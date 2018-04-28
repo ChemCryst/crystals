@@ -1,36 +1,36 @@
 %SCRIPT SUM39
  
-Summary of list type 39:
+%% Summary of list type 39:
  
-Overall parameters:
+%% Overall parameters:
+
+%%     OV1  OV2  OV3  OV4  OV5  OV6  OV7  OV8  OV9 OV10 OV11 OV12
+%% %  COPY '#GENERALEDIT 39'
+%% %  COPY 'LOCATE RECORDTYPE = 103'
+%% %% %  COPY 'FORMAT RECORD ( 4X,12I5 )'
+%% %  COPY 'DISPLAY RECORD'
+%% %  COPY 'END'
  
-     OV1  OV2  OV3  OV4  OV5  OV6  OV7  OV8  OV9 OV10 OV11 OV12
-%  COPY '#GENERALEDIT 39'
-%  COPY 'LOCATE RECORDTYPE = 103'
-%%  COPY 'ERROR MESSAGE = NO SIGNAL = NONE ACTION = CONTING NAME = EDITERROR'
-%  COPY 'FORMAT RECORD ( 4X,12I5 )'
-%  COPY 'DISPLAY RECORD'
-%  COPY 'END'
+%% Integer parameters:
  
-Integer parameters:
+%%    NAME SERI   I1   I2   I3   I4   I5   I6   I7   I8   I9  I10
+%% %  COPY '#GENERALEDIT 39'
+%% %  COPY 'LOCATE RECORDTYPE = 101'
+%% %  COPY 'FORMAT RECORD ( 4X,A4,11I5 )'
+%% %  COPY 'DISPLAY RECORD'
+%% %  COPY 'END'
  
-   NAME SERI   I1   I2   I3   I4   I5   I6   I7   I8   I9  I10
-%  COPY '#GENERALEDIT 39'
-%  COPY 'LOCATE RECORDTYPE = 101'
-%%  COPY 'ERROR MESSAGE = NO SIGNAL = NONE ACTION = CONTING NAME = EDITERROR'
-%  COPY 'FORMAT RECORD ( 4X,A4,11I5 )'
-%  COPY 'DISPLAY RECORD'
-%  COPY 'END'
+%% Real parameters:   % This bit dies with a WRITE error I cannot fix
  
-Real parameters:
- 
-   NAME SERI   R1   R2   R3   R4   R5   R6   R7   R8   R9   R10
-%  COPY '#GENERALEDIT 39'
-%  COPY 'LOCATE RECORDTYPE = 102'
-%%  COPY 'ERROR MESSAGE = NO SIGNAL = NONE ACTION = CONTING NAME = EDITERROR'
+%%    NAME SERI   R1   R2   R3   R4   R5   R6   R7   R8   R9   R10
+%% %  COPY '#GENERALEDIT 39'
+%% %  COPY 'LOCATE RECORDTYPE = 102'
 %%  GENEDIT wont handle / in FORMAT - to be fixed sometime (DJW 2015)
 %%  COPY 'FORMAT RECORD ( 4X,A4,F5.0,1X,2(4(F15.7,2X),/,13X),2(F15.7,2X) ) '
-%  COPY 'FORMAT RECORD ( 4X,A4,F5.0,1X,10F8.2 ) '
-%  COPY 'DISPLAY RECORD REAL 3'
-%  COPY 'END'
+%% %  COPY 'FORMAT RECORD ( 4X,A4,F5.0,1X,10F8.2 ) '
+%% %  COPY 'DISPLAY RECORD REAL 3'
+%% %  COPY 'END'
+
+% COPY '#SUM L 39'
+% COPY 'END'
 %END SCRIPT

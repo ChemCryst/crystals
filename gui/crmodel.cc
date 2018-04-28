@@ -147,6 +147,7 @@ CrModel::CrModel( CrGUIElement * mParentPtr )
   m_style.m_modview = (CxModel*)ptr_to_cxObject;
   m_style.showh = true;
   m_style.bond_style = BONDSTYLE_HALFPARENTPART;
+  m_style.min_peak_height_to_show = -99999;
 }
 
 CrModel::~CrModel()
@@ -303,6 +304,14 @@ CcParse CrModel::ParseInput( deque<string> &  tokenList )
       {
         tokenList.pop_front(); // Remove that token!
         m_style.radius_scale = float(atoi(tokenList.front().c_str()))/1000.0f;
+        tokenList.pop_front();
+        Update(true);
+        break;
+      }
+      case kTMinPeakHeight:
+      {
+        tokenList.pop_front(); // Remove that token!
+        m_style.min_peak_height_to_show = atoi(tokenList.front().c_str());
         tokenList.pop_front();
         Update(true);
         break;
@@ -697,8 +706,19 @@ void CrModel::ContextMenu(int x, int y, string atomname, int selection, string a
         theMenu = m_popupMenu2;
         break;
       case 3: // The user has clicked on a single atom
+      {
+        string element;
+        string::size_type pos1 = atomname.find('(');
+//        string::size_type pos2 = atomname.find(')');
+//        if ( (pos1 != string::npos ) && ( pos2 != string::npos ) )
+        if (pos1 != string::npos ) 
+        {
+          element = atomname.substr(0,pos1);
+          (CcController::theController)->status.SetAtomFlags(element);
+        }
         theMenu = m_popupMenu3;
         break;
+      }
       case 4: // The user has clicked on a normal bond
         theMenu = m_popupMenu4;
         (CcController::theController)->status.SetBondType(BOND_NORM);

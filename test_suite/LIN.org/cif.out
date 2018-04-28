@@ -3,9 +3,8 @@ _audit_creation_date        "20  -  -  "
 [63] _audit_creation_method CRYSTALS
 
 _oxford_structure_analysis_title  'Cyclo in P 21 21 21'
-_chemical_name_systematic         ?
-_chemical_melting_point           ?
-
+_chemical_name_systematic         .
+_chemical_melting_point           'not measured'
 #looking for refcif 
  
  
@@ -283,7 +282,7 @@ _cell_formula_units_Z                    4
 
 _chemical_formula_sum             'C7 H11 N1 O3'
 _chemical_formula_moiety          'C7 H11 N1 O3'
-_chemical_compound_source                ?
+_chemical_compound_source                .
 _chemical_formula_weight            157.00
  
  
@@ -299,7 +298,7 @@ _exptl_crystal_size_mid           ?
 _exptl_crystal_size_max           ? 
  
 _exptl_crystal_density_diffrn     1.252 
-_exptl_crystal_density_meas       ? 
+_exptl_crystal_density_meas       'not measured' 
 _exptl_crystal_density_method     'not measured' 
 # Non-dispersive F(000): 
 _exptl_crystal_F_000              336 
@@ -327,10 +326,11 @@ _computing_molecular_graphics     'CAMERON (Watkin et al., 1996)'
 _diffrn_standards_interval_time   . 
 _diffrn_standards_interval_count  . 
 _diffrn_standards_number          0 
-_diffrn_standards_decay_%         ? 
+_diffrn_standards_decay_%         . 
  
 _diffrn_ambient_temperature        293
 _diffrn_reflns_number             1849 
+_diffrn_reflns_av_unetI/netI      0.035 
 _reflns_number_total              1133 
 _diffrn_reflns_av_R_equivalents   0.018 
 # Number of reflections without Friedels Law is 0 
@@ -362,7 +362,7 @@ _reflns_limit_l_max               19
 _oxford_diffrn_Wilson_B_factor    0.00 
 _oxford_diffrn_Wilson_scale       0.00 
  
-_atom_sites_solution_primary      Other  #heavy,direct,difmap,geom,iterative
+_atom_sites_solution_primary      other  #heavy,direct,difmap,geom,iterative
 # _atom_sites_solution_secondary  difmap
 _atom_sites_solution_hydrogens    difmap
  
@@ -376,29 +376,31 @@ _refine_diff_density_max          0.42
  
  
 # The values actually used during refinement 
-_oxford_reflns_threshold_expression_ref     I>-10.0\s(I)
-_refine_ls_number_reflns          1133 
+_oxford_refine_reflns_threshold_expression_ref   I>-10.0\s(I)
 _refine_ls_number_restraints      0 
 _refine_ls_number_parameters      55 
-_oxford_refine_ls_R_factor_ref    0.0885 
-_refine_ls_wR_factor_ref          0.2185 
-_refine_ls_goodness_of_fit_ref    1.6799 
+_refine_ls_number_reflns          1133 
+_oxford_refine_ls_R_factor_ref    0.0879 
+_refine_ls_wR_factor_ref          0.2170 
+_refine_ls_goodness_of_fit_ref    1.6682 
 [01] _refine_ls_shift/su_max           0.0000
 [02] _refine_ls_shift/su_mean          0.0000
  
  
 # The values computed with all filters except I/sigma 
 _oxford_reflns_number_all         1133 
-_refine_ls_R_factor_all           0.0885 
-_refine_ls_wR_factor_all          0.2185 
+_refine_ls_R_factor_all           0.0879 
+_refine_ls_wR_factor_all          0.2170 
  
 # The values computed with a 2 sigma cutoff - a la SHELX 
-_reflns_threshold_expression      I>2.0\s(I)
+_reflns_threshold_expression                I>2.0\s(I)
 _reflns_number_gt                 1016 
-_refine_ls_R_factor_gt            0.0792 
-_refine_ls_wR_factor_gt           0.1986 
+_refine_ls_R_factor_gt            0.0785 
+_refine_ls_wR_factor_gt           0.1968 
  
-# choose from: rm (reference molecule of known chirality), 
+ 
+# choose from: 
+# rm (reference molecule of known chirality), 
 # ad (anomolous dispersion - Flack), rmad (rm and ad), 
 # syn (from synthesis), unk (unknown) or . (not applicable). 
 _chemical_absolute_configuration  'unk' 
@@ -460,28 +462,28 @@ _atom_site_refinement_flags_occupancy
 _atom_site_disorder_assembly
 _atom_site_disorder_group
 _atom_site_attached_hydrogens
-C1 C 0.8970(13) 0.0468(5) 0.1907(4) 0.0307(13) 1.0000 Uiso . . . . . . 
-C2 C 0.7657(14) 0.1321(5) 0.1279(4) 0.0327(12) 1.0000 Uiso . . . . . . 
-O3 O 0.7714(11) 0.2468(3) 0.1552(3) 0.0408 1.0000 Uani . . . . . . 
-C4 C 0.6426(17) 0.3315(6) 0.0970(5) 0.0497(17) 1.0000 Uiso . . . . . . 
-O5 O 0.6658(12) 0.1005(4) 0.0597(3) 0.0479 1.0000 Uani . . . . . . 
-N6 N 0.9614(11) 0.0914(4) 0.2765(3) 0.0301(11) 1.0000 Uiso . . . . . . 
-C7 C 0.7647(13) 0.1167(5) 0.3350(4) 0.0299 1.0000 Uani . . . . . . 
-O8 O 0.5235(10) 0.1078(4) 0.3167(3) 0.0399(11) 1.0000 Uiso . . . . . . 
-C9 C 0.8585(15) 0.1529(6) 0.4236(4) 0.0379 1.0000 Uani . . . . . . 
-C10 C 0.8310(15) -0.0878(5) 0.1806(5) 0.0406 1.0000 Uani . . . . . . 
-C11 C 1.0997(15) -0.0423(7) 0.1522(5) 0.0501 1.0000 Uani . . . . . . 
-H41 H 0.6545 0.4120 0.1194 0.0692 1.0000 Uiso . . . . . . 
-H42 H 0.7251 0.3290 0.0409 0.0692 1.0000 Uiso . . . . . . 
-H43 H 0.4540 0.3111 0.0908 0.0692 1.0000 Uiso . . . . . . 
+C1 C 0.8970(13) 0.0468(5) 0.1907(4) 0.0310(13) 1.0000 Uiso . . . . . . 
+C2 C 0.7657(14) 0.1321(5) 0.1279(4) 0.0329(12) 1.0000 Uiso . . . . . . 
+O3 O 0.7714(11) 0.2468(3) 0.1552(3) 0.0411 1.0000 Uani . . . . . . 
+C4 C 0.6427(17) 0.3314(6) 0.0970(5) 0.0500(17) 1.0000 Uiso . . . . . . 
+O5 O 0.6658(12) 0.1005(4) 0.0597(3) 0.0482 1.0000 Uani . . . . . . 
+N6 N 0.9614(11) 0.0915(4) 0.2765(3) 0.0303(10) 1.0000 Uiso . . . . . . 
+C7 C 0.7647(13) 0.1167(5) 0.3349(4) 0.0300 1.0000 Uani . . . . . . 
+O8 O 0.5235(10) 0.1078(4) 0.3167(3) 0.0402(11) 1.0000 Uiso . . . . . . 
+C9 C 0.8585(15) 0.1529(6) 0.4236(4) 0.0381 1.0000 Uani . . . . . . 
+C10 C 0.8310(15) -0.0877(5) 0.1806(4) 0.0407 1.0000 Uani . . . . . . 
+C11 C 1.0997(15) -0.0423(7) 0.1522(5) 0.0500 1.0000 Uani . . . . . . 
+H41 H 0.6545 0.4120 0.1194 0.0691 1.0000 Uiso . . . . . . 
+H42 H 0.7251 0.3290 0.0409 0.0691 1.0000 Uiso . . . . . . 
+H43 H 0.4540 0.3111 0.0908 0.0691 1.0000 Uiso . . . . . . 
 H91 H 0.7084 0.1693 0.4609 0.0486 1.0000 Uiso . . . . . . 
 H92 H 0.9657 0.0897 0.4497 0.0486 1.0000 Uiso . . . . . . 
 H93 H 0.9695 0.2243 0.4204 0.0486 1.0000 Uiso . . . . . . 
-H101 H 0.8162 -0.1395 0.2317 0.0517 1.0000 Uiso . . . . . . 
-H102 H 0.6995 -0.1149 0.1393 0.0517 1.0000 Uiso . . . . . . 
-H111 H 1.2600 -0.0670 0.1838 0.0601 1.0000 Uiso . . . . . . 
-H112 H 1.1433 -0.0424 0.0914 0.0601 1.0000 Uiso . . . . . . 
-H1 H 0.8606 0.6111 0.2067 0.0500 1.0000 Uiso . . . . . . 
+H101 H 0.8162 -0.1395 0.2317 0.0516 1.0000 Uiso . . . . . . 
+H102 H 0.6995 -0.1149 0.1393 0.0516 1.0000 Uiso . . . . . . 
+H111 H 1.2600 -0.0670 0.1838 0.0600 1.0000 Uiso . . . . . . 
+H112 H 1.1433 -0.0424 0.0914 0.0600 1.0000 Uiso . . . . . . 
+H1 H 0.8612 0.6108 0.2067 0.0500 1.0000 Uiso . . . . . . 
 loop_
 _atom_site_aniso_label
 _atom_site_aniso_U_11
@@ -490,17 +492,17 @@ _atom_site_aniso_U_33
 _atom_site_aniso_U_23
 _atom_site_aniso_U_13
 _atom_site_aniso_U_12
-O3 0.059(3) 0.0271(18) 0.037(2) -0.0026(17) -0.009(2) 0.002(2) 
-O5 0.072(4) 0.038(2) 0.034(2) -0.0071(19) -0.011(3) 0.001(3) 
+O3 0.059(3) 0.0273(18) 0.037(2) -0.0027(17) -0.009(2) 0.002(2) 
+O5 0.072(4) 0.038(2) 0.034(2) -0.0071(19) -0.011(2) 0.001(3) 
 C7 0.0295 0.0265 0.034(3) 0.0033 0.0007 -0.0022 
-C9 0.043(3) 0.0407 0.0305 0.0017 -0.0017 -0.0035 
-C10 0.0418 0.027(3) 0.0532 -0.0043 0.0034 0.0040 
-C11 0.0387 0.0484 0.0631 -0.016(3) 0.0056 0.0079 
+C9 0.043(3) 0.0407 0.0305 0.0017 -0.0016 -0.0035 
+C10 0.0418 0.027(3) 0.0531 -0.0043 0.0034 0.0041 
+C11 0.0387 0.0483 0.0630 -0.016(3) 0.0056 0.0079 
 
-_refine_ls_extinction_coef 615.550 
+_refine_ls_extinction_coef 675.867 
 _refine_ls_extinction_method 
     'Larson (1970), Equation 22'
-_oxford_refine_ls_scale 1.58(3) 
+_oxford_refine_ls_scale 1.59(3) 
 loop_
  _geom_bond_atom_site_label_1
  _geom_bond_site_symmetry_1
@@ -509,16 +511,16 @@ loop_
  _geom_bond_distance
  _geom_bond_publ_flag
 C1 . C2 . 1.494(8)    yes
-C1 . N6 . 1.440(7)    yes
+C1 . N6 . 1.439(7)    yes
 C1 . C10 . 1.528(8)    yes
-C1 . C11 . 1.521(9)    yes
+C1 . C11 . 1.520(9)    yes
 C2 . O3 . 1.333(7)    yes
 C2 . O5 . 1.207(7)    yes
 O3 . C4 . 1.438(8)    yes
-C4 . H41 . 0.954    no
+C4 . H41 . 0.955    no
 C4 . H42 . 0.952    no
 C4 . H43 . 0.961    no
-N6 . H1 3_745 0.939    no
+N6 . H1 3_745 0.935    no
 N6 . C7 . 1.348(8)    yes
 C7 . O8 . 1.224(8)    yes
 C7 . C9 . 1.489(8)    yes
@@ -526,8 +528,8 @@ C9 . H91 . 0.952    no
 C9 . H92 . 0.962    no
 C9 . H93 . 0.960    no
 C10 . C11 . 1.481(10)    yes
-C10 . H101 . 0.971    no
-C10 . H102 . 0.953    no
+C10 . H101 . 0.972    no
+C10 . H102 . 0.954    no
 C11 . H111 . 0.965    no
 C11 . H112 . 0.956    no
 loop_
@@ -550,13 +552,13 @@ C1 . C2 . O5 . 123.5(5)    yes
 O3 . C2 . O5 . 123.7(6)    yes
 C2 . O3 . C4 . 114.4(5)    yes
 O3 . C4 . H41 . 110.8    no
-O3 . C4 . H42 . 110.7    no
+O3 . C4 . H42 . 110.8    no
 H41 . C4 . H42 . 108.9    no
 O3 . C4 . H43 . 109.7    no
 H41 . C4 . H43 . 108.2    no
 H42 . C4 . H43 . 108.4    no
 C1 . N6 . H1 3_745 122.4    no
-C1 . N6 . C7 . 121.2(5)    yes
+C1 . N6 . C7 . 121.3(5)    yes
 H1 3_745 N6 . C7 . 116.2    no
 N6 . C7 . O8 . 121.9(6)    yes
 N6 . C7 . C9 . 116.0(6)    yes
@@ -568,13 +570,13 @@ C7 . C9 . H93 . 110.6    no
 H91 . C9 . H93 . 108.5    no
 H92 . C9 . H93 . 107.7    no
 C1 . C10 . C11 . 60.7(4)    yes
-C1 . C10 . H101 . 120.3    no
+C1 . C10 . H101 . 120.4    no
 C11 . C10 . H101 . 120.2    no
-C1 . C10 . H102 . 121.1    no
+C1 . C10 . H102 . 121.2    no
 C11 . C10 . H102 . 121.2    no
 H101 . C10 . H102 . 107.4    no
 C1 . C11 . C10 . 61.2(4)    yes
-C1 . C11 . H111 . 121.6    no
+C1 . C11 . H111 . 121.7    no
 C10 . C11 . H111 . 119.2    no
 C1 . C11 . H112 . 121.8    no
 C10 . C11 . H112 . 119.1    no
@@ -591,8 +593,8 @@ loop_
  _geom_hbond_distance_HA
  _geom_hbond_distance_DA
  _geom_hbond_publ_flag
-C4 . H41 . O8 3_655 156.0(5) 0.954 2.529 3.423(9)    yes
-N6 3_755 H1 . O8 3_655 164.5(3) 0.939 1.926 2.842(9)    yes
+C4 . H41 . O8 3_655 156.0(5) 0.955 2.529 3.423(9)    yes
+N6 3_755 H1 . O8 3_655 164.7(3) 0.935 1.929 2.842(9)    yes
 
 
 _iucr_refine_instructions_details

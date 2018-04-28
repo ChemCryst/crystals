@@ -119,6 +119,16 @@ void CcStatus::SetBondType(int bt)
   }
 }
 
+void CcStatus::SetAtomFlags(string element)
+{
+  UnSetBit(25,&statusFlags);
+
+  if ( element == "H" ) {
+      SetBit(25,&statusFlags);
+  }
+}
+
+
 bool CcStatus::ShouldBeEnabled(int enableFlags, int disableFlags)
 {
     if( disableFlags & statusFlags )           //If any bits match, then should be disabled.
@@ -247,7 +257,7 @@ int CcStatus::GetBitByToken(string & token)
 #ifdef bS24
     CHECKTOKEN(24)
 #endif
-#ifdef bS26
+#ifdef bS25
     CHECKTOKEN(25)
 #endif
 #ifdef bS26
@@ -268,7 +278,7 @@ int CcStatus::GetBitByToken(string & token)
 #ifdef bS31
     CHECKTOKEN(31)
 #endif
-    return -1; //Tokenn not matched.
+    return -1; //Token not matched.
 }
 
 

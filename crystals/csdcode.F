@@ -2658,7 +2658,7 @@ C--   HYPRES   H total in cryst.
 C--   METTOT   metal total in cryst
 C--   ICON list of atoms connected to Iat
 C--   ICOB list of bondtypes for ICON
-      INTEGER RINGAT(20),NRING,HYPRES,METTOT,NHETER,NMETAL
+      INTEGER RINGAT(30),NRING,HYPRES,METTOT,NHETER,NMETAL
       INTEGER NNITRO,NSP3,IOK,NPIB,NPHOSP,NOXY,KMIN,NTOR
       INTEGER I,J,K,M,ICON(30),ICOB(30),IPIBON,NBT,I1,J1,NVAL,N1
       INTEGER IPASS,NNOT,NNOT1,LU,I9,J9,LTYPE(3),IPIB
@@ -4586,7 +4586,8 @@ C--
                KAT=JCON(K)
                CALL PLUDIJ(JAT,KAT,AXYZO,D1)
 
-               IF(D1.LT. 1.450  .AND. ISTORE(AELEM-1+KAT).NE.2) THEN
+               IF(D1.LT. 1.450  .AND. ISTORE(AELEM-1+KAT).NE.2 
+     1             .AND. KLIST + NLIST .LT. 30 ) THEN
                   NBT=7
                   CALL SAMSBT(JAT,KAT,NBT,BOND,BTYPE,NBOCRY)
                   KLIST=KLIST+1

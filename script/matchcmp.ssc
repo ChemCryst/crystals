@@ -74,12 +74,35 @@
 %           GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
 %           IF VALUE .EQ. 1 THEN
 %              COPY '#SCRIPT XCAMSPEC'
-%           END IF
+%          END IF
 %         ELSE
 {E An error occured when attempting the match the two fragments, the
 {E most common reasons are:
 {I   1.  The fragments have two- or more-fold symmetry.
 {I   2.  The fragments are different.
+
+^^WI WINDOW XHELP 'Break Symmetry ' COMMIT='CANCEL' CANCEL='CANCEL'
+^^WI POSITION CENTRED _MAINTEXTOUTPUT
+^^WI GRID GRIDM NROWS=5 NCOLS=5
+^^WI {
+^^WI   @ 2,2 STATIC T2 'Click an atom in the residue'
+^^WI   @ 3,2 STATIC T3 'to compare with the first.'
+^^WI   @ 4,2 GRID G NROWS=2 NCOLS=4
+^^WI   {
+^^WI     @ 2,1 STRETCH S HORIZONTAL
+^^WI     @ 2,2 BUTTON XHELP 'Help' 
+^^WI     @ 2,4 BUTTON CANCEL 'Cancel' CANCEL DEFAULT COMMIT
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+%          VERIFY CANCEL XHELP
+%          GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
+%          IF VALUE .EQ. 2 THEN
+%           COPY '#SPAWN CRYSDIR:manual/analyse/matchcmp.html' 
+{S Symmetry help
+%          END IF
+^^CO       DISPOSE XHELP
 %         END IF
 %       END IF
 %   END IF

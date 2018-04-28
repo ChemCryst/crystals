@@ -1109,7 +1109,7 @@ cdjwapr06            IF (DELTA.GE..05) THEN
                IF (ISSPRT.EQ.0) THEN
                   WRITE (NCWU,1650) CTEMP(1:LTEMP),NHYB,DELTA,MHYB,
      1             DELTA2,DEV,DELTAA
-                  WRITE (NCWU,'(A)') CMON(1)(:)
+                  WRITE (NCWU,'(A)') trim(CMON(1))
                END IF
             END IF
 1650        FORMAT (A,1X,' sp',I1,' delta ',F6.2,' sp',I1,' delta',F6.2,
@@ -3143,10 +3143,11 @@ C Check for clashing serial numebr
       DO ISW = 1,999
          ICLASH = 0
          DO K5 = L5,JT,MD5
-           IF ( ( ISTORE(K5)        .EQ. IHH(1) ) .AND.
-     1         ( NINT(STORE(K5+1)) .EQ. SW )     ) THEN
+           IF ( ISTORE(K5) .EQ. IHH(1) ) then
+             if( NINT(STORE(K5+1)) .EQ. SW ) THEN
               SW = SW + 1
               ICLASH = 1
+             end if
            END IF
          END DO
          IF ( ICLASH .EQ. 0) EXIT  ! No clash found

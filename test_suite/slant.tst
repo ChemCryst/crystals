@@ -1,7 +1,7 @@
 \set time slow
 \rele print CROUTPUT:
 \TITLE P6122 TEST DECK FROM LARSON  -  MUCH MODIFIED FOR CRYSTALS               
-\SET MONITOR OFF
+\SET MIRROR OFF
 \LIST 1                                                                         
 REAL 8.53    8.53    20.37         0.0 0.0 -0.5                                 
 END                                                                             
@@ -58,7 +58,7 @@ END
 \LIST 23                                                                        
 MODIFY ANOM= YES                                                                
 END                                                                             
-\SET MONITOR ON
+\SET MIRROR ON
 \USE tdlist6.hkl
 \SFLS                                                                           
 CALC                                                                            

@@ -1,0 +1,76 @@
+%SCRIPT BROWSE
+%%  
+%% browse for a filename  'CFILE'
+%%  
+%  VARIABLE CHARACTER CFILE 
+%  VARIABLE LOGICAL RUNNOW  
+%  EVALUATE RUNNOW = FALSE
+%%  
+^^WI WINDOW BROWSE 'Browse' MODAL COMMIT='CFBOK' CANCEL='CFBXX'  
+^^WI GRID GRIDM NROWS=8 NCOLS=3  
+^^WI {  
+^^WI @ 2,2 GRID CFG NROWS=1 NCOLS=3 OUTLINE='file to be found:'  
+^^WI {  
+^^WI @ 1,1 EDITBOX CINILE ' ' CHARS=48 INFORM=NO INPUT  
+^^WI @ 1,3 BUTTON BROWSE 'Browse...'  
+^^WI }  
+^^WI @ 5,2 CHECKBOX RF 'Process file now' STATE=ON  
+^^WI @ 7,2 GRID GB NROWS=1 NCOLS=3  
+^^WI {  
+^^WI @ 1,1 BUTTON CFBOK '&Ok' DEFAULT  
+^^WI @ 1,3 BUTTON CFBXX '&Cancel'  
+^^WI }  
+^^WI }  
+^^WI SHOW  
+^^CR  
+%  LOOP  
+%    VERIFY BROWSE CFBXX CFBOK  
+%    GET SILENT NOSTORE FINAL ABBREVIATED 'BXX?' 'BXX'  
+%    CASE VALUE  
+%      BLOCK %BROWSE%  
+^^WI SYSOPENFILE 
+^^WI [ '*.ins;*.res;*.hkl;*.hklf5;*.cif;*.cmf;*.fcf;*.cif_od;*.pcf;'
+^^WI   'Crystallographic files'
+^^WI   '*.*;' 'All files (*.*)'
+^^WI   '*.ins;*.res;*.hkl*;*.hkl;' 'SHELX files (*.ins,*.res,*.hkl*)'
+^^WI   '*.dat;*.cry;*.12;*.use;*.l12;*.l16' 'CRYSTALS files (*.dat, etc)'
+^^WI   '*.cif*;*.cmf;*.fcf;*.pcf;' 'CIF files (*.cif*,*.cmf,*.fcf,*.pcf)' ]
+^^CR                                                                            
+%        GET SILENT TEXT 'New filename:'  
+%        IF CVALUE .NE. 'CANCEL' THEN  
+%          CLEAR  
+^^WI SET CINILE TEXT  
+%          TRANSFER "^^WI '" // CVALUE // "'" TO DISPLAY  
+^^CR  
+%          EVALUATE CFILE = CVALUE  
+%          IF ( .NOT. ( FILEEXISTS CFILE ) ) THEN  
+{E Error: Filename given does not exist.  
+%          END IF  
+%        END IF  
+%      END BLOCK  
+%      BLOCK %CFBXX%  
+^^CO DISPOSE BROWSE
+%        FINISH  
+%      END BLOCK  
+%      BLOCK %CFBOK%  
+^^?? CINILE TEXT  
+%        GET SILENT TEXT 'CIN name '  
+%        EVALUATE CFILE = CVALUE  
+%        IF ( .NOT. ( FILEEXISTS CFILE ) ) THEN  
+{E Error: Filename given does not exist.  
+%          ELSE  
+^^?? RF STATE  
+%          VERIFY ON OFF  
+%          GET SILENT NOSTORE FINAL ABBREVIATED ' '  
+%          IF ( VALUE .EQ. 1 ) THEN  
+%            EVALUATE RUNNOW = TRUE  
+%          END IF  
+%%  
+^^CO DISPOSE BROWSE
+%          EVALUATE LOOPEND = LOOPCOUNTER  
+%        END IF  
+%      END BLOCK  
+%    END CASE  
+%  END LOOP  
+% SHOW CFILE RUNNOW
+% END SCRIPT  

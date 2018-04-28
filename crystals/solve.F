@@ -216,6 +216,10 @@ CODE FOR XSFLSE
       SUBROUTINE XSFLSE
       use solve_helper
       use sfls_punch_mod
+      use list26_mod, only: invertm
+      use lists1_mod, only: klschk
+      use lists2_mod, only: xldlst
+
 C--GENERAL MATRIX INVERSION AND CALCULATION OF SHIFT ROUTINES.
 C
 C  THESE ROUTINES INVERT THE NORMAL MATRIX AND OUTPUT
@@ -262,10 +266,7 @@ C--
       CHARACTER *21 CTEXT, CSAVE
       CHARACTER *14 CLST23(4)
 C-------STEFANS VARIABLES
-      INTEGER ZEROED_COUNT
-      INTEGER XCOUNT, YCOUNT
-      REAL  THRESH_HOLD, RHS
-      REAL  SQRT_Mii, SQRT_Mjj, Mij
+c18      INTEGER ZEROED_COUNT
 C----------------------------
       INCLUDE 'TYPE11.INC'
 C
@@ -289,7 +290,7 @@ C
       INCLUDE 'XCHARS.INC'
       INCLUDE 'XWORK.INC'
       INCLUDE 'XWORKA.INC'
-      common /xpatch/djwscl
+c18      common /xpatch/djwscl
       INCLUDE 'XPDS.INC'
       INCLUDE 'XLST01.INC'
       INCLUDE 'XLST05.INC'
@@ -334,9 +335,21 @@ C      DATA RMSSM/ 0.3/
 C
       DATA IVERSN /410/
       
-      real, dimension(:), allocatable :: ref
-      real, dimension(:,:), allocatable :: check, unpacked
-      integer sfls_punch_flag
+!      real, dimension(:), allocatable :: ref
+!      real, dimension(:,:), allocatable :: check, unpacked
+      integer sfls_punch_flag, sfls_calcul_flag
+      
+      character(len=16) blasname
+      
+      character(len=22),dimension(0:6), parameter :: methodtxt=(/
+     &  'Automatic             ',
+     &  'LDLT                  ',
+     &  'Eigen filtering       ',
+     &  'LDLT double precision ',
+     &  'old crystals Choleski ',
+     &  'modern Choleski       ',
+     &  'modern Choleski dp    ' /)
+     
 c
 #ifdef _HOL_
       DATA ISFLS/4HSFLS/
@@ -349,8 +362,6 @@ C--INITIALISE THE TIMING FUNCTION
       CALL XTIME1(2)
 C--READ ANY OTHER PARAMETERS
       IF ( KRDDPV ( ISTORE(NFL),1 )   .LT.   0 ) GO TO 9900
-C----- METHOD = 0 FOR CHOLESKI, ELSE 1
-      METHOD = ISTORE(NFL)
 C--CLEAR THE CORE
       CALL XCSAE
       CALL XRSL
@@ -359,9 +370,19 @@ C--LOAD THE CONTROL LISTS
       INCLUDE 'IDIM33.INC'
       CALL XFAL33
       sfls_punch_flag=ISTORE(M33CD+5)
+      sfls_calcul_flag=ISTORE(M33CD+1)
+      if(sfls_calcul_flag>0 .and. sfls_punch_flag<=0) then
+        sfls_punch_flag=3 ! numpy is default
+      end if
+      ! sfls_calcul_flag == 1 is leverages calculations
+
+C----- METHOD = 0 LDLT; 1 eigen value filtering; 2 ldlt double precision; 3 CHOLESKI
+      if(istore(M33CD)<0) then ! overwrite invertor when huge is used.
+        METHOD = ISTORE(M33CD+8)
+      else
+        method=6 ! choleski double precision
+      end if
       IF ( IERFLG .LT. 0 ) GO TO 9900
-cdjwdec06 - save the sparsity flag. 0=sparse
-      ispar = istore(m33cd+13)
 C--LOAD A FEW MORE LISTS
       CALL XFAL01
       CALL XFAL05
@@ -414,15 +435,11 @@ C----- FIND THE 'PRINT' LEVEL
      5 /' Parameters marked COMPOSITE contain derivatives from ',
      6  'other physical parameters'/)
       ENDIF
-C----- SET THE EIGENVALUE FILTERS
-      AUGFAC = STORE(M33CD+9)
-      FILTER = STORE(M33CD+10)
-      DISCRM = STORE(M33CD+11)
 C----- MAXIMUM  SHIFT/ESD
 C>DJWOCT96
 cdjwapril2015
 c      SMAX = -1000000.0
-       smax = zero
+       shmax = zero
        JSAVE = 0
        CSAVE = ' '
 C<DJWOCT96
@@ -434,11 +451,11 @@ C--SET UP THE SHIFT AREA
       NMW=MD33ST-1
       JC=KCHLFL(MW*NMW)
       JD=JC+(NMW-1)*MW
-cdec06
-         if (ispar .eq.0) then
-c-----    set general shift to 0.8 for sparse build
-          store(m33sv)=min(store(m33sv), 0.8)
-         endif
+      if (sfls_calcul_flag==1) then
+c-----    set general shift to 0.0 for leverages calculations
+        store(m33sv)=0.0
+      end if     
+
 c
 C--FIND THE POINTERS TO THE SHIFT INFORMATION
       JA=M33ST+1
@@ -456,11 +473,10 @@ C--CHECK IF A SHIFT FACTOR HAS BEEN GIVEN IN LIST 33
          IF(ISTORE(JA))1050,1100,1100
 C--MOVE THE SHIFT FACTOR FROM LIST 33
 1050     CONTINUE
-cdec06
-         if (ispar .eq.0) then
-c-----    set maximal shift to 0.8 for sparse build
-          store(jb)=min(store(jb), 0.8)
-         endif
+         if (sfls_calcul_flag==1) then
+c-----     set general shift to 0.0 for leverages calculations
+           store(jb)=0.0
+         end if
          STORE(I)=STORE(JB)
 C--INCREMENT THE POINTERS
 1100     CONTINUE
@@ -468,10 +484,6 @@ C--INCREMENT THE POINTERS
          JB=JB+1
 1150  CONTINUE
 C
-      IF (METHOD .EQ. 1) THEN
-        IF (ISSPRT .EQ. 0) WRITE(NCWU,1151)  AUGFAC, FILTER, DISCRM
-1151    FORMAT(1X, ' Eigen filters ', 3(G10.4,3X) )
-      ENDIF
 C--FORM THE ABSOLUTE LIST 12
       JQ=2
       JS=1
@@ -540,7 +552,6 @@ C--CHECK THAT THE NUMBER OF DEGREES OF FREEDOM IS POSITIVE
             E=D/STORE(L11P+16)
       ENDIF
 C--CHECK THE TYPE OF LIST 11
-1500  CONTINUE
 cdjwapr09 F is counter for sum of squares, ABSF for sum abs(shift/esd)
       F = 0.0
       ABSF = 0
@@ -601,64 +612,96 @@ C--INVERT THE  MATRIX BLOCK IF IT IS NECESSARY
          JY=ISTORE(M12B+1)
          NELEM = (JY*(JY+1))/2
 C
-         IF ( (JP .LE. 0) .OR.(METHOD .EQ. 0) ) THEN
 C-----  RE-USE OF MSTRIX OR CHOLESKI - GET SOME CORE FOR THE UPPER TRIAN
-            L11C = KADD11(-101,MD11,NELEM)
-c oct-05
-C----- ALLOCATE SPACE FOR SCALE VECTOR
-            ISCL = KADD11( 1013, MD11, JY)
-c oct-05
+         L11C = KADD11(-101,MD11,NELEM)
 
-         ELSE
-C-----  GET SOME CORE FOR THE FULL MATRIX
-            L11C = KADD11( -101, MD11, JY*JY)
-C----- ALLOCATE SPACE FOR EIGEN VALUES
-            IVAL = KADD11( 1012, MD11, JY)
-C----- ALLOCATE SPACE FOR SCALE VECTOR
-            ISCL = KADD11( 1013, MD11, JY)
-C----- ALLOCATE SPACE FOR EGENVECTORS
-            IVEC = KADD11( 1014, MD11, JY*JY)
-C----- ALLOCATE WORK SPACE
-            IWRK = KADD11( 1015, MD11, 5*JY)
-            IF ( IERFLG .LT. 0 ) GO TO 9900
-         ENDIF
          M11 = L11C
          INM = L11C
 C--BRING DOWN THE MATRIX - REMEMBER MD11 INDICATES SINGLE OR DOUBLE PREC
 
       CALL XDOWNF (M11DB, XSTR11 (MD11*L11C-MD11+1), MD11*NELEM)
 C     If we are going to threshhold the normal matrix then we do it here
-      if ( store(M33CD+16) .gt. 0 ) then
-            ZEROED_COUNT =  tri_matrix_apply_threshhold(STR11(L11C),
-     1       JY*(JY+1)/2, JY, store(M33CD+16))
-      end if
+c18      if ( store(M33CD+16) .gt. 0 ) then
+c18            ZEROED_COUNT =  tri_matrix_apply_threshhold(STR11(L11C),
+c18     1       JY*(JY+1)/2, JY, store(M33CD+16))
+c18      end if
 C --- If we are doing punching then do it here.      
-      IF ( sfls_punch_flag>0 ) THEN
-          call sfls_punch_normal(STR11(L11C:L11C+JY*(JY+1)/2-1), JY, 
+         IF ( sfls_punch_flag>0 ) THEN
+             call sfls_punch_normal(STR11(L11C:L11C+JY*(JY+1)/2-1), JY, 
      1        sfls_punch_flag)
-      END IF
-
-CDJW-OCT-05
-c      write(ncwu,'(a)') 'The scaling vector'
-c         IDJW = L11C
-c         jdjw = iscl
-c         DO 2051 I = 1, JY
-c            str11(jdjw) = STR11(IDJW)
-c            IDJW = IDJW + JY - I + 1
-c            jdjw=jdjw+1
-2051     CONTINUE 
-c        call outv(str11(iscl),jy)
-CDJW-OCT-05
-
+         END IF
    
       IF (JP .GT. 0 ) THEN
+
 C----- CHOOSE INVERTOR
-            IF (METHOD .LE. 0) THEN   !Cholesky
-c                allocate(ref(JY*(JY+1)/2))
-c                ref=STR11(L11C:L11C+JY*(JY+1)/2-1)
-c               call eigen_inversion(STR11(L11C:L11C+JY*(JY+1)/2-1),
-c     1              JY, 100.0)
-c               !deallocate(ref)
+        if (method == -1) then !default - look it up in L23.
+           method = istore(l23m+7)
+        end if
+
+        if(method<0 .or. method>ubound(methodtxt,1)) then
+            method=0
+            WRITE ( CMON, '(A,A)') '{E Bug in crystals: method ',
+     &        'out of bounds in methodtxt(method)'
+            CALL XPRVDU(NCVDU, 1,0)
+        end if
+        WRITE ( CMON, '(A,A)') 'Inversion method: ', 
+     &    trim(methodtxt(method))
+        CALL XPRVDU(NCVDU, 1,0)
+        istore(L11P+30)=method
+
+c        allocate(ref(JY*(JY+1)/2))
+c        ref=STR11(L11C:L11C+JY*(JY+1)/2-1)
+
+        select case(method)
+            case(0) ! LDLT + automatic precision switch
+
+c L D L^t inversion + preconditioning
+#ifdef CRY_FORTDIGITAL
+c stupid compiler has a stack overflow by making a temporary array 
+               call auto_inversion(
+     1             STR11(L11C), JY, info, blasname)
+#else
+               call auto_inversion(
+     1             STR11(L11C:L11C+JY*(JY+1)/2-1), JY, info, blasname)
+#endif
+               if(info==1111111) then
+                  WRITE ( CMON, '(A)') '{E Problem ill-conditioned.' 
+                  CALL XPRVDU(NCVDU, 1,0)   
+                  WRITE ( NCWU, '(A)') '!! Problem ill-conditioned.' 
+
+c we are now trying to invert using eigen value filtering
+                  WRITE ( CMON, '(A)') 
+     1              '{I Using approximate inversion.' 
+                  CALL XPRVDU(NCVDU, 1,0) 
+                  if(issprt==0) then  
+                    WRITE ( NCWU, '(A)') 
+     1                'Using approximate inversion.' 
+                  end if
+                  istore(L11P+30)=-99 ! -0 not possible... design flaw, zero value should not have been used
+                                     
+               else if(info>0) then
+                  WRITE ( CMON, '(A,I0,A,A)') '{E Parameter ', info, 
+     1               ' is singular. Inversion failed in ',trim(blasname) 
+                  istore(L11P+30)=-99
+                  CALL XPRVDU(NCVDU, 1,0)
+                  STR11(L11C:L11C+JY*(JY+1)/2-1)=0.0
+                  CALL XSING(info-1,JY,L11C,L11C)    
+                else if(info<0) then
+                  WRITE ( CMON, '(I0,A,A,A)') '{E ', info, 
+     1                ' argument of ',trim(blasname),
+     2                ' has an illegal value.' 
+                  CALL XPRVDU(NCVDU, 1,0)
+                  if(issprt==0) then
+                    WRITE ( NCWU, '(I0,A,A,A)') '!! ', info, 
+     1                ' argument of ',trim(blasname),
+     2                ' has an illegal value.' 
+                  end if
+                  istore(L11P+30)=-99
+                  STR11(L11C:L11C+JY*(JY+1)/2-1)=0.0
+                  CALL XSING(info-1,JY,L11C,L11C)    
+                end if
+
+            case(1) ! LDLT single precision
 
 c L D L^t inversion + preconditioning
 #ifdef CRY_FORTDIGITAL
@@ -669,10 +712,75 @@ c stupid compiler has a stack overflow by making a temporary array
                call LDLT_inversion(
      1             STR11(L11C:L11C+JY*(JY+1)/2-1), JY, info)
 #endif
-               if(info>0) then
+               if(info==1111111) then
+                  WRITE ( CMON, '(A)') '{E Problem ill-conditioned.' 
+                  CALL XPRVDU(NCVDU, 1,0)   
+                  WRITE ( NCWU, '(A)') '!! Problem ill-conditioned.' 
+                  istore(L11P+30)=-istore(L11P+30)
+                                     
+               else if(info>0) then
                   WRITE ( CMON, '(A,I8,A)') '{E Parameter ', info, 
      1                ' is singular. Inversion failed.' 
                   CALL XPRVDU(NCVDU, 1,0)
+                  STR11(L11C:L11C+JY*(JY+1)/2-1)=0.0
+                  istore(L11P+30)=-istore(L11P+30)
+                  CALL XSING(info-1,JY,L11C,L11C)    
+                else if(info<0) then
+                  WRITE ( CMON, '(I8,A,A)') '{E ', info, 
+     1                ' argument of SSYTRF or SSYTRI ',
+     2                'has an illegal value.' 
+                  CALL XPRVDU(NCVDU, 1,0)
+                  if(issprt==0) then
+                    WRITE ( NCWU, '(I8,A,A)') '!! ', info, 
+     1                ' argument of SSYTRF or SSYTRI ',
+     2                'has an illegal value.' 
+                  end if
+                  istore(L11P+30)=-istore(L11P+30)
+                  STR11(L11C:L11C+JY*(JY+1)/2-1)=0.0
+                  CALL XSING(info-1,JY,L11C,L11C)    
+                end if
+
+            case(2) ! eigen decomposition filtering + inversion
+               
+               call eigen_inversion(STR11(L11C:L11C+JY*(JY+1)/2-1),
+     1              JY, 1e-2, nrej, cond, fcond, info, blasname)
+
+               if ( nrej .gt. 0 ) THEN
+                  istore(L11P+30)=-istore(L11P+30)
+                  WRITE ( CMON, '(A,I8,A)') '{E ', nrej, 
+     1   ' eigenvalues rejected.' 
+                  CALL XPRVDU(NCVDU, 1,0)
+                  WRITE ( CMON, '(A,G9.2,A,G9.2)') 
+     1'{E Condition before filtering', cond, 
+     1' and after filtering ', fcond
+                  CALL XPRVDU(NCVDU, 1,0)
+                else
+                  WRITE ( CMON, '(A,G9.2)') 
+     1'{I Condition number of normal matrix ', cond
+                  CALL XPRVDU(NCVDU, 1,0)
+                end if
+
+            case(3) ! LDLT double precision
+
+c L D L^t inversion + preconditioning
+#ifdef CRY_FORTDIGITAL
+c stupid compiler has a stack overflow by making a temporary array 
+               call LDLT_inversion_dp(
+     1             STR11(L11C), JY, info)
+#else
+               call LDLT_inversion_dp(
+     1             STR11(L11C:L11C+JY*(JY+1)/2-1), JY, info)
+#endif
+               if(info==1111111) then
+                  WRITE ( CMON, '(A)') '{E Problem ill-conditioned.' 
+                  CALL XPRVDU(NCVDU, 1,0)   
+                  WRITE ( NCWU, '(A)') '!! Problem ill-conditioned.' 
+                  istore(L11P+30)=-istore(L11P+30)
+               else if(info>0) then
+                  WRITE ( CMON, '(A,I8,A)') '{E Parameter ', info, 
+     1                ' is singular. Inversion failed.' 
+                  CALL XPRVDU(NCVDU, 1,0)
+                  istore(L11P+30)=-istore(L11P+30)
                   STR11(L11C:L11C+JY*(JY+1)/2-1)=0.0
                   CALL XSING(info-1,JY,L11C,L11C)    
                 else if(info<0) then
@@ -680,53 +788,72 @@ c stupid compiler has a stack overflow by making a temporary array
      1                ' argument of SSYTRF or SSYTRI ',
      2                'has an illegal value.' 
                   CALL XPRVDU(NCVDU, 1,0)
+                  if(issprt==0) then
+                    WRITE ( NCWU, '(I8,A,A)') '!! ', info, 
+     1                ' argument of SSYTRF or SSYTRI ',
+     2                'has an illegal value.' 
+                  end if
+                  istore(L11P+30)=-istore(L11P+30)
                   STR11(L11C:L11C+JY*(JY+1)/2-1)=0.0
                   CALL XSING(info-1,JY,L11C,L11C)    
                 end if
                     
+            case(4) ! original choleski
+                   
+               CALL XCHOLS(JY, L11C, KO)
+
+           case(5)               
 c Cholesky inversion + preconditioning
-c               call choleskyl_inversion(
-c     1             STR11(L11C:L11C+JY*(JY+1)/2-1), JY, info)
+               call choleskyl_inversion(
+     1             STR11(L11C:L11C+JY*(JY+1)/2-1), JY, info)
 c                print *, STR11(L11C:L11C+5)
 
-c - original cholesky               
-               !print *, '****** origin', STR11(L11C:L11C+4)
-c               call date_and_time(VALUES=measuredtime)
-c               starttime=((measuredtime(5)*3600+measuredtime(6)*60)+
-c     1             measuredtime(7))+measuredtime(8)/1000.0
-c               print *, 'start xchols'
-c               call flush
-c               STR11(L11C:L11C+JY*(JY+1)/2-1)=ref
-c               CALL XCHOLS(JY, L11C, KO)
+           case(6)               
+c Cholesky inversion + preconditioning
+               call choleskyl_inversion_dp(
+     1             STR11(L11C:L11C+JY*(JY+1)/2-1), JY, info)
 c                print *, STR11(L11C:L11C+5)
-c               call date_and_time(VALUES=measuredtime)
-c               print *, 'xchols done in (s): ', 
-c     1             ((measuredtime(5)*3600+measuredtime(6)*60)+
-c     2             measuredtime(7))+measuredtime(8)/1000.0-starttime
-c               call flush
-
-c                allocate(unpacked(JY,JY))
+               
+            case default
+                WRITE ( CMON, '(A,I8)') 
+     1            '{E Error unknown invertor ', method
+                CALL XPRVDU(NCVDU, 1,0)
+                if(issprt==0) then
+                  WRITE ( NCWU, '(A,I8)') 
+     1              '{!! Error unknown invertor ', method 
+                end if            
+         end select
+         
+#if defined(CRY_OSLINUX)
+         print *, 'Invert status: ', istore(L11P+30)
+#endif         
+         
+                if(allocated(invertm)) then
+                  deallocate(invertm)
+                end if
+                allocate(invertm(JY,JY))
 c                allocate(check(JY,JY))
-c                do i=1, JY
-c                    j = ((i-1)*(2*(JY)-i+2))/2
-c                    k = j + JY - i
-c                    unpacked(i:JY, i)=STR11(L11C+j:L11C+k)
-c                    unpacked(i, i:JY)=STR11(L11C+j:L11C+k)
+                do i=1, JY
+                    j = ((i-1)*(2*(JY)-i+2))/2
+                    k = j + JY - i
+                    invertm(i:JY, i)=STR11(L11C+j:L11C+k)
+                    invertm(i, i:JY)=STR11(L11C+j:L11C+k)
 c                    check(i:JY, i)=ref(1+j:1+k)
 c                    check(i, i:JY)=ref(1+j:1+k)
-c                end do
+                end do
 c                check=matmul(check, unpacked)
-c                do i=1,min(15,JY)
-c                    write(*, '(15(F5.2,1X))') check(1:min(15,JY),i)
+c                rmax=0.0
+c                do i=1, jy
+c                  if(abs(check(i,i))>rmax) then
+c                    rmax=check(i,i)
+c                  end if
+c                  check(i,i)=0.0
 c                end do
+c                print *, rmax, minval(check), maxval(check)
 c                deallocate(unpacked)
 c                deallocate(check)
 c                deallocate(ref)
-               
-c               print *, '****** ref', STR11(L11C:L11C+4)
-               
-               
-            ELSE
+         
 C----- EXPAND  LOWER TRIANGLE OF FULL SQUARE
 
 c      WRITE (NCWU,103)
@@ -750,39 +877,33 @@ c      ENDDO
 c
 c
 c
-               call eigen_inversion(STR11(L11C:L11C+JY*(JY+1)/2-1),
-     1              JY, 1e-2, nrej, cond, fcond, info)
-
-               if ( nrej .gt. 0 ) THEN
-                  WRITE ( CMON, '(A,I8,A)') '{E ', nrej, 
-     1   ' eigenvalues rejected.' 
-                  CALL XPRVDU(NCVDU, 1,0)
-                  WRITE ( CMON, '(A,G9.2,A,G9.2)') 
-     1'{E Condition before filtering', cond, 
-     1' and after filtering ', fcond
-                  CALL XPRVDU(NCVDU, 1,0)
-                else
-                  WRITE ( CMON, '(A,G9.2)') 
-     1'{I Condition number of normal matrix ', cond
-                  CALL XPRVDU(NCVDU, 1,0)
-                end if
-
-c               CALL XMTCVT (INM, JY, 1, MD11)
-c               CALL XFILTR
-c     1      (STR11(INM), STR11(IVAL), STR11(IVEC), STR11(ISCL),
-c     2      STR11(IWRK), JY, AUGFAC, FILTER, DISCRM, ILEVEL  )
-C----- COMPRESS INVERTED MATRIX
-c               CALL XMTCVT (INM, JY, 2, MD11)
-            ENDIF
          ENDIF
-                 
-C-- If we are doing matlab punching then do it here.   
+         
+C-- If we are doing data punching then do it here.   
          IF ( sfls_punch_flag>0 ) THEN
             call sfls_punch_variance(STR11(L11C:L11C+JY*(JY+1)/2-1), JY, 
      1          sfls_punch_flag)
          END IF
+
+C -- if numpy format, print out a python script
+         IF ( sfls_punch_flag==3 ) THEN
+            call sfls_punch_python() 
+         END IF
+         
+C-- If we are calculating leverages then do it here         
+         IF ( sfls_calcul_flag==1 ) THEN
+#ifdef CRY_GUI
+            if(ISTORE(M33CD+12)>=0) then ! PLOT=YES keyword 
+              i=nint(STORE(M33CD+9)) !parameter P1. In this case, least square parameter number to consider
+              call sfls_punch_leverages(jy, plot=.true., tselectedarg=i)
+            else
+              call sfls_punch_leverages(jy)
+            end if
+#else
+            call sfls_punch_leverages(jy)
+#endif
+         END IF
                     
-2050     CONTINUE
          L11RC = KADD11(-102,MD11R, JY)
          M11R=L11RC
          IF ( IERFLG .LT. 0 ) GO TO 9900
@@ -842,13 +963,13 @@ cdjwapri2015
 cRIC Ordering problem comparing zero with zero. Ensure that one
 c value is always chosen as smallest.
             IF (JSAVE .EQ. 0) THEN
-               SMAX = S
+               SHMAX = S
                JSAVE = JT
                CSAVE = CTEXT
             ENDIF
 c hang onto sign for the moment
-            IF (ABS(S) .GT. abs(SMAX)) THEN
-               SMAX = S
+            IF (ABS(S) .GT. abs(SHMAX)) THEN
+               SHMAX = S
                JSAVE = JT
                CSAVE = CTEXT
             ENDIF
@@ -990,14 +1111,14 @@ CRIC13:     1 29x,      ' The mean abs(shift/su) =', F16.7)
 
       IF (ISSPRT .EQ. 0) 
 c remove the ABS() at some time in the future
-     1 WRITE(NCWU,3557) abs(SMAX), JSAVE, CSAVE(1:LENNAM)
+     1 WRITE(NCWU,3557) abs(SHMAX), JSAVE, CSAVE(1:LENNAM)
 CRIC13:3557  FORMAT(' The largest (shift/esd) =',F10.6,
 3557  FORMAT(' The largest (shift/esd) =',F10.2,
      1 ', for Parameter ', I4,', ', A/)
       WRITE ( CMON, 
      1 '('' Shift/su: sumsq='',f12.5,'' rms='',f12.5,
      2 '' max='',f12.5,'' for '',A)')
-     3 F, RMSS, SMAX, CSAVE(1:LENNAM)
+     3 F, RMSS, SHMAX, CSAVE(1:LENNAM)
       CALL XPRVDU(NCVDU, 1,0)
 
 C---JAN97 - THE FOLLOWING STATEMENT MAY BE NEEDED IF THE
@@ -1039,7 +1160,6 @@ C----- SINGULARITY SITUATION IS OKAY
      2 ' Terminating after this cycle')
       ENDIF
 C--UPDATE THE VALUES OF THE VARIOUS DETERMINED FUNCTIONS
-3700  CONTINUE
       JU=1
 C--CHECK IF THIS IS THE FIRST CYCLE TO SEE IF DIFFERENCES CAN BE CALCULA
       IF(ISTORE(L33CB+1))3800,3800,3750
@@ -1052,7 +1172,6 @@ C--NO REFINEMENT LAST TIME
 C--CHECK IF SINGULARITIES ALREADY INDICATE TERMINATION
 3850  CONTINUE
 C--CHECK THE CONDITIONS THAT MUST BE MET BY ALL CYCLES
-3900  CONTINUE
       IF ( ISSPRT.EQ. 0)  write(ncwu,3901)
 3901  format(32x,'Min',10x,'Actual',11x,'Max')
       M23AC=L23AC
@@ -1068,10 +1187,8 @@ C--CHECK THE MINIMUM VALUE
      1  store(m23ac),store(je+1),store(m23ac+1)
       if (store(je+1) .lt. store(m23ac)) goto 4300
 C--CHECK THE MAXIMUM VALUE
-3950  CONTINUE
       if (store(je+1) .gt. store(m23ac+1)) goto 4300
 C--UPDATE FOR THE NEXT CONDITION
-4000  CONTINUE
       JE=JE+1
       M23AC=M23AC+JG
 4050  CONTINUE
@@ -1092,10 +1209,8 @@ C--LOOP OVER EACH
 C--CHECK THE MIMIMUM
       if (a .lt. store(m23ic)) goto 4300
 C--CHECK THE MAXIMUM
-4150  CONTINUE
       if (a .gt. store(m23ic+1)) goto 4300
 C--UPDATE
-4200  CONTINUE
       JE=JE+1
       JH=JH+1
       M23IC=M23IC+JG
@@ -1111,7 +1226,7 @@ C--ONE OR MORE TERMINATION CONDITIONS HAVE BEEN SATISFIED
 4350  FORMAT(' Forced termination after this cycle: ',
      3 ' Actual value condition on: ',   A)
        CALL XPRVDU(NCVDU, 1,0)
-       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
+       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') trim(CMON(1))
 c
 c send convergence status to LIST 39
 c-----      update list 39 - assumes only one SFLS record
@@ -1132,7 +1247,7 @@ c            isfls = 'SFLS'
 4351  FORMAT(' Forced termination after this cycle: ',
      3 ' Relative change condition on ',   A)
        CALL XPRVDU(NCVDU, 1,0)
-       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
+       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') trim(CMON(1))
 c send convergence status to LIST 39
 c-----      update list 39 - assumes only one SFLS record
 c            isfls = 'SFLS'
@@ -1188,7 +1303,7 @@ C--PRINT THE HEADING AND THE VARIOUS DETAILS AMASSED
       ENDIF
 4447  FORMAT(1X ,' You have used neither restraints nor reflections')
 4448  FORMAT(/60(2H *)/)
-4449  FORMAT(/40(2H *)/)
+c4449  FORMAT(/40(2H *)/)
 C
       IF (ISSPRT .EQ. 0) THEN
         WRITE(NCWU,4448)
@@ -1239,7 +1354,7 @@ cdjwjun09
       ENDIF
 C----- MAXIMUM SHIFT/ESD
 c     now remove sign from maximum shift
-      STORE(L30RF+7 ) = abs(SMAX)
+      STORE(L30RF+7 ) = abs(SHMAX)
       STORE(L30RF+8 ) = STORE(L11P+24)
       IF (STORE(L11P+24) .GT. ZERO) STORE(L30RF+9 ) = STORE(L11P+25)
       IF (STORE(L11P+27) .GT. ZERO) STORE(L30RF+10 ) = STORE(L11P+28)
@@ -1261,48 +1376,48 @@ c      9 = U11      = JC+8mw
 c
 c----- find average adp and position
 c      reversals and s/esd
-      ovrtms=0.
-      ovrrev=0.
-      ovrsoe=0.
-      adptms=0.
-      adprev=0.
-      adpsoe=0.
-      xyztms=0.
-      xyzrev=0.
-      xyzsoe=0.
-C--COMPUTE THE mean TOTALS TO BE PRINTED
+c18   ovrtms=0.
+c18   ovrrev=0.
+c18   ovrsoe=0.
+c18   adptms=0.
+c18   adprev=0.
+c18   adpsoe=0.
+c18   xyztms=0.
+c18   xyzrev=0.
+c18   xyzsoe=0.
+C--COMPUTE THE TOTALS TO BE PRINTED
       Y=0.
       Z=0.
-      j = 0
+c18   j = 0
       DO 4550 I=JC,JD,MW
-      j = j + 1
-      terms = store(i+1)
-         select case(j)
-            case(1)
+c18   j = j + 1
+c18   terms = store(i+1)
+c18      select case(j)
+c18         case(1)
 c  overall
-              ovrtms = ovrtms+terms
-              ovrsoe = ovrsoe +store(i+6)
-            case(5,9,10,11)
+c18           ovrtms = ovrtms+terms
+c18           ovrsoe = ovrsoe +store(i+6)
+c18         case(5,9,10,11)
 c  adp
-              adptms=adptms+terms
-              adpsoe=adpsoe+store(i+6)            
-            case(6,7,8)
+c18           adptms=adptms+terms
+c18           adpsoe=adpsoe+store(i+6)            
+c18         case(6,7,8)
 c   xyz
-              xyztms=xyztms+terms
-              xyzsoe=xyzsoe+store(i+6)            
-         end select
+c18           xyztms=xyztms+terms
+c18           xyzsoe=xyzsoe+store(i+6)            
+c18      end select
 c
 c      check no of reversals is valid
-       if (store(i+4) .gt. zero) then
-         select case(j)
-            case(5,9,10,11)
+c18    if (store(i+4) .gt. zero) then
+c18      select case(j)
+c18         case(5,9,10,11)
 c  adp
-              adprev=adprev+store(i+4)            
-            case(6,7,8)
+c18           adprev=adprev+store(i+4)            
+c18         case(6,7,8)
 c   xyz
-              xyzrev=xyzrev+store(i+4)            
-         end select
-       endif
+c18           xyzrev=xyzrev+store(i+4)            
+c18      end select
+c18    endif
       Y=Y+STORE(I+1)
       Z=Z+STORE(I+4)
       STORE(I+1)=1./AMAX1(STORE(I+1),1.)
@@ -1316,11 +1431,11 @@ c      write(ncwu,'(3(a,g16.4))')'adptms',adptms,' xyztms',xyztms,
 c     1 ' ovrtms',ovrtms 
 c      write(ncwu,'(3(a,g16.4))')'adpsoe',adpsoe,' xyzsoe',xyzsoe,
 c     1 ' ovrsoe',ovrsoe 
-      ovrsoe=sqrt(ovrsoe/max(1.,ovrtms))
-      adpsoe=sqrt(adpsoe/max(1.,adptms))
-      xyzsoe=sqrt(xyzsoe/max(1.,xyztms))
-      adprev=100. * adprev/max(1.,adptms)
-      xyzrev=100. * xyzrev/max(1.,xyztms)
+c18   ovrsoe=sqrt(ovrsoe/max(1.,ovrtms))
+c18   adpsoe=sqrt(adpsoe/max(1.,adptms))
+c18   xyzsoe=sqrt(xyzsoe/max(1.,xyztms))
+c18   adprev=100. * adprev/max(1.,adptms)
+c18   xyzrev=100. * xyzrev/max(1.,xyztms)
 c      write(ncwu,'(3(a,g16.4))')'adpsoe',adpsoe,' xyzsoe',xyzsoe,
 c     1 ' ovrsoe',ovrsoe 
 c      write(ncwu,'(3(a,g16.4))')'adprev',adprev,' xyzrev',xyzrev,
@@ -1405,7 +1520,7 @@ c     3 'UisoRin',2X,'RadRin',3X,'DecRin',3X,'AziRin'
 c     4 //' Mean      ',10F9.5//' R.M.S.    ',10F9.5)
 c      WRITE(NCWU,4653) (STORE(I+6),I=JC+14*MW,JC+23*MW,MW)
 c      WRITE(NCWU,4775) (STORE(I+5),I=JC+14*MW,JC+23*MW,MW)
-4775  FORMAT(/' Maximum   ',10F9.5)
+c4775  FORMAT(/' Maximum   ',10F9.5)
 c      ENDIF
 c
 c
@@ -1469,168 +1584,14 @@ c----- TYPE eq -1 - normal scale factors
 C--COMPUTE THE NEW TOTALS AFTER THE NEW SHIFT FACTOR HAS BEEN APPLIED
 cdjwdec06
 c---- reset values in list 33
-      istore(j) = -1
-      store(k) = store(i)
+c18    istore(j) = -1
+c18    store(k) = store(i)
 cdjwdec06
       STORE(I+2)=STORE(I+2)*STORE(I)
       STORE(I+3)=STORE(I+3)*STORE(I)
       J=J+1
       K=K+1
 5100  CONTINUE
-c
-cdjwdec06
-c      Code to catch run-away refinements, especially
-c      with the sparse matrix build.
-c      xyz,occ,ext,Flack are caught as absolute values in KFLSP
-c      adp and overall are caught here (SFLSE) by looking at 
-c      shift/esd, reversals and R-factor.
-c
-      if (ispar .eq.0) then
-       adpshift = min(1., 4./adpsoe)
-       ovrshift = min(1., 4./ovrsoe)
-       xyzshift = min(1., 8./xyzsoe)
-      else
-       adpshift = min(1., 15./adpsoe)
-       ovrshift = min(1., 15./ovrsoe)
-       xyzshift = min(1., 15./xyzsoe)
-      endif
-c
-      usershift = store(m33sv+1)      !current overall
-      oldshift = usershift
-c
-c--- check for old shift factor for adps
-      if (m33sv .gt. l33sv) then
-c        write(ncwu,'(a)') 'old and new shift factors'
-c        write(ncwu,'(20i5)')(istore(jjdjw),jjdjw=m33st,m33st+md33st-1)
-c        write(ncwu,'(20f5.2)') 
-c     1  (store(jjdjw-md33sv),jjdjw=m33sv,m33sv+md33sv-1)
-c        write(ncwu,'(20f5.2)')(store(jjdjw),jjdjw=m33sv,m33sv+md33sv-1)
-c
-c       Find minimum of current and oldshifts
-
-        k=0      !general
-        if (istore(k+m33st) .eq. -1) 
-     1    oldshift= min(store(k+m33sv-md33sv),oldshift)
-        k=1      !overall
-        if (istore(k+m33st) .eq. -1) 
-     1   oldshift= min(store(k+m33sv-md33sv),oldshift)
-        k=5      !Uiso
-        if (istore(k+m33st) .eq. -1) 
-     1   oldshift= min(store(k+m33sv-md33sv),oldshift)
-        do k=9,11      !Uii
-        if (istore(k+m33st) .eq. -1) 
-     1   oldshift= min(store(k+m33sv-md33sv),oldshift)
-        enddo
-      endif         
-c
-c
-      rfshift = 1.
-      if (ispar .eq. 0) then
-c-- sparse build - modify shift factor depending upon R
-       if (rlast .ge. 30.) then
-        rfshift = .3
-       else if (rlast .ge. 20.) then
-        rfshift = .5
-       else
-        rfshift = .8
-       endif 
-      endif
-c
-       revshift = 1.0
-       if ((adprev .gt. 0.0) .and. (adpsoe .gt. 2.)) then
-c  reversal info if large shifts
-         if (adprev .gt. 80.) then
-           revshift =  0.41
-         else if (adprev .gt. 70.) then
-           revshift =  0.71
-         else if (adprev .lt. 35.) then
-           revshift = 1.09
-         endif
-       endif
-      if (revshift .le. 1.0) then
-      adpshift=min(1.,usershift,rfshift,adpshift,revshift)
-      else
-      adpshift=revshift*adpshift
-      endif
-c
-c now overall
-      ovrshift=ovrshift * revshift
-c
-c      now do something about xyz
-       revshift = 1.0
-       if ((xyzrev .gt. 0.0) .and. (xyzsoe .gt. 3.)) then
-c  reversal info if large shifts
-         if (xyzrev .gt. 80.) then
-           revshift =  0.41
-         else if (xyzrev .gt. 70.) then
-           revshift =  0.71
-         else if (xyzrev .lt. 35.) then
-           revshift = 1.09
-         endif
-       endif
-      if (revshift .le. 1.0) then
-      xyzshift=min(1.,usershift,rfshift,xyzshift,revshift)
-      else
-      xyzshift=revshift*xyzshift
-      endif
-
-c
-c
-c      write(ncwu,'(8(a,f8.4,x))')'usershift',usershift,
-c     1 'oldshift',oldshift,'rfshift',rfshift,'adpshift',adpshift,
-c     2 'revshift',revshift,'adp',adpshift,' xyz',xyzshift,' Over',
-c     3 ovrshift
-c
-5102  format(a,f8.1,a,f6.2,a,f6.2,2(a,2f6.2),a,f6.2,
-     1 a,f6.3,a,f6.3,a,f6.3)
-c      write(ncwu,5102)
-c     1 'Sssr=',sssr, ' Smax=',smax,' Rmss=',rmss,
-c     2 ' Av Rev ', adprev,xyzrev,
-c     3 ' Av shift/esd', adpsoe,xyzsoe, 
-c     4 ' R= ',store(l30rf),' adp=',adpshift,' Xyz', xyzshift,
-c     5 ' Over', ovrshift
-
-c
-c       write(ncwu,'(a)') 'Current shift factors'
-c       write(ncwu,'(20i5)') (istore(jjdjw),jjdjw=m33st,m33st+md33st-1)
-c       write(ncwu,'(20f5.2)') (store(jjdjw),jjdjw=m33sv,m33sv+md33sv-1)
-c
-c write back to list 33
-       k=0 !general
-         if (istore(k+m33st) .eq. -1) 
-     1    store(k+m33sv)= min(adpshift,store(k+m33sv))
-       k=1 !overall
-         if (istore(k+m33st) .eq. -1) 
-     1    store(k+m33sv)= min(adpshift, ovrshift,store(k+m33sv))
-       k=5 !Uiso
-         if (istore(k+m33st) .eq. -1) 
-     1    store(k+m33sv)= min(adpshift,store(k+m33sv))
-       do k=6,8 ! xyz
-         if (istore(k+m33st) .eq. -1) 
-     1    store(k+m33sv)= xyzshift
-       enddo
-       do k=9,14 !adp
-         if (istore(k+m33st) .eq. -1) 
-     1    store(k+m33sv)= min(adpshift, store(k+m33sv))
-       enddo
-c
-c       
-c       write(ncwu,'(/a)') 'New shift factors'
-c       write(ncwu,'(20f5.2)') (store(jjdjw),jjdjw=m33sv,m33sv+md33sv-1)
-c
-      J=M33ST+1
-      k=m33sv+1
-c--see if the shifts have to be adjusted
-      do i=jc,jd,mw
-       if(istore(j) .EQ. -1)  then
-        store(i) = store(k)
-        store(i+2)=store(i+2)*store(i)
-        store(i+3)=store(i+3)*store(i)
-       endif
-       j=j+1
-       k=k+1
-      enddo
-c
 c
       if ( issprt .eq. 0 ) write(ncwu,5105)
      2 store(jc),(store(i),i=je,jc+23*mw,mw)
@@ -1641,32 +1602,32 @@ c
 c--shuffle the results for x, y and z
       jf=jc+5*mw
       jg=l1p1
-      do 5150 i=1,3
-      a1(i)=store(jf+2)*store(jg)
-      a1(i+3)=store(jf+3)
-      store(jf+3)=store(jf+3)/store(jg)
-      jf=jf+mw
-      jg=jg+1
-5150  continue
+      do i=1,3 !5150
+        a1(i)=store(jf+2)*store(jg)
+        a1(i+3)=store(jf+3)
+        store(jf+3)=store(jf+3)/store(jg)
+        jf=jf+mw
+        jg=jg+1
+      end do !5150  continue
 cdjwaug06
 c----- DU[ISO] in SFLSG needs to be scaled if there are
 c      partial shifts
 c
-      scalsv = ovrshift
-      if (ovrshift .lt. 1.0) then
-        write(cmon,'(a,f4.2)') 'Over-all rescaling factor ', scalsv
-        call outcol(9)
-        call xprvdu(ncvdu, 1,0)
-        call outcol(1)
-        if (issprt .eq. 0) write(ncwu,'(//a//)') cmon(1)
-      endif
+c18      scalsv = ovrshift
+c18      if (ovrshift .lt. 1.0) then
+c18        write(cmon,'(a,f4.2)') 'Over-all rescaling factor ', scalsv
+c18        call outcol(9)
+c18        call xprvdu(ncvdu, 1,0)
+c18        call outcol(1)
+c18        if (issprt .eq. 0) write(ncwu,'(//a//)') trim(CMON(1))
+c18      endif
 c      djwscl =  min(shift, scalsv)
 c ric11 - shift is not initialised.
-      djwscl =   scalsv
+c18      djwscl =   scalsv
 C
 cdjwdec06
 c----- rewrite list 33 to disk in case scalefactors have been changed
-      CALL XWLSTD(33,ICOM33,IDIM33,-1,-1)
+c18            CALL XWLSTD(33,ICOM33,IDIM33,-1,-1)
 c
 C
 C--PREPARE THE LIST 24 FOR OUTPUT
@@ -1710,307 +1671,6 @@ C -- LIST 11 WRONG TYPE
 C
       END
 C
-CODE FOR OUTV
-      SUBROUTINE OUTV(A,N)
-      DIMENSION A(N)
-      INCLUDE 'XUNITS.INC'
-      WRITE(NCWU, 123) A
-123   FORMAT(10F13.0)
-      RETURN
-      END
-      
-C
-C
-CODE FOR XFILTR
-      SUBROUTINE XFILTR (A, B, C, U, W, M, AUGFAC, FILTER, DISC, ILEVEL)
-C----- INVERT NORMAL MATRIX BY EIGENVALUE FILTERING
-C
-C      N.x = y
-C      N = V.D.V'
-C      N-1 = V.D-1.V'
-C      x = N-1. y
-C
-C      THIS IS NOT AS EFFICIENT AS SOLVING THE EQUATIONS DIRECTLY FROM
-C      EIGEN FACTORS (SEE BELOW), BUT IS NECESSARY IF WE NEED TO SAVE
-C      THE INVERSE FOR THE ESDS.
-C      N.x = y
-C      V.D.V'.x = y
-C      D.V'.x = V'. y      (V' = V-1)
-C      V'.x = D-1.V'. y
-C      x = V.D-1.V'. y
-C
-C----- A(M,M) NORMAL MATRIX - UPPER TRIANGLE USED AS WORK SPACE, LOWER
-C             RETURNED UNCHANGED.
-C----- B(M)   EIGENVALUES
-C----- C(M,M) EIGENVECTORS
-C----- U(M)   SCALING VECTOR
-C----- W(5*M) WORK AREA
-C----- AUGFAC AUGMENTATION (MARQUARDT) FACTOR    E.G. 0.0000
-C----- FILTER FILTER LEVEL                       E.G. 0.00005
-C----- DISC   DISCONTINUITY VALUE                E.G. 100
-C----- ILEVEL MONITOR LEVEL -1 OFF,  2 HIGH
-C
-      DIMENSION A(M,M), B(M), C(M,M), U(M), W(5*M)
-      INCLUDE 'XUNITS.INC'
-      INCLUDE 'XSSVAL.INC'
-      INCLUDE 'XCONST.INC'
-      INCLUDE 'XIOBUF.INC'
-C
-C
-C
-C PRE-SCALE NORMAL MATRIX.
-C GET INVERSE DIAGONAL SCALING MATRIX U FROM NORMAL MATRIX.
-C THE ELEMENTS ARE 1./SQRT(DIAGONAL ELEMENT OF NORMAL MATRIX)
-C
-c      WRITE (NCWU,103)
-c103   FORMAT(/ , ' The Normal Matrix' )
-c      DO J = 1, M
-c        WRITE (NCWU,101) J
-c        WRITE (NCWU, 102) (A(I,J),I=1,M)
-c101     FORMAT (/, ' Column ', I5)
-c102     FORMAT((1X,20G15.8/))
-c      ENDDO
-
-      DO 10 I=1,M
-        U(I)=1.0
-        IF (ABS(A(I,I)) .GT. ZERO) U(I)=1.0 / SQRT(A(I,I))
-10    CONTINUE
-C
-C SCALE MATRIX BY U
-C
-      DO 20 J=1, M
-        UJ=U(J)
-        DO 30 K=1,J
-          A(J,K) = A(J,K) * U(K) * UJ
-30      CONTINUE
-20    CONTINUE
-C
-C-----  EA06C RETURNS EIGENVECTORS AND EIGENVALUES
-C
-C      CALL EA06C(A, B, C, M, M, M, W)
-C
-C Replace Harwell routine with LAPACK one. Differences: The LAPACK
-C one overwrites the normal matrix with the eigenvectors. That's OK,
-C we overwrite it with it's inverse soon anyway.
-C
-      INFO = 0
-      CALL SSYEV('V','L', M, A, M, B, W, M*5, INFO)
-C
-C
-      IF (ILEVEL .GE.2) THEN
-        IF (ISSPRT .EQ. 0) THEN
-          WRITE (NCWU,1000)
-          WRITE (NCWU, 1010) (B(I),I=1,M)
-        ENDIF
-1000    FORMAT(/,' Eigen values of Normal matrix')
-1010    FORMAT((1X,10F8.3/))
-        IF (ISSPRT .EQ. 0) THEN
-          WRITE (NCWU,1020)
-1020      FORMAT(/ , ' Eigen vectors of Normal Matrix' )
-          DO 1040 J = 1, M
-          WRITE (NCWU,1030) J
-          WRITE (NCWU, 1015) (A(I,J),I=1,M)
-1030      FORMAT (/, ' Column ', I5)
-1015      FORMAT((1X,20F6.2/))
-1040      CONTINUE
-        ENDIF
-      ENDIF
-C
-C                  EIGENVALUE FILTERING
-C
-C----- SEE IF THERE IS A DISCONTINUITY IN THE MAGNITUDES OF THE
-C      EIGENVALUES. IF THERE IS, SET ALL THE SMALL ONES TO ZERO.
-C
-C
-C----- FIND LARGEST AND SMALLEST
-      Y = B(1)
-      Z = B(1)
-      II = 1
-      IK = 1
-      DO 100 I = 2, M
-       IF ( B(I) .GT. Y ) THEN
-         II = I
-         Y = B(I)
-       ELSE IF (B(I) .LT. Z) THEN
-         IK = I
-         Z = B(I)
-       ENDIF
-100   CONTINUE
-
-c      WRITE(NCWU,'(A,I4)')'Info: ',INFO
-c      WRITE(NCWU,'(A,2(I4,G15.8))')'Largest, smallest: ',II,Y,IK,Z
-
-C
-C----- FIND NEXT LARGEST
-      DO 120 J = 1, M
-         X = Z
-         IJ = IK
-         DO 110 I = 1, M
-           IF( (B(I).GT.X) .AND. (B(I).LT.Y) )  THEN
-             X = B(I)
-             IJ = I
-           ENDIF
-110      CONTINUE
-
-c      WRITE(NCWU,'(A,I4,G15.8)')'Next largest: ',IJ,X
-
-
-C-----   LOOK FOR A DISCONTINUITY
-         IF ( Y .GT. (DISC * X)) THEN
-C-----   RESET ALL SMALLER TO ZERO AND EXIT LOOP
-         IF (ISSPRT .EQ. 0) WRITE(NCWU,111) II, Y, IJ, X
-         WRITE ( CMON,113 )
-         CALL XPRVDU(NCVDU, 1,0)
-113      FORMAT(' Discontinuity in eigenvector list ')
-111      FORMAT(' Discontinuity in eigenvector list ',/,
-     1    12X, 2(I5, G11.4,4X))
-           DO 115 K = 1, M
-             IF(B(K) .LE. X ) THEN
-                  IF (ISSPRT .EQ. 0) WRITE(NCWU,112)  K, B(K)
-                  WRITE ( CMON,112 ) K
-                  CALL XPRVDU(NCVDU, 1,0)
- 112              FORMAT(1X,' Zeroing eigen value ',I5,4X, G11.4,
-     1            ' Eigen vectors are: ')
-                  B(K) = 0.0
-                  IF (ISSPRT .EQ. 0) WRITE (NCWU, 1015) (A(I,K),I=1,M)
-             END IF
-115        CONTINUE
-           GOTO 130
-         ELSE
-C-----     EXCHANGE SMALLER
-           Y = X
-           II = IJ
-         ENDIF
-120    CONTINUE
-130    CONTINUE
-C
-C------ INVERT DIAGONAL MATRIX, REJECTING LOW EIGENVALUES AND
-C------ AUGMENTING OTHERS.
-C
-      DO 40 I=1,M
-        IF(B(I) .GT. FILTER) THEN
-              B(I) = 1.0 / (B(I) + AUGFAC)
-        ELSE
-              B(I) = 0.0
-        ENDIF
-40    CONTINUE
-C
-C----- TRANSPOSE 'A' into 'C' TO INCREASE EFFICIENCY OF INNER LOOP LATER
-       DO J = 1,M
-         DO I = 1, M
-            C(J,I) = A(I,J)
-         END DO
-       END DO
-C
-C----- FORM       N-1 = U.V.D-1.V'.U'
-C
-      DO J = 1, M
-        UJ = U(J)
-        DO I = 1, M
-          SUM = 0.0
-          DO K = 1,M
-            SUM =  SUM + ( B(K) * C(K,I) * C(K,J) )
-          END DO
-         A(I,J) = SUM * U(I) * UJ
-        END DO
-      END DO
-C
-      RETURN
-      END
-CODE FOR XMTCVT
-      SUBROUTINE XMTCVT(IADD, N, ITYPE, ILEN)
-C
-C----- ILEN LENGTH OF REPRESENTATION OF VALUE (MD11)
-C      IF ITYPE = 1
-C----- EXPAND A LOWER TRIANGLE STARTING AT IADD AND STORED BY COLUMNS
-C      INTO LOWER HALF OF SQUARE SYMETRIC MATRIX STARTING AT SAME ADDRES
-C      ELSE
-C----- CONTRACT A SQUARE MATRIX INTO A LOWER TRIANGLE
-C
-      INCLUDE 'TYPE11.INC'
-      INCLUDE 'XSTR11.INC'
-      INCLUDE 'QSTR11.INC'
-C
-C
-C
-
-c      WRITE(442,*) 'Ilen: ', ILEN
-
-      IF ( ITYPE .EQ. 1 ) THEN
-	DO L = (N*N)-1, N, -1
-          IA = IMLIND(N,L)
-c          WRITE(442,*)'Moving: ', IA, ' to ', L
-          XSTR11(IADD+L) = XSTR11(IADD+IA)
-        END DO
-        RETURN
-      END IF  
-
-      JADD = IADD - 1
-      DO 10 L = 2, N
-      IF (ITYPE .EQ. 1) THEN
-            STOP 'Reimplemented above'
-            M = N - L + 2
-      ELSE
-            M = L
-      ENDIF
-C---- NUMBER OF ITEMS IN COLUMN M
-            NIM = N - M + 1
-C----- ADDRESS OG LAST ELEMENT OF COLUMN M OF LOWER TRIANGLE
-            ITL = JADD + M* (2*N - M +1) /2
-C----- ADDRESS OF DIAGONAL ELEMENT OF COLUMN M OF LOWER TRIANGLE
-            ITD = ITL - NIM + 1
-C----- ADDRESS OF LAST ELEMENT IN COLUMN M IN SQUARE MATRIX
-            ISL = JADD + M * N
-C----- ADDRESS OF FIRST ELEMENT IN COLUMN M IN SQUARE MATRIX
-            ISF = ISL - N + 1
-C----- ADDRESS OF DIAGONAL ELEMENT IN COLUMN M IN SQUARE MATRIX
-            ISD = ISL - NIM + 1
-C----- MOVE THE COLUMN ALONG
-      IF (ITYPE .EQ. 1) THEN
-            CALL XMOVE (XSTR11(ITD), XSTR11(ISD), NIM*ILEN)
-      ELSE
-            CALL XMOVE (XSTR11(ISD), XSTR11(ITD), NIM*ILEN)
-      ENDIF
-10    CONTINUE
-C
-      END
-C
-C Given zero-based index into NxN square array, give corresponding index into lower triangle array, 
-C assuming symmetry.
-CODE FOR IMLIND
-      FUNCTION IMLIND(N,I)
-C N - dimension of matrix
-C I - 0-based index into 3x3 matrix, e.g. 8 = 3,3 for a 3x3 matrix
-C IMLIND - 0-based index of position (column order), e.g. 5 = 3,3 for a 3x3 lower triangle matrix
-      
-      IROW = MOD(I,N) ! zero-based row index
-      ICOL = (I - IROW) / N !  zero-based col index
-
-c      WRITE(442,*)'IMLIND:', N, ' ', I
-
-
-C Lower triangle only contains entries where row >= col, swap if reqd:
-      IF ( IROW < ICOL ) THEN
-         ITEMP = IROW
-         IROW = ICOL
-         ICOL = ITEMP
-      END IF
-
-
-C Compute index into lower triangle of IROW, ICOL
-
-      IMLIND = ( ICOL * ( 2 * N - ICOL - 1 ) / 2 ) + IROW
-
-c     $B22+(9-C$17)/2*C$17
-
-c      WRITE(442,*) 'IROW, ICOL, IMLIND: ', IROW, ICOL, IMLIND
-c      WRITE(442,*) 'IROW, ICOL: ', IROW, ICOL
-c      WRITE(442,*) 'IROW, ICOL, IMLIND: ', IROW, ICOL, IMLIND
-      RETURN
-      END
-
-         
-
 CODE FOR KFLSP
       FUNCTION KFLSP (JT, JS, JR, JO, JX, JC, JQ, JZ, ICAPT,
      1 E, C, A, S, RMAX, SOESD, ILEVEL, MW, CTEXT)
@@ -2418,7 +2078,7 @@ C
 C
       COMMON /XWORK/F,BC(11),IBC(14)
       INCLUDE 'XWORKA.INC'
-      common /xpatch/djwscl
+c18      common /xpatch/djwscl
       INCLUDE 'XCHARS.INC'
       INCLUDE 'XLST01.INC'
       INCLUDE 'XLST05.INC'
@@ -2720,7 +2380,7 @@ cdjwjul07
 c----- DU[ISO] in SFLSG needs to be scaled if there are
 c      partial shifts by factor from SFLSE
 C   B holds the shift to the DU[iso]. 
-      B= STORE(JX+1) - (B * DJWSCL)
+      b= store(jx+1) - b
 cric11 - added brackets around difference above. Wrongly. Now fixed.
 c
       IF (ISSPRT .EQ. 0) THEN
@@ -2971,7 +2631,7 @@ C----- SAVE THE MEAN C-C ESD
       call outcol(7)
       CALL XPRVDU(NCVDU, 1,0)
       call outcol(1)
-      IF (ISSPRT .EQ.0) WRITE(NCWU,'(A)')cmon(1)
+      IF (ISSPRT .EQ.0) WRITE(NCWU,'(A)')trim(CMON(1))
 c
 c
       STORE(L30CF+14) = AESDC/MAX(1.0, FLOAT(NESDC))
@@ -3037,7 +2697,7 @@ c        Overall parameters
       CALL OUTCOL(3)
       CALL XPRVDU(NCVDU, 4,0)
       CALL OUTCOL(1)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') trim(CMON(1))
       RETURN
       END
 C
@@ -3329,25 +2989,4 @@ c----- output shift summary info to punch
 100   FORMAT ('# ', 4(3F9.5,3X))
       RETURN
       END      
-
-Code for open_normalfile
-C --- Subroutine for opening a new file for outputing the normal matrix into.
-C fileid - The file id to open the file under.
-      Subroutine open_normalfile(fileid)
-      implicit none
-
-      integer fileid, filecount, i
-      logical file_exists
-      character*255 file_name
-
-      filecount = 0
-      file_exists = .true.
-      do while (file_exists)
-         write(file_name, '(a,i4,a)'), 'normal', filecount, '.m'
-         call xcras(file_name, i) 
-         inquire(FILE=FILE_NAME(1:i), EXIST=file_exists)
-         filecount = filecount + 1
-      end do
-      OPEN(fileid, FILE=file_name, STATUS='UNKNOWN')
-      end subroutine open_normalfile
 

@@ -1,0 +1,11 @@
+%SCRIPT XUEQUIV
+%% Single atom
+% COPY '#EDIT'
+% COPY 'UEQUIV '
+%% just get one atom name
+%  CLEAR
+%  INSERT 'CONT '
+%  GET TEXT 'Atom?' ' '
+%  SEND
+% COPY 'END'
+%END SCRIPT

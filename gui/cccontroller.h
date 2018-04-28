@@ -208,7 +208,7 @@ extern "C" {
   void  newdata        (    int isize,      int* id         );
   void  datain         ( int id, int *data, int offset, int nwords );
   void  callccode      (  char *theLine                     );
-  void  guexec         (  char *theLine                     );
+  int guexec         (  char *theLine                     );
 #ifdef CRY_OSWIN32
   bool  IsWinNT();
 #endif

@@ -42,7 +42,7 @@
 ^^WI                   '#SCRIPT XSPLIT_N_A' DISABLEIF='IN'
 ^^WI             ITEM _SENVN '&Environment of _A'
 ^^WI                   '#DIST_NOUT MON=ALL_NPIVOT _A_NEND' DISABLEIF='IN'
-^^WI             MENU _SREFT 'Sticky &refine mode'
+^^WI             MENU _SREFT 'Refine &mode'
 ^^WI                 ITEM _F '&Fix' '#SCRIPT XSTICK_N_A_NFIX'
 ^^WI                                 DISABLEIF='IN'
 ^^WI                 ITEM _X '&Xs' '#SCRIPT XSTICK_N_A_NXS'
@@ -52,6 +52,9 @@
 ^^WI                 ITEM _U 'Xs and &aniso' '#SCRIPT XSTICK_N_A_NANISO'
 ^^WI                                 DISABLEIF='IN'
 ^^WI                 ITEM _R '&Ride' '#SCRIPT XSTICK_N_A_NRIDE'
+^^WI                                 DISABLEIF='IN'
+^^WI                 SPLIT
+^^WI                 ITEM _D '&Default' '#SCRIPT XSTICK_N_A_NDEFAULT'
 ^^WI                                 DISABLEIF='IN'
 ^^WI             ENDMENU
 ^^WI             ITEM _DELA '&Delete _A' '#EDIT_NDELETE _A_NEND'
@@ -101,6 +104,10 @@
 ^^WI                                 DISABLEIF='IN' ENABLEIF='SEL2'
 ^^WI             ITEM _DIST 'Swap &coordinates' '#SCRIPT YASWAP_N_G'
 ^^WI                                 DISABLEIF='IN' ENABLEIF='SEL2'
+^^WI             ITEM _GUISO 'Change to Uequiv'
+^^WI                         '#SCRIPT XUEQUIVS_N_GEND' DISABLEIF='SEL0'
+^^WI             ITEM _GUSET 'Set U[iso]' 
+^^WI                         '#SCRIPT XUSETS_N_GEND' DISABLEIF='SEL0'
 ^^WI             SPLIT
 ^^WI             ITEM _GDELA 'Centroid of &selection'
 ^^WI                         '#SCRIPT XCENTRO_N_GEND' DISABLEIF='IN SEL1'
@@ -145,7 +152,7 @@
 ^^WI                 ITEM _GRESP '&Plane' '#SCRIPT XRESTR_NPLANE_N_GEND'
 ^^WI                                  DISABLEIF='IN SEL1 SEL2'
 ^^WI             ENDMENU
-^^WI             MENU _SREFT 'Sticky &refine mode'
+^^WI             MENU _SREFT '&Refine mode'
 ^^WI                 ITEM _F '&Fix selection' '#SCRIPT XSTICKS_NFIX_N_GEND'
 ^^WI                                 DISABLEIF='IN'
 ^^WI                 ITEM _X '&Xs selection' '#SCRIPT XSTICKS_NXS_N_GEND'
@@ -158,6 +165,9 @@
 ^^WI                                 DISABLEIF='IN'
 ^^WI                 ITEM _R '&Ride selection (H)'
 ^^WI                                   '#SCRIPT XSTICKS_NRIDE_N_GEND'
+^^WI                                 DISABLEIF='IN'
+^^WI                 SPLIT
+^^WI                 ITEM _D '&Default' '#SCRIPT XSTICKS_NDEFAULT_N_GEND'
 ^^WI                                 DISABLEIF='IN'
 ^^WI             ENDMENU
 ^^WI         ENDDEFINEMENU

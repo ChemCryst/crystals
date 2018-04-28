@@ -30,8 +30,10 @@ C and the sigma computed with the old algorithm.  This is then re-input
 C and F and Sig(F) computed with the new algorithm.  This new list may 
 C have less reflections in it than the original hkli file, so the index 
 C limits etc in LIST 30 must be left unaltered. TO achieve this, a new 
-C flag has been added to the LIST 6 input control block. If L30UP (list 30 
-C undate) is set to NO, list 30 is not updated.  The default is YES, so 
+C flag has been added to the LIST 6 input control block. 
+C
+C If L30UP (list 30  update)
+C is set to NO, list 30 is not updated.  The default is YES, so 
 C LIST 30 is filled in when reflections are first input. In all the PUNCH 6/7 
 C routines set it to NO to conserve the original values.  The LIST 6 
 C created by convpat (converts PLATON SQUEEZE output) also sets L30UP to 
@@ -147,7 +149,7 @@ C     /FOT/          ELEMENTS       SIGMA(/FO/)    BATCH          INDICES
 C     BATCH/PHASE    SINTH/L**2     FO/FC          JCODE          SERIAL
 C     RATIO          THETA          OMEGA          CHI            PHI
 C     KAPPA          PSI            CORRECTIONS    FACTOR1        FACTOR2
-C     FACTOR3        RATIO/JCODE    NOTHING
+C     FACTOR3        RATIO/JCODE    NOTHING        A-IMAG         B-IMAG
 C
 C
 C
@@ -179,6 +181,8 @@ C  ICOL3   THE NUMBER OF COLUMNS PER PAGE (THIS IS CONSTRAINED
 C          IN THE RANGE 1 TO 3).
 C
 C--
+      use lists1_mod, only: xrlind
+      
       INCLUDE 'ICOM06.INC'
       INCLUDE 'ISTORE.INC'
 C
@@ -242,7 +246,7 @@ Cdjwjan03 - LOAD A LIST 5 ANYWAY IF IT EXISTS
 C      IF(IULN-6)1400,1250,1400
 C--CHECK IF THERE IS A LIST 5 STORED
 1250  CONTINUE
-      CALL XRLIND(5,I,J,K,L,M,STORE(NFL))
+      CALL XRLIND(5,I,J,K,L,M,ISTORE(NFL:NFL+1))
 C--CHECK THE DISC ADDRESS
       IF(J)1400,1400,1300
 C--THERE IS A LIST 5 STORED  -  LOAD IT INTO CORE
@@ -607,6 +611,8 @@ C         0  READ ONLY.
 C        +1  CAREFUL UPDATE ONLY.
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ISTORE.INC'
       INCLUDE 'ICOM06.INC'
       INCLUDE 'ICOM28.INC'
@@ -1020,6 +1026,9 @@ CODE FOR XFAL28
 C--SUBROUTINE TO LOAD LIST 28 FROM DISC, IF IT EXISTS
 C
 C--
+      use lists1_mod, only: xrlind
+      use lists2_mod, only: xldlst
+      
       INCLUDE 'ICOM28.INC'
       INCLUDE 'ISTORE.INC'
 C
@@ -1038,7 +1047,7 @@ C
 C--ZERO THE LIST 28 COMMON BLOCK
       CALL XZEROF(ICOM28(1),IDIM28)
 C--READ THE DETAILS FOR LIST 28
-      CALL XRLIND(28,I,J,K,L,M,STORE(NFL))
+      CALL XRLIND(28,I,J,K,L,M,ISTORE(NFL:NFL+1))
 C--CHECK IF SUCH A LIST EXISTS
       IF(J)1250,1250,1000
 C--THERE IS A LIST 28  -  LOAD IT FROM DISC
@@ -1229,6 +1238,7 @@ C--
       INCLUDE 'STORE.INC'
       INCLUDE 'XLST01.INC'
       INCLUDE 'XLST06.INC'
+      EXTERNAL RCSTL2
 C
       IDWZAP = IN
 C--CHECK IF LIST 1 IS AVAILABLE
@@ -1236,12 +1246,37 @@ C--CHECK IF LIST 1 IS AVAILABLE
       IF(L1S)1050,1050,1000
 C--CALCULATE (SIN(THETA)/LAMBDA)**2
 1000  CONTINUE
-      SNTHL2=STORE(M6)*STORE(M6)*STORE(L1S)+STORE(M6+1)*STORE(M6+1)
-     2 *STORE(L1S+1)+STORE(M6+2)*STORE(M6+2)*STORE(L1S+2)+STORE(M6+1)
-     3 *STORE(M6+2)*STORE(L1S+3)+STORE(M6)*STORE(M6+2)*STORE(L1S+4)
-     4 +STORE(M6)*STORE(M6+1)*STORE(L1S+5)
+      SNTHL2 = RCSTL2(STORE(M6), STORE(M6+1), STORE(M6+2), STORE(L1S))
+c      SNTHL2=STORE(M6)*STORE(M6)*STORE(L1S)+STORE(M6+1)*STORE(M6+1)
+c     2 *STORE(L1S+1)+STORE(M6+2)*STORE(M6+2)*STORE(L1S+2)+STORE(M6+1)
+c     3 *STORE(M6+2)*STORE(L1S+3)+STORE(M6)*STORE(M6+2)*STORE(L1S+4)
+c     4 +STORE(M6)*STORE(M6+1)*STORE(L1S+5)
 C--AND NOW RETURN
 1050  CONTINUE
+      RETURN
+      END
+
+CODE FOR RCSTL2
+      FUNCTION RCSTL2(H,K,L,R)
+C--CALCULATE (SIN(THETA)/LAMBDA)**2
+      REAL R(6) ! Upper triangle (11,22,33,23,13,12 ordering) of R matrix used to compute sin(theta)/lambda
+      REAL H, K, L ! Reflection indices   
+c      print *, 'pre - comp'
+      RCSTL2= H*H*R(1) + K*K*R(2) + L*L*R(3) 
+     1     +  K*L*R(4) + H*L*R(5) + H*K*R(6)
+c      print *,'rcstl2: ', h,k,l, rcstl2, r
+      RETURN
+      END
+C
+C
+CODE FOR RCSTL3
+      FUNCTION RCSTL3(H,K,L,R)
+C--CALCULATE (SIN(THETA)/LAMBDA)**3
+      REAL R(6) ! Upper triangle (11,22,33,23,13,12 ordering) of R matrix used to compute sin(theta)/lambda
+C          R IS NORMALLY STORE(L1S)
+      REAL H, K, L ! Reflection indices   
+      RCSTL3=SQRT(RCSTL2(H,K,L,R))
+      RCSTL3=RCSTL3*RCSTL3*RCSTL3
       RETURN
       END
 C
@@ -1393,6 +1428,7 @@ cC--WRITE THE NEW DETAILS TO DISC
 c      CALL XUPF(IBUFF(4),STORE(L6P),IBUFF(3)-MD0)
 c      RETURN
 c      END
+C
 CODE FOR KLDRNR
       FUNCTION KLDRNR(IN)
 C--LOAD THE NEXT REFLECTION FROM THE DISC

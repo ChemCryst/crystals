@@ -1,0 +1,185 @@
+% SCRIPT XMOO2 
+%% plot functions of MoO
+%% 
+%%                                                                              
+% IF ( EXISTS 6 .NE. 1 ) THEN                                                   
+                                                                                
+{E No reflections stored. Use "X-ray data->Input reflections".                  
+                                                                                
+%   FINISH                                                                      
+% END IF                                                                        
+%%
+% VARIABLE LOGICAL MOO2
+% EVALUATE MOO2 = FILEEXISTS 'moo2.dat'
+%     if .not. MOO2 then
+{E
+{E The file MOO2.DAT does not exist    
+{E
+%        copy '#script xhelp1'
+
+ The file 'moo2.dat' was created during input of reflections.
+ It no longer exists, or is in a different folder
+ Re-input your reflection data.
+
+%        copy '#script xhelp2'  
+%        FINISH
+%     end if
+%%                                                                              
+%%                                                                              
+^^WI WINDOW XVAR 'Multiplicity of Observations' LARGE MODAL KEEP SIZE                    
+^^WI COMMIT='XC_BXX' CANCEL='XC_BXX'                                            
+^^WI GRID MAIN NROWS=3 NCOLS=1                                                  
+^^WI {                                                                          
+^^WI  @ 1,1 GRID TOP NROWS=3 NCOLS=3                                            
+^^WI  {                                                                         
+^^WI   @ 2,2 TABCTRL _MAINTABS                                                  
+^^WI   {                                                                        
+^^WI    TAB _MAINTAB7 'Multiplicities' GRID _MAINTG7 NROWS=3 NCOLS=3  
+^^WI    { 
+^^WI    @ 1,2 BUTTON XC_BHLP 'Help'                
+^^WI    @ 2,2 RESIZE _XARSZ VERTICAL
+^^WI     {
+^^WI       ITEM GRID GRAPH NROWS=5 NCOLS=3
+^^WI       {
+^^WI        @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                             
+^^WI        {                                                                      
+^^WI         @ 1,1 ICON IM INFO                                                    
+^^WI         @ 1,3 GRID EXP2 NROWS=2 NCOLS=1                                       
+^^WI         {                                                                     
+^^WI          @ 1,1 STATIC XFW1                                                    
+^^WI          'Number of reflections having the reported multiplicity'
+^^WI          @ 2,1 STATIC XFW2                                                    
+^^WI          'The end bin contains reflections with a MoO of 20 or more'         
+^^WI         }                                                                     
+^^WI        }                                                                      
+^^WI        @ 4,2 PLOTWINDOW _VMOO1 NROWS=20 NCOLS=64 
+^^WI   
+^^WI       }
+^^WI       ITEM GRID GRAPH NROWS=5 NCOLS=3
+^^WI       {
+^^WI        @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                             
+^^WI        {                                                                      
+^^WI         @ 1,1 ICON IM INFO                                                    
+^^WI         @ 1,3 GRID EXP2 NROWS=2 NCOLS=1                                       
+^^WI         {                                                                     
+^^WI          @ 1,1 STATIC XFW1                                                    
+^^WI          'Average Multiplicity of Observation as a function of resolution'         
+^^WI         }                                                                     
+^^WI        }                                                                      
+^^WI        @ 4,2 PLOTWINDOW _VMOO2 NROWS=20 NCOLS=64 
+^^WI   
+^^WI       }
+^^WI     }
+^^WI    }                                                                       
+^^WI   }                                                                        
+^^WI  }                                                                         
+%%    
+^^WI  @ 2,1 GRID BUTT NROWS=2 NCOLS=7                                           
+^^WI  {                                                                         
+^^WI   @ 1,1 STRETCH RS HORIZONTAL                                              
+^^WI   @ 1,2 BUTTON XC_HELP 'Resolution Table'                                            
+^^WI   @ 1,6 BUTTON XC_BXX 'Close' COMMIT DEFAULT CANCEL                        
+^^WI  }                                                                         
+^^WI }                                                                          
+^^WI SHOW                                                                       
+%%
+%%
+^^CR   
+%%                                                                              
+%%
+% VARIABLE INTEGER BIN CONTENT
+% VARIABLE REAL ABIN
+%%
+^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VMOO1 
+^^PL XAXIS TITLE 'Multiplicity'    
+^^PL YAXIS  TITLE 'Number of reflections'                                
+^^PL NSERIES=1 LENGTH=20                                                       
+^^PL SERIES 1 SERIESNAME 'MoO'                                     
+%     CLEAR
+%     COPY '#OPEN SCPDATA moo2.dat' 
+%% skip one line
+%      EXTRACT NEXT                                                             
+%     LOOP
+%      ON ERROR TERMINATE                                                           
+%      ON END TERMINATE
+%      EXTRACT NEXT                                                             
+%      CLEAR                                                                        
+%      EXTRACT TRANSFER INPUT                                                       
+%      CLEAR
+%      GET NOSTORE NOPROMPT INTEGER ' ' '0'
+%      EVALUATE BIN = VALUE                                        
+%      GET NOSTORE NOPROMPT INTEGER ' ' '0'
+%      EVALUATE CONTENT = VALUE                                        
+%% skip last 2 items
+%      GET NOSTORE NOPROMPT REAL ' ' '-1.0'
+%      GET NOSTORE NOPROMPT INTEGER ' ' '0'
+%%
+%      CLEAR
+%      INSERT !^^PL LABEL '!   
+%      STORE FORMAT /(I5)/ LENGTH 5 INTEGER BIN
+%      INSERT !' DATA !
+%      STORE FORMAT /(I10)/ LENGTH 10 INTEGER CONTENT
+%      OUTPUT
+%     END LOOP
+%     COPY '#CLOSE SCPDATA'
+^^PL SHOW                                                                       
+^^CR     
+%%
+%% reprocess for the resolution graph
+%%
+^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VMOO2 
+^^PL XAXIS TITLE 'Resolution (sin(\theta)/\lambda)\**3'    
+^^PL YAXIS  TITLE 'Average MoO'                                
+^^PL NSERIES=1 LENGTH=20                                                       
+^^PL SERIES 1 SERIESNAME 'MoO'                                     
+%     CLEAR
+%     COPY '#OPEN SCPDATA moo2.dat' 
+%% skip one line
+%      EXTRACT NEXT                                                             
+%     LOOP
+%      ON ERROR TERMINATE                                                           
+%      ON END TERMINATE
+%      EXTRACT NEXT                                                             
+%      CLEAR                                                                        
+%      EXTRACT TRANSFER INPUT                                                       
+%      CLEAR
+%% skip first 2 items
+%      GET NOSTORE NOPROMPT INTEGER ' ' '0'
+%      GET NOSTORE NOPROMPT INTEGER ' ' '0'
+%      GET NOSTORE NOPROMPT REAL ' ' '-1.0'
+%      EVALUATE ABIN = VALUE                                        
+%      GET NOSTORE NOPROMPT INTEGER ' ' '0'
+%      EVALUATE CONTENT = VALUE                                        
+%%
+%      CLEAR
+%      INSERT !^^PL LABEL '!   
+%      STORE FORMAT /(F6.2)/ LENGTH 6 REAL ABIN
+%      INSERT !' DATA !
+%      STORE FORMAT /(I10)/ LENGTH 10 INTEGER CONTENT
+%      OUTPUT
+%     END LOOP
+%     COPY '#CLOSE SCPDATA'
+^^PL SHOW                                                                       
+^^CR     
+%%                                                                       
+%  LOOP                                                                         
+%    VERIFY XC_BXX  XC_HELP  XC_BHLP
+%    GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '                               
+%    CASE VALUE                                                                 
+%      BLOCK    %XC_XX                                                         
+^^CO     DISPOSE XVAR                                                        
+%        FINISH                                                                 
+%      END BLOCK           
+%      BLOCK    %XC_HELP
+%        COPY '#SCRIPT SINTHETA'
+Botton Button
+%      END BLOCK
+%      BLOCK    %XC_BHLP
+%         COPY '#SPAWN CRYSDIR:manual/analyse/moo.html' 
+Top Button
+%      END BLOCK
+%    END CASE                                                                   
+%  END LOOP                                                                     
+%%                                                                       
+%END SCRIPT                                                                     
+

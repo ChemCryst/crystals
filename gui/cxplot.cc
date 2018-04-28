@@ -173,6 +173,7 @@ using namespace std;
 #ifdef CRY_USEWX
  #include <wx/font.h>
  #include <wx/thread.h>
+ #include "mathsymbols.h"
 
 // These macros are being defined somewhere. They shouldn't be.
 
@@ -248,7 +249,7 @@ CxPlot::CxPlot(CrPlot* container)
 #endif
 #ifdef CRY_USEWX
     mfgcolour = wxColour(0,0,0);
-    m_brush = new wxBrush(mfgcolour,wxSOLID);
+    m_brush = new wxBrush(mfgcolour,wxBRUSHSTYLE_SOLID);
     m_memDC = new wxMemoryDC();
 #endif
 }
@@ -441,7 +442,7 @@ void CxPlot::DrawLine(int thickness, int x1, int y1, int x2, int y2)
     pen.DeleteObject();                                     // added by steve - clean up resources
 #endif
 #ifdef CRY_USEWX
-    wxPen apen(mfgcolour,thickness,wxSOLID);
+    wxPen apen(mfgcolour,thickness,wxPENSTYLE_SOLID);
     m_memDC->SetPen(apen);
     m_memDC->DrawLine(cpoint1.x,cpoint1.y,cpoint2.x,cpoint2.y);
 #endif
@@ -497,7 +498,7 @@ void CxPlot::DrawEllipse(int x, int y, int w, int h, bool fill)
     brush.DeleteObject();           
 #endif
 #ifdef CRY_USEWX
-      wxPen apen(mfgcolour,1,wxSOLID);
+      wxPen apen(mfgcolour,1,wxPENSTYLE_SOLID);
       m_memDC->SetPen(apen);
       if ( fill )
             m_memDC->SetBrush( *m_brush );
@@ -535,7 +536,7 @@ void CxPlot::DrawCross(int x, int y, int w)
     m_memDC->SelectObject(m_oldMemDCBitmap);
     m_memDC->SelectObject(oldpen);
 #else
-	  wxPen apen(mfgcolour,2,wxSOLID);
+	  wxPen apen(mfgcolour,2,wxPENSTYLE_SOLID);
       m_memDC->SetPen(apen);
       m_memDC->DrawLine(topleft.x,topleft.y,bottomright.x,bottomright.y);
 //      wxPen bpen(wxColour(0,0,0),2,wxSOLID);
@@ -655,8 +656,21 @@ void CxPlot::DrawText(int x, int y, string text, int param, int fontsize)
 #endif
 #ifdef CRY_USEWX
       wxString wtext = wxString(text.c_str());
+
+      MathSymbols::replaceMarkup(wtext);
+
+/*      wtext.Replace("\\theta", L"\u03b8");
+      wtext.Replace("\\sigma", L"\u03c3");
+      wtext.Replace("\\rho", L"\u03c1");
+      wtext.Replace("\\lambda", L"\u03bb");
+      wtext.Replace("\\SUM", L"\u03a3");	
+      wtext.Replace("\\**-1", L"\u207B\u00B9");
+      wtext.Replace("\\**2", L"\u00B2");
+      wtext.Replace("\\**3", L"\u00B3");
+     wtext.Replace("\\sqrt", L"\u221A");
+*/
       m_memDC->SetBrush( *m_brush );
-      wxPen apen(mfgcolour,1,wxSOLID);
+      wxPen apen(mfgcolour,1,wxPENSTYLE_SOLID);
       m_memDC->SetPen(apen);
       m_memDC->SetBackgroundMode( wxTRANSPARENT );
       int tx, ty, mx, my;
@@ -845,7 +859,7 @@ void CxPlot::DrawPoly(int nVertices, int * vertices, bool fill)
     m_memDC->SelectObject(m_oldMemDCBitmap);
 #endif
 #ifdef CRY_USEWX
-    wxPen apen(mfgcolour,1,wxSOLID);
+    wxPen apen(mfgcolour,1,wxPENSTYLE_SOLID);
     m_memDC->SetPen(apen);
 //    m_memDC->SetPen( *m_pen );
     if ( fill )
@@ -1100,9 +1114,11 @@ void CxPlot::CreatePopup(string text, CcPoint point)
 #endif
 #ifdef CRY_USEWX
   int cx,cy;
-  GetTextExtent( text.c_str(), &cx, &cy ); //using cxmodel's DC to work out text extent before creation.
+  wxString wtext = wxString(text.c_str());
+  MathSymbols::replaceMarkup(wtext);
+  GetTextExtent( wtext, &cx, &cy ); //using cxmodel's DC to work out text extent before creation.
                                                    //then can create in one step.
-  m_TextPopup = new mywxStaticText(this, -1, text.c_str(),
+  m_TextPopup = new mywxStaticText(this, -1, wtext,
                                  wxPoint(CRMAX(0,point.x-cx-4),CRMAX(0,point.y-cy-4)),
                                  wxSize(cx+4,cy+4),
                                  wxALIGN_CENTER|wxSIMPLE_BORDER) ;
@@ -1515,14 +1531,17 @@ void CxPlotKey::OnPaint(wxPaintEvent & event)
   for(int i=0; i<m_NumberOfSeries; i++)
   {
       wxColour acolour (m_Colours[0][i], m_Colours[1][i], m_Colours[2][i]);
-      wxPen apen(acolour,1,wxSOLID);
-      wxBrush abrush (acolour,wxSOLID);
+      wxPen apen(acolour,1,wxPENSTYLE_SOLID);
+      wxBrush abrush (acolour,wxBRUSHSTYLE_SOLID);
 
       dc.SetPen(apen);
       dc.SetBrush(abrush);
 
       dc.DrawRectangle( 3, i*cy/m_NumberOfSeries + 3, 12, 9);
-      dc.DrawText( m_Names[i].c_str(), 20, i*cy/m_NumberOfSeries);
+
+      wxString wtext = wxString(m_Names[i].c_str());
+      MathSymbols::replaceMarkup(wtext);
+      dc.DrawText(wtext , 20, i*cy/m_NumberOfSeries);
   }
 }
 #endif

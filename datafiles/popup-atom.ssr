@@ -33,6 +33,9 @@
 ^^WI                    DISABLEIF= 'IN'
 ^^WI             ITEM _RP '&Set occupancy of _A' '#SCRIPT XOCCG_N_A' 
 ^^wi                    DISABLEIF= 'IN'
+^^WI             ITEM _GUISO 'Change to Uequiv'
+^^WI                         '#SCRIPT XUEQUIV_N_GEND' DISABLEIF='IN'
+^^WI             ITEM _GUSET 'Set U[iso]' '#SCRIPT XUSET_N_GEND' DISABLEIF='IN'
 ^^WI             SPLIT
 ^^WI             ITEM _EDA 'Ed&it _A' '#SCRIPT XPARAM_N_A' DISABLEIF='IN'
 ^^WI             ITEM _ADDH 'Add &hydrogens to _A' '#SCRIPT XADDH_N_A'
@@ -41,7 +44,7 @@
 ^^WI                   '#SCRIPT XSPLIT_N_A' DISABLEIF='IN'
 ^^WI             ITEM _ENVN '&Environment of _A'
 ^^WI                   '#DIST_NOUT MON=ALL_NPIVOT _A_NEND' DISABLEIF='IN'
-^^WI             MENU _SREFT 'Sticky &refine mode'
+^^WI             MENU _SREFT 'Refine &mode'
 ^^WI                 ITEM _F '&Fix' '#SCRIPT XSTICK_N_A_NFIX'
 ^^WI                                 DISABLEIF='IN'
 ^^WI                 ITEM _X '&Xs' '#SCRIPT XSTICK_N_A_NXS'
@@ -49,9 +52,12 @@
 ^^WI                 ITEM _I 'Xs and U&iso' '#SCRIPT XSTICK_N_A_NISO'
 ^^WI                                 DISABLEIF='IN'
 ^^WI                 ITEM _U 'Xs and &aniso' '#SCRIPT XSTICK_N_A_NANISO'
-^^WI                                 DISABLEIF='IN'
+^^WI                                 DISABLEIF='IN' DISABLEIF='HYD'
 ^^WI                 ITEM _R '&Ride' '#SCRIPT XSTICK_N_A_NRIDE'
-^^WI                                 DISABLEIF='IN'
+^^WI                                 DISABLEIF='IN' ENABLEIF='HYD'
+^^WI                 SPLIT
+^^WI                 ITEM _D '&Default' '#SCRIPT XSTICK_N_A_NDEFAULT'
+^^WI                                 DISABLEIF='IN' 
 ^^WI             ENDMENU
 ^^WI             SPLIT
 ^^WI             ITEM _SLFRG '&Select fragment containing _A'

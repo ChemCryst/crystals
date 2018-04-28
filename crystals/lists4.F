@@ -104,6 +104,8 @@ CODE FOR XRD01
 C--READ LIST TYPE 1, THE CELL PARAMETERS
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ISTORE.INC'
       INCLUDE 'ICOM01.INC'
       INCLUDE 'ICOM20.INC'
@@ -177,6 +179,10 @@ C--
       INCLUDE 'ISTORE.INC'
 C
       DIMENSION AA(26),IADD1(4),IADD2(3)
+      ! doing some calculations in double precision to improve numerical stability
+      double precision, dimension(26) :: aad
+      integer, parameter :: dp=kind(1.0d0)
+      double precision od, hd, dstore
 C
       INCLUDE 'STORE.INC'
       INCLUDE 'XLST01.INC'
@@ -235,22 +241,35 @@ C--CALCULATE THE SINE AND COSINES OF THE INPUT ANGLES
       DO 1350 NY=M,NX
       AA(NW)=COS(STORE(NY+3))
       AA(NW+3)=SIN(STORE(NY+3))
+      AAD(NW)=COS(real(STORE(NY+3),dp))
+      AAD(NW+3)=SIN(real(STORE(NY+3), dp))
       NW=NW+1
 1350  CONTINUE
 C--CALCULATE THE VOLUMES
       O=STORE(M)*STORE(M+1)*STORE(M+2)
-      STORE(M+6)=O*SQRT(1.-A*A-B*B-C*C+2.*A*B*C)
-      STORE(N+6)=1./STORE(M+6)
-      O=O*STORE(N+6)
+      od=real(STORE(M), dp)*real(STORE(M+1), dp)*real(STORE(M+2), dp)
+      ! replaced with double precision calculation
+      !STORE(M+6)=O*SQRT(1.-A*A-B*B-C*C+2.*A*B*C)
+      dstore=Od*SQRT(
+     1  1.d0-aad(1)**2-aad(2)**2-aad(3)**2+2.d0*Aad(1)*aad(2)*aad(3))
+      ! replaced with double precision calculation
+      STORE(M+6)=dstore
+      STORE(N+6)=1.0d0/dstore
+      O=Od*1.0d0/dstore
+      Od=Od*1.0d0/dstore
 C--CALCULATE THE MISSING PARAMETERS
       H=1./(D*E*F)
+      Hd=1.0d0/(aad(4)*aad(5)*aad(6))
       NU=1
       NZ=N
       DO 1400 NY=M,NX
       NV=IADD1(NU)
       NW=IADD1(NU+1)
-      STORE(NZ)=O*AA(NU+3)/STORE(NY)
-      STORE(NZ+3)=ACOS((AA(NV)*AA(NW)-AA(NU))*AA(NU+3)*H)
+      ! replaced with double precision calculation
+      !STORE(NZ)=O*AA(NU+3)/STORE(NY)
+      !STORE(NZ+3)=ACOS((AA(NV)*AA(NW)-AA(NU))*AA(NU+3)*H)
+      STORE(NZ)=Od*AAD(NU+3)/STORE(NY)
+      STORE(NZ+3)=ACOS((AAD(NV)*AAD(NW)-AAD(NU))*AAD(NU+3)*Hd)
       NU=NU+1
       NZ=NZ+1
 1400  CONTINUE
@@ -260,14 +279,16 @@ C--CALCULATE THE MISSING PARAMETERS
 
 
 C--CALCULATE THE ORTHOGONALIZATION MATRICES
-      STORE(L1O1)=STORE(L1P1)*SIN(STORE(L1P1+4))*SIN(STORE(L1P2+5))
+      STORE(L1O1)=STORE(L1P1)*
+     1  SIN(real(STORE(L1P1+4),dp))*SIN(real(STORE(L1P2+5),dp))
       STORE(L1O1+1)=0.
       STORE(L1O1+2)=0.
-      STORE(L1O1+3)=-STORE(L1P1)*SIN(STORE(L1P1+4))*COS(STORE(L1P2+5))
-      STORE(L1O1+4)=STORE(L1P1+1)*SIN(STORE(L1P1+3))
+      STORE(L1O1+3)=-STORE(L1P1)*
+     1  SIN(real(STORE(L1P1+4),dp))*COS(real(STORE(L1P2+5), dp))
+      STORE(L1O1+4)=STORE(L1P1+1)*SIN(real(STORE(L1P1+3), dp))
       STORE(L1O1+5)=0.
-      STORE(L1O1+6)=STORE(L1P1)*COS(STORE(L1P1+4))
-      STORE(L1O1+7)=STORE(L1P1+1)*COS(STORE(L1P1+3))
+      STORE(L1O1+6)=STORE(L1P1)*COS(real(STORE(L1P1+4), dp))
+      STORE(L1O1+7)=STORE(L1P1+1)*COS(real(STORE(L1P1+3), dp))
       STORE(L1O1+8)=STORE(L1P1+2)
 C--CALCULATE THE INVERSE ORTHOGONALISATION MATRIX
       IF(KINV2(3,STORE(L1O1),STORE(L1M2),9,0,STORE(L1M1),STORE(L1M1+9),
@@ -347,7 +368,10 @@ CODE FOR XFAL01
 C--ROUTINE TO LOAD LIST 1 FROM THE DISC
 C
 C--
-      REAL D(3), RN, CALP, CBET, CGAM
+      use lists2_mod, only: xldlst
+
+      double precision D(3), RN, CALP, CBET, CGAM
+      integer, parameter :: dp=kind(1.0d0)
       INCLUDE 'ICOM01.INC'
 C
       INCLUDE 'XLST01.INC'
@@ -973,6 +997,8 @@ CODE FOR XFAL02
 C--ROUTINE TO LOAD LIST 2 FROM THE DISC
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ISTORE.INC'
       INCLUDE 'ICOM02.INC'
 C
@@ -1022,6 +1048,8 @@ CODE FOR XFAL03
 C--ROUTINE TO LOAD LIST 3 FROM THE DISC
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ICOM03.INC'
 C
       INCLUDE 'XLST03.INC'
@@ -1152,6 +1180,8 @@ C     THE CALLING ROUTINE MUST SAVE THE REAL LIST 5 ADDRESSES
 C     IF THEY ARE ALREADY IN USE.
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ISTORE.INC'
       INCLUDE 'ICOM05.INC'
 C
@@ -1442,6 +1472,8 @@ CODE FOR XFAL13
 C--ROUTINE TO LOAD LIST 13 FROM THE DISC
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ICOM13.INC'
 C
       INCLUDE 'XLST13.INC'
@@ -1463,6 +1495,8 @@ C      1 = ORTHOGONALISATION MATRIX
 C      2 = CRYSTAL FRACTIONS TO INERTIAL
 C      3 = CRYSTAL FRACTIONS TO TLS
 C      4 = USER DEFINED
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ICOM20.INC'
       INCLUDE 'ISTORE.INC'
 C
@@ -1524,6 +1558,8 @@ CODE FOR XFAL14
 C--ROUTINE TO LOAD LIST 14 FROM THE DISC
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ICOM14.INC'
 C
       INCLUDE 'XLST14.INC'
@@ -1541,6 +1577,8 @@ CODE FOR XFAL24
 C--ROUTINE TO LOAD LIST 24 FROM THE DISC
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ICOM24.INC'
 C
       INCLUDE 'XLST24.INC'
@@ -1558,6 +1596,8 @@ CODE FOR XFAL25
 C--ROUTINE TO LOAD LIST 25 FROM THE DISC
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ICOM25.INC'
 C
       INCLUDE 'XLST25.INC'
@@ -1575,6 +1615,8 @@ CODE FOR XFAL29
 C--ROUTINE TO LOAD LIST 29 FROM THE DISC
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ICOM29.INC'
 C
       INCLUDE 'XLST29.INC'
@@ -1593,6 +1635,8 @@ CODE FOR XFAL30
 C--ROUTINE TO LOAD LIST 30 FROM THE DISC
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ICOM30.INC'
 C
       INCLUDE 'XLST30.INC'
@@ -1632,7 +1676,7 @@ C--
       INCLUDE 'ICOM33.INC'
 C
       DIMENSION IRQ(3,8),IRCALC(3,3),IEND(2),INO(1), JRQ(3,2)
-      DIMENSION INVERT(2), JTYP33(2)
+      DIMENSION INVERT(7), JTYP33(2)
 C
       INCLUDE 'STORE.INC'
       INCLUDE 'XUNITS.INC'
@@ -1680,7 +1724,11 @@ C
       DATA INO(1)/4HNO  /
 
       DATA IEND(1)/4HE   /,IEND(2)/4HND  /
-      DATA INVERT(1) /4HCHOL/, INVERT(2) /4HEIGE/
+      ! Array invert must match commands.src
+      DATA INVERT(1) /4HDEFA/
+      DATA INVERT(2) /4HAUTO/, INVERT(3) /4HLDLT/
+      DATA INVERT(4) /4HEIGE/, INVERT(5) /4HDP_L/
+      DATA INVERT(6) /4HXCHO/, INVERT(7) /4HCHOL/
 #else
       DATA JTYP33(1)/'   1'/, JTYP33(2)/'   2'/
 
@@ -1703,7 +1751,11 @@ C
       DATA INO(1)/'NO  '/
 
       DATA IEND(1)/'E   '/,IEND(2)/'ND  '/
-      DATA INVERT(1) /'CHOL'/, INVERT(2) /'EIGE'/
+      ! Array invert must match commands.src
+      DATA INVERT(1) /'DEFA'/
+      DATA INVERT(2) /'AUTO'/, INVERT(3) /'LDLT'/
+      DATA INVERT(4) /'EIGE'/, INVERT(5) /'DP_L'/
+      DATA INVERT(6) /'XCHO'/, INVERT(7) /'CHOL'/
 #endif
 C
 C
@@ -1953,6 +2005,10 @@ C--'REFINE' HAS BEEN INPUT FOR THIS CYCLE
 2550     CONTINUE
          CALL XMOVEI (JRQ(1,2), IRQ(1,2), NWRQ)     !"SPEC LIS NO"
 C----- SET INVERSION TO CHOLESKI OR EIGENVECTOR
+         if(2+ ISTORE(M33CD+8)<1 .or. 
+     1     2+ ISTORE(M33CD+8)>size(invert)) then
+           call abort()
+         end if
          IRQ(3,5) = INVERT(2+ ISTORE(M33CD+8))      !"CHOL" or "EIGE"
          KG=1
 C--INDICATE THAT ANY TYPE OF CALCULATION IS NOW ALLOWED
@@ -2209,6 +2265,8 @@ CODE FOR XFAL27
 C--ROUTINE TO LOAD LIST 27 FROM THE DISC
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ISTORE.INC'
       INCLUDE 'ICOM27.INC'
 C
@@ -2229,6 +2287,8 @@ CODE FOR XFAL33
 C--ROUTINE TO LOAD LIST 33 FROM THE DISC
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ISTORE.INC'
       INCLUDE 'ICOM33.INC'
 C
@@ -2254,6 +2314,8 @@ CODE FOR XFAL38
 C--ROUTINE TO LOAD LIST 38 FROM THE DISC
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ICOM38.INC'
 C
       INCLUDE 'XLST38.INC'
@@ -2271,6 +2333,8 @@ CODE FOR XFAL39
 C--ROUTINE TO LOAD LIST 39 FROM THE DISC
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ICOM39.INC'
 C
       INCLUDE 'XLST39.INC'
@@ -2287,6 +2351,8 @@ CODE FOR XFAL40
 C--ROUTINE TO LOAD LIST 40 FROM THE DISC
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ICOM40.INC'
 C
       INCLUDE 'XLST40.INC'
@@ -2303,6 +2369,8 @@ CODE FOR XFAL41
 C--ROUTINE TO LOAD LIST 41 FROM THE DISC
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ICOM41.INC'
 C
       INCLUDE 'XLST41.INC'
@@ -2320,6 +2388,8 @@ CODE FOR XFAL42
 C--ROUTINE TO LOAD LIST 42 FROM THE DISC
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ICOM42.INC'
 C
       INCLUDE 'XLST42.INC'
@@ -2337,16 +2407,45 @@ CODE FOR XFAL23
 C--ROUTINE TO LOAD LIST 23 FROM THE DISC
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ICOM23.INC'
 C
       INCLUDE 'XLST23.INC'
 C
       INCLUDE 'QLST23.INC'
 C
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'QSTORE.INC'
       INCLUDE 'IDIM23.INC'
+      
 C--LOAD THE LIST
-      CALL XLDLST(23,ICOM23,IDIM23,-1)
-      RETURN
+      CALL XLDLST(23,ICOM23,IDIM23,-1)  
+
+C-- Checking L23M record
+      if (md23m .le. 7) then ! old l23. Extend record and set default invertor.
+      
+C When extending a record, we not only need to create new space for it in store and
+C update the common block, but also update the record header pointers which are stored
+C just before each data block pointed to by the common block. The only is IADDR+3 (which
+C should be 5 words before the start of the data block, but here we use KHUNTR to return
+C IADDR, just to be on the safe side.
+
+        ISTAT = KHUNTR(23,101,IADDL,IADDR,IADDD,-1)
+        IF ( ISTAT.EQ.0 ) THEN
+           newl23m=nfl
+           nextnf = KCHNFL(12)
+           istore(newl23m:newl23m+md23m-1)=istore(l23m:l23m+md23m-1)
+           istore(newl23m+7)=0
+           md23m=8
+           l23m=newl23m
+           m23m=newl23m+7
+           istore(iaddr+3) = newl23m
+        end if
+      end if
+      RETURN 
+ 
       END
 C
 C
@@ -2676,7 +2775,15 @@ C
       CHARACTER CEND*3
       INTEGER NBUFF1, LBUFF1, MBUFF1
       INTEGER ISIZE1(19)
-
+C For calculating f' and f'' and mu from tables (if particular wavelength not present in files)
+      LOGICAL LFPCAL
+      INTEGER IZ ! atomic number
+      REAL*4  AMU, RHO, FP, FPP, RAY, COMP,RENERG
+      REAL*8  F_TO_MU,ATOEV,MU,ATOMX,VC
+      PARAMETER ( ATOEV = 12398.4244680242D0 )        ! EV = ATOEV / LAMBDA (in A)
+      parameter (F_TO_MU= 4208.031548D0)            ! Mu in microns
+  
+  
 C
 C----- TO HOLD REAL FORMAT EXPRESSION
       CHARACTER *8 CFMTXP
@@ -2713,6 +2820,8 @@ C     NUMBER OF WAVWLENGTHS PRESENT IN PROPERTIES FILE
 C
 C
       CALL XTIME1 ( 2 )
+      LFPCAL = .FALSE.  !FALSE = Default to f' and f'' from scatt file, unless wavelength not present
+
 CMAR98
       ICOMBF = KSTALL ( IDIMBF )
       CALL XZEROF (STORE(ICOMBF), IDIMBF)
@@ -2945,77 +3054,105 @@ C-----  SPOT THE WAVELENGTH
         ENDIF
 5350  CONTINUE
       IF (DELMIN .GE. 0.01) THEN
-        WRITE ( CMON, 9701) WAVUSE, WAVE
+        LFPCAL = .TRUE.
+        RENERG = ATOEV / WAVE   ! Convert A to eV.
+        WRITE ( CMON, 9701) WAVE
         CALL XPRVDU(NCVDU, 2,0)
 9701    FORMAT
-     1 (' System files contain no anomalous entries for required', 
-     2 ' wavelength'/F8.4, ' used in lieu of ',F8.4,
-     3 ' for anomalous scattering')
-        IF (ISSPRT .EQ. 0) WRITE ( NCWU, '(A,A)') CMON(1),CMON(2),
-     1  CMON(3)
+     1 (' System files contain no resonant scattering data for '/, 
+     2 ' wavelength',F8.4,' using calculated values instead.')
+        IF (ISSPRT .EQ. 0) WRITE ( NCWU, '(A,A)') trim(CMON(1)),
+     1  trim(CMON(2))
       ENDIF
 C----- BEGIN PROCESSING FORMULA LIST
-      DO 5500 J = IADDF, JADDF, NADDF
+      DO J = IADDF, JADDF, NADDF
 C----- CONVERT BACK TO CHARACTER
-      WRITE(CTMP, 20) ISTORE(J)
-      READ(CTMP, 20) CARG
-      LSTART = KCCNEQ( CARG, 1, ' ')
-      IF (LSTART .EQ. -1) GOTO 9730
-      LSTART = MAX0( 1, LSTART)
-C     LEFT ADJUST STRING
-      CTMP = CARG(LSTART:4)
-      CARG = CTMP
-      LENSER = 4
-      CALL XCCUPC( CARG, CARGU)
-C     READ WHOLE FILE FOR EACH ELEMENT
-      REWIND NCEXTR
-5400  CONTINUE
-      IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 5401
-5401  CONTINUE
+        WRITE(CTMP, 20) ISTORE(J)
+        READ(CTMP, 20) CARG
+        LSTART = KCCNEQ( CARG, 1, ' ')
+        IF (LSTART .EQ. -1) GOTO 9730
+        LSTART = MAX0( 1, LSTART)
+C LEFT ADJUST STRING
+        CTMP = CARG(LSTART:4)
+        CARG = CTMP
+        LENSER = 4
+        CALL XCCUPC( CARG, CARGU)
+C       READ WHOLE FILE FOR EACH ELEMENT
+        REWIND NCEXTR
+5400    CONTINUE
+        IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 5401
+5401    CONTINUE
 C----- CHECK FIRST FOUR CHARACERS ONLY - REMEMBER CINPBF IS MIXED CASE
-      CALL XCCUPC(CINPBF(1:LENSER),CUPA)
-      IF ( (CINPBF(1:LENSER) .NE. CARG(1:LENSER)) .AND.
-     1 (CUPA(1:4) .NE. CARGU(1:LENSER)) ) THEN
+        CALL XCCUPC(CINPBF(1:LENSER),CUPA)
+        IF ( (CINPBF(1:LENSER) .NE. CARG(1:LENSER)) .AND.
+     1             (CUPA(1:4) .NE. CARGU(1:LENSER)) ) THEN
 C----- NO MATCH SKIP REQUIRED NUMBER OF LINES
-        DO 5420 I = 2,NLINES
-        IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 5402
-5402    CONTINUE
-5420    CONTINUE
+          DO I = 2,NLINES
+            IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 5402
+5402        CONTINUE
+          END DO
 C----- GO BACK FOR NEXT DATA RECORD
-        GOTO 5400
-      ENDIF
+          GOTO 5400
+        END IF
 C----- MATCH
-      IF (LAM .NE. 1) THEN
+        IF (LAM .NE. 1) THEN
 C----- SKIP UNTIL REQUIRED LINE
-        DO 5430 I = 2,LAM
-        IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 5421
-5421    CONTINUE
-5430    CONTINUE
-      END IF
+          DO I = 2,LAM
+            IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 5421
+5421        CONTINUE
+          END DO
+        END IF
+
+        IF ( LFPCAL ) THEN   ! Ignore values from file (too far from required wavelength) - calc instead
+C - Find atomic number
+          iz = -1                                ! Set to -1 to get Z from element string
+          call abselement( iz, CARG(1:LENSER))  ! note - will fail for charged element names, e.g. LiP1 etc.
+c          if ( iz .gt. 0 ) then  
+c            call absatomic_data( iz, amu, rho ) !amu not needed for resonant bit
+c          end if
+c          if ( iz .le. 0 .or. amu .le. 0.0 ) then                  ! fail - print message for now and fall back on closest wavelength
+          if ( iz .le. 0 ) then                  ! fail - print message for now and fall back on closest wavelength
+            WRITE ( CMON, 9702) CARG(1:LENSER), WAVUSE
+            CALL XPRVDU(NCVDU, 2,0)
+9702        FORMAT
+     1 ('Cannot calculate resonant scattering contribution for ',
+     2   A4, /, 
+     3 'falling back on data for wavelength = ', F8.5)
+            IF (ISSPRT .EQ. 0) WRITE ( NCWU, '(A,A)') trim(CMON(1)),
+     1                                                trim(CMON(2))
+          else
+            call abscromer( iz, RENERG, fp, fpp)
+            write ( cinpbf, '(A4,2(1x,F14.8))') CARG(1:LENSER), FP, FPP
+            write(cmon,'(2A,2(a,F8.3))')
+     1      ' Computed dispersion correction for ', CARG(1:LENSER),
+     2      ' f ''= ', fp, ' f" = ', fpp
+            CALL XPRVDU(NCVDU, 1,0)
+          end if
+      ENDIF
+  
 C----- CONVERT WHOLE LINE TO UPPER CASE
-      COUTBF = ' '
-      CALL XCCUPC (CINPBF, COUTBF)
+        COUTBF = ' '
+        CALL XCCUPC (CINPBF, COUTBF)
 C----- SAVE ELEMENT NAME LINE
-      READ (COUTBF, 20) (ISTORE(JADDS+II), II=0,19)
-      JADDS = JADDS + 20
-      IF (LAM .LE. NLINES-2) THEN
+        READ (COUTBF, 20) (ISTORE(JADDS+II), II=0,19)
+        JADDS = JADDS + 20
+        IF (LAM .LE. NLINES-2) THEN
 C----- SKIP REMAINING LINES
-        DO 5440 I = LAM, NLINES-2
-        IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 5431
-5431    CONTINUE
-5440    CONTINUE
-      END IF
+          DO I = LAM, NLINES-2
+            IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 5431
+5431        CONTINUE
+          END DO
+        END IF
 C----- NOW GET THE COMMON PART OF THE DATA
-      IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 5441
-5441  CONTINUE
+        IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 5441
+5441    CONTINUE
 C----- CONVERT WHOLE LINE TO UPPER CASE
-      COUTBF = ' '
-      CALL XCCUPC (CINPBF, COUTBF)
-      READ(COUTBF,20) (ISTORE(JADDS+II), II= 0,19)
-      II = KSTALL(NADDS)
-      JADDS  = JADDS + 20
-C----- GO BACK FOR NEXT ELEMENT
-5500  CONTINUE
+        COUTBF = ' '
+        CALL XCCUPC (CINPBF, COUTBF)
+        READ(COUTBF,20) (ISTORE(JADDS+II), II= 0,19)
+        II = KSTALL(NADDS)
+        JADDS  = JADDS + 20
+      END DO   ! GO BACK FOR NEXT ELEMENT
 C
 C----- ALL FINISHED - RESET JADDS TO START OF LAST ITEM
       JADDS = JADDS - NADDS
@@ -3068,67 +3205,114 @@ C----- CURRENTLY ONLY TWO WAVELENGTS ARE KNOWN
         LAM = 2
       END IF
 C----- BEGIN PROCESSING FORMULA LIST
-      DO 6500 J = IADDF, JADDF, NADDF
+      DO J = IADDF, JADDF, NADDF
 C----- CONVERT BACK TO CHARACTER
-      WRITE(CTMP, 20) ISTORE(J)
-      READ(CTMP, 20) CARG
-      LSTART = KCCNEQ( CARG, 1, ' ')
-      IF (LSTART .EQ. -1) GOTO 9730
-      LSTART = MAX0( 1, LSTART)
-C     LEFT ADJUST STRING
-      CTMP = CARG(LSTART:4)
-      CARG = CTMP
-      LENSER = 4
-      CALL XCCUPC( CARG, CARGU)
-C     READ WHOLE FILE FOR EACH ELEMENT
-      REWIND NCEXTR
-6400  CONTINUE
+        WRITE(CTMP, 20) ISTORE(J)
+        READ(CTMP, 20) CARG
+        LSTART = KCCNEQ( CARG, 1, ' ')
+        IF (LSTART .EQ. -1) GOTO 9730
+        LSTART = MAX0( 1, LSTART)
+C LEFT ADJUST STRING
+        CTMP = CARG(LSTART:4)
+        CARG = CTMP
+        LENSER = 4
+        CALL XCCUPC( CARG, CARGU)
+C READ WHOLE FILE FOR EACH ELEMENT
+        REWIND NCEXTR
+6400    CONTINUE
 C----- GET THE COMMON PART OF THE DATA - CONTAINS ELEMENT NAME
-      IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 6401
-6401  CONTINUE
+        IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 6401
+6401    CONTINUE
 C----- CHECK FIRST FOUR CHARACERS ONLY - REMEMBER CINPBF IS MIXED CASE
-      IF ( (CINPBF(1:LENSER) .NE. CARG(1:LENSER)) .AND.
-     1 (CINPBF(1:LENSER) .NE. CARGU(1:LENSER)) ) THEN
+        IF ( (CINPBF(1:LENSER) .NE. CARG(1:LENSER)) .AND.
+     1       (CINPBF(1:LENSER) .NE. CARGU(1:LENSER)) ) THEN
 C----- NO MATCH SKIP REQUIRED NUMBER OF LINES
-        DO 6420 I = 2,NLINES
-        IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 6402
-6402    CONTINUE
-6420    CONTINUE
+          DO I = 2,NLINES
+            IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 6402
+6402        CONTINUE
+          END DO
 C----- GO BACK FOR NEXT DATA RECORD
-        GOTO 6400
-      ENDIF
+          GOTO 6400
+        ENDIF
 C----- MATCH
 C----- CONVERT WHOLE LINE TO UPPER CASE
-      COUTBF = ' '
-      CALL XCCUPC (CINPBF, COUTBF)
-      READ(COUTBF,20) (ISTORE(JADDS+II), II= 0,19)
-      JADDS  = JADDS + 20
+        COUTBF = ' '
+        CALL XCCUPC (CINPBF, COUTBF)
+        READ(COUTBF,20) (ISTORE(JADDS+II), II= 0,19)
+        JADDS  = JADDS + 20
 C----- LOOK FOR SECOND PART
-      IF (LAM .NE. 1) THEN
+        IF (LAM .NE. 1) THEN
 C----- SKIP UNTIL REQUIRED LINE
-        DO 6430 I = 1,LAM-1
-        IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 6431
-6431    CONTINUE
-6430    CONTINUE
-      END IF
-      IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 6435
+          DO I = 1,LAM-1
+            IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 6431
+6431        CONTINUE
+          END DO
+        END IF
+        IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 6435
+6435    CONTINUE
+
+        IF ( LFPCAL ) THEN   ! Ignore values from file (too far from required wavelength) - calc instead
+C - Find atomic number
+          iz = -1                                ! Set to -1 to get Z from element string
+          call abselement( iz, CARG(1:LENSER))  ! note - will fail for charged element names, e.g. LiP1 etc.
+          if ( iz .gt. 0 ) then  
+            call absatomic_data( iz, amu, rho ) !amu not needed for resonant bit
+          end if
+c          write(cmon,*)'iz, element, amu, rho = ', iz, carg(1:lenser), amu, rho
+c          CALL XPRVDU(NCVDU, 1,0)
+          if ( iz .le. 0 .or. amu .le. 0.0 ) then                ! fail - print message for now and fall back on closest wavelength
+            WRITE ( CMON, 9703) CARG(1:LENSER), WAVUSE
+            CALL XPRVDU(NCVDU, 2,0)
+9703        FORMAT
+     1 (' Can''t compute interaction cross section for ',
+     2   A4, /, 
+     3 ' falling back on data from closest wavelength = ',F8.5)
+            IF (ISSPRT .EQ. 0) WRITE ( NCWU, '(A,A)') trim(CMON(1)),
+     1                                                trim(CMON(2))
+          else
+            call abscromer( iz, RENERG, fp, fpp)
+            call absraycomp( iz, RENERG, ray, comp)
+            mu= (F_TO_MU* rho*( fpp+ ray+ comp))/( amu* RENERG)
+c            write(cmon,*)'amu, rho, Fp, Fpp, Mu (microns-1) = ', 
+c     1                    amu, rho, fp, fpp, mu
+c            CALL XPRVDU(NCVDU, 1,0)
+c            write(cmon,*)'Mu (cm-1) = ', mu * 10000.0
+c            CALL XPRVDU(NCVDU, 1,0)
+C Convert mu (in cm-1) to photon interaction cross section (sigma_i). Formula from I.T. is:
+C
+C mu = (1/Vc).sigma_i, where Vc is the volume (in A^3) occupied by one atom (assuming elemental material).
+C We can work this out from the atomic density and mass as follows:
+C
+C Vc = AW x 1E24 / (N.rho), AW = atomic weight, rho = density in gcm-3, N = Avogadro.
+C We can divide top and bottom by 10^24 to keep numbers reasonable.
+            Vc =  amu  / ( 0.6022 * rho )  
+            atomx = mu * 1000.0 * Vc ! NB. CRYSTALS uses mm-1 units (hence 1000 conversion here instead of 10000).
+            write(cmon,'(3A,F14.6)')
+     1      ' Computed photon interaction cross section for ',
+     2      CARG(1:LENSER), ' = ', atomx
+            CALL XPRVDU(NCVDU, 1,0)
+            write ( cinpbf, '(A,F14.6)') 'CONTINUE MU = ', ATOMX
+          end if
+        ENDIF
+
 C----- CONVERT WHOLE LINE TO UPPER CASE
-6435  CONTINUE
-      COUTBF = ' '
-      CALL XCCUPC (CINPBF, COUTBF)
+c        WRITE ( CMON, '(a)') cinpbf
+c        CALL XPRVDU(NCVDU, 1,0)
+        COUTBF = ' '
+        CALL XCCUPC (CINPBF, COUTBF)
 C----- SAVE ELEMENT NAME LINE
-      READ (COUTBF, 20) (ISTORE(JADDS+II), II=0,19)
+        READ (COUTBF, 20) (ISTORE(JADDS+II), II=0,19)
       JADDS = JADDS + 20
-      IF (LAM .LE. NLINES-2) THEN
+        IF (LAM .LE. NLINES-2) THEN
 C----- SKIP REMAINING LINES
-        DO 6440 I = LAM, NLINES-2
-        IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 6439
-6439    CONTINUE
-6440    CONTINUE
-      END IF
-      II = KSTALL(NADDS)
+          DO I = LAM, NLINES-2
+            IF (KRDLIN(NCEXTR, CINPBF, LENGTH)) 9720, 9710, 6439
+6439        CONTINUE
+          END DO
+        END IF
+        II = KSTALL(NADDS)
 C----- GO BACK FOR NEXT ELEMENT
-6500  CONTINUE
+      END DO
 C
 C RIC: Close the file!
       CALL XRDOPN (7, IDEV, CLINE(1:ISIZE), ISIZE)
@@ -3172,14 +3356,14 @@ C
 9710  CONTINUE
       CALL XERIOM (NCEXTR, IABS(I))
       WRITE ( CMON, 9711) CLINE(1:ISIZE), CARG
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU, '(A)') CMON(1)
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU, '(A)') trim(CMON(1))
       CALL XPRVDU(NCVDU, 1,0)
 9711  FORMAT (' End of file ', A, ' - item  "',A,'"  not found')
       GOTO 9900
 9720  CONTINUE
       CALL XERIOM (NCEXTR, IABS(I))
       WRITE ( CMON, 9721) CLINE(1:ISIZE), CARG
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU, '(A)') CMON(1)
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU, '(A)') trim(CMON(1))
       CALL XPRVDU(NCVDU, 1,0)
 9721  FORMAT (' Error in file ', A, ' - item  "',A,'"  not found')
       GOTO 9900
@@ -3243,4 +3427,4 @@ C
       CALL XOPMSG (IOPCMP, IOPCMI, 0)
       GO TO 9900
       END
-
+    

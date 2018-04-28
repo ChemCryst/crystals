@@ -11,7 +11,7 @@ END
 \LIST 5                                                                         
 OVERALL SCALE= 8.98675                                                          
 READ NATOM= 18                                                                  
-\SET MONITOR OFF
+\SET MIRROR OFF
 ATOM O 2    X= 0.49152 0.35147 0.16649      OCC= 1.00 0                         
 CONT U[11]= 0.06974  0.05204  0.06920  U[12]= -0.02368  U[13]= -0.02303         
 CONT U[23]= -0.02356                                                            
@@ -84,7 +84,7 @@ END
 sym p -1
 end
 # djw jun09
-\SET MONITOR ON
+\SET MIRROR ON
 \HYDROGEN                                                                       
 PHENYL C(6) C(7) C(2) UNTIL C(5)                                                
 AFTER C(7)                                                                      

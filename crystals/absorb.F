@@ -463,8 +463,8 @@ C----- PLATE
       WRITE ( CMON,5700) STORE(M6), STORE(M6+1), STORE(M6+2),
      2 A,B,C,D
       CALL XPRVDU(NCVDU, 2,0)
-      WRITE(NCAWU, '(A)') (CMON(II )(:),II=1,2)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') (CMON(II )(:),II=1,2)
+      WRITE(NCAWU, '(A)') (trim(CMON(II)),II=1,2)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') (trim(CMON(II)),II=1,2)
 5700  FORMAT(1X,3F4.0,' Excessive shape correction',/,
      1 ' Inclinations ',3F7.3,'  Correction ',F12.3)
 C----- SET MAXIMUM CORRECTION
@@ -537,11 +537,11 @@ C      STORE(L30IX+5) = STORE(LIX+1)
  6520  CONTINUE
       WRITE ( CMON,6599)BFACT(10),CFACT(10)
       CALL XPRVDU(NCVDU, 2,0)
-      WRITE(NCAWU, '(A)') (CMON(II )(:),II=1,2)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') (CMON(II )(:),II=1,2)
+      WRITE(NCAWU, '(A)') (trim(CMON(II)),II=1,2)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') (trim(CMON(II)),II=1,2)
       WRITE ( CMON,6600)
-      WRITE(NCAWU, '(A)') CMON(1 )(:)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+      WRITE(NCAWU, '(A)') trim(CMON(1))
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 C----- SET DIFFRACTOMETER TYPE TO ROLLETT
       ISTORE(L13DT)=7
 6599  FORMAT( ' Maximum correction to I is ',F7.2,
@@ -928,15 +928,15 @@ C--SWAP THE OUTPUT
 C -- TERMINATION MESSAGES
       WRITE ( CMON , 2600) ABSMIN, ABSMAX
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) CMON(1)(:)
-      WRITE ( NCAWU , '(A)' ) CMON(1)(:)
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) trim(CMON(1))
+      WRITE ( NCAWU , '(A)' ) trim(CMON(1))
 2600  FORMAT ( 1X , 'Minimum correction = ', F10.4,
      1 2X, 'Maximum correction = ', F10.4)
 C
       WRITE ( CMON , 2650) N6W, N
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) CMON(1)(:)
-      WRITE ( NCAWU , '(A)' ) CMON(1)(:)
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) trim(CMON(1))
+      WRITE ( NCAWU , '(A)' ) trim(CMON(1))
 2650  FORMAT ( 1X , I6 , ' reflections accepted' , 10X , I6 ,
      2 ' reflections rejected' )
 C

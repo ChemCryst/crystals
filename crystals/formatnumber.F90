@@ -225,6 +225,23 @@ double precision r
                 write(buffer, "(F0.1,'(',I0,')')") num, nint(esd*10.0d0)
             end if
         end if
+        ! add leading zero if necessary
+        i=index(buffer, '.')
+        if(i>1) then
+            if(buffer(i-1:i-1)==' ') then
+                buffer(i-1:i-1)='0'
+            else if(buffer(i-1:i-1)=='-') then
+                if(i>2) then
+                    if(buffer(i-2:i-2)==' ') then
+                        buffer(i-2:i-1)='-0'
+                    end if
+                else 
+                    buffer='-0'//trim(buffer(2:))
+                end if
+            end if
+        else if(i==1) then
+            buffer='0'//trim(buffer)
+        end if
     else
         ! number of zeros before any digit
         digit=0
@@ -247,10 +264,11 @@ double precision r
                 total=digit+arg_precision+3+nint(log10(abs(num)))
             end if
         else
-            total=digit+arg_precision+3+nint(log10(abs(num)))
+            total=digit+arg_precision+3+abs(nint(log10(abs(num))))
         end if
         write(formatstr, "(a,I0,a,I0,a)") '(F',total,'.',digit+arg_precision, ',"(",I0,")")'
         write(buffer, formatstr) num, nint(esd*10**(digit+arg_precision))
+        buffer=adjustl(buffer)
     end if
     if(arg_length/=-1) then
         if(len_trim(buffer)>arg_length) then

@@ -223,7 +223,7 @@ C
 
       WRITE ( CMON,1005) REASON(MSGST:MSGEND)
       CALL XPRVDU(NCEROR, 1, 0)
-      IF (ISSPRT .EQ. 0) WRITE (NCWU, '(a)' ) cmon(1)
+      IF (ISSPRT .EQ. 0) WRITE (NCWU, '(a)' ) trim(CMON(1))
 C
       RETURN
       END
@@ -585,7 +585,7 @@ cdjwapr08 - autoincrement file root
      1      ' The D/A file ( ', clcnam(1:namlen) ,
      2      ' )already exists'
           call xprvdu(nceror, 1, 0)
-          if (issprt .eq. 0) write (ncwu, '(A)' ) CMON(1)
+          if (issprt .eq. 0) write (ncwu, '(A)' ) trim(CMON(1))
 c
           ierr=.false.
           i =index(clcnam(1:namlen),'.')-1
@@ -595,7 +595,7 @@ c
               write(cmon,'(a)')
      1        ' Only 9 generations permitted'
               call xprvdu(nceror, 1, 0)
-              if (issprt .eq. 0) write (ncwu, '(A)' ) CMON(1)
+              if (issprt .eq. 0) write (ncwu, '(A)' ) trim(CMON(1))
               ierr=.true. !goto 9920
             else            
               if (j .le. 0) then ! no number in name, inserting one
@@ -619,7 +619,7 @@ cdjwjan09 - replace # with -
      1        ' The D/A file ( ', clcnam(1:ILEN) ,
      2        ' )already exists and cannot be overwritten'
             CALL XPRVDU(NCEROR, 1, 0)
-            IF (ISSPRT .EQ. 0) WRITE (NCWU, '(a)' ) cmon(1)
+            IF (ISSPRT .EQ. 0) WRITE (NCWU, '(a)' ) trim(CMON(1))
 C -- INTERNAL ERROR DETECTED
             CALL XOPMSG ( IOPCRY , IOPcmi , 0 )
             !GO TO 9900
@@ -635,7 +635,7 @@ C -- INTERNAL ERROR DETECTED
      1    ' A new D/A file ( ', clcnam(1:namlen) ,
      2    ' )will be created'
         CALL XPRVDU(NCEROR, 1, 0)
-        IF (ISSPRT .EQ. 0) WRITE (NCWU, '(a)' ) cmon(1)
+        IF (ISSPRT .EQ. 0) WRITE (NCWU, '(a)' ) trim(CMON(1))
       endif ! end check for non existent 'new' file
 c
 c
@@ -969,7 +969,7 @@ C
 C -- READS EACH RECORD FROM THE FILE UNTIL ONE READ FAILS. THIS IS
 C    ASSUMED TO BE THE FIRST NON-EXISTANT RECORD.
 C
-      PARAMETER (NMXREC = 100 000)
+      PARAMETER (NMXREC = 1 000 000)
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XERVAL.INC'
@@ -1277,11 +1277,31 @@ C
       END
 C
 CODE FOR XMOVE 
-      SUBROUTINE XMOVE ( ISRCE , IRESLT , N )
+      SUBROUTINE XMOVE ( SRCE , RESLT , N )
       implicit none
 C
-C -- MOVES REALS, INTEGERS OR HOLERITHS FROM 'ISRCE'
-C    TO 'IRESLT' WITHOUT TYPE CHECKING OR CONVERSION.
+C -- MOVES REALS FROM 'SRCE'
+C    TO 'RESLT' 
+C
+C    SRCE and RESLT are actually part of the same memory space 
+C    through equivalence so the use of a temporary variable is compulsory
+      integer, intent(in) :: N
+      real, dimension(N), intent(in) :: SRCE 
+      real, dimension(N), intent(out) :: RESLT
+      real, dimension(N) :: temp
+      integer i
+C
+      temp=SRCE
+      RESLT=temp
+      END
+
+C
+CODE FOR XMOVEI (modern replacement)
+      SUBROUTINE XMOVEI ( ISRCE , IRESLT , N )
+      implicit none
+C
+C -- MOVES INTEGERS FROM 'ISRCE'
+C    TO 'IRESLT' 
 C
 C    ISRCE and IRESLT are actually part of the same memory space 
 C    through equivalence so the use of a temporary variable is compulsory
@@ -1293,26 +1313,6 @@ C    through equivalence so the use of a temporary variable is compulsory
 C
       temp=ISRCE
       IRESLT=temp
-      END
-
-C
-CODE FOR XMOVEI (modern replacement)
-      SUBROUTINE XMOVEI ( ISRCE , IRESLT , N )
-      implicit none
-C
-C -- MOVES REALS, INTEGERS OR HOLERITHS FROM 'ISRCE'
-C    TO 'IRESLT' WITHOUT TYPE CHECKING OR CONVERSION.
-C    Code identical to XMOVE, different subroutine for historical reasons
-C
-C    ISRCE and IRESLT are actually part of the same memory space 
-C    through equivalence so the use of a temporary variable is compulsory
-      integer, intent(in) :: N
-      integer, dimension(N), intent(in) :: ISRCE 
-      integer, dimension(N), intent(out) :: IRESLT
-      integer, dimension(N) :: temp
-      integer i
-C
-      call XMOVE ( ISRCE , IRESLT , N )
       END
 C
 CODE FOR XPAUSE
@@ -1618,7 +1618,7 @@ cdjwjun07
       WRITE(CMON(1),'(3A)')'Script: ',
      1  CSCPNM(1:LENNM), ''''
       ENDIF
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) cmon(1)(:)
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) trim(CMON(1))
 cdjwjun07
 
 
@@ -1875,14 +1875,9 @@ C LOOK FOR AN ENVIRONMENT STRING IF NONE WAS ASSIGNED UP TO NOW
         LIST(LEVEL) = ' '
 #if defined (CRY_FORTDIGITAL)
       CALL GETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
-#elif defined (CRY_FORTINTEL)
-C The intel environment does not pick up changes made by _putenv in C++ code
-C Therefore use this interface to the C++ to get values.
-          CALL CGETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
 #else 
-          call GETVAR(NAME(LEVEL)(1:COLPOS(LEVEL)-1), LIST(LEVEL))
-c          call GET_ENVIRONMENT_VARIABLE(NAME(LEVEL)(1:COLPOS(LEVEL)-1),
-c    &      LIST(LEVEL))
+          call GET_ENVIRONMENT_VARIABLE(NAME(LEVEL)(1:COLPOS(LEVEL)-1),
+     &      LIST(LEVEL))
 #endif
 CNOV98 IF THERE IS NO ENVIRONMENT VARIABLE, CHECK THE PRESETS
         IF (LIST(LEVEL) .EQ. ' ') THEN
@@ -2278,10 +2273,18 @@ C      MODE > 0 CHECK IF ENOUGH ROOM FOR 'MODE' LINES, OTHERWISE PROCESS
 C
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XSSVAL.INC'
+C
+C----- THE MONITOR FILE BUFFERS
+C      CHARACTER*132           CIOBUF
+C      CHARACTER*2             CCRCHR, MACDUM
+C      COMMON /XIOBUF/         CIOBUF, CCRCHR, MACDUM
 C----- THE VDU AND ERROR MONITOR BUFFERS
+C      INTEGER LINBUF
 C      PARAMETER (LINBUF=24)
-C      CHARACTER *80 CCVDU(LINBUF), CCEROR(LINBUF), CMON(LINBUF)
+C      CHARACTER(len=4096) CCVDU(LINBUF), CCEROR(LINBUF), CMON(LINBUF)
 C      COMMON /XCIOBF/ CCVDU, CCEROR, CMON
+C      integer LVDU, MVDU, LEROR, MEROR
 C      COMMON /XIIOBF/ LVDU, MVDU, LEROR, MEROR
 C
       CHARACTER*1 CTEMP
@@ -2293,16 +2296,18 @@ C       SHOULD FORCE A PRINT?
 C
       IF (NCDEV .EQ. NCVDU) THEN
         IF((LMON + NLINES) .GT. LINBUF) THEN
+            IF (ISSMON.GE.0) CALL XPRTMON(LMON-1)
             CALL XPRTDV(NCDEV,CCVDU, LINBUF, LMON-1)
-            LMON=1
+           LMON=1
         ENDIF
-            DO 100 I = 1,NLINES
-                  CCVDU(LMON) = CMON(I)
-                  LMON=LMON + 1
-100         CONTINUE
+        DO 100 I = 1,NLINES
+               CCVDU(LMON) = CMON(I)
+               LMON=LMON + 1
+100     CONTINUE
         IF (MODE .EQ. 0) THEN
-            CALL XPRTDV(NCDEV, CCVDU, LINBUF, LMON-1)
-            LMON = 1
+               IF (ISSMON.GE.0) CALL XPRTMON(LMON-1)
+               CALL XPRTDV(NCDEV, CCVDU, LINBUF, LMON-1)
+               LMON = 1
         ENDIF
       ELSE IF(NCDEV .EQ. NCEROR) THEN
         IF((LEROR + NLINES) .GT. LINBUF) THEN
@@ -2322,41 +2327,39 @@ C
       ENDIF
       RETURN
       END
-
-#ifdef CRY_FORTINTEL
-CODE FOR CGETENV
-      SUBROUTINE CGETENV(CKEY, CVAL)
-      INTERFACE
-                SUBROUTINE GETCENV(CKEYA,CVALA)
-					!DEC$ ATTRIBUTES C :: getcenv
-                    CHARACTER*(*) CKEYA, CVALA
-                    !DEC$ ATTRIBUTES REFERENCE :: CKEYA
-                    !DEC$ ATTRIBUTES REFERENCE :: CVALA
-                END SUBROUTINE GETCENV
-      END INTERFACE
-      CHARACTER*(*) CKEY, CVAL
-      CHARACTER*262 CKA, CVA
-      CKA=CKEY(1:LEN(CKEY))//CHAR(0)
-      CVA=CVAL(1:LEN(CVAL))//CHAR(0)
-      CALL GETCENV(CKA,CVA)
-      CVAL = CVA
+C
+CODE FOR XPRTMON
+      SUBROUTINE XPRTMON(NLIN)
+C PRINT THE SCREEN OUTPUT TO THE MONITOR FILE
+C NOTE THAT XPRTDV CLEARS THE CCVDU BUFFER
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XSSVAL.INC'
+      IF (NLIN.LE.0) RETURN
+      DO I=1,NLIN
+       IF((CCVDU(I)(1:2).EQ.'^^').AND.(ISSMON.EQ.0))  THEN 
+            CONTINUE
+       ELSE 
+            WRITE(NCAWU,'(A)') TRIM(CCVDU(I))
+       ENDIF
+      ENDDO
+      RETURN
       END
-#endif
-
+C
 CODE FOR XPRTDV
       SUBROUTINE XPRTDV(NCDEV, CBUF, LINBUF, NLINES)
 C---- MACHINE SPECIFIC WRITE TO THE SCREEN
-#ifdef CRY_GUI
-C{
-      use fwrappergui_mod, only: CALLCCODE
-C}
-#endif
+c#ifdef CRY_GUI
+cC{
+c      use fwrappergui_mod, only: CALLCCODE
+cC}
+c#endif
       INCLUDE 'XDRIVE.INC'
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'CAMBLK.INC'
       INCLUDE 'OUTCOL.INC'
       CHARACTER*(*) CBUF(LINBUF)
-      CHARACTER*262 CEXTRA
+      CHARACTER(len=len(cbuf(1))+6) CEXTRA
       CHARACTER*1 CFIRST, CLAST
       CHARACTER*10 CFRMAT
       DATA CFRMAT /'(1X,A)'/
@@ -2385,8 +2388,8 @@ c         if defined(__GIL__)  || defined(__MAC__) ||defined (__INW__)
 #ifdef CRY_GUI
                N = MIN(N,256)         ! SET N TO LAST NON-BLANK
                CBUF(J)(N+1:N+1) = CHAR(0) ! Make into a c string.
-			   N = N + 1
-c			   WRITE(123,*)'INW version', N
+               N = N + 1
+c              WRITE(123,*)'INW version', N
 #endif
 
 #ifdef CRY_GUI
@@ -2396,7 +2399,7 @@ c			   WRITE(123,*)'INW version', N
           ELSE 
              WRITE( CEXTRA,'(2(A,I2.2),A)')
      1       '{', IOFORE, ',', IOBACK, CBUF(J)
-	         N = N + 6
+             N = N + 6
           ENDIF 
        ELSE 
           WRITE( CEXTRA,'(A)') CBUF(J) !Line not limited (^^ command)
@@ -2409,7 +2412,7 @@ c       WRITE(123,'(A,I5)') 'N: ',N
 
        IF (CLAST .EQ. CHAR(13)) THEN !--- NO CR OR LF
 #ifdef CRY_GUI
-            CALL CALLCCODE ( CEXTRA(1:N))
+            CALL fcallc ( CEXTRA(1:N))
 #else
             WRITE(NCDEV ,CFRMAT) CBUF(J)(1:N)
 #endif
@@ -2422,21 +2425,21 @@ c       WRITE(123,'(A,I5)') 'N: ',N
         ELSEIF (CLAST .EQ. '$') THEN !--- LEAVE CURSOR AT CURRENT POSITION
                 CFRMAT = '(A,A1)'
 #ifdef CRY_GUI
-            CALL CALLCCODE ( CEXTRA(1:N) )
+            CALL fcallc ( CEXTRA(1:N) )
 #endif
                ELSEIF ( CFIRST .EQ. '0' ) THEN
                     CFRMAT = '(/,A)'
 #ifdef CRY_NOGUI
             WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
 #else 
-            CALL CALLCCODE ( CEXTRA(1:N))
+            CALL fcallc ( CEXTRA(1:N))
 #endif
                ELSE
                     CFRMAT = '(A)'
 #ifdef CRY_NOGUI
             WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
 #else
-            CALL CALLCCODE ( CEXTRA(1:N))
+            CALL fcallc ( CEXTRA(1:N))
 #endif
                ENDIF
 C
@@ -2451,12 +2454,19 @@ C
 #ifdef CRY_GUI
 CODE FOR GDETCH
       SUBROUTINE GDETCH(CLINE)
-      use fwrappergui_mod, only: GUEXEC
+c      use fwrappergui_mod, only: GUEXEC
       CHARACTER*(*) CLINE
       CHARACTER*262 CEXTRA
+      INTEGER RET, ISTAT
+      integer, external :: FWEXEC
+      
       CEXTRA = ' '
       WRITE(CEXTRA,'(A)')CLINE
-      CALL GUEXEC ( CEXTRA//CHAR(0) )
+      RET = FWEXEC ( CEXTRA//CHAR(0) )
+
+C     Move return value into the script value EXITSTATUS
+      ISTAT = KSCTRN ( 1 , "EXITSTATUS" , RET, 1 )
+      
       RETURN
       END
 #endif
@@ -2465,8 +2475,11 @@ CODE FOR GDETCH
 
 CODE FOR GETCWD
       SUBROUTINE GETCWD ( CWORK )
-#if defined(CRY_FORTDIGITAL)  || defined (CRY_FORTINTEL)
-      USE DFLIB
+#ifdef CRY_FORTDIGITAL 
+      USE DFPORT
+#endif
+#ifdef CRY_FORTINTEL 
+      USE IFPORT
 #endif
       CHARACTER*(*) CWORK
 
@@ -2527,4 +2540,3 @@ C e.g. "Fri Sep 07 04:37:23 2001"
 
       RETURN
       END
-

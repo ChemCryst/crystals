@@ -4,6 +4,7 @@
 %   VARIABLE INTEGER IRUN
 %  VARIABLE LOGICAL EDITOR_OK
 %  VARIABLE CHARACTER EDITOR_FILE
+%  VARIABLE INTEGER EXITSTATUS                                                    
 %   IF EXISTS 6 .LT. 1 THEN
 {E            You do not have any reflections stored.
 {E            It is impossible to proceed without data.
@@ -144,17 +145,14 @@
 %      IF ( IRUN .EQ. 2 ) THEN
 %           FINISH
 %      END IF
-%      IF ( FILEEXISTS ( 'sir9x.cry' ) ) THEN
-%         EVALUATE T = FILEDELETE ( 'sir9x.cry' )
+%      IF ( FILEEXISTS ( 'sir9X.cry' ) ) THEN
+%         EVALUATE T = FILEDELETE ( 'sir9X.cry' )
 %      END IF
-#ifdef CRY_OSWIN32
-%      COPY '#SPAWN + "CRYSDIR:SIR92.EXE" sir92.ini sir92.lis'
-#else
-%      COPY '#SPAWN + "CRYSDIR:sir92" SIR92.INI sir92.lis'                                                      
-#endif
+%      COPY '#SPAWN + "CRYSDIR:sir92.exe" sir92.ini sir92.lis'
+%      TRANSFER 'EXIT CODE: ' // CHARACTER ( EXITSTATUS ) TO DISPLAY
 %   END BLOCK
 %%
-%   IF ( .NOT. FILEEXISTS ( 'sir9x.cry' ) ) THEN
+%   IF ( .NOT. FILEEXISTS ( 'sir9X.cry' ) ) THEN
 
 {E Sir92 did not save the structure. Make sure you click 'Quit' to exit.
 

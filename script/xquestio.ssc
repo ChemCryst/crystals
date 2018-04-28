@@ -1,4 +1,6 @@
 %SCRIPT XQUESTIO
+%% You might prefer to use XHELPQUEST, which will display the contents of
+%% a text file offering some helpful information
 %% The variabled QLINE1, QLINE2 BUTTXX and BUTTOK are set in the calling script
 % VARIABLE CHARACTER QLINE1 QLINE2 QTITLE BUTTOK BUTTXX
 % VARIABLE LOGICAL ANSWER

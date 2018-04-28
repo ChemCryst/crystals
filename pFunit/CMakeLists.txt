@@ -8,6 +8,7 @@ endif()
 
 project(pfunit-crystals)
 
+set(SF_MODPATH "${CMAKE_SOURCE_DIR}/cmakemodules/")
 set(CMAKE_Fortran_FLAGS "")
 set(CMAKE_C_FLAGS "")
 set(CMAKE_CXX_FLAGS "")

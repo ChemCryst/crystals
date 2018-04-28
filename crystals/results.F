@@ -1,4 +1,4 @@
-C $Log: results.F,v $ 
+C $Log: results.F,v $
 C Revision 1.203  2013/05/25 09:28:06  rich
 C Internal buffer read was one character too long.
 C
@@ -1633,6 +1633,15 @@ C
       LOGICAL LHFIXD(3)
 C
       EQUIVALENCE (IALATM,ALLATM)
+      
+      interface
+        subroutine snum(coor,esd,nd,np,j,ivet)
+          real coor, esd
+          integer nd, np, j
+          integer, dimension(:) :: ivet
+        end subroutine
+      end interface
+      
       SAVE IALATM
 #if !defined(_HOL_) 
       DATA IALATM / '    ' /
@@ -1794,13 +1803,20 @@ C--SET UP THE FLAGS FOR THE PASS OVER THE COORDS.
         MPD=3
         IP=3
 C--LOOP OVER THE COORDS.
+C      write(123,'(a,b34)')'xyz', istore(m5+15)
         DO L=1,3
 C-DJW-APR-04
 C Check if riding H ESD to be omitted                      
-        IF ( ( AND(ISTORE(M5+15),KBREFB(3)).GT.0 ) .AND.                 
-     1  ((ISTORE(M5).EQ.KHYD).OR.(ISTORE(M5).EQ.KDET)) )THEN              
+          IF ( ( AND(ISTORE(M5+15),KBREFB(3)).GT.0 ) .AND.                 
+     1     ((ISTORE(M5).EQ.KHYD).OR.(ISTORE(M5).EQ.KDET)) )THEN              
           IF (IPESD .eq. 2) BPD(MPD) = 0.0                                               
-        ENDIF
+          ENDIF
+c Sep2017 
+C If an atom on a special position is mentioned in the users LIST 12
+C it cannot be automatically fixed by a constraint, so is restrained.
+c This lead to it being output with a very small esd rather than nothing.
+c bits 8-10 set to 1 for special positions
+          IF(BTEST(ISTORE(M5+15),7+L)) BPD(MPD)=0.
 C
           LOJ = J+6
           J=J+NXF
@@ -2095,6 +2111,15 @@ C
       INCLUDE 'QSTORE.INC'
 C
       EQUIVALENCE (IALATM,ALLATM)
+
+      interface
+        subroutine snum(coor,esd,nd,np,j,ivet)
+          real coor, esd
+          integer nd, np, j
+          integer, dimension(:) :: ivet
+        end subroutine
+      end interface
+      
       SAVE IALATM
 #if !defined(_HOL_) 
       DATA IALATM / '    ' /
@@ -2213,7 +2238,15 @@ C--LOOP OVER THE PARAMETERS
       else if (iflag .eq. 4) then
             ll = 4
       endif
+c      write(123,'(a,b34)')'Uij', istore(m5+15)
       DO 1750 L=1,ll
+c Sep2017 
+C If an atom on a special position is mentioned in the users LIST 12
+C it cannot be automatically fixed by a constraint, so is restrained.
+c This lead to it being output with a very small esd rather than nothing.
+c bits 25-30 set to 1 for Uij special positions
+          IF(BTEST(ISTORE(M5+15),24+L)) BPD(MPD)=0.
+c
       LOJ = J + 6
       J=J+NUF
       CALL SNUM(STORE(MP),BPD(MPD),NUD,NOP,J,LINEA)
@@ -2440,6 +2473,14 @@ C
       INCLUDE 'XSSCHR.INC'
 C
       INCLUDE 'QSTORE.INC'
+      
+      interface
+        subroutine snum(coor,esd,nd,np,j,ivet)
+          real coor, esd
+          integer nd, np, j
+          integer, dimension(:) :: ivet
+        end subroutine
+      end interface      
 C
       DATA COVER / 'Scale  ', 'Du(iso) ', 'Ou(iso) ',
      2  'Polarity', 'Flack  ', 'Extinction'/
@@ -2593,6 +2634,13 @@ C
 C
       INCLUDE 'QSTORE.INC'
 C
+      interface
+        subroutine snum(coor,esd,nd,np,j,ivet)
+          real coor, esd
+          integer nd, np, j
+          integer, dimension(:) :: ivet
+        end subroutine
+      end interface
 C
       IFUNC = IFUNC
 
@@ -3250,7 +3298,7 @@ C
       CHARACTER*32 CFORM
       CHARACTER*80 CTEMP
 C
-      DIMENSION IVET(118)
+      DIMENSION IVET(:)
 C
       INCLUDE 'XCHARS.INC'
       INCLUDE 'XCONST.INC'
@@ -3258,6 +3306,10 @@ C
       EQUIVALENCE (JB,CB)
       DATA CB/'    '/
 C
+      if(j>size(ivet)) then
+        j=size(ivet)
+      end if
+
 C----- WE DONT KNOW HOW BIG IVET IS, BUT WE CAN CLEAR OUT THE LAST
 C      /ND/ LOCATIONS
       MODND = ABS(ND)
@@ -3413,7 +3465,7 @@ C
 C--
 C
 C
-      DIMENSION IVET(118)
+      DIMENSION IVET(*)
 C
       INCLUDE 'XCHARS.INC'
 C
@@ -3872,6 +3924,13 @@ C
 C
       INCLUDE 'QSTORE.INC'
 C
+      interface
+        subroutine snum(coor,esd,nd,np,j,ivet)
+          real coor, esd
+          integer nd, np, j
+          integer, dimension(:) :: ivet
+        end subroutine
+      end interface
 C
 #ifdef _HOL_
       DATA KHYD /4HH   /
@@ -4081,6 +4140,15 @@ C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'UFILE.INC'
       INCLUDE 'XSSCHR.INC'
+      
+      interface
+        subroutine snum(coor,esd,nd,np,j,ivet)
+          real coor, esd
+          integer nd, np, j
+          integer, dimension(:) :: ivet
+        end subroutine
+      end interface
+      
       DATA CKEY /'DAT'/
 
       CALL XRSL  ! CLEAR THE STORE
@@ -4235,6 +4303,13 @@ C
 c
       INCLUDE 'QLST30.INC'
 
+      interface
+        subroutine snum(coor,esd,nd,np,j,ivet)
+          real coor, esd
+          integer nd, np, j
+          integer, dimension(:) :: ivet
+        end subroutine
+      end interface
 C
       DATA CGEOM /'_bond', '_angle', '_torsion', '_hbond' /
       DATA CTEXT /'_geom', '_distance'/
@@ -4470,7 +4545,11 @@ cdjwoct05. More fiddles to keep Bill happy
           CALL SNUM ( TERM, 0., -1, 0, 10, IVEC )
         endif
       else
+       if ( kkey .eq. 2 ) then !angle
+        CALL SNUM ( TERM, ESD, -2, 0, 10, IVEC )
+       else !not angle
         CALL SNUM ( TERM, ESD, -3, 0, 10, IVEC )
+       endif
       endif
       WRITE( CBUF, '(20A1)') (IVEC(I), I=1, 20)
       CALL XCRAS ( CBUF, N)
@@ -4537,11 +4616,13 @@ CODE FOR XCIFX
 CDJWMAR99[      CIF OUTPUT DIRECTED TO NCFPU1, PERMITTING TEXT OUTPUT TO
 C               BE SENT TO THE PUNCH UNIT AS A TABLE
 C
+      use lists2_mod, only: xldlst
+
       PARAMETER (NCOL=2,NROW=49)
       PARAMETER (IDATA=15,IREF=23)
       CHARACTER*35 CPAGE(NROW,NCOL)
       CHARACTER*76 CREFMK
-      PARAMETER (IDIFMX=11)
+      PARAMETER (IDIFMX=14)
       PARAMETER (IREDMX=7)
       DIMENSION IREFCD(3,IDIFMX)
       DIMENSION IREDCD(IREDMX)
@@ -4555,7 +4636,7 @@ C Things needed by SGROUP call
       DIMENSION SPG(10) 
       CHARACTER *16 SGLINE
       CHARACTER *10 SGRP
-	  
+      
 C
 CDJWMAR99 MANY CHANGES TO BRING UP TO DATE WITH NEW CIFDIC
       PARAMETER (NTERM=4)
@@ -4567,6 +4648,7 @@ CDJWMAR99 MANY CHANGES TO BRING UP TO DATE WITH NEW CIFDIC
       CHARACTER CCELL(3)*1,CANG(3)*5,CSIZE(3)*3,CINDEX(3)*2
       CHARACTER CBUF*80,CTEMP*80,CLINE*80, CHLINE*380
       character *80 ctext(4)
+      character *80 cflack
 C
       CHARACTER*4 CTYPE
       CHARACTER*15 CINSTR,CDIR,CPARAM,CVALUE,CDEF
@@ -4584,6 +4666,7 @@ C
       INCLUDE 'TSSCHR.INC'
       INCLUDE 'ICOM30.INC'
       INCLUDE 'ICOM31.INC'
+      INCLUDE 'ICOM39.INC'
       INCLUDE 'ISTORE.INC'
       INCLUDE 'STORE.INC'
       INCLUDE 'XCOMPD.INC'
@@ -4608,13 +4691,23 @@ C
       INCLUDE 'XLST29.INC'
       INCLUDE 'XLST30.INC'
       INCLUDE 'XLST31.INC'
+      INCLUDE 'XLST39.INC'
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XFLAGS.INC'
 C
 C
       INCLUDE 'QLST30.INC'
       INCLUDE 'QLST31.INC'
+      INCLUDE 'QLST39.INC'
       INCLUDE 'QSTORE.INC'
+
+      interface
+        subroutine snum(coor,esd,nd,np,j,ivet)
+          real coor, esd
+          integer nd, np, j
+          integer, dimension(:) :: ivet
+        end subroutine
+      end interface
 
       V(CA,CB,CC,AL,BE,GA)=CA*CB*CC * SQRT(1-COS(AL)**2-COS(BE)**2-
      1   COS(GA)**2 + 2 * COS(AL) * COS(BE) * COS(GA))
@@ -4622,12 +4715,12 @@ C
 c
 C UNKNOWN CAD4 MACH3 KAPPACCD DIP SMART IPDS XCALIBUR APEX2 GEMINI
 C    1     2       3     4    5     6    7   8        9      10
-c SUPERNOVA
-C   11
+c SUPERNOVA SYNCHROTRON SPALLATION REACTOR
+C   11       12           13        14
 C------ REFERENCE CODES FOR THE DIFFRACTOMETERS
       DATA IREFCD /4,5,6, 13,24,13, 13,24,13, 25,17,17, 15,17,17,
      1 26,27,27, 20,19,20,  37,36,36, 45,45,45, 47,36,36,
-     2 48,36,36  /
+     2 48,36,36,  4,5,6,  4,5,6,  4,5,6    /
 C UNKNOWN RC93 DENZO SHELX XRED CRYSALIS SAINT
 C   1       2    3     4     5      6      7
 C------ REFERENCE CODES FOR DATA REDUCTION
@@ -4639,9 +4732,17 @@ C------ REFERENCE CODES FOR ABSORPTION METHOD
       DATA IABSCD /7,21,16,17,31,32,33,39,40,40,39,7,7,16,45,36/
 
 C
+#ifdef _HOL_
+      DATA ICFLAC/4HFLAC/
+      DATA ICHOOFT/4HHOOF/
+#else
+      DATA ICFLAC/'FLAC'/
+      DATA ICHOOFT/'HOOF'/
+#endif
+c
       DATA UPPER/'ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
       DATA LOWER/'abcdefghijklmnopqrstuvwxyz'/
-C                  1 2 3 4 5 6  7  8  9  10 11 12
+C                  1 2 3 4 5 6  7  8  9  10 11 12 
       DATA LSTNUM/1,2,3,4,5,13,23,29,30,31,6,28/
       DATA CCELL/'a','b','c'/
       DATA CANG/'alpha','beta','gamma'/
@@ -4661,6 +4762,7 @@ CDJWMAR99      DATA JDEV /'H','K','L','I'/
      1            ' 62',' 63',' 64',' 65'/
  
 1     FORMAT (A)
+8002  FORMAT ('<TR><TD>',A,'</TD><TD>',A,'</TD><TD>',A,'</TD></TR>')
 2     FORMAT ('<TR><TD>',A,'</TD><TD>',A,'</TD></TR>')
 9002  FORMAT ('<TD>',A,'</TD><TD>',A,'</TD>')
 3     FORMAT ('<TR><TD>',A,'</TD><TD>',F5.2,'</TD></TR>')
@@ -4696,8 +4798,6 @@ CRICJUN02 - Last minute SFLS calc to get threshold cutoffs into 30.
       CALL XRSL
       CALL XCSAE
 
-C----- SET REFLECTION LISTING TYPE
-      ITYP06 = 1
 
       IF (KEXIST(33) .LE. 0) THEN
          IF (ISSPRT .EQ. 0) WRITE(NCWU, 1151)
@@ -4706,6 +4806,8 @@ C----- SET REFLECTION LISTING TYPE
 1151     FORMAT(' Calculation of R values cannot proceed ',
      2          'as no refinement has been carried out yet.')
       ELSE
+C----- SET REFLECTION LISTING TYPE (LIST 6)
+         ITYP06 = 1
          CALL XSFLSB(-1,ITYP06)
       ENDIF
 
@@ -4741,8 +4843,9 @@ C----- OUTPUT A TITLE, FIRST 44 CHARACTERS ONLY
         K=MIN(44,NCHAR-1)
         WRITE (NCFPU1,'(/,''_oxford_structure_analysis_title  '''''',
      1   A,'''''''')') CLINE(1:K)
-        WRITE (NCFPU1,'(''_chemical_name_systematic '',T35,''?'')')
-        WRITE (NCFPU1,'(''_chemical_melting_point '',T35,''?'',/)')
+        WRITE (NCFPU1,'(''_chemical_name_systematic '',T35,''.'')')
+        WRITE (NCFPU1,1850)
+     1  '_chemical_melting_point ',' ','''not measured'''
       ELSE IF ( IPUNCH .EQ. 1 ) THEN
         WRITE (CLINE,'(15A4,3(A2,A))') (KTITL(I),I=1,15),CBUF(7:8),'-',
      1  CBUF(4:5),'-',CBUF(1:2)
@@ -4809,12 +4912,12 @@ C----- CLOSE THE FILE
      1    CMON(1)(:nctrim(cmon(1)))
           IERFLG=0
         END IF
+        CALL XPCIF ('#end of refcif ')
       END IF
-      CALL XPCIF ('#end of refcif ')
 
 C################################################################
  
-C                      1 2 3 4 5 6  7  8  9  10 11 12
+C                      1 2 3 4 5 6  7  8  9  10 11 12 
 C FYI:    DATA LSTNUM /1,2,3,4,5,13,23,29,30,31, 6,28 /
 
       DO MLST=1,NLST
@@ -4865,16 +4968,63 @@ C----- LOADED BY XFAL06          CALL XFAL28
          ELSE IF (LSTYPE.EQ.31) THEN
             CALL XLDLST (31,ICOM31,IDIM31,0)
          END IF
- 
          IF (IERFLG.GE.0) JLOAD(MLST)=1
       END DO
-c we dont need LIST 25, but it it exists, we chould use it
-        if (kexist(25) .ge. 1)  then
-         if (khuntr (25,0, iaddl,iaddr,iaddd, -1) . lt. 0) call xfal25
-        else
-         n25=0
-        endif
+c call this here since it updates list 30. THLIM only loads not-loaded lists
+          IGLS = 0
+          CALL XTHLIM (THMIN, THMAX,THMCMP, THBEST,THBCMP,
+     1    INRIC,IULN,IGLS)
+c we dont need LIST 25, but it it exists, we should use it
+        IF (KEXIST(25) .GE. 1)  THEN
+         IF (KHUNTR (25,0, IADDL,IADDR,IADDD, -1) . LT. 0) CALL XFAL25
+        ELSE
+         N25=0
+        ENDIF
+c LIST 39 may/may not exist. Optional loading:
+c look fo the FLACK records
+       iflack0=0                  !indicate there are no records 0 or 1
+       iflack1=0
+       ihooft=0
+       n39f=0
+       if(ic.eq.0) then
+         if (kexist(39) .ge. 1)  then
+          if (khuntr (39,0, iaddl,iaddr,iaddd, -1) . lt. 0) call xfal39
+          endif
+         if (n39f.gt.0) then
+          ndjw =  l39f+md39f*(n39f-1)
+          m39f = l39f
+          do i=1,n39f                                !Find record FLACK(0)
+           iflack0=m39f
+           if ((istore(m39f) .eq. icflac) .and. 
+     1       (nint(store(m39f+1)) .eq. 0)) exit
+            m39f=m39f+md39f
+          enddo
+          m39f = l39f
+          do i=1,n39f                                !Find record FLACK(1)
+           iflack1=m39f
+           if ((istore(m39f) .eq. icflac) .and. 
+     1       (nint(store(m39f+1)) .eq. 1)) exit
+            m39f=m39f+md39f
+          enddo
 c
+          m39f = l39f
+          do i=1,n39f                                !Find record HOOFT(0)
+           ihooft=m39f
+           if ((istore(m39f) .eq. ichooft) .and. 
+     1       (nint(store(m39f+1)) .eq. 0)) exit
+            m39f=m39f+md39f
+          enddo
+         endif 
+c
+         if (iflack0*iflack1.le.0) then                        !we have no FLACK records.
+           write(cmon,'(a)')
+     1   'You should run the menu Analyse/Absolute config'
+           call outcol(3)
+           call xprvdu(ncvdu,1,0)
+           call outcol(1)
+           call xpause(2000)
+         endif
+        endif
 C################################################################
 
       IF ( IPUNCH .GE. 0 ) THEN
@@ -4944,7 +5094,6 @@ c     call xrefpr (istore(lrefs),nrefs,mdrefs)
           CALL XPRVDU (NCVDU,1,0)
         END IF
       END IF
-
 
 C
 C################################################################
@@ -5078,7 +5227,7 @@ c     2        + (VOL-V(CIFA,CIFB,CIFC+ESD(3),CIFAL,CIFBE,CIFGA))**2
 c     3        + (VOL-V(CIFA,CIFB,CIFC,CIFAL+ESD(4)*DTR,CIFBE,CIFGA))**2
 c     4        + (VOL-V(CIFA,CIFB,CIFC,CIFAL,CIFBE+ESD(5)*DTR,CIFGA))**2
 c     5        + (VOL-V(CIFA,CIFB,CIFC,CIFAL,CIFBE,CIFGA+ESD(6)*DTR))**2)
-	 
+     
          IF ((LAUENO.EQ.4).OR.(LAUENO.EQ.5)) THEN       ! Tetragonal - special case a and b errors are 100% correlated
 
               CU=SQRT( 
@@ -5089,7 +5238,7 @@ c     5        + (VOL-V(CIFA,CIFB,CIFC,CIFAL,CIFBE,CIFGA+ESD(6)*DTR))**2)
 c         ELSE IF ((LAUENO.EQ.6).OR.(LAUENO.EQ.7)) THEN   ! rhombohedral - not used by default in CRYSTALS
 c TODO
          ELSE IF ((LAUENO.EQ. 8).OR.(LAUENO.EQ.10)
-     1	      .OR.(LAUENO.EQ.11).OR.(LAUENO.EQ.12)) THEN   ! trigonal or hexagonal (w/ hex axes)
+     1        .OR.(LAUENO.EQ.11).OR.(LAUENO.EQ.12)) THEN   ! trigonal or hexagonal (w/ hex axes)
 
             CU=SQRT( 
      1     (VOL**2) * 0.8660254 *
@@ -5103,8 +5252,8 @@ c TODO
      1    (3*(ESD(1)/CIFA)**2 + 3*(ESD(2)/CIFB)**2 + 3*(ESD(3)/CIFC)**2)
      7             )
 
-      	 ELSE                                           ! Triclinic, monoclinic, orthorhombox
-    	    CU=SQRT( 
+         ELSE                                           ! Triclinic, monoclinic, orthorhombox
+            CU=SQRT( 
      1     (VOL**2) * 
      1       ((ESD(1)/CIFA)**2 +(ESD(2)/CIFB)**2 +(ESD(3)/CIFC)**2)
      2  +  ( (CIFA*CIFB*CIFC)**4 / (VOL**2) ) * (
@@ -5114,7 +5263,7 @@ c TODO
      6                             ) 
      7         )
          END IF
-	   
+       
          CALL XFILL (IB,IVEC,16)
          CALL SNUM (VOL,CU,-2,0,12,IVEC)
          WRITE (CBUF,'(16A1)') (IVEC(J),J=1,16)
@@ -5205,16 +5354,14 @@ C DISPLAY EACH SYMMETRY OPERATOR
          END IF
 C
          IF ( IPUNCH .EQ. 0 ) THEN
-
+C          SET ABSOLUTE STRUCTURE FLAG
            IF ( NINT ( STORE(L2C) ) .LE. 0 ) THEN
-             IFLACK = 0
+             JAS = 0
            ELSE
-             IFLACK = 1
+             JAS = 1
            END IF
          END IF
       END IF
-
-
 C 
 C----- LIST 3
 C 
@@ -5425,7 +5572,8 @@ Cdjw NOV97
          END IF
          SUM=STORE(I+1) / ZPRIME
          NSUM=NINT(SUM)
-         IF (AMOD(SUM,1.0).LE.ZERO) THEN
+         IF (AMOD(SUM,1.0).LE. 0.005) THEN  !change ZERO to 0.005
+c                                           !to avoid float due to rounding
             WRITE (CTEMP,1600) NSUM
 1600        FORMAT (I8)
          ELSE
@@ -5455,7 +5603,7 @@ C
      1  CLINE(2:MAX(2,J-1)),''''
         WRITE (NCFPU1,'(A,T35,A,A,A)') '_chemical_formula_moiety','''',
      1  CLINE(2:MAX(2,J-1)),''''
-        WRITE (NCFPU1,'(''_chemical_compound_source'',T42,''?'')')
+        WRITE (NCFPU1,'(''_chemical_compound_source'',T42,''.'')')
       ELSE IF ( IPUNCH .EQ. 1 ) THEN
         K=MIN(27,J)
         WRITE (CPAGE(2,1)(:),'(A,A)') 'Formula ',CLINE(1:K)
@@ -5476,8 +5624,8 @@ c--   Machine type
 c
 C     UNKNOWN CAD4 MACH3 KAPPACCD DIP SMART IPDS XCALIBUR APEX2 GEMINI
 C        1     2       3     4    5     6    7      8      9      10
-c     SUPERNOVA
-C       11
+c     SUPERNOVA SYNCHROTRON SPALLATION REACTOR
+C       11       12           13        14
 C----- PARAMETER 13 ON DIRECTIVE 2 IS A CHATACTER STRING: DIFFRACTOMETER MAKE
         IPARAM=13
         IDIR=2
@@ -5607,7 +5755,8 @@ c
             WRITE (CLINE,'(A,''density_meas'',T35,F6.3)') CBUF(1:15),
      1       STORE(L30GE)
           ELSE
-            WRITE (CLINE,1850) CBUF(1:15),'density_meas','?'
+            WRITE (CLINE,1850) CBUF(1:15),'density_meas',
+     1      '''not measured'''
             CALL XPCIF (CLINE)
             WRITE (CLINE,1850) CBUF(1:15),'density_method',
      1      '''not measured'''
@@ -5893,6 +6042,15 @@ C- GEMINI
            ELSE IF (IDIFNO .EQ. 11) THEN
 C- SUPERNOVA
              CTEMP='Oxford Diffraction SuperNova'
+           ELSE IF (IDIFNO .EQ. 12) THEN
+C- SYNCHROTRON
+             CTEMP='Synchrotron'
+           ELSE IF (IDIFNO .EQ. 13) THEN
+C- SPALLATION
+             CTEMP='Neutron spallation source'
+           ELSE IF (IDIFNO .EQ. 14) THEN
+C- REACTOR
+             CTEMP='Neutron reactor source'
 C- Unknown
            ELSE IF (IDIFNO .GT. IDIFMX) THEN
              WRITE(CMON,'(A)') 'Unknown Diffractometer type'
@@ -5917,36 +6075,48 @@ C
      1      T35,'''''''',A,'''''''')') CTEMP(1:NCHAR-1)
            CALL XPCIF (CLINE)
 C
-           WRITE (CLINE,'(A)') 
+           IF (IDIFNO .LE. 10) THEN   !Graphite monochromator
+             WRITE (CLINE,'(A)') 
      1     '_diffrn_radiation_monochromator      ''graphite'''
-           CALL XPCIF (CLINE)
+             CALL XPCIF (CLINE)
+           ELSE IF (IDIFNO .LE. 12) THEN ! Focussing mirrors
+             WRITE (CLINE,'(A)') 
+     1     '_diffrn_radiation_monochromator      ''focussing mirrors'''
+             CALL XPCIF (CLINE)
+           ENDIF  ! NB no mono specified for neutron sources
         END IF
       END IF
 C--- END OF LIST 30
 C
 C    LIST 13
       IF (JLOAD(6).GE.1) THEN
-         CBUF(1:8)='''  ?   '''
-         IF (NINT(10.*STORE(L13DC)).EQ.7) THEN
+         CBUF = ' ? '
+         IF ( IDIFNO .EQ. 12 ) THEN
+            CBUF = 'synchrotron'
+         ELSE IF ( IDIFNO .GE. 13 ) THEN
+            CBUF = 'neutrons'
+         ELSE IF (NINT(100.*STORE(L13DC)).EQ.71) THEN
 #ifdef __MAC__
-            CBUF(1:8) = '''Mo K\\a'''
+            CBUF = 'Mo K\\a'
 #else
-            CBUF(1:8) = '''Mo K\a'''
+            CBUF = 'Mo K\a'
 #endif
-         ELSE IF (NINT(10.*STORE(L13DC)).EQ.15) THEN
+         ELSE IF (NINT(100.*STORE(L13DC)).EQ.154) THEN
 #ifdef __MAC__
-            CBUF(1:8) = '''Cu K\\a'''
+            CBUF = 'Cu K\\a'
 #else
-            CBUF(1:8) = '''Cu K\a'''
+            CBUF = 'Cu K\a'
 #endif
          END IF
          IF ( IPUNCH .EQ. 0 ) THEN
-           WRITE (NCFPU1,'(''_diffrn_radiation_type       '', T35, A)')
-     1      CBUF(1:8)
+           WRITE (NCFPU1,'(''_diffrn_radiation_type       '', 
+     1                       T35, '''''''',A,'''''''')')
+     1      CBUF(1:NCTRIM(CBUF))
            WRITE (NCFPU1,'(''_diffrn_radiation_wavelength '', T35,
      1      F12.5)') STORE(L13DC)
          ELSE  IF ( IPUNCH .EQ. 1 ) THEN
-           WRITE (CPAGE(8,1)(:),'(A,4X,A)') 'Radiation type',CBUF(2:7)
+           WRITE (CPAGE(8,1)(:),'(A,4X,A)') 'Radiation type',
+     1                                    CBUF(1:NCTRIM(CBUF))
            WRITE (CPAGE(8,2)(:),'(A,5X,F10.6)')'Wavelength',STORE(L13DC)
          END IF
       END IF
@@ -6171,7 +6341,7 @@ C
            WRITE (CLINE,'(A, ''decay_% '', F6.2)') CBUF(1:18),
      1      STORE(L30CD+8)
           ELSE
-           WRITE (CLINE,'(A, ''decay_%  ?'')') CBUF(1:18)
+           WRITE (CLINE,'(A, ''decay_%  .'')') CBUF(1:18)
           END IF
           CALL XPCIF (CLINE)
           CALL XPCIF (' ')
@@ -6190,6 +6360,12 @@ C
           WRITE (CLINE,'(A, ''number '', I10)') CBUF(1:15),
      1      NINT(STORE(L30DR))
           CALL XPCIF (CLINE)
+          if(store(l30dr+1).gt.0.0) then
+           CLINE=' '
+           WRITE (CLINE,'(A, ''av_unetI/netI '', f10.3)') 
+     1    CBUF(1:15), STORE(L30DR+1)
+           CALL XPCIF (CLINE)
+          endif
         ELSE IF ( IPUNCH .EQ. 1 ) THEN
            WRITE (CPAGE(IDATA+2,1)(:),'(''Reflections measured '', I8)')
      1      NINT(STORE(L30DR))
@@ -6200,8 +6376,6 @@ C
         ELSE IF ( IPUNCH .EQ. 2 ) THEN
             WRITE (NCPU,4) 'Reflections measured', NINT(STORE(L30DR))
         END IF
- 
-
 c      write(ncwu,*)'List 6 total', n6d, store(l30dr), store(l30dr+2),
 c     1 store(l30dr+4)
         IF ((n6d .gt. nint(STORE(L30DR+4))) .and. 
@@ -6257,11 +6431,8 @@ C----- TRY FOR A FRIEDEL MERGE ESTIMATE
         INRIC = 0
         IGLS  = 0
 
-cdjwnov05-check list 6
+c
         if (kexist(6) .gt. 0) then
-         CALL XTHLIM (THMIN, THMAX,THMCMP, THBEST,THBCMP,
-     1   INRIC,IULN,IGLS)
- 
          IF ( IPUNCH .EQ. 0 ) THEN
            CBUF(1:21)='_diffrn_reflns_theta_'
            WRITE (CLINE,'(A,''min '', F10.3)') CBUF(1:21), THMIN
@@ -6365,13 +6536,13 @@ cdjwnov05-end of list 6 goodies
 cdjwnov2011 - make all text lowercase - requested by ALT
            CSOLVE ='direct'
            IF(ISOLVE.EQ. 0) THEN
-                  CSOLVE='Other'
+                  CSOLVE='other'
             ELSE IF (ISOLVE .EQ. 4) THEN
                   CSOLVE='Heavy'
             ELSE IF (ISOLVE .EQ. 6) THEN
-                  CSOLVE='Other'
+                  CSOLVE='other'
             ELSE IF (ISOLVE .EQ. 7) THEN
-                  CSOLVE='Other'
+                  CSOLVE='other'
             ENDIF
            CALL XPCIF (' ')
         WRITE (NCFPU1,'(''_atom_sites_solution_primary '',T35,A,
@@ -6416,7 +6587,6 @@ C
      1 ('# selected by a user-defined sigma threshold ')
            CALL XPCIF (' ')
            CALL XPCIF (' ')
-
            CALL XPCIF 
      1     ('# The values actually used during refinement')
 #ifdef __MAC__
@@ -6425,19 +6595,20 @@ C
            WRITE(CBUF,'(''I>'',F6.1,''\s(I)'')') STORE(L30RF+3)
 #endif
            CALL XCRAS (CBUF,NCHAR)
-           WRITE (NCFPU1,'(''_oxford_reflns_threshold_expression_ref '',
-     1                    T45,A)')  CBUF(1:NCHAR) 
+           WRITE (NCFPU1,
+     1    '(''_oxford_refine_reflns_threshold_expression_ref '',
+     1                    T50,A)')  CBUF(1:NCHAR) 
            CBUF(1:11)='_refine_ls_'
-           WRITE (CLINE,'(A, ''number_reflns '', I10)') CBUF(1:11),
-     1                    NINT(STORE(L30RF+8))
-           CALL XPCIF (CLINE)
            WRITE (CLINE,'(A, ''number_restraints '', I10)') CBUF(1:11),
      1                   NINT(STORE(L30CF+13))
            CALL XPCIF (CLINE)
            WRITE (CLINE,'(A, ''number_parameters '', I10)') CBUF(1:11),
      1                   NINT(STORE(L30RF+2))
            CALL XPCIF (CLINE)
-           WRITE (CLINE,'(''_oxford'',A,''R_factor_ref '',F10.4)') 
+           WRITE (CLINE,'(A, ''number_reflns '', I10)') CBUF(1:11),
+     1                    NINT(STORE(L30RF+8))
+           CALL XPCIF (CLINE)
+           WRITE (CLINE,'(A,A,''R_factor_ref '',F10.4)') '_oxford',
      1                   CBUF(1:11), STORE(L30RF+0)*0.01
            CALL XPCIF (CLINE)
            WRITE (CLINE,'(A, ''wR_factor_ref '', F10.4)') CBUF(1:11),
@@ -6464,6 +6635,7 @@ C
            WRITE (CLINE,'(''_oxford_reflns_number_all '', I10)')
      1                  NINT(STORE(L30CF+5))
            CALL XPCIF (CLINE)
+c
            WRITE (CLINE,'(''_refine_ls_R_factor_all '', F10.4)')
      1                  STORE(L30CF+6)*0.01
            CALL XPCIF (CLINE)
@@ -6472,18 +6644,8 @@ C
            CALL XPCIF (CLINE)
 C
            CALL XPCIF (' ')
-cdjw may07 - removed so that 2 sigma cut is always shown
-c           IF ( LCUTUS .EQ. 0 ) THEN
-c             WRITE (NCFPU1,1)
-c     1       '# No actual I/u(I) cutoff was used for refinement. The'
-c             WRITE (NCFPU1,1)
-c     1       '# threshold below is used for "_gt" information ONLY:'
-c           ELSE
-c             WRITE (NCFPU1,
-c     1    '(''# The I/u(I) cutoff below was used for refinement as '')')
-c             WRITE (NCFPU1,
-c     1      '(''# well as the _gt R-factors:'')')
-c           END IF
+c
+c
            CALL XPCIF 
      1     ('# The values computed with a 2 sigma cutoff - a la SHELX')
 
@@ -6493,9 +6655,9 @@ c           END IF
            WRITE(CBUF,'(''I>'',F6.1,''\s(I)'')') STORE(L30CF+0)
 #endif
            CALL XCRAS (CBUF,NCHAR)
-           WRITE (NCFPU1,'(''_reflns_threshold_expression '',T35,A)')
-     1                 CBUF(1:NCHAR)
-           CBUF(1:11)='_refine_ls_'
+           WRITE (NCFPU1,
+     1    '(''_reflns_threshold_expression '',T45,A)')
+     2                 CBUF(1:NCHAR)
            WRITE (CLINE,'(''_reflns_number_gt '', I10)')
      1                 NINT(STORE(L30CF+1))
            CALL XPCIF (CLINE)
@@ -6544,75 +6706,168 @@ C
            WRITE (NCPU,5) '&Delta;/&sigma;<sub>max</sub>',STORE(L30RF+7)
         END IF
 C 
-        IF (STORE(L30GE+7).GT.ZEROSQ) THEN
-            IF (STORE(L30GE+6).GT.0.5+ZERO) THEN
-               WRITE (CMON,2400)
-2400           FORMAT ('The Flack parameter is greater than 0.5',
-     1         'The structure may need inverting')
-               CALL XPRVDU (NCVDU,1,0)
-            END IF
-C----- PACK UP THE FLACK PARAMETER AND ITS ESD
-            CALL XFILL (IB,IVEC,16)
-            CALL SNUM (STORE(L30GE+6),STORE(L30GE+7),-0,0,10,IVEC)
-            WRITE (CTEMP,'(16A1)') (IVEC(J),J=1,16)
-            CALL XCRAS (CTEMP,N)
-            IF ((ISTORE(L13CD) .EQ. 0) .and. 
-     1          (STORE(L30GE+7) .GT. ZERO)) THEN
-             WRITE(CLINE,'(A,A)')  
-     1       '# The Flack parameter was determined before',
-     2       ' Friedel pairs were merged'
-             CALL XPCIF (CLINE)
-            ENDIF
-            CBUF(1:11)='_refine_ls_'
-            IF ( IPUNCH .EQ. 0 ) THEN
-              WRITE (CLINE,'(A, ''abs_structure_Flack  '', 4X, A )')
-     2         CBUF(1:11),CTEMP(1:N)
-              CALL XPCIF (CLINE)
-            ELSE IF ( IPUNCH .EQ. 1 ) THEN
-              WRITE (CPAGE(IREF+7,1)(:),'(A,A)') 'Flack parameter',
-     1         CTEMP(1:N)
-            ELSE IF ( IPUNCH .EQ. 2 ) THEN
-              WRITE (NCPU,2) 'Flack parameter',
-     1         CTEMP(1:N)
-            END IF
- 
-            WRITE (CTEMP,'(I12)') MAX(0,NINT(STORE(L30DR+2)-
-     1       STORE(L30DR+4)))
-            CALL XCRAS (CTEMP,N)
-            IF ( IPUNCH .EQ. 0 ) THEN
-              WRITE (CLINE,'(A, ''abs_structure_details  '', 4X,          
-     1        ''''''Flack (1983), '',                                            
-     2        A, '' Friedel-pairs'''''')') CBUF(1:11),CTEMP(1:N)
-              CALL XPCIF (CLINE)
-              ival =041
-              ctemp = crefmk(istore(lrefs), nrefs, mdrefs, ival)
-            END IF
-        END IF
-
-           WRITE(CLINE,'(A)')
-     1'# choose from:  rm (reference molecule of known chirality),'
-           CALL XPCIF(CLINE)
-           WRITE(CLINE,'(A)')
-     1'# ad (anomolous dispersion - Flack), rmad (rm and ad),'
-           CALL XPCIF(CLINE)
-           WRITE(CLINE,'(A)')
-     1'# syn (from synthesis), unk (unknown) or . (not applicable).'
-           CALL XPCIF(CLINE)
-
-
-        IF (STORE(L30GE+7).GT.ZERO) THEN
-           WRITE (CLINE,1201) 'ad'
-        ELSE
-           IF ( IFLACK .EQ. 0 ) THEN
-             WRITE (CLINE,1201) 'unk'
-           ELSE
-             WRITE (CLINE,1201) '.'
-           END IF
-        END IF
-1201    FORMAT ('_chemical_absolute_configuration',T35,'''',A,'''')
-        CALL XPCIF(CLINE)
-        CALL XPCIF (' ')
-C 
+c---------------------------------------------------------------------------------
+c GOTO: If there is no Flack-info, skip all the next bit. 
+      cflack = ' '
+      nlflack=1
+      mflack=0
+      ifval = 0
+      jas = 1
+      if(ic.eq.0) then                  ! only if non-centric
+        jas=0                           ! indicate centric
+        if ((iflack1.eq.0).and. (store(l30ge+7).lt.zerosq)) then
+c         No list 39 or Flack esd
+            goto 9753
+        else if 
+c         List 39 exists but no details in it
+     1    ((store(iflack1+6).le.zero).and.(store(l30ge+7).lt.
+     2     zerosq))then
+            goto 9753
+        endif
+        if (iflack0*iflack1.gt.0) then                        !we have both FLACK records.
+C            These are updated only if the user does an ABSOLUTE analysis
+C-----   Pack up the LIST 39 data
+         write(chline,'(a,a)')
+     1     '#  For an explanation, see Cooper & Watkin,' ,
+     2   ' Acta Cryst. (2016). B72, 661-683'
+         if(ipunch.eq.0) call xpcif (chline)
+         call xfill (ib,ivec,16)
+         call snum (store(iflack0+8),store(iflack0+9),-0,0,10,ivec)
+         write (ctemp,'(16a1)') (ivec(j),j=1,16)
+         call xcras (ctemp,n)
+         write(cline,'(a,a,a,i8,a)')
+     1   '_oxford_Hooft_y ', ctemp(1:n), 
+     2    ' # for ', nint(store(iflack1+8)), ' Friedel pairs'
+          if(ipunch.eq.0)call xpcif (cline)
+          call xfill (ib,ivec,16)
+          call snum (store(iflack0+6),store(iflack0+7),-0,0,10,ivec)
+          write (ctemp,'(16a1)') (ivec(j),j=1,16)
+          call xcras (ctemp,n)
+          nlflack=n
+          mflack= nint(store(iflack1+6))
+          cflack(1:nlflack) = ctemp(1:nlflack)
+          write(cline,'(a,a,a,i8,a)')
+     1   '_oxford_Bijvoet_difference ', ctemp(1:n), 
+     2    ' # for ', mflack, ' Friedel pairs'
+          if(ipunch.eq.0) call xpcif (cline)
+          write(chline,'(a)')'# (Similar to the Parsons(q).)'
+          if(ipunch.eq.0) call xpcif (chline)
+c           Set the reference to PFW
+          ifval = 050
+        endif
+c
+        if (store(l30ge+7).gt.zerosq) then
+         if (store(l30ge+6).gt.0.5+zero) then
+          write (cmon,2400)
+2400          FORMAT ('The Flack parameter is greater than 0.5',/
+     1     'The structure may need inverting')
+          call outcol(3)
+          call xprvdu (ncvdu,2,0)
+          call outcol(1)
+          call xpause(2000)
+         end if
+c-----   pack up the flack parameter and its esd from l30
+c        (this is updated by the lsq and so is the last available value)
+         mf=max(0,nint(store(l30dr+2)-store(l30dr+4)))
+         if (mf.gt.0) then
+          call xfill (ib,ivec,16)
+          call snum (store(l30ge+6),store(l30ge+7),-0,0,10,ivec)
+          write (ctemp,'(16a1)') (ivec(j),j=1,16)
+         else
+          ctemp = ' . '
+         endif
+         call xcras (ctemp,n)
+c   output proper Flack as _oxford_
+         write(cline,'(a,a,a,i8,a)')
+     1   '_oxford_refined_Flack_x ', ctemp(1:n), 
+     2    ' # for ', mf, ' Friedel pairs'
+         if(ipunch.eq.0) call xpcif (cline)
+         if (ifval.eq.0) then
+c                   Set reference to Flack if not already set tO PFW
+         nlflack=n
+         mflack=max(0,nint(store(l30dr+2)-store(l30dr+4)))
+         ifval=041
+         cflack(1:nlflack) = ctemp(1:nlflack)
+         endif
+          if ((istore(l13cd) .eq. 0) .AND. 
+     1          (store(l30ge+7) .gt. zero)) then
+            write(cline,'(a,a)')  
+     1      '# NOTE: The Flack parameter was determined before',
+     2      ' Friedel pairs were merged'
+            if(ipunch.eq.0) call xpcif (cline)
+          endif
+        end if
+c
+        if ( ipunch .eq. 1 ) then
+         write (cpage(iref+7,1)(:),'(a,2X,a)') 'Flack parameter',
+     1        cflack(1:nlflack)
+        else if ( ipunch .eq. 2 ) then
+         if(ifval.eq.41) then
+          write (ncpu,8002) 'Flack parameter', CFLACK(1:nlflack),
+     1         ' Flack (1983)'
+         else
+          write (ncpu,8002) 'Flack parameter', CFLACK(1:nlflack),
+     1         ' Parsons, Flack & Wagner (2013)'
+         endif
+        endif
+c
+        if ( ipunch .eq. 0 ) then
+         cbuf(1:11)='_refine_ls_'
+         write (cline,'(a,a,4x, a )')
+     1        cbuf(1:11),'abs_structure_Flack  ',CFLACK(1:nlflack)
+         call xpcif (cline)
+         write (ctemp,'(i12)') mflack
+         call xcras (ctemp,n)
+         write (cline,'(a,a)')cbuf(1:11),'abs_structure_details'
+         call xpcif (cline)
+         write(cline,'(a)')';'
+         call xpcif (cline)
+         if(ifval.eq.41)then 
+          write(cline,'(a,2x,a,a)')' Flack (1983),',ctemp(1:n),
+     1         ' Friedel Pairs'
+          call xpcif (cline)
+         else
+          write(cline,'(a)')' Parsons, Flack & Wagner (2013),'
+          call xpcif (cline)
+          write(cline,'(1x,a,a)') ctemp(1:n),' Friedel Pairs'
+          call xpcif (cline)
+         endif
+         write(cline,'(a)')';'
+         call xpcif (cline)
+         ctemp = crefmk(istore(lrefs), nrefs, mdrefs, ifval)
+        end if
+9753    continue      !come here if no Flack info available
+c
+c
+        cline = ' '
+        call xpcif(cline)
+        write(cline,'(a)') '# choose from:'
+        call xpcif(cline)
+        write(cline,'(a)') 
+     1   '# rm (reference molecule of known chirality),'
+        call xpcif(cline)
+        write(cline,'(a)')
+     1   '# ad (anomolous dispersion - Flack), rmad (rm and ad),'
+        call xpcif(cline)
+        write(cline,'(a)')
+     1   '# syn (from synthesis), unk (unknown) or . (not applicable).'
+        call xpcif(cline)
+c
+c
+        if (ifval.gt.0) then
+           write (cline,1201) 'ad'
+        else
+           if ( jas .eq. 0 ) then
+             write (cline,1201) 'unk'
+           else
+             write (cline,1201) '.'
+           end if
+1201       format ('_chemical_absolute_configuration',T35,'''',A,'''')
+        endif
+        call xpcif(cline)
+        call xpcif (' ')
+      endif
+c---------------------------------------------------------------------------------
 C      THE REFINEMENT DETAILS
 C----- PARAMETER 13 ON DIRECTIVE 3 IS A CHARACTER STRING
         IPARAM=13
@@ -6627,6 +6882,7 @@ C----- PARAMETER 13 ON DIRECTIVE 3 IS A CHARACTER STRING
             CTYPE='Fsqd'
             IFARG = 2
         END IF
+        CBUF(1:11)='_refine_ls_'
         CLINE=' '
         IF ( IPUNCH .EQ. 0 ) THEN
            CALL XPCIF (' ')
@@ -7133,7 +7389,7 @@ c
         CALL FCASE(CNEW, CNEW, ISSFLC) !0=lower,1=upper,2=conserve
         WRITE (CMON,'(A,A)') 'Opening file: ', CNEW(1:JLEN)
         CALL XPRVDU(NCEROR, 1,0)
-        IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) CMON(1)(:)
+        IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) trim(CMON(1))
 c
 C      - OPEN CIF OUTPUT ON FRN1
         CALL XMOVEI (KEYFIL(1,23),KDEV,4)
@@ -7306,7 +7562,7 @@ C
       CHARACTER*16 CFILTER(NFAILN)
       CHARACTER*32 CFAILN(NFAILN,2)
       CHARACTER*32 CWEIGHT, CYAXIS
-      DIMENSION FILTER(5), AFILTER(5)
+      DIMENSION FILTER(5)
       PARAMETER (NPLT=10)
       DIMENSION IFOPLT(2*NPLT+1), IFCPLT(2*NPLT+1)
       PARAMETER (DISTPLT = 3.0)
@@ -7320,7 +7576,6 @@ C
       PARAMETER (MAXBIN=80)
       DIMENSION IBIN(MAXBIN)  !bins for the histogram
       DIMENSION BBIN(MAXBIN)  ! .. ..
-      CHARACTER*1 CSIGN
       CHARACTER*80 LINE
       CHARACTER*40 FORM
       CHARACTER*36 HKLLAB
@@ -7376,13 +7631,13 @@ C
 
       DATA CFAILN(5,1) /'Ratio > '/
       DATA CFAILN(5,2) /' '/
-	  
+      
 #ifdef _HOL_
-      DATA IFLAC/4HFLAC/
-      DATA IHOOFT/4HHOOF/
+      DATA ICFLAC/4HFLAC/
+      DATA ICHOOFT/4HHOOF/
 #else
-      DATA IFLAC/'FLAC'/
-      DATA IHOOFT/'HOOF'/
+      DATA ICFLAC/'FLAC'/
+      DATA ICHOOFT/'HOOF'/
 #endif
 C      set packing constants for Ton's code
       PARAMETER  (NPAK=256)
@@ -7438,6 +7693,39 @@ Cdjwsep07 check the type of reflections
         END IF
 300   CONTINUE
       IF (IERROR.LE.0) GO TO 2850
+c
+c look fo the FLACK records
+       iflack0=0                  !indicate there are no records 0 or 1
+       iflack1=0
+       ihooft=0
+       m39f=0
+        if (n39f.gt.0) then
+         m39f = l39f
+         do i=1,n39f                                !Find record FLACK(0)
+          iflack0=m39f
+          if ((istore(m39f) .eq. icflac) .and. 
+     1       (nint(store(m39f+1)) .eq. 0)) exit
+           m39f=m39f+md39f
+         enddo
+c
+         m39f = l39f
+         do i=1,n39f                                !Find record FLACK(1)
+          iflack1=m39f
+          if ((istore(m39f) .eq. icflac) .and. 
+     1       (nint(store(m39f+1)) .eq. 1)) exit
+           m39f=m39f+md39f
+         enddo
+C
+         m39f = l39f
+         do i=1,n39f                                !Find record HOOFT(0)
+          ihooft=m39f
+          if ((istore(m39f) .eq. ichooft) .and. 
+     1       (nint(store(m39f+1)) .eq. 0)) exit
+           m39f=m39f+md39f
+         enddo
+        endif 
+c
+c
 c  reset IERROR for use as general error flag -1 = fail
       IERROR = 1
 c
@@ -7637,7 +7925,7 @@ C                         should be about unity anyway.  Will be computed later
       NCENTRIC=0                       ! CENTRIC PAIRS
       SUMBO=0.                         ! SUM OF SQ OF OBSERVED BIJVOET DIFFERENCES
       SUMBC=0.                         ! SUM OF SQ OF CALCULATED BIJVOET DIFFERENCES
-      QMAX = 0                         ! MAximum Quotient value
+      QMAX = 0.0                         ! MAximum Quotient value
       NREF = 0 ! Was used without being defined, but may not be required at all...
 C     Excluded reflection categories
       CALL XZEROF (IFAILN, NFAILN)
@@ -7803,17 +8091,19 @@ c 2
           sflackx=10000.     !to end of list later
          END IF
 c
-c 3        filter 3 set once Ds(max) known
+c 3        filter 3 set below once Ds(max) known
+c 4        filter 4 set below 
 c
 c
 c 5        special test for poor agreement
-         q = abs(max(foka,fcka)/min(foka,fcka)) 
-         if(Q .gt. filter(5)) then
+         if((min(foka,fcka).le.0.).or. 
+     1    (abs(max(foka,fcka)/min(foka,fcka)) .gt. filter(5))) then
           ifail=5
           ifailn(5)=ifailn(5)+1
           flackx=10000.      !set large values so that sorted
           sflackx=10000.     !to end of list later
          else
+          q=abs(max(foka,fcka)/min(foka,fcka))
           qmax = max(qmax,q)
          END IF
 c
@@ -7832,7 +8122,7 @@ c Hole in one
         wt = 1./(sig2*sig2)
         i = LINFIT(2,x,y,wt,a,sa,b,sb,t,tsq,r,rsq,mitem,tensor)
       endif
-c Hole in one
+c End Hole in one
 C
 C
 c
@@ -8034,40 +8324,42 @@ c
       WRITE (CMON,'(10(a,i7))') ' No of Reflections processed =',
      1  NREFIN,'         No of Friedel Pairs =',MFRIED
       CALL XPRVDU (NCVDU,1,0)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A)') CMON(1)(:nctrim(cmon(1)))
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A)') trim(CMON(1))
 C
 C
       WRITE (CMON,'(10(a,2x,i7))') ' No of Friedel Pairs found =',
-     1  MFRIED,' No of Friedel Pairs used  =',NFRIED
+     1  MFRIED,' No of Friedel Pairs used  =',NFRIED,
+     2 ' using filters 1,2 & 5'
       CALL XPRVDU (NCVDU,1,0)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:nctrim(cmon(1)))
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
 C
       WRITE (CMON,'(10(a,i7))') ' No of Unpaired Reflections  =',
      1  LFRIED
       CALL XPRVDU (NCVDU,1,0)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:nctrim(cmon(1)))
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
 C
       WRITE (CMON,'(10(a,i7))') ' No of Centric Reflections   =',
      1  NCENTRIC
       CALL XPRVDU (NCVDU,1,0)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:nctrim(cmon(1)))
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
 C
       WRITE (CMON,'(10(a,i6,A))') '     Friedel Coverage        =',
      1  (100*MFRIED)/(MFRIED+LFRIED),' %'
       CALL XPRVDU (NCVDU,1,0)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:nctrim(cmon(1)))
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
 C
       obstocal = sqrt(sumbo/sumbc)
       WRITE (CMON,'(10(A,F7.2))')' Observed:calculated signal  =',
      1 obstocal
-      CALL XPRVDU (NCVDU,1,0)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:nctrim(cmon(1)))
+c      CALL XPRVDU (NCVDU,1,0)           !screen prints done later so that
+c                                        !they remain visible at end of calc
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
       if(obstocal .gt. 3.) then
         call outcol(9)
         write(cmon,'(a,a)')' The observed Bijvoet differences are much',
      1  ' greater than the calculated differences'
-        call xprvdu (ncvdu,1,0)
-        if (issprt.eq.0) write (ncwu,'(a)') cmon(1)(:nctrim(cmon(1)))
+c        call xprvdu (ncvdu,1,0)
+        if (issprt.eq.0) write (ncwu,'(a)') trim(CMON(1))
         call outcol(1)
       endif
 C
@@ -8080,7 +8372,7 @@ C
       WRITE (CMON,'(A)')
      1' Flack parameter obtained from original refinement'
 c      CALL XPRVDU (NCVDU,1,0)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:nctrim(cmon(1)))
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
 C
 c      now Howards goodies
       IF (mfried.gt.0) THEN
@@ -8100,7 +8392,7 @@ C
      2  xflack, '(',qflack,') = ',
      2 100.*FLRNUM/FLRDEN,'%'
         CALL XPRVDU (NCVDU, 1, 0)
-        IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a/)') CMON(1)(:nctrim(cmon(1)))
+        IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a/)') trim(CMON(1))
 C
        if(issprt.eq.0)then
           WRITE (ncwu,'(//A/A)')  
@@ -8123,7 +8415,7 @@ c
 C                                 Distribution graph definition
           WRITE (CMON,'(A,/,A,/,A,/,A,2f7.2,A,/,A,2f7.2,A,/,A,/,A,/,A)')
      1  '^^PL PLOTDATA _DIST SCATTER ATTACH _VDIST KEY',
-     2  '^^PL XAXIS TITLE ''D/sigma(Do)''  ',
+     2  '^^PL XAXIS TITLE ''D/\sigma(Do)''  ',
      3  '^^PL NSERIES=2 LENGTH=100 ',
      4  '^^PL YAXIS ZOOM ', 0.0, 100.,
      4  ' TITLE ''Frequency of Do (% of Dmax)'' ',
@@ -8146,6 +8438,14 @@ c
 C -- FINISH THE GRAPH DEFINITION
           WRITE (CMON,'(A,/,A)') '^^PL SHOW','^^CR'
           CALL XPRVDU (NCVDU, 2, 0)
+C     send number of reflections to screen
+        WRITE(CMON,'(A,I7,A)')
+     1  '^^CO SAFESET [ _DIS_NREF TEXT ',(mfried),' ]'
+        CALL XPRVDU(NCVDU, 1,0)
+C SEND NUMBER FILTERED TO SCREEN (DUMMY HERE)
+        WRITE(CMON,'(A,I7,A)')
+     1  '^^CO SAFESET [ _DIS_NFIL TEXT ',(mfried),' ]'
+        CALL XPRVDU(NCVDU, 1,0)
       endif
 C
       write(cmon,'(/a,f6.2)')' Maximum accepted quotient=',qmax
@@ -8159,10 +8459,10 @@ c      CALL xprvdu (ncvdu, 2, 0)
 C
 C
 C
-      WRITE (CMON,'(/6x,a,i8,a/)') ' Continuing Calculations with',
-     1      NFRIED,' pairs'
+c      WRITE (CMON,'(/6x,a,i8,a/)') ' Continuing Calculations with',
+c     1      NFRIED,' pairs'
 c      CALL XPRVDU (NCVDU, 3, 0)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)') CMON(2)(:nctrim(cmon(2)))
+c      IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)') CMON(2)(:nctrim(cmon(2)))
 C
 C                                    ---- END OF GENERAL OUTPUT
 C
@@ -8242,12 +8542,13 @@ c
         ENDIF
         m6acc = m6acc + md6acc
        ENDDO npploop1
+       nnpp=nint(ss)
 C
        WRITE (CMON,'(7x,a,i7,a)') '  Normal Probability Plot for', 
-     1  nint(ss),' Bijvoet pairs'
+     1  nnpp,' Bijvoet pairs between 1st and 9th decile'
        CALL XPRVDU (NCVDU,1,0)
        IF (ISSPRT.EQ.0) THEN
-            WRITE (NCWU,'(a)') CMON(1)(:nctrim(cmon(1)))
+            WRITE (NCWU,'(/a)') trim(CMON(1))
             WRITE(NCWU,'(A,F7.4)')' Reduced Chisq= ',redchi
        ENDIF
 C
@@ -8256,7 +8557,7 @@ C      determinant
        WRITE (CMON,'(a,7x,2f12.3)') ' Gradient for zero intercept = ',
      1    SXY/SXX
 c      CALL XPRVDU (NCVDU,1,0)
-       IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)(:nctrim(cmon(1)))
+       IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
        DETER=SS*SXX-SX*SX
        IF (DETER.NE.0.) THEN
             ycut=(SXX*SY-SX*SXY)/DETER
@@ -8529,10 +8830,11 @@ C
 C
 C                            find slope and intercept of Fo/Fc plot
 C                                                WRITE TYPE OF PLOT
-        WRITE (cmon,'(7x,a,a,i8,a)') cplot(:nctrim(cplot)),
-     1                          ' for',nfofc,' Bijvoet pairs'
+        WRITE (cmon,'(7x,a,a,i8,a,a)') cplot(:nctrim(cplot)),
+     1                          ' for',nfofc,' Bijvoet pairs',
+     2  ' using filters 1,2,3 & 5'
         CALL xprvdu (ncvdu, 1, 0)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(//a/)') cmon(1)(:nctrim(cmon(1)))
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(//a/)') trim(CMON(1))
 c
         if (nfofc .le. 10) then
               call outcol(9)
@@ -8553,19 +8855,19 @@ C
           WRITE (CMON,800) SLOPE,SIGSLOP
 800       FORMAT (27x,'   Slope, sigma =',F7.3,f7.3)
 c          CALL XPRVDU (NCVDU, 1, 0)
-          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)(:nctrim(cmon(1)))
+          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
           XCUT = YCUT/SLOPE
           WRITE (CMON,805) YCUT,SIGCUT
 805       FORMAT (26X,'Intercept, sigma =',F7.3,F7.3)
 c          CALL XPRVDU (NCVDU, 1, 0)
-          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)(:nctrim(cmon(1)))
+          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
           PSEUDOF=0.5*(1.-SLOPE)
           PSEUDOS=0.5*SIGSLOP
           PSEUDOC = CORREL
           WRITE (CMON,810) PSEUDOF,PSEUDOS
 810       FORMAT (19X,'  Post-Refinement Flack =',2F7.3)
 c          CALL XPRVDU (NCVDU,1,0)
-          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)(:nctrim(cmon(1)))
+          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
           WRITE (CMON,815) CORREL,cood
 815       FORMAT (/'{I Correlation coeff and r^2 of Scatter Plot =',
      1     F7.3,F7.3)
@@ -8584,16 +8886,16 @@ c          CALL XPRVDU (NCVDU,1,0)
           CALL outcol (9)
           WRITE (CMON,*) 'Line fitting failed'
           CALL XPRVDU (NCVDU, 1, 0)
-          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)(:nctrim(cmon(1)))
+          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
           WRITE (CMON,*) ' Slope and Intercept cannot be computed'
           CALL XPRVDU (NCVDU, 1, 0)
-          IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)') CMON(1)(:nctrim(cmon(1)))
+          IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)') trim(CMON(1))
         ELSE
 C         LINFIT RETURNS IDJW = -2
           CALL outcol (9)
           WRITE (CMON,*) ' Correlation Coefficient cannot be computed'
           CALL XPRVDU (NCVDU, 1, 0)
-          IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)') CMON(1)(:nctrim(cmon(1)))
+          IF (ISSPRT.EQ.0) WRITE (NCWU,'(/a)') trim(CMON(1))
         END IF
         CALL outcol (1)
 C
@@ -8660,7 +8962,6 @@ c
            foka=str11(m6acc+5)
            fcka=str11(m6acc+6)
            sigmaq=str11(m6acc+7)
-c      write(123,'(3i5,4f12.4)') mh,mk,ml,res, fokd,fckd,sigmad
 C
            if (itype.eq.1) then
 C           totals for Fo/Fc plot
@@ -8705,7 +9006,7 @@ c
          WRITE 
      1  (CMON,'(A,/,A,/,A,/,A,f10.2,A,/,A,f10.2,A,A/,A,/,A,/,A)')
      1  '^^PL PLOTDATA _DO SCATTER ATTACH _VDO KEY',
-     2  '^^PL XAXIS TITLE ''[Sin(theta)/lambda]**3''  ',
+     2  '^^PL XAXIS TITLE ''[sin \theta / \lambda]\**3''  ',
      3  '^^PL NSERIES=2 LENGTH=100 ',
      4  '^^PL YAXIS ZOOM 0. ', abinmax, ' TITLE Frequency ',
      5  '^^PL YAXISRIGHT ZOOM 0. ', bbinmax, 
@@ -8831,11 +9132,14 @@ c  Compute Flack for each reflection
         sumwt=0.
         n6save = n6acc
         m6acc = l6acc
+        icounter = 0
+c      write(123,*)n6acc
         do i=1,n6acc
          if(istr11(m6acc+8).ne.0) then
            str11(m6acc+5)=10000.  !set large values so that sorted
            str11(m6acc+6)=10000.  !to end of list later
          else
+           icounter = icounter+1
            flackx=(str11(m6acc+3)-str11(m6acc+2))/(2.*str11(m6acc+3))
            sflackx=str11(m6acc+4)/abs((2.*str11(m6acc+3)))
            flxwt = 1./(sflackx*sflackx)
@@ -8849,7 +9153,7 @@ c  Compute Flack for each reflection
         enddo
 c average Flack(x) and average sigma
         xbar = sumflx/sumwt
-        sbar = sumsig/float(n6acc)
+        sbar = sumsig/float(icounter)
         xbar_init=xbar
         xbar_sig=sbar
 
@@ -8868,19 +9172,20 @@ c
          m6acc = m6acc + md6acc
         enddo
 c
+c      write(123,*)n6acc, icounter !verify that the trimming has worked
 c
         write(cmon,'(2x,a,i6,a )') 
      1  ' Computing Histogram starting with ',n6acc,
      1  ' Bijvoet pairs'
         call xprvdu (ncvdu,1,0)
-        if (issprt.eq.0) write(ncwu,'(/A)')cmon(1)(:nctrim(cmon(1)))
+        if (issprt.eq.0) write(ncwu,'(/A)')trim(CMON(1))
         if(n6acc.le.0.1*n6save) then
             call outcol(9)
             write(cmon,'(a)') 
      1      ' Too few pairs for a reliable histogram'
             call xprvdu (ncvdu,1,0)
             call outcol(1)
-           if (issprt.eq.0)write(ncwu,'(/A)')cmon(1)(:nctrim(cmon(1)))
+           if (issprt.eq.0)write(ncwu,'(/A)')trim(CMON(1))
 c            goto 1730
         endif
 c
@@ -8936,8 +9241,7 @@ C
         nle3s=0
         m6acc=l6acc
         DO 1700 i=1,n6acc
-c replace delta/sigma plot with simple plot of the computed Flack
-c The delta/sigma plots do not clearly resolve good from poor data
+c  plot the distribution of Flack parameters
           data = str11(m6acc+5)
           wt = sqrt(str11(m6acc+9))
 c         add data point
@@ -8984,6 +9288,10 @@ c
             CALL XPRVDU (NCVDU, 1, 0)
           enddo
 c
+C     send number of reflections to screen
+        WRITE(CMON,'(A,I7,A)')
+     1  '^^CO SAFESET [ _HIS_NREF TEXT ',(n6acc),' ]'
+        CALL XPRVDU(NCVDU, 1,0)
 C send the percentage at 3 sigma to screen
 
         WRITE(CMON,'(A,F7.1,A)')
@@ -9139,14 +9447,14 @@ c
      1    f3quart,f7octile, f9decile
 c
           WRITE (ncwu,'(/a,f12.4,/2(a,f12.4)/,
-     1    2(a,f12.4/),a,f7.4,a,i6)')
+     1    2(a,f12.4/),a,f7.4,a,i6,a)')
      *  ' Initial mean Flack(x) =',xbar_init,
      1  '   Final mean Flack(x) =',fmean,' and LSQ Flack(x) ',x_simple,
      2  '           Internal su =',sigint,
      3  '           External su =',sigext,
      5  ' Number of pairs with probability greater than ', 
      5    filter(4),' = ',
-     6    ngood
+     6    ngood, ' using filters 1,2,3,4 & 5'
 c
           WRITE (NCWU,1950)
 1950      FORMAT (//' No of pairs for which delta(Io)',
@@ -9284,6 +9592,16 @@ c
           endif
 c
         if (nfried .gt .0) then
+         WRITE (CMON,'(A,F7.2)') '  Observed:calculated signal  =',
+     1   obstocal
+         call xprvdu (ncvdu,1,0)  ! Listing prints left where they were, above
+         if(obstocal .gt. 3.) then
+          call outcol(9)
+          write(cmon,'(a,a)')'  The observed Bijvoet differences',
+     1    ' are much greater than the calculated differences'
+          call xprvdu (ncvdu,1,0)
+          call outcol(1)
+         endif
          if(issprt.eq.0) write(ncwu,'(//)')
 c
          CALL outcol (3)
@@ -9325,7 +9643,7 @@ c
      1   ' (Using', nfofc,' reflections. Correl Coef =',
      2   nint(100.*pseudoc),'%)'
          CALL XPRVDU (NCVDU, 1, 0)
-         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A,a,a)') CMON(1)(:43),'£ ',
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A,a,a)') CMON(1)(:43),'Â£ ',
      1   CMON(1)(45:nctrim(cmon(1)))
          call outcol(1)
          write(cmon,'(/)')
@@ -9334,9 +9652,9 @@ c
          call outcol(3)
          write(cmon,'(a,I6,A,f5.1,a)')' Histogram re-weighted,',
      1   ngood,' reflections, ', (nle3s*100./n6acc),
-     2  '% within -.5 to 1.5'
+     2  '% within interval x= -.5 to 1.5'
          CALL XPRVDU (NCVDU, 1, 0)
-         if (issprt.eq.0)write(ncwu,'(/a)')CMON(1)(:nctrim(cmon(1)))
+         if (issprt.eq.0)write(ncwu,'(/a)')trim(CMON(1))
 c
          IF (itype.eq.1) THEN
           WRITE (CMON,'(A,2F7.3)') '      Parsons Quotient & su',
@@ -9368,7 +9686,7 @@ c
 2100      FORMAT (/4(/a,a))
           WRITE (ncwu,2100)
      1   '@  ','Flack,1983, Acta Cryst A39, 876-881',
-     2   '£  ','Thompson & Watkin, 2011, J Appl Cryst, 44, 1077-1022',
+     2   'Â£  ','Thompson & Watkin, 2011, J Appl Cryst, 44, 1077-1022',
      3   '$  ','Hooft et al, 2008, J Appl Cryst, 41, 96-103',
      4   '&  ','Cooper et al, to be published'
          END IF
@@ -9383,7 +9701,7 @@ C
 
         WRITE (CMON,'(/)')
 c        CALL XPRVDU (NCVDU, 1, 0)
-        IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)')CMON(1)(:nctrim(cmon(1)))
+        IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)')trim(CMON(1))
         IF (qflack.GE.0.3) THEN
           WRITE (CMON,'(a,a/a,a/)')
      1  '{E The absolute configuration has not been reliably',
@@ -9442,12 +9760,12 @@ C CALCULATE P2(0)
 c
          WRITE (cmon,'(a)') ' Hooft probability analysis'
          CALL xprvdu (ncvdu, 1, 0)
-         IF (issprt.eq.0) WRITE (ncwu,'(A)')cmon(1)(:nctrim(cmon(1)))
+         IF (issprt.eq.0) WRITE (ncwu,'(A)')trim(CMON(1))
 C P2(True)
          WRITE (CMON,'(a,a)') ' For an enantiopure material,',
      1  ' there are 2 choices, P2'
          CALL XPRVDU (NCVDU, 1, 0)
-         IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)')CMON(1)(:nctrim(cmon(1)))
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)')trim(CMON(1))
 C
          IF (XPLL2.GE.0.0) THEN
            WRITE (FORM,2150) XPLL2,XPLL2
@@ -9473,16 +9791,16 @@ C CALCULATE P3(0),P3(TW),P3(1)
          XTWLL=EXP(XTWLL)
          XSMLL=XPLLL+XTWLL+XMNLL
          IF (XSMLL.GT. 0.0) THEN
-          XPLLL=XPLLL/XSMLL
-          XMNLL=XMNLL/XSMLL
-          XTWLL=XTWLL/XSMLL
+           XPLLL=XPLLL/XSMLL
+           XMNLL=XMNLL/XSMLL
+           XTWLL=XTWLL/XSMLL
 C P3(True)
            IF (XPLLL.GT.0.001) THEN
-            WRITE (FORM,2150) XPLLL,XPLLL
+              WRITE (FORM,2150) XPLLL,XPLLL
            ELSE IF (XPLLL.LT.0.0) THEN
-            WRITE (FORM,2200)
+              WRITE (FORM,2200)
            ELSE
-            WRITE (FORM,2150) XPLLL,XPLLL
+              WRITE (FORM,2150) XPLLL,XPLLL
            END IF
            WRITE (LINE,2350) FORM
 2350      FORMAT (' P3(correct) ',A)
@@ -9491,11 +9809,11 @@ C P3(True)
            IF (ISSPRT.EQ.0) WRITE (NCWU,2300) LINE
 C P3(Twin)
            IF (XTWLL.GT.0.001) THEN
-            WRITE (FORM,2150) XTWLL,XTWLL
+              WRITE (FORM,2150) XTWLL,XTWLL
            ELSE IF (XTWLL.LT.0.0) THEN
-            WRITE (FORM,2200)
+              WRITE (FORM,2200)
            ELSE
-            WRITE (FORM,2150) XTWLL,XTWLL
+              WRITE (FORM,2150) XTWLL,XTWLL
            END IF
            WRITE (LINE,2400) FORM
 2400      FORMAT (' P3(rac-twin)',A)
@@ -9504,17 +9822,20 @@ C P3(Twin)
            IF (ISSPRT.EQ.0) WRITE (NCWU,2300) LINE
 C P3(False)
            IF (XMNLL.GT.0.001) THEN
-            WRITE (FORM,2150) XMNLL,XMNLL
+              WRITE (FORM,2150) XMNLL,XMNLL
            ELSE IF (XMNLL.LT.0.0) THEN
-            WRITE (FORM,2200)
+              WRITE (FORM,2200)
            ELSE
-            WRITE (FORM,2150) XMNLL,XMNLL
+              WRITE (FORM,2150) XMNLL,XMNLL
            END IF
            WRITE (LINE,2450) FORM
 2450      FORMAT (' P3(inverse) ',A)
            WRITE (CMON,2300) LINE
 c           CALL XPRVDU (NCVDU, 1, 0)
            IF (ISSPRT.EQ.0) WRITE (NCWU,2300) LINE
+c
+c
+c
            WRITE (LINE,2500) XG
  2500      FORMAT (' G           ',F9.4)
            IF (ISSPRT.EQ.0) WRITE (NCWU,2300) LINE
@@ -9530,7 +9851,7 @@ c           CALL XPRVDU (NCVDU, 1, 0)
            IF (ISSPRT.EQ.0) WRITE (NCWU,2300) LINE
            WRITE (CMON,'(/)')
 c          CALL XPRVDU (NCVDU, 1, 0)
-          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)')CMON(1)(:nctrim(cmon(1)))
+          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)')trim(CMON(1))
          ELSE
           WRITE (CMON,'(a//)')
      1     ' Data do not resolve the P3 hypothesis'
@@ -9541,10 +9862,10 @@ c          CALL XPRVDU (NCVDU, 1, 0)
       endif
 C
       IINVERT = 0
-      IF ((XPLL2 .GE. 0.0).AND.(XPLL2.LE.0.66)) THEN
+      IF ((XPLL2 .GE. 0.001).AND.(XPLL2.LE.0.50)) THEN
            IINVERT = 1
       ENDIF
-      IF((XTWLL.LE.0.33).AND.(XPLLL.LT.0.33))THEN
+      IF((xplll.ge.0.001).AND.(XPLLL.LT.0.33))THEN
            IINVERT = 1
       ENDIF
       IF (IINVERT .EQ. 1) THEN
@@ -9557,24 +9878,23 @@ C
       IF ( MFRIED .LE. 0) THEN
         WRITE (CMON,'(/)')
 c        CALL XPRVDU (NCVDU, 1, 0)
-        IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)')CMON(1)(:nctrim(cmon(1)))
+        IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)')trim(CMON(1))
         WRITE (CMON,'(10(a,i7))') ' No of Reflections processed =',
      1   NREFIN
         CALL XPRVDU (NCVDU, 1, 0)
-        IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A)')CMON(1)(:nctrim(cmon(1)))
+        IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A)')trim(CMON(1))
         call outcol(9)
         WRITE (CMON,'(a)') ' No Friedel Pairs found'
         CALL XPRVDU (NCVDU, 1, 0)
         call outcol(1)
-        IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)')CMON(1)(:nctrim(cmon(1)))
+        IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)')trim(CMON(1))
 c       ERROR EXIT
         GOTO 2850
       END IF
-C                  ------PRINT SUMMARY OF EXCLUDED REFLECTIONS
+C                  ------Test Error Condition
 2760  continue
-      if(IERROR .LE. 0) then
+      if(IERROR .LE. 0) then                              !Error set
          call outcol(9)
-
         if(float(nfried)/float(mfried) .le. 0.1) THEN
          WRITE (CMON,'(10(a,2x,i7))') ' No of Friedel Pairs found =',
      1   MFRIED,' No of Friedel Pairs used  =',NFRIED
@@ -9582,7 +9902,7 @@ C                  ------PRINT SUMMARY OF EXCLUDED REFLECTIONS
         endif
          write(cmon,'(A)') ' Too few useful Friedel Pairs'
          call xprvdu (ncvdu, 1, 0)
-         if (issprt.eq.0) write (ncwu,'(a)')cmon(1)(:NCTRIM(CMON(1)))
+         if (issprt.eq.0) write (ncwu,'(a)')trim(CMON(1))
          call outcol(1)
          ffz = 0.5
          if(filter(1).lt. .5) ffz=.1
@@ -9598,14 +9918,13 @@ C send the suggested filter(1) to screen
      1  '^^CO SAFESET [ _FIL1 TEXT ', ffz,' ]'
         CALL XPRVDU(NCVDU, 1,0)
 
-
 c clear all plot windows
 
        IF (IPLOT.EQ.1) THEN
 c distribution
           WRITE (CMON,'(A,/,A,/,A,/,A,2f7.2,A,/,A,2f7.2,A,/,A,/,A,/,A)')
      1  '^^PL PLOTDATA _DIST SCATTER ATTACH _VDIST KEY',
-     2  '^^PL XAXIS TITLE ''D/sigma(Do)''  ',
+     2  '^^PL XAXIS TITLE ''D/\sigma(Do)''  ',
      3  '^^PL NSERIES=2 LENGTH=100 ',
      4  '^^PL YAXIS ZOOM ', 0.0, 100.,
      4  ' TITLE ''Frequency of Do (%)'' ',
@@ -9629,7 +9948,7 @@ c clear NPP
 c Signal plot
          WRITE (CMON,'(A/A/A/A/A,A/A/A/A)')
      1  '^^PL PLOTDATA _DO SCATTER ATTACH _VDO KEY',
-     2  '^^PL XAXIS TITLE ''[Sin(theta)/lambda]**3''  ',
+     2  '^^PL XAXIS TITLE ''[sin \theta / \lambda]\**3''  ',
      3  '^^PL NSERIES=2 LENGTH=100 ',
      4  '^^PL YAXIS ZOOM 0. 100. TITLE ''Frequency'' ',
      5  '^^PL YAXISRIGHT ZOOM 0.  100.', 
@@ -9668,17 +9987,22 @@ C clear the percentage at 3 sigma
         WRITE(CMON,'(A,F7.1,A)')
      1  '^^CO SAFESET [ _HIS_PC TEXT ',0.,' ]'
         CALL XPRVDU(NCVDU, 1,0)
-
 c clear no. good data 
         WRITE(CMON,'(A,F7.1,A)')
      1  '^^CO SAFESET [ _NREF TEXT ',0.,' ]'
         CALL XPRVDU(NCVDU, 1,0)
        END IF
-
-
-
-
-      else
+c clear distributions
+        WRITE(CMON,'(A,I7,A)')
+     1  '^^CO SAFESET [ _DIS_NREF TEXT ',0,' ]'
+        CALL XPRVDU(NCVDU, 1,0)
+        WRITE(CMON,'(A,I7,A)')
+     1  '^^CO SAFESET [ _DIS_NFIL TEXT ',0,' ]'
+        CALL XPRVDU(NCVDU, 1,0)
+        WRITE(CMON,'(A,I7,A)')
+     1  '^^CO SAFESET [ _HIS_NREF TEXT ',0,' ]'
+        CALL XPRVDU(NCVDU, 1,0)
+      else                                          !ERROR not set - continue output
 C
         if (iweight.eq.1) then
              CWEIGHT='LSQ'
@@ -9686,15 +10010,7 @@ C
              CWEIGHT='SIG'
         endif
 c
-c  find the FLACK record
 C
-       if (n39f.gt.0) then
-        m39f = l39f
-        do i=1,n39f
-         if (istore(m39f) .eq. iflac) exit
-         m39f=m39f+md39f
-        enddo
-       endif
 c                                !R
 c                                !wR2
 c                                !Friedif
@@ -9720,7 +10036,7 @@ c
         itempdjw(17)=ngood         !H-used
         tempdjw(18)=(nle3s*100./n6acc)
         tempdjw(19)=yslope         !npp slope
-        tempdjw(20)=store(m39f+2)  !main npp
+        tempdjw(20)=store(iflack0+2)  !main npp          !NOTE iflack0 set just above.
 c                                 !GOF
 c
        if(ipunch.eq.4) then       !Summary for import to spread sheet
@@ -9740,24 +10056,44 @@ c
 
 987   format(a3,x,3f7.2, f8.5, 83x, 2i6)
        endif
+c
+c
+c
+c
+c
 c now update LIST 39
-       if (n39f.gt.0) then
-        m39f = l39f
-        do i=1,n39f
-         if (istore(m39f) .eq. iflac) then
-c            store(m39f+2)=store(l30dr+8) !MAIN NPP
-             store(m39f+3)=yslope         !BIJVOET NPP
-             store(m39f+4)=tempdjw(3)     !Hin1
-             store(m39f+5)=tempdjw(4)     !
+       if (iflack0*iflack1.gt.0) then
+         if (iflack0.gt.0) then
+c FLAC(0) record
+c            store(iflack0+2)= set elsewhere !MAIN NPP Note: Used in tempdjw(20)
+             store(iflack0+3)=yslope         !BIJVOET NPP
+             store(iflack0+4)=tempdjw(3)     !Hin1
+             store(iflack0+5)=tempdjw(4)     !
 c          Note that 'Parsons' might be quotient or difference
-             store(m39f+6)=tempdjw(7)     !Parsons
-             store(m39f+7)=tempdjw(8)     !
-             store(m39f+8)=tempdjw(5)     !Hooft
-             store(m39f+9)=tempdjw(6)     !
-             store(m39f+10)=tempdjw(11)     !Histogram
-             store(m39f+11)=tempdjw(13)     !
-         else if (istore(m39f) .eq. ihooft) then
-c            I have now 'invented' (known to PLATON-CheckCIF) 
+             store(iflack0+6)=tempdjw(7)     !Parsons
+             store(iflack0+7)=tempdjw(8)     !
+             store(iflack0+8)=tempdjw(5)     !Hooft
+             store(iflack0+9)=tempdjw(6)     !
+             store(iflack0+10)=tempdjw(11)     !Histogram
+             store(iflack0+11)=tempdjw(13)     !
+         endif
+c FLACK(1) record
+            continue
+         if (iflack1.gt.0) then
+            store(iflack1+2) = mfried
+            store(iflack1+3) = nnpp
+            store(iflack1+4) = nfried
+            store(iflack1+6) = nfofc
+            store(iflack1+8) = nfofc
+            store(iflack1+10) = ngood
+             do i=5,11,2
+                  store(iflack1+i)=0.
+             enddo
+         endif
+       endif   
+c?       m39f = 0
+       if (ihooft .gt. 0) then
+c            Ton has now 'invented' (known to PLATON-CheckCIF) 
 c            datanames for P2, P3 etc.
 c            _platon_Bijvoet-pair_Hooft_y
 c            _platon_Bijvoet-pair_Hooft_P2-true
@@ -9766,36 +10102,30 @@ c            _platon_Bijvoet-pair_Hooft_P3-true
 c            _platon_Bijvoet-pair_Hooft_P3-rac-twin
 c            _platon_Bijvoet-pair_Hooft_P3-false
 c            _platon_Bijvoet-pair_Parsons_z
-c            Ton
+c
              if(xpll2 .lt. 0.0) then
               xpll2 = 0.                 ! P2 does not compute
               xpln2 = 0.
              else
               xpln2 = 1.-xpll2
              endif
-             store(m39f+2)=xpll2         !p2-true
-             store(m39f+3)=xpln2         !p2-false
              if(xsmll .le. zerosq) then
                xplll = 0.                ! P3 does not compute
                xtwll = 0.
                xmnll = 0.
              endif
-             store(m39f+4)=xplll         !p3-true
-             store(m39f+5)=xtwll         !p3-rac-twin
-             store(m39f+6)=xmnll         !p3-false
-         endif
-         m39f=m39f+md39f
-        enddo
+             store(ihooft+2)=xpll2         !p2-true
+             store(ihooft+3)=xpln2         !p2-false
+             store(ihooft+4)=xplll         !p3-true
+             store(ihooft+5)=xtwll         !p3-rac-twin
+             store(ihooft+6)=xmnll         !p3-false
+             do i=7,11
+                  store(ihooft+i)=0.
+             enddo
+        endif
         call xwlstd(39, icom39, idim39, -1, -1)
-       endif
-
-
       endif
-
-
-
-
-
+c
 2840  continue
       IF (ISSPRT.EQ.0) THEN
         WRITE (ncwu,'(/A,A/)') ' Excluded reflections',
@@ -9820,6 +10150,7 @@ C -- ERRORS DETECTED
       RETURN
       END
 c
+C
 CODE FOR XTONCENT
       FUNCTION KTONCENT (I1,J1,K1,NCENTRIC)
 C     KTONCENT = -1 IF NON-CENTRIC
@@ -9958,20 +10289,20 @@ C--TERMINATE THE LIST
 
       write(cmon,'(a,9I6,3x,A)')'Value   ', (i,i=1,9), 'items'
       CALL XPRVDU(NCVDU,1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)')CMON(1)(:nctrim(cmon(1)))
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)')trim(CMON(1))
       do i=1,9
             am(i) = (100.*float(mm(i))/float(n))
       enddo
       write(CMON,'(a, 9f6.1,2i6)')'Observed  ',  am, n, nterm
       CALL XPRVDU(NCVDU,1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)')CMON(1)(:nctrim(cmon(1)))
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)')trim(CMON(1))
 
       do i=1,9
             am(i) = 100.0*log10((float(i+1))/float(i))
       enddo
       write(CMON,'(a, 9f6.1)')'Calculated',  am
       CALL XPRVDU(NCVDU,1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)')CMON(1)(:nctrim(cmon(1)))
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)')trim(CMON(1))
 C
       RETURN
 C
@@ -9979,7 +10310,7 @@ C
       write(cmon,'(a,f6.2)') 
      c 'Items less than unity: Raise the scale factor from', scale
       CALL XPRVDU(NCVDU,1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
       RETURN
 9900  CONTINUE
 C -- ERRORS
@@ -10054,19 +10385,19 @@ c      determinant
             write(cmon,471) 
 471         format ('Correlation coefficient cannot be computed')
             call xprvdu(ncvdu, 1,0)
-            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+            if (issprt.eq.0) write (ncwu,'(/a)') trim(CMON(1))
             write(cmon,472) slope, rinter 
 472         format(' Slope and intercept of plot =',
      1      3g10.3)
 c            call xprvdu(ncvdu, 1,0)
-            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+            if (issprt.eq.0) write (ncwu,'(/a)') trim(CMON(1))
          endif
         else
             mode = 5
             write(cmon,473) 
 473         format ('Slope and Intercept cannot be computed')
             call xprvdu(ncvdu, 1,0)
-            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+            if (issprt.eq.0) write (ncwu,'(/a)') trim(CMON(1))
         endif
       ENDIF
       RETURN
@@ -10110,42 +10441,28 @@ CODE FOR XCIFQC
 CDJWMAR99[      CIF OUTPUT DIRECTED TO NCFPU1, PERMITTING TEXT OUTPUT TO
 C               BE SENT TO THE PUNCH UNIT AS A TABLE
 C
-      PARAMETER (NCOL=2,NROW=49)
-      PARAMETER (IDATA=15,IREF=23)
-      CHARACTER*35 CPAGE(NROW,NCOL)
-      CHARACTER*76 CREFMK
-      PARAMETER (IDIFMX=11)
-      PARAMETER (IREDMX=7)
-      DIMENSION IREFCD(3,IDIFMX)
-      DIMENSION IREDCD(IREDMX)
-CAVDL more solution packages in cif-goodies
-      PARAMETER (ISOLMX=10)
-      DIMENSION ISOLCD(ISOLMX)
-      PARAMETER (IABSMX=16)
-      DIMENSION IABSCD(IABSMX)
-
 C
 CDJWMAR99 MANY CHANGES TO BRING UP TO DATE WITH NEW CIFDIC
-      PARAMETER (NTERM=4)
-      PARAMETER (NNAMES=30)
-      DIMENSION A(12), JDEV(4), KDEV(4)
+      use lists2_mod, only: xldlst
+
+      DIMENSION A(12), KDEV(4)
       PARAMETER (NLST=4)
       DIMENSION LSTNUM(NLST), JLOAD(NLST)
       DIMENSION IVEC(16), ESD(6)
       CHARACTER CCELL(3)*1,CANG(3)*5,CSIZE(3)*3,CINDEX(3)*2
-      CHARACTER CBUF*80,CTEMP*80,CLINE*80, CHLINE*380
-      character *80 ctext(4)
-C
-      CHARACTER*4 CTYPE
-      CHARACTER*15 CINSTR,CDIR,CPARAM,CVALUE,CDEF
+      CHARACTER CBUF*80,CTEMP*80,CLINE*80
+
+
+
+
       CHARACTER*26 UPPER,LOWER
       CHARACTER*3 CSSUBS(11)
-      CHARACTER*17 CWT
-      CHARACTER*22 CFM, CFMC ! 'F<sub>obs</sub>&sup2;'
-      CHARACTER*35 CMOD
-      CHARACTER*6 CSOLVE
-cdjwapr09
-      INTEGER  IFARG      ! F OR F^2 WEIGHTING SCHEME
+
+      
+
+
+
+
 C
       INCLUDE 'IDIM31.INC'
 
@@ -10183,6 +10500,14 @@ C
       INCLUDE 'QLST30.INC'
       INCLUDE 'QLST31.INC'
       INCLUDE 'QSTORE.INC'
+
+      interface
+        subroutine snum(coor,esd,nd,np,j,ivet)
+          real coor, esd
+          integer nd, np, j
+          integer, dimension(:) :: ivet
+        end subroutine
+      end interface
 
       V(CA,CB,CC,AL,BE,GA)=CA*CB*CC * SQRT(1-COS(AL)**2-COS(BE)**2-
      1   COS(GA)**2 + 2 * COS(AL) * COS(BE) * COS(GA))
@@ -10444,7 +10769,7 @@ C----- CLOSE THE 'CIF' OUTPUT FILE
       END
 c
 CODE FOR LINFIT
-	function LINFIT(mode,x,y,wt,a,sa,b,sb,t,tsq,r,rsq,mitem,tensor)
+      function LINFIT(mode,x,y,wt,a,sa,b,sb,t,tsq,r,rsq,mitem,tensor)
 c     1  root, xcoord, ycoord, grad)
 c least squares best line, based on Bevington, Chapter 6 
 c  see also http://mathworld.wolfram.com/LeastSquaresFitting.html
@@ -10462,24 +10787,24 @@ c
 c
       LINFIT = 0
       if(mode.eq.1) then
-	ss = 0.
-	sx = 0.
-	sxx = 0.
-	sy = 0.
-	syy = 0.
-	sxy = 0.
+        ss = 0.
+        sx = 0.
+        sxx = 0.
+        sy = 0.
+        syy = 0.
+        sxy = 0.
         nitem=0
 c        xmax = 0.
 c        ymax = 0.
 
-      else if (mode.eq.2) then	
+      else if (mode.eq.2) then  
         nitem=nitem+1
-	ss = ss+wt
-	sx = sx + x*wt
-	sxx = sxx + x*x*wt
-	sy = sy + y*wt
-	syy = syy + y*y*wt
-	sxy = sxy + x*y*wt
+        ss = ss+wt
+        sx = sx + x*wt
+        sxx = sxx + x*x*wt
+        sy = sy + y*wt
+        syy = syy + y*y*wt
+        sxy = sxy + x*y*wt
 c        xmax = max(xmax, abs(x*wt))
 c        ymax = max(ymax, abs(y*wt))
 
@@ -10488,7 +10813,7 @@ c        ymax = max(ymax, abs(y*wt))
         mitem = nitem
         LINFIT = +1
 c
-	denom = ss*sxx - sx*sx
+        denom = ss*sxx - sx*sx
         if(abs(denom) .gt. zero) then
             a = (sy*sxx - sx*sxy)/denom
             b = (ss*sxy - sx*sy)/denom
@@ -10618,7 +10943,8 @@ c
           endif      
 c        call xprvdu(ncvdu,3,0)
         if (issprt .eq. 0) THEN
-          write(ncwu,'(/a/a/a)')cmon(1)(:),cmon(2)(:),cmon(3)(:)
+          write(ncwu,'(/a/a/a)')trim(CMON(1)),
+     1      trim(CMON(2)),trim(cmon(3))
         endif
 c
 c compute gradient for zero intercept. A non-zero intercept
@@ -10819,6 +11145,7 @@ C
       INCLUDE  'QSTR11.INC'
         noldgood = n6acc
         ncycle = 0
+        
 c
 c
         DO 1650 iii=1,ntries
@@ -10929,7 +11256,7 @@ c
         if(kflack .le. 0) then
             write(cmon,'(a)') ' Too few reflections for histogram'
             call xprvdu (ncvdu,1,0)
-           if (issprt.eq.0)write(ncwu,'(/A)')cmon(1)(:nctrim(cmon(1)))
+           if (issprt.eq.0)write(ncwu,'(/A)')trim(CMON(1))
         endif
         call outcol(1)
         return
@@ -11268,6 +11595,8 @@ CODE FOR ADD39
       SUBROUTINE ADD39
 C--INPUT OR EXTEND A LIST 39 (GENERAL DATA STORE)
 
+      use lists2_mod, only: xldlst
+
       INCLUDE 'ISTORE.INC'
       INCLUDE 'STORE.INC'
       INCLUDE 'XLEXIC.INC'
@@ -11287,7 +11616,6 @@ C--INPUT OR EXTEND A LIST 39 (GENERAL DATA STORE)
       INCLUDE 'XLST50.INC'
       INCLUDE 'ICOM39.INC'
 
-      DIMENSION PROCS(32)
       DATA IDIMN /32/
 
 C -- Start the clock.

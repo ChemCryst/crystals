@@ -1,7 +1,7 @@
 %SCRIPT DIP2000
 
  * Running DIPIN.
-%      COPY '#SPAWN "CRYSDIR:DIPIN.EXE"'
+%      COPY '#SPAWN "CRYSDIR:dipin.exe"'
  * Done.
 
 % COPY '#SCRIPT XDIPIN'

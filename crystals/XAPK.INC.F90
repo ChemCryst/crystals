@@ -1,0 +1,5 @@
+module xapk_mod
+    integer NWKA,NKA,LKA,NKAS,NKAO,NKAV,ICOORD(2,22) 
+
+    COMMON/XAPK/NWKA,NKA,LKA,NKAS,NKAO,NKAV,ICOORD
+end module

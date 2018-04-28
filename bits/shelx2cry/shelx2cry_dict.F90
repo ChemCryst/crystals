@@ -39,7 +39,7 @@ type(dict_t) :: this
     allocate(this%tuples(80))
     associate (tuples => this%tuples)
         tuples(1)%key='ABIN'
-        tuples(1)%func => shelx_unsupported
+        tuples(1)%func => shelx_abin
         tuples(2)%key='ACTA'
         tuples(2)%func => shelx_ignored
         tuples(3)%key='AFIX'
@@ -73,7 +73,7 @@ type(dict_t) :: this
         tuples(17)%key='DAMP'
         tuples(17)%func => shelx_unsupported    
         tuples(18)%key='DANG'
-        tuples(18)%func => shelx_unsupported    
+        tuples(18)%func => shelx_dfix    
         tuples(19)%key='DEFS'
         tuples(19)%func => shelx_unsupported    
         tuples(20)%key='DELU'
@@ -81,9 +81,9 @@ type(dict_t) :: this
         tuples(21)%key='DFIX'
         tuples(21)%func => shelx_dfix
         tuples(22)%key='DISP'
-        tuples(22)%func => shelx_unsupported    
+        tuples(22)%func => shelx_disp    
         tuples(23)%key='EADP'
-        tuples(23)%func => shelx_unsupported    
+        tuples(23)%func => shelx_eadp
         tuples(24)%key='END '
         tuples(24)%func => shelx_end
         tuples(25)%key='EQIV'
@@ -95,7 +95,7 @@ type(dict_t) :: this
         tuples(28)%key='FEND'
         tuples(28)%func => shelx_unsupported    
         tuples(29)%key='FLAT'
-        tuples(29)%func => shelx_unsupported    
+        tuples(29)%func => shelx_flat
         tuples(30)%key='FMAP'
         tuples(30)%func => shelx_ignored    
         tuples(31)%key='FRAG'
@@ -109,17 +109,17 @@ type(dict_t) :: this
         tuples(35)%key='HFIX'
         tuples(35)%func => shelx_unsupported    
         tuples(36)%key='HKLF'
-        tuples(36)%func => shelx_ignored    
+        tuples(36)%func => shelx_hklf    
         tuples(37)%key='HTAB'
         tuples(37)%func => shelx_ignored    
         tuples(38)%key='ISOR'
-        tuples(38)%func => shelx_unsupported    
+        tuples(38)%func => shelx_isor
         tuples(39)%key='LATT'
         tuples(39)%func => shelx_latt    
         tuples(40)%key='LAUE'
         tuples(40)%func => shelx_unsupported    
         tuples(41)%key='LIST'
-        tuples(41)%func => shelx_unsupported    
+        tuples(41)%func => shelx_ignored    
         tuples(42)%key='L.S.'
         tuples(42)%func => shelx_ignored    
         tuples(43)%key='MERG'
@@ -147,11 +147,11 @@ type(dict_t) :: this
         tuples(54)%key='RESI'
         tuples(54)%func => shelx_resi
         tuples(55)%key='RIGU'
-        tuples(55)%func => shelx_unsupported    
+        tuples(55)%func => shelx_rigu
         tuples(56)%key='RTAB'
         tuples(56)%func => shelx_unsupported    
         tuples(57)%key='SADI'
-        tuples(57)%func => shelx_unsupported    
+        tuples(57)%func => shelx_sadi
         tuples(58)%key='SAME'
         tuples(58)%func => shelx_same    
         tuples(59)%key='SFAC'
@@ -187,7 +187,7 @@ type(dict_t) :: this
         tuples(74)%key='WIGL'
         tuples(74)%func => shelx_unsupported    
         tuples(75)%key='WPDB'
-        tuples(75)%func => shelx_unsupported    
+        tuples(75)%func => shelx_ignored    
         tuples(76)%key='XNPD'
         tuples(76)%func => shelx_unsupported    
         tuples(77)%key='ZERR'
@@ -203,11 +203,11 @@ type(dict_t) :: this
 end function
 
 !> Get the subroutine corresponding to a keyword
-function getvalue(this, key) result(proc)
+subroutine getvalue(this, key, proc)
 implicit none
 class(dict_t) :: this
 character(len=4), intent(in) :: key
-procedure(shelx_dummy), pointer :: proc
+procedure(shelx_dummy), pointer, intent(out) :: proc
 integer i
     
     proc => null()
@@ -224,7 +224,7 @@ integer i
         end do
     end associate
     
-end function
+end subroutine
 
 
 end module

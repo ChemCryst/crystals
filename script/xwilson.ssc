@@ -20,7 +20,8 @@
 % EVALUATE I6DONE = TRUE                                                        
 % EVALUATE I6MASK = TRUE                                                        
 % COPY '#SCRIPT XPUTINFO'                                                       
-%%                                                                              
+%% 
+%%                                                                             
 %%                                                                              
 ^^WI WINDOW XWILSON 'Wilson Plot' LARGE MODAL KEEP SIZE                    
 ^^WI COMMIT='XC_BOK' CANCEL='XC_BOK'                                            
@@ -60,7 +61,7 @@
 ^^WI           STATE=OFF INFORM=YES                                             
 ^^WI     @ 8,2 GRID GSTAT NROWS=1 NCOLS=11                                      
 ^^WI     {                                                                      
-^^WI       @ 1,1 STATIC WBFS 'B factor:'                                        
+^^WI       @ 1,1 STATIC WBFS 'U factor:'                                        
 ^^WI       @ 1,3 STATIC _MW_BFACTR '0000.0000'                                  
 ^^WI       @ 1,5 STATIC WBFS 'Scale:'                                           
 ^^WI       @ 1,7 STATIC _MW_BSCALE '0000.0000'                                  
@@ -84,7 +85,7 @@
 ^^CO SENDPROGRESSTO _CHECKPR                                                    
 %%                                                                              
 % LOOP                                                                          
-
+%%                                                                              
 ^^CO SET PROGOUTPUT TEXT 'Computing Wilson statistics'                          
 %  COPY '#WILSON'                                                               
 %  COPY 'OUTPUT PLOT=YES NZ=YES STATS=YES'                                      
@@ -96,7 +97,7 @@
 %  COPY 'END'                                                                   
 %%                                                                              
 %%                                                                              
-
+%%                                                                              
 ^^CO SET PROGOUTPUT TEXT 'Ready'                                                
 %%                                                                              
 %  LOOP                                                                         
@@ -176,16 +177,10 @@
 %        COPY 'END'                                                             
 %      END BLOCK    
 %      BLOCK    %HELP
-  The calculated points (BLUE) depend upon the current values
-  for the Debye (B) and scale factors.  Clicking on a GREEN
-  data point to select a maximum value of Rho will change the
-  B and scale, and hence the calculated plot values.
-
-  For consistency, it is recommended that you clear the check
-  box and select the maximum observed Rho value before selecting
-  a new Rho value.
+%         COPY '#SPAWN CRYSDIR:manual/analyse/tabbed-initial.html#wil' 
+{S Wilson Plot help
 %      END BLOCK                                                            
-                                                                
+%%                                                                                                                                              
 %    END CASE                                                                   
 %  END LOOP                                                                     
 % END LOOP                                                                      

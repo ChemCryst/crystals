@@ -3,21 +3,19 @@
 %% Prepare for a Fourier map. This script exits leaving a hanging               
 %% '#FOURIER' command open.                                                     
 %%                                                                              
-%% If Friedel pairs are not merged, the merge them.                             
-%%                                                                              
-%% If Twinned, then calculate FO for primary domain and merge.                  
-%%                                                                              
-%  VARIABLE INTEGER ITMP                                                        
-%  VARIABLE LOGICAL TWINNED MERGED                                              
-%%                                                                              
-%%                                                                              
 %%djw                                                                           
-%  VARIABLE  INTEGER F67                                                        
+%  VARIABLE  INTEGER F67  DOCALC
 %%
 %      COPY '#SCRIPT SFLS67'
+%      IF DOCALC .EQ. 2 THEN
+
+{I Fourier abandoned
+
+%         FINISH
+%      END IF
 % 
 %      IF ( F67 .EQ. 6 ) THEN                                                   
-%        COPY '#FOURIER 6'                                                      
+%        COPY '#FOURIER 6'             % we should never use LIST 6 except for Pattersons                                         
 %      ELSE                                                                     
 %        COPY '#FOURIER 7'                                                      
 %      END IF                                                                   

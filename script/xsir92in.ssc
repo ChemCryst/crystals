@@ -6,7 +6,7 @@
 %%                                                                              
 %      COPY '#SCRIPT FRESH'                                                     
 %%                                                                              
-%      COPY '#USE SIR9x.cry'                                                    
+%      COPY '#USE sir9X.cry'                                                    
 %      COPY '#EDIT'                                                             
 %      COPY 'MON OFF'                                                           
 %      COPY 'REFORMAT ALL'                                                      

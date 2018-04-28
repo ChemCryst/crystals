@@ -1,0 +1,391 @@
+#TITLE GEOM TEST USING CYCLO DATA
+#LIST 1
+#LIST 20
+#LIST 30
+#LIST 1
+#SET PRINT OFF
+Bonds: Update required - There is no list 41
+Bonds: Update required - List 40 has changed
+Single precision:  1-norm:  9.27E+00 condition number:  1.33E+02 relative error:  1.59E-05
+Single precision:  1-norm:  9.26E+00 condition number:  1.33E+02 relative error:  1.59E-05
+#ESD
+           Notification of SPECIAL conditions
+ Initialising Special positions
+ The new list   9 contains    22 atoms
+#GEOM
+
+
+ Geom test using CYCLo data                                                           Date              Time          
+
+
+ Results for axis number    1
+
+
+ Centroid in orthogonal angstrom and crystal fractions
+
+[41]      0.44      5.20      4.82
+
+
+  Rotation matrix from orthogonal to best plane co-ordinates
+
+  latent roots             L         M         N         w.r.t. A*, B' and C
+
+    4.34253            -0.2600    0.9358    0.2380
+    3.12625            -0.3796    0.1276   -0.9163
+    1.11130            -0.8879   -0.3286    0.3220
+
+
+  Transformation from crystal fractions w.r.t. centroid to best plane coordinates in angstrom and fractions
+
+                 -1.2803   10.3265    3.6474              -0.2600    0.9358    0.2380
+                 -1.8693    1.4086  -14.0401              -0.3796    0.1276   -0.9163
+                 -4.3728   -3.6257    4.9339              -0.8879   -0.3286    0.3220
+
+
+
+  Transformation to crystal fractions w.r.t. centroid from best plane co-ordinates in angstrom and fractions
+
+[31]                  -0.052    -0.077    -0.180               
+                  0.0848    0.0116   -0.0298               0.9358    0.1276   -0.3286
+                  0.0155   -0.0598    0.0210               0.2380   -0.9163    0.3220
+
+
+
+  Equation of the plane :
+
+  -4.37278 * X +  -3.62568 * Y +   4.93391 * Z  =    -0.547                    X, Y and Z are in crystal fractions
+
+plane-vector (in polar coord.):
+
+DECLINAT =   -71.22     DECLINAT/100 =  -0.7122
+AZIMUTH  =    20.31     AZIMUTH /100 =   0.2031
+  Co-ordinates of the defining atoms projectedonto the best  plane
+
+    Type     Serial       Weight       XP        YP        ZP       delta   esd
+
+     C         10.         1.000      1.077    -0.029     0.754     0.754  .0021
+     C          9.         1.000      1.103    -0.056    -0.737    -0.737  .0019
+     C          4.         1.000     -0.228     0.024    -0.020    -0.020  .0018
+     N          3.         1.000     -0.913     1.280    -0.006    -0.006  .0015
+     C          5.         1.000     -1.039    -1.218     0.009     0.009  .0018
+
+ Spherical index =   0.26 cylindrical index =   0.51 Discoidal index =   0.70
+ Value closest to unity is best descriptor. See D. M. P. Mingos and A. L. Rohl
+  J. Chem. Soc. Dalton Trans. (1991), 3419-3425
+
+
+ Co-ordinates of other atoms projected onto the best  plane
+
+    Type     Serial                    XP        YP        ZP       delta   esd
+
+     N          3.                   -0.913     1.280    -0.006    -0.006  .0015
+     C          5.                   -1.039    -1.218     0.009     0.009  .0018
+ Results for axis number    2
+
+
+ Centroid in orthogonal angstrom and crystal fractions
+
+[41]      1.14      3.42      5.47
+
+
+  Rotation matrix from orthogonal to best line  co-ordinates
+
+  latent roots             L         M         N         w.r.t. A*, B' and C
+
+    0.00000             0.8710    0.1286   -0.4742
+    0.44493             0.3771    0.4436    0.8130
+    7.22176            -0.3149    0.8870   -0.3378
+
+
+  Transformation from crystal fractions w.r.t. centroid to best line  coordinates in angstrom and fractions
+
+                  4.2896    1.4189   -7.2654               0.8710    0.1286   -0.4742
+                  1.8573    4.8947   12.4575               0.3771    0.4436    0.8130
+                 -1.5507    9.7875   -5.1766              -0.3149    0.8870   -0.3378
+
+
+
+  Transformation to crystal fractions w.r.t. centroid from best line  co-ordinates in angstrom and fractions
+
+                  0.1769    0.0766   -0.0639               0.8710    0.3771   -0.3149
+                  0.0117    0.0402    0.0804               0.1286    0.4436    0.8870
+                 -0.0309    0.0531   -0.0220              -0.4742    0.8130   -0.3378
+
+
+
+  Equation of the line  :
+
+  -1.55070 * X +   9.78753 * Y +  -5.17663 * Z  =     0.832                    X, Y and Z are in crystal fractions
+
+line -vector (in polar coord.):
+
+DECLINAT =  -109.75     DECLINAT/100 =  -1.0975
+AZIMUTH  =   -70.46     AZIMUTH /100 =  -0.7046
+  Co-ordinates of the defining atoms projectedonto the best  line 
+
+    Type     Serial       Weight       XP        YP        ZP       delta   esd
+
+     C          7.         1.000      0.000     0.103    -1.835     0.103  .0024
+     O          6.         1.000      0.000    -0.437    -0.489     0.437  .0014
+     C          5.         1.000      0.000     0.473     0.486     0.473  .0018
+     C          4.         1.000      0.000    -0.139     1.838     0.139  .0018
+
+ Spherical index =   0.00 cylindrical index =   0.97 Discoidal index =   1.00
+ Value closest to unity is best descriptor. See D. M. P. Mingos and A. L. Rohl
+  J. Chem. Soc. Dalton Trans. (1991), 3419-3425
+
+
+ Co-ordinates of other atoms projected onto the best  line 
+
+    Type     Serial                    XP        YP        ZP       delta   esd
+
+     O          8.                   -0.028     1.664     0.293     1.664  .0015
+
+
+  Angle between axis    1 and axis    2 is  83.07  Degrees
+
+
+
+
+ Geom test using CYCLo data                                                           Date              Time          
+
+
+ Principal axes and 'direction' cosines of the thermal ellipsoids
+
+
+ Type Serial     m.s.d.         a*        b'         c          a         b         c    Uarith     Ugeom    Uprime
+
+ C        5.    0.02783    0.08875   0.77092   0.63072    0.08875   0.77092   0.63072
+                0.03349    0.50682   0.51016  -0.69489    0.50682   0.51016  -0.69489
+                0.03876   -0.85747   0.38133  -0.34544   -0.85747   0.38133  -0.34544   0.03336   0.03306   0.04666                        
+
+ N        3.    0.02124    0.95117   0.13585   0.27715    0.95117   0.13585   0.27715
+                0.03241   -0.30574   0.29159   0.90636   -0.30574   0.29159   0.90636
+                0.03838    0.04232  -0.94685   0.31889    0.04232  -0.94685   0.31889   0.03068   0.02978   0.05855                        
+
+ C        4.    0.02645    0.82601  -0.45726  -0.32958    0.82601  -0.45726  -0.32958
+                0.02961    0.55946   0.59385   0.57823    0.55946   0.59385   0.57823
+                0.03493   -0.06868  -0.66201   0.74634   -0.06868  -0.66201   0.74634   0.03033   0.03013   0.03910                        
+
+ C        9.    0.02699   -0.30355   0.93238   0.19629   -0.30355   0.93238   0.19629
+                0.04063    0.94706   0.27265   0.16952    0.94706   0.27265   0.16952
+                0.04549   -0.10454  -0.23735   0.96578   -0.10454  -0.23735   0.96578   0.03770   0.03681   0.06847                        
+
+ C       10.    0.02494    0.77715  -0.50412  -0.37670    0.77715  -0.50412  -0.37670
+                0.04654    0.60964   0.45458   0.64938    0.60964   0.45458   0.64938
+                0.06195   -0.15613  -0.73432   0.66061   -0.15613  -0.73432   0.66061   0.04448   0.04158   0.11560                        
+ Average radius of      5 atoms =  0.0343 rmsd   0.0050
+ Maximum radius of      5 atoms =  0.0416
+   Maximum axis of      5 atoms =  0.0619
+for Uprime see Acta Cryst (2000). B56, 747-749
+ Results for group number    1
+
+
+ Geom test using CYCLo data                                                           Date              Time          
+
+
+ Analysis of rigid body motion
+ Input centre of libration (crystal fractions)       0.0000  0.0000  0.0000
+ Centre of gravity, used as centre of libration      0.1414  0.4147  0.2767
+
+
+ Tensors with respect to the above centre and orthogonal axes (A*, B' and C)
+
+               L                           T                          S
+
+[35]     5.64    -0.82    -2.7       0.02    -0.00     0.00      -0.05    -0.06     0.11
+[35]    -0.82    16.99     4.6      -0.00     0.03    -0.00       0.13    -0.06     0.04
+[35]    -2.72     4.60     2.2       0.00    -0.00     0.03      -0.08    -0.38     0.11
+
+
+
+ Rotation matrix from orthogonal axes to coordinate system defined by L
+
+ Latent roots             L         M         N         w.r.t. a*, b' and c
+
+     -0.067             0.3932   -0.2219    0.8923
+[34]       6.4              0.911     0.223    -0.346
+[34]      18.5             -0.122     0.949     0.289
+
+
+ Rotation matrices from crystal fractions w.r.t. libration centre 
+ to axial system  defined by L
+                Angstrom                               Fractions
+
+[41]          1.93     -2.44     13.67
+[41]          4.48      2.46     -5.30
+[41]         -0.60     10.47      4.44
+
+ Tensors with respect to principal axes of L
+
+               L                           T                          S
+
+[35]    -0.06     0.00     0.0       0.03    -0.00    -0.00       0.14    -0.24    -0.28
+[35]     0.00     6.47     0.0      -0.00     0.02     0.00       0.05     0.00     0.08
+[35]     0.00     0.00    18.5      -0.00     0.00     0.02       0.13     0.04    -0.15
+
+
+
+
+ Centre for which s is symmetric :                   0.4550  0.2096  0.2016
+ Axial displacements for which S becomes diagonal  (Angstroms along principal axes of L)
+                                 Shift directions
+                              1         2         3
+
+                 Axis 1               -4.22      3.64
+
+                 Axis 2      0.01                0.04
+
+                 Axis 3      0.00     -0.02
+ Final reduced tensors
+
+               L                           T                          S
+
+[35]    -0.06     0.00     0.0       0.03    -0.53    -0.62       0.14     0.00     0.00
+[35]     0.00     6.47     0.0      -0.53     0.89     1.01       0.00     0.00     0.00
+[35]     0.00     0.00    18.5      -0.62     1.01     1.21       0.00     0.00    -0.15
+
+
+
+ Screw pitches (angstrom/degree) :              -2.21   0.00  -0.01
+ Observed and calculated temperature factors   (Crystal axes)
+
+
+      Code     Atom  Serial       X/A      Y/B      Z/C          U11     U22     U33     U23     U13     U12
+
+
+        1      O        8.       0.3352   0.4008   0.4401       0.071   0.038   0.035  -0.005  -0.014   0.000
+[40]                                                                 0.06    0.03    0.03   -0.00   -0.01    0.00
+
+        2      C        5.       0.2367   0.3688   0.3718       0.037   0.031   0.032  -0.003   0.001  -0.002
+[40]                                                                 0.04    0.03    0.03   -0.00   -0.00   -0.00
+
+        3      C       10.      -0.1009   0.5399   0.3492       0.034   0.049   0.050  -0.012   0.005   0.010
+[40]                                                                 0.03    0.04    0.04   -0.01    0.00    0.00
+
+        4      C        4.       0.1033   0.4529   0.3095       0.027   0.031   0.032  -0.003   0.001   0.001
+[40]                                                                 0.02    0.03    0.03   -0.00    0.00    0.00
+
+        5      N        3.       0.0402   0.4089   0.2241       0.022   0.038   0.032  -0.002  -0.003  -0.002
+[40]                                                                 0.02    0.03    0.03   -0.00   -0.00    0.00
+
+        6      C        2.       0.2360   0.3838   0.1656       0.031   0.025   0.033   0.003   0.000  -0.002
+[40]                                                                 0.02    0.02    0.03    0.00    0.00   -0.00
+
+        7      C       11.       0.1394   0.3477   0.0763       0.046   0.039   0.031   0.001   0.000  -0.005
+[40]                                                                 0.04    0.03    0.03    0.00   -0.00   -0.00
+
+
+                R1-Factor for U'S =    6.68
+               R^2-Factor for U'S =    6.18
+       R.M.S. discrepancy for U'S =  0.0017
+  Co-ordinates of other atoms after TLS application
+ O     8.  0.3352  0.4008  0.4401   0.071   0.038   0.035  -0.005  -0.014   0.000
+[40]                                     0.06    0.03    0.03   -0.00   -0.01    0.00
+
+
+ Geom test using CYCLo data                                                           Date              Time          
+
+
+ Bond lengths and angles :  (1) uncorrected,  (2) corrected for libration
+
+
+ Distance limit   1.800
+
+ Angle limit      0.000
+
+
+
+
+ Distances about atom  O      8.          X/A =  0.3352     Y/B =  0.4008     Z/C =  0.4401
+
+  Code    Atom  Serial
+
+    2     C        5.       1.207     1.210
+
+
+
+
+ Distances about atom  C      5.          X/A =  0.2367     Y/B =  0.3688     Z/C =  0.3718
+
+  Code    Atom  Serial
+
+    4     C        4.       1.484     1.489
+
+
+
+
+ Distances about atom  C     10.          X/A = -0.1009     Y/B =  0.5399     Z/C =  0.3492
+
+  Code    Atom  Serial
+
+    4     C        4.       1.518     1.521
+
+
+
+
+ Distances about atom  C      4.          X/A =  0.1033     Y/B =  0.4529     Z/C =  0.3095
+
+  Code    Atom  Serial
+
+    5     N        3.       1.430     1.434
+
+
+
+
+ Distances about atom  N      3.          X/A =  0.0402     Y/B =  0.4089     Z/C =  0.2241
+
+  Code    Atom  Serial
+
+    6     C        2.       1.346     1.349
+
+
+
+
+ Distances about atom  C      2.          X/A =  0.2360     Y/B =  0.3838     Z/C =  0.1656
+
+  Code    Atom  Serial
+
+    7     C       11.       1.502     1.507
+
+
+
+
+ Distances about atom  C     11.          X/A =  0.1394     Y/B =  0.3477     Z/C =  0.0763
+
+ *******************************************************************************
+          To continue, you must issue a new ATOM directive
+ *******************************************************************************
+ Results for axis number    4
+
+  Y
+  :
+  :
+  :
+  :....... X
+
+
+
+  C.7...........O.6                        N.3                                                                         
+                  .                         .                                                                          
+                  .                        .                                                                           
+                   .                      .                                                                            
+                   .                      .                                                                            
+                    .                    .                                                                             
+                    .                   .                                                                              
+                     .                  .                                                                              
+                      .                .                                                                               
+                      .               .                                                                                
+                      C.5............C.4                                                                               
+                      .                                                                                                
+                     .                                                                                                 
+                    .                                                                                                  
+                    .                                                                                                  
+                   .                                                                                                   
+                  .                                                                                                    
+                 .                                                                                                     
+               O.8                                                                                                     
+#END
+
+
+          : Job ends ok       with     0 warnings and     0 errors

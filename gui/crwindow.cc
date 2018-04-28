@@ -184,6 +184,12 @@ CrWindow::~CrWindow()
 //        delete (CxWindow*)ptr_to_cxObject;
     }
 
+    if (mName == "_MAIN") { 
+	
+		wxGetApp().ExitMainLoop();
+	
+	}
+
 }
 
 

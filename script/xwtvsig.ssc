@@ -1,5 +1,12 @@
 %SCRIPT XWTVSIG                                                                 
 %%
+%% plot weight vs sigma from old-type sigmas.dat file.
+%% New-type files are processes in XVARIANCE2
+%%
+% VARIABLE LOGICAL SIG SIG2               % Decalre both so that SIG2 is false
+% EVALUATE SIG = FILEEXISTS 'sigmas.dat'
+% VARIABLE LOGICAL XWVSRUNNING XVARRUNNING
+% EVALUATE XWVSRUNNING  = TRUE
 % VARIABLE INTEGER FTYPE
 %% Find refinement type
 %% FTYPE is 0 for Fo ref and 1 for Fsq ref                                     
@@ -22,7 +29,7 @@
 ^^WI    @ 1,3 GRID EXP2 NROWS=4 NCOLS=2                                         
 ^^WI    {                                                                       
 ^^WI     @ 1,1 STATIC XFW1                                                      
-^^WI 'You are looking at a scatter plot of 1/Sigma versus SQRT(weight).' 
+^^WI 'You are looking at a scatter plot of 1/Sigma versus SQRT(weight)' 
 %        IF FTYPE .EQ. 0 THEN
 ^^WI     @ 1,2 STATIC XFW1 ' for a refinement on F' 
 %        ELSE
@@ -39,11 +46,13 @@
 ^^WI     DEFINEPOPUPMENU POPUP 'Selection'                                      
 ^^WI       ITEM _SDELA '&Omit _L' 'OMIT_N_L'                                    
 ^^WI     ENDDEFINEMENU                                                          
-^^WI   @ 6,2 GRID EXBT NROWS=1 NCOLS=4                                          
+^^WI   @ 6,2 GRID EXBT NROWS=1 NCOLS=8                                          
 ^^WI   {                                                                        
 ^^WI    @ 1,1 STRETCH VB HORIZONTAL
-^^WI    @ 1,4 BUTTON EXT_BOK 'Close' DEFAULT COMMIT CANCEL
-^^WI    @ 1,2 BUTTON SAVENPP 'Save Image'
+^^WI    @ 1,2 BUTTON X_HELP 'Help'
+^^WI    @ 1,4 BUTTON SAVENPP 'Save Image'
+^^WI    @ 1,6 BUTTON VARSCP 'Variance Plot'
+^^WI    @ 1,8 BUTTON EXT_BOK 'Close' DEFAULT COMMIT CANCEL
 ^^WI   }                                                                        
 ^^WI  }                                                                         
 ^^WI  @ 2,1 PROGRESS _FOFCPR 'Please wait'                                      
@@ -51,17 +60,43 @@
 ^^WI SHOW                                                                       
 ^^CR                                                                            
 ^^CO SENDPROGRESSTO _FOFCPR                                                     
-%  LOOP                                                                         
+%%
+%  LOOP  
 %    COPY '#sum list 6 level=sigma'                                              
 %    COPY 'END'                                                                 
-%    VERIFY EXT_BOK SAVENPP OMIT                                                        
+%% output a dividing ruler
+{S 
+%    copy '#sum l 4'
+%    copy 'end' 
+%%
+%    VERIFY EXT_BOK SAVENPP VARSCP X_HELP OMIT                                                        
 %    GET SILENT NOSTORE FINAL ABBREVIATED '?' 'EXT_BOK'                         
 %    IF VALUE .EQ. 1 THEN                                                       
 ^^CO    DISPOSE xwtvsig                                                
+%       EVALUATE XWVSRUNNING  = FALSE
 %       FINISH                                                                  
 %    ELSE IF VALUE .EQ. 2 THEN
 ^^CO    SET _VWTVSIG SAVE 800 600 weight_
 %    ELSE IF VALUE .EQ. 3 THEN
+%       IF XVARRUNNING .EQ. FALSE THEN
+% show sig sig2
+%         IF .NOT. SIG THEN
+{E
+{S Old format sigma.dat file does not exist.
+{S Use the menu item "Variance of Reflections"
+{E
+%           FINISH
+%         ELSE
+%           COPY '#SCRIPT XVARIANCE'
+%         END IF
+%       ELSE
+{E Variance SCRIPT already running
+%       END IF
+%    ELSE IF VALUE .EQ. 4 THEN
+%     BLOCK    %XHELP
+%       COPY '#SCRIPT HELPSIGMA'
+%     END BLOCK
+%    ELSE IF VALUE .EQ. 5 THEN
 %     BLOCK                                                                      
 %      ON EDITERROR TERMINATE                                                   
 %      COPY '#GENERALEDIT 28'                                                   
@@ -89,5 +124,6 @@
 %     END BLOCK                                                                  
 %    END IF                                                                     
 %  END LOOP                                                                     
+% EVALUATE XWVSRUNNING  = FALSE
 %END SCRIPT                                                                     
                                                                                 

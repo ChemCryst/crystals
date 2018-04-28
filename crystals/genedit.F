@@ -72,6 +72,9 @@ C      1.01      FEBRUARY 1985         PWB   ADD 'OPERATE' DIRECTIVE
 C      1.02      FEBRUARY 1985         PWB   CHANGE 'ERROR' DIRECTIVE
 C      1.03      JANUARY 1991          DJW   ADD 'TOP, NEXT, LAST, BOTTO
 C
+      use lists1_mod, only: xrlind
+      use lists2_mod, only: xldlst
+      
       CHARACTER*80 CFORM(3) , CIFORM
       CHARACTER*12 CEVARI , CTVARI
 C
@@ -96,6 +99,12 @@ C
       DATA ICOMSZ / 5 /
       DATA LLSTCM / 512 /
       DIMENSION ID(2)
+      
+      character, dimension(18), parameter :: numbers=
+     1     (/'0','1','2','3','4','5','6','7','8','9',
+     2       '+','-','.',' ','e','E','d','D'/)
+      logical found, isanumber
+      
 C
 C
 C -- SET THE TIMING AND READ THE CONSTANTS
@@ -130,7 +139,8 @@ C than useless.
 
       INLOG = IRDLOG(IFLIND)
       IRDLOG(IFLIND) = 0
-      IF(INLOG.NE.0)WRITE(NCLU,'(A)')'# GENERALEDIT can not be logged'
+cdjw-2017 Suppress this info line - we all know about GENERALEDIT now.
+c      IF(INLOG.NE.0)WRITE(NCLU,'(A)')'# GENERALEDIT can not be logged'
 C
 C
 C -- ENSURE THAT THE ALL THE DIRECTIVES APPEAR TO HAVE BEEN READ ONCE
@@ -450,7 +460,41 @@ C -- 'TRANSFER' DIRECTIVE
 C
       IF ( IRCADR .LE. 0 ) GO TO 8930
 C
-      ISTAT = KSCTRN ( IDIREC , CTVARI , ISTORE(IRCADR+IOFF), ILGTH )
+      ! Checking if the transfer is a variable name or a constant
+      isanumber=.true.
+      do j=1, len_trim(ctvari)
+          found=.false.
+          do i=1, size(numbers)
+              if(ctvari(j:j)==numbers(i)) then  
+                  found=.true.
+                  exit
+              end if
+          end do
+          if(.not. found) then
+              isanumber=.false.
+              exit
+          end if
+      end do
+      ! Further check if a number: e or d can't be the first character
+      if(isanumber) then
+          do i=11, size(numbers)
+              if(index(ctvari, numbers(i))==1) then
+                  isanumber=.false.
+                  exit
+              end if
+          end do
+      end if
+      
+      if(isanumber .and. idirec==2) then
+          ! A constant, read in the value directly
+          read(ctvari, *, iostat=ISTAT) STORE(IRCADR+IOFF)
+          if(istat/=0) then
+            istat=-1
+          end if
+      else
+          ! A variable from script, fetching the value
+          ISTAT = KSCTRN ( IDIREC , CTVARI , ISTORE(IRCADR+IOFF), ILGTH)
+      end if
 C
       GO TO 8000
 C
@@ -463,8 +507,34 @@ C -- 'TRANSHEAD' DIRECTIVE
 C
       IF ( ILSTCM + IOFF .LE. 0 ) GO TO 8930
       IF ( ILSTCM + IOFF .GT. ISIZST ) GO TO 8930
-C
-      ISTAT = KSCTRN ( IDIREC , CTVARI , ISTORE(ILSTCM+IOFF), 1 )
+
+      
+      ! Checking if the transfer is a variable name or a constant
+      isanumber=.true.
+      do j=1, len_trim(ctvari)
+          found=.false.
+          do i=1, size(numbers)
+              if(ctvari(j:j)==numbers(i)) then  
+                  found=.true.
+                  exit
+              end if
+          end do
+          if(.not. found) then
+              isanumber=.false.
+              exit
+          end if
+      end do
+      
+      if(isanumber .and. idirec==2) then
+          ! A constant, read in the value directly
+          read(ctvari, *) ISTORE(ILSTCM+IOFF)
+c          print *,' Read const: ', STORE(ILSTcM+ioff), ILSTCM, IOFF
+      else
+          ! A variable from script, fetching the value
+          ISTAT = KSCTRN ( IDIREC , CTVARI , ISTORE(ILSTCM+IOFF), 1)
+      end if
+
+C      ISTAT = KSCTRN ( IDIREC , CTVARI , ISTORE(ILSTCM+IOFF), 1 )
 C              
       GO TO 8000
 C

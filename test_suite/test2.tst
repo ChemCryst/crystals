@@ -68,6 +68,14 @@ REFINE
 END
 \
 \                      Now try aniso refinement
+#LIST     16
+LIMIT      0.1 U[11] 
+LIMIT      0.1 U[22] 
+LIMIT      0.1 U[33] 
+LIMIT      0.1 U[12] 
+LIMIT      0.1 U[13] 
+LIMIT      0.1 U[23] 
+END
 #LIST 12
 BLOCK SCALE X'S, U'S
 END

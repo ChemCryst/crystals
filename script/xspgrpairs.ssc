@@ -1,0 +1,151 @@
+%SCRIPT SPGRPAIRS
+%% copy of Markus's a_spgrpairs - currently unchanged (March 2017)
+%%
+{1,11
+{1,11 The coordinates will be inverted and
+{1,11 the Space Group changed to its enantiomer.
+{1,11
+%%
+% VARIABLE CHARACTER LAT SYMA1 SYMA2 SYMB SYMC OLDSYMBOL NEWSYMBOL
+% VARIABLE LOGICAL LCHANGESPGR
+%%
+% IF EXISTS 2 .LE. 0 THEN
+%    EVALUATE L2 = 'P   '
+%    EVALUATE A2 = '1'
+%    EVALUATE B2 = ' '
+%    EVALUATE C2 = ' '
+%  ELSE
+%%
+%    COPY '#GENERALEDIT 2'
+%    COPY 'LOCATE RECORDTYPE = 106'
+%    COPY 'TOP'
+%    COPY 'TRANSFER FROM OFFSET =  0 TO LAT'
+%    COPY 'TRANSFER FROM OFFSET =  1 TO SYMA1'
+%    COPY 'TRANSFER FROM OFFSET =  2 TO SYMB'
+%    COPY 'TRANSFER FROM OFFSET =  3 TO SYMC'
+%    COPY 'END'
+%  END IF
+%%
+%  EVALUATE SYMA2 = SYMA1
+%  EVALUATE LCHANGESPGR = FALSE
+%%
+%  IF LAT .EQ. "P   " THEN
+%%
+%% Tetragonal
+%%
+%    IF      ( SYMA1 .EQ. "41  " ) .AND. ( SYMB .EQ. "    " ) .AND. ( SYMC .EQ. "    " ) THEN
+%      EVALUATE SYMA2 = "43  "
+%      EVALUATE LCHANGESPGR = TRUE
+%%
+%    ELSE IF ( SYMA1 .EQ. "43  " ) .AND. ( SYMB .EQ. "    " ) .AND. ( SYMC .EQ. "    " ) THEN
+%      EVALUATE SYMA2 = "41  "
+%      EVALUATE LCHANGESPGR = TRUE
+%%
+%    ELSE IF ( SYMA1 .EQ. "41  " ) .AND. ( SYMB .EQ. "2   " ) .AND. ( SYMC .EQ. "2   " ) THEN
+%      EVALUATE SYMA2 = "43  "
+%      EVALUATE LCHANGESPGR = TRUE
+%%
+%    ELSE IF ( SYMA1 .EQ. "43  " ) .AND. ( SYMB .EQ. "2   " ) .AND. ( SYMC .EQ. "2   " ) THEN
+%      EVALUATE SYMA2 = "41  "
+%      EVALUATE LCHANGESPGR = TRUE
+%%
+%    ELSE IF ( SYMA1 .EQ. "41  " ) .AND. ( SYMB .EQ. "21  " ) .AND. ( SYMC .EQ. "2   " ) THEN
+%      EVALUATE SYMA2 = "43  "
+%      EVALUATE LCHANGESPGR = TRUE
+%%
+%    ELSE IF ( SYMA1 .EQ. "43  " ) .AND. ( SYMB .EQ. "21  " ) .AND. ( SYMC .EQ. "2   " ) THEN
+%      EVALUATE SYMA2 = "41  "
+%      EVALUATE LCHANGESPGR = TRUE
+%%
+%% Trigonal
+%%
+%    ELSE IF ( SYMA1 .EQ. "31  " ) .AND. ( SYMB .EQ. "    " ) .AND. ( SYMC .EQ. "    " ) THEN
+%      EVALUATE SYMA2 = "32  "
+%      EVALUATE LCHANGESPGR = TRUE
+%%
+%    ELSE IF ( SYMA1 .EQ. "32  " ) .AND. ( SYMB .EQ. "    " ) .AND. ( SYMC .EQ. "    " ) THEN
+%      EVALUATE SYMA2 = "31  "
+%      EVALUATE LCHANGESPGR = TRUE
+%%
+%    ELSE IF ( SYMA1 .EQ. "31  " ) .AND. ( SYMB .EQ. "2   " ) .AND. ( SYMC .EQ. "1   " ) THEN
+%      EVALUATE SYMA2 = "32  "
+%      EVALUATE LCHANGESPGR = TRUE
+%%
+%    ELSE IF ( SYMA1 .EQ. "32  " ) .AND. ( SYMB .EQ. "2   " ) .AND. ( SYMC .EQ. "1   " ) THEN
+%      EVALUATE SYMA2 = "31  "
+%      EVALUATE LCHANGESPGR = TRUE
+%%
+%    ELSE IF ( SYMA1 .EQ. "31  " ) .AND. ( SYMB .EQ. "1   " ) .AND. ( SYMC .EQ. "2   " ) THEN
+%      EVALUATE SYMA2 = "32  "
+%      EVALUATE LCHANGESPGR = TRUE
+%%
+%    ELSE IF ( SYMA1 .EQ. "32  " ) .AND. ( SYMB .EQ. "1   " ) .AND. ( SYMC .EQ. "2   " ) THEN
+%      EVALUATE SYMA2 = "31  "
+%      EVALUATE LCHANGESPGR = TRUE
+%%
+%% Hexagonal
+%%
+%    ELSE IF ( SYMA1 .EQ. "61  " ) THEN
+%      EVALUATE SYMA2 = "65  "
+%      EVALUATE LCHANGESPGR = TRUE
+%%
+%    ELSE IF ( SYMA1 .EQ. "65  " ) THEN
+%      EVALUATE SYMA2 = "61  "
+%      EVALUATE LCHANGESPGR = TRUE
+%%
+%    ELSE IF ( SYMA1 .EQ. "61  " ) .AND. ( SYMB .EQ. "2   " ) .AND. ( SYMC .EQ. "2   " ) THEN
+%      EVALUATE SYMA2 = "65  "
+%      EVALUATE LCHANGESPGR = TRUE
+%%
+%    ELSE IF ( SYMA1 .EQ. "65  " ) .AND. ( SYMB .EQ. "2   " ) .AND. ( SYMC .EQ. "2   " ) THEN
+%      EVALUATE SYMA2 = "61  "
+%      EVALUATE LCHANGESPGR = TRUE
+%%
+%    ELSE IF ( SYMA1 .EQ. "62  " ) THEN
+%      EVALUATE SYMA2 = "64  "
+%      EVALUATE LCHANGESPGR = TRUE
+%%
+%    ELSE IF ( SYMA1 .EQ. "64  " ) THEN
+%      EVALUATE SYMA2 = "62  "
+%      EVALUATE LCHANGESPGR = TRUE
+%%
+%    ELSE IF ( SYMA1 .EQ. "62  " ) .AND. ( SYMB .EQ. "2   " ) .AND. ( SYMC .EQ. "2   " ) THEN
+%      EVALUATE SYMA2 = "64  "
+%      EVALUATE LCHANGESPGR = TRUE
+%%
+%    ELSE IF ( SYMA1 .EQ. "64  " ) .AND. ( SYMB .EQ. "2   " ) .AND. ( SYMC .EQ. "2   " ) THEN
+%      EVALUATE SYMA2 = "62  "
+%      EVALUATE LCHANGESPGR = TRUE
+%%
+%% Cubic
+%%
+%    ELSE IF ( SYMA1 .EQ. "41  " ) .AND. ( SYMB .EQ. "3   " ) .AND. ( SYMC .EQ. "2   " ) THEN
+%      EVALUATE SYMA2 = "43  "
+%      EVALUATE LCHANGESPGR = TRUE
+%%
+%    ELSE IF ( SYMA1 .EQ. "43  " ) .AND. ( SYMB .EQ. "3   " ) .AND. ( SYMC .EQ. "2   " ) THEN
+%      EVALUATE SYMA2 = "41  "
+%      EVALUATE LCHANGESPGR = TRUE
+%%
+%    END IF
+%%
+%  END IF
+%%
+%  EVALUATE OLDSYMBOL = LAT // " " // SYMA1 // " " // SYMB // " " // SYMC
+%  EVALUATE NEWSYMBOL = LAT // " " // SYMA2 // " " // SYMB // " " // SYMC
+%  IF LCHANGESPGR THEN
+%    ON ERROR TERMINATE
+%    COPY '#SPACEGROUP'
+%    TRANSFER 'SYMBOL ' // NEWSYMBOL TO CRYSTALS
+%    COPY 'END'
+%     COPY '#EDIT'
+%     COPY 'MON OFF'
+%     COPY 'TRANSFORM -1 0 0  0 -1 0  0 0 -1 ALL'
+%     COPY 'SHIFT 1  1  1    ALL'
+%     COPY 'END'
+%    TRANSFER "{I Space group changed from " // OLDSYMBOL // " to " // NEWSYMBOL // "." TO DISPLAY
+%  ELSE
+%    TRANSFER "{I No space group change needed." TO DISPLAY
+%  END IF
+%%
+%END SCRIPT

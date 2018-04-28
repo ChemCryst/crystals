@@ -174,6 +174,9 @@ C
 C Revision 1.12  2001/02/26 10:26:49  richard
 C Added changelog to top of file
 C
+c-----------------------------------------------------------------------------
+c For some historical information (for example the binary bits) see lexical.man
+c-----------------------------------------------------------------------------
 C
 CODE FOR XILEXP
       SUBROUTINE XILEXP(IULN,IFIRST)
@@ -1470,7 +1473,7 @@ c           CALL XPRVDU(NCVDU,1,0)
         II = 0
         DO I = M5F,M5F+(MD5F*(N5F-1)),MD5F
            JPTVAL = ISTORE(I+14)
-	   IF ( ( ((ISTORE(I).EQ.KHYD).OR. (ISTORE(I).EQ.KDET)).AND.
+       IF ( ( ((ISTORE(I).EQ.KHYD).OR. (ISTORE(I).EQ.KDET)).AND.
      1            ((J.EQ.3).OR.(J.EQ.6)) ) .OR.
      2          ( ((ISTORE(I).NE.KHYD).AND.(ISTORE(I).NE.KDET)).AND.
      1            ((J.EQ.3).OR.(J.EQ.7)) ) ) THEN

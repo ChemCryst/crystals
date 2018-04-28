@@ -5,8 +5,8 @@
 %  VARIABLE INTEGER IPRT IPEG IPEP IHYB IREF
 %  VARIABLE LOGICAL LPEE LPES LPEO LPEX LPEY LPEZ
 %  VARIABLE LOGICAL LPEU11 LPEU22 LPEU33 LPEU23 LPEU13 LPEU12 LPED
-%  VARIABLE LOGICAL XPRENEW LPEG LPEP
-%  VARIABLE INTEGER NINDEX ISER
+%  VARIABLE LOGICAL XPRENEW LPEG LPEP LSTICK HATOM
+%  VARIABLE INTEGER NINDEX ISER IRSWIT
 %%
 %% Get atom name
 %%
@@ -14,12 +14,17 @@
 %  EVALUATE CATM = CVALUE
 %  EVALUATE CELE = FIRSTSTR ( CATM )
 %  EVALUATE ISER = FIRSTINT ( CATM ) 
+%  EVALUATE HATOM = FALSE
+%  IF ( ( CELE .EQ. 'H' ) .or. ( CELE .EQ. 'D' ) ) THEN                   
+%    EVALUATE HATOM = TRUE
+%  END IF
 %%
 ^^WI WINDOW XPARA 
 %%% TRANSFER "^^WI 'Atom " // CATM // "'" TO DISPLAY
 ^^WI MODAL
 ^^WI GRID M NROWS=3 NCOLS=5 {
-^^WI   @ 2,2 GRID B NROWS=11 NCOLS=11 COMMAND='EDIT' {
+^^WI  @ 2,2 GRID B NROWS=2 NCOLS=1 COMMAND='EDIT' {
+^^WI   @ 1,1 GRID B NROWS=11 NCOLS=11 {
 ^^WI     @ 1,1   STATIC XPTE Element
 ^^WI     @ 1,3   EDITBOX XPEE ' '           INFORM=YES
 ^^WI     @ 1,5   STATIC XPTS Serial
@@ -53,11 +58,26 @@
 ^^WI     @ 10,7  STATIC XEPEG '(0-999)'
 ^^WI     @ 10,11  STATIC XEPEG '(0-999)'
 ^^WI   }
-^^WI   @ 2,4 GRID C NROWS=9 NCOLS=1 {
+^^WI   @ 2,1 GRID B NROWS=1 NCOLS=3 {
+^^WI     @ 1,1  STATIC XEPEG 'Refinement mode'
+^^WI     @ 1,3  DROPDOWN XSTICK INFORM=YES ADDTOLIST
+^^WI     'default'
+^^WI     'fix'
+^^WI     'Xs'
+^^WI     'Xs, Uiso'
+% IF HATOM THEN
+^^WI     'Ride'
+% ELSE
+^^WI     'Xs, Uijs'
+% END IF
+^^WI     NULL
+^^WI   }
+^^WI  }
+^^WI  @ 2,4 GRID C NROWS=9 NCOLS=1 {
 ^^WI     @ 3,1 BUTTON BOK 'Cancel' DEFAULT COMMIT CANCEL
 ^^WI     @ 9,1 BUTTON BXD 'Delete'
 ^^WI     @ 1,1 BUTTON BAP 'Apply changes' DISABLED=YES
-^^WI   }
+^^WI  }
 ^^WI }
 ^^WI SHOW
 ^^CR
@@ -202,7 +222,31 @@
 %  INSERT "'"
 %  OUTPUT
 %
-%
+%  IF ( IREF IAND 128 ) .NE. 0 THEN
+%% Sticky flag is set:
+%   EVALUATE IRSWIT = IREF IAND 127
+%% Default is 'default', then:
+%   IF ( IRSWIT .EQ. 4 ) THEN
+%%Fix
+^^CO SET XSTICK SELECTION=2
+%   ELSE IF ( IRSWIT .EQ. 1 ) THEN
+%% Xs
+^^CO SET XSTICK SELECTION=3
+%   ELSE IF ( IRSWIT .EQ. 2 ) THEN
+%% Xs, Uiso
+^^CO SET XSTICK SELECTION=4
+%   ELSE IF ( IRSWIT .EQ. 3 ) THEN
+%% Xs, Uijs
+%    IF .NOT. HATOM THEN
+^^CO SET XSTICK SELECTION=5
+%    END IF
+%   ELSE IF ( IRSWIT .EQ. 10 ) THEN
+%% Ride
+%    IF HATOM THEN
+^^CO SET XSTICK SELECTION=5
+%    END IF
+%   END IF
+%  END IF
 ^^CO FOCUS XPES
 %  EVALUATE LPEE = FALSE
 %  EVALUATE LPES = FALSE
@@ -219,6 +263,7 @@
 %  EVALUATE LPED = FALSE
 %  EVALUATE LPEG = FALSE
 %  EVALUATE LPEP = FALSE
+%  EVALUATE LSTICK = FALSE
 %%
 %%
 %%
@@ -235,7 +280,7 @@
 %    BLOCK        % EDIT - values changed
 %% Retrieve edit name
 %      VERIFY XPEE   XPES   XPEO   XPEX   XPEY XPEZ XPEU11 XPEU22  -
-                XPEU33 XPEU23 XPEU13 XPEU12 XPED XPEG XPEP 
+                XPEU33 XPEU23 XPEU13 XPEU12 XPED XPEG XPEP XSTICK
 %      GET SILENT NOSTORE FINAL ABBREVIATED 'Edit item?' ' '
 %      CASE VALUE
 %        EVALUATE LPEE = TRUE
@@ -253,6 +298,7 @@
 %        EVALUATE LPED = TRUE
 %        EVALUATE LPEG = TRUE
 %        EVALUATE LPEP = TRUE
+%        EVALUATE LSTICK = TRUE
 %      END CASE
 %      GET SILENT NOSTORE TEXT 'Edited text?' 'XX'
 %      IF CVALUE .EQ. 'XX' THEN
@@ -278,6 +324,25 @@
 %          EVALUATE CELE = UPPERCASE CVALUE
 %          COPY 'TRANSFER TO OFFSET=0 FROM CELE'
  * Updated element type.
+%        END IF
+%        IF LSTICK THEN
+^^??       XSTICK SELECTED
+%          EVALUATE IREF = 0
+%          GET SILENT NOSTORE INTEGER ' ' ' '
+%          CASE VALUE 
+%            EVALUATE IREF = 0
+%            EVALUATE IREF = 132
+%            EVALUATE IREF = 129
+%            EVALUATE IREF = 130
+%            BLOCK  % aniso or ride
+%              EVALUATE IREF = 131
+%              IF HATOM THEN
+%                EVALUATE IREF = 138
+%              END IF
+%            END BLOCK
+%          END CASE
+%          COPY 'TRANSFER TO OFFSET=15 FROM IREF'
+ * Updated refinement mode flag.
 %        END IF
 %        IF LPES THEN
 ^^??       XPES TEXT

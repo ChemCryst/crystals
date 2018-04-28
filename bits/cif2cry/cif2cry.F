@@ -46,7 +46,7 @@ C<ric02/>
       real          minsize, medsize, maxsize
       real          norien, thorientmin, thorientmax
       real          temperature, stand, decay
-      real          hmin, hmax, kmin, kmax, lmin, lmax
+      real          hmin, hmax, kmin, kmax, lmin, lmax, rsigma
       real          r, rw, s, nparam
       real          dcalc, dobs, molwt
       character*20   colour, shape
@@ -77,8 +77,8 @@ C<ric02/>
       data nparam    /0.0/
 
 
-	  data probably_neutrons /.false./
-	  
+      data probably_neutrons /.false./
+      
       call no_stdout_buffer()
 
 cdjw open a file for errors since DOS window closes too fast
@@ -337,28 +337,28 @@ C....... Write out a crystals instruction:
 C     probably_neutrons only true if a1 coeff are present and all zero.
 180   continue
       f2 = numb_('_atom_type_scat_Cromer_Mann_a1',  x, sx)
-	  if (.not.(f2)) goto 182
-	  if ( abs ( x ) .lt. 0.000001 ) then
-	    probably_neutrons = .true.
+      if (.not.(f2)) goto 182
+      if ( abs ( x ) .lt. 0.000001 ) then
+        probably_neutrons = .true.
       else
-	    probably_neutrons = .false.
-		goto 182 !stop looping
-	  end if
+        probably_neutrons = .false.
+        goto 182 !stop looping
+      end if
       if(loop_) goto 180
 182   continue
 
 C     probably_neutrons set true if diffrn_radiation_type starts with 'neutron'.
       f1 = char_('_diffrn_radiation_type', name)
-	  if ( f1 ) then
-	    do i = 1,len(name)
+      if ( f1 ) then
+        do i = 1,len(name)
           j = index( charcCase, name(i:i) )
-		  if ( j .gt. 0 ) name(i:i) = charc(j:j)
-		end do
-		if ( index( name, 'neutron' ) .gt. 0 ) then
-		   probably_neutrons = .true.
-		end if
+          if ( j .gt. 0 ) name(i:i) = charc(j:j)
+        end do
+        if ( index( name, 'neutron' ) .gt. 0 ) then
+           probably_neutrons = .true.
+        end if
       end if
-190   continue		  
+190   continue        
 
 
 c djwnov09
@@ -370,9 +370,9 @@ c      read in wavelength
       else
 C....... Write out a crystals instruction:
        write(NOUTF,'(a)') '#LIST 13'
-	   if ( probably_neutrons ) then
+       if ( probably_neutrons ) then
          write(NOUTF,'(a)') 'diffraction radiation = neutrons'
-	   end if
+       end if
        write(NOUTF,'(a,f12.10)') 'condition ', wave
        write(NOUTF,'(a)') 'end'
       endif
@@ -429,8 +429,8 @@ C If 2nd char is not a space this is definitely wrong.
         endif
         
       endif
- 	  
-	  
+      
+      
 C....... Extract cell formula units Z
 
       f1 = numb_('_cell_formula_units_Z', unitZ, dum)
@@ -494,13 +494,13 @@ C                                        Store the number of atoms
         write(NOUTF, '(a,15(a2,I4,2x))') 'content   ',
      *               (cpzlabel(i,2), Int(natoms(i)),i=1,nelement-1)
         
-		if ( probably_neutrons ) then
+        if ( probably_neutrons ) then
           write(NOUTF,'(a/a)')'SCATTERING CRYSDIR:script/nscatt.dat',
      *              'PROPERTIES CRYSDIR:script/propwin.dat'
-		else
-	      write(NOUTF,'(a/a)')'SCATTERING CRYSDIR:script/scatt.dat',
+        else
+          write(NOUTF,'(a/a)')'SCATTERING CRYSDIR:script/scatt.dat',
      *              'PROPERTIES CRYSDIR:script/propwin.dat'
-	    end if
+        end if
         write(NOUTF, '(a)') 'end'
       endif
 
@@ -743,6 +743,7 @@ c.......=========================
       f1 = numb_('_diffrn_reflns_limit_l_max', lmax, dum).or.(f1)
       f1 = numb_('_diffrn_reflns_theta_min', thetamin, dum).or.(f1)
       f1 = numb_('_diffrn_reflns_theta_max', thetamax, dum).or.(f1)
+      f1 = numb_('_diffrn_reflns_av_sigmaI/netI', rsigma, dum).or.(f1)
       f2 = char_('_exptl_crystal_colour', colour).or.(f1)
       f2 = char_('_exptl_crystal_description', shape).or.(f1)
       f1 = numb_('_refine_ls_R_factor_gt', r, dum).or.(f1)
@@ -759,6 +760,7 @@ c.......=========================
         write(NOUTF,'(a,2x, 2(a,I6,2x), a, f6.2)') 'DATRED',
      *        'NREFMES = ', nint(nrefmes), 'NREFMERG = ', 
      *         int(nrefmerg), 'RMERGE = ', rmerge 
+        write(NOUTF, '(A,2X,F6.2)') 'CONT RSIGMA=',RSIGMA
         write(NOUTF, '(a, 2x, 3(a, f6.2,2x))') 'CONDITIONS', 
      *          'MINSIZE = ', minsize, 'MEDSIZE = ', medsize,
      *          'MAXSIZE = ', maxsize

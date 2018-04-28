@@ -25,16 +25,17 @@ A SCRIPT to assist with the weighting of least squares refinement
 ^^WI   {                                                                        
 % IF ( LED23 ) THEN                                                             
 ^^WI     @ 1,1 STATIC TO 'Choose a weighting scheme. When swapping'             
-^^WI     @ 2,1 STATIC T1 'to F2 refinement, simple Statistical weights '        
+^^WI     @ 2,1 STATIC T1 'to Fsq refinement, simple Statistical weights '        
 ^^WI     @ 3,1 STATIC T2 'are essential until after a cycle of refinement.'     
 % ELSE                                                                          
-^^WI     @ 1,1 STATIC TO 'Choose a weighting scheme, or'                        
-^^WI     @ 2,1 STATIC T1 'Analyse to see the current'                           
+^^WI     @ 1,1 STATIC TO 'Choose a weighting scheme,'                        
+^^WI     @ 2,1 STATIC T1 'or Analyse to see the current'                           
 ^^WI     @ 3,1 STATIC T2 'agreement analysis.'                                  
 % END IF                                                                        
 ^^WI   }                                                                        
-^^WI   @ 2,4 LISTBOX XW_LIST VISLINES=8 ADDTOLIST                               
-^^WI         'Quasi-Unit' 'Statistical' 'Auto-statistical' 'Optimal Chebychev'  
+^^WI   @ 2,4 LISTBOX XW_LIST VISLINES=9 ADDTOLIST                               
+^^WI         'Quasi-Unit' 'Simple-statistical' 'Robust-statistical'
+^^WI         'Modified-SHELX' 'Optimal Chebychev'  
 ^^WI         'Chebychev(F)' 'Chebychev(Fsq)' NULL                               
 ^^WI   @ 2,6 GRID BTNS NROWS=7 NCOLS=1                                          
 ^^WI   {                                                                        
@@ -48,15 +49,15 @@ A SCRIPT to assist with the weighting of least squares refinement
 ^^CR                                                                            
 % IF ( LED23 ) THEN                                                             
 %  IF ( FTYPE .eq. 0 ) THEN                                                     
-^^CO SET XW_LIST SELECTION=1                                                                
+^^CO SET XW_LIST SELECTION=1         
 %  ELSE                                                                         
-^^CO SET XW_LIST SELECTION=2                                                    
-%  END IF                                                                       
+^^CO SET XW_LIST SELECTION=2         
+%  END IF                                                            
 % ELSE                                                                          
 %  IF ( FTYPE .eq. 0 ) THEN                                                     
-^^CO SET XW_LIST SELECTION=4                                                    
+^^CO SET XW_LIST SELECTION=5         
 %  ELSE                                                                       
-^^CO SET XW_LIST SELECTION=3                                              
+^^CO SET XW_LIST SELECTION=4         
 %  END IF                                                                       
 % END IF                                                                        
 %  LOOP                                                                         
@@ -71,45 +72,9 @@ A SCRIPT to assist with the weighting of least squares refinement
 %      END BLOCK                                                                
 %      BLOCK                            %BHH%                                   
 %          COPY '#SCRIPT XHELP1'                                                
-QUASI-UNIT WEIGHTS                                                              
-      (w = 1 for F refinement, 1/(2F) for Fsq refinement)                       
-      This scheme is the most suitable for initial refinements,                 
-ie until the model is fully parameterised.  It is rarely advisable              
-for the final refinement since it leads to poor error estimates.                
-                                                                                
-STATISTICAL WEIGHTS                                                             
-      (w=1/SigmaSq + modifiers)                                                 
-      This scheme is most suitable for final refinement of good                 
-quality data free from serious systematic error, and where there                
-the model is complete and well behaved.                                         
-                                                                                
-OPTIMAL CHEBYCHEV WEIGHTS                                                       
-      (w=function of residual)                                                  
-      This scheme is more flexible than the Auto-statistical.                   
-It tries to compensate for errors in both the data and the model, and           
-give optimal values for those parameters which are being refined.               
-CRYSTALS tries to choose the optimal terms depending upon whether the           
-refinement is against F or Fsq                                                  
-                                                                                
-AUTO-STATISTICAL                                                                
-      w= 1.0 / ( sigma^2 + (aP)^2 + bP ), P = (Fo + 2Fc)/3                      
-      or P=(Fo^2 + 2Fc^2)/3 depending on refinement against F or F^2.           
- This is a very popular weighting scheme. The parameters a and b                
- are determined automatically in order to give a goodness of fit of             
- approximately one and a flat analysis of variance across all ranges            
- of Fc.                                                                         
-                                                                                
-CHEBYCHEV(F)                                                                    
-       Explicitly instruct CRYSTALS to optimise terms for refinement            
-against F.  May sometimes be useful for refinement against Fsq if the           
-errors have an unusual distribution                                             
-                                                                                
-CHEBYCHEV(Fsq)                                                                  
-       Explicitly instruct CRYSTALS to optimise terms for refinement            
-against Fsq.  May sometimes be useful for refinement against F if the           
-errors have an unusual distribution                                             
-                                                                                
-ANALYSIS OF RESIDUALS      w(Fo - Fc)**2 versus /Fc/                            
+
+{12,0 ANALYSIS OF RESIDUALS      w(Fo - Fc)**2 versus /Fc/                            
+
 In the table, examine the weighted residual                                     
 (headed w(delta)**2, column 3 from the right). Towards                          
 the end of a refinement, this should be approximately                           
@@ -120,15 +85,15 @@ modeled in the structure. You should verify that the
 structure is essentially correct, i.e. not in a false                           
 minimum. In particular, check columns 2 and 3, sum Fo                           
 and sum Fc. If, towards the bottom (i.e. strong                                 
-reflections), sum Fo is less than sum Fc, you may need                          
-to include an isotropic EXTINCTION parameter in the least                       
-squares. Restore unit weights before starting the                               
-extinction parameter refinement.                                                
+reflections), <Fo>/<Fc> is substantially less than unity, 
+you may need to include an isotropic EXTINCTION parameter 
+in the least squares. Restore unit weights before starting 
+the extinction parameter refinement.                                                
                                                                                 
 If the parameters you are refining have 'reasonable'                            
-values, you should attempt to correct the data for this                         
-trend, or introduce suitable additional parameters to                           
-the model. See, for example, DIFABS.                                            
+values, you should attempt to correct the data for the                         
+<Fo>/<Fc> trend, or introduce suitable additional 
+parameters to the model. See, for example, DIFABS.                                            
                                                                                 
 If you can do neither of these, then you should modify                          
 the refinement weights to minimise the problem.                                 
@@ -140,6 +105,69 @@ constant distribution with the minimum number of parameters.
                                                                                 
 Occasional ranges having a large residual can be ignored in                     
 routine work.                                                                   
+
+{12,0 CHOOSING WEIGHTS
+
+It is dangerous to use a weighting scheme which has a dependancy
+on the mode (e.g. Chebychev or SHELX) in the early stages since
+a poor model may adversely down-weight important reflections.
+Unit Weights are usually excellent for refinement against F
+
+Simple Staistical weights (in which the observed sigma(I) values
+are augmented by a small contribution from the structure amplitude)
+are good for refinement against F^2.
+
+Once the model is complete and the refinement is partially converged
+CRYSTALS will try to select and optimise a weighting scheme for you.
+
+
+{12,0 QUASI-UNIT WEIGHTS                                                              
+      (w = 1.0 for F refinement, 1/(2F) for Fsq refinement)                       
+      This scheme is the most suitable for initial refinements,                 
+ie until the model is fully parameterised.  It is rarely advisable              
+for the final refinement since it leads to poor error estimates
+and will generate a checkcif error.
+                                                                                
+{12,0 SIMPLE STATISTICAL WEIGHTS                                                             
+      (w=1/(SigmaSq + fixed modifier))                                                 
+      This scheme is most suitable for development stage refinement                 
+ of good quality data free from serious systematic error, and where
+ the model is complete and well behaved.                                         
+                                                                                
+{12,0 ROBUST STATISTICAL
+      (w=1/(SigmaSq))
+      This scheme is suitable for the case where the bulk of the data
+ has small systematic errors, but may contain a few refelctions with
+ serious casual errors, such as might occur from a high pressure cell
+
+{12,0 MODIFIED SHELX
+      w= 1.0 / ( sigma^2 + (aP)^2 + bP ), P = (Fo + 2Fc)/3                      
+      or P=(Fo^2 + 2Fc^2)/3 depending on refinement against F or F^2.           
+ This is a very popular weighting scheme. The parameters a and b                
+ are determined automatically in order to give a goodness of fit of             
+ approximately one and a flat analysis of variance across all ranges            
+ of Fc.                                                                         
+      
+
+{12,0 OPTIMAL CHEBYCHEV WEIGHTS                                                       
+      (w=function of residual)                                                  
+      This scheme is more flexible than the Modified SHELX scheme.                   
+It tries to compensate for errors in both the data and the model, and           
+give optimal values for those parameters which are being refined.               
+CRYSTALS tries to choose the optimal terms depending upon whether the           
+refinement is against F or Fsq                                                  
+                                                                                
+                                                                                
+{12,0 CHEBYCHEV(F)                                                                    
+       Explicitly instruct CRYSTALS to optimise terms for refinement            
+against F.  May sometimes be useful for refinement against Fsq if the           
+errors have an unusual distribution                                             
+                                                                                
+{12,0 CHEBYCHEV(Fsq)                                                                  
+       Explicitly instruct CRYSTALS to optimise terms for refinement            
+against Fsq.  May sometimes be useful for refinement against F if the           
+errors have an unusual distribution                                             
+                                                                                
 %          COPY '#SCRIPT XHELP2'                                                
 %      END BLOCK                                                                
 %      BLOCK                                          %BAA%                     
@@ -152,7 +180,7 @@ routine work.
 ^^WI DISPOSE XWEIGHT                                                            
 ^^CR                                                                            
 %         CASE VALUE                                                            
-%            BLOCK                                    %UNIT%                    
+%            BLOCK                                    %1 UNIT%                    
  *   Unit weighting                                                             
 %                COPY '#LIST 4'                                                 
 %                COPY 'END'                                                     
@@ -163,10 +191,23 @@ routine work.
 %                EVALUATE WDONE = FALSE                                         
 %                COPY '#SCRIPT XPUTINFO'                                        
 %            END BLOCK                                                          
-%            BLOCK                                    %STATISTICAL%             
+%            BLOCK                                    %2 SIMPLE STATISTICAL%             
+ *   Simple Statistical weighting
 %                COPY '#SCRIPT STATWT'                                          
 %            END BLOCK                                                          
-%            BLOCK                                   %AUTO-STAT%                
+%            BLOCK                                    %3 ROBUST SCHEME 8%
+ *   Robust Statistical Weighting
+%                COPY '#LIST 4 '
+%                COPY 'SCHEME  8 NPARAM= 0 TYPE=CHOOSE '
+%                COPY 'CONT WEIGHT=   2.0000000 MAX=  10000.0000 ROBUST=Y '
+%                COPY 'CONT TOLER=      6.0000 '
+%                COPY 'END'
+%                COPY '#WEIGHT'                                                 
+%                COPY 'END'                                                     
+%                COPY '#SCRIPT XANAL'                                           
+%            END BLOCK
+%            BLOCK                                   %4 SHELX%                
+ *   SHELX-type Weighting
 %                COPY '#LIST 4'                                                 
 %                COPY 'SCHEME 17'                                               
 %                COPY 'END'                                                     
@@ -174,24 +215,25 @@ routine work.
 %                COPY 'END'                                                     
 %                COPY '#SCRIPT XANAL'                                           
 %            END BLOCK                                                          
-%            BLOCK                                    %OPTIMAL CHEBYCHEV%       
+%            BLOCK                                    %5 OPTIMAL CHEBYCHEV%       
 %                IF FTYPE .EQ. 0 THEN                                           
-%% Fo refinement                                                                
+ * Chebychev Fo refinement                                                                
 %                    COPY '#SCRIPT XFOPTWT'                                     
 %                ELSE                                                           
+ * Chebychev Fsq refinement                                                                
 %                    COPY '#SCRIPT XFSQWT'                                      
 %                END IF                                                         
 %            END BLOCK                                                          
-%            BLOCK                                    %CHEBYCHEV(F)%            
-%% Fo refinement                                                                
+%            BLOCK                                    %6 CHEBYCHEV(F)%            
+ * Chebychev Fo refinement                                                                
+
 %                    COPY '#SCRIPT XFOPTWT'                                     
 %            END BLOCK                                                          
 %%                                                                              
-%            BLOCK                                    %CHEBYCHEV(Fsq)%          
-%% Fsq refinement                                                               
+%            BLOCK                                    %7 CHEBYCHEV(Fsq)%          
+ * Chebychev Fsq refinement                                                                
 %                    COPY '#SCRIPT XFSQWT'                                      
 %            END BLOCK                                                          
-                                                                                
 %         END CASE                                                              
 %         FINISH                                                                
 %      END BLOCK                                                                

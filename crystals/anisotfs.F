@@ -179,7 +179,7 @@ C
 cfeb08         WRITE (NCAWU,150)
             WRITE (CMON,150)
             CALL XPRVDU (NCVDU,2,0)
-            write(ncawu,'(a)') cmon(1),cmon(2)
+            write(ncawu,'(a)') cmon(1),trim(CMON(2))
 150      FORMAT (' Principal axes of the thermal ellipsoids, A**2'/
      1 14x,' Min  ',4x,' Med  ',4x,' Max  ',4x,' Uarith     Ugeom',
      2 4x,'Uprime')
@@ -333,8 +333,11 @@ cdjwfeb06 compute geometric mean
             UGEOM=sign(1.,ugeom)*abs(UGEOM)**0.33333
             UARITH = (STORE(NE)+STORE(NE+1)+STORE(NE+2))/3.
 cdjwsep08
-            UPRIME =SIGN(1.,STORE(NE))* ABS(STORE(NE+2)*STORE(NE+1))/
-     1      ABS(STORE(NE))
+            if(abs(STORE(NE))<=epsilon(1.0)) then
+              uprime=0.0
+            else
+              UPRIME = ABS(STORE(NE+2)*STORE(NE+1))/STORE(NE)
+            end if
             UEQUIV = UGEOM
             avol = avol + uequiv
             dvol = dvol + uequiv*uequiv
@@ -376,7 +379,7 @@ cfeb08                  WRITE (NCAWU,500)
                WRITE (CMON,550) STORE(M5B),STORE(M5B+1),(STORE(III),III=
      1          NE,J),UARITH, UGEOM, UPRIME, CTEXT
                CALL XPRVDU (NCVDU,1,0)
-               write(ncawu,'(a)') cmon(1)
+               write(ncawu,'(a)') trim(CMON(1))
 550            FORMAT (1X,A4,F6.0,6F10.4,3X,A24)
                IF (ISSPRT.EQ.0) WRITE (NCWU,600) STORE(M5B),STORE(M5B+1)
      1          ,(STORE(I),I=NF,K),UARITH, UGEOM, UPRIME, CTEXT
@@ -386,8 +389,8 @@ cfeb08                  WRITE (NCAWU,500)
                WRITE (CMON,550) STORE(M5B),STORE(M5B+1),(STORE(III),III=
      1          NE,J),UARITH,UGEOM,UPRIME, CTEXT
                CALL XPRVDU (NCVDU,1,0)
-               IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
-cfeb08               WRITE (NCAWU,'(A)') CMON(1)
+               IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
+cfeb08               WRITE (NCAWU,'(A)') trim(CMON(1))
             END IF
 CDJWSEP08
             IF (JPUNCH .GT. 0) THEN
@@ -449,7 +452,7 @@ C
      1         CSHAPE, CTEXT
 830            FORMAT (1X,A4,F6.0,F10.4,5X,A12,6X,A24)
                CALL XPRVDU (NCVDU,1,0)
-c               WRITE (NCAWU,'(A)') CMON(1)
+c               WRITE (NCAWU,'(A)') trim(CMON(1))
             END IF
 C
          END IF
@@ -466,22 +469,22 @@ cdjwfeb06
      1 ' atoms =',avol/float(nvol), ' rmsd ',
      2   sqrt((nvol*dvol-avol*avol)/(nvol*(nvol-1)))
          CALL XPRVDU (NCVDU,1,0)
-         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
 c
          write(cmon,'(A,i6,a,f8.4)')' Maximum radius of ',nvol,
      1 ' atoms =',bvol
          CALL XPRVDU (NCVDU,1,0)
-         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
 c
          write(cmon,'(A,i6,a,f8.4)')'   Maximum axis of ',nvol,
      1 ' atoms =',cvol
          CALL XPRVDU (NCVDU,1,0)
-         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
 c
          write(cmon,'(a)')
      1   'for Uprime see Acta Cryst (2000). B56, 747-749'
          CALL XPRVDU (NCVDU,1,0)
-         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
        endif
       endif
 950   CONTINUE
@@ -612,9 +615,8 @@ C----- COMMAND BUFFER
       IDIMBF=50
 CMAR98
       ICOMBF=KSTALL(IDIMBF)
-      CALL XZEROF (STORE(ICOMBF),IDIMBF)
 C----- ZERO THE BUFFER
-      CALL XZEROF (ISTORE(ICOMBF),IDIMBF)
+      CALL XZEROF (STORE(ICOMBF),IDIMBF)
 C----- COMMON BLOCK OFFSET(-1) FOR INPUT LIST
       IMDINP=35
 C----- INITIALSE LEXICAL PROCESSING
@@ -1176,14 +1178,14 @@ C-----    WRITE NEW PARAMETERS
                WRITE(CMON,100)  STORE(ISTART),STORE(ISTART+1),
      1         (STORE(J),J=JJ,JJ+8)
                CALL XPRVDU(NCVDU,1,0)
-               IF (ISSPRT.EQ.0) WRITE(NCWU,'(A)') CMON(1)(1:)
-cfeb08               WRITE (NCAWU,'(A)') CMON(1)(1:)
+               IF (ISSPRT.EQ.0) WRITE(NCWU,'(A)') trim(cmon(1))
+cfeb08               WRITE (NCAWU,'(A)') trim(CMON(1))
 100            FORMAT (1X,A4,F4.0,3F8.4,6F8.3)
                WRITE(CMON,150)  (STORE(J),J=JWORK,JWORK+5)
 150            FORMAT (1X,32X,6F8.3)
                CALL XPRVDU(NCVDU,1,0)
-               IF (ISSPRT.EQ.0) WRITE(NCWU,'(A)') CMON(1)(1:)
-cfeb08               WRITE (NCAWU,'(A)') CMON(1)(1:)
+               IF (ISSPRT.EQ.0) WRITE(NCWU,'(A)') trim(cmon(1))
+cfeb08               WRITE (NCAWU,'(A)') trim(CMON(1))
                IF (IRPL.EQ.1) THEN
 C-----           REPLACE
                  CALL XMOVE (STORE(JWORK),STORE(ISAVE+7),6)
@@ -1268,7 +1270,7 @@ C      KWORK  ADDRESS FOR RESULTANT MATRICES
 C      IMODE  IF .LE. 0 PRODUCE NO OUTPUT
 C
 C--
-      DOUBLE PRECISION DAA,DAR,DAI,DWE,DAS
+      DOUBLE PRECISION DAA(20,20),DAR(21),DAI(20,20),DWE(60),DAS(20)
 C
       real, dimension(420) :: DUMMYA, DUMMYB
       real, dimension(3,3) :: TEMP1, TEMP2
@@ -1279,11 +1281,9 @@ C
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XCONST.INC'
       !INCLUDE 'XLST01.INC'
-      INCLUDE 'XWORK.INC'
       INCLUDE 'XWORKA.INC'
 C
       INCLUDE 'XRTLSC.INC'
-      COMMON /DRWORK/ DAA(20,20),DAR(21),DAI(20,20),DWE(60),DAS(20)
       INCLUDE 'XIOBUF.INC'
 C
 C
@@ -1292,12 +1292,15 @@ C
       integer itemp2, itemp3, natom2
       real anumb, del, dels, delu, rad, rmsu, sfac, sum, sums, sumu
       real ufac
+      real a, b, c, d, e, f, t
+      integer i, j, k, n, infodummy
       
       real, external :: norm3, xdetr3
       integer, external :: kinv2
 
       EQUIVALENCE (DUMMYA(1),AA(1,1)), (DUMMYB(1),DV(1,1))
       EQUIVALENCE (TEMP1(1,1),DUMMYA(1)), (TEMP2(1,1),DUMMYA(10))
+      DOUBLE PRECISION abd(20)
 C
 C----- USE SYSTEM-WIDE CONVENTION
       RAD =RTD
@@ -1431,7 +1434,9 @@ C---- RHS
          DAA(I,J)=DAA(J,I)
 1050  CONTINUE
 C---SOLVE NORMAL EQUATIONS, STORING INVERSE MATRIX AS AI AND RESULTS AS
-      CALL RLTNT
+      ABD = real(ab, kind(1.0d0))
+      CALL RLTNT(abd, DAA, DAR, DAI, infodummy)
+      AR=DAR
 C----- RESCALE THE RESULTS
       DO 1100 I=1,20
          AR(I)=AR(I)*SNGL(DAS(I))
@@ -1551,7 +1556,7 @@ C---SHIFT ORIGIN TO MAKE S SYMMETRIC
          WA(I,I)=0.
 1650  CONTINUE
       WRITE (CMON,1700) CF
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A)') CMON(1)(:)
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A)') trim(CMON(1))
       CALL XPRVDU (NCVDU,1,0)
 1700  FORMAT (' Centre for which s is symmetric :             ',4X,3F8.
      14)
@@ -1688,7 +1693,6 @@ C   ARE STORED AT JJ
 C
 C--
       INCLUDE 'STORE.INC'
-      INCLUDE 'XWORK.INC'
       INCLUDE 'XRTLSC.INC'
 C
       CALL XZEROF (DV(1,1),120)
@@ -1761,6 +1765,19 @@ C
       UB(6)=UA(1,2)
       RETURN
       END
+      SUBROUTINE RSUB09DP (UA,UB)
+C
+C
+      double precision UA(3,3), UB(6)
+C
+      UB(1)=UA(1,1)
+      UB(2)=UA(2,2)
+      UB(3)=UA(3,3)
+      UB(4)=UA(2,3)
+      UB(5)=UA(1,3)
+      UB(6)=UA(1,2)
+      RETURN
+      END
 CODE FOR RSUB10
       SUBROUTINE RSUB10 (UA,UB)
 C
@@ -1777,12 +1794,26 @@ C
 50       UA(J,I)=UA(I,J)
       RETURN
       END
+      SUBROUTINE RSUB10DP (UA,UB)
+C
+C
+      double precision :: UA(3,3), UB(6)
+C
+      UA(2,3)=UB(4)
+      UA(1,3)=UB(5)
+      UA(1,2)=UB(6)
+      DO 50 I=1,3
+         UA(I,I)=UB(I)
+         K=MIN0(3,I+1)
+         DO 50 J=K,3
+50       UA(J,I)=UA(I,J)
+      RETURN
+      END      
 CODE FOR RSUB11
       SUBROUTINE RSUB11 (MON)
 C
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
-      INCLUDE 'XWORK.INC'
       INCLUDE 'XRTLSC.INC'
       INCLUDE 'XIOBUF.INC'
 C
@@ -1795,7 +1826,7 @@ C
       DO 100 I=1,3
          WRITE (CMON,150) (AL(I,J),J=1,3),(AT(I,J),J=1,3),(AS(I,J),
      1   J=1,3)
-         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
          IF (MON.EQ.2) CALL XPRVDU (NCVDU,1,0)
 100   CONTINUE
 150   FORMAT ((3(3F9.3,2X)))
@@ -1809,7 +1840,6 @@ C
 C
       DIMENSION XX(3,3), YY(3,3)
 C
-      INCLUDE 'XWORK.INC'
 C
       DO 50 I=1,3
          DO 50 J=1,3
@@ -1963,7 +1993,6 @@ C--CALCULATES DISTANCE BETWEEN TWO ATOMS WHOSE ORTHOGONAL COORDINATES
 C   ARE STORED FROM MA AND FROM MB
 C
       INCLUDE 'STORE.INC'
-      INCLUDE 'XWORK.INC'
 C
       X=STORE(MB)-STORE(MA)
       Y=STORE(MB+1)-STORE(MA+1)
@@ -1975,7 +2004,6 @@ CODE FOR RANGLE
       FUNCTION RANGLE (D1,D2,D3)
 C---CALCULATES ANGLE A-B-C WHERE A-B=D1, B-C=D3, A-C=D2
 C
-      INCLUDE 'XWORK.INC'
       INCLUDE 'XCONST.INC'
 C
       U=-(D2*D2-D1*D1-D3*D3)/(2.*D1*D3)
@@ -1988,59 +2016,62 @@ C
       RETURN
       END
 CODE FOR RLTNT
-      SUBROUTINE RLTNT
+      SUBROUTINE RLTNT(ab, DAA, DAR, Dai, info)
+      use xssval_mod, only: issprt !INCLUDE 'XSSVAL.INC'
+      use xunits_mod, only: ncvdu, ncwu !INCLUDE 'XUNITS.INC'
+      use xchars_mod, only: ib, iq !INCLUDE 'XCHARS.INC'
+      use xiobuf_mod, only: cmon !INCLUDE 'XIOBUF.INC'
+      use xrtlsc_mod, only: iprint, ndel, tester, testev !INCLUDE 'XRTLSC.INC'
+      use xrtlsc_mod, only: jdel
+      implicit none
 C
-      DOUBLE PRECISION DAA,DAR,DAI,DWE,DAS
+      double precision, intent(in) :: ab(20) !< right hand side
+      double precision, intent(inout) :: DAA(20,20) !< normal matrix
+      double precision, intent(out) :: DAI(20,20) !< normal matrix
+      double precision, intent(out) :: DAR(21) !< eigen values (first 20 entries)
+      integer, intent(out) :: info !< Status of the calculation
+      double precision, dimension(:), allocatable :: DWE
+      integer, dimension(21) :: iw
 C
-      DIMENSION IQ1(1), IB1(1), IW(21)
-      DIMENSION WE(27)
-C
-      INCLUDE 'STORE.INC'
-      INCLUDE 'XWORK.INC'
-      INCLUDE 'XUNITS.INC'
-      INCLUDE 'XSSVAL.INC'
-      INCLUDE 'XRTLSC.INC'
-      COMMON /DRWORK/ DAA(20,20),DAR(21),DAI(20,20),DWE(60),DAS(20)
-      INCLUDE 'XCHARS.INC'
-      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'STORE.INC'      
+            
+      integer i, j, k, l
 C
 C
-      EQUIVALENCE (IW(1),AA(1,1))
-      EQUIVALENCE (IB1(1),IB), (IQ1(1),IQ)
+!      EQUIVALENCE (IW(1),AA(1,1))
+!      EQUIVALENCE (IB1(1),IB), (IQ1(1),IQ)
 C
-      EQUIVALENCE (WE(1),WA(1,1))
+!      EQUIVALENCE (WE(1),WA(1,1))
+
 C--EXTRACT THE LATENT ROOTS AND VECTORS OF THE NORMAL MATRIX
 c      M=0
 c      CALL F02ABF (DAA,20,20,DAR,DAI,20,DWE,M)
       INFO = 0
-      CALL DSYEV('V','L',20,DAA,20,DAR,DWE,60,INFO)
-      DO ITEMP3=1,20
-        DO ITEMP2=1,20
-          DAI(ITEMP2,ITEMP3) = DAA(ITEMP2,ITEMP3)
-        END DO
-      END DO
-      DO 100 I=1,20
-         AR(I)=SNGL(DAR(I))
-         DO 50 J=1,20
-            AI(J,I)=SNGL(DAI(J,I))
-            AA(J,I)=SNGL(DAA(J,I))
-50       CONTINUE
-100   CONTINUE
-C--TRANSFORM THE R.H.S.
-      CALL XMLTTM (AI,AB,WE,20,20,1)
-      AR(21)=AR(20)
+      dai=daa
+      ! looking of optimal size of working array
+      allocate(DWE(1))
+      CALL DSYEV('V','L',20,dai,20,dar,DWE,-1,info)
+      info=nint(dwe(1))
+      deallocate(dwe)
+      allocate(dwe(info))
+      ! eigenvalue decomposition
+      CALL DSYEV('V','L',20,DAI,20,DAR,DWE,size(dwe),INFO)
+C--TRANSFORM THE R.H.S.      
+      dwe(1:20)=matmul(transpose(dai), ab) !CALL XMLTTM (AI,AB,WE,20,20,1)
+      DAR(21)=DAR(20)
       L=0
 C--LOOP OVER EACH EIGENVALUE AND CHECK ITS SIZE AND RATIO TO THE LAST
       DO 650 I=1,20
          J=21-I
-         IF (AR(J)-TESTEV) 150,150,350
+         IF (dAR(J)-TESTEV) 150,150,350
 C--THE EIGENVALUE HAS TOO SMALL A VALUE
 150      CONTINUE
          L=J
          DO 200 K=1,J
-            WE(K)=0.
+            dWE(K)=0.
 200      CONTINUE
-         IF (ISSPRT.EQ.0) WRITE (NCWU,250) J,IB,IQ1(1)
+         info=-999
+         IF (ISSPRT.EQ.0) WRITE (NCWU,250) J,IB,IQ
 250      FORMAT (//' CRYSTALS is having difficulties withe the analysis'
      1    ,//' The inverse of the eigenvalues from 1 to ',I2,'  have bee
      2n set to zero',A1,'and marked by a ''',A1,''' in the listing below
@@ -2054,7 +2085,7 @@ C--CHECK THE RATIO TO THE LAST
 350      CONTINUE
          IF (J-20) 400,500,500
 400      CONTINUE
-         IF (AR(J)/AR(J+1)-TESTER) 150,150,450
+         IF (dAR(J)/dAR(J+1)-TESTER) 150,150,450
 450      CONTINUE
 C----- SHOULD WE REJECT THIS ANYWAY
          IF (NDEL) 600,600,500
@@ -2064,7 +2095,7 @@ C----- SHOULD WE REJECT THIS ANYWAY
 550      CONTINUE
 C--COMPUTE THE TERM FOR THIS CORRECT VALUE
 600      CONTINUE
-         WE(J)=WE(J)/AR(J)
+         dWE(J)=dWE(J)/dAR(J)
 650   CONTINUE
 C--CHECK IF THE EIGENVALUES AND VECTORS SHOULD BE PRINTED
       IF (IPRINT) 1050,1050,700
@@ -2077,21 +2108,21 @@ C--PRINT THE VALUES
      3 S21  S22  S23  S31  S32',/)
       DO 1000 J=1,20
          DO 800 I=1,20
-800         IW(I)=NINT(1000.*AI(I,J))
-         CALL XMOVE (IB1(1),IW(21),1)
+800         IW(I)=NINT(1000.*dAI(I,J))
+         CALL XMOVE (IB,IW(21),1)
 C--CHECK IF WE HAVE EXHAUSTED THE DELETED EIGENVALUES
          IF (L-J) 900,850,850
 C--THIS ONE WAS DELETED
 850      CONTINUE
-         CALL XMOVE (IQ1(1),IW(21),1)
+         CALL XMOVE (IQ,IW(21),1)
 C--PRINT THE VALUES
 900      CONTINUE
-         IF (ISSPRT.EQ.0) WRITE(NCWU,950)J,AR(J),IW(21),(IW(K),K=1,20)
+         IF (ISSPRT.EQ.0) WRITE(NCWU,950)J,dAR(J),IW(21),(IW(K),K=1,20)
 950      FORMAT (1X,I3,E12.3,1X,A1,2X,20I5)
 1000  CONTINUE
 C---TRANSFORM BACK TO ORIGINAL PARAMETER SET
 1050  CONTINUE
-      CALL XMLTMM (AI,WE,AR,20,20,1)
+      dar(1:20)=matmul(dai, dwe(1:20)) ! CALL XMLTMM (AI,WE,AR,20,20,1)
       RETURN
       END
 CODE FOR XPANDU

@@ -1,12 +1,35 @@
 %SCRIPT YGETSIG
-%%    read internal and external sigmas from the file SIGMAS.DAT 
-%%    called from XCHECK6.SSC
-%     VARIABLE REAL INTERNAL EXTERNAL SXX SXY GRADIENT NITEMS NREFMES 
-%     VARIABLE INTEGER NSIGMAS
-%     COPY '#OPEN SCPDATA sigmas.dat' 
-%%   Skip first line:                                                      
-%     EXTRACT NEXT
+%%    read internal and external sigmas from the SIGMAS.DAT files
+%%    called from XVARIANCE.SSC and XVARIANCE2
+%     VARIABLE REAL INTERNAL EXTERNAL SXX SXY GRADIENT  NREFMES 
+%     VARIABLE INTEGER JSTEP
+%     VARIABLE LOGICAL SIG SIG2
+%SHOW SIG SIG2
+%     VARIABLE INTEGER NSIGMAS NITEMS STEP
+%     VARIABLE REAL ZERO 
+%     EVALUATE ZERO = 0.
+%     IF SIG THEN 
+%        COPY '#OPEN SCPDATA sigmas.dat' 
+%%       Skip first  line:                                                      
+%        EXTRACT NEXT
+%     ELSE IF SIG2 THEN
+%        COPY '#OPEN SCPDATA sigmas2.dat' 
+%%       Skip first 2 lineS:                                                      
+%        EXTRACT NEXT
+%        CLEAR
+%        EXTRACT NEXT
+%     END IF
+
+%     IF NREFMES .GE. 10000. THEN
+%        EVALUATE JSTEP = 500
+%     ELSE
+%        EVALUATE JSTEP = 200
+%     END IF
 %     LOOP
+%      EVALUATE STEP = LOOPCOUNTER MOD  JSTEP 
+%      IF STEP .EQ. 0 THEN
+%       TRANSFER '^^CO SET _MW_SOFAR TEXT ' // CHARACTER LOOPCOUNTER TO DISPLAY                                                                         
+%      END IF
 %      ON ERROR TERMINATE                                                           
 %      ON END TERMINATE
 %      EXTRACT NEXT                                                             
@@ -22,30 +45,44 @@
 %      EVALUATE EXTERNAL = VALUE                                        
 %      GET NOSTORE NOPROMPT REAL ' ' '-1.0' 
 %      EVALUATE INTERNAL = VALUE                                        
-%      GET NOSTORE NOPROMPT REAL ' ' '-1.0' 
+%      GET NOSTORE NOPROMPT INTEGER ' ' '1' 
 %      EVALUATE NITEMS = VALUE  
+%      IF SIG2 THEN
+%% skip the 8th item
+%        GET NOSTORE NOPROMPT REAL ' ' '-1.0' 
+%      END IF
 %%
 %      CLEAR
 %      INSERT !^^PL LABEL '!   
-%      STORE FORMAT /(F5.0)/ LENGTH 5 REAL NITEMS
+%      STORE FORMAT /(I5)/ LENGTH 5 INTEGER NITEMS
 %      INSERT !' DATA !
-%      STORE FORMAT /(F10.2)/ LENGTH 10 REAL EXTERNAL
-%      STORE FORMAT /(F10.2)/ LENGTH 10 REAL INTERNAL
-%      IF NITEMS .GE. 3. THEN
+%      IF NITEMS .LT. 6 THEN
+%       STORE FORMAT /(F10.2)/ LENGTH 10 REAL EXTERNAL
+%       STORE FORMAT /(F10.2)/ LENGTH 10 REAL INTERNAL
+%       STORE FORMAT /(F10.2)/ LENGTH 10 REAL ZERO
+%       STORE FORMAT /(F10.2)/ LENGTH 10 REAL ZERO
+%      ELSE
+%       STORE FORMAT /(F10.2)/ LENGTH 10 REAL ZERO
+%       STORE FORMAT /(F10.2)/ LENGTH 10 REAL ZERO
+%       STORE FORMAT /(F10.2)/ LENGTH 10 REAL EXTERNAL
+%       STORE FORMAT /(F10.2)/ LENGTH 10 REAL INTERNAL
+%      END IF
+%      IF NITEMS .GE. 3 THEN
 %        OUTPUT
-%        EVALUATE SXX = SXX + EXTERNAL * EXTERNAL * NITEMS
-%        EVALUATE SXY = SXY + EXTERNAL * INTERNAL * NITEMS
+%        EVALUATE SXX = SXX + EXTERNAL * EXTERNAL * REAL ( NITEMS )
+%        EVALUATE SXY = SXY + EXTERNAL * INTERNAL * REAL ( NITEMS )
 %        EVALUATE NSIGMAS = NSIGMAS + 1
 %      END IF
+%%
 %     END LOOP
 %%
+%     TRANSFER '^^CO SET _MW_USED TEXT ' // CHARACTER NSIGMAS TO DISPLAY                             
 %     IF ( NSIGMAS .GT. 1 ) THEN
 %      EVALUATE GRADIENT = SXY / SXX    
 %      transfer '^^CO SET _MW_GRAD TEXT ' // CHARACTER GRADIENT TO DISPLAY                             
 %     ELSE
-{E Insufficient equivalent reflections for variance plot in "sigmas.dat" 
+{E Insufficient equivalent reflections for variance plot in "sigmas2.dat" 
 %      TRANSFER '{E   ' //  CHARACTER NSIGMAS // ' equivalents found' TO DISPLAY
-%      transfer '^^CO SET _MW_USED TEXT ' // CHARACTER NSIGMAS TO DISPLAY                             
 %     END IF                                                                          
 %%
 %     COPY '#CLOSE SCPDATA'

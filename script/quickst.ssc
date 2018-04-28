@@ -18,7 +18,7 @@ Some basic data is missing. We cannot process the reflections
 Give the minimum I/sigma(i) to be used in refinement. It can be changed later
 % COPY '#LIST 28'
 % INSERT 'MINIMA RATIO='
-% GET FINAL REAL  'I/sigma(I) ' '3.0'
+% GET FINAL REAL  'I/sigma(I) ' '-3.0'
 % SEND
 % COPY 'END'
 %%

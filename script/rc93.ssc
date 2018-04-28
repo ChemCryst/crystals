@@ -1,11 +1,7 @@
 %SCRIPT RC93
 
  * Running RC93.
-#ifdef CRY_OSWIN32
-%      COPY '#SPAWN % "CRYSDIR:RC93.EXE" "CRYSDIR:"'
-#else
-%      COPY '#SPAWN % "CRYSDIR:rc93"'
-#endif
+%      COPY '#SPAWN % "CRYSDIR:rc93.exe" "CRYSDIR:"'
  * Done.
 % copy '#type rc93.err'
 

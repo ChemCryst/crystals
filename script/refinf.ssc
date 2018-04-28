@@ -24,9 +24,9 @@
 {1,11                                  {12,11positions (LIST 23)                
 {1,11 Choose weights                   {12,11Perform analysis of residuals and  
 {1,11                                  {12,11select weighting scheme (LIST 4)   
-{1,11 Rescale weights                  {12,11 Set GoF close to unity.           
+{1,11 Rescale weights                  {12,11Set GoF close to unity.           
 {1,11 Filter reflections               {12,11Set filters on acceptable          
-{1,11                                  {12,11reflections. (LIST 28)These can    
+{1,11                                  {12,11reflections. (LIST 28) These can    
 {1,11                                  {12,11be changed at any time.            
                                                                                 
 {1,11 Delete all restraints            {12,11Clear LIST 16                      
@@ -50,6 +50,9 @@
 {1,11                                  {12,11reflection flags so that it can 
 {1,11                                  {12,11store the returned A and 
 {1,11                                  {12,11B parts rather than
-{1,11                                  {12,11modify Fo                          
+{1,11                                  {12,11modify Fo  
+{1,11
+{1,11  Anomalous Modified SQUEEZE      {12,11Add anomalous contributions to 
+{1,11                                  {12,11SQUEEZE output                        
 {1,0                                                                            
 %END SCRIPT                                                                     

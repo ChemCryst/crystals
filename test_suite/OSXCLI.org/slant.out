@@ -1,44 +1,43 @@
-#TITLE P6122 TEST DECK FROM LARSON  -  MUCH MODIFIED FOR CRYSTALS                                                                                                                                                                                               
-#SET MONITOR OFF                                                                                                                                                                                                                                                
-#LIST 1                                                                                                                                                                                                                                                         
-#LIST 20                                                                                                                                                                                                                                                        
-#LIST 30                                                                                                                                                                                                                                                        
-#LIST 1                                                                                                                                                                                                                                                         
-#LIST 2                                                                                                                                                                                                                                                         
-#LIST 3                                                                                                                                                                                                                                                         
-#LIST 13                                                                                                                                                                                                                                                        
-#LIST 29                                                                                                                                                                                                                                                        
-#LIST 5                                                                                                                                                                                                                                                         
-#LIST 12                                                                                                                                                                                                                                                        
-#LIST 23                                                                                                                                                                                                                                                        
-#SET MONITOR ON                                                                                                                                                                                                                                                 
-#USE TDLIST6.HKL                                                                                                                                                                                                                                                
-#LIST 1                                                                                                                                                                                                                                                         
-# THIS LIST 6 IS USED BY MANY TEST DECKS                                                                                                                                                                                                                        
-#LIST 6                                                                                                                                                                                                                                                         
-#LIST 28                                                                                                                                                                                                                                                        
-#LIST 6                                                                                                                                                                                                                                                         
+#TITLE P6122 TEST DECK FROM LARSON  -  MUCH MODIFIED FOR CRYSTALS
+#SET MIRROR OFF
+#LIST 1
+#LIST 20
+#LIST 30
+#LIST 1
+#LIST 2
+#LIST 3
+#LIST 13
+#LIST 29
+#LIST 5
+#LIST 12
+#LIST 23
+#SET MIRROR ON
+#USE TDLIST6.HKL
+#LIST 1
+# THIS LIST 6 IS USED BY MANY TEST DECKS
+#LIST 6
+#LIST 28
+#LIST 6
  The updated reflections are now on UNIT 53
 
 
 
-      92 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
-#SFLS                                                                                                                                                                                                                                                           
-#LIST 4                                                                                                                                                                                                                                                         
-#CLEAR 16                                                                                                                                                                                                                                                       
-#LIST  16                                                                                                                                                                                                                                                       
-#CLEAR 17                                                                                                                                                                                                                                                       
-#LIST  17                                                                                                                                                                                                                                                       
-#LIST 26                                                                                                                                                                                                                                                        
-#BONDCALC                                                                                                                                                                                                                                                       
+      92 reflections accepted           0 reflections rejected
+#SFLS
+#LIST 4
+#CLEAR 16
+#LIST  16
+#CLEAR 17
+#LIST  17
+#LIST 26
+#BONDCALC
 Bonds: Update required - There is no list 41
-#LIST 26                                                                                                                                                                                                                                                        
-#WEIGHT                                                                                                                                                                                                                                                         
+#LIST 26
+#WEIGHT
                      LIST 4 weighting type is NORMAL
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC  NO  NO                                                                                                                                                                                                                                                   
-#CALCULAT   1                                                                                                                                                                                                                                                   
-#CYCLENDS                                                                                                                                                                                                                                                       
+#SFLS
+#SPEC  NO  NO
+#CALCULAT   1
  Initialising Special positions
 
 
@@ -80,8 +79,8 @@ Bonds: Update required - There is no list 41
 
 
 
- Target Weighted Residual = 14.77                                                                                                                                                                                                                               
-   h   k  l     Fo      Fc  wDel Fo/Fc     h   k  l     Fo      Fc  wDel Fo/Fc                                                                                                                                                                                  
+ Target Weighted Residual = 14.77
+   h   k  l     Fo      Fc  wDel Fo/Fc     h   k  l     Fo      Fc  wDel Fo/Fc
 [28]    0   0  12   48.4   11.0  37.5  4.4      1   1   4   81.4   52.9  28.6  1.5
 [28]    0   2   6   60.3   32.0  28.3  1.8      0   2   3   54.1   26.4  27.7  2.0
 [28]    0   0   6   39.4   12.1  27.3  3.2      1   1   8   42.2   16.4  25.8  2.5
@@ -118,17 +117,18 @@ Bonds: Update required - There is no list 41
 
 
 
-       92 reflections   R 47.68% Rw 47.80% with I/u(I) from List 28                                                                                                                                                                                             
-       92 reflections   R 47.68% Rw 47.80% with I/u(I) > -10.0                                                                                                                                                                                                  
-       92 reflections   R 47.68% Rw 47.80% with I/u(I) >   2.0                                                                                                                                                                                                  
+       92 reflections   R 47.68% Rw 47.80% with I/u(I) from List 28, I/Sig= -10.00
+       92 reflections   R 47.68% Rw 47.80% with I/u(I) > -10.0
+       92 reflections   R 47.68% Rw 47.80% with I/u(I) >   2.0
 [29] SumFo/SumFc=  1.88    SumFoFc/SumFc^2=  1.66    SumwFoFc/SumwFc^2=  1.66
-LS-scale=  1.000   Wilson Scale=  0.000                                                                                                                                                                                                                         
+LS-scale=  1.000   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =   12.2     100*(<Fo>-<Fc>)/<Fo> =    46.
-#TITLE SLANT FOURIER TESTS IN P6122                                                                                                                                                                                                                             
-#SLANT                                                                                                                                                                                                                                                          
-# NOTE BIZARE LIMITS = JUST TO TEST IT                                                                                                                                                                                                                          
-# WORKS OUTSIDE THE BASIC UNIT CELL                                                                                                                                                                                                                             
-#SLANT                                                                                                                                                                                                                                                          
+#CYCLENDS
+#TITLE SLANT FOURIER TESTS IN P6122
+#SLANT
+# NOTE BIZARE LIMITS = JUST TO TEST IT
+# WORKS OUTSIDE THE BASIC UNIT CELL
+#SLANT
 
 
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
@@ -151,7 +151,7 @@ LS-scale=  1.000   Wilson Scale=  0.000
     3 *   35  41  35  20   0   0
 
     4 *    0   0   0   0   0   0
-#SLANT                                                                                                                                                                                                                                                          
+#SLANT
 
 
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
@@ -194,7 +194,7 @@ LS-scale=  1.000   Wilson Scale=  0.000
    14 *   -3  -1   0  -2  -4  -5  -6 -10 -13 -10   0  11  16  12
 
    15 *   -3  -3  -3  -3  -2  -1  -3  -8 -10  -3  12  27  32  24
-#TRIAL                                                                                                                                                                                                                                                          
+#TRIAL
 
 
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
@@ -294,7 +294,7 @@ LS-scale=  1.000   Wilson Scale=  0.000
 
    10 *  170 200 130 176 212 198 157 187 109 171 190 178 140 173  94 164 172 164 136 161 100 162 171 161 141 150
 
-   11 *  221 170 200 130 176 212 198 157 187 109 171 190 178 140 173  94 164 172 164 136 161 100 162 171 161 141
+   11 *  221 170 200 130 176 212 198 157 187 109 171 190 178 140 173  94 164 172 164 136 161  99 162 171 161 141
 
    12 *  230 221 170 200 130 176 212 198 157 187 109 171 190 178 140 173  94 164 172 164 136 161  99 162 171 161
 
@@ -326,20 +326,20 @@ LS-scale=  1.000   Wilson Scale=  0.000
 
     8 *  176 212 198 157 187 109 171 190 178 140 173  94 164 172 164 136 161 100 162 171 161 141 150 107 159 168
 
-    9 *  130 176 212 198 157 187 109 171 190 178 140 173  94 164 172 164 136 161 100 162 171 161 141 150 107 159
+    9 *  130 176 212 198 157 187 109 171 190 178 140 173  94 164 172 164 136 161  99 162 171 161 141 150 107 159
 
    10 *  200 130 176 212 198 157 187 109 171 190 178 140 173  94 164 172 164 136 161  99 162 171 161 141 150 107
 
    11 *  170 200 130 176 212 198 157 187 109 171 190 178 140 173  94 164 172 164 136 161  99 162 171 161 141 150
 
-   12 *  221 170 200 130 176 212 198 156 187 109 171 190 178 140 173  94 164 172 164 136 161  99 162 171 161 141
-# DEMONSTRATE SLANT FOURIERS THROUGH ANISOTROPIC                                                                                                                                                                                                                
-# PLANAR GROUP, AND 'SPLITTING' OF ATOM                                                                                                                                                                                                                         
-#DISK                                                                                                                                                                                                                                                           
-#LIST 1                                                                                                                                                                                                                                                         
-#SPACE                                                                                                                                                                                                                                                          
-#LIST 14                                                                                                                                                                                                                                                        
-#SPACE                                                                                                                                                                                                                                                          
+   12 *  221 170 200 130 176 212 198 157 187 109 171 190 178 140 173  94 164 172 164 136 161  99 162 171 161 141
+# DEMONSTRATE SLANT FOURIERS THROUGH ANISOTROPIC
+# PLANAR GROUP, AND 'SPLITTING' OF ATOM
+#DISK
+#LIST 1
+#SPACE
+#LIST 14
+#SPACE
   Space Group P 4       
   The Space Group is ACentric  Primitive Tetragonal    Laue Symmetry 4/m     
   Multiplicity of a General Site is   4  Laue-no is   4
@@ -360,33 +360,32 @@ Space group symbol is   P    4
                               X axis from  0.000 to  0.500
                               Y axis from  0.000 to  0.500
                               Z axis from  0.000 to  0.500
-#LIST 3                                                                                                                                                                                                                                                         
-#                                                                                                                                                                                                                                                               
-# PUNCHED ON 26-JAN93 AT 11:35:34                                                                                                                                                                                                                               
-#                                                                                                                                                                                                                                                               
-#LIST      5                                                                                                                                                                                                                                                    
-#                                                                                                                                                                                                                                                               
-# PUNCHED ON 26-JAN93 AT 11:35:36                                                                                                                                                                                                                               
-#                                                                                                                                                                                                                                                               
-#LIST      6                                                                                                                                                                                                                                                    
+#LIST 3
+#
+# PUNCHED ON 26-JAN93 AT 11:35:34
+#
+#LIST      5
+#
+# PUNCHED ON 26-JAN93 AT 11:35:36
+#
+#LIST      6
  The updated reflections are now on UNIT 52
 
 
 
-     631 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
-#EDIT                                                                                                                                                                                                                                                           
- The following atom(s) will be kept                                                                                                                                                                                                                             
+     631 reflections accepted           0 reflections rejected
+#EDIT
+ The following atom(s) will be kept
     C   0      C   1      C   2      C   3      C   4      C   5      C  25
  List   5 now contains      7 atom(s)
-#LIST 12                                                                                                                                                                                                                                                        
-#SFLS                                                                                                                                                                                                                                                           
-#LIST 26                                                                                                                                                                                                                                                        
-#WEIGHT                                                                                                                                                                                                                                                         
+#LIST 12
+#SFLS
+#LIST 26
+#WEIGHT
                      LIST 4 weighting type is NORMAL
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC  NO  NO                                                                                                                                                                                                                                                   
-#CALCULAT   1                                                                                                                                                                                                                                                   
-#CYCLENDS                                                                                                                                                                                                                                                       
+#SFLS
+#SPEC  NO  NO
+#CALCULAT   1
  Initialising Special positions
 
 
@@ -428,8 +427,8 @@ Space group symbol is   P    4
 
 
 
- Target Weighted Residual =  0.04                                                                                                                                                                                                                               
-   h   k  l     Fo      Fc  wDel Fo/Fc     h   k  l     Fo      Fc  wDel Fo/Fc                                                                                                                                                                                  
+ Target Weighted Residual =  0.04
+   h   k  l     Fo      Fc  wDel Fo/Fc     h   k  l     Fo      Fc  wDel Fo/Fc
 [28]    0   3   1   41.3   41.3   0.1  1.0      3   6   2    2.4    2.5   0.1  0.9
 [28]    1   1   7    8.3    8.3   0.1  0.9     -1   1   7    8.3    8.3   0.1  0.9
 [28]   -1   3  11   13.6   13.7   0.1  1.0      3   1  11   13.6   13.7   0.1  1.0
@@ -466,20 +465,21 @@ Space group symbol is   P    4
 
 
 
-      631 reflections   R  0.25% Rw  0.21% with I/u(I) from List 28                                                                                                                                                                                             
-      631 reflections   R  0.25% Rw  0.21% with I/u(I) > -10.0                                                                                                                                                                                                  
-      631 reflections   R  0.25% Rw  0.21% with I/u(I) >   2.0                                                                                                                                                                                                  
+      631 reflections   R  0.25% Rw  0.21% with I/u(I) from List 28, I/Sig= -10.00
+      631 reflections   R  0.25% Rw  0.21% with I/u(I) > -10.0
+      631 reflections   R  0.25% Rw  0.21% with I/u(I) >   2.0
 [29] SumFo/SumFc=  1.00    SumFoFc/SumFc^2=  1.00    SumwFoFc/SumwFc^2=  1.00
-LS-scale=  1.000   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.001    100*(<Fo>-<Fc>)/<Fo> =    -0.01                                                                                                                                                                                                         
-#EDIT                                                                                                                                                                                                                                                           
- The following atom(s) will be created                                                                                                                                                                                                                          
-         Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part                                                                                                                                                                             
-                                   Uiso  Size D/100 A/100                                                                                                                                                                                                       
-   C 250 0.50 0.420-0.273 0.000 1 0.040 0.000 0.000 0.00 0.00 0.00     0.000      0                                                                                                                                                                             
-   C 251 0.50 0.446-0.227 0.000 1 0.040 0.000 0.000 0.00 0.00 0.00     0.000      0                                                                                                                                                                             
+LS-scale=  1.000   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.001    100*(<Fo>-<Fc>)/<Fo> =    -0.01
+#CYCLENDS
+#EDIT
+ The following atom(s) will be created
+         Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part
+                                   Uiso  Size D/100 A/100
+   C 250 0.50 0.420-0.273 0.000 1 0.040 0.000 0.000 0.00 0.00 0.00     0.000      0
+   C 251 0.50 0.446-0.227 0.000 1 0.040 0.000 0.000 0.00 0.00 0.00     0.000      0
  List   5 now contains      9 atom(s)
-#MOLAX                                                                                                                                                                                                                                                          
+#MOLAX
 
 
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
@@ -543,7 +543,7 @@ AZIMUTH  =    45.02     AZIMUTH /100 =   0.4502
 
  LIST 20 has been updated
 
-#ANISO                                                                                                                                                                                                                                                          
+#ANISO
  Results for group number    1
 
 
@@ -629,7 +629,7 @@ AZIMUTH  =    45.02     AZIMUTH /100 =   0.4502
 
 
 
- Centre for which s is symmetric :                   0.0000  0.0000  0.0000                                                                                                                                                                                     
+ Centre for which s is symmetric :                   0.0000  0.0000  0.0000
  Axial displacements for which S becomes diagonal  (Angstroms along principal axes of L)
                                  Shift directions
                               1         2         3
@@ -691,13 +691,13 @@ AZIMUTH  =    45.02     AZIMUTH /100 =   0.4502
                 0.26999   -0.50001  -0.86602   0.00000   -0.50001  -0.86602   0.00000   0.11000   0.06000   0.53995                        
  LIST 20 AXIS record will be updated 
  LIST 20 has been updated
-#PRINT 20                                                                                                                                                                                                                                                       
+#PRINT 20
 
 
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
 
 
- Print list type    20     serial number        6     Address    35466     Length     234     Created on                          
+ Print list type    20     serial number        6     Address    35530     Length     234     Created on                          
 
 
 
@@ -817,8 +817,8 @@ AZIMUTH  =    45.02     AZIMUTH /100 =   0.4502
 
 
 
-# GIVE A MATRIX EXPLICITLY                                                                                                                                                                                                                                      
-#SLANT                                                                                                                                                                                                                                                          
+# GIVE A MATRIX EXPLICITLY
+#SLANT
 
 
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
@@ -869,8 +869,8 @@ AZIMUTH  =    45.02     AZIMUTH /100 =   0.4502
     8 *    0   0   0   0   0   0  43 117 204 274 301 275 206 122  48   0   0   0   0   0
 
     9 *    0   0   0   0   0   0  44 114 197 265 291 264 197 113  39   0   0   0   0   0
-# USE SAVED MATRICES AND CENTROIDS                                                                                                                                                                                                                              
-#SLANT                                                                                                                                                                                                                                                          
+# USE SAVED MATRICES AND CENTROIDS
+#SLANT
 
 
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
@@ -921,7 +921,7 @@ AZIMUTH  =    45.02     AZIMUTH /100 =   0.4502
     8 *    0   0   0   0   0   0  43 117 204 274 301 275 207 122  48   0   0   0   0   0
 
     9 *    0   0   0   0   0   0  44 114 197 265 291 265 197 113  39   0   0   0   0   0
-#SLANT                                                                                                                                                                                                                                                          
+#SLANT
 
 
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
@@ -972,7 +972,7 @@ AZIMUTH  =    45.02     AZIMUTH /100 =   0.4502
     8 *    0   0   3  16  18   6   0   0   0   0  42 127 215 278 293 253 173  80   3   0
 
     9 *    0   0   0   0   0   0   0   0   0   0  37 103 173 222 232 196 127  48   0   0
-#SLANT                                                                                                                                                                                                                                                          
+#SLANT
 
 
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
@@ -1023,8 +1023,8 @@ AZIMUTH  =    45.02     AZIMUTH /100 =   0.4502
     8 *    0   0   3  16  18   6   0   0   0   0  42 127 215 278 293 253 173  80   3   0
 
     9 *    0   0   0   0   0   0   0   0   0   0  37 103 173 222 232 196 127  48   0   0
-# LOOK AT SECTIONS ABOVE AND BELOW PRINCIPAL PLANE                                                                                                                                                                                                              
-#SLANT                                                                                                                                                                                                                                                          
+# LOOK AT SECTIONS ABOVE AND BELOW PRINCIPAL PLANE
+#SLANT
 
 
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
@@ -1053,7 +1053,7 @@ AZIMUTH  =    45.02     AZIMUTH /100 =   0.4502
     3 *   54  -1  -1  -1  -1  10   8  -1  -1
 
     4 *   52  -1  -1  -1  -1  10  40  54  52
-#SLANT                                                                                                                                                                                                                                                          
+#SLANT
 
 
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
@@ -1082,7 +1082,7 @@ AZIMUTH  =    45.02     AZIMUTH /100 =   0.4502
     3 *   54  -1  -1  -1  -1  10   8  -1  -1
 
     4 *   52  -1  -1  -1  -1  10  40  54  52
-#SLANT                                                                                                                                                                                                                                                          
+#SLANT
 
 
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
@@ -1111,7 +1111,7 @@ AZIMUTH  =    45.02     AZIMUTH /100 =   0.4502
     3 *   54   0   0   0   0  10   8   0   0
 
     4 *   52   0   0   0   0  10  40  54  52
-#SLANT                                                                                                                                                                                                                                                          
+#SLANT
 
 
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
@@ -1140,7 +1140,7 @@ AZIMUTH  =    45.02     AZIMUTH /100 =   0.4502
     3 *   54   0   0   0   0  10   8   0   0
 
     4 *   52   0   0   0   0  10  40  54  52
-#SLANT                                                                                                                                                                                                                                                          
+#SLANT
 
 
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
@@ -1169,7 +1169,7 @@ AZIMUTH  =    45.02     AZIMUTH /100 =   0.4502
     3 *   54   0   0   0   0  10   8   0   0
 
     4 *   52   0   0   0   0  10  40  54  52
-#SLANT                                                                                                                                                                                                                                                          
+#SLANT
 
 
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
@@ -1198,7 +1198,7 @@ AZIMUTH  =    45.02     AZIMUTH /100 =   0.4502
     3 *   54   1   1   1   1  10   8   1   1
 
     4 *   52   1   1   1   1  10  40  54  52
-#SLANT                                                                                                                                                                                                                                                          
+#SLANT
 
 
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
@@ -1227,7 +1227,7 @@ AZIMUTH  =    45.02     AZIMUTH /100 =   0.4502
     3 *   54   1   1   1   1  10   8   1   1
 
     4 *   52   1   1   1   1  10  40  54  52
-#FINI                                                                                                                                                                                                                                                           
+#FINI
 
 
           : Job ends ok       with     0 warnings and     0 errors

@@ -2,12 +2,15 @@
 %%
 %% A script to manage (reset, delete, retain) the List 5's in the DSC file.
 %%
-%  VARIABLE INTEGER NT NTS NTSC
+%  VARIABLE INTEGER NT NTS NTSC NTST
 %  VARIABLE LOGICAL L
 %%
+%  BLOCK
+%  ON ERROR CONTINUE
 %  COPY '#GENERALEDIT 5'
 %  COPY 'GETSERIAL NTSC'
 %  COPY 'END'
+%  END BLOCK
 %%
 %  COPY '#CLOSE SCPDATA'
 %  COPY '#RELE PUNCH dscdata.pch'
@@ -76,6 +79,7 @@
 %       CLEAR
 %       INSERT !^^WI '!
 %       GET NOPROMPT INTEGER ' ' '-100'
+%       EVALUATE NTST = VALUE
 %       INSERT ':'
 %       GET NOPROMPT NOSTORE INTEGER ' ' '-100'
 %       GET NOPROMPT NOSTORE INTEGER ' ' '-100'
@@ -98,8 +102,15 @@
 ^^WI 'NULL'
 ^^CR
 %%
+%% If current L5 is in error state, we can't get current number - assume it's last one.
 %%
-
+%  IF NTSC .EQ. 0 THEN
+%     CLEAR
+%     INSERT !^^CO SET DS5 TEXT 'Current serial is: !
+%     STORE INTEGER NTST
+%     INSERT !'!
+%     OUTPUT
+%  END IF
 %%
 %  EVALUATE NTS = 1
 %%

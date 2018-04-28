@@ -578,7 +578,7 @@ C     SET INITIAL VALUES
       IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
       CALL XFAL06(6, 0)
       DO WHILE ( KLDRNR(0) .GE. 0 )
-       IF ( ( KALLOW(ALLOW) .GE. 0 ) .OR. ( IL28FL .EQ. 0 ) ) THEN
+       IF ( ( KALLOW(IALLOW) .GE. 0 ) .OR. ( IL28FL .EQ. 0 ) ) THEN
         FOB  = STORE(M6+3)            ! FO
         IF(E5)THEN
           FCA  = SCALE * STORE(M6+5)    ! FC
@@ -668,18 +668,20 @@ C     LEAST SQUARES
       DIV=PP*T-Q*Q                                                      
       SLOPE=(R*T-Q*S)/DIV                                               
       FLGK=(PP*S-Q*R)/DIV                                               
-      SC=EXP(-FLGK)                                                     
+      SC=EXP(-FLGK) 
+      SCC=SQRT(1/SC)                  !CRYSTALS Fo  SCALE FACTOR                                                    
       BT=-0.5*SLOPE                                                     
+      UT = BT/(8*PI*PI)
       WRITE(NCWU,340) SLOPE,FLGK,BT,SC                                    
   340 FORMAT(1H ,7HSLOPE =,F8.4,4X,11HINTERCEPT =,F8.4,4X,              
      1/25H TEMPERATURE FACTOR (B) =,F8.4,4X,7HSCALE =,F12.4,             
      2 4X,37HF(ABSOLUTE)**2 = SCALE*F(OBSERVED)**2)
 
       IF (ISTATP .EQ. 1) THEN
-
+CDJW-2018 OUTPUT U TO GRAPHICS
         WRITE(CMON,'(A,F8.4,A,F12.4)')
-     1  '^^CO SET _MW_BFACTR TEXT ',BT,
-     1  ' SET _MW_BSCALE TEXT ',SC
+     1  '^^CO SET _MW_BFACTR TEXT ',UT,
+     1  ' SET _MW_BSCALE TEXT ',SCC
         CALL XPRVDU(NCVDU, 1,0)
       END IF
 
@@ -735,9 +737,9 @@ C TOP FRAME
       IF ( IPLOTW .EQ. 1 ) THEN
         WRITE(CMON,'(A,6(/A))')
      1  '^^PL PLOTDATA _WILSON SCATTER ATTACH _VWILSON KEY',
-     1  '^^PL XAXIS TITLE "ln(<F(obs)**2>rho/<SUM(f**2)>rho)"',
+     1 '^^PL XAXIS TITLE "ln(<Fo\**2>(\rho)/<\SUMf\**2>(\rho))"',
      1  '^^PL NSERIES=3 LENGTH=50 YAXIS TITLE ', 
-     1  '^^PL "Rho=(Sin(theta)/lambda)**2"',
+     1  '^^PL "\rho (= sin\**2\theta/\lambda\**2)"',
      1  '^^PL SERIES 1 SERIESNAME ''Straight Line'' TYPE LINE',
      1  '^^PL SERIES 2 SERIESNAME ''Wilson (Fobs)''',
      1  '^^PL SERIES 3 SERIESNAME ''Wilson (Fcalc)'''

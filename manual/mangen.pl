@@ -715,6 +715,8 @@ sub substitute{
    $texline =~ s/\#K(.*)\n/\n\n\\bigskip\\Keyword{$1}/g;
 
 # Format #U's
+   $htmlline =~ s/\#U([^ ]*)\ (.*)\#/\<A HREF=\"$1\"\>$2\<\/A\>/g;
+   $texline =~  s/\#U([^ ]*)\ (.*)\#/\\url{$1}{$2}/g;
    $htmlline =~ s/\#U(.*)\#/\<A HREF=\"$1\"\>$1\<\/A\>/g;
    $texline =~ s/\#U(.*)\#/\\url{$1}/g;
 

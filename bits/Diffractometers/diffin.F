@@ -28,7 +28,9 @@ C
 C Revision 1.4  2011/05/17 16:00:16  djw
 C Enable long lines, up to 512 characters
 C
-	program diffin
+
+      program diffin
+      implicit none
 c---------------------------------------------------------------------
 c General program for reading all cif files
 c
@@ -48,6 +50,7 @@ c or
 c       -o    output file name
 C
 c -d    Diffractometer name
+c -b    batch, do not ask questions during processing
 c       input filename
 c
 
@@ -69,14 +72,20 @@ c
 #include "ciftbx.cmn"
 #include "cifin.cmn"
 c
-      character*256 file_root
-      character*256 prognm,outfil,device,extbl
+      character*4096 file_root
+      character*4096 prognm,outfil,device,extbl
       logical lfirst,namebl,allbl,linfl,loutfl
-      character*36  cspace, output_name
-      character*36  output_hkl
-      character*32  response,buffer,option
+      character*4096  cspace, output_name
+      character*4096  output_hkl
+      character*32  response
+      character*256 option
       CHARACTER*12  cdiff, ctemp
-      character*132 carg1, carg2
+      character*132 carg2
+      
+      integer i, ldiff, lfr, n, narg, ndata, nglob
+      logical namdev, interactive
+      
+      integer, external :: igdat, nctrim
 c
       data noutf    /10/
       data nhkl     /11/
@@ -86,7 +95,7 @@ c
       data nglob    /15/
 
       call no_stdout_buffer()
-
+      
 c
 C----- GET DATE
       I=IGDAT(CDATE)
@@ -118,6 +127,8 @@ c     Make CCDC files the default
       option = 'null'
       device = 'CSD'
       extbl  = '.cry'
+      interactive=.true.
+      
 c
       N = 1
 #if defined(CRY_FORTDIGITAL)
@@ -140,6 +151,9 @@ c
         IF (option.eq.'-f') THEN                  !first
                 IF ( allbl ) GOTO 8000
                 lfirst = .TRUE.
+        ELSE IF (option.eq.'-b') THEN             !batch (non-interactive)
+                IF ( lfirst ) GOTO 8000
+                interactive=.false.
         ELSE IF (option.eq.'-a') THEN             !all
                 IF ( lfirst ) GOTO 8000
                 allbl = .TRUE.
@@ -266,9 +280,11 @@ c     get the name of the input file
 105   continue
       WRITE(6,'(/2a/)') 'Read DATA from input Cif:  ',NAME
       WRITE(NTEXT,'(/2a/)') 'Read DATA from input Cif  ',NAME
-      write(6,'(a/a)') 'Loading the ciftbx database.',
+      write(6,'(////)')
+      write(6,'(a)') 
+     1 '              Loading the ciftbx database.'
+      write(6,'(a)')
      1 ' This may take a while if there are a lot of reflections'
-      write(6,'(//)')
       IF (.NOT.(OPEN_(NAME(1:LEN_TRIM(NAME))))) THEN
          WRITE (6,'(A,A,A///)') 'File ', Name, ' does not exist'
          WRITE (NTEXT,'(A,A,A///)') 'File ', Name, ' does not exist'
@@ -293,7 +309,7 @@ C - NOTE that data_ looks for the start of a new block
         goto 9999
       else
         block_name = bloc_
-        if (bloc_ =="global") then
+        if (bloc_ =="global" .or. bloc_ =="General") then ! General is produced by TEXSAN refinement packahe (rigaku)
         write(6,'(/a,a/)')   ' >>>>> data_global statement found -',
      1  ' now looking for block_'
         write(ntext,'(/a,a/)') ' >>>>> data_global statement found -',
@@ -407,7 +423,7 @@ c
 C 
 c----------------------------------------------------------------
 C 
-      call datain
+      call datain(interactive)
 c
 c-- end.bit  --------------------------------------------------
 c-- post-process CSD files
@@ -478,11 +494,11 @@ c
 8000  continue
 8020  CONTINUE    !Usage error
       write(6,'(/3a/)')  'Usage: ',prognm(1:LEN_TRIM(prognm)),
-     2 ' [-f|-a] [-d device] [[-n blockextension]|[-o outputfile]]', 
+     2 ' [-f|-a|-b] [-d device] [[-n blockextension]|[-o outputfile]]', 
      3 '[inputfile]'
 
       write(ntext,'(/3a/)')  'Usage: ',prognm(1:LEN_TRIM(prognm)),
-     1 ' [-f|a] [[-n blockextension]|[-o outputfile]] [inputfile]'
+     1 ' [-f|a|-b] [[-n blockextension]|[-o outputfile]] [inputfile]'
       goto 9999
 c
 9999  CONTINUE 
@@ -491,7 +507,7 @@ c
         read (*, '(a)') response
       end if
       STOP      
-	end
+      end
 c
       SUBROUTINE NOILLEGAL(OPTION)
         character*32 option
@@ -515,7 +531,6 @@ C=======================================================================
 #if defined(CRY_FORTDIGITAL)
       USE DFPORT
 #endif
-      CHARACTER*80 CMNAM
       character*(*)  CARG
 C--
       optlen=132

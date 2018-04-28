@@ -581,9 +581,10 @@ CODE FOR XGUIUP
       SUBROUTINE XGUIUP ( IULN )
       use unitcell_mod
       use math_mod, only:degrees
-#if defined(CRY_GUI)      
-      use fwrappergui_mod, only : fstbnd, fstatm, fstsph, fstrng
-#endif
+      use lists1_mod, only: xrlind, klschk
+C#if defined(CRY_GUI)      
+C      use fwrappergui_mod, only : fstbnd, fstatm, fstsph, fstrng
+C#endif
       implicit none
 C----- UPDATE THE GUI
 C
@@ -644,6 +645,7 @@ c         loaded by the calling routine.
       INTEGER IUNKN
       CHARACTER*8 CRADTN(2)
       CHARACTER*11 CBONDS(0:9)
+      DIMENSION ID(2)
 
 
       integer, dimension(15) :: LST
@@ -660,12 +662,12 @@ c         loaded by the calling routine.
       integer kfndpr, kg, ki, kj, knf11, kr, l01sr, l02sr, l04sr, l05sr
       integer l12sr, l13sr, l16sr, l23sr, l25sr, l29sr, l30sr, l41sr
       integer last, lbuf, lfm, ll, llab, llab2, lmod, ln, lsn, ltmn
-      integer mlst, nfw, nlst, nocare, nos, numb
+      integer mlst, nfw, nlst, nocare, nos, numb, Isflag
 
       integer, save :: NCLINF
       
       integer, external :: kexist, khuntr, k41dep, kflopn, kstall
-      integer, external :: kmolax, kinv2, klschk, kincrf, klddrh
+      integer, external :: kmolax, kinv2, kincrf, klddrh
       real, external :: xdstn2
 
       DATA ISERnn /50*0/
@@ -897,7 +899,7 @@ C Get atom type.
                WRITE(CATTYP,'(A4)')IATTYP
                IF(CATTYP(1:1).EQ.'Q') THEN
                  QSINL5 = .TRUE.
-                 IF ( STORE (I5+13).GT.0.0001 ) LSPARE = .TRUE.
+                 IF ( ABS(STORE (I5+13)).GT.0.0001 ) LSPARE = .TRUE.
                END IF
                IF ( ISTORE(I5+14).NE.0 ) PTINL5 = .TRUE.
 
@@ -1130,6 +1132,18 @@ C                  STORE(I5+3) = 0.0
                    ISPARE = NINT(COV*GSCALE)
                END IF
 
+C Pass sticky refinement flag options if present.
+               ISFLAG = 0
+C This block catches old negative sticky flag and fixes it to look like new format
+               IF (ISTORE(I5+15) .LT. 0) THEN
+                  ISTORE(I5+15) = -ISTORE(I5+15)
+                  ISTORE(I5+15) = OR ( ISTORE(I5+15), 128 ) ! Set bit7
+               END IF
+C This block detects sticky flag and sets ISFLAG to pass info to GUI.               
+               IF( AND( ISTORE(I5+15), 128 ) .NE. 0 ) THEN
+                 ISFLAG = AND(ISTORE(I5+15), 127)  ! Pass lower 7 bits.
+               ENDIF
+               
                IF ( NINT(STORE(I5+3)) .LE. 1 ) THEN
 
                      CALL PRTGRP(ISTORE(I5+14),JPRT,JGRP,1)
@@ -1146,7 +1160,7 @@ C                  STORE(I5+3) = 0.0
      3          AXES(1,2),AXES(2,2),AXES(3,2),
      3          AXES(1,3),AXES(2,3),AXES(3,3),
      4          STORE(I5+4),STORE(I5+5),STORE(I5+6),
-     5          ISTORE(I5+16), JGRP, JPRT, UEQUIV, STORE(I5+13))
+     5          ISTORE(I5+16), JGRP, JPRT, UEQUIV, STORE(I5+13),ISFLAG)
 
 #endif
                ELSE IF ( NINT(STORE(I5+3)) .EQ. 2 ) THEN
@@ -1648,14 +1662,14 @@ c             CALL XPRVDU(NCVDU, 1,0)
               IF (STORE(L30RF+3).GT.-9.9)
      1            WRITE(CCOL,'(F6.2)')STORE(L30RF+3)
 
-246           FORMAT ('^^WI SAFESET [ _MT_REF_R TEXT ',F8.2,' ]',
-     1                    ' SAFESET [ _MT_REF_RW TEXT ',F8.2,' ]',/,
-     1                '^^WI SAFESET [ _MT_REF_NPAR TEXT ',F5.0,' ]',
-     1                    ' SAFESET [ _MT_REF_SCUT TEXT ',A,' ]',/,
-     1                  '^^WI SAFESET [ _MT_REF_GOOF TEXT ',F6.3,' ]',
-     1                    ' SAFESET [ _MT_REF_MAXRMS TEXT ',F8.4,' ]',/,
-     1                '^^WI SAFESET [ _MT_REF_NREF TEXT ',F7.0,' ]',/,
-     1                '^^CR')
+246           FORMAT('^^WI SAFESET [ _MT_REF_R TEXT ',F8.2,' ]',
+     1                   ' SAFESET [ _MT_REF_RW TEXT ',F8.2,' ]',/,
+     1               '^^WI SAFESET [ _MT_REF_NPAR TEXT ',F9.0,' ]',
+     1                   ' SAFESET [ _MT_REF_SCUT TEXT ',A,' ]',/,
+     1               '^^WI SAFESET [ _MT_REF_GOOF TEXT ',F9.3,' ]',
+     1                   ' SAFESET [ _MT_REF_MAXRMS TEXT ',F9.4,' ]',/,
+     1               '^^WI SAFESET [ _MT_REF_NREF TEXT ',F7.0,' ]',/,
+     1               '^^CR')
               WRITE ( CMON, 246 ) STORE(L30RF), STORE(L30RF+1),
      1            STORE(L30RF+2), CCOL,  STORE(L30RF+4),
      1            STORE(L30RF+7),STORE(L30RF+8)

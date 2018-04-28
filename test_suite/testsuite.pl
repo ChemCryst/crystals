@@ -5,6 +5,23 @@
 
 use Env qw(CRYUSEFILE CRYSDIR COMPCODE CROUTPUT);
 
+use Getopt::Std;
+my %testsuite_options=();
+getopts("cs", \%testsuite_options);
+$clean = 0;
+$smoketest = 0;
+
+if ( defined $testsuite_options{c} )
+{
+    print "\nRunning Cleanup\n";
+    $clean = 1;
+}
+if ( defined $testsuite_options{s} )
+{
+    print "\nRunning smoketest only\n" ;
+    $smoketest = 1;
+}
+
 my $windows=($^O=~/Win/)?1:0;# Are we running on windows?
 
 my $diff = "diff --strip-trailing-cr";
@@ -40,7 +57,7 @@ print (" using $CRYSEXE \n");
 
 # Either clean up, or run the tests.
 
-  if (TRUE eq contains("-c", @ARGV))
+  if ($clean)
   {
     print "Doing clean up\n";
     cleanUp(@cleanup);
@@ -93,9 +110,10 @@ sub obscureMachinePrecision() {
         open(my $fho, '>', "$CROUTPUT") or die $!;
         while (<$fhi>) { 
 	   my $line = $_;
-           chomp($line);
 #Catch negative zero formats from MINGW compiler.
-	   $line =~ s/(\s)-(0+\.0*\s)/$1 $2/g;
+	   $line =~ s/(\s)-(0+\.0*\s)/$1 $2/g;   
+
+	   chomp($line);
 
 #  su_max shift often has too much precision to be stable across platforms
 	   if($line =~ m/^(_refine_ls_shift\/su_max\s+\d+.\d\d\d\d)\d+.*$/ ) {
@@ -221,7 +239,7 @@ sub obscureMachinePrecision() {
 	   } elsif($line =~ m/^( Minimisation function\s+\d+\.\d\d)\d(E\S\d\d\s+\d+\.\d\d)\d(E\S\d\d\s+\d+\.\d\d)\d(E\S\d\d.*)/ ) {
               print $fho "[30] $1 $2 $3 $4\n";
 # Shift max  "                                         0.0762   0.0487   0.0794"
-	   } elsif($line =~ m/^(           \s*\d\.\d\d\d)\d(   \d\.\d\d\d)\d(   \d.\d\d\d)\d(\s*)/ ) {
+	   } elsif($line =~ m/^(           \s*-*\d\.\d\d\d)\d(   -*\d\.\d\d\d)\d(   -*\d.\d\d\d)\d(\s*)/ ) {
               print $fho "[31] $1 $2 $3 $4\n";
 # Min funcs "    211786.        195909.          21729.               0.3664E+06          On scale of /FO/"
 	   } elsif($line =~ m/^(\s+\d+)\d\.(\s+\d+)\d\.(\s+\d+)\d\.(\s+0\.\d\d)\d\d(E.\d\d\s+On scale of \/FO\/\s*)/ ) {
@@ -382,7 +400,7 @@ sub runTest      # Run each .tst file through both versions of CRYSTALS.
 {
     foreach $currentFileName (@files)
     {
-	$CRYUSEFILE=$currentFileName;
+        $CRYUSEFILE=$currentFileName;
         $name = $currentFileName;   
         $name =~ s\.tst\\g;           # Remove the .tst extension.
 	
@@ -392,21 +410,27 @@ sub runTest      # Run each .tst file through both versions of CRYSTALS.
         unlink "crfilev2.h5";
         print("Running Crystals (release version) on $name.tst\n");
         `$CRYSEXE`;                   # Run it
-	
-	
-        obscureMachinePrecision();
 
-
-        if (TRUE ne contains("-l", @ARGV)) {
-            print("Removing bfiles (use '-l' to leave in place)\n");
-	    cleanUp(@cleanup);
-	}
-        print `$diff $CROUTPUT $COMPCODE.org/$CROUTPUT`;
-        
-        print "$?";
+        print "CRYSTALS exit code: $?\n";
         if ( "$?" != "0" ) {
            $exitcode = 1;
-        }	
+        } 
+
+        if ( not $smoketest ) {		
+			obscureMachinePrecision();
+
+
+			if (TRUE ne contains("-l", @ARGV)) {
+				print("Removing bfiles (use '-l' to leave in place)\n");
+				cleanUp(@cleanup);
+			}
+			print `$diff $CROUTPUT $COMPCODE.org/$CROUTPUT`;
+			
+			print "diff exitcode: $?\n";
+			if ( "$?" != "0" ) {
+			   $exitcode = 1;
+			}	
+		}
 	
 #        $CROUTPUT="$name.d.out";      # Set environment variable
 #        print("Deleting files... ");
@@ -422,6 +446,6 @@ sub runTest      # Run each .tst file through both versions of CRYSTALS.
 #	print("Doing diff!\n");
 #        print `diff $CROUTPUT $COMPCODE.org/$CROUTPUT > diffs/$name.d.diff`;
     }
-    print `compare.bat`
+#print `compare.bat`
 }
 

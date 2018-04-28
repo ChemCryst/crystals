@@ -1,11 +1,11 @@
-#LIST 1                                                                                                                                                                                                                                                         
-#LIST 20                                                                                                                                                                                                                                                        
-#LIST 30                                                                                                                                                                                                                                                        
-#LIST 1                                                                                                                                                                                                                                                         
-#LIST 31                                                                                                                                                                                                                                                        
-#SPACE                                                                                                                                                                                                                                                          
-#LIST 14                                                                                                                                                                                                                                                        
-#SPACE                                                                                                                                                                                                                                                          
+#LIST 1
+#LIST 20
+#LIST 30
+#LIST 1
+#LIST 31
+#SPACE
+#LIST 14
+#SPACE
   Space Group P 1       
   The Space Group is ACentric  Primitive Triclinic     Laue Symmetry 1bar    
   Multiplicity of a General Site is   1  Laue-no is   1
@@ -25,41 +25,40 @@ Space group symbol is   P    1
                               X axis from  0.000 to  1.000
                               Y axis from  0.000 to  1.000
                               Z axis from  0.000 to  0.500
-#COMPOSITION                                                                                                                                                                                                                                                    
-#LIST 13                                                                                                                                                                                                                                                        
-#COMPOSITION                                                                                                                                                                                                                                                    
-#LIST 3                                                                                                                                                                                                                                                         
-#LIST 29                                                                                                                                                                                                                                                        
-#LIST      5                                                                                                                                                                                                                                                    
-#LIST 23                                                                                                                                                                                                                                                        
-#USE PARTIAL.HKL                                                                                                                                                                                                                                                
-#LIST      6                                                                                                                                                                                                                                                    
-#LIST 28                                                                                                                                                                                                                                                        
-#LIST      6                                                                                                                                                                                                                                                    
+#COMPOSITION
+#LIST 13
+#COMPOSITION
+#LIST 3
+#LIST 29
+#LIST      5
+#LIST 23
+#USE PARTIAL.HKL
+#LIST      6
+#LIST 28
+#LIST      6
  The updated reflections are now on UNIT 53
 
 
 
-    2803 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
-# SET PARTIAL TO YES AND UPDATE TO NO.                                                                                                                                                                                                                          
-#GENERALEDIT 23                                                                                                                                                                                                                                                 
-#LIST     12                                                                                                                                                                                                                                                    
-#LIST 4                                                                                                                                                                                                                                                         
-#WEIGHT                                                                                                                                                                                                                                                         
+    2803 reflections accepted           0 reflections rejected
+# SET PARTIAL TO YES AND UPDATE TO NO.
+#GENERALEDIT 23
+#LIST     12
+#LIST 4
+#WEIGHT
                      LIST 4 weighting type is NORMAL
-#SFLS                                                                                                                                                                                                                                                           
-#CLEAR 16                                                                                                                                                                                                                                                       
-#LIST  16                                                                                                                                                                                                                                                       
-#CLEAR 17                                                                                                                                                                                                                                                       
-#LIST  17                                                                                                                                                                                                                                                       
-#LIST 26                                                                                                                                                                                                                                                        
-#BONDCALC                                                                                                                                                                                                                                                       
+#SFLS
+#CLEAR 16
+#LIST  16
+#CLEAR 17
+#LIST  17
+#LIST 26
+#BONDCALC
 Bonds: Update required - There is no list 41
-#LIST 26                                                                                                                                                                                                                                                        
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC  NO  NO                                                                                                                                                                                                                                                   
-#SCALE      1                                                                                                                                                                                                                                                   
-#CYCLENDS                                                                                                                                                                                                                                                       
+#LIST 26
+#SFLS
+#SPEC  NO  NO
+#SCALE      1
  Initialising Special positions
 
 
@@ -117,12 +116,12 @@ Bonds: Update required - There is no list 41
 
  Structure factor least squares calculation    1  ends  1
 [29] SumFo/SumFc=  6.54    SumFoFc/SumFc^2=  6.42    SumwFoFc/SumwFc^2=  6.42
-LS-scale=  6.428   Wilson Scale=  0.000                                                                                                                                                                                                                         
+LS-scale=  6.428   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.2     100*(<Fo>-<Fc>)/<Fo> =     1.
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC  NO  NO                                                                                                                                                                                                                                                   
-#SCALE      1                                                                                                                                                                                                                                                   
-#CYCLENDS                                                                                                                                                                                                                                                       
+#CYCLENDS
+#SFLS
+#SPEC  NO  NO
+#SCALE      1
  Initialising Special positions
 
 
@@ -180,12 +179,12 @@ LS-scale=  6.428   Wilson Scale=  0.000
 
  Structure factor least squares calculation    2  ends  1
 [29] SumFo/SumFc=  6.54    SumFoFc/SumFc^2=  6.42    SumwFoFc/SumwFc^2=  6.42
-LS-scale=  6.428   Wilson Scale=  0.000                                                                                                                                                                                                                         
+LS-scale=  6.428   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.2     100*(<Fo>-<Fc>)/<Fo> =     1.
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC  NO  NO                                                                                                                                                                                                                                                   
-#CALCULAT   1                                                                                                                                                                                                                                                   
-#CYCLENDS                                                                                                                                                                                                                                                       
+#CYCLENDS
+#SFLS
+#SPEC  NO  NO
+#CALCULAT   1
  Initialising Special positions
 
 
@@ -227,8 +226,8 @@ LS-scale=  6.428   Wilson Scale=  0.000
 
 
 
- Target Weighted Residual =  8.18                                                                                                                                                                                                                               
-   h   k  l     Fo      Fc  wDel Fo/Fc     h   k  l     Fo      Fc  wDel Fo/Fc                                                                                                                                                                                  
+ Target Weighted Residual =  8.18
+   h   k  l     Fo      Fc  wDel Fo/Fc     h   k  l     Fo      Fc  wDel Fo/Fc
 [28]   -1   0   1   42.3   60.6 117.2  0.7      0   1   0   36.4   51.1  94.6  0.7
 [28]    0   1   1   43.9   56.7  82.4  0.7     -1   1   0   32.1   44.8  81.5  0.7
 [28]   -3   1   2   28.8   41.3  80.0  0.7      0  -1   1   71.8   83.6  76.1  0.8
@@ -265,17 +264,18 @@ LS-scale=  6.428   Wilson Scale=  0.000
 
 
 
-     2803 reflections   R  6.39% Rw  8.72% with I/u(I) from List 28                                                                                                                                                                                             
-     2803 reflections   R  6.39% Rw  8.72% with I/u(I) > -10.0                                                                                                                                                                                                  
-     2803 reflections   R  6.39% Rw  8.72% with I/u(I) >   2.0                                                                                                                                                                                                  
+     2803 reflections   R  6.39% Rw  8.72% with I/u(I) from List 28, I/Sig= -10.00
+     2803 reflections   R  6.39% Rw  8.72% with I/u(I) > -10.0
+     2803 reflections   R  6.39% Rw  8.72% with I/u(I) >   2.0
 [29] SumFo/SumFc=  6.54    SumFoFc/SumFc^2=  6.42    SumwFoFc/SumwFc^2=  6.42
-LS-scale=  6.428   Wilson Scale=  0.000                                                                                                                                                                                                                         
+LS-scale=  6.428   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.2     100*(<Fo>-<Fc>)/<Fo> =     1.
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#LIST 22                                                                                                                                                                                                                                                        
+#CYCLENDS
+#SFLS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#LIST 22
  Initialising Special positions
  Floating origin in  x direction
  Floating origin in  y direction
@@ -283,9 +283,8 @@ LS-scale=  6.428   Wilson Scale=  0.000
 Refining   298 parameters in    1 block :    45163 elements in the LS matrix.
  Space required on DISK is   89 records,   353  Blocks,   181 Kbytes. 
      3 Symmetry restraints written to LIST 17
-#LIST 17                                                                                                                                                                                                                                                        
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#LIST 17
+#REFINE     1
  Initialising Special positions
 
 
@@ -343,13 +342,14 @@ Refining   298 parameters in    1 block :    45163 elements in the LS matrix.
 
  Structure factor least squares calculation    4  ends  2
 [29] SumFo/SumFc=  6.54    SumFoFc/SumFc^2=  6.42    SumwFoFc/SumwFc^2=  6.42
-LS-scale=  6.428   Wilson Scale=  0.000                                                                                                                                                                                                                         
+LS-scale=  6.428   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.2     100*(<Fo>-<Fc>)/<Fo> =     1.
-#LIST 26                                                                                                                                                                                                                                                        
-#DORESTRAIN                                                                                                                                                                                                                                                     
-#INVERT  CHOL                                                                                                                                                                                                                                                   
-#NEWSHIFTS                                                                                                                                                                                                                                                      
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+#DORESTRAIN
+#LIST 26
+#DORESTRAIN
+#INVERT  DEFA
+#NEWSHIFTS
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -364,6 +364,7 @@ LS-scale=  6.428   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  2.64E+01 condition number:  4.79E+03 relative error:  5.71E-04
  S/ESD     1           1            -0.192      0.0E+00    0.182E-01        -10.60                          SCALE   
 [14]  S/ESD    52          52           -0.033       0.0E+00    0.22 E-01         -1.4         C      5 U[33]   
 [14]  S/ESD    54          54           -0.013       0.0E+00    0.12 E-01         -1.1         C      5 U[13]   
@@ -445,7 +446,7 @@ All cycle   Min function          0.0           0.19E+06       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -640,18 +641,17 @@ All cycle   Min function          0.0           0.19E+06       0.10E+16
 [37]                       0.00            -0.00    0.00    0.00    0.00   -0.00    0.00    0.00   -0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.017    0.014    0.018 
-Mean C-C su =   0.0298                                                                                                                                                                                                                                          
+Mean C-C su =   0.0298
  The following atoms should be carefully examined 
 [24]  C      11.    0.043     0.091     0.464     0.199     0.122     0.977     Might be split
 [24]  C      12.    0.022     0.112     0.545     0.226     0.111     2.692     Might be split
 [24]  C      13.    0.040     0.078     1.372     0.497     0.163     2.638     Might be split
 [24]  C      14.    0.045     0.104     0.836     0.328     0.158     1.935     Might be split
 [24]  C      15.    0.028     0.103     0.666     0.265     0.124     2.457     Might be split
-#CYCLENDS                                                                                                                                                                                                                                                       
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#CYCLENDS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
  Initialising Special positions
 
 
@@ -709,9 +709,10 @@ Mean C-C su =   0.0298
 
  Structure factor least squares calculation    5  ends  2
 [29] SumFo/SumFc=  6.20    SumFoFc/SumFc^2=  6.23    SumwFoFc/SumwFc^2=  6.23
-LS-scale=  6.236   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.057    100*(<Fo>-<Fc>)/<Fo> =    -0.47                                                                                                                                                                                                         
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+LS-scale=  6.236   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.057    100*(<Fo>-<Fc>)/<Fo> =    -0.47
+#DORESTRAIN
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -726,6 +727,7 @@ LS-scale=  6.236   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  2.56E+01 condition number:  6.96E+03 relative error:  8.30E-04
  S/ESD     1           1             0.022     -0.1E+00    0.160E-01          1.36                          SCALE   
  LARGE    77          77            0.0604      0.4E+00    0.109E+00          0.55        C     13 U[11]   
 [14]  S/ESD   230         230            0.011      -0.5E+00    0.97 E-02          1.1         C    120 U[11]   
@@ -788,7 +790,7 @@ All cycle   Min function          0.0           0.15E+06       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -983,18 +985,17 @@ All cycle   Min function          0.0           0.15E+06       0.10E+16
 [37]                       0.00            -0.00    0.00    0.00    0.00   -0.00    0.00    0.00    0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.016    0.013    0.017 
-Mean C-C su =   0.0280                                                                                                                                                                                                                                          
+Mean C-C su =   0.0280
  The following atoms should be carefully examined 
 [24]  C      11.    0.050     0.094     0.446     0.197     0.128     0.835     Might be split
 [24]  C      12.    0.028     0.116     0.510     0.218     0.119     2.078     Might be split
 [24]  C      13.    0.043     0.078     1.507     0.543     0.172     2.749     Might be split
 [24]  C      14.    0.050     0.117     0.847     0.338     0.170     1.984     Might be split
 [24]  C      15.    0.028     0.103     0.706     0.279     0.127     2.583     Might be split
-#CYCLENDS                                                                                                                                                                                                                                                       
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#CYCLENDS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
  Initialising Special positions
 
 
@@ -1052,9 +1053,10 @@ Mean C-C su =   0.0280
 
  Structure factor least squares calculation    6  ends  2
 [29] SumFo/SumFc=  6.24    SumFoFc/SumFc^2=  6.25    SumwFoFc/SumwFc^2=  6.25
-LS-scale=  6.258   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.033    100*(<Fo>-<Fc>)/<Fo> =    -0.28                                                                                                                                                                                                         
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+LS-scale=  6.258   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.033    100*(<Fo>-<Fc>)/<Fo> =    -0.28
+#DORESTRAIN
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -1069,6 +1071,7 @@ LS-scale=  6.258   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  2.58E+01 condition number:  7.60E+03 relative error:  9.06E-04
 
                                                 for         298 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -1128,7 +1131,7 @@ All cycle   Min function          0.0           0.15E+06       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -1323,18 +1326,17 @@ All cycle   Min function          0.0           0.15E+06       0.10E+16
 [37]                       0.00             0.00    0.00    0.00   -0.00    0.00    0.00    0.00   -0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.016    0.013    0.017 
-Mean C-C su =   0.0283                                                                                                                                                                                                                                          
+Mean C-C su =   0.0283
  The following atoms should be carefully examined 
 [24]  C      11.    0.049     0.095     0.447     0.197     0.128     0.859     Might be split
 [24]  C      12.    0.025     0.116     0.523     0.221     0.116     2.356     Might be split
 [24]  C      13.    0.043     0.078     1.524     0.549     0.173     2.734     Might be split
 [24]  C      14.    0.047     0.121     0.887     0.352     0.172     2.255     Might be split
 [24]  C      15.    0.028     0.105     0.702     0.278     0.128     2.620     Might be split
-#CYCLENDS                                                                                                                                                                                                                                                       
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#CYCLENDS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
  Initialising Special positions
 
 
@@ -1392,9 +1394,10 @@ Mean C-C su =   0.0283
 
  Structure factor least squares calculation    7  ends  2
 [29] SumFo/SumFc=  6.24    SumFoFc/SumFc^2=  6.25    SumwFoFc/SumwFc^2=  6.25
-LS-scale=  6.258   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.28                                                                                                                                                                                                         
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+LS-scale=  6.258   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.28
+#DORESTRAIN
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -1409,6 +1412,7 @@ LS-scale=  6.258   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  2.58E+01 condition number:  7.54E+03 relative error:  8.99E-04
 
                                                 for         298 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -1449,7 +1453,7 @@ All cycle   Min function          0.0           0.15E+06       0.10E+16
 
 
 [38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   -0.00
-                                        -0.0001   0.0000   0.0001
+[31]                                         -0.000    0.000    0.000 
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.001    0.001    0.004 
@@ -1468,7 +1472,7 @@ All cycle   Min function          0.0           0.15E+06       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -1663,30 +1667,30 @@ All cycle   Min function          0.0           0.15E+06       0.10E+16
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00   -0.00    0.00    0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.016    0.013    0.017 
-Mean C-C su =   0.0284                                                                                                                                                                                                                                          
+Mean C-C su =   0.0284
  The following atoms should be carefully examined 
 [24]  C      11.    0.050     0.095     0.445     0.197     0.128     0.837     Might be split
 [24]  C      12.    0.027     0.117     0.518     0.220     0.118     2.241     Might be split
 [24]  C      13.    0.043     0.079     1.558     0.560     0.175     2.816     Might be split
 [24]  C      14.    0.049     0.125     0.878     0.351     0.175     2.224     Might be split
 [24]  C      15.    0.027     0.105     0.709     0.280     0.127     2.673     Might be split
-#CYCLENDS                                                                                                                                                                                                                                                       
-#PRINT 23                                                                                                                                                                                                                                                       
+#CYCLENDS
+#PRINT 23
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    23     serial number        3     Address    33913     Length      76     Created on                          
+ Print list type    23     serial number        3     Address    33945     Length      77     Created on                          
 
 
 
- Record  101    LGRP    7  NGRP      1   MODIFICATIONS APPLIED TO /FO/ AND /FC/ DURING SFLS (-1 FOR NO, 0 FOR YES)       
+ Record  101    LGRP    8  NGRP      1   MODIFICATIONS APPLIED TO /FO/ AND /FC/ DURING SFLS (-1 FOR NO, 0 FOR YES)       
 
 
-    ANOMALOUS      EXTINCTION     LAYERSCALES    BATCHSCALES    PARTIAL        UPDATE         ENANTIOPOLE 
+    ANOMALOUS      EXTINCTION     LAYERSCALES    BATCHSCALES    PARTIAL        UPDATE         ENANTIOPOLE    INVERTOR    
 
-         -1              0             -1             -1              0             -1             -1
+         -1              0             -1             -1              0             -1             -1              0
 
 
  Record  103    LGRP    6  NGRP      1   MODIFICATIONS TO THE MINIMISATION FUNCTION DURING SFLS (-1 FOR NO, 0 FOR YES)   
@@ -1724,13 +1728,13 @@ Mean C-C su =   0.0284
 
 
 
-#PRINT 22                                                                                                                                                                                                                                                       
+#PRINT 22
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        1     Address    38682     Length     729     Created on                          
+ Print list type    22     serial number        1     Address    38718     Length     729     Created on                          
 
 
             298 parameter(s) in    1 block(s) - as follows:
@@ -1913,13 +1917,13 @@ Mean C-C su =   0.0284
  Profile parameters  ( No parameters refined )
 
  Extinction param    ( No parameters refined )
-#PRINT 24                                                                                                                                                                                                                                                       
+#PRINT 24
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number        5     Address    85654     Length     616     Created on                          
+ Print list type    24     serial number        5     Address    85698     Length     616     Created on                          
 
 
 
@@ -2233,14 +2237,13 @@ Mean C-C su =   0.0284
 
 
 
-#LIST 23                                                                                                                                                                                                                                                        
-#LIST 4                                                                                                                                                                                                                                                         
-#WEIGHT                                                                                                                                                                                                                                                         
+#LIST 23
+#LIST 4
+#WEIGHT
                      LIST 4 weighting type is 1/FO
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC  NO  NO                                                                                                                                                                                                                                                   
-#CALCULAT   1                                                                                                                                                                                                                                                   
-#CYCLENDS                                                                                                                                                                                                                                                       
+#SFLS
+#SPEC  NO  NO
+#CALCULAT   1
  Initialising Special positions
 
 
@@ -2282,8 +2285,8 @@ Mean C-C su =   0.0284
 
 
 
- Target Weighted Residual =  6.79                                                                                                                                                                                                                               
-   h   k  l     Fo      Fc  wDel Fo/Fc     h   k  l     Fo      Fc  wDel Fo/Fc                                                                                                                                                                                  
+ Target Weighted Residual =  6.79
+   h   k  l     Fo      Fc  wDel Fo/Fc     h   k  l     Fo      Fc  wDel Fo/Fc
 [28]   -1   0   1   43.5   60.1  89.4  0.7      0   1   0   37.4   50.4  71.2  0.7
 [28]   -1   1   0   33.0   43.4  57.3  0.7     -3   1   2   29.6   39.8  55.9  0.7
 [28]    0   1   1   45.1   54.8  55.5  0.8      0  -1   1   73.7   81.8  47.7  0.9
@@ -2320,17 +2323,17 @@ Mean C-C su =   0.0284
 
 
 
-     2803 reflections   R  6.32% Rw 14.80% with I/u(I) from List 28                                                                                                                                                                                             
-     2803 reflections   R  6.32% Rw 14.80% with I/u(I) > -10.0                                                                                                                                                                                                  
-     2803 reflections   R  6.32% Rw 14.80% with I/u(I) >   2.0                                                                                                                                                                                                  
+     2803 reflections   R  6.32% Rw 14.80% with I/u(I) from List 28, I/Sig= -10.00
+     2803 reflections   R  6.32% Rw 14.80% with I/u(I) > -10.0
+     2803 reflections   R  6.32% Rw 14.80% with I/u(I) >   2.0
 [29] SumFo/SumFc=  6.24    SumFoFc/SumFc^2=  6.25    SumwFoFc/SumwFc^2=  6.22
-LS-scale=  6.259   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.033    100*(<Fo>-<Fc>)/<Fo> =    -0.28                                                                                                                                                                                                         
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+LS-scale=  6.259   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.033    100*(<Fo>-<Fc>)/<Fo> =    -0.28
+#CYCLENDS
+#SFLS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
  Initialising Special positions
 
 
@@ -2388,9 +2391,10 @@ LS-scale=  6.259   Wilson Scale=  0.000
 
  Structure factor least squares calculation    9  ends  2
 [29] SumFo/SumFc=  6.24    SumFoFc/SumFc^2=  6.25    SumwFoFc/SumwFc^2=  6.22
-LS-scale=  6.259   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.033    100*(<Fo>-<Fc>)/<Fo> =    -0.28                                                                                                                                                                                                         
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+LS-scale=  6.259   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.033    100*(<Fo>-<Fc>)/<Fo> =    -0.28
+#DORESTRAIN
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -2405,6 +2409,7 @@ LS-scale=  6.259   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  2.53E+01 condition number:  7.47E+03 relative error:  8.90E-04
 
                                                 for         298 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -2460,7 +2465,7 @@ All cycle   Min function          0.0           0.13E+06       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -2655,18 +2660,17 @@ All cycle   Min function          0.0           0.13E+06       0.10E+16
 [37]                       0.00            -0.00    0.00    0.00    0.00   -0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.015    0.012    0.016 
-Mean C-C su =   0.0272                                                                                                                                                                                                                                          
+Mean C-C su =   0.0272
  The following atoms should be carefully examined 
 [24]  C      11.    0.050     0.093     0.449     0.197     0.128     0.825     Might be split
 [24]  C      12.    0.026     0.115     0.527     0.223     0.116     2.331     Might be split
 [24]  C      13.    0.043     0.079     1.545     0.556     0.175     2.797     Might be split
 [24]  C      14.    0.048     0.125     0.889     0.354     0.175     2.295     Might be split
 [24]  C      15.    0.027     0.108     0.687     0.274     0.127     2.705     Might be split
-#CYCLENDS                                                                                                                                                                                                                                                       
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#CYCLENDS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
  Initialising Special positions
 
 
@@ -2724,9 +2728,10 @@ Mean C-C su =   0.0272
 
  Structure factor least squares calculation   10  ends  2
 [29] SumFo/SumFc=  6.24    SumFoFc/SumFc^2=  6.26    SumwFoFc/SumwFc^2=  6.22
-LS-scale=  6.251   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.013    100*(<Fo>-<Fc>)/<Fo> =    -0.11                                                                                                                                                                                                         
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+LS-scale=  6.251   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.013    100*(<Fo>-<Fc>)/<Fo> =    -0.11
+#DORESTRAIN
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -2741,6 +2746,7 @@ LS-scale=  6.251   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  2.53E+01 condition number:  7.35E+03 relative error:  8.76E-04
 
                                                 for         298 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -2781,7 +2787,7 @@ All cycle   Min function          0.0           0.13E+06       0.10E+16
 
 
 [38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00    0.00   -0.00    0.00    0.00    0.00   -0.00
-                                        -0.0001   0.0000   0.0001
+[31]                                         -0.000    0.000    0.000 
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.001    0.000    0.002 
@@ -2800,7 +2806,7 @@ All cycle   Min function          0.0           0.13E+06       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -2995,18 +3001,17 @@ All cycle   Min function          0.0           0.13E+06       0.10E+16
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00   -0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.015    0.012    0.016 
-Mean C-C su =   0.0273                                                                                                                                                                                                                                          
+Mean C-C su =   0.0273
  The following atoms should be carefully examined 
 [24]  C      11.    0.050     0.093     0.449     0.197     0.128     0.833     Might be split
 [24]  C      12.    0.026     0.116     0.525     0.222     0.117     2.313     Might be split
 [24]  C      13.    0.043     0.080     1.564     0.562     0.175     2.891     Might be split
 [24]  C      14.    0.049     0.127     0.880     0.352     0.177     2.253     Might be split
 [24]  C      15.    0.027     0.108     0.694     0.276     0.127     2.746     Might be split
-#CYCLENDS                                                                                                                                                                                                                                                       
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#CYCLENDS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
  Initialising Special positions
 
 
@@ -3064,9 +3069,10 @@ Mean C-C su =   0.0273
 
  Structure factor least squares calculation   11  ends  2
 [29] SumFo/SumFc=  6.24    SumFoFc/SumFc^2=  6.26    SumwFoFc/SumwFc^2=  6.22
-LS-scale=  6.251   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.013    100*(<Fo>-<Fc>)/<Fo> =    -0.10                                                                                                                                                                                                         
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+LS-scale=  6.251   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.013    100*(<Fo>-<Fc>)/<Fo> =    -0.10
+#DORESTRAIN
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -3081,6 +3087,7 @@ LS-scale=  6.251   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  2.53E+01 condition number:  7.51E+03 relative error:  8.95E-04
 
                                                 for         298 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -3121,7 +3128,7 @@ All cycle   Min function          0.0           0.13E+06       0.10E+16
 
 
 [38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00   -0.00   -0.00    0.00    0.00    0.00    0.00
-                                        -0.0001   0.0000   0.0001
+[31]                                         -0.000    0.000    0.000 
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.001    0.000    0.001 
@@ -3140,7 +3147,7 @@ All cycle   Min function          0.0           0.13E+06       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -3335,18 +3342,17 @@ All cycle   Min function          0.0           0.13E+06       0.10E+16
 [37]                       0.00             0.00    0.00    0.00   -0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.015    0.012    0.016 
-Mean C-C su =   0.0273                                                                                                                                                                                                                                          
+Mean C-C su =   0.0273
  The following atoms should be carefully examined 
 [24]  C      11.    0.050     0.093     0.450     0.197     0.128     0.835     Might be split
 [24]  C      12.    0.026     0.116     0.526     0.223     0.116     2.339     Might be split
 [24]  C      13.    0.043     0.079     1.549     0.557     0.175     2.809     Might be split
 [24]  C      14.    0.049     0.128     0.890     0.356     0.178     2.311     Might be split
 [24]  C      15.    0.027     0.108     0.691     0.275     0.127     2.724     Might be split
-#CYCLENDS                                                                                                                                                                                                                                                       
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#CYCLENDS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
  Initialising Special positions
 
 
@@ -3404,9 +3410,10 @@ Mean C-C su =   0.0273
 
  Structure factor least squares calculation   12  ends  2
 [29] SumFo/SumFc=  6.24    SumFoFc/SumFc^2=  6.26    SumwFoFc/SumwFc^2=  6.22
-LS-scale=  6.251   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.012    100*(<Fo>-<Fc>)/<Fo> =    -0.10                                                                                                                                                                                                         
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+LS-scale=  6.251   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.012    100*(<Fo>-<Fc>)/<Fo> =    -0.10
+#DORESTRAIN
+#INVERT  DEFA
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -3421,6 +3428,7 @@ LS-scale=  6.251   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  2.53E+01 condition number:  7.36E+03 relative error:  8.77E-04
 
                                                 for         298 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -3431,7 +3439,7 @@ LS-scale=  6.251   Wilson Scale=  0.000
 All cycle   R-factor              0.0            6.3           0.10E+03
 All cycle   Rw                    0.0            15.           0.10E+03
 [06] All cycle   shift/esd
- Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
+ Forced termination after this cycle:  Actual value condition on: shift/esd
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -3457,7 +3465,7 @@ All cycle   Rw                    0.0            15.           0.10E+03
 
 
 [38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   -0.00
-                                        -0.0001   0.0000   0.0001
+[31]                                         -0.000    0.000    0.000 
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.000    0.000    0.001 
@@ -3476,7 +3484,7 @@ All cycle   Rw                    0.0            15.           0.10E+03
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -3671,30 +3679,30 @@ All cycle   Rw                    0.0            15.           0.10E+03
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00   -0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.015    0.012    0.016 
-Mean C-C su =   0.0273                                                                                                                                                                                                                                          
+Mean C-C su =   0.0273
  The following atoms should be carefully examined 
 [24]  C      11.    0.050     0.093     0.450     0.197     0.128     0.835     Might be split
 [24]  C      12.    0.026     0.116     0.526     0.223     0.117     2.334     Might be split
 [24]  C      13.    0.043     0.079     1.559     0.560     0.175     2.850     Might be split
 [24]  C      14.    0.049     0.129     0.885     0.354     0.178     2.294     Might be split
 [24]  C      15.    0.027     0.108     0.692     0.276     0.127     2.740     Might be split
-#CYCLENDS                                                                                                                                                                                                                                                       
-#PRINT 23                                                                                                                                                                                                                                                       
+#CYCLENDS
+#PRINT 23
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    23     serial number        4     Address    33913     Length      76     Created on                          
+ Print list type    23     serial number        4     Address    33945     Length      77     Created on                          
 
 
 
- Record  101    LGRP    7  NGRP      1   MODIFICATIONS APPLIED TO /FO/ AND /FC/ DURING SFLS (-1 FOR NO, 0 FOR YES)       
+ Record  101    LGRP    8  NGRP      1   MODIFICATIONS APPLIED TO /FO/ AND /FC/ DURING SFLS (-1 FOR NO, 0 FOR YES)       
 
 
-    ANOMALOUS      EXTINCTION     LAYERSCALES    BATCHSCALES    PARTIAL        UPDATE         ENANTIOPOLE 
+    ANOMALOUS      EXTINCTION     LAYERSCALES    BATCHSCALES    PARTIAL        UPDATE         ENANTIOPOLE    INVERTOR    
 
-         -1              0             -1             -1              0             -1             -1
+         -1              0             -1             -1              0             -1             -1              0
 
 
  Record  103    LGRP    6  NGRP      1   MODIFICATIONS TO THE MINIMISATION FUNCTION DURING SFLS (-1 FOR NO, 0 FOR YES)   
@@ -3732,13 +3740,13 @@ Mean C-C su =   0.0273
 
 
 
-#PRINT 22                                                                                                                                                                                                                                                       
+#PRINT 22
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        1     Address    38682     Length     729     Created on                          
+ Print list type    22     serial number        1     Address    38718     Length     729     Created on                          
 
 
             298 parameter(s) in    1 block(s) - as follows:
@@ -3921,13 +3929,13 @@ Mean C-C su =   0.0273
  Profile parameters  ( No parameters refined )
 
  Extinction param    ( No parameters refined )
-#PRINT 24                                                                                                                                                                                                                                                       
+#PRINT 24
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number        9     Address    85654     Length     616     Created on                          
+ Print list type    24     serial number        9     Address    85698     Length     616     Created on                          
 
 
 
@@ -4241,7 +4249,7 @@ Mean C-C su =   0.0273
 
 
 
-#END                                                                                                                                                                                                                                                            
+#END
 
 
           : Job ends ok       with     0 warnings and     0 errors

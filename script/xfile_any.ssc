@@ -6,7 +6,7 @@
 %% CARG CLASS
 %% SI  SHEL  ins/res
 %% N   DIFF  Nonius (Kccd)
-%% A   DIFF  Agilent (AG cif)
+%% A   DIFF  Rigaku Oxdiff (ROD cif)
 %% R   DIFF  Rigaku (RI cif)
 %% W   DIFF  WinGX (GD cif)
 %% PP  DIFF  Pre-processed
@@ -23,7 +23,7 @@
 %% 1 - hkl
 %% 2 - hklf5
 %% 3 - ins,res
-%% 4 - cif (agilent)
+%% 4 - cif (rigakuod)
 %% 5 - cif (nonius)
 %% 6-  cif (rigaku)
 %% 7 - cif (general instrument)
@@ -134,7 +134,7 @@
 ^^WI    @ 3,1 STATIC M 'INs or RES file detected. Confirm and click OK.'
 %END BLOCK
 %BLOCK
-^^WI    @ 3,1 STATIC M 'Agilent CIF detected. Confirm and click OK.'
+^^WI    @ 3,1 STATIC M 'RigakuOD CIF detected. Confirm and click OK.'
 %END BLOCK
 %BLOCK
 ^^WI    @ 3,1 STATIC M 'Nonius CIF file detected. Confirm and click OK.'
@@ -167,7 +167,7 @@
 % IF FTYPE .EQ. 5 THEN
 ^^WI       STATE=ON
 % END IF
-^^WI     @ 5,2 RADIOBUTTON AG 'Agilent' 
+^^WI     @ 5,2 RADIOBUTTON ROD 'Rigaku OD' 
 % IF FTYPE .EQ. 4 THEN
 ^^WI       STATE=ON
 % END IF
@@ -248,11 +248,11 @@
 %           EVALUATE CLASS = 'DIFF'
 %         ELSE
 %%
-^^??       AG STATE                                                              
+^^??       ROD STATE                                                              
 %          VERIFY ON OFF                                                         
 %          GET SILENT NOSTORE FINAL ABBREVIATED ' '                              
 %          IF ( VALUE .EQ. 1 ) THEN                                              
-%            EVALUATE CARG = 'A'     %AGILENT                                      
+%            EVALUATE CARG = 'A'     %RIGAKU OD                                      
 %            EVALUATE CLASS = 'DIFF'
 %          ELSE
 %%
@@ -377,7 +377,7 @@
 %        IF C_FILE .NE. ' ' THEN
 %         EVALUATE INSTITLE =  C_FILE 
 %        END IF
-%        COPY '#SCRIPT XSHELXIN' 
+%        COPY '#SCRIPT XPASCAL' 
 %      ELSE IF CARG .EQ. 'S4' THEN
 %        IF C_FILE .NE. ' ' THEN
 %         EVALUATE HKLTITLE =  C_FILE 

@@ -1,3 +1,22 @@
+C  EXPRESSION OPERATORS USED IN KSCEXP
+C      DATA COPER /                '('   ,   ')'   ,                ! 0-2
+C     2                  '+'   ,   '-'   ,   '*'   ,   '/'   ,      ! 3-6    !Bop 1 - 
+C     3                '.EQ.'  ,   '='   ,  '.NE.' ,  '<>'   ,      ! 7-10
+C     4                '.LE.'  ,  '=<'   ,  '.GE.' ,  '>='   ,      !11-14
+C     5                '.LT.'  ,   '<'   ,  '.GT.' ,   '>'   ,      !15-18
+C     6                '.OR.'  , '.AND.' , '.THEN.' , '.ELSE.' ,    !19-22
+C     7                '//'    , 'STARTSWITH' , '**', 'IOR',        !23-26
+C     7                'IAND'  , 'IDECMASK', 'MOD' ,                !27-29   !Bop - 27
+C
+C     8                '.NOT.' ,   '+'   ,   '-'   , 'EXISTS' ,     !29-32   !Uop 1 - 4
+C     9                '.IF.'  , 'REAL'  ,'INTEGER', '.VALUE.',     !33-36   !Uop 5 - 8
+C     *                'CHARACTER','KEYWORD','UPPERCASE','FIRSTSTR',!37-40   !un 9-12
+C     1                'FIRSTINT','SQRT','GETPATH','GETFILE',       !41-44   !un 13-16
+C     2                'GETTITLE','FILEEXISTS','FILEDELETE',        !45-47   !un 17-19
+C     3                'FILEISOPEN','GETEXTN','GETCWD','RANDOM' ,   !48-51   !un 20-23
+C     4                'GETENV','COMPRESS','SPGTOCRY','ABS','PACK', !52-56   !un 24-28
+C     5                'LEN'/                                       !57      !un 29
+C
 C $Log: not supported by cvs2svn $
 C Revision 1.75  2013/09/19 21:35:39  rich
 C Change precision of listing output where not important to reduce differences across platforms.
@@ -1694,7 +1713,7 @@ C
       CALL XSCMSG ( MILLEG , MCOMND , CLOWER(NDIREC:NEND) , 0 )
       GO TO 9900
 9920  CONTINUE
-      CALL XSCMSG ( MTOOMY , MAVKEY , 'The maximum is' , NCHK )
+      CALL XSCMSG ( MTOOMY , MAVKEY , 'The maximum is' , 0 )
       GO TO 9900
 9930  CONTINUE
       CALL XSCMSG ( MNOTFD , MLABEL , CSERCH , 0 )
@@ -2789,6 +2808,8 @@ C
       PARAMETER ( JPOSTK = 4 )
 CDEC08  1 NEW UNARY OPERATOR
 C       REAL=ABS(REAL)
+cjan18  New Binary Operator
+c       REAL = REAL MOD (REAL) or INT
 C
 CJAN02  1 NEW UNARY OPERATOR
 C       CHAR=GETENV(CHAR)
@@ -2819,9 +2840,11 @@ C       INT = INT IAND INT
 CJUN03  2 NEW UNARY OPS:
 C       CHAR=COMPRESS(CHAR) - removes extra spaces
 C       CHAR=SPGTOCRY(CHAR) - tries to fix up Xprep style space groups
+cdjwMar-2017
+C       CHAR=PACK(CHAR) - REMOVES ALL SPACES AND LEFT-PACKS
 C
 cdjwdec08
-      PARAMETER ( NOPER = 55 , NUBASE = 28 )
+      PARAMETER ( NOPER = 58 , NUBASE = 29 )
       PARAMETER ( NARGMX = 3 , NOTYPE = 14 )
 C
       PARAMETER ( JNONE = 0 )
@@ -2862,11 +2885,11 @@ C
 C
       DATA IDEFOP / 1 , 1 , 2 , 2 , 2 , 2 , 3 , 3 , 3 , 3 ,
      2              2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 5 , 5 ,
-     3              6 , 7 , 11, 11, 2,  2 , 2 , 2 ,
+     3              6 , 7 , 11, 11, 2,  2 , 2 , 2 , 2 ,
 CJAN99  abs dec08
      4           8 , 9 ,  9 , 10 ,  8 , 10 ,  4 , 12 , 13 , 10 ,
      5          12 ,12 , 12,   4 , 12 , 12 , 12 , 12 , 12 , 12 ,
-     6          12 ,12 , 13,  12 , 12 , 12 ,  4 /
+     6          12 ,12 , 13,  12 , 12 , 12 ,  4 , 12 , 12 /
 C
       DATA NARGS  /0 , 2 , 2 , 1 , 2 , 2 , 3 , 1 , 1 , 1 , 2 , 1 , 1, 0/
       DATA NRESLT /0 , 1 , 1 , 1 , 1 , 2 , 1 , 1 , 1 , 1 , 1 , 1 , 1, 1/
@@ -2960,7 +2983,7 @@ C
      3        4050 , 4050 , 4050 , 4050 , 4050 ,
      4        4050 , 4050 , 4050 , 4100 , 4110 ,
      5        8000 , 4120 , 4130 , 4140 , 4150 ,
-     6        4160 , 4170 , 4180 ,
+     6        4160 , 4170 , 4180 , 4155 ,
      6        9940 ) , IOPER
       GO TO 9940
 C
@@ -3155,6 +3178,22 @@ C
 C
       GO TO 8000
 C
+
+4155  CONTINUE
+C
+C -- 'MOD'
+C
+          IF ( ITYPE(1) .EQ. 1 ) THEN
+            ICODE(JVALUE,IARG(2)) = MOD(ICODE(JVALUE,IARG(2)) ,
+     2                              ICODE(JVALUE,IARG(1)))
+          ELSE IF ( ITYPE(1) .EQ. 2 ) THEN
+            XCODE(JVALUE,IARG(2)) = MOD(XCODE(JVALUE,IARG(2)) ,
+     2                              XCODE(JVALUE,IARG(1)))
+          ENDIF
+C
+      GO TO 8000
+C
+
 C
 4160  CONTINUE
 C
@@ -3247,7 +3286,7 @@ CJAN99  abs dec08
      3        5090 , 5100,  5110 , 5120 , 5130 ,
      3        5140 , 5150,  5160 , 5170 , 5180 , 
      4        5190 , 5200,  5210 , 5220 , 5230 ,
-     5        5240 , 5250,  9940 ) , IUOPER
+     5        5240 , 5250,  5260 , 5270 , 9940 ) , IUOPER
       GO TO 9940
 C
 C
@@ -3622,9 +3661,9 @@ C
       CALL MTRNLG(CWORK1,'OLD',LEN1)
       INQUIRE(FILE=CWORK1(1:LEN1), EXIST=LRESLT)
 #ifdef __INW__ 
-	  IF ( .NOT. LRESLT ) THEN
+      IF ( .NOT. LRESLT ) THEN
         INQUIRE(DIRECTORY=CWORK1(1:LEN1), EXIST=LRESLT)
-      END IF	  
+      END IF      
 #endif
       IF ( LRESLT ) THEN
           ICODE(JVALUE,IARG(1)) = 1
@@ -3785,6 +3824,7 @@ C (4) There is always a space after a, b, c, d, n or m
           END IF
         END DO
         IED = IED + 1
+        IF ( IED .GT. LEN(CWORK2) ) EXIT
       END DO
 C (5) There is always a space before 6
       IED=1
@@ -3796,6 +3836,7 @@ C (5) There is always a space before 6
           CWORK1(IED:IED) = '6'
         END IF
         IED = IED + 1
+        IF ( IED .GT. LEN(CWORK1) ) EXIT
       END DO
 C (6a) Adjacent numbers always have #1>#2.
 C (6b) Always a space after a number, unless another number or /
@@ -3819,6 +3860,7 @@ C (6b) Always a space after a number, unless another number or /
           END IF
         END IF
         IED = IED + 1
+        IF ( IED .GT. LEN(CWORK2) ) EXIT
       END DO
 C (7) There is always a space before -, and one digit after.
       IED=1
@@ -3848,6 +3890,7 @@ C (7) There is always a space before -, and one digit after.
           IMEM = 0
         END IF
         IED = IED + 1
+        IF ( IED .GT. LEN(CWORK1) ) EXIT
       END DO
       CALL XCREMS(CWORK1,CWORK2,IED)
       ISTAT = KSCSCD ( CWORK2(1:IED) , ICODE(JVALUE,IARG(1)) )
@@ -3862,9 +3905,32 @@ C Return the absolute of the argument.
 C
         XCODE(JVALUE,IARG(1)) = ABS ( XCODE(JVALUE,IARG(1)) ) 
         ICODE(JVTYPE,IARG(1)) = 2
+      GO TO 8000
 C
+5260  CONTINUE
+C
+C -- 'PACK'
+C
+      ISTAT = KSCSDC ( ICODE(JVALUE,IARG(1)) , CWORK1 , LEN1 )
+      CALL XCRAS( CWORK1, LEN1)
+      LEN1 = MAX ( LEN1, 1 )
+      ISTAT = KSCSCD ( CWORK1(1:LEN1) , ICODE(JVALUE,IARG(1)) )
+      ICODE(JVTYPE,IARG(1)) = 4
+      GO TO 8000
+C
+C
+5270  CONTINUE
+C
+C -- 'LEN'
+C
+      ISTAT = KSCSDC ( ICODE(JVALUE,IARG(1)) , CWORK1 , LEN1 )
+      LEN1 = MAX ( LEN1, 1 )
+      ICODE(JVALUE,IARG(1)) = NCTRIM( CWORK1 )
+      ICODE(JVTYPE,IARG(1)) = 1
 C
       GO TO 8000
+ 
+C
 C
 8000  CONTINUE
 C
@@ -4105,9 +4171,9 @@ C
       PARAMETER ( NOUTVL = 100 , NOPERS = 20 )
 C
       PARAMETER ( IBASBR = 1               , NBROPR =  2 )
-      PARAMETER ( IBASBI = IBASBR + NBROPR , NBOPER = 26 )
+      PARAMETER ( IBASBI = IBASBR + NBROPR , NBOPER = 27 )
 CJAN99  'ABS' dec08
-      PARAMETER ( IBASUN = IBASBI + NBOPER , NUOPER = 27 )
+      PARAMETER ( IBASUN = IBASBI + NBOPER , NUOPER = 29 )
       PARAMETER ( NOPER = IBASUN + NUOPER - 1 )
       PARAMETER ( LOPER = 10 )
 C
@@ -4137,22 +4203,23 @@ C
       DATA IVARIB(JCTYPE) / 1 /
 C
       DATA COPER /                '('   ,   ')'   ,                ! 0-2
-     2                  '+'   ,   '-'   ,   '*'   ,   '/'   ,      ! 3-6
+     2                  '+'   ,   '-'   ,   '*'   ,   '/'   ,      ! 3-6    !Bop 1 - 
      3                '.EQ.'  ,   '='   ,  '.NE.' ,  '<>'   ,      ! 7-10
      4                '.LE.'  ,  '=<'   ,  '.GE.' ,  '>='   ,      !11-14
      5                '.LT.'  ,   '<'   ,  '.GT.' ,   '>'   ,      !15-18
      6                '.OR.'  , '.AND.' , '.THEN.' , '.ELSE.' ,    !19-22
      7                '//'    , 'STARTSWITH' , '**', 'IOR',        !23-26
-     7                'IAND'  , 'IDECMASK',                        !27,28
+     7                'IAND'  , 'IDECMASK', 'MOD' ,                !27-29   !Bop - 27
 C
-     8                '.NOT.' ,   '+'   ,   '-'   , 'EXISTS' ,     !29-32
-     9                '.IF.'  , 'REAL'  ,'INTEGER', '.VALUE.',     !33-36
+     8                '.NOT.' ,   '+'   ,   '-'   , 'EXISTS' ,     !29-32   !Uop 1 - 4
+     9                '.IF.'  , 'REAL'  ,'INTEGER', '.VALUE.',     !33-36   !Uop 5 - 8
 CJAN99 'ABS' dec08
-     *                'CHARACTER','KEYWORD','UPPERCASE','FIRSTSTR',!37-40
-     1                'FIRSTINT','SQRT','GETPATH','GETFILE',       !41-44
-     2                'GETTITLE','FILEEXISTS','FILEDELETE',        !45-47
-     3                'FILEISOPEN','GETEXTN','GETCWD','RANDOM' ,   !48-51
-     4                'GETENV','COMPRESS','SPGTOCRY','ABS'/        !52-55
+     *                'CHARACTER','KEYWORD','UPPERCASE','FIRSTSTR',!37-40   !un 9-12
+     1                'FIRSTINT','SQRT','GETPATH','GETFILE',       !41-44   !un 13-16
+     2                'GETTITLE','FILEEXISTS','FILEDELETE',        !45-47   !un 17-19
+     3                'FILEISOPEN','GETEXTN','GETCWD','RANDOM' ,   !48-51   !un 20-23
+     4                'GETENV','COMPRESS','SPGTOCRY','ABS','PACK', !52-56   !un 24-28
+     5                'LEN'/                                       !57      !un 29
 C
       DATA IPRECD /      0    ,   200   ,    0    ,
      2                  100   ,   100   ,   120   ,   120   ,
@@ -4161,7 +4228,7 @@ C
      5                   80   ,    80   ,    80   ,    80   ,
      6                   50   ,    60   ,    30   ,    20   ,
      7                  100   ,    80   ,   190   ,    90   ,
-     8                   90   ,    90   ,
+     8                   90   ,    90   ,   190   ,
 C
      8                   90   ,   180   ,   180   ,   180   ,
      9                   40   ,   180   ,   180   ,   180   ,
@@ -4170,7 +4237,8 @@ CJAN99 'ABS' dec08
      1                  180   ,   180   ,   180   ,   180   ,
      2                  180   ,   180   ,   180   ,
      3                  180   ,   180   ,   180   ,   200   ,
-     4                  180   ,   180   ,   180   ,   180 /
+     4                  180   ,   180   ,   180   ,   180   ,
+     5                  180   ,   180 /
 C
       DATA CDATAT / '<invalid>', 'integer', 'real', 'logical',
      2             'character' /
@@ -4858,7 +4926,7 @@ C
       CALL XSCMSG ( MUNKNW , MIDENT , CNAME , 0 )
       GO TO 9900
 9940  CONTINUE
-      CALL XSCMSG ( MOUTRG , MIDNNM , ' ' , IIDENT )
+      CALL XSCMSG ( MOUTRG , MIDNNM , ' ' , 0 )
       GO TO 9900
       END
 CODE FOR KSCINT
@@ -5291,7 +5359,7 @@ C
             WRITE(CMON,1000) IDESC, NDESCR
 1000        FORMAT(' Allocating descriptor ',I5,' / ',I5)
             CALL XPRVDU(NCVDU, 1,0)
-            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') trim(CMON(1))
       ENDIF
       IF ( IDESC .GT. NDESCR ) GO TO 9910
 C
@@ -5346,7 +5414,7 @@ C
       if (iscver .gt. 0) then
        write(cmon,1000) idesc, ctext(1:len(ctext))
        call xprvdu(ncvdu,1,0)
-       if (issprt .eq. 0) write(ncwu,'(a)') cmon(1)
+       if (issprt .eq. 0) write(ncwu,'(a)') trim(CMON(1))
 1000   format(' Descriptor',i4,' = ',A)
       endif
       CDESC(IDESCR(1,IDESC)) = CTEXT
@@ -6340,10 +6408,10 @@ C
       KSCSTK = -1
       RETURN
 9910  CONTINUE
-      CALL XSCMSG ( MILLEG , MSTKIT , ' ' , ITEM )
+      CALL XSCMSG ( MILLEG , MSTKIT , ' ' , 0 )
       GO TO 9900
 9920  CONTINUE
-      CALL XSCMSG ( MILLEG , MSTKLV , ' ' , ILEVEL )
+      CALL XSCMSG ( MILLEG , MSTKLV , ' ' , 0 )
       GO TO 9900
 C
 C
@@ -7782,7 +7850,8 @@ C
         IF (ISCVER .GT. 0)  THEN
          WRITE ( CMON, 9998 ) CVARIB
          CALL XPRVDU(NCVDU, 1,0)
-         IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)(5:)
+         IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') 
+     1     CMON(1)(5:len_trim(CMON(1)))
 9998     FORMAT ('{9,1 ', A,' Already exists' )
         ENDIF
         IF ( IVTYPE .NE. ITYPE ) GO TO 9920
@@ -7903,7 +7972,7 @@ C
       IF ( ISCSVE .GT. 0 ) THEN
         WRITE ( CMON, 1005 ) ITYPE,IFLIND, ILEVEL(IFLIND)
         CALL XPRVDU(NCVDU, 1,0)
-        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
+        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') trim(CMON(1))
 1005    FORMAT ( 1X , 'Create stack frame of type : ', I6,' file# ',2I6)
       ENDIF
 C
@@ -7929,7 +7998,7 @@ C
       IF ( ISCSVE .GT. 0 ) THEN
         WRITE ( CMON, 1006 ) ICURLV, ITYPE, IFLIND
         CALL XPRVDU(NCVDU, 1,0)
-        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
+        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') trim(CMON(1))
 1006    FORMAT ( 1X , 'Old level : ', I6,' type ',I6,' ifl ',i6)
       ENDIF
 C
@@ -7951,7 +8020,7 @@ C
       IF ( ISCSVE .GT. 0 ) THEN
         WRITE ( CMON, 1015 ) ICURLV , INEWLV
         CALL XPRVDU(NCVDU, 1,0)
-        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
+        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') trim(CMON(1))
 1015    FORMAT ( 1X , 'Current level :  ' , I5 , ' New level : ' , I5 )
       ENDIF
 C
@@ -8201,7 +8270,7 @@ cdjwjun07
      1  CSCPNM(1:LENNM), ''''
       ENDIF
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) cmon(1)(:)
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) trim(CMON(1))
 cdjwjun07
 cdjwdec09
 C
@@ -8298,7 +8367,7 @@ C
         LEVEL = ILEVEL(IFLIND)
         WRITE ( CMON, 1005 ) LEVEL , ISTACK(JBTYPE,LEVEL)
         CALL XPRVDU(NCVDU, 1,0)
-        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
+        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') trim(CMON(1))
 1005    FORMAT ( 1X , 'Delete current stack level ' , I5 ,
      2 ' of type : ' , I5 )
       ENDIF

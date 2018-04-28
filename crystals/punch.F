@@ -256,29 +256,35 @@ C
 C Revision 1.16  2001/02/26 10:28:03  richard
 C RIC: Added changelog to top of file
 C
-C      A     COMPRESSED PUNCH FORMAT
-C                  XPCH6G(LSTNO,ICLASS)
-C      B     CIF OUTPUT F's
-C                  XPCH6C(LSTNO,0)
-C      C     NORMAL DATA, ONE REFLECTION PRE CARD
-C                  XPCH6S(LSTNO,LSTNO)
-C      D     OBSERVED QUANTITIES ONLY
-C                  XPCH6O(LSTNO)
-C      E     CIF OUTPUT F^2's
-C                  XPCH6C(LSTNO,1)
-C      F     PLAIN SHELX HKL OUTPUT
-C                  XPCH6X(LSTNO,0)
-C      G     SHELX HKL OUTPUT of FC with made up sigmas.
-C                  XPCH6X(LSTNO,1)
-C      H     CIF OUTPUT F^2's  on scale of Fc
-C                  XPCH6C(LSTNO,2)
+C      A     COMPRESSED PUNCH FORMAT                  XPCH6G(LSTNO,ICLASS,.false.)
+C      B     CIF OUTPUT F's                           XPCH6C(LSTNO,0,.false.)
+C      C     NORMAL DATA, ONE REFLECTION PRE CARD     XPCH6S(LSTNO,LSTNO,.false.)
+C      D     OBSERVED QUANTITIES ONLY                 XPCH6O(LSTNO,.false.)
+C      E     CIF OUTPUT F^2's                         XPCH6C(LSTNO,1,.false.)
+C      F     PLAIN SHELX HKL OUTPUT                   XPCH6X(LSTNO,0,.false.)
+C      G     SHELX HKL OUTPUT of FC with made up sigmas.  XPCH6X(LSTNO,1,.false.)
+C      H     CIF OUTPUT F^2's  on scale of Fc         XPCH6C(LSTNO,2,.false.)
+C      I     ALL Keys set                             XPCH6N(LSTNO,LSTNO,1,.false.)
+C      J     F^2 ALL Keys set, Sigmas adjusted for old and new scales  XPCH6N(LSTNO,LSTNO,2,.false.)
 
+C  Same output but reflection must not not be filtered out
+C      AF    COMPRESSED PUNCH FORMAT                  XPCH6G(LSTNO,ICLASS,.true.)
+C      BF    CIF OUTPUT F's                           XPCH6C(LSTNO,0,.true.)
+C      CF    NORMAL DATA, ONE REFLECTION PRE CARD     XPCH6S(LSTNO,LSTNO,.true.)
+C      DF    OBSERVED QUANTITIES ONLY                 XPCH6O(LSTNO,.true.)
+C      EF    CIF OUTPUT F^2's                         XPCH6C(LSTNO,1,.true.)
+C      FF    PLAIN SHELX HKL OUTPUTC                  XPCH6X(LSTNO,0,.true.)
+C      GF    SHELX HKL OUTPUT of FC with made up sigmas.  XPCH6X(LSTNO,1,.true.)
+C      HF    CIF OUTPUT F^2's  on scale of Fc         XPCH6C(LSTNO,2,.true.)
+C      IF    ALL Keys set          C                  XPCH6N(LSTNO,LSTNO,1,.true.)
+C      J     F^2 ALL Keys set, Sigmas adjusted for old and new scales  XPCH6N(LSTNO,LSTNO,2,.true.)
 C
 CODE FOR XPCH5S
       SUBROUTINE XPCH5S(IN)
 C--PUNCH LIST 5 IN CRYSTALS FORMAT
 C      IN 1 EVERYTHING
 C         0 ONLY ATOMS
+C        -1 NO HEADER OR OVERALL - SUITABLE FOR INPUT WITH #EDIT
 C
 C--
       INCLUDE 'ISTORE.INC'
@@ -289,9 +295,17 @@ C
       INCLUDE 'XUSLST.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XOPVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
       INCLUDE 'QSTORE.INC'
 C
+      IF (IN .GT. 0) THEN
+       WRITE(CMON,'('' Punching LIST 5A in CRYSTALS format'')')
+       CALL XPRVDU(NCVDU, 1,0)
+      ELSE
+       WRITE(CMON,'('' Punching LIST 5A atoms only'')')
+       CALL XPRVDU(NCVDU, 1,0)
+      ENDIF
 C--LOAD LIST 5 FROM THE DISC
       IF (KHUNTR (5,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL05
       IF ( IERFLG .LT. 0 ) GO TO 9900
@@ -382,9 +396,12 @@ C
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XOPVAL.INC'
+      INCLUDE 'XIOBUF.INC'
 C
       INCLUDE 'QSTORE.INC'
 C
+      WRITE(CMON,'('' Punching LIST 5B in XRAY format'')')
+      CALL XPRVDU(NCVDU, 1,0)
 C--LOAD LIST 5
       CALL XFAL05
       IF ( IERFLG .LT. 0 ) GO TO 9900
@@ -454,6 +471,7 @@ C
       INCLUDE 'XLST23.INC'
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'XCOMPD.INC'
+      INCLUDE 'XIOBUF.INC'
 C
       INCLUDE 'QSTORE.INC'
 #ifdef _HOL_
@@ -464,6 +482,8 @@ C
       DATA KDET /'D   '/
 #endif
 C
+      WRITE(CMON,'('' Punching LIST 5C in SHELX format'')')
+      CALL XPRVDU(NCVDU, 1,0)
 C--LOAD LIST 3, TO FIND THE FORM FACTORS TO BE USED
       IF (KHUNTR (3,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL03
       IF (KHUNTR (5,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL05
@@ -601,7 +621,7 @@ CDJWFEB2000
 C--
       CHARACTER*6 CLAB
       INCLUDE 'ISTORE.INC'
-      DIMENSION A(3)
+      DIMENSION A(3), KDEV(4)
 C
       INCLUDE 'STORE.INC'
       INCLUDE 'XCOMPD.INC'
@@ -621,6 +641,8 @@ C
       INCLUDE 'UFILE.INC'
 C
       INCLUDE 'QSTORE.INC'
+      WRITE(CMON,'('' Punching LIST 5D in CHIME (xyz) format'')')
+      CALL XPRVDU(NCVDU, 1,0)
 C
       IF (KEXIST(1) .LT. 1) THEN
       WRITE(CMON,'('' No Cell Parameters Available'')')
@@ -722,6 +744,8 @@ C
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'QSTORE.INC'
 C
+      WRITE(CMON,'('' Punching LIST 5E in e.s.d format'')')
+      CALL XPRVDU(NCVDU, 1,0)
 C
 C--INITIALISE THE TIMING
       CALL XTIME1(2)
@@ -987,11 +1011,30 @@ C -- ERRORS
       RETURN
       END
 C
-CODE FOR XPCH6S
-      SUBROUTINE XPCH6S(IULN, iuln2)
+C--LIST PUNCH ROUTINES
+C
+C      A     COMPRESSED PUNCH FORMAT                        XG(LSTNO,ICLASS,l28filter)
+C      B     CIF OUTPUT F's                                 XPCH6C(LSTNO,0,l28filter)
+C      C     NORMAL DATA, ONE REFLECTION PRE CARD           XPCH6S(LSTNO,LSTNO,l28filter)
+C      D     OBSERVED QUANTITIES ONLY                       XPCH6O(LSTNO,l28filter)
+C      E     CIF OUTPUT F^2's                               XPCH6C(LSTNO,1,l28filter)
+C      F     PLAIN SHELX HKL OUTPUT                         XPCH6X(LSTNO,0,l28filter)
+C      G     SHELX HKL OUTPUT of FC with made up sigmas.    XPCH6X(LSTNO,1,l28filter)
+C      H     CIF OUTPUT F^2's  on scale of Fc               XPCH6C(LSTNO,2,l28filter)
+C      I     ALL Keys set                                   XPCH6N(LSTNO,LSTNO,1,l28filter)
+C         (J     removed - was CARMELO'S SIM WEIGHT TEST)
+C      J     F^2 ALL Keys set, Sigmas adjusted for old and new scales
+C                                                           XPCH6N(LSTNO,LSTNO,2 OR 3,l28filter)
+C
+C      XF    Same subroutine but l28filter flag set to True
+C
+
+CODE FOR XPCH6S                                                      !PUNCH 6 C
+      SUBROUTINE XPCH6S(IULN, iuln2, l28filter)
 C  PUNCH C      PUNCH LIST 6/7 IN SHORT CRYSTALS FORMAT
 C
 C--
+      logical, intent(in) :: l28filter
       DIMENSION JFOT(1), JFOO(1)
       INCLUDE 'ISTORE.INC'
 C
@@ -1002,6 +1045,7 @@ C
       INCLUDE 'XLST01.INC'
       INCLUDE 'XUSLST.INC'
       INCLUDE 'XLST06.INC'
+      INCLUDE 'XLST28.INC'
       INCLUDE 'XOPVAL.INC'
 C
       INCLUDE 'QSTORE.INC'
@@ -1018,6 +1062,8 @@ C     FACTOR3        RATIO/JCODE    NOTHING
 C
 C
       IF (KEXIST(1) .GE. 1) CALL XFAL01
+      IF (KHUNTR(28,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL28
+
 C--SET UP LIST 6 FOR READING ONLY
       IN = 0
       CALL XFAL06(IULN, IN)
@@ -1085,8 +1131,14 @@ C--FETCH THE NEXT REFLECTION
 CDJWMAR99       PUNCH LESS THANS
 C      IF (KFNR(IN)) 1250, 1100, 1100
       IF (KLDRNR(IN)) 1250, 1100, 1100
-C--FIX THE INDICES
 1100  CONTINUE
+C--check if filtered reflections need printing
+      if(l28filter) then
+         if(KALLOW(IALLOW)<0) then
+           goto 1050
+         end if
+      end if
+C--FIX THE INDICES
       J=M6+2
       DO 1150 I=M6,J
       ISTORE(I)=NINT(STORE(I))
@@ -1124,12 +1176,13 @@ C -- ERRORS
       RETURN
       END
 C
-CODE FOR XPCH6O
-      SUBROUTINE XPCH6O(IULN)
+CODE FOR XPCH6O                                                  ! PUNCH 6 D
+      SUBROUTINE XPCH6O(IULN, l28filter)
 C  PUNCH D      PUNCH THE OBSERVED QUANTITIES FOR EACH REFLECTION ON
 C             SEVERAL LINES INFULL CRYSTALS FORMAT
 C
 C--
+      logical, intent(in) :: l28filter
       INCLUDE 'ISTORE.INC'
 C
       INCLUDE 'STORE.INC'
@@ -1138,11 +1191,13 @@ C
       INCLUDE 'XLST01.INC'
       INCLUDE 'XUSLST.INC'
       INCLUDE 'XLST06.INC'
+      INCLUDE 'XLST28.INC'
       INCLUDE 'XOPVAL.INC'
 C
       INCLUDE 'QSTORE.INC'
 C
       IF (KEXIST(1) .GE. 1) CALL XFAL01
+      IF (KHUNTR(28,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL28
 C--SET UP LIST 6 FOR READING ONLY
       IN = 0
       CALL XFAL06(IULN, IN)
@@ -1163,8 +1218,14 @@ C--FETCH THE NEXT REFLECTION
 CDJWMAR99       PUNCH LESS THANS
 C      IF (KFNR(IN)) 1250, 1100, 1100
       IF (KLDRNR(IN)) 1250, 1100, 1100
-C--FIX THE INDICES
 1100  CONTINUE
+C--check if filtered reflections need printing
+      if(l28filter) then
+         if(KALLOW(IALLOW)<0) then
+           goto 1050
+         end if
+      end if
+C--FIX THE INDICES
       J=M6+2
       DO 1150 I=M6,J
       ISTORE(I)=NINT(STORE(I))
@@ -1193,8 +1254,8 @@ C -- ERRORS
       RETURN
       END
 C
-CODE FOR XPCH6G
-      SUBROUTINE XPCH6G(IULN, IN)
+CODE FOR XPCH6G                                                 !PUNCH 6 A
+      SUBROUTINE XPCH6G(IULN, IN, l28filter)
 C  PUNCH A   GENERAL COMPRESSED PUNCHING ROUTINES FOR LIST 6
 C
 C  IN  THE TYPE OF PUNCHING REQUIRED :
@@ -1215,6 +1276,7 @@ C--INDEX STEPS WHICH ARE NEGATIVE LEAD TO THE REFLECTION BEING REJECTED
 C  ON INPUT.
 C
 C--
+      logical, intent(in) :: l28filter
       INCLUDE 'ISTORE.INC'
 C
       DIMENSION AA(5),IPOS(5)
@@ -1228,11 +1290,13 @@ C
       INCLUDE 'XCHARS.INC'
       INCLUDE 'XLST06.INC'
       INCLUDE 'XLST13.INC'
+      INCLUDE 'XLST28.INC'
       INCLUDE 'XOPVAL.INC'
 C
       INCLUDE 'QSTORE.INC'
 C
       IF (KEXIST(1) .GE. 1) CALL XFAL01
+      IF (KHUNTR(28,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL28
 C----- DEFINE IN TO BE 0, I,E. FULL PUNCH
       IN = 0
 C--INCREMENT THE VALUE OF 'IN'
@@ -1322,8 +1386,14 @@ C--FETCH THE NEXT REFLECTION
 CDJWMAR99       PUNCH LESS THANS
 C      IF (KFNR(IN)) 1250, 1100, 1100
       IF (KLDRNR(IN1)) 2400, 2000, 2000
-C--COMPUTE THE INDICES
 2000  CONTINUE
+C--check if filtered reflections need printing
+      if(l28filter) then
+         if(KALLOW(IALLOW)<0) then
+           goto 1950
+         end if
+      end if
+C--COMPUTE THE INDICES
       JH=NINT(STORE(M6))
       IK=NINT(STORE(M6+1))
       IL=NINT(STORE(M6+2))
@@ -1369,13 +1439,16 @@ C
 C -- ERRORS
       CALL XOPMSG ( IOPPCH , IOPLSP , 6 )
       END
-CODE FOR XPCH6C
-      SUBROUTINE XPCH6C(IULN,KF)
+CODE FOR XPCH6C                                                       !PUNCH 6 B, E, H
+      SUBROUTINE XPCH6C(IULN,KF, l28filter)
 C PUNCH B,E,H  CIF FORMAT PUNCH
 C KF  0 - F's
 C     1 - F^2's
 C     2 - F^2'S ON SCALE OF FC
 CDJWMAY99 - OUTPUT TO FOREIGN PUNCH UNIT
+      use lists2_mod, only: xldlst
+
+      logical, intent(in) :: l28filter
       CHARACTER*80 CBUF
       DIMENSION KDEV(4)
       DIMENSION IVEC(20), ESD(6)
@@ -1404,6 +1477,15 @@ CDJWMAY99 - OUTPUT TO FOREIGN PUNCH UNIT
       CHARACTER*12 CTEMP
       CHARACTER*1 CALW(5)
       CHARACTER CCELL(3)*1,CANG(3)*5
+
+      interface
+        subroutine snum(coor,esd,nd,np,j,ivet)
+          real coor, esd
+          integer nd, np, j
+          integer, dimension(:) :: ivet
+        end subroutine
+      end interface
+      
       DATA CCELL/'a','b','c'/
       DATA CANG/'alpha','beta','gamma'/
 cdjwmay2011 Add high and low
@@ -1416,6 +1498,7 @@ CDJW02  DO OPENS IN SCRIPT
 CDJW02      CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
 CDJW02      CALL XRDOPN(6, KDEV , CSSFCF, LSSFCF)
       IF (KEXIST(1) .GE. 1) CALL XFAL01
+      IF (KHUNTR(28,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL28
       CALL XFAL05
       IN = 0
       CALL XFAL06(IULN, IN)
@@ -1550,6 +1633,12 @@ C---- GET SIGMA THRESHOLD FROM L28
 1840  CONTINUE
       ISTAT = KLDRNR (IN)
       IF (ISTAT .LT. 0) GOTO 1850
+C--check if filtered reflections need printing
+      if(l28filter) then
+         if(KALLOW(IALLOW)<0) then
+           goto 1840
+         end if
+      end if
 
       I = NINT(STORE(M6))
       J = NINT(STORE(M6+1))
@@ -1582,19 +1671,19 @@ C
 C
       IF ( STORE(M6+20) .LT. S6SIG) THEN
         IALW = 2                    !Rejected by sigma cutoff.
-		WT = 0.0
+        WT = 0.0
       ELSE IF (idjw.eq.-17) THEN
 c       Fails sin-theta/lambda test
         IF (iallow.LT.0) THEN
          IALW = 5                    !Rejected by low resolution
-  		 WT = 0.0
+         WT = 0.0
         else if (iallow.gt. 0) then
          ialw = 4                    ! rejected by high resolution
-		 WT = 0.0
+         WT = 0.0
         endif
       ELSE IF (idjw.LT.0) THEN
         IALW = 3                    !Rejected by something else.
-		WT = 0.0
+        WT = 0.0
       ELSE
         IALW = 1                    !Used.
       END IF
@@ -1624,17 +1713,22 @@ CRIGAUG00 - CLOSE CIF
 CDJW02      CALL XRDOPN(7, KDEV , CSSCIF, LSSCIF)
       RETURN
       END
-CODE FOR XPCH6X
-      SUBROUTINE XPCH6X(IULN,IFOFC)
+CODE FOR XPCH6X                                                       !PUNCH 6 F, G
+      SUBROUTINE XPCH6X(IULN,IFOFC, l28filter)
 C----- SHELX FORMAT PUNCH
 C - List number (6 or 7) for loading the right reflection list.
 C - IFOFC: 0 - punch FOsq, 1 - punch FCsq with made up errors sigma.
+      logical, intent(in) :: l28filter
       INCLUDE 'STORE.INC'
       INCLUDE 'XUNITS.INC'
+      INCLUDE 'XLST01.INC'
       INCLUDE 'XLST06.INC'
+      INCLUDE 'XLST28.INC'
       CALL XRSL
       CALL XCSAE
       IN = 0
+      IF (KHUNTR(1,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL01
+      IF (KHUNTR(28,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL28
       CALL XFAL06(IULN, IN)
       IF (IERFLG .LT. 0) GOTO 9999
 
@@ -1643,6 +1737,12 @@ c      E=STORE(M6DTL+1)       ! FETCH THE MAXIMUM VALUE OF /FO/
 
 1840  CONTINUE
         IF ( KLDRNR (IN) .LT. 0 ) GOTO 9999
+C--check if filtered reflections need printing
+        if(l28filter) then
+           if(KALLOW(IALLOW)<0) then
+             goto 1840
+           end if
+        end if
         IF ( IFOFC .EQ. 0 ) THEN
           CALL XSQRF(FOS, STORE(M6+3), FABS, SIGMA, STORE(M6+12))
         ELSE
@@ -1673,14 +1773,15 @@ C sigma's underestimated by a factor of 5.
       RETURN
       END
 C
-CODE FOR XPCH6N
-      SUBROUTINE XPCH6N(IULN,IULN2, IFTYPE)
+CODE FOR XPCH6N                                                       !PUNCH 6 I,J
+      SUBROUTINE XPCH6N(IULN,IULN2, IFTYPE, l28filter)
 C BASED ON XPCH6Z, WHICH SEEMS INCOMPLETE
 C  PUNCH I      PUNCH LIST 6/7 WITH ALL SET KEYS
 C  IFTYPE = 1 FOR /FO/ OUTPUT
 C  IFTYPE = 2 FOR FO^2 USING CURRENT ALGORITHM TO COMPUTE SIGMA.
 C  IFTYPE = 3 FOR FO^2 USING OLD ALGORITHM TO COMPUTE SIGMA.
 C--
+      logical, intent(in) :: l28filter
       DIMENSION JFOT(1), JFOO(1)
       INCLUDE 'ISTORE.INC'
       INCLUDE 'ICOM06.INC'
@@ -1692,13 +1793,15 @@ C
       INCLUDE 'XLST01.INC'
       INCLUDE 'XUSLST.INC'
       INCLUDE 'XLST06.INC'
+      INCLUDE 'XLST28.INC'
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'XCONST.INC'
-
-      CHARACTER*11 C6KEYS(33)
-      CHARACTER*9  C6FORM(33)
-      INTEGER N6KEYS(33)
-      INTEGER N6LEN(33), I6PCH(33)
+c
+      PARAMETER (N6MAX=35)
+      CHARACTER*11 C6KEYS(N6MAX)
+      CHARACTER*9  C6FORM(N6MAX)
+      INTEGER N6KEYS(N6MAX)
+      INTEGER N6LEN(N6MAX), I6PCH(N6MAX)
       CHARACTER*256 CBGFMT   
       character(len=12), dimension(:), allocatable :: CBGFMTa ! CBGFMT as array
 C
@@ -1711,12 +1814,13 @@ C
      3  'BATCH/PHASE','SINTH/L**2','FO/FC','JCODE','SERIAL',
      4  'RATIO', 'THETA', 'OMEGA',    'CHI',      'PHI',
      5   'KAPPA', 'PSI', 'CORRECTIONS', 'FACTOR1', 'FACTOR2',
-     6   'FACTOR3', 'RATIO/JCODE','NOTHING'/
+     6   'FACTOR3', 'RATIO/JCODE','NOTHING', 'A-IMAG','B-IMAG'/
      
 
 C length of each item in FORMAT statement
       DATA N6LEN/ 4,4,4,10,11, 10,6,10,10,8, 10,8,5,4,8, 
-     1             8,5,8,4,8,   8,5,5,5,5,    5,5,5,8,8, 8,12,8/
+     1            8,5,8,4,8,   8,5,5,5,5,    5,5,5,8,8, 
+     2            8,12,8,10,10/
 C1                   H           K       L     /FO/(3)   SQRTW(4)
       DATA C6FORM/ 'I4  ',     'I4  ', 'I4  ', 'F10.2', '1X,G10.3',
 C6                  /FC/(5)    PHASE    A-PART  B-PART   TBAR
@@ -1729,8 +1833,8 @@ C21                 RATIO      THETA    OMEGA   CHI     PHI
      4             'F8.2',     'F5.1', 'F5.1', 'F5.1', 'F5.1',
 C26                 KAPPA      PSI     CORRECTIONS FACTOR1 FACTOR2
      5             'F5.1',    'F5.1',   'F7.4',   'F8.4', 'F8.4',
-C31                FACTOR3    RATIO/JCODE NOTHING
-     6             'F8.4',     'F12.4',    'F8.4'/
+C31                FACTOR3    RATIO/JCODE NOTHING  A-IMAG  B-IMAG
+     6             'F8.4',     'F12.4',    'F8.4', 'F10.2', 'F10.2'/
 C
 C1     H              K              L              /FO/(3)       SQRTW(4)
 C6    /FC/(5)         PHASE          A-PART          B-PART       TBAR
@@ -1738,9 +1842,11 @@ C11    /FOT/          ELEMENTS       SIGMA(/FO/)(12) BATCH        INDICES(14)
 C16    BATCH/PHASE(15)SINTH/L**2     FO/FC          JCODE         SERIAL
 C21    RATIO          THETA          OMEGA          CHI           PHI
 C26    KAPPA          PSI            CORRECTIONS(27)FACTOR1       FACTOR2
-C31    FACTOR3        RATIO/JCODE(31) NOTHING
+C31    FACTOR3        RATIO/JCODE(31) NOTHING      A-IMAG        B-IMAG
 C
-      CALL XZEROF(I6PCH,33)
+      IF (KHUNTR(1,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL01
+      IF (KHUNTR(28,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL28
+      CALL XZEROF(I6PCH,N6MAX)
 C--SET UP LIST 6 FOR READING ONLY
       IN = 0
       CALL XFAL06(IULN, IN)
@@ -1758,13 +1864,6 @@ CDJW mar08
       write(ncpu,100) iuln, IULN2 
 100   format('# punching LIST',I3,' as LIST',i3,' with all keys set')
 c
-C      WRITE(123,'(4I8)') L6R,   M6R,   N6R,   MD6R
-C      WRITE(123,'(4I8)') L6W,   M6W,   N6W,   MD6W
-C      WRITE(123,'(4I8)') L6D,   M6D,   N6D,   MD6D
-C      WRITE(123,'(4I8)') L6DMP, M6DMP, N6DMP, MD6DMP
-C      WRITE(123,'(4I8)') L6P,   M6P,   N6P,   MD6P
-C      WRITE(123,'(4I8)') L6DTL, M6DTL, N6DTL, MD6DTL
-C      WRITE(123,'(/)')
 C  DECOMPOSE PACKED ITEMS
       M6PCH = 0
       do i=l6dmp,m6dmp
@@ -1793,7 +1892,17 @@ C     1 c6keys(istore(i)-l6+1)
 C      WRITE(123,'(/)')
 C      WRITE(123,'(5I6)') (I6PCH(I),I=1,M6PCH)
 C      WRITE(123,'(6A11)') (C6KEYS(I6PCH(I)),I=1,M6PCH)
-
+C
+C
+       IF(M6PCH .GT. N6MAX) THEN
+         WRITE (CMON,270) istore(l6p+4)
+270      FORMAT ('{E LIST 6 keys incompatible with this version (',
+     1   I5, ') of CRYSTALS ')
+         CALL XPRVDU (NCVDU,2,0)
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A,A)') 
+     1   CMON(1)(3:nctrim(cmon(1)))
+       ENDIF
+C
 ctemp      if(allocated(CBGFMTa)) deallocate(CBGFMTa)
       allocate(CBGFMTa(m6pch))
       NBGNXT = 2  !Next free char in CBGFMT
@@ -1833,6 +1942,12 @@ c
 c
       nref = 0
       DO WHILE (KLDRNR(IN).GE.0)
+C--check if filtered reflections need printing
+      if(l28filter) then
+         if(KALLOW(IALLOW)<0) then
+           cycle
+         end if
+      end if
       nref = nref + 1
 C--FIX THE INDICES
 c      J=M6+2
@@ -1847,11 +1962,13 @@ C  COMPUTE Fo^2 AND Fc^2
         STORE(M6+3) = FSQ
         STORE(M6+12) = SIGSQ
         STORE(M6+5) = STORE(M6+5)*STORE(M6+5)
+        STORE(M6+10) = STORE(M6+10)*STORE(M6+10)
       ELSE IF (JFTYPE.EQ.3) THEN   !old-type list 6
         FSIGN=STORE(M6+3)
         SIG = STORE(M6+12)
         FSQ=FSIGN*ABS(FSIGN)
         STORE(M6+5) = STORE(M6+5)*STORE(M6+5)
+        STORE(M6+10) = STORE(M6+10)*STORE(M6+10)
         IF (SIG.GT.ZERO) THEN
 C----- WE HAVE SOME KIND OF SIGMA - TRY TO SCALE IT
            IF (ABS(FSIGN).GT. 1.0) THEN
@@ -1909,6 +2026,7 @@ C
       INCLUDE 'XLST01.INC'
       INCLUDE 'XUSLST.INC'
       INCLUDE 'XLST06.INC'
+      INCLUDE 'XLST28.INC'
       INCLUDE 'XOPVAL.INC'
 C
       INCLUDE 'QSTORE.INC'
@@ -1935,6 +2053,7 @@ C
      8/
 C
       IF (KEXIST(1) .GE. 1) CALL XFAL01
+      IF (KHUNTR(28,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL28
 C--SET UP LIST 6 FOR READING ONLY
       IN = 0
       CALL XFAL06(IULN, IN)
@@ -2063,6 +2182,7 @@ C
       INCLUDE 'XLST01.INC'
       INCLUDE 'XUSLST.INC'
       INCLUDE 'XLST06.INC'
+      INCLUDE 'XLST28.INC'
       INCLUDE 'XOPVAL.INC'
       CHARACTER*11 C6KEYS(33),C6KEYI(33)
       CHARACTER*9  C6FORM(33)
@@ -2112,6 +2232,7 @@ C     KAPPA          PSI            CORRECTIONS(27)FACTOR1        FACTOR2
 C     FACTOR3        RATIO/JCODE(31) NOTHING
 C
       IF (KEXIST(1) .GE. 1) CALL XFAL01
+      IF (KHUNTR(28,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL28
 C--SET UP LIST 6 FOR READING ONLY
       IN = 0
       CALL XFAL06(IULN, IN)
@@ -2786,10 +2907,10 @@ C
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'QSTORE.INC'
       CHARACTER CBUF*30,CTEMP*30
-	  CHARACTER*7 CLAT
-	  CHARACTER*2 CNY
-	  DATA CLAT /'PIRFABC'/
-	  DATA CNY /'NY'/
+      CHARACTER*7 CLAT
+      CHARACTER*2 CNY
+      DATA CLAT /'PIRFABC'/
+      DATA CNY /'NY'/
 C      
       
       IF (KHUNTR (2,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL02
@@ -2817,7 +2938,7 @@ c END
 
       WRITE(NCPU,100)N2,CLAT(NINT(STORE(L2C+1)):NINT(STORE(L2C+1))),
      1                  CNY(NINT(STORE(L2C))+1:NINT(STORE(L2C))+1)
-	  
+      
       DO I=L2,M2,MD2
          CALL XSUMOP (STORE(I),STORE(L2P),CTEMP,LENGTH,1)
          CALL XCCLWC (CTEMP(1:LENGTH),CBUF(1:LENGTH))
@@ -2827,7 +2948,7 @@ c END
       WRITE(NCPU,102) (ISTORE(I),I=L2SG,L2SG+MD2SG-1)
 
       WRITE(NCPU,103) (ISTORE(I),I=L2CC,L2CC+MD2CC-1)
-	  
+      
 100   FORMAT('CELL NSYM=',I3,' LATT=',A1,' CENTRIC=',A1)
 101   FORMAT('SYMM ',A)
 102   FORMAT('SPACEGROUP ',4A4)
@@ -2865,7 +2986,11 @@ C
       ENDIF
 C
            ICENTR=NINT(STORE(L2C))+1
+           M2P = L2P+((N2P-1)*MD2P)
+           M2 = L2+((N2-1)*MD2)
 C
+C           WRITE(NDEVICE,'(A,8I5)')'L2etc: ',
+C     1      L2,N2,M2,MD2,L2P,N2P,M2P,MD2P
 C DISPLAY EACH SYMMETRY OPERATOR
            WRITE (NDEVICE,1000)
 1000       FORMAT ('loop_',/,' _symmetry_equiv_pos_as_xyz')
@@ -2875,6 +3000,7 @@ C DISPLAY EACH SYMMETRY OPERATOR
                DO K=1,ICENTR
 C NEGATE IF REQUIRED
                   IF (K.EQ.2) CALL XNEGTR (STORE(I),STORE(NFL),9)
+C                  WRITE (NDEVICE,'(A,3I4)') 'Indices : ',I,J,K
                   CALL XSUMOP (STORE(NFL),STORE(J),CTEMP,LENGTH,1)
                   CALL XCCLWC (CTEMP(1:LENGTH),CBUF(1:LENGTH))
                   WRITE (NDEVICE,1050) CBUF(1:LENGTH)
@@ -2915,7 +3041,7 @@ c END
       WRITE(NCPU,'(A)') '#LIST 3'
 
       WRITE(NCPU,100) N3
-	  
+      
       DO I=L3,M3,MD3
          WRITE (NCPU,101)(STORE(J),J=I,I+MD3-1)
       END DO
@@ -2929,7 +3055,7 @@ c END
 
       RETURN
       END
-	  
+      
 CODE FOR XPCH13
       SUBROUTINE XPCH13
 
@@ -2946,7 +3072,7 @@ C
 C      
       CHARACTER*15 CINSTR,CDIR,CPARAM,CVALUE,CDEF,CVAL2
       CHARACTER*1 CNY(2)
-	DATA CNY /'N','Y'/
+      DATA CNY /'N','Y'/
       
       IF (KHUNTR (13,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL13
       IF ( IERFLG .LT. 0 ) THEN
@@ -2970,7 +3096,7 @@ C The 13+3 ids the instruction number 13 from the command file.
          CALL XCTRIM(CVALUE,LVALUE)
          WRITE(NCPU,100) CNY(ISTORE(L13CD)+2),
      1                   CNY(ISTORE(L13CD+1)+2),CVALUE
-	END IF
+      END IF
 
 101   FORMAT('DIFFRACTION GEOMETRY=',A,' RADIATION=',A)
 
@@ -3005,36 +3131,36 @@ C Get radiation option
 
       IF ( N13DC .GT. 0 ) THEN
          WRITE(NCPU,102) (STORE(I),I=L13DC,L13DC+7-1)
-	END IF
+      END IF
       IF ( N132R .GT. 0 ) THEN
         DO J=L132R,L132R+(N132R*MD132R),MD132R
           WRITE(NCPU,104) (STORE(I),I=J,J+9-1)
         END DO
-	END IF
+      END IF
       IF ( N133R .GT. 0 ) THEN
         DO J=L133R,L133R+(N133R*MD133R),MD133R
           WRITE(NCPU,105) (STORE(I),I=J,J+9-1)
         END DO
-	END IF
+      END IF
       IF ( N13RL .GT. 0 ) THEN
          WRITE(NCPU,106) (STORE(I),I=L13RL,L13RL+12-1)
-	END IF
+      END IF
       IF ( N13RC .GT. 0 ) THEN
          WRITE(NCPU,107) (STORE(I),I=L13RC,L13RC+12-1)
-	END IF
+      END IF
       IF ( N13OM .GT. 0 ) THEN
          WRITE(NCPU,103) (STORE(I),I=L13OM,L13OM+9-1)
-	END IF
+      END IF
       IF ( N13AX .GT. 0 ) THEN
          WRITE(NCPU,108) (STORE(I),I=L13AX,L13AX+3-1)
-	END IF
+      END IF
 
       WRITE(NCPU,'(A)') 'END'
 
       RETURN
       END
-	  
-	  
+      
+      
 CODE FOR XPCH4
       SUBROUTINE XPCH4
 
@@ -3050,7 +3176,7 @@ C
       INCLUDE 'QSTORE.INC'
       CHARACTER*15 CINSTR,CDIR,CPARAM,CVALUE,CDEF,CVAL2
       CHARACTER*1 CNY(2)
-	DATA CNY /'N','Y'/
+      DATA CNY /'N','Y'/
 C      
       
       IF (KHUNTR (4,0, IADDL,IADDR,IADDD, -1) .LT. 4) CALL XFAL04
@@ -3064,7 +3190,7 @@ C
 100   FORMAT('SCHEME ', I2, ' NPARAM=',I2,' TYPE=',A,/,
      1       'CONT WEIGHT=',F12.7,' MAX=',F12.4,' ROBUST=',A1,/,
      2       'CONT DUNITZ=',A1,' TOLER=',F12.4,' DS1=',F12.4,/,
-     3       'CONT DS2=',F12.4,' QUASI=',F12.4 )
+     3       'CONT DS2=',F12.4,' REWT=',F12.4 )
       IPARAM = 3
       IDIR   = 1
       IVAL   = ISTORE(L4C+1) !NB Param offset is different from param number here!
@@ -3101,7 +3227,7 @@ C
 C      
       CHARACTER*15 CINSTR,CDIR,CPARAM,CVALUE,CDEF,CVAL2
       CHARACTER*1 CNY(2)
-	DATA CNY /'N','Y'/
+      DATA CNY /'N','Y'/
       
       IF (KHUNTR (23,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL23
       IF ( IERFLG .LT. 0 ) THEN
@@ -3159,7 +3285,7 @@ C Get special option
 
       RETURN
       END
-	  
+      
 CODE FOR XPCH25
       SUBROUTINE XPCH25
 
@@ -3185,11 +3311,11 @@ C
       WRITE(NCPU,'(A)') '#LIST 25'
 
       WRITE(NCPU,100)N25
-	  
+      
       DO I=L25,L25+(N25-1)*MD25,MD25  
         WRITE(NCPU,101) (STORE(J),J=I,I+8)
       END DO
-	  
+      
 100   FORMAT('READ NELEM=',I3)
 101   FORMAT('MATRIX ',3(F14.9,1X),2(/,'CONT   ',3(F14.9,1X)))
 
@@ -3308,7 +3434,7 @@ C
       DO I=L29,L29+(N29-1)*MD29,MD29  
         WRITE(NCPU,101) (STORE(J),J=I,I+MD29-1)
       END DO
-	  
+      
 100   FORMAT('READ NELEM=',I3)
 101   FORMAT('ELEMENT ',A4,1X,F7.4,1X,F13.4,1X,F8.4,1X,3F9.3,1X,A4)
 
@@ -3319,6 +3445,8 @@ C
 
 CODE FOR XPCH31
       SUBROUTINE XPCH31
+
+      use lists2_mod, only: xldlst
 
       INCLUDE 'ISTORE.INC'
 C PUNCH LIST 31 IN CRYSTALS FORMAT
@@ -3348,7 +3476,7 @@ C--LOAD LIST 31 FROM DISC (XFAL routine is specialised for DistAngl)
       WRITE(NCPU,'(A)') '#LIST 31'
       WRITE(NCPU,100) STORE(L31K)
       WRITE(NCPU,101) (STORE(J),J=L31,L31+MD31-1)
-	  
+      
 100   FORMAT('AMULT ',F17.8)
 101   FORMAT('MATRIX ',6(1X,F11.5),/,
      1  'CONT ',14X,5(1X,F11.5),/,  
@@ -3365,6 +3493,8 @@ C--LOAD LIST 31 FROM DISC (XFAL routine is specialised for DistAngl)
 
 CODE FOR XPCH39
       SUBROUTINE XPCH39
+
+      use lists2_mod, only: xldlst
 
       INCLUDE 'ISTORE.INC'
 C PUNCH LIST 39 IN CRYSTALS FORMAT

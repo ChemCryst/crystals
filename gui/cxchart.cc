@@ -192,8 +192,8 @@ CxChart::CxChart(CrChart* container)
     memDC = new CDC();
 #else
     mfgcolour = wxColour(0,0,0);
-    m_pen = new wxPen(mfgcolour,1,wxSOLID);
-    m_brush = new wxBrush(mfgcolour,wxSOLID);
+    m_pen = new wxPen(mfgcolour,1,wxPENSTYLE_SOLID);
+    m_brush = new wxBrush(mfgcolour,wxBRUSHSTYLE_SOLID);
     memDC = new wxMemoryDC();
 #endif
     mPolyMode = 0;

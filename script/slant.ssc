@@ -209,7 +209,7 @@ MCE not found. See wincrys/script/slant.scp
 % END IF
 #else
 MCE not available on this platform
-Â#endif
+#endif
 %      END BLOCK
 %     END CASE
 %     END BLOCK

@@ -1,17 +1,71 @@
 %SCRIPT XSPLIT
-%  VARIABLE CHARACTER CATM 
-%%
-% COPY '#EDIT'
+% VARIABLE CHARACTER CATM CELE CCHK
+% VARIABLE INTEGER ISER
+% VARIABLE REAL RCHK RFLG
+% VARIABLE INTEGER SPLERR
+% EVALUATE SPLERR = 0
+% QUEUE REWIND
 % LOOP
-%   ON END TERMINATE
-%   GET NOSTORE KEYWORD 'Atom?' ' '
-%   EVALUATE CATM = CVALUE
+%    ON END TERMINATE
 %%
+%% Get Atom name
 %%
-%% Split the atom
+%    GET SILENT NOSTORE TEXT 'Atom?' ' '
+%    EVALUATE CATM = CVALUE
 %%
-%   TRANSFER 'SPLIT 10 ' // CHARACTER CATM TO CRYSTALS
-%   TRANSFER 'DELETE ' // CHARACTER CATM TO CRYSTALS
+%%   Put instructions in queue for processing later.
+%    CLEAR
+%    INSERT 'SPLIT 10 '
+%    STORE FORMAT /(A12)/ LENGTH 12 CHARACTER CATM                       
+%    QUEUE SEND
+%%
+%    CLEAR
+%    INSERT 'DELETE ' 
+%    STORE FORMAT /(A12)/ LENGTH 12 CHARACTER CATM                       
+%    QUEUE SEND
+%%
+%    EVALUATE CELE = FIRSTSTR ( CATM )
+%    EVALUATE ISER = FIRSTINT ( CATM ) 
+%%
+%% Check atom is aniso
+%%
+%    EVALUATE RFLG = - 100.0
+%    COPY '#GENERALEDIT 5'
+%    COPY 'LOCATE RECORDTYPE=101'
+%    COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%    LOOP 
+%       ON EDITERROR TERMINATE
+%       COPY 'TRANSFER FROM OFFSET=0 TO CCHK'
+%       COPY 'TRANSFER FROM OFFSET=1 TO RCHK'
+%       IF ( ( CELE .EQ. CCHK ) .AND. ( ISER .EQ. INTEGER ( RCHK ) ) ) THEN
+%          COPY 'TRANSFER FROM OFFSET=3 TO RFLG'
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%       END IF
+%       COPY 'NEXT'
+%    END LOOP
+%    COPY 'END'
+%%
+%% Check atom was found
+%%
+%    IF ( RFLG .LT. - 99.0 ) THEN
+%      TRANSFER '{E Atom not found: ' // CELE // CHARACTER ( ISER ) TO DISPLAY
+%      EVALUATE SPLERR = 1
+%    END IF
+%%
+%% Check atom is ANISO.
+%%
+%    IF ( INTEGER ( RFLG ) .NE. 0 ) THEN
+{E You can only split elliptical (anisotropic) atoms.
+%      TRANSFER '{E Not aniso: ' // CATM TO DISPLAY
+%      EVALUATE SPLERR = 1
+%    END IF
 % END LOOP
-% COPY 'END'
+%%
+%% Split the atoms
+%%
+% IF SPLERR .EQ. 0 THEN
+%   COPY '#EDIT'
+%   QUEUE PROCESS
+%   COPY 'END'
+% END IF
 %END SCRIPT

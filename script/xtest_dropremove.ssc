@@ -1,4 +1,4 @@
-%SCRIPT XFOUR                                                                   
+%SCRIPT XTEST_DROPREMOVE                                                                   
 ^^WI WINDOW TESTREMOVE 'Choose an item'
 ^^WI COMMIT='BUTTONOK' CANCEL='BUTTONOK'
 ^^WI GRID GRIDM NROWS=1 NCOLS=2                                             

@@ -1,4 +1,6 @@
 %SCRIPT XLEVP
+% VARIABLE INTEGER LSPARAM
+% EVALUATE LSPARAM = 1
 ^^WI WINDOW xlevp 'Leverage plot' KEEP SIZE MODAL
 ^^WI COMMIT='LP_BOK' CANCEL='LP_BOK'
 ^^WI GRID MAIN NROWS=2 NCOLS=1
@@ -7,18 +9,47 @@
 ^^WI  {
 ^^WI   @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''
 ^^WI   {
-^^WI    @ 1,3 GRID EXP2 NROWS=3 NCOLS=1
+^^WI    @ 1,3 GRID EXP2 NROWS=1 NCOLS=3
 ^^WI    {
-^^WI     @ 1,1 STATIC XFW1    '  '
-^^WI     @ 2,1 STATIC XFW2    '  '
-^^WI     @ 3,1 STATIC XFW3    '  '
+^^WI     @ 1,1 GRID EXP2 NROWS=2 NCOLS=1
+^^WI     {
+^^WI      @ 1,1 STATIC T5 'Least square parameter'
+^^WI      @ 2,1 LISTBOX LSPARAMBOX VISLINES=8 ADDTOLIST                                                    
+^^WI        NULL
+^^WI     } 
+^^WI     @ 1,2 GRID EXP2 NROWS=1 NCOLS=1
+^^WI     {
+^^WI      @ 1,1 STATIC XFW1    ' '
+^^WI     } 
+^^WI     @ 1,3 GRID EXP2 NROWS=5 NCOLS=1
+^^WI     {
+^^WI      @ 1,1 STATIC XFW1    'See: Applications of leverage analysis in structure refinement '
+^^WI      @ 2,1 STATIC XFW2    'Parsons, S., Wagner, T., Presly, O., Wood, P. A. & Cooper, R. I. (2012). J. Appl. Cryst. 45, 417-429.   '
+^^WI      @ 3,1 STATIC XFW3    ' P = Z(Z\**tZ)\**-1Z\**t and T2 = t\_i\_j\**2\$/(1+P\_i\_i) '
+^^WI      @ 4,1 STATIC XFW4    ' moo = multiplicity of observations '
+^^WI      @ 5,1 STATIC XFW5    ' '
+^^WI     }
 ^^WI    }
-^^WI    @ 1,1 ICON IM INFO
 ^^WI   }
-^^WI   @ 4,2 PLOTWINDOW _VLEVP NROWS=20 NCOLS=64
-^^WI   @ 6,2 GRID EXBT NROWS=1 NCOLS=1
+^^WI   @ 4,2 TABCTRL _MAINTABS
+^^WI   {
+^^WI    TAB _TAB1 'vs Fo' GRID _MAINTG2 NROWS=1 NCOLS=1
+^^WI    {
+^^WI      @ 1,1 PLOTWINDOW _VLEVP NROWS=1 NCOLS=1
+^^WI    }
+^^WI    TAB _TAB2 'vs sin(\theta)/\lambda' GRID _MAINTG2 NROWS=1 NCOLS=1
+^^WI    {
+^^WI      @ 1,1 PLOTWINDOW _VLEVR NROWS=1 NCOLS=1
+^^WI    }
+^^WI    TAB _TAB3 'vs moo' GRID _MAINTG2 NROWS=1 NCOLS=1
+^^WI    {
+^^WI      @ 1,1 PLOTWINDOW _VLEVM NROWS=1 NCOLS=1
+^^WI    }
+^^WI   }
+^^WI   @ 6,2 GRID EXBT NROWS=1 NCOLS=2
 ^^WI   {
 ^^WI    @ 1,1 BUTTON LP_BOK 'Close' DEFAULT
+^^WI    @ 1,2 BUTTON CALC  '&Recalculate'
 ^^WI   }
 ^^WI  }
 ^^WI  @ 2,1 PROGRESS _FOFCPR 'Please wait'
@@ -26,14 +57,40 @@
 ^^WI SHOW
 ^^CR
 ^^CO SENDPROGRESSTO _FOFCPR
+^^CO SET LSPARAMBOX DISABLED=YES
+^^CO SET CALC DISABLED=YES
 %  COPY '#sfls'
-%  COPY 'refine'
-%  COPY 'shift general=0'
-%  COPY '#sfls'
-%  COPY 'refine lev=1'
-%  COPY 'shift general=0'
+%  COPY 'refine calc=leverages plot=yes'
 %  COPY 'end'
-%  GET SILENT NOSTORE TEXT ' ' ' '
+^^CO SET LSPARAMBOX DISABLED=NO
+^^CO SET CALC DISABLED=NO
+% VARIABLE INTEGER JLOOP
+% LOOP
+% EVALUATE JLOOP = LOOPCOUNTER
+%%
+%   VERIFY CALC LP_BOK 
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%   CASE VALUE
+%     BLOCK  %CALCULATE%
+^^??  LSPARAMBOX SELECTED                                                                    
+%     GET NOSTORE SILENT FINAL INTEGER 'LSPARAM' '1'                          
+%     EVALUATE LSPARAM = VALUE                                                    
+^^CO SET LSPARAMBOX DISABLED=YES
+^^CO SET CALC DISABLED=YES
+%     TRANSFER '#sfls' TO CRYSTALS
+%     TRANSFER 'refine calc=leverages plot=yes P1=' // -
+        CHARACTER ( LSPARAM ) TO CRYSTALS
+%     TRANSFER 'end'  TO CRYSTALS
+^^CO SET LSPARAMBOX DISABLED=NO
+^^CO SET CALC DISABLED=NO
+%     END BLOCK
+%     BLOCK %CANCEL%
+%        EVALUATE LOOPEND = LOOPCOUNTER
 ^^CO DISPOSE xlevp
+%        FINISH
+%     END BLOCK
+%   END CASE
+% END LOOP
+%  GET SILENT NOSTORE TEXT ' ' ' '
 %END SCRIPT
 

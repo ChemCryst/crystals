@@ -1,16 +1,18 @@
-#TITLE GEOM TEST USING CYCLO DATA                                                                                                                                                                                                                               
-#LIST 1                                                                                                                                                                                                                                                         
-#LIST 20                                                                                                                                                                                                                                                        
-#LIST 30                                                                                                                                                                                                                                                        
-#LIST 1                                                                                                                                                                                                                                                         
-#SET PRINT OFF                                                                                                                                                                                                                                                  
+#TITLE GEOM TEST USING CYCLO DATA
+#LIST 1
+#LIST 20
+#LIST 30
+#LIST 1
+#SET PRINT OFF
 Bonds: Update required - There is no list 41
 Bonds: Update required - List 40 has changed
-#ESD                                                                                                                                                                                                                                                            
+Single precision:  1-norm:  9.27E+00 condition number:  1.33E+02 relative error:  1.59E-05
+Single precision:  1-norm:  9.26E+00 condition number:  1.33E+02 relative error:  1.59E-05
+#ESD
            Notification of SPECIAL conditions
  Initialising Special positions
  The new list   9 contains    22 atoms
-#GEOM                                                                                                                                                                                                                                                           
+#GEOM
 
 
  Geom test using CYCLo data                                                           Date              Time          
@@ -43,7 +45,7 @@ Bonds: Update required - List 40 has changed
 
   Transformation to crystal fractions w.r.t. centroid from best plane co-ordinates in angstrom and fractions
 
-                 -0.0528   -0.0771   -0.1803              -0.2600   -0.3796   -0.8879
+[31]                  -0.052    -0.077    -0.180               
                   0.0848    0.0116   -0.0298               0.9358    0.1276   -0.3286
                   0.0155   -0.0598    0.0210               0.2380   -0.9163    0.3220
 
@@ -170,12 +172,12 @@ AZIMUTH  =   -70.46     AZIMUTH /100 =  -0.7046
                 0.04549   -0.10454  -0.23735   0.96578   -0.10454  -0.23735   0.96578   0.03770   0.03681   0.06847                        
 
  C       10.    0.02494    0.77715  -0.50412  -0.37670    0.77715  -0.50412  -0.37670
-                0.04654    0.60964   0.45457   0.64938    0.60964   0.45457   0.64938
+                0.04654    0.60964   0.45458   0.64938    0.60964   0.45458   0.64938
                 0.06195   -0.15613  -0.73432   0.66061   -0.15613  -0.73432   0.66061   0.04448   0.04158   0.11560                        
- Average radius of      5 atoms =  0.0343 rmsd   0.0050                                                                                                                                                                                                         
- Maximum radius of      5 atoms =  0.0416                                                                                                                                                                                                                       
-   Maximum axis of      5 atoms =  0.0619                                                                                                                                                                                                                       
-for Uprime see Acta Cryst (2000). B56, 747-749                                                                                                                                                                                                                  
+ Average radius of      5 atoms =  0.0343 rmsd   0.0050
+ Maximum radius of      5 atoms =  0.0416
+   Maximum axis of      5 atoms =  0.0619
+for Uprime see Acta Cryst (2000). B56, 747-749
  Results for group number    1
 
 
@@ -225,7 +227,7 @@ for Uprime see Acta Cryst (2000). B56, 747-749
 
 
 
- Centre for which s is symmetric :                   0.4550  0.2096  0.2016                                                                                                                                                                                     
+ Centre for which s is symmetric :                   0.4550  0.2096  0.2016
  Axial displacements for which S becomes diagonal  (Angstroms along principal axes of L)
                                  Shift directions
                               1         2         3
@@ -278,7 +280,7 @@ for Uprime see Acta Cryst (2000). B56, 747-749
                R^2-Factor for U'S =    6.18
        R.M.S. discrepancy for U'S =  0.0017
   Co-ordinates of other atoms after TLS application
- O     8.  0.3352  0.4008  0.4401   0.071   0.038   0.035  -0.005  -0.014   0.000                                                                                                                                                                               
+ O     8.  0.3352  0.4008  0.4401   0.071   0.038   0.035  -0.005  -0.014   0.000
 [40]                                     0.06    0.03    0.03   -0.00   -0.01    0.00
 
 
@@ -383,7 +385,7 @@ for Uprime see Acta Cryst (2000). B56, 747-749
                   .                                                                                                    
                  .                                                                                                     
                O.8                                                                                                     
-#END                                                                                                                                                                                                                                                            
+#END
 
 
           : Job ends ok       with     0 warnings and     0 errors

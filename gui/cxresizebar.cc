@@ -225,7 +225,7 @@ void CxResizeBar::OnMouseMove( wxMouseEvent & evt )
    myDC -> InvertRgn( &rgn );
 #else
    wxWindowDC myDC(this);
-   myDC.SetBrush( wxBrush( wxColour(0,0,0), wxSOLID ) );
+   myDC.SetBrush( wxBrush( wxColour(0,0,0), wxBRUSHSTYLE_SOLID ) );
    myDC.SetLogicalFunction ( wxINVERT );
    myDC.DrawRectangle(m_oldrec.Left(), m_oldrec.Top(), m_oldrec.Width(), m_oldrec.Height());
 #endif
@@ -429,7 +429,7 @@ void CxResizeBar::OnLButtonUp( wxMouseEvent & event )
    myDC -> InvertRgn( &rgn );
 #endif
 #ifdef CRY_USEWX
-   myDC.SetBrush( wxBrush( wxColour(0,0,0), wxSOLID ) );
+   myDC.SetBrush( wxBrush( wxColour(0,0,0), wxBRUSHSTYLE_SOLID ) );
    myDC.SetLogicalFunction ( wxINVERT );
    myDC.DrawRectangle(xoff + m_oldrec.Left(), yoff + m_oldrec.Top(), xoff + m_oldrec.Width(), yoff + m_oldrec.Height());
 #endif
@@ -510,9 +510,9 @@ void CxResizeBar::OnPaint()
 void CxResizeBar::OnPaint(wxPaintEvent & event)
 {
     wxPaintDC dc(this); // device context for painting
-    wxPen penHigh(wxSystemSettings::GetColour(wxSYS_COLOUR_3DHIGHLIGHT ),1,wxSOLID);
-    wxPen penMid (wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT ),1,wxSOLID);
-    wxPen penLow (wxSystemSettings::GetColour(wxSYS_COLOUR_3DSHADOW),1,wxSOLID);
+    wxPen penHigh(wxSystemSettings::GetColour(wxSYS_COLOUR_3DHIGHLIGHT ),1,wxPENSTYLE_SOLID);
+    wxPen penMid (wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT ),1,wxPENSTYLE_SOLID);
+    wxPen penLow (wxSystemSettings::GetColour(wxSYS_COLOUR_3DSHADOW),1,wxPENSTYLE_SOLID);
 #endif
 
     CcRect rect1, rect2, rect3, rect4;

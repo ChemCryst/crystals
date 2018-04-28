@@ -21,9 +21,9 @@
 #else
 #include    <GL/glu.h>
 #endif
-#ifdef CRY_USEWX
-  #include "idb_splash.xpm"
-#endif
+//#ifdef CRY_USEWX
+//  #include "idb_splash.xpm"
+//#endif
 
 #ifndef PFD_SUPPORT_COMPOSITION
 #define PFD_SUPPORT_COMPOSITION 0x00008000
@@ -780,6 +780,8 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
               {
                 if ( ((CcModelAtom*)object)->occ != 1000 )
                    labelstrm << " occ:" << (float)((CcModelAtom*)object)->occ/1000.0;
+                if ( ((CcModelAtom*)object)->m_isflg )
+                   labelstrm << " " << ((CcModelAtom*)object)->m_sflags;
               }
               else if ( objectType == CC_SPHERE )
               {

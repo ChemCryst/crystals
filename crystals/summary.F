@@ -530,7 +530,7 @@ C
       integer lstype, level, loadln
       integer iaddd, iaddl, iaddr, intltp
       
-      integer, external :: khuntr
+      integer, external :: khuntr, kexist
 C
       !INCLUDE 'XLST01.INC'
       INCLUDE 'XLST02.INC'
@@ -601,62 +601,72 @@ C
 C
 C -- LOAD LIST IF REQUIRED
 C
+C      WRITE(123,*) 'IERFLG=',IERFLG
+C The faffing about with loading list 5 is required because IERFLG is
+c not updated if L 5 does not exist, so its failure to load causes the program
+c to hang. Probably XLDR05 needs hacking
+C
       IF ( LOADLN .GT. 0 ) THEN
 C
-        IF ( LSTYPE .EQ. 1 ) THEN
-      IF (KHUNTR (1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
-        ELSE IF ( LSTYPE .EQ. 2 ) THEN
-      IF (KHUNTR (2,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL02
-        ELSE IF ( LSTYPE .EQ. 3 ) THEN
-      IF (KHUNTR (3,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL03
-        ELSE IF ( LSTYPE .EQ. 4 ) THEN
-      IF (KHUNTR (4,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL04
-        ELSE IF ( LSTYPE .EQ. 5 ) THEN
-      IF (KHUNTR (5,0, IADDL,IADDR,IADDD, -1) .LT. 0)
+       IF ( LSTYPE .EQ. 1 ) THEN
+        IF (KHUNTR (1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
+       ELSE IF ( LSTYPE .EQ. 2 ) THEN
+        IF (KHUNTR (2,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL02
+       ELSE IF ( LSTYPE .EQ. 3 ) THEN
+        IF (KHUNTR (3,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL03
+       ELSE IF ( LSTYPE .EQ. 4 ) THEN
+        IF (KHUNTR (4,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL04
+       ELSE IF ( LSTYPE .EQ. 5 ) THEN
+        IF (KHUNTR (5,0, IADDL,IADDR,IADDD, -1) .LT. 0)
      1  CALL XLDR05 ( LSTYPE )
-        ELSE IF ( LSTYPE .EQ. 6 ) THEN
-      IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
-      IF (KHUNTR ( 5,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL05
-      IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL30
-          CALL XFAL06 (6, 0 )
-        ELSE IF ( LSTYPE .EQ. 7 ) THEN
-      IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
-      IF (KHUNTR ( 5,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL05
-      IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL30
-          CALL XFAL06 (7, 0 )
-        ELSE IF ( LSTYPE .EQ. 9 ) THEN
-      IF (KHUNTR ( 9,0, IADDL,IADDR,IADDD, -1) .LT. 0) 
-     1  CALL XLDR05 ( LSTYPE )
-        ELSE IF ( LSTYPE .EQ. 10 ) THEN
-      IF (KHUNTR (10,0, IADDL,IADDR,IADDD, -1) .LT. 0)
-     1  CALL XLDR05 ( LSTYPE )
-        ELSE IF ( LSTYPE .EQ. 13 ) THEN
-      IF (KHUNTR (13,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL13
-        ELSE IF ( LSTYPE .EQ. 14 ) THEN
-      IF (KHUNTR (14,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL14
-        ELSE IF ( LSTYPE .EQ. 23 ) THEN
-      IF (KHUNTR (23,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL23
-        ELSE IF ( LSTYPE .EQ. 25 ) THEN
-      IF (KHUNTR (25,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL25
-        ELSE IF ( LSTYPE .EQ. 27 ) THEN
-      IF (KHUNTR (27,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL27
-        ELSE IF ( LSTYPE .EQ. 28 ) THEN
-      IF (KHUNTR (28,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL28
-        ELSE IF ( LSTYPE .EQ. 29 ) THEN
-      IF (KHUNTR (29,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL29
-        ELSE IF ( LSTYPE .EQ. 30 ) THEN
-      IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL30
-        ELSE IF ( LSTYPE .EQ. 39 ) THEN
-      IF (KHUNTR (39,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL39
-        ELSE IF ( LSTYPE .EQ. 40 ) THEN
-      IF (KHUNTR (40,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL40
-        ELSE IF ( LSTYPE .EQ. 41 ) THEN
-      IF (KHUNTR (41,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL41
-        ELSE IF ( LSTYPE .EQ. 42 ) THEN
-      IF (KHUNTR (42,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL42
+       ELSE IF ( LSTYPE .EQ. 6 ) THEN
+        IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
+        IF (KHUNTR ( 5,0, IADDL,IADDR,IADDD, -1) .LT. 0) THEN
+          IF (KEXIST(5) .GT. 0) CALL XFAL05
         ENDIF
-C
+        IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL30
         IF ( IERFLG .LT. 0 ) GO TO 9900
+          CALL XFAL06 (6, 0 )
+       ELSE IF ( LSTYPE .EQ. 7 ) THEN
+        IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
+        IF (KHUNTR ( 5,0, IADDL,IADDR,IADDD, -1) .LT. 0) THEN
+          IF (KEXIST(5) .GT. 0) CALL XFAL05
+        ENDIF
+        IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL30
+        IF ( IERFLG .LT. 0 ) GO TO 9900
+          CALL XFAL06 (7, 0 )
+       ELSE IF ( LSTYPE .EQ. 9 ) THEN
+        IF (KHUNTR ( 9,0, IADDL,IADDR,IADDD, -1) .LT. 0) 
+     1  CALL XLDR05 ( LSTYPE )
+       ELSE IF ( LSTYPE .EQ. 10 ) THEN
+        IF (KHUNTR (10,0, IADDL,IADDR,IADDD, -1) .LT. 0)
+     1  CALL XLDR05 ( LSTYPE )
+       ELSE IF ( LSTYPE .EQ. 13 ) THEN
+        IF (KHUNTR (13,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL13
+       ELSE IF ( LSTYPE .EQ. 14 ) THEN
+        IF (KHUNTR (14,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL14
+       ELSE IF ( LSTYPE .EQ. 23 ) THEN
+        IF (KHUNTR (23,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL23
+       ELSE IF ( LSTYPE .EQ. 25 ) THEN
+        IF (KHUNTR (25,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL25
+       ELSE IF ( LSTYPE .EQ. 27 ) THEN
+        IF (KHUNTR (27,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL27
+       ELSE IF ( LSTYPE .EQ. 28 ) THEN
+        IF (KHUNTR (28,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL28
+       ELSE IF ( LSTYPE .EQ. 29 ) THEN
+        IF (KHUNTR (29,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL29
+       ELSE IF ( LSTYPE .EQ. 30 ) THEN
+        IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL30
+       ELSE IF ( LSTYPE .EQ. 39 ) THEN
+        IF (KHUNTR (39,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL39
+       ELSE IF ( LSTYPE .EQ. 40 ) THEN
+        IF (KHUNTR (40,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL40
+       ELSE IF ( LSTYPE .EQ. 41 ) THEN
+        IF (KHUNTR (41,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL41
+       ELSE IF ( LSTYPE .EQ. 42 ) THEN
+        IF (KHUNTR (42,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL42
+       ENDIF
+       IF ( IERFLG .LT. 0 ) GO TO 9900
       ENDIF
 C
 C -- PRODUCE SUMMARY
@@ -735,6 +745,7 @@ C
 C
 C
 9900  CONTINUE
+
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9905 ) LSTYPE
       WRITE ( CMON , 9905 ) LSTYPE
       CALL XPRVDU(NCVDU, 1,0)
@@ -1156,11 +1167,13 @@ C>> ALERT C for > 5
           ENDIF
           IF(SXB .GT. 5) THEN
             call xprvdu(ncvdu,1,0)
-            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(/A/)') cmon(1)(3:)
+            IF (ISSPRT .EQ. 0) then 
+              WRITE(NCWU,'(/A/)') cmon(1)(3:len_trim(cmon(1)))
+            end if
             WRITE(CMON,'(A)')
      1      'One possible cause is twinning - try ROTAX Analysis'            
             call xprvdu(ncvdu,1,0)
-            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(/A/)') cmon(1)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(/A/)') trim(CMON(1))
           ENDIF
 c
 C
@@ -1248,11 +1261,15 @@ C                      6  LOW LAYER/BATCH/ELEMENT
 C                      7  MEDIUM/HIGH LAYER/BATCH/ELEMENT
 C -- OUTPUT SCALE FACTORS OR A SUITABLE ALTERNATIVE MESSAGE IF THERE
 C    ARE NONE
+C
+C -- OUTPUT ATOMS PARAMETERS
+      CALL XMDMON ( L5,MD5,N5,1,1, 1,LEVEL,0,1,1,ISTORE(ICONTR) )
+C
       IF ( ( MD5LS +MD5BS +MD5ES +MD5CL + MD5PR +MD5EX )
      1 .LE. 0 ) THEN
         WRITE ( CMON , 1065 )
         CALL XPRVDU(NCVDU, 2,0)
-        IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') (CMON(II)(:),II=1,2)
+        IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') (trim(CMON(II)),II=1,2)
 1065    FORMAT ( 1X , 'There are no layer, element, or batch scales',/,
      1 1X, 'There are no special overall parameters' )
       ELSE
@@ -1266,9 +1283,6 @@ C    ARE NONE
 C -- OUTPUT OVERALL PARAMETERS
 CNOV98      CALL XMDMON ( L5O,1,MD5O,1,2, 1,LEVEL,0,1,1,ISTORE(ICONTR) )
       CALL XMDMON ( L5O,1,MD5O,1,2, 1, 2 ,0,1,1,ISTORE(ICONTR) )
-C
-C -- OUTPUT ATOMS PARAMETERS
-      CALL XMDMON ( L5,MD5,N5,1,1, 1,LEVEL,0,1,1,ISTORE(ICONTR) )
 C
 C----- UPDATE GUIMODEL
 C----- SET ILOOP TO A DUMMY, SAVE AUTOUPDTE FLAG
@@ -1294,6 +1308,34 @@ CODE FOR XTHETA
       END IF
       RETURN
       END
+      
+CODE FOR RCTHETA
+      FUNCTION RCTHETA(H,K,L)
+      INCLUDE 'XLST01.INC'
+      INCLUDE 'XLST13.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XCONST.INC'
+      REAL H,K,L
+      EXTERNAL RCSTL2
+
+      RCTHETA = 0.0
+C--CHECK IF LIST 1 IS AVAILABLE
+      IF  (L1S .LE. 0) THEN
+c        Print *, 'No L1'
+        RETURN
+      END IF
+c      Print *, 'Fine'
+
+      ST = SQRT ( ABS ( RCSTL2(H,K,L,STORE(L1S)) ) ) * STORE(L13DC)
+      IF ( ST .GT. 1.0 ) THEN
+        RCTHETA = 90.0
+      ELSE
+        RCTHETA = ASIN ( ST  ) * RTD
+      END IF
+      RETURN
+      END
+
+      
 C
 CODE FOR XSTHL3
       FUNCTION XSTHL3(I)
@@ -1339,6 +1381,10 @@ C
       real thmin, thmax, thmcmp, thbest, thbcmp
       integer iplot, iuln, iglst, iaddd, iaddl, iaddr, ichg
       integer icount, ihtot, iklast, iktot, illast, iltot, imaxh
+
+      real, EXTERNAL :: RCTHETA
+      REAL RH,RK,RL
+      
       integer imaxk, imaxl, iminh, imink, iminl, istat, itrsz
       real sto, thdum, thdum2
       
@@ -1353,9 +1399,11 @@ C
 c
       IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
       IF (KHUNTR ( 2,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL02
+      IF (KHUNTR ( 6,0, IADDL,IADDR,IADDD, -1) .LT. 0) 
+     1                                      CALL XFAL06 (IULN, 0 )
       IF (KHUNTR (13,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL13
       IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL30
-      CALL XFAL06 (IULN, 0 )
+      
 
 C -- SCAN LIST 6 FOR ALL REFLECTIONS
 
@@ -1402,265 +1450,265 @@ C -- SCAN LIST 6 FOR ALL REFLECTIONS
 1200  CONTINUE
 
 C See if there is a higher possible IMAXH
-      STORE(M6) = IMAXH
-      STORE(M6+1) = 0.0
-      STORE(M6+2) = 0.0
+      RH = IMAXH
+      RK = 0.0
+      RL = 0.0
       ICHG = 1
       ICOUNT = 1
       DO WHILE ( ( ICHG .NE. 0 ) .AND. ( ICOUNT .LT. 400 ) )
         ICOUNT = ICOUNT + 1
         ICHG = 0
-        STORE(M6) = STORE(M6) + 1.0
-        IF ( XTHETA(ICHG) .LT. THMAX ) THEN
+        RH = RH + 1.0
+        IF ( RCTHETA(RH,RK,RL) .LT. THMAX ) THEN
           ICHG = 1
-          IMAXH = NINT ( STORE(M6) )
+          IMAXH = NINT ( RH )
         ELSE
-          STORE(M6) = STORE(M6) - 1.0
+          RH = RH - 1.0
         END IF
 
-        STO = XTHETA(ICHG)
-        STORE(M6+1) = STORE(M6+1) + 1.0
-        IF ( XTHETA(ICHG) .LT. STO ) THEN
+        STO = RCTHETA(RH,RK,RL)
+        RK = RK + 1.0
+        IF ( RCTHETA(RH,RK,RL) .LT. STO ) THEN
           ICHG = 1
         ELSE
-          STORE(M6+1) = STORE(M6+1) - 2.0
-          IF ( XTHETA(ICHG) .LT. STO ) THEN
+          RK = RK - 2.0
+          IF ( RCTHETA(RH,RK,RL) .LT. STO ) THEN
             ICHG = 1
           ELSE
-            STORE(M6+1) = STORE(M6+1) + 1.0
+            RK = RK + 1.0
           END IF
         END IF
 
-        STO = XTHETA(ICHG)
-        STORE(M6+2) = STORE(M6+2) + 1.0
-        IF ( XTHETA(ICHG) .LT. STO ) THEN
+        STO = RCTHETA(RH,RK,RL)
+        RL = RL + 1.0
+        IF ( RCTHETA(RH,RK,RL) .LT. STO ) THEN
           ICHG = 1
         ELSE
-          STORE(M6+2) = STORE(M6+2) - 2.0
-          IF ( XTHETA(ICHG) .LT. STO ) THEN
+          RL = RL - 2.0
+          IF ( RCTHETA(RH,RK,RL) .LT. STO ) THEN
             ICHG = 1
           ELSE
-            STORE(M6+2) = STORE(M6+2) + 1.0
+            RL = RL + 1.0
           END IF
         END IF
       END DO
 
 C See if there is a lower possible IMINH
-      STORE(M6) = IMINH
-      STORE(M6+1) = 0.0
-      STORE(M6+2) = 0.0
+      RH = IMINH
+      RK = 0.0
+      RL = 0.0
       ICHG = 1
       ICOUNT = 1
       DO WHILE ( ( ICHG .NE. 0 ) .AND. ( ICOUNT .LT. 400 ) )
         ICOUNT = ICOUNT + 1
         ICHG = 0
-        STORE(M6) = STORE(M6) - 1.0
-        IF ( XTHETA(ICHG) .LT. THMAX ) THEN
+        RH = RH - 1.0
+        IF ( RCTHETA(RH,RK,RL) .LT. THMAX ) THEN
           ICHG = 1
-          IMINH = NINT ( STORE(M6) )
+          IMINH = NINT ( RH )
         ELSE
-          STORE(M6) = STORE(M6) + 1.0
+          RH = RH + 1.0
         END IF
 
-        STO = XTHETA(ICHG)
-        STORE(M6+1) = STORE(M6+1) + 1.0
-        IF ( XTHETA(ICHG) .LT. STO ) THEN
+        STO = RCTHETA(RH,RK,RL)
+        RK = RK + 1.0
+        IF ( RCTHETA(RH,RK,RL) .LT. STO ) THEN
           ICHG = 1
         ELSE
-          STORE(M6+1) = STORE(M6+1) - 2.0
-          IF ( XTHETA(ICHG) .LT. STO ) THEN
+          RK = RK - 2.0
+          IF ( RCTHETA(RH,RK,RL) .LT. STO ) THEN
             ICHG = 1
           ELSE
-            STORE(M6+1) = STORE(M6+1) + 1.0
+            RK = RK + 1.0
           END IF
         END IF
 
-        STO = XTHETA(ICHG)
-        STORE(M6+2) = STORE(M6+2) + 1.0
-        IF ( XTHETA(ICHG) .LT. STO ) THEN
+        STO = RCTHETA(RH,RK,RL)
+        RL = RL + 1.0
+        IF ( RCTHETA(RH,RK,RL) .LT. STO ) THEN
           ICHG = 1
         ELSE
-          STORE(M6+2) = STORE(M6+2) - 2.0
-          IF ( XTHETA(ICHG) .LT. STO ) THEN
+          RL = RL - 2.0
+          IF ( RCTHETA(RH,RK,RL) .LT. STO ) THEN
             ICHG = 1
           ELSE
-            STORE(M6+2) = STORE(M6+2) + 1.0
+            RL = RL + 1.0
           END IF
         END IF
       END DO
 
 C See if there is a higher possible IMAXK
-      STORE(M6  ) = 0.0
-      STORE(M6+1) = IMAXK
-      STORE(M6+2) = 0.0
+      RH = 0.0
+      RK = IMAXK
+      RL = 0.0
       ICHG = 1
       ICOUNT = 1
       DO WHILE ( ( ICHG .NE. 0 ) .AND. ( ICOUNT .LT. 400 ) )
         ICOUNT = ICOUNT + 1
         ICHG = 0
-        STORE(M6+1) = STORE(M6+1) + 1.0
-        IF ( XTHETA(ICHG) .LT. THMAX ) THEN
+        RK = RK + 1.0
+        IF ( RCTHETA(RH,RK,RL) .LT. THMAX ) THEN
           ICHG = 1
-          IMAXK = NINT ( STORE(M6+1) )
+          IMAXK = NINT ( RK )
         ELSE
-          STORE(M6+1) = STORE(M6+1) - 1.0
+          RK = RK - 1.0
         END IF
 
-        STO = XTHETA(ICHG)
-        STORE(M6) = STORE(M6) + 1.0
-        IF ( XTHETA(ICHG) .LT. STO ) THEN
+        STO = RCTHETA(RH,RK,RL)
+        RH = RH + 1.0
+        IF ( RCTHETA(RH,RK,RL) .LT. STO ) THEN
           ICHG = 1
         ELSE
-          STORE(M6) = STORE(M6) - 2.0
-          IF ( XTHETA(ICHG) .LT. STO ) THEN
+          RH = RH - 2.0
+          IF ( RCTHETA(RH,RK,RL) .LT. STO ) THEN
             ICHG = 1
           ELSE
-            STORE(M6) = STORE(M6) + 1.0
+            RH = RH + 1.0
           END IF
         END IF
 
-        STO = XTHETA(ICHG)
-        STORE(M6+2) = STORE(M6+2) + 1.0
-        IF ( XTHETA(ICHG) .LT. STO ) THEN
+        STO = RCTHETA(RH,RK,RL)
+        RL = RL + 1.0
+        IF ( RCTHETA(RH,RK,RL) .LT. STO ) THEN
           ICHG = 1
         ELSE
-          STORE(M6+2) = STORE(M6+2) - 2.0
-          IF ( XTHETA(ICHG) .LT. STO ) THEN
+          RL = RL - 2.0
+          IF ( RCTHETA(RH,RK,RL) .LT. STO ) THEN
             ICHG = 1
           ELSE
-            STORE(M6+2) = STORE(M6+2) + 1.0
+            RL = RL + 1.0
           END IF
         END IF
       END DO
 
 C See if there is a higher possible IMINK
-      STORE(M6  ) = 0.0
-      STORE(M6+1) = IMINK
-      STORE(M6+2) = 0.0
+      RH = 0.0
+      RK = IMINK
+      RL = 0.0
       ICHG = 1
       ICOUNT = 1
       DO WHILE ( ( ICHG .NE. 0 ) .AND. ( ICOUNT .LT. 400 ) )
         ICOUNT = ICOUNT + 1
         ICHG = 0
-        STORE(M6+1) = STORE(M6+1) - 1.0
-        IF ( XTHETA(ICHG) .LT. THMAX ) THEN
+        RK = RK - 1.0
+        IF ( RCTHETA(RH,RK,RL) .LT. THMAX ) THEN
           ICHG = 1
-          IMINK = NINT ( STORE(M6+1) )
+          IMINK = NINT ( RK )
         ELSE
-          STORE(M6+1) = STORE(M6+1) + 1.0
+          RK = RK + 1.0
         END IF
 
-        STO = XTHETA(ICHG)
-        STORE(M6) = STORE(M6) + 1.0
-        IF ( XTHETA(ICHG) .LT. STO ) THEN
+        STO = RCTHETA(RH,RK,RL)
+        RH = RH + 1.0
+        IF ( RCTHETA(RH,RK,RL) .LT. STO ) THEN
           ICHG = 1
         ELSE
-          STORE(M6) = STORE(M6) - 2.0
-          IF ( XTHETA(ICHG) .LT. STO ) THEN
+          RH = RH - 2.0
+          IF ( RCTHETA(RH,RK,RL) .LT. STO ) THEN
             ICHG = 1
           ELSE
-            STORE(M6) = STORE(M6) + 1.0
+            RH = RH + 1.0
           END IF
         END IF
 
-        STO = XTHETA(ICHG)
-        STORE(M6+2) = STORE(M6+2) + 1.0
-        IF ( XTHETA(ICHG) .LT. STO ) THEN
+        STO = RCTHETA(RH,RK,RL)
+        RL = RL + 1.0
+        IF ( RCTHETA(RH,RK,RL) .LT. STO ) THEN
           ICHG = 1
         ELSE
-          STORE(M6+2) = STORE(M6+2) - 2.0
-          IF ( XTHETA(ICHG) .LT. STO ) THEN
+          RL = RL - 2.0
+          IF ( RCTHETA(RH,RK,RL) .LT. STO ) THEN
             ICHG = 1
           ELSE
-            STORE(M6+2) = STORE(M6+2) + 1.0
+            RL = RL + 1.0
           END IF
         END IF
       END DO
 
 C See if there is a higher possible IMAXL
-      STORE(M6) = 0.0
-      STORE(M6+1) = 0.0
-      STORE(M6+2) = IMAXL
+      RH = 0.0
+      RK = 0.0
+      RL = IMAXL
       ICHG = 1
       ICOUNT = 1
       DO WHILE ( ( ICHG .NE. 0 ) .AND. ( ICOUNT .LT. 400 ) )
         ICOUNT = ICOUNT + 1
         ICHG = 0
-        STORE(M6+2) = STORE(M6+2) + 1.0
-        IF ( XTHETA(ICHG) .LT. THMAX ) THEN
+        RL = RL + 1.0
+        IF ( RCTHETA(RH,RK,RL) .LT. THMAX ) THEN
           ICHG = 1
-          IMAXL = NINT ( STORE(M6+2) )
+          IMAXL = NINT ( RL )
         ELSE
-          STORE(M6+2) = STORE(M6+2) - 1.0
+          RL = RL - 1.0
         END IF
 
-        STO = XTHETA(ICHG)
-        STORE(M6+1) = STORE(M6+1) + 1.0
-        IF ( XTHETA(ICHG) .LT. STO ) THEN
+        STO = RCTHETA(RH,RK,RL)
+        RK = RK + 1.0
+        IF ( RCTHETA(RH,RK,RL) .LT. STO ) THEN
           ICHG = 1
         ELSE
-          STORE(M6+1) = STORE(M6+1) - 2.0
-          IF ( XTHETA(ICHG) .LT. STO ) THEN
+          RK = RK - 2.0
+          IF ( RCTHETA(RH,RK,RL) .LT. STO ) THEN
             ICHG = 1
           ELSE
-            STORE(M6+1) = STORE(M6+1) + 1.0
+            RK = RK + 1.0
           END IF
         END IF
 
-        STO = XTHETA(ICHG)
-        STORE(M6) = STORE(M6) + 1.0
-        IF ( XTHETA(ICHG) .LT. STO ) THEN
+        STO = RCTHETA(RH,RK,RL)
+        RH = RH + 1.0
+        IF ( RCTHETA(RH,RK,RL) .LT. STO ) THEN
           ICHG = 1
         ELSE
-          STORE(M6) = STORE(M6) - 2.0
-          IF ( XTHETA(ICHG) .LT. STO ) THEN
+          RH = RH - 2.0
+          IF ( RCTHETA(RH,RK,RL) .LT. STO ) THEN
             ICHG = 1
           ELSE
-            STORE(M6) = STORE(M6) + 1.0
+            RH = RH + 1.0
           END IF
         END IF
       END DO
 
 C See if there is a lower possible IMINL
-      STORE(M6) = 0.0
-      STORE(M6+1) = 0.0
-      STORE(M6+2) = IMINL
+      RH = 0.0
+      RK = 0.0
+      RL = IMINL
       ICHG = 1
       ICOUNT = 1
       DO WHILE ( ( ICHG .NE. 0 ) .AND. ( ICOUNT .LT. 400 ) )
         ICOUNT = ICOUNT + 1
         ICHG = 0
-        STORE(M6+2) = STORE(M6+2) - 1.0
-        IF ( XTHETA(ICHG) .LT. THMAX ) THEN
+        RL = RL - 1.0
+        IF ( RCTHETA(RH,RK,RL) .LT. THMAX ) THEN
           ICHG = 1
-          IMINL = NINT ( STORE(M6+2) )
+          IMINL = NINT ( RL )
         ELSE
-          STORE(M6+2) = STORE(M6+2) + 1.0
+          RL = RL + 1.0
         END IF
 
-        STO = XTHETA(ICHG)
-        STORE(M6+1) = STORE(M6+1) + 1.0
-        IF ( XTHETA(ICHG) .LT. STO ) THEN
+        STO = RCTHETA(RH,RK,RL)
+        RK = RK + 1.0
+        IF ( RCTHETA(RH,RK,RL) .LT. STO ) THEN
           ICHG = 1
         ELSE
-          STORE(M6+1) = STORE(M6+1) - 2.0
-          IF ( XTHETA(ICHG) .LT. STO ) THEN
+          RK = RK - 2.0
+          IF ( RCTHETA(RH,RK,RL) .LT. STO ) THEN
             ICHG = 1
           ELSE
-            STORE(M6+1) = STORE(M6+1) + 1.0
+            RK = RK + 1.0
           END IF
         END IF
 
-        STO = XTHETA(ICHG)
-        STORE(M6) = STORE(M6) + 1.0
-        IF ( XTHETA(ICHG) .LT. STO ) THEN
+        STO = RCTHETA(RH,RK,RL)
+        RH = RH + 1.0
+        IF ( RCTHETA(RH,RK,RL) .LT. STO ) THEN
           ICHG = 1
         ELSE
-          STORE(M6) = STORE(M6) - 2.0
-          IF ( XTHETA(ICHG) .LT. STO ) THEN
+          RH = RH - 2.0
+          IF ( RCTHETA(RH,RK,RL) .LT. STO ) THEN
             ICHG = 1
           ELSE
-            STORE(M6) = STORE(M6) + 1.0
+            RH = RH + 1.0
           END IF
         END IF
       END DO
@@ -1694,11 +1742,14 @@ C will not be optimised.
 
       END IF
 
-      STORE(L30IX+6)=THMIN
-      STORE(L30IX+7)=THMAX
-
+c If thmax already set in LIST 30, assume it was put there by
+c SFLS, which computes the actual theta values for every reflection
+c rather than an estimate based on index ranges.  DJW 2017
+      IF ( STORE(L30IX+7).LE. ZERO) THEN
+       STORE(L30IX+6)=THMIN
+       STORE(L30IX+7)=THMAX
+      END IF
       STORE(L30CF+9)=THMCMP
-
 
       CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
 
@@ -1708,6 +1759,7 @@ c
 CODE FOR XCOMPL
       SUBROUTINE XCOMPL ( ITRSZ, JNH,JNK,JNL, JXH,JXK,JXL,
      1              THMAX,THMCMP, THBEST,THBCMP, IPLOT, IULN, IGLST )
+      use m_mrgrnk
       INCLUDE 'ISTORE.INC'
       INCLUDE 'STORE.INC'
       INCLUDE 'XLST06.INC'
@@ -1720,14 +1772,24 @@ CODE FOR XCOMPL
       INCLUDE 'QSTORE.INC'
 cdjw0106  problems with dynamic arrays if > about 90,000 refls
 cric0712  problems with static arrays if about 100001 refls...
-      DIMENSION IHKLTR ( 3, ITRSZ + 1 )
+c      DIMENSION IHKLTR ( 3, ITRSZ + 1 )
 c      parameter (itrmax=100001)
 c      DIMENSION IHKLTR ( 3, itrmax )
       DIMENSION ALLBIN ( 100 )
       DIMENSION FNDBIN ( 100 )
       DIMENSION ACTBIN ( 100 )
       character *80 ctemp
+      integer, dimension(:), allocatable :: sort_keys
+      integer, dimension(:,:), allocatable :: ihkltr
+      !> address of first index l in sorted array ihkltr
+      integer, dimension(:,:), allocatable :: ladresses
+      !> current l
+      integer currentl
+      integer lstart, lend
 
+      allocate( ihkltr( 3, itrsz ) )
+
+      
       THBEST = 0.0
       THBCMP = 0.0
 c   convert thmax to (sin(th)/lam)^3
@@ -1739,7 +1801,7 @@ c        WRITE ( CMON , '(a,2i8)' )
 c     1 'Too many reflections to compute completeness ',itrsz,itrmax
 c        CALL XPRVDU(NCVDU, 2,0)
 c        if (issprt .eq. 0) then
-c            write(ncwu,'(a)') cmon(1)(:)
+c            write(ncwu,'(a)') trim(CMON(1))
 c            return
 c        endif
 c      endif
@@ -1754,12 +1816,28 @@ c
           NHKL = NHKL + 1
           ISTAT = KSYSAB ( 2 )
           DO I = 0,2
-             IHKLTR(I+1, NHKL) = STORE(M6+I)
+             IHKLTR(I+1, NHKL) = nint(STORE(M6+I))
           END DO
       END DO
 
-      CALL XSHELI ( IHKLTR, 3, 3, NHKL, NHKL*3, IHKLTR(1,NHKL+1))
+      !CALL XSHELI ( IHKLTR, 3, 3, NHKL, NHKL*3, IHKLTR(1,NHKL+1))
+      allocate(sort_keys(NHKL))
+      call mrgrnk(ihkltr( 3, : ), sort_keys)
+      allocate(ladresses(2,
+     1  IHKLTR(3,sort_keys(1)):IHKLTR(3,sort_keys(NHKL))))
 
+      ! build address list of first l indices 
+      ladresses=-1
+      currentl=IHKLTR(3,sort_keys(1))
+      ladresses(1,currentl)=1
+      do icpt=1, nhkl
+        if(IHKLTR(3,sort_keys(icpt))/=currentl) then
+          ladresses(2,currentl)=icpt-1
+          currentl=IHKLTR(3,sort_keys(icpt))
+          ladresses(1,currentl)=icpt
+        end if
+      end do
+      ladresses(2,currentl)=nhkl
 
       NALLWD = 0
       NFOUND = 0
@@ -1794,27 +1872,29 @@ cdjwoct2010                  JID = ( ( XTHETA(NALLWD) / THMAX ) * 100.0 )
                   JID = MAX ( 1,  JID )
                   JID = MIN ( 100,JID )
                   ALLBIN(JID) = ALLBIN(JID) + 1.0
-                  JP = 1
                   IFOUND = 0
 
-                  DO WHILE ( IHKLTR(3,JP) .NE. IL )
-                    JP = JP + 1
-                    IF ( JP .GT. NHKL ) JP = -1
-                    IF ( JP .LE. 0)  EXIT
-                  END DO
-                  IF ( JP .GT. 0 ) THEN
-                    DO WHILE ( IHKLTR(3,JP) .EQ. IL )
-                      IF ( ( IHKLTR(1,JP) .EQ. IH ) .AND.
-     1                     ( IHKLTR(2,JP) .EQ. IK ) ) THEN
+                  ! use the look up table to find the first and last address of IL
+                  if(IL>=lbound(ladresses, 2) .and. 
+     1              IL<=ubound(ladresses, 2)) then
+                    lstart=ladresses(1,IL)
+                    lend=ladresses(2,IL)
+                  else
+                    lstart=0
+                    lend=-1
+                  end if
+                  
+                  ! go through the remaining reflections
+                  do JP=lstart, lend
+                      IF ( ( IHKLTR(1,sort_keys(JP)) .EQ. IH ) .AND.
+     1                     ( IHKLTR(2,sort_keys(JP)) .EQ. IK ) ) THEN
                            NFOUND = NFOUND + 1
                            IFOUND = 1
                            FNDBIN(JID) = FNDBIN(JID) + 1.0
                            EXIT
                       END IF
-                      JP = JP + 1
-                      IF ( JP .GT. NHKL ) EXIT
-                    END DO
-                  END IF
+                  end do
+                  
                   IF ( IFOUND .EQ. 0 ) THEN
                     IF ((IPLOT.GE.0 ).AND.( IMISSI .EQ. 0)) THEN
                     IF (ISSPRT .EQ. 0)  
@@ -1922,8 +2002,8 @@ C THMAX < 25 degrees, in which case it is 0.75*THMAX.
         CMPMIN = 100.0 * MIN(0.99,CMPMIN)
         WRITE(CMON,'(A/A/A,F7.2,A/A/A/A)')
      1  '^^PL PLOTDATA _COMPL SCATTER ATTACH _VCOMPL KEY',
-     1  '^^PL XAXIS TITLE (SIN(Theta)/lambda)^3 NSERIES=2 LENGTH=100',
-     1  '^^PL YAXIS ZOOM ', CMPMIN,
+     1  '^^PL XAXIS TITLE ''(sin \theta / \lambda)\**3'' ',
+     1  '^^PL NSERIES=2 LENGTH=100 YAXIS ZOOM ', CMPMIN,
      1  ' 100.0 TITLE ''Cumulative Completeness''',
      1  '^^PL YAXISRIGHT ZOOM 0 100 TITLE ''Shell Completeness''',
      1 '^^PL SERIES 1 SERIESNAME ''Cumulative Completeness'' TYPE LINE',
@@ -1963,9 +2043,9 @@ cdjwoct2010
           point=stl3max*(I/100.0)
           point2=exp((2.0*log(point))/3.0)
           point=rtd*asin(store(l13dc)*point**0.333)
-          write(ctemp,'(f10.3,a,f10.3)') point, ':', point2
+          write(ctemp,'(a,f10.3,a,f10.3,a)') '"',point, ' ', point2,'"'
 c      write(123,*) ctemp
-          call xcras(ctemp,nchar)
+c          call xcras(ctemp,nchar)
           call xctrim(ctemp,nchar)
 c      write(123,*) ctemp(1:nchar)
           WRITE(CMON,'(A,A,A,4F10.5)')
@@ -1980,18 +2060,21 @@ c
         CALL XPRVDU(NCVDU, 2,0)
 
       END IF
+      deallocate(ihkltr)
+      deallocate(sort_keys) 
 c
       RETURN
       END
 c
 CODE FOR XSUM06
       SUBROUTINE XSUM06 (iuln,  LEVEL )
+      use m_mrgrnk
       implicit none
 C
 C -- ROUTINE TO DISPLAY SUMMARY OF LIST 6
 C
       CHARACTER *8 CNAME(35)
-      CHARACTER *15 HKLLAB
+      character(len=15) :: hkllab
 
       INCLUDE 'ICOM39.INC'
       integer, dimension(35) :: KEY
@@ -2009,12 +2092,9 @@ C
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XCONST.INC'
       INCLUDE 'XIOBUF.INC'
-      INCLUDE 'TYPE11.INC'
-      INCLUDE 'XSTR11.INC'
       INCLUDE 'XSIZES.INC'
 C
       INCLUDE 'QSTORE.INC'
-      INCLUDE 'QSTR11.INC'
       INCLUDE 'QLST39.INC'
       
       integer iuln, level, i, iaddd, iaddl, iaddr, iallow, idjwerr
@@ -2027,6 +2107,9 @@ C
       real wdel, wfo, wrfac, wt, wtop, ycut, yslope, z, z10, z90, z_max
       real zcalc, zh
 C
+      integer, dimension(:), allocatable :: sort_keys
+      real, dimension(:,:), allocatable :: reflections, omitted, temp2d     
+      integer omitindex 
 C
       DATA KEY/ 1, 2, 3, 4, 5, 6, 0, 0, 0, 0,
      1          0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -2050,17 +2133,28 @@ c      DIMENSION X(N6D)
 c      DIMENSION Y(N6D)
 
       real, dimension(2) :: TEMP
-CDJW08
       
-      integer, external :: khuntr, kfnr, kallow, kldrnr
       
-      MAX11 = ISIZ11
+      integer, external :: khuntr, kfnr, kallow, kldrnr, kexist
+      
 C
-      IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
-      IF (KHUNTR ( 5,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL05
-      IF (KHUNTR (13,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL13
-      IF (KHUNTR (23,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL23
-      IF (KHUNTR (39,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL39
+      IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) THEN
+            IF (KEXIST(1) .GT. 0) CALL XFAL01
+      ENDIF
+      IF (KHUNTR ( 5,0, IADDL,IADDR,IADDD, -1) .LT. 0) THEN
+            IF (KEXIST(5) .GT. 0) CALL XFAL05
+      ENDIF
+      IF (KHUNTR (13,0, IADDL,IADDR,IADDD, -1) .LT. 0) THEN
+            IF (KEXIST(13) .GT. 0) CALL XFAL13
+      ENDIF
+      IF (KHUNTR (23,0, IADDL,IADDR,IADDD, -1) .LT. 0) THEN
+            IF (KEXIST(23) .GT. 0) CALL XFAL23
+      ENDIF
+      IF (KHUNTR (39,0, IADDL,IADDR,IADDD, -1) .LT. 0) THEN
+            IF (KEXIST(39) .GT. 0) CALL XFAL39
+      ENDIF
+      IF ( IERFLG .LT. 0 ) GO TO 9900
+
 
       IFSQ = ISTORE(L23MN+1)
 c set flag for twinned/normal data
@@ -2070,8 +2164,9 @@ C
       ELSE                                 ! F = FOT
             ITWIN = 10
       ENDIF
+      
 C--SETUP A GRAPH HERE
-      IF ( LEVEL.EQ.4 ) THEN                 ! Fo vs Fc scatter
+      IF ((LEVEL.EQ.4) .OR. (LEVEL.EQ.7)) THEN            ! Fo vs Fc scatter
         WRITE(CMON,'(A,/,A,/,A)')
      1  '^^PL PLOTDATA _FOFC SCATTER ATTACH _VFOFC KEY',
      2  '^^PL XAXIS TITLE Fc NSERIES=1 LENGTH=2000',
@@ -2084,8 +2179,9 @@ C--SETUP A GRAPH HERE
      3  '^^PL XAXIS TITLE ''Expected (Z-score)'' NSERIES=1 LENGTH=2000'
         CALL XPRVDU(NCVDU, 2,0)
         IF (IFSQ .GE. 0) THEN   ! FSQ REFINENENT
-          WRITE(CMON,'(A)')
-     1 '^^PL YAXIS TITLE ''w^.5 x (Fo^2-Fc^2)'' SERIES 1 TYPE SCATTER'
+          WRITE(CMON,'(2A)')
+     1 '^^PL YAXIS TITLE ''\sqrtw x (Fo\**2-Fc\**2)'' ',
+     2 'SERIES 1 TYPE SCATTER'
         ELSE
           WRITE(CMON,'(A)')
      1  '^^PL YAXIS TITLE ''w(Fo-Fc)'' SERIES 1 TYPE SCATTER'
@@ -2095,8 +2191,8 @@ C--SETUP A GRAPH HERE
       IF ( LEVEL.EQ.6 ) THEN                 ! Weight vs Sigma
         WRITE(CMON,'(A,/,A,/,A)')
      1  '^^PL PLOTDATA _WTVSIG SCATTER ATTACH _VWTVSIG KEY',
-     1  '^^PL YAXIS TITLE ''SQRT(weight)'' NSERIES=1 LENGTH=2000',
-     1  '^^PL XAXIS TITLE ''1/Sigma'' SERIES 1 TYPE SCATTER'
+     1  '^^PL YAXIS TITLE ''\sqrt(weight)'' NSERIES=1 LENGTH=2000',
+     1  '^^PL XAXIS TITLE ''1/\sigma'' SERIES 1 TYPE SCATTER'
         CALL XPRVDU(NCVDU, 3,0)
       END IF
 C
@@ -2145,6 +2241,7 @@ C
       SIGTOP = 0.0
       N6ACC = 0
       PLOTMAX = 0.0
+      omitindex = 0
 c----- totals for slope and intercept
         ss = 0.
         sx = 0.
@@ -2154,15 +2251,16 @@ c----- totals for slope and intercept
         sxy = 0.
 
 1100  CONTINUE
-        ISTAT = KFNR ( 0 )
+        ISTAT = KLDRNR ( 0 )
         IF ( ISTAT .LT. 0 ) GO TO 1200
+      IF (KALLOW(IALLOW)==0) THEN
 
         N6ACC = N6ACC + 1
 cjun2010  FO = STORE(M6+itwin)
         FO = STORE(M6+3)
         FC = SCALE * STORE(M6+5)
 
-        IF ( LEVEL.EQ.4 ) THEN
+        IF ((LEVEL.EQ.4) .OR. (LEVEL.EQ.7)) THEN
           PLOTMAX = MAX( PLOTMAX, FC )
           WRITE(HKLLAB, '(2(I4,A),I4)') NINT(STORE(M6)),',',
      1    NINT(STORE(M6+1)), ',', NINT(STORE(M6+2))
@@ -2189,11 +2287,17 @@ C - FSQ REFINENENT
         WBOT = WBOT + WFO*WFO
 
         IF ( LEVEL.EQ.5 ) THEN
-C If you have more than 8.8 million reflections you might be in trouble.
-         IF ( N6ACC .LE. MAX11/2 ) THEN
-          STR11(N6ACC*2-1) = WDEL     !Format:   [WDEL,INDICES]
-          STR11(N6ACC*2) = STORE(M6)+STORE(M6+1)*256.+STORE(M6+2)*65536.
-         END IF
+          if(.not. allocated(reflections)) then
+            allocate(reflections(16384, 4))
+          else if(n6acc>ubound(reflections, 1)) then
+            ! array too small, need to extend
+            call move_alloc(reflections, temp2d)
+            allocate(reflections(ubound(temp2d, 1)+16384, 4))
+            reflections(1:ubound(temp2d, 1),:)=temp2d
+            deallocate(temp2d)
+          end if
+          reflections(n6acc,1:3)=STORE(M6:M6+2)
+          reflections(n6acc, 4)=wdel
         END IF
 
         IF ( LEVEL.EQ.6 ) THEN
@@ -2225,32 +2329,40 @@ c         refinement on F
           CALL XPRVDU(NCVDU, 1,0)
         END IF
 
-
+      else if (KALLOW(IALLOW)<0) THEN ! ommited reflection
+        if(.not. allocated(omitted)) then
+          allocate(omitted(16384, 5))
+          omitindex=0
+        else if(omitindex>=ubound(omitted, 1)) then
+          ! array too small, need to extend
+          call move_alloc(omitted, temp2d)
+          allocate(omitted(ubound(temp2d, 1)+16384, 5))
+          omitted(1:ubound(temp2d, 1),:)=temp2d
+          deallocate(temp2d)
+        end if
+        omitindex=omitindex+1
+        omitted(omitindex,1:3)=STORE(M6:M6+2)
+        omitted(omitindex, 4)=STORE(M6+3)        ! Fo
+        omitted(omitindex, 5)=scale * STORE(M6+5) ! Fc
+      end if
 
       GO TO 1100
 1200  CONTINUE
 
       IF ( LEVEL.EQ.4 ) THEN      !Also output the omitted refls.
-
-        WRITE(CMON,'(A)')
-     1  '^^PL ADDSERIES Omitted TYPE SCATTERX'
-        CALL XPRVDU(NCVDU,1,0)
-
-        CALL XFAL06 (IULN, 0 )
-        DO WHILE ( KLDRNR ( 0 ) .GE. 0 )
-          IF (KALLOW(IALLOW).LT.0) THEN
-cjun2010            FO = STORE(M6+itwin)
-            FO = STORE(M6+3)
-            FC = SCALE * STORE(M6+5)
-            WRITE(HKLLAB, '(2(I4,A),I4)') NINT(STORE(M6)),',',
-     1      NINT(STORE(M6+1)), ',', NINT(STORE(M6+2))
-            CALL XCRAS(HKLLAB, IHKLLEN)
-            WRITE(CMON,'(3A,2(1X,F12.2))')
-     1     '^^PL LABEL ''', HKLLAB(1:IHKLLEN), ''' DATA ', FC ,FO
-c            WRITE(CMON,'(A,2(1X,F12.2))')
-c     1     '^^PL DATA ', FC ,FO
-            CALL XPRVDU(NCVDU, 1,0)
-          ENDIF
+        if(omitindex>0) then
+          WRITE(CMON,'(A)')
+     1      '^^PL ADDSERIES Omitted TYPE SCATTERX'
+          CALL XPRVDU(NCVDU,1,0)
+        end if
+        do i=1, omitindex
+          WRITE(HKLLAB, '(2(I0,A),I0)') NINT(omitted(i,1)),',',
+     1      NINT(omitted(i,2)), ',', NINT(omitted(i,3))
+            hkllab=adjustl(hkllab)
+          WRITE(CMON,'(3A,2(1X,F12.2))')
+     1     '^^PL LABEL ''', trim(HKLLAB), ''' DATA ', omitted(i,5),
+     2     omitted(i,4)
+          CALL XPRVDU(NCVDU, 1,0)
         END DO
       END IF
 C
@@ -2293,35 +2405,29 @@ C -- PRINT THE R VALUE ETC.
 
       IF ( LEVEL.EQ.5 ) THEN
 
-        IF ( N6ACC .GT. MAX11/2 ) THEN
-          WRITE(CMON,'(A,I8)') '{E Too many reflections: ', N6ACC
-          CALL XPRVDU(NCVDU,1,0)
-          N6ACC = MAX11/2
-        END IF
         WRITE(CMON,'(A,I8,A)')' Computing normal probability plot for',
      1    N6ACC, ' reflections.'
         CALL XPRVDU(NCVDU,1,0)
 C Sort the sqrt(W)*(Fo2-Fc2) into ascending order.
-        CALL XSHELQ(STR11,2,1,N6ACC,N6ACC*2,TEMP)
+        allocate(sort_keys(N6ACC))
+        call mrgrnk(reflections(1:n6acc,4), sort_keys)
 c Numerical Recipes (ed3) . p265 "Incomplete gamma function"
 C
         iz10=CEILING(N6ACC*0.05)
         iz90=CEILING(N6ACC*0.95)
         z_max = 0.
-c
+c 
         DO I=1,N6ACC
            PC = (I-0.5)/float(N6ACC)
            A = sqrt(-2.*log(.5-abs(PC-.5)))
            B = 0.27061*A+2.30753
            C = A*(A*.04481+.99229)+1
            Z = A-B/C
-C Unpack HKL
-           D=FLOAT(NINT(STR11(I*2)/256.))
-           MH=STR11(I*2)-D*256.
-           ML=FLOAT(NINT(D/256.))
-           MK=D-ML*256.
 
-           ZH = STR11(I*2-1)
+           MH=nint(reflections(sort_keys(I),1))
+           MK=nint(reflections(sort_keys(I),2))
+           ML=nint(reflections(sort_keys(I),3))
+           ZH = reflections(sort_keys(I),4)
 
            if (I.LE.N6ACC/2) Z=-Z
            IF (I.EQ.iz10) z10=z
@@ -2330,7 +2436,7 @@ C Unpack HKL
 c debug          WRITE(CMON,'(I5,2F15.2)') I,ZH,Z
 c debug          CALL XPRVDU(NCVDU,1,0)
 c
-           ss =  ss  + 1.
+           !ss =  ss  + 1.
            sx =  sx  + z
            sy =  sy  + zh
            sxx = sxx + z*z
@@ -2338,15 +2444,18 @@ c
            sxy = sxy + zh*z
 c
            PLOTMAX = MAX( PLOTMAX, Z )
-           WRITE(HKLLAB, '(2(I4,A),I4)') MH, ',', MK, ',', ML
-           CALL XCRAS(HKLLAB, IHKLLEN)
+           WRITE(HKLLAB, '(2(I0,A),I0)') MH, ',', MK, ',', ML
+           HKLLAB=adjustl(HKLLAB)
            WRITE(CMON,'(3A,2F11.3)')
-     1     '^^PL LABEL ''',HKLLAB(1:IHKLLEN),''' DATA ',Z,STR11(I*2-1)
-            CALL XPRVDU(NCVDU, 1,0)
+     1     '^^PL LABEL ''',trim(HKLLAB),''' DATA ',Z,
+     2     reflections(sort_keys(I),4)
+          CALL XPRVDU(NCVDU, 1,0)
         END DO
+        
 c      find slope and intercept
         ycut = 0.
         yslope = 0.
+        ss=real(n6acc)
 c      determinant
         deter = ss*sxx-sx*sx
         if (deter .ne. 0.) then
@@ -2362,32 +2471,39 @@ c      determinant
 470      format(' Slope, intercept and Cc of Normal Probability Plot =',
      1  f7.3,f10.2,f10.5)
             call xprvdu(ncvdu, 1,0)
-            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+            if (issprt.eq.0) write (ncwu,'(/a)') trim(CMON(1))
             idjwerr = 0
             if ( (slope .gt. 1.1) .or. (slope .lt. 0.9) ) then
               idjwerr = 1
-              write(cmon,'(a)')'{E The slope shoud be unity'
+              write(cmon,'(a)')'{E The slope should be unity'
               call xprvdu(ncvdu, 1,0)
-              if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(3:)
+              if (issprt.eq.0) then
+                write (ncwu,'(/a)') cmon(1)(3:len_trim(cmon(1)))
+              end if
             endif
             if ((cutter .lt. -.05) .or. (cutter .gt. .05) ) then
               idjwerr = 1
               write(cmon,'(a)')'{E The intercept should be zero'
               call xprvdu(ncvdu, 1,0)
-              if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(3:)
+              if (issprt.eq.0) then
+                write (ncwu,'(/a)') cmon(1)(3:len_trim(cmon(1)))
+              end if
             endif
             if(idjwerr .ne .0) then
                 write(cmon,'(a)') 
      1 '{E CRYSTALS suggests that you check your weighting scheme'
                 call xprvdu(ncvdu, 1,0)
-                if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(3:)
+                if (issprt.eq.0) then 
+                  write (ncwu,'(/a)') cmon(1)(3:len_trim(cmon(1)))
+                end if
             endif
-c-----      update list 39 - assumes only one FLAC record
+c-----      update list 39 - assumes value is in FLAC record 0
 c            iflac = 'FLAC'
             if (khuntr (39,0, iaddl,iaddr,iaddd, 0) .eq. 0) then
              m39f=l39f
              do i=1,n39f
-               if (istore(m39f) .eq. iflac) then
+               if ((istore(m39f) .eq. iflac) .and.
+     1            (nint(store(m39f+1)) .eq. 0))then
                 store(m39f+2) = slope
                 call xwlstd ( 39, icom39, idim39, -1, -1)
                 exit
@@ -2400,26 +2516,27 @@ c
             write(cmon,471) 
 471         format ('Correlation coefficient cannot be computed')
             call xprvdu(ncvdu, 1,0)
-            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+            if (issprt.eq.0) write (ncwu,'(/a)') trim(CMON(1))
             write(cmon,460) slope, cutter
 460        format(' Slope and intercept of Normal Probability Plot =',
      1  2f10.5)
             call xprvdu(ncvdu, 1,0)
-            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+            if (issprt.eq.0) write (ncwu,'(/a)') trim(CMON(1))
             if ( (slope .gt. 1.1) .or. (slope .lt. 0.9) .or.
      1      (cutter .lt. -.05) .or. (cutter .gt. .05)) then
               WRITE(CMON,'(A)') 
      1 '{E CRYSTALS suggests that you check your weighting scheme'
              call xprvdu(ncvdu, 1,0)
-             if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+             if (issprt.eq.0) write (ncwu,'(/a)') trim(CMON(1))
                endif
             endif
         else
             write(cmon,472) 
 472         format ('Slope and Intercept cannot be computed')
             call xprvdu(ncvdu, 1,0)
-            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+            if (issprt.eq.0) write (ncwu,'(/a)') trim(CMON(1))
         endif
+                
 c
 c recycle looking for outliers
 c---------------------------------------------------------
@@ -2427,11 +2544,6 @@ c---------------------------------------------------------
 C                                       NEW PASS TO DETECT OUTLIERS
       noutl=0
       npploop2:  DO I=1,N6ACC
-C Unpack HKL
-        D=FLOAT(NINT(STR11(I*2)/256.))
-        MH=STR11(I*2)-D*256.
-        ML=FLOAT(NINT(D/256.))
-        MK=D-ML*256.
 C
         PC = (I-0.5)/float(N6ACC)
         A = sqrt(-2.*log(.5-abs(PC-.5)))
@@ -2440,7 +2552,10 @@ C
         Z = A-B/C
         if (I.LE.N6ACC/2) Z=-Z
         Zcalc = z*yslope+ycut
-        ZH = STR11(I*2-1)
+        MH=nint(reflections(sort_keys(I),1))
+        MK=nint(reflections(sort_keys(I),2))
+        ML=nint(reflections(sort_keys(I),3))
+        ZH = reflections(sort_keys(I),4)
         ston=abs(Zcalc-ZH)
 C
         IF((zh.lt.zcalc-.1*z_max).or.(zh.gt.zcalc+0.1*z_max)) THEN
@@ -2474,7 +2589,7 @@ c
 c---------------------------------------------------------
       END IF
 c
-      IF ( LEVEL.EQ.4)  THEN
+      IF ((LEVEL.EQ.4) .OR. (LEVEL.EQ.7)) THEN
 c  add A SERIES FOR STRAIGHT LINE (y=x) for extinction spotting.
         WRITE(CMON,'(A/A,2F10.2)')
      1  '^^PL ADDSERIES ''Unit Slope'' TYPE LINE',
@@ -2513,12 +2628,16 @@ C
 c
 C -- FINISH THE GRAPH DEFINITION
       IF ( ( LEVEL.EQ.4 ).OR.( LEVEL.EQ.5 )
-     1 .OR.( LEVEL.EQ.6 )) THEN
+     1 .OR.( LEVEL.EQ.6 ).OR.(LEVEL.EQ.7)) THEN
         WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR'
         CALL XPRVDU(NCVDU, 2,0)
       ENDIF
 C
 c
+      RETURN
+9900  CONTINUE
+      WRITE(CMON,'(A)')'{E List 1,5,13,23 or 39 does not exist'
+      CALL XPRVDU(NCVDU,1,0)
       RETURN
       END
 C
@@ -2582,7 +2701,7 @@ C
         call xcrems(cmon(1), cmon(1), len)
           CALL XPRVDU(NCVDU, 1,0)
 1025      FORMAT ( 1X , A, A )
-          IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) cmon(1)
+          IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) trim(CMON(1))
         IND13 = IND13 + 1
 1100  CONTINUE
 C
@@ -3153,7 +3272,7 @@ C
      2 'ABSORPTION', 'GENERAL', 'COLOUR', 'SHAPE', 'CIF'/
 C
       DATA (CKEY(I,1),I=1,MAXKEY)/
-     1 'Total measured', '*',
+     1  'Total measured', 'Rsigma',
      2  'No. Friedel separate', 'Rint Friedel separate',
      3  'No. Friedel merged',   'Rint Friedel merged',
      4  'Wilson B factor', 'Wilson scale factor',
@@ -3543,15 +3662,22 @@ c
         if(issprt.eq.0) write(ncwu,'(a)') 'floating data'
         m39f=l39f
         do i = 1,n39f
-         write(cmon,1010) (store(j),j=m39f,m39f+md39f-1)
+         vmax = 9999.                                    !choose output FORMAT
+         do j = m39f+2,m39f+md39f-1
+            if(store(j).gt.vmax) vmax=store(j)
+         enddo
+         if (vmax.le.9999.) then
+          write(cmon,1010) (store(j),j=m39f,m39f+md39f-1)
+         else 
+          write(cmon,1011) (store(j),j=m39f,m39f+md39f-1)
+         endif
          call xprvdu(ncvdu,1,0)
-         if(issprt.eq.0) 
-     1   write(ncwu,1010) (store(j),j=m39f,m39f+md39f-1)
+         if (issprt .eq. 0) write ( ncwu , '(a)' ) trim(cmon(1))
          m39f=m39f+md39f
         enddo
-1010  format(a6,f6.0,10f8.3)
+1010  format(a6,f6.0,10f9.3)
+1011  format(a6,f6.0,10f9.1)
       endif
-
       return
       end
 c
@@ -3951,15 +4077,15 @@ c      nmax=max(1,nmax)
 c        WRITE(CMON,'(A,10(/A))')
         WRITE(CMON,'(a/a/a,i6,/a,/a,i6,a,5(/a))')
      1  '^^PL PLOTDATA _SIGRES SCATTER ATTACH _VSIGRES KEY',
-     2  '^^PL XAXIS TITLE ''(sin(theta)/lambda)**3'' NSERIES=4',
+     2  '^^PL XAXIS TITLE ''(sin \theta /\lambda)\**3'' NSERIES=4',
      3  '^^PL LENGTH=',nbin,
      4  '^^PL YAXIS TITLE ''Frequency''',
      5  '^^PL YAXISRIGHT ZOOM 0 ',nint(smax),
-     5  ' TITLE ''Average(I/sigmaI)''',
-     6  '^^PL SERIES 1 SERIESNAME ''I/sigma(I)<3.0'' TYPE LINE ',
-     7  '^^PL SERIES 2 SERIESNAME ''I/sigma(I)<10.0'' TYPE LINE ',
-     8  '^^PL SERIES 3 SERIESNAME ''I/sigma(I)>10.0'' TYPE LINE ',
-     9  '^^PL SERIES 4 SERIESNAME ''<I/sigma>'' TYPE LINE ',
+     5  ' TITLE ''<I/\sigma(I)>''',
+     6  '^^PL SERIES 1 SERIESNAME ''I/\sigma(I)<3.0'' TYPE LINE ',
+     7  '^^PL SERIES 2 SERIESNAME ''I/\sigma(I)<10.0'' TYPE LINE ',
+     8  '^^PL SERIES 3 SERIESNAME ''I/\sigma(I)>10.0'' TYPE LINE ',
+     9  '^^PL SERIES 4 SERIESNAME ''<I/\sigma>'' TYPE LINE ',
      1  '^^PL USERIGHTAXIS'
 
         CALL XPRVDU(NCVDU, 10,0)
@@ -3983,11 +4109,11 @@ c        WRITE(CMON,'(A,10(/A))')
       IF (IPLOT1 .EQ. 1) THEN
         WRITE(CMON,'(A,6(/A))')
      1  '^^PL PLOTDATA _SIGLEVL BARGRAPH ATTACH _VSIGLEVL KEY',
-     1  '^^PL XAXIS TITLE ''I/sigma(I)'' NSERIES=2 LENGTH=100',
+     1  '^^PL XAXIS TITLE ''I/\sigma(I)'' NSERIES=2 LENGTH=100',
      1  '^^PL YAXIS TITLE ''Number of observations''',
-     1  '^^PL YAXISRIGHT TITLE ''Percent > given I/s(I)''',
-     1  '^^PL SERIES 1 SERIESNAME ''I/sigma(I) frequency''',
-     1  '^^PL SERIES 2 SERIESNAME ''% Observations > I/sigma(I)''',
+     1  '^^PL YAXISRIGHT TITLE ''Percent > given I/\sigma(I)''',
+     1  '^^PL SERIES 1 SERIESNAME ''I/\sigma(I) frequency''',
+     1  '^^PL SERIES 2 SERIESNAME ''% Observations > I/\sigma(I)''',
      1  '^^PL TYPE LINE USERIGHTAXIS'
         CALL XPRVDU(NCVDU, 7,0)
 
@@ -4138,7 +4264,7 @@ c      tmx = tmx * 4.0
       IF (IAGREE .EQ. 1) THEN
         WRITE(CMON,'(A,2(/A))')
      1  '^^PL PLOTDATA _XTWAG SCATTER ATTACH _TWAG',
-     1  '^^PL XAXIS TITLE ''Deviation in A^-1'' NSERIES=1 LENGTH=25',
+     1'^^PL XAXIS TITLE ''Deviation in \AA\**-1'' NSERIES=1 LENGTH=25',
      1  '^^PL YAXIS TITLE ''Fo-Fc'''
         CALL XPRVDU(NCVDU, 4,0)
         SCALE = STORE(L5O)
@@ -4208,7 +4334,7 @@ c           CALL XMLTMM(STORE(L1M2),BAD,TEMP,3,3,1)
       IF (IPLOT .EQ. 1) THEN
         WRITE(CMON,'(A,3(/A))')
      1  '^^PL PLOTDATA _XTLA BARGRAPH ATTACH _TLA',
-     1  '^^PL XAXIS TITLE ''Deviation in A^-1'' NSERIES=1 LENGTH=25',
+     1'^^PL XAXIS TITLE ''Deviation in \AA\**-1'' NSERIES=1 LENGTH=25',
      1  '^^PL YAXIS TITLE ''Number of observations''',
      1  '^^PL SERIES 1 SERIESNAME ''Number of reflections at'''
         CALL XPRVDU(NCVDU, 4,0)

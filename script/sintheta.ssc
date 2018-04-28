@@ -1,31 +1,6 @@
 %SCRIPT SINTHETA
 % COPY '#SCRIPT XHELP1'
 
-{I Completeness: The plot should mainly be along the top line
-{I Sigma Frequnecy: Generally falls away towards the right
-{I Sigma vs Res: The pale blue line shows the average I/sig(I),
-{I               the other curves the frequency of weak, medium and 
-{I               strong data.
-{I Variances: The actual agreement between equivalents vs the 
-{I            manufacturers estimate of the varaince. This is usually 
-{I            underestimated.
-{I Merging R: This is generally better for the strong reflections.
-{I Absences: The points should be more or less symmetric about 0,0
-{I Histogram: Distribution of systematic absences
-{I Wilson: An up-turn at high resolution may indicate the need to limit 
-{I         the resolution of the data.
-{I N(z): The orange, pink and black lines are theoretical distribuions, 
-{I       the red line is the observed distribution for all data
-{I Cell Conent: Various facts.
-
----------------------------------------------------------------------------
-                    -----------------------------------
-
-The resolution plots are for equal intervals in (Sin(theta)/Lambda)**3.  
-This ensures that each bin contains roughly the same number of 
-reciprocal lattice points.  Some points may then have been 
-rejected because of the LIST 28 filters.
-
                  Mo                                         Cu
 
  Theta    Sin  Sin/lam(sin/lam)^2(sin/lam)^3  Sin/lam (sin/lam)^2 (sin/lam)^3
@@ -68,4 +43,11 @@ rejected because of the LIST 28 filters.
  Theta    Sin  Sin/lam(sin/lam)^2(sin/lam)^3  Sin/lam (sin/lam)^2 (sin/lam)^3
 
                  Mo                                         Cu
+                    -----------------------------------
+
+The resolution plots are for equal intervals in (Sin(theta)/Lambda)**3.  
+This ensures that each bin contains roughly the same number of 
+reciprocal lattice points.  Some points may then have been 
+rejected because of the LIST 28 filters.
+
 % COPY '#SCRIPT XHELP2'

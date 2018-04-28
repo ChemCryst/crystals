@@ -6,41 +6,60 @@
 ^^WI         TOOL _MGU 'tool_guid.bmp' 'Guide' '#SCRIPT XGUIDE'                 
 ^^WI           DISABLEIF='IN'                                                   
 ^^WI         SPLIT                                                              
-^^WI         TOOL _MFO toolfour.bmp 'Fourier'                                   
+^^WI         TOOL _MFO toolfour.bmp 
+^^WI 'Fourier'                                   
 ^^WI          '#SCRIPT XFOUR_NDIFF' DISABLEIF='IN QS' ENABLEIF='L5 L1 L2'       
-^^WI         TOOL _MADDH tl_perh.bmp 'Add H' '#SCRIPT GFINDH'                   
-^^WI          DISABLEIF='IN QS'  ENABLEIF='L5'                                  
-^^WI         TOOL _MREMQ tl_delq.bmp 'Cut Qs' '#SCRIPT XDELQ'                  
-^^WI          DISABLEIF='IN'  ENABLEIF='QS L5'                                  
-^^WI         TOOL _MREMH tl_delh.bmp 'Cut H' '#EDIT_NSELECT TYPE NE H_NEND'    
+^^WI         TOOL _MADDH tl_perh.bmp 
+^^WI 'Add Hydrogen' 
+^^WI         '#SCRIPT GFINDH'                   
+^^WI         DISABLEIF='IN QS'  ENABLEIF='L5'                                  
+^^WI         TOOL _MREMQ tl_delq.bmp 
+^^WI 'Remove Q peaks' 
+^^WI         '#SCRIPT XDELQ'                  
+^^WI         DISABLEIF='IN'  ENABLEIF='QS L5'                                  
+^^WI         TOOL _MREMH tl_delh.bmp 
+^^WI 'Remove Hydrogen atoms' 
+^^WI         '#EDIT_NSELECT TYPE NE H_NEND'    
 ^^WI          DISABLEIF='IN'  ENABLEIF='L5'                                     
 ^^WI         SPLIT                                                              
-^^WI         TOOL _UN05 undo.bmp 'Undo'                            
-^^WI          '#SCRIPT XDSCMAN' DISABLEIF='IN'                                  
-^^WI         TOOL _ED05 ed5.bmp 'Parameters'                      
+^^WI         TOOL _UN05 undo.bmp 
+^^WI 'Undo'                            
+^^WI         '#SCRIPT XDSCMAN' DISABLEIF='IN'                                  
+^^WI         TOOL _ED05 ed5.bmp 
+^^WI 'Edit the atomic and other Parameters'                      
 ^^WI          '#SCRIPT SYSED5' DISABLEIF='IN' ENABLEIF='L5'                     
-^^WI         TOOL _ED12 ed12.bmp 'Refinement'          
+^^WI         TOOL _ED12 ed12.bmp
+^^WI 'Edit the current refinement instructions (Constraints)'          
 ^^WI          '#SCRIPT EDLIST12' DISABLEIF='IN' ENABLEIF='L5'                   
-^^WI         TOOL _ED16 ed16.bmp 'Restraints'                     
+^^WI         TOOL _ED16 ed16.bmp 
+^^WI 'Edit the current Restraints'                     
 ^^WI          '#SCRIPT EDLIST16' DISABLEIF='IN' ENABLEIF='L5'                   
-^^WI         TOOL _DO33 refine.bmp 'Refine'                                     
+^^WI         TOOL _DO33 refine.bmp 
+^^WI 'Initiate some cycles of refinement'                                     
 ^^WI          '#SCRIPT XREFINE' DISABLEIF='IN'                                  
 ^^WI         SPLIT                                                              
-^^WI         TOOL _MCA toolcam.bmp 'Cameron' '#SCRIPT XCAMNORM'                 
-^^WI          DISABLEIF='IN' ENABLEIF='L5 L1 L2'                                
-^^WI         TOOL _MRC 'mercury.bmp' 'Mercury' '#SCRIPT MERCURY'                
-^^WI          DISABLEIF='IN'                                                    
+^^WI         TOOL _MCA toolcam.bmp 
+^^WI 'Manupulate the structure with Cameron graphics' 
+^^WI         '#SCRIPT XCAMNORM'                 
+^^WI         DISABLEIF='IN' ENABLEIF='L5 L1 L2'                                
+^^WI         TOOL _MRC 'mercury.bmp' 
+^^WI 'View the structure in Mercury' 
+^^WI         '#SCRIPT MERCURY'  DISABLEIF='IN'                                                    
 ^^WI         SPLIT                                                              
-^^WI         TOOL _MNP 'notepad.bmp' 'Notepad' '$notepad'                       
-^^WI          DISABLEIF='IN'                                                    
+^^WI         TOOL _MNP 'notepad.bmp' 
+^^WI 'Open Notepad' 
+^^WI         '$notepad'   DISABLEIF='IN'                                                    
 #ifdef CRY_OSWIN32
-^^WI TOOL _MCM 'pifmgr.dll' 'Command' '$"CRYSDIR:oshell.bat" P'         
-^^WI  APPICON DISABLEIF='IN'                                            
+^^WI         TOOL _MCM 'pifmgr.dll' 
+^^WI 'Open a Command shell' 
+^^WI         '$"CRYSDIR:oshell.bat" P'   APPICON DISABLEIF='IN'                                            
 #endif
-^^WI         TOOL _MEX 'explorer.bmp' 'Explore' '$explorer ./'                  
-^^WI          DISABLEIF='IN'                                                    
+^^WI         TOOL _MEX 'explorer.bmp' 
+^^WI 'Explore the current working folder' 
+^^WI         '$explorer ./'  DISABLEIF='IN'                                                    
 ^^WI         SPLIT                                                              
-^^WI         TOOL _MHL 'tool_help.bmp' 'Help'                                   
+^^WI         TOOL _MHL 'tool_help.bmp' 
+^^WI 'Some not very useful Help'                                   
 ^^WI         '$ "CRYSDIR:manual/readme.html"' DISABLEIF='IN'                    
 ^^WI       }                                                                    
 %%SSR END                                                                       

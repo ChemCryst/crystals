@@ -26,7 +26,7 @@ CcModelAtom::CcModelAtom(const string & llabel,int lx1,int ly1,int lz1,
                           float u6,float u7,float u8,float u9,
                           float fx, float fy, float fz,
                           const string & elem, int serial, int refflag,
-                          int assembly, int group, float ueq, float fspare,
+                          int assembly, int group, float ueq, float fspare, int isflg,
                           CcModelDoc* parentptr)
 {
   mp_parent = parentptr;
@@ -50,6 +50,7 @@ CcModelAtom::CcModelAtom(const string & llabel,int lx1,int ly1,int lz1,
   m_group = group;
   m_elem = elem;
   m_spare = fspare;
+  m_isflg = isflg;
   m_nbonds = 0;
   
   localmatrix[0]=x11;
@@ -69,6 +70,16 @@ CcModelAtom::CcModelAtom(const string & llabel,int lx1,int ly1,int lz1,
   localmatrix[14]=0.0;
   localmatrix[15]=1.0;
 
+  switch (m_isflg) {
+    case 0: m_sflags = ""; break;
+    case 1: m_sflags = "refine X's"; break;
+    case 2: m_sflags = "refine X's,Uiso"; break;
+    case 3: m_sflags = "refine X's,Uijs"; break;
+    case 4: m_sflags = "fix atom"; break;
+    case 10: m_sflags = "ride atom"; break;
+    default: m_sflags = "unknown flags"; break;
+  }
+  
 }
 
 
@@ -97,7 +108,8 @@ void CcModelAtom::Init()
   frac_z = 0.0;
   m_spare = 0.0;
   m_nbonds = 0;
-
+  m_isflg = 0;
+  m_sflags = "";
 }
 
 CcModelAtom::~CcModelAtom()
@@ -192,6 +204,10 @@ void CcModelAtom::Render(CcModelStyle *style, bool feedback)
         mp_parent->ApplyIndexColour( m_glID );
 //        glColor3ub( (m_glID & 0xff0000) >> 16, (m_glID & 0xff00) >> 8, (m_glID & 0xff) );
 
+  } else if ( m_label.length() && ( m_label[0] == 'Q' ) && ( sparerad < style->min_peak_height_to_show  ) ) {
+  // do not show
+		GLfloat Surface[] = { (float)r/255.0f,(float)g/255.0f,(float)b/255.0f, 0.05f };
+		glColor4fv( Surface );
   } else if ( style->radius_type == CRTINY ) {  //make invisible (unless selected or no bonds)
 
     if ( m_nbonds == 0 ) {
@@ -201,7 +217,8 @@ void CcModelAtom::Render(CcModelStyle *style, bool feedback)
 		GLfloat Surface[] = { 1.0f, 1.0f, 1.0f, 0.0f };
 		glColor4fv( Surface );
 	} else if ( m_excluded ) {
-        GLfloat Surface[] = { 128.0f+(float)r/127.0f,128.0f+(float)g/127.0f,128.0f+(float)b/127.0f, 0.3f };
+//        GLfloat Surface[] = { 128.0f+(float)r/127.0f,128.0f+(float)g/127.0f,128.0f+(float)b/127.0f, 0.3f };
+		GLfloat Surface[] = { (float)r/255.0f,(float)g/255.0f,(float)b/255.0f, 0.05f };
         glColor4fv( Surface );
         extra = 20.0f;
 	} else {

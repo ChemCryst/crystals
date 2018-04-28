@@ -573,6 +573,8 @@ void CcModelDoc::DocToList( CrModList* ml )
       row.push_back( strm.str() );
       strm.str(""); strm << (*atom).m_group;
       row.push_back( strm.str() );
+      strm.str(""); strm << (*atom).m_sflags;
+      row.push_back( strm.str() );
 
       ml -> AddRow((*atom).id,            row,
                    (*atom).IsSelected(),
@@ -931,7 +933,7 @@ void CcModelDoc::FastAtom(const string & label,int x1,int y1,int z1,
                           float u6,float u7,float u8,float u9,
                           float frac_x, float frac_y, float frac_z,
                           const string & elem, int serial, int refflag,
-                          int assembly, int group, float ueq, float fspare)
+                          int assembly, int group, float ueq, float fspare, int iflag)
 
 {
     m_thread_critical_section.Enter();
@@ -939,7 +941,7 @@ void CcModelDoc::FastAtom(const string & label,int x1,int y1,int z1,
                           r,g,b,occ,cov,vdw,spare,flag,
                           u1,u2,u3,u4,u5,u6,u7,u8,u9,frac_x,
                           frac_y,frac_z,elem,serial,refflag,
-                          assembly, group, ueq,fspare,this);
+                          assembly, group, ueq,fspare,iflag,this);
         m_nAtoms++;
         item.id = m_nAtoms + mDonutList.size() + mSphereList.size();
 		item.m_glID = m_glIDs++;
@@ -987,7 +989,7 @@ void fastatom  (char* elem,int serial,char* label,int x1,int y1,int z1,
                 int r, int g, int b, int occ,float cov, int vdw,
                 int spare, int flag, float u1,float u2,float u3,float u4,float u5,
                 float u6,float u7,float u8,float u9, float fx, float fy, float fz,
-                int refflag, int assembly, int group, float ueq, float fspare);
+                int refflag, int assembly, int group, float ueq, float fspare, int iflag);
 void fastsphere  (char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,int cov, int vdw,
                 int spare, int flag, int iso, int irad);
@@ -1014,7 +1016,7 @@ void fastatom  (char* elem,int serial,char* label,int x1,int y1,int z1,
                 int r, int g, int b, int occ,float cov, int vdw,
                 int spare, int flag, float u1,float u2,float u3,float u4,float u5,
                 float u6,float u7,float u8,float u9, float fx, float fy, float fz,
-                int refflag, int assembly, int group, float ueq, float fspare)
+                int refflag, int assembly, int group, float ueq, float fspare, int iflag)
 {
       string clabel = label;
       string celem  = elem;
@@ -1023,7 +1025,7 @@ void fastatom  (char* elem,int serial,char* label,int x1,int y1,int z1,
             CcModelDoc::sm_CurrentModelDoc->FastAtom(clabel,x1,y1,z1, 
                           r,g,b,occ,cov,vdw,spare,flag,
                           u1,u2,u3,u4,u5,u6,u7,u8,u9,fx,fy,fz,
-                          celem,serial,refflag,assembly,group,ueq, fspare) ;
+                          celem,serial,refflag,assembly,group,ueq, fspare,iflag) ;
 
 }
 

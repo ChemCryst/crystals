@@ -2,8 +2,6 @@ c      COMMON /XLSVAL/ ILSCLN , ILSCLS , ILSCLV , ILSEXI , ILSAVI ,
 c     2 ILSMSG , ILSNMS , ILSERF , ILSPUF , ILSDLF , ILSOWF , ILSCUR ,
 c     3 ILSRTF , ILSSET , ILSCLR , ILSOVR , ILSRDY , ILSUPD , ILSRFI
 
-c      COMMON /XLSVAL/ ,
-c     2 ILSMSG , ILSNMS , 
 
 
 c      DATA ILSCLN / 1 / , ILSCLS / 2 / , ILSCLV / 3 /
@@ -23,9 +21,11 @@ c      DATA ILSOVR / -1 / , ILSRDY / 0 / , ILSUPD / 1 /
       integer, parameter :: ILSERF=1, ILSPUF=2, ILSDLF=3,
      1            ILSOWF=4, ILSCUR=5, ILSRTF=2 
 
-      integer, parameter :: ILSMSG=1, ILSNMS=-1 
-
       integer, parameter :: ILSSET=-1, ILSCLR=1, ILSOVR=-1,
      1            ILSRDY=0, ILSUPD=1 
 
 
+      integer :: ILSMSG, ILSNMS
+
+      COMMON /XLSVAL/ 
+     2 ILSMSG , ILSNMS 

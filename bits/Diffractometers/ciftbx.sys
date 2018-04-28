@@ -125,7 +125,7 @@ C                                 Character image of current data item
 c made adjustable by djw, May 2011
          character strg_*(linlen)
 C                                 File name of current CIF
-         character file_*80
+         character file_*512
 C                                 Data item type
          character type_*4
 C

@@ -1582,6 +1582,9 @@ syntax is:
 SPHERE r
 #
 where r is the radius in angstroms of the sphere.
+#J
+e.g. ENCLOSURE ATOM C1 SPHERE 4.0 CUT VIEW
+#
 #IANORTHIC#
 This is used to generate an ANORTHIC box ie a box whose sides are parallel to the unit cell axes. As this box is directly related
 to the

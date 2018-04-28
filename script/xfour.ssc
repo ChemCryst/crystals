@@ -1,7 +1,6 @@
 %SCRIPT XFOUR                                                                   
 % VARIABLE CHARACTER FNAME CFILE                                                
-% VARIABLE LOGICAL TWINNED NOINI5 MERGED                                        
-% EVALUATE MERGED = FALSE                                                       
+% VARIABLE LOGICAL TWINNED NOINI5 
 % EVALUATE TWINNED = FALSE                                                      
 % EVALUATE NOINI5 = FALSE                                                       
 % VARIABLE LOGICAL SCRIPTEXT                                                    
@@ -264,16 +263,18 @@
 %%djw - check that map is not a Patterson                                       
 %% disable check (was le 5)
 %       IF ( IMAP .LE. 8 ) THEN                                                 
-%        EVALUATE F67 = 6                                                       
 %%                                                                              
 %         COPY '#SCRIPT SFLS67'                                                 
+%         IF DOCALC .EQ. 2 THEN      % Fourier abandoned
+
+{I Fourier abandoned
+
+%            FINISH
+%         END IF
 %%                                                                              
 %       ELSE                                                                    
-{Patterson map - remove all knowlwdge about twinning.                           
-%         IF ( ( EXISTS 25 ) .EQ. 1 ) THEN                                      
-%           COPY '#LIST 25'                                                     
-%           COPY 'END'                                                          
-%         END IF                                                                
+{Patterson map - remove knowledge about twinning.                           
+%% TODO - LIST 13 should be returned to original state later
 %         COPY '#LIST 5'                                                        
 %         COPY 'READ NATOM = 0'                                                 
 %         COPY 'END'                                                            
@@ -281,7 +282,7 @@
 %          COPY '#GENERALEDIT 13'                                               
 %          COPY 'LOCATE RECORDTYPE=101'                                         
 %          IF ( TWINNED .EQ. TRUE ) THEN                                        
-%            EVALUATE ITEMP = 0                                                 
+%            EVALUATE ITMP = -1                                                 
 %            COPY 'TRANSFER TO OFFSET=1 FROM ITMP'                              
 %          END IF                                                               
 %          COPY 'END'                                                           
@@ -371,8 +372,8 @@
 %       STORE FORMAT /(F7.2)/ LENGTH 7 REAL REJLIMIT                            
 %       QUEUE SEND                                                              
 %       CLEAR                                                                   
-%       IF ( F67 .EQ. 6 ) THEN                                                  
-%         COPY '#FOURIER'                                                       
+%       IF ( F67 .EQ. 6 ) THEN          % should be patterson only
+%         COPY '#FOURIER 6'                                                       
 %         QUEUE PROCESS                                                         
 %         COPY 'END'                                                            
 %       ELSE                                                                    
@@ -394,7 +395,7 @@
 %         COPY '#SCRIPT XQUESTIO'                                               
 %         IF ANSWER .EQ. TRUE THEN                                              
  * Starting Fourier map viewer.                                                 
-%               TRANSFER '#SPAWN "CRYSDIR:CONTOUR.EXE" ' // -                   
+%               TRANSFER '#SPAWN "CRYSDIR:contour.exe" ' // -                   
  FNAME TO CRYSTALS                                                              
 %         END IF                                                                
 %       END IF                                                                  

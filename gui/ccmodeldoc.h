@@ -173,7 +173,7 @@ class CcModelDoc
                           float u6,float u7,float u8,float u9,
                           float fx, float fy, float fz,
                           const string &  elem, int serial, int refflag,
-                          int assembly, int group, float ueq, float fspare);
+                          int assembly, int group, float ueq, float fspare, int isflg);
 
         void FastSphere(const string & label,int x1,int y1,int z1, 
                           int r, int g, int b, int occ,int cov, int vdw,

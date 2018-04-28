@@ -1,5 +1,6 @@
 %SCRIPT FLACK39
 % VARIABLE CHARACTER CFLACK
+% VARIABLE REAL SERIAL
 %%
 %%
 %  IF EXISTS 39 .NE. 1 THEN
@@ -10,8 +11,9 @@
 %      COPY 'END'
 %  END IF
 %%
-%  VARIABLE LOGICAL DOINSERT
-%  EVALUATE DOINSERT = TRUE
+%  VARIABLE LOGICAL DOINSERT0 DOINSERT1
+%  EVALUATE DOINSERT0 = TRUE
+%  EVALUATE DOINSERT1 = TRUE
 %  COPY '#GENERALEDIT 39'
 %  COPY 'LOCATE RECORDTYPE = 102'
 %  COPY 'KEY OFFSET = 0 LENGTH = 1 MODE = CHARACTER'
@@ -24,26 +26,36 @@
 %  LOOP
 %    ON EDITERROR TERMINATE
 %    COPY 'TRANSFER FROM OFFSET=0 TO CFLACK'
+%    COPY 'TRANSFER FROM OFFSET=1 TO SERIAL'
 %    IF CFLACK .EQ. 'FLAC' THEN
-%      EVALUATE DOINSERT = FALSE
+%       IF SERIAL .EQ. 0. THEN
+%        EVALUATE DOINSERT0 = FALSE
+%       ELSE IF SERIAL .EQ. 1. THEN
+%        EVALUATE DOINSERT1 = FALSE
+%       END IF
 %    END IF
 %    COPY 'NEXT'
 %  END LOOP
 %  COPY 'END'
-%  IF DOINSERT THEN
 %   BLOCK
 %    VARIABLE CHARACTER GNAME
-%    VARIABLE INTEGER GSERI
+%    VARIABLE REAL GSERI
 %    VARIABLE REAL F1 F2 F3 F4 F5 F6 F7 F8 F9 F10
 %    evaluate gname = 'FLAC'
-%    evaluate gseri  = 0
-{I Inserting Absolute Structure record in LIST 39
-%    copy '#script add39f'
+%    IF DOINSERT0 THEN
+%      evaluate gseri  = 0.
+{I Inserting Absolute Structure record ZERO in LIST 39
+%      copy '#script add39f'
+%    END IF
+%    IF DOINSERT1 THEN
+%      evaluate gseri  = 1.
+{I Inserting Absolute Structure record ONE in LIST 39
+%      copy '#script add39f'
+%    END IF
 %   END BLOCK
-%  END IF
 %%
 %%
-%  EVALUATE DOINSERT = TRUE
+%  EVALUATE DOINSERT0 = TRUE
 %  COPY '#GENERALEDIT 39'
 %  COPY 'LOCATE RECORDTYPE = 102'
 %  COPY 'KEY OFFSET = 0 LENGTH = 1 MODE = CHARACTER'
@@ -57,18 +69,18 @@
 %    ON EDITERROR TERMINATE
 %    COPY 'TRANSFER FROM OFFSET=0 TO CFLACK'
 %    IF CFLACK .EQ. 'HOOF' THEN
-%      EVALUATE DOINSERT = FALSE
+%      EVALUATE DOINSERT0 = FALSE
 %    END IF
 %    COPY 'NEXT'
 %  END LOOP
 %  COPY 'END'
-%  IF DOINSERT THEN
+%  IF DOINSERT0 THEN
 %   BLOCK
 %    VARIABLE CHARACTER GNAME
-%    VARIABLE INTEGER GSERI
+%    VARIABLE REAL GSERI
 %    VARIABLE REAL F1 F2 F3 F4 F5 F6 F7 F8 F9 F10
 %    evaluate gname = 'HOOF'
-%    evaluate gseri  = 0
+%    evaluate gseri  = 0.
 {I Inserting Hooft Probability record in LIST 39
 %    copy '#script add39f'
 %   END BLOCK

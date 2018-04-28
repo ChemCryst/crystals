@@ -143,15 +143,15 @@ C--FIND THE TYPE OF LISTS   IULN1 IS USUALY 6
             WRITE(CMON,'(A)')
      1    '{E Input and Output lists cannot be the same'
             CALL XPRVDU(NCVDU,1,0)
-            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') trim(CMON(1))
             GOTO 9910
       ENDIF
 C---- NOTHING TO DO IF NO LIST 6
       IF (KEXIST(IULN1) .LE. 0) THEN
         WRITE (CMON,'(A,I3)') '{E No LIST 6', IULN1
         CALL XPRVDU(NCVDU,1,0)
-        WRITE (NCAWU,'(a)') CMON(1)
-        IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)
+        WRITE (NCAWU,'(a)') trim(CMON(1))
+        IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
       RETURN
       ENDIF
 C--CLEAR THE STORE
@@ -159,7 +159,7 @@ C--CLEAR THE STORE
       CALL XCSAE
 C
 C     PUNCH ALL SET KEYS, ON SCALE OF /Fo/
-      CALL XPCH6N(IULN1,IULN2,1)
+      CALL XPCH6N(IULN1,IULN2,1,.false.)
 C
 1810  CONTINUE
       CALL XOPMSG ( IOPREF , IOPEND , 200 )
@@ -227,8 +227,8 @@ C---- NOTHING TO DO IF NO LIST 6
 c      IF (KEXIST(6) .LE. 0) THEN
 c        WRITE (CMON,'(A)') ' No LIST 6'
 c        CALL XPRVDU(NCVDU,1,0)
-c        WRITE (NCAWU,'(a)') CMON(1)
-c        IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)
+c        WRITE (NCAWU,'(a)') trim(CMON(1))
+c        IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
 c      RETURN
 c      ENDIF
 C
@@ -243,7 +243,7 @@ c      IF (IULN1 .EQ. IULN2) THEN
 c            WRITE(CMON,'(A)')
 c     1    ' Input and Output lists cannot be the same'
 c            CALL XPRVDU(NCVDU,1,0)
-c            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') CMON(1)
+c            IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') trim(CMON(1))
 c            GOTO 9910
 c      ENDIF
 C--CLEAR THE STORE
@@ -291,7 +291,7 @@ cC-----CHECK REFLECTIONS ALREADY ON DISK
 c      IF (L6D .LE. 0) THEN
 c       WRITE(CMON,'(A)')' Reflections not in DSC file'
 c       CALL XPRVDU (NCVDU,1,0)
-c       IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)
+c       IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
 c       GOTO 9910
 c      ENDIF
 cC
@@ -458,6 +458,9 @@ C
 C
 C--SET THE TIMING FUNCTION
       CALL XTIME1 (2)
+C----- CLEAR THE R-SIGMA ACCUMULATORS
+      RSIGNUM=0.
+      RSIGDEN=0.
 c----- un-set data keys
       irfo = nowt
       irft = nowt
@@ -490,6 +493,8 @@ C--READ THE NEXT DIRECTIVE CARD FROM THE INPUT STREAM
       LAST=IDIR
       IDIR=KRDNDC(ISTORE(KX),KY)
 C--CHECK THE REPLY
+C      WRITE(123,'(/,A,I6,(/4I6,2X,4I6,2X,4I6,2X,4I6))')'IDIR=',IDIR,
+C     1(ISTORE(IIDJW),IIDJW=KX,KX+KY-1)
       IF (IDIR) 600,100,150
 C--CONTINUATION CARD  -  RESET THE POINTER
 100   CONTINUE
@@ -528,8 +533,8 @@ C--FORMAT STATEMNT IS TOO LONG
       CALL XERHDR (0)
       WRITE (CMON,400)
       CALL XPRVDU (NCVDU,1,0)
-      WRITE (NCAWU,'(a)') CMON(1)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)
+      WRITE (NCAWU,'(a)') trim(CMON(1))
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
 400   FORMAT (' Format statement is too large')
       GO TO 5250
 C--STORE THE NEW FORMAT OR PART OF FORMAT
@@ -566,6 +571,8 @@ c     3 L6P,M6P,MD6P,N6P,L6DTL,M6DTL,MD6DTL,N6DTL
 C--STORE THE TEMPORARY PART OF THE COMMON BLOCK
       I=KX+IDIM06
       CALL XMOVE (ISTORE(I),ICOM6A(1),IDIM6A)
+c      write(123,'(a/(4i6,6x,4i6))') 'ICOM06a',
+c     1(icom6a(iidjw),iidjw=1,idim6a)
 Cdjwnov2000
 C----- save the matrix and tolerance
       CALL XMOVE (STORE(L6MR),TRANSH,9)
@@ -573,24 +580,25 @@ C----- save the matrix and tolerance
 csquare it for later use (sint/lam)sq
       TWIND=STORE(L6MR+10) * STORE(L6MR+10)
 c2016 open an archive file on FRN2 if required
-c     not for copy
-      if((itype6.ne.1).and.(itype6.ne.5)) then
-       if(larch.eq.0)  then
-        CALL XMOVEI (KEYFIL(1,24),KDEV,4)
-        CALL XRDOPN (6,KDEV,'ARCHIVE-HKL.CIF',15)
-       endif
-      endif
+c2018 - replaced by internal call to PUNCH 6 I at end     
+c      if((itype6.ne.1).and.(itype6.ne.5)) then
+c       if(larch.eq.0)  then
+c        CALL XMOVEI (KEYFIL(1,24),KDEV,4)
+c        CALL XRDOPN (6,KDEV,'ARCHIVE-HKL.CIF',15)
+c       endif
+c      endif
 Cdjw dec97
 C--SET THE NUMBER OF REJECTED REFLECTIONS TO ZERO
       N6DEAD=0
+      N6THETA=0
       N6NEG=0
 C ITYPE COPY FIXED FREE COMPRESSED TWIN (HKLI) FIXED FREE COMP
 C        1     2    3       4        5           6    7    8
       IF (ITYPE6.GT.8) THEN
          WRITE (CMON,'(a)') 'Invalid READ type'
          CALL XPRVDU (NCVDU,1,0)
-         WRITE (NCAWU,'(a)') CMON(1)
-         IF (ISSPRT.EQ.0) WRITE (NCAWU,'(a)') CMON(1)
+         WRITE (NCAWU,'(a)') trim(CMON(1))
+         IF (ISSPRT.EQ.0) WRITE (NCAWU,'(a)') trim(CMON(1))
          GO TO 5250
       END IF
       IF (ITYPE6.EQ.5) THEN
@@ -664,8 +672,8 @@ C----- set default to untwinned
          IF (N25.LE.1) THEN
             WRITE (CMON,'(a)') 'Warning - You have no twin law'
             CALL XPRVDU (NCVDU,1,0)
-            WRITE (NCAWU,'(a)') CMON(1)
-            IF (ISSPRT.EQ.0) WRITE (NCAWU,'(a)') CMON(1)
+            WRITE (NCAWU,'(a)') trim(CMON(1))
+            IF (ISSPRT.EQ.0) WRITE (NCAWU,'(a)') trim(CMON(1))
          END IF
       END IF
       IF (ISTORE(KZ+3)) 950,950,1150
@@ -682,8 +690,8 @@ C--NO OUTPUT DATA
       CALL XERHDR (0)
       WRITE (CMON,1050)
       CALL XPRVDU (NCVDU,1,0)
-      WRITE (NCAWU,'(a)') CMON(1)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)
+      WRITE (NCAWU,'(a)') trim(CMON(1))
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
 1050  FORMAT (' Insufficient output coefficients per reflection',' have
      1been indicated')
       GO TO 5200
@@ -707,8 +715,8 @@ Cdjwoct200
          call outcol(3)
          CALL XPRVDU (NCVDU,2,0)
          call outcol(1)
-         WRITE (NCAWU,'(a)') CMON(1),CMON(2)
-         IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1),CMON(2)
+         WRITE (NCAWU,'(a)') CMON(1),trim(CMON(2))
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1)),trim(CMON(2))
          GO TO 5450
       END IF
 Cdjwoct2000
@@ -871,7 +879,7 @@ C----- PUT SOMETHING INTO ELEMENTS
 cdec2000
 c
       if ((jnft.gt.0).and.(store(m6+11).le.zero)) then
-        elem = 0.
+        elem = 1.            !there must always be one element
         if (n25 .gt. 1) then
          elem = 1.
          m25 = l25+md25
@@ -933,19 +941,21 @@ C----- INITIALISE THE ABSORPTION CORRECTION
       I=MABS(-1)
       IF (IERFLG.LT.0) GO TO 5450
       LN=IULN
-      if((itype6.ne.1).and.(itype6.ne.5)) then
+c2018 - replaced by internal call to PUNCH 6 I at end     
+c      if((itype6.ne.1).and.(itype6.ne.5)) then
 c     only if not 'COPY' operation
-      if(larch.eq.0) then
-        write(ncfpu2,'(a/a/A)')
-     1  '_iucr_refine_reflections_details',';',
-     1  '# An asterisk in column 34 indicates a format overflow'
-        if(isq.eq.-1) then
-          write(ncfpu2,'(a)')'# Data was input as F-squared'
-        else
-          write(ncfpu2,'(a)')'# Data was input as F'
-        endif
-      endif
-      endif
+c      if(larch.eq.0) then
+c        write(ncfpu2,'(a/a/A)')
+c     1  '_iucr_refine_reflections_details',';',
+c     1  '# An asterisk in the last column indicates a format overflow'
+c        if(isq.eq.-1) then
+c          write(ncfpu2,'(a)')'# Data was input as F-squared'
+c        else
+c          write(ncfpu2,'(a)')'# Data was input as F'
+c        endif
+c        write(ncfpu2,'(a)')'# h,k,l I sigma, (ELEMENT)'
+c      endif
+c      endif
 C--BRANCH ON THE TYPE OF OUTPUT
       GO TO (5000,2550,3250,3450,5000,4050,4050,4050,2500),ITYPE6
 C3600  STOP 'LIST 6 ERROR'
@@ -998,7 +1008,7 @@ CNOV2000 CHECK THAT THE FORMAT IS ALL-FLOATING
          GO TO 5200
       END IF
 c
-c
+c 
 c
 c
 C--READ THE NEXT REFLECTION
@@ -1008,9 +1018,6 @@ C
 cdjw2003
 c----- if a list 7 read no reflections
 C      if (iuln .ne. 7) then
-
-
-
       READ (IUNIT,CFORM,END=3200,ERR=3100) (STORE(I),I=L6IB,M6IB)
       NCARDS=NCARDS+INCREM
 C--CHECK FOR BLANK ENTRY
@@ -1032,14 +1039,16 @@ C----- ERROR DURING READ -
 3100  CONTINUE
       IF (NCARDS.LE.0) THEN
         if (iuln .ne. 7) then
+         call outcol(3)
          WRITE(CMON,'(A)') 'No reflections found'
          CALL XPRVDU (NCVDU,1,0)
-         WRITE (NCAWU,'(A)') CMON(1)
-         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
+         WRITE (NCAWU,'(A)') trim(CMON(1))
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
          WRITE (CMON,'(A)') ' Check the reflection filename, and format'
          CALL XPRVDU (NCVDU,1,0)
-         WRITE (NCAWU,'(A)') CMON(1)
-         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
+         WRITE (NCAWU,'(A)') trim(CMON(1))
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
+         call outcol(1)
         end if
 CDJW2003         LEF=-1
       ELSE
@@ -1164,10 +1173,11 @@ C----- CHECK INDICES
      2  (abs(store(m6+1)).gt.255.).or.
      3  (abs(store(m6+2)).gt.255.))
      4  then
-            write(cmon,'(A,4i10)') 'Bad index near reflection ',n6w,
-     1      nint(store(m6)),nint(store(m6+1)),nint(store(m6+2))
+            write(cmon,'(A,4i10)') 'Bad index near reflection ',
+     1      n6w+n6dead,
+     2      nint(store(m6)),nint(store(m6+1)),nint(store(m6+2))
             call xprvdu (ncvdu,1,0)
-            if (issprt.eq.0) write (ncwu,'(/a)') cmon(1)(:)
+            if (issprt.eq.0) write (ncwu,'(/a)') trim(CMON(1))
             n6dead = n6dead + 1
             goto 4850
         endif
@@ -1231,6 +1241,20 @@ C--CHECK IF WE SHOULD COMPUTE SIN(THETA)/LAMBDA SQUARED
 C--COMPUTE IT
 4300     CONTINUE
          STORE(M6+16)=SNTHL2(I)
+         if(l13dc .gt. 0) then
+            if(abs(store(m6+16)* wave).gt.1.0)then
+             call outcol(9)
+             write(cmon,'(a,3i5,f12.2)')'Sintheta > 1.0',
+     1       nint(store(m6)),nint(store(m6+1)),nint(store(m6+2)),
+     2       abs(store(m6+16)* wave)
+             call xprvdu (ncvdu,1,0)
+             call outcol(1)
+             write (ncawu,'(a)') trim(cmon(1))
+c             if (issprt.eq.0) write (ncwu,'(a)') trim(cmon(1))
+             n6theta=n6theta+1
+c             go to 4850       ! carry on using the bad reflections
+            endif
+         endif
 C--ENSURE A MINIMUM BATCH NUMBER OF ONE
 4350     CONTINUE
          STORE(M6+13)=AMAX1(STORE(M6+13),1.)
@@ -1258,27 +1282,32 @@ C--AND NOW APPLY ANY ABSORPTION CORRECTION THAT IS REQUIRED
          IF (MABS(0)) 4850,4600,4600
 4600     CONTINUE
          JFO=M6+IFO
+c2018 - replaced by internal call to PUNCH 6 I at end     
 c----- output archive material for PUNCH unit
-         if(larch.eq.0) then
-          call refout(ncfpu2, nint(store(m6)),nint(store(m6+1)),
-     1      nint(store(m6+2)), store(jfo), store(m6+12))
-         endif
-C--ARE WE INPUTTING /FO/ **2 ?
-         IF (ISQ) 4650,4700,4700
-4650     CONTINUE
+C         if(larch.eq.0) then
+C          ie = 0
+C          if(ifo.eq.10) ie=nint(store(m6+11))
+C            call refout(ncfpu2, nint(store(m6)),nint(store(m6+1)),
+C     1      nint(store(m6+2)), store(jfo), store(m6+12),ie)
+C         endif
 C--CHECK IF WE SHOULD TAKE THE SQUARE ROOT
-Cdjwmap99[
-         CALL XSQRT (STORE(JFO),FSIGN,FABS,STORE(M6+12),SIG)
-         STORE(JFO)=FSIGN
-         STORE(M6+12)=SIG
-Cdjwmap99]
-Cric2001[
+C--ARE WE INPUTTING /FO/ **2 ?
+         IF (ISQ.lt.0) THEN
+           RSIGF=STORE(JFO)
+           RSIGS=STORE(M6+12)
+           CALL XSQRT (STORE(JFO),FSIGN,FABS,STORE(M6+12),SIG)
+           STORE(JFO)=FSIGN
+           STORE(M6+12)=SIG
 C If F's are squared, Fc's probably are aswell.
-         STORE(M6+5) = SQRT (ABS(STORE(M6+5)))
-Cric2001]
-C
-C--APPLY THE SCALE STORED IN THE 'CORRECTIONS' SLOT
+           STORE(M6+5) = SQRT (ABS(STORE(M6+5)))
+         ELSE
+C          RECOVER F^2 FOR RSIGMA
+           CALL XSQRF (RSIGF,STORE(JFO),FABS,RSIGS,STORE(M6+12))
+         ENDIF
 4700     CONTINUE
+         RSIGNUM=RSIGNUM+RSIGS
+         RSIGDEN=RSIGDEN+RSIGF
+C--APPLY THE SCALE STORED IN THE 'CORRECTIONS' SLOT
          STORE(JFO)=STORE(JFO)*STORE(M6+27)
          STORE(M6+12)=STORE(M6+12)*STORE(M6+27)
 c^^moved from above -Feb 2001
@@ -1341,18 +1370,19 @@ C--BRANCH ON THE TYPE OF INPUT
 4900  CONTINUE
       WRITE (CMON,4950)
       CALL XPRVDU (NCVDU,1,0)
-      WRITE (NCAWU,'(/A/)') CMON(1)(:)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A/)') CMON(1)(:)
+      WRITE (NCAWU,'(/A/)') trim(CMON(1))
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A/)') trim(CMON(1))
 4950  FORMAT (' Unsupported input data format')
       GO TO 5200
 C
 C--END OF THE REFLECTION INPUT  -  STORE THEM ON THE DISC
 5000  CONTINUE
-      if((larch.eq.0).and.(itype6.ne.1).and.(itype6.ne.5)) then
-        write(ncfpu2,'(a)')';'
-c     close archive file if necessary
-        CALL XRDOPN (7,KDEV,'ARCHIVE-HKL.CIF',15)
-      endif
+c2018 - replaced by internal call to PUNCH 6 I at end     
+C      if((larch.eq.0).and.(itype6.ne.1).and.(itype6.ne.5)) then
+C        write(ncfpu2,'(a)')';'
+c        close archive file if necessary
+C        CALL XRDOPN (7,KDEV,'ARCHIVE-HKL.CIF',15)
+C      endif
       N6D=N6W
 C--NO ERRORS  -  CALCULATE THE REFLECTION DETAILS
       DO 5050 I=1,MD6
@@ -1363,8 +1393,8 @@ C--TERMINATE THE OUTPUT OF THE LIST
       CALL XLINES
       WRITE (CMON,5100) N6W,N6DEAD
       CALL XPRVDU (NCVDU,1,0)
-      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') CMON(1)(:)
-c      WRITE (NCAWU,'(A)') CMON(1)(:)
+      IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
+c      WRITE (NCAWU,'(A)') trim(CMON(1))
 5100  FORMAT (1X,I7,' reflections accepted',5X,I7,' reflections rejected
      1')
 C----- ONLY UPDATE LIST 30 FOR LIST 6 TYPE INPUT
@@ -1374,9 +1404,26 @@ cdjw Sept 2012.  Twinned data is probably merged by instrument software,
 c   but we dont know what was done with FRIEDEL pairs.
 c   Hence, we dont know whather to update DR+2 or DR+4
        IF ((ITYPE6.NE.1).AND.(ITYPE6.NE.5)) THEN
-       IF (L30UP .GE. 0) THEN
+       IF (L30UP .GE. -0) THEN             !L30UP is set in LIST6.F
          IF (KHUNTR(30,0,IADDL,IADDR,IADDD,-1).LT.0) CALL XFAL30
          STORE(L30DR)=FLOAT(N6W)
+c        write(123,*)'rsignun,rsigden',rsignum,rsigden
+         RSIGMA=RSIGNUM/RSIGDEN
+C        write(123,*)'Rsigma=',rsigma, store(l30dr+1)
+         IF(STORE(L30DR+1).GT. ZERO) then
+           if(ABS(STORE(L30DR+1)-RSIGMA).GT.0.0005) THEN
+            WRITE(CMON,'(A,A,F6.3,A,F6.3)')' Rsigma has changed from',
+     2      ' its old value of',store(l30dr+1),' to ', rsigma
+            CALL OUTCOL(3)
+            call xprvdu (ncvdu,1,0)
+            CALL OUTCOL(1)
+            if (issprt.eq.0) write (ncwu,'(/a/)') TRIM(cmon(1))
+           ENDIF
+         ENDIF
+         STORE(L30DR+1)=RSIGMA          !BEWARE: there may be systematic
+c                                       !absences included when done here.
+c                                       this will be (re)set if XSYST
+c                                       !is done on a LIST 6
 C----- MIN AND MAX INDICES, FROM L6 DETAILS
          LIX=L6DTL
          STORE(L30IX)=STORE(LIX)
@@ -1388,9 +1435,29 @@ C----- MIN AND MAX INDICES, FROM L6 DETAILS
          STORE(L30IX+4)=STORE(LIX)
          STORE(L30IX+5)=STORE(LIX+1)
 C---- THETA IS NOT AVAILABLE DURING READING REFLECTIONS
-C        LIX = L6DTL + 16*MD6DTL
-C        STORE(L30IX+6) = ASIN(SQRT(STORE(LIX))* WAVE)*RTD
-C        STORE(L30IX+7) = ASIN(SQRT(STORE(LIX+1))*WAVE)*RTD
+c djw-2017. Why Not? this is probably the best place to compute thmax
+c currrently it is done in SFLS.
+c For twinned data the theta for contributors may be (slightly) different.
+c SFLS will see this difference.
+c djw-2018. Store the current 'best estimate' on input. SFLS may update it
+c but we need some kind of value for the MOO calculations.
+         LIX = L6DTL + 16*MD6DTL
+         if(abs(SQRT(STORE(LIX))* WAVE)>1.0 .or. 
+     1     abs(SQRT(STORE(LIX+1))* WAVE)>1.0 ) then
+           ! Inconsistent data cell is wrong, hkl indices are wrong or wavelength is wrong
+           ! the sine is outside [-1.0,1.0]
+           WRITE (CMON,'(a)') '{E Inconsistent data. '//
+     1       '  sin(Theta)/lambda outside permitted range.'
+           CALL XPRVDU (NCVDU,1,0)
+           WRITE (CMON,'(a)') '{E Cell parameters, wavelength and '//
+     1       'hkl indices are not compatible'
+           CALL XPRVDU (NCVDU,1,0)
+           STORE(L30IX+6)=99.0
+           STORE(L30IX+7)=-99.0
+         else
+           STORE(L30IX+6) = ASIN(SQRT(STORE(LIX))* WAVE)*RTD
+           STORE(L30IX+7) = ASIN(SQRT(STORE(LIX+1))*WAVE)*RTD
+         end if
          CALL XWLSTD (30,ICOM30,IDIM30,-1,-1)
        ENDIF
        ENDIF
@@ -1400,16 +1467,16 @@ cdjwsep08      IF ((ITYPE6.EQ.5).OR.(IFO.EQ.JFOT(1))) THEN
       IF ((ITYPE6.EQ.5).OR.(IRFT .GE. 0)) THEN
          WRITE (CMON,'(a)') 'Upating List 13 for twinned data'
          CALL XPRVDU (NCVDU,1,0)
-c         WRITE (NCAWU,'(a)') CMON(1)
-         IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)
+c         WRITE (NCAWU,'(a)') trim(CMON(1))
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
          ISTORE(L13CD+1)=0
          CALL XWLSTD (13,ICOM13,IDIM13,-1,-1)
       ELSE
          IF (ISTORE(L13CD+1) .EQ. 0 ) THEN
          WRITE (CMON,'(a)') 'Resetting List 13 for un-twinned data'
          CALL XPRVDU (NCVDU,1,0)
-c         WRITE (NCAWU,'(a)') CMON(1)
-         IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') CMON(1)
+c         WRITE (NCAWU,'(a)') trim(CMON(1))
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
          ISTORE(L13CD+1)=-1
          CALL XWLSTD (13,ICOM13,IDIM13,-1,-1)
          ENDIF
@@ -1446,6 +1513,46 @@ C--INPUT FROM THE MAIN CHANNEL  -  ALTER THE COUNTERS
       MON=NI
 5400  CONTINUE
 C--AND NOW RETURN
+      if(n6theta.gt.0) then
+        call outcol(9)
+        write(cmon,'(i10,a)')n6theta, 
+     1 ' reflections have sintheta/lambda > 1.0'
+        call xprvdu (ncvdu,1,0)
+        write (ncawu,'(a)') trim(cmon(1))
+        if (issprt.eq.0) write (ncwu,'(a)') trim(cmon(1))
+        write(cmon,'(A/A/A)')
+     1  'This could be due to errors in the reflection file',
+     2  'in the unit cell parameters or in the wavelength',
+     3  'See the Monitor file for details'
+        call xprvdu (ncvdu,3,0)
+        call xpause (2000)
+        call outcol(1)
+      endif
+C
+      IF(LEF.EQ.0) THEN      
+c open an archive file on NCPU if required
+       if((larch.eq.0).and.(itype6.ne.1).and.(itype6.ne.5)) then
+         CALL XMOVEI (KEYFIL(1,5),KDEV,4)
+         CALL XRDOPN (6,KDEV,'ARCHIVE-HKL.CIF',15)
+        write(ncpu,'(a/a/)')
+     1  '_iucr_refine_reflections_details',';'
+        if(isq.eq.-1) then
+          write(ncpu,'(a)')'# Data was input as F-squared'
+        else
+          write(ncpu,'(a)')'# Data was input as F'
+        endif
+C
+        CALL XPCH6N(6,6,2,.false.)
+        write(ncpu,'(a)')';'
+C
+c       close archive file if necessary
+        CALL XRDOPN (7,KDEV,'ARCHIVE-HKL.CIF',15)
+c   RESTORE THE PUNCH FILE
+        CALL XMOVEI (KEYFIL(1,5),KDEV,4)
+        CALL XRDOPN (6,KDEV,'BFILE.PCH',9)
+       endif
+      ENDIF
+C
       CALL XOPMSG (IOPLSI,IOPLSE,IULN)
       CALL XTIME2 (2)
       RETURN
@@ -1484,6 +1591,7 @@ Cdjwmar99]
       RETURN
       END
 CODE FOR XSQRF
+      !> return the signed structure amplitude and the corresponding sigma
       SUBROUTINE XSQRF (FSQ,FSIGN,FABS,SIGSQ,SIG)
 C----- RETURN THE SIGNED STRUCTURE AMPLITUDE AND THE CORRESPONDING SIGMA
 C      FROM A SIGNED STRUCTURE FACTOR
@@ -1492,8 +1600,15 @@ C      FSIGN INPUT SIGNED MAGNITUDE
 C      FABS  DUMMY
 C      SIGSQ OUTPUT SIGMA SQ
 C      INPUT SIGMA
-      INCLUDE 'XCONST.INC'
-      INCLUDE 'XLST6B.INC'
+      use xconst_mod, only: zero
+      use xlst6b_mod, only: xthresh
+      
+      real, intent(out) :: fsq !< Output amplitude
+      real, intent(in) :: fsign !< input signed amplitude
+      real, intent(in) :: fabs !< unused
+      real, intent(out) :: sigsq !< output sigma**2
+      real, intent(in) :: sig !< input sigma
+
       FSQ=FSIGN*ABS(FSIGN)
       IF (SIG.GT.ZERO) THEN
 C----- WE HAVE SOME KIND OF SIGMA - TRY TO SCALE IT

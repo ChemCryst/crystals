@@ -3,10 +3,11 @@
 %  VARIABLE INTEGER ABSORPTION RADIATION ORIENTTYPE
 %  VARIABLE CHARACTER CTYPE
 %  VARIABLE LOGICAL READORIENT
+%  VARIABLE CHARACTER FRIEDEL TWIN CLINE
  Input of experimental conditions for your structure
  ----- -- ------------ ---------- --- ---- ---------
                                            use  END  to abandon input
-%  ON ERROR REPEAT
+%%  ON ERROR REPEAT
 %  ON END TERMINATE
 %  VERIFY YES NO
 %      GET NOSTORE FINAL ABBREVIATED  -
@@ -16,7 +17,7 @@ The list containing the conditions should be in a file, e.g. ZAP.SCF.
 %
 %    BLOCK
 %      ON END TERMINATE
-%      ON ERROR RESTART
+%%      ON ERROR RESTART
 %      CLEAR
 %      INSERT '#USE '
 %      GET FINAL FILENAME 'File containing LIST 13'
@@ -26,23 +27,33 @@ The list containing the conditions should be in a file, e.g. ZAP.SCF.
 %  ELSE
 %    BLOCK
 %      ON END TERMINATE
-%      ON ERROR RESTART
+%%      ON ERROR RESTART
 %      IF RADIATION .LE. 0 THEN
 %        VERIFY CU MO
 %        GET NOSTORE VERIFIED 'Radiation used' 'MO'
 %        EVALUATE RADIATION = VALUE
 %      END IF
 %
-%      QUEUE REWIND
-%      CLEAR
 %        VERIFY YES NO
 %      GET NOSTORE FINAL ABBREVIATED  -
 "Do you want to apply Friedel's law?" 'YES'
 %      IF VALUE .EQ. 1 THEN
-%        INSERT 'CRYSTAL FRIEDEL = YES '
+%        EVALUATE FRIEDEL = 'YES' 
 %      ELSE
-%        INSERT 'CRYSTAL FRIEDEL = NO '
+%        EVALUATE FRIEDEL = 'NO' 
 %      END IF
+%        VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+"Is the crystal twinned?" 'NO'
+%      IF VALUE .EQ. 1 THEN
+%        EVALUATE TWIN = 'YES' 
+%      ELSE
+%        EVALUATE TWIN = 'NO' 
+%      END IF
+%      QUEUE REWIND
+%      CLEAR
+%      EVALUATE CLINE =  'CRYSTAL FRIEDEL = ' // FRIEDEL // ' TWINN = ' // TWIN // ' '
+%      STORE FORMAT /(A32)/ LENGTH 32 CHARACTER CLINE
 %      QUEUE SEND
 %      CLEAR
 %        CASE RADIATION

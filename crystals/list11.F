@@ -800,6 +800,8 @@ C  LIST IS ASSUMED NOT TO BE IN STORE.
 C  THE PREAMBLE BLOCK IS ALWAYS ASSUMED TO BE IN STORE.
 C
 C--
+      use lists1_mod, only: klschk
+      
       INCLUDE 'TYPE11.INC'
       INCLUDE 'ISTORE.INC'
       INCLUDE 'ICOM11.INC'
@@ -859,6 +861,8 @@ C
 C--IF A GIVEN PART IS NOT LOADED, ITS POINTER IS SET TO 'NOWT'.
 C
 C--
+      use lists2_mod, only: xldlst
+
       INCLUDE 'TYPE11.INC'
       INCLUDE 'ICOM11.INC'
       INCLUDE 'ISTORE.INC'
@@ -876,6 +880,7 @@ C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QSTR11.INC'
       INCLUDE 'QLST11.INC'
+      integer newl11p
 C
       CALL XIN11
 C--SET THE LIST TYPE
@@ -913,6 +918,23 @@ C--BRING DOWN THE DATA
       CALL XDOWNF (M11R, XSTR11 (MD11R*L11R-MD11R+1), MD11R*N11R)
 C--AND NOW RETURN
 1250  CONTINUE
+C-- Checking preambule
+      if(MD11P<31) then ! 31 has to match the value in commands.src
+        ! old list 11, extending preamble:
+C When extending a record, we not only need to create new space for it in store and
+C update the common block, but also update the record header pointers which are stored
+C just before each data block pointed to by the common block. The only update required 
+C is IADDR+3 (which should be 5 words before the start of the data block, but here we 
+C use KHUNTR to return IADDR, just to be on the safe side.
+        ISTAT = KHUNTR(11,103,IADDL,IADDR,IADDD,-1)
+        newl11p = nfl
+        nextnf = KCHNFL(31)
+        store(newl11p:newl11p+MD11P-1)=store(l11P:l11P+MD11P-1)
+        store(newl11p+MD11P:newl11p+30)=0.0
+        MD11P=31
+        l11p=newl11p
+        istore(iaddr+3) = newl11p
+      end if
       RETURN
 C
 9900  CONTINUE
@@ -983,7 +1005,7 @@ C--NOT ENOUGH CORE
       CALL XPRVDU(NCVDU, 2,0)
 1100  FORMAT(2X,
      2 'Insufficient memory allocated for LIST 11, Record number ', I5)
-1101  FORMAT(I10,' words too few for this',
+1101  FORMAT(I10,' words needed.'/, ' Too many for this',
      2 ' compilation of CRYSTALS (max = ', I10,')', /,
      3 ' Define a smaller matrix in LIST 12' )
       CALL XERHND ( IERERR )

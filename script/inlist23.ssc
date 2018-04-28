@@ -36,7 +36,7 @@
 %    INSERT ' RESTRAIN='                                                        
 %    STORE KEYWORD VALUE                                                        
 %      GET NOSTORE FINAL ABBREVIATED  -                                         
- 'Do you wish to refine against F squared? ' 'NO'                               
+ 'Do you wish to refine against F squared? ' 'YES'                               
 %    EVALUATE FSQ =  VALUE                                                      
 %    INSERT ' F-SQ='                                                            
 %    STORE KEYWORD VALUE                                                        

@@ -709,6 +709,7 @@ C  POINTERS ARE SET UP TO THE REST.
 C
 C--
 C
+      use lists1_mod, only: klschk, xrlind
 C
       CHARACTER CFORM*9, CFMRQ*6, CEND*3
       CHARACTER CIMAGE*80

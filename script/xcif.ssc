@@ -5,6 +5,21 @@
 %    VARIABLE INTEGER FTYPE ISQUEEZE
 %    EVALUATE ISQUEEZE = - 1
 %    VARIABLE REAL SOESD
+%    VARIABLE INTEGER INVERTTYPE ICENTRIC
+%%
+%%
+%%   Remember that XCIF includes a call to XSFLB to ensure that values are up to date
+%%
+%%
+%%
+%    COPY '#GENERALEDIT 11'
+%    COPY 'LOCATE RECORDTYPE=103'
+%    COPY 'TRANSFER FROM OFFSET=30 TO INVERTTYPE'
+%    COPY 'END'
+%    IF ( INVERTTYPE .LT. 0 ) THEN
+{E Cannot ouput cif file with esds. Inverted matrix cannot be trusted
+%      FINISH
+%    END IF
 %%
 %    EVALUATE TWINNED = FALSE
 %    BLOCK
@@ -24,8 +39,15 @@
 %% Find out if  H is in list 29. This sets HINCELL to true or false.
 %    COPY '#SCRIPT CHECK29'
 %%
+%      IF ( EXISTS 2 .GT. 0 ) THEN
+%          COPY '#GENERALEDIT 2'
+%          COPY 'LOCATE RECORDTYPE=101'
+%          COPY 'TRANSFER FROM OFFSET =  0 TO ICENTRIC'
+%          COPY 'END'
+%      END IF
+%%
 %% Check shift/esd
-%      IF ( EXISTS 13 .GT. 0 ) THEN
+%      IF ( EXISTS 30 .GT. 0 ) THEN
 %          COPY '#GENERALEDIT 30'
 %          COPY 'LOCATE RECORDTYPE=103'
 %          COPY 'TRANSFER FROM OFFSET =  7 TO SOESD'
@@ -50,7 +72,7 @@
 ^^WI GRID   GRIDM NROWS=12 NCOLS=3
 ^^WI {
 ^^WI  @ 2,2 BUTTON GOODY 'Edit CIF Goodies...'
-^^WI  @ 4,2 GRID GRIDA NROWS=1 NCOLS=3 OUTLINE='Recalculate'
+^^WI  @ 4,2 GRID GRIDA NROWS=2 NCOLS=3 OUTLINE='Recalculate'
 ^^WI  {
 ^^WI    @ 1,1 CHECKBOX XREF 'Six final cycles'
 %    IF ( SOESD .GT. 0.01 ) .OR. ( .NOT. VALID11 ) THEN
@@ -65,6 +87,12 @@
 %    IF ( .NOT. VALID11 ) THEN
 ^^WI      DISABLED=YES
 %    END IF
+^^WI    @ 2,3 CHECKBOX XABS 'Check Absolute Structure' 
+%        IF ICENTRIC .EQ. 0 THEN 
+^^WI        STATE = ON
+%        ELSE
+^^WI        STATE = OFF
+%        END IF
 ^^WI  }
 ^^WI  @ 5,2 GRID GRIDA NROWS=1 NCOLS=2 OUTLINE='H-bonds'
 ^^WI  {
@@ -160,6 +188,10 @@
  Additional FCF file - Saves an additional file called publish.fcf
  containing the hkl data in either F or F-squared format.
 
+ If either/both files ARCHIVE-HKL.CIF and platon_sqd.sqf exist, you
+ will be able to embed them in the cif.
+
+
 %       COPY '#SCRIPT XHELP2'
 
 %      END BLOCK
@@ -176,6 +208,17 @@
 %    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %    IF ( VALUE .EQ. 1 ) THEN
 %      COPY '#SCRIPT SIXCYCLE'
+%    END IF
+%%
+^^?? XABS STATE
+%    VERIFY ON OFF
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%    IF ( VALUE .EQ. 1 ) THEN
+%      IF ICENTRIC .EQ. 0 THEN
+%       COPY '#SCRIPT TONSWORK'
+%       COPY '#TON PLOT=NO PUNCH =NO'                                                         
+%       COPY 'END'
+%      END IF
 %    END IF
 %%
 %%

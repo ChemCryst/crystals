@@ -1,19 +1,19 @@
-#USE CYCLO.IN                                                                                                                                                                                                                                                   
-#SET COMMUNIC SLOW                                                                                                                                                                                                                                              
-#SET WATCH 5                                                                                                                                                                                                                                                    
-#CLEAR 12                                                                                                                                                                                                                                                       
-#LIST  12                                                                                                                                                                                                                                                       
-#CLEAR 16                                                                                                                                                                                                                                                       
-#LIST  16                                                                                                                                                                                                                                                       
-#                                                                                                                                                                                                                                                               
-#TITLE CYCLO IN P 21 21 21                                                                                                                                                                                                                                      
-#LIST 1                                                                                                                                                                                                                                                         
-#LIST 20                                                                                                                                                                                                                                                        
-#LIST 30                                                                                                                                                                                                                                                        
-#LIST 1                                                                                                                                                                                                                                                         
-#SPACE                                                                                                                                                                                                                                                          
-#LIST 14                                                                                                                                                                                                                                                        
-#SPACE                                                                                                                                                                                                                                                          
+#USE CYCLO.IN
+#SET COMMUNIC SLOW
+#SET WATCH 5
+#CLEAR 12
+#LIST  12
+#CLEAR 16
+#LIST  16
+#
+#TITLE CYCLO IN P 21 21 21
+#LIST 1
+#LIST 20
+#LIST 30
+#LIST 1
+#SPACE
+#LIST 14
+#SPACE
   Space Group P21 21 21 
   The Space Group is ACentric  Primitive Orthorhombic  Laue Symmetry mmm     
   Multiplicity of a General Site is   4  Laue-no is   3
@@ -33,25 +33,25 @@ Space group symbol is   P    21   21   21
                               X axis from  0.000 to  0.500
                               Y axis from  0.000 to  0.500
                               Z axis from  0.000 to  0.500
-# WORK GET SCATTERING FACTORS AND PUT THEM INTO LIST 3                                                                                                                                                                                                          
-#COMPOSIT                                                                                                                                                                                                                                                       
-#LIST 13                                                                                                                                                                                                                                                        
-#COMPOSIT                                                                                                                                                                                                                                                       
-#LIST 3                                                                                                                                                                                                                                                         
-#LIST 29                                                                                                                                                                                                                                                        
-#LIST 29                                                                                                                                                                                                                                                        
-#LIST 5                                                                                                                                                                                                                                                         
-#                                                                                                                                                                                                                                                               
-#           COORDINATES TAKEN FROM PARTIAL REFINEMENT DONE ELSEWHERE.                                                                                                                                                                                           
-#                                                                                                                                                                                                                                                               
+# WORK GET SCATTERING FACTORS AND PUT THEM INTO LIST 3
+#COMPOSIT
+#LIST 13
+#COMPOSIT
+#LIST 3
+#LIST 29
+#LIST 29
+#LIST 5
+#
+#           COORDINATES TAKEN FROM PARTIAL REFINEMENT DONE ELSEWHERE.
+#
 Bonds: Update required - There is no list 41
-#LIST 4                                                                                                                                                                                                                                                         
-#                                         WEISSENBERG DIFFRACTOMETER.                                                                                                                                                                                           
-#LIST 13                                                                                                                                                                                                                                                        
-#LIST 28                                                                                                                                                                                                                                                        
-# HOOK UP THE REFLECTION FILE                                                                                                                                                                                                                                   
-#OPEN HKLI  "CYCLO.HKL"                                                                                                                                                                                                                                         
-#HKLI                                                                                                                                                                                                                                                           
+#LIST 4
+#                                         WEISSENBERG DIFFRACTOMETER.
+#LIST 13
+#LIST 28
+# HOOK UP THE REFLECTION FILE
+#OPEN HKLI  "CYCLO.HKL"
+#HKLI
 
  No scales found
 
@@ -61,9 +61,9 @@ Bonds: Update required - There is no list 41
 
 
 
-    1866 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
-#SYST                                                                                                                                                                                                                                                           
-#SORT                                                                                                                                                                                                                                                           
+    1866 reflections accepted           0 reflections rejected
+#SYST
+#SORT
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -95,20 +95,20 @@ Bonds: Update required - There is no list 41
 
 
      17 absences,   mean Fo =   0.800,   rms Fo/sigma(Fo)=   4.497
-                                                                                                                                                                                                                                                                
-Fo range            -ve   1.000   2.000   4.000   8.000  16.000  Remainder                                                                                                                                                                                      
-Mean Fo          -1.321   0.721   1.474   2.085   0.000   0.000   0.000                                                                                                                                                                                         
-Number                4       2       9       2       0       0       0                                                                                                                                                                                         
-                                                                                                                                                                                                                                                                
-Fo/sigma range      -ve   1.000   2.000   4.000   8.000  16.000  Remainder                                                                                                                                                                                      
-rms (Fo/sigma)    2.451   0.857   1.690   3.405   5.459  11.667   0.000                                                                                                                                                                                         
-Number                4       1       2       5       4       1       0                                                                                                                                                                                         
-                                                                                                                                                                                                                                                                
-   1849 reflections accepted              17 reflections rejected                                                                                                                                                                                               
-#MERGE                                                                                                                                                                                                                                                          
+
+Fo range            -ve   1.000   2.000   4.000   8.000  16.000  Remainder
+Mean Fo          -1.321   0.721   1.474   2.085   0.000   0.000   0.000
+Number                4       2       9       2       0       0       0
+
+Fo/sigma range      -ve   1.000   2.000   4.000   8.000  16.000  Remainder
+rms (Fo/sigma)    2.451   0.857   1.690   3.405   5.459  11.667   0.000
+Number                4       1       2       5       4       1       0
+
+   1849 reflections accepted              17 reflections rejected
+#MERGE
  After   1 pass    1849 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
-#LIST 6                                                                                                                                                                                                                                                         
+#LIST 6
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -123,7 +123,7 @@ Number                4       1       2       5       4       1       0
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
-Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.                                                                                                                                                                                   
+Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
    0.0 -  0.5    46  4    46  1087 ----------------------
    0.5 -  1.0    20  2    66  1067 ----------
    1.0 -  1.5    31  3    97  1036 ---------------
@@ -230,18 +230,18 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
   1849 Contributors input            0 Contributors rejected
   1133 Merged reflections output     0 Merged reflections rejected
      0 Contributors deviating from the average by more than   3.0e.s.ds
-   965 Reflections greater than 3 sigma(i),  85.172 percent of data                                                                                                                                                                                             
- Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.018                                                                                                                                                                                                   
- Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.015                                                                                                                                                                                               
- Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma                                                                                                                                                                                                             
+   965 Reflections greater than 3 sigma(i),  85.172 percent of data
+ Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.018
+ Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.015
+ Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma
 [41]                0.01            0.10           0.53
-#                           STORE REFLECTIONS ON DISC FOR FUTURE USE                                                                                                                                                                                            
+#                           STORE REFLECTIONS ON DISC FOR FUTURE USE
 
 
 
-    1133 reflections accepted           0 reflections rejected                                                                                                                                                                                                  
-# DO A PRETTY PICTURE:                                                                                                                                                                                                                                          
-#MOLAX                                                                                                                                                                                                                                                          
+    1133 reflections accepted           0 reflections rejected
+# DO A PRETTY PICTURE:
+#MOLAX
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -294,18 +294,17 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
                      .   .                                                                                             
                      .  C10                                                                                            
                    C11..                                                                                               
-#                                         NOFSQ, NOANOM                                                                                                                                                                                                         
-#LIST 23                                                                                                                                                                                                                                                        
-#SFLS                                                                                                                                                                                                                                                           
-#CLEAR 17                                                                                                                                                                                                                                                       
-#LIST  17                                                                                                                                                                                                                                                       
-#LIST 26                                                                                                                                                                                                                                                        
-#WEIGHT                                                                                                                                                                                                                                                         
+#                                         NOFSQ, NOANOM
+#LIST 23
+#SFLS
+#CLEAR 17
+#LIST  17
+#LIST 26
+#WEIGHT
                      LIST 4 weighting type is NORMAL
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC  NO  NO                                                                                                                                                                                                                                                   
-#SCALE      1                                                                                                                                                                                                                                                   
-#CYCLENDS                                                                                                                                                                                                                                                       
+#SFLS
+#SPEC  NO  NO
+#SCALE      1
  Initialising Special positions
 
 
@@ -363,9 +362,10 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
  Structure factor least squares calculation    1  ends  1
 [29] SumFo/SumFc=  1.45    SumFoFc/SumFc^2=  1.45    SumwFoFc/SumwFc^2=  1.45
-LS-scale=  1.456   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.023    100*(<Fo>-<Fc>)/<Fo> =    -0.32                                                                                                                                                                                                         
-#FOUR                                                                                                                                                                                                                                                           
+LS-scale=  1.456   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.023    100*(<Fo>-<Fc>)/<Fo> =    -0.32
+#CYCLENDS
+#FOUR
  Initialising Special positions
  Number of new peaks to be retained is :     14
 
@@ -1989,18 +1989,18 @@ LS-scale=  1.456   Wilson Scale=  0.000
  C        11.     0.1025    0.9570    0.1507       -2.4   
 [18]  QN  -15.3  Hole        
  The new list  10 contains    12 atoms
- The minimum and maximum map densities are  -1.53      1.22    electrons /A^3                                                                                                                                                                                   
+ The minimum and maximum map densities are  -1.53      1.22    electrons /A^3
 [20]                   The deepest hole is at    
  Mean electron density at original atomic sites is    -0.11
                       with an R.M.S. deviation of      0.61
-#PRINT 10                                                                                                                                                                                                                                                       
-#FOUR                                                                                                                                                                                                                                                           
+#PRINT 10
+#FOUR
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number        1     Address    54137     Length     299     Created on                          
+ Print list type    10     serial number        1     Address    54240     Length     299     Created on                          
 
 
 
@@ -3741,16 +3741,16 @@ LS-scale=  1.456   Wilson Scale=  0.000
  Q        10.     0.1025    0.9603    0.1500       86.0  Good Shape  
  Q        11.     0.6406    0.3325    0.0956       84.3  Good Shape  
  The new list  10 contains    22 atoms
- The minimum and maximum map densities are  -1.48      12.0    electrons /A^3                                                                                                                                                                                   
+ The minimum and maximum map densities are  -1.48      12.0    electrons /A^3
 [20]                   The deepest hole is at    
-#PRINT 10                                                                                                                                                                                                                                                       
-#FOUR                                                                                                                                                                                                                                                           
+#PRINT 10
+#FOUR
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number        2     Address    54436     Length     479     Created on                          
+ Print list type    10     serial number        2     Address    54539     Length     479     Created on                          
 
 
 
@@ -5521,16 +5521,16 @@ LS-scale=  1.456   Wilson Scale=  0.000
 [19]  Q        10. 5.9  Poor Shape  
 [19]  Q        11. 9.6  Poor Shape  
  The new list  10 contains    22 atoms
- The minimum and maximum map densities are  -1.28      13.3    electrons /A^3                                                                                                                                                                                   
+ The minimum and maximum map densities are  -1.28      13.3    electrons /A^3
 [20]                   The deepest hole is at    
-#PRINT 10                                                                                                                                                                                                                                                       
-#FOUR                                                                                                                                                                                                                                                           
+#PRINT 10
+#FOUR
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number        3     Address    54915     Length     479     Created on                          
+ Print list type    10     serial number        3     Address    55018     Length     479     Created on                          
 
 
 
@@ -7301,16 +7301,16 @@ LS-scale=  1.456   Wilson Scale=  0.000
  Q        10.     0.1019    0.9617    0.1496       85.7  Good Shape  
  Q        11.     0.6438    0.3331    0.0956       81.9  Good Shape  
  The new list  10 contains    22 atoms
- The minimum and maximum map densities are  -1.97      11.9    electrons /A^3                                                                                                                                                                                   
+ The minimum and maximum map densities are  -1.97      11.9    electrons /A^3
 [20]                   The deepest hole is at    
-#PRINT 10                                                                                                                                                                                                                                                       
-#FOUR                                                                                                                                                                                                                                                           
+#PRINT 10
+#FOUR
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number        4     Address    55394     Length     479     Created on                          
+ Print list type    10     serial number        4     Address    55497     Length     479     Created on                          
 
 
 
@@ -9111,16 +9111,16 @@ LS-scale=  1.456   Wilson Scale=  0.000
 [19]  Q        30. 7.7  Poor Shape  
 [19]  Q        31. 6.1  Poor Shape  
  The new list  10 contains    36 atoms
- The minimum and maximum map densities are  -6.11      15.7    electrons /A^3                                                                                                                                                                                   
+ The minimum and maximum map densities are  -6.11      15.7    electrons /A^3
 [20]                   The deepest hole is at    
-#PRINT 10                                                                                                                                                                                                                                                       
-#FOUR                                                                                                                                                                                                                                                           
+#PRINT 10
+#FOUR
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number        5     Address    55873     Length     731     Created on                          
+ Print list type    10     serial number        5     Address    55976     Length     731     Created on                          
 
 
 
@@ -10348,14 +10348,14 @@ LS-scale=  1.456   Wilson Scale=  0.000
 [19]  Q        13. 3.3  Poor Shape  
 [19]  Q        14. 2.9  Poor Shape  
  The new list  10 contains    14 atoms
-#PRINT 10                                                                                                                                                                                                                                                       
-#FOUR                                                                                                                                                                                                                                                           
+#PRINT 10
+#FOUR
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number        6     Address    56604     Length     335     Created on                          
+ Print list type    10     serial number        6     Address    56707     Length     335     Created on                          
 
 
 
@@ -11522,14 +11522,14 @@ LS-scale=  1.456   Wilson Scale=  0.000
 [19]  Q        16. 5.8  Poor Shape  
  Q        17.     0.3381    0.2239    0.5000       51.4  Good Shape  
  The new list  10 contains    14 atoms
-#PRINT 10                                                                                                                                                                                                                                                       
-#FOUR                                                                                                                                                                                                                                                           
+#PRINT 10
+#FOUR
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number        7     Address    56939     Length     335     Created on                          
+ Print list type    10     serial number        7     Address    57042     Length     335     Created on                          
 
 
 
@@ -12692,14 +12692,14 @@ LS-scale=  1.456   Wilson Scale=  0.000
  Q        13.     0.5000    0.2647    0.3831      134.6  Good Shape  
  Q        14.     0.5000    0.2292    0.3644      124.3  Good Shape  
  The new list  10 contains    14 atoms
-#PRINT 10                                                                                                                                                                                                                                                       
-#FOUR                                                                                                                                                                                                                                                           
+#PRINT 10
+#FOUR
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number        8     Address    57274     Length     335     Created on                          
+ Print list type    10     serial number        8     Address    57377     Length     335     Created on                          
 
 
 
@@ -13870,14 +13870,14 @@ LS-scale=  1.456   Wilson Scale=  0.000
  Q        20.     0.1756    0.2025    0.2598      475.8  Good Shape  
  Q        21.     0.3612    0.1578    0.2646      463.5  Good Shape  
  The new list  10 contains    14 atoms
-#PRINT 10                                                                                                                                                                                                                                                       
-#FOUR                                                                                                                                                                                                                                                           
+#PRINT 10
+#FOUR
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number        9     Address    57609     Length     335     Created on                          
+ Print list type    10     serial number        9     Address    57712     Length     335     Created on                          
 
 
 
@@ -15624,18 +15624,18 @@ LS-scale=  1.456   Wilson Scale=  0.000
  C        11.     0.1025    0.9570    0.1507        6.2   
 [18]  QN  -1.4  Hole        
  The new list  10 contains    12 atoms
- The minimum and maximum map densities are  -1.05      1.06    electrons /A^3                                                                                                                                                                                   
+ The minimum and maximum map densities are  -1.05      1.06    electrons /A^3
 [20]                   The deepest hole is at    
  Mean electron density at original atomic sites is     1.89
                       with an R.M.S. deviation of      2.61
-#PRINT 10                                                                                                                                                                                                                                                       
-#FOUR                                                                                                                                                                                                                                                           
+#PRINT 10
+#FOUR
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       10     Address    57944     Length     299     Created on                          
+ Print list type    10     serial number       10     Address    58047     Length     299     Created on                          
 
 
 
@@ -17412,16 +17412,16 @@ LS-scale=  1.456   Wilson Scale=  0.000
 [19]  Q        35. 6.2  Poor Shape  
 [19]  Q        36. 5.7  Poor Shape  
  The new list  10 contains    36 atoms
- The minimum and maximum map densities are  -5.66      15.6    electrons /A^3                                                                                                                                                                                   
+ The minimum and maximum map densities are  -5.66      15.6    electrons /A^3
 [20]                   The deepest hole is at    
-#PRINT 10                                                                                                                                                                                                                                                       
-#FOUR                                                                                                                                                                                                                                                           
+#PRINT 10
+#FOUR
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       11     Address    58243     Length     731     Created on                          
+ Print list type    10     serial number       11     Address    58346     Length     731     Created on                          
 
 
 
@@ -17530,7 +17530,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
  Q             19.      1.00000     1.00000     0.14375     0.40472     0.14292     0.05000     0.00000     0.00000
                                                                                     0.00000     0.00000     0.00000    25.4
           0.          0.          0.          0.
- Q             20.      1.00000     1.00000     0.89125     0.91194     0.00146     0.05000     0.00000     0.00000
+ Q             20.      1.00000     1.00000     0.39125     0.58806    -0.00146     0.05000     0.00000     0.00000
                                                                                     0.00000     0.00000     0.00000    25.0
           0.          0.          0.          0.
  Q             21.      1.00000     1.00000     0.23438     0.39250     0.19313     0.05000     0.00000     0.00000
@@ -19248,7 +19248,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
  Q        14.     0.7275    0.6758    0.0706       35.8  Good Shape  
  Q        15.     0.7050    0.6764    0.0690       35.3  Good Shape  
  Q        16.     0.8637    0.7394    0.1827       34.4  Good Shape  
- Q        17.     0.7550    0.5992    0.1835       32.5  Good Shape  
+ Q        17.     0.7550    0.5992    0.1835       32.4  Good Shape  
  Q        18.     0.8037    0.7244    0.1627       29.2  Good Shape  
  Q        19.     0.2900    0.2442    0.0400       27.9  Good Shape  
  Q        20.     0.4187    0.0506    0.1581       25.1  Good Shape  
@@ -19267,16 +19267,16 @@ LS-scale=  1.456   Wilson Scale=  0.000
 [19]  Q        33. 7.4  Poor Shape  
 [19]  Q        34. 5.4  Poor Shape  
  The new list  10 contains    36 atoms
- The minimum and maximum map densities are  -5.54      15.6    electrons /A^3                                                                                                                                                                                   
+ The minimum and maximum map densities are  -5.54      15.6    electrons /A^3
 [20]                   The deepest hole is at    
-#PRINT 10                                                                                                                                                                                                                                                       
-#FOUR                                                                                                                                                                                                                                                           
+#PRINT 10
+#FOUR
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       12     Address    58974     Length     731     Created on                          
+ Print list type    10     serial number       12     Address    59077     Length     731     Created on                          
 
 
 
@@ -19377,7 +19377,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
                                                                                     0.00000     0.00000     0.00000    34.4
           0.          0.          0.          0.
  Q             17.      1.00000     1.00000     0.75500     0.59917     0.18354     0.05000     0.00000     0.00000
-                                                                                    0.00000     0.00000     0.00000    32.5
+                                                                                    0.00000     0.00000     0.00000    32.4
           0.          0.          0.          0.
  Q             18.      1.00000     1.00000     0.80375     0.72444     0.16271     0.05000     0.00000     0.00000
                                                                                     0.00000     0.00000     0.00000    29.2
@@ -19391,7 +19391,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
  Q             21.      1.00000     1.00000     0.93187     0.89417     0.01187     0.05000     0.00000     0.00000
                                                                                     0.00000     0.00000     0.00000    24.9
           0.          0.          0.          0.
- Q             22.      1.00000     1.00000     0.39437     0.58861     0.00021     0.05000     0.00000     0.00000
+ Q             22.      1.00000     1.00000     0.89437     0.91139    -0.00021     0.05000     0.00000     0.00000
                                                                                     0.00000     0.00000     0.00000    23.7
           0.          0.          0.          0.
  Q             23.      1.00000     1.00000     0.65000     0.55556     0.02604     0.05000     0.00000     0.00000
@@ -21120,16 +21120,16 @@ LS-scale=  1.456   Wilson Scale=  0.000
 [19]  Q        31. 7.3  Poor Shape  
 [19]  Q        32. 6.9  Poor Shape  
  The new list  10 contains    36 atoms
- The minimum and maximum map densities are  -5.85      15.5    electrons /A^3                                                                                                                                                                                   
+ The minimum and maximum map densities are  -5.85      15.5    electrons /A^3
 [20]                   The deepest hole is at    
-#PRINT 10                                                                                                                                                                                                                                                       
-#FOUR                                                                                                                                                                                                                                                           
+#PRINT 10
+#FOUR
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       13     Address    59705     Length     731     Created on                          
+ Print list type    10     serial number       13     Address    59808     Length     731     Created on                          
 
 
 
@@ -22972,16 +22972,16 @@ LS-scale=  1.456   Wilson Scale=  0.000
 [19]  Q        30. 7.7  Poor Shape  
 [19]  Q        31. 6.1  Poor Shape  
  The new list  10 contains    36 atoms
- The minimum and maximum map densities are  -6.11      15.7    electrons /A^3                                                                                                                                                                                   
+ The minimum and maximum map densities are  -6.11      15.7    electrons /A^3
 [20]                   The deepest hole is at    
-#PRINT 10                                                                                                                                                                                                                                                       
-#FOUR                                                                                                                                                                                                                                                           
+#PRINT 10
+#FOUR
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       14     Address    60436     Length     731     Created on                          
+ Print list type    10     serial number       14     Address    60539     Length     731     Created on                          
 
 
 
@@ -24209,14 +24209,14 @@ LS-scale=  1.456   Wilson Scale=  0.000
 [19]  Q        13. 3.3  Poor Shape  
 [19]  Q        14. 2.9  Poor Shape  
  The new list  10 contains    14 atoms
-#PRINT 10                                                                                                                                                                                                                                                       
-#FOUR                                                                                                                                                                                                                                                           
+#PRINT 10
+#FOUR
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       15     Address    61167     Length     335     Created on                          
+ Print list type    10     serial number       15     Address    61270     Length     335     Created on                          
 
 
 
@@ -25383,14 +25383,14 @@ LS-scale=  1.456   Wilson Scale=  0.000
 [19]  Q        16. 5.8  Poor Shape  
  Q        17.     0.3381    0.2239    0.5000       51.4  Good Shape  
  The new list  10 contains    14 atoms
-#PRINT 10                                                                                                                                                                                                                                                       
-#FOUR                                                                                                                                                                                                                                                           
+#PRINT 10
+#FOUR
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       16     Address    61502     Length     335     Created on                          
+ Print list type    10     serial number       16     Address    61605     Length     335     Created on                          
 
 
 
@@ -26553,14 +26553,14 @@ LS-scale=  1.456   Wilson Scale=  0.000
  Q        13.     0.5000    0.2647    0.3831      134.6  Good Shape  
  Q        14.     0.5000    0.2292    0.3644      124.3  Good Shape  
  The new list  10 contains    14 atoms
-#PRINT 10                                                                                                                                                                                                                                                       
-#FOUR                                                                                                                                                                                                                                                           
+#PRINT 10
+#FOUR
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       17     Address    61837     Length     335     Created on                          
+ Print list type    10     serial number       17     Address    61940     Length     335     Created on                          
 
 
 
@@ -27731,14 +27731,14 @@ LS-scale=  1.456   Wilson Scale=  0.000
  Q        20.     0.1756    0.2025    0.2598      475.8  Good Shape  
  Q        21.     0.3612    0.1578    0.2646      463.5  Good Shape  
  The new list  10 contains    14 atoms
-#PRINT 10                                                                                                                                                                                                                                                       
-#LIST 4                                                                                                                                                                                                                                                         
+#PRINT 10
+#LIST 4
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       18     Address    62172     Length     335     Created on                          
+ Print list type    10     serial number       18     Address    62275     Length     335     Created on                          
 
 
 
@@ -27852,20 +27852,19 @@ LS-scale=  1.456   Wilson Scale=  0.000
 
 
 
-#WEIGHT                                                                                                                                                                                                                                                         
+#WEIGHT
                      LIST 4 weighting type is NORMAL
-#LIST 12                                                                                                                                                                                                                                                        
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#LIST 22                                                                                                                                                                                                                                                        
+#LIST 12
+#SFLS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#LIST 22
  Initialising Special positions
 Refining    34 parameters in    1 block :      679 elements in the LS matrix.
  Space required on DISK is    2 records,     6  Blocks,     3 Kbytes. 
-#LIST 17                                                                                                                                                                                                                                                        
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#LIST 17
+#REFINE     1
  Initialising Special positions
 
 
@@ -27923,13 +27922,14 @@ Refining    34 parameters in    1 block :      679 elements in the LS matrix.
 
  Structure factor least squares calculation    2  ends  2
 [29] SumFo/SumFc=  1.45    SumFoFc/SumFc^2=  1.45    SumwFoFc/SumwFc^2=  1.45
-LS-scale=  1.456   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.023    100*(<Fo>-<Fc>)/<Fo> =    -0.32                                                                                                                                                                                                         
-#LIST 26                                                                                                                                                                                                                                                        
-#DORESTRAIN                                                                                                                                                                                                                                                     
-#INVERT  CHOL                                                                                                                                                                                                                                                   
-#NEWSHIFTS                                                                                                                                                                                                                                                      
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+LS-scale=  1.456   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.023    100*(<Fo>-<Fc>)/<Fo> =    -0.32
+#DORESTRAIN
+#LIST 26
+#DORESTRAIN
+#INVERT  DEFA
+#NEWSHIFTS
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -27944,6 +27944,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  1.82E+00 condition number:  3.22E+00 relative error:  3.84E-07
 
                                                 for          34 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -27999,7 +28000,7 @@ All cycle   Min function          0.0           0.98E+04       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -28084,12 +28085,11 @@ All cycle   Min function          0.0           0.98E+04       0.10E+16
                       0.0000           -0.0006  -0.0011   0.0004   0.0000
                       0.0000            0.0026   0.0011   0.0008   0.0000
 [31]                                         0.012    0.012    0.011 
-Mean C-C su =   0.0111                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+Mean C-C su =   0.0111
+#CYCLENDS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
  Initialising Special positions
 
 
@@ -28147,9 +28147,10 @@ Mean C-C su =   0.0111
 
  Structure factor least squares calculation    3  ends  2
 [29] SumFo/SumFc=  1.45    SumFoFc/SumFc^2=  1.45    SumwFoFc/SumwFc^2=  1.45
-LS-scale=  1.457   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.026    100*(<Fo>-<Fc>)/<Fo> =    -0.35                                                                                                                                                                                                         
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+LS-scale=  1.457   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.026    100*(<Fo>-<Fc>)/<Fo> =    -0.35
+#DORESTRAIN
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -28164,6 +28165,7 @@ LS-scale=  1.457   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  1.79E+00 condition number:  3.19E+00 relative error:  3.80E-07
 
                                                 for          34 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -28223,7 +28225,7 @@ All cycle   Min function          0.0           0.97E+04       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -28308,12 +28310,11 @@ All cycle   Min function          0.0           0.97E+04       0.10E+16
                       0.0000           -0.0001  -0.0002   0.0003   0.0000
                       0.0000            0.0026   0.0011   0.0008   0.0000
 [31]                                         0.012    0.012    0.011 
-Mean C-C su =   0.0110                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+Mean C-C su =   0.0110
+#CYCLENDS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
  Initialising Special positions
 
 
@@ -28371,9 +28372,10 @@ Mean C-C su =   0.0110
 
  Structure factor least squares calculation    4  ends  2
 [29] SumFo/SumFc=  1.45    SumFoFc/SumFc^2=  1.45    SumwFoFc/SumwFc^2=  1.45
-LS-scale=  1.457   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.028    100*(<Fo>-<Fc>)/<Fo> =    -0.38                                                                                                                                                                                                         
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+LS-scale=  1.457   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.028    100*(<Fo>-<Fc>)/<Fo> =    -0.38
+#DORESTRAIN
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -28388,6 +28390,7 @@ LS-scale=  1.457   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  1.79E+00 condition number:  3.18E+00 relative error:  3.79E-07
 
                                                 for          34 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -28398,7 +28401,7 @@ LS-scale=  1.457   Wilson Scale=  0.000
 All cycle   R-factor              0.0            15.           0.10E+03
 All cycle   Rw                    0.0            19.           0.10E+03
 [06] All cycle   shift/esd
- Forced termination after this cycle:  Actual value condition on: shift/esd                                                                                                                                                                                     
+ Forced termination after this cycle:  Actual value condition on: shift/esd
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -28443,7 +28446,7 @@ All cycle   Rw                    0.0            19.           0.10E+03
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -28528,21 +28531,20 @@ All cycle   Rw                    0.0            19.           0.10E+03
                       0.0000            0.0000   0.0000   0.0000   0.0000
                       0.0000            0.0026   0.0011   0.0008   0.0000
 [31]                                         0.012    0.012    0.011 
-Mean C-C su =   0.0110                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#LIST 12                                                                                                                                                                                                                                                        
-#SFLS                                                                                                                                                                                                                                                           
-#LIST 12                                                                                                                                                                                                                                                        
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#LIST 22                                                                                                                                                                                                                                                        
+Mean C-C su =   0.0110
+#CYCLENDS
+#LIST 12
+#SFLS
+#LIST 12
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#LIST 22
  Initialising Special positions
 Refining    45 parameters in    1 block :     1141 elements in the LS matrix.
  Space required on DISK is    3 records,     9  Blocks,     5 Kbytes. 
-#LIST 17                                                                                                                                                                                                                                                        
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#LIST 17
+#REFINE     1
  Initialising Special positions
 
 
@@ -28600,13 +28602,14 @@ Refining    45 parameters in    1 block :     1141 elements in the LS matrix.
 
  Structure factor least squares calculation    5  ends  2
 [29] SumFo/SumFc=  1.45    SumFoFc/SumFc^2=  1.45    SumwFoFc/SumwFc^2=  1.45
-LS-scale=  1.457   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.028    100*(<Fo>-<Fc>)/<Fo> =    -0.38                                                                                                                                                                                                         
-#LIST 26                                                                                                                                                                                                                                                        
-#DORESTRAIN                                                                                                                                                                                                                                                     
-#INVERT  CHOL                                                                                                                                                                                                                                                   
-#NEWSHIFTS                                                                                                                                                                                                                                                      
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+LS-scale=  1.457   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.028    100*(<Fo>-<Fc>)/<Fo> =    -0.38
+#DORESTRAIN
+#LIST 26
+#DORESTRAIN
+#INVERT  DEFA
+#NEWSHIFTS
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -28621,6 +28624,7 @@ LS-scale=  1.457   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  4.49E+00 condition number:  4.21E+01 relative error:  5.02E-06
  S/ESD     1           1             0.026      0.0E+00    0.143E-01          1.79                          SCALE   
 [14]  S/ESD    21          21            0.012       0.0E+00    0.15 E-02          7.8         O      5 U[ISO]  
 [14]  S/ESD    25          25           -0.016       0.0E+00    0.23 E-02         -7.1         N      6 U[ISO]  
@@ -28679,7 +28683,7 @@ All cycle   Min function          0.0           0.97E+04       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -28764,12 +28768,11 @@ All cycle   Min function          0.0           0.97E+04       0.10E+16
                       0.0000            0.0000   0.0000   0.0001   0.0022
                       0.0000            0.0026   0.0011   0.0008   0.0027
 [31]                                         0.012    0.012    0.011 
-Mean C-C su =   0.0111                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+Mean C-C su =   0.0111
+#CYCLENDS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
  Initialising Special positions
 
 
@@ -28827,9 +28830,10 @@ Mean C-C su =   0.0111
 
  Structure factor least squares calculation    6  ends  2
 [29] SumFo/SumFc=  1.47    SumFoFc/SumFc^2=  1.47    SumwFoFc/SumwFc^2=  1.47
-LS-scale=  1.483   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.062    100*(<Fo>-<Fc>)/<Fo> =    -0.86                                                                                                                                                                                                         
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+LS-scale=  1.483   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.062    100*(<Fo>-<Fc>)/<Fo> =    -0.86
+#DORESTRAIN
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -28844,6 +28848,7 @@ LS-scale=  1.483   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  4.51E+00 condition number:  4.23E+01 relative error:  5.04E-06
 
                                                 for          45 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -28903,7 +28908,7 @@ Inter cycle Rw                   -5.0            1.1           0.10E+03
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -28988,12 +28993,11 @@ Inter cycle Rw                   -5.0            1.1           0.10E+03
                       0.0000           -0.0001  -0.0002   0.0002   0.0001
                       0.0000            0.0025   0.0011   0.0007   0.0026
 [31]                                         0.012    0.011    0.011 
-Mean C-C su =   0.0104                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+Mean C-C su =   0.0104
+#CYCLENDS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
  Initialising Special positions
 
 
@@ -29051,9 +29055,10 @@ Mean C-C su =   0.0104
 
  Structure factor least squares calculation    7  ends  2
 [29] SumFo/SumFc=  1.48    SumFoFc/SumFc^2=  1.48    SumwFoFc/SumwFc^2=  1.48
-LS-scale=  1.488   Wilson Scale=  0.000                                                                                                                                                                                                                         
+LS-scale=  1.488   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+#DORESTRAIN
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -29068,6 +29073,7 @@ LS-scale=  1.488   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  4.51E+00 condition number:  4.22E+01 relative error:  5.04E-06
 
                                                 for          45 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -29127,7 +29133,7 @@ All cycle   Min function          0.0           0.86E+04       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -29212,12 +29218,11 @@ All cycle   Min function          0.0           0.86E+04       0.10E+16
                       0.0000            0.0000  -0.0001   0.0000   0.0001
                       0.0000            0.0025   0.0010   0.0007   0.0026
 [31]                                         0.012    0.011    0.011 
-Mean C-C su =   0.0104                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+Mean C-C su =   0.0104
+#CYCLENDS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
  Initialising Special positions
 
 
@@ -29275,9 +29280,10 @@ Mean C-C su =   0.0104
 
  Structure factor least squares calculation    8  ends  2
 [29] SumFo/SumFc=  1.48    SumFoFc/SumFc^2=  1.48    SumwFoFc/SumwFc^2=  1.48
-LS-scale=  1.488   Wilson Scale=  0.000                                                                                                                                                                                                                         
+LS-scale=  1.488   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+#DORESTRAIN
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -29292,6 +29298,7 @@ LS-scale=  1.488   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  4.51E+00 condition number:  4.23E+01 relative error:  5.04E-06
 
                                                 for          45 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -29351,7 +29358,7 @@ All cycle   Min function          0.0           0.86E+04       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -29436,23 +29443,22 @@ All cycle   Min function          0.0           0.86E+04       0.10E+16
                       0.0000            0.0000   0.0000   0.0001  -0.0001
                       0.0000            0.0025   0.0010   0.0007   0.0026
 [31]                                         0.012    0.011    0.011 
-Mean C-C su =   0.0104                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#LIST 12                                                                                                                                                                                                                                                        
-#SFLS                                                                                                                                                                                                                                                           
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#LIST 22                                                                                                                                                                                                                                                        
+Mean C-C su =   0.0104
+#CYCLENDS
+#LIST 12
+#SFLS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
+#LIST 22
  Initialising Special positions
 Refining    68 parameters in    1 block :     2498 elements in the LS matrix.
  Space required on DISK is    5 records,    20  Blocks,    10 Kbytes. 
  LIST 23 has been modified to match LIST 12
  New LIST 23 written to disk
      11 Atoms modified;   New  LIST 5 written to DISK
-#LIST 17                                                                                                                                                                                                                                                        
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+#LIST 17
+#REFINE     1
  Initialising Special positions
 
 
@@ -29510,13 +29516,14 @@ Refining    68 parameters in    1 block :     2498 elements in the LS matrix.
 
  Structure factor least squares calculation    9  ends  2
 [29] SumFo/SumFc=  1.48    SumFoFc/SumFc^2=  1.48    SumwFoFc/SumwFc^2=  1.48
-LS-scale=  1.488   Wilson Scale=  0.000                                                                                                                                                                                                                         
+LS-scale=  1.488   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
-#LIST 26                                                                                                                                                                                                                                                        
-#DORESTRAIN                                                                                                                                                                                                                                                     
-#INVERT  CHOL                                                                                                                                                                                                                                                   
-#NEWSHIFTS                                                                                                                                                                                                                                                      
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+#DORESTRAIN
+#LIST 26
+#DORESTRAIN
+#INVERT  DEFA
+#NEWSHIFTS
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -29531,6 +29538,7 @@ LS-scale=  1.488   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  8.27E+00 condition number:  1.41E+02 relative error:  1.68E-05
 [13]  LARGE     1           1             0.1       0.0E+00    0.1 E-01         10.6                           SCALE   
 [13]  LARGE     2           2           655.0       0.0E+00    0.3 E+02         18.1                           EXTPARAM
 [14]  S/ESD    15          15            0.025       0.0E+00    0.38 E-02          6.7         O      3 U[11]   
@@ -29601,7 +29609,7 @@ All cycle   Min function          0.0           0.86E+04       0.10E+16
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -29686,12 +29694,11 @@ All cycle   Min function          0.0           0.86E+04       0.10E+16
 [37]                       0.00             0.00    0.00    0.00   -0.00    0.00    0.01   -0.01    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#SPEC LIS  NO                                                                                                                                                                                                                                                   
-      Checking SPECIAL positions subject to tolerance of .60000     Angstrom                                                                                                                                                                                    
-#REFINE     1                                                                                                                                                                                                                                                   
-#DORESTRAIN                                                                                                                                                                                                                                                     
+Mean C-C su =   0.0000
+#CYCLENDS
+#SPEC LIS  NO
+      Checking SPECIAL positions subject to tolerance of .60000     Angstrom
+#REFINE     1
  Initialising Special positions
 
 
@@ -29749,9 +29756,10 @@ Mean C-C su =   0.0000
 
  Structure factor least squares calculation   10  ends  2
 [29] SumFo/SumFc=  1.64    SumFoFc/SumFc^2=  1.64    SumwFoFc/SumwFc^2=  1.64
-LS-scale=  1.664   Wilson Scale=  0.000                                                                                                                                                                                                                         
-<Fo>-<Fc> =   -0.095    100*(<Fo>-<Fc>)/<Fo> =    -1.49                                                                                                                                                                                                         
-#INVERT  CHOL                                                                                                                                                                                                                                                   
+LS-scale=  1.664   Wilson Scale=  0.000
+<Fo>-<Fc> =   -0.095    100*(<Fo>-<Fc>)/<Fo> =    -1.49
+#DORESTRAIN
+#INVERT  DEFA
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -29766,8 +29774,9 @@ LS-scale=  1.664   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Single precision:  1-norm:  8.66E+00 condition number:  2.19E+02 relative error:  2.61E-05
  S/ESD     1           1             0.069      0.4E+00    0.176E-01          3.94                          SCALE   
-[43] Resetting shift for Extinction  Shift=     856.   Esd=     10   New shift=     131.01                                                                                                                                                                       
+[43] Resetting shift for Extinction  Shift=     856.   Esd=     10   New shift=     131.01
 [13]  LARGE     2           2           131.0       0.1E+01    0.1 E+03          8.3                           EXTPARAM
 [14]  S/ESD    21          21            0.011       0.4E+00    0.69 E-02          1.6         C      4 U[11]   
 
@@ -29829,7 +29838,7 @@ Inter cycle Rw                   -5.0            3.7           0.10E+03
  Shift
 [39]  factors     1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00   1.00
              1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000  1.00000
-#SOLVE                                                                                                                                                                                                                                                          
+#SOLVE
  Initialising Special positions
 
 
@@ -29914,41 +29923,41 @@ Inter cycle Rw                   -5.0            3.7           0.10E+03
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00   -0.00   -0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000                                                                                                                                                                                                                                          
-#CYCLENDS                                                                                                                                                                                                                                                       
-#LIST 4                                                                                                                                                                                                                                                         
-#WEIGHT                                                                                                                                                                                                                                                         
+Mean C-C su =   0.0000
+#CYCLENDS
+#LIST 4
+#WEIGHT
                      LIST 4 weighting type is NORMAL
-                                                                                                                                                                                                                                                                
-[66]  Best fit this cycle:      0.040     0.1  .0 .0 .0 .333                                                                                                                                                                                                        
+
+[66]  Best fit this cycle:      0.040     0.1  .0 .0 .0 .333
 [67]            <wdelsq> :      1.3           S :      1.1
-                                                                                                                                                                                                                                                                
-                                                                                                                                                                                                                                                                
-[66]  Best fit this cycle:      0.060     0.1  .0 .0 .0 .333                                                                                                                                                                                                        
-[67]            <wdelsq> :      1.3           S :      1.1
-                                                                                                                                                                                                                                                                
-                                                                                                                                                                                                                                                                
-[66]  Best fit this cycle:      0.070     0.1  .0 .0 .0 .333                                                                                                                                                                                                        
-[67]            <wdelsq> :      1.3           S :      1.1
-                                                                                                                                                                                                                                                                
-                                                                                                                                                                                                                                                                
-[66]  Best fit this cycle:      0.065     0.1  .0 .0 .0 .333                                                                                                                                                                                                        
-[67]            <wdelsq> :      1.3           S :      1.1
-                                                                                                                                                                                                                                                                
-                                                                                                                                                                                                                                                                
-[66]  Best fit this cycle:      0.065     0.1  .0 .0 .0 .333                                                                                                                                                                                                        
-[67]            <wdelsq> :      1.3           S :      1.1
-                                                                                                                                                                                                                                                                
-                                                                                                                                                                                                                                                                
-[66]  Best fit this cycle:      0.065     0.1  .0 .0 .0 .333                                                                                                                                                                                                        
-[67]            <wdelsq> :      1.3           S :      1.1
-                                                                                                                                                                                                                                                                
 
 
-     Weights applied:     0.0650    0.1023 .0 .0 .0 .333                                                                                                                                                                                                        
+[66]  Best fit this cycle:      0.060     0.1  .0 .0 .0 .333
+[67]            <wdelsq> :      1.3           S :      1.1
 
 
-#FOUR                                                                                                                                                                                                                                                           
+[66]  Best fit this cycle:      0.070     0.1  .0 .0 .0 .333
+[67]            <wdelsq> :      1.3           S :      1.1
+
+
+[66]  Best fit this cycle:      0.065     0.1  .0 .0 .0 .333
+[67]            <wdelsq> :      1.3           S :      1.1
+
+
+[66]  Best fit this cycle:      0.065     0.1  .0 .0 .0 .333
+[67]            <wdelsq> :      1.3           S :      1.1
+
+
+[66]  Best fit this cycle:      0.065     0.1  .0 .0 .0 .333
+[67]            <wdelsq> :      1.3           S :      1.1
+
+
+
+     Weights applied:     0.0650    0.1023 .0 .0 .0 .333
+
+
+#FOUR
  Initialising Special positions
  Number of new peaks to be retained is :     14
 
@@ -31577,18 +31586,18 @@ Mean C-C su =   0.0000
  C        11.     0.1016    0.9554    0.1516       -5.8   
 [18]  QN  -3.7  Hole        
  The new list  10 contains    12 atoms
- The minimum and maximum map densities are -0.687     0.533    electrons /A^3                                                                                                                                                                                   
+ The minimum and maximum map densities are -0.687     0.533    electrons /A^3
 [20]                   The deepest hole is at    
  Mean electron density at original atomic sites is    -0.78
                       with an R.M.S. deviation of      0.21
-#PRINT 10                                                                                                                                                                                                                                                       
-#FOUR                                                                                                                                                                                                                                                           
+#PRINT 10
+#FOUR
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       19     Address    73898     Length     299     Created on                          
+ Print list type    10     serial number       19     Address    74087     Length     299     Created on                          
 
 
 
@@ -33334,16 +33343,16 @@ Mean C-C su =   0.0000
 [19]  Q        10. 0.2  Poor Shape  
 [19]  Q        11. 1.6  Poor Shape  
  The new list  10 contains    22 atoms
- The minimum and maximum map densities are  -2.04      9.23    electrons /A^3                                                                                                                                                                                   
+ The minimum and maximum map densities are  -2.04      9.23    electrons /A^3
 [20]                   The deepest hole is at    
-#PRINT 10                                                                                                                                                                                                                                                       
-#FOUR                                                                                                                                                                                                                                                           
+#PRINT 10
+#FOUR
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       20     Address    74197     Length     479     Created on                          
+ Print list type    10     serial number       20     Address    74386     Length     479     Created on                          
 
 
 
@@ -35119,16 +35128,16 @@ Mean C-C su =   0.0000
 [19]  Q        10. 6.7  Poor Shape  
 [19]  Q        11. 5.5  Poor Shape  
  The new list  10 contains    22 atoms
- The minimum and maximum map densities are  -2.03      9.70    electrons /A^3                                                                                                                                                                                   
+ The minimum and maximum map densities are  -2.03      9.70    electrons /A^3
 [20]                   The deepest hole is at    
-#PRINT 10                                                                                                                                                                                                                                                       
-#FOUR                                                                                                                                                                                                                                                           
+#PRINT 10
+#FOUR
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       21     Address    74676     Length     479     Created on                          
+ Print list type    10     serial number       21     Address    74865     Length     479     Created on                          
 
 
 
@@ -36904,16 +36913,16 @@ Mean C-C su =   0.0000
 [19]  Q        10. 8.0  Poor Shape  
 [19]  Q        11. 1.6  Poor Shape  
  The new list  10 contains    22 atoms
- The minimum and maximum map densities are  -2.04      8.77    electrons /A^3                                                                                                                                                                                   
+ The minimum and maximum map densities are  -2.04      8.77    electrons /A^3
 [20]                   The deepest hole is at    
-#PRINT 10                                                                                                                                                                                                                                                       
-#FOUR                                                                                                                                                                                                                                                           
+#PRINT 10
+#FOUR
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       22     Address    75155     Length     479     Created on                          
+ Print list type    10     serial number       22     Address    75344     Length     479     Created on                          
 
 
 
@@ -38710,16 +38719,16 @@ Mean C-C su =   0.0000
 [19]  Q        26. 7.4  Poor Shape  
 [19]  Q        27. 6.3  Poor Shape  
  The new list  10 contains    36 atoms
- The minimum and maximum map densities are  -4.91      12.6    electrons /A^3                                                                                                                                                                                   
+ The minimum and maximum map densities are  -4.91      12.6    electrons /A^3
 [20]                   The deepest hole is at    
-#PRINT 10                                                                                                                                                                                                                                                       
-#FOUR                                                                                                                                                                                                                                                           
+#PRINT 10
+#FOUR
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       23     Address    75634     Length     731     Created on                          
+ Print list type    10     serial number       23     Address    75823     Length     731     Created on                          
 
 
 
@@ -39939,14 +39948,14 @@ Mean C-C su =   0.0000
 
  Q         1.     0.0000    0.0000    0.0000     1957.3  Good Shape  
  The new list  10 contains     1 atoms
-#PRINT 10                                                                                                                                                                                                                                                       
-#FOUR                                                                                                                                                                                                                                                           
+#PRINT 10
+#FOUR
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       24     Address    76365     Length     101     Created on                          
+ Print list type    10     serial number       24     Address    76554     Length     101     Created on                          
 
 
 
@@ -41061,14 +41070,14 @@ Mean C-C su =   0.0000
 
  Q         1.     0.0000    0.0000    0.0000     1957.2  Good Shape  
  The new list  10 contains     1 atoms
-#PRINT 10                                                                                                                                                                                                                                                       
-#FOUR                                                                                                                                                                                                                                                           
+#PRINT 10
+#FOUR
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       25     Address    76466     Length     101     Created on                          
+ Print list type    10     serial number       25     Address    76655     Length     101     Created on                          
 
 
 
@@ -41647,7 +41656,7 @@ Mean C-C su =   0.0000
       *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *
          -1   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
  
- Malformed peak at      0.339     0.374     0.297
+ Malformed peak at      0.339     0.374     0.296
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -42043,7 +42052,7 @@ Mean C-C su =   0.0000
  
     4 *  81  76  81  80  82  69  31  27  24 -18 -34 -21 -20 -39 -54 -69 -93 -88 -75 -77 -75 *   4
  
-    5 * 114 100 114 115 105  86  43  37  40   1 -25 -23 -20 -24 -29 -51 -89 -89 -68 -66 -68 *   5
+    5 * 114 100 114 115 105  86  43  37  40   1 -25 -23 -20 -24 -29 -51 -89 -89 -68 -65 -68 *   5
  
     6 * 113 100 113  97  67  71  65  53  28  -3  -2   3 -11 -37 -51 -52 -71 -84 -94-106 -94 *   6
  
@@ -42206,14 +42215,14 @@ Mean C-C su =   0.0000
  Q        20.     0.0000    0.5000    0.2954      212.7  Good Shape  
  Q        21.     0.3344    0.4408    0.3290      211.6  Good Shape  
  The new list  10 contains    14 atoms
-#PRINT 10                                                                                                                                                                                                                                                       
-#FOUR                                                                                                                                                                                                                                                           
+#PRINT 10
+#FOUR
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       26     Address    76567     Length     335     Created on                          
+ Print list type    10     serial number       26     Address    76756     Length     335     Created on                          
 
 
 
@@ -43355,8 +43364,8 @@ Mean C-C su =   0.0000
 
  Minimum peak height for search is    50.00
  No peaks found, so no LIST 10 formed
-#PRINT 10                                                                                                                                                                                                                                                       
-#FINISH                                                                                                                                                                                                                                                         
+#PRINT 10
+#FINISH
  List type       10 with serial       26 is marked as an error list
 
  CRYSTALS -- ERROR

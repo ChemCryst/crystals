@@ -1,6 +1,7 @@
       integer NFLD,LFLD,NULD 
+      real XSTR11
+      
       COMMON/XDATF/NFLD,LFLD,NULD 
       
-      REAL, dimension(33554432) :: XSTR11
-      COMMON/XDATD/XSTR11 
+      COMMON/XDATD/XSTR11(67108864) 
 

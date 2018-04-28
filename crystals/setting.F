@@ -32,7 +32,7 @@ C
       COMMON /CAD/FCV(3),PD(3,3),QD(3,3),RD(3,3),SD(3,3),SI,CO,FKAP(3),
      2 FBIS(3),FPSI,FEUL(3),FHKL(3),CD(3,3),FLAM(3),DET,CON1,CON2,CON3
       COMMON /XABSWK/IMODE,WAV,WAVSQ,IDIF,IDAT,IFF,IG,ALPHA,IR1,IR2,
-     2 IR3,IR4,ISET,NPI,NPV,VK(3),UM(3,3),UB(3,3),V(3,2),FACT(10),
+     2 IR3,IR4,ISET,NPI,NPV,VK(3),UM(3,3),UB(3,3),V(3,3),FACT(10),
      3 BFACT(10),CFACT(10),THL,ISPC
 C
       INCLUDE 'STORE.INC'
@@ -361,7 +361,7 @@ C
 1400  CONTINUE
       WRITE ( CMON ,1500)
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 1500  FORMAT(' Singular Matrix')
       RETURN
       END
@@ -671,7 +671,7 @@ C
 1000  CONTINUE
       WRITE(CMON, 1100) A, S
       CALL XPRVDU(NCVDU, 2,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON( 1)(:),CMON( 2)(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1)),trim(CMON(2))
 1100  FORMAT(' Sin theta gt than 1',3F6.1,F8.4/
      1 'Check cell parameters and reflection file')
       CALL XOPMSG (IOPABS,IOPINT,0)
@@ -790,7 +790,7 @@ C
 1000  CONTINUE
       WRITE ( CMON ,1010)
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 1010  FORMAT(' This geometry not available ')
       CALL XOPMSG (IOPABS,IOPINT,0)
       CALL XERHND(IERPRG)

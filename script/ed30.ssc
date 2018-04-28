@@ -127,7 +127,7 @@
 ^^WI     @ 1,7 DROPDOWN INST INFORM=YES ADDTOLIST                               
 ^^WI     'Unknown' 'CAD4' 'Mach3' 'KappaCCD' 'Dip'                      
 ^^WI     'Smart' 'IPDS' 'Xcalibur'  'APEX2' 'Gemini' 
-^^WI     'SuperNova' 'NULL'                             
+^^WI     'SuperNova' 'Synchrotron' 'Spallation' 'Reactor' 'NULL'                
 ^^WI     @ 1,9  STATIC ED30T 'Scan'                                             
 ^^WI     @ 1,11  DROPDOWN SCAN INFORM=YES ADDTOLIST                             
 ^^WI     '2theta/omega' 'Omega' 'Phi' 'Phi and omega' 'unknown' 'NULL'          

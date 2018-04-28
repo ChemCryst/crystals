@@ -696,12 +696,12 @@ C     LATER SINGLE-STEP SCANNER.
 C--
       DIMENSION VCVVEC(8192)
       REAL VCVVSZ
-	  COMMON /VCVTMP/ VCVVSZ, VCVVEC
-	  
+      COMMON /VCVTMP/ VCVVSZ, VCVVEC
+      
       DIMENSION LATOM(4)
       DIMENSION R(2,3), SD(2,3), XYZ(3)
       DIMENSION RI(3,2),  VCV(6,6)
-	  DIMENSION ZZZ(1)
+      DIMENSION ZZZ(1)
       CHARACTER *12 CBUFF
       CHARACTER *32 CATOM(2), CBLANK
       INCLUDE 'ICOM12.INC'
@@ -830,7 +830,7 @@ C        NOTE THAT PUNCH 11 C LISTS JUST THE UNSCALED INVERSE MATRIX
 
             WRITE(CMON,'(A,F12.8)')'VCv multiplier: ', C
             CALL XPRVDU (NCVDU,1,0)
-			SRTC = SQRT(C)
+            SRTC = SQRT(C)
 c            M11 = L11+N11-1
 c            DO I = L11,M11
 c              STR11(I) = STR11(I)*C
@@ -860,7 +860,7 @@ C--PRINT THE INITIAL CAPTIONS
      1 ' The su is computed from the mean atomic variances'
       ENDIF
       CALL XPRVDU (NCVDU,1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1)(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 C
       WRITE ( CMON,1150)
       CALL XPRVDU(NCVDU, 1,0)
@@ -906,8 +906,8 @@ C--SET ASIDE AN AREA IN WHICH GENERATED PARAMETERS CAN BE STORED
       NFL=NFL+6
       ISCRAT=NFL
       NFL=NFL+N12
-	  DO I=0,5
-	    STORE(IONES+I)=1.0
+      DO I=0,5
+        STORE(IONES+I)=1.0
       END DO
 C
 C--SET UP THE POINTER FOR THE FIRST ATOM FOUND  -  A STACK IS FORMED HER
@@ -926,7 +926,7 @@ C--NO ARGUMENTS FOUND
       CALL XPCLNN(LN)
       WRITE ( CMON,1550)
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 1550  FORMAT(' No arguments found')
       GOTO 1200
 C--ARGUMENTS TO BE PROCESSED  -  CHECK FOR AN OPERAND
@@ -937,7 +937,7 @@ C--ARGUMENT IS OF THE WRONG TYPE
       CALL XPCLNN(LN)
       WRITE ( CMON,1700)
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 1700  FORMAT(' Only atoms may appear on an ''ATOM'' card')
       GOTO 2650
 C--PICK UP ATOM SPECIFICATION AND FIND THE ATOMS IN LIST 5
@@ -1013,7 +1013,7 @@ C--NOT ENOUGH ATOMS
         CALL XPCLNN(LN)
         WRITE ( CMON,2100)
         CALL XPRVDU(NCVDU, 1,0)
-        IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+        IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 2100    FORMAT(' Not enough atoms provided')
         GOTO 2650
       END IF
@@ -1070,54 +1070,54 @@ c        I = IGETVCV(2, JSTACK, LSTACK, IOUT, LEVEL)
         CALL XTRANS(R, RI, 2, 3)
         CALL XTDFUN(RI, IONES)
         WRITE(CMON,'(A,6F10.6)')'IOnes ',(STORE(JJ+IONES),JJ=0,5)
- 	    CALL XPRVDU (NCVDU,1,0)
+        CALL XPRVDU (NCVDU,1,0)
 
         I = JGETVCV(2, JSTACK, LSTACK, IOUT, LEVEL, IONES)
         NWP = 2*3
-	
-		DO I = 0, N12-1
-		  STORE(IOUT+I) = STORE(IOUT+I)*SRTC
-c		  WRITE(123,'(F15.10)') STORE(IOUT+I)
-		END DO
+    
+        DO I = 0, N12-1
+          STORE(IOUT+I) = STORE(IOUT+I)*SRTC
+c         WRITE(123,'(F15.10)') STORE(IOUT+I)
+        END DO
 
-		CALL XMOVE ( STORE(IOUT), VCVVEC(1), N12 )
-		VCVVSZ = N12
-		
+        CALL XMOVE ( STORE(IOUT), VCVVEC(1), N12 )
+        VCVVSZ = N12
+        
 C Test Variance calc
-c 	    WRITE(123,'(a)') ' ' 
+c       WRITE(123,'(a)') ' ' 
 c        DO I = 0, N11
-c		   WRITE(123,'(F15.10)') STR11(L11+I)
-c		END DO
-c 	    WRITE(123,'(a)') ' ' 
+c          WRITE(123,'(F15.10)') STR11(L11+I)
+c       END DO
+c       WRITE(123,'(a)') ' ' 
 
         CALL XZEROF(STORE(ISCRAT),N12)
         DO I = 0,N12-1
- 		  DO J = 0,N12-1
-		   IF ( J .GE. I ) THEN  ! 1,1; 2,1; 2,2; 3,1; etc.
-			   II = N12-I
-     		   IROW = N11-((II)*(II+1)/2)  ! -0,-1,-3,-6,-10...
-		       IOFF = J-I
-		   ELSE
-			   JJ = N12-J
-    		   IROW = N11-((JJ)*(JJ+1)/2) 
-		       IOFF = I-J
-		   END IF
-  		   
-c		   WRITE(123,'(F15.10)') STR11(L11+IROW+IOFF)
+          DO J = 0,N12-1
+           IF ( J .GE. I ) THEN  ! 1,1; 2,1; 2,2; 3,1; etc.
+               II = N12-I
+               IROW = N11-((II)*(II+1)/2)  ! -0,-1,-3,-6,-10...
+               IOFF = J-I
+           ELSE
+               JJ = N12-J
+               IROW = N11-((JJ)*(JJ+1)/2) 
+               IOFF = I-J
+           END IF
+           
+c          WRITE(123,'(F15.10)') STR11(L11+IROW+IOFF)
 
-		   WRITE(CMON,'(4(A,I4),A)') 'TMP(',I, ') += VCV(',I, 
-     1		                        ',',J, ') * IOUT(',J ,')'
-   	       CALL XPRVDU (NCVDU,1,0)
-		   WRITE(CMON,'(2(A,I4),A,F15.12)') 'VCV(',I,  ',',J, ') = ', 
+           WRITE(CMON,'(4(A,I4),A)') 'TMP(',I, ') += VCV(',I, 
+     1                              ',',J, ') * IOUT(',J ,')'
+           CALL XPRVDU (NCVDU,1,0)
+           WRITE(CMON,'(2(A,I4),A,F15.12)') 'VCV(',I,  ',',J, ') = ', 
      1                              STR11(L11+IROW+IOFF)
-   	       CALL XPRVDU (NCVDU,1,0)
-		   STORE(ISCRAT+I) = STORE(ISCRAT+I) 
-     1	 	   + STORE(IOUT+J)*STR11(L11+IROW+IOFF)
-	      END DO
-		END DO
+           CALL XPRVDU (NCVDU,1,0)
+           STORE(ISCRAT+I) = STORE(ISCRAT+I) 
+     1         + STORE(IOUT+J)*STR11(L11+IROW+IOFF)
+          END DO
+        END DO
 
         CALL XMLTMM(STORE(ISCRAT),STORE(IOUT),ZZZ,1,N12,1)
-				
+                
         ESD = SQRT(ZZZ(1))
       ENDIF
 c
@@ -1156,7 +1156,7 @@ C--VCV not available
       CALL XPCLNN(LN)
       WRITE ( CMON,2901)
       CALL XPRVDU(NCVDU, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') CMON(1 )(:)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 2901  FORMAT(' Covariance matrix not available. Do some refinement.')
       GOTO 2650
 C
@@ -1252,7 +1252,7 @@ C
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XCONST.INC'
-	  INCLUDE 'STORE.INC'
+      INCLUDE 'STORE.INC'
       DIMENSION RI(3,2)
       DIMENSION RDEL(3)
 C
@@ -1395,44 +1395,44 @@ C      column and row addresses
                STORE(ISYMM+ICELL) = SMAT(J,K)
 c               STORE(ISYMM+ICELL) = 1.0
 c               WRITE(CMON,'(A,I4)')'Symm add ',ICELL
-c         	   CALL XPRVDU (NCVDU,1,0)
-			END DO
-		 END DO
+c              CALL XPRVDU (NCVDU,1,0)
+            END DO
+         END DO
          ISTACK = ISTACK-LSTACK
-	  END DO
+      END DO
 
   
       DO JJ = 0,5
         WRITE(CMON,'(A,6F10.6)')'Symm ',(STORE(JJ*6+ISYMM+KK),KK=0,5)
-		CALL XPRVDU (NCVDU,1,0)
-	  END DO
+        CALL XPRVDU (NCVDU,1,0)
+      END DO
   
 C WORK2(6x1) = CELL EDGES(6x6) * INPUT VECTOR (6x1)
       DO I=0, NATOM-1
-	    DO J = 0,2
+        DO J = 0,2
           STORE(IWORK2+J+(I*3)) = STORE(JFUNC+J+(I*3)) * STORE(L1P1+J)
-		ENDDO
+        ENDDO
       ENDDO
 
- 	  DO JJ = 1, 6
+      DO JJ = 1, 6
         WRITE(CMON,'(A,F10.6)')'WORK2 ',STORE(JJ-1+IWORK2)
-		CALL XPRVDU (NCVDU,1,0)
-	  END DO
+        CALL XPRVDU (NCVDU,1,0)
+      END DO
 
       DO JJ = 0,5
         WRITE(CMON,'(A,6F10.6)')'Symm ',(STORE(JJ*6+ISYMM+KK),KK=0,5)
-		CALL XPRVDU (NCVDU,1,0)
-	  END DO
-	  
+        CALL XPRVDU (NCVDU,1,0)
+      END DO
+      
 C WORK (6x1) = SYMM(6x6) * WORK2(6x1)
       CALL XMLTMM (STORE(ISYMM),STORE(IWORK2),STORE(IWORK),NWP,NWP,1)
 
-	  DO JJ = 1, 6
+      DO JJ = 1, 6
         WRITE(CMON,'(A,F10.6)')'WORK ',STORE(JJ-1+IWORK)
-		CALL XPRVDU (NCVDU,1,0)
-	  END DO
+        CALL XPRVDU (NCVDU,1,0)
+      END DO
 
-	  
+      
 C----- now loop over the stored atoms
       ISTACK = JSTACK+(NATOM-1)*LSTACK
       IPART = JPART
@@ -1448,7 +1448,7 @@ C----- now loop over the stored atoms
 C 
 C      FORM POSITIONAL COORDINATE ERROR STACK
 C
-  	     M12TMP = ISTORE(ISTACK+12)
+         M12TMP = ISTORE(ISTACK+12)
          KB = JB
          CALL XFPCES (M12TMP,JB,NWS,ISTORE(IPART))
 
@@ -1456,35 +1456,35 @@ C
          CALL XPRVDU (NCVDU,1,0)
 
          DO JJ = 1, ISTORE(IPART)
-		   DO KK = 0,2
-		     NPART = KK+(JJ-1)*3
+           DO KK = 0,2
+             NPART = KK+(JJ-1)*3
              WRITE(CMON,'(A,4I9,F10.6)')'Part ',NPART+1,
      1      ISTORE(KB+NPART*4),ISTORE(KB+1+NPART*4),
      1      ISTORE(KB+2+NPART*4),STORE(KB+3+NPART*4)
-    	     CALL XPRVDU (NCVDU,1,0)
+             CALL XPRVDU (NCVDU,1,0)
              IF ( ISTORE(KB+NPART*4) .GT. 0 ) THEN
                IIWORK = (I-1)*3 + KK
                IIOUT = ISTORE(KB+NPART*4)-1
-			   RWEIG = STORE(KB+3+NPART*4)
+               RWEIG = STORE(KB+3+NPART*4)
                WRITE(CMON,'(2(A,I6),A,F10.6)')'IIWORK ',IIWORK,
      1           'IIOUT ',IIOUT,
      1           'RWEIG ',RWEIG
-    	       CALL XPRVDU (NCVDU,1,0)
-			   STORE(IOUT+IIOUT) = STORE(IOUT+IIOUT) + 
+               CALL XPRVDU (NCVDU,1,0)
+               STORE(IOUT+IIOUT) = STORE(IOUT+IIOUT) + 
      1                             RWEIG * STORE(IWORK+IIWORK)
-			 END IF
-		   END DO
+             END IF
+           END DO
          END DO
          IPART = IPART+1
          ISTACK = ISTACK-LSTACK
       END DO
 
 
-	  DO JJ = 1, N12
+      DO JJ = 1, N12
         WRITE(CMON,'(A,F10.6)')'IOUT ',STORE(JJ-1+IOUT)
-		CALL XPRVDU (NCVDU,1,0)
-	  END DO
-	  
+        CALL XPRVDU (NCVDU,1,0)
+      END DO
+      
       JGETVCV = 1
       GOTO 1900
 1850  CONTINUE
@@ -1494,4 +1494,4 @@ C      FAIL
       RETURN
       END
 
-	  
+      

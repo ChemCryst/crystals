@@ -25,6 +25,7 @@ goto BUILD
 rem contour has not been updated to work woth the new graphics/compiler
 rem %F77% /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\contour\contour.F %BITS_FOPTS% /MD
 %F77% /fpp %FDEF% /define:_%COMPCODE%_ /I..\crystals ..\bits\convplat\convplat.F %BITS_FOPTS% /MD || ( make_err.bat )
+%F77% /fpp %FDEF% /define:_%COMPCODE%_ /I..\crystals ..\bits\convplat\platanom.F %BITS_FOPTS% /MD || ( make_err.bat )
 %F77% /fpp %FDEF% /define:_%COMPCODE%_ /I..\crystals ..\bits\csd2cry\csd2cry.F obj\nobuf.obj %BITS_FOPTS% /MD || ( make_err.bat )
 %F77% /fpp %FDEF% /define:_%COMPCODE%_ /I..\crystals ..\bits\delred\delred.F obj\nobuf.obj %BITS_FOPTS% /MD || ( make_err.bat )
 %F77% /fpp %FDEF% /define:_%COMPCODE%_ /I..\crystals ..\bits\dipin\dipin.F obj\nobuf.obj %BITS_FOPTS% /MD || ( make_err.bat )

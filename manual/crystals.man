@@ -277,6 +277,15 @@ For a simple example, see LIST 1, section #RLIST01#.
  is likely to be very site-specific.
 #Q
 
+#I\RELEASE  devicename filename#
+#PThe file currently open on 'devicename' is closed, and a new file opened
+ on that device if necessary. The file just closed can be examined using
+ the \TYPE command. The filename parameter is optional. If it is
+ specified, the new file will be opened with that name.
+#PUseful devices currently available include PRINTER, PUNCH, LOG and MONITOR.
+
+#Q
+
 #I\OPEN devicename filename#
 #PThis command is similar to RELEASE, except that a wider range of
  device
@@ -297,18 +306,24 @@ For a simple example, see LIST 1, section #RLIST01#.
 #I\CLOSE devicename #
 #PAny file on specified device is closed.
 
-#I\RELEASE  devicename filename#
-#PThe file currently open on 'devicename' is closed, and a new file opened
- on that device if necessary. The file just closed can be examined using
- the \TYPE command. The filename parameter is optional. If it is
- specified, the new file will be opened with that name.
-#PUseful devices currently available include PRINTER, PUNCH, LOG and MONITOR.
-
 #Q
 #I\APPEND devicename filename#
 #POutput to the specified device is appended to any output already in
 the specified file.
 #Q
+
+
+#Q
+#I\FLUSH devicename #
+#PBuffered output on the specified device is flushed to the connected file
+ so that it can be seen with an editor.
+#J
+      e.g.
+      \FLUSH LOG
+      \FLUSH PRINT
+
+#Q
+
 #IDevice names#
 #PDevices are names used inside CRYSTALS to refer
 to files that it has opened. Deviecs recognised by CRYSTALS are:
@@ -320,7 +335,7 @@ to files that it has opened. Deviecs recognised by CRYSTALS are:
 # PRINTER  - the listing file (bfilenn.lis by default)
 # PUNCH    - the punch file (bfilenn.pch by default)
 # LOG      - record of all commands issued (bfile.log by default)
-# MONITOR  - obsolete, used to be text that appeared on the screen
+# MONITOR  - Copy of text that appears on the screen
 # SPY      - obsolete, used to collect usage data (locally!).
 # NEWDISC  - a second database, open during \PURGE commands.
 # COMMANDS - the file commands.dsc defines the syntax and data 
@@ -430,8 +445,8 @@ If  state = OFF  then subsequent commands are not written
  USE file called by it.
  Because the log file is a direct copy of the users commands, it may
  subsequently be used (probably after modification) as a control file.
-#I\SET MONITOR state#
-#PIf 'state' = ON, then all input is reflected in the monitor file.
+#I\SET MIRROR state#
+#PIf 'state' = ON, then all input is reflected in the monitor or list file.
  If 'state' = OFF, monitoring.
  is suppressed. Any change made to
  the monitoring state applies only to the current level of USE file and
@@ -478,6 +493,14 @@ If  state = OFF  then subsequent commands are not written
 #PThis command is used to control output to the 'printer' file. The
  state
  OFF suppresses printer output.
+#I\SET MONITOR state#
+#PThis command is used to control output to the 'monitor' file. 
+#J 
+ OFF  suppresses all output 
+ ON   copy screen output to monitor
+ SLOW copy all screen output PLUS output for graphics to monitor.
+ (Mainly used for debuging graphics)
+#J
 #I\SET OPENMESSAGE state#
 #PThis command is used to enable or disable file handling messages.
  OFF suppresses messages.
@@ -497,7 +520,11 @@ If  state = OFF  then subsequent commands are not written
 during filtering. Arguments are Io or Ic, default is Io.
 See "The use of partial observations, partial models and partial residuals
 to improve the least-squares refinement of crystal structures."
-A. David Rae, Crystallography Reviews, 2013. Vol. 19, No. 4, 165,
+A. David Rae, Crystallography Reviews, 2013. Vol. 19, No. 4, 165.
+#PIo is appropriate during initial stages of an analysis, but once the R factor
+drops below 10-15%, Ic gives an unbiassed filtering of the weak reflections. A
+threshold ratio of 1 or 2 is useful if there are a very large number of very
+weak reflections.
 #Q
 #YFiles#
 #PWhen CRYSTALS runs it stores all crystallographic data in a single file,
@@ -2721,6 +2748,9 @@ for publication.
       G - SHELX output with statistically generated sigmas
       H - Output the reflections in 'cif' format. F^s, scale of Fc
       I - Outputs all set items as a LIST 6.
+      J - Used to convert pre-2016 esds to more precise ones. 
+
+     *F - * as above, F indicates that LIST 28 filters will be applied
 #
 #PLIST 6 is also output by the links to the direct methods programs. In
  these files, the magnitudes of Fo or Fsq are scaled so that the largest
@@ -3555,9 +3585,10 @@ For example:
  taken when computing Fourier maps. See the sections on Fourier maps, 
  #RFOURIER# and DIFABS #RDIFABS#.  
 #PIf FRIEDEL is set to "YES", Friedel's law is applied whatever the 
- space group.  A flag is set in the 'phase' slot for each reflcetion 
- to indicate if the law was invoked or not.  If the data is then
- sorted byt not merged, Friedel pairs will be adjacent and flagged. Use
+ space group.  A flag is set in the 'JCODE' slot for each reflcetion 
+ to indicate if the law was invoked or not. 
+ DO NOT USE excluded JCODES IN \MERGE. If the data is then
+ sorted but not merged, Friedel pairs will be adjacent and flagged. Used
  by the function "\TON" for evaluating absolute configuration.
 #
 #Q
@@ -6121,6 +6152,7 @@ ther SERIAL of kept atoms (default 0) otherwise there are no parameters.
                 Kabsch method and applied. This algorithm
                 preserves chirality.
        4        Enable improper rotation in Kabsch method
+       5        Use identity matrix as rotation component
 #
 #DGROUP NUMBER#
 #PThis directive specifies the number of atoms in the groups to be matched.
@@ -7779,6 +7811,16 @@ are only going to be calculated.
  U(IJ)'S    VALUE, E.S.D= BOND1, BOND2
  A-VIBRATIONS VALUE, E.S.D= BOND1, BOND2
  A-U(IJ)'S    VALUE, E.S.D= BOND1, BOND2
+ UTLS              E.S.D. [ m ] ATOM1 [ ATOM2 ] ...
+ UEQIV             E.S.D. ATOM1 [ ATOM2 ] ...
+ UVOL              E.S.D. ATOM1 [ ATOM2 ] ...
+ UQISO             E.S.D. ATOM1 [ ATOM2 ] ...
+ UEIG              E.S.D. ATOM1 [ ATOM2 ] ...
+ UALIGN            E.S.D. ATOM1 [ ATOM2 ] ...
+ URIGU             E.S.D. ATOM1 TO ATOM2 [, ATOM3 TO ATOM4 ] ...
+ UPERP             E.S.D. ATOM1 TO ATOM2 [ TO ATOM3 ] [, ATOM4 TO ATOM5 [ TO ATOM6 ] ] ...
+ UPLANE            E.S.D. ATOM1 TO ATOM2 TO ATOM3 [, ATOM4 TO ATOM5 TO ATOM6 ] ...
+ ULIJ              E.S.D. ATOM1 TO ATOM2 TO ATOM3 [, ATOM4 TO ATOM5 TO ATOM6 ] ...
  PLANAR            E.S.D  FOR 'ATOM SPECIFICATIONS'
  LIMIT             E.S.D  FOR 'PARAMETER SPECIFICATIONS'
  ORIGIN            E.S.D  FOR 'PARAMETER SPECIFICATIONS'
@@ -8214,6 +8256,126 @@ are only going to be calculated.
  with the current model.)
 #
 
+
+#DUTLS              E.S.D. [ m ] ATOM1 [ ATOM2 ] ...#
+   Restrain ADPs of all or the m first atoms listed to calculated ADPs derived 
+   from a TLS model from all the atom list.
+#J
+ UTLS 0.01 3 F(1) F(2) F(3) C(1) C(2)
+#
+#P A TLS model is generated using F(1), F(2), F(3), C(1) and C(2). This model 
+ is then used to calculate theoritical ADPs. These ADPs are then used as targets
+ for the restraints on atoms F(1), F(2) and F(3) with an e.s.d. of 0.01.
+#
+
+   
+#DUEQIV             E.S.D. ATOM1 [ ATOM2 ] ...#
+   Restrain Ueqiv of the ADPs of all the atom listed to be equal
+#J
+ UEQIV 0.01 F(1) F(2) F(3)
+#
+#P Ueq is the arthmetic mean of the principal axes of an ADP. 
+ the current Ueq is calculated for each atom and an average calculated.
+ If an atom is non positive definite, its Ueq is not used for the calculation of the mean
+ but the atom is included in the restraint. Ueq of each atom is then restrained to
+ the average.
+#
+   
+   
+#DUVOL              E.S.D. ATOM1 [ ATOM2 ] ...#
+   Restrain Ugeom of the ADPs of all the atom listed to be equal
+#J
+ UVOL 0.01 F(1) F(2) F(3)
+#
+#P Ugeom is the geometric mean of the principal axes of an ADP. 
+ the current Ugeom is calculated for each atom and an average calculated.
+ If an atom is non positive definite, the atom is excluded from the restraint. 
+ Ugeom of each atom is then restrained to the average.
+#
+
+
+#DUQISO             E.S.D. ATOM1 [ ATOM2 ] ...#
+   Restrain each atom listed to be isotropic
+#J
+ UQISO 0.01 F(1) F(2) F(3)
+#
+#P The length of the principal component of each atom are restrained to its average.
+ Each atom is treated independantly.
+#
+   
+   
+#DUEIG              E.S.D. ATOM1 [ ATOM2 ] ...# 
+   Restrain each atom listed to be spheroid (2 smallest principle axes to be equal)
+#J
+ UEIG 0.01 F(1) F(2) F(3)
+#
+#P The length of the two smallest principal component of each atom are restrained to its average.
+ Each atom is treated independantly and the third principal component is free.
+#
+  
+   
+#DUALIGN            E.S.D. ATOM1 [ ATOM2 ] ...#
+   Restrain the ADPs of all the atom listed to be aligned to their average direction
+#J
+ UALIGN 0.01 F(1) F(2) F(3)
+#
+#P The matrix of eigenvectors is calculated for each ADP and an average calculated.
+ If an atom is non positive definite, the atom is excluded from average but keep for the restraint. 
+ Each matrix of eigenvectors is then restrained to the average. The eigenvalues remain free.
+#
+
+  
+#DURIGU             E.S.D. ATOM1 TO ATOM2 [, ATOM3 TO ATOM4 ] ...#
+   Restrain the ADPs listed using enhanced rigibody restraints
+#J
+ URIGU 0.01 F(1) TO F(2), F(2) TO F(3)
+#
+#P Implementation of the RIGU restraint from SHELXL. See 
+ #Uhttps://dx.doi.org/10.1107%2FS0108767312014535 Thorn, A., et. al., Acta Cryst. Sect A, 2012, Vol. 68, pp. 448-451#
+#   
+
+
+#DUPERP             E.S.D. ATOM1 TO ATOM2 [ TO ATOM3 ] [, ATOM4 TO ATOM5 [ TO ATOM6 ] ] ...#
+   Restrain the ADP of the first atom of the group to be perpendicular to the direction 
+   of the 2 atoms of the group or the bissector define by ATOM1 TO ATOM2 and ATOM1 TO ATOM3
+#J
+ UPERP 0.01 F(1) TO C(1), F(2) TO C(1)
+#
+#P The ADP of the atom F(1) and F(2) are restrained to be perpendicular to the direction
+ F(1)-C(1) and F(2)-C(2) respectively.
+#
+
+#J
+ UPERP 0.01 C(2) TO C(1) TO C(3)
+#
+#P The ADP of the atom C(2) is restrained to be perpendicular to the direction
+ define by the bissector of C(1)-C(2)-C(3).
+#
+
+
+#DUPLANE            E.S.D. ATOM1 TO ATOM2 TO ATOM3 [, ATOM4 TO ATOM5 TO ATOM6 ] ...#   
+   Restrain the ADP of the first atom of the group to be perpendicular to the plane 
+   formed by the 3 atoms of the group
+#J
+ UPLANE 0.01 F(1) TO C(1) TO C(2)
+#
+#P The ADP of the atom F(1) is restrained to be colinear to the direction
+ define by the normal of the plane defined by F(1), C(1) and C(2).
+#
+
+ 
+#DULIJ              E.S.D. ATOM1 TO ATOM2 TO ATOM3 [, ATOM4 TO ATOM5 TO ATOM6 ] ...#
+   Restrain the ADP of all the first atom (ATOM1, ATOM4...) of the groups to be equal in the local coordinate 
+   basis defined by all the atom of each group (ATOM1, ATOM2, ATOM3; ATOM4, ATOM5, ATOM6...).
+#J
+ ULIJ 0.01 F(1) TO C(1) TO C(2), F(2) TO C(1) TO C(2)
+#
+#P The Uij terms of the ADP of the atom F(1) and F(2) are restrained to be equal
+ in their repesctive local coordinate system defined by F(1), C(1), C(2) and
+ F(2), C(1), C(2).
+#
+
+
 #YGeneral restraints#
 #HSgeneral#
 #PThe 'general restraint' enables
@@ -8456,6 +8618,11 @@ are only going to be calculated.
  with a summary on the terminal. If the LEVEL is LOW, only restraints
  where the calculated value differs significantly from the target are
  printed, otherwise all restraints are printed.
+#PIf a cycle of refinement is done before issuing the command, the leverages 
+ of all the restraints are calculated and printed on the screen and the lis file.
+ A leverage of 0 means that the restraint has no influence on the parameter, 
+ a leverage of 1 means that the restraint completely determine the value of the parameter,
+ a value between 0 and 1 indicate that bot the X-ray data and the restraint contribute to the parameter.
 #
 #XLIST 4#
 #XWeighting schemes#
@@ -8615,7 +8782,7 @@ factor control, see section #RLIST23#).
  to define the weighting scheme, P(1) is the first such
  parameter and P(NP) the last parameter.
 #PThe available weighting schemes are :
-#N  36#
+#N  53#
 #J
  1.     sqrt(W) = Fo/P(1), Fo < P(1) OR Fo = P(1)
         sqrt(W) = P(1)/Fo, Fo > P(1)
@@ -8726,6 +8893,14 @@ factor control, see section #RLIST23#).
  This scheme can in principle be introduced at any time, but the
  parameters P(i) are best optimised near the end of a refinement.
  Typical values for CAD4 data are: p(1)=.001, p(2)=3.0 and p(4)=1.
+#
+#YAuto-Statistical Weights, 17#
+#HSstat#
+ This scheme can in principle be introduced at any time, but the
+ parameters P(i) are best optimised near the end of a refinement.
+ The parameters are optimised automatically by a grid-search of 
+ the residual as a function of intensity and resolution.
+#
 #YPrinting LIST 4#
 #HSprint4#
 #Pof LIST 4 may be printed with:
@@ -8744,35 +8919,30 @@ factor control, see section #RLIST23#).
 #PIf the weighting scheme is changed, new weights are automatically
  computed for the next structure factor calculation. The computation of
  weights can be forced at any time with \WEIGHT.
-#I\WEIGHT INPUT=#
+#I\WEIGHT INPUT= FACTOR=#
 #KINPUT#
 Indicates which reflection list to use.
 #J
       6      Default
       7      Alternative reflection list
 #
-#Q
-#DLIST LEVEL=#
-#KLEVEL#
-LEVEL is OFF, LOW, MEDIUM or HIGH 
-#
-#YRe-weighting the reflections - REWEIGHT#
-#HSreweight#
-#I\REWEIGHT INPUT= FACTOR=#
-#KINPUT#
-Indicates which reflection list to use.
-#J
-      6      Default
-      7      Alternative reflection list
-#
+
 #KFACTOR#
 # If FACTOR is less or equal zero, the code tries to compute a value
  which will make S (GoF) about unity.  It is important that the GoF 
  stored in LIST 30 is up to date. The SCRIPT REWEIGHT will try to do this 
  for you.
+# If FACTOR is unity, the re-weighting factor is taken from LIST 4.
+ This is the default action
+#P
+If FACTOR is greater than zero and not exactly unity,
+ all weights will be multiplied by this amount.  
 #
-If FACTOR is greater than zero, all weights will be multiplied by this 
-amount.  The default value is unity.
+
+#Q
+#DLIST LEVEL=#
+#KLEVEL#
+LEVEL is OFF, LOW, MEDIUM or HIGH 
 #
 
 #Q
@@ -8973,12 +9143,13 @@ including negative ones.
  \SFLS  INPUT=
  CALCULATE LIST= MAP= /Fo/= THRESHHOLD=
  SCALE LIST= MAP= /Fo/=
- REFINE LIST= MAP= /Fo/= PUNCH= MATRIX= MONITOR= INVERTOR=
+ REFINE LIST= MAP= /Fo/= PUNCH= MATRIX= MONITOR= INVERTOR= CALCULATE=
  SHIFT  KEY= KEY=
  MAXIMUM  KEY= KEY=
  FORCE  KEY= KEY=
  SOLVE MONITOR= MA=P /Fo/= PUNCH= MATRIX=
  VECTOR MONITOR= MAP= /Fo/= PUNCH= MATRIX=
+ HUGE=
  END
 #
 #J
@@ -9210,14 +9381,14 @@ default value is 4.0
  This parameter has the same options as for
  the  CALCULATE  directive above.
 #KPUNCH#
- Controls punching LIST 5 (the model parameters) to the .PCH file
+ Controls punching results to files
 #N   2#
 #J
-      NO   -  Default value
-      YES
-#
- If  PUNCH  is  YES, LIST 5 is punched after the current cycle of
- refinement.
+      NO  -  Default value
+      YES  -  write the model parameters to a *.pch file
+      MATLAB  - write the design matrix, normal matrix, inversion and weights to matlabs files *.m
+      TEXT  - write the design matrix, normal matrix, inversion and weights to ASCII files *.dat
+      NUMPY  - write numpy files for python plus a python script for the user to use
 #KMATRIX#
  Controls re-use of the normal matrix
 #N   2#
@@ -9246,28 +9417,21 @@ default value is 4.0
  SHIFT RATIO exceeds 3.0, and/or the SHIFT/ESD  exceeds 1.0 . Only those
  atoms in LIST 5 containing one or more refinable parameters are listed.
 #KINVERTOR#
- Two matrix inversion methods are provided.
+ Six matrix inversion methods are provided.
 #N   2#
 #J
-      CHOLESKI  -  Default value
-      EIGENVALUE
+      AUTO - Default value (Auto-adaptive single precision/double precision LDLT inversion)
+      LDLT - single precision Robust Cholesky decomposition of a matrix with pivoting
+      EIGENVALUE - Eigenvalue decomposition + filtering on small eigenvalues then inversion
+      DP_LDLT - double precision Robust Cholesky decomposition of a matrix with pivoting
+      XCHOLESKI - original crystals Choleski decomposition
+      CHOLESKI - Standard Choleski inversion
 #
- The default Choleski invertor is suitable for most well conditioned problems.
- The alternative Eigenvalue invertor is suitable for ill-conditioned cases,
- such as those involving pseudo-symmetry. It is slower than the Choleski
- method and cannot handle such large normal matrices. The memory
- required is almost three times that used for each block in the Cholesky
- method.
-#KAUGFACT#
- This is a constant to be added to all eigen values during eigenvalue
- inversion. The default value is 0.0.
-#KFILTER#
- The inverse of eigen values below this threshold are set to 0.0 rather than
- 1./value. It filters out latent singularities. The default is 0.00005
-#KDISCRIMINATOR#
- If the ratio of two adjacent eigenvalues in a ranked listing exceeds this
- value, the inverse of the smaller and all subsequent eigen values is set
- to 0.0. The default is 100.0
+ The AUTO method is suitable for most problem including moderatly ill condition problems.
+ Crystals will switch automatically from single precision to double precision for the inversion when needed.
+ The eigenvalue decomposition should be used with care, the XCHOLESKI method is kept for historical purpose,
+ The LDLT and DP_LDLT can be use to forced crystals to use single or double precision. Beware of precision loss
+ in single precision. The CHOLESKI method is deprecated.
 #DSHIFT  KEY = VALUE  KEY = VALUE .  .  .  .#
 #PThis directive sets the shift factor for the specified cycle of
  refinement. (The shift factor is the amount by which the calculated
@@ -9283,7 +9447,7 @@ default value is 4.0
  The following  KEYS  are recognized :
 #N   7#
 #J
-      GENERAL   This refers to all the variable parameters
+      GENERAL   This refers to all the atomic, batch and element parameters
       OVERALL   This refers to the overall parameters
 
       OCC     U[ISO]      X       Y       Z
@@ -9327,6 +9491,21 @@ default value is 4.0
  the eigenvalues of the normal matrix. Although no new matrix is produced
  by this directive, sufficient space must be allocated for the normal
  matrix, since it is loaded when the new coordinates are calculated.
+#KHUGE#
+#PThis directive tuned the refinement for big structures. It performs the
+ the normal matrix accumulation in single precision, 
+ the accumulation of the right and side is also done in single precision.
+ The inversion is still using double precision but with a 
+ Choleski decomposition faster than the default auto-adaptive LDL^t decomposition. 
+ Bigger structures tend to be more ill-conditioned so inversion needs to be done in double precision.
+ These changes could potentially lead to a less stable refinement but it is unlikely, 
+ the default refinement is just very conservative.
+#KCALCULATE
+ LEVERAGES  - CALCULATE the leverages and t-values. Warning: shifts are not applied in this case; 
+ default output is numpy but can be changed to TEXT using PUNCH. MATLAB and pch is not supported at the moment.
+#
+ This directive CALCULATE is differente from the previous directive and is applied under REFINE.
+ 
 #KMONITOR#
  This parameter has the same options as for
  the  CALCULATE  directive above.
@@ -10880,13 +11059,17 @@ section #RLIST20#).
 #N   3#
 #J
       OFF
-      LOW   -  Default
-      HIGH
+      LOW  
+      MEDIUM
+      HIGH   -  Default
+      DISTANCE
+      (DEBUG)
 #
- If  LIST  is  LOW , the default, then the listing is in a compressed
+ If  LIST  is  LOW the the listing is in a compressed
  format, without symmetry information. If LIST is OFF, no output is sent
  to the listing file unless PUNCH is PUBLISH, when a copy of the publication
- listing appears in the listing file.
+ listing appears in the listing file. If LIST is DISTANCE, a simplified table of
+ distances is output.
 #
 #KPUNCH=#
  This controls the output sent to the 'punch' file.
@@ -13597,7 +13780,7 @@ OVER 1 Scale Du(iso) Ou(iso) Polarity Enantiopole Extinction
 #P
 There are three REAL records
 #
-FLAC holds information about the Absolute Structure
+FLAC(0) holds information about the Absolute Structure
 #J
 Slope of the npp for the refinement
 Slope of the npp for the Bijvoet pairs
@@ -13605,6 +13788,19 @@ Hole-in-one value and su
 Difference or Quotient value and su
 Hooft y value and su
 Histogram value and su
+#
+FLAC(1) Holds the numbers of reflections used for various calculations:
+#J
+No of Friedel Pairs found
+No of Friedel Pairs after applying filters 1,2 & 5
+No of Friedel Pairs used for the normal probability plot
+Not used
+No of Friedel Pairs used for the Parsons method, applying filters 1,2,3 & 5
+Not used
+No of Friedel Pairs used for the Parsons method, applying filters 1,2,3 & 5
+Not used
+No of Friedel Pairs used for the histogram method, applying filters 1,2,3,4 & 5
+Not used
 #
 HOOF holds the Hooft probabilities
 #J

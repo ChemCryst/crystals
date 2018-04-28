@@ -95,8 +95,18 @@ c total real and imaginary scattering
       fit=0.
       write(12,'(a,f5.2)')  '# d-factor=',dmult
       do i=1,8
-            read(11,'(a)')ctemp
-            write(12,'(a)')ctemp(1:80)
+        read(11,'(a)')ctemp
+        if(ctemp(1:2) .eq.'ST') then
+          ctemp(14:14) = '2'
+        else if (ctemp(1:4) .eq. 'READ') then
+          ctemp(15:15) = '3'
+        else if (ctemp(1:3) .eq. 'FOR') then
+          write(12,'(a)') 'CONT A-IMAG B-IMAG'
+          ctemp(55:61) = '4f11.5)'
+        else if (ctemp(1:3).eq. 'END') then
+          write(12,'(a)') 'CONT A-IMAG B-IMAG'
+        endif
+        write(12,'(a)')ctemp(1:80)
       enddo
 c
       pi=3.14159
@@ -155,21 +165,30 @@ c Get normal, real and imaginary parts
              frt=frt+fr
              fit=fit+fi
       enddo
-      d = fit/(frn+frt)
-      d = d*dmult
-      anewa=  apart-d*bpart
-      bnewb=d*apart+  bpart
+c      d = fit/(frn+frt)
+c      d = d*dmult
+
+c updated version 
+       c = 1.0 + (frt/frn)
+       d = fit/frn     
+      
+      
+c pseudo imaginary parts:
+      aimag=  -d*bpart
+      bimag=  d*apart
+      areal = c*apart
+      breal = c*bpart
       write(12,'(3i4,a)') ih,ik,il,ctemp(1:53)
-      write(12,'(2f8.2)') anewa, bnewb
+      write(12,'(4f11.5)') areal, breal, aimag, bimag
       goto 300
 400   CONTINUE
       WRITE(*,*) 'Error during input of solvent formula'
 200   continue
       write(12,'(i4//)') -512
       write(*,*)'Number of reflections read =',nref, '  dmod=',dmult
-      write(*,*)'Press return to finish'
-      read(*,'(a)') ctemp
-      stop
+c      write(*,*)'Press return to finish'
+c      read(*,'(a)') ctemp
+c      stop
       end
 c
 c

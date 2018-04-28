@@ -2,6 +2,7 @@
 %% RUN PRE-PREPARED FILES IN SUPERFLIP                                          
 %%                                                                              
 % VARIABLE CHARACTER C67 CFILE NEXTWORD SPACEREADOLD                            
+%  VARIABLE INTEGER EXITSTATUS                                                    
 %% variables used by the question box below                                     
 % VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2                         
 % VARIABLE LOGICAL ANSWER SFILERR SPGTRIC                                       
@@ -12,14 +13,16 @@
 %  EVALUATE SGOK = FALSE                                                        
 %  EVALUATE SPGTRIC = FALSE                                                     
 %%                                                                              
-#ifdef CRY_OSWIN32
-%      COPY '#SPAWN + "CRYSDIR:superflip.EXE" sflip.inflip'                     
-#else
-%      COPY '#SPAWN % "CRYSDIR:superflip" sflip.inflip' 
-#endif
+%   IF ( FILEEXISTS ( 'sflip.inflip' ) ) THEN                                  
+%      COPY '#SPAWN % "CRYSDIR:superflip.exe" sflip.inflip'                     
+%      TRANSFER 'EXIT CODE: ' // CHARACTER ( EXITSTATUS ) TO DISPLAY
+%   ELSE
+{E *** No input file available. Run "Create/Run file" first
+%      FINISH                                                                   
+%   END IF                                                                        
 %%djwapr11      COPY '#TYPE sflip.sflog'                                        
 %% check the Superflip log-file for convergence indications                     
-%  EVALUATE CFILE = 'SFLIP.SFLOG'                                               
+%  EVALUATE CFILE = 'sflip.sflog'                                               
 %  TRANSFER '#OPEN SCPD "' // CFILE // '"' TO CRYSTALS                          
 %                                                                               
                                                                                 
@@ -58,7 +61,7 @@
 %%  At some occasions no convergence is detected, but acceptable symmetry is    
 %%  present; this means that the structure is solved anyhow, so check for       
 %% symmetry agreement                                                           
-%  EVALUATE CFILE = 'SFLIP.SFLOG'                                               
+%  EVALUATE CFILE = 'sflip.sflog'                                               
 %  TRANSFER '#OPEN SCPD "' // CFILE // '"' TO CRYSTALS                          
 %                                                                               
 %                                                                               
@@ -103,7 +106,7 @@
 %%                                                                              
 %% Get  the old space group name for information, take it from the sflip.in     
 %%                                                                              
-%  EVALUATE CFILE = 'SFLIP.INFLIP'                                              
+%  EVALUATE CFILE = 'sflip.inflip'                                              
 %  TRANSFER '#OPEN SCPD "' // CFILE // '"' TO CRYSTALS                          
 %                                                                               
 %                                                                               
@@ -153,9 +156,9 @@
 %                                                                               
 %                                                                               
 %  IF ( ( SFLIPSOL .EQ. TRUE ) .AND. ( SFLIPSYM .EQ. TRUE ) ) THEN              
-{E Superflip solved the structure                                               
-{E There is convergence and also good symmetry agreement.                       
-{E Continue analysing the symmetry                                              
+{I Superflip solved the structure                                               
+{I There is convergence and also good symmetry agreement.                       
+{I Continue analysing the symmetry                                              
 %  END IF                                                                       
 %                                                                               
 %                                                                               
@@ -192,9 +195,12 @@
 %      FINISH                                                                   
 %   END IF                                                                      
 %  IF SGOK .EQ. FALSE THEN                                                      
-{E Space Group change recommended                                               
-{E The superflip SCRIPTS will close down to enable you to re-input              
-{E the basic data with the suggested space group                                
+{I
+{I A Space Group change was recommended.
+{I The superflip SCRIPTS will close down to enable you to re-input              
+{I the basic data with the suggested space group since the systematic
+{I absences may now be different.                               
+{I
 %      FINISH                                                                   
 %  END IF                                                                       
 %  IF ( FILEEXISTS ( 'sflip.inflip' ) ) THEN                                    
@@ -203,11 +209,8 @@
 %  END IF                                                                       
 %      TRANSFER '#FOREIGN SUPERFLIP IN= ' // C67 // ' ' TO CRYSTALS             
 %      COPY 'END'                                                               
-#ifdef CRY_OSWIN32
-%      COPY '#SPAWN + "CRYSDIR:edma.EXE" sflip.inflip'                          
-#else
-%      COPY '#SPAWN % "CRYSDIR:edma" sflip.inflip'                          
-#endif
+%      COPY '#SPAWN % "CRYSDIR:edma.exe" sflip.inflip'                          
+%      TRANSFER 'EXIT CODE: ' // CHARACTER ( EXITSTATUS ) TO DISPLAY
 %%  clear out merged reflection list                                            
 %%                                                                              
 %    if ( exists 7 .gt. 0 ) then                                                

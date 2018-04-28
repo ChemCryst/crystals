@@ -1,32 +1,32 @@
-%SCRIPT HKLF52CRY  
+%SCRIPT HKLF52CRY   
 %%  
 %% Run hklf52cry with common options.  
 %%  
+%  VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2
+%  VARIABLE LOGICAL ANSWER
 %  VARIABLE CHARACTER CIN COUT CARG  
-%  VARIABLE LOGICAL RUNNOW NEW25  
+%  VARIABLE LOGICAL NEW25 RUNNOW
 %  VARIABLE REAL VOLF  
 %  VARIABLE INTEGER N25 NEL  
+%  VARIABLE LOGICAL EDITOR_OK
+%  VARIABLE CHARACTER EDITOR_FILE
 %  EVALUATE N25 = 0
 %  EVALUATE RUNNOW = FALSE  
 %  EVALUATE NEW25 = FALSE  
-%%  
 ^^WI WINDOW HKLF52CRY 'hklf5cry' MODAL COMMIT='CFBOK' CANCEL='CFBXX'  
-^^WI GRID GRIDM NROWS=8 NCOLS=3  
+^^WI GRID GRIDM NROWS=6 NCOLS=3  
 ^^WI {  
 ^^WI @ 2,2 GRID CFG NROWS=1 NCOLS=3 OUTLINE='hklf5 to convert:'  
 ^^WI {  
 ^^WI @ 1,1 EDITBOX CINILE ' ' CHARS=48 INFORM=NO INPUT  
 ^^WI @ 1,3 BUTTON BROWSE 'Browse...'  
 ^^WI }  
-  
 ^^WI @ 4,2 GRID GB NROWS=3 NCOLS=3  
 ^^WI {  
 ^^WI @ 1,1 STATIC T1 'Output file:'  
-^^WI @ 1,3 EDITBOX OFNAM 'hklf52cry.out'  
+^^WI @ 1,3 EDITBOX OFNAM 'hklf52cry.cry'  
 ^^WI }  
-^^WI @ 5,2 CHECKBOX RF 'Read converted file into CRYSTALS now' STATE=ON  
-^^WI @ 6,2 CHECKBOX RM 'Input new twin laws now' STATE=OFF  
-^^WI @ 7,2 GRID GB NROWS=1 NCOLS=3  
+^^WI @ 5,2 GRID GB NROWS=1 NCOLS=3  
 ^^WI {  
 ^^WI @ 1,1 BUTTON CFBOK '&Ok' DEFAULT  
 ^^WI @ 1,3 BUTTON CFBXX '&Cancel'  
@@ -64,23 +64,6 @@
 %        IF ( .NOT. ( FILEEXISTS CIN ) ) THEN  
 {E Error: Filename given does not exist.  
 %          ELSE  
-^^?? RF STATE  
-%          VERIFY ON OFF  
-%          VARIABLE LOGICAL RUNNOW  
-%          EVALUATE RUNNOW = FALSE  
-%          GET SILENT NOSTORE FINAL ABBREVIATED ' '  
-%          IF ( VALUE .EQ. 1 ) THEN  
-%            EVALUATE RUNNOW = TRUE  
-%          END IF  
-%%  
-^^?? RM STATE  
-%          VERIFY ON OFF  
-%          EVALUATE NEW25 = FALSE  
-%          GET SILENT NOSTORE FINAL ABBREVIATED ' '  
-%          IF ( VALUE .EQ. 1 ) THEN  
-%            EVALUATE NEW25 = TRUE  
-%          END IF  
-%%  
 ^^?? OFNAM TEXT  
 %          GET SILENT TEXT 'Output file '  
 %          EVALUATE COUT = CVALUE  
@@ -91,58 +74,181 @@
 %      END BLOCK  
 %    END CASE  
 %  END LOOP  
-  
+%%  
 %% Launch HKLF5 TO CRY  
 %%  
-  
+%% Remove any previous files
+%  VARIABLE LOGICAL T
+%  EVALUATE T = FILEDELETE ( 'l25.cry' )
+%  EVALUATE T = FILEDELETE ( cout )
+%%
 %  variable character ccommand  
-%  evaluate ccommand = '#SPAWN + "CRYSDIR:hklf52cry.exe " ' -  
-// cin // ' -o ' // cout  
+%  evaluate ccommand = '#SPAWN + "CRYSDIR:hklf52cry.exe" "' -  
+// cin // '" -o ' // cout  
 %  TRANSFER ccommand TO display  
 %  TRANSFER ccommand TO CRYSTALS  
 %%  
 %%  
-%  IF RUNNOW THEN  
-%    TRANSFER '#USE ' // COUT TO CRYSTALS  
-%  end if  
+%%  START PROCESSING THE OUTPUT
 %%  
-%  IF .NOT. NEW25 THEN  
-%    FINISH
+%  if ( fileexists 'l25.cry' ) then
+%    EVALUATE RUNNOW = TRUE
+%%  Show the matrix
+
+
+{I CRYSTALS thinks that the twin laws are:
+%    copy '#type l25.cry'
+%  else
+%    EVALUATE RUNNOW = FALSE
+
+{E  CRYSTALS is having problems understanding the hkl5 file.
+{E  The most common reason is that the HKLF5 file
+{E  contains merged reflections.
+{E  Create an unmerged file which will be merged in CRYSTALS.
+{E  Look in the LOG file (TLAW_OUT.LIS) for details.
+
+%  end if
+%%  
+^^WI WINDOW A1 'Process Twin output' SIZE LARGE KEEP MODAL
+^^WI CANCEL='RF_BXX'
+^^WI GRID MAIN NROWS=2 NCOLS=3
+^^WI {
+^^WI   @ 1,2 GRID TEXT NROWS=4  NCOLS=1
+^^WI   {
+^^WI    @ 1,1 STATIC TEXT1 
+^^WI    'If CRYSTALS has found the correct twin law, choose Input Matrix'
+^^WI    @ 2,1 STATIC TEXT1 
+^^WI    'If you have other ideas, you can edit the Matrix File'
+^^WI    @ 3,1 STATIC TEXT1 
+^^WI    'If you know the matrix from the instrument, Manually Input a matrix'
+^^WI    @ 4,1 STATIC TEXT1 
+^^WI    'If you need more facts. look at the log file'
+^^WI   }
+^^WI   @ 2,2 GRID BTNS NROWS=4 NCOLS=3 OUTLINE=' '
+^^WI   {
+^^WI       @ 1,1 RADIOBUTTON ITYP11 'Input Matrix file'    STATE=OFF INFORM
+^^WI       @ 1,2 RADIOBUTTON IPUN12 'Look at LOG file'     STATE=OFF INFORM
+^^WI       @ 2,1 RADIOBUTTON ITYP21 'Edit Matrix File'     STATE=OFF INFORM
+^^WI       @ 2,2 RADIOBUTTON ITYP22 'Manual Matrix Input'   STATE=OFF INFORM
+^^WI       @ 4,1 BUTTON RF_BXX 'Quit' 
+^^WI       @ 4,2 BUTTON RF_CONT 'Continue' 
+^^WI       @ 4,3 BUTTON RF_HELP 'Help'        
+^^WI   }     
+^^WI }
+^^WI SHOW
+^^CR
+% VARIABLE INTEGER JLOOP IDJW 
+% VARIABLE LOGICAL USE6
+% EVALUATE USE6 = FALSE
+% LOOP
+%  EVALUATE JLOOP = LOOPCOUNTER
+%  VERIFY  RF_BXX ITYP11 IPUN12 ITYP21 ITYP22 RF_HELP RF_CONT
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%  EVALUATE IDJW = VALUE
+%  CASE VALUE
+%   BLOCK                                           %RF_BXX - QUIT%
+%       EVALUATE LOOPCOUNTER = LOOPEND
+%   END BLOCK
+%%
+%   BLOCK                                           %READ MATRIX%
+%    IF FILEEXISTS ( 'l25.cry' ) THEN
+%     COPY '#USE l25.cry'
+%     EVALUATE NEW25 = TRUE
+%     EVALUATE USE6 = TRUE
+%     EVALUATE LOOPCOUNTER = LOOPEND
+%    ELSE
+{E  A matrix has not been computed
+%    END IF   
+%   END BLOCK 
+%%
+%   BLOCK                                           %LOOK AT LOG%
+%    IF FILEEXISTS ( 'TLAW_OUT.LIS' ) THEN
+#ifdef __GID__
+%      COPY '#SPAWN +notepad.exe TLAW_OUT.LIS'
+#else
+%      EVALUATE EDITOR_FILE = 'TLAW_OUT.LIS'
+%      COPY '#SCRIPT XEDITOR'
+#endif
+%    ELSE
+{E  CRYSTALS failed to process the HKLF 5 file
+%    END IF
+%   END BLOCK
+%%
+%   BLOCK                                           %EDIT MATRIX%
+%    IF FILEEXISTS ( 'l25.cry' ) THEN
+#ifdef __GID__
+%      COPY '#SPAWN +notepad.exe l25.cry'
+#else
+%      EVALUATE EDITOR_FILE = 'l25.cry'
+%      COPY '#SCRIPT XEDITOR'
+%      IF ( .NOT. EDITOR_OK ) THEN
+ Editing abandoned
+%      ELSE
+%        EVALUATE USE6 = TRUE
+%        EVALUATE LOOPCOUNTER = LOOPEND
+%      END IF                                                                             
+#endif
+%    ELSE
+{E  There is no matrix file (l25.cry) to edit
+%    END IF   
+%   END BLOCK
+%%
+%   BLOCK                                           %MANUAL MATRIX%
+%    copy '#script IN25'
+%    EVALUATE NEW25 = TRUE
+%    EVALUATE USE6 = TRUE
+%    EVALUATE LOOPCOUNTER = LOOPEND
+%%
+%   END BLOCK
+%   BLOCK                                           %HELP%
+%    COPY '#SPAWN CRYSDIR:manual/analyse/hklf52cry.html'
+%   END BLOCK
+%   BLOCK                                           %CONTINUE%
+{I   Choose an option
+%   END BLOCK
+%  END CASE
+% END LOOP
+^^CO    DISPOSE A1
+%%
+%  IF USE6 .EQ. FALSE THEN
+{E The reflections will not be processed
+%   FINISH
+%  END IF
+
+{I The reflections will be processed after some
+{I intenal checks have been made
+
+
+
+
+%% MODIFY LISTS 5, 13 AND 25
+%  IF ( EXISTS 5 .NE. 1 ) THEN  
+%   COPY '#LIST 5'
+%   COPY 'READ NATOM=0'
+%   COPY 'END'
 %  END IF
 %%
-%    copy '#script inlist25'  
+%  IF ( EXISTS 25 .EQ. 1 ) THEN  
+Found List 25 (twin laws), enabling twin flag  
 %    VARIABLE INTEGER ITMP  
 %    COPY '#GENERALEDIT 13'  
 %    COPY 'LOCATE RECORDTYPE=101'  
 %% Check for twin laws. If present, restore L13 flag.  
-%    IF ( EXISTS 25 .EQ. 1 ) THEN  
-Found List 25 (twin laws), enabling twin flag  
-%      EVALUATE ITMP = 0  
-%      COPY 'TRANSFER TO OFFSET=1 FROM ITMP'  
-%      COPY 'WRITE'  
-%    END IF  
+%    EVALUATE ITMP = 0  
+%    COPY 'TRANSFER TO OFFSET=1 FROM ITMP'  
+%    COPY 'WRITE'  
 %    COPY 'END'  
 %%  
-%%  
-%%  
 %    EVALUATE VOLF = 1.  
-%    IF ( ( EXISTS 25 ) .GE. 1 ) THEN  
-%      COPY '#GENERALEDIT 25'  
-%      COPY 'TRANSHEAD FROM OFFSET=3 TO N25'  
-%      COPY 'GETSERIAL ORIGSER'  
-%      COPY 'END'  
-%      EVALUATE VOLF = 1. / REAL N25  
-%    END IF  
+%    COPY '#GENERALEDIT 25'  
+%    COPY 'TRANSHEAD FROM OFFSET=3 TO N25'  
+%    COPY 'GETSERIAL ORIGSER'  
+%    COPY 'END'  
+%    EVALUATE VOLF = 1. / REAL N25  
+%  END IF  
 %%  
 %    IF N25 .GE. 2 THEN  
-%     IF ( EXISTS 5 .NE. 1 ) THEN  
-
-You can only input twin laws and fractions if you have a model
-(LIST 5)
-%       FINISH
-%     END IF
-
-* Resetting element scale factors  
+Resetting element scale factors  
 %      COPY '#GENERALEDIT 5'  
 %      COPY 'TRANSHEAD FROM OFFSET=22 TO NEL'  
 %      COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'  
@@ -173,5 +279,39 @@ You can only input twin laws and fractions if you have a model
 %      COPY 'END'  
 %    END IF  
 %%  
+%%  
+%% Only import reflections if LIST 25 exists
+%  IF ( .NOT. RUNNOW ) THEN
+
+{E  HKLF 5 Reflection processing was unsuccessful.
+{E  The most common reason is that the HKLF5 file
+{E  contains merged reflections.
+{E  Create an unmerged file which will be merged in CRYSTALS.
+{E  Look in TLAW_OUT.LIS for details
+%  ELSE
+%%  
+%   IF ( ( EXISTS 25 ) .GE. 1 ) THEN  
+%     EVALUATE QTITLE = 'Import reflections'
+%     EVALUATE QLINE1 = 'Do you want to import the reflections?'
+%     EVALUATE QLINE2 = ' '
+%     EVALUATE BUTTOK = '&Yes'
+%     EVALUATE BUTTXX = '&No'
+%     COPY '#SCRIPT XQUESTIO'
+%     IF ANSWER .EQ. FALSE THEN
+%       FINISH
+%     ELSE
+%       TRANSFER '#USE ' // COUT TO CRYSTALS  
+%       COPY '#SYST'
+%       COPY 'END'
+%       COPY '#SORT'
+%       COPY 'END'
+%       COPY '#MERGE'
+%       COPY 'END'
+%     END IF
+%   ELSE
+{E  CRYSTALS must have twin laws (LIST 25) before twinned
+{E  reflections can be processed
+%   END IF
+%  END IF
 %%  
 % END SCRIPT  

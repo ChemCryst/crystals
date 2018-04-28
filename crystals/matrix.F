@@ -853,10 +853,44 @@ C--ZERO LENGTH VECTOR
       RETURN
       END
 C
+CODE FOR NCROP3
+      subroutine DNCROP3(A,B,C)
+C--COMPUTES THE CROSS PRODUCT OF THE VECTORS A AND B AND STORES THE
+C  RESULT IN C.
+C
+C  A  THE FIRST VECTOR.
+C  B  THE SECOND VECTOR.
+C  C  THE CROSS PRODUCT OF A WITH B. (C = A CROSS B).
+C
+C--THE RETURN VALUES OF 'NCROP' ARE :
+C
+C  -1  THE INPUT VECTORS ARE PARALLEL  RESULTANT VECTOR HAS ZERO LENGTH.
+C  >0  THE RESULTANT VECTOR IS NOT ZERO.
+C
+C--THE OUTPUT VECTOR IN 'C' IS NORMALISED BEFORE RETURN.
+C
+C--
+C
+      double precision A(3),B(3),C(3)
+C
+      CALL DVMULT(A,B,C)
+      call DNORM3(C)
+      END
+C
 CODE FOR VMULT
       SUBROUTINE VMULT(A,B,C)
 C----- FORM THE UN-NORMALISED VECTOR (cross) PRODUCT
       DIMENSION A(3),B(3),C(3)
+      C(1)=A(2)*B(3)-A(3)*B(2)
+      C(2)=A(3)*B(1)-A(1)*B(3)
+      C(3)=A(1)*B(2)-A(2)*B(1)
+      RETURN
+      END
+C
+CODE FOR VMULT
+      SUBROUTINE DVMULT(A,B,C)
+C----- FORM THE UN-NORMALISED VECTOR (cross) PRODUCT
+      double precision A(3),B(3),C(3)
       C(1)=A(2)*B(3)-A(3)*B(2)
       C(2)=A(3)*B(1)-A(1)*B(3)
       C(3)=A(1)*B(2)-A(2)*B(1)
@@ -919,6 +953,37 @@ C--AND NOW RETURN
 1050  CONTINUE
       RETURN
       END
+CODE FOR NORM3
+      subroutine DNORM3(X)
+C--NORMALISE THE VECTOR 'X' SO THAT THE SUM OF THE SQUARES
+C  OF ITS THREE ELEMENTS IS UNITY.
+C
+C  X  THE VECTOR, CONTAINING THREE ELEMENTS.
+C
+C--THE RETURN VALUES OF 'NORM' ARE :
+C
+C  -1  THE VECTOR HAS ZERO LENGTH  (<0.0001).
+C  >0  ALL OKAY.
+C
+C--
+C
+      include 'XCONST.INC'
+      double precision X(3)
+      double precision d
+C
+C
+C--SUM THE SQUARES
+      D=sum(X**2)
+C--CHECK THAT THE VECTOR IS NOT OF ZERO LENGTH
+      IF(D-ZEROSQ)1050,1050,1000
+C--NORMALISE THE COMPONENTS
+1000  CONTINUE
+      D=1./SQRT(D)
+      X=X*D
+C--AND NOW RETURN
+1050  CONTINUE
+      RETURN
+      END
 C
 CODE FOR KINV2
       integer FUNCTION KINV2(N,A,B,NA,NM,C,D,NC)
@@ -975,7 +1040,8 @@ C
       call dgetrf( n, n, ab, n, ipiv, info )
 
       if(info/=0) then
-          KINV2=info
+          kinv2 = info
+          if ( KINV2 .GT. 0 ) goto 3100  ! Singular value. Flag and return
           !do i=1, n
           !    print *, real(ab(i, :), 4)
           !end do
@@ -989,10 +1055,13 @@ C
           return
       end if
 
-      call dgetri( n, ab, n, ipiv, work, n*nb, info	)
+           
+      
+      call dgetri( n, ab, n, ipiv, work, n*nb, info )
 
       if(info/=0) then
-          KINV2=-1
+          KINV2=info
+          if ( KINV2 .GT. 0 ) goto 3100  ! Singular value. Flag and return
           WRITE(NCAWU,*)' Inverter fails (dgetri) '
           IF (ISSPRT .EQ. 0) THEN
               WRITE(NCWU,*)' Inverter fails (dgetri) '
@@ -1024,6 +1093,113 @@ C--SOLVE THE GIVEN EQUATIONS IF ANY
 C
 3100  RETURN
       END
+      integer FUNCTION KINV2DP(N,A,B,NA,NM,C,D,NC)
+C      implicit none
+C--MATRIX INVERSION AND SOLUTION OF SIMULTANEOUS LINEAR EQUATIONS
+C
+C  N       ORDER OF THE MATICES TO BE INVERTED.
+C  A       MATRIX TO BE INVERTED  I.E. A(N,N)
+C  B       INVERSE MATRIX  -  CALCULATED BY THIS SUBROUTINE  -  B(N,N)
+C  NA      THE ORDER OF 'A' AND 'B'  -  GREATER THAN OR EQUAL
+C          TO 'N*N'.
+C  NM      NUMBER OF COLUMN VECTORS TO BE MULTIPLIED ONTO THE INVERSE
+C          MATRIX
+C  C       COLUMN VECTORS TO BE MULTIPLIED ONTO THE INVERSE MATRIX C(N,M
+C  D       RESULTS OF MULTIPLICATION ON TO THE INVERSE MATRIX  -  D(N,M)
+C  NC      THE ORDER OF 'C' AND 'D'  -  GREATER THAN OR EQUAL
+C          TO THE MAXIMUM OF 'N' AND 'N*NM'. THIS MEANS THAT A COLUMN
+C          VECTOR AT LEAST MUST BE PROVIDED FOR BOTH.
+C
+C--IN MATRIX NOTATION
+C
+C  D=B.C
+C  C=A.D
+C
+C--RETURN VALUES OF 'KINV2DP' ARE :
+C
+C   0  INVERSION ETC. WENT OKAY.
+C  >0  SINGULAR  -  RETURN VALUE INDICATES FIRST SIGNULAR ELEMENT FOUND.
+C
+C--
+C
+      integer, intent(in) :: n, na, nm, nc
+      double precision, dimension(na), intent(in) :: A
+      double precision, dimension(na), intent(out) :: B
+      double precision, dimension(nc), intent(in) :: C
+      double precision, dimension(nc), intent(out) :: D
+C
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XIOBUF.INC'
+C
+      integer, dimension(N) :: ipiv
+      integer info, nb, i, j, k, m1, m2, m3, m4
+      double precision, dimension(:), allocatable :: work
+      double precision, dimension(N,N) :: ab
+
+      integer, external :: ilaenv
+
+      KINV2DP=0
+      nb=max(1, ilaenv( 1, 'dgetri', '', N, -1,-1,-1 ))
+      allocate(work(n*nb))
+      ab=reshape(a, (/n,n/))
+      call dgetrf( n, n, ab, n, ipiv, info )
+
+      if(info/=0) then
+          KINV2DP = info
+          if ( KINV2DP .GT. 0 ) goto 3100  ! Singular value. Flag and return
+          !do i=1, n
+          !    print *, real(ab(i, :), 4)
+          !end do
+          WRITE(NCAWU,*)' Inverter fails (dgetrf) '
+          IF (ISSPRT .EQ. 0) THEN
+              WRITE(NCWU,*)' Inverter fails (dgetrf) '
+          ENDIF
+          WRITE ( CMON, *)' Inverter fails (dgetrf) '
+          CALL XPRVDU(NCVDU, 1,0)
+          CALL XERHND ( IERSEV )
+          return
+      end if
+
+           
+      
+      call dgetri( n, ab, n, ipiv, work, n*nb, info )
+
+      if(info/=0) then
+          KINV2DP=info
+          if ( KINV2DP .GT. 0 ) goto 3100  ! Singular value. Flag and return
+          WRITE(NCAWU,*)' Inverter fails (dgetri) '
+          IF (ISSPRT .EQ. 0) THEN
+              WRITE(NCWU,*)' Inverter fails (dgetri) '
+          ENDIF
+          WRITE ( CMON, *)' Inverter fails (dgetri) '
+          CALL XPRVDU(NCVDU, 1,0)
+          CALL XERHND ( IERSEV )
+          return
+      end if
+      deallocate(work)
+
+      b=reshape(ab, (/n*n/))
+C
+C--SOLVE THE GIVEN EQUATIONS IF ANY
+      IF(NM)3100,3100,2900
+2900  M3=1
+      M4=1
+      DO 3050 I=1,NM
+      DO 3000 J=1,N
+      M1=J
+      M2=M3
+      D(M4)=0.
+      DO 2950 K=1,N
+      D(M4)=D(M4)+B(M1)*C(M2)
+      M1=M1+N
+2950  M2=M2+1
+3000  M4=M4+1
+3050  M3=M3+N
+C
+3100  RETURN
+      END      
 C
 CODE FOR XINT2
       SUBROUTINE XINT2(N,B,NB,D,ND,J,K,ITYPE)
@@ -1329,13 +1505,11 @@ C
       INCLUDE 'QSTR11.INC'
 C
       LS=NOC+1
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1000)LS
-      ENDIF
       WRITE(NCAWU,1000) LS
       WRITE ( CMON, 1000) LS
       CALL XPRVDU(NCVDU, 1,0)
 1000  FORMAT('{E Singularity - relative parameter',I5)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(//A//)')TRIM(CMON(1)(3:))
       LS=IBASE+NOC
       DO 1150 LT=1,N
       STR11(LS)=0.0
@@ -1758,565 +1932,29 @@ C -- RELEASE WORK SPACE
       RETURN
       END
 C
-
-C=================================================================================C
-C                 Upper triangular matrix routines added by stefan                C
-C                             Also some matlab output subroutines                 C
-C=================================================================================C
-
-C======================================================================C
-C                  Upper triangular matrix routines                    C
-C======================================================================C
-CODE FOR tri_matrix_normalise
-      subroutine tri_matrix_normalise(matrix, mat_size, mat_dim, vector)
-      implicit none
-C
-C     Description:
-C        Takes upper tri matrix and normalises all the values in it using the diagonal elments.
-C       Vector must be an array of reals which is at least mat_dim big.
-C
-C     Returns:
-C         The vector used to normalise the matrix in vector
-C
-C  ================   Arguments   ================
-      integer mat_dim            ! the size of one dimention of the matrix
-      integer mat_size           ! the number of elements in the
-      real matrix(mat_size)      ! the matrix to normalise
-      double precision vector(mat_dim)
-C  ================Local Variables================
-      integer x   ! Position in the matrix
-
-      do x= 0, mat_dim-1 ! Run though matrix getting sqrt of the diagonal elements
-            vector(x+1) = sqrt(matrix((mat_dim - x)*x+x*(x+1)/2+1))
-      enddo
-      call tri_matrix_normalise_with_inv(matrix, mat_size, mat_dim,
-     1  vector)
-      end
-
-CODE FOR matrix_normalise_with
-      subroutine tri_matrix_normalise_with(matrix, mat_size, mat_dim,
-     1 vector)
-      implicit none
-C
-C     Description:
-C        Takes upper tri matrix and pre and post multiplies it with the
-C       inverse of the diagonal matrix vector.
-C
-C     Returns:
-C        Returns the normalised matrix in the matrix parameter
-C
-C  ================   Arguments   ================
-      integer mat_dim            ! the size of one dimention of the matrix
-      integer mat_size           ! the number of elements in the
-      real matrix(mat_size)   ! the matrix to normalise
-      double precision vector(mat_dim)       ! the vector to normalise with
-
-      call tri_diag_mul_matrix(vector, mat_dim, matrix, mat_size)
-      call tri_matrix_mul_diag(matrix, mat_size, vector, mat_dim)
-      end
-
-CODE FOR matrix_normalise_with_inv
-      subroutine tri_matrix_normalise_with_inv(matrix, mat_size,
-     1 mat_dim, vector)
-      implicit none
-C
-C     Description:
-C        Takes upper tri matrix and pre and post multiplies it with the
-C       inverse of the diagonal matrix vector.
-C
-C     Returns:
-C        Returns the denormalised matrix in the matrix parameter
-C
-C  ================   Arguments   ================
-      integer mat_dim                        ! the size of one dimention of the matrix
-      integer mat_size                       ! the number of elements in the
-      real matrix(mat_size)                  ! the matrix to normalise
-      double precision vector(mat_dim)       ! the vector to normalise with
-
-      call tri_invdiag_mul_matrix(vector, mat_dim, matrix, mat_size)
-      call tri_matrix_mul_invdiag(matrix, mat_size, vector, mat_dim)
-      end
-
-CODE FOR tri_matrix_mul_diag
-      subroutine tri_matrix_mul_diag(matrix, matrix_size, diag,
-     1 diag_size)
-      implicit none
-C
-C     Description:
-C        Takes a upper triangular matrix and multiplies it with a diag
-C       matrix. The matrices are assumed to be the same dimension.
-C
-C     Returns:
-C        The result of the multiplication in the matrix parameter
-C
-C  ================   Arguments   ================
-      integer matrix_size
-      real matrix(matrix_size)
-      integer diag_size
-      double precision diag(diag_size)
-C  ================Local Variables================
-      integer row, column
-      integer mat_elem
-      double precision const
-
-      mat_elem = 1
-      do row = 1, diag_size
-        const = diag(row)
-        do column = row, diag_size
-            matrix(mat_elem) = const*matrix(mat_elem);
-            mat_elem = mat_elem + 1;
-        end do
-      end do
-      end
-
-CODE FOR tri_diag_mul_matrix
-      subroutine tri_diag_mul_matrix(diag, diag_size, matrix,
-     1  matrix_size)
-      implicit none
-C
-C     Description:
-C        Takes a diag matrix and multiplies it with a upper triangular matrix.
-C       The matrices are assumed to be the same dimension.
-C
-C     Returns:
-C        The result of the multiplication in the matrix parameter
-C
-C  ================   Arguments   ================
-      integer matrix_size
-      real matrix(matrix_size)
-      integer diag_size
-      double precision diag(diag_size)
-C  ================Local Variables================
-      integer mat_elem
-      double precision const
-      integer row, column
-
-      row = 1
-      mat_elem = 1
-      do while (mat_elem .le. matrix_size)
-            do column = row, diag_size
-                  matrix(mat_elem) = diag(column)*matrix(mat_elem)
-                  mat_elem = mat_elem + 1
-            end do
-            row = row + 1
-      end do
-      end
-
-CODE FOR tri_matrix_mul_invdiag
-      subroutine tri_matrix_mul_invdiag(matrix, matrix_size, diag,
-     1 diag_size)
-      implicit none
-C
-C     Description:
-C        Takes a upper triangular matrix and multiplies it the inverse of the diag matrix.
-C       The matrices are assumed to be the same dimension.
-C
-C     Returns:
-C        The result of the multiplication in the matrix parameter
-C
-C  ================   Arguments   ================
-      integer matrix_size
-      real matrix(matrix_size)
-      integer diag_size
-      double precision diag(diag_size)
-C  ================Local Variables================
-      integer row, column
-      integer mat_elem
-      double precision const
-
-      mat_elem = 1
-      do row = 1, diag_size
-        const = diag(row)
-        do column = row, diag_size
-            matrix(mat_elem) = matrix(mat_elem)/const;
-            mat_elem = mat_elem + 1;
-        end do
-      end do
-      end
-
-CODE FOR tri_invdiag_mul_matrix
-      subroutine tri_invdiag_mul_matrix(diag, diag_size, matrix,
-     1  matrix_size)
-      implicit none
-C
-C     Description:
-C        Takes a diag matrix and multiplies it's unverse with an upper triangular matrix.
-C       The matrices are assumed to be the same dimension.
-C
-C     Returns:
-C        The result of the multiplication in the matrix parameter
-C
-C  ================   Arguments   ================
-      integer matrix_size
-      real matrix(matrix_size)
-      integer diag_size
-      double precision diag(diag_size)
-C  ================Local Variables================
-      integer row, column
-      integer mat_elem
-      double precision const
-
-      row = 1
-      mat_elem = 1
-      do while (mat_elem .le. matrix_size)
-            do column = row, diag_size
-                  matrix(mat_elem) = matrix(mat_elem)/diag(column)
-                  mat_elem = mat_elem + 1
-            end do
-            row = row + 1
-      end do
-      end
-
-CODE FOR tri_get
-      function tri_get(mat, nmat, mat_dim, xpos, ypos)
-      implicit none
-      real tri_get
-C
-C     Description:
-C        Get the value of the element in mat at position xpos ypos.
-C       Treets mat as a upper triangler symetric matrix. It is indexed from 1
-C
-C     Precondition:
-C        xpos, ypos must both be less then or equal to the dimension of the matrix
-C
-C     Returns:
-C        The value stored at the position xpos, ypos
-C
-C  ================   Arguments   ================
-      integer nmat, mat_dim
-      real mat(nmat)
-      integer xpos, ypos
-C  ================Local Variables================
-      integer maxpos, minpos
-C  ================Function calls ================
-      integer max, min
-
-      maxpos = max(xpos, ypos)
-      minpos = min(xpos, ypos) - 1
-      tri_get = mat((mat_dim-(minpos+1))*minpos+minpos*(minpos+1)/2+
-     1 maxpos)
-      end
-
-CODE FOR tri_set
-      subroutine tri_set(mat, nmat, mat_dim, xpos, ypos, value)
-      implicit none
-C
-C     Description:
-C        Set the value of the element in mat at position xpos ypos.
-C       Treets mat as a upper triangler symetric matrix
-C
-C     Precondition:
-C        xpos, ypos must both be less then the dimension of the matrix
-C
-C  ================   Arguments   ================
-      integer nmat, mat_dim
-      real mat(nmat)
-      integer xpos, ypos
-      real value
-C  ================Local Variables================
-      integer maxpos, minpos
-C  ================Function calls ================
-      integer max, min
-
-      maxpos = max(xpos, ypos)
-      minpos = min(xpos, ypos) - 1
-      mat((mat_dim-(minpos+1))*minpos+minpos*(minpos+1)/2+
-     1 maxpos) = value
-      end
-
-C======================================================================C
-C                         Diagonal matrix routines                     C
-C======================================================================C
-
-CODE FOR inv_diag
-      subroutine inv_diag(diag, diag_size)
-      implicit none
-C
-C     Description:
-C           Invertes the diagonal matrix which is represented as a vector
-C     Precondition:
-C
-C  ================   Arguments   ================
-      integer diag_size
-      double precision diag(diag_size)
-C  ================Local Variables================
-      integer i
-
-      do i = 1, diag_size
-            diag(i) = 1.0/diag(i)
-      end do
-      end
-
-cCODE FOR diag_get
-c      function diag_get(diag, diag_dim, xpos, ypos)
-c      implicit none
-c      real diag_get
-cC
-cC     Description:
-cC           Returns the value at xpos, ypos in the diagonal matrix
-cC     Returns:
-cC           Returns the value at xpos, ypos in the diagonal matrix
-cC  ================   Arguments   ================
-c      integer diag_dim
-c      real diag(diag_dim)
-c      integer xpos, ypos
-c
-c      if (xpos .ne. ypos) then
-c            diag_get = 0.0
-c      else
-c            diag_get = diag(xpos)
-c      end if
-c      return
-c      end
-
-CODE FOR tri_matrix_apply_threshhold
-      function tri_matrix_apply_threshhold(matrix, matrix_size,
-     1 mat_dim, threshhold)
-      implicit none
-      integer tri_matrix_apply_threshhold
-C
-C     Description:
-C           Take a upper triangluar matrix and replaces all values
-C          which are less then threshold*sqrt(Mii)*sqrt(Mjj) with zero
-C
-C     Returns:
-C           The number of elements which where zeroed and
-C           the thresh holded matrix in the variable matrix.
-C
-C  ================   Arguments   ================
-      integer matrix_size
-      real matrix(matrix_size)
-      integer mat_dim         ! dimension of the matrix
-      real threshhold      ! Threshhold value for the matrix
-C  ================Local Variables================
-      integer curx, cury      ! Current x and y position
-      real normilisers(mat_dim)
-      real curr_val
-C  ================Function calls ================
-      real tri_get
-
-      tri_matrix_apply_threshhold =0
-      do curx = 1, mat_dim
-            normilisers(curx) = 1/sqrt(tri_get(matrix, matrix_size,
-     1       mat_dim, curx, curx))
-      end do
-      do curx = 2, mat_dim
-            do cury = curx+1, mat_dim
-                  curr_val = tri_get(matrix, matrix_size, mat_dim,
-     1             curx, cury)*normilisers(curx)*normilisers(cury)
-                  if (curr_val .lt. threshhold
-     1             ) then
-                        call tri_set(matrix, matrix_size, mat_dim, curx,
-     1                    cury, 0.0)
-                        tri_matrix_apply_threshhold =
-     1                   tri_matrix_apply_threshhold + 1
-                  end if
-            end do
-      end do
-      print '(A, F7.5, I10)', 'Threshold is: ', threshhold,
-     1 tri_matrix_apply_threshhold
-      end
-
-C======================================================================C
-C                         matlab output routines                       C
-C======================================================================C
-CODE FOR matlab_tri_mat
-      subroutine matlab_tri_mat(unit, matrix, matrix_size, mat_dim,
-     1  var_name)
-      implicit none
-
-      integer unit
-      character*(*) var_name
-      integer mat_dim
-      integer matrix_size
-      real matrix(matrix_size)
-
-      integer xpos, ypos, maxpos, minpos, mat_elem
-
-      write (unit, '(A, '' = ['')'), var_name
-      do xpos = 1, mat_dim
-            do ypos = 1, mat_dim
-                  if (mod(ypos, 6) .eq. 0) write (unit, '(A)'), '...'
-                  maxpos = max(xpos, ypos)
-                  minpos = min(xpos, ypos) - 1
-                  mat_elem = (mat_dim-(minpos+1))*minpos+minpos*
-     1             (minpos+1)/2 + maxpos
-                  write (unit, '(G16.8$)'), matrix(mat_elem)
-            end do
-            if (xpos .ne. mat_dim)
-     1             write (unit, '(A)'), ';'
-      end do
-      write (unit, '(A)'), '];'
-      end
-
-CODE FOR matlab_vector
-      subroutine matlab_vector(unit, vector, vec_dim, var_name)
-      implicit none
-
-      integer unit
-      character*(*) var_name
-      integer vec_dim
-      real vector(vec_dim)
-      integer pos
-
-      write (unit, '(A, '' = ['')'), var_name
-      do pos = 1, vec_dim
-            if (mod(pos, 6) .eq. 0) write (unit, '(A)'), '...'
-            write (unit, '(G16.8$)'), vector(pos)
-      end do
-      write (unit, '(A)'), '];'
-      end
-
-CODE FOR matlab_add_vector_to_cell
-      subroutine matlab_add_vector_to_cell(unit, vector, vec_dim,
-     1 var_name)
-      implicit none
-
-      integer unit
-      character*(*) var_name
-      integer vec_dim
-      real vector(vec_dim)
-      character*80 tempstring
-
-      tempstring = var_name
-      call matlab_vector(unit, vector, vec_dim,
-     1 tempstring(1:len(var_name)) // '{length(' //
-     2 tempstring(1:len(var_name)) // ')+1}')
-      end
-
-CODE FOR matlab_add_matrix_to_cell
-      subroutine matlab_add_matrix_to_cell(unit, matrix, matrix_size,
-     1 mat_dim, var_name)
-      implicit none
-
-      integer unit
-      character*(*) var_name
-      integer matrix_size, mat_dim
-      real matrix(matrix_size)
-      character*80 tempstring
-
-      tempstring = var_name
-      call matlab_tri_mat(unit, matrix, matrix_size, mat_dim,
-     1 tempstring(1:len(var_name)) // '{length(' //
-     2 tempstring(1:len(var_name)) // ')+1}')
-      end
-
-C======================================================================C
-C                       Sub block matrix routines                      C
-C======================================================================C
-cCODE FOR sum_block
-c      function sum_block(mat, nmat, mat_dim, params1_add,
-c     1 params2_add, num_param_sumed, block_start_parm)
-c
-c      double precision sum_block
-cC
-cC     Description:
-cC        Sums all the values in the block of the mat pointed to by the
-cC       parameters in the parts which are pointed to by.
-cC
-cC     Precondition:
-cC       params1_add and params2_add are pointers to valid atoms parts
-cC       List 12 has already been loaded.
-cC       List 12 has been loaded with the parameter numbers set
-cC        to there number not to pointer in the derivative stack.
-cC
-cC     Returns:
-cC           The sum of the values for the rectangle referenced or -1
-cC           if for some reason the suming was invalid
-cC
-c      INCLUDE 'ISTORE.INC'
-c      INCLUDE 'STORE.INC'
-c      INCLUDE 'QSTORE.INC'
-cC  ================   Arguments   ================
-c      integer nmat, mat_dim          !The size of the matrix and it's dimension
-c      real mat(nmat)                 !The upper triangulare matrix
-c      integer params1_add            !Address in istore of the part information.
-c      integer params2_add            !Address in istore of the part information.
-c      integer num_param_sumed        !On return the number of values sumed
-c      integer block_start_parm       !The first parameter in this block.
-cC  ================Local Variables================
-c      integer param_iterator1(3)
-c      integer param_iterator2(3)
-c      integer tempa, tempb
-cC  ================Function calls ================
-c      integer list_iter_next
-c      logical iter_has_next
-c      real tri_get, abs
-c
-c      sum_block = 0.0
-c      num_param_sumed = 0
-c      block_start = block_start - 1
-c
-c      call part_create_list_iter(param_iterator1, istore(params1_add))  ! Create an iterator to go over the part
-c      do while (iter_has_next(param_iterator1))                         ! Check that there is a parameter to use
-c            tempa = istore(list_iter_next(param_iterator1))
-c     1               -block_start_parm                                  ! Get the current parameter number in this block
-c            if (tempa .gt. 0 .and.
-c     1       tempa .le. mat_dim) then                                   ! If the parameter is withing this block
-c              call part_create_list_iter(param_iterator2,
-c     1         istore(params2_info_add))
-c              do while (iter_has_next(param_iterator2))
-c                  tempb = istore(list_iter_next(param_iterator2))
-c     1               -block_start_parm                                  ! Get the current parameter number in this block
-c                  if (tempb .gt. 0 .and.
-c     1                tempb .le. mat_dim) then                          ! If the parameter is withing this block
-c                  sum_block = sum_block + abs(tri_get(mat, nmat,        ! Get the current element and add it to the current number total
-c     2              mat_dim, tempa, tempb))
-c                   num_param_sumed = num_param_sumed + 1                ! Count that this element has been included
-c                  else                                                  ! If the parameter was outside the matrix block then don't sum any of it.
-c                        sum_block = -1                                  ! Inform the caller that we didn't sum it.
-c                        return
-c                  end if
-c             enddo
-c           else                                                         ! If the parameter was outside the matrix block then don't sum any of it.
-c              sum_block = -1                                            ! Inform the caller that we didn't sum it.
-c              return
-c           end if
-c      end do
-c      end
-
-cCODE FOR mean_of_block
-c      function mean_of_block(mat, nmat, mat_dim, params1_add,
-c     1 params2_add, block_start_parm)
-c      implicit none
-c      double precision mean_of_block
-cC
-cC     Description:
-cC        Calculates the mean of the abs rectange of parameters pointed to by the part which
-cC       is pointed to by params1_add and params2_add.
-cC
-cC     Precondition:
-cC       params1_info_add and params2_info_add are pointers to valid atoms parts
-cC       List 12 has already been loaded.
-cC       List 12 has been loaded with the parameter numbers set
-cC        to there number not to pointer in the derivative stack.
-cC
-cC     Returns:
-cC           Returns the mean of the abs rectange referenced or -1 if for some reason the
-cC          mean wasn't calculated
-cC
-c
-cC  ================   Arguments   ================
-c      integer nmat, mat_dim               ! The size of the block of the normal matrix
-c      real mat(nmat)                      ! The current upper triangler block of the normal matrix
-c      integer params1_add, params2_add    ! The addresses to the parameter parts
-c      integer block_start_parm            ! The parameter number of the first element in the matrix
-c
-cC  ================Local Variables================
-c      integer block_size
-cC  ================Function calls ================
-c      double precision sum_block
-c
-c      mean_of_block = sum_block(mat, nmat, mat_dim, params1_add,
-c     1 params2_add, block_size, block_start_parm)                 ! Get the sum of a
-c      if (mean_of_block .ge. 0)                                   ! If the sum isn't negative
-c     1       mean_of_block = mean_of_block/block_size             ! There wasn't a problem
-c      end
-
-
-C The following level 2 BLAS routines are only required on digital build. All other platforms
-C use optimsed, external libraries. (MKL or OpenBLAS)
-
+      subroutine kronecker(k, a, b)
+      ! calculate the kronecker product of a and b
+      ! An explicit interface is needed to use this subroutine!! (I don't know why)
+          implicit none
+          double precision, dimension(:,:), intent(in)  :: a, b
+          double precision, dimension(:,:), intent(out) :: k
+          integer :: i, j, ma, na, mb, nb
+          
+          ma = ubound(a, 1)
+          na = ubound(a, 2)
+          mb = ubound(b, 1)
+          nb = ubound(b, 2)
+          if (size(k,1) /= ma*mb .or. size(k,2) /= na*nb) then
+              !write(*,*) 'k has invalid size'
+              k=0
+              !stop
+          else
+              forall(i=1:ma, j=1:na)
+                  k(mb*(i-1)+1:mb*i,nb*(j-1)+1:nb*j) = a(i,j)*b
+              end forall
+          end if
+               
+      end subroutine kronecker
 
 #if defined (CRY_FORTDIGITAL) || defined (CRY_OWNLAPACK)
 
@@ -4843,7 +4481,7 @@ c
 *
       WRITE( CMON, FMT = 9999 )SRNAME, INFO
       CALL XPRVDU(NCVDU,1,0)
-      WRITE(NCWU,'(A)')CMON(1)
+      WRITE(NCWU,'(A)')trim(CMON(1))
 *
       CALL GUEXIT(3001)
 

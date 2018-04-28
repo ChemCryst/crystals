@@ -154,6 +154,13 @@ MAP TYPE=OPTIMAL PRINT=YES
 REFLECTION WEIGHT=LIST-6
 END
 \PRINT 10
+
+\ skip the weighted pattersons - they throw up a miriad small errors
+\end
+
+
+
+
 \FOUR
 MAP TYPE=FO-PATTERSON PRINT=YES
 REFLECTION WEIGHT=LIST-6

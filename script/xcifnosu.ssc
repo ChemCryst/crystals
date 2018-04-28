@@ -2,7 +2,11 @@
 %% The variables needed by XQUESTIO                                             
 % VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX                         
 % VARIABLE LOGICAL   ANSWER                                                     
-%% check a few lists                                                            
+%%
+%%
+%%   Remember that XCIF calls SFLSB to update LIST 30
+%%
+%%
 %  BLOCK                                                                        
 %    IF ( EXISTS 4 .NE. 1 ) THEN                                                
 {E **** WARNING: Default LIST 4 created                                         
@@ -30,7 +34,8 @@
 %    END IF                                                                     
 %  END BLOCK                                                                    
 %%  No need to chack LIST 3 since esd are not being output
-%%  COPY '#SCRIPT CHECK3'                                                        
+%%  COPY '#SCRIPT CHECK3'
+%%
                                                                                 
  * CIF listing of all data                                                      
                                                                                 
@@ -56,24 +61,6 @@
 %      COPY 'PIVOT H '                                                          
 %      COPY 'BOND O N C'                                                        
 %      COPY 'END '                                                              
-                                                                                
-%%                                                                              
-%%                                                                              
-%    EVALUATE QTITLE = 'Parameter CIF'                                          
-%    EVALUATE QLINE1 = 'CIF saved as noesds.cif.'                               
-%    EVALUATE QLINE2 = 'Do you want to open it for editing?'                    
-%    EVALUATE BUTTOK = '&Yes'                                                   
-%    EVALUATE BUTTXX = '&No'                                                    
-%    COPY '#SCRIPT XQUESTIO'                                                    
-%    IF ANSWER .EQ. TRUE THEN                                                   
-#ifdef CRY_USEWX
-%  COPY '#SPAWN notepad.exe noesds.cif'                              
-#else
-%  VARIABLE CHARACTER READER_FILE
-%  EVALUATE READER_FILE = 'noesds.cif'
-%  COPY '#SCRIPT XREADER'
-#endif
-%    END IF                                                                     
   Parameters saved in {&noesds.cif{&                                            
 %%                                                                              
 %%
@@ -88,9 +75,9 @@
 ^^WI   {                                                                        
 ^^WI     @ 1,2 STATIC CF1 'Prepare a CIF reflection listing with:'              
 ^^WI     @ 3,2 RADIOBUTTON RF '&Fo, Fc and sigma(Fo)'                           
-^^WI           STATE=ON                                                         
+^^WI           STATE=OFF                                                         
 ^^WI     @ 4,2 RADIOBUTTON RS 'Fo^2, Fc^2, and sigma(Fo^2)'                     
-^^WI           STATE=OFF                                                        
+^^WI           STATE=ON                                                        
 ^^WI     @ 6,2 STATIC CF2 'CIF will be saved as noesds.fcf'                     
 ^^WI   }                                                                        
 ^^WI   @ 1,2 GRID GRIDR NROWS=5 NCOLS=2                                         
@@ -115,10 +102,28 @@
 %    IF VALUE .EQ. 1 THEN                                                       
 %      COPY '#PUNCH 6 B'                                                        
 %    ELSE                                                                       
-%      COPY '#PUNCH 6 E'                                                        
+%      COPY '#PUNCH 6 H'                                                        
 %    END IF                                                                     
 %    COPY 'END'                                                                 
 %    COPY '#RELEASE FRN1 BFILE.FRN'                                             
  Reflections saved in {&noesds.fcf{&                                            
 %%                                                                              
+                                                                                
+%%                                                                              
+%%                                                                              
+%    EVALUATE QTITLE = 'Parameter CIF'                                          
+%    EVALUATE QLINE1 = 'CIF saved as noesds.cif.'                               
+%    EVALUATE QLINE2 = 'Do you want to open it for editing?'                    
+%    EVALUATE BUTTOK = '&Yes'                                                   
+%    EVALUATE BUTTXX = '&No'                                                    
+%    COPY '#SCRIPT XQUESTIO'                                                    
+%    IF ANSWER .EQ. TRUE THEN                                                   
+#ifdef CRY_USEWX
+%  COPY '#SPAWN notepad.exe noesds.cif'                              
+#else
+%  VARIABLE CHARACTER READER_FILE
+%  EVALUATE READER_FILE = 'noesds.cif'
+%  COPY '#SCRIPT XREADER'
+#endif
+%    END IF                                                                     
 %END SCRIPT                                                                     

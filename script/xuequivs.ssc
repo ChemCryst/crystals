@@ -1,0 +1,14 @@
+%SCRIPT XUEQUIVS
+%% Selection
+% COPY '#EDIT'
+% COPY 'UEQUIV '
+%% loop over selected atom queue
+% LOOP
+%  ON END TERMINATE
+%  CLEAR
+%  INSERT 'CONT '
+%  GET TEXT 'Atom?' ' '
+%  SEND
+% END LOOP
+% COPY 'END'
+%END SCRIPT

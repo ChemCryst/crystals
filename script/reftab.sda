@@ -1,4 +1,4 @@
-  49 items  - #nnn "CIF-text"    References, aphabetical order
+  50 items  - #nnn "CIF-text"    References, aphabetical order
 
 #001 USER DEFINED STRUCTURE SOLUTION                                            
 User-defined structure solution reference                                       
@@ -114,9 +114,6 @@ Otwinowski, Z. & Minor, W. (1997). Methods in Enzymology, Vol. 276,
 edited by C. W. Carter Jr & R. M. Sweet, pp. 307--326.                          
 New York: Academic Press.                                                       
                                                                                 
-#036 CrysAlisPro, (Agilent, 2011)                                   
-Agilent (2011). CrysAlisPro.                                       
-                                                                                
 #037 Xcalibur, (Oxford Diffraction, 2002)                                       
 Oxford Diffraction, (2002). Xcalibur User Manual.                               
                                                                                 
@@ -129,11 +126,17 @@ Oxford Diffraction, (2010). Supernova User Manual.
 #042 Superflip (Palatinus & Chapuis, 2007)
 Palatinus, L. & Chapuis, G. (2007). J. Appl. Cryst. 40, 786-790.
 
+#050 Parsons Quotient (Parsons, Flack & Wagner, 2013) 
+Parsons,S., Flack, H.D. and Wagner, T. Acta Cryst. (2013). B69, 249–259
+
 #038 Robust Weighting (Prince, 1982)                                            
 Prince, E.                                                                      
 Mathematical Techniques in Crystallography                                      
 and Materials Science                                                           
 Springer-Verlag, New York, 1982.                                                
+
+#036 CrysAlisPro (Rigaku Oxford Diffraction, 2017)                                   
+Rigaku Oxford Diffraction (2017). CrysAlisPro.                                       
                                                                                 
 #018 SHELXS 86 (Sheldrick, 1986)                                                
 Sheldrick, G. M. (2008). Acta Cryst A64, 112-122.                               

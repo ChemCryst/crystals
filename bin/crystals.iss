@@ -11,6 +11,10 @@
   #define crysOS 'win-int-openmp'
 #endif
 
+#if "TRUE" == GetEnv('CR64BIT')
+  #define crysOS 'win-int64-openmp'
+#endif
+
 
 #if Len(GetEnv('CRYSVNVER')) > 0 
   #define crysSVN GetEnv('CRYSVNVER')
@@ -67,7 +71,7 @@ Name: {app}\mce
 Name: {app}\MCE\mce_manual_soubory
 
 [Files]                                                     
-Source: ..\build\*.*; DestDir: {app}\; Excludes: "make*,buildfile.bat,code.bat";
+Source: ..\build\*.*; DestDir: {app}\; Excludes: "make*,buildfile.bat,code.bat"; Flags: ignoreversion;
 Source: ..\build\script\*.*; DestDir: {app}\script\;
 Source: ..\build\mce\*.*; DestDir: {app}\mce\;  Flags: ignoreversion;            
 Source: ..\build\mce\mce_manual_soubory\*.*; DestDir: {app}\mce\mce_manual_soubory\;
@@ -98,22 +102,38 @@ Filename: wincrys.ini; Section: Latest; Key: Strdir; String: "{app}\demo\demo"; 
 
 
 [Registry]
-Root: HKLM; Subkey: "Software\Chem Cryst"; Flags: uninsdeletekeyifempty
-Root: HKLM; Subkey: "Software\Chem Cryst\Crystals"; Flags: uninsdeletekey
-Root: HKLM; Subkey: "Software\Chem Cryst\Crystals"; ValueType: string; ValueName: "Location"; ValueData: "{app}"
-Root: HKLM; Subkey: "Software\Chem Cryst\Crystals"; ValueType: string; ValueName: "Crysdir"; ValueData: "{app}\user\,{app}\"
+Root: HKLM32; Subkey: "Software\Chem Cryst"; Flags: uninsdeletekeyifempty
+Root: HKLM32; Subkey: "Software\Chem Cryst\Crystals"; Flags: uninsdeletekey
+Root: HKLM32; Subkey: "Software\Chem Cryst\Crystals"; ValueType: string; ValueName: "Location"; ValueData: "{app}"
+Root: HKLM32; Subkey: "Software\Chem Cryst\Crystals"; ValueType: string; ValueName: "Crysdir"; ValueData: "{app}\user\,{app}\"
+Root: HKLM64; Subkey: "Software\Chem Cryst"; Flags: uninsdeletekeyifempty; Check: IsWin64
+Root: HKLM64; Subkey: "Software\Chem Cryst\Crystals"; Flags: uninsdeletekey; Check: IsWin64
+Root: HKLM64; Subkey: "Software\Chem Cryst\Crystals"; ValueType: string; ValueName: "Location"; ValueData: "{app}"; Check: IsWin64
+Root: HKLM64; Subkey: "Software\Chem Cryst\Crystals"; ValueType: string; ValueName: "Crysdir"; ValueData: "{app}\user\,{app}\"; Check: IsWin64
 
-Root: HKCU; Subkey: "Software\Chem Cryst"; Flags: uninsdeletekeyifempty
-Root: HKCU; Subkey: "Software\Chem Cryst\Crystals"; Flags: uninsdeletekey
+Root: HKCU32; Subkey: "Software\Chem Cryst"; Flags: uninsdeletekeyifempty
+Root: HKCU32; Subkey: "Software\Chem Cryst\Crystals"; Flags: uninsdeletekey
 
-Root: HKCU; Subkey: "Software\Chem Cryst\Crystals"; ValueType: string; ValueName: "Location"; ValueData: "{app}"
-Root: HKCU; Subkey: "Software\Chem Cryst\Crystals"; ValueType: string; ValueName: "Crysdir"; ValueData: "{app}\user\,{app}\"
+Root: HKCU32; Subkey: "Software\Chem Cryst\Crystals"; ValueType: string; ValueName: "Location"; ValueData: "{app}"
+Root: HKCU32; Subkey: "Software\Chem Cryst\Crystals"; ValueType: string; ValueName: "Crysdir"; ValueData: "{app}\user\,{app}\"
 
-Root: HKCU; Subkey: "Software\Chem Cryst\Crystals"; ValueType: string; ValueName: "Strdir"; ValueData: "{app}\demo\demo"; Flags: createvalueifdoesntexist
-Root: HKCU; Subkey: "Software\Chem Cryst\Crystals"; ValueType: string; ValueName: "FontHeight"; ValueData: "8"; Flags: createvalueifdoesntexist
-Root: HKCU; Subkey: "Software\Chem Cryst\Crystals"; ValueType: string; ValueName: "FontWidth"; ValueData: "0"; Flags: createvalueifdoesntexist
-Root: HKCU; Subkey: "Software\Chem Cryst\Crystals"; ValueType: string; ValueName: "FontFace"; ValueData: "Lucida Console"; Flags: createvalueifdoesntexist
-Root: HKCU; Subkey: "Software\Chem Cryst\Crystals"; ValueType: string; ValueName: "PLATONDIR"; ValueData: "{app}\platon.exe"; Flags: createvalueifdoesntexist
+Root: HKCU32; Subkey: "Software\Chem Cryst\Crystals"; ValueType: string; ValueName: "Strdir"; ValueData: "{app}\demo\demo"; Flags: createvalueifdoesntexist
+Root: HKCU32; Subkey: "Software\Chem Cryst\Crystals"; ValueType: string; ValueName: "FontHeight"; ValueData: "8"; Flags: createvalueifdoesntexist
+Root: HKCU32; Subkey: "Software\Chem Cryst\Crystals"; ValueType: string; ValueName: "FontWidth"; ValueData: "0"; Flags: createvalueifdoesntexist
+Root: HKCU32; Subkey: "Software\Chem Cryst\Crystals"; ValueType: string; ValueName: "FontFace"; ValueData: "Lucida Console"; Flags: createvalueifdoesntexist
+Root: HKCU32; Subkey: "Software\Chem Cryst\Crystals"; ValueType: string; ValueName: "PLATONDIR"; ValueData: "{app}\platon.exe"; Flags: createvalueifdoesntexist
+
+Root: HKCU64; Subkey: "Software\Chem Cryst"; Flags: uninsdeletekeyifempty; Check: IsWin64
+Root: HKCU64; Subkey: "Software\Chem Cryst\Crystals"; Flags: uninsdeletekey; Check: IsWin64
+
+Root: HKCU64; Subkey: "Software\Chem Cryst\Crystals"; ValueType: string; ValueName: "Location"; ValueData: "{app}"; Check: IsWin64
+Root: HKCU64; Subkey: "Software\Chem Cryst\Crystals"; ValueType: string; ValueName: "Crysdir"; ValueData: "{app}\user\,{app}\"; Check: IsWin64
+
+Root: HKCU64; Subkey: "Software\Chem Cryst\Crystals"; ValueType: string; ValueName: "Strdir"; ValueData: "{app}\demo\demo"; Flags: createvalueifdoesntexist; Check: IsWin64
+Root: HKCU64; Subkey: "Software\Chem Cryst\Crystals"; ValueType: string; ValueName: "FontHeight"; ValueData: "8"; Flags: createvalueifdoesntexist; Check: IsWin64
+Root: HKCU64; Subkey: "Software\Chem Cryst\Crystals"; ValueType: string; ValueName: "FontWidth"; ValueData: "0"; Flags: createvalueifdoesntexist; Check: IsWin64
+Root: HKCU64; Subkey: "Software\Chem Cryst\Crystals"; ValueType: string; ValueName: "FontFace"; ValueData: "Lucida Console"; Flags: createvalueifdoesntexist; Check: IsWin64
+Root: HKCU64; Subkey: "Software\Chem Cryst\Crystals"; ValueType: string; ValueName: "PLATONDIR"; ValueData: "{app}\platon.exe"; Flags: createvalueifdoesntexist; Check: IsWin64
 
 Root: HKCR; SubKey: .dsc; ValueType: STRING; ValueData: CrystalsFile; Flags: uninsdeletevalue
 Root: HKCR; SubKey: CrystalsFile; ValueType: STRING; ValueData: Crystals Data File; Flags: uninsdeletevalue

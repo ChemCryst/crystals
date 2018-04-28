@@ -349,7 +349,7 @@
 %         CLEAR
 %         EXTRACT TRANSFER INPUT
 ^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VROTAX KEY
-^^PL XAXIS TITLE 'Distance from nearest lattice point (A^-1)'
+^^PL XAXIS TITLE 'Distance from nearest lattice point (A\**-1)'
 ^^PL YAXIS TITLE 'Number of reflections'
 ^^PL NSERIES=2 LENGTH=13
 ^^PL SERIES 1 SERIESNAME 'Reflections used for f.o.m.'

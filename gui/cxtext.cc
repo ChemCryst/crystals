@@ -41,6 +41,7 @@
 #include    <string>
 using namespace std;
 #include    "crtext.h"
+#include    "mathsymbols.h"
 
 
 int CxText::mTextCount = kTextBase;
@@ -83,7 +84,9 @@ Destroy();
 void    CxText::SetText( const string & text )
 {
 #ifdef CRY_USEWX
-    SetLabel(text.c_str());
+    wxString wtext = wxString(text.c_str());
+    MathSymbols::replaceMarkup(wtext);
+    SetLabel(wtext);
     SetSize(GetIdealWidth(),GetHeight());
     Refresh();
 #endif
