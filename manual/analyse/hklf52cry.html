@@ -1,6 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta name="generator" content=
@@ -16,13 +13,89 @@
 
 <body>
   <div class="c1">
-    <h1>hkl52cry</h1></div>
-  Twinned crystals are ones in which two (or more) parts have different
+    <h1>hkl52cry</h1>
+  </div>Twinned crystals are ones in which two (or more) parts have different
   orientations. Unlike accidental intergrowths, the unit cells of the components of a
   twin are related to each other in a rational way, so that the indices of reflections
   from each component are also rationally related by a matrix call the "Twin Law". Each
-  part generates its own diffraction pattern. These will also have a rtional relationship
-  between them.<br />
+  part generates its own diffraction pattern. These will also have a rotional
+  relationship between them.<br />
+  <br />
+  <br />
+
+  <div class="c1">
+    <h2>CRYSTALS and SHELX</h2>
+  </div>The reflection format for twinned data is different in CRYSTALS and SHELX. The
+  program hklf52cry converts a SHELX reflection file (hklf 5 format) to a standard
+  CRYSTALS format (LIST 6). The program also tries to extract the twin laws based on the
+  indices of groups of overlapping reflections.<br />
+  <br />
+  <br />
+  CRYSTALS and SHELXL both refine composite crystals (usually twins) by the method of C.
+  T. Grainger and J. F. McConnell. ( <i>Acta Cryst. (1969). B25, 1962</i>). In the
+  absence of interference between the diffracted beams from each component of the twin,
+  the observed intensity is the volume-fraction weighted sum of the overlapping
+  intensities from the twin components.<br />
+  Io=&#931;c<sub>i</sub>I<sub>i</sub><br />
+  where c<sub>i</sub> is the vol-fraction of component <i>i</i>, and I<sub>i</sub> its
+  unobservable intensity. The c<sub>i</sub> can be estimated by replacing the observed
+  I<sub>i</sub> with their calculated equivalents. The c<sub>i</sub> should sum to
+  unity.<br />
+
+  <div class="c1">
+    <h2>Experimental Considerations</h2>
+  </div>The diffraction image for a sample consisting of two parts will consist of
+  overlapping diffraction patterns from each component. The instrument software will have
+  to try to assign each diffracted spot to one lattice or the other, or both
+  simultaneously, and hence assign one or two indices to each spot. Each lattice will
+  have its own orientation matrix.<br />
+  If the sample is really twinned, there will be a geometric relationship between the
+  orientation of the two patterns in three dimensions. This relationship is the Twin Law,
+  and must be determined when the diffraction images are being processed.<br />
+  If the sample is not really twinned, but is just two crystallites grown together, the
+  instrument may still be able to assign orientation matrices to the two lattices, but
+  they will not be related in a rational way.<br />
+  The output reflection file will consist of a list of the observed intensities together
+  with information about the indices of the reflections contributing to the total
+  intensity. CRYSTALS and SHELX use different ways of representing this relationship.
+
+  <div class="c1">
+    <h2>Differences between CRYSTALS and SHELXL</h2>
+  </div>
+
+  <h3>CRYSTALS</h3>The crystal is regarded as being composed of a principal and a minor
+  component. The reflection file consists of the index of the principal component, the
+  total measured intensity, and a flag indicating whether the minor component also
+  contributes to the intensity.
+  <pre>
+e.g.
+h k l intensity sigma 1
+</pre>indicates a contribution from only the primary component
+  <pre>
+h k l intensity sigma 12
+</pre>indicates a contribution from both components. The index of the second component
+(which is needed in order to determine its calculated intensity) is obtained by
+multiplying the given index by the twin law matrix. The concept can be extended to a
+sample consisting of up to nine components.
+
+  <h3>SHELX</h3>Twinned data is input into SHELXL by the instruction:<br />
+  hklf 5<br />
+  The reflection file consists of groups of lines all referring to a single observed
+  intensity.
+  <pre>
+e.g.
+h k l intensity sigma m
+</pre>hkl is the index corresponding to component <i>m</i>.<br />
+  When both twin components contribute to a single observed intensity they are grouped
+  together:
+  <pre>
+h  k  l  intensity sigma -1
+h' k' l' intensity sigma  2
+</pre>The intensity and sigmas have the same values on both lines. hkl is the index of
+the principal component, h'k'l' the index of the minor component, indicated by the
+<i>2</i> at the end of the line.<br />
+  Since the index of the minor component is given explicitly, SHELX does not need to know
+  the twin law, and in fact the two components neesd not be related by a twin law.<br />
 
   <p><strong>Classification</strong></p>
 
@@ -36,150 +109,75 @@
   twins in which some points contain contributions from one component only.</p>
 
   <ol>
-    <li><strong>TLQS twins</strong> have multiple diffraction patters. The
-    &lsquo;spots&rsquo; may be split, or give two distinct lattices.</li>
-    <br>
-    <table width="100%" border="3" cellspacing="0" cellpadding="0">
-    <tr>
-    <td width="50%">
-    In the central (horizontal) row the diffraction spots from two lattices 
-    overlap exactly. In the first row above, the two lattices give rise to 
-    separate diffaction spots (white arrows for one lattice, blue for the other).
-    On the next row the spots are (in this example) almost evenly spaced.
-    By the 4<sup>th</sup> row the spots are again overlapping. <br>
-    TLQS twins are normally evident from the diffraction images. The instument
-    must decide how to process the images. 
-    <br />
-    In this case the intensities of 
-    reflections on the zeroth and fourth rows are the sums of both lattices.
-    On the first and second rows the two components are well resolved and can be
-    estimated separately. On the third row the splitting is marginal, and the instrument
-    will have to choose for itself whether to agregate the contributions, or whether it
-    can resolve them.
-    </td>
-    <td width="50%">
-    <img src="h0l-b2.png">
-    <br />Picture provided by Simon Parsons
-    </td>
-    </tr>
-    </table>
+    <li>
+      <strong>TLQS twins</strong> have multiple diffraction patters. The
+      &#8216;spots&#8217; may be split, or give two distinct lattices.<br />
+
+      <table width="100%" border="3" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="50%">In the central (horizontal) row the diffraction spots from two
+          lattices overlap exactly. In the first row above, the two lattices give rise to
+          separate diffaction spots (white arrows for one lattice, blue for the other).
+          On the next row the spots are (in this example) almost evenly spaced. By the
+          4<sup>th</sup> row the spots are again overlapping.<br />
+          TLQS twins are normally evident from the diffraction images. The instument must
+          decide how to process the images.<br />
+          In this case the intensities of reflections on the zeroth and fourth rows are
+          the sums of both lattices. On the first and second rows the two components are
+          well resolved and can be estimated separately. On the third row the splitting
+          is marginal, and the instrument will have to choose for itself whether to
+          agregate the contributions, or whether it can resolve them.</td>
+
+          <td width="50%"><img src="h0l-b2.png" /><br />
+          Picture provided by Simon Parsons</td>
+        </tr>
+      </table>
+    </li>
 
     <li>
       <strong>TLS twins</strong>show a single diffraction pattern.
-    <table width="100%" border="3" cellspacing="0" cellpadding="0">
-    <tr>
-    <td width="50%">
-      <ol>
-        <li><strong>Class I</strong> (merohedral)<br />
-        The twin operator belongs to the Laue symmetry of the untwinned crystal. The
-        centre of symmetry can always be chosen as the operator. Except for the influence
-        of Friedels Law, the intensities from a twinned sample are the same as those from
-        an untwinned sample.<br />
-        r.l. of twin has higher symmetry than r.l. of component<br />
-        I<sub>t</sub> = vI<sub>1</sub> + (1-v)I<sub>2</sub></li>
 
-        <li><strong>Class II</strong> (pseudo-merohedral)<br />
-        The centre of symmetry is never the twin operator. Two reflections not equivalent
-        by Laue symmetry contribute to a single observation.<br />
-        r.l. of twin has same symmetry as r.l. of component.</li>
-      </ol>
-   <hr color="blue">
-   i and ii represent the diffraction patterns from each of two components (each with
-   symmetry <i>2</i>) related
-   by a 2-fold rotations about <i>h</i>. If there are equal volumes of both component
-   in the twin, the resulting image is as in iii.  The diffraction image now has <i>mm</i>
-   symmetry, which could lead to difficulties in determining the space group. If the volumes
-   are unequal, the symmetry remains <i>2</i>. Note that in 3 there are more strong spots in
-   i and ii.  This gives rise to an unusual distribution of E values 
-   (&lt;|E<sup>2</sup>-1|&gt;&nbsp;~0.74) and several values of F<sub>o</sub>
-   substantially greater than F<sub>c</sub>. 
-   </td>
-   <td width=50%>
-    <img src="fig3-b.png">
-    <br />Picture provided by Simon Parsons
-   </td>
-   </tr>
-   </table>
-     <br />     <br />
-     <br />
+      <table width="100%" border="3" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="50%">
+            <ol>
+              <li><strong>Class I</strong> (merohedral)<br />
+              The twin operator belongs to the Laue symmetry of the untwinned crystal.
+              The centre of symmetry can always be chosen as the operator. Except for the
+              influence of Friedels Law, the intensities from a twinned sample are the
+              same as those from an untwinned sample.<br />
+              r.l. of twin has higher symmetry than r.l. of component<br />
+              I<sub>t</sub> = vI<sub>1</sub> + (1-v)I<sub>2</sub></li>
 
+              <li><strong>Class II</strong> (pseudo-merohedral)<br />
+              The centre of symmetry is never the twin operator. Two reflections not
+              equivalent by Laue symmetry contribute to a single observation.<br />
+              r.l. of twin has same symmetry as r.l. of component.</li>
+            </ol>
+            <hr color="blue" />
+            i and ii represent the diffraction patterns from each of two components (each
+            with symmetry <i>2</i>) related by a 2-fold rotations about <i>h</i>. If
+            there are equal volumes of both component in the twin, the resulting image is
+            as in iii. The diffraction image now has <i>mm</i> symmetry, which could lead
+            to difficulties in determining the space group. If the volumes are unequal,
+            the symmetry remains <i>2</i>. Note that in 3 there are more strong spots in
+            i and ii. This gives rise to an unusual distribution of E values
+            (&lt;|E<sup>2</sup>-1|&gt;&nbsp;~0.74) and several values of F<sub>o</sub>
+            substantially greater than F<sub>c</sub>.
+          </td>
+
+          <td width="50%"><img src="fig3-b.png" /><br />
+          Picture provided by Simon Parsons</td>
+        </tr>
+      </table><br />
+      <br />
+      <br />
       For further discussion <a href="http://www.xtl.ox.ac.uk/resources/twin.html">see
-      here</a> or chapter 18 in Crystal Structure Analysis Principles and Practice. 
-      Second Edition. <br />
-      Edited by William Clegg, Alexander J Blake, Jacqueline M Cole, John S O Evans, 
-      Peter Main, Simon Parsons, and David J Watkin. <br />
+      here</a> or chapter 18 in Crystal Structure Analysis Principles and Practice.
+      Second Edition.<br />
+      Edited by William Clegg, Alexander J Blake, Jacqueline M Cole, John S O Evans,
+      Peter Main, Simon Parsons, and David J Watkin.<br />
       International Union of Crystallography Texts on Crystallography
-
-      <br />     <br />
-     <br />
-
-      CRYSTALS and SHELXL both refine composite crystals (usually twins) by the
-      method of C. T. Grainger and J. F. McConnell. ( <i>Acta Cryst. (1969). B25,
-      1962</i>). In the absence of interference between the diffracted beams from each
-      component of the twin, the observed intensity is the volume-fraction weighted sum
-      of the overlapping intensities from the twin components.<br />
-      Io=&Sigma;c<sub>i</sub>I<sub>i</sub><br />
-      where c<sub>i</sub> is the vol-fraction of component <i>i</i>, and I<sub>i</sub>
-      its unobservable intensity. The c<sub>i</sub> can be estimated by replacing the
-      observed I<sub>i</sub> with their calculated equivalents. The c<sub>i</sub> should
-      sum to unity.<br />
-
-      <div class="c1">
-        <h2>Experimental Considerations</h2></div>
-      </div>The diffraction image for a sample consisting of two parts will consist of
-      overlapping diffraction patterns from each component. The instrument software will
-      have to try to assign each diffracted spot to one lattice or the other, or both
-      simultaneously, and hence assign one or two indices to each spot. Each lattice will
-      have its own orientation matrix.<br />
-      If the sample is really twinned, there will be a geometric relationship between the
-      orientation of the two patterns in three dimensions. This relationship is the Twin
-      Law, and must be determined when the diffraction images are being processed.<br />
-      If the sample is not really twinned, but is just two crystallites grown together,
-      the instrument may still be able to assign orientation matrices to the two
-      lattices, but they will not be related in a rational way.<br />
-      The output reflection file will consist of a list of the observed intensities
-      together with information about the indices of the reflections contributing to the
-      total intensity. CRYSTALS and SHELX use different ways of representing this
-      relationship.
-
-      <div class="c1">
-        <h2>Differences between CRYSTALS and SHELXL</h2>
-      </div>
-
-      <h3>CRYSTALS</h3>The crystal is regarded as being composed of a principal and a
-      minor component. The reflection file consists of the index of the principal
-      component, the total measured intensity, and a flag indicating whether the minor
-      component also contributes to the intensity.
-      <pre>
-e.g.
-h k l intensity sigma 1
-</pre>indicates a contribution from only the primary component
-      <pre>
-h k l intensity sigma 12
-</pre>indicates a contribution from both components. The index of the second component
-(which is needed in order to determine its calculated intensity) is obtained by
-multiplying the given index by the twin law matrix. The concept can be extended to a
-sample consisting of up to nine components.
-
-      <h3>SHELX</h3>Twinned data is input into SHELXL by the instruction:<br />
-      hklf 5<br />
-      The reflection file consists of groups of lines all referring to a single observed
-      intensity.
-      <pre>
-e.g.
-h k l intensity sigma m
-</pre>hkl is the index corresponding to component <i>m</i>.<br />
-      When both twin components contribute to a single observed intensity they are
-      grouped together:
-      <pre>
-h  k  l  intensity sigma -1
-h' k' l' intensity sigma  2
-</pre>The intensity and sigmas have the same values on both lines. hkl is the index of
-the principal component, h'k'l' the index of the minor component, indicated by the <i>
-      2</i> at the end of the line.<br />
-      Since the index of the minor component is given explicitly, SHELX does not need to
-      know the twin law, and in fact the two components neesd not be related by a twin
-      law.<br />
     </li>
   </ol>
 </body>
