@@ -205,7 +205,7 @@
 %%
 %   END BLOCK
 %   BLOCK                                           %HELP%
-%    COPY '#SPAWN CRYSDIR:manual/analyse/hklf52cry.html'
+%    COPY '#SPAWN CRYSDIR:manual/Xray-data/hklf52cry.html'
 %   END BLOCK
 %   BLOCK                                           %CONTINUE%
 {I   Choose an option
