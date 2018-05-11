@@ -21,22 +21,23 @@
 ^^WI @ 1,1 EDITBOX CINILE ' ' CHARS=48 INFORM=NO INPUT  
 ^^WI @ 1,3 BUTTON BROWSE 'Browse...'  
 ^^WI }  
-^^WI @ 4,2 GRID GB NROWS=3 NCOLS=3  
+^^WI @ 4,2 GRID GB NROWS=3 NCOLS=5  
 ^^WI {  
 ^^WI @ 1,1 STATIC T1 'Output file:'  
 ^^WI @ 1,3 EDITBOX OFNAM 'hklf52cry.cry'  
 ^^WI }  
-^^WI @ 5,2 GRID GB NROWS=1 NCOLS=3  
+^^WI @ 5,2 GRID GB NROWS=1 NCOLS=5  
 ^^WI {  
 ^^WI @ 1,1 BUTTON CFBOK '&Ok' DEFAULT  
-^^WI @ 1,3 BUTTON CFBXX '&Cancel'  
+^^WI @ 1,3 BUTTON CFBXX '&Cancel' 
+^^WI @ 1,5 BUTTON CFHELP 'Help' 
 ^^WI }  
 ^^WI }  
 ^^WI SHOW  
 ^^CR  
 %  LOOP  
-%    VERIFY BROWSE CFBXX CFBOK  
-%    GET SILENT NOSTORE FINAL ABBREVIATED 'BXX?' 'BXX'  
+%    VERIFY BROWSE CFBXX CFBOK  CFHELP
+%    GET SILENT NOSTORE FINAL ABBREVIATED 'BXX?' 'BXX'
 %    CASE VALUE  
 %      BLOCK %BROWSE%  
 ^^WI SYSOPENFILE '*.hkl;*.dat;' 'HKL format (*.hkl,*.dat)'  
@@ -72,6 +73,9 @@
 %          EVALUATE LOOPEND = LOOPCOUNTER  
 %        END IF  
 %      END BLOCK  
+%      BLOCK %CFHELP%
+%       COPY '#SPAWN CRYSDIR:manual/Xray-data/table.html'
+%      END BLOCK
 %    END CASE  
 %  END LOOP  
 %%  
