@@ -63,6 +63,7 @@ InfoAfterFile=..\bin\postinst.txt
 [Dirs]
 Name: {app}\Manual
 Name: {app}\Manual\analyse
+Name: {app}\Manual\Xray-data
 Name: {app}\Script
 Name: {app}\user
 Name: {app}\user\Script
