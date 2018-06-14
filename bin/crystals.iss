@@ -64,6 +64,7 @@ InfoAfterFile=..\bin\postinst.txt
 Name: {app}\Manual
 Name: {app}\Manual\analyse
 Name: {app}\Manual\Xray-data
+Name: {app}\Manual\structure
 Name: {app}\Script
 Name: {app}\user
 Name: {app}\user\Script
@@ -78,6 +79,8 @@ Source: ..\build\mce\*.*; DestDir: {app}\mce\;  Flags: ignoreversion;
 Source: ..\build\mce\mce_manual_soubory\*.*; DestDir: {app}\mce\mce_manual_soubory\;
 Source: ..\build\manual\*.*; DestDir: {app}\manual\;
 Source: ..\build\manual\analyse\*.*; DestDir: {app}\manual\analyse\;
+Source: ..\build\manual\Xray-data\*.*; DestDir: {app}\manual\Xray-data\;
+Source: ..\build\manual\structure\*.*; DestDir: {app}\manual\structure\;
 Source: ..\build\demo\*; DestDir: {app}\demo\; Flags: recursesubdirs; Excludes: "*.doc";
 
 [Icons]
