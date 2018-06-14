@@ -482,6 +482,11 @@ C----- CHECK IF LIST 12, 16 OR 17 or 18
          END IF
          RETURN
       ENDIF
+C----- CHECK IF LIST 30
+      IF (LSTNO.EQ.30) THEN
+            CALL XPCH30
+            RETURN
+      END IF
 C----- CHECK IF LIST 41
       IF (LSTNO.EQ.41) THEN
             CALL XPCH41
