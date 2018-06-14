@@ -1,0 +1,196 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta name="generator" content=
+  "HTML Tidy for Linux (vers 25 March 2009), see www.w3.org" />
+
+  <title>Comparing two refinements</title>
+  <style type="text/css">
+/*<![CDATA[*/
+  span.c2 {color: blue}
+  div.c1 {text-align: center}
+  /*]]>*/
+  </style>
+</head>
+
+<body>
+  <div class="c1">
+    <h1>Comparing two refinements</h1>
+  </div>CRYSTALS has a roundabout way for comparing the crystal structures resulting from
+  two different refinement strategies. The strategies can include changing restraints,
+  constraints, weighing schemes, reflection filters etc.etc.<br />
+  <strong>The important issue is that the order of the atoms in LIST 5 must be identical
+  for both refinements</strong><br />
+
+  <ol>
+    <li>Perform the first refinement and save the resulting atomic coordinates (LIST 5).
+    You will need to know how many atoms you have in your structure, and the names of the
+    first and last atoms.
+
+      <ol>
+        <li>Issue<br />
+        <small>#DISPLAY LOW<br />
+        END</small><br />
+        <span class="c2">Make a note of the number of atoms, and the identity of the
+        first and last atoms.</span><br />
+        <code>Summary of contents of list 5 - Parameters<br />
+        <br />
+        The list currently contains <strong><span class="c2">22</span></strong>
+        atoms<br />
+        <strong><span class="c2">O 1</span></strong> C 2 N 3 C 4 C 5 N 6 C 7<br />
+        O 8 C 9 C 10 C 11 H 92 H 91 H 93<br />
+        H 101 H 102 H 112 H 111 H 61 H 43 H 42<br />
+        <strong><span class="c2">H 41</span></strong><br /></code></li>
+
+        <li>Issue<br />
+        <small>#DISK<br />
+        RETAIN 5<br />
+        END<br /></small> <span class="c2">Make a note of the serial number of the
+        current LIST 5.</span><br />
+        <code>Disc operation on LIST 5 Serial <span class="c2">xx</span></code></li>
+
+        <li>Use the editor to change all the atom TYPES to something unusual, say
+        'Q'<br />
+        Issue<br />
+        <small>#EDIT<br />
+        CHANGE FIRST(TYPE) UNTIL LAST Q<br />
+        EXEC<br />
+        END<br /></small></li>
+
+        <li>Save these atomic coordinates in a named file, e.g. FIRST.DAT<br />
+        Issue<br />
+        <small>#RELE PUNCH FIRST.DAT<br />
+        #PUNCH 5 F<br />
+        END<br />
+        #RELE PUNCH BFILE.PCH<br /></small></li>
+
+        <li>Restore the current working LIST 5<br />
+        <small>#DISK<br />
+        RESET 5 xx<br />
+        END<br /></small> <span class="c2">Where xx is the list Serial number you made a
+        note of.</span></li>
+      </ol>
+    </li>
+
+    <li>Perform the second refinement. Retain the LIST 5 as in step 1.1 above, just in
+    case. You now need to import the results of the first refinement, saved in FIRST.DAT
+    into the current LIST 5.<br />
+
+      <ul>
+        <li>Issue<br />
+        <small>#EDIT<br />
+        #USE FIRST.DAT<br />
+        END<br /></small></li>
+      </ul>
+    </li>
+
+    <li>The shifts in atomic positions between the two refinements can be found by
+    issuing:
+
+      <ul>
+        <li><small>#DISTANCE<br />
+        SELECT RANGE=LIMIT<br />
+        LIMIT 0 .5 0 0<br />
+        OUTPUT LIST=DIST<br />
+        END<br /></small></li>
+      </ul>The table lists the distance from each named atom in the current refinement to
+      the corresponding Q atom in the first refinement.
+      <pre>
+<code>
+  Q(1) - F(1)    0.002        0.619 1.576 0.671
+  Q(2) - C(2)    0.002        0.579 1.424 0.693
+  Q(3) - C(3)    0.002        0.528 1.482 0.627
+</code>
+</pre>
+    </li>
+
+    <li>The bond length and bond angle differences, and a comparison of the ADPs can be
+    obtained by issuing:
+
+      <ul>
+        <li><small>#REGULARISE COMPARE<br />
+        GROUP <span class="c2">22</span><br />
+        OLD O(1) UNTIL H(41)<br />
+        NEW Q(1) UNTIL Q(41)<br />
+        METHOD 5<br />
+        END<br /></small></li>
+      </ul>Where the <span class="c2">22</span>is the number of atoms in the molecule,
+      O(1) is the first atom in the refinement and H(41) is the last, and the Q atoms
+      correspond.<br />
+      The NEW peaks are shifted so that their centre of gravity corresponds to that of
+      the OLD atoms, and then the coordinates etc are compared. <span class="c2">METHOD
+      5</span>indicates that neither of the molecules may be rotated - the relative
+      orientations are fixed.<br />
+      The first table lists the atom pairs, the displacements in x,y and z, the distance
+      between the corresponding items, and the angle subtended by the pair at the centre
+      of gravity. NOTE that since the centre of gravity of the NEW peaks has been
+      adjusted, these distances will not be the same as was seen with #DISTANCE above.
+      <pre>
+<code>
+ Position  Type  Serial   d(x)    d(y)    d(z)  Distance  Angle
+      1    F         1.   0.001   0.002   0.003   0.004   0.033
+      2    C         2.  -0.002   0.001   0.002   0.003   0.028
+      3    C         3.   0.001  -0.001  -0.000   0.002   0.019
+      4    C         4.  -0.001   0.003  -0.001   0.003   0.049
+</code>
+</pre>The orthogonalised adps are then compared. Uprime is defined in <i>Watkin, Acta
+Cryst (2000)</i>.
+      <pre>
+<code>
+
+ Position  Type  Serial                     Old U[ij]                       Old Principal Axes   Uprime   Ugeom
+                                            New U[ij]                       New Principal Axes
+                                       delta U[ij]                        delta Principal Axes
+
+      1    F        1.     0.048   0.098   0.099   0.004   0.003  -0.009    0.047 0.096 0.103    0.212    0.077
+           Q        1.     0.048   0.097   0.099   0.004   0.003  -0.008    0.047 0.095 0.103    0.210    0.077
+                          -0.000   0.000   0.000  -0.001   0.000  -0.000   -0.000 0.001-0.000    0.002    0.000
+</code>
+</pre>Below this corresponding bond lengths and torsion angles are compared. Note that
+the bond length discrepancies will not correspond to the atomic displacements seen in
+<strong>#DISTANCE</strong> above.
+      <pre>
+<code>
+
+Bond length deviations
+F1-C2               Q1-Q2                0.003
+C2-C3               Q2-Q3                0.004
+C2-C17              Q2-Q17               0.000
+
+
+Torsion angle deviations                                                         Angles &amp; Difference
+F1-C2-C3-C4                           Q1-Q2-Q3-Q4                              -179.01 -178.94   -0.07
+F1-C2-C3-H31                          Q1-Q2-Q3-Q31                                2.77    2.92   -0.15
+C17-C2-C3-C4                          Q17-Q2-Q3-Q4                                0.44    0.59   -0.15
+</code>
+</pre>followed by a summary of the overall discrepancies.<br />
+      <br />
+    </li>
+
+    <li>Comparing two refinement in an external program.<br />
+      <br />
+      If you wish to compute functions of the two data sets in an external program, such
+      as EXCEL, <strong>do not</strong> change the atom names to Q before punching them
+      to the named file, and output them with<strong>#PUNCH 5 E</strong>. The file
+      FIRST.dat will contain two lines for each atom. The first contains the coordinates,
+      the second the e.s.d.<br />
+      Do a similar thing for the second refinement.
+
+      <ul>
+        <li><code>Issue<br />
+        <small>#RELE PUNCH FIRST.DAT<br />
+        #PUNCH 5 E<br />
+        END<br />
+        #RELE PUNCH BFILE.PCH<br /></small></code> Carry out the second refinement<br />
+        <code>Issue<br />
+        <small>#RELE PUNCH SECOND.DAT<br />
+        #PUNCH 5 E<br />
+        END<br />
+        #RELE PUNCH BFILE.PCH<br /></small></code></li>
+      </ul>
+    </li>
+  </ol>
+</body>
+</html>

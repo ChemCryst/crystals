@@ -1,0 +1,29 @@
+
+                                                              <name="fo-fc">
+<tr>
+<td width="40%">
+<h2> Analyse</h2>
+<h3> Fo vs Fc</h3>
+<p>
+The green line is unit gradient.  The reflections (red crosses) should
+be distributed evenly about this line. Blue crosses are reflection
+that have been filtered out (LIST 28).  If the red crosses follow
+a systematic downwards curve at high values of Fc, this may indicate 
+the need for an extinction correction. A few point falling a long way 
+from the line may be outliers (bad values of Fo), or may indicate
+serious erroes in the model (bad values of Fc).  They can be filtered 
+out of the refinement by right clicking on them, but only if you are
+confident that you can explain them. A slight systematic trend for Fo 
+to be greater than Fc, plus more scatter than usual, may indicate 
+twinning.<br>
+The blue crosses at Fc=zero are reflections that have been filtered out
+from the very start. Go to Refinement-Filter Reflections and uncheck the 
+filters if you want to compute all Fc values.
+</p>
+</td>
+<td>
+&nbsp;
+<img id="8 " src="./F0vsFc.jpg"  align="left"
+ alt="Not Available">
+</td>
+</tr>

@@ -1,0 +1,27 @@
+
+
+<tr>
+<td width="40%">
+                                    <a name="npp" id="npp"></a>
+<h2> Analyse</h2>
+<h3> Normal Probability Plot</h3>
+<p>
+This should be a straight line of unit gradient.  The tails
+are often ragged, and not too important if only a few reflections
+are involved.  If the line has a significan curve, this means that
+there is a significant
+trend in the residual which must be corrected either by improving
+the model or adjusting the weights. If the curve is more-or-less 
+straight but not of unit gradient, the weights need rescalling.
+<br> In this case there is a down turn in a few reflections (probably
+not too important), and the gradient is about 0.4, indicating that 
+the weights need re-scalling.
+</p>
+</td>
+<td>
+&nbsp;
+<img id="9 " src="./Normal-p.jpg"  align="left"
+ alt="Not Available">
+</td>
+</tr>
+

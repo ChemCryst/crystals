@@ -1,0 +1,59 @@
+
+
+<tr>
+<td width="40%">
+<h2> Graphics Window</h2>
+<h3> Highlighted atoms + TLS</h3>
+<p>
+Computes the TLS analysis of the selected atoms.  Large values of R1 
+indicate thet the selected atoms do not form a rigid group.  Small 
+values of R1 plus large values of L<sub>33</sub> indicate thet there may 
+be a bond shortening effect.  Look in the listing file to see the 
+corrected bond lengths.  In this case the R1 value of 7% and the 
+ L<sub>33</sub> value of 70 degree<sup>2</sup> leads to bond length 
+corrections of about 0.02A.
+</p>
+</td>
+<td>
+&nbsp;
+<img id="13 " src="./TLS.jpg"  align="top"
+ alt="Not Available">
+<br><br><hr><br>
+<img id="13b " src="./TLS-2.jpg"  align="bottom"
+ alt="Not Available">
+</td>
+</tr>
+
+
+<tr>
+<td width="40%">
+<h2> Graphics Window</h2>
+<h3> Highlighted atoms + Slant Fourier</h3>
+<p>
+This computes the best plane through the selected atoms and then the 
+electron density (or difference density) in sections parallel to the 
+plane. You will probably need to raise the number of sections from the 
+default (2) in order to obtain a thicker slab of the structure.  Michael 
+Husaks MCE viewer lets you examine the density. <br>
+This is a really useful utiity for helping you to unravel disorder.  
+Remember that an ordinary peak-search picks out local maxima, but tells 
+you nothing about the surrounding density. Set the occupation factors of
+the suspicious atoms to zero and then re-compute structure factors 
+(<b>Do not try refinement</b>). Then click the solvent atoms to locate 
+the area of interest and view the slant difference Fourier. The atoms 
+with zero occupancie will not contribute to the map, but will help you
+locate the supposed solvent amongst the electron density.<br><br>
+The electron density distribution is displayed in MCE, distributed with 
+CRYSTALS by courtesy of Micheal Husak and Jan Rohlicek. 
+See www.vscht.cz/min/mce  for more details.
+</p>
+</td>
+<td>
+&nbsp;
+<img id="14 " src="./slant-1.jpg"  align="top"
+ alt="Not Available">
+<br><br><hr><br>
+<img id="15 " src="./slant-2.jpg"  align="bottom"
+ alt="Not Available">
+</td>
+</tr>

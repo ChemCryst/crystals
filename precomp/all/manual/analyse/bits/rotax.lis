@@ -1,0 +1,22 @@
+
+
+<tr>
+<td width="40%">
+<h2> Analyse</h2>
+<h3> Rotax</h3>
+<p>
+This utility, developed by Simon Parsons, Bob Gould and Richard Cooper, 
+examines the 30 reflections with the largest residuals for evidence of 
+merohedral or pseudo merahedral twinning.  Go to "Help - Twin Worked 
+Examples" for more information.<br>
+The image right is from the worked example "Keen - twin". 
+</p>
+</td>
+<td>
+&nbsp;
+<img id="Rot " src="./rotax.jpg"  align="bottom"
+ alt="Not Available">
+</td>
+</tr>
+
+

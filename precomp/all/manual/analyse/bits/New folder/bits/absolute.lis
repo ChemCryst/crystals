@@ -1,0 +1,52 @@
+
+
+<tr>
+<td width="40%">
+<h2> Analyse</h2>
+<h3> Absolute Configuration</h3>
+&nbsp;
+
+<A href="./Flack.pdf" >
+<img id="10c " src="./tn_Flack.jpg"  align="top"
+ alt="Not Available"><br>
+See: <i>H. D. Flack and G. Bernardinelli., J. 
+Appl. Cryst. (2000). 33, 1143-1148</i>.
+</A>
+</td>
+<td >
+<p>
+CRYSTALS has two different refineable parameters to help with the 
+determination of absolute structure. <br>
+The oldest, the Rodger's "eta" parameter is a multiplier onto f", and 
+takes the value +1 if the model has the correct hand, and -1 if it needs 
+inverting. Flack showed that this parameter is unreliable as eta 
+approaches zero.<br>
+The Flack "x" parameter is the mixing term in 
+<br> F^2 = (1-x)F^2+h + xF^2-h <br>
+and takes the value zero if the model has the correct hand, and +1 if it needs 
+inverting.  <br>
+Either the Rodger's or Flack parameter should be refined simultaneously 
+with the other structural parameters since its value will influence 
+them, and they in turn will influence the s.u. on the absolute 
+configuration parameter.<br>
+<strong> Interpreting the Absolure Configuration Paramters</strong><br>
+<p style="font-size:80%">
+If the s.u. on the Flack parameter is greater than 0.30, the X-ray data 
+contain no significant anomalous information so that the absolute configuration
+cannot be assigned by X-ray means. The value of x can be set to zero and not refined.
+ (It may be appropriate to report x and its s.u. to demonstrate that the 
+calculation was actually performed).  <br>
+If the s.u. is small enough (<0.04), then the parameter itself can be evaluated.  
+If it falls close to zero or unity, then the absolute configuration has been determined.
+If it falls within this range, but is significantly distant from the bounds, 
+the material is probably twinned by inversion.
+</p>
+<p style="font-size:100%">
+Hooft, Straver and Spek have devised a new parameter which examines the 
+anomalous differences computed with the Flack x set to zero.  Its 
+robustness has yet to be determined.
+</p>
+</td>
+</tr>
+
+

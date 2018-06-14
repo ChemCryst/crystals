@@ -1,0 +1,133 @@
+<tr>
+<td width="40%">
+                                                     <a name="ti" id="ti"></a>
+<h2> Analyse: Data Quality</h2>
+<h3> Tabbed Initial</h3>
+</td>
+<td>
+&nbsp;
+</td>
+</tr>
+
+<tr>
+<td width="40%">
+<h4> Completeness</h4>
+<p>
+<name="completeness">
+An almost solid row of blue crosses at the top - 
+good sign - high completeness.  <br>
+Missing Data: A few low angle reflections missing (probably 
+behind the beam stop)- Not usually important.  If the blue crosses
+fall off at high angle, you can click on the graph at the theta max
+at which you believe the data to be more-or-less complete.<br>
+The inset shows data from a  <a href="./cropped.jpg">
+poorly diffracting poly-peptide</a>. The 
+structure was difficult to solve, and refined to a conventional R=8%
+with data down to 2 sigma.<br>
+<img id="1a" src="./s-bad-completeness.jpg"    align="bottom"
+ alt="Not Available">
+
+</p>
+</td>
+<td>
+&nbsp;
+<img id="1 " src="./completeness.jpg"    align="left"
+ alt="Not Available">
+</td>
+</tr>
+
+
+<tr>
+<td width="40%">
+<h4>Sigma Frequency</h4>
+<p>
+There are very few reflections below -2 sigma - i.e. no badly negative 
+reflections.  From the blue line you can see that about 5400 out of 
+the 7000 reflections have I/sigma(I) &GT; 3.  The listing file should
+give the exact figure. 77% of this data is reliably observable. If the
+figure falls below 50% you can expect problems with structure solution
+and refinement.
+</p>
+</td>
+<td>
+&nbsp;
+<img id="2 " src="./sigfreq.JPG"    align="left"
+ alt="Not Available">
+</td>
+</tr>
+
+
+<tr>
+<td width="40%">
+<h4>Sigma vs Resolution</h4>
+<p>
+The green curve shows that the very reliable data fades away at
+[sin(theta)/lambda]<sup>2</sup> of about 0.3. As normal, 
+the weak data (red) is mostly at high resolution.  The yellow curve
+is the cumulative sum, and is scaled to fit the chart (in this example
+by being multiplied by 10). 
+It shows that the mean I/sigma(I) is about 2 at 0.36 resolution. This
+is typical of an 'ordinary' data set.  Weakly diffracting crystals
+fall below the 2-sigma threshold at a lower resolution.<br>
+The inset shows the data for the same poor crystal described above<br>
+<img id="3a" src="./s-bad-SvsR.jpg"  align="bottom"
+ alt="Not Available">
+</p>
+</td>
+<td>
+&nbsp;
+<img id="3 " src="./sigvsres.jpg"  align="left"
+ alt="Not Available">
+</td>
+</tr>
+
+
+<tr>
+<td width="40%">
+<h4>Wilson Plot</h4>
+<p>
+This shows the usual ripple due to repeated molecular motifs.
+The gradient gives an estimate of the overall adp, the intercept
+an estimate of the overall scale of the data. Note the conventional
+use of <b>B</b> for the adp. <br>
+B=8.pi<sup>2</sup>U <br>
+Low values of <b>MOD[E<sup>2</sup>-1] </b> (&lt; 0.74) may
+indicate twinning.<br>
+If the high-rho end of the curve is ragged, 
+or shows an up-turn (due to systematic over-estimation of weak 
+reflections), a maximum value of rho for the
+rest of the analysis can be selected by right-clicking
+on the appropriate blue cross.  This value can be reset
+at any time in the REFINEMENT/FILTERING menu. The LIST 28
+check box enables you so see the effect of reflection filters.<br>
+<img id="4a" src="./s-bad-Wilson.jpg"  align="left"
+ alt="Not Available">
+Same poor data as described above.
+
+</p>
+</td>
+<td>
+&nbsp;
+<img id="4 " src="./Wilson.jpg"  align="left"
+ alt="Not Available">
+</td>
+</tr>
+
+
+<tr>
+<td width="40%">
+<h4>N(z) Distribution</h4>
+<p>
+This shows your data (as crosses) compared to thoretical 
+distributions and <b><i>may</i></b> 
+help you decide if you data is centrosymmetric or not.
+Generally not a very reliable test, especially if you have
+heavy atoms or repeated molecular motifs
+</p>
+</td>
+<td>
+&nbsp;
+<img id="5 " src="./Nz.jpg"  align="left"
+ alt="Not Available">
+</td>
+</tr>

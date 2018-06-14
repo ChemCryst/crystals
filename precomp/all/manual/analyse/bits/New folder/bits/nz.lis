@@ -1,0 +1,31 @@
+
+
+<tr>
+<td width="40%">
+<h4>N(z) Distribution</h4>
+<p>
+This shows your data (as crosses) compared to thoretical 
+distributions and <b><i>may</i></b> 
+help you decide if you data is centrosymmetric or not.
+Generally not a very reliable test, especially if you have
+heavy atoms or repeated molecular motifs
+</p>
+</td>
+<td>
+&nbsp;
+<img id="5 " src="./Nz.jpg"  align="left"
+ alt="Not Available">
+</td>
+</tr>
+
+
+<tr>
+<td width="40%">
+<h2> Analyse</h2>
+<h3> Agreement</h3>
+</td>
+<td>
+&nbsp;
+</td>
+</tr>
+

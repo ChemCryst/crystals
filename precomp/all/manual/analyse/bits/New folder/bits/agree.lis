@@ -1,0 +1,77 @@
+
+
+<tr>
+<td width="40%">
+<h2> Analyse</h2>
+<h3> Agreement</h3>
+</td>
+<td>
+&nbsp;
+</td>
+</tr>
+
+<name="agreement">
+<tr>
+<td width="40%">
+<h4>Residual</h4>
+<p> Plots &lt;(Fo-Fc)<sup>2</sup>&gt; vs Fc and resolution (red)
+and &lt;w(Fo-Fc)<sup>2</sup>&gt; vs Fc and resolution (blue).
+The blue bars should all be very short and centred at about 1.0.  
+In this example there is a systematic trend as a function of both
+Fc and resolution.  Since high angle reflections are generally weak,
+these two curves are saying more or less the same thing. In this case
+almost all blue bars hang down from the unit coordinate, indicating
+that the weights need re-adjusting (REFINEMENT/WEIGHTS). 
+
+<p> 
+CRYSTALS can try to determine a weighting scheme for you.
+<br> For refinement against F<sup>2</sup> a scheme similar to 
+Sheldrick's scheme is avaiable.
+<br>For refinement againts Fo an optimal Chebychev polynomial is fitted 
+to the residual.
+<br>
+When the weights have been correclty assigned, the weighted residual
+for any batch of reflections should be about unity.
+</p>
+
+
+<br>The second 
+image shows the result of recomputing the weights.  One strong and 
+one weak batch still have large blue deviations, but the green curve 
+shows that only a few reflections are involved in these batches.
+</p>
+</td>
+<td>
+&nbsp;
+<img id="6 " src="./residual.jpg"  align="top"
+ alt="Not Available">
+<br><br><hr><br>
+<img id="6 " src="./weights.jpg"  align="bottom"
+ alt="Not Available">
+</td>
+</tr>
+
+
+<tr>
+<td width="40%">
+<h4>Class/Parity (index, R-factor, R by class etc)</h4>
+<p>
+These are diagnostics which may point to problems with the data 
+or model in difficult cases. <i>Residual</i> and <i>R</i> 
+by parity/class should be constant across the calsses. 
+If there is alternation or some other pattern, this may indicate
+pseudo-translational symmetry. Examine the SIR ouput file for
+an alternative diagnostic. The Residual and R by index should also
+be contant. <br>
+In this example, the blue bars are consistantly below unity (but
+otherwise fairly constant) indicating that the weights need rescaling.
+</p>
+</td>
+<td>
+&nbsp;
+<img id="7 " src="./class-parity.jpg"  align="left"
+ alt="Not Available">
+</td>
+</tr>
+
+

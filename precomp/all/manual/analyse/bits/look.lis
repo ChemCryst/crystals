@@ -1,0 +1,84 @@
+
+---------- ABSOLUTE.LIS
+See: <i>H. D. Flack and G. Bernardinelli., J. 
+The oldest, the Rodger's "eta" parameter is a multiplier onto f", and 
+takes the value +1 if the model has the correct hand, and -1 if it needs 
+and takes the value zero if the model has the correct hand, and +1 if it needs 
+them, and they in turn will influence the s.u. on the absolute 
+cannot be assigned by X-ray means. The value of x can be set to zero and not refined.
+ (It may be appropriate to report x and its s.u. to demonstrate that the 
+Hooft, Straver and Spek have devised a new parameter which examines the 
+
+---------- AGREE.LIS
+<p> Plots &lt;(Fo-Fc)<sup>2</sup>&gt; vs Fc and resolution (red)
+and &lt;w(Fo-Fc)<sup>2</sup>&gt; vs Fc and resolution (blue).
+The blue bars should all be very short and centred at about 1.0.  
+Fc and resolution.  Since high angle reflections are generally weak,
+image shows the result of recomputing the weights.  One strong and 
+or model in difficult cases. <i>Residual</i> and <i>R</i> 
+an alternative diagnostic. The Residual and R by index should also
+
+---------- DIFABS.LIS
+azimuth and declination of the incident and emergent beams, 
+azimuth (angle in the h-k plane) and declination (angle above this plane) of the 
+absorption corrections). The text window shows the maximum, minimum and 
+mean values, which in  this case range over +/- 5% and are not very 
+
+---------- FOFC.LIS
+from the very start. Go to Refinement-Filter Reflections and uncheck the 
+
+---------- GRAPHICS.LIS
+corrected bond lengths.  In this case the R1 value of 7% and the 
+This computes the best plane through the selected atoms and then the 
+the suspicious atoms to zero and then re-compute structure factors 
+the area of interest and view the slant difference Fourier. The atoms 
+CRYSTALS by courtesy of Micheal Husak and Jan Rohlicek. 
+
+---------- LOOK.LIS
+See: <i>H. D. Flack and G. Bernardinelli., J. 
+The oldest, the Rodger's "eta" parameter is a multiplier onto f", and 
+takes the value +1 if the model has the correct hand, and -1 if it needs 
+and takes the value zero if the model has the correct hand, and +1 if it needs 
+them, and they in turn will influence the s.u. on the absolute 
+cannot be assigned by X-ray means. The value of x can be set to zero and not refined.
+ (It may be appropriate to report x and its s.u. to demonstrate that the 
+Hooft, Straver and Spek have devised a new parameter which examines the 
+<p> Plots &lt;(Fo-Fc)<sup>2</sup>&gt; vs Fc and resolution (red)
+and &lt;w(Fo-Fc)<sup>2</sup>&gt; vs Fc and resolution (blue).
+The blue bars should all be very short and centred at about 1.0.  
+Fc and resolution.  Since high angle reflections are generally weak,
+image shows the result of recomputing the weights.  One strong and 
+or model in difficult cases. <i>Residual</i> and <i>R</i> 
+an alternative diagnostic. The Residual and R by index should also
+azimuth and declination of the incident and emergent beams, 
+azimuth (angle in the h-k plane) and declination (angle above this plane) of the 
+absorption corrections). The text window shows the maximum, minimum and 
+mean values, which in  this case range over +/- 5% and are not very 
+from the very start. Go to Refinement-Filter Reflections and uncheck the 
+corrected bond lengths.  In this case the R1 value of 7% and the 
+This computes the best plane through the selected atoms and then the 
+the suspicious atoms to zero and then re-compute structure factors 
+the area of interest and view the slant difference Fourier. The atoms 
+CRYSTALS by courtesy of Micheal Husak and Jan Rohlicek. 
+
+---------- MOGUL.LIS
+geometries in the MOGUL data base and alerts you to any significant 
+target values and esds are based on the MOGUL values.
+
+---------- NPP.LIS
+are often ragged, and not too important if only a few reflections
+not too important), and the gradient is about 0.4, indicating that 
+
+---------- NZ.LIS
+distributions and <b><i>may</i></b> 
+
+---------- ROTAX.LIS
+This utility, developed by Simon Parsons, Bob Gould and Richard Cooper, 
+
+---------- TI.LIS
+structure was difficult to solve, and refined to a conventional R=8%
+and refinement.
+is the cumulative sum, and is scaled to fit the chart (in this example
+distributions and <b><i>may</i></b> 
+
+---------- WILSON.LIS

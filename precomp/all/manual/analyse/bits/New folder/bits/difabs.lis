@@ -1,0 +1,47 @@
+
+
+<tr>
+<td width="40%">
+                                         <a name="difabs" id="difabs"></a>
+<h2> Analyse</h2>
+<h3> Difabs</h3>
+<p>
+The colour-field shows the mean value &lt;Fo/Fc&gt; value as a funcion of 
+azimuth and declination of the incident and emergent beams, 
+i.e. as a funcion of direction with respect to the crystal shape.
+
+<br><br>
+For Area Detector data, multiple observations at different angles are merged,
+so the 
+azimuth (angle in the h-k plane) and declination (angle above this plane) of the 
+scattering vector are used. 
+
+
+<br><br>The map should be featureless, but 
+almost never is.  Steep gradients may indicate problems with the 
+structural model or with the data processing (e.g. unsatisfactory 
+absorption corrections). The text window shows the maximum, minimum and 
+mean values, which in  this case range over +/- 5% and are not very 
+significant. (Note that the DIFABS calculation can actually be applied 
+in CRYSTALS as a "correction" to the data, but this is not available 
+from a menu.)
+
+<br><br>If the figure field is completely black (very little variation) more 
+detail can sometimes be seen by plotting the logarithm of the values 
+(Press L on the keyboard). 
+<br>Pressing / replaces the ratio map with the multiplicity of observation
+map. This should show good coverage of the unique part of the reciprocal lattice.
+</p>
+</td>
+<td>
+&nbsp;
+<img id="10 " src="./difabs-1.jpg"  align="top"
+ alt="Not Available">
+&nbsp;
+<br><br><hr><br>
+<img id="11 " src="./Difabs-2.jpg"  align="bottom"
+ alt="Not Available">
+</td>
+</tr>
+
+

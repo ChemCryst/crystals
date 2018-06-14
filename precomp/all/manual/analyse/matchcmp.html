@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta name="generator" content=
+  "HTML Tidy for Linux (vers 25 March 2009), see www.w3.org" />
+
+  <title>Analyses in CRYSTALS</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+  <style type="&rdquo;text/css&rdquo;">
+<![CDATA[
+  body { background-color:white; color:black;
+  #para2 { font-family:fantasy; color:blue }
+  p { font-size:12pt; }
+  p:first-letter {font-size: 200%; color:red }
+  h3 { font-family:monospace; color:#ff00ff }
+  h1 {  color:green }
+  ]]>
+  </style>
+  <style type="text/css">
+/*<![CDATA[*/
+  div.c1 {text-align: center}
+  /*]]>*/
+  </style>
+</head>
+
+<body>
+  <div class="c1">
+    <h1>Comparison of two Molecules</h1>
+  </div>
+
+  <table width="100%" border="1" cellspacing="0" cellpadding="10">
+    <tr>
+      <td width="50%">
+        <a name="mcmp" id="mcmp"></a>
+
+        <h4>Breaking Symmetry</h4>
+
+        <p>If the molecules being compared have internal topographic symmetry <i>(i.e.
+        symmetry of connectivity)</i> the MATCH routine may be unable to choose which of
+        the alternative paths through the molecules to take.<br />
+        &nbsp; <img id="3" src="./mcmp-3.png" align="center" alt="Not Available" name=
+        "3" /></p>
+
+        <p>You can try breaking the symmetry by changing the TYPE of one or more
+        equivalent atoms in both molecules.<br />
+        <br />
+        &nbsp; <img id="1" src="./mcmp-1.png" align="center" alt="Not Available" name=
+        "1" /></p>
+      </td>
+
+      <td width="50%">
+        Start by retaining the current atom list (LIST 5):<br />
+        <pre>
+      #DISK
+      RETAIN 5
+      END
+      
+</pre>make a note of the current version of LIST 5.<br />
+        Use the GUI to change the type of two equivalent atoms (in this case hydrogen to
+        nitrogen).<br />
+        Use the GUI to compare the modified molecules. If the algorithm fails again, try
+        degrading the symmetry further by changing another pair of atoms. &nbsp; <img id=
+        "2" src="./mcmp-2.png" align="center" alt="Not Available" name="2" /> If the
+        match is successful and a pseudo-symmetry operator exists, it will be given in
+        the listing file:
+        <pre>
+ Trace = 1.000 Determinant =-1.000 Tr+Det =-0.000
+ see Giacovazzo, Sect 1.D
+ Element:  1  2  3  4  6 -1 -2 -3 -4 -6
+ Tr_det:   4  0  1  2  3 -4  0 -1 -2 -3
+
+  Pseudo-symmetry element  m detected
+
+  Pseudo-symmetry operator of form :-    0.50+X    1.50-Y    0.50+Z
+      
+</pre>Restore the proper atom list:<br />
+        <pre>
+      #DISK
+      RESET  5 n
+      END
+      
+</pre>where 'n', the version number, was noted earlier.
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

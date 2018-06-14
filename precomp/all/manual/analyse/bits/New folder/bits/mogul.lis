@@ -1,0 +1,21 @@
+
+<tr>
+<td width="40%">
+<h2> Analyse</h2>
+<h3> MOGUL</h3>
+<p>
+This can only be used if you have the CCDC MOGUL system installed on 
+your PC.  It compares the local geometry of your structure with similar 
+geometries in the MOGUL data base and alerts you to any significant 
+differences (\Z\ values).  Clicking on a featue shows the corresponding 
+values stored in MOGUL.  It can be used to set up restraints, where the 
+target values and esds are based on the MOGUL values.
+</p>
+</td>
+<td>
+&nbsp;
+<img id="12 " src="./Mogul.jpg"  align="left"
+ alt="Not Available">
+</td>
+</tr>
+
