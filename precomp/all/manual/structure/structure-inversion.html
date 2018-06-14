@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta name="generator" content=
+  "HTML Tidy for Linux (vers 25 March 2009), see www.w3.org" />
+
+  <title>Inverting a Structure</title>
+  <style type="text/css">
+/*<![CDATA[*/
+  body {
+  background-color: #FFFFFF;
+  }
+  a.c1 {font-style: italic}
+  /*]]>*/
+  </style>
+</head>
+
+<body>
+  <hr />
+
+  <center><h1>Inverting a Structure</h1><br /></center>
+  <br />
+  CRYSTALS tries to apply the correct inversions, translations and Space Group changes
+  for all Space Groups in standard settings.<br />
+  Note that these operations may move the structure away from the centre of the cell, so
+  that it will need re-centring ( <i>New Centre Molecule</i> )
+  <hr />
+  Copied from <a class="c1" href=
+  "http://structure.usc.edu/cns/tutorial/other/ambiguities_in_phasing.html">http://structure.usc.edu/cns/tutorial/other/ambiguities_in_phasing.html</a>
+  with minor changes.<br />
+
+  <h3><a name="enantiomorph" id="enantiomorph">Enantiomorph ambiguity</a></h3>A given
+  3-dimensionally periodic configuration of atoms and its inverse image give rise to
+  identical diffraction patterns. For crystals with a centrosymmetric space group this is
+  trivially true. For non-centrosymmetric space groups this gives rise to a hand
+  ambiguity or <em>enantiomorph ambiguity</em> (<em>Protein Crystallography</em>,
+  Blundell &amp; Johnson, 1976, page 374).
+
+  <p>For non-centrosymmetric space groups, there always exists a centre of inversion
+  which maps the given atom configuration onto its inverse image. For most
+  non-centrosymmetric space groups, this centre of inversion is at the origin of the
+  coordinate system (i.e. at 0,0,0) and the inverse image is obtained simply by flipping
+  the signs of the atomic coordinates. However, there can be two kinds of
+  difficulties:</p>
+
+  <ol>
+    <li>
+      <strong>The centre of inversion changes the space group.</strong><br />
+      This is the case for the 22 <em>enantiomorphic</em> space groups.<br />
+      The 22 enantiomorphic space groups can be grouped into 11 pairs:
+
+      <table border="1">
+        <tr>
+          <td>P4<sub>1</sub></td>
+
+          <td>P4<sub>1</sub>22</td>
+
+          <td>P4<sub>1</sub>2<sub>1</sub>2</td>
+
+          <td>P3<sub>1</sub></td>
+
+          <td>P3<sub>1</sub>12</td>
+
+          <td>P3<sub>1</sub>21</td>
+
+          <td>P6<sub>1</sub></td>
+
+          <td>P6<sub>2</sub></td>
+
+          <td>P6<sub>1</sub>22</td>
+
+          <td>P6<sub>2</sub>22</td>
+
+          <td>P4<sub>1</sub>32</td>
+        </tr>
+
+        <tr>
+          <td>P4<sub>3</sub></td>
+
+          <td>P4<sub>3</sub>22</td>
+
+          <td>P4<sub>3</sub>2<sub>1</sub>2</td>
+
+          <td>P3<sub>2</sub></td>
+
+          <td>P3<sub>2</sub>12</td>
+
+          <td>P3<sub>2</sub>21</td>
+
+          <td>P6<sub>3</sub></td>
+
+          <td>P6<sub>4</sub></td>
+
+          <td>P6<sub>3</sub>22</td>
+
+          <td>P6<sub>4</sub>22</td>
+
+          <td>P4<sub>3</sub>32</td>
+        </tr>
+      </table>
+
+      <p>The atomic coordinates of the inverse image are obtained by flipping the signs
+      of the original coordinates. If the space group of the original atom configuration
+      is listed in the top row of the table, the space group of the inverse image is
+      given in the same column in the bottom row, and vice versa.</p>
+    </li>
+
+    <li>
+      <strong>The centre of inversion is not at the origin of the coordinate
+      system.</strong><br />
+      This is the case for these 7 space groups
+
+      <table border="1">
+        <tr>
+          <td>Fdd2,</td>
+
+          <td>I4<sub>1</sub>,</td>
+
+          <td>I4<sub>1</sub>22,</td>
+
+          <td>I4<sub>1</sub>md,</td>
+
+          <td>I4<sub>1</sub>cd,</td>
+
+          <td>I-42d,</td>
+
+          <td>F4<sub>1</sub>32.</td>
+        </tr>
+      </table><br />
+      In these space groups, the inverse image is obtained by a combination of flipping
+      the signs of the coordinates and a translation (International Tables for
+      Crystallography, Volume A, 1983, Table 15.3.2, column 6).
+    </li>
+  </ol>
+
+  <p>For a clarification of the terms <em>enantiomorph</em> and <em>enantiomorphic space
+  group</em> refer to the International Tables for Crystallography, Volume A, 1983,
+  section 10.5, <em>Enantiomorphism</em>, <em>enantiomerism</em>, <em>chirality</em>,
+  <em>dissymmetry</em>.</p>
+  <hr />
+
+  <h2>See also</h2><a class="c1" href=
+  "http://shelx.uni-goettingen.de/shelxl_user_guide.pdf">http://shelx.uni-goettingen.de/shelxl_user_guide.pdf</a><br />
+
+  <br />
+  If the Flack x (by direct or post-refinement methods) takes a value greater than 0.5,
+  the enantiomorph should be changed. For most space groups this simply involves
+  inserting an instruction 'MOVE 1 1 1 -1' before the first atom.
+
+  <p>Where the space group is one of the 11 enantiomorphous pairs (e.g. P31 and P32) the
+  translation parts of the symmetry operators need to be inverted as well the
+  coordinates.</p>
+
+  <p>There are seven cases for which, if the standard setting of the International Tables
+  for Crystallography has been used, inversion in the origin does not lead to the
+  inverted absolute structure. This problem was probably first described in print by
+  Parthe &amp; Gelato (1984) and Bernardinelli &amp; Flack (1985), but had been
+  previously explained to the author [GMS] by D. Rogers (ca. 1980). The offending space
+  groups and corresponding correct MOVE instructions are:</p>
+
+  <ol>
+    <li><code>Fdd2 MOVE .25 .25 1 -1</code></li>
+
+    <li><code>I41cd MOVE 1 .5 1 -1</code></li>
+
+    <li><code>I41 MOVE 1 .5 1 -1</code></li>
+
+    <li><code>I-42d MOVE 1 .5 .25 -1</code></li>
+
+    <li><code>I4122 MOVE 1 .5 .25 -1</code></li>
+
+    <li><code>F4132 MOVE .25 .25 .25 -1</code></li>
+
+    <li><code>I41md MOVE 1 .5 1 -1</code></li>
+  </ol>
+</body>
+</html>
