@@ -11,6 +11,51 @@
 % VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
 % VARIABLE LOGICAL   ANSWER
 %%
+%  VARIABLE LOGICAL TOOL-HELP
+%  COPY '#SCRIPT TEST-TOOL-HELP'
+%  VARIABLE CHARACTER BUTTOK BUTTXX 
+%  VARIABLE LOGICAL RUNNOW
+%  EVALUATE RUNNOW = FALSE  
+% IF TOOL-HELP .EQ. TRUE THEN
+^^WI WINDOW INVERT 'Invert Structure' MODAL COMMIT='CFBOK' CANCEL='CFBXX'  
+^^WI GRID GRIDM NROWS=3 NCOLS=3  
+^^WI {  
+^^WI   @ 2,2 GRID GB NROWS=1 NCOLS=5  
+^^WI  {  
+^^WI   @ 1,1 BUTTON CFBOK '&Continue' DEFAULT  
+^^WI   @ 1,3 BUTTON CFBXX '&Cancel' 
+^^WI   @ 1,5 BUTTON CFHELP 'Help' 
+^^WI  }  
+^^WI }  
+^^WI SHOW  
+^^CR  
+%  LOOP 
+%    VERIFY  CFBXX CFHELP CFBOK  
+%    GET SILENT NOSTORE FINAL ABBREVIATED 'BXX?' 'BXX'
+%    CASE VALUE  
+%      BLOCK %CFBXX% 
+
+{I Inversion cancelled
+ 
+^^CO     DISPOSE invert  
+%        FINISH  
+%      END BLOCK  
+%      BLOCK %CFHELP%
+%       COPY '#SPAWN CRYSDIR:manual/structure/structure-inversion.html'
+%      END BLOCK
+%      BLOCK %CFBOK%  
+%          EVALUATE RUNNOW = TRUE 
+^^CO DISPOSE INVERT  
+%          EVALUATE LOOPEND = LOOPCOUNTER  
+%      END BLOCK  
+%    END CASE  
+%  END LOOP  
+%%  
+%  IF RUNNOW .EQ. FALSE THEN
+%   FINISH
+%  END IF
+% END IF
+%%
 %%
 % IF ( EXISTS 2 .ne. 1 ) THEN
 {E No LIST 2 available
@@ -71,15 +116,15 @@
 %%
 % VARIABLE LOGICAL LSG
 % VARIABLE INTEGER ITEM
-% VARIABLE CHARACTER TEMP
+% VARIABLE CHARACTER A_TEMP
 %%
 % verify P41 P4122  P41212 P31 P3112 P3121 P61 -
          P62 P6122  P6222  P4132
 %%
 %     LOOP 11 TIMES
-%      EVALUATE TEMP = KEYWORD LOOPCOUNTER
-%      EVALUATE TEMP = PACK ( TEMP )
-%      IF ( TEMP .EQ. L2 ) THEN
+%      EVALUATE A_TEMP = KEYWORD LOOPCOUNTER
+%      EVALUATE A_TEMP = PACK ( A_TEMP )
+%      IF ( A_TEMP .EQ. L2 ) THEN
 %          EVALUATE LSG = TRUE
 %          evaluate item = loopcounter
 %          EVALUATE LOOPEND = LOOPCOUNTER
@@ -91,9 +136,9 @@
 %%
 %  IF LSG .EQ. FALSE THEN
 %     LOOP 11 TIMES
-%      EVALUATE TEMP = KEYWORD LOOPCOUNTER
-%      EVALUATE TEMP = PACK ( TEMP )
-%      IF ( TEMP .EQ. L2 ) THEN
+%      EVALUATE A_TEMP = KEYWORD LOOPCOUNTER
+%      EVALUATE A_TEMP = PACK ( A_TEMP )
+%      IF ( A_TEMP .EQ. L2 ) THEN
 %          EVALUATE LSG = TRUE
 %          evaluate item = loopcounter + 11
 %          EVALUATE LOOPEND = LOOPCOUNTER
@@ -112,9 +157,9 @@
 %%
 %  IF LSG .EQ. FALSE THEN
 %     LOOP 7 TIMES
-%      EVALUATE TEMP = KEYWORD LOOPCOUNTER
-%      EVALUATE TEMP = PACK ( TEMP )
-%      IF ( TEMP .EQ. L2 ) THEN
+%      EVALUATE A_TEMP = KEYWORD LOOPCOUNTER
+%      EVALUATE A_TEMP = PACK ( A_TEMP )
+%      IF ( A_TEMP .EQ. L2 ) THEN
 %          EVALUATE LSG = TRUE
 %          evaluate item = loopcounter + 22
 %          EVALUATE LOOPEND = LOOPCOUNTER
@@ -142,7 +187,23 @@
 %%
 % ELSE
 
-SOMETHING WRONG
+{I Something wrong
 
 % END IF
+
+
+%  EVALUATE QTITLE = 'Recentre Structure in Cell'
+%  EVALUATE QLINE1 = 'Inverting a structure may move it out of the cell'
+%  EVALUATE QLINE2 = 'Would you like to try to re-centre it?'
+%  EVALUATE BUTTOK = '&Re-centre' 
+%  EVALUATE BUTTXX = '&Cancel'
+%  COPY '#SCRIPT XQUESTIO'
+%  IF ( ANSWER .EQ. TRUE ) THEN
+%   COPY '#SCRIPT XSHIFT'
+%  END IF
+
+
+
+
+
 %END SCRIPT

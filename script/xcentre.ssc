@@ -60,6 +60,7 @@ WARNING - You have no atoms
 % TRANSFER "END" TO CRYSTALS
 % IF SERIAL .GT. 0.0 THEN
 %% START SHIFTING ATOMS - WE REALLY NEED A /MOD/ INSTRUCTION IN SCRIPTS
+%% Added Jan 2017, but not yet used here!!
 %   IF X .LT. 0.0 THEN
 %      EVALUATE XS = 1.
 %   ELSE IF X .GT. 1. THEN

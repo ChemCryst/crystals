@@ -8,8 +8,10 @@
 ^^WI   ITEM HSTAR '&Migrating from SHELX' 
 ^^WI     '#SPAWN CRYSDIR:manual/beginnersguide.pdf' DISABLEIF='IN'  
 ^^WI   ITEM HSTAR '&COMMAND line' '#SCRIPT XSTART' DISABLEIF='IN'               
-^^WI   ITEM HTIPS '&Tip of the day'                                             
+^^WI   ITEM HTIPS '&Enable Tip of the day'  
 ^^WI   '#SCRIPT TIPS' DISABLEIF='IN'                                            
+^^WI   ITEM HHELP '&Enable TOOLS help'
+^^WI   '#SCRIPT SET-TOOL-HELP' DISABLEIF='IN'                                           
 ^^WI   SPLIT 
 ^^WI   MENU HDEMO '&Simple Worked Examples'                                            
 ^^WI     ITEM DEMO '&Basic'                                                     
