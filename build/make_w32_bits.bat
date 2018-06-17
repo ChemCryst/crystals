@@ -18,6 +18,15 @@ goto BUILD
 
 
 :BUILD
+%CC%  /c ..\sginfo\sgclib.c ..\sginfo\sgfind.c ..\sginfo\sghkl.c ..\sginfo\sgio.c ..\sginfo\sgsi.c ..\sginfo\sginfo_extra.c
+%F77% /c ..\sginfo\sginfo_type.F90  
+%F77% /c ..\sginfo\sginfo.F90 /object:fsginfo.obj
+lib sgclib.obj sgfind.obj sghkl.obj sgio.obj sgsi.obj sginfo_extra.obj sginfo_type.obj fsginfo.obj /out:sginfo.lib
+%F77% /c ..\bits\shelx2cry\crystal_data.F90
+%F77% /c ..\bits\shelx2cry\shelx_procedures.F90 
+%F77% /c ..\bits\shelx2cry\shelx2cry_dict.F90 
+%F77% /c ..\bits\shelx2cry\shelx2cry_mod.F90 
+%F77% /fpp %FDEF% /define:_%COMPCODE%_ /I..\crystals ..\bits\shelx2cry\shelx2cry.F90 shelx2cry_mod.obj  shelx_procedures.obj shelx2cry_dict.obj crystal_data.obj  sginfo.lib %BITS_FOPTS%  /exe:shelx2cry.exe
 
 %CC% ..\bits\Common\nobuf.c /Foobj\nobuf.obj /nologo /c /I..\gui /O2 /Zi /Oy- /D"NDEBUG" /MD  || ( make_err.bat )
 
