@@ -108,7 +108,7 @@
 {I * Importing reflections only.
 
 %       COPY '#CLOSE HKLI'
-%       COPY '#OPEN FRN2 ARCHIVE-HKL.CIF'
+%%       COPY '#OPEN FRN2 ARCHIVE-HKL.CIF'
 %       COPY '#OPEN HKLI shelx.hkl'
 %       COPY '#HKLI'
 %       COPY "READ   F'S=FSQ  NCOEF=5  TYPE=FIXED CHECK NO ARCH=YES"
@@ -117,7 +117,7 @@
 %       COPY 'STORE NCOEF=6'
 %       COPY 'OUTPUT INDICES /FO/ SIGMA(/FO/) RATIO/JCODE CORRECTIONS SERIAL'
 %       COPY 'END'
-%       COPY '#CLOSE FRN2 '
+%%       COPY '#CLOSE FRN2 '
 %       COPY '#CLOSE HKLI'
 %       COPY '#SCRIPT XWINGX'
 %       COPY '#SCRIPT DIRECT'

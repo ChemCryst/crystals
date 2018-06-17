@@ -140,9 +140,9 @@ Files INITIAL.* will be created in your directory. They may be important.
 {I If you have a SHELX hklf file, input that from the Data menu.
 %     FINISH
 %   else
-%     COPY '#OPEN FRN2 ARCHIVE-HKL.CIF'
+%%     COPY '#OPEN FRN2 ARCHIVE-HKL.CIF'
 %     TRANSFER '#USE cif-reflections.cry' TO CRYSTALS   
-%     COPY '#CLOSE FRN2 '
+%%     COPY '#CLOSE FRN2 '
 %   end if
 %  else
 %   if ( .not. FILEEXISTS ( 'from-cif.hkl' ) ) THEN 

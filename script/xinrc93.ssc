@@ -105,9 +105,9 @@ Files INITIAL.* will be created in your directory. They may be important.
 %    EVALUATE ABSNAME = FILENAME // '.ABS'
 %    TRANSFER '#USE "' //  SCFNAME // '" ' TO CRYSTALS
 %    TRANSFER '#OPEN HKLI "' //  HKLNAME // '" ' TO CRYSTALS
-%     COPY '#OPEN FRN2 ARCHIVE-HKL.CIF'
+%%     COPY '#OPEN FRN2 ARCHIVE-HKL.CIF'
 %    TRANSFER '#USE "' //  ABSNAME // '" ' TO CRYSTALS
-%     COPY '#CLOSE FRN2'
+%%     COPY '#CLOSE FRN2'
 %    BLOCK
 %      ON ERROR REPEAT
 %%     CHECK THAT THE BASIC DATA IS READ IN OK

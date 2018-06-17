@@ -158,11 +158,11 @@ Files INITIAL.* will be created in your directory. They may be important.
 %    QUEUE SEND                                                                 
 %    CLEAR                                                                      
 %  END BLOCK                                                                    
-%  COPY '#OPEN FRN2 ARCHIVE-HKL.CIF'
+%%  COPY '#OPEN FRN2 ARCHIVE-HKL.CIF'
 %  COPY '#HKLI'                                                                 
 %  QUEUE PROCESS                                                                
 %  COPY 'END'                                                                   
-%  COPY '#CLOSE FRN2'
+%%  COPY '#CLOSE FRN2'
 %  COPY '#CLOSE HKLI'                                                           
 %%                                                                              
 %  MESSAGE USER1 ' Error during reflection processing'                          

@@ -542,11 +542,11 @@
 
 ^^WI      DISPOSE XINLIST6                                                      
 ^^CR  
-%         COPY '#OPEN FRN2 ARCHIVE-HKL.CIF'
+%%         COPY '#OPEN FRN2 ARCHIVE-HKL.CIF'
 %         COPY '#HKLI'                                                          
 %         QUEUE PROCESS                                                         
 %         COPY 'END'                                                            
-%         COPY '#CLOSE FRN2'
+%%         COPY '#CLOSE FRN2'
 %         COPY '#CLOSE HKLI'                                                    
 %%                                                                              
 %         BLOCK
