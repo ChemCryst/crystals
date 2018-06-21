@@ -1236,7 +1236,7 @@ Cc #LIST 6
       if ( nref .gt. 0 ) then
         write(NOUTF,'(a)')'# read in reflections'
         write(NOUTF,'(a)')'#CLOSE HKLI'
-        write(noutf,'(a)')'#OPEN FRN2 ARCHIVE-HKL.CIF'
+c2018        write(noutf,'(a)')'#OPEN FRN2 ARCHIVE-HKL.CIF'
         write(NOUTF,'(3a)')'#OPEN HKLI  "'//
      *                      chkl(1:len_trim(chkl))//'"'
         write(NOUTF,'(a)')'#HKLI'
