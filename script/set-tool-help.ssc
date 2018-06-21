@@ -1,0 +1,42 @@
+%SCRIPT SET-TOOL-HELP                                                                    
+%% Turn tool bar help ON/OFF
+% VARIABLE INTEGER IVALUE JVALUE
+%%                                                                              
+^^WI WINDOW XHELP 'Toolbar Help' MODAL SIZE KEEP                               
+^^WI COMMIT='BOK' CANCEL='BOK'                                                  
+^^WI GRID BIGG NROWS=3 NCOLS=2                                                  
+^^WI {                                                                          
+^^WI   @ 2,2 GRID BTNS NROWS=1 NCOLS=3
+^^WI   {                                                                        
+^^WI     @ 1,1 CHECKBOX STAS '&Enable HELP on Toolbar Items'                            
+^^WI           INFORM=YES STATE=ON                                               
+^^WI     @ 1,3 BUTTON BOK  '&Close'                                             
+^^WI   }                                                                        
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR                                                                            
+% LOOP     50 TIMES
+%  VERIFY BOK STAS ON OFF
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' '                                     
+%  EVALUATE IVALUE = VALUE
+%  IF IVALUE .EQ. 1 THEN                                                         
+%  VERIFY ON OFF STAS
+^^??  STAS STATE                                                                
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' '                                     
+%     EVALUATE JVALUE = VALUE
+%     IF JVALUE .EQ. 1 THEN  
+{I    Help ON
+^^CO     SETKEY TOOL-HELP 0               
+^^CO     SET STAS STATE = ON
+%     ELSE                                                                      
+{I       Help OFF
+^^CO     SETKEY TOOL-HELP 1               
+^^CO     SET STAS STATE = OFF
+%     END IF                                                                    
+^^WI  DISPOSE XHELP                                                              
+^^CR                                                                            
+%     COPY '#SCRIPT TEST-TOOL-HELP'
+%     FINISH                                                                    
+%  END IF                                                                       
+% END LOOP 
+%END SCRIPT                                                                     

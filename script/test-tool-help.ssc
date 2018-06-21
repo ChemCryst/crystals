@@ -1,0 +1,19 @@
+%SCRIPT TEST-TOOL-HELP
+%%
+%% Check if toolbar help has been turned off.
+%% Note that the LOGICAL TOOL-HELP is not
+%% the KEY TOOL-HELP
+%%
+% VARIABLE LOGICAL TOOL-HELP
+% EVALUATE TOOL-HELP = TRUE
+%%
+^^?? GETKEY TOOL-HELP
+%    GET SILENT NOSTORE FINAL TEXT '1' '1'
+%    IF CVALUE .NE. '1' THEN
+%      EVALUATE TOOL-HELP = TRUE
+{I   Tool-bar HELP enabled
+%    ELSE
+%      EVALUATE TOOL-HELP = FALSE
+{I   Tool-bar HELP disabled
+%    END IF
+%END SCRIPT
