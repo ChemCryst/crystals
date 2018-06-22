@@ -1,0 +1,421 @@
+%SCRIPT XSHELXT
+%% 
+%   VARIABLE CHARACTER QLINE1 QLINE2 QTITLE BUTT1 BUTT2 BUTT3
+%   VARIABLE INTEGER XCHOICE VIT
+%   VARIABLE LOGICAL ANSWER LCRY T DODMIN DOALL DOCFOM DOIT
+%   VARIABLE REAL VDMIN
+%   VARIABLE CHARACTER FSHELXT
+%% 
+^^CO GETKEY SHELXTEXE   
+%   GET SILENT NOSTORE FINAL TEXT '1' '1'                                        
+%   EVALUATE FSHELXT = CVALUE                                                      
+%   IF FSHELXT .EQ. '1' .OR. FILEEXISTS ( FSHELXT ) .EQ. FALSE THEN                  
+%           EVALUATE QTITLE = 'ShelxT not found'
+%           EVALUATE QLINE1 = 'Browse for the executable, go to'
+%           EVALUATE QLINE2 = 'SHELX website to download or cancel?'
+%           EVALUATE BUTT1 = '&Browse'
+%           EVALUATE BUTT2 = '&Download'
+%           EVALUATE BUTT3 = '&Cancel'
+%           COPY '#SCRIPT XCHOICE'
+%           IF XCHOICE .EQ. 3 THEN
+%               FINISH
+%           ELSE IF XCHOICE .EQ. 2 THEN
+%               COPY '#SPAWN http://shelx.uni-goettingen.de/download.php'
+%               FINISH
+%           ELSE
+%             COPY '#SCRIPT XPREFS'
+^^CO GETKEY SHELXTEXE   
+%             GET SILENT NOSTORE FINAL TEXT '1' '1'                                        
+%             EVALUATE FSHELXT = CVALUE                                                      
+%             IF FSHELXT .EQ. '1' .OR. FILEEXISTS ( FSHELXT ) .EQ. FALSE THEN
+{E Shelxt location not set, or invalid path.
+%               FINISH
+%             END IF
+%           END IF
+%   END IF
+%   VARIABLE INTEGER IRUN
+%   VARIABLE INTEGER ATOMCOUNT
+%% New Script Nov2015, based on XSIR92
+%  VARIABLE LOGICAL EDITOR_OK
+%  VARIABLE CHARACTER EDITOR_FILE
+%   IF EXISTS 6 .LT. 1 THEN
+            You do not have any reflections stored.
+            It is impossible to proceed without data.
+%       FINISH
+%   END IF
+%%
+%% write a SHELXT data file
+%%
+%   BLOCK
+^^WI WINDOW SHELX 'ShelxT Preparation'
+^^WI   MODAL COMMIT='BOK' CANCEL='BXX'
+^^WI GRID GRIDLR NROWS=13 NCOLS=3
+^^WI {
+^^WI     @ 2,2 GRID GRIDE NROWS=1 NCOLS=5
+^^WI     {
+^^WI       @ 1,1 CHECKBOX XD 'Max resolution' INFORM=NO
+^^WI       @ 1,3 EDITBOX ED '0.8' CHARS=4 REAL 
+^^WI       @ 1,5 STATIC EAA '\AA'  
+^^WI     }
+^^WI     @ 4,2 CHECKBOX XY "Use 'chemical' figure of merit" INFORM=NO
+^^WI     @ 6,2 CHECKBOX XA 'Search ALL space groups in Laue class' INFORM=NO
+^^WI     @ 8,2 GRID GRIDE NROWS=1 NCOLS=3
+^^WI     {
+^^WI       @ 1,1 CHECKBOX XM 'Dual space iterations' INFORM=NO
+^^WI       @ 1,3 EDITBOX EM '100' CHARS=4 INTEGER 
+^^WI     }
+^^WI     @ 11,2 GRID GRIDO NROWS=3 NCOLS=1
+^^WI     {
+^^WI       @ 1,1 CHECKBOX CED '&Edit ShelxT file before processing'
+^^WI           STATE=OFF
+^^WI       @ 2,1 CHECKBOX CRUN '&Run ShelxT now'
+^^WI           STATE=ON
+^^WI       @ 3,1 RADIOBUTTON CLIST '&View last listing file'
+^^WI           STATE=OFF
+^^WI     }
+^^WI     @ 13,2 GRID GRIDR NROWS=1 NCOLS=3
+^^WI     {
+^^WI       @ 1,1 BUTTON BOK '&Ok'
+^^WI       @ 1,3 BUTTON BXX '&Cancel'
+^^WI     }
+^^WI }
+^^WI SHOW
+^^CR
+%      VERIFY BOK BXX
+%      GET SILENT NOSTORE ABBREVIATED 'BOK=Process'
+%      IF VALUE .EQ. 2 THEN
+^^WI      DISPOSE SHELX
+^^CR
+%         FINISH
+%      END IF
+%%
+%      COPY '#FOREIGN SXT'
+%      COPY 'END'
+%%
+^^??   CLIST STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE ABBREVIATED 'On=edit'
+%      IF ( VALUE .EQ. 1 ) THEN
+%       IF ( FILEEXISTS ( 'shelxt.lxt' ) ) THEN
+%           EVALUATE EDITOR_FILE = 'shelxt.lxt'
+%           COPY '#SCRIPT XEDITOR'
+%       ELSE
+{E There is no previous listing file: SHEXLt.LXT
+%       END IF
+%       FINISH
+%      END IF
+%%
+^^??   CRUN STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE ABBREVIATED 'ON=Run shelxt now'
+%      EVALUATE IRUN = VALUE
+^^??   XD STATE                                                            
+%      VERIFY ON OFF                                                          
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '                               
+%      IF VALUE .EQ. 1 THEN                                                   
+%         EVALUATE DODMIN = TRUE                                                    
+^^??      ED TEXT 
+%         GET SILENT NOSTORE REAL ' '
+%         EVALUATE VDMIN = VALUE
+%      END IF
+%%
+^^??   XA STATE                                                            
+%      VERIFY ON OFF                                                          
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '                               
+%      IF VALUE .EQ. 1 THEN                                                   
+%         EVALUATE DOALL = TRUE 
+%      END IF
+%%
+^^??   XY STATE                                                            
+%      VERIFY ON OFF                                                          
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '                               
+%      IF VALUE .EQ. 1 THEN                                                   
+%         EVALUATE DOCFOM = TRUE                                              
+%      END IF
+%%
+^^??   XM STATE                                                            
+%      VERIFY ON OFF                                                          
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '                               
+%      IF VALUE .EQ. 1 THEN                                                   
+%         EVALUATE DOIT  = TRUE                                                    
+^^??      EM TEXT 
+%         GET SILENT NOSTORE INTEGER ' '
+%         EVALUATE VIT = VALUE
+%      END IF
+^^??   CED STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE ABBREVIATED 'ON=Edit first'
+^^WI DISPOSE SHELX
+^^CR
+%      IF ( VALUE .EQ. 1 ) THEN
+%           EVALUATE EDITOR_FILE = 'shelxt.ins'
+%           COPY '#SCRIPT XEDITOR'
+%           IF ( .NOT. EDITOR_OK ) THEN
+{I User cancelled SHELXT run.
+%              FINISH
+%            END IF                                                                             
+%      END IF
+%      IF ( IRUN .EQ. 2 ) THEN
+%           FINISH
+%      END IF
+^^GR MODEL L5 SHOW
+^^CR
+%      IF ( FILEEXISTS ( 'shelxt_a.res' ) ) THEN
+%         EVALUATE T = FILEDELETE ( 'shelxt_a.res' )
+%      END IF
+%      QUEUE REWIND
+%      CLEAR
+%      INSERT '#SPAWN'
+%      TRANSFER '% "' // FSHELXT // '" ' TO INPUT
+%      GET TEXT ' ' '0'
+%      IF DOALL THEN
+%        INSERT '-a '
+%      END IF
+%      IF DOCFOM THEN
+%        INSERT '-y '
+%      END IF
+%      IF DOIT THEN
+%        TRANSFER '-m' // CHARACTER VIT TO INPUT 
+%        GET TEXT ' ' '0'
+%      END IF
+%      IF DODMIN THEN
+%        TRANSFER '-d' // CHARACTER VDMIN TO INPUT
+%        GET TEXT ' ' '0'
+%      END IF
+%      INSERT "shelxt"
+%      SEND
+%%      TRANSFER CVALUE TO DISPLAY                  
+%%      TRANSFER CVALUE TO CRYSTALS                 
+%   END BLOCK
+%%
+%   IF ( .NOT. FILEEXISTS ( 'shelxt_a.res' ) ) THEN
+
+{E SHELXT did not solve a structure. 
+
+%      FINISH
+%   END IF
+%%
+%% READ THE DATA IN
+%     IF FILEEXISTS ( 'shelxt_input.cry' ) THEN
+%       EVALUATE T =  FILEDELETE ( 'shelxt_input.cry' )
+%     END IF
+% TRANSFER '#SPAWN % "CRYSDIR:shelx2cry.exe" -o shelxt_input.cry shelxt_a.res' -
+ TO CRYSTALS
+%%
+%     IF FILEEXISTS ( 'shelxt_input.cry' ) THEN
+%       COPY '#USE shelxt_input.cry'
+%     ELSE
+{E shelx2cry conversion of SHELXT output failed (see output above for information).
+%     END IF
+%     FINISH
+%%
+^^WI WINDOW XRADIO 'Import results' MODAL
+^^WI COMMIT='RF_BOK' CANCEL='RF_BXX'
+^^WI GRID MAIN NROWS=4 NCOLS=7
+^^WI {
+^^WI  @ 2,2 GRID L NROWS=1 NCOLS=1
+^^WI  {
+^^WI   @ 1,1 GRID AC NROWS=1 NCOLS=3 OUTLINE='Results'
+^^WI    {
+^^WI     @ 1,1 RADIOBUTTON IUSEA 'Use the structure'
+^^WI            STATE=ON
+^^WI     @ 1,2 RADIOBUTTON IUSEB 'Reject the structure'
+^^WI            STATE=OFF
+^^WI     @ 1,3 RADIOBUTTON IUSEC 'View the listing file'
+^^WI            STATE=OFF
+^^WI    }
+^^WI  }
+^^WI  @ 2,6 GRID R NROWS=3 NCOLS=1
+^^WI  {
+^^WI   @ 1,1 BUTTON RF_BOK '&OK' DEFAULT
+^^WI   @ 3,1 BUTTON RF_BXX '&Cancel'
+^^WI  }
+^^WI }
+^^WI SHOW
+^^CR
+%%
+%%
+%    LOOP
+%      ON ERROR TERMINATE
+%      VERIFY RF_BXX RF_BOK
+%      GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
+%      CASE VALUE
+%       BLOCK
+^^CO      DISPOSE XRADIO
+%         FINISH
+%       END BLOCK
+%       BLOCK
+%         EVALUATE LOOPEND = LOOPCOUNTER
+%       END BLOCK
+%      END CASE
+%    END LOOP
+%%
+%    VARIABLE INTEGER ISTATE
+^^??  IUSEA STATE
+%     VERIFY ON OFF
+%     GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%     IF VALUE .EQ. 1 THEN
+%      EVALUATE ISTATE = 1
+%     END IF
+^^??  IUSEB STATE
+%     VERIFY ON OFF
+%     GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%     IF VALUE .EQ. 1 THEN
+%      EVALUATE ISTATE = 2
+%     END IF
+^^??  IUSEC STATE
+%     VERIFY ON OFF
+%     GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%     IF VALUE .EQ. 1 THEN
+%      EVALUATE ISTATE = 3
+%     END IF
+^^CO     DISPOSE XRADIO
+%%
+%   CASE ISTATE
+%     BLOCK
+    Accept the structure
+%%
+%     END BLOCK
+%%
+%     BLOCK
+%%  reject the structure
+
+   If the structure will not solve:
+   1) Be sure that the space group is correct.
+   2) View the Log File and study the output of the
+      SHELXT program for reasons for failure.
+   3) Read the SHELXT manual for help. (not provided)
+   4) Try Superflip or Sir92
+%       IF ATOMCOUNT .GT. 0 THEN
+%               COPY '#DISK'
+%               COPY 'DELETE 5'
+%               COPY 'END'
+^^GR MODEL L5 SHOW
+^^CR
+{E  The trial model has not been saved
+%       END IF
+%      FINISH
+%     END BLOCK
+%     BLOCK
+%%  view the log file
+%       COPY '#SPAWN +notepad.exe shelxt.lxt'
+%%
+%       BLOCK
+^^WI WINDOW NRADIO 'Process results'   MODAL
+^^WI COMMIT='RF_BOK' CANCEL='RF_BXX'
+^^WI GRID MAIN NROWS=4 NCOLS=7
+^^WI {
+^^WI  @ 2,2 GRID L NROWS=1 NCOLS=1
+^^WI  {
+^^WI   @ 1,1 GRID AC NROWS=1 NCOLS=2 OUTLINE='Action'
+^^WI    {
+^^WI     @ 1,1 RADIOBUTTON IUSEF 'Use the structure' STATE=ON
+^^WI     @ 1,2 RADIOBUTTON IUSEG 'Reject the structure' STATE=OFF
+^^WI    }
+^^WI  }
+^^WI  @ 2,6 GRID R NROWS=3 NCOLS=1
+^^WI  {
+^^WI   @ 1,1 BUTTON RF_BOK '&OK' DEFAULT
+^^WI   @ 3,1 BUTTON RF_BXX '&Cancel'
+^^WI  }
+^^WI }
+^^WI SHOW
+^^CR
+%       END BLOCK
+%%
+%%
+%       LOOP
+%        ON ERROR TERMINATE
+%        VERIFY RF_BXX RF_BOK
+%        GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
+%        CASE VALUE
+%         BLOCK
+^^CO       DISPOSE NRADIO
+%          FINISH
+%         END BLOCK
+%         BLOCK
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%         END BLOCK
+%        END CASE
+%       END LOOP
+%%
+%%      VARIABLE INTEGER ISTATE
+^^??    IUSEF STATE
+%       VERIFY ON OFF
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%       IF VALUE .EQ. 1 THEN
+%        EVALUATE ISTATE = 1
+%       END IF
+^^??    IUSEG STATE
+%       VERIFY ON OFF
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%       IF VALUE .EQ. 1 THEN
+%        EVALUATE ISTATE = 2
+%       END IF
+^^CO    DISPOSE NRADIO
+%%
+%       CASE ISTATE
+%       BLOCK
+       Accept the structure
+%       END BLOCK
+%%
+%       BLOCK
+%%    reject the structure
+
+   If the structure will not solve:
+   1) Be sure that the space group is correct.
+   2) View the Log File and study the output of the
+      SHELXT program for reasons for failure.
+   3) Read the SHELXT manual for help. (not provided)
+   4) Try Superflip or Sir92
+%          IF ATOMCOUNT .GT. 0 THEN
+%               COPY '#DISK'
+%               COPY 'DELETE 5'
+%               COPY 'END'
+^^GR MODEL L5 SHOW
+^^CR
+{E  The trial model has not been saved
+%          END IF
+%        FINISH
+%       END BLOCK
+%       END CASE
+%     END BLOCK
+%%
+%    END CASE
+
+%      BLOCK
+%        IF ATOMCOUNT .LE. 0 THEN
+{E
+{E     SHELXT failed to find any atoms
+{E
+%          FINISH
+%        END IF
+%        COPY '#EDIT'
+%        COPY 'TYPECHANGE TYPE EQ Q C'
+%        COPY 'END'
+%        COPY '#EDIT'
+%        COPY 'MON OFF'
+%        COPY 'CHANGE FIRST(OCC) UNTIL LAST 1.0'
+%        COPY 'MON MEDIUM'
+%        COPY 'END'
+%%
+%%  CENTRE STRUCTURE IN CELL
+%       COPY '#SCRIPT XCENTRE'
+%       COPY '#SCRIPT XRETYPE'
+%       COPY '#SCRIPT XRENUMB'
+%      END BLOCK
+%%
+%%
+%      COPY '#SCRIPT FRESH'
+%%
+%      COPY '#SCRIPT XSCALE'
+%%
+%% SET Solution type
+%      COPY '#GENERALEDIT 30'
+%      COPY 'LOCATE RECORDTYPE=106'
+%      COPY 'CHANGE OFFSET=12 MODE=INTEGER INTEGER=1'
+%      COPY 'WRITE OVERWRITE=OVERWRITE'
+%      COPY 'END'
+ * Done. Shelxt input complete.
+%END SCRIPT
+

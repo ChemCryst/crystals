@@ -128,7 +128,7 @@
 %      END IF
 ^^GR MODEL L5 SHOW
 ^^CR
-%      IF ( FILEEXISTS ( 'sir9x.cry' ) ) THEN
+%      IF ( FILEEXISTS ( 'shelxs.res' ) ) THEN
 %         EVALUATE T = FILEDELETE ( 'shelxs.res' )
 %      END IF
 #ifdef CRY_OSWIN32
@@ -141,7 +141,7 @@
 %%
 %   IF ( .NOT. FILEEXISTS ( 'shelxs.res' ) ) THEN
 
-{E SHELXS did not create a structure. Make sure you click 'Quit' to exit.
+{E SHELXS did not create a structure. 
 
 %      FINISH
 %   END IF

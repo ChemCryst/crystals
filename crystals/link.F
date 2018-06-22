@@ -245,7 +245,7 @@ C      PREPARE DATA FOR FOREIGN PROGRAMS
 C      ILINK  SELECTS THE SORT OF OUTPUT TO PRODUCE
 C-     ILINKS ARE  1:SNOOPI, 2:CAMERON, 3:SHELXS86, 4:MULTAN81
 C-                 5:SIR88,  6:SIR92,   7:SIR97,    8:PLATON,  9:CSD 10:MOL2 
-C                 11:SUPERFLIP         12:SIR02    13:SIR11
+C                 11:SUPERFLIP         12:SIR02    13:SIR11    14:SHELXT
 C      IEFORT SELECTS POWER SETTING OF FOREIGN CALL
 C           FOR SHELXS86     IEFORT = 1, NORMAL
 C                                     2, DIFFICULT
@@ -269,9 +269,8 @@ c      ITYP06                6 OR 7
 C
       use lists2_mod, only: xldlst
 
-Cavdldec06 - now THIRTEEN links (NLINK=13)
 C     ADD SIR02, SIR11
-      PARAMETER (NLINK=13, NLIST=8)
+      PARAMETER (NLINK=14, NLIST=8)
       PARAMETER ( NWORK = 1000 )
 C      IMETHD SELECTS SOME SORT OF ALTERNATIVE METHOD FOR THE
 C      FOREIGN CALL.
@@ -358,7 +357,8 @@ C- POINTER TO LIST
      1            1, 2, 3, 5, 0, 29, 40, 41,
      2            1, 2, 3,30, 6, 13, 29, 31,
      7            1, 2, 3, 0, 6, 13, 29,  0,
-     8            1, 2, 3, 0, 6, 13, 29,  0/
+     8            1, 2, 3, 0, 6, 13, 29,  0, 
+     9            1, 2, 3, 0 ,6, 13, 29, 31/
 C
 #ifdef _HOL_
       DATA KHYD,KDET,CBLANK /4HH   ,4HD   ,' '/
@@ -466,7 +466,7 @@ CAVDLdec06 added superflip
       GOTO ( 1600,   1700,    1800,
      1       2000,   1900,    1900,   1900,   
      2       1860,   1870,    1880,   1890, 
-     3       1900,   1900,    9900), ILINK
+     3       1900,   1900,    1841,   9900), ILINK
 C
 1600  CONTINUE
 C
@@ -714,6 +714,109 @@ C----- END OF DATA - WRITE A BLANK LINE
       WRITE (NCFPU1,'(/)')
 C----- END OF SHELXS DATA
       GOTO 8000
+      
+      
+1841  CONTINUE
+C     LINK TO WRITE OUTPUT FOR SHELXS86 ---------------------
+C
+C----- OUTPUT A TITLE, FIRST 40 CHARACTERS ONLY
+      WRITE(NCFPU1,'(''TITL '',10A4)') (KTITL(I),I=1,10)
+      WRITE(NCFPU1, '(''CELL '', F8.5, 6f10.5)')
+     1 STORE(L13DC), (STORE(I),I=L1P1,L1P1+5)
+      WRITE(NCFPU1,1810) NINT(T2),
+     1 STORE(L31), STORE(L31+6), STORE(L31+11),
+     2 RTD*STORE(L31+15),RTD*STORE(L31+18),RTD*STORE(L31+20)
+C----- FIND LATTICE TYPE
+      LATTYP = ((2*IC) -1) * IL
+      WRITE (NCFPU1,'( ''LATT '', I3)') LATTYP
+      DO  I = L2,M2,MD2
+            CALL XSUMOP( STORE(I), STORE(L2P), OPERAT, LENGTH,0)
+C--DO NOT PRINT UNIT MATRIX.
+            IF ( OPERAT(1:LENGTH) .EQ. 'X,Y,Z') cycle
+            CALL XCONOP (OPERAT, LENGTH, DECML, LDEC)
+            WRITE(NCFPU1,'(''SYMM  '', A)') DECML(1:LDEC)
+       END DO
+
+C---- GET MULTIPLICITY
+      F = T2
+      IF ( N29 .LE. 0 ) THEN
+        IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1830 )
+        WRITE ( NCAWU , 1830 )
+        WRITE ( CMON, 1830 )
+        CALL XPRVDU(NCVDU, 1,0)
+        GOTO 9900
+      ELSE
+C----- WRITE SFAC CARDS
+        M29 = L29 + (N29-1)*MD29
+        M3 = L3 + (N3-1)*MD3
+        DO J = L29, M29, MD29
+          DO K = L3, M3, MD3
+           IF (ISTORE(J) .EQ. ISTORE(K)) GOTO 1842
+          END DO
+          IF (ISSPRT .EQ. 0) WRITE(NCAWU,1833) ISTORE(J)
+          WRITE(NCAWU,1833) ISTORE(J)
+          WRITE ( CMON, 1833) ISTORE(J)
+          CALL XPRVDU(NCVDU, 1,0)
+          GOTO 9900
+1842      CONTINUE
+          WRITE ( NCFPU1 , 1837 ) ISTORE(J), (STORE(M), M=K+3, K+11),
+     1    STORE(K+1), STORE(K+2), STORE(J+5), STORE(J+1), STORE(J+6)
+        END DO
+C----- UNIT CARDS
+        WRITE (NCFPU1, ' (''UNIT '', 12F6.0)')
+     1  (F*STORE(J+4), J = L29, M29, MD29)
+      ENDIF
+C----- OUTPUT ON ACTUAL SCALE
+cdjwoct08
+c----- rescale incase there are any very big numbers
+C----- FIND SCALE FROM MAXIMUM FO (ITEM 3)
+      IN = L6DTL + MD6DTL * 3
+      IF (STORE(IN+3) .LE. ZERO) THEN
+      SCALE = 1.0
+      ELSE
+      SCALE =  99998./(STORE(IN+1)*store(in+1)) 
+      ENDIF
+      write(ncwu,*) store(in+1),store(in+2),store(in+3)
+      write(ncwu,'(a,f12.5)') 'Scale', scale
+C
+      WRITE(NCFPU1, '(''HKLF  4'' )')
+C----- LOOP OVER DATA
+      IN = 0
+1845  CONTINUE
+      ISTAT = KLDRNR (IN)
+      IF (ISTAT .LT. 0) GOTO 1846
+      I = NINT(STORE(M6))
+      J = NINT(STORE(M6+1))
+      K = NINT(STORE(M6+2))
+CDJWMAR99[
+      CALL XSQRF
+     1 (FS, STORE(M6+3), FABS, S, STORE(M6+12))
+      IF ((S .LE. ZERO) .AND. (STORE(M6+20) .GT. ZERO))
+     1 S = ABS(FS) / STORE(M6+20)
+cdjwoct08
+      fs = scale*fs
+      s  = scale*s
+CDJWMAR99]
+      IF (FS.LE.-1000.) THEN
+       WRITE(NCFPU2, '(3I4, 2F8.1)') I, J, K, FS, S
+      ELSE IF (FS.LE.0.) THEN
+       WRITE(NCFPU2, '(3I4, 2F8.2)') I, J, K, FS, S
+      ELSE IF (FS.LE.9999.) THEN
+       WRITE(NCFPU2, '(3I4, 2F8.3)') I, J, K, FS, S
+      ELSE IF (FS.LE.99999.) THEN
+       WRITE(NCFPU2, '(3I4, 2F8.2)') I, J, K, FS, S
+      ELSE IF (FS.LE.999999.) THEN
+       WRITE(NCFPU2, '(3I4, 2F8.1)') I, J, K, FS, S
+      ELSE
+       WRITE(NCFPU2, '(3I4, 2F8.0)') I, J, K, FS, S
+      END IF
+      GOTO 1845
+1846  CONTINUE
+C----- END OF DATA - WRITE A BLANK LINE
+      WRITE (NCFPU2,'(/)')
+C----- END OF SHELXS DATA
+      GOTO 8000
+
 CAVDLdec06 continue with superflip data
 1890  CONTINUE
 C     LINK TO WRITE OUTPUT FOR SUPERFLIP ---------------------
@@ -1733,7 +1836,7 @@ C----- TIDY UP
 C
 C     SNOOPI, CAMERON, SHELXS86, MULTAN, SIRxx
       GOTO (8010,8020,8030,9000,8030,8030,8030,8040,8030,8030,8030,
-     1 8030,8030),ILINK
+     1 8030,8030,8030),ILINK
       GOTO 9100
 C
 8010  CONTINUE
@@ -1830,7 +1933,7 @@ C----- RETURNS NEGATIVE IF FAILURE
 C      ILINK - TYPE OF FOREIGN PROGRAM
       CHARACTER *256 CPATH
 CDJWJAN08
-      PARAMETER (NFILE = 17)
+      PARAMETER (NFILE = 19)
       CHARACTER *16 CFILE(NFILE)
 C
       DIMENSION JFRN(4,2),  LFILE(NFILE)
@@ -1858,10 +1961,12 @@ C
      4  'sflip.inflip',
      5  'sir02.sir',
      6  'sir11.sir' ,
-     7  'sir11.hkl' /
+     7  'sir11.hkl' ,
+     8  'shelxt.ins' ,
+     9  'shelxt.hkl' /
 C
       DATA LFILE / 10,  9,  10,  11, 11, 11, 9, 8, 9, 10, 10, 12, 13 ,
-     1             12,  9,  9,   9  /
+     1             12,  9,  9,   9, 10, 10  /
 C
 #ifdef _HOL_
       DATA JFRN /1HF , 1HR , 1HN , 1H1 ,
@@ -1883,7 +1988,7 @@ C----- OPEN THE FIRST FILE
       JFILE = 1
 
       GOTO ( 110, 120, 130, 140, 150, 160, 170, 180, 190, 195 , 196,
-     & 200, 210, 9900), ILINK
+     & 200, 210, 220, 9900), ILINK
 
 C
 110   CONTINUE
@@ -1947,6 +2052,12 @@ C sir02 djwJAN08
 C sir11 djwsep11
       IFILE=16
 c      and 17
+      KLOOP = 2
+      GOTO 1000
+220   CONTINUE
+C sir11 djwsep11
+      IFILE=18
+c      (and 19)
       KLOOP = 2
       GOTO 1000
 C

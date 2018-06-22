@@ -4070,10 +4070,10 @@ FOREIGN            1    0
    1    4096 CRYSTALSFOREIGN
    1.FOREIGN            4    1    0    0
          3    3    3    1
-    .PROGRAM            1   -1    1   13    1
+    .PROGRAM            1   -1    1   14    1
      SNOOPI         CAMERON        SHELXS         MULTAN         SIR88
      SIR92          SIR97          PLATON         CSD            MOL2
-     SUPERFLIP      SIR02          SIR11
+     SUPERFLIP      SIR02          SIR11          SXT
     .MODE               2    0    1    6    1 NORMAL
      NORMAL         DIFFICULT      SPECIAL        PATTERSON      HARD
      LONG

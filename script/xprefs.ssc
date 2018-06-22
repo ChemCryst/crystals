@@ -15,7 +15,7 @@
 %    END IF
 %%
 ^^WI WINDOW XPREFS 'Preferences' MODAL COMMIT='PREFS_OK' CANCEL='PREFS_XX'  
-^^WI GRID MAIN NROWS=9 NCOLS=3 
+^^WI GRID MAIN NROWS=11 NCOLS=3 
 ^^WI {
 ^^WI   @ 2,2 GRID Opts NROWS=3 NCOLS=3
 ^^WI   {
@@ -42,13 +42,19 @@
 ^^WI     @ 1,3 EDITBOX XPLAT ' ' CHARS=32
 ^^WI     @ 1,5 BUTTON BPLAT 'Browse...'
 ^^WI   }   
-^^WI   @ 6,2 GRID EDITO NROWS=1 NCOLS=5
+^^WI   @ 6,2 GRID PLATO NROWS=1 NCOLS=5
+^^WI   {
+^^WI     @ 1,1 STATIC TP1 'ShelxT executable'
+^^WI     @ 1,3 EDITBOX XSXT ' ' CHARS=32
+^^WI     @ 1,5 BUTTON BSXT 'Browse...'
+^^WI   }   
+^^WI   @ 8,2 GRID EDITO NROWS=1 NCOLS=5
 ^^WI   {
 ^^WI     @ 1,1 STATIC TE1 'External editor'
 ^^WI     @ 1,3 EDITBOX XEDITO ' ' CHARS=32
 ^^WI     @ 1,5 BUTTON BEDITO 'Browse...'
 ^^WI   }   
-^^WI   @ 8,2 GRID BTNS NROWS=1 NCOLS=5
+^^WI   @ 10,2 GRID BTNS NROWS=1 NCOLS=5
 ^^WI   {                                                                        
 ^^WI     @ 1,1 STRETCH MF_ST HORIZONTAL                                         
 ^^WI     @ 1,2 BUTTON PREFS_OK '&OK' LENGTH='Cancel' DEFAULT COMMIT                         
@@ -72,6 +78,18 @@
 %    TRANSFER "^^CO SET XPLAT TEXT '" // CFILE // "'" TO DISPLAY
 %  END IF
 %%
+^^CO GETKEY SHELXTEXE 
+%  GET SILENT NOSTORE FINAL TEXT '1' '1'                                        
+%  EVALUATE CFILE = CVALUE                                         
+%  IF CFILE .EQ. '1' THEN
+^^CO  SET XSXT TEXT ' '
+%  ELSE IF FILEEXISTS ( CFILE ) .EQ. FALSE THEN 
+^^CO  SET XSXT TEXT ' '
+{E Stored shelxt.exe location does not exist.
+%  ELSE
+%    TRANSFER "^^CO SET XSXT TEXT '" // CFILE // "'" TO DISPLAY
+%  END IF
+%%
 ^^CO GETKEY CRYEDITOR
 %  GET SILENT NOSTORE FINAL TEXT '1' '1'                                        
 %  EVALUATE CFILE = CVALUE                                         
@@ -85,7 +103,7 @@
 %  END IF
 %%
 % LOOP
-%   VERIFY PREFS_OK PREFS_XX BPLAT BEDITO
+%   VERIFY PREFS_OK PREFS_XX BPLAT BSXT BEDITO
 %   GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'PREFS_OK'
 %   CASE VALUE
 %     BLOCK
@@ -109,6 +127,12 @@
 %       GET SILENT TEXT 'Platon location:' ' '                                         
 %       INSERT '"'                                                               
 %       OUTPUT                                                                   
+^^??    XSXT TEXT
+%       CLEAR                                                                      
+%       INSERT '^^CO SETKEY SHELXTEXE "'                                           
+%       GET SILENT TEXT 'Shelxt location:' ' '                                         
+%       INSERT '"'                                                               
+%       OUTPUT                                                                   
 ^^??    XEDITO TEXT
 %       CLEAR                                                                      
 %       INSERT '^^CO SETKEY CRYEDITOR "'                                           
@@ -128,6 +152,14 @@
 %      IF CVALUE .NE. 'CANCEL' THEN               
 %       EVALUATE CFILE = CVALUE                   
 %       TRANSFER "^^CO SET XPLAT TEXT '" // CFILE // "'" TO DISPLAY
+%      END IF
+%     END BLOCK
+%     BLOCK   % BSXT
+^^CO SYSOPENFILE 'shelxt.exe' 'Shelxt executable'
+%     GET NOSTORE SILENT TEXT 'Shelxt location:'  
+%      IF CVALUE .NE. 'CANCEL' THEN               
+%       EVALUATE CFILE = CVALUE                   
+%       TRANSFER "^^CO SET XSXT TEXT '" // CFILE // "'" TO DISPLAY
 %      END IF
 %     END BLOCK
 %     BLOCK   % BEDITO

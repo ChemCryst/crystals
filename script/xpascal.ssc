@@ -3,6 +3,11 @@
 %% 
 %% To do - how to resolve HKLF5 from 4
 %%                               
+%   VARIABLE LOGICAL T
+%   VARIABLE CHARACTER INSTITLE HKLTITLE
+%   VARIABLE CHARACTER C_FILE CEXTN CROOT CARG CLASS
+%%
+% IF ( INSTITLE .EQ. ' ' ) .OR. ( .NOT. ( FILEEXISTS INSTITLE ) ) THEN
 ^^WI SYSOPENFILE 'All files (*.*)|*.*;'
 ^^WI          'SHELX (*.ins,res,hkl,hklf5)|*.ins;*.res;*.hkl;*.hklf5'
 ^^CR
@@ -11,11 +16,12 @@
 %   IF CVALUE .EQ. 'CANCEL' THEN
 %     FINISH
 %   END IF
-%   VARIABLE LOGICAL T
-%   VARIABLE CHARACTER INSTITLE HKLTITLE
-%   VARIABLE CHARACTER C_FILE CEXTN CROOT CARG CLASS
 %%
 %   EVALUATE C_FILE = CVALUE
+%%
+% ELSE
+%   EVALUATE C_FILE = INSTITLE
+% END IF
 %%
 %   IF ( .NOT. ( FILEEXISTS C_FILE ) ) THEN
 {E Error: Filename given does not exist.

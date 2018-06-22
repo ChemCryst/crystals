@@ -26,8 +26,8 @@
 %   EVALUATE CEXTN = GETEXTN ( C_FILE )
 %   EVALUATE CEXTN = UPPERCASE ( CEXTN )
 %   IF ( CEXTN .EQ. 'INS' )  .OR. ( CEXTN .EQ. 'RES' ) THEN
-%     IF FILEEXISTS ( 'crystalsinput.dat' ) THEN
-%       EVALUATE T =  FILEDELETE ( 'crystalsinput.dat' )
+%     IF FILEEXISTS ( 'crystalsinput.cry' ) THEN
+%       EVALUATE T =  FILEDELETE ( 'crystalsinput.cry' )
 %     END IF
 %  TRANSFER '#SPAWN % "CRYSDIR:shelx2cry.exe"  -o crystalsinput.cry ' - 
    // C_FILE TO CRYSTALS

@@ -4,28 +4,34 @@
 ^^WI                                        DISABLEIF='IN'                      
 
 ^^WI    MENU _SFLIP 'Superflip'                                                 
-^^WI     ITEM _FLIP '&Create/run files' '#SCRIPT XFLIP' ENABLEIF='L1 L2 L6'
+^^WI     ITEM _FLIP '&Create files and run' '#SCRIPT XFLIP' ENABLEIF='L1 L2 L6'
 ^^WI                                        DISABLEIF='IN'                      
-^^WI     ITEM -RFLIP '&Run files' '#SCRIPT XFLIPRUN' DISABLEIF='IN'             
+^^WI     ITEM -RFLIP '&Run with existing input' '#SCRIPT XFLIPRUN'           
 ^^WI                                        DISABLEIF='IN'                      
-^^WI     ITEM _FLIP '&Input results' '#SCRIPT XFLIPIN' DISABLEIF='IN' 
+^^WI     ITEM _FLIP '&Input existing results' '#SCRIPT XFLIPIN' DISABLEIF='IN' 
 ^^WI     ITEM COPYR 'Copyright' '#SPAWN CRYSDIR:manual/superflip-details.pdf'             
 ^^WI    ENDMENU                                                                 
          
+^^WI    ITEM _SHE 'Shelx&T' '#SCRIPT XSHELXT' ENABLEIF='L1 L2 L6'               
+^^WI                                        DISABLEIF='IN'                      
+
 ^^WI    ITEM _SHE 'Shel&xS' '#SCRIPT XSHELXS' ENABLEIF='L1 L2 L6'               
 ^^WI                                        DISABLEIF='IN'                      
+
 ^^WI    MENU _SIR97 'Sir 9&7'                                                   
-^^WI     ITEM _SIR '&Create files' '#SCRIPT XSIR97' ENABLEIF='L1 L2 L6'         
+^^WI     ITEM _SIR '&Create files and run' '#SCRIPT XSIR97' ENABLEIF='L1 L2 L6'
 ^^WI                                        DISABLEIF='IN'                      
-^^WI     ITEM _SIR '&Run SIR97  ' '#SCRIPT runsir97' DISABLEIF='IN'             
-^^WI     ITEM _SIR '&Input results' '#SCRIPT XSIR97IN' DISABLEIF='IN'           
+^^WI     ITEM _SIR '&Run SIR97 with existing input' '#SCRIPT runsir97' 
+^^WI                                        DISABLEIF='IN'             
+^^WI     ITEM _SIR '&Input existing results' '#SCRIPT XSIR97IN' DISABLEIF='IN'           
 ^^WI    ENDMENU                                                                 
 
 ^^WI    MENU _SIR02 'Sir 1&1'                                                   
-^^WI     ITEM _SIR '&Create files' '#SCRIPT XSIR11' ENABLEIF='L1 L2 L6'         
+^^WI     ITEM _SIR '&Create files and run' '#SCRIPT XSIR11' ENABLEIF='L1 L2 L6'         
 ^^WI                                        DISABLEIF='IN'                      
-^^WI     ITEM _SIR '&Run SIR11  ' '#SCRIPT RUNSIR11' DISABLEIF='IN'             
-^^WI     ITEM _SIR '&Input results' '#SCRIPT XSIR11IN' DISABLEIF='IN'           
+^^WI     ITEM _SIR '&Run SIR11  with existing input' '#SCRIPT RUNSIR11' 
+^^WI                                        DISABLEIF='IN'             
+^^WI     ITEM _SIR '&Input existing results' '#SCRIPT XSIR11IN' DISABLEIF='IN'           
 ^^WI    ENDMENU                                                                 
 
 ^^WI    SPLIT                                                                   
