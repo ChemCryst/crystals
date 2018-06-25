@@ -12,7 +12,9 @@ SYMM X, Y, Z
 SPACEGROUP P -1
 CLASS Triclinic
 END
-\FLIMIT
+# SGinfo PG code#:    2
+# CRYSTALS LG code#:    1
+\FLIMIT  1
 END
 \LIST 13
 COND WAVE= 1.54178

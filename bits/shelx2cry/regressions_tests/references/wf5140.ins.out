@@ -13,7 +13,9 @@ SYMM 1/2-X, 1/2+Y, 1/2-Z
 SPACEGROUP  P 1 21/n 1
 CLASS Monoclinic
 END
-\FLIMIT
+# SGinfo PG code#:    5
+# CRYSTALS LG code#:    3
+\FLIMIT  3
 END
 \LIST 13
 COND WAVE= .71073
