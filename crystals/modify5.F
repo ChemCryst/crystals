@@ -3877,6 +3877,10 @@ C
       INCLUDE 'QSTORE.INC'
 C
 C
+      IF ( N5 .LE. 1 ) THEN ! Zero or one atom = atoms in order already. 
+         KMDSRT = 1
+         RETURN
+      END IF
 C -- **** INITIALISATION SECTION ****
 C
       IFOUND=KSTALL(N5)

@@ -130,5 +130,51 @@ character(len=12), dimension(0:7), parameter :: XS_name=(/ &
 &    "Hexagonal   ", &
 &    "Cubic       " /)
   
+!> Convert sginfo point group number into CRYSTALS Laue group number
+!>              1=1BAR, 2=2/M, 3=MMM, 4=4/M, 5=4/MMM, 6=R3R, 7=R3MR,
+!>              8=3, 9=31M, 10=3M1, 11=6/M, 12=6/MMM, 13=M3 AND 14=M3M
+integer, dimension(0:40), parameter :: LG_Code_from_PG_Index = (/ &
+&   0,  &
+&   1,       &
+&   1,       &
+&   2,      &
+&   2,      &
+&   3,      &
+&   3,      &
+&   3,      &
+&   3,      &
+&   4,      &
+&   4,      &
+&   4,      &
+&   5,    &
+&   5,    &
+&   5,    &
+&   5,    &
+&   5,    &
+&   8,       &
+&   8,       &
+&   10,     &
+&   9,     &
+&   8,      &
+&   10,     &
+&   9,     &
+&   8,      &
+&   10,     &
+&   9,     &
+&   8,      &
+&   11,      &
+&   11,      &
+&   11,      &
+&   12,    &
+&   12,    &
+&   12,    &
+&   12,    &
+&   12,    &
+&   13,      &
+&   13,      &
+&   14,     &
+&   14,     &
+&   14  /)
+  
   
 end module

@@ -1315,10 +1315,14 @@ type(T_LatticeTranslation), dimension(:), allocatable :: LatticeTranslation
         write(log_unit, '(a)') 'Resulting input file won''t work'
     end if
     write(crystals_fileunit, '(a, a)') 'CLASS ', trim(XS_name(SgInfo%XtalSystem))  
-    
     write(crystals_fileunit, '(a)') 'END'
-    write(crystals_fileunit, '(a)') '\FLIMIT'
+
+    write(crystals_fileunit, '(a,i4)') '# SGinfo PG code#: ', SgInfo%PointGroup / 396
+    i = LG_Code_from_PG_Index ( SgInfo%PointGroup / 396 )
+    write(crystals_fileunit, '(a,i4)') '# CRYSTALS LG code#: ', i
+    write(crystals_fileunit, '(a,i2)') '\FLIMIT ',i
     write(crystals_fileunit, '(a)') 'END'
+
     
     ! process list2
     ! \LIST 2

@@ -64,7 +64,7 @@
 ^^WI       @ 1,1 CHECKBOX XM 'Dual space iterations' INFORM=NO
 ^^WI       @ 1,3 EDITBOX EM '100' CHARS=4 INTEGER 
 ^^WI     }
-^^WI     @ 11,2 GRID GRIDO NROWS=3 NCOLS=1
+^^WI     @ 10,2 GRID GRIDO NROWS=3 NCOLS=1
 ^^WI     {
 ^^WI       @ 1,1 CHECKBOX CED '&Edit ShelxT file before processing'
 ^^WI           STATE=OFF
@@ -73,7 +73,7 @@
 ^^WI       @ 3,1 RADIOBUTTON CLIST '&View last listing file'
 ^^WI           STATE=OFF
 ^^WI     }
-^^WI     @ 13,2 GRID GRIDR NROWS=1 NCOLS=3
+^^WI     @ 12,2 GRID GRIDR NROWS=1 NCOLS=3
 ^^WI     {
 ^^WI       @ 1,1 BUTTON BOK '&Ok'
 ^^WI       @ 1,3 BUTTON BXX '&Cancel'

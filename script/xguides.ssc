@@ -9,14 +9,15 @@
 %% KTDEFA  =                                                                    
 %%  1 Run SIR92                                                                 
 %%  2 Run SUPERFLIP
-%%  3 Run SHELXS                                                                
-%%  4 Run SIR97                                                                 
-%%  5 Import Sir92 data.                                                        
-%%  6 Import Sir97 data.                                                        
-%%  7 Import Superflip data.                                                        
-%%  8 Shelx file.                                                               
-%%  9 Cameron file.                                                             
-%%  10 Initial analysis.                                                         
+%%  3 Run SHELXT
+%%  4 Run SHELXS                                                                
+%%  5 Run SIR97                                                                 
+%%  6 Import Sir92 data.                                                        
+%%  7 Import Sir97 data.                                                        
+%%  8 Import Superflip data.                                                        
+%%  9 Shelx file.                                                               
+%%  10 Cameron file.                                                             
+%%  11 Initial analysis.                                                         
 %%%                                                                             
 %%                                                                              
 %% Check for windows already open                                               
@@ -51,16 +52,17 @@
 ^^WI  @ 2,4 GRID MID NROWS=3 NCOLS=3                                            
 ^^WI  {                                                                         
 ^^WI   @ 1,1 DROPDOWN _XG_LIST ADDTOLIST                                        
-^^WI     'Run Sir92'                                                            
-^^WI     'Run Superflip'                                                            
-^^WI     'Run ShelxS'                                                           
-^^WI     'Run Sir97'                                                            
-^^WI     'Use Sir92 output'                                                     
-^^WI     'Use Sir97 output'                                                     
-^^WI     'Use Superflip output'                                                     
-^^WI     'Use Shelx file'                                                       
-^^WI     'Use a Cameron file'                                                   
-^^WI     'Initial analysis'                                                     
+^^WI     'Sir92'                                                            
+^^WI     'Superflip'                                                            
+^^WI     'ShelxT'                                                           
+^^WI     'ShelxS'                                                           
+^^WI     'Sir97'                                                            
+^^WI     'Read existing Sir92 output'                                                     
+^^WI     'Read existing Sir97 output'                                                     
+^^WI     'Read existing Superflip output'                                                     
+^^WI     'Read existing Shelx file'                                                       
+^^WI     'Open a Cameron file'                                                   
+^^WI     'Initial analysis of data'                                                     
 ^^WI     NULL                                                                   
 ^^WI   @ 3,1 GRID BTNS NROWS=1 NCOLS=4                                          
 ^^WI   {                                                                        
@@ -87,7 +89,7 @@
 %    EVALUATE KTDEFA = 1                                                        
 #endif
 %  ELSE                                                                         
-%    EVALUATE KTDEFA = 10                                                        
+%    EVALUATE KTDEFA = 11
 %  END IF                                                                       
 %%                                                                              
 %%                                                                              

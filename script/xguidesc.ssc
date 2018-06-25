@@ -2,14 +2,15 @@
 %%                                                                              
 %%  1 Run SIR92                                                                 
 %%  2 Run SUPERFLIP                                                             
-%%  3 Run SHELXS                                                                
-%%  4 Run SIR97                                                                 
-%%  5 Import Sir92 data.                                                        
-%%  6 Import Sir97 data.                                                        
-%%  7 Import Superflip data.                                                    
-%%  8 Shelx file.                                                               
-%%  9 Cameron file.                                                             
-%%  10 Initial analysis.                                                        
+%%  2 Run SHELXT                                                             
+%%  4 Run SHELXS                                                                
+%%  5 Run SIR97                                                                 
+%%  6 Import Sir92 data.                                                        
+%%  7 Import Sir97 data.                                                        
+%%  8 Import Superflip data.                                                    
+%%  9 Shelx file.                                                               
+%%  10 Cameron file.                                                             
+%%  11 Initial analysis.                                                        
 %%                                                                              
 %  VERIFY GS_BOK GS_BXX GS_BHELP                                                
 %  GET SILENT NOSTORE ABBREVIATED 'Continue?' 'GS_BXX'                          
@@ -28,34 +29,38 @@
 %        END BLOCK                                                              
 %%                                                                              
 %        BLOCK % 3                                                              
-%          COPY '#SCRIPT XSHELXS'                                               
+%          COPY '#SCRIPT XSHELXT'                                               
 %        END BLOCK                                                              
 %%                                                                              
 %        BLOCK % 4                                                              
-%          COPY '#SCRIPT XSIR97'                                                
+%          COPY '#SCRIPT XSHELXS'                                               
 %        END BLOCK                                                              
 %%                                                                              
 %        BLOCK % 5                                                              
-%          COPY '#SCRIPT XSIR92IN'                                              
+%          COPY '#SCRIPT XSIR97'                                                
 %        END BLOCK                                                              
 %%                                                                              
 %        BLOCK % 6                                                              
-%          COPY '#SCRIPT XSIR97IN'                                              
+%          COPY '#SCRIPT XSIR92IN'                                              
 %        END BLOCK                                                              
 %%                                                                              
 %        BLOCK % 7                                                              
-%          COPY '#SCRIPT XFLIPIN'                                          
+%          COPY '#SCRIPT XSIR97IN'                                              
 %        END BLOCK                                                              
 %%                                                                              
 %        BLOCK % 8                                                              
-%          COPY '#SCRIPT XPASCAL'                                              
+%          COPY '#SCRIPT XFLIPIN'                                          
 %        END BLOCK                                                              
 %%                                                                              
 %        BLOCK % 9                                                              
+%          COPY '#SCRIPT XPASCAL'                                              
+%        END BLOCK                                                              
+%%                                                                              
+%        BLOCK % 10                                                              
 %          COPY '#USE cameron.l5'                                               
 %        END BLOCK                                                              
 %%                                                                              
-%        BLOCK % 10                                                             
+%        BLOCK % 11                                                             
 %          COPY '#SCRIPT XCHECK6'                                               
 %        END BLOCK                                                              
 %%                                                                              
