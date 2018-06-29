@@ -1,4 +1,5 @@
 %SCRIPT HSTRATEGY
+%% Updated to refer to area detector instruments. DJW 2018
 % VARIABLE INTEGER HELPSIZE
 % EVALUATE HELPSIZE = 2
 % COPY '#SCRIPT XHELP1'
@@ -9,32 +10,47 @@ An over all scheme for a well behaved structure analaysis is:
  of the procedure. Complex mathematics is a poor substitute
  for good experimental practices.
  
- 2. Collect the best data you can. Collect some (at least 10%)
- equivalent reflections for an indication of the data quality.
- Collect systematic absences for glide planes  and screw axes.
- Collect systematic absences for centred cells out to theta =
- theta(max)/2.
+ 2. Collect the best data you can. Anthony Linden, in "Best 
+ practice and pitfalls  in absolute structure determination"
+ (Tetrahedron: Asymmetry 28 (2017) 1314–1320), suggests a target
+ redundancy,(Multiplicity of Observations, MoO). Simon Parsons,
+ in "Determination of absolute configuration using X-ray 
+ diffraction" (Tetrahedron: Asymmetry 28 (2017) 1304–1313), 
+ suggests 6-8.
  
- 3. Preprocess the reflection data with some local software to
- get a file of h, k, l, I, sigma(I), and setting angles if
- these are needed for some geometry dependent absorption
- correction.
+ 3. Preprocess the reflection data on the diffractometer to
+ get a file of h, k, l, I, sigma(I), preserving the original 
+ indices of equivalent refelctions and corrected for absorption
+ and inter-frame scaling.
  
- 4. Use CRYSTALS to do data reduction, and submit a Direct
- Methods job with MULTAN, SHELXS, or SIR.
+ 4. In CRYSTALS, either activate The Guide (a crystal icon on
+ the tool bar) or click on DATA.  Look at the graphs in
+ "ANALYSE/TABBED INITIAL ANALYSIS" to look out for problems 
+ with the data collection
+
+ 5. Submit a Direct Methods job with one of the programs found
+  under "SOLVE.
  
  5. If Direct Methods fail, check the data, space group,
  crystal density, data reduction process. If these are all
- OK, use CRYSTALS or SHELXS to compute a Patterson  map.
- Seek help.
+ OK, seek help.  The CRYSTALS developers are always interested 
+ in problem structures, and will help where they can.
  
- 6. Input the trial structure to CRYSTALS and perform Fourier
- refinement. IT IS IMPORTANT to realize that though least
- squares refinement is often used early in a refinement, there
- is no guarantee that it will converge, and in fact the results
- may actually be mis-leading. Proceed to refinement with care.
+ 6. Modern Direct Methods programs usually output a model which
+ is good enough for least squares refinement. In CRYSTALS atoms
+ are identified by a two-part name: atom_type(serial_number),
+ e.g. C(6).  The serial number MUST be a proper number, 
+ conventionally in the range 1-9999. The two-part name must 
+ be unique.  Duplicate serial numbers can be asigned to atoms
+ of different types (e.g. C(3) and O(3)), but this is not
+ recommended since the names of automatically generated hydrogen
+ atoms are based on the name of the atom they are bound to
+ (H(81), H(82), H(83) bound to C(8)). 
+
+ 7. Use the tools STRUCTURE/NEW CENTRE MOLECULES and 
+ STRUCTURE/RENUMBER ATOMS to do the job automatically.
  
- 7. Compare the final results critically with your expectations.
+ 8. Compare the final results critically with your expectations.
  An unusual effect in part of the structure, even if of no
  direct interest for the current investigation, may be
  symptomatic of a faulty refinement.

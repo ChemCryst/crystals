@@ -1,6 +1,6 @@
 %SCRIPT TEST-TOOL-HELP
 %%
-%% Check if toolbar help has been turned off.
+%% Check if toolbar help has been turned on/off.
 %% Note that the LOGICAL TOOL-HELP is not
 %% the KEY TOOL-HELP
 %%

@@ -1,50 +1,20 @@
 %SCRIPT XSHIFT                                                                  
 %% Use the SG operators to try to centre each moiety separately                 
 %%
-%  VARIABLE LOGICAL TOOL-HELP
-%  COPY '#SCRIPT TEST-TOOL-HELP'
 %  VARIABLE CHARACTER BUTTOK BUTTXX 
+%% _______________________________________________________________
+%% See if GLOBAL help is needed
+%%
+%  VARIABLE LOGICAL TOOL-HELP
+%  VARIABLE CHARACTER TOOL-TEXT
 %  VARIABLE LOGICAL RUNNOW
-%  EVALUATE RUNNOW = FALSE  
-% IF TOOL-HELP .EQ. TRUE THEN
-^^WI WINDOW CENTRE 'Centre Structure' MODAL COMMIT='CFBOK' CANCEL='CFBXX'  
-^^WI GRID GRIDM NROWS=3 NCOLS=3  
-^^WI {  
-^^WI   @ 2,2 GRID GB NROWS=1 NCOLS=5  
-^^WI  {  
-^^WI   @ 1,1 BUTTON CFBOK '&Continue' DEFAULT  
-^^WI   @ 1,3 BUTTON CFBXX '&Cancel' 
-^^WI   @ 1,5 BUTTON CFHELP 'Help' 
-^^WI  }  
-^^WI }  
-^^WI SHOW  
-^^CR  
-%  LOOP 
-%    VERIFY  CFBXX CFHELP CFBOK  
-%    GET SILENT NOSTORE FINAL ABBREVIATED 'BXX?' 'BXX'
-%    CASE VALUE  
-%      BLOCK %CFBXX% 
-
-{I Automatic centring cancelled
- 
-^^CO     DISPOSE CENTRE
-%        FINISH  
-%      END BLOCK  
-%      BLOCK %CFHELP%
-%       COPY '#SPAWN CRYSDIR:manual/structure/new-centre.html'
-%      END BLOCK
-%      BLOCK %CFBOK%  
-%          EVALUATE RUNNOW = TRUE 
-^^CO DISPOSE INVERT  
-%          EVALUATE LOOPEND = LOOPCOUNTER  
-%      END BLOCK  
-%    END CASE  
-%  END LOOP  
-%%  
-%  IF RUNNOW .EQ. FALSE THEN
-%   FINISH
+%  EVALUATE TOOL-TEXT = 'new-centre'
+%  COPY '#SCRIPT CALL-TOOL-HELP'
+%  IF .NOT. RUNNOW THEN 
+%    FINISH
 %  END IF
-% END IF
+%% _______________________________________________________________
+%%
 %%
 %  VARIABLE INTEGER RESIDUE OLDRESIDUE                                          
 %  VARIABLE CHARACTER CTYPE CISER CLAST                                         

@@ -1,7 +1,7 @@
 % SCRIPT XINVERT
 %%
 %% A script to invert the structure
-%% including the rogues
+%% including the rogue space groups
 %% Makes use of Markus's a_xinvert now living a
 %% paralell life as xspgrpairs
 %%
@@ -11,51 +11,18 @@
 % VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
 % VARIABLE LOGICAL   ANSWER
 %%
-%  VARIABLE LOGICAL TOOL-HELP
-%  COPY '#SCRIPT TEST-TOOL-HELP'
-%  VARIABLE CHARACTER BUTTOK BUTTXX 
-%  VARIABLE LOGICAL RUNNOW
-%  EVALUATE RUNNOW = FALSE  
-% IF TOOL-HELP .EQ. TRUE THEN
-^^WI WINDOW INVERT 'Invert Structure' MODAL COMMIT='CFBOK' CANCEL='CFBXX'  
-^^WI GRID GRIDM NROWS=3 NCOLS=3  
-^^WI {  
-^^WI   @ 2,2 GRID GB NROWS=1 NCOLS=5  
-^^WI  {  
-^^WI   @ 1,1 BUTTON CFBOK '&Continue' DEFAULT  
-^^WI   @ 1,3 BUTTON CFBXX '&Cancel' 
-^^WI   @ 1,5 BUTTON CFHELP 'Help' 
-^^WI  }  
-^^WI }  
-^^WI SHOW  
-^^CR  
-%  LOOP 
-%    VERIFY  CFBXX CFHELP CFBOK  
-%    GET SILENT NOSTORE FINAL ABBREVIATED 'BXX?' 'BXX'
-%    CASE VALUE  
-%      BLOCK %CFBXX% 
-
-{I Inversion cancelled
- 
-^^CO     DISPOSE invert  
-%        FINISH  
-%      END BLOCK  
-%      BLOCK %CFHELP%
-%       COPY '#SPAWN CRYSDIR:manual/structure/structure-inversion.html'
-%      END BLOCK
-%      BLOCK %CFBOK%  
-%          EVALUATE RUNNOW = TRUE 
-^^CO DISPOSE INVERT  
-%          EVALUATE LOOPEND = LOOPCOUNTER  
-%      END BLOCK  
-%    END CASE  
-%  END LOOP  
-%%  
-%  IF RUNNOW .EQ. FALSE THEN
-%   FINISH
-%  END IF
-% END IF
+%% _______________________________________________________________
+%% See if GLOBAL help is needed
 %%
+%  VARIABLE LOGICAL TOOL-HELP
+%  VARIABLE CHARACTER TOOL-TEXT
+%  VARIABLE LOGICAL RUNNOW
+%  EVALUATE TOOL-TEXT = 'structure-inversion'
+%  COPY '#SCRIPT CALL-TOOL-HELP'
+%  IF .NOT. RUNNOW THEN 
+%    FINISH
+%  END IF
+%% _______________________________________________________________
 %%
 % IF ( EXISTS 2 .ne. 1 ) THEN
 {E No LIST 2 available

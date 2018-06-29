@@ -6,12 +6,24 @@
 % VARIABLE REAL VOLPRATM NNONHATM CELLVOL SGMULT NALLOWREF ESTNPARA ESTOTP      
 % VARIABLE INTEGER ABSPRINT ABSTOTAL                                            
 % EVALUATE MERGER = FILEEXISTS 'mergingr.dat'                                   
-% EVALUATE ABSENT = FILEEXISTS 'absences.dat'                                   
+% EVALUATE ABSENT = FILEEXISTS 'absences.dat' .OR. FILEEXISTS 'absences2.dat'
 % EVALUATE HIST = FILEEXISTS 'histogram.dat'                                   
 % EVALUATE LMAONCE = TRUE                                                       
 % EVALUATE WILFIL = FALSE                                                       
 % VARIABLE INTEGER NSIGMAS
 % EVALUATE NSIGMAS = 0
+%% CHECKING FOR TYPE OF absences FILE
+% VARIABLE INTEGER ABSPRINT ABSTOTAL
+% VARIABLE LOGICAL ABSFILE2
+% EVALUATE ABSFILE2 = FALSE
+% IF ( FILEEXISTS ( 'absences2.dat' ) ) THEN
+%   EVALUATE ABSFILE2 = TRUE
+% ELSE  IF ( FILEEXISTS ( 'absences.dat' ) ) THEN
+%
+% ELSE
+{E      Absences file does not exist
+% END IF 
+
 %%                                                                              
 % IF ( EXISTS 6 .NE. 1 ) THEN                                                   
                                                                                 
@@ -433,8 +445,14 @@
 %  END IF                                                                       
 %  COPY 'END'                                                                   
 %%                                                                              
-%  IF ( ABSENT .AND. LMAONCE ) THEN                                             
-%    COPY '#OPEN SCPDATA absences.dat'                                          
+%  IF ( ABSENT .AND. LMAONCE ) THEN
+%    IF ABSFILE2 THEN 
+opening absences2
+%      COPY '#OPEN SCPDATA absences2.dat'                                          
+%    ELSE
+opening absences
+%      COPY '#OPEN SCPDATA absences.dat'                                          
+%    END IF
 ^^CO SET PROGOUTPUT TEXT 'Reading systematic absences from absences.dat'        
 ^^WI WINDOW XABORT 'Absences' MODAL GRID MAIN NROWS=5 NCOLS=5                   
 ^^WI { @ 2,2 STATIC T1 'Reading absence data.'                                  

@@ -4,10 +4,25 @@
 %%
 A SCRIPT to help collect atoms into a molecule, or bring new peaks close
 to existing atoms.
+%% _______________________________________________________________
+%% See if GLOBAL help is needed
+%%
+%  VARIABLE LOGICAL TOOL-HELP
+%  VARIABLE CHARACTER TOOL-TEXT
+%  VARIABLE LOGICAL RUNNOW
+%  EVALUATE TOOL-TEXT = 'atom-collection'
+%  COPY '#SCRIPT CALL-TOOL-HELP'
+%  IF .NOT. RUNNOW THEN 
+%    FINISH
+%  END IF
+%% _______________________________________________________________
+%%
+
+%%
 %% check we have an atom list
 %  IF EXISTS 5 .NE. 1 THEN
   You do not have an atom list.
-%  FINISH
+%    FINISH
 %  END IF
 %%
 ^^WI WINDOW COLLECT 'Molecule Assembly' MODAL

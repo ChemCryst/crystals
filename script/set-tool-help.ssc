@@ -1,5 +1,8 @@
 %SCRIPT SET-TOOL-HELP                                                                    
 %% Turn tool bar help ON/OFF
+%%
+%% Called from the TOOLS item on the tool bar
+%%
 % VARIABLE INTEGER IVALUE JVALUE
 %%                                                                              
 ^^WI WINDOW XHELP 'Toolbar Help' MODAL SIZE KEEP                               

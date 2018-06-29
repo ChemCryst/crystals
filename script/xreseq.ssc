@@ -1,7 +1,21 @@
 %SCRIPT XRESEQU                                                                 
-%%   Resequence atoms without first sorting by atomic weight                    
+%%   Resequence atoms without first sorting by atomic weight   
+%%
+%% _______________________________________________________________
+%% See if GLOBAL help is needed
+%%
+%  VARIABLE LOGICAL TOOL-HELP
+%  VARIABLE CHARACTER TOOL-TEXT
+%  VARIABLE LOGICAL RUNNOW
+%  EVALUATE TOOL-TEXT = 'resequence'
+%  COPY '#SCRIPT CALL-TOOL-HELP'
+%  IF .NOT. RUNNOW THEN 
+%    FINISH
+%  END IF
+%% _______________________________________________________________
+%%
 %  copy '#REGROUP'                                                              
-%  copy 'SELECT TYPE=ALL SEQUENCE= EXHYD MOVE=-0.2'                                
+%  copy 'SELECT TYPE=ALL SEQUENCE= EXHYD MOVE=-0.2 GROUP=YES'                                
 %  copy 'end'
 %  copy '#script hnam'                                                                   
 %END SCRIPT                                                                     
