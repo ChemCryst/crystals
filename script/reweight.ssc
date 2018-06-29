@@ -1,5 +1,22 @@
 %SCRIPT REWEIGHT
 %% Try to normalise the GOF.
+%% _______________________________________________________________
+%% See if GLOBAL help is needed
+%%
+%  VARIABLE CHARACTER TOOL-FOLDER
+%  VARIABLE LOGICAL TOOL-HELP
+%  VARIABLE CHARACTER TOOL-TEXT
+%  VARIABLE LOGICAL RUNNOW
+%  EVALUATE TOOL-FOLDER = 'refinement'
+%  EVALUATE TOOL-TEXT = 'reweight'
+%  COPY '#SCRIPT CALL-TOOL-HELP'
+%  IF .NOT. RUNNOW THEN 
+%    FINISH
+%  END IF
+%% _______________________________________________________________
+%%
+
+
 % COPY '#SCRIPT XANAL'
 % COPY '#weight'
 % COPY 'end'

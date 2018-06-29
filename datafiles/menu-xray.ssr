@@ -61,6 +61,7 @@
 ^^WI   ITEM ED05 'Edit &Coordinates' '#SCRIPT SYSED5' DISABLEIF='IN'
 ^^WI   ITEM ED29 'Edit &Elemental properties' '#SCRIPT SYSED29' 
 ^^WI              DISABLEIF='IN'
+^^WI   ITEM ED3  'Edit &Scattering Factors' '#SCRIPT EDLIST3' DISABLEIF='IN' 
 ^^WI   ITEM ED30 'Edit &goodies' '#SCRIPT ED30' DISABLEIF='IN'
 ^^WI   SPLIT
 ^^WI   MENU _OBS 'Diffractometer files (OBSOLESCENT)'

@@ -22,10 +22,6 @@
 ^^WI   ITEM DRED '&DelRed' '$% CRYSDIR:delred'
 #endif
 ^^WI            DISABLEIF='IN'
-^^WI   ITEM ED29 '&Atom properties' '#SCRIPT EDLIST29'                              
-^^WI               ENABLEIF='L29' DISABLEIF='IN'  
-^^WI   ITEM ED3 '&Change F prime' '#SCRIPT EDLIST3'                              
-^^WI               ENABLEIF='L3' DISABLEIF='IN'  
 ^^WI   SPLIT                                                                    
 ^^WI   ITEM SPTEST '&Spacegroup quiz' '#SCRIPT SPACETEST'                       
 ^^WI   ITEM WWTB   '&Who wants to be..'  '#SCRIPT WWTB'                         

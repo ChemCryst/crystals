@@ -14,15 +14,20 @@
 %% _______________________________________________________________
 %% See if GLOBAL help is needed
 %%
+%  VARIABLE CHARACTER TOOL-FOLDER
 %  VARIABLE LOGICAL TOOL-HELP
 %  VARIABLE CHARACTER TOOL-TEXT
 %  VARIABLE LOGICAL RUNNOW
-%  EVALUATE TOOL-TEXT = 'structure-inversion'
+%  EVALUATE TOOL-FOLDER = 'structure'
+%  EVALUATE TOOL-TEXT = 'new-centre'
 %  COPY '#SCRIPT CALL-TOOL-HELP'
 %  IF .NOT. RUNNOW THEN 
 %    FINISH
 %  END IF
 %% _______________________________________________________________
+%%
+
+
 %%
 % IF ( EXISTS 2 .ne. 1 ) THEN
 {E No LIST 2 available

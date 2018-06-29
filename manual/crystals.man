@@ -3585,7 +3585,7 @@ For example:
  taken when computing Fourier maps. See the sections on Fourier maps, 
  #RFOURIER# and DIFABS #RDIFABS#.  
 #PIf FRIEDEL is set to "YES", Friedel's law is applied whatever the 
- space group.  A flag is set in the 'JCODE' slot for each reflcetion 
+ space group.  A flag is set in the 'JCODE' slot for each reflection 
  to indicate if the law was invoked or not. 
  DO NOT USE excluded JCODES IN \MERGE. If the data is then
  sorted but not merged, Friedel pairs will be adjacent and flagged. Used
@@ -10554,7 +10554,7 @@ or computed using  SCALE  =  YES  above.
 #HSlist10#
 #Q
 #D\LIST 10#
-#PLIST 10 cannot be input bythe user. When the map scan has been completed,
+#PLIST 10 cannot be input by the user. When the map scan has been completed,
  the resulting peaks are output to the disc as a LIST 10.
  Except for an external or  Patterson map, the atoms already
  in LIST 5 are placed at the beginning of the LIST 10.
