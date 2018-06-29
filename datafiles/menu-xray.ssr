@@ -54,14 +54,16 @@
 ^^WI    ITEM CHIME 'Export CHIME file'  '#SCRIPT XCHIME'
 ^^WI              DISABLEIF='IN' ENABLEIF='L1 L2 L5'
 ^^WI   ENDMENU
-^^WI   ITEM _CUT '&Filter reflections' '#SCRIPT XLIST28'
-^^WI          ENABLEIF='L6'
-^^WI   ITEM ED30 'Edit &goodies' '#SCRIPT ED30' DISABLEIF='IN'
 ^^WI   ITEM VU06 'View reflections' '#SCRIPT VULIST6' ENABLEIF='L6'
 ^^WI                                                  DISABLEIF='IN'
+^^WI   ITEM _CUT '&Filter reflections' '#SCRIPT XLIST28'
+^^WI              ENABLEIF='L6'
+^^WI   ITEM ED05 'Edit &Coordinates' '#SCRIPT SYSED5' DISABLEIF='IN'
+^^WI   ITEM ED29 'Edit &Elemental properties' '#SCRIPT SYSED29' 
+^^WI              DISABLEIF='IN'
+^^WI   ITEM ED30 'Edit &goodies' '#SCRIPT ED30' DISABLEIF='IN'
 ^^WI   SPLIT
 ^^WI   MENU _OBS 'Diffractometer files (OBSOLESCENT)'
-
 ^^WI     MENU _PRE 'Process diffractometer files'
 ^^WI       ITEM GEN  'Generalised cif input' '#SCRIPT XDIFFIN'
 ^^WI       ITEM KCCD 'Run &Agilentin - Agilent data' '#SCRIPT XODIN'
