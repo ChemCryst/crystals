@@ -1,0 +1,7 @@
+#ifdef CRY_OSLINUX
+$+nedit scplst29.dat
+#elif CRY_NOGUI
+$edit scplst29.dat
+#else
+$+notepad scplst29.dat
+#endif

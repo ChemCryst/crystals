@@ -1,0 +1,181 @@
+%SCRIPT SYSED5
+    This SCRIPT puts you into a system editor to modify the element properties
+%%
+%  IF ( EXISTS 29 .NE. 1 ) THEN
+%    COPY '#LIST 29'
+%    COPY 'END'
+%  END IF
+%%
+%  COPY '#RELEASE PUNCH scporg29.dat'
+%  TRANSFER "# This file (ScpOrg29.dat) will be read by CRYSTALS" TO PUNCH
+%  TRANSFER "# if you abandon changes to the ScpLst29.dat." TO PUNCH
+%  COPY '#PUNCH 29'
+%  COPY 'END'
+%  COPY '#RELEASE PUNCH scplst29.dat'
+%  TRANSFER "# This file (ScpLst29.dat) will be read by CRYSTALS" TO PUNCH
+%  TRANSFER "# when you close it, so save any changes that you make." TO PUNCH
+%  TRANSFER "# To abandon changes: either don't save, or, delete all" TO PUNCH
+%  TRANSFER "# lines from this file before saving." TO PUNCH
+%  TRANSFER "# " TO PUNCH
+%  TRANSFER "# THE MOST COMMON ERROR IS FORGETTING TO ENSURE" TO PUNCH
+%  TRANSFER "# THAT THE NUMBER OF ATOMS IS CORRECT IN THE" TO PUNCH
+%  TRANSFER "# THE 'READ NATOM=...' DIRECTIVE" TO PUNCH
+%  COPY '#PUNCH 29'
+%  COPY 'END'
+%  COPY '#RELEASE PUNCH bfile.pch'
+%%
+%  VARIABLE LOGICAL ISERR
+%%
+% VARIABLE LOGICAL EDITED_ONCE
+% EVALUATE EDITED_ONCE = FALSE
+%%
+%  LOOP
+%%
+#ifdef __GID__
+^^WI WINDOW BLOCK5 'Waiting' MODAL CANCEL='^^CO DISPOSE BLOCK5'
+^^WI GRID MAIN NROWS=4 NCOLS=3 { @ 2,2 STATIC T1 'Starting editor...'
+^^WI @ 3,2 STATIC T1 'Close notepad to continue.' } SHOW
+^^CR
+%    EVALUATE ISERR = TRUE
+%    BLOCK
+%      ON ERROR TERMINATE
+%    COPY '#use crysdir:script/edlist29.dat'
+%%
+%      EVALUATE ISERR = FALSE
+%%
+%    END BLOCK
+%%
+^^CO DISPOSE BLOCK5
+%%
+%    IF ( ISERR ) THEN
+{E Missing script file (crysdir:script\edlist29.dat).
+{I Cannot edit parameters. Maybe a reinstall of CRYSTALS would help.
+%      FINISH
+%    END IF
+#else
+%    VARIABLE CHARACTER EDITOR_FILE
+%    VARIABLE LOGICAL EDITOR_OK
+%    EVALUATE EDITOR_FILE = 'scplst29.dat'
+%    COPY '#SCRIPT xeditor'
+%    IF ( .NOT. EDITOR_OK ) THEN
+%      IF ( EDITED_ONCE ) THEN
+%        COPY '#USE scporg29.dat'
+ Original list 29 restored.
+%      ELSE
+ Changes abandoned by user. List 29 has not been changed.
+%      END IF
+%      FINISH
+%    END IF
+%    EVALUATE EDITED_ONCE = TRUE
+#endif
+%%
+%    EVALUATE ISERR = TRUE
+%    BLOCK
+%      ON ERROR TERMINATE
+%      COPY '#USE scplst29.dat'
+%%
+%      EVALUATE ISERR = FALSE
+%%
+%    END BLOCK
+%%
+%    IF ( ISERR ) THEN
+^^WI WINDOW EDERR1 'Error reading file' MODAL
+^^WI COMMIT='B1'  CANCEL='B2' POSITION=CENTRED '_MAIN'
+^^WI GRID GTB NROWS=5 NCOLS=5
+^^WI {
+^^WI   @ 2,2 ICON MYICON HAND
+^^WI   @ 2,4 GRID TL NROWS=3 NCOLS=1
+^^WI   {
+^^WI @ 1,1 STATIC T1 'There is an error in the file that is being'
+^^WI @ 2,1 STATIC T2 'read back into CRYSTALS.'
+^^WI @ 3,1 STATIC T2 'Check the command syntax is valid.'
+^^WI   }
+^^WI   @ 4,4 GRID LOWER NROWS=1 NCOLS=7
+^^WI   {
+^^WI     @ 1,1 STRETCH XQ_S1 HORIZONTAL
+^^WI @ 1,2 BUTTON EDB1 'Edit again' DEFAULT 
+^^WI @ 1,4 BUTTON EDB2 'Lose changes'
+^^WI @ 1,6 BUTTON EDB3 'Ignore'
+^^WI     @ 1,7 STRETCH XQ_S2 HORIZONTAL
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+%%
+%      VERIFY EDB1 EDB2 EDB3
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%      CASE VALUE
+%        BLOCK 
+%          TRANSFER '{I Re-opening file' TO DISPLAY
+%        END BLOCK 
+%        BLOCK 
+%          COPY '#USE SCPORG29.DAT'
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%          COPY '#SUM L 29'
+%          COPY 'END'
+%        END BLOCK 
+%        BLOCK 
+%          TRANSFER '{I Continuing, with errors' TO DISPLAY
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%        END BLOCK 
+%      END CASE
+^^CO   DISPOSE EDERR1
+%    ELSE 
+%      EVALUATE ISERR = TRUE
+%      BLOCK
+%        ON ERROR TERMINATE
+%        COPY '#SUMMARY LIST 29'
+%        COPY 'END'
+%%   
+%        EVALUATE ISERR = FALSE
+{I List 29 updated.
+%      END BLOCK
+%%
+%      IF ( ISERR ) THEN
+^^WI WINDOW EDERR2 'Error in restraints' MODAL
+^^WI COMMIT='B1'  CANCEL='B2' POSITION=CENTRED '_MAIN'
+^^WI GRID GTB NROWS=5 NCOLS=5
+^^WI {
+^^WI   @ 2,2 ICON MYICON HAND
+^^WI   @ 2,4 GRID TL NROWS=3 NCOLS=1
+^^WI   {
+^^WI @ 1,1 STATIC T1 'There is a syntax error in the LIST 29 directives'
+^^WI @ 2,1 STATIC T2 '(parameters) that have been read back into CRYSTALS.'
+^^WI @ 3,1 STATIC T2 'Perhaps a keyword (ATOM, READ NATOM etc) is wrong?'
+^^WI   }
+^^WI   @ 4,4 GRID LOWER NROWS=1 NCOLS=7
+^^WI   {
+^^WI     @ 1,1 STRETCH XQ_S1 HORIZONTAL
+^^WI @ 1,2 BUTTON EDB4 'Edit again' DEFAULT 
+^^WI @ 1,4 BUTTON EDB5 'Lose changes'
+^^WI @ 1,6 BUTTON EDB6 'Ignore'
+^^WI     @ 1,7 STRETCH XQ_S2 HORIZONTAL
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+%%
+%        VERIFY EDB4 EDB5 EDB6
+%        GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+^^CO     DISPOSE EDERR2
+%        CASE VALUE
+%          BLOCK 
+%            TRANSFER '{I Re-opening file' TO DISPLAY
+%          END BLOCK 
+%          BLOCK 
+%            COPY '#USE SCPORG29.DAT'
+%            COPY '#SUM L 29'
+%            COPY 'END'
+%            FINISH
+%          END BLOCK 
+%          BLOCK 
+%            TRANSFER '{I Continuing, with errors' TO DISPLAY
+%            FINISH
+%          END BLOCK 
+%        END CASE
+%      ELSE
+%        FINISH
+%      END IF
+%    END IF
+%  END LOOP
+%END SCRIPT

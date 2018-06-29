@@ -1,4 +1,10 @@
 %SCRIPT EDLIST29  %Editor for list 29%                                          
+%% This SCRIPT failed to work June 2018
+%% Rather than fix it, control will be passed to a manual editor
+%  COPY '#SCRIPT SYSED29'
+%  FINISH
+%%
+%%
 %  VARIABLE INTEGER SELECT OFFSET                                               
 %  VARIABLE LOGICAL ALREADYPRES                                                 
                       Edit elemental properties                                 

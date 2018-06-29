@@ -7,7 +7,7 @@
 %    COPY 'END'
 %  END IF
 %%
-%  COPY '#RELEASE PUNCH scporg.dat'
+%  COPY '#RELEASE PUNCH scporg5.dat'
 %  TRANSFER "# This file (ScpOrg5.dat) will be read by CRYSTALS" TO PUNCH
 %  TRANSFER "# if you abandon changes to the ScpLst5.dat." TO PUNCH
 %  COPY '#PUNCH 5'
