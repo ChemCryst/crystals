@@ -2164,12 +2164,14 @@ C----- ENANTIOPOLE
 CDJWJUN01      STORE(L5O+4) = MAX (STORE(L5O+4), 0.0)
 C----- EXTINCTION
       STORE(L5O+5) = MAX (STORE(L5O+5), -ZERO)
+C RIC18: Do note reset twin element scales - need to go slightly negative sometimes
+C and reseting breaks any constraints between scales. Note that same change also required in SFLS.F.
 C----- ELEMENT SCALES
-      K=L5ES
-      DO 1165 I=1,MD5ES
-      STORE(K) = MAX (STORE(K), 0.0)
-      K=K+1
-1165  CONTINUE
+c      K=L5ES
+c      DO 1165 I=1,MD5ES
+c      STORE(K) = MAX (STORE(K), 0.0)
+c      K=K+1
+c1165  CONTINUE
 C
 C--LOOP OVER EACH ATOM CHECKING TEMPERATURE FACTORS
 C-C-C-LOOP OVER EACH ATOM CHECKING T.F. AND SPECIAL PARAMETERS

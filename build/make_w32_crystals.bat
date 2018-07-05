@@ -27,7 +27,7 @@
 SET COMMAND=where mkl_core.dll
 FOR /F "delims=" %%A IN ('%COMMAND%') DO (
     SET TEMPVAR=%%A
-    SET TEMPVARP=%%~pA
+    SET TEMPVARP=%%~dpA
     GOTO :copymkl
 )
 :copymkl

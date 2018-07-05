@@ -929,28 +929,34 @@ c turn on red
                WRITE ( CMON, 2301)  I, STORE(K)
                CALL XPRVDU(NCVDU, 1,0)
 2301           FORMAT(' Twin element error, Scale',I3,' = ',F8.4)
-               STORE(K) = 0.0
+C RIC18: Do note reset twin element scales - need to go slightly negative sometimes
+C and reseting breaks any constraints between scales. Note that same change also required in SOLVE.F.
+C               STORE(K) = 0.0
                nneg = nneg + 1
              ENDIF
              elesum = elesum + store(k)
              K=K+1
            END DO
-           if (nneg .gt. 0) then
-             elescl = 1./ elesum
-             IF (ISSPRT .EQ. 0) WRITE(NCWU,2302) elescl
-             WRITE ( CMON, 2302)  elescl
-             CALL XPRVDU(NCVDU, 1,0)
-2302         FORMAT(' Rescaling element scales by  ',f10.4)
-           end if
+C RIC18: Do note reset twin element scales - need to go slightly negative sometimes
+C and reseting breaks any constraints between scales. Note that same change also required in SOLVE.F.
+c           if (nneg .gt. 0) then
+c             elescl = 1./ elesum
+c             IF (ISSPRT .EQ. 0) WRITE(NCWU,2302) elescl
+c             WRITE ( CMON, 2302)  elescl
+c             CALL XPRVDU(NCVDU, 1,0)
+c2302         FORMAT(' Rescaling element scales by  ',f10.4)
+c           end if
 c turn off red
            CALL OUTCOL(9)
            K=L5ES
            DO I=1,MD5ES   ! FORM THE SQUARE ROOT OF THE ELEMENT SCALES
-             if ( nneg .gt. 0) then
-               STORE(J)=SQRT(STORE(K)*elescl)
-             else
+C RIC18: Do note rescale twin element scales - need to go slightly negative sometimes
+C and reseting breaks any constraints between scales. Note that same change also required in SOLVE.F.
+c             if ( nneg .gt. 0) then
+c               STORE(J)=SQRT(STORE(K)*elescl)
+c             else
                STORE(J)=SQRT(STORE(K))
-             end if
+c             end if
              J=J+1
              K=K+1
            END DO
