@@ -19,10 +19,31 @@
     <h1>New Centre Molecules</h1>
   </div>This module tries to move the connected components of a structure (Residues) so that they lie
   close to 0.5 0.5 0.5.<br />
+  Use the graphical editor CAMERON to 
+  <a href="cam-centre.html">fine-tune</a> the final choice of equivalent positions.
+  <img src="cam-centre-3_tn.png" size="130">
   <br />
+  <div class="c1">
+    <h2>Method</h2></div>
   The algorithm starts by using the Cheshire Groups to choose an origin shift which will
-  place the first atom close to 0.5 0.5 0.5 <i>see Direct Methods in Crystallography,
-  Giacovazzo, Academic Press, 1980, Chapter 2, page 57</i>. If you have a heavy atom you
+  place the first atom close to 0.5 0.5 0.5 <i>(see Direct Methods in Crystallography,
+  Giacovazzo, Academic Press, 1980, Chapter 2, page 57)</i>. <br />
+
+  The same origin shift is then applied to all the atoms. The algorithm then applies the 
+  permitted space group operators to cluster the remaining
+  connected atom fragments around the chosen atom.
+  RESIDUE values are inserted during this process.<br /><br />
+
+
+  Remember that an origin
+  shift changes the values of the A &amp; B parts of the structure factor, so if these
+  have been saved (see <i>LIST 23</i>) they must be recomputed when the re-centring is
+  completed.<br /><br />
+
+
+
+
+  If you have a heavy atom you
   might want to make this the first atom before starting New Centre. If you know the name
   of this atom, say Zn(1), you can move it to the top of the list by issuing:<br />
   <pre>
@@ -49,14 +70,11 @@ END
       Any key can be sorted, eg DSORT U[iso] would put the atom with the smallest Uiso at
       the top of the atom list.</td>
     </tr>
-  </table>The same origin shift is then applied to all the atoms. Remember that an origin
-  shift changes the values of the A &amp; B parts of the structure factor, so if these
-  have been saved (see <i>LIST 23</i>) they must be recomputed when the re-centring is
-  completed.<br />
-  The algorithm then applies the permitted space group operators to cluster the remaining
-  connected atom fragments around the chosen atom.
+  </table>
 
-  <h2>Example</h2>Choose a small test structure (for example, "cyclo" in the Demo
+  <div class="c1">
+  <h2>Example</h2></div>
+  Choose a small test structure (for example, "cyclo" in the Demo
   suite.)<br />
   Break it into two parts by right clicking on a bond near the middle of the structure
   and choose "Break Bond" to remove that bond.<br />

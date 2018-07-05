@@ -12,7 +12,7 @@ to existing atoms.
 %  VARIABLE CHARACTER TOOL-TEXT
 %  VARIABLE LOGICAL RUNNOW
 %  EVALUATE TOOL-FOLDER = 'structure'
-%  EVALUATE TOOL-TEXT = 'new-centre'
+%  EVALUATE TOOL-TEXT = 'atom-collection'
 %  COPY '#SCRIPT CALL-TOOL-HELP'
 %  IF .NOT. RUNNOW THEN 
 %    FINISH
