@@ -14,9 +14,9 @@ help for the purposes of running CRYSTALS.
 hold all your structures and keep each structure in a sub-folder of this:
 e.g. _I{c:\strs\compound1\
 
-#P2. Copy the crystallographic data in to the sub-folder. CRYSTALS likes
-data from Nonius CAD4, DIP or KappaCCD machines, or
-alternatively simply a SHELX format .INS/RES and .HKL file.
+#P2. Copy the crystallographic data in to the sub-folder. CRYSTALS accepts
+data files (usuall cif files) from most modern machines, 
+and SHELX format .INS/RES and .HKL files.
 
 #_B{Take _B{care: _B{If _B{you _B{open _B{a _B{data _B{file _B{with _B{WORD,
 _B{you _B{may _B{accidentally _B{save _B{it _B{as _B{a _B{WORD _B{document.
