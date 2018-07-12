@@ -7,7 +7,10 @@
 %   VARIABLE CHARACTER INSTITLE HKLTITLE
 %   VARIABLE CHARACTER C_FILE CEXTN CROOT CARG CLASS
 %%
+%% If INSTITLE is already set, just use it
+%%
 % IF ( INSTITLE .EQ. ' ' ) .OR. ( .NOT. ( FILEEXISTS INSTITLE ) ) THEN
+%%
 ^^WI SYSOPENFILE 'All files (*.*)|*.*;'
 ^^WI          'SHELX (*.ins,res,hkl,hklf5)|*.ins;*.res;*.hkl;*.hklf5'
 ^^CR

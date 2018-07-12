@@ -4,55 +4,55 @@
 ^^WI   '#SCRIPT GUIDESTART' DISABLEIF='IN'                                            
 ^^WI   ITEM HSTAR '&Read me first' '#SCRIPT XREADME' DISABLEIF='IN'             
 ^^WI   ITEM HSTAR '&Getting started'                                            
-^^WI     '#SPAWN CRYSDIR:manual/readme.html' DISABLEIF='IN'  
+^^WI     '#SPAWN "CRYSDIR:manual/readme.html"' DISABLEIF='IN'  
 ^^WI   ITEM HSTAR '&Beginners Guide' 
-^^WI     '#SPAWN CRYSDIR:manual/beginnersguide.pdf' DISABLEIF='IN'  
+^^WI     '#SPAWN "CRYSDIR:manual/beginnersguide.pdf"' DISABLEIF='IN'  
 ^^WI   ITEM HSTAR '&COMMAND line' '#SCRIPT XSTART' DISABLEIF='IN'               
 ^^WI   SPLIT 
 ^^WI   MENU HDEMO '&Simple Worked Examples'                                            
 ^^WI     ITEM DEMO '&Basic'                                                     
-^^WI     '#SPAWN CRYSDIR:DEMO/CYCLO/cyclo-A4.pdf' DISABLEIF='IN'           
+^^WI     '#SPAWN "CRYSDIR:DEMO/CYCLO/cyclo-A4.pdf"' DISABLEIF='IN'           
 
 ^^WI     ITEM DEMO '&Ylid'                                                     
-^^WI     '#SPAWN CRYSDIR:DEMO/YLID/ylid.pdf' DISABLEIF='IN'
+^^WI     '#SPAWN "CRYSDIR:DEMO/YLID/ylid.pdf"' DISABLEIF='IN'
 
 ^^WI     ITEM DEMO '&Peach'                                                     
-^^WI     '#SPAWN CRYSDIR:DEMO/PEACH/peach.pdf' DISABLEIF='IN'           
+^^WI     '#SPAWN "CRYSDIR:DEMO/PEACH/peach.pdf"' DISABLEIF='IN'           
            
 ^^WI   ENDMENU                                                                  
 
 ^^WI   MENU HDEMO '&Advanced Worked Examples'                                            
                                                                                 
 ^^WI     ITEM DEMO '&Editing'                                                   
-^^WI     '#SPAWN CRYSDIR:DEMO/EDITOR/editors.pdf' DISABLEIF='IN'                
+^^WI     '#SPAWN "CRYSDIR:DEMO/EDITOR/editors.pdf"' DISABLEIF='IN'                
                                                                                 
 ^^WI     ITEM DEMO '&Wrong S.G.'                                                   
-^^WI     '#SPAWN CRYSDIR:DEMO/LLEWELLYN/llewellyn.pdf' DISABLEIF='IN'                
+^^WI     '#SPAWN "CRYSDIR:DEMO/LLEWELLYN/llewellyn.pdf"' DISABLEIF='IN'                
                                                                                 
 ^^WI     ITEM DEMO '&Weak Data'                                                   
-^^WI     '#SPAWN CRYSDIR:DEMO/QUICK/tetra.pdf' DISABLEIF='IN'                
+^^WI     '#SPAWN "CRYSDIR:DEMO/QUICK/tetra.pdf"' DISABLEIF='IN'                
 
 ^^WI     ITEM DEMO '&Disorder'                                                   
-^^WI     '#SPAWN CRYSDIR:DEMO/DISORDER/disorder.pdf' DISABLEIF='IN'                
+^^WI     '#SPAWN "CRYSDIR:DEMO/DISORDER/disorder.pdf"' DISABLEIF='IN'                
 
 ^^WI     ITEM DEMO '&Special Shapes'                                                   
-^^WI     '#SPAWN CRYSDIR:DEMO/SHAPE/shape.pdf' DISABLEIF='IN'                
+^^WI     '#SPAWN "CRYSDIR:DEMO/SHAPE/shape.pdf"' DISABLEIF='IN'                
 ^^WI   ENDMENU                                                                  
 
 ^^WI   MENU HDEMO '&Twin Worked Examples'                                            
 ^^WI     ITEM DEMO '&Twin-KEEN'                                                 
-^^WI     '#SPAWN CRYSDIR:DEMO/KEEN/keen-twin.pdf' DISABLEIF='IN'                
+^^WI     '#SPAWN "CRYSDIR:DEMO/KEEN/keen-twin.pdf"' DISABLEIF='IN'                
                                                                                 
 ^^WI     ITEM DEMO '&Twin'                                                      
-^^WI     '#SPAWN CRYSDIR:DEMO/TWIN/tin-twin.pdf' DISABLEIF='IN'                 
+^^WI     '#SPAWN "CRYSDIR:DEMO/TWIN/tin-twin.pdf"' DISABLEIF='IN'                 
                                                                                 
 ^^WI     ITEM DEMO '&Twin-2'                                                    
-^^WI     '#SPAWN CRYSDIR:DEMO/TWIN2/twin-2.pdf' DISABLEIF='IN'                  
+^^WI     '#SPAWN "CRYSDIR:DEMO/TWIN2/twin-2.pdf"' DISABLEIF='IN'                  
 ^^WI   ENDMENU                                                                  
 
 ^^WI   MENU HDEMO '&Command Line Examples'                                            
 ^^WI     ITEM DEMO '&Command Line'                                                   
-^^WI     '#SPAWN CRYSDIR:DEMO/advanced.pdf' DISABLEIF='IN'                
+^^WI     '#SPAWN "CRYSDIR:DEMO/advanced.pdf"' DISABLEIF='IN'                
 ^^WI   ENDMENU                                                                  
                                                                                 
 ^^WI     SPLIT 
@@ -66,34 +66,34 @@
 ^^WI   ENDMENU                                                                  
                                                                    
 ^^WI   MENU HELP '&Online Manuals'                                                      
-^^WI    ITEM FAQ '&Faq' '#SPAWN CRYSDIR:manual/faq-1.html' DISABLEIF='IN'       
+^^WI    ITEM FAQ '&Faq' '#SPAWN CRYSDIR:manual/faq-1.html"' DISABLEIF='IN'       
 ^^WI    ITEM TI 'Inde&x'                                                        
-^^WI    '#SPAWN CRYSDIR:manual/manindex.html' DISABLEIF='IN'                    
+^^WI    '#SPAWN "CRYSDIR:manual/manindex.html"' DISABLEIF='IN'                    
 ^^WI    MENU CM '&Full Manual'                                                  
 ^^WI     ITEM T1 '&Introduction to the System'                                  
-^^WI     '#SPAWN CRYSDIR:manual/crystalsmanual-intro.html'                      
+^^WI     '#SPAWN "CRYSDIR:manual/crystalsmanual-intro.html"'                      
 ^^WI     DISABLEIF='IN' ITEM T2 '&Definitions and Conventions'                  
-^^WI     '#SPAWN CRYSDIR:manual/crystalsmanual-definition.html'                 
+^^WI     '#SPAWN "CRYSDIR:manual/crystalsmanual-definition.html"'                 
 ^^WI     DISABLEIF='IN' ITEM T3 'The Crystals Data&base'                        
-^^WI     '#SPAWN CRYSDIR:manual/crystalsmanual-database.html'                   
+^^WI     '#SPAWN "CRYSDIR:manual/crystalsmanual-database.html"'                   
 ^^WI     DISABLEIF='IN' ITEM T4 'Initial data in&put'                           
-^^WI     '#SPAWN CRYSDIR:manual/crystalsmanual-initial.html'                    
+^^WI     '#SPAWN "CRYSDIR:manual/crystalsmanual-initial.html"'                    
 ^^WI     DISABLEIF='IN' ITEM T5 '&Reflection data input'                        
-^^WI     '#SPAWN CRYSDIR:manual/crystalsmanual-reflectionin.html'               
+^^WI     '#SPAWN "CRYSDIR:manual/crystalsmanual-reflectionin.html"'               
 ^^WI     DISABLEIF='IN' ITEM T6 '&Atomic and structural parameters'             
-^^WI     '#SPAWN CRYSDIR:manual/crystalsmanual-atomic.html'                     
+^^WI     '#SPAWN "CRYSDIR:manual/crystalsmanual-atomic.html"'                     
 ^^WI     DISABLEIF='IN' ITEM T7 'Structure Factors and Least S&quares'          
-^^WI     '#SPAWN CRYSDIR:manual/crystalsmanual-sfls.html'                       
+^^WI     '#SPAWN "CRYSDIR:manual/crystalsmanual-sfls.html"'                       
 ^^WI     DISABLEIF='IN' ITEM T8 '&Fourier routines'                             
-^^WI     '#SPAWN CRYSDIR:manual/crystalsmanual-fourier.html'                    
+^^WI     '#SPAWN "CRYSDIR:manual/crystalsmanual-fourier.html"'                    
 ^^WI     DISABLEIF='IN' ITEM T9 'Ana&lysis of results'                          
-^^WI     '#SPAWN CRYSDIR:manual/crystalsmanual-analysis.html'                   
+^^WI     '#SPAWN "CRYSDIR:manual/crystalsmanual-analysis.html"'                   
 ^^WI     DISABLEIF='IN' ITEM T0 '&Twinned crystals'                             
-^^WI     '#SPAWN CRYSDIR:manual/crystalsmanual-twinning.html'                   
+^^WI     '#SPAWN "CRYSDIR:manual/crystalsmanual-twinning.html"'                   
 ^^WI     DISABLEIF='IN' ITEM TA '&Matrix calculations'                          
-^^WI     '#SPAWN CRYSDIR:manual/crystalsmanual-matrix.html'                     
+^^WI     '#SPAWN "CRYSDIR:manual/crystalsmanual-matrix.html"'                     
 ^^WI     DISABLEIF='IN' ITEM TB '&Obsolete commands'                            
-^^WI     '#SPAWN CRYSDIR:manual/crystalsmanual-obsolete.html'                   
+^^WI     '#SPAWN "CRYSDIR:manual/crystalsmanual-obsolete.html"'                   
 ^^WI     DISABLEIF='IN'                                                         
 ^^WI    ENDMENU                                                                 
 ^^WI    SPLIT                                                                   
@@ -102,19 +102,19 @@
 
 ^^WI   MENU HELP '&PDF Manuals'                                                      
 ^^WI    ITEM PDF 'CRYSTALS Manual'
-^^WI    '#SPAWN CRYSDIR:manual/crystals.pdf' DISABLEIF='IN'                    
+^^WI    '#SPAWN "CRYSDIR:manual/crystals.pdf"' DISABLEIF='IN'                    
 ^^WI    ITEM PDF 'CAMERON Manual'
-^^WI    '#SPAWN CRYSDIR:manual/cameron.pdf' DISABLEIF='IN'                    
+^^WI    '#SPAWN "CRYSDIR:manual/cameron.pdf"' DISABLEIF='IN'                    
 ^^WI    ITEM PDF 'Sir92 Manual'
-^^WI    '#SPAWN CRYSDIR:manual/guide92.pdf' DISABLEIF='IN'
+^^WI    '#SPAWN "CRYSDIR:manual/guide92.pdf"' DISABLEIF='IN'
 ^^WI    ITEM PDF 'Supeflip Manual'
-^^WI    '#SPAWN CRYSDIR:manual/superflip_user_manual.pdf' DISABLEIF='IN'
+^^WI    '#SPAWN "CRYSDIR:manual/superflip_user_manual.pdf"' DISABLEIF='IN'
 ^^WI    ITEM PDF 'EDMA Manual'
-^^WI    '#SPAWN CRYSDIR:manual/edma_user_manual.pdf' DISABLEIF='IN'
+^^WI    '#SPAWN "CRYSDIR:manual/edma_user_manual.pdf"' DISABLEIF='IN'
 ^^WI    ITEM PDF 'Marching Cube Manual'
-^^WI    '#SPAWN CRYSDIR:mce/MCE_manual.html' DISABLEIF='IN'                    
+^^WI    '#SPAWN "CRYSDIR:mce/MCE_manual.html"' DISABLEIF='IN'                    
 ^^WI    ITEM PDF 'MOGUL in CRYSTALS Manual'
-^^WI    '#SPAWN CRYSDIR:manual/mogul.pdf' DISABLEIF='IN'                    
+^^WI    '#SPAWN "CRYSDIR:manual/mogul.pdf"' DISABLEIF='IN'                    
 ^^WI   ENDMENU                                                                  
 ^^WI   SPLIT                                                                    
 ^^WI   ITEM CK '&Check for updates'                                             
@@ -128,7 +128,7 @@
 ^^WI   '#SPAWN http://www.xtl.ox.ac.uk/news.html' DISABLEIF='IN'                
 ^^WI   SPLIT                                                                    
 ^^WI   ITEM ABOUT '&About Crystals' '#SCRIPT XREFER' DISABLEIF='IN'             
-^^WI   ITEM COPYR 'Copyright' '#SPAWN CRYSDIR:manual/copyright.pdf'
+^^WI   ITEM COPYR 'Copyright' '#SPAWN "CRYSDIR:manual/copyright.pdf"'
 ^^WI  ENDMENU                                                                   
 %%SSR END
 

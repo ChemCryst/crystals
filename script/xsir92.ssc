@@ -262,7 +262,7 @@
    3) Try one of the alternative Sir92 parameters options.
 
    4) Guidance from the authors of Sir92 is available in
-      the file &{CRYSDIR:guide92.txt&{.
+      the file guide92.txt in the folder where Wincrys is installed.
 
 {I   5) Obtain SIR2011  from   {&http://www.ic.cnr.it/{&.
 
@@ -373,7 +373,7 @@
    3) Try one of the alternative Sir92 parameters options.
 
    4) Guidance from the authors of Sir92 is available in
-      the file &{CRYSDIR:guide92.txt&{.
+      the file guide92.txt in the folder where Wincrys is installed.
 
 {I   5) Obtain SIR2011  from   {&http://www.ic.cnr.it/{&.
 

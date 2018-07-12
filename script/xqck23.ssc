@@ -59,7 +59,7 @@
 %   GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'MF_F2'
 %   EVALUATE BPRESS = VALUE
 %   IF BPRESS .EQ. 3 THEN
-%      COPY '#SPAWN CRYSDIR:manual/crystalsmanual-sfls.html'
+%      COPY '#SPAWN "CRYSDIR:manual/crystalsmanual-sfls.html"'
 %   ELSE
 %      VERIFY ON OFF                                                             
 ^^??   FFSQ STATE                                                                

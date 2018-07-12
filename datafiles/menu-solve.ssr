@@ -9,7 +9,7 @@
 ^^WI     ITEM -RFLIP '&Run with existing input' '#SCRIPT XFLIPRUN'           
 ^^WI                                        DISABLEIF='IN'                      
 ^^WI     ITEM _FLIP '&Input existing results' '#SCRIPT XFLIPIN' DISABLEIF='IN' 
-^^WI     ITEM COPYR 'Copyright' '#SPAWN CRYSDIR:manual/superflip-details.pdf'             
+^^WI     ITEM COPYR 'Copyright' '#SPAWN "CRYSDIR:manual/superflip-details.pdf"'             
 ^^WI    ENDMENU                                                                 
          
 ^^WI    ITEM _SHE 'Shelx&T' '#SCRIPT XSHELXT' ENABLEIF='L1 L2 L6'               

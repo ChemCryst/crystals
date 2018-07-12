@@ -30,9 +30,9 @@
 ^^WI '$ http://journals.iucr.org/services/cif/checking/checkfull.html'                                                
 ^^WI     ITEM P '&Checkcif in platon' '#SCRIPT PLATONC' DISABLEIF='IN'          
 ^^WI     ITEM HLPB 'PLATON Help'                                                         
-^^WI     '#SPAWN CRYSDIR:manual/analyse/platon.html' DISABLEIF='IN'             
+^^WI     '#SPAWN "CRYSDIR:manual/analyse/platon.html"' DISABLEIF='IN'             
 ^^WI     ITEM HLPB 'CIF Help'                                                         
-^^WI     '#SPAWN CRYSDIR:manual/analyse/cifcheck.html' DISABLEIF='IN'             
+^^WI     '#SPAWN "CRYSDIR:manual/analyse/cifcheck.html"' DISABLEIF='IN'             
 ^^WI   SPLIT                                                                                
 ^^WI   ITEM PWEB 'Printcif on the &web'                                         
 ^^WI '$ http://publcif.iucr.org/services/tools/printcif.php'                     

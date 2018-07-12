@@ -177,7 +177,7 @@
 %        COPY 'END'                                                             
 %      END BLOCK    
 %      BLOCK    %HELP
-%         COPY '#SPAWN CRYSDIR:manual/analyse/tabbed-initial.html#wil' 
+%         COPY '#SPAWN "CRYSDIR:manual/analyse/tabbed-initial.html#wil"' 
 {S Wilson Plot help
 %      END BLOCK                                                            
 %%                                                                                                                                              

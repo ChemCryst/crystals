@@ -29,8 +29,8 @@
 %     IF FILEEXISTS ( 'crystalsinput.cry' ) THEN
 %       EVALUATE T =  FILEDELETE ( 'crystalsinput.cry' )
 %     END IF
-%  TRANSFER '#SPAWN % "CRYSDIR:shelx2cry.exe"  -o crystalsinput.cry ' - 
-   // C_FILE TO CRYSTALS
+%  TRANSFER '#SPAWN % "CRYSDIR:shelx2cry.exe"  -o crystalsinput.cry "' - 
+   // C_FILE // '"' TO CRYSTALS
 %%
 %     IF FILEEXISTS ( 'crystalsinput.cry' ) THEN
 %       COPY '#SCRIPT DIFFEXEC'  % don't just #USE it because we need to check other things

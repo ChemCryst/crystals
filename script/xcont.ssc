@@ -181,7 +181,7 @@ view the generated sections.
 %       COPY '#SCRIPT XHELP2'                                                   
 %     END BLOCK                                                                 
 %     BLOCK                        % MCE help                                   
-%       COPY '#SPAWN CRYSDIR:manual/analyse/mce.html'   
+%       COPY '#SPAWN "CRYSDIR:manual/analyse/mce.html"'   
 %     END BLOCK                                                                 
 %%                                                                              
 %     BLOCK                       % BOK                                         

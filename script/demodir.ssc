@@ -19,7 +19,7 @@
 %   FINISH
 % END IF
 % EVALUATE T = FILEDELETE ( CFDIR // 'crfilev2.dsc' )
-% TRANSFER '#RELE PUNCH ' // CFDIR // '/crystart.dat' TO CRYSTALS
+% TRANSFER '#RELE PUNCH "' // CFDIR // '/crystart.dat"' TO CRYSTALS
 % TRANSFER '#SCRIPT DEMO' TO PUNCH
 ^^WI    SET _MAIN TEXT=
 % TRANSFER "^^WI 'Crystals - " // CFDIR // "'" TO DISPLAY

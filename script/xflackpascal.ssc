@@ -451,7 +451,7 @@ Saving distribution data
 %        COPY '#SCRIPT SINTHETA '
 %     END BLOCK
 %     BLOCK  %EHELP%
-%        COPY '#SPAWN CRYSDIR:manual/analyse/absolute.html' 
+%        COPY '#SPAWN "CRYSDIR:manual/analyse/absolute.html"' 
 %     END BLOCK
 %     BLOCK %ITYPEA%
 %       EVALUATE ITYPE = 0

@@ -2,9 +2,9 @@
 ^^WI  MENU _VIEW    'A&ppearance'
 ^^WI    MENU SL '&Screen Layout'                                                       
 ^^WI     ITEM P1 '&HTML'                                             
-^^WI     '#SPAWN CRYSDIR:script/layout.html' DISABLEIF='IN'                   
+^^WI     '#SPAWN "CRYSDIR:script/layout.html"' DISABLEIF='IN'                   
 ^^WI     ITEM P1 '&PDF'                                              
-^^WI     '#SPAWN CRYSDIR:script/pale-layout.pdf' DISABLEIF='IN'                   
+^^WI     '#SPAWN "CRYSDIR:script/pale-layout.pdf"' DISABLEIF='IN'                   
 ^^WI    ENDMENU                                                                 
 ^^WI    MENU SCALE '&Atoms'                                                     
 ^^WI     ITEM SCCOV '&Covalent'                                                 

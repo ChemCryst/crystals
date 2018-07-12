@@ -175,7 +175,7 @@
 Botton Button
 %      END BLOCK
 %      BLOCK    %XC_BHLP
-%         COPY '#SPAWN CRYSDIR:manual/analyse/moo.html' 
+%         COPY '#SPAWN "CRYSDIR:manual/analyse/moo.html"' 
 Top Button
 %      END BLOCK
 %    END CASE                                                                   
