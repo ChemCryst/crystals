@@ -3890,13 +3890,13 @@ end subroutine
 
 !> Write list28 (filter reflections)
 !! Insert default filters to be consistent with processing from within crystals
+!! djw Remove low resolution limit - should be done by instrument
 subroutine write_list28()
 use crystal_data_m
 implicit none
 
     write(crystals_fileunit, '(a)') '\LIST 28'
     write(crystals_fileunit, '(a)') 'MINIMA'
-    write(crystals_fileunit, '(a)') 'CONT    SINTH/L**2  =   0.01000'
     write(crystals_fileunit, '(a)') 'CONT    RATIO       =  -3.00000'
     write(crystals_fileunit, '(a)') 'END'
 end subroutine
