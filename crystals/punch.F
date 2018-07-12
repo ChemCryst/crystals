@@ -3429,7 +3429,10 @@ C
 
       WRITE(NCPU,'(A)') '#LIST 29'
       WRITE(NCPU,100)N29
-      WRITE(NCPU,'(A)')'# covalent,vdw,ionic,number,muA,weight,colour'
+      WRITE(NCPU,'(A,A)')
+     1'#             covalent        vdw    ionic',
+     1'     number    muA    weight colour'
+
 
       DO I=L29,L29+(N29-1)*MD29,MD29  
         WRITE(NCPU,101) (STORE(J),J=I,I+MD29-1)
