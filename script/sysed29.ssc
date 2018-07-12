@@ -1,6 +1,23 @@
 %SCRIPT SYSED5
     This SCRIPT puts you into a system editor to modify the element properties
 %%
+%% _______________________________________________________________
+%% See if GLOBAL help is needed
+%%
+%  VARIABLE CHARACTER TOOL-FOLDER
+%  VARIABLE LOGICAL TOOL-HELP
+%  VARIABLE CHARACTER TOOL-TEXT
+%  VARIABLE LOGICAL RUNNOW
+%  EVALUATE TOOL-FOLDER = 'Xray-data'
+%  EVALUATE TOOL-TEXT = 'ed29'
+%  COPY '#SCRIPT CALL-TOOL-HELP'
+%  IF .NOT. RUNNOW THEN 
+%    FINISH
+%  END IF
+%% _______________________________________________________________
+%%
+
+
 %  IF ( EXISTS 29 .NE. 1 ) THEN
 %    COPY '#LIST 29'
 %    COPY 'END'

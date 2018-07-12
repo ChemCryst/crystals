@@ -12,8 +12,8 @@ PROBLEMS:
  1 You didn't prepare a folder with the basic data. 
 
      Either:
-       open a DOS box and create a folder and load (from floppy, 
-       ftp etc) the basic data.
+       open a DOS box and create a folder and load (from pen drive, 
+       ftp, E-mail etc) the basic data.
      or:     
        a) Click My Computer
        b) Select drive letter ( eg C:)
@@ -21,7 +21,7 @@ PROBLEMS:
           is still highlighted in blue, change the name to 
           something useful.
        d) Click on folder, and copy X-ray data files into 
-          folder from some where else (ftp, floppy, Neighbourhood etc.)
+          folder from some where else (ftp, pen drive, Neighbourhood etc.)
        e) Close My Computer
 
      On the CRYSTALS menu, choose File, New Working directory, and find 
@@ -38,9 +38,11 @@ PROBLEMS:
 
  3 You need to get the data into CRYSTALS
 
-     On the menu, Select X-ray data
+     On the toolbar menu, Select DATA
      Either:
-       select Preprocess/CAD4/DIP2000
+       select Guided Import
+     or:
+       select Data Files (Current)
      or:
        select Shelx (INS or RES) file
 

@@ -862,7 +862,7 @@ C
       CLOW = ' '
 C----- DISPLAY SPACE GROUP SYMBOL
       J  = L2SG + MD2SG - 1
-      WRITE(CLINE,2100) (ISTORE(I), I = L2SG, J)
+      if(issprt.eq.0) WRITE(CLINE,2100) (ISTORE(I), I = L2SG, J)
 2100  FORMAT('Space group symbol is ', 2X, 4(A4,1X))
       CALL XCREMS(CLINE, CLOW, ILAST)
 C

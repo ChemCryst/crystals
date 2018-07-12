@@ -65,7 +65,8 @@ span.c2
             </ul>
           </ul>
 
-      <td width="50%"><strong>SHELX .ins or .res files</strong><br>
+      <td width="50%"><a name="shelx">
+      <strong>SHELX .ins or .res files</strong><br>
       Remember that CRYSTALS identifies atoms by a symbol which
       represents the element type and a number, <i>e.g.</i>. C(23)
       Where possible, a SHELX atom identifier is converted to a
@@ -73,6 +74,35 @@ span.c2
       SHELX identifiers contain letters after the number
       <i>e.g.</i> H12b, the numeric part is increased by 100 or
       1000, <i>e.g.</i> H12b becomes H112.
+      <br /><br />
+      <strong>SHELX .cif files</strong><br />
+      Modern SHELX .cif files contain the final .res and .hkl files
+      embeded at the end as non-cif comments.  They will be ignored
+      by any cif processing software<br />
+      We recommend that you use a text editor to extract the .res and 
+      .hkl as separate files.  Input the three files into CRYSTALS in 
+      the following order:<br />
+
+      
+      <ul>
+      
+      <li>Input the .cif file.<br />
+      The cif file may contain bits of information which are not
+            present in the .res file
+      
+      <li>
+      Input the .res file.<br />
+      The .res file contains the essential crystallographic data
+            in its most accurate form. It will replace items 
+            previously extracted from the .cif.
+      
+      <li>
+      Input the .hkl file.<br />
+      The .hkl file contains the original unmerged data (unlike 
+            an .fcf file which is merged). CRYSTALS will
+            perform its own merge and output some useful statistics.
+      </ul>
+
     </table>
 
   <table width="100%" border="1" cellspacing="0" cellpadding="10"

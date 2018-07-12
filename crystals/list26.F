@@ -1355,13 +1355,14 @@ C--UTLS RESTRAINTS PRINT
             end do
             write(ncwu, *) ''
           end if
-        
-          call printderivatives(ircpt)        
+C         Derivatives output only if Execution listing requested        
+          if (istat2.eq.1) call printderivatives(ircpt)        
         end if
 
         numrestraints=size(restraints_list(ircpt)%subrestraints)/
      1   max(1, restraints_list(ircpt)%groups)
 
+        if(istat2.eq.1) then ! Matrices output only if Execution listing requested  
         ! print out transformartion matrices
         write(ncwu, '(4X, A)') 'Transformation matrices:'
         do icpt=1, size(restraints_list(ircpt)%subrestraints), 
@@ -1427,6 +1428,7 @@ C--UTLS RESTRAINTS PRINT
             end associate        
           end if
         end do
+        endif
 
         do icpt=1, size(restraints_list(ircpt)%subrestraints)
           associate(subrestraint => 

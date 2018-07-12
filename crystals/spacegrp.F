@@ -1,4 +1,4 @@
-C MORE BAD NEWS, MARCH 2017
+C MORE BAD NEWS, MARCH 2017 
 c Space group 141 has the old symbol I 41/a m d, which is acceptable
 c to CRYSTALS as  _space_group_name_H-M_alt
 c I 41/a 2/m 2/d is accessible as _symmetry_space_group_name_H-M, but
@@ -433,7 +433,7 @@ C
 
 C----- DISPLAY SPACE GROUP SYMBOL
       J  = L2SG + MD2SG - 1
-      WRITE(NCWU,2101) (ISTORE(I), I = L2SG, J)
+      if(issprt.eq.0) WRITE(NCWU,2101) (ISTORE(I), I = L2SG, J)
 2101  FORMAT('Space group symbol is ', 2X, 4(A4,1X))
       WRITE(CLINE,'(4a4)') (ISTORE(I), I = L2SG, J)
       CALL XCREMS(CLINE,SGRP,NCHAR)
@@ -2858,7 +2858,7 @@ C
 C--------------------------------------------------------------------
 C----- DISPLAY SPACE GROUP SYMBOL
       J  = L2SG + MD2SG - 1
-      WRITE(NCWU,2100) (ISTORE(I), I = L2SG, J)
+      if(issprt.eq.0) WRITE(NCWU,2100) (ISTORE(I), I = L2SG, J)
 2100  FORMAT('Space group symbol is ', 2X, 4(A4,1X))
       WRITE(CLINE,'(4a4)') (ISTORE(I), I = L2SG, J)
       CALL XCREMS(CLINE,SGRP,NCHAR)

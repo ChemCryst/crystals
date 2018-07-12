@@ -658,10 +658,10 @@ c L D L^t inversion + preconditioning
 #ifdef CRY_FORTDIGITAL
 c stupid compiler has a stack overflow by making a temporary array 
                call auto_inversion(
-     1             STR11(L11C), JY, info, blasname)
+     1             STR11(L11C), JY, info, blasname, jz)
 #else
                call auto_inversion(
-     1             STR11(L11C:L11C+JY*(JY+1)/2-1), JY, info, blasname)
+     1             STR11(L11C:L11C+JY*(JY+1)/2-1), JY,info,blasname,jz)
 #endif
                if(info==1111111) then
                   WRITE ( CMON, '(A)') '{E Problem ill-conditioned.' 

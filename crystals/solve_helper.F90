@@ -902,12 +902,14 @@ end subroutine
 
 !> code for the inversion of the normal matrix using LDL^t decomposition
 !! of symmetric matrices with dynamic handling of conditioning
-subroutine auto_inversion(nmatrix, nmsize, info, blasname)
+subroutine auto_inversion(nmatrix, nmsize, info, blasname, block_no)
 use xiobuf_mod, only: cmon
 use xunits_mod, only:ncvdu,ncwu
+use xssval_mod, only:issprt
 implicit none
 !> Leading dimension of the matrix nmatrix
 integer, intent(in) :: nmsize
+integer, intent(in) :: block_no
 !> On input symmetric real matrix stored in packed format (lower triangle)
 !! aij is stored in AP( i+(2n-j)(j-1)/2) for j <= i.
 !! On output the inverse of the matrix is return
@@ -1046,11 +1048,11 @@ print *, 'condition number ', 1.0/rcond
 print *, 'relative error ', 1.0/rcond*epsilon(1.0)
 print *, 'One norm ', onenorm
 #endif
-WRITE ( NCWU, '(A, 1X,3(A, 1PE9.2,1X))') 'Single precision: ', &
-&   '1-norm: ', onenorm, &
-&   'condition number: ', 1.0d0/rcond, &
-&   'relative error: ', 1.0d0/rcond*epsilon(1.0)
-
+     if (issprt==0) then
+ WRITE ( NCWU, '(A,I3,A, 1PE9.2)') &
+&   'Block No', block_no,  & 
+&   '.  Single precision relative error: ', 1.0d0/rcond*epsilon(1.0)
+     end if
 
 if(1.0/rcond*epsilon(1.0)>1e-3) then
     ! not enough precision, using double precision
@@ -1127,10 +1129,12 @@ if(1.0/rcond*epsilon(1.0)>1e-3) then
     print *, 'relative error ', 1.0d0/drcond*epsilon(1.0d0)
     print *, 'One norm ', donenorm
 #endif
-    WRITE ( NCWU, '(A, 1X,3(A, 1PE9.2,1X))') 'Double precision: ', &
-    &   '1-norm: ', donenorm, &
-    &   'condition number: ', 1.0d0/drcond, &
-    &   'relative error: ', 1.0d0/drcond*epsilon(1.0d0)
+    if (issprt==0) then
+     WRITE ( NCWU, '(A)')'Insufficient precision - trying double'
+     WRITE ( NCWU, '(A,I3,A, 1PE9.2)') &
+&   'Block No', block_no, & 
+&   '.  Double precision relative error: ', 1.0d0/rcond*epsilon(1.0)
+    end if
 
 
     if(1.0d0/drcond*epsilon(1.0d0)>1e-3) then

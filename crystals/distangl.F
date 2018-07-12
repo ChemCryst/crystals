@@ -7848,7 +7848,8 @@ C -- Checks whether list 41 needs updating.
 
 C-- If there is no L41, we need to update.
       IF ( KEXIST(41) .LE. 0 ) THEN
-         WRITE(NCWU,'(a)')'Bonds: Update required - There is no list 41'
+         if (issprt.eq.0) WRITE(NCWU,'(a)')
+     1   'Bonds: Update required - There is no list 41'
          RETURN
       ENDIF
 
@@ -7864,14 +7865,16 @@ C-- If there is no L41, we need to update.
 C-- If the number of atoms in L5 has changed, we need to update.
 
       IF ( N5 .NE. ISTORE(L41D) ) THEN
-         WRITE(NCWU,'(a)')'Bonds: Update required - List5 length change'
+         if (issprt.eq.0)WRITE(NCWU,'(a)')
+     1   'Bonds: Update required - List5 length change'
          RETURN
       ENDIF
 
 C-- If the serial of L40 has changed, we need to update.
 
       IF ( IL40SR .NE. ISTORE(L41D+3) ) THEN
-         WRITE(NCWU,'(a)')'Bonds: Update required - List 40 has changed'
+         if (issprt.eq.0) WRITE(NCWU,'(a)')
+     1   'Bonds: Update required - List 40 has changed'
          RETURN
       ENDIF
 
@@ -7888,7 +7891,7 @@ C -- Calculate a 16-bit CRC for List 5:
 C -- See if the CRC has changed.
 
       IF ( L5CRC .NE. ISTORE(L41D+1) ) THEN
-         WRITE(NCWU,'(a)')
+         if (issprt.eq.0) WRITE(NCWU,'(a)')
      + 'Bonds: Update required - List 5 checksum changed'
          RETURN
       ENDIF

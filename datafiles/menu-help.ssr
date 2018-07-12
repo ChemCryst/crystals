@@ -5,7 +5,7 @@
 ^^WI   ITEM HSTAR '&Read me first' '#SCRIPT XREADME' DISABLEIF='IN'             
 ^^WI   ITEM HSTAR '&Getting started'                                            
 ^^WI     '#SPAWN CRYSDIR:manual/readme.html' DISABLEIF='IN'  
-^^WI   ITEM HSTAR '&Migrating from SHELX' 
+^^WI   ITEM HSTAR '&Beginners Guide' 
 ^^WI     '#SPAWN CRYSDIR:manual/beginnersguide.pdf' DISABLEIF='IN'  
 ^^WI   ITEM HSTAR '&COMMAND line' '#SCRIPT XSTART' DISABLEIF='IN'               
 ^^WI   SPLIT 
