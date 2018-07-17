@@ -1483,6 +1483,11 @@ integer i
     call to_upper(atomslist(atomslist_index)%label)
     atomslist(atomslist_index)%sfac=atomtype
     atomslist(atomslist_index)%coordinates=coordinates
+    do i=1, 3
+        if(atomslist(atomslist_index)%coordinates(i)>9.0) then 
+            atomslist(atomslist_index)%coordinates(i)=atomslist(atomslist_index)%coordinates(i)-10.0
+        end if
+    end do    
     atomslist(atomslist_index)%aniso=aniso
     if(part>0 .and. part_sof/=-1.0) then
         ! We are working on a res file, this values should be the same as the one reported on each atom
@@ -1576,6 +1581,11 @@ type(atom_t), dimension(:), allocatable :: templist
     call to_upper(atomslist(atomslist_index)%label)
     atomslist(atomslist_index)%sfac=atomtype
     atomslist(atomslist_index)%coordinates=coordinates
+    do i=1, 3
+        if(atomslist(atomslist_index)%coordinates(i)>9.0) then 
+            atomslist(atomslist_index)%coordinates(i)=atomslist(atomslist_index)%coordinates(i)-10.0
+        end if
+    end do
     if(iso<0.0) then
         ! If an isotropic U is given as -T, where T is in the range 
         ! 0.5 < T < 5, it is fixed at T times the Ueq of the previous 

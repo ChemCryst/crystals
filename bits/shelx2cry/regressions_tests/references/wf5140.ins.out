@@ -27,7 +27,6 @@ PROPERTIES CRYSDIR:script/propwin.dat
 END
 \LIST 28
 MINIMA
-CONT    SINTH/L**2  =   0.01000
 CONT    RATIO       =  -3.00000
 END
 \LIST 5
