@@ -1,6 +1,6 @@
 %%SSR MENU-GRAPHICS
 ^^WI  MENU CAME '&Graphics'
-^^WI   ITEM CAM '&Cameron Graphics'
+^^WI   ITEM CAM '&Cameron Graphics	CTRL+Y'
 ^^WI            '#SCRIPT XCAMNORM'
 ^^WI             ENABLEIF='L1 L2 L5' DISABLEIF='IN'
 ^^WI   ITEM CAM '&Cameron (View existing input files)'

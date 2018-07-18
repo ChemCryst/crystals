@@ -1,14 +1,14 @@
 %%SSR MENU-ANALYSE
 ^^WI  MENU _ANALYSE 'A&nalyse'                                                  
-^^WI   ITEM AGREE '&Agreement analysis' '#SCRIPT XANAL'                         
+^^WI   ITEM AGREE '&Agreement analysis	Ctrl+A' '#SCRIPT XANAL'                         
 ^^WI               ENABLEIF='L5 L6' DISABLEIF='IN'                              
-^^WI   ITEM AGREE '&Fo vs Fc graph' '#SCRIPT XFOVSFC'                           
+^^WI   ITEM AGREE '&Fo vs Fc graph	Ctrl+F' '#SCRIPT XFOVSFC'                           
 ^^WI               ENABLEIF='L6 L5 L1 L2' DISABLEIF='IN'                        
 ^^WI   ITEM AGREE '&Normal probability plot' '#SCRIPT XNORMPP'                  
 ^^WI               ENABLEIF='L6 L5 L1 L2' DISABLEIF='IN' 
 ^^WI   ITEM DIFAB '&Difabs analysis' '#SCRIPT XDIFABS'                          
 ^^WI               ENABLEIF='L5 L6' DISABLEIF='IN'                              
-^^WI   ITEM AGREE '&Wilson plot' '#SCRIPT XWILSON'                              
+^^WI   ITEM AGREE '&Wilson plot	Ctrl+W' '#SCRIPT XWILSON'                              
 ^^WI               ENABLEIF='L6 L1 L2' DISABLEIF='IN'                           
 ^^WI   SPLIT
 ^^WI   ITEM AGREE '&Variance of Reflections' '#SCRIPT CHOOSEVAR'                       
@@ -23,7 +23,7 @@
 ^^WI   ITEM HOOFT '&Absolute config' '#SCRIPT XFLACKPASCAL'                          
 ^^WI               ENABLEIF='L5 L6 L30' DISABLEIF='IN'                              
 ^^WI   MENU XROTAX '&Rotax analysis/twins'                                      
-^^WI     ITEM XINTWIN 'ROTAX' '#SCRIPT XROTAX'                                  
+^^WI     ITEM XINTWIN 'ROTAX	Ctrl+R' '#SCRIPT XROTAX'                                  
 ^^WI               ENABLEIF='L1 L5 L6' DISABLEIF='IN'                           
 ^^WI     SPLIT                                                                  
 ^^WI     ITEM XINTWIN 'Input twinned data' '#SCRIPT ED25'                       

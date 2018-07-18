@@ -3,9 +3,9 @@
 ^^WI   ITEM _REF '&The Guide' '#SCRIPT XGUIDE'  DISABLEIF='IN'                  
 ^^WI   ITEM _REF '&Setup directives and constraints' '#SCRIPT XWRITE5'          
 ^^WI          ENABLEIF='L1 L2 L3 L5 L6' DISABLEIF='QS IN'                       
-^^WI   ITEM _REF 'Setu&p and refine' '#SCRIPT SWRITE5'                          
+^^WI   ITEM _REF 'Setu&p and refine	Ctrl+R' '#SCRIPT SWRITE5'                          
 ^^WI          ENABLEIF='L1 L2 L3 L5 L6' DISABLEIF='QS IN'                       
-^^WI   ITEM _REF '&Refine' '#SCRIPT XREFINE'                                    
+^^WI   ITEM _REF '&Refine	Alt+R' '#SCRIPT XREFINE'                                    
 ^^WI          ENABLEIF='L1 L2 L3 L5 L6' DISABLEIF='QS IN'                       
 ^^WI   ITEM _REF '&Refine H' '#SCRIPT GXREFH'                                   
 ^^WI          ENABLEIF='L1 L2 L3 L5 L6' DISABLEIF='QS IN'                       
@@ -35,9 +35,9 @@
 ^^WI   ITEM SIMUS 'Add 1-2,1-3 thermal similarity restraints'                   
 ^^WI            '#SCRIPT YSIMU' DISABLEIF='IN' ENABLEIF='L5'                    
 ^^WI  SPLIT                                                                     
-^^WI   ITEM _SCALE 'Calculate &Scale factor' '#SFLS_NSCALE_NEND'                
+^^WI   ITEM _SCALE 'Calculate &Scale factor	Alt+S' '#SFLS_NSCALE_NEND'                
 ^^WI               ENABLEIF='L1 L2 L3 L5 L6'       DISABLEIF='IN'               
-^^WI   ITEM _CALC  'Recalculate &phases' '#SFLS_NCALC_NEND'                     
+^^WI   ITEM _CALC  'Recalculate &phases	Alt+C' '#SFLS_NCALC_NEND'                     
 ^^WI               ENABLEIF='L1 L2 L3 L5 L6'       DISABLEIF='IN'               
 ^^WI  SPLIT                                                                     
 ^^WI   ITEM _SQUEEZE 'PLATON Squeeze' '#SCRIPT SQUEEZE'                         

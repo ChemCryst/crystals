@@ -1,6 +1,6 @@
 %%SSR MENU-STRUCTURE                                                            
 ^^WI  MENU _STRUC   '&Structure'                                                
-^^WI   ITEM XDSC 'Undo/backup model' '#SCRIPT XDSCMAN'                          
+^^WI   ITEM XDSC 'Undo/backup model	Ctrl-Z' '#SCRIPT XDSCMAN'                          
 ^^WI                                              DISABLEIF='IN'                
 ^^WI   MENU INPUT '&Input'                                                      
 ^^WI    ITEM XIN5 'Shel&x file (INS or RES)'                                    
@@ -46,7 +46,7 @@
 ^^WI   ITEM XBONDS '&Add and remove bonds'                                      
 ^^WI       '#SCRIPT EDBONDS' DISABLEIF='IN' ENABLEIF='L2 L1 L5'                 
 ^^WI   SPLIT                                                                    
-^^WI   ITEM ADDH 'Add hydrogen + &fourier' '#SCRIPT GFINDH'                     
+^^WI   ITEM ADDH 'Add hydrogen + &fourier	Ctrl+H' '#SCRIPT GFINDH'                     
 ^^WI              DISABLEIF='IN' ENABLEIF='L1 L2 L5'                            
 ^^WI   ITEM ADDH 'Add &hydrogen geometrically' '#PERHYDRO_NEND'                 
 ^^WI              DISABLEIF='IN' ENABLEIF='L1 L2 L5'                            

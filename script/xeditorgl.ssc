@@ -1,6 +1,6 @@
 %SCRIPT XEDITORGL
 %%
-% VARIABLE CHARACTER EDITOR_FILE
+% VARIABLE CHARACTER EDITOR_FILE EDITOR_ORIG
 % VARIABLE LOGICAL EDITOR_OK
 % EVALUATE EDITOR_OK = FALSE
 %% The variables needed by XQUESTIO                                             
@@ -32,6 +32,14 @@ Using user-specified editor.
 %%
 %TRANSFER "^^WI WINDOW XEDITOR 'Editing " // EDITOR_FILE // "'" TO DISPLAY
 ^^WI SIZE MODAL KEEP
+^^WI DEFINEMENU MAIN 'NULL'
+^^WI  MENU _FILE    '&File'
+^^WI   ITEM SAVE    '&Save	Ctrl+S' 'BSS' 
+^^WI   ITEM EXIT    'Save and E&xit	Ctrl+X'  'BOK'
+^^WI   ITEM REVERT  '&Reload original file	Ctrl+R'  'BRR'
+^^WI   ITEM CLOSE   '&Close	ALT+F4'  'BXX'
+^^WI  ENDMENU
+^^WI ENDDEFINEMENU
 ^^WI GRID OUTER NROWS=1 NCOLS=3
 ^^WI {
 ^^WI   @ 1,1 RESIZE _RSZXED VERTICAL {
@@ -46,11 +54,12 @@ Using user-specified editor.
 ^^WI       @ 3,1 STATIC T1 'Click an atom to insert into editor'
 ^^WI     }
 ^^WI   }
-^^WI   @ 1,3 GRID BTNS NROWS=7 NCOLS=3
+^^WI   @ 1,3 GRID BTNS NROWS=9 NCOLS=3
 ^^WI   {
-^^WI     @ 2,2 BUTTON BOK '&Save and exit' DEFAULT COMMIT
-^^WI     @ 4,2 BUTTON BRR '&Revert'
-^^WI     @ 6,2 BUTTON BXX 'Cance&l' CANCEL
+^^WI     @ 2,2 BUTTON BOK 'Save and e&xit' DEFAULT COMMIT
+^^WI     @ 4,2 BUTTON BSS '&Save' 
+^^WI     @ 6,2 BUTTON BRR '&Reload original'
+^^WI     @ 8,2 BUTTON BXX '&Close' CANCEL
 ^^WI   }
 ^^WI }
 ^^WI SHOW
@@ -58,9 +67,10 @@ Using user-specified editor.
 %TRANSFER "^^CO SET TEXT5 LOAD '" // EDITOR_FILE // "'" TO DISPLAY
 %%
 % LOOP
-%   VERIFY BOK BXX BRR
+%   VERIFY BOK BXX BRR BSS
 %   GET SILENT NOSTORE FINAL ABBREVIATED 'BOK?' ' '
 %   IF VALUE .EQ. 1 THEN
+%% save and close
 %TRANSFER "^^CO SET TEXT5 EDITSAVE '" // EDITOR_FILE // "'" TO DISPLAY
 ^^??   _ANYTHING_ EXISTS
 %      GET NOSTORE SILENT TEXT 'Waiting for save' ' '
@@ -68,6 +78,7 @@ Using user-specified editor.
 %      EVALUATE EDITOR_OK = TRUE
 %      FINISH
 %   ELSE IF ( VALUE .EQ. 2 ) THEN
+%% cancel - check for mods first
 ^^??   TEXT5 MODIFIED
 %      VERIFY YES NO
 %      GET SILENT NOSTORE FINAL ABBREVIATED 'Mod?' ' '
@@ -87,6 +98,7 @@ Using user-specified editor.
 %        FINISH
 %      END IF
 %   ELSE IF ( VALUE .EQ. 3 ) THEN
+%% revert - check for mods first
 ^^??   TEXT5 MODIFIED
 %      VERIFY YES NO
 %      GET SILENT NOSTORE FINAL ABBREVIATED 'Mod?' ' '
@@ -98,11 +110,17 @@ Using user-specified editor.
 %         EVALUATE BUTTXX = '&Cancel'                                               
 %         COPY '#SCRIPT XQUESTIO'                                               
 %         IF ANSWER .EQ. TRUE THEN                                              
-%TRANSFER "^^CO SET TEXT5 LOAD '" // EDITOR_FILE // "'" TO DISPLAY
+%TRANSFER "^^CO SET TEXT5 LOAD '" // EDITOR_ORIG // "'" TO DISPLAY
 %         END IF
 %      ELSE
-%TRANSFER "^^CO SET TEXT5 LOAD '" // EDITOR_FILE // "'" TO DISPLAY
+%TRANSFER "^^CO SET TEXT5 LOAD '" // EDITOR_ORIG // "'" TO DISPLAY
 %      END IF
+%   ELSE IF ( VALUE .EQ. 4 ) THEN
+%% Save
+%TRANSFER "^^CO SET TEXT5 EDITSAVE '" // EDITOR_FILE // "'" TO DISPLAY
+^^??   _ANYTHING_ EXISTS
+%      GET NOSTORE SILENT TEXT 'Waiting for save' ' '
+%      EVALUATE EDITOR_OK = TRUE
 %   END IF
 % END LOOP
 %END SCRIPT

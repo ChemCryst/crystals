@@ -9,12 +9,20 @@
 %  END IF
 %%
 %  COPY '#RELEASE PUNCH scporg16.dat'
-%  TRANSFER "# This file (ScpOrg16.dat) will be read by CRYSTALS" TO PUNCH
-%  TRANSFER "# if you abandon changes to the ScpLst16.dat." TO PUNCH
+%  TRANSFER "# This file will be read by CRYSTALS" TO PUNCH
+%  TRANSFER "# when you close it, so save any changes that you make." TO PUNCH
+%  TRANSFER "# To abandon changes: either don't save, or, delete all" TO PUNCH
+%  TRANSFER "# lines from this file before saving." TO PUNCH
+%  TRANSFER "# " TO PUNCH
+%  TRANSFER "# To remove all restraints, replace them with the" TO PUNCH
+%  TRANSFER "# single keyword NO, so that the file reads:" TO PUNCH
+%  TRANSFER "#     #LIST 16" TO PUNCH
+%  TRANSFER "#     NO" TO PUNCH
+%  TRANSFER "#     END" TO PUNCH
 %  COPY '#PUNCH 16'
 %  COPY 'END'
 %  COPY '#RELEASE PUNCH scplst16.dat'
-%  TRANSFER "# This file (ScpLst16.dat) will be read by CRYSTALS" TO PUNCH
+%  TRANSFER "# This file will be read by CRYSTALS" TO PUNCH
 %  TRANSFER "# when you close it, so save any changes that you make." TO PUNCH
 %  TRANSFER "# To abandon changes: either don't save, or, delete all" TO PUNCH
 %  TRANSFER "# lines from this file before saving." TO PUNCH
@@ -58,9 +66,10 @@
 %      FINISH
 %    END IF
 #else
-%    VARIABLE CHARACTER EDITOR_FILE
+%    VARIABLE CHARACTER EDITOR_FILE EDITOR_ORIG
 %    VARIABLE LOGICAL EDITOR_OK
 %    EVALUATE EDITOR_FILE = 'scplst16.dat'
+%    EVALUATE EDITOR_ORIG = 'scporg16.dat'
 %    COPY '#SCRIPT xeditorgl'
 %    IF ( .NOT. EDITOR_OK ) THEN
 %      IF ( EDITED_ONCE ) THEN
