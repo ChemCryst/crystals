@@ -1,8 +1,5 @@
 #USE REGINIT.DAT
 #SET PRINT OFF
-Space group symbol is   P    1             
-Bonds: Update required - There is no list 41
-Bonds: Update required - List5 length change
 #TITLE TEST 1
 #REGULAR KEEP
 Input: mapping    6 atoms onto    6
@@ -311,9 +308,6 @@ Bonds: Update required - List5 length change
  ENANTIO     0.000  EXTPARAM    0.000
 #USE REGINIT.DAT
 #SET PRINT OFF
-Space group symbol is   P    1             
-Bonds: Update required - List5 length change
-Bonds: Update required - List5 length change
 #TITLE TEST 3
 #REGULAR KEEP
 Input: mapping    6 atoms onto    6
@@ -623,9 +617,6 @@ Bonds: Update required - List5 length change
 #TITLE AUGMENT
 #USE REGINIT.DAT
 #SET PRINT OFF
-Space group symbol is   P    1             
-Bonds: Update required - List5 length change
-Bonds: Update required - List5 length change
 #TITLE TEST 5
 #REGULAR AUGMENT
 Input: mapping    6 atoms onto    6
@@ -919,8 +910,6 @@ Bonds: Update required - List5 length change
  ENANTIO     0.000  EXTPARAM    0.000
 #USE REGINIT.DAT
 #SET PRINT OFF
-Space group symbol is   P    1             
-Bonds: Update required - List5 length change
 #TITLE TEST 7
 #REGULAR AUGMENT
 Input: mapping    6 atoms onto    6
@@ -1215,8 +1204,6 @@ Bonds: Update required - List5 length change
 # REPLACE
 #USE REGINIT.DAT
 #SET PRINT OFF
-Space group symbol is   P    1             
-Bonds: Update required - List5 length change
 #TITLE TEST 9
 #REGULAR REPLACE
 Input: mapping    6 atoms onto    6
@@ -1510,8 +1497,6 @@ Bonds: Update required - List5 length change
  ENANTIO     0.000  EXTPARAM    0.000
 #USE REGINIT.DAT
 #SET PRINT OFF
-Space group symbol is   P    1             
-Bonds: Update required - List5 length change
 #TITLE TEST 11
 #REGULAR REPLACE
 Input: mapping    6 atoms onto    6
@@ -1805,8 +1790,6 @@ Bonds: Update required - List5 length change
  ENANTIO     0.000  EXTPARAM    0.000
 #USE REGINIT.DAT
 #SET PRINT OFF
-Space group symbol is   P    1             
-Bonds: Update required - List5 length change
 #TITLE TEST 13
 #REGULAR REPLACE
 #EDIT

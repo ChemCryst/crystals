@@ -67,27 +67,6 @@ ___________
  (0) UPERP 0.0001 CL(1) TO C(2), CL(3) TO C(2), CL(4) TO C(2)
  -- Restrain an ADP perpendicular to a bond
 
-    No derivatives stored, do a refinement cycle
-    
-    Transformation matrices:
-          CL(1)                                           CL(3)
-        7.73E-01  -3.88E-01   4.90E-01             7.49E-01  -4.58E-01  -4.90E-01
-       -8.86E-03   7.84E-01   6.21E-01             9.74E-03   7.31E-01  -6.83E-01
-       -6.34E-01  -4.85E-01   6.12E-01             6.63E-01   5.06E-01   5.42E-01
-          C(2)                                           C(2)
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-
-          CL(4)
-        8.77E-01   3.34E-01   3.34E-01
-       -1.01E-02  -7.07E-01   7.07E-01
-        4.81E-01  -6.23E-01  -6.23E-01
-          C(2)
-        0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00
-
     Atom CL(1), basis: CL(1),C(2)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
          1  1  0  0  0   -1.67E-02     0.00E+00    -1.67E-02             Uc[1,3]==0
@@ -191,8 +170,9 @@ LS-scale=  0.436   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.34E+01 condition number:  1.68E+04 relative error:  2.00E-03
-Double precision:  1-norm:  1.34E+01 condition number:  1.68E+04 relative error:  3.72E-12
+Block No  1.  Single precision relative error:  2.00E-03
+Insufficient precision - trying double
+Block No  1.  Double precision relative error:  2.00E-03
 [13]  LARGE     2           2            -0.7       0.0E+00    0.2 E+01         -0.3                           ENANTIO 
 [14]  S/ESD     6           6           -0.018       0.0E+00    0.11 E-01         -1.7         CL     1 U[11]   
 [14]  S/ESD    24          24            0.021       0.0E+00    0.19 E-01          1.1         CL     3 U[11]   
@@ -511,8 +491,9 @@ LS-scale=  0.437   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.38E+01 condition number:  1.68E+04 relative error:  2.00E-03
-Double precision:  1-norm:  1.38E+01 condition number:  1.68E+04 relative error:  3.72E-12
+Block No  1.  Single precision relative error:  2.00E-03
+Insufficient precision - trying double
+Block No  1.  Double precision relative error:  2.00E-03
 [13]  LARGE     2           2             0.0      -0.1E+00    0.2 E+00          0.3                           ENANTIO 
 [14]  S/ESD    24          24            0.010       0.5E+00    0.23 E-02          4.2         CL     3 U[11]   
 [14]  S/ESD    26          26            0.011      -0.2E+00    0.32 E-02          3.4         CL     3 U[33]   
@@ -828,8 +809,9 @@ LS-scale=  0.439   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.38E+01 condition number:  1.77E+04 relative error:  2.11E-03
-Double precision:  1-norm:  1.38E+01 condition number:  1.77E+04 relative error:  3.93E-12
+Block No  1.  Single precision relative error:  2.11E-03
+Insufficient precision - trying double
+Block No  1.  Double precision relative error:  2.11E-03
 [13]  LARGE     2           2            -0.0      -0.6E+00    0.2 E+00         -0.2                           ENANTIO 
 
                                                 for         263 parameters
@@ -1143,8 +1125,9 @@ LS-scale=  0.439   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.38E+01 condition number:  1.77E+04 relative error:  2.11E-03
-Double precision:  1-norm:  1.38E+01 condition number:  1.77E+04 relative error:  3.93E-12
+Block No  1.  Single precision relative error:  2.11E-03
+Insufficient precision - trying double
+Block No  1.  Double precision relative error:  2.11E-03
 [13]  LARGE     2           2             0.0      -0.5E+00    0.2 E+00          0.1                           ENANTIO 
 
                                                 for         263 parameters
@@ -1458,8 +1441,9 @@ LS-scale=  0.439   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.38E+01 condition number:  1.77E+04 relative error:  2.11E-03
-Double precision:  1-norm:  1.38E+01 condition number:  1.77E+04 relative error:  3.93E-12
+Block No  1.  Single precision relative error:  2.11E-03
+Insufficient precision - trying double
+Block No  1.  Double precision relative error:  2.11E-03
 [13]  LARGE     2           2            -0.0      -0.7E+00    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -1705,39 +1689,6 @@ ___________
  (0) UPERP 0.0001 CL(1) TO C(2), CL(3) TO C(2), CL(4) TO C(2)
  -- Restrain an ADP perpendicular to a bond
 
-    Derivatives:
-      CL(   1) U[11]    CL(   1) U[22]    CL(   1) U[33]    CL(   1) U[23]    CL(   1) U[13]    CL(   1) U[12]
-        6:-4.077E+03      7: 1.535E+03      8: 2.522E+03      9:-3.935E+03     10: 1.404E+03     11:-1.095E+03   Uc[1,3]==0
-      CL(   1) U[11]    CL(   1) U[22]    CL(   1) U[33]    CL(   1) U[23]    CL(   1) U[13]    CL(   1) U[12]
-        6: 4.614E+01      7:-3.160E+03      8: 3.161E+03      9: 1.585E+03     10:-3.279E+03     11:-4.110E+03   Uc[2,3]==0
-      CL(   3) U[11]    CL(   3) U[22]    CL(   3) U[33]    CL(   3) U[23]    CL(   3) U[13]    CL(   3) U[12]
-       24: 4.128E+03     25:-1.891E+03     26:-2.247E+03     27:-4.123E+03     28: 7.425E+02     29: 6.810E+02   Uc[1,3]==0
-      CL(   3) U[11]    CL(   3) U[22]    CL(   3) U[33]    CL(   3) U[23]    CL(   3) U[13]    CL(   3) U[12]
-       24: 5.293E+01     25: 3.091E+03     26:-3.091E+03     27: 5.343E+02     28:-3.666E+03     29: 4.084E+03   Uc[2,3]==0
-      CL(   4) U[11]    CL(   4) U[22]    CL(   4) U[33]    CL(   4) U[23]    CL(   4) U[13]    CL(   4) U[12]
-       33: 3.493E+03     34:-1.753E+03     35:-1.694E+03     36:-3.447E+03     37:-3.226E+03     38:-3.282E+03   Uc[1,3]==0
-      CL(   4) U[11]    CL(   4) U[22]    CL(   4) U[33]    CL(   4) U[23]    CL(   4) U[13]    CL(   4) U[12]
-       33:-4.045E+01     34: 3.677E+03     35:-3.678E+03     36:-1.274E+02     37: 2.888E+03     38:-2.733E+03   Uc[2,3]==0
-
-    Transformation matrices:
-          CL(1)                                           CL(3)
-        7.76E-01  -3.82E-01   4.91E-01             7.52E-01  -4.51E-01  -4.91E-01
-       -8.77E-03   7.89E-01   6.14E-01             9.65E-03   7.36E-01  -6.77E-01
-       -6.31E-01  -4.81E-01   6.18E-01             6.59E-01   5.04E-01   5.49E-01
-          C(2)                                           C(2)
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-
-          CL(4)
-        8.78E-01   3.35E-01   3.29E-01
-       -1.02E-02  -7.01E-01   7.13E-01
-        4.78E-01  -6.30E-01  -6.19E-01
-          C(2)
-        0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00
-
     Atom CL(1), basis: CL(1),C(2)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
          1  1  0  0  0   -4.47E-05     0.00E+00    -4.47E-05    0.996    Uc[1,3]==0
@@ -1807,22 +1758,6 @@ Refining   263 parameters in    1 block :    35258 elements in the LS matrix.
 ___________
  (0) UPERP 0.0001 C(24) TO C(29) TO C(25), C(25) TO C(24) TO C(26)
  -- Restrain an ADP perpendicular to the bissector of two bonds
-
-    No derivatives stored, do a refinement cycle
-    
-    Transformation matrices:
-          C(24)                                           C(25)
-        9.77E-01   1.14E-02   2.00E-01             8.83E-01  -3.67E-01  -3.05E-01
-        8.11E-04   9.98E-01  -5.69E-02             1.10E-02   6.39E-01  -7.69E-01
-       -2.14E-01   5.57E-02   9.78E-01             4.70E-01   6.76E-01   5.61E-01
-          C(29)                                           C(24)
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-          C(25)                                           C(26)
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
 
     Atom C(24), basis: C(24),C(29),C(25)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
@@ -1923,7 +1858,7 @@ LS-scale=  0.436   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.44E+01 condition number:  8.23E+03 relative error:  9.81E-04
+Block No  1.  Single precision relative error:  9.81E-04
 [13]  LARGE     2           2            -0.1       0.0E+00    0.4 E+00         -0.2                           ENANTIO 
 [14]  S/ESD   168         168           -0.011       0.0E+00    0.89 E-02         -1.2         C     19 U[11]   
 [14]  S/ESD   170         170            0.013       0.0E+00    0.75 E-02          1.8         C     19 U[33]   
@@ -2241,8 +2176,9 @@ LS-scale=  0.441   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.42E+01 condition number:  9.69E+03 relative error:  1.16E-03
-Double precision:  1-norm:  1.42E+01 condition number:  9.69E+03 relative error:  2.15E-12
+Block No  1.  Single precision relative error:  1.16E-03
+Insufficient precision - trying double
+Block No  1.  Double precision relative error:  1.16E-03
 [13]  LARGE     2           2             0.0      -0.3E+00    0.2 E+00          0.1                           ENANTIO 
 
                                                 for         263 parameters
@@ -2556,7 +2492,7 @@ LS-scale=  0.441   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.42E+01 condition number:  7.59E+03 relative error:  9.05E-04
+Block No  1.  Single precision relative error:  9.05E-04
 [13]  LARGE     2           2             0.0       0.4E-01    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -2870,7 +2806,7 @@ LS-scale=  0.441   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.42E+01 condition number:  7.61E+03 relative error:  9.07E-04
+Block No  1.  Single precision relative error:  9.07E-04
 [13]  LARGE     2           2            -0.0      -0.5E+01    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -3184,7 +3120,7 @@ LS-scale=  0.441   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.42E+01 condition number:  7.67E+03 relative error:  9.14E-04
+Block No  1.  Single precision relative error:  9.14E-04
 [13]  LARGE     2           2             0.0      -0.2E+01    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -3430,30 +3366,6 @@ ___________
  (0) UPERP 0.0001 C(24) TO C(29) TO C(25), C(25) TO C(24) TO C(26)
  -- Restrain an ADP perpendicular to the bissector of two bonds
 
-    Derivatives:
-       C(  24) U[11]     C(  24) U[22]     C(  24) U[33]     C(  24) U[23]     C(  24) U[13]     C(  24) U[12]
-      213:-1.684E+03    214: 6.512E+00    215: 1.574E+03    216: 2.025E+02    217: 7.256E+03    218: 4.668E+02   Uc[1,3]==0
-       C(  24) U[11]     C(  24) U[22]     C(  24) U[33]     C(  24) U[23]     C(  24) U[13]     C(  24) U[12]
-      213:-1.579E+00    214: 5.000E+02    215:-5.001E+02    216: 7.740E+03    217: 1.179E+02    218:-1.720E+03   Uc[2,3]==0
-       C(  25) U[11]     C(  25) U[22]     C(  25) U[33]     C(  25) U[23]     C(  25) U[13]     C(  25) U[12]
-      222: 3.348E+03    223:-1.987E+03    224:-1.400E+03    225:-3.336E+03    226: 2.739E+03    227: 3.263E+03   Uc[1,3]==0
-       C(  25) U[11]     C(  25) U[22]     C(  25) U[33]     C(  25) U[23]     C(  25) U[13]     C(  25) U[12]
-      222: 4.166E+01    223: 3.428E+03    224:-3.429E+03    225:-1.208E+03    226:-2.872E+03    227: 2.509E+03   Uc[2,3]==0
-
-    Transformation matrices:
-          C(24)                                           C(25)
-        9.77E-01   1.29E-02   2.01E-01             8.78E-01  -3.74E-01  -3.13E-01
-        9.12E-04   9.98E-01  -6.40E-02             1.09E-02   6.42E-01  -7.67E-01
-       -2.16E-01   6.26E-02   9.78E-01             4.79E-01   6.70E-01   5.61E-01
-          C(29)                                           C(24)
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-          C(25)                                           C(26)
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-
     Atom C(24), basis: C(24),C(29),C(25)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
          1  1  0  0  0    2.97E-05     0.00E+00     2.97E-05    0.999    Uc[1,3]==0
@@ -3519,22 +3431,6 @@ Refining   263 parameters in    1 block :    35258 elements in the LS matrix.
 ___________
  (0) UPLANE 0.0001 C(24) TO C(29) TO C(25), C(25) TO C(24) TO C(26)
  -- Restrain an ADP to be normal to a plane
-
-    No derivatives stored, do a refinement cycle
-    
-    Transformation matrices:
-          C(24)                                           C(25)
-       -5.35E-01  -3.15E-01   7.92E-01             1.36E-01   4.41E-01   8.85E-01
-        6.91E-01  -6.97E-01   1.81E-01             6.97E-01  -6.79E-01   2.21E-01
-        4.87E-01   6.44E-01   5.83E-01             7.04E-01   5.87E-01  -4.10E-01
-          C(29)                                           C(24)
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-          C(25)                                           C(26)
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
 
     Atom C(24), basis: C(24),C(29),C(25)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
@@ -3635,8 +3531,9 @@ LS-scale=  0.436   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.43E+01 condition number:  1.45E+04 relative error:  1.73E-03
-Double precision:  1-norm:  1.43E+01 condition number:  1.45E+04 relative error:  3.23E-12
+Block No  1.  Single precision relative error:  1.73E-03
+Insufficient precision - trying double
+Block No  1.  Double precision relative error:  1.73E-03
 [13]  LARGE     2           2            -0.1       0.0E+00    0.6 E+00         -0.1                           ENANTIO 
 [14]  S/ESD   170         170            0.013       0.0E+00    0.11 E-01          1.1         C     19 U[33]   
 [14]  S/ESD   213         213            0.015       0.0E+00    0.80 E-02          1.8         C     24 U[11]   
@@ -3953,8 +3850,9 @@ LS-scale=  0.441   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.42E+01 condition number:  1.53E+04 relative error:  1.83E-03
-Double precision:  1-norm:  1.42E+01 condition number:  1.54E+04 relative error:  3.41E-12
+Block No  1.  Single precision relative error:  1.83E-03
+Insufficient precision - trying double
+Block No  1.  Double precision relative error:  1.83E-03
 [13]  LARGE     2           2             0.0      -0.3E+00    0.2 E+00          0.1                           ENANTIO 
 
                                                 for         263 parameters
@@ -4268,8 +4166,9 @@ LS-scale=  0.440   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.42E+01 condition number:  1.52E+04 relative error:  1.81E-03
-Double precision:  1-norm:  1.42E+01 condition number:  1.52E+04 relative error:  3.38E-12
+Block No  1.  Single precision relative error:  1.81E-03
+Insufficient precision - trying double
+Block No  1.  Double precision relative error:  1.81E-03
 [13]  LARGE     2           2            -0.0      -0.5E+00    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -4583,8 +4482,9 @@ LS-scale=  0.440   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.49E+01 condition number:  1.60E+04 relative error:  1.91E-03
-Double precision:  1-norm:  1.49E+01 condition number:  1.60E+04 relative error:  3.55E-12
+Block No  1.  Single precision relative error:  1.91E-03
+Insufficient precision - trying double
+Block No  1.  Double precision relative error:  1.91E-03
 [13]  LARGE     2           2             0.0      -0.1E+01    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -4898,8 +4798,9 @@ LS-scale=  0.440   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.42E+01 condition number:  1.53E+04 relative error:  1.82E-03
-Double precision:  1-norm:  1.42E+01 condition number:  1.53E+04 relative error:  3.39E-12
+Block No  1.  Single precision relative error:  1.82E-03
+Insufficient precision - trying double
+Block No  1.  Double precision relative error:  1.82E-03
 [13]  LARGE     2           2            -0.0      -0.7E+00    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -5145,30 +5046,6 @@ ___________
  (0) UPLANE 0.0001 C(24) TO C(29) TO C(25), C(25) TO C(24) TO C(26)
  -- Restrain an ADP to be normal to a plane
 
-    Derivatives:
-       C(  24) U[11]     C(  24) U[22]     C(  24) U[33]     C(  24) U[23]     C(  24) U[13]     C(  24) U[12]
-      213:-2.981E+03    214: 1.741E+03    215: 1.190E+03    216:-4.851E+03    217: 3.507E+03    218: 1.296E+03   Uc[1,2]=0
-       C(  24) U[11]     C(  24) U[22]     C(  24) U[33]     C(  24) U[23]     C(  24) U[13]     C(  24) U[12]
-      213: 2.644E+03    214:-3.587E+03    215: 8.870E+02    216:-2.288E+03    217: 3.952E+03    218: 8.702E+02   Uc[2,3]=0
-       C(  25) U[11]     C(  25) U[22]     C(  25) U[33]     C(  25) U[23]     C(  25) U[13]     C(  25) U[12]
-      222: 8.402E+02    223:-2.416E+03    224: 1.502E+03    225:-4.068E+03    226: 5.136E+03    227: 1.614E+03   Uc[1,2]=0
-       C(  25) U[11]     C(  25) U[22]     C(  25) U[33]     C(  25) U[23]     C(  25) U[13]     C(  25) U[12]
-      222: 3.897E+03    223:-3.164E+03    224:-7.165E+02    225: 3.285E+03    226:-1.125E+03    227:-6.502E+02   Uc[2,3]=0
-
-    Transformation matrices:
-          C(24)                                           C(25)
-       -5.46E-01  -3.13E-01   7.85E-01             1.53E-01   4.43E-01   8.81E-01
-        6.89E-01  -6.96E-01   1.94E-01             6.92E-01  -6.86E-01   2.14E-01
-        4.77E-01   6.46E-01   5.89E-01             7.05E-01   5.77E-01  -4.22E-01
-          C(29)                                           C(24)
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-          C(25)                                           C(26)
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-
     Atom C(24), basis: C(24),C(29),C(25)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
          1  1  0  0  0   -1.19E-04     0.00E+00    -1.19E-04    0.999    Uc[1,2]=0
@@ -5234,24 +5111,6 @@ Refining   263 parameters in    1 block :    35258 elements in the LS matrix.
 ___________
  (0) UALIGN 0.0001 C(24) C(25) C(26) C(27) C(28) C(29)
  -- Restrain all ADPs to be aligned
-
-    No derivatives stored, do a refinement cycle
-    
-    Transformation matrices:
-          C(24)                                           C(25)
-        9.60E-01   3.09E-02   2.64E-01             9.60E-01   3.09E-02   2.64E-01
-       -5.40E-02   9.96E-01   7.67E-02            -5.40E-02   9.96E-01   7.67E-02
-       -2.74E-01  -8.78E-02   9.62E-01            -2.74E-01  -8.78E-02   9.62E-01
-
-          C(26)                                           C(27)
-        9.60E-01   3.09E-02   2.64E-01             9.60E-01   3.09E-02   2.64E-01
-       -5.40E-02   9.96E-01   7.67E-02            -5.40E-02   9.96E-01   7.67E-02
-       -2.74E-01  -8.78E-02   9.62E-01            -2.74E-01  -8.78E-02   9.62E-01
-
-          C(28)                                           C(29)
-        9.60E-01   3.09E-02   2.64E-01             9.60E-01   3.09E-02   2.64E-01
-       -5.40E-02   9.96E-01   7.67E-02            -5.40E-02   9.96E-01   7.67E-02
-       -2.74E-01  -8.78E-02   9.62E-01            -2.74E-01  -8.78E-02   9.62E-01
 
     Atom C(24)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
@@ -5374,8 +5233,9 @@ LS-scale=  0.436   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.33E+01 condition number:  1.33E+04 relative error:  1.59E-03
-Double precision:  1-norm:  1.33E+01 condition number:  1.33E+04 relative error:  2.96E-12
+Block No  1.  Single precision relative error:  1.59E-03
+Insufficient precision - trying double
+Block No  1.  Double precision relative error:  1.59E-03
 [13]  LARGE     2           2            -0.1       0.0E+00    0.1 E+01         -0.0                           ENANTIO 
 [14]  S/ESD   234         234           -0.022       0.0E+00    0.42 E-02         -5.2         C     26 U[23]   
 [14]  S/ESD   252         252            0.013       0.0E+00    0.38 E-02          3.4         C     28 U[23]   
@@ -5692,8 +5552,9 @@ LS-scale=  0.440   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.35E+01 condition number:  1.24E+04 relative error:  1.48E-03
-Double precision:  1-norm:  1.35E+01 condition number:  1.24E+04 relative error:  2.75E-12
+Block No  1.  Single precision relative error:  1.48E-03
+Insufficient precision - trying double
+Block No  1.  Double precision relative error:  1.48E-03
 [13]  LARGE     2           2             0.0      -0.5E+00    0.2 E+00          0.2                           ENANTIO 
 
                                                 for         263 parameters
@@ -6007,8 +5868,9 @@ LS-scale=  0.440   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.35E+01 condition number:  1.31E+04 relative error:  1.56E-03
-Double precision:  1-norm:  1.35E+01 condition number:  1.31E+04 relative error:  2.92E-12
+Block No  1.  Single precision relative error:  1.56E-03
+Insufficient precision - trying double
+Block No  1.  Double precision relative error:  1.56E-03
 [13]  LARGE     2           2            -0.0      -0.3E+00    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -6322,8 +6184,9 @@ LS-scale=  0.440   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.36E+01 condition number:  1.29E+04 relative error:  1.54E-03
-Double precision:  1-norm:  1.36E+01 condition number:  1.29E+04 relative error:  2.86E-12
+Block No  1.  Single precision relative error:  1.54E-03
+Insufficient precision - trying double
+Block No  1.  Double precision relative error:  1.54E-03
 [13]  LARGE     2           2             0.0      -0.5E+00    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -6637,8 +6500,9 @@ LS-scale=  0.440   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.35E+01 condition number:  1.47E+04 relative error:  1.75E-03
-Double precision:  1-norm:  1.35E+01 condition number:  1.47E+04 relative error:  3.27E-12
+Block No  1.  Single precision relative error:  1.75E-03
+Insufficient precision - trying double
+Block No  1.  Double precision relative error:  1.75E-03
 [13]  LARGE     2           2            -0.0      -0.8E-01    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -6884,60 +6748,6 @@ ___________
  (0) UALIGN 0.0001 C(24) C(25) C(26) C(27) C(28) C(29)
  -- Restrain all ADPs to be aligned
 
-    Derivatives:
-       C(  24) U[11]     C(  24) U[22]     C(  24) U[33]     C(  24) U[23]     C(  24) U[13]     C(  24) U[12]
-      213:-9.283E+02    214: 8.002E+02    215: 1.256E+02    216: 2.199E+03    217: 1.806E+02    218: 7.503E+03   Ul_12 = 0.0
-       C(  24) U[11]     C(  24) U[22]     C(  24) U[33]     C(  24) U[23]     C(  24) U[13]     C(  24) U[12]
-      213: 2.682E+02    214:-6.999E+02    215: 4.469E+02    216: 7.620E+03    217:-1.064E+03    218:-2.110E+03   Ul_23 = 0.0
-       C(  24) U[11]     C(  24) U[22]     C(  24) U[33]     C(  24) U[23]     C(  24) U[13]     C(  24) U[12]
-      213:-2.113E+03    214:-7.091E+01    215: 2.088E+03    216: 5.853E+02    217: 6.774E+03    218:-8.960E+02   Ul_13 = 0.0
-       C(  25) U[11]     C(  25) U[22]     C(  25) U[33]     C(  25) U[23]     C(  25) U[13]     C(  25) U[12]
-      222:-9.283E+02    223: 8.002E+02    224: 1.256E+02    225: 2.199E+03    226: 1.806E+02    227: 7.503E+03   Ul_12 = 0.0
-       C(  25) U[11]     C(  25) U[22]     C(  25) U[33]     C(  25) U[23]     C(  25) U[13]     C(  25) U[12]
-      222: 2.682E+02    223:-6.999E+02    224: 4.469E+02    225: 7.620E+03    226:-1.064E+03    227:-2.110E+03   Ul_23 = 0.0
-       C(  25) U[11]     C(  25) U[22]     C(  25) U[33]     C(  25) U[23]     C(  25) U[13]     C(  25) U[12]
-      222:-2.113E+03    223:-7.091E+01    224: 2.088E+03    225: 5.853E+02    226: 6.774E+03    227:-8.960E+02   Ul_13 = 0.0
-       C(  26) U[11]     C(  26) U[22]     C(  26) U[33]     C(  26) U[23]     C(  26) U[13]     C(  26) U[12]
-      231:-9.283E+02    232: 8.002E+02    233: 1.256E+02    234: 2.199E+03    235: 1.806E+02    236: 7.503E+03   Ul_12 = 0.0
-       C(  26) U[11]     C(  26) U[22]     C(  26) U[33]     C(  26) U[23]     C(  26) U[13]     C(  26) U[12]
-      231: 2.682E+02    232:-6.999E+02    233: 4.469E+02    234: 7.620E+03    235:-1.064E+03    236:-2.110E+03   Ul_23 = 0.0
-       C(  26) U[11]     C(  26) U[22]     C(  26) U[33]     C(  26) U[23]     C(  26) U[13]     C(  26) U[12]
-      231:-2.113E+03    232:-7.091E+01    233: 2.088E+03    234: 5.853E+02    235: 6.774E+03    236:-8.960E+02   Ul_13 = 0.0
-       C(  27) U[11]     C(  27) U[22]     C(  27) U[33]     C(  27) U[23]     C(  27) U[13]     C(  27) U[12]
-      240:-9.283E+02    241: 8.002E+02    242: 1.256E+02    243: 2.199E+03    244: 1.806E+02    245: 7.503E+03   Ul_12 = 0.0
-       C(  27) U[11]     C(  27) U[22]     C(  27) U[33]     C(  27) U[23]     C(  27) U[13]     C(  27) U[12]
-      240: 2.682E+02    241:-6.999E+02    242: 4.469E+02    243: 7.620E+03    244:-1.064E+03    245:-2.110E+03   Ul_23 = 0.0
-       C(  27) U[11]     C(  27) U[22]     C(  27) U[33]     C(  27) U[23]     C(  27) U[13]     C(  27) U[12]
-      240:-2.113E+03    241:-7.091E+01    242: 2.088E+03    243: 5.853E+02    244: 6.774E+03    245:-8.960E+02   Ul_13 = 0.0
-       C(  28) U[11]     C(  28) U[22]     C(  28) U[33]     C(  28) U[23]     C(  28) U[13]     C(  28) U[12]
-      249:-9.283E+02    250: 8.002E+02    251: 1.256E+02    252: 2.199E+03    253: 1.806E+02    254: 7.503E+03   Ul_12 = 0.0
-       C(  28) U[11]     C(  28) U[22]     C(  28) U[33]     C(  28) U[23]     C(  28) U[13]     C(  28) U[12]
-      249: 2.682E+02    250:-6.999E+02    251: 4.469E+02    252: 7.620E+03    253:-1.064E+03    254:-2.110E+03   Ul_23 = 0.0
-       C(  28) U[11]     C(  28) U[22]     C(  28) U[33]     C(  28) U[23]     C(  28) U[13]     C(  28) U[12]
-      249:-2.113E+03    250:-7.091E+01    251: 2.088E+03    252: 5.853E+02    253: 6.774E+03    254:-8.960E+02   Ul_13 = 0.0
-       C(  29) U[11]     C(  29) U[22]     C(  29) U[33]     C(  29) U[23]     C(  29) U[13]     C(  29) U[12]
-      258:-9.283E+02    259: 8.002E+02    260: 1.256E+02    261: 2.199E+03    262: 1.806E+02    263: 7.503E+03   Ul_12 = 0.0
-       C(  29) U[11]     C(  29) U[22]     C(  29) U[33]     C(  29) U[23]     C(  29) U[13]     C(  29) U[12]
-      258: 2.682E+02    259:-6.999E+02    260: 4.469E+02    261: 7.620E+03    262:-1.064E+03    263:-2.110E+03   Ul_23 = 0.0
-       C(  29) U[11]     C(  29) U[22]     C(  29) U[33]     C(  29) U[23]     C(  29) U[13]     C(  29) U[12]
-      258:-2.113E+03    259:-7.091E+01    260: 2.088E+03    261: 5.853E+02    262: 6.774E+03    263:-8.960E+02   Ul_13 = 0.0
-
-    Transformation matrices:
-          C(24)                                           C(25)
-        9.54E-01   1.01E-01   2.70E-01             9.54E-01   1.01E-01   2.70E-01
-       -1.21E-01   9.91E-01   5.77E-02            -1.21E-01   9.91E-01   5.77E-02
-       -2.76E-01  -8.78E-02   9.61E-01            -2.76E-01  -8.78E-02   9.61E-01
-
-          C(26)                                           C(27)
-        9.54E-01   1.01E-01   2.70E-01             9.54E-01   1.01E-01   2.70E-01
-       -1.21E-01   9.91E-01   5.77E-02            -1.21E-01   9.91E-01   5.77E-02
-       -2.76E-01  -8.78E-02   9.61E-01            -2.76E-01  -8.78E-02   9.61E-01
-
-          C(28)                                           C(29)
-        9.54E-01   1.01E-01   2.70E-01             9.54E-01   1.01E-01   2.70E-01
-       -1.21E-01   9.91E-01   5.77E-02            -1.21E-01   9.91E-01   5.77E-02
-       -2.76E-01  -8.78E-02   9.61E-01            -2.76E-01  -8.78E-02   9.61E-01
-
     Atom C(24)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
          1  1  0  0  0    5.43E-06     0.00E+00     5.43E-06    0.999    Ul_12 = 0.0
@@ -7025,18 +6835,6 @@ Refining   263 parameters in    1 block :    35258 elements in the LS matrix.
 ___________
  (0) URIGU 0.0001 C(7) TO C(9), C(9) TO C(11)
  -- Enhanced rigid body restraints
-
-    No derivatives stored, do a refinement cycle
-    
-    Transformation matrices:
-          C(7)                                           C(9)
-        6.13E-01  -7.53E-01   2.29E-01             3.11E-01  -9.49E-01  -5.40E-02
-       -6.46E-01  -6.51E-01  -3.90E-01             9.80E-02   8.38E-02  -9.93E-01
-        4.55E-01   9.10E-02  -8.92E-01             9.45E-01   3.03E-01   1.06E-01
-          C(9)                                           C(11)
-        6.13E-01  -7.53E-01   2.29E-01             3.11E-01  -9.49E-01  -5.40E-02
-       -6.46E-01  -6.51E-01  -3.90E-01             9.80E-02   8.38E-02  -9.93E-01
-        4.55E-01   9.10E-02  -8.92E-01             9.45E-01   3.03E-01   1.06E-01
 
     Atom C(7), basis: C(7),C(9)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
@@ -7139,8 +6937,9 @@ LS-scale=  0.436   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.39E+01 condition number:  3.26E+04 relative error:  3.89E-03
-Double precision:  1-norm:  1.39E+01 condition number:  3.26E+04 relative error:  7.24E-12
+Block No  1.  Single precision relative error:  3.89E-03
+Insufficient precision - trying double
+Block No  1.  Double precision relative error:  3.89E-03
 [13]  LARGE     2           2            -0.1       0.0E+00    0.8 E+00         -0.1                           ENANTIO 
 
                                                 for         263 parameters
@@ -7454,8 +7253,9 @@ LS-scale=  0.441   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.39E+01 condition number:  3.50E+04 relative error:  4.18E-03
-Double precision:  1-norm:  1.39E+01 condition number:  3.50E+04 relative error:  7.78E-12
+Block No  1.  Single precision relative error:  4.18E-03
+Insufficient precision - trying double
+Block No  1.  Double precision relative error:  4.18E-03
 [13]  LARGE     2           2             0.0      -0.3E+00    0.2 E+00          0.1                           ENANTIO 
 
                                                 for         263 parameters
@@ -7769,8 +7569,9 @@ LS-scale=  0.440   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.35E+02 condition number:  3.58E+05 relative error:  4.27E-02
-Double precision:  1-norm:  1.35E+02 condition number:  3.58E+05 relative error:  7.95E-11
+Block No  1.  Single precision relative error:  4.27E-02
+Insufficient precision - trying double
+Block No  1.  Double precision relative error:  4.27E-02
 [13]  LARGE     2           2             0.0       0.3E+00    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -8084,8 +7885,9 @@ LS-scale=  0.440   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.39E+01 condition number:  3.54E+04 relative error:  4.22E-03
-Double precision:  1-norm:  1.39E+01 condition number:  3.55E+04 relative error:  7.87E-12
+Block No  1.  Single precision relative error:  4.22E-03
+Insufficient precision - trying double
+Block No  1.  Double precision relative error:  4.22E-03
 [13]  LARGE     2           2             0.0       0.6E+00    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -8399,8 +8201,9 @@ LS-scale=  0.440   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.39E+01 condition number:  3.58E+04 relative error:  4.27E-03
-Double precision:  1-norm:  1.39E+01 condition number:  3.58E+04 relative error:  7.96E-12
+Block No  1.  Single precision relative error:  4.27E-03
+Insufficient precision - trying double
+Block No  1.  Double precision relative error:  4.27E-03
 [13]  LARGE     2           2            -0.0      -0.3E+01    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -8646,30 +8449,6 @@ ___________
  (0) URIGU 0.0001 C(7) TO C(9), C(9) TO C(11)
  -- Enhanced rigid body restraints
 
-    Derivatives:
-       C(   7) U[11]     C(   7) U[22]     C(   7) U[33]     C(   7) U[23]     C(   7) U[13]     C(   7) U[12]     C(   9) U[11]     C(   9) U[22]     C(   9) U[33]     C(   9) U[23]     C(   9) U[13]     C(   9) U[12]
-       60: 2.239E+03     61:-5.017E+02     62:-1.689E+03     63: 5.498E+03     64:-3.422E+03     65:-2.376E+03     78:-2.239E+03     79: 5.017E+02     80: 1.689E+03     81:-5.498E+03     82: 3.422E+03     83: 2.376E+03   Uc1[1,3]-Uc2[1,3]=0
-       C(   7) U[11]     C(   7) U[22]     C(   7) U[33]     C(   7) U[23]     C(   7) U[13]     C(   7) U[12]     C(   9) U[11]     C(   9) U[22]     C(   9) U[33]     C(   9) U[23]     C(   9) U[13]     C(   9) U[12]
-       60:-2.377E+03     61:-4.327E+02     62: 2.765E+03     63: 4.346E+03     64: 3.126E+03     65:-2.827E+03     78: 2.377E+03     79: 4.327E+02     80:-2.765E+03     81:-4.346E+03     82:-3.126E+03     83: 2.827E+03   Uc1[2,3]-Uc2[2,3]=0
-       C(   7) U[11]     C(   7) U[22]     C(   7) U[33]     C(   7) U[23]     C(   7) U[13]     C(   7) U[12]     C(   9) U[11]     C(   9) U[22]     C(   9) U[33]     C(   9) U[23]     C(   9) U[13]     C(   9) U[12]
-       60: 1.705E+03     61: 5.554E+01     62: 6.291E+03     63:-1.182E+03     64:-6.551E+03     65: 6.155E+02     78:-1.705E+03     79:-5.554E+01     80:-6.291E+03     81: 1.182E+03     82: 6.551E+03     83:-6.155E+02   Uc1[3,3]-Uc2[3,3]=0
-       C(   9) U[11]     C(   9) U[22]     C(   9) U[33]     C(   9) U[23]     C(   9) U[13]     C(   9) U[12]     C(  11) U[11]     C(  11) U[22]     C(  11) U[33]     C(  11) U[23]     C(  11) U[13]     C(  11) U[12]
-       78: 2.416E+03     79:-2.374E+03     80:-3.976E+01     81:-8.804E+02     82:-1.158E+02     83:-6.282E+03     96:-2.416E+03     97: 2.374E+03     98: 3.976E+01     99: 8.804E+02    100: 1.158E+02    101: 6.282E+03   Uc1[1,3]-Uc2[1,3]=0
-       C(   9) U[11]     C(   9) U[22]     C(   9) U[33]     C(   9) U[23]     C(   9) U[13]     C(   9) U[12]     C(  11) U[11]     C(  11) U[22]     C(  11) U[33]     C(  11) U[23]     C(  11) U[13]     C(  11) U[12]
-       78: 7.003E+02     79: 1.989E+02     80:-7.939E+02     81:-2.432E+03     82:-7.377E+03     83: 8.285E+02     96:-7.003E+02     97:-1.989E+02     98: 7.939E+02     99: 2.432E+03    100: 7.377E+03    101:-8.285E+02   Uc1[2,3]-Uc2[2,3]=0
-       C(   9) U[11]     C(   9) U[22]     C(   9) U[33]     C(   9) U[23]     C(   9) U[13]     C(   9) U[12]     C(  11) U[11]     C(  11) U[22]     C(  11) U[33]     C(  11) U[23]     C(  11) U[13]     C(  11) U[12]
-       78: 7.065E+03     79: 7.921E+02     80: 8.019E+01     81: 5.041E+02     82: 1.505E+03     83: 4.731E+03     96:-7.065E+03     97:-7.921E+02     98:-8.019E+01     99:-5.041E+02    100:-1.505E+03    101:-4.731E+03   Uc1[3,3]-Uc2[3,3]=0
-
-    Transformation matrices:
-          C(7)                                           C(9)
-        6.08E-01  -7.54E-01   2.38E-01             3.21E-01  -9.46E-01  -4.97E-02
-       -6.45E-01  -6.51E-01  -3.90E-01             9.32E-02   7.90E-02  -9.94E-01
-        4.62E-01   8.41E-02  -8.90E-01             9.43E-01   3.14E-01   1.00E-01
-          C(9)                                           C(11)
-        6.08E-01  -7.54E-01   2.38E-01             3.21E-01  -9.46E-01  -4.97E-02
-       -6.45E-01  -6.51E-01  -3.90E-01             9.32E-02   7.90E-02  -9.94E-01
-        4.62E-01   8.41E-02  -8.90E-01             9.43E-01   3.14E-01   1.00E-01
-
     Atom C(7), basis: C(7),C(9)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
          1  1  0  0  0   -7.31E-07     0.00E+00    -7.31E-07    0.999    Uc1[1,3]-Uc2[1,3]=0
@@ -8738,35 +8517,6 @@ ___________
  (0) ULIJ 0.0001 C(24) TO C(25) TO C(26), C(25) TO C(26) TO C(27),
 CONT C(26) TO C(27) TO C(28)
  -- Restrain Uij to be equals in their local basis
-
-    No derivatives stored, do a refinement cycle
-    
-    Transformation matrices:
-          C(24)                                           C(25)
-        1.36E-01   4.41E-01   8.85E-01             7.23E-01   6.82E-01   1.02E-01
-       -6.97E-01   6.79E-01  -2.21E-01            -6.51E-01   7.26E-01  -2.14E-01
-       -7.04E-01  -5.87E-01   4.10E-01            -2.34E-01   8.89E-02   9.72E-01
-          C(25)                                           C(26)
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-          C(26)                                           C(27)
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-
-          C(26)
-        5.37E-01   2.97E-01  -7.97E-01
-       -6.74E-01   7.14E-01  -1.81E-01
-        5.07E-01   6.34E-01   5.77E-01
-          C(27)
-        0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00
-          C(28)
-        0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00
 
     Atom C(24), basis: C(24),C(25),C(26)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
@@ -8883,7 +8633,7 @@ LS-scale=  0.436   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.39E+01 condition number:  2.39E+02 relative error:  2.85E-05
+Block No  1.  Single precision relative error:  2.85E-05
 [13]  LARGE     2           2            -0.1       0.0E+00    0.1 E+01         -0.0                           ENANTIO 
 [14]  S/ESD   213         213            0.021       0.0E+00    0.64 E-03         32.9         C     24 U[11]   
 [14]  S/ESD   232         232           -0.022       0.0E+00    0.65 E-03        -34.8         C     26 U[22]   
@@ -9200,7 +8950,7 @@ LS-scale=  0.440   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.38E+01 condition number:  2.37E+02 relative error:  2.82E-05
+Block No  1.  Single precision relative error:  2.82E-05
 [13]  LARGE     2           2             0.0      -0.2E+00    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -9514,7 +9264,7 @@ LS-scale=  0.440   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.38E+01 condition number:  2.35E+02 relative error:  2.80E-05
+Block No  1.  Single precision relative error:  2.80E-05
 [13]  LARGE     2           2             0.0       0.6E-01    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -9828,7 +9578,7 @@ LS-scale=  0.440   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.38E+01 condition number:  2.36E+02 relative error:  2.82E-05
+Block No  1.  Single precision relative error:  2.82E-05
 [13]  LARGE     2           2            -0.0      -0.2E+02    0.2 E+00         -0.1                           ENANTIO 
 
                                                 for         263 parameters
@@ -10142,7 +9892,7 @@ LS-scale=  0.440   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.38E+01 condition number:  2.35E+02 relative error:  2.81E-05
+Block No  1.  Single precision relative error:  2.81E-05
 [13]  LARGE     2           2             0.0      -0.1E+01    0.2 E+00          0.1                           ENANTIO 
 
                                                 for         263 parameters
@@ -10389,71 +10139,6 @@ ___________
 CONT C(26) TO C(27) TO C(28)
  -- Restrain Uij to be equals in their local basis
 
-    Derivatives:
-       C(  24) U[11]     C(  24) U[22]     C(  24) U[33]     C(  24) U[23]     C(  24) U[13]     C(  24) U[12]
-      213: 1.830E+02    214: 1.576E+03    215: 6.233E+03    216: 6.269E+03    217: 2.136E+03    218: 1.074E+03   U11_local - <U11_local> == 0
-       C(  24) U[11]     C(  24) U[22]     C(  24) U[33]     C(  24) U[23]     C(  24) U[13]     C(  24) U[12]
-      213: 3.864E+03    214: 3.755E+03    215: 3.697E+02    216:-2.356E+03    217: 2.391E+03    218:-7.618E+03   U22_local - <U22_local> == 0
-       C(  24) U[11]     C(  24) U[22]     C(  24) U[33]     C(  24) U[23]     C(  24) U[13]     C(  24) U[12]
-      213: 3.977E+03    214: 2.692E+03    215: 1.421E+03    216:-3.912E+03    217:-4.755E+03    218: 6.544E+03   U33_local - <U33_local> == 0
-       C(  24) U[11]     C(  24) U[22]     C(  24) U[33]     C(  24) U[23]     C(  24) U[13]     C(  24) U[12]
-      213:-8.408E+02    214: 2.433E+03    215:-1.518E+03    216: 4.074E+03    217:-5.168E+03    218:-1.639E+03   U12_local - <U12_local> == 0
-       C(  24) U[11]     C(  24) U[22]     C(  24) U[33]     C(  24) U[23]     C(  24) U[13]     C(  24) U[12]
-      213: 3.920E+03    214:-3.179E+03    215:-7.249E+02    216: 3.308E+03    217:-1.131E+03    218:-6.390E+02   U23_local - <U23_local> == 0
-       C(  24) U[11]     C(  24) U[22]     C(  24) U[33]     C(  24) U[23]     C(  24) U[13]     C(  24) U[12]
-      213:-8.530E+02    214:-2.060E+03    215: 2.977E+03    216:-2.600E+03    217:-4.469E+03    218:-3.206E+03   U13_local - <U13_local> == 0
-       C(  25) U[11]     C(  25) U[22]     C(  25) U[33]     C(  25) U[23]     C(  25) U[13]     C(  25) U[12]
-      222: 4.059E+03    223: 3.853E+03    224: 9.350E+01    225: 1.200E+03    226: 1.232E+03    227: 7.909E+03   U11_local - <U11_local> == 0
-       C(  25) U[11]     C(  25) U[22]     C(  25) U[33]     C(  25) U[23]     C(  25) U[13]     C(  25) U[12]
-      222: 3.516E+03    223: 4.122E+03    224: 3.536E+02    225:-2.414E+03    226: 2.230E+03    227:-7.613E+03   U22_local - <U22_local> == 0
-       C(  25) U[11]     C(  25) U[22]     C(  25) U[33]     C(  25) U[23]     C(  25) U[13]     C(  25) U[12]
-      222: 4.495E+02    223: 4.862E+01    224: 7.577E+03    225: 1.214E+03    226:-3.691E+03    227:-2.957E+02   U33_local - <U33_local> == 0
-       C(  25) U[11]     C(  25) U[22]     C(  25) U[33]     C(  25) U[23]     C(  25) U[13]     C(  25) U[12]
-      222:-3.778E+03    223: 3.985E+03    224:-1.818E+02    225:-5.463E+02    226:-1.771E+03    227: 4.098E+02   U12_local - <U12_local> == 0
-       C(  25) U[11]     C(  25) U[22]     C(  25) U[33]     C(  25) U[23]     C(  25) U[13]     C(  25) U[12]
-      222: 1.257E+03    223: 4.476E+02    224:-1.637E+03    225: 5.457E+03    226:-4.763E+03    227:-1.775E+03   U23_local - <U23_local> == 0
-       C(  25) U[11]     C(  25) U[22]     C(  25) U[33]     C(  25) U[23]     C(  25) U[13]     C(  25) U[12]
-      222:-1.351E+03    223: 4.328E+02    224: 8.417E+02    225: 5.471E+03    226: 5.341E+03    227:-8.717E+02   U13_local - <U13_local> == 0
-       C(  26) U[11]     C(  26) U[22]     C(  26) U[33]     C(  26) U[23]     C(  26) U[13]     C(  26) U[12]
-      231: 2.284E+03    232: 7.414E+02    233: 5.095E+03    234:-3.887E+03    235:-6.822E+03    236: 2.602E+03   U11_local - <U11_local> == 0
-       C(  26) U[11]     C(  26) U[22]     C(  26) U[33]     C(  26) U[23]     C(  26) U[13]     C(  26) U[12]
-      231: 3.739E+03    232: 3.996E+03    233: 2.595E+02    234:-2.037E+03    235: 1.970E+03    236:-7.731E+03   U22_local - <U22_local> == 0
-       C(  26) U[11]     C(  26) U[22]     C(  26) U[33]     C(  26) U[23]     C(  26) U[13]     C(  26) U[12]
-      231: 2.001E+03    232: 3.286E+03    233: 2.670E+03    234: 5.924E+03    235: 4.623E+03    236: 5.129E+03   U33_local - <U33_local> == 0
-       C(  26) U[11]     C(  26) U[22]     C(  26) U[33]     C(  26) U[23]     C(  26) U[13]     C(  26) U[12]
-      231:-2.922E+03    232: 1.721E+03    233: 1.150E+03    234:-4.951E+03    235: 3.595E+03    236: 1.356E+03   U12_local - <U12_local> == 0
-       C(  26) U[11]     C(  26) U[22]     C(  26) U[33]     C(  26) U[23]     C(  26) U[13]     C(  26) U[12]
-      231:-2.736E+03    232: 3.623E+03    233:-8.324E+02    234: 2.343E+03    235:-3.880E+03    236:-6.773E+02   U23_local - <U23_local> == 0
-       C(  26) U[11]     C(  26) U[22]     C(  26) U[33]     C(  26) U[23]     C(  26) U[13]     C(  26) U[12]
-      231: 2.138E+03    232: 1.561E+03    233:-3.688E+03    234:-2.685E+03    235:-7.240E+02    236: 3.957E+03   U13_local - <U13_local> == 0
-
-    Transformation matrices:
-          C(24)                                           C(25)
-        1.52E-01   4.45E-01   8.80E-01             7.12E-01   6.92E-01   1.10E-01
-       -6.94E-01   6.84E-01  -2.15E-01            -6.61E-01   7.18E-01  -2.10E-01
-       -7.04E-01  -5.78E-01   4.23E-01            -2.38E-01   7.70E-02   9.72E-01
-          C(25)                                           C(26)
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-          C(26)                                           C(27)
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-
-          C(26)
-        5.32E-01   3.03E-01  -7.98E-01
-       -6.82E-01   7.07E-01  -1.79E-01
-        5.02E-01   6.40E-01   5.75E-01
-          C(27)
-        0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00
-          C(28)
-        0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00
-
     Atom C(24), basis: C(24),C(25),C(26)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
          1  1  0  0  0    3.33E-02     3.33E-02     3.84E-05    0.999    U11_local - <U11_local> == 0
@@ -10542,14 +10227,6 @@ R a tansformation matrix of adp to cartesian space and U a adp matrix.
 Then R U R^t = Q L Q^t => L = Q^t R U R^t Q.
 Finally dL/dU_ij = Q^t R dU/DU_ij R^t Q
  
-    No derivatives stored, do a refinement cycle
-    
-    Transformation matrices:
-          CL(1)                                           CL(3)
-       -2.00E-01  -8.17E-01   5.41E-01             7.73E-01   5.46E-01  -3.23E-01
-       -7.39E-01   4.88E-01   4.64E-01            -5.19E-01   8.37E-01   1.71E-01
-        6.43E-01   3.07E-01   7.02E-01             3.63E-01   3.51E-02   9.31E-01
-
     Atom CL(1)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
          1  1  0  0  0    4.67E-02     0.00E+00     4.67E-02             L_11-<L_11,L_22>=0
@@ -10651,8 +10328,9 @@ LS-scale=  0.436   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.35E+01 condition number:  1.66E+04 relative error:  1.98E-03
-Double precision:  1-norm:  1.35E+01 condition number:  1.66E+04 relative error:  3.69E-12
+Block No  1.  Single precision relative error:  1.98E-03
+Insufficient precision - trying double
+Block No  1.  Double precision relative error:  1.98E-03
 [13]  LARGE     2           2            -0.1       0.0E+00    0.1 E+01         -0.1                           ENANTIO 
 [14]  S/ESD     9           9           -0.012       0.0E+00    0.49 E-02         -2.5         CL     1 U[23]   
 
@@ -10967,8 +10645,9 @@ LS-scale=  0.441   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.35E+01 condition number:  1.46E+04 relative error:  1.75E-03
-Double precision:  1-norm:  1.35E+01 condition number:  1.46E+04 relative error:  3.25E-12
+Block No  1.  Single precision relative error:  1.75E-03
+Insufficient precision - trying double
+Block No  1.  Double precision relative error:  1.75E-03
 [13]  LARGE     2           2             0.0      -0.4E+00    0.3 E+00          0.1                           ENANTIO 
 
                                                 for         263 parameters
@@ -11282,8 +10961,9 @@ LS-scale=  0.441   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.36E+01 condition number:  1.44E+04 relative error:  1.72E-03
-Double precision:  1-norm:  1.36E+01 condition number:  1.44E+04 relative error:  3.20E-12
+Block No  1.  Single precision relative error:  1.72E-03
+Insufficient precision - trying double
+Block No  1.  Double precision relative error:  1.72E-03
 [13]  LARGE     2           2             0.0       0.1E-01    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -11597,8 +11277,9 @@ LS-scale=  0.442   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.36E+01 condition number:  1.21E+04 relative error:  1.44E-03
-Double precision:  1-norm:  1.36E+01 condition number:  1.21E+04 relative error:  2.68E-12
+Block No  1.  Single precision relative error:  1.44E-03
+Insufficient precision - trying double
+Block No  1.  Double precision relative error:  1.44E-03
 [13]  LARGE     2           2             0.0       0.9E+01    0.6 E+00          0.0                           ENANTIO 
 [14]  S/ESD    11          11           -0.012      -0.9E+01    0.41 E-02         -2.8         CL     1 U[12]   
 
@@ -11913,8 +11594,9 @@ LS-scale=  0.442   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.35E+01 condition number:  1.46E+04 relative error:  1.74E-03
-Double precision:  1-norm:  1.35E+01 condition number:  1.46E+04 relative error:  3.25E-12
+Block No  1.  Single precision relative error:  1.74E-03
+Insufficient precision - trying double
+Block No  1.  Double precision relative error:  1.74E-03
 [13]  LARGE     2           2            -0.0      -0.4E+01    0.7 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -12166,26 +11848,6 @@ R a tansformation matrix of adp to cartesian space and U a adp matrix.
 Then R U R^t = Q L Q^t => L = Q^t R U R^t Q.
 Finally dL/dU_ij = Q^t R dU/DU_ij R^t Q
  
-    Derivatives:
-      CL(   1) U[11]    CL(   1) U[22]    CL(   1) U[33]    CL(   1) U[23]    CL(   1) U[13]    CL(   1) U[12]
-        6: 8.914E+02      7: 2.399E+03      8: 3.038E+03      9:-7.163E+03     10:-5.212E+03     11: 3.614E+03   L_11-<L_11,L_22>=0
-      CL(   1) U[11]    CL(   1) U[22]    CL(   1) U[33]    CL(   1) U[23]    CL(   1) U[13]    CL(   1) U[12]
-        6: 3.857E+03      7: 2.873E+03      8:-4.445E+02      9: 8.112E+02     10:-2.169E+03     11:-8.425E+03   L_22-<L_11,L_22>=0
-      CL(   1) U[11]    CL(   1) U[22]    CL(   1) U[33]    CL(   1) U[23]    CL(   1) U[13]    CL(   1) U[12]
-        6: 3.857E+03      7: 2.873E+03      8:-4.445E+02      9: 8.112E+02     10:-2.169E+03     11:-8.425E+03   L_12=0
-      CL(   3) U[11]    CL(   3) U[22]    CL(   3) U[33]    CL(   3) U[23]    CL(   3) U[13]    CL(   3) U[12]
-       24: 3.249E+03     25: 2.285E+03     26: 3.305E+02     27:-4.205E+03     28: 3.333E+03     29:-7.564E+03   L_11-<L_11,L_22>=0
-      CL(   3) U[11]    CL(   3) U[22]    CL(   3) U[33]    CL(   3) U[23]    CL(   3) U[13]    CL(   3) U[12]
-       24: 2.506E+03     25: 4.072E+03     26:-6.658E+02     27: 9.776E+01     28:-4.593E+01     29: 7.122E+03   L_22-<L_11,L_22>=0
-      CL(   3) U[11]    CL(   3) U[22]    CL(   3) U[33]    CL(   3) U[23]    CL(   3) U[13]    CL(   3) U[12]
-       24: 2.506E+03     25: 4.072E+03     26:-6.658E+02     27: 9.776E+01     28:-4.593E+01     29: 7.122E+03   L_12=0
-
-    Transformation matrices:
-          CL(1)                                           CL(3)
-       -1.02E-01  -8.02E-01   5.88E-01             9.52E-01   3.39E-02  -3.05E-01
-        8.54E-01   2.32E-01   4.65E-01             2.40E-02   9.83E-01   1.84E-01
-       -5.10E-01   5.50E-01   6.61E-01             3.06E-01  -1.82E-01   9.34E-01
-
     Atom CL(1)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
          1  1  0  0  0    6.66E-02     0.00E+00     6.66E-02    0.997    L_11-<L_11,L_22>=0
@@ -12260,14 +11922,6 @@ R a tansformation matrix of adp to cartesian space and U a adp matrix.
 Then R U R^t = Q L Q^t => L = Q^t R U R^t Q.
 Finally dL/dU_ij = Q^t R dU/DU_ij R^t Q
  
-    No derivatives stored, do a refinement cycle
-    
-    Transformation matrices:
-          CL(1)                                           CL(3)
-        5.41E-01  -8.17E-01  -2.00E-01             7.73E-01   5.46E-01  -3.23E-01
-        4.64E-01   4.88E-01  -7.39E-01            -5.19E-01   8.37E-01   1.71E-01
-        7.02E-01   3.07E-01   6.43E-01             3.63E-01   3.51E-02   9.31E-01
-
     Atom CL(1)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
          1  1  0  0  0    1.12E-01     8.09E-02     3.16E-02             L(1,1)-<eig>=0
@@ -12375,7 +12029,7 @@ LS-scale=  0.436   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.35E+01 condition number:  1.78E+02 relative error:  2.13E-05
+Block No  1.  Single precision relative error:  2.13E-05
 [13]  LARGE     2           2            -0.1       0.0E+00    0.4 E+01         -0.0                           ENANTIO 
 [14]  S/ESD     6           6           -0.014       0.0E+00    0.22 E-02         -6.4         CL     1 U[11]   
 [14]  S/ESD     9           9           -0.026       0.0E+00    0.13 E-02        -19.7         CL     1 U[23]   
@@ -12697,7 +12351,7 @@ LS-scale=  0.447   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.53E+01 condition number:  2.02E+02 relative error:  2.40E-05
+Block No  1.  Single precision relative error:  2.40E-05
 [13]  LARGE     2           2             0.0      -0.6E+00    0.2 E+00          0.3                           ENANTIO 
 
                                                 for         263 parameters
@@ -13011,7 +12665,7 @@ LS-scale=  0.439   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.53E+01 condition number:  2.00E+02 relative error:  2.39E-05
+Block No  1.  Single precision relative error:  2.39E-05
 [13]  LARGE     2           2             0.0       0.3E+00    0.2 E+00          0.1                           ENANTIO 
 
                                                 for         263 parameters
@@ -13325,7 +12979,7 @@ LS-scale=  0.439   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.53E+01 condition number:  2.01E+02 relative error:  2.40E-05
+Block No  1.  Single precision relative error:  2.40E-05
 [13]  LARGE     2           2            -0.0      -0.8E+00    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -13639,7 +13293,7 @@ LS-scale=  0.439   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.53E+01 condition number:  2.01E+02 relative error:  2.39E-05
+Block No  1.  Single precision relative error:  2.39E-05
 [13]  LARGE     2           2             0.0      -0.2E+00    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -13891,38 +13545,6 @@ R a tansformation matrix of adp to cartesian space and U a adp matrix.
 Then R U R^t = Q L Q^t => L = Q^t R U R^t Q.
 Finally dL/dU_ij = Q^t R dU/DU_ij R^t Q
  
-    Derivatives:
-      CL(   1) U[11]    CL(   1) U[22]    CL(   1) U[33]    CL(   1) U[23]    CL(   1) U[13]    CL(   1) U[12]
-        6: 1.049E+03      7: 1.669E+03      8: 3.963E+03      9: 5.910E+03     10: 4.971E+03     11: 3.338E+03   L(1,1)-<eig>=0
-      CL(   1) U[11]    CL(   1) U[22]    CL(   1) U[33]    CL(   1) U[23]    CL(   1) U[13]    CL(   1) U[12]
-        6: 5.954E+03      7: 1.094E+03      8:-2.382E+02      9: 1.071E+03     10:-4.038E+03     11:-7.497E+03   L(2,2)-<eig>=0
-      CL(   1) U[11]    CL(   1) U[22]    CL(   1) U[33]    CL(   1) U[23]    CL(   1) U[13]    CL(   1) U[12]
-        6:-2.395E+02      7: 3.998E+03      8: 3.039E+03      9:-8.983E+03     10:-3.185E+03     11: 2.158E+03   L(3,3)-<eig>=0
-      CL(   1) U[11]    CL(   1) U[22]    CL(   1) U[33]    CL(   1) U[23]    CL(   1) U[13]    CL(   1) U[12]
-        6: 1.683E+03      7:-2.867E+03      8: 1.261E+03      9: 1.140E+03     10:-5.381E+03     11: 4.690E+03   L(2,3)=0
-      CL(   1) U[11]    CL(   1) U[22]    CL(   1) U[33]    CL(   1) U[23]    CL(   1) U[13]    CL(   1) U[12]
-        6:-8.567E+02      7:-3.301E+03      8: 4.142E+03      9:-1.705E+03     10: 1.115E+03     11:-3.829E+03   L(1,3)=0
-      CL(   1) U[11]    CL(   1) U[22]    CL(   1) U[33]    CL(   1) U[23]    CL(   1) U[13]    CL(   1) U[12]
-        6:-3.371E+03      7: 2.028E+03      8: 1.409E+03      9: 3.857E+03     10:-4.679E+03     11:-2.194E+03   L(1,2)=0
-      CL(   3) U[11]    CL(   3) U[22]    CL(   3) U[33]    CL(   3) U[23]    CL(   3) U[13]    CL(   3) U[12]
-       24: 5.885E+03     25: 1.426E+02     26:-7.827E+02     27: 2.380E+02     28: 2.090E+03     29: 4.894E+03   L(1,1)-<eig>=0
-      CL(   3) U[11]    CL(   3) U[22]    CL(   3) U[33]    CL(   3) U[23]    CL(   3) U[13]    CL(   3) U[12]
-       24:-3.043E+02     25: 5.938E+03     26:-3.657E+02     27:-5.896E+03     28: 4.860E+02     29:-6.077E+03   L(2,2)-<eig>=0
-      CL(   3) U[11]    CL(   3) U[22]    CL(   3) U[33]    CL(   3) U[23]    CL(   3) U[13]    CL(   3) U[12]
-       24:-2.877E+02     25:-7.892E+02     26: 6.442E+03     27: 2.187E+03     28:-6.298E+03     29:-2.288E+03   L(3,3)-<eig>=0
-      CL(   3) U[11]    CL(   3) U[22]    CL(   3) U[33]    CL(   3) U[23]    CL(   3) U[13]    CL(   3) U[12]
-       24: 8.611E+02     25: 1.616E+03     26:-2.452E+03     27: 6.803E+03     28:-1.716E+03     29:-3.044E+03   L(2,3)=0
-      CL(   3) U[11]    CL(   3) U[22]    CL(   3) U[33]    CL(   3) U[23]    CL(   3) U[13]    CL(   3) U[12]
-       24:-2.474E+03     25: 6.915E+02     26: 1.687E+03     27: 3.514E+03     28: 6.745E+03     29: 5.467E+02   L(1,3)=0
-      CL(   3) U[11]    CL(   3) U[22]    CL(   3) U[33]    CL(   3) U[23]    CL(   3) U[13]    CL(   3) U[12]
-       24:-2.451E+03     25: 3.037E+03     26:-5.443E+02     27: 6.157E+02     28:-2.926E+03     29: 6.016E+03   L(1,2)=0
-
-    Transformation matrices:
-          CL(1)                                           CL(3)
-        6.19E-01   2.15E-01  -7.56E-01             3.39E-01   8.34E-01  -4.36E-01
-        3.62E-01   7.75E-01   5.17E-01            -9.21E-01   3.88E-01   2.60E-02
-        6.97E-01  -5.94E-01   4.02E-01             1.91E-01   3.93E-01   8.99E-01
-
     Atom CL(1)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
          1  1  0  0  0    7.62E-02     7.62E-02     4.86E-05    0.996    L(1,1)-<eig>=0
@@ -13996,14 +13618,6 @@ Refining   263 parameters in    1 block :    35258 elements in the LS matrix.
 ___________
  (0) UVOL 0.0001 CL(1) CL(3)
  -- Restraint geometric mean of all ADPs to be equal
-
-    No derivatives stored, do a refinement cycle
-    
-    Transformation matrices:
-          CL(1)                                           CL(3)
-        5.41E-01  -8.17E-01  -2.00E-01             7.73E-01   5.46E-01  -3.23E-01
-        4.64E-01   4.88E-01  -7.39E-01            -5.19E-01   8.37E-01   1.71E-01
-        6.94E-01   3.19E-01   6.46E-01             3.52E-01   2.74E-02   9.36E-01
 
     Atom CL(1)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
@@ -14102,7 +13716,7 @@ LS-scale=  0.436   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.35E+01 condition number:  4.24E+03 relative error:  5.06E-04
+Block No  1.  Single precision relative error:  5.06E-04
 [13]  LARGE     2           2            -0.1       0.0E+00    0.1 E+01         -0.1                           ENANTIO 
 [14]  S/ESD     6           6            0.014       0.0E+00    0.84 E-02          1.7         CL     1 U[11]   
 [14]  S/ESD     7           7            0.019       0.0E+00    0.69 E-02          2.8         CL     1 U[22]   
@@ -14421,7 +14035,7 @@ LS-scale=  0.444   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.42E+01 condition number:  3.12E+03 relative error:  3.72E-04
+Block No  1.  Single precision relative error:  3.72E-04
 [13]  LARGE     2           2             0.1      -0.1E+01    0.2 E+00          0.6                           ENANTIO 
 
                                                 for         263 parameters
@@ -14735,7 +14349,7 @@ LS-scale=  0.441   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.42E+01 condition number:  3.19E+03 relative error:  3.80E-04
+Block No  1.  Single precision relative error:  3.80E-04
 [13]  LARGE     2           2            -0.0      -0.1E+00    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -15049,7 +14663,7 @@ LS-scale=  0.441   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.42E+01 condition number:  3.13E+03 relative error:  3.73E-04
+Block No  1.  Single precision relative error:  3.73E-04
 [13]  LARGE     2           2             0.0      -0.7E+00    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -15363,7 +14977,7 @@ LS-scale=  0.441   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.42E+01 condition number:  3.12E+03 relative error:  3.72E-04
+Block No  1.  Single precision relative error:  3.72E-04
 [13]  LARGE     2           2            -0.0      -0.7E+00    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -15609,18 +15223,6 @@ ___________
  (0) UVOL 0.0001 CL(1) CL(3)
  -- Restraint geometric mean of all ADPs to be equal
 
-    Derivatives:
-      CL(   1) U[11]    CL(   1) U[22]    CL(   1) U[33]    CL(   1) U[23]    CL(   1) U[13]    CL(   1) U[12]
-        6: 2.543E+03      7: 3.189E+03      8: 2.981E+03      9:-1.732E+03     10:-8.287E+02     11: 7.119E+01   U_geom = <U>_geom
-      CL(   3) U[11]    CL(   3) U[22]    CL(   3) U[33]    CL(   3) U[23]    CL(   3) U[13]    CL(   3) U[12]
-       24: 3.821E+03     25: 3.860E+03     26: 1.707E+03     27:-1.122E+03     28: 1.537E+03     29:-1.168E+02   U_geom = <U>_geom
-
-    Transformation matrices:
-          CL(1)                                           CL(3)
-        5.13E-01  -8.40E-01  -1.77E-01             7.23E-01   6.27E-01  -2.90E-01
-        5.15E-01   4.66E-01  -7.19E-01            -5.94E-01   7.79E-01   2.02E-01
-        6.79E-01   2.90E-01   6.74E-01             3.42E-01   1.73E-02   9.40E-01
-
     Atom CL(1)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
          1  1  0  0  0    9.45E-02     9.46E-02    -1.30E-04    0.993    U_geom = <U>_geom
@@ -15684,14 +15286,6 @@ Refining   263 parameters in    1 block :    35258 elements in the LS matrix.
 ___________
  (0) UEQIV 0.0001 CL(1) CL(3)
  -- Restraint all Ueq to be equal
-
-    No derivatives stored, do a refinement cycle
-    
-    Transformation matrices:
-          CL(1)                                           CL(3)
-        5.41E-01  -8.17E-01  -2.00E-01             7.73E-01   5.46E-01  -3.23E-01
-        4.64E-01   4.88E-01  -7.39E-01            -5.19E-01   8.37E-01   1.71E-01
-        6.94E-01   3.19E-01   6.46E-01             3.52E-01   2.74E-02   9.36E-01
 
     Atom CL(1)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
@@ -15790,7 +15384,7 @@ LS-scale=  0.436   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.36E+01 condition number:  4.26E+03 relative error:  5.07E-04
+Block No  1.  Single precision relative error:  5.07E-04
  S/ESD     1           1             0.012      0.0E+00    0.691E-02          1.73                          SCALE   
 [13]  LARGE     2           2            -0.1       0.0E+00    0.1 E+01         -0.1                           ENANTIO 
 [14]  S/ESD     6           6            0.024       0.0E+00    0.95 E-02          2.5         CL     1 U[11]   
@@ -16111,7 +15705,7 @@ LS-scale=  0.448   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.44E+01 condition number:  3.16E+03 relative error:  3.77E-04
+Block No  1.  Single precision relative error:  3.77E-04
 [13]  LARGE     2           2             0.1      -0.7E+00    0.2 E+00          0.3                           ENANTIO 
 
                                                 for         263 parameters
@@ -16425,7 +16019,7 @@ LS-scale=  0.442   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.43E+01 condition number:  3.11E+03 relative error:  3.71E-04
+Block No  1.  Single precision relative error:  3.71E-04
 [13]  LARGE     2           2            -0.0      -0.3E+00    0.2 E+00         -0.1                           ENANTIO 
 
                                                 for         263 parameters
@@ -16739,7 +16333,7 @@ LS-scale=  0.442   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.43E+01 condition number:  3.11E+03 relative error:  3.71E-04
+Block No  1.  Single precision relative error:  3.71E-04
 [13]  LARGE     2           2             0.0      -0.3E+00    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -17053,7 +16647,7 @@ LS-scale=  0.442   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.43E+01 condition number:  3.11E+03 relative error:  3.71E-04
+Block No  1.  Single precision relative error:  3.71E-04
 [13]  LARGE     2           2            -0.0      -0.7E-01    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -17299,18 +16893,6 @@ ___________
  (0) UEQIV 0.0001 CL(1) CL(3)
  -- Restraint all Ueq to be equal
 
-    Derivatives:
-      CL(   1) U[11]    CL(   1) U[22]    CL(   1) U[33]    CL(   1) U[23]    CL(   1) U[13]    CL(   1) U[12]
-        6: 2.824E+03      7: 2.824E+03      8: 2.824E+03      9:-2.469E-04     10:-8.058E+01     11:-4.228E-04   U_eq = <U>_eq
-      CL(   3) U[11]    CL(   3) U[22]    CL(   3) U[33]    CL(   3) U[23]    CL(   3) U[13]    CL(   3) U[12]
-       24: 2.824E+03     25: 2.824E+03     26: 2.824E+03     27:-2.469E-04     28:-8.058E+01     29:-4.228E-04   U_eq = <U>_eq
-
-    Transformation matrices:
-          CL(1)                                           CL(3)
-        4.52E-01  -8.76E-01  -1.66E-01             7.38E-01   6.03E-01  -3.03E-01
-        5.41E-01   4.17E-01  -7.30E-01            -5.77E-01   7.97E-01   1.81E-01
-        7.03E-01   2.52E-01   6.65E-01             3.40E-01   3.21E-02   9.40E-01
-
     Atom CL(1)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
          1  1  0  0  0    1.04E-01     1.04E-01    -1.18E-04    0.995    U_eq = <U>_eq
@@ -17380,24 +16962,6 @@ L tensor:
 T tensor:
   7.74E-03   2.67E-03   1.26E-02  -1.67E-03   6.58E-03  -3.05E-03
  
-    No derivatives stored, do a refinement cycle
-    
-    Transformation matrices:
-          C(24)                                           C(25)
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-
-          C(26)                                           C(27)
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-
-          C(28)                                           C(29)
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-
     Atom C(24)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
          1  1  0  0  0    3.38E-02     3.23E-02     1.47E-03             U11 - Utls11 == 0
@@ -17537,7 +17101,7 @@ LS-scale=  0.436   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.33E+01 condition number:  2.05E+02 relative error:  2.44E-05
+Block No  1.  Single precision relative error:  2.44E-05
 [13]  LARGE     2           2            -0.1       0.0E+00    0.6 E+00         -0.1                           ENANTIO 
 [14]  S/ESD   170         170            0.013       0.0E+00    0.12 E-01          1.0         C     19 U[33]   
 
@@ -17852,7 +17416,7 @@ LS-scale=  0.439   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.33E+01 condition number:  2.05E+02 relative error:  2.44E-05
+Block No  1.  Single precision relative error:  2.44E-05
 [13]  LARGE     2           2             0.0      -0.2E+00    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -18166,7 +17730,7 @@ LS-scale=  0.438   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.33E+01 condition number:  2.05E+02 relative error:  2.44E-05
+Block No  1.  Single precision relative error:  2.44E-05
 [13]  LARGE     2           2            -0.0      -0.4E+00    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -18480,7 +18044,7 @@ LS-scale=  0.438   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.33E+01 condition number:  2.05E+02 relative error:  2.45E-05
+Block No  1.  Single precision relative error:  2.45E-05
 [13]  LARGE     2           2            -0.0       0.1E+01    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -18794,7 +18358,7 @@ LS-scale=  0.438   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.33E+01 condition number:  2.04E+02 relative error:  2.44E-05
+Block No  1.  Single precision relative error:  2.44E-05
 [13]  LARGE     2           2             0.0      -0.1E+01    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -19108,7 +18672,7 @@ LS-scale=  0.438   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.33E+01 condition number:  2.05E+02 relative error:  2.45E-05
+Block No  1.  Single precision relative error:  2.45E-05
 [13]  LARGE     2           2            -0.0      -0.1E+01    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -19422,7 +18986,7 @@ LS-scale=  0.438   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.33E+01 condition number:  2.04E+02 relative error:  2.44E-05
+Block No  1.  Single precision relative error:  2.44E-05
 [13]  LARGE     2           2             0.0      -0.1E+01    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -19736,7 +19300,7 @@ LS-scale=  0.438   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.33E+01 condition number:  2.05E+02 relative error:  2.45E-05
+Block No  1.  Single precision relative error:  2.45E-05
 [13]  LARGE     2           2            -0.0      -0.1E+01    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -20050,7 +19614,7 @@ LS-scale=  0.438   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.33E+01 condition number:  2.05E+02 relative error:  2.44E-05
+Block No  1.  Single precision relative error:  2.44E-05
 [13]  LARGE     2           2             0.0      -0.6E+00    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -20364,7 +19928,7 @@ LS-scale=  0.438   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.33E+01 condition number:  2.05E+02 relative error:  2.45E-05
+Block No  1.  Single precision relative error:  2.45E-05
 [13]  LARGE     2           2            -0.0      -0.2E+01    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -20615,96 +20179,6 @@ L tensor:
 T tensor:
   8.53E-03   2.53E-03   1.32E-02  -1.70E-03   6.69E-03  -2.74E-03
  
-    Derivatives:
-       C(  24) U[11]
-      213: 7.996E+03   U11 - Utls11 == 0
-       C(  24) U[22]
-      214: 7.996E+03   U22 - Utls22 == 0
-       C(  24) U[33]
-      215: 7.996E+03   U33 - Utls33 == 0
-       C(  24) U[23]
-      216: 7.996E+03   U12 - Utls12 == 0
-       C(  24) U[13]
-      217: 7.996E+03   U23 - Utls23 == 0
-       C(  24) U[12]
-      218: 7.996E+03   U13 - Utls13 == 0
-       C(  25) U[11]
-      222: 7.996E+03   U11 - Utls11 == 0
-       C(  25) U[22]
-      223: 7.996E+03   U22 - Utls22 == 0
-       C(  25) U[33]
-      224: 7.996E+03   U33 - Utls33 == 0
-       C(  25) U[23]
-      225: 7.996E+03   U12 - Utls12 == 0
-       C(  25) U[13]
-      226: 7.996E+03   U23 - Utls23 == 0
-       C(  25) U[12]
-      227: 7.996E+03   U13 - Utls13 == 0
-       C(  26) U[11]
-      231: 7.996E+03   U11 - Utls11 == 0
-       C(  26) U[22]
-      232: 7.996E+03   U22 - Utls22 == 0
-       C(  26) U[33]
-      233: 7.996E+03   U33 - Utls33 == 0
-       C(  26) U[23]
-      234: 7.996E+03   U12 - Utls12 == 0
-       C(  26) U[13]
-      235: 7.996E+03   U23 - Utls23 == 0
-       C(  26) U[12]
-      236: 7.996E+03   U13 - Utls13 == 0
-       C(  27) U[11]
-      240: 7.996E+03   U11 - Utls11 == 0
-       C(  27) U[22]
-      241: 7.996E+03   U22 - Utls22 == 0
-       C(  27) U[33]
-      242: 7.996E+03   U33 - Utls33 == 0
-       C(  27) U[23]
-      243: 7.996E+03   U12 - Utls12 == 0
-       C(  27) U[13]
-      244: 7.996E+03   U23 - Utls23 == 0
-       C(  27) U[12]
-      245: 7.996E+03   U13 - Utls13 == 0
-       C(  28) U[11]
-      249: 7.996E+03   U11 - Utls11 == 0
-       C(  28) U[22]
-      250: 7.996E+03   U22 - Utls22 == 0
-       C(  28) U[33]
-      251: 7.996E+03   U33 - Utls33 == 0
-       C(  28) U[23]
-      252: 7.996E+03   U12 - Utls12 == 0
-       C(  28) U[13]
-      253: 7.996E+03   U23 - Utls23 == 0
-       C(  28) U[12]
-      254: 7.996E+03   U13 - Utls13 == 0
-       C(  29) U[11]
-      258: 7.996E+03   U11 - Utls11 == 0
-       C(  29) U[22]
-      259: 7.996E+03   U22 - Utls22 == 0
-       C(  29) U[33]
-      260: 7.996E+03   U33 - Utls33 == 0
-       C(  29) U[23]
-      261: 7.996E+03   U12 - Utls12 == 0
-       C(  29) U[13]
-      262: 7.996E+03   U23 - Utls23 == 0
-       C(  29) U[12]
-      263: 7.996E+03   U13 - Utls13 == 0
-
-    Transformation matrices:
-          C(24)                                           C(25)
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-
-          C(26)                                           C(27)
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-
-          C(28)                                           C(29)
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-        0.00E+00   0.00E+00   0.00E+00             0.00E+00   0.00E+00   0.00E+00
-
     Atom C(24)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
          1  1  0  0  0    3.13E-02     3.13E-02     7.03E-05    0.999    U11 - Utls11 == 0
