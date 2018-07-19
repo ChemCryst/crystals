@@ -1,0 +1,10 @@
+Run py-path.bat to set path
+edit CrawlActaE.py (year & month)
+run CrawlActaE
+baregrep on cif for p]
+save hits as p-files.txt
+sort /+69 p-files.txt >p-sort.txt  (check 69 - it may differ)
+Take care that all the bit p] are at the end
+Exclude the low p]
+delete the folders with the low p] entries
+
