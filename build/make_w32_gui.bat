@@ -15,7 +15,7 @@
 @if "%CRDEBUG%" == "TRUE" if not exist dobj mkdir dobj
 @if "%CRDEBUG%" == "TRUE" set FOPTIONS=%FDEF% %FWIN% %FDEBUG%
 @if "%CRDEBUG%" == "TRUE" set COPTIONS=%CDEF% %CDEBUG%
-@FOR %%I IN ( ..\gui\*.cc )  DO call buildfile.bat %%~nI  
+@FOR %%I IN ( ..\gui\*.cpp )  DO call buildfile.bat %%~nI  
 
 call buildfile.bat lapack
 
