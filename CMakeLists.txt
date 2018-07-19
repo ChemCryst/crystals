@@ -341,16 +341,33 @@ IF (Fortran_COMPILER_NAME MATCHES "gfortran")  # gfortran
 
 ELSEIF ( IFORT_COMPILER ) # ifort (untested)
 
-    SET (CMAKE_Fortran_FLAGS_RELEASE "-O3 -fpp /MD -Qmkl -Qdiag-disable:8291 -traceback -QaxSSE2")
-    SET (CMAKE_Fortran_FLAGS_DEBUG   "-check:all /MDd -debug:all -Qtrapuv -fpe0 -fpp -Qmkl -warn:nofileopt -Qdiag-disable:8291 -Qdiag-disable:8290 -check:format -check:overflow -check:pointers -check:noarg_temp_created -check:uninit -traceback -check:nooutput_conversion")
+  IF (UNIX)
+
+	    SET (CMAKE_Fortran_FLAGS_RELEASE "-debug all -g -O3 -fpp -mkl -diag-disable:8291 -traceback")
+	    SET (CMAKE_Fortran_FLAGS_DEBUG   "-g -check all -debug all -ftrapuv -fpe0 -fstack-protector-all -O0 -fpp -mkl -diag-disable:8291 -check uninit -traceback -check nooutput_conversion")
+
+  ELSE()
+
+	    SET (CMAKE_Fortran_FLAGS_RELEASE "-O3 -fpp -MD -Qmkl -Qdiag-disable:8291 -traceback -QaxSSE2")
+	    SET (CMAKE_Fortran_FLAGS_DEBUG   "-check:all -MDd -debug:all -Qtrapuv -fpe0 -fpp -Qmkl -warn:nofileopt -Qdiag-disable:8291 -Qdiag-disable:8290 -check:format -check:overflow -check:pointers -check:noarg_temp_created -check:uninit -traceback -check:nooutput_conversion")
+
+    	SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}  /O2  /EHs /W3 /Oy- ")
+    	SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /EHs /W3 /Oy- ")
+    	SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}  /O2 /EHs /W3 /Oy- ")
+    	SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}  /EHs /W3 /Oy- ")
 
 
-	add_definitions(-DWIN32)
-	add_definitions(-DWXUSINGDLL)
-	add_definitions(-D_WINDOWS)
-	add_definitions(-D_UNICODE)
-	add_definitions(-D__WXMSW__)
-	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+	    add_definitions(-DWIN32)
+	    add_definitions(-DWXUSINGDLL)
+	    add_definitions(-D_WINDOWS)
+	    add_definitions(-D_UNICODE)
+	    add_definitions(-D__WXMSW__)
+	    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+
+	    set(CMAKE_CXX_LINK_EXECUTABLE "ifort <OBJECTS>  -o <TARGET> <LINK_LIBRARIES> /link <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS>")
+
+    ENDIF()
+
 	add_definitions(-DCRYSVNVER=${CRYSVNVER})
 	
     IF(CMAKE_BUILD_TYPE MATCHES Debug)
@@ -362,12 +379,7 @@ ELSEIF ( IFORT_COMPILER ) # ifort (untested)
 	include_directories(gui)
 	
 	
-    SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}  /O2  /EHs /W3 /Oy- ")
-    SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /EHs /W3 /Oy- ")
-    SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}  /O2 /EHs /W3 /Oy- ")
-    SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}  /EHs /W3 /Oy- ")
 
-    set(CMAKE_CXX_LINK_EXECUTABLE "ifort <OBJECTS>  -o <TARGET> <LINK_LIBRARIES> /link <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS>")
 
 ELSEIF (Fortran_COMPILER_NAME MATCHES "g77")   # g77
 
