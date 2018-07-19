@@ -94,6 +94,14 @@ if(CMAKE_COMPILER_IS_GNUCC)
   endif ()
 endif ()
 
+# FFLAGS depend on the compiler
+GET_FILENAME_COMPONENT (Fortran_COMPILER_NAME "${CMAKE_Fortran_COMPILER}" NAME)
+if ((Fortran_COMPILER_NAME MATCHES "ifort") OR (Fortran_COMPILER_NAME MATCHES "ifort.exe")) # ifort (untested)
+    message(WARNING "Using Intel Fortran compiler.")  
+    SET (IFORT_COMPILER 1)
+endif()
+
+
 FIND_PACKAGE ( Perl REQUIRED)
 IF ( PERL_FOUND )
     MESSAGE ( STATUS "Perl executable: [${PERL_EXECUTABLE}]")
@@ -234,7 +242,11 @@ endif()
 
 if ( WIN32 )
     add_definitions(-DCRY_OSWIN32)
-    add_definitions(-D__MIN__)
+    if ( IFORT_COMPILER )
+        add_definitions(-D__INW__)
+    else ()
+        add_definitions(-D__MIN__)
+    endif()
 endif()
 
 if ( APPLE )
@@ -244,7 +256,6 @@ endif()
 if ( MSYS )
     add_definitions(-DCRY_OSWIN32)
 endif()
-add_definitions(-DCRY_GNU)
 
 if( compileHDF5 )
     SET(useHDF5 ON)
@@ -302,10 +313,11 @@ IF (NOT CMAKE_BUILD_TYPE)   # make sure that the default is a RELEASE
 ENDIF()
 string(TOUPPER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE)
 
-# FFLAGS depend on the compiler
-GET_FILENAME_COMPONENT (Fortran_COMPILER_NAME "${CMAKE_Fortran_COMPILER}" NAME)
 
 IF (Fortran_COMPILER_NAME MATCHES "gfortran")  # gfortran
+    
+    add_definitions(-DCRY_GNU)
+    
     if(useFAST)
         SET (CMAKE_Fortran_FLAGS_RELEASE "-fno-omit-frame-pointer -fno-f2c -O3 -g -march=native -Wfatal-errors -ftree-vectorize -flto -fwhole-program")
     else ()
@@ -326,19 +338,51 @@ IF (Fortran_COMPILER_NAME MATCHES "gfortran")  # gfortran
     endif ()
     SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-omit-frame-pointer -std=gnu++11 -O1 -g")
     SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fno-omit-frame-pointer  -O1 -g")
-ELSEIF ((Fortran_COMPILER_NAME MATCHES "ifort") OR (Fortran_COMPILER_NAME MATCHES "ifort.exe")) # ifort (untested)
-    SET (CMAKE_Fortran_FLAGS_RELEASE "-debug all -g -O3 -fpp -mkl -diag-disable:8291 -traceback")
-    SET (CMAKE_Fortran_FLAGS_DEBUG   "-g -check all -debug all -ftrapuv -fpe0 -fstack-protector-all -O0 -fpp -mkl -diag-disable:8291 -check uninit -traceback -check nooutput_conversion")
-    SET (IFORT_COMPILER 1)
+
+ELSEIF ( IFORT_COMPILER ) # ifort (untested)
+
+    SET (CMAKE_Fortran_FLAGS_RELEASE "-O3 -fpp /MD -Qmkl -Qdiag-disable:8291 -traceback -QaxSSE2")
+    SET (CMAKE_Fortran_FLAGS_DEBUG   "-check:all /MDd -debug:all -Qtrapuv -fpe0 -fpp -Qmkl -warn:nofileopt -Qdiag-disable:8291 -Qdiag-disable:8290 -check:format -check:overflow -check:pointers -check:noarg_temp_created -check:uninit -traceback -check:nooutput_conversion")
+
+
+	add_definitions(-DWIN32)
+	add_definitions(-DWXUSINGDLL)
+	add_definitions(-D_WINDOWS)
+	add_definitions(-D_UNICODE)
+	add_definitions(-D__WXMSW__)
+	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+	add_definitions(-DCRYSVNVER=${CRYSVNVER})
+	
+    IF(CMAKE_BUILD_TYPE MATCHES Debug)
+		add_definitions(-DDEBUG)
+	else()
+		add_definitions(-DNDEBUG)
+	endif()
+	
+	include_directories(gui)
+	
+	
+    SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}  /O2  /EHs /W3 /Oy- ")
+    SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /EHs /W3 /Oy- ")
+    SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}  /O2 /EHs /W3 /Oy- ")
+    SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}  /EHs /W3 /Oy- ")
+
+    set(CMAKE_CXX_LINK_EXECUTABLE "ifort <OBJECTS>  -o <TARGET> <LINK_LIBRARIES> /link <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS>")
+
 ELSEIF (Fortran_COMPILER_NAME MATCHES "g77")   # g77
+
+    add_definitions(-DCRY_GNU)
     SET (CMAKE_Fortran_FLAGS_RELEASE "-funroll-all-loops -fno-f2c -O3")
     SET (CMAKE_Fortran_FLAGS_DEBUG   "-fno-f2c -O0 -g")
+
 ELSE ()
+
     MESSAGE ("CMAKE_Fortran_COMPILER full path: " ${CMAKE_Fortran_COMPILER})
     MESSAGE ("Fortran compiler: " ${Fortran_COMPILER_NAME})
     MESSAGE ("No optimized Fortran compiler flags are known, we just try -O2...")
     SET (CMAKE_Fortran_FLAGS_RELEASE "-O2")
     SET (CMAKE_Fortran_FLAGS_DEBUG   "-O0 -g")
+
 ENDIF ()
 
 
@@ -552,7 +596,7 @@ ENDFOREACH()
 
 if ( useGUI )
     INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/crys_fortran)
-    ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} $<TARGET_OBJECTS:CrystalsUserInterface> ${CMAKE_SOURCE_DIR}/gui/fwrapper_gui.F90 ${CMAKE_SOURCE_DIR}/gui/fwrapperimp_gui.F90 gui/gcrystals.cc crystals/crystals.F)
+    ADD_EXECUTABLE (crystals WIN32 ${scpfiles} ${datfiles} ${srtfiles} $<TARGET_OBJECTS:CrystalsUserInterface> ${CMAKE_SOURCE_DIR}/gui/fwrapper_gui.F90 ${CMAKE_SOURCE_DIR}/gui/fwrapperimp_gui.F90 gui/gcrystals.cpp crystals/crystals.F)
     ADD_EXECUTABLE (crystalscl ${scpfiles} ${datfiles} ${srtfiles} crystals/crystals-cl.F ${CMAKE_SOURCE_DIR}/gui/fwrapperimp_cl.F90 )
 
     if(MSYS)

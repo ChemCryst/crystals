@@ -82,8 +82,8 @@
 @
 :tryCPP
 @rem GUI CC FILES
-@if not exist ..\gui\%FILENAME%.cc goto tryWEB
-@set CCSRC=..\gui\%FILESTEM%.cc
+@if not exist ..\gui\%FILENAME%.cpp goto tryWEB
+@set CCSRC=..\gui\%FILESTEM%.cpp
 @set JUMPBACK=tryWEB
 @set FILEFOUND=OK
 @goto ccomp

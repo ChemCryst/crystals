@@ -138,14 +138,16 @@ weight.F
 lapack.F
 )
 
-# Trap NaN as those seem to appear sometimes in the fourier test
-# Not applied globally because it breaks things
-SET_PROPERTY( SOURCE fourier.F PROPERTY COMPILE_FLAGS -ffpe-trap=invalid )
-SET_PROPERTY( SOURCE fourie.F PROPERTY COMPILE_FLAGS -ffpe-trap=invalid )
+if (Fortran_COMPILER_NAME MATCHES "gfortran")  # gfortran
+   # gfortran: Trap NaN as those seem to appear sometimes in the fourier test
+   # Not applied globally because it breaks things
+   SET_PROPERTY( SOURCE fourier.F PROPERTY COMPILE_FLAGS -ffpe-trap=invalid )
+   SET_PROPERTY( SOURCE fourie.F PROPERTY COMPILE_FLAGS -ffpe-trap=invalid )
+   SET_SOURCE_FILES_PROPERTIES(lapack.F PROPERTIES COMPILE_FLAGS -O0)
+endif()
 
 #target_link_libraries(CrystalsFortran openblas)
 SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES LINKER_LANGUAGE Fortran)
-SET_SOURCE_FILES_PROPERTIES(lapack.F PROPERTIES COMPILE_FLAGS -O0)
 
 # These lines add definitions at the preprocessor stage - when CMake is checking for module dependencies in the Fortran.
 # Without these lines modules may be built in the wrong order causing a compilation failure in parallel builds.
