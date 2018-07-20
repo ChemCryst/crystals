@@ -428,7 +428,10 @@ C to avoid problems down the line
       CALL XFAL12(JS,JQ,JR,JN)
 
       call load_lsq_params(parameters_list)
-                  
+#if defined(CRY_OSLINUX)
+      print *, 'new size of parameters_list: ', 
+     1  sizeof(parameters_list)/1024.0, 'kB'
+#endif        
 C
 C--CLEAR THE CORE AREA
       CALL XRSL
@@ -2299,6 +2302,10 @@ C--JUMP ON THE FUNCTION
       else if(idjwtemp>size(restraints_list)) then
         restraints_block_size=restraints_block_size*2
         call extend(restraints_list, restraints_block_size)
+#if defined(CRY_OSLINUX)
+        print *, 'new size of restraints_list: ', 
+     1      sizeof(restraints_list)/1024.0, 'kB'
+#endif        
       end if        
 
       ! looking for the corresponding user restraint in list16,list17
@@ -2353,11 +2360,35 @@ C--JUMP ON THE FUNCTION
      1         index(r%restraint_text,'COMP')==0 .and.
      1         index(r%restraint_text,'EXEC')==0
      1         ) then
-              WRITE(CMON,'("{E",1X, "(",I0,")",1X, A)') list16_index,
-     1          trim(r%restraint_text)
-              CALL XPRVDU(NCVDU, 1,0)      
+     
+              icptn=index(r%restraint_text, char(10)) ! Checking for end of line in restraints
+              if(icptn>0) then
+                ! Printing one line at a time
+                WRITE(CMON,'("{E",1X, "(",I0,")",1X, A)') list16_index,
+     1            r%restraint_text(1:icptn-1)
+                CALL XPRVDU(NCVDU, 1,0)      
+            
+                icptn=icptn+1
+                do ii=icptn, len_trim(r%restraint_text)
+                  if(r%restraint_text(ii:ii)==char(10)) then
+                    WRITE(CMON,'("{E",1X, 6X,1X, A)') 
+     1                trim(r%restraint_text(icptn:ii-1))          
+                    CALL XPRVDU(NCVDU, 1,0)      
+                    icptn=ii+1
+                   end if
+                end do
+                WRITE(CMON,'("{E",1X, 6X,1X, A)') 
+     1            trim(r%restraint_text(icptn:))          
+                CALL XPRVDU(NCVDU, 1,0)      
+              else
+                WRITE(CMON,'("{E",1X, "(",I0,")",1X, A)') list16_index,
+     1            trim(r%restraint_text)
+                CALL XPRVDU(NCVDU, 1,0)      
+              end if
+
               WRITE(CMON,'("{E", 4X, A)') 'Restraint in error'
               CALL XPRVDU(NCVDU, 1,0)      
+
             end if
           end associate            
         end if         
@@ -7531,6 +7562,10 @@ c                CALL XPRVDU(NCVDU,1,0)
      1      then
             derivatives_block_size=derivatives_block_size*2
             call extend(restraints_derivatives, derivatives_block_size)
+#if defined(CRY_OSLINUX)
+            print *, 'new size of derivatives: ', 
+     1          sizeof(restraints_derivatives)/1024.0, 'kB'
+#endif
           end if
         end if
         associate(r => 
