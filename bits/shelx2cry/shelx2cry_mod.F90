@@ -1018,6 +1018,7 @@ end subroutine
 !> Write list5 (atom parameters)
 subroutine write_list5()
 use crystal_data_m
+use sginfo_mod
 implicit none
 integer i, j, k
 real occ
@@ -1050,7 +1051,8 @@ real, dimension(3) :: diffxyz
             atomslist(i)%multiplicity=0
             do j=1, size(spacegroup%ListSeitzMx)
                 diffxyz=abs(atomslist(i)%coordinates- &
-                &   matmul(real(spacegroup%ListSeitzMx(j)%R), atomslist(i)%coordinates))
+                &   matmul(real(spacegroup%ListSeitzMx(j)%R), atomslist(i)%coordinates) - &
+                &   real(spacegroup%ListSeitzMx(j)%T)/sginfo_stbf)
                 do k=1, 3
                     do while(diffxyz(k)>=1.0)
                         diffxyz(k)=diffxyz(k)-1.0
@@ -1063,7 +1065,8 @@ real, dimension(3) :: diffxyz
             if(spacegroup%centric==-1) then
                 do j=1, size(spacegroup%ListSeitzMx)
                     diffxyz=abs(atomslist(i)%coordinates- &
-                    &   matmul(real(-1*spacegroup%ListSeitzMx(j)%R), atomslist(i)%coordinates))
+                    &   matmul(real(-1*spacegroup%ListSeitzMx(j)%R), atomslist(i)%coordinates) - &
+                    &   real(spacegroup%ListSeitzMx(j)%T)/sginfo_stbf)
                     do k=1, 3
                         do while(diffxyz(k)>=1.0)
                             diffxyz(k)=diffxyz(k)-1.0
