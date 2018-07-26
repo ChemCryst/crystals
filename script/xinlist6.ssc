@@ -290,9 +290,10 @@
 ^^WI   }
 ^^WI   TAB IN6TAB1 'Transform' GRID XIN6A NROWS=5 NCOLS=3                        
 ^^WI   {                                                                        
-^^WI    @ 2,2 GRID GAB NROWS=2 NCOLS=1 OUTLINE ='Transform'                     
-^^WI    {                                                                       
-^^WI     @ 1,1 CHECKBOX MAT                                                     
+^^WI    @ 2,2 GRID GAB NROWS=3 NCOLS=1 OUTLINE ='Transform'                     
+^^WI    {   
+^^WI     @ 1,1 STATIC ST1 "Don't forget to check this box"                                                                    
+^^WI     @ 2,1 CHECKBOX MAT                                                     
 ^^WI 'Apply this transformation matrix to the hkl data.'
 % IF HTRANS THEN
 ^^WI   STATE=ON
@@ -553,8 +554,11 @@
 %         IF ( EXISTS 6 .NE. 1 ) THEN 
 {E
 {E  You have not succeeded in reading in any reflections
-
 {E  Check the file format and the file extension.
+   A common problem is that a file with .fcf format has .hkl 
+   as the extension so that CRYSTALS tries to read it as
+   a SHELX hklf4 file.
+
 {E
 %           COPY "#USE CONTROL"
 %           FINISH
@@ -575,6 +579,10 @@
 {E
 {E  You have not succeeded in reading in any reflections
 {E  Check the file format and the file extension.
+   A common problem is that a file with .fcf format has .hkl 
+   as the extension so that CRYSTALS tries to read it as
+   a SHELX hklf4 file.
+
 {E
 %             COPY "#USE CONTROL"
 %             FINISH

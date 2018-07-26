@@ -4,7 +4,6 @@
 % VARIABLE LOGICAL SIG SIG2                                                      
 % EVALUATE SIG = FILEEXISTS 'sigmas.dat'                                   
 % EVALUATE SIG2 = FILEEXISTS 'sigmas2.dat'                                   
-% show sig sig2
 %     if  sig2 then
 %            copy '#script xvariance2'
 %     else if sig then

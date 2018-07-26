@@ -175,7 +175,7 @@
 % IF FTYPE .EQ. 6 THEN
 ^^WI       STATE=ON
 % END IF
-^^WI     @ 7,2 RADIOBUTTON GD 'Generalised (WinGX)'  
+^^WI     @ 7,2 RADIOBUTTON GD 'Generalised cif'  
 % IF FTYPE .EQ. 7 THEN
 ^^WI       STATE=ON
 % END IF

@@ -123,7 +123,7 @@
 ^^WI  }
 ^^WI  @ 3,1 GRID G NROWS=3 NCOLS=3 {
 ^^WI     @ 2,1 GRID GA NROWS=4 NCOLS=1 {
-^^WI        @ 1,1 STATIC RT_T4 'Choose a'
+^^WI        @ 1,1 STATIC RT_T4 'Select a low'
 ^^WI        @ 2,1 STATIC RT_T4 'figure of merit (f.o.m):'
 ^^WI        @ 4,1 LISTBOX RT_RES VISLINES=9 INFORM=YES
 ^^WI              ADDTOLIST
