@@ -300,7 +300,7 @@
 % ELSE
 ^^WI   STATE=OFF
 % END IF
-^^WI     @ 2,1 GRID GBB NROWS=5 NCOLS=5
+^^WI     @ 3,1 GRID GBB NROWS=5 NCOLS=5
 ^^WI     {                                                                      
 % TRANSFER "^^WI @ 1,1 EDITBOX M11 " // CHARACTER HKLT11 TO DISPLAY
 ^^WI CHARS=6 REAL
