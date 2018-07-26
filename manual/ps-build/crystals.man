@@ -9275,12 +9275,12 @@ default value is 4.0
  Two matrix inversion methods are provided.
 #N   2#
 #J
-      CHOLESKI  -  Default value
+      CHOLESKY  -  Default value
       EIGENVALUE
 #
- The default Choleski invertor is suitable for most well conditioned problems.
+ The default Cholesky invertor is suitable for most well conditioned problems.
  The alternative Eigenvalue invertor is suitable for ill-conditioned cases,
- such as those involving pseudo-symmetry. It is slower than the Choleski
+ such as those involving pseudo-symmetry. It is slower than the Cholesky
  method and cannot handle such large normal matrices. The memory
  required is almost three times that used for each block in the Cholesky
  method.

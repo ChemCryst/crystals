@@ -9424,14 +9424,14 @@ default value is 4.0
       LDLT - single precision Robust Cholesky decomposition of a matrix with pivoting
       EIGENVALUE - Eigenvalue decomposition + filtering on small eigenvalues then inversion
       DP_LDLT - double precision Robust Cholesky decomposition of a matrix with pivoting
-      XCHOLESKI - original crystals Choleski decomposition
-      CHOLESKI - Standard Choleski inversion
+      XCHOLESKY - original crystals Cholesky decomposition
+      CHOLESKY - Standard Cholesky inversion
 #
  The AUTO method is suitable for most problem including moderatly ill condition problems.
  Crystals will switch automatically from single precision to double precision for the inversion when needed.
- The eigenvalue decomposition should be used with care, the XCHOLESKI method is kept for historical purpose,
+ The eigenvalue decomposition should be used with care, the XCHOLESKY method is kept for historical purpose,
  The LDLT and DP_LDLT can be use to forced crystals to use single or double precision. Beware of precision loss
- in single precision. The CHOLESKI method is deprecated.
+ in single precision. The CHOLESKY method is deprecated.
 #DSHIFT  KEY = VALUE  KEY = VALUE .  .  .  .#
 #PThis directive sets the shift factor for the specified cycle of
  refinement. (The shift factor is the amount by which the calculated
@@ -9496,7 +9496,7 @@ default value is 4.0
  the normal matrix accumulation in single precision, 
  the accumulation of the right and side is also done in single precision.
  The inversion is still using double precision but with a 
- Choleski decomposition faster than the default auto-adaptive LDL^t decomposition. 
+ Cholesky decomposition faster than the default auto-adaptive LDL^t decomposition. 
  Bigger structures tend to be more ill-conditioned so inversion needs to be done in double precision.
  These changes could potentially lead to a less stable refinement but it is unlikely, 
  the default refinement is just very conservative.
