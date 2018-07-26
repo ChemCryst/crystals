@@ -8,12 +8,12 @@ Crystals User Guide
    :maxdepth: 1
    :caption: Contents:
 
-   install
-   gettingstarted
-   userinterface
-   commandline
-   examples
-   faqs
+   userguide/install
+   userguide/gettingstarted
+   userguide/examples
+   userguide/userinterface
+   userguide/commandline
+   userguide/faqs
 
 
 

@@ -19,22 +19,22 @@ Overview of the graphical user interface
 
 
 
-*********
+=========
 The Menus
-*********
+=========
 
 
 .. index:: GUI menus
 
 
-====
+----
 File
-====
+----
 
 
----------------
+^^^^^^^^^^^^^^^
 New Working Dir
----------------
+^^^^^^^^^^^^^^^
 
 
    
@@ -45,9 +45,9 @@ New Working Dir
    
    
 
--------------
+^^^^^^^^^^^^^
 Open Datafile
--------------
+^^^^^^^^^^^^^
 
 
    
@@ -57,9 +57,9 @@ Open Datafile
    
    
 
--------------
+^^^^^^^^^^^^^
 Save Datafile
--------------
+^^^^^^^^^^^^^
 
 
    
@@ -68,9 +68,9 @@ Save Datafile
    
    
 
-----------------
+^^^^^^^^^^^^^^^^
 Save Datafile As
-----------------
+^^^^^^^^^^^^^^^^
 
 
    
@@ -80,9 +80,9 @@ Save Datafile As
    
    
 
---------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Open Instruction File (USE file)
---------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
    
@@ -91,18 +91,18 @@ Open Instruction File (USE file)
    
    
 
--------------
+^^^^^^^^^^^^^
 Exit Crystals
--------------
+^^^^^^^^^^^^^
 
 
    
    Closes the program.
    
 
-==========
+----------
 X-ray data
-==========
+----------
 
 
 
@@ -111,9 +111,9 @@ experimental X-ray observations and data.
 
 
 
--------------
+^^^^^^^^^^^^^
 Guided Import
--------------
+^^^^^^^^^^^^^
 
 
    
@@ -124,35 +124,35 @@ Guided Import
    
    
 
--------------------
+^^^^^^^^^^^^^^^^^^^
 Diffractometer cifs
--------------------
+^^^^^^^^^^^^^^^^^^^
 
 
    
    Submenu. See section :ref:`Preprocess`.
 
------------------
+^^^^^^^^^^^^^^^^^
 Use Pre-processed
------------------
+^^^^^^^^^^^^^^^^^
 
 
    
    Submenu. See Section :ref:`Use`
    
 
-------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Import Shelx file (INS or RES)
-------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
    
    Opens a dialog to help import SHELX .ins or .res files. Choose the
    file name. You will need to know the space group symbol.
 
------------------
+^^^^^^^^^^^^^^^^^
 Import HKLF4 data
------------------
+^^^^^^^^^^^^^^^^^
 
 
    
@@ -161,9 +161,9 @@ Import HKLF4 data
    
    
 
------------------
+^^^^^^^^^^^^^^^^^
 Import HKLF5 data
------------------
+^^^^^^^^^^^^^^^^^
 
 
    
@@ -174,9 +174,9 @@ Import HKLF5 data
    
    
 
-------------------
+^^^^^^^^^^^^^^^^^^
 Import "cif" files
-------------------
+^^^^^^^^^^^^^^^^^^
 
 
    
@@ -187,22 +187,22 @@ Import "cif" files
    If the "cif" file contains more than one structure, the data from 
    each may either be put into separate CRYSTALS format files, or into one
    single file. If there is a single file, it can be imported directly into
-   CRYSTALS.  If the "cif" file contians a Z'=2 structure, the two 
+   CRYSTALS.  If the "cif" file contians a Z'-2 structure, the two 
    molecules can be 'matched', ie tested for similarity.
    
 
----------------
+^^^^^^^^^^^^^^^
 Input/Edit Cell
----------------
+^^^^^^^^^^^^^^^
 
 
    
    Displays a dialog box for inputing or editing the cell parameters and
    their associated standard uncertainties.
 
----------------------
+^^^^^^^^^^^^^^^^^^^^^
 Input/Edit SpaceGroup
----------------------
+^^^^^^^^^^^^^^^^^^^^^
 
 
    
@@ -213,9 +213,9 @@ Input/Edit SpaceGroup
    
    
 
-------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^
 Input/Edit Cell Contents
-------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 
    
@@ -225,18 +225,18 @@ Input/Edit Cell Contents
    
    
 
------------
+^^^^^^^^^^^
 File Export
------------
+^^^^^^^^^^^
 
 
    
    Enables the creation of text files in various formats
    
 
-------------------
+^^^^^^^^^^^^^^^^^^
 Filter reflections
-------------------
+^^^^^^^^^^^^^^^^^^
 
 
    
@@ -246,20 +246,20 @@ Filter reflections
    reflections.
    
 
-------------
+^^^^^^^^^^^^
 Edit goodies
-------------
+^^^^^^^^^^^^
 
 
    
-   Allows editing of the 'goodies' - lots of information that is required
+   Allows editing of the 'goodies'- lots of information that is required
    for a useful CIF is stored here. This dialog provides a convenient way
    to view and edit it.
    
 
-----------------
+^^^^^^^^^^^^^^^^
 View Reflections
-----------------
+^^^^^^^^^^^^^^^^
 
 
    
@@ -271,9 +271,9 @@ View Reflections
 .. _Preprocess:
 
  
-===================
+-------------------
 Diffractometer cifs
-===================
+-------------------
 
 
 
@@ -290,27 +290,27 @@ Try the WinGX option if your instrument is not listed, but remember to
 use "Edit Cif Goodies" to manually set the instrument type.
 
 
---------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 Run Generalised cif input 
---------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
    
    May eventually replace other options listed below.
    
 
----------------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Run Agilentin (Oxford Diffraction data)
----------------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
    
    Agelentin in processes Oxford Diffraction data.
    
 
-----------------------
+^^^^^^^^^^^^^^^^^^^^^^
 Run KccdIn (Kccd data)
-----------------------
+^^^^^^^^^^^^^^^^^^^^^^
 
 
    
@@ -318,9 +318,9 @@ Run KccdIn (Kccd data)
    diffractomer software and produces input files suitable for reading
    into Crystals.
 
---------------------
+^^^^^^^^^^^^^^^^^^^^
 Run RC93 (Cad4 data)
---------------------
+^^^^^^^^^^^^^^^^^^^^
 
 
    
@@ -328,9 +328,9 @@ Run RC93 (Cad4 data)
    diffractomer software and produces input files suitable for reading
    into Crystals.
 
-------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^
 Run DipIn (DIP2000 data)
-------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 
    
@@ -342,34 +342,34 @@ Run DipIn (DIP2000 data)
 .. _Use:
 
  
-========================
+------------------------
 Input Pre-processed data
-========================
+------------------------
 
 
 
 
------------------
+^^^^^^^^^^^^^^^^^
 Use KCCDIN output
------------------
+^^^^^^^^^^^^^^^^^
 
 
    
    Reads in CRYSTALS format data files produced by the KCCDIN program
    
 
----------------
+^^^^^^^^^^^^^^^
 Use RC93 output
----------------
+^^^^^^^^^^^^^^^
 
 
    
    Reads in CRYSTALS format data files produced by the RC93 program
    
 
-----------------
+^^^^^^^^^^^^^^^^
 Use DIPIN output
-----------------
+^^^^^^^^^^^^^^^^
 
 
    
@@ -380,24 +380,24 @@ Use DIPIN output
    
    
 
-=====
+-----
 Solve
-=====
+-----
 
 
 
 .. _undo:
 
  
-=========
+---------
 Structure
-=========
+---------
 
 
 
-----
+^^^^
 Undo
-----
+^^^^
 
    
 
@@ -414,38 +414,38 @@ Undo
    
    
 
-=======
+-------
 Fourier
-=======
+-------
 
 
 
-==========
+----------
 Refinement
-==========
+----------
 
 
 
-=======
+-------
 Results
-=======
+-------
 
 
 
---------------
+^^^^^^^^^^^^^^
 Likely H-bonds
---------------
+^^^^^^^^^^^^^^
 
 
    
-   Finds all X--H distances (X=O or N) where the bond distance falls between
+   Finds all X--H distances (X-O or N) where the bond distance falls between
    1.5 and 2.2 Angstroms. Also lists the X-H--X angles so that you can decide
    if the X--H is an acceptable hydrogen bond.
    
 
-------------------
+^^^^^^^^^^^^^^^^^^
 Agreement analysis
-------------------
+^^^^^^^^^^^^^^^^^^
 
 
    
@@ -453,9 +453,9 @@ Agreement analysis
    
    
 
----------------
+^^^^^^^^^^^^^^^
 Difabs analysis
----------------
+^^^^^^^^^^^^^^^
 
 
    
@@ -464,18 +464,18 @@ Difabs analysis
    
    
 
---------------------
+^^^^^^^^^^^^^^^^^^^^
 Rotax analysis/twins
---------------------
+^^^^^^^^^^^^^^^^^^^^
 
 
    
    Submenu, see section :ref:`rotax`
    
 
-----------------
+^^^^^^^^^^^^^^^^
 Edit CIF goodies
-----------------
+^^^^^^^^^^^^^^^^
 
 
    
@@ -484,9 +484,9 @@ Edit CIF goodies
    
    
 
-------------------
+^^^^^^^^^^^^^^^^^^
 Publication tables
-------------------
+^^^^^^^^^^^^^^^^^^
 
 
    Allows you to output data in a variety of ways. CIF is probably the most
@@ -498,7 +498,7 @@ Publication tables
    ::
 
 
-      SU values are quoted to two digits precision if they are <= 19.
+      SU values are quoted to two digits precision if they are <- 19.
       E.g.
       rule of 9:    5.548(1)   1.453(2)    3.921(3)    1.2287(8)
       rule of 19:   5.5483(9)  1.4532(16)  3.921(3)    1.2287(8)
@@ -513,9 +513,9 @@ Publication tables
    of precision across all values. 
    
 
-------------
+^^^^^^^^^^^^
 Summary file
-------------
+^^^^^^^^^^^^
 
 
    
@@ -523,9 +523,9 @@ Summary file
    
    
 
------------
+^^^^^^^^^^^
 Acta checks
------------
+^^^^^^^^^^^
 
 
    
@@ -534,9 +534,9 @@ Acta checks
    
    
 
--------------------
+^^^^^^^^^^^^^^^^^^^
 Checkcif on the web
--------------------
+^^^^^^^^^^^^^^^^^^^
 
 
    
@@ -544,9 +544,9 @@ Checkcif on the web
    
    
 
-------
+^^^^^^
 Platon
-------
+^^^^^^
 
 
    
@@ -558,15 +558,15 @@ Platon
 .. _rotax:
 
  
-================
+----------------
 Results -> Rotax
-================
+----------------
 
 
 
------
+^^^^^
 ROTAX
------
+^^^^^
 
 
    
@@ -581,9 +581,9 @@ ROTAX
    
    
 
------------------------
+^^^^^^^^^^^^^^^^^^^^^^^
 Input twinned structure
------------------------
+^^^^^^^^^^^^^^^^^^^^^^^
 
 
    
@@ -592,9 +592,9 @@ Input twinned structure
    
    
 
-----------------
+^^^^^^^^^^^^^^^^
 Remove twin laws
-----------------
+^^^^^^^^^^^^^^^^
 
 
    
@@ -604,15 +604,15 @@ Remove twin laws
    
    
 
-========
+--------
 Graphics
-========
+--------
 
 
 
-----------------
+^^^^^^^^^^^^^^^^
 Cameron Graphics
-----------------
+^^^^^^^^^^^^^^^^
 
 
    
@@ -621,17 +621,17 @@ Cameron Graphics
    
    
 
--------
+^^^^^^^
 Special
--------
+^^^^^^^
 
    
    Submenu. See section :ref:`specialgraphics`.
    
 
---------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 Import last Cameron output
---------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
    
@@ -640,9 +640,9 @@ Import last Cameron output
    Structure -> Undo, section :ref:`undo`).
    
 
--------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^
 Import last Cameron input
--------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
    
@@ -652,9 +652,9 @@ Import last Cameron input
    Structure -> Undo, section :ref:`undo`).
    
 
----------
+^^^^^^^^^
 Mapviewer
----------
+^^^^^^^^^
 
 
    
@@ -666,15 +666,15 @@ Mapviewer
 .. _specialgraphics:
 
  
-===================
+-------------------
 Graphics -> Special
-===================
+-------------------
 
 
 
-----------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Cameron (use existing input files)
-----------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
    
@@ -682,33 +682,33 @@ Cameron (use existing input files)
    have an external program that produces cameron.ini and cameron.l5i files.
    
 
-==========
+----------
 Appearance
-==========
+----------
 
 
 
------
+^^^^^
 Atoms
------
+^^^^^
 
 
    
    Submenu. See section :ref:`atoms`.
    
 
------
+^^^^^
 Model
------
+^^^^^
 
 
    
    Submenu. See section :ref:`model`.
    
 
----------------------
+^^^^^^^^^^^^^^^^^^^^^
 Auto scale (zoom off)
----------------------
+^^^^^^^^^^^^^^^^^^^^^
 
 
    
@@ -716,9 +716,9 @@ Auto scale (zoom off)
    
    
 
--------------
+^^^^^^^^^^^^^
 Set Text Font
--------------
+^^^^^^^^^^^^^
 
 
    
@@ -727,9 +727,9 @@ Set Text Font
    otherwise the output of tables will not make much sense.
    
 
---------------
+^^^^^^^^^^^^^^
 Set Input Font
---------------
+^^^^^^^^^^^^^^
 
 
    
@@ -742,15 +742,15 @@ Set Input Font
 .. _atoms:
 
  
-===================
+-------------------
 Appearance -> Atoms
-===================
+-------------------
 
 
 
---------
+^^^^^^^^
 Covalent
---------
+^^^^^^^^
 
 
    
@@ -758,9 +758,9 @@ Covalent
    their covalent radius.
    
 
--------------
+^^^^^^^^^^^^^
 Van der Walls
--------------
+^^^^^^^^^^^^^
 
 
    
@@ -768,9 +768,9 @@ Van der Walls
    the VDW radius.
    
 
--------
+^^^^^^^
 Thermal
--------
+^^^^^^^
 
 
    
@@ -778,27 +778,27 @@ Thermal
    representing U[iso].
    
 
-------------
+^^^^^^^^^^^^
 Quarter size
-------------
+^^^^^^^^^^^^
 
 
    
    Set radius to 1/4 of given value (either covalent, vdw or thermal).
    
 
----------
+^^^^^^^^^
 Half size
----------
+^^^^^^^^^
 
 
    
    Set radius to 1/2 of given value (either covalent, vdw or thermal).
    
 
----------
+^^^^^^^^^
 Full size
----------
+^^^^^^^^^
 
 
    
@@ -809,24 +809,24 @@ Full size
 .. _model:
 
  
-===================
+-------------------
 Appearance -> Model
-===================
+-------------------
 
 
 
-------------
+^^^^^^^^^^^^
 Update model
-------------
+^^^^^^^^^^^^
 
 
    
    If automatic update is disabled, this command updates the model
    
 
----------------
+^^^^^^^^^^^^^^^
 Auto update OFF
----------------
+^^^^^^^^^^^^^^^
 
 
    
@@ -834,18 +834,18 @@ Auto update OFF
    significantly slowing the program
    
 
---------------
+^^^^^^^^^^^^^^
 Auto update ON
---------------
+^^^^^^^^^^^^^^
 
 
    
    Enables auto update of the model window.
    
 
--------------
+^^^^^^^^^^^^^
 Set wallpaper
--------------
+^^^^^^^^^^^^^
 
 
    
@@ -855,9 +855,9 @@ Set wallpaper
    the bitmap in pixels must be a multiple of 4.
    
 
-------------
+^^^^^^^^^^^^
 No wallpaper
-------------
+^^^^^^^^^^^^
 
 
    
@@ -866,9 +866,9 @@ No wallpaper
    
    
 
-===========
+-----------
 Development
-===========
+-----------
 
 
 
