@@ -6235,6 +6235,6 @@ SAME 0.10000 C(203) C(863) C(853) C(233) C(243) C(253) C(263) O(13) C(273)
 CONT C(283) C(293) C(303) C(843) C(833) C(333)
 CONT AND C(2043) C(2143) C(2243) C(2343) C(2443) C(2543) C(2643) O(143) C(2743)
 CONT C(2843) C(2943) C(3043) C(3143) C(3243) C(3343)
-1 Errors found during conversion, please check the log file
 
+1 Error(s) found during conversion, please check the log file
 ## Warning: Structure has been SQUEEZED

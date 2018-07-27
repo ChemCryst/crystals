@@ -59,7 +59,7 @@ subroutine shelx_hklf(shelxline)
 use crystal_data_m
 implicit none
 type(line_t), intent(in) :: shelxline
-character(len=64) :: buffer
+character(len=512) :: buffer
 character(len=:), allocatable :: stripline
 character(len=lenlabel), dimension(:), allocatable :: splitbuffer
 integer i
@@ -74,7 +74,7 @@ logical transforml
     transform(9)=1.0
     transforml=.false.
 
-    buffer=shelxline%line(5:min(68, len(shelxline%line)))
+    buffer=shelxline%line(5:len(shelxline%line))
     buffer=adjustl(buffer)
     
     if(buffer(1:1)=='5') then ! twin refinement expecting hklf 5 file later, issuing a warning
@@ -107,7 +107,7 @@ logical transforml
         ! First is the hklf code, then a scale factor, then a transformation matrix:
         read(splitbuffer(2), *) s
         do i=1,9
-            read(splitbuffer(i+1), *) transform(i)
+            read(splitbuffer(i+2), *) transform(i)
         end do
         transforml=.true.
     else

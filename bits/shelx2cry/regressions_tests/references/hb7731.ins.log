@@ -118,3 +118,5 @@ Line 95: AFIX   0
 
 Processing shelxl labels into crystals serials
 Done
+
+## Warning: hkl indices need transforming, see transform.cry
