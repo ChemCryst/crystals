@@ -60,6 +60,19 @@ use crystal_data_m
 implicit none
 type(line_t), intent(in) :: shelxline
 character(len=64) :: buffer
+character(len=:), allocatable :: stripline
+character(len=lenlabel), dimension(:), allocatable :: splitbuffer
+integer i
+real s
+real, dimension(9) :: transform
+logical transforml
+
+    s=1.0
+    transform=0.0
+    transform(1)=1.0
+    transform(5)=1.0
+    transform(9)=1.0
+    transforml=.false.
 
     buffer=shelxline%line(5:min(68, len(shelxline%line)))
     buffer=adjustl(buffer)
@@ -72,8 +85,79 @@ character(len=64) :: buffer
         info_table(info_table_index)%shelxline=trim(shelxline%line)
         info_table(info_table_index)%line_number=shelxline%line_number
         info_table(info_table_index)%text='Warning: Structure is TWINNED and HKLF 5 has been used'
-
     end if
+    
+    call deduplicates(trim(buffer), stripline)
+    call explode(stripline, lenlabel, splitbuffer)
+    ! trying to make sense of the hklf instruction   
+    if(size(splitbuffer)<=1) then
+        ! done above, it is the hklf code or nothing
+    else if(size(splitbuffer)==2) then
+        ! First is the hklf code, then it is a scale factor:
+        ! the scale factor S multiplies both Fo² and σ(Fo²)
+        read(splitbuffer(2), *) s
+        transforml=.true.
+    else if(size(splitbuffer)==10) then
+        ! First is the hklf code, then a transformation matrix:
+        do i=1,9
+            read(splitbuffer(i+1), *) transform(i)
+        end do
+        transforml=.true.
+    else if(size(splitbuffer)==11) then
+        ! First is the hklf code, then a scale factor, then a transformation matrix:
+        read(splitbuffer(2), *) s
+        do i=1,9
+            read(splitbuffer(i+1), *) transform(i)
+        end do
+        transforml=.true.
+    else
+        write(log_unit,*) 'Warning: Unsupported combination of arguments in HKLF'
+        write(log_unit, '("shelxline ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+    end if
+    
+    if(transforml) then
+        ! check that the determinant is positive
+        if(m33det(reshape(transform, (/3,3/)))<=0) then ! matrix is transposed but the determinant is unaffected.
+            transforml=.true.
+            write(log_unit,*) 'Error: The transformation matrix from HKLF is invalid (determinant<=0)'
+            write(log_unit, '("shelxline ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        end if
+        
+        ! write ouput to file
+        open(111, file='transform.cry', action='write')
+        write(111, *) '# Scaling of observations + transformation matrix of reflection indices'
+        write(111, *) s
+        write(111, *) transform(1:3)
+        write(111, *) transform(4:6)
+        write(111, *) transform(7:9)
+        close(111)
+
+        info_table_index=info_table_index+1
+        info_table(info_table_index)%shelxline=trim(shelxline%line)
+        info_table(info_table_index)%line_number=shelxline%line_number
+        info_table(info_table_index)%text='Warning: hkl indices need transforming, see transform.cry'
+    end if
+    
+contains
+
+    !***********************************************************************************************************************************
+    !  M33DET  -  Compute the determinant of a 3x3 matrix.
+    !***********************************************************************************************************************************
+    !> Return the determinant of a 3x3 matrix
+    function m33det (a) result (det)
+    implicit none
+    real, dimension(3,3), intent(in)  :: a
+    real :: det
+
+        det =   a(1,1)*a(2,2)*a(3,3)  &
+            - a(1,1)*a(2,3)*a(3,2)  &
+            - a(1,2)*a(2,1)*a(3,3)  &
+            + a(1,2)*a(2,3)*a(3,1)  &
+            + a(1,3)*a(2,1)*a(3,2)  &
+            - a(1,3)*a(2,2)*a(3,1)
+
+        return
+    end function m33det
     
 end subroutine
 
