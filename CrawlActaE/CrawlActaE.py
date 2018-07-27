@@ -10,12 +10,25 @@ import re
 
 from bs4 import BeautifulSoup
 
+import argparse
 
-#### Parameters to change: #####
-year=2018
-month=1
-path=str(year)+'-'+str(month)
-##### End ###########
+parser = argparse.ArgumentParser(description='Crawl cif/fcf files from Acta E')
+parser.add_argument('--year', dest='year', type=int,
+                    help='Year')
+parser.add_argument('--month', dest='month', type=int,
+                    help='Month')
+
+args = parser.parse_args()
+
+if(args.year is None):
+    year=2018
+else:
+    year=args.year
+if(args.month is None):
+    month=1
+else:
+    month=args.month
+path="%d-%02d"%(year, month)
 
 try:
     os.stat(path)
