@@ -1546,7 +1546,6 @@ c    users responsibility to be sure SCALE and Fc are set if necessary
             djw4=store(m6+3)
           endif
 C -- CALCULATE RATIO OF (FO)**2 AND SIGMA((FO)**2),IF IT HAS NOT BEEN INPUT
-c         IF (IRATIO.LE.0) THEN
             IF (STORE(M6+12).LE.ZERO) THEN
                STORE(M6+20)=0.0
             ELSE
@@ -1555,7 +1554,6 @@ c Oct 2013  Compute RATIO on F^2
              STORE(M6+20) = MIN(128., (DJW1/DJW3))
             END IF
          endif
-c         ENDIF
 c
       STORE(M6+13) = AMAX1 ( STORE(M6+13) , 1.0 )
 C

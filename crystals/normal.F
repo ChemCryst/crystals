@@ -35,6 +35,7 @@ C             1 = UPDATE WEIGHTS
       INCLUDE 'XESTAT.INC'
       INCLUDE 'XLST02.INC'
       INCLUDE 'XLST03.INC'
+      INCLUDE 'XLST05.INC'
       INCLUDE 'XLST29.INC'
       INCLUDE 'XLST01.INC'
       INCLUDE 'ISTORE.INC'
@@ -66,6 +67,21 @@ C -- ALLOCATE SPACE TO HOLD RETURN VALUES FROM INPUT
          CALL XPRVDU(NCVDU,1,0)
          GOTO 9900
       END IF
+
+
+      IF (KEXIST(5).LE.0 .and. (issrat.eq.1)) THEN
+C            RESET RATIO FLAG TO Io
+             WRITE(CMON,'(A)')'No list 5 (scale factors) available'
+             CALL XPRVDU(NCVDU,1,0)
+             write(cmon,'(a)')
+     1      'IRATIO reset to Io because scale is not available'
+             CALL XPRVDU(NCVDU, 1,0)
+             ISSRAT = 0
+      ELSE
+        IF (KHUNTR ( 5,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL05
+      END IF
+
+
       IF (KEXIST(6).LE.0) THEN
          WRITE(CMON,'(A)')'No list 6 (observations) available'
          CALL XPRVDU(NCVDU,1,0)
