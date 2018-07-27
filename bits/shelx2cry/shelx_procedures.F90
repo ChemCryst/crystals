@@ -121,6 +121,7 @@ logical transforml
             transforml=.true.
             write(log_unit,*) 'Error: The transformation matrix from HKLF is invalid (determinant<=0)'
             write(log_unit, '("shelxline ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+            summary%error_no=summary%error_no+1
         end if
         
         ! write ouput to file
@@ -203,6 +204,7 @@ character(len=:), allocatable :: stripline
     if(len_trim(shelxline%line)<5) then
         write(log_unit,*) 'Error: Empty DFIX or DANG'
         write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        summary%error_no=summary%error_no+1
         return
     end if
     
@@ -253,6 +255,7 @@ character(len=:), allocatable :: stripline
                     write(log_unit,*) 'Error: Cannot have a space after `_` '
                     write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
                     write(log_unit,*) repeat(' ', 5+5+nint(log10(real(shelxline%line_number)))+1), '^'
+                    summary%error_no=summary%error_no+1
                     return
                 end if
             end if
@@ -269,12 +272,14 @@ character(len=:), allocatable :: stripline
     if(iostatus/=0) then
         write(log_unit,*) 'Error: Expected a number but got ', trim(splitbuffer(1))
         write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        summary%error_no=summary%error_no+1
         return
     end if
     
     if(distance>15.0) then
         write(log_unit,*) 'Error: Distance should between 0.0 and 15.0 but got ', trim(splitbuffer(1))
         write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        summary%error_no=summary%error_no+1
         return
     end if
 
@@ -297,6 +302,7 @@ character(len=:), allocatable :: stripline
             write(log_unit, *) 'Error: Missing a label in DFIX'
             write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
             write(log_unit,*) repeat(' ', 5+4+len_trim(shelxline%line)), '^'
+            summary%error_no=summary%error_no+1
             return
         end if
             
@@ -322,6 +328,7 @@ type(line_t), intent(in) :: shelxline
     if(len_trim(shelxline%line)<5) then
         write(log_unit,*) 'Error: Empty FLAT'
         write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        summary%error_no=summary%error_no+1
         return
     end if
 
@@ -354,6 +361,7 @@ character(len=128) :: namedresidue
     if(len_trim(shelxline%line)<5) then
         write(log_unit,*) 'Error: Empty SADI'
         write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        summary%error_no=summary%error_no+1
         return
     end if
     
@@ -405,6 +413,7 @@ character(len=128) :: namedresidue
                     write(log_unit,*) 'Error: Cannot have a space after `_` '
                     write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
                     write(log_unit,*) repeat(' ', 5+5+nint(log10(real(shelxline%line_number)))+1), '^'
+                    summary%error_no=summary%error_no+1
                     return
                 end if
             end if
@@ -439,6 +448,7 @@ character(len=128) :: namedresidue
         ! odd number of atoms
         write(log_unit, *) 'Error: Missing a label in SADI'
         write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        summary%error_no=summary%error_no+1
         return
     end if
     allocate(sadi_table(sadi_table_index)%atom_pairs(2, (j-start)/2))
@@ -464,6 +474,7 @@ integer iostatus
     if(iostatus/=0) then
         write(log_unit, *) 'Error: Syntax error'
         write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        summary%error_no=summary%error_no+1
         call abort()
     end if
     list1index=list1index+1
@@ -485,6 +496,7 @@ integer iostatus
     if(iostatus/=0) then
         write(log_unit, *) 'Error: Syntax error'
         write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        summary%error_no=summary%error_no+1
         call abort()
     end if
     write(list31(1), '(a)') '\LIST 31'
@@ -528,7 +540,7 @@ end subroutine
 
 !> Parse the SFAC keyword. Extract the atoms type use in the file.
 subroutine shelx_sfac(shelxline)
-use crystal_data_m, only: sfac, sfac_index, line_t, to_upper, sfac_long, log_unit
+use crystal_data_m, only: sfac, sfac_index, line_t, to_upper, sfac_long, log_unit, summary
 implicit none
 type(line_t), intent(in) :: shelxline
 integer i, j, code, iostatus
@@ -554,6 +566,7 @@ real, dimension(14) :: longsfac
                 if(iostatus/=0) then
                     write(log_unit, *) 'Error: Syntax error'
                     write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+                    summary%error_no=summary%error_no+1
                     call abort()
                 end if
                 sfac_long(:,sfac_index)=longsfac
@@ -575,7 +588,7 @@ end subroutine
 
 !> Parse the DISP keyword. Extract the atoms type use in the file.
 subroutine shelx_disp(shelxline)
-use crystal_data_m, only: disp_table, line_t, to_upper, deduplicates, explode
+use crystal_data_m, only: disp_table, line_t, to_upper, deduplicates, explode, summary
 use crystal_data_m, only: sfac_index, sfac, log_unit
 implicit none
 type(line_t), intent(in) :: shelxline
@@ -586,6 +599,7 @@ character(len=len_trim(shelxline%line)), dimension(:), allocatable :: exploded
     if(sfac_index==0) then
         write(log_unit, *) 'Error: SFAC card missing before DISP'
         write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        summary%error_no=summary%error_no+1
         call abort()
     end if
     
@@ -794,6 +808,7 @@ integer iostatus
             part=0
             write(log_unit, *) 'Error: syntax error in PART instruction'
             write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+            summary%error_no=summary%error_no+1
         end if
     end if
     
@@ -801,6 +816,7 @@ integer iostatus
         part=-part
         write(log_unit, *) 'Error: Suppression of special position constraints not supported'
         write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        summary%error_no=summary%error_no+1
     end if
     
 end subroutine
@@ -814,6 +830,7 @@ type(line_t), intent(in) :: shelxline
     if(len_trim(shelxline%line)<5) then
         write(log_unit,*) 'Error: Empty SAME'
         write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        summary%error_no=summary%error_no+1
         return
     end if
         
@@ -850,18 +867,21 @@ character(len=:), allocatable :: stripline
     if(len_trim(shelxline%line)<5) then
         write(log_unit,*) 'Error: Empty EADP'
         write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        summary%error_no=summary%error_no+1
         return
     end if
 
     if(index(shelxline%line,'<')>0 .or. index(shelxline%line,'>')>0) then
         write(log_unit,*) 'Error: < or > is not implemented'
         write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        summary%error_no=summary%error_no+1
         return
     end if
     
     if(index(shelxline%line,'$')>0) then
         write(log_unit,*) 'Error: symmetry equivalent `_$?` is not implemented'
         write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        summary%error_no=summary%error_no+1
         return
     end if
     
@@ -912,6 +932,7 @@ character(len=:), allocatable :: stripline
                     write(log_unit,*) 'Error: Cannot have a space after `_` '
                     write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
                     write(log_unit,*) repeat(' ', 5+5+nint(log10(real(shelxline%line_number)))+1), '^'
+                    summary%error_no=summary%error_no+1
                     return
                 end if
             end if        
@@ -933,6 +954,7 @@ character(len=:), allocatable :: stripline
         if( numatom<2 ) then
             write(log_unit, *) "Error: 2 atoms needed at least for EADP"
             write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+            summary%error_no=summary%error_no+1
             return
         end if
     end if
@@ -968,18 +990,21 @@ real s1, s2
     if(len_trim(shelxline%line)<5) then
         write(log_unit,*) 'Error: Empty RIGU'
         write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        summary%error_no=summary%error_no+1
         return
     end if
 
     if(index(shelxline%line,'<')>0 .or. index(shelxline%line,'>')>0) then
         write(log_unit,*) 'Error: < or > is not implemented'
         write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        summary%error_no=summary%error_no+1
         return
     end if
     
     if(index(shelxline%line,'$')>0) then
         write(log_unit,*) 'Error: symmetry equivalent `_$?` is not implemented'
         write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        summary%error_no=summary%error_no+1
         return
     end if
     
@@ -1030,6 +1055,7 @@ real s1, s2
                     write(log_unit,*) 'Error: Cannot have a space after `_` '
                     write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
                     write(log_unit,*) repeat(' ', 5+5+nint(log10(real(shelxline%line_number)))+1), '^'
+                    summary%error_no=summary%error_no+1
                     return
                 end if
             end if        
@@ -1060,6 +1086,7 @@ real s1, s2
     if(start>1) then
         write(log_unit,*) 'Error: s1, s2 options in RIGU not supported '
         write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        summary%error_no=summary%error_no+1
         return
     end if
     
@@ -1092,6 +1119,7 @@ type(line_t), intent(in) :: shelxline
     if(len_trim(shelxline%line)<5) then
         write(log_unit,*) 'Error: Empty ISOR'
         write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        summary%error_no=summary%error_no+1
         return
     end if
         

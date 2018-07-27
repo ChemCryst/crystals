@@ -1091,6 +1091,7 @@ real, dimension(3) :: diffxyz
                 if(fvar_index>size(fvar) .or. fvar_index<=0) then
                     write(log_unit, '(2a)') 'Error: Free variable missing for sof=', atomslist(i)%sof
                     write(log_unit, '("Line ", I0, ": ", a)') atomslist(i)%line_number, trim(atomslist(i)%shelxline)
+                    summary%error_no=summary%error_no+1
                     occ=1.0
                 else                               
                     occ=abs(atomslist(i)%sof)-fvar_index*10.0
@@ -1498,6 +1499,7 @@ integer i
             write(log_unit, '(a)') 'Error: res file not consistent'
             write(log_unit, '(a)') '       sof from part should be the same of the atom one'
             write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+            summary%error_no=summary%error_no+1
         end if
     end if
     atomslist(atomslist_index)%sof=sof
@@ -1642,6 +1644,7 @@ type(atom_t), dimension(:), allocatable :: templist
             write(log_unit, '(a)') 'Error: res file not consistent'
             write(log_unit, '(a)') '       sof from part should be the same of the atom one'
             write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+            summary%error_no=summary%error_no+1
         end if
     end if
     atomslist(atomslist_index)%sof=sof
@@ -1685,6 +1688,7 @@ integer start, iostatus
         if(len_trim(flat_table(i)%shelxline)<5) then
             write(log_unit,*) 'Error: Empty FLAT'
             write(log_unit, '("Line ", I0, ": ", a)') flat_table(i)%line_number, trim(flat_table(i)%shelxline)
+            summary%error_no=summary%error_no+1
             return
         end if
 
@@ -1692,6 +1696,7 @@ integer start, iostatus
         if(allocated(errormsg)) then
             write(log_unit,*) trim(errormsg)
             write(log_unit, '("Line ", I0, ": ", a)') flat_table(i)%line_number, trim(flat_table(i)%shelxline)  
+            summary%error_no=summary%error_no+1
         end if
         
         bufferline=stripline
@@ -1711,6 +1716,7 @@ integer start, iostatus
         if(flat_table(i)%namedresidue=='-' .or. flat_table(i)%namedresidue=='+') then
             write(log_unit, *) "Error: This residue name does not make sense"
             write(log_unit, '("Line ", I0, ": ", a)') flat_table(i)%line_number, flat_table(i)%shelxline
+            summary%error_no=summary%error_no+1
             return
         end if
 
@@ -1724,6 +1730,7 @@ integer start, iostatus
             if( size(splitbuffer)-start<3 ) then
                 write(log_unit, *) "Error: Can't fit a plane with less than 4 atoms"
                 write(log_unit, '("Line ", I0, ": ", a)') flat_table(i)%line_number, flat_table(i)%shelxline
+                summary%error_no=summary%error_no+1
                 return
             end if
         end if
@@ -2725,13 +2732,15 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
         if(len_trim(isor_table(i)%shelxline)<5) then
             write(log_unit,*) 'Error: Empty ISOR'
             write(log_unit, '("Line ", I0, ": ", a)') isor_table(i)%line_number, trim(isor_table(i)%shelxline)
+            summary%error_no=summary%error_no+1
             return
         end if
 
         call explicit_atoms(isor_table(i)%shelxline, stripline, errormsg)
         if(allocated(errormsg)) then
             write(log_unit,*) trim(errormsg)
-            write(log_unit, '("Line ", I0, ": ", a)') isor_table(i)%line_number, trim(isor_table(i)%shelxline)  
+            write(log_unit, '("Line ", I0, ": ", a)') isor_table(i)%line_number, trim(isor_table(i)%shelxline) 
+            summary%error_no=summary%error_no+1 
         end if
         
         isorresidue=-99
@@ -2782,6 +2791,7 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
                         write(log_unit,*) 'Error: Cannot have a space after `_` '
                         write(log_unit, '("Line ", I0, ": ", a)') isor_table(i)%line_number, trim(isor_table(i)%shelxline)
                         write(log_unit,*) repeat(' ', 5+5+nint(log10(real(isor_table(i)%line_number)))+1), '^'
+                        summary%error_no=summary%error_no+1
                         return
                     end if
                 end if        
@@ -3161,7 +3171,7 @@ subroutine write_list16_same()
 use crystal_data_m, only: lenlabel, same_table, same_table_index, atomslist
 use crystal_data_m, only: atomslist_index, crystals_fileunit, log_unit, sfac
 use crystal_data_m, only: residue_names, explicit_atoms, deduplicates
-use crystal_data_m, only: to_upper, explode
+use crystal_data_m, only: to_upper, explode, summary
 implicit none
 integer, dimension(:), allocatable :: serials
 character(len=lenlabel) :: atom
@@ -3194,6 +3204,7 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
         if(len_trim(same_table(i)%shelxline)<5) then
             write(log_unit,*) 'Error: Empty ISOR'
             write(log_unit, '("Line ", I0, ": ", a)') same_table(i)%line_number, trim(same_table(i)%shelxline)
+            summary%error_no=summary%error_no+1
             return
         end if
 
@@ -3201,6 +3212,7 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
         if(allocated(errormsg)) then
             write(log_unit,*) trim(errormsg)
             write(log_unit, '("Line ", I0, ": ", a)') same_table(i)%line_number, trim(same_table(i)%shelxline)  
+            summary%error_no=summary%error_no+1
         end if
         
         sameresidue=-99
@@ -3251,6 +3263,7 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
                         write(log_unit,*) 'Error: Cannot have a space after `_` '
                         write(log_unit, '("Line ", I0, ": ", a)') same_table(i)%line_number, trim(same_table(i)%shelxline)
                         write(log_unit,*) repeat(' ', 5+5+nint(log10(real(same_table(i)%line_number)))+1), '^'
+                        summary%error_no=summary%error_no+1
                         return
                     end if
                 end if        

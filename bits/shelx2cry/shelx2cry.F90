@@ -14,6 +14,9 @@ type(line_t) :: line
 logical file_exists, foundres
 integer i
 
+summary%error_no=0
+summary%warning_no=0
+
 ! Default length
 allocate(character(len=1) :: arg_val)
 
@@ -199,8 +202,15 @@ close(shelxf_id)
 call write_crystalfile(crystals_filepath)
 
 ! print out saved warnings
+write(log_unit, '(a)') ''
+if(summary%error_no>0) then
+    if(allocated(log_filepath)) then
+        write(log_unit, '(I0, 1X, a)') summary%error_no, 'Error(s) found during conversion, please check the log file'
+    else
+        write(log_unit, '(I0, 1X, a)') summary%error_no, 'Error(s) found during conversion, please check the output'
+    end if
+end if
 if(info_table_index>0) then
-    write(log_unit, '(a)') ''
     do i=1, info_table_index
         write(log_unit, '(a, a)') '## ', trim(info_table(i)%text)
     end do

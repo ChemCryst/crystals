@@ -169,6 +169,12 @@ end type
 type(info_t), dimension(1024) :: info_table
 integer :: info_table_index=0
 
+type summary_t
+    integer :: error_no !< Number of errors issued
+    integer :: warning_no !< number of warnings issued
+end type
+type(summary_t) :: summary
+
 contains
 
 !> Transform a string to upper case
