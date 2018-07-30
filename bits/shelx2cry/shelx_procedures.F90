@@ -62,7 +62,7 @@ type(line_t), intent(in) :: shelxline
 character(len=512) :: buffer
 character(len=:), allocatable :: stripline
 character(len=lenlabel), dimension(:), allocatable :: splitbuffer
-integer i
+integer i, hklfcode
 real s
 real, dimension(9) :: transform
 logical transforml
@@ -77,21 +77,17 @@ logical transforml
     buffer=shelxline%line(5:len(shelxline%line))
     buffer=adjustl(buffer)
     
-    if(buffer(1:1)=='5') then ! twin refinement expecting hklf 5 file later, issuing a warning
-
-        write(log_unit, *) 'Warning: Structure is TWINNED and HKLF 5 has been used '
-        write(log_unit, *) shelxline%line_number, trim(shelxline%line)
-        info_table_index=info_table_index+1
-        info_table(info_table_index)%shelxline=trim(shelxline%line)
-        info_table(info_table_index)%line_number=shelxline%line_number
-        info_table(info_table_index)%text='Warning: Structure is TWINNED and HKLF 5 has been used'
+    if(len_trim(buffer)==0) then
+        return
     end if
     
     call deduplicates(trim(buffer), stripline)
     call explode(stripline, lenlabel, splitbuffer)
+
     ! trying to make sense of the hklf instruction   
-    if(size(splitbuffer)<=1) then
-        ! done above, it is the hklf code or nothing
+    read(splitbuffer(1), *) hklfcode
+    if(size(splitbuffer)==1) then
+        ! all good, nothing to do
     else if(size(splitbuffer)==2) then
         ! First is the hklf code, then it is a scale factor:
         ! the scale factor S multiplies both Fo² and σ(Fo²)
@@ -115,6 +111,22 @@ logical transforml
         write(log_unit, '("shelxline ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
     end if
     
+    if(hklfcode<1 .or. hklfcode>6) then
+        write(log_unit, *) 'Error: Invalid HKLF code '
+        write(log_unit, *) shelxline%line_number, trim(shelxline%line)
+        summary%error_no=summary%error_no+1
+        return
+    end if
+    
+    if(hklfcode==5) then ! twin refinement expecting hklf 5 file later, issuing a warning
+        write(log_unit, *) 'Warning: Structure is TWINNED and HKLF 5 has been used '
+        write(log_unit, *) shelxline%line_number, trim(shelxline%line)
+        info_table_index=info_table_index+1
+        info_table(info_table_index)%shelxline=trim(shelxline%line)
+        info_table(info_table_index)%line_number=shelxline%line_number
+        info_table(info_table_index)%text='Warning: Structure is TWINNED and HKLF 5 has been used'
+    end if
+        
     if(transforml) then
         ! check that the determinant is positive
         if(m33det(reshape(transform, (/3,3/)))<=0) then ! matrix is transposed but the determinant is unaffected.
@@ -127,6 +139,7 @@ logical transforml
         ! write ouput to file
         open(111, file='transform.cry', action='write')
         write(111, *) '# Scaling of observations + transformation matrix of reflection indices'
+        write(111, '(A, I0)') 'HKLF ', hklfcode
         write(111, *) s
         write(111, *) transform(1:3)
         write(111, *) transform(4:6)
