@@ -373,8 +373,12 @@ function printparam(self)
 implicit none
 class(param_t), intent(in) :: self
 character(len=:), allocatable :: printparam
+character(len=512) :: tempa
+character(len=1024) :: tempb
 
-write(printparam, *) '[', self%indices, '] ', trim(self%label), ' ', self%serial, ' ', trim(self%name)
+write(tempa, '(I0,:,",")') self%indices
+write(tempb,'(A,A,A,A,1X,I4,1X,A)') '[', trim(tempa), '] ', trim(self%label), self%serial, trim(self%name)
+printparam=trim(tempb)
 
 end function
 
