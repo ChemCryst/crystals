@@ -65,7 +65,7 @@ character(len=lenlabel), dimension(:), allocatable :: splitbuffer
 integer i, hklfcode
 real s
 real, dimension(9) :: transform
-logical transforml
+logical transforml, file_exists
 
     s=1.0
     transform=0.0
@@ -73,6 +73,13 @@ logical transforml
     transform(5)=1.0
     transform(9)=1.0
     transforml=.false.
+    
+    ! First check if a file transform.cry already exists
+    inquire(file="transform.cry", exist=file_exists)
+    if(file_exists) then
+        open(111, file="transform.cry")
+        close(111, status="delete")
+    end if
 
     buffer=shelxline%line(5:len(shelxline%line))
     buffer=adjustl(buffer)
