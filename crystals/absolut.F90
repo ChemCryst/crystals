@@ -1680,9 +1680,12 @@ include  'STORE.INC'
         write(cmon,'(/a/)') '{I You should refine the Flack(x) parameter'
         call xprvdu (ncvdu, 3, 0)
         call outcol(1)
+        xflack = 0.0
+        qflack = 0.0
+    else
+        xflack = store(l5o+4)
+        qflack = store(l30ge+7)
     endif
-    xflack = store(l5o+4)
-    qflack = store(l30ge+7)
     !print *, 'Flack parameter obtained from refinement ', xflack, qflack
 
 !c-----multiplier to correct fC for flack parameter value
@@ -3627,13 +3630,19 @@ CALL XCSAE
     write(cmon,'(a,a)') '_______________________________', repeat('_', n+i+25)
     write(ncwu,'(a,a)') '_______________________________', repeat('_', n+i+25)
     call xprvdu(ncvdu,1,0)
-    write(cmon,'(a, a)') 'Flack parameter from refinement ', &
-    &    print_value(v1(2), sv1(2), opt_fixedform=.true.,&
-    &    opt_length=n+i+2, opt_decimal_pos=n)
-    write(ncwu,'(a, a)') 'Flack parameter from refinement ',  &
-    &    print_value(v1(2), sv1(2), opt_fixedform=.true., &
-    &    opt_length=n+i+2, opt_decimal_pos=n)
-    call xprvdu(ncvdu,1,0)
+    if(v1(2)/=0.0 .and. sv1(2)/=0.0) then
+        write(cmon,'(a, a)') 'Flack parameter from refinement ', &
+        &    print_value(v1(2), sv1(2), opt_fixedform=.true.,&
+        &    opt_length=n+i+2, opt_decimal_pos=n)
+        write(ncwu,'(a, a)') 'Flack parameter from refinement ',  &
+        &    print_value(v1(2), sv1(2), opt_fixedform=.true., &
+        &    opt_length=n+i+2, opt_decimal_pos=n)
+        call xprvdu(ncvdu,1,0)
+    else
+        write(cmon,'(a)') 'Flack parameter has not been refined '
+        write(ncwu,'(a)') 'Flack parameter has not been refined '
+        call xprvdu(ncvdu,1,0)
+    end if
     write(cmon,'(a, a, 1X, "(",I0, " outliers)")')  &
     &    'Hole-in-one                     ',  &
     &    print_value(v1(3), sv1(3), opt_fixedform=.true., &
@@ -3718,13 +3727,19 @@ CALL XCSAE
 
     if(nint(v2(1))>0) then
 
-        write(cmon,'(a, a)') 'Flack parameter from refinement ',  &
-        &    print_value(v2(2), sv2(2), opt_fixedform=.true., &
-        &    opt_length=n+i+2, opt_decimal_pos=n)
-        write(ncwu,'(a, a)') 'Flack parameter from refinement ',  &
-        &    print_value(v2(2), sv2(2), opt_fixedform=.true., &
-        &    opt_length=n+i+2, opt_decimal_pos=n)
-        call xprvdu(ncvdu,1,0)
+        if(v2(2)/=0.0 .and. sv2(2)/=0.0) then
+            write(cmon,'(a, a)') 'Flack parameter from refinement ',  &
+            &    print_value(v2(2), sv2(2), opt_fixedform=.true., &
+            &    opt_length=n+i+2, opt_decimal_pos=n)
+            write(ncwu,'(a, a)') 'Flack parameter from refinement ',  &
+            &    print_value(v2(2), sv2(2), opt_fixedform=.true., &
+            &    opt_length=n+i+2, opt_decimal_pos=n)
+            call xprvdu(ncvdu,1,0)
+        else
+            write(cmon,'(a)') 'Flack parameter has not been refined '
+            write(ncwu,'(a)') 'Flack parameter has not been refined '
+            call xprvdu(ncvdu,1,0)
+        end if
         write(cmon,'(a, a, 1X, "(",I0, " outliers)")')  &
         &    'Hole-in-one                     ',  &
         &    print_value(v2(3), sv2(3), opt_fixedform=.true., &
@@ -3821,13 +3836,19 @@ CALL XCSAE
 
         if(nint(v3(1))>0) then
 
-            write(cmon,'(a, a)') 'Flack parameter from refinement ', &
-            &    print_value(v3(2), sv3(2), opt_fixedform=.true., &
-            &    opt_length=n+i+2, opt_decimal_pos=n)
-            write(ncwu,'(a, a)') 'Flack parameter from refinement ', &
-            &    print_value(v3(2), sv3(2), opt_fixedform=.true.,&
-            &    opt_length=n+i+2, opt_decimal_pos=n)
-            call xprvdu(ncvdu,1,0)
+            if(v3(2)/=0.0 .and. sv3(2)/=0.0) then
+                write(cmon,'(a, a)') 'Flack parameter from refinement ', &
+                &    print_value(v3(2), sv3(2), opt_fixedform=.true., &
+                &    opt_length=n+i+2, opt_decimal_pos=n)
+                write(ncwu,'(a, a)') 'Flack parameter from refinement ', &
+                &    print_value(v3(2), sv3(2), opt_fixedform=.true.,&
+                &    opt_length=n+i+2, opt_decimal_pos=n)
+                call xprvdu(ncvdu,1,0)
+            else
+                write(cmon,'(a)') 'Flack parameter has not been refined '
+                write(ncwu,'(a)') 'Flack parameter has not been refined '
+                call xprvdu(ncvdu,1,0)
+            end if
             write(cmon,'(a, a, 1X, "(",I0, " outliers)")') &
             &    'Hole-in-one                     ', &
             &    print_value(v3(3), sv3(3), opt_fixedform=.true.,&
