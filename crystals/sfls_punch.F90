@@ -1065,8 +1065,9 @@ double precision, dimension(3) :: hkl_dp
 type(param_t), dimension(:), allocatable :: lsq_list !< List of least squares parameters
 real, dimension(:,:), allocatable :: ftemp2d
 real, dimension(:), allocatable :: ftemp1d
+integer irestraint !< current index for the restraints. if zero, processing hkl reflections
 integer tselected
-integer info, irestraint, i, j, k, previous, numobs, islider, datheader
+integer info,  i, j, k, previous, numobs, islider, datheader
 double precision normalize
 integer, dimension(:,:), allocatable :: hkl,temp2di
 integer numfields, iostatus
@@ -1636,7 +1637,7 @@ double precision, external :: ddot !< blas dot product
     end if
     
     if(file_type==0) then
-        call numpy_write_header(leverage_unit, (/numobs, 5+2*nsize/), 128, 'C', '<f8')
+        call numpy_write_header(leverage_unit, (/numobs, 5+2/), 128, 'C', '<f8')
     end if
     
     close(leverage_unit)
