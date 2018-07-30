@@ -4664,10 +4664,6 @@ with the same number of observations.
    
 
 *HUGE*
-
-
-
-   
    This directive tuned the refinement for big structures. It performs the
    the normal matrix accumulation in single precision, 
    the accumulation of the right and side is also done in single precision.
@@ -4677,14 +4673,16 @@ with the same number of observations.
    These changes could potentially lead to a less stable refinement but it is unlikely, 
    the default refinement is just very conservative.
    
-   KCALCULATE
+*CALCULATE*
    LEVERAGES  - CALCULATE the leverages and t-values. Warning: shifts are not applied in this case; 
    default output is numpy but can be changed to TEXT using PUNCH. MATLAB and pch is not supported at the moment.
    
-   
    This directive CALCULATE is differente from the previous directive and is applied under REFINE.
    
+*P1*
+   Parameter passed to CALCULATE (see Above).
    
+   If CALCULATE=LEVERAGES then P1 is the parameter number on which the leverages are calculated.
 
 *MONITOR*
 
