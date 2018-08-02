@@ -129,7 +129,8 @@
 %  COPY '#GENERALEDIT 23'                                                        
 %  COPY 'LOCATE RECORDTYPE=101'                                                 
 %  COPY 'TRANSFER FROM OFFSET=7 TO ISELECT'  
-%  COPY 'END'      
+%  COPY 'END'     
+% EVALUATE ISELECT = ISELECT + 1 
 %%
 %  IF ( EXISTS 12 .GT. 0 ) THEN                                                 
 %    COPY '#GENERALEDIT 12'                                                     
@@ -549,7 +550,7 @@
 %%                                                                              
 ^^??  INVERTLIST SELECTED                                                                    
 %  GET NOSTORE SILENT INTEGER ' '
-%  EVALUATE ISELECT = VALUE
+%  EVALUATE ISELECT = VALUE - 1
 %      COPY "#GENERALEDIT 23"                                                      
 %      COPY 'LOCATE RECORDTYPE=101'                                               
 %      COPY 'TRANSFER TO OFFSET=7 FROM ISELECT'
