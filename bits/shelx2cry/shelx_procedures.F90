@@ -138,7 +138,7 @@ logical transforml, file_exists
         
         write(buffer, '(A, I0)') 'HKLF ', hklfcode
         call extras_info%write(trim(buffer))
-        write(buffer, '(A, F14.8)') 'SCALE ', s
+        write(buffer, '(A, F14.8)') 'SCAL ', s
         call extras_info%write(trim(buffer))
         write(buffer, '(A, 3F14.8)') 'R     ', transform(1:3)
         call extras_info%write(trim(buffer))
