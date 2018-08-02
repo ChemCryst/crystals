@@ -15,6 +15,10 @@
 %% variables used to check if any reflections were actually read in
 %  VARIABLE REAL  H K L SUM
 %% First check for all zero values
+PASSED INTO XINLIST6
+%%SHOW HKLT11 HKLT12 HKLT13
+%%SHOW HKLT21 HKLT22 HKLT23
+%%SHOW HKLT31 HKLT32 HKLT33
 %  EVALUATE HTRANS = FALSE
 %  IF ABS ( HKLT11 ) .GT. 0.01 THEN
 %    EVALUATE HTRANS = TRUE
@@ -43,16 +47,17 @@
 %  IF ABS ( HKLT33 ) .GT. 0.01 THEN 
 %    EVALUATE HTRANS = TRUE
 %  END IF
+%%SHOW HTRANS
 %  IF ( .NOT. HTRANS ) THEN
 %    EVALUATE HKLT11 = 1.0
-%    EVALUATE HKLT22 = 1.0
-%    EVALUATE HKLT33 = 1.0
 %    EVALUATE HKLT12 = 0.0
 %    EVALUATE HKLT13 = 0.0
 %    EVALUATE HKLT21 = 0.0
+%    EVALUATE HKLT22 = 1.0
 %    EVALUATE HKLT23 = 0.0
 %    EVALUATE HKLT31 = 0.0
 %    EVALUATE HKLT32 = 0.0
+%    EVALUATE HKLT33 = 1.0
 %  ELSE
 %% Some values are set. Do they differ from unit matrix?
 %   EVALUATE HTRANS = FALSE
@@ -84,6 +89,12 @@
 %    EVALUATE HTRANS = TRUE
 %   END IF
 %  END IF
+%%
+%%AFTER CHECKING FOR UNIT MATRIX
+%%SHOW HKLT11 HKLT12 HKLT13
+%%SHOW HKLT21 HKLT22 HKLT23
+%%SHOW HKLT31 HKLT32 HKLT33
+%% SHOW HTRANS
 %%
 %% Initial checks. Is there any point proceeding.
 %%

@@ -37,6 +37,12 @@
 %     ELSE
  {E The INS/RES files have not been processed          
 %     END IF
+%%
+%     IF FILEEXISTS 'transform.cry' THEN
+%%
+%       COPY '#SCRIPT XSX2CRYB'
+%%
+%     END IF
 %     FINISH
 %   END IF
 %%

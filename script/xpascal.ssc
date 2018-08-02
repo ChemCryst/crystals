@@ -7,6 +7,12 @@
 %   VARIABLE CHARACTER INSTITLE HKLTITLE
 %   VARIABLE CHARACTER C_FILE CEXTN CROOT CARG CLASS
 %%
+%% get rid of any old TRANSFORM.CRY FILES
+%      IF FILEEXISTS ( 'transform.cry' )  THEN
+%       EVALUATE T =  FILEDELETE ( 'transform.cry' )
+%      END IF
+
+%%
 %% If INSTITLE is already set, just use it
 %%
 % IF ( INSTITLE .EQ. ' ' ) .OR. ( .NOT. ( FILEEXISTS INSTITLE ) ) THEN
