@@ -2427,7 +2427,7 @@ C--LOAD THE LIST
       CALL XLDLST(23,ICOM23,IDIM23,-1)  
 
 C-- Checking L23M record
-      if (md23m .le. 7) then ! old l23. Extend record and set default invertor.
+      if (md23m .le. 8) then ! old l23. Extend record and set default invertor.
       
 C When extending a record, we not only need to create new space for it in store and
 C update the common block, but also update the record header pointers which are stored
@@ -2440,10 +2440,11 @@ C IADDR, just to be on the safe side.
            newl23m=nfl
            nextnf = KCHNFL(12)
            istore(newl23m:newl23m+md23m-1)=istore(l23m:l23m+md23m-1)
-           istore(newl23m+7)=0
-           md23m=8
+           istore(newl23m+7)=0 ! invertor
+           istore(newl23m+8)=0 ! huge
+           md23m=9
            l23m=newl23m
-           m23m=newl23m+7
+           m23m=newl23m+8
            istore(iaddr+3) = newl23m
         end if
       end if

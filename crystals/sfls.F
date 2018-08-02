@@ -1682,6 +1682,7 @@ C      dS/dp = dB/dp + dC/dp,           dSN/dp = -dB/dp + dC/dp
       INCLUDE 'XLST06.INC'
       INCLUDE 'XLST11.INC'
       INCLUDE 'XLST12.INC'
+      INCLUDE 'XLST23.INC'
       INCLUDE 'XLST25.INC'
       INCLUDE 'XLST28.INC'
       INCLUDE 'XLST33.INC'
@@ -1757,12 +1758,20 @@ C----- INITIALISE THE SORT BUFFER
       NSORT = 30
       CALL SRTDWN(LSORT,MDSORT,NSORT, JSORT, LTEMPR, XVALUR,0)
       JSORT = 5
+      
+      ! Check for the huge flag
+      call xfal23
+      if(ISTORE(M33CD)==-1) then
+        ! default choice, look it up it L23
+        sfls_sp_normalm=ISTORE(L23M+8)
+      else
+        sfls_sp_normalm=ISTORE(M33CD)
+      end if
 
       sfls_punch_flag=ISTORE(M33CD+5)
       if(sfls_punch_flag>3) then
         sfls_punch_flag=3
       end if
-      sfls_sp_normalm=ISTORE(M33CD)
       sfls_calcul_flag=ISTORE(M33CD+1)
       if(sfls_calcul_flag>0 .and. sfls_punch_flag<=0) then
         sfls_punch_flag=3 ! numpy is default in this case
@@ -1851,7 +1860,7 @@ C--CHECK IF A PRINT IS REQUIRED
 
       NO=JO
       NP=JP
-      if(sfls_sp_normalm<0) then
+      if(sfls_sp_normalm<1) then
         allocate(normalmatrix(JP-JO+1,JP-JO+1, tid))
         !allocate(ref(JP-JO+1,JP-JO+1))
         normalmatrix=0.0d0
@@ -1863,7 +1872,7 @@ C--CHECK IF A PRINT IS REQUIRED
       !ref=0.0
       designindex=0
       ! size of the design matrix chunk to be tuned (PP)
-      if(sfls_sp_normalm<0) then
+      if(sfls_sp_normalm<1) then
         allocate(designmatrix(JP-JO+1,designchunk*tid))
         designmatrix=0.0d0
         allocate(righthandside(n11r))
@@ -2338,7 +2347,7 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
 
           END IF
 
-          if(sfls_sp_normalm<0) then
+          if(sfls_sp_normalm<1) then
             righthandside=righthandside+STORE(JO:JP)*WDF   ! ACCUMULATE THE RIGHT HAND SIDES
           else
             righthandside_sp=righthandside_sp+STORE(JO:JP)*WDF   ! ACCUMULATE THE RIGHT HAND SIDES
@@ -2356,7 +2365,7 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
              if(designindex>designchunk*tid) then
                  ! Output design matrix to disk
                  if(sfls_punch_flag>0) then
-                     if(sfls_sp_normalm<0) then
+                     if(sfls_sp_normalm<1) then
                          call sfls_punch_addtodesign(designmatrix, 
      1                       hkllist, sfls_punch_flag)
                      else
@@ -2374,7 +2383,7 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
 !$OMP DO schedule(static)
                  do i=1, tid
                      ! passing first element as array to avoid temporary copy
-                     if(sfls_sp_normalm<0) then
+                     if(sfls_sp_normalm<1) then
                        call DSYRK('L','N',JP-JO+1,designchunk,
      1                   1.0d0, 
      2                   designmatrix(1,designchunk*(i-1)+1),
@@ -2393,7 +2402,7 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
 
                  ! reset index for the chunk array
                  designindex=1
-                 if(sfls_sp_normalm<0) then
+                 if(sfls_sp_normalm<1) then
                    designmatrix=0.0d0
                  else
                    designmatrix_sp=0.0
@@ -2401,7 +2410,7 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
                  hkllist=0
              end if
 
-             if(sfls_sp_normalm<0) then
+             if(sfls_sp_normalm<1) then
                designmatrix(:,designindex) = STORE(JO:JP)
              else
                designmatrix_sp(:,designindex) = STORE(JO:JP)
@@ -2468,7 +2477,7 @@ C  DO THIS FOR ALL TYPES OF CALCULATION
 
       
       ! put back right hand side into original storage
-      if(sfls_sp_normalm<0) then
+      if(sfls_sp_normalm<1) then
         str11(l11r:l11R+n11r-1)=righthandside
         deallocate(righthandside)
       else
@@ -2482,7 +2491,7 @@ C  DO THIS FOR ALL TYPES OF CALCULATION
              if(designindex>0) then
                ! Output design matrix to disk
                if(sfls_punch_flag>0) then
-                  if(sfls_sp_normalm<0) then                  
+                  if(sfls_sp_normalm<1) then                  
                        call sfls_punch_addtodesign(
      1                     designmatrix(:,1:designindex), 
      2                     hkllist(:,1:designindex), 
@@ -2502,7 +2511,7 @@ C  DO THIS FOR ALL TYPES OF CALCULATION
 
 !$OMP DO schedule(static)
             do i=1, tid
-                 if(sfls_sp_normalm<0) then
+                 if(sfls_sp_normalm<1) then
                      call DSYRK('L','N',JP-JO+1,designchunk,
      1                   1.0d0, 
      2                   designmatrix(1,designchunk*(i-1)+1),
@@ -2519,7 +2528,7 @@ C  DO THIS FOR ALL TYPES OF CALCULATION
              end if
 
 c Only vectorized with gfortran 4.8 not 4.4
-             if(sfls_sp_normalm<0) then
+             if(sfls_sp_normalm<1) then
                  do i=1, ubound(normalmatrix,2)
                      do j=2, ubound(normalmatrix,3)
                         normalmatrix(:,i,1)=normalmatrix(:,i,1)
@@ -2546,7 +2555,7 @@ c Only vectorized with gfortran 4.8 not 4.4
                do i=1,MNR
                  j = ((i-1)*(2*(MNR)-i+2))/2
                  k = j + MNR - i
-                 if(sfls_sp_normalm<0) then
+                 if(sfls_sp_normalm<1) then
                    STR11(IBS+j:IBS+k)
      1               =normalmatrix(i+IBL-1:IBL-1+MNR,IBL+i-1,1)
                  else
@@ -2590,12 +2599,12 @@ c Looks OK.
       print *, 'Formation of the normal matrix time (ms): ',
      1  ((measuredtime(5)*3600+measuredtime(6)*60)+
      2  measuredtime(7))*1000+measuredtime(8)-starttime
-      if(sfls_sp_normalm>=0) then
+      if(sfls_sp_normalm==1) then
         print *, 'Single precision accumulation'
       end if
 #endif
       
-      if(sfls_sp_normalm<0) then
+      if(sfls_sp_normalm<1) then
         deallocate(designmatrix)
         deallocate(normalmatrix)      
       else

@@ -1237,12 +1237,12 @@ ZAPZAP    22       4    3
     .LIST 12            0    0    0    0    0        12
 LIST 23            5    0
   23   40960 CRYSTALSINPUT
-   1.MODIFY             8    1    0    0    8    1  101    1   23
+   1.MODIFY             9    1    0    0    9    1  101    1   23
          1    1    1    1    1    1    0    0    0    0
 MODIFICATIONS APPLIED TO /FO/ AND /FC/ DURING SFLS (-1 FOR NO, 0 FOR YES)
 (1X ,8(3X,12A1))
 (1X ,I10,7I15)
-         3    3    3    3    3    3    3    3
+         3    3    3    3    3    3    3    3    3
     .ANOMALOUS          0    0    1    2   -1 NO
      NO             YES
     .EXTINCTION         0    0    1    2   -1 NO
@@ -1260,6 +1260,8 @@ MODIFICATIONS APPLIED TO /FO/ AND /FC/ DURING SFLS (-1 FOR NO, 0 FOR YES)
     .INVERTOR           0    0    1    6    0 AUTO
      AUTO           LDLT           EIGENVALUE     DP_LDLT        XCHOLESKI   
      CHOLESKI
+    .HUGE               0    0    1    2    0 NO 
+     NO             YES
    2.MINIMISE           6    1    0    0    6    1  103    9   23
          1    1    1    1    1    1    0    0    0    0
 MODIFICATIONS TO THE MINIMISATION FUNCTION DURING SFLS (-1 FOR NO, 0 FOR YES)
@@ -1779,8 +1781,8 @@ INFORMATION THAT CONTROLS THE TYPE OF SFLS CALCULATION TO BE PERFORMED
 (1X ,I7,7I15)
          3    3    3    3    3    3    3    3    3    2    2    2    3    3    3
          3    2
-    .HUGE               0    0    1    2   -1 NO
-     NO             YES
+    .HUGE               0    0    1    2   -1 DEFAULT
+     DEFAULT        NO             YES
     .CALCULATE          0    0    1    2    0 NO
      NO             LEVERAGES
     .LIST               0    0    1    4   -2 OFF

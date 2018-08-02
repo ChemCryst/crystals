@@ -337,6 +337,7 @@ C
 !      real, dimension(:), allocatable :: ref
 !      real, dimension(:,:), allocatable :: check, unpacked
       integer sfls_punch_flag, sfls_calcul_flag
+      integer modehuge !< force inversion to cholesky double precision
       
       character(len=16) blasname
       
@@ -376,10 +377,18 @@ C--LOAD THE CONTROL LISTS
       ! sfls_calcul_flag == 1 is leverages calculations
 
 C----- METHOD = 0 LDLT; 1 eigen value filtering; 2 ldlt double precision; 3 CHOLESKI
-      if(istore(M33CD)<0) then ! overwrite invertor when huge is used.
-        METHOD = ISTORE(M33CD+8)
+      ! Check for the huge flag
+      if(ISTORE(M33CD)==-1) then
+        ! default choice, look it up it L23
+        modehuge=ISTORE(L23M+8)
       else
+        modehuge=ISTORE(M33CD)
+      end if
+      
+      if(modehuge==1) then ! overwrite invertor when huge is used.
         method=6 ! choleski double precision
+      else
+        METHOD = ISTORE(M33CD+8)
       end if
       IF ( IERFLG .LT. 0 ) GO TO 9900
 C--LOAD A FEW MORE LISTS

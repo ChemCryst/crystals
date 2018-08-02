@@ -30,17 +30,18 @@
 %%                                                                              
 %%   Local variables:                                                           
 %  VARIABLE INTEGER REFLAG INBLOCK IEXTIN N5 ICHK I5 PART RESI                  
-%  VARIABLE INTEGER HMODE ISER CURMODE RMFLAG OLDSER
+%  VARIABLE INTEGER HMODE ISER CURMODE RMFLAG OLDSER HUGE
 %  VARIABLE LOGICAL DOWRITE OVERRIDE STUCK TWINNED STICKY FLACK OLD5
-%  VARIABLE LOGICAL DOREFINE HRIDE HREST DOFOUR DREST                           
+%  VARIABLE LOGICAL DOREFINE HRIDE HREST DOFOUR DREST DOHUGE
 %  VARIABLE CHARACTER CTYPE CTYPE2 KEYBREAK                                     
 %  VARIABLE REAL SERIAL HFIRST CENTRO WORK1 SERIAL2 RN5                         
-%  VARIABLE INTEGER IWORK1
+%  VARIABLE INTEGER IWORK1 ISELECT
 %  EVALUATE TWINNED = FALSE                                                     
 %  EVALUATE FLACK = FALSE                                                     
 %  EVALUATE DOREFINE = TRUE                                                     
 %  EVALUATE DOFOUR = FALSE                                                      
 %  EVALUATE OLD5 = FALSE
+%  EVALUATE DOHUGE = FALSE
 %  VARIABLE CHARACTER CCHK CELE                                                 
 %  VARIABLE REAL RCHK                                                           
 %%                                                                              
@@ -91,7 +92,7 @@
 %  IF ( DKEXT ) THEN                                                            
 %    EVALUATE DOEXTNC = TRUE                                                    
 %  END IF                                                                       
-%%                                                                              
+%%                                                             
 %                                                                               
 %  BLOCK                                                                        
 %    VARIABLE INTEGER ITMP                                                      
@@ -114,7 +115,22 @@
 %  COPY 'LOCATE RECORDTYPE=101'                                                 
 %  COPY 'TRANSFER FROM OFFSET=0 TO CENTRO'                                      
 %  COPY 'END'                                                                   
-%%                                                                              
+%%           
+%% Get current value for huge                                                                   
+%  COPY '#GENERALEDIT 23'                                                        
+%  COPY 'LOCATE RECORDTYPE=101'                                                 
+%  COPY 'TRANSFER FROM OFFSET=8 TO HUGE'  
+%  COPY 'END'      
+% IF HUGE .EQ. 1 THEN  
+%  EVALUATE DOHUGE = TRUE
+% END IF                                                         
+%%
+%% Get current value for invert
+%  COPY '#GENERALEDIT 23'                                                        
+%  COPY 'LOCATE RECORDTYPE=101'                                                 
+%  COPY 'TRANSFER FROM OFFSET=7 TO ISELECT'  
+%  COPY 'END'      
+%%
 %  IF ( EXISTS 12 .GT. 0 ) THEN                                                 
 %    COPY '#GENERALEDIT 12'                                                     
 %    COPY 'GETSERIAL ISER'                                                      
@@ -186,7 +202,7 @@
 ^^WI COMMIT='W5_BOK' CANCEL='W5_BXX'                                            
 ^^WI GRID MAIN NROWS=3 NCOLS=5                                                  
 ^^WI {                                                                          
-^^WI  @ 2,2 GRID L NROWS=7 NCOLS=1                                              
+^^WI  @ 2,2 GRID L NROWS=8 NCOLS=1                                              
 ^^WI  {                                                                         
 %     IF SETADP .EQ. 0 THEN                                                     
 ^^WI   @ 1,1 CHECKBOX XR_GO '&Setup refinement only, do not refine.'            
@@ -289,8 +305,29 @@
 % END IF                                                                        
 ^^WI   }                                                                        
 % END IF                                                                        
-%% End edit                                                                     
-^^WI   @ 7,1 GRID RN NROWS=2 NCOLS=1                                            
+%% End edit  
+^^WI   @ 7,1 GRID LO NROWS=2 NCOLS=1 OUTLINE='Least squares options'                 
+^^WI   {                                                                        
+^^WI    @ 1,1 CHECKBOX CHUGE 'Fast least squares for large structures' 
+% IF DOHUGE THEN
+^^WI    STATE=ON                        
+% ELSE
+^^WI    STATE=OFF
+% END IF
+^^WI    @ 2,1 GRID INVERT NROWS=1 NCOLS=2 
+^^WI    {      
+^^WI      @ 1,1 STATIC 'T' 'Inversion method'                                                                  
+^^WI      @ 1,2 DROPDOWN 'INVERTLIST' ADDTOLIST                                        
+^^WI        'Auto'
+^^WI        'LDLT single precision'
+^^WI        'Eigenvalues'
+^^WI        'LDLT double precision'
+^^WI        'Original Cholesky'
+^^WI        'Choleksy'
+^^WI        NULL
+^^WI    }
+^^WI   }
+^^WI   @ 8,1 GRID RN NROWS=2 NCOLS=1                                            
 ^^WI   {                                                                        
 ^^WI    @ 1,1 CHECKBOX ALTER                                                    
 ^^WI      'Advanced: Edit directives or restraints before proceeding'           
@@ -307,7 +344,9 @@
 ^^WI  }                                                                         
 ^^WI }                                                                          
 ^^WI SHOW                                                                       
-^^CR                                                                            
+^^CR            
+% TRANSFER "^^CO SET INVERTLIST SELECTION=" // CHARACTER ISELECT TO DISPLAY         
+^^CO SET INVERTLIST DISABLED=NO                                                        
 %%                                                                              
 %  IF ( SETADP .LE. 0 ) THEN                                                    
 {S * Direct call of XWRITE5 - setting default refinement                        
@@ -493,7 +532,29 @@
 %      COPY 'WRITE OVERWRITE=OVERWRITE'                                           
 %      COPY 'END'                                                                 
 %  END IF
+%%
+^^?? CHUGE STATE
+%  VERIFY ON OFF                                                                
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
+%  IF ( VALUE .EQ. 1 ) THEN  
+%    EVALUATE HUGE = 1
+%  ELSE                                                   
+%    EVALUATE HUGE = 0
+%  END IF
+%      COPY "#GENERALEDIT 23"                                                      
+%      COPY 'LOCATE RECORDTYPE=101'                                               
+%      COPY 'TRANSFER TO OFFSET=8 FROM HUGE'                                     
+%      COPY 'WRITE OVERWRITE=OVERWRITE'                                           
+%      COPY 'END'                                                                 
 %%                                                                              
+^^??  INVERTLIST SELECTED                                                                    
+%  GET NOSTORE SILENT INTEGER ' '
+%  EVALUATE ISELECT = VALUE
+%      COPY "#GENERALEDIT 23"                                                      
+%      COPY 'LOCATE RECORDTYPE=101'                                               
+%      COPY 'TRANSFER TO OFFSET=7 FROM ISELECT'
+%      COPY 'WRITE OVERWRITE=OVERWRITE'                                           
+%      COPY 'END'                                                                 
 %%                                                                              
 %%                                                                              
 %%                                                                              

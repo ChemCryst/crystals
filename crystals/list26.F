@@ -7307,6 +7307,7 @@ C
       INCLUDE 'XLST11.INC'
       INCLUDE 'XLST12.INC'
       INCLUDE 'XLST22.INC'
+      INCLUDE 'XLST23.INC'
       INCLUDE 'XLST33.INC'
       INCLUDE 'XCNTRL.INC'
       INCLUDE 'XUNITS.INC'
@@ -7354,7 +7355,16 @@ C--FIND WHETHER A NEW MATRIX IS BEING COMPUTED
       if(sfls_calcul_flag>0 .and. sfls_punch_flag<=0) then
         sfls_punch_flag=3 ! numpy is default
       end if
-      sfls_sp_normalm=ISTORE(M33CD)
+
+      ! Check for the huge flag
+      call xfal23
+      if(ISTORE(M33CD)==-1) then
+        ! default choice, look it up it L23
+        sfls_sp_normalm=ISTORE(L23M+8)
+      else
+        sfls_sp_normalm=ISTORE(M33CD)
+      end if
+      
 C--RESET THE CORE LIMITS
       CALL XRSL
       CALL XCSAE
@@ -7595,7 +7605,7 @@ c                CALL XPRVDU(NCVDU,1,0)
 #endif
                 call abort()
             end if
-            if(sfls_sp_normalm<0) then
+            if(sfls_sp_normalm<1) then
               call sfls_punch_addtodesign(
      1          reshape(globalderivatives*sign(SQRT(ABS(C)),C), 
      2            (/size(globalderivatives), 1/) ),
@@ -7631,7 +7641,7 @@ C--OUTPUT THE NEW MATRIX
         ! it is important to pass a design matrix with the correct shape even though no data is written
         ! it is how the subroutine will work out the size of the design matrix
         allocate(globalderivatives(num_global_parameters))
-        if(sfls_sp_normalm<0) then
+        if(sfls_sp_normalm<1) then
           call sfls_punch_addtodesign(
      1      reshape(globalderivatives, 
      2        (/size(globalderivatives), 1/) ), 
