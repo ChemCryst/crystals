@@ -116,6 +116,9 @@
 ^^WI    ITEM PDF 'MOGUL in CRYSTALS Manual'
 ^^WI    '#SPAWN "CRYSDIR:manual/mogul.pdf"' DISABLEIF='IN'                    
 ^^WI   ENDMENU                                                                  
+^^WI   ITEM THETA 'Resolution Table'
+^^WI    '#SCRIPT SINTHETA' DISABLEIF='IN'                    
+
 ^^WI   SPLIT                                                                    
 ^^WI   ITEM CK '&Check for updates'                                             
 ^^WI   '#SPAWN http://www.xtl.ox.ac.uk/tag/crystals-release.html'
