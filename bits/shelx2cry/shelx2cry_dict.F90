@@ -135,7 +135,7 @@ type(dict_t) :: this
         tuples(48)%key='NEUT'
         tuples(48)%func => shelx_unsupported    
         tuples(49)%key='OMIT'
-        tuples(49)%func => shelx_unsupported    
+        tuples(49)%func => shelx_omit    
         tuples(50)%key='PART'
         tuples(50)%func => shelx_part    
         tuples(51)%key='PLAN'
@@ -157,7 +157,7 @@ type(dict_t) :: this
         tuples(59)%key='SFAC'
         tuples(59)%func => shelx_sfac
         tuples(60)%key='SHEL'
-        tuples(60)%func => shelx_unsupported    
+        tuples(60)%func => shelx_shel
         tuples(61)%key='SIMU'
         tuples(61)%func => shelx_unsupported    
         tuples(62)%key='SIZE'

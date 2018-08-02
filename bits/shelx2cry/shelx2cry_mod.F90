@@ -616,14 +616,20 @@ integer checksumfab, checksumfabref
     end do
     
     ! checking checksums
-    if(checksumhkl/=checksumhklref) then
-        write(log_unit, '(a)') 'hkl file is corrupted, the checksum is invalid'
+    if(checksumhklref>0) then
+        if(checksumhkl/=checksumhklref) then
+            write(log_unit, '(a)') 'hkl file is corrupted, the checksum is invalid'
+        end if
     end if
-    if(checksumfab/=checksumfabref) then
-        write(log_unit, '(a)') 'fab file is corrupted, the checksum is invalid'
+    if(checksumfabref>0) then
+        if(checksumfab/=checksumfabref) then
+            write(log_unit, '(a)') 'fab file is corrupted, the checksum is invalid'
+        end if
     end if
-    if(checksumres/=checksumresref) then
-        write(log_unit, '(a)') 'res file is corrupted, the checksum is invalid'
+    if(checksumresref>0) then
+        if(checksumres/=checksumresref) then
+            write(log_unit, '(a)') 'res file is corrupted, the checksum is invalid'
+        end if
     end if
         
 end subroutine

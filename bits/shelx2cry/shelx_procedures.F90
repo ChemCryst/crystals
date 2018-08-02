@@ -74,13 +74,6 @@ logical transforml, file_exists
     transform(9)=1.0
     transforml=.false.
     
-    ! First check if a file transform.cry already exists
-    inquire(file="transform.cry", exist=file_exists)
-    if(file_exists) then
-        open(111, file="transform.cry")
-        close(111, status="delete")
-    end if
-
     buffer=shelxline%line(5:len(shelxline%line))
     buffer=adjustl(buffer)
     
@@ -143,15 +136,16 @@ logical transforml, file_exists
             summary%error_no=summary%error_no+1
         end if
         
-        ! write ouput to file
-        open(111, file='transform.cry', action='write')
-        write(111, *) '# Scaling of observations + transformation matrix of reflection indices'
-        write(111, '(A, I0)') 'HKLF ', hklfcode
-        write(111, *) s
-        write(111, *) transform(1:3)
-        write(111, *) transform(4:6)
-        write(111, *) transform(7:9)
-        close(111)
+        write(buffer, '(A, I0)') 'HKLF ', hklfcode
+        call extras_info%write(trim(buffer))
+        write(buffer, '(A, F14.8)') 'SCALE ', s
+        call extras_info%write(trim(buffer))
+        write(buffer, '(A, 3F14.8)') 'R     ', transform(1:3)
+        call extras_info%write(trim(buffer))
+        write(buffer, '(A, 3F14.8)') 'R     ', transform(4:6)
+        call extras_info%write(trim(buffer))
+        write(buffer, '(A, 3F14.8)') 'R     ', transform(7:9)
+        call extras_info%write(trim(buffer))
 
         info_table_index=info_table_index+1
         info_table(info_table_index)%shelxline=trim(shelxline%line)
@@ -1149,6 +1143,28 @@ type(line_t), intent(in) :: shelxline
     isor_table(isor_table_index)%esd1=0.0
     isor_table(isor_table_index)%esd2=0.0
 
+end subroutine
+
+!> Parse the SHEL keyword. 
+subroutine shelx_shel(shelxline)
+use crystal_data_m
+implicit none
+type(line_t), intent(in) :: shelxline
+character(len=512) :: buffer
+
+    write(buffer, '(A, A)') 'SHEL ', trim(adjustl(shelxline%line(5:)))
+    call extras_info%write(trim(buffer))
+end subroutine
+
+!> Parse the OMIT keyword. 
+subroutine shelx_omit(shelxline)
+use crystal_data_m
+implicit none
+type(line_t), intent(in) :: shelxline
+character(len=512) :: buffer
+
+    write(buffer, '(A, A)') 'OMIT ', trim(adjustl(shelxline%line(5:)))
+    call extras_info%write(trim(buffer))
 end subroutine
 
 end module

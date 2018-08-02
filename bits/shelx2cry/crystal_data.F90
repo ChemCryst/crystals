@@ -1,5 +1,6 @@
 !> Crystallographic data of a structure during import from shelx
 module crystal_data_m
+use extras_mod
 
 logical, public :: the_end=.false. !< has the keyword END been reached
 
@@ -7,6 +8,8 @@ integer, parameter :: crystals_fileunit=1234 !< unit number for the crystals fil
 integer :: log_unit
 integer, parameter :: lenlabel=12
 integer, parameter :: line_length=72
+
+type(extras_t) :: extras_info !< extra information to write to a file
 
 type line_t
     integer :: line_number=1 !< Hold the line number from the shelx file

@@ -4,12 +4,13 @@
 program shelx2cry
 use shelx2cry_mod
 use crystal_data_m
+use extras_mod
 use, intrinsic :: iso_fortran_env, only : output_unit
 implicit none
 
 integer arg_cpt, iostatus, arg_length
 integer shelxf_id !< unit id of the shelx file
-character(len=:), allocatable :: shelx_filepath, arg_val, crystals_filepath, log_filepath
+character(len=:), allocatable :: shelx_filepath, arg_val, crystals_filepath, log_filepath, extras_filepath
 type(line_t) :: line
 logical file_exists, foundres
 integer i
@@ -148,6 +149,20 @@ if(.not. allocated(crystals_filepath)) then
     crystals_filepath='crystalsinput.dat'
 end if
 
+allocate(character(len=len(crystals_filepath)+6) :: extras_filepath)
+i=index(crystals_filepath, '.')
+if(i>0) then
+    extras_filepath(1:i-1)=crystals_filepath(1:i-1)
+    extras_filepath(i:i+5)='-extra'
+    extras_filepath(i+6:)=crystals_filepath(i:)
+else
+    extras_filepath(1:len(crystals_filepath))=crystals_filepath
+    extras_filepath(len(crystals_filepath)+1:)='-extra'
+end if
+
+extras_info=extras(extras_filepath)
+call extras_info%write("# Additional information for "//crystals_filepath)
+
 ! check if the file exists
 inquire(file=trim(shelx_filepath), exist=file_exists)
 if(.not. file_exists) then
@@ -200,6 +215,7 @@ end do
 close(shelxf_id)
 
 call write_crystalfile(crystals_filepath)
+call extras_info%close
 
 ! print out saved warnings
 write(log_unit, '(a)') ''
