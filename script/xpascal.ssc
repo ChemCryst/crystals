@@ -8,8 +8,8 @@
 %   VARIABLE CHARACTER C_FILE CEXTN CROOT CARG CLASS
 %%
 %% get rid of any old TRANSFORM.CRY FILES
-%      IF FILEEXISTS ( 'transform.cry' )  THEN
-%       EVALUATE T =  FILEDELETE ( 'transform.cry' )
+%      IF FILEEXISTS ( 'crystalsinput-extra.cry' )  THEN
+%       EVALUATE T =  FILEDELETE ( 'crystalsinput-extra.cry' )
 %      END IF
 
 %%

@@ -1,5 +1,6 @@
 %SCRIPT XINLIST6                                                                
-%% CRYSTALS reflection input script                                             
+%% CRYSTALS reflection input script  
+%%  copy '#script verify'                                           
 %  VARIABLE CHARACTER HKLTITLE THEINS
 %  VARIABLE INTEGER INBASICS FTYPE FS NCOEF FMT                                 
 %  VARIABLE LOGICAL LCANCEL INITSETUP XQMERGE LOKOK FOUNDINS
@@ -16,9 +17,9 @@
 %  VARIABLE REAL  H K L SUM
 %% First check for all zero values
 PASSED INTO XINLIST6
-%%SHOW HKLT11 HKLT12 HKLT13
-%%SHOW HKLT21 HKLT22 HKLT23
-%%SHOW HKLT31 HKLT32 HKLT33
+%SHOW HKLT11 HKLT12 HKLT13
+%SHOW HKLT21 HKLT22 HKLT23
+%SHOW HKLT31 HKLT32 HKLT33
 %  EVALUATE HTRANS = FALSE
 %  IF ABS ( HKLT11 ) .GT. 0.01 THEN
 %    EVALUATE HTRANS = TRUE

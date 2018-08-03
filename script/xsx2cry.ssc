@@ -38,7 +38,7 @@
  {E The INS/RES files have not been processed          
 %     END IF
 %%
-%     IF FILEEXISTS 'transform.cry' THEN
+%     IF FILEEXISTS 'crystalsinput-extra.cry' THEN
 %%
 %       COPY '#SCRIPT XSX2CRYB'
 %%
