@@ -618,10 +618,11 @@ c----- load list 2 for systematic absence check
       IF (KHUNTR(2,0,IADDL,IADDR,IADDD,-1).LT.0) CALL XFAL02
 c
 Cdjwoct2000 > moved from lower down
-C--LOAD LIST 13 FOR THE TWIN DATA
+C--LOAD LIST 13 
       CALL XFAL13
       IF (IERFLG.LT.0) GO TO 5450
       WAVE=STORE(L13DC)
+      WAVE=WAVE*WAVE
 Cdjwnov2000 > nolonger used at all. Type
 C      determind from input keys
 C--POINT INITIALLY TO '/FO/'
