@@ -469,16 +469,15 @@ END SUBROUTINE M33INV
 !* End of subroutine DSYEVC3
 
 !> Extract a res file from a cif file
-subroutine extract_res_from_cif(shelx_filepath, found)
+subroutine extract_res_from_cif(shelx_filepath, res_file)
 use crystal_data_m, only: log_unit
 implicit  none
 character(len=*), intent(in) :: shelx_filepath
-logical, intent(out) :: found
-character(len=len(shelx_filepath)+4) :: res_filepath
+character(len=512), intent(out) :: res_file
+character(len=512) :: res_filepath, fab_filepath, hkl_filepath
 integer resid, cifid, iostatus
 character(len=2048) :: buffer, tempc
-integer :: data_number
-character(len=4) :: data_number_text
+character(len=128) :: data_id
 integer checksumhkl, checksumhklref, i
 integer checksumres, checksumresref
 integer checksumfab, checksumfabref
@@ -490,20 +489,22 @@ integer checksumfab, checksumfabref
     checksumfab=0
     checksumfabref=0
 
-    found=.false.
+    res_file=''
     cifid=815
-    data_number=0
     open(unit=cifid,file=shelx_filepath, status='old')
     do
         read(cifid, '(a)', iostat=iostatus) buffer
         if(iostatus/=0) then
             exit
         end if
+        if(index(adjustl(buffer), 'data_')==1) then
+            data_id=adjustl(buffer)
+            data_id=data_id(6:)
+        end if
+        
         if(index(buffer, '_shelx_res_file')>0 .or. &
         &   index(buffer,'_iucr_refine_instructions_details')>0) then
             ! found a res file!
-            found=.true.
-            data_number=data_number+1
             read(cifid, '(a)', iostat=iostatus) buffer
             if(trim(buffer)/=';') then
                 print *, 'unexpected line: ', trim(buffer)
@@ -513,10 +514,12 @@ integer checksumfab, checksumfabref
             
             checksumres=0
             res_filepath=shelx_filepath
-            write(data_number_text, '(I0)') data_number
-            res_filepath(len_trim(res_filepath)-3:)='_'//trim(data_number_text)//'.res'
+            res_filepath(len_trim(res_filepath)-3:)='_'//trim(data_id)//'.res'
+            if(trim(res_file)=='') then ! save the first file encountered
+                res_file=res_filepath
+            end if
             resid=816
-            open(unit=resid,file=res_filepath)       
+            open(unit=resid,file=trim(res_filepath))       
             do
                 read(cifid, '(a)', iostat=iostatus) buffer
                 if(iostatus/=0 .or. trim(buffer)==';') then
@@ -549,11 +552,10 @@ integer checksumfab, checksumfabref
             end if
             
             checksumhkl=0
-            res_filepath=shelx_filepath
-            write(data_number_text, '(I0)') data_number
-            res_filepath(len_trim(res_filepath)-3:)='_'//trim(data_number_text)//'.hkl'
+            hkl_filepath=shelx_filepath
+            hkl_filepath(len_trim(hkl_filepath)-3:)='_'//trim(data_id)//'.hkl'
             resid=816
-            open(unit=resid,file=res_filepath)       
+            open(unit=resid,file=trim(hkl_filepath))       
             do
                 read(cifid, '(a)', iostat=iostatus) buffer
                 if(iostatus/=0 .or. trim(buffer)==';') then
@@ -587,11 +589,10 @@ integer checksumfab, checksumfabref
             end if
             
             checksumfab=0
-            res_filepath=shelx_filepath
-            write(data_number_text, '(I0)') data_number
-            res_filepath(len_trim(res_filepath)-3:)='_'//trim(data_number_text)//'.fab'
+            fab_filepath=shelx_filepath
+            fab_filepath(len_trim(fab_filepath)-3:)='_'//trim(data_id)//'.fab'
             resid=816
-            open(unit=resid,file=res_filepath)       
+            open(unit=resid,file=trim(fab_filepath))       
             do
                 read(cifid, '(a)', iostat=iostatus) buffer
                 if(iostatus/=0 .or. trim(buffer)==';') then
@@ -616,20 +617,26 @@ integer checksumfab, checksumfabref
     end do
     
     ! checking checksums
-    if(checksumhklref>0) then
+    if(checksumhklref>0 .and. checksumhkl>0) then
         if(checksumhkl/=checksumhklref) then
-            write(log_unit, '(a)') 'hkl file is corrupted, the checksum is invalid'
+            write(log_unit, '(a, a)') 'hkl file is corrupted, the checksum is invalid in ', trim(hkl_filepath)
         end if
+        checksumhklref=0
+        checksumhkl=0
     end if
-    if(checksumfabref>0) then
+    if(checksumfabref>0 .and. checksumfab>0) then
         if(checksumfab/=checksumfabref) then
-            write(log_unit, '(a)') 'fab file is corrupted, the checksum is invalid'
+            write(log_unit, '(a, a)') 'fab file is corrupted, the checksum is invalid in ', trim(fab_filepath)
         end if
+        checksumfabref=0
+        checksumfab=0
     end if
-    if(checksumresref>0) then
+    if(checksumresref>0 .and. checksumres>0) then
         if(checksumres/=checksumresref) then
-            write(log_unit, '(a)') 'res file is corrupted, the checksum is invalid'
+            write(log_unit, '(a, a)') 'res file is corrupted, the checksum is invalid in ', trim(res_filepath)
         end if
+        checksumres=0
+        checksumresref=0
     end if
         
 end subroutine

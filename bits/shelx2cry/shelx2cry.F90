@@ -11,8 +11,9 @@ implicit none
 integer arg_cpt, iostatus, arg_length
 integer shelxf_id !< unit id of the shelx file
 character(len=:), allocatable :: shelx_filepath, arg_val, crystals_filepath, log_filepath, extras_filepath
+character(len=512) :: res_file
 type(line_t) :: line
-logical file_exists, foundres
+logical file_exists
 integer i
 
 summary%error_no=0
@@ -178,12 +179,20 @@ if(.not. file_exists) then
                 &   trim(shelx_filepath),'.res`' 
                 stop            
             else
-                call extract_res_from_cif(trim(shelx_filepath)//'.cif', foundres)
-                if(.not. foundres) then
+                call extract_res_from_cif(trim(shelx_filepath)//'.cif', res_file)
+                if(trim(res_file)=='') then
                     write(log_unit,*) 'Error: No res file included in cif file'
                     stop
                 end if
-                shelx_filepath=trim(shelx_filepath)//'_1.res'
+                shelx_filepath=trim(res_file)
+                write(log_unit,*) ''
+                write(log_unit,*) '=============================================='
+                write(log_unit,*) 'Importing ', trim(res_file)
+                info_table_index=info_table_index+1
+                info_table(info_table_index)%text='Warning: multiple res files embedded in the cif file, the first file '// &
+                &   trim(res_file)//' has been imported'
+                info_table_index=info_table_index+1
+                info_table(info_table_index)%text='         Re-run the import on the other res files to import a different one'
             end if
         else
             shelx_filepath=trim(shelx_filepath)//'.res'
@@ -195,12 +204,20 @@ end if
 print *, trim(shelx_filepath)
 
 if(shelx_filepath(len_trim(shelx_filepath)-2:)=="cif") then
-    call extract_res_from_cif(trim(shelx_filepath), foundres)
-    if(.not. foundres) then
+    call extract_res_from_cif(trim(shelx_filepath), res_file)
+    if(trim(res_file)=='') then
         write(log_unit,*)'Error: No res file included in cif file'
         stop
     end if
-    shelx_filepath(len_trim(shelx_filepath)-3:)='_1.res'
+    shelx_filepath=trim(res_file)
+    write(log_unit,*) ''
+    write(log_unit,*) '=============================================='
+    write(log_unit,*) 'Importing ', trim(res_file)
+    info_table_index=info_table_index+1
+    info_table(info_table_index)%text='Warning: multiple res files embedded in the cif file, the first file '// &
+    &   trim(res_file)//' has been imported'
+    info_table_index=info_table_index+1
+    info_table(info_table_index)%text='         Re-run the import on the other res files to import a different one'
 end if
 
 shelxf_id=816
