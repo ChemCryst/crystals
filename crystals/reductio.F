@@ -2218,6 +2218,8 @@ CODE FOR MRGLSQ
       DIMENSION TENSOR(3)
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XSSVAL.INC'
+  
       dimension ibin(nbin)
       dimension jbin(nbin,2)
 C
