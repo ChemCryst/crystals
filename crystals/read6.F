@@ -622,7 +622,7 @@ C--LOAD LIST 13
       CALL XFAL13
       IF (IERFLG.LT.0) GO TO 5450
       WAVE=STORE(L13DC)
-      WAVE=WAVE*WAVE
+      wave2=wave*wave
 Cdjwnov2000 > nolonger used at all. Type
 C      determind from input keys
 C--POINT INITIALLY TO '/FO/'
@@ -1243,11 +1243,11 @@ C--COMPUTE IT
 4300     CONTINUE
          STORE(M6+16)=SNTHL2(I)
          if(l13dc .gt. 0) then
-            if(abs(store(m6+16)* wave).gt.1.0)then
+            if(abs(store(m6+16)* wave2).gt.1.0)then
              call outcol(9)
              write(cmon,'(a,3i5,f12.2)')'Sintheta > 1.0',
      1       nint(store(m6)),nint(store(m6+1)),nint(store(m6+2)),
-     2       abs(store(m6+16)* wave)
+     2       abs(store(m6+16)* wave2)
              call xprvdu (ncvdu,1,0)
              call outcol(1)
              write (ncawu,'(a)') trim(cmon(1))
