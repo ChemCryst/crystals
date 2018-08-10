@@ -126,6 +126,10 @@ logical transforml, file_exists
         info_table(info_table_index)%line_number=shelxline%line_number
         info_table(info_table_index)%text='Warning: Structure is TWINNED and HKLF 5 has been used'
     end if
+    
+    hklf%code=hklfcode
+    hklf%transform=transpose(reshape(transform, (/3,3/)))
+    hklf%scale=0.0
         
     if(transforml) then
         ! check that the determinant is positive
@@ -479,12 +483,11 @@ subroutine shelx_cell(shelxline)
 use crystal_data_m
 implicit none
 type(line_t), intent(in) :: shelxline
-real :: wave
 character dummy
 integer iostatus
 
     !CELL 1.54187 14.8113 13.1910 14.8119 90 98.158 90
-    read(shelxline%line, *, iostat=iostatus) dummy, wave, unitcell
+    read(shelxline%line, *, iostat=iostatus) dummy, wavelength, unitcell
     if(iostatus/=0) then
         write(log_unit, *) 'Error: Syntax error'
         write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
@@ -494,7 +497,7 @@ integer iostatus
     list1index=list1index+1
     write(list1(list1index), '(a5,1X,6(F0.5,1X))') 'REAL ', unitcell
     list13index=list13index+1
-    write(list13(list13index), '(a,F0.5)') 'COND WAVE= ', wave
+    write(list13(list13index), '(a,F0.5)') 'COND WAVE= ', wavelength
 
 end subroutine
 
@@ -1150,10 +1153,8 @@ subroutine shelx_shel(shelxline)
 use crystal_data_m
 implicit none
 type(line_t), intent(in) :: shelxline
-character(len=512) :: buffer
 
-    write(buffer, '(A, A)') 'SHEL ', trim(adjustl(shelxline%line(5:)))
-    call extras_info%write(trim(buffer))
+    read(shelxline%line(5:),*) omitlist%shel
 end subroutine
 
 !> Parse the OMIT keyword. 
@@ -1162,9 +1163,78 @@ use crystal_data_m
 implicit none
 type(line_t), intent(in) :: shelxline
 character(len=512) :: buffer
+integer i,j,k
+character(len=16), dimension(3) :: buffer3
+integer, dimension(:,:), allocatable :: tmp
 
-    write(buffer, '(A, A)') 'OMIT ', trim(adjustl(shelxline%line(5:)))
-    call extras_info%write(trim(buffer))
+    ! check what we have, 3 hkl indices or 2 values.
+    buffer3=''
+    j=0
+    k=0
+    buffer=adjustl(shelxline%line(6:)) !first 5 char are "OMIT "
+    i=1
+    do while(i<=len_trim(buffer))
+        if(.not. isanumber(buffer(i:i))) then
+            i=i+1
+            cycle
+        else
+            k=1
+            j=j+1
+            if(j>3) then
+                print *, 'Omit invalid'
+                call abort()
+            end if
+            do while(i<=len_trim(buffer))
+                if(isanumber(buffer(i:i))) then
+                    buffer3(j)(k:k)=buffer(i:i)
+                    k=k+1
+                    i=i+1
+                else
+                    exit
+                end if
+            end do
+        end if
+    end do
+    
+    if(j==2) then 
+        read(buffer3(2), *) omitlist%twotheta
+    else if(j==3) then
+        if(.not. allocated(omitlist%hkl)) then
+            allocate(omitlist%hkl(1024,3))
+            omitlist%index=0
+            omitlist%hkl=0
+        else 
+            if(omitlist%index==ubound(omitlist%hkl, 1)) then
+                ! array too small, increasing...
+                call move_alloc(omitlist%hkl, tmp)
+                allocate(omitlist%hkl(ubound(tmp, 1)+1024,3))
+                omitlist%hkl(1:ubound(tmp, 1),:)=tmp
+                omitlist%hkl(ubound(tmp, 1)+1:,:)=0
+                deallocate(tmp)
+            end if
+        end if
+                
+        omitlist%index=omitlist%index+1
+        read(buffer3, *) omitlist%hkl(omitlist%index,:)
+    end if
+        
+contains
+
+    logical function isanumber(c)
+    implicit none
+    character, intent(in) :: c
+    character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7','8','9','.','-','+'/)
+    integer i
+        
+        isanumber=.false.
+        do i=1,size(numbers)
+            if(numbers(i)==c) then
+                isanumber=.true.
+                return
+            end if
+        end do
+
+    end function
 end subroutine
 
 end module

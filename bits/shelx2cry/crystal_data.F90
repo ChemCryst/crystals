@@ -11,6 +11,21 @@ integer, parameter :: line_length=72
 
 type(extras_t) :: extras_info !< extra information to write to a file
 
+type hklf_t !< hold information from hklf card
+    integer :: code !< hklf code (1,2,3,4,5 or 6)
+    real, dimension(3,3) :: transform !< transformation matrix for h,k,l indices
+    real :: scale !< Unused in crystals, scaling factors for the intensities and sigmas
+end type
+type(hklf_t) :: hklf
+
+type omit_t !< hold information from omit and shel card
+    real :: twotheta=0.0 !< 2theta limit
+    real, dimension(2) :: shel=(/-1.0,-1.0/)
+    integer, dimension(:,:), allocatable :: hkl !< list of hkl indices
+    integer index !< number of hkl reflections omitted
+end type
+type(omit_t) omitlist 
+
 type line_t
     integer :: line_number=1 !< Hold the line number from the shelx file
     character(len=:), allocatable :: line !< line content
@@ -31,6 +46,7 @@ real, dimension(128) :: sfac_units !< number of elements in unit cell
 integer :: sfac_index=0 !< current index in sfac
 real, dimension(:), allocatable :: fvar !< list of free variables (sfac from shelx)
 real, dimension(6) :: unitcell=0.0 !< Array holding the unit cell parameters (a,b,c, alpha,beta,gamma). ANgle sin degree
+real wavelength !< wavelengh from shelx CELL card
 integer :: residue=0 !< Current residue
 character(len=128), dimension(:), allocatable :: residue_names !< Name or class of the residues
 integer :: part=0 !< current part

@@ -11,13 +11,14 @@ implicit none
 integer arg_cpt, iostatus, arg_length
 integer shelxf_id !< unit id of the shelx file
 character(len=:), allocatable :: shelx_filepath, arg_val, crystals_filepath, log_filepath, extras_filepath
-character(len=512) :: res_file
+character(len=512) :: res_file, hkl_file
 type(line_t) :: line
 logical file_exists
 integer i
 
 summary%error_no=0
 summary%warning_no=0
+hkl_file=''
 
 ! Default length
 allocate(character(len=1) :: arg_val)
@@ -55,11 +56,36 @@ do
         print *, ''
         print *, 'List of options:'
         print *, '--help, -h This help'
+        print *, '--hkl specify an hkl file [default: name taken from the resfile]'
         print *, '-o output file for crystals [default: crystalsinput.dat]'
         print *, '-l log file [default: stdout]'
         print *, ''
         stop
     
+    else if(arg_val(1:5)=='--hkl') then
+        ! check if name is not included
+        if(len_trim(arg_val)>5) then
+            ! we assume a separator (typically =: --hkl=truc.hkl)
+            hkl_file=adjustl(arg_val(7:))
+        else
+            !filename in next argument
+            ! arg length first
+            i=i+1
+            call get_command_argument(i, arg_val, arg_length, iostatus)
+            if(iostatus>0) then
+                print *, i, 'Cannot retrieve command line argument'
+                call abort()
+            end if
+            deallocate(arg_val)
+            allocate(character(len=max(6, arg_length)) :: arg_val)
+            call get_command_argument(i, arg_val, arg_length, iostatus)
+            if(iostatus/=0) then
+                print *, i, 'Cannot retrieve command line argument again'
+                call abort()
+            end if
+            hkl_file=arg_val
+        end if
+
     else if(arg_val(1:2)=='-o') then
         if(len_trim(arg_val)==2) then
             if(i==arg_cpt) then
@@ -231,7 +257,41 @@ do while(iostatus==0)
 end do
 close(shelxf_id)
 
+open(crystals_fileunit, file=crystals_filepath)
 call write_crystalfile(crystals_filepath)
+
+if(hklf%code==5) then ! Cannot directly import hkl, it needs to go through hklf5tocry first
+    info_table_index=info_table_index+1
+    info_table(info_table_index)%text='Warning: Cannot process an hklf5 file here, use hklf5cry from within crystals'
+else
+    ! filename for hkl file given?
+    if(trim(hkl_file)=='') then
+        ! append hkl file processing if present with the same name as res file
+        inquire(file=shelx_filepath(1:len_trim(shelx_filepath)-3)//'hkl', exist=file_exists)
+        if(file_exists) then
+            call write_hkl(shelx_filepath(1:len_trim(shelx_filepath)-3)//'hkl')
+        else
+            print *, shelx_filepath(1:len_trim(shelx_filepath)-3)//'hkl'
+            info_table_index=info_table_index+1
+            info_table(info_table_index)%text='Warning: Could not find the corresponding hkl file'
+            info_table_index=info_table_index+1
+            info_table(info_table_index)%text='         You will have to import it manually'
+        end if
+    else
+        ! append hkl file processing if present with the same name as res file
+        inquire(file=trim(hkl_file), exist=file_exists)
+        if(file_exists) then
+            call write_hkl(trim(hkl_file))
+        else
+            info_table_index=info_table_index+1
+            info_table(info_table_index)%text='Warning: Could not find the hkl file given: '//trim(hkl_file)
+        end if
+    end if
+end if
+
+close(crystals_fileunit)
+
+
 call extras_info%close
 
 ! print out saved warnings
@@ -245,6 +305,9 @@ if(summary%error_no>0) then
 end if
 if(info_table_index>0) then
     do i=1, info_table_index
+        if(log_unit==4521) then
+            write(*, '(a, a)') '## ', trim(info_table(i)%text)
+        end if
         write(log_unit, '(a, a)') '## ', trim(info_table(i)%text)
     end do
 end if

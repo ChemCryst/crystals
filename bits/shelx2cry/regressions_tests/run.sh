@@ -1,6 +1,6 @@
 #!/bin/sh
 
-for path in insfiles/*; do
+for path in insfiles/*.ins; do
     [ -e "$path" ] || continue
     # ... rest of the loop body
 

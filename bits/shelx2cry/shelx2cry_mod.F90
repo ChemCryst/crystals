@@ -151,8 +151,6 @@ use crystal_data_m
 implicit none
 character(len=*), intent(in) :: crystals_filepath
 
-    open(crystals_fileunit, file=crystals_filepath)
-
     ! process serial numbers 
     call get_shelx2crystals_serial
 
@@ -192,7 +190,6 @@ character(len=*), intent(in) :: crystals_filepath
     write(crystals_fileunit, '(a)') 'MINIMI NSING=    0 F-SQ=Y RESTR=Y REFLEC=Y'
     write(crystals_fileunit, '(a)') 'END'
     
-    close(crystals_fileunit)
 end subroutine
 
 !> Algorithm to translate shelx labels into crystals serial code.
@@ -3929,15 +3926,84 @@ end subroutine
 
 !> Write list28 (filter reflections)
 !! Insert default filters to be consistent with processing from within crystals
+!! add omit and resolution limits
 !! djw Remove low resolution limit - should be done by instrument
 subroutine write_list28()
 use crystal_data_m
 implicit none
+integer i
+real tmp
+real limith, limitl
 
+    limith=-1.0
+    limitl=-1.0
+    if(omitlist%shel(1)>=0) then
+        limitl=1.0/(4.0*omitlist%shel(1)**2)
+        limith=1.0/(4.0*omitlist%shel(2)**2)
+    end if
+    if(omitlist%twotheta>0.0) then
+        limith=max(limith, (sin(omitlist%twotheta*3.14159/360.0)/wavelength)**2)
+    end if
+    
     write(crystals_fileunit, '(a)') '\LIST 28'
     write(crystals_fileunit, '(a)') 'MINIMA'
-    write(crystals_fileunit, '(a)') 'CONT    RATIO       =  -3.00000'
+    if(limitl>-1.0) then
+        write(crystals_fileunit, '(a, F0.3)') 'CONT SINTH/L**2  =  ', limitl
+    end if
+    write(crystals_fileunit, '(a)') 'CONT    RATIO    =  -3.00000'
+
+    if(limith>-1.0) then
+        write(crystals_fileunit, '(a, F0.3)') 'MAXIMA SINTH/L**2 = ', limith
+    end if
+
+    if(omitlist%index>0) then
+        write(crystals_fileunit, '(a, I0)') 'READ NOMIT = ', omitlist%index
+        do i=1, omitlist%index
+            write(crystals_fileunit, '(a, 3(I0, " "))') 'OMIT ', omitlist%hkl(i,:)
+        end do
+    end if 
+    
     write(crystals_fileunit, '(a)') 'END'
 end subroutine
+
+subroutine write_hkl(hklfile_path)
+use crystal_data_m, only:hklf, crystals_fileunit
+implicit none
+character(len=*) :: hklfile_path
+
+!# read in reflections
+!#CLOSE HKLI
+!#OPEN HKLI  "datafile.hkl"
+!#HKLI
+!READ F'S=FSQ NCOEF=6 TYPE=FIXED CHECK=NO
+!INPUT H K L /FO/ SIGMA(/FO/) /Fc/
+!FORMAT (3F4.0, 3F10.0)
+!MATRIX 1 0 0    0 1 0  0 0 1
+!STORE NCOEF=7
+!OUTP INDI /FO/ SIG RATIO/J CORR SERI /Fc/
+!END
+!#CLOSE HKLI
+!#LIST 6
+!READ TYPE=COPY
+!END
+
+write(crystals_fileunit, '(a)') '# read in reflections'
+write(crystals_fileunit, '(a)') '#CLOSE HKLI'
+write(crystals_fileunit, '(a,a,a)') '#OPEN HKLI  "',trim(hklfile_path),'"'
+write(crystals_fileunit, '(a)') '#HKLI'
+write(crystals_fileunit, '(a)') "READ F'S=FSQ NCOEF=6 TYPE=FIXED CHECK=NO"
+write(crystals_fileunit, '(a)') 'INPUT H K L /FO/ SIGMA(/FO/) /Fc/'
+write(crystals_fileunit, '(a)') 'FORMAT (3F4.0, 3F10.0)'
+write(crystals_fileunit, '(a, 9(F0.3," "))') 'MATRIX ', transpose(hklf%transform)
+write(crystals_fileunit, '(a)') 'STORE NCOEF=7'
+write(crystals_fileunit, '(a)') 'OUTP INDI /FO/ SIG RATIO/J CORR SERI /Fc/'
+write(crystals_fileunit, '(a)') 'END'
+write(crystals_fileunit, '(a)') '#CLOSE HKLI'
+write(crystals_fileunit, '(a)') '#LIST 6'
+write(crystals_fileunit, '(a)') 'READ TYPE=COPY'
+write(crystals_fileunit, '(a)') 'END'
+
+end subroutine
+
 
 end module
