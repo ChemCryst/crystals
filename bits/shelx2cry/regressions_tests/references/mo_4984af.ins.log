@@ -2,8 +2,6 @@ Warning: `EQIV` Not supported
 Line 10: EQIV $1 0.5-X,1-Y,0.5+Z
 Warning: `TEMP` Not supported 
 Line 13: TEMP -173.15
-Warning: `OMIT` Not supported 
-Line 23: OMIT -2 56
 Warning: `WGHT` Not supported 
 Line 27: WGHT    0.059600   12.515901
 Warning: isotropic thermal parameter depends on previous atom
@@ -115,3 +113,5 @@ Processing shelxl labels into crystals serials
 Done
 
 ## Warning: hkl indices need transforming, see transform.cry
+## Warning: Could not find the corresponding hkl file
+##          You will have to import it manually

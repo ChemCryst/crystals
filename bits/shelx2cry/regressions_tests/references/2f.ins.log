@@ -177,3 +177,4 @@ Processing shelxl labels into crystals serials
 Done
 
 ## Warning: Structure is TWINNED and HKLF 5 has been used
+## Warning: Cannot process an hklf5 file here, use hklf5cry from within crystals
