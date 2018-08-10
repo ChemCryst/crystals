@@ -738,12 +738,18 @@ c               CALL XPRVDU (NCVDU,1,0)
 
                IF(KEXIST(1).LE.0) CYCLE
                IF(KEXIST(2).LE.0) CYCLE
-               IF(KEXIST(5).LE.0) CYCLE
+               IF(KEXIST(5).LE.0) THEN
+                  ISERnn(5) = 0
+                  CYCLE
+               END IF
                IF(KEXIST(29).LE.0) CYCLE
                IF(KEXIST(41).LE.0) CYCLE
                IF(KHUNTR(1,0,IADDL,IADDR,IADDD,-1).NE.0) CYCLE
                IF(KHUNTR(2,0,IADDL,IADDR,IADDD,-1).NE.0) CYCLE
-               IF(KHUNTR(5,0,IADDL,IADDR,IADDD,-1).NE.0) CYCLE
+               IF(KHUNTR(5,0,IADDL,IADDR,IADDD,-1).NE.0) THEN
+                  ISERnn(5) = 0
+                  CYCLE
+               END IF
                IF(KHUNTR(29,0,IADDL,IADDR,IADDD,-1).NE.0) CYCLE
 C In this mode, we can't run XBCALC so the existing 41 will have to do.
                IF(KHUNTR(41,0,IADDL,IADDR,IADDD,-1).NE.0) CYCLE
@@ -755,7 +761,11 @@ c               CALL XPRVDU (NCVDU,1,0)
 
                IF(KEXIST(1).LE.0) CYCLE
                IF(KEXIST(2).LE.0) CYCLE
-               IF(KEXIST(5).LE.0) CYCLE
+               IF(KEXIST(5).LE.0) THEN
+                  ISERnn(5) = 0
+                  CYCLE
+               END IF
+
                IF(KEXIST(29).LE.0) CYCLE
 
 C Ensure list 41 dependencies are up to date:

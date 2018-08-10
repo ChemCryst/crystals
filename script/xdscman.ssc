@@ -1,19 +1,37 @@
-%SCRIPT XDSCMAN
+%SCRIPT A_XDSCMAN
+%%
+%%Warning - there is a bug IN QUIT WITHOUT change.
+%%It may reset to first version in list.
+%%Marking a version to be both retained and deleted results
+%%in 2 entries in the inxed
+%%Spotted by DJW, April 2016. Not fixed
+%% Fixed RIC 2018.
+%%
 %%
 %% A script to manage (reset, delete, retain) the List 5's in the DSC file.
 %%
-%  VARIABLE INTEGER NT NTS NTSC NTST
-%  VARIABLE LOGICAL L
+%  VARIABLE INTEGER NT NTS ORIGSER 
+%  VARIABLE INTEGER IDJWTEMP
+%  VARIABLE LOGICAL L DONOTDISP RESCAN L5ERR
+%%
+%  VARIABLE INTEGER ICURSER ICURSEL IMAXSEL INDCURSEL
 %%
 %  BLOCK
 %  ON ERROR CONTINUE
-%  COPY '#GENERALEDIT 5'
-%  COPY 'GETSERIAL NTSC'
-%  COPY 'END'
+%    COPY '#GENERALEDIT 5'
+%    COPY 'GETSERIAL ORIGSER'
+%    COPY 'END'
+%    IF ORIGSER .LT. 0 THEN
+%       EVALUATE ORIGSER = - ORIGSER
+%    END IF 
 %  END BLOCK
+%%  SHOW ORIGSER
 %%
 %  COPY '#CLOSE SCPDATA'
 %  COPY '#RELE PUNCH dscdata.pch'
+%  COPY '#DISK'
+%  COPY 'PRINT CURRENT YES 5'
+%  COPY 'END'
 %  COPY '#DISK'
 %  COPY 'PRINT DISK YES 5'
 %  COPY 'END'
@@ -40,18 +58,19 @@
 ^^WI         @ 3,1 STATIC DS3 'Serial:        '
 ^^WI         @ 4,1 STATIC DS4 'Origin:        '
 ^^WI       }
-^^WI       @ 3,1 GRID SE NROWS=7 NCOLS=1
+^^WI       @ 3,1 GRID SE NROWS=11 NCOLS=1
 ^^WI       {
 ^^WI          @ 1,1 BUTTON BCLOSE 'Close' DEFAULT COMMIT CANCEL
-^^WI          @ 3,1 BUTTON BRESET 'Make current'
-^^WI          @ 5,1 BUTTON BDELET 'Delete on next purge'
-^^WI          @ 7,1 BUTTON BKEEP  'Retain forever'
+^^WI          @ 3,1 BUTTON BQUIT 'Cancel'
+^^WI          @ 7,1 BUTTON BDELET 'Delete on next purge'
+^^WI          @ 9,1 BUTTON BKEEP  'Retain forever'
+^^WI          @ 11,1 BUTTON BMOVIE 'Replay to end'
 ^^WI       }
 ^^WI     }
 ^^WI  }
 %  CLEAR
 %  INSERT !^^WI @ 5,2 STATIC DS5 'Current serial is: !
-%  STORE INTEGER NTSC
+%  STORE INTEGER ORIGSER
 %  INSERT !'!
 %  OUTPUT
 ^^WI }
@@ -59,37 +78,71 @@
 ^^CR
 %%
 %%
+%  EVALUATE RESCAN = TRUE
+%%
+%%
+%%
+%  LOOP
+%   IF RESCAN THEN
+%    EVALUATE RESCAN = FALSE
+%    COPY '#CLOSE SCPDATA'
+%    COPY '#RELE PUNCH dscdata.pch'
+%    COPY '#DISK'
+%    COPY 'PRINT CURRENT YES 5'
+%    COPY 'END'
+%    COPY '#DISK'
+%    COPY 'PRINT DISK YES 5'
+%    COPY 'END'
+%    COPY '#RELEASE PUNCH bfile.pch'
+%    COPY '#OPEN SCPDATA dscdata.pch'
 ^^WI SET DS_RES REMOVE 0 ADDTOLIST
 %%
-%  EXTRACT REWIND
-%  VARIABLE INTEGER IDJWTEMP
-%  LOOP
-%    ON ERROR TERMINATE
-%    ON END TERMINATE
+%    EVALUATE IMAXSEL = 0
+%    EVALUATE INDCURSEL = 0
+%%
+%    EXTRACT REWIND
+%% First line of input is current list serial. Store serial number.
+%    EXTRACT NEXT
+%    CLEAR
+%    EXTRACT TRANSFER INPUT
+%    GET NOPROMPT NOSTORE INTEGER ' ' '-100'
+%    CLEAR
+%    GET NOPROMPT INTEGER ' ' '-100'
+%    EVALUATE NT = VALUE
+%    IF ORIGSER .EQ. 0 THEN
+%       EVALUATE ORIGSER = NT
+%    END IF
+%    GET NOPROMPT TEXT ' ' 'Date'
+%%
+%    LOOP
+%      ON ERROR TERMINATE
+%      ON END TERMINATE
 %%
 %% Get the date for each result.
 %% Format is LIST# SERIAL USEFLAG ORIGIN ERRORFLAG DELETEFLAG DATE
-%    EXTRACT NEXT
-%    CLEAR
-%%    EXTRACT TRANSFER COMMAND
-%%    EXECUTE SEND
-%    EXTRACT TRANSFER INPUT
-%    GET NOPROMPT NOSTORE INTEGER ' ' '-100'
-%    IF VALUE .EQ. 5 THEN
+%      EXTRACT NEXT
+%      CLEAR
+%      EXTRACT TRANSFER INPUT
+%      GET NOPROMPT NOSTORE INTEGER ' ' '-100'
+%      IF VALUE .EQ. 5 THEN
 %       CLEAR
 %       INSERT !^^WI '!
 %       GET NOPROMPT INTEGER ' ' '-100'
-%       EVALUATE NTST = VALUE
+%       EVALUATE ICURSER = VALUE
+%%      SHOW ICURSER
 %       INSERT ':'
 %       GET NOPROMPT NOSTORE INTEGER ' ' '-100'
 %       GET NOPROMPT NOSTORE INTEGER ' ' '-100'
+%       IF ICURSER .EQ. NT THEN
+%         EVALUATE INDCURSEL = IMAXSEL
+%       END IF
 %       GET NOPROMPT NOSTORE INTEGER ' ' '-100'
 %       GET NOPROMPT NOSTORE INTEGER ' ' '-100'
 %       evaluate idjwtemp = value
 %       if idjwtemp .eq. 1 then
-%        insert ' To Retain '
+%        insert ' Retain '
 %       else if idjwtemp .eq. 2 then
-%        insert ' To Delete '
+%        insert ' Delete '
 %       else 
 %        insert '           '
 %       end if
@@ -97,66 +150,60 @@
 %       GET NOPROMPT TEXT ' ' 'Date'
 %       INSERT !'!
 %       OUTPUT
-%    END IF
-%  END LOOP
+%       EVALUATE IMAXSEL = IMAXSEL + 1
+%      END IF
+%    END LOOP
 ^^WI 'NULL'
 ^^CR
 %%
-%% If current L5 is in error state, we can't get current number - assume it's last one.
+%    EVALUATE NTS = INDCURSEL + 1
+%    TRANSFER "^^CO FOCUS DS_RES SET DS_RES SELECTION=" // -
+              CHARACTER NTS TO DISPLAY
 %%
-%  IF NTSC .EQ. 0 THEN
-%     CLEAR
-%     INSERT !^^CO SET DS5 TEXT 'Current serial is: !
-%     STORE INTEGER NTST
-%     INSERT !'!
-%     OUTPUT
-%  END IF
-%%
-%  EVALUATE NTS = 1
-%%
-^^CO FOCUS DS_RES SET DS_RES SELECTION=-1
-%%
-%%
-%  LOOP
+%   END IF
 %% Search for the NTSth entry in the SCPDATA file.
 %%
-%    EXTRACT REWIND
-%    LOOP ( NTS ) TIMES
+%   EXTRACT REWIND
+%% Skip header line (current index)
+%   EXTRACT NEXT
+%   LOOP ( NTS ) TIMES
 %      ON ERROR TERMINATE
 %      ON END TERMINATE
 %      EXTRACT NEXT
-%    END LOOP
+%   END LOOP
 %%
+%   EVALUATE DONOTDISP = FALSE
 %% Format is LIST# SERIAL USEFLAG ORIGIN ERRORFLAG DELETEFLAG DATE
-%    CLEAR
-%    EXTRACT TRANSFER INPUT
+%   CLEAR
+%   EXTRACT TRANSFER INPUT
 %%
-%    GET NOPROMPT NOSTORE INTEGER ' ' '-100'
+%   GET NOPROMPT NOSTORE INTEGER ' ' '-100'
 %%
-%    CLEAR
-%    INSERT !^^CO SET DS3 TEXT 'Serial:!
-%    GET NOPROMPT INTEGER ' ' '-100'
-%    EVALUATE NT = VALUE
-%    INSERT !'!
-%    OUTPUT
+%   CLEAR
+%   INSERT !^^CO SET DS3 TEXT 'Serial:!
+%   GET NOPROMPT INTEGER ' ' '-100'
+%   EVALUATE NT = VALUE
+%   INSERT !'!
+%   OUTPUT
 %%
-%    GET NOPROMPT NOSTORE INTEGER ' ' '-100'
+%   GET NOPROMPT NOSTORE INTEGER ' ' '-100'
 %%
-%    CLEAR
-%    INSERT !^^CO SET DS4 TEXT 'Origin:    !
-%    GET NOPROMPT INTEGER ' ' '-100'
-%    INSERT !'!
-%    OUTPUT
+%   CLEAR
+%   INSERT !^^CO SET DS4 TEXT 'Origin:    !
+%   GET NOPROMPT INTEGER ' ' '-100'
+%   INSERT !'!
+%   OUTPUT
 %%
-%    GET NOPROMPT NOSTORE INTEGER ' ' '-100'
-%    IF ( VALUE .EQ. 0 ) THEN
+%   GET NOPROMPT NOSTORE INTEGER ' ' '-100'
+%   IF ( VALUE .EQ. 0 ) THEN
 ^^CO     SET DS1 TEXT ''
-%    ELSE
+%   ELSE
 ^^CO     SET DS1 TEXT 'Error List'
-%    END IF
+%        EVALUATE DONOTDISP = TRUE
+%   END IF
 %%
-%    GET NOPROMPT NOSTORE INTEGER ' ' '-100'
-%    CASE VALUE + 1
+%   GET NOPROMPT NOSTORE INTEGER ' ' '-100'
+%   CASE VALUE + 1
 %      BLOCK
 ^^CO     SET DS2 TEXT ''
 %      END BLOCK
@@ -165,81 +212,208 @@
 %      END BLOCK
 %      BLOCK
 ^^CO     SET DS2 TEXT 'To be deleted'
+%        EVALUATE DONOTDISP = TRUE
 %      END BLOCK
-%    END CASE
+%   END CASE
 %%
-%    GET NOPROMPT NOSTORE TEXT ' ' 'Date'
+%   GET NOPROMPT NOSTORE TEXT ' ' 'Date'
 %%
+%   CLEAR
+%   COPY '#DISK'
+%   INSERT 'RESET 5 '
+%   STORE INTEGER NT
+%   SEND
+%   IF DONOTDISP THEN
+^^GR MODEL L5 SHOW
+^^CR
+%   ELSE
+%        COPY '#SUM L 5'
+%        COPY 'END'
+%   END IF
+%   CLEAR
+%   INSERT !^^CO SET DS5 TEXT 'Current serial is: !
+%   STORE INTEGER NT
+%   INSERT !'!
+%   OUTPUT
+^^CO FOCUS DS_RES
 %%
-%    VERIFY BCLOSE BRESET BDELET BKEEP DS_RES
-%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
-%    CASE VALUE
-%      BLOCK                                                  % BCLOSE %
+%   VERIFY BCLOSE BDELET BKEEP BMOVIE BQUIT DS_RES
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%%  TRANSFER "Value chosen is " // CHARACTER ( VALUE ) TO DISPLAY
+%   CASE VALUE
+%   BLOCK                                                  % BCLOSE %
 ^^CO     DISPOSE DSCMAN
 %        COPY '#CLOSE SCPDATA'
 %        EVALUATE L = FILEDELETE ( 'dscdata.pch' )
 %        FINISH
-%      END BLOCK
-%      BLOCK                                                  % BRESET %
-%        CLEAR
+%   END BLOCK
+%   BLOCK                                                  % BDELET %
+%        EVALUATE RESCAN = TRUE
 %        COPY '#DISK'
-%        INSERT 'RESET 5 '
+%        CLEAR
+%        INSERT 'DELETE 5 '
 %        STORE INTEGER NT
 %        SEND
+%        CLEAR
+%        INSERT 'RETAIN 5 '
+%        STORE INTEGER NT
+%        INSERT ' ACTION=NO'
+%        SEND
+%        COPY '#CLOSE SCPDATA'
+%        COPY '#RELE PUNCH dscdata.pch'
+%        COPY '#DISK'
+%        COPY 'PRINT CURRENT YES 5'
+%        COPY 'END'
+%        COPY '#DISK'
+%        COPY 'PRINT DISK YES 5'
+%        COPY 'END'
+%        COPY '#RELEASE PUNCH bfile.pch'
+%        COPY '#OPEN SCPDATA dscdata.pch'
+^^CO FOCUS DS_RES
+%   END BLOCK
+%   BLOCK                                                  % BKEEP %
+%        EVALUATE RESCAN = TRUE
+%        COPY '#DISK'
+%        CLEAR
+%        INSERT 'RETAIN 5 '
+%        STORE INTEGER NT
+%        SEND
+%        CLEAR
+%        INSERT 'DELETE 5 '
+%        STORE INTEGER NT
+%        INSERT ' ACTION=NO'
+%        SEND
+%        COPY '#CLOSE SCPDATA'
+%        COPY '#RELE PUNCH dscdata.pch'
+%        COPY '#DISK'
+%        COPY 'PRINT CURRENT YES 5'
+%        COPY 'END'
+%        COPY '#DISK'
+%        COPY 'PRINT DISK YES 5'
+%        COPY 'END'
+%        COPY '#RELEASE PUNCH bfile.pch'
+%        COPY '#OPEN SCPDATA dscdata.pch'
+^^CO FOCUS DS_RES
+%   END BLOCK
+%   BLOCK                                                  % BMOVIE %
+^^WI WINDOW XSTOP 'Movie running...' MODAL
+^^WI POSITION=CENTRED '_MAINTEXTOUTPUT'
+^^WI GRID MAIN NROWS=3 NCOLS=5
+^^WI { @ 2,2 STATIC T1 'Click to'
+^^WI   @ 2,4 BUTTON MSTOP 'stop the movie!' INFORM=NO DEFAULT DISABLED=NO } SHOW
+^^CR
+%        EVALUATE ICURSEL = NTS
+%        LOOP
+%          ON ERROR TERMINATE
+%          ON END TERMINATE
+%%
+%% Get the date for each result.
+%% Format is LIST# SERIAL USEFLAG ORIGIN ERRORFLAG DELETEFLAG DATE
+%          EXTRACT NEXT
+%          CLEAR
+%%         EXTRACT TRANSFER COMMAND
+%%         EXECUTE SEND
+%          EXTRACT TRANSFER INPUT
+%          GET NOPROMPT NOSTORE INTEGER ' ' '-100'
+%          IF VALUE .EQ. 5 THEN
+%            CLEAR
+%            COPY '#DISK'
+%            INSERT 'RESET 5 '
+%            GET NOPROMPT INTEGER ' ' '-100'
+%            EVALUATE ICURSER = VALUE
+%            SEND
+%            EVALUATE L5ERR = TRUE
+%            BLOCK
+%              ON ERROR TERMINATE
+%              COPY '#SUM L 5'
+%              COPY 'END'
+%%
+%              EVALUATE L5ERR = FALSE
+%%
+%            END BLOCK
+%%
+%            IF L5ERR THEN
+Unable to display currently selected L5.
+^^GR MODEL L5 SHOW
+^^CR
+%            END IF
+%%
+%            CLEAR
+%            INSERT !^^CO SET DS5 TEXT 'Current serial is: !
+%            STORE INTEGER ICURSER
+%            INSERT !'!
+%            OUTPUT
+%%
+%            CLEAR
+%            INSERT !^^CO SET DS3 TEXT 'Serial:!
+%            STORE INTEGER ICURSER
+%            INSERT !'!
+%            OUTPUT
+%%
+%            GET NOPROMPT NOSTORE INTEGER ' ' '-100'
+%%
+%            CLEAR
+%            INSERT !^^CO SET DS4 TEXT 'Origin:    !
+%            GET NOPROMPT INTEGER ' ' '-100'
+%            INSERT !'!
+%            OUTPUT
+%% Throw away the rest of the record
+%            GET NOPROMPT NOSTORE TEXT ' ' ' '
+%% Update counter
+%            EVALUATE ICURSEL = ICURSEL + 1
+%            CLEAR
+%            INSERT !^^CO FOCUS DS_RES SET DS_RES SELECTION=!
+%            STORE INTEGER ICURSEL
+%            OUTPUT
+%            COPY '#PAUSE 1'
+%%           COPY '#PAUSE 2'
+%          END IF
+%          CLEAR
+^^??       MSTOP STATE
+%          VERIFY ON OFF
+%          GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%          IF VALUE .EQ. 1 THEN
+%            EVALUATE LOOPEND = LOOPCOUNTER
+%          END IF
+%          EVALUATE NTS = ICURSEL
+%        END LOOP
+^^CO DISPOSE XSTOP
+%%^^CO FOCUS DS_RES
+%   END BLOCK
+%   BLOCK                                                  % BQUIT %
+%        COPY '#DISK'
+%        CLEAR
+%% SHOW ORIGSER 
+%        INSERT 'RESET 5 '
+%        STORE INTEGER ORIGSER
+%        SEND
+%        EVALUATE L5ERR = TRUE
+%        BLOCK
+%           ON ERROR TERMINATE
+%           COPY '#SUM L 5'
+%           COPY 'END'
+%
+%           EVALUATE L5ERR = FALSE
+%
+%        END BLOCK
+%
+%        IF L5ERR THEN
+L5 cannot be displayed.
+^^GR MODEL L5 SHOW
+^^CR
+%        END IF
 %        COPY '#SUM L 5'
 %        COPY 'END'
-%        CLEAR
-%        INSERT !^^CO SET DS5 TEXT 'Current serial is: !
-%        STORE INTEGER NT
-%        INSERT !'!
-%        OUTPUT
-^^CO FOCUS DS_RES
-%      END BLOCK
-%      BLOCK                                                  % BDELET %
-%        COPY '#DISK'
-%        CLEAR
-%        INSERT 'DELETE 5 '
-%        STORE INTEGER NT
-%        SEND
-%        CLEAR
-%        INSERT 'RETAIN 5 '
-%        STORE INTEGER NT
-%        INSERT ' ACTION=NO'
-%        SEND
-%  COPY '#CLOSE SCPDATA'
-%  COPY '#RELE PUNCH dscdata.pch'
-%  COPY '#DISK'
-%  COPY 'PRINT DISK YES 5'
-%  COPY 'END'
-%  COPY '#RELEASE PUNCH bfile.pch'
-%  COPY '#OPEN SCPDATA dscdata.pch'
-^^CO FOCUS DS_RES
-%      END BLOCK
-%      BLOCK                                                  % BKEEP %
-%        COPY '#DISK'
-%        CLEAR
-%        INSERT 'RETAIN 5 '
-%        STORE INTEGER NT
-%        SEND
-%        CLEAR
-%        INSERT 'DELETE 5 '
-%        STORE INTEGER NT
-%        INSERT ' ACTION=NO'
-%        SEND
-%  COPY '#CLOSE SCPDATA'
-%  COPY '#RELE PUNCH dscdata.pch'
-%  COPY '#DISK'
-%  COPY 'PRINT DISK YES 5'
-%  COPY 'END'
-%  COPY '#RELEASE PUNCH bfile.pch'
-%  COPY '#OPEN SCPDATA dscdata.pch'
-^^CO FOCUS DS_RES
-%      END BLOCK
-%      BLOCK                                                  % RT_RES %
+^^CO     DISPOSE DSCMAN
+%        COPY '#CLOSE SCPDATA'
+%        EVALUATE L = FILEDELETE ( 'dscdata.pch' )
+%        FINISH
+%   END BLOCK
+%   BLOCK                                                  % DS_RES %
 %% Do nothing. Window will update when it loops back.
 %        GET SILENT NOSTORE INTEGER ' ' ' '
 %        EVALUATE NTS = VALUE
-%      END BLOCK
-%    END CASE
+%   END BLOCK
+%   END CASE
 %  END LOOP
 %END SCRIPT
