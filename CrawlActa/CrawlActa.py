@@ -83,9 +83,13 @@ parser.add_argument('--year', dest='year', type=int,
 parser.add_argument('--month', dest='month', type=int,
                     help='Month')
 parser.add_argument('--journal', dest='journal', type=str,
-                    help='Journal (b or e)')
+                    help='Journal (b, c or e)')
 
 args = parser.parse_args()
+
+if not len(sys.argv) > 1:
+    parser.print_help()
+    sys.exit(1)    
 
 if(args.year is None):
     year=2018
