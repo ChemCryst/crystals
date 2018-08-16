@@ -140,17 +140,6 @@ logical transforml, file_exists
             summary%error_no=summary%error_no+1
         end if
         
-        write(buffer, '(A, I0)') 'HKLF ', hklfcode
-        call extras_info%write(trim(buffer))
-        write(buffer, '(A, F14.8)') 'SCAL ', s
-        call extras_info%write(trim(buffer))
-        write(buffer, '(A, 3F14.8)') 'R     ', transform(1:3)
-        call extras_info%write(trim(buffer))
-        write(buffer, '(A, 3F14.8)') 'R     ', transform(4:6)
-        call extras_info%write(trim(buffer))
-        write(buffer, '(A, 3F14.8)') 'R     ', transform(7:9)
-        call extras_info%write(trim(buffer))
-
         info_table_index=info_table_index+1
         info_table(info_table_index)%shelxline=trim(shelxline%line)
         info_table(info_table_index)%line_number=shelxline%line_number

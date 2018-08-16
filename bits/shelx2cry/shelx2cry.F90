@@ -4,7 +4,6 @@
 program shelx2cry
 use shelx2cry_mod
 use crystal_data_m
-use extras_mod
 use, intrinsic :: iso_fortran_env, only : output_unit
 implicit none
 
@@ -187,9 +186,6 @@ else
     extras_filepath(len(crystals_filepath)+1:)='-extra'
 end if
 
-extras_info=extras(extras_filepath)
-call extras_info%write("# Additional information for "//crystals_filepath)
-
 ! check if the file exists
 inquire(file=trim(shelx_filepath), exist=file_exists)
 if(.not. file_exists) then
@@ -290,9 +286,6 @@ else
 end if
 
 close(crystals_fileunit)
-
-
-call extras_info%close
 
 ! print out saved warnings
 write(log_unit, '(a)') ''
