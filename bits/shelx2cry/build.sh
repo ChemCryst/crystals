@@ -4,6 +4,7 @@
 set -x
 FC=gfortran
 FFLAGS="-g -fno-realloc-lhs -static -fcheck=all -Wno-compare-reals -c -I../../sginfo"
+$FC $FFLAGS shelx2cry_cif.F90
 $FC $FFLAGS crystal_data.F90
 $FC $FFLAGS shelx_procedures.F90
 $FC $FFLAGS shelx2cry_dict.F90

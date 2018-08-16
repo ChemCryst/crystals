@@ -4,16 +4,19 @@
 program shelx2cry
 use shelx2cry_mod
 use crystal_data_m
+use shelx2cry_cifparse_m
 use, intrinsic :: iso_fortran_env, only : output_unit
 implicit none
 
 integer arg_cpt, iostatus, arg_length
 integer shelxf_id !< unit id of the shelx file
 character(len=:), allocatable :: shelx_filepath, arg_val, crystals_filepath, log_filepath, extras_filepath
-character(len=512) :: res_file, hkl_file
+character(len=char_len) :: res_file, hkl_file
 type(line_t) :: line
 logical file_exists
 integer i
+integer error
+type(cif_t), dimension(:), allocatable :: cif_content
 
 summary%error_no=0
 summary%warning_no=0
@@ -226,6 +229,8 @@ end if
 print *, trim(shelx_filepath)
 
 if(shelx_filepath(len_trim(shelx_filepath)-2:)=="cif") then
+    !call res_list(trim(shelx_filepath), cif_content, error)
+    !call ask_user(cif_content, res_file)
     call extract_res_from_cif(trim(shelx_filepath), res_file)
     if(trim(res_file)=='') then
         write(log_unit,*)'Error: No res file included in cif file'
