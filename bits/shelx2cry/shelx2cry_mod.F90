@@ -3810,9 +3810,7 @@ character(len=*) :: hklfile_path
 !OUTP INDI /FO/ SIG RATIO/J CORR SERI /Fc/
 !END
 !#CLOSE HKLI
-!#LIST 6
-!READ TYPE=COPY
-!END
+!#SCRIPT XPROC6
 
 write(crystals_fileunit, '(a)') '# read in reflections'
 write(crystals_fileunit, '(a)') '#CLOSE HKLI'
@@ -3826,9 +3824,7 @@ write(crystals_fileunit, '(a)') 'STORE NCOEF=7'
 write(crystals_fileunit, '(a)') 'OUTP INDI /FO/ SIG RATIO/J CORR SERI /Fc/'
 write(crystals_fileunit, '(a)') 'END'
 write(crystals_fileunit, '(a)') '#CLOSE HKLI'
-write(crystals_fileunit, '(a)') '#LIST 6'
-write(crystals_fileunit, '(a)') 'READ TYPE=COPY'
-write(crystals_fileunit, '(a)') 'END'
+write(crystals_fileunit, '(a)') '#SCRIPT XPROC6'
 
 end subroutine
 
