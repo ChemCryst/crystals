@@ -5,7 +5,7 @@
 {E   You have not yet successfully read in any reflections
 
 %     FINISH
-%    END
+%    END IF
 %%
 %    COPY '#SCRIPT XFRIEDEL'                                                      
 %%                                                                              
