@@ -1,0 +1,40 @@
+%SCRIPT XPROC6
+%% Process a newly input LIST 6
+%    IF ( EXISTS 6 .NE. 1 ) THEN
+
+{E   You have not yet successfully read in any reflections
+
+%     FINISH
+%    END
+%%
+%    COPY '#SCRIPT XFRIEDEL'                                                      
+%%                                                                              
+{S * Removing systematically absent reflections                                 
+%    COPY '#SYSTEMATIC'                                                           
+%    COPY 'END'                                                                   
+{S * Sorting reflections                                                        
+%    COPY '#SORT'                                                                 
+%    COPY 'END'                                                                   
+%    IF ( XQMERGE ) THEN                                                          
+{S * Merging equivalent reflections                                             
+%      CLEAR                                                                    
+%      COPY '#MERGE'                                                            
+%      COPY 'END'                                                               
+%    END IF                                                                       
+%                                                                               
+{S * Final copy to DSC file                                                     
+%    COPY '#LIST 6'                                                               
+%    COPY 'READ TYPE = COPY'                                                      
+%    COPY 'END'  
+%%
+%%   Because modern strategies do not (usually) make use of the LIST 6
+%%   scratch files (pseudo 'mag tapes', MT1 and MT2) lots of copies of
+%%   LIST 6 build up on the disk (approximatley 12 from the usual scripts)
+%%                                                                              
+{S * Clear out intermediate reflection files
+%%    COPY  '#DISK'
+%%    COPY  'PRINT DISK'
+%%    COPY  'END'
+%    COPY '#PURGE LIST=6'
+%    COPY 'END'
+%END SCRIPT
