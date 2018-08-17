@@ -1,5 +1,6 @@
 %SCRIPT XPROC6
 %% Process a newly input LIST 6
+%  VARIABLE LOGICAL XQMERGE
 %    IF ( EXISTS 6 .NE. 1 ) THEN
 
 {E   You have not yet successfully read in any reflections
