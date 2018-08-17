@@ -1251,10 +1251,12 @@ c2018        write(noutf,'(a)')'#OPEN FRN2 ARCHIVE-HKL.CIF'
         write(NOUTF,'(a)')'OUTP INDI /FO/ SIG RATIO/J CORR SERI /Fc/'
         write(NOUTF,'(a)')'END'
         write(NOUTF,'(a)')'#CLOSE HKLI'
-        write(noutf,'(a)')'#CLOSE FRN2 '
-        write(noutf,'(a)')'#LIST 6'
-        write(noutf,'(a)')'READ TYPE=COPY'
-        write(noutf,'(a)')'END'
+c2018        write(noutf,'(a)')'#CLOSE FRN2 '
+c2018        write(noutf,'(a)')'#LIST 6'
+c2018        write(noutf,'(a)')'READ TYPE=COPY'
+c2018        write(noutf,'(a)')'END'
+        write(noutf,'(a)')'#SCRIPT XPROC6'
+
       endif
 C END LIST 6
 C
