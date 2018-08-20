@@ -1531,7 +1531,7 @@ C
       WRITE(NCFPU1,'(''_audit_creation_date  '',6X, 
      1 ''"'', 3(A2,A))')
      2 CBUF(7:8),'-',CBUF(4:5),'-',CBUF(1:2),'"'
-      WRITE(NCFPU1, '(''_audit_creation_method      CRYSTALS '',/)')
+      WRITE(NCFPU1, "('_audit_creation_method      ''CRYSTALS'' ',/)")
 
 C --  CONVERT ANGLES TO DEGREES.
       STORE(L1P1+3)=RTD*STORE(L1P1+3)
