@@ -3101,7 +3101,7 @@ C--END OF THE FIRST PASS  -  PASS THROUGH NOW AND ACCUMULATE
       RETURN
       END
 C
-!> Calculate ULIJ restraints. Each local Uij is restrained to the mean <Uij> of all atoms.
+!> Calculate ULIJ restraints. Each local Uij is restrained to the mean \<Uij\> of all atoms.
 !! The first atom of the group is the atom to be restrainted, the 2 other atoms are used to form the local basis      
       SUBROUTINE XCVCULIJ(results)
       use xssval_mod, only: issapp, issprt
@@ -3727,7 +3727,7 @@ C--
       integer :: icpt, jcpt
       real, dimension(12) :: A1 !< Partial derivatives
       double precision, dimension(3) :: ROT1, ROT2, ROT3 !< Cartesian axes
-      double precision, dimension(3) :: ANAXIS, DIFF_VEC !< temp variables to calculates axes
+      double precision, dimension(3) :: DIFF_VEC !< temp variables to calculates axes
       
       double precision U_L_1(6), U_L_2(6) !< adp in linear 6 element form
       integer, dimension(9), parameter :: U_ASSIGN=
@@ -3817,8 +3817,6 @@ C Here is the interatomic vector in crystal fractions:
         DIFF_VEC(2)=STORE(JQ+10)-STORE(JU+10)
         DIFF_VEC(3)=STORE(JQ+12)-STORE(JU+12)
 
-        ANAXIS = (/1.0d0, 0.0d0, 0.0d0/)
-      
         ROT3=matmul(A_M, DIFF_VEC)
         CALL DNORM3(ROT3) !Normalise
       
@@ -4399,13 +4397,12 @@ C--CLEAR THE P.D. SLOSTS FOR THE NEXT COORD.
       END
 C
 CODE FOR XCVCUVOL
-!> \brief Restrain the geometric mean of the principal axes of 2 adps to be equal
+!> \brief Restrain the geometric mean of the principal axes of n ADPs to be equal (non positive definite ADPs are ignored)
 !!
 !! geometric mean: <U> = (a b c)**(1/3)
 !! with a, b, c length of the principal axes (eigen values)
 !!
-!! The restraint is: <U_1> - <U_2> = 0
-!! => (a_1 b_1 c_1)**(1/3) - (a_2 b_2 c_2)**(1/3) = 0
+!! The restraint is: <U_k> = avg(<U_k>) 
 !! 
 !! d(a_1 b_1 c_1) = [ d(a_1)(b_1 c_1) + d(b_1)(a_1 c_1) + d(c_1)(a_1 b_1) ] / [3*(a_1 b_1 c_1)**(2.0/3.0)]
       SUBROUTINE XCVCUVOL(results)
@@ -4436,7 +4433,7 @@ CODE FOR XCVCUVOL
           double precision, dimension(3) :: W !< eigen values
           logical :: tobeused !< flag for unusable atoms
       end type
-      type(Udata_t), dimension(:), allocatable :: Udata
+      type(Udata_t), dimension(:), allocatable :: Udata !< ADPs data
       
       real :: Um_avg !< average of alls the Ugeom
       double precision rtemp
