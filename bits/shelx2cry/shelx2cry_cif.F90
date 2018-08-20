@@ -5,6 +5,7 @@ integer, parameter :: char_len=128 !< constant for the length of the different s
 
 type cif_t !< This type hold the information contained in a cif file
     character(len=char_len) :: data_id = ''!< cif data block header (data_*)
+    character(len=char_len) :: audit_creation_method = '' !< Software used for refinement
     character(len=char_len), dimension(7) :: cell = '' !< Unit cell parameters (a,b,c,alpha,beta,gamma,volume)
     character(len=char_len) :: crystal_group_name = '' !< Space group in Hall notation (_space_group_name_Hall )
     character(len=char_len) :: crystal_group_name_alt = '' !< Space group alternative name (_space_group_name_H-M_alt)
@@ -35,14 +36,8 @@ integer i
     allocate(cif_content_temp(32))
 
     open(unit=cifid,file=cifpath, status='old')
+    read(cifid, '(a)', iostat=iostatus) buffer
     do
-        read(cifid, '(a)', iostat=iostatus) buffer
-        if(iostatus>0) then ! error
-            error = iostatus
-            exit
-        else if(iostatus<0) then ! end of file
-            exit
-        end if
         if(index(adjustl(buffer), 'data_')==1) then
             if(cif_content_index==size(cif_content_temp)) then ! buffer full, extending...
                 call move_alloc(cif_content_temp,cif_content)
@@ -53,11 +48,41 @@ integer i
             cif_content_index=cif_content_index+1
             cif_content_temp(cif_content_index)%data_id=adjustl(buffer)
             cif_content_temp(cif_content_index)%data_id=cif_content_temp(cif_content_index)%data_id(6:)
+        else if(index(buffer, '_audit_creation_method')>0) then
+            cif_content_temp(cif_content_index)%audit_creation_method=adjustl(buffer(index(buffer, '_audit_creation_method')+22:))
+            if(trim(cif_content_temp(cif_content_index)%audit_creation_method)=='') then ! probably a text bloc
+                read(cifid, '(a)', iostat=iostatus) buffer
+                if(iostatus>0) then ! error
+                    error = iostatus
+                    exit
+                else if(iostatus<0) then ! end of file
+                    exit
+                end if   
+                if(trim(buffer)==';') then ! it is a text bloc
+                    do 
+                        read(cifid, '(a)', iostat=iostatus) buffer
+                        if(iostatus>0) then ! error
+                            error = iostatus
+                            exit
+                        else if(iostatus<0) then ! end of file
+                            exit
+                        end if   
+                        if(trim(buffer)==';') then
+                            exit
+                        else
+                            cif_content_temp(cif_content_index)%audit_creation_method= &
+                            &   trim(cif_content_temp(cif_content_index)%audit_creation_method)// &
+                            &   ' '//trim(buffer)
+                        end if
+                    end do
+                end if
+            end if
         else if(index(buffer, '_shelx_res_file')>0 .or. &
         &   index(buffer,'_iucr_refine_instructions_details')>0) then
             ! found a res file!
             cif_content_temp(cif_content_index)%resfile_no=cif_content_temp(cif_content_index)%resfile_no+1
-        else if(index(buffer, '_shelx_hkl_file')>0) then
+        else if(index(buffer, '_shelx_hkl_file')>0 .or. &
+        &   index(buffer, '_iucr_refine_reflections_details')>0) then
             ! found a hkl file!
             cif_content_temp(cif_content_index)%hklfile_no=cif_content_temp(cif_content_index)%hklfile_no+1
         else if(index(buffer, '_shelx_fab_file')>0) then
@@ -89,6 +114,14 @@ integer i
         else if(index(buffer, '_chemical_name_common')>0) then
             cif_content_temp(cif_content_index)%chemical_name_common= &
             &   adjustl(buffer(index(buffer, '_chemical_name_common')+22:))
+        end if        
+        
+        read(cifid, '(a)', iostat=iostatus) buffer
+        if(iostatus>0) then ! error
+            error = iostatus
+            exit
+        else if(iostatus<0) then ! end of file
+            exit
         end if        
     end do
 
@@ -124,6 +157,7 @@ character(len=char_len) :: message
                 write(*, '(3X,a)') 'No res file present in this section'
             else
                 write(*, '(i3,")",1X,a)') i, trim(cif_content(i)%data_id)
+                write(*, '(a18,1x,a)') 'Refined by:', trim(cif_content(i)%audit_creation_method(1:14*3))
                 write(*, '(a18,1x,a)') 'Name:', trim(cif_content(i)%chemical_name_common)
                 write(*, '(a18,1x,a)') 'Crystal system:', trim(cif_content(i)%crystal_system)
                 write(*, '(a18,1x,a)') 'Space group:', trim(cif_content(i)%crystal_group_name)
@@ -178,6 +212,8 @@ character(len=char_len) :: data_id
 integer checksumhkl, checksumhklref, i
 integer checksumres, checksumresref
 integer checksumfab, checksumfabref
+integer res_signature
+logical test
 
     checksumhkl=0
     checksumhklref=0
@@ -201,6 +237,7 @@ integer checksumfab, checksumfabref
         if(index(buffer, '_shelx_res_file')>0 .or. &
         &   index(buffer,'_iucr_refine_instructions_details')>0) then
             ! found a res file!
+            res_signature=0
             read(cifid, '(a)', iostat=iostatus) buffer
             if(trim(buffer)/=';') then
                 print *, 'unexpected line: ', trim(buffer)
@@ -219,6 +256,11 @@ integer checksumfab, checksumfabref
                     close(resid)
                     exit
                 end if
+                if(index(buffer, 'CELL')==1 .or. &
+                &   index(buffer, 'HKLF')==1 .or. &
+                &   index(buffer, 'SFAC')==1) then
+                    res_signature=res_signature+1
+                end if
                 write(resid, '(a)') trim(buffer)
                 do i=1, len_trim(buffer)
                     if(buffer(i:i)>' ') then
@@ -226,6 +268,17 @@ integer checksumfab, checksumfabref
                     end if
                 end do                
             end do
+            if(res_signature==3) then 
+                close(resid)
+            else ! this is not a shelx res file, deleting
+                close(resid)
+                ! weird, if I add status="delete" above it does not work. 
+                ! I have to close it, open it again and then close it with delete
+                ! (gfortran 8.1)
+                print *, 'The instruction details from the cif are not a res file'
+                open(unit=resid,file=trim(res_filepath)) 
+                close(resid, status="DELETE", iostat=res_signature)
+            end if
             checksumres=mod(checksumres, 714025)
             checksumres=checksumres*1366+150889
             checksumres=mod(checksumres, 714025)
@@ -235,7 +288,8 @@ integer checksumfab, checksumfabref
             read(buffer, *) tempc, checksumresref
         end if
 
-        if(index(buffer, '_shelx_hkl_file')>0) then
+        if(index(buffer, '_shelx_hkl_file')>0 .or. &
+        &   index(buffer, '_iucr_refine_reflections_details')>0) then
             ! found a hkl file!
             read(cifid, '(a)', iostat=iostatus) buffer
             if(trim(buffer)/=';') then
@@ -358,6 +412,7 @@ integer i, res_cpt
                 write(*, '(3X,a)') 'No res file present in this section'
             else
                 write(*, '(i3,")",1X,a)') i, trim(cif_content(i)%data_id)
+                write(*, '(a18,1x,a)') 'Refined by:', trim(cif_content(i)%audit_creation_method(1:14*3))
                 write(*, '(a18,1x,a)') 'Name:', trim(cif_content(i)%chemical_name_common)
                 write(*, '(a18,1x,a)') 'Crystal system:', trim(cif_content(i)%crystal_system)
                 write(*, '(a18,1x,a)') 'Space group:', trim(cif_content(i)%crystal_group_name)

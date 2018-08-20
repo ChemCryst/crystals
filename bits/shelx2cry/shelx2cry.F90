@@ -240,6 +240,7 @@ if(shelx_filepath(len_trim(shelx_filepath)-2:)=="cif") then
             stop
         end if
     else
+        call extract_res_from_cif(trim(shelx_filepath))
         do i=1, size(cif_content)
             if(cif_content(i)%resfile_no==1) then
                 res_file=shelx_filepath
