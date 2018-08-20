@@ -211,7 +211,7 @@ end subroutine
 subroutine sfls_punch_init_reflections(sfls_punch_flag, header)
 implicit none
 integer, intent(in) :: sfls_punch_flag !< Flag controlling the type of output
-character(len=*), dimension(:), intent(in) :: header
+character(len=*), dimension(:), intent(in) :: header !< header to be printed at top of the file
 integer filecount
 character(len=255) :: file_name
 
@@ -683,8 +683,8 @@ end subroutine
 subroutine sfls_punch_addtoreflections(hkl, datas, sfls_punch_flag, punch)
 use numpy_mod, only: numpy_write_header
 implicit none
-integer, dimension(3), intent(in) :: hkl
-real, dimension(:), intent(in) :: datas
+integer, dimension(3), intent(in) :: hkl !< hkl indices
+real, dimension(:), intent(in) :: datas !< Line of the design matrix
 integer, intent(in) :: sfls_punch_flag !< Flag controlling the type of output
 logical, optional, intent(in) :: punch !< Flag to close the file when done
 integer m, n, mypos

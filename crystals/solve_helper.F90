@@ -907,9 +907,8 @@ use xiobuf_mod, only: cmon
 use xunits_mod, only:ncvdu,ncwu
 use xssval_mod, only:issprt
 implicit none
-!> Leading dimension of the matrix nmatrix
-integer, intent(in) :: nmsize
-integer, intent(in) :: block_no
+integer, intent(in) :: nmsize !< Leading dimension of the matrix nmatrix
+integer, intent(in) :: block_no !< block number when doing block refinement
 !> On input symmetric real matrix stored in packed format (lower triangle)
 !! aij is stored in AP( i+(2n-j)(j-1)/2) for j <= i.
 !! On output the inverse of the matrix is return
