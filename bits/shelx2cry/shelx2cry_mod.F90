@@ -1,4 +1,4 @@
-!> This module holds the different subroutines for shel2cry
+!> This module holds the different subroutines for shel2cry \ingroup shelx2cry
 !! 
 module shelx2cry_mod
 
@@ -151,11 +151,13 @@ use crystal_data_m
 implicit none
 character(len=*), intent(in) :: crystals_filepath
 
+    print *, 'Reading of res file done'
+
     ! process serial numbers 
     call get_shelx2crystals_serial
 
+    write(*, *) 'Processing Unit cell'
     call write_list1()
-
     call write_list31()
 
 !    if(spacegroup%latt<0) then
@@ -167,22 +169,30 @@ character(len=*), intent(in) :: crystals_filepath
 
     !call write_spacegroup()
 
+    
+    write(*, *) 'Processing space group and symmetry'
     call write_list2()
 
+    write(*, *) 'Processing experimental set up'
     call write_list13()
 
+    write(*, *) 'Processing chemical composition'
     call write_composition()
 
+    write(*, *) 'Processing scattering factors'
     call write_list3()
-    
-    call write_list28()
-
     call write_list29()
     
+    write(*, *) 'Processing reflections filters'
+    call write_list28()
+    
+    write(*, *) 'Processing atomic model'
     call write_list5()
 
+    write(*, *) 'Processing constraints'
     call write_list12()
 
+    write(*, *) 'Processing restraints'
     call write_list16()
     
     write(crystals_fileunit, '(a)') '\LIST 23'
@@ -515,11 +525,11 @@ character :: linecont
         end do
         if(serial1>0) then
             if(atomslist(serial1)%crystals_serial==-1) then
-                write(log_unit, '(2a)')  'Error: Crystals serial not defined ', eadp_table(i)%atoms(1)
+                write(*, '(2a)')  'Error: Crystals serial not defined ', eadp_table(i)%atoms(1)
                 call abort()
             end if
         else
-            write(log_unit, '(2a)') 'Error: Crystals serial not defined ', eadp_table(i)%atoms(1)
+            write(*, '(2a)') 'Error: Crystals serial not defined ', eadp_table(i)%atoms(1)
             call abort()
         end if
         
@@ -533,11 +543,11 @@ character :: linecont
             end do
             if(l>0) then
                 if(atomslist(l)%crystals_serial==-1) then
-                    write(log_unit, '(2a)') 'Error: Crystals serial not defined ', eadp_table(i)%atoms(l)
+                    write(*, '(2a)') 'Error: Crystals serial not defined ', eadp_table(i)%atoms(l)
                     call abort()
                 end if
             else
-                write(log_unit, '(2a)') 'Error: Crystals serial not defined ', eadp_table(i)%atoms(l)
+                write(*, '(2a)') 'Error: Crystals serial not defined ', eadp_table(i)%atoms(l)
                 call abort()
             end if
             
@@ -595,11 +605,11 @@ character :: linecont
         end do
         if(serial1>0) then
             if(atomslist(serial1)%crystals_serial==-1) then
-                write(log_unit, '(2a)') 'Error: Crystals serial not defined ', rigu_table(i)%atoms(1)
+                write(*, '(2a)') 'Error: Crystals serial not defined ', rigu_table(i)%atoms(1)
                 call abort()
             end if
         else
-            write(log_unit, '(2a)') 'Error: Crystals serial not defined ', rigu_table(i)%atoms(1)
+            write(*, '(2a)') 'Error: Crystals serial not defined ', rigu_table(i)%atoms(1)
             call abort()
         end if
         
@@ -613,11 +623,11 @@ character :: linecont
             end do
             if(l>0) then
                 if(atomslist(l)%crystals_serial==-1) then
-                    write(log_unit, '(2a)') 'Error: Crystals serial not defined ', rigu_table(i)%atoms(l)
+                    write(*, '(2a)') 'Error: Crystals serial not defined ', rigu_table(i)%atoms(l)
                     call abort()
                 end if
             else
-                write(log_unit, '(2a)') 'Error: Crystals serial not defined ', rigu_table(i)%atoms(l)
+                write(*, '(2a)') 'Error: Crystals serial not defined ', rigu_table(i)%atoms(l)
                 call abort()
             end if
             
@@ -926,6 +936,8 @@ real, dimension(3) :: diffxyz
                 ! occupancy depends on a free variable
                 fvar_index=int(abs(atomslist(i)%sof)/10.0)
                 if(fvar_index>size(fvar) .or. fvar_index<=0) then
+                    write(*, '(2a)') 'Error: Free variable missing for sof=', atomslist(i)%sof
+                    write(*, '("Line ", I0, ": ", a)') atomslist(i)%line_number, trim(atomslist(i)%shelxline)
                     write(log_unit, '(2a)') 'Error: Free variable missing for sof=', atomslist(i)%sof
                     write(log_unit, '("Line ", I0, ": ", a)') atomslist(i)%line_number, trim(atomslist(i)%shelxline)
                     summary%error_no=summary%error_no+1
@@ -953,7 +965,7 @@ real, dimension(3) :: diffxyz
                 flag=0
             end if
             if(atomslist(i)%crystals_serial==-1) then
-                write(log_unit, '(a)') 'Error: crystals serial not defined'
+                write(*, '(a)') 'Error: crystals serial not defined'
                 call abort()
             end if
             
@@ -1032,10 +1044,10 @@ type(T_LatticeTranslation), dimension(:), allocatable :: LatticeTranslation
     call InitSgInfo(SgInfo)
     error=MemoryInit(SgInfo)
     if(error/=0) then
-        write(log_unit, '(a)') 'Error Cannot allocate memory'
+        write(*, '(a)') 'Error Cannot allocate memory'
         call abort()
     end if
-    
+        
     ! Adding symmetry operators
     do i=1, spacegroup%symmindex
         buffer=adjustl(spacegroup%symm(i))
@@ -1047,13 +1059,13 @@ type(T_LatticeTranslation), dimension(:), allocatable :: LatticeTranslation
         error=ParseSymXYZ(xyz, NewSMx, nint(sginfo_stbf))
         deallocate(xyz)
         if(error/=0) then
-            write(log_unit, '(2a)') 'Error: Cannot recognize symmetry operator ', trim(buffer)
+            write(*, '(2a)') 'Error: Cannot recognize symmetry operator ', trim(buffer)
             call abort()
         end if
         
         error=Add2ListSeitzMx(SgInfo, NewSMx)
         if(error/=0) then
-            write(log_unit, '(a)') 'Error in Add2ListSeitzMx'
+            write(*, '(a)') 'Error in Add2ListSeitzMx'
             call abort()
         end if
     end do
@@ -1077,7 +1089,7 @@ type(T_LatticeTranslation), dimension(:), allocatable :: LatticeTranslation
     if(spacegroup%latt>0) then
         error=AddInversion2ListSeitzMx(SgInfo)
         if(error/=0) then
-            write(log_unit, '(a)') 'Error in AddInversion2ListSeitzMx'
+            write(*, '(a)') 'Error in AddInversion2ListSeitzMx'
             call abort()
         end if
     end if
@@ -1085,7 +1097,7 @@ type(T_LatticeTranslation), dimension(:), allocatable :: LatticeTranslation
     ! All done!
     error=CompleteSgInfo(SgInfo)
     if(error/=0) then
-        write(log_unit, '(a)') 'Error in CompleteSgInfo'
+        write(*, '(a)') 'Error in CompleteSgInfo'
         call abort()
     end if
 
@@ -1099,7 +1111,7 @@ type(T_LatticeTranslation), dimension(:), allocatable :: LatticeTranslation
     if(c_associated(SgInfo%LatticeInfo)) then
         call C_F_POINTER(SgInfo%LatticeInfo, LatticeInfo)
     else
-        write(log_unit, '(a)') 'Error: LatticeInfo not associated'
+        write(*, '(a)') 'Error: LatticeInfo not associated'
         call abort()
     end if
 
@@ -1123,7 +1135,7 @@ type(T_LatticeTranslation), dimension(:), allocatable :: LatticeTranslation
             write(crystals_fileunit, '(a, a)') 'SYMM ', trim(buffer)        
         end do
     else
-        write(log_unit, '(a)') 'Error: No summetry operators in SgInfo%ListSeitzMx'
+        write(*, '(a)') 'Error: No summetry operators in SgInfo%ListSeitzMx'
         call abort()
     end if
     
@@ -1299,24 +1311,11 @@ integer, intent(in) :: atomtype !< atom type as integer (position in sfac)
 real, dimension(:), intent(in) :: coordinates !< atomic coordinates
 real, intent(in) :: sof !< site occupation factor (sof) from shelx
 real, dimension(6), intent(in) :: aniso !< adps U11 U22 U33 U23 U13 U12
-type(line_t) :: shelxline
+type(line_t), intent(in) :: shelxline !< Current line of the res file
 integer i
  
     if(.not. allocated(atomslist)) then
         allocate(atomslist(1024))
-        atomslist_index=0
-        atomslist%label=''
-        atomslist%sfac=0
-        do i=1, size(atomslist)
-            atomslist(i)%coordinates=0.0
-            atomslist(i)%aniso=0.0
-        end do
-        atomslist%iso=0.0
-        atomslist%sof=0.0
-        atomslist%resi=0
-        atomslist%part=0
-        atomslist%shelxline=''
-        atomslist%crystals_serial=-1
     end if
 
     atomslist_index=atomslist_index+1
@@ -1333,6 +1332,9 @@ integer i
     if(part>0 .and. part_sof/=-1.0) then
         ! We are working on a res file, this values should be the same as the one reported on each atom
         if(abs(sof-part_sof)>0.01) then
+            write(*, '(a)') 'Error: res file not consistent'
+            write(*, '(a)') '       sof from part should be the same of the atom one'
+            write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
             write(log_unit, '(a)') 'Error: res file not consistent'
             write(log_unit, '(a)') '       sof from part should be the same of the atom one'
             write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
@@ -1356,8 +1358,8 @@ integer, intent(in) :: atomtype !< atom type as integer (position in sfac)
 real, dimension(:), intent(in) :: coordinates !< atomic coordinates
 real, intent(in) :: sof !< site occupation factor (sof) from shelx
 real, intent(in) :: iso !< isotropic temperature factor
+type(line_t), intent(in) :: shelxline !< Current line of the res file
 integer i, j, k
-type(line_t) :: shelxline
 real, dimension(3,3) :: orthogonalisation, uij, metric, rmetric
 double precision, dimension(3,3) :: temp
 double precision, dimension(3) :: eigv
@@ -1383,39 +1385,13 @@ type(atom_t), dimension(:), allocatable :: templist
      
     if(.not. allocated(atomslist)) then
         allocate(atomslist(1024))
-        atomslist_index=0
-        atomslist%label=''
-        atomslist%sfac=0
-        do i=1, size(atomslist)
-            atomslist(i)%coordinates=0.0
-            atomslist(i)%aniso=0.0
-        end do
-        atomslist%iso=0.0
-        atomslist%sof=0.0
-        atomslist%resi=0
-        atomslist%part=0
-        atomslist%shelxline=''
     end if
 
     atomslist_index=atomslist_index+1
     if(atomslist_index>size(atomslist)) then
-        allocate(templist(size(atomslist)))
-        templist=atomslist
-        deallocate(atomslist)
+        call move_alloc(atomslist, templist)
         allocate(atomslist(size(templist)+1024))
         atomslist(1:size(templist))=templist
-
-        atomslist(size(templist)+1:)%label=''
-        atomslist(size(templist)+1:)%sfac=0
-        do i=size(templist)+1, size(atomslist)
-            atomslist(i)%coordinates=0.0
-            atomslist(i)%aniso=0.0
-        end do
-        atomslist(size(templist)+1:)%iso=0.0
-        atomslist(size(templist)+1:)%sof=0.0
-        atomslist(size(templist)+1:)%resi=0
-        atomslist(size(templist)+1:)%part=0
-        atomslist(size(templist)+1:)%shelxline=''   
         deallocate(templist)     
     end if
     
@@ -1478,6 +1454,9 @@ type(atom_t), dimension(:), allocatable :: templist
     if(part>0 .and. part_sof/=-1.0) then
         ! We are working on a res file, this values should be the same as the one reported on each atom
         if(abs(sof-part_sof)>0.01) then
+            write(*, '(a)') 'Error: res file not consistent'
+            write(*, '(a)') '       sof from part should be the same of the atom one'
+            write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
             write(log_unit, '(a)') 'Error: res file not consistent'
             write(log_unit, '(a)') '       sof from part should be the same of the atom one'
             write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
@@ -1523,6 +1502,8 @@ integer start, iostatus
     flat_loop:do i=1, flat_table_index
 
         if(len_trim(flat_table(i)%shelxline)<5) then
+            write(*,*) 'Error: Empty FLAT'
+            write(*, '("Line ", I0, ": ", a)') flat_table(i)%line_number, trim(flat_table(i)%shelxline)
             write(log_unit,*) 'Error: Empty FLAT'
             write(log_unit, '("Line ", I0, ": ", a)') flat_table(i)%line_number, trim(flat_table(i)%shelxline)
             summary%error_no=summary%error_no+1
@@ -1553,6 +1534,8 @@ integer start, iostatus
         if(flat_table(i)%namedresidue=='-' .or. flat_table(i)%namedresidue=='+') then
             write(log_unit, *) "Error: This residue name does not make sense"
             write(log_unit, '("Line ", I0, ": ", a)') flat_table(i)%line_number, flat_table(i)%shelxline
+            write(*, *) "Error: This residue name does not make sense"
+            write(*, '("Line ", I0, ": ", a)') flat_table(i)%line_number, flat_table(i)%shelxline
             summary%error_no=summary%error_no+1
             return
         end if
@@ -1567,6 +1550,8 @@ integer start, iostatus
             if( size(splitbuffer)-start<3 ) then
                 write(log_unit, *) "Error: Can't fit a plane with less than 4 atoms"
                 write(log_unit, '("Line ", I0, ": ", a)') flat_table(i)%line_number, flat_table(i)%shelxline
+                write(*, *) "Error: Can't fit a plane with less than 4 atoms"
+                write(*, '("Line ", I0, ": ", a)') flat_table(i)%line_number, flat_table(i)%shelxline
                 summary%error_no=summary%error_no+1
                 return
             end if
@@ -1633,14 +1618,14 @@ integer start, iostatus
                 end do
             
                 if(serial1==0) then
-                    write(log_unit, '(a)') flat_table(i)%atoms(j)
-                    write(log_unit, '(I0)') serial1
-                    write(log_unit, '(a)') 'Error: check your res file. I cannot find the atom'
+                    write(*, '(a)') flat_table(i)%atoms(j)
+                    write(*, '(I0)') serial1
+                    write(*, '(a)') 'Error: check your res file. I cannot find the atom'
                     call abort()
                 end if
                 
                 if(atomslist(serial1)%crystals_serial==-1) then
-                    write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                    write(*, '(a)') 'Error: Crystals serial not defined'
                     call abort()
                 end if
                 serials(j)=serial1
@@ -1702,7 +1687,7 @@ integer start, iostatus
                     end if
                     
                     if(atomslist(serial1)%crystals_serial==-1) then
-                        write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                        write(*, '(a)') 'Error: Crystals serial not defined'
                         call abort()
                     end if
                     serials(k)=serial1
@@ -1763,7 +1748,7 @@ integer start, iostatus
                     end if
                     
                     if(atomslist(serial1)%crystals_serial==-1) then
-                        write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                        write(*, '(a)') 'Error: Crystals serial not defined'
                         call abort()
                     end if
                     serials(k)=serial1
@@ -1830,7 +1815,7 @@ integer start, iostatus
                 end if
                 
                 if(atomslist(serial1)%crystals_serial==-1) then
-                    write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                    write(*, '(a)') 'Error: Crystals serial not defined'
                     call abort()
                 end if
                 serials(k)=serial1
@@ -1976,15 +1961,15 @@ integer, dimension(:), allocatable :: residuelist
             end do
 
             if(serial1==0 .or. serial2==0) then
-                write(log_unit, '(2a)') dfix_table(i)%atom1, dfix_table(i)%atom2
-                write(log_unit, '(2I0)') serial1, serial2
-                write(log_unit, '(a)') 'Error: check your res file. I cannot find the atom'
+                write(*, '(2a)') dfix_table(i)%atom1, dfix_table(i)%atom2
+                write(*, '(2I0)') serial1, serial2
+                write(*, '(a)') 'Error: check your res file. I cannot find the atom'
                 call abort()
             end if
                         
             ! good to go
             if(atomslist(serial1)%crystals_serial==-1 .or. atomslist(serial2)%crystals_serial==-1) then
-                write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                write(*, '(a)') 'Error: Crystals serial not defined'
                 call abort()
             end if
             write(crystals_fileunit, '(a, 1X, F0.5, ",", F0.5, " = ", a,"(",I0,")", " TO ", a,"(",I0,")")') &
@@ -2074,7 +2059,7 @@ integer, dimension(:), allocatable :: residuelist
                 else
                 
                     if(atomslist(serial1)%crystals_serial==-1 .or. atomslist(serial2)%crystals_serial==-1) then
-                        write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                        write(*, '(a)') 'Error: Crystals serial not defined'
                         call abort()
                     end if
                     write(crystals_fileunit, '(a, 1X, F0.5, ",", F0.5, " = ", a,"(",I0,")", " TO ", a,"(",I0,")")') &
@@ -2157,7 +2142,7 @@ integer, dimension(:), allocatable :: residuelist
                                                         
                 if(serial1/=0 .and. serial2/=0) then
                     if(atomslist(serial1)%crystals_serial==-1 .or. atomslist(serial2)%crystals_serial==-1) then
-                        write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                        write(*, '(a)') 'Error: Crystals serial not defined'
                         call abort()
                     end if
                     write(crystals_fileunit, '(a, 1X, F0.5, ",", F0.5, " = ", a,"(",I0,")", " TO ", a,"(",I0,")")') &
@@ -2312,7 +2297,7 @@ integer, dimension(:), allocatable :: residuelist
                         
                         serials(k)=serial1
                         if(atomslist(serial1)%crystals_serial==-1) then
-                            write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                            write(*, '(a)') 'Error: Crystals serial not defined'
                             call abort()
                         end if
                     !end associate
@@ -2368,7 +2353,7 @@ integer, dimension(:), allocatable :: residuelist
                             end do
                             serials(l)=serial1
                             if(atomslist(serial1)%crystals_serial==-1) then
-                                write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                                write(*, '(a)') 'Error: Crystals serial not defined'
                                 call abort()
                             end if
                         !end associate
@@ -2427,7 +2412,7 @@ integer, dimension(:), allocatable :: residuelist
                             end do
                             serials(l)=serial1
                             if(atomslist(serial1)%crystals_serial==-1) then
-                                write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                                write(*, '(a)') 'Error: Crystals serial not defined'
                                 call abort()
                             end if
                         !end associate
@@ -2465,7 +2450,7 @@ integer, dimension(:), allocatable :: residuelist
                         end do
                         serials(k)=serial1
                         if(atomslist(serial1)%crystals_serial==-1) then
-                            write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                            write(*, '(a)') 'Error: Crystals serial not defined'
                             call abort()
                         end if
                     !end associate
@@ -2567,6 +2552,8 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
     isor_loop:do i=1, isor_table_index
 
         if(len_trim(isor_table(i)%shelxline)<5) then
+            write(*,*) 'Error: Empty ISOR'
+            write(*, '("Line ", I0, ": ", a)') isor_table(i)%line_number, trim(isor_table(i)%shelxline)
             write(log_unit,*) 'Error: Empty ISOR'
             write(log_unit, '("Line ", I0, ": ", a)') isor_table(i)%line_number, trim(isor_table(i)%shelxline)
             summary%error_no=summary%error_no+1
@@ -2628,6 +2615,9 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
                         write(log_unit,*) 'Error: Cannot have a space after `_` '
                         write(log_unit, '("Line ", I0, ": ", a)') isor_table(i)%line_number, trim(isor_table(i)%shelxline)
                         write(log_unit,*) repeat(' ', 5+5+nint(log10(real(isor_table(i)%line_number)))+1), '^'
+                        write(*,*) 'Error: Cannot have a space after `_` '
+                        write(*, '("Line ", I0, ": ", a)') isor_table(i)%line_number, trim(isor_table(i)%shelxline)
+                        write(*,*) repeat(' ', 5+5+nint(log10(real(isor_table(i)%line_number)))+1), '^'
                         summary%error_no=summary%error_no+1
                         return
                     end if
@@ -2706,13 +2696,13 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
                     if(indexresi>0) then
                         if(atom(indexresi+1:indexresi+1)=='-') then
                             ! previous residue
-                            write(log_unit, '(a)') 'Warning: Residue - in atom with ISOR without _*'
-                            write(log_unit, '(a)') '         Not implemented'
+                            write(*, '(a)') 'Warning: Residue - in atom with ISOR without _*'
+                            write(*, '(a)') '         Not implemented'
                             call abort()
                         else if(atom(indexresi+1:indexresi+1)=='+') then
                             ! next residue
-                            write(log_unit, '(a)') 'Warning: Residue + in atom with ISOR without _*'
-                            write(log_unit, '(a)') '         Not implemented'
+                            write(*, '(a)') 'Warning: Residue + in atom with ISOR without _*'
+                            write(*, '(a)') '         Not implemented'
                             call abort()
                         else if(iachar(atom(indexresi+1:indexresi+1))>=48 .and. &
                         &   iachar(atom(indexresi+1:indexresi+1))<=57) then
@@ -2749,14 +2739,14 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
                 end if
                 
                 if(serial1==0) then
-                    write(log_unit, '(a)') isor_table(i)%atoms(j)
-                    write(log_unit, '(I0)') serial1
-                    write(log_unit, '(a)') 'Error: check your res file. I cannot find the atom'
+                    write(*, '(a)') isor_table(i)%atoms(j)
+                    write(*, '(I0)') serial1
+                    write(*, '(a)') 'Error: check your res file. I cannot find the atom'
                     call abort()
                 end if
                 
                 if(atomslist(serial1)%crystals_serial==-1) then
-                    write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                    write(*, '(a)') 'Error: Crystals serial not defined'
                     call abort()
                 end if
                 serials(j)=serial1
@@ -2828,7 +2818,7 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
                     end if
                     
                     if(atomslist(serial1)%crystals_serial==-1) then
-                        write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                        write(*, '(a)') 'Error: Crystals serial not defined'
                         call abort()
                     end if
                     serials(k)=serial1
@@ -2901,7 +2891,7 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
                     end if
                     
                     if(atomslist(serial1)%crystals_serial==-1) then
-                        write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                        write(*, '(a)') 'Error: Crystals serial not defined'
                         call abort()
                     end if
                     serials(k)=serial1
@@ -2978,7 +2968,7 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
                 end if
                 
                 if(atomslist(serial1)%crystals_serial==-1) then
-                    write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                    write(*, '(a)') 'Error: Crystals serial not defined'
                     call abort()
                 end if
                 serials(k)=serial1
@@ -3041,6 +3031,8 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
         if(len_trim(same_table(i)%shelxline)<5) then
             write(log_unit,*) 'Error: Empty ISOR'
             write(log_unit, '("Line ", I0, ": ", a)') same_table(i)%line_number, trim(same_table(i)%shelxline)
+            write(*,*) 'Error: Empty ISOR'
+            write(*, '("Line ", I0, ": ", a)') same_table(i)%line_number, trim(same_table(i)%shelxline)
             summary%error_no=summary%error_no+1
             return
         end if
@@ -3100,6 +3092,9 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
                         write(log_unit,*) 'Error: Cannot have a space after `_` '
                         write(log_unit, '("Line ", I0, ": ", a)') same_table(i)%line_number, trim(same_table(i)%shelxline)
                         write(log_unit,*) repeat(' ', 5+5+nint(log10(real(same_table(i)%line_number)))+1), '^'
+                        write(*,*) 'Error: Cannot have a space after `_` '
+                        write(*, '("Line ", I0, ": ", a)') same_table(i)%line_number, trim(same_table(i)%shelxline)
+                        write(*,*) repeat(' ', 5+5+nint(log10(real(same_table(i)%line_number)))+1), '^'
                         summary%error_no=summary%error_no+1
                         return
                     end if
@@ -3204,13 +3199,13 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
                     if(indexresi>0) then
                         if(atom(indexresi+1:indexresi+1)=='-') then
                             ! previous residue
-                            write(log_unit, '(a)') 'Warning: Residue - in atom with ISOR without _*'
-                            write(log_unit, '(a)') '         Not implemented'
+                            write(*, '(a)') 'Warning: Residue - in atom with ISOR without _*'
+                            write(*, '(a)') '         Not implemented'
                             call abort()
                         else if(atom(indexresi+1:indexresi+1)=='+') then
                             ! next residue
-                            write(log_unit, '(a)') 'Warning: Residue + in atom with ISOR without _*'
-                            write(log_unit, '(a)') '         Not implemented'
+                            write(*, '(a)') 'Warning: Residue + in atom with ISOR without _*'
+                            write(*, '(a)') '         Not implemented'
                             call abort()
                         else if(iachar(atom(indexresi+1:indexresi+1))>=48 .and. &
                         &   iachar(atom(indexresi+1:indexresi+1))<=57) then
@@ -3236,14 +3231,14 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
                 end do
             
                 if(serial1==0) then
-                    write(log_unit, '(a)') same_table(i)%list1(j)
-                    write(log_unit, '(I0)') serial1
-                    write(log_unit, '(a)') 'Error: check your res file. I cannot find the atom'
+                    write(*, '(a)') same_table(i)%list1(j)
+                    write(*, '(I0)') serial1
+                    write(*, '(a)') 'Error: check your res file. I cannot find the atom'
                     call abort()
                 end if
                 
                 if(atomslist(serial1)%crystals_serial==-1) then
-                    write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                    write(*, '(a)') 'Error: Crystals serial not defined'
                     call abort()
                 end if
                 serials(j)=serial1
@@ -3274,13 +3269,13 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
                     if(indexresi>0) then
                         if(atom(indexresi+1:indexresi+1)=='-') then
                             ! previous residue
-                            write(log_unit, '(a)') 'Warning: Residue - in atom with ISOR without _*'
-                            write(log_unit, '(a)') '         Not implemented'
+                            write(*, '(a)') 'Warning: Residue - in atom with ISOR without _*'
+                            write(*, '(a)') '         Not implemented'
                             call abort()
                         else if(atom(indexresi+1:indexresi+1)=='+') then
                             ! next residue
-                            write(log_unit, '(a)') 'Warning: Residue + in atom with ISOR without _*'
-                            write(log_unit, '(a)') '         Not implemented'
+                            write(*, '(a)') 'Warning: Residue + in atom with ISOR without _*'
+                            write(*, '(a)') '         Not implemented'
                             call abort()
                         else if(iachar(atom(indexresi+1:indexresi+1))>=48 .and. &
                         &   iachar(atom(indexresi+1:indexresi+1))<=57) then
@@ -3306,14 +3301,14 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
                 end do
             
                 if(serial1==0) then
-                    write(log_unit, '(a)') same_table(i)%list2(j)
-                    write(log_unit, '(I0)') serial1
-                    write(log_unit, '(a)') 'Error: check your res file. I cannot find the atom'
+                    write(*, '(a)') same_table(i)%list2(j)
+                    write(*, '(I0)') serial1
+                    write(*, '(a)') 'Error: check your res file. I cannot find the atom'
                     call abort()
                 end if
                 
                 if(atomslist(serial1)%crystals_serial==-1) then
-                    write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                    write(*, '(a)') 'Error: Crystals serial not defined'
                     call abort()
                 end if
                 serials(j)=serial1
@@ -3384,7 +3379,7 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
                     end if
                     
                     if(atomslist(serial1)%crystals_serial==-1) then
-                        write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                        write(*, '(a)') 'Error: Crystals serial not defined'
                         call abort()
                     end if
                     serials(k)=serial1
@@ -3446,7 +3441,7 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
                     end if
                     
                     if(atomslist(serial1)%crystals_serial==-1) then
-                        write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                        write(*, '(a)') 'Error: Crystals serial not defined'
                         call abort()
                     end if
                     serials(k)=serial1
@@ -3520,7 +3515,7 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
                     end if
                     
                     if(atomslist(serial1)%crystals_serial==-1) then
-                        write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                        write(*, '(a)') 'Error: Crystals serial not defined'
                         call abort()
                     end if
                     serials(k)=serial1
@@ -3584,7 +3579,7 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
                     end if
                     
                     if(atomslist(serial1)%crystals_serial==-1) then
-                        write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                        write(*, '(a)') 'Error: Crystals serial not defined'
                         call abort()
                     end if
                     serials(k)=serial1
@@ -3659,7 +3654,7 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
                 end if
                 
                 if(atomslist(serial1)%crystals_serial==-1) then
-                    write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                    write(*, '(a)') 'Error: Crystals serial not defined'
                     call abort()
                 end if
                 serials(k)=serial1
@@ -3725,7 +3720,7 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
                 end if
                 
                 if(atomslist(serial1)%crystals_serial==-1) then
-                    write(log_unit, '(a)') 'Error: Crystals serial not defined'
+                    write(*, '(a)') 'Error: Crystals serial not defined'
                     call abort()
                 end if
                 serials(k)=serial1
@@ -3796,7 +3791,8 @@ end subroutine
 subroutine write_hkl(hklfile_path)
 use crystal_data_m, only:hklf, crystals_fileunit
 implicit none
-character(len=*) :: hklfile_path
+character(len=*), intent(in) :: hklfile_path
+integer i
 
 !# read in reflections
 !#CLOSE HKLI
@@ -3812,9 +3808,11 @@ character(len=*) :: hklfile_path
 !#CLOSE HKLI
 !#SCRIPT XPROC6
 
+i=max(index(hklfile_path, "/", .true.), index(hklfile_path, "\", .true.))
+
 write(crystals_fileunit, '(a)') '# read in reflections'
 write(crystals_fileunit, '(a)') '#CLOSE HKLI'
-write(crystals_fileunit, '(a,a,a)') '#OPEN HKLI  "',trim(hklfile_path),'"'
+write(crystals_fileunit, '(a,a,a)') '#OPEN HKLI  "',trim(hklfile_path(i+1:)),'"'
 write(crystals_fileunit, '(a)') '#HKLI'
 write(crystals_fileunit, '(a)') "READ F'S=FSQ NCOEF=6 TYPE=FIXED CHECK=NO"
 write(crystals_fileunit, '(a)') 'INPUT H K L /FO/ SIGMA(/FO/) /Fc/'

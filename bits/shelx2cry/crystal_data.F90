@@ -1,7 +1,9 @@
-!> Crystallographic data of a structure during import from shelx
+!> Crystallographic data of a structure during import from shelx \ingroup shelx2cry
 module crystal_data_m
 
 logical, public :: the_end=.false. !< has the keyword END been reached
+
+logical, public :: Interactive_mode=.false. !< Ask user question if set to .true.
 
 integer, parameter :: crystals_fileunit=1234 !< unit number for the crystals file ouput
 integer :: log_unit
@@ -59,18 +61,18 @@ type(disp_t), dimension(:), allocatable :: disp_table !< List of disp keywords
 
 !> Atom type. It holds hold the information about an atom in the structure
 type atom_t
-    character(len=lenlabel) :: label !< label from shelx
-    integer :: sfac !< sfac from shelx
-    real, dimension(3) :: coordinates !< x,y,z fractional coordinates from shelx
-    real, dimension(6) :: aniso !< Anistropic displacement parameters U11 U22 U33 U23 U13 U12 from shelx
-    real :: iso !< isotropic temperature factor from shelx
-    real :: sof !< Site occupation factor from shelx
-    integer :: multiplicity !< multiplicity (calculated)
-    integer resi !< residue from shelx
-    integer part !< group from shelx
-    character(len=512) :: shelxline !< raw line from res/ins file
-    integer :: line_number !< line number of shelxline from res/ins file
-    integer :: crystals_serial !< crystals serial code
+    character(len=lenlabel) :: label = '' !< label from shelx
+    integer :: sfac = 0 !< sfac from shelx
+    real, dimension(3) :: coordinates = 0.0 !< x,y,z fractional coordinates from shelx
+    real, dimension(6) :: aniso = 0.0 !< Anistropic displacement parameters U11 U22 U33 U23 U13 U12 from shelx
+    real :: iso = 0.0 !< isotropic temperature factor from shelx
+    real :: sof = 0.0 !< Site occupation factor from shelx
+    integer :: multiplicity = 0 !< multiplicity (calculated)
+    integer :: resi = 0 !< residue from shelx
+    integer :: part = 0 !< group from shelx
+    character(len=512) :: shelxline = '' !< raw line from res/ins file
+    integer :: line_number = 0 !< line number of shelxline from res/ins file
+    integer :: crystals_serial = -1 !< crystals serial code
 end type
 type(atom_t), dimension(:), allocatable :: atomslist !< list of atoms in the res/ins file
 integer atomslist_index !< Current index in the list of atoms list (atomslist)
@@ -190,6 +192,13 @@ type summary_t
     integer :: warning_no !< number of warnings issued
 end type
 type(summary_t) :: summary
+
+type shelx_unsupported_t !< type for the list of the tags found in the res file not supported by crystals
+    character(len=4) :: tag = '' !< shelxl tag
+    integer :: num = 0 !< number of tag found
+end type
+type(shelx_unsupported_t), dimension(80) :: shelx_unsupported_list !< list of the tags found in the res file not supported by crystals
+integer :: shelx_unsupported_list_index = 0
 
 contains
 
@@ -522,6 +531,18 @@ integer ipos, iostatus
     end if
     
 end subroutine
-    
+
+!> return the identity matrix
+function matrix_eye(order)
+implicit none
+integer, intent(in) :: order !< order of the matrix
+real, dimension(order, order) :: matrix_eye !< identity matrix
+integer i
+
+    matrix_eye=0.0
+    do i=1, order
+        matrix_eye(i,i)=1.0
+    end do
+end function
 
 end module

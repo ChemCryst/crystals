@@ -1,28 +1,30 @@
+!> Module for the parsing of cif files \ingroup shelx2cry
 module shelx2cry_cifparse_m
 
-integer, parameter :: char_len=128
+integer, parameter :: char_len=128 !< constant for the length of the different strings and buffers
 
-type cif_t
-    character(len=char_len) :: data_id
-    character(len=char_len), dimension(7) :: cell
-    character(len=char_len) :: crystal_group_name
-    character(len=char_len) :: crystal_group_name_alt
-    character(len=char_len) :: crystal_system
-    character(len=char_len) :: chemical_name_common
-    integer :: resfile_no, hklfile_no, fabfile_no
-contains
-    procedure, pass :: print => print_cif
+type cif_t !< This type hold the information contained in a cif file
+    character(len=char_len) :: data_id = ''!< cif data block header (data_*)
+    character(len=char_len), dimension(7) :: cell = '' !< Unit cell parameters (a,b,c,alpha,beta,gamma,volume)
+    character(len=char_len) :: crystal_group_name = '' !< Space group in Hall notation (_space_group_name_Hall )
+    character(len=char_len) :: crystal_group_name_alt = '' !< Space group alternative name (_space_group_name_H-M_alt)
+    character(len=char_len) :: crystal_system = '' !< Crystal system (_space_group_crystal_system)
+    character(len=char_len) :: chemical_name_common = '' !< Chemical name (_chemical_name_common)
+    integer :: resfile_no = 0 !< number of res file in a data block. Should be one or zero.
+    integer :: hklfile_no = 0 !< number of hkl file in a data block. Should be one or zero.
+    integer :: fabfile_no = 0 !< number of fab file in a data block. Should be one or zero.
 end type
 
 contains
 
-subroutine res_list(cifpath, cif_content, error)
+!> Scan all the data blocks in a cif file. Store the result in a cif_t type.
+subroutine scan_cif(cifpath, cif_content, error)
 implicit none
-character(len=*), intent(in) :: cifpath
+character(len=*), intent(in) :: cifpath !< Path to the cif file
+integer, intent(out) :: error !< error flag
+type(cif_t), dimension(:), allocatable, intent(out) :: cif_content !< Content of the cif
 integer, parameter :: cifid=815
-integer, intent(out) :: error
 type(cif_t), dimension(:), allocatable :: cif_content_temp
-type(cif_t), dimension(:), allocatable, intent(out) :: cif_content
 integer cif_content_index
 character(len=1024) :: buffer
 integer iostatus
@@ -31,27 +33,23 @@ integer i
     error = 0
     cif_content_index=0
     allocate(cif_content_temp(32))
-    do i=1, size(cif_content_temp)
-        cif_content_temp(i)%data_id=''
-        cif_content_temp(i)%cell=''
-        cif_content_temp(i)%crystal_group_name=''
-        cif_content_temp(i)%crystal_group_name_alt=''
-        cif_content_temp(i)%crystal_system=''
-        cif_content_temp(i)%resfile_no=0
-        cif_content_temp(i)%hklfile_no=0
-        cif_content_temp(i)%fabfile_no=0
-        cif_content_temp(i)%chemical_name_common=''
-    end do
 
     open(unit=cifid,file=cifpath, status='old')
     do
         read(cifid, '(a)', iostat=iostatus) buffer
-        if(iostatus/=0) then
-            error = -1
+        if(iostatus>0) then ! error
+            error = iostatus
+            exit
+        else if(iostatus<0) then ! end of file
             exit
         end if
         if(index(adjustl(buffer), 'data_')==1) then
-            print *, cif_content_index, trim(buffer)
+            if(cif_content_index==size(cif_content_temp)) then ! buffer full, extending...
+                call move_alloc(cif_content_temp,cif_content)
+                allocate(cif_content_temp(size(cif_content)+32))
+                cif_content_temp(1:size(cif_content))=cif_content
+                deallocate(cif_content)
+            end if
             cif_content_index=cif_content_index+1
             cif_content_temp(cif_content_index)%data_id=adjustl(buffer)
             cif_content_temp(cif_content_index)%data_id=cif_content_temp(cif_content_index)%data_id(6:)
@@ -100,11 +98,12 @@ integer i
     
 end subroutine
 
-subroutine ask_user(cif_content, chosen_res)
+!> Ask the user for which dataset to convert to crystals
+subroutine ask_user(cif_content, chosen_id)
 implicit none
-type(cif_t), dimension(:), intent(in) :: cif_content
-character(len=char_len) :: chosen_res
-integer i, res_cpt, chosen_id, ierror
+type(cif_t), dimension(:), intent(in) :: cif_content !< Cif file content obtained from scan_cif
+integer, intent(out) :: chosen_id !< Chosen dataset as the index in cif_content
+integer i, res_cpt, ierror
 character(len=char_len) :: message
 
     ! check if multiple files are present
@@ -158,20 +157,20 @@ character(len=char_len) :: message
                         &   'Error: Empty dataset, no res file present '
                         cycle
                     end if
-                    chosen_res=trim(cif_content(chosen_id)%data_id)
                     exit
                 end if
             end if
         end do
     end if
+    print *, ''
+    
 end subroutine
 
 !> Extract a res file from a cif file
-subroutine extract_res_from_cif(shelx_filepath, res_file)
+subroutine extract_res_from_cif(shelx_filepath)
 use crystal_data_m, only: log_unit
 implicit  none
 character(len=*), intent(in) :: shelx_filepath
-character(len=char_len), intent(out) :: res_file
 character(len=char_len) :: res_filepath, fab_filepath, hkl_filepath
 integer resid, cifid, iostatus
 character(len=2048) :: buffer, tempc
@@ -187,7 +186,6 @@ integer checksumfab, checksumfabref
     checksumfab=0
     checksumfabref=0
 
-    res_file=''
     cifid=815
     open(unit=cifid,file=shelx_filepath, status='old')
     do
@@ -213,9 +211,6 @@ integer checksumfab, checksumfabref
             checksumres=0
             res_filepath=shelx_filepath
             res_filepath(len_trim(res_filepath)-3:)='_'//trim(data_id)//'.res'
-            if(trim(res_file)=='') then ! save the first file encountered
-                res_file=res_filepath
-            end if
             resid=816
             open(unit=resid,file=trim(res_filepath))       
             do
@@ -339,21 +334,47 @@ integer checksumfab, checksumfabref
         
 end subroutine
 
-subroutine print_cif(self)
+!> Print the content of a cif file
+subroutine print_content(cif_content)
 implicit none
-class(cif_t), intent(in) :: self
-integer i
+type(cif_t), dimension(:), intent(in) :: cif_content !< Cif file content obtained from scan_cif
+integer i, res_cpt
 
-    print *, trim(self%data_id)
-    do i=1, 7
-        print *, trim(self%cell(i))
+    ! check if multiple files are present
+    res_cpt=0
+    do i=1, size(cif_content)
+        if(cif_content(i)%resfile_no>1) then
+            print *, "Error: invalid cif file. More than one res file in ", trim(cif_content(i)%data_id)
+        else if(cif_content(i)%resfile_no>0) then 
+            res_cpt=res_cpt+1
+        end if
     end do
-    print *, trim(self%crystal_group_name)
-    print *, trim(self%crystal_group_name_alt)
-    print *, trim(self%crystal_system)
-    print *, trim(self%chemical_name_common)
-    print *, self%resfile_no, self%hklfile_no, self%fabfile_no
     
+    if(res_cpt>1) then
+        do i=1, size(cif_content)
+            write(*, '(a)') repeat('=',14*3+1+18)
+            if(cif_content(i)%resfile_no==0) then
+                write(*, '(i3,")",1X,a)') i, trim(cif_content(i)%data_id)
+                write(*, '(3X,a)') 'No res file present in this section'
+            else
+                write(*, '(i3,")",1X,a)') i, trim(cif_content(i)%data_id)
+                write(*, '(a18,1x,a)') 'Name:', trim(cif_content(i)%chemical_name_common)
+                write(*, '(a18,1x,a)') 'Crystal system:', trim(cif_content(i)%crystal_system)
+                write(*, '(a18,1x,a)') 'Space group:', trim(cif_content(i)%crystal_group_name)
+                write(*, '(a18,1x,a)') 'Space group alt:', trim(cif_content(i)%crystal_group_name_alt)
+                write(*, '(a18,1x,3a14)') 'Cell lengths:', cif_content(i)%cell(1:3)
+                write(*, '(a18,1x,3a14)') 'Cell angles:', cif_content(i)%cell(4:6)
+            end if
+            if(cif_content(i)%hklfile_no==0) then
+                write(*, '(3X, a)') 'No hkl file present in this section'
+            end if
+            if(cif_content(i)%fabfile_no==1) then
+                write(*, '(3X, a)') 'A fab file has been found, the structure has been squeezed'
+            end if
+        end do
+        write(*, '(a)') repeat('=',14*3+1+18)
+        
+    end if
 end subroutine
 
 end module

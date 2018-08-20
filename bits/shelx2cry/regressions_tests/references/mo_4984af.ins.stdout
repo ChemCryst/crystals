@@ -1,0 +1,29 @@
+ Crystals output file: mo_4984af.ins.out
+ Processing res file insfiles/mo_4984af.ins
+ 
+ Reading of res file done
+ Processing Unit cell
+ Processing space group and symmetry
+ Processing experimental set up
+ Processing chemical composition
+ Processing scattering factors
+ Processing reflections filters
+ Processing atomic model
+ Processing constraints
+ Processing restraints
+ 
+List of ignored shexl commands:
+    EQIV: 1 time(s)
+    TEMP: 1 time(s)
+    WGHT: 1 time(s)
+    AFIX: 28 time(s)
+ 
+## Warning: Could not find the corresponding hkl file insfiles/mo_4984af.hkl
+##          You will have to import it manually
+##          A transformation matrix is present,
+##          do not forget to convert the hkl indices using:
+##          |   0.000    0.000    1.000 |
+##          |   1.000    0.000    0.000 |
+##          |   0.000    1.000    0.000 |
+ 
+ All done.

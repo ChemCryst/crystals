@@ -1,4 +1,4 @@
-!> Dictionary handling the call of the correct subroutine depending on the shelx keyword
+!> Dictionary handling the call of the correct subroutine depending on the shelx keyword \ingroup shelx2cry
 module shelx_keywords_dict_m
 
 !> Typical interface used when calling the subroutines
@@ -147,7 +147,7 @@ type(dict_t) :: this
         tuples(54)%key='RESI'
         tuples(54)%func => shelx_resi
         tuples(55)%key='RIGU'
-        tuples(55)%func => shelx_rigu
+        tuples(55)%func => shelx_unsupported    
         tuples(56)%key='RTAB'
         tuples(56)%func => shelx_unsupported    
         tuples(57)%key='SADI'

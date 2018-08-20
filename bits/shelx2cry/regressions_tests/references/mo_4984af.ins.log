@@ -112,6 +112,10 @@ Line 124: AFIX   0
 Processing shelxl labels into crystals serials
 Done
 
-## Warning: hkl indices need transforming, see transform.cry
-## Warning: Could not find the corresponding hkl file
+## Warning: Could not find the corresponding hkl file insfiles/mo_4984af.hkl
 ##          You will have to import it manually
+##          A transformation matrix is present,
+##          do not forget to convert the hkl indices using:
+##          |   0.000    0.000    1.000 |
+##          |   1.000    0.000    0.000 |
+##          |   0.000    1.000    0.000 |

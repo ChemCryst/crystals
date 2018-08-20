@@ -1,0 +1,23 @@
+ Crystals output file: hb7731.ins.out
+ Processing res file insfiles/hb7731.ins
+ 
+ Reading of res file done
+ Processing Unit cell
+ Processing space group and symmetry
+ Processing experimental set up
+ Processing chemical composition
+ Processing scattering factors
+ Processing reflections filters
+ Processing atomic model
+ Processing constraints
+ Processing restraints
+ Processing hkl file header
+ 
+List of ignored shexl commands:
+    TEMP: 2 time(s)
+    SIZE: 1 time(s)
+    WGHT: 1 time(s)
+    AFIX: 20 time(s)
+ 
+ 
+ All done.

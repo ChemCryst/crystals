@@ -1,4 +1,4 @@
-!> This module list the subroutine processing each keyword of a res file
+!> This module list the subroutine processing each keyword of a res file \ingroup shelx2cry
 module shelx_procedures_m
 integer, parameter, private :: debug=0
 contains
@@ -8,9 +8,30 @@ subroutine shelx_unsupported(shelxline)
 use crystal_data_m
 implicit none
 type(line_t), intent(in) :: shelxline
+integer i, found
+character(len=4) :: tag
 
-    write(log_unit, '(a,a,a)') 'Warning: `',trim(shelxline%line(1:4)),'` Not supported '
+    tag=shelxline%line(1:4)
+    call to_upper(tag)
+
+    write(log_unit, '(a,a,a)') 'Warning: `',trim(tag),'` Not supported '
     write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+    
+    found=0
+    do i=1, shelx_unsupported_list_index
+        if(shelx_unsupported_list(i)%tag==shelxline%line(1:4)) then
+            found=i
+            exit
+        end if
+    end do
+    
+    if(found>0) then
+        shelx_unsupported_list(found)%num=shelx_unsupported_list(found)%num+1
+    else
+        shelx_unsupported_list_index=shelx_unsupported_list_index+1
+        shelx_unsupported_list(shelx_unsupported_list_index)%tag=tag
+        shelx_unsupported_list(shelx_unsupported_list_index)%num=1
+    end if
 
 end subroutine
 
@@ -107,7 +128,7 @@ logical transforml, file_exists
         end do
         transforml=.true.
     else
-        write(log_unit,*) 'Warning: Unsupported combination of arguments in HKLF'
+        write(log_unit,*) 'Error: Unsupported combination of arguments in HKLF'
         write(log_unit, '("shelxline ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
     end if
     
@@ -138,12 +159,7 @@ logical transforml, file_exists
             write(log_unit,*) 'Error: The transformation matrix from HKLF is invalid (determinant<=0)'
             write(log_unit, '("shelxline ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
             summary%error_no=summary%error_no+1
-        end if
-        
-        info_table_index=info_table_index+1
-        info_table(info_table_index)%shelxline=trim(shelxline%line)
-        info_table(info_table_index)%line_number=shelxline%line_number
-        info_table(info_table_index)%text='Warning: hkl indices need transforming, see transform.cry'
+        end if        
     end if
     
 contains
@@ -478,8 +494,8 @@ integer iostatus
     !CELL 1.54187 14.8113 13.1910 14.8119 90 98.158 90
     read(shelxline%line, *, iostat=iostatus) dummy, wavelength, unitcell
     if(iostatus/=0) then
-        write(log_unit, *) 'Error: Syntax error'
-        write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        write(*, *) 'Error: Syntax error'
+        write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
         summary%error_no=summary%error_no+1
         call abort()
     end if
@@ -500,8 +516,8 @@ integer iostatus
 
     read(shelxline%line(5:), *, iostat=iostatus) esds
     if(iostatus/=0) then
-        write(log_unit, *) 'Error: Syntax error'
-        write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        write(*, *) 'Error: Syntax error'
+        write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
         summary%error_no=summary%error_no+1
         call abort()
     end if
@@ -524,7 +540,7 @@ real, dimension(:), allocatable :: fvartemp
     temp=0.0
     read(shelxline%line(5:), *, iostat=iostatus) temp
     if(temp(1024)/=0.0) then
-        write(log_unit, *) 'More than 1024 free variable?!?!'
+        write(*, *) 'More than 1024 free variable?!?!'
         call abort()
     end if
     do i=1024,1,-1
@@ -570,8 +586,8 @@ real, dimension(14) :: longsfac
                 ! SFAC E a1 b1 a2 b2 a3 b3 a4 b4 c f' f" mu r wt
                 read(shelxline%line(i:), *, iostat=iostatus) longsfac
                 if(iostatus/=0) then
-                    write(log_unit, *) 'Error: Syntax error'
-                    write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+                    write(*, *) 'Error: Syntax error'
+                    write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
                     summary%error_no=summary%error_no+1
                     call abort()
                 end if
@@ -603,8 +619,8 @@ character(len=:), allocatable :: stripped
 character(len=len_trim(shelxline%line)), dimension(:), allocatable :: exploded
 
     if(sfac_index==0) then
-        write(log_unit, *) 'Error: SFAC card missing before DISP'
-        write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        write(*, *) 'Error: SFAC card missing before DISP'
+        write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
         summary%error_no=summary%error_no+1
         call abort()
     end if
@@ -669,7 +685,7 @@ character(len=12) :: buffer
         do while(shelxline%line(i:i)/=' ')
             read(buffer, '(I1)', iostat=iostatus) code
             if(iostatus/=0 .and. shelxline%line(i:i)/='.') then
-                write(log_unit, *) 'Wrong input in UNIT'
+                write(*, *) 'Wrong input in UNIT'
                 call abort()
             end if
             j=j+1

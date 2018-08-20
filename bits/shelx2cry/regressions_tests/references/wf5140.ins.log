@@ -1,6 +1,6 @@
 Warning: `TEMP` Not supported 
 Line 17: TEMP -173.140
- Error: s1, s2 options in RIGU not supported 
+Warning: `RIGU` Not supported 
 Line 20: RIGU 0.002 0.002
 Warning: `SIZE` Not supported 
 Line 22: SIZE 0.40x0.35x0.35
@@ -6132,7 +6132,6 @@ CONT C(283) C(293) C(303) C(843) C(833) C(333)
 CONT AND C(2043) C(2143) C(2243) C(2343) C(2443) C(2543) C(2643) O(143) C(2743)
 CONT C(2843) C(2943) C(3043) C(3143) C(3243) C(3343)
 
-1 Error(s) found during conversion, please check the log file
 ## Warning: Structure has been SQUEEZED
-## Warning: Could not find the corresponding hkl file
+## Warning: Could not find the corresponding hkl file insfiles/wf5140.hkl
 ##          You will have to import it manually

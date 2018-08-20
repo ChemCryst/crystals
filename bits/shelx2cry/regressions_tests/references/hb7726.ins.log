@@ -1,0 +1,21 @@
+Warning: `SIZE` Not supported 
+Line 17: SIZE 0.1 0.03 0.02
+Warning: `TEMP` Not supported 
+Line 18: TEMP 25(2)
+Warning: `WGHT` Not supported 
+Line 20: WGHT 0.1896 0
+ Error: The transformation matrix from HKLF is invalid (determinant<=0)
+shelxline 160: HKLF 4 3.0  0 1 0  1 0 0  0 0 1
+
+Processing shelxl labels into crystals serials
+Done
+
+1 Error(s) found during conversion, please check the log file
+ 
+## Warning: Could not find the corresponding hkl file insfiles/hb7726.hkl
+##          You will have to import it manually
+##          A transformation matrix is present,
+##          do not forget to convert the hkl indices using:
+##          |   0.000    1.000    0.000 |
+##          |   1.000    0.000    0.000 |
+##          |   0.000    0.000    1.000 |

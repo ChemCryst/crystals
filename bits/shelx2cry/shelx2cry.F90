@@ -1,6 +1,7 @@
 !> This program convert a shelxl ins or res file to a crystals file
 !! 
 !! Usage: shelx2cry filename
+!! \defgroup shelx2cry
 program shelx2cry
 use shelx2cry_mod
 use crystal_data_m
@@ -10,8 +11,8 @@ implicit none
 
 integer arg_cpt, iostatus, arg_length
 integer shelxf_id !< unit id of the shelx file
-character(len=:), allocatable :: shelx_filepath, arg_val, crystals_filepath, log_filepath, extras_filepath
-character(len=char_len) :: res_file, hkl_file
+character(len=:), allocatable :: arg_val, crystals_filepath, log_filepath
+character(len=char_len) :: res_file, hkl_file, buffer, shelx_filepath
 type(line_t) :: line
 logical file_exists
 integer i
@@ -21,6 +22,7 @@ type(cif_t), dimension(:), allocatable :: cif_content
 summary%error_no=0
 summary%warning_no=0
 hkl_file=''
+shelx_filepath=''
 
 ! Default length
 allocate(character(len=1) :: arg_val)
@@ -44,7 +46,7 @@ do
         call abort()
     end if
     deallocate(arg_val)
-    allocate(character(len=max(6, arg_length)) :: arg_val)
+    allocate(character(len=max(13, arg_length)) :: arg_val)
     call get_command_argument(i, arg_val, arg_length, iostatus)
     if(iostatus/=0) then
         print *, i, 'Cannot retrieve command line argument again'
@@ -54,16 +56,19 @@ do
     if(arg_val(1:6)=='--help' .or. arg_val(1:2)=='-h') then
         print *, 'shelx2cry: Conversion utility from shelxl files to crystals'
         print *, ''
-        print *, 'Usage : shelx2cry [-o file] [-l log] file'
+        print *, 'Usage : shelx2cry [-o file] [-l log] [--hkl=file.hkl] [-i] file'
         print *, ''
         print *, 'List of options:'
-        print *, '--help, -h This help'
-        print *, '--hkl specify an hkl file [default: name taken from the resfile]'
-        print *, '-o output file for crystals [default: crystalsinput.dat]'
-        print *, '-l log file [default: stdout]'
+        print *, '--help, -h                   This help'
+        print *, '--hkl file.hkl               Specify an hkl file [default: name taken from the resfile]'
+        print *, '-o output                    File for crystals [default: crystalsinput.dat]'
+        print *, '-l log file                  Log output to a file [default: shelx2cry.log]'
+        print *, '-i, --interactive            Interactive mode'
         print *, ''
         stop
     
+    else if(arg_val(1:13)=='--interactive' .or. arg_val(1:2)=='-i') then
+        Interactive_mode=.true.
     else if(arg_val(1:5)=='--hkl') then
         ! check if name is not included
         if(len_trim(arg_val)>5) then
@@ -138,55 +143,42 @@ do
                 print *, i, 'Cannot retrieve command line argument again'
                 call abort()
             end if
-            
-            print *, 'Log output file: ', log_filepath
         else
             if(arg_val(3:3)=='=') arg_val(3:3)=' '
             if(trim(arg_val(3:))/='') then
                 allocate(character(len=len_trim(trim(adjustl(arg_val(3:))))) :: log_filepath)
                 log_filepath=trim(adjustl(arg_val(3:)))
-                print *, 'Log output file: ', log_filepath
             end if
         end if
     else
-        if(allocated(shelx_filepath)) then
+        if(len_trim(shelx_filepath)>0) then
             print *, 'Error: an input file already read'
             stop
         end if
-        allocate(character(len=arg_length+4+4) :: shelx_filepath)
-        shelx_filepath=repeat(' ', arg_length+4+4)
-        shelx_filepath(1:arg_length)=arg_val
+        shelx_filepath=arg_val
     end if
 end do
 
-if(.not. allocated(shelx_filepath)) then
-    ! dummy allocate to suppress gfortran warning
-    allocate(character(len=0) :: shelx_filepath)
+if(len_trim(shelx_filepath)==0) then
     print *, 'Input file missing'
     stop
 end if
 
 if(allocated(log_filepath)) then
-    log_unit=4521
-    open(log_unit, file=log_filepath, status="replace")
+    if(trim(log_filepath)=='stdout') then
+        log_unit=output_unit
+    else
+        log_unit=4521
+        open(log_unit, file=log_filepath, status="replace")
+    end if
 else
-    log_unit=output_unit
+    log_unit=4521
+    open(log_unit, file="shelx2cry.log", status="replace")
 end if
 
 if(.not. allocated(crystals_filepath)) then
-    allocate(character(len=len('crystalsinput.dat')) :: crystals_filepath)
-    crystals_filepath='crystalsinput.dat'
-end if
-
-allocate(character(len=len(crystals_filepath)+6) :: extras_filepath)
-i=index(crystals_filepath, '.')
-if(i>0) then
-    extras_filepath(1:i-1)=crystals_filepath(1:i-1)
-    extras_filepath(i:i+5)='-extra'
-    extras_filepath(i+6:)=crystals_filepath(i:)
-else
-    extras_filepath(1:len(crystals_filepath))=crystals_filepath
-    extras_filepath(len(crystals_filepath)+1:)='-extra'
+    allocate(character(len=len('crystalsinput.cry')) :: crystals_filepath)
+    crystals_filepath='crystalsinput.cry'
 end if
 
 ! check if the file exists
@@ -199,25 +191,12 @@ if(.not. file_exists) then
         if(.not. file_exists) then
             inquire(file=trim(shelx_filepath)//'.cif', exist=file_exists)
             if(.not. file_exists) then
-                write(log_unit,'(a,a,a,a,a,a,a,a)') 'Cannot find `', trim(shelx_filepath), '`, `', &
+                write(*,'(a,a,a,a,a,a,a,a)') 'Cannot find `', trim(shelx_filepath), '`, `', &
                 &   trim(shelx_filepath),'.ins`', ' or `', &
                 &   trim(shelx_filepath),'.res`' 
                 stop            
             else
-                call extract_res_from_cif(trim(shelx_filepath)//'.cif', res_file)
-                if(trim(res_file)=='') then
-                    write(log_unit,*) 'Error: No res file included in cif file'
-                    stop
-                end if
-                shelx_filepath=trim(res_file)
-                write(log_unit,*) ''
-                write(log_unit,*) '=============================================='
-                write(log_unit,*) 'Importing ', trim(res_file)
-                info_table_index=info_table_index+1
-                info_table(info_table_index)%text='Warning: multiple res files embedded in the cif file, the first file '// &
-                &   trim(res_file)//' has been imported'
-                info_table_index=info_table_index+1
-                info_table(info_table_index)%text='         Re-run the import on the other res files to import a different one'
+                shelx_filepath=trim(shelx_filepath)//'.cif'
             end if
         else
             shelx_filepath=trim(shelx_filepath)//'.res'
@@ -226,29 +205,61 @@ if(.not. file_exists) then
         shelx_filepath=trim(shelx_filepath)//'.ins'
     end if
 end if
-print *, trim(shelx_filepath)
 
 if(shelx_filepath(len_trim(shelx_filepath)-2:)=="cif") then
-    !call res_list(trim(shelx_filepath), cif_content, error)
-    !call ask_user(cif_content, res_file)
-    call extract_res_from_cif(trim(shelx_filepath), res_file)
-    if(trim(res_file)=='') then
-        write(log_unit,*)'Error: No res file included in cif file'
+    Print *, 'Processing cif file ', trim(shelx_filepath)
+    call scan_cif(trim(shelx_filepath), cif_content, error)
+    if(error/=0) then
+        print *, 'Error while reading the cif file'
         stop
     end if
+    if(count(cif_content%resfile_no>0)==0) then
+        print *, 'Error: No res file included in cif file'
+        stop
+    else if(count(cif_content%resfile_no>0)>1) then
+        ! more then one file, extracting them all
+        call extract_res_from_cif(trim(shelx_filepath))
+        if(interactive_mode) then
+            call ask_user(cif_content, i)
+            res_file=shelx_filepath
+            res_file(len_trim(res_file)-3:)='_'//trim(cif_content(i)%data_id)//'.res'
+        else
+            !print list of files and quit
+            call print_content(cif_content)
+            write(*, '(a)') 'Res file created:'
+            do i=1, size(cif_content)
+                if(cif_content(i)%resfile_no==1) then
+                    buffer=shelx_filepath
+                    buffer(len_trim(buffer)-3:)='_'//trim(cif_content(i)%data_id)//'.res'
+                    write(*, '(1x,"- ", a)') trim(buffer)
+                end if
+            end do
+            write(*, *) ''                    
+            print *, 'Several res file found, re-run program on the newly created res files '
+            print *, 'of your choice or use the interactive mode.'   
+            stop
+        end if
+    else
+        do i=1, size(cif_content)
+            if(cif_content(i)%resfile_no==1) then
+                res_file=shelx_filepath
+                res_file(len_trim(res_file)-3:)='_'//trim(cif_content(i)%data_id)//'.res'
+                exit
+            end if
+        end do
+    end if
     shelx_filepath=trim(res_file)
-    write(log_unit,*) ''
-    write(log_unit,*) '=============================================='
-    write(log_unit,*) 'Importing ', trim(res_file)
-    info_table_index=info_table_index+1
-    info_table(info_table_index)%text='Warning: multiple res files embedded in the cif file, the first file '// &
-    &   trim(res_file)//' has been imported'
-    info_table_index=info_table_index+1
-    info_table(info_table_index)%text='         Re-run the import on the other res files to import a different one'
 end if
 
 shelxf_id=816
-open(unit=shelxf_id,file=trim(shelx_filepath), status='old')
+open(unit=shelxf_id,file=trim(shelx_filepath), iostat=iostatus, status='old')
+if(iostatus/=0) then
+    print *, 'Error: Cannot open the file ', trim(shelx_filepath)
+    stop
+else
+    print *, 'Processing res file ', trim(shelx_filepath)
+    print *, ''
+end if
 iostatus=0
 do while(iostatus==0)
     call readline(shelxf_id, line, iostatus)
@@ -270,18 +281,32 @@ else
         ! append hkl file processing if present with the same name as res file
         inquire(file=shelx_filepath(1:len_trim(shelx_filepath)-3)//'hkl', exist=file_exists)
         if(file_exists) then
+            write(*, *) 'Processing hkl file header'
             call write_hkl(shelx_filepath(1:len_trim(shelx_filepath)-3)//'hkl')
         else
-            print *, shelx_filepath(1:len_trim(shelx_filepath)-3)//'hkl'
             info_table_index=info_table_index+1
-            info_table(info_table_index)%text='Warning: Could not find the corresponding hkl file'
+            info_table(info_table_index)%text='Warning: Could not find the corresponding hkl file '// &
+            &   shelx_filepath(1:len_trim(shelx_filepath)-3)//'hkl'
             info_table_index=info_table_index+1
             info_table(info_table_index)%text='         You will have to import it manually'
+            
+            if(any(abs(hklf%transform-matrix_eye(3))>1e-3)) then
+                info_table_index=info_table_index+1
+                info_table(info_table_index)%text='         A transformation matrix is present, '
+                info_table_index=info_table_index+1
+                info_table(info_table_index)%text='         do not forget to convert the hkl indices using:'
+                do i=1, 3
+                    info_table_index=info_table_index+1
+                    write(info_table(info_table_index)%text, '(9X, "|",3(F8.3,1X),"|")') hklf%transform(i,:)
+                end do
+            end if
+            
         end if
     else
         ! append hkl file processing if present with the same name as res file
         inquire(file=trim(hkl_file), exist=file_exists)
         if(file_exists) then
+            write(*, *) 'Processing hkl file header'
             call write_hkl(trim(hkl_file))
         else
             info_table_index=info_table_index+1
@@ -300,7 +325,18 @@ if(summary%error_no>0) then
     else
         write(log_unit, '(I0, 1X, a)') summary%error_no, 'Error(s) found during conversion, please check the output'
     end if
+    write(log_unit, *) ''
 end if
+
+if(shelx_unsupported_list_index>0) then
+    write(*,*) ''
+    write(*, '(a)') 'List of ignored shexl commands:'
+    do i=1, shelx_unsupported_list_index
+        write(*, '(4X, a,": ", I0,1X,a)') shelx_unsupported_list(i)%tag, shelx_unsupported_list(i)%num, 'time(s)'
+    end do
+    write(*,*) ''
+end if
+
 if(info_table_index>0) then
     do i=1, info_table_index
         if(log_unit==4521) then
@@ -309,5 +345,8 @@ if(info_table_index>0) then
         write(log_unit, '(a, a)') '## ', trim(info_table(i)%text)
     end do
 end if
+
+print *, ''
+print *, 'All done.'
 
 end program
