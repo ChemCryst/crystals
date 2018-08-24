@@ -1,4 +1,4 @@
-%SCRIPT XSX2CRYB         
+%SCRIPT XSX2CRYB          
 %%
 %% This script reads Pascal's transform.cry file in order to set
 %% HKLTnn, the transformation matrix                                                     

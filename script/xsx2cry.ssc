@@ -6,7 +6,7 @@
 %   VARIABLE CHARACTER C_FILE CEXTN CARG
 %%
 %%                               
-%   if ( c_file .eq. ' ' ) then
+%   IF ( C_FILE .EQ. ' ' ) THEN
 ^^WI SYSOPENFILE 'All files (*.*)|*.*;'
 ^^WI             'CIF (*.ins,*.res)|*.ins;*.res;'
 ^^CR
@@ -16,7 +16,7 @@
 %      FINISH
 %    END IF
 %    EVALUATE C_FILE = CVALUE
-%   end if
+%   END IF
 %%
 %   IF ( .NOT. ( FILEEXISTS C_FILE ) ) THEN
 {E Error: Filename given does not exist.
@@ -29,14 +29,20 @@
 %     IF FILEEXISTS ( 'crystalsinput.cry' ) THEN
 %       EVALUATE T =  FILEDELETE ( 'crystalsinput.cry' )
 %     END IF
-%  TRANSFER '#SPAWN % "CRYSDIR:shelx2cry.exe"  -o crystalsinput.cry "' - 
-   // C_FILE // '"' TO CRYSTALS
+%     TRANSFER '#SPAWN % "CRYSDIR:shelx2cry.exe"  -o crystalsinput.cry "' - 
+      // C_FILE // '"' TO CRYSTALS
 %%
 %     IF FILEEXISTS ( 'crystalsinput.cry' ) THEN
-%       COPY '#SCRIPT DIFFEXEC'  % don't just #USE it because we need to check other things
+%%      don't just #USE it because we need to check other things
+%       COPY '#SCRIPT DIFFEXEC' 
 %     ELSE
  {E The INS/RES files have not been processed          
 %     END IF
+%%
+% FINISH
+%%
+%%  XSX2CRY used to read -extra.cry looking for bits and
+%%  pieces.  Pascal now puts them directly into crystalsinput.cry
 %%
 %     IF FILEEXISTS 'crystalsinput-extra.cry' THEN
 %%
