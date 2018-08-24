@@ -206,7 +206,7 @@ contains
 elemental subroutine to_upper(strIn, strOut)
  implicit none
 
- character(len=*), intent(inout) :: strIn !< mixed case input
+ character(len=*), intent(inout) :: strIn !< mixed case input and upper case output if output not supplied
  character(len=len(strIn)), intent(out), optional :: strOut !< upper case output
  integer :: i,j
 
@@ -226,6 +226,25 @@ elemental subroutine to_upper(strIn, strOut)
      end do
 
 end subroutine to_upper
+
+elemental function to_upper_fun(strIn) result(strOut)
+ implicit none
+
+ character(len=*), intent(in) :: strIn !< mixed case input
+ character(len=len(strIn)) :: strOut !< upper case output
+ integer :: i,j
+
+     do i = 1, len(strIn)
+          j = iachar(strIn(i:i))
+          if (j>= iachar("a") .and. j<=iachar("z") ) then
+               strOut(i:i) = achar(iachar(strIn(i:i))-32)
+          else
+               strOut(i:i) = strIn(i:i)
+          end if
+     end do
+
+end function to_upper_fun
+
 
 !> Remove repeated separators. Default separator is space
 subroutine deduplicates(line, strip, sep_arg)

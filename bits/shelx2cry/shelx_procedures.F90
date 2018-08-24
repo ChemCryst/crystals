@@ -1167,6 +1167,7 @@ character(len=256) :: errormsg
         write(*,*) trim(errormsg)
         write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
     else if(iostatus>0) then
+        write(*,*) 'Error while reading SHEL command:'
         write(*,*) trim(errormsg)
         write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
         call abort

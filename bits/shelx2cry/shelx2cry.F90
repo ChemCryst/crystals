@@ -206,7 +206,7 @@ if(.not. file_exists) then
     end if
 end if
 
-if(shelx_filepath(len_trim(shelx_filepath)-2:)=="cif") then
+if(to_upper_fun(shelx_filepath(len_trim(shelx_filepath)-2:))=="CIF") then
     Print *, 'Processing cif file ', trim(shelx_filepath)
     call scan_cif(trim(shelx_filepath), cif_content, error)
     if(error/=0) then
