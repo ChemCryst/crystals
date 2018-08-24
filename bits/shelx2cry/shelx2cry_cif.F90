@@ -14,6 +14,12 @@ type cif_t !< This type hold the information contained in a cif file
     integer :: resfile_no = 0 !< number of res file in a data block. Should be one or zero.
     integer :: hklfile_no = 0 !< number of hkl file in a data block. Should be one or zero.
     integer :: fabfile_no = 0 !< number of fab file in a data block. Should be one or zero.
+    integer :: hklchecksum_cal = 0 !< Shelxl checksum calculated from data
+    integer :: hklchecksum_ref = 0 !< shelxl checksum as read in the cif
+    integer :: reschecksum_cal = 0 !< Shelxl checksum calculated from data
+    integer :: reschecksum_ref = 0 !< shelxl checksum as read in the cif
+    integer :: fabchecksum_cal = 0 !< Shelxl checksum calculated from data
+    integer :: fabchecksum_ref = 0 !< shelxl checksum as read in the cif
 end type
 
 contains
@@ -27,9 +33,9 @@ type(cif_t), dimension(:), allocatable, intent(out) :: cif_content !< Content of
 integer, parameter :: cifid=815
 type(cif_t), dimension(:), allocatable :: cif_content_temp
 integer cif_content_index
-character(len=1024) :: buffer
+character(len=1024) :: buffer, tempc
 integer iostatus
-integer i
+integer i, checksum
 
     error = 0
     cif_content_index=0
@@ -81,13 +87,124 @@ integer i
         &   index(buffer,'_iucr_refine_instructions_details')>0) then
             ! found a res file!
             cif_content_temp(cif_content_index)%resfile_no=cif_content_temp(cif_content_index)%resfile_no+1
+
+            ! Calculate shelxl checksum
+            read(cifid, '(a)', iostat=iostatus) buffer
+            if(iostatus>0) then ! error
+                error = iostatus
+                exit
+            else if(iostatus<0) then ! end of file
+                exit
+            end if   
+            if(trim(buffer)==';') then ! Start of the bloc
+                checksum=0
+                do 
+                    read(cifid, '(a)', iostat=iostatus) buffer
+                    if(iostatus>0) then ! error
+                        error = iostatus
+                        exit
+                    else if(iostatus<0) then ! end of file
+                        exit
+                    end if   
+                    if(trim(buffer)==';') then ! end of the bloc
+                        exit
+                    else
+                        do i=1, len_trim(buffer)
+                            if(buffer(i:i)>' ') then
+                                checksum=checksum+iachar(buffer(i:i))
+                            end if
+                        end do                
+                    end if
+                end do
+                checksum=mod(checksum, 714025)
+                checksum=checksum*1366+150889
+                checksum=mod(checksum, 714025)
+                checksum=mod(checksum, 100000)        
+                cif_content_temp(cif_content_index)%reschecksum_cal=checksum
+            end if
+        else if(index(buffer, '_shelx_res_checksum')>0) then
+            read(buffer, *) tempc, cif_content_temp(cif_content_index)%reschecksum_ref
         else if(index(buffer, '_shelx_hkl_file')>0 .or. &
         &   index(buffer, '_iucr_refine_reflections_details')>0) then
             ! found a hkl file!
             cif_content_temp(cif_content_index)%hklfile_no=cif_content_temp(cif_content_index)%hklfile_no+1
+            
+            ! Calculate shelxl checksum
+            read(cifid, '(a)', iostat=iostatus) buffer
+            if(iostatus>0) then ! error
+                error = iostatus
+                exit
+            else if(iostatus<0) then ! end of file
+                exit
+            end if   
+            if(trim(buffer)==';') then ! Start of the bloc
+                checksum=0
+                do 
+                    read(cifid, '(a)', iostat=iostatus) buffer
+                    if(iostatus>0) then ! error
+                        error = iostatus
+                        exit
+                    else if(iostatus<0) then ! end of file
+                        exit
+                    end if   
+                    if(trim(buffer)==';') then ! end of the bloc
+                        exit
+                    else
+                        do i=1, len_trim(buffer)
+                            if(buffer(i:i)>' ') then
+                                checksum=checksum+iachar(buffer(i:i))
+                            end if
+                        end do                
+                    end if
+                end do
+                checksum=mod(checksum, 714025)
+                checksum=checksum*1366+150889
+                checksum=mod(checksum, 714025)
+                checksum=mod(checksum, 100000)        
+                cif_content_temp(cif_content_index)%hklchecksum_cal=checksum
+            end if
+        else if(index(buffer, '_shelx_hkl_checksum')>0) then
+            read(buffer, *) tempc, cif_content_temp(cif_content_index)%hklchecksum_ref
         else if(index(buffer, '_shelx_fab_file')>0) then
             ! found a fab file (squeeze)!
             cif_content_temp(cif_content_index)%fabfile_no=cif_content_temp(cif_content_index)%fabfile_no+1
+
+            ! Calculate shelxl checksum
+            read(cifid, '(a)', iostat=iostatus) buffer
+            if(iostatus>0) then ! error
+                error = iostatus
+                exit
+            else if(iostatus<0) then ! end of file
+                exit
+            end if   
+            if(trim(buffer)==';') then ! Start of the bloc
+                checksum=0
+                do 
+                    read(cifid, '(a)', iostat=iostatus) buffer
+                    if(iostatus>0) then ! error
+                        error = iostatus
+                        exit
+                    else if(iostatus<0) then ! end of file
+                        exit
+                    end if   
+                    if(trim(buffer)==';') then ! end of the bloc
+                        exit
+                    else
+                        do i=1, len_trim(buffer)
+                            if(buffer(i:i)>' ') then
+                                checksum=checksum+iachar(buffer(i:i))
+                            end if
+                        end do                
+                    end if
+                end do
+                checksum=mod(checksum, 714025)
+                checksum=checksum*1366+150889
+                checksum=mod(checksum, 714025)
+                checksum=mod(checksum, 100000)        
+                cif_content_temp(cif_content_index)%fabchecksum_cal=checksum
+            end if
+        else if(index(buffer, '_shelx_fab_checksum')>0) then
+            read(buffer, *) tempc, cif_content_temp(cif_content_index)%fabchecksum_ref
         else if(index(buffer, '_cell_length_a')>0) then
             cif_content_temp(cif_content_index)%cell(1)=adjustl(buffer(index(buffer, '_cell_length_a')+15:))
         else if(index(buffer, '_cell_length_b')>0) then
@@ -209,18 +326,8 @@ character(len=char_len) :: res_filepath, fab_filepath, hkl_filepath
 integer resid, cifid, iostatus
 character(len=2048) :: buffer, tempc
 character(len=char_len) :: data_id
-integer checksumhkl, checksumhklref, i
-integer checksumres, checksumresref
-integer checksumfab, checksumfabref
-integer res_signature
+integer res_signature, i
 logical test
-
-    checksumhkl=0
-    checksumhklref=0
-    checksumres=0
-    checksumresref=0
-    checksumfab=0
-    checksumfabref=0
 
     cifid=815
     open(unit=cifid,file=shelx_filepath, status='old')
@@ -245,7 +352,6 @@ logical test
                 call abort()
             end if
             
-            checksumres=0
             res_filepath=shelx_filepath
             res_filepath(len_trim(res_filepath)-3:)='_'//trim(data_id)//'.res'
             resid=816
@@ -262,11 +368,6 @@ logical test
                     res_signature=res_signature+1
                 end if
                 write(resid, '(a)') trim(buffer)
-                do i=1, len_trim(buffer)
-                    if(buffer(i:i)>' ') then
-                        checksumres=checksumres+iachar(buffer(i:i))
-                    end if
-                end do                
             end do
             if(res_signature==3) then 
                 close(resid)
@@ -279,13 +380,6 @@ logical test
                 open(unit=resid,file=trim(res_filepath)) 
                 close(resid, status="DELETE", iostat=res_signature)
             end if
-            checksumres=mod(checksumres, 714025)
-            checksumres=checksumres*1366+150889
-            checksumres=mod(checksumres, 714025)
-            checksumres=mod(checksumres, 100000)        
-        end if
-        if(index(buffer, '_shelx_res_checksum')>0) then
-            read(buffer, *) tempc, checksumresref
         end if
 
         if(index(buffer, '_shelx_hkl_file')>0 .or. &
@@ -298,7 +392,6 @@ logical test
                 call abort()
             end if
             
-            checksumhkl=0
             hkl_filepath=shelx_filepath
             hkl_filepath(len_trim(hkl_filepath)-3:)='_'//trim(data_id)//'.hkl'
             resid=816
@@ -310,21 +403,8 @@ logical test
                     exit
                 end if
                 write(resid, '(a)') trim(buffer)
-                do i=1, len_trim(buffer)
-                    if(buffer(i:i)>' ') then
-                        checksumhkl=checksumhkl+iachar(buffer(i:i))
-                    end if
-                end do                
             end do
-            checksumhkl=mod(checksumhkl, 714025)
-            checksumhkl=checksumhkl*1366+150889
-            checksumhkl=mod(checksumhkl, 714025)
-            checksumhkl=mod(checksumhkl, 100000)        
-        end if
-        if(index(buffer, '_shelx_hkl_checksum')>0) then
-            read(buffer, *) tempc, checksumhklref
-        end if
-        
+        end if        
         
         if(index(buffer, '_shelx_fab_file')>0) then
             ! found a fab file (squeeze)!
@@ -335,7 +415,6 @@ logical test
                 call abort()
             end if
             
-            checksumfab=0
             fab_filepath=shelx_filepath
             fab_filepath(len_trim(fab_filepath)-3:)='_'//trim(data_id)//'.fab'
             resid=816
@@ -347,45 +426,10 @@ logical test
                     exit
                 end if
                 write(resid, '(a)') trim(buffer)
-                do i=1, len_trim(buffer)
-                    if(buffer(i:i)>' ') then
-                        checksumfab=checksumfab+iachar(buffer(i:i))
-                    end if
-                end do                
             end do
-            checksumfab=mod(checksumfab, 714025)
-            checksumfab=checksumfab*1366+150889
-            checksumfab=mod(checksumfab, 714025)
-            checksumfab=mod(checksumfab, 100000)        
         end if        
-        if(index(buffer, '_shelx_fab_checksum')>0) then
-            read(buffer, *) tempc, checksumfabref
-        end if
     end do
-    
-    ! checking checksums
-    if(checksumhklref>0 .and. checksumhkl>0) then
-        if(checksumhkl/=checksumhklref) then
-            write(log_unit, '(a, a)') 'hkl file is corrupted, the checksum is invalid in ', trim(hkl_filepath)
-        end if
-        checksumhklref=0
-        checksumhkl=0
-    end if
-    if(checksumfabref>0 .and. checksumfab>0) then
-        if(checksumfab/=checksumfabref) then
-            write(log_unit, '(a, a)') 'fab file is corrupted, the checksum is invalid in ', trim(fab_filepath)
-        end if
-        checksumfabref=0
-        checksumfab=0
-    end if
-    if(checksumresref>0 .and. checksumres>0) then
-        if(checksumres/=checksumresref) then
-            write(log_unit, '(a, a)') 'res file is corrupted, the checksum is invalid in ', trim(res_filepath)
-        end if
-        checksumres=0
-        checksumresref=0
-    end if
-        
+            
 end subroutine
 
 !> Print the content of a cif file
@@ -404,7 +448,7 @@ integer i, res_cpt
         end if
     end do
     
-    if(res_cpt>1) then
+    if(res_cpt>0) then
         do i=1, size(cif_content)
             write(*, '(a)') repeat('=',14*3+1+18)
             if(cif_content(i)%resfile_no==0) then
@@ -419,12 +463,28 @@ integer i, res_cpt
                 write(*, '(a18,1x,a)') 'Space group alt:', trim(cif_content(i)%crystal_group_name_alt)
                 write(*, '(a18,1x,3a14)') 'Cell lengths:', cif_content(i)%cell(1:3)
                 write(*, '(a18,1x,3a14)') 'Cell angles:', cif_content(i)%cell(4:6)
+                if(cif_content(i)%reschecksum_ref/=0) then
+                    if(cif_content(i)%reschecksum_ref/=cif_content(i)%reschecksum_cal) then
+                        write(*, '(a)') '/!\ The res file is corrupted, the checksum does not match'
+                    end if
+                end if
             end if
             if(cif_content(i)%hklfile_no==0) then
                 write(*, '(3X, a)') 'No hkl file present in this section'
+            else
+                if(cif_content(i)%hklchecksum_ref/=0) then
+                    if(cif_content(i)%hklchecksum_ref/=cif_content(i)%hklchecksum_cal) then
+                        write(*, '(a)') '/!\ The hkl file is corrupted, the checksum does not match'
+                    end if
+                end if
             end if
             if(cif_content(i)%fabfile_no==1) then
                 write(*, '(3X, a)') 'A fab file has been found, the structure has been squeezed'
+                if(cif_content(i)%fabchecksum_ref/=0) then
+                    if(cif_content(i)%fabchecksum_ref/=cif_content(i)%fabchecksum_cal) then
+                        write(*, '(a)') '/!\ The fab file is corrupted, the checksum does not match'
+                    end if
+                end if
             end if
         end do
         write(*, '(a)') repeat('=',14*3+1+18)

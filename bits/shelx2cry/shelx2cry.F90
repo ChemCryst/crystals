@@ -243,6 +243,7 @@ if(to_upper_fun(shelx_filepath(len_trim(shelx_filepath)-2:))=="CIF") then
         call extract_res_from_cif(trim(shelx_filepath))
         do i=1, size(cif_content)
             if(cif_content(i)%resfile_no==1) then
+                call print_content(cif_content)
                 res_file=shelx_filepath
                 res_file(len_trim(res_file)-3:)='_'//trim(cif_content(i)%data_id)//'.res'
                 exit
