@@ -1158,8 +1158,19 @@ subroutine shelx_shel(shelxline)
 use crystal_data_m
 implicit none
 type(line_t), intent(in) :: shelxline
+integer iostatus
+character(len=256) :: errormsg
 
-    read(shelxline%line(5:),*) omitlist%shel
+    read(shelxline%line(5:),*, iostat=iostatus, iomsg=errormsg) omitlist%shel
+    if(iostatus<0) then
+        write(*,*) 'Error: wrongly formatted SHEL command'
+        write(*,*) trim(errormsg)
+        write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+    else if(iostatus>0) then
+        write(*,*) trim(errormsg)
+        write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        call abort
+    end if
 end subroutine
 
 !> Parse the OMIT keyword. 
