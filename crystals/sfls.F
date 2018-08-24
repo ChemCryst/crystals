@@ -2100,6 +2100,15 @@ C--PRINT THIS CONTRIBUTOR
             NQ=NQ-1  ! UPDATE THE NUMBER OF ELEMENTS LEFT TO PROCESS
           END DO
 
+          if(fcext<0.0) then
+            WRITE(CMON, '(A,A,E12.2)')'{E Critical programming error, ',
+     1        'FC is negative: ', fcext
+            CALL XPRVDU(NCVDU, 1,0)   
+            WRITE(CMON, '(A,A,E12.2)') '{E FCEXT set to 0.01'
+            CALL XPRVDU(NCVDU, 1,0)   
+            fcext=0.01
+          end if
+            
           FC=SQRT(FCEXT)  ! COMPUTE THE OVERALL /FCT/ VALUE
           JO=NO
           JP=NP
