@@ -1723,7 +1723,11 @@ C
       character(len=4) :: buffer
 
       ! variables to handle a bug when the element scale goes negative
-      real :: minfc !< minimum value of all the offended reflections
+      type minfc_t !< type to hold negative fc
+        real :: fc !< Fcalc
+        integer, dimension(3) :: hkl !< hkl indices
+      end type
+      type(minfc_t), dimension(10) :: minfc_list !< List of the 10 most negative fcalc 
       integer :: numnegative !< number of negative Fc set to zero
 
 c     Working out the number of threadings available
@@ -1924,7 +1928,11 @@ c     3 'ACT, BCT, Fp, PHIp, A'', B'', Pshift'
 c      write(123,'(/)')
 
       numnegative=0
-      minfc=0.0
+      minfc_list%fc=0.0
+      do ipp=1, 3
+        minfc_list%hkl(ipp)=0
+      end do
+ 
       DO WHILE (.TRUE.)  ! START OF THE LOOP OVER REFLECTIONS
 
         IF( SFLS_TYPE .EQ. SFLS_CALC ) THEN
@@ -2081,6 +2089,12 @@ c
           END DO  ! END OF THIS TWINNED REFLECTION  
 c
 c
+c       save the current generated indices in case we need them for error
+c       messages
+          idjwh=nint(store(m6))
+          idjwk=nint(store(m6+1))
+          idjwl=nint(store(m6+2))
+c
 c
           store(m6)=ph  ! restore the nominal indices
           store(m6+1)=pk
@@ -2129,7 +2143,24 @@ C--PRINT THIS CONTRIBUTOR
           ! Fc can become negative if the element scale is negative
           if(fcext<0.0) then
             numnegative=numnegative+1
-            minfc=min(minfc, fcext)
+            if(fcext<minfc_list(size(minfc_list))%fc) then
+              ipp=size(minfc_list)
+              do while (fcext<minfc_list(ipp)%fc)
+                ipp=ipp-1
+                if(ipp==0) exit
+              end do
+              if(ipp==0) then
+                minfc_list(2:size(minfc_list))=
+     1            minfc_list(1:size(minfc_list)-1)
+                minfc_list(1)%fc=fcext
+                minfc_list(1)%hkl=(/idjwh,idjwk,idjwl/)              
+              else
+                minfc_list(ipp+2:size(minfc_list))=
+     1            minfc_list(ipp+1:size(minfc_list)-1)
+                minfc_list(ipp+1)%fc=fcext
+                minfc_list(ipp+1)%hkl=(/idjwh,idjwk,idjwl/)
+              end if
+            end if
             fcext=0.0
           end if
             
@@ -2524,10 +2555,31 @@ C  DO THIS FOR ALL TYPES OF CALCULATION
         WRITE(CMON, '(A,I0,A)')
      1    '{E Error: an element scale is negative causing ',numnegative,
      1    ' reflections to have a negative Fc'
+        CALL XPRVDU(NCVDU, 1,0)
+        WRITE(CMON, '(A,I0,A)')
+     1    '{E Below the ',size(minfc_list),' most negative reflections'
         CALL XPRVDU(NCVDU, 1,0)   
-        WRITE(CMON, '(A,E12.2)') '{E The most negative value was: ', 
-     1    minfc
-        CALL XPRVDU(NCVDU, 1,0)   
+        do ipp=1, size(minfc_list)
+          if(.not. all(minfc_list(ipp)%hkl==0)) then
+            WRITE(CMON, '(A,3I5,2X,1PG12.2)') '{E ', 
+     1        minfc_list(ipp)%hkl, minfc_list(ipp)%fc
+            CALL XPRVDU(NCVDU, 1,0) 
+          end if
+        end do
+        
+        IF (ISSPRT .EQ. 0) then
+          WRITE(NCWU, '(A,I0,A)')
+     1      'Error: an element scale is negative causing ',numnegative,
+     1      ' reflections to have a negative Fc'
+          WRITE(NCWU, '(A,I0,A)')
+     1      'Below the ',size(minfc_list),' most negative reflections'
+          do ipp=1, size(minfc_list)
+            if(.not. all(minfc_list(ipp)%hkl==0)) then
+              WRITE(NCWU, '(3I5,2X,1PG12.2)') 
+     1          minfc_list(ipp)%hkl, minfc_list(ipp)%fc
+            end if
+          end do
+        end if
       end if
         
       if(sfls_punch_flag>0 .and. SFLS_TYPE==SFLS_REFINE) then
