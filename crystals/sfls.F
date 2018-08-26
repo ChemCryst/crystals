@@ -1722,6 +1722,10 @@ C
       integer, parameter :: designchunk=512
       character(len=4) :: buffer
 
+      ! variables to handle a bug when the element scale goes negative
+      real :: minfc !< minimum value of all the offended reflections
+      integer :: numnegative !< number of negative Fc set to zero
+
 c     Working out the number of threadings available
 c     Using at most 6 of them
 c     each thread has a chunk of reflections and a normal matrix
@@ -1861,10 +1865,18 @@ C--CHECK IF A PRINT IS REQUIRED
       NO=JO
       NP=JP
       if(sfls_sp_normalm<1) then
+#if defined(CRY_OSLINUX)
+        print *, 'Size of normal matrices: ', (JP-JO+1)*(JP-JO+1)*tid*
+     1    sizeof(1.0d0)/1024.0**2, 'MB'
+#endif       
         allocate(normalmatrix(JP-JO+1,JP-JO+1, tid))
         !allocate(ref(JP-JO+1,JP-JO+1))
         normalmatrix=0.0d0
       else
+#if defined(CRY_OSLINUX)
+        print *, 'Size of normal matrices: ', (JP-JO+1)*(JP-JO+1)*tid*
+     1    sizeof(1.0)/1024.0**2, 'MB'
+#endif       
         allocate(normalmatrix_sp(JP-JO+1,JP-JO+1, tid))
         !allocate(ref(JP-JO+1,JP-JO+1))
         normalmatrix_sp=0.0
@@ -1877,11 +1889,23 @@ C--CHECK IF A PRINT IS REQUIRED
         designmatrix=0.0d0
         allocate(righthandside(n11r))
         righthandside=0.0d0
+#if defined(CRY_OSLINUX)
+        print *, 'Size of design matrix block: ', 
+     1    sizeof(designmatrix)/1024.0, 'kB'
+        print *, 'Size of the right hand size: ', 
+     1    sizeof(righthandside)/1024.0, 'kB'
+#endif       
       else
         allocate(designmatrix_sp(JP-JO+1,designchunk*tid))
         designmatrix_sp=0.0
         allocate(righthandside_sp(n11r))
         righthandside_sp=0.0
+#if defined(CRY_OSLINUX)
+        print *, 'Size of design matrix block: ', 
+     1    sizeof(designmatrix_sp)/1024.0, 'kB'
+        print *, 'Size of the right hand size: ', 
+     1    sizeof(righthandside_sp)/1024.0, 'kB'
+#endif       
       end if
       allocate(hkllist(3,designchunk*tid))
       hkllist=0
@@ -1899,6 +1923,8 @@ c     2 'Av: Fp, PHIp, Fn, PHIn, FaV, PHIav',
 c     3 'ACT, BCT, Fp, PHIp, A'', B'', Pshift'
 c      write(123,'(/)')
 
+      numnegative=0
+      minfc=0.0
       DO WHILE (.TRUE.)  ! START OF THE LOOP OVER REFLECTIONS
 
         IF( SFLS_TYPE .EQ. SFLS_CALC ) THEN
@@ -2100,13 +2126,11 @@ C--PRINT THIS CONTRIBUTOR
             NQ=NQ-1  ! UPDATE THE NUMBER OF ELEMENTS LEFT TO PROCESS
           END DO
 
+          ! Fc can become negative if the element scale is negative
           if(fcext<0.0) then
-            WRITE(CMON, '(A,A,E12.2)')'{E Critical programming error, ',
-     1        'FC is negative: ', fcext
-            CALL XPRVDU(NCVDU, 1,0)   
-            WRITE(CMON, '(A,A,E12.2)') '{E FCEXT set to 0.01'
-            CALL XPRVDU(NCVDU, 1,0)   
-            fcext=0.01
+            numnegative=numnegative+1
+            minfc=min(minfc, fcext)
+            fcext=0.0
           end if
             
           FC=SQRT(FCEXT)  ! COMPUTE THE OVERALL /FCT/ VALUE
@@ -2122,8 +2146,12 @@ C           SAVE THE TOTAL OVER ALL ELEMENTS
 c           SAVE THE VALUE FOR THE MAIN ELEMENT
             JREF_STACK_PTR=ISTORE(JREF_STACK_START) 
             LJV=ISTORE(JREF_STACK_PTR+8)+M5ES
-            STORE(M6+3)=STORE(M6+10)
+            if(fc>0.0) then ! Value can be exactly zero due to negative element scale
+              STORE(M6+3)=STORE(M6+10)
      1                    *STORE(JREF_STACK_PTR+6)*STORE(LJV)/FC
+            else
+              STORE(M6+3)=0.0
+            end if
             STORE(M6+5)=STORE(JREF_STACK_PTR+6)*STORE(LJV)
             STORE(M6+6)=STORE(JREF_STACK_PTR+7)
           END IF
@@ -2140,7 +2168,11 @@ c          P=0. !cdjwjul2010 why set P to zero? Should it be M6+6?
             DO LJU=1,NM ! PASS AMONGST THE VARIOUS CONTRIBUTORS
               JREF_STACK_PTR=ISTORE(JREF_STACK_PTR) ! FIND THE ADDRESS OF THIS CONTRIBUTOR
               LJV=ISTORE(JREF_STACK_PTR+8)+L5ES
-              A=STORE(JREF_STACK_PTR+6)*STORE(LJV)/FC
+              if(fc>0.0) then ! Value can be exactly zero due to negative element scale
+                A=STORE(JREF_STACK_PTR+6)*STORE(LJV)/FC
+              else
+                A=0.0
+              end if
               LJS=ISTORE(JREF_STACK_PTR+1)
               N = JP - JO 
               DO J = 0, N  ! ADD IN THE DERIVATIVES
@@ -2155,13 +2187,18 @@ c          P=0. !cdjwjul2010 why set P to zero? Should it be M6+6?
 c             FETCH THE INFORMATION FOR THE NEXT ELEMENT SCALE FACTOR
               JREF_STACK_PTR=ISTORE(JREF_STACK_PTR)
               LJX=ISTORE(JREF_STACK_PTR+8)
-              A=0.5*SCALEW
+              if(fc>0.0) then ! Value can be exactly zero due to negative element scale
+                A=0.5*SCALEW
      1             *STORE(JREF_STACK_PTR+6)*STORE(JREF_STACK_PTR+6)/FC
+              else
+                A=0.0
+              end if
               NI=NI-1
               CALL XADDPD ( A, LJX, JO, JQ, JR) 
             END DO
           END IF
         END IF  ! end of twinned calculations
+                
 C--FINISH OFF THIS REFLECTION  
 C
 C--CHECK IF WE SHOULD INCLUDE EXTINCTION
@@ -2315,7 +2352,13 @@ C  EXTINCTION. THE FIRST PARAMETER IS THE OVERALL SCALE FACTOR.
 C---- TO REFINE SCALE OF F**2 (RATHER THAN F), SQUARE AND
 C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
 
-          IF(NV .GE. 0) A = A * FCEXT * SCALES / ( 2. * FCEXS )
+          IF(NV .GE. 0) then
+            if(fcexs==0.0) then 
+              A=0.0
+            else
+              A = A * FCEXT * SCALES / ( 2. * FCEXS )
+            end if
+          end if
           LJX=0
           M12=L12O
           CALL XADDPD ( A, 0, JO, JQ, JR) 
@@ -2477,6 +2520,16 @@ C  DO THIS FOR ALL TYPES OF CALCULATION
           
       END DO  ! END OF REFLECTION LOOP
 
+      if(numnegative>0) then
+        WRITE(CMON, '(A,I0,A)')
+     1    '{E Error: an element scale is negative causing ',numnegative,
+     1    ' reflections to have a negative Fc'
+        CALL XPRVDU(NCVDU, 1,0)   
+        WRITE(CMON, '(A,E12.2)') '{E The most negative value was: ', 
+     1    minfc
+        CALL XPRVDU(NCVDU, 1,0)   
+      end if
+        
       if(sfls_punch_flag>0 .and. SFLS_TYPE==SFLS_REFINE) then
           ! close reflections file
           call sfls_punch_addtoreflections(nint(STORE(M6:M6+2)), 
@@ -3689,6 +3742,10 @@ C
       allocate(atemp(n5, n2t))
       allocate(cosa(n5, n2t))
       allocate(sina(n5, n2t))
+!#if defined(CRY_OSLINUX)
+!      print *, 'Size of temporaries Tiso, Taniso, cosa, sina...: ', 
+!     1    (sizeof(Tiso)+5.0*sizeof(sina))/1024.0, 'kB'
+!#endif 
 
 c Pre-calculating some expensives values using optimised functions if available
 
@@ -4192,6 +4249,10 @@ C And in common:
 C  M12   ADDRESS OF THE HEADER FOR THE PARAMETER IN LIST 12
 
 C--SET UP THE LIST 12 FLAGS
+      if(isnan(a)) then
+        print *, 'the derivative is NaN, the refinement will crash'
+        call abort
+      end if
       L12A=ISTORE(M12+1)
       IF(ISTORE(M12+1).GT.0) THEN 
         DO WHILE ( L12A .GT. 0 )
