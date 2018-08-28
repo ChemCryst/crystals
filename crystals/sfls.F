@@ -1947,7 +1947,7 @@ c      write(123,'(/)')
         LAYER=-1   ! SET THE LAYER SCALING CONSTANTS INITIALLY
         SCALEL=1.0
         IF(LAYERED)THEN   ! CHECK IF THIS SCALE IS TO BE USED
-          LAYER=KLAYER(I)-1  ! FIND THE LAYER NUMBER AND SET ITS VALUE
+          LAYER=KLAYER(M6)-1  ! FIND THE LAYER NUMBER AND SET ITS VALUE
           IF ( IERFLG .LT. 0 ) GO TO 19900
           M5LS=L5LS+LAYER
           SCALEL=STORE(M5LS)
@@ -1956,7 +1956,7 @@ c      write(123,'(/)')
         IBATCH=-1  ! SET THE INITIAL VALUES FOR THE BATCH SCALE FACTOR
         SCALEB=1.
         IF(BATCHED) THEN ! CHECK IF THE BATCH SCALE FACTOR SHOULD BE USED
-          IBATCH=KBATCH(I)-1  ! FIND THE BATCH NUMBER AND SET THE SCALE
+          IBATCH=KBATCH(m6)-1  ! FIND THE BATCH NUMBER AND SET THE SCALE
           IF ( IERFLG .LT. 0 ) GO TO 19900
           M5BS=L5BS+IBATCH
           SCALEB=STORE(M5BS)
@@ -2303,6 +2303,7 @@ c
           RDJW = ABS(WDF)
           IF (RDJW .GT. ABS(XVALUR)) THEN
 C----  H,K,L,FO,FC,/WDELTA/,FO/FC
+            !$OMP CRITICAL
             CALL XMOVE(STORE(M6), STORE(LTEMPR), 3)
             STORE(LTEMPR+3) = UJ
             STORE(LTEMPR+4) = FCEXT
@@ -2310,6 +2311,7 @@ C----  H,K,L,FO,FC,/WDELTA/,FO/FC
             STORE(LTEMPR+6) = MIN(99., UJ / MAX(FCEXT , ZERO))
             CALL SRTDWN(LSORT,MDSORT,NSORT, JSORT, LTEMPR, 
      1              XVALUR, 0)
+            !$OMP END CRITICAL
           ENDIF
 C
 C
@@ -2884,7 +2886,14 @@ C------ SIGMA FO .LE. ZERO ---- SUGGESTS PROBABLY NO CALCULATION
 
 
 CODE FOR KLAYER
-      FUNCTION KLAYER(IN)
+      FUNCTION KLAYER(m6) ! Thread safe
+      use store_mod, only: store !< read only
+      use xerval_mod, only: iererr !< read only
+      use xssval_mod, only: issprt !< read only
+      use xlst05_mod, only: l5lsc, md5ls !< read only
+      use xunits_mod, only: ncvdu, ncwu !< read only
+      use xiobuf_mod, only: cmon !< read only
+      implicit none
 C--COMPUTE THE LAYER SCALE INDEX FOR THE CURRENT REFLECTION.
 C
 C  IN  A DUMMY ARGUMENT.
@@ -2895,20 +2904,12 @@ C  -1  NO LAYER SCALES IN LIST 5.
 C  >0  THE LAYER SCALE INDEX.
 C
 C--
-      INCLUDE 'ISTORE.INC'
-C
-      INCLUDE 'STORE.INC'
-      INCLUDE 'XUNITS.INC'
-      INCLUDE 'XSSVAL.INC'
-      INCLUDE 'XLST05.INC'
-      INCLUDE 'XLST06.INC'
-      INCLUDE 'XERVAL.INC'
-      INCLUDE 'XIOBUF.INC'
-C
-      INCLUDE 'QSTORE.INC'
-C
-      IDWZAP = IN
-C--
+      
+      integer, intent(in) :: m6 !< reflection address
+      integer :: klayer !< Layer index or -1 if no layer index found
+      real a
+      integer i
+
       KLAYER=-1
 
       IF(MD5LS.GT.0)THEN  ! ARE THERE ANY LAYER SCALES STORED?
@@ -2921,6 +2922,7 @@ C--
         I=NINT(A+STORE(L5LSC+3))  ! COMPUTE THE OUTPUT INDEX
 
         IF((I.LE.0).OR.(I.GT.MD5LS))THEN  ! ILLEGAL LAYER SCALE VALUE
+          !$OMP CRITICAL            
           CALL XERHDR(0)
           IF (ISSPRT .EQ. 0)
      1     WRITE(NCWU,1200)NINT(STORE(M6)),NINT(STORE(M6+1)),
@@ -2931,6 +2933,7 @@ C--
 1200      FORMAT(' Reflection : ',3I5,
      2 '  generates an illegal layer scale index of ',I4)
           CALL XERHND ( IERERR )
+          !$OMP END CRITICAL
           RETURN
         END IF
 
@@ -2940,7 +2943,14 @@ C--
       END
 
 CODE FOR KBATCH
-      FUNCTION KBATCH(IN)
+      FUNCTION KBATCH(m6) ! Thread safe
+      use store_mod, only: store !< read only
+      use xerval_mod, only: iererr !< read only
+      use xssval_mod, only: issprt !< read only
+      use xlst05_mod, only: md5bs !< read only
+      use xunits_mod, only: ncvdu, ncwu !< read only
+      use xiobuf_mod, only: cmon !< read only
+      implicit none
 C--COMPUTE THE BATCH SCALE INDEX FOR THE CURRENT REFLECTION.
 C
 C  IN  A DUMMY ARGUMENT.
@@ -2951,22 +2961,17 @@ C  -1  NO BATCH SCALES IN LIST 5.
 C  >0  THE BATCH SCALE INDEX.
 C
 C--
-      INCLUDE 'ISTORE.INC'
-      INCLUDE 'STORE.INC'
-      INCLUDE 'XUNITS.INC'
-      INCLUDE 'XSSVAL.INC'
-      INCLUDE 'XLST05.INC'
-      INCLUDE 'XLST06.INC'
-      INCLUDE 'XERVAL.INC'
-      INCLUDE 'XIOBUF.INC'
-      INCLUDE 'QSTORE.INC'
 
-      IDWZAP = IN
+      integer, intent(in) :: m6 !< reflection address
+      integer :: kbatch !< Batch index or -1 if no batch index found
+      integer i
+
       KBATCH=-1
       IF (MD5BS.GT.0) THEN   ! ARE ANY BATCH SCALES STORED
         I=NINT(STORE(M6+13))  ! COMPUTE THE INDEX VALUE
 C--CHECK IF THE VALUE IS LARGE ENOUGH
         IF((I.LE.0).OR.(I.GT.MD5BS))THEN 
+          !$OMP CRITICAL            
           CALL XERHDR(0)  ! ILLEGAL BATCH SCALE VALUE
           IF (ISSPRT .EQ. 0)
      1     WRITE(NCWU,1100)NINT(STORE(M6)),NINT(STORE(M6+1)),
@@ -2977,6 +2982,7 @@ C--CHECK IF THE VALUE IS LARGE ENOUGH
 1100      FORMAT(' Reflection : ',3I5,
      2 '  generates an illegal batch scale index of ',I4)
           CALL XERHND ( IERERR )
+          !$OMP END CRITICAL            
           RETURN
         END IF
         KBATCH=I
