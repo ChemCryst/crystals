@@ -711,7 +711,7 @@ C-C-C-OF ANGLES IS ALWAYS IN UNITS OF 100 DEGREES.)
      2          ' given in degrees: ', F8.4,/,
      3       21X,'Value devided by 100 to get units of 100 degrees',/,
      4       21X,'(in LIST 5 only in case of refinement !)')
-                STORE(M5+9)=STORE(M5+9)/100
+                STORE(M5+9)=STORE(M5+9)/100.0
               ENDIF
 C-C-C-BRING DECLINAT INTO PRACTICAL RANGE IF TOO FAR AWAY FROM IT
               IF ((STORE(M5+9).GT.3.6).OR.(STORE(M5+9).LT.-3.6)) THEN
@@ -751,7 +751,7 @@ C-C-C-OF ANGLES IS ALWAYS IN UNITS OF 100 DEGREES.)
      2                     ' given in degrees: ', F8.4,/,
      3        21X,'Value devided by 100 to get units of 100 degrees',/,
      4        21X,'(in LIST 5 only in case of refinement !)')
-                  STORE(M5+10)=STORE(M5+10)/100
+                  STORE(M5+10)=STORE(M5+10)/100.0
                 ENDIF
 C-C-C-BRING AZIMUTH INTO PRACTICAL RANGE IF TOO FAR AWAY FROM IT
                 IF ((STORE(M5+10).GT.3.6).OR.(STORE(M5+10).LT.-3.6))THEN
@@ -3394,96 +3394,6 @@ C-C-C-CALCULATE THE DERIVATIVE W.R.T. SPHERE-FACTOR FOR RADIUS
       DSFRAD=((COS(4*PI*STSP*STORE(M5ASP+8))
      2 *4*PI*STSP*STORE(M5ASP+8))-(SIN(4*PI*STSP*STORE(M5ASP+8))))
      3 /(4*PI*STSP*(STORE(M5ASP+8))**2)
-      END
-
-
-CODE FOR PDOLEV
-      FUNCTION PDOLEV( L12, N12, MD12B, V, N11, DF, NDF, JPNX, TIX, RED)
-
-      DIMENSION VCVVEC(8192)
-      INTEGER IVCVVSZ
-      COMMON /VCVTMP/ IVCVVSZ, VCVVEC
-
-      DIMENSION L12(N12), V(N11), DF(NDF)
-C Work out leverage and some other things. See Prince, Mathematical
-c Techniques in Crystallography and Materials Science, 2nd Edition,
-c Springer-Verlag. pp120-123
-
-C  L12 is an array of size N12 containing information about the
-C  blocking of the array V.
-
-C  V is of size N11, but may be in blocks (see L12)
-
-C  DF is the current row of the design matrix. (Called A below).
-
-C  P = A.V.At
-c  where P is the projection (say hat) matrix.
-c        A is the LHS
-c        V is the inverse normal matrix (must be already known).
-c  The leverages are the diagonal elements of the hat matrix, Pii.
-
-C Ti = Ai.Vn, then t^2ij/(1+Pii) is the amount by which a repeated
-c measurement of the ith reflection will reduce the variance of the
-c estimate of the LJTh parameter.
-
-C JPNX is the (one-based) index of the parameter of interest. E.g
-C 1 is usually the scale factor. See \PRINT 22 for indices.
-
-C For calculation of TIx, remember that the matrix V is packed into a
-C lower triangle so that each column starts from the diagonal. Thus we
-C accumulate TIx when either the row or column matches JPNX.
-
-C Return values:
-c      PDOLEV - (function return) the leverage value of this reflection
-c      TIX    - the value of ziVn for the selected parameter (JPNX)
-c      RED    - the amount by which repeated measurement of this
-c               reflection will reduce the JPNXth parameter's variance.
-
-C if JPNX is zero then we use the VCVVEC to pre and post multiply each
-C (Zit)(Zi) matrix, and get the stuff.
-
-
-c       WRITE(125,'(1000G15.9)')(DF(I),I=1,NDF)
-c       WRITE(126,'(4I12)')N12,N11,NDF,IVCVVSZ
-
-
-       M11 = 1
-       PII = 0.0
-       TIx = 0.0
-       TITMP=0.0
-       JPN = JPNX - 1
-
- 
-       DO I = 1,N12,MD12B        ! Loop over each block
-         IBS = L12(I+1)             ! IBS:= Number of rows in block
-         DO J = 0, IBS-1            ! Loop over each row
-           DO K = 0, IBS-J-1          ! Loop over each column.
-             DOUB = 2.0                 ! Add in off-diagonals twice.
-             IF ( K.EQ.0 ) DOUB = 1.0   ! Add on-diagonals once.
-             PII = PII + DOUB * DF(1+J) * DF(1+J+K) * V(M11)
-             IF ( J .EQ. JPN ) THEN   ! This is the row of interest for Tij
-               TIx = TIx + DF(1+J+K) * V(M11)
-             ELSE IF ( J+K .EQ. JPN ) THEN   ! This is also the row of interest for Tij
-               TIx = TIx + DF(1+J) * V(M11)
-             ELSE IF ( JPNX .LT. 0 ) THEN !Accumulate whole of ti
-               TITMP= TITMP + VCVVEC(1+J) *DF(1+J+K) *V(M11)
-               IF (K.NE.0) THEN
-                TITMP=TITMP+VCVVEC(1+J+K)*DF(1+J)*V(M11)
-               END IF
-             END IF
-             M11 = M11 + 1
-           END DO
-         END DO
-       END DO
-
-       IF ( JPNX .LT. 0 ) THEN
-         TIx = TITMP
-       ENDIF
-
-
-       RED = (TIX**2)/(1.0+PII)
-       PDOLEV = PII
-       RETURN
       END
 
 CODE FOR XSFLSX
