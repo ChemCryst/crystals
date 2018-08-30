@@ -697,9 +697,10 @@ c Kccd SG is only Point Group
 C
 c
 c----------------------------------------------------------------
-c----- Dont demand a SG in an fcf file
+c----- Dont demand a SG in a reflection file (
+c      2018. SHELX has started calling fcf files hkl!! See DIFFIN
       if ((nref .gt. 1).and.(idiff.ne.5).and. (.not.fsg)  
-     1 .and. (.not. fcf) )then
+     1 .and. (.not. fcf)  )then
 C----- reflections all read - check space group with Nonius code
        write(6,'(a)') 'Space Group Code provided by Enraf-Nonius'
        if (.not. fsg) then

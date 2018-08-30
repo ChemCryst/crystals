@@ -253,6 +253,9 @@ c get input file extension to use later in connection with list 6
        if(i.gt.0) ctemp = infil(i+1:)
        if (ctemp(1:3) .eq. 'fcf') then
             fcf = .true.
+c      2018. SHELX has started calling fcf files hkl!! Rats!!
+       else if (ctemp(1:3) .eq. 'hkl') then
+            fcf = .true.
        else
             fcf = .false.
        endif

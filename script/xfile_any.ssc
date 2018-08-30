@@ -3,22 +3,23 @@
 %% Called from XFILE A/R/N/S/W if the extension is unexpected. In these case
 %% C_FILE will hold the path and CEXTN the extension (uppercased)
 %
-%% CARG CLASS
-%% SI  SHEL  ins/res
-%% N   DIFF  Nonius (Kccd)
-%% A   DIFF  Rigaku Oxdiff (ROD cif)
-%% R   DIFF  Rigaku (RI cif)
-%% W   DIFF  WinGX (GD cif)
-%% PP  DIFF  Pre-processed
-%% SI  SHEL  ins/res
-%% S4  SHEL  hklf4
-%% S5  SHEL  hklf5
-%% CD  CRYS  CRYSTALS data
-%% FA  CIFS  Atoms etc cif
-%% FR  CIFS  Reflections cif
-%% FM  CIFS  Multi-cif
+%% FTYPE CARG CLASS
+%% 0           Unknown
+%% 1     S4   SHEL  hklf4
+%% 2     S5   SHEL  hklf5
+%% 3     SI   SHEL  ins/res
+%% 4     A    DIFF  Rigaku Oxdiff (ROD cif)
+%% 5     N    DIFF  Nonius (NO Kccd)
+%% 6     R    DIFF  Rigaku (RI cif)
+%% 7     W    DIFF  WinGX (General GD cif)
+%% 8     FA   CIFS  Atoms etc cif
+%% 8     FR   CIFS  Reflections cif
+%% 9     FM   CIFS  Multi-cif
+%% 10    CD   CRYS  CRYSTALS USE file
+%% 11    PP   DIFF  Pre-processed DIFFIN output
+%% 12    FS   CIFS  Shelx from Cif (use file to be followed by import checks)
 %%
-%% Guess the type
+%% Guess the type from the extension
 %% 0 - unknown
 %% 1 - hkl
 %% 2 - hklf5
@@ -71,6 +72,9 @@
 %  EVALUATE CROOT = UPPERCASE ( CROOT )
 %  EVALUATE CLOC = CROOT // '.' // CEXTN
 %%
+%% CLOC is just local part of filename.extension
+%% C_UPP is whole filename includig path and extension 
+%%
 %  IF ( CLOC .EQ. 'FROM-CIF.CRY' ) THEN
 %    EVALUATE FTYPE = 11
 %  ELSE IF ( CLOC .EQ. 'IMPORT.CIF' ) THEN
@@ -83,7 +87,7 @@
 %    EVALUATE FTYPE = 10
 %  ELSE IF ( CEXTN .EQ. '16' ) .OR.  ( CEXTN .EQ. '12' ) THEN
 %    EVALUATE FTYPE = 10
-%  ELSE IF  ( CEXTN .EQ. 'CMF' ) THEN
+%  ELSE IF  ( CEXTN .EQ. 'CMF' ) THEN                        % What is this?
 %    EVALUATE FTYPE = 9
 %  ELSE IF  ( CEXTN .EQ. 'INS' ) .OR.  ( CEXTN .EQ. 'RES' ) THEN
 %    EVALUATE FTYPE = 3
@@ -99,9 +103,9 @@
 %    EVALUATE FTYPE = 1
 %  ELSE IF  ( CEXTN .EQ. 'CIF' ) THEN
 %    EVALUATE FTYPE = 7
-%  ELSE IF  ( CEXTN .EQ. 'PCF' ) THEN
+%  ELSE IF  ( CEXTN .EQ. 'PCF' ) THEN                        %Bruker format file
 %    EVALUATE FTYPE = 7
-%  ELSE IF  ( CEXTN .EQ. 'FCF' ) THEN
+%  ELSE IF  ( CEXTN .EQ. 'FCF' ) THEN                        %IUCr format reflections
 %    EVALUATE FTYPE = 8
 %  END IF
 %
@@ -121,48 +125,53 @@
 ^^WI    @ 1,1 STATIC CIFILE
 %   TRANSFER "^^WI '" // C_FILE // "'" TO DISPLAY
 %   CASE FTYPE + 1
-%BLOCK
+% BLOCK                                                                   %%0
 ^^WI    @ 3,1 STATIC M 'Please select type of file below, then click OK.'
-%END BLOCK
-%BLOCK
+% END BLOCK
+% BLOCK                                                                   %%1
 ^^WI    @ 3,1 STATIC M 'HKL file detected. Confirm and click OK.'
-%END BLOCK
-%BLOCK
+% END BLOCK
+% BLOCK                                                                   %%2
 ^^WI    @ 3,1 STATIC M 'HKLF5 file detected. Confirm and click OK.'
-%END BLOCK
-%BLOCK
+% END BLOCK
+% BLOCK                                                                   %%3
 ^^WI    @ 3,1 STATIC M 'INs or RES file detected. Confirm and click OK.'
-%END BLOCK
-%BLOCK
+% END BLOCK
+% BLOCK                                                                   %%4
 ^^WI    @ 3,1 STATIC M 'RigakuOD CIF detected. Confirm and click OK.'
-%END BLOCK
-%BLOCK
+% END BLOCK
+% BLOCK                                                                   %%5
 ^^WI    @ 3,1 STATIC M 'Nonius CIF file detected. Confirm and click OK.'
-%END BLOCK
-%BLOCK
+% END BLOCK
+% BLOCK                                                                   %%6
 ^^WI    @ 3,1 STATIC M 'Rigaku CIF type. Confirm and click OK.'
-%END BLOCK
-%BLOCK
+% END BLOCK
+% BLOCK                                                                   %%7
 ^^WI    @ 3,1 STATIC M 'General data CIF type. Confirm and click OK.'
-%END BLOCK
-%BLOCK
+% END BLOCK
+% BLOCK                                                                   %%8
 ^^WI    @ 3,1 STATIC M 'Structure or data CIF. Confirm and click OK.'
-%END BLOCK
-%BLOCK
+% END BLOCK
+% BLOCK                                                                   %%9
 ^^WI    @ 3,1 STATIC M 'Multiple structure CIF. Confirm and click OK.'
-%END BLOCK
-%BLOCK
+% END BLOCK
+% BLOCK                                                                   %%10
 ^^WI    @ 3,1 STATIC M 'CRYSTALS instruction file. Confirm and click OK.'
-%END BLOCK
-%BLOCK
+% END BLOCK
+% BLOCK                                                                   %%11
 ^^WI    @ 3,1 STATIC M 'Output from CRYSTALS preprocessing detected.'
-%END BLOCK
+% END BLOCK
+% BLOCK                                                                   %%12
+^^WI    @ 3,1 STATIC M 'Multi RES in cif, selected by user.'
+% END BLOCK
 %  END CASE
 ^^WI  }
 %%
 ^^WI  @ 4,2 GRID ZZZ NROWS=14 NCOLS=7 OUTLINE='Data Files'  
 ^^WI  {                       
-^^WI     @ 2,2 STATIC T1 'Basic data cifs:'                                          
+%%
+%%
+^^WI     @ 2,2 STATIC T1                         'Basic data cifs:'                                          
 ^^WI     @ 4,2 RADIOBUTTON NO 'Nonius Kccd' 
 % IF FTYPE .EQ. 5 THEN
 ^^WI       STATE=ON
@@ -190,7 +199,8 @@
 ^^WI       STATE=ON
 % END IF
 %%
-^^WI     @ 2,6 STATIC T2 'SHELX files:'                                          
+%%
+^^WI     @ 2,6 STATIC T2                         'SHELX files:'                                          
 ^^WI     @ 4,6 RADIOBUTTON SI 'SHELX ins or res files' 
 % IF FTYPE .EQ. 3 THEN
 ^^WI       STATE=ON
@@ -204,14 +214,20 @@
 ^^WI       STATE=ON
 % END IF
 %%                                                                       
-^^WI     @ 10,2 STATIC T3 'Other cifs:'                                          
+%%
+^^WI     @ 10,2 STATIC T3                         'Other cifs:'                                          
+^^WI     @ 11,2 RADIOBUTTON FS 'Cif containing SHELX files'
+% IF FTYPE .EQ. 12 THEN
+^^WI       STATE=ON
+% END IF
 ^^WI     @ 12,2 RADIOBUTTON FA 'Atom (CSD) etc cif files' 
 ^^WI     @ 13,2 RADIOBUTTON FM 'Multi-cif files' 
 % IF FTYPE .EQ. 9 THEN
 ^^WI       STATE=ON
 % END IF
 %%
-^^WI     @ 9,6 STATIC T4 'CRYSTALS files:'                                          
+%%
+^^WI     @ 9,6 STATIC T4                         'CRYSTALS files:'                                          
 ^^WI     @ 11,6 RADIOBUTTON CD 'CRYSTALS instruction file' 
 % IF FTYPE .EQ. 10 .OR. FTYPE .EQ. 0 THEN
 ^^WI       STATE=ON
@@ -244,7 +260,7 @@
 %         VERIFY ON OFF                                                         
 %         GET SILENT NOSTORE FINAL ABBREVIATED ' '                              
 %         IF VALUE .EQ. 1  THEN
-%           EVALUATE CARG = 'N'      %NONIUS
+%           EVALUATE CARG = 'N'                                    %NONIUS
 %           EVALUATE CLASS = 'DIFF'
 %         ELSE
 %%
@@ -252,7 +268,7 @@
 %          VERIFY ON OFF                                                         
 %          GET SILENT NOSTORE FINAL ABBREVIATED ' '                              
 %          IF ( VALUE .EQ. 1 ) THEN                                              
-%            EVALUATE CARG = 'A'     %RIGAKU OD                                      
+%            EVALUATE CARG = 'A'                                   %RIGAKU OD                                      
 %            EVALUATE CLASS = 'DIFF'
 %          ELSE
 %%
@@ -260,7 +276,7 @@
 %           VERIFY ON OFF                                                         
 %           GET SILENT NOSTORE FINAL ABBREVIATED ' '                              
 %           IF ( VALUE .EQ. 1 ) THEN                                              
-%             EVALUATE CARG = 'R'    %RIGAKU                               
+%             EVALUATE CARG = 'R'                                  %RIGAKU                               
 %             EVALUATE CLASS = 'DIFF'
 %           ELSE
 %%
@@ -269,7 +285,7 @@
 %            GET SILENT NOSTORE FINAL ABBREVIATED ' '                              
 %            IF ( VALUE .EQ. 1 ) THEN                                              
 %%             WinGX
-%              EVALUATE CARG = 'W'    %WINGX                                       
+%              EVALUATE CARG = 'W'                                  %WINGX                                       
 %              EVALUATE CLASS = 'DIFF'
 %            ELSE
 %%
@@ -277,7 +293,7 @@
 %             VERIFY ON OFF                                                         
 %             GET SILENT NOSTORE FINAL ABBREVIATED ' '                              
 %             IF ( VALUE .EQ. 1 ) THEN                                              
-%               EVALUATE CARG = 'PP'                                           
+%               EVALUATE CARG = 'PP'                               %DIFFIN output            
 %               EVALUATE CLASS = 'DIFF'
 %             ELSE
 %%   
@@ -285,7 +301,7 @@
 %              VERIFY ON OFF                                                         
 %              GET SILENT NOSTORE FINAL ABBREVIATED ' '                              
 %              IF ( VALUE .EQ. 1 ) THEN                                              
-%                EVALUATE CARG = 'SI'                                           
+%                EVALUATE CARG = 'SI'                              %SHELX ins/res             
 %                EVALUATE CLASS = 'SHEL'
 %              ELSE
 %%
@@ -293,7 +309,7 @@
 %               VERIFY ON OFF                                                         
 %               GET SILENT NOSTORE FINAL ABBREVIATED ' '                              
 %               IF ( VALUE .EQ. 1 ) THEN                                              
-%                 EVALUATE CARG = 'S4'                                           
+%                 EVALUATE CARG = 'S4'                             %SHELX hklf4              
 %                 EVALUATE CLASS = 'SHEL'
 %               ELSE                                                                
 %%
@@ -301,7 +317,7 @@
 %                VERIFY ON OFF                                                         
 %                GET SILENT NOSTORE FINAL ABBREVIATED ' '                              
 %                IF ( VALUE .EQ. 1 ) THEN                                              
-%                  EVALUATE CARG = 'S5'                                           
+%                  EVALUATE CARG = 'S5'                            %SHELX hklf5               
 %                  EVALUATE CLASS = 'SHEL'
 %                ELSE                                                                
 %%
@@ -309,7 +325,7 @@
 %                 VERIFY ON OFF                                                         
 %                 GET SILENT NOSTORE FINAL ABBREVIATED ' '                              
 %                 IF ( VALUE .EQ. 1 ) THEN                                              
-%                   EVALUATE CARG = 'CD'                                           
+%                   EVALUATE CARG = 'CD'                           %CRYSTALS USE file                
 %                   EVALUATE CLASS = 'CRYS'
 %                 ELSE
 %%
@@ -317,7 +333,7 @@
 %                  VERIFY ON OFF                                                         
 %                  GET SILENT NOSTORE FINAL ABBREVIATED ' '                              
 %                  IF ( VALUE .EQ. 1 ) THEN                                              
-%                    EVALUATE CARG = 'FA'                                           
+%                    EVALUATE CARG = 'FA'                          %Atom cif                 
 %                    EVALUATE CLASS = 'CIFS'
 %                  ELSE                                                                
 %%        
@@ -325,7 +341,7 @@
 %                   VERIFY ON OFF                                                         
 %                   GET SILENT NOSTORE FINAL ABBREVIATED ' '                              
 %                   IF ( VALUE .EQ. 1 ) THEN                                              
-%                     EVALUATE CARG = 'FR'                                           
+%                     EVALUATE CARG = 'FR'                         %Reflection cif                  
 %                     EVALUATE CLASS = 'CIFS'
 %                   ELSE                                                                
 %%
@@ -333,9 +349,17 @@
 %                    VERIFY ON OFF                                                         
 %                    GET SILENT NOSTORE FINAL ABBREVIATED ' '                              
 %                    IF ( VALUE .EQ. 1 ) THEN                                              
-%                      EVALUATE CARG = 'FM'                                           
+%                      EVALUATE CARG = 'FM'                        %Multi-cif without SHELX                   
 %                      EVALUATE CLASS = 'CIFS'
-%                    END IF                                                                
+%                    ELSE                                                                
+^^??                  FS STATE                                                              
+%                     VERIFY ON OFF                                                         
+%                     GET SILENT NOSTORE FINAL ABBREVIATED ' '                              
+%                     IF ( VALUE .EQ. 1 ) THEN                                             
+%                       EVALUATE CARG = 'FS'                       %Multi SHELX in cif
+%                       EVALUATE CLASS = 'SHEL'
+%                     END IF                                                                
+%                    END IF
 %                   END IF                                                                
 %                  END IF                                                                
 %                 END IF                                                                
@@ -346,19 +370,20 @@
 %            END IF                                                                
 %           END IF                                                                
 %          END IF                                                                
-%         END IF                                                                
+%         END IF                                                               
 ^^CO      DISPOSE GETARG                                                       
 %      END BLOCK                                                                 
 %   END CASE                                                                    
-%%
 %  END IF
+%%
+%show ftype carg class
 %%
 %  IF CLASS .EQ. 'DIFF' THEN
 %   IF CARG = 'PP' THEN
 %     COPY '#SCRIPT DIFFEXEC'
 %     FINISH
 %   ELSE
- {I Diffractometer input cifs - Launch DIFFIN                                                               
+ {I Diffractometer input cifs - Launch DIFFIN followed by DIFFEXEC                                                               
 %     if      ( carg .eq. 'A' ) then
 %      copy '#script xfilea'
 %     else if ( carg .eq. 'N' ) then 
@@ -373,18 +398,39 @@
 %  ELSE IF CLASS .EQ. 'SHEL' THEN
 %%
  Import SHELX data
-%      IF      CARG .EQ. 'SI' THEN
-%        IF C_FILE .NE. ' ' THEN
-%         EVALUATE INSTITLE =  C_FILE 
-%        END IF
-%        COPY '#SCRIPT XPASCAL' 
-%      ELSE IF CARG .EQ. 'S4' THEN
+%      IF CARG .EQ. 'S4' THEN
 %        IF C_FILE .NE. ' ' THEN
 %         EVALUATE HKLTITLE =  C_FILE 
 %        END IF
 %        COPY '#SCRIPT XINLIST6' 
 %      ELSE IF CARG .EQ. 'S5' THEN
 %        COPY '#SCRIPT HKLF52CRY'
+%%                                        SHELX files or a cif with embedded SHELX FILES 
+%      ELSE IF  ( CARG .EQ. 'FS' ) .OR. (  CARG .EQ. 'SI' ) THEN             
+%        IF C_FILE .NE. ' ' THEN
+%         EVALUATE INSTITLE =  C_FILE 
+%%        Run Pascals program directly.
+%         IF FILEEXISTS ( 'crystalsinput.dat' ) THEN
+%           EVALUATE T =  FILEDELETE ( 'crystalsinput.cry' )
+%         END IF
+% show c_file
+% TRANSFER '#SPAWN % "CRYSDIR:shelx2cry.exe" ' // '"' // C_FILE // '"' TO CRYSTALS
+%% If there are several .res in the .cif, Pascal creates crystalsinput.dat
+%% This contains the SX data plus a call to try to read the first of the .hkl files.
+%% The user may not want the first data set.
+%% Use the existence if crystalsinput.dat to indicate that file processing has been run
+%          IF FILEEXISTS ( 'crystalsinput.cry' ) THEN
+%%           don't just #USE it because we need to check other things
+%            COPY '#SCRIPT DIFFEXEC' 
+%          ELSE
+
+
+{I  The cif contains more than one .RES file.
+{I  Go to DATA input again and select the file you want. 
+
+
+%          END IF
+%        END IF
 %      END IF
 %%
 %  ELSE IF CLASS .EQ. 'CRYS' THEN
@@ -410,11 +456,11 @@ DO CIF STUFF
 %        EVALUATE CARG = ' -f -d CSD -o '
 %% 'SPAWN +' Starts in DOS box
 cif2cry
-% show carg
 % TRANSFER '#SPAWN + "CRYSDIR:diffin.exe" ' // CARG // '"' // COUT -           
   // '" "' // C_FILE // '"' TO CRYSTALS                                            
 %%                                                                              
 %        TRANSFER '#USE ' // COUT  TO CRYSTALS    
+%        TRANSFER '#USE ' // COUT  TO DISPLAY
 %%                                   
 %      END IF 
 %%
@@ -423,4 +469,4 @@ cif2cry
 %%
 Something wrong
 %  END IF
-%END SCRIPT                                                                     
+% END SCRIPT                                                                     

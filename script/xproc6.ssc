@@ -7,6 +7,12 @@
 
 %     FINISH
 %    END IF
+%    IF ( EXISTS 2 .NE. 1 ) THEN
+
+{E   You have not yet successfully input a Space Group
+
+%     FINISH
+%    END IF
 %%
 %    COPY '#SCRIPT XFRIEDEL'                                                      
 %%                                                                              
@@ -16,7 +22,8 @@
 {S * Sorting reflections                                                        
 %    COPY '#SORT'                                                                 
 %    COPY 'END'                                                                   
-%    IF ( XQMERGE ) THEN                                                          
+%    IF ( XQMERGE ) THEN        
+%%   Friedel Pair merging is controlled by LIST 13                                                  
 {S * Merging equivalent reflections                                             
 %      CLEAR                                                                    
 %      COPY '#MERGE'                                                            

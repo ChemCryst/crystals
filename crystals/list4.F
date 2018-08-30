@@ -3810,11 +3810,13 @@ c          Some non zero Fc - a good chance we have done SFLS
            DO WHILE ( .TRUE. ) ! Ensure grid doesn't extend below 0:
              SXA = MAX(SXA,4.*SXAG)
              SXB = MAX(SXB,4.*SXBG)
-             IF ( SXA .GT. 0.3 ) THEN
-               SXA = 0.2                    
-               SXB = 0.0
-               EXIT
-             END IF
+c removed July 2018 for better compatibility with SX
+c             IF ( SXA .GT. 0.3 ) THEN
+c      write(123,*)'Forced exit', sxa, sxb, 'forced continue'
+c               SXA = 0.2                    
+c               SXB = 0.0
+c               EXIT
+c             END IF
 C For each grid point (9x9) calculate 10 wD^2 values corresponding to Fc range.
              DO J = -4,4
                 DO K = -4,4

@@ -33,7 +33,7 @@
 %%   
 %   EVALUATE CEXTN = GETEXTN ( C_FILE )
 %   EVALUATE CEXTN = UPPERCASE ( CEXTN )
-%   IF ( CEXTN .EQ. 'CIF' ) .or. ( CEXTN .EQ. 'PCF' ) THEN
+%   IF ( CEXTN .EQ. 'CIF' ) .OR. ( CEXTN .EQ. 'PCF' ) THEN
 %     IF FILEEXISTS ( 'from-cif.cry' ) THEN
 %       EVALUATE T =  FILEDELETE ( 'from-cif.cry' )
 %     END IF
@@ -50,7 +50,7 @@
  {E The diffractometer files have not been processed          
 %     END IF
 %     FINISH
-%   ELSE IF ( CEXTN .EQ. 'FCF' ) THEN
+%   ELSE IF ( CEXTN .EQ. 'FCF' )  .OR. ( CEXTN .EQ. 'HKL' ) THEN
 %     IF FILEEXISTS ( 'cif-reflections.hkl' ) THEN
 %       EVALUATE T =  FILEDELETE ( 'cif-reflections.hkl' )
 %     END IF
@@ -65,10 +65,18 @@
 % TRANSFER '#SPAWN % "CRYSDIR:diffin.exe" ' // CARG // '"' // COUT -           
   // '" "' // C_FILE // '"' TO CRYSTALS                                            
 %     TRANSFER 'EXIT CODE: ' // CHARACTER ( EXITSTATUS ) TO DISPLAY      
-%     COPY '#SCRIPT diffexec'   
+
+%     IF FILEEXISTS ( 'cif-reflections.cry' ) .AND. -
+         FILEEXISTS ( 'cif-reflections.hkl' ) THEN
+%       COPY '#SCRIPT DIFFEXEC'
+%     ELSE
+ {E The diffractometer files have not been processed properly         
+%     END IF
 %     FINISH
 %   END IF
 %%
-%   COPY '#SCRIPT XFILE_ANY'
+
+{E Your file has not been processed
+
 %
 %END SCRIPT

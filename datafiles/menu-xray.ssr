@@ -1,6 +1,6 @@
 %%SSR MENU-XRAY
 ^^WI  MENU _START   '&Data'
-^^WI   ITEM _REF '&Open file	Ctrl+O' '#SCRIPT xfile_any'  DISABLEIF='IN'
+^^WI   ITEM _REF '&Open file	Ctrl+O' '#SCRIPT XFILE_ANY'  DISABLEIF='IN'
 ^^WI   SPLIT
 ^^WI   ITEM _REF 'Open import guide' '#SCRIPT XGUIDEI'  DISABLEIF='IN'
 ^^WI   MENU _FILES 'Data Files (Current)'
@@ -18,6 +18,8 @@
 ^^WI   SPLIT
 
 ^^WI     ITEM XINP  'Import S&helx files (ins, res)'
+^^WI                '#SCRIPT XPASCAL' DISABLEIF='IN'
+^^WI     ITEM XINP  'Extract SHELX res and hkl from cif'
 ^^WI                '#SCRIPT XPASCAL' DISABLEIF='IN'
 ^^WI     ITEM XIN5 'Import SHELX97 files (INS or RES)'
 ^^WI               '#SCRIPT XSHELXIN' DISABLEIF='IN'

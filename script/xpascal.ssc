@@ -18,7 +18,7 @@
 % IF ( INSTITLE .EQ. ' ' ) .OR. ( .NOT. ( FILEEXISTS INSTITLE ) ) THEN
 %%
 ^^WI SYSOPENFILE 'All files (*.*)|*.*;'
-^^WI          'SHELX (*.ins,res,hkl,hklf5)|*.ins;*.res;*.hkl;*.hklf5'
+^^WI          'SHELX (*.ins,res,hkl,hklf5,cif)|*.ins;*.res;*.hkl;*.hklf5;*.cif'
 ^^CR
 %%
 %   GET SILENT NOSTORE TEXT 'New filename:' 'CANCEL'                                                                              
@@ -40,12 +40,20 @@
 %   EVALUATE CEXTN = GETEXTN ( C_FILE )
 %   EVALUATE CEXTN = UPPERCASE ( CEXTN )
 %%   EVALUATE INSTITLE = GETPATH ( C_FILE ) // GETTITLE ( C_FILE )
-%   IF ( CEXTN .EQ. 'INS' ) .OR. ( CEXTN .EQ. 'RES' ) THEN
+%   IF ( CEXTN .EQ. 'INS' ) .OR. ( CEXTN .EQ. 'RES' ) .or.  ( CEXTN .EQ. 'CIF' ) THEN
 %      EVALUATE INSTITLE = C_FILE
 %      IF FILEEXISTS ( 'crystalsinput.cry' )  THEN
 %       EVALUATE T =  FILEDELETE ( 'crystalsinput.cry' )
 %      END IF
-%      COPY '#SCRIPT XSX2CRY' 
+%      TRANSFER '#SPAWN % "CRYSDIR:shelx2cry.exe"  -o crystalsinput.cry "' - 
+      // C_FILE // '"' TO CRYSTALS
+%%
+%      IF FILEEXISTS ( 'crystalsinput.cry' ) THEN
+%%      don't just #USE it because we need to check other things
+%       COPY '#SCRIPT DIFFEXEC' 
+%      ELSE
+ {E The INS/RES files have not been processed          
+%      END IF
 %      FINISH
 %   ELSE IF ( CEXTN .EQ. 'HKL' ) THEN
 %      EVALUATE HKLTITLE = C_FILE

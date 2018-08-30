@@ -30,9 +30,48 @@
 %           COPY 'TRANSFER TO OFFSET = 0 FROM OSCALE'
 %           COPY 'WRITE OVERWRITE=OVERWRITE'                                   
 %           COPY 'END'
-%           COPY '#SFLS'
-%           COPY 'CALC'
-%           COPY 'END'
+%    END IF
+
+{I Try refining scalefactor
+
+%    COPY '#SFLS'
+%    COPY 'SCALE'
+%    COPY 'END'
+%% Set weighting type depending on LIST 23,
+%  VARIABLE INTEGER FOLD  FTYPE
+%% check if FOLD has been set earlier
+%  IF FOLD .EQ. 0 THEN
+%   IF EXISTS 23 .GE. 1 THEN                                                     
+%    COPY '#GENERALEDIT 23'                                                      
+%    COPY 'LOCATE RECORDTYPE = 103'                                              
+%    COPY 'TRANSFER FROM OFFSET =  1 TO FOLD'                                    
+%    COPY 'END'                                                                  
+%%   FOLD = -1 for F, or 0 for F**2                                         
+%%                                     FTYPE needed for script STATWT                                              
+%    EVALUATE FOLD = FOLD + 2                                                    
+%%                                     Now, FOLD =  1 for F, or 2 for F**2.                                        
+%   END IF                                                                       
+%  END IF
+%%
+%% IF LIST 23 NOT SET, ASSUME UNIT WEIGHTS
+%    IF FOLD .LE. 1 THEN                                                          
+ 
+{S * Reset weighting scheme to unit weights.                                    
+ 
+%      COPY '#LIST 4'                                                              
+%      copy 'SCHEME 9 0 normal'
+%      COPY 'END'                                                                  
+%    ELSE                                                                         
+
+{S * Reset weighting scheme to statistical weights.                             
+
+%      COPY '#LIST 4'
+%      COPY 'SCHEME NUMBER=16 NPARAM=6'
+%      COPY 'PARAM 0 0 0 0 0 1.0 '                 %% PURE STATISTICS
+%      COPY 'END'
+%      COPY '#SFLS'
+%      COPY 'SCALE'
+%      COPY 'END'
 %    END IF
 %  END IF
 %END SCRIPT

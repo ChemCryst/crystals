@@ -460,6 +460,7 @@ C
       INCLUDE 'XCONST.INC'
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XLISTI.INC'
+      INCLUDE 'XLST01.INC'
       INCLUDE 'XLST02.INC'
       INCLUDE 'XLST06.INC'
       INCLUDE 'XLST13.INC'
@@ -468,10 +469,10 @@ C
       INCLUDE 'XERVAL.INC'
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'XIOBUF.INC'
-      CHARACTER *12 CFILE
+      CHARACTER *13 CFILE
       CHARACTER *13 CFILE2
       DIMENSION JFRN(4), JFRN2(4)
-      DATA CFILE / 'absences.dat' /
+      DATA CFILE / 'absences2.dat' /    ! now contains a column with resolution^3
       DATA CFILE2/ 'histogram.dat' /
 #ifdef _HOL_
       DATA JFRN  /1HF, 1HR, 1HN, 1H1/
@@ -574,10 +575,11 @@ C----- ACCUMULATORS
       ENDDO
 C
       IF ( IULN .EQ. 6 ) THEN
-        CALL XRDOPN ( 5 , JFRN(1) , CFILE, 12 )
+        CALL XRDOPN ( 5 , JFRN(1) , CFILE, 13 )
         CALL XRDOPN ( 5 , JFRN2(1) , CFILE2, 13 )
         IF (IERFLG .LE. 0) GOTO 9900               !EXIT ON ERROR
-        WRITE(NCFPU1,'(A)')'   H   K   L   Fobs^2/Sigma      Fobs^2'
+        WRITE(NCFPU1,'(A,A)')'   H   K   L   Fobs^2/Sigma      Fobs^2',
+     1  ' (Sintheta/lambda)^3'
       END IF
 C
 C--MAIN REFLECTION READING LOOP
@@ -590,6 +592,8 @@ C--CHECK IF THIS REFLECTION IS SYSTEMATICALLY ABSENT
       IF(KSYSAB(IN))1550,1600,1600
 c
 1550  CONTINUE
+c      get (sinth/lam)^3
+       stl3 = RCSTL3(STORE(L6),STORE(L6+1),STORE(L6+2), STORE(L1S))
        NABSNT = NABSNT + 1
        FO = STORE(L6+ifo)      !changed from 3, djw April 2017
        SUMI = SUMI + FO
@@ -624,8 +628,8 @@ C
          SIGRAT = FOS/2.*ZERO
        END IF
        IF ( IULN .EQ. 6 ) THEN
-        WRITE(NCFPU1,'(3I4,2(1X,F12.3))') (NINT(STORE(L6+I)),I=0,2),
-     1                                  SIGRAT,FOS
+        WRITE(NCFPU1,'(3I4,3(1X,F12.3))') (NINT(STORE(L6+I)),I=0,2),
+     1                                  SIGRAT,FOS, STL3
        END IF
 C
        IF (STORE(L6+12) .GE. 2.*ZERO) THEN

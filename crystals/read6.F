@@ -1450,7 +1450,7 @@ c but we need some kind of value for the MOO calculations.
            WRITE (CMON,'(a)') '{E Inconsistent data. '//
      1       '  sin(Theta)/lambda outside permitted range.'
            CALL XPRVDU (NCVDU,1,0)
-           WRITE (CMON,'(a)') '{E Cell parameters, wavelength and '//
+           WRITE (CMON,'(a/)') '{E Cell parameters, wavelength and '//
      1       'hkl indices are not compatible'
            CALL XPRVDU (NCVDU,1,0)
            STORE(L30IX+6)=99.0
@@ -1521,11 +1521,12 @@ C--AND NOW RETURN
         call xprvdu (ncvdu,1,0)
         write (ncawu,'(a)') trim(cmon(1))
         if (issprt.eq.0) write (ncwu,'(a)') trim(cmon(1))
-        write(cmon,'(A/A/A)')
+        write(cmon,'(A/A/A//A)')
      1  'This could be due to errors in the reflection file',
      2  'in the unit cell parameters or in the wavelength',
-     3  'See the Monitor file for details'
-        call xprvdu (ncvdu,3,0)
+     3  'If the data come from SHELX, check for a matrix on HKLF ',
+     4  'See the Monitor file for details'
+        call xprvdu (ncvdu,5,0)
         call xpause (2000)
         call outcol(1)
       endif

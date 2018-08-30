@@ -22,7 +22,7 @@
 ^^WI   SPLIT                                                                    
 ^^WI   ITEM HOOFT '&Absolute config' '#SCRIPT XFLACKPASCAL'                          
 ^^WI               ENABLEIF='L5 L6 L30' DISABLEIF='IN'                              
-^^WI   MENU XROTAX '&Rotax analysis/twins'                                      
+^^WI   MENU XROTAX '&ROTAX analysis/twins'                                      
 ^^WI     ITEM XINTWIN 'ROTAX	Ctrl+R' '#SCRIPT XROTAX'                                  
 ^^WI               ENABLEIF='L1 L5 L6' DISABLEIF='IN'                           
 ^^WI     SPLIT                                                                  
