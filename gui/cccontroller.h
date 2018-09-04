@@ -40,7 +40,8 @@
  #include <windows.h>
 #endif
 
- 
+std::string GetExePath();
+
 #ifndef CRY_USEMFC   //  if using wxWidgets
 //DECLARE_EVENT_TYPE(ccEVT_COMMAND_ADDED, 1238) //Made up number 
 extern const wxEventType ccEVT_COMMAND_ADDED;

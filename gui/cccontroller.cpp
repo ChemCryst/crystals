@@ -861,15 +861,47 @@ CcController::CcController( const string & directory, const string & dscfile )
     char * ecrys = getenv("CRYSDIR");
     if ( ecrys == 0 )
     {
-      std::cerr << "You must set CRYSDIR before running crystals.\n";
-      return;
+      string crysdir=GetExePath();
+      if ( crysdir.length() == 0 )
+      {
+        std::cerr << "You must set CRYSDIR before running crystals.\n";
+        return;
+      }
+      else 
+      {
+#ifdef CRY_OSWIN32
+        _putenv( "CRYSDIR="+crysdir );
+#else
+        string p = "CRYSDIR="+crysdir;
+        char * env = new char[p.size()+1];
+        strcpy(env, p.c_str());
+        stringlist.push_back(env);
+        putenv( env );
+#endif          
+      }      
     }
  
     string crysdir ( ecrys );
     if ( crysdir.length() == 0 )
     {
-      std::cerr << "Set CRYSDIR to the location of crystals before running crystals.\n";
-      return;
+      crysdir=GetExePath();
+      if ( crysdir.length() == 0 )
+      {
+        std::cerr << "Set CRYSDIR to the location of crystals before running crystals.\n";
+        return;
+      } 
+      else 
+      {
+#ifdef CRY_OSWIN32
+        _putenv( "CRYSDIR="+crysdir );
+#else
+        string p = "CRYSDIR="+crysdir;
+        char * env = new char[p.size()+1];
+        strcpy(env, p.c_str());
+        stringlist.push_back(env);
+        putenv( env );
+#endif          
+      }      
     }
 
     int nEnv = EnvVarCount( crysdir );
@@ -4504,3 +4536,29 @@ bool CcController::GetCrystalsCommand( char * line, bool & bGuexec )
   return (true);
 }
 
+std::string GetExePath() {
+#ifdef CRY_OSLINUX
+  // Code taken from: http://www.gamedev.net/community/forums/topic.asp?topic_id=459511
+  std::string path = "";
+  pid_t pid = getpid();
+  char buf[20] = {0};
+  sprintf(buf,"%d",pid);
+  std::string _link = "/proc/";
+  _link.append( buf );
+  _link.append( "/exe");
+  char proc[512];
+  int ch = readlink(_link.c_str(),proc,512);
+  if (ch != -1) {
+    proc[ch] = 0;
+    path = proc;
+    std::string::size_type t = path.find_last_of("/");
+    path = path.substr(0,t);
+  }
+
+  std::string crysdir = path + string("/");
+  std::cerr << "pp " << crysdir << "\n" << std::flush;
+  return crysdir;
+#else
+  crysdir='';
+#endif     
+}
