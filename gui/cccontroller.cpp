@@ -869,10 +869,10 @@ CcController::CcController( const string & directory, const string & dscfile )
       }
       else 
       {
-#ifdef CRY_OSWIN32
-        _putenv( "CRYSDIR="+crysdir );
-#else
         string p = "CRYSDIR="+crysdir;
+#ifdef CRY_OSWIN32
+        _putenv( p.c_str() );
+#else
         char * env = new char[p.size()+1];
         strcpy(env, p.c_str());
         stringlist.push_back(env);
@@ -892,10 +892,10 @@ CcController::CcController( const string & directory, const string & dscfile )
       } 
       else 
       {
-#ifdef CRY_OSWIN32
-        _putenv( "CRYSDIR="+crysdir );
-#else
         string p = "CRYSDIR="+crysdir;
+#ifdef CRY_OSWIN32
+        _putenv( p.c_str() );
+#else
         char * env = new char[p.size()+1];
         strcpy(env, p.c_str());
         stringlist.push_back(env);
