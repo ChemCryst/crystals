@@ -4558,6 +4558,6 @@ std::string GetExePath() {
   std::string crysdir = path + string("/");
   return crysdir;
 #else
-  crysdir='';
+  return '';
 #endif     
 }
