@@ -460,10 +460,10 @@ integer cont, k, j, startresidue, endresidue, tagresidue
                 k=k-1
                 if(k<1) then
                     if(collect) then
-                        allocate(character(len=32+len_trim(endlabel)) :: errormsg)
+                        allocate(character(len=29+len_trim(endlabel)) :: errormsg)
                         write(errormsg, *) 'Error: Cannot find end atom ', trim(endlabel)
                     else
-                        allocate(character(len=32+len_trim(startlabel)) :: errormsg)
+                        allocate(character(len=31+len_trim(startlabel)) :: errormsg)
                         write(errormsg, *) 'Error: Cannot find first atom ', trim(startlabel)
                     end if
                     return
@@ -472,10 +472,10 @@ integer cont, k, j, startresidue, endresidue, tagresidue
                 k=k+1
                 if(k>atomslist_index) then
                     if(collect) then
-                        allocate(character(len=32+len_trim(endlabel)) :: errormsg)
+                        allocate(character(len=29+len_trim(endlabel)) :: errormsg)
                         write(errormsg, *) 'Error: Cannot find end atom ', trim(endlabel)
                     else
-                        allocate(character(len=32+len_trim(startlabel)) :: errormsg)
+                        allocate(character(len=31+len_trim(startlabel)) :: errormsg)
                         write(errormsg, *) 'Error: Cannot find first atom ', trim(startlabel)
                     end if
                     return

@@ -3029,9 +3029,9 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
     same_loop:do i=1, same_table_index
 
         if(len_trim(same_table(i)%shelxline)<5) then
-            write(log_unit,*) 'Error: Empty ISOR'
+            write(log_unit,*) 'Error: Empty SAME'
             write(log_unit, '("Line ", I0, ": ", a)') same_table(i)%line_number, trim(same_table(i)%shelxline)
-            write(*,*) 'Error: Empty ISOR'
+            write(*,*) 'Error: Empty SAME'
             write(*, '("Line ", I0, ": ", a)') same_table(i)%line_number, trim(same_table(i)%shelxline)
             summary%error_no=summary%error_no+1
             return
@@ -3041,7 +3041,10 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
         if(allocated(errormsg)) then
             write(log_unit,*) trim(errormsg)
             write(log_unit, '("Line ", I0, ": ", a)') same_table(i)%line_number, trim(same_table(i)%shelxline)  
+            write(*,*) trim(errormsg)
+            write(*, '("Line ", I0, ": ", a)') same_table(i)%line_number, trim(same_table(i)%shelxline)  
             summary%error_no=summary%error_no+1
+            return
         end if
         
         sameresidue=-99

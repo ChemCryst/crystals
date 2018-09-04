@@ -1,0 +1,74 @@
+Warning: `EQIV` Not supported 
+Line 10: EQIV $1 0.5-X,0.5+Y,1.5-Z
+Warning: `EQIV` Not supported 
+Line 11: EQIV $2 0.5-X,-0.5+Y,1.5-Z
+Warning: `EQIV` Not supported 
+Line 12: EQIV $3 1-X,1-Y,2-Z
+Warning: `EQIV` Not supported 
+Line 13: EQIV $4 -1+X,-1+Y,+Z
+Warning: `EQIV` Not supported 
+Line 14: EQIV $5 +X,1+Y,+Z
+Warning: `RIGU` Not supported 
+Line 17: RIGU N1B > C6
+Warning: `SIZE` Not supported 
+Line 22: SIZE 0.08 0.11 0.42
+Warning: `TEMP` Not supported 
+Line 23: TEMP -123
+Warning: `WGHT` Not supported 
+Line 42: WGHT    0.069400    0.868100
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 86: H12A  2    0.167554    0.577368    0.764569    11.00000   -1.20000
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 87: H12B  2    0.028615    0.722636    0.770617    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 90: AFIX  43
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 91: H13   2   -0.040278    0.347810    0.799483    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 92: AFIX   0
+Warning: `AFIX` Not supported 
+Line 97: AFIX  93
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 98: H15A  2    0.031094    0.196447    0.957569    11.00000   -1.20000
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 99: H15B  2   -0.066956    0.126203    0.891645    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 100: AFIX   0
+Warning: `AFIX` Not supported 
+Line 103: AFIX  93
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 104: H16A  2    0.210356    0.526784    0.963304    11.00000   -1.20000
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 105: H16B  2    0.227580    0.668668    0.901236    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 106: AFIX   0
+
+Processing shelxl labels into crystals serials
+2 identical serial for N1B: 12 and N12: 12
+New serial for N1B: 13 and N12: 12
+2 identical serial for N1B: 13 and N13: 13
+New serial for N1B: 14 and N13: 13
+Done
+
+Processing DFIXs/DANGs...
+DFIX 0.88 0.001 N12 H12a N12 H12b
+DISTANCE .88000,.00100 = N(12) TO H(121)
+DFIX 0.88 0.001 N12 H12a N12 H12b
+DISTANCE .88000,.00100 = N(12) TO H(122)
+DFIX 1.43 C5B C6
+DISTANCE 1.43000,.02000 = C(52) TO C(6)
+
+Processing ISORs...
+Warning: [st] esd in ISOR not supported, using [s] instead
+ISOR 0.004 0.008 N2B N3B
+UQISO 0.00400 N(22) N(32)
+
+## Warning: Could not find the corresponding hkl file insfiles/pk2606sup1_5.hkl
+##          You will have to import it manually
