@@ -3776,6 +3776,7 @@ real limith, limitl
         write(crystals_fileunit, '(a, F0.3)') 'CONT SINTH/L**2  =  ', limitl
     end if
     write(crystals_fileunit, '(a)') 'CONT    RATIO    =  -3.00000'
+    write(crystals_fileunit, '(a)') 'CONT    SQRTW    =   0.00000'
 
     if(limith>-1.0) then
         write(crystals_fileunit, '(a, F0.3)') 'MAXIMA SINTH/L**2 = ', limith
