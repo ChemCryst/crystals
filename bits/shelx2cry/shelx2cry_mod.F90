@@ -3782,7 +3782,7 @@ real limith, limitl
     end if
 
     if(omitlist%index>0) then
-        write(crystals_fileunit, '(a, I0)') 'READ NOMIT = ', omitlist%index
+        write(crystals_fileunit, '(a, I0)') 'READ NOMIS = ', omitlist%index
         do i=1, omitlist%index
             write(crystals_fileunit, '(a, 3(I0, " "))') 'OMIT ', omitlist%hkl(i,:)
         end do
