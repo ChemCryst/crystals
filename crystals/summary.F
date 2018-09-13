@@ -3026,7 +3026,7 @@ C
             WRITE ( CMON , 1105 ) ( ISTORE(J) ,
      2      J = INDNAM , INDNAM + 2 ) , STORE(I+1)
             CALL XPRVDU(NCVDU, 1,0)
-1105        FORMAT ( 2X , 'Minimum value of ' , 3A4 , ' is ' , F10.5 )
+1105        FORMAT ( 2X , 'Minimum value of ' , 3A4 , ' is ' , G10.3 )
             INDNAM = INDNAM + MD28CN
 1200      CONTINUE
         ENDIF
