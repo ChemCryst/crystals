@@ -1,0 +1,59 @@
+%SCRIPT LIST28-SET-WT
+%% A SCRIPT TO SAVE THE OLD VALUES OF "SQRT" OR INSERT A SMALL VALUE
+%%
+%% Record 1101 is the list of currently set minimal values
+%% Record 101 is the complet list
+%%
+%% Record 1101 is scanned to find the key SQRT in record NCOND
+%% This is then used to extract and replace values in 1101 and 101
+%%
+
+{S Setting filtering out of zero-weight reflections
+
+%%
+% VARIABLE LOGICAL WTFOUND
+% EVALUATE WTFOUND = FALSE
+% VARIABLE INTEGER NCOND MCOND
+% VARIABLE REAL RW 
+% VARIABLE CHARACTER CW
+%%
+%   COPY '#GENERALEDIT 28'                                                      
+%   COPY 'LOCATE RECORDTYPE = 1101'                                             
+%   COPY 'ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR'           
+%   COPY 'TOP'  
+%   LOOP  
+%     EVALUATE NCOND = LOOPCOUNTER                                                              
+%     ON EDITERROR TERMINATE                                                    
+%     ON ERROR TERMINATE                                                        
+%     COPY 'TRANSFER FROM OFFSET = 0 TO CW'   %% 0,1,2 are bits of 3A4                                    
+%     COPY 'TRANSFER FROM OFFSET = 3 TO RW' 
+%      IF CW .EQ. "SQRT" THEN 
+%        IF RW .LT. 0.0000001 THEN   %ONLY UPDATE IF NO REAL VALUE SET
+%          EVALUATE WTFOUND = TRUE
+%          EVALUATE RW = 0.0000001
+%        END IF
+%        COPY 'TRANSFER TO OFFSET = 3 FROM RW'                                       
+%        COPY 'WRITE OVERWRITE = OVERWRITE'
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%      END IF
+%     copy 'next'
+%   END LOOP
+%   COPY 'END'
+%%
+% IF WTFOUND .EQ. TRUE THEN
+%   COPY '#GENERALEDIT 28'                                                      
+%   COPY 'LOCATE RECORDTYPE = 101'                                             
+%   COPY 'ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR'           
+%   COPY 'TOP' 
+%   EVALUATE MCOND = NCOND - 1
+%   LOOP  MCOND TIMES
+%     COPY 'NEXT'
+%   END LOOP
+%   ON EDITERROR TERMINATE                                                    
+%   ON ERROR TERMINATE                                                        
+%   EVALUATE RW = 0.0000001
+%   COPY 'TRANSFER TO OFFSET = 1 FROM RW'
+%   COPY 'WRITE OVERWRITE = OVERWRITE'
+%   COPY 'END'
+% END IF
+%END SCRIPT

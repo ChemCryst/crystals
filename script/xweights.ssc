@@ -8,7 +8,13 @@ A SCRIPT to assist with the weighting of least squares refinement
 %  VARIABLE LOGICAL WMASK WDONE                                                 
 %  EVALUATE WMASK = TRUE                                                        
 %  EVALUATE WDONE = TRUE                                                        
-%  COPY '#SCRIPT XPUTINFO'                                                      
+%  COPY '#SCRIPT XPUTINFO' 
+%%
+%% Set the SQRT filter in LIST 28 to ZERO to ensure that all reflections
+%% are used whatever the WEIGHT.
+%% Later, in Robust Statisical weighting, the filter is set to 0.0000001 
+%% It should probably be set to this value for all Robust schemes - WIP.  
+%  COPY '#SCRIPT LIST28-ZERO-WT'                                              
 %%                                                                              
 %% FIND OUT IF F OR FSQ REFINEMENT                                              
 %  VARIABLE INTEGER FTYPE                                                       
@@ -138,7 +144,8 @@ and will generate a checkcif error.
       (w=1/(SigmaSq))
       This scheme is suitable for the case where the bulk of the data
  has small systematic errors, but may contain a few refelctions with
- serious casual errors, such as might occur from a high pressure cell
+ serious casual errors, such as might occur from a high pressure cell.
+ 
 
 {12,0 MODIFIED SHELX
       w= 1.0 / ( sigma^2 + (aP)^2 + bP ), P = (Fo + 2Fc)/3                      
@@ -202,6 +209,7 @@ errors have an unusual distribution
 %                COPY 'CONT WEIGHT=   2.0000000 MAX=  10000.0000 ROBUST=Y '
 %                COPY 'CONT TOLER=      6.0000 '
 %                COPY 'END'
+%                COPY '#SCRIPT LIST28-SET-WT'  %% BEWARE IF/WHEN RETURNING TO NORMAL WTS
 %                COPY '#WEIGHT'                                                 
 %                COPY 'END'                                                     
 %                COPY '#SCRIPT XANAL'                                           

@@ -436,11 +436,6 @@
 %  COPY 'END'                                                                   
 %%                                                                              
 ^^CO SET PROGOUTPUT TEXT 'Computing Wilson statistics' 
-%  IF ( EXISTS 5 .NE. 1 ) THEN                         
-%    COPY '#LIST 5'
-%    COPY 'READ NATOM=0'
-%    COPY 'END'
-%  END IF
 %  COPY '#WILSON'                                                               
 %  COPY 'OUTPUT PLOT=YES NZ=YES STATS=YES'                                      
 %  IF ( WILFIL ) THEN                                                           

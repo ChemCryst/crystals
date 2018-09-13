@@ -14,11 +14,15 @@ Some basic data is missing. We cannot process the reflections
 % END BLOCK
 % CLEAR
 % COPY '#SCRIPT INLIST6'
-
 Give the minimum I/sigma(i) to be used in refinement. It can be changed later
 % COPY '#LIST 28'
+% CLEAR
 % INSERT 'MINIMA RATIO='
 % GET FINAL REAL  'I/sigma(I) ' '-3.0'
+% SEND
+% CLEAR
+% INSERT 'MINIMA SQRTW='
+% GET FINAL REAL  'SQRT(W) ' '0.0'
 % SEND
 % COPY 'END'
 %%

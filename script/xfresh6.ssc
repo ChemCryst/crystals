@@ -31,7 +31,9 @@ List 23 already in place.
 %%
 %% modern instruments have beam-stop masks so a sint cutoff is not required
 %% {I A default sin(theta)/lambda minimum of 0.01 is recommended.                  
-%%          INSERT 'SINT=0.01'                                                    
+%%          INSERT 'SINT=0.01' 
+%%         ENSURE SQRTW IS IN THE MINIMA LIST
+%          INSERT 'SQRTW = 0.0'                                                   
 %          SEND                                                                  
 %          COPY 'END'                                                            
 %          COPY '#GENERALEDIT 30'                                                     

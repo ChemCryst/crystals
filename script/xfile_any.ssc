@@ -376,7 +376,7 @@
 %   END CASE                                                                    
 %  END IF
 %%
-%show ftype carg class
+%%show ftype carg class
 %%
 %  IF CLASS .EQ. 'DIFF' THEN
 %   IF CARG = 'PP' THEN
@@ -413,7 +413,7 @@
 %         IF FILEEXISTS ( 'crystalsinput.dat' ) THEN
 %           EVALUATE T =  FILEDELETE ( 'crystalsinput.cry' )
 %         END IF
-% show c_file
+%% show c_file
 % TRANSFER '#SPAWN % "CRYSDIR:shelx2cry.exe" ' // '"' // C_FILE // '"' TO CRYSTALS
 %% If there are several .res in the .cif, Pascal creates crystalsinput.dat
 %% This contains the SX data plus a call to try to read the first of the .hkl files.
