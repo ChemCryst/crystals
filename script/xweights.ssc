@@ -145,6 +145,7 @@ and will generate a checkcif error.
       This scheme is suitable for the case where the bulk of the data
  has small systematic errors, but may contain a few refelctions with
  serious casual errors, such as might occur from a high pressure cell.
+ Seriuous outliers are given a weight of zero.
  
 
 {12,0 MODIFIED SHELX
