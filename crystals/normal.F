@@ -70,7 +70,8 @@ C -- ALLOCATE SPACE TO HOLD RETURN VALUES FROM INPUT
       END IF
 
 
-      IF (KEXIST(5).LE.0 .and. (issrat.eq.1)) THEN
+      IF (KEXIST(5).LE.0 ) THEN
+       IF (issrat.eq.1) THEN
 C            RESET RATIO FLAG TO Io
              WRITE(CMON,'(A)')'No list 5 (scale factors) available'
              CALL XPRVDU(NCVDU,1,0)
@@ -78,6 +79,7 @@ C            RESET RATIO FLAG TO Io
      1      'IRATIO reset to Io because scale is not available'
              CALL XPRVDU(NCVDU, 1,0)
              ISSRAT = 0
+       ENDIF
       ELSE
         IF (KHUNTR ( 5,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL05
       END IF
