@@ -5938,7 +5938,7 @@ c               Agilent
             if ( ipunch .eq. 2 ) write(ncpu,9)
             DO I=1,3,2
               IF ( IPUNCH .EQ. 0 ) THEN
-                WRITE (CLINE,'(A,''correction_T_'', A, F8.2)')
+                WRITE (CLINE,'(A,''correction_T_'', A, 1X,F8.2)')
      1           CBUF(1:15),CSIZE(I),
      2           STORE(L30AB-1+J+(I+1)/2) / STORE(L30AB+1+J) * TMAX
                 CALL XPCIF (CLINE)
