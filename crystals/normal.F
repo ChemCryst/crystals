@@ -102,10 +102,10 @@ C            RESET RATIO FLAG TO Io
       END IF
 
 
-      IPLOTW = ISTORE(ICOMBF)
-      IPLOTN = ISTORE(ICOMBF+1)
-      ISTATP = ISTORE(ICOMBF+2)
-      IL28FL = ISTORE(ICOMBF+3)
+      IPLOTW = ISTORE(ICOMBF)      !PLOT
+      IPLOTN = ISTORE(ICOMBF+1)      !Nz
+      ISTATP = ISTORE(ICOMBF+2)      !STATS
+      IL28FL = ISTORE(ICOMBF+3)      !LIST 28
       IWEIGT = ISTORE(ICOMBF+4)
       EVALS=.FALSE.
       EPUNCH=.FALSE.
@@ -239,7 +239,7 @@ C OBTAIN SUMS FOR WILSON PLOT AND FIT LEAST SQUARES STRAIGHT LINE
 
 
 C PLOT WILSON CURVE AND LEAST SQUARES STRAIGHT LINE
-      CALL GRAPH80(0,IPLOTW) 
+      CALL GRAPH80(0,IPLOTW,ISTATP) 
   450 BT=2.0*BT                                                         
 
 C CALCULATE SCALE FACTORS FOR APPROPRIATE REFLEXION GROUPS
@@ -700,23 +700,24 @@ CDJW-2018 OUTPUT U TO GRAPHICS
 C
 C
 CODE FOR GRAPH80
-      SUBROUTINE GRAPH80(NGP,IPLOTW)
+      SUBROUTINE GRAPH80(NGP,IPLOTW,ISTATP)
 C     LINE PRINTER PLOT AT 50 VALUES OF RHO                             
       INCLUDE 'XWMISC.INC'
       INCLUDE 'XWILSO.INC'
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XCONST.INC'
       INCLUDE 'XUNITS.INC'
-
+      INCLUDE 'UFILE.INC'
+C
+      DIMENSION KDEV(4)
       DIMENSION FH(6),RH(6),M(117),R(4),AD(4),AW(4),AWC(4)                     
-      DATA IST,ISP,ICW,ICD/1H*,1H ,1HW,1HD/                             
+      DATA IST,ISP,ICW,ICD/1H*,1H ,1HW,1HD/ 
+C
+      CALL XZEROF (RHOW, 50)
+      CALL XZEROF (FOW, 50)
+      CALL XZEROF (FCW, 50)
+                            
 C     DETERMINE RANGES OF LOGS                                          
-cdjwfeb08
-      if (iplotw .eq.1) then
-       write(ncpu,'(a)')'Wilson Plot'
-       write(ncpu,123)
-123   format(10x,'s^2',5x,'Best Line',3x,'Obs Wilson'2x,'Calc Wilson')
-      endif
       RX=AVR(NB)                                                        
       FX=FLGK                                                           
       FN=SLOPE*RX+FLGK                                                  
@@ -758,6 +759,14 @@ C TOP FRAME
 C NOTE. FOR THE PRINTER, EACH LINE IS FILLED WITH SPACES
 C AND THEN TEXT ADDED. THE FORMAT DESCRIPTOR $ INHIBITS
 C LINE FEEDS
+C
+CDJW - PREAPRE TO APPEND PUCH OUTPUT ON FRN1
+      CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
+      CALL XRDOPN(6, KDEV , 'Wilson.pch', 10)
+      WRITE(NCFPU1,'(20X,A)')'Wilson Plot'
+      WRITE(NCFPU1,123)
+123   FORMAT(10x,'s^2',5x,'Best Line',3x,'Obs Wilson'2x,'Calc Wilson')
+
 
       DO I=1,50                                                     
         DCV(I)=-1000000.0                                                 
@@ -818,18 +827,21 @@ C STORE K-CURVE
             CALL XPRVDU(NCVDU, 1,0)
           END IF
 cdjwfeb08
-            write(ncpu,'(i4,4f12.4)') i, 0.02*FLOAT(I-1)*RX, sval,
+            write(ncfpu1,'(i4,4f12.4)') i, 0.02*FLOAT(I-1)*RX, sval,
      1      wval,wcval
-
-
-
+C SAVE THE VALUES TO FIND THE TURNING POINT
+            RHOW(I)=0.02*FLOAT(I-1)*RX
+            FOW(I)=WVAL
+            FCW(I)=WCVAL
+C
+C
           XMIN = MIN(XMIN, SVAL,WVAL)
           XMAX = MAX(XMAX, SVAL,WVAL)
-
+C
         END IF
-
+C
         M(16)=ISP
-
+C
         IF(MOD(I,10).EQ.0)THEN
           M(15)=ISP                                                         
           M(17)=ISP                                                         
@@ -850,7 +862,30 @@ cdjwfeb08
            M(L)=ISP
         END DO
       END DO
-
+C NOW WE HAVE ALL THE VALUES STORED, LOK FOR THE TURNING POINT.
+      IRES = 50
+      DO L=50,3,-1
+            IF( (FOW(L)-FOW(L-1).LT.0.0) .AND.
+     2          (FOW(L-1)-FOW(L-2).LT.0.0) ) THEN
+                IRES=L
+                EXIT
+            ENDIF
+      ENDDO 
+      WRITE(NCFPU1,'(//A)')'Suggested resolution cutoff:'
+      WRITE(NCFPU1,'(I3, 3F8.3 )')IRES, RHOW(IRES),FOW(IRES),
+     1                   FCW(IRES)
+C
+      CALL OUTCOL(10)
+      WRITE(CMON,'(A,F8.3/I3,3F8.3)')'Suggested resolution cutoff:',
+     1 RHOW(IRES),      IRES, RHOW(IRES),FOW(IRES),FCW(IRES)
+      CALL XPRVDU(NCVDU, 2,0)
+      CALL OUTCOL(1)
+      CALL XRDOPN(7, KDEV , 'Wilson.pch', 10)
+      IF ( ISTATP .EQ. 1 ) THEN
+        WRITE(CMON,'(A,F12.3,A)')
+     1  '^^CO SAFESET [ _MW_E2CUT TEXT ',RHOW(IRES), ' ]'
+        CALL XPRVDU(NCVDU, 1,0)
+      ENDIF
       IF ( IPLOTW .EQ. 1 ) THEN
 C Round down XMIN to nearest .1:
         XRX = XMIN * 10.
