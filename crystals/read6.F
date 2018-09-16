@@ -373,13 +373,15 @@ c123      CHARACTER*80 CFORM
       INCLUDE 'ICOM6A.INC'
       INCLUDE 'ICOM13.INC'
       INCLUDE 'ICOM30.INC'
+      INCLUDE 'XCARDS.INC'
 C
 C
       CHARACTER*32 CCAPT1
       CHARACTER*32 CCAPT2
 c123      DIMENSION AA(10), YCARD1(82), YCARD2(82), IFORM(40)
       PARAMETER (NFORM=64)    ! for compatibility with long cards
-      DIMENSION AA(10), YCARD1(258), YCARD2(258), IFORM(NFORM)
+      DIMENSION AA(10), YCARD1(size(image)+2), YCARD2(size(image)+2)
+      DIMENSION IFORM(NFORM)
       DIMENSION IPARTS(4), ICAD4(11), ISLX(4), JSIGMA(1), JRATIO(1)
       DIMENSION JFOT(1), JFOO(1)
       DIMENSION TRANSH(12)
@@ -391,7 +393,6 @@ C
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'UFILE.INC'
       INCLUDE 'XCHARS.INC'
-      INCLUDE 'XCARDS.INC'
       INCLUDE 'XCONST.INC'
       INCLUDE 'XLISTI.INC'
       INCLUDE 'XLST01.INC'
@@ -417,7 +418,7 @@ C
       INCLUDE 'QLST30.INC'
 C
 C
-      DATA NCARD/258/
+      integer, parameter :: ncard = size(image)+2
 C
 c123      DATA NFORM/41/ ! now a parameter statement above
 C
@@ -518,7 +519,7 @@ c      WRITE(123,'(A,10I10)')
 c     1 'LFORM, LASTCH, NC, ND',LFORM, LASTCH, NC, ND
       M=LFORM
 c123      N=LASTCH-NC+1   ! look for closing ')' instead
-      do idjw=256,m,-1
+      do idjw=size(image),m,-1
             n=idjw-1
             if(image(IDJW).eq.IBRAC) exit
       enddo
@@ -1874,7 +1875,7 @@ C--CHECK FOR END OF CARD
          IF (NC) 100,100,200
 C--END OF THE CARD  -  READ THE NEXT
 100      CONTINUE
-         READ (IUNIT,150,END=500) IMAGE
+         READ (IUNIT,150,END=500) IMAGE(1:256)
 150      FORMAT (256A1)
          NCARDS=NCARDS+INCREM
          NC=1
