@@ -14,6 +14,10 @@ elemental integer function i_store(k)
 implicit none
 integer, intent(in) :: k !< address in store
 
+!if(k<1 .or. k>size(store)) then
+!    call abort()
+!end if
+
 i_store = transfer(STORE(k), 1)
 
 end function

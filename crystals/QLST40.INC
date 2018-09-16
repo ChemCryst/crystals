@@ -1,2 +1,2 @@
-      EQUIVALENCE ( L40T , ICOM40(1) )
+      equivalence ( l40t , icom40(1) )
 

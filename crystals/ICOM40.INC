@@ -1,2 +1,2 @@
-      DIMENSION ICOM40(20)
+      integer, dimension(20) :: icom40
 
