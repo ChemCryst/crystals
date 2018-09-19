@@ -294,8 +294,10 @@ C      25 unused    26 UALIGN    27 URIGU    28 ULIJ
 C      29 UPLANE    30 UXXQIV    31 UXYQIV   32 UXZQIV   
 C      33 UYYQIV    34 UYZQIV    35 UZZQIV   36 UEIG
 C      37 UQISO     38 UVOL      39 UEQIV    40 UTLS
+C      41 XCHIV
 C
-C Don't forget to chage coperation in preset.F !!
+C X??? restraints are shelx restraints
+C Don't forget to chage coperation in preset.F and XL26WK.INC!!
 C--
 C
       use, intrinsic :: IEEE_ARITHMETIC
@@ -542,6 +544,7 @@ C 5570 UQISO
 C 5580 UVOL
 C 5590 UEQIV
 C 5600 UTLS
+C 5710 XCHIV
 C 1250
 c
       write(cmon,'(a)') ''
@@ -1069,6 +1072,11 @@ C--'UTLS' RESTRAINT
       NN=0
       GOTO 2500
       
+C--'XCHIV' RESTRAINT
+5710  CONTINUE
+      NN=0
+      GOTO 2500
+
 C
 C
 C--'EXECUTION LISTING'
@@ -1153,7 +1161,7 @@ C--BRANCH ON THE TYPE OF RESTRAINTS
       GOTO(1050,1050,2850,3000,2850,3050,3150,3050,3200,1050,1050,3300,
      2 1050,4150,1050,1050,4550,4540,2850,1050,3280,3290,3270,3285,3295,
      2 3260,3261,3262,3263,3264,3265,3266,3267,3268,3269,3271,
-     2 3272,3273,3274,3275,2800),I
+     2 3272,3273,3274,3275,4010,2800),I
 2800  CONTINUE
       CALL XOPMSG (IOPL16, IOPINT, 0)
       GOTO 9900
@@ -1553,6 +1561,11 @@ C         Derivatives output only if Execution listing requested
         CALL XPRVDU(NCVDU, 1,0)            
       end if
       N=0 ! do not print mean deviation
+      GOTO 1050
+
+C--XCHIV RESTRAINTS PRINT
+4010  CONTINUE
+      NN=0
       GOTO 1050
 C         
 C--UXXQIV RESTRAINTS PRINT
@@ -2210,8 +2223,14 @@ C
               type(restraints_t), intent(inout), optional :: results
           end subroutine
       end interface
-       interface 
+      interface 
           subroutine XCDEF(results)
+              use list26_mod
+              type(restraints_t), intent(inout), optional :: results
+          end subroutine
+      end interface
+      interface 
+          subroutine XCHIV(results)
               use list26_mod
               type(restraints_t), intent(inout), optional :: results
           end subroutine
@@ -2405,7 +2424,9 @@ cdjwsep2011
       GOTO(1150,1200,1250,1300,1350,1400,1450,1500,1550,1600, !1
      1     1650,1700,1950,2000,2050,2100,2150,2200,2250,2055, !11
      1     1560,1570,1580,1565,1575,1590,1591,1592,1593,1594, !21
-     1     1595,1596,1597,1598,1599,1601,1602,1603,1604,1605,1100) ,I   !31
+     1     1595,1596,1597,1598,1599,1601,1602,1603,1604,1605, !31
+     1     1606, !41
+     1     1100) ,I   
 1100  CONTINUE
       CALL XOPMSG (IOPL16, IOPINT, 0)
       GOTO 9900
@@ -2551,6 +2572,11 @@ C--'UEQIV' RESTRAINT
 C--'UTLS' RESTRAINT
 1605  CONTINUE
       CALL XCVCTLS(restraints_list(idjwtemp))
+      GOTO 1000  
+
+C--'XCHIV' RESTRAINT
+1606  CONTINUE
+      CALL XCHIV(restraints_list(idjwtemp))
       GOTO 1000  
 
 C--'EXECUTION LISTING'
@@ -3713,7 +3739,8 @@ CODE FOR XCVCURIGU
       use xiobuf_mod, only: cmon
       use math_mod, only: DSYEVJ3
       use store_mod, only: store, istore=>i_store, c_store
-
+      use xlst41_mod
+    
       implicit none
 C--CALCULATE RIGID BODY RESTRAINTS (URIGU resraints)
 C
@@ -6913,7 +6940,6 @@ C--CALCULATE THE DERIVATIVES, APART FROM THE MULTIPLIER OF '0.5*DIST**-1
       END
 C
 CODE FOR XADXYZ
-      SUBROUTINE XADXYZ
 C--ADD IN THE CONTRIBUTIONS FOR X , Y AND Z
 C
 C  THE PARTIAL DERIVATIVES ARE ASSUMED TO BE STORED IN THE COMMON
@@ -6942,33 +6968,34 @@ C
 C--THE X, Y AND Z COORDS. ARE ASSUMED TO BE THE FIRST STORED.
 C
 C--
-      INCLUDE 'ISTORE.INC'
-C
-      INCLUDE 'STORE.INC'
-      INCLUDE 'XWORK.INC'
-      INCLUDE 'XWORKA.INC'
-c     INCLUDE 'XUNITS.INC'
-C
-      INCLUDE 'QSTORE.INC'
+      SUBROUTINE XADXYZ
+      use store_mod, only:istore=>i_store, store
+      use xwork_mod, only:e,f,g,h ! read only
+      use xworka_mod, only: jo ! read only
+      use xworka_mod, only: jp, jv ! write only
+      implicit none
+
+      integer i, j
+
 C
 C--FIND THE ADDRESS OF THE PARAMETER CHAIN
       JP=ISTORE(JO+6)
 C--FIND THE ADDRESS OF THE SPREAD PARAMETERS
       JV=ISTORE(JO+16)
 C--LOOP OVER EACH COORDINATE
-      DO 1000 J=1,3
+      DO J=1,3
 C--FIND THE SYMMETRY MATRIX
-      I=ISTORE(JO+4)+ISTORE(JP+1)
+        I=ISTORE(JO+4)+ISTORE(JP+1)
 C--CALCULATE THE DERIVATIVES FOR THIS COORD. W.R.T. THE GENERATED X, Y Z
-      STORE(JV+9)=STORE(JO+14)*STORE(I-5)
-      STORE(JV+11)=STORE(JO+14)*STORE(I-2)
-      STORE(JV+13)=STORE(JO+14)*STORE(I+1)
+        STORE(JV+9)=STORE(JO+14)*STORE(I-5)
+        STORE(JV+11)=STORE(JO+14)*STORE(I-2)
+        STORE(JV+13)=STORE(JO+14)*STORE(I+1)
 C--CALCULATE THE PARTIAL DERIVATIVE FOR THIS COORD
-      STORE(JP+2)=STORE(JP+2)+E*(F*STORE(JV+9)+G*STORE(JV+11)
-     2 +H*STORE(JV+13))
-c     WRITE(NCWU,*)'ADXYZ ', I, ' ', STORE(JP+2), ' ', JP
-      JP=ISTORE(JP)
-1000  CONTINUE
+        STORE(JP+2)=STORE(JP+2)+E*(F*STORE(JV+9)+G*STORE(JV+11)
+     2    +H*STORE(JV+13))
+c       WRITE(NCWU,*)'ADXYZ ', I, ' ', STORE(JP+2), ' ', JP
+        JP=ISTORE(JP)
+      END DO
       RETURN
       END
 C
@@ -8198,6 +8225,179 @@ C
 
 
       RETURN
+      END
+
+CODE FOR XCHIV
+!> CHIV shelxl type of restraint
+      SUBROUTINE XCHIV(results)
+      use xssval_mod, only: issapp, issprt
+      use list26_mod
+      use xiobuf_mod, only: cmon
+      use math_mod, only: DSYEVJ3
+      use store_mod, only: store, istore=>i_store, c_store
+      use xlst41_mod, only: l41b, m41b, md41b, n41b
+      use xlst05_mod, only: l5, md5
+    
+      implicit none
+
+      type(restraints_t), intent(inout), optional :: results
+
+      integer :: icpt, jcpt
+      real, dimension(12) :: A1 !< Partial derivatives
+      double precision, dimension(3) :: ROT1, ROT2, ROT3 !< Cartesian axes
+      double precision, dimension(3) :: DIFF_VEC !< temp variables to calculates axes
+      
+      double precision U_L_1(6), U_L_2(6) !< adp in linear 6 element form
+      integer, dimension(9), parameter :: U_ASSIGN=
+     &    (/ 1, 6, 5, 6, 2, 4, 5, 4, 3 /) !< Transform linear 6 elements adp to linear 9 element adps
+      double precision U_M_1(3,3), U_M_2(3,3) !< adp as a 3x3 matrix
+      double precision R_M(3,3) !< rotation matrix
+      double precision RAB(3,3) !< full transformation matrix
+      double precision RABUBAR_1(3,3) !< adp in local cartesian coordinate space
+      double precision RABUBAR_2(3,3) !< adp in local cartesian coordinate space
+      double precision, dimension(3,3) :: A_M !< orthogonalisation matrix
+      double precision, dimension(3,3) :: A_M_inv !< inverse orthogonalisation matrix
+      double precision dUcart(9,6) !< dU/dxx matrix where each derivative dxx is a column vector
+
+      real, dimension(3) :: vaf, vbf, vcf, va, vb, vc, vb_cross_vc
+
+      real, dimension(3,4) :: derivs
+      real volume_model
+      integer, dimension(3) :: neighbours
+      integer pivot
+      
+      integer iaddl, iaddr, iaddd, ia1, ia2
+
+      REAL DIFF_VAL
+      REAL MEAN_VAL
+      
+      integer, external :: khuntr
+      
+C
+      INCLUDE 'XWORK.INC'
+      INCLUDE 'XWORKA.INC'
+      INCLUDE 'XCNTRL.INC'
+      INCLUDE 'XLST22.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XLST01.INC'
+      INCLUDE 'XAPK.INC'
+      include 'XUNITS.INC'
+      !include 'XSSVAL.INC'
+C
+      EQUIVALENCE (O,A1(1))    ! Note well
+
+C--SET UP A FEW CONSTANTS                                        
+      JA=LCA              ! Address of first parameter block header                                      
+      MCA=JA ! address of fisrt atom
+
+      if(present(results)) then
+          results%short_desc='Chirality volume restraint (CHIV)'
+          results%groups=NCA/4
+          call extend(results%subrestraints, NCA/4, .true.)
+      end if  
+            
+      ! Orthogonalisation matrix and its inverse (stored by rows, reshape fill column wise, hence the transpose)
+      A_M=transpose(reshape(STORE(L1O1:L1O1+8), (/3,3/))) ! Multiply diffvec by orthogonalisation matrix
+      A_M_inv=transpose(reshape(STORE(L1O2:L1O2+8), (/3,3/))) ! Multiply diffvec by orthogonalisation matrix
+      
+      JA=LCA
+      do icpt=1, nca/4 ! loop over each group of 4 atoms
+        pivot = ja
+        do jcpt = 1, 3
+          ja = istore(ja)
+          neighbours(jcpt) = ja
+        end do
+
+        if(present(results)) then
+         call extend(results%subrestraints(icpt)%atoms,4,.true.)
+          results%subrestraints(icpt)%atoms(1)%label=
+     &      c_store(pivot+2)
+          results%subrestraints(icpt)%atoms(1)%serial=
+     &      nint(store(pivot+3))
+          results%subrestraints(icpt)%atoms(1)%coordinates_crys=
+     &      store(pivot+4:pivot+6)
+          results%subrestraints(icpt)%atoms(1)%coordinates_cart =
+     &      matmul(A_M, store(pivot+4:pivot+6))
+          results%subrestraints(icpt)%atoms(1)%M=A_M
+          do jcpt=1, 3
+            results%subrestraints(icpt)%atoms(jcpt+1)%label=
+     &        c_store(neighbours(jcpt)+2)
+            results%subrestraints(icpt)%atoms(jcpt+1)%serial=
+     &        nint(store(neighbours(jcpt)+3))
+            results%subrestraints(icpt)%atoms(jcpt+1)%coordinates_crys =
+     &        store(neighbours(jcpt)+4:neighbours(jcpt)+6)
+            results%subrestraints(icpt)%atoms(jcpt+1)%coordinates_cart =
+     &        matmul(A_M, store(neighbours(jcpt)+4:neighbours(jcpt)+6))
+            results%subrestraints(icpt)%atoms(jcpt+1)%M=A_M
+          end do
+          
+          print *, icpt
+          do jcpt=1, 4
+            print *,trim(results%subrestraints(icpt)%atoms(jcpt)%label),
+     1        results%subrestraints(icpt)%atoms(jcpt)%serial
+          end do
+        end if
+                
+        ! defining a tetrahedron
+        va=results%subrestraints(icpt)%atoms(1)%coordinates_cart -
+     &    results%subrestraints(icpt)%atoms(2)%coordinates_cart
+        vb=results%subrestraints(icpt)%atoms(2)%coordinates_cart -
+     &    results%subrestraints(icpt)%atoms(3)%coordinates_cart
+        vc=results%subrestraints(icpt)%atoms(3)%coordinates_cart -
+     &    results%subrestraints(icpt)%atoms(4)%coordinates_cart
+        call vmult(vb, vc, vb_cross_vc)
+        volume_model = dot_product(va, vb_cross_vc)
+        DIFF_VAL = store(lcg+4)**2 - volume_model**2
+        MEAN_VAL = store(lcg+4)**2 + volume_model**2
+        
+        ! derivatives
+        call vmult(
+     1    results%subrestraints(icpt)%atoms(2)%coordinates_cart -
+     1    results%subrestraints(icpt)%atoms(3)%coordinates_cart,        
+     2    results%subrestraints(icpt)%atoms(3)%coordinates_cart -
+     2    results%subrestraints(icpt)%atoms(4)%coordinates_cart,        
+     3    derivs(:,1)) 
+        call vmult(
+     1    results%subrestraints(icpt)%atoms(3)%coordinates_cart -
+     1    results%subrestraints(icpt)%atoms(4)%coordinates_cart,        
+     2    results%subrestraints(icpt)%atoms(1)%coordinates_cart -
+     2    results%subrestraints(icpt)%atoms(3)%coordinates_cart,        
+     3    derivs(:,2)) 
+        call vmult(
+     1    results%subrestraints(icpt)%atoms(2)%coordinates_cart -
+     1    results%subrestraints(icpt)%atoms(4)%coordinates_cart,        
+     2    results%subrestraints(icpt)%atoms(1)%coordinates_cart -
+     2    results%subrestraints(icpt)%atoms(2)%coordinates_cart,        
+     3    derivs(:,3)) 
+        call vmult(
+     1    results%subrestraints(icpt)%atoms(1)%coordinates_cart -
+     1    results%subrestraints(icpt)%atoms(2)%coordinates_cart,        
+     2    results%subrestraints(icpt)%atoms(2)%coordinates_cart -
+     2    results%subrestraints(icpt)%atoms(3)%coordinates_cart,        
+     3    derivs(:,4))
+        derivs=2.0*volume_model*derivs
+        
+        ! fractionalize the derivatives
+        do jcpt=1, 4
+          derivs(:,jcpt) = matmul(A_M_inv, derivs(:,jcpt))
+        end do
+        
+        jo=pivot
+        call xadxyz
+        
+        do jcpt=1, 3
+          jo=neighbours(jcpt)
+          call xadxyz
+        end do
+        
+        STORE(LCG+4) = 0.5*MEAN_VAL
+        STORE(L22PD+2) = DIFF_VAL ! Difference between restraint target 0.0 and computed from current parameters (D)
+        STORE(L22PD+1) = STORE(LCG+3)
+        MCA=JA                                                            CVC01500
+        CALL XFMPDQ                  
+        JA=ISTORE(JA)
+      end do
+
       END
 
 

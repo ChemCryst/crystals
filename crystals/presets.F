@@ -2054,6 +2054,7 @@ C      THE NAMES OF THE VARIOUS RESTRAINTS
      1 coperation(38 ) /'UVOL'/,
      1 coperation(39 ) /'UEQIV'/,
      1 coperation(40 ) /'UTLS'/
+     1 coperation(41 ) /'XCHIV'/
 
 C--
 C
