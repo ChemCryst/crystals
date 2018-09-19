@@ -378,6 +378,8 @@ CDJW DEC 99 ADD GLOBAL SCRIPT VARIABLES SO WE CAN GET 'VERIFY'
       INCLUDE 'XSCGBL.INC'
       INCLUDE 'XSCCHK.INC'
       INCLUDE 'XMENUC.INC'
+      
+      character(len=16) :: cformat
 C
 C
 C
@@ -569,8 +571,9 @@ C
 C
 C -- CONVERT INPUT TO UPPERCASE FOR CORRECT COMMAND PROCESSING
       CALL XCCUPC ( CRDLWC , CRDUPC )
-      READ ( CRDLWC , '(256A1)' ) LCMAGE(1:256)
-      READ ( CRDUPC , '(256A1)' ) IMAGE(1:256)
+      write(cformat, '("(",I0,"A1)")') size(image)
+      READ ( CRDLWC , cformat ) LCMAGE
+      READ ( CRDUPC , cformat ) IMAGE
 C
       IF ( ISSSTA .LE. 0 ) NI = NI + IRDINC(IFLIND)
 C
