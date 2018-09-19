@@ -1,2 +1,5 @@
+      integer IPTVAL,NPTTOT,NPTCUR
+      real OMF, OME
+
       COMMON/XLXPRT/IPTVAL,NPTTOT,NPTCUR, OMF, OME
 

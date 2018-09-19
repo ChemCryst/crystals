@@ -1,2 +1,2 @@
-      DIMENSION KCHAR(10) 
+      integer, dimension(10) :: KCHAR 
 
