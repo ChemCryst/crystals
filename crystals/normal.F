@@ -709,6 +709,7 @@ C     LINE PRINTER PLOT AT 50 VALUES OF RHO
       INCLUDE 'XUNITS.INC'
       INCLUDE 'UFILE.INC'
 C
+      DIMENSION RHOW(50), FCW(50), FOW(50)
       DIMENSION KDEV(4)
       DIMENSION FH(6),RH(6),M(117),R(4),AD(4),AW(4),AWC(4)                     
       DATA IST,ISP,ICW,ICD/1H*,1H ,1HW,1HD/ 
@@ -862,24 +863,34 @@ C
            M(L)=ISP
         END DO
       END DO
-C NOW WE HAVE ALL THE VALUES STORED, LOK FOR THE TURNING POINT.
-      IRES = 50
-      DO L=50,3,-1
-            IF( (FOW(L)-FOW(L-1).LT.0.0) .AND.
-     2          (FOW(L-1)-FOW(L-2).LT.0.0) ) THEN
-                IRES=L
-                EXIT
-            ENDIF
-      ENDDO 
+C NOW WE HAVE ALL THE VALUES STORED, LOOK FOR THE TURNING POINT.
+C
+      IRES=50
+      mloc=minloc(fow,dim=1)
+      if ((mloc .ge. 30) .and. (mloc .lt. 48)) then     !ignore low angle data
+            do l=mloc, 50
+                  if(fow(l+2)-fow(l+1) .ge. 0.0) then
+                        ires=l
+                        exit
+                  endif
+            enddo
+      endif
       WRITE(NCFPU1,'(//A)')'Suggested resolution cutoff:'
       WRITE(NCFPU1,'(I3, 3F8.3 )')IRES, RHOW(IRES),FOW(IRES),
      1                   FCW(IRES)
-C
+      WRITE(NCFPU1,'(//A)')'Suggested resolution cutoff:'
+      WRITE(NCFPU1,'(I3, 3F8.3 )')IRES, RHOW(IRES),FOW(IRES),
+     1                   FCW(IRES)
       CALL OUTCOL(10)
       WRITE(CMON,'(A,F8.3/I3,3F8.3)')'Suggested resolution cutoff:',
      1 RHOW(IRES),      IRES, RHOW(IRES),FOW(IRES),FCW(IRES)
       CALL XPRVDU(NCVDU, 2,0)
       CALL OUTCOL(1)
+
+
+
+
+
       CALL XRDOPN(7, KDEV , 'Wilson.pch', 10)
       IF ( ISTATP .EQ. 1 ) THEN
         WRITE(CMON,'(A,F12.3,A)')
