@@ -183,7 +183,7 @@ type(dict_t) :: this
         tuples(72)%key='UNIT'
         tuples(72)%func => shelx_unit    
         tuples(73)%key='WGHT'
-        tuples(73)%func => shelx_unsupported    
+        tuples(73)%func => shelx_wght
         tuples(74)%key='WIGL'
         tuples(74)%func => shelx_unsupported    
         tuples(75)%key='WPDB'

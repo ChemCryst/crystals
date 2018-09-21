@@ -30,6 +30,7 @@ type line_t
     character(len=:), allocatable :: line !< line content
 end type
 
+real, dimension(6) :: list4 = 0.0 !< Array holding the values of the shelx weighting scheme
 character(len=512), dimension(512) :: list1 !< Array holding list1 instructions
 integer :: list1index=0 !< index in list1
 character(len=512), dimension(512) :: list13 !< Array holding list13 instructions

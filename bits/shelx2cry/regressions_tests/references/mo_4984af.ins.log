@@ -2,8 +2,6 @@ Warning: `EQIV` Not supported
 Line 10: EQIV $1 0.5-X,1-Y,0.5+Z
 Warning: `TEMP` Not supported 
 Line 13: TEMP -173.15
-Warning: `WGHT` Not supported 
-Line 27: WGHT    0.059600   12.515901
 Warning: isotropic thermal parameter depends on previous atom
          Thermal parameter will be fixed at current value
 Line 36: H2    2    0.399627    0.515955    0.604874    21.00000   -1.20000

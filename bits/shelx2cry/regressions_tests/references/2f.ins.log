@@ -2,8 +2,6 @@ Warning: `TEMP` Not supported
 Line 10: TEMP -173.150
 Warning: `SIZE` Not supported 
 Line 11: SIZE 0.040 0.090 0.223
-Warning: `WGHT` Not supported 
-Line 21: WGHT    0.059900    5.185000
 Warning: `BASF` Not supported 
 Line 22: BASF   0.35877
 Warning: `AFIX` Not supported 

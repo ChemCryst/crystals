@@ -14,8 +14,6 @@ Warning: `SIZE` Not supported
 Line 22: SIZE 0.08 0.11 0.42
 Warning: `TEMP` Not supported 
 Line 23: TEMP -123
-Warning: `WGHT` Not supported 
-Line 42: WGHT    0.069400    0.868100
 Warning: isotropic thermal parameter depends on previous atom
          Thermal parameter will be fixed at current value
 Line 86: H12A  2    0.167554    0.577368    0.764569    11.00000   -1.20000

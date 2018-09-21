@@ -182,6 +182,9 @@ character(len=*), intent(in) :: crystals_filepath
     write(*, *) 'Processing scattering factors'
     call write_list3()
     call write_list29()
+
+    write(*, *) 'Processing weighting scheme'
+    call write_list4()
     
     write(*, *) 'Processing reflections filters'
     call write_list28()
@@ -805,6 +808,21 @@ integer i
         end do
     end if
 
+end subroutine
+
+!> write list 4 (weighting scheme) to file.
+subroutine write_list4()
+use crystal_data_m
+implicit none
+
+    if(any(list4/=0.0)) then
+        write(crystals_fileunit, '(a)') '#LIST 4'
+        write(crystals_fileunit, '(a)') 'SCHEME 16 NPARAM= 6 TYPE=CHOOSE'
+        write(crystals_fileunit, '(a)') 'CONT WEIGHT=   2.0000000 MAX=  10000.0000 ROBUST=N'
+        write(crystals_fileunit, '(a)') 'CONT DUNITZ=N TOLER=      6.0000 DS1=      1.0000'
+        write(crystals_fileunit, '(a)') 'CONT DS2=      1.0000 REWT=      1.0000'
+        write(crystals_fileunit, '(a,6F13.6)') 'PARAM', list4
+    end if
 end subroutine
 
 !> Write space group command

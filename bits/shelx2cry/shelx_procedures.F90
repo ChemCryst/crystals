@@ -1234,7 +1234,7 @@ integer, dimension(:,:), allocatable :: tmp
         omitlist%index=omitlist%index+1
         read(buffer3, *) omitlist%hkl(omitlist%index,:)
     end if
-        
+    
 contains
 
     logical function isanumber(c)
@@ -1253,5 +1253,34 @@ contains
 
     end function
 end subroutine
+
+!> Parse the WGHT keyword. 
+subroutine shelx_wght(shelxline)
+use crystal_data_m
+implicit none
+type(line_t), intent(in) :: shelxline
+character(len=512) :: buffer
+character(len=:), allocatable :: stripline
+character(len=lenlabel), dimension(:), allocatable :: splitbuffer
+integer iostatus
+character(len=256) :: errormsg
+integer i
+
+    ! load default values
+    list4 = (/0.1, 0.0, 0.0, 0.0, 0.0, 1.0/3.0/)
+
+    call deduplicates(trim(shelxline%line), stripline)
+    call explode(stripline, lenlabel, splitbuffer)
+    
+    do i=2, size(splitbuffer)
+        read(splitbuffer(i), *, iostat=iostatus, iomsg=errormsg) list4(i-1)
+        if(iostatus/=0) then
+            write(*,*) 'Error: wrongly formatted WGHT command'
+            write(*,*) trim(errormsg)
+            write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+            write(*,*) splitbuffer(i)
+        end if
+    end do
+end subroutine      
 
 end module

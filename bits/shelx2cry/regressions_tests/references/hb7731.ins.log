@@ -4,8 +4,6 @@ Warning: `SIZE` Not supported
 Line 15: SIZE  0.05 0.15 0.30
 Warning: `TEMP` Not supported 
 Line 16: TEMP -100
-Warning: `WGHT` Not supported 
-Line 17: WGHT    0.058100    4.990900
 Warning: `AFIX` Not supported 
 Line 35: AFIX  23
 Warning: isotropic thermal parameter depends on previous atom
