@@ -29,6 +29,6 @@ SET (CMAKE_Fortran_FLAGS_RELEASE "-O1 -std=legacy -fno-automatic -fno-inline")
 message(STATUS "shelxs/sxtocry fortran flags: ${CMAKE_Fortran_FLAGS_RELEASE}")
 
 add_executable (shelxs shelxs.F ../Common/nobuf.c)
-add_executable (sxtocry sxtocry.F ../Common/nobuf.c)
+# add_executable (sxtocry sxtocry.F ../Common/nobuf.c)
 message(STATUS "End building shelxs")
 message("")
