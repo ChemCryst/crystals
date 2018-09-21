@@ -602,6 +602,12 @@ C--
       INCLUDE 'QSTORE.INC'
       INCLUDE 'XLSVAL.INC'
       INCLUDE 'XOPVAL.INC'
+
+      if (kexist(41).gt.0 .and. kexist(5).gt.0) then
+        if (khuntr(5,0,iaddl,iaddr,iaddd,-1).lt.0) call xfal05
+        if (khuntr (41,0,iaddl,iaddr,iaddd,-1).lt. 0) call xfal41
+      end if
+
 C
 C--USE THE LEXICAL SCANNER TO READ THE CARDS
       IF(KLEXAN(IULN,IFIRST,LENGTH))1200,1000,1000
