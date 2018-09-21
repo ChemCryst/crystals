@@ -1765,19 +1765,23 @@ C     CHARACTERS IN ADJACENT ELEMENTS OF 'ARRAY'
 C
 CODE FOR XFA4CS
       SUBROUTINE XFA4CS(AONE,AFOUR,N)
-C
+      implicit none
+      real, dimension(n), intent(in) :: aone
 C----- PACK 'N' A1 WORDS INTO (N+3)/4 A4 WORDS
-      DIMENSION AONE(N), AFOUR((N+3)/4)
-c123      CHARACTER *80 BUFFER
-      CHARACTER *(N) BUFFER
+      real, dimension((n+3)/4), intent(out) :: afour
+      integer, intent(in) :: n
+      character(len=n) :: buffer
+      character(len=12) :: cform
+      
+      integer i, m
 C
 C----- CLEAR BUFFER
       BUFFER=' '
-      WRITE(BUFFER,100) AONE
-100   FORMAT(256A1)
+      write(cform, '("(",I0,"A1)")') N
+      WRITE(BUFFER,cform) AONE
       M=(N+3)/4
-      READ(BUFFER,200) (AFOUR(I),I=1,M)
-200   FORMAT(64A4)
+      write(cform, '("(",I0,"A4)")') M
+      READ(BUFFER,cform) (AFOUR(I),I=1,M)
       RETURN
       END
 CODE FOR XFILL

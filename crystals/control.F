@@ -2357,8 +2357,8 @@ C--INVALID LOCATION
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1050)IADD,LN,IREC
       WRITE ( CMON, 1050) IADD,LN,IREC
       CALL XPRVDU(NCEROR, 2,0)
-1050  FORMAT(' Invalid common block address ',I8,/,'List type ',I5,
-     2 5X,'Record type ',I8)
+1050  FORMAT(' Invalid common block address ',I0,/,'List type ',I0,
+     2 5X,'Record type ',I0)
       CALL XERHND ( IERPRG )
 C--FETCH THE CONTENTS
 1100  CONTINUE

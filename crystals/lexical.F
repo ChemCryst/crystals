@@ -375,34 +375,73 @@ C      >1      DIRECTIVE NUMBER READ
 C
 C--
 C--
-      DIMENSION KMOUSE(5), KCONT(4), KALL(3), KREM(3), KSMILE(3)
+      use xlst41_mod, only: l41b, m41b, md41b, n41b !< Connectivity
+      use xlst05_mod, only: l5, md5, n5 !< atomic model
+      use store_mod, only: istore=>i_store, store, c_store, i_store_set
+      use store_mod, only: lfl
+      use lexical_mod
+      use xopval_mod
+      use xssval_mod
+      use xlexic_mod
+      implicit none
+      
+      integer KMOUSE(5), KCONT(4), KALL(3), KREM(3), KSMILE(3)
       CHARACTER *240 CMOUSE
-      DIMENSION ICOMMN(IDIMN)
+      integer ICOMMN(IDIMN)
 C
-      INCLUDE 'ISTORE.INC'
       INCLUDE 'KCHAR.INC'
 C
 C      DIMENSION BLANK(1)
 C
-      INCLUDE 'STORE.INC'
       INCLUDE 'XUNITS.INC'
-      INCLUDE 'XSSVAL.INC'
       INCLUDE 'XLISTI.INC'
       INCLUDE 'XLST50.INC'
       INCLUDE 'XCHARS.INC'
       INCLUDE 'XCARDS.INC'
       INCLUDE 'XLEXCH.INC'
-      INCLUDE 'XLEXIC.INC'
-      INCLUDE 'XOPVAL.INC'
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XLXPRT.INC'
 C
-      INCLUDE 'QSTORE.INC'
       INCLUDE 'QCHAR.INC'
 C
 C      EQUIVALENCE ( BLANK , IB )
 C
 C
+      integer idimn, iadarg, iadcrd, nargcd, ncard, ilast
+      integer i, ia1, ia2, iaddd, iaddl, iaddr, icpt, idirnm, idwzap
+      integer imouse, jmouse, iskip, istat, j, ja, k , l, limit
+      integer lxa, m, mmouse, n, nbrack, nchrrd, nmouse, nxa, nxtcdi
+      real t
+      
+      integer klxrdd
+      integer, external :: kstalh, kfndnp, krdpv, khuntr, kequal
+      integer, external :: kcomp, knequl, kbits, kinput, krdndc
+      integer, external :: kexist
+      
+      character(len=size(image)) :: image_text
+      character(len=128) :: ctemp
+      character(len=10), dimension(:), allocatable :: elements
+
+      integer neighbour_address, neighbour_cpt
+      integer, dimension(3) :: xchiv_neighbours
+      integer lp, rp
+      character(len=3) :: label
+      integer serial
+      
+      ! variable substitution
+      type variable_t
+        character(len=64) :: label
+        real :: rvalue
+      end type
+      type(variable_t), dimension(256) :: restraints_var_list
+      integer :: restraints_var_list_index = 0
+      integer dollar_start, dollar_end, eq
+      character(len=64) :: var_name
+      
+      integer m5
+      character(len=16) :: atom_name
+      integer itemp
+      
       DATA NXA/9/,LXA/1/
 #ifdef _HOL_
       DATA KMOUSE/1HM ,1HO ,1HU ,1HS ,1HE /
@@ -551,6 +590,146 @@ C----- RESET ISKIP TO NON-MESSAGE STATUS
       ISKIP = 0
 C----- INITIALISE THE OPERATOR STATUS
       MA = 0
+
+      if (kexist(41).gt.0 .and. kexist(5).gt.0) then
+        write(ctemp, '("(",I0,"A1)")') size(image)
+        write(image_text, ctemp) image      
+
+        ! process local variable definition
+        if(image_text(1:6)=='DEFINE') then 
+          eq = index(image_text, '=')
+          restraints_var_list_index=restraints_var_list_index+1
+          restraints_var_list(restraints_var_list_index)%label=
+     1      trim(adjustl(image_text(7:eq-1)))
+          read(image_text(eq+1:), *) 
+     1      restraints_var_list(restraints_var_list_index)%rvalue
+        end if
+       
+        ! substitue variable with its value
+        dollar_start = index(image_text, '$')
+        do while(dollar_start>0)
+          ! capture variable name
+          dollar_end=dollar_start+1
+          do while(image_text(dollar_end:dollar_end)/=' ')
+            dollar_end=dollar_end+1
+          end do
+          var_name=trim(image_text(dollar_start+1:dollar_end))
+        
+          ! look for its value in the table
+          do  i=1, restraints_var_list_index
+           if(restraints_var_list(i)%label == var_name) then
+              write(var_name, '(F0.6)') restraints_var_list(i)%rvalue
+              image_text=image_text(1:dollar_start-1)//' '//
+     1          trim(var_name)//' '//trim(image_text(dollar_end+1:))
+            end if
+          end do
+          dollar_start = index(image_text, '$')
+        end do
+     
+        ! expand atoms type
+        if(index(image_text, '(*)')>0) then
+          call explode(image_text, 10, elements)
+          image_text=''
+          do i=1, size(elements)
+            dollar_start = index(elements(i), '(*)')
+            ! capture atom type
+            if(dollar_start>0) then
+              var_name=elements(i)(1:dollar_start-1)
+          
+              if(i<size(elements)) then
+                if(trim(elements(i+1))=='TO') then
+                  ! need to be done in pairs
+                  image_text=trim(image_text)//' '//elements(i)
+                  cycle
+                end if
+              end if
+               
+              ! look for all atoms with same type
+              if(n5>0) then
+                m5 = l5
+                do j = 1, n5
+                  if(transfer(store(m5), '    ')==var_name) then
+                    write(atom_name, '(A,"(",I0,")")') 
+     1                trim(transfer(store(m5), '    ')), 
+     1                nint(store(m5+1))
+                    image_text=trim(image_text)//' '//trim(atom_name)
+                  end if
+                  m5 = m5 + md5
+                end do
+              end if
+            else
+              image_text=trim(image_text)//' '//elements(i)
+             end if
+          end do
+          image_text=adjustl(image_text)
+          print *, trim(image_text)
+        end if
+                   
+        if(image_text(1:5)=='XCHIV') then       ! Expand xchiv        
+          ! split atom list
+          call explode(image_text, 10, elements)
+        
+          image_text = trim(elements(1))
+          do i=2, size(elements)
+            lp = index(elements(i), '(')
+            rp = index(elements(i), ')')
+            if(lp>0 .and. rp>0) then
+              ! explicit neighbours
+              associate(el => elements(i)) 
+                label = el(1:lp-1)
+                read(el(lp+1:rp-1), *) serial  
+              end associate
+              neighbour_cpt=0
+              xchiv_neighbours=0
+              DO M41B = L41B, L41B + (N41B-1)*MD41B, MD41B
+                IA1 = L5 + ISTORE(M41B)*MD5
+                IA2 = L5 + ISTORE(M41B+6)*MD5
+          
+c                print *, label, serial, 
+c     1            trim(c_store(IA1)), NINT(STORE(IA1+1)),
+c     1            trim(c_store(IA2)), NINT(STORE(IA2+1))
+                if( trim(label)==trim(c_store(IA1)) .and.  
+     1            serial==NINT(STORE(IA1+1)) ) then
+                  if(trim(c_store(IA1))/='H') then
+                    neighbour_address=IA2 
+                  end if
+                else if( trim(label)==trim(c_store(IA2)) .and.  
+     1            serial==NINT(STORE(IA2+1)) ) then
+                  if(trim(c_store(IA2))/='H') then
+                    neighbour_address=ia1
+                  end if
+                else
+                  neighbour_address=-1
+                end if
+          
+                if(neighbour_address>0) then
+                  neighbour_cpt=neighbour_cpt+1
+                  if(neighbour_cpt>3) then
+                    exit
+                  end if
+                  xchiv_neighbours(neighbour_cpt)=neighbour_address
+                end if
+              end do
+            
+              if(neighbour_cpt==3) then ! xchiv requires exactly 3 neighbours
+                image_text=trim(image_text)//' '//trim(elements(i))
+                do j=1, 3
+                  write(ctemp, '(A,"(",I0,")")') 
+     1              trim(c_store(xchiv_neighbours(j))),
+     1              nint(store(xchiv_neighbours(j)+1))
+                  image_text=trim(image_text)//' '//ctemp
+                end do
+              end if
+            else
+              image_text=trim(image_text)//' '//trim(elements(i))
+            end if
+          end do
+        end if ! expand xchiv
+
+        write(ctemp, '("(",I0,"A1)")') size(image)
+        read(image_text, ctemp) image
+        !print *, 'final ', trim(image_text)
+      end if ! end check of list 41 and 5
 1750  CONTINUE
 C
 C -- **** ARGUMENT PROCESSING LOOP STARTS HERE ****
@@ -611,7 +790,7 @@ C -- THIS IS THE GENERAL OPERATOR PROCESSING SECTION. THE OPERATOR
 C    NUMBER AND THE CHARACTERS FOR THE OPERATOR ARE STORED AS THE
 C    ARGUMENT AND THE POINTER MOVED.
 C
-      ISTORE(MC) = I
+      call i_store_set(MC, I) ! ISTORE(MC) = I
       CALL XMOVEI ( KCHAR(I) , ISTORE(MC+2) , 1 )
       NC = NC + 1
 C
@@ -621,7 +800,7 @@ C    VARIABLE
 C
 C -- STORE CHARACTER POSITION FOR THE ARGUMENT FOUND. CHECK FOR ILLEGAL
 C    COMBINATIONS OF ARGUMENTS
-      ISTORE(MC+1)=NC+ME-1
+      call i_store_set(MC+1, NC+ME-1) ! ISTORE(MC+1)=NC+ME-1
 C--CHECK THAT THE LAST OPERAND IS ALLOWED
       IF(KBITS(MA,KB(I)))2400,2550,2400
 
@@ -650,7 +829,7 @@ C--CHECK IF THE NEXT OPERAND IS A NUMBER
       IF(KINPUT(T))2650,2650,2750
 C--END OF NUMBER FOUND  -  NON-NUMERIC CHARACTER WHICH IS NOT '.'
 2650  CONTINUE
-      ISTORE(MC)=0
+      STORE(MC)=0.0
       STORE(MC+2)=T
 C--CHECK IF THE TERMINATOR WAS A ','
       IF(IMAGE(NC-1).EQ.ICOMMA)NC=NC-1
@@ -668,7 +847,7 @@ C  ACCORDINGLY IT IS TREATED AS A VARIABLE, TO BE TERMINATED
 C  BY AN OPERATOR OR A BLANK SPACE
 2750  CONTINUE
       I=KV
-      ISTORE(MC)=-1
+      call i_store_set(MC, -1) ! ISTORE(MC)=-1
       ND=NC
 C--BEGIN SEARCH FOR THE TERMINATING CHARACTER
 2800  CONTINUE
@@ -2861,10 +3040,13 @@ C
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XCONST.INC'
+      
+      integer l
 C
       CALL XPCLNN(LN)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,1000)BLANKS(1:IN+6),IN
-      WRITE ( CMON, 1000) BLANKS(1:IN+6),IN
+      l=min(len(blanks)-6, in)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1000)BLANKS(1:l+6),IN
+      WRITE ( CMON, 1000) BLANKS(1:l+6),IN
       CALL XPRVDU(NCEROR, 2,0)
 1000  FORMAT(A,'*',/,
      1 ' Error in scale factor definition at about column',I5)
@@ -2883,7 +3065,7 @@ C
       INCLUDE 'XCONST.INC'
 C
       CALL XPCLNN(LN)
-      IN = MIN ( IN, 88 ) ! Calls for some continued L16 
+      IN = MIN ( IN, 88-6 ) ! Calls for some continued L16 
       IN = MAX ( IN, 0  ) ! records will otherwise fail.
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1000)BLANKS(1:IN+6),IN
       WRITE ( CMON, 1000) BLANKS(1:IN+6),IN
