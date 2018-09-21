@@ -93,6 +93,7 @@ hydrogen.F
 input.F
 input6.F
 invert.F
+lexical_helper.F90
 lexical.F
 link.F
 list11.F
