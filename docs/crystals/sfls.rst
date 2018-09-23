@@ -216,8 +216,9 @@ For all these cases only the parameters specified on the control directives
 and the following directives are refined.
 
 
-**Correlations in Refinement**
-
+--------------------------
+Correlations in Refinement
+--------------------------
 
 
 
@@ -291,7 +292,9 @@ zero, and the calculation will proceed for isotropic atoms.
 
 
 
-**F or Fsq refinement?**
+--------------------
+F or Fsq refinement?
+--------------------
 
 
 Both type of refinement have been available in CRYSTALS since the early
@@ -318,7 +321,9 @@ analysis requires care and attention.
 
 
 
-**Hydrogen Atom Refinement**
+------------------------
+Hydrogen Atom Refinement
+------------------------
 
 
 
