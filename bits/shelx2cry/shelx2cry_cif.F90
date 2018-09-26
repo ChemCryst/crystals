@@ -43,6 +43,10 @@ integer i, checksum
     error = 0
     cif_content_index=0
     allocate(cif_content_temp(32))
+    cif_content_temp%resfile_no=0
+    cif_content_temp%instruction_file_no=0
+    cif_content_temp%hklfile_no=0
+    cif_content_temp%fabfile_no=0
 
     open(unit=cifid,file=cifpath, status='old')
     read(cifid, '(a)', iostat=iostatus) buffer
@@ -51,6 +55,10 @@ integer i, checksum
             if(cif_content_index==size(cif_content_temp)) then ! buffer full, extending...
                 call move_alloc(cif_content_temp,cif_content)
                 allocate(cif_content_temp(size(cif_content)+32))
+                cif_content_temp%resfile_no=0
+                cif_content_temp%instruction_file_no=0
+                cif_content_temp%hklfile_no=0
+                cif_content_temp%fabfile_no=0
                 cif_content_temp(1:size(cif_content))=cif_content
                 deallocate(cif_content)
             end if
@@ -283,7 +291,7 @@ character(len=char_len) :: message
     if(res_cpt>1) then
         do i=1, size(cif_content)
             write(*, '(a)') repeat('=',14*3+1+18)
-            if(cif_content(i)%resfile_no==0 .or. cif_content(i)%instruction_file_no==0) then
+            if(cif_content(i)%resfile_no==0 .and. cif_content(i)%instruction_file_no==0) then
                 write(*, '(i3,")",1X,a)') i, trim(cif_content(i)%data_id)
                 write(*, '(3X,a)') 'No res file present in this section'
             else
@@ -346,13 +354,13 @@ logical test
 integer cif_content_index
 
     cifid=815
+    cif_content_index=0
     open(unit=cifid,file=shelx_filepath, status='old')
     do
         read(cifid, '(a)', iostat=iostatus) buffer
         if(iostatus/=0) then
             exit
         end if
-        cif_content_index=0
         if(index(adjustl(buffer), 'data_')==1) then
             data_id=adjustl(buffer)
             data_id=data_id(6:)
@@ -485,7 +493,7 @@ integer i, res_cpt
     if(res_cpt>0) then
         do i=1, size(cif_content)
             write(*, '(a)') repeat('=',14*3+1+18)
-            if(cif_content(i)%resfile_no==0 .or. cif_content(i)%instruction_file_no==0) then
+            if(cif_content(i)%resfile_no==0 .and. cif_content(i)%instruction_file_no==0) then
                 write(*, '(i3,")",1X,a)') i, trim(cif_content(i)%data_id)
                 write(*, '(3X,a)') 'No res file present in this section'
             else
