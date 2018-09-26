@@ -13,6 +13,7 @@ integer arg_cpt, iostatus, arg_length
 integer shelxf_id !< unit id of the shelx file
 character(len=:), allocatable :: arg_val, crystals_filepath, log_filepath
 character(len=char_len) :: res_file, hkl_file, buffer, shelx_filepath
+character(len=256) :: iomessage
 type(line_t) :: line
 logical file_exists
 integer i
@@ -205,7 +206,6 @@ if(.not. file_exists) then
         shelx_filepath=trim(shelx_filepath)//'.ins'
     end if
 end if
-
 if(to_upper_fun(shelx_filepath(len_trim(shelx_filepath)-2:))=="CIF") then
     Print *, 'Processing cif file ', trim(shelx_filepath)
     call scan_cif(trim(shelx_filepath), cif_content, error)
@@ -218,7 +218,7 @@ if(to_upper_fun(shelx_filepath(len_trim(shelx_filepath)-2:))=="CIF") then
         stop
     else if(count(cif_content%resfile_no>0)>1) then
         ! more then one file, extracting them all
-        call extract_res_from_cif(trim(shelx_filepath))
+        call extract_res_from_cif(cif_content, trim(shelx_filepath))
         if(interactive_mode) then
             call ask_user(cif_content, i)
             res_file=shelx_filepath
@@ -240,10 +240,27 @@ if(to_upper_fun(shelx_filepath(len_trim(shelx_filepath)-2:))=="CIF") then
             stop
         end if
     else
-        call extract_res_from_cif(trim(shelx_filepath))
+        call extract_res_from_cif(cif_content, trim(shelx_filepath))
         do i=1, size(cif_content)
             if(cif_content(i)%resfile_no==1) then
                 call print_content(cif_content)
+                res_file=shelx_filepath
+                res_file(len_trim(res_file)-3:)='_'//trim(cif_content(i)%data_id)//'.res'
+                exit
+            else if(cif_content(i)%resfile_no>1) then
+                call print_content(cif_content)
+                print *, 'Error: several instructions details for the same ID, please check cif file'
+                res_file=shelx_filepath
+                res_file(len_trim(res_file)-3:)='_'//trim(cif_content(i)%data_id)//'.res'
+                exit
+            else if(cif_content(i)%instruction_file_no==1) then
+                call print_content(cif_content)
+                res_file=shelx_filepath
+                res_file(len_trim(res_file)-3:)='_'//trim(cif_content(i)%data_id)//'.res'
+                exit
+            else if(cif_content(i)%instruction_file_no>1) then
+                call print_content(cif_content)
+                print *, 'Error: several instructions details for the same ID, please check cif file'
                 res_file=shelx_filepath
                 res_file(len_trim(res_file)-3:)='_'//trim(cif_content(i)%data_id)//'.res'
                 exit
@@ -254,9 +271,10 @@ if(to_upper_fun(shelx_filepath(len_trim(shelx_filepath)-2:))=="CIF") then
 end if
 
 shelxf_id=816
-open(unit=shelxf_id,file=trim(shelx_filepath), iostat=iostatus, status='old')
+open(unit=shelxf_id,file=trim(shelx_filepath), iostat=iostatus, iomsg=iomessage, status='old')
 if(iostatus/=0) then
     print *, 'Error: Cannot open the file ', trim(shelx_filepath)
+    print *, trim(iomessage)
     stop
 else
     print *, 'Processing res file ', trim(shelx_filepath)

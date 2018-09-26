@@ -12,12 +12,15 @@ type cif_t !< This type hold the information contained in a cif file
     character(len=char_len) :: crystal_system = '' !< Crystal system (_space_group_crystal_system)
     character(len=char_len) :: chemical_name_common = '' !< Chemical name (_chemical_name_common)
     integer :: resfile_no = 0 !< number of res file in a data block. Should be one or zero.
+    integer :: instruction_file_no !< number of iucr intruction details block. should be one or zero.
     integer :: hklfile_no = 0 !< number of hkl file in a data block. Should be one or zero.
     integer :: fabfile_no = 0 !< number of fab file in a data block. Should be one or zero.
     integer :: hklchecksum_cal = 0 !< Shelxl checksum calculated from data
     integer :: hklchecksum_ref = 0 !< shelxl checksum as read in the cif
     integer :: reschecksum_cal = 0 !< Shelxl checksum calculated from data
     integer :: reschecksum_ref = 0 !< shelxl checksum as read in the cif
+    integer :: iucrchecksum_cal = 0 !< Shelxl checksum calculated from data (_iucr_refine_instructions_details)
+    integer :: iucrchecksum_ref = 0 !< shelxl checksum as read in the cif (_iucr_refine_instructions_details)
     integer :: fabchecksum_cal = 0 !< Shelxl checksum calculated from data
     integer :: fabchecksum_ref = 0 !< shelxl checksum as read in the cif
 end type
@@ -85,8 +88,12 @@ integer i, checksum
             end if
         else if(index(buffer, '_shelx_res_file')>0 .or. &
         &   index(buffer,'_iucr_refine_instructions_details')>0) then
-            ! found a res file!
-            cif_content_temp(cif_content_index)%resfile_no=cif_content_temp(cif_content_index)%resfile_no+1
+            ! found a res file or instruction details
+            if(index(buffer, '_shelx_res_file')>0) then
+                cif_content_temp(cif_content_index)%resfile_no=cif_content_temp(cif_content_index)%resfile_no+1
+            else
+                cif_content_temp(cif_content_index)%instruction_file_no=cif_content_temp(cif_content_index)%instruction_file_no+1
+            end if
 
             ! Calculate shelxl checksum
             read(cifid, '(a)', iostat=iostatus) buffer
@@ -120,10 +127,15 @@ integer i, checksum
                 checksum=checksum*1366+150889
                 checksum=mod(checksum, 714025)
                 checksum=mod(checksum, 100000)        
-                cif_content_temp(cif_content_index)%reschecksum_cal=checksum
+                if(index(buffer, '_shelx_res_file')>0) then
+                  cif_content_temp(cif_content_index)%reschecksum_cal=checksum
+                else
+                  cif_content_temp(cif_content_index)%iucrchecksum_cal=checksum
+                end if
             end if
         else if(index(buffer, '_shelx_res_checksum')>0) then
             read(buffer, *) tempc, cif_content_temp(cif_content_index)%reschecksum_ref
+            read(buffer, *) tempc, cif_content_temp(cif_content_index)%iucrchecksum_ref
         else if(index(buffer, '_shelx_hkl_file')>0 .or. &
         &   index(buffer, '_iucr_refine_reflections_details')>0) then
             ! found a hkl file!
@@ -261,7 +273,9 @@ character(len=char_len) :: message
     do i=1, size(cif_content)
         if(cif_content(i)%resfile_no>1) then
             print *, "Error: invalid cif file. More than one res file in ", trim(cif_content(i)%data_id)
-        else if(cif_content(i)%resfile_no>0) then 
+        else if(cif_content(i)%instruction_file_no>1) then
+            print *, "Error: invalid cif file. More than one iucr instructions block in ", trim(cif_content(i)%data_id)
+        else if(cif_content(i)%resfile_no>0 .or. cif_content(i)%instruction_file_no>0) then 
             res_cpt=res_cpt+1
         end if
     end do
@@ -269,7 +283,7 @@ character(len=char_len) :: message
     if(res_cpt>1) then
         do i=1, size(cif_content)
             write(*, '(a)') repeat('=',14*3+1+18)
-            if(cif_content(i)%resfile_no==0) then
+            if(cif_content(i)%resfile_no==0 .or. cif_content(i)%instruction_file_no==0) then
                 write(*, '(i3,")",1X,a)') i, trim(cif_content(i)%data_id)
                 write(*, '(3X,a)') 'No res file present in this section'
             else
@@ -303,7 +317,7 @@ character(len=char_len) :: message
                     &   'Error: invalid choice. Choose a number in the interval ',1,size(cif_content)
                     cycle
                 else
-                    if(cif_content(chosen_id)%resfile_no<1) then
+                    if(cif_content(chosen_id)%resfile_no<1 .and. cif_content(chosen_id)%instruction_file_no<1) then
                         write(message,'(a)') &
                         &   'Error: Empty dataset, no res file present '
                         cycle
@@ -318,9 +332,10 @@ character(len=char_len) :: message
 end subroutine
 
 !> Extract a res file from a cif file
-subroutine extract_res_from_cif(shelx_filepath)
+subroutine extract_res_from_cif(cif_content, shelx_filepath)
 use crystal_data_m, only: log_unit
 implicit  none
+type(cif_t), dimension(:), intent(in) :: cif_content !< Cif file content obtained from scan_cif
 character(len=*), intent(in) :: shelx_filepath
 character(len=char_len) :: res_filepath, fab_filepath, hkl_filepath
 integer resid, cifid, iostatus
@@ -328,6 +343,7 @@ character(len=2048) :: buffer, tempc
 character(len=char_len) :: data_id
 integer res_signature, i
 logical test
+integer cif_content_index
 
     cifid=815
     open(unit=cifid,file=shelx_filepath, status='old')
@@ -336,13 +352,16 @@ logical test
         if(iostatus/=0) then
             exit
         end if
+        cif_content_index=0
         if(index(adjustl(buffer), 'data_')==1) then
             data_id=adjustl(buffer)
             data_id=data_id(6:)
+            cif_content_index=cif_content_index+1
         end if
         
         if(index(buffer, '_shelx_res_file')>0 .or. &
         &   index(buffer,'_iucr_refine_instructions_details')>0) then
+
             ! found a res file!
             res_signature=0
             read(cifid, '(a)', iostat=iostatus) buffer
@@ -352,33 +371,46 @@ logical test
                 call abort()
             end if
             
-            res_filepath=shelx_filepath
-            res_filepath(len_trim(res_filepath)-3:)='_'//trim(data_id)//'.res'
-            resid=816
-            open(unit=resid,file=trim(res_filepath))       
-            do
-                read(cifid, '(a)', iostat=iostatus) buffer
-                if(iostatus/=0 .or. trim(buffer)==';') then
+            if(cif_content(cif_content_index)%resfile_no>=1 .and. &
+            &   cif_content(cif_content_index)%instruction_file_no>=1) then
+                if(index(buffer,'_iucr_refine_instructions_details')>0) then
+                    ! skip this bloc, we'll use _shelx_res_file instead
+                    do
+                        read(cifid, '(a)', iostat=iostatus) buffer
+                        if(iostatus/=0 .or. trim(buffer)==';') then
+                            exit
+                        end if
+                    end do
+                end if
+            else
+                res_filepath=shelx_filepath
+                res_filepath(len_trim(res_filepath)-3:)='_'//trim(data_id)//'.res'
+                resid=816
+                open(unit=resid,file=trim(res_filepath))       
+                do
+                    read(cifid, '(a)', iostat=iostatus) buffer
+                    if(iostatus/=0 .or. trim(buffer)==';') then
+                        close(resid)
+                        exit
+                    end if
+                    if(index(buffer, 'CELL')==1 .or. &
+                    &   index(buffer, 'HKLF')==1 .or. &
+                    &   index(buffer, 'SFAC')==1) then
+                        res_signature=res_signature+1
+                    end if
+                    write(resid, '(a)') trim(buffer)
+                end do
+                if(res_signature==3) then 
                     close(resid)
-                    exit
+                else ! this is not a shelx res file, deleting
+                    close(resid)
+                    ! weird, if I add status="delete" above it does not work. 
+                    ! I have to close it, open it again and then close it with delete
+                    ! (gfortran 8.1)
+                    print *, 'The instruction details from the cif are not a res file'
+                    open(unit=resid,file=trim(res_filepath)) 
+                    close(resid, status="DELETE", iostat=res_signature)
                 end if
-                if(index(buffer, 'CELL')==1 .or. &
-                &   index(buffer, 'HKLF')==1 .or. &
-                &   index(buffer, 'SFAC')==1) then
-                    res_signature=res_signature+1
-                end if
-                write(resid, '(a)') trim(buffer)
-            end do
-            if(res_signature==3) then 
-                close(resid)
-            else ! this is not a shelx res file, deleting
-                close(resid)
-                ! weird, if I add status="delete" above it does not work. 
-                ! I have to close it, open it again and then close it with delete
-                ! (gfortran 8.1)
-                print *, 'The instruction details from the cif are not a res file'
-                open(unit=resid,file=trim(res_filepath)) 
-                close(resid, status="DELETE", iostat=res_signature)
             end if
         end if
 
@@ -443,7 +475,9 @@ integer i, res_cpt
     do i=1, size(cif_content)
         if(cif_content(i)%resfile_no>1) then
             print *, "Error: invalid cif file. More than one res file in ", trim(cif_content(i)%data_id)
-        else if(cif_content(i)%resfile_no>0) then 
+        else if(cif_content(i)%instruction_file_no>1) then
+            print *, "Error: invalid cif file. More than one iucr instructions block in ", trim(cif_content(i)%data_id)
+        else if(cif_content(i)%resfile_no>0 .or. cif_content(i)%instruction_file_no>0) then 
             res_cpt=res_cpt+1
         end if
     end do
@@ -451,7 +485,7 @@ integer i, res_cpt
     if(res_cpt>0) then
         do i=1, size(cif_content)
             write(*, '(a)') repeat('=',14*3+1+18)
-            if(cif_content(i)%resfile_no==0) then
+            if(cif_content(i)%resfile_no==0 .or. cif_content(i)%instruction_file_no==0) then
                 write(*, '(i3,")",1X,a)') i, trim(cif_content(i)%data_id)
                 write(*, '(3X,a)') 'No res file present in this section'
             else
