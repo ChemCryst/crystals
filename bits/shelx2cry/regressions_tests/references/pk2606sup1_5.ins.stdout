@@ -7,6 +7,7 @@
  Processing experimental set up
  Processing chemical composition
  Processing scattering factors
+ Processing weighting scheme
  Processing reflections filters
  Processing atomic model
  Processing constraints
@@ -17,7 +18,6 @@ List of ignored shexl commands:
     RIGU: 1 time(s)
     SIZE: 1 time(s)
     TEMP: 1 time(s)
-    WGHT: 1 time(s)
     AFIX: 6 time(s)
  
 ## Warning: Could not find the corresponding hkl file insfiles/pk2606sup1_5.hkl
