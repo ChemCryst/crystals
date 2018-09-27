@@ -885,10 +885,12 @@ subroutine write_list5()
 use crystal_data_m
 use sginfo_mod
 implicit none
-integer i, j, k
+integer i, j, k, l
 real occ
 integer flag, atompart, fvar_index
 real, dimension(3) :: diffxyz
+type(T_LatticeTranslation), dimension(:), allocatable :: LatticeTranslations
+real, dimension(3) :: LatticeTranslation 
 
     ! atom list
     !#LIST     5
@@ -911,28 +913,18 @@ real, dimension(3) :: diffxyz
         write(crystals_fileunit, '("READ NATOM = ",I0,", NLAYER = ",I0,'// &
         &   '", NELEMENT = ",I0,", NBATCH = ",I0)') &
         &   atomslist_index, 0, 0, 0
-        do i=1, atomslist_index
-            ! calculate multiplicity
+                
+        call LatticeTranslation_init(LatticeTranslations)
+        do i=1, atomslist_index ! loop over atoms
             atomslist(i)%multiplicity=0
-            do j=1, size(spacegroup%ListSeitzMx)
-                diffxyz=abs(atomslist(i)%coordinates- &
-                &   matmul(real(spacegroup%ListSeitzMx(j)%R), atomslist(i)%coordinates) - &
-                &   real(spacegroup%ListSeitzMx(j)%T)/sginfo_stbf)
-                do k=1, 3
-                    do while(diffxyz(k)>=1.0)
-                        diffxyz(k)=diffxyz(k)-1.0
-                    end do
-                end do
-                if(all(diffxyz<1e-3)) then
-                    atomslist(i)%multiplicity=atomslist(i)%multiplicity+1
-                end if
-            end do
-            if(spacegroup%centric==-1) then
-                do j=1, size(spacegroup%ListSeitzMx)
+            ! calculate multiplicity
+            do l=1, LatticeTranslations(abs(spacegroup%latt))%nTrVector ! lopp over lattice translation
+                LatticeTranslation = LatticeTranslations(abs(spacegroup%latt))%TrVector(:,l)/sginfo_stbf
+                do j=1, size(spacegroup%ListSeitzMx) ! loop over symmetry oprators
                     diffxyz=abs(atomslist(i)%coordinates- &
-                    &   matmul(real(-1*spacegroup%ListSeitzMx(j)%R), atomslist(i)%coordinates) - &
-                    &   real(spacegroup%ListSeitzMx(j)%T)/sginfo_stbf)
-                    do k=1, 3
+                    &   matmul(real(spacegroup%ListSeitzMx(j)%R), atomslist(i)%coordinates) - &
+                    &   real(spacegroup%ListSeitzMx(j)%T)/sginfo_stbf - LatticeTranslation)
+                    do k=1, 3 ! keep difference in range 0,1
                         do while(diffxyz(k)>=1.0)
                             diffxyz(k)=diffxyz(k)-1.0
                         end do
@@ -940,9 +932,24 @@ real, dimension(3) :: diffxyz
                     if(all(diffxyz<1e-3)) then
                         atomslist(i)%multiplicity=atomslist(i)%multiplicity+1
                     end if
-                end do
-            end if
-        
+                end do ! end loop over symmetry operators
+                if(spacegroup%centric==-1) then
+                    do j=1, size(spacegroup%ListSeitzMx) ! loop over symmetry oprators
+                        diffxyz=abs(atomslist(i)%coordinates- &
+                        &   matmul(real(-1*spacegroup%ListSeitzMx(j)%R), atomslist(i)%coordinates) - &
+                        &   real(spacegroup%ListSeitzMx(j)%T)/sginfo_stbf - LatticeTranslation)
+                        do k=1, 3 ! keep difference in range 0,1
+                            do while(diffxyz(k)>=1.0)
+                                diffxyz(k)=diffxyz(k)-1.0
+                            end do
+                        end do
+                        if(all(diffxyz<1e-3)) then
+                            atomslist(i)%multiplicity=atomslist(i)%multiplicity+1
+                        end if
+                    end do ! end loop over symmetry operators
+                end if
+            end do ! end loop over lattice translation
+            
             ! extracting occupancy from sof
             if(atomslist(i)%sof>=10.0 .and. atomslist(i)%sof<20.0) then
                 ! fixed occupancy
@@ -1019,7 +1026,7 @@ real, dimension(3) :: diffxyz
                 atompart=(int(abs(atomslist(i)%sof)/10.0)-1)*1000+flag
                 write(crystals_fileunit, '("CONT PART=",I0)') atompart
             end if
-        end do
+        end do ! end loop over atoms coordinates
         write(crystals_fileunit, '(a)') 'END'
     end if
 
