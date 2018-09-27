@@ -1,3 +1,4 @@
+!> \ingroup crystals
 C $Log: list26.F,v $
 C Revision 1.27  2013/12/11 16:54:14  rich
 C Some mismatched subroutine argument lengths following previous update.f
@@ -621,10 +622,11 @@ c
         end if
       end if
       
-      GOTO(1300,1350,1550,1750,1850,1950,2100,2150,2200,2350,
-     1     2400,2450,1050,4000,4300,1050,4400,4370,1710,5000,
-     2     5010,5020,5030,5040,5050,5060,5070,5080,5090,5500,
-     3     5510,5520,5530,5540,5550,5560,5570,5580,5590,5600,1250) ,I
+      GOTO(1300,1350,1550,1750,1850,1950,2100,2150,2200,2350, !1 
+     1     2400,2450,1050,4000,4300,1050,4400,4370,1710,5000, !11
+     2     5010,5020,5030,5040,5050,5060,5070,5080,5090,5500, !21
+     3     5510,5520,5530,5540,5550,5560,5570,5580,5590,5600, !31
+     4     5710, 1250) ,I                                     !41 
 1250  CONTINUE
       CALL XOPMSG (IOPL16, IOPINT, 0)
       GOTO 9900
@@ -1345,6 +1347,8 @@ C--ULIJ RESTRAINTS PRINT
 3262  CONTINUE
 C--UTLS RESTRAINTS PRINT
 3275  CONTINUE
+C--XCHIV RESTRAINTS PRINT
+4010  CONTINUE
       NN=0
 
       if(allocated(restraints_list(ircpt)%subrestraints)) then
@@ -1561,11 +1565,6 @@ C         Derivatives output only if Execution listing requested
         CALL XPRVDU(NCVDU, 1,0)            
       end if
       N=0 ! do not print mean deviation
-      GOTO 1050
-
-C--XCHIV RESTRAINTS PRINT
-4010  CONTINUE
-      NN=0
       GOTO 1050
 C         
 C--UXXQIV RESTRAINTS PRINT
@@ -2342,7 +2341,7 @@ C--JUMP ON THE FUNCTION
           last=0 ! start of the chain      
           i=KLDDRH(LAST,NEXT,IBUFF)
           if(i<0) call abort() ! this is not normal
-        end if              
+        end if                  
 
         restraints_list(idjwtemp)%restraint_text=''
         list16_index=list16_index+1
@@ -3767,6 +3766,11 @@ C--
       double precision, dimension(3,3) :: A_M !< orthogonalisation matrix
       double precision dUcart(9,6) !< dU/dxx matrix where each derivative dxx is a column vector
 
+      integer :: pairs12_num !< number of 1,2 distances pairs
+      real :: esd12 !< esd for 1,2 distances pairs
+      real :: esd13 !< esd for 1,3 distances pairs
+      real esd
+
       REAL DIFF_VAL
       REAL MEAN_VAL
       
@@ -3787,6 +3791,10 @@ C--SET UP A FEW CONSTANTS
       JA=LCA              ! Address of first parameter block header                                      
       MCA=JA ! address of fisrt atom
       
+      esd12=store(lcg+4)
+      esd13=store(lcg+3)
+      pairs12_num=nint(store(lcg+2))      
+      
       if(present(results)) then
           results%short_desc='Enhanced rigid body restraints'
           results%groups=NCA/2
@@ -3797,8 +3805,14 @@ C--SET UP A FEW CONSTANTS
       A_M=transpose(reshape(STORE(L1O1:L1O1+8), (/3,3/))) ! Multiply diffvec by orthogonalisation matrix
       
       JA=LCA
-      do icpt=1, nca/2 ! loop over each atom
+      esd=esd12
+      do icpt=1, nca/2 ! loop over each atom pairs
         JB=istore(ja)
+        
+        if(pairs12_num>0 .and. icpt>pairs12_num) then
+            ! switch esd for 1,3 distances
+            esd=esd13
+        end if
 
         if(present(results)) then
           do jcpt=1, 3
@@ -3939,7 +3953,7 @@ C You need to set SUM to be the compute
 
           STORE(LCG+4)=0.5*MEAN_VAL
           STORE(L22PD+2)=0.0-DIFF_VAL ! Difference between restraint target 0.0 and computed from current parameters (D)
-          STORE(L22PD+1) = STORE(LCG+3)
+          STORE(L22PD+1) = esd
           CALL XFMPDQ                  
 
 C--CLEAR THE P.D. SLOSTS FOR THE NEXT COORD.         
@@ -8315,9 +8329,9 @@ C--SET UP A FEW CONSTANTS
           results%subrestraints(icpt)%atoms(1)%serial=
      &      nint(store(pivot+3))
           results%subrestraints(icpt)%atoms(1)%coordinates_crys=
-     &      store(pivot+4:pivot+6)
+     &      store(istore(pivot+16)+8:istore(pivot+16)+12:2)
           results%subrestraints(icpt)%atoms(1)%coordinates_cart =
-     &      matmul(A_M, store(pivot+4:pivot+6))
+     &      matmul(A_M, store(istore(pivot+16)+8:istore(pivot+16)+12:2))
           results%subrestraints(icpt)%atoms(1)%M=A_M
           do jcpt=1, 3
             results%subrestraints(icpt)%atoms(jcpt+1)%label=
@@ -8325,17 +8339,13 @@ C--SET UP A FEW CONSTANTS
             results%subrestraints(icpt)%atoms(jcpt+1)%serial=
      &        nint(store(neighbours(jcpt)+3))
             results%subrestraints(icpt)%atoms(jcpt+1)%coordinates_crys =
-     &        store(neighbours(jcpt)+4:neighbours(jcpt)+6)
+     &        store(istore(neighbours(jcpt)+16)+8:
+     1          istore(neighbours(jcpt)+16)+12:2)
             results%subrestraints(icpt)%atoms(jcpt+1)%coordinates_cart =
-     &        matmul(A_M, store(neighbours(jcpt)+4:neighbours(jcpt)+6))
+     &        matmul(A_M, store(istore(neighbours(jcpt)+16)+8:
+     1          istore(neighbours(jcpt)+16)+12:2))
             results%subrestraints(icpt)%atoms(jcpt+1)%M=A_M
-          end do
-          
-          print *, icpt
-          do jcpt=1, 4
-            print *,trim(results%subrestraints(icpt)%atoms(jcpt)%label),
-     1        results%subrestraints(icpt)%atoms(jcpt)%serial
-          end do
+          end do          
         end if
                 
         ! defining a tetrahedron
@@ -8347,8 +8357,10 @@ C--SET UP A FEW CONSTANTS
      &    results%subrestraints(icpt)%atoms(4)%coordinates_cart
         call vmult(vb, vc, vb_cross_vc)
         volume_model = dot_product(va, vb_cross_vc)
-        DIFF_VAL = store(lcg+4)**2 - volume_model**2
-        MEAN_VAL = store(lcg+4)**2 + volume_model**2
+        results%subrestraints(icpt)%rvalue=volume_model
+        results%subrestraints(icpt)%rtarget=store(lcg+4)
+        DIFF_VAL = volume_model - store(lcg+4)
+        MEAN_VAL = volume_model + store(lcg+4)
         
         ! derivatives
         call vmult(
@@ -8375,7 +8387,6 @@ C--SET UP A FEW CONSTANTS
      2    results%subrestraints(icpt)%atoms(2)%coordinates_cart -
      2    results%subrestraints(icpt)%atoms(3)%coordinates_cart,        
      3    derivs(:,4))
-        derivs=2.0*volume_model*derivs
         
         ! fractionalize the derivatives
         do jcpt=1, 4
@@ -8383,17 +8394,24 @@ C--SET UP A FEW CONSTANTS
         end do
         
         jo=pivot
+        e=1.0
+        f=derivs(1,1)
+        g=derivs(2,1)
+        h=derivs(3,1)
         call xadxyz
         
         do jcpt=1, 3
           jo=neighbours(jcpt)
+          e=1.0
+          f=derivs(1,jcpt+1)
+          g=derivs(2,jcpt+1)
+          h=derivs(3,jcpt+1)
           call xadxyz
         end do
         
-        STORE(LCG+4) = 0.5*MEAN_VAL
-        STORE(L22PD+2) = DIFF_VAL ! Difference between restraint target 0.0 and computed from current parameters (D)
+        !STORE(LCG+4) = 0.5*MEAN_VAL
+        STORE(L22PD+2) = DIFF_VAL ! Difference between restraint target computed from current parameters
         STORE(L22PD+1) = STORE(LCG+3)
-        MCA=JA                                                            CVC01500
         CALL XFMPDQ                  
         JA=ISTORE(JA)
       end do

@@ -8,6 +8,7 @@
 !! In order to run check hi without dependency, a special call to XAPP16 and XADCPD is made (calconly=.true.) in XCHK16 which does not apply the changes to the disc.
 !!
 !! For now this object only complements the original storage in the dsc and this new information is not saved and must be computed everytime.
+!! \ingroup crystals
 module list26_mod
 use list12_mod, only: param_t
 implicit none
@@ -314,6 +315,7 @@ integer, intent(out) :: info !< return zero if all is well, negative on error
 real, dimension(:), allocatable, intent(out) :: leverages !< list of leverages
 real, dimension(:), allocatable :: temp1d
 integer k, cpt
+integer, dimension(2) :: invmsh
 
 info=0
 
@@ -340,7 +342,8 @@ do k=1, size(restraints_derivatives)
         end if
         
         associate(r => restraints_derivatives(k))
-
+            invmsh = shape(invertm)
+            if ( size(r%derivatives) /= invmsh(1) ) cycle
             ! Calculation of leverage see https://doi.org/10.1107/S0021889812015191
             ! Hat matrix: A (A^t W A)^-1 A^t W, leverage is diagonal element
             ! A is design matrix, W weight as a diagonal matrix
@@ -474,7 +477,7 @@ subroutine printderivatives(rindex)
 use xunits_mod, only: ncwu
 implicit none
 integer, intent(in) :: rindex
-integer i, j, k, l, cpt
+integer i, k, cpt
 character(len=128) :: formatstr
 character(len=4096) :: strlong
 integer, dimension(:), allocatable :: list, listserial

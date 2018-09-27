@@ -1,3 +1,4 @@
+!> \ingroup crystals
 C $Log: presets.F,v $ 
 C Revision 1.66  2012/03/23 13:54:08  rich
 C Changed some common block variables into constants.
@@ -2055,6 +2056,7 @@ C      THE NAMES OF THE VARIOUS RESTRAINTS
      1 coperation(39 ) /'UEQIV'/,
      1 coperation(40 ) /'UTLS'/
      1 coperation(41 ) /'XCHIV'/
+     1 coperation(42 ) /'XRIGU'/
 
 C--
 C
