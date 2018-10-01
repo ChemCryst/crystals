@@ -3,6 +3,17 @@ module xlexical_mod
 implicit none
 private
 
+!> type holding information during preprocssing
+type restraint_t
+  character(len=5) :: type !< type of restraint
+  character(len=:), allocatable :: original !< original text
+  character(len=:), allocatable :: processed !< pre-processed text
+end type
+!> Storage of the list of restraints before after pre-processing
+type(restraint_t), dimension(:), allocatable :: restraints_list
+integer :: restraints_list_index = 0 !< index in restraints_list
+public restraints_list, restraints_list_index
+
 !> List of crystals bond definition
 !!    1 = single  2= double  3=triple  4=quadruple
 !!    5 = aromatic      6 = polymeric single
@@ -40,44 +51,89 @@ end type
 type(variable_t), dimension(256) :: restraints_var_list
 integer :: restraints_var_list_index = 0 !< max index in restraints_var_list
 
-public lexical_preprocessing
+public lexical_preprocessing, restraints_init
 
 contains
 
+!> Initialise restraints
+subroutine restraints_init()
+implicit none
+  if(allocated(restraints_list)) then
+    deallocate(restraints_list)
+    restraints_list_index = 0
+  end if
+  restraints_var_list_index = 0
+end subroutine
+
 !> Preprocess a restraint with various substitutions
-subroutine lexical_preprocessing(image_text)
+subroutine lexical_preprocessing(image_text, ierror)
 use xiobuf_mod, only: cmon !< I/O units
 use xunits_mod, only: ncvdu !< I/O units
 implicit none
 character(len=*) :: image_text !< text of the restraint (one line)
-character(len=len(image_text)) :: original !< copy of image_text for reference
+integer, intent(out) :: ierror !< error code 0==success
+integer i
+type(restraint_t), dimension(:), allocatable :: restraints_temp
+
+  ierror=0
   
-  original=image_text
+  restraints_list_index = restraints_list_index + 1
+  if(.not. allocated(restraints_list)) then
+    allocate(restraints_list(128))
+  end if
+  if(restraints_list_index>size(restraints_list)) then
+    call move_alloc(restraints_list, restraints_temp)
+    allocate(restraints_list(size(restraints_temp)+128))
+    restraints_list(1:size(restraints_temp)) = restraints_temp
+  end if
   
+  allocate(character(len=len_trim(image_text)) :: &
+  & restraints_list(restraints_list_index)%original)
+  restraints_list(restraints_list_index)%original=trim(image_text)
+  if(len_trim(restraints_list(restraints_list_index)%original)>4) then
+    do i=restraints_list_index, 1, -1
+      if(restraints_list(i)%original(1:4)=='CONT') then
+        cycle
+      else
+        restraints_list(restraints_list_index)%type=restraints_list(i)%original(1:5)
+        exit
+      end if
+    end do  
+  else
+    restraints_list(restraints_list_index)%type=restraints_list(restraints_list_index)%original
+  end if
+
   ! Look for variable definition: define a = 0.01
-  call define_variable(image_text)
+  call define_variable(image_text, ierror)
+  if(ierror/=0) return
   
   ! replace variable names with their definition: $a
-  call substitue_variable(image_text)
+  call substitue_variable(image_text, ierror)
+  if(ierror/=0) return
   
   ! look for bonds definitions: C--H
   call replace_bonds(image_text)  
   
   ! expand atom names: C(*)
-  call expand_atoms_names(image_text)
+  call expand_atoms_names(image_text, ierror)
   
   ! expand xchiv restraint
-  call expand_xchiv(image_text)  
+  call expand_xchiv(image_text, ierror)  
 
   ! expand rigu restraint
-  call expand_rigu(image_text)  
+  call expand_rigu(image_text, ierror)  
 
-  if(image_text/=original) then
-    write(cmon, '(A,A)') '{I --- ', trim(original)
-    call xprvdu(ncvdu,1,0)
-    write(cmon, '(A,A)') '{I +++ ', trim(image_text)
-    call xprvdu(ncvdu,1,0)
-  end if
+  associate(restraint => restraints_list(restraints_list_index))
+    allocate(character(len=len_trim(image_text)) :: restraint%processed)
+    restraint%processed=trim(image_text)
+
+    if(image_text/=restraint%original) then
+      write(cmon, '(A,A)') '{I --- ', restraint%original
+      call xprvdu(ncvdu,1,0)
+      write(cmon, '(A,A)') '{I +++ ', restraint%processed
+      call xprvdu(ncvdu,1,0)
+    end if
+  end associate
 
 end subroutine
 
@@ -90,8 +146,9 @@ implicit none
   character, intent(in), optional :: sep_arg !< Separator 
   logical, intent(in), optional :: greedy_arg !< do not merge consecutive separators if false
   character(len=lenstring), dimension(:), allocatable, intent(out) :: elements
+  character(len=lenstring), dimension(:), allocatable :: temp
   character(len=lenstring) :: bufferlabel
-  integer i, j, k, start
+  integer i, j, k, n, m, start, maxel
   character sep
   logical greedy
 
@@ -139,7 +196,28 @@ implicit none
   if(j>0 .and. trim(bufferlabel)/='') then
     elements(k)=bufferlabel
   end if
-    
+  
+  ! check for parenthesis, separator is allowed inside them
+  maxel = size(elements)
+  i = 1
+  do 
+    if(i>maxel) exit
+    n = count( (/ (elements(i)(j:j), j=1, len_trim(elements(i))) /) == '(' ) 
+    m = count( (/ (elements(i)(j:j), j=1, len_trim(elements(i))) /) == ')' ) 
+    if(n/=m .and. i<size(elements)) then
+      ! found unbalanced parenthesis, merging next field
+      maxel = maxel -1
+      elements(i) = trim(elements(i))//trim(elements(i+1))
+      elements(i+1:maxel)=elements(i+2:maxel+1)
+      cycle
+    end if
+    i = i +1
+  end do
+  if(maxel<size(elements)) then
+    call move_alloc(elements, temp)
+    allocate(elements(maxel))
+    elements=temp(1:maxel)
+  end if
 end subroutine
 
 !> count the number of a character, option to count consecutive ones as one.
@@ -632,51 +710,55 @@ character(len=512) :: buffer
 end subroutine
 
 !> define a variable for later use using the DEFINE `restraint`
-subroutine define_variable(image_text)
+subroutine define_variable(image_text, ierror)
 use xiobuf_mod, only: cmon !< I/O units
 use xunits_mod, only: ncvdu !< I/O units
 implicit none
 character(len=*), intent(inout) :: image_text
+integer, intent(out) :: ierror
 integer eq
 character(len=64) :: var_name
-logical invalid
 integer i
+
+  ierror = 0
 
   ! process local variable definition
   if(image_text(1:6)=='DEFINE') then 
     eq = index(image_text, '=')
     var_name = trim(adjustl(image_text(7:eq-1)))
-    invalid=.false.
     do i=1, len_trim(var_name)
       if(iachar(var_name(i:i))<65 .or. iachar(var_name(i:i))>90) then
-        invalid=.true.
         write(cmon, '(A,A)') '{E ', trim(image_text) 
         CALL XPRVDU(NCVDU,1,0)
-        write(cmon, '(A,A,A)') '{E ', repeat(' ', 6+i), '^'
+        write(cmon, '(A,A,A)') '{E ', repeat('-', 6+i), '^'
         CALL XPRVDU(NCVDU,1,0)
         write(cmon, '(A,A,A)') '{E Error: Invalid variable name, character `', &
         & var_name(i:i), '` not allowed'
         CALL XPRVDU(NCVDU,1,0)
+        ierror = -1
+        return
       end if
     end do
-    if(.not. invalid) then
-      restraints_var_list_index=restraints_var_list_index+1
-      restraints_var_list(restraints_var_list_index)%label=trim(adjustl(image_text(7:eq-1)))
-      read(image_text(eq+1:), *) restraints_var_list(restraints_var_list_index)%rvalue
-    else
-      image_text='REM '//trim(image_text)
-    end if
+    restraints_var_list_index=restraints_var_list_index+1
+    restraints_var_list(restraints_var_list_index)%label=trim(adjustl(image_text(7:eq-1)))
+    read(image_text(eq+1:), *) restraints_var_list(restraints_var_list_index)%rvalue
   end if
   
 end subroutine
 
 !> substitute a variable with its value
-subroutine substitue_variable(image_text)
+subroutine substitue_variable(image_text, ierror)
+use xiobuf_mod, only: cmon !< I/O units
+use xunits_mod, only: ncvdu !< I/O units
 implicit none
 character(len=*), intent(inout) :: image_text
+integer, intent(out) :: ierror
 integer dollar_start, dollar_end
 character(len=64) :: var_name
 integer i
+logical found
+
+  ierror = 0
 
   dollar_start = index(image_text, '$')
   do while(dollar_start>0)
@@ -688,31 +770,49 @@ integer i
     var_name=trim(image_text(dollar_start+1:dollar_end))
 
     ! look for its value in the table
+    found = .false.
     do  i=1, restraints_var_list_index
       if(restraints_var_list(i)%label == var_name) then
         write(var_name, '(F0.6)') restraints_var_list(i)%rvalue
         image_text=image_text(1:dollar_start-1)//' '// &
         & trim(var_name)//' '//trim(image_text(dollar_end+1:))
+        found = .true.
       end if
     end do
-    dollar_start = index(image_text, '$')
+    if(found) then
+      dollar_start = index(image_text, '$')
+    else
+      write(cmon, '(A,A)') '{E ', trim(image_text) 
+      CALL XPRVDU(NCVDU,1,0)
+      write(cmon, '(A,A,A)') '{E ', repeat('-', dollar_start-1), &
+      & repeat('^', len_trim(var_name)+1)
+      CALL XPRVDU(NCVDU,1,0)
+      write(cmon, '(A,A,A)') '{E Error: Definition of variable `$', &
+      & trim(var_name), '` is missing'
+      call xprvdu(ncvdu,1,0)   
+      ierror = -1
+      return
+    end if
   end do
 end subroutine
 
 !> expand generic atoms name. only C(*) == all C is implemented
-subroutine expand_atoms_names(image_text)
+subroutine expand_atoms_names(image_text, ierror)
 use store_mod, only: store
 use xlst05_mod, only: l5, md5, n5 !< atomic model
 use xiobuf_mod, only: cmon !< I/O units
 use xunits_mod, only: ncvdu !< I/O units
 implicit none
 character(len=*), intent(inout) :: image_text
+integer, intent(out) :: ierror
 character(len=10), dimension(:), allocatable :: elements
 integer m5
 character(len=16) :: atom_name
 integer pattern_start
 integer i, j
 character(len=64) :: var_name
+
+  ierror = 0
 
   ! expand atoms type
   if(index(image_text, '(*)')>0) then
@@ -733,7 +833,8 @@ character(len=64) :: var_name
             write(cmon, '(A,A,A)') '{E Error: Generic pairs are not implemented'
             CALL XPRVDU(NCVDU,1,0)
             image_text=trim(image_text)//' '//elements(i)
-            cycle
+            ierror = -1
+            return
           end if
         end if
 
@@ -758,7 +859,7 @@ character(len=64) :: var_name
 end subroutine
 
 !> expand XCHIV restraints. look for the 3 neighbours.
-subroutine expand_xchiv(image_text)
+subroutine expand_xchiv(image_text, ierror)
 use store_mod, only: istore=>i_store, store, c_store, i_store_set
 use xlst41_mod, only: l41b, m41b, md41b, n41b !< Connectivity
 use xlst05_mod, only: l5, md5, n5 !< atomic model
@@ -766,6 +867,7 @@ use xiobuf_mod, only: cmon !< I/O units
 use xunits_mod, only: ncvdu !< I/O units
 implicit none
 character(len=*), intent(inout) :: image_text
+integer , intent(out) :: ierror
 character(len=10), dimension(:), allocatable :: elements
 integer neighbour_address, neighbour_cpt
 integer, dimension(6) :: xchiv_neighbours
@@ -775,7 +877,19 @@ integer serial
 character(len=128) :: ctemp
 integer ia1, ia2, j
 
-  if(image_text(1:5)=='XCHIV') then       ! Expand xchiv        
+  ierror = 0
+
+  if(restraints_list(restraints_list_index)%type=='XCHIV') then       ! Expand xchiv        
+
+    if(image_text(1:4)=='CONT') then      
+      ierror = -1
+      write(cmon, '(A,A)') '{E ', trim(image_text) 
+      CALL XPRVDU(NCVDU,1,0)
+      write(cmon, '(A)') '{E Error: XCHIV Restraint cannot be split over multiple lines'
+      call xprvdu(ncvdu,1,0)
+      return
+    end if
+    
     ! split atom list
     call explode(image_text, 10, elements)
 
@@ -823,6 +937,8 @@ integer ia1, ia2, j
             image_text=trim(image_text)//' '//ctemp
           end do
         else
+          write(cmon, '(A,A)') '{E ', trim(image_text) 
+          CALL XPRVDU(NCVDU,1,0)
           write(cmon, '(A,A)') '{E Error: XCHIV needs exactly 3 non hydrogen neigbours for ', trim(elements(i))
           call xprvdu(ncvdu,1,0)        
           do j=1, min(neighbour_cpt, size(xchiv_neighbours))
@@ -830,6 +946,8 @@ integer ia1, ia2, j
             & nint(store(xchiv_neighbours(j)+1))
             call xprvdu(ncvdu,1,0)        
           end do
+          ierror = -1
+          return
         end if
       else
         image_text=trim(image_text)//' '//trim(elements(i))
@@ -838,9 +956,12 @@ integer ia1, ia2, j
   end if ! expand xchiv
 end subroutine
 
-subroutine expand_rigu(image_text)  
+subroutine expand_rigu(image_text, ierror)  
+use xiobuf_mod, only: cmon !< I/O units
+use xunits_mod, only: ncvdu !< I/O units
 implicit none
 character(len=*), intent(inout) :: image_text
+integer, intent(out) :: ierror !< error code 0==success
 character(len=10), dimension(:), allocatable :: elements
 integer start, i, j
 type(atom_t), dimension(:), allocatable :: atoms
@@ -851,7 +972,19 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
 logical found
 real esd13
 
-  if(image_text(1:5)=='XRIGU') then      
+  ierror = 0
+
+  if(restraints_list(restraints_list_index)%type=='XRIGU') then      
+  
+    if(image_text(1:4)=='CONT') then      
+      ierror = -1
+      write(cmon, '(A,A)') '{E ', trim(image_text) 
+      CALL XPRVDU(NCVDU,1,0)
+      write(cmon, '(A)') '{E Error: XRIGU Restraint cannot be split over multiple lines'
+      call xprvdu(ncvdu,1,0)
+      return
+    end if
+  
     ! split atom list
     call explode(image_text, 10, elements)
     

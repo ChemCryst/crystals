@@ -713,6 +713,8 @@ C--THE CARD IMAGES ARE STORED IN ANOTHER DATA RECORD, WHICH IS GIVEN
 C  BY THE ORIGINAL DATA RECORD PLUS ONE NEGATED.
 C
 C--
+      use xlexical_mod, only: restraints_list, restraints_list_index
+      use xlexical_mod, only: restraints_init
       INCLUDE 'ICOMLX.INC'
       INCLUDE 'ISTORE.INC'
       INCLUDE 'XFILEC.INC'
@@ -739,6 +741,8 @@ C
 C
 C -- INITIALISE DIRECTIVES FOR LEXICAL INPUT
       CALL XLXINI ( ILAST , 1 )
+      call restraints_init()
+      
 C -- INDICATE THAT THE WHOLE REGION UP TO 'LFL' CAN BE USED. THIS
 C    ROUTINE DOES NOT USE THE BUFFER SET UP AT 'MD' BY XLXINI.
       MG = 0
@@ -856,6 +860,19 @@ C
 C
       IF ( LEF .NE. 0 ) GO TO 9900
 C
+
+C -- write the modified list 16 to lis if modification have been made
+      if(allocated(restraints_list)) then
+        write(ncwu, '(A)') '-- Original list 26:'
+        do icpt=1, restraints_list_index
+          write(ncwu, '(A)') restraints_list(icpt)%original
+        end do
+        write(ncwu, '(A)') '-- Pre-processed list 26:'
+        do icpt=1, restraints_list_index
+          write(ncwu, '(A)') restraints_list(icpt)%processed
+        end do
+      end if 
+
       RETURN
 C
 C

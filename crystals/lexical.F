@@ -410,6 +410,7 @@ C--
       
       character(len=size(image)) :: image_text
       character(len=128) :: ctemp
+      integer ierror
       
       ! array containing a list of characters. It was equivalenced with iplus &co
       ! but it is incompatible accross different modules
@@ -576,7 +577,11 @@ C----- INITIALISE THE OPERATOR STATUS
       if (kexist(41).gt.0 .and. kexist(5).gt.0) then
         write(ctemp, '("(",I0,"A1)")') size(image)
         write(image_text, ctemp) image      
-        call lexical_preprocessing(image_text)
+        call lexical_preprocessing(image_text, ierror)
+        if(ierror<0) then
+          istat = -1
+          goto 9900
+        end if
         read(image_text, ctemp) image
       end if ! end check of list 41 and 5
       
@@ -759,6 +764,7 @@ C -- SET RETURN VALUE
       ILAST = IDIRNM
 C -- CHANGE NUMBER FOR 'END' TO 0
       IF ( ILAST .LT. 0 ) ILAST = 0
+      
 C
       RETURN
 C
