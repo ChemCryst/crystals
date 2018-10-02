@@ -77,6 +77,7 @@ type(restraint_t), dimension(:), allocatable :: restraints_temp
 
   ierror=0
   
+  ! update index and allocate/etend storage if necessary
   restraints_list_index = restraints_list_index + 1
   if(.not. allocated(restraints_list)) then
     allocate(restraints_list(128))
@@ -87,6 +88,7 @@ type(restraint_t), dimension(:), allocatable :: restraints_temp
     restraints_list(1:size(restraints_temp)) = restraints_temp
   end if
   
+  ! save type of restraint, check for cont and look for parent restraint for the type
   allocate(character(len=len_trim(image_text)) :: &
   & restraints_list(restraints_list_index)%original)
   restraints_list(restraints_list_index)%original=trim(image_text)
@@ -102,7 +104,7 @@ type(restraint_t), dimension(:), allocatable :: restraints_temp
     end if
   end do  
   if(restraints_list(restraints_list_index)%type=='') then
-    restraints_list(restraints_list_index)%type=restraints_list(i)%original
+    restraints_list(restraints_list_index)%type=restraints_list(restraints_list_index)%original
   end if
 
   ! Look for variable definition: define a = 0.01
