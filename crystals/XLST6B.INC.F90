@@ -1,9 +1,9 @@
 !> some global list 6 parameters
 module xlst6b_mod
-    implicit none
-    
-    real XTHRESH
+  implicit none
 
-    common/xlst6b/xthresh
-    
+  real XTHRESH
+
+  common/xlst6b/xthresh
+
 end module

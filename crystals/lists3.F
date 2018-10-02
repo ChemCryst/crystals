@@ -714,7 +714,7 @@ C  BY THE ORIGINAL DATA RECORD PLUS ONE NEGATED.
 C
 C--
       use xlexical_mod, only: restraints_list, restraints_list_index
-      use xlexical_mod, only: restraints_init
+      use xlexical_mod, only: restraints_init,list16_modified
       INCLUDE 'ICOMLX.INC'
       INCLUDE 'ISTORE.INC'
       INCLUDE 'XFILEC.INC'
@@ -862,7 +862,7 @@ C
 C
 
 C -- write the modified list 16 to lis if modification have been made
-      if(allocated(restraints_list)) then
+      if(list16_modified .and. allocated(restraints_list)) then
         write(ncwu, '(A)') '-- Original list 26:'
         do icpt=1, restraints_list_index
           write(ncwu, '(A)') restraints_list(icpt)%original

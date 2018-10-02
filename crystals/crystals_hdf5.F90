@@ -3,10 +3,10 @@
 ! dummy hdf5 function to avoid linking to hdf5 when hdf5 is not used
 module hdf5_dsc
 
-logical, private, parameter :: debug_hdf5 = .false.
-INTEGER, PARAMETER :: HID_T = 4
+  logical, private, parameter :: debug_hdf5 = .false.
+  INTEGER, PARAMETER :: HID_T = 4
 
-type, public :: t_dsc_hdf5
+  type, public :: t_dsc_hdf5
     integer(hid_t) :: file_id       ! file identifier
     character(len=1024) :: file_name
     integer :: idunit
@@ -16,120 +16,117 @@ type, public :: t_dsc_hdf5
     integer(hid_t) :: dsc_dspace_id     ! dataspace identifier
     integer(hid_t) :: dsc_dtype         ! opaque datatype
     character(len=10) :: dsc_dtype_tag = "dsc record"
-    !integer(hid_t) :: crp_list      ! dataset creation property identifier 
-    !integer(hid_t) :: filespace     ! dataspace identifier 
+    !integer(hid_t) :: crp_list      ! dataset creation property identifier
+    !integer(hid_t) :: filespace     ! dataspace identifier
     !integer(hid_t) :: slicespace_id ! memory dataspace identifier
-end type
+  end type
 
-type(t_dsc_hdf5), dimension(:), allocatable, target, private :: hdf5_dic
-logical :: hdf5_in_use = .false.
+  type(t_dsc_hdf5), dimension(:), allocatable, target, private :: hdf5_dic
+  logical :: hdf5_in_use = .false.
 
 contains
 
-subroutine hdf5_dsc_open(crfile, filename, error)
+  subroutine hdf5_dsc_open(crfile, filename, error)
     implicit none
     type(t_dsc_hdf5), pointer :: crfile
     integer, intent(out) :: error
     character(len=*), intent(in) :: filename
-    
-    error = -1
-end subroutine
 
-subroutine hdf5_dsc_close(crfile, error)
+    error = -1
+  end subroutine
+
+  subroutine hdf5_dsc_close(crfile, error)
     implicit none
     type(t_dsc_hdf5), pointer :: crfile
     integer, intent(out) :: error
-    
-    error = -1
-end subroutine
 
-subroutine hdf5_dsc_kfetch(crfile, fetch_address, dataread, error)
+    error = -1
+  end subroutine
+
+  subroutine hdf5_dsc_kfetch(crfile, fetch_address, dataread, error)
     use xdaval_mod
     implicit none
     type(t_dsc_hdf5), intent(inout) :: crfile
     integer, intent(in) :: fetch_address
     integer, dimension(:), intent(out) :: dataread
     integer, intent(out) :: error
-    
-   error=-1
-end subroutine
 
-subroutine hdf5_dsc_kstore(crfile, store_address, datastore, error)
+    error = -1
+  end subroutine
+
+  subroutine hdf5_dsc_kstore(crfile, store_address, datastore, error)
     implicit none
     type(t_dsc_hdf5), intent(inout) :: crfile
     integer, intent(in) :: store_address
     integer, dimension(:), intent(in) :: datastore
     integer, intent(out) :: error
-    
+
     error = -1
-end subroutine
+  end subroutine
 
-subroutine hdf5_dsc_get_dspace(crfile) 
+  subroutine hdf5_dsc_get_dspace(crfile)
     implicit none
     type(t_dsc_hdf5), intent(inout) :: crfile
 
-end subroutine
+  end subroutine
 
-
-subroutine hdf5_dsc_get_dset(crfile) 
+  subroutine hdf5_dsc_get_dset(crfile)
     implicit none
     type(t_dsc_hdf5), intent(inout) :: crfile
-end subroutine
+  end subroutine
 
-subroutine hdf5_dsc_get_dtype(crfile)
+  subroutine hdf5_dsc_get_dtype(crfile)
     implicit none
     type(t_dsc_hdf5), intent(inout) :: crfile
-end subroutine
+  end subroutine
 
-subroutine hdf5_dic_del(idunit, error)
+  subroutine hdf5_dic_del(idunit, error)
     implicit none
     integer, intent(in) :: idunit
     integer, intent(out) :: error
 
-    error =-1
-end subroutine
+    error = -1
+  end subroutine
 
-subroutine hdf5_dic_add(crfile, error)
+  subroutine hdf5_dic_add(crfile, error)
     implicit none
     type(t_dsc_hdf5), pointer :: crfile
     type(t_dsc_hdf5), dimension(size(hdf5_dic)) :: temp
     integer, intent(out) :: error
     integer i
 
-    error=-1
-end subroutine
+    error = -1
+  end subroutine
 
-
-subroutine hdf5_dic_get(crfile, idunit, error)
+  subroutine hdf5_dic_get(crfile, idunit, error)
     implicit none
     type(t_dsc_hdf5), pointer :: crfile
     integer, intent(in) :: idunit
     integer, intent(out) :: error
-    
-    error=-1
-end subroutine
-    
 
-subroutine xdaend_hdf5 (crfile, last )
+    error = -1
+  end subroutine
+
+  subroutine xdaend_hdf5(crfile, last)
     use xunits_mod !include 'XUNITS.INC'
     use xssval_mod !include 'XSSVAL.INC'
     use xerval_mod !include 'XERVAL.INC'
     implicit none
-    type(t_dsc_hdf5), intent(inout) :: crfile      
+    type(t_dsc_hdf5), intent(inout) :: crfile
     integer, intent(out) :: last
-end subroutine
+  end subroutine
 
-subroutine hdf5_dsc_extend(crfile, error, extendsizearg)
+  subroutine hdf5_dsc_extend(crfile, error, extendsizearg)
     implicit none
     type(t_dsc_hdf5), intent(inout) :: crfile
     integer, intent(out) :: error
     integer, intent(in), optional :: extendsizearg
-    
+
     error = -1
-end subroutine
+  end subroutine
 
 !code for xdaxtn
-subroutine xdaxtn_hdf5 (crfile, ibegin,icount )
+  subroutine xdaxtn_hdf5(crfile, ibegin, icount)
     use xunits_mod !include 'XUNITS.INC'
     use xssval_mod !include 'XSSVAL.INC'
     use xerval_mod !include 'XERVAL.INC'
@@ -140,10 +137,9 @@ subroutine xdaxtn_hdf5 (crfile, ibegin,icount )
     type(t_dsc_hdf5), intent(inout) :: crfile
     integer, intent(in) :: ibegin, icount
 
-end subroutine
+  end subroutine
 
-
-subroutine xdaini_hdf5(crfile)
+  subroutine xdaini_hdf5(crfile)
     use xdisc_mod !include 'xdisc.inc'
     use xunits_mod !include 'xunits.inc'
     use xssval_mod !include 'xssval.inc'
@@ -152,44 +148,44 @@ subroutine xdaini_hdf5(crfile)
     implicit none
 
     type(t_dsc_hdf5), pointer :: crfile
-end subroutine
+  end subroutine
 
 #if defined(CRY_FORTDIGITAL)
-subroutine hdf5_dsc_use_set()
+  subroutine hdf5_dsc_use_set()
     !dec$ attributes c :: hdf5_dsc_use_set
     implicit none
-    
+
     hdf5_in_use = .false.
     !print *, 'hdf5 set in use in fortran'
-end subroutine
+  end subroutine
 #else
-subroutine hdf5_dsc_use_set() bind(c)
+  subroutine hdf5_dsc_use_set() bind(c)
     implicit none
-    
+
     hdf5_in_use = .false.
     !print *, 'hdf5 set in use in fortran'
-end subroutine
+  end subroutine
 #endif
 
 end module
 
 #else
 
-!> The module hdf5_dsc holds the necessary subroutine to handle the new hdf5 
+!> The module hdf5_dsc holds the necessary subroutine to handle the new hdf5
 !> file format storage.
 !> At present, the dsc file remains in place inside a hdf5 dataspace using an opaque datatype
 !>
 !> The actual dsc is read and write using unformatted direct access, the length of the record in bytes is defined by issdar.
 !> The addressing in hdf5 is in bytes so the record index from the dsc needs to be converted with the byte position using issdar. See recordoffset(1) = (fetch_address-1)*ISSDAR_copy
 module hdf5_dsc
-use hdf5
+  use hdf5
 
-integer, parameter :: ISSDAR_copy = 512 !< ISSDAR specifies the number of logical records, ie the number of single precision real numbers. This value needs to match the one in preset.F
+  integer, parameter :: ISSDAR_copy = 512 !< ISSDAR specifies the number of logical records, ie the number of single precision real numbers. This value needs to match the one in preset.F
 
-logical :: hdf5_in_use = .false.
-logical, parameter :: debug_hdf5 = .false.
+  logical :: hdf5_in_use = .false.
+  logical, parameter :: debug_hdf5 = .false.
 
-type, public :: t_dsc_hdf5
+  type, public :: t_dsc_hdf5
     integer(hid_t) :: file_id       ! file identifier
     character(len=1024) :: file_name
     integer :: idunit
@@ -199,112 +195,111 @@ type, public :: t_dsc_hdf5
     integer(hid_t) :: dsc_dspace_id     ! dataspace identifier
     integer(hid_t) :: dsc_dtype         ! opaque datatype
     character(len=10) :: dsc_dtype_tag = "dsc record"
-    !integer(hid_t) :: crp_list      ! dataset creation property identifier 
-    !integer(hid_t) :: filespace     ! dataspace identifier 
+    !integer(hid_t) :: crp_list      ! dataset creation property identifier
+    !integer(hid_t) :: filespace     ! dataspace identifier
     !integer(hid_t) :: slicespace_id ! memory dataspace identifier
-end type
+  end type
 
-type(t_dsc_hdf5), dimension(:), allocatable, target, private :: hdf5_dic !< several files can be opened at the same time, this array hold all of them
+  type(t_dsc_hdf5), dimension(:), allocatable, target, private :: hdf5_dic !< several files can be opened at the same time, this array hold all of them
 
 contains
 
-subroutine hdf5_dsc_use_set() bind(c)
+  subroutine hdf5_dsc_use_set() bind(c)
     implicit none
-    
+
     hdf5_in_use = .true.
     !print *, 'hdf5 set in use in fortran'
-end subroutine
-    
+  end subroutine
 
-subroutine hdf5_dsc_open(crfile, filename, error)
+  subroutine hdf5_dsc_open(crfile, filename, error)
     implicit none
     type(t_dsc_hdf5), pointer, intent(inout) :: crfile
     integer, intent(out) :: error
     character(len=*), intent(in) :: filename
     integer :: errorb
     logical fexist
-    
+
     error = 0
     ! look for a new space to open hdf5 file
     call hdf5_dic_add(crfile, error)
-    if(error/=0) then
-        print *, 'error during creation of a new hdf5 file'
-        call exit(1)
+    if (error /= 0) then
+      print *, 'error during creation of a new hdf5 file'
+      call exit(1)
     end if
-    crfile%idunit=-1 ! temporary unit
-    crfile%file_name=filename
+    crfile%idunit = -1 ! temporary unit
+    crfile%file_name = filename
 
     !
-    ! Initialize FORTRAN interface. 
+    ! Initialize FORTRAN interface.
     !
-    
-    CALL h5open_f(error)            
-    
+
+    CALL h5open_f(error)
+
     ! check if the file exist
-    inquire(file=filename, exist=fexist)
+    inquire (file=filename, exist=fexist)
     !print *, trim(filename), fexist
-    if(fexist) then
-        call h5fopen_f(filename, H5F_ACC_RDWR_F, crfile%file_id, error)
-        !print *, 'here!', error
-        if(error/=0) then
-            if(debug_hdf5) then
-                print *, 'Cannot open the file ', trim(filename)
-            end if
-            ! destroy record in hdf5 dic
-            call hdf5_dic_del(crfile%idunit, errorb)
-            if(errorb/=0) then
-                print *, 'Impossible to remove the failed open hdf5 file from the dictionary'
-                print *, 'It is not possible to recover'
-                call exit(1)
-            end if
-        end if      
-        crfile%dsc_dset_id=0      
-        crfile%dsc_dspace_id=0    
-        crfile%dsc_dtype=0      
-    else
-    
-        !
-        ! Create a new file using the default properties.
-        !
-        !print *, 'creating hdf5 ', filename
-        CALL h5fcreate_f(filename, H5F_ACC_EXCL_F, crfile%file_id, error)
-        if(error/=0) then
-            ! destroy record in hdf5 dic
-            !print *, 'Impossible to create hdf5 file'
-            if(debug_hdf5) then
-                print *, 'Impossible to create the hdf5 file ', trim(filename)
-            end if
-            call hdf5_dic_del(crfile%idunit, errorb)
-            if(errorb/=0) then
-                print *, 'Impossible to remove the failed open hdf5 file from the dictionary'
-                print *, 'It is not possible to recover'
-                call exit(1)
-            end if
+    if (fexist) then
+      call h5fopen_f(filename, H5F_ACC_RDWR_F, crfile%file_id, error)
+      !print *, 'here!', error
+      if (error /= 0) then
+        if (debug_hdf5) then
+          print *, 'Cannot open the file ', trim(filename)
         end if
-        crfile%dsc_dset_id=0      
-        crfile%dsc_dspace_id=0    
-        crfile%dsc_dtype=0          
-    end if
-end subroutine
+        ! destroy record in hdf5 dic
+        call hdf5_dic_del(crfile%idunit, errorb)
+        if (errorb /= 0) then
+          print *, 'Impossible to remove the failed open hdf5 file from the dictionary'
+          print *, 'It is not possible to recover'
+          call exit(1)
+        end if
+      end if
+      crfile%dsc_dset_id = 0
+      crfile%dsc_dspace_id = 0
+      crfile%dsc_dtype = 0
+    else
 
-subroutine hdf5_dsc_close(crfile, error)
+      !
+      ! Create a new file using the default properties.
+      !
+      !print *, 'creating hdf5 ', filename
+      CALL h5fcreate_f(filename, H5F_ACC_EXCL_F, crfile%file_id, error)
+      if (error /= 0) then
+        ! destroy record in hdf5 dic
+        !print *, 'Impossible to create hdf5 file'
+        if (debug_hdf5) then
+          print *, 'Impossible to create the hdf5 file ', trim(filename)
+        end if
+        call hdf5_dic_del(crfile%idunit, errorb)
+        if (errorb /= 0) then
+          print *, 'Impossible to remove the failed open hdf5 file from the dictionary'
+          print *, 'It is not possible to recover'
+          call exit(1)
+        end if
+      end if
+      crfile%dsc_dset_id = 0
+      crfile%dsc_dspace_id = 0
+      crfile%dsc_dtype = 0
+    end if
+  end subroutine
+
+  subroutine hdf5_dsc_close(crfile, error)
     implicit none
     type(t_dsc_hdf5), pointer, intent(inout) :: crfile
     integer, intent(out) :: error
-        
+
     !call h5dclose_f(crfile%dsc_dset_id, error)
     !call h5sclose_f(crfile%dsc_dspace_id, error)
     CALL h5fclose_f(crfile%file_id, error)
 
     call hdf5_dic_del(crfile%idunit, error)
-    if(error/=0) then
-        print *, 'Impossible to remove the failed open hdf5 file from the dictionary'
-        print *, 'It is not possible to recover'
-        call exit(1)
+    if (error /= 0) then
+      print *, 'Impossible to remove the failed open hdf5 file from the dictionary'
+      print *, 'It is not possible to recover'
+      call exit(1)
     end if
-end subroutine
+  end subroutine
 
-subroutine hdf5_dsc_kfetch(crfile, fetch_address, dataread, error)
+  subroutine hdf5_dsc_kfetch(crfile, fetch_address, dataread, error)
     use xdaval_mod
     implicit none
     type(t_dsc_hdf5), intent(inout) :: crfile
@@ -312,296 +307,293 @@ subroutine hdf5_dsc_kfetch(crfile, fetch_address, dataread, error)
     integer, dimension(:), intent(out) :: dataread
     integer, intent(out) :: error
     integer idaerr, inext, ireq
-    
+
     integer fileend
-    integer(hsize_t), dimension(1) :: recordoffset      !hyperslab offset in the file 
-    integer(hsize_t), dimension(1) :: slicedimension 
+    integer(hsize_t), dimension(1) :: recordoffset      !hyperslab offset in the file
+    integer(hsize_t), dimension(1) :: slicedimension
     integer(hid_t) :: slicespace_id ! memory dataspace identifier
     type(c_ptr) :: f_ptr
-    integer     ::   rank = 1                        ! dataset rank      
+    integer     ::   rank = 1                        ! dataset rank
 
-    
     slicedimension = (/size(dataread)/)
 
     ! check if the read is no bigger than the data
-    call xdaend_hdf5(crfile, fileend )
+    call xdaend_hdf5(crfile, fileend)
 
     !print *, 'n, fileend ', n, fileend
-    if(fetch_address>fileend) then
-        error = -1
-        return                 
+    if (fetch_address > fileend) then
+      error = -1
+      return
     end if
-        
+
     !
     !select a hyperslab.
     !
     !call h5dget_space_f(crfile%dsc_dset_id, filespace, error)
     ! offset in records from, the begining of the dataset
     recordoffset(1) = (fetch_address-1)*ISSDAR_copy
-    call h5sselect_hyperslab_f(crfile%dsc_dspace_id, H5S_SELECT_SET_F, recordoffset, slicedimension, error)      
+    call h5sselect_hyperslab_f(crfile%dsc_dspace_id, H5S_SELECT_SET_F, recordoffset, slicedimension, error)
     !print *, 'KFETCH: select slice', error
-    if(debug_hdf5) then
-        if(error==-1) then
-            print *, 'Error when selecting a slice (kfetch)'
-        end if
+    if (debug_hdf5) then
+      if (error == -1) then
+        print *, 'Error when selecting a slice (kfetch)'
+      end if
     end if
-    if(error==-1) return
+    if (error == -1) return
 
     !
     ! create a dataspace to hold the slice in memory
-    call h5screate_simple_f(rank,slicedimension,slicespace_id,error) 
+    call h5screate_simple_f(rank, slicedimension, slicespace_id, error)
     !print *, 'KFETCH ', error
-    if(debug_hdf5) then
-        if(error==-1) then
-            print *, 'Error when creating a dataspace (kfetch)'
-        end if
+    if (debug_hdf5) then
+      if (error == -1) then
+        print *, 'Error when creating a dataspace (kfetch)'
+      end if
     end if
-    if(error==-1) return
-    
+    if (error == -1) return
+
     !
     ! reading the data from the hyperslab.
-    !    
+    !
     !print *, crfile%dsc_dtype, crfile%dsc_dset_id
-    if(crfile%dsc_dtype==0) then
-        call hdf5_dsc_get_dtype(crfile)
+    if (crfile%dsc_dtype == 0) then
+      call hdf5_dsc_get_dtype(crfile)
     end if
     call h5dread_f(crfile%dsc_dset_id, crfile%dsc_dtype, dataread, &
     &   slicedimension, error, &
-    &   mem_space_id = slicespace_id, file_space_id = crfile%dsc_dspace_id )
+    &   mem_space_id=slicespace_id, file_space_id=crfile%dsc_dspace_id)
     !print *, 'KFETCH loc, read, error ', fetch_address, dataread(1), error, size(dataread)
-    if(debug_hdf5) then
-        if(error==-1) then
-            print *, 'Error when reading a slice (kfetch)'
-        end if
+    if (debug_hdf5) then
+      if (error == -1) then
+        print *, 'Error when reading a slice (kfetch)'
+      end if
     end if
-    if(error==-1) return
+    if (error == -1) return
     !write(*, '(A,   10(Z8.8, 1X))') 'kfetch', dataread(1:10)
-        
-end subroutine
 
-subroutine hdf5_dsc_kstore(crfile, store_address, datastore, error)
+  end subroutine
+
+  subroutine hdf5_dsc_kstore(crfile, store_address, datastore, error)
     implicit none
     type(t_dsc_hdf5), intent(inout) :: crfile
     integer, intent(in) :: store_address !< starting address of the data in store
     integer, dimension(:), intent(in) :: datastore !< data to be written to embedded dsc file
     integer, intent(out) :: error
-    
+
     integer fileend
-    integer(hsize_t), dimension(1) :: recordoffset      !< hyperslab offset in the file 
+    integer(hsize_t), dimension(1) :: recordoffset      !< hyperslab offset in the file
     integer(hsize_t), dimension(1) :: slicedimension !< size of the data to be written
-    integer(hid_t) :: filespace     !< dataspace identifier 
+    integer(hid_t) :: filespace     !< dataspace identifier
     integer(hid_t) :: slicespace_id !< memory dataspace identifier
     type(c_ptr) :: f_ptr
-    integer     ::   rank = 1                        !< dataset rank      
+    integer     ::   rank = 1                        !< dataset rank
     integer(hsize_t), dimension(1) :: readdims !< dataset dimensions
     integer(hsize_t), dimension(1) :: readmaxdims  !< dataset dimensions
     integer last
-        
-    slicedimension(1)=size(datastore)
+
+    slicedimension(1) = size(datastore)
     ! check if there is enough space
-    call xdaend_hdf5 (crfile, last )
-    
-    if(last<=store_address) then
-        call hdf5_dsc_extend(crfile, error, store_address-last+1)
+    call xdaend_hdf5(crfile, last)
+
+    if (last <= store_address) then
+      call hdf5_dsc_extend(crfile, error, store_address-last+1)
     end if
-    if(debug_hdf5) then
-        if(error==-1) then
-            print *, 'Error when extending the dsc dataset (kstore)'
-        end if
-    end if    
-    if(error==-1) return
-    call hdf5_dsc_get_dspace(crfile) 
+    if (debug_hdf5) then
+      if (error == -1) then
+        print *, 'Error when extending the dsc dataset (kstore)'
+      end if
+    end if
+    if (error == -1) return
+    call hdf5_dsc_get_dspace(crfile)
 
     !
     !select a hyperslab.
     !
     call h5dget_space_f(crfile%dsc_dset_id, filespace, error)
-    if(debug_hdf5) then
-        if(error==-1) then
-            print *, 'Error when getting the dsc dataspace (kstore)'
-        end if
-    end if    
-    if(error==-1) return
+    if (debug_hdf5) then
+      if (error == -1) then
+        print *, 'Error when getting the dsc dataspace (kstore)'
+      end if
+    end if
+    if (error == -1) return
     !! offset in records from, the begining of the dataset
     recordoffset(1) = (store_address-1)*ISSDAR_copy
-    call h5sselect_hyperslab_f(filespace, H5S_SELECT_SET_F, recordoffset, slicedimension, error)      
+    call h5sselect_hyperslab_f(filespace, H5S_SELECT_SET_F, recordoffset, slicedimension, error)
     !print *, 'xdaxtn_hdf5: select slice', error
-    if(debug_hdf5) then
-        if(error==-1) then
-            print *, 'Error when selecting a slice (kstore)'
-        end if
+    if (debug_hdf5) then
+      if (error == -1) then
+        print *, 'Error when selecting a slice (kstore)'
+      end if
     end if
-    if(error==-1) return
+    if (error == -1) return
 
     !
     ! create a dataspace to hold the slice in memory
     !
-    call h5screate_simple_f(rank,slicedimension,slicespace_id,error) 
+    call h5screate_simple_f(rank, slicedimension, slicespace_id, error)
     !print *, 'xdaxtn_hdf5 ', error
-    if(debug_hdf5) then
-        if(error==-1) then
-            print *, 'Error when creating a tempoaray dataspace (kstore)'
-        end if
+    if (debug_hdf5) then
+      if (error == -1) then
+        print *, 'Error when creating a tempoaray dataspace (kstore)'
+      end if
     end if
-    if(error==-1) return
+    if (error == -1) return
 
     !
     !write the data to the hyperslab.
-    !    
+    !
     call h5dwrite_f(crfile%dsc_dset_id, crfile%dsc_dtype, datastore, slicedimension, &
-    &   error, file_space_id = filespace, mem_space_id = slicespace_id)
-    if(debug_hdf5) then
-        if(error==-1) then
-            print *, 'Error when writing data (kstore)'
-        end if
+    &   error, file_space_id=filespace, mem_space_id=slicespace_id)
+    if (debug_hdf5) then
+      if (error == -1) then
+        print *, 'Error when writing data (kstore)'
+      end if
     end if
     !print *, 'xdaxtn_hdf5 writing: ', store_address, datastore(1), error
-end subroutine
+  end subroutine
 
-subroutine hdf5_dsc_get_dspace(crfile) 
+  subroutine hdf5_dsc_get_dspace(crfile)
     implicit none
     type(t_dsc_hdf5), intent(inout) :: crfile
     integer error
-    
-    if(crfile%dsc_dset_id==0) then
-        call hdf5_dsc_get_dset(crfile) 
-    end if  
-    
-    call h5dget_space_f(crfile%dsc_dset_id, crfile%dsc_dspace_id, error) 
-    !print *, 'Getting dspace '
-    if(error/=0) then
-        print *, 'h5dget_space_f ', crfile%dsc_dset_id
-        print *, 'Impossible to copy the dsc dataset to a dataspace'
-        call exit(1)
+
+    if (crfile%dsc_dset_id == 0) then
+      call hdf5_dsc_get_dset(crfile)
     end if
-end subroutine
 
+    call h5dget_space_f(crfile%dsc_dset_id, crfile%dsc_dspace_id, error)
+    !print *, 'Getting dspace '
+    if (error /= 0) then
+      print *, 'h5dget_space_f ', crfile%dsc_dset_id
+      print *, 'Impossible to copy the dsc dataset to a dataspace'
+      call exit(1)
+    end if
+  end subroutine
 
-subroutine hdf5_dsc_get_dset(crfile) 
+  subroutine hdf5_dsc_get_dset(crfile)
     implicit none
     type(t_dsc_hdf5), intent(inout) :: crfile
     integer error
 
-    if(crfile%file_id==0) then
-        print *, 'hdf5 file not opened, cannot get dataset'
-        call exit(1)
+    if (crfile%file_id == 0) then
+      print *, 'hdf5 file not opened, cannot get dataset'
+      call exit(1)
     end if
 
     CALL h5dopen_f(crfile%file_id, crfile%dsc_dsetname, crfile%dsc_dset_id, error)
-    if(error/=0) then
-        print *, 'Impossible to open the dsc dataset from: ', crfile%file_name
-        call exit(1)
+    if (error /= 0) then
+      print *, 'Impossible to open the dsc dataset from: ', crfile%file_name
+      call exit(1)
     end if
-end subroutine
+  end subroutine
 
-subroutine hdf5_dsc_get_dtype(crfile)
+  subroutine hdf5_dsc_get_dtype(crfile)
     implicit none
     type(t_dsc_hdf5), intent(inout) :: crfile
     integer error
 
-    if(crfile%dsc_dset_id==0) then
-        call hdf5_dsc_get_dset(crfile) 
+    if (crfile%dsc_dset_id == 0) then
+      call hdf5_dsc_get_dset(crfile)
     end if
 
-    call h5dget_type_f(crfile%dsc_dset_id, crfile%dsc_dtype, error) 
+    call h5dget_type_f(crfile%dsc_dset_id, crfile%dsc_dtype, error)
     !print *, crfile%dsc_dset_id, crfile%dsc_dspace_id, crfile%dsc_dtype
-    if(error/=0) then
-        print *, 'Impossible to get the data type of the dsc dataspace'
-        call exit(1)
+    if (error /= 0) then
+      print *, 'Impossible to get the data type of the dsc dataspace'
+      call exit(1)
     end if
-end subroutine
+  end subroutine
 
-subroutine hdf5_dic_del(idunit, error)
+  subroutine hdf5_dic_del(idunit, error)
     implicit none
     integer, intent(in) :: idunit
     type(t_dsc_hdf5), dimension(size(hdf5_dic)) :: temp
     integer, intent(out) :: error
     integer i
 
-    error=-1
-    if(allocated(hdf5_dic)) then
-        temp=hdf5_dic
-        
-        do i=1, size(temp)
-            if(temp(i)%idunit==idunit) then
-                deallocate(hdf5_dic)
-                if(size(temp)>1) then
-                    allocate(hdf5_dic(size(temp)-1))
-                    if(i>1) then
-                        hdf5_dic(1:i-1)=temp(1:i-1)
-                    end if
-                    if(i<size(temp)) then
-                        hdf5_dic(i:size(hdf5_dic))=temp(i+1:size(hdf5_dic)+1)
-                    end if
-                end if
-                error = 0
-                return
-            end if
-        end do
-    end if
-end subroutine
+    error = -1
+    if (allocated(hdf5_dic)) then
+      temp = hdf5_dic
 
-subroutine hdf5_dic_add(crfile, error)
+      do i = 1, size(temp)
+        if (temp(i)%idunit == idunit) then
+          deallocate (hdf5_dic)
+          if (size(temp) > 1) then
+            allocate (hdf5_dic(size(temp)-1))
+            if (i > 1) then
+              hdf5_dic(1:i-1) = temp(1:i-1)
+            end if
+            if (i < size(temp)) then
+              hdf5_dic(i:size(hdf5_dic)) = temp(i+1:size(hdf5_dic)+1)
+            end if
+          end if
+          error = 0
+          return
+        end if
+      end do
+    end if
+  end subroutine
+
+  subroutine hdf5_dic_add(crfile, error)
     implicit none
     type(t_dsc_hdf5), intent(out), pointer :: crfile
     type(t_dsc_hdf5), dimension(size(hdf5_dic)) :: temp
     integer, intent(out) :: error
     integer i
 
-    error=-1
-    if(allocated(hdf5_dic)) then
-        temp=hdf5_dic
-        deallocate(hdf5_dic)
-        allocate(hdf5_dic(size(temp)+1))
-        hdf5_dic(1:size(temp))=temp
-        crfile=>hdf5_dic(size(temp)+1)
-        error = 0
+    error = -1
+    if (allocated(hdf5_dic)) then
+      temp = hdf5_dic
+      deallocate (hdf5_dic)
+      allocate (hdf5_dic(size(temp)+1))
+      hdf5_dic(1:size(temp)) = temp
+      crfile => hdf5_dic(size(temp)+1)
+      error = 0
     else
-        allocate(hdf5_dic(1))
-        crfile=>hdf5_dic(1)
-        error = 0
+      allocate (hdf5_dic(1))
+      crfile => hdf5_dic(1)
+      error = 0
     end if
-end subroutine
+  end subroutine
 
-
-subroutine hdf5_dic_get(crfile, idunit, error)
+  subroutine hdf5_dic_get(crfile, idunit, error)
     implicit none
     type(t_dsc_hdf5), intent(out), pointer :: crfile
     integer, intent(in) :: idunit
     integer, intent(out) :: error
     integer i
-    
+
     !print *, 'hdf5 dic ', size(hdf5_dic)
-    error=-1
-    if(allocated(hdf5_dic)) then
-        do i=1, size(hdf5_dic)
-            !print *, 'search dic ', trim(hdf5_dic(i)%file_name), hdf5_dic(i)%idunit
-            !print *, 'idunit in dic ', i, hdf5_dic(i)%idunit
-            if(hdf5_dic(i)%idunit==idunit) then
-                crfile=>hdf5_dic(i)
-                error=0
-                return
-            end if
-        end do
+    error = -1
+    if (allocated(hdf5_dic)) then
+      do i = 1, size(hdf5_dic)
+        !print *, 'search dic ', trim(hdf5_dic(i)%file_name), hdf5_dic(i)%idunit
+        !print *, 'idunit in dic ', i, hdf5_dic(i)%idunit
+        if (hdf5_dic(i)%idunit == idunit) then
+          crfile => hdf5_dic(i)
+          error = 0
+          return
+        end if
+      end do
     end if
-    
-end subroutine
-    
-subroutine printdic()
+
+  end subroutine
+
+  subroutine printdic()
     implicit none
     integer i
 
-    if(allocated(hdf5_dic)) then
-        do i=1, size(hdf5_dic)
-            print *, 'dic ', i, trim(hdf5_dic(i)%file_name), hdf5_dic(i)%idunit
-        end do
-    else 
-        print *, 'dic not alloated'
+    if (allocated(hdf5_dic)) then
+      do i = 1, size(hdf5_dic)
+        print *, 'dic ', i, trim(hdf5_dic(i)%file_name), hdf5_dic(i)%idunit
+      end do
+    else
+      print *, 'dic not alloated'
     end if
-    
-end subroutine
 
-subroutine xdaend_hdf5 (crfile, last )
+  end subroutine
+
+  subroutine xdaend_hdf5(crfile, last)
     use xunits_mod !include 'XUNITS.INC'
     use xssval_mod !include 'XSSVAL.INC'
     use xerval_mod !include 'XERVAL.INC'
@@ -611,19 +603,19 @@ subroutine xdaend_hdf5 (crfile, last )
 !c    present in a disc file
 !c
 
-    type(t_dsc_hdf5), intent(inout) :: crfile      
+    type(t_dsc_hdf5), intent(inout) :: crfile
     integer, intent(out) :: last
     integer(hsize_t), dimension(1) :: readdims ! dataset dimensions
     integer(hsize_t), dimension(1) :: readmaxdims  ! dataset dimensions
     integer error
 
-    if(crfile%dsc_dspace_id==0) then
-        ! dataspace not opened
-        ! Open an existing dataset.
-        !
-        call hdf5_dsc_get_dspace(crfile) 
+    if (crfile%dsc_dspace_id == 0) then
+      ! dataspace not opened
+      ! Open an existing dataset.
+      !
+      call hdf5_dsc_get_dspace(crfile)
     end if
-        
+
     !
     ! read the dimensions of the current data set
     !
@@ -632,14 +624,14 @@ subroutine xdaend_hdf5 (crfile, last )
     &    readmaxdims, error)
     !print *, error
     !print *, 'dims: ', readdims, ' maxdims: ', readmaxdims
-    if(error==-1) then
-        print *, 'error in xdaend_hdf5'
-        call exit(1)
+    if (error == -1) then
+      print *, 'error in xdaend_hdf5'
+      call exit(1)
     end if
     last = readdims(1)/ISSDAR_copy
-end subroutine
+  end subroutine
 
-subroutine hdf5_dsc_extend(crfile, error, extendsizearg)
+  subroutine hdf5_dsc_extend(crfile, error, extendsizearg)
     implicit none
     type(t_dsc_hdf5), intent(inout) :: crfile
     integer, intent(out) :: error
@@ -649,75 +641,75 @@ subroutine hdf5_dsc_extend(crfile, error, extendsizearg)
     integer fileend
     integer :: extendsize
     integer     ::   rank = 1                        ! dataset rank
-    
-    if(present(extendsizearg)) then
-        extendsize=extendsizearg*ISSDAR_copy
+
+    if (present(extendsizearg)) then
+      extendsize = extendsizearg*ISSDAR_copy
     else
-        extendsize=crfile%dsc_blocksize
+      extendsize = crfile%dsc_blocksize
     end if
-    
-    if(crfile%dsc_dspace_id==0) then
-        call hdf5_dsc_get_dspace(crfile) 
+
+    if (crfile%dsc_dspace_id == 0) then
+      call hdf5_dsc_get_dspace(crfile)
     end if
-    
+
     !
     ! read the dimensions of the current data set
     !
     call h5sget_simple_extent_dims_f(crfile%dsc_dspace_id, &
     &   readdims, readmaxdims, error)
     !print *, 'h5sget_simple_extent_dims_f ', error
-    !print *, 'dims: ', readdims, ' maxdims: ', readmaxdims            
-    if(debug_hdf5) then
-        if(error==-1) then
-            print *, 'Error when readinf dimension of the dsc (dsc_extend)'
-        end if
+    !print *, 'dims: ', readdims, ' maxdims: ', readmaxdims
+    if (debug_hdf5) then
+      if (error == -1) then
+        print *, 'Error when readinf dimension of the dsc (dsc_extend)'
+      end if
     end if
-    if(error==-1) return
+    if (error == -1) return
 
-    call xdaend_hdf5(crfile, fileend )
+    call xdaend_hdf5(crfile, fileend)
     !
     !extend the dataset by the chunk size
     !
     call h5dset_extent_f(crfile%dsc_dset_id, &
-        readdims+extendsize, error)
-    if(debug_hdf5) then
-        if(error==-1) then
-            print *, 'Error when extending the dsc (dsc_extend)'
-        end if
+                         readdims+extendsize, error)
+    if (debug_hdf5) then
+      if (error == -1) then
+        print *, 'Error when extending the dsc (dsc_extend)'
+      end if
     end if
     !print *, 'h5dset_extent_f ', error
-    if(error==-1) return
-            
+    if (error == -1) return
+
     ! We now need to get a new dataset, closing the current one and opening a new one with the updated size
     !
     ! end access to the dataset and release resources used by it.
     !
     call h5dclose_f(crfile%dsc_dset_id, error)
-    crfile%dsc_dset_id=0
+    crfile%dsc_dset_id = 0
     !print *, 'h5dclose_f ', error
-    if(debug_hdf5) then
-        if(error==-1) then
-            print *, 'Error when closing the dataset (dsc_extend)'
-        end if
+    if (debug_hdf5) then
+      if (error == -1) then
+        print *, 'Error when closing the dataset (dsc_extend)'
+      end if
     end if
-    if(error==-1) return
+    if (error == -1) return
 
     !
     ! terminate access to the data space.
     !
     call h5sclose_f(crfile%dsc_dspace_id, error)
-    crfile%dsc_dspace_id=0
-    if(debug_hdf5) then
-        if(error==-1) then
-            print *, 'Error when closing dataspace (dsc_extend)'
-        end if
+    crfile%dsc_dspace_id = 0
+    if (debug_hdf5) then
+      if (error == -1) then
+        print *, 'Error when closing dataspace (dsc_extend)'
+      end if
     end if
     !print *, 'h5sclose_f ', error
 
-end subroutine
+  end subroutine
 
 !code for xdaxtn
-subroutine xdaxtn_hdf5 (crfile, ibegin,icount )
+  subroutine xdaxtn_hdf5(crfile, ibegin, icount)
     use xunits_mod !include 'XUNITS.INC'
     use xssval_mod !include 'XSSVAL.INC'
     use xerval_mod !include 'XERVAL.INC'
@@ -727,10 +719,10 @@ subroutine xdaxtn_hdf5 (crfile, ibegin,icount )
     implicit none
 
     type(t_dsc_hdf5), intent(inout) :: crfile
-    integer(hsize_t), dimension(1) :: recordoffset      !hyperslab offset in the file 
+    integer(hsize_t), dimension(1) :: recordoffset      !hyperslab offset in the file
     integer(hsize_t), dimension(1) :: slicedimension
     integer, dimension(ISSDAR_copy), target :: writedata ! write buffer
-    integer(hid_t) :: filespace     ! dataspace identifier 
+    integer(hid_t) :: filespace     ! dataspace identifier
     integer(hid_t) :: slicespace_id ! memory dataspace identifier
     integer     ::   rank = 1                        ! dataset rank
     integer     ::   error ! error flag
@@ -739,9 +731,8 @@ subroutine xdaxtn_hdf5 (crfile, ibegin,icount )
     integer(hsize_t), dimension(1) :: readmaxdims, maxdims  ! dataset dimensions
     integer(hid_t) :: crp_list
 
-    
     integer, intent(in) :: ibegin, icount
-    
+
     integer i, iend, ios, istart, iunit, fileend, extend
 
 !c
@@ -765,61 +756,59 @@ subroutine xdaxtn_hdf5 (crfile, ibegin,icount )
 !c -- ibegin may be a constant and so should not be modified
 !c
 
-
     !print *, 'xdaxtn_hdf5 start'
     slicedimension = (/ISSDAR_copy/)
     istart = ibegin
-    writedata=0
+    writedata = 0
 
-    if ( istart .lt. 0 ) call xdaend_hdf5(crfile, istart )
+    if (istart .lt. 0) call xdaend_hdf5(crfile, istart)
 
     !c -- no operation
-    if ( icount .le. 0 ) go to 8000
+    if (icount .le. 0) go to 8000
 
-    iend = istart + icount - 1
-    if ( idamax .le. 0 ) go to 1900
-    if ( iend .gt. idamax ) go to 9920
-    1900  continue
-    
-    if(iend>istart) then
-        call hdf5_dsc_extend(crfile, error, iend-istart+1)
-        !print *, 'hdf5_dsc_extend ', error
-        if (error == -1) goto 9900
+    iend = istart+icount-1
+    if (idamax .le. 0) go to 1900
+    if (iend .gt. idamax) go to 9920
+1900 continue
+
+    if (iend > istart) then
+      call hdf5_dsc_extend(crfile, error, iend-istart+1)
+      !print *, 'hdf5_dsc_extend ', error
+      if (error == -1) goto 9900
     end if
-    
-    2000  continue
 
-    8000  continue
+2000 continue
+
+8000 continue
     return
 
-    9900  continue
+9900 continue
     !c -- error while extending disc file
     if (issprt .eq. 0) then
-        write ( ncwu , 9910 ) iunit
+      write (ncwu, 9910) iunit
     endif
     !cjan08      write ( ncawu , 9910 ) iunit
-    write ( cmon, 9910 ) iunit
-    call xprvdu(nceror, 1,0)
-    9910  format ( 1x , 'an error has occured while extending file ' , &
-    &   'on unit ' , i3 )
-    call xeriom ( iunit , ios )
-    call xerhnd ( iercat )
-    9920  continue
+    write (cmon, 9910) iunit
+    call xprvdu(nceror, 1, 0)
+9910 format(1x, 'an error has occured while extending file ', &
+&   'on unit ', i3)
+    call xeriom(iunit, ios)
+    call xerhnd(iercat)
+9920 continue
     !c -- size too great
     if (issprt .eq. 0) then
-    write ( ncwu , 9925 ) iunit
+      write (ncwu, 9925) iunit
     endif
     !cjan08      write ( ncawu , 9925 ) iunit
-    write ( cmon, 9925 ) iunit
-    call xprvdu(nceror, 1,0)
-    9925  format ( 1x , 'the maximum size of the file on unit ' , i3 , &
-    &   ' has been exceeded' )
-    call xerhnd ( iercat )
+    write (cmon, 9925) iunit
+    call xprvdu(nceror, 1, 0)
+9925 format(1x, 'the maximum size of the file on unit ', i3, &
+&   ' has been exceeded')
+    call xerhnd(iercat)
     go to 9900
-end subroutine
+  end subroutine
 
-
-subroutine xdaini_hdf5(crfile)
+  subroutine xdaini_hdf5(crfile)
     use xdisc_mod !include 'xdisc.inc'
     use xunits_mod !include 'xunits.inc'
     use xssval_mod !include 'xssval.inc'
@@ -840,39 +829,39 @@ subroutine xdaini_hdf5(crfile)
     integer     ::   rank = 1                        ! dataset rank
     integer(hsize_t), dimension(1) :: dims  ! dataset dimensions
     integer     ::   error ! error flag
-    integer(hsize_t), dimension(1) :: chunksize 
+    integer(hsize_t), dimension(1) :: chunksize
     integer(size_t) :: datasize
     integer(hid_t) :: crp_list
     integer(hid_t) :: aspace_id     ! Attribute Dataspace identifier
-    integer(hid_t) :: attr_id       ! Attribute identifier    
+    integer(hid_t) :: attr_id       ! Attribute identifier
     integer(hsize_t), dimension(1) :: adims  ! Attribute dimension
-    integer(hid_t) :: atype_id      ! Attribute Dataspace identifier 
-    integer(size_t) :: attrlen    ! Length of the attribute string   
+    integer(hid_t) :: atype_id      ! Attribute Dataspace identifier
+    integer(size_t) :: attrlen    ! Length of the attribute string
     integer recordsize
     character(len=8) :: sdate
     character(len=10) :: stime
 
     character*10 newnam
     integer irecno, ireq, n, nsaveu
-    
+
     interface
-        function kswpdu ( iunit )
-            implicit none
-            integer, intent(in) :: iunit
-            integer :: kswpdu
-        end function
+      function kswpdu(iunit)
+        implicit none
+        integer, intent(in) :: iunit
+        integer :: kswpdu
+      end function
     end interface
 
     !print *, associated(crfile)
 
     !print *, 'xdaini_hdf5 start'
-    inquire(iolength=recordsize) 1.0
+    inquire (iolength=recordsize) 1.0
 
     dims = (/8*crfile%dsc_blocksize/)
     chunksize = (/crfile%dsc_blocksize/)
     ! constants only defined after h5open
     maxdims = (/h5s_unlimited_f/)
-    
+
     ! Create attribute holding version number
     adims = 1
     CALL h5screate_simple_f(1, adims, aspace_id, error)
@@ -884,11 +873,11 @@ subroutine xdaini_hdf5(crfile)
     adims = 1
     call DATE_AND_TIME(sdate, stime)
     CALL h5tcopy_f(H5T_NATIVE_CHARACTER, atype_id, error)
-    attrlen=len(sdate)+len(stime)+1
-    CALL h5tset_size_f(atype_id, attrlen, error)    
+    attrlen = len(sdate)+len(stime)+1
+    CALL h5tset_size_f(atype_id, attrlen, error)
     CALL h5screate_simple_f(1, adims, aspace_id, error)
     CALL h5acreate_f(crfile%file_id, "Creation date", atype_id, aspace_id, attr_id, error)
-    CALL h5awrite_f(attr_id, atype_id, sdate//' '//stime , adims, error)
+    CALL h5awrite_f(attr_id, atype_id, sdate//' '//stime, adims, error)
     CALL h5aclose_f(attr_id, error)
 
     !
@@ -896,9 +885,9 @@ subroutine xdaini_hdf5(crfile)
     !
     call h5screate_simple_f(1, (/2_hsize_t/), crfile%dsc_dspace_id, error, &
     &    maxdims=maxdims)
-    if(error==-1) then 
-        print *, 'Error during initialisation 1'
-        call exit(1)
+    if (error == -1) then
+      print *, 'Error during initialisation 1'
+      call exit(1)
     end if
     !print *, error
     !print *, dims, maxdims
@@ -908,38 +897,38 @@ subroutine xdaini_hdf5(crfile)
     !modify dataset creation properties, i.e. enable chunking
     !
     call h5pcreate_f(H5P_DATASET_CREATE_F, crp_list, error)
-    if(error==-1) then 
-        print *, 'Error during initialisation 2'
-        call exit(1)
+    if (error == -1) then
+      print *, 'Error during initialisation 2'
+      call exit(1)
     end if
     call h5pset_chunk_f(crp_list, rank, chunksize, error)
-    if(error==-1) then 
-        print *, 'Error during initialisation 3'
-        call exit(1)
+    if (error == -1) then
+      print *, 'Error during initialisation 3'
+      call exit(1)
     end if
 
     ! Set ZLIB / DEFLATE Compression using compression level 6.
     CALL h5pset_deflate_f(crp_list, 6, error)
-    if(error==-1) then 
-        print *, 'Error during setup of compression in hdf5 file'
-        call exit(1)
+    if (error == -1) then
+      print *, 'Error during setup of compression in hdf5 file'
+      call exit(1)
     end if
 
     !
     ! create opaque datatype and set the tag to something appropriate.
     !
-    inquire(iolength=recordsize) 1.0
-    datasize=recordsize
-    call h5tcreate_f(h5t_opaque_f, datasize, crfile%dsc_dtype,error)
-    if(error==-1) then 
-        print *, 'Error during initialisation 4'
-        call exit(1)
+    inquire (iolength=recordsize) 1.0
+    datasize = recordsize
+    call h5tcreate_f(h5t_opaque_f, datasize, crfile%dsc_dtype, error)
+    if (error == -1) then
+      print *, 'Error during initialisation 4'
+      call exit(1)
     end if
     !print *, error
-    call h5tset_tag_f(crfile%dsc_dtype,crfile%dsc_dtype_tag,error)
-    if(error==-1) then 
-        print *, 'Error during initialisation 5'
-        call exit(1)
+    call h5tset_tag_f(crfile%dsc_dtype, crfile%dsc_dtype_tag, error)
+    if (error == -1) then
+      print *, 'Error during initialisation 5'
+      call exit(1)
     end if
     !print *, error
 
@@ -950,49 +939,49 @@ subroutine xdaini_hdf5(crfile)
     &    crfile%dsc_dtype, &
     &    crfile%dsc_dspace_id, crfile%dsc_dset_id, &
     &    error, crp_list)
-    if(error==-1) then 
-        print *, 'Error during initialisation 6'
-        call exit(1)
+    if (error == -1) then
+      print *, 'Error during initialisation 6'
+      call exit(1)
     end if
     !print *, 'h5dcreate_f ', error, crfile%dsc_dset_id, crfile%dsc_dspace_id
 
-    call h5pclose_f(crp_list, error) 
+    call h5pclose_f(crp_list, error)
 
     idatot = -1
-    ireq = min ( idaini , idaqua )
-    ireq = max ( ireq , idamin )
+    ireq = min(idaini, idaqua)
+    ireq = max(ireq, idamin)
     irecno = 1
     !c
     !c -- write a few records to the file
     !c
-    call xdaxtn_hdf5 (crfile, irecno , ireq )
-    idatot = irecno + ireq -  1
+    call xdaxtn_hdf5(crfile, irecno, ireq)
+    idatot = irecno+ireq-1
     !c
     !c -- initialise file and current list indexes
     !c
-    nsaveu = kswpdu ( crfile%idunit )
+    nsaveu = kswpdu(crfile%idunit)
     !c
     call xsetfi
     call xsetli
     !c
-    n = kswpdu ( nsaveu )
+    n = kswpdu(nsaveu)
     !c
-    call xdanam ( crfile%idunit , newnam )
+    call xdanam(crfile%idunit, newnam)
     !c
     if (issprt .eq. 0) then
-    write ( ncwu , 1010 ) crfile%idunit , newnam
+      write (ncwu, 1010) crfile%idunit, newnam
     endif
     !cjan08      write ( ncawu , 1010 ) idunit , newnam
-    1010  format ( // , 1x , 72 ( '*' ) , / , &
-    & 1x , 'a new direct access file has been created ' , &
-    & 'on unit ' , i3 , ' -- ' , a10 , ' file' , / , &
-    & 1x , 72 ( '*' ) , // )
-    write ( cmon, 1011 ) crfile%idunit , newnam
-    call xprvdu(ncvdu, 1,0)
-    1011  format( 1x , 'a new direct access file has been created ' , &
-    & 'on unit ' , i3 , ' -- ' , a10 , ' file')
+1010 format(//, 1x, 72('*'), /, &
+& 1x, 'a new direct access file has been created ', &
+& 'on unit ', i3, ' -- ', a10, ' file', /, &
+& 1x, 72('*'), //)
+    write (cmon, 1011) crfile%idunit, newnam
+    call xprvdu(ncvdu, 1, 0)
+1011 format(1x, 'a new direct access file has been created ', &
+& 'on unit ', i3, ' -- ', a10, ' file')
     !c
-end subroutine
+  end subroutine
 
 end module
 

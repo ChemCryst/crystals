@@ -5,8 +5,8 @@
 
 !> module version of XDISC INC file
 module xdisc_mod
-    integer nu
-    
-    common/XDISC/NU 
+  integer nu
+
+  common/XDISC/NU
 end module
 
