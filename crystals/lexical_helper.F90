@@ -51,7 +51,7 @@ module xlexical_mod
   type(variable_t), dimension(256) :: restraints_var_list
   integer :: restraints_var_list_index = 0 !< max index in restraints_var_list
 
-  logical list16_modified = .false.
+  logical :: list16_modified = .false.
 
   public lexical_preprocessing, restraints_init, list16_modified
 
