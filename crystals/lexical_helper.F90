@@ -90,17 +90,19 @@ type(restraint_t), dimension(:), allocatable :: restraints_temp
   allocate(character(len=len_trim(image_text)) :: &
   & restraints_list(restraints_list_index)%original)
   restraints_list(restraints_list_index)%original=trim(image_text)
-  if(len_trim(restraints_list(restraints_list_index)%original)>4) then
-    do i=restraints_list_index, 1, -1
+  restraints_list(restraints_list_index)%type=''
+  do i=restraints_list_index, 1, -1
+    if(len_trim(restraints_list(i)%original)>4) then
       if(restraints_list(i)%original(1:4)=='CONT') then
         cycle
       else
         restraints_list(restraints_list_index)%type=restraints_list(i)%original(1:5)
         exit
       end if
-    end do  
-  else
-    restraints_list(restraints_list_index)%type=restraints_list(restraints_list_index)%original
+    end if
+  end do  
+  if(restraints_list(restraints_list_index)%type=='') then
+    restraints_list(restraints_list_index)%type=restraints_list(i)%original
   end if
 
   ! Look for variable definition: define a = 0.01
