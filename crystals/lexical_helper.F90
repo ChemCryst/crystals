@@ -3,6 +3,8 @@ module xlexical_mod
   implicit none
   private
 
+  integer, parameter :: split_len = 24 !< length of element when splitting strings
+
   !> type holding information during preprocssing
   type restraint_t
     character(len=5) :: type !< type of restraint
@@ -28,16 +30,24 @@ module xlexical_mod
     real, dimension(3) :: translation !< translation part
   end type
 
+  !> Symmetry operator in matrix notation
+  type sym_mat_t
+    real, dimension(3, 3) :: R !< rotation matrix
+    real, dimension(3) :: T !< Translation
+  end type
+
   !> general atom type
   type atom_t
     character(len=5) :: label !< atomic type
     integer :: serial !< serial number
     type(sym_op_t) :: sym_op !< symmetry operator
+    type(sym_mat_t) :: sym_mat !< symmetry operator in matrix form
     integer :: ref !< a ref number used when building pairs
     integer :: bond !< type of bond when used in pairs
   contains
     procedure :: init => init_atom !< initialise object
     procedure :: text => atom_text !< pretty print
+    procedure :: sym_mat_update => atom_update_sym_mat !< update matrix notation using crystals notation (sym_op)
   end type
 
   !> variable name and its value
@@ -148,6 +158,8 @@ contains
   !> Split a string into different pieces given a separator. Defaul separator is space.
   !! Len of pieces must be passed to the function
   subroutine explode(line, lenstring, elements, sep_arg, greedy_arg)
+    use xiobuf_mod, only: cmon !< I/O units
+    use xunits_mod, only: ncvdu !< I/O units
     implicit none
     character(len=*), intent(in) :: line !< text to process
     integer, intent(in) :: lenstring !< length of each individual elements
@@ -156,7 +168,7 @@ contains
     character(len=lenstring), dimension(:), allocatable, intent(out) :: elements
     character(len=lenstring), dimension(:), allocatable :: temp
     character(len=lenstring) :: bufferlabel
-    integer i, j, k, n, m, start, maxel
+    integer i, j, k, n, start, maxel
     character sep
     logical greedy
 
@@ -172,6 +184,8 @@ contains
       greedy = .true.
     end if
 
+    allocate (elements(count_char(trim(line), sep, greedy)+1))
+
     start = 1
     if (greedy) then
       do while (line(start:start) == sep)
@@ -179,11 +193,10 @@ contains
       end do
     end if
 
-    allocate (elements(count_char(trim(line), sep, greedy)+1-start+1))
-
     k = 1
     j = 0
     bufferlabel = ''
+    elements = ''
     do i = start, len_trim(line)
       if (line(i:i) == sep) then
         if (greedy .and. i > 1) then
@@ -198,7 +211,11 @@ contains
         cycle
       end if
       j = j+1
-      if (j > lenstring) cycle
+      if (j > lenstring) then
+        write (cmon, '(A,A)') '{E Programming error: len too short for elements in explode (lexical_helper.F90)'
+        call xprvdu(ncvdu, 1, 0)
+        cycle
+      end if
       bufferlabel(j:j) = line(i:i)
     end do
     if (j > 0 .and. trim(bufferlabel) /= '') then
@@ -210,9 +227,15 @@ contains
     i = 1
     do
       if (i > maxel) exit
-      n = count((/(elements(i) (j:j), j=1, len_trim(elements(i)))/) == '(')
-      m = count((/(elements(i) (j:j), j=1, len_trim(elements(i)))/) == ')')
-      if (n /= m .and. i < size(elements)) then
+      n = 0
+      do j = 1, len_trim(elements(i))
+        if (elements(i) (j:j) == '(') then
+          n = n+1
+        else if (elements(i) (j:j) == ')') then
+          n = n-1
+        end if
+      end do
+      if (n /= 0 .and. i < size(elements)) then
         ! found unbalanced parenthesis, merging next field
         maxel = maxel-1
         elements(i) = trim(elements(i))//trim(elements(i+1))
@@ -229,21 +252,37 @@ contains
   end subroutine
 
   !> count the number of a character, option to count consecutive ones as one.
-  pure function count_char(line, c, greedy) result(cpt)
+  !! if greedy is set, separators at begining of line are ignored
+  function count_char(line, c, greedy) result(cpt)
     implicit none
     character(len=*), intent(in) :: line !< text to process
     character, intent(in) :: c !< character to search
     logical, intent(in) :: greedy
     integer cpt !< Number of character found
-    integer i
+    integer i, start
 
     cpt = 0
-    do i = 1, len_trim(line)
+
+    if (greedy) then
+      i = 1
+      do while (line(i:i) == c)
+        i = i+1
+      end do
+      start = i
+    else
+      start = 1
+    end if
+
+    do i = start, len_trim(line)
       if (line(i:i) == c) then
-        if (greedy .and. i > 1) then
-          if (line(i-1:i-1) /= c) then
-            cpt = cpt+1
+        if (greedy) then
+          if (i > 1) then
+            if (line(i-1:i-1) /= c) then
+              cpt = cpt+1
+            end if
           end if
+        else
+          cpt = cpt+1
         end if
       end if
     end do
@@ -296,7 +335,8 @@ contains
               left%sym_op%translation = store(m41b+3:m41b+5)
             end if
           else
-            if (atoms(i)%serial == nint(store(ia1+1))) then
+            if (atoms(i)%serial == nint(store(ia1+1)) .and. &
+            & atoms(i)%sym_op%S == istore(ia1+2) .and. atoms(i)%sym_op%L == istore(ia1+3)) then
               ! left has not been assigned yet atom(i) is not used in right
               left%label = c_store(ia1)
               left%serial = nint(store(ia1+1))
@@ -323,7 +363,8 @@ contains
               right%sym_op%translation = store(m41b+9:m41b+11)
             end if
           else
-            if (atoms(i)%serial == nint(store(ia2+1))) then
+            if (atoms(i)%serial == nint(store(ia2+1)) .and. &
+            & atoms(i)%sym_op%S == istore(ia2+2) .and. atoms(i)%sym_op%L == istore(ia2+3)) then
               ! right has not been assigned yet atom(i) is not used in left
               right%label = c_store(ia2)
               right%serial = nint(store(ia2+1))
@@ -609,9 +650,11 @@ contains
     class(atom_t), intent(inout) :: self
     self%label = ''
     self%serial = -1
-    self%sym_op%S = 0
-    self%sym_op%L = 0
+    self%sym_op%S = 1
+    self%sym_op%L = 1
     self%sym_op%translation = 0.0
+    self%sym_mat%R = 0.0
+    self%sym_mat%T = 0.0
     self%ref = -1
   end subroutine
 
@@ -812,7 +855,7 @@ contains
     implicit none
     character(len=*), intent(inout) :: image_text
     integer, intent(out) :: ierror
-    character(len=10), dimension(:), allocatable :: elements
+    character(len=split_len), dimension(:), allocatable :: elements
     integer m5
     character(len=16) :: atom_name
     integer pattern_start
@@ -823,7 +866,7 @@ contains
 
     ! expand atoms type
     if (index(image_text, '(*)') > 0) then
-      call explode(image_text, 10, elements)
+      call explode(image_text, split_len, elements)
       image_text = ''
       do i = 1, size(elements)
         pattern_start = index(elements(i), '(*)')
@@ -875,7 +918,7 @@ contains
     implicit none
     character(len=*), intent(inout) :: image_text
     integer, intent(out) :: ierror
-    character(len=10), dimension(:), allocatable :: elements
+    character(len=split_len), dimension(:), allocatable :: elements
     integer neighbour_address, neighbour_cpt
     integer, dimension(6) :: xchiv_neighbours
     integer lp, rp, i
@@ -898,7 +941,7 @@ contains
       end if
 
       ! split atom list
-      call explode(image_text, 10, elements)
+      call explode(image_text, split_len, elements)
 
       image_text = trim(elements(1))
       do i = 2, size(elements)
@@ -968,7 +1011,8 @@ contains
     implicit none
     character(len=*), intent(inout) :: image_text
     integer, intent(out) :: ierror !< error code 0==success
-    character(len=10), dimension(:), allocatable :: elements
+    character(len=len(image_text)) :: original
+    character(len=split_len), dimension(:), allocatable :: elements
     integer start, i, j
     type(atom_t), dimension(:), allocatable :: atoms
     character(len=64) :: buffer
@@ -979,6 +1023,7 @@ contains
     real esd13
 
     ierror = 0
+    original = image_text
 
     if (restraints_list(restraints_list_index)%type == 'XRIGU') then
 
@@ -992,7 +1037,16 @@ contains
       end if
 
       ! split atom list
-      call explode(image_text, 10, elements)
+      call explode(image_text, split_len, elements)
+
+      if (size(elements) < 3) then
+        ierror = -1
+        write (cmon, '(A,A)') '{E ', trim(image_text)
+        CALL XPRVDU(NCVDU, 1, 0)
+        write (cmon, '(A)') '{E Error: XRIGU Restraint needs more than one atom'
+        call xprvdu(ncvdu, 1, 0)
+        return
+      end if
 
       ! elements(1) is XRIGU
       image_text = 'URIGU'
@@ -1031,16 +1085,36 @@ contains
         image_text = trim(image_text)//' 0.004'
       end if
 
+      if (size(elements)-start < 2) then
+        ierror = -1
+        image_text = original
+        write (cmon, '(A,A)') '{E ', trim(image_text)
+        CALL XPRVDU(NCVDU, 1, 0)
+        write (cmon, '(A)') '{E Error: XRIGU Restraint needs more than one atom'
+        call xprvdu(ncvdu, 1, 0)
+        return
+      end if
+
       allocate (atoms(size(elements)-start))
       call atoms%init()
       do i = start+1, size(elements)
         atoms(i-start) = read_atom(trim(elements(i)))
+        if (atoms(i-start)%serial == -1) then
+          ierror = -1
+          image_text = original
+          return
+        end if
       end do
       call get_pairs(atoms, pairs)
 
       ! write the number of 1,2 distances pairs
       write (buffer, '(I0)') ubound(pairs, 2)
       image_text = trim(image_text)//' '//trim(buffer)
+      if (ubound(pairs, 2) > 0) then
+        found = .true.
+      else
+        found = .false.
+      end if
 
       do i = 1, ubound(pairs, 2)
         write (buffer, '(A,"(",I0,") TO ", A, "(",I0,")")') &
@@ -1065,6 +1139,16 @@ contains
         end do
         if (ubound(pairs, 2) > 0) then
           image_text(len_trim(image_text):len_trim(image_text)) = ' '
+        else
+          if (.not. found) then ! no 1,2 pairs and no 1,3 pairs
+            ! commenting out restraint, it is empty
+            image_text = 'REM '//trim(image_text)
+          end if
+        end if
+      else
+        if (.not. found) then ! no 1,2 pairs and no 1,3 pairs
+          ! commenting out restraint, it is empty
+          image_text = 'REM '//trim(image_text)
         end if
       end if
     end if
@@ -1072,23 +1156,118 @@ contains
 
   end subroutine
 
-  !> Parse an atom definition TYPE(SERIAL,S,L,TX,TY,TZ,KEY)
+  !> Parse an atom definition TYPE(SERIAL,S,L,TX,TY,TZ)
+  !! If serial returns -1, there was an error
   function read_atom(text) result(atom)
+    use xiobuf_mod, only: cmon !< I/O units
+    use xunits_mod, only: ncvdu !< I/O units
     implicit none
     character(len=*), intent(in) :: text
     type(atom_t) :: atom
-    integer i, j
+    integer i, j, info
+    character(len=len(text)) :: buffer
+    character(len=split_len), dimension(:), allocatable :: elements
+    character(len=128) :: msgstatus
+
+    call atom%init()
 
     i = index(text, '(')
     j = index(text, ')')
 
     if (i > 0 .and. j > 0) then
-      atom%label = text(1:i-1)
-      read (text(i+1:j-1), *) atom%serial
+      buffer = text(i+1:j-1)
+      atom%label = adjustl(text(1:i-1))
+      call explode(buffer, split_len, elements, ',', .false.)
+      if (size(elements) > 6) then
+        write (cmon, '(A,A,A)') '{E Error: ', trim(text), ' is not a valid atom name'
+        call xprvdu(ncvdu, 1, 0)
+        atom%serial = -1
+        return
+      end if
+      do j = 1, size(elements)
+        if (trim(elements(j)) /= '') then
+          select case (j)
+          case (1) ! serial
+            read (elements(j), *, iostat=info, iomsg=msgstatus) atom%serial
+            if (atom%serial < 0) then
+              info = -1
+              msgstatus = 'Negative serial number is not valid'
+            end if
+          case (2) ! symmetry operator provided in the unit cell symmetry LIST 2
+            read (elements(j), *, iostat=info, iomsg=msgstatus) atom%sym_op%S
+          case (3) ! the non-primitive lattice translation that is to be added
+            read (elements(j), *, iostat=info, iomsg=msgstatus) atom%sym_op%L
+            if (atom%sym_op%L < 1 .or. atom%sym_op%L > 4) then
+              info = -1
+              msgstatus = 'Lattice translation number is not valid'
+            end if
+          case (4)
+            read (elements(j), *, iostat=info, iomsg=msgstatus) atom%sym_op%translation(1)
+          case (5)
+            read (elements(j), *, iostat=info, iomsg=msgstatus) atom%sym_op%translation(2)
+          case (6)
+            read (elements(j), *, iostat=info, iomsg=msgstatus) atom%sym_op%translation(3)
+          case default
+            atom%serial = -1
+            return
+          end select
+          if (info /= 0) then ! error when reading one of the values
+            write (cmon, '(A,A,A)') '{E Error: ', trim(text), ' is not a valid atom name'
+            call xprvdu(ncvdu, 1, 0)
+            write (cmon, '(A,A)') '{E ', trim(msgstatus)
+            call xprvdu(ncvdu, 1, 0)
+            atom%serial = -1
+            return
+          end if
+        end if
+      end do
     else
-      atom%label = text
+      atom%serial = -1
+      return
     end if
 
+    call atom%sym_mat_update(info)
+    if (info /= 0) then
+      atom%serial = -1
+      return
+    end if
   end function
+
+  subroutine atom_update_sym_mat(self, ierror)
+    use xlst02_mod, only: n2, l2, md2, l2p, n2p, md2p
+    use xunits_mod, only: ierflg
+    use store_mod, only: store
+    use xiobuf_mod, only: cmon !< I/O units
+    use xunits_mod, only: ncvdu !< I/O units
+    implicit none
+    class(atom_t), intent(inout) :: self
+    integer, intent(out) :: ierror
+    integer i, j
+
+    ierror = 0
+    i = l2+(md2*(abs(self%sym_op%S)-1))
+    j = l2p+(md2p*(self%sym_op%L-1))
+
+    if (i > l2+((n2-1)*md2) .or. i < l2) then
+      write (cmon, '(A,I0)') '{E Error: invalid symmetry operator index ', self%sym_op%S
+      call xprvdu(ncvdu, 1, 0)
+      ierror = -1
+      return
+    end if
+    if (j > l2p+((n2p-1)*md2p) .or. j < l2p) then
+      write (cmon, '(A,I0)') '{E Error: invalid lattice translation index ', self%sym_op%L
+      call xprvdu(ncvdu, 1, 0)
+      ierror = -1
+      return
+    end if
+
+    self%sym_mat%R = transpose(reshape(store(i:i+8), (/3, 3/)))
+    self%sym_mat%T = store(j:j+2)+self%sym_op%translation
+
+    if (self%sym_op%S < 0) then
+      self%sym_mat%R = -1.0*self%sym_mat%R
+    end if
+
+  end subroutine
 
 end module

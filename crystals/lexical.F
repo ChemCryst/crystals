@@ -546,6 +546,19 @@ c       write(ncwu,'(a,256a1)') 'o: ',(image(itemp),itemp=1,lastch)
 c       write(ncwu,'(a,64a4)') 'p: ',(STORE(itemp),
 c     1 itemp=nxtcdi,nxtcdi+lastch/4)
 
+      ! on the fly substitution for restraints
+      ! alphabetic haracters only, no spaces
+      if (kexist(41).gt.0 .and. kexist(5).gt.0) then
+        write(ctemp, '("(",I0,"A1)")') size(image)
+        write(image_text, ctemp) image      
+        call lexical_preprocessing(image_text, ierror)
+        if(ierror<0) then
+          istat = -1
+          goto 9900
+        end if
+        read(image_text, ctemp) image
+      end if ! end check of list 41 and 5
+
 C
 C--- LOOK FOR 'REM' OR 'SMILES'
       IF ((KCOMP (3, IMAGE(1), KREM(1), 1, 3) .GT. 0) .or.
@@ -571,19 +584,6 @@ C----- RESET ISKIP TO NON-MESSAGE STATUS
       ISKIP = 0
 C----- INITIALISE THE OPERATOR STATUS
       MA = 0
-
-      ! on the fly substitution for restraints
-      ! alphabetic haracters only, no spaces
-      if (kexist(41).gt.0 .and. kexist(5).gt.0) then
-        write(ctemp, '("(",I0,"A1)")') size(image)
-        write(image_text, ctemp) image      
-        call lexical_preprocessing(image_text, ierror)
-        if(ierror<0) then
-          istat = -1
-          goto 9900
-        end if
-        read(image_text, ctemp) image
-      end if ! end check of list 41 and 5
       
 1750  CONTINUE
 C
