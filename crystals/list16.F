@@ -361,7 +361,7 @@ C  29.UZZBAR        30. UPERP        31.unused        32.ULIJ
 C  33.UALIGN        34.URIGU         35.UPLANE        36.UXXQIV        
 C  37.UXYQIV        38.UXZQIV        39.UYYQIV        40.UYZQIV        
 C  41.UZZQIV        42.UEIG          43.UQISO         44.UVOL
-C  45.UEQIV         46.UTLS          47.XCHIV         47.XRIGU(virtual)
+C  45.UEQIV         46.UTLS          47.XCHIV         48.XRIGU(virtual)
 C
 C----- ISTORE (LCG+1) OPERATIONS 
 c      Note that some correspond to several MG values.
@@ -1632,7 +1632,7 @@ C--CHECK FOR AN ARGUMENT
       IF(ME)2550,2550,22751
 C--SEE IF WE CAN READ A NUMBER
 22751 CONTINUE
-      IF(KSYNUM(Z))2700,22752,2700
+      IF(KSYNUM(Z))22755,22752,2700
 C--A NUMBER HAS BEEN READ  -  IT MUST BE THE TARGET OR ESD
 22752 CONTINUE
       ME=ME-1
