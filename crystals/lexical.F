@@ -377,6 +377,7 @@ C
 C--
 C--
       use xlexical_mod, only: lexical_preprocessing
+      use xlexical_mod, only: restraints_list, restraints_list_index
       use store_mod, only: istore=>i_store, store, c_store, i_store_set
       use store_mod, only: lfl
       use xopval_mod, only: iopcry, iopint, iopspc
