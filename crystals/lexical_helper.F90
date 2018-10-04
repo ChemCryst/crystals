@@ -121,6 +121,15 @@ contains
     if (restraints_list(restraints_list_index)%type == '') then
       restraints_list(restraints_list_index)%type = restraints_list(restraints_list_index)%original
     end if
+    
+    if(image_text(1:4)=='REM ') then
+      ! ignore comments
+      associate (restraint=>restraints_list(restraints_list_index))
+        allocate (character(len=len_trim(image_text)) :: restraint%processed)
+        restraint%processed = trim(image_text)
+      end associate
+      return
+    end if
 
     ! Look for variable definition: define a = 0.01
     call define_variable(image_text, ierror)
