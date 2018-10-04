@@ -557,6 +557,16 @@ c     1 itemp=nxtcdi,nxtcdi+lastch/4)
           goto 9900
         end if
         read(image_text, ctemp) image
+        
+        ! This is a bit risky
+        ! If for some reason the restraint has been commented out
+        ! the type of restraint is changed to rem in list61
+        if(image_text(1:4)=='REM ') then
+          if(restraints_list(restraints_list_index)%original/=
+     1      restraints_list(restraints_list_index)%processed) then
+            call i_store_set(MR61+11, 120)
+          end if
+        end if
       end if ! end check of list 41 and 5
 
 C

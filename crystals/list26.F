@@ -2113,6 +2113,8 @@ CODE FOR XAPP16
       SUBROUTINE XAPP16(savederivativesarg)
       use lists1_mod, only: xrlind, klschk
       use list26_mod
+      use xlexical_mod, only:lexical_list => restraints_list
+      use xlexical_mod, only:lexical_list_index => restraints_list_index
 C--APPLY THE RESTRAINTS
 C
 C  THIS SUBROUTINE READS DOWN THE LIST 26 AND CALCULATES THE
@@ -2360,7 +2362,17 @@ C--JUMP ON THE FUNCTION
           do i=1, IBUFF(6)
             if(i==IBUFF(6)) eol=''
             CALL XDOWNF(L,CARD(1),IBUFF(5)) ! loading data from disc to card
-            WRITE(CLINE,fline)  CARD ! transfering fata to text
+            WRITE(CLINE,fline)  CARD ! transfering data to text
+            
+            ! cline migh not be the output of the lexical scanner if pre-processing has been done, see lexical_helper.F90
+            ! looking in the restraint look up table if substitutions have been done, if so, print out what is processed
+            ! not the original restraint
+            do icpt=1, lexical_list_index
+              if(lexical_list(icpt)%original==cline) then
+                cline=lexical_list(icpt)%processed
+              end if
+            end do            
+            
             restraints_list(idjwtemp)%restraint_text=
      &      trim(restraints_list(idjwtemp)%restraint_text)//
      &      trim(cline)//eol

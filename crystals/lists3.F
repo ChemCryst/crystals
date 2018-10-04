@@ -1003,6 +1003,7 @@ C--UPDATE FOR THE NEXT ARGUMENT
 C
 CODE FOR XPRTLC
       SUBROUTINE XPRTLC(NUMB,IADDD,LENGRP,NGRP)
+      use xlexical_mod, only: restraints_list, restraints_list_index
 C--PRINT A CARD IMAGE PRODUCED BY THE LEXICAL SCANNER.
 C
 C  NUMB    THE CARD NUMBER. Decremented by 1 for REM cards
@@ -1045,6 +1046,16 @@ C--FIRST CARD
 1150  CONTINUE
       WRITE(CLINE, 1200) NUMB, CARD
 1200  FORMAT(I5, 1X, 20A4)
+
+      ! cline migh not be the output of the lexical scanner if pre-processing has been done, see lexical_helper.F90
+      ! looking in the restraint look up table if substitutions have been done, if so, print out what is processed
+      ! not the original restraint
+      do icpt=1, restraints_list_index
+        if(restraints_list(icpt)%original==cline(7:)) then
+          write(cline,'(I5,1X,A)') numb, restraints_list(icpt)%processed
+        end if
+      end do
+
 cdjw - dont increment REM cards
       if(cline(7:10).eq.'REM ')then 
             numb=numb-1
@@ -1056,9 +1067,20 @@ C--NOT THE FIRST CARD
 1250  CONTINUE
       WRITE(CLINE, 1300) CARD
 1300  FORMAT(8X,20A4)
+
+      ! cline migh not be the output of the lexical scanner if pre-processing has been done, see lexical_helper.F90
+      ! looking in the restraint look up table if substitutions have been done, if so, print out what is processed
+      ! not the original restraint
+      do icpt=1, restraints_list_index
+        if(restraints_list(icpt)%original==cline) then
+          cline=restraints_list(icpt)%processed
+        end if
+      end do
+
 1400  CONTINUE
       CALL XCTRIM (CLINE, NCHARS)
 cdjwMar2010 - allow full line length
+
       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(1X,A)')  CLINE(1:NCHARS)
          WRITE(NCAWU,'(1X,A)')  CLINE(1:NCHARS)
          WRITE ( CMON, '(1X,A)') CLINE(1:NCHARS)
