@@ -380,6 +380,7 @@ C      37 UQISO     38 UVOL      39 UEQIV    40 UTLS
 C      41 XCHIV     42 XRIGU(virtual)
 C
 C  X??? Restraints are shelxl restraints
+C  Virtual restraints don't do anything here. They are substituted by another restraint before hand.
 C
 C Don't forget to chage coperation in preset.F and XL26WK.INC!!
 C

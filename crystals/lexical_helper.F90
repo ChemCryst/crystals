@@ -44,6 +44,8 @@ module xlexical_mod
     type(sym_mat_t) :: sym_mat !< symmetry operator in matrix form
     integer :: ref !< a ref number used when building pairs
     integer :: bond !< type of bond when used in pairs
+    integer :: part
+    integer :: resi
   contains
     procedure :: init => init_atom !< initialise object
     procedure :: text => atom_text !< pretty print
@@ -330,20 +332,20 @@ contains
               left%serial = nint(store(ia1+1))
               left%ref = i
               left%bond = istore(m41b+12)
-              left%sym_op%S = istore(m41b+1)
-              left%sym_op%L = istore(m41b+2)
+              left%sym_op%S = nint(store(m41b+1))
+              left%sym_op%L = nint(store(m41b+2))
               left%sym_op%translation = store(m41b+3:m41b+5)
             end if
           else
             if (atoms(i)%serial == nint(store(ia1+1)) .and. &
-            & atoms(i)%sym_op%S == istore(ia1+2) .and. atoms(i)%sym_op%L == istore(ia1+3)) then
+            & atoms(i)%sym_op%S == nint(store(ia1+2)) .and. atoms(i)%sym_op%L == nint(store(ia1+3))) then
               ! left has not been assigned yet atom(i) is not used in right
               left%label = c_store(ia1)
               left%serial = nint(store(ia1+1))
               left%ref = i
               left%bond = istore(m41b+12)
-              left%sym_op%S = istore(m41b+1)
-              left%sym_op%L = istore(m41b+2)
+              left%sym_op%S = nint(store(m41b+1))
+              left%sym_op%L = nint(store(m41b+2))
               left%sym_op%translation = store(m41b+3:m41b+5)
             end if
           end if
@@ -358,20 +360,20 @@ contains
               right%serial = nint(store(ia2+1))
               right%ref = i
               right%bond = istore(m41b+12)
-              right%sym_op%S = istore(m41b+7)
-              right%sym_op%L = istore(m41b+8)
+              right%sym_op%S = nint(store(m41b+7))
+              right%sym_op%L = nint(store(m41b+8))
               right%sym_op%translation = store(m41b+9:m41b+11)
             end if
           else
             if (atoms(i)%serial == nint(store(ia2+1)) .and. &
-            & atoms(i)%sym_op%S == istore(ia2+2) .and. atoms(i)%sym_op%L == istore(ia2+3)) then
+            & atoms(i)%sym_op%S == nint(store(ia2+2)) .and. atoms(i)%sym_op%L == nint(store(ia2+3))) then
               ! right has not been assigned yet atom(i) is not used in left
               right%label = c_store(ia2)
               right%serial = nint(store(ia2+1))
               right%ref = i
               right%bond = istore(m41b+12)
-              right%sym_op%S = istore(m41b+7)
-              right%sym_op%L = istore(m41b+8)
+              right%sym_op%S = nint(store(m41b+7))
+              right%sym_op%L = nint(store(m41b+8))
               right%sym_op%translation = store(m41b+9:m41b+11)
             end if
           end if
@@ -454,8 +456,8 @@ contains
               left%label = c_store(ia1)
               left%serial = nint(store(ia1+1))
               left%ref = i
-              left%sym_op%S = istore(m41b_1+1)
-              left%sym_op%L = istore(m41b_1+2)
+              left%sym_op%S = nint(store(m41b_1+1))
+              left%sym_op%L = nint(store(m41b_1+2))
               left%sym_op%translation = store(m41b_1+3:m41b_1+5)
             end if
           else if (atoms(i)%serial == nint(store(ia1+1))) then
@@ -463,8 +465,8 @@ contains
             left%label = c_store(ia1)
             left%serial = nint(store(ia1+1))
             left%ref = i
-            left%sym_op%S = istore(m41b_1+1)
-            left%sym_op%L = istore(m41b_1+2)
+            left%sym_op%S = nint(store(m41b_1+1))
+            left%sym_op%L = nint(store(m41b_1+2))
             left%sym_op%translation = store(m41b_1+3:m41b_1+5)
           end if
         end if
@@ -479,8 +481,8 @@ contains
               right%label = c_store(ia3)
               right%serial = nint(store(ia3+1))
               right%ref = i
-              right%sym_op%S = istore(m41b_3+7)
-              right%sym_op%L = istore(m41b_3+8)
+              right%sym_op%S = nint(store(m41b_3+7))
+              right%sym_op%L = nint(store(m41b_3+8))
               right%sym_op%translation = store(m41b_3+9:m41b_3+11)
             end if
           else if (atoms(i)%serial == nint(store(ia3+1))) then
@@ -488,8 +490,8 @@ contains
             right%label = c_store(ia3)
             right%serial = nint(store(ia3+1))
             right%ref = i
-            right%sym_op%S = istore(m41b_3+7)
-            right%sym_op%L = istore(m41b_3+8)
+            right%sym_op%S = nint(store(m41b_3+7))
+            right%sym_op%L = nint(store(m41b_3+8))
             right%sym_op%translation = store(m41b_3+9:m41b_3+11)
           end if
         end if
@@ -651,11 +653,13 @@ contains
     self%label = ''
     self%serial = -1
     self%sym_op%S = 1
-    self%sym_op%L = 1
+    self%sym_op%L = 0
     self%sym_op%translation = 0.0
     self%sym_mat%R = 0.0
     self%sym_mat%T = 0.0
     self%ref = -1
+    self%part = -1
+    self%resi = -1
   end subroutine
 
   !> pretty print for atom_t type
@@ -846,21 +850,26 @@ contains
     end do
   end subroutine
 
-  !> expand generic atoms name. only C(*) == all C is implemented
+  !> expand generic atoms name. 
+  !! - C(*) == all C atoms
+  !! - C(part=i) all C atoms in part i
+  !! - C(resi=i) all C atoms in residue i
   subroutine expand_atoms_names(image_text, ierror)
-    use store_mod, only: store
+    use store_mod, only: store, istore => i_store
     use xlst05_mod, only: l5, md5, n5 !< atomic model
     use xiobuf_mod, only: cmon !< I/O units
     use xunits_mod, only: ncvdu !< I/O units
     implicit none
     character(len=*), intent(inout) :: image_text
+    character(len=len(image_text)) :: buffer
     integer, intent(out) :: ierror
     character(len=split_len), dimension(:), allocatable :: elements
-    integer m5
+    integer m5, k
     character(len=16) :: atom_name
     integer pattern_start
     integer i, j
     character(len=64) :: var_name
+    type(atom_t) :: atom, atom_l5
 
     ierror = 0
 
@@ -889,23 +898,52 @@ contains
           end if
 
           ! look for all atoms with same type
-          if (n5 > 0) then
-            m5 = l5
-            do j = 1, n5
-              if (transfer(store(m5), '    ') == var_name) then
-                write (atom_name, '(A,"(",I0,")")') trim(transfer(store(m5), '    ')), &
-                & nint(store(m5+1))
-                image_text = trim(image_text)//' '//trim(atom_name)
-              end if
-              m5 = m5+md5
-            end do
-          end if
+          m5 = l5
+          do j = 1, n5
+            if (transfer(store(m5), '    ') == var_name) then
+              write (atom_name, '(A,"(",I0,")")') trim(transfer(store(m5), '    ')), &
+              & nint(store(m5+1))
+              image_text = trim(image_text)//' '//trim(atom_name)
+            end if
+            m5 = m5+md5
+          end do
         else
           image_text = trim(image_text)//' '//elements(i)
         end if
       end do
       image_text = adjustl(image_text)
     end if
+    
+    ! split atom list
+    call explode(image_text, split_len, elements)
+    buffer=elements(1)
+    do i = 2, size(elements)
+      atom = read_atom(trim(elements(i)))
+      if(atom%part>0 .or. atom%resi>0) then
+      
+        m5 = l5
+        do k = 1, n5
+          write(atom_l5%label, '(A4)') store(m5)
+          atom_l5%serial = nint(store(m5+1))
+          atom_l5%part = istore(m5+14)
+          atom_l5%resi = istore(m5+16)
+          
+          if(atom%part>0 .and. atom_l5%part==atom%part) then
+            write(atom_name, '(A,"(",I0,")")') trim(atom_l5%label), atom_l5%serial
+            buffer=trim(buffer)//' '//trim(atom_name)
+          else if(atom%resi>0 .and. atom_l5%resi==atom%resi) then
+            write(atom_name, '(A,"(",I0,")")') trim(atom_l5%label), atom_l5%serial
+            buffer=trim(buffer)//' '//trim(atom_name)
+          end if
+          m5 = m5 + md5
+        end do
+      
+      else
+        buffer=trim(buffer)//' '//trim(elements(i))
+      end if
+    end do
+    image_text = buffer
+    
   end subroutine
 
   !> expand XCHIV restraints. look for the 3 neighbours.
@@ -1164,7 +1202,7 @@ contains
     implicit none
     character(len=*), intent(in) :: text
     type(atom_t) :: atom
-    integer i, j, info
+    integer i, j, n, info, eoffset
     character(len=len(text)) :: buffer
     character(len=split_len), dimension(:), allocatable :: elements
     character(len=128) :: msgstatus
@@ -1184,33 +1222,48 @@ contains
         atom%serial = -1
         return
       end if
+      eoffset=0
       do j = 1, size(elements)
         if (trim(elements(j)) /= '') then
-          select case (j)
-          case (1) ! serial
-            read (elements(j), *, iostat=info, iomsg=msgstatus) atom%serial
-            if (atom%serial < 0) then
-              info = -1
-              msgstatus = 'Negative serial number is not valid'
+          if(index(elements(j), 'PART')>0) then
+            n = index(elements(j), '=')
+            if(n>0) then
+              read (elements(j)(n+1:), *, iostat=info, iomsg=msgstatus) atom%part
+              eoffset=eoffset+1
             end if
-          case (2) ! symmetry operator provided in the unit cell symmetry LIST 2
-            read (elements(j), *, iostat=info, iomsg=msgstatus) atom%sym_op%S
-          case (3) ! the non-primitive lattice translation that is to be added
-            read (elements(j), *, iostat=info, iomsg=msgstatus) atom%sym_op%L
-            if (atom%sym_op%L < 1 .or. atom%sym_op%L > 4) then
-              info = -1
-              msgstatus = 'Lattice translation number is not valid'
+          else if(index(elements(j), 'RESI')>0) then
+            n = index(elements(j), '=')
+            if(n>0) then
+              read (elements(j)(n+1:), *, iostat=info, iomsg=msgstatus) atom%resi
+              eoffset=eoffset+1
             end if
-          case (4)
-            read (elements(j), *, iostat=info, iomsg=msgstatus) atom%sym_op%translation(1)
-          case (5)
-            read (elements(j), *, iostat=info, iomsg=msgstatus) atom%sym_op%translation(2)
-          case (6)
-            read (elements(j), *, iostat=info, iomsg=msgstatus) atom%sym_op%translation(3)
-          case default
-            atom%serial = -1
-            return
-          end select
+          else
+            select case (j)
+            case (1) ! serial
+              read (elements(j), *, iostat=info, iomsg=msgstatus) atom%serial
+              if (atom%serial < 0) then
+                info = -1
+                msgstatus = 'Negative serial number is not valid'
+              end if
+            case (2) ! symmetry operator provided in the unit cell symmetry LIST 2
+              read (elements(j), *, iostat=info, iomsg=msgstatus) atom%sym_op%S
+            case (3) ! the non-primitive lattice translation that is to be added
+              read (elements(j), *, iostat=info, iomsg=msgstatus) atom%sym_op%L
+              if (atom%sym_op%L < 1 .or. atom%sym_op%L > 4) then
+                info = -1
+                msgstatus = 'Lattice translation number is not valid'
+              end if
+            case (4)
+              read (elements(j), *, iostat=info, iomsg=msgstatus) atom%sym_op%translation(1)
+            case (5)
+              read (elements(j), *, iostat=info, iomsg=msgstatus) atom%sym_op%translation(2)
+            case (6)
+              read (elements(j), *, iostat=info, iomsg=msgstatus) atom%sym_op%translation(3)
+            case default
+              atom%serial = -1
+              return
+            end select
+          end if
           if (info /= 0) then ! error when reading one of the values
             write (cmon, '(A,A,A)') '{E Error: ', trim(text), ' is not a valid atom name'
             call xprvdu(ncvdu, 1, 0)
@@ -1246,8 +1299,12 @@ contains
 
     ierror = 0
     i = l2+(md2*(abs(self%sym_op%S)-1))
-    j = l2p+(md2p*(self%sym_op%L-1))
-
+    if(self%sym_op%L==0) then
+      j = l2p+(md2p*(self%sym_op%L))
+    else
+      j = l2p+(md2p*(self%sym_op%L-1))
+    end if
+    
     if (i > l2+((n2-1)*md2) .or. i < l2) then
       write (cmon, '(A,I0)') '{E Error: invalid symmetry operator index ', self%sym_op%S
       call xprvdu(ncvdu, 1, 0)
