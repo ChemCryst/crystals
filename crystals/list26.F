@@ -2356,12 +2356,12 @@ C--JUMP ON THE FUNCTION
           if(allocated(card)) deallocate(card)
           allocate(card(ibuff(5)))
           if(allocated(cline)) deallocate(cline)
-          allocate(character(len=ibuff(5)*4) :: cline)
           write(fline, "(A, I0, A)") "(",ibuff(5),"A4)"
           eol=char(10)
           do i=1, IBUFF(6)
             if(i==IBUFF(6)) eol=''
             CALL XDOWNF(L,CARD(1),IBUFF(5)) ! loading data from disc to card
+            allocate(character(len=ibuff(5)*4) :: cline) !weird, cline got reallocated some how and can be too short
             WRITE(CLINE,fline)  CARD ! transfering data to text
             
             ! cline migh not be the output of the lexical scanner if pre-processing has been done, see lexical_helper.F90
@@ -2376,6 +2376,7 @@ C--JUMP ON THE FUNCTION
             restraints_list(idjwtemp)%restraint_text=
      &      trim(restraints_list(idjwtemp)%restraint_text)//
      &      trim(cline)//eol
+            deallocate(cline)
             L=L+KINCRF(IBUFF(5)) ! calculating next address 
           end do 
        
