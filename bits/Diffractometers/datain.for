@@ -800,68 +800,76 @@ C....... pull apart the site label into element and number
 C....... find out if one of two character element by checking
 C....... if 2nd char is a number:
 C....... Original label is in label(n,1)
-      iellen=2
-      do i=1,10
-        if (numer(i:i).eq.label(nsite,1)(2:2)) iellen=1
-      end do
+c#      iellen=2
+c#      do i=1,10
+c#        if (numer(i:i).eq.label(nsite,1)(2:2)) iellen=1
+c#      end do
 C........Store element type in label(n,2):
-      if (iellen == 2) then
-        c=label(nsite,1) (2:2)
-        icton = ichar(c)
+c#      if (iellen == 2) then
+c#        c=label(nsite,1) (2:2)
+c#        icton = ichar(c)
 C . If uppercase, make lowercase.
-        if ((icton < 91) .and. (icton > 64) ) then
-          icton = icton+32
-          c = char(icton)
-        end if
-        label(nsite,2)=label(nsite,1)(1:iellen)
-        label(nsite,2)(2:2) = c
-      else if (iellen == 1) then
-        label(nsite,2)=label(nsite,1)(1:iellen)
-      endif
+c#        if ((icton < 91) .and. (icton > 64) ) then
+c#          icton = icton+32
+c#          c = char(icton)
+c#        end if
+c#        label(nsite,2)=label(nsite,1)(1:iellen)
+c#        label(nsite,2)(2:2) = c
+c#      else if (iellen == 1) then
+c#        label(nsite,2)=label(nsite,1)(1:iellen)
+c#      endif
 c
-      iserialflag=0
-      buffer = ' '
+c#      iserialflag=0
+c#      buffer = ' '
 c
-      do j=iellen+1,iellen+6
-        buffer(j:j)=label(nsite,1)(j:j)
-
-        do i=1,nodchr
-          if (((label(nsite,1)(j:j)) .eq. charcCase(i:i)) .or.
-     *        ((label(nsite,1)(j:j)) .eq. charc(i:i))) then
-            buffer(j:j)=numer(i:i)
-            iserialflag=1
-            exit
-          endif
-        enddo
-                     
-        if (label(nsite,1)(j:j) == ' '.or.
-     *      label(nsite,1)(j:j) == '_' ) then    !First time through there is no serial
-            buffer(j:j)='0'
-            iserialflag=1
-            exit
-        end if
-
-        if (label(nsite,1)(j+1:j+1) == ' '.or.
-     *      label(nsite,1)(j+1:j+1) == '_' ) exit
-      enddo       
+c#      do j=iellen+1,iellen+6
+c#        buffer(j:j)=label(nsite,1)(j:j)
+c#
+c#        do i=1,nodchr
+c#          if (((label(nsite,1)(j:j)) .eq. charcCase(i:i)) .or.
+c#     *        ((label(nsite,1)(j:j)) .eq. charc(i:i))) then
+c#            buffer(j:j)=numer(i:i)
+c#            iserialflag=1
+c#            exit
+c#          endif
+c#        enddo
+c#                     
+c#        if (label(nsite,1)(j:j) == ' '.or.
+c#     *      label(nsite,1)(j:j) == '_' ) then    !First time through there is no serial
+c#            buffer(j:j)='0'
+c#            iserialflag=1
+c#            exit
+c#        end if
+c#
+c#        if (label(nsite,1)(j+1:j+1) == ' '.or.
+c#     *      label(nsite,1)(j+1:j+1) == '_' ) exit
+c#      enddo       
 c
 C RIC03 - Removed duplicate label detection code. Use #EDIT 
 C instead. (See later)
-
+c
+c
+c
+c  Replacement subroutine to deal with XD cif files
+c
+      call cifatoms(label(nsite,1), label(nsite,2), label(nsite,3))
+c
+c
+c
 C-------------------------------
 C........Store serial number:
-      If (iserialflag==0) then
-        label(nsite,3)=label(nsite,1)(iellen+1:j)
-      else 
-        label(nsite,3)=buffer(iellen+1:j)
-      write(6, '(a,2x,a,2x,a,2x,a3,a)') ' atom name ',
-     *          label(nsite,1), ' changed to ',
-     *            label(nsite,2), label(nsite,3) 
-        write(ntext, '(a,2x,a,2x,a,2x,a3,a)') ' atom name ',
-     *          label(nsite,1), ' changed to ',
-     *            label(nsite,2), label(nsite,3) 
-
-      endif
+c#      If (iserialflag==0) then
+c#        label(nsite,3)=label(nsite,1)(iellen+1:j)
+c#      else 
+c#        label(nsite,3)=buffer(iellen+1:j)
+c#      write(6, '(a,2x,a,2x,a,2x,a3,a)') ' atom name ',
+c#     *          label(nsite,1), ' changed to ',
+c#     *            label(nsite,2), label(nsite,3) 
+c#        write(ntext, '(a,2x,a,2x,a,2x,a3,a)') ' atom name ',
+c#     *          label(nsite,1), ' changed to ',
+c#     *            label(nsite,2), label(nsite,3) 
+c#
+c#      endif
 c
       f2 = numb_('_atom_site_fract_x',  xf(nsite), sx)
       f2 = numb_('_atom_site_fract_y',  yf(nsite), sy).AND.(f2)
@@ -982,7 +990,7 @@ C
         JDKW=1
 C       25 CHARACTER USED IN TITLE AND CDATE
         IF(IDJW.GT.55) JDJW=MAX(1,IDJW-25)     
-      write(123,*)idjw,jdjw
+c      write(123,*)idjw,jdjw
         WRITE (NOUTF,'(//a,2X,A,2x,a)') '#TITLE ',
      1  INFIL(JDJW:IDJW),CDATE
       ENDIF
@@ -1604,6 +1612,51 @@ c
       return
       end
 c
+CODE FOR CIFATOMS
+c
+      subroutine cifatoms(cinput,cname,cserial)
+c
+C Written to replace existing code in oprder to cope with XD cif files
+c Extract characters until a number is found, then build number until
+c end of input or character found.
+c Ignore other characters
+c
+      logical numfound
+      character *(*) cinput
+      character *(*) cname
+      character *(*) cserial
+      character *32  clower
+      character *10  cnumer
+      character*26 calpha
+      data calpha / 'abcdefghijklmnopqrstuvwxyz' /
+      data cnumer / '0123456789' /
+c
+      numfound=.false.
+      inlen = nctrim(cinput)
+      call xcclwc(cinput, clower)
+C
+      nout=0
+      iserial=0
+      cname=' '
+      do i=1,inlen
+        j=index(calpha,clower(i:i))
+        if(j.ne.0) then
+          if (numfound.eqv. .false.) then
+            nout=nout+1
+            cname(nout:nout)=clower(i:i)
+          endif 
+       else
+          j=index(cnumer,clower(i:i))
+          if (j.ne.0) then
+            numfound=.true.
+            iserial=10*iserial+j-1
+          endif
+        endif
+      enddo
+      write(cserial,'(i6)') iserial
+      return
+      end
+C
 C=======================================================================
 #include "xgroup.for"
 #include "charact.for"

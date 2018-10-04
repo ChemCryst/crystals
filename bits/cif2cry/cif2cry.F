@@ -524,51 +524,57 @@ C....... pull apart the site label into element and number
 C....... find out if one of two character element by checking
 C....... if 2nd char is a number:
 C....... Original label is in label(n,1)
-      iellen=2
-      do i=1,10
-        if (numer(i:i).eq.label(nsite,1)(2:2)) iellen=1
-      end do
+c#      iellen=2
+c#      do i=1,10
+c#        if (numer(i:i).eq.label(nsite,1)(2:2)) iellen=1
+c#      end do
 C........Store element type in label(n,2):
-      if (iellen == 2) then
-        c=label(nsite,1) (2:2)
-        cton = ichar(c)
+c#      if (iellen == 2) then
+c#        c=label(nsite,1) (2:2)
+c#        cton = ichar(c)
 C . If uppercase, make lowercase.
-        if ((cton < 91) .and. (cton > 64) ) then
-          cton = cton+32
-          c = char(cton)
-        end if
-        label(nsite,2)=label(nsite,1)(1:iellen)
-        label(nsite,2)(2:2) = c
-      else if (iellen == 1) then
-        label(nsite,2)=label(nsite,1)(1:iellen)
-      endif
-        
-      serialflag=0
-      buffer = ' '
+c#        if ((cton < 91) .and. (cton > 64) ) then
+c#          cton = cton+32
+c#          c = char(cton)
+c#        end if
+c#        label(nsite,2)=label(nsite,1)(1:iellen)
+c#        label(nsite,2)(2:2) = c
+c#      else if (iellen == 1) then
+c#        label(nsite,2)=label(nsite,1)(1:iellen)
+c#      endif
+c#        
+c#      serialflag=0
+c#      buffer = ' '
+c#
+c#      do j=iellen+1,iellen+6
+c#        buffer(j:j)=label(nsite,1)(j:j)
+c#
+c#        do i=1,nodchr
+c#          if (((label(nsite,1)(j:j)) .eq. charcCase(i:i)) .or.
+c#     *        ((label(nsite,1)(j:j)) .eq. charc(i:i))) then
+c#            buffer(j:j)=numer(i:i)
+c#            serialflag=1
+c#            exit
+c#          endif
+c#        enddo
+c#                     
+c#        if (label(nsite,1)(j:j) == ' '.or.
+c#     *      label(nsite,1)(j:j) == '_' ) then    !First time through there is no serial
+c#            buffer(j:j)='0'
+c#            serialflag=1
+c#            exit
+c#        end if
+c#
+c#        if (label(nsite,1)(j+1:j+1) == ' '.or.
+c#     *      label(nsite,1)(j+1:j+1) == '_' ) exit
+c#      enddo       
 
-      do j=iellen+1,iellen+6
-        buffer(j:j)=label(nsite,1)(j:j)
-
-        do i=1,nodchr
-          if (((label(nsite,1)(j:j)) .eq. charcCase(i:i)) .or.
-     *        ((label(nsite,1)(j:j)) .eq. charc(i:i))) then
-            buffer(j:j)=numer(i:i)
-            serialflag=1
-            exit
-          endif
-        enddo
-                     
-        if (label(nsite,1)(j:j) == ' '.or.
-     *      label(nsite,1)(j:j) == '_' ) then    !First time through there is no serial
-            buffer(j:j)='0'
-            serialflag=1
-            exit
-        end if
-
-        if (label(nsite,1)(j+1:j+1) == ' '.or.
-     *      label(nsite,1)(j+1:j+1) == '_' ) exit
-      enddo       
-
+c# Replacement subroutine to deal with XD cif files
+c
+c
+      call cifatoms(label(nsite,1), label(nsite,2), label(nsite,3))
+c      write(123,'(3(a,3x))') 
+c     1 label(nsite,1), label(nsite,2), label(nsite,3)
 
 C RIC03 - Removed duplicate label detection code. Use #EDIT 
 C instead. (See later)
@@ -576,19 +582,19 @@ C instead. (See later)
 C-------------------------------
 
 C........Store serial number:
-      If (serialflag==0) then
-        label(nsite,3)=label(nsite,1)(iellen+1:j)
-      else 
-        label(nsite,3)=buffer(iellen+1:j)
-        write(6, '(a,2x,a,2x,a,2x,a3,a)') 'atom name',
-     *          label(nsite,1), 'changed to',
-     *            label(nsite,2), label(nsite,3) 
+c#      If (serialflag==0) then
+c#        label(nsite,3)=label(nsite,1)(iellen+1:j)
+c#      else 
+c#        label(nsite,3)=buffer(iellen+1:j)
+c#        write(6, '(a,2x,a,2x,a,2x,a3,a)') 'atom name',
+c#     *          label(nsite,1), 'changed to',
+c#     *            label(nsite,2), label(nsite,3) 
+c#
+c#        write(17, '(a,2x,a,2x,a,2x,a3,a)') 'atom name',
+c#     *          label(nsite,1), 'changed to',
+c#     *            label(nsite,2), label(nsite,3) 
 
-        write(17, '(a,2x,a,2x,a,2x,a3,a)') 'atom name',
-     *          label(nsite,1), 'changed to',
-     *            label(nsite,2), label(nsite,3) 
-
-      endif
+c#      endif
 
       f2 = numb_('_atom_site_fract_x',  xf(nsite), sx)
       f2 = numb_('_atom_site_fract_y',  yf(nsite), sy).AND.(f2)
@@ -996,3 +1002,107 @@ C<ric02>
       end if
 C<ric02/>
       end
+c
+c
+CODE FOR CIFATOMS
+c
+      subroutine cifatoms(cinput,cname,cserial)
+c
+C Written to replace existing code in oprder to cope with XD cif files
+c Extract characters until a number is found, then build number until
+c end of input or character found.
+c Ignore other characters
+c
+      logical numfound
+      character *(*) cinput
+      character *(*) cname
+      character *(*) cserial
+      character *32  clower
+      character *10  cnumer
+      character*26 calpha
+      data calpha / 'abcdefghijklmnopqrstuvwxyz' /
+      data cnumer / '0123456789' /
+c
+      numfound=.false.
+      inlen = nctrim(cinput)
+      call xcclwc(cinput, clower)
+C
+      nout=0
+      iserial=0
+      cname=' '
+      do i=1,inlen
+        j=index(calpha,clower(i:i))
+        if(j.ne.0) then
+          if (numfound.eqv. .false.) then
+            nout=nout+1
+            cname(nout:nout)=clower(i:i)
+          endif 
+       else
+          j=index(cnumer,clower(i:i))
+          if (j.ne.0) then
+            numfound=.true.
+            iserial=10*iserial+j-1
+          endif
+        endif
+      enddo
+      write(cserial,'(i6)') iserial
+      return
+      end
+C
+C
+C
+CODE FOR NCTRIM
+      INTEGER FUNCTION NCTRIM( CSOURC )
+C-- LENGTH OF ARGUMENT EXCLUDING TRAINING SPACES.
+C CODE COPIED FROM \BITS\CHARACT.FOR
+C------ TRIM OFF TRAILING SPACES
+C      CSOURC - SOURCE STRING
+C      NCHAR   - LAST NON-SPACE CHARACTER
+      CHARACTER *(*) CSOURC
+      CHARACTER *1 CBLANK
+      DATA CBLANK /' '/
+C
+      LENGTH = LEN (CSOURC)
+      IF (CSOURC(LENGTH:LENGTH) .NE. CBLANK) THEN
+          NCTRIM = LENGTH
+          RETURN
+      ENDIF
+      DO 100 I = LENGTH, 1, -1
+        IF (CSOURC(I:I) .NE. CBLANK) GOTO 200
+100   CONTINUE
+
+      I = 0
+
+200   CONTINUE
+      NCTRIM = I
+      RETURN
+      END
+c
+CODE FOR XCCLWC
+      SUBROUTINE XCCLWC ( CSOURC, CLOWER )
+C
+C -- CONVERT STRING TO LOWERCASE
+C
+C      CSOURC      SOURCE STRING TO BE CONVERTED
+C      CLOWER      RESULTANT STRING
+C
+      CHARACTER*(*) CSOURC,  CLOWER
+      CHARACTER*26 CALPHA , CEQUIV
+      DATA CALPHA / 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' /
+      DATA CEQUIV / 'abcdefghijklmnopqrstuvwxyz' /
+C
+C -- MOVE WHOLE STRING.
+C-ASSIGNING LOWER TO UPPER IS FORMALLY INVALID
+C      CLOWER = CSOURC
+      READ(CSOURC,'(A)') CLOWER
+C
+      LENGTH = MIN0 ( LEN ( CSOURC) , LEN ( CLOWER ) )
+C
+C -- SEARCH FOR UPPERCASE CHARACTERS AND CONVERT TO LOWERCASE
+      DO 2000 I = 1 , LENGTH
+        IPOS = INDEX ( CALPHA , CSOURC(I:I) )
+        IF ( IPOS .GT. 0 ) CLOWER(I:I) = CEQUIV(IPOS:IPOS)
+2000  CONTINUE
+      RETURN
+      END
+
