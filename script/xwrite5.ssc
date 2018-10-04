@@ -675,6 +675,10 @@
 %% Remember the L5 serial number - we will reset before refining
 %      COPY '#GENERALEDIT 5'                                                    
 %      COPY 'GETSERIAL OLDSER'                                                  
+%% Watch out for -ve serial numbers - retained lists                                     
+%      IF OLDSER .LE. 0 THEN
+%       EVALUATE OLDSER = - OLDSER
+%      END IF            
 %      COPY 'END'                                                               
 %%                                                                              
 %%                                                                              
