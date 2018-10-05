@@ -17,11 +17,12 @@ module xlexical_mod
   public restraints_list, restraints_list_index
 
   !> List of crystals bond definition
+  !!   10 = any type
   !!    1 = single  2= double  3=triple  4=quadruple
   !!    5 = aromatic      6 = polymeric single
-  !!    7 = delocalised   9 = pi-bond
-  character(len=2), dimension(8), parameter :: bond_list_definition = &
-  & (/'--', '==', '-=', '##', '@@', '&&', '~~', 'oo'/)
+  !!    7 = delocalised   8 = strange    9 = pi-bond
+  character(len=2), dimension(10), parameter :: bond_list_definition = &
+  & (/'--', '==', '-=', '##', '@@', '&&', '~~', '**', '::', '??'/)
 
   !> Symmetry operator as defined in crystals
   type sym_op_t
@@ -139,10 +140,10 @@ contains
     call substitue_variable(image_text, ierror)
     if (ierror /= 0) return
 
-    ! look for bonds definitions: C--H
+    ! look for bonds definitions: C--H, ...
     call replace_bonds(image_text)
 
-    ! expand atom names: C(*)
+    ! expand atom names: C(*), ...
     call expand_atoms_names(image_text, ierror)
 
     ! expand xchiv restraint
@@ -391,9 +392,11 @@ contains
 
       if (left%ref /= -1 .and. right%ref /= -1) then
         if (present(bond_type)) then
-          if (bond_type /= left%bond .or. bond_type /= right%bond) then
-            ! incorrect bond type, ignoring...
-            cycle
+          if(bond_type/=size(bond_list_definition)) then ! last bond type is any type
+            if (bond_type /= left%bond .or. bond_type /= right%bond) then
+              ! incorrect bond type, ignoring...
+              cycle
+            end if
           end if
         end if
 
@@ -688,7 +691,7 @@ contains
     use xunits_mod, only: ncvdu !< I/O units
     implicit none
     character(len=*), intent(inout) :: text
-    character(len=3) :: bond_type_text, left, right
+    character(len=4) :: bond_type_text, left, right
     integer bond_type, location, motif_len
     integer i, j
     ! atoms pairs
@@ -696,6 +699,10 @@ contains
     type(atom_t), dimension(:, :), allocatable :: pairs
     character(len=8000) :: replacement
     character(len=512) :: buffer
+    logical found, empty
+    
+    found = .false. ! true if a bond definition is found
+    empty=.true. ! true if all bond definitions are empty
 
     do ! loop until everything is found
       bond_type = -1
@@ -707,12 +714,21 @@ contains
           exit
         end if
       end do
+      
+      ! special case for -0- which is any bond like -10-
+      write (bond_type_text, '("-",I0,"-")') 0
+      if (index(text, bond_type_text) > 0) then
+        bond_type = size(bond_list_definition)
+      end if
 
       if (bond_type <= 0) then
         exit
+      else
+        found = .true. ! if true, we have found at least a bond definition
       end if
 
       ! we found a bond definition, we now fetch the atom type
+      ! get which bond text is used first, numeric or characters
       location = index(text, bond_list_definition(bond_type))
       if (location > 0) then
         motif_len = len(bond_list_definition(bond_type))
@@ -761,6 +777,7 @@ contains
           & trim(pairs(1, i)%label), pairs(1, i)%serial, &
           & trim(pairs(2, i)%label), pairs(2, i)%serial
           replacement = trim(replacement)//' '//trim(buffer)//','
+          empty = .false.
         end do
         replacement(len_trim(replacement):len_trim(replacement)) = ' '
 
@@ -770,6 +787,16 @@ contains
         text = text(1:i-1)//trim(replacement)//trim(text(j+1:))
       end if
     end do
+    
+    if(found .and. empty) then
+      ! nothing have been found, commenting out the restraint
+      write (cmon, '(A,A)') '{I No bond found in restraint:'
+      CALL XPRVDU(NCVDU, 1, 0)
+      write (cmon, '(A,A)') '{I ', trim(text)
+      CALL XPRVDU(NCVDU, 1, 0)
+      text = 'REM '//trim(text)
+    end if
+    
   end subroutine
 
   !> define a variable for later use using the DEFINE `restraint`

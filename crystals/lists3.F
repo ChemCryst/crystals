@@ -1004,6 +1004,7 @@ C
 CODE FOR XPRTLC
       SUBROUTINE XPRTLC(NUMB,IADDD,LENGRP,NGRP)
       use xlexical_mod, only: restraints_list, restraints_list_index
+      use xcards_mod, only: image
 C--PRINT A CARD IMAGE PRODUCED BY THE LEXICAL SCANNER.
 C
 C  NUMB    THE CARD NUMBER. Decremented by 1 for REM cards
@@ -1013,7 +1014,7 @@ C  NGRP    THE NUMBER OF REAL CARDS IN THIS LOGICAL CARD.
 C
 C--
 C
-      CHARACTER *88 CLINE
+      CHARACTER(len=size(image)) :: CLINE
       DIMENSION CARD(20)
 C
       INCLUDE 'XUNITS.INC'
