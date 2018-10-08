@@ -3822,6 +3822,8 @@ use crystal_data_m, only:hklf, crystals_fileunit
 implicit none
 character(len=*), intent(in) :: hklfile_path
 integer i
+! The backslash character causes problem in doxygen, using the following workaround instead
+character(len=1), parameter :: backslash = char(92) !< the back slash character 
 
 !# read in reflections
 !#CLOSE HKLI
@@ -3837,7 +3839,7 @@ integer i
 !#CLOSE HKLI
 !#SCRIPT XPROC6
 
-i=max(index(hklfile_path, "/", .true.), index(hklfile_path, "\", .true.))
+i=max(index(hklfile_path, "/", .true.), index(hklfile_path, backslash, .true.))
 
 write(crystals_fileunit, '(a)') '# read in reflections'
 write(crystals_fileunit, '(a)') '#CLOSE HKLI'
