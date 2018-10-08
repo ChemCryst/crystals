@@ -39,18 +39,24 @@ module xlexical_mod
 
   !> general atom type
   type atom_t
+    integer :: l5addr !< address in list 5 in store
     character(len=5) :: label !< atomic type
     integer :: serial !< serial number
     type(sym_op_t) :: sym_op !< symmetry operator
     type(sym_mat_t) :: sym_mat !< symmetry operator in matrix form
     integer :: ref !< a ref number used when building pairs
     integer :: bond !< type of bond when used in pairs
-    integer :: part
-    integer :: resi
+    integer :: part !< part number
+    integer :: resi !< residue number
   contains
     procedure :: init => init_atom !< initialise object
     procedure :: text => atom_text !< pretty print
     procedure :: sym_mat_update => atom_update_sym_mat !< update matrix notation using crystals notation (sym_op)
+    procedure, private :: atom_compare !< overload equivalence to compare atom type object
+    generic :: operator(==) => atom_compare
+    generic :: operator(/=) => atom_compare
+    generic :: operator( .eqv. ) => atom_compare
+    generic :: operator( .neqv. ) => atom_compare
   end type
 
   !> variable name and its value
@@ -64,7 +70,7 @@ module xlexical_mod
   type(variable_t), dimension(256) :: restraints_var_list
   integer :: restraints_var_list_index = 0 !< max index in restraints_var_list
 
-  logical :: list16_modified = .false.
+  logical :: list16_modified = .false. !< flag to notify a modification of the input
 
   public lexical_preprocessing, restraints_init, list16_modified
 
@@ -122,8 +128,8 @@ contains
     if (restraints_list(restraints_list_index)%type == '') then
       restraints_list(restraints_list_index)%type = restraints_list(restraints_list_index)%original
     end if
-    
-    if(image_text(1:4)=='REM ') then
+
+    if (image_text(1:4) == 'REM ') then
       ! ignore comments
       associate (restraint=>restraints_list(restraints_list_index))
         allocate (character(len=len_trim(image_text)) :: restraint%processed)
@@ -304,17 +310,17 @@ contains
   !> Get get pairs of atoms using the connectivity list
   subroutine get_pairs(atoms, pairs, bond_type)
     ! we assume list 5 and 41 already loaded
-    use xlst05_mod, only: l5, md5 !< atomic model
-    use xlst41_mod, only: m41b, l41b, n41b, md41b !< connectivity list
+    use xlst41_mod, only: l41b, n41b, md41b !< connectivity list
     use store_mod, only: istore => i_store, c_store, store
     implicit none
     type(atom_t), dimension(:), intent(in) :: atoms !< list of atoms to use
     type(atom_t), dimension(:, :), allocatable, intent(out) :: pairs !< pairs of atoms found
     integer, intent(in), optional :: bond_type !< optional bond type to look for
-    integer i, ia1, ia2
+    integer i
     type(atom_t) :: left, right
     type(atom_t), dimension(:, :), allocatable :: pairs_temp
-    integer pair_index
+    type(atom_t), dimension(2) :: bond_atoms
+    integer pair_index, m41b
 
     allocate (pairs_temp(2, 128))
     call pairs_temp%init()
@@ -327,64 +333,41 @@ contains
     end if
 
     do m41b = l41b, l41b+(n41b-1)*md41b, md41b
-      ia1 = l5+istore(m41b)*md5
-      ia2 = l5+istore(m41b+6)*md5
-
+      bond_atoms = load_atom_from_l41(m41b)
       call left%init()
       call right%init()
+
       do i = 1, size(atoms)
-        if (trim(atoms(i)%label) == trim(c_store(ia1))) then
+        if (trim(atoms(i)%label) == trim(bond_atoms(1)%label)) then
           if (atoms(i)%serial == -1) then
             ! found one side
             if (left%serial == -1 .and. right%ref /= i) then
               ! left has not been assigned yet atom(i) is not used in right
-              left%label = c_store(ia1)
-              left%serial = nint(store(ia1+1))
+              left = bond_atoms(1)
               left%ref = i
-              left%bond = istore(m41b+12)
-              left%sym_op%S = nint(store(m41b+1))
-              left%sym_op%L = nint(store(m41b+2))
-              left%sym_op%translation = store(m41b+3:m41b+5)
             end if
           else
-            if (atoms(i)%serial == nint(store(ia1+1)) .and. &
-            & atoms(i)%sym_op%S == nint(store(ia1+2)) .and. atoms(i)%sym_op%L == nint(store(ia1+3))) then
+            if (atoms(i) == bond_atoms(1)) then
               ! left has not been assigned yet atom(i) is not used in right
-              left%label = c_store(ia1)
-              left%serial = nint(store(ia1+1))
+              left = bond_atoms(1)
               left%ref = i
-              left%bond = istore(m41b+12)
-              left%sym_op%S = nint(store(m41b+1))
-              left%sym_op%L = nint(store(m41b+2))
-              left%sym_op%translation = store(m41b+3:m41b+5)
             end if
           end if
         end if
 
-        if (trim(atoms(i)%label) == trim(c_store(ia2))) then
+        if (trim(atoms(i)%label) == trim(bond_atoms(2)%label)) then
           if (atoms(i)%serial == -1) then
             ! found the other side
             if (right%serial == -1 .and. left%ref /= i) then
               ! right has not been assigned yet atom(i) is not used in left
-              right%label = c_store(ia2)
-              right%serial = nint(store(ia2+1))
+              right = bond_atoms(2)
               right%ref = i
-              right%bond = istore(m41b+12)
-              right%sym_op%S = nint(store(m41b+7))
-              right%sym_op%L = nint(store(m41b+8))
-              right%sym_op%translation = store(m41b+9:m41b+11)
             end if
           else
-            if (atoms(i)%serial == nint(store(ia2+1)) .and. &
-            & atoms(i)%sym_op%S == nint(store(ia2+2)) .and. atoms(i)%sym_op%L == nint(store(ia2+3))) then
+            if (atoms(i) == bond_atoms(2)) then
               ! right has not been assigned yet atom(i) is not used in left
-              right%label = c_store(ia2)
-              right%serial = nint(store(ia2+1))
+              right = bond_atoms(2)
               right%ref = i
-              right%bond = istore(m41b+12)
-              right%sym_op%S = nint(store(m41b+7))
-              right%sym_op%L = nint(store(m41b+8))
-              right%sym_op%translation = store(m41b+9:m41b+11)
             end if
           end if
         end if
@@ -392,7 +375,7 @@ contains
 
       if (left%ref /= -1 .and. right%ref /= -1) then
         if (present(bond_type)) then
-          if(bond_type/=size(bond_list_definition)) then ! last bond type is any type
+          if (bond_type /= size(bond_list_definition)) then ! last bond type is any type
             if (bond_type /= left%bond .or. bond_type /= right%bond) then
               ! incorrect bond type, ignoring...
               cycle
@@ -420,18 +403,16 @@ contains
   !> Get get 1,3 pairs of atoms using the precomputed 1,3 connectivity with get_connectivity_13
   subroutine get_pairs_13(atoms, connectivity_13, pairs)
     ! we assume list 5 and 41 already loaded
-    use xlst05_mod, only: l5, md5 !< atomic model
-    use xlst41_mod, only: m41b, l41b, n41b, md41b !< connectivity list
+    use xlst41_mod, only: l41b, n41b, md41b !< connectivity list
     use store_mod, only: istore => i_store, c_store, store
     implicit none
     type(atom_t), dimension(:), intent(in) :: atoms !< list of atoms to use
-    integer, dimension(:, :), intent(in) :: connectivity_13 !< 1,3 connectivity as calculated by get_connectivity_13
+    type(atom_t), dimension(:, :), intent(in) :: connectivity_13 !< 1,3 connectivity as calculated by get_connectivity_13
     type(atom_t), dimension(:, :), allocatable, intent(out) :: pairs !< pairs of 1,3 atoms found
-    integer i, j, ia1, ia3, m41b_1, m41b_3
+    integer i, j
     type(atom_t) :: left, right
     type(atom_t), dimension(:, :), allocatable :: pairs_temp
     integer pair_index
-    integer ia2
 
     allocate (pairs_temp(2, 128))
     call pairs_temp%init()
@@ -444,67 +425,43 @@ contains
     end if
 
     do j = 1, ubound(connectivity_13, 2)
-      !print *, '======================'
-      ia1 = connectivity_13(1, j)
-      m41b_1 = connectivity_13(2, j)
-      ia3 = connectivity_13(5, j)
-      m41b_3 = connectivity_13(6, j)
-      !print *, connectivity_13(:,j)
-      ia2 = connectivity_13(3, j)
-      !write(*, '(3(A4,1X,I0,1X))') store(ia1), int(store(ia1+1)), store(ia2), int(store(ia2+1)), store(ia3), int(store(ia3+1))
 
       call left%init()
       call right%init()
 
       do i = 1, size(atoms)
         !print *, atoms(i)%text()
-        if (trim(atoms(i)%label) == trim(c_store(ia1))) then
+        if (atoms(i)%label == connectivity_13(1, j)%label) then
           !print *, 'left ', atoms(i)%text()
           if (atoms(i)%serial == -1) then
             ! found one side
             if (left%serial == -1 .and. right%ref /= i) then
               ! left has not been assigned yet atom(i) is not used in right
               ! print *, 'left ', trim(c_store(ia1)), nint(store(ia1+1)), i, left%ref, right%ref
-              left%label = c_store(ia1)
-              left%serial = nint(store(ia1+1))
+              left = connectivity_13(1, j)
               left%ref = i
-              left%sym_op%S = nint(store(m41b_1+1))
-              left%sym_op%L = nint(store(m41b_1+2))
-              left%sym_op%translation = store(m41b_1+3:m41b_1+5)
             end if
-          else if (atoms(i)%serial == nint(store(ia1+1))) then
+          else if (atoms(i)%serial == connectivity_13(1, j)%serial) then
             ! print *, 'left ', trim(c_store(ia1)), nint(store(ia1+1)), i, left%ref, right%ref
-            left%label = c_store(ia1)
-            left%serial = nint(store(ia1+1))
+            left = connectivity_13(1, j)
             left%ref = i
-            left%sym_op%S = nint(store(m41b_1+1))
-            left%sym_op%L = nint(store(m41b_1+2))
-            left%sym_op%translation = store(m41b_1+3:m41b_1+5)
           end if
         end if
 
-        if (trim(atoms(i)%label) == trim(c_store(ia3))) then
+        if (trim(atoms(i)%label) == connectivity_13(3, j)%label) then
           !print *, 'right ', atoms(i)%text()
           if (atoms(i)%serial == -1) then
             ! found the other side
             if (right%serial == -1 .and. left%ref /= i) then
               ! print *, 'right ', trim(c_store(ia3)), nint(store(ia3+1)), i, left%ref, right%ref
               ! right has not been assigned yet atom(i) is not used in left
-              right%label = c_store(ia3)
-              right%serial = nint(store(ia3+1))
+              right = connectivity_13(3, j)
               right%ref = i
-              right%sym_op%S = nint(store(m41b_3+7))
-              right%sym_op%L = nint(store(m41b_3+8))
-              right%sym_op%translation = store(m41b_3+9:m41b_3+11)
             end if
-          else if (atoms(i)%serial == nint(store(ia3+1))) then
+          else if (atoms(i)%serial == connectivity_13(3, j)%serial) then
             ! print *, 'right ', trim(c_store(ia3)), nint(store(ia3+1)), i, left%ref, right%ref
-            right%label = c_store(ia3)
-            right%serial = nint(store(ia3+1))
+            right = connectivity_13(3, j)
             right%ref = i
-            right%sym_op%S = nint(store(m41b_3+7))
-            right%sym_op%L = nint(store(m41b_3+8))
-            right%sym_op%translation = store(m41b_3+9:m41b_3+11)
           end if
         end if
       end do
@@ -530,13 +487,13 @@ contains
   !> Get get 1,3 list of atoms using the connectivity list
   subroutine get_connectivity_13(connectivity_13)
     ! we assume list 5 and 41 already loaded
-    use xlst05_mod, only: l5, md5 !< atomic model
     use xlst41_mod, only: l41b, n41b, md41b !< connectivity list
     use store_mod, only: istore => i_store, c_store, store
     implicit none
-    integer, dimension(:, :), allocatable, intent(out) :: connectivity_13 !< list of 3 atoms vectors forming 1-3 connections
-    integer, dimension(:, :), allocatable :: connectivity_13_temp
-    integer m41b_1, m41b_2, ia1, ia2, ib1, ib2, connectivity_13_index
+    type(atom_t), dimension(:, :), allocatable, intent(out) :: connectivity_13 !< list of 3 atoms vectors forming 1-3 connections
+    type(atom_t), dimension(:, :), allocatable :: connectivity_13_temp
+    integer m41b_1, m41b_2, connectivity_13_index
+    type(atom_t), dimension(2) :: bond1_atoms, bond2_atoms
 
     if (md41b == 0) then
       ! no bonds
@@ -544,89 +501,65 @@ contains
       return
     end if
 
-    allocate (connectivity_13_temp(6, 128))
-    connectivity_13_temp = 0
+    allocate (connectivity_13_temp(3, 128))
     connectivity_13_index = 0
 
     do m41b_1 = l41b, l41b+(n41b-1)*md41b, md41b
-      ia1 = l5+istore(m41b_1)*md5
-      ia2 = l5+istore(m41b_1+6)*md5
+      bond1_atoms = load_atom_from_l41(m41b_1)
 
       do m41b_2 = l41b, l41b+(n41b-1)*md41b, md41b
         if (m41b_2 < m41b_1) then
           cycle
         end if
+        bond2_atoms = load_atom_from_l41(m41b_2)
 
-        ib1 = l5+istore(m41b_2)*md5
-        ib2 = l5+istore(m41b_2+6)*md5
-
-        if (ia1 == ib1 .and. ia2 /= ib2 .and. &
-        & istore(m41b_1+1) == istore(m41b_2+1) .and. &
-        & istore(m41b_1+2) == istore(m41b_2+2) .and. &
-        & all(abs(store(m41b_1+3:m41b_1+5)-store(m41b_2+3:m41b_2+5)) < 0.001)) then
+        if (bond1_atoms(1) == bond2_atoms(1) .and. &
+        & bond1_atoms(2) /= bond2_atoms(2)) then
 
           connectivity_13_index = connectivity_13_index+1
           if (connectivity_13_index > ubound(connectivity_13_temp, 2)) then
             call extend_connectivity(connectivity_13_temp)
           end if
-          connectivity_13_temp(1, connectivity_13_index) = ia2
-          connectivity_13_temp(2, connectivity_13_index) = m41b_1
-          connectivity_13_temp(3, connectivity_13_index) = ia1
-          connectivity_13_temp(4, connectivity_13_index) = m41b_1
-          connectivity_13_temp(5, connectivity_13_index) = ib2
-          connectivity_13_temp(6, connectivity_13_index) = m41b_2
-          !write(*, '(3(A4,1X,I0,1X))') store(ia2), int(store(ia2+1)), store(ia1), int(store(ia1+1)), store(ib2), int(store(ib2+1))
+          connectivity_13_temp(1, connectivity_13_index) = bond1_atoms(2)
+          connectivity_13_temp(2, connectivity_13_index) = bond1_atoms(1)
+          connectivity_13_temp(3, connectivity_13_index) = bond2_atoms(2)
+          !write(*,*) '1 ', bond1_atoms(2)%text(), bond1_atoms(1)%text(), bond2_atoms(1)%text(), bond2_atoms(2)%text()
 
-        else if (ia1 == ib2 .and. ia2 /= ib1 .and. &
-        & istore(m41b_1+1) == istore(m41b_2+1) .and. &
-        & istore(m41b_1+2) == istore(m41b_2+2) .and. &
-        & all(abs(store(m41b_1+3:m41b_1+5)-store(m41b_2+3:m41b_2+5)) < 0.001)) then
+        else if (bond1_atoms(2) == bond2_atoms(1) .and. &
+        & bond1_atoms(1) /= bond2_atoms(2)) then
 
           connectivity_13_index = connectivity_13_index+1
           if (connectivity_13_index > ubound(connectivity_13_temp, 2)) then
             call extend_connectivity(connectivity_13_temp)
           end if
-          connectivity_13_temp(1, connectivity_13_index) = ia2
-          connectivity_13_temp(2, connectivity_13_index) = m41b_1
-          connectivity_13_temp(3, connectivity_13_index) = ia1
-          connectivity_13_temp(4, connectivity_13_index) = m41b_1
-          connectivity_13_temp(5, connectivity_13_index) = ib1
-          connectivity_13_temp(6, connectivity_13_index) = m41b_2
-          !write(*, '(3(A4,1X,I0,1X))') store(ia2), int(store(ia2+1)), store(ia1), int(store(ia1+1)), store(ib1), int(store(ib1+1))
+          connectivity_13_temp(1, connectivity_13_index) = bond1_atoms(1)
+          connectivity_13_temp(2, connectivity_13_index) = bond1_atoms(2)
+          connectivity_13_temp(3, connectivity_13_index) = bond2_atoms(2)
+          !write(*,*) '2 ', bond1_atoms(1)%text(), bond1_atoms(2)%text(), bond2_atoms(1)%text(), bond2_atoms(2)%text()
 
-        else if (ia2 == ib1 .and. ia1 /= ib2 .and. &
-        & istore(m41b_1+1) == istore(m41b_2+1) .and. &
-        & istore(m41b_1+2) == istore(m41b_2+2) .and. &
-        & all(abs(store(m41b_1+3:m41b_1+5)-store(m41b_2+3:m41b_2+5)) < 0.001)) then
+        else if (bond1_atoms(1) == bond2_atoms(2) .and. &
+        & bond1_atoms(2) /= bond2_atoms(1)) then
 
           connectivity_13_index = connectivity_13_index+1
           if (connectivity_13_index > ubound(connectivity_13_temp, 2)) then
             call extend_connectivity(connectivity_13_temp)
           end if
-          connectivity_13_temp(1, connectivity_13_index) = ia1
-          connectivity_13_temp(2, connectivity_13_index) = m41b_1
-          connectivity_13_temp(3, connectivity_13_index) = ia2
-          connectivity_13_temp(4, connectivity_13_index) = m41b_1
-          connectivity_13_temp(5, connectivity_13_index) = ib2
-          connectivity_13_temp(6, connectivity_13_index) = m41b_2
-          !write(*, '(3(A4,1X,I0,1X))') store(ia1), int(store(ia1+1)), store(ia2), int(store(ia2+1)), store(ib2), int(store(ib2+1))
+          connectivity_13_temp(1, connectivity_13_index) = bond1_atoms(2)
+          connectivity_13_temp(2, connectivity_13_index) = bond1_atoms(1)
+          connectivity_13_temp(3, connectivity_13_index) = bond2_atoms(1)
+          !write(*,*) '3 ', bond1_atoms(2)%text(), bond1_atoms(1)%text(), bond2_atoms(2)%text(), bond2_atoms(1)%text()
 
-        else if (ia2 == ib2 .and. ia1 /= ib1 .and. &
-        & istore(m41b_1+1) == istore(m41b_2+1) .and. &
-        & istore(m41b_1+2) == istore(m41b_2+2) .and. &
-        & all(abs(store(m41b_1+3:m41b_1+5)-store(m41b_2+3:m41b_2+5)) < 0.001)) then
+        else if (bond1_atoms(2) == bond2_atoms(2) .and. &
+        & bond1_atoms(1) /= bond2_atoms(1)) then
 
           connectivity_13_index = connectivity_13_index+1
           if (connectivity_13_index > ubound(connectivity_13_temp, 2)) then
             call extend_connectivity(connectivity_13_temp)
           end if
-          connectivity_13_temp(1, connectivity_13_index) = ia1
-          connectivity_13_temp(2, connectivity_13_index) = m41b_1
-          connectivity_13_temp(3, connectivity_13_index) = ia2
-          connectivity_13_temp(4, connectivity_13_index) = m41b_1
-          connectivity_13_temp(5, connectivity_13_index) = ib1
-          connectivity_13_temp(6, connectivity_13_index) = m41b_2
-          !write(*, '(3(A4,1X,I0,1X))') store(ia1), int(store(ia1+1)), store(ia2), int(store(ia2+1)), store(ib1), int(store(ib1+1))
+          connectivity_13_temp(1, connectivity_13_index) = bond1_atoms(1)
+          connectivity_13_temp(2, connectivity_13_index) = bond1_atoms(2)
+          connectivity_13_temp(3, connectivity_13_index) = bond2_atoms(1)
+          !write(*,*) '4 ', bond1_atoms(1)%text(), bond1_atoms(2)%text(), bond2_atoms(2)%text(), bond2_atoms(1)%text()
 
         end if
       end do
@@ -646,12 +579,11 @@ contains
     !> Extend connectivity_13 array when full
     subroutine extend_connectivity(connectivity_13)
       implicit none
-      integer, dimension(:, :), allocatable, intent(inout) :: connectivity_13
-      integer, dimension(:, :), allocatable :: temp
+      type(atom_t), dimension(:, :), allocatable, intent(inout) :: connectivity_13
+      type(atom_t), dimension(:, :), allocatable :: temp
 
       call move_alloc(connectivity_13, temp)
       allocate (connectivity_13(6, size(temp)+128))
-      connectivity_13 = 0
       connectivity_13(:, 1:ubound(temp, 2)) = temp
 
     end subroutine
@@ -662,16 +594,17 @@ contains
   elemental subroutine init_atom(self)
     implicit none
     class(atom_t), intent(inout) :: self
+    self%l5addr = -1
     self%label = ''
     self%serial = -1
     self%sym_op%S = 1
-    self%sym_op%L = 0
+    self%sym_op%L = 1
     self%sym_op%translation = 0.0
     self%sym_mat%R = 0.0
     self%sym_mat%T = 0.0
     self%ref = -1
-    self%part = -1
-    self%resi = -1
+    self%part = 0
+    self%resi = 0
   end subroutine
 
   !> pretty print for atom_t type
@@ -681,7 +614,20 @@ contains
     character(len=:), allocatable ::atom_text
     character(len=256) :: buffer
 
-    write (buffer, '(A,"(",I0,")")') trim(self%label), self%serial
+    if (any(self%sym_op%translation /= 0.0)) then
+      write (buffer, '(A,"(",3(I0,","),2(F8.4,","),F8.4,")")') &
+      & trim(self%label), self%serial, self%sym_op%S, self%sym_op%L, self%sym_op%translation
+    else if (self%sym_op%L /= 1) then
+      write (buffer, '(A,"(",2(I0,","),I0,")")') &
+      & trim(self%label), self%serial, self%sym_op%S, self%sym_op%L
+    else if (self%sym_op%S /= 1) then
+      write (buffer, '(A,"(",1(I0,","),I0,")")') &
+      & trim(self%label), self%serial, self%sym_op%S
+    else
+      write (buffer, '(A,"(",I0,")")') &
+      & trim(self%label), self%serial
+    end if
+
     atom_text = trim(buffer)
   end function
 
@@ -700,9 +646,9 @@ contains
     character(len=8000) :: replacement
     character(len=512) :: buffer
     logical found, empty
-    
+
     found = .false. ! true if a bond definition is found
-    empty=.true. ! true if all bond definitions are empty
+    empty = .true. ! true if all bond definitions are empty
 
     do ! loop until everything is found
       bond_type = -1
@@ -714,7 +660,7 @@ contains
           exit
         end if
       end do
-      
+
       ! special case for -0- which is any bond like -10-
       write (bond_type_text, '("-",I0,"-")') 0
       if (index(text, bond_type_text) > 0) then
@@ -787,8 +733,8 @@ contains
         text = text(1:i-1)//trim(replacement)//trim(text(j+1:))
       end if
     end do
-    
-    if(found .and. empty) then
+
+    if (found .and. empty) then
       ! nothing have been found, commenting out the restraint
       write (cmon, '(A,A)') '{I No bond found in restraint:'
       CALL XPRVDU(NCVDU, 1, 0)
@@ -796,7 +742,7 @@ contains
       CALL XPRVDU(NCVDU, 1, 0)
       text = 'REM '//trim(text)
     end if
-    
+
   end subroutine
 
   !> define a variable for later use using the DEFINE `restraint`
@@ -886,7 +832,7 @@ contains
     end do
   end subroutine
 
-  !> expand generic atoms name. 
+  !> expand generic atoms name.
   !! - C(*) == all C atoms
   !! - C(part=i) all C atoms in part i
   !! - C(resi=i) all C atoms in residue i
@@ -949,37 +895,37 @@ contains
       end do
       image_text = adjustl(image_text)
     end if
-    
+
     ! split atom list
     call explode(image_text, split_len, elements)
-    buffer=elements(1)
+    buffer = elements(1)
     do i = 2, size(elements)
       atom = read_atom(trim(elements(i)))
-      if(atom%part>0 .or. atom%resi>0) then
-      
+      if (atom%part > 0 .or. atom%resi > 0) then
+
         m5 = l5
         do k = 1, n5
-          write(atom_l5%label, '(A4)') store(m5)
+          write (atom_l5%label, '(A4)') store(m5)
           atom_l5%serial = nint(store(m5+1))
           atom_l5%part = istore(m5+14)
           atom_l5%resi = istore(m5+16)
-          
-          if(atom%part>0 .and. atom_l5%part==atom%part) then
-            write(atom_name, '(A,"(",I0,")")') trim(atom_l5%label), atom_l5%serial
-            buffer=trim(buffer)//' '//trim(atom_name)
-          else if(atom%resi>0 .and. atom_l5%resi==atom%resi) then
-            write(atom_name, '(A,"(",I0,")")') trim(atom_l5%label), atom_l5%serial
-            buffer=trim(buffer)//' '//trim(atom_name)
+
+          if (atom%part > 0 .and. atom_l5%part == atom%part) then
+            write (atom_name, '(A,"(",I0,")")') trim(atom_l5%label), atom_l5%serial
+            buffer = trim(buffer)//' '//trim(atom_name)
+          else if (atom%resi > 0 .and. atom_l5%resi == atom%resi) then
+            write (atom_name, '(A,"(",I0,")")') trim(atom_l5%label), atom_l5%serial
+            buffer = trim(buffer)//' '//trim(atom_name)
           end if
-          m5 = m5 + md5
+          m5 = m5+md5
         end do
-      
+
       else
-        buffer=trim(buffer)//' '//trim(elements(i))
+        buffer = trim(buffer)//' '//trim(elements(i))
       end if
     end do
     image_text = buffer
-    
+
   end subroutine
 
   !> expand XCHIV restraints. look for the 3 neighbours.
@@ -994,12 +940,10 @@ contains
     integer, intent(out) :: ierror
     character(len=split_len), dimension(:), allocatable :: elements
     integer neighbour_address, neighbour_cpt
-    integer, dimension(6) :: xchiv_neighbours
-    integer lp, rp, i
-    character(len=3) :: label
-    integer serial
-    character(len=128) :: ctemp
-    integer ia1, ia2, j
+    type(atom_t), dimension(6) :: xchiv_neighbours
+    integer i, j
+    type(atom_t) :: atom
+    type(atom_t), dimension(2) :: bond_atoms
 
     ierror = 0
 
@@ -1019,27 +963,18 @@ contains
 
       image_text = trim(elements(1))
       do i = 2, size(elements)
-        lp = index(elements(i), '(')
-        rp = index(elements(i), ')')
-        if (lp > 0 .and. rp > 0) then
+        atom = read_atom(trim(elements(i)))
+        if (atom%serial /= -1) then
           ! explicit neighbours
-          label = elements(i) (1:lp-1)
-          read (elements(i) (lp+1:rp-1), *) serial
           neighbour_cpt = 0
-          xchiv_neighbours = 0
           DO M41B = L41B, L41B+(N41B-1)*MD41B, MD41B
-            IA1 = L5+ISTORE(M41B)*MD5
-            IA2 = L5+ISTORE(M41B+6)*MD5
+            bond_atoms = load_atom_from_l41(M41B)
 
             neighbour_address = -1
-            if (trim(label) == trim(c_store(IA1)) .and. serial == NINT(STORE(IA1+1))) then
-              if (trim(c_store(IA2)) /= 'H') then
-                neighbour_address = IA2
-              end if
-            else if (trim(label) == trim(c_store(IA2)) .and. serial == NINT(STORE(IA2+1))) then
-              if (trim(c_store(IA1)) /= 'H') then
-                neighbour_address = ia1
-              end if
+            if (bond_atoms(1) == atom .and. trim(bond_atoms(2)%label) /= 'H') then
+              neighbour_address = 2
+            else if (bond_atoms(2) == atom .and. trim(bond_atoms(1)%label) /= 'H') then
+              neighbour_address = 1
             end if
 
             if (neighbour_address > 0) then
@@ -1047,16 +982,14 @@ contains
               if (neighbour_cpt > 6) then
                 exit
               end if
-              xchiv_neighbours(neighbour_cpt) = neighbour_address
+              xchiv_neighbours(neighbour_cpt) = bond_atoms(neighbour_address)
             end if
           end do
 
           if (neighbour_cpt == 3) then ! xchiv requires exactly 3 neighbours
             image_text = trim(image_text)//' '//trim(elements(i))
             do j = 1, 3
-              write (ctemp, '(A,"(",I0,")")') trim(c_store(xchiv_neighbours(j))), &
-              & nint(store(xchiv_neighbours(j)+1))
-              image_text = trim(image_text)//' '//ctemp
+              image_text = trim(image_text)//' '//xchiv_neighbours(j)%text()
             end do
           else
             write (cmon, '(A,A)') '{E ', trim(image_text)
@@ -1064,8 +997,7 @@ contains
             write (cmon, '(A,A)') '{E Error: XCHIV needs exactly 3 non hydrogen neigbours for ', trim(elements(i))
             call xprvdu(ncvdu, 1, 0)
             do j = 1, min(neighbour_cpt, size(xchiv_neighbours))
-              write (cmon, '(A,"(",I0,")")') trim(c_store(xchiv_neighbours(j))), &
-              & nint(store(xchiv_neighbours(j)+1))
+              write (cmon, '(A)') xchiv_neighbours(j)%text()
               call xprvdu(ncvdu, 1, 0)
             end do
             ierror = -1
@@ -1090,7 +1022,7 @@ contains
     integer start, i, j
     type(atom_t), dimension(:), allocatable :: atoms
     character(len=64) :: buffer
-    integer, dimension(:, :), allocatable :: connectivity_13
+    type(atom_t), dimension(:, :), allocatable :: connectivity_13
     type(atom_t), dimension(:, :), allocatable :: pairs
     character, dimension(13), parameter :: numbers = (/'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '-', '+'/)
     logical found
@@ -1157,6 +1089,7 @@ contains
         read (elements(3), *) esd13
       else
         image_text = trim(image_text)//' 0.004'
+        esd13 = 0.004
       end if
 
       if (size(elements)-start < 2) then
@@ -1258,20 +1191,20 @@ contains
         atom%serial = -1
         return
       end if
-      eoffset=0
+      eoffset = 0
       do j = 1, size(elements)
         if (trim(elements(j)) /= '') then
-          if(index(elements(j), 'PART')>0) then
+          if (index(elements(j), 'PART') > 0) then
             n = index(elements(j), '=')
-            if(n>0) then
-              read (elements(j)(n+1:), *, iostat=info, iomsg=msgstatus) atom%part
-              eoffset=eoffset+1
+            if (n > 0) then
+              read (elements(j) (n+1:), *, iostat=info, iomsg=msgstatus) atom%part
+              eoffset = eoffset+1
             end if
-          else if(index(elements(j), 'RESI')>0) then
+          else if (index(elements(j), 'RESI') > 0) then
             n = index(elements(j), '=')
-            if(n>0) then
-              read (elements(j)(n+1:), *, iostat=info, iomsg=msgstatus) atom%resi
-              eoffset=eoffset+1
+            if (n > 0) then
+              read (elements(j) (n+1:), *, iostat=info, iomsg=msgstatus) atom%resi
+              eoffset = eoffset+1
             end if
           else
             select case (j)
@@ -1335,12 +1268,12 @@ contains
 
     ierror = 0
     i = l2+(md2*(abs(self%sym_op%S)-1))
-    if(self%sym_op%L==0) then
+    if (self%sym_op%L == 0) then
       j = l2p+(md2p*(self%sym_op%L))
     else
       j = l2p+(md2p*(self%sym_op%L-1))
     end if
-    
+
     if (i > l2+((n2-1)*md2) .or. i < l2) then
       write (cmon, '(A,I0)') '{E Error: invalid symmetry operator index ', self%sym_op%S
       call xprvdu(ncvdu, 1, 0)
@@ -1363,4 +1296,66 @@ contains
 
   end subroutine
 
+  function load_atom_from_l41(l41addr) result(atom)
+    use xlst05_mod, only: l5, md5 !< atomic model
+    use xlst41_mod, only: m41b, l41b, n41b, md41b !< connectivity list
+    use store_mod, only: istore => i_store, c_store, store
+    implicit none
+    integer, intent(in) :: l41addr
+    type(atom_t), dimension(2) :: atom
+    integer l5addr
+
+    l5addr = l5+istore(l41addr)*md5
+    atom(1)%l5addr = l5addr
+    atom(1)%label = trim(c_store(l5addr))
+    atom(1)%serial = nint(store(l5addr+1))
+    atom(1)%part = istore(l5addr+14)
+    atom(1)%resi = istore(l5addr+16)
+    atom(1)%bond = istore(l41addr+12)
+    atom(1)%sym_op%S = istore(l41addr+1)
+    atom(1)%sym_op%L = istore(l41addr+2)
+    !print *, nint(store(l41addr+1)), istore(l41addr+1)
+    !print *, nint(store(l41addr+2)), istore(l41addr+2)
+    atom(1)%sym_op%translation = store(l41addr+3:l41addr+5)
+
+    l5addr = l5+istore(l41addr+6)*md5
+    atom(2)%l5addr = l5addr
+    atom(2)%label = trim(c_store(l5addr))
+    atom(2)%serial = nint(store(l5addr+1))
+    atom(2)%part = istore(l5addr+14)
+    atom(2)%resi = istore(l5addr+16)
+    atom(2)%bond = istore(l41addr+12)
+    atom(2)%sym_op%S = istore(l41addr+7)
+    atom(2)%sym_op%L = istore(l41addr+8)
+    !print *, nint(store(l41addr+7)), istore(l41addr+7)
+    !print *, nint(store(l41addr+8)), istore(l41addr+8)
+    atom(2)%sym_op%translation = store(l41addr+9:l41addr+11)
+  end function
+
+  function atom_compare(atom1, atom2) result(r)
+    implicit none
+    class(atom_t), intent(in) :: atom1, atom2
+    logical :: r
+
+    r = .true.
+
+    if (atom1%label /= atom2%label) r = .false.
+    !print *, 'label ', atom1%label, atom2%label, r
+    if (atom1%serial /= atom2%serial) r = .false.
+    !print *, 'serial ', atom1%serial, atom2%serial, r
+    if (atom1%part /= atom2%part) r = .false.
+    !print *, 'part ', atom1%part, atom2%part, r
+    if (atom1%resi /= atom2%resi) r = .false.
+    !print *, 'resi ', atom1%resi, atom2%resi, r
+    if (atom1%sym_op%S /= atom2%sym_op%S) r = .false.
+    !print *, 'S ', atom1%sym_op%S, atom2%sym_op%S, r
+    if (atom1%sym_op%L /= atom2%sym_op%L) r = .false.
+    !print *, 'L ', atom1%sym_op%L, atom2%sym_op%L, r
+
+    if (any(abs(atom1%sym_op%translation-atom2%sym_op%translation) > 0.01)) r = .false.
+
+    !print *, atom1%text(), atom2%text()
+    !print *, 'here ', r
+
+  end function
 end module
