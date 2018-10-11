@@ -172,7 +172,6 @@ contains
     if (.not. initialised) then
       ierror = -1
       call print_to_mon('{E Error: Lexical helper not initialised')
-      call abort()
       return
     end if
 
@@ -255,6 +254,9 @@ contains
         list16_modified = .true.
         call print_to_mon('{I --- '//trim(restraint%original), wrap_arg=.true.)
         call print_to_mon('{I +++ '//trim(restraint%processed), wrap_arg=.true.)
+      else
+        ! no changes, restore original in case the formatting has been changed
+        restraint%processed = restraint%original
       end if
     end associate
 
@@ -1573,7 +1575,6 @@ contains
           call print_to_mon('{E '//repeat('-', n+6)//repeat('^', len_trim(elements(i))))
           call print_to_mon('{E Error: index out of bound for the metric tensor '//trim(elements(i)))
           ierror = -1
-          call abort()
         end if
         if (atom%sym_op%S < 1 .or. atom%sym_op%S > 3) then
           n = index(image_text, trim(elements(i)))
@@ -1581,7 +1582,6 @@ contains
           call print_to_mon('{E '//repeat('-', n+6)//repeat('^', len_trim(elements(i))))
           call print_to_mon('{E Error: index out of bound for the metric tensor '//trim(elements(i)))
           ierror = -1
-          call abort()
         end if
         cycle
       end if
@@ -1605,7 +1605,6 @@ contains
           call print_to_mon('{E '//repeat('-', n+6)//repeat('^', len_trim(elements(i))))
           call print_to_mon('{E Error: atom '//trim(elements(i))//' is not present in the model')
           ierror = -1
-          call abort()
         end if
       end if
     end do
