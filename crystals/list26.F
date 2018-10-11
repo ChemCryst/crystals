@@ -2113,8 +2113,7 @@ CODE FOR XAPP16
       SUBROUTINE XAPP16(savederivativesarg)
       use lists1_mod, only: xrlind, klschk
       use list26_mod
-      use xlexical_mod, only:lexical_list => restraints_list
-      use xlexical_mod, only:lexical_list_index => restraints_list_index
+      use lexical_mod, only:lexical_list, lexical_list_index
 C--APPLY THE RESTRAINTS
 C
 C  THIS SUBROUTINE READS DOWN THE LIST 26 AND CALCULATES THE

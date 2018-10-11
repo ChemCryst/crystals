@@ -1,28 +1,30 @@
-!> Module for the lexical analyzer \ingroup crystals
-module xlexical_mod
+!> Module for the lexical analyzer
+module lexical_mod
   implicit none
-  private
+  private ! make everything private by default
 
   integer, parameter :: split_len = 24 !< length of element when splitting strings
 
   !> type holding information during preprocssing
-  type restraint_t
+  type lexical_t
     character(len=5) :: type !< type of restraint
     character(len=:), allocatable :: original !< original text
     character(len=:), allocatable :: processed !< pre-processed text
   end type
   !> Storage of the list of restraints before after pre-processing
-  type(restraint_t), dimension(:), allocatable :: restraints_list
-  integer :: restraints_list_index = 0 !< index in restraints_list
-  public restraints_list, restraints_list_index
+  type(lexical_t), dimension(:), allocatable :: lexical_list
+  integer :: lexical_list_index = 0 !< index in lexical_list
+  public lexical_list, lexical_list_index
 
+  ! The backslash character causes problem in doxygen, using the following workaround instead
+  character(len=2), parameter :: qmark = char(63)//char(63) !< the ?? string
   !> List of crystals bond definition
-  !!   10 = any type
-  !!    1 = single  2= double  3=triple  4=quadruple
-  !!    5 = aromatic      6 = polymeric single
-  !!    7 = delocalised   8 = strange    9 = pi-bond
+  !! -  10 = any type
+  !! -   1 = single  2= double  3=triple  4=quadruple
+  !! -   5 = aromatic      6 = polymeric single
+  !! -   7 = delocalised   8 = strange    9 = pi-bond
   character(len=2), dimension(10), parameter :: bond_list_definition = &
-  & (/'--', '==', '-=', '##', '@@', '&&', '~~', '**', '::', '??'/)
+  & (/'--', '==', '-=', '##', '@@', '&&', '~~', '**', '::', qmark/)
 
   !> Symmetry operator as defined in crystals
   type sym_op_t
@@ -53,10 +55,10 @@ module xlexical_mod
     procedure :: text => atom_text !< pretty print
     procedure :: sym_mat_update => atom_update_sym_mat !< update matrix notation using crystals notation (sym_op)
     procedure, private :: atom_compare !< overload equivalence to compare atom type object
-    generic :: operator(==) => atom_compare
-    generic :: operator(/=) => atom_compare
-    generic :: operator( .eqv. ) => atom_compare
-    generic :: operator( .neqv. ) => atom_compare
+    generic :: operator(==) => atom_compare !< overload ==
+    generic :: operator(/=) => atom_compare !< overload /=
+    generic :: operator( .eqv. ) => atom_compare !< overload .eqv.
+    generic :: operator( .neqv. ) => atom_compare !< overload .neqv.
   end type
 
   !> variable name and its value
@@ -67,107 +69,192 @@ module xlexical_mod
   !> Hold the list of variables for substitution
   !! definition: `define a = 0.01`
   !! usage: `dist 0.0, $a = mean ...`
-  type(variable_t), dimension(256) :: restraints_var_list
-  integer :: restraints_var_list_index = 0 !< max index in restraints_var_list
+  type(variable_t), dimension(256) :: lexical_var_list
+  integer :: lexical_var_list_index = 0 !< max index in lexical_var_list
 
   logical :: list16_modified = .false. !< flag to notify a modification of the input
+  logical :: initialised = .false. !< flag to indicate the state of the module
 
-  public lexical_preprocessing, restraints_init, list16_modified
+  integer savedl5, savedn5, savedmd5
+  integer savedl41b, savedmd41b, savedn41b
+
+  public lexical_preprocessing, lexical_list_init, lexical_print_changes
 
 contains
 
   !> Initialise restraints
-  subroutine restraints_init()
+  subroutine lexical_list_init()
+    use lists2_mod
+    use store_mod, only: store
+    use xlisti_mod, only: l0, m0, n0, md0 !< core list variables
     implicit none
-    if (allocated(restraints_list)) then
-      deallocate (restraints_list)
-      restraints_list_index = 0
+    integer, parameter :: idim05 = 40
+    integer, dimension(idim05) :: icom05
+    integer, parameter :: idim41 = 16
+    integer, dimension(idim41) :: icom41
+    integer n0old
+
+    integer, external :: kexist
+
+    initialised = .true.
+
+    if (allocated(lexical_list)) then
+      deallocate (lexical_list)
+      lexical_list_index = 0
     end if
-    restraints_var_list_index = 0
+    lexical_var_list_index = 0
     list16_modified = .false.
+
+    if (kexist(41) .gt. 0 .and. kexist(5) .gt. 0) then
+      ! load list 5 and 41 and save their adresses
+      ! Their existence from other subroutines is wiped out to avoid side effects
+      n0old = n0
+      call xldlst(5, icom05, idim05, 0)
+
+      ! removing record in chain list
+      if (n0old /= n0) then
+        ! a new record has been added
+        if (n0 > 1) then
+          n0 = n0-1
+        else
+          n0 = 0
+          l0 = -1000000
+          m0 = -1000000
+        end if
+      end if
+
+      ! saving list 5 address
+      savedl5 = icom05(1)
+      savedn5 = icom05(4)
+      savedmd5 = icom05(3)
+
+      n0old = n0
+      call xldlst(41, icom41, idim41, 0)
+
+      ! removing record in chain list
+      if (n0old /= n0) then
+        ! a new record has been added
+        if (n0 > 1) then
+          n0 = n0-1
+        else
+          n0 = 0
+          l0 = -1000000
+          m0 = -1000000
+        end if
+      end if
+
+      ! saving list 41 addresses
+      savedl41b = icom41(1)
+      savedmd41b = icom41(3)
+      savedn41b = icom41(4)
+    else
+      savedl5 = 0
+      savedn5 = 0
+      savedmd5 = 0
+      savedl41b = 0
+      savedmd41b = 0
+      savedn41b = 0
+    end if
   end subroutine
 
   !> Preprocess a restraint with various substitutions
   subroutine lexical_preprocessing(image_text, ierror)
-    use xiobuf_mod, only: cmon !< I/O units
-    use xunits_mod, only: ncvdu !< I/O units
     implicit none
     character(len=*) :: image_text !< text of the restraint (one line)
     integer, intent(out) :: ierror !< error code 0==success
     integer i
-    type(restraint_t), dimension(:), allocatable :: restraints_temp
+    type(lexical_t), dimension(:), allocatable :: lexical_temp
+    logical change, changesub
 
     ierror = 0
+    change = .false.
+
+    if (.not. initialised) then
+      ierror = -1
+      call print_to_mon('{E Error: Lexical helper not initialised')
+      call abort()
+      return
+    end if
 
     ! update index and allocate/etend storage if necessary
-    restraints_list_index = restraints_list_index+1
-    if (.not. allocated(restraints_list)) then
-      allocate (restraints_list(128))
+    lexical_list_index = lexical_list_index+1
+    if (.not. allocated(lexical_list)) then
+      allocate (lexical_list(128))
     end if
-    if (restraints_list_index > size(restraints_list)) then
-      call move_alloc(restraints_list, restraints_temp)
-      allocate (restraints_list(size(restraints_temp)+128))
-      restraints_list(1:size(restraints_temp)) = restraints_temp
+    if (lexical_list_index > size(lexical_list)) then
+      call move_alloc(lexical_list, lexical_temp)
+      allocate (lexical_list(size(lexical_temp)+128))
+      lexical_list(1:size(lexical_temp)) = lexical_temp
     end if
 
     ! save type of restraint, check for cont and look for parent restraint for the type
     allocate (character(len=len_trim(image_text)) :: &
-    & restraints_list(restraints_list_index)%original)
-    restraints_list(restraints_list_index)%original = trim(image_text)
-    restraints_list(restraints_list_index)%type = ''
-    do i = restraints_list_index, 1, -1
-      if (len_trim(restraints_list(i)%original) > 4) then
-        if (restraints_list(i)%original(1:4) == 'CONT') then
+    & lexical_list(lexical_list_index)%original)
+    lexical_list(lexical_list_index)%original = trim(image_text)
+    lexical_list(lexical_list_index)%type = ''
+    do i = lexical_list_index, 1, -1
+      if (len_trim(lexical_list(i)%original) > 4) then
+        if (lexical_list(i)%original(1:4) == 'CONT') then
           cycle
         else
-          restraints_list(restraints_list_index)%type = restraints_list(i)%original(1:5)
+          lexical_list(lexical_list_index)%type = lexical_list(i)%original(1:5)
           exit
         end if
       end if
     end do
-    if (restraints_list(restraints_list_index)%type == '') then
-      restraints_list(restraints_list_index)%type = restraints_list(restraints_list_index)%original
+    if (lexical_list(lexical_list_index)%type == '') then
+      lexical_list(lexical_list_index)%type = lexical_list(lexical_list_index)%original
     end if
 
     if (image_text(1:4) == 'REM ') then
       ! ignore comments
-      associate (restraint=>restraints_list(restraints_list_index))
+      associate (restraint=>lexical_list(lexical_list_index))
         allocate (character(len=len_trim(image_text)) :: restraint%processed)
         restraint%processed = trim(image_text)
       end associate
       return
     end if
 
+    ! insert missing spaces around operators
+    call fixed_spacing(image_text)
+
+    ! check atoms
+    call check_atom(image_text, ierror)
+    if (ierror /= 0) return
+
     ! Look for variable definition: define a = 0.01
     call define_variable(image_text, ierror)
     if (ierror /= 0) return
 
     ! replace variable names with their definition: $a
-    call substitue_variable(image_text, ierror)
+    call substitue_variable(image_text, ierror, changesub)
     if (ierror /= 0) return
+    change = change .or. changesub
 
     ! look for bonds definitions: C--H, ...
-    call replace_bonds(image_text)
+    call replace_bonds(image_text, changesub)
+    change = change .or. changesub
 
     ! expand atom names: C(*), ...
-    call expand_atoms_names(image_text, ierror)
+    call expand_atoms_names(image_text, ierror, changesub)
+    change = change .or. changesub
 
     ! expand xchiv restraint
-    call expand_xchiv(image_text, ierror)
+    call expand_xchiv(image_text, ierror, changesub)
+    change = change .or. changesub
 
     ! expand rigu restraint
-    call expand_rigu(image_text, ierror)
+    call expand_rigu(image_text, ierror, changesub)
+    change = change .or. changesub
 
-    associate (restraint=>restraints_list(restraints_list_index))
+    associate (restraint=>lexical_list(lexical_list_index))
       allocate (character(len=len_trim(image_text)) :: restraint%processed)
       restraint%processed = trim(image_text)
 
-      if (image_text /= restraint%original) then
+      if (change) then
         list16_modified = .true.
-        write (cmon, '(A,A)') '{I --- ', restraint%original
-        call xprvdu(ncvdu, 1, 0)
-        write (cmon, '(A,A)') '{I +++ ', restraint%processed
-        call xprvdu(ncvdu, 1, 0)
+        call print_to_mon('{I --- '//trim(restraint%original), wrap_arg=.true.)
+        call print_to_mon('{I +++ '//trim(restraint%processed), wrap_arg=.true.)
       end if
     end associate
 
@@ -176,8 +263,6 @@ contains
   !> Split a string into different pieces given a separator. Defaul separator is space.
   !! Len of pieces must be passed to the function
   subroutine explode(line, lenstring, elements, sep_arg, greedy_arg)
-    use xiobuf_mod, only: cmon !< I/O units
-    use xunits_mod, only: ncvdu !< I/O units
     implicit none
     character(len=*), intent(in) :: line !< text to process
     integer, intent(in) :: lenstring !< length of each individual elements
@@ -230,8 +315,7 @@ contains
       end if
       j = j+1
       if (j > lenstring) then
-        write (cmon, '(A,A)') '{E Programming error: len too short for elements in explode (lexical_helper.F90)'
-        call xprvdu(ncvdu, 1, 0)
+        call print_to_mon('{E Programming error: len too short for elements in explode (lexical_helper.F90)')
         cycle
       end if
       bufferlabel(j:j) = line(i:i)
@@ -632,11 +716,10 @@ contains
   end function
 
   !> replace a bond place holder with paris of bonded atoms (C--H => C(1) to H(1), ...)
-  subroutine replace_bonds(text)
-    use xiobuf_mod, only: cmon !< I/O units
-    use xunits_mod, only: ncvdu !< I/O units
+  subroutine replace_bonds(text, change)
     implicit none
     character(len=*), intent(inout) :: text
+    logical, intent(out) :: change
     character(len=4) :: bond_type_text, left, right
     integer bond_type, location, motif_len
     integer i, j
@@ -649,6 +732,7 @@ contains
 
     found = .false. ! true if a bond definition is found
     empty = .true. ! true if all bond definitions are empty
+    change = .false.
 
     do ! loop until everything is found
       bond_type = -1
@@ -675,6 +759,7 @@ contains
 
       ! we found a bond definition, we now fetch the atom type
       ! get which bond text is used first, numeric or characters
+      change = .true.
       location = index(text, bond_list_definition(bond_type))
       if (location > 0) then
         motif_len = len(bond_list_definition(bond_type))
@@ -736,10 +821,8 @@ contains
 
     if (found .and. empty) then
       ! nothing have been found, commenting out the restraint
-      write (cmon, '(A,A)') '{I No bond found in restraint:'
-      CALL XPRVDU(NCVDU, 1, 0)
-      write (cmon, '(A,A)') '{I ', trim(text)
-      CALL XPRVDU(NCVDU, 1, 0)
+      call print_to_mon('{I No bond found in restraint:')
+      call print_to_mon('{I '//trim(text))
       text = 'REM '//trim(text)
     end if
 
@@ -747,8 +830,6 @@ contains
 
   !> define a variable for later use using the DEFINE `restraint`
   subroutine define_variable(image_text, ierror)
-    use xiobuf_mod, only: cmon !< I/O units
-    use xunits_mod, only: ncvdu !< I/O units
     implicit none
     character(len=*), intent(inout) :: image_text
     integer, intent(out) :: ierror
@@ -764,37 +845,34 @@ contains
       var_name = trim(adjustl(image_text(7:eq-1)))
       do i = 1, len_trim(var_name)
         if (iachar(var_name(i:i)) < 65 .or. iachar(var_name(i:i)) > 90) then
-          write (cmon, '(A,A)') '{E ', trim(image_text)
-          CALL XPRVDU(NCVDU, 1, 0)
-          write (cmon, '(A,A,A)') '{E ', repeat('-', 6+i), '^'
-          CALL XPRVDU(NCVDU, 1, 0)
-          write (cmon, '(A,A,A)') '{E Error: Invalid variable name, character `', &
-          & var_name(i:i), '` not allowed'
-          CALL XPRVDU(NCVDU, 1, 0)
+          call print_to_mon('{E '//trim(image_text))
+          call print_to_mon('{E '//repeat('-', 6+i)//'^')
+          call print_to_mon('{E Error: Invalid variable name, character `'// &
+          & var_name(i:i)//'` not allowed')
           ierror = -1
           return
         end if
       end do
-      restraints_var_list_index = restraints_var_list_index+1
-      restraints_var_list(restraints_var_list_index)%label = trim(adjustl(image_text(7:eq-1)))
-      read (image_text(eq+1:), *) restraints_var_list(restraints_var_list_index)%rvalue
+      lexical_var_list_index = lexical_var_list_index+1
+      lexical_var_list(lexical_var_list_index)%label = trim(adjustl(image_text(7:eq-1)))
+      read (image_text(eq+1:), *) lexical_var_list(lexical_var_list_index)%rvalue
     end if
 
   end subroutine
 
   !> substitute a variable with its value
-  subroutine substitue_variable(image_text, ierror)
-    use xiobuf_mod, only: cmon !< I/O units
-    use xunits_mod, only: ncvdu !< I/O units
+  subroutine substitue_variable(image_text, ierror, change)
     implicit none
     character(len=*), intent(inout) :: image_text
     integer, intent(out) :: ierror
+    logical, intent(out) :: change
     integer dollar_start, dollar_end
     character(len=64) :: var_name
     integer i
     logical found
 
     ierror = 0
+    change = .false.
 
     dollar_start = index(image_text, '$')
     do while (dollar_start > 0)
@@ -807,25 +885,23 @@ contains
 
       ! look for its value in the table
       found = .false.
-      do i = 1, restraints_var_list_index
-        if (restraints_var_list(i)%label == var_name) then
-          write (var_name, '(F0.6)') restraints_var_list(i)%rvalue
+      do i = 1, lexical_var_list_index
+        if (lexical_var_list(i)%label == var_name) then
+          write (var_name, '(F0.6)') lexical_var_list(i)%rvalue
           image_text = image_text(1:dollar_start-1)//' '// &
           & trim(var_name)//' '//trim(image_text(dollar_end+1:))
           found = .true.
+          change = .true.
         end if
       end do
       if (found) then
         dollar_start = index(image_text, '$')
       else
-        write (cmon, '(A,A)') '{E ', trim(image_text)
-        CALL XPRVDU(NCVDU, 1, 0)
-        write (cmon, '(A,A,A)') '{E ', repeat('-', dollar_start-1), &
-        & repeat('^', len_trim(var_name)+1)
-        CALL XPRVDU(NCVDU, 1, 0)
-        write (cmon, '(A,A,A)') '{E Error: Definition of variable `$', &
-        & trim(var_name), '` is missing'
-        call xprvdu(ncvdu, 1, 0)
+        call print_to_mon('{E '//trim(image_text))
+        call print_to_mon('{E '//repeat('-', dollar_start-1)// &
+        & repeat('^', len_trim(var_name)+1))
+        call print_to_mon('{E Error: Definition of variable `$'// &
+        & trim(var_name)//'` is missing')
         ierror = -1
         return
       end if
@@ -836,15 +912,14 @@ contains
   !! - C(*) == all C atoms
   !! - C(part=i) all C atoms in part i
   !! - C(resi=i) all C atoms in residue i
-  subroutine expand_atoms_names(image_text, ierror)
+  subroutine expand_atoms_names(image_text, ierror, modified)
     use store_mod, only: store, istore => i_store
-    use xlst05_mod, only: l5, md5, n5 !< atomic model
-    use xiobuf_mod, only: cmon !< I/O units
-    use xunits_mod, only: ncvdu !< I/O units
     implicit none
     character(len=*), intent(inout) :: image_text
-    character(len=len(image_text)) :: buffer
     integer, intent(out) :: ierror
+    logical, intent(out) :: modified
+    character(len=len(image_text)) :: original
+    character(len=len(image_text)) :: buffer
     character(len=split_len), dimension(:), allocatable :: elements
     integer m5, k
     character(len=16) :: atom_name
@@ -854,6 +929,8 @@ contains
     type(atom_t) :: atom, atom_l5
 
     ierror = 0
+    modified = .false.
+    original = image_text
 
     ! expand atoms type
     if (index(image_text, '(*)') > 0) then
@@ -868,11 +945,9 @@ contains
           if (i < size(elements)) then
             if (trim(elements(i+1)) == 'TO') then
               ! need to be done in pairs
-              write (cmon, '(A,A)') '{E ', trim(image_text)//' '//elements(i)//' '// &
-              & elements(i+1)
-              CALL XPRVDU(NCVDU, 1, 0)
-              write (cmon, '(A,A,A)') '{E Error: Generic pairs are not implemented'
-              CALL XPRVDU(NCVDU, 1, 0)
+              call print_to_mon('{E '//trim(image_text)//' '//elements(i)//' '// &
+              & trim(elements(i+1)))
+              call print_to_mon('{E Error: Generic pairs are not implemented')
               image_text = trim(image_text)//' '//elements(i)
               ierror = -1
               return
@@ -880,14 +955,15 @@ contains
           end if
 
           ! look for all atoms with same type
-          m5 = l5
-          do j = 1, n5
+          m5 = savedl5
+          do j = 1, savedn5
             if (transfer(store(m5), '    ') == var_name) then
               write (atom_name, '(A,"(",I0,")")') trim(transfer(store(m5), '    ')), &
               & nint(store(m5+1))
               image_text = trim(image_text)//' '//trim(atom_name)
+              modified = .true.
             end if
-            m5 = m5+md5
+            m5 = m5+savedmd5
           end do
         else
           image_text = trim(image_text)//' '//elements(i)
@@ -896,15 +972,16 @@ contains
       image_text = adjustl(image_text)
     end if
 
-    ! split atom list
-    call explode(image_text, split_len, elements)
+    ! expand part and resi
+    call explode(image_text, split_len, elements) ! split atom list
     buffer = elements(1)
     do i = 2, size(elements)
       atom = read_atom(trim(elements(i)))
       if (atom%part > 0 .or. atom%resi > 0) then
+        modified = .true.
 
-        m5 = l5
-        do k = 1, n5
+        m5 = savedl5
+        do k = 1, savedn5
           write (atom_l5%label, '(A4)') store(m5)
           atom_l5%serial = nint(store(m5+1))
           atom_l5%part = istore(m5+14)
@@ -917,7 +994,7 @@ contains
             write (atom_name, '(A,"(",I0,")")') trim(atom_l5%label), atom_l5%serial
             buffer = trim(buffer)//' '//trim(atom_name)
           end if
-          m5 = m5+md5
+          m5 = m5+savedmd5
         end do
 
       else
@@ -929,32 +1006,29 @@ contains
   end subroutine
 
   !> expand XCHIV restraints. look for the 3 neighbours.
-  subroutine expand_xchiv(image_text, ierror)
+  subroutine expand_xchiv(image_text, ierror, change)
     use store_mod, only: istore => i_store, store, c_store, i_store_set
-    use xlst41_mod, only: l41b, m41b, md41b, n41b !< Connectivity
-    use xlst05_mod, only: l5, md5, n5 !< atomic model
-    use xiobuf_mod, only: cmon !< I/O units
-    use xunits_mod, only: ncvdu !< I/O units
     implicit none
     character(len=*), intent(inout) :: image_text
     integer, intent(out) :: ierror
+    logical, intent(out) :: change
     character(len=split_len), dimension(:), allocatable :: elements
     integer neighbour_address, neighbour_cpt
     type(atom_t), dimension(6) :: xchiv_neighbours
     integer i, j
     type(atom_t) :: atom
     type(atom_t), dimension(2) :: bond_atoms
+    integer m41b
 
     ierror = 0
+    change = .false.
 
-    if (restraints_list(restraints_list_index)%type == 'XCHIV') then       ! Expand xchiv
+    if (lexical_list(lexical_list_index)%type == 'XCHIV') then       ! Expand xchiv
 
       if (image_text(1:4) == 'CONT') then
         ierror = -1
-        write (cmon, '(A,A)') '{E ', trim(image_text)
-        CALL XPRVDU(NCVDU, 1, 0)
-        write (cmon, '(A)') '{E Error: XCHIV Restraint cannot be split over multiple lines'
-        call xprvdu(ncvdu, 1, 0)
+        call print_to_mon('{E '//trim(image_text))
+        call print_to_mon('{E Error: XCHIV Restraint cannot be split over multiple lines')
         return
       end if
 
@@ -967,7 +1041,7 @@ contains
         if (atom%serial /= -1) then
           ! explicit neighbours
           neighbour_cpt = 0
-          DO M41B = L41B, L41B+(N41B-1)*MD41B, MD41B
+          do m41b = savedl41b, savedl41b+(savedn41b-1)*savedmd41b, savedmd41b
             bond_atoms = load_atom_from_l41(M41B)
 
             neighbour_address = -1
@@ -987,18 +1061,16 @@ contains
           end do
 
           if (neighbour_cpt == 3) then ! xchiv requires exactly 3 neighbours
+            change = .true.
             image_text = trim(image_text)//' '//trim(elements(i))
             do j = 1, 3
               image_text = trim(image_text)//' '//xchiv_neighbours(j)%text()
             end do
           else
-            write (cmon, '(A,A)') '{E ', trim(image_text)
-            CALL XPRVDU(NCVDU, 1, 0)
-            write (cmon, '(A,A)') '{E Error: XCHIV needs exactly 3 non hydrogen neigbours for ', trim(elements(i))
-            call xprvdu(ncvdu, 1, 0)
+            call print_to_mon('{E '//trim(image_text))
+            call print_to_mon('{E Error: XCHIV needs exactly 3 non hydrogen neigbours for '//trim(elements(i)))
             do j = 1, min(neighbour_cpt, size(xchiv_neighbours))
-              write (cmon, '(A)') xchiv_neighbours(j)%text()
-              call xprvdu(ncvdu, 1, 0)
+              call print_to_mon(xchiv_neighbours(j)%text())
             end do
             ierror = -1
             return
@@ -1011,12 +1083,11 @@ contains
   end subroutine
 
   !> Rewrite shelxl RIGU restraint into crystals RIGU implementation (atoms pairs)
-  subroutine expand_rigu(image_text, ierror)
-    use xiobuf_mod, only: cmon !< I/O units
-    use xunits_mod, only: ncvdu !< I/O units
+  subroutine expand_rigu(image_text, ierror, change)
     implicit none
     character(len=*), intent(inout) :: image_text
     integer, intent(out) :: ierror !< error code 0==success
+    logical, intent(out) :: change
     character(len=len(image_text)) :: original
     character(len=split_len), dimension(:), allocatable :: elements
     integer start, i, j
@@ -1030,15 +1101,15 @@ contains
 
     ierror = 0
     original = image_text
+    change = .false.
 
-    if (restraints_list(restraints_list_index)%type == 'XRIGU') then
+    if (lexical_list(lexical_list_index)%type == 'XRIGU') then
+      change = .true.
 
       if (image_text(1:4) == 'CONT') then
         ierror = -1
-        write (cmon, '(A,A)') '{E ', trim(image_text)
-        CALL XPRVDU(NCVDU, 1, 0)
-        write (cmon, '(A)') '{E Error: XRIGU Restraint cannot be split over multiple lines'
-        call xprvdu(ncvdu, 1, 0)
+        call print_to_mon('{E '//trim(image_text))
+        call print_to_mon('{E Error: XRIGU Restraint cannot be split over multiple lines')
         return
       end if
 
@@ -1047,10 +1118,8 @@ contains
 
       if (size(elements) < 3) then
         ierror = -1
-        write (cmon, '(A,A)') '{E ', trim(image_text)
-        CALL XPRVDU(NCVDU, 1, 0)
-        write (cmon, '(A)') '{E Error: XRIGU Restraint needs more than one atom'
-        call xprvdu(ncvdu, 1, 0)
+        call print_to_mon('{E '//trim(image_text))
+        call print_to_mon('{E Error: XRIGU Restraint needs more than one atom')
         return
       end if
 
@@ -1095,10 +1164,8 @@ contains
       if (size(elements)-start < 2) then
         ierror = -1
         image_text = original
-        write (cmon, '(A,A)') '{E ', trim(image_text)
-        CALL XPRVDU(NCVDU, 1, 0)
-        write (cmon, '(A)') '{E Error: XRIGU Restraint needs more than one atom'
-        call xprvdu(ncvdu, 1, 0)
+        call print_to_mon('{E '//trim(image_text))
+        call print_to_mon('{E Error: XRIGU Restraint needs more than one atom')
         return
       end if
 
@@ -1166,48 +1233,68 @@ contains
   !> Parse an atom definition TYPE(SERIAL,S,L,TX,TY,TZ)
   !! If serial returns -1, there was an error
   function read_atom(text) result(atom)
-    use xiobuf_mod, only: cmon !< I/O units
-    use xunits_mod, only: ncvdu !< I/O units
     implicit none
     character(len=*), intent(in) :: text
     type(atom_t) :: atom
-    integer i, j, n, info, eoffset
+    integer i, j, k, n, info, eoffset
     character(len=len(text)) :: buffer
     character(len=split_len), dimension(:), allocatable :: elements
     character(len=128) :: msgstatus
+    logical skip_position
+
+    character(len=6), dimension(16), parameter :: param_name = (/  &
+    & 'X     ', 'Y     ', 'Z     ', 'OCC   ', 'U[ISO]', 'SPARE ',&
+    & 'U[11] ', 'U[22] ', 'U[33] ', 'U[23] ', 'U[13] ', 'U[12] ',&
+    & "X'S   ", "U'S   ", "UIJ'S ", "UII'S "/)
 
     call atom%init()
+
+    ! catch (*) notation
+    if (index(text, '(*)') > 0) then
+      atom%serial = -1
+      return
+    end if
 
     i = index(text, '(')
     j = index(text, ')')
 
-    if (i > 0 .and. j > 0) then
+    if (i > 1 .and. j > i) then
       buffer = text(i+1:j-1)
       atom%label = adjustl(text(1:i-1))
       call explode(buffer, split_len, elements, ',', .false.)
-      if (size(elements) > 6) then
-        write (cmon, '(A,A,A)') '{E Error: ', trim(text), ' is not a valid atom name'
-        call xprvdu(ncvdu, 1, 0)
-        atom%serial = -1
-        return
-      end if
       eoffset = 0
       do j = 1, size(elements)
+        skip_position = .false.
+        info = 0
+        msgstatus = ''
         if (trim(elements(j)) /= '') then
+          do k = 1, size(param_name)
+            if (index(elements(j), trim(param_name(k))) > 0) then
+              ! valid instruction but not used in restraints
+              eoffset = eoffset+1
+              skip_position = .true.
+              exit
+            end if
+          end do
+
           if (index(elements(j), 'PART') > 0) then
             n = index(elements(j), '=')
             if (n > 0) then
               read (elements(j) (n+1:), *, iostat=info, iomsg=msgstatus) atom%part
               eoffset = eoffset+1
+              skip_position = .true.
             end if
           else if (index(elements(j), 'RESI') > 0) then
             n = index(elements(j), '=')
             if (n > 0) then
               read (elements(j) (n+1:), *, iostat=info, iomsg=msgstatus) atom%resi
               eoffset = eoffset+1
+              skip_position = .true.
             end if
-          else
-            select case (j)
+          end if
+
+          if (.not. skip_position) then
+            select case (j+eoffset)
             case (1) ! serial
               read (elements(j), *, iostat=info, iomsg=msgstatus) atom%serial
               if (atom%serial < 0) then
@@ -1229,15 +1316,14 @@ contains
             case (6)
               read (elements(j), *, iostat=info, iomsg=msgstatus) atom%sym_op%translation(3)
             case default
+              write (msgstatus, '(A, I0, 1X, I0)') '{E Error: wrong offset in read_atom ', j, eoffset
+              info = -1
               atom%serial = -1
-              return
             end select
           end if
           if (info /= 0) then ! error when reading one of the values
-            write (cmon, '(A,A,A)') '{E Error: ', trim(text), ' is not a valid atom name'
-            call xprvdu(ncvdu, 1, 0)
-            write (cmon, '(A,A)') '{E ', trim(msgstatus)
-            call xprvdu(ncvdu, 1, 0)
+            call print_to_mon('{E Error: '//trim(text)//' is not a valid atom name')
+            call print_to_mon('{E '//trim(msgstatus))
             atom%serial = -1
             return
           end if
@@ -1255,16 +1341,16 @@ contains
     end if
   end function
 
+  !> Update symmetry oprators from crystals notation to matrix notation
   subroutine atom_update_sym_mat(self, ierror)
     use xlst02_mod, only: n2, l2, md2, l2p, n2p, md2p
     use xunits_mod, only: ierflg
     use store_mod, only: store
-    use xiobuf_mod, only: cmon !< I/O units
-    use xunits_mod, only: ncvdu !< I/O units
     implicit none
     class(atom_t), intent(inout) :: self
     integer, intent(out) :: ierror
     integer i, j
+    character(len=256) :: logtext
 
     ierror = 0
     i = l2+(md2*(abs(self%sym_op%S)-1))
@@ -1275,14 +1361,14 @@ contains
     end if
 
     if (i > l2+((n2-1)*md2) .or. i < l2) then
-      write (cmon, '(A,I0)') '{E Error: invalid symmetry operator index ', self%sym_op%S
-      call xprvdu(ncvdu, 1, 0)
+      write (logtext, '(A,I0)') '{E Error: invalid symmetry operator index ', self%sym_op%S
+      call print_to_mon(logtext)
       ierror = -1
       return
     end if
     if (j > l2p+((n2p-1)*md2p) .or. j < l2p) then
-      write (cmon, '(A,I0)') '{E Error: invalid lattice translation index ', self%sym_op%L
-      call xprvdu(ncvdu, 1, 0)
+      write (logtext, '(A,I0)') '{E Error: invalid lattice translation index ', self%sym_op%L
+      call print_to_mon(logtext)
       ierror = -1
       return
     end if
@@ -1296,16 +1382,15 @@ contains
 
   end subroutine
 
+  !> bond information from list 41 into a pair of atom_t objects
   function load_atom_from_l41(l41addr) result(atom)
-    use xlst05_mod, only: l5, md5 !< atomic model
-    use xlst41_mod, only: m41b, l41b, n41b, md41b !< connectivity list
     use store_mod, only: istore => i_store, c_store, store
     implicit none
     integer, intent(in) :: l41addr
     type(atom_t), dimension(2) :: atom
     integer l5addr
 
-    l5addr = l5+istore(l41addr)*md5
+    l5addr = savedl5+istore(l41addr)*savedmd5
     atom(1)%l5addr = l5addr
     atom(1)%label = trim(c_store(l5addr))
     atom(1)%serial = nint(store(l5addr+1))
@@ -1318,7 +1403,7 @@ contains
     !print *, nint(store(l41addr+2)), istore(l41addr+2)
     atom(1)%sym_op%translation = store(l41addr+3:l41addr+5)
 
-    l5addr = l5+istore(l41addr+6)*md5
+    l5addr = savedl5+istore(l41addr+6)*savedmd5
     atom(2)%l5addr = l5addr
     atom(2)%label = trim(c_store(l5addr))
     atom(2)%serial = nint(store(l5addr+1))
@@ -1332,6 +1417,7 @@ contains
     atom(2)%sym_op%translation = store(l41addr+9:l41addr+11)
   end function
 
+  !> compare 2 atom_t object type together
   function atom_compare(atom1, atom2) result(r)
     implicit none
     class(atom_t), intent(in) :: atom1, atom2
@@ -1358,4 +1444,281 @@ contains
     !print *, 'here ', r
 
   end function
+
+  subroutine print_to_mon(text, wrap_arg)
+    use xiobuf_mod, only: cmon !< I/O units
+    use xunits_mod, only: ncvdu !< I/O units
+    implicit none
+    character(len=*), intent(in) :: text !< text to print to screen
+    logical, intent(in), optional :: wrap_arg !< option to wrap text over several lines
+    logical wrap
+    integer istart, iend
+    integer, parameter :: line_len = 100 !< length of a line
+    integer, parameter :: tab_len = 4 !< length of tabulation to insert after a wrap
+    character(len=3) :: prefix !< color code prefix
+
+    if (present(wrap_arg)) then
+      wrap = wrap_arg
+    else
+      wrap = .false.
+    end if
+    prefix = ''
+
+#ifdef CRY_NOGUI
+    if (text(1:1) == '{') then
+      istart = 4
+    else
+      istart = 1
+    end if
+#else
+    if (text(1:1) == '{') then
+      prefix = text(1:3)
+    end if
+    istart = 1
+#endif
+
+    if (wrap) then
+      if (line_len < len_trim(text)) then
+        iend = line_len+istart-1
+        do while (text(iend:iend) /= ' ')
+          iend = iend-1
+          if (iend < 1) exit
+        end do
+      else
+        iend = len_trim(text)
+      end if
+    else
+      iend = len_trim(text)
+    end if
+    write (cmon, '(A)') trim(text(istart:iend))
+    call xprvdu(ncvdu, 1, 0)
+    istart = iend+1
+    iend = min(iend+line_len-tab_len, len_trim(text))
+
+    do while (istart < len_trim(text))
+
+      if (iend < len_trim(text)) then
+        do while (text(iend:iend) /= ' ')
+          iend = iend-1
+          if (iend < istart) exit
+        end do
+      else
+        iend = len_trim(text)
+      end if
+
+      write (cmon, '(A, A, A)') prefix, repeat(' ', tab_len), trim(adjustl(text(istart:iend)))
+      call xprvdu(ncvdu, 1, 0)
+
+      istart = iend+1
+      iend = min(iend+line_len, len_trim(text))
+    end do
+
+  end subroutine
+
+  !> look for atom definition and check if there are in List 5
+  subroutine check_atom(image_text, ierror)
+    use store_mod, only: store
+    implicit none
+    character(len=*), intent(inout) :: image_text
+    integer, intent(out) :: ierror
+    character(len=split_len), dimension(:), allocatable :: elements
+    type(atom_t) :: atom
+    integer i, j, m5, n
+    logical found
+    character(len=8), dimension(13), parameter :: ignore = (/ &
+                                                  'RENAME  ', &
+                                                  'LAYER   ', &
+                                                  'ELEMENT ', &
+                                                  'PROFILE ', &
+                                                  'DELETE  ', &
+                                                  'CREATE  ', &
+                                                  'OLD     ', &
+                                                  'RESI    ', &
+                                                  'CONTINUE', &
+                                                  'BEFORE  ', &
+                                                  'AFTER   ', &
+                                                  'CONT    ', &
+                                                  'MOVE    '/)
+
+    ierror = 0
+
+    if (image_text(1:4) == 'REM ') then ! ignore comments
+      return
+    end if
+
+    do i = 1, size(ignore)
+      if (image_text(1:len_trim(ignore(i))) == trim(ignore(i))) then ! ignore some instructions
+        return
+      end if
+    end do
+
+    ! split atom list
+    call explode(image_text, split_len, elements)
+
+    do i = 2, size(elements)
+
+      do j = 1, size(ignore)
+        if (elements(i) (1:len_trim(ignore(j))) == trim(ignore(j))) then ! ignore some instructions
+          return
+        end if
+      end do
+
+      atom = read_atom(trim(elements(i)))
+
+      if (atom%label == 'G') then
+        ! metric tensor!
+        if (atom%serial < 1 .or. atom%serial > 3) then
+          n = index(image_text, trim(elements(i)))
+          call print_to_mon('{E Error: '//trim(image_text))
+          call print_to_mon('{E '//repeat('-', n+6)//repeat('^', len_trim(elements(i))))
+          call print_to_mon('{E Error: index out of bound for the metric tensor '//trim(elements(i)))
+          ierror = -1
+          call abort()
+        end if
+        if (atom%sym_op%S < 1 .or. atom%sym_op%S > 3) then
+          n = index(image_text, trim(elements(i)))
+          call print_to_mon('{E Error: '//trim(image_text))
+          call print_to_mon('{E '//repeat('-', n+6)//repeat('^', len_trim(elements(i))))
+          call print_to_mon('{E Error: index out of bound for the metric tensor '//trim(elements(i)))
+          ierror = -1
+          call abort()
+        end if
+        cycle
+      end if
+
+      if (atom%serial /= -1) then
+        ! check list 5
+        m5 = savedl5
+        found = .false.
+        do j = 1, savedn5
+          if (transfer(store(m5), '    ') == atom%label .and. &
+          & nint(store(m5+1)) == atom%serial) then
+            found = .true.
+            exit
+          end if
+          m5 = m5+savedmd5
+        end do
+
+        if (.not. found) then
+          n = index(image_text, trim(elements(i)))
+          call print_to_mon('{E Error: '//trim(image_text))
+          call print_to_mon('{E '//repeat('-', n+6)//repeat('^', len_trim(elements(i))))
+          call print_to_mon('{E Error: atom '//trim(elements(i))//' is not present in the model')
+          ierror = -1
+          call abort()
+        end if
+      end if
+    end do
+  end subroutine
+
+  !> Instert spaces around operators when necessary
+  !! Splitting of expression relies on spaces.
+  subroutine fixed_spacing(image_text)
+    implicit none
+    character(len=*), intent(inout) :: image_text
+    character, dimension(5), parameter :: parameters = (/'/', '*', '-', '+', '='/)
+    integer n, i, k, s
+    character, dimension(10), parameter :: numbers = (/'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'/)
+    logical founda, foundb
+
+    ! insert spaces around = if missing
+    s = index(image_text, ' ') ! look for the first space, do not touch the first keyword
+    do i = 1, size(parameters)
+      n = s+1
+      do
+        n = n+1
+        if (n > len_trim(image_text)) exit
+
+        if (image_text(n:n) == parameters(i) .and. n > 1) then
+          if (image_text(n-1:n-1) /= ' ' .and. image_text(n+1:n+1) /= ' ') then
+            if (i < 5) then
+              founda = .false. !after
+              foundb = .false. !before
+              do k = 1, size(numbers)
+                if (image_text(n+1:n+1) == numbers(k)) then
+                  founda = .true.
+                  exit
+                end if
+              end do
+              do k = 1, size(numbers)
+                if (image_text(n-1:n-1) == numbers(k)) then
+                  foundb = .true.
+                  exit
+                end if
+              end do
+              if (founda .and. foundb) then
+                ! do nothing
+              else if (founda) then
+                image_text = image_text(1:n-1)//' '//parameters(i)//trim(image_text(n+1:))
+                n = n+1
+              else if (foundb) then
+                image_text = image_text(1:n-1)//parameters(i)//trim(image_text(n+1:))
+                n = n+1
+              else
+                image_text = image_text(1:n-1)//' '//parameters(i)//' '//trim(image_text(n+1:))
+                n = n+2
+              end if
+            else
+              image_text = image_text(1:n-1)//' '//parameters(i)//' '//trim(image_text(n+1:))
+              n = n+2
+            end if
+          else if (image_text(n-1:n-1) /= ' ') then
+            if (i < 5) then
+              foundb = .false. !before
+              do k = 1, size(numbers)
+                if (image_text(n-1:n-1) == numbers(k)) then
+                  foundb = .true.
+                  exit
+                end if
+              end do
+              if (.not. foundb) then
+                image_text = image_text(1:n-1)//' '//parameters(i)//trim(image_text(n+1:))
+                n = n+1
+              end if
+            else
+              image_text = image_text(1:n-1)//' '//parameters(i)//trim(image_text(n+1:))
+              n = n+1
+            end if
+          else if (image_text(n+1:n+1) /= ' ') then
+            if (i < 5) then
+              founda = .false. !before
+              do k = 1, size(numbers)
+                if (image_text(n+1:n+1) == numbers(k)) then
+                  founda = .true.
+                  exit
+                end if
+              end do
+              if (.not. founda) then
+                image_text = image_text(1:n-1)//parameters(i)//' '//trim(image_text(n+1:))
+                n = n+1
+              end if
+            else
+              image_text = image_text(1:n-1)//' '//parameters(i)//trim(image_text(n+1:))
+              n = n+1
+            end if
+          end if
+        end if
+      end do
+    end do
+
+  end subroutine
+
+  !> print the content before and after the changes from this module
+  subroutine lexical_print_changes(iounit)
+    implicit none
+    integer, intent(in) :: iounit
+    integer i
+
+    if (list16_modified .and. allocated(lexical_list)) then
+      write (iounit, '(A)') '-- Original input to lexical analyzer:'
+      do i = 1, lexical_list_index
+        write (iounit, '(A)') lexical_list(i)%original
+      end do
+      write (iounit, '(A)') '-- Modified input to lexical analyzer:'
+      do i = 1, lexical_list_index
+        write (iounit, '(A)') lexical_list(i)%processed
+      end do
+    end if
+  end subroutine
+
 end module

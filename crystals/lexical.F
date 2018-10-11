@@ -376,8 +376,8 @@ C      >1      DIRECTIVE NUMBER READ
 C
 C--
 C--
-      use xlexical_mod, only: lexical_preprocessing
-      use xlexical_mod, only: restraints_list, restraints_list_index
+      use lexical_mod, only: lexical_preprocessing
+      use lexical_mod, only: lexical_list, lexical_list_index
       use store_mod, only: istore=>i_store, store, c_store, i_store_set
       use store_mod, only: lfl
       use xopval_mod, only: iopcry, iopint, iopspc
@@ -547,8 +547,7 @@ c       write(ncwu,'(a,256a1)') 'o: ',(image(itemp),itemp=1,lastch)
 c       write(ncwu,'(a,64a4)') 'p: ',(STORE(itemp),
 c     1 itemp=nxtcdi,nxtcdi+lastch/4)
 
-      ! on the fly substitution for restraints
-      ! alphabetic haracters only, no spaces
+      ! on the fly substitution for the lexical analyzer
       if (kexist(41).gt.0 .and. kexist(5).gt.0) then
         write(ctemp, '("(",I0,"A1)")') size(image)
         write(image_text, ctemp) image      
@@ -563,8 +562,8 @@ c     1 itemp=nxtcdi,nxtcdi+lastch/4)
         ! If for some reason the restraint has been commented out
         ! the type of restraint is changed to rem in list61
         if(image_text(1:4)=='REM ') then
-          if(restraints_list(restraints_list_index)%original/=
-     1      restraints_list(restraints_list_index)%processed) then
+          if(lexical_list(lexical_list_index)%original/=
+     1      lexical_list(lexical_list_index)%processed) then
             call i_store_set(MR61+11, 120)
           end if
         end if
@@ -838,6 +837,7 @@ C
 C
 CODE FOR XLXINI
       SUBROUTINE XLXINI ( ILAST , ICHNG )
+      use lexical_mod, only: lexical_list_init
 C
 C -- FIX UP DIRECTIVES ETC. FOR LEXICAL SCANNER INPUT
 C----- ICHNG  SWITCH TO CAUSE MODIFICATION OF READ COUNTS
@@ -856,8 +856,11 @@ C
       INCLUDE 'XOPVAL.INC'
 C
       INCLUDE 'QSTORE.INC'
+      
+      call lexical_list_init()
 C
 C
+
 C -- FIX UP EACH DIRECTIVE IN AN APPROPRIATE WAY
 C
       IF ( NR60 .LE. 0 ) GO TO 1400

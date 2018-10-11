@@ -603,11 +603,6 @@ C--
       INCLUDE 'XLSVAL.INC'
       INCLUDE 'XOPVAL.INC'
 
-      !if (kexist(41).gt.0 .and. kexist(5).gt.0) then
-      !  if (khuntr(5,0,iaddl,iaddr,iaddd,-1).lt.0) call xfal05
-      !  if (khuntr (41,0,iaddl,iaddr,iaddd,-1).lt. 0) call xfal41
-      !end if
-
 C
 C--USE THE LEXICAL SCANNER TO READ THE CARDS
       IF(KLEXAN(IULN,IFIRST,LENGTH))1200,1000,1000
@@ -713,8 +708,7 @@ C--THE CARD IMAGES ARE STORED IN ANOTHER DATA RECORD, WHICH IS GIVEN
 C  BY THE ORIGINAL DATA RECORD PLUS ONE NEGATED.
 C
 C--
-      use xlexical_mod, only: restraints_list, restraints_list_index
-      use xlexical_mod, only: restraints_init,list16_modified
+      use lexical_mod, only: lexical_print_changes
       INCLUDE 'ICOMLX.INC'
       INCLUDE 'ISTORE.INC'
       INCLUDE 'XFILEC.INC'
@@ -741,7 +735,6 @@ C
 C
 C -- INITIALISE DIRECTIVES FOR LEXICAL INPUT
       CALL XLXINI ( ILAST , 1 )
-      call restraints_init()
       
 C -- INDICATE THAT THE WHOLE REGION UP TO 'LFL' CAN BE USED. THIS
 C    ROUTINE DOES NOT USE THE BUFFER SET UP AT 'MD' BY XLXINI.
@@ -862,16 +855,7 @@ C
 C
 
 C -- write the modified list 16 to lis if modification have been made
-      if(list16_modified .and. allocated(restraints_list)) then
-        write(ncwu, '(A)') '-- Original list 26:'
-        do icpt=1, restraints_list_index
-          write(ncwu, '(A)') restraints_list(icpt)%original
-        end do
-        write(ncwu, '(A)') '-- Pre-processed list 26:'
-        do icpt=1, restraints_list_index
-          write(ncwu, '(A)') restraints_list(icpt)%processed
-        end do
-      end if 
+      call lexical_print_changes(ncwu)
 
       RETURN
 C
@@ -1003,7 +987,7 @@ C--UPDATE FOR THE NEXT ARGUMENT
 C
 CODE FOR XPRTLC
       SUBROUTINE XPRTLC(NUMB,IADDD,LENGRP,NGRP)
-      use xlexical_mod, only: restraints_list, restraints_list_index
+      use lexical_mod, only: lexical_list, lexical_list_index
       use xcards_mod, only: image
 C--PRINT A CARD IMAGE PRODUCED BY THE LEXICAL SCANNER.
 C
@@ -1051,9 +1035,9 @@ C--FIRST CARD
       ! cline migh not be the output of the lexical scanner if pre-processing has been done, see lexical_helper.F90
       ! looking in the restraint look up table if substitutions have been done, if so, print out what is processed
       ! not the original restraint
-      do icpt=1, restraints_list_index
-        if(restraints_list(icpt)%original==cline(7:)) then
-          write(cline,'(I5,1X,A)') numb, restraints_list(icpt)%processed
+      do icpt=1, lexical_list_index
+        if(lexical_list(icpt)%original==cline(7:)) then
+          write(cline,'(I5,1X,A)') numb, lexical_list(icpt)%processed
         end if
       end do
 
@@ -1072,9 +1056,9 @@ C--NOT THE FIRST CARD
       ! cline migh not be the output of the lexical scanner if pre-processing has been done, see lexical_helper.F90
       ! looking in the restraint look up table if substitutions have been done, if so, print out what is processed
       ! not the original restraint
-      do icpt=1, restraints_list_index
-        if(restraints_list(icpt)%original==cline) then
-          cline=restraints_list(icpt)%processed
+      do icpt=1, lexical_list_index
+        if(lexical_list(icpt)%original==cline) then
+          cline=lexical_list(icpt)%processed
         end if
       end do
 
