@@ -3,7 +3,7 @@ module lexical_mod
   implicit none
   private ! make everything private by default
 
-  integer, parameter :: split_len = 24 !< length of element when splitting strings
+  integer, parameter :: split_len = 64 !< length of element when splitting strings
 
   !> type holding information during preprocssing
   type lexical_t
@@ -261,21 +261,24 @@ contains
         restraint%processed = restraint%original
       end if
     end associate
-
+    
   end subroutine
 
   !> Split a string into different pieces given a separator. Defaul separator is space.
-  !! Len of pieces must be passed to the function
-  subroutine explode(line, lenstring, elements, sep_arg, greedy_arg)
+  !! - Len of pieces must be passed to the function
+  !! - separator inside parenthesis are allowed
+  subroutine explode(line, lenstring, elements, sep_arg, fieldpos, greedy_arg)
     implicit none
     character(len=*), intent(in) :: line !< text to process
     integer, intent(in) :: lenstring !< length of each individual elements
     character, intent(in), optional :: sep_arg !< Separator
+    integer, dimension(:), allocatable, intent(out), optional :: fieldpos !< index of each field in the original string
     logical, intent(in), optional :: greedy_arg !< do not merge consecutive separators if false
     character(len=lenstring), dimension(:), allocatable, intent(out) :: elements
     character(len=lenstring), dimension(:), allocatable :: temp
+    integer, dimension(:), allocatable :: fieldpostemp
     character(len=lenstring) :: bufferlabel
-    integer i, j, k, n, start, maxel
+    integer i, j, k, n, start, maxel, bufferpos
     character sep
     logical greedy
 
@@ -291,7 +294,11 @@ contains
       greedy = .true.
     end if
 
-    allocate (elements(count_char(trim(line), sep, greedy)+1))
+    n = count_char(trim(line), sep, greedy)
+    allocate (elements(n+1))
+    if (present(fieldpos)) then
+      allocate (fieldpos(n+1))
+    end if
 
     start = 1
     if (greedy) then
@@ -304,6 +311,7 @@ contains
     j = 0
     bufferlabel = ''
     elements = ''
+    bufferpos = 0
     do i = start, len_trim(line)
       if (line(i:i) == sep) then
         if (greedy .and. i > 1) then
@@ -312,6 +320,9 @@ contains
           end if
         end if
         elements(k) = bufferlabel
+        if (present(fieldpos)) then
+          fieldpos(k) = bufferpos
+        end if
         k = k+1
         j = 0
         bufferlabel = ''
@@ -322,10 +333,16 @@ contains
         call print_to_mon('{E Programming error: len too short for elements in explode (lexical_helper.F90)')
         cycle
       end if
+      if (j == 1) then
+        bufferpos = i
+      end if
       bufferlabel(j:j) = line(i:i)
     end do
     if (j > 0 .and. trim(bufferlabel) /= '') then
       elements(k) = bufferlabel
+      if (present(fieldpos)) then
+        fieldpos(k) = bufferpos
+      end if
     end if
 
     ! check for parenthesis, separator is allowed inside them
@@ -346,6 +363,9 @@ contains
         maxel = maxel-1
         elements(i) = trim(elements(i))//trim(elements(i+1))
         elements(i+1:maxel) = elements(i+2:maxel+1)
+        if (present(fieldpos)) then
+          fieldpos(i+1:maxel) = fieldpos(i+2:maxel+1)
+        end if
         cycle
       end if
       i = i+1
@@ -354,6 +374,11 @@ contains
       call move_alloc(elements, temp)
       allocate (elements(maxel))
       elements = temp(1:maxel)
+      if (present(fieldpos)) then
+        call move_alloc(fieldpos, fieldpostemp)
+        allocate (fieldpos(maxel))
+        fieldpos = fieldpostemp(1:maxel)
+      end if
     end if
   end subroutine
 
@@ -1265,7 +1290,7 @@ contains
     if (i > 1 .and. j > i) then
       buffer = text(i+1:j-1)
       atom%label = adjustl(text(1:i-1))
-      call explode(buffer, split_len, elements, ',', .false.)
+      call explode(buffer, split_len, elements, ',', greedy_arg=.false.)
       eoffset = 0
       do j = 1, size(elements)
         skip_position = .false.
@@ -1364,13 +1389,13 @@ contains
       j = l2p+(md2p*(self%sym_op%L-1))
     end if
 
-    if (i > l2+((n2-1)*md2) .or. i < l2) then
+    if (i > l2+((n2-1)*md2) .or. i < l2 .or. l2 < 1) then
       write (logtext, '(A,I0)') '{E Error: invalid symmetry operator index ', self%sym_op%S
       call print_to_mon(logtext)
       ierror = -1
       return
     end if
-    if (j > l2p+((n2p-1)*md2p) .or. j < l2p) then
+    if (j > l2p+((n2p-1)*md2p) .or. j < l2p .or. l2p < 1) then
       write (logtext, '(A,I0)') '{E Error: invalid lattice translation index ', self%sym_op%L
       call print_to_mon(logtext)
       ierror = -1
@@ -1451,7 +1476,7 @@ contains
 
   subroutine print_to_mon(text, wrap_arg)
     use xiobuf_mod, only: cmon !< I/O units
-    use xunits_mod, only: ncvdu !< I/O units
+    use xunits_mod, only: ncwu, ncvdu !< I/O units
     implicit none
     character(len=*), intent(in) :: text !< text to print to screen
     logical, intent(in), optional :: wrap_arg !< option to wrap text over several lines
@@ -1474,12 +1499,15 @@ contains
     else
       istart = 1
     end if
+    write (ncwu, '(A)') trim(text(istart:iend))
 #else
     if (text(1:1) == '{') then
       prefix = text(1:3)
     end if
     istart = 1
+    write (ncwu, '(A)') trim(text(istart+len_trim(prefix)-1:iend))
 #endif
+
 
     if (wrap) then
       if (line_len < len_trim(text)) then
@@ -1526,8 +1554,9 @@ contains
     character(len=*), intent(inout) :: image_text
     integer, intent(out) :: ierror
     character(len=split_len), dimension(:), allocatable :: elements
+    integer, dimension(:), allocatable :: fieldpos
     type(atom_t) :: atom
-    integer i, j, m5, n
+    integer i, j, m5, n, m
     logical found
     character(len=8), dimension(13), parameter :: ignore = (/ &
                                                   'RENAME  ', &
@@ -1557,7 +1586,7 @@ contains
     end do
 
     ! split atom list
-    call explode(image_text, split_len, elements)
+    call explode(image_text, split_len, elements, fieldpos=fieldpos)
 
     do i = 2, size(elements)
 
@@ -1602,9 +1631,14 @@ contains
         end do
 
         if (.not. found) then
-          n = index(image_text, trim(elements(i)))
+          n = fieldpos(i)
+          if (i < size(fieldpos)) then
+            m = fieldpos(i+1)-fieldpos(i)
+          else
+            m = len_trim(image_text)-fieldpos(i)
+          end if
           call print_to_mon('{E Error: '//trim(image_text))
-          call print_to_mon('{E '//repeat('-', n+6)//repeat('^', len_trim(elements(i))))
+          call print_to_mon('{E '//repeat('-', n+6)//repeat('^', m))
           call print_to_mon('{E Error: atom '//trim(elements(i))//' is not present in the model')
           ierror = -1
         end if
@@ -1612,26 +1646,32 @@ contains
     end do
   end subroutine
 
-  !> Instert spaces around operators when necessary
+  !> Insert spaces around operators when necessary
   !! Splitting of expression relies on spaces.
   subroutine fixed_spacing(image_text)
     implicit none
     character(len=*), intent(inout) :: image_text
     character, dimension(5), parameter :: parameters = (/'/', '*', '-', '+', '='/)
-    integer n, i, k, s
+    integer n, i, k, s, m
     character, dimension(10), parameter :: numbers = (/'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'/)
     logical founda, foundb
 
     ! insert spaces around = if missing
     s = index(image_text, ' ') ! look for the first space, do not touch the first keyword
     do i = 1, size(parameters)
-      n = s+1
+      n = s
       do
         n = n+1
         if (n > len_trim(image_text)) exit
 
         if (image_text(n:n) == parameters(i) .and. n > 1) then
           if (image_text(n-1:n-1) /= ' ' .and. image_text(n+1:n+1) /= ' ') then
+            ! exceptions
+            if (image_text(n-1:n+2) == 'F-SQ') then
+              n = n+2
+              cycle
+            end if
+
             if (i < 5) then
               founda = .false. !after
               foundb = .false. !before
@@ -1702,9 +1742,33 @@ contains
       end do
     end do
 
+    ! remove spaces between label and serial in an atom definition
+    ! ie. C  (1) => c(1)
+    s = index(image_text, ' ') ! look for the first space, do not touch the first keyword
+    n = s
+    do
+      n = n+1
+      if (n > len_trim(image_text)) exit
+
+      if (image_text(n:n) == '(' .and. n > 1) then
+        PRINT *, trim(image_text(n:))
+        if (image_text(n-1:n-1) == ' ') then
+          m = 1
+          do while (image_text(n-m:n-m) == ' ')
+            m = m+1
+          end do
+          if (n-m > s .and. iachar(image_text(n-m:n-m)) > 64 .and. iachar(image_text(n-m:n-m)) < 89) then ! text already upper case at this point
+            ! removing the spaces
+            image_text = image_text(1:n-m)//trim(image_text(n:))
+            n = n-m
+          end if
+        end if
+      end if
+    end do
+
   end subroutine
 
-  !> print the content before and after the changes from this module
+!> print the content before and after the changes from this module
   subroutine lexical_print_changes(iounit)
     implicit none
     integer, intent(in) :: iounit
