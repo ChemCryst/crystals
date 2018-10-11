@@ -1049,7 +1049,7 @@ contains
     if (issprt == 0) then
       WRITE (NCWU, '(A,I3,A, 1PE9.2)') &
      &   'Block No', block_no,  &
-     &   '.  Single precision relative error: ', 1.0d0/rcond*epsilon(1.0)
+     &   '.  Single precision relative error: ', 1.0/rcond*epsilon(1.0)
     end if
 
     if (1.0/rcond*epsilon(1.0) > 1e-3) then
