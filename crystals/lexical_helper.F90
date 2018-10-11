@@ -18,13 +18,15 @@ module lexical_mod
 
   ! The backslash character causes problem in doxygen, using the following workaround instead
   character(len=2), parameter :: qmark = char(63)//char(63) !< the ?? string
+  ! The ampersand is causing ifort to crash
+  character(len=2), parameter :: amps = char(38)//char(38) !< the && string
   !> List of crystals bond definition
   !! -  10 = any type
   !! -   1 = single  2= double  3=triple  4=quadruple
   !! -   5 = aromatic      6 = polymeric single
   !! -   7 = delocalised   8 = strange    9 = pi-bond
   character(len=2), dimension(10), parameter :: bond_list_definition = &
-  & (/'--', '==', '-=', '##', '@@', '&&', '~~', '**', '::', qmark/)
+  & (/'--', '==', '-=', '##', '@@', amps, '~~', '**', '::', qmark/)
 
   !> Symmetry operator as defined in crystals
   type sym_op_t
