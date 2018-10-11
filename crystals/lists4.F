@@ -2450,6 +2450,8 @@ C IADDR, just to be on the safe side.
            l23m=newl23m
            m23m=newl23m+8
            istore(iaddr+3) = newl23m
+c now write the modified list back to disk
+           call xwlstd (23, icom23, idim23, 0 ,-1)
         end if
       end if
       RETURN 
