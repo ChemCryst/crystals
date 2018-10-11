@@ -1271,10 +1271,11 @@ contains
     character(len=128) :: msgstatus
     logical skip_position
 
-    character(len=6), dimension(16), parameter :: param_name = (/  &
+    character(len=6), dimension(19), parameter :: param_name = (/  &
     & 'X     ', 'Y     ', 'Z     ', 'OCC   ', 'U[ISO]', 'SPARE ',&
     & 'U[11] ', 'U[22] ', 'U[33] ', 'U[23] ', 'U[13] ', 'U[12] ',&
-    & "X'S   ", "U'S   ", "UIJ'S ", "UII'S "/)
+    & "X'S   ", "U'S   ", "UIJ'S ", "UII'S ", 'DECLIN', 'SIZE  ',&
+    & 'AZIMUT' /)
 
     call atom%init()
 
@@ -1358,7 +1359,6 @@ contains
             end select
           end if
           if (info /= 0) then ! error when reading one of the values
-            call abort()
             call print_to_mon('{E Error: '//trim(text)//' is not a valid atom name')
             call print_to_mon('{E '//trim(msgstatus))
             atom%serial = -1
