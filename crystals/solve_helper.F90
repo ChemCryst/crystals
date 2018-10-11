@@ -1131,7 +1131,7 @@ contains
         WRITE (NCWU, '(A)') 'Insufficient precision - trying double'
         WRITE (NCWU, '(A,I3,A, 1PE9.2)') &
    &   'Block No', block_no, &
-   &   '.  Double precision relative error: ', 1.0d0/drcond*epsilon(1.0)
+   &   '.  Double precision relative error: ', 1.0d0/drcond*epsilon(1.0d0)
       end if
 
       if (1.0d0/drcond*epsilon(1.0d0) > 1e-3) then
