@@ -1751,7 +1751,6 @@ contains
       if (n > len_trim(image_text)) exit
 
       if (image_text(n:n) == '(' .and. n > 1) then
-        PRINT *, trim(image_text(n:))
         if (image_text(n-1:n-1) == ' ') then
           m = 1
           do while (image_text(n-m:n-m) == ' ')
