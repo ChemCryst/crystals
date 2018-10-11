@@ -934,6 +934,7 @@ C use KHUNTR to return IADDR, just to be on the safe side.
         MD11P=31
         l11p=newl11p
         istore(iaddr+3) = newl11p
+        call xwlstd(iuln,icom11,idim11,+1,-1)  ! preserve links
       end if
       RETURN
 C
