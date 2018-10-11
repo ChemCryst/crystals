@@ -86,7 +86,7 @@ contains
 
   !> Initialise restraints
   subroutine lexical_list_init()
-    use lists2_mod
+    use lists2_mod, only: xldlst
     use store_mod, only: store
     use xlisti_mod, only: l0, m0, n0, md0 !< core list variables
     implicit none
