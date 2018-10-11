@@ -319,7 +319,7 @@ contains
             cycle
           end if
         end if
-        elements(k) = bufferlabel
+        elements(k) = adjustl(bufferlabel)
         if (present(fieldpos)) then
           fieldpos(k) = bufferpos
         end if
@@ -339,7 +339,7 @@ contains
       bufferlabel(j:j) = line(i:i)
     end do
     if (j > 0 .and. trim(bufferlabel) /= '') then
-      elements(k) = bufferlabel
+      elements(k) = adjustl(bufferlabel)
       if (present(fieldpos)) then
         fieldpos(k) = bufferpos
       end if
@@ -1286,6 +1286,13 @@ contains
 
     i = index(text, '(')
     j = index(text, ')')
+    
+    if(i>3) then
+      ! ok, not an atom could be command like type, first...
+      ! to be done
+      atom%label=text(1:j-1)
+      return
+    end if
 
     if (i > 1 .and. j > i) then
       buffer = text(i+1:j-1)
@@ -1351,6 +1358,7 @@ contains
             end select
           end if
           if (info /= 0) then ! error when reading one of the values
+            call abort()
             call print_to_mon('{E Error: '//trim(text)//' is not a valid atom name')
             call print_to_mon('{E '//trim(msgstatus))
             atom%serial = -1
@@ -1499,13 +1507,13 @@ contains
     else
       istart = 1
     end if
-    write (ncwu, '(A)') trim(text(istart:iend))
+    write (ncwu, '(A)') trim(text(istart:))
 #else
     if (text(1:1) == '{') then
       prefix = text(1:3)
     end if
     istart = 1
-    write (ncwu, '(A)') trim(text(istart+len_trim(prefix)-1:iend))
+    write (ncwu, '(A)') trim(text(istart+len_trim(prefix)-1:))
 #endif
 
 
@@ -1558,7 +1566,7 @@ contains
     type(atom_t) :: atom
     integer i, j, m5, n, m
     logical found
-    character(len=8), dimension(13), parameter :: ignore = (/ &
+    character(len=8), dimension(16), parameter :: ignore = (/ &
                                                   'RENAME  ', &
                                                   'LAYER   ', &
                                                   'ELEMENT ', &
@@ -1567,10 +1575,13 @@ contains
                                                   'CREATE  ', &
                                                   'OLD     ', &
                                                   'RESI    ', &
-                                                  'CONTINUE', &
+                                                  'CONT    ', &
                                                   'BEFORE  ', &
                                                   'AFTER   ', &
                                                   'CONT    ', &
+                                                  'TYPE    ', &
+                                                  'FIRST   ', &
+                                                  'UNTIL   ', &
                                                   'MOVE    '/)
 
     ierror = 0
