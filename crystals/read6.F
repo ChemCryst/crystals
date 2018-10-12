@@ -1545,8 +1545,20 @@ c open an archive file on NCPU if required
           write(ncpu,'(a)')'# Data was input as F'
         endif
 C
+        write(ncpu,'(a)') 
+     1 '# This file can be directly input to CRYSTALS'
+        write(ncpu,'(a)') '# without any editing by issuing:'
+        write(ncpu,'(a)') '# #USE ARCHIVE-HKL.CIF'
+       
         CALL XPCH6N(6,6,2,.false.)
-C DO Type=copy to ensure that all necessary storage flags are set
+c include COMMANDS to process the data and then
+C do Type=copy to ensure that all necessary storage flags are set
+        write(ncpu,'(a)') '#syst'
+        write(ncpu,'(a)') 'end'
+        write(ncpu,'(a)') '#sort'
+        write(ncpu,'(a)') 'end'
+        write(ncpu,'(a)') '#merge'
+        write(ncpu,'(a)') 'end'
         write(ncpu,'(a)') '#list 6'
         write(ncpu,'(a)') 'read type=copy'
         write(ncpu,'(a)') 'end'
