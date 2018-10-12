@@ -22,6 +22,27 @@ Bonds: Update required - There is no list 41
 Refining    21 parameters in    4 block :      148 elements in the LS matrix.
  Space required on DISK is    1 records,     2  Blocks,     1 Kbytes. 
 #LIST 26
+
+
+ P6122 - LARSON'S TEST CASE ADAPTED TO TEST THE RESTRAINTS CHECKING                   Date              Time          
+
+
+ Print symbolic list    26
+     0 EXECUTION 
+     1 RESTRAIN 1.5 , 0.03 = SQRT 
+         CONT ((C(1,5,X)-S(1,5,X))*(C(1,5,X)-S(1,5,X))*G(1,1) 
+         CONT +(C(1,5,X)-S(1,5,X))*(C(1,5,Y)-S(1,5,Y))*G(1,2) 
+         CONT +(C(1,5,X)-S(1,5,X))*(C(1,5,Z)-S(1,5,Z))*G(1,3) 
+         CONT +(C(1,5,Y)-S(1,5,Y))*(C(1,5,X)-S(1,5,X))*G(2,1) 
+         CONT +(C(1,5,Y)-S(1,5,Y))*(C(1,5,Y)-S(1,5,Y))*G(2,2) 
+         CONT +(C(1,5,Y)-S(1,5,Y))*(C(1,5,Z)-S(1,5,Z))*G(2,3) 
+         CONT +(C(1,5,Z)-S(1,5,Z))*(C(1,5,X)-S(1,5,X))*G(3,1) 
+         CONT +(C(1,5,Z)-S(1,5,Z))*(C(1,5,Y)-S(1,5,Y))*G(3,2) 
+         CONT +(C(1,5,Z)-S(1,5,Z))*(C(1,5,Z)-S(1,5,Z))*G(3,3)) 
+            *
+ Operator '(' not found at about column    6
+Error label 5850. Card abandoned
+ Processing of the card above has been abandoned
 #CHECK
 #LIST 16
 
@@ -31,102 +52,6 @@ Refining    21 parameters in    4 block :      148 elements in the LS matrix.
 
   Restraints checking  -  
   restraints that produce no contributions are marked with a '?'
-
-
- Full loader listing, including the coordinates of generated atoms :
-
-     C          1.   0.50000  0.00000 -0.49800  0.00000  1.00000  0.04137  0.04137  0.02533  0.00000  0.00000  0.02068
-     S          1.   0.50000  0.00000 -0.79800 -0.59600  1.25000  0.02533  0.02533  0.02533  0.00000  0.00000  0.01266
-
- Listing of the code chain.     Chain base =       0     Data base =       0     Control block :    13411677649216777216
-       1047   -998953      3236       294      1059   -997048      2964         2      1053      2962  16776314         0
- Work stack header at    1053  :  -1000000         6      -724       178   -998953         0
- Atom header at    1059  :      1085         0     C       1.              3      1076         5    1    0    0    0
-                                  77       8911065353216  16776471  16776449
-      1076  :      1079         5     X       
-      1079  :      1082         6     Y       
-      1082  :   -998953         7     Z       
- Atom header at    1085  :   -998953         0     S       1.              3      1102         5    1    0    0    0
-                                  59       8651065353216  16776427  16776405
-      1102  :      1105         5     X       
-      1105  :      1108         6     Y       
-      1108  :   -998953         7     Z       
- Function at    1047  :    2   Restrain   
-      1111  :      1116         2  16776457  16776413  16776403
-      1116  :      1121         2  16776457  16776413  16776401
-      1121  :      1126         3  16776403  16776401  16776399
-      1126  :      1131         3  16776399  16777171  16776397
-      1131  :      1136         2  16776457  16776413  16776395
-      1136  :      1141         2  16776459  16776415  16776393
-      1141  :      1146         3  16776395  16776393  16776391
-      1146  :      1151         3  16776391  16777173  16776389
-      1151  :      1156         1  16776397  16776389  16776387
-      1156  :      1161         2  16776457  16776413  16776385
-      1161  :      1166         2  16776461  16776417  16776383
-      1166  :      1171         3  16776385  16776383  16776381
-      1171  :      1176         3  16776381  16777175  16776379
-      1176  :      1181         1  16776387  16776379  16776377
-      1181  :      1186         2  16776459  16776415  16776375
-      1186  :      1191         2  16776457  16776413  16776373
-      1191  :      1196         3  16776375  16776373  16776371
-      1196  :      1201         3  16776371  16777177  16776369
-      1201  :      1206         1  16776377  16776369  16776367
-      1206  :      1211         2  16776459  16776415  16776365
-      1211  :      1216         2  16776459  16776415  16776363
-      1216  :      1221         3  16776365  16776363  16776361
-      1221  :      1226         3  16776361  16777179  16776359
-      1226  :      1231         1  16776367  16776359  16776357
-      1231  :      1236         2  16776459  16776415  16776355
-      1236  :      1241         2  16776461  16776417  16776353
-      1241  :      1246         3  16776355  16776353  16776351
-      1246  :      1251         3  16776351  16777181  16776349
-      1251  :      1256         1  16776357  16776349  16776347
-      1256  :      1261         2  16776461  16776417  16776345
-      1261  :      1266         2  16776457  16776413  16776343
-      1266  :      1271         3  16776345  16776343  16776341
-      1271  :      1276         3  16776341  16777183  16776339
-      1276  :      1281         1  16776347  16776339  16776337
-      1281  :      1286         2  16776461  16776417  16776335
-      1286  :      1291         2  16776459  16776415  16776333
-      1291  :      1296         3  16776335  16776333  16776331
-      1296  :      1301         3  16776331  16777185  16776329
-      1301  :      1306         1  16776337  16776329  16776327
-      1306  :      1311         2  16776461  16776417  16776325
-      1311  :      1316         2  16776461  16776417  16776323
-      1316  :      1321         3  16776325  16776323  16776321
-      1321  :      1326         3  16776321  16777187  16776319
-      1326  :      1331         1  16776327  16776319  16776317
-      1331  :      1336         6  16776317  16776319  16776315
-      1336  :   -998953        14  16777216  16777216  16776315
-[38]  C           1.0000   0.50    0.00   -0.49    0.00    1.00    0.04    0.04    0.02    0.00    0.00    0.02
-[38]  S           1.0000   0.50    0.00   -0.79   -0.59    1.25    0.02    0.02    0.02    0.00    0.00    0.01
-___________
- (1) RESTRAIN 1.5 , 0.03 = SQRT
-CONT ((C(1,5,X)-S(1,5,X))*(C(1,5,X)-S(1,5,X))*G(1,1)
-CONT +(C(1,5,X)-S(1,5,X))*(C(1,5,Y)-S(1,5,Y))*G(1,2)
-CONT +(C(1,5,X)-S(1,5,X))*(C(1,5,Z)-S(1,5,Z))*G(1,3)
-CONT +(C(1,5,Y)-S(1,5,Y))*(C(1,5,X)-S(1,5,X))*G(2,1)
-CONT +(C(1,5,Y)-S(1,5,Y))*(C(1,5,Y)-S(1,5,Y))*G(2,2)
-CONT +(C(1,5,Y)-S(1,5,Y))*(C(1,5,Z)-S(1,5,Z))*G(2,3)
-CONT +(C(1,5,Z)-S(1,5,Z))*(C(1,5,X)-S(1,5,X))*G(3,1)
-CONT +(C(1,5,Z)-S(1,5,Z))*(C(1,5,Y)-S(1,5,Y))*G(3,2)
-CONT +(C(1,5,Z)-S(1,5,Z))*(C(1,5,Z)-S(1,5,Z))*G(3,3))
- Calculated value    0.6731881142E+01
- Calculated value    0.4820548058E+01
- Calculated value   -0.4842164993E+01
- Calculated value   -0.1540939617E+02
- Calculated value   -0.4820548058E+01
- Calculated value    0.4842164993E+01
- Calculated value    0.1540939617E+02
- Derivative(s) :
-         8
-                    0.1111E+04                   -0.5232E+01                    0.2250E+01
-        12         -0.9663E+01        17         -0.2162E-01
-
-
-   1.  General restraint to be     0.1500000000E+01  with an E.S.D. of    0.3000000119E-01
-       Calculated value            0.6731881142E+01  giving a delta of   -0.5231881142E+01
-          - Derivatives not found, do a refinement cycle to get leverages -
 
 
  Full loader listing, including the coordinates of generated atoms :
@@ -194,7 +119,7 @@ CONT TO C(1,7,1,-1)
                     0.1111E+04                   -0.5232E+01                    0.2250E+01
         12         -0.9663E+01        17         -0.2162E-01
 
-   2. Restrain these distances to be    1.500 Angstrom,
+   1. Restrain these distances to be    1.500 Angstrom,
                 with an E.S.D. of   0.030
 
             Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ   distances    Delta
@@ -300,7 +225,7 @@ CONT C(1) TO O(1) C(1,7) TO O(1,7)
                     0.1111E+04                    0.1500E+01                    0.1959E+03
          3         -0.2384E-06         4          0.7153E-06        17         -0.4768E-06
 
-   3.   Restrain the differences between the following distances to be
+   2.   Restrain the differences between the following distances to be
     1.500  Angstrom, with an E.S.D. of    0.030
 
             Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ   distances 
@@ -395,7 +320,7 @@ CONT C(1) TO O(1) C(1,7) TO O(1,7)
                     0.1111E+04                   -0.3257E+01                    0.9978E+02
          3          0.1049E+01         4         -0.2181E+01         5         -0.1969E+02        17          0.1132E+01
 
-   4.   Restrain the following distances to their common mean of     9.989 Angstrom
+   3.   Restrain the following distances to their common mean of     9.989 Angstrom
                                                  with an E.S.D. of   0.030
 
             Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ   distances    Delta
@@ -470,7 +395,7 @@ CONT TO O(1,7,,-1)
          3         -0.3998E+00         4          0.2886E+00         5         -0.3607E+00        12         -0.9116E+00
         17          0.3409E+00
 
-   5. Restrain these  angles   to be    0.000 degrees ,
+   4. Restrain these  angles   to be    0.000 degrees ,
                 with an E.S.D. of   1.000
 
             Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ       Atom  3    S(I) L TX TY TZ    angles  Delta
@@ -570,7 +495,7 @@ CONT S(1,3) TO C(1,3) TO O(1,4)
          3         -0.6672E-01         4          0.3719E-01         5         -0.2020E+00        12         -0.2460E+01
         17          0.8819E+00
 
-   6.   Restrain the differences between the following  angles   to be
+   5.   Restrain the differences between the following  angles   to be
     0.000  degrees , with an E.S.D. of    1.000
 
             Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ       Atom  3    S(I) L TX TY TZ    angles 
@@ -698,7 +623,7 @@ CONT S(1,3) TO C(1,3) TO O(1,4)
          3         -0.3331E+00         4          0.2514E+00         5         -0.1587E+00        12          0.1549E+01
         17         -0.5409E+00
 
-   7.   Restrain the following  angles   to their common mean of    74.664 degrees 
+   6.   Restrain the following  angles   to their common mean of    74.664 degrees 
                                                  with an E.S.D. of   1.000
 
             Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ       Atom  3    S(I) L TX TY TZ    angles  Delta
@@ -851,7 +776,7 @@ CONT S(1) TO O(1) S(1) TO C(1) S(1,7) TO C(1,7)
         16         -0.8555E+00        17          0.5895E-04        18         -0.8555E+00        19         -0.5723E+00
         20         -0.1979E+01        21          0.8555E+00
 
-   8.DELU - Restrain the difference in the M.S.D.'s along a bond to be
+   7.DELU - Restrain the difference in the M.S.D.'s along a bond to be
         0.00000  angstrom squared, with an E.S.D. of  0.06000
 
             Atom  1    S(I) L TX TY TZ    M.S.D.'s          Atom  2    S(I) L TX TY TZ    M.S.D.'s    Delta
@@ -913,7 +838,7 @@ ___________
          6         -0.1000E+01        13          0.1000E+01
 
 
-   9.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000071E-01
+   8.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000071E-01
        Calculated value           -0.4669999704E-02  giving a delta of    0.4669999704E-02
           - Derivatives not found, do a refinement cycle to get leverages -
 
@@ -968,7 +893,7 @@ ___________
          7         -0.1000E+01        13          0.1000E+01
 
 
-  10.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000071E-01
+   9.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000071E-01
        Calculated value           -0.1467000134E-01  giving a delta of    0.1467000134E-01
           - Derivatives not found, do a refinement cycle to get leverages -
 
@@ -1024,7 +949,7 @@ ___________
         16         -0.2000E+01
 
 
-  11.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000071E-01
+  10.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000071E-01
        Calculated value           -0.2467000112E-01  giving a delta of    0.2467000112E-01
           - Derivatives not found, do a refinement cycle to get leverages -
 
@@ -1079,7 +1004,7 @@ ___________
          6         -0.1000E+01        11          0.1000E+01        13          0.1000E+01        16         -0.1000E+01
 
 
-  12.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000071E-01
+  11.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000071E-01
        Calculated value           -0.7334999740E-02  giving a delta of    0.7334999740E-02
           - Derivatives not found, do a refinement cycle to get leverages -
 
@@ -1228,7 +1153,7 @@ ___________
                     0.1000E+05                    0.7335E-02                    0.2668E-03
          6         -0.1000E+01        11          0.1000E+01        13          0.1000E+01        16         -0.1000E+01
 
-     13.SIMU - Restrain the difference in the components of  U(IJ)'s to be
+     12.SIMU - Restrain the difference in the components of  U(IJ)'s to be
         0.00000  angstrom squared, with an E.S.D. of  0.01000
 
             Atom  1    S(I) L TX TY TZ     U(IJ)'s          Atom  2    S(I) L TX TY TZ     U(IJ)'s    Delta     Coord.'S

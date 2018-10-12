@@ -1679,16 +1679,18 @@ Mean C-C su =   0.0284
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    23     serial number        3     Address    35147     Length      77     Created on                          
+ Print list type    23     serial number        3     Address    35149     Length      78     Created on                          
 
 
 
- Record  101    LGRP    8  NGRP      1   MODIFICATIONS APPLIED TO /FO/ AND /FC/ DURING SFLS (-1 FOR NO, 0 FOR YES)       
+ Record  101    LGRP    9  NGRP      1   MODIFICATIONS APPLIED TO /FO/ AND /FC/ DURING SFLS (-1 FOR NO, 0 FOR YES)       
 
 
     ANOMALOUS      EXTINCTION     LAYERSCALES    BATCHSCALES    PARTIAL        UPDATE         ENANTIOPOLE    INVERTOR    
+   HUGE        
 
          -1              0             -1             -1              0             -1             -1              0
+          0
 
 
  Record  103    LGRP    6  NGRP      1   MODIFICATIONS TO THE MINIMISATION FUNCTION DURING SFLS (-1 FOR NO, 0 FOR YES)   
@@ -1732,7 +1734,7 @@ Mean C-C su =   0.0284
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        1     Address    38718     Length     729     Created on                          
+ Print list type    22     serial number        1     Address    38721     Length     729     Created on                          
 
 
             298 parameter(s) in    1 block(s) - as follows:
@@ -1921,7 +1923,7 @@ Mean C-C su =   0.0284
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number        5     Address    85698     Length     616     Created on                          
+ Print list type    24     serial number        5     Address    85701     Length     616     Created on                          
 
 
 
@@ -3691,16 +3693,18 @@ Mean C-C su =   0.0273
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    23     serial number        4     Address    35147     Length      77     Created on                          
+ Print list type    23     serial number        4     Address    35149     Length      78     Created on                          
 
 
 
- Record  101    LGRP    8  NGRP      1   MODIFICATIONS APPLIED TO /FO/ AND /FC/ DURING SFLS (-1 FOR NO, 0 FOR YES)       
+ Record  101    LGRP    9  NGRP      1   MODIFICATIONS APPLIED TO /FO/ AND /FC/ DURING SFLS (-1 FOR NO, 0 FOR YES)       
 
 
     ANOMALOUS      EXTINCTION     LAYERSCALES    BATCHSCALES    PARTIAL        UPDATE         ENANTIOPOLE    INVERTOR    
+   HUGE        
 
          -1              0             -1             -1              0             -1             -1              0
+          0
 
 
  Record  103    LGRP    6  NGRP      1   MODIFICATIONS TO THE MINIMISATION FUNCTION DURING SFLS (-1 FOR NO, 0 FOR YES)   
@@ -3744,7 +3748,7 @@ Mean C-C su =   0.0273
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        1     Address    38718     Length     729     Created on                          
+ Print list type    22     serial number        1     Address    38721     Length     729     Created on                          
 
 
             298 parameter(s) in    1 block(s) - as follows:
@@ -3933,7 +3937,7 @@ Mean C-C su =   0.0273
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number        9     Address    85698     Length     616     Created on                          
+ Print list type    24     serial number        9     Address    85701     Length     616     Created on                          
 
 
 

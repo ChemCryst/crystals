@@ -1206,7 +1206,7 @@ LS-scale=  5.759   Wilson Scale=  0.000
 
 Block No  1.  Single precision relative error:  1.34E-03
 Insufficient precision - trying double
-Block No  1.  Double precision relative error:  1.34E-03
+Block No  1.  Double precision relative error:  2.49E-12
 [13]  LARGE     1           1             0.6       0.0E+00    0.1 E-01         32.5                           SCALE   
 [14]  S/ESD     2           2            0.409       0.0E+00    0.60 E-01          6.7         C      1 OCC     
                                                                                                             Composite
@@ -3484,7 +3484,7 @@ Mean C-C su =   0.0493
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        2     Address   104267     Length     450     Created on                          
+ Print list type    22     serial number        2     Address   104268     Length     450     Created on                          
 
 
              35 parameter(s) in    1 block(s) - as follows:
@@ -3670,7 +3670,7 @@ Mean C-C su =   0.0493
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number       14     Address   112959     Length      90     Created on                          
+ Print list type    24     serial number       14     Address   112960     Length      90     Created on                          
 
 
 
@@ -6509,7 +6509,7 @@ Mean C-C su =   0.0481
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        4     Address   104267     Length     450     Created on                          
+ Print list type    22     serial number        4     Address   104268     Length     450     Created on                          
 
 
              35 parameter(s) in    1 block(s) - as follows:
@@ -6695,7 +6695,7 @@ Mean C-C su =   0.0481
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number       26     Address   227491     Length      90     Created on                          
+ Print list type    24     serial number       26     Address   227492     Length      90     Created on                          
 
 
 
@@ -10359,7 +10359,7 @@ Mean C-C su =   0.0477
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        6     Address   104267     Length     450     Created on                          
+ Print list type    22     serial number        6     Address   104268     Length     450     Created on                          
 
 
              35 parameter(s) in    1 block(s) - as follows:
@@ -10545,7 +10545,7 @@ Mean C-C su =   0.0477
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number       40     Address   336745     Length      90     Created on                          
+ Print list type    24     serial number       40     Address   336746     Length      90     Created on                          
 
 
 
@@ -14107,7 +14107,7 @@ Mean C-C su =   0.0481
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        8     Address   104267     Length     450     Created on                          
+ Print list type    22     serial number        8     Address   104268     Length     450     Created on                          
 
 
              35 parameter(s) in    1 block(s) - as follows:
@@ -14293,7 +14293,7 @@ Mean C-C su =   0.0481
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number       54     Address   448433     Length      90     Created on                          
+ Print list type    24     serial number       54     Address   448434     Length      90     Created on                          
 
 
 
