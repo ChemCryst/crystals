@@ -1546,6 +1546,7 @@ c open an archive file on NCPU if required
         endif
 C
         CALL XPCH6N(6,6,2,.false.)
+C DO Type=copy to ensure that all necessary storage flags are set
         write(ncpu,'(a)') '#list 6'
         write(ncpu,'(a)') 'read type=copy'
         write(ncpu,'(a)') 'end'
