@@ -2,8 +2,16 @@ CODE FOR HKLF52CRY
       PROGRAM HKL52CRY
 C----- BASED UPON SIMON PARSONS ctwin.f90
 C      IO BASED UPON RICHARD COOPERS cif2cry.fpp
+c      Extraction of twin matrix by Bruce FOxman, 2017
 c
+c      removal of clusters of reflections where more than one
+c      reflections have the same element ID, e.g. -2, -2, 1
+c      Reflections are also omited from a scratch copy of the
+c      hklf5 file before passing to TLAW2
+c 
       DIMENSION INDEX(3), VALUE(2), PARENT(3,3)
+      CHARACTER *80 CLINE(9)
+      CHARACTER *9  CELEM
       CHARACTER*256 PROGNM,INFIL,OUTFIL,OPTION
       DATA NINF    /10/
       DATA NOUTF   /11/
@@ -11,6 +19,15 @@ c
       DATA OUTFIL /' '/
       DATA PARENT/1.,0.,0.,0.,1.,0.,0.,0.,1./
       COMMON/MAT/R(3,3,7),RSV(3,3,7),JJMAX
+
+cdjw open a file for errors since DOS window closes too fast
+c    lots of writes to 17 later
+      open(17,file='HKL5.lis',status='unknown')
+      ICAPTION=0
+C Open a scratch file to write a new HKLF5 without repeated elements
+      OPEN(14,STATUS='SCRATCH',FORM='FORMATTED')
+
+
       I =  IO(NINF,NOUTF,INFIL, OUTFIL)
       IF (I .LE. 0) STOP 'ERROR IN io UNITS'
 
@@ -23,48 +40,86 @@ c
      1 'SIGMA CORRECT /FOT/ ELEMENTS')")
       WRITE(11,"('INPUT H K L /FOT/ SIGMA(/FO/) ELEMENTS')")
       WRITE(11,"('END')")
+C
+C SAVE THE INPUT REFLECTION IN A CHARACTER LINE BUFFER.
+C IF THE -N...1 BLOCK OF REFLECTIONS CONTAINS DUPLICATE KEYS
+C DELETE THE BLOCK, OTHERWISE OUTPUT IT
       JELEM = 0
+      LINE=1
 100   CONTINUE
-      READ(10,'(3I4,2F8.2,I4)',ERR=9000,END=9000) INDEX,VALUE,KEY
-C
-C     BRUKER FILES END WITH H, K, L ALL = 0; SKIP THAT & LOOK FOR EOF
-C
+      READ(10,'(A)',ERR=9000,END=9000)CLINE(LINE)
+      READ(CLINE(LINE),'(3I4,2F8.2,I4)') 
+     1  INDEX,VALUE,KEY
+C       BRUKER FILES END WITH H, K, L ALL = 0; SKIP THAT & LOOK FOR EOF
       IF(INDEX(1).EQ.0.AND.INDEX(2).EQ.0.AND.INDEX(3).EQ.0) GO TO 100
+      LINE=LINE+1
+C
       IF (KEY .LT.0) THEN
-            DO 
-                   JELEM = KKEY(KEY,JELEM)
-                  READ(10,'(3I4,2F8.2,I4)',ERR=9999,END=9000) 
-     1            INDEX,VALUE,KEY
-                  IF (KEY .GT. 0) THEN
-                      JELEM = KKEY(KEY,JELEM)
-                     WRITE(11,'(3I4,2F16.4,I9)') 
-     1               INDEX,VALUE,JELEM
-                     JELEM = 0
-                     GOTO 800
-                   ENDIF
-            ENDDO
-800         CONTINUE
+         DO 
+           JELEM = KKEY(KEY,JELEM)
+           READ(10,'(A)',ERR=9999,END=9000)CLINE(LINE)
+           READ(CLINE(LINE),'(3I4,2F8.2,I4)') 
+     1     INDEX,VALUE,KEY
+           LINE=LINE+1
+           IF (KEY .GT. 0) THEN
+             JELEM = KKEY(KEY,JELEM)
+             WRITE(CELEM,'(I9)') JELEM
+             IFAIL=0
+             DO I1=1,8
+               IF(CELEM(I1:I1).EQ. ' ') CYCLE
+               DO I2=I1+1,9
+                 IF(CELEM(I1:I1).EQ.CELEM(I2:I2)) THEN 
+C  DUPLICATE KEY - FAIL
+                  IFAIL=1
+                 ENDIF
+               ENDDO
+             ENDDO
+             IF(IFAIL.EQ.1)THEN 
+             IF(ICAPTION.EQ.0) THEN 
+             WRITE(17,'(A)')' Duplicate element Keys'
+             ICAPTION=ICAPTION+1
+             ENDIF
+      WRITE(17,'((A))')(CLINE(IDJW),IDJW=1,LINE-1)
+             ELSE
+      WRITE(14,'((A))')(CLINE(IDJW),IDJW=1,LINE-1)
+             WRITE(11,'(3I4,2F16.4,I9)') 
+     1       INDEX,VALUE,JELEM
+             ENDIF
+             JELEM = 0
+             LINE=1
+             GOTO 800
+           ENDIF
+         ENDDO
+800      CONTINUE
       ELSE
-            JELEM = ABS(KEY)
-            WRITE(11,'(3I4,2F16.4,I9)') 
-     1      INDEX,VALUE,JELEM
-            JELEM = 0
+         JELEM = ABS(KEY)
+         WRITE(11,'(3I4,2F16.4,I9)') 
+     1   INDEX,VALUE,JELEM
+      WRITE(14,'((A))')(CLINE(IDJW),IDJW=1,LINE-1)
+         JELEM = 0
+         LINE=1
       ENDIF
       GOTO 100
+C
+C
 9000  CONTINUE
       WRITE(11,"('-512')")
       CALL TLAW2(iout)
-        IF (IOUT.GE.1) THEN
-        OPEN(14,STATUS='UNKNOWN',FILE='l25.cry')
-        WRITE(14,'(/A/)') 
+      IF (IOUT.GE.1) THEN
+         OPEN(14,STATUS='UNKNOWN',FILE='l25.cry')
+         IF(JJMAX.LT.1) THEN
+            WRITE(14,'(A)')'# Twin Laws could not be determined'
+         ELSE
+          WRITE(14,'(/A/)') 
      1 '# CRYSTALS thinks the twin laws are:'
-        WRITE(14,"('\LIST 25')")
-        WRITE(14,9050) JJMAX+1
-        WRITE(14,9100) PARENT
-9050    FORMAT('READ NELEMENT=',I1)
-        WRITE(14,9100) (((R(I,J,JJ),J=1,3),I=1,3),JJ=1,JJMAX)
-        WRITE(14,"('END')")
-9100    FORMAT(('MATRIX  ',(6F9.5),/,'CONT    ',3F9.5))
+          WRITE(14,"('\LIST 25')")
+          WRITE(14,9050) JJMAX+1
+          WRITE(14,9100) PARENT
+9050      FORMAT('READ NELEMENT=',I1)
+          WRITE(14,9100) (((R(I,J,JJ),J=1,3),I=1,3),JJ=1,JJMAX)
+          WRITE(14,"('END')")
+9100      FORMAT(('MATRIX  ',(6F9.5),/,'CONT    ',3F9.5))
+         ENDIF
       ENDIF
       STOP 'FINISHED'
 C
@@ -116,9 +171,6 @@ C      data outfil /' '/
 
 c      call no_stdout_buffer()
 
-cdjw open a file for errors since DOS window closes too fast
-c    lots of writes to 17 later
-      open(17,file='HKL5.lis',status='unknown')
 
 C<ric02>
 C Read data from the commandline:
@@ -317,8 +369,8 @@ C
       NREF=1
 C     READ IN AND CHECK FOR -VE/+VE SET SEQUENCE IN HKLF5 FILE
 C     & DETERMINE THE NUMBER OF COMPONENTS (JJMAX)
-      REWIND 10
-   10 READ (10,500,END=100) HT1,KT1,LT1,FO,SIGMA,JCODE
+      REWIND 14
+   10 READ (14,500,END=100) HT1,KT1,LT1,FO,SIGMA,JCODE
       IF(HT1.EQ.0.AND.KT1.EQ.0.AND.LT1.EQ.0) GO TO 10
       IF(JCODE.LT.0) GO TO 11
       GO TO 10
@@ -327,7 +379,7 @@ C     & DETERMINE THE NUMBER OF COMPONENTS (JJMAX)
       HKLT(NREF,1,JJ)=HT1
       HKLT(NREF,2,JJ)=KT1
       HKLT(NREF,3,JJ)=LT1
-   12 READ (10,500) HP1,KP1,LP1,FO2,SIGMA,JCODE2
+   12 READ (14,500) HP1,KP1,LP1,FO2,SIGMA,JCODE2
       IF(HP1.EQ.0.AND.KP1.EQ.0.AND.LP1.EQ.0) GO TO 10
       IF(JCODE2) 14,13,13
    13 HKLP(NREF,1)=HP1
