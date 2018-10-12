@@ -1546,6 +1546,10 @@ c open an archive file on NCPU if required
         endif
 C
         CALL XPCH6N(6,6,2,.false.)
+        write(ncpu,'(a)') '#list 6'
+        write(ncpu,'(a)') 'read type=copy'
+        write(ncpu,'(a)') 'end'
+
         write(ncpu,'(a)')';'
 C
 c       close archive file if necessary
