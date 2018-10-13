@@ -56,11 +56,11 @@ module lexical_mod
     procedure :: init => init_atom !< initialise object
     procedure :: text => atom_text !< pretty print
     procedure :: sym_mat_update => atom_update_sym_mat !< update matrix notation using crystals notation (sym_op)
-    procedure, private :: atom_compare !< overload equivalence to compare atom type object
+    procedure, private :: atom_compare, natom_compare !< overload equivalence to compare atom type object
     generic :: operator(==) => atom_compare !< overload ==
-    generic :: operator(/=) => atom_compare !< overload /=
+    generic :: operator(/=) => natom_compare !< overload /=
     generic :: operator( .eqv. ) => atom_compare !< overload .eqv.
-    generic :: operator( .neqv. ) => atom_compare !< overload .neqv.
+    generic :: operator( .neqv. ) => natom_compare !< overload .neqv.
   end type
 
   !> variable name and its value
@@ -106,7 +106,7 @@ contains
     end if
     lexical_var_list_index = 0
     list16_modified = .false.
-
+    
     if (kexist(41) .gt. 0 .and. kexist(5) .gt. 0) then
       ! load list 5 and 41 and save their adresses
       ! Their existence from other subroutines is wiped out to avoid side effects
@@ -254,14 +254,14 @@ contains
 
       if (change) then
         list16_modified = .true.
-        call print_to_mon('{I --- '//trim(restraint%original), wrap_arg=.true.)
-        call print_to_mon('{I +++ '//trim(restraint%processed), wrap_arg=.true.)
+        call print_to_mon('{I --- '//trim(restraint%original), wrap_arg=.true., mon_only=.true.)
+        call print_to_mon('{I +++ '//trim(restraint%processed), wrap_arg=.true., mon_only=.true.)
       else
         ! no changes, restore original in case the formatting has been changed
         restraint%processed = restraint%original
       end if
     end associate
-    
+
   end subroutine
 
   !> Split a string into different pieces given a separator. Defaul separator is space.
@@ -423,7 +423,6 @@ contains
   !> Get get pairs of atoms using the connectivity list
   subroutine get_pairs(atoms, pairs, bond_type)
     ! we assume list 5 and 41 already loaded
-    use xlst41_mod, only: l41b, n41b, md41b !< connectivity list
     use store_mod, only: istore => i_store, c_store, store
     implicit none
     type(atom_t), dimension(:), intent(in) :: atoms !< list of atoms to use
@@ -439,18 +438,19 @@ contains
     call pairs_temp%init()
     pair_index = 0
 
-    if (md41b == 0) then
+    if (savedmd41b == 0 .or. savedl41b < 0) then
       ! no bonds
       allocate (pairs(0, 0))
       return
     end if
 
-    do m41b = l41b, l41b+(n41b-1)*md41b, md41b
+    do m41b = savedl41b, savedl41b+(savedn41b-1)*savedmd41b, savedmd41b
       bond_atoms = load_atom_from_l41(m41b)
       call left%init()
       call right%init()
 
       do i = 1, size(atoms)
+        !print *, i, atoms(i)%text()
         if (trim(atoms(i)%label) == trim(bond_atoms(1)%label)) then
           if (atoms(i)%serial == -1) then
             ! found one side
@@ -458,12 +458,14 @@ contains
               ! left has not been assigned yet atom(i) is not used in right
               left = bond_atoms(1)
               left%ref = i
+              !print *, 'l ', left%ref, right%ref, left%text(), right%text()
             end if
           else
-            if (atoms(i) == bond_atoms(1)) then
+            if (atoms(i) == bond_atoms(1) .and. left%serial == -1 .and. right%ref /= i) then
               ! left has not been assigned yet atom(i) is not used in right
               left = bond_atoms(1)
               left%ref = i
+              !print *, 'l ', left%ref, right%ref, left%text(), right%text()
             end if
           end if
         end if
@@ -475,16 +477,19 @@ contains
               ! right has not been assigned yet atom(i) is not used in left
               right = bond_atoms(2)
               right%ref = i
+              !print *, 'r ', left%ref, right%ref, left%text(), right%text()
             end if
           else
-            if (atoms(i) == bond_atoms(2)) then
+            if (atoms(i) == bond_atoms(2) .and. right%serial == -1 .and. left%ref /= i) then
               ! right has not been assigned yet atom(i) is not used in left
               right = bond_atoms(2)
               right%ref = i
+              !print *, 'r ', left%ref, right%ref, left%text(), right%text()
             end if
           end if
         end if
       end do
+      !print *, 'e ', left%ref, right%ref, left%text(), right%text()
 
       if (left%ref /= -1 .and. right%ref /= -1) then
         if (present(bond_type)) then
@@ -516,7 +521,6 @@ contains
   !> Get get 1,3 pairs of atoms using the precomputed 1,3 connectivity with get_connectivity_13
   subroutine get_pairs_13(atoms, connectivity_13, pairs)
     ! we assume list 5 and 41 already loaded
-    use xlst41_mod, only: l41b, n41b, md41b !< connectivity list
     use store_mod, only: istore => i_store, c_store, store
     implicit none
     type(atom_t), dimension(:), intent(in) :: atoms !< list of atoms to use
@@ -543,19 +547,16 @@ contains
       call right%init()
 
       do i = 1, size(atoms)
-        !print *, atoms(i)%text()
         if (atoms(i)%label == connectivity_13(1, j)%label) then
           !print *, 'left ', atoms(i)%text()
           if (atoms(i)%serial == -1) then
             ! found one side
             if (left%serial == -1 .and. right%ref /= i) then
               ! left has not been assigned yet atom(i) is not used in right
-              ! print *, 'left ', trim(c_store(ia1)), nint(store(ia1+1)), i, left%ref, right%ref
               left = connectivity_13(1, j)
               left%ref = i
             end if
-          else if (atoms(i)%serial == connectivity_13(1, j)%serial) then
-            ! print *, 'left ', trim(c_store(ia1)), nint(store(ia1+1)), i, left%ref, right%ref
+          else if (atoms(i) == connectivity_13(1, j) .and. left%serial == -1 .and. right%ref /= i) then
             left = connectivity_13(1, j)
             left%ref = i
           end if
@@ -566,13 +567,11 @@ contains
           if (atoms(i)%serial == -1) then
             ! found the other side
             if (right%serial == -1 .and. left%ref /= i) then
-              ! print *, 'right ', trim(c_store(ia3)), nint(store(ia3+1)), i, left%ref, right%ref
               ! right has not been assigned yet atom(i) is not used in left
               right = connectivity_13(3, j)
               right%ref = i
             end if
-          else if (atoms(i)%serial == connectivity_13(3, j)%serial) then
-            ! print *, 'right ', trim(c_store(ia3)), nint(store(ia3+1)), i, left%ref, right%ref
+          else if (atoms(i) == connectivity_13(3, j) .and. left%serial == -1 .and. right%ref /= i) then
             right = connectivity_13(3, j)
             right%ref = i
           end if
@@ -600,7 +599,6 @@ contains
   !> Get get 1,3 list of atoms using the connectivity list
   subroutine get_connectivity_13(connectivity_13)
     ! we assume list 5 and 41 already loaded
-    use xlst41_mod, only: l41b, n41b, md41b !< connectivity list
     use store_mod, only: istore => i_store, c_store, store
     implicit none
     type(atom_t), dimension(:, :), allocatable, intent(out) :: connectivity_13 !< list of 3 atoms vectors forming 1-3 connections
@@ -608,7 +606,7 @@ contains
     integer m41b_1, m41b_2, connectivity_13_index
     type(atom_t), dimension(2) :: bond1_atoms, bond2_atoms
 
-    if (md41b == 0) then
+    if (savedmd41b == 0) then
       ! no bonds
       allocate (connectivity_13(0, 0))
       return
@@ -617,13 +615,10 @@ contains
     allocate (connectivity_13_temp(3, 128))
     connectivity_13_index = 0
 
-    do m41b_1 = l41b, l41b+(n41b-1)*md41b, md41b
+    do m41b_1 = savedl41b, savedl41b+(savedn41b-1)*savedmd41b, savedmd41b
       bond1_atoms = load_atom_from_l41(m41b_1)
 
-      do m41b_2 = l41b, l41b+(n41b-1)*md41b, md41b
-        if (m41b_2 < m41b_1) then
-          cycle
-        end if
+      do m41b_2 = m41b_1+savedmd41b, savedl41b+(savedn41b-1)*savedmd41b, savedmd41b
         bond2_atoms = load_atom_from_l41(m41b_2)
 
         if (bond1_atoms(1) == bond2_atoms(1) .and. &
@@ -710,14 +705,14 @@ contains
     self%l5addr = -1
     self%label = ''
     self%serial = -1
-    self%sym_op%S = 1
-    self%sym_op%L = 1
+    self%sym_op%S = huge(0)
+    self%sym_op%L = -1
     self%sym_op%translation = 0.0
     self%sym_mat%R = 0.0
     self%sym_mat%T = 0.0
     self%ref = -1
-    self%part = 0
-    self%resi = 0
+    self%part = -1
+    self%resi = -1
   end subroutine
 
   !> pretty print for atom_t type
@@ -727,13 +722,13 @@ contains
     character(len=:), allocatable ::atom_text
     character(len=256) :: buffer
 
-    if (any(self%sym_op%translation /= 0.0)) then
+    if (any(abs(self%sym_op%translation) > 1e-6)) then
       write (buffer, '(A,"(",3(I0,","),2(F8.4,","),F8.4,")")') &
       & trim(self%label), self%serial, self%sym_op%S, self%sym_op%L, self%sym_op%translation
-    else if (self%sym_op%L /= 1) then
+    else if (self%sym_op%L > 1) then
       write (buffer, '(A,"(",2(I0,","),I0,")")') &
       & trim(self%label), self%serial, self%sym_op%S, self%sym_op%L
-    else if (self%sym_op%S /= 1) then
+    else if (self%sym_op%S > 1 .and. self%sym_op%S /= huge(1)) then
       write (buffer, '(A,"(",1(I0,","),I0,")")') &
       & trim(self%label), self%serial, self%sym_op%S
     else
@@ -756,7 +751,6 @@ contains
     type(atom_t), dimension(2) :: atoms
     type(atom_t), dimension(:, :), allocatable :: pairs
     character(len=8000) :: replacement
-    character(len=512) :: buffer
     logical found, empty
 
     found = .false. ! true if a bond definition is found
@@ -833,10 +827,7 @@ contains
 
         replacement = ''
         do i = 1, ubound(pairs, 2)
-          write (buffer, '(A,"(",I0,") TO ",A,"(",I0,")")') &
-          & trim(pairs(1, i)%label), pairs(1, i)%serial, &
-          & trim(pairs(2, i)%label), pairs(2, i)%serial
-          replacement = trim(replacement)//' '//trim(buffer)//','
+          replacement = trim(replacement)//' '//pairs(1, i)%text()//' TO '//pairs(2, i)%text()//','
           empty = .false.
         end do
         replacement(len_trim(replacement):len_trim(replacement)) = ' '
@@ -907,10 +898,11 @@ contains
     do while (dollar_start > 0)
       ! capture variable name
       dollar_end = dollar_start+1
-      do while (image_text(dollar_end:dollar_end) /= ' ')
+      do while (iachar(image_text(dollar_end:dollar_end))>64 .and. &
+      & iachar(image_text(dollar_end:dollar_end))<91)
         dollar_end = dollar_end+1
       end do
-      var_name = trim(image_text(dollar_start+1:dollar_end))
+      var_name = trim(image_text(dollar_start+1:dollar_end-1))
 
       ! look for its value in the table
       found = .false.
@@ -918,7 +910,7 @@ contains
         if (lexical_var_list(i)%label == var_name) then
           write (var_name, '(F0.6)') lexical_var_list(i)%rvalue
           image_text = image_text(1:dollar_start-1)//' '// &
-          & trim(var_name)//' '//trim(image_text(dollar_end+1:))
+          & trim(var_name)//' '//trim(image_text(dollar_end:))
           found = .true.
           change = .true.
         end if
@@ -1016,10 +1008,10 @@ contains
           atom_l5%part = istore(m5+14)
           atom_l5%resi = istore(m5+16)
 
-          if (atom%part > 0 .and. atom_l5%part == atom%part) then
+          if (atom%part > 0 .and. atom_l5%part == atom%part .and. atom_l5%label==atom%label) then
             write (atom_name, '(A,"(",I0,")")') trim(atom_l5%label), atom_l5%serial
             buffer = trim(buffer)//' '//trim(atom_name)
-          else if (atom%resi > 0 .and. atom_l5%resi == atom%resi) then
+          else if (atom%resi > 0 .and. atom_l5%resi == atom%resi .and. atom_l5%label==atom%label) then
             write (atom_name, '(A,"(",I0,")")') trim(atom_l5%label), atom_l5%serial
             buffer = trim(buffer)//' '//trim(atom_name)
           end if
@@ -1220,10 +1212,7 @@ contains
       end if
 
       do i = 1, ubound(pairs, 2)
-        write (buffer, '(A,"(",I0,") TO ", A, "(",I0,")")') &
-        & trim(pairs(1, i)%label), pairs(1, i)%serial, &
-        & trim(pairs(2, i)%label), pairs(2, i)%serial
-        image_text = trim(image_text)//' '//trim(buffer)//','
+        image_text = trim(image_text)//' '//pairs(1, i)%text()//' TO '//pairs(2, i)%text()//','
       end do
       image_text(len_trim(image_text):len_trim(image_text)) = ' '
 
@@ -1235,10 +1224,7 @@ contains
           image_text = trim(image_text)//','
         end if
         do i = 1, ubound(pairs, 2)
-          write (buffer, '(A,"(",I0,") TO ", A, "(",I0,")")') &
-          & trim(pairs(1, i)%label), pairs(1, i)%serial, &
-          & trim(pairs(2, i)%label), pairs(2, i)%serial
-          image_text = trim(image_text)//' '//trim(buffer)//','
+          image_text = trim(image_text)//' '//pairs(1, i)%text()//' TO '//pairs(2, i)%text()//','
         end do
         if (ubound(pairs, 2) > 0) then
           image_text(len_trim(image_text):len_trim(image_text)) = ' '
@@ -1275,7 +1261,7 @@ contains
     & 'X     ', 'Y     ', 'Z     ', 'OCC   ', 'U[ISO]', 'SPARE ',&
     & 'U[11] ', 'U[22] ', 'U[33] ', 'U[23] ', 'U[13] ', 'U[12] ',&
     & "X'S   ", "U'S   ", "UIJ'S ", "UII'S ", 'DECLIN', 'SIZE  ',&
-    & 'AZIMUT' /)
+    & 'AZIMUT'/)
 
     call atom%init()
 
@@ -1287,17 +1273,21 @@ contains
 
     i = index(text, '(')
     j = index(text, ')')
-    
-    if(i>3) then
+    atom%label = text(1:i-1)
+    if(atom%label(1:1)==',') then
+      ! oops, a coma made it here. It happens when there is no space after the coma
+      ! can safely ignored because it was fallowing a space
+      atom%label=atom%label(2:)
+    end if
+
+    if (len_trim(atom%label) > 3) then
       ! ok, not an atom could be command like type, first...
-      ! to be done
-      atom%label=text(1:j-1)
+      ! to be done properly
       return
     end if
 
     if (i > 1 .and. j > i) then
       buffer = text(i+1:j-1)
-      atom%label = adjustl(text(1:i-1))
       call explode(buffer, split_len, elements, ',', greedy_arg=.false.)
       eoffset = 0
       do j = 1, size(elements)
@@ -1371,6 +1361,10 @@ contains
       return
     end if
 
+    if (atom%resi == 0) then
+      atom%resi = 1
+    end if
+
     call atom%sym_mat_update(info)
     if (info /= 0) then
       atom%serial = -1
@@ -1388,6 +1382,12 @@ contains
     integer, intent(out) :: ierror
     integer i, j
     character(len=256) :: logtext
+
+    if (self%sym_op%S == huge(1) .or. self%sym_op%L == -1) then
+      self%sym_mat%R = 0.0
+      self%sym_mat%T = 0.0
+      return
+    end if
 
     ierror = 0
     i = l2+(md2*(abs(self%sym_op%S)-1))
@@ -1435,7 +1435,15 @@ contains
     atom(1)%resi = istore(l5addr+16)
     atom(1)%bond = istore(l41addr+12)
     atom(1)%sym_op%S = istore(l41addr+1)
+    ! every where else default is 1 but not is list 41, fixing...
+    if (atom(1)%sym_op%S == 0) then
+      atom(1)%sym_op%S = 1
+    end if
     atom(1)%sym_op%L = istore(l41addr+2)
+    ! every where else default is 1 but not is list 41, fixing...
+    if (atom(1)%sym_op%L == 0) then
+      atom(1)%sym_op%L = 1
+    end if
     !print *, nint(store(l41addr+1)), istore(l41addr+1)
     !print *, nint(store(l41addr+2)), istore(l41addr+2)
     atom(1)%sym_op%translation = store(l41addr+3:l41addr+5)
@@ -1466,28 +1474,47 @@ contains
     !print *, 'label ', atom1%label, atom2%label, r
     if (atom1%serial /= atom2%serial) r = .false.
     !print *, 'serial ', atom1%serial, atom2%serial, r
-    if (atom1%part /= atom2%part) r = .false.
+    if (atom1%part /= -1 .and. atom2%part /= -1) then
+      ! ignore part if one of the atom has no part definition
+      if (atom1%part /= atom2%part) r = .false.
+    end if
     !print *, 'part ', atom1%part, atom2%part, r
-    if (atom1%resi /= atom2%resi) r = .false.
+    if (atom1%resi /= -1 .and. atom2%resi /= -1) then
+      ! ignore residue if one of the atom has no residue definition
+      if (atom1%resi /= atom2%resi) r = .false.
+    end if
     !print *, 'resi ', atom1%resi, atom2%resi, r
-    if (atom1%sym_op%S /= atom2%sym_op%S) r = .false.
-    !print *, 'S ', atom1%sym_op%S, atom2%sym_op%S, r
-    if (atom1%sym_op%L /= atom2%sym_op%L) r = .false.
-    !print *, 'L ', atom1%sym_op%L, atom2%sym_op%L, r
+    if (atom1%sym_op%S /= huge(0) .and. atom1%sym_op%L /= -1) then
+      ! ignore symmetry if one of the atom has no symmetry definition
+      if (atom1%sym_op%S /= atom2%sym_op%S) r = .false.
+      !print *, 'S ', atom1%sym_op%S, atom2%sym_op%S, r
+      if (atom1%sym_op%L /= atom2%sym_op%L) r = .false.
+      !print *, 'L ', atom1%sym_op%L, atom2%sym_op%L, r
 
-    if (any(abs(atom1%sym_op%translation-atom2%sym_op%translation) > 0.01)) r = .false.
+      if (any(abs(atom1%sym_op%translation-atom2%sym_op%translation) > 0.01)) r = .false.
+    end if
 
     !print *, atom1%text(), atom2%text()
     !print *, 'here ', r
 
   end function
 
-  subroutine print_to_mon(text, wrap_arg)
+  function natom_compare(atom1, atom2) result(r)
+    implicit none
+    class(atom_t), intent(in) :: atom1, atom2
+    logical :: r
+
+    r = .not. atom_compare(atom1, atom2)
+
+  end function
+
+  subroutine print_to_mon(text, wrap_arg, mon_only)
     use xiobuf_mod, only: cmon !< I/O units
     use xunits_mod, only: ncwu, ncvdu !< I/O units
     implicit none
     character(len=*), intent(in) :: text !< text to print to screen
     logical, intent(in), optional :: wrap_arg !< option to wrap text over several lines
+    logical, intent(in), optional :: mon_only !< output to monitor only
     logical wrap
     integer istart, iend
     integer, parameter :: line_len = 100 !< length of a line
@@ -1507,15 +1534,18 @@ contains
     else
       istart = 1
     end if
-    write (ncwu, '(A)') trim(text(istart:))
+    if(.not. present(mon_only)) then
+      write (ncwu, '(A)') trim(text(istart:))
+    end if
 #else
     if (text(1:1) == '{') then
       prefix = text(1:3)
     end if
     istart = 1
-    write (ncwu, '(A)') trim(text(istart+len_trim(prefix)-1:))
+    if(.not. present(mon_only)) then
+      write (ncwu, '(A)') trim(text(istart+len_trim(prefix)-1:))
+    end if
 #endif
-
 
     if (wrap) then
       if (line_len < len_trim(text)) then
@@ -1662,98 +1692,90 @@ contains
   subroutine fixed_spacing(image_text)
     implicit none
     character(len=*), intent(inout) :: image_text
-    character, dimension(5), parameter :: parameters = (/'/', '*', '-', '+', '='/)
-    integer n, i, k, s, m
-    character, dimension(10), parameter :: numbers = (/'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'/)
+    character, dimension(5), parameter :: operators = (/'/', '*', '-', '+', '='/)
+    integer n, m, i, s, lenbuf
     logical founda, foundb
+    character(len=4) :: buffer
 
-    ! insert spaces around = if missing
+    ! insert spaces around operators if missing
     s = index(image_text, ' ') ! look for the first space, do not touch the first keyword
-    do i = 1, size(parameters)
+    do i = 1, size(operators)
       n = s
       do
         n = n+1
+
         if (n > len_trim(image_text)) exit
 
-        if (image_text(n:n) == parameters(i) .and. n > 1) then
-          if (image_text(n-1:n-1) /= ' ' .and. image_text(n+1:n+1) /= ' ') then
-            ! exceptions
-            if (image_text(n-1:n+2) == 'F-SQ') then
-              n = n+2
-              cycle
+        if (image_text(n:n) == operators(i)) then
+          founda = .false. !after
+          foundb = .false. !before
+
+          ! spaces after operator
+          founda = .false. !after
+          if (iachar(image_text(n+1:n+1)) > 64 .and. iachar(image_text(n+1:n+1)) < 91) then! A-Z, no need for a-z already all upper case
+            !we need a space except if it is a bond definition
+            if ((iachar(image_text(n-1:n-1)) > 32  .and. iachar(image_text(n-1:n-1)) < 39) .or. &
+            &   (iachar(image_text(n-1:n-1)) > 41  .and. iachar(image_text(n-1:n-1)) < 48) .or. &
+            &   (iachar(image_text(n-1:n-1)) > 57  .and. iachar(image_text(n-1:n-1)) < 65) .or. &
+            &   (iachar(image_text(n-1:n-1)) > 89  .and. iachar(image_text(n-1:n-1)) < 97) .or. &
+            &   (iachar(image_text(n-1:n-1)) > 122 .and. iachar(image_text(n-1:n-1)) <127) ) then ! not [ A-Za-z0-9)]
+              founda = .false.
+            else
+              founda = .true.
+            end if
+          else if (image_text(n+1:n+1) == '(') then
+            founda = .true.
+          end if
+
+          if (founda) then
+            image_text = image_text(1:n)//' '//trim(image_text(n+1:))
+          end if
+
+          if (n > 1) then
+            if (iachar(image_text(n-1:n-1)) > 64 .and. iachar(image_text(n-1:n-1)) < 91) then ! A-Z, no need for a-z already all upper case
+              !we need a space except if it is a bond definition
+              if ((iachar(image_text(n+1:n+1)) > 32  .and. iachar(image_text(n+1:n+1)) < 48) .or. &
+              &   (iachar(image_text(n+1:n+1)) > 41  .and. iachar(image_text(n+1:n+1)) < 48) .or. &
+              &   (iachar(image_text(n+1:n+1)) > 57  .and. iachar(image_text(n+1:n+1)) < 65) .or. &
+              &   (iachar(image_text(n+1:n+1)) > 89  .and. iachar(image_text(n+1:n+1)) < 97) .or. &
+              &   (iachar(image_text(n+1:n+1)) > 122 .and. iachar(image_text(n+1:n+1)) < 127) ) then ! not [ A-Za-z0-9]
+                foundb = .false.
+              else
+                foundb = .true.
+              end if
+            else if (image_text(n-1:n-1) == ')') then
+              foundb = .true.
             end if
 
-            if (i < 5) then
-              founda = .false. !after
-              foundb = .false. !before
-              do k = 1, size(numbers)
-                if (image_text(n+1:n+1) == numbers(k)) then
-                  founda = .true.
-                  exit
-                end if
-              end do
-              do k = 1, size(numbers)
-                if (image_text(n-1:n-1) == numbers(k)) then
-                  foundb = .true.
-                  exit
-                end if
-              end do
-              if (founda .and. foundb) then
-                ! do nothing
-              else if (founda) then
-                image_text = image_text(1:n-1)//' '//parameters(i)//trim(image_text(n+1:))
-                n = n+1
-              else if (foundb) then
-                image_text = image_text(1:n-1)//parameters(i)//trim(image_text(n+1:))
-                n = n+1
-              else
-                image_text = image_text(1:n-1)//' '//parameters(i)//' '//trim(image_text(n+1:))
-                n = n+2
-              end if
-            else
-              image_text = image_text(1:n-1)//' '//parameters(i)//' '//trim(image_text(n+1:))
-              n = n+2
-            end if
-          else if (image_text(n-1:n-1) /= ' ') then
-            if (i < 5) then
-              foundb = .false. !before
-              do k = 1, size(numbers)
-                if (image_text(n-1:n-1) == numbers(k)) then
-                  foundb = .true.
-                  exit
-                end if
-              end do
-              if (.not. foundb) then
-                image_text = image_text(1:n-1)//' '//parameters(i)//trim(image_text(n+1:))
-                n = n+1
-              end if
-            else
-              image_text = image_text(1:n-1)//' '//parameters(i)//trim(image_text(n+1:))
-              n = n+1
-            end if
-          else if (image_text(n+1:n+1) /= ' ') then
-            if (i < 5) then
-              founda = .false. !before
-              do k = 1, size(numbers)
-                if (image_text(n+1:n+1) == numbers(k)) then
-                  founda = .true.
-                  exit
-                end if
-              end do
-              if (.not. founda) then
-                image_text = image_text(1:n-1)//parameters(i)//' '//trim(image_text(n+1:))
-                n = n+1
-              end if
-            else
-              image_text = image_text(1:n-1)//' '//parameters(i)//trim(image_text(n+1:))
-              n = n+1
+            if (foundb) then
+              image_text = image_text(1:n-1)//' '//trim(image_text(n:))
             end if
           end if
+
+          if (founda) n = n+1
+          if (foundb) n = n+1
+
         end if
       end do
     end do
 
+    ! always have a space after `)`
+    s = index(image_text, ' ') ! look for the first space, do not touch the first keyword
+    n = s
+    do
+      n = n+1
+      if (n > len_trim(image_text)) exit
+
+      if (image_text(n:n) == ')') then
+        if (image_text(n+1:n+1) /= ' ') then
+          image_text = image_text(1:n)//' '//trim(image_text(n+1:))
+          n = n+1
+        end if
+      end if
+    end do
+
     ! remove spaces between label and serial in an atom definition
+    ! or add space otherwise if missing
     ! ie. C  (1) => c(1)
     s = index(image_text, ' ') ! look for the first space, do not touch the first keyword
     n = s
@@ -1772,9 +1794,100 @@ contains
             image_text = image_text(1:n-m)//trim(image_text(n:))
             n = n-m
           end if
+        else
+          if (iachar(image_text(n-1:n-1)) > 64 .and. iachar(image_text(n-1:n-1)) < 89) then
+            ! atom label, we are ok
+          else
+            image_text = image_text(1:n-1)//' '//trim(image_text(n:))
+          end if
         end if
       end if
     end do
+
+    ! remove spaces after ( or before )
+    s = index(image_text, ' ') ! look for the first space, do not touch the first keyword
+    n = s
+    do
+      n = n+1
+      if (n > len_trim(image_text)) exit
+
+      if (image_text(n:n) == '(') then
+        m = 0
+        do while (image_text(n+m+1:n+m+1) == ' ')
+          m = m+1
+        end do
+        if (m > 0) then
+          image_text = image_text(1:n)//trim(image_text(n+m+1:))
+        end if
+      else if (image_text(n:n) == ')') then
+        m = 1
+        do while (image_text(n-m:n-m) == ' ')
+          m = m+1
+        end do
+        if (m > 1) then
+          image_text = image_text(1:n-m)//trim(image_text(n:))
+          n = n-m
+        end if
+      end if
+    end do
+    
+    ! remove spaces aroud bond definitions
+    s = index(image_text, ' ') ! look for the first space, do not touch the first keyword
+    do i=1, size(bond_list_definition)
+      n = s
+      do
+        n = n+1
+        if (n > len_trim(image_text)) exit
+
+        if (image_text(n:n+1) == bond_list_definition(i)) then
+          m = 0
+          do while (image_text(n+1+m+1:n+1+m+1) == ' ')
+            m = m+1
+          end do
+          if (m > 0) then
+            image_text = image_text(1:n+1)//trim(image_text(n+1+m+1:))
+          end if
+
+          m = 1
+          do while (image_text(n-m:n-m) == ' ')
+            m = m+1
+          end do
+          if (m > 1) then
+            image_text = image_text(1:n-m)//trim(image_text(n:))
+            n = n-m
+          end if
+        end if
+      end do
+    end do
+    do i=1, size(bond_list_definition)
+      n = s
+      write(buffer, '("-",I0,"-")') i
+      lenbuf=len_trim(buffer)
+      
+      do
+        n = n+1
+        if (n > len_trim(image_text)) exit
+
+        if (image_text(n:n+lenbuf-1) == trim(buffer)) then
+          m = 0
+          do while (image_text(n+m+lenbuf:n+m+lenbuf) == ' ')
+            m = m+1
+          end do
+          if (m > 0) then
+            image_text = image_text(1:n+lenbuf-1)//trim(image_text(n+m+lenbuf:))
+          end if
+
+          m = 1
+          do while (image_text(n-m:n-m) == ' ')
+            m = m+1
+          end do
+          if (m > 1) then
+            image_text = image_text(1:n-m)//trim(image_text(n:))
+            n = n-m
+          end if
+        end if
+      end do
+    end do    
 
   end subroutine
 
