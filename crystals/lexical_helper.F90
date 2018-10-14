@@ -259,6 +259,7 @@ contains
       else
         ! no changes, restore original in case the formatting has been changed
         restraint%processed = restraint%original
+        image_text=restraint%original
       end if
     end associate
 
