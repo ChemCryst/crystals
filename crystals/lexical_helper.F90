@@ -1258,11 +1258,11 @@ contains
     character(len=128) :: msgstatus
     logical skip_position
 
-    character(len=6), dimension(19), parameter :: param_name = (/  &
+    character(len=6), dimension(21), parameter :: param_name = (/  &
     & 'X     ', 'Y     ', 'Z     ', 'OCC   ', 'U[ISO]', 'SPARE ',&
     & 'U[11] ', 'U[22] ', 'U[33] ', 'U[23] ', 'U[13] ', 'U[12] ',&
     & "X'S   ", "U'S   ", "UIJ'S ", "UII'S ", 'DECLIN', 'SIZE  ',&
-    & 'AZIMUT'/)
+    & 'AZIMUT', 'SERIAL', 'TYPE  '/)
 
     call atom%init()
 
@@ -1324,25 +1324,25 @@ contains
           if (.not. skip_position) then
             select case (j+eoffset)
             case (1) ! serial
-              read (elements(j), *, iostat=info, iomsg=msgstatus) atom%serial
+              read (elements(j+eoffset), *, iostat=info, iomsg=msgstatus) atom%serial
               if (atom%serial < 0) then
                 info = -1
                 msgstatus = 'Negative serial number is not valid'
               end if
             case (2) ! symmetry operator provided in the unit cell symmetry LIST 2
-              read (elements(j), *, iostat=info, iomsg=msgstatus) atom%sym_op%S
+              read (elements(j+eoffset), *, iostat=info, iomsg=msgstatus) atom%sym_op%S
             case (3) ! the non-primitive lattice translation that is to be added
-              read (elements(j), *, iostat=info, iomsg=msgstatus) atom%sym_op%L
+              read (elements(j+eoffset), *, iostat=info, iomsg=msgstatus) atom%sym_op%L
               if (atom%sym_op%L < 1 .or. atom%sym_op%L > 4) then
                 info = -1
                 msgstatus = 'Lattice translation number is not valid'
               end if
             case (4)
-              read (elements(j), *, iostat=info, iomsg=msgstatus) atom%sym_op%translation(1)
+              read (elements(j+eoffset), *, iostat=info, iomsg=msgstatus) atom%sym_op%translation(1)
             case (5)
-              read (elements(j), *, iostat=info, iomsg=msgstatus) atom%sym_op%translation(2)
+              read (elements(j+eoffset), *, iostat=info, iomsg=msgstatus) atom%sym_op%translation(2)
             case (6)
-              read (elements(j), *, iostat=info, iomsg=msgstatus) atom%sym_op%translation(3)
+              read (elements(j+eoffset), *, iostat=info, iomsg=msgstatus) atom%sym_op%translation(3)
             case default
               write (msgstatus, '(A, I0, 1X, I0)') '{E Error: wrong offset in read_atom ', j, eoffset
               info = -1
