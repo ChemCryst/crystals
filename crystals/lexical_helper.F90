@@ -80,6 +80,8 @@ module lexical_mod
   integer savedl5, savedn5, savedmd5
   integer savedl41b, savedmd41b, savedn41b
 
+  real, dimension(:), allocatable :: l5store, l41store !< local copy of l5 and l41 in store
+
   public lexical_preprocessing, lexical_list_init, lexical_print_changes
 
 contains
@@ -87,14 +89,14 @@ contains
   !> Initialise restraints
   subroutine lexical_list_init()
     use lists2_mod, only: xldlst
-    use store_mod, only: store
+    use store_mod, only: store, nfl, lfl, nul
     use xlisti_mod, only: l0, m0, n0, md0 !< core list variables
     implicit none
     integer, parameter :: idim05 = 40
     integer, dimension(idim05) :: icom05
     integer, parameter :: idim41 = 16
     integer, dimension(idim41) :: icom41
-    integer n0old
+    integer n0old, nflold, nulold, lflold, i
 
     integer, external :: kexist
 
@@ -104,13 +106,22 @@ contains
       deallocate (lexical_list)
       lexical_list_index = 0
     end if
+    if (allocated(l5store)) then
+      deallocate (l5store)
+    end if
+    if (allocated(l41store)) then
+      deallocate (l41store)
+    end if
     lexical_var_list_index = 0
     list16_modified = .false.
-    
+
     if (kexist(41) .gt. 0 .and. kexist(5) .gt. 0) then
       ! load list 5 and 41 and save their adresses
       ! Their existence from other subroutines is wiped out to avoid side effects
       n0old = n0
+      nflold = nfl
+      nulold = nul
+      lflold = lfl
       call xldlst(5, icom05, idim05, 0)
 
       ! removing record in chain list
@@ -129,6 +140,10 @@ contains
       savedl5 = icom05(1)
       savedn5 = icom05(4)
       savedmd5 = icom05(3)
+
+      allocate (l5store(savedn5*savedmd5))
+      l5store = store(savedl5:savedl5+savedn5*savedmd5-1)
+      savedl5 = 1
 
       n0old = n0
       call xldlst(41, icom41, idim41, 0)
@@ -149,6 +164,15 @@ contains
       savedl41b = icom41(1)
       savedmd41b = icom41(3)
       savedn41b = icom41(4)
+
+      allocate (l41store(savedn41b*savedmd41b))
+      l41store = store(savedl41b:savedl41b+savedn41b*savedmd41b-1)
+      savedl41b = 1
+
+      nfl = nflold
+      nul = nulold
+      lfl = lflold
+
     else
       savedl5 = 0
       savedn5 = 0
@@ -259,7 +283,7 @@ contains
       else
         ! no changes, restore original in case the formatting has been changed
         restraint%processed = restraint%original
-        image_text=restraint%original
+        image_text = restraint%original
       end if
     end associate
 
@@ -424,7 +448,6 @@ contains
   !> Get get pairs of atoms using the connectivity list
   subroutine get_pairs(atoms, pairs, bond_type)
     ! we assume list 5 and 41 already loaded
-    use store_mod, only: istore => i_store, c_store, store
     implicit none
     type(atom_t), dimension(:), intent(in) :: atoms !< list of atoms to use
     type(atom_t), dimension(:, :), allocatable, intent(out) :: pairs !< pairs of atoms found
@@ -522,7 +545,6 @@ contains
   !> Get get 1,3 pairs of atoms using the precomputed 1,3 connectivity with get_connectivity_13
   subroutine get_pairs_13(atoms, connectivity_13, pairs)
     ! we assume list 5 and 41 already loaded
-    use store_mod, only: istore => i_store, c_store, store
     implicit none
     type(atom_t), dimension(:), intent(in) :: atoms !< list of atoms to use
     type(atom_t), dimension(:, :), intent(in) :: connectivity_13 !< 1,3 connectivity as calculated by get_connectivity_13
@@ -600,7 +622,6 @@ contains
   !> Get get 1,3 list of atoms using the connectivity list
   subroutine get_connectivity_13(connectivity_13)
     ! we assume list 5 and 41 already loaded
-    use store_mod, only: istore => i_store, c_store, store
     implicit none
     type(atom_t), dimension(:, :), allocatable, intent(out) :: connectivity_13 !< list of 3 atoms vectors forming 1-3 connections
     type(atom_t), dimension(:, :), allocatable :: connectivity_13_temp
@@ -899,8 +920,8 @@ contains
     do while (dollar_start > 0)
       ! capture variable name
       dollar_end = dollar_start+1
-      do while (iachar(image_text(dollar_end:dollar_end))>64 .and. &
-      & iachar(image_text(dollar_end:dollar_end))<91)
+      do while (iachar(image_text(dollar_end:dollar_end)) > 64 .and. &
+      & iachar(image_text(dollar_end:dollar_end)) < 91)
         dollar_end = dollar_end+1
       end do
       var_name = trim(image_text(dollar_start+1:dollar_end-1))
@@ -935,7 +956,6 @@ contains
   !! - C(part=i) all C atoms in part i
   !! - C(resi=i) all C atoms in residue i
   subroutine expand_atoms_names(image_text, ierror, modified)
-    use store_mod, only: store, istore => i_store
     implicit none
     character(len=*), intent(inout) :: image_text
     integer, intent(out) :: ierror
@@ -979,9 +999,9 @@ contains
           ! look for all atoms with same type
           m5 = savedl5
           do j = 1, savedn5
-            if (transfer(store(m5), '    ') == var_name) then
-              write (atom_name, '(A,"(",I0,")")') trim(transfer(store(m5), '    ')), &
-              & nint(store(m5+1))
+            if (transfer(l5store(m5), '    ') == var_name) then
+              write (atom_name, '(A,"(",I0,")")') trim(transfer(l5store(m5), '    ')), &
+              & nint(l5store(m5+1))
               image_text = trim(image_text)//' '//trim(atom_name)
               modified = .true.
             end if
@@ -1004,15 +1024,15 @@ contains
 
         m5 = savedl5
         do k = 1, savedn5
-          write (atom_l5%label, '(A4)') store(m5)
-          atom_l5%serial = nint(store(m5+1))
-          atom_l5%part = istore(m5+14)
-          atom_l5%resi = istore(m5+16)
+          write (atom_l5%label, '(A4)') l5store(m5)
+          atom_l5%serial = nint(l5store(m5+1))
+          atom_l5%part = transfer(l5store(m5+14), 1)
+          atom_l5%resi = transfer(l5store(m5+16), 1)
 
-          if (atom%part > 0 .and. atom_l5%part == atom%part .and. atom_l5%label==atom%label) then
+          if (atom%part > 0 .and. atom_l5%part == atom%part .and. atom_l5%label == atom%label) then
             write (atom_name, '(A,"(",I0,")")') trim(atom_l5%label), atom_l5%serial
             buffer = trim(buffer)//' '//trim(atom_name)
-          else if (atom%resi > 0 .and. atom_l5%resi == atom%resi .and. atom_l5%label==atom%label) then
+          else if (atom%resi > 0 .and. atom_l5%resi == atom%resi .and. atom_l5%label == atom%label) then
             write (atom_name, '(A,"(",I0,")")') trim(atom_l5%label), atom_l5%serial
             buffer = trim(buffer)//' '//trim(atom_name)
           end if
@@ -1029,7 +1049,6 @@ contains
 
   !> expand XCHIV restraints. look for the 3 neighbours.
   subroutine expand_xchiv(image_text, ierror, change)
-    use store_mod, only: istore => i_store, store, c_store, i_store_set
     implicit none
     character(len=*), intent(inout) :: image_text
     integer, intent(out) :: ierror
@@ -1275,10 +1294,10 @@ contains
     i = index(text, '(')
     j = index(text, ')')
     atom%label = text(1:i-1)
-    if(atom%label(1:1)==',') then
+    if (atom%label(1:1) == ',') then
       ! oops, a coma made it here. It happens when there is no space after the coma
       ! can safely ignored because it was fallowing a space
-      atom%label=atom%label(2:)
+      atom%label = atom%label(2:)
     end if
 
     if (len_trim(atom%label) > 3) then
@@ -1422,45 +1441,40 @@ contains
 
   !> bond information from list 41 into a pair of atom_t objects
   function load_atom_from_l41(l41addr) result(atom)
-    use store_mod, only: istore => i_store, c_store, store
     implicit none
     integer, intent(in) :: l41addr
     type(atom_t), dimension(2) :: atom
     integer l5addr
 
-    l5addr = savedl5+istore(l41addr)*savedmd5
+    l5addr = savedl5+transfer(l41store(l41addr), 1)*savedmd5
     atom(1)%l5addr = l5addr
-    atom(1)%label = trim(c_store(l5addr))
-    atom(1)%serial = nint(store(l5addr+1))
-    atom(1)%part = istore(l5addr+14)
-    atom(1)%resi = istore(l5addr+16)
-    atom(1)%bond = istore(l41addr+12)
-    atom(1)%sym_op%S = istore(l41addr+1)
+    atom(1)%label = trim(transfer(l5store(l5addr), '    '))
+    atom(1)%serial = nint(l5store(l5addr+1))
+    atom(1)%part = transfer(l5store(l5addr+14), 1)
+    atom(1)%resi = transfer(l5store(l5addr+16), 1)
+    atom(1)%bond = transfer(l41store(l41addr+12), 1)
+    atom(1)%sym_op%S = transfer(l41store(l41addr+1), 1)
     ! every where else default is 1 but not is list 41, fixing...
     if (atom(1)%sym_op%S == 0) then
       atom(1)%sym_op%S = 1
     end if
-    atom(1)%sym_op%L = istore(l41addr+2)
+    atom(1)%sym_op%L = transfer(l41store(l41addr+2), 1)
     ! every where else default is 1 but not is list 41, fixing...
     if (atom(1)%sym_op%L == 0) then
       atom(1)%sym_op%L = 1
     end if
-    !print *, nint(store(l41addr+1)), istore(l41addr+1)
-    !print *, nint(store(l41addr+2)), istore(l41addr+2)
-    atom(1)%sym_op%translation = store(l41addr+3:l41addr+5)
+    atom(1)%sym_op%translation = l41store(l41addr+3:l41addr+5)
 
-    l5addr = savedl5+istore(l41addr+6)*savedmd5
+    l5addr = savedl5+transfer(l41store(l41addr+6), 1)*savedmd5
     atom(2)%l5addr = l5addr
-    atom(2)%label = trim(c_store(l5addr))
-    atom(2)%serial = nint(store(l5addr+1))
-    atom(2)%part = istore(l5addr+14)
-    atom(2)%resi = istore(l5addr+16)
-    atom(2)%bond = istore(l41addr+12)
-    atom(2)%sym_op%S = istore(l41addr+7)
-    atom(2)%sym_op%L = istore(l41addr+8)
-    !print *, nint(store(l41addr+7)), istore(l41addr+7)
-    !print *, nint(store(l41addr+8)), istore(l41addr+8)
-    atom(2)%sym_op%translation = store(l41addr+9:l41addr+11)
+    atom(2)%label = trim(transfer(l5store(l5addr), '    '))
+    atom(2)%serial = nint(l5store(l5addr+1))
+    atom(2)%part = transfer(l5store(l5addr+14), 1)
+    atom(2)%resi = transfer(l5store(l5addr+16), 1)
+    atom(2)%bond = transfer(l41store(l41addr+12), 1)
+    atom(2)%sym_op%S = transfer(l41store(l41addr+7), 1)
+    atom(2)%sym_op%L = transfer(l41store(l41addr+8), 1)
+    atom(2)%sym_op%translation = l41store(l41addr+9:l41addr+11)
   end function
 
   !> compare 2 atom_t object type together
@@ -1535,7 +1549,7 @@ contains
     else
       istart = 1
     end if
-    if(.not. present(mon_only)) then
+    if (.not. present(mon_only)) then
       write (ncwu, '(A)') trim(text(istart:))
     end if
 #else
@@ -1543,7 +1557,7 @@ contains
       prefix = text(1:3)
     end if
     istart = 1
-    if(.not. present(mon_only)) then
+    if (.not. present(mon_only)) then
       write (ncwu, '(A)') trim(text(istart+len_trim(prefix)-1:))
     end if
 #endif
@@ -1588,7 +1602,6 @@ contains
 
   !> look for atom definition and check if there are in List 5
   subroutine check_atom(image_text, ierror)
-    use store_mod, only: store
     implicit none
     character(len=*), intent(inout) :: image_text
     integer, intent(out) :: ierror
@@ -1664,8 +1677,8 @@ contains
         m5 = savedl5
         found = .false.
         do j = 1, savedn5
-          if (transfer(store(m5), '    ') == atom%label .and. &
-          & nint(store(m5+1)) == atom%serial) then
+          if (transfer(l5store(m5), '    ') == atom%label .and. &
+          & nint(l5store(m5+1)) == atom%serial) then
             found = .true.
             exit
           end if
@@ -1715,11 +1728,11 @@ contains
           founda = .false. !after
           if (iachar(image_text(n+1:n+1)) > 64 .and. iachar(image_text(n+1:n+1)) < 91) then! A-Z, no need for a-z already all upper case
             !we need a space except if it is a bond definition
-            if ((iachar(image_text(n-1:n-1)) > 32  .and. iachar(image_text(n-1:n-1)) < 39) .or. &
-            &   (iachar(image_text(n-1:n-1)) > 41  .and. iachar(image_text(n-1:n-1)) < 48) .or. &
-            &   (iachar(image_text(n-1:n-1)) > 57  .and. iachar(image_text(n-1:n-1)) < 65) .or. &
-            &   (iachar(image_text(n-1:n-1)) > 89  .and. iachar(image_text(n-1:n-1)) < 97) .or. &
-            &   (iachar(image_text(n-1:n-1)) > 122 .and. iachar(image_text(n-1:n-1)) <127) ) then ! not [ A-Za-z0-9)]
+            if ((iachar(image_text(n-1:n-1)) > 32 .and. iachar(image_text(n-1:n-1)) < 39) .or. &
+            &   (iachar(image_text(n-1:n-1)) > 41 .and. iachar(image_text(n-1:n-1)) < 48) .or. &
+            &   (iachar(image_text(n-1:n-1)) > 57 .and. iachar(image_text(n-1:n-1)) < 65) .or. &
+            &   (iachar(image_text(n-1:n-1)) > 89 .and. iachar(image_text(n-1:n-1)) < 97) .or. &
+            &   (iachar(image_text(n-1:n-1)) > 122 .and. iachar(image_text(n-1:n-1)) < 127)) then ! not [ A-Za-z0-9)]
               founda = .false.
             else
               founda = .true.
@@ -1735,11 +1748,11 @@ contains
           if (n > 1) then
             if (iachar(image_text(n-1:n-1)) > 64 .and. iachar(image_text(n-1:n-1)) < 91) then ! A-Z, no need for a-z already all upper case
               !we need a space except if it is a bond definition
-              if ((iachar(image_text(n+1:n+1)) > 32  .and. iachar(image_text(n+1:n+1)) < 48) .or. &
-              &   (iachar(image_text(n+1:n+1)) > 41  .and. iachar(image_text(n+1:n+1)) < 48) .or. &
-              &   (iachar(image_text(n+1:n+1)) > 57  .and. iachar(image_text(n+1:n+1)) < 65) .or. &
-              &   (iachar(image_text(n+1:n+1)) > 89  .and. iachar(image_text(n+1:n+1)) < 97) .or. &
-              &   (iachar(image_text(n+1:n+1)) > 122 .and. iachar(image_text(n+1:n+1)) < 127) ) then ! not [ A-Za-z0-9]
+              if ((iachar(image_text(n+1:n+1)) > 32 .and. iachar(image_text(n+1:n+1)) < 48) .or. &
+              &   (iachar(image_text(n+1:n+1)) > 41 .and. iachar(image_text(n+1:n+1)) < 48) .or. &
+              &   (iachar(image_text(n+1:n+1)) > 57 .and. iachar(image_text(n+1:n+1)) < 65) .or. &
+              &   (iachar(image_text(n+1:n+1)) > 89 .and. iachar(image_text(n+1:n+1)) < 97) .or. &
+              &   (iachar(image_text(n+1:n+1)) > 122 .and. iachar(image_text(n+1:n+1)) < 127)) then ! not [ A-Za-z0-9]
                 foundb = .false.
               else
                 foundb = .true.
@@ -1831,10 +1844,10 @@ contains
         end if
       end if
     end do
-    
+
     ! remove spaces aroud bond definitions
     s = index(image_text, ' ') ! look for the first space, do not touch the first keyword
-    do i=1, size(bond_list_definition)
+    do i = 1, size(bond_list_definition)
       n = s
       do
         n = n+1
@@ -1860,11 +1873,11 @@ contains
         end if
       end do
     end do
-    do i=1, size(bond_list_definition)
+    do i = 1, size(bond_list_definition)
       n = s
-      write(buffer, '("-",I0,"-")') i
-      lenbuf=len_trim(buffer)
-      
+      write (buffer, '("-",I0,"-")') i
+      lenbuf = len_trim(buffer)
+
       do
         n = n+1
         if (n > len_trim(image_text)) exit
@@ -1888,7 +1901,7 @@ contains
           end if
         end if
       end do
-    end do    
+    end do
 
   end subroutine
 
