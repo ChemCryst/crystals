@@ -35,7 +35,7 @@ pipeline {
                     agent {label 'Orion'}    
                     environment {
                         LD_LIBRARY_PATH = '~/lib64:~/lib:/files/ric/pparois/root/lib64:/files/ric/pparois/root/lib:${env.LD_LIBRARY_PATH}'
-                        PATH+EXTRA = '~/bin:/files/ric/pparois/root/bin'
+                        PATH = '~/bin:/files/ric/pparois/root/bin'
                         LD_RUN_PATH = '~/lib64:~/lib:/files/ric/pparois/root/lib64:/files/ric/pparois/root/lib:${env.LD_RUN_PATH}'
                         CPLUS_INCLUDE_PATH = '/files/ric/pparois/root/include/'
                     }
@@ -43,6 +43,7 @@ pipeline {
                         stage('Build') {                // Run the build
                             steps {
                                     sh '''
+                                        echo $PATH
                                         module load intel/2017
                                         rm -Rf b
                                         mkdir b
@@ -59,8 +60,7 @@ pipeline {
                             }
                             steps {
                                     sh '''
-                                        module load intel/2017
-                                        cd test_suite
+                                        cd ../test_suite
                                         mkdir -p script
                                         echo "%SCRIPT NONE" > script/tipauto.scp
                                         echo "%END SCRIPT" >> script/tipauto.scp
