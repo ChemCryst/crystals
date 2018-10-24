@@ -10,28 +10,28 @@ pipeline {
                         COMPCODE = 'INW'
                     }
                     stages {
-                        stage('Setup') {                     // Setup the environment
-                            steps {
-                                bat 'call build\\setupenv.DUNITZ.bat'
-                            }
-                        }
                         stage('Build') {                      // Run the build
                             steps {
                                 bat '''
+                                    call build\\setupenv.DUNITZ.bat
                                     cd build
                                     call make_w32.bat
                                 '''
                             }
                         }
                         stage('Test') {
+                            environment {
+                                CRYSDIR = '.\\,..\\build\\'
+                                COMPCODE = 'INW'
+                            }
                             steps {
                                 bat '''
+                                    call build\\setupenv.DUNITZ.bat
                                     cd test_suite
                                     mkdir script
                                     echo "%SCRIPT NONE" > script\\tipauto.scp
                                     echo "%END SCRIPT" >> script\\tipauto.scp
                                     del crfilev2.dsc
-                                    set CRYSDIR=.\\,..\\build\\
                                     perl testsuite.pl
                                 '''
                             }
