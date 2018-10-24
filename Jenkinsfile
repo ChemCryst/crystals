@@ -8,6 +8,7 @@ pipeline {
                     agent { label 'Dunitz' }
                     environment {
                         COMPCODE = 'INW'
+                        CRBUILDEXIT = 'TRUE'   // exit build script on fail
                     }
                     stages {
                         stage('Build') {                      // Run the build
