@@ -21,6 +21,7 @@ pipeline {
                                     cd build
                                     call make_w32.bat
                                     mspdbsrv -stop
+                                    echo "Build step complete"
                                 '''
                             }
                         }
