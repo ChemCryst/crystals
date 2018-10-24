@@ -14,8 +14,12 @@ pipeline {
                             steps {
                                 bat '''
                                     call build\\setupenv.DUNITZ.bat
+                                    set _MSPDBSRV_ENDPOINT_=%RANDOM%
+                                    echo %_MSPDBSRV_ENDPOINT_%
+                                    start mspdbsrv -start -spawn -shutdowntime 90000
                                     cd build
                                     call make_w32.bat
+                                    mspdbsrv -stop
                                 '''
                             }
                         }
