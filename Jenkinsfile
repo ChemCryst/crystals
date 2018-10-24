@@ -2,8 +2,8 @@ pipeline {
     agent none
     
     stages {
-//        stage("Build and test on all platforms") {
-//            parallel {
+        stage("Build and test on all platforms") {
+            parallel {
                 stage("Win64 Intel64") {
                     agent { label 'Dunitz' }
                     environment {
@@ -90,8 +90,8 @@ pipeline {
                         }
                     }
                 }
- //           }
-//        }
+            }
+        }
     }
 }
 
