@@ -50,6 +50,7 @@ pipeline {
                                         cd b
                                         cmake3 -DuseGUI=off -DuseOPENMP=no -DCMAKE_Fortran_COMPILER=gfortran73 -DCMAKE_C_COMPILER=gcc73 -DCMAKE_CXX_COMPILER=g++73 -DBLA_VENDOR=Intel10_64lp  ..
                                         nice -7 make -j6 || exit 1
+                                        pwd
                                     '''
                             }
                         }
@@ -60,6 +61,7 @@ pipeline {
                             }
                             steps {
                                     sh '''
+                                        pwd
                                         cd ../test_suite
                                         mkdir -p script
                                         echo "%SCRIPT NONE" > script/tipauto.scp
