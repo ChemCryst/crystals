@@ -368,7 +368,7 @@ sub obscureMachinePrecision() {
 	   } elsif($line =~ m/^(\s+\d+\.)\d\d(\s+\d+\.)\d\d(\s+\*{12}\s+)/) {
               print $fho "[62] $1 $2 $3\n";
 # Version number in CIF changes
-	   } elsif($line =~ m/^_audit_creation_method CRYSTALS.*$/ ) {
+	   } elsif($line =~ m/^_audit_creation_method.*$/ ) {
               print $fho "[63] _audit_creation_method CRYSTALS\n";
 #     TOTALS          2016     96782.09     96957.7       0.105E+06       0.960E+00     3.01    6.37     .  .  *  
  	  } elsif($line =~ m/^(\s+TOTALS\s+\d+\s+\d+\.)\d+(\s+\d+\.)\d+(.*)$/ ) {
