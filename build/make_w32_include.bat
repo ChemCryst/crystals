@@ -15,8 +15,12 @@
 @if defined CRYSVNVER goto SVER
 @set CRYSVNVER=00000
 @for /f "delims=" %%a in ('svnversion ..') do @set CRYSVNVER=%%a
+@
+@if "%CRYSVNVER%" == "00000" ( @for /f "delims=" %%a in ('git rev-list HEAD --count') do @set CRYSVNVER=%%a )
+@
 @echo CrySVNver = %CRYSVNVER%
 :SVER
+@
 @if defined CRYMONTH goto SDATE
 @echo off
 FOR /F "skip=1 tokens=1-6" %%A IN ('WMIC Path Win32_LocalTime Get Day^,Hour^,Minute^,Month^,Second^,Year /Format:table') DO (
