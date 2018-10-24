@@ -20,7 +20,7 @@ pipeline {
                         }
                         stage('Test') {
                             steps {
-                                bat 'cd ..\\test_suite'
+                                bat 'cd test_suite'
                                 bat 'mkdir script'
                                 bat 'echo "%SCRIPT NONE" > script\\tipauto.scp'
                                 bat 'echo "%END SCRIPT" >> script\\tipauto.scp'
@@ -62,7 +62,7 @@ pipeline {
                             steps {
                                     sh '''
                                         pwd
-                                        cd ../test_suite
+                                        cd test_suite
                                         mkdir -p script
                                         echo "%SCRIPT NONE" > script/tipauto.scp
                                         echo "%END SCRIPT" >> script/tipauto.scp
