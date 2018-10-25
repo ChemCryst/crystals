@@ -193,7 +193,7 @@ LS-scale=  6.285   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.00E+00 condition number:  1.00E+00 relative error:  1.19E-07
+Block No  1.  Single precision relative error:  1.19E-07
 [44] Resetting shift for Enantio     Shift=       0.4   Esd=       0.0   New shift=       0.43
 [13]  LARGE     1           1             0.4       0.0E+00    0.2 E-01         16.4                           ENANTIO 
 
@@ -373,7 +373,7 @@ LS-scale=  6.285   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.00E+00 condition number:  1.00E+00 relative error:  1.19E-07
+Block No  1.  Single precision relative error:  1.19E-07
  S/ESD     1           1             0.041      0.1E+00    0.270E-01          1.50                          ENANTIO 
 
                                                 for           1 parameters
@@ -556,7 +556,7 @@ LS-scale=  6.285   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.00E+00 condition number:  1.00E+00 relative error:  1.19E-07
+Block No  1.  Single precision relative error:  1.19E-07
 
                                                 for           1 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -9738,7 +9738,7 @@ END
  List type   6 with serial number    36 is the current version. 
  You may still save this list with DELETE n ACTION=NO
 #PURG
- List type    6  serial number   36 from    66830 to   100761 will not be copied ( deleted )         
+ List type    6  serial number   36 from    66831 to   100762 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
@@ -18902,7 +18902,7 @@ LS-scale=  6.285   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.00E+00 condition number:  1.00E+00 relative error:  1.19E-07
+Block No  1.  Single precision relative error:  1.19E-07
 [44] Resetting shift for Enantio     Shift=       0.4   Esd=       0.0   New shift=       0.43
 [13]  LARGE     1           1             0.4       0.0E+00    0.2 E-01         16.4                           ENANTIO 
 
@@ -19082,7 +19082,7 @@ LS-scale=  6.285   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.00E+00 condition number:  1.00E+00 relative error:  1.19E-07
+Block No  1.  Single precision relative error:  1.19E-07
  S/ESD     1           1             0.041      0.1E+00    0.270E-01          1.50                          ENANTIO 
 
                                                 for           1 parameters
@@ -19265,7 +19265,7 @@ LS-scale=  6.285   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.00E+00 condition number:  1.00E+00 relative error:  1.19E-07
+Block No  1.  Single precision relative error:  1.19E-07
 
                                                 for           1 parameters
 [64]                                  The rms (shift/su)  =           0.
