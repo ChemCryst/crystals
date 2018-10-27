@@ -1,13 +1,3 @@
-Warning: `EQIV` Not supported 
-Line 10: EQIV $1 0.5-X,0.5+Y,1.5-Z
-Warning: `EQIV` Not supported 
-Line 11: EQIV $2 0.5-X,-0.5+Y,1.5-Z
-Warning: `EQIV` Not supported 
-Line 12: EQIV $3 1-X,1-Y,2-Z
-Warning: `EQIV` Not supported 
-Line 13: EQIV $4 -1+X,-1+Y,+Z
-Warning: `EQIV` Not supported 
-Line 14: EQIV $5 +X,1+Y,+Z
 Warning: `RIGU` Not supported 
 Line 17: RIGU N1B > C6
 Warning: `SIZE` Not supported 
