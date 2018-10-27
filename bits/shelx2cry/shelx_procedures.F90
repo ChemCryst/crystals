@@ -738,6 +738,40 @@ type(line_t), intent(in) :: shelxline
 
 end subroutine
 
+!> Parse the EQIV keyword. Extract the symmetry operators as text.
+subroutine shelx_eqiv(shelxline)
+use crystal_data_m
+implicit none
+type(line_t), intent(in) :: shelxline
+integer i, num, ierror
+character(len=len(shelxline%line)) :: buffer, errormsg
+
+    buffer=adjustl(shelxline%line(5:))
+    
+    !search and check for the number
+    i = index(buffer, ' ')
+    if(i>2) then
+        if(buffer(1:1)=='$') then
+            read(buffer(2:i), *, iostat=ierror, iomsg=errormsg) num 
+        else
+            ierror = -1
+        end if
+    else
+        ierror = -1
+    end if
+    
+    if(ierror/=0) then
+        write(log_unit, '(a,a)') 'Error: invalid index in EQIV: ', trim(buffer(1:i))
+        write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        return 
+    end if
+    
+    eqiv_list_index = eqiv_list_index + 1
+    eqiv_list(eqiv_list_index)%index = num
+    eqiv_list(eqiv_list_index)%text = trim(adjustl(buffer(i:)))
+    
+end subroutine
+
 !> Parse RESI keyword. Change the current residue to the new value found.
 subroutine shelx_resi(shelxline)
 use crystal_data_m
