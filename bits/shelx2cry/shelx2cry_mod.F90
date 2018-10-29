@@ -173,6 +173,9 @@ character(len=*), intent(in) :: crystals_filepath
     write(*, *) 'Processing space group and symmetry'
     call write_list2()
 
+    ! converting eqiv text to matrices (depends on list 2)
+    call convert_eqiv()
+
     write(*, *) 'Processing experimental set up'
     call write_list13()
 
@@ -886,7 +889,7 @@ use crystal_data_m
 use sginfo_mod
 implicit none
 integer i, j, k, l
-real occ
+real occ, d
 integer flag, atompart, fvar_index
 real, dimension(3) :: diffxyz
 type(T_LatticeTranslation), dimension(:), allocatable :: LatticeTranslations
@@ -984,6 +987,18 @@ real, dimension(3) :: LatticeTranslation
             end if
             occ=occ*real(atomslist(i)%multiplicity)
             
+            ! a check for consistency of sof
+            ! 11.000, 21.000, 31.000 then site symmetry multiplicity should be 1
+            ! it is just a warning, that would only refine well if multiplicity is taking into account in a free variable
+            ! so in the end the chemical occupancy is fine
+            d = real(nint((atomslist(i)%sof-1.0)/10.0), kind(d))
+            if(atomslist(i)%multiplicity>1 .and. abs(abs(atomslist(i)%sof-d*10.0)-1.0)<0.01e-3) then
+                write(log_unit, '("Line ", I0, ": ", a)') atomslist(i)%line_number, trim(atomslist(i)%shelxline)
+                write(log_unit, '(a)') 'Warning: double check s.o.f'
+                write(log_unit, '(a, I0)') '         Atom sit on special position with multiplicty ', atomslist(i)%multiplicity
+                write(log_unit, '(a, I0)') '         but s.o.f is 1.0'
+            end if
+            
             if(atomslist(i)%iso/=0.0) then
                 flag=1
             else
@@ -1046,6 +1061,90 @@ integer i
         write(crystals_fileunit, '(a)') 'END'
     end if
 
+end subroutine
+
+subroutine convert_eqiv()
+use iso_c_binding
+use sginfo_mod
+use crystal_data_m
+implicit none
+integer ierror, i, j, k, l
+type(T_sginfo) :: sginfo
+type(T_RTMx) :: NewSMx
+character(kind=C_char), dimension(:), allocatable :: xyz
+real, dimension(3) :: t, LatticeTranslation
+type(T_LatticeTranslation), dimension(:), allocatable :: LatticeTranslations
+
+    call InitSgInfo(SgInfo)
+    ierror=MemoryInit(SgInfo)
+    if(ierror/=0) then
+        write(*, '(a)') 'Error Cannot allocate memory'
+        call abort()
+    end if
+        
+    call LatticeTranslation_init(LatticeTranslations)
+
+    ! Adding symmetry operators
+    do i=1, eqiv_list_index
+        allocate(xyz(len_trim(eqiv_list(i)%text)+1))
+        do j=1, size(xyz)-1
+            xyz(j)=eqiv_list(i)%text(j:j)
+        end do
+        xyz(size(xyz))=C_NULL_CHAR
+        ierror=ParseSymXYZnornd(xyz, NewSMx, nint(sginfo_stbf))
+        deallocate(xyz)
+        if(ierror/=0) then
+            write(*, '(a, a)') 'Error: Cannot recognize symmetry operator ', eqiv_list(i)%text
+            eqiv_list(i)%rotation = -1
+            eqiv_list(i)%translation = -1
+        end if
+        eqiv_list(i)%rotation = transpose(reshape(NewSMx%R, (/3,3/))) ! Fortran is column major, hence transpose
+        eqiv_list(i)%translation = NewSMx%T/sginfo_stbf        
+
+        do l=1, LatticeTranslations(abs(spacegroup%latt))%nTrVector ! lopp over lattice translation
+            LatticeTranslation = LatticeTranslations(abs(spacegroup%latt))%TrVector(:,l)/sginfo_stbf
+            do j=1, size(spacegroup%ListSeitzMx) ! loop over symmetry oprators
+                if(all(abs(eqiv_list(i)%rotation-real(spacegroup%ListSeitzMx(j)%R))<0.01)) then                
+                    t = abs(eqiv_list(i)%translation - real(spacegroup%ListSeitzMx(j)%T)/sginfo_stbf - LatticeTranslation)
+                    do k=1, 3
+                        do while(t(k)>=1.0)
+                            t(k)=t(k)-1.0
+                        end do
+                        do while(t(k)<0.0)
+                            t(k)=t(k)+1.0
+                        end do
+                    end do
+                    
+                    if(all(t<0.01)) then
+                        eqiv_list(i)%S = j
+                        eqiv_list(i)%L = l
+                        eqiv_list(i)%crystals_translation = eqiv_list(i)%translation - &
+                        &  real(spacegroup%ListSeitzMx(j)%T)/sginfo_stbf + LatticeTranslation
+                    end if
+                    
+                else if(all(abs(eqiv_list(i)%rotation+real(spacegroup%ListSeitzMx(j)%R))<0.01)) then
+                    t = abs(eqiv_list(i)%translation - real(spacegroup%ListSeitzMx(j)%T)/sginfo_stbf - LatticeTranslation)
+                    do k=1, 3
+                        do while(t(k)>1.0)
+                            t(k)=t(k)-1.0
+                        end do
+                        do while(t(k)<0.0)
+                            t(k)=t(k)+1.0
+                        end do
+                    end do
+                    
+                    if(all(t<0.01)) then
+                        eqiv_list(i)%S = -j
+                        eqiv_list(i)%L = l
+                        eqiv_list(i)%crystals_translation = eqiv_list(i)%translation - &
+                        &  real(spacegroup%ListSeitzMx(j)%T)/sginfo_stbf + LatticeTranslation
+                    end if
+                
+                end if
+            end do
+        end do
+    end do
+    
 end subroutine
 
 !> write list2 (space group and symmetry)
@@ -2233,10 +2332,12 @@ implicit none
 integer, dimension(:), allocatable :: serials
 character(len=lenlabel) :: atom
 integer i, j, k, l, m, indexresi, resi1
-integer :: serial1
+integer :: serial1, iostatus
+integer :: sym_index 
 character(len=lenlabel) :: label
 character :: linecont
 integer, dimension(:), allocatable :: residuelist
+character(len=256), dimension(2) :: buffer
 
     call makeresiduelist(residuelist)
 
@@ -2267,7 +2368,7 @@ integer, dimension(:), allocatable :: residuelist
             
             do k=1, 2
                 if(index(sadi_table(i)%atom_pairs(k,j), '_*')>0) then
-                    write(log_unit, '(a)') 'Warning: ignoring DFIX between ', trim(sadi_table(i)%atom_pairs(1,j)), &
+                    write(log_unit, '(a)') 'Warning: ignoring SADI between ', trim(sadi_table(i)%atom_pairs(1,j)), &
                     &   ' and ', trim(sadi_table(i)%atom_pairs(2,j))
                     write(log_unit, '(a)') '_* syntax not supported'
                     cycle
@@ -2280,6 +2381,7 @@ integer, dimension(:), allocatable :: residuelist
                     resi1=0
                     ! ICE on gfortran 61 when using associate
                     atom=sadi_table(i)%atom_pairs(k,j)
+                    sym_index = 0
                     !associate( atom => sadi_table(i)%atom_pairs(k,j) )
                         indexresi=index(atom, '_')
                         if(indexresi>0) then
@@ -2297,6 +2399,12 @@ integer, dimension(:), allocatable :: residuelist
                             &   iachar(atom(indexresi+1:indexresi+1))<=57) then
                                 ! residue number
                                 read(atom(indexresi+1:), *) resi1
+                            else if(atom(indexresi+1:indexresi+1)=='$') then
+                                read(atom(indexresi+2:), *, iostat=iostatus) sym_index
+                                if(iostatus/=0) then
+                                    write(log_unit, '(a)') 'Error: Cannot read symmetry index ', trim(atom)
+                                    cycle sadi_loop
+                                end if
                             else
                                 ! residue name
                                 write(log_unit, '(a)') 'Warning: Residue name in atom with SADI_*'
@@ -2326,17 +2434,21 @@ integer, dimension(:), allocatable :: residuelist
                             call abort()
                         end if
                     !end associate
+
+                    if(sym_index>0) then
+                        write(buffer(k), '(a,"(",3(I0,","),2(F0.3,","),F0.3,")")') &
+                        &   trim(sfac(atomslist(serials(k))%sfac)), atomslist(serials(k))%crystals_serial, &
+                        &   eqiv_list(sym_index)%S, eqiv_list(sym_index)%L, eqiv_list(sym_index)%crystals_translation
+                    else
+                        write(buffer(k), '(a,"(",I0,")")') &
+                        &   trim(sfac(atomslist(serials(k))%sfac)), atomslist(serials(k))%crystals_serial
+                    end if
                 end do
-                                       
-                write(crystals_fileunit, '(a, a,"(",I0,")", " TO ", a,"(",I0,")",a)') &
+                
+                write(crystals_fileunit, '(a,a,a,a, a)') &
                 &   'CONT ', &
-                &   trim(sfac(atomslist(serials(1))%sfac)), atomslist(serials(1))%crystals_serial, &
-                &   trim(sfac(atomslist(serials(2))%sfac)), atomslist(serials(2))%crystals_serial, &
-                &   linecont
-                write(log_unit, '(a, a,"(",I0,")", " TO ", a,"(",I0,")",a)') &
-                &   'CONT ', &
-                &   trim(sfac(atomslist(serials(1))%sfac)), atomslist(serials(1))%crystals_serial, &
-                &   trim(sfac(atomslist(serials(2))%sfac)), atomslist(serials(2))%crystals_serial, &
+                &   trim(buffer(1)), ' TO ', &
+                &   trim(buffer(2)), &
                 &   linecont
             else if(sadi_table(i)%residue==-98) then
                 ! dfix applied to a named residues
@@ -2346,6 +2458,7 @@ integer, dimension(:), allocatable :: residuelist
                     do l=1, 2           
                         resi1=k
                         atom=sadi_table(i)%atom_pairs(l,j)
+                        sym_index = 0
                         !associate( atom => sadi_table(i)%atom_pairs(l,j) )
                             indexresi=index(atom, '_')
                             if(indexresi>0) then
@@ -2359,6 +2472,12 @@ integer, dimension(:), allocatable :: residuelist
                                 &   iachar(atom(indexresi+1:indexresi+1))<=57) then
                                     ! residue number
                                     read(atom(indexresi+1:), *) resi1
+                                else if(atom(indexresi+1:indexresi+1)=='$') then
+                                    read(atom(indexresi+2:), *, iostat=iostatus) sym_index  
+                                    if(iostatus/=0) then
+                                        write(log_unit, '(a)') 'Error: Cannot read symmetry index ', trim(atom)
+                                        cycle sadi_loop
+                                    end if
                                 else
                                     ! residue name
                                     write(log_unit, '(a)') 'Warning: Residue name in atom with SADI_*'
@@ -2382,18 +2501,21 @@ integer, dimension(:), allocatable :: residuelist
                                 call abort()
                             end if
                         !end associate
-                    end do
-                                           
-                    write(crystals_fileunit, '(a, a,"(",I0,")", " TO ", a,"(",I0,")", a)') &
-                    &   'CONT ', &
-                    &   trim(sfac(atomslist(serials(1))%sfac)), atomslist(serials(1))%crystals_serial, &
-                    &   trim(sfac(atomslist(serials(2))%sfac)), atomslist(serials(2))%crystals_serial, &
-                    &   linecont
-                    write(log_unit, '(a, a,"(",I0,")", " TO ", a,"(",I0,")", a)') &
-                    &   'CONT ', &
-                    &   trim(sfac(atomslist(serials(1))%sfac)), atomslist(serials(1))%crystals_serial, &
-                    &   trim(sfac(atomslist(serials(2))%sfac)), atomslist(serials(2))%crystals_serial, &
-                    &   linecont
+                    if(sym_index>0) then
+                        write(buffer(k), '(a,"(",3(I0,","),2(F0.3,","),F0.3,")")') &
+                        &   trim(sfac(atomslist(serials(k))%sfac)), atomslist(serials(k))%crystals_serial, &
+                        &   eqiv_list(sym_index)%S, eqiv_list(sym_index)%L, eqiv_list(sym_index)%crystals_translation
+                    else
+                        write(buffer(k), '(a,"(",I0,")")') &
+                        &   trim(sfac(atomslist(serials(k))%sfac)), atomslist(serials(k))%crystals_serial
+                    end if
+                end do
+                
+                write(crystals_fileunit, '(a,a,a,a,a)') &
+                &   'CONT ', &
+                &   trim(buffer(1)), ' TO ', &
+                &   trim(buffer(2)), &
+                &   linecont
 
                 end do
             else if(sadi_table(i)%residue==-1) then
