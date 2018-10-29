@@ -1,5 +1,5 @@
 
-call "E:\Program Files\IntelSWTools\compilers_and_libraries_2017.4.210\windows\bin\ipsxe-comp-vars.bat" ia64 vs2015
+call "E:\Program Files\IntelSWTools\compilers_and_libraries_2017.4.210\windows\bin\ipsxe-comp-vars.bat" intel64 vs2015
 
 SET COMPCODE=INW
 SET CROPENMP=TRUE
