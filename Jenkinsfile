@@ -9,6 +9,8 @@ pipeline {
                     environment {
                         COMPCODE = 'INW'
                         CRBUILDEXIT = 'TRUE'   // exit build script on fail
+                        CROPENMP = 'TRUE'
+                        CR64BIT = 'TRUE'
                     }
                     stages {
                         stage('Build') {                      // Run the build
@@ -28,7 +30,7 @@ pipeline {
                         stage('Test') {
                             environment {
                                 CRYSDIR = '.\\,..\\build\\'
-                                COMPCODE = 'INW'
+                                COMPCODE = 'INW_OMP'
                             }
                             steps {
                                 bat '''
@@ -45,7 +47,8 @@ pipeline {
                     }
                     post {
                         always {
-                            archiveArtifacts artifacts: 'test_suite/*.out', fingerprint: true
+                            bat 'ren test_suite INW_OMP.org'  // Change path here to get unique archive path.
+                            archiveArtifacts artifacts: 'INW_OMP.org/*.out', fingerprint: true
                         }
                     }
                 }
@@ -95,7 +98,8 @@ pipeline {
                     }
                     post {
                         always {
-                            archiveArtifacts artifacts: 'test_suite/*.out', fingerprint: true
+                            sh 'mv test_suite LIN.org'      // Change path here to get unique archive path.
+                            archiveArtifacts artifacts: 'LIN.org/*.out', fingerprint: true
                         }
                     }
                 }
