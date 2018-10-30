@@ -9,57 +9,58 @@ pipeline {
                     stages {
                         stage('Setup') {                     // Setup the environment
                             steps {
-                                bat '''
-                                    call build\\setupenv.%NODE_NAME%
-                                    '''
+                                bat 'call build\\setupenv.DUNITZ'
                             }
                         }
                         stage('Build') {                      // Run the build
                             steps {
-                                bat '''
-                                    cd build
-                                    call make_w32.bat
-                                    '''
+                                bat 'cd build'
+                                bat 'call make_w32.bat'
                             }
                         }
                         stage('Test') {
                             steps {
-                                bat '''
-                                    cd ..\\test_suite
-                                    mkdir script
-                                    echo "%SCRIPT NONE" > script\\tipauto.scp
-                                    echo "%END SCRIPT" >> script\\tipauto.scp
-                                    del crfilev2.dsc
-                                    set CRYSDIR=.\\,..\\build\\
-                                    perl testsuite.pl
-                                    '''
+                                bat 'cd ..\\test_suite'
+                                bat 'mkdir script'
+                                bat 'echo "%SCRIPT NONE" > script\\tipauto.scp'
+                                bat 'echo "%END SCRIPT" >> script\\tipauto.scp'
+                                bat 'del crfilev2.dsc'
+                                bat 'set CRYSDIR=.\\,..\\build\\'
+                                bat 'perl testsuite.pl'
                             }
                         }
                     }
                 }
                 stage("Win64 Intel64") {
                     agent {label 'Orion'}    
+                    environment {
+                        LD_LIBRARY_PATH=~/lib64:~/lib:/files/ric/pparois/root/lib64:/files/ric/pparois/root/lib:${env.LD_LIBRARY_PATH}
+                        PATH+EXTRA=~/bin:/files/ric/pparois/root/bin
+                        LD_RUN_PATH=~/lib64:~/lib:/files/ric/pparois/root/lib64:/files/ric/pparois/root/lib:${env.LD_RUN_PATH}
+                        CPLUS_INCLUDE_PATH=/files/ric/pparois/root/include/
+                    }
                     stages {
                         stage('Build') {                // Run the build
                             steps {
-                                withEnv(['LD_LIBRARY_PATH=~/lib64:~/lib:/files/ric/pparois/root/lib64:/files/ric/pparois/root/lib:$LD_LIBRARY_PATH', 'PATH+EXTRA=~/bin:/files/ric/pparois/root/bin', 'LD_RUN_PATH=~/lib64:~/lib:/files/ric/pparois/root/lib64:/files/ric/pparois/root/lib:$LD_RUN_PATH', 'CPLUS_INCLUDE_PATH=/files/ric/pparois/root/include/']) {
-                                    sh '''
+                                    sh (
                                         module load intel/2017
                                         rm -Rf b
                                         mkdir b
                                         cd b
                                         cmake3 -DuseGUI=off -DuseOPENMP=no -DCMAKE_Fortran_COMPILER=gfortran73 -DCMAKE_C_COMPILER=gcc73 -DCMAKE_CXX_COMPILER=g++73 -DBLA_VENDOR=Intel10_64lp  ..
-                                        nice -7 make -j6 || exit 1'''
-                                    '''
-                                }
+                                        nice -7 make -j6 || exit 1
+                                    )
                             }
                         }
                         stage('Test') {
+                            environment {
+                                CRYSDIR=./,../b/
+                                COMPCODE=LIN
+                            }
                             steps {
-                                withEnv(['LD_LIBRARY_PATH=~/lib64:~/lib:/files/ric/pparois/root/lib64:/files/ric/pparois/root/lib:$LD_LIBRARY_PATH', 'PATH+EXTRA=~/bin:/files/ric/pparois/root/bin', 'LD_RUN_PATH=~/lib64:~/lib:/files/ric/pparois/root/lib64:/files/ric/pparois/root/lib:$LD_RUN_PATH', 
                                 'CPLUS_INCLUDE_PATH=/files/ric/pparois/root/include/',
-                                'CRYSDIR=./,../b/','COMPCODE=LIN']) {
-                                    sh '''module load intel/2017
+                                    sh ( 
+                                        module load intel/2017
                                         cd test_suite
                                         mkdir -p script
                                         echo "%SCRIPT NONE" > script/tipauto.scp
@@ -68,8 +69,8 @@ pipeline {
                                         rm -f crfilev2.h5
                                         rm -f gui.tst
                                         nice -10 perl testsuite.pl
-                                    '''
-                                }
+                                    )
+                                
                             }
                         }
                     }
