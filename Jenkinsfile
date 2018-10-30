@@ -3,7 +3,7 @@ pipeline {
     
     stages {
         stage("Build and test on all platforms") {
-            parallel {
+//            parallel {
                 stage("Win64 Intel64") {
                     agent { label 'Dunitz' }
                     stages {
@@ -81,7 +81,7 @@ pipeline {
                         }
                     }
                 }
-            }
+ //           }
         }
     }
 }
