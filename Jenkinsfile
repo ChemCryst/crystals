@@ -42,14 +42,14 @@ pipeline {
                     stages {
                         stage('Build') {                // Run the build
                             steps {
-                                    sh (
+                                    sh '''
                                         module load intel/2017
                                         rm -Rf b
                                         mkdir b
                                         cd b
                                         cmake3 -DuseGUI=off -DuseOPENMP=no -DCMAKE_Fortran_COMPILER=gfortran73 -DCMAKE_C_COMPILER=gcc73 -DCMAKE_CXX_COMPILER=g++73 -DBLA_VENDOR=Intel10_64lp  ..
                                         nice -7 make -j6 || exit 1
-                                    )
+                                    '''
                             }
                         }
                         stage('Test') {
@@ -58,8 +58,7 @@ pipeline {
                                 COMPCODE = 'LIN'
                             }
                             steps {
-                                'CPLUS_INCLUDE_PATH=/files/ric/pparois/root/include/',
-                                    sh ( 
+                                    sh '''
                                         module load intel/2017
                                         cd test_suite
                                         mkdir -p script
@@ -69,9 +68,10 @@ pipeline {
                                         rm -f crfilev2.h5
                                         rm -f gui.tst
                                         nice -10 perl testsuite.pl
-                                    )
+                                    '''
                                 
                             }
+                            
                         }
                     }
                 }
