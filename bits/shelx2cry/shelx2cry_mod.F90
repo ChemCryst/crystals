@@ -886,7 +886,7 @@ use crystal_data_m
 use sginfo_mod
 implicit none
 integer i, j, k, l
-real occ
+real occ, d
 integer flag, atompart, fvar_index
 real, dimension(3) :: diffxyz
 type(T_LatticeTranslation), dimension(:), allocatable :: LatticeTranslations
@@ -983,6 +983,18 @@ real, dimension(3) :: LatticeTranslation
                 occ=atomslist(i)%sof
             end if
             occ=occ*real(atomslist(i)%multiplicity)
+            
+            ! a check for consistency of sof
+            ! 11.000, 21.000, 31.000 then site symmetry multiplicity should be 1
+            ! it is just a warning, that would only refine well if multiplicity is taking into account in a free variable
+            ! so in the end the chemical occupancy is fine
+            d = real(nint((atomslist(i)%sof-1.0)/10.0), kind(d))
+            if(atomslist(i)%multiplicity>1 .and. abs(abs(atomslist(i)%sof-d*10.0)-1.0)<0.01e-3) then
+                write(log_unit, '("Line ", I0, ": ", a)') atomslist(i)%line_number, trim(atomslist(i)%shelxline)
+                write(log_unit, '(a)') 'Warning: double check s.o.f'
+                write(log_unit, '(a, I0)') '         Atom sit on special position with multiplicty ', atomslist(i)%multiplicity
+                write(log_unit, '(a, I0)') '         but s.o.f is 1.0'
+            end if
             
             if(atomslist(i)%iso/=0.0) then
                 flag=1
