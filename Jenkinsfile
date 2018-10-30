@@ -9,24 +9,28 @@ pipeline {
                     stages {
                         stage('Setup') {                     // Setup the environment
                             steps {
-                                bat 'call build\\setupenv.DUNITZ'
+                                bat 'call build\\setupenv.DUNITZ.bat'
                             }
                         }
                         stage('Build') {                      // Run the build
                             steps {
-                                bat 'cd build'
-                                bat 'call make_w32.bat'
+                                bat '''
+                                    cd build
+                                    call make_w32.bat
+                                '''
                             }
                         }
                         stage('Test') {
                             steps {
-                                bat 'cd test_suite'
-                                bat 'mkdir script'
-                                bat 'echo "%SCRIPT NONE" > script\\tipauto.scp'
-                                bat 'echo "%END SCRIPT" >> script\\tipauto.scp'
-                                bat 'del crfilev2.dsc'
-                                bat 'set CRYSDIR=.\\,..\\build\\'
-                                bat 'perl testsuite.pl'
+                                bat '''
+                                    cd test_suite
+                                    mkdir script
+                                    echo "%SCRIPT NONE" > script\\tipauto.scp
+                                    echo "%END SCRIPT" >> script\\tipauto.scp
+                                    del crfilev2.dsc
+                                    set CRYSDIR=.\\,..\\build\\
+                                    perl testsuite.pl
+                                '''
                             }
                         }
                     }
