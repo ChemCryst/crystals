@@ -58,6 +58,9 @@ type eqiv_t
     character(len=128) :: text !< symmetry operator as in EQIV
     real, dimension(3,3) :: rotation !< rotation matrix
     real, dimension(3) :: translation !< translation
+    integer :: S !< index of symmetry operator in LIST 2, if sapce group is centric, S is negative if inverted
+    integer :: L !< non-primitive lattice translation
+    real, dimension(3) :: crystals_translation !< shitfs in unit cells to be added
 end type
 type(eqiv_t), dimension(128) :: eqiv_list
 integer :: eqiv_list_index = 0
@@ -94,7 +97,7 @@ type SeitzMx_t
     integer, dimension(3) :: T !< translation * 12 (see sginfo and STBF)
 end type
 
-!> Space group type. All the lements describing the space group.
+!> Space group type. All the elements describing the space group.
 type spacegroup_t
     integer :: latt !< lattice type from shelx (1=P, 2=I, 3=rhombohedral obverse on hexagonal axes, 4=F, 5=A, 6=B, 7=C)
     character(len=128), dimension(32) :: symm !< list of symmetry element read from res/ins file
