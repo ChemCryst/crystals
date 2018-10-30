@@ -52,6 +52,16 @@ character(len=128), dimension(:), allocatable :: residue_names !< Name or class 
 integer :: part=0 !< current part
 real :: part_sof=-1.0 !< Overriding subsequent site occupation factor
 
+!> EQIV data type (EQIV $n symmetry operation)
+type eqiv_t
+    integer :: index !< index of symmetry operator
+    character(len=128) :: text !< symmetry operator as in EQIV
+    real, dimension(3,3) :: rotation !< rotation matrix
+    real, dimension(3) :: translation !< translation
+end type
+type(eqiv_t), dimension(128) :: eqiv_list
+integer :: eqiv_list_index = 0
+
 type disp_t
     character(len=512) :: shelxline !< raw line from res/ins file
     integer :: line_number !< line number of shelxline from res/ins file

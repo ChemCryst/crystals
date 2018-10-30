@@ -155,6 +155,8 @@ character(len=*), intent(in) :: crystals_filepath
 
     ! process serial numbers 
     call get_shelx2crystals_serial
+    ! converting eqiv text to matrices
+    call convert_eqiv()
 
     write(*, *) 'Processing Unit cell'
     call write_list1()
@@ -1057,6 +1059,43 @@ integer i
         end do
         write(crystals_fileunit, '(a)') 'END'
     end if
+
+end subroutine
+
+subroutine convert_eqiv()
+use iso_c_binding
+use sginfo_mod
+use crystal_data_m
+implicit none
+integer ierror, i, j
+type(T_sginfo) :: sginfo
+type(T_RTMx) :: NewSMx
+character(kind=C_char), dimension(:), allocatable :: xyz
+
+    call InitSgInfo(SgInfo)
+    ierror=MemoryInit(SgInfo)
+    if(ierror/=0) then
+        write(*, '(a)') 'Error Cannot allocate memory'
+        call abort()
+    end if
+        
+    ! Adding symmetry operators
+    do i=1, eqiv_list_index
+        allocate(xyz(len_trim(eqiv_list(i)%text)+1))
+        do j=1, size(xyz)-1
+            xyz(j)=eqiv_list(i)%text(j:j)
+        end do
+        xyz(size(xyz))=C_NULL_CHAR
+        ierror=ParseSymXYZnornd(xyz, NewSMx, nint(sginfo_stbf))
+        deallocate(xyz)
+        if(ierror/=0) then
+            write(*, '(a, a)') 'Error: Cannot recognize symmetry operator ', eqiv_list(i)%text
+            eqiv_list(i)%rotation = -1
+            eqiv_list(i)%translation = -1
+        end if
+        eqiv_list(i)%rotation = transpose(reshape(NewSMx%R, (/3,3/))) ! Fortran is column major, hence transpose
+        eqiv_list(i)%translation = NewSMx%T/sginfo_stbf        
+    end do
 
 end subroutine
 
