@@ -43,6 +43,11 @@ pipeline {
                             }
                         }
                     }
+                    post {
+                        always {
+                            archiveArtifacts artifacts: 'test_suite/*.out', fingerprint: true
+                        }
+                    }
                 }
                 stage("Linux") {
                     agent {label 'Orion'}    
@@ -86,7 +91,11 @@ pipeline {
                                     '''
                                 
                             }
-                            
+                        }
+                    }
+                    post {
+                        always {
+                            archiveArtifacts artifacts: 'test_suite/*.out', fingerprint: true
                         }
                     }
                 }
