@@ -591,7 +591,7 @@ Space group symbol is   P    1
 
  Rsigma has changed from its old value of 2.184 to  0.152
 
-        88 reflections have sintheta/lambda > 1.0
+        86 reflections have sintheta/lambda > 1.0
 #PRINT 6
 
 
@@ -740,7 +740,7 @@ Bad index near reflection        278       512         0         0
 
  Rsigma has changed from its old value of 0.152 to  0.000
 
-       262 reflections have sintheta/lambda > 1.0
+       259 reflections have sintheta/lambda > 1.0
 #PRINT 6
 
 
@@ -1122,7 +1122,7 @@ Bad index near reflection        278       512         0         0
 
 
      270 reflections accepted           0 reflections rejected
-       254 reflections have sintheta/lambda > 1.0
+       251 reflections have sintheta/lambda > 1.0
 #PRINT 6
 
 
@@ -1298,7 +1298,7 @@ Bad index near reflection        278       512         0         0
 
 
      270 reflections accepted           0 reflections rejected
-       254 reflections have sintheta/lambda > 1.0
+       251 reflections have sintheta/lambda > 1.0
 #PRINT 6
 
 
@@ -1476,7 +1476,7 @@ Bad index near reflection        278       512         0         0
 
      270 reflections accepted           0 reflections rejected
 Upating List 13 for twinned data
-       254 reflections have sintheta/lambda > 1.0
+       251 reflections have sintheta/lambda > 1.0
 #PRINT 6 C
 
 
@@ -3287,7 +3287,7 @@ Upating List 13 for twinned data
 
 
        9 reflections accepted           0 reflections rejected
-         4 reflections have sintheta/lambda > 1.0
+         3 reflections have sintheta/lambda > 1.0
 #LIST 1
 #LIST 13
 #PRINT 13
@@ -5848,7 +5848,7 @@ LS-scale= 12.394   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  7.96E+00 condition number:  3.72E+02 relative error:  4.44E-05
+Block No  1.  Single precision relative error:  4.44E-05
  S/ESD     1           1            -1.155      0.0E+00    0.628E+00         -1.84                          SCALE   
  LARGE     2           2           -0.1928      0.0E+00    0.702E-01         -2.75        SI     1 U[11]   
                                                                                                             Composite
@@ -6555,7 +6555,7 @@ The slope and correlation coefficient should be small
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     6     serial number       86     Address    82623     Length    7570     Created on                          
+ Print list type     6     serial number       86     Address    82624     Length    7570     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -6690,7 +6690,7 @@ The slope and correlation coefficient should be small
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     6     serial number       90     Address    90813     Length    7570     Created on                          
+ Print list type     6     serial number       90     Address    90814     Length    7570     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -6825,7 +6825,7 @@ The slope and correlation coefficient should be small
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     5     serial number       14     Address    98383     Length     137     Created on                          
+ Print list type     5     serial number       14     Address    98384     Length     137     Created on                          
 
 
 
@@ -7188,14 +7188,14 @@ LS-scale=  1.000   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  1.84E+00 condition number:  1.12E+01 relative error:  1.34E-06
+Block No  1.  Single precision relative error:  1.34E-06
  S/ESD     1           1             0.029      0.0E+00    0.189E-01          1.52                          SCALE   
 [13]  LARGE     2           2             0.0       0.0E+00    0.4 E-02          1.4                           DU[ISO] 
-Single precision:  1-norm:  1.19E+00 condition number:  1.44E+00 relative error:  1.72E-07
+Block No  2.  Single precision relative error:  1.72E-07
  Block   2
-Single precision:  1-norm:  1.17E+00 condition number:  1.41E+00 relative error:  1.68E-07
+Block No  3.  Single precision relative error:  1.68E-07
  Block   3
-Single precision:  1-norm:  1.11E+00 condition number:  1.24E+00 relative error:  1.47E-07
+Block No  4.  Single precision relative error:  1.47E-07
  Block   4
 [14]  S/ESD    11           1           -0.022       0.0E+00    0.36 E-02         -6.3         C      1 X       
 [14]  S/ESD    13           3            0.017       0.0E+00    0.40 E-02          4.2         C      1 Z       
@@ -7487,7 +7487,7 @@ Mean C-C su =   0.0182
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     6     serial number       96     Address    90813     Length    7570     Created on                          
+ Print list type     6     serial number       96     Address    90814     Length    7570     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -7723,7 +7723,7 @@ LS-scale=  1.992   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  7.15E+00 condition number:  7.74E+02 relative error:  9.23E-05
+Block No  1.  Single precision relative error:  9.23E-05
 
                                                 for          37 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -7957,7 +7957,7 @@ LS-scale=  1.992   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  7.15E+00 condition number:  7.63E+02 relative error:  9.09E-05
+Block No  1.  Single precision relative error:  9.09E-05
 
                                                 for          37 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -8100,7 +8100,7 @@ ___________
  HEXACHLOROBORAZINE  -  LIST INPUT                                                    Date              Time          
 
 
- Print list type    11     serial number       20     Address   125668     Length     809     Created on                          
+ Print list type    11     serial number       20     Address   125669     Length     809     Created on                          
 
  Inverse matrix
 
@@ -8151,7 +8151,7 @@ ___________
  HEXACHLOROBORAZINE  -  LIST INPUT                                                    Date              Time          
 
 
- Print list type    11     serial number       20     Address   125668     Length     809     Created on                          
+ Print list type    11     serial number       20     Address   125669     Length     809     Created on                          
 
 
  Print List 11 as correlation matrix
@@ -8242,7 +8242,7 @@ ___________
  HEXACHLOROBORAZINE  -  LIST INPUT                                                    Date              Time          
 
 
- Print list type    11     serial number       20     Address   125668     Length     809     Created on                          
+ Print list type    11     serial number       20     Address   125669     Length     809     Created on                          
 
  Inverse matrix
 
@@ -8305,7 +8305,7 @@ ___________
 [50]     22    -0.100 E-06   0.441 E-08   0.726 E-09   0.860 E-09  -0.230 E-07   0.448 E-09  -0.674 E-08   0.845 E-08
 [50]     23    -0.800 E-08  -0.116 E-06  -0.211 E-07  -0.600 E-08   0.360 E-07  -0.184 E-07   0.142 E-06  -0.559 E-07
 [50]     24    -0.102 E-06   0.530 E-06   0.113 E-06   0.870 E-07  -0.274 E-08  -0.368 E-06  -0.349 E-06   0.113 E-06
-[50]     25     0.517 E-07   0.659 E-07  -0.449 E-08  -0.658 E-08  -0.184 E-07  -0.718 E-10  -0.532 E-07   0.286 E-06
+[50]     25     0.517 E-07   0.659 E-07  -0.449 E-08  -0.658 E-08  -0.184 E-07  -0.717 E-10  -0.532 E-07   0.286 E-06
 [50]     26    -0.140 E-06   0.295 E-07  -0.518 E-08  -0.209 E-08  -0.135 E-06  -0.801 E-07  -0.574 E-07   0.103 E-06
 [50]     27     0.801 E-07   0.488 E-07  -0.103 E-07  -0.129 E-07  -0.834 E-07  -0.609 E-07  -0.221 E-07   0.111 E-06
 [50]     28     0.524 E-07   0.710 E-07   0.110 E-07   0.682 E-08  -0.556 E-08  -0.446 E-07  -0.234 E-06  -0.262 E-07

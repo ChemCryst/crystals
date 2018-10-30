@@ -78,7 +78,7 @@ Refining    13 parameters in    1 block :      133 elements in the LS matrix.
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        1     Address    27591     Length     232     Created on                          
+ Print list type    22     serial number        1     Address    27592     Length     232     Created on                          
 
 
              13 parameter(s) in    1 block(s) - as follows:
@@ -844,7 +844,7 @@ LS-scale= 21.615   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  2.15E+00 condition number:  9.33E+00 relative error:  1.11E-06
+Block No  1.  Single precision relative error:  1.11E-06
 [13]  LARGE     1           1            -2.3       0.0E+00    0.1 E+00        -13.4                           SCALE   
                                                                                                             Composite
 
@@ -1204,7 +1204,7 @@ Refining    13 parameters in    1 block :      133 elements in the LS matrix.
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    22     serial number        2     Address    30764     Length     202     Created on                          
+ Print list type    22     serial number        2     Address    30765     Length     202     Created on                          
 
 
              13 parameter(s) in    1 block(s) - as follows:
@@ -1962,7 +1962,7 @@ LS-scale= 21.615   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Single precision:  1-norm:  2.16E+00 condition number:  9.39E+00 relative error:  1.12E-06
+Block No  1.  Single precision relative error:  1.12E-06
 [13]  LARGE     1           1            -2.3       0.0E+00    0.1 E+00        -13.4                           SCALE   
                                                                                                             Composite
 
