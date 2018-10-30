@@ -5,7 +5,7 @@ pipeline {
         stage("Build and test on all platforms") {
             parallel {
                 stage("Win64 Intel64") {
-                    agent { label "Dunitz" }
+                    agent { label 'Dunitz' }
                     stages {
                         stage('Setup') {                     // Setup the environment
                             steps {
@@ -31,11 +31,11 @@ pipeline {
                         }
                     }
                 }
-                stage("Win64 Intel64") {
+                stage("Linux") {
                     agent {label 'Orion'}    
                     environment {
                         LD_LIBRARY_PATH = '~/lib64:~/lib:/files/ric/pparois/root/lib64:/files/ric/pparois/root/lib:${env.LD_LIBRARY_PATH}'
-                        PATH = '~/bin:/files/ric/pparois/root/bin:$PATH'
+                        PATH = "~/bin:/files/ric/pparois/root/bin:$PATH"
                         LD_RUN_PATH = '~/lib64:~/lib:/files/ric/pparois/root/lib64:/files/ric/pparois/root/lib:${env.LD_RUN_PATH}'
                         CPLUS_INCLUDE_PATH = '/files/ric/pparois/root/include/'
                     }
