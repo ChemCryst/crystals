@@ -47,7 +47,6 @@ rem %F77% /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\contour\contour.F %BIT
 %F77% /fpp %FDEF% /define:_%COMPCODE%_ /I..\crystals /I..\bits\rc93 ..\bits\rc93\rc93.F obj\nobuf.obj /automatic %BITS_FOPTS% /MD || ( make_err.bat )
 %F77% /fpp %FDEF% /define:_%COMPCODE%_ /I..\crystals ..\bits\reindex\reindex.F obj\nobuf.obj %BITS_FOPTS% /MD || ( make_err.bat )
 %F77% /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\shelxs\shelxs.F %BITS_FOPTS% /MD  || ( make_err.bat )
-%F77% /fpp %FDEF% /define:_%COMPCODE%_ /I..\crystals ..\bits\shelxs\sxtocry.F obj\nobuf.obj %BITS_FOPTS% /MD || ( make_err.bat )
 %F77% /fpp %FDEF% /I..\crystals ..\bits\sir92\sir92.F /Fosir92.o /static /libs:qwin %BITS_FOPTS% /nolink || ( make_err.bat )
 %F77% /fpp %FDEF% /I..\crystals ..\bits\sir92\norm92.F /Fonorm92.o /nostatic /libs:qwin %BITS_FOPTS% /nolink || ( make_err.bat )
 %F77% sir92.o norm92.o /libs:qwin || ( make_err.bat )
