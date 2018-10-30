@@ -34,10 +34,10 @@ pipeline {
                 stage("Win64 Intel64") {
                     agent {label 'Orion'}    
                     environment {
-                        LD_LIBRARY_PATH=~/lib64:~/lib:/files/ric/pparois/root/lib64:/files/ric/pparois/root/lib:${env.LD_LIBRARY_PATH}
-                        PATH+EXTRA=~/bin:/files/ric/pparois/root/bin
-                        LD_RUN_PATH=~/lib64:~/lib:/files/ric/pparois/root/lib64:/files/ric/pparois/root/lib:${env.LD_RUN_PATH}
-                        CPLUS_INCLUDE_PATH=/files/ric/pparois/root/include/
+                        LD_LIBRARY_PATH = '~/lib64:~/lib:/files/ric/pparois/root/lib64:/files/ric/pparois/root/lib:${env.LD_LIBRARY_PATH}'
+                        PATH+EXTRA = '~/bin:/files/ric/pparois/root/bin'
+                        LD_RUN_PATH = '~/lib64:~/lib:/files/ric/pparois/root/lib64:/files/ric/pparois/root/lib:${env.LD_RUN_PATH}'
+                        CPLUS_INCLUDE_PATH = '/files/ric/pparois/root/include/'
                     }
                     stages {
                         stage('Build') {                // Run the build
@@ -54,8 +54,8 @@ pipeline {
                         }
                         stage('Test') {
                             environment {
-                                CRYSDIR=./,../b/
-                                COMPCODE=LIN
+                                CRYSDIR = './,../b/'
+                                COMPCODE = 'LIN'
                             }
                             steps {
                                 'CPLUS_INCLUDE_PATH=/files/ric/pparois/root/include/',
