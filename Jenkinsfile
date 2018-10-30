@@ -6,6 +6,9 @@ pipeline {
 //            parallel {
                 stage("Win64 Intel64") {
                     agent { label 'Dunitz' }
+                    environment {
+                        COMPCODE = 'INW'
+                    }
                     stages {
                         stage('Setup') {                     // Setup the environment
                             steps {
