@@ -95,6 +95,18 @@ interface
     end function
 end interface
 
+!> int ParseSymXYZnornd(const char *SymXYZ, T_RTMx *SeitzMx, int FacTr)
+interface
+    function ParseSymXYZnornd(SymXYZ, SeitzMx, FacTr) bind(c, name="ParseSymXYZnornd")
+    use sginfo_type_mod
+    implicit none
+        character(kind=C_char), dimension(*) :: SymXYZ
+        type(T_RTMx) :: SeitzMx
+        integer(C_int), value :: FacTr
+        integer(C_int) :: ParseSymXYZnornd
+    end function
+end interface
+
 !> int AddLatticeTr2ListSeitzMx(T_SgInfo *SgInfo,
 !!                             const T_LatticeInfo *LatticeInfo);
 interface

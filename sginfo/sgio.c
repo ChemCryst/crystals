@@ -885,6 +885,149 @@ int ParseSymXYZ(const char *SymXYZ, T_RTMx *SeitzMx, int FacTr)
 #undef P_XYZ
 }
 
+int ParseSymXYZnornd(const char *SymXYZ, T_RTMx *SeitzMx, int FacTr)
+{
+  unsigned int  P_mode;
+  int           Row, Column, Sign, GotXYZ, i;
+  double        Value, Value1, Value2, Delta;
+
+
+  for (i = 0; i < 12; i++) SeitzMx->a[i] = 0;
+
+#define P_Blank   0x01u
+#define P_Comma   0x02u
+#define P_Plus    0x04u
+#define P_Dash    0x08u
+#define P_Slash   0x10u
+#define P_Value1  0x20u
+#define P_Value2  0x40u
+#define P_XYZ     0x80u
+
+  Value1 = 0.;
+
+  Row    = 0;
+  Sign   = 1;
+  Value  = 0.;
+  GotXYZ = 0;
+  P_mode = P_Blank | P_Plus | P_Dash | P_Value1 | P_XYZ;
+
+  do
+  {
+    switch (*SymXYZ)
+    {
+      case ' ':
+      case '\t':
+      case '_':
+        if ((P_mode & P_Blank) == 0) return -1;
+        break;
+      case ',':
+      case ';':
+        if (Row == 2)                return -1;
+      case '\0':
+        if ((P_mode & P_Comma) == 0) return -1;
+        if (GotXYZ == 0)             return -1;
+        if (P_mode & P_Slash) Value += Value1;
+        Value *= FacTr;
+        if (Value < 0.) i = Value - .5;
+        else            i = Value + .5;
+        Delta = Value - i;
+        if (Delta < 0.) Delta = -Delta;
+        if (Delta > .01 * FacTr) return -1;
+        i = Value; 
+        SeitzMx->s.T[Row] = i;
+        Row++;
+        Sign   = 1;
+        Value  = 0.;
+        P_mode = P_Blank | P_Plus | P_Dash | P_Value1 | P_XYZ;
+        GotXYZ = 0;
+        break;
+      case '+':
+        if ((P_mode & P_Plus)  == 0) return -1;
+        if (P_mode & P_Slash) Value += Value1;
+        Sign =  1;
+        if (P_mode & P_Value2)
+          P_mode = P_Value2;
+        else
+          P_mode = P_Blank | P_Value1 | P_XYZ;
+        break;
+      case '-':
+        if ((P_mode & P_Dash)  == 0) return -1;
+        if (P_mode & P_Slash) Value += Value1;
+        Sign = -1;
+        if (P_mode & P_Value2)
+          P_mode = P_Value2;
+        else
+          P_mode = P_Blank | P_Value1 | P_XYZ;
+        break;
+      case '/':
+      case ':':
+        if ((P_mode & P_Slash) == 0) return -1;
+        Sign =  1;
+        P_mode = P_Blank | P_Plus | P_Dash | P_Value2;
+        break;
+      case '.':
+      case '0':
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+      case '6':
+      case '7':
+      case '8':
+      case '9':
+        if      (P_mode & P_Value1)
+        {
+          if (sscanf(SymXYZ, "%lf%n", &Value1, &i) != 1) return -1;
+          if (Sign == -1) Value1 = -Value1;
+          P_mode = P_Blank | P_Comma | P_Plus | P_Dash | P_Slash;
+        }
+        else if (P_mode & P_Value2)
+        {
+          if (sscanf(SymXYZ, "%lf%n", &Value2, &i) != 1) return -1;
+          if (Sign == -1) Value2 = -Value2;
+          if (Value1 != 0.)
+          {
+            if (Value2 == 0.) return -1;
+            Value += Value1 / Value2;
+          }
+          P_mode = P_Blank | P_Comma | P_Plus | P_Dash;
+        }
+        else
+          return -1;
+        SymXYZ += (i - 1);
+        break;
+      case 'X':
+      case 'x': Column = 0; goto Process_XYZ;
+      case 'Y':
+      case 'y': Column = 1; goto Process_XYZ;
+      case 'Z':
+      case 'z': Column = 2;
+       Process_XYZ:
+        if ((P_mode & P_XYZ) == 0) return -1;
+        i = Row * 3 + Column;
+        if (SeitzMx->s.R[i] != 0) return -1;
+        SeitzMx->s.R[i] = Sign;
+        GotXYZ = 1;
+        P_mode = P_Blank | P_Comma | P_Plus | P_Dash;
+        break;
+    }
+  }
+  while (*SymXYZ++);
+
+  if (Row != 3) return -1;
+
+  return 0;
+
+#undef P_Blank
+#undef P_Comma
+#undef P_Plus
+#undef P_Dash
+#undef P_Slash
+#undef P_Value1
+#undef P_Value2
+#undef P_XYZ
+}
 
 static int LookupRotMx(T_HallGenerator *HG)
 {
