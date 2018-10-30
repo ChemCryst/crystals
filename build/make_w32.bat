@@ -17,13 +17,13 @@
 @if "%1" == "clean" goto clean
 
 set CRYSVNSAFE=%CRYSVNVER::=-%
-@rmdir /q/s ..\debuginfo
-@mkdir ..\debuginfo
-@mkdir ..\debuginfo\%CRYSVNSAFE%
-@copy crystals.pdb ..\debuginfo\%CRYSVNSAFE%\
-@copy crystals.exe ..\debuginfo\%CRYSVNSAFE%\
-@copy CrashRpt*.dll ..\debuginfo\%CRYSVNSAFE%\
-@copy CrashRpt*.pdb ..\debuginfo\%CRYSVNSAFE%\
+rmdir /q/s ..\debuginfo
+mkdir ..\debuginfo
+mkdir ..\debuginfo\%CRYSVNSAFE%
+copy crystals.pdb ..\debuginfo\%CRYSVNSAFE%\
+copy crystals.exe ..\debuginfo\%CRYSVNSAFE%\
+copy CrashRpt*.dll ..\debuginfo\%CRYSVNSAFE%\
+copy CrashRpt*.pdb ..\debuginfo\%CRYSVNSAFE%\
 
 @goto exit
 
