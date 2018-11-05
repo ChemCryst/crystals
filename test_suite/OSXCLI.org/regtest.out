@@ -1,7 +1,5 @@
 #USE REGINIT.DAT
 #SET PRINT OFF
-Space group symbol is   P    1             
-Bonds: Update required - There is no list 41
 #TITLE TEST 1
 #REGULAR KEEP
 Input: mapping    6 atoms onto    6
@@ -309,7 +307,6 @@ Individual Delta          0.004         0.008   O4       - O104
  ENANTIO     0.000  EXTPARAM    0.000
 #USE REGINIT.DAT
 #SET PRINT OFF
-Space group symbol is   P    1             
 #TITLE TEST 3
 #REGULAR KEEP
 Input: mapping    6 atoms onto    6
@@ -618,7 +615,6 @@ Individual Delta          0.004         0.008   O4       - O104
 #TITLE AUGMENT
 #USE REGINIT.DAT
 #SET PRINT OFF
-Space group symbol is   P    1             
 #TITLE TEST 5
 #REGULAR AUGMENT
 Input: mapping    6 atoms onto    6
@@ -911,7 +907,6 @@ Individual Delta          0.004         0.008   O4       - O104
  ENANTIO     0.000  EXTPARAM    0.000
 #USE REGINIT.DAT
 #SET PRINT OFF
-Space group symbol is   P    1             
 #TITLE TEST 7
 #REGULAR AUGMENT
 Input: mapping    6 atoms onto    6
@@ -1205,7 +1200,6 @@ Individual Delta          0.004         0.008   O4       - O104
 # REPLACE
 #USE REGINIT.DAT
 #SET PRINT OFF
-Space group symbol is   P    1             
 #TITLE TEST 9
 #REGULAR REPLACE
 Input: mapping    6 atoms onto    6
@@ -1496,7 +1490,6 @@ Individual Delta          0.004         0.008   O4       - O104
  ENANTIO     0.000  EXTPARAM    0.000
 #USE REGINIT.DAT
 #SET PRINT OFF
-Space group symbol is   P    1             
 #TITLE TEST 11
 #REGULAR REPLACE
 Input: mapping    6 atoms onto    6
@@ -1787,7 +1780,6 @@ Individual Delta          0.004         0.008   O4       - O104
  ENANTIO     0.000  EXTPARAM    0.000
 #USE REGINIT.DAT
 #SET PRINT OFF
-Space group symbol is   P    1             
 #TITLE TEST 13
 #REGULAR REPLACE
 #EDIT
