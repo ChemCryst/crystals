@@ -1610,7 +1610,8 @@ contains
     type(atom_t) :: atom
     integer i, j, m5, n, m
     logical found
-    character(len=8), dimension(16), parameter :: ignore = (/ &
+    character(len=8), dimension(17), parameter :: ignore = (/ &
+                                                  'DRENAME ', &
                                                   'RENAME  ', &
                                                   'LAYER   ', &
                                                   'ELEMENT ', &
