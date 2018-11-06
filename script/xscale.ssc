@@ -39,6 +39,7 @@
 %    COPY 'END'
 %% Set weighting type depending on LIST 23,
 %  VARIABLE INTEGER FOLD  FTYPE
+% SHOW FOLD
 %% check if FOLD has been set earlier
 %  IF FOLD .EQ. 0 THEN
 %   IF EXISTS 23 .GE. 1 THEN                                                     
@@ -67,7 +68,7 @@
 
 %      COPY '#LIST 4'
 %      COPY 'SCHEME NUMBER=16 NPARAM=6'
-%      COPY 'PARAM 0 0 0 0 0 1.0 '                 %% PURE STATISTICS
+%      COPY 'PARAM 0.1 0 0 0 0 0.333 '                 %% IMPURE STATISTICS
 %      COPY 'END'
 %%      COPY '#SFLS'
 %%      COPY 'SCALE'
