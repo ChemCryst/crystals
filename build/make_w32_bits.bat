@@ -26,6 +26,7 @@ lib sgclib.obj sgfind.obj sghkl.obj sgio.obj sgsi.obj sginfo_extra.obj sginfo_ty
 %F77% /c ..\bits\shelx2cry\shelx_procedures.F90 
 %F77% /c ..\bits\shelx2cry\shelx2cry_dict.F90 
 %F77% /c ..\bits\shelx2cry\shelx2cry_mod.F90 
+%F77% /c ..\bits\shelx2cry\shelx2cry_cif.F90 
 %F77% /fpp %FDEF% /define:_%COMPCODE%_ /I..\crystals ..\bits\shelx2cry\shelx2cry.F90 shelx2cry_mod.obj  shelx_procedures.obj shelx2cry_dict.obj crystal_data.obj  sginfo.lib %BITS_FOPTS%  /exe:shelx2cry.exe
 
 %CC% ..\bits\Common\nobuf.c /Foobj\nobuf.obj /nologo /c /I..\gui /O2 /Zi /Oy- /D"NDEBUG" /MD  || ( make_err.bat )
