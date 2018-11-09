@@ -1344,10 +1344,11 @@ contains
             select case (j+eoffset)
             case (1) ! serial
               read (elements(j+eoffset), *, iostat=info, iomsg=msgstatus) atom%serial
-              if (atom%serial < 0) then
-                info = -1
-                msgstatus = 'Negative serial number is not valid'
-              end if
+! negative serial is OK, and is used to temporarily rename atoms in some scripts to avoid clashes.
+              !if (atom%serial < 0) then
+              !  info = -1
+              !  msgstatus = 'Negative serial number is not valid'
+              !end if
             case (2) ! symmetry operator provided in the unit cell symmetry LIST 2
               read (elements(j+eoffset), *, iostat=info, iomsg=msgstatus) atom%sym_op%S
             case (3) ! the non-primitive lattice translation that is to be added
