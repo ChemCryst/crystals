@@ -77,7 +77,7 @@ C
       
       CHARACTER*80 CFORM(3) , CIFORM
       CHARACTER*132 CGENSB
-      CHARACTER*12 CEVARI , CTVARI, CUVARI
+      CHARACTER*16 CEVARI , CTVARI, CUVARI
 C
       INCLUDE 'ISTORE.INC'
 C
@@ -134,7 +134,7 @@ C
 C
 c
       INLOG = IRDLOG(IFLIND)
-      IRDLOG(IFLIND) = 0
+      IRDLOG(IFLIND) = -1   !Only log comments and system commands
 C
 C
 C -- ENSURE THAT THE ALL THE DIRECTIVES APPEAR TO HAVE BEEN READ ONCE
@@ -470,23 +470,32 @@ C
 C
       numbertype = isanumber(ctvari)
 
+c      write(nclu,*) '# ntype: ',numbertype
       
-      if(numbertype .eq. 1 .and. idirec==2) then
-          ! A constant, read in the value directly
+      if(numbertype .eq. 2 .and. idirec==2) then   ! Real value to DSC file
+          ! A real constant, read in the value directly
           read(ctvari, *, iostat=ISTAT) STORE(IRCADR+IOFF)
           if(istat/=0) then
             istat=-1
           end if
           IF(INLOG.NE.0) CALL GENLOG
-      else if(numbertype .eq. 1 .and. idirec==2) then
+c          write(nclu,*) '# real ',ctvari, store(ircadr+ioff) 
+      else if(numbertype .eq. 1 .and. idirec==2) then  !Integer to DSC file
           ! A constant, read in the value directly
           read(ctvari, *, iostat=ISTAT) ISTORE(IRCADR+IOFF)
           if(istat/=0) then
             istat=-1
           end if
           IF(INLOG.NE.0) CALL GENLOG
-      else if ( idirec==2 ) then
+c          write(`,*) '# int ',ctvari, istore(ircadr+ioff) 
+      else if ( idirec == 2 .and. ctvari(1:1).eq.'"' )  then !String to DSC file
+          do j = 1, ilgth, 4
+              read (ctvari(j+1:j+4),'(A4)') istore(ircadr+ioff+j-1)
+          end do
+          IF(INLOG.NE.0) CALL GENLOG
+      else if ( idirec==2 ) then             ! Script to DSC file
           IF ( IRDSCR(IFLIND) .GE. 1 ) THEN   ! Scripts running
+              ISTAT = KSCTRN(IDIREC,CTVARI,ISTORE(IRCADR+IOFF),ILGTH)
               call xccupc ( ctvari, cuvari )
 C -- FIND IDENTIFIER
               ISTAT = KSCIDN (2, 3, CUVARI, 1, ITYPE, IDENT, ICVAL, -1)  ! 2=find id by name, 3=search all levels, 
@@ -498,21 +507,32 @@ C -- FIND IDENTIFIER
                          WRITE(CGENSB(I:), *) ISTORE(IRCADR+IOFF)
                      ELSE IF ( ITYPE .EQ. 2 ) THEN
                          WRITE(CGENSB(I:), *) STORE(IRCADR+IOFF)
+                     ELSE IF ( ITYPE .EQ. 4 ) THEN
+                         WRITE(CGENSB(I:), '(A1,99A4)') '"',      !Leading quote indicates string
+     1                         (ISTORE(IRCADR+IOFF+J-1),J=1,ILGTH/4)
                      ELSE
-                         WRITE(CGENSB(I:), *) CUVARI
+                         WRITE(CGENSB(I:), *) '# Itype: ', ITYPE, 
+     1                    ' var: ', CUVARI
                      ENDIF   
                      CGENSB = TRIM(CGENSB) // ' ' // 
      1                 TRIM( CRDLWC(I+LEN(CTVARI):) )
+c                      write(nclu,*) '# crdlwc: ', crdlwc  
+c                      write(nclu,*) '# cgensb: ', cgensb  
                   ELSE
                      CGENSB = '# Not found: '//TRIM(CUVARI)//
      1                 ' input: '//trim(crdupc)
                   END IF
+              ELSE
+                  write(nclu,*) '# Var not found: ', ctvari 
               END IF
+          ELSE
+              write(nclu,*) '# Scripts not running cannot access: ', ctvari 
           END IF
           IF(INLOG.NE.0) CALL GENMOD( CGENSB )
-      else 
+      else   ! DSC file to script
           ! A variable from script, fetching the value
           ISTAT = KSCTRN ( IDIREC , CTVARI , ISTORE(IRCADR+IOFF), ILGTH)
+c          write(nclu,*) '# transfering : ', ctvari 
       end if
 C
       GO TO 8000
@@ -534,12 +554,18 @@ C
       if(numbertype .eq. 1 .and. idirec==2) then
           ! A constant integer, read in the value directly
           read(ctvari, *) ISTORE(ILSTCM+IOFF)
+          IF(INLOG.NE.0) CALL GENLOG
       else if(numbertype .eq. 2 .and. idirec==2) then
           ! A constant real, read in the value directly
           read(ctvari, *) STORE(ILSTCM+IOFF)
+          IF(INLOG.NE.0) CALL GENLOG
 c          print *,' Read const: ', STORE(ILSTcM+ioff), ILSTCM, IOFF
       else if ( idirec==2 ) then
+          CGENSB = '# Not found: '//TRIM(CUVARI)//
+     1                 ' input: '//trim(crdupc)
           IF ( IRDSCR(IFLIND) .GE. 1 ) THEN   ! Scripts running
+              ISTAT = KSCTRN ( IDIREC , CTVARI , ISTORE(ILSTCM+IOFF), 1)
+c Substitute in value on command line for logging.              
               call xccupc ( ctvari, cuvari )
 C -- FIND IDENTIFIER
               ISTAT = KSCIDN (2,3,CUVARI,1,ITYPE,IDENT,ICVAL,-1)  ! 2=find id by name, 3=search all levels, 
@@ -556,9 +582,6 @@ C -- FIND IDENTIFIER
                      ENDIF   
                      CGENSB = TRIM(CGENSB) // ' ' // 
      1                 TRIM( CRDLWC(I+LEN(CTVARI):) )
-                  ELSE
-                     CGENSB = '# Not found: '//TRIM(CUVARI)//
-     1                 ' input: '//trim(crdupc)
                   END IF
               END IF
           END IF
@@ -782,9 +805,8 @@ C
 C -- RELEASE RESOURCES
       CALL XSTRLL ( ICOMBL )
 
-Cric - do not write this END. Waste of space and often comes AFTER
-Cthe next command.
-c      IF(INLOG.NE.0)WRITE(NCLU,'(A)')'END'
+C Write the last read line to the log (while logging was temporarily disabled)
+      IF(INLOG.NE.0) CALL GENLOG
       IRDLOG(IFLIND) = INLOG
 C
 C -- FINAL MESSAGE

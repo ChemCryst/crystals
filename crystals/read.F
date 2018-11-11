@@ -347,6 +347,7 @@ C      IRDCPY(I)   COPY FLAG
 C                    0      NO COPY. LINES READ ARE INSTRUCTIONS
 C                    1      MIRROR INPUT DIRECTLY TO OUTPUT.
 C      IRDLOG(I)   LOG FLAG
+C                   -1      LOG ONLY COMMENTS AND IMMEDIATE SYSTEM COMMANDS (open, release, etc)
 C                    O      NO LOGGING
 C                    1      INPUT WRITTEN TO LOG FILE
 C
@@ -591,7 +592,12 @@ c        if ((issprt .eq. 0) .and. (cmon(1)(2:4) .eq. 'SCR')) then
 cdjwjun07
         IHFLAG = 0
         NC = 2
-        IF ( IMAGE(2) .EQ. IB ) GO TO 1000
+        IF ( IMAGE(2) .EQ. IB ) THEN    ! Comment - let's log it for more logfile context.
+           IF ( ABS(IRDLOG(IFLIND)) .EQ. 1 ) THEN
+              WRITE ( NCLU , 1450 ) TRIM(CRDLWC(1:IFIN))
+           ENDIF
+           GO TO 1000
+        END IF
         ISTAT = KRDSYS ( IN )
         IF ( ISTAT .GT. 0 ) GO TO 1000
         KRDREC = 1
@@ -604,7 +610,7 @@ cdjwjun07
         KRDREC = 0
 C -- IF LOGGING WRITE LINE BACK TO LOG CHANNEL
       IF ( IRDLOG(IFLIND) .EQ. 1 ) THEN
-        WRITE ( NCLU , 1450 ) CRDLWC(1:IFIN)
+        WRITE ( NCLU , 1450 ) TRIM(CRDLWC(1:IFIN))
 1450    FORMAT ( A )
       ENDIF
 C
@@ -961,7 +967,7 @@ C
       IF ( ISYSIN .LE. 0 ) THEN
 C --  IF LOGGING WRITE LINE BACK TO LOG CHANNEL
         IF ( IRDLOG(IFLIND) .EQ. 1 ) THEN
-         WRITE ( NCLU , 500 ) CRDLWC(1:80)
+         WRITE ( NCLU , 500 ) TRIM(CRDLWC(1:80))
 500      FORMAT ( A )
 501      FORMAT ('# ',A)
         ENDIF
@@ -982,15 +988,15 @@ C      SPAW(N)     $           APPE(ND)    BENCH       DEFI(NE)
 C      FLUS(H)
 C
 C --  IF LOGGING WRITE LINE BACK TO LOG CHANNEL
-      IF ( IRDLOG(IFLIND) .EQ. 1 ) THEN
+      IF ( ABS(IRDLOG(IFLIND)) .EQ. 1 ) THEN
 C-----   DO NOT LOG SCRIPT INSTRUCTIONS
 CRIC0101 DO NOT LOG USE,$,or SPAWN INSTRUCTIONS EITHER.
          IF (( ISYSIN .NE. ISCRIP) .AND. ( ISYSIN .NE. IUSE )
      1   .AND.(ISYSIN .NE. IDOLLA) .AND. ( ISYSIN .NE. ISPAWN) ) THEN
-          WRITE ( NCLU , 500 ) CRDLWC(1:80)
+          WRITE ( NCLU , 500 ) TRIM(CRDLWC(1:80))
          ELSE
 c          WRITE ( NCLU , 501 ) CRDLWC(1:80)
-          WRITE ( NCLU , 501 ) CRDLWC
+          WRITE ( NCLU , 501 ) TRIM(CRDLWC)
          ENDIF
       END IF
 C
