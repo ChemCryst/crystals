@@ -121,11 +121,24 @@ Warning: `AFIX` Not supported
 Line 130: AFIX 0
 
 Processing shelxl labels into crystals serials
+Table of converted serial numbers
+ |    Shelx Crystals |    Shelx Crystals |    Shelx Crystals |    Shelx Crystals
+ |    CO1_0        1 |    CL1_0        1 |    CL2_0        2 |     N1_0        1
+ |    H1A_0       11 |    H1B_0       12 |     N2_0        2 |    H2A_0       21
+ |    H2B_0       22 |     N3_0        3 |    H3A_0       31 |    H3B_0       32
+ |     C1_0        1 |     H1_0        1 |     C2_0        2 |     H2_0        2
+ |     C3_0        3 |    H3C_0       33 |    H3D_0       34 |     C4_0        4
+ |    H4A_0       41 |    H4B_0       42 |     C5_0        5 |    H5A_0       51
+ |    H5B_0       52 |     C6_0        6 |    H6A_0       61 |    H6B_0       62
+ |     C7_0        7 |     H7_0        7 |     C8_0        8 |    H8A_0       81
+ |    H8B_0       82 |     C9_0        9 |    H9A_0       91 |    H9B_0       92
+ |     O1_0        1
 Done
 
 Processing SADIs...
 SADI C2_$1 C3_$2
 DISTANCE 0.0,  .02000 = MEAN 
+CONT C(2,2,1,1.000,1.000,1.000) TO C(3,5,1,.000,.000,1.000) 
 
 ## Warning: Could not find the corresponding hkl file insfiles/lh5797_I.hkl
 ##          You will have to import it manually

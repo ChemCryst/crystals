@@ -172,6 +172,24 @@ Line 155: AFIX   0
          156 HKLF 5
 
 Processing shelxl labels into crystals serials
+Table of converted serial numbers
+ |    Shelx Crystals |    Shelx Crystals |    Shelx Crystals |    Shelx Crystals
+ |    AU1_0        1 |     P1_0        1 |     S2_0        2 |     N3_0        3
+ |     C4_0        4 |     H4_0        4 |     C5_0        5 |    H5A_0       51
+ |    H5B_0       52 |    H5C_0       53 |     C6_0        6 |    H6A_0       61
+ |    H6B_0       62 |    H6C_0       63 |     C7_0        7 |     H7_0        7
+ |     C8_0        8 |    H8A_0       81 |    H8B_0       82 |    H8C_0       83
+ |     C9_0        9 |    H9A_0       91 |    H9B_0       92 |    H9C_0       93
+ |    C10_0       10 |    C11_0       11 |    C12_0       12 |    H12_0       12
+ |    C13_0       13 |    H13_0       13 |    C14_0       14 |    H14_0       14
+ |    C15_0       15 |    H15_0       15 |    C16_0       16 |    C17_0       17
+ |    H17_0       17 |    C18_0       18 |    H18_0       18 |    C19_0       19
+ |    H19_0       19 |    C20_0       20 |    H20_0       20 |    C21_0       21
+ |    H21_0       21 |    P22_0       22 |   SE23_0       23 |   SE24_0       24
+ |   SE25_0       25 |    C26_0       26 |    C27_0       27 |    H27_0       27
+ |    C28_0       28 |    H28_0       28 |    C29_0       29 |    H29_0       29
+ |    C30_0       30 |    H30_0       30 |    C31_0       31 |    H31_0       31
+
 Done
 
 ## Warning: Structure is TWINNED and HKLF 5 has been used

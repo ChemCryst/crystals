@@ -9,6 +9,7 @@ integer, parameter :: crystals_fileunit=1234 !< unit number for the crystals fil
 integer :: log_unit
 integer, parameter :: lenlabel=12
 integer, parameter :: line_length=72
+integer, parameter :: shelxline_length=1024
 
 type hklf_t !< hold information from hklf card
     integer :: code !< hklf code (1,2,3,4,5 or 6)
@@ -47,8 +48,6 @@ integer :: sfac_index=0 !< current index in sfac
 real, dimension(:), allocatable :: fvar !< list of free variables (sfac from shelx)
 real, dimension(6) :: unitcell=0.0 !< Array holding the unit cell parameters (a,b,c, alpha,beta,gamma). ANgle sin degree
 real wavelength !< wavelengh from shelx CELL card
-integer :: residue=0 !< Current residue
-character(len=128), dimension(:), allocatable :: residue_names !< Name or class of the residues
 integer :: part=0 !< current part
 real :: part_sof=-1.0 !< Overriding subsequent site occupation factor
 
@@ -62,8 +61,28 @@ type eqiv_t
     integer :: L !< non-primitive lattice translation
     real, dimension(3) :: crystals_translation !< shitfs in unit cells to be added
 end type
-type(eqiv_t), dimension(128) :: eqiv_list
-integer :: eqiv_list_index = 0
+type(eqiv_t), dimension(128) :: eqiv_list !< list of all eqiv instructions
+integer :: eqiv_list_index = 0 !< current index in eqiv_list
+
+!> data type for RESI
+type resi_t
+    integer :: number !< numeric number
+    character(len=4) :: class !< class of the residue (4 apha numeric characters max, cannot start with a number)
+    character(len=128) :: alias !< an alias
+    integer :: crystals_residue !< residue used for crystals (only support integers)
+    integer :: shelx_line_number
+contains
+    procedure :: init => init_resi !< initialise object
+    procedure :: is_set => is_resi_set !< overload .eqv.
+    procedure, private :: resi_compare, nresi_compare !< overload equivalence to compare resi type object
+    generic :: operator(==) => resi_compare !< overload ==
+    generic :: operator(/=) => nresi_compare !< overload /=
+    generic :: operator( .eqv. ) => resi_compare !< overload .eqv.
+    generic :: operator( .neqv. ) => nresi_compare !< overload .neqv.
+end type
+type(resi_t), dimension(512) :: resi_list !< list of all resi instructions
+integer :: resi_list_index = 0 !< max index in resi_list
+integer :: current_resi_index = 0 !< current residue
 
 type disp_t
     character(len=512) :: shelxline !< raw line from res/ins file
@@ -82,14 +101,35 @@ type atom_t
     real :: iso = 0.0 !< isotropic temperature factor from shelx
     real :: sof = 0.0 !< Site occupation factor from shelx
     integer :: multiplicity = 0 !< multiplicity (calculated)
-    integer :: resi = 0 !< residue from shelx
+    type(resi_t) :: resi  !< residue from shelx
     integer :: part = 0 !< group from shelx
-    character(len=512) :: shelxline = '' !< raw line from res/ins file
+    character(len=shelxline_length) :: shelxline = '' !< raw line from res/ins file
     integer :: line_number = 0 !< line number of shelxline from res/ins file
     integer :: crystals_serial = -1 !< crystals serial code
+contains
+    procedure, private :: atom_compare_to_shelx !< compare atom_shelx_t to atom_t
+    generic :: operator(==) => atom_compare_to_shelx !< overload ==
 end type
 type(atom_t), dimension(:), allocatable :: atomslist !< list of atoms in the res/ins file
 integer atomslist_index !< Current index in the list of atoms list (atomslist)
+
+!> Shelxl atom type
+type atom_shelx_t
+    character(len=lenlabel) :: label = '' !< shelx label
+    character(len=lenlabel) :: text = '' !< raw label from shelx
+    type(resi_t) :: resi
+    integer :: symmetry !< XX_$y
+    logical :: previous !< XX_-
+    logical :: after !< XX_+
+    logical :: resi_all !< all residues
+contains
+    procedure :: init => init_atom_shelx !< initialise object    
+    procedure, private :: shelx_compare_to_atom !< compare atom_shelx_t to atom_t
+    generic :: operator(==) => shelx_compare_to_atom !< overload ==
+end type
+interface atom_shelx_t
+module procedure read_atom_shelx
+end interface
 
 !> Symmetry operators
 type SeitzMx_t
@@ -112,9 +152,8 @@ type(spacegroup_t), save :: spacegroup !< Hold the spagroup information
 type dfix_t
     real :: distance, esd
     character(len=lenlabel) :: atom1, atom2
-    integer :: residue=-99 !< Residue number -99=None, -1=all, else is the residue number
-    character(len=128) :: namedresidue !< Residue alias name
-    character(len=1024) :: shelxline !< raw instruction line from res file
+    type(resi_t) :: residue !< Residue
+    character(len=shelxline_length) :: shelxline !< raw instruction line from res file
     integer :: line_number !< Line number form res file
 end type
 type(dfix_t), dimension(1024), save :: dfix_table
@@ -124,9 +163,8 @@ integer :: dfix_table_index=0
 type flat_t
     character(len=lenlabel), dimension(:), allocatable :: atoms
     real esd !< esd of the restraint
-    integer :: residue=-99 !< Residue number -99=None, -1=all, else is the residue number
-    character(len=128) :: namedresidue='' !< Residue alias
-    character(len=1024) :: shelxline !< raw instruction line from res file
+    type(resi_t) :: residue !< Residue
+    character(len=shelxline_length) :: shelxline !< raw instruction line from res file
     integer :: line_number !< Line number form res file
 end type
 type(flat_t), dimension(1024), save :: flat_table
@@ -135,9 +173,8 @@ integer :: flat_table_index=0
 !> type EADP
 type eadp_t
     character(len=lenlabel), dimension(:), allocatable :: atoms
-    integer :: residue=-99 !< Residue number -99=None, -1=all, else is the residue number
-    character(len=128) :: namedresidue='' !< Residue alias
-    character(len=1024) :: shelxline !< raw instruction line from res file
+    type(resi_t) :: residue !< Residue
+    character(len=shelxline_length) :: shelxline !< raw instruction line from res file
     integer :: line_number !< Line number form res file
 end type
 type(eadp_t), dimension(1024), save :: eadp_table
@@ -146,10 +183,9 @@ integer :: eadp_table_index=0
 !> type ISOR
 type isor_t
     character(len=lenlabel), dimension(:), allocatable :: atoms
-    integer :: residue=-99 !< Residue number -99=None, -1=all, else is the residue number
+    type(resi_t) :: residue !< Residue
     real :: esd1, esd2 !< if the atom is terminal (or makes no bonds), esd2 is used instead of esd1
-    character(len=128) :: namedresidue='' !< Residue alias
-    character(len=1024) :: shelxline !< raw instruction line from res file
+    character(len=shelxline_length) :: shelxline !< raw instruction line from res file
     integer :: line_number !< Line number form res file
 end type
 type(isor_t), dimension(1024), save :: isor_table
@@ -158,9 +194,8 @@ integer :: isor_table_index=0
 !> type RIGU
 type rigu_t
     character(len=lenlabel), dimension(:), allocatable :: atoms
-    integer :: residue=-99 !< Residue number -99=None, -1=all, else is the residue number
-    character(len=128) :: namedresidue='' !< Residue alias
-    character(len=1024) :: shelxline !< raw instruction line from res file
+    type(resi_t) :: residue !< Residue
+    character(len=shelxline_length) :: shelxline !< raw instruction line from res file
     integer :: line_number !< Line number form res file
     real :: s1, s2
 end type
@@ -171,9 +206,8 @@ integer :: rigu_table_index=0
 type sadi_t
     real :: esd
     character(len=lenlabel), dimension(:,:), allocatable :: atom_pairs !< pairs of atoms 
-    integer :: residue=-99 !< Residue number -99=None, -98=alias residue, -1=all, else is the residue number
-    character(len=128) :: namedresidue='' !< Alias of a residue
-    character(len=1024) :: shelxline !< raw instruction line from res file
+    type(atom_shelx_t) :: residue !< Residue
+    character(len=shelxline_length) :: shelxline !< raw instruction line from res file
     integer :: line_number !< Line number form res file
 end type
 type(sadi_t), dimension(1024), save :: sadi_table
@@ -181,20 +215,19 @@ integer :: sadi_table_index=0
 
 !> type SAME
 type same_t
-    character(len=1024) :: shelxline !< raw instruction line from res file
+    character(len=shelxline_length) :: shelxline !< raw instruction line from res file
     integer :: line_number !< Line number form res file
     character(len=lenlabel), dimension(:), allocatable :: list1 !< reference atoms
     character(len=lenlabel), dimension(:), allocatable :: list2 !< target atoms
     real esd1, esd2 !< esds
-    character(len=128) :: namedresidue !< Residue alias
-    integer :: residue !< Residue number -99=None, -1=all, else is the residue number
+    type(resi_t) :: residue !< Residue
 end type
 type(same_t), dimension(1024) :: same_table
 integer :: same_table_index=0
 
 !> type info. List of warning saved for printing at the end so they don't get lost
 type info_t
-    character(len=1024) :: shelxline !< raw instruction line from res file
+    character(len=shelxline_length) :: shelxline !< raw instruction line from res file
     integer :: line_number !< Line number form res file
     character(len=1024) :: text
 end type
@@ -263,9 +296,9 @@ end function to_upper_fun
 !> Remove repeated separators. Default separator is space
 subroutine deduplicates(line, strip, sep_arg)
 implicit none
-character(len=*), intent(in) :: line !< text to process
+character(len=*) :: line !< text to process
 character, intent(in), optional :: sep_arg !< Separator to deduplicate
-character(len=:), allocatable, intent(out) :: strip
+character(len=:), allocatable, intent(out), optional :: strip
 character(len=len_trim(line)) :: buffer
 integer i,k, sepfound
 character sep
@@ -294,9 +327,12 @@ character sep
     end do
 
     buffer=adjustl(buffer) 
-    allocate(character(len=len_trim(buffer)) :: strip)
-    strip=trim(buffer)
-
+    if(present(strip)) then
+        allocate(character(len=len_trim(buffer)) :: strip)
+        strip=trim(buffer)
+    else
+        line=trim(buffer)
+    end if
 end subroutine
 
 !> Split a string into different pieces given a separator. Defaul separator is space.
@@ -361,208 +397,129 @@ implicit none
 character(len=*), intent(in) :: linein
 character(len=:), allocatable, intent(out) :: lineout
 character(len=:), allocatable, intent(out) :: errormsg
-character(len=:), allocatable :: stripline
-character(len=:), allocatable :: bufferline
+character(len=2048) :: bufferline, expandlist
 logical reverse, collect
-character(len=6) :: startlabel, endlabel, buffer
-integer cont, k, j, startresidue, endresidue, tagresidue
+type(atom_shelx_t) :: startlabel, endlabel, keyword
+integer cont, i, k, j
+character(len=lenlabel), dimension(:), allocatable :: splitbuffer
 
-    startresidue=0
-    endresidue=0
-   
-    ! extracting list of atoms, first removing duplicates spaces and keyword
-    call deduplicates(linein, bufferline)
+    bufferline=linein
     call to_upper(bufferline)
-    allocate(character(len=4096) :: stripline)
-    stripline=bufferline
-    deallocate(bufferline)
-    allocate(character(len=4096) :: bufferline)
-    
-    ! checking for a residue number on the command
-    buffer=''
-    if(index(linein, '_')==5) then
-        k=5
-        do
-            k=k+1
-            if(linein(k:k)/=' ') then
-                buffer=trim(buffer)//linein(k:k)
-            else
-                exit
-            end if
-        end do
-        read(buffer, *) tagresidue
-    else
-        tagresidue=0
-    end if
-    
-    ! looking for <,> shortcut
-    cont=max(index(stripline, '<'), index(stripline, '>'))
-    !write(log_unit, *) '*************** ', cont
-    do while(cont>0)
-        if(index(stripline, '<')==cont) then    
-            reverse=.true.
-        else
-            reverse=.false.
-        end if
-    
-        ! found < or >, expliciting atom list
-        bufferline=stripline(1:cont-1)
+
+    do
+        expandlist=''
         
-        ! first searching for label on the right
-        if(stripline(cont+1:cont+1)==' ') cont=cont+1        
-        j=0
-        endlabel=''
-        do k=cont+1, len_trim(stripline)
-            if(stripline(k:k)==' ' .or. stripline(k:k)=='<' .or. stripline(k:k)=='>') then
-                exit
-            end if
-            j=j+1
-            endlabel(j:j)=stripline(k:k)
-        end do  
-        ! check for residue
-        k=index(endlabel, '_')
-        if(k>0) then
-            read(endlabel(k+1:), *) endresidue
-            endlabel=endlabel(1:k-1)
-        end if
+		! looking for <,> shortcut
+		cont=max(index(bufferline, '<'), index(bufferline, '>'))
+		if(cont==0) then
+			exit
+		end if
+		
+		if(cont>0) then
+			! ensure spaces around operator
+			bufferline=bufferline(1:cont-1)//' '//bufferline(cont:cont)//' '//trim(bufferline(cont+1:))
+		end if
+			
+		! extracting list of atoms, first removing duplicates spaces and keyword
+		call deduplicates(bufferline)
+		call explode(bufferline, lenlabel, splitbuffer)    
+
+		keyword = atom_shelx_t(splitbuffer(1))
+		do i=2, size(splitbuffer)
+			if(trim(splitbuffer(i))=='<' .or. trim(splitbuffer(i))=='>') then
+				startlabel = atom_shelx_t(splitbuffer(i-1))
+				endlabel = atom_shelx_t(splitbuffer(i+1))
+				if(trim(splitbuffer(i))=='>') then
+				  reverse=.false.
+				else
+				  reverse=.true.
+				end if
+
+				! scanning atom list to find the implicit atoms
+				if(reverse) then
+					k=atomslist_index
+				else
+					k=1
+				end if
+				collect=.false.
+				do 
+					if(trim(atomslist(k)%label)==trim(startlabel%label)) then
+						!found the first atom
+						!write(log_unit, *) isor_table(i)%shelxline
+						!write(*, *) 'Found start: ', trim(startlabel%label)
+						if(startlabel%resi%is_set()) then
+							if(atomslist(k)%resi == startlabel%resi) then
+								collect=.true.
+							end if
+						else if (keyword%resi%is_set()) then
+							if(keyword%resi ==atomslist(k)%resi) then
+								collect=.true.
+							end if
+						else
+							collect = .true.
+						end if
+					end if
+					if(reverse) then
+						k=k-1
+						if(k<1) then
+							if(collect) then
+								allocate(character(len=29+len_trim(endlabel%text)) :: errormsg)
+								write(errormsg, *) 'Error: Cannot find end atom ', trim(endlabel%text)
+							else
+								allocate(character(len=31+len_trim(startlabel%text)) :: errormsg)
+								write(errormsg, *) 'Error: Cannot find first atom ', trim(startlabel%text)
+							end if
+							return
+						end if
+					else
+						k=k+1
+						if(k>atomslist_index) then
+							if(collect) then
+								allocate(character(len=29+len_trim(endlabel%text)) :: errormsg)
+								write(errormsg, *) 'Error: Cannot find end atom ', trim(endlabel%text)
+							else
+								allocate(character(len=31+len_trim(startlabel%text)) :: errormsg)
+								write(errormsg, *) 'Error: Cannot find first atom ', trim(startlabel%text)
+							end if
+							return
+						end if
+					end if
+					!print *, K, trim(atomslist(k)%label),' ', trim(endlabel%label),' ', trim(atomslist(k)%label)==trim(endlabel%label)
+					
+					if(collect) then
+						if(trim(atomslist(k)%label)==trim(endlabel%label)) then
+							!found the first atom
+							!write(log_unit, *) isor_table(i)%shelxline
+							!write(*, *) 'Found end: ', trim(endlabel%label)
+							if(startlabel%resi%is_set()) then
+								if(atomslist(k)%resi == startlabel%resi) then
+									exit
+								end if
+							else if (keyword%resi%is_set()) then
+								if(keyword%resi==atomslist(k)%resi) then
+									exit
+								end if
+							else
+								exit
+							end if
+						end if
+						
+						if(trim(sfac(atomslist(k)%sfac))/='H' .and. &
+						&   trim(sfac(atomslist(k)%sfac))/='D') then
+							! adding the atom to the list
+							expandlist=trim(expandlist)//' '//trim(atomslist(k)%label)
+						end if
+					end if
+				end do
+
+				bufferline=bufferline(1:cont-1)//' '//trim(expandlist)//' '//trim(bufferline(cont+1:))				
+			end if
+		end do
+	end do
         
-        ! then looking for label on the left
-        cont=max(index(stripline, '<'), index(stripline, '>'))
-        if(stripline(cont-1:cont-1)==' ') cont=cont-1        
-        j=7
-        startlabel=''
-        do k=cont-1, 1, -1
-            if(stripline(k:k)==' ' .or. stripline(k:k)=='<' .or. stripline(k:k)=='>') then
-                exit
-            end if
-            j=j-1
-            startlabel(j:j)=stripline(k:k)
-        end do  
-        startlabel=adjustl(startlabel)
-        ! check for residue
-        k=index(startlabel, '_')
-        if(k>0) then
-            read(startlabel(k+1:), *) startresidue
-            startlabel=startlabel(1:k-1)
-        end if
-
-        ! scanning atom list to find the implicit atoms
-        if(reverse) then
-            k=atomslist_index
-        else
-            k=1
-        end if
-        collect=.false.
-        do 
-            if(trim(atomslist(k)%label)==trim(startlabel)) then
-                !found the first atom
-                !write(log_unit, *) isor_table(i)%shelxline
-                !write(log_unit, *) 'Found start: ', trim(startlabel)
-                if(startresidue/=0) then
-                    if(startresidue==atomslist(k)%resi) then
-                        collect=.true.
-                    end if
-                else if (tagresidue/=0) then
-                    if(tagresidue==atomslist(k)%resi) then
-                        collect=.true.
-                    end if
-                else
-                    collect=.true.
-                end if
-            end if
-            if(reverse) then
-                k=k-1
-                if(k<1) then
-                    if(collect) then
-                        allocate(character(len=29+len_trim(endlabel)) :: errormsg)
-                        write(errormsg, *) 'Error: Cannot find end atom ', trim(endlabel)
-                    else
-                        allocate(character(len=31+len_trim(startlabel)) :: errormsg)
-                        write(errormsg, *) 'Error: Cannot find first atom ', trim(startlabel)
-                    end if
-                    return
-                end if
-            else
-                k=k+1
-                if(k>atomslist_index) then
-                    if(collect) then
-                        allocate(character(len=29+len_trim(endlabel)) :: errormsg)
-                        write(errormsg, *) 'Error: Cannot find end atom ', trim(endlabel)
-                    else
-                        allocate(character(len=31+len_trim(startlabel)) :: errormsg)
-                        write(errormsg, *) 'Error: Cannot find first atom ', trim(startlabel)
-                    end if
-                    return
-                end if
-            end if
-            if(collect) then
-                if(trim(atomslist(k)%label)==trim(endlabel)) then
-                    !write(log_unit, *) 'Found end: ', trim(endlabel)
-                    !write(log_unit, *) 'Done!!!!!'
-                    ! job done
-                    if(startresidue/=0) then
-                        if(startresidue==atomslist(k)%resi) then
-                            exit
-                        end if
-                    else if (tagresidue/=0) then
-                        if(tagresidue==atomslist(k)%resi) then
-                            exit
-                        end if
-                    else
-                        exit
-                    end if
-                end if
-                
-                if(trim(sfac(atomslist(k)%sfac))/='H' .and. &
-                &   trim(sfac(atomslist(k)%sfac))/='D') then
-                    ! adding the atom to the list
-                    bufferline=trim(bufferline)//' '//trim(atomslist(k)%label)
-                end if
-            end if
-        end do
-        ! concatenating the remaining
-        bufferline=trim(bufferline)//' '//&
-        &   trim(adjustl(stripline(max(index(stripline, '<'), index(stripline, '>'))+1:)))
-
-        !write(log_unit, *) trim(stripline)
-        !write(log_unit, *) trim(bufferline)
-        stripline=bufferline
-        cont=max(index(stripline, '<'), index(stripline, '>'))
-    end do
+    allocate(character(len=len_trim(bufferline)) :: lineout)
+    lineout=trim(bufferline)
         
-    allocate(character(len=len_trim(stripline)) :: lineout)
-    lineout=trim(stripline)
-        
-end subroutine
-
-!> Extract any residue information from an instruction or an atom
-subroutine get_residue(txtin, label, resi_num, resi_name)
-implicit none
-character(len=*), intent(in) :: txtin
-integer, intent(out) :: resi_num
-character(len=lenlabel), intent(out) :: label
-character(len=128), intent(out) :: resi_name
-integer ipos, iostatus
-
-    resi_num=0
-    resi_name=''
-
-    ipos=index(txtin, '_')
-    if(ipos==0) then
-        label=txtin
-        return
-    end if
-    
-    ! We have a residue
-    label=txtin(1:ipos-1)
-    
-    read(txtin(ipos+1:), *, iostat=iostatus) resi_num
-    if(iostatus/=0) then 
-        ! not a number
-        resi_num=0
-        resi_name=txtin(ipos+1:)
-    end if
-    
 end subroutine
 
 !> return the identity matrix
@@ -576,6 +533,189 @@ integer i
     do i=1, order
         matrix_eye(i,i)=1.0
     end do
+end function
+
+!> parse a shelx label, also constructor of read_atom_shelx
+function read_atom_shelx(atom_text) result(atom)
+implicit none
+character(len=*), intent(in) :: atom_text
+type(atom_shelx_t) :: atom
+integer i
+
+    i = index(atom_text, '_')
+    call atom%init()
+    atom%text = atom_text
+    if(i>0) then
+        atom%label=atom_text(1:i-1)
+        if(atom_text(i+1:i+1)=='$') then
+            ! symmetry operator
+            read(atom_text(i+2:), *) atom%symmetry
+        else if(atom_text(i+1:i+1)=='+') then
+            atom%after = .true.
+        else if(atom_text(i+1:i+1)=='-') then
+            atom%previous = .true.
+        else
+            ! a number?
+            if(ichar(atom_text(i+1:i+1))>47 .and. ichar(atom_text(i+1:i+1))<58) then
+              read(atom_text(i+1:), *) atom%resi%number
+            else if(len_trim(atom_text)>i+4) then
+              ! an alias
+              atom%resi%alias=atom_text(i+1:)
+            else
+              atom%resi%class=atom_text(i+1:)
+            end if
+        end if
+    else
+        atom%label=atom_text
+    end if
+end function
+
+!> Initialise resi_t type
+elemental subroutine init_resi(self)
+implicit none
+class(resi_t), intent(inout) :: self
+    self%number = 0
+    self%class = ''
+    self%alias = ''
+end subroutine
+
+!> initialise atom_shelx_t type
+elemental subroutine init_atom_shelx(self)
+implicit none
+class(atom_shelx_t), intent(inout) :: self
+    self%text = ''
+    self%label = '' 
+    call self%resi%init()
+    self%symmetry=0
+    self%previous = .false.
+    self%after = .false.
+    self%resi_all = .false.
+end subroutine
+
+!> Check if any residue is set
+function is_resi_set(resi) result(r)
+implicit none
+class(resi_t), intent(in) :: resi
+logical :: r
+
+    r = .false.
+    if(resi%number/=0) then
+        r = .true.
+    else if(resi%class /= '') then
+        r = .true.
+    else if(resi%alias /= '') then
+        r = .true.
+    end if
+end function
+
+!> compare 2 resi_t object type together
+function resi_compare(resi1, resi2) result(r)
+implicit none
+class(resi_t), intent(in) :: resi1, resi2
+logical :: r
+
+    r = .true.
+    if(resi1%number/=resi2%number) then
+        r = .false.
+    else if(resi1%class /= resi2%class) then
+        r = .false.
+    else if(resi1%alias /= resi2%alias) then
+        r = .false.
+    end if
+
+end function
+
+!> negation of resi_compare
+function nresi_compare(resi1, resi2) result(r)
+implicit none
+class(resi_t), intent(in) :: resi1, resi2
+logical :: r
+    r = .not. resi_compare(resi1, resi2)
+end function
+
+!> compare atom_t and atom_shelx_t together
+function atom_compare_to_shelx(atom1, atom2) result(r)
+implicit none
+class(atom_t), intent(in) :: atom1
+class(atom_shelx_t), intent(in) :: atom2
+logical :: r
+
+    r = .true.
+    if(atom1%label/=atom2%label) then
+		r = .false.
+	else
+		if(atom1%resi%is_set() .and. atom2%resi%is_set()) then
+		    r = atom1%resi == atom2%resi
+		end if
+	end if
+
+end function
+
+!> compare atom_t and atom_shelx_t together
+function shelx_compare_to_atom(atom2, atom1) result(r)
+implicit none
+class(atom_t), intent(in) :: atom1
+class(atom_shelx_t), intent(in) :: atom2
+logical :: r
+
+    r = atom_compare_to_shelx(atom1, atom2) 
+end function
+
+function find_in_atom_list(atom) result(idatom)
+implicit none
+type(atom_shelx_t), intent(in) :: atom
+integer idatom
+integer i
+
+    if(atom%resi_all) then
+        print *, 'Cannot find an atom with all residues specifies'
+        call abort()
+    end if
+    if(atom%previous .or. atom%after) then
+        print *, 'Not implemented'
+        call abort()
+    end if
+
+    do i=1, size(atomslist)
+        if(atom%resi%is_set()) then
+            if(atom == atomslist(i)) then
+                idatom = i
+                return 
+            end if
+        else
+           if(atom%label == atomslist(i)%label) then
+               idatom = i
+               return
+            end if
+        endif
+    end do
+    
+    idatom = 0
+
+end function
+
+function resilist_from_class(classname) result(resilist)
+implicit none
+character(len=4), intent(in) :: classname
+integer i, cpt
+integer, dimension(:), allocatable :: resilist
+
+    cpt=0
+    do i=1, resi_list_index
+        if(resi_list(i)%class==classname) then
+            cpt=cpt+1
+        end if
+    end do
+    
+    cpt=0
+    allocate(resilist(cpt))
+    do i=1, resi_list_index
+        if(resi_list(i)%class==classname) then
+            resilist(cpt)=resi_list(i)%number
+        end if
+    end do
+    
+
 end function
 
 end module
