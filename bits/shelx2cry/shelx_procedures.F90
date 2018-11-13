@@ -86,7 +86,7 @@ character(len=lenlabel), dimension(:), allocatable :: splitbuffer
 integer i, hklfcode
 real s
 real, dimension(9) :: transform
-logical transforml, file_exists
+logical transforml
 
     s=1.0
     transform=0.0
@@ -210,14 +210,10 @@ subroutine shelx_dfix(shelxline)
 use crystal_data_m
 implicit none
 type(line_t), intent(in) :: shelxline
-integer i, j, linepos, start, iostatus
-character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7','8','9','.','-','+'/)
-logical found
-character(len=128) :: buffernum
+integer i, linepos, start, iostatus
 type(resi_t) :: dfix_residue
 type(atom_shelx_t) :: keyword
 real distance, esd
-integer :: dfixresidue
 character(len=lenlabel), dimension(:), allocatable :: splitbuffer
 character(len=:), allocatable :: stripline
 character(len=512) :: errormsg
@@ -317,9 +313,6 @@ use crystal_data_m
 implicit none
 type(line_t), intent(in) :: shelxline
 integer i, j, linepos, start, iostatus
-character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7','8','9','.','-','+'/)
-logical found
-character(len=128) :: buffernum
 real esd
 character(len=lenlabel), dimension(:), allocatable :: splitbuffer
 character(len=:), allocatable :: stripline
@@ -458,7 +451,7 @@ end subroutine
 
 !> Parse the SFAC keyword. Extract the atoms type use in the file.
 subroutine shelx_sfac(shelxline)
-use crystal_data_m, only: sfac, sfac_index, line_t, to_upper, sfac_long, log_unit, summary
+use crystal_data_m, only: sfac, sfac_index, line_t, to_upper, sfac_long, summary
 implicit none
 type(line_t), intent(in) :: shelxline
 integer i, j, code, iostatus
@@ -507,7 +500,7 @@ end subroutine
 !> Parse the DISP keyword. Extract the atoms type use in the file.
 subroutine shelx_disp(shelxline)
 use crystal_data_m, only: disp_table, line_t, to_upper, deduplicates, explode, summary
-use crystal_data_m, only: sfac_index, sfac, log_unit
+use crystal_data_m, only: sfac_index, sfac
 implicit none
 type(line_t), intent(in) :: shelxline
 integer i, j
@@ -714,7 +707,7 @@ character(len=lenlabel), dimension(:), allocatable :: splitbuffer
                 write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
                 return
             else
-                resi_class = resi_alias
+                resi_class = resi_alias(1:4)
                 resi_alias = ''
             end if
             
@@ -736,23 +729,23 @@ character(len=lenlabel), dimension(:), allocatable :: splitbuffer
        if( resi_list(i)%class == resi_class .and. &
        & resi_list(i)%number == resi_number .and. &
        & resi_list(i)%alias == resi_alias) then
-		    write(*,*) 'Error: RESI already used at line ', resi_list(i)%shelx_line_number
-	        write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
-		    current_resi_index = i
-		    return
-	    end if
-	end do
+        write(*,*) 'Error: RESI already used at line ', resi_list(i)%shelx_line_number
+          write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        current_resi_index = i
+        return
+      end if
+  end do
 
     if(resi_class/='' .or. resi_number/=0 .or. resi_alias/='') then
-		resi_list_index = resi_list_index + 1
-		resi_list(resi_list_index)%class = resi_class
-		resi_list(resi_list_index)%number = resi_number
-		resi_list(resi_list_index)%alias = resi_alias
-		resi_list(resi_list_index)%shelx_line_number = shelxline%line_number
-		current_resi_index = resi_list_index
-	else
-		current_resi_index = 0
-	end if
+    resi_list_index = resi_list_index + 1
+    resi_list(resi_list_index)%class = resi_class
+    resi_list(resi_list_index)%number = resi_number
+    resi_list(resi_list_index)%alias = resi_alias
+    resi_list(resi_list_index)%shelx_line_number = shelxline%line_number
+    current_resi_index = resi_list_index
+  else
+    current_resi_index = 0
+  end if
 end subroutine
 
 !> Parse PART keyword. Change the current part to the new value found.<br />
@@ -817,14 +810,10 @@ subroutine shelx_eadp(shelxline)
 use crystal_data_m
 implicit none
 type(line_t), intent(in) :: shelxline
-integer i, j, linepos, start, iostatus
-character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7','8','9','.','-','+'/)
-logical found
-character(len=128) :: buffernum
+integer start, iostatus
 integer :: numatom
 character(len=lenlabel), dimension(:), allocatable :: splitbuffer
 character(len=:), allocatable :: stripline
-type(resi_t) :: eadp_residue
 type(atom_shelx_t) :: keyword
 
     write(log_unit,*) 'Warning: EADP implemented as a restraint'
@@ -879,10 +868,7 @@ subroutine shelx_rigu(shelxline)
 use crystal_data_m
 implicit none
 type(line_t), intent(in) :: shelxline
-integer i, j, linepos, start, iostatus
-character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7','8','9','.','-','+'/)
-logical found
-character(len=128) :: buffernum
+integer i, linepos, start, iostatus
 character(len=lenlabel), dimension(:), allocatable :: splitbuffer
 character(len=:), allocatable :: stripline
 real s1, s2
@@ -1091,7 +1077,6 @@ subroutine shelx_wght(shelxline)
 use crystal_data_m
 implicit none
 type(line_t), intent(in) :: shelxline
-character(len=512) :: buffer
 character(len=:), allocatable :: stripline
 character(len=lenlabel), dimension(:), allocatable :: splitbuffer
 integer iostatus

@@ -63,7 +63,7 @@ integer i, checksum
                 deallocate(cif_content)
             end if
             cif_content_index=cif_content_index+1
-            cif_content_temp(cif_content_index)%data_id=adjustl(buffer)
+            cif_content_temp(cif_content_index)%data_id=trim(adjustl(buffer))
             cif_content_temp(cif_content_index)%data_id=cif_content_temp(cif_content_index)%data_id(6:)
         else if(index(buffer, '_audit_creation_method')>0) then
             cif_content_temp(cif_content_index)%audit_creation_method=adjustl(buffer(index(buffer, '_audit_creation_method')+22:))
@@ -347,10 +347,9 @@ type(cif_t), dimension(:), intent(in) :: cif_content !< Cif file content obtaine
 character(len=*), intent(in) :: shelx_filepath
 character(len=char_len) :: res_filepath, fab_filepath, hkl_filepath
 integer resid, cifid, iostatus
-character(len=2048) :: buffer, tempc
+character(len=2048) :: buffer
 character(len=char_len) :: data_id
-integer res_signature, i
-logical test
+integer res_signature
 integer cif_content_index
 
     cifid=815
@@ -362,7 +361,7 @@ integer cif_content_index
             exit
         end if
         if(index(adjustl(buffer), 'data_')==1) then
-            data_id=adjustl(buffer)
+            data_id=trim(adjustl(buffer))
             data_id=data_id(6:)
             cif_content_index=cif_content_index+1
         end if

@@ -400,7 +400,7 @@ character(len=:), allocatable, intent(out) :: errormsg
 character(len=2048) :: bufferline, expandlist
 logical reverse, collect
 type(atom_shelx_t) :: startlabel, endlabel, keyword
-integer cont, i, k, j
+integer cont, i, k
 character(len=lenlabel), dimension(:), allocatable :: splitbuffer
 
     bufferline=linein
@@ -409,113 +409,113 @@ character(len=lenlabel), dimension(:), allocatable :: splitbuffer
     do
         expandlist=''
         
-		! looking for <,> shortcut
-		cont=max(index(bufferline, '<'), index(bufferline, '>'))
-		if(cont==0) then
-			exit
-		end if
-		
-		if(cont>0) then
-			! ensure spaces around operator
-			bufferline=bufferline(1:cont-1)//' '//bufferline(cont:cont)//' '//trim(bufferline(cont+1:))
-		end if
-			
-		! extracting list of atoms, first removing duplicates spaces and keyword
-		call deduplicates(bufferline)
-		call explode(bufferline, lenlabel, splitbuffer)    
+    ! looking for <,> shortcut
+    cont=max(index(bufferline, '<'), index(bufferline, '>'))
+    if(cont==0) then
+      exit
+    end if
+    
+    if(cont>0) then
+      ! ensure spaces around operator
+      bufferline=bufferline(1:cont-1)//' '//bufferline(cont:cont)//' '//trim(bufferline(cont+1:))
+    end if
+      
+    ! extracting list of atoms, first removing duplicates spaces and keyword
+    call deduplicates(bufferline)
+    call explode(bufferline, lenlabel, splitbuffer)    
 
-		keyword = atom_shelx_t(splitbuffer(1))
-		do i=2, size(splitbuffer)
-			if(trim(splitbuffer(i))=='<' .or. trim(splitbuffer(i))=='>') then
-				startlabel = atom_shelx_t(splitbuffer(i-1))
-				endlabel = atom_shelx_t(splitbuffer(i+1))
-				if(trim(splitbuffer(i))=='>') then
-				  reverse=.false.
-				else
-				  reverse=.true.
-				end if
+    keyword = atom_shelx_t(splitbuffer(1))
+    do i=2, size(splitbuffer)
+      if(trim(splitbuffer(i))=='<' .or. trim(splitbuffer(i))=='>') then
+        startlabel = atom_shelx_t(splitbuffer(i-1))
+        endlabel = atom_shelx_t(splitbuffer(i+1))
+        if(trim(splitbuffer(i))=='>') then
+          reverse=.false.
+        else
+          reverse=.true.
+        end if
 
-				! scanning atom list to find the implicit atoms
-				if(reverse) then
-					k=atomslist_index
-				else
-					k=1
-				end if
-				collect=.false.
-				do 
-					if(trim(atomslist(k)%label)==trim(startlabel%label)) then
-						!found the first atom
-						!write(log_unit, *) isor_table(i)%shelxline
-						!write(*, *) 'Found start: ', trim(startlabel%label)
-						if(startlabel%resi%is_set()) then
-							if(atomslist(k)%resi == startlabel%resi) then
-								collect=.true.
-							end if
-						else if (keyword%resi%is_set()) then
-							if(keyword%resi ==atomslist(k)%resi) then
-								collect=.true.
-							end if
-						else
-							collect = .true.
-						end if
-					end if
-					if(reverse) then
-						k=k-1
-						if(k<1) then
-							if(collect) then
-								allocate(character(len=29+len_trim(endlabel%text)) :: errormsg)
-								write(errormsg, *) 'Error: Cannot find end atom ', trim(endlabel%text)
-							else
-								allocate(character(len=31+len_trim(startlabel%text)) :: errormsg)
-								write(errormsg, *) 'Error: Cannot find first atom ', trim(startlabel%text)
-							end if
-							return
-						end if
-					else
-						k=k+1
-						if(k>atomslist_index) then
-							if(collect) then
-								allocate(character(len=29+len_trim(endlabel%text)) :: errormsg)
-								write(errormsg, *) 'Error: Cannot find end atom ', trim(endlabel%text)
-							else
-								allocate(character(len=31+len_trim(startlabel%text)) :: errormsg)
-								write(errormsg, *) 'Error: Cannot find first atom ', trim(startlabel%text)
-							end if
-							return
-						end if
-					end if
-					!print *, K, trim(atomslist(k)%label),' ', trim(endlabel%label),' ', trim(atomslist(k)%label)==trim(endlabel%label)
-					
-					if(collect) then
-						if(trim(atomslist(k)%label)==trim(endlabel%label)) then
-							!found the first atom
-							!write(log_unit, *) isor_table(i)%shelxline
-							!write(*, *) 'Found end: ', trim(endlabel%label)
-							if(startlabel%resi%is_set()) then
-								if(atomslist(k)%resi == startlabel%resi) then
-									exit
-								end if
-							else if (keyword%resi%is_set()) then
-								if(keyword%resi==atomslist(k)%resi) then
-									exit
-								end if
-							else
-								exit
-							end if
-						end if
-						
-						if(trim(sfac(atomslist(k)%sfac))/='H' .and. &
-						&   trim(sfac(atomslist(k)%sfac))/='D') then
-							! adding the atom to the list
-							expandlist=trim(expandlist)//' '//trim(atomslist(k)%label)
-						end if
-					end if
-				end do
+        ! scanning atom list to find the implicit atoms
+        if(reverse) then
+          k=atomslist_index
+        else
+          k=1
+        end if
+        collect=.false.
+        do 
+          if(trim(atomslist(k)%label)==trim(startlabel%label)) then
+            !found the first atom
+            !write(log_unit, *) isor_table(i)%shelxline
+            !write(*, *) 'Found start: ', trim(startlabel%label)
+            if(startlabel%resi%is_set()) then
+              if(atomslist(k)%resi == startlabel%resi) then
+                collect=.true.
+              end if
+            else if (keyword%resi%is_set()) then
+              if(keyword%resi ==atomslist(k)%resi) then
+                collect=.true.
+              end if
+            else
+              collect = .true.
+            end if
+          end if
+          if(reverse) then
+            k=k-1
+            if(k<1) then
+              if(collect) then
+                allocate(character(len=29+len_trim(endlabel%text)) :: errormsg)
+                write(errormsg, *) 'Error: Cannot find end atom ', trim(endlabel%text)
+              else
+                allocate(character(len=31+len_trim(startlabel%text)) :: errormsg)
+                write(errormsg, *) 'Error: Cannot find first atom ', trim(startlabel%text)
+              end if
+              return
+            end if
+          else
+            k=k+1
+            if(k>atomslist_index) then
+              if(collect) then
+                allocate(character(len=29+len_trim(endlabel%text)) :: errormsg)
+                write(errormsg, *) 'Error: Cannot find end atom ', trim(endlabel%text)
+              else
+                allocate(character(len=31+len_trim(startlabel%text)) :: errormsg)
+                write(errormsg, *) 'Error: Cannot find first atom ', trim(startlabel%text)
+              end if
+              return
+            end if
+          end if
+          !print *, K, trim(atomslist(k)%label),' ', trim(endlabel%label),' ', trim(atomslist(k)%label)==trim(endlabel%label)
+          
+          if(collect) then
+            if(trim(atomslist(k)%label)==trim(endlabel%label)) then
+              !found the first atom
+              !write(log_unit, *) isor_table(i)%shelxline
+              !write(*, *) 'Found end: ', trim(endlabel%label)
+              if(startlabel%resi%is_set()) then
+                if(atomslist(k)%resi == startlabel%resi) then
+                  exit
+                end if
+              else if (keyword%resi%is_set()) then
+                if(keyword%resi==atomslist(k)%resi) then
+                  exit
+                end if
+              else
+                exit
+              end if
+            end if
+            
+            if(trim(sfac(atomslist(k)%sfac))/='H' .and. &
+            &   trim(sfac(atomslist(k)%sfac))/='D') then
+              ! adding the atom to the list
+              expandlist=trim(expandlist)//' '//trim(atomslist(k)%label)
+            end if
+          end if
+        end do
 
-				bufferline=bufferline(1:cont-1)//' '//trim(expandlist)//' '//trim(bufferline(cont+1:))				
-			end if
-		end do
-	end do
+        bufferline=bufferline(1:cont-1)//' '//trim(expandlist)//' '//trim(bufferline(cont+1:))        
+      end if
+    end do
+  end do
         
     allocate(character(len=len_trim(bufferline)) :: lineout)
     lineout=trim(bufferline)
@@ -642,12 +642,12 @@ logical :: r
 
     r = .true.
     if(atom1%label/=atom2%label) then
-		r = .false.
-	else
-		if(atom1%resi%is_set() .and. atom2%resi%is_set()) then
-		    r = atom1%resi == atom2%resi
-		end if
-	end if
+    r = .false.
+  else
+    if(atom1%resi%is_set() .and. atom2%resi%is_set()) then
+        r = atom1%resi == atom2%resi
+    end if
+  end if
 
 end function
 

@@ -155,10 +155,9 @@ procedure(shelx_dummy), pointer :: proc
 end subroutine
 
 !> Write the crystals file
-subroutine write_crystalfile(crystals_filepath)
+subroutine write_crystalfile()
 use crystal_data_m
 implicit none
-character(len=*), intent(in) :: crystals_filepath
 
     print *, 'Reading of res file done'
 
@@ -221,7 +220,7 @@ end subroutine
 subroutine get_shelx2crystals_serial()
 use crystal_data_m
 implicit none
-integer i, j, k, start, maxresidue, maxresiduelen, iostatus
+integer i, j, k, start, maxresidue, maxresiduelen
 character(len=128) :: label, residueformat, residuetext, serialtext
 character(len=128) :: buffer, line
 logical found
@@ -238,17 +237,17 @@ end type
     
     ! first generating an integer numeration of residues    
     maxresidue=0
-  	do i=1, resi_list_index
+    do i=1, resi_list_index
         maxresidue = max(maxresidue, resi_list(i)%number)
-    end do	
-  	do i=1, resi_list_index
-	      if(resi_list(i)%number>0) then
-	          resi_list(i)%crystals_residue = resi_list(i)%number
-	      else
-	          maxresidue = maxresidue + 1
-	          resi_list(i)%crystals_residue = maxresidue
-	      end if
-	  end do
+    end do  
+    do i=1, resi_list_index
+        if(resi_list(i)%number>0) then
+            resi_list(i)%crystals_residue = resi_list(i)%number
+        else
+            maxresidue = maxresidue + 1
+            resi_list(i)%crystals_residue = maxresidue
+        end if
+    end do
     
     ! finding format to print residue
     maxresiduelen=0
@@ -1641,18 +1640,13 @@ implicit none
 integer, dimension(:), allocatable :: serials
 type(atom_shelx_t) :: atom_shelx
 character(len=1024) :: buffer1, buffertemp
-logical found
 integer i, j, k, l
-integer :: serial1, resi1
-character(len=lenlabel) :: label
+integer :: serial1
 integer, dimension(:), allocatable :: residuelist
 character(len=:), allocatable :: stripline, errormsg
-character(len=2048) :: bufferline
 real esd
 character(len=lenlabel), dimension(:), allocatable :: splitbuffer
 integer start, iostatus
-type(resi_t) :: flat_residue
-type(atom_shelx_t) :: keyword
 character(len=:), dimension(:), allocatable :: broadcast
 
     call makeresiduelist(residuelist)
@@ -1790,10 +1784,9 @@ end subroutine
 subroutine write_list16_dfix()
 use crystal_data_m
 implicit none
-integer i, j, k, l, indexresi, resi1, resi2
+integer i, j, k
 integer :: serial1, serial2, start
 type(atom_shelx_t) :: atom1, atom2
-character(len=lenlabel) :: label
 integer, dimension(:), allocatable :: residuelist
 character(len=:), allocatable :: errormsg
 character(len=lenlabel), dimension(:), allocatable :: splitbuffer
@@ -1877,13 +1870,9 @@ subroutine write_list16_sadi()
 use crystal_data_m
 implicit none
 integer, dimension(:), allocatable :: serials
-type(atom_shelx_t) :: atom, keyword
-integer i, j, k, l, m, indexresi, resi1, start
-integer :: serial1, iostatus
-integer :: sym_index 
-character(len=lenlabel) :: label
+type(atom_shelx_t) :: atom
+integer i, j, k, l, start
 character :: linecont
-integer, dimension(:), allocatable :: residuelist
 character(len=256), dimension(2) :: buffer
 character(len=lenlabel), dimension(:), allocatable :: splitbuffer
 character(len=:), dimension(:), allocatable :: broadcast
@@ -1906,7 +1895,7 @@ character(len=:), allocatable :: stripline, errormsg
         &   'DISTANCE 0.0, ', sadi_table(i)%esd, ' = MEAN ' 
         write(log_unit, '(a, 1X, F0.5, a)') &
         &   'DISTANCE 0.0, ', sadi_table(i)%esd, ' = MEAN ' 
-        linecont = ', '
+        linecont = ','
                 
         call explicit_atoms(sadi_table(i)%shelxline, stripline, errormsg)
         if(allocated(errormsg)) then
@@ -2024,21 +2013,14 @@ end subroutine
 subroutine write_list16_isor()
 use crystal_data_m
 implicit none
-integer, dimension(:), allocatable :: serials
 character(len=1024) :: buffer, buffertemp
-logical found
-integer i, j, k, l
+integer i, j, k
 integer :: serial
-character(len=lenlabel) :: label
 integer, dimension(:), allocatable :: residuelist
 character(len=:), allocatable :: stripline, errormsg
-character(len=2048) :: bufferline
 real esd1, esd2
-character(len=128) :: buffernum
-character(len=128) :: namedresidue
 character(len=lenlabel), dimension(:), allocatable :: splitbuffer
-integer linepos, start, iostatus, isorresidue
-character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7','8','9','.','-','+'/)
+integer start, iostatus
 type(atom_shelx_t) :: atom
 character(len=:), dimension(:), allocatable :: broadcast
 
@@ -2152,7 +2134,6 @@ character(len=128) :: namedresidue
 character(len=lenlabel), dimension(:), allocatable :: splitbuffer
 integer linepos, start, iostatus, sameresidue
 character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7','8','9','.','-','+'/)
-type(resi_t) :: same_residue
 
     call makeresiduelist(residuelist)
     
@@ -2893,7 +2874,6 @@ subroutine write_list28()
 use crystal_data_m
 implicit none
 integer i
-real tmp
 real limith, limitl
 
     limith=-1.0
@@ -3050,6 +3030,7 @@ integer, dimension(:), allocatable :: classlist
                 end if
             end do
         else
+            allocate(character(len=2*len(text)) :: broadcast(0))
             print *, 'Hummm broadcast failing'
             call abort()
         end if  
