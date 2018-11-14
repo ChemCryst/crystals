@@ -76,7 +76,8 @@ C
       use lists2_mod, only: xldlst
       
       CHARACTER*80 CFORM(3) , CIFORM
-      CHARACTER*12 CEVARI , CTVARI
+      CHARACTER*132 CGENSB
+      CHARACTER*33 CEVARI , CTVARI, CUVARI
 C
       INCLUDE 'ISTORE.INC'
 C
@@ -90,6 +91,8 @@ C
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XSIZES.INC'
+      INCLUDE 'TRDDAT.INC'
+      INCLUDE 'XRDDAT.INC'
       INCLUDE 'UFILE.INC'
 C
       INCLUDE 'QSTORE.INC'
@@ -99,11 +102,6 @@ C
       DATA ICOMSZ / 5 /
       DATA LLSTCM / 512 /
       DIMENSION ID(2)
-      
-      character, dimension(18), parameter :: numbers=
-     1     (/'0','1','2','3','4','5','6','7','8','9',
-     2       '+','-','.',' ','e','E','d','D'/)
-      logical found, isanumber
       
 C
 C
@@ -134,13 +132,9 @@ C
       MDATA = 0
       NMAX = 0
 C
-C Turn logging off, temporarily, as logged GENERALEDITS are worse
-C than useless.
-
+c
       INLOG = IRDLOG(IFLIND)
-      IRDLOG(IFLIND) = 0
-cdjw-2017 Suppress this info line - we all know about GENERALEDIT now.
-c      IF(INLOG.NE.0)WRITE(NCLU,'(A)')'# GENERALEDIT can not be logged'
+      IRDLOG(IFLIND) = -1   !Only log comments and system commands
 C
 C
 C -- ENSURE THAT THE ALL THE DIRECTIVES APPEAR TO HAVE BEEN READ ONCE
@@ -208,6 +202,7 @@ C
 2100  CONTINUE
 C -- 'LOCATE' DIRECTIVE
 C
+      IF(INLOG.NE.0) CALL GENLOG
       IRTYPE = ISTORE(ICOMBL)
 C
       ISTAT = KHUNTR ( ILTYPE , IRTYPE , IADDL , IADDR , IADDD , -1 )
@@ -248,6 +243,7 @@ C -- 'KEY' DIRECTIVE
         IKYLEN = ISTORE(ICOMBL+1)
         IKYTYP = ISTORE(ICOMBL+2)
       ENDIF
+      IF(INLOG.NE.0) CALL GENLOG
       GO TO 8000
 C
 2300  CONTINUE
@@ -327,12 +323,14 @@ C
 C -- 'FORMAT' DIRECTIVE
       IFORM = ISTORE(ICOMBL)
       CFORM(IFORM) = CIFORM
+      IF(INLOG.NE.0) CALL GENLOG
       GO TO 8000
 C
 2420  CONTINUE
 C----- 'TOP' DIRECTIVE
       IF ( NGRP .LE. 0 ) GO TO 8960
       IRCADR = LDATA
+      IF(INLOG.NE.0) CALL GENLOG
       GOTO 8000
 C
 2440  CONTINUE
@@ -340,6 +338,7 @@ C----- 'NEXT' DIRECTIVE
       IF ( NGRP .LE. 0 ) GO TO 8960
       IRCADR = IRCADR + LENGRP
       IF ( IRCADR .GE. LDATA + (LENGRP * NGRP) ) GOTO 8970
+      IF(INLOG.NE.0) CALL GENLOG
       GOTO 8000
 C
 2460  CONTINUE
@@ -347,12 +346,14 @@ C----- 'PREVIOUS' DIRECTIVE
       IF ( NGRP .LE. 0 ) GO TO 8960
       IRCADR = IRCADR - LENGRP
       IF ( IRCADR .LT. LDATA ) GOTO 8970
+      IF(INLOG.NE.0) CALL GENLOG
       GOTO 8000
 C
 2480  CONTINUE
 C----- 'BOTTOM' DIRECTIVE
       IF ( NGRP .LE. 0 ) GO TO 8960
       IRCADR = LDATA + (LENGRP * (NGRP-1)  )
+      IF(INLOG.NE.0) CALL GENLOG
       GOTO 8000
 C
 C
@@ -367,6 +368,7 @@ C
       IF ( ISTAT .LE. 0 ) GO TO 8940
 C
       IRCADR = LDATA + ( ISTAT - 1 ) * LENGRP
+      IF(INLOG.NE.0) CALL GENLOG
       GO TO 8000
 C
 2600  CONTINUE
@@ -374,6 +376,7 @@ C -- 'GROUP' DIRECTIVE
       IGROFF = ISTORE(ICOMBL)
       IGRLEN = ISTORE(ICOMBL+1)
       IGRTYP = ISTORE(ICOMBL+2)
+      IF(INLOG.NE.0) CALL GENLOG
       GO TO 8000
 C
 2700  CONTINUE
@@ -391,6 +394,7 @@ C
       ELSE IF ( ILVSEL .EQ. 3 ) THEN
         IERROR = IERERR
       ENDIF
+      IF(INLOG.NE.0) CALL GENLOG
 C
       GO TO 8000
 C
@@ -420,6 +424,7 @@ C
       IRCADR = MDATA
 C
       ISTORE(ICMADR) = NGRP
+      IF(INLOG.NE.0) CALL GENLOG
 C
       GO TO 8000
 C
@@ -437,12 +442,15 @@ C
       NGRP = NGRP - 1
 C
       ISTORE(ICMADR) = NGRP
+      IF(INLOG.NE.0) CALL GENLOG
 C
       GO TO 8000
 C
 3000  CONTINUE
 C -- 'WRITE' DIRECTIVE
-      IF(INLOG.NE.0)WRITE(NCLU,'(A)')'# An update (WRITE) occured'
+c      IF(INLOG.NE.0)WRITE(NCLU,'(A)')'# An update (WRITE) occured'
+       IF(INLOG.NE.0) CALL GENLOG
+
       IOWF = ISTORE(ICOMBL)
       INEW = ISTORE(ICOMBL+1)
 C      IOWF = 0
@@ -460,40 +468,72 @@ C -- 'TRANSFER' DIRECTIVE
 C
       IF ( IRCADR .LE. 0 ) GO TO 8930
 C
-      ! Checking if the transfer is a variable name or a constant
-      isanumber=.true.
-      do j=1, len_trim(ctvari)
-          found=.false.
-          do i=1, size(numbers)
-              if(ctvari(j:j)==numbers(i)) then  
-                  found=.true.
-                  exit
-              end if
-          end do
-          if(.not. found) then
-              isanumber=.false.
-              exit
-          end if
-      end do
-      ! Further check if a number: e or d can't be the first character
-      if(isanumber) then
-          do i=11, size(numbers)
-              if(index(ctvari, numbers(i))==1) then
-                  isanumber=.false.
-                  exit
-              end if
-          end do
-      end if
+      numbertype = isanumber(ctvari)
+
+c      write(nclu,*) '# ntype: ',numbertype
       
-      if(isanumber .and. idirec==2) then
-          ! A constant, read in the value directly
+      if(numbertype .eq. 2 .and. idirec==2) then   ! Real value to DSC file
+          ! A real constant, read in the value directly
           read(ctvari, *, iostat=ISTAT) STORE(IRCADR+IOFF)
           if(istat/=0) then
             istat=-1
           end if
-      else
+          IF(INLOG.NE.0) CALL GENLOG
+c          write(nclu,*) '# real ',ctvari, store(ircadr+ioff) 
+      else if(numbertype .eq. 1 .and. idirec==2) then  !Integer to DSC file
+          ! A constant, read in the value directly
+          read(ctvari, *, iostat=ISTAT) ISTORE(IRCADR+IOFF)
+          if(istat/=0) then
+            istat=-1
+          end if
+          IF(INLOG.NE.0) CALL GENLOG
+c          write(`,*) '# int ',ctvari, istore(ircadr+ioff) 
+      else if ( idirec == 2 .and. ctvari(1:1).eq.'"' )  then !String to DSC file
+          ilgth = min ( ilgth, (len(ctvari)-1)/4 )   ! don't go out of bounds (currently 33 chars in CTVARI)
+          do j = 0, ilgth-1
+              read(ctvari((j*4)+2:(j*4)+5),'(A4)')istore(ircadr+ioff+j)
+          end do
+          IF(INLOG.NE.0) CALL GENLOG
+      else if ( idirec==2 ) then             ! Script to DSC file
+          IF ( IRDSCR(IFLIND) .GE. 1 ) THEN   ! Scripts running
+              ISTAT = KSCTRN(IDIREC,CTVARI,ISTORE(IRCADR+IOFF),ILGTH)
+              call xccupc ( ctvari, cuvari )
+C -- FIND IDENTIFIER
+              ISTAT = KSCIDN (2, 3, CUVARI, 1, ITYPE, IDENT, ICVAL, -1)  ! 2=find id by name, 3=search all levels, 
+              IF ( ISTAT .GE. 1 ) THEN   ! Variable found
+                  I = INDEX(CRDUPC,cuvari)
+                  IF ( I .gt. 0 ) THEN
+                     CGENSB = crdlwc(1:I-1)
+                     IF ( ITYPE .EQ. 1 ) THEN
+                         WRITE(CGENSB(I:), *) ISTORE(IRCADR+IOFF)
+                     ELSE IF ( ITYPE .EQ. 2 ) THEN
+                         WRITE(CGENSB(I:), *) STORE(IRCADR+IOFF)
+                     ELSE IF ( ITYPE .EQ. 4 ) THEN
+                         WRITE(CGENSB(I:), '(A1,99A4)') '"',      !Leading quote indicates string
+     1                         (ISTORE(IRCADR+IOFF+J-1),J=1,ILGTH)
+                     ELSE
+                         WRITE(CGENSB(I:), *) '# Itype: ', ITYPE, 
+     1                    ' var: ', CUVARI
+                     ENDIF   
+                     CGENSB = TRIM(CGENSB) // ' ' // 
+     1                 TRIM( CRDLWC(I+LEN(CTVARI):) )
+c                      write(nclu,*) '# crdlwc: ', crdlwc  
+c                      write(nclu,*) '# cgensb: ', cgensb  
+                  ELSE
+                     CGENSB = '# Not found: '//TRIM(CUVARI)//
+     1                 ' input: '//trim(crdupc)
+                  END IF
+              ELSE
+                  write(nclu,*) '# Var not found: ', ctvari 
+              END IF
+          ELSE
+              write(nclu,*) '# Scripts not running cannot access: ', ctvari 
+          END IF
+          IF(INLOG.NE.0) CALL GENMOD( CGENSB )
+      else   ! DSC file to script
           ! A variable from script, fetching the value
           ISTAT = KSCTRN ( IDIREC , CTVARI , ISTORE(IRCADR+IOFF), ILGTH)
+c          write(nclu,*) '# transfering : ', ctvari 
       end if
 C
       GO TO 8000
@@ -510,25 +550,43 @@ C
 
       
       ! Checking if the transfer is a variable name or a constant
-      isanumber=.true.
-      do j=1, len_trim(ctvari)
-          found=.false.
-          do i=1, size(numbers)
-              if(ctvari(j:j)==numbers(i)) then  
-                  found=.true.
-                  exit
-              end if
-          end do
-          if(.not. found) then
-              isanumber=.false.
-              exit
-          end if
-      end do
+      numbertype = isanumber(ctvari)
       
-      if(isanumber .and. idirec==2) then
-          ! A constant, read in the value directly
+      if(numbertype .eq. 1 .and. idirec==2) then
+          ! A constant integer, read in the value directly
           read(ctvari, *) ISTORE(ILSTCM+IOFF)
+          IF(INLOG.NE.0) CALL GENLOG
+      else if(numbertype .eq. 2 .and. idirec==2) then
+          ! A constant real, read in the value directly
+          read(ctvari, *) STORE(ILSTCM+IOFF)
+          IF(INLOG.NE.0) CALL GENLOG
 c          print *,' Read const: ', STORE(ILSTcM+ioff), ILSTCM, IOFF
+      else if ( idirec==2 ) then
+          CGENSB = '# Not found: '//TRIM(CUVARI)//
+     1                 ' input: '//trim(crdupc)
+          IF ( IRDSCR(IFLIND) .GE. 1 ) THEN   ! Scripts running
+              ISTAT = KSCTRN ( IDIREC , CTVARI , ISTORE(ILSTCM+IOFF), 1)
+c Substitute in value on command line for logging.              
+              call xccupc ( ctvari, cuvari )
+C -- FIND IDENTIFIER
+              ISTAT = KSCIDN (2,3,CUVARI,1,ITYPE,IDENT,ICVAL,-1)  ! 2=find id by name, 3=search all levels, 
+              IF ( ISTAT .GE. 1 ) THEN   ! Variable found
+                  I = INDEX(CRDUPC,cuvari)
+                  IF ( I .gt. 0 ) THEN
+                     CGENSB = crdlwc(1:I-1)
+                     IF ( ITYPE .EQ. 1 ) THEN
+                         WRITE(CGENSB(I:), *) ISTORE(IRCADR+IOFF)
+                     ELSE IF ( ITYPE .EQ. 2 ) THEN
+                         WRITE(CGENSB(I:), *) STORE(IRCADR+IOFF)
+                     ELSE
+                         WRITE(CGENSB(I:), *) CUVARI
+                     ENDIF   
+                     CGENSB = TRIM(CGENSB) // ' ' // 
+     1                 TRIM( CRDLWC(I+LEN(CTVARI):) )
+                  END IF
+              END IF
+          END IF
+          IF(INLOG.NE.0) CALL GENMOD( CGENSB )      
       else
           ! A variable from script, fetching the value
           ISTAT = KSCTRN ( IDIREC , CTVARI , ISTORE(ILSTCM+IOFF), 1)
@@ -555,6 +613,7 @@ C -- 'SORT' DIRECTIVE
       IOFF = ISTORE(ICOMBL)
       IMODE = ISTORE(ICOMBL+1) 
       IDIREC = 3 - 2 * ISTORE(ICOMBL+2)
+      IF(INLOG.NE.0) CALL GENLOG
 
       IF ( ( NGRP .LE. 1 ) .OR. ( LDATA .LE. 0 ) ) GOTO 8000
 
@@ -570,6 +629,7 @@ C
 C -- 'CHANGE' DIRECTIVE
       IOFF = ISTORE(ICOMBL)
       IMODE = ISTORE(ICOMBL+1)
+       IF(INLOG.NE.0) CALL GENLOG
 C
       IF ( IRCADR .LE. 0 ) GO TO 8930
 C
@@ -583,6 +643,7 @@ C -- 'RECORD' DIRECTIVE
         IRCLEN = ISTORE(ICOMBL+1)
         IRCTYP = ISTORE(ICOMBL+2)
       ENDIF
+      IF(INLOG.NE.0) CALL GENLOG
       GO TO 8000
 C
 3400  CONTINUE
@@ -603,6 +664,7 @@ C
       IOPER = ISTORE(ICOMBL)
       IOFF = ISTORE(ICOMBL+1)
       IMODE = ISTORE(ICOMBL+2)
+      IF(INLOG.NE.0) CALL GENLOG
 C
       IF ( IRCADR .LE. 0 ) GO TO 8930
 C
@@ -744,9 +806,8 @@ C
 C -- RELEASE RESOURCES
       CALL XSTRLL ( ICOMBL )
 
-Cric - do not write this END. Waste of space and often comes AFTER
-Cthe next command.
-c      IF(INLOG.NE.0)WRITE(NCLU,'(A)')'END'
+C Write the last read line to the log (while logging was temporarily disabled)
+      IF(INLOG.NE.0) CALL GENLOG
       IRDLOG(IFLIND) = INLOG
 C
 C -- FINAL MESSAGE
@@ -770,3 +831,93 @@ C
 C
       END
 
+
+CODE FOR GENLOG
+      SUBROUTINE GENLOG
+C Log the current generaledit directive.
+C NB. Logging is off for all generaledit directives, log any that change the state of the DSC
+C ( Locate, transfer, write, transhead, ... etc, ?)
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'TRDDAT.INC'
+      INCLUDE 'XRDDAT.INC'
+
+      WRITE (NCLU, '(A)') CRDUPC(1:LEN_TRIM(CRDUPC))
+      RETURN
+      
+      END
+CODE FOR GENMOD
+      SUBROUTINE GENMOD ( CGENSB )
+C Log the current generaledit directive.
+C NB. Logging is off for all generaledit directives, log any that change the state of the DSC
+C ( Locate, transfer, write, transhead, ... etc, ?)
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'TRDDAT.INC'
+      INCLUDE 'XRDDAT.INC'
+      CHARACTER*(*) CGENSB
+
+      WRITE (NCLU, '(A)') CGENSB
+      RETURN
+      
+      END
+
+CODE FOR ISANUMBER
+      integer function isanumber( string )
+      character*(*) string
+      character, dimension(11), parameter :: integers=
+     1     (/'0','1','2','3','4','5','6','7','8','9','-'/)
+      character, dimension(7), parameter :: numbers=
+     1     (/'+','.',' ','e','E','d','D'/)
+      logical found
+C Returns 0 for non-numerical string; 1 for integer; 2 for other (real / scientific)      
+      
+      isanumber = 0
+
+C Check general format: cannot start with e or d.       
+      do i=4, size(numbers)
+          if(index(string, numbers(i))==1) then
+               return
+          end if
+      end do
+     
+      do j=1, len_trim(string)
+          found=.false.
+          do i=1, size(integers)
+              if(string(j:j)==integers(i)) then
+                  found=.true.
+                  if ( isanumber .eq. 0 ) isanumber = 1
+                  exit
+              end if
+          end do
+          if(.not. found) then ! it's not an integer, but might still be a real number.
+              do i=1, size(numbers)
+                  if(string(j:j)==numbers(i)) then
+                      found=.true.
+                      isanumber = 2
+                      exit
+                  end if
+              end do
+              if(.not. found) then ! it's not any type of number. Give up and go home.
+                 isanumber = 0
+                 return
+              end if
+          end if
+      end do 
+      
+      return      
+      end
+      
+      
+c      program testit
+c      character*10, dimension(10), parameter :: testc = 
+c     1  (/'1','1.234',' 1.23 ',' jk32.4', '1.23e3','9.23r+4',
+c     1 '9.23e-14','','e','9999'/)
+c      do j = 1, size(testc)
+c         print *, testc(j), ' ', isanumber(testc(j))
+c      end do
+c      end program

@@ -121,6 +121,28 @@ sub obscureMachinePrecision() {
 # su_mean shift often has too much precision to be stable across platforms
 	   } elsif($line =~ m/^(_refine_ls_shift\/su_mean\s+\d+\.\d\d\d\d).*$/ ) {
               print $fho "[02] $1\n";
+# Some difabs output
+#   -0.0474   -0.0116    0.0017    0.0059    0.0032   -0.0036   -0.0013
+	   } elsif($line =~ m/^(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d\s*$/ ) {
+              print $fho "[77] $1 $2 $3 $4 $5 $6 $7\n";
+#   -0.0474   -0.0116    0.0017    0.0059    0.0032   -0.0036   -0.0013
+	   } elsif($line =~ m/^(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d\s*$/ ) {
+              print $fho "[72] $1 $2 $3 $4 $5 $6\n";
+# Some difabs output
+#   -0.0193   -0.0082   -0.0035   -0.0001    0.0030
+	   } elsif($line =~ m/^(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d\s*$/ ) {
+              print $fho "[73] $1 $2 $3 $4 $5\n";
+# Some difabs output
+#   -0.0193   -0.0082   -0.0035   -0.0001    0.0030
+	   } elsif($line =~ m/^(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d\s*$/ ) {
+              print $fho "[74] $1 $2 $3 $4\n";
+# Some difabs output
+#  25  0.82 0.80 0.78 0.77 0.76 0.76 0.76 0.76 0.76 0.77 0.78 0.81 0.84 0.87 0.91 0.93 0.94 0.92
+	   } elsif($line =~ m/^(\s+\d+\s+0.\d)\d(\s+0.\d)\d(\s+0.\d)\d(\s+0.\d)\d(\s+0.\d)\d(\s+0.\d)\d(\s+0.\d)\d(\s+0.\d)\d(\s+0.\d)\d(\s+0.\d)\d(\s+0.\d)\d(\s+0.\d)\d(\s+0.\d)\d(\s+0.\d)\d(\s+0.\d)\d(\s+0.\d)\d(\s+0.\d)\d(\s+0.\d)\d\s*$/ ) {
+              print $fho "[75] $1$2$3$4$5$6$7$8$9$10$11$12$13$14$15$15$17$18\n";
+#  11   0.100E+01     -563  560    0    0    0 -607    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+	   } elsif($line =~ m/^(\s+\d+\s+0.\d\d\dE.\d\d..)\s+-?(\d+)\s+-?(\d+)\s+-?(\d+)\s+-?(\d+)\s+-?(\d+)\s+-?(\d+)\s+-?(\d+)\s+-?(\d+)\s+-?(\d+)\s+-?(\d+)\s+-?(\d+)\s+-?(\d+)\s+-?(\d+)\s+-?(\d+)\s+-?(\d+)\s+-?(\d+)\s+-?(\d+)\s+-?(\d+)\s+-?(\d+)\s+-?(\d+)\s*$/ ) {
+              print $fho "[76] $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11 $12 $13 $14 $15 $16 $17 $18 $19 $20 $21\n";
 # Reversal stats are unstable wrt very tiny changes in shifts
 	  } elsif($line =~ m/^( Reversals).*$/ ) {
               print $fho "[03] $1\n"; 
@@ -316,29 +338,29 @@ sub obscureMachinePrecision() {
 	   } elsif($line =~ m/^(\s+\d+\s+\w+\s+\d+\.\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\.\d)\d(\s+\d+\.\d)\d.*/) {
               print $fho "[49] $1 $2\n";
 # Too much detail 9 (Print 11)
-	   } elsif($line =~ m/^(\s+\d+\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d)/) {
-              print $fho "[50] $1 $2 $3 $4 $5 $6 $7 $8 $9\n";
+	   } elsif($line =~ m/^(\s+\d+\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d)/) {
+              print $fho "[50] $1$2$3$4$5$6$7$8$9\n";
 # Too much detail 8 (Print 11)
-	   } elsif($line =~ m/^(\s+\d+\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d)\s*/) {
-              print $fho "[51] $1 $2 $3 $4 $5 $6 $7 $8\n";
+	   } elsif($line =~ m/^(\s+\d+\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d)\s*/) {
+              print $fho "[51] $1$2$3$4$5$6$7$8\n";
 # Too much detail 7
-	   } elsif($line =~ m/^(\s+\d+\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d)\s*/) {
-              print $fho "[52] $1 $2 $3 $4 $5 $6 $7\n";
+	   } elsif($line =~ m/^(\s+\d+\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d)\s*/) {
+              print $fho "[52] $1$2$3$4$5$6$7\n";
 # Too much detail 6
-	   } elsif($line =~ m/^(\s+\d+\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d)\s*/) {
-              print $fho "[53] $1 $2 $3 $4 $5 $6\n";
+	   } elsif($line =~ m/^(\s+\d+\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d)\s*/) {
+              print $fho "[53] $1$2$3$4$5$6\n";
 # Too much detail 5
-	   } elsif($line =~ m/^(\s+\d+\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d)\s*/) {
-              print $fho "[54] $1 $2 $3 $4 $5\n";
+	   } elsif($line =~ m/^(\s+\d+\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d)\s*/) {
+              print $fho "[54] $1$2$3$4$5\n";
 # Too much detail 4
-	   } elsif($line =~ m/^(\s+\d+\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d)\s*/) {
-              print $fho "[55] $1 $2 $3 $4\n";
+	   } elsif($line =~ m/^(\s+\d+\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d)\s*/) {
+              print $fho "[55] $1$2$3$4\n";
 # Too much detail 3
-	   } elsif($line =~ m/^(\s+\d+\s+-?0\.\d\d\d)\d\d(E.\d\d\s+-?0\.\d\d\d)\d\d(E.\d\d)\s*/) {
-              print $fho "[56] $1 $2 $3\n";
+	   } elsif($line =~ m/^(\s+\d+\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d)\s*/) {
+              print $fho "[56] $1$2$3\n";
 # Too much detail 2 (print 11)
-	   } elsif($line =~ m/^(\s+\d+\s+-?0\.\d\d\d)\d\d(E.\d\d)\s*/) {
-              print $fho "[57] $1 $2\n";
+	   } elsif($line =~ m/^(\s+\d+\s+-?0\.\d\d)\d\d\d(E.\d\d)\s*/) {
+              print $fho "[57] $1$2\n";
 # Too many sigfigs
 	   } elsif($line =~ m/^(\s+PARAMETE\s+\d\.\d\d\d)\d\d(\s+-?\d\.\d\d\d)\d\d(\s*)/) {
               print $fho "[58] $1 $2 $3\n";

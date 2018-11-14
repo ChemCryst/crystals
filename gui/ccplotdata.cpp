@@ -359,7 +359,7 @@ bool CcPlotData::ParseInput( deque<string> &  tokenList )
                     min = max;
                     max = temp;
                     m_Axes.m_Flipped = true;
-                    attachedPlot->FlipGraph(true);
+					if (attachedPlot) attachedPlot->FlipGraph(true);
                 }
 
                 if(m_CurrentAxis != -1)
@@ -609,7 +609,7 @@ void CcPlotData::DrawKey()
     }
 
     // pass these through the CrPlot to CxPlot, and create a key window.
-    attachedPlot->CreateKey(m_NumberOfSeries, names, col);
+	if (attachedPlot) attachedPlot->CreateKey(m_NumberOfSeries, names, col);
 
     // free up memory.
     delete [] names;

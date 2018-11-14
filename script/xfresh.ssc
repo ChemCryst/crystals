@@ -16,10 +16,16 @@
 % BLOCK                                                                         
 %  COPY '#CLEAR 16'                                                             
 %  COPY 'END'                                                                   
-%  COPY '#DISK'
-%  COPY 'DELETE 40'
-%  COPY 'DELETE 41'
-%  COPY 'END'
+%  IF EXISTS 40 .GE. 1 THEN                                                     
+%     COPY '#DISK'
+%     COPY 'DELETE 40'
+%     COPY 'END'
+%  END IF
+%  IF EXISTS 41 .GE. 1 THEN                                                     
+%     COPY '#DISK'
+%     COPY 'DELETE 41'
+%     COPY 'END'
+%  END IF
 %  COPY '#CLEAR 12'                                                             
 %  COPY 'END'                                                                   
 %%                                                                              
