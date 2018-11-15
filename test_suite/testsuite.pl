@@ -123,6 +123,9 @@ sub obscureMachinePrecision() {
               print $fho "[02] $1\n";
 # Some difabs output
 #   -0.0474   -0.0116    0.0017    0.0059    0.0032   -0.0036   -0.0013
+	   } elsif($line =~ m/^(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d\s*$/ ) {
+              print $fho "[77] $1 $2 $3 $4 $5 $6 $7\n";
+#   -0.0474   -0.0116    0.0017    0.0059    0.0032   -0.0036   -0.0013
 	   } elsif($line =~ m/^(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d\s*$/ ) {
               print $fho "[72] $1 $2 $3 $4 $5 $6\n";
 # Some difabs output
