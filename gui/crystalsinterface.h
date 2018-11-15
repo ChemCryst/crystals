@@ -337,7 +337,6 @@ enum {
 // #define LOGSTATUS    //Log lots of things (LOGSTAT macro)
  #define LOGERRORS    //        Log errors         (LOGERR macro)
  #define LOGWARNINGS  //        Log warnings       (LOGWARN macro)
- #define LOGSTATUS    //Log lots of things (LOGSTAT macro)
 #endif
 
 
