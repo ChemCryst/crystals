@@ -109,6 +109,7 @@ type atom_t
 contains
     procedure, private :: atom_compare_to_shelx !< compare atom_shelx_t to atom_t
     generic :: operator(==) => atom_compare_to_shelx !< overload ==
+    procedure :: crystals_label !< return a crystals label TYPE(SERIAL,S,L,TX,TY,TZ)
 end type
 type(atom_t), dimension(:), allocatable :: atomslist !< list of atoms in the res/ins file
 integer atomslist_index !< Current index in the list of atoms list (atomslist)
@@ -694,11 +695,12 @@ integer i
 
 end function
 
+!> Return the list of residues given a class
 function resilist_from_class(classname) result(resilist)
 implicit none
-character(len=4), intent(in) :: classname
+character(len=4), intent(in) :: classname !< name of the class
 integer i, cpt
-integer, dimension(:), allocatable :: resilist
+integer, dimension(:), allocatable :: resilist !< list of residue numbers
 
     cpt=0
     do i=1, resi_list_index
@@ -716,6 +718,33 @@ integer, dimension(:), allocatable :: resilist
     end do
     
 
+end function
+
+!> Return a label in crystals format
+function crystals_label(self, symmetry) result(label)
+implicit none
+class(atom_t) :: self !< atom to format
+integer, intent(in), optional :: symmetry !< symmetry operator (index in eqiv_list)
+character(len=:), allocatable :: label
+character(len=128) :: buffer
+
+if(present(symmetry)) then
+    if(symmetry>0 .and. symmetry<=eqiv_list_index) then
+        write(buffer, '(a,"(",3(I0,","),2(F0.3,","),F0.3,")")') &
+        &   trim(sfac(self%sfac)), self%crystals_serial, &!
+        &   eqiv_list(symmetry)%S, eqiv_list(symmetry)%L, eqiv_list(symmetry)%crystals_translation
+    else
+        write(buffer, '(a,"(",I0,")")') &
+        &   trim(sfac(self%sfac)), self%crystals_serial
+    end if
+else
+    write(buffer, '(a,"(",I0,")")') &
+    &   trim(sfac(self%sfac)), self%crystals_serial
+end if
+
+allocate(character(len=len_trim(buffer)) :: label)
+label = trim(buffer)
+                        
 end function
 
 end module

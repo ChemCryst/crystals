@@ -593,26 +593,26 @@ type(atom_shelx_t) :: atom
                 linecont=','
             end if
             if(j==2) then
-                write(crystals_fileunit, '(a, a,"(",I0,")", " TO ", a,"(",I0,")", a)') &
+                write(crystals_fileunit, '(a, a, " TO ", a, a)') &
                 &   'U(IJ) 0.0, 0.001 =  ', &
-                &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
-                &   trim(sfac(atomslist(l)%sfac)), atomslist(l)%crystals_serial, &
+                &   atomslist(serial1)%crystals_label(), &
+                &   atomslist(l)%crystals_label(), &
                 &   linecont
-                write(log_unit, '(a, a,"(",I0,")", " TO ", a,"(",I0,")", a)') &
+                write(log_unit, '(a, a, " TO ", a, a)') &
                 &   'U(IJ) 0.0, 0.001 =  ', &
-                &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
-                &   trim(sfac(atomslist(l)%sfac)), atomslist(l)%crystals_serial, &
+                &   atomslist(serial1)%crystals_label(), &
+                &   atomslist(l)%crystals_label(), &
                 &   linecont
             else
-                write(crystals_fileunit, '(a, a,"(",I0,")", " TO ", a,"(",I0,")", a)') &
+                write(crystals_fileunit, '(a, a, " TO ", a, a)') &
                 &   'CONT ', &
-                &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
-                &   trim(sfac(atomslist(l)%sfac)), atomslist(l)%crystals_serial, &
+                &   atomslist(serial1)%crystals_label(), &
+                &   atomslist(l)%crystals_label(), &
                 &   linecont
-                write(log_unit, '(a, a,"(",I0,")", " TO ", a,"(",I0,")", a)') &
+                write(log_unit, '(a, a, " TO ", a, a)') &
                 &   'CONT ', &
-                &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
-                &   trim(sfac(atomslist(l)%sfac)), atomslist(l)%crystals_serial, &
+                &   atomslist(serial1)%crystals_label(), &
+                &   atomslist(l)%crystals_label(), &
                 &   linecont
             end if
             
@@ -669,12 +669,12 @@ type(atom_shelx_t) :: atom
             
             write(crystals_fileunit, '(a, a,"(",I0,")", " TO ", a,"(",I0,")")') &
             &   'RIGU 0.0, 0.001 =  ', &
-            &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
-            &   trim(sfac(atomslist(l)%sfac)), atomslist(l)%crystals_serial
+            &   atomslist(serial1)%crystals_label(), &
+            &   atomslist(l)%crystals_label()
             write(log_unit, '(a, a,"(",I0,")", " TO ", a,"(",I0,")")') &
             &   'RIGU 0.0, 0.001 =  ', &
-            &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
-            &   trim(sfac(atomslist(l)%sfac)), atomslist(l)%crystals_serial
+            &   atomslist(serial1)%crystals_label(), &
+            &   atomslist(l)%crystals_label()
             
             serial1=l
         end do
@@ -1763,9 +1763,7 @@ character(len=:), dimension(:), allocatable :: broadcast
             write(buffertemp, '(a, F7.5, 1X)') 'PLANAR ', flat_table(i)%esd
              do l=1, size(serials)
                 if(serials(l)==0) cycle
-                write(buffer1, '(a,"(",I0,")")') &
-                &   trim(sfac(atomslist(serials(l))%sfac)), atomslist(serials(l))%crystals_serial
-                buffertemp=trim(buffertemp)//' '//trim(buffer1)
+                buffertemp=trim(buffertemp)//' '//atomslist(serials(l))%crystals_label()
                 if(len_trim(buffertemp)>72) then
                     write(crystals_fileunit, '(a)') trim(buffertemp)                           
                     write(log_unit, '(a)') trim(buffertemp)                
@@ -1850,14 +1848,14 @@ character(len=:), allocatable :: stripline
                     write(*, '(a)') 'Error: Crystals serial not defined'
                     call abort()
                 end if
-                write(crystals_fileunit, '(a, 1X, F0.5, ",", F0.5, " = ", a,"(",I0,")", " TO ", a,"(",I0,")")') &
+                write(crystals_fileunit, '(a, 1X, F0.5, ",", F0.5, " = ", a," TO ", a)') &
                 &   'DISTANCE', dfix_table(i)%distance, dfix_table(i)%esd, &
-                &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
-                &   trim(sfac(atomslist(serial2)%sfac)), atomslist(serial2)%crystals_serial
-                write(log_unit, '(a, 1X, F0.5, ",", F0.5, " = ", a,"(",I0,")", " TO ", a,"(",I0,")")') &
+                &   atomslist(serial1)%crystals_label(atom1%symmetry), &
+                &   atomslist(serial2)%crystals_label(atom2%symmetry)
+                write(log_unit, '(a, 1X, F0.5, ",", F0.5, " = ", a, " TO ", a)') &
                 &   'DISTANCE', dfix_table(i)%distance, dfix_table(i)%esd, &
-                &   trim(sfac(atomslist(serial1)%sfac)), atomslist(serial1)%crystals_serial, &
-                &   trim(sfac(atomslist(serial2)%sfac)), atomslist(serial2)%crystals_serial
+                &   atomslist(serial1)%crystals_label(atom1%symmetry), &
+                &   atomslist(serial2)%crystals_label(atom2%symmetry)
             end do
         end do
                     
@@ -1932,14 +1930,7 @@ character(len=:), allocatable :: stripline, errormsg
                         call abort()
                     end if
 
-                    if(atom%symmetry>0) then
-                        write(buffer(l), '(a,"(",3(I0,","),2(F0.3,","),F0.3,")")') &
-                        &   trim(sfac(atomslist(serials(l))%sfac)), atomslist(serials(l))%crystals_serial, &
-                        &   eqiv_list(atom%symmetry)%S, eqiv_list(atom%symmetry)%L, eqiv_list(atom%symmetry)%crystals_translation
-                    else
-                        write(buffer(l), '(a,"(",I0,")")') &
-                        &   trim(sfac(atomslist(serials(l))%sfac)), atomslist(serials(l))%crystals_serial
-                    end if
+                    buffer(l) = atomslist(serials(l))%crystals_label(atom%symmetry)
                 end do
                 
                 if(j==size(broadcast) .and. k==size(splitbuffer)-1) then
@@ -2094,9 +2085,7 @@ character(len=:), dimension(:), allocatable :: broadcast
                 end if
                             
                 ! good to go
-                write(buffer, '(a,"(",I0,")")') &
-                &   trim(sfac(atomslist(serial)%sfac)), atomslist(serial)%crystals_serial
-                buffertemp=trim(buffertemp)//' '//trim(buffer)
+                buffertemp=trim(buffertemp)//' '//atomslist(serial)%crystals_label()
                 if(len_trim(buffertemp)>72) then
                     write(crystals_fileunit, '(a)') trim(buffertemp)                           
                     write(log_unit, '(a)') trim(buffertemp)  
@@ -2367,9 +2356,7 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
             ! good to go
             write(buffertemp, '(a, F7.5, 1X)') 'SAME ', same_table(i)%esd1
              do k=1, size(serials)
-                write(buffer1, '(a,"(",I0,")")') &
-                &   trim(sfac(atomslist(serials(k))%sfac)), atomslist(serials(k))%crystals_serial
-                buffertemp=trim(buffertemp)//' '//trim(buffer1)
+                buffertemp=trim(buffertemp)//' '//atomslist(serials(k))%crystals_label()
                 if(len_trim(buffertemp)>72) then
                     write(crystals_fileunit, '(a)') trim(buffertemp)                           
                     write(log_unit, '(a)') trim(buffertemp)  
@@ -2437,9 +2424,7 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
             ! good to go
             write(buffertemp, '(a)') 'CONT AND '
             do k=1, size(serials)
-                write(buffer1, '(a,"(",I0,")")') &
-                &   trim(sfac(atomslist(serials(k))%sfac)), atomslist(serials(k))%crystals_serial
-                buffertemp=trim(buffertemp)//' '//trim(buffer1)
+                buffertemp=trim(buffertemp)//' '//atomslist(serials(k))%crystals_label()
                 if(len_trim(buffertemp)>72) then
                     write(crystals_fileunit, '(a)') trim(buffertemp)                           
                     write(log_unit, '(a)') trim(buffertemp)  
@@ -2508,9 +2493,7 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
                 ! good to go
                 write(buffertemp, '(a, F7.5, 1X)') 'SAME ', same_table(i)%esd1
                  do k=1, size(serials)
-                    write(buffer1, '(a,"(",I0,")")') &
-                    &   trim(sfac(atomslist(serials(k))%sfac)), atomslist(serials(k))%crystals_serial
-                    buffertemp=trim(buffertemp)//' '//trim(buffer1)
+                    buffertemp=trim(buffertemp)//' '//atomslist(serials(k))%crystals_label()
                     if(len_trim(buffertemp)>72) then
                         write(crystals_fileunit, '(a)') trim(buffertemp)                           
                         write(log_unit, '(a)') trim(buffertemp)  
@@ -2570,9 +2553,7 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
                 ! good to go
                 write(buffertemp, '(a)') 'CONT AND '
                  do k=1, size(serials)
-                    write(buffer1, '(a,"(",I0,")")') &
-                    &   trim(sfac(atomslist(serials(k))%sfac)), atomslist(serials(k))%crystals_serial
-                    buffertemp=trim(buffertemp)//' '//trim(buffer1)
+                    buffertemp=trim(buffertemp)//' '//atomslist(serials(k))%crystals_label()
                     if(len_trim(buffertemp)>72) then
                         write(crystals_fileunit, '(a)') trim(buffertemp)                           
                         write(log_unit, '(a)') trim(buffertemp)  
@@ -2644,9 +2625,7 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
                 ! good to go
                 write(buffertemp, '(a, F7.5, 1X)') 'SAME ', same_table(i)%esd1
                  do k=1, size(serials)
-                    write(buffer1, '(a,"(",I0,")")') &
-                    &   trim(sfac(atomslist(serials(k))%sfac)), atomslist(serials(k))%crystals_serial
-                    buffertemp=trim(buffertemp)//' '//trim(buffer1)
+                    buffertemp=trim(buffertemp)//' '//atomslist(serials(k))%crystals_label()
                     if(len_trim(buffertemp)>72) then
                         write(crystals_fileunit, '(a)') trim(buffertemp)                           
                         write(log_unit, '(a)') trim(buffertemp)  
@@ -2708,9 +2687,7 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
                 ! good to go
                 write(buffertemp, '(a)') 'CONT AND '
                  do k=1, size(serials)
-                    write(buffer1, '(a,"(",I0,")")') &
-                    &   trim(sfac(atomslist(serials(k))%sfac)), atomslist(serials(k))%crystals_serial
-                    buffertemp=trim(buffertemp)//' '//trim(buffer1)
+                    buffertemp=trim(buffertemp)//' '//atomslist(serials(k))%crystals_label()
                     if(len_trim(buffertemp)>72) then
                         write(crystals_fileunit, '(a)') trim(buffertemp)                           
                         write(log_unit, '(a)') trim(buffertemp)  
@@ -2782,9 +2759,7 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
                 
             write(buffertemp, '(a, F7.5, 1X)') 'SAME ', same_table(i)%esd1
              do k=1, size(serials)
-                write(buffer1, '(a,"(",I0,")")') &
-                &   trim(sfac(atomslist(serials(k))%sfac)), atomslist(serials(k))%crystals_serial
-                buffertemp=trim(buffertemp)//' '//trim(buffer1)
+                buffertemp=trim(buffertemp)//' '//atomslist(serials(k))%crystals_label()
                 if(len_trim(buffertemp)>72) then
                     write(crystals_fileunit, '(a)') trim(buffertemp)                           
                     write(log_unit, '(a)') trim(buffertemp)  
@@ -2848,9 +2823,7 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
                 
             write(buffertemp, '(a)') 'CONT AND '
              do k=1, size(serials)
-                write(buffer1, '(a,"(",I0,")")') &
-                &   trim(sfac(atomslist(serials(k))%sfac)), atomslist(serials(k))%crystals_serial
-                buffertemp=trim(buffertemp)//' '//trim(buffer1)
+                buffertemp=trim(buffertemp)//' '//atomslist(serials(k))%crystals_label()
                 if(len_trim(buffertemp)>72) then
                     write(crystals_fileunit, '(a)') trim(buffertemp)                           
                     write(log_unit, '(a)') trim(buffertemp)  
@@ -2908,6 +2881,7 @@ real limith, limitl
     write(crystals_fileunit, '(a)') 'END'
 end subroutine
 
+!> Write hkl file
 subroutine write_hkl(hklfile_path)
 use crystal_data_m, only:hklf, crystals_fileunit
 implicit none
@@ -2948,11 +2922,12 @@ write(crystals_fileunit, '(a)') '#SCRIPT XPROC6'
 
 end subroutine
 
+!> Take a shelx instruction and broadcast all the residues if present
 subroutine broadcast_shelx_cmd(text, broadcast)
 use crystal_data_m
 implicit none
-character(len=*), intent(in) ::text
-character(len=:), dimension(:), allocatable, intent(out) :: broadcast
+character(len=*), intent(in) ::text !< input shelx instruction
+character(len=:), dimension(:), allocatable, intent(out) :: broadcast !< list of individual shelx instruction
 character(len=lenlabel), dimension(:), allocatable :: splitbuffer
 character(len=:), allocatable :: stripline
 type(atom_shelx_t) :: keyword
