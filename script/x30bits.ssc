@@ -73,9 +73,9 @@
 ^^WI    @ 2,1 GRID GRIDACB NROWS=1 NCOLS=7
 ^^WI    {                                                                       
 ^^WI      @ 1,1  STATIC ED30T 'Crystal shape'                                   
-^^WI      @ 1,3  EDITBOX SHAPE '0' CHARS=20 INFORM=YES                          
+^^WI      @ 1,3  EDITBOX SHAPE '0' CHARS=20 LIMIT=32 INFORM=YES 
 ^^WI      @ 1,5  STATIC ED30T 'Colour'                                          
-^^WI      @ 1,7  EDITBOX COLOUR '0' CHARS=20 INFORM=YES                         
+^^WI      @ 1,7  EDITBOX COLOUR '0' CHARS=20 LIMIT=32 INFORM=YES                          
 ^^WI    }                                                                       
 ^^WI    @ 3,1 GRID GRIDACC NROWS=1 NCOLS=11
 ^^WI    {                                                                       

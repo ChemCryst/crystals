@@ -77,7 +77,7 @@ C
       
       CHARACTER*80 CFORM(3) , CIFORM
       CHARACTER*132 CGENSB
-      CHARACTER*16 CEVARI , CTVARI, CUVARI
+      CHARACTER*33 CEVARI , CTVARI, CUVARI
 C
       INCLUDE 'ISTORE.INC'
 C
@@ -489,8 +489,9 @@ c          write(nclu,*) '# real ',ctvari, store(ircadr+ioff)
           IF(INLOG.NE.0) CALL GENLOG
 c          write(`,*) '# int ',ctvari, istore(ircadr+ioff) 
       else if ( idirec == 2 .and. ctvari(1:1).eq.'"' )  then !String to DSC file
-          do j = 1, ilgth, 4
-              read (ctvari(j+1:j+4),'(A4)') istore(ircadr+ioff+j-1)
+          ilgth = min ( ilgth, (len(ctvari)-1)/4 )   ! don't go out of bounds (currently 33 chars in CTVARI)
+          do j = 0, ilgth-1
+              read(ctvari((j*4)+2:(j*4)+5),'(A4)')istore(ircadr+ioff+j)
           end do
           IF(INLOG.NE.0) CALL GENLOG
       else if ( idirec==2 ) then             ! Script to DSC file
@@ -509,7 +510,7 @@ C -- FIND IDENTIFIER
                          WRITE(CGENSB(I:), *) STORE(IRCADR+IOFF)
                      ELSE IF ( ITYPE .EQ. 4 ) THEN
                          WRITE(CGENSB(I:), '(A1,99A4)') '"',      !Leading quote indicates string
-     1                         (ISTORE(IRCADR+IOFF+J-1),J=1,ILGTH/4)
+     1                         (ISTORE(IRCADR+IOFF+J-1),J=1,ILGTH)
                      ELSE
                          WRITE(CGENSB(I:), *) '# Itype: ', ITYPE, 
      1                    ' var: ', CUVARI
