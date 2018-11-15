@@ -71,8 +71,9 @@
 %%                                                                              
 %          BLOCK                                                                
 %% Set scale factor                                                             
+%              VARIABLE REAL SCALEO SCALEW                                 
+%              evaluate scalew = 1.0                                     
 %              IF ( EXISTS ( 30 ) .EQ. 1 ) THEN                                 
-%                   VARIABLE REAL SCALEO SCALEW                                 
 %                   COPY '#GENERALEDIT 30'                                      
 %                   COPY 'LOCATE RECORDTYPE = 101'                              
 %                   COPY 'TRANSFER FROM OFFSET =  7 TO SCALEO'                  

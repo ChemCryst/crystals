@@ -368,6 +368,7 @@ C--
 c123      CHARACTER*80 CFORM
       CHARACTER*256 CFORM    ! for compatibility with long cards
       CHARACTER*132 CBTEST
+      CHARACTER*256 CRLINE   ! for reading reflections from input stream
       INCLUDE 'ISTORE.INC'
       INCLUDE 'ICOM06.INC'
       INCLUDE 'ICOM6A.INC'
@@ -1020,7 +1021,13 @@ C
 cdjw2003
 c----- if a list 7 read no reflections
 C      if (iuln .ne. 7) then
-      READ (IUNIT,CFORM,END=3200,ERR=3100) (STORE(I),I=L6IB,M6IB)
+      if ( iunit .ne. ncaru ) then !read from control stream. Log it.
+         read (IUNIT,'(A)',END=3200, ERR=3100) CRLINE   
+         IF ( IRDLOG(IFLIND) .EQ. 1 ) WRITE(NCLU,'(A)') TRIM(CRLINE)
+         READ (CRLINE,CFORM,END=3200,ERR=3100) (STORE(I),I=L6IB,M6IB)
+      else
+         READ (IUNIT,CFORM,END=3200,ERR=3100) (STORE(I),I=L6IB,M6IB)
+      end if
       NCARDS=NCARDS+INCREM
 C--CHECK FOR BLANK ENTRY
       DO 3000 I=L6IB,M6IB
