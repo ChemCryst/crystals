@@ -1639,18 +1639,15 @@ use crystal_data_m
 implicit none
 integer, dimension(:), allocatable :: serials
 type(atom_shelx_t) :: atom_shelx
-character(len=1024) :: buffer1, buffertemp
+character(len=1024) :: buffertemp
 integer i, j, k, l
 integer :: serial1
-integer, dimension(:), allocatable :: residuelist
 character(len=:), allocatable :: stripline, errormsg
 real esd
 character(len=lenlabel), dimension(:), allocatable :: splitbuffer
 integer start, iostatus
 character(len=:), dimension(:), allocatable :: broadcast
 
-    call makeresiduelist(residuelist)
-    
     ! PLANAR 0.01 N(1) C(3) 
     if(flat_table_index>0) then
         write(log_unit, '(a)') ''
@@ -1785,13 +1782,10 @@ implicit none
 integer i, j, k
 integer :: serial1, serial2, start
 type(atom_shelx_t) :: atom1, atom2
-integer, dimension(:), allocatable :: residuelist
 character(len=:), allocatable :: errormsg
 character(len=lenlabel), dimension(:), allocatable :: splitbuffer
 character(len=:), dimension(:), allocatable :: broadcast
 character(len=:), allocatable :: stripline
-
-    call makeresiduelist(residuelist)
 
     if(dfix_table_index>0) then
         write(log_unit, '(a)') ''
@@ -2004,10 +1998,9 @@ end subroutine
 subroutine write_list16_isor()
 use crystal_data_m
 implicit none
-character(len=1024) :: buffer, buffertemp
+character(len=1024) :: buffertemp
 integer i, j, k
 integer :: serial
-integer, dimension(:), allocatable :: residuelist
 character(len=:), allocatable :: stripline, errormsg
 real esd1, esd2
 character(len=lenlabel), dimension(:), allocatable :: splitbuffer
@@ -2016,8 +2009,6 @@ type(atom_shelx_t) :: atom
 character(len=:), dimension(:), allocatable :: broadcast
 
 
-    call makeresiduelist(residuelist)
-    
     ! ISOR 0.01 0.02 N(1) C(3) 
     if(isor_table_index>0) then
         write(log_unit, '(a)') ''
@@ -2109,7 +2100,7 @@ use crystal_data_m, only: resi_t
 implicit none
 integer, dimension(:), allocatable :: serials
 character(len=lenlabel) :: atom
-character(len=1024) :: buffer1, buffertemp
+character(len=1024) :: buffertemp
 logical found
 integer i, j, k, l, indexresi, resi1
 integer :: serial1
@@ -2570,7 +2561,7 @@ character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7'
             allocate(serials(size(same_table(i)%list1)))
             serials=0
 
-            ! ISOR applied to all residues
+            ! same applied to all residues
             do j=1, size(residuelist)
                 
                 do k=1, size(same_table(i)%list1)
