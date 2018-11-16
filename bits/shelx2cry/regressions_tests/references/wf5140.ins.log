@@ -2688,2437 +2688,300 @@ Warning: `AFIX` Not supported
 Line 2823: AFIX   0
 
 Processing shelxl labels into crystals serials
-2 identical serial for C32: 323 and C03B: 323
-New serial for C32: 333 and C03B: 323
-2 identical serial for C32: 333 and C33: 333
-New serial for C32: 343 and C33: 333
-2 identical serial for C32: 343 and C34: 343
-New serial for C32: 353 and C34: 343
-2 identical serial for C32: 353 and C35: 353
-New serial for C32: 363 and C35: 353
-2 identical serial for C32: 363 and C36: 363
-New serial for C32: 373 and C36: 363
-2 identical serial for C32: 373 and C37: 373
-New serial for C32: 383 and C37: 373
-2 identical serial for C32: 383 and C38: 383
-New serial for C32: 393 and C38: 383
-2 identical serial for C32: 393 and C39: 393
-New serial for C32: 403 and C39: 393
-2 identical serial for C32: 403 and C40: 403
-New serial for C32: 413 and C40: 403
-2 identical serial for C32: 413 and C41: 413
-New serial for C32: 423 and C41: 413
-2 identical serial for C32: 423 and C42: 423
-New serial for C32: 433 and C42: 423
-2 identical serial for C32: 433 and C43: 433
-New serial for C32: 443 and C43: 433
-2 identical serial for C32: 443 and C44: 443
-New serial for C32: 453 and C44: 443
-2 identical serial for C32: 453 and C45: 453
-New serial for C32: 463 and C45: 453
-2 identical serial for C32: 463 and C46: 463
-New serial for C32: 473 and C46: 463
-2 identical serial for C32: 473 and C47: 473
-New serial for C32: 483 and C47: 473
-2 identical serial for C32: 483 and C48: 483
-New serial for C32: 493 and C48: 483
-2 identical serial for C32: 493 and C49: 493
-New serial for C32: 503 and C49: 493
-2 identical serial for C32: 503 and C50: 503
-New serial for C32: 513 and C50: 503
-2 identical serial for C32: 513 and C51: 513
-New serial for C32: 523 and C51: 513
-2 identical serial for C32: 523 and C52: 523
-New serial for C32: 533 and C52: 523
-2 identical serial for C32: 533 and C53: 533
-New serial for C32: 543 and C53: 533
-2 identical serial for C32: 543 and C54: 543
-New serial for C32: 553 and C54: 543
-2 identical serial for C32: 553 and C55: 553
-New serial for C32: 563 and C55: 553
-2 identical serial for C32: 563 and C56: 563
-New serial for C32: 573 and C56: 563
-2 identical serial for C32: 573 and C57: 573
-New serial for C32: 583 and C57: 573
-2 identical serial for C32: 583 and C58: 583
-New serial for C32: 593 and C58: 583
-2 identical serial for C32: 593 and C59: 593
-New serial for C32: 603 and C59: 593
-2 identical serial for C32: 603 and C60: 603
-New serial for C32: 613 and C60: 603
-2 identical serial for C32: 613 and C61: 613
-New serial for C32: 623 and C61: 613
-2 identical serial for C32: 623 and C62: 623
-New serial for C32: 633 and C62: 623
-2 identical serial for C32: 633 and C63: 633
-New serial for C32: 643 and C63: 633
-2 identical serial for C32: 643 and C64: 643
-New serial for C32: 653 and C64: 643
-2 identical serial for C32: 653 and C65: 653
-New serial for C32: 663 and C65: 653
-2 identical serial for C32: 663 and C66: 663
-New serial for C32: 673 and C66: 663
-2 identical serial for C32: 673 and C67: 673
-New serial for C32: 683 and C67: 673
-2 identical serial for C32: 683 and C68: 683
-New serial for C32: 693 and C68: 683
-2 identical serial for C32: 693 and C69: 693
-New serial for C32: 703 and C69: 693
-2 identical serial for C32: 703 and C70: 703
-New serial for C32: 713 and C70: 703
-2 identical serial for C32: 713 and C71: 713
-New serial for C32: 723 and C71: 713
-2 identical serial for C32: 723 and C72: 723
-New serial for C32: 733 and C72: 723
-2 identical serial for C32: 733 and C73: 733
-New serial for C32: 743 and C73: 733
-2 identical serial for C32: 743 and C74: 743
-New serial for C32: 753 and C74: 743
-2 identical serial for C32: 753 and C75: 753
-New serial for C32: 763 and C75: 753
-2 identical serial for C32: 763 and C76: 763
-New serial for C32: 773 and C76: 763
-2 identical serial for C32: 773 and C77: 773
-New serial for C32: 783 and C77: 773
-2 identical serial for C32: 783 and C78: 783
-New serial for C32: 793 and C78: 783
-2 identical serial for C32: 793 and C79: 793
-New serial for C32: 803 and C79: 793
-2 identical serial for C32: 803 and C80: 803
-New serial for C32: 813 and C80: 803
-2 identical serial for C32: 813 and C81: 813
-New serial for C32: 823 and C81: 813
-2 identical serial for C32: 823 and C82: 823
-New serial for C32: 833 and C82: 823
-2 identical serial for C31: 313 and C03A: 313
-New serial for C31: 323 and C03A: 313
-2 identical serial for C31: 323 and C03B: 323
-New serial for C31: 333 and C03B: 323
-2 identical serial for C31: 333 and C33: 333
-New serial for C31: 343 and C33: 333
-2 identical serial for C31: 343 and C34: 343
-New serial for C31: 353 and C34: 343
-2 identical serial for C31: 353 and C35: 353
-New serial for C31: 363 and C35: 353
-2 identical serial for C31: 363 and C36: 363
-New serial for C31: 373 and C36: 363
-2 identical serial for C31: 373 and C37: 373
-New serial for C31: 383 and C37: 373
-2 identical serial for C31: 383 and C38: 383
-New serial for C31: 393 and C38: 383
-2 identical serial for C31: 393 and C39: 393
-New serial for C31: 403 and C39: 393
-2 identical serial for C31: 403 and C40: 403
-New serial for C31: 413 and C40: 403
-2 identical serial for C31: 413 and C41: 413
-New serial for C31: 423 and C41: 413
-2 identical serial for C31: 423 and C42: 423
-New serial for C31: 433 and C42: 423
-2 identical serial for C31: 433 and C43: 433
-New serial for C31: 443 and C43: 433
-2 identical serial for C31: 443 and C44: 443
-New serial for C31: 453 and C44: 443
-2 identical serial for C31: 453 and C45: 453
-New serial for C31: 463 and C45: 453
-2 identical serial for C31: 463 and C46: 463
-New serial for C31: 473 and C46: 463
-2 identical serial for C31: 473 and C47: 473
-New serial for C31: 483 and C47: 473
-2 identical serial for C31: 483 and C48: 483
-New serial for C31: 493 and C48: 483
-2 identical serial for C31: 493 and C49: 493
-New serial for C31: 503 and C49: 493
-2 identical serial for C31: 503 and C50: 503
-New serial for C31: 513 and C50: 503
-2 identical serial for C31: 513 and C51: 513
-New serial for C31: 523 and C51: 513
-2 identical serial for C31: 523 and C52: 523
-New serial for C31: 533 and C52: 523
-2 identical serial for C31: 533 and C53: 533
-New serial for C31: 543 and C53: 533
-2 identical serial for C31: 543 and C54: 543
-New serial for C31: 553 and C54: 543
-2 identical serial for C31: 553 and C55: 553
-New serial for C31: 563 and C55: 553
-2 identical serial for C31: 563 and C56: 563
-New serial for C31: 573 and C56: 563
-2 identical serial for C31: 573 and C57: 573
-New serial for C31: 583 and C57: 573
-2 identical serial for C31: 583 and C58: 583
-New serial for C31: 593 and C58: 583
-2 identical serial for C31: 593 and C59: 593
-New serial for C31: 603 and C59: 593
-2 identical serial for C31: 603 and C60: 603
-New serial for C31: 613 and C60: 603
-2 identical serial for C31: 613 and C61: 613
-New serial for C31: 623 and C61: 613
-2 identical serial for C31: 623 and C62: 623
-New serial for C31: 633 and C62: 623
-2 identical serial for C31: 633 and C63: 633
-New serial for C31: 643 and C63: 633
-2 identical serial for C31: 643 and C64: 643
-New serial for C31: 653 and C64: 643
-2 identical serial for C31: 653 and C65: 653
-New serial for C31: 663 and C65: 653
-2 identical serial for C31: 663 and C66: 663
-New serial for C31: 673 and C66: 663
-2 identical serial for C31: 673 and C67: 673
-New serial for C31: 683 and C67: 673
-2 identical serial for C31: 683 and C68: 683
-New serial for C31: 693 and C68: 683
-2 identical serial for C31: 693 and C69: 693
-New serial for C31: 703 and C69: 693
-2 identical serial for C31: 703 and C70: 703
-New serial for C31: 713 and C70: 703
-2 identical serial for C31: 713 and C71: 713
-New serial for C31: 723 and C71: 713
-2 identical serial for C31: 723 and C72: 723
-New serial for C31: 733 and C72: 723
-2 identical serial for C31: 733 and C73: 733
-New serial for C31: 743 and C73: 733
-2 identical serial for C31: 743 and C74: 743
-New serial for C31: 753 and C74: 743
-2 identical serial for C31: 753 and C75: 753
-New serial for C31: 763 and C75: 753
-2 identical serial for C31: 763 and C76: 763
-New serial for C31: 773 and C76: 763
-2 identical serial for C31: 773 and C77: 773
-New serial for C31: 783 and C77: 773
-2 identical serial for C31: 783 and C78: 783
-New serial for C31: 793 and C78: 783
-2 identical serial for C31: 793 and C79: 793
-New serial for C31: 803 and C79: 793
-2 identical serial for C31: 803 and C80: 803
-New serial for C31: 813 and C80: 803
-2 identical serial for C31: 813 and C81: 813
-New serial for C31: 823 and C81: 813
-2 identical serial for C31: 823 and C82: 823
-New serial for C31: 833 and C82: 823
-2 identical serial for C31: 833 and C32: 833
-New serial for C31: 843 and C32: 833
-2 identical serial for C22: 223 and C02B: 223
-New serial for C22: 233 and C02B: 223
-2 identical serial for C22: 233 and C23: 233
-New serial for C22: 243 and C23: 233
-2 identical serial for C22: 243 and C24: 243
-New serial for C22: 253 and C24: 243
-2 identical serial for C22: 253 and C25: 253
-New serial for C22: 263 and C25: 253
-2 identical serial for C22: 263 and C26: 263
-New serial for C22: 273 and C26: 263
-2 identical serial for C22: 273 and C27: 273
-New serial for C22: 283 and C27: 273
-2 identical serial for C22: 283 and C28: 283
-New serial for C22: 293 and C28: 283
-2 identical serial for C22: 293 and C29: 293
-New serial for C22: 303 and C29: 293
-2 identical serial for C22: 303 and C30: 303
-New serial for C22: 313 and C30: 303
-2 identical serial for C22: 313 and C03A: 313
-New serial for C22: 323 and C03A: 313
-2 identical serial for C22: 323 and C03B: 323
-New serial for C22: 333 and C03B: 323
-2 identical serial for C22: 333 and C33: 333
-New serial for C22: 343 and C33: 333
-2 identical serial for C22: 343 and C34: 343
-New serial for C22: 353 and C34: 343
-2 identical serial for C22: 353 and C35: 353
-New serial for C22: 363 and C35: 353
-2 identical serial for C22: 363 and C36: 363
-New serial for C22: 373 and C36: 363
-2 identical serial for C22: 373 and C37: 373
-New serial for C22: 383 and C37: 373
-2 identical serial for C22: 383 and C38: 383
-New serial for C22: 393 and C38: 383
-2 identical serial for C22: 393 and C39: 393
-New serial for C22: 403 and C39: 393
-2 identical serial for C22: 403 and C40: 403
-New serial for C22: 413 and C40: 403
-2 identical serial for C22: 413 and C41: 413
-New serial for C22: 423 and C41: 413
-2 identical serial for C22: 423 and C42: 423
-New serial for C22: 433 and C42: 423
-2 identical serial for C22: 433 and C43: 433
-New serial for C22: 443 and C43: 433
-2 identical serial for C22: 443 and C44: 443
-New serial for C22: 453 and C44: 443
-2 identical serial for C22: 453 and C45: 453
-New serial for C22: 463 and C45: 453
-2 identical serial for C22: 463 and C46: 463
-New serial for C22: 473 and C46: 463
-2 identical serial for C22: 473 and C47: 473
-New serial for C22: 483 and C47: 473
-2 identical serial for C22: 483 and C48: 483
-New serial for C22: 493 and C48: 483
-2 identical serial for C22: 493 and C49: 493
-New serial for C22: 503 and C49: 493
-2 identical serial for C22: 503 and C50: 503
-New serial for C22: 513 and C50: 503
-2 identical serial for C22: 513 and C51: 513
-New serial for C22: 523 and C51: 513
-2 identical serial for C22: 523 and C52: 523
-New serial for C22: 533 and C52: 523
-2 identical serial for C22: 533 and C53: 533
-New serial for C22: 543 and C53: 533
-2 identical serial for C22: 543 and C54: 543
-New serial for C22: 553 and C54: 543
-2 identical serial for C22: 553 and C55: 553
-New serial for C22: 563 and C55: 553
-2 identical serial for C22: 563 and C56: 563
-New serial for C22: 573 and C56: 563
-2 identical serial for C22: 573 and C57: 573
-New serial for C22: 583 and C57: 573
-2 identical serial for C22: 583 and C58: 583
-New serial for C22: 593 and C58: 583
-2 identical serial for C22: 593 and C59: 593
-New serial for C22: 603 and C59: 593
-2 identical serial for C22: 603 and C60: 603
-New serial for C22: 613 and C60: 603
-2 identical serial for C22: 613 and C61: 613
-New serial for C22: 623 and C61: 613
-2 identical serial for C22: 623 and C62: 623
-New serial for C22: 633 and C62: 623
-2 identical serial for C22: 633 and C63: 633
-New serial for C22: 643 and C63: 633
-2 identical serial for C22: 643 and C64: 643
-New serial for C22: 653 and C64: 643
-2 identical serial for C22: 653 and C65: 653
-New serial for C22: 663 and C65: 653
-2 identical serial for C22: 663 and C66: 663
-New serial for C22: 673 and C66: 663
-2 identical serial for C22: 673 and C67: 673
-New serial for C22: 683 and C67: 673
-2 identical serial for C22: 683 and C68: 683
-New serial for C22: 693 and C68: 683
-2 identical serial for C22: 693 and C69: 693
-New serial for C22: 703 and C69: 693
-2 identical serial for C22: 703 and C70: 703
-New serial for C22: 713 and C70: 703
-2 identical serial for C22: 713 and C71: 713
-New serial for C22: 723 and C71: 713
-2 identical serial for C22: 723 and C72: 723
-New serial for C22: 733 and C72: 723
-2 identical serial for C22: 733 and C73: 733
-New serial for C22: 743 and C73: 733
-2 identical serial for C22: 743 and C74: 743
-New serial for C22: 753 and C74: 743
-2 identical serial for C22: 753 and C75: 753
-New serial for C22: 763 and C75: 753
-2 identical serial for C22: 763 and C76: 763
-New serial for C22: 773 and C76: 763
-2 identical serial for C22: 773 and C77: 773
-New serial for C22: 783 and C77: 773
-2 identical serial for C22: 783 and C78: 783
-New serial for C22: 793 and C78: 783
-2 identical serial for C22: 793 and C79: 793
-New serial for C22: 803 and C79: 793
-2 identical serial for C22: 803 and C80: 803
-New serial for C22: 813 and C80: 803
-2 identical serial for C22: 813 and C81: 813
-New serial for C22: 823 and C81: 813
-2 identical serial for C22: 823 and C82: 823
-New serial for C22: 833 and C82: 823
-2 identical serial for C22: 833 and C32: 833
-New serial for C22: 843 and C32: 833
-2 identical serial for C22: 843 and C31: 843
-New serial for C22: 853 and C31: 843
-2 identical serial for C21: 213 and C02A: 213
-New serial for C21: 223 and C02A: 213
-2 identical serial for C21: 223 and C02B: 223
-New serial for C21: 233 and C02B: 223
-2 identical serial for C21: 233 and C23: 233
-New serial for C21: 243 and C23: 233
-2 identical serial for C21: 243 and C24: 243
-New serial for C21: 253 and C24: 243
-2 identical serial for C21: 253 and C25: 253
-New serial for C21: 263 and C25: 253
-2 identical serial for C21: 263 and C26: 263
-New serial for C21: 273 and C26: 263
-2 identical serial for C21: 273 and C27: 273
-New serial for C21: 283 and C27: 273
-2 identical serial for C21: 283 and C28: 283
-New serial for C21: 293 and C28: 283
-2 identical serial for C21: 293 and C29: 293
-New serial for C21: 303 and C29: 293
-2 identical serial for C21: 303 and C30: 303
-New serial for C21: 313 and C30: 303
-2 identical serial for C21: 313 and C03A: 313
-New serial for C21: 323 and C03A: 313
-2 identical serial for C21: 323 and C03B: 323
-New serial for C21: 333 and C03B: 323
-2 identical serial for C21: 333 and C33: 333
-New serial for C21: 343 and C33: 333
-2 identical serial for C21: 343 and C34: 343
-New serial for C21: 353 and C34: 343
-2 identical serial for C21: 353 and C35: 353
-New serial for C21: 363 and C35: 353
-2 identical serial for C21: 363 and C36: 363
-New serial for C21: 373 and C36: 363
-2 identical serial for C21: 373 and C37: 373
-New serial for C21: 383 and C37: 373
-2 identical serial for C21: 383 and C38: 383
-New serial for C21: 393 and C38: 383
-2 identical serial for C21: 393 and C39: 393
-New serial for C21: 403 and C39: 393
-2 identical serial for C21: 403 and C40: 403
-New serial for C21: 413 and C40: 403
-2 identical serial for C21: 413 and C41: 413
-New serial for C21: 423 and C41: 413
-2 identical serial for C21: 423 and C42: 423
-New serial for C21: 433 and C42: 423
-2 identical serial for C21: 433 and C43: 433
-New serial for C21: 443 and C43: 433
-2 identical serial for C21: 443 and C44: 443
-New serial for C21: 453 and C44: 443
-2 identical serial for C21: 453 and C45: 453
-New serial for C21: 463 and C45: 453
-2 identical serial for C21: 463 and C46: 463
-New serial for C21: 473 and C46: 463
-2 identical serial for C21: 473 and C47: 473
-New serial for C21: 483 and C47: 473
-2 identical serial for C21: 483 and C48: 483
-New serial for C21: 493 and C48: 483
-2 identical serial for C21: 493 and C49: 493
-New serial for C21: 503 and C49: 493
-2 identical serial for C21: 503 and C50: 503
-New serial for C21: 513 and C50: 503
-2 identical serial for C21: 513 and C51: 513
-New serial for C21: 523 and C51: 513
-2 identical serial for C21: 523 and C52: 523
-New serial for C21: 533 and C52: 523
-2 identical serial for C21: 533 and C53: 533
-New serial for C21: 543 and C53: 533
-2 identical serial for C21: 543 and C54: 543
-New serial for C21: 553 and C54: 543
-2 identical serial for C21: 553 and C55: 553
-New serial for C21: 563 and C55: 553
-2 identical serial for C21: 563 and C56: 563
-New serial for C21: 573 and C56: 563
-2 identical serial for C21: 573 and C57: 573
-New serial for C21: 583 and C57: 573
-2 identical serial for C21: 583 and C58: 583
-New serial for C21: 593 and C58: 583
-2 identical serial for C21: 593 and C59: 593
-New serial for C21: 603 and C59: 593
-2 identical serial for C21: 603 and C60: 603
-New serial for C21: 613 and C60: 603
-2 identical serial for C21: 613 and C61: 613
-New serial for C21: 623 and C61: 613
-2 identical serial for C21: 623 and C62: 623
-New serial for C21: 633 and C62: 623
-2 identical serial for C21: 633 and C63: 633
-New serial for C21: 643 and C63: 633
-2 identical serial for C21: 643 and C64: 643
-New serial for C21: 653 and C64: 643
-2 identical serial for C21: 653 and C65: 653
-New serial for C21: 663 and C65: 653
-2 identical serial for C21: 663 and C66: 663
-New serial for C21: 673 and C66: 663
-2 identical serial for C21: 673 and C67: 673
-New serial for C21: 683 and C67: 673
-2 identical serial for C21: 683 and C68: 683
-New serial for C21: 693 and C68: 683
-2 identical serial for C21: 693 and C69: 693
-New serial for C21: 703 and C69: 693
-2 identical serial for C21: 703 and C70: 703
-New serial for C21: 713 and C70: 703
-2 identical serial for C21: 713 and C71: 713
-New serial for C21: 723 and C71: 713
-2 identical serial for C21: 723 and C72: 723
-New serial for C21: 733 and C72: 723
-2 identical serial for C21: 733 and C73: 733
-New serial for C21: 743 and C73: 733
-2 identical serial for C21: 743 and C74: 743
-New serial for C21: 753 and C74: 743
-2 identical serial for C21: 753 and C75: 753
-New serial for C21: 763 and C75: 753
-2 identical serial for C21: 763 and C76: 763
-New serial for C21: 773 and C76: 763
-2 identical serial for C21: 773 and C77: 773
-New serial for C21: 783 and C77: 773
-2 identical serial for C21: 783 and C78: 783
-New serial for C21: 793 and C78: 783
-2 identical serial for C21: 793 and C79: 793
-New serial for C21: 803 and C79: 793
-2 identical serial for C21: 803 and C80: 803
-New serial for C21: 813 and C80: 803
-2 identical serial for C21: 813 and C81: 813
-New serial for C21: 823 and C81: 813
-2 identical serial for C21: 823 and C82: 823
-New serial for C21: 833 and C82: 823
-2 identical serial for C21: 833 and C32: 833
-New serial for C21: 843 and C32: 833
-2 identical serial for C21: 843 and C31: 843
-New serial for C21: 853 and C31: 843
-2 identical serial for C21: 853 and C22: 853
-New serial for C21: 863 and C22: 853
-2 identical serial for C1B: 121 and C01B: 121
-New serial for C1B: 131 and C01B: 121
-2 identical serial for N1A: 111 and N01A: 111
-New serial for N1A: 121 and N01A: 111
-2 identical serial for N1A: 121 and N1B: 121
-New serial for N1A: 131 and N1B: 121
-2 identical serial for C4A: 411 and C04A: 411
-New serial for C4A: 421 and C04A: 411
-2 identical serial for C4A: 421 and C4B: 421
-New serial for C4A: 431 and C4B: 421
-2 identical serial for C1A: 111 and C01A: 111
-New serial for C1A: 121 and C01A: 111
-2 identical serial for C1A: 121 and C01B: 121
-New serial for C1A: 131 and C01B: 121
-2 identical serial for C1A: 131 and C1B: 131
-New serial for C1A: 141 and C1B: 131
-2 identical serial for H37: 371 and H3G: 371
-New serial for H37: 381 and H3G: 371
-2 identical serial for C32: 321 and C3B: 321
-New serial for C32: 331 and C3B: 321
-2 identical serial for C32: 331 and C33: 331
-New serial for C32: 341 and C33: 331
-2 identical serial for C32: 341 and C34: 341
-New serial for C32: 351 and C34: 341
-2 identical serial for C32: 351 and C35: 351
-New serial for C32: 361 and C35: 351
-2 identical serial for C32: 361 and C36: 361
-New serial for C32: 371 and C36: 361
-2 identical serial for C32: 371 and C37: 371
-New serial for C32: 381 and C37: 371
-2 identical serial for C32: 381 and C38: 381
-New serial for C32: 391 and C38: 381
-2 identical serial for C32: 391 and C39: 391
-New serial for C32: 401 and C39: 391
-2 identical serial for C32: 401 and C40: 401
-New serial for C32: 411 and C40: 401
-2 identical serial for C32: 411 and C04A: 411
-New serial for C32: 421 and C04A: 411
-2 identical serial for C32: 421 and C4B: 421
-New serial for C32: 431 and C4B: 421
-2 identical serial for C32: 431 and C4A: 431
-New serial for C32: 441 and C4A: 431
-2 identical serial for C31: 311 and C3A: 311
-New serial for C31: 321 and C3A: 311
-2 identical serial for C31: 321 and C3B: 321
-New serial for C31: 331 and C3B: 321
-2 identical serial for C31: 331 and C33: 331
-New serial for C31: 341 and C33: 331
-2 identical serial for C31: 341 and C34: 341
-New serial for C31: 351 and C34: 341
-2 identical serial for C31: 351 and C35: 351
-New serial for C31: 361 and C35: 351
-2 identical serial for C31: 361 and C36: 361
-New serial for C31: 371 and C36: 361
-2 identical serial for C31: 371 and C37: 371
-New serial for C31: 381 and C37: 371
-2 identical serial for C31: 381 and C38: 381
-New serial for C31: 391 and C38: 381
-2 identical serial for C31: 391 and C39: 391
-New serial for C31: 401 and C39: 391
-2 identical serial for C31: 401 and C40: 401
-New serial for C31: 411 and C40: 401
-2 identical serial for C31: 411 and C04A: 411
-New serial for C31: 421 and C04A: 411
-2 identical serial for C31: 421 and C4B: 421
-New serial for C31: 431 and C4B: 421
-2 identical serial for C31: 431 and C4A: 431
-New serial for C31: 441 and C4A: 431
-2 identical serial for C31: 441 and C32: 441
-New serial for C31: 451 and C32: 441
-2 identical serial for C22: 221 and C2B: 221
-New serial for C22: 231 and C2B: 221
-2 identical serial for C22: 231 and C23: 231
-New serial for C22: 241 and C23: 231
-2 identical serial for C22: 241 and C24: 241
-New serial for C22: 251 and C24: 241
-2 identical serial for C22: 251 and C25: 251
-New serial for C22: 261 and C25: 251
-2 identical serial for C22: 261 and C26: 261
-New serial for C22: 271 and C26: 261
-2 identical serial for C22: 271 and C27: 271
-New serial for C22: 281 and C27: 271
-2 identical serial for C22: 281 and C28: 281
-New serial for C22: 291 and C28: 281
-2 identical serial for C22: 291 and C29: 291
-New serial for C22: 301 and C29: 291
-2 identical serial for C22: 301 and C30: 301
-New serial for C22: 311 and C30: 301
-2 identical serial for C22: 311 and C3A: 311
-New serial for C22: 321 and C3A: 311
-2 identical serial for C22: 321 and C3B: 321
-New serial for C22: 331 and C3B: 321
-2 identical serial for C22: 331 and C33: 331
-New serial for C22: 341 and C33: 331
-2 identical serial for C22: 341 and C34: 341
-New serial for C22: 351 and C34: 341
-2 identical serial for C22: 351 and C35: 351
-New serial for C22: 361 and C35: 351
-2 identical serial for C22: 361 and C36: 361
-New serial for C22: 371 and C36: 361
-2 identical serial for C22: 371 and C37: 371
-New serial for C22: 381 and C37: 371
-2 identical serial for C22: 381 and C38: 381
-New serial for C22: 391 and C38: 381
-2 identical serial for C22: 391 and C39: 391
-New serial for C22: 401 and C39: 391
-2 identical serial for C22: 401 and C40: 401
-New serial for C22: 411 and C40: 401
-2 identical serial for C22: 411 and C04A: 411
-New serial for C22: 421 and C04A: 411
-2 identical serial for C22: 421 and C4B: 421
-New serial for C22: 431 and C4B: 421
-2 identical serial for C22: 431 and C4A: 431
-New serial for C22: 441 and C4A: 431
-2 identical serial for C22: 441 and C32: 441
-New serial for C22: 451 and C32: 441
-2 identical serial for C22: 451 and C31: 451
-New serial for C22: 461 and C31: 451
-2 identical serial for C21: 211 and C2A: 211
-New serial for C21: 221 and C2A: 211
-2 identical serial for C21: 221 and C2B: 221
-New serial for C21: 231 and C2B: 221
-2 identical serial for C21: 231 and C23: 231
-New serial for C21: 241 and C23: 231
-2 identical serial for C21: 241 and C24: 241
-New serial for C21: 251 and C24: 241
-2 identical serial for C21: 251 and C25: 251
-New serial for C21: 261 and C25: 251
-2 identical serial for C21: 261 and C26: 261
-New serial for C21: 271 and C26: 261
-2 identical serial for C21: 271 and C27: 271
-New serial for C21: 281 and C27: 271
-2 identical serial for C21: 281 and C28: 281
-New serial for C21: 291 and C28: 281
-2 identical serial for C21: 291 and C29: 291
-New serial for C21: 301 and C29: 291
-2 identical serial for C21: 301 and C30: 301
-New serial for C21: 311 and C30: 301
-2 identical serial for C21: 311 and C3A: 311
-New serial for C21: 321 and C3A: 311
-2 identical serial for C21: 321 and C3B: 321
-New serial for C21: 331 and C3B: 321
-2 identical serial for C21: 331 and C33: 331
-New serial for C21: 341 and C33: 331
-2 identical serial for C21: 341 and C34: 341
-New serial for C21: 351 and C34: 341
-2 identical serial for C21: 351 and C35: 351
-New serial for C21: 361 and C35: 351
-2 identical serial for C21: 361 and C36: 361
-New serial for C21: 371 and C36: 361
-2 identical serial for C21: 371 and C37: 371
-New serial for C21: 381 and C37: 371
-2 identical serial for C21: 381 and C38: 381
-New serial for C21: 391 and C38: 381
-2 identical serial for C21: 391 and C39: 391
-New serial for C21: 401 and C39: 391
-2 identical serial for C21: 401 and C40: 401
-New serial for C21: 411 and C40: 401
-2 identical serial for C21: 411 and C04A: 411
-New serial for C21: 421 and C04A: 411
-2 identical serial for C21: 421 and C4B: 421
-New serial for C21: 431 and C4B: 421
-2 identical serial for C21: 431 and C4A: 431
-New serial for C21: 441 and C4A: 431
-2 identical serial for C21: 441 and C32: 441
-New serial for C21: 451 and C32: 441
-2 identical serial for C21: 451 and C31: 451
-New serial for C21: 461 and C31: 451
-2 identical serial for C21: 461 and C22: 461
-New serial for C21: 471 and C22: 461
-2 identical serial for C14: 141 and C1A: 141
-New serial for C14: 151 and C1A: 141
-2 identical serial for C14: 151 and C15: 151
-New serial for C14: 161 and C15: 151
-2 identical serial for C14: 161 and C16: 161
-New serial for C14: 171 and C16: 161
-2 identical serial for C14: 171 and C17: 171
-New serial for C14: 181 and C17: 171
-2 identical serial for C14: 181 and C18: 181
-New serial for C14: 191 and C18: 181
-2 identical serial for C14: 191 and C19: 191
-New serial for C14: 201 and C19: 191
-2 identical serial for C14: 201 and C20: 201
-New serial for C14: 211 and C20: 201
-2 identical serial for C14: 211 and C2A: 211
-New serial for C14: 221 and C2A: 211
-2 identical serial for C14: 221 and C2B: 221
-New serial for C14: 231 and C2B: 221
-2 identical serial for C14: 231 and C23: 231
-New serial for C14: 241 and C23: 231
-2 identical serial for C14: 241 and C24: 241
-New serial for C14: 251 and C24: 241
-2 identical serial for C14: 251 and C25: 251
-New serial for C14: 261 and C25: 251
-2 identical serial for C14: 261 and C26: 261
-New serial for C14: 271 and C26: 261
-2 identical serial for C14: 271 and C27: 271
-New serial for C14: 281 and C27: 271
-2 identical serial for C14: 281 and C28: 281
-New serial for C14: 291 and C28: 281
-2 identical serial for C14: 291 and C29: 291
-New serial for C14: 301 and C29: 291
-2 identical serial for C14: 301 and C30: 301
-New serial for C14: 311 and C30: 301
-2 identical serial for C14: 311 and C3A: 311
-New serial for C14: 321 and C3A: 311
-2 identical serial for C14: 321 and C3B: 321
-New serial for C14: 331 and C3B: 321
-2 identical serial for C14: 331 and C33: 331
-New serial for C14: 341 and C33: 331
-2 identical serial for C14: 341 and C34: 341
-New serial for C14: 351 and C34: 341
-2 identical serial for C14: 351 and C35: 351
-New serial for C14: 361 and C35: 351
-2 identical serial for C14: 361 and C36: 361
-New serial for C14: 371 and C36: 361
-2 identical serial for C14: 371 and C37: 371
-New serial for C14: 381 and C37: 371
-2 identical serial for C14: 381 and C38: 381
-New serial for C14: 391 and C38: 381
-2 identical serial for C14: 391 and C39: 391
-New serial for C14: 401 and C39: 391
-2 identical serial for C14: 401 and C40: 401
-New serial for C14: 411 and C40: 401
-2 identical serial for C14: 411 and C04A: 411
-New serial for C14: 421 and C04A: 411
-2 identical serial for C14: 421 and C4B: 421
-New serial for C14: 431 and C4B: 421
-2 identical serial for C14: 431 and C4A: 431
-New serial for C14: 441 and C4A: 431
-2 identical serial for C14: 441 and C32: 441
-New serial for C14: 451 and C32: 441
-2 identical serial for C14: 451 and C31: 451
-New serial for C14: 461 and C31: 451
-2 identical serial for C14: 461 and C22: 461
-New serial for C14: 471 and C22: 461
-2 identical serial for C14: 471 and C21: 471
-New serial for C14: 481 and C21: 471
-2 identical serial for C13: 131 and C1B: 131
-New serial for C13: 141 and C1B: 131
-2 identical serial for C13: 141 and C1A: 141
-New serial for C13: 151 and C1A: 141
-2 identical serial for C13: 151 and C15: 151
-New serial for C13: 161 and C15: 151
-2 identical serial for C13: 161 and C16: 161
-New serial for C13: 171 and C16: 161
-2 identical serial for C13: 171 and C17: 171
-New serial for C13: 181 and C17: 171
-2 identical serial for C13: 181 and C18: 181
-New serial for C13: 191 and C18: 181
-2 identical serial for C13: 191 and C19: 191
-New serial for C13: 201 and C19: 191
-2 identical serial for C13: 201 and C20: 201
-New serial for C13: 211 and C20: 201
-2 identical serial for C13: 211 and C2A: 211
-New serial for C13: 221 and C2A: 211
-2 identical serial for C13: 221 and C2B: 221
-New serial for C13: 231 and C2B: 221
-2 identical serial for C13: 231 and C23: 231
-New serial for C13: 241 and C23: 231
-2 identical serial for C13: 241 and C24: 241
-New serial for C13: 251 and C24: 241
-2 identical serial for C13: 251 and C25: 251
-New serial for C13: 261 and C25: 251
-2 identical serial for C13: 261 and C26: 261
-New serial for C13: 271 and C26: 261
-2 identical serial for C13: 271 and C27: 271
-New serial for C13: 281 and C27: 271
-2 identical serial for C13: 281 and C28: 281
-New serial for C13: 291 and C28: 281
-2 identical serial for C13: 291 and C29: 291
-New serial for C13: 301 and C29: 291
-2 identical serial for C13: 301 and C30: 301
-New serial for C13: 311 and C30: 301
-2 identical serial for C13: 311 and C3A: 311
-New serial for C13: 321 and C3A: 311
-2 identical serial for C13: 321 and C3B: 321
-New serial for C13: 331 and C3B: 321
-2 identical serial for C13: 331 and C33: 331
-New serial for C13: 341 and C33: 331
-2 identical serial for C13: 341 and C34: 341
-New serial for C13: 351 and C34: 341
-2 identical serial for C13: 351 and C35: 351
-New serial for C13: 361 and C35: 351
-2 identical serial for C13: 361 and C36: 361
-New serial for C13: 371 and C36: 361
-2 identical serial for C13: 371 and C37: 371
-New serial for C13: 381 and C37: 371
-2 identical serial for C13: 381 and C38: 381
-New serial for C13: 391 and C38: 381
-2 identical serial for C13: 391 and C39: 391
-New serial for C13: 401 and C39: 391
-2 identical serial for C13: 401 and C40: 401
-New serial for C13: 411 and C40: 401
-2 identical serial for C13: 411 and C04A: 411
-New serial for C13: 421 and C04A: 411
-2 identical serial for C13: 421 and C4B: 421
-New serial for C13: 431 and C4B: 421
-2 identical serial for C13: 431 and C4A: 431
-New serial for C13: 441 and C4A: 431
-2 identical serial for C13: 441 and C32: 441
-New serial for C13: 451 and C32: 441
-2 identical serial for C13: 451 and C31: 451
-New serial for C13: 461 and C31: 451
-2 identical serial for C13: 461 and C22: 461
-New serial for C13: 471 and C22: 461
-2 identical serial for C13: 471 and C21: 471
-New serial for C13: 481 and C21: 471
-2 identical serial for C13: 481 and C14: 481
-New serial for C13: 491 and C14: 481
-2 identical serial for C12: 121 and C01B: 121
-New serial for C12: 131 and C01B: 121
-2 identical serial for C12: 131 and C1B: 131
-New serial for C12: 141 and C1B: 131
-2 identical serial for C12: 141 and C1A: 141
-New serial for C12: 151 and C1A: 141
-2 identical serial for C12: 151 and C15: 151
-New serial for C12: 161 and C15: 151
-2 identical serial for C12: 161 and C16: 161
-New serial for C12: 171 and C16: 161
-2 identical serial for C12: 171 and C17: 171
-New serial for C12: 181 and C17: 171
-2 identical serial for C12: 181 and C18: 181
-New serial for C12: 191 and C18: 181
-2 identical serial for C12: 191 and C19: 191
-New serial for C12: 201 and C19: 191
-2 identical serial for C12: 201 and C20: 201
-New serial for C12: 211 and C20: 201
-2 identical serial for C12: 211 and C2A: 211
-New serial for C12: 221 and C2A: 211
-2 identical serial for C12: 221 and C2B: 221
-New serial for C12: 231 and C2B: 221
-2 identical serial for C12: 231 and C23: 231
-New serial for C12: 241 and C23: 231
-2 identical serial for C12: 241 and C24: 241
-New serial for C12: 251 and C24: 241
-2 identical serial for C12: 251 and C25: 251
-New serial for C12: 261 and C25: 251
-2 identical serial for C12: 261 and C26: 261
-New serial for C12: 271 and C26: 261
-2 identical serial for C12: 271 and C27: 271
-New serial for C12: 281 and C27: 271
-2 identical serial for C12: 281 and C28: 281
-New serial for C12: 291 and C28: 281
-2 identical serial for C12: 291 and C29: 291
-New serial for C12: 301 and C29: 291
-2 identical serial for C12: 301 and C30: 301
-New serial for C12: 311 and C30: 301
-2 identical serial for C12: 311 and C3A: 311
-New serial for C12: 321 and C3A: 311
-2 identical serial for C12: 321 and C3B: 321
-New serial for C12: 331 and C3B: 321
-2 identical serial for C12: 331 and C33: 331
-New serial for C12: 341 and C33: 331
-2 identical serial for C12: 341 and C34: 341
-New serial for C12: 351 and C34: 341
-2 identical serial for C12: 351 and C35: 351
-New serial for C12: 361 and C35: 351
-2 identical serial for C12: 361 and C36: 361
-New serial for C12: 371 and C36: 361
-2 identical serial for C12: 371 and C37: 371
-New serial for C12: 381 and C37: 371
-2 identical serial for C12: 381 and C38: 381
-New serial for C12: 391 and C38: 381
-2 identical serial for C12: 391 and C39: 391
-New serial for C12: 401 and C39: 391
-2 identical serial for C12: 401 and C40: 401
-New serial for C12: 411 and C40: 401
-2 identical serial for C12: 411 and C04A: 411
-New serial for C12: 421 and C04A: 411
-2 identical serial for C12: 421 and C4B: 421
-New serial for C12: 431 and C4B: 421
-2 identical serial for C12: 431 and C4A: 431
-New serial for C12: 441 and C4A: 431
-2 identical serial for C12: 441 and C32: 441
-New serial for C12: 451 and C32: 441
-2 identical serial for C12: 451 and C31: 451
-New serial for C12: 461 and C31: 451
-2 identical serial for C12: 461 and C22: 461
-New serial for C12: 471 and C22: 461
-2 identical serial for C12: 471 and C21: 471
-New serial for C12: 481 and C21: 471
-2 identical serial for C12: 481 and C14: 481
-New serial for C12: 491 and C14: 481
-2 identical serial for C12: 491 and C13: 491
-New serial for C12: 501 and C13: 491
-2 identical serial for C11: 111 and C01A: 111
-New serial for C11: 121 and C01A: 111
-2 identical serial for C11: 121 and C01B: 121
-New serial for C11: 131 and C01B: 121
-2 identical serial for C11: 131 and C1B: 131
-New serial for C11: 141 and C1B: 131
-2 identical serial for C11: 141 and C1A: 141
-New serial for C11: 151 and C1A: 141
-2 identical serial for C11: 151 and C15: 151
-New serial for C11: 161 and C15: 151
-2 identical serial for C11: 161 and C16: 161
-New serial for C11: 171 and C16: 161
-2 identical serial for C11: 171 and C17: 171
-New serial for C11: 181 and C17: 171
-2 identical serial for C11: 181 and C18: 181
-New serial for C11: 191 and C18: 181
-2 identical serial for C11: 191 and C19: 191
-New serial for C11: 201 and C19: 191
-2 identical serial for C11: 201 and C20: 201
-New serial for C11: 211 and C20: 201
-2 identical serial for C11: 211 and C2A: 211
-New serial for C11: 221 and C2A: 211
-2 identical serial for C11: 221 and C2B: 221
-New serial for C11: 231 and C2B: 221
-2 identical serial for C11: 231 and C23: 231
-New serial for C11: 241 and C23: 231
-2 identical serial for C11: 241 and C24: 241
-New serial for C11: 251 and C24: 241
-2 identical serial for C11: 251 and C25: 251
-New serial for C11: 261 and C25: 251
-2 identical serial for C11: 261 and C26: 261
-New serial for C11: 271 and C26: 261
-2 identical serial for C11: 271 and C27: 271
-New serial for C11: 281 and C27: 271
-2 identical serial for C11: 281 and C28: 281
-New serial for C11: 291 and C28: 281
-2 identical serial for C11: 291 and C29: 291
-New serial for C11: 301 and C29: 291
-2 identical serial for C11: 301 and C30: 301
-New serial for C11: 311 and C30: 301
-2 identical serial for C11: 311 and C3A: 311
-New serial for C11: 321 and C3A: 311
-2 identical serial for C11: 321 and C3B: 321
-New serial for C11: 331 and C3B: 321
-2 identical serial for C11: 331 and C33: 331
-New serial for C11: 341 and C33: 331
-2 identical serial for C11: 341 and C34: 341
-New serial for C11: 351 and C34: 341
-2 identical serial for C11: 351 and C35: 351
-New serial for C11: 361 and C35: 351
-2 identical serial for C11: 361 and C36: 361
-New serial for C11: 371 and C36: 361
-2 identical serial for C11: 371 and C37: 371
-New serial for C11: 381 and C37: 371
-2 identical serial for C11: 381 and C38: 381
-New serial for C11: 391 and C38: 381
-2 identical serial for C11: 391 and C39: 391
-New serial for C11: 401 and C39: 391
-2 identical serial for C11: 401 and C40: 401
-New serial for C11: 411 and C40: 401
-2 identical serial for C11: 411 and C04A: 411
-New serial for C11: 421 and C04A: 411
-2 identical serial for C11: 421 and C4B: 421
-New serial for C11: 431 and C4B: 421
-2 identical serial for C11: 431 and C4A: 431
-New serial for C11: 441 and C4A: 431
-2 identical serial for C11: 441 and C32: 441
-New serial for C11: 451 and C32: 441
-2 identical serial for C11: 451 and C31: 451
-New serial for C11: 461 and C31: 451
-2 identical serial for C11: 461 and C22: 461
-New serial for C11: 471 and C22: 461
-2 identical serial for C11: 471 and C21: 471
-New serial for C11: 481 and C21: 471
-2 identical serial for C11: 481 and C14: 481
-New serial for C11: 491 and C14: 481
-2 identical serial for C11: 491 and C13: 491
-New serial for C11: 501 and C13: 491
-2 identical serial for C11: 501 and C12: 501
-New serial for C11: 511 and C12: 501
-2 identical serial for C11: 511 and C5A: 511
-New serial for C11: 521 and C5A: 511
-2 identical serial for C11: 521 and C5B: 521
-New serial for C11: 531 and C5B: 521
-2 identical serial for C62: 621 and C6B: 621
-New serial for C62: 631 and C6B: 621
-2 identical serial for C62: 631 and C63: 631
-New serial for C62: 641 and C63: 631
-2 identical serial for C61: 611 and C6A: 611
-New serial for C61: 621 and C6A: 611
-2 identical serial for C61: 621 and C6B: 621
-New serial for C61: 631 and C6B: 621
-2 identical serial for C61: 631 and C63: 631
-New serial for C61: 641 and C63: 631
-2 identical serial for C61: 641 and C62: 641
-New serial for C61: 651 and C62: 641
-2 identical serial for C65: 651 and C61: 651
-New serial for C65: 661 and C61: 651
-2 identical serial for C65: 661 and C66: 661
-New serial for C65: 671 and C66: 661
-2 identical serial for C65: 671 and C67: 671
-New serial for C65: 681 and C67: 671
-2 identical serial for C64: 641 and C62: 641
-New serial for C64: 651 and C62: 641
-2 identical serial for C64: 651 and C61: 651
-New serial for C64: 661 and C61: 651
-2 identical serial for C64: 661 and C66: 661
-New serial for C64: 671 and C66: 661
-2 identical serial for C64: 671 and C67: 671
-New serial for C64: 681 and C67: 671
-2 identical serial for C64: 681 and C65: 681
-New serial for C64: 691 and C65: 681
-2 identical serial for C52: 521 and C5B: 521
-New serial for C52: 531 and C5B: 521
-2 identical serial for C52: 531 and C11: 531
-New serial for C52: 541 and C11: 531
-2 identical serial for C51: 511 and C5A: 511
-New serial for C51: 521 and C5A: 511
-2 identical serial for C51: 521 and C5B: 521
-New serial for C51: 531 and C5B: 521
-2 identical serial for C51: 531 and C11: 531
-New serial for C51: 541 and C11: 531
-2 identical serial for C51: 541 and C52: 541
-New serial for C51: 551 and C52: 541
-2 identical serial for C50: 501 and C12: 501
-New serial for C50: 511 and C12: 501
-2 identical serial for C50: 511 and C5A: 511
-New serial for C50: 521 and C5A: 511
-2 identical serial for C50: 521 and C5B: 521
-New serial for C50: 531 and C5B: 521
-2 identical serial for C50: 531 and C11: 531
-New serial for C50: 541 and C11: 531
-2 identical serial for C50: 541 and C52: 541
-New serial for C50: 551 and C52: 541
-2 identical serial for C50: 551 and C51: 551
-New serial for C50: 561 and C51: 551
-2 identical serial for C49: 491 and C13: 491
-New serial for C49: 501 and C13: 491
-2 identical serial for C49: 501 and C12: 501
-New serial for C49: 511 and C12: 501
-2 identical serial for C49: 511 and C5A: 511
-New serial for C49: 521 and C5A: 511
-2 identical serial for C49: 521 and C5B: 521
-New serial for C49: 531 and C5B: 521
-2 identical serial for C49: 531 and C11: 531
-New serial for C49: 541 and C11: 531
-2 identical serial for C49: 541 and C52: 541
-New serial for C49: 551 and C52: 541
-2 identical serial for C49: 551 and C51: 551
-New serial for C49: 561 and C51: 551
-2 identical serial for C49: 561 and C50: 561
-New serial for C49: 571 and C50: 561
-2 identical serial for C48: 481 and C14: 481
-New serial for C48: 491 and C14: 481
-2 identical serial for C48: 491 and C13: 491
-New serial for C48: 501 and C13: 491
-2 identical serial for C48: 501 and C12: 501
-New serial for C48: 511 and C12: 501
-2 identical serial for C48: 511 and C5A: 511
-New serial for C48: 521 and C5A: 511
-2 identical serial for C48: 521 and C5B: 521
-New serial for C48: 531 and C5B: 521
-2 identical serial for C48: 531 and C11: 531
-New serial for C48: 541 and C11: 531
-2 identical serial for C48: 541 and C52: 541
-New serial for C48: 551 and C52: 541
-2 identical serial for C48: 551 and C51: 551
-New serial for C48: 561 and C51: 551
-2 identical serial for C48: 561 and C50: 561
-New serial for C48: 571 and C50: 561
-2 identical serial for C48: 571 and C49: 571
-New serial for C48: 581 and C49: 571
-2 identical serial for C47: 471 and C21: 471
-New serial for C47: 481 and C21: 471
-2 identical serial for C47: 481 and C14: 481
-New serial for C47: 491 and C14: 481
-2 identical serial for C47: 491 and C13: 491
-New serial for C47: 501 and C13: 491
-2 identical serial for C47: 501 and C12: 501
-New serial for C47: 511 and C12: 501
-2 identical serial for C47: 511 and C5A: 511
-New serial for C47: 521 and C5A: 511
-2 identical serial for C47: 521 and C5B: 521
-New serial for C47: 531 and C5B: 521
-2 identical serial for C47: 531 and C11: 531
-New serial for C47: 541 and C11: 531
-2 identical serial for C47: 541 and C52: 541
-New serial for C47: 551 and C52: 541
-2 identical serial for C47: 551 and C51: 551
-New serial for C47: 561 and C51: 551
-2 identical serial for C47: 561 and C50: 561
-New serial for C47: 571 and C50: 561
-2 identical serial for C47: 571 and C49: 571
-New serial for C47: 581 and C49: 571
-2 identical serial for C47: 581 and C48: 581
-New serial for C47: 591 and C48: 581
-2 identical serial for C59: 591 and C47: 591
-New serial for C59: 601 and C47: 591
-2 identical serial for C59: 601 and C60: 601
-New serial for C59: 611 and C60: 601
-2 identical serial for C59: 611 and C6A: 611
-New serial for C59: 621 and C6A: 611
-2 identical serial for C59: 621 and C6B: 621
-New serial for C59: 631 and C6B: 621
-2 identical serial for C59: 631 and C63: 631
-New serial for C59: 641 and C63: 631
-2 identical serial for C59: 641 and C62: 641
-New serial for C59: 651 and C62: 641
-2 identical serial for C59: 651 and C61: 651
-New serial for C59: 661 and C61: 651
-2 identical serial for C59: 661 and C66: 661
-New serial for C59: 671 and C66: 661
-2 identical serial for C59: 671 and C67: 671
-New serial for C59: 681 and C67: 671
-2 identical serial for C59: 681 and C65: 681
-New serial for C59: 691 and C65: 681
-2 identical serial for C59: 691 and C64: 691
-New serial for C59: 701 and C64: 691
-2 identical serial for C58: 581 and C48: 581
-New serial for C58: 591 and C48: 581
-2 identical serial for C58: 591 and C47: 591
-New serial for C58: 601 and C47: 591
-2 identical serial for C58: 601 and C60: 601
-New serial for C58: 611 and C60: 601
-2 identical serial for C58: 611 and C6A: 611
-New serial for C58: 621 and C6A: 611
-2 identical serial for C58: 621 and C6B: 621
-New serial for C58: 631 and C6B: 621
-2 identical serial for C58: 631 and C63: 631
-New serial for C58: 641 and C63: 631
-2 identical serial for C58: 641 and C62: 641
-New serial for C58: 651 and C62: 641
-2 identical serial for C58: 651 and C61: 651
-New serial for C58: 661 and C61: 651
-2 identical serial for C58: 661 and C66: 661
-New serial for C58: 671 and C66: 661
-2 identical serial for C58: 671 and C67: 671
-New serial for C58: 681 and C67: 671
-2 identical serial for C58: 681 and C65: 681
-New serial for C58: 691 and C65: 681
-2 identical serial for C58: 691 and C64: 691
-New serial for C58: 701 and C64: 691
-2 identical serial for C58: 701 and C59: 701
-New serial for C58: 711 and C59: 701
-2 identical serial for C58: 711 and C7A: 711
-New serial for C58: 721 and C7A: 711
-2 identical serial for C58: 721 and C7B: 721
-New serial for C58: 731 and C7B: 721
-2 identical serial for C57: 571 and C49: 571
-New serial for C57: 581 and C49: 571
-2 identical serial for C57: 581 and C48: 581
-New serial for C57: 591 and C48: 581
-2 identical serial for C57: 591 and C47: 591
-New serial for C57: 601 and C47: 591
-2 identical serial for C57: 601 and C60: 601
-New serial for C57: 611 and C60: 601
-2 identical serial for C57: 611 and C6A: 611
-New serial for C57: 621 and C6A: 611
-2 identical serial for C57: 621 and C6B: 621
-New serial for C57: 631 and C6B: 621
-2 identical serial for C57: 631 and C63: 631
-New serial for C57: 641 and C63: 631
-2 identical serial for C57: 641 and C62: 641
-New serial for C57: 651 and C62: 641
-2 identical serial for C57: 651 and C61: 651
-New serial for C57: 661 and C61: 651
-2 identical serial for C57: 661 and C66: 661
-New serial for C57: 671 and C66: 661
-2 identical serial for C57: 671 and C67: 671
-New serial for C57: 681 and C67: 671
-2 identical serial for C57: 681 and C65: 681
-New serial for C57: 691 and C65: 681
-2 identical serial for C57: 691 and C64: 691
-New serial for C57: 701 and C64: 691
-2 identical serial for C57: 701 and C59: 701
-New serial for C57: 711 and C59: 701
-2 identical serial for C57: 711 and C7A: 711
-New serial for C57: 721 and C7A: 711
-2 identical serial for C57: 721 and C7B: 721
-New serial for C57: 731 and C7B: 721
-2 identical serial for C57: 731 and C58: 731
-New serial for C57: 741 and C58: 731
-2 identical serial for C56: 561 and C50: 561
-New serial for C56: 571 and C50: 561
-2 identical serial for C56: 571 and C49: 571
-New serial for C56: 581 and C49: 571
-2 identical serial for C56: 581 and C48: 581
-New serial for C56: 591 and C48: 581
-2 identical serial for C56: 591 and C47: 591
-New serial for C56: 601 and C47: 591
-2 identical serial for C56: 601 and C60: 601
-New serial for C56: 611 and C60: 601
-2 identical serial for C56: 611 and C6A: 611
-New serial for C56: 621 and C6A: 611
-2 identical serial for C56: 621 and C6B: 621
-New serial for C56: 631 and C6B: 621
-2 identical serial for C56: 631 and C63: 631
-New serial for C56: 641 and C63: 631
-2 identical serial for C56: 641 and C62: 641
-New serial for C56: 651 and C62: 641
-2 identical serial for C56: 651 and C61: 651
-New serial for C56: 661 and C61: 651
-2 identical serial for C56: 661 and C66: 661
-New serial for C56: 671 and C66: 661
-2 identical serial for C56: 671 and C67: 671
-New serial for C56: 681 and C67: 671
-2 identical serial for C56: 681 and C65: 681
-New serial for C56: 691 and C65: 681
-2 identical serial for C56: 691 and C64: 691
-New serial for C56: 701 and C64: 691
-2 identical serial for C56: 701 and C59: 701
-New serial for C56: 711 and C59: 701
-2 identical serial for C56: 711 and C7A: 711
-New serial for C56: 721 and C7A: 711
-2 identical serial for C56: 721 and C7B: 721
-New serial for C56: 731 and C7B: 721
-2 identical serial for C56: 731 and C58: 731
-New serial for C56: 741 and C58: 731
-2 identical serial for C56: 741 and C57: 741
-New serial for C56: 751 and C57: 741
-2 identical serial for C55: 551 and C51: 551
-New serial for C55: 561 and C51: 551
-2 identical serial for C55: 561 and C50: 561
-New serial for C55: 571 and C50: 561
-2 identical serial for C55: 571 and C49: 571
-New serial for C55: 581 and C49: 571
-2 identical serial for C55: 581 and C48: 581
-New serial for C55: 591 and C48: 581
-2 identical serial for C55: 591 and C47: 591
-New serial for C55: 601 and C47: 591
-2 identical serial for C55: 601 and C60: 601
-New serial for C55: 611 and C60: 601
-2 identical serial for C55: 611 and C6A: 611
-New serial for C55: 621 and C6A: 611
-2 identical serial for C55: 621 and C6B: 621
-New serial for C55: 631 and C6B: 621
-2 identical serial for C55: 631 and C63: 631
-New serial for C55: 641 and C63: 631
-2 identical serial for C55: 641 and C62: 641
-New serial for C55: 651 and C62: 641
-2 identical serial for C55: 651 and C61: 651
-New serial for C55: 661 and C61: 651
-2 identical serial for C55: 661 and C66: 661
-New serial for C55: 671 and C66: 661
-2 identical serial for C55: 671 and C67: 671
-New serial for C55: 681 and C67: 671
-2 identical serial for C55: 681 and C65: 681
-New serial for C55: 691 and C65: 681
-2 identical serial for C55: 691 and C64: 691
-New serial for C55: 701 and C64: 691
-2 identical serial for C55: 701 and C59: 701
-New serial for C55: 711 and C59: 701
-2 identical serial for C55: 711 and C7A: 711
-New serial for C55: 721 and C7A: 711
-2 identical serial for C55: 721 and C7B: 721
-New serial for C55: 731 and C7B: 721
-2 identical serial for C55: 731 and C58: 731
-New serial for C55: 741 and C58: 731
-2 identical serial for C55: 741 and C57: 741
-New serial for C55: 751 and C57: 741
-2 identical serial for C55: 751 and C56: 751
-New serial for C55: 761 and C56: 751
-2 identical serial for C54: 541 and C52: 541
-New serial for C54: 551 and C52: 541
-2 identical serial for C54: 551 and C51: 551
-New serial for C54: 561 and C51: 551
-2 identical serial for C54: 561 and C50: 561
-New serial for C54: 571 and C50: 561
-2 identical serial for C54: 571 and C49: 571
-New serial for C54: 581 and C49: 571
-2 identical serial for C54: 581 and C48: 581
-New serial for C54: 591 and C48: 581
-2 identical serial for C54: 591 and C47: 591
-New serial for C54: 601 and C47: 591
-2 identical serial for C54: 601 and C60: 601
-New serial for C54: 611 and C60: 601
-2 identical serial for C54: 611 and C6A: 611
-New serial for C54: 621 and C6A: 611
-2 identical serial for C54: 621 and C6B: 621
-New serial for C54: 631 and C6B: 621
-2 identical serial for C54: 631 and C63: 631
-New serial for C54: 641 and C63: 631
-2 identical serial for C54: 641 and C62: 641
-New serial for C54: 651 and C62: 641
-2 identical serial for C54: 651 and C61: 651
-New serial for C54: 661 and C61: 651
-2 identical serial for C54: 661 and C66: 661
-New serial for C54: 671 and C66: 661
-2 identical serial for C54: 671 and C67: 671
-New serial for C54: 681 and C67: 671
-2 identical serial for C54: 681 and C65: 681
-New serial for C54: 691 and C65: 681
-2 identical serial for C54: 691 and C64: 691
-New serial for C54: 701 and C64: 691
-2 identical serial for C54: 701 and C59: 701
-New serial for C54: 711 and C59: 701
-2 identical serial for C54: 711 and C7A: 711
-New serial for C54: 721 and C7A: 711
-2 identical serial for C54: 721 and C7B: 721
-New serial for C54: 731 and C7B: 721
-2 identical serial for C54: 731 and C58: 731
-New serial for C54: 741 and C58: 731
-2 identical serial for C54: 741 and C57: 741
-New serial for C54: 751 and C57: 741
-2 identical serial for C54: 751 and C56: 751
-New serial for C54: 761 and C56: 751
-2 identical serial for C54: 761 and C55: 761
-New serial for C54: 771 and C55: 761
-2 identical serial for C53: 531 and C11: 531
-New serial for C53: 541 and C11: 531
-2 identical serial for C53: 541 and C52: 541
-New serial for C53: 551 and C52: 541
-2 identical serial for C53: 551 and C51: 551
-New serial for C53: 561 and C51: 551
-2 identical serial for C53: 561 and C50: 561
-New serial for C53: 571 and C50: 561
-2 identical serial for C53: 571 and C49: 571
-New serial for C53: 581 and C49: 571
-2 identical serial for C53: 581 and C48: 581
-New serial for C53: 591 and C48: 581
-2 identical serial for C53: 591 and C47: 591
-New serial for C53: 601 and C47: 591
-2 identical serial for C53: 601 and C60: 601
-New serial for C53: 611 and C60: 601
-2 identical serial for C53: 611 and C6A: 611
-New serial for C53: 621 and C6A: 611
-2 identical serial for C53: 621 and C6B: 621
-New serial for C53: 631 and C6B: 621
-2 identical serial for C53: 631 and C63: 631
-New serial for C53: 641 and C63: 631
-2 identical serial for C53: 641 and C62: 641
-New serial for C53: 651 and C62: 641
-2 identical serial for C53: 651 and C61: 651
-New serial for C53: 661 and C61: 651
-2 identical serial for C53: 661 and C66: 661
-New serial for C53: 671 and C66: 661
-2 identical serial for C53: 671 and C67: 671
-New serial for C53: 681 and C67: 671
-2 identical serial for C53: 681 and C65: 681
-New serial for C53: 691 and C65: 681
-2 identical serial for C53: 691 and C64: 691
-New serial for C53: 701 and C64: 691
-2 identical serial for C53: 701 and C59: 701
-New serial for C53: 711 and C59: 701
-2 identical serial for C53: 711 and C7A: 711
-New serial for C53: 721 and C7A: 711
-2 identical serial for C53: 721 and C7B: 721
-New serial for C53: 731 and C7B: 721
-2 identical serial for C53: 731 and C58: 731
-New serial for C53: 741 and C58: 731
-2 identical serial for C53: 741 and C57: 741
-New serial for C53: 751 and C57: 741
-2 identical serial for C53: 751 and C56: 751
-New serial for C53: 761 and C56: 751
-2 identical serial for C53: 761 and C55: 761
-New serial for C53: 771 and C55: 761
-2 identical serial for C53: 771 and C54: 771
-New serial for C53: 781 and C54: 771
-2 identical serial for C82: 821 and C8B: 821
-New serial for C82: 831 and C8B: 821
-2 identical serial for C81: 811 and C8A: 811
-New serial for C81: 821 and C8A: 811
-2 identical serial for C81: 821 and C8B: 821
-New serial for C81: 831 and C8B: 821
-2 identical serial for C81: 831 and C82: 831
-New serial for C81: 841 and C82: 831
-2 identical serial for C78: 781 and C53: 781
-New serial for C78: 791 and C53: 781
-2 identical serial for C78: 791 and C79: 791
-New serial for C78: 801 and C79: 791
-2 identical serial for C78: 801 and C80: 801
-New serial for C78: 811 and C80: 801
-2 identical serial for C78: 811 and C8A: 811
-New serial for C78: 821 and C8A: 811
-2 identical serial for C78: 821 and C8B: 821
-New serial for C78: 831 and C8B: 821
-2 identical serial for C78: 831 and C82: 831
-New serial for C78: 841 and C82: 831
-2 identical serial for C78: 841 and C81: 841
-New serial for C78: 851 and C81: 841
-2 identical serial for C77: 771 and C54: 771
-New serial for C77: 781 and C54: 771
-2 identical serial for C77: 781 and C53: 781
-New serial for C77: 791 and C53: 781
-2 identical serial for C77: 791 and C79: 791
-New serial for C77: 801 and C79: 791
-2 identical serial for C77: 801 and C80: 801
-New serial for C77: 811 and C80: 801
-2 identical serial for C77: 811 and C8A: 811
-New serial for C77: 821 and C8A: 811
-2 identical serial for C77: 821 and C8B: 821
-New serial for C77: 831 and C8B: 821
-2 identical serial for C77: 831 and C82: 831
-New serial for C77: 841 and C82: 831
-2 identical serial for C77: 841 and C81: 841
-New serial for C77: 851 and C81: 841
-2 identical serial for C77: 851 and C78: 851
-New serial for C77: 861 and C78: 851
-2 identical serial for C76: 761 and C55: 761
-New serial for C76: 771 and C55: 761
-2 identical serial for C76: 771 and C54: 771
-New serial for C76: 781 and C54: 771
-2 identical serial for C76: 781 and C53: 781
-New serial for C76: 791 and C53: 781
-2 identical serial for C76: 791 and C79: 791
-New serial for C76: 801 and C79: 791
-2 identical serial for C76: 801 and C80: 801
-New serial for C76: 811 and C80: 801
-2 identical serial for C76: 811 and C8A: 811
-New serial for C76: 821 and C8A: 811
-2 identical serial for C76: 821 and C8B: 821
-New serial for C76: 831 and C8B: 821
-2 identical serial for C76: 831 and C82: 831
-New serial for C76: 841 and C82: 831
-2 identical serial for C76: 841 and C81: 841
-New serial for C76: 851 and C81: 841
-2 identical serial for C76: 851 and C78: 851
-New serial for C76: 861 and C78: 851
-2 identical serial for C76: 861 and C77: 861
-New serial for C76: 871 and C77: 861
-2 identical serial for C75: 751 and C56: 751
-New serial for C75: 761 and C56: 751
-2 identical serial for C75: 761 and C55: 761
-New serial for C75: 771 and C55: 761
-2 identical serial for C75: 771 and C54: 771
-New serial for C75: 781 and C54: 771
-2 identical serial for C75: 781 and C53: 781
-New serial for C75: 791 and C53: 781
-2 identical serial for C75: 791 and C79: 791
-New serial for C75: 801 and C79: 791
-2 identical serial for C75: 801 and C80: 801
-New serial for C75: 811 and C80: 801
-2 identical serial for C75: 811 and C8A: 811
-New serial for C75: 821 and C8A: 811
-2 identical serial for C75: 821 and C8B: 821
-New serial for C75: 831 and C8B: 821
-2 identical serial for C75: 831 and C82: 831
-New serial for C75: 841 and C82: 831
-2 identical serial for C75: 841 and C81: 841
-New serial for C75: 851 and C81: 841
-2 identical serial for C75: 851 and C78: 851
-New serial for C75: 861 and C78: 851
-2 identical serial for C75: 861 and C77: 861
-New serial for C75: 871 and C77: 861
-2 identical serial for C75: 871 and C76: 871
-New serial for C75: 881 and C76: 871
-2 identical serial for C74: 741 and C57: 741
-New serial for C74: 751 and C57: 741
-2 identical serial for C74: 751 and C56: 751
-New serial for C74: 761 and C56: 751
-2 identical serial for C74: 761 and C55: 761
-New serial for C74: 771 and C55: 761
-2 identical serial for C74: 771 and C54: 771
-New serial for C74: 781 and C54: 771
-2 identical serial for C74: 781 and C53: 781
-New serial for C74: 791 and C53: 781
-2 identical serial for C74: 791 and C79: 791
-New serial for C74: 801 and C79: 791
-2 identical serial for C74: 801 and C80: 801
-New serial for C74: 811 and C80: 801
-2 identical serial for C74: 811 and C8A: 811
-New serial for C74: 821 and C8A: 811
-2 identical serial for C74: 821 and C8B: 821
-New serial for C74: 831 and C8B: 821
-2 identical serial for C74: 831 and C82: 831
-New serial for C74: 841 and C82: 831
-2 identical serial for C74: 841 and C81: 841
-New serial for C74: 851 and C81: 841
-2 identical serial for C74: 851 and C78: 851
-New serial for C74: 861 and C78: 851
-2 identical serial for C74: 861 and C77: 861
-New serial for C74: 871 and C77: 861
-2 identical serial for C74: 871 and C76: 871
-New serial for C74: 881 and C76: 871
-2 identical serial for C74: 881 and C75: 881
-New serial for C74: 891 and C75: 881
-2 identical serial for C73: 731 and C58: 731
-New serial for C73: 741 and C58: 731
-2 identical serial for C73: 741 and C57: 741
-New serial for C73: 751 and C57: 741
-2 identical serial for C73: 751 and C56: 751
-New serial for C73: 761 and C56: 751
-2 identical serial for C73: 761 and C55: 761
-New serial for C73: 771 and C55: 761
-2 identical serial for C73: 771 and C54: 771
-New serial for C73: 781 and C54: 771
-2 identical serial for C73: 781 and C53: 781
-New serial for C73: 791 and C53: 781
-2 identical serial for C73: 791 and C79: 791
-New serial for C73: 801 and C79: 791
-2 identical serial for C73: 801 and C80: 801
-New serial for C73: 811 and C80: 801
-2 identical serial for C73: 811 and C8A: 811
-New serial for C73: 821 and C8A: 811
-2 identical serial for C73: 821 and C8B: 821
-New serial for C73: 831 and C8B: 821
-2 identical serial for C73: 831 and C82: 831
-New serial for C73: 841 and C82: 831
-2 identical serial for C73: 841 and C81: 841
-New serial for C73: 851 and C81: 841
-2 identical serial for C73: 851 and C78: 851
-New serial for C73: 861 and C78: 851
-2 identical serial for C73: 861 and C77: 861
-New serial for C73: 871 and C77: 861
-2 identical serial for C73: 871 and C76: 871
-New serial for C73: 881 and C76: 871
-2 identical serial for C73: 881 and C75: 881
-New serial for C73: 891 and C75: 881
-2 identical serial for C73: 891 and C74: 891
-New serial for C73: 901 and C74: 891
-2 identical serial for C72: 721 and C7B: 721
-New serial for C72: 731 and C7B: 721
-2 identical serial for C72: 731 and C58: 731
-New serial for C72: 741 and C58: 731
-2 identical serial for C72: 741 and C57: 741
-New serial for C72: 751 and C57: 741
-2 identical serial for C72: 751 and C56: 751
-New serial for C72: 761 and C56: 751
-2 identical serial for C72: 761 and C55: 761
-New serial for C72: 771 and C55: 761
-2 identical serial for C72: 771 and C54: 771
-New serial for C72: 781 and C54: 771
-2 identical serial for C72: 781 and C53: 781
-New serial for C72: 791 and C53: 781
-2 identical serial for C72: 791 and C79: 791
-New serial for C72: 801 and C79: 791
-2 identical serial for C72: 801 and C80: 801
-New serial for C72: 811 and C80: 801
-2 identical serial for C72: 811 and C8A: 811
-New serial for C72: 821 and C8A: 811
-2 identical serial for C72: 821 and C8B: 821
-New serial for C72: 831 and C8B: 821
-2 identical serial for C72: 831 and C82: 831
-New serial for C72: 841 and C82: 831
-2 identical serial for C72: 841 and C81: 841
-New serial for C72: 851 and C81: 841
-2 identical serial for C72: 851 and C78: 851
-New serial for C72: 861 and C78: 851
-2 identical serial for C72: 861 and C77: 861
-New serial for C72: 871 and C77: 861
-2 identical serial for C72: 871 and C76: 871
-New serial for C72: 881 and C76: 871
-2 identical serial for C72: 881 and C75: 881
-New serial for C72: 891 and C75: 881
-2 identical serial for C72: 891 and C74: 891
-New serial for C72: 901 and C74: 891
-2 identical serial for C72: 901 and C73: 901
-New serial for C72: 911 and C73: 901
-2 identical serial for C72: 911 and C9A: 911
-New serial for C72: 921 and C9A: 911
-2 identical serial for C72: 921 and C9B: 921
-New serial for C72: 931 and C9B: 921
-2 identical serial for C71: 711 and C7A: 711
-New serial for C71: 721 and C7A: 711
-2 identical serial for C71: 721 and C7B: 721
-New serial for C71: 731 and C7B: 721
-2 identical serial for C71: 731 and C58: 731
-New serial for C71: 741 and C58: 731
-2 identical serial for C71: 741 and C57: 741
-New serial for C71: 751 and C57: 741
-2 identical serial for C71: 751 and C56: 751
-New serial for C71: 761 and C56: 751
-2 identical serial for C71: 761 and C55: 761
-New serial for C71: 771 and C55: 761
-2 identical serial for C71: 771 and C54: 771
-New serial for C71: 781 and C54: 771
-2 identical serial for C71: 781 and C53: 781
-New serial for C71: 791 and C53: 781
-2 identical serial for C71: 791 and C79: 791
-New serial for C71: 801 and C79: 791
-2 identical serial for C71: 801 and C80: 801
-New serial for C71: 811 and C80: 801
-2 identical serial for C71: 811 and C8A: 811
-New serial for C71: 821 and C8A: 811
-2 identical serial for C71: 821 and C8B: 821
-New serial for C71: 831 and C8B: 821
-2 identical serial for C71: 831 and C82: 831
-New serial for C71: 841 and C82: 831
-2 identical serial for C71: 841 and C81: 841
-New serial for C71: 851 and C81: 841
-2 identical serial for C71: 851 and C78: 851
-New serial for C71: 861 and C78: 851
-2 identical serial for C71: 861 and C77: 861
-New serial for C71: 871 and C77: 861
-2 identical serial for C71: 871 and C76: 871
-New serial for C71: 881 and C76: 871
-2 identical serial for C71: 881 and C75: 881
-New serial for C71: 891 and C75: 881
-2 identical serial for C71: 891 and C74: 891
-New serial for C71: 901 and C74: 891
-2 identical serial for C71: 901 and C73: 901
-New serial for C71: 911 and C73: 901
-2 identical serial for C71: 911 and C9A: 911
-New serial for C71: 921 and C9A: 911
-2 identical serial for C71: 921 and C9B: 921
-New serial for C71: 931 and C9B: 921
-2 identical serial for C71: 931 and C72: 931
-New serial for C71: 941 and C72: 931
-2 identical serial for C70: 701 and C59: 701
-New serial for C70: 711 and C59: 701
-2 identical serial for C70: 711 and C7A: 711
-New serial for C70: 721 and C7A: 711
-2 identical serial for C70: 721 and C7B: 721
-New serial for C70: 731 and C7B: 721
-2 identical serial for C70: 731 and C58: 731
-New serial for C70: 741 and C58: 731
-2 identical serial for C70: 741 and C57: 741
-New serial for C70: 751 and C57: 741
-2 identical serial for C70: 751 and C56: 751
-New serial for C70: 761 and C56: 751
-2 identical serial for C70: 761 and C55: 761
-New serial for C70: 771 and C55: 761
-2 identical serial for C70: 771 and C54: 771
-New serial for C70: 781 and C54: 771
-2 identical serial for C70: 781 and C53: 781
-New serial for C70: 791 and C53: 781
-2 identical serial for C70: 791 and C79: 791
-New serial for C70: 801 and C79: 791
-2 identical serial for C70: 801 and C80: 801
-New serial for C70: 811 and C80: 801
-2 identical serial for C70: 811 and C8A: 811
-New serial for C70: 821 and C8A: 811
-2 identical serial for C70: 821 and C8B: 821
-New serial for C70: 831 and C8B: 821
-2 identical serial for C70: 831 and C82: 831
-New serial for C70: 841 and C82: 831
-2 identical serial for C70: 841 and C81: 841
-New serial for C70: 851 and C81: 841
-2 identical serial for C70: 851 and C78: 851
-New serial for C70: 861 and C78: 851
-2 identical serial for C70: 861 and C77: 861
-New serial for C70: 871 and C77: 861
-2 identical serial for C70: 871 and C76: 871
-New serial for C70: 881 and C76: 871
-2 identical serial for C70: 881 and C75: 881
-New serial for C70: 891 and C75: 881
-2 identical serial for C70: 891 and C74: 891
-New serial for C70: 901 and C74: 891
-2 identical serial for C70: 901 and C73: 901
-New serial for C70: 911 and C73: 901
-2 identical serial for C70: 911 and C9A: 911
-New serial for C70: 921 and C9A: 911
-2 identical serial for C70: 921 and C9B: 921
-New serial for C70: 931 and C9B: 921
-2 identical serial for C70: 931 and C72: 931
-New serial for C70: 941 and C72: 931
-2 identical serial for C70: 941 and C71: 941
-New serial for C70: 951 and C71: 941
-2 identical serial for C69: 691 and C64: 691
-New serial for C69: 701 and C64: 691
-2 identical serial for C69: 701 and C59: 701
-New serial for C69: 711 and C59: 701
-2 identical serial for C69: 711 and C7A: 711
-New serial for C69: 721 and C7A: 711
-2 identical serial for C69: 721 and C7B: 721
-New serial for C69: 731 and C7B: 721
-2 identical serial for C69: 731 and C58: 731
-New serial for C69: 741 and C58: 731
-2 identical serial for C69: 741 and C57: 741
-New serial for C69: 751 and C57: 741
-2 identical serial for C69: 751 and C56: 751
-New serial for C69: 761 and C56: 751
-2 identical serial for C69: 761 and C55: 761
-New serial for C69: 771 and C55: 761
-2 identical serial for C69: 771 and C54: 771
-New serial for C69: 781 and C54: 771
-2 identical serial for C69: 781 and C53: 781
-New serial for C69: 791 and C53: 781
-2 identical serial for C69: 791 and C79: 791
-New serial for C69: 801 and C79: 791
-2 identical serial for C69: 801 and C80: 801
-New serial for C69: 811 and C80: 801
-2 identical serial for C69: 811 and C8A: 811
-New serial for C69: 821 and C8A: 811
-2 identical serial for C69: 821 and C8B: 821
-New serial for C69: 831 and C8B: 821
-2 identical serial for C69: 831 and C82: 831
-New serial for C69: 841 and C82: 831
-2 identical serial for C69: 841 and C81: 841
-New serial for C69: 851 and C81: 841
-2 identical serial for C69: 851 and C78: 851
-New serial for C69: 861 and C78: 851
-2 identical serial for C69: 861 and C77: 861
-New serial for C69: 871 and C77: 861
-2 identical serial for C69: 871 and C76: 871
-New serial for C69: 881 and C76: 871
-2 identical serial for C69: 881 and C75: 881
-New serial for C69: 891 and C75: 881
-2 identical serial for C69: 891 and C74: 891
-New serial for C69: 901 and C74: 891
-2 identical serial for C69: 901 and C73: 901
-New serial for C69: 911 and C73: 901
-2 identical serial for C69: 911 and C9A: 911
-New serial for C69: 921 and C9A: 911
-2 identical serial for C69: 921 and C9B: 921
-New serial for C69: 931 and C9B: 921
-2 identical serial for C69: 931 and C72: 931
-New serial for C69: 941 and C72: 931
-2 identical serial for C69: 941 and C71: 941
-New serial for C69: 951 and C71: 941
-2 identical serial for C69: 951 and C70: 951
-New serial for C69: 961 and C70: 951
-2 identical serial for C68: 681 and C65: 681
-New serial for C68: 691 and C65: 681
-2 identical serial for C68: 691 and C64: 691
-New serial for C68: 701 and C64: 691
-2 identical serial for C68: 701 and C59: 701
-New serial for C68: 711 and C59: 701
-2 identical serial for C68: 711 and C7A: 711
-New serial for C68: 721 and C7A: 711
-2 identical serial for C68: 721 and C7B: 721
-New serial for C68: 731 and C7B: 721
-2 identical serial for C68: 731 and C58: 731
-New serial for C68: 741 and C58: 731
-2 identical serial for C68: 741 and C57: 741
-New serial for C68: 751 and C57: 741
-2 identical serial for C68: 751 and C56: 751
-New serial for C68: 761 and C56: 751
-2 identical serial for C68: 761 and C55: 761
-New serial for C68: 771 and C55: 761
-2 identical serial for C68: 771 and C54: 771
-New serial for C68: 781 and C54: 771
-2 identical serial for C68: 781 and C53: 781
-New serial for C68: 791 and C53: 781
-2 identical serial for C68: 791 and C79: 791
-New serial for C68: 801 and C79: 791
-2 identical serial for C68: 801 and C80: 801
-New serial for C68: 811 and C80: 801
-2 identical serial for C68: 811 and C8A: 811
-New serial for C68: 821 and C8A: 811
-2 identical serial for C68: 821 and C8B: 821
-New serial for C68: 831 and C8B: 821
-2 identical serial for C68: 831 and C82: 831
-New serial for C68: 841 and C82: 831
-2 identical serial for C68: 841 and C81: 841
-New serial for C68: 851 and C81: 841
-2 identical serial for C68: 851 and C78: 851
-New serial for C68: 861 and C78: 851
-2 identical serial for C68: 861 and C77: 861
-New serial for C68: 871 and C77: 861
-2 identical serial for C68: 871 and C76: 871
-New serial for C68: 881 and C76: 871
-2 identical serial for C68: 881 and C75: 881
-New serial for C68: 891 and C75: 881
-2 identical serial for C68: 891 and C74: 891
-New serial for C68: 901 and C74: 891
-2 identical serial for C68: 901 and C73: 901
-New serial for C68: 911 and C73: 901
-2 identical serial for C68: 911 and C9A: 911
-New serial for C68: 921 and C9A: 911
-2 identical serial for C68: 921 and C9B: 921
-New serial for C68: 931 and C9B: 921
-2 identical serial for C68: 931 and C72: 931
-New serial for C68: 941 and C72: 931
-2 identical serial for C68: 941 and C71: 941
-New serial for C68: 951 and C71: 941
-2 identical serial for C68: 951 and C70: 951
-New serial for C68: 961 and C70: 951
-2 identical serial for C68: 961 and C69: 961
-New serial for C68: 971 and C69: 961
-2 identical serial for C46: 461 and C22: 461
-New serial for C46: 471 and C22: 461
-2 identical serial for C46: 471 and C21: 471
-New serial for C46: 481 and C21: 471
-2 identical serial for C46: 481 and C14: 481
-New serial for C46: 491 and C14: 481
-2 identical serial for C46: 491 and C13: 491
-New serial for C46: 501 and C13: 491
-2 identical serial for C46: 501 and C12: 501
-New serial for C46: 511 and C12: 501
-2 identical serial for C46: 511 and C5A: 511
-New serial for C46: 521 and C5A: 511
-2 identical serial for C46: 521 and C5B: 521
-New serial for C46: 531 and C5B: 521
-2 identical serial for C46: 531 and C11: 531
-New serial for C46: 541 and C11: 531
-2 identical serial for C46: 541 and C52: 541
-New serial for C46: 551 and C52: 541
-2 identical serial for C46: 551 and C51: 551
-New serial for C46: 561 and C51: 551
-2 identical serial for C46: 561 and C50: 561
-New serial for C46: 571 and C50: 561
-2 identical serial for C46: 571 and C49: 571
-New serial for C46: 581 and C49: 571
-2 identical serial for C46: 581 and C48: 581
-New serial for C46: 591 and C48: 581
-2 identical serial for C46: 591 and C47: 591
-New serial for C46: 601 and C47: 591
-2 identical serial for C46: 601 and C60: 601
-New serial for C46: 611 and C60: 601
-2 identical serial for C46: 611 and C6A: 611
-New serial for C46: 621 and C6A: 611
-2 identical serial for C46: 621 and C6B: 621
-New serial for C46: 631 and C6B: 621
-2 identical serial for C46: 631 and C63: 631
-New serial for C46: 641 and C63: 631
-2 identical serial for C46: 641 and C62: 641
-New serial for C46: 651 and C62: 641
-2 identical serial for C46: 651 and C61: 651
-New serial for C46: 661 and C61: 651
-2 identical serial for C46: 661 and C66: 661
-New serial for C46: 671 and C66: 661
-2 identical serial for C46: 671 and C67: 671
-New serial for C46: 681 and C67: 671
-2 identical serial for C46: 681 and C65: 681
-New serial for C46: 691 and C65: 681
-2 identical serial for C46: 691 and C64: 691
-New serial for C46: 701 and C64: 691
-2 identical serial for C46: 701 and C59: 701
-New serial for C46: 711 and C59: 701
-2 identical serial for C46: 711 and C7A: 711
-New serial for C46: 721 and C7A: 711
-2 identical serial for C46: 721 and C7B: 721
-New serial for C46: 731 and C7B: 721
-2 identical serial for C46: 731 and C58: 731
-New serial for C46: 741 and C58: 731
-2 identical serial for C46: 741 and C57: 741
-New serial for C46: 751 and C57: 741
-2 identical serial for C46: 751 and C56: 751
-New serial for C46: 761 and C56: 751
-2 identical serial for C46: 761 and C55: 761
-New serial for C46: 771 and C55: 761
-2 identical serial for C46: 771 and C54: 771
-New serial for C46: 781 and C54: 771
-2 identical serial for C46: 781 and C53: 781
-New serial for C46: 791 and C53: 781
-2 identical serial for C46: 791 and C79: 791
-New serial for C46: 801 and C79: 791
-2 identical serial for C46: 801 and C80: 801
-New serial for C46: 811 and C80: 801
-2 identical serial for C46: 811 and C8A: 811
-New serial for C46: 821 and C8A: 811
-2 identical serial for C46: 821 and C8B: 821
-New serial for C46: 831 and C8B: 821
-2 identical serial for C46: 831 and C82: 831
-New serial for C46: 841 and C82: 831
-2 identical serial for C46: 841 and C81: 841
-New serial for C46: 851 and C81: 841
-2 identical serial for C46: 851 and C78: 851
-New serial for C46: 861 and C78: 851
-2 identical serial for C46: 861 and C77: 861
-New serial for C46: 871 and C77: 861
-2 identical serial for C46: 871 and C76: 871
-New serial for C46: 881 and C76: 871
-2 identical serial for C46: 881 and C75: 881
-New serial for C46: 891 and C75: 881
-2 identical serial for C46: 891 and C74: 891
-New serial for C46: 901 and C74: 891
-2 identical serial for C46: 901 and C73: 901
-New serial for C46: 911 and C73: 901
-2 identical serial for C46: 911 and C9A: 911
-New serial for C46: 921 and C9A: 911
-2 identical serial for C46: 921 and C9B: 921
-New serial for C46: 931 and C9B: 921
-2 identical serial for C46: 931 and C72: 931
-New serial for C46: 941 and C72: 931
-2 identical serial for C46: 941 and C71: 941
-New serial for C46: 951 and C71: 941
-2 identical serial for C46: 951 and C70: 951
-New serial for C46: 961 and C70: 951
-2 identical serial for C46: 961 and C69: 961
-New serial for C46: 971 and C69: 961
-2 identical serial for C46: 971 and C68: 971
-New serial for C46: 981 and C68: 971
-2 identical serial for C45: 451 and C31: 451
-New serial for C45: 461 and C31: 451
-2 identical serial for C45: 461 and C22: 461
-New serial for C45: 471 and C22: 461
-2 identical serial for C45: 471 and C21: 471
-New serial for C45: 481 and C21: 471
-2 identical serial for C45: 481 and C14: 481
-New serial for C45: 491 and C14: 481
-2 identical serial for C45: 491 and C13: 491
-New serial for C45: 501 and C13: 491
-2 identical serial for C45: 501 and C12: 501
-New serial for C45: 511 and C12: 501
-2 identical serial for C45: 511 and C5A: 511
-New serial for C45: 521 and C5A: 511
-2 identical serial for C45: 521 and C5B: 521
-New serial for C45: 531 and C5B: 521
-2 identical serial for C45: 531 and C11: 531
-New serial for C45: 541 and C11: 531
-2 identical serial for C45: 541 and C52: 541
-New serial for C45: 551 and C52: 541
-2 identical serial for C45: 551 and C51: 551
-New serial for C45: 561 and C51: 551
-2 identical serial for C45: 561 and C50: 561
-New serial for C45: 571 and C50: 561
-2 identical serial for C45: 571 and C49: 571
-New serial for C45: 581 and C49: 571
-2 identical serial for C45: 581 and C48: 581
-New serial for C45: 591 and C48: 581
-2 identical serial for C45: 591 and C47: 591
-New serial for C45: 601 and C47: 591
-2 identical serial for C45: 601 and C60: 601
-New serial for C45: 611 and C60: 601
-2 identical serial for C45: 611 and C6A: 611
-New serial for C45: 621 and C6A: 611
-2 identical serial for C45: 621 and C6B: 621
-New serial for C45: 631 and C6B: 621
-2 identical serial for C45: 631 and C63: 631
-New serial for C45: 641 and C63: 631
-2 identical serial for C45: 641 and C62: 641
-New serial for C45: 651 and C62: 641
-2 identical serial for C45: 651 and C61: 651
-New serial for C45: 661 and C61: 651
-2 identical serial for C45: 661 and C66: 661
-New serial for C45: 671 and C66: 661
-2 identical serial for C45: 671 and C67: 671
-New serial for C45: 681 and C67: 671
-2 identical serial for C45: 681 and C65: 681
-New serial for C45: 691 and C65: 681
-2 identical serial for C45: 691 and C64: 691
-New serial for C45: 701 and C64: 691
-2 identical serial for C45: 701 and C59: 701
-New serial for C45: 711 and C59: 701
-2 identical serial for C45: 711 and C7A: 711
-New serial for C45: 721 and C7A: 711
-2 identical serial for C45: 721 and C7B: 721
-New serial for C45: 731 and C7B: 721
-2 identical serial for C45: 731 and C58: 731
-New serial for C45: 741 and C58: 731
-2 identical serial for C45: 741 and C57: 741
-New serial for C45: 751 and C57: 741
-2 identical serial for C45: 751 and C56: 751
-New serial for C45: 761 and C56: 751
-2 identical serial for C45: 761 and C55: 761
-New serial for C45: 771 and C55: 761
-2 identical serial for C45: 771 and C54: 771
-New serial for C45: 781 and C54: 771
-2 identical serial for C45: 781 and C53: 781
-New serial for C45: 791 and C53: 781
-2 identical serial for C45: 791 and C79: 791
-New serial for C45: 801 and C79: 791
-2 identical serial for C45: 801 and C80: 801
-New serial for C45: 811 and C80: 801
-2 identical serial for C45: 811 and C8A: 811
-New serial for C45: 821 and C8A: 811
-2 identical serial for C45: 821 and C8B: 821
-New serial for C45: 831 and C8B: 821
-2 identical serial for C45: 831 and C82: 831
-New serial for C45: 841 and C82: 831
-2 identical serial for C45: 841 and C81: 841
-New serial for C45: 851 and C81: 841
-2 identical serial for C45: 851 and C78: 851
-New serial for C45: 861 and C78: 851
-2 identical serial for C45: 861 and C77: 861
-New serial for C45: 871 and C77: 861
-2 identical serial for C45: 871 and C76: 871
-New serial for C45: 881 and C76: 871
-2 identical serial for C45: 881 and C75: 881
-New serial for C45: 891 and C75: 881
-2 identical serial for C45: 891 and C74: 891
-New serial for C45: 901 and C74: 891
-2 identical serial for C45: 901 and C73: 901
-New serial for C45: 911 and C73: 901
-2 identical serial for C45: 911 and C9A: 911
-New serial for C45: 921 and C9A: 911
-2 identical serial for C45: 921 and C9B: 921
-New serial for C45: 931 and C9B: 921
-2 identical serial for C45: 931 and C72: 931
-New serial for C45: 941 and C72: 931
-2 identical serial for C45: 941 and C71: 941
-New serial for C45: 951 and C71: 941
-2 identical serial for C45: 951 and C70: 951
-New serial for C45: 961 and C70: 951
-2 identical serial for C45: 961 and C69: 961
-New serial for C45: 971 and C69: 961
-2 identical serial for C45: 971 and C68: 971
-New serial for C45: 981 and C68: 971
-2 identical serial for C45: 981 and C46: 981
-New serial for C45: 991 and C46: 981
-2 identical serial for C44: 441 and C32: 441
-New serial for C44: 451 and C32: 441
-2 identical serial for C44: 451 and C31: 451
-New serial for C44: 461 and C31: 451
-2 identical serial for C44: 461 and C22: 461
-New serial for C44: 471 and C22: 461
-2 identical serial for C44: 471 and C21: 471
-New serial for C44: 481 and C21: 471
-2 identical serial for C44: 481 and C14: 481
-New serial for C44: 491 and C14: 481
-2 identical serial for C44: 491 and C13: 491
-New serial for C44: 501 and C13: 491
-2 identical serial for C44: 501 and C12: 501
-New serial for C44: 511 and C12: 501
-2 identical serial for C44: 511 and C5A: 511
-New serial for C44: 521 and C5A: 511
-2 identical serial for C44: 521 and C5B: 521
-New serial for C44: 531 and C5B: 521
-2 identical serial for C44: 531 and C11: 531
-New serial for C44: 541 and C11: 531
-2 identical serial for C44: 541 and C52: 541
-New serial for C44: 551 and C52: 541
-2 identical serial for C44: 551 and C51: 551
-New serial for C44: 561 and C51: 551
-2 identical serial for C44: 561 and C50: 561
-New serial for C44: 571 and C50: 561
-2 identical serial for C44: 571 and C49: 571
-New serial for C44: 581 and C49: 571
-2 identical serial for C44: 581 and C48: 581
-New serial for C44: 591 and C48: 581
-2 identical serial for C44: 591 and C47: 591
-New serial for C44: 601 and C47: 591
-2 identical serial for C44: 601 and C60: 601
-New serial for C44: 611 and C60: 601
-2 identical serial for C44: 611 and C6A: 611
-New serial for C44: 621 and C6A: 611
-2 identical serial for C44: 621 and C6B: 621
-New serial for C44: 631 and C6B: 621
-2 identical serial for C44: 631 and C63: 631
-New serial for C44: 641 and C63: 631
-2 identical serial for C44: 641 and C62: 641
-New serial for C44: 651 and C62: 641
-2 identical serial for C44: 651 and C61: 651
-New serial for C44: 661 and C61: 651
-2 identical serial for C44: 661 and C66: 661
-New serial for C44: 671 and C66: 661
-2 identical serial for C44: 671 and C67: 671
-New serial for C44: 681 and C67: 671
-2 identical serial for C44: 681 and C65: 681
-New serial for C44: 691 and C65: 681
-2 identical serial for C44: 691 and C64: 691
-New serial for C44: 701 and C64: 691
-2 identical serial for C44: 701 and C59: 701
-New serial for C44: 711 and C59: 701
-2 identical serial for C44: 711 and C7A: 711
-New serial for C44: 721 and C7A: 711
-2 identical serial for C44: 721 and C7B: 721
-New serial for C44: 731 and C7B: 721
-2 identical serial for C44: 731 and C58: 731
-New serial for C44: 741 and C58: 731
-2 identical serial for C44: 741 and C57: 741
-New serial for C44: 751 and C57: 741
-2 identical serial for C44: 751 and C56: 751
-New serial for C44: 761 and C56: 751
-2 identical serial for C44: 761 and C55: 761
-New serial for C44: 771 and C55: 761
-2 identical serial for C44: 771 and C54: 771
-New serial for C44: 781 and C54: 771
-2 identical serial for C44: 781 and C53: 781
-New serial for C44: 791 and C53: 781
-2 identical serial for C44: 791 and C79: 791
-New serial for C44: 801 and C79: 791
-2 identical serial for C44: 801 and C80: 801
-New serial for C44: 811 and C80: 801
-2 identical serial for C44: 811 and C8A: 811
-New serial for C44: 821 and C8A: 811
-2 identical serial for C44: 821 and C8B: 821
-New serial for C44: 831 and C8B: 821
-2 identical serial for C44: 831 and C82: 831
-New serial for C44: 841 and C82: 831
-2 identical serial for C44: 841 and C81: 841
-New serial for C44: 851 and C81: 841
-2 identical serial for C44: 851 and C78: 851
-New serial for C44: 861 and C78: 851
-2 identical serial for C44: 861 and C77: 861
-New serial for C44: 871 and C77: 861
-2 identical serial for C44: 871 and C76: 871
-New serial for C44: 881 and C76: 871
-2 identical serial for C44: 881 and C75: 881
-New serial for C44: 891 and C75: 881
-2 identical serial for C44: 891 and C74: 891
-New serial for C44: 901 and C74: 891
-2 identical serial for C44: 901 and C73: 901
-New serial for C44: 911 and C73: 901
-2 identical serial for C44: 911 and C9A: 911
-New serial for C44: 921 and C9A: 911
-2 identical serial for C44: 921 and C9B: 921
-New serial for C44: 931 and C9B: 921
-2 identical serial for C44: 931 and C72: 931
-New serial for C44: 941 and C72: 931
-2 identical serial for C44: 941 and C71: 941
-New serial for C44: 951 and C71: 941
-2 identical serial for C44: 951 and C70: 951
-New serial for C44: 961 and C70: 951
-2 identical serial for C44: 961 and C69: 961
-New serial for C44: 971 and C69: 961
-2 identical serial for C44: 971 and C68: 971
-New serial for C44: 981 and C68: 971
-2 identical serial for C44: 981 and C46: 981
-New serial for C44: 991 and C46: 981
-2 identical serial for C44: 991 and C45: 991
-New serial for C44: 1001 and C45: 991
-2 identical serial for C43: 431 and C4A: 431
-New serial for C43: 441 and C4A: 431
-2 identical serial for C43: 441 and C32: 441
-New serial for C43: 451 and C32: 441
-2 identical serial for C43: 451 and C31: 451
-New serial for C43: 461 and C31: 451
-2 identical serial for C43: 461 and C22: 461
-New serial for C43: 471 and C22: 461
-2 identical serial for C43: 471 and C21: 471
-New serial for C43: 481 and C21: 471
-2 identical serial for C43: 481 and C14: 481
-New serial for C43: 491 and C14: 481
-2 identical serial for C43: 491 and C13: 491
-New serial for C43: 501 and C13: 491
-2 identical serial for C43: 501 and C12: 501
-New serial for C43: 511 and C12: 501
-2 identical serial for C43: 511 and C5A: 511
-New serial for C43: 521 and C5A: 511
-2 identical serial for C43: 521 and C5B: 521
-New serial for C43: 531 and C5B: 521
-2 identical serial for C43: 531 and C11: 531
-New serial for C43: 541 and C11: 531
-2 identical serial for C43: 541 and C52: 541
-New serial for C43: 551 and C52: 541
-2 identical serial for C43: 551 and C51: 551
-New serial for C43: 561 and C51: 551
-2 identical serial for C43: 561 and C50: 561
-New serial for C43: 571 and C50: 561
-2 identical serial for C43: 571 and C49: 571
-New serial for C43: 581 and C49: 571
-2 identical serial for C43: 581 and C48: 581
-New serial for C43: 591 and C48: 581
-2 identical serial for C43: 591 and C47: 591
-New serial for C43: 601 and C47: 591
-2 identical serial for C43: 601 and C60: 601
-New serial for C43: 611 and C60: 601
-2 identical serial for C43: 611 and C6A: 611
-New serial for C43: 621 and C6A: 611
-2 identical serial for C43: 621 and C6B: 621
-New serial for C43: 631 and C6B: 621
-2 identical serial for C43: 631 and C63: 631
-New serial for C43: 641 and C63: 631
-2 identical serial for C43: 641 and C62: 641
-New serial for C43: 651 and C62: 641
-2 identical serial for C43: 651 and C61: 651
-New serial for C43: 661 and C61: 651
-2 identical serial for C43: 661 and C66: 661
-New serial for C43: 671 and C66: 661
-2 identical serial for C43: 671 and C67: 671
-New serial for C43: 681 and C67: 671
-2 identical serial for C43: 681 and C65: 681
-New serial for C43: 691 and C65: 681
-2 identical serial for C43: 691 and C64: 691
-New serial for C43: 701 and C64: 691
-2 identical serial for C43: 701 and C59: 701
-New serial for C43: 711 and C59: 701
-2 identical serial for C43: 711 and C7A: 711
-New serial for C43: 721 and C7A: 711
-2 identical serial for C43: 721 and C7B: 721
-New serial for C43: 731 and C7B: 721
-2 identical serial for C43: 731 and C58: 731
-New serial for C43: 741 and C58: 731
-2 identical serial for C43: 741 and C57: 741
-New serial for C43: 751 and C57: 741
-2 identical serial for C43: 751 and C56: 751
-New serial for C43: 761 and C56: 751
-2 identical serial for C43: 761 and C55: 761
-New serial for C43: 771 and C55: 761
-2 identical serial for C43: 771 and C54: 771
-New serial for C43: 781 and C54: 771
-2 identical serial for C43: 781 and C53: 781
-New serial for C43: 791 and C53: 781
-2 identical serial for C43: 791 and C79: 791
-New serial for C43: 801 and C79: 791
-2 identical serial for C43: 801 and C80: 801
-New serial for C43: 811 and C80: 801
-2 identical serial for C43: 811 and C8A: 811
-New serial for C43: 821 and C8A: 811
-2 identical serial for C43: 821 and C8B: 821
-New serial for C43: 831 and C8B: 821
-2 identical serial for C43: 831 and C82: 831
-New serial for C43: 841 and C82: 831
-2 identical serial for C43: 841 and C81: 841
-New serial for C43: 851 and C81: 841
-2 identical serial for C43: 851 and C78: 851
-New serial for C43: 861 and C78: 851
-2 identical serial for C43: 861 and C77: 861
-New serial for C43: 871 and C77: 861
-2 identical serial for C43: 871 and C76: 871
-New serial for C43: 881 and C76: 871
-2 identical serial for C43: 881 and C75: 881
-New serial for C43: 891 and C75: 881
-2 identical serial for C43: 891 and C74: 891
-New serial for C43: 901 and C74: 891
-2 identical serial for C43: 901 and C73: 901
-New serial for C43: 911 and C73: 901
-2 identical serial for C43: 911 and C9A: 911
-New serial for C43: 921 and C9A: 911
-2 identical serial for C43: 921 and C9B: 921
-New serial for C43: 931 and C9B: 921
-2 identical serial for C43: 931 and C72: 931
-New serial for C43: 941 and C72: 931
-2 identical serial for C43: 941 and C71: 941
-New serial for C43: 951 and C71: 941
-2 identical serial for C43: 951 and C70: 951
-New serial for C43: 961 and C70: 951
-2 identical serial for C43: 961 and C69: 961
-New serial for C43: 971 and C69: 961
-2 identical serial for C43: 971 and C68: 971
-New serial for C43: 981 and C68: 971
-2 identical serial for C43: 981 and C46: 981
-New serial for C43: 991 and C46: 981
-2 identical serial for C43: 991 and C45: 991
-New serial for C43: 1001 and C45: 991
-2 identical serial for C43: 1001 and C44: 1001
-New serial for C43: 1011 and C44: 1001
-2 identical serial for C43: 1011 and C10A: 1011
-New serial for C43: 1021 and C10A: 1011
-2 identical serial for C43: 1021 and C10B: 1021
-New serial for C43: 1031 and C10B: 1021
-2 identical serial for C42: 421 and C4B: 421
-New serial for C42: 431 and C4B: 421
-2 identical serial for C42: 431 and C4A: 431
-New serial for C42: 441 and C4A: 431
-2 identical serial for C42: 441 and C32: 441
-New serial for C42: 451 and C32: 441
-2 identical serial for C42: 451 and C31: 451
-New serial for C42: 461 and C31: 451
-2 identical serial for C42: 461 and C22: 461
-New serial for C42: 471 and C22: 461
-2 identical serial for C42: 471 and C21: 471
-New serial for C42: 481 and C21: 471
-2 identical serial for C42: 481 and C14: 481
-New serial for C42: 491 and C14: 481
-2 identical serial for C42: 491 and C13: 491
-New serial for C42: 501 and C13: 491
-2 identical serial for C42: 501 and C12: 501
-New serial for C42: 511 and C12: 501
-2 identical serial for C42: 511 and C5A: 511
-New serial for C42: 521 and C5A: 511
-2 identical serial for C42: 521 and C5B: 521
-New serial for C42: 531 and C5B: 521
-2 identical serial for C42: 531 and C11: 531
-New serial for C42: 541 and C11: 531
-2 identical serial for C42: 541 and C52: 541
-New serial for C42: 551 and C52: 541
-2 identical serial for C42: 551 and C51: 551
-New serial for C42: 561 and C51: 551
-2 identical serial for C42: 561 and C50: 561
-New serial for C42: 571 and C50: 561
-2 identical serial for C42: 571 and C49: 571
-New serial for C42: 581 and C49: 571
-2 identical serial for C42: 581 and C48: 581
-New serial for C42: 591 and C48: 581
-2 identical serial for C42: 591 and C47: 591
-New serial for C42: 601 and C47: 591
-2 identical serial for C42: 601 and C60: 601
-New serial for C42: 611 and C60: 601
-2 identical serial for C42: 611 and C6A: 611
-New serial for C42: 621 and C6A: 611
-2 identical serial for C42: 621 and C6B: 621
-New serial for C42: 631 and C6B: 621
-2 identical serial for C42: 631 and C63: 631
-New serial for C42: 641 and C63: 631
-2 identical serial for C42: 641 and C62: 641
-New serial for C42: 651 and C62: 641
-2 identical serial for C42: 651 and C61: 651
-New serial for C42: 661 and C61: 651
-2 identical serial for C42: 661 and C66: 661
-New serial for C42: 671 and C66: 661
-2 identical serial for C42: 671 and C67: 671
-New serial for C42: 681 and C67: 671
-2 identical serial for C42: 681 and C65: 681
-New serial for C42: 691 and C65: 681
-2 identical serial for C42: 691 and C64: 691
-New serial for C42: 701 and C64: 691
-2 identical serial for C42: 701 and C59: 701
-New serial for C42: 711 and C59: 701
-2 identical serial for C42: 711 and C7A: 711
-New serial for C42: 721 and C7A: 711
-2 identical serial for C42: 721 and C7B: 721
-New serial for C42: 731 and C7B: 721
-2 identical serial for C42: 731 and C58: 731
-New serial for C42: 741 and C58: 731
-2 identical serial for C42: 741 and C57: 741
-New serial for C42: 751 and C57: 741
-2 identical serial for C42: 751 and C56: 751
-New serial for C42: 761 and C56: 751
-2 identical serial for C42: 761 and C55: 761
-New serial for C42: 771 and C55: 761
-2 identical serial for C42: 771 and C54: 771
-New serial for C42: 781 and C54: 771
-2 identical serial for C42: 781 and C53: 781
-New serial for C42: 791 and C53: 781
-2 identical serial for C42: 791 and C79: 791
-New serial for C42: 801 and C79: 791
-2 identical serial for C42: 801 and C80: 801
-New serial for C42: 811 and C80: 801
-2 identical serial for C42: 811 and C8A: 811
-New serial for C42: 821 and C8A: 811
-2 identical serial for C42: 821 and C8B: 821
-New serial for C42: 831 and C8B: 821
-2 identical serial for C42: 831 and C82: 831
-New serial for C42: 841 and C82: 831
-2 identical serial for C42: 841 and C81: 841
-New serial for C42: 851 and C81: 841
-2 identical serial for C42: 851 and C78: 851
-New serial for C42: 861 and C78: 851
-2 identical serial for C42: 861 and C77: 861
-New serial for C42: 871 and C77: 861
-2 identical serial for C42: 871 and C76: 871
-New serial for C42: 881 and C76: 871
-2 identical serial for C42: 881 and C75: 881
-New serial for C42: 891 and C75: 881
-2 identical serial for C42: 891 and C74: 891
-New serial for C42: 901 and C74: 891
-2 identical serial for C42: 901 and C73: 901
-New serial for C42: 911 and C73: 901
-2 identical serial for C42: 911 and C9A: 911
-New serial for C42: 921 and C9A: 911
-2 identical serial for C42: 921 and C9B: 921
-New serial for C42: 931 and C9B: 921
-2 identical serial for C42: 931 and C72: 931
-New serial for C42: 941 and C72: 931
-2 identical serial for C42: 941 and C71: 941
-New serial for C42: 951 and C71: 941
-2 identical serial for C42: 951 and C70: 951
-New serial for C42: 961 and C70: 951
-2 identical serial for C42: 961 and C69: 961
-New serial for C42: 971 and C69: 961
-2 identical serial for C42: 971 and C68: 971
-New serial for C42: 981 and C68: 971
-2 identical serial for C42: 981 and C46: 981
-New serial for C42: 991 and C46: 981
-2 identical serial for C42: 991 and C45: 991
-New serial for C42: 1001 and C45: 991
-2 identical serial for C42: 1001 and C44: 1001
-New serial for C42: 1011 and C44: 1001
-2 identical serial for C42: 1011 and C10A: 1011
-New serial for C42: 1021 and C10A: 1011
-2 identical serial for C42: 1021 and C10B: 1021
-New serial for C42: 1031 and C10B: 1021
-2 identical serial for C42: 1031 and C43: 1031
-New serial for C42: 1041 and C43: 1031
-2 identical serial for C41: 411 and C04A: 411
-New serial for C41: 421 and C04A: 411
-2 identical serial for C41: 421 and C4B: 421
-New serial for C41: 431 and C4B: 421
-2 identical serial for C41: 431 and C4A: 431
-New serial for C41: 441 and C4A: 431
-2 identical serial for C41: 441 and C32: 441
-New serial for C41: 451 and C32: 441
-2 identical serial for C41: 451 and C31: 451
-New serial for C41: 461 and C31: 451
-2 identical serial for C41: 461 and C22: 461
-New serial for C41: 471 and C22: 461
-2 identical serial for C41: 471 and C21: 471
-New serial for C41: 481 and C21: 471
-2 identical serial for C41: 481 and C14: 481
-New serial for C41: 491 and C14: 481
-2 identical serial for C41: 491 and C13: 491
-New serial for C41: 501 and C13: 491
-2 identical serial for C41: 501 and C12: 501
-New serial for C41: 511 and C12: 501
-2 identical serial for C41: 511 and C5A: 511
-New serial for C41: 521 and C5A: 511
-2 identical serial for C41: 521 and C5B: 521
-New serial for C41: 531 and C5B: 521
-2 identical serial for C41: 531 and C11: 531
-New serial for C41: 541 and C11: 531
-2 identical serial for C41: 541 and C52: 541
-New serial for C41: 551 and C52: 541
-2 identical serial for C41: 551 and C51: 551
-New serial for C41: 561 and C51: 551
-2 identical serial for C41: 561 and C50: 561
-New serial for C41: 571 and C50: 561
-2 identical serial for C41: 571 and C49: 571
-New serial for C41: 581 and C49: 571
-2 identical serial for C41: 581 and C48: 581
-New serial for C41: 591 and C48: 581
-2 identical serial for C41: 591 and C47: 591
-New serial for C41: 601 and C47: 591
-2 identical serial for C41: 601 and C60: 601
-New serial for C41: 611 and C60: 601
-2 identical serial for C41: 611 and C6A: 611
-New serial for C41: 621 and C6A: 611
-2 identical serial for C41: 621 and C6B: 621
-New serial for C41: 631 and C6B: 621
-2 identical serial for C41: 631 and C63: 631
-New serial for C41: 641 and C63: 631
-2 identical serial for C41: 641 and C62: 641
-New serial for C41: 651 and C62: 641
-2 identical serial for C41: 651 and C61: 651
-New serial for C41: 661 and C61: 651
-2 identical serial for C41: 661 and C66: 661
-New serial for C41: 671 and C66: 661
-2 identical serial for C41: 671 and C67: 671
-New serial for C41: 681 and C67: 671
-2 identical serial for C41: 681 and C65: 681
-New serial for C41: 691 and C65: 681
-2 identical serial for C41: 691 and C64: 691
-New serial for C41: 701 and C64: 691
-2 identical serial for C41: 701 and C59: 701
-New serial for C41: 711 and C59: 701
-2 identical serial for C41: 711 and C7A: 711
-New serial for C41: 721 and C7A: 711
-2 identical serial for C41: 721 and C7B: 721
-New serial for C41: 731 and C7B: 721
-2 identical serial for C41: 731 and C58: 731
-New serial for C41: 741 and C58: 731
-2 identical serial for C41: 741 and C57: 741
-New serial for C41: 751 and C57: 741
-2 identical serial for C41: 751 and C56: 751
-New serial for C41: 761 and C56: 751
-2 identical serial for C41: 761 and C55: 761
-New serial for C41: 771 and C55: 761
-2 identical serial for C41: 771 and C54: 771
-New serial for C41: 781 and C54: 771
-2 identical serial for C41: 781 and C53: 781
-New serial for C41: 791 and C53: 781
-2 identical serial for C41: 791 and C79: 791
-New serial for C41: 801 and C79: 791
-2 identical serial for C41: 801 and C80: 801
-New serial for C41: 811 and C80: 801
-2 identical serial for C41: 811 and C8A: 811
-New serial for C41: 821 and C8A: 811
-2 identical serial for C41: 821 and C8B: 821
-New serial for C41: 831 and C8B: 821
-2 identical serial for C41: 831 and C82: 831
-New serial for C41: 841 and C82: 831
-2 identical serial for C41: 841 and C81: 841
-New serial for C41: 851 and C81: 841
-2 identical serial for C41: 851 and C78: 851
-New serial for C41: 861 and C78: 851
-2 identical serial for C41: 861 and C77: 861
-New serial for C41: 871 and C77: 861
-2 identical serial for C41: 871 and C76: 871
-New serial for C41: 881 and C76: 871
-2 identical serial for C41: 881 and C75: 881
-New serial for C41: 891 and C75: 881
-2 identical serial for C41: 891 and C74: 891
-New serial for C41: 901 and C74: 891
-2 identical serial for C41: 901 and C73: 901
-New serial for C41: 911 and C73: 901
-2 identical serial for C41: 911 and C9A: 911
-New serial for C41: 921 and C9A: 911
-2 identical serial for C41: 921 and C9B: 921
-New serial for C41: 931 and C9B: 921
-2 identical serial for C41: 931 and C72: 931
-New serial for C41: 941 and C72: 931
-2 identical serial for C41: 941 and C71: 941
-New serial for C41: 951 and C71: 941
-2 identical serial for C41: 951 and C70: 951
-New serial for C41: 961 and C70: 951
-2 identical serial for C41: 961 and C69: 961
-New serial for C41: 971 and C69: 961
-2 identical serial for C41: 971 and C68: 971
-New serial for C41: 981 and C68: 971
-2 identical serial for C41: 981 and C46: 981
-New serial for C41: 991 and C46: 981
-2 identical serial for C41: 991 and C45: 991
-New serial for C41: 1001 and C45: 991
-2 identical serial for C41: 1001 and C44: 1001
-New serial for C41: 1011 and C44: 1001
-2 identical serial for C41: 1011 and C10A: 1011
-New serial for C41: 1021 and C10A: 1011
-2 identical serial for C41: 1021 and C10B: 1021
-New serial for C41: 1031 and C10B: 1021
-2 identical serial for C41: 1031 and C43: 1031
-New serial for C41: 1041 and C43: 1031
-2 identical serial for C41: 1041 and C42: 1041
-New serial for C41: 1051 and C42: 1041
+Table of converted serial numbers
+ |    Shelx Crystals |    Shelx Crystals |    Shelx Crystals |    Shelx Crystals
+ |    FE1_1       11 |    FE2_1       21 |     O4_1       41 |     O5_1       51
+ |     O6_1       61 |     O7_1       71 |    C41_1     5411 |    C42_1     2421
+ |    H42_1      421 |    C43_1      431 |    H43_1      431 |    C44_1      441
+ |    C45_1      451 |    H45_1      451 |    C46_1      461 |    H46_1      461
+ |    C68_1      681 |    C69_1      691 |    C70_1      701 |    C71_1     5711
+ |    H71_1      711 |    C72_1     2721 |    H72_1      721 |    C73_1      731
+ |    H73_1      731 |    C74_1      741 |    H74_1      741 |    C75_1      751
+ |    C76_1      761 |    H76_1      761 |    C77_1      771 |    C78_1      781
+ |    H78_1      781 |    C79_1      791 |    H79_1      791 |    C80_1      801
+ |    H80_1      801 |    C81_1     5811 |    H81_1      811 |    C82_1     2821
+ |    C53_1      531 |   H53A_1     5311 |   H53B_1     5321 |   H53D_1     5341
+ |   H53E_1     5351 |    C54_1      541 |   H54A_1     5411 |   H54B_1     5421
+ |    C55_1      551 |   H55A_1     5511 |   H55B_1     5521 |    C56_1      561
+ |   H56A_1     5611 |   H56B_1     5621 |    C57_1      571 |   H57A_1     5711
+ |   H57B_1     5721 |   H57D_1     5741 |   H57E_1     5751 |    C58_1      581
+ |   H58A_1     5811 |   H58B_1     5821 |    C59_1      591 |   C54B_1     5421
+ |   H54D_1     5441 |   H54E_1     5451 |   C55B_1     5521 |   H55D_1     5541
+ |   H55E_1     5551 |   C56B_1     5621 |   H56D_1     5641 |   H56E_1     5651
+ |     C1_1       11 |     C2_1       21 |     C3_1       31 |     H3_1       31
+ |     C4_1       41 |     C5_1       51 |     H5_1       51 |     C6_1       61
+ |    C47_1      471 |    C48_1      481 |    C49_1      491 |    C50_1      501
+ |    H50_1      501 |    C51_1     4511 |    C52_1     2521 |    H52_1      521
+ |     N1_1       11 |    C64_1      641 |    C65_1      651 |   H65A_1     6511
+ |   H65B_1     6521 |   H65C_1     6531 |    C66_1      661 |   H66A_1     6611
+ |   H66B_1     6621 |   H66C_1     6631 |    C67_1      671 |   H67A_1     6711
+ |   H67B_1     6721 |   H67C_1     6731 |    C60_1      601 |    C61_1     4611
+ |   H61A_1     6111 |   H61B_1     6121 |   H61C_1     6131 |    C62_1     2621
+ |   H62A_1     6211 |   H62B_1     6221 |   H62C_1     6231 |    C63_1      631
+ |   H63A_1     6311 |   H63B_1     6321 |   H63C_1     6331 |     C7_1       71
+ |     C8_1       81 |     H8_1       81 |     C9_1       91 |     H9_1       91
+ |    C10_1      101 |    C11_1     7111 |    H11_1      111 |    C12_1     3121
+ |    H12_1      121 |    C13_1      131 |    H13_1      131 |    C14_1      141
+ |    C15_1      151 |    H15_1      151 |    C16_1      161 |    C17_1      171
+ |    H17_1      171 |    C18_1      181 |    C19_1      191 |     O2_1       21
+ |     F1_1       11 |     N2_1       21 |    C20_1      201 |    C21_1     4211
+ |    H21_1      211 |    C22_1     2221 |    H22_1      221 |    C23_1      231
+ |    H23_1      231 |    C24_1      241 |    C25_1      251 |    H25_1      251
+ |    C26_1      261 |   H26A_1     2611 |   H26B_1     2621 |     O1_1       11
+ |    C27_1      271 |   H27A_1     2711 |   H27B_1     2721 |    C28_1      281
+ |    C29_1      291 |    H29_1      291 |    C30_1      301 |    H30_1      301
+ |    C31_1     4311 |    H31_1      311 |    C32_1     2321 |    C33_1      331
+ |    H33_1      331 |    C34_1      341 |    C35_1      351 |    H35_1      351
+ |    C36_1      361 |    C37_1      371 |    H37_1     2371 |    C38_1      381
+ |    C39_1      391 |    C40_1      401 |    H40_1      401 |     O3_1       31
+ |     F2_1       21 |     N3_1       31 |    C1A_1     4111 |    C2A_1      211
+ |    C3A_1      311 |    H3D_1      341 |    C4A_1     4411 |    C5A_1      511
+ |    H5D_1      541 |    C6A_1      611 |   C47A_1     4711 |   C48A_1     4811
+ |   C49A_1     4911 |   C50A_1     5011 |   H50D_1     5041 |   C51A_1     5111
+ |   C52A_1     5211 |   H52D_1     5241 |    N1A_1     1111 |   C64A_1     6411
+ |   C65A_1     6511 |   H65D_1     6541 |   H65E_1     6551 |   H65F_1     6561
+ |   C66A_1     6611 |   H66D_1     6641 |   H66E_1     6651 |   H66F_1     6661
+ |   C67A_1     6711 |   H67D_1     6741 |   H67E_1     6751 |   H67F_1     6761
+ |   C60A_1     6011 |   C61A_1     6111 |   H61D_1     6141 |   H61E_1     6151
+ |   H61F_1     6161 |   C62A_1     6211 |   H62D_1     6241 |   H62E_1     6251
+ |   H62F_1     6261 |   C63A_1     6311 |   H63D_1     6341 |   H63E_1     6351
+ |   H63F_1     6361 |    C7A_1      711 |    C8A_1      811 |    H8D_1      841
+ |    C9A_1      911 |    H9D_1      941 |   C10A_1     1011 |   C11A_1     1111
+ |   H11D_1     1141 |   C12A_1     1211 |   H12D_1     1241 |   C13A_1     1311
+ |   H13D_1     1341 |   C14A_1     1411 |   C15A_1     1511 |   H15D_1     1541
+ |   C16A_1     1611 |   C17A_1     1711 |   H17D_1     1741 |   C18A_1     1811
+ |   C19A_1     1911 |    O2A_1      211 |    F1A_1      111 |    N2A_1      211
+ |   C20A_1     2011 |   C21A_1     2111 |   H21D_1     2141 |   C22A_1     2211
+ |   H22D_1     2241 |   C23A_1     2311 |   H23D_1     2341 |   C24A_1     2411
+ |   C25A_1     2511 |   H25D_1     2541 |   C26A_1     2611 |   H26D_1     2641
+ |   H26E_1     2651 |    O1A_1      111 |   C27A_1     2711 |   H27D_1     2741
+ |   H27E_1     2751 |   C28A_1     2811 |   C29A_1     2911 |   H29D_1     2941
+ |   C30A_1     3011 |   H30D_1     3041 |   C31A_1     3111 |   H31D_1     3141
+ |   C32A_1     3211 |   C33A_1     3311 |   H33D_1     3341 |   C34A_1     3411
+ |   C35A_1     3511 |   H35D_1     3541 |   C36A_1     3611 |   C37A_1     3711
+ |   H37D_1     3741 |   C38A_1     3811 |   C39A_1     3911 |   C40A_1     4011
+ |   H40D_1     4041 |    O3A_1      311 |    F2A_1      211 |    N3A_1      311
+ |    C1B_1     2121 |    C2B_1      221 |    C3B_1      321 |    H3G_1      371
+ |    C4B_1      421 |    C5B_1      521 |    H5G_1      571 |    C6B_1      621
+ |   C47B_1     4721 |   C48B_1     4821 |   C49B_1     4921 |   C50B_1     5021
+ |   H50G_1     5071 |   C51B_1     5121 |   C52B_1     5221 |   H52G_1     5271
+ |    N1B_1      121 |   C64B_1     6421 |   C65B_1     6521 |   H65G_1     6571
+ |   H65H_1     6581 |   H65I_1     6591 |   C66B_1     6621 |   H66G_1     6671
+ |   H66H_1     6681 |   H66I_1     6691 |   C67B_1     6721 |   H67G_1     6771
+ |   H67H_1     6781 |   H67I_1     6791 |   C60B_1     6021 |   C61B_1     6121
+ |   H61G_1     6171 |   H61H_1     6181 |   H61I_1     6191 |   C62B_1     6221
+ |   H62G_1     6271 |   H62H_1     6281 |   H62I_1     6291 |   C63B_1     6321
+ |   H63G_1     6371 |   H63H_1     6381 |   H63I_1     6391 |    C7B_1      721
+ |    C8B_1      821 |    H8G_1      871 |    C9B_1      921 |    H9G_1      971
+ |   C10B_1     1021 |   C11B_1     1121 |   H11G_1     1171 |   C12B_1     1221
+ |   H12G_1     1271 |   C13B_1     1321 |   H13G_1     1371 |   C14B_1     1421
+ |   C15B_1     1521 |   H15G_1     1571 |   C16B_1     1621 |   C17B_1     1721
+ |   H17G_1     1771 |   C18B_1     1821 |   C19B_1     1921 |    O2B_1      221
+ |    F1B_1      121 |    N2B_1      221 |   C13C_1     1331 |   H13J_1    13101
+ |   C14C_1     1431 |   C15C_1     1531 |   H15J_1    15101 |   C16C_1     1631
+ |   C17C_1     1731 |   H17J_1    17101 |   C18C_1     1831 |   C19C_1     1931
+ |    O2C_1      231 |    F1C_1      131 |    N2C_1      231 |   C20C_1     2031
+ |   C21C_1     2131 |   H21J_1    21101 |   C22C_1     2231 |   H22J_1    22101
+ |   C23C_1     2331 |   H23J_1    23101 |   C24C_1     2431 |   C25C_1     2531
+ |   H25J_1    25101 |   C26C_1     2631 |   H26J_1    26101 |   H26K_1    26111
+ |    O1C_1      131 |   C27C_1     2731 |   H27J_1    27101 |   H27K_1    27111
+ |   C28C_1     2831 |   C29C_1     2931 |   H29J_1    29101 |   C30C_1     3031
+ |   H30J_1    30101 |   C31C_1     3131 |   H31J_1    31101 |   C32C_1     3231
+ |   C33C_1     3331 |   H33J_1    33101 |   C34C_1     3431 |   C35C_1     3531
+ |   H35J_1    35101 |   C36C_1     3631 |   C37C_1     3731 |   H37J_1    37101
+ |   C38C_1     3831 |   C39C_1     3931 |   C40C_1     4031 |   H40J_1    40101
+ |    O3C_1      331 |    F2C_1      231 |    N3C_1      331 |   C34D_1     3441
+ |   C35D_1     3541 |   H35M_1    35131 |   C36D_1     3641 |   C37D_1     3741
+ |   H37M_1    37131 |   C38D_1     3841 |   C39D_1     3941 |   C40D_1     4041
+ |   H40M_1    40131 |    O3D_1      341 |    F2D_1      241 |    N3D_1      341
+ |   N01A_1      111 |   C01A_1      111 |   C01B_1      121 |   H1ZA_1    12611
+ |   H1ZB_1    12621 |   H1ZC_1    12631 |   C04A_1      411 |   H4ZA_1    42611
+ |   H4ZB_1    42621 |   CL01_1       11 |   CL02_1       21 |     F1_2       12
+ |     O2_2       22 |     N2_2       22 |    FE3_2       32 |     N3_2       32
+ |    FE4_2       42 |     O4_2       42 |     O5_2       52 |     C1_2       12
+ |     C2_2       22 |     C3_2       32 |     H3_2       32 |     C4_2       42
+ |     C5_2       52 |     H5_2       52 |     C6_2       62 |    C47_2      472
+ |    C48_2      482 |    C49_2      492 |    C50_2      502 |    H50_2      502
+ |    C51_2      512 |    C52_2      522 |    H52_2      522 |     N1_2       12
+ |     C7_2       72 |     C8_2       82 |     H8_2       82 |     C9_2       92
+ |     H9_2       92 |    C10_2      102 |    C11_2      112 |    H11_2      112
+ |    C12_2      122 |    H12_2      122 |    C13_2      132 |    H13_2      132
+ |    C14_2      142 |    C15_2      152 |    H15_2      152 |    C16_2      162
+ |    C17_2      172 |    H17_2      172 |    C18_2      182 |    C19_2      192
+ |    C20_2      202 |    C21_2      212 |    H21_2      212 |    C22_2      222
+ |    H22_2      222 |    C23_2      232 |    H23_2      232 |    C24_2      242
+ |    C25_2      252 |    H25_2      252 |    C26_2      262 |   H26A_2     2612
+ |   H26B_2     2622 |     O1_2       12 |    C27_2      272 |   H27A_2     2712
+ |   H27B_2     2722 |    C28_2      282 |    C29_2      292 |    H29_2      292
+ |    C30_2      302 |    H30_2      302 |    C31_2      312 |    H31_2      312
+ |    C32_2      322 |    C33_2      332 |    H33_2      332 |    C34_2      342
+ |    C35_2      352 |    H35_2      352 |    C36_2      362 |    C37_2      372
+ |    H37_2      372 |    C38_2      382 |    C39_2      392 |     O3_2       32
+ |     F2_2       22 |   C20A_2     2012 |   C21A_2     2112 |   H21D_2     2142
+ |   C22A_2     2212 |   H22D_2     2242 |   C23A_2     2312 |   H23D_2     2342
+ |   C24A_2     2412 |   C25A_2     2512 |   H25D_2     2542 |   C26A_2     2612
+ |   H26D_2     2642 |   H26E_2     2652 |    O1A_2      112 |   C27A_2     2712
+ |   H27D_2     2742 |   H27E_2     2752 |   C28A_2     2812 |   C29A_2     2912
+ |   H29D_2     2942 |   C30A_2     3012 |   H30D_2     3042 |   C31A_2     3112
+ |   H31D_2     3142 |   C32A_2     3212 |   C33A_2     3312 |   H33D_2     3342
+ |   C34A_2     3412 |   C35A_2     3512 |   H35D_2     3542 |   C36A_2     3612
+ |   C37A_2     3712 |   H37D_2     3742 |   C38A_2     3812 |   C39A_2     3912
+ |    O3A_2      312 |    F2A_2      212 |   C20B_2     2022 |   C21B_2     2122
+ |   H21G_2     2172 |   C22B_2     2222 |   H22G_2     2272 |   C23B_2     2322
+ |   H23G_2     2372 |   C24B_2     2422 |   C25B_2     2522 |   H25G_2     2572
+ |   C26B_2     2622 |   H26G_2     2672 |   H26H_2     2682 |    O1B_2      122
+ |   C27B_2     2722 |   H27G_2     2772 |   H27H_2     2782 |   C28B_2     2822
+ |   C29B_2     2922 |   H29G_2     2972 |   C30B_2     3022 |   H30G_2     3072
+ |   C31B_2     3122 |   H31G_2     3172 |   C32B_2     3222 |   C33B_2     3322
+ |   H33G_2     3372 |   C34B_2     3422 |   C35B_2     3522 |   H35G_2     3572
+ |   C36B_2     3622 |   C37B_2     3722 |   H37G_2     3772 |   C38B_2     3822
+ |   C39B_2     3922 |    O3B_2      322 |    F2B_2      222 |    C40_2      402
+ |    H40_2      402 |    C41_2      412 |    C42_2      422 |    H42_2      422
+ |    C43_2      432 |    H43_2      432 |    C44_2      442 |    C45_2      452
+ |    H45_2      452 |    C46_2      462 |    H46_2      462 |    C53_2      532
+ |   H53A_2     5312 |   H53B_2     5322 |   H53E_2     5352 |   H53F_2     5362
+ |    C54_2      542 |   H54A_2     5412 |   H54B_2     5422 |    C55_2      552
+ |   H55A_2     5512 |   H55B_2     5522 |   C54A_2     5412 |   H54D_2     5442
+ |   H54E_2     5452 |   C55A_2     5512 |   H55D_2     5542 |   H55E_2     5552
+ |    C56_2      562 |   H56A_2     5612 |   H56B_2     5622 |   H56D_2     5642
+ |   H56E_2     5652 |    C57_2      572 |   H57A_2     5712 |   H57B_2     5722
+ |    C58_2      582 |   H58A_2     5812 |   H58B_2     5822 |    C59_2      592
+ |    C60_2      602 |    C61_2      612 |   H61A_2     6112 |   H61B_2     6122
+ |   H61C_2     6132 |    C62_2      622 |   H62A_2     6212 |   H62B_2     6222
+ |   H62C_2     6232 |    C63_2      632 |   H63A_2     6312 |   H63B_2     6322
+ |   H63C_2     6332 |    C64_2      642 |    C65_2      652 |   H65A_2     6512
+ |   H65B_2     6522 |   H65C_2     6532 |    C66_2      662 |   H66A_2     6612
+ |   H66B_2     6622 |   H66C_2     6632 |    C67_2      672 |   H67A_2     6712
+ |   H67B_2     6722 |   H67C_2     6732 |    C68_2      682 |    C69_2      692
+ |    C70_2      702 |    C71_2      712 |    H71_2      712 |    C72_2      722
+ |    H72_2      722 |    C73_2      732 |    H73_2      732 |    C74_2      742
+ |    H74_2      742 |    C75_2      752 |    C76_2      762 |    H76_2      762
+ |    C77_2      772 |    C78_2      782 |    H78_2      782 |    C79_2      792
+ |    H79_2      792 |    C80_2      802 |    H80_2      802 |    C81_2      812
+ |    H81_2      812 |    C82_2      822 |     O6_2       62 |     O7_2       72
+ |   C69A_2     6912 |   C70A_2     7012 |   C71A_2     7112 |   H71D_2     7142
+ |   C72A_2     7212 |   H72D_2     7242 |   C73A_2     7312 |   H73D_2     7342
+ |   C74A_2     7412 |   H74D_2     7442 |   C75A_2     7512 |   C76A_2     7612
+ |   H76D_2     7642 |   C77A_2     7712 |   C78A_2     7812 |   H78D_2     7842
+ |   C79A_2     7912 |   H79D_2     7942 |   C80A_2     8012 |   H80D_2     8042
+ |   C81A_2     8112 |   H81D_2     8142 |   C82A_2     8212 |    O6A_2      612
+ |    O7A_2      712 |    FE1_3       13 |     N1_3       13 |     C1_3       13
+ |    FE2_3       23 |     N2_3       23 |     C2_3       23 |     N3_3       33
+ |     C3_3       33 |     H3_3       33 |     O4_3       43 |     C4_3       43
+ |     O5_3       53 |     C5_3       53 |     H5_3       53 |     O6_3       63
+ |     C6_3       63 |     O7_3       73 |     C7_3       73 |     C8_3       83
+ |     H8_3       83 |     C9_3       93 |     H9_3       93 |    C10_3      103
+ |    C11_3      113 |    H11_3      113 |    C12_3      123 |    H12_3      123
+ |    C13_3      133 |    H13_3      133 |    C14_3      143 |    C15_3      153
+ |    H15_3      153 |    C16_3      163 |    C17_3      173 |    H17_3      173
+ |    C18_3      183 |    C19_3      193 |     O2_3       23 |     F1_3       13
+ |    C20_3      203 |    C21_3     1213 |    H21_3      213 |    C22_3     1223
+ |    H22_3      223 |    C23_3      233 |    H23_3      233 |    C24_3      243
+ |    C25_3      253 |    H25_3      253 |    C26_3      263 |   H26A_3     2613
+ |   H26B_3     2623 |     O1_3       13 |    C27_3      273 |   H27A_3     2713
+ |   H27B_3     2723 |    C28_3      283 |    C29_3      293 |    H29_3      293
+ |    C30_3      303 |    H30_3      303 |    C31_3     1313 |    H31_3      313
+ |    C32_3     1323 |    C33_3      333 |    H33_3      333 |    C34_3      343
+ |    C35_3      353 |    H35_3      353 |    C36_3      363 |    C37_3      373
+ |    H37_3      373 |    C38_3      383 |    C39_3      393 |    C40_3      403
+ |    H40_3      403 |     O3_3       33 |     F2_3       23 |   C14A_3     1413
+ |   C15A_3     1513 |   H15D_3     1543 |   C16A_3     1613 |   C17A_3     1713
+ |   H17D_3     1743 |   C18A_3     1813 |   C19A_3     1913 |    O2A_3      213
+ |    F1A_3      113 |   C20A_3     2013 |   C21A_3     2113 |   H21D_3     2143
+ |   C22A_3     2213 |   H22D_3     2243 |   C23A_3     2313 |   H23A_3     2313
+ |   C24A_3     2413 |   C25A_3     2513 |   H25D_3     2543 |   C26A_3     2613
+ |   H26D_3     2643 |   H26E_3     2653 |    O1A_3      113 |   C27A_3     2713
+ |   H27D_3     2743 |   H27E_3     2753 |   C28A_3     2813 |   C29A_3     2913
+ |   H29D_3     2943 |   C30A_3     3013 |   H30D_3     3043 |   C31A_3     3113
+ |   H31D_3     3143 |   C32A_3     3213 |   C33A_3     3313 |   H33D_3     3343
+ |   C34A_3     3413 |   C35A_3     3513 |   H35D_3     3543 |   C36A_3     3613
+ |   C37A_3     3713 |   H37D_3     3743 |   C38A_3     3813 |   C39A_3     3913
+ |   C40A_3     4013 |   H40D_3     4043 |    O3A_3      313 |    F2A_3      213
+ |   C14B_3     1423 |   C15B_3     1523 |   H15G_3     1573 |   C16B_3     1623
+ |   C17B_3     1723 |   H17G_3     1773 |   C18B_3     1823 |   C19B_3     1923
+ |    O2B_3      223 |    F1B_3      123 |   C20B_3     2023 |   C21B_3     2123
+ |   H21G_3     2173 |   C22B_3     2223 |   H22G_3     2273 |   C23B_3     2323
+ |   H23G_3     2373 |   C24B_3     2423 |   C25B_3     2523 |   H25G_3     2573
+ |   C26B_3     2623 |   H26G_3     2673 |   H26H_3     2683 |    O1B_3      123
+ |   C27B_3     2723 |   H27G_3     2773 |   H27H_3     2783 |   C28B_3     2823
+ |   C29B_3     2923 |   H29G_3     2973 |   C30B_3     3023 |   H30G_3     3073
+ |   C31B_3     3123 |   H31G_3     3173 |   C32B_3     3223 |   C33B_3     3323
+ |   H33G_3     3373 |   C14C_3     1433 |   C15C_3     1533 |   H15J_3    15103
+ |   C16C_3     1633 |   C17C_3     1733 |   H17J_3    17103 |   C18C_3     1833
+ |   C19C_3     1933 |    O2C_3      233 |    F1C_3      133 |   C20C_3     2033
+ |   C21C_3     2133 |   H21J_3    21103 |   C22C_3     2233 |   H22J_3    22103
+ |   C23C_3     2333 |   H23J_3    23103 |   C24C_3     2433 |   C25C_3     2533
+ |   H25J_3    25103 |   C26C_3     2633 |   H26J_3    26103 |   H26K_3    26113
+ |    O1C_3      133 |   C27C_3     2733 |   H27J_3    27103 |   H27K_3    27113
+ |   C28C_3     2833 |   C29C_3     2933 |   H29J_3    29103 |   C30C_3     3033
+ |   H30J_3    30103 |   C31C_3     3133 |   H31J_3    31103 |   C32C_3     3233
+ |   C33C_3     3333 |   H33J_3    33103 |   C20D_3     2043 |   C21D_3     2143
+ |   H21M_3    21133 |   C22D_3     2243 |   H22M_3    22133 |   C23D_3     2343
+ |   H23M_3    23133 |   C24D_3     2443 |   C25D_3     2543 |   H25M_3    25133
+ |   C26D_3     2643 |   H26M_3    26133 |   H26N_3    26143 |    O1D_3      143
+ |   C27D_3     2743 |   H27M_3    27133 |   H27N_3    27143 |   C28D_3     2843
+ |   C29D_3     2943 |   H29M_3    29133 |   C30D_3     3043 |   H30M_3    30133
+ |   C31D_3     3143 |   H31M_3    31133 |   C32D_3     3243 |   C33D_3     3343
+ |   H33M_3    33133 |    C41_3      413 |    C42_3      423 |    H42_3      423
+ |    C43_3      433 |    H43_3      433 |    C44_3      443 |    C45_3      453
+ |    H45_3      453 |    C46_3      463 |    H46_3      463 |    C47_3      473
+ |    C48_3      483 |    C49_3      493 |    C50_3      503 |    H50_3      503
+ |    C51_3      513 |    C52_3      523 |    H52_3      523 |    C53_3      533
+ |   H53A_3     5313 |   H53B_3     5323 |    C54_3      543 |   H54A_3     5413
+ |   H54B_3     5423 |    C55_3      553 |   H55A_3     5513 |   H55B_3     5523
+ |   H55D_3     5543 |   H55E_3     5553 |    C56_3      563 |   H56A_3     5613
+ |   H56B_3     5623 |    C57_3      573 |   H57A_3     5713 |   H57B_3     5723
+ |   C56A_3     5613 |   H56D_3     5643 |   H56E_3     5653 |   C57A_3     5713
+ |   H57D_3     5743 |   H57E_3     5753 |    C58_3      583 |   H58A_3     5813
+ |   H58B_3     5823 |   H58D_3     5843 |   H58E_3     5853 |    C59_3      593
+ |    C60_3      603 |    C61_3      613 |   H61A_3     6113 |   H61B_3     6123
+ |   H61C_3     6133 |    C62_3      623 |   H62A_3     6213 |   H62B_3     6223
+ |   H62C_3     6233 |    C63_3      633 |   H63A_3     6313 |   H63B_3     6323
+ |   H63C_3     6333 |    C64_3      643 |    C65_3      653 |   H65A_3     6513
+ |   H65B_3     6523 |   H65C_3     6533 |    C66_3      663 |   H66A_3     6613
+ |   H66B_3     6623 |   H66C_3     6633 |    C67_3      673 |   H67A_3     6713
+ |   H67B_3     6723 |   H67C_3     6733 |   C65A_3     6513 |   H65D_3     6543
+ |   H65E_3     6553 |   H65F_3     6563 |   C66A_3     6613 |   H66D_3     6643
+ |   H66E_3     6653 |   H66F_3     6663 |   C67A_3     6713 |   H67D_3     6743
+ |   H67E_3     6753 |   H67F_3     6763 |   C65B_3     6523 |   H65G_3     6573
+ |   H65H_3     6583 |   H65I_3     6593 |   C66B_3     6623 |   H66G_3     6673
+ |   H66H_3     6683 |   H66I_3     6693 |   C67B_3     6723 |   H67G_3     6773
+ |   H67H_3     6783 |   H67I_3     6793 |    C68_3      683 |    C69_3      693
+ |    C70_3      703 |    C71_3      713 |    H71_3      713 |    C72_3      723
+ |    H72_3      723 |    C73_3      733 |    H73_3      733 |    C74_3      743
+ |    H74_3      743 |    C75_3      753 |    C76_3      763 |    H76_3      763
+ |    C77_3      773 |    C78_3      783 |    H78_3      783 |    C79_3      793
+ |    H79_3      793 |    C80_3      803 |    H80_3      803 |    C81_3      813
+ |    H81_3      813 |    C82_3      823 |     O8_3       83 |    HO1_3       13
+ |    HO2_3       23 |   N03A_3      313 |   C03A_3      313 |   C03B_3      323
+ |   H3ZA_3    32613 |   H3ZB_3    32623 |   H3ZC_3    32633 |   N02A_3      213
+ |   C02A_3      213 |   C02B_3      223 |   H2ZA_3    22613 |   H2ZB_3    22623
+ |   H2ZC_3    22633
 Done
 
 Processing FLATs...
 FLAT_1 C41 > C46 C47 C47A C47B N3 N3A N3C N3D
-PLANAR 0.10000 C(1051) C(1041) C(1031) C(1001) C(991) C(981) C(591) C(4711)
+PLANAR 0.10000 C(5411) C(2421) C(431) C(441) C(451) C(461) C(471) C(4711)
 CONT C(4721) N(31) N(311) N(331) N(341)
 FLAT_1 C1 > C52 C64 C60 C7 C44
-PLANAR 0.10000 C(11) C(21) C(31) C(41) C(51) C(61) C(591) C(581) C(571) C(561)
-CONT C(551) C(541) C(691) C(601) C(71) C(1001)
+PLANAR 0.10000 C(11) C(21) C(31) C(41) C(51) C(61) C(471) C(481) C(491) C(501)
+CONT C(4511) C(2521) C(641) C(601) C(71) C(441)
 FLAT_1 C7 > C12 N2 C6
-PLANAR 0.10000 C(71) C(81) C(91) C(101) C(531) C(501) N(21) C(61)
+PLANAR 0.10000 C(71) C(81) C(91) C(101) C(7111) C(3121) N(21) C(61)
 FLAT_1 C13 > F1 C20
-PLANAR 0.10000 C(491) C(481) C(151) C(161) C(171) C(181) C(191) O(21) F(11)
+PLANAR 0.10000 C(131) C(141) C(151) C(161) C(171) C(181) C(191) O(21) F(11)
 CONT C(201)
 FLAT_1 C20 > C26 C18
-PLANAR 0.10000 C(201) C(471) C(461) C(231) C(241) C(251) C(261) C(181)
+PLANAR 0.10000 C(201) C(4211) C(2221) C(231) C(241) C(251) C(261) C(181)
 FLAT_1 C27 > C34 C34D
-PLANAR 0.10000 C(271) C(281) C(291) C(301) C(451) C(441) C(331) C(341) C(3441)
+PLANAR 0.10000 C(271) C(281) C(291) C(301) C(4311) C(2321) C(331) C(341) C(3441)
 CONT
 FLAT_1 C34 > F2 C40 C32
 PLANAR 0.10000 C(341) C(351) C(361) C(371) C(381) C(391) C(401) O(31) F(21)
-CONT C(401) C(441)
+CONT C(401) C(2321)
 FLAT_1 C1A > C52A C64A C60A C7A C44
-PLANAR 0.10000 C(141) C(211) C(311) C(431) C(511) C(611) C(4711) C(4811) C(4911)
-CONT C(5011) C(5111) C(5211) C(6411) C(6011) C(711) C(1001)
+PLANAR 0.10000 C(4111) C(211) C(311) C(4411) C(511) C(611) C(4711) C(4811)
+CONT C(4911) C(5011) C(5111) C(5211) C(6411) C(6011) C(711) C(441)
 FLAT_1 C7A > C12A N2A C6A
 PLANAR 0.10000 C(711) C(811) C(911) C(1011) C(1111) C(1211) N(211) C(611)
 CONT
@@ -5135,8 +2998,8 @@ FLAT_1 C34A > F2A C40A C32A
 PLANAR 0.10000 C(3411) C(3511) C(3611) C(3711) C(3811) C(3911) C(4011) O(311)
 CONT F(211) C(4011) C(3211)
 FLAT_1 C1B > C52B C64B C60B C7B C44
-PLANAR 0.10000 C(131) C(221) C(321) C(421) C(521) C(621) C(4721) C(4821) C(4921)
-CONT C(5021) C(5121) C(5221) C(6421) C(6021) C(721) C(1001)
+PLANAR 0.10000 C(2121) C(221) C(321) C(421) C(521) C(621) C(4721) C(4821)
+CONT C(4921) C(5021) C(5121) C(5221) C(6421) C(6021) C(721) C(441)
 FLAT_1 C7B > C12B C6B N2B N2C
 PLANAR 0.10000 C(721) C(821) C(921) C(1021) C(1121) C(1221) C(621) N(221)
 CONT N(231)
@@ -5157,7 +3020,7 @@ PLANAR 0.10000 C(3431) C(3531) C(3631) C(3731) C(3831) C(3931) C(4031) O(331)
 CONT F(231) C(4031) C(3231)
 FLAT_1 C34D > F2D C40D C32
 PLANAR 0.10000 C(3441) C(3541) C(3641) C(3741) C(3841) C(3941) C(4041) O(341)
-CONT F(241) C(4041) C(441)
+CONT F(241) C(4041) C(2321)
 FLAT_2 C20 > C25 C18 C26
 PLANAR 0.10000 C(202) C(212) C(222) C(232) C(242) C(252) C(182) C(262)
 FLAT_2 C20A > C25A C18 C26A
@@ -5190,12 +3053,12 @@ FLAT_3 C14 > F1 C13 C20
 PLANAR 0.10000 C(143) C(153) C(163) C(173) C(183) C(193) O(23) F(13) C(133)
 CONT C(203)
 FLAT_3 C20 > C26 C18
-PLANAR 0.10000 C(203) C(863) C(853) C(233) C(243) C(253) C(263) C(183)
+PLANAR 0.10000 C(203) C(1213) C(1223) C(233) C(243) C(253) C(263) C(183)
 FLAT_3 C27 > C33 C34
-PLANAR 0.10000 C(273) C(283) C(293) C(303) C(843) C(833) C(333) C(343)
+PLANAR 0.10000 C(273) C(283) C(293) C(303) C(1313) C(1323) C(333) C(343)
 FLAT_3 C34 > F2 C32 C32C
 PLANAR 0.10000 C(343) C(353) C(363) C(373) C(383) C(393) C(403) O(33) F(23)
-CONT C(833) C(3233)
+CONT C(1323) C(3233)
 FLAT_3 C14A > F1A C13 C20A
 PLANAR 0.10000 C(1413) C(1513) C(1613) C(1713) C(1813) C(1913) O(213) F(113)
 CONT C(133) C(2013)
@@ -5248,7 +3111,9 @@ DANG_1 2.615 0.004 N01A C01B
 DISTANCE 2.61500,.00400 = N(111) TO C(121)
 DFIX_1 1.7602 0.002 C04A Cl01 C04A Cl02
 DISTANCE 1.76020,.00200 = C(411) TO CL(11)
+DISTANCE 1.76020,.00200 = C(411) TO CL(21)
 DFIX_1 1.7602 0.002 C04A Cl01 C04A Cl02
+DISTANCE 1.76020,.00200 = C(411) TO CL(11)
 DISTANCE 1.76020,.00200 = C(411) TO CL(21)
 DFIX_1 2.9338 0.004 Cl01 Cl02
 DISTANCE 2.93380,.00400 = CL(11) TO CL(21)
@@ -5268,25 +3133,25 @@ DISTANCE 2.61500,.04000 = N(213) TO C(223)
 Processing SADIs...
 SADI_1 C41 C42 C42 C43 C43 C44 C44 C45 C45 C46 C46 C41
 DISTANCE 0.0,  .02000 = MEAN 
-CONT C(1051) TO C(1041),
-CONT C(1041) TO C(1031),
-CONT C(1031) TO C(1001),
-CONT C(1001) TO C(991),
-CONT C(991) TO C(981),
-CONT C(981) TO C(1051) 
+CONT C(5411) TO C(2421),
+CONT C(2421) TO C(431),
+CONT C(431) TO C(441),
+CONT C(441) TO C(451),
+CONT C(451) TO C(461),
+CONT C(461) TO C(5411) 
 SADI_1 0.04 C41 C43 C43 C45 C45 C41 C42 C44 C44 C46 C46 C42
 DISTANCE 0.0,  .04000 = MEAN 
-CONT C(1051) TO C(1031),
-CONT C(1031) TO C(991),
-CONT C(991) TO C(1051),
-CONT C(1041) TO C(1001),
-CONT C(1001) TO C(981),
-CONT C(981) TO C(1041) 
+CONT C(5411) TO C(431),
+CONT C(431) TO C(451),
+CONT C(451) TO C(5411),
+CONT C(2421) TO C(441),
+CONT C(441) TO C(461),
+CONT C(461) TO C(2421) 
 SADI_1 0.04 C41 C44 C42 C45 C43 C46
 DISTANCE 0.0,  .04000 = MEAN 
-CONT C(1051) TO C(1001),
-CONT C(1041) TO C(991),
-CONT C(1031) TO C(981) 
+CONT C(5411) TO C(441),
+CONT C(2421) TO C(451),
+CONT C(431) TO C(461) 
 SADI_1 C40 N3 C40A N3A C40C N3C C40D N3D
 DISTANCE 0.0,  .02000 = MEAN 
 CONT C(401) TO N(31),
@@ -5295,76 +3160,76 @@ CONT C(4031) TO N(331),
 CONT C(4041) TO N(341) 
 SADI_1 C41 N3 C41 N3A C41 N3C C41 N3D
 DISTANCE 0.0,  .02000 = MEAN 
-CONT C(1051) TO N(31),
-CONT C(1051) TO N(311),
-CONT C(1051) TO N(331),
-CONT C(1051) TO N(341) 
+CONT C(5411) TO N(31),
+CONT C(5411) TO N(311),
+CONT C(5411) TO N(331),
+CONT C(5411) TO N(341) 
 SADI_1 C41 C40 C41 C40A C41 C40C C41 C40D
 DISTANCE 0.0,  .02000 = MEAN 
-CONT C(1051) TO C(401),
-CONT C(1051) TO C(4011),
-CONT C(1051) TO C(4031),
-CONT C(1051) TO C(4041) 
+CONT C(5411) TO C(401),
+CONT C(5411) TO C(4011),
+CONT C(5411) TO C(4031),
+CONT C(5411) TO C(4041) 
 SADI_1 C44 C47 C44 C47A C44 C47B
 DISTANCE 0.0,  .02000 = MEAN 
-CONT C(1001) TO C(591),
-CONT C(1001) TO C(4711),
-CONT C(1001) TO C(4721) 
+CONT C(441) TO C(471),
+CONT C(441) TO C(4711),
+CONT C(441) TO C(4721) 
 SADI_1 0.04 C53 C54 C54 C55 C55 C56 C56 C57 C57 C58 C58 C59 C53  C54B C54B C55B C55B C56B C56B C57
 DISTANCE 0.0,  .04000 = MEAN 
-CONT C(781) TO C(771),
-CONT C(771) TO C(761),
-CONT C(761) TO C(751),
-CONT C(751) TO C(741),
-CONT C(741) TO C(731),
-CONT C(731) TO C(701),
-CONT C(781) TO C(5421),
+CONT C(531) TO C(541),
+CONT C(541) TO C(551),
+CONT C(551) TO C(561),
+CONT C(561) TO C(571),
+CONT C(571) TO C(581),
+CONT C(581) TO C(591),
+CONT C(531) TO C(5421),
 CONT C(5421) TO C(5521),
 CONT C(5521) TO C(5621),
-CONT C(5621) TO C(741) 
+CONT C(5621) TO C(571) 
 SADI_1 0.04 C53 C55 C53 C55B C55 C57 C55B C57 C57 C59 C54 C56  C54B C56B C56 C58 C56B C58 C57 C59
 DISTANCE 0.0,  .04000 = MEAN 
-CONT C(781) TO C(761),
-CONT C(781) TO C(5521),
-CONT C(761) TO C(741),
-CONT C(5521) TO C(741),
-CONT C(741) TO C(701),
-CONT C(771) TO C(751),
+CONT C(531) TO C(551),
+CONT C(531) TO C(5521),
+CONT C(551) TO C(571),
+CONT C(5521) TO C(571),
+CONT C(571) TO C(591),
+CONT C(541) TO C(561),
 CONT C(5421) TO C(5621),
-CONT C(751) TO C(731),
-CONT C(5621) TO C(731),
-CONT C(741) TO C(701) 
+CONT C(561) TO C(581),
+CONT C(5621) TO C(581),
+CONT C(571) TO C(591) 
 SADI_1 0.04 C64 C65 C64 C66 C64 C67
 DISTANCE 0.0,  .04000 = MEAN 
-CONT C(691) TO C(681),
-CONT C(691) TO C(661),
-CONT C(691) TO C(671) 
+CONT C(641) TO C(651),
+CONT C(641) TO C(661),
+CONT C(641) TO C(671) 
 SADI_1 0.04 C67 C66 C67 C65 C66 C65
 DISTANCE 0.0,  .04000 = MEAN 
 CONT C(671) TO C(661),
-CONT C(671) TO C(681),
-CONT C(661) TO C(681) 
+CONT C(671) TO C(651),
+CONT C(661) TO C(651) 
 SADI_1 C7 C8 C8 C9 C9 C10 C10 C11 C11 C12 C12 C7
 DISTANCE 0.0,  .02000 = MEAN 
 CONT C(71) TO C(81),
 CONT C(81) TO C(91),
 CONT C(91) TO C(101),
-CONT C(101) TO C(531),
-CONT C(531) TO C(501),
-CONT C(501) TO C(71) 
+CONT C(101) TO C(7111),
+CONT C(7111) TO C(3121),
+CONT C(3121) TO C(71) 
 SADI_1 0.04 C7 C9 C9 C11 C11 C7 C8 C10 C10 C12 C12 C8
 DISTANCE 0.0,  .04000 = MEAN 
 CONT C(71) TO C(91),
-CONT C(91) TO C(531),
-CONT C(531) TO C(71),
+CONT C(91) TO C(7111),
+CONT C(7111) TO C(71),
 CONT C(81) TO C(101),
-CONT C(101) TO C(501),
-CONT C(501) TO C(81) 
+CONT C(101) TO C(3121),
+CONT C(3121) TO C(81) 
 SADI_1 0.04 C7 C10 C8 C11 C9 C12
 DISTANCE 0.0,  .04000 = MEAN 
 CONT C(71) TO C(101),
-CONT C(81) TO C(531),
-CONT C(91) TO C(501) 
+CONT C(81) TO C(7111),
+CONT C(91) TO C(3121) 
 SADI_1 0.04 C6 C7 C6A C7A C6B C7B
 DISTANCE 0.0,  .04000 = MEAN 
 CONT C(61) TO C(71),
@@ -5372,23 +3237,23 @@ CONT C(611) TO C(711),
 CONT C(621) TO C(721) 
 SADI_1 C14 C15 C15 C16 C16 C17 C17 C18 C18 C19 C19 C14
 DISTANCE 0.0,  .02000 = MEAN 
-CONT C(481) TO C(151),
+CONT C(141) TO C(151),
 CONT C(151) TO C(161),
 CONT C(161) TO C(171),
 CONT C(171) TO C(181),
 CONT C(181) TO C(191),
-CONT C(191) TO C(481) 
+CONT C(191) TO C(141) 
 SADI_1 0.04 C14 C16 C16 C18 C18 C14 C15 C17 C17 C19 C19 C15
 DISTANCE 0.0,  .04000 = MEAN 
-CONT C(481) TO C(161),
+CONT C(141) TO C(161),
 CONT C(161) TO C(181),
-CONT C(181) TO C(481),
+CONT C(181) TO C(141),
 CONT C(151) TO C(171),
 CONT C(171) TO C(191),
 CONT C(191) TO C(151) 
 SADI_1 0.04 C14 C17 C15 C18 C16 C19
 DISTANCE 0.0,  .04000 = MEAN 
-CONT C(481) TO C(171),
+CONT C(141) TO C(171),
 CONT C(151) TO C(181),
 CONT C(161) TO C(191) 
 SADI_1 C10 N2 C10A N2A C10B N2B C10B N2C
@@ -5399,51 +3264,51 @@ CONT C(1021) TO N(221),
 CONT C(1021) TO N(231) 
 SADI_1 0.04 C10 C13 C10A C13A C10B C13B C10B C13C
 DISTANCE 0.0,  .04000 = MEAN 
-CONT C(101) TO C(491),
+CONT C(101) TO C(131),
 CONT C(1011) TO C(1311),
 CONT C(1021) TO C(1321),
 CONT C(1021) TO C(1331) 
 SADI_1 C20 C21 C21 C22 C22 C23 C23 C24 C24 C25 C25 C20
 DISTANCE 0.0,  .02000 = MEAN 
-CONT C(201) TO C(471),
-CONT C(471) TO C(461),
-CONT C(461) TO C(231),
+CONT C(201) TO C(4211),
+CONT C(4211) TO C(2221),
+CONT C(2221) TO C(231),
 CONT C(231) TO C(241),
 CONT C(241) TO C(251),
 CONT C(251) TO C(201) 
 SADI_1 0.04 C20 C22 C22 C24 C24 C20 C21 C23 C23 C25 C25 C21
 DISTANCE 0.0,  .04000 = MEAN 
-CONT C(201) TO C(461),
-CONT C(461) TO C(241),
+CONT C(201) TO C(2221),
+CONT C(2221) TO C(241),
 CONT C(241) TO C(201),
-CONT C(471) TO C(231),
+CONT C(4211) TO C(231),
 CONT C(231) TO C(251),
-CONT C(251) TO C(471) 
+CONT C(251) TO C(4211) 
 SADI_1 0.04 C20 C23 C21 C24 C22 C25
 DISTANCE 0.0,  .04000 = MEAN 
 CONT C(201) TO C(231),
-CONT C(471) TO C(241),
-CONT C(461) TO C(251) 
+CONT C(4211) TO C(241),
+CONT C(2221) TO C(251) 
 SADI_1 C28 C29 C29 C30 C30 C31 C31 C32 C32 C33 C33 C28
 DISTANCE 0.0,  .02000 = MEAN 
 CONT C(281) TO C(291),
 CONT C(291) TO C(301),
-CONT C(301) TO C(451),
-CONT C(451) TO C(441),
-CONT C(441) TO C(331),
+CONT C(301) TO C(4311),
+CONT C(4311) TO C(2321),
+CONT C(2321) TO C(331),
 CONT C(331) TO C(281) 
 SADI_1 0.04 C28 C30 C30 C32 C32 C28 C29 C31 C31 C33 C33 C29
 DISTANCE 0.0,  .04000 = MEAN 
 CONT C(281) TO C(301),
-CONT C(301) TO C(441),
-CONT C(441) TO C(281),
-CONT C(291) TO C(451),
-CONT C(451) TO C(331),
+CONT C(301) TO C(2321),
+CONT C(2321) TO C(281),
+CONT C(291) TO C(4311),
+CONT C(4311) TO C(331),
 CONT C(331) TO C(291) 
 SADI_1 0.04 C28 C31 C29 C32 C30 C33
 DISTANCE 0.0,  .04000 = MEAN 
-CONT C(281) TO C(451),
-CONT C(291) TO C(441),
+CONT C(281) TO C(4311),
+CONT C(291) TO C(2321),
 CONT C(301) TO C(331) 
 SADI_1 C24 C26 C24A C26A C24C C26C C27 C28 C27A C28A C27C C28C
 DISTANCE 0.0,  .02000 = MEAN 
@@ -5478,10 +3343,10 @@ CONT C(201) TO C(181),
 CONT C(2011) TO C(1811),
 CONT C(2031) TO C(1831),
 CONT C(2011) TO C(1821),
-CONT C(441) TO C(341),
+CONT C(2321) TO C(341),
 CONT C(3211) TO C(3411),
 CONT C(3231) TO C(3431),
-CONT C(441) TO C(3441) 
+CONT C(2321) TO C(3441) 
 SADI_1 C36 F2 C36A F2A C36C F2C C36D F2D
 DISTANCE 0.0,  .02000 = MEAN 
 CONT C(361) TO F(21),
@@ -5529,8 +3394,8 @@ CONT C(1831) TO C(2131),
 CONT C(1831) TO C(2531) 
 SADI_1 N3C C42 N3C C46
 DISTANCE 0.0,  .02000 = MEAN 
-CONT N(331) TO C(1041),
-CONT N(331) TO C(981) 
+CONT N(331) TO C(2421),
+CONT N(331) TO C(461) 
 SADI_1 C32C C35C C32C C39C
 DISTANCE 0.0,  .02000 = MEAN 
 CONT C(3231) TO C(3531),
@@ -5736,7 +3601,7 @@ CONT C(2013) TO C(1813),
 CONT C(2023) TO C(1823),
 CONT C(2033) TO C(1833),
 CONT C(1823) TO C(2043),
-CONT C(833) TO C(343),
+CONT C(1323) TO C(343),
 CONT C(3233) TO C(343),
 CONT C(3213) TO C(3413),
 CONT C(3223) TO C(3413),
@@ -5764,7 +3629,7 @@ CONT C(153) TO C(183),
 CONT C(163) TO C(193) 
 SADI_3 C18 C21 C18 C25
 DISTANCE 0.0,  .02000 = MEAN 
-CONT C(183) TO C(863),
+CONT C(183) TO C(1213),
 CONT C(183) TO C(253) 
 SADI_3 C20 C17 C20 C19
 DISTANCE 0.0,  .02000 = MEAN 
@@ -5820,7 +3685,7 @@ CONT C(353) TO C(383),
 CONT C(363) TO C(393) 
 SADI_3 C34 C31 C34 C33
 DISTANCE 0.0,  .02000 = MEAN 
-CONT C(343) TO C(843),
+CONT C(343) TO C(1313),
 CONT C(343) TO C(333) 
 SADI_3 C34 C31C C34 C33C
 DISTANCE 0.0,  .02000 = MEAN 
@@ -5828,8 +3693,8 @@ CONT C(343) TO C(3133),
 CONT C(343) TO C(3333) 
 SADI_3 C32 C35 C32 C39
 DISTANCE 0.0,  .02000 = MEAN 
-CONT C(833) TO C(353),
-CONT C(833) TO C(393) 
+CONT C(1323) TO C(353),
+CONT C(1323) TO C(393) 
 SADI_3 C32C C35 C32C C39
 DISTANCE 0.0,  .02000 = MEAN 
 CONT C(3233) TO C(353),
@@ -5885,19 +3750,19 @@ CONT C(6623) TO C(6723)
 
 Processing EADPs...
 EADP_1 C50 C51 C52 C47 C51A C52A C47A C51B C52B C47B
-U(IJ) 0.0, 0.001 =  C(561) TO C(551),
-CONT C(551) TO C(541),
-CONT C(541) TO C(591),
-CONT C(591) TO C(5111),
+U(IJ) 0.0, 0.001 =  C(501) TO C(4511),
+CONT C(4511) TO C(2521),
+CONT C(2521) TO C(471),
+CONT C(471) TO C(5111),
 CONT C(5111) TO C(5211),
 CONT C(5211) TO C(4711),
 CONT C(4711) TO C(5121),
 CONT C(5121) TO C(5221),
 CONT C(5221) TO C(4721) 
 EADP_1 C63 C62 C61 C63A C62A C61A C63B C62B C61B
-U(IJ) 0.0, 0.001 =  C(631) TO C(641),
-CONT C(641) TO C(651),
-CONT C(651) TO C(6311),
+U(IJ) 0.0, 0.001 =  C(631) TO C(2621),
+CONT C(2621) TO C(4611),
+CONT C(4611) TO C(6311),
 CONT C(6311) TO C(6211),
 CONT C(6211) TO C(6111),
 CONT C(6111) TO C(6321),
@@ -5910,8 +3775,8 @@ CONT C(211) TO C(221)
 EADP_1 F1A F1
 U(IJ) 0.0, 0.001 =  F(111) TO F(11) 
 EADP_3 C13 C14 C14A C14B C14C C15 C15A C15B C15C C16 C16A C16B  C16C C19 C19A C19B C19C
-U(IJ) 0.0, 0.001 =  C(491) TO C(481),
-CONT C(481) TO C(1411),
+U(IJ) 0.0, 0.001 =  C(131) TO C(141),
+CONT C(141) TO C(1411),
 CONT C(1411) TO C(1421),
 CONT C(1421) TO C(1431),
 CONT C(1431) TO C(151),
@@ -5934,31 +3799,32 @@ CONT C(6611) TO C(6621)
 
 Processing ISORs...
 ISOR_1 0.1 C53 > C56B
-UQISO 0.10000 C(781) C(771) C(761) C(751) C(741) C(731) C(701) C(5421) C(5521)
+UQISO 0.10000 C(531) C(541) C(551) C(561) C(571) C(581) C(591) C(5421) C(5521)
 CONT C(5621)
 ISOR_1 0.05 C1 > N3D
-UQISO 0.05000 C(11) C(21) C(31) C(41) C(51) C(61) C(591) C(581) C(571) C(561)
-CONT C(551) C(541) N(11) C(691) C(681) C(661) C(671) C(601) C(651) C(641)
-CONT C(631) C(71) C(81) C(91) C(101) C(531) C(501) C(491) C(481) C(151) C(161)
-CONT C(171) C(181) C(191) O(21) F(11) N(21) C(201) C(471) C(461) C(231) C(241)
-CONT C(251) C(261) O(11) C(271) C(281) C(291) C(301) C(451) C(441) C(331)
-CONT C(341) C(351) C(361) C(371) C(381) C(391) C(401) O(31) F(21) N(31) C(141)
-CONT C(211) C(311) C(431) C(511) C(611) C(4711) C(4811) C(4911) C(5011) C(5111)
-CONT C(5211) N(131) C(6411) C(6511) C(6611) C(6711) C(6011) C(6111) C(6211)
-CONT C(6311) C(711) C(811) C(911) C(1011) C(1111) C(1211) C(1311) C(1411)
-CONT C(1511) C(1611) C(1711) C(1811) C(1911) O(211) F(111) N(211) C(2011)
-CONT C(2111) C(2211) C(2311) C(2411) C(2511) C(2611) O(111) C(2711) C(2811)
-CONT C(2911) C(3011) C(3111) C(3211) C(3311) C(3411) C(3511) C(3611) C(3711)
-CONT C(3811) C(3911) C(4011) O(311) F(211) N(311) C(131) C(221) C(321) C(421)
-CONT C(521) C(621) C(4721) C(4821) C(4921) C(5021) C(5121) C(5221) N(121)
-CONT C(6421) C(6521) C(6621) C(6721) C(6021) C(6121) C(6221) C(6321) C(721)
-CONT C(821) C(921) C(1021) C(1121) C(1221) C(1321) C(1421) C(1521) C(1621)
-CONT C(1721) C(1821) C(1921) O(221) F(121) N(221) C(1331) C(1431) C(1531)
-CONT C(1631) C(1731) C(1831) C(1931) O(231) F(131) N(231) C(2031) C(2131)
-CONT C(2231) C(2331) C(2431) C(2531) C(2631) O(131) C(2731) C(2831) C(2931)
-CONT C(3031) C(3131) C(3231) C(3331) C(3431) C(3531) C(3631) C(3731) C(3831)
-CONT C(3931) C(4031) O(331) F(231) N(331) C(3441) C(3541) C(3641) C(3741)
-CONT C(3841) C(3941) C(4041) O(341) F(241) N(341)
+UQISO 0.05000 C(11) C(21) C(31) C(41) C(51) C(61) C(471) C(481) C(491) C(501)
+CONT C(4511) C(2521) N(11) C(641) C(651) C(661) C(671) C(601) C(4611) C(2621)
+CONT C(631) C(71) C(81) C(91) C(101) C(7111) C(3121) C(131) C(141) C(151)
+CONT C(161) C(171) C(181) C(191) O(21) F(11) N(21) C(201) C(4211) C(2221)
+CONT C(231) C(241) C(251) C(261) O(11) C(271) C(281) C(291) C(301) C(4311)
+CONT C(2321) C(331) C(341) C(351) C(361) C(371) C(381) C(391) C(401) O(31)
+CONT F(21) N(31) C(4111) C(211) C(311) C(4411) C(511) C(611) C(4711) C(4811)
+CONT C(4911) C(5011) C(5111) C(5211) N(1111) C(6411) C(6511) C(6611) C(6711)
+CONT C(6011) C(6111) C(6211) C(6311) C(711) C(811) C(911) C(1011) C(1111)
+CONT C(1211) C(1311) C(1411) C(1511) C(1611) C(1711) C(1811) C(1911) O(211)
+CONT F(111) N(211) C(2011) C(2111) C(2211) C(2311) C(2411) C(2511) C(2611)
+CONT O(111) C(2711) C(2811) C(2911) C(3011) C(3111) C(3211) C(3311) C(3411)
+CONT C(3511) C(3611) C(3711) C(3811) C(3911) C(4011) O(311) F(211) N(311)
+CONT C(2121) C(221) C(321) C(421) C(521) C(621) C(4721) C(4821) C(4921) C(5021)
+CONT C(5121) C(5221) N(121) C(6421) C(6521) C(6621) C(6721) C(6021) C(6121)
+CONT C(6221) C(6321) C(721) C(821) C(921) C(1021) C(1121) C(1221) C(1321)
+CONT C(1421) C(1521) C(1621) C(1721) C(1821) C(1921) O(221) F(121) N(221)
+CONT C(1331) C(1431) C(1531) C(1631) C(1731) C(1831) C(1931) O(231) F(131)
+CONT N(231) C(2031) C(2131) C(2231) C(2331) C(2431) C(2531) C(2631) O(131)
+CONT C(2731) C(2831) C(2931) C(3031) C(3131) C(3231) C(3331) C(3431) C(3531)
+CONT C(3631) C(3731) C(3831) C(3931) C(4031) O(331) F(231) N(331) C(3441)
+CONT C(3541) C(3641) C(3741) C(3841) C(3941) C(4041) O(341) F(241) N(341)
+CONT
 ISOR_1 0.1 N01A > Cl02
 UQISO 0.10000 N(111) C(111) C(121) C(411) CL(11) CL(21)
 ISOR_2 0.1 C20 > F2B
@@ -5979,8 +3845,8 @@ CONT C(7112) C(7212) C(7312) C(7412) C(7512) C(7612) C(7712) C(7812) C(7912)
 CONT C(8012) C(8112) C(8212)
 ISOR_3 0.1 C14 > C33D
 UQISO 0.10000 C(143) C(153) C(163) C(173) C(183) C(193) O(23) F(13) C(203)
-CONT C(863) C(853) C(233) C(243) C(253) C(263) O(13) C(273) C(283) C(293)
-CONT C(303) C(843) C(833) C(333) C(343) C(353) C(363) C(373) C(383) C(393)
+CONT C(1213) C(1223) C(233) C(243) C(253) C(263) O(13) C(273) C(283) C(293)
+CONT C(303) C(1313) C(1323) C(333) C(343) C(353) C(363) C(373) C(383) C(393)
 CONT C(403) O(33) F(23) C(1413) C(1513) C(1613) C(1713) C(1813) C(1913) O(213)
 CONT F(113) C(2013) C(2113) C(2213) C(2313) C(2413) C(2513) C(2613) O(113)
 CONT C(2713) C(2813) C(2913) C(3013) C(3113) C(3213) C(3313) C(3413) C(3513)
@@ -6002,32 +3868,32 @@ UQISO 0.10000 N(213) C(213) C(223)
 
 Processing SAMEs...
 SAME_1 C1_2 > N1_2
-SAME 0.10000 C(12) C(22) C(32) C(42) C(52) C(62) C(472) C(482) C(492) C(502)
-CONT C(512) C(522) N(12)
-CONT AND C(12) C(22) C(32) C(42) C(52) C(62) C(472) C(482) C(492) C(502) C(512)
-CONT C(522) N(12)
+SAME 0.10000 C(11) C(21) C(31) C(41) C(51) C(61) C(471) C(481) C(491) C(501)
+CONT C(4511) C(2521) N(11)
+CONT AND C(11) C(21) C(31) C(41) C(51) C(61) C(471) C(481) C(491) C(501) C(4511)
+CONT C(2521) N(11)
 SAME_1 C1 > N1
-SAME 0.10000 C(11) C(21) C(31) C(41) C(51) C(61) C(591) C(581) C(571) C(561)
-CONT C(551) C(541) N(11)
-CONT AND C(141) C(211) C(311) C(431) C(511) C(611) C(4711) C(4811) C(4911)
-CONT C(5011) C(5111) C(5211) N(131)
+SAME 0.10000 C(11) C(21) C(31) C(41) C(51) C(61) C(471) C(481) C(491) C(501)
+CONT C(4511) C(2521) N(11)
+CONT AND C(4111) C(211) C(311) C(4411) C(511) C(611) C(4711) C(4811) C(4911)
+CONT C(5011) C(5111) C(5211) N(1111)
 SAME_1 C64 > C67
-SAME 0.10000 C(691) C(681) C(661) C(671)
+SAME 0.10000 C(641) C(651) C(661) C(671)
 CONT AND C(6411) C(6511) C(6611) C(6711)
 SAME_1 C60 > C63
-SAME 0.10000 C(601) C(651) C(641) C(631)
+SAME 0.10000 C(601) C(4611) C(2621) C(631)
 CONT AND C(6011) C(6111) C(6211) C(6311)
 SAME_1 C7 > C12
-SAME 0.10000 C(71) C(81) C(91) C(101) C(531) C(501)
+SAME 0.10000 C(71) C(81) C(91) C(101) C(7111) C(3121)
 CONT AND C(711) C(811) C(911) C(1011) C(1111) C(1211)
 SAME_1 C13 > N2
-SAME 0.10000 C(491) C(481) C(151) C(161) C(171) C(181) C(191) O(21) F(11)
+SAME 0.10000 C(131) C(141) C(151) C(161) C(171) C(181) C(191) O(21) F(11)
 CONT N(21)
 CONT AND C(1311) C(1411) C(1511) C(1611) C(1711) C(1811) C(1911) O(211) F(111)
 CONT N(211)
 SAME_1 C20 > C33
-SAME 0.10000 C(201) C(471) C(461) C(231) C(241) C(251) C(261) O(11) C(271)
-CONT C(281) C(291) C(301) C(451) C(441) C(331)
+SAME 0.10000 C(201) C(4211) C(2221) C(231) C(241) C(251) C(261) O(11) C(271)
+CONT C(281) C(291) C(301) C(4311) C(2321) C(331)
 CONT AND C(2011) C(2111) C(2211) C(2311) C(2411) C(2511) C(2611) O(111) C(2711)
 CONT C(2811) C(2911) C(3011) C(3111) C(3211) C(3311)
 SAME_1 C34 > N3
@@ -6036,32 +3902,32 @@ CONT N(31)
 CONT AND C(3411) C(3511) C(3611) C(3711) C(3811) C(3911) C(4011) O(311) F(211)
 CONT N(311)
 SAME_1 C1 > N1
-SAME 0.10000 C(11) C(21) C(31) C(41) C(51) C(61) C(591) C(581) C(571) C(561)
-CONT C(551) C(541) N(11)
-CONT AND C(131) C(221) C(321) C(421) C(521) C(621) C(4721) C(4821) C(4921)
+SAME 0.10000 C(11) C(21) C(31) C(41) C(51) C(61) C(471) C(481) C(491) C(501)
+CONT C(4511) C(2521) N(11)
+CONT AND C(2121) C(221) C(321) C(421) C(521) C(621) C(4721) C(4821) C(4921)
 CONT C(5021) C(5121) C(5221) N(121)
 SAME_1 C64 > C67
-SAME 0.10000 C(691) C(681) C(661) C(671)
+SAME 0.10000 C(641) C(651) C(661) C(671)
 CONT AND C(6421) C(6521) C(6621) C(6721)
 SAME_1 C60 > C63
-SAME 0.10000 C(601) C(651) C(641) C(631)
+SAME 0.10000 C(601) C(4611) C(2621) C(631)
 CONT AND C(6021) C(6121) C(6221) C(6321)
 SAME_1 C7 > C12
-SAME 0.10000 C(71) C(81) C(91) C(101) C(531) C(501)
+SAME 0.10000 C(71) C(81) C(91) C(101) C(7111) C(3121)
 CONT AND C(721) C(821) C(921) C(1021) C(1121) C(1221)
 SAME_1 C13 > N2
-SAME 0.10000 C(491) C(481) C(151) C(161) C(171) C(181) C(191) O(21) F(11)
+SAME 0.10000 C(131) C(141) C(151) C(161) C(171) C(181) C(191) O(21) F(11)
 CONT N(21)
 CONT AND C(1321) C(1421) C(1521) C(1621) C(1721) C(1821) C(1921) O(221) F(121)
 CONT N(221)
 SAME_1 C13 > N2
-SAME 0.10000 C(491) C(481) C(151) C(161) C(171) C(181) C(191) O(21) F(11)
+SAME 0.10000 C(131) C(141) C(151) C(161) C(171) C(181) C(191) O(21) F(11)
 CONT N(21)
 CONT AND C(1331) C(1431) C(1531) C(1631) C(1731) C(1831) C(1931) O(231) F(131)
 CONT N(231)
 SAME_1 C20 > C33
-SAME 0.10000 C(201) C(471) C(461) C(231) C(241) C(251) C(261) O(11) C(271)
-CONT C(281) C(291) C(301) C(451) C(441) C(331)
+SAME 0.10000 C(201) C(4211) C(2221) C(231) C(241) C(251) C(261) O(11) C(271)
+CONT C(281) C(291) C(301) C(4311) C(2321) C(331)
 CONT AND C(2031) C(2131) C(2231) C(2331) C(2431) C(2531) C(2631) O(131) C(2731)
 CONT C(2831) C(2931) C(3031) C(3131) C(3231) C(3331)
 SAME_1 C34 > N3
@@ -6075,58 +3941,58 @@ CONT N(31)
 CONT AND C(3441) C(3541) C(3641) C(3741) C(3841) C(3941) C(4041) O(341) F(241)
 CONT N(341)
 SAME_2 C20 > F2
-SAME 0.10000 C(202) C(212) C(222) C(232) C(242) C(252) C(262) O(12) C(272)
-CONT C(282) C(292) C(302) C(312) C(322) C(332) C(342) C(352) C(362) C(372)
-CONT C(382) C(392) O(32) F(22)
-CONT AND C(2012) C(2112) C(2212) C(2312) C(2412) C(2512) C(2612) O(112) C(2712)
-CONT C(2812) C(2912) C(3012) C(3112) C(3212) C(3312) C(3412) C(3512) C(3612)
-CONT C(3712) C(3812) C(3912) O(312) F(212)
+SAME 0.10000 C(201) C(4211) C(2221) C(231) C(241) C(251) C(261) O(11) C(271)
+CONT C(281) C(291) C(301) C(4311) C(2321) C(331) C(341) C(351) C(361) C(371)
+CONT C(381) C(391) O(31) F(21)
+CONT AND C(2011) C(2111) C(2211) C(2311) C(2411) C(2511) C(2611) O(111) C(2711)
+CONT C(2811) C(2911) C(3011) C(3111) C(3211) C(3311) C(3411) C(3511) C(3611)
+CONT C(3711) C(3811) C(3911) O(311) F(211)
 SAME_2 C20 > F2
-SAME 0.10000 C(202) C(212) C(222) C(232) C(242) C(252) C(262) O(12) C(272)
-CONT C(282) C(292) C(302) C(312) C(322) C(332) C(342) C(352) C(362) C(372)
-CONT C(382) C(392) O(32) F(22)
+SAME 0.10000 C(201) C(4211) C(2221) C(231) C(241) C(251) C(261) O(11) C(271)
+CONT C(281) C(291) C(301) C(4311) C(2321) C(331) C(341) C(351) C(361) C(371)
+CONT C(381) C(391) O(31) F(21)
 CONT AND C(2022) C(2122) C(2222) C(2322) C(2422) C(2522) C(2622) O(122) C(2722)
 CONT C(2822) C(2922) C(3022) C(3122) C(3222) C(3322) C(3422) C(3522) C(3622)
 CONT C(3722) C(3822) C(3922) O(322) F(222)
 SAME_2 C69 > C82
-SAME 0.10000 C(692) C(702) C(712) C(722) C(732) C(742) C(752) C(762) C(772)
-CONT C(782) C(792) C(802) C(812) C(822)
+SAME 0.10000 C(691) C(701) C(5711) C(2721) C(731) C(741) C(751) C(761) C(771)
+CONT C(781) C(791) C(801) C(5811) C(2821)
 CONT AND C(6912) C(7012) C(7112) C(7212) C(7312) C(7412) C(7512) C(7612) C(7712)
 CONT C(7812) C(7912) C(8012) C(8112) C(8212)
 SAME_3 C20_1 > C33_1
-SAME 0.10000 C(201) C(471) C(461) C(231) C(241) C(251) C(261) O(11) C(271)
-CONT C(281) C(291) C(301) C(451) C(441) C(331)
-CONT AND C(201) C(471) C(461) C(231) C(241) C(251) C(261) O(11) C(271) C(281)
-CONT C(291) C(301) C(451) C(441) C(331)
+SAME 0.10000 C(201) C(4211) C(2221) C(231) C(241) C(251) C(261) O(11) C(271)
+CONT C(281) C(291) C(301) C(4311) C(2321) C(331)
+CONT AND C(201) C(4211) C(2221) C(231) C(241) C(251) C(261) O(11) C(271) C(281)
+CONT C(291) C(301) C(4311) C(2321) C(331)
 SAME_3 C14 > C33
-SAME 0.10000 C(143) C(153) C(163) C(173) C(183) C(193) O(23) F(13) C(203)
-CONT C(863) C(853) C(233) C(243) C(253) C(263) O(13) C(273) C(283) C(293)
-CONT C(303) C(843) C(833) C(333)
-CONT AND C(1413) C(1513) C(1613) C(1713) C(1813) C(1913) O(213) F(113) C(2013)
-CONT C(2113) C(2213) C(2313) C(2413) C(2513) C(2613) O(113) C(2713) C(2813)
-CONT C(2913) C(3013) C(3113) C(3213) C(3313)
+SAME 0.10000 C(141) C(151) C(161) C(171) C(181) C(191) O(21) F(11) C(201)
+CONT C(4211) C(2221) C(231) C(241) C(251) C(261) O(11) C(271) C(281) C(291)
+CONT C(301) C(4311) C(2321) C(331)
+CONT AND C(1411) C(1511) C(1611) C(1711) C(1811) C(1911) O(211) F(111) C(2011)
+CONT C(2111) C(2211) C(2311) C(2411) C(2511) C(2611) O(111) C(2711) C(2811)
+CONT C(2911) C(3011) C(3111) C(3211) C(3311)
 SAME_3 C34 > F2
-SAME 0.10000 C(343) C(353) C(363) C(373) C(383) C(393) C(403) O(33) F(23)
+SAME 0.10000 C(341) C(351) C(361) C(371) C(381) C(391) C(401) O(31) F(21)
 CONT
-CONT AND C(3413) C(3513) C(3613) C(3713) C(3813) C(3913) C(4013) O(313) F(213)
+CONT AND C(3411) C(3511) C(3611) C(3711) C(3811) C(3911) C(4011) O(311) F(211)
 CONT
 SAME_3 C14 > C33
-SAME 0.10000 C(143) C(153) C(163) C(173) C(183) C(193) O(23) F(13) C(203)
-CONT C(863) C(853) C(233) C(243) C(253) C(263) O(13) C(273) C(283) C(293)
-CONT C(303) C(843) C(833) C(333)
-CONT AND C(1423) C(1523) C(1623) C(1723) C(1823) C(1923) O(223) F(123) C(2023)
-CONT C(2123) C(2223) C(2323) C(2423) C(2523) C(2623) O(123) C(2723) C(2823)
-CONT C(2923) C(3023) C(3123) C(3223) C(3323)
+SAME 0.10000 C(141) C(151) C(161) C(171) C(181) C(191) O(21) F(11) C(201)
+CONT C(4211) C(2221) C(231) C(241) C(251) C(261) O(11) C(271) C(281) C(291)
+CONT C(301) C(4311) C(2321) C(331)
+CONT AND C(1421) C(1521) C(1621) C(1721) C(1821) C(1921) O(221) F(121) C(2022)
+CONT C(2122) C(2222) C(2322) C(2422) C(2522) C(2622) O(122) C(2722) C(2822)
+CONT C(2922) C(3022) C(3122) C(3222) C(3322)
 SAME_3 C14 > C33
-SAME 0.10000 C(143) C(153) C(163) C(173) C(183) C(193) O(23) F(13) C(203)
-CONT C(863) C(853) C(233) C(243) C(253) C(263) O(13) C(273) C(283) C(293)
-CONT C(303) C(843) C(833) C(333)
-CONT AND C(1433) C(1533) C(1633) C(1733) C(1833) C(1933) O(233) F(133) C(2033)
-CONT C(2133) C(2233) C(2333) C(2433) C(2533) C(2633) O(133) C(2733) C(2833)
-CONT C(2933) C(3033) C(3133) C(3233) C(3333)
+SAME 0.10000 C(141) C(151) C(161) C(171) C(181) C(191) O(21) F(11) C(201)
+CONT C(4211) C(2221) C(231) C(241) C(251) C(261) O(11) C(271) C(281) C(291)
+CONT C(301) C(4311) C(2321) C(331)
+CONT AND C(1431) C(1531) C(1631) C(1731) C(1831) C(1931) O(231) F(131) C(2031)
+CONT C(2131) C(2231) C(2331) C(2431) C(2531) C(2631) O(131) C(2731) C(2831)
+CONT C(2931) C(3031) C(3131) C(3231) C(3331)
 SAME_3 C20 > C33
-SAME 0.10000 C(203) C(863) C(853) C(233) C(243) C(253) C(263) O(13) C(273)
-CONT C(283) C(293) C(303) C(843) C(833) C(333)
+SAME 0.10000 C(201) C(4211) C(2221) C(231) C(241) C(251) C(261) O(11) C(271)
+CONT C(281) C(291) C(301) C(4311) C(2321) C(331)
 CONT AND C(2043) C(2143) C(2243) C(2343) C(2443) C(2543) C(2643) O(143) C(2743)
 CONT C(2843) C(2943) C(3043) C(3143) C(3243) C(3343)
 

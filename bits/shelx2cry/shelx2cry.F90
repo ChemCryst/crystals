@@ -290,7 +290,7 @@ end do
 close(shelxf_id)
 
 open(crystals_fileunit, file=crystals_filepath)
-call write_crystalfile(crystals_filepath)
+call write_crystalfile()
 
 if(hklf%code==5) then ! Cannot directly import hkl, it needs to go through hklf5tocry first
     info_table_index=info_table_index+1

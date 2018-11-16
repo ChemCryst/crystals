@@ -3,7 +3,7 @@
 
 set -x
 FC=gfortran81
-FFLAGS="-g -fno-realloc-lhs -static -fcheck=all -Wno-compare-reals -c -I../../sginfo"
+FFLAGS="-g -fno-realloc-lhs -static -fcheck=all -Wall -Wextra -Wno-compare-reals -c -I../../sginfo"
 $FC $FFLAGS crystal_data.F90
 $FC $FFLAGS shelx2cry_cif.F90
 $FC $FFLAGS shelx_procedures.F90

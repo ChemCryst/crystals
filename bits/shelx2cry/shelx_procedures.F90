@@ -86,7 +86,7 @@ character(len=lenlabel), dimension(:), allocatable :: splitbuffer
 integer i, hklfcode
 real s
 real, dimension(9) :: transform
-logical transforml, file_exists
+logical transforml
 
     s=1.0
     transform=0.0
@@ -210,19 +210,16 @@ subroutine shelx_dfix(shelxline)
 use crystal_data_m
 implicit none
 type(line_t), intent(in) :: shelxline
-integer i, j, linepos, start, iostatus
-character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7','8','9','.','-','+'/)
-logical found
-character(len=128) :: buffernum
-character(len=128) :: namedresidue
+integer i, linepos, start, iostatus
+type(resi_t) :: dfix_residue
+type(atom_shelx_t) :: keyword
 real distance, esd
-integer :: dfixresidue
 character(len=lenlabel), dimension(:), allocatable :: splitbuffer
 character(len=:), allocatable :: stripline
+character(len=512) :: errormsg
 
     ! parsing more complicated on this one as we don't know the number of parameters
     linepos=5 ! First 4 is DFIX or DANG
-    namedresidue=''
     
     if(len_trim(shelxline%line)<5) then
         write(log_unit,*) 'Error: Empty DFIX or DANG'
@@ -230,70 +227,18 @@ character(len=:), allocatable :: stripline
         summary%error_no=summary%error_no+1
         return
     end if
-    
-    dfixresidue=-99
-    buffernum=''
-    ! check for subscripts on dfix
-    if(shelxline%line(5:5)=='_') then
-        ! check for `_*̀
-        if(shelxline%line(6:6)=='*') then
-            dfixresidue=-1
-            linepos=7
-        else
-            ! check for a residue number
-            found=.true.
-            j=0
-            do while(found)
-                found=.false.
-                do i=1, 10
-                    if(shelxline%line(6+j:6+j)==numbers(i)) then
-                        found=.true.
-                        buffernum(j+1:j+1)=shelxline%line(6+j:6+j)
-                        j=j+1
-                        exit
-                    end if
-                end do
-            end do
-            if(len_trim(buffernum)>0) then
-                read(buffernum, *) dfixresidue
-                linepos=6+j
-            end if
-            
-            ! check for a residue name
-            if(dfixresidue==-99) then
-                if(shelxline%line(6:6)/=' ') then
-                    ! DFIX applied to named residue
-                    i=6
-                    j=1
-                    do while(shelxline%line(i:i)/=' ')
-                        namedresidue(j:j)=shelxline%line(i:i)
-                        i=i+1
-                        j=j+1
-                        linepos=linepos+1
-                        if(i>=len(shelxline%line)) exit
-                    end do
-                    dfixresidue=-98
-                    linepos=linepos+1
-                else
-                    write(log_unit,*) 'Error: Cannot have a space after `_` '
-                    write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
-                    write(log_unit,*) repeat(' ', 5+5+nint(log10(real(shelxline%line_number)))+1), '^'
-                    summary%error_no=summary%error_no+1
-                    return
-                end if
-            end if
-        end if
-    end if
-    
-    call deduplicates(shelxline%line(linepos:), stripline)
+        
+    call deduplicates(shelxline%line, stripline)
     call to_upper(stripline)    
-
     call explode(stripline, lenlabel, splitbuffer)    
+    keyword = atom_shelx_t(splitbuffer(1))
+    dfix_residue = keyword%resi
     
     ! first element is the distance
-    read(splitbuffer(1), *, iostat=iostatus) distance
+    read(splitbuffer(2), *, iostat=iostatus, iomsg=errormsg) distance
     if(iostatus/=0) then
-        write(log_unit,*) 'Error: Expected a number but got ', trim(splitbuffer(1))
+        write(log_unit,*) 'Error: Expected a number but got ', trim(splitbuffer(2))
+        write(log_unit,*) errormsg
         write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
         summary%error_no=summary%error_no+1
         return
@@ -307,7 +252,7 @@ character(len=:), allocatable :: stripline
     end if
 
     ! Second element could be the esd
-    read(splitbuffer(2), *, iostat=iostatus) esd
+    read(splitbuffer(3), *, iostat=iostatus) esd
     if(iostatus/=0) then
         ! no esd, use default
         if(shelxline%line(1:4)=='DFIX') then
@@ -315,9 +260,9 @@ character(len=:), allocatable :: stripline
         else
             esd=0.04
         end if
-        start=2
-    else
         start=3
+    else
+        start=4
     end if
     
     do i=start, size(splitbuffer),2
@@ -336,8 +281,7 @@ character(len=:), allocatable :: stripline
         call to_upper(splitbuffer(i+1), dfix_table(dfix_table_index)%atom2)
         dfix_table(dfix_table_index)%shelxline=trim(shelxline%line)
         dfix_table(dfix_table_index)%line_number=shelxline%line_number
-        dfix_table(dfix_table_index)%residue=dfixresidue
-        dfix_table(dfix_table_index)%namedresidue=namedresidue
+        dfix_table(dfix_table_index)%residue=dfix_residue
     end do
 
 end subroutine
@@ -369,14 +313,10 @@ use crystal_data_m
 implicit none
 type(line_t), intent(in) :: shelxline
 integer i, j, linepos, start, iostatus
-character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7','8','9','.','-','+'/)
-logical found
-character(len=128) :: buffernum
 real esd
-integer :: sadiresidue
 character(len=lenlabel), dimension(:), allocatable :: splitbuffer
 character(len=:), allocatable :: stripline
-character(len=128) :: namedresidue
+type(atom_shelx_t) :: sadi_residue
 
     ! parsing more complicated on this one as we don't know the number of parameters
     linepos=5 ! First 4 is DFIX
@@ -388,81 +328,30 @@ character(len=128) :: namedresidue
         return
     end if
     
-    sadiresidue=-99
-    buffernum=''
-    ! check for subscripts on sadi
-    if(shelxline%line(5:5)=='_') then
-        ! check for `_*̀
-        if(shelxline%line(6:6)=='*') then
-            sadiresidue=-1
-            linepos=7
-        else
-            ! check for a residue number
-            found=.true.
-            j=0
-            do while(found)
-                found=.false.
-                do i=1, 10
-                    if(shelxline%line(6+j:6+j)==numbers(i)) then
-                        found=.true.
-                        buffernum(j+1:j+1)=shelxline%line(6+j:6+j)
-                        j=j+1
-                        exit
-                    end if
-                end do
-            end do
-            if(len_trim(buffernum)>0) then
-                read(buffernum, *) sadiresidue
-                linepos=6+j
-            end if
-            
-            ! check for a residue name
-            if(sadiresidue==-99) then
-                if(shelxline%line(6:6)/=' ') then
-                    ! DFIX applied to named residue
-                    namedresidue=''
-                    i=6
-                    j=1
-                    do while(shelxline%line(i:i)/=' ')
-                        namedresidue(j:j)=shelxline%line(i:i)
-                        i=i+1
-                        j=j+1
-                        linepos=linepos+1
-                        if(i>=len(shelxline%line)) exit
-                    end do
-                    sadiresidue=-98
-                    linepos=linepos+1
-                else
-                    write(log_unit,*) 'Error: Cannot have a space after `_` '
-                    write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
-                    write(log_unit,*) repeat(' ', 5+5+nint(log10(real(shelxline%line_number)))+1), '^'
-                    summary%error_no=summary%error_no+1
-                    return
-                end if
-            end if
-        end if
-    end if
+    i = index(shelxline%line, ' ')
     
-    call deduplicates(shelxline%line(linepos:), stripline)
+    call deduplicates(shelxline%line, stripline)
     call to_upper(stripline)
     call explode(stripline, lenlabel, splitbuffer)    
     
+    sadi_residue = atom_shelx_t(splitbuffer(1))
+
+    
     ! first element is the esd
-    read(splitbuffer(1), *, iostat=iostatus) esd
+    read(splitbuffer(2), *, iostat=iostatus) esd
     if(iostatus==0) then
-        start=2
+        start=3
     else
         ! no esd, use default
         esd=0.02
-        start=1
+        start=2
     end if
     
     sadi_table_index=sadi_table_index+1
     sadi_table(sadi_table_index)%esd=esd
     sadi_table(sadi_table_index)%shelxline=trim(shelxline%line)
     sadi_table(sadi_table_index)%line_number=shelxline%line_number
-    sadi_table(sadi_table_index)%residue=sadiresidue
-    sadi_table(sadi_table_index)%namedresidue=namedresidue
+    sadi_table(sadi_table_index)%residue=sadi_residue
     
     do j=1, size(splitbuffer)
         if( trim(splitbuffer(j))=='' ) exit
@@ -562,7 +451,7 @@ end subroutine
 
 !> Parse the SFAC keyword. Extract the atoms type use in the file.
 subroutine shelx_sfac(shelxline)
-use crystal_data_m, only: sfac, sfac_index, line_t, to_upper, sfac_long, log_unit, summary
+use crystal_data_m, only: sfac, sfac_index, line_t, to_upper, sfac_long, summary
 implicit none
 type(line_t), intent(in) :: shelxline
 integer i, j, code, iostatus
@@ -611,7 +500,7 @@ end subroutine
 !> Parse the DISP keyword. Extract the atoms type use in the file.
 subroutine shelx_disp(shelxline)
 use crystal_data_m, only: disp_table, line_t, to_upper, deduplicates, explode, summary
-use crystal_data_m, only: sfac_index, sfac, log_unit
+use crystal_data_m, only: sfac_index, sfac
 implicit none
 type(line_t), intent(in) :: shelxline
 integer i, j
@@ -777,75 +666,86 @@ subroutine shelx_resi(shelxline)
 use crystal_data_m
 implicit none
 type(line_t), intent(in) :: shelxline
-character(len=128) :: aname, buffer
-integer i, j, start
-character(len=128), dimension(:), allocatable :: residue_temp
+integer ierror
+character(len=4) :: resi_class
+integer :: i, resi_number
+character(len=128) :: resi_alias
+character(len=:), allocatable :: stripline
+character(len=lenlabel), dimension(:), allocatable :: splitbuffer
 
     !read(shelxline%line(5:), *) residue
+    ! RESI class[ ] number[0] alias
+    resi_class = ''
+    resi_number = 0
+    resi_alias = ''
     
-    ! Read in the number
-    start=5
-    do while(shelxline%line(start:start)==' ')
-        start=start+1
-        if(start>len_trim(shelxline%line)) exit
-    end do
-    j=0
-    buffer=''
-    do i=start, len_trim(shelxline%line)
-        if(shelxline%line(i:i)==' ') then
-            exit
+    call deduplicates(shelxline%line, stripline)
+    call explode(stripline, lenlabel, splitbuffer)
+    
+    if(size(splitbuffer)<2) then
+        write(*,*) 'Error: RESI instruction '
+        write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        return
+    end if
+    
+    ! is it an alias or a number ?
+    if(iachar(splitbuffer(2)(1:1))>47 .and. iachar(splitbuffer(2)(1:1))<58) then ! 0-9
+        read(splitbuffer(2), *,iostat=ierror) resi_number
+        if(ierror/=0) then
+            write(*,*) 'Error: invalid resi number ', trim(splitbuffer(2))
+            write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+            return
         end if
-        j=j+1
-        buffer(j:j)=shelxline%line(i:i)
-    end do
-    read(buffer, *) residue
-    !write(log_unit, *) trim(shelxline%line), trim(buffer), residue
-    
-    !if(residue==0) then
-    !    write(log_unit, *) 'Error: residue index is zero'
-    !    call abort()
-    !end if
-
-    ! Read in the residue name
-    start=i
-    if(start<=len_trim(shelxline%line)) then
-        do while(shelxline%line(start:start)==' ')
-            start=start+1
-            if(start>len_trim(shelxline%line)) exit
-        end do
-        j=0
-        buffer=''
-        do i=start, len_trim(shelxline%line)
-            if(shelxline%line(i:i)==' ') then
-                exit
-            end if
-            j=j+1
-            buffer(j:j)=shelxline%line(i:i)
-        end do
-        read(buffer, *) aname
     else
-        aname=''
+        resi_alias = splitbuffer(2)
     end if
-    !residue_names
-    if(aname/='') then
-        if(.not. allocated(residue_names)) then
-            allocate(residue_names(max(1024, residue)))
-            residue_names=''
-            residue_names(residue)=trim(aname)
-        else
-            if(residue>size(residue_names)) then
-                allocate(residue_temp(size(residue_names)))
-                residue_temp=residue_names
-                deallocate(residue_names)
-                allocate(residue_names(max(size(residue_temp)+1024, residue)))
-                residue_names=''
-                residue_names(1:size(residue_temp))=residue_temp
-                residue_names(residue)=trim(aname)
+    
+    if(resi_alias /= '') then
+        if(size(splitbuffer)>2) then ! not an alias but a class
+            if(len_trim(resi_alias)>len(resi_class)) then
+                write(*,*) 'Error: invalid class name', trim(resi_alias)
+                write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+                return
             else
-                residue_names(residue)=trim(aname)
+                resi_class = resi_alias(1:4)
+                resi_alias = ''
+            end if
+            
+            if(size(splitbuffer)==3) then
+                resi_alias = splitbuffer(3)
+            else
+                read(splitbuffer(3), *,iostat=ierror) resi_number
+                if(ierror/=0) then
+                    write(*,*) 'Error: invalid resi number ', trim(splitbuffer(3))
+                    write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+                    return
+                end if
+                resi_alias = splitbuffer(4)            
             end if
         end if
     end if
+    
+    do i = 1, resi_list_index
+       if( resi_list(i)%class == resi_class .and. &
+       & resi_list(i)%number == resi_number .and. &
+       & resi_list(i)%alias == resi_alias) then
+        write(*,*) 'Error: RESI already used at line ', resi_list(i)%shelx_line_number
+          write(*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        current_resi_index = i
+        return
+      end if
+  end do
+
+    if(resi_class/='' .or. resi_number/=0 .or. resi_alias/='') then
+    resi_list_index = resi_list_index + 1
+    resi_list(resi_list_index)%class = resi_class
+    resi_list(resi_list_index)%number = resi_number
+    resi_list(resi_list_index)%alias = resi_alias
+    resi_list(resi_list_index)%shelx_line_number = shelxline%line_number
+    current_resi_index = resi_list_index
+  else
+    current_resi_index = 0
+  end if
 end subroutine
 
 !> Parse PART keyword. Change the current part to the new value found.<br />
@@ -882,6 +782,9 @@ subroutine shelx_same(shelxline)
 use crystal_data_m
 implicit none
 type(line_t), intent(in) :: shelxline
+type(resi_t) :: same_residue
+type(atom_shelx_t) :: keyword
+integer i
 
     if(len_trim(shelxline%line)<5) then
         write(log_unit,*) 'Error: Empty SAME'
@@ -889,15 +792,17 @@ type(line_t), intent(in) :: shelxline
         summary%error_no=summary%error_no+1
         return
     end if
+    
+    i = index(shelxline%line, ' ')
+    keyword = atom_shelx_t(shelxline%line)
+    same_residue = keyword%resi
         
     same_table_index=same_table_index+1
     same_table(same_table_index)%shelxline=trim(shelxline%line)
     same_table(same_table_index)%line_number=shelxline%line_number
     same_table(same_table_index)%esd1=0.0
     same_table(same_table_index)%esd2=0.0
-    same_table(same_table_index)%residue=-99
-    same_table(same_table_index)%namedresidue=''
-
+    same_table(same_table_index)%residue = same_residue
 end subroutine
 
 !> Parse the EADP keyword. Restrain Plane
@@ -905,21 +810,15 @@ subroutine shelx_eadp(shelxline)
 use crystal_data_m
 implicit none
 type(line_t), intent(in) :: shelxline
-integer i, j, linepos, start, iostatus
-character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7','8','9','.','-','+'/)
-logical found
-character(len=128) :: buffernum
-character(len=128) :: namedresidue
-integer :: eadpresidue, numatom
+integer start, iostatus
+integer :: numatom
 character(len=lenlabel), dimension(:), allocatable :: splitbuffer
 character(len=:), allocatable :: stripline
+type(atom_shelx_t) :: keyword
 
     write(log_unit,*) 'Warning: EADP implemented as a restraint'
     write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)  
 
-    ! parsing more complicated on this one as we don't know the number of parameters
-    linepos=5 ! First 4 is EADP
-    
     if(len_trim(shelxline%line)<5) then
         write(log_unit,*) 'Error: Empty EADP'
         write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
@@ -934,79 +833,18 @@ character(len=:), allocatable :: stripline
         return
     end if
     
-    if(index(shelxline%line,'$')>0) then
-        write(log_unit,*) 'Error: symmetry equivalent `_$?` is not implemented'
-        write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
-        summary%error_no=summary%error_no+1
-        return
-    end if
-    
-    eadpresidue=-99
-    buffernum=''
-    ! check for subscripts on dfix
-    if(shelxline%line(5:5)=='_') then
-        ! check for `_*̀
-        if(shelxline%line(6:6)=='*') then
-            eadpresidue=-1
-            linepos=7
-        else
-            ! check for a residue number
-            found=.true.
-            j=0
-            do while(found)
-                found=.false.
-                do i=1, 10
-                    if(shelxline%line(6+j:6+j)==numbers(i)) then
-                        found=.true.
-                        buffernum(j+1:j+1)=shelxline%line(6+j:6+j)
-                        j=j+1
-                        exit
-                    end if
-                end do
-            end do
-            if(len_trim(buffernum)>0) then
-                read(buffernum, *) eadpresidue
-                linepos=6+j
-            end if
-
-            ! check for a residue name
-            if(eadpresidue==-99) then
-                if(shelxline%line(6:6)/=' ') then
-                    ! FLAT applied to named residue
-                    i=6
-                    j=1
-                    do while(shelxline%line(i:i)/=' ')
-                        namedresidue(j:j)=shelxline%line(i:i)
-                        i=i+1
-                        j=j+1
-                        linepos=linepos+1
-                        if(i>=len(shelxline%line)) exit
-                    end do
-                    eadpresidue=-98
-                    linepos=linepos+1
-                else
-                    write(log_unit,*) 'Error: Cannot have a space after `_` '
-                    write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
-                    write(log_unit,*) repeat(' ', 5+5+nint(log10(real(shelxline%line_number)))+1), '^'
-                    summary%error_no=summary%error_no+1
-                    return
-                end if
-            end if        
-        end if
-    end if
-    
-    call deduplicates(shelxline%line(linepos:), stripline)
+    call deduplicates(shelxline%line, stripline)
     call to_upper(stripline)    
-
     call explode(stripline, lenlabel, splitbuffer)    
+    keyword = atom_shelx_t(splitbuffer(1))
     
     ! first element is the number of atoms (optional)
-    read(splitbuffer(1), *, iostat=iostatus) numatom
+    read(splitbuffer(2), *, iostat=iostatus) numatom
     if(iostatus/=0) then
         numatom=-1
-        start=0
-    else
         start=1
+    else
+        start=2
         if( numatom<2 ) then
             write(log_unit, *) "Error: 2 atoms needed at least for EADP"
             write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
@@ -1015,13 +853,13 @@ character(len=:), allocatable :: stripline
         end if
     end if
         
+    !print *, splitbuffer
     eadp_table_index=eadp_table_index+1
     allocate(eadp_table(eadp_table_index)%atoms(size(splitbuffer)-start))
     call to_upper(splitbuffer(start+1:size(splitbuffer)), eadp_table(eadp_table_index)%atoms)
     eadp_table(eadp_table_index)%shelxline=trim(shelxline%line)
     eadp_table(eadp_table_index)%line_number=shelxline%line_number
-    eadp_table(eadp_table_index)%residue=eadpresidue
-    eadp_table(eadp_table_index)%namedresidue=namedresidue
+    eadp_table(eadp_table_index)%residue=keyword%resi
 
 end subroutine
 
@@ -1030,15 +868,12 @@ subroutine shelx_rigu(shelxline)
 use crystal_data_m
 implicit none
 type(line_t), intent(in) :: shelxline
-integer i, j, linepos, start, iostatus
-character, dimension(13), parameter :: numbers=(/'0','1','2','3','4','5','6','7','8','9','.','-','+'/)
-logical found
-character(len=128) :: buffernum
-character(len=128) :: namedresidue
-integer :: riguresidue
+integer i, linepos, start, iostatus
 character(len=lenlabel), dimension(:), allocatable :: splitbuffer
 character(len=:), allocatable :: stripline
 real s1, s2
+type(resi_t) :: rigu_residue
+type(atom_shelx_t) :: keyword
 
     ! parsing more complicated on this one as we don't know the number of parameters
     linepos=5 ! First 4 is RIGU
@@ -1064,63 +899,13 @@ real s1, s2
         return
     end if
     
-    riguresidue=-99
-    buffernum=''
-    ! check for subscripts on dfix
-    if(shelxline%line(5:5)=='_') then
-        ! check for `_*̀
-        if(shelxline%line(6:6)=='*') then
-            riguresidue=-1
-            linepos=7
-        else
-            ! check for a residue number
-            found=.true.
-            j=0
-            do while(found)
-                found=.false.
-                do i=1, 10
-                    if(shelxline%line(6+j:6+j)==numbers(i)) then
-                        found=.true.
-                        buffernum(j+1:j+1)=shelxline%line(6+j:6+j)
-                        j=j+1
-                        exit
-                    end if
-                end do
-            end do
-            if(len_trim(buffernum)>0) then
-                read(buffernum, *) riguresidue
-                linepos=6+j
-            end if
-
-            ! check for a residue name
-            if(riguresidue==-99) then
-                if(shelxline%line(6:6)/=' ') then
-                    ! RIGU applied to named residue
-                    i=6
-                    j=1
-                    do while(shelxline%line(i:i)/=' ')
-                        namedresidue(j:j)=shelxline%line(i:i)
-                        i=i+1
-                        j=j+1
-                        linepos=linepos+1
-                        if(i>=len(shelxline%line)) exit
-                    end do
-                    riguresidue=-98
-                    linepos=linepos+1
-                else
-                    write(log_unit,*) 'Error: Cannot have a space after `_` '
-                    write(log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
-                    write(log_unit,*) repeat(' ', 5+5+nint(log10(real(shelxline%line_number)))+1), '^'
-                    summary%error_no=summary%error_no+1
-                    return
-                end if
-            end if        
-        end if
-    end if
+    i = index(shelxline%line, ' ')
+    keyword = atom_shelx_t(shelxline%line)
+    rigu_residue = keyword%resi
+    
     
     call deduplicates(shelxline%line(linepos:), stripline)
     call to_upper(stripline)    
-
     call explode(stripline, lenlabel, splitbuffer)
     
     ! first element is s1 (esd for 1,2 distances)
@@ -1151,8 +936,7 @@ real s1, s2
     call to_upper(splitbuffer(start+1:size(splitbuffer)), rigu_table(rigu_table_index)%atoms)
     rigu_table(rigu_table_index)%shelxline=trim(shelxline%line)
     rigu_table(rigu_table_index)%line_number=shelxline%line_number
-    rigu_table(rigu_table_index)%residue=riguresidue
-    rigu_table(rigu_table_index)%namedresidue=namedresidue
+    rigu_table(rigu_table_index)%residue=rigu_residue
 
 end subroutine
 
@@ -1293,7 +1077,6 @@ subroutine shelx_wght(shelxline)
 use crystal_data_m
 implicit none
 type(line_t), intent(in) :: shelxline
-character(len=512) :: buffer
 character(len=:), allocatable :: stripline
 character(len=lenlabel), dimension(:), allocatable :: splitbuffer
 integer iostatus

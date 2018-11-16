@@ -195,7 +195,7 @@ END
 NO
 REM   HREST   START (DO NOT REMOVE THIS LINE)
 REM   HREST   END (DO NOT REMOVE THIS LINE) 
-# SADI C2_$1 C3_$2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+# SADI C2_$1 C3_$2
 DISTANCE 0.0,  .02000 = MEAN 
 CONT C(2,2,1,1.000,1.000,1.000) TO C(3,5,1,.000,.000,1.000) 
 END
