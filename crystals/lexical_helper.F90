@@ -1609,7 +1609,7 @@ contains
     character(len=split_len), dimension(:), allocatable :: elements
     integer, dimension(:), allocatable :: fieldpos
     type(atom_t) :: atom
-    integer i, j, m5, n, m
+    integer i, j, m5, n, m, image_text_nchar
     logical found
     character(len=8), dimension(17), parameter :: ignore = (/ &
                                                   'DRENAME ', &
@@ -1631,13 +1631,18 @@ contains
                                                   'MOVE    '/)
 
     ierror = 0
+    image_text_nchar = index(image_text,' ')-1  !look for abbreviated directives
+    if (image_text_nchar <= 1) then    ! should never get to this point
+!      write(123,*) 'Empty line, Nchar=', image_text_nchar
+      return
+    end if
 
     if (image_text(1:4) == 'REM ') then ! ignore comments
       return
     end if
 
     do i = 1, size(ignore)
-      if (image_text(1:len_trim(ignore(i))) == trim(ignore(i))) then ! ignore some instructions
+      if (image_text(1:image_text_nchar) == ignore(i)(1:image_text_nchar)) then ! ignore some instructions
         return
       end if
     end do
