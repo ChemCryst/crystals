@@ -362,12 +362,6 @@ contains
       summary%error_no = summary%error_no+1
       return
     end if
-    allocate (sadi_table(sadi_table_index)%atom_pairs(2, (j-start)/2))
-
-    do i = 0, (j-start)/2-1
-      sadi_table(sadi_table_index)%atom_pairs(:, i+1) = &
-      &   (/splitbuffer(start+i*2), splitbuffer(start+i*2+1)/)
-    end do
 
   end subroutine
 
@@ -801,7 +795,6 @@ contains
     same_table(same_table_index)%line_number = shelxline%line_number
     same_table(same_table_index)%esd1 = 0.0
     same_table(same_table_index)%esd2 = 0.0
-    same_table(same_table_index)%residue = same_residue
   end subroutine
 
 !> Parse the EADP keyword. Restrain Plane
