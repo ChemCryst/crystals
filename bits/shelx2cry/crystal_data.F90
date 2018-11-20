@@ -183,7 +183,6 @@ module crystal_data_m
 
 !> type ISOR
   type isor_t
-    character(len=lenlabel), dimension(:), allocatable :: atoms
     type(resi_t) :: residue !< Residue
     real :: esd1, esd2 !< if the atom is terminal (or makes no bonds), esd2 is used instead of esd1
     character(len=shelxline_length) :: shelxline !< raw instruction line from res file
@@ -206,7 +205,6 @@ module crystal_data_m
 !> type SADI
   type sadi_t
     real :: esd
-    character(len=lenlabel), dimension(:, :), allocatable :: atom_pairs !< pairs of atoms
     type(atom_shelx_t) :: residue !< Residue
     character(len=shelxline_length) :: shelxline !< raw instruction line from res file
     integer :: line_number !< Line number form res file
@@ -218,10 +216,8 @@ module crystal_data_m
   type same_t
     character(len=shelxline_length) :: shelxline !< raw instruction line from res file
     integer :: line_number !< Line number form res file
-    character(len=lenlabel), dimension(:), allocatable :: list1 !< reference atoms
-    character(len=lenlabel), dimension(:), allocatable :: list2 !< target atoms
+    integer, dimension(:), allocatable :: list_to !< target atoms
     real esd1, esd2 !< esds
-    type(resi_t) :: residue !< Residue
   end type
   type(same_t), dimension(1024) :: same_table
   integer :: same_table_index = 0
