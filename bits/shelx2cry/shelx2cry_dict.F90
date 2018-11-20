@@ -147,7 +147,7 @@ contains
       tuples(54)%key = 'RESI'
       tuples(54)%func => shelx_resi
       tuples(55)%key = 'RIGU'
-      tuples(55)%func => shelx_unsupported
+      tuples(55)%func => shelx_rigu
       tuples(56)%key = 'RTAB'
       tuples(56)%func => shelx_unsupported
       tuples(57)%key = 'SADI'

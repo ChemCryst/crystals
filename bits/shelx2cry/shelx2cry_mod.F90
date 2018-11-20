@@ -621,62 +621,8 @@ contains
 !*   RIGU
 !*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
     ! RIGU N2 C7 C8 C9 C10 C6 C5 C4 C3 C2 C1 N1 C12
-    if (rigu_table_index > 0) then
-      write (log_unit, '(a)') ''
-      write (log_unit, '(a)') 'Processing RIGUs...'
-    end if
-
-    riguloop: do i = 1, rigu_table_index
-      write (log_unit, '(a)') trim(rigu_table(i)%shelxline)
-      write (crystals_fileunit, '(a, a)') '# ', rigu_table(i)%shelxline
-      serial1 = 0
-      do m = 1, atomslist_index
-        if (trim(rigu_table(i)%atoms(1)) == trim(atomslist(m)%label)) then
-          serial1 = m
-          exit
-        end if
-      end do
-      if (serial1 > 0) then
-        if (atomslist(serial1)%crystals_serial == -1) then
-          write (*, '(2a)') 'Error: Crystals serial not defined ', rigu_table(i)%atoms(1)
-          call abort()
-        end if
-      else
-        write (*, '(2a)') 'Error: Crystals serial not defined ', rigu_table(i)%atoms(1)
-        call abort()
-      end if
-
-      do j = 2, size(rigu_table(i)%atoms)
-        l = 0
-        do m = 1, atomslist_index
-          if (trim(rigu_table(i)%atoms(j)) == trim(atomslist(m)%label)) then
-            l = m
-            exit
-          end if
-        end do
-        if (l > 0) then
-          if (atomslist(l)%crystals_serial == -1) then
-            write (*, '(2a)') 'Error: Crystals serial not defined ', rigu_table(i)%atoms(l)
-            call abort()
-          end if
-        else
-          write (*, '(2a)') 'Error: Crystals serial not defined ', rigu_table(i)%atoms(l)
-          call abort()
-        end if
-
-        write (crystals_fileunit, '(a, a,"(",I0,")", " TO ", a,"(",I0,")")') &
-        &   'RIGU 0.0, 0.001 =  ', &
-        &   atomslist(serial1)%crystals_label(), &
-        &   atomslist(l)%crystals_label()
-        write (log_unit, '(a, a,"(",I0,")", " TO ", a,"(",I0,")")') &
-        &   'RIGU 0.0, 0.001 =  ', &
-        &   atomslist(serial1)%crystals_label(), &
-        &   atomslist(l)%crystals_label()
-
-        serial1 = l
-      end do
-    end do riguloop
-
+    call write_list16_rigu()
+    
 !*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
 !*   ISOR
 !*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!
@@ -2404,5 +2350,138 @@ contains
     end if
 
   end subroutine
+  
+  subroutine write_list16_rigu()
+    use crystal_data_m, only: lenlabel, rigu_table, rigu_table_index, atomslist
+    use crystal_data_m, only: atomslist_index, crystals_fileunit, log_unit, sfac
+    use crystal_data_m, only: explicit_atoms, deduplicates
+    use crystal_data_m, only: to_upper, explode, summary
+    use crystal_data_m, only: resi_t, atom_shelx_t, resilist_from_class
+    implicit none
+    character(len=1024) :: buffertemp
+    integer i, j, k, l
+    character(len=:), allocatable :: stripline, errormsg
+    real esd12, esd13
+    integer, dimension(:), allocatable :: serials
+    character(len=lenlabel), dimension(:), allocatable :: splitbuffer
+    integer start, iostatus, serial
+    type(atom_shelx_t) :: keyword, atom_shelx
+    character(len=:), dimension(:), allocatable :: broadcast
 
+    if (rigu_table_index > 0) then
+      write (log_unit, '(a)') ''
+      write (log_unit, '(a)') 'Processing RIGUs...'
+    end if
+
+    rigu_loop: do i = 1, rigu_table_index
+
+      call explicit_atoms(rigu_table(i)%shelxline, stripline, errormsg)
+      if (allocated(errormsg)) then
+        write (log_unit, *) trim(errormsg)
+        write (log_unit, '("Line ", I0, ": ", a)') rigu_table(i)%line_number, trim(rigu_table(i)%shelxline)
+        summary%error_no = summary%error_no+1
+      end if
+
+      call broadcast_shelx_cmd(trim(stripline), broadcast)
+
+      do j = 1, size(broadcast)
+        call deduplicates(broadcast(j), stripline)
+        call to_upper(stripline)
+        call explode(stripline, lenlabel, splitbuffer)
+
+        if(j==1) then
+          ! second element is the esd of 1,2 distances (optional)
+          read (splitbuffer(2), *, iostat=iostatus) esd12
+          if (iostatus /= 0) then
+            esd12 = 0.004
+            start = 2
+          else
+            start = 3
+          end if
+
+          ! third element is the esd of 1,3 distances (optional)
+          read (splitbuffer(3), *, iostat=iostatus) esd13
+          if (iostatus /= 0) then
+            esd13 = 0.004
+          else
+            start = start + 1
+          end if
+
+          rigu_table(i)%esd12 = esd12
+          rigu_table(i)%esd13 = esd13
+        end if
+        
+        if(start>size(splitbuffer)) then
+          write (log_unit, '(a)') 'Warning: Empty RIGU. Not implemented'
+          write (log_unit, '("Line ", I0, ": ", a)') rigu_table(i)%line_number, trim(rigu_table(i)%shelxline)
+          write (*, '(a)') 'Warning: Empty RIGU. Not implemented'
+          write (*, '("Line ", I0, ": ", a)') rigu_table(i)%line_number, trim(rigu_table(i)%shelxline)
+        end if
+
+        write (log_unit, '(a)') trim(rigu_table(i)%shelxline)
+        write (crystals_fileunit, '(a, a)') '# ', trim(rigu_table(i)%shelxline)
+        
+        allocate(serials(size(splitbuffer)-start+1))
+        do k=start, size(splitbuffer)
+          atom_shelx = atom_shelx_t(splitbuffer(k))
+
+          if (atom_shelx%previous) then
+            ! previous residue
+            write (log_unit, '(a)') 'Warning: Residue - in atom with RIGU'
+            write (log_unit, '(a)') '         Not implemented'
+            cycle rigu_loop
+          else if (atom_shelx%after) then
+            ! next residue
+            write (log_unit, '(a)') 'Warning: Residue + in atom with RIGU'
+            write (log_unit, '(a)') '         Not implemented'
+            cycle rigu_loop
+          end if
+
+          serial = 0
+          do l = 1, atomslist_index
+            if(atom_shelx%resi%is_set()) then
+              if(atom_shelx == atomslist(l)) then
+                serial = l
+                exit
+              end if
+            else
+              if(atom_shelx%label==atomslist(l)%label) then
+                serial = l
+                exit
+              end if
+            end if
+          end do
+
+          if (serial == 0) then
+            write (*, '(a)') trim(rigu_table(i)%shelxline)
+            write (*, '(a)') trim(broadcast(j))
+            write (*, '(a)') splitbuffer(k)
+            write (*, '(I0)') serial
+            write (*, '(a)') 'Error: check your res file. I cannot find the atom'
+            call abort()
+          end if
+
+          if (atomslist(serial)%crystals_serial == -1) then
+            write (*, '(a)') 'Error: Crystals serial not defined'
+            call abort()
+          end if
+          serials(k-start+1) = serial
+        end do
+
+        ! good to go
+        write (buffertemp, '(a, F7.5, 1X, F7.5)') 'XRIGU ', rigu_table(i)%esd12, rigu_table(i)%esd13
+        do l = 1, size(serials)
+          if (serials(l) == 0) cycle
+          buffertemp = trim(buffertemp)//' '//atomslist(serials(l))%crystals_label()
+          if (len_trim(buffertemp) > 72) then
+            write (crystals_fileunit, '(a)') trim(buffertemp)
+            write (log_unit, '(a)') trim(buffertemp)
+            buffertemp = 'CONT'
+          end if
+        end do
+        write (crystals_fileunit, '(a)') trim(buffertemp)
+        write (log_unit, '(a)') trim(buffertemp)
+      end do ! loop broadcast
+    end do rigu_loop
+  end subroutine
 end module
