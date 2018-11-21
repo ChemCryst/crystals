@@ -178,12 +178,12 @@ pipeline {
                                     '''
                             }
                         }
-                        post {
+                    }
+                    post {
                             always {
                                 sh 'mv test_suite OSXCLI.org'      // Change path here to get unique archive path.
                                 archiveArtifacts artifacts: 'OSXCLI.org/*.out', fingerprint: true
                             }
-                        }
                     }
                 }
             }
