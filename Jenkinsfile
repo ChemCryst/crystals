@@ -1,11 +1,16 @@
 pipeline {
     agent none
-    
+    options {
+        timeout(time: 1, unit: 'HOURS') 
+    }
     stages {
         stage("Build and test on all platforms") {
             parallel {
                 stage("Win64-Intel") {
                     agent { label 'Dunitz' }
+                    options {
+                        timeout(time: 1, unit: 'HOURS') 
+                    }
                     environment {
                         COMPCODE = 'INW'
                         CRBUILDEXIT = 'TRUE'   // exit build script on fail
@@ -54,6 +59,9 @@ pipeline {
                 }
                 stage("Linux") {
                     agent {label 'Orion'}    
+                    options {
+                        timeout(time: 1, unit: 'HOURS') 
+                    }
                     environment {
                         LD_LIBRARY_PATH = '~/lib64:~/lib:/files/ric/pparois/root/lib64:/files/ric/pparois/root/lib:${env.LD_LIBRARY_PATH}'
                         PATH = "~/bin:/files/ric/pparois/root/bin:$PATH"
@@ -146,6 +154,9 @@ pipeline {
                 }
                 stage("OSX") {
                     agent {label 'Flack'}    
+                    options {
+                        timeout(time: 1, unit: 'HOURS') 
+                    }
                     environment {
                         PATH = "/Applications/CMake.app/Contents/bin:$PATH"
                     }
