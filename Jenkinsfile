@@ -69,8 +69,8 @@ pipeline {
                         CPLUS_INCLUDE_PATH = '/files/ric/pparois/root/include/'
                     }
                     stages {
-                        stage("Linux Smoketest") {
-                            stages {
+//                        stage("Linux Smoketest") {
+//                            stages {
                                 stage('Build Linux Smoketest') {                // Run the build
                                     steps {
                                             sh '''
@@ -104,10 +104,10 @@ pipeline {
                                             '''
                                    }
                                 }
-                            }
-                        }
-                        stage('Linux build and test') {
-                            stages {
+//                            }
+//                        }
+//                        stage('Linux build and test') {
+//                            stages {
                                 stage('Linux Build') {                // Run the build
                                     steps {
                                             sh '''
@@ -142,14 +142,14 @@ pipeline {
                                         
                                     }
                                 }
-                            }
+//                            }
                             post {
                                 always {
                                     sh 'mv test_suite LIN.org'      // Change path here to get unique archive path.
                                     archiveArtifacts artifacts: 'LIN.org/*.out', fingerprint: true
                                 }
                             }
-                        }
+//                        }
                     }
                 }
                 stage("OSX") {
@@ -161,40 +161,36 @@ pipeline {
                         PATH = "/Applications/CMake.app/Contents/bin:$PATH"
                     }
                     stages {
-                        stage('OSX build and test') {
-                            stages {
-                                stage('OSX Build') {                // Run the build
-                                    steps {
-                                            sh '''
-                                                rm -Rf b
-                                                mkdir b
-                                                cd b
-                                                cmake -DCMAKE_NOCOLOR=yes -DMINGW=1 -DuseGUI=off -G"Unix Makefiles" ..
-                                                make -j6 || exit 1
-                                            '''
-                                    }
-                                }
-                                stage('OSX Test') {
-                                    environment {
-                                        CRYSDIR = './,../b/'
-                                        COMPCODE = 'OSXCLI'
-                                    }
-                                    steps {
-                                            sh '''
-                                                cd test_suite
-                                                mkdir -p script
-                                                rm -f crfilev2.dsc
-                                                rm -f gui.tst
-                                                perl testsuite.pl
-                                            '''
-                                    }
-                                }
+                        stage('OSX Build') {                // Run the build
+                            steps {
+                                    sh '''
+                                        rm -Rf b
+                                        mkdir b
+                                        cd b
+                                        cmake -DCMAKE_NOCOLOR=yes -DMINGW=1 -DuseGUI=off -G"Unix Makefiles" ..
+                                        make -j6 || exit 1
+                                    '''
                             }
-                            post {
-                                always {
-                                    sh 'mv test_suite OSXCLI.org'      // Change path here to get unique archive path.
-                                    archiveArtifacts artifacts: 'OSXCLI.org/*.out', fingerprint: true
-                                }
+                        }
+                        stage('OSX Test') {
+                            environment {
+                                CRYSDIR = './,../b/'
+                                COMPCODE = 'OSXCLI'
+                            }
+                            steps {
+                                    sh '''
+                                        cd test_suite
+                                        mkdir -p script
+                                        rm -f crfilev2.dsc
+                                        rm -f gui.tst
+                                        perl testsuite.pl
+                                    '''
+                            }
+                        }
+                        post {
+                            always {
+                                sh 'mv test_suite OSXCLI.org'      // Change path here to get unique archive path.
+                                archiveArtifacts artifacts: 'OSXCLI.org/*.out', fingerprint: true
                             }
                         }
                     }
