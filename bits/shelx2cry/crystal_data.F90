@@ -191,17 +191,6 @@ module crystal_data_m
   type(isor_t), dimension(1024), save :: isor_table
   integer :: isor_table_index = 0
 
-!> type RIGU
-  type rigu_t
-    character(len=lenlabel), dimension(:), allocatable :: atoms
-    type(resi_t) :: residue !< Residue
-    character(len=shelxline_length) :: shelxline !< raw instruction line from res file
-    integer :: line_number !< Line number form res file
-    real :: s1, s2
-  end type
-  type(rigu_t), dimension(1024), save :: rigu_table
-  integer :: rigu_table_index = 0
-
 !> type SADI
   type sadi_t
     real :: esd
@@ -211,6 +200,16 @@ module crystal_data_m
   end type
   type(sadi_t), dimension(1024), save :: sadi_table
   integer :: sadi_table_index = 0
+
+!> type RIGU
+  type rigu_t
+    real :: esd12 !< esd 1,2-distances
+    real :: esd13 !< esd 1,3-distances
+    character(len=shelxline_length) :: shelxline !< raw instruction line from res file
+    integer :: line_number !< Line number form res file
+  end type
+  type(rigu_t), dimension(1024), save :: rigu_table
+  integer :: rigu_table_index = 0
 
 !> type SAME
   type same_t

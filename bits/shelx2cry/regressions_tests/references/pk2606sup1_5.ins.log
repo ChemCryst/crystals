@@ -1,5 +1,3 @@
-Warning: `RIGU` Not supported 
-Line 17: RIGU N1B > C6
 Warning: `SIZE` Not supported 
 Line 22: SIZE 0.08 0.11 0.42
 Warning: `TEMP` Not supported 
@@ -60,6 +58,10 @@ DISTANCE .88000,.00100 = N(12) TO H(121)
 DISTANCE .88000,.00100 = N(12) TO H(122)
 DFIX 1.43 C5B C6
 DISTANCE 1.43000,.02000 = C(52) TO C(6)
+
+Processing RIGUs...
+RIGU N1B > C6
+XRIGU 0.00400 0.00400 N(112) N(22) N(32) N(42) C(52) O(112) C(6)
 
 Processing ISORs...
 ISOR 0.004 0.008 N2B N3B

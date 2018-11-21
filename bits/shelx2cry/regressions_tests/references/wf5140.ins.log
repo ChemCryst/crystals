@@ -1,7 +1,5 @@
 Warning: `TEMP` Not supported 
 Line 17: TEMP -173.140
-Warning: `RIGU` Not supported 
-Line 20: RIGU 0.002 0.002
 Warning: `SIZE` Not supported 
 Line 22: SIZE 0.40x0.35x0.35
  Warning: Structure has been SQUEEZED 
@@ -3796,6 +3794,12 @@ U(IJ) 0.0, 0.001 =  C(2711) TO C(2743)
 EADP_3 C66 C66A C66B
 U(IJ) 0.0, 0.001 =  C(661) TO C(6611),
 CONT C(6611) TO C(6621) 
+
+Processing RIGUs...
+Warning: Empty RIGU. Not implemented
+Line 20: RIGU 0.002 0.002
+RIGU 0.002 0.002
+XRIGU 0.00200 0.00200
 
 Processing ISORs...
 ISOR_1 0.1 C53 > C56B

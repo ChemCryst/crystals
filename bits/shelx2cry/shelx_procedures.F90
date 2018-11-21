@@ -860,74 +860,10 @@ contains
     use crystal_data_m
     implicit none
     type(line_t), intent(in) :: shelxline
-    integer i, linepos, start, iostatus
-    character(len=lenlabel), dimension(:), allocatable :: splitbuffer
-    character(len=:), allocatable :: stripline
-    real s1, s2
-    type(resi_t) :: rigu_residue
-    type(atom_shelx_t) :: keyword
-
-    ! parsing more complicated on this one as we don't know the number of parameters
-    linepos = 5 ! First 4 is RIGU
-
-    if (len_trim(shelxline%line) < 5) then
-      write (log_unit, *) 'Error: Empty RIGU'
-      write (log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
-      summary%error_no = summary%error_no+1
-      return
-    end if
-
-    if (index(shelxline%line, '<') > 0 .or. index(shelxline%line, '>') > 0) then
-      write (log_unit, *) 'Error: < or > is not implemented'
-      write (log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
-      summary%error_no = summary%error_no+1
-      return
-    end if
-
-    if (index(shelxline%line, '$') > 0) then
-      write (log_unit, *) 'Error: symmetry equivalent `_$?` is not implemented'
-      write (log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
-      summary%error_no = summary%error_no+1
-      return
-    end if
-
-    i = index(shelxline%line, ' ')
-    keyword = atom_shelx_t(shelxline%line)
-    rigu_residue = keyword%resi
-
-    call deduplicates(shelxline%line(linepos:), stripline)
-    call to_upper(stripline)
-    call explode(stripline, lenlabel, splitbuffer)
-
-    ! first element is s1 (esd for 1,2 distances)
-    read (splitbuffer(1), *, iostat=iostatus) s1
-    if (iostatus /= 0) then
-      s1 = -1
-      start = 0
-    else
-      ! second element is s2 (esd for 1,3 distances)
-      read (splitbuffer(1), *, iostat=iostatus) s2
-      if (iostatus /= 0) then
-        s2 = -1
-        start = 1
-      else
-        start = 2
-      end if
-    end if
-
-    if (start > 1) then
-      write (log_unit, *) 'Error: s1, s2 options in RIGU not supported '
-      write (log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
-      summary%error_no = summary%error_no+1
-      return
-    end if
 
     rigu_table_index = rigu_table_index+1
-    allocate (rigu_table(rigu_table_index)%atoms(size(splitbuffer)-start))
-    call to_upper(splitbuffer(start+1:size(splitbuffer)), rigu_table(rigu_table_index)%atoms)
     rigu_table(rigu_table_index)%shelxline = trim(shelxline%line)
     rigu_table(rigu_table_index)%line_number = shelxline%line_number
-    rigu_table(rigu_table_index)%residue = rigu_residue
 
   end subroutine
 
