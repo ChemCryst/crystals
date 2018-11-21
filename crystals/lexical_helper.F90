@@ -1632,6 +1632,7 @@ contains
 
     ierror = 0
     image_text_nchar = index(image_text,' ')-1  !look for abbreviated directives
+    image_text_nchar = min ( image_text_nchar, 8 ) ! can't compare beyond length of ignore char*8 string.
     if (image_text_nchar <= 1) then    ! should never get to this point
 !      write(123,*) 'Empty line, Nchar=', image_text_nchar
       return
