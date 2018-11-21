@@ -860,10 +860,10 @@ contains
     use crystal_data_m
     implicit none
     type(line_t), intent(in) :: shelxline
-    
-    rigu_table_index = rigu_table_index + 1
+
+    rigu_table_index = rigu_table_index+1
     rigu_table(rigu_table_index)%shelxline = trim(shelxline%line)
-    rigu_table(rigu_table_index)%line_number = shelxline%line_number    
+    rigu_table(rigu_table_index)%line_number = shelxline%line_number
 
   end subroutine
 
