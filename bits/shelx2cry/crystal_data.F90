@@ -386,7 +386,7 @@ contains
     end do
   end function
 
-!> explicit the use of '<' or '>' in the list of atoms
+!> explicit the use of '$', '<' or '>' in the list of atoms
   subroutine explicit_atoms(linein, lineout, errormsg)
     implicit none
     character(len=*), intent(in) :: linein

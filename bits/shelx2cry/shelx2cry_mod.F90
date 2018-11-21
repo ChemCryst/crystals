@@ -2041,8 +2041,9 @@ contains
       if (keyword%resi%is_set()) then
         call broadcast_shelx_cmd(trim(stripline), broadcast, override=.true.)
       else
-        allocate (character(len=len_trim(stripline)) :: broadcast(1))
-        broadcast(1) = trim(stripline)
+        if(allocated(broadcast)) deallocate(broadcast)
+        allocate(character(len=len_trim(stripline)) :: broadcast(1))
+        broadcast(1)=trim(stripline)
       end if
 
       ! first element is shelx instruction
