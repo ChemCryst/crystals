@@ -53,7 +53,7 @@
 \ hook the monitor file to channel 3 - some systems may force you to use 6
 \STORE UNIT NCAW 3
 \ATTACH  3 MONITOR SEQUENTIAL CIF FORMATTED WRITE FREE
-\open monitor bfile.mon
+\open monitor logs/bfile.mon
 \
 \
 \
@@ -136,7 +136,7 @@
 \ STORE  UNIT NCQU 89
 \ ATTACH 89 SCPQUEUE SEQUENTIAL UNKNOWN FORMATTED WRITE FREE
 \ATTACH 89 SCPQUEUE SEQUENTIAL CIF FORMATTED WRITE FREE
-\OPEN SCPQUEUE bfile.spq
+\OPEN SCPQUEUE logs/bfile.spq
 \
 \ set up the disc files with the system and users data bases.
 \ STORE  DISC NCIF 15
@@ -155,17 +155,17 @@
 \ NOW THE FILES CONCERNED WITH THE CURRENT STRUCTURE
 \
 \ the filename bfile.LIS will contain the detailed output listings.
-\OPEN PRINTER bfile.lis
+\OPEN PRINTER logs/bfile.lis
 \ Formatted output files.
 \ the filenames bfile.PCH and .LOG  will be system dependant
 \ STORE UNIT NCPU 7
 \ cdjwmay99ATTACH 7 PUNCH SEQUENTIAL UNKNOWN FORMATTED WRITE FREE
 \ATTACH 7 PUNCH SEQUENTIAL CIF FORMATTED WRITE FREE
-\OPEN PUNCH bfile.pch
+\OPEN PUNCH logs/bfile.pch
 \ STORE UFIL NCLU 8
 \ ATTACH 8 LOG SEQUENTIAL UNKNOWN FORMATTED WRITE FREE
 \ATTACH 8 LOG SEQUENTIAL NEW FORMATTED WRITE FREE
-\OPEN LOG bfile.log
+\OPEN LOG logs/bfile.log
 \
 \
 \ The reflection data. User should issue \OPEN HKLI if he needs to read it.
