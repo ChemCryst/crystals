@@ -357,6 +357,7 @@ C
        ENDIF
       ELSE
         CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN)
+        IF ( ACSTAT .EQ. 'NEW' ) CALL MKDIRP (CLCNAM(1:NAMLEN))
         OPEN ( UNIT   = IUNIT ,
      1         FILE   = CLCNAM(1:NAMLEN),
      1         STATUS = ACSTAT ,
@@ -399,6 +400,7 @@ C
        ENDIF
       ELSE
         CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN)
+        IF ( ACSTAT .EQ. 'NEW' ) CALL MKDIRP (CLCNAM(1:NAMLEN))
         OPEN ( UNIT   = IUNIT ,
      1         FILE   = CLCNAM(1:NAMLEN),
      1         STATUS = ACSTAT ,
@@ -2540,3 +2542,76 @@ C e.g. "Fri Sep 07 04:37:23 2001"
 
       RETURN
       END
+
+
+
+CODE FOR MKDIRP
+      SUBROUTINE MKDIRP (FILEPATH)
+C Checks a path, makes a subdirectory if it doesn't exist.
+#ifdef CRY_FORTINTEL
+      use ifport
+      IMPLICIT NONE
+#elif CRY_OSWIN32
+      use iso_c_binding, only: C_CHAR, C_NULL_CHAR
+      IMPLICIT NONE
+      interface
+        subroutine cry_mkdir(string) bind(C, name="cry_mkdir")
+          use iso_c_binding, only: c_char
+          character(kind=c_char) :: string(*)
+        end subroutine cry_mkdir
+      end interface
+#else
+      IMPLICIT NONE
+#endif
+      CHARACTER*(*) FILEPATH 
+      CHARACTER*1024 WORKPATH
+      CHARACTER*1024 CMDLINE  !Allow space for quite long paths
+      CHARACTER*256 DIRTEST  !Allow for quite long directory names
+      LOGICAL LEXISTS
+      INTEGER IPOS, ICOUNT, I, NPOS
+      IPOS = 1
+      WORKPATH = FILEPATH   ! Make copy, replace all \\ with /.
+      DO WHILE (IPOS.GT.0)
+         IPOS = INDEX( WORKPATH, '\' )
+         IF ( IPOS .GT. 0 ) WORKPATH(IPOS:IPOS) = '/'
+      END DO
+C Now, working forwards, inquire and create each folder. Ignore filename after last slash.
+      NPOS = 2
+      ICOUNT = 1
+      IPOS = 0
+      DO WHILE (.TRUE.)
+         write(129,*) 'Checking from ', NPOS, ' ', WORKPATH(NPOS:)
+         IPOS = INDEX( WORKPATH(NPOS:), '/' ) !Find a slash
+         IF ( IPOS. LE. 0 ) EXIT
+         NPOS = NPOS + IPOS
+         DIRTEST = WORKPATH(1:NPOS-2)             ! Test everything up to it
+         write(129,*) 'Dirtest is ', NPOS, ' ', DIRTEST
+
+#ifdef CRY_FORTINTEL
+         INQUIRE( DIRECTORY=DIRTEST, EXIST=LEXISTS )         
+#else        
+         INQUIRE( FILE=TRIM(DIRTEST)//'/.', EXIST=LEXISTS )  
+#endif 
+         IF ( LEXISTS ) THEN
+            write(129,*)'Directory checked, and exists: ' // DIRTEST
+         ELSE
+            write(129,*)'Directory does not exist, creating: '//DIRTEST
+#ifdef CRY_FORTINTEL
+            I = MAKEDIRQQ(DIRTEST)
+#elif CRY_OSWIN32
+            write(129,*)'Non-intel version: '//DIRTEST
+            call cry_mkdir(trim(dirtest)//C_NULL_CHAR)
+C            CMDLINE = 'mkdir '//trim(DIRTEST)
+C            call SYSTEM( CMDLINE )
+#else
+            CMDLINE = 'mkdir -p '//trim(DIRTEST)
+            call SYSTEM( CMDLINE )
+#endif
+         END IF
+         IF (NPOS .GE. LEN(WORKPATH) ) EXIT ! Catch case where slash is at end of path.
+
+         ICOUNT = ICOUNT + 1
+         IF ( ICOUNT .GT. 10 ) EXIT  ! Debugging - avoid infinity loop
+      END DO
+      RETURN
+      END 
