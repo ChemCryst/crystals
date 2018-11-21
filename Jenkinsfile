@@ -1,11 +1,16 @@
 pipeline {
     agent none
-    
+    options {
+        timeout(time: 1, unit: 'HOURS') 
+    }
     stages {
         stage("Build and test on all platforms") {
             parallel {
                 stage("Win64-Intel") {
                     agent { label 'Dunitz' }
+                    options {
+                        timeout(time: 1, unit: 'HOURS') 
+                    }
                     environment {
                         COMPCODE = 'INW'
                         CRBUILDEXIT = 'TRUE'   // exit build script on fail
@@ -54,6 +59,9 @@ pipeline {
                 }
                 stage("Linux") {
                     agent {label 'Orion'}    
+                    options {
+                        timeout(time: 1, unit: 'HOURS') 
+                    }
                     environment {
                         LD_LIBRARY_PATH = '~/lib64:~/lib:/files/ric/pparois/root/lib64:/files/ric/pparois/root/lib:${env.LD_LIBRARY_PATH}'
                         PATH = "~/bin:/files/ric/pparois/root/bin:$PATH"
@@ -61,10 +69,8 @@ pipeline {
                         CPLUS_INCLUDE_PATH = '/files/ric/pparois/root/include/'
                     }
                     stages {
-                        stage("Linux Smoketest") {
-                            stages {
-                                stage('Build Linux Smoketest') {                // Run the build
-                                    steps {
+                        stage('Build Linux Smoketest') {                // Run the build
+                            steps {
                                             sh '''
                                                 echo $PATH
                                                 module load intel/2017
@@ -75,34 +81,30 @@ pipeline {
                                                 nice -7 make -j6 || exit 1
                                                 pwd
                                             '''
-                                    }
-                                }
-                                stage('Run Linux Smoketest') {
-                                    environment {
-                                        CRYSDIR = './,../d/'
-                                        COMPCODE = 'LIN'
-                                    }
-                                    steps {
-                                            sh '''
-                                                pwd
-                                                cd test_suite
-                                                mkdir -p script
-                                                echo "%SCRIPT NONE" > script/tipauto.scp
-                                                echo "%END SCRIPT" >> script/tipauto.scp
-                                                rm -f crfilev2.dsc
-                                                rm -f crfilev2.h5
-                                                rm -f gui.tst
-                                                nice -10 perl testsuite.pl -s
-                                            '''
-                                   }
-                                }
                             }
                         }
-                        stage('Linux build and test') {
-                            stages {
-                                stage('Linux Build') {                // Run the build
-                                    steps {
-                                            sh '''
+                        stage('Run Linux Smoketest') {
+                            environment {
+                                CRYSDIR = './,../d/'
+                                COMPCODE = 'LIN'
+                            }
+                            steps {
+                                    sh '''
+                                        pwd
+                                        cd test_suite
+                                        mkdir -p script
+                                        echo "%SCRIPT NONE" > script/tipauto.scp
+                                        echo "%END SCRIPT" >> script/tipauto.scp
+                                        rm -f crfilev2.dsc
+                                        rm -f crfilev2.h5
+                                        rm -f gui.tst
+                                        nice -10 perl testsuite.pl -s
+                                    '''
+                           }
+                        }
+                        stage('Linux Build') {                // Run the build
+                            steps {
+                                    sh '''
                                                 echo $PATH
                                                 module load intel/2017
                                                 rm -Rf b
@@ -111,16 +113,16 @@ pipeline {
                                                 cmake3 -DuseGUI=off -DuseOPENMP=no -DCMAKE_Fortran_COMPILER=gfortran73 -DCMAKE_C_COMPILER=gcc73 -DCMAKE_CXX_COMPILER=g++73 -DBLA_VENDOR=Intel10_64lp  ..
                                                 nice -7 make -j6 || exit 1
                                                 pwd
-                                            '''
-                                    }
-                                }
-                                stage('Linux Test') {
-                                    environment {
-                                        CRYSDIR = './,../b/'
-                                        COMPCODE = 'LIN'
-                                    }
-                                    steps {
-                                            sh '''
+                                    '''
+                            }
+                        }
+                        stage('Linux Test') {
+                            environment {
+                                CRYSDIR = './,../b/'
+                                COMPCODE = 'LIN'
+                            }
+                            steps {
+                                    sh '''
                                                 pwd
                                                 cd test_suite
                                                 mkdir -p script
@@ -130,62 +132,58 @@ pipeline {
                                                 rm -f crfilev2.h5
                                                 rm -f gui.tst
                                                 nice -10 perl testsuite.pl
-                                            '''
-                                        
-                                    }
-                                }
+                                    '''
                             }
-                            post {
+                        }
+                    }
+                    post {
                                 always {
                                     sh 'mv test_suite LIN.org'      // Change path here to get unique archive path.
                                     archiveArtifacts artifacts: 'LIN.org/*.out', fingerprint: true
                                 }
-                            }
-                        }
                     }
                 }
                 stage("OSX") {
                     agent {label 'Flack'}    
+                    options {
+                        timeout(time: 1, unit: 'HOURS') 
+                    }
                     environment {
                         PATH = "/Applications/CMake.app/Contents/bin:$PATH"
                     }
                     stages {
-                        stage('OSX build and test') {
-                            stages {
-                                stage('OSX Build') {                // Run the build
-                                    steps {
-                                            sh '''
-                                                rm -Rf b
-                                                mkdir b
-                                                cd b
-                                                cmake -DCMAKE_NOCOLOR=yes -DMINGW=1 -DuseGUI=off -G"Unix Makefiles" ..
-                                                make -j6 || exit 1
-                                            '''
-                                    }
-                                }
-                                stage('OSX Test') {
-                                    environment {
-                                        CRYSDIR = './,../b/'
-                                        COMPCODE = 'OSXCLI'
-                                    }
-                                    steps {
-                                            sh '''
-                                                cd test_suite
-                                                mkdir -p script
-                                                rm -f crfilev2.dsc
-                                                rm -f gui.tst
-                                                perl testsuite.pl
-                                            '''
-                                    }
-                                }
-                            }
-                            post {
-                                always {
-                                    sh 'mv test_suite OSXCLI.org'      // Change path here to get unique archive path.
-                                    archiveArtifacts artifacts: 'OSXCLI.org/*.out', fingerprint: true
-                                }
+                        stage('OSX Build') {                // Run the build
+                            steps {
+                                    sh '''
+                                        rm -Rf b
+                                        mkdir b
+                                        cd b
+                                        cmake -DCMAKE_NOCOLOR=yes -DMINGW=1 -DuseGUI=off -G"Unix Makefiles" ..
+                                        make -j6 || exit 1
+                                    '''
                             }
                         }
+                        stage('OSX Test') {
+                            environment {
+                                CRYSDIR = './,../b/'
+                                COMPCODE = 'OSXCLI'
+                            }
+                            steps {
+                                    sh '''
+                                        cd test_suite
+                                        mkdir -p script
+                                        rm -f crfilev2.dsc
+                                        rm -f gui.tst
+                                        perl testsuite.pl
+                                    '''
+                            }
+                        }
+                    }
+                    post {
+                            always {
+                                sh 'mv test_suite OSXCLI.org'      // Change path here to get unique archive path.
+                                archiveArtifacts artifacts: 'OSXCLI.org/*.out', fingerprint: true
+                            }
                     }
                 }
             }
