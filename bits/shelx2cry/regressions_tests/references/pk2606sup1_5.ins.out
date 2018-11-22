@@ -77,7 +77,7 @@ CONT U[11]=.03317, U[22]=.02887, U[33]=.01891
 CONT U[23]=-.00172, U[13]=-.00516, U[12]=-.00560
 CONT PART=1001
 #  N1B   3    0.600428    0.618023    0.807281   -21.00000    0.02862    0.02004          0.02011    0.01770   -0.01029   -0.00425
-ATOM TYPE=N, SERIAL=14, OCC=.09363, FLAG=0
+ATOM TYPE=N, SERIAL=112, OCC=.09363, FLAG=0
 CONT X=.60043, Y=.61802, Z=.80728
 CONT U[11]=.02862, U[22]=.02004, U[33]=.02011
 CONT U[23]=.01770, U[13]=-.01029, U[12]=-.00425
@@ -188,12 +188,16 @@ END
 NO
 REM   HREST   START (DO NOT REMOVE THIS LINE)
 REM   HREST   END (DO NOT REMOVE THIS LINE) 
-# DFIX 0.88 0.001 N12 H12a N12 H12b                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+# DFIX 0.88 0.001 N12 H12a N12 H12b
 DISTANCE .88000,.00100 = N(12) TO H(121)
-# DFIX 0.88 0.001 N12 H12a N12 H12b                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
 DISTANCE .88000,.00100 = N(12) TO H(122)
-# DFIX 1.43 C5B C6                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+# DFIX 0.88 0.001 N12 H12a N12 H12b
+DISTANCE .88000,.00100 = N(12) TO H(121)
+DISTANCE .88000,.00100 = N(12) TO H(122)
+# DFIX 1.43 C5B C6
 DISTANCE 1.43000,.02000 = C(52) TO C(6)
+# RIGU N1B > C6
+XRIGU 0.00400 0.00400 N(112) N(22) N(32) N(42) C(52) O(112) C(6)
 # ISOR 0.004 0.008 N2B N3B
 UQISO 0.00400 N(22) N(32)
 END

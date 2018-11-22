@@ -115,5 +115,18 @@ Warning: `AFIX` Not supported
 Line 95: AFIX   0
 
 Processing shelxl labels into crystals serials
+Table of converted serial numbers
+ |    Shelx Crystals |    Shelx Crystals |    Shelx Crystals |    Shelx Crystals
+ |     SN_0        1 |     S1_0        1 |     S2_0        2 |     O1_0        1
+ |     O2_0        2 |     N1_0        1 |     C1_0        1 |     C2_0        2
+ |    H2A_0       21 |    H2B_0       22 |     C3_0        3 |    H3A_0       31
+ |    H3B_0       32 |     C4_0        4 |    H4A_0       41 |    H4B_0       42
+ |    H4C_0       43 |     C5_0        5 |    H5A_0       51 |    H5B_0       52
+ |     C6_0        6 |    H6A_0       61 |    H6B_0       62 |     C7_0        7
+ |    H7A_0       71 |    H7B_0       72 |    H7C_0       73 |     C8_0        8
+ |    H8A_0       81 |    H8B_0       82 |     C9_0        9 |    H9A_0       91
+ |    H9B_0       92 |    C10_0       10 |   H10A_0      101 |   H10B_0      102
+ |    C11_0       11 |   H11A_0      111 |   H11B_0      112 |   H11C_0      113
+
 Done
 

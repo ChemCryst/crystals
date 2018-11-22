@@ -37,6 +37,7 @@ Bonds: Update required - There is no list 41
 #BONDCALC
 # SPACES
 #LIST 16
+Bonds: Update required - There is no list 41
 -- Original input to lexical analyzer:
 DIST 0.0,  1.0=MEAN CL(1) TO C(2),C(2)TO CL(3  ) , CL(  3  ) TO CL(1)
 DIST 0.0 ,1.0 = MEAN C -- C C==C C-5- C
@@ -73,9 +74,9 @@ DIST 1.000000 , .010000 = CL(1) TO CL(3)
 DIST 1.000000 , .010000 = CL(1) TO CL(3)
 # INVALID ATOM
 #LIST 16
-E Error: UQISO 0.01 C(128) C(2, 128)
-E ------------------^^^^^^^
-E Error: atom C(128) is not present in the model
+Error: UQISO 0.01 C(128) C(2, 128)
+------------------^^^^^^^
+Error: atom C(128) is not present in the model
  The last card contains unaccessed parameter(s) beyond column    6
 #END
 
