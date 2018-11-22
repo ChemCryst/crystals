@@ -2633,7 +2633,7 @@ LS-scale=  1.733   Wilson Scale=  0.000
 [19]  Q         3. 3.3  Poor Shape  
 [18]  QN  -3.8  Hole        
  The new list  10 contains    25 atoms
- The minimum and maximum map densities are -0.376     0.436    electrons /A^3
+[68]  The minimum and maximum map densities are -0.37      0.43     electrons /A^3
 [20]                   The deepest hole is at    
  Mean electron density at original atomic sites is    -0.10
                       with an R.M.S. deviation of      0.10
@@ -5649,7 +5649,7 @@ LS-scale=  1.733   Wilson Scale=  0.000
 [19]  Q         3. 3.3  Poor Shape  
 [18]  QN  -3.8  Hole        
  The new list  10 contains    25 atoms
- The minimum and maximum map densities are -0.382     0.433    electrons /A^3
+[68]  The minimum and maximum map densities are -0.38      0.43     electrons /A^3
 [20]                   The deepest hole is at    
  Mean electron density at original atomic sites is    -0.10
                       with an R.M.S. deviation of      0.10
@@ -8663,7 +8663,7 @@ LS-scale=  1.687   Wilson Scale=  0.000
 [19]  Q         5. 3.1  Poor Shape  
 [18]  QN  -3.8  Hole        
  The new list  10 contains    27 atoms
- The minimum and maximum map densities are -0.379     0.423    electrons /A^3
+[68]  The minimum and maximum map densities are -0.37      0.42     electrons /A^3
 [20]                   The deepest hole is at    
  Mean electron density at original atomic sites is    -0.04
                       with an R.M.S. deviation of      0.12
@@ -11686,7 +11686,7 @@ LS-scale=  1.687   Wilson Scale=  0.000
 [19]  Q         5. 3.1  Poor Shape  
 [18]  QN  -3.8  Hole        
  The new list  10 contains    27 atoms
- The minimum and maximum map densities are -0.379     0.423    electrons /A^3
+[68]  The minimum and maximum map densities are -0.37      0.42     electrons /A^3
 [20]                   The deepest hole is at    
  Mean electron density at original atomic sites is    -0.04
                       with an R.M.S. deviation of      0.12

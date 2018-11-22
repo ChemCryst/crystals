@@ -407,7 +407,10 @@ sub obscureMachinePrecision() {
 #     H   = 2N         1002        47.07        47.1       0.101E+06       0.106E+01     3.25    6.72           *      
  	  } elsif($line =~ m/^(\s*\S+\s+(?:=|#)\s\S+\s+\d+\s+\d+\.\d\d\s+\d+\.\d\s+0\.\d\d\dE\S\d\d\s+0\.\d)\d\d(E\S\d\d\s+\d+\.)\d\d(\s+\d+\.)\d\d(\s+.*)$/ ) {
               print $fho "[68] $1 $2 $3 $4\n";
-	  } else {
+#The minimum and maximum map densities are -0.378     0.423    electrons /A^3
+ 	  } elsif($line =~ m/^(.*The minimum and maximum map densities are\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(.*)$/ ) {
+              print $fho "[68] $1 $2 $3\n";
+      } else {
               print $fho "$line\n";
 	   }
  	}
