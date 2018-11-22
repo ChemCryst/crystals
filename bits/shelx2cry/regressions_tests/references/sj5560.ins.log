@@ -1,0 +1,214 @@
+Warning: `SIZE` Not supported 
+Line 28: SIZE 0.189 0.223 0.228
+Warning: `TEMP` Not supported 
+Line 29: TEMP -173
+Warning: `AFIX` Not supported 
+Line 70: AFIX  43
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 71: H3    2    0.641554    0.236737    0.946994    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 72: AFIX   0
+Warning: `AFIX` Not supported 
+Line 99: AFIX  43
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 100: H8    2    0.389972    0.502718    0.924234    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 101: AFIX   0
+Warning: `AFIX` Not supported 
+Line 138: AFIX  43
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 139: H13   2    0.767990    0.402393    0.637357    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 140: AFIX   0
+Warning: `AFIX` Not supported 
+Line 177: AFIX  43
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 178: H18   2    0.402224    0.403558    0.562111    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 179: AFIX   0
+Warning: `AFIX` Not supported 
+Line 218: AFIX  43
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 219: H23   2    0.154203    0.199115    0.457577    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 220: AFIX   0
+Warning: `AFIX` Not supported 
+Line 247: AFIX  43
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 248: H28   2   -0.119447    0.467727    0.428192    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 249: AFIX   0
+Warning: `AFIX` Not supported 
+Line 276: AFIX  43
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 277: H33   2    0.257887    0.361513    0.141318    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 278: AFIX   0
+Warning: `AFIX` Not supported 
+Line 305: AFIX  43
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 306: H38   2   -0.098345    0.377789    0.079662    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 307: AFIX   0
+
+Processing shelxl labels into crystals serials
+Table of converted serial numbers
+ |    Shelx Crystals |    Shelx Crystals |    Shelx Crystals |    Shelx Crystals
+ |    HF1_0        1 |     O1_0        1 |     O2_0        2 |     C1_0        1
+ |     F1_0        1 |     F2_0        2 |     F3_0        3 |     C2_0        2
+ |     C3_0        3 |     H3_0        3 |     C4_0        4 |     C5_0        5
+ |     F4_0        4 |     F5_0        5 |     F6_0        6 |     O3_0        3
+ |     O4_0        4 |     C6_0        6 |     F7_0        7 |     F8_0        8
+ |     F9_0        9 |     C7_0        7 |     C8_0        8 |     H8_0        8
+ |     C9_0        9 |    C10_0       10 |    F10_0       10 |    F11_0       11
+ |    F12_0       12 |   F10A_0      101 |   F11A_0      111 |   F12A_0      121
+ |     O5_0        5 |     O6_0        6 |    C11_0       11 |    F13_0       13
+ |    F14_0       14 |    F15_0       15 |    C12_0       12 |    C13_0       13
+ |    H13_0       13 |    C14_0       14 |    C15_0       15 |    F16_0       16
+ |    F17_0       17 |    F18_0       18 |   F16A_0      161 |   F17A_0      171
+ |   F18A_0      181 |     O7_0        7 |     O8_0        8 |    C16_0       16
+ |    F19_0       19 |    F20_0       20 |    F21_0       21 |    C17_0       17
+ |    C18_0       18 |    H18_0       18 |    C19_0       19 |    C20_0       20
+ |    F22_0       22 |    F23_0       23 |    F24_0       24 |   F22A_0      221
+ |   F23A_0      231 |   F24A_0      241 |    HF2_0        2 |     O9_0        9
+ |    O10_0       10 |    C21_0       21 |    F25_0       25 |    F26_0       26
+ |    F27_0       27 |    C22_0       22 |    C23_0       23 |    H23_0       23
+ |    C24_0       24 |    C25_0       25 |    F28_0       28 |    F29_0       29
+ |    F30_0       30 |    O11_0       11 |    O12_0       12 |    C26_0       26
+ |    F31_0       31 |    F32_0       32 |    F33_0       33 |    C27_0       27
+ |    C28_0       28 |    H28_0       28 |    C29_0       29 |    C30_0       30
+ |    F34_0       34 |    F35_0       35 |    F36_0       36 |    O13_0       13
+ |    O14_0       14 |    C31_0       31 |    F37_0       37 |    F38_0       38
+ |    F39_0       39 |    C32_0       32 |    C33_0       33 |    H33_0       33
+ |    C34_0       34 |    C35_0       35 |    F40_0       40 |    F41_0       41
+ |    F42_0       42 |    O15_0       15 |    O16_0       16 |    C36_0       36
+ |    F43_0       43 |    F44_0       44 |    F45_0       45 |    C37_0       37
+ |    C38_0       38 |    H38_0       38 |    C39_0       39 |    C40_0       40
+ |    F46_0       46 |    F47_0       47 |    F48_0       48
+Done
+
+Processing DFIXs/DANGs...
+DFIX 1.35 0.01 C10 F10A C10 F11A C10 F12A
+DISTANCE 1.35000,.01000 = C(10) TO F(101)
+DISTANCE 1.35000,.01000 = C(10) TO F(111)
+DISTANCE 1.35000,.01000 = C(10) TO F(121)
+DFIX 1.35 0.01 C10 F10A C10 F11A C10 F12A
+DISTANCE 1.35000,.01000 = C(10) TO F(101)
+DISTANCE 1.35000,.01000 = C(10) TO F(111)
+DISTANCE 1.35000,.01000 = C(10) TO F(121)
+DFIX 1.35 0.01 C10 F10A C10 F11A C10 F12A
+DISTANCE 1.35000,.01000 = C(10) TO F(101)
+DISTANCE 1.35000,.01000 = C(10) TO F(111)
+DISTANCE 1.35000,.01000 = C(10) TO F(121)
+DFIX 1.35 0.01 C15 F16A C15 F17A C15 F18A
+DISTANCE 1.35000,.01000 = C(15) TO F(161)
+DISTANCE 1.35000,.01000 = C(15) TO F(171)
+DISTANCE 1.35000,.01000 = C(15) TO F(181)
+DFIX 1.35 0.01 C15 F16A C15 F17A C15 F18A
+DISTANCE 1.35000,.01000 = C(15) TO F(161)
+DISTANCE 1.35000,.01000 = C(15) TO F(171)
+DISTANCE 1.35000,.01000 = C(15) TO F(181)
+DFIX 1.35 0.01 C15 F16A C15 F17A C15 F18A
+DISTANCE 1.35000,.01000 = C(15) TO F(161)
+DISTANCE 1.35000,.01000 = C(15) TO F(171)
+DISTANCE 1.35000,.01000 = C(15) TO F(181)
+DFIX 1.35 0.01 C20 F22A C20 F23A C20 F24A
+DISTANCE 1.35000,.01000 = C(20) TO F(221)
+DISTANCE 1.35000,.01000 = C(20) TO F(231)
+DISTANCE 1.35000,.01000 = C(20) TO F(241)
+DFIX 1.35 0.01 C20 F22A C20 F23A C20 F24A
+DISTANCE 1.35000,.01000 = C(20) TO F(221)
+DISTANCE 1.35000,.01000 = C(20) TO F(231)
+DISTANCE 1.35000,.01000 = C(20) TO F(241)
+DFIX 1.35 0.01 C20 F22A C20 F23A C20 F24A
+DISTANCE 1.35000,.01000 = C(20) TO F(221)
+DISTANCE 1.35000,.01000 = C(20) TO F(231)
+DISTANCE 1.35000,.01000 = C(20) TO F(241)
+DFIX 2.15 0.01 F10A F11A F10A F12A F11A F12A
+DISTANCE 2.15000,.01000 = F(101) TO F(111)
+DISTANCE 2.15000,.01000 = F(101) TO F(121)
+DISTANCE 2.15000,.01000 = F(111) TO F(121)
+DFIX 2.15 0.01 F10A F11A F10A F12A F11A F12A
+DISTANCE 2.15000,.01000 = F(101) TO F(111)
+DISTANCE 2.15000,.01000 = F(101) TO F(121)
+DISTANCE 2.15000,.01000 = F(111) TO F(121)
+DFIX 2.15 0.01 F10A F11A F10A F12A F11A F12A
+DISTANCE 2.15000,.01000 = F(101) TO F(111)
+DISTANCE 2.15000,.01000 = F(101) TO F(121)
+DISTANCE 2.15000,.01000 = F(111) TO F(121)
+DFIX 2.15 0.01 F16A F17A F16A F18A F17A F18A
+DISTANCE 2.15000,.01000 = F(161) TO F(171)
+DISTANCE 2.15000,.01000 = F(161) TO F(181)
+DISTANCE 2.15000,.01000 = F(171) TO F(181)
+DFIX 2.15 0.01 F16A F17A F16A F18A F17A F18A
+DISTANCE 2.15000,.01000 = F(161) TO F(171)
+DISTANCE 2.15000,.01000 = F(161) TO F(181)
+DISTANCE 2.15000,.01000 = F(171) TO F(181)
+DFIX 2.15 0.01 F16A F17A F16A F18A F17A F18A
+DISTANCE 2.15000,.01000 = F(161) TO F(171)
+DISTANCE 2.15000,.01000 = F(161) TO F(181)
+DISTANCE 2.15000,.01000 = F(171) TO F(181)
+DFIX 2.15 0.01 F22A F23A F22A F24A F23A F24A
+DISTANCE 2.15000,.01000 = F(221) TO F(231)
+DISTANCE 2.15000,.01000 = F(221) TO F(241)
+DISTANCE 2.15000,.01000 = F(231) TO F(241)
+DFIX 2.15 0.01 F22A F23A F22A F24A F23A F24A
+DISTANCE 2.15000,.01000 = F(221) TO F(231)
+DISTANCE 2.15000,.01000 = F(221) TO F(241)
+DISTANCE 2.15000,.01000 = F(231) TO F(241)
+DFIX 2.15 0.01 F22A F23A F22A F24A F23A F24A
+DISTANCE 2.15000,.01000 = F(221) TO F(231)
+DISTANCE 2.15000,.01000 = F(221) TO F(241)
+DISTANCE 2.15000,.01000 = F(231) TO F(241)
+DFIX 2.3 0.05 C9 F10A C9 F11A C9 F12A
+DISTANCE 2.30000,.05000 = C(9) TO F(101)
+DISTANCE 2.30000,.05000 = C(9) TO F(111)
+DISTANCE 2.30000,.05000 = C(9) TO F(121)
+DFIX 2.3 0.05 C9 F10A C9 F11A C9 F12A
+DISTANCE 2.30000,.05000 = C(9) TO F(101)
+DISTANCE 2.30000,.05000 = C(9) TO F(111)
+DISTANCE 2.30000,.05000 = C(9) TO F(121)
+DFIX 2.3 0.05 C9 F10A C9 F11A C9 F12A
+DISTANCE 2.30000,.05000 = C(9) TO F(101)
+DISTANCE 2.30000,.05000 = C(9) TO F(111)
+DISTANCE 2.30000,.05000 = C(9) TO F(121)
+DFIX 2.3 0.05 C14 F16A C14 F17A C14 F18A
+DISTANCE 2.30000,.05000 = C(14) TO F(161)
+DISTANCE 2.30000,.05000 = C(14) TO F(171)
+DISTANCE 2.30000,.05000 = C(14) TO F(181)
+DFIX 2.3 0.05 C14 F16A C14 F17A C14 F18A
+DISTANCE 2.30000,.05000 = C(14) TO F(161)
+DISTANCE 2.30000,.05000 = C(14) TO F(171)
+DISTANCE 2.30000,.05000 = C(14) TO F(181)
+DFIX 2.3 0.05 C14 F16A C14 F17A C14 F18A
+DISTANCE 2.30000,.05000 = C(14) TO F(161)
+DISTANCE 2.30000,.05000 = C(14) TO F(171)
+DISTANCE 2.30000,.05000 = C(14) TO F(181)
+DFIX 2.3 0.05 C19 F22A C19 F23A C19 F24A
+DISTANCE 2.30000,.05000 = C(19) TO F(221)
+DISTANCE 2.30000,.05000 = C(19) TO F(231)
+DISTANCE 2.30000,.05000 = C(19) TO F(241)
+DFIX 2.3 0.05 C19 F22A C19 F23A C19 F24A
+DISTANCE 2.30000,.05000 = C(19) TO F(221)
+DISTANCE 2.30000,.05000 = C(19) TO F(231)
+DISTANCE 2.30000,.05000 = C(19) TO F(241)
+DFIX 2.3 0.05 C19 F22A C19 F23A C19 F24A
+DISTANCE 2.30000,.05000 = C(19) TO F(221)
+DISTANCE 2.30000,.05000 = C(19) TO F(231)
+DISTANCE 2.30000,.05000 = C(19) TO F(241)
+
+Processing ISORs...
+ISOR 0.005 0.01 $F
+Warning: [st] esd in ISOR not supported, using [s] instead
+UQISO 0.00500 F(*)
+
+## Warning: Could not find the corresponding hkl file insfiles/sj5560.hkl
+##          You will have to import it manually

@@ -398,11 +398,11 @@ contains
     character(len=256) :: iomessage
     character(len=:), allocatable :: stripline
     character(len=lenlabel), dimension(:), allocatable :: splitbuffer
-    
+
     call deduplicates(trim(shelxline%line), stripline)
     call explode(stripline, lenlabel, splitbuffer)
-    
-    if(size(splitbuffer)<7) then
+
+    if (size(splitbuffer) < 7) then
       ! invalid shelxl command
       write (*, *) 'Error: Syntax error. '
       write (*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
@@ -410,7 +410,7 @@ contains
       call abort()
     end if
 
-    do i=size(splitbuffer), size(splitbuffer)-5, -1 ! starting from the end in case Z is missing
+    do i = size(splitbuffer), size(splitbuffer)-5, -1 ! starting from the end in case Z is missing
       read (splitbuffer(i), *, iostat=iostatus, iomsg=iomessage) esds(i-size(splitbuffer)+size(esds))
       if (iostatus /= 0) then
         write (*, *) 'Error while reading esd ', trim(splitbuffer(i))

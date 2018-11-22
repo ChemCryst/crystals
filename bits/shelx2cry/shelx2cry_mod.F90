@@ -280,9 +280,9 @@ contains
         end if
       end do
 
+      serialtext = ''
       if (start /= 0) then
         ! fetch the serial number
-        serialtext = ''
         k = 0
 
         do j = start, len_trim(label)
@@ -509,10 +509,13 @@ contains
   subroutine write_list16()
     use crystal_data_m
     implicit none
-    integer i, j, l, m
+    integer i, j, l, m, k
     integer :: serial1
     character :: linecont
-    type(atom_shelx_t) :: atom
+    type(atom_shelx_t) :: first, next
+    character(len=lenlabel), dimension(:), allocatable :: splitbuffer
+    character(len=:), dimension(:), allocatable :: broadcast
+    character(len=:), allocatable :: stripline, errormsg
 
     ! Restraints
     write (crystals_fileunit, '(a)') '\LIST 16'
@@ -546,74 +549,54 @@ contains
 
     eadploop: do i = 1, eadp_table_index
       write (log_unit, '(a)') trim(eadp_table(i)%shelxline)
-      write (crystals_fileunit, '(a, a)') '# ', eadp_table(i)%shelxline
-      serial1 = 0
-      atom = atom_shelx_t(eadp_table(i)%atoms(1))
-      do m = 1, atomslist_index
-        !print *, eadp_table(i)%atoms(1), atomslist(m)%label, atom == atomslist(m)
-        if (atom == atomslist(m)) then
-          serial1 = m
-          exit
-        end if
-      end do
-      if (serial1 > 0) then
-        if (atomslist(serial1)%crystals_serial == -1) then
-          write (*, '(2a)') 'Error: Crystals serial not defined ', eadp_table(i)%atoms(1)
-          call abort()
-        end if
-      else
-        write (*, '(2a)') 'Error: Crystals serial not defined ', eadp_table(i)%atoms(1)
-        call abort()
-      end if
+      write (crystals_fileunit, '(a, a)') '# ', trim(eadp_table(i)%shelxline)
 
-      do j = 2, size(eadp_table(i)%atoms)
-        l = 0
-        do m = 1, atomslist_index
-          if (trim(eadp_table(i)%atoms(j)) == trim(atomslist(m)%label)) then
-            l = m
-            exit
+      call explicit_atoms(eadp_table(i)%shelxline, stripline, errormsg)
+      if (allocated(errormsg)) then
+        write (log_unit, *) trim(errormsg)
+        write (log_unit, '("Line ", I0, ": ", a)') flat_table(i)%line_number, trim(flat_table(i)%shelxline)
+        summary%error_no = summary%error_no+1
+      end if
+      call broadcast_shelx_cmd(stripline, broadcast)
+
+      do j = 1, size(broadcast)
+        call deduplicates(broadcast(j), stripline)
+        call to_upper(stripline)
+        call explode(stripline, lenlabel, splitbuffer)
+
+        do k = 2, size(splitbuffer)-1
+          first = atom_shelx_t(splitbuffer(k))
+          next = atom_shelx_t(splitbuffer(k+1))
+
+          if (k == size(splitbuffer)-1) then
+            linecont = ''
+          else
+            linecont = ','
+          end if
+          if (k == 2) then
+            write (crystals_fileunit, '(a, a, " TO ", a, a)') &
+            &   'U(IJ) 0.0, 0.001 =  ', &
+            &   first%crystals_label(), &
+            &   next%crystals_label(), &
+            &   linecont
+            write (log_unit, '(a, a, " TO ", a, a)') &
+            &   'U(IJ) 0.0, 0.001 =  ', &
+            &   first%crystals_label(), &
+            &   next%crystals_label(), &
+            &   linecont
+          else
+            write (crystals_fileunit, '(a, a, " TO ", a, a)') &
+            &   'CONT ', &
+            &   first%crystals_label(), &
+            &   next%crystals_label(), &
+            &   linecont
+            write (log_unit, '(a, a, " TO ", a, a)') &
+            &   'CONT ', &
+            &   first%crystals_label(), &
+            &   next%crystals_label(), &
+            &   linecont
           end if
         end do
-        if (l > 0) then
-          if (atomslist(l)%crystals_serial == -1) then
-            write (*, '(2a)') 'Error: Crystals serial not defined ', eadp_table(i)%atoms(l)
-            call abort()
-          end if
-        else
-          write (*, '(2a)') 'Error: Crystals serial not defined ', eadp_table(i)%atoms(l)
-          call abort()
-        end if
-
-        if (j == size(eadp_table(i)%atoms)) then
-          linecont = ''
-        else
-          linecont = ','
-        end if
-        if (j == 2) then
-          write (crystals_fileunit, '(a, a, " TO ", a, a)') &
-          &   'U(IJ) 0.0, 0.001 =  ', &
-          &   atomslist(serial1)%crystals_label(), &
-          &   atomslist(l)%crystals_label(), &
-          &   linecont
-          write (log_unit, '(a, a, " TO ", a, a)') &
-          &   'U(IJ) 0.0, 0.001 =  ', &
-          &   atomslist(serial1)%crystals_label(), &
-          &   atomslist(l)%crystals_label(), &
-          &   linecont
-        else
-          write (crystals_fileunit, '(a, a, " TO ", a, a)') &
-          &   'CONT ', &
-          &   atomslist(serial1)%crystals_label(), &
-          &   atomslist(l)%crystals_label(), &
-          &   linecont
-          write (log_unit, '(a, a, " TO ", a, a)') &
-          &   'CONT ', &
-          &   atomslist(serial1)%crystals_label(), &
-          &   atomslist(l)%crystals_label(), &
-          &   linecont
-        end if
-
-        serial1 = l
       end do
     end do eadploop
 
@@ -1577,11 +1560,10 @@ contains
   subroutine write_list16_flat()
     use crystal_data_m
     implicit none
-    integer, dimension(:), allocatable :: serials
+    character(len=128), dimension(:), allocatable :: serials
     type(atom_shelx_t) :: atom_shelx
     character(len=1024) :: buffertemp
     integer i, j, k, l
-    integer :: serial1
     character(len=:), allocatable :: stripline, errormsg
     real esd
     character(len=lenlabel), dimension(:), allocatable :: splitbuffer
@@ -1644,9 +1626,10 @@ contains
 
         if (allocated(serials)) deallocate (serials)
         allocate (serials(size(splitbuffer)))
-        serials = 0
+        serials = ''
         do k = start, size(splitbuffer)
           atom_shelx = atom_shelx_t(splitbuffer(k))
+          write (serials(k), '(a)') atom_shelx%crystals_label()
 
           if (atom_shelx%previous) then
             ! previous residue
@@ -1665,42 +1648,19 @@ contains
             cycle flat_loop
           end if
 
-          serial1 = 0
-          do l = 1, atomslist_index
-            if (trim(atom_shelx%label) == trim(atomslist(l)%label)) then
-              if (atom_shelx%resi%is_set()) then
-                if (atom_shelx%resi == atomslist(l)%resi) then
-                  serial1 = l
-                  exit
-                end if
-              else
-                serial1 = l
-                exit
-              end if
-            end if
-          end do
-
-          if (serial1 == 0) then
+          if (serials(k) == '') then
             write (*, '(a)') trim(flat_table(i)%shelxline)
             write (*, '(a)') trim(broadcast(j))
             write (*, '(a)') splitbuffer(k)
-            write (*, '(I0)') serial1
             write (*, '(a)') 'Error: check your res file. I cannot find the atom'
             call abort()
           end if
-
-          if (atomslist(serial1)%crystals_serial == -1) then
-            write (*, '(a)') 'Error: Crystals serial not defined'
-            call abort()
-          end if
-          serials(k) = serial1
         end do
 
         ! good to go
         write (buffertemp, '(a, F7.5, 1X)') 'PLANAR ', flat_table(i)%esd
-        do l = 1, size(serials)
-          if (serials(l) == 0) cycle
-          buffertemp = trim(buffertemp)//' '//atomslist(serials(l))%crystals_label()
+        do l = start, size(serials)
+          buffertemp = trim(buffertemp)//' '//serials(l)
           if (len_trim(buffertemp) > 72) then
             write (crystals_fileunit, '(a)') trim(buffertemp)
             write (log_unit, '(a)') trim(buffertemp)
@@ -1767,29 +1727,20 @@ contains
           atom1 = atom_shelx_t(splitbuffer(k))
           atom2 = atom_shelx_t(splitbuffer(k+1))
 
-          serial1 = find_in_atom_list(atom1)
-          serial2 = find_in_atom_list(atom2)
-
-          if (serial1 == 0 .or. serial2 == 0) then
+          if (atom1%crystals_label() == '' .or. atom2%crystals_label() == '') then
             write (*, '(2a)') dfix_table(i)%atom1, dfix_table(i)%atom2
-            write (*, '(2I0)') serial1, serial2
             write (*, '(a)') 'Error: check your res file. I cannot find the atom'
             call abort()
           end if
 
-          ! good to go
-          if (atomslist(serial1)%crystals_serial == -1 .or. atomslist(serial2)%crystals_serial == -1) then
-            write (*, '(a)') 'Error: Crystals serial not defined'
-            call abort()
-          end if
           write (crystals_fileunit, '(a, 1X, F0.5, ",", F0.5, " = ", a," TO ", a)') &
           &   'DISTANCE', dfix_table(i)%distance, dfix_table(i)%esd, &
-          &   atomslist(serial1)%crystals_label(atom1%symmetry), &
-          &   atomslist(serial2)%crystals_label(atom2%symmetry)
+          &   atom1%crystals_label(), &
+          &   atom2%crystals_label()
           write (log_unit, '(a, 1X, F0.5, ",", F0.5, " = ", a, " TO ", a)') &
           &   'DISTANCE', dfix_table(i)%distance, dfix_table(i)%esd, &
-          &   atomslist(serial1)%crystals_label(atom1%symmetry), &
-          &   atomslist(serial2)%crystals_label(atom2%symmetry)
+          &   atom1%crystals_label(), &
+          &   atom2%crystals_label()
         end do
       end do
 
@@ -1852,19 +1803,13 @@ contains
           do l = 1, 2
             atom = atom_shelx_t(splitbuffer(k+l-1))
 
-            serials(l) = find_in_atom_list(atom)
-
-            if (serials(l) == 0) then
+            if (atom%crystals_label() == '') then
               write (log_unit, '(I0, 1X, a, a)') j, sadi_table(i)%shelxline
-              write (log_unit, '(3a)') 'Warning: ', splitbuffer(k), ' is missing in res file '
+              write (log_unit, '(3a)') 'Warning: ', splitbuffer(k+l-1), ' is missing in res file '
               cycle sadi_loop
             end if
-            if (atomslist(serials(l))%crystals_serial == -1) then
-              write (*, '(a)') 'Error: Crystals serial not defined'
-              call abort()
-            end if
 
-            buffer(l) = atomslist(serials(l))%crystals_label(atom%symmetry)
+            buffer(l) = atom%crystals_label()
           end do
 
           if (j == size(broadcast) .and. k == size(splitbuffer)-1) then
@@ -1957,17 +1902,14 @@ contains
         do k = start, size(splitbuffer)
           atom = atom_shelx_t(splitbuffer(k))
 
-          serial = find_in_atom_list(atom)
-
-          if (serial == 0) then
+          if (atom%crystals_label() == '') then
             write (*, '(a)') atom%text
-            write (*, '(2I0)') serial
             write (*, '(a)') 'Error: check your res file. I cannot find the atom'
             call abort()
           end if
 
           ! good to go
-          buffertemp = trim(buffertemp)//' '//atomslist(serial)%crystals_label()
+          buffertemp = trim(buffertemp)//' '//atom%crystals_label()
           if (len_trim(buffertemp) > 72) then
             write (crystals_fileunit, '(a)') trim(buffertemp)
             write (log_unit, '(a)') trim(buffertemp)
@@ -2041,9 +1983,9 @@ contains
       if (keyword%resi%is_set()) then
         call broadcast_shelx_cmd(trim(stripline), broadcast, override=.true.)
       else
-        if(allocated(broadcast)) deallocate(broadcast)
-        allocate(character(len=len_trim(stripline)) :: broadcast(1))
-        broadcast(1)=trim(stripline)
+        if (allocated(broadcast)) deallocate (broadcast)
+        allocate (character(len=len_trim(stripline)) :: broadcast(1))
+        broadcast(1) = trim(stripline)
       end if
 
       ! first element is shelx instruction
@@ -2051,9 +1993,9 @@ contains
       read (splitbuffer(2), *, iostat=iostatus) esd1
       if (iostatus /= 0) then
         esd1 = 0.1
-        start = 1
-      else
         start = 2
+      else
+        start = 3
       end if
 
       ! third element is the esd of terminal atoms (optional)
@@ -2070,7 +2012,7 @@ contains
 
       ! now that we have the list of the reference atoms,
       ! lets make the list of atoms to which the restraint is applied to
-      allocate (same_table(i)%list_to(size(splitbuffer)-start))
+      allocate (same_table(i)%list_to(size(splitbuffer)-start+1))
       same_table(i)%list_to = 0
       ! find the starting point in the atom list
       do j = 1, size(atomslist)
@@ -2105,19 +2047,16 @@ contains
 
         do k = start, size(splitbuffer)
           atom = atom_shelx_t(splitbuffer(k))
-          do l = 1, atomslist_index
-            if (atom%resi%is_set()) then
-              if (atomslist(l) == atom) then
-                buffertemp = trim(buffertemp)//' '//atomslist(l)%crystals_label()
-                exit
-              end if
-            else
-              if (atomslist(l)%label == atom%label) then
-                buffertemp = trim(buffertemp)//' '//atomslist(l)%crystals_label()
-                exit
-              end if
-            end if
-          end do
+
+          if (atom%crystals_label() == '') then
+            write (*, '(a)') atom%text
+            write (*, '(a)') splitbuffer(k)
+            write (*, '(a)') 'Error: check your res file. I cannot find the atom'
+            call abort()
+          end if
+
+          buffertemp = trim(buffertemp)//' '//atom%crystals_label()
+
           if (len_trim(buffertemp) > 72) then
             write (crystals_fileunit, '(a)') trim(buffertemp)
             write (log_unit, '(a)') trim(buffertemp)
@@ -2363,7 +2302,7 @@ contains
     integer i, j, k, l
     character(len=:), allocatable :: stripline, errormsg
     real esd12, esd13
-    integer, dimension(:), allocatable :: serials
+    character(len=128), dimension(:), allocatable :: serials
     character(len=lenlabel), dimension(:), allocatable :: splitbuffer
     integer start, iostatus, serial
     type(atom_shelx_t) :: atom_shelx
@@ -2417,63 +2356,33 @@ contains
           write (log_unit, '("Line ", I0, ": ", a)') rigu_table(i)%line_number, trim(rigu_table(i)%shelxline)
           write (*, '(a)') 'Warning: Empty RIGU. Not implemented'
           write (*, '("Line ", I0, ": ", a)') rigu_table(i)%line_number, trim(rigu_table(i)%shelxline)
+          cycle rigu_loop
         end if
 
         write (log_unit, '(a)') trim(rigu_table(i)%shelxline)
         write (crystals_fileunit, '(a, a)') '# ', trim(rigu_table(i)%shelxline)
 
+        if (allocated(serials)) deallocate (serials)
         allocate (serials(size(splitbuffer)-start+1))
+        serials = ''
         do k = start, size(splitbuffer)
           atom_shelx = atom_shelx_t(splitbuffer(k))
 
-          if (atom_shelx%previous) then
-            ! previous residue
-            write (log_unit, '(a)') 'Warning: Residue - in atom with RIGU'
-            write (log_unit, '(a)') '         Not implemented'
-            cycle rigu_loop
-          else if (atom_shelx%after) then
-            ! next residue
-            write (log_unit, '(a)') 'Warning: Residue + in atom with RIGU'
-            write (log_unit, '(a)') '         Not implemented'
-            cycle rigu_loop
-          end if
-
-          serial = 0
-          do l = 1, atomslist_index
-            if (atom_shelx%resi%is_set()) then
-              if (atom_shelx == atomslist(l)) then
-                serial = l
-                exit
-              end if
-            else
-              if (atom_shelx%label == atomslist(l)%label) then
-                serial = l
-                exit
-              end if
-            end if
-          end do
-
-          if (serial == 0) then
+          if (atom_shelx%crystals_label() == '') then
             write (*, '(a)') trim(rigu_table(i)%shelxline)
             write (*, '(a)') trim(broadcast(j))
             write (*, '(a)') splitbuffer(k)
-            write (*, '(I0)') serial
             write (*, '(a)') 'Error: check your res file. I cannot find the atom'
             call abort()
           end if
 
-          if (atomslist(serial)%crystals_serial == -1) then
-            write (*, '(a)') 'Error: Crystals serial not defined'
-            call abort()
-          end if
-          serials(k-start+1) = serial
+          serials(k-start+1) = atom_shelx%crystals_label()
         end do
 
         ! good to go
         write (buffertemp, '(a, F7.5, 1X, F7.5)') 'XRIGU ', rigu_table(i)%esd12, rigu_table(i)%esd13
         do l = 1, size(serials)
-          if (serials(l) == 0) cycle
-          buffertemp = trim(buffertemp)//' '//atomslist(serials(l))%crystals_label()
+          buffertemp = trim(buffertemp)//' '//serials(l)
           if (len_trim(buffertemp) > 72) then
             write (crystals_fileunit, '(a)') trim(buffertemp)
             write (log_unit, '(a)') trim(buffertemp)

@@ -1,0 +1,70 @@
+Warning: `TEMP` Not supported 
+Line 10: TEMP -173
+Warning: `RTAB` Not supported 
+Line 19: RTAB_0 Phi C1 C7 O1 C
+Warning: `RTAB` Not supported 
+Line 20: RTAB_0 Psi C7 O1 C N_1
+Warning: `RTAB` Not supported 
+Line 21: RTAB_0 Ome O1 C N_+ CA_+
+Warning: `RTAB` Not supported 
+Line 22: RTAB_0 Phi C N_1 CA_+ C_+
+Warning: `RTAB` Not supported 
+Line 23: RTAB_* Phi C_- N CA C
+Warning: `RTAB` Not supported 
+Line 24: RTAB_* Psi N CA C N_+
+Warning: `RTAB` Not supported 
+Line 25: RTAB_* Ome CA_+ N_+ C CA
+Warning: `RTAB` Not supported 
+Line 28: RTAB_1 hb1 N_1 H_1
+Warning: `RTAB` Not supported 
+Line 29: RTAB_1 hb1 H_1 O_$1
+Warning: `RTAB` Not supported 
+Line 30: RTAB_1 hb1 N_1 O_$1
+Warning: `RTAB` Not supported 
+Line 31: RTAB_1 hb1 N_1 H_1 O_$1
+Warning: `RTAB` Not supported 
+Line 32: RTAB_1 hb1 H_1 O_$1 C_$1
+Warning: `RTAB` Not supported 
+Line 33: RTAB_1 hb1 N_1 O_$1 C_$1
+Warning: `RTAB` Not supported 
+Line 36: RTAB_1 hb2 N_2 H_2
+Warning: `RTAB` Not supported 
+Line 37: RTAB_1 hb2 H_2 O_$2
+Warning: `RTAB` Not supported 
+Line 38: RTAB_1 hb2 N_2 O_$2
+Warning: `RTAB` Not supported 
+Line 39: RTAB_1 hb2 N_2 H_2 O_$2
+Warning: `RTAB` Not supported 
+Line 40: RTAB_1 hb2 H_2 O_$2 C_$2
+Warning: `RTAB` Not supported 
+Line 41: RTAB_1 hb2 N_2 O_$2 C_$2
+Warning: `RTAB` Not supported 
+Line 43: RTAB hb3 OH_2 HH_2
+Warning: `RTAB` Not supported 
+Line 44: RTAB hb3 HH_2 O_$3
+Warning: `RTAB` Not supported 
+Line 45: RTAB hb3 OH_2 O_$3
+Warning: `RTAB` Not supported 
+Line 46: RTAB hb3 OH_2 HH_2 O_$3
+Warning: `RTAB` Not supported 
+Line 47: RTAB hb3 HH_2 O_$3 C_$3
+Warning: `RTAB` Not supported 
+Line 48: RTAB hb3 OH_2 O_$3 C_$3
+
+Processing shelxl labels into crystals serials
+Table of converted serial numbers
+ |    Shelx Crystals |    Shelx Crystals |    Shelx Crystals |    Shelx Crystals
+ |     C1_0      111 |     C2_0      121 |     H2_0      121 |     C3_0      131
+ |     H3_0      131 |     C4_0       41 |     H4_0       41 |     C5_0       51
+ |     H5_0       51 |     C6_0       61 |     H6_0       61 |     C7_0       71
+ |    H71_0      711 |    H72_0      721 |     O1_0      111 |      C_0       31
+ |      O_0       21 |      N_1       11 |      H_1       31 |     CA_1       21
+ |     H1_1       11 |     H2_1       21 |      C_1       11 |      O_1       11
+ |      N_2       12 |      H_2       42 |     CA_2       42 |     CB_2       32
+ |    HB1_2      212 |    HB2_2      122 |    HB3_2      132 |     CG_2       22
+ |    HG1_2      112 |    HG2_2       22 |    HG3_2       32 |      C_2       12
+ |      O_2       22 |     OH_2       12 |     HH_2       12
+Done
+
+## Warning: Could not find the corresponding hkl file insfiles/ex2009_II.hkl
+##          You will have to import it manually
