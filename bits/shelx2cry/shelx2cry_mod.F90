@@ -509,8 +509,7 @@ contains
   subroutine write_list16()
     use crystal_data_m
     implicit none
-    integer i, j, l, m, k
-    integer :: serial1
+    integer i, j, k
     character :: linecont
     type(atom_shelx_t) :: first, next
     character(len=lenlabel), dimension(:), allocatable :: splitbuffer
@@ -1680,7 +1679,7 @@ contains
     use crystal_data_m
     implicit none
     integer i, j, k
-    integer :: serial1, serial2, start
+    integer :: start
     type(atom_shelx_t) :: atom1, atom2
     character(len=:), allocatable :: errormsg
     character(len=lenlabel), dimension(:), allocatable :: splitbuffer
@@ -1837,7 +1836,6 @@ contains
     implicit none
     character(len=1024) :: buffertemp
     integer i, j, k
-    integer :: serial
     character(len=:), allocatable :: stripline, errormsg
     real esd1, esd2
     character(len=lenlabel), dimension(:), allocatable :: splitbuffer
@@ -1903,7 +1901,9 @@ contains
           atom = atom_shelx_t(splitbuffer(k))
 
           if (atom%crystals_label() == '') then
-            write (*, '(a)') atom%text
+            write (*, '("Line ", I0, ": ", a)') isor_table(i)%line_number, trim(isor_table(i)%shelxline)
+            write (*, '(a)') stripline
+            write (*, '(a)') splitbuffer(k), atom%text
             write (*, '(a)') 'Error: check your res file. I cannot find the atom'
             call abort()
           end if
@@ -1926,7 +1926,7 @@ contains
 !> Write same restraints to list16 section
   subroutine write_list16_same()
     use crystal_data_m, only: lenlabel, same_table, same_table_index, atomslist
-    use crystal_data_m, only: atomslist_index, crystals_fileunit, log_unit, sfac
+    use crystal_data_m, only: crystals_fileunit, log_unit, sfac, atomslist_index
     use crystal_data_m, only: explicit_atoms, deduplicates
     use crystal_data_m, only: to_upper, explode, summary
     use crystal_data_m, only: resi_t, atom_shelx_t, resilist_from_class
@@ -2015,15 +2015,28 @@ contains
       allocate (same_table(i)%list_to(size(splitbuffer)-start+1))
       same_table(i)%list_to = 0
       ! find the starting point in the atom list
-      do j = 1, size(atomslist)
+      l = 0
+      do j = 1, atomslist_index
         if (atomslist(j)%line_number > same_table(i)%line_number) then
           ! This is the atom declaration just after the same instruction in the ins file
           l = j
           exit
         end if
       end do
+
       j = 0
       do
+        if (atomslist(l)%sfac == 0) then
+          write (log_unit, *) 'Error: Invalid atom type ', atomslist(l)%line_number, ': ', &
+          & trim(atomslist(l)%shelxline), ' ', atomslist(l)%sfac
+          write (log_unit, '("Line ", I0, ": ", a)') same_table(i)%line_number, trim(same_table(i)%shelxline)
+          write (*, *) 'Error: Invalid atom type ', atomslist(l)%line_number, ': ', &
+          & trim(atomslist(l)%shelxline), ' ', atomslist(l)%sfac
+          write (*, '("Line ", I0, ": ", a)') same_table(i)%line_number, trim(same_table(i)%shelxline)
+          summary%error_no = summary%error_no+1
+          cycle same_loop
+        end if
+
         if (trim(sfac(atomslist(l)%sfac)) /= 'H' .and. &
         &   trim(sfac(atomslist(l)%sfac)) /= 'D') then
           j = j+1
@@ -2033,6 +2046,14 @@ contains
           end if
         end if
         l = l+1
+        if (l > atomslist_index) then
+          write (log_unit, *) 'Error: Invalid SAME restraint. No more atom to add '
+          write (log_unit, '("Line ", I0, ": ", a)') same_table(i)%line_number, trim(same_table(i)%shelxline)
+          write (*, *) 'Error: Invalid SAME restraint. No more atom to add '
+          write (*, '("Line ", I0, ": ", a)') same_table(i)%line_number, trim(same_table(i)%shelxline)
+          summary%error_no = summary%error_no+1
+          cycle same_loop
+        end if
       end do
 
       write (crystals_fileunit, '(a, a)') '# ', trim(same_table(i)%shelxline)
@@ -2292,8 +2313,8 @@ contains
 
   !> Write RIGU restraints to crystals file
   subroutine write_list16_rigu()
-    use crystal_data_m, only: lenlabel, rigu_table, rigu_table_index, atomslist
-    use crystal_data_m, only: atomslist_index, crystals_fileunit, log_unit
+    use crystal_data_m, only: lenlabel, rigu_table, rigu_table_index
+    use crystal_data_m, only: crystals_fileunit, log_unit
     use crystal_data_m, only: explicit_atoms, deduplicates
     use crystal_data_m, only: to_upper, explode, summary
     use crystal_data_m, only: resi_t, atom_shelx_t, resilist_from_class
@@ -2304,7 +2325,7 @@ contains
     real esd12, esd13
     character(len=128), dimension(:), allocatable :: serials
     character(len=lenlabel), dimension(:), allocatable :: splitbuffer
-    integer start, iostatus, serial
+    integer start, iostatus
     type(atom_shelx_t) :: atom_shelx
     character(len=:), dimension(:), allocatable :: broadcast
 
@@ -2331,20 +2352,31 @@ contains
 
         if (j == 1) then
           ! second element is the esd of 1,2 distances (optional)
-          read (splitbuffer(2), *, iostat=iostatus) esd12
-          if (iostatus /= 0) then
-            esd12 = 0.004
-            start = 2
-          else
-            start = 3
-          end if
+          if (size(splitbuffer) > 1) then
+            read (splitbuffer(2), *, iostat=iostatus) esd12
+            if (iostatus /= 0) then
+              esd12 = 0.004
+              start = 2
+            else
+              start = 3
+            end if
 
-          ! third element is the esd of 1,3 distances (optional)
-          read (splitbuffer(3), *, iostat=iostatus) esd13
-          if (iostatus /= 0) then
-            esd13 = 0.004
+            ! third element is the esd of 1,3 distances (optional)
+            if (size(splitbuffer) > 2) then
+              read (splitbuffer(3), *, iostat=iostatus) esd13
+              if (iostatus /= 0) then
+                esd13 = 0.004
+              else
+                start = start+1
+              end if
+            else
+              esd13 = 0.004
+              start = 3
+            end if
           else
-            start = start+1
+            esd12 = 0.004
+            esd13 = 0.004
+            start = 2
           end if
 
           rigu_table(i)%esd12 = esd12

@@ -418,6 +418,7 @@ contains
 
       ! extracting list of atoms, first removing duplicates spaces and keyword
       call deduplicates(bufferline)
+      cont = max(index(bufferline, '<'), index(bufferline, '>'))
       call explode(bufferline, lenlabel, splitbuffer)
 
       keyword = atom_shelx_t(splitbuffer(1))
@@ -485,7 +486,6 @@ contains
             if (collect) then
               if (trim(atomslist(k)%label) == trim(endlabel%label)) then
                 !found the first atom
-                !write(log_unit, *) isor_table(i)%shelxline
                 !write(*, *) 'Found end: ', trim(endlabel%label)
                 if (startlabel%resi%is_set()) then
                   if (atomslist(k)%resi == startlabel%resi) then
