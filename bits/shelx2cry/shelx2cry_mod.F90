@@ -1902,10 +1902,10 @@ contains
 
           if (atom%crystals_label() == '') then
             write (*, '("Line ", I0, ": ", a)') isor_table(i)%line_number, trim(isor_table(i)%shelxline)
-            write (*, '(a)') stripline
-            write (*, '(a)') splitbuffer(k), atom%text
-            write (*, '(a)') 'Error: check your res file. I cannot find the atom'
-            call abort()
+            write (*, '(a)') 'Error: check your res file. I cannot find the atom ', trim(splitbuffer(k))
+            write (log_unit, '("Line ", I0, ": ", a)') isor_table(i)%line_number, trim(isor_table(i)%shelxline)
+            write (log_unit, '(a)') 'Error: check your res file. I cannot find the atom ', trim(splitbuffer(k))
+            cycle
           end if
 
           ! good to go
