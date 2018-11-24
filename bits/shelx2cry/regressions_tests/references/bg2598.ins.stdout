@@ -1,0 +1,30 @@
+ Crystals output file: bg2598.ins.out
+ Processing res file insfiles/bg2598.ins
+ 
+ Reading of res file done
+ Processing Unit cell
+ Processing space group and symmetry
+ Processing experimental set up
+ Processing chemical composition
+ Processing scattering factors
+ Processing weighting scheme
+ Processing reflections filters
+ Processing atomic model
+ Processing constraints
+ Processing restraints
+ Error: Invalid SAME restraint. No more atom to add 
+Line 334: SAME 0.01 0.01 C123 > C126
+ 
+List of ignored shexl commands:
+    TEMP: 1 time(s)
+    SIZE: 1 time(s)
+    MPLA: 6 time(s)
+    SUMP: 1 time(s)
+    AFIX: 89 time(s)
+    SIMU: 1 time(s)
+    DELU: 1 time(s)
+ 
+## Warning: Could not find the corresponding hkl file insfiles/bg2598.hkl
+##          You will have to import it manually
+ 
+ All done.
