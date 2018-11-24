@@ -394,15 +394,33 @@ contains
     implicit none
     type(line_t), intent(in) :: shelxline
     real, dimension(7) :: esds
-    integer iostatus
+    integer iostatus, i
+    character(len=256) :: iomessage
+    character(len=:), allocatable :: stripline
+    character(len=lenlabel), dimension(:), allocatable :: splitbuffer
 
-    read (shelxline%line(5:), *, iostat=iostatus) esds
-    if (iostatus /= 0) then
-      write (*, *) 'Error: Syntax error'
+    call deduplicates(trim(shelxline%line), stripline)
+    call explode(stripline, lenlabel, splitbuffer)
+
+    if (size(splitbuffer) < 7) then
+      ! invalid shelxl command
+      write (*, *) 'Error: Syntax error. '
       write (*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
       summary%error_no = summary%error_no+1
       call abort()
     end if
+
+    do i = size(splitbuffer), size(splitbuffer)-5, -1 ! starting from the end in case Z is missing
+      read (splitbuffer(i), *, iostat=iostatus, iomsg=iomessage) esds(i-size(splitbuffer)+size(esds))
+      if (iostatus /= 0) then
+        write (*, *) 'Error while reading esd ', trim(splitbuffer(i))
+        write (*, *) trim(iomessage)
+        write (*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+        summary%error_no = summary%error_no+1
+        call abort()
+      end if
+    end do
+
     write (list31(1), '(a)') '\LIST 31'
     write (list31(2), '("MATRIX V(11)=",F0.5, ", V(22)=",F0.5, ", V(33)=",F0.5)') esds(2:4)
     write (list31(3), '("CONT V(44)=",F0.5, ", V(55)=",F0.5, ", V(66)=",F0.5)') esds(5:7)

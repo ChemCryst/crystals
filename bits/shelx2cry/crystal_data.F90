@@ -109,7 +109,7 @@ module crystal_data_m
   contains
     procedure, private :: atom_compare_to_shelx !< compare atom_shelx_t to atom_t
     generic :: operator(==) => atom_compare_to_shelx !< overload ==
-    procedure :: crystals_label !< return a crystals label TYPE(SERIAL,S,L,TX,TY,TZ)
+    procedure :: crystals_label => atom_crystals_label !< return a crystals label TYPE(SERIAL,S,L,TX,TY,TZ)
   end type
   type(atom_t), dimension(:), allocatable :: atomslist !< list of atoms in the res/ins file
   integer atomslist_index !< Current index in the list of atoms list (atomslist)
@@ -127,6 +127,7 @@ module crystal_data_m
     procedure :: init => init_atom_shelx !< initialise object
     procedure, private :: shelx_compare_to_atom !< compare atom_shelx_t to atom_t
     generic :: operator(==) => shelx_compare_to_atom !< overload ==
+    procedure :: crystals_label => shelx_atom_crystals_label !< return a crystals label TYPE(SERIAL,S,L,TX,TY,TZ)
   end type
   interface atom_shelx_t
     module procedure read_atom_shelx
@@ -386,7 +387,7 @@ contains
     end do
   end function
 
-!> explicit the use of '<' or '>' in the list of atoms
+!> explicit the use of '$', '<' or '>' in the list of atoms
   subroutine explicit_atoms(linein, lineout, errormsg)
     implicit none
     character(len=*), intent(in) :: linein
@@ -417,6 +418,7 @@ contains
 
       ! extracting list of atoms, first removing duplicates spaces and keyword
       call deduplicates(bufferline)
+      cont = max(index(bufferline, '<'), index(bufferline, '>'))
       call explode(bufferline, lenlabel, splitbuffer)
 
       keyword = atom_shelx_t(splitbuffer(1))
@@ -484,7 +486,6 @@ contains
             if (collect) then
               if (trim(atomslist(k)%label) == trim(endlabel%label)) then
                 !found the first atom
-                !write(log_unit, *) isor_table(i)%shelxline
                 !write(*, *) 'Found end: ', trim(endlabel%label)
                 if (startlabel%resi%is_set()) then
                   if (atomslist(k)%resi == startlabel%resi) then
@@ -714,7 +715,7 @@ contains
   end function
 
 !> Return a label in crystals format
-  function crystals_label(self, symmetry) result(label)
+  function atom_crystals_label(self, symmetry) result(label)
     implicit none
     class(atom_t) :: self !< atom to format
     integer, intent(in), optional :: symmetry !< symmetry operator (index in eqiv_list)
@@ -733,6 +734,44 @@ contains
     else
       write (buffer, '(a,"(",I0,")")') &
       &   trim(sfac(self%sfac)), self%crystals_serial
+    end if
+
+    allocate (character(len=len_trim(buffer)) :: label)
+    label = trim(buffer)
+
+  end function
+
+!> Return a label in crystals format
+  function shelx_atom_crystals_label(self) result(label)
+    implicit none
+    class(atom_shelx_t) :: self !< atom to format
+    character(len=:), allocatable :: label
+    character(len=128) :: buffer
+    integer l, cpt
+
+    buffer = ''
+
+    if (self%label(1:1) == '$') then
+      write (buffer, '(a,"(*)")') trim(self%label(2:))
+    else
+      cpt = 0
+      do l = 1, atomslist_index
+        if (self%resi%is_set()) then
+          if (atomslist(l) == self) then
+            cpt = cpt+1
+            buffer = atomslist(l)%crystals_label(self%symmetry)
+          end if
+        else
+          if (atomslist(l)%label == self%label) then
+            cpt = cpt+1
+            buffer = atomslist(l)%crystals_label(self%symmetry)
+          end if
+        end if
+      end do
+
+      if (cpt > 1) then
+        print *, 'Error: Too many atoms ', cpt
+      end if
     end if
 
     allocate (character(len=len_trim(buffer)) :: label)

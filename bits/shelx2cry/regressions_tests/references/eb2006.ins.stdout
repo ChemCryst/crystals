@@ -1,0 +1,22 @@
+ Crystals output file: eb2006.ins.out
+ Processing res file insfiles/eb2006.ins
+ 
+ Reading of res file done
+ Processing Unit cell
+ Processing space group and symmetry
+ Processing experimental set up
+ Processing chemical composition
+ Processing scattering factors
+ Processing weighting scheme
+ Processing reflections filters
+ Processing atomic model
+ Processing constraints
+ Processing restraints
+ 
+List of ignored shexl commands:
+    AFIX: 46 time(s)
+ 
+## Warning: Could not find the corresponding hkl file insfiles/eb2006.hkl
+##          You will have to import it manually
+ 
+ All done.

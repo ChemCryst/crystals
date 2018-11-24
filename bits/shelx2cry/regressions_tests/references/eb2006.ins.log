@@ -1,0 +1,185 @@
+Warning: `AFIX` Not supported 
+Line 31: AFIX  43
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 32: H5    2    0.771505    0.796503    0.518730    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 33: AFIX   0
+Warning: `AFIX` Not supported 
+Line 36: AFIX  43
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 37: H6    2    0.828359    0.915019    0.405361    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 38: AFIX   0
+Warning: `AFIX` Not supported 
+Line 41: AFIX  43
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 42: H7    2    0.895764    0.814448    0.264514    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 43: AFIX   0
+Warning: `AFIX` Not supported 
+Line 46: AFIX  43
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 47: H8    2    0.899186    0.591177    0.235345    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 48: AFIX   0
+Warning: `AFIX` Not supported 
+Line 51: AFIX  43
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 52: H9    2    0.838837    0.469768    0.347161    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 53: AFIX   0
+Warning: `AFIX` Not supported 
+Line 58: AFIX  43
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 59: H11   2    0.499538    0.375216    0.392399    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 60: AFIX   0
+Warning: `AFIX` Not supported 
+Line 63: AFIX  43
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 64: H12   2    0.365441    0.125914    0.328229    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 65: AFIX   0
+Warning: `AFIX` Not supported 
+Line 68: AFIX  43
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 69: H13   2    0.473544   -0.015856    0.374040    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 70: AFIX   0
+Warning: `AFIX` Not supported 
+Line 73: AFIX  43
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 74: H14   2    0.715715    0.091410    0.484866    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 75: AFIX   0
+Warning: `AFIX` Not supported 
+Line 78: AFIX  43
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 79: H15   2    0.847623    0.339856    0.552705    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 80: AFIX   0
+Warning: `AFIX` Not supported 
+Line 85: AFIX  43
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 86: H17   2    0.560626    0.418078    0.641843    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 87: AFIX   0
+Warning: `AFIX` Not supported 
+Line 90: AFIX  43
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 91: H18   2    0.513669    0.322591    0.766637    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 92: AFIX   0
+Warning: `AFIX` Not supported 
+Line 97: AFIX  43
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 98: H20   2    0.976303    0.568322    0.904152    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 99: AFIX   0
+Warning: `AFIX` Not supported 
+Line 102: AFIX  43
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 103: H21   2    1.022484    0.668288    0.781300    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 104: AFIX   0
+Warning: `AFIX` Not supported 
+Line 109: AFIX  43
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 110: H23   2    0.633679    0.508979    1.005200    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 111: AFIX   0
+Warning: `AFIX` Not supported 
+Line 114: AFIX  43
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 115: H24   2    0.581544    0.414209    1.129615    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 116: AFIX   0
+Warning: `AFIX` Not supported 
+Line 121: AFIX  43
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 122: H26   2    0.580408    0.231762    1.209379    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 123: AFIX   0
+Warning: `AFIX` Not supported 
+Line 126: AFIX  43
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 127: H27   2    0.629569    0.041163    1.210997    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 128: AFIX   0
+Warning: `AFIX` Not supported 
+Line 133: AFIX  43
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 134: H29   2    0.720023   -0.146994    1.132433    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 135: AFIX   0
+Warning: `AFIX` Not supported 
+Line 138: AFIX  43
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 139: H30   2    0.812385   -0.251575    1.006095    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 140: AFIX   0
+Warning: `AFIX` Not supported 
+Line 143: AFIX  43
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 144: H31   2    0.858863   -0.160725    0.878988    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 145: AFIX   0
+Warning: `AFIX` Not supported 
+Line 150: AFIX  43
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 151: H33   2    0.871636    0.027271    0.803171    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 152: AFIX   0
+Warning: `AFIX` Not supported 
+Line 155: AFIX  43
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 156: H34   2    0.824187    0.219295    0.801112    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 157: AFIX   0
+
+Processing shelxl labels into crystals serials
+Table of converted serial numbers
+ |    Shelx Crystals |    Shelx Crystals |    Shelx Crystals |    Shelx Crystals
+ |     N1_0        1 |     C1_0        1 |     C2_0        2 |     C3_0        3
+ |     C4_0        4 |     C5_0        5 |     H5_0        5 |     C6_0        6
+ |     H6_0        6 |     C7_0        7 |     H7_0        7 |     C8_0        8
+ |     H8_0        8 |     C9_0        9 |     H9_0        9 |    C10_0       10
+ |    C11_0       11 |    H11_0       11 |    C12_0       12 |    H12_0       12
+ |    C13_0       13 |    H13_0       13 |    C14_0       14 |    H14_0       14
+ |    C15_0       15 |    H15_0       15 |    C16_0       16 |    C17_0       17
+ |    H17_0       17 |    C18_0       18 |    H18_0       18 |    C19_0       19
+ |    C20_0       20 |    H20_0       20 |    C21_0       21 |    H21_0       21
+ |    C22_0       22 |    C23_0       23 |    H23_0       23 |    C24_0       24
+ |    H24_0       24 |    C25_0       25 |    C26_0       26 |    H26_0       26
+ |    C27_0       27 |    H27_0       27 |    C28_0       28 |    C29_0       29
+ |    H29_0       29 |    C30_0       30 |    H30_0       30 |    C31_0       31
+ |    H31_0       31 |    C32_0       32 |    C33_0       33 |    H33_0       33
+ |    C34_0       34 |    H34_0       34 |    C35_0       35 |    C36_0       36
+ |    C37_0       37
+Done
+
+## Warning: Could not find the corresponding hkl file insfiles/eb2006.hkl
+##          You will have to import it manually
