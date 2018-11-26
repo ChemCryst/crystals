@@ -35,7 +35,7 @@ Using user-specified editor.
 ^^WI DEFINEMENU MAIN 'NULL'
 ^^WI  MENU _FILE    '&File'
 ^^WI   ITEM SAVE    '&Save	Ctrl+S' 'BSS' 
-^^WI   ITEM EXIT    'Save and E&xit	Ctrl+X'  'BOK'
+^^WI   ITEM EXIT    'Save and E&xit'  'BOK'
 ^^WI   ITEM REVERT  '&Reload original file	Ctrl+R'  'BRR'
 ^^WI   ITEM CLOSE   '&Close	ALT+F4'  'BXX'
 ^^WI  ENDMENU

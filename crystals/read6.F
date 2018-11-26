@@ -368,6 +368,9 @@ C--
 c123      CHARACTER*80 CFORM
       CHARACTER*256 CFORM    ! for compatibility with long cards
       CHARACTER*132 CBTEST
+      CHARACTER*256 CRLINE(8)   ! for reading reflections from input stream (up to 8 lines max)
+      CHARACTER*28  CAFORM      ! for reading reflections as text lines  e.g. (A/A/A) for 3 lines.
+      INTEGER FCOUNT, FSPOS, ISPOS
       INCLUDE 'ISTORE.INC'
       INCLUDE 'ICOM06.INC'
       INCLUDE 'ICOM6A.INC'
@@ -473,6 +476,7 @@ C--BLANK OUT THE FORMAT ARRAY
       INCLUDE 'IDIM6A.INC'
 C--SET THE INITIAL FORMAT CONTROL FLAG
       LFORM=1
+      fcount = 1       ! default - one line
 C--SET UP AN AREA TO HOLD DETAILS OF THE DIRECTIVES FOUND ON INPUT
       LN=IULN
       IREC=1001
@@ -1009,6 +1013,20 @@ CNOV2000 CHECK THAT THE FORMAT IS ALL-FLOATING
          CALL XPRVDU (NCVDU,1,0)
          GO TO 5200
       END IF
+C count number of lines in FORMAT statement
+      fcount = 1       ! default - one line
+      fspos = 0
+      caform = '(A'
+      do while (.true.)
+         ispos = index(cform(fspos+1:), '/')
+         if ( ispos .le. 0 ) exit
+         fspos = fspos + ispos
+         fcount = fcount + 1
+         caform = trim(caform) // '/A'
+      end do
+      caform = trim(caform) // ')'
+c      write(ncwu,*) 'Format count and string are: ', fcount, ' ',
+c     1  trim(caform),' ', trim(cform)
 c
 c 
 c
@@ -1020,7 +1038,16 @@ C
 cdjw2003
 c----- if a list 7 read no reflections
 C      if (iuln .ne. 7) then
-      READ (IUNIT,CFORM,END=3200,ERR=3100) (STORE(I),I=L6IB,M6IB)
+      if ( iunit .ne. ncaru ) then !read from control stream. Log it.
+         DO J = 1, FCOUNT
+            read (IUNIT,'(A)',END=3200, ERR=3100) CRLINE(J)   
+            IF ( IRDLOG(IFLIND).EQ.1) WRITE(NCLU,'(A)')TRIM(CRLINE(J))
+         END DO
+         READ (CRLINE,CFORM,END=3200,ERR=3100) (STORE(I),I=L6IB,M6IB)
+c         write (ncwu,*) 'hkl: ',(STORE(I),I=L6IB, M6IB)
+      else
+         READ (IUNIT,CFORM,END=3200,ERR=3100) (STORE(I),I=L6IB,M6IB)
+      end if
       NCARDS=NCARDS+INCREM
 C--CHECK FOR BLANK ENTRY
       DO 3000 I=L6IB,M6IB

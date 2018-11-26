@@ -347,6 +347,7 @@ C      IRDCPY(I)   COPY FLAG
 C                    0      NO COPY. LINES READ ARE INSTRUCTIONS
 C                    1      MIRROR INPUT DIRECTLY TO OUTPUT.
 C      IRDLOG(I)   LOG FLAG
+C                   -1      LOG ONLY COMMENTS AND IMMEDIATE SYSTEM COMMANDS (open, release, etc)
 C                    O      NO LOGGING
 C                    1      INPUT WRITTEN TO LOG FILE
 C
@@ -591,7 +592,12 @@ c        if ((issprt .eq. 0) .and. (cmon(1)(2:4) .eq. 'SCR')) then
 cdjwjun07
         IHFLAG = 0
         NC = 2
-        IF ( IMAGE(2) .EQ. IB ) GO TO 1000
+        IF ( IMAGE(2) .EQ. IB ) THEN    ! Comment - let's log it for more logfile context.
+           IF ( ABS(IRDLOG(IFLIND)) .EQ. 1 ) THEN
+              WRITE ( NCLU , 1450 ) TRIM(CRDLWC(1:IFIN))
+           ENDIF
+           GO TO 1000
+        END IF
         ISTAT = KRDSYS ( IN )
         IF ( ISTAT .GT. 0 ) GO TO 1000
         KRDREC = 1
@@ -604,7 +610,7 @@ cdjwjun07
         KRDREC = 0
 C -- IF LOGGING WRITE LINE BACK TO LOG CHANNEL
       IF ( IRDLOG(IFLIND) .EQ. 1 ) THEN
-        WRITE ( NCLU , 1450 ) CRDLWC(1:IFIN)
+        WRITE ( NCLU , 1450 ) TRIM(CRDLWC(1:IFIN))
 1450    FORMAT ( A )
       ENDIF
 C
@@ -926,7 +932,7 @@ C
       DATA ITYPE  / 9 / , IREMOV / 10 / , ISTRE  / 11 / , ISTART / 12 /
       DATA ISCRIP / 13 /, ICOMND / 14 / , ICLOSE / 15 / , ISPAWN / 16 /
       DATA IDOLLA / 17 /, IAPEND / 18 / , IBENCH / 19 / , IDEFIN / 20 /
-      DATA IFLUSH / 21 /
+      DATA IFLUSH / 21 /, IIMPOR / 22 /
 C
       DATA NUSE / 2 / , LUSE / 4 /
 C
@@ -961,7 +967,7 @@ C
       IF ( ISYSIN .LE. 0 ) THEN
 C --  IF LOGGING WRITE LINE BACK TO LOG CHANNEL
         IF ( IRDLOG(IFLIND) .EQ. 1 ) THEN
-         WRITE ( NCLU , 500 ) CRDLWC(1:80)
+         WRITE ( NCLU , 500 ) TRIM(CRDLWC(1:80))
 500      FORMAT ( A )
 501      FORMAT ('# ',A)
         ENDIF
@@ -979,18 +985,18 @@ C      PAUS(E)     HELP        SET         ATTACH      OPEN
 C      RELE(ASE)   USE         MANUAL      TYPE        REMO(VE)
 C      STOR(E)     STAR(T)     SCRI(PT)    COMM(ANDS)  CLOS(E)
 C      SPAW(N)     $           APPE(ND)    BENCH       DEFI(NE)
-C      FLUS(H)
+C      FLUS(H)     IMPO(RT)
 C
 C --  IF LOGGING WRITE LINE BACK TO LOG CHANNEL
-      IF ( IRDLOG(IFLIND) .EQ. 1 ) THEN
+      IF ( ABS(IRDLOG(IFLIND)) .EQ. 1 ) THEN
 C-----   DO NOT LOG SCRIPT INSTRUCTIONS
 CRIC0101 DO NOT LOG USE,$,or SPAWN INSTRUCTIONS EITHER.
          IF (( ISYSIN .NE. ISCRIP) .AND. ( ISYSIN .NE. IUSE )
      1   .AND.(ISYSIN .NE. IDOLLA) .AND. ( ISYSIN .NE. ISPAWN) ) THEN
-          WRITE ( NCLU , 500 ) CRDLWC(1:80)
+          WRITE ( NCLU , 500 ) TRIM(CRDLWC(1:80))
          ELSE
 c          WRITE ( NCLU , 501 ) CRDLWC(1:80)
-          WRITE ( NCLU , 501 ) CRDLWC
+          WRITE ( NCLU , 501 ) TRIM(CRDLWC)
          ENDIF
       END IF
 C
@@ -1000,7 +1006,7 @@ CDJWMAR99
      2        1600 , 1700 , 1200 , 1200 , 2000 ,
      3        2100 , 2200 , 2300 , 2400 , 2500 , 
      4        2600 , 2600 , 1550 , 3000 , 3200 , 
-     5        3300 , 9920 ) , ISYSIN
+     5        3300 , 1701 , 9920 ) , ISYSIN
       GO TO 9920
 C
 C
@@ -1086,7 +1092,9 @@ C
 C
 1700  CONTINUE
 C
-C -- 'USE'
+C -- 'USE' - reads file of commands and echoes to the log file.
+C -- the #use instruction itself is omitted from the log to ensure
+C -- equivalent log playback
 C
 C -- IDENTIFY NEXT ARGUMENT. DETERMINE LENGTH. CHECK ONLY ONE ARGUMENT.
       IREQUI = 1
@@ -1096,6 +1104,32 @@ C
 C
       ICOPY = 0
       INLOG = IRDLOG(IFLIND)
+      INCAT = ICAT
+      IOPER = KCOMP ( LUSE , IMAGE(NC) , KEYUSE(1) , NUSE , LUSE )
+      ICLMSG = IRDCMS(IFLIND)
+      ISCR   = 0
+C
+      IF ( IOPER .GT. 0 ) THEN
+        CALL XMONTR ( -1 )
+      ENDIF
+C
+      GO TO 3100
+
+1701  CONTINUE
+C
+C -- 'IMPORT' - like #USE, but reads a file of commands and does not echo them
+C -- to the log file. the #import instruction is logged. Use this command when
+C -- you can be certain a file will be recreated by earlier events in the log.
+C -- e.g. a script punches a list to a file and then reads it back in.
+C
+C -- IDENTIFY NEXT ARGUMENT. DETERMINE LENGTH. CHECK ONLY ONE ARGUMENT.
+      IREQUI = 1
+      LENGTH = KRDARG ( IREQUI , 1 )
+      IF ( LENGTH .LE. 0 ) GO TO 9980
+C
+C
+      ICOPY = 0
+      INLOG = 0     ! Turns off logging for the #import-ed file.
       INCAT = ICAT
       IOPER = KCOMP ( LUSE , IMAGE(NC) , KEYUSE(1) , NUSE , LUSE )
       ICLMSG = IRDCMS(IFLIND)
@@ -1209,7 +1243,7 @@ C            close back to top level if a SCRIPT does not exist
         ENDIF
       ELSE IF ( ( IOPER .EQ. 1 ) .OR. ( IOPER .EQ. 2 ) ) THEN
 C -- 'USE LAST' OR 'USE CONTROL'
-      CALL XFLUNW ( IOPER , 3 )
+        CALL XFLUNW ( IOPER , 3 )
       ENDIF
 C
       GO TO 9000

@@ -12,10 +12,11 @@
  Processing atomic model
  Processing constraints
  Processing restraints
+Warning: Empty RIGU. Not implemented
+Line 20: RIGU 0.002 0.002
  
 List of ignored shexl commands:
     TEMP: 1 time(s)
-    RIGU: 1 time(s)
     SIZE: 1 time(s)
     SUMP: 8 time(s)
     BIND: 7 time(s)
