@@ -10,7 +10,7 @@
 % END IF                                                                        
 %%
 % VARIABLE LOGICAL MOO2
-% EVALUATE MOO2 = FILEEXISTS 'moo2.dat'
+% EVALUATE MOO2 = FILEEXISTS 'data\moo2.dat'
 %     if .not. MOO2 then
 {E
 {E The file MOO2.DAT does not exist    
@@ -96,7 +96,7 @@
 ^^PL NSERIES=1 LENGTH=20                                                       
 ^^PL SERIES 1 SERIESNAME 'MoO'                                     
 %     CLEAR
-%     COPY '#OPEN SCPDATA moo2.dat' 
+%     COPY '#OPEN SCPDATA data/moo2.dat' 
 %% skip one line
 %      EXTRACT NEXT                                                             
 %     LOOP
@@ -133,7 +133,7 @@
 ^^PL NSERIES=1 LENGTH=20                                                       
 ^^PL SERIES 1 SERIESNAME 'MoO'                                     
 %     CLEAR
-%     COPY '#OPEN SCPDATA moo2.dat' 
+%     COPY '#OPEN SCPDATA data/moo2.dat' 
 %% skip one line
 %      EXTRACT NEXT                                                             
 %     LOOP

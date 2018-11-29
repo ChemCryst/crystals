@@ -1,6 +1,6 @@
 %SCRIPT XVARIANCE2                                                                 
 %%   
-%% Process the newer sigmas2.dat fle (with extra info)
+%% Process the newer data/sigmas2.dat fle (with extra info)
 %%
 % VARIABLE LOGICAL XWVSRUNNING XVARRUNNING 
 % VARIABLE LOGICAL ABORT
@@ -16,11 +16,11 @@
 % EVALUATE SIG2 = FILEEXISTS 'sigmas2.dat'                                   
 % IF .NOT. SIG2 THEN
 {E
-{E The file SIGMAS2.DAT does not exist    
+{E The file data/SIGMAS2.DAT does not exist    
 {E
 %        copy '#script xhelp1'
 
- The file SIGMAS2.DAT was created during input of reflections.
+ The file data/SIGMAS2.DAT was created during input of reflections.
  It no longer exists, or is in a different folder
  Re-input your reflection data.
 
@@ -132,11 +132,11 @@
 %%
 %%
 %%Variances
-^^CO SET PROGOUTPUT TEXT 'WAIT: Reading variances from sigmas2.dat - may be slow'  
+^^CO SET PROGOUTPUT TEXT 'WAIT: Reading from data/sigmas2.dat - may be slow'  
 %  VARIABLE REAL INTERNAL EXTERNAL SXX SXY GRADIENT  NREFMES
 %  VARIABLE INTEGER NITEMS
 %    BLOCK
-^^CO SET PROGOUTPUT TEXT 'WAIT: Reading variances from sigmas2.dat - may be slow'             
+^^CO SET PROGOUTPUT TEXT 'WAIT: Reading from data/sigmas2.dat - may be slow'             
 ^^PL PLOTDATA _CLASS SCATTER ATTACH _VSIGMA    KEY                              
 ^^PL XAXIS TITLE 'External (Mean standard uncertianty)'                                           
 ^^PL NSERIES=2 LENGTH=40 

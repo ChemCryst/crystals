@@ -5,9 +5,10 @@
 % VARIABLE REAL NEWRHO NEWRAT THFULL MRGR NMBR                                      
 % VARIABLE REAL VOLPRATM NNONHATM CELLVOL SGMULT NALLOWREF ESTNPARA ESTOTP      
 % VARIABLE INTEGER ABSPRINT ABSTOTAL                                            
-% EVALUATE MERGER = FILEEXISTS 'mergingr.dat'                                   
-% EVALUATE ABSENT = FILEEXISTS 'absences.dat' .OR. FILEEXISTS 'absences2.dat'
-% EVALUATE HIST = FILEEXISTS 'histogram.dat'                                   
+% EVALUATE MERGER = FILEEXISTS 'data/mergingr.dat'                                   
+% EVALUATE ABSENT = FILEEXISTS 'absences.dat' -
+               .OR. FILEEXISTS 'data/absences2.dat'
+% EVALUATE HIST = FILEEXISTS 'data/histogram.dat'                                   
 % EVALUATE LMAONCE = TRUE                                                       
 % EVALUATE WILFIL = FALSE                                                       
 % VARIABLE INTEGER NSIGMAS
@@ -16,7 +17,7 @@
 % VARIABLE INTEGER ABSPRINT ABSTOTAL
 % VARIABLE LOGICAL ABSFILE2
 % EVALUATE ABSFILE2 = FALSE
-% IF ( FILEEXISTS ( 'absences2.dat' ) ) THEN
+% IF ( FILEEXISTS ( 'data/absences2.dat' ) ) THEN
 %   EVALUATE ABSFILE2 = TRUE
 % ELSE  IF ( FILEEXISTS ( 'absences.dat' ) ) THEN
 %
@@ -255,7 +256,7 @@
 ^^WI     {                                                                      
 ^^WI      @ 1,3 GRID EXP2 NROWS=3 NCOLS=1                                       
 ^^WI      {                                                                     
-^^WI       @ 1,1 STATIC XFW1 'The file histogram.dat' 
+^^WI       @ 1,1 STATIC XFW1 'The file data/histogram.dat' 
 ^^WI       @ 2,1 STATIC XFW2 'is missing.'   
 ^^WI       @ 3,1 STATIC XFW3 ' '                       
 ^^WI      }                                                                     
@@ -450,12 +451,12 @@
 %  IF ( ABSENT .AND. LMAONCE ) THEN
 %    IF ABSFILE2 THEN 
 opening absences2
-%      COPY '#OPEN SCPDATA absences2.dat'                                          
+%      COPY '#OPEN SCPDATA data/absences2.dat'                                          
 %    ELSE
 opening absences
 %      COPY '#OPEN SCPDATA absences.dat'                                          
 %    END IF
-^^CO SET PROGOUTPUT TEXT 'Reading systematic absences from absences.dat'        
+^^CO SET PROGOUTPUT TEXT 'Reading systematic absences from absences.dat'   
 ^^WI WINDOW XABORT 'Absences' MODAL GRID MAIN NROWS=5 NCOLS=5                   
 ^^WI { @ 2,2 STATIC T1 'Reading absence data.'                                  
 ^^WI   @ 2,4 BUTTON RF_BAB '&Abort' INFORM=NO DEFAULT DISABLED=NO               
@@ -562,12 +563,12 @@ opening absences
 %%                                                                       
 %%                                                                       
 %%Histogram
-^^CO SET PROGOUTPUT TEXT 'Reading histogram from histogram.dat'             
+^^CO SET PROGOUTPUT TEXT 'Reading histogram from data/histogram.dat'             
 %    VARIABLE INTEGER NREF MREF
 %    VARIABLE REAL REF
 %  IF ( HIST .AND. LMAONCE ) THEN  
 %    EVALUATE MREF = 10                                           
-%    COPY '#OPEN SCPDATA histogram.dat' 
+%    COPY '#OPEN SCPDATA data/histogram.dat' 
 %%    FIND NUMBER OF REFLECTIONS 
 %    EXTRACT REWIND
 %%   Skip first line:                                                      
@@ -597,7 +598,7 @@ opening absences
 %    END LOOP
 %    COPY '#CLOSE SCPDATA'                                                      
 %%                                         
-%    COPY '#OPEN SCPDATA histogram.dat' 
+%    COPY '#OPEN SCPDATA data/histogram.dat' 
 %    EXTRACT REWIND                                                             
 %    EXTRACT NEXT                                                               
 %%                                                                              
@@ -638,7 +639,7 @@ opening absences
 ^^CR                                                                            
 %    COPY '#CLOSE SCPDATA'                                                      
 %% Next pass for F/sigma
-%    COPY '#OPEN SCPDATA histogram.dat'                                          
+%    COPY '#OPEN SCPDATA data/histogram.dat'                                          
 %    EXTRACT REWIND                                                             
 %% Skip first line:                                                      
 %    EXTRACT NEXT                                                               
@@ -689,9 +690,9 @@ opening absences
 %%                                                                       
 %%                                                                       
 %%                                                                       
-^^CO SET PROGOUTPUT TEXT 'Reading merging-R data from mergingr.dat'             
+^^CO SET PROGOUTPUT TEXT 'Reading merging-R data from data/mergingr.dat'        
 %  IF ( MERGER .AND. LMAONCE ) THEN                                             
-%    COPY '#OPEN SCPDATA mergingr.dat'                                          
+%    COPY '#OPEN SCPDATA data/mergingr.dat'                                          
 %    EXTRACT REWIND                                                             
 %% Skip first three lines:                                                      
 %    EXTRACT NEXT                                                               

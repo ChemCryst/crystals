@@ -13,7 +13,7 @@
 %%       Skip first  line:                                                      
 %        EXTRACT NEXT
 %     ELSE IF SIG2 THEN
-%        COPY '#OPEN SCPDATA sigmas2.dat' 
+%        COPY '#OPEN SCPDATA data/sigmas2.dat' 
 %%       Skip first 2 lineS:                                                      
 %        EXTRACT NEXT
 %        CLEAR
