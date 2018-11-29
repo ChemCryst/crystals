@@ -48,7 +48,7 @@
 %        COPY 'NEXT'
 %  END LOOP
 %  COPY 'END'
-%  COPY '#RELEASE SCPQUEUE bfile.spq'
+%  COPY '#RELEASE SCPQUEUE logs/bfile.spq'
  {I Finished.
 %END SCRIPT
 

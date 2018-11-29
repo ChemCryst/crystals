@@ -105,7 +105,7 @@
 %      COPY '#PUNCH 6 H'                                                        
 %    END IF                                                                     
 %    COPY 'END'                                                                 
-%    COPY '#RELEASE FRN1 BFILE.FRN'                                             
+%    COPY '#RELEASE FRN1 logs/bfile.frn'                                             
  Reflections saved in {&noesds.fcf{&                                            
 %%                                                                              
                                                                                 

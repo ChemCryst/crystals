@@ -31,7 +31,7 @@
 %  GET NOSTORE SILENT TEXT 'Atom2?' ' '
 %  TRANSFER CVALUE TO PUNCH
 %  TRANSFER 'END' TO PUNCH
-%  TRANSFER '#RELEASE PUNCH bfile.pch' TO CRYSTALS
+%  TRANSFER '#RELEASE PUNCH logs/bfile.pch' TO CRYSTALS
 %%
 %% If IMODE = 2 store content of AtomsToWorkOn.dat, in case a previous selection should be used
 %%
@@ -54,7 +54,7 @@
 %    END LOOP
 %    COPY '#CLOSE SCPDATA'
 %    TRANSFER 'END' TO PUNCH
-%%   TRANSFER '#RELEASE PUNCH bfile.pch' TO CRYSTALS
+%%   TRANSFER '#RELEASE PUNCH logs/bfile.pch' TO CRYSTALS
 %  END IF
 %%
 %% Store the selected atoms in file
@@ -96,7 +96,7 @@
 %    END IF
 %  END IF
 %  TRANSFER 'END' TO PUNCH
-%  TRANSFER '#RELEASE PUNCH bfile.pch' TO CRYSTALS
+%  TRANSFER '#RELEASE PUNCH logs/bfile.pch' TO CRYSTALS
 %%
 %  IF ( FILEEXISTS ( 'PreviousSelection.dat' ) ) THEN
 %    EVALUATE T = FILEDELETE ( 'PreviousSelection.dat' )

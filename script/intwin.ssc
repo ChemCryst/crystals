@@ -60,7 +60,7 @@
 % COPY '#RELEASE PUNCH pretwin6.dat'
 % COPY '#PUNCH 6 C'
 % COPY 'END'
-% COPY '#RELEASE PUNCH bfile.pch'
+% COPY '#RELEASE PUNCH logs/bfile.pch'
 {S *  Converting the reflection list format
 % COPY '#LIST 6'
 % COPY 'READ TYPE=TWIN'

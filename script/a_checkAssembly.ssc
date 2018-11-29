@@ -156,7 +156,7 @@
 %    END LOOP
 %    COPY '#CLOSE SCPDATA'
 %    TRANSFER "END" TO PUNCH
-%    COPY '#RELEASE PUNCH bfile.pch'
+%    COPY '#RELEASE PUNCH logs/bfile.pch'
 %%
 %  ELSE
 %    TRANSFER "{E CRYSTALS will try to get the pairs using the offset " // CHARACTER ( OFFSET ) // "." TO DISPLAY
@@ -213,7 +213,7 @@
 %    END LOOP
 %    COPY '#CLOSE SCPDATA'
 %    TRANSFER "END" TO PUNCH
-%    COPY '#RELEASE PUNCH bfile.pch'
+%    COPY '#RELEASE PUNCH logs/bfile.pch'
 %%
 %  END IF
 %%

@@ -42,7 +42,7 @@
 %   COPY '#RELEASE PUNCH pretwin5.dat'
 %   COPY '#PUNCH 5'
 %   COPY 'END'
-%   COPY '#RELEASE PUNCH bfile.pch'
+%   COPY '#RELEASE PUNCH logs/bfile.pch'
 %   COPY '#OPEN SCPDATA pretwin5.dat'
 %   COPY '#RELEASE SCPQUEUE postwin5.dat'
 %   QUEUE REWIND
@@ -62,7 +62,7 @@
 %  END BLOCK
 {R Completed alteration to List5. Reading altered data back into program...
 %%
-%  COPY '#RELEASE SCPQUEUE bfile.spq'
+%  COPY '#RELEASE SCPQUEUE logs/bfile.spq'
 %  EXTRACT CLOSE
 %  COPY '#USE postwin5.dat'
 %%  COPY '#SUM L 5'

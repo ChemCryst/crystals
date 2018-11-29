@@ -21,7 +21,7 @@
 %     SEND
 %     COPY     'END'
 %     GET SILENT NOSTORE TEXT 'type end...'
-%     COPY '#RELEASE PUNCH bfile.pch'
+%     COPY '#RELEASE PUNCH logs/bfile.pch'
 %   END BLOCK
 %   BLOCK %ANGLES%
 %% Get a value then, three values and an END.
@@ -38,7 +38,7 @@
 %     SEND
 %     COPY 'END'
 %     GET SILENT NOSTORE TEXT 'type end...'
-%     COPY '#RELEASE PUNCH bfile.pch'
+%     COPY '#RELEASE PUNCH logs/bfile.pch'
 %   END BLOCK
 %   BLOCK %TORSION%
 %% Get four values and an END.
@@ -65,7 +65,7 @@
 %     COPY '#RELEASE PUNCH crystals.qf'
 %     TRANSFER 'DISPLAY' TO PUNCH
 %     TRANSFER CLINE1    TO PUNCH
-%     COPY '#RELEASE PUNCH bfile.pch'
+%     COPY '#RELEASE PUNCH logs/bfile.pch'
 %   END BLOCK
 % END CASE
 % COPY '#FOREIGN CSD'

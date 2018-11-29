@@ -141,7 +141,7 @@
 %    COPY '#RELEASE PUNCH OLDLIST5.DAT'                                         
 %    COPY '#PUNCH 5'                                                            
 %    COPY 'END'                                                                 
-%    COPY '#RELEASE PUNCH bfile.pch'                                            
+%    COPY '#RELEASE PUNCH logs/bfile.pch'                                            
                                                                                 
 {I A copy of your current atom list has been saved in                           
 {I the current directory as 'OLDLIST5.DAT'                                      
@@ -161,7 +161,7 @@
 %     COPY '#RELEASE PUNCH TMPLIST5.DAT'                                        
 %     COPY '#PUNCH 5'                                                           
 %     COPY 'END'                                                                
-%     COPY '#RELEASE PUNCH bfile.pch'                                           
+%     COPY '#RELEASE PUNCH logs/bfile.pch'                                           
 %     COPY '#USE TMPLIST5.DAT'                                                  
 %    END IF                                                                     
 %%                                                                              
@@ -174,7 +174,7 @@
 %     COPY '#RELEASE PUNCH TMPLIST5.DAT'                                        
 %     COPY '#PUNCH 5'                                                           
 %     COPY 'END'                                                                
-%     COPY '#RELEASE PUNCH bfile.pch'                                           
+%     COPY '#RELEASE PUNCH logs/bfile.pch'                                           
 %     COPY '#USE TMPLIST5.DAT'                                                  
 %  END IF                                                                       
 % END IF                                                                        

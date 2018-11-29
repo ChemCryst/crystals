@@ -189,7 +189,7 @@
 %%
 %% Close punch file.
 %%
-% COPY '#RELEASE PUNCH bfile.pch'
+% COPY '#RELEASE PUNCH logs/bfile.pch'
 %%
 %% Run the program
 %%

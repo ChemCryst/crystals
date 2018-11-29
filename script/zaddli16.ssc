@@ -19,7 +19,7 @@
 % EVALUATE ADD16BREAK = TRUE
 %%
 %% YADDLI16 will:
-%% Release the punch file, leaving it open on bfile.pch
+%% Release the punch file, leaving it open on logs/bfile.pch
 %% Be reading from the SCPDATA.
 %% Be outputting to the SCPQUEUE.
 %%
@@ -76,7 +76,7 @@
 %   END LOOP
 % END IF
 %%
-% COPY '#RELEASE SCPQUEUE bfile.spq'
+% COPY '#RELEASE SCPQUEUE logs/bfile.spq'
 % EXTRACT CLOSE
 % GET SILENT NOSTORE NOPROMPT TEXT ' ' ' '
 % COPY '#USE scplst16a.dat'

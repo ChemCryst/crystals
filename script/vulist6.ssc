@@ -37,14 +37,14 @@
 %    TRANSFER ' ' TO PUNCH
 %    COPY '#PUNCH 6 C'
 %    COPY 'END'
-%    COPY '#RELEASE PUNCH bfile.pch'
+%    COPY '#RELEASE PUNCH logs/bfile.pch'
 %   ELSE
 %    COPY '#RELEASE FRN1 SCPLST6.DAT'
 %    TRANSFER '# These are F^2 reflections in fcf format' TO PUNCH
 %    TRANSFER ' ' TO PUNCH
 %    COPY '#PUNCH 6 H'
 %    COPY 'END'
-%    COPY '#RELEASE FRN1 bfile.frn'
+%    COPY '#RELEASE FRN1 logs/bfile.frn'
 %   END IF
 %  END BLOCK
 %%

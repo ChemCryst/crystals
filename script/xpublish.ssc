@@ -129,7 +129,7 @@
 %            COPY '#RELE PUNCH SHELXS.HKL'
 %            COPY '#PUNCH 6 F'
 %            COPY 'END'
-%            COPY '#RELE PUNCH bfile.pch'
+%            COPY '#RELE PUNCH logs/bfile.pch'
  Shelx output to {&SHELXS.HKL{&                                                     
 %          END BLOCK                                                            
 %          BLOCK                                         %REFLECTIONS%          
