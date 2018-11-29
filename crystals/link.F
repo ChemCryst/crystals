@@ -1877,7 +1877,7 @@ C - Could move these to ZCAMER.
         ENDIF
         IIIIIN = 1
         ISTAT = KRDREC(IIIIIN)
-        WRITE(CHRBUF,'(256A1)')LCMAGE
+        WRITE(CHRBUF,'(256A1)')LCMAGE(1:256)
 #ifdef CRY_GUI
          CALL ZCONTR
 #endif
