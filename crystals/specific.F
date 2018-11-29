@@ -2580,26 +2580,24 @@ C Now, working forwards, inquire and create each folder. Ignore filename after l
       ICOUNT = 1
       IPOS = 0
       DO WHILE (.TRUE.)
-         write(129,*) 'Checking from ', NPOS, ' ', WORKPATH(NPOS:)
+c         write(129,*) 'Checking from ', NPOS, ' ', WORKPATH(NPOS:)
          IPOS = INDEX( WORKPATH(NPOS:), '/' ) !Find a slash
          IF ( IPOS. LE. 0 ) EXIT
          NPOS = NPOS + IPOS
          DIRTEST = WORKPATH(1:NPOS-2)             ! Test everything up to it
-         write(129,*) 'Dirtest is ', NPOS, ' ', DIRTEST
+c         write(129,*) 'Dirtest is ', NPOS, ' ', DIRTEST
 
 #ifdef CRY_FORTINTEL
          INQUIRE( DIRECTORY=DIRTEST, EXIST=LEXISTS )         
 #else        
          INQUIRE( FILE=TRIM(DIRTEST)//'/.', EXIST=LEXISTS )  
 #endif 
-         IF ( LEXISTS ) THEN
-            write(129,*)'Directory checked, and exists: ' // DIRTEST
-         ELSE
-            write(129,*)'Directory does not exist, creating: '//DIRTEST
+         IF ( .NOT. LEXISTS ) THEN
+c            write(129,*)'Directory does not exist, creating: '//DIRTEST
 #ifdef CRY_FORTINTEL
             I = MAKEDIRQQ(DIRTEST)
 #elif CRY_OSWIN32
-            write(129,*)'Non-intel version: '//DIRTEST
+c            write(129,*)'Non-intel version: '//DIRTEST
             call cry_mkdir(trim(dirtest)//C_NULL_CHAR)
 C            CMDLINE = 'mkdir '//trim(DIRTEST)
 C            call SYSTEM( CMDLINE )
