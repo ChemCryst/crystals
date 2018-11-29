@@ -30,7 +30,7 @@
 {1,11Naming the Parts                                                           
 {1,11                                                                           
 {1,11In CRYSTALS                                                                
-{1,11If a strcuture contains two or more discrete molecular fragments,          
+{1,11If a structure contains two or more discrete molecular fragments,          
 {1,11these are called {12,11RESIDUES                                            
 {1,11Atoms can be allocated to a RESIDUE, and the RESIDUE number be             
 {1,11used to identify all those atoms e.g. RESIDUE(2)                           
