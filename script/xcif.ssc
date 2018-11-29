@@ -6,7 +6,7 @@
 %    EVALUATE ISQUEEZE = - 1
 %    VARIABLE REAL SOESD
 %    VARIABLE INTEGER INVERTTYPE ICENTRIC
-%%
+%    VARIABLE INTEGER F67
 %%
 %%   Remember that XCIF includes a call to XSFLB to ensure that values are up to date
 %%
@@ -30,8 +30,10 @@
 %        COPY 'TRANSFER FROM OFFSET=1 TO ITMP'
 %        IF ( ITMP .GE. 0 ) THEN
 %         EVALUATE TWINNED = TRUE
+%         EVALUATE F67 = 7
 %        ELSE
 %         EVALUATE TWINNED = FALSE
+%         EVALUATE F67 = 6
 %        END IF
 %        COPY 'END'
 %      END IF
@@ -60,7 +62,7 @@
 %          COPY 'LOCATE RECORDTYPE=101'
 %          COPY 'TRANSFER FROM OFFSET =  4 TO ISQUEEZE'
 %          COPY 'LOCATE RECORDTYPE=103'
-%          COPY 'TRANSFER FROM OFFSET =  1 TO FTYPE'
+%          COPY 'TRANSFER FROM OFFSET =  1 TO FTYPE'  %% F of Fsq
 %          COPY 'END'
 %      END IF
 %%
@@ -226,8 +228,7 @@
 %    VERIFY ON OFF
 %    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %    IF ( VALUE .EQ. 1 ) THEN
-%  VARIABLE  INTEGER F67                                                        
-%  EVALUATE F67 = 7
+%  
 %% A final difference map.
 %      COPY '#SCRIPT PREFOUR'
 %      COPY 'MAP TYPE=DIFF'
@@ -317,16 +318,16 @@
 %        VERIFY ON OFF
 %        GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %        IF ( VALUE .EQ. 1 ) THEN
-%         COPY '#PUNCH 6 H'
+%         TRANSFER '#PUNCH ' // CHARACTER ( F67 ) // ' H' TO CRYSTALS
 %        ELSE
-%         COPY '#PUNCH 6 B'
+%         COPY '#TRANSFER ' // CHARACTER ( F67 ) // ' B' TO CRYSTALS
 %        END IF
 %        COPY 'END'
 %      ELSE
 %        IF FTYPE .EQ. 0 THEN
-%         COPY '#PUNCH 6 H'
+%         TRANSFER '#PUNCH ' // CHARACTER ( F67 ) // ' H' TO CRYSTALS
 %        ELSE
-%         COPY '#PUNCH 6 B'
+%         COPY '#TRANSFER ' // CHARACTER ( F67 ) // ' B' TO CRYSTALS
 %        END IF
 %        COPY 'END'
 %      END IF
