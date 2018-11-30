@@ -416,7 +416,7 @@ sub obscureMachinePrecision() {
       
       } else {
               print $fho "$line\n";
-	   }
+	  }
  	}
         close ($fhi);
         close ($fho); 
