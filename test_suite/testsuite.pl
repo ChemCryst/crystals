@@ -411,7 +411,7 @@ sub obscureMachinePrecision() {
  	  } elsif($line =~ m/^(.*The minimum and maximum map densities are\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(.*)$/ ) {
               print $fho "[68] $1 $2 $3\n";
 #         1  1  0  0  0    5.70E-02     5.70E-02    -3.22E-05    1.000    U33_local - <U33_local> == 0
- 	  } elsif($line =~ m/^(\s+1\s+1\s+0\s+0\s+0\s+-?\d+\.\d)\d(E.\d\d\s+-?\d+\.\d)\d(E.\d\d\s+-?\d+\.\d)\d(.*)$/ {
+ 	  } elsif($line =~ m/^(\s+1\s+1\s+0\s+0\s+0\s+-?\d+\.\d)\d(E.\d\d\s+-?\d+\.\d)\d(E.\d\d\s+-?\d+\.\d)\d(.*)$/ ) {
               print $fho "[78] $1$2$3$4\n";
       
       } else {
