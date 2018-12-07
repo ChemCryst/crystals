@@ -53,3 +53,7 @@ CTestTestfile.cmake
 *.bak
 b/
 g/
+
+build/script
+test_suite/bfile*
+test_suite/*.out
