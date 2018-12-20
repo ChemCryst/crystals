@@ -152,7 +152,7 @@
         <h3>Fo vs Fc</h3>
 
         <p>The green line is unit gradient. The reflections (red crosses) should be
-        distributed evenly about this line. Blue crosses are reflection that have been
+        distributed evenly about this line. Green crosses are reflection that have been
         filtered out (LIST 28). If the red crosses follow a systematic downwards curve at
         high values of Fc, this may indicate the need for an extinction correction. A few
         point falling a long way from the line may be outliers (bad values of Fo), or may
@@ -160,13 +160,21 @@
         of the refinement by right clicking on them, but only if you are confident that
         you can explain them. A slight systematic trend for Fo to be greater than Fc,
         plus more scatter than usual, may indicate twinning.<br />
-        The blue crosses at Fc=zero are reflections that have been filtered out from the
+        The green crosses at Fc=zero are reflections that have been filtered out from the
         very start. Go to Refinement-Filter Reflections and uncheck the filters if you
         want to compute all Fc values.</p>
+        <p>In the lower image, the Fo values fall below the Fc values for the strong 
+        reflections.  This is symptomatic of extinction, which should be accounted for
+        in the refinement.
       </td>
 
       <td>&nbsp; <img id="4" src="./F0vsFc.jpg" align="left" alt="Not Available" name=
-      "4" /></td>
+      "4" />
+      <br /><br />
+      &nbsp; <img id="4b" src="./extinction-b.png" align="left" alt="Not Available" name=
+      "4b" />
+
+      </td>
     </tr>
 
     <tr>
@@ -530,8 +538,8 @@
         <h3>Highlighted atoms + TLS</h3>
 
         <p>Computes the TLS analysis of the selected atoms. Large values of R1 indicate
-        thet the selected atoms do not form a rigid group. Small values of R1 plus large
-        values of L<sub>33</sub> indicate thet there may be a bond shortening effect.
+        that the selected atoms do not form a rigid group. Small values of R1 plus large
+        values of L<sub>33</sub> indicate that there may be a bond shortening effect.
         Look in the listing file to see the corrected bond lengths. In this case the R1
         value of 7% and the L<sub>33</sub> value of 70 degree<sup>2</sup> leads to bond
         length corrections of about 0.02A.</p>
