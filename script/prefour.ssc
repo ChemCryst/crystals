@@ -6,7 +6,7 @@
 %%djw                                                                           
 %  VARIABLE  INTEGER F67  DOCALC
 %%
-%      COPY '#SCRIPT SFLS67'
+%      COPY '#SCRIPT SFLS67'    %% This de-twinns and merges Friedel pairs. It also set F67 to 7
 %      IF DOCALC .EQ. 2 THEN
 
 {I Fourier abandoned

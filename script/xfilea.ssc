@@ -6,7 +6,7 @@
 %   VARIABLE CHARACTER C_FILE CEXTN CARG
 %   VARIABLE INTEGER FLEN
 %   EVALUATE FLEN = LEN ( c_FILE )
-%%
+%%                               
 %   if ( c_file .eq. ' ' ) .or. ( flen .le. 0 ) then
 ^^WI SYSOPENFILE 'All files (*.*)|*.*;'
 ^^WI             'CIF (*.cif_od,*.fcf_od)|*.cif_od;*.fcf_od;'

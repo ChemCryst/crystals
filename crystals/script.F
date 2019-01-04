@@ -6654,6 +6654,10 @@ C            CDEST       CHARACTER ARRAY HOLDING DESTINATION KEYWORDS
 C                              DISPLAY     DISPLAY DATA ON TERMINAL
 C                              CRYSTALS    DATA IS A CRYSTALS COMMAND
 C                              SCRIPT      DATA IS A SCRIPT COMMAND
+C                              BUFFER
+C                              INPUT
+C                              PUNCH
+C                              FRN1
 C            CWORK       WORK AREA IN WHICH TEXT TO BE DISPLAYED IS
 C                        STORED
 C
@@ -6667,7 +6671,7 @@ C
       CHARACTER*(LTO) CTO(NTO)
 C
 CJAN99
-      PARAMETER ( LDEST = 12 , NDEST = 6 )
+      PARAMETER ( LDEST = 12 , NDEST = 7 )
       CHARACTER*(LDEST) CDEST(NDEST)
 C
       PARAMETER ( LENDSP = 256 )
@@ -6683,7 +6687,7 @@ C
       DATA CTO / 'TO' /
 CJAN99
       DATA CDEST / 'DISPLAY','CRYSTALS','SCRIPT','BUFFER','INPUT',
-     1             'PUNCH' /
+     1             'PUNCH', 'FRN1' /
 C
 C
 C
@@ -6778,6 +6782,12 @@ C -- 'PUNCH' To write lines of text into the punch file.
 C
         ISTAT = KSCSDC ( IVALUE , CWORK , LENWRK )
         WRITE ( NCPU, 1105 ) CWORK(1:LENWRK)
+      ELSE IF ( IDEST .EQ. 7 ) THEN
+C
+C -- 'FRN1' To write lines of text into the FOREIGN file.
+C
+        ISTAT = KSCSDC ( IVALUE , CWORK , LENWRK )
+        WRITE (NCFPU1, 1105 ) CWORK(1:LENWRK)
       ENDIF
 C
 C

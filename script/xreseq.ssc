@@ -6,18 +6,17 @@
 %%
 %  VARIABLE CHARACTER TOOL-FOLDER
 %  VARIABLE LOGICAL TOOL-HELP
-%  VARIABLE CHARACTER TOOL-TEXT
+%  VARIABLE CHARACTER TOOL-TEXT TOOL-FILE
 %  VARIABLE LOGICAL RUNNOW
 %  EVALUATE TOOL-FOLDER = 'structure'
-%  EVALUATE TOOL-TEXT = 'resequence'
+%  EVALUATE TOOL-FILE = 'resequence'
+%  EVALUATE TOOL-TEXT = 'Resequence atom numbers'
 %  COPY '#SCRIPT CALL-TOOL-HELP'
 %  IF .NOT. RUNNOW THEN 
 %    FINISH
 %  END IF
 %% _______________________________________________________________
 %%
-
-
 %%
 %  copy '#REGROUP'                                                              
 %  copy 'SELECT TYPE=ALL SEQUENCE= EXHYD MOVE=-0.2 GROUP=YES'                                

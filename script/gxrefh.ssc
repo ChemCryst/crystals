@@ -1,4 +1,22 @@
 %SCRIPT GXREFH                                                                  
+%%
+%% _______________________________________________________________
+%% See if GLOBAL help is needed
+%%
+%  VARIABLE CHARACTER TOOL-FOLDER
+%  VARIABLE LOGICAL TOOL-HELP
+%  VARIABLE CHARACTER TOOL-TEXT TOOL-FILE
+%  VARIABLE LOGICAL RUNNOW
+%  EVALUATE TOOL-FOLDER = 'refinement'
+%  EVALUATE TOOL-FILE = 'refine-h'
+%  EVALUATE TOOL-TEXT = 'This WILL conserve your LIST 12 and 16'
+%  COPY '#SCRIPT CALL-TOOL-HELP'
+%  IF .NOT. RUNNOW THEN 
+%    FINISH
+%  END IF
+%% _______________________________________________________________
+%%
+%%
 %% VARIABLES NEEDED FOR XREGULH.SCP
 % VARIABLE CHARACTER CTYPE                                                      
 % VARIABLE INTEGER HFOUND                                                       
