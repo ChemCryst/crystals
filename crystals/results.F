@@ -9647,7 +9647,7 @@ c
      1   ' (Using', nfofc,' reflections. Correl Coef =',
      2   nint(100.*pseudoc),'%)'
          CALL XPRVDU (NCVDU, 1, 0)
-         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A,a,a)') CMON(1)(:43),'\A3 ',
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A,a,a)') CMON(1)(:43),'£ ',
      1   CMON(1)(45:nctrim(cmon(1)))
          call outcol(1)
          write(cmon,'(/)')
@@ -9690,7 +9690,7 @@ c
 2100      FORMAT (/4(/a,a))
           WRITE (ncwu,2100)
      1   '@  ','Flack,1983, Acta Cryst A39, 876-881',
-     2   '\A3  ','Thompson & Watkin, 2011, J Appl Cryst, 44, 1077-1022',
+     2   '£  ','Thompson & Watkin, 2011, J Appl Cryst, 44, 1077-1022',
      3   '$  ','Hooft et al, 2008, J Appl Cryst, 41, 96-103',
      4   '&  ','Cooper et al, to be published'
          END IF
