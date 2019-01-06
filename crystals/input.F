@@ -389,6 +389,9 @@ c             just the symbol
       else if(lstno.eq.4) then   !check for LIST 4
             call XPCH4
             return
+      else if(lstno.eq.9) then   !check for LIST 9 !DISGUISED AS A LIST 5
+            call XPCH5E(2)
+            return
       else if(lstno.eq.13) then   !check for LIST 13
             call XPCH13
             return

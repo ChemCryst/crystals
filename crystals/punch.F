@@ -265,7 +265,8 @@ C      F     PLAIN SHELX HKL OUTPUT                   XPCH6X(LSTNO,0,.false.)
 C      G     SHELX HKL OUTPUT of FC with made up sigmas.  XPCH6X(LSTNO,1,.false.)
 C      H     CIF OUTPUT F^2's  on scale of Fc         XPCH6C(LSTNO,2,.false.)
 C      I     ALL Keys set                             XPCH6N(LSTNO,LSTNO,1,.false.)
-C      J     F^2 ALL Keys set, Sigmas adjusted for old and new scales  XPCH6N(LSTNO,LSTNO,2,.false.)
+C      J     F^2 ALL Keys set, Sigmas adjusted for old and new scales  
+c                                                     XPCH6N(LSTNO,LSTNO,2,.false.)
 
 C  Same output but reflection must not not be filtered out
 C      AF    COMPRESSED PUNCH FORMAT                  XPCH6G(LSTNO,ICLASS,.true.)
@@ -277,7 +278,8 @@ C      FF    PLAIN SHELX HKL OUTPUTC                  XPCH6X(LSTNO,0,.true.)
 C      GF    SHELX HKL OUTPUT of FC with made up sigmas.  XPCH6X(LSTNO,1,.true.)
 C      HF    CIF OUTPUT F^2's  on scale of Fc         XPCH6C(LSTNO,2,.true.)
 C      IF    ALL Keys set          C                  XPCH6N(LSTNO,LSTNO,1,.true.)
-C      J     F^2 ALL Keys set, Sigmas adjusted for old and new scales  XPCH6N(LSTNO,LSTNO,2,.true.)
+C      J     F^2 ALL Keys set, Sigmas adjusted for old and new scales  
+C                                                     XPCH6N(LSTNO,LSTNO,2,.true.)
 C
 CODE FOR XPCH5S
       SUBROUTINE XPCH5S(IN)
@@ -1440,19 +1442,19 @@ C -- ERRORS
       CALL XOPMSG ( IOPPCH , IOPLSP , 6 )
       END
 CODE FOR XPCH6C                                                       !PUNCH 6 B, E, H
-      SUBROUTINE XPCH6C(IULN,KF, l28filter)
+      SUBROUTINE XPCH6C(IULN,KFOUT, l28filter)
 C PUNCH B,E,H  CIF FORMAT PUNCH
-C KF  0 - F's
-C     1 - F^2's
-C     2 - F^2'S ON SCALE OF FC
+C KFOUT   0 - F's
+C         1 - F^2's
+C         2 - F^2'S ON SCALE OF FC
 CDJWMAY99 - OUTPUT TO FOREIGN PUNCH UNIT
       use lists2_mod, only: xldlst
-
+c
       logical, intent(in) :: l28filter
       CHARACTER*80 CBUF
       DIMENSION KDEV(4)
-      LOGICAL LNAME
-      DIMENSION IVEC(20), ESD(6)
+      LOGICAL LNAME, TWINNED
+      DIMENSION IVEC(20), ESD(6), TWINDEX(3)
       INCLUDE 'ISTORE.INC'
       INCLUDE 'STORE.INC'
       INCLUDE 'UFILE.INC'
@@ -1465,18 +1467,23 @@ CDJWMAY99 - OUTPUT TO FOREIGN PUNCH UNIT
       INCLUDE 'XCONST.INC'
       INCLUDE 'XCHARS.INC'
       INCLUDE 'XCOMPD.INC'
+      INCLUDE 'XPDS.INC'
+      INCLUDE 'XWORKA.INC'
       INCLUDE 'XLST01.INC'
       INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST09.INC'
       INCLUDE 'XLST06.INC'
+      INCLUDE 'XLST13.INC'
       INCLUDE 'XLST23.INC'
+      INCLUDE 'XLST25.INC'
       INCLUDE 'XLST28.INC'
       INCLUDE 'XLST31.INC'
-      INCLUDE 'XLST13.INC'
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'QSTORE.INC'
       INCLUDE 'ICOM31.INC'
       INCLUDE 'QLST31.INC'
       CHARACTER*12 CTEMP
+      CHARACTER *9 CELEMENT
       CHARACTER*1 CALW(5)
       CHARACTER CCELL(3)*1,CANG(3)*5
 
@@ -1495,6 +1502,7 @@ cdjwmay2011 Add high and low
       INCLUDE 'IDIM31.INC'
       CALL XRSL
       CALL XCSAE
+      KF = KFOUT
       CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
       INQUIRE(UNIT=NCFPU1,NAMED=LNAME,NAME=CBUF)
 C      WRITE(123,'(I6,L8,A, 4A4)')NCFPU1, LNAME, CBUF, KDEV
@@ -1507,9 +1515,27 @@ C   OPEN A DEFAULT FILE IF ONE ISN'T ALREADY ATTACHED
      1      CBUF(1:NCTRIM(CBUF))
       ENDIF
       CALL XPRVDU (NCVDU,1,0)
-      IF (KEXIST(1) .GE. 1) CALL XFAL01
+      MD5ES = 0  !NOTE: N5ES SET (INCORRECTLY I THINK) TO '2' IN LIST 5
+                 !ALL ELEMENT SCALES ARE IN THE FIRST RECORD
+      MD9ES = 0
+      IF (KHUNTR(01,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL01
+      IF (KHUNTR(13,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL13
       IF (KHUNTR(28,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL28
-      CALL XFAL05
+      IF (KHUNTR(05,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL05
+      TWINNED =  .FALSE.
+      IF (MD5ES .GE. 1) THEN 
+        CALL XFAL25
+        IF (IERFLG .LT. 0) GOTO 9900
+        IF (KEXIST(9) .LT. 1) THEN
+         WRITE(CMON,'('' No ESDS available'')')
+         CALL XPRVDU(NCVDU, 1,0)
+C        NOTE: esds set to zero below if L 9 does not exist
+        ELSE
+         IF (KHUNTR(09,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL09
+        ENDIF
+        TWINNED =  .TRUE.
+      ENDIF
+C
       IN = 0
       CALL XFAL06(IULN, IN)
       IF (IERFLG .LT. 0) GOTO 9900
@@ -1520,20 +1546,23 @@ C   OPEN A DEFAULT FILE IF ONE ISN'T ALREADY ATTACHED
         L31 = -1
       END IF
 C TYPE OF OUTPUT REQUEST. 
-C      KF     0 - F's
-C             1 - F^2's
-C             2 - F^2'S ON SCALE OF FC
+C    KFOUT     0 - F's
+C              1 - F^2's
+C              2 - F^2'S ON SCALE OF FC
+CCC             3 - TWINNED F^2'S ON SCALE OF FC
 C FIND TYPE OF REFINEMENT. 
 C      KFR =  0 = F
 C             1 = F^2
+C             2 = F^2
 C             3 = NO REFINEMENT
 C
       IF (KHUNTR (23,0, IADDL,IADDR,IADDD, -1) .LT. 0) THEN
             CALL XFAL23
-            KFR = 1 + ISTORE(L23MN+1)
+            KFR = 1 + ISTORE(L23MN+1)   !type of refinement Fo/Fo^2 = 0/1
       ELSE
-            KFR = 3
+            KFR = 3                     !no refinement type - this should never happen
       ENDIF
+C
 C
       WRITE(NCFPU1, '(''data_I '')')
       WRITE(NCFPU1, '(''#  '',10A4)') (KTITL(I),I=1,10)
@@ -1586,18 +1615,57 @@ C      WRITE SYMMETRY_INFO
 C
       CALL XCIF2(NCFPU1)
 C
+      IF (TWINNED) THEN
+        WRITE(NCFPU1,900)
+900     FORMAT(/,'loop_',/
+     1 '_twin_individual_id'/
+     2 '_twin_individual_mass_fraction_refined'/
+     4 '_twin_individual_twin_matrix_11'/
+     5 '_twin_individual_twin_matrix_12'/
+     6 '_twin_individual_twin_matrix_13'/
+     7 '_twin_individual_twin_matrix_21'/
+     8 '_twin_individual_twin_matrix_22'/
+     9 '_twin_individual_twin_matrix_23'/
+     1 '_twin_individual_twin_matrix_31'/
+     2 '_twin_individual_twin_matrix_32'/
+     3 '_twin_individual_twin_matrix_33'/)
+C
+C
+C
+        ITEMP=KHUNTR (9,0, IADDL,IADDR,IADDD, -1)
+         IF ( ITEMP .NE. 0) THEN
+          CALL XZEROF (BPD, 11)    ! ZERO THE ESD BUFFER
+        ELSE
+          M9ES = L9ES
+          DO ITEMP=1,MD9ES                  !ALL THE SCALES ARE PART OF THE SAME RECORD
+           BPD(ITEMP) = STORE(M9ES+ITEMP-1)
+          ENDDO
+        ENDIF            
+        M25 = L25
+        DO I=1,N25
+          CALL XFILL (IB,IVEC,16)
+          CALL SNUM (STORE(L5ES+I-1),BPD(I),-3,0,10,IVEC)
+          WRITE (CBUF,'(16A1)') (IVEC(J),J=1,16)
+          CALL XCRAS (CBUF,N)
+          WRITE(NCFPU1,'(I4,1X,A,1X,3(3F8.4,3X))') I, CBUF(1:N),
+     1   (STORE(M25+K),K=0,8)
+          M25=M25+MD25
+        ENDDO
+       ENDIF
+
+C
       SCALE6 = STORE(L5O)
 C     NOW LOOK FOR THE CASE OF F^2 REFINEMENT, AND OUTPUT ON SCALE OF FC
-      IF((KF .EQ. 2) .AND. (KFR.EQ.1)) THEN
+      IF((KFOUT .EQ. 2) .AND. (KFR.EQ.1)) THEN
             KFR = 2
             SCALWT = SCALE6*SCALE6*SCALE6*SCALE6
       ENDIF
 c
-      IF(KF .NE. KFR) WRITE(NCFPU1,'(/A,A/A)')
+      IF(KFOUT .NE. KFR) WRITE(NCFPU1,'(/A,A/A)')
      1 '# Requested output type does not correspond to refinement',
      2 ' type','# Weights cannot be converted'
 c
-      IF (KF .EQ. 2) THEN
+      IF (KFOUT .EQ. 2) THEN
        WRITE(NCFPU1,'(/''# NOTE FO on scale of Fc, '', F12.5)')
      1               1./SCALE6
       ELSE
@@ -1609,23 +1677,71 @@ c
       WRITE(NCFPU1,'(''#    l - excluded at low resolution  '')')
       WRITE(NCFPU1,'(''#    h - excluded at high resolution  '')')
       WRITE(NCFPU1,'(''#    x - excluded for another reason  '')')
-
-      IF ( KF.EQ. 0 )  THEN
-         WRITE(NCFPU1,1000)
-      ELSE
-         WRITE(NCFPU1,1001)
-      END IF
-1000  FORMAT ( /,'loop_',/,'_refln_index_h'/,'_refln_index_k'/,
-     1 '_refln_index_l'/,'_refln_F_meas'/,'_refln_F_calc'/,
-     2 '_refln_F_sigma'/,'_refln_observed_status')
-1001  FORMAT ( /,'loop_',/,'_refln_index_h'/,'_refln_index_k'/,
-     1 '_refln_index_l'/,'_refln_F_squared_meas'/,
-     2 '_refln_F_squared_calc'/,
-     3 '_refln_F_squared_sigma'/,'_refln_observed_status')
 C
-      IF (KF .EQ. KFR) then 
-        WRITE(NCFPU1,1002)
-1002    FORMAT('_refln_refinement_weight')
+      IF ( KFOUT .EQ. 0 )  THEN
+         IF ( TWINNED) THEN
+          WRITE(NCFPU1,1012)
+         ELSE
+          WRITE(NCFPU1,1000)
+         ENDIF
+      ELSE
+         IF (TWINNED) THEN
+           WRITE(NCFPU1,1002)
+         ELSE
+           WRITE(NCFPU1,1001)
+         ENDIF
+      END IF
+
+1000  FORMAT ( /,'loop_',/,
+     1 '_refln_index_h'/,
+     2 '_refln_index_k'/,
+     3 '_refln_index_l'/,
+     4 '_refln_F_meas'/,
+     5 '_refln_F_calc'/,
+     6 '_refln_F_sigma'/,
+     7 '_refln_include_status')
+C
+1001  FORMAT ( /,'loop_',/,
+     1 '_refln_index_h'/,
+     2 '_refln_index_k'/,
+     3 '_refln_index_l'/,
+     4 '_refln_F_squared_meas'/,
+     5 '_refln_F_squared_calc'/,
+     6 '_refln_F_squared_sigma'/,
+     7 '_refln_include_status')
+C
+1012  FORMAT(/,'loop_',/
+     1 '_twin_refln_datum_id'/
+     2 '_twin_refln_individual_id'/
+     3 '_twin_refln_index_h'/
+     4 '_twin_refln_index_k'/
+     5 '_twin_refln_index_l'/
+     7 '_twin_refln_F_meas'/
+     6 '_twin_refln_F_calc'/
+     8 '_twin_refln_F_sigma'/
+     9 '_twin_refln_include_status'/)
+C
+1002  FORMAT(/,'loop_',/
+     1 '_twin_refln_datum_id'/
+     2 '_twin_refln_individual_id'/
+     3 '_twin_refln_index_h'/
+     4 '_twin_refln_index_k'/
+     5 '_twin_refln_index_l'/
+     7 '_twin_refln_F_squared_meas'/
+     6 '_twin_refln_F_squared_calc'/
+     8 '_twin_refln_F_squared_sigma'/
+     9 '_twin_refln_include_status'/)
+C
+      IF ( TWINNED ) THEN
+        IF (KFOUT .EQ. KFR) THEN
+          WRITE(NCFPU1,1003)
+1003      FORMAT('_twin_refln_refinement_weight')
+        ENDIF
+      ELSE 
+        IF (KFOUT .EQ. KFR) THEN
+         WRITE(NCFPU1,1004)
+1004     FORMAT('_refln_refinement_weight')
+        ENDIF
       ENDIF
 
 C---- GET SIGMA THRESHOLD FROM L28
@@ -1640,6 +1756,10 @@ C---- GET SIGMA THRESHOLD FROM L28
             INDNAM = INDNAM + MD28CN
         END DO
       ENDIF
+C
+C
+C
+      IDREF=0
 1840  CONTINUE
       ISTAT = KLDRNR (IN)
       IF (ISTAT .LT. 0) GOTO 1850
@@ -1650,6 +1770,7 @@ C--check if filtered reflections need printing
          end if
       end if
 
+      IDREF=IDREF+1
       I = NINT(STORE(M6))
       J = NINT(STORE(M6+1))
       K = NINT(STORE(M6+2))
@@ -1661,11 +1782,11 @@ C
       S =  MAX(0.0,STORE(M6+12))
       FC = STORE(M6+5)
       FCS = FC*FC
-      IF ( KF.NE. 0 ) THEN
+      IF ( KFOUT.NE. 0 ) THEN
          CALL XSQRF(FOS, FO, FABS, SIGMA, S)
       END IF      
 c
-      IF (KF .EQ. 2) THEN            !scale of Fcalc
+      IF (KFOUT .EQ. 2) THEN            !scale of Fcalc
        FO = STORE(M6+3)/ SCALE6
        fos = fos/(scale6*scale6)
        S =  s / SCALE6
@@ -1697,22 +1818,59 @@ c       Fails sin-theta/lambda test
       ELSE
         IALW = 1                    !Used.
       END IF
-      IF ( KF.NE. 0 ) THEN
-        IF (KFR.EQ. KF) THEN
-         WRITE(NCFPU1,1003)I,J,K,FOS,FCS,SIGMA,CALW(IALW), WT
-c     1   ,store(m6+20),fos/sigma,(store(m6+20)*sigma)/fos
-        ELSE
-         WRITE(NCFPU1,1003)I,J,K,FOS,FCS,SIGMA,CALW(IALW)
-c     1   ,wt,store(m6+20),fos/sigma,(store(m6+20)*sigma)/fos
+c
+c
+      IF (TWINNED) THEN
+        IELEMENT = NINT(STORE(M6+11))
+        WRITE(CELEMENT,'(I9)')IELEMENT
+        DO ITMP=10-MD5ES,9
+         READ(CELEMENT(ITMP:ITMP),'(I1)') JTMP
+         IF (JTMP .NE. 0) THEN           
+          CALL XMLTTM
+     1    (STORE(L25+(JTMP-1)*MD25),STORE(M6),TWINDEX,3,3,1)
+
+          IF ( KFOUT .NE. 0 ) THEN       ! SOME KIND OF F^2 REQUESTED
+           IF (KFR.EQ. KFOUT) THEN
+            WRITE(NCFPU1,1015)
+     1      IDREF,JTMP,NINT(TWINDEX(1)),NINT(TWINDEX(2)),
+     2      NINT(TWINDEX(3)),FOS, FCS, SIGMA,CALW(IALW),WT
+           ELSE
+            WRITE(NCFPU1,1015)
+     1      IDREF,JTMP,NINT(TWINDEX(1)),NINT(TWINDEX(2)),
+     2      NINT(TWINDEX(3)),FOS, FCS, SIGMA,CALW(IALW)
+           ENDIF
+          ELSE                            ! Fo REFINEMENT
+           IF (KFR.EQ.KFOUT) THEN
+            WRITE(NCFPU1,1015)
+     1      IDREF,JTMP,NINT(TWINDEX(1)),NINT(TWINDEX(2)),
+     2      NINT(TWINDEX(3)),FO, FC, S,CALW(IALW),WT
+           ELSE
+            WRITE(NCFPU1,1015)
+     1      IDREF,JTMP,NINT(TWINDEX(1)),NINT(TWINDEX(2)),
+     2      NINT(TWINDEX(3)),FO, FC, S,CALW(IALW)
+           ENDIF
+          ENDIF
+         ENDIF
+         IELEMENT=IELEMENT/10
+        ENDDO
+1015    FORMAT (I10,I2,3I4,3F12.2,1X,A1,E13.4)
+C
+      ELSE 
+        IF ( KFOUT .NE. 0 ) THEN       ! SOME KIND OF F^2 REQUESTED
+         IF (KFR.EQ. KFOUT) THEN
+          WRITE(NCFPU1,1005)I,J,K,FOS,FCS,SIGMA,CALW(IALW), WT
+         ELSE
+          WRITE(NCFPU1,1005)I,J,K,FOS,FCS,SIGMA,CALW(IALW)
+         ENDIF
+         ELSE                            ! Fo REFINEMENT
+         IF (KFR.EQ.KFOUT) THEN
+           WRITE(NCFPU1,1005)I, J, K, FO, FC, S,CALW(IALW), WT
+          ELSE
+           WRITE(NCFPU1,1005)I, J, K, FO, FC, S,CALW(IALW)
+          ENDIF
         ENDIF
-      ELSE
-        IF (KFR.EQ.KF) THEN
-         WRITE(NCFPU1,1003)I, J, K, FO, FC, S,CALW(IALW), WT
-        ELSE
-         WRITE(NCFPU1,1003)I, J, K, FO, FC, S,CALW(IALW)
-        ENDIF
-      END IF
-1003  FORMAT (3I4,3F12.2,1X,A1,E13.4E2,3F12.4)
+1005    FORMAT (3I4,3F12.2,1X,A1,E13.4)
+      ENDIF
       GOTO 1840
 1850  CONTINUE
       GOTO 9999

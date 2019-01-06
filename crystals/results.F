@@ -2609,8 +2609,10 @@ C      NL                 NUMBER OF LINES PRINTED. INITIALLY SET AT
 C                         END OF PAGE.
 C
       DIMENSION KDEV(4)
-      CHARACTER *80 CLINE
-      CHARACTER *80 CFORM, CBUF
+      DIMENSION IVEC(20)
+      CHARACTER *120 CLINE
+      CHARACTER *120 CFORM, CBUF
+      LOGICAL TWINNED
       INCLUDE 'TSSCHR.INC'
 C
       INCLUDE 'ISTORE.INC'
@@ -2623,8 +2625,11 @@ C
       INCLUDE 'XCHARS.INC'
       INCLUDE 'XLST01.INC'
       INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST09.INC'
       INCLUDE 'XLST11.INC'
       INCLUDE 'XLST12.INC'
+      INCLUDE 'XLST13.INC'
+      INCLUDE 'XLST25.INC'
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XOPK.INC'
@@ -2643,87 +2648,87 @@ C
       end interface
 C
       IFUNC = IFUNC
-
+      CALL XRSL
+      CALL XCSAE
+      CALL XPCH5E(2)   ! ENSURE A LIST 9 (ESDS) EXISTS IF THE MATRIX IS OK
+      CALL XRSL
+      CALL XCSAE
 c#endif
+      CALL XFAL05
       IF ( MD5ES .EQ. 0 ) RETURN
 
 CDJWMAY99 - PREAPRE TO APPEND CIF OUTPUT ON FRN1
       CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
       CALL XRDOPN(8, KDEV , CSSCIF, LSSCIF)
-C -- SET INITIAL VALUES.
-      NOD = -3
-
-      NOF = 10
-
-      M5 = L5ES
-      M5A = L5ES
-      M12 = L12ES
-      MD5A = MD5ES
-      N5A = N5ES
-
-      NL = LINEX
-
-C--CALCULATE THE E.S.D.'S AND STORE THEM IN BPD
-
-      JP = 1
-      IF ( IPESD .NE. 0 ) THEN
-        CALL XPESD ( 2, JP)
-      ELSE
-        CALL XZEROF (BPD, 11)
-      END IF
-
 C
-C--CLEAR THE OUTPUT BUFFER
-      CALL XMVSPD(IB,LINEA(1),118)
-      J=4
-C--SET UP THE FLAGS FOR THE PASS OVER THE PARAMETERS
-      MP=M5A
-      MPD=1
-      IP=1
-
-2410  FORMAT (1X,'Twin element scales')
-      IF (ISSPRT .EQ. 0) THEN
-        IF ( ILSTCO .GT. 0 )  THEN
-            WRITE( NCWU, 2410)
-        END IF
-      END IF
-      IF ( IPCHCO .EQ. 1 )  THEN
-            WRITE(NCPU, 2410)
-      ELSE IF (IPCHCO .EQ. 2) THEN
-            WRITE(NCFPU1,2557)
-2557        FORMAT(/,'loop_',/,4X,'_oxford_twin_element_scale_factors')
-      END IF
-      WRITE ( CMON , 2410 )
-      CALL XPRVDU(NCVDU, 1,0)
-
-C--LOOP OVER THE PARAMETERS
-      DO L=1,MD5A
-C--CLEAR THE OUTPUT BUFFER
-        CALL XMVSPD(IB,LINEA(1),118)
-        J= 4 + NOF
-        CALL SNUM(STORE(MP), BPD(MPD), NOD, 0, J, LINEA)
-        IP=IP+1
-        MP=MP+1
-        MPD=MPD+1
-
-        WRITE (CLINE,'(2X,78A1)') (LINEA(KL), KL=1,78)
-        CALL XCTRIM (CLINE, NLINE)
-
-        IF ( (ISSPRT .EQ. 0) .AND. ( ILSTCO .GT. 0 ) ) THEN
-            WRITE( NCWU , '(A)') CLINE(1:NLINE)
+      IF (KHUNTR(01,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL01
+      IF (KHUNTR(09,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL09
+      IF (KHUNTR(13,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL13
+      TWINNED=.FALSE.
+      IF (N5ES.GE.1) THEN
+            TWINNED=.TRUE.
+            IF(KEXIST(25) .GE.1) CALL XFAL25
+      ENDIF
+      IF (TWINNED) THEN
+       WRITE(CMON,'(A)')'Twin Elements'
+       CALL XPRVDU(NCVDU, 1,0)
+       IF (IPCHCO .EQ.2) THEN
+        WRITE(NCFPU1,900)
+900     FORMAT(/,'loop_',/
+     1 '_twin_individual_id'/
+     2 '_twin_individual_mass_fraction_refined'/
+     4 '_twin_individual_twin_matrix_11'/
+     5 '_twin_individual_twin_matrix_12'/
+     6 '_twin_individual_twin_matrix_13'/
+     7 '_twin_individual_twin_matrix_21'/
+     8 '_twin_individual_twin_matrix_22'/
+     9 '_twin_individual_twin_matrix_23'/
+     1 '_twin_individual_twin_matrix_31'/
+     2 '_twin_individual_twin_matrix_32'/
+     3 '_twin_individual_twin_matrix_33'/)
+        ELSE IF (IPCHCO.EQ.1) THEN
+            WRITE(NCPU,'(/A/)')'Twin Elements'
+        ELSE IF ( (ISSPRT .EQ. 0) .AND. ( ILSTCO .GT. 0 ) ) THEN
+            WRITE(NCWU,'(/A/)')'Twin Elements'
         ENDIF
+C
+C
+        ITEMP=KHUNTR (9,0, IADDL,IADDR,IADDD, -1)
+        IF ( ITEMP .NE. 0) THEN
+          CALL XZEROF (BPD, 11)    ! ZERO THE ESD BUFFER
+        ELSE
+          M9ES = L9ES
+          DO ITEMP=1,MD9ES                  !ALL THE SCALES ARE PART OF THE SAME RECORD
+           BPD(ITEMP) = STORE(M9ES+ITEMP-1)
+          ENDDO
+        ENDIF            
+        M25 = L25
+        DO I=1,N25
+          CALL XFILL (IB,IVEC,16)
+          CALL SNUM (STORE(L5ES+I-1),BPD(I),-3,0,10,IVEC)
+          WRITE (CBUF,'(16A1)') (IVEC(J),J=1,16)
+          CALL XCRAS (CBUF,N)
+          WRITE(CLINE,'(I4,1X,A,1X,3(3F8.4,3X))') I, CBUF(1:N),
+     1   (STORE(M25+K),K=0,8)
+          CALL XCTRIM (CLINE, NLINE)
 
-        IF ( IPCHCO .EQ. 1 )  THEN
-            WRITE( NCPU , '(A)') CLINE(1:NLINE)
-        ELSE IF (IPCHCO .EQ. 2) THEN
-            WRITE( NCFPU1 , '(A)') CLINE(1:NLINE)
-        ENDIF
+         IF ( (ISSPRT .EQ. 0) .AND. ( ILSTCO .GT. 0 ) ) THEN
+             WRITE( NCWU , '(A)') CLINE(1:NLINE)
+         ENDIF
 
-        WRITE ( CMON , '(A)' ) CLINE(1:NLINE)
-        CALL XPRVDU(NCVDU, 1,0)
-      END DO
-
-
+         IF ( IPCHCO .EQ. 1 )  THEN
+             WRITE( NCPU , '(A)') CLINE(1:NLINE)
+         ELSE IF (IPCHCO .EQ. 2) THEN
+             WRITE( NCFPU1 , '(A)') CLINE(1:NLINE)
+         ENDIF
+ 
+         WRITE ( CMON , '(A)' ) CLINE(1:NLINE)
+         CALL XPRVDU(NCVDU, 1,0)
+         M25=M25+MD25
+        ENDDO
+      ENDIF
+C
+C
       RETURN
 9910  CONTINUE
       WRITE ( CMON, '(A)') 'ERROR in twin scale parameter print'
@@ -4795,8 +4800,6 @@ CDJWMAY99 - OPEN CIF OUTPUT ON FRN1
 CRICJUN02 - Last minute SFLS calc to get threshold cutoffs into 30.
       CALL XRSL
       CALL XCSAE
-
-
       IF (KEXIST(33) .LE. 0) THEN
          IF (ISSPRT .EQ. 0) WRITE(NCWU, 1151)
          WRITE ( CMON ,1151)
@@ -4807,7 +4810,9 @@ CRICJUN02 - Last minute SFLS calc to get threshold cutoffs into 30.
 C----- SET REFLECTION LISTING TYPE (LIST 6)
          ITYP06 = 1
          CALL XSFLSB(-1,ITYP06)
+         CALL XPCH5E(2)          !CREATE A LIST 9 (ESDS)
       ENDIF
+CRICJUN02 - Last minute SFLS calc to get threshold cutoffs into 30.
 
       CALL XRSL
       CALL XCSAE
@@ -5654,10 +5659,10 @@ c
           CLINE(1:18)='_cell_measurement_'
           WRITE (NCFPU1,'(A18, ''reflns_used '',T35,I8)') CLINE(1:18),
      1     NINT(STORE(L30CD+3))
-          WRITE (NCFPU1,'(A18, ''theta_min '',T35,I8)') CLINE(1:18),
-     1     NINT(STORE(L30CD+4))
-          WRITE (NCFPU1,'(A18, ''theta_max '',T35,I8)') CLINE(1:18),
-     1     NINT(STORE(L30CD+5))
+          WRITE (NCFPU1,'(A18, ''theta_min '',T35,F10.2)') CLINE(1:18),
+     1     STORE(L30CD+4)
+          WRITE (NCFPU1,'(A18, ''theta_max '',T35,F10.2)') CLINE(1:18),
+     1     STORE(L30CD+5)
           WRITE (NCFPU1,'(A18, ''temperature '',T35,I8)') CLINE(1:18),
      1     NINT(STORE(L30CD+6))
         ELSE IF ( IPUNCH .EQ. 1 ) THEN
@@ -11857,5 +11862,4 @@ C -- INPUT ERRORS
       GO TO 9900
 
       END
-      
-      
+  

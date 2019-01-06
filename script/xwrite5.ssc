@@ -1,5 +1,22 @@
 %SCRIPT XWRITE5                                                                 
-%%                                                                                
+%% 
+%%
+%% _______________________________________________________________
+%% See if GLOBAL help is needed
+%%
+%  VARIABLE CHARACTER TOOL-FOLDER
+%  VARIABLE LOGICAL TOOL-HELP
+%  VARIABLE CHARACTER TOOL-TEXT TOOL-FILE
+%  VARIABLE LOGICAL RUNNOW
+%  EVALUATE TOOL-FOLDER = 'refinement'
+%  EVALUATE TOOL-FILE = 'refinement'
+%  EVALUATE TOOL-TEXT = 'General Advice about Refinement'
+%  COPY '#SCRIPT CALL-TOOL-HELP'
+%  IF .NOT. RUNNOW THEN 
+%    FINISH
+%  END IF
+%% _______________________________________________________________
+%%
 %  BLOCK
 %% clear out the old ride and restraint files
 %   VARIABLE LOGICAL FD

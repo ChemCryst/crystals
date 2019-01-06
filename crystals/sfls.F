@@ -548,7 +548,7 @@ C----- SET THE ENANTIOPOLE REFINEMENT FLAG
       if(twinned .and. enantio) then
       write(cmon,'(A/A)') 
      1 'You cannot refine Twin components and Flack directly',
-     2 'Include inversion twinning in LIST 25 and LIST 12'
+     2 'You must Include inversion twinning in LIST 25 and LIST 12'
          CALL OUTCOL(9)
          CALL XPRVDU(NCVDU, 2,0)
          CALL OUTCOL(1)
@@ -557,7 +557,7 @@ C----- SET THE ENANTIOPOLE REFINEMENT FLAG
 c
       if((twinned .and. partials).or.(twinned .and. update_part))then
       write(cmon,'(A/A)') 
-     1 'You cannot refine Twin components with Partial conributions',
+     1 'You cannot refine Twin components with Partial contributions',
      2 'This could include SQUEEZED data'
          CALL OUTCOL(9)
          CALL XPRVDU(NCVDU, 2,0)
@@ -2128,7 +2128,7 @@ C--COMPUTE THE TOTALS AGAINST /FC/ FOR THIS ELEMENT
                 END IF
 C--PRINT THIS CONTRIBUTOR
                 LJS=JREF_STACK_PTR+3
-                A=STORE(JREF_STACK_PTR+7)*D
+                A=STORE(JREF_STACK_PTR+7)*D   ! defined as 180/pi above
                 C=STORE(JREF_STACK_PTR+6)*STORE(LJV)
                 IF (ISSPRT .EQ. 0) THEN
                   WRITE(NCWU,3350)
