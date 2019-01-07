@@ -2399,7 +2399,7 @@ LS-scale=  1.632   Wilson Scale=  0.000
 
 Block No  1.  Single precision relative error:  2.67E-05
  S/ESD     1           1             0.041      0.3E+00    0.187E-01          2.19                          SCALE   
-[43] Resetting shift for Extinction  Shift=     361.   Esd=      7   New shift=      99.41
+[43] Resetting shift for Extinction  Shift=     361.   Esd=      7   New shift=      99.4
 [13]  LARGE     2           2            99.4       0.7E+00    0.7 E+02          4.9                           EXTPARAM
  S/ESD    69          69             0.016      0.6E+00    0.730E-02          2.19                          LAYER     1
  S/ESD    69          69             0.016      0.6E+00    0.730E-02          2.19                          LAYER     7
@@ -3210,7 +3210,7 @@ LS-scale=  1.673   Wilson Scale=  0.000
 
 Block No  1.  Single precision relative error:  2.94E-05
  S/ESD     1           1            -0.030      0.0E+00    0.170E-01         -1.77                          SCALE   
-[43] Resetting shift for Extinction  Shift=     153.   Esd=      7   New shift=     119.29
+[43] Resetting shift for Extinction  Shift=     153.   Esd=      7   New shift=     119.2
 [13]  LARGE     2           2           119.2       0.0E+00    0.7 E+02          2.0                           EXTPARAM
  S/ESD    69          69             0.011      0.0E+00    0.692E-02          1.59                          LAYER     1
  S/ESD    69          69             0.011      0.0E+00    0.692E-02          1.59                          LAYER     7
@@ -6254,7 +6254,7 @@ LS-scale=  1.632   Wilson Scale=  0.000
 
 Block No  1.  Single precision relative error:  2.67E-05
  S/ESD     1           1             0.041      0.3E+00    0.187E-01          2.19                          SCALE   
-[43] Resetting shift for Extinction  Shift=     361.   Esd=      7   New shift=      99.40
+[43] Resetting shift for Extinction  Shift=     361.   Esd=      7   New shift=      99.4
 [13]  LARGE     2           2            99.4       0.7E+00    0.7 E+02          4.9                           EXTPARAM
  S/ESD    69          69             0.016      0.6E+00    0.731E-02          2.19                          LAYER     1
  S/ESD    69          69             0.016      0.6E+00    0.731E-02          2.19                          LAYER     7
@@ -7063,7 +7063,7 @@ LS-scale=  1.673   Wilson Scale=  0.000
 
 Block No  1.  Single precision relative error:  2.94E-05
  S/ESD     1           1            -0.030      0.0E+00    0.170E-01         -1.76                          SCALE   
-[43] Resetting shift for Extinction  Shift=     153.   Esd=      7   New shift=     119.28
+[43] Resetting shift for Extinction  Shift=     153.   Esd=      7   New shift=     119.2
 [13]  LARGE     2           2           119.2       0.0E+00    0.7 E+02          2.0                           EXTPARAM
  S/ESD    69          69             0.011      0.0E+00    0.692E-02          1.59                          LAYER     1
  S/ESD    69          69             0.011      0.0E+00    0.692E-02          1.59                          LAYER     7
@@ -10109,7 +10109,7 @@ LS-scale=  1.542   Wilson Scale=  0.000
 
 Block No  1.  Single precision relative error:  2.80E-05
 [13]  LARGE     1           1             0.1       0.6E+00    0.5 E-01          3.4                           SCALE   
-[43] Resetting shift for Extinction  Shift=     311.   Esd=      6   New shift=      74.00
+[43] Resetting shift for Extinction  Shift=     311.   Esd=      6   New shift=      74.0
 [13]  LARGE     2           2            74.0       0.8E+00    0.6 E+02          4.5                           EXTPARAM
 [14]  S/ESD    21          21            0.011       0.4E+00    0.96 E-02          1.2         C      4 U[11]   
  S/ESD    69          69             0.045      0.9E+00    0.751E-02          6.02                          LAYER     1
@@ -10920,7 +10920,7 @@ LS-scale=  1.605   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 Block No  1.  Single precision relative error:  2.92E-05
-[43] Resetting shift for Extinction  Shift=     156.   Esd=      7   New shift=      88.81
+[43] Resetting shift for Extinction  Shift=     156.   Esd=      7   New shift=      88.8
 [13]  LARGE     2           2            88.8       0.0E+00    0.7 E+02          2.1                           EXTPARAM
  S/ESD    69          69             0.039      0.0E+00    0.708E-02          5.47                          LAYER     1
  S/ESD    69          69             0.039      0.0E+00    0.708E-02          5.47                          LAYER     7
@@ -11165,7 +11165,7 @@ LS-scale=  1.593   Wilson Scale=  0.000
 
 Block No  1.  Single precision relative error:  3.00E-05
  S/ESD     1           1             0.069     -0.2E+01    0.505E-01          1.36                          SCALE   
-[43] Resetting shift for Extinction  Shift=     186.   Esd=      7   New shift=     106.57
+[43] Resetting shift for Extinction  Shift=     186.   Esd=      7   New shift=     106.5
 [13]  LARGE     2           2           106.5       0.2E+01    0.7 E+02          2.6                           EXTPARAM
  S/ESD    69          69             0.019      0.5E+00    0.690E-02          2.69                          LAYER     1
  S/ESD    69          69             0.019      0.5E+00    0.690E-02          2.69                          LAYER     7
@@ -11414,7 +11414,7 @@ LS-scale=  1.615   Wilson Scale=  0.000
 
 Block No  1.  Single precision relative error:  3.08E-05
  S/ESD     1           1             0.053      0.8E+00    0.498E-01          1.06                          SCALE   
-[43] Resetting shift for Extinction  Shift=     166.   Esd=      7   New shift=     127.88
+[43] Resetting shift for Extinction  Shift=     166.   Esd=      7   New shift=     127.8
 [13]  LARGE     2           2           127.8       0.2E+01    0.7 E+02          2.2                           EXTPARAM
  S/ESD    71          71            -0.020      0.7E+00    0.675E-02         -2.99                          LAYER     3
  S/ESD    71          71            -0.020      0.7E+00    0.675E-02         -2.99                          LAYER     7
@@ -13973,7 +13973,7 @@ LS-scale=  1.542   Wilson Scale=  0.000
 
 Block No  1.  Single precision relative error:  2.80E-05
 [13]  LARGE     1           1             0.1       0.6E+00    0.5 E-01          3.4                           SCALE   
-[43] Resetting shift for Extinction  Shift=     311.   Esd=      6   New shift=      74.00
+[43] Resetting shift for Extinction  Shift=     311.   Esd=      6   New shift=      74.0
 [13]  LARGE     2           2            73.9       0.8E+00    0.6 E+02          4.5                           EXTPARAM
 [14]  S/ESD    21          21            0.011       0.4E+00    0.96 E-02          1.2         C      4 U[11]   
  S/ESD    69          69             0.045      0.9E+00    0.751E-02          6.02                          LAYER     1
@@ -14784,7 +14784,7 @@ LS-scale=  1.605   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 Block No  1.  Single precision relative error:  2.92E-05
-[43] Resetting shift for Extinction  Shift=     156.   Esd=      7   New shift=      88.80
+[43] Resetting shift for Extinction  Shift=     156.   Esd=      7   New shift=      88.8
 [13]  LARGE     2           2            88.7       0.0E+00    0.7 E+02          2.1                           EXTPARAM
  S/ESD    69          69             0.039      0.0E+00    0.708E-02          5.48                          LAYER     1
  S/ESD    69          69             0.039      0.0E+00    0.708E-02          5.48                          LAYER     7
@@ -15029,7 +15029,7 @@ LS-scale=  1.593   Wilson Scale=  0.000
 
 Block No  1.  Single precision relative error:  3.00E-05
  S/ESD     1           1             0.069     -0.2E+01    0.505E-01          1.36                          SCALE   
-[43] Resetting shift for Extinction  Shift=     186.   Esd=      7   New shift=     106.56
+[43] Resetting shift for Extinction  Shift=     186.   Esd=      7   New shift=     106.5
 [13]  LARGE     2           2           106.5       0.2E+01    0.7 E+02          2.6                           EXTPARAM
  S/ESD    69          69             0.019      0.5E+00    0.690E-02          2.69                          LAYER     1
  S/ESD    69          69             0.019      0.5E+00    0.690E-02          2.69                          LAYER     7
@@ -15278,7 +15278,7 @@ LS-scale=  1.615   Wilson Scale=  0.000
 
 Block No  1.  Single precision relative error:  3.08E-05
  S/ESD     1           1             0.053      0.8E+00    0.498E-01          1.06                          SCALE   
-[43] Resetting shift for Extinction  Shift=     166.   Esd=      7   New shift=     127.87
+[43] Resetting shift for Extinction  Shift=     166.   Esd=      7   New shift=     127.8
 [13]  LARGE     2           2           127.8       0.2E+01    0.7 E+02          2.2                           EXTPARAM
  S/ESD    71          71            -0.020      0.7E+00    0.675E-02         -2.99                          LAYER     3
  S/ESD    71          71            -0.020      0.7E+00    0.675E-02         -2.99                          LAYER     7
