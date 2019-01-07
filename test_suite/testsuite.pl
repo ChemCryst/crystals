@@ -318,7 +318,7 @@ sub obscureMachinePrecision() {
 	   } elsif($line =~ m/^(\s+-?\d+\.\d\d\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+)\d\.\d\d\s*/) {
               print $fho "$1 $2 $3 $4 $5\n";
 # "Resetting shift for Extinction  Shift=     299   Esd=     104.51  New shift=     143.86"
-	   } elsif($line =~ m/^(.*\d+\.)\d\d(\s+Esd=\s+\d+)\d\.\d(.*)/) {
+	   } elsif($line =~ m/^(.*\d+\.)\d\d(\s+Esd=\s+\d+)\d\.\d+(\s+New shift=\s+\d+.\d).*/) {
               print $fho "[43] $1 $2 $3\n";
 	   } elsif($line =~ m/^(.*\d+\.\d)\d(\s+Esd=\s+\d+\.\d)\d(.*)/) {
               print $fho "[44] $1 $2 $3\n";
