@@ -2298,7 +2298,7 @@ LS-scale=  1.604   Wilson Scale=  0.000
 
 Block No  1.  Single precision relative error:  2.51E-05
 [13]  LARGE     1           1             0.2       0.5E+00    0.4 E-01          5.4                           SCALE   
-[43] Resetting shift for Extinction  Shift=     837.   Esd=      7   New shift=     112.64
+[43] Resetting shift for Extinction  Shift=     837.   Esd=      7   New shift=     112.6
 [13]  LARGE     2           2           112.6       0.1E+01    0.7 E+02         10.6                           EXTPARAM
 [14]  S/ESD    21          21            0.013       0.4E+00    0.67 E-02          1.9         C      4 U[11]   
 
