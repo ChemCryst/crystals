@@ -294,8 +294,8 @@ _chemical_formula_weight            157.00
  
  
 _cell_measurement_reflns_used            0
-_cell_measurement_theta_min              0
-_cell_measurement_theta_max              0
+_cell_measurement_theta_min             0.00
+_cell_measurement_theta_max             0.00
 _cell_measurement_temperature          293
  
 _exptl_crystal_description        '?' 

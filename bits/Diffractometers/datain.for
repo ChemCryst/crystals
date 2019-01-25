@@ -91,6 +91,8 @@ c #include "ciftbx.sys"
       CHARACTER*(linlen) LINE
       CHARACTER*(linlen) SLINE
       CHARACTER*(linlen) CFORM
+      CHARACTER*(linlen) CTITLE
+  
 
 
       parameter (nodchr = 29)    !Number of chars to look out for.
@@ -987,12 +989,25 @@ C
 C 
       IF (FN) THEN
         IDJW=NCTRIM(INFIL)
-        JDKW=1
-C       25 CHARACTER USED IN TITLE AND CDATE
-        IF(IDJW.GT.55) JDJW=MAX(1,IDJW-25)     
-c      write(123,*)idjw,jdjw
+
+        DO ITEMP=IDJW,1,-1
+            JTEMP=ITEMP
+            IF(INFIL(ITEMP:ITEMP).EQ. '.') EXIT
+            JTEMP=IDJW+1   !IN CASE THERE IS NO '.'
+        ENDDO
+        DO KTEMP=JTEMP,1,-1
+            LTEMP=KTEMP
+            IF(INFIL(KTEMP:KTEMP).EQ.'\') EXIT
+            LTEMP=LTEMP-1  !IN CASE THERE IS NO '\'
+        ENDDO
+        LTEMP=LTEMP+1
+        JTEMP=JTEMP-1
+        JDJW=JTEMP-LTEMP
+        JDJW=MIN(55,JDJW) !25 CHARACTERS USED FOR #TITLE AND CDATE
+        JTEMP=LTEMP+JDJW
+c      write(123,*)LTEMP,JTEMP
         WRITE (NOUTF,'(//a,2X,A,2x,a)') '#TITLE ',
-     1  INFIL(JDJW:IDJW),CDATE
+     1  INFIL(LTEMP:JTEMP),CDATE
       ENDIF
 c
 c

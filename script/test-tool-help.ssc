@@ -11,9 +11,9 @@
 %    GET SILENT NOSTORE FINAL TEXT '1' '1'
 %    IF CVALUE .NE. '1' THEN
 %      EVALUATE TOOL-HELP = TRUE
-{I   Tool-bar HELP enabled
+{I   Tool-bar HELP is enabled
 %    ELSE
 %      EVALUATE TOOL-HELP = FALSE
-{I   Tool-bar HELP disabled
+{I   Tool-bar HELP is disabled
 %    END IF
 %END SCRIPT

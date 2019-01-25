@@ -12,6 +12,7 @@
 %    FINISH
 %  END BLOCK
 {I Inverted normal matrix for the current parameters does not exist.
+{I You need to carry out at least one more cycle of refinement
 %  EVALUATE VALID11 = FALSE
 %END SCRIPT
 

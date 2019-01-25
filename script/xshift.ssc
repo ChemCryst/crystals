@@ -7,18 +7,17 @@
 %%
 %  VARIABLE CHARACTER TOOL-FOLDER
 %  VARIABLE LOGICAL TOOL-HELP
-%  VARIABLE CHARACTER TOOL-TEXT
+%  VARIABLE CHARACTER TOOL-TEXT TOOL-FILE
 %  VARIABLE LOGICAL RUNNOW
 %  EVALUATE TOOL-FOLDER = 'structure'
-%  EVALUATE TOOL-TEXT = 'new-centre'
+%  EVALUATE TOOL-FILE = 'new-centre'
+%  EVALUATE TOOL-TEXT = 'Use the SG operators to try to centre each moiety separately'
 %  COPY '#SCRIPT CALL-TOOL-HELP'
 %  IF .NOT. RUNNOW THEN 
 %    FINISH
 %  END IF
 %% _______________________________________________________________
 %%
-
-
 %%
 %%
 %  VARIABLE INTEGER RESIDUE OLDRESIDUE                                          

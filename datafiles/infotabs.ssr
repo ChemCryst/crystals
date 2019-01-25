@@ -173,12 +173,12 @@
 ^^WI                     @ 1,3 STATIC _MT_OBS_NMRG '000000'                     
 ^^WI                     @ 1,5 STATIC _MTG14 'R merge'                          
 ^^WI                     @ 1,7 STATIC _MT_OBS_RMRG '0.0000'                     
-^^WI                     @ 1,9 STATIC _MTG14 '(Friedels merged)'                
+^^WI                     @ 1,9 STATIC _MTG14 '(Friedels not merged)'                
 ^^WI                     @ 2,1 STATIC _MTG14 'After merge'                      
 ^^WI                     @ 2,3 STATIC _MT_OBS_NFMRG '000000'                    
 ^^WI                     @ 2,5 STATIC _MTG14 'R merge'                          
 ^^WI                     @ 2,7 STATIC _MT_OBS_RFMRG '0.0000'                    
-^^WI                     @ 2,9 STATIC _MTG14 '(Friedels not merged)'            
+^^WI                     @ 2,9 STATIC _MTG14 '(Friedels merged)'            
 ^^WI                   }                                                        
 ^^WI                   @ 4,1 GRID GRIDAAC NROWS=2 NCOLS=15                      
 ^^WI                   {                                                        

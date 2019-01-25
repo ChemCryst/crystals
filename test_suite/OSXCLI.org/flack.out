@@ -5164,7 +5164,7 @@ Quadrant averages: N, Mean(Do), Mean(Ds) [Summary of scatterplot]
  Using counting statistics weights
        Hooft Parameter & su -0.005  0.012  $ 
            Hole-in-one & su -0.004  0.009    
-    Bijvoet Difference & su  0.006  0.009  £  (Using   300 reflections. Correl Coef =  90%)
+    Bijvoet Difference & su  0.006  0.009  %  (Using   300 reflections. Correl Coef =  90%)
 
  Histogram re-weighted,   226 reflections,  71.0% within interval x= -.5 to 1.5
     Bijvoet Difference & su -0.004  0.013    
@@ -5173,7 +5173,7 @@ Quadrant averages: N, Mean(Do), Mean(Ds) [Summary of scatterplot]
 
 
 @  Flack,1983, Acta Cryst A39, 876-881
-£  Thompson & Watkin, 2011, J Appl Cryst, 44, 1077-1022
+%  Thompson & Watkin, 2011, J Appl Cryst, 44, 1077-1022
 $  Hooft et al, 2008, J Appl Cryst, 41, 96-103
 &  Cooper et al, to be published
 

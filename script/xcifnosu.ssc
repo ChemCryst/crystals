@@ -4,7 +4,7 @@
 % VARIABLE LOGICAL   ANSWER                                                     
 %%
 %%
-%%   Remember that XCIF calls SFLSB to update LIST 30
+%%   Remember that XCIF calls SFLSB to update LIST 30 AND LIST 9
 %%
 %%
 %  BLOCK                                                                        
@@ -44,7 +44,7 @@
 %    COPY "#STORE CSYS CIF 'noesds.cif'"                                        
 %    COPY '#APPEND PUNCH '                                                      
 %    COPY '#CIF '                                                               
-%    COPY 'END'                                                                 
+%    COPY 'END'
 %    COPY '#PARAMETERS'                                                         
 %    COPY 'LAYOUT INSET = 1 NCHAR = 120 ESD=NO'                                 
 %    COPY 'COORD SELECT=ALL MONITOR=LOW PRINT=YES PUNCH=CIF NCHAR=14'           

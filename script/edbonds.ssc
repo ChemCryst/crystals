@@ -1,7 +1,27 @@
 %SCRIPT EDBONDS                                                                 
     This SCRIPT puts you into a system editor to modify the bonding             
     instructions.                                                               
+%%
+%% _______________________________________________________________
+%% See if GLOBAL help is needed
+%%
+%  VARIABLE CHARACTER TOOL-FOLDER
+%  VARIABLE LOGICAL TOOL-HELP
+%  VARIABLE CHARACTER TOOL-TEXT TOOL-FILE
+%  VARIABLE LOGICAL RUNNOW
+%  EVALUATE TOOL-FOLDER = 'structure'
+%  EVALUATE TOOL-FILE = 'ed40'
+%  EVALUATE TOOL-TEXT = 'Use an editor to modify the bonding instructions'
+%  COPY '#SCRIPT CALL-TOOL-HELP'
+%  IF .NOT. RUNNOW THEN 
+%    FINISH
+%  END IF
+%% _______________________________________________________________
+%%
+
+
 %%                                                                              
+
 %  IF ( EXISTS 40 .NE. 1 ) THEN                                                 
 %    COPY '#LIST 40'                                                            
 %    COPY 'END'                                                                 

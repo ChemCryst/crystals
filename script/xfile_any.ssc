@@ -43,11 +43,11 @@
 %  IF ( .NOT. ( FILEEXISTS C_FILE ) ) THEN
 %% If called incorrectly or without argument, then get a file.
 ^^WI SYSOPENFILE 
-^^WI [ '*.ins;*.res;*.hkl;*.hklf5;*.cif;*.cmf;*.fcf;*.cif_od;*.pcf;'
+^^WI [ '*.ins;*.res;*.hkl;*.hklf5;*.cif;*.cmf;*.fcf;*.cif_od;*.pcf;*.cry;*.dat;'
 ^^WI   'Crystallographic files'
 ^^WI   '*.*;' 'All files (*.*)'
 ^^WI   '*.ins;*.res;*.hkl*;*.hkl;' 'SHELX files (*.ins,*.res,*.hkl*)'
-^^WI   '*.dat;*.cry;*.12;*.use;*.l12;*.l16' 'CRYSTALS files (*.dat, etc)'
+^^WI   '*.dat;*.cry;*.12;*.use;*.l12;*.l16' 'CRYSTALS files (*.dat,etc)'
 ^^WI   '*.cif*;*.cmf;*.fcf;*.pcf;' 'CIF files (*.cif*,*.cmf,*.fcf,*.pcf)' ]
 ^^CR                                                                            
 %    GET SILENT NOSTORE TEXT 'New filename:' 'CANCEL'                                                                              
@@ -436,6 +436,7 @@
 %  ELSE IF CLASS .EQ. 'CRYS' THEN
 %%
 {I Reading CRYSTALS instruction file
+%      TRANSFER '#USE ' // C_FILE // ' '  TO display
 %      TRANSFER '#USE ' // C_FILE // ' '  TO CRYSTALS
 {I CRYSTALS instruction file closed
 %%

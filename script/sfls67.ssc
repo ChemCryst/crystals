@@ -1,4 +1,7 @@
 %SCRIPT SFLS67                                                                  
+%%
+%% Set up structure factor for FOURIER maps
+%%
 %  VARIABLE LOGICAL TWINNED FRIEDELPAIRS PARTIALS                                          
 %  VARIABLE INTEGER F67 DOSCALE DOCALC 
 %
