@@ -1,18 +1,18 @@
       program combine
 c----- convert the PLATON squeezed outout to CRYSTALS format
       character *80 cline
-      integer intype !< 1 for *.fab, 0 for other
+c      integer intype !< 1 for *.fab, 0 for other
       
       in1 = 10
       in2 = 11
       iout1 = 12
-      intype = 0
+c      intype = 0
       
       open(in1,file='PLATON6',status='old')
-      open(in2,file='platon_sq.fab',status='old',err=40)
-      intype=1
-      GOTO 70
-40    CONTINUE
+c      open(in2,file='platon_sq.fab',status='old',err=40)
+c      intype=1
+c      GOTO 70
+c40    CONTINUE
       open(in2,file='platon_sqd.hkl',status='old',err=50)
       GOTO 70
 50    CONTINUE
@@ -54,24 +54,24 @@ c
       np = 0
 
 100   continue
-        if (intype==0) then ! Other filetype (old)
+c        if (intype==0) then ! Other filetype (old)
           read(in2,'(3i4,68x,i8,2f8.2)',err=200,end=200)
      1      ih,ik,il,ic,a,b                             !read from hkp
-        else ! new fab file
-          read(in2,'(3i5,2f10.2)',err=200,end=200)
-     1      ih,ik,il,a,b                             !read from fab
-        end if
+c        else ! new fab file
+c          read(in2,'(3i5,2f10.2)',err=200,end=200)
+c     1      ih,ik,il,a,b                             !read from fab
+c        end if
 110     continue
           read(in1,'(a)',end=200) cline               !read from our L6
           read(cline,'(3i4)') jh,jk,jl
           if ( jh.eq.-512) goto 200
           n6 = n6 + 1
           if((ih.ne.jh).or.(ik.ne.jk).or.(il.ne.jl)) then
-            if (intype==0) then ! Other filetype (old)
+c            if (intype==0) then ! Other filetype (old)
               write(6,'(3I4,A)')jh,jk,jl,' not found in HKP file'
-            else
-              write(6,'(3I4,A)')jh,jk,jl,' not found in .fab file'
-            end if
+c            else
+c              write(6,'(3I4,A)')jh,jk,jl,' not found in .fab file'
+c            end if
             goto 110
           end if
           np = np + 1
@@ -93,11 +93,10 @@ c
 250   continue
       rewind(iout1)
       write(iout1,'(A,A)')
-     1  'Could not open platon_sqd.hkl, platon-sr.hkl, ',
-     2  'platon.hkp or platon_sq.fab'
-      write(6,'(A,A)')
-     1 'Cannot open platon_sqd.hkl,platon-sr.hkl, platon.hkp ',
-     2 'or platon_sq.fab.'
+     1  'Could not open platon_sqd.hkl, platon-sr.hkl, or',
+     2  'platon.hkp.'
+      write(6,'(A)')
+     1 'Cannot open platon_sqd.hkl,platon-sr.hkl, or platon.hkp.'
 
       end
 
