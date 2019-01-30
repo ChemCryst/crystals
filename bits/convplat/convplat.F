@@ -1,5 +1,11 @@
       program combine
 c----- convert the PLATON squeezed outout to CRYSTALS format
+C In Apr2018 PP modified code to read platon_sq.fab files in preference to 
+C platon_sqd.hkl output however, the .fab indexing and ordering can be signficantly 
+C different to the hkl, and that isn't handled in this code. Therefore 
+C reverting (Jan19) to reading the C platon_sqd.hkl file which contains a and b 
+C parts beyond col 80. Apr18 code is just commented out for now.
+
       character *80 cline
 c      integer intype !< 1 for *.fab, 0 for other
       
