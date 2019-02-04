@@ -5,55 +5,40 @@
 ^^WI   '#SCRIPT TIPS' DISABLEIF='IN'                                            
 ^^WI   ITEM HHELP '&Enable TOOLS help'
 ^^WI   '#SCRIPT SET-TOOL-HELP' DISABLEIF='IN'                                           
+%%
+%%
 ^^WI   SPLIT
 ^^WI   ITEM NOTE '&Notepad' '$notepad' DISABLEIF='IN'
-^^WI   ITEM XBENCH '&Benchmark' '#SCRIPT XBENCH' DISABLEIF='IN'                 
-^^WI ITEM XDL '&Delete bfiles' '#spawn + "crysdir:crdelbf.BAT"' DISABLEIF='IN'
-^^WI   ITEM PLAT  '&Platon' '#SCRIPT PLATON'                                    
-^^WI               ENABLEIF='L1 L2 L3 L5 L6'                                    
-^^WI   SPLIT                                                                    
+^^WI   ITEM XDL '&Delete bfiles' '#spawn + "crysdir:crdelbf.BAT"' 
+^^WI     DISABLEIF='IN'
 ^^WI   ITEM CANON '&Systematic Naming' '#SCRIPT DCANON'                         
-^^WI               ENABLEIF='L1 L2 L5' DISABLEIF='IN'                           
+^^WI     ENABLEIF='L1 L2 L5' DISABLEIF='IN'                           
 ^^WI   ITEM PROBE '&Probe minima' '#SCRIPT XPROBE'                              
-^^WI               ENABLEIF='L1 L2 L5 L6' DISABLEIF='IN'                        
-#ifdef CRY_OSWIN32
-^^WI   ITEM DRED '&DelRed' '$% "CRYSDIR:delred.exe"' 
-#else
-^^WI   ITEM DRED '&DelRed' '$% "CRYSDIR:delred"'
-#endif
-^^WI            DISABLEIF='IN'
+^^WI     ENABLEIF='L1 L2 L5 L6' DISABLEIF='IN'                        
+%%
+%%
 ^^WI   SPLIT                                                                    
 ^^WI   ITEM SPTEST '&Spacegroup quiz' '#SCRIPT SPACETEST'                       
 ^^WI   ITEM WWTB   '&Who wants to be..'  '#SCRIPT WWTB'                         
-^^WI   SPLIT                                                                    
-^^WI   MENU NEW '&New Things'                                                
-^^WI    ITEM XSPEK '&Absolute' '#SCRIPT XFLACK' DISABLEIF='IN'              
-^^WI    ITEM XREWT '&Reweight' '#SCRIPT REWEIGHT' DISABLEIF='IN'              
-^^WI   ITEM INFO 'Information' '#SCRIPT NEWINF'
-^^WI              DISABLEIF='IN'
-^^WI   ENDMENU                                                                  
+%%
+%%
 ^^WI   SPLIT                                                                    
 ^^WI   MENU OBSOLETE '&Obsolete'                                                
-^^WI    ITEM CONY 'Co&ntour' '$"CRYSDIR:contour.exe"' DISABLEIF='IN'             
-^^WI    ITEM CSD2 'csd2cry' '$% "CRYSDIR:csd2cry.exe"' DISABLEIF='IN'              
-#ifdef CRY_OSWIN32
-^^WI   ITEM REIN '&Re-index' '$% "CRYSDIR:reindex.exe"'
+#ifdef  CRY_OSWIN32
+^^WI      ITEM DRED '&DelRed' '$% "CRYSDIR:delred.exe"' 
 #else
-^^WI   ITEM REIN '&Re-index' '$% "CRYSDIR:reindex"' 
+^^WI      ITEM DRED '&DelRed' '$% "CRYSDIR:delred"'
 #endif
-^^WI            DISABLEIF='IN'            
-#ifdef CRY_OSWIN32
-^^WI   ITEM SXTO 's&x2cry' '$% "CRYSDIR:sxtocry.exe"' 
+^^WI       DISABLEIF='IN'
+#ifdef  CRY_OSWIN32
+^^WI      ITEM REIN '&Re-index' '$% "CRYSDIR:reindex.exe"'
 #else
-^^WI   ITEM SXTO 's&x2cry' '$% "CRYSDIR:sxtocry"' 
+^^WI      ITEM REIN '&Re-index' '$% "CRYSDIR:reindex"' 
 #endif
-^^WI            DISABLEIF='IN'
-^^WI    MENU _SIR02 'Sir 0&2'                                                   
-^^WI     ITEM _SIR '&Create files' '#SCRIPT XSIR02' ENABLEIF='L1 L2 L6'         
-^^WI                                        DISABLEIF='IN'                      
-^^WI     ITEM _SIR '&Run SIR02  ' '#SCRIPT runsir02' DISABLEIF='IN'             
-^^WI     ITEM _SIR '&Input results' '#SCRIPT XSIR02IN' DISABLEIF='IN'           
-^^WI    ENDMENU                                                                 
+^^WI      DISABLEIF='IN'            
+^^WI      ITEM XBENCH '&Benchmark' '#SCRIPT XBENCH' DISABLEIF='IN'                 
+%%
+%%
 ^^WI   SPLIT                                                                    
 ^^WI    MENU PR '&Primer'                                                       
 ^^WI     ITEM P1 '&Getting Started'                                             
@@ -117,7 +102,7 @@
 ^^WI    ENDMENU                                                                 
 ^^WI   ENDMENU                                                                  
 ^^WI   ITEM INFO 'Information' '#SCRIPT TOOLINF'
-^^WI              DISABLEIF='IN'
+^^WI     DISABLEIF='IN'
 ^^WI  ENDMENU                                                                   
 %%END SSR
 

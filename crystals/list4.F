@@ -612,7 +612,13 @@ C
 C--PROCESS THE NEXT REFLECTION  -  CHECK THAT THE CURRENT /FO/ IS NOT ZE
 C
 2450    CONTINUE
-        FO= ABS(STORE(M6+ITWIN))
+                                    !Now (2019)I think the ABS is incorrect.
+                                    !However, it makes only trivial differences to 
+                                    !the testdecks so is left as-is
+                                    !There are more ABS lower down which probably
+                                    !also should be changed
+        FO= ABS(STORE(M6+ITWIN))  !IS THE ABS CORRECT?
+c        FO= (STORE(M6+ITWIN))
         SIGMA=STORE(M6+12)  ! SET WEIGHT TO THE SIGMA VALUED STORED IN LIST 6
         FC=STORE(M6+5)*SCALE ! CONVERT TO SCALE of Fo.
 C--SET UP THE INVERSE VALUES
@@ -1076,7 +1082,7 @@ c
             WRITE(CMON,'(A,/,A,/,A)')
      1      '^^PL PLOTDATA _CLASS BARGRAPH ATTACH _RWGHT',
      1      '^^PL XAXIS TITLE ''Reciprocal weights vs /FO/''',
-     1'^^PL NSERIES=1 LENGTH=20 YAXIS TITLE ''estimated <(Fo-Fc)\**2>'''
+     1'^^PL NSERIES=1 LENGTH=20 YAXIS TITLE ''Reciprocal Weight'''
           CALL XPRVDU(NCVDU, 3,0)
           END IF
 6160      FORMAT( ' Reciprocal weights versus /FO/' ,A3)
@@ -3309,7 +3315,8 @@ C--CHECK IF WE ARE REFINING AGAINST /FO/ **2
 C--WE ARE REFINING AGINST /FO/ **2
 1350  CONTINUE
       ACI=ACI*FO*FO
-      ACT=ABS(FO)*FO-FC*FC
+      ACT=ABS(FO)*FO-FC*FC    !is the abs valid?
+c      ACT=(FO)*FO-FC*FC
       ACT=ACT*ACT
 C--COMPUTE THE WEIGHTED DELTA SQUARED
 1400  CONTINUE
@@ -3336,12 +3343,14 @@ C
 C--ADD IN OVERALL TOTALS
       APD(1)=APD(1)+FO
       APD(2)=APD(2)+FC
-      APD(3)=APD(3)+ABS(ABS(FO) - FC)
+      APD(3)=APD(3)+ABS(ABS(FO) - FC)   ! is the abs correct?
+c      APD(3)=APD(3)+ABS((FO) - FC)
       APD(4)=APD(4)+ACI
       APD(5)=APD(5)+BCI
       APD(6)=APD(6)+AP
       APD(7)=APD(7)+ACT
-      APD(12)=APD(12)+ABS(FO)
+      APD(12)=APD(12)+ABS(FO)     ! is the abs correct?
+c      APD(12)=APD(12)+(FO)
 C--ADD IN THE TOTALS FOR THE INDICES
       L=KPOSN(1)
       CALL XSUM(L)
@@ -3503,12 +3512,14 @@ C--ADD IN THE TOTALS
       ISTORE(NOC+1)=ISTORE(NOC+1)+1
       STORE(NOC+2)=STORE(NOC+2)+FO
       STORE(NOC+3)=STORE(NOC+3)+FC
-      STORE(NOC+4)=STORE(NOC+4)+ABS(ABS(FO)-FC)
+      STORE(NOC+4)=STORE(NOC+4)+ABS(ABS(FO)-FC)  ! IS THE ABS CORRECT?
+c      STORE(NOC+4)=STORE(NOC+4)+ABS((FO)-FC)
       STORE(NOC+5)=STORE(NOC+5)+ACI
       STORE(NOC+6)=STORE(NOC+6)+BCI
       STORE(NOC+7)=STORE(NOC+7)+AP
       STORE(NOC+8)=STORE(NOC+8)+ACT
-      STORE(NOC+9)=STORE(NOC+9)+ABS(FO)
+      STORE(NOC+9)=STORE(NOC+9)+ABS(FO) !IS THE ABS CORRECT?
+c      STORE(NOC+9)=STORE(NOC+9)+(FO)
 C--UPDATE THE MAXIMUM CORE ADDRESS
       MAXADD=MAX0(MAXADD,NOC+9)
 1300  CONTINUE

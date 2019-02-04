@@ -183,8 +183,14 @@ C--NOT THE CORRECT SERIAL NUMBER
      1    trim(CMON(3)), trim(CMON(4))
           WRITE(NCAWU,'(/A/A/A/)')trim(CMON(2)), 
      1    trim(CMON(3)), trim(CMON(4))
+          IF((LN.EQ.11).AND.(IBUFF(1).EQ.5))THEN
+           WRITE(CMON,'(a)')
+     1    ' You must do a cycle of refinement to compute esds'
+           CALL XPRVDU(NCEROR, 1,0)
+           WRITE(NCAWU,'(/A/)')trim(CMON(1))
+          ENDIF
           CALL OUTCOL(1)
-        end if
+        END IF
       else
         nostop=-1
       end if

@@ -5136,9 +5136,9 @@ C----- SAVE THE TIMER STATUS
 C
       WRITE (CMON,1235)
       CALL XPRVDU(NCVDU, 4,0)
-1235  format (/  ' For Microvax 3800,',
-     1 ' 500 parameters, 5000 observations '/
-     1 'Accumulation = 1824 secs, Inversion = 75 secs'/)
+1235  format (/  ' For Microvax 3800 in 1988,',
+     1 ' 500 parameters & 5000 observations required:'/
+     1 ' Accumulation = 1824 secs, Inversion = 75 secs'/)
 C
             WRITE(CMON,3060) NVAR,NREF
             CALL XPRVDU(NCVDU, 2,0)

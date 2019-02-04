@@ -1,4 +1,13 @@
 %SCRIPT XFOPTWT
+%%
+%% Replaced by xfoptwt-19 Jan, 2019.
+%% The new script uses SCHEME 10, no robust weighting and
+%% uses unit weights.
+%% It now gives GOF closer to unity with modern data and avoids
+%% problems where there are lots of very small su(F).
+%% Some ABS functions (commented) should probably be removed fro LIST4.F,
+%% But doing so causes lots of very small changes in the test decks
+%%
 %% GUI version of FOPTWT. It tries to choose a scheme based on slope
 %% and correlation cofficient
 % IF EXISTS 6 .NE. 1 THEN                                                       

@@ -22,6 +22,9 @@
 ^^WI   SPLIT                                                                    
 ^^WI   ITEM HOOFT '&Absolute config' '#SCRIPT XFLACKPASCAL'                          
 ^^WI               ENABLEIF='L5 L6 L30' DISABLEIF='IN'                              
+^^WI   ITEM HBON  '&Likely H-bonds'                                             
+^^WI   '#dist_Nou mo=al_Nsel ran=li_Nli 1.5 2.2 .7 2.2_Npi h_Nbo o n_Nen'
+^^WI               ENABLEIF='L1 L2 L5' DISABLEIF='IN'                           
 ^^WI   MENU XROTAX '&ROTAX analysis/twins'                                      
 ^^WI     ITEM XINTWIN 'ROTAX	Ctrl+R' '#SCRIPT XROTAX'                                  
 ^^WI               ENABLEIF='L1 L5 L6' DISABLEIF='IN'                           
@@ -31,9 +34,6 @@
 ^^WI     ITEM XINTWIN 'Remove twin laws' '#SCRIPT UNTWIN'                       
 ^^WI               ENABLEIF='L5 L6' DISABLEIF='IN'                              
 ^^WI   ENDMENU                                                                  
-^^WI   ITEM HBON  '&Likely H-bonds'                                             
-^^WI '#dist_Nou mo=al_Nsel ran=li_Nli 1.5 2.2 .7 2.2_Npi h_Nbo o n_Nen'         
-^^WI               ENABLEIF='L1 L2 L5' DISABLEIF='IN'                           
 ^^WI   SPLIT                                                                    
 ^^WI   MENU XPUBC 'Publication checks'                                          
 ^^WI   ITEM ACTA  '&Local Acta checks' '#SCRIPT ACTA'                                 

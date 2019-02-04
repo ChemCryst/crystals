@@ -45,9 +45,9 @@
 ^^WI                    ITEM _REFR '&Update model' '#SUM L 2_N#SUM L 5_NEND'
 ^^WI                      DISABLEIF='IN' ENABLEIF='L1 L2 L5'
 ^^WI                    SPLIT
-^^WI                    ITEM _REFR 'Auto update OFF' '#SCRIPT updtoff'
+^^WI                    ITEM _REFR 'Auto Display OFF' '#SCRIPT updtoff'
 ^^WI                      DISABLEIF='IN'
-^^WI                    ITEM _REFR 'Auto update ON'  '#SCRIPT updton'
+^^WI                    ITEM _REFR 'Auto Display ON'  '#SCRIPT updton'
 ^^WI                      DISABLEIF='IN'
 ^^WI                   ENDDEFINEMENU
 %%END SSR
