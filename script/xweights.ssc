@@ -41,7 +41,7 @@ A SCRIPT to assist with the weighting of least squares refinement
 ^^WI   }                                                                        
 ^^WI   @ 2,4 LISTBOX XW_LIST VISLINES=9 ADDTOLIST                               
 ^^WI         'Quasi-Unit' 'Simple-statistical' 'Robust-statistical'
-^^WI         'Modified-SHELX' 'Optimal Chebychev'  
+^^WI         'Modified-SHELX' 'Automatic Chebychev'  
 ^^WI         'Chebychev(F)' 'Chebychev(Fsq)' NULL                               
 ^^WI   @ 2,6 GRID BTNS NROWS=7 NCOLS=1                                          
 ^^WI   {                                                                        
@@ -125,10 +125,10 @@ A SCRIPT to assist with the weighting of least squares refinement
 %                COPY 'END'                                                     
 %                COPY '#SCRIPT XANAL'                                           
 %            END BLOCK                                                          
-%            BLOCK                                    %5 OPTIMAL CHEBYCHEV%       
+%            BLOCK                                    %5 AUTOMATIC CHEBYCHEV%       
 %                IF FTYPE .EQ. 0 THEN                                           
  * Chebychev Fo refinement                                                                
-%                    COPY '#SCRIPT XFOPTWT'                                     
+%                    COPY '#SCRIPT XFOPTWT-19'                                     
 %                ELSE                                                           
  * Chebychev Fsq refinement                                                                
 %                    COPY '#SCRIPT XFSQWT'                                      
@@ -137,7 +137,7 @@ A SCRIPT to assist with the weighting of least squares refinement
 %            BLOCK                                    %6 CHEBYCHEV(F)%            
  * Chebychev Fo refinement                                                                
 
-%                    COPY '#SCRIPT XFOPTWT'                                     
+%                    COPY '#SCRIPT XFOPTWT-19'                                     
 %            END BLOCK                                                          
 %%                                                                              
 %            BLOCK                                    %7 CHEBYCHEV(Fsq)%          

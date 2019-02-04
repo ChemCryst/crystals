@@ -1372,10 +1372,16 @@ C--READ THE INPUT DIRECTIVES
 C--INPUT WENT OKAY  -  CLEAR THE CORE AGAIN
       CALL XRSL
       CALL XCSAE
+      IF ( IPESD .NE. 0 ) THEN     !FORM THE ABSOLUTE LIST 12
+       CALL XPCH5E(2)   ! ENSURE A LIST 9 (ESDS) EXISTS IF THE MATRIX IS OK
+       CALL XRSL
+       CALL XCSAE
+       IF (KHUNTR(09,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL09
+      ENDIF
 C--LOAD A FEW LISTS
-      CALL XFAL01
-      CALL XFAL05
-      CALL XFAL23
+      IF (KHUNTR(01,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL01
+      IF (KHUNTR(05,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL05
+      IF (KHUNTR(23,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL23
 cdjwfeb2001
         toler = store(l23sp+5)
         call xprc17 (0, 0, TOLER, -1)
@@ -1432,7 +1438,8 @@ C
 C
 C----- OUTPUT THE OVERALL PARAMETERS
 #endif
-      MCFUNC = 1
+      MCFUNC = 1      !Not yet used - projected use unclear!!
+c---- output overall parameters
       CALL XPP5OV(MCFUNC)
 C----- OUTPUT THE TWIN SCALE PARAMETERS
       CALL XPP5TW(MCFUNC)
@@ -2650,24 +2657,28 @@ C
       IFUNC = IFUNC
       CALL XRSL
       CALL XCSAE
-      CALL XPCH5E(2)   ! ENSURE A LIST 9 (ESDS) EXISTS IF THE MATRIX IS OK
-      CALL XRSL
-      CALL XCSAE
-c#endif
-      CALL XFAL05
+c  LIST 5 should already be loaded by XPCH5E
+      IF (KHUNTR(05,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL05 
       IF ( MD5ES .EQ. 0 ) RETURN
 
 CDJWMAY99 - PREAPRE TO APPEND CIF OUTPUT ON FRN1
       CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
       CALL XRDOPN(8, KDEV , CSSCIF, LSSCIF)
 C
+c  LIST 1, 5 and 9 should have been loaded in XPCH5E
       IF (KHUNTR(01,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL01
-      IF (KHUNTR(09,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL09
       IF (KHUNTR(13,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL13
+      if (ipesd.ne.0) then
+       IF (KHUNTR(09,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL09
+      endif
       TWINNED=.FALSE.
       IF (N5ES.GE.1) THEN
             TWINNED=.TRUE.
-            IF(KEXIST(25) .GE.1) CALL XFAL25
+            IF(KEXIST(25) .GE.1) then 
+                  CALL XFAL25
+            else
+                  goto 9910
+            endif
       ENDIF
       IF (TWINNED) THEN
        WRITE(CMON,'(A)')'Twin Elements'
@@ -2693,15 +2704,17 @@ C
         ENDIF
 C
 C
-        ITEMP=KHUNTR (9,0, IADDL,IADDR,IADDD, -1)
-        IF ( ITEMP .NE. 0) THEN
-          CALL XZEROF (BPD, 11)    ! ZERO THE ESD BUFFER
-        ELSE
-          M9ES = L9ES
-          DO ITEMP=1,MD9ES                  !ALL THE SCALES ARE PART OF THE SAME RECORD
-           BPD(ITEMP) = STORE(M9ES+ITEMP-1)
-          ENDDO
-        ENDIF            
+        CALL XZEROF (BPD, 11)    ! ZERO THE ESD BUFFER
+        if(ipesd.ne.0) then
+         ITEMP=KHUNTR (9,0, IADDL,IADDR,IADDD, -1)
+         IF ( ITEMP .EQ. 0) THEN
+           M9ES = L9ES
+           DO ITEMP=1,MD9ES                  !ALL THE SCALES ARE PART OF THE SAME RECORD
+            BPD(ITEMP) = STORE(M9ES+ITEMP-1)
+           ENDDO
+         ENDIF            
+        endif
+c
         M25 = L25
         DO I=1,N25
           CALL XFILL (IB,IVEC,16)
@@ -4810,7 +4823,7 @@ CRICJUN02 - Last minute SFLS calc to get threshold cutoffs into 30.
 C----- SET REFLECTION LISTING TYPE (LIST 6)
          ITYP06 = 1
          CALL XSFLSB(-1,ITYP06)
-         CALL XPCH5E(2)          !CREATE A LIST 9 (ESDS)
+C-JAN-19         CALL XPCH5E(2)          !CREATE A LIST 9 (ESDS)
       ENDIF
 CRICJUN02 - Last minute SFLS calc to get threshold cutoffs into 30.
 
