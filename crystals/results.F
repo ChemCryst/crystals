@@ -6603,6 +6603,8 @@ C
       call xpcif
      1 ('# selected by a user-defined sigma threshold ')
            CALL XPCIF (' ')
+      call xpcif
+     1 ('# Explicitly named reflections are ALWAYS excluded from R&wR')
            CALL XPCIF (' ')
            CALL XPCIF 
      1     ('# The values actually used during refinement')
@@ -6647,7 +6649,7 @@ c-try to catch old DSC files where +11 held minimisation function
 C
            CALL XPCIF (' ')
            CALL XPCIF 
-     1     ('# The values computed with all filters except I/sigma')
+     1     ('# Computed with no filters except I/sigma = -10')
 
            WRITE (CLINE,'(''_oxford_reflns_number_all '', I10)')
      1                  NINT(STORE(L30CF+5))
@@ -6664,7 +6666,7 @@ C
 c
 c
            CALL XPCIF 
-     1     ('# The values computed with a 2 sigma cutoff - a la SHELX')
+     1    ('# Computed with no filters except I/sigma = +2 a la SHELX')
 
 #ifdef __MAC__
            WRITE(CBUF,'(''I>'',F6.1,''\\s(I)'')') STORE(L30CF+0)

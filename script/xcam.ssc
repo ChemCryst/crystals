@@ -63,11 +63,12 @@
 ^^WI             @ 3,1 DROPDOWN LPACK INFORM=YES ADDTOLIST                      
 ^^WI             'Unpack' 'Complete' 'Centroid' 'Cut' 'Window' 'NULL'           
 ^^WI             @ 3,3 DROPDOWN LCOLOR INFORM=YES ADDTOLIST                     
-^^WI              'Coloured' 'B&W' 'B&W-2' 'Obey' 'NULL'                                
+^^WI              'Coloured' 'B&W' 'B&W-2' 'Obey' 'NULL'    
+%% If you edit FONTs, dont forgrt to edit XNSTYLE.SSC                            
 ^^WI             @ 5,1 DROPDOWN LFONT INFORM=YES ADDTOLIST                      
-^^WI             'Font 4' 'Font 6'
-^^WI             'Font 8' 'Font 9' 'Font 10' 'Font 12' 'Font 16'                
-^^WI             'Font 20' 'Font 24' 'Font 28' 'Font 32'                        
+^^WI             'Font 6'
+^^WI             'Font 8'  'Font 10' 'Font 12' 'Font 16'                
+^^WI             'Font 20' 'Font 24' 'Font 28' 'Font 36'                        
 ^^WI             'Font 48' 'Font 72' 'NULL'                                     
 ^^WI           }                                                                
 ^^WI           @ 6,2 GRID STUFF NROWS=6 NCOLS=2                                 
@@ -219,7 +220,7 @@
 ^^CR                                                                            
 %% Set increment default to 5 degrees                                           
 ^^CO SET XC_BL SELECTION=5                                                      
-^^CO SET LFONT SELECTION=4                                                      
+^^CO SET LFONT SELECTION=1                                                      
 %VARIABLE INTEGER ATOMSIN ATOMSOUT ATOMCHANGE                                   
 %%                                                                              
 %% COUNT THE NUMBER OF ATOMS PASSED TO CAMERON.                                 

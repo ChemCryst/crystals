@@ -14,7 +14,7 @@
 % EVALUATE CALLED = TRUE                                                        
 %% 
 %% edit was still activated even if part number selection cancelled
-%  if nvalue .lt. 0 then
+%  if nvalue .eq. ( - 1 ) then
 %    finish
 %  end if                                                                             
 %%                                                                              

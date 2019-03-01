@@ -286,7 +286,7 @@ C SO THAT IT ONLY FITS ON 90% OF THE SCREEN.
 CDJWMAR97      YMAX = (0.9*XCEN)/SCALE + YCP
       YMAX = (0.9*YCEN)/SCALE + YCP
       IDLAB = 0
-cdjwnov06      TENPIX = REAL(ILSIZE)/SCALE
+cdjwnov06      TENPIX = REAL(ILSIZE)/SCALE  Note ILSIZE no longer used
 cdjwnov06  See Mouse
       TENPIX = REAL(Ifont)*2.5/SCALE
       IF (ICURS.EQ.1) RETURN
