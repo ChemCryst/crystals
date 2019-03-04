@@ -27,15 +27,17 @@
 ^^WI                 ITEM _X 'Oth&er' '#SCRIPT XOTHER_N_A'
 ^^WI                                 DISABLEIF='IN'
 ^^WI             ENDMENU
+^^WI             SPLIT
 ^^WI             ITEM _RP 'Set &residue number of _A' '#SCRIPT XRESG_N_A' 
 ^^WI                    DISABLEIF= 'IN'
-^^WI             ITEM _RP 'Set &part number of _A' '#SCRIPT XPARTG_N_A' 
+^^WI             ITEM _RP 'Set &part number of _A'    '#SCRIPT XPARTG_N_A' 
 ^^WI                    DISABLEIF= 'IN'
-^^WI             ITEM _RP '&Set occupancy of _A' '#SCRIPT XOCCG_N_A' 
+^^WI             ITEM _RP '&Set occupancy of _A'      '#SCRIPT XOCCG_N_A' 
 ^^wi                    DISABLEIF= 'IN'
-^^WI             ITEM _GUISO 'Change to Uequiv'
-^^WI                         '#SCRIPT XUEQUIV_N_GEND' DISABLEIF='IN'
-^^WI             ITEM _GUSET 'Set U[iso]' '#SCRIPT XUSET_N_GEND' DISABLEIF='IN'
+^^WI             ITEM _GUISO 'Change _A to Uequiv'    '#SCRIPT XUEQUIV_N_A'
+^^WI                    DISABLEIF='IN'
+^^WI             ITEM _GUSET 'Set U[iso] of _A'       '#SCRIPT XUSET_N_A' 
+^^wi                    DISABLEIF='IN'
 ^^WI             SPLIT
 ^^WI             ITEM _EDA 'Ed&it _A' '#SCRIPT XPARAM_N_A' DISABLEIF='IN'
 ^^WI             ITEM _ADDH 'Add &hydrogens to _A' '#SCRIPT XADDH_N_A'
@@ -62,9 +64,6 @@
 ^^WI             SPLIT
 ^^WI             ITEM _SLFRG '&Select fragment containing _A'
 ^^WI                    '^^CO SET MODEL01 SELFRAG _A YES' DISABLEIF='IN'
-^^WI             ITEM _ZMFRG '&Zoom fragment containing _A'
-^^WI              '^^CO SET MODEL01 SELFRAG _A YES ZOOMATOMS YES SELECT ALL=NO'
-^^WI                    DISABLEIF='IN'
 ^^WI             ITEM _GDELA 'Dele&te fragment containing _A'
 ^^WI                    '#SCRIPT DELGRP_N_FEND'  DISABLEIF='IN'
 ^^WI             ITEM _GDELA 'Centroid of &fragment containing _A'
@@ -77,6 +76,10 @@
 ^^WI                 ITEM _GDELA 'Same restraint'
 ^^WI                    '#SCRIPT MATCHSAME_N_FEND'  DISABLEIF='IN'
 ^^WI             ENDMENU
+^^WI             ITEM _ZMFRG '&Zoom fragment containing _A'
+^^WI              '^^CO SET MODEL01 SELFRAG _A YES ZOOMATOMS YES SELECT ALL=NO'
+^^WI                    DISABLEIF='IN'
+
 ^^WI             SPLIT
 ^^WI             ITEM _DELA '&Delete _A' '#EDIT_NDELETE _A_NEND'
 ^^WI                                 DISABLEIF='IN'

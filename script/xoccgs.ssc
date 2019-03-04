@@ -2,13 +2,14 @@
 %%Get a occupation number. CMESSAGE is text to be displayed
 % VARIABLE CHARACTER CATOM CMESSAGE
 % VARIABLE LOGICAL CALLED
-% VARIABLE REAL APART AVALUE
+% VARIABLE REAL AOCC AVALUE
 % EVALUATE CALLED = TRUE
 % EVALUATE CMESSAGE = 'Example: 0.5'
+% EVALUATE AVALUE = 1.0
 %%
 %%
 % COPY '#SCRIPT XGETVAL'
-% EVALUATE APART = AVALUE
+% EVALUATE AOCC = AVALUE
 % EVALUATE CALLED = TRUE
 %%
 %% edit was still activated even if part number selection cancelled

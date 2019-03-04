@@ -175,9 +175,12 @@ C        ISCAL = ISCALS
         ICLDEF = ICLDES
 C        IFONT = 12 (changed from IFSIZE by DJW)
 #if defined(_DOS_)
+c Note. variable ILSIZE is no longer used - Feb 2019
+c GUI label size depends upon the scaled FONT.
+c Scalefactor set in FastText (in ccchartdoc.ccp)
         ILSIZE = 8
 #else
-        ILSIZE = 60
+        ILSIZE = 60 
 #endif
 C MOVE OVER THE COLOUR NUMBERS
         DO 1000 I = 1 , ICLMAX
@@ -2690,7 +2693,6 @@ C-DJW      IF (ICN.EQ.1) IFSIZE = MAX(2,NCOMMD(INCNT))
       GOTO 9999
 714   CONTINUE
 C DEFAULT FONT
-C-DJW      IFSIZE = 12
 c DJW Nov03
       IFONT = 20
       GOTO 9999
@@ -3448,7 +3450,11 @@ C FIRST WE NEED TO SHUT DOWN THE OLD DEVICE IF REQUIRED.
         ENDIF
       ENDIF
 C LOAD IN THE DEVICE INFO
-      ILSIZE = 10
+#if defined(_DOS_)
+        ILSIZE = 8  !Note variable ILSIZE is no longer used - Feb 2019
+#else
+        ILSIZE = 60
+#endif
 cric99: Device.cmn removed. Parameters stored in CAMPRE in CAMDEV
 c      IF (.NOT.LFILES (-1,'DEVICE.CMN',IINPT)) THEN
 c        CALL ZTXTMD
