@@ -53,9 +53,11 @@ CcModelBond::CcModelBond(int x1,int y1,int z1, int x2, int y2, int z2,
   m_bsym = ( btype < 0 );
   m_np = np;
   for (int i = 0; i < np; i++ ) {
-      CcModelAtom* atom = mp_parent->FindAtomByPosn( ptrs[i] );
-	  atom->m_nbonds++;
-      m_patms.push_back( atom );
+	  CcModelAtom* atom = mp_parent->FindAtomByPosn( ptrs[i] );
+	  if (atom) {
+		  atom->m_nbonds++;
+		  m_patms.push_back(atom);
+	  }
   }
   m_label = label;
   m_slabel = cslabl;
@@ -177,6 +179,13 @@ void CcModelBond::Render(CcModelStyle *style, bool feedback)
 		}
 	}
 
+	if ( style->showres ) {
+		if (m_patms.size() > 1 ) {
+			if ( (m_patms[0]->m_refflag != style->showres) && (m_patms[1]->m_refflag != style->showres) ) return;
+		}
+	}
+
+    
 
 
    float vecX, vecY, vecZ;

@@ -1,5 +1,5 @@
 %SCRIPT XMODVIEW                                                                
-% VERIFY THERM COV ROT SEL POLY TOGGLEH
+% VERIFY THERM COV ROT SEL POLY TOGGLEH CYCLER SHOWR
 % GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                  
 % CASE VALUE                                                                    
 %  BLOCK                                                                        
@@ -51,6 +51,12 @@
 ^^CO SET MODEL01 SHOWH YES
 %    END BLOCK                                                                    
 %   END CASE                                                                      
+%  END BLOCK
+%  BLOCK                                                                        
+^^CO SET MODEL01 CYCLER                                                      
+%  END BLOCK                                                                    
+%  BLOCK                                                                        
+^^CO SET MODEL01 SHOWR
 %  END BLOCK                                                                    
 % END CASE                                                                      
 %END SCRIPT                                                                     

@@ -148,6 +148,7 @@ CrModel::CrModel( CrGUIElement * mParentPtr )
   m_style.showh = true;
   m_style.bond_style = BONDSTYLE_HALFPARENTPART;
   m_style.min_peak_height_to_show = -99999;
+  m_style.showres = 0;
 }
 
 CrModel::~CrModel()
@@ -322,6 +323,31 @@ CcParse CrModel::ParseInput( deque<string> &  tokenList )
         bool select = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes);
         tokenList.pop_front();
         m_style.showh = select;
+        Update(true);
+        break;
+      }
+      case kTCycleResidue:
+      {
+        tokenList.pop_front(); // Remove that token!
+        if(m_ModelDoc) { //No point if there is no model.
+            m_style.showres++;  // keep incrementing - model code (with access to residue list) will detect if we go off the end of residue numbers and reset appropriately.
+            m_style.showres = m_ModelDoc->FindNextResidueNumber(m_style.showres);
+            if ( m_style.showres ) {
+                ostringstream s;
+                s << "Showing residue #" << m_style.showres;
+                if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->CreateMessagePopup( s.str() );
+            } else {
+                if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->DeleteMessagePopup( );
+            }
+        }
+        Update(true);
+        break;
+      }
+      case kTShowResidues:
+      {
+        tokenList.pop_front(); // Remove that token!
+        m_style.showres = 0;
+        if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->DeleteMessagePopup( );
         Update(true);
         break;
       }

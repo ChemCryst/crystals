@@ -609,7 +609,7 @@ CcRect CcModelDoc::FindModel2DExtent(float * mat, CcModelStyle * style) {
 	for ( list<CcModelAtom>::iterator atom=mAtomList.begin();       atom != mAtomList.end();     atom++)
 	{
 
-
+        if ( (style->showres != 0) && ( (*atom).m_refflag != style->showres )) continue;
 //not excluded
 		if ( !((*atom).m_excluded) ) {
 			CcPoint c = (*atom).GetAtom2DCoord(mat);
@@ -644,10 +644,46 @@ std::list<Cc2DAtom> CcModelDoc::AtomCoords2D(float * mat) {
 	return ret;
 }
 
+// Input: An atom residue number
+// Returns: Same number if that residue exists,
+//          Next highest residue number, if it exists
+//          Or zero.
+// Usage - for cycling, increment current number, call this routine, use returned value.
+//
+int CcModelDoc::FindNextResidueNumber(int current)
+{
+     int nextres = 0;
+     bool resnotfound = true;
+
+//TODO: Loop through donut and sphere lists -> need to update to pass in and store this info.
+     for ( list<CcModelAtom>::iterator atom=mAtomList.begin();       atom != mAtomList.end();     ++atom) {
+         int ar = (*atom).m_refflag;
+         if ( ar == current ){
+             nextres = ar;
+             resnotfound = false;
+             break;
+         }
+         // check if ar might be the next residue to cycle to.
+         if  ( ar > current ) {  //Only need an update if atom res# is > showres, subject to following conditions:
+            if ( nextres < current ) { //defo needs updating to something (unless only one residue?)
+                nextres = ar;
+             } else {                  // nextres is bigger than showres. Make it the smallest of nextres and ar.
+                if ( ar < nextres ) {
+                    nextres = ar;
+                }
+            }
+        }
+     }
+     return nextres;
+}
+
+
 bool CcModelDoc::RenderAtoms( CcModelStyle * style, bool feedback)
 {
    bool ret = false;
    m_thread_critical_section.Enter();
+
+
    if ( !( mAtomList.empty() && mSphereList.empty() && mDonutList.empty() ) ) {
 
 // Render atoms last if 'TINY' style (transparent).
@@ -661,7 +697,7 @@ bool CcModelDoc::RenderAtoms( CcModelStyle * style, bool feedback)
      }
 // Non Q atoms
 	 for ( list<CcModelAtom>::iterator atom=mAtomList.begin();       atom != mAtomList.end();     ++atom) {
-	    if ((*atom).Label().length() == 0 || (*atom).Label()[0] != 'Q' ) {
+        if (((*atom).Label().length() == 0 || (*atom).Label()[0] != 'Q' ) && ( (style->showres == 0) || ( (*atom).m_refflag == style->showres )) ) {
 		   (*atom).Render(style, feedback);
 	    }
      }
@@ -676,7 +712,6 @@ bool CcModelDoc::RenderAtoms( CcModelStyle * style, bool feedback)
    m_thread_critical_section.Leave();
    return ret;
 }
-
 
 
 bool CcModelDoc::RenderBonds( CcModelStyle * style, bool feedback )

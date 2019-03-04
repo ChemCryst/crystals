@@ -198,6 +198,7 @@ CxModel::CxModel(CrModel* container)
   m_Hover     = false;
   m_Shading   = true;
   m_TextPopup = nil;
+  m_MessagePopup = nil;
   m_selectRect.Set(0,0,0,0);
   m_mouseMode = CXROTATE;
   m_initcolourindex = false;
@@ -211,6 +212,7 @@ CxModel::~CxModel()
   delete [] mat;
   delete m_pixels;
   DeletePopup();
+  DeleteMessagePopup();
 #ifdef CRY_USEWX
   delete m_context;
 #endif
@@ -1719,50 +1721,45 @@ void CxModel::DeletePopup()
   }
 }
 
+void CxModel::DeleteMessagePopup()
+{
+  if ( m_MessagePopup )
+  {
+    m_MessagePopup->Destroy();
+    NeedRedraw(false);
+    m_MessagePopup=nil;
+  }
+}
+
 void CxModel::CreatePopup(string atomname, CcPoint point)
 {
-#ifdef CRY_USEWX
-//  m_DoNotPaint = true;
-#endif
-
   DeletePopup();
 
-#ifdef CRY_USEMFC
-  string n = string(" ") + atomname + string(" ");
-
-  m_TextPopup = new CStatic();
-  m_TextPopup->Create(n.c_str(), SS_SIMPLE|SS_CENTER|WS_BORDER, CRect(0,0,0,0), this);
-  m_TextPopup->SetFont(CcController::mp_font);
-
-  CClientDC dc(m_TextPopup);
-  CFont* oldFont = dc.SelectObject(CcController::mp_font);
-
-  SIZE size = dc.GetOutputTextExtent(n.c_str(),n.length());
-  size.cx += 3;
-  size.cy += 2;
-
-  m_TextPopup->ModifyStyleEx(NULL,WS_EX_TOPMOST,0);
-  int x = CRMIN(GetWidth() - size.cx, point.x + 20) ;
-  x = CRMAX(0,x);
-  int y = CRMIN(GetHeight() - size.cy,point.y);
-  y = CRMAX(0,y);
-  m_TextPopup->MoveWindow(x,y,size.cx,size.cy, FALSE);
-  m_TextPopup->ShowWindow(SW_SHOW);
-  RedrawWindow();
-  dc.SelectObject(oldFont);
-#else
   int cx,cy;
   GetTextExtent( atomname.c_str(), &cx, &cy ); //using cxmodel's DC to work out text extent before creation.
                                                    //then can create in one step.
   m_TextPopup = new mywxStaticText(this, -1, atomname.c_str(),
-//  m_TextPopup = new mywxStaticText((wxWindow*)ptr_to_crObject->GetRootWidget()->ptr_to_cxObject, -1, atomname.c_str(),
                                  wxPoint(CRMAX(0,point.x-cx-9),CRMAX(0,point.y-cy-9)),
                                  wxSize(cx+4,cy+4),
                                  wxALIGN_CENTER|wxSIMPLE_BORDER) ;
-//  m_TextPopup->SetEvtHandlerEnabled(true);
 
-#endif
 }
+
+//Popup a status / info / warning message at top left corner. Message replaces previous message.
+void CxModel::CreateMessagePopup(string message)
+{
+  DeleteMessagePopup();
+
+  int cx,cy;
+  GetTextExtent( message.c_str(), &cx, &cy ); //using cxmodel's DC to work out text extent before creation.
+                                                   //then can create in one step.
+  m_MessagePopup = new mywxStaticText(this, -1, message.c_str(),
+                                 wxPoint(2,2),
+                                 wxSize(cx+4,cy+4),
+                                 wxALIGN_CENTER|wxSIMPLE_BORDER) ;
+}
+
+
 
 /*
 void CxModel::LoadDIBitmap(string filename)
