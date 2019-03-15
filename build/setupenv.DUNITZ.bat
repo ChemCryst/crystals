@@ -7,6 +7,7 @@ set WXMINOR=0
 SET WXWIN=e:\wx31
 SET WXLIB=%WXWIN%\lib\%WXVC%_dll
 set PATH=%WXLIB%;%PATH%
+set INNOSETUP=c:\program files (x86)\Inno Setup 5
 
 SETLOCAL ENABLEEXTENSIONS
 setlocal EnableExtensions EnableDelayedExpansion

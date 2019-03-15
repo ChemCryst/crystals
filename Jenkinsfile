@@ -49,6 +49,20 @@ pipeline {
                                 '''
                             }
                         }
+                        stage('Win64-Intel Installer') {
+                            environment {
+                                CRYSDIR = '.\\,..\\build\\'
+                                COMPCODE = 'INW_OMP'
+                            }
+                            steps {
+                                bat '''
+                                    call build\\setupenv.DUNITZ.bat
+                                    cd build
+                                    call make_w32.bat dist
+                                    xcopy /s /y ..\debuginfo e:\omp17-x64\
+                                '''
+                            }
+                        }
                     }
                     post {
                         always {
