@@ -59,7 +59,7 @@ pipeline {
                                     call build\\setupenv.DUNITZ.bat
                                     cd build
                                     call make_w32.bat dist
-                                    xcopy /s /y ..\debuginfo e:\omp17-x64\
+                                    xcopy /s /y ..\\debuginfo e:\\omp17-x64\\
                                 '''
                             }
                         }
