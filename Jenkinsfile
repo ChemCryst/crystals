@@ -69,6 +69,15 @@ pipeline {
                             bat 'ren test_suite INW_OMP.org'  // Change path here to get unique archive path.
                             archiveArtifacts artifacts: 'INW_OMP.org/*.out', fingerprint: true
                         }
+                        success  {
+                            ftpPublisher alwaysPublishFromMaster: false, continueOnError: false, failOnError: false, publishers: [
+                                [configName: 'crystals.xtl', transfers: [
+                                    [asciiMode: false, cleanRemote: false, excludes: '', flatten: true, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: "/", remoteDirectorySDF: false, removePrefix: '', sourceFiles: '**.exe']
+                                ], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true]
+                            ]
+                        }
+
+                        
                     }
                 }
                 stage("Linux") {
@@ -202,6 +211,7 @@ pipeline {
                 }
             }
         }
+       
     }
 }
 
