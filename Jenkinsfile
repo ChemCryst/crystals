@@ -70,7 +70,7 @@ pipeline {
                             archiveArtifacts artifacts: 'INW_OMP.org/*.out', fingerprint: true
                         }
                         success  {
-                            ftpPublisher alwaysPublishFromMaster: false, continueOnError: false, failOnError: false, paramPublish: [parameterName:""], publishers: [
+                            ftpPublisher alwaysPublishFromMaster: false, masterNodeName: 'master', continueOnError: false, failOnError: false, paramPublish: [parameterName:""], publishers: [
                                 [configName: 'crystals.xtl', transfers: [
                                     [asciiMode: false, cleanRemote: false, excludes: '', flatten: true, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: "/", remoteDirectorySDF: false, removePrefix: '', sourceFiles: '**.exe']
                                 ], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true]
