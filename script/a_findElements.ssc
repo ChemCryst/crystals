@@ -29,7 +29,7 @@
 %      END IF
 %      COPY '#RELEASE PUNCH SortOrder.dat'
 %      TRANSFER CATYPE1 TO PUNCH
-%      COPY '#RELEASE PUNCH bfile.pch'
+%      COPY '#RELEASE PUNCH logs/bfile.pch'
 %      EVALUATE ICOUNT = ICOUNT + 1
 %    ELSE
 %      EVALUATE LNEWATFOUND = TRUE
@@ -54,7 +54,7 @@
 %        END IF
 %        COPY '#APPEND PUNCH SortOrder.dat'
 %        TRANSFER CATYPE1 TO PUNCH
-%        COPY '#RELEASE PUNCH bfile.pch'
+%        COPY '#RELEASE PUNCH logs/bfile.pch'
 %        EVALUATE ICOUNT = ICOUNT + 1
 %      END IF
 %    END IF
@@ -63,7 +63,7 @@
 %  COPY 'END'
 %  COPY '#APPEND PUNCH SortOrder.dat'
 %  TRANSFER "END" TO PUNCH
-%  COPY '#RELEASE PUNCH bfile.pch'
+%  COPY '#RELEASE PUNCH logs/bfile.pch'
 %%
 %  IF LDEBUG THEN
 %    TRANSFER "{I " // CHARACTER ( ICOUNT ) // " atom types found in this structure." TO DISPLAY

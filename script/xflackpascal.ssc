@@ -372,7 +372,7 @@
 ^^WI DISPOSE RFNG
 ^^CR
 %      IF IPUNCH .EQ. 2 THEN
-%       COPY '#RELEASE PUNCH bfile.pch'
+%       COPY '#RELEASE PUNCH logs/bfile.pch'
 %      END IF
 %      IF _BADNPP .NE. 0 THEN
 ^^WI    WINDOW XINFO 'Warning'  MODAL

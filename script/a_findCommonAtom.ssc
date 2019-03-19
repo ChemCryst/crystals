@@ -152,7 +152,7 @@
 %        TRANSFER CATM2 TO PUNCH
 %        TRANSFER CATM1 TO PUNCH
 %        TRANSFER 'END' TO PUNCH
-%        TRANSFER '#RELEASE PUNCH bfile.pch' TO CRYSTALS
+%        TRANSFER '#RELEASE PUNCH logs/bfile.pch' TO CRYSTALS
 %        FINISH
 %      ELSE IF BDIST1 .LT. 0.5 THEN
 %        TRANSFER "{I Maybe a match has been found." TO DISPLAY
@@ -168,7 +168,7 @@
 %        TRANSFER CATM1 TO PUNCH
 %        TRANSFER CATM2 TO PUNCH
 %        TRANSFER 'END' TO PUNCH
-%        TRANSFER '#RELEASE PUNCH bfile.pch' TO CRYSTALS
+%        TRANSFER '#RELEASE PUNCH logs/bfile.pch' TO CRYSTALS
 %        FINISH
 %      ELSE IF BDIST2 .LT. 0.5 THEN
 %        TRANSFER "{I Maybe a match has been found." TO DISPLAY

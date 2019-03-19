@@ -226,7 +226,7 @@
 %  COPY '#RELEASE PUNCH crystals.qf'                                            
 %  TRANSFER 'MOGUL GUI OPEN 3D' TO PUNCH                                        
 %  TRANSFER 'MOGUL MOLECULE FILE crystals.mol2' TO PUNCH                        
-%  COPY '#RELEASE PUNCH bfile.pch'                                              
+%  COPY '#RELEASE PUNCH logs/bfile.pch'                                              
 {I * Running Mogul.                                                             
 % TRANSFER '#SPAWN "' // MOGULLOC // '" -ins crystals.qf' TO CRYSTALS           
 {R * Done.                                                                      
@@ -285,7 +285,7 @@
 %   COPY 'EXCLUDE H'                                                            
 %   COPY 'END'                                                                  
 %  END IF                                                                       
-%  COPY '#RELEASE PUNCH bfile.pch'                                              
+%  COPY '#RELEASE PUNCH logs/bfile.pch'                                              
 {R * Done.                                                                      
 {I * Running Mogul.                                                             
 

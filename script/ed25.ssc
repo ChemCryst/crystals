@@ -523,7 +523,7 @@
 %         COPY '#RELEASE PUNCH pretwin6.dat'
 %         COPY '#PUNCH 6 C'
 %         COPY 'END'
-%         COPY '#RELEASE PUNCH bfile.pch'
+%         COPY '#RELEASE PUNCH logs/bfile.pch'
 %       END IF
 {S * Converting the reflection list to twinned (FOT) format.
 %       COPY '#LIST 6'

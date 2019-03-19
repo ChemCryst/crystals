@@ -1,12 +1,10 @@
 %SCRIPT XWILSON                                                                 
 % VARIABLE REAL WORK1 WORK2 WORK3                                               
-% VARIABLE LOGICAL MERGER ABSENT LNEWRAT LNEWRHO I6DONE I6MASK LMAONCE          
+% VARIABLE LOGICAL LNEWRAT LNEWRHO I6DONE I6MASK LMAONCE          
 % VARIABLE LOGICAL WILFIL                                                       
 % VARIABLE REAL NEWRHO NEWRAT THFULL MRGR                                       
 % VARIABLE REAL VOLPRATM NNONHATM CELLVOL SGMULT NALLOWREF ESTNPARA ESTOTP      
 % VARIABLE INTEGER ABSPRINT ABSTOTAL                                            
-% EVALUATE MERGER = FILEEXISTS 'mergingr.dat'                                   
-% EVALUATE ABSENT = FILEEXISTS 'absences.dat'                                   
 % EVALUATE LMAONCE = TRUE                                                       
 % EVALUATE WILFIL = FALSE                                                       
 %%                                                                              

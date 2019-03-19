@@ -62,7 +62,7 @@ You have no atoms for this structure
 %     COPY 'BONDED'
 %     QUEUE PROCESS
 %     COPY 'END'
-%     COPY '#RELEASE PUNCH bfile.pch'
+%     COPY '#RELEASE PUNCH logs/bfile.pch'
 
 Hydrogen RIDE constraints have been put into {&h-constraints.dat{&
 

@@ -105,7 +105,7 @@
 %  COPY '#release punch sa_lowest.dat'
 %  COPY '#punch 5'
 %  COPY 'end'
-%  COPY '#release punch bfile.pch'
+%  COPY '#release punch logs/bfile.pch'
 %  COPY '#release scpqueue sa_stat.dat'
 %  QUEUE REWIND
 %%
@@ -205,7 +205,7 @@
 %        COPY '#release punch sa_lowest.dat'
 %        COPY '#punch 5'
 %        COPY 'end'
-%        COPY '#release punch bfile.pch'
+%        COPY '#release punch logs/bfile.pch'
 %      END IF
 %      EVALUATE ACCEPT = TRUE
 %%
@@ -248,7 +248,7 @@
 %      COPY '#release punch sa_prev.dat'
 %      COPY '#punch 5'
 %      COPY 'end'
-%      COPY '#release punch bfile.pch'
+%      COPY '#release punch logs/bfile.pch'
 %      EVALUATE R1 = R
 %%
 %% Reset the NOCHANGE counter to zero if appropriate:
@@ -313,7 +313,7 @@
 %  COPY '#script updton'
 %  COPY '#set term win'
 %  COPY '#set open on'
-%  COPY '#release scpqueue bfile.spq'
+%  COPY '#release scpqueue logs/bfile.spq'
 %%
 %%    Present result.
 %%

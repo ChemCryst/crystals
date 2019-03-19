@@ -42,8 +42,8 @@
 %      COPY 'END'                                                               
   Reflections saved in {&publish.fcf{&                                          
                                                                              
-%  COPY '#RELEASE PUNCH bfile.pch'                                              
-%  COPY '#RELEASE FRN1 BFILE.FRN'                                           
+%  COPY '#RELEASE PUNCH logs/bfile.pch'                                              
+%  COPY '#RELEASE FRN1 logs/bfile.frn'                                           
 %  EVALUATE T = FILEDELETE ( 'publish.chk' )                                    
 %%                                                                              
 ^^CO GETKEY PLATONDIR                                                           

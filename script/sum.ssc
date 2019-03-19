@@ -84,7 +84,7 @@
 %      COPY '#PUNCH 6 C'
 %      COPY 'END'
 %    END IF
-%    COPY '#RELEASE PUNCH bfile.pch'
+%    COPY '#RELEASE PUNCH logs/bfile.pch'
 
 {I * Summary data is now in a file: {&summary.lis{&
 

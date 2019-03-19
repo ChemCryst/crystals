@@ -59,6 +59,6 @@
 %   copy '#punch 6 C'
 %   copy 'end'
 % end if
-% copy '#release punch bfile.pch'
+% copy '#release punch logs/bfile.pch'
 %%
 %END SCRIPT                                                                     

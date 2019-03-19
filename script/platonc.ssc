@@ -11,7 +11,7 @@
 %  END IF                                                                       
 %%                                                                              
 %%                                                                              
-%  COPY '#RELEASE PUNCH bfile.pch'                                              
+%  COPY '#RELEASE PUNCH logs/bfile.pch'                                              
 %  EVALUATE T = FILEDELETE ( 'publish.chk' )                                    
 %%                                                                              
 %%                                                                              

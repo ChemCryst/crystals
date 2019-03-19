@@ -84,8 +84,8 @@
 ^^CO  DISPOSE ROTAX
 %     SEND
 %     COPY 'END'
-%     COPY '#RELEASE PUNCH bfile.pch'
-%     COPY '#RELEASE PRINT bfile.lis'
+%     COPY '#RELEASE PUNCH logs/bfile.pch'
+%     COPY '#RELEASE PRINT logs/bfile.lis'
 %     COPY '#OPEN SCPDATA rotax.pch'
 ^^WI WINDOW ROTAX2 'Rotax results' MODAL SIZE KEEP
 ^^WI POSITION=CENTRED '_MAIN'

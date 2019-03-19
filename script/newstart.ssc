@@ -20,9 +20,9 @@ Script for starting on a new structure
 %  COPY 'EXTEND SIZE=10 TRIES=1000'
 %  COPY 'END'
 %  END BLOCK
-Files INITIAL.* will be created in your directory. They may be important.
-%  COPY '#RELEASE PRINT initial.lis'
-%  COPY '#RELEASE LOG INITIAL.DAT'
+Files INITIAL.* will be created in your logs/ folder. They may be important.
+%  COPY '#RELEASE PRINT logs/initial.lis'
+%  COPY '#RELEASE LOG logs/initial.dat'
 %  IF ( EXISTS 28 .NE. 1 ) THEN
 %   COPY '#SCRIPT XLIST28'
 %  END IF
