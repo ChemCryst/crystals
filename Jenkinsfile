@@ -63,24 +63,28 @@ pipeline {
                                 '''
                             }
                         }
+                        stage('Deploy') {
+                            when {
+                              expression {
+                                ( currentBuild.result == null || currentBuild.result == 'SUCCESS' ) && env.BRANCH_NAME == 'master'
+                              }
+                            }
+                            steps {
+                                ftpPublisher alwaysPublishFromMaster: false, masterNodeName: 'master', continueOnError: false, failOnError: false, paramPublish: [parameterName:""], publishers: [
+                                    [configName: 'crystals.xtl', transfers: [
+                                        [asciiMode: false, cleanRemote: false, excludes: '', flatten: true, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: "/", remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'installer/**.exe']
+                                    ], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true]
+                                ]
+                            }
+                        }
                     }
                     post {
                         always {
                             bat 'ren test_suite INW_OMP.org'  // Change path here to get unique archive path.
                             archiveArtifacts artifacts: 'INW_OMP.org/*.out', fingerprint: true
                         }
-                        success  {
-                            ftpPublisher alwaysPublishFromMaster: false, masterNodeName: 'master', continueOnError: false, failOnError: false, paramPublish: [parameterName:""], publishers: [
-                                [configName: 'crystals.xtl', transfers: [
-                                    [asciiMode: false, cleanRemote: false, excludes: '', flatten: true, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: "/", remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'installer/**.exe']
-                                ], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true]
-                            ]
-                        }
-
-                        
                     }
                 }
-                
                 
                 stage("Win32-Intel") {
                     agent { label 'Dunitz' }
@@ -111,7 +115,7 @@ pipeline {
                         stage('Win32-Intel Test') {
                             environment {
                                 CRYSDIR = '.\\,..\\build\\'
-                                COMPCODE = 'INW'
+                                COMPCODE = 'INW32'
                             }
                             steps {
                                 bat '''
@@ -141,8 +145,8 @@ pipeline {
                     }
                     post {
                         always {
-                            bat 'ren test_suite INW.org'  // Change path here to get unique archive path.
-                            archiveArtifacts artifacts: 'INW.org/*.out', fingerprint: true
+                            bat 'ren test_suite INW32.org'  // Change path here to get unique archive path.
+                            archiveArtifacts artifacts: 'INW32.org/*.out', fingerprint: true
                         }
                         success  {
                             ftpPublisher alwaysPublishFromMaster: false, masterNodeName: 'master', continueOnError: false, failOnError: false, paramPublish: [parameterName:""], publishers: [
