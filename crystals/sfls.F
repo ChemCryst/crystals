@@ -1238,39 +1238,44 @@ c                 all the data
           IF(RALL(11).GT.ZERO)
      1                      STORE(L30CF+7)=100.*SQRT(RALL(11)/RALL(12))
 c
-C6260      FORMAT (/
-C     1       ' With Sigma(I) cutoff= ',F6.2, 
-C     1       ', there are', I9, ' reflections',/
-C     1       , ' R-value=',F7.3, 34X, ' Rw=', F7.3)
-
 6261      FORMAT (2X,I7,' reflections   R ',F5.2,
-     1    '% Rw ',F5.2,'% with I/u(I) >',F6.1)
+     1    '% Rw ',F5.2,'% with I/u(I) >',F6.1,2x,A)
 
 6262      FORMAT (2X,I7,' reflections   R ',F5.2,
      1    '% Rw ',F5.2,'% with I/u(I) from List 28, I/Sig=',f7.2)
 
-
+c (writes to NCWU don't have final text to prevent lots of messages from the
+c test decks.
             if (issprt .eq.0) write(ncwu,'(//)')
             CALL OUTCOL(6)
-C AS USED           (NOTE WE SHOULD CHECK THE DENOMINATIOS ARE NOT ZERO)
+C 'ratio' AS USED           (NOTE WE SHOULD CHECK THE DENOMINATIOS ARE NOT ZERO)
             WRITE ( CMON, 6262) 
      1       NINT(RALL(14)), MIN(99.99,100.*RALL(15)/RALL(16)),
      2       MIN(99.99,100.*SQRT(RALL(17)/RALL(18))),
      2       RALL(13)
             CALL XPRVDU(NCVDU, 1, 0)
+
             IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 C AT -10 SIGAM
             WRITE ( CMON, 6261)
      1       NINT(STORE(L30CF+5)), MIN(99.99,STORE(L30CF+6)),
-     2                      MIN(99.99,STORE(L30CF+7)), -10.0
+     2                      MIN(99.99,STORE(L30CF+7)), -10.0,
+     3       '(Exclude very bad data)'
             CALL XPRVDU(NCVDU, 1, 0)
-            IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
+
+
+            IF (ISSPRT .EQ. 0) WRITE(NCWU, 6261) 
+     1       NINT(STORE(L30CF+5)), MIN(99.99,STORE(L30CF+6)),
+     2                      MIN(99.99,STORE(L30CF+7)), -10.0    
 C AT +2 SIGMA
             WRITE ( CMON, 6261)  
      1       NINT(STORE(L30CF+1)), MIN(99.99,STORE(L30CF+2)),
-     2                      MIN(99.99,STORE(L30CF+3)), RALL(1)
+     2                      MIN(99.99,STORE(L30CF+3)), RALL(1),
+     3      '(a la SHELX)'
             CALL XPRVDU(NCVDU, 1, 0)
-            IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
+            IF (ISSPRT .EQ. 0) WRITE(NCWU, 6261) 
+     1       NINT(STORE(L30CF+1)), MIN(99.99,STORE(L30CF+2)),
+     2                      MIN(99.99,STORE(L30CF+3)), RALL(1)
             CALL OUTCOL(1)
        ENDIF
        CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
@@ -1936,10 +1941,10 @@ c      write(123,'(/)')
       DO WHILE (.TRUE.)  ! START OF THE LOOP OVER REFLECTIONS
 
         IF( SFLS_TYPE .EQ. SFLS_CALC ) THEN
-          ! use all reflections discarding filters
+          ! use all reflections ignoring filters
           IFNR=KLDRNR(1)
         ELSE
-          IFNR = KFNR(1)
+          IFNR = KFNR(1)  ! KALLOW
         ENDIF
 
         IF(IFNR.LT.0) EXIT
@@ -2282,9 +2287,11 @@ C
           S=SCALEK*SCALEK
         END IF
         AMINF=AMINF+WDF*WDF  ! COMPUTE THE MINIMISATION FUNCTION
-
-        IF ((SFLS_TYPE.NE.SFLS_CALC) .OR.(KALLOW(IALLOW).GE.0)) THEN
+        
+        ik = KALLOW(IALLOW)
+        IF ((SFLS_TYPE.NE.SFLS_CALC) .OR.(ik.GE.0)) THEN
 C If #CALC, then L28 was adjusted earlier. Call KALLOW again to get normal R
+C NO LONGER DONE SINCE WE WANT ALL THE REFLECTIONS CALCULATING - fEB 2019
           NT=NT+1     ! UPDATE THE REFLECTION COUNTER FLAG
           FOT=FOT+FO   ! COMPUTE THE TERMS FOR THE NORMAL R-VALUE
           FOABS = FOABS + ABS(FO)
@@ -2514,34 +2521,36 @@ c     1                 STORE(L12B), N12B*MD12B, MD12B )
         CALL XACRT(7)  ! AND THE PHASE
         CALL XACRT(16)
 
+        k=kallow(iallow)
         IF(SFLS_TYPE .eq. SFLS_CALC) THEN ! ADD DETAILS FOR ALL DATA WHEN 'CALC'
-          k=kallow(iallow)
-          if(iallow/=-1 .and. k/=-21) then
-        
-          IF (STORE(M6+20) .GE. RALL(1)) THEN      ! Check that sigma acceptable
-            RALL(2) = RALL(2) + 1.                 ! refs used
-            RALL(3) = RALL(3) + ABS(ABS(FO)-FCEXS) ! sum Abs(Fo-Fc)
-            RALL(4) = RALL(4) + ABS(FO)            ! sum Fo
-            RALL(5) = RALL(5) + WDF*WDF            ! sum wdelta sq
-            RALL(6) = RALL(6) + A*A                ! 
-          ENDIF
-          ! NO CHECKS
-          RALL(8) = RALL(8) + 1.
-          RALL(9) = RALL(9) + ABS(ABS(FO)-FCEXS)
-          RALL(10) = RALL(10) + ABS(FO)
-          RALL(11) = RALL(11) + WDF*WDF
-          RALL(12) = RALL(12) + A*A
+C  DO THIS FOR ALL TYPES OF CALCULATION  EXCEPT NAMED REFLECTIONS
+         IF(K.NE.-70) THEN                   !OMIT NAMED REFLECTIONS
+!  (-10 sigma,  RALL(7) used
+          if (STORE(M6+20) .GE. RALL(7)) THEN      ! 2 sigma only
+           RALL(8) = RALL(8) + 1.
+           RALL(9) = RALL(9) + ABS(ABS(FO)-FCEXS)
+           RALL(10) = RALL(10) + ABS(FO)
+           RALL(11) = RALL(11) + WDF*WDF
+           RALL(12) = RALL(12) + A*A
           end if
-        ENDIF
-C
-C  DO THIS FOR ALL TYPES OF CALCULATION 
-          IF (STORE(M6+20) .GE. RALL(13)) THEN      ! Check that sigma acceptable
+! SHELX emulation   (2 sigma)
+          IF (STORE(M6+20) .GE. RALL(1)) THEN     ! -10 sigme
+           RALL(2) = RALL(2) + 1.                 ! refs used
+           RALL(3) = RALL(3) + ABS(ABS(FO)-FCEXS) ! sum Abs(Fo-Fc)
+           RALL(4) = RALL(4) + ABS(FO)            ! sum Fo
+           RALL(5) = RALL(5) + WDF*WDF            ! sum wdelta sq
+           RALL(6) = RALL(6) + A*A                ! 
+          ENDIF
+! (user-sigma sigma)
+          if (k.eq.0) then                           ! use all LIST28 items
+c          IF (STORE(M6+20) .GE. RALL(13)) THEN      ! user-sigma 
             RALL(14) = RALL(14) + 1.                 ! refs used
             RALL(15) = RALL(15) + ABS(ABS(FO)-FCEXS) ! sum Abs(Fo-Fc)
             RALL(16) = RALL(16) + ABS(FO)            ! sum Fo
             RALL(17) = RALL(17) + WDF*WDF            ! sum wdelta sq
             RALL(18) = RALL(18) + A*A                ! 
           ENDIF
+         ENDIF
 
          if(sfls_punch_flag>0 .and. SFLS_TYPE==SFLS_REFINE) then
              !hkl=nint(STORE(M6:M6+2))
@@ -2549,7 +2558,7 @@ C  DO THIS FOR ALL TYPES OF CALCULATION
      1         (/ Fo, STORE(M6+12), FCEXS, w, scale, st/), 
      2         sfls_punch_flag)
          end if
-          
+        ENDIF          
           
       END DO  ! END OF REFLECTION LOOP
 

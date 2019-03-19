@@ -33,9 +33,9 @@
 ^^WI                   }                                                        
 ^^WI                 }                                                          
 ^^WI                 TAB _MAINTAB0 'Cell/Sym' GRID _MAINTG0                     
-^^WI                                         NROWS=1 NCOLS=1                    
+^^WI                                         NROWS=2 NCOLS=1                    
 ^^WI                 {                                                          
-^^WI                   @ 1,1 GRID _MAINTG01 NROWS=4 NCOLS=3                     
+^^WI                   @ 1,1 GRID _MAINTG01 NROWS=2 NCOLS=3                     
 ^^WI                   {                                                        
 ^^WI                     @ 1,1 GRID _ABC NROWS=2 NCOLS=11                        
 ^^WI                     {                                                      
@@ -52,21 +52,28 @@
 ^^WI                       @ 2,5  STATIC _MTG011 gamma                          
 ^^WI                       @ 2,6 STATIC _MT_CELL_GA 0.00000                     
 ^^WI                     }                                                      
+^^WI                     @ 1,2  STRETCH _MTS15 HORIZONTAL                        
 ^^WI                     @ 1,3 BUTTON '#SCRIPT XCELLIN' 'Set cell' SLIM       
-^^WI                        DISABLEIF='IN' LENGTH='Set Space group'             
-^^WI                     @ 2,1 STATIC MTWAVELEN 'Space group'                   
-^^WI                     @ 2,2 STATIC _MT_SPACEGROUP                            
+^^WI                        DISABLEIF='IN' LENGTH='Set Space group'
+^^WI                   }
+^^WI                   @ 2,1 GRID _MAINTG01 NROWS=3 NCOLS=4                     
+^^WI                   {                                                        
+^^WI                     @ 1,1 STATIC MTWAVELEN 'Space group'                   
+^^WI                     @ 1,2 STATIC _MT_SPACEGROUP                            
 ^^WI                         'Space group is not known.'                        
-^^WI                     @ 2,3 BUTTON '#SCRIPT XSPACE' 'Set space group'        
+^^WI                     @ 1,3  STRETCH _MTS15 HORIZONTAL                        
+^^WI                     @ 1,4 BUTTON '#SCRIPT XSPACE' 'Set space group'        
 ^^WI                        SLIM   DISABLEIF='IN'                               
-^^WI                     @ 3,1 STATIC MTWAVELEN 'Scatterers'                    
-^^WI                     @ 3,2 STATIC _MT_FORMULA                               
+^^WI                     @ 2,1 STATIC MTWAVELEN 'Scatterers'                    
+^^WI                     @ 2,2 STATIC _MT_FORMULA                               
 ^^WI                         'The formula is not known'                         
-^^WI                     @ 3,3 BUTTON '#SCRIPT XINLIST3' 'Set formula/lambda'          
+^^WI                     @ 2,3  STRETCH _MTS15 HORIZONTAL                        
+^^WI                     @ 2,4 BUTTON '#SCRIPT XINLIST3' 'Set formula/lambda'          
 ^^WI                        SLIM   DISABLEIF='IN' 
-^^WI                     @ 4,1 STATIC MTWAVELEN 'Wavelength'                    
-^^WI                     @ 4,2 STATIC _MT_WAVE '000.00000 Angstroms (X-rays)'   
-^^WI                     @ 4,3 BUTTON '#SCRIPT EDLIST3' 'Set Anomalous/lambda'
+^^WI                     @ 3,1 STATIC MTWAVELEN 'Wavelength'                    
+^^WI                     @ 3,2 STATIC _MT_WAVE '000.00000 Angstroms (X-rays)'   
+^^WI                     @ 3,3  STRETCH _MTS15 HORIZONTAL                        
+^^WI                     @ 3,4 BUTTON '#SCRIPT EDLIST3' 'Set Anomalous/lambda'
 ^^WI                        SLIM   DISABLEIF='IN'                              
 ^^WI                   }                                                        
 ^^WI                 }                                                          

@@ -28,13 +28,21 @@
 ^^WI                 ITEM _X 'Oth&er' '#SCRIPT XOTHER_N_A'
 ^^WI                                 DISABLEIF='IN'
 ^^WI             ENDMENU
+^^WI             ITEM _DELA '&Delete _A' '#EDIT_NDELETE _A_NEND'
+^^WI                                 DISABLEIF='IN'
 ^^WI             SPLIT
 ^^WI             ITEM _SRP 'Set &residue number of _A' '#SCRIPT XRESG_N_A' 
 ^^WI                    DISABLEIF= 'IN'
-^^WI             ITEM _SRP 'Set &part number of _A' '#SCRIPT XPARTG_N_A' 
+^^WI             ITEM _SRP 'Set &part number of _A'    '#SCRIPT XPARTG_N_A' 
 ^^WI                    DISABLEIF= 'IN'
-^^WI             ITEM _RP '&Set occupancy of _A' '#SCRIPT XOCCG_N_A' 
+^^WI             ITEM _RP '&Set occupancy of _A'       '#SCRIPT XOCCG_N_A' 
 ^^wi                    DISABLEIF= 'IN'
+^^WI             ITEM _GUISO 'Change _A to Uequiv'    '#SCRIPT XUEQUIV_N_A'
+^^WI                    DISABLEIF='IN'
+^^WI             ITEM _GUSET 'Set U[iso] of _A'       '#SCRIPT XUSET_N_A' 
+^^wi                    DISABLEIF='IN'
+^^WI             SPLIT
+
 ^^WI             ITEM _SEDA 'Ed&it _A' '#SCRIPT XPARAM_N_A' DISABLEIF='IN'
 ^^WI             ITEM _SADDH 'Add &hydrogens to _A' '#SCRIPT XADDH_N_A'
 ^^WI                    DISABLEIF='IN'
@@ -42,7 +50,7 @@
 ^^WI                   '#SCRIPT XSPLIT_N_A' DISABLEIF='IN'
 ^^WI             ITEM _SENVN '&Environment of _A'
 ^^WI                   '#DIST_NOUT MON=ALL_NPIVOT _A_NEND' DISABLEIF='IN'
-^^WI             MENU _SREFT 'Refine &mode'
+^^WI             MENU _SREFT 'Refine &mode OF _A'
 ^^WI                 ITEM _F '&Fix' '#SCRIPT XSTICK_N_A_NFIX'
 ^^WI                                 DISABLEIF='IN'
 ^^WI                 ITEM _X '&Xs' '#SCRIPT XSTICK_N_A_NXS'
@@ -57,9 +65,8 @@
 ^^WI                 ITEM _D '&Default' '#SCRIPT XSTICK_N_A_NDEFAULT'
 ^^WI                                 DISABLEIF='IN'
 ^^WI             ENDMENU
-^^WI             ITEM _DELA '&Delete _A' '#EDIT_NDELETE _A_NEND'
-^^WI                                 DISABLEIF='IN'
 ^^WI             ENDMENU
+
 ^^WI             SPLIT
 ^^WI             MENU _SRETY '&Change types of selection'
 ^^WI                 ITEM _H '&Hydrogen' '#SCRIPT YRETYPES_NH_N_GEND'
@@ -88,26 +95,28 @@
 ^^WI                 ITEM _X 'Oth&er' '#SCRIPT XOTHERS'
 ^^WI                                 DISABLEIF='IN'
 ^^WI             ENDMENU
+
 ^^WI             ITEM _GDELA 'Dele&te selection' '#SCRIPT DELGRP_N_GEND'
 ^^WI                                             DISABLEIF='IN'
-^^WI             ITEM _RPSS 'Spli&t selection' '#SCRIPT XSPLITS_N_GEND' 
-^^WI                    DISABLEIF= 'IN'
 ^^WI             ITEM _RPS 'Set &residue number of selection' '#SCRIPT XRESGS' 
 ^^WI                    DISABLEIF= 'IN'
-^^WI             ITEM _RPS 'Set &part number of selection' '#SCRIPT XPARTGS' 
+^^WI             ITEM _RPS 'Set &part number of selection'    '#SCRIPT XPARTGS' 
 ^^WI                    DISABLEIF= 'IN'
-^^WI             ITEM _RPO '&Set occupancy of selection' '#SCRIPT XOCCGS'
-^^wi                    DISABLEIF= 'IN'
+^^WI             ITEM _RPO '&Set occupancy of selection'      '#SCRIPT XOCCGS'
+^^wI                    DISABLEIF= 'IN'
+^^WI             ITEM _GUISO 'Change selection to Uequiv' '#SCRIPT XUEQUIVS_N_GEND'
+^^WI                    DISABLEIF='SEL0'
+^^WI             ITEM _GUSET 'Set U[iso] of selection'  '#SCRIPT XUSETS_N_GEND'
+^^WI                    DISABLEIF='SEL0'
+^^WI             SPLIT
+^^WI             ITEM _RPSS 'Spli&t selection' '#SCRIPT XSPLITS_N_GEND' 
+^^WI                    DISABLEIF= 'IN'
 ^^WI               ITEM ZOOMSEL 'Zoom to selection'
 ^^WI                 '^^CO SET MODEL01 ZOOMATOMS YES SELECT ALL=NO' DISABLEIF='SEL0'
 ^^WI             ITEM _DIST 'S&wap labels' '#SCRIPT YCSWAP_N_G'
 ^^WI                                 DISABLEIF='IN' ENABLEIF='SEL2'
 ^^WI             ITEM _DIST 'Swap &coordinates' '#SCRIPT YASWAP_N_G'
 ^^WI                                 DISABLEIF='IN' ENABLEIF='SEL2'
-^^WI             ITEM _GUISO 'Change to Uequiv'
-^^WI                         '#SCRIPT XUEQUIVS_N_GEND' DISABLEIF='SEL0'
-^^WI             ITEM _GUSET 'Set U[iso]' 
-^^WI                         '#SCRIPT XUSETS_N_GEND' DISABLEIF='SEL0'
 ^^WI             SPLIT
 ^^WI             ITEM _GDELA 'Centroid of &selection'
 ^^WI                         '#SCRIPT XCENTRO_N_GEND' DISABLEIF='IN SEL1'

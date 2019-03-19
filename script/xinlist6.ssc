@@ -15,7 +15,7 @@
 %  VARIABLE REAL HKLT31 HKLT32 HKLT33
 %% variables used to check if any reflections were actually read in
 %  VARIABLE REAL  H K L SUM
-%% First check for all zero values
+%% First check for all zero values. 
 %  EVALUATE HTRANS = FALSE
 %  IF ABS ( HKLT11 ) .GT. 0.01 THEN
 %    EVALUATE HTRANS = TRUE
@@ -86,6 +86,7 @@
 %   END IF
 %  END IF
 %%
+Initialisation:
 %% Initial checks. Is there any point proceeding.
 %%
 %% If data missing, is there a .ins or .res file worth loading?
@@ -291,17 +292,20 @@
 ^^WI   }
 ^^WI   TAB IN6TAB1 'Transform' GRID XIN6A NROWS=5 NCOLS=3                        
 ^^WI   {                                                                        
-^^WI    @ 2,2 GRID GAB NROWS=3 NCOLS=1 OUTLINE ='Transform'                     
+^^WI    @ 2,2 GRID GAC NROWS=3 NCOLS=1 OUTLINE = ' '                    
+^^WI    {    
+^^WI     @ 2,1 CHECKBOX MAT 
+^^WI      'Apply this transformation matrix to the hkl data?.'
+^^WI       INFORM = YES
+%          IF HTRANS THEN
+^^WI        STATE=ON
+%          ELSE
+^^WI        STATE=OFF
+%          END IF
+^^WI    }                                                                        
+^^WI    @ 4,2 GRID GAB NROWS=3 NCOLS=1 OUTLINE ='Matrix'                     
 ^^WI    {   
-^^WI     @ 1,1 STATIC ST1 "Don't forget to check this box"                                                                    
-^^WI     @ 2,1 CHECKBOX MAT                                                     
-^^WI 'Apply this transformation matrix to the hkl data.'
-% IF HTRANS THEN
-^^WI   STATE=ON
-% ELSE
-^^WI   STATE=OFF
-% END IF
-^^WI     @ 3,1 GRID GBB NROWS=5 NCOLS=5
+^^WI     @ 1,1 GRID GBB NROWS=5 NCOLS=5
 ^^WI     {                                                                      
 % TRANSFER "^^WI @ 1,1 EDITBOX M11 " // CHARACTER HKLT11 TO DISPLAY
 ^^WI CHARS=6 REAL
@@ -322,19 +326,29 @@
 % TRANSFER "^^WI @ 5,5 EDITBOX M33 " // CHARACTER HKLT33 TO DISPLAY
 ^^WI CHARS=6 REAL
 ^^WI     }                                                                      
-^^WI    }                                                                       
-^^WI   }                                                                        
-^^WI  }                                                                         
-^^WI  @ 2,1 GRID GB NROWS=3 NCOLS=7                                             
-^^WI  {                                                                         
-^^WI   @ 2,2 BUTTON BOK '&Ok' DEFAULT DISABLED=YES                              
-^^WI   @ 2,4 BUTTON BXX '&Cancel'                                               
-^^WI   @ 2,5 STRETCH ACROS HORIZONTAL                                           
-^^WI   @ 2,6 BUTTON HELP1 'Help...'                                             
-^^WI  }                                                                         
+^^WI    }
+^^WI   }                                                                      
+^^WI   @ 2,1 GRID GB NROWS=3 NCOLS=7                                             
+^^WI   {                                                                         
+^^WI    @ 2,2 BUTTON BOK '&Ok' DEFAULT DISABLED=YES                              
+^^WI    @ 2,4 BUTTON BXX '&Cancel'                                               
+^^WI    @ 2,5 STRETCH ACROS HORIZONTAL                                           
+^^WI    @ 2,6 BUTTON HELP1 'Help...'                                             
+^^WI   }                                                                         
 ^^WI }                                                                          
 ^^WI SHOW                                                                       
-^^CR                                                                            
+^^CR         
+%       IF HTRANS .EQ. FALSE THEN
+^^CO         SET M11 DISABLED=YES
+^^CO         SET M12 DISABLED=YES
+^^CO         SET M13 DISABLED=YES
+^^CO         SET M21 DISABLED=YES
+^^CO         SET M22 DISABLED=YES
+^^CO         SET M23 DISABLED=YES
+^^CO         SET M31 DISABLED=YES
+^^CO         SET M32 DISABLED=YES
+^^CO         SET M33 DISABLED=YES
+%       END IF
 % IF ( FILEEXISTS ( HKLTITLE ) ) THEN                                           
 %   TRANSFER "^^CO SET L6FILE TEXT '" // HKLTITLE // "'" TO DISPLAY             
 ^^CO SET L6FILE INFORM=NO SET BOK DISABLED=NO                                   
@@ -373,9 +387,36 @@
 %% "CBMERGE" - enable or disable MFO (Friedel merge checkbox) 
 %%                                                                              
 % LOOP                                                                          
-%   VERIFY L6FILE BOK BXX BROWSE HELP1 RDF1 RDF2 RDF3 CBMERGE
+%   VERIFY MAT L6FILE BOK BXX BROWSE HELP1 RDF1 RDF2 RDF3 CBMERGE
 %   GET SILENT NOSTORE FINAL ABBREVIATED 'Opt' ' '                              
 %   CASE VALUE                                                                  
+%     BLOCK
+%           VERIFY ON OFF                                                       
+%           GET SILENT NOSTORE FINAL ABBREVIATED 'Transform?' 'ON'              
+%           IF ( VALUE .EQ. 1 ) THEN                                            
+^^CO         SET M11 DISABLED=NO
+^^CO         SET M12 DISABLED=NO
+^^CO         SET M13 DISABLED=NO
+^^CO         SET M21 DISABLED=NO
+^^CO         SET M22 DISABLED=NO
+^^CO         SET M23 DISABLED=NO
+^^CO         SET M31 DISABLED=NO
+^^CO         SET M32 DISABLED=NO
+^^CO         SET M33 DISABLED=NO
+%            EVALUATE HTRANS = TRUE
+%           ELSE
+^^CO         SET M11 DISABLED=YES
+^^CO         SET M12 DISABLED=YES
+^^CO         SET M13 DISABLED=YES
+^^CO         SET M21 DISABLED=YES
+^^CO         SET M22 DISABLED=YES
+^^CO         SET M23 DISABLED=YES
+^^CO         SET M31 DISABLED=YES
+^^CO         SET M32 DISABLED=YES
+^^CO         SET M33 DISABLED=YES
+%            EVALUATE HTRANS = FALSE
+%           END IF
+%     END BLOCK
 %     BLOCK                         %L6FILE%                                    
 %       GET SILENT NOSTORE TEXT ' ' ' '                                         
 ^^CO SET L6FILE INFORM=NO SET BOK DISABLED=NO                                   
@@ -493,11 +534,8 @@
 %           CLEAR                                                               
 %  INSERT 'OUTPUT INDICES /FO/ SIGMA(/FO/) RATIO/JCODE CORRECTIONS SERIAL '     
 %           QUEUE SEND                                                          
-%           CLEAR                                                               
-^^?? MAT STATE                                                                  
-%           VERIFY ON OFF                                                       
-%           GET SILENT NOSTORE FINAL ABBREVIATED 'Transform?' 'ON'              
-%           IF ( VALUE .EQ. 1 ) THEN                                            
+%           CLEAR 
+%           IF HTRANS THEN
 %             INSERT 'MATRIX'                                                   
 ^^??          M11 TEXT                                                          
 %             GET SILENT REAL ' ' '1.0'                                         

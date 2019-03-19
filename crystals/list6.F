@@ -1097,9 +1097,12 @@ C--THIS FUNCTION DETERMINES WHETHER A REFLECTION IS ACCEPTABLE TO LIST 2
 c
 cdjwapr2011. Return info about which test failed
 C
-C--THE RETURN VALUES OF 'KALLOW' ARE :
+C--THE RETURN VALUES OF 'KALLOW' ARE FROM THE FIRST FAILING CONDITION:
 C   0  THE REFLECTION IS OKAY.
 C  -N  NOT ACCEPTABLE TO TEST 'N'
+C  -70 NAMED REFLECTION
+C  -80 LOGICAL CONDITION
+C  -90 SLICE CONDITION
 C -100 GENERAL REJECTION
 C
 C  IALLOW  -1 MINIMA FLAG SET FOR THIS REFLECTION
@@ -1109,6 +1112,10 @@ C
 C--THE REFLECTION IS TAKEN FROM THE CORE BUFFER AT 'M6', AND
 C  SIN(THETA)/LAMBDA SQUARED AND FO/FC ARE COMPUTED BY THIS ROUTINE.
 C
+C  note that if 2 conditions are set for a parameter, the
+C  value returnes will be the first one found.
+C  e.g. if both min and max conditions are sset on resolution, the maxima
+c  will be flagged as failing. 
 C--
       INCLUDE 'ISTORE.INC'
 C
@@ -1137,7 +1144,27 @@ C--COMPUTE FO/FC
 1050  CONTINUE
       STORE(M6+17)=STORE(M6+3)/STORE(M6+5)
 1100  CONTINUE
+c
+c 
+c
+C -- CHECK FOR SPECIFIC OMISSIONS FIRST
+      IF ( N28OM .LE. 0 ) GO TO 1125
+      DO 1620 I = L28OM , M28OM , MD28OM
+      A = 0.
+      DO 1610 J = 1 , 3
+      IND6 = M6 + J - 1
+      IND28 = I + J - 1
+      A = A + ABS ( STORE(IND6) - STORE(IND28) )
+1610  CONTINUE
+      IF ( A .LE.  ( 3 * ZERO )  ) THEN
+            IALLOW = -1
+            IK = -70
+            GO TO 1650
+      ENDIF
+1620  CONTINUE
+c
 C--CHECK IF THERE ARE ANY MINIMA CONDITIONS
+1125  CONTINUE
       IF(N28MN)1250,1250,1150
 C--RUN THROUGH THE MINIMA CONDITIONS
 1150  CONTINUE
@@ -1148,7 +1175,6 @@ C--RUN THROUGH THE MINIMA CONDITIONS
             IK = m6-j-1
             GOTO 1650
       ENDIF
-c      K = K - 1  ! RC 310811 - removed this line - variable K does not exist
 1200  CONTINUE
 C--CHECK IF THERE ARE ANY MAXIMA CONDITIONS
 1250  CONTINUE
@@ -1162,7 +1188,6 @@ C--RUN THROUGH THE MAXIMA CONDITIONS
             IK = m6-j-1
             GOTO 1650
       ENDIF
-c      K = K - 1 ! RC 310811 - removed this line - variable K does not exist
 1350  CONTINUE
 C--CHECK IF THERE ARE ANY SLICE CONDITIONS
 1400  CONTINUE
@@ -1179,6 +1204,8 @@ C We have a match. If reject, then disallow this reflection.
 C If accept, stop processing slice directives.
 C----- REJECT OR ACCEPT?
           IF (ISTORE(I+5) .EQ. 0) THEN
+            IALLOW = -1
+            IK = -90
             GOTO 1650 !Reject this reflection outright
           ELSE
             GOTO 1600 !Accept as far as SLICE is concerned.
@@ -1198,6 +1225,8 @@ C We have a match. If reject, then disallow this reflection.
 C If accept, stop processing condition directives.
 C-- REJECT OR ACCEPT?
           IF (ISTORE(I+5) .EQ. 0) THEN
+            IALLOW = -1
+            IK = -80
             GOTO 1650    !Reject this reflection outright.
           ELSE
             GOTO 1800    !Accept as far as CONDITIONS are concerned.
@@ -1206,17 +1235,6 @@ C-- REJECT OR ACCEPT?
 1750  CONTINUE
 1800  CONTINUE
 C
-C -- CHECK FOR SPECIFIC OMISSIONS
-      IF ( N28OM .LE. 0 ) GO TO 1640
-      DO 1620 I = L28OM , M28OM , MD28OM
-      A = 0.
-      DO 1610 J = 1 , 3
-      IND6 = M6 + J - 1
-      IND28 = I + J - 1
-      A = A + ABS ( STORE(IND6) - STORE(IND28) )
-1610  CONTINUE
-      IF ( A .LE.  ( 3 * ZERO )  ) GO TO 1650
-1620  CONTINUE
 C
 1640  CONTINUE
 C -- REFLECTION HAS PASSED ALL TESTS

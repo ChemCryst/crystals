@@ -1,20 +1,21 @@
-%SCRIPT XOCCGS
+%SCRIPT XOCCG
 %%Get a occupation number. CMESSAGE is text to be displayed
 % VARIABLE CHARACTER CATOM CMESSAGE
 % VARIABLE LOGICAL CALLED
-% VARIABLE REAL APART AVALUE
+% VARIABLE REAL AOCC AVALUE
 % EVALUATE CALLED = TRUE
 % EVALUATE CMESSAGE = 'Example: 0.5'
+% EVALUATE AVALUE = 1.0
 %%
 %%
 % GET SILENT NOSTORE FINAL KEYWORD 'Atom?' ' '
 % EVALUATE CATOM = CVALUE
 %%
 % COPY '#SCRIPT XGETVAL'
-% EVALUATE APART = AVALUE
+% EVALUATE AOCC = AVALUE
 % EVALUATE CALLED = TRUE
 %%
-%% edit was still activated even if part number selection cancelled
+%% edit was still activated even if selection cancelled
 %  if avalue .lt. 0. then
 %    finish
 %  end if                                                                             

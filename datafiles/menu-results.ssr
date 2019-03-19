@@ -2,13 +2,13 @@
 ^^WI  MENU _RESULTS 'Res&ults'                                                  
 ^^WI   ITEM PUBL 'Output &CIF file' '#SCRIPT XCIF'  DISABLEIF='IN QS'           
 ^^WI                                ENABLEIF='L1 L2 L3 L5 L6'                   
+^^WI   ITEM PUSU 'Output &CIF file no esds' '#SCRIPT XCIFNOSU'  DISABLEIF='IN'         
+^^WI                                ENABLEIF='L1 L2 L3 L5' 
 ^^WI   ITEM SUMM 'Output &HTML summary' '#SCRIPT XHTML' DISABLEIF='IN QS'       
 ^^WI                                ENABLEIF='L1 L2 L3 L5 L6'                   
 ^^WI   ITEM SUMM 'Output &Summary file' '#SCRIPT SUM' DISABLEIF='IN QS'         
 ^^WI                                ENABLEIF='L1 L2 L3 L5 L6'                   
 ^^WI   ITEM SUMM 'Output &other tables' '#SCRIPT XPUBLISH'                      
-^^WI   ITEM PUSU '&CIF file no esds' '#SCRIPT XCIFNOSU'  DISABLEIF='IN'         
-^^WI                                ENABLEIF='L1 L2 L3 L5' 
 ^^WI   ITEM PEXP 'Export archive LISTS' '#SCRIPT EXPORT' DISABLEIF='IN QS'                     
 
 ^^WI   SPLIT                                                                    

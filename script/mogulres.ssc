@@ -65,12 +65,14 @@
 ^^WI            MOUSEACTION=SELECTATOM
 ^^WI       @ 2,2 GRID M NROWS=9 NCOLS=3
 ^^WI       {
-^^WI         @ 2,2 GRID G NROWS=2 NCOLS=1
+^^WI         @ 2,2 GRID G NROWS=3 NCOLS=1
 ^^WI         {
 ^^WI           @ 1,1 STATIC RT_T4
 ^^WI 'Z-scores: zero is best agreement. See information tab.'
 ^^WI           @ 2,1 STATIC RT_T5 
 ^^WI 'Click a column header to sort data.'
+^^WI           @ 3,1 STATIC RT_T6 
+^^WI 'For angles, the first atom is the pivot'
 ^^WI         }
 ^^WI         @ 4,2 GRID L NROWS=3 NCOLS=1 ISOLATE
 ^^WI         {
