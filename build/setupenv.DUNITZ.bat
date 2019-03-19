@@ -3,7 +3,7 @@
 if "%CR64BIT%" == "TRUE" (
     call "E:\Program Files\IntelSWTools\compilers_and_libraries_2017.4.210\windows\bin\ipsxe-comp-vars.bat" intel64 vs2015
     ) else (
-    call "E:\Program Files\IntelSWTools\compilers_and_libraries_2017.4.210\windows\bin\ipsxe-comp-vars.bat" intel32 vs2015
+    call "E:\Program Files\IntelSWTools\compilers_and_libraries_2017.4.210\windows\bin\ipsxe-comp-vars.bat" ia32 vs2015
     )
 
 set WXNUM=31
