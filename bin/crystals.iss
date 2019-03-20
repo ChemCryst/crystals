@@ -8,7 +8,7 @@
 #endif
 
 #if "TRUE" == GetEnv('CROPENMP')
-  #define crysOS 'win-int-openmp'
+  #define crysOS 'win-int32-openmp'
 #endif
 
 #if "TRUE" == GetEnv('CR64BIT')
