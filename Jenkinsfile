@@ -198,7 +198,7 @@ pipeline {
                                     mkdir b
                                     cd b
                                     cmake -DBLA_VENDOR=OpenBLAS -DMINGW=1 -DwxWidgets_ROOT_DIR=%WXWIN% -DwxWidgets_LIB_DIR=%WXLIB% -DwxWidgets_CONFIGURATION=mswu -G"MinGW Makefiles" ..
-                                    mingw32-make -j6 || exit 1
+                                    mingw32-make -j3 || exit 1
                                     echo "Build step complete"
                                 '''
                             }
