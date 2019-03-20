@@ -64,7 +64,7 @@ pipeline {
                             }
                         }
                         
-                        stage('Deploy') {
+                        stage('Deploy Win64 - master branch only') {
                             when {
                               expression {
                                    env.BRANCH_NAME == 'master'
@@ -143,18 +143,27 @@ pipeline {
                                 '''
                             }
                         }
+                        stage('Deploy Win32 - master branch only') {
+                            when {
+                              expression {
+                                   env.BRANCH_NAME == 'master'
+                              }
+                            }
+                            steps {
+                                ftpPublisher alwaysPublishFromMaster: false, masterNodeName: 'master', continueOnError: false, failOnError: false, paramPublish: [parameterName:""], publishers: [
+                                    [configName: 'crystals.xtl', transfers: [
+                                        [asciiMode: false, cleanRemote: false, excludes: '', flatten: true, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: "/", remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'installer/**.exe']
+                                    ], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true]
+                                ]
+                            }
+                        }
+                        
+                        
                     }
                     post {
                         always {
                             bat 'ren test_suite INW32.org'  // Change path here to get unique archive path.
                             archiveArtifacts artifacts: 'INW32.org/*.out', fingerprint: true
-                        }
-                        success  {
-                            ftpPublisher alwaysPublishFromMaster: false, masterNodeName: 'master', continueOnError: false, failOnError: false, paramPublish: [parameterName:""], publishers: [
-                                [configName: 'crystals.xtl', transfers: [
-                                    [asciiMode: false, cleanRemote: false, excludes: '', flatten: true, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: "/", remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'installer/**.exe']
-                                ], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true]
-                            ]
                         }
                     }
                 }
