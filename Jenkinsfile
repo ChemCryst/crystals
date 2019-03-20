@@ -168,7 +168,56 @@ pipeline {
                     }
                 }
                 
-                
+                stage("MinGW") {
+                    agent { label 'master' }
+                    options {
+                        timeout(time: 1, unit: 'HOURS') 
+                    }
+                    environment {
+                        COMPCODE = 'MIN'
+                        CRBUILDEXIT = 'TRUE'   // exit build script on fail
+                        CROPENMP = 'TRUE'
+                        CR64BIT = 'TRUE'
+                    }
+                    stages {
+                        stage('MinGW Build') {                      // Run the build
+                            steps {
+                                bat '''
+                                    call build\\setupenv.SAYRE.bat
+                                    rmdir /q/s b
+                                    mkdir b
+                                    cd b
+                                    cmake -DBLA_VENDOR=OpenBLAS -DMINGW=1 -DwxWidgets_ROOT_DIR=%WXWIN% -DwxWidgets_LIB_DIR=%WXLIB% -DwxWidgets_CONFIGURATION=mswu -G"MinGW Makefiles" ..
+                                    mingw32-make -j6
+                                    echo "Build step complete"
+                                '''
+                            }
+                        }
+                        stage('MinGW Test') {
+                            environment {
+                                CRYSDIR = '.\\,..\\b\\'
+                                COMPCODE = 'MIN64'
+                            }
+                            steps {
+                                bat '''
+                                    call build\\setupenv.SAYRE.bat
+                                    cd test_suite
+                                    mkdir script
+                                    echo "%SCRIPT NONE" > script\\tipauto.scp
+                                    echo "%END SCRIPT" >> script\\tipauto.scp
+                                    del crfilev2.dsc
+                                    perl testsuite.pl
+                                '''
+                            }
+                        }
+                    }
+                    post {
+                        always {
+                            bat 'ren test_suite MIN64.org'  // Change path here to get unique archive path.
+                            archiveArtifacts artifacts: 'MIN64.org/*.out', fingerprint: true
+                        }
+                    }
+                }
                 
                 
                 stage("Linux") {
