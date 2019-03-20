@@ -50,6 +50,11 @@ pipeline {
                             }
                         }
                         stage('Win64-Intel Installer') {
+                            when {
+                              expression {
+                                   env.BRANCH_NAME == 'master'
+                              }
+                            }
                             environment {
                                 CRYSDIR = '.\\,..\\build\\'
                                 COMPCODE = 'INW_OMP'
@@ -131,6 +136,11 @@ pipeline {
                             }
                         }
                         stage('Win32-Intel Installer') {
+                            when {
+                              expression {
+                                   env.BRANCH_NAME == 'master'
+                              }
+                            }
                             environment {
                                 CRYSDIR = '.\\,..\\build\\'
                                 COMPCODE = 'INW'
@@ -188,7 +198,7 @@ pipeline {
                                     mkdir b
                                     cd b
                                     cmake -DBLA_VENDOR=OpenBLAS -DMINGW=1 -DwxWidgets_ROOT_DIR=%WXWIN% -DwxWidgets_LIB_DIR=%WXLIB% -DwxWidgets_CONFIGURATION=mswu -G"MinGW Makefiles" ..
-                                    mingw32-make -j6
+                                    mingw32-make -j6 || exit 1
                                     echo "Build step complete"
                                 '''
                             }
