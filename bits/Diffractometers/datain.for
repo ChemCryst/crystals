@@ -1190,15 +1190,17 @@ C----- WRITING LIST 30
          WRITE (NOUTF,'(a,a)')    'cont instrument= ', cinst
          WRITE (NOUTF,'(a)')      'GENERAL'
          WRITE (NOUTF,'(a,f7.1)') 'cont Z=',zm
-         WRITE (NOUTF,'(a,a)')    'COLOUR ',ccoL
+         WRITE (NOUTF,'(a,a)')    'COLOUR ',ccol(1:nctrim(ccol))
          WRITE (NOUTF,'(a,a)')    'SHAPE ',cshape
          WRITE (NOUTF,'(a)')      'INDEXRAN'
-         WRITE (NOUTF,'(a,i7)')   'cont hmin=',MINH
-         WRITE (NOUTF,'(a,i7)')   'cont hmax=',MAXH
-         WRITE (NOUTF,'(a,i7)')   'cont kmin=',MINK
-         WRITE (NOUTF,'(a,i7)')   'cont kmax=',MAXK
-         WRITE (NOUTF,'(a,i7)')   'cont lmin=',MINL
-         WRITE (NOUTF,'(a,i7)')   'cont lmax=',MAXL
+         if ( nref .gt. 0 ) then
+             WRITE (NOUTF,'(a,i7)')   'cont hmin=',MINH
+             WRITE (NOUTF,'(a,i7)')   'cont hmax=',MAXH
+             WRITE (NOUTF,'(a,i7)')   'cont kmin=',MINK
+             WRITE (NOUTF,'(a,i7)')   'cont kmax=',MAXK
+             WRITE (NOUTF,'(a,i7)')   'cont lmin=',MINL
+             WRITE (NOUTF,'(a,i7)')   'cont lmax=',MAXL
+         end if
          WRITE (NOUTF,'(a,i7)')   'END'
 c
 c--------------------------------------------------------------
