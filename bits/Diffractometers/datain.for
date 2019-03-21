@@ -459,6 +459,7 @@ c         endif
       write(6,'(A,3x,a)') 'Crystal Colour Found', ccol(1:nctrim(ccol))
 c
 c
+      nref=0
 c 
 c -TO DO - SEPTEMBER 2012 - TEST FOR OLD-STYLE F REFINEMENT
 C....... Read and process the reflections
@@ -475,7 +476,6 @@ c-------------------------------------------------
        MAXH=-10000
        MAXK=-10000
        MAXL=-10000
-       nref=0
 c
 cdjw oct07 - read reflections
 
@@ -1190,15 +1190,17 @@ C----- WRITING LIST 30
          WRITE (NOUTF,'(a,a)')    'cont instrument= ', cinst
          WRITE (NOUTF,'(a)')      'GENERAL'
          WRITE (NOUTF,'(a,f7.1)') 'cont Z=',zm
-         WRITE (NOUTF,'(a,a)')    'COLOUR ',ccoL
+         WRITE (NOUTF,'(a,a)')    'COLOUR ',ccol(1:nctrim(ccol))
          WRITE (NOUTF,'(a,a)')    'SHAPE ',cshape
          WRITE (NOUTF,'(a)')      'INDEXRAN'
-         WRITE (NOUTF,'(a,i7)')   'cont hmin=',MINH
-         WRITE (NOUTF,'(a,i7)')   'cont hmax=',MAXH
-         WRITE (NOUTF,'(a,i7)')   'cont kmin=',MINK
-         WRITE (NOUTF,'(a,i7)')   'cont kmax=',MAXK
-         WRITE (NOUTF,'(a,i7)')   'cont lmin=',MINL
-         WRITE (NOUTF,'(a,i7)')   'cont lmax=',MAXL
+         if ( nref .gt. 0 ) then
+             WRITE (NOUTF,'(a,i7)')   'cont hmin=',MINH
+             WRITE (NOUTF,'(a,i7)')   'cont hmax=',MAXH
+             WRITE (NOUTF,'(a,i7)')   'cont kmin=',MINK
+             WRITE (NOUTF,'(a,i7)')   'cont kmax=',MAXK
+             WRITE (NOUTF,'(a,i7)')   'cont lmin=',MINL
+             WRITE (NOUTF,'(a,i7)')   'cont lmax=',MAXL
+         end if
          WRITE (NOUTF,'(a,i7)')   'END'
 c
 c--------------------------------------------------------------
