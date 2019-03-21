@@ -42,7 +42,6 @@ if(useSTATIC)
 endif ()
 
 ENABLE_LANGUAGE(Fortran)
-set(CPACK_NSIS_EXECUTABLES_DIRECTORY ".")
 INCLUDE (CPack)
 IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.0)
     include(CheckFortranCompilerFlag)
@@ -108,9 +107,7 @@ IF ( PERL_FOUND )
     MESSAGE ( STATUS "Perl executable: [${PERL_EXECUTABLE}]")
 ENDIF ( PERL_FOUND )
 
-# IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.5) - fails for 3.10, recommend to use VERSION comparison operator
-IF ( ${CMAKE_VERSION} VERSION_GREATER 3.5 )
-    set( BLA_STATIC TRUE )
+IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.5)
     find_package(BLAS)
     find_package(LAPACK)
 
@@ -134,7 +131,7 @@ IF ( ${CMAKE_VERSION} VERSION_GREATER 3.5 )
         if ( LAPACK_LINKER_FLAGS )
            uniquely_add_flags ( CMAKE_MODULE_LINKER_FLAGS ${LAPACK_LINKER_FLAGS} )
         endif()
-        message(STATUS "[>3.5] Using BLAS library: ${BLAS_LIBRARIES}")
+        message(STATUS "Using BLAS library: ${BLAS_LIBRARIES}")
     else ()
         message(STATUS "Using builtin BLAS and LAPACK library")
         add_definitions(-DCRY_OWNLAPACK)
@@ -167,7 +164,7 @@ else ()
             if ( LAPACK_LINKER_FLAGS )
                uniquely_add_flags ( CMAKE_MODULE_LINKER_FLAGS ${LAPACK_LINKER_FLAGS} )
             endif()
-            message(STATUS "[<=3.5] Using BLAS library: ${BLAS_LIBRARIES}")
+            message(STATUS "Using BLAS library: ${BLAS_LIBRARIES}")
         else ()
             message(STATUS "Using builtin BLASS library")
             add_definitions(-DCRY_OWNLAPACK)
@@ -673,27 +670,6 @@ endif ()
 
 ADD_CUSTOM_TARGET ( startups ALL DEPENDS dscbuild ${srtfiles} )
 ADD_CUSTOM_TARGET ( dscbuild ALL DEPENDS commands.dsc crystals )
-
-
-install ( TARGETS crystals DESTINATION .
-          EXPORT ${BLAD_LIBARY}
-          LIBRARY DESTINATION . 
-          RUNTIME DESTINATION .
-          ARCHIVE DESTINATION . )
-
-install(CODE "
-    include(BundleUtilities)
-    fixup_bundle(\"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${EXECUTABLE_NAME}${CMAKE_EXECUTABLE_SUFFIX}\" \"\" \"\")
-    file(GLOB dynamic_libs \"\${CMAKE_INSTALL_PREFIX}/*${CMAKE_SHARED_LIBRARY_SUFFIX}*\")
-    message(STATUS \"GLOB: \${dynamic_libs}\")
-    foreach(dll IN LISTS dynamic_libs)
-        if(\"${CMAKE_STRIP}\")
-            execute_process(COMMAND ${CMAKE_STRIP} \"-s\" \${dll})
-        endif()
-    endforeach(dll)
-")       
-
-# install ( FILES ${OpenBLAS_LIBRARY} DESTINATION . )
 
 # Unit testing
 ADD_SUBDIRECTORY(pFunit)

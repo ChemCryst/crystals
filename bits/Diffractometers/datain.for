@@ -462,7 +462,6 @@ c
 c 
 c -TO DO - SEPTEMBER 2012 - TEST FOR OLD-STYLE F REFINEMENT
 C....... Read and process the reflections
-      nref=0
 C 
       F1=NUMB_('_refln_index_h',adum,DUM)
       if ( .not. f1 ) then
@@ -476,6 +475,7 @@ c-------------------------------------------------
        MAXH=-10000
        MAXK=-10000
        MAXL=-10000
+       nref=0
 c
 cdjw oct07 - read reflections
 
