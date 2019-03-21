@@ -459,6 +459,7 @@ c         endif
       write(6,'(A,3x,a)') 'Crystal Colour Found', ccol(1:nctrim(ccol))
 c
 c
+      nref=0
 c 
 c -TO DO - SEPTEMBER 2012 - TEST FOR OLD-STYLE F REFINEMENT
 C....... Read and process the reflections
@@ -475,7 +476,6 @@ c-------------------------------------------------
        MAXH=-10000
        MAXK=-10000
        MAXL=-10000
-       nref=0
 c
 cdjw oct07 - read reflections
 
