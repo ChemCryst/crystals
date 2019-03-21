@@ -33,7 +33,10 @@
 ^^WI                 TOOL _MSHOWH tool_showh.bmp 'Show H'           
 ^^WI                 '#SCRIPT XMODVIEW_NTOGGLEH' TOGGLE
 ^^WI                   DISABLEIF='IN' ENABLEIF='L5'
-^^WI                 ITEM _MSHOWH STATE=ON                                      
+^^WI                 TOOL _MCYCLER tool_showh.bmp 'Cycle residues'           
+^^WI                 '#SCRIPT XMODVIEW_NCYCLER' DISABLEIF='IN' ENABLEIF='L5'
+^^WI                 TOOL _MSHOWR tool_showh.bmp 'Show all residues'           
+^^WI                 '#SCRIPT XMODVIEW_NSHOWR' DISABLEIF='IN' ENABLEIF='L5'
 ^^WI               }                                                            
 %%END SSR                                                                       
                                                                                 
