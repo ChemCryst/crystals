@@ -602,7 +602,7 @@ REAL
 
     WEIGHT         MAXIMUM        TOLER          DS1            DS2            QUASI          REWT        
 
-[23]    2.00      10000.0000         6.0000         1.0000         1.0000         0.2500         1.0000
+[77]    2.00      10000.00          6.00          1.00          1.00          0.25          1.00
 
 
 
@@ -638,7 +638,7 @@ REAL
 
     WEIGHT         MAXIMUM        TOLER          DS1            DS2            QUASI          REWT        
 
-[23]    2.00      10000.0000         6.0000         1.0000         1.0000         0.2500         1.0000
+[77]    2.00      10000.00          6.00          1.00          1.00          0.25          1.00
 
 
 
@@ -966,16 +966,18 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type    23     serial number        1     Address     5014     Length      77     Created on                          
+ Print list type    23     serial number        1     Address     5014     Length      78     Created on                          
 
 
 
- Record  101    LGRP    8  NGRP      1   MODIFICATIONS APPLIED TO /FO/ AND /FC/ DURING SFLS (-1 FOR NO, 0 FOR YES)       
+ Record  101    LGRP    9  NGRP      1   MODIFICATIONS APPLIED TO /FO/ AND /FC/ DURING SFLS (-1 FOR NO, 0 FOR YES)       
 
 
     ANOMALOUS      EXTINCTION     LAYERSCALES    BATCHSCALES    PARTIAL        UPDATE         ENANTIOPOLE    INVERTOR    
+   HUGE        
 
          -1             -1              0             -1             -1             -1             -1              0
+          0
 
 
  Record  103    LGRP    6  NGRP      1   MODIFICATIONS TO THE MINIMISATION FUNCTION DURING SFLS (-1 FOR NO, 0 FOR YES)   
@@ -1020,7 +1022,7 @@ REAL
  TEST LIST INPUT                                                                      Date              Time          
 
 
- Print list type    25     serial number        1     Address     5091     Length      52     Created on                          
+ Print list type    25     serial number        1     Address     5092     Length      52     Created on                          
 
 
 
