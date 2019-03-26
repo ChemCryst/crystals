@@ -222,7 +222,8 @@ pipeline {
                                     perl testsuite.pl -s
                                 '''
                             }
-                        }                        stage('MinGW Build') {                      // Run the build
+                        }
+                        stage('MinGW Build') {                      // Run the build
                             steps {
                                 bat '''
                                     call build\\setupenv.SAYRE.bat
