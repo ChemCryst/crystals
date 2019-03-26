@@ -93,7 +93,7 @@ pipeline {
                 }
                 
 // Single Dunitz node can't cope with this at the moment in parallel with 64 bit build.
-/*                stage("Win32-Intel") {
+                stage("Win32-Intel") {
                     agent { label 'Dunitz' }
                     options {
                         timeout(time: 1, unit: 'HOURS') 
@@ -178,7 +178,7 @@ pipeline {
                         }
                     }
                 }
-                */                
+                                
 
                 
                 stage("MinGW") {
