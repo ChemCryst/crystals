@@ -193,7 +193,36 @@ pipeline {
                         CR64BIT = 'TRUE'
                     }
                     stages {
-                        stage('MinGW Build') {                      // Run the build
+                        stage('MinGW debug build') {                      // Run the build
+                            steps {
+                                bat '''
+                                    call build\\setupenv.SAYRE.bat
+                                    rmdir /q/s b
+                                    mkdir b
+                                    cd b
+                                    cmake -DCMAKE_BUILD_TYPE=Debug -DBLA_VENDOR=OpenBLAS -DMINGW=1 -DwxWidgets_ROOT_DIR=%WXWIN% -DwxWidgets_LIB_DIR=%WXLIB% -DwxWidgets_CONFIGURATION=mswu -G"MinGW Makefiles" ..
+                                    mingw32-make -j3 || exit 1
+                                    echo "Build step complete"
+                                '''
+                            }
+                        }
+                        stage('MinGW Smoketest') {
+                            environment {
+                                CRYSDIR = '.\\,..\\b\\'
+                                COMPCODE = 'MIN64'
+                            }
+                            steps {
+                                bat '''
+                                    call build\\setupenv.SAYRE.bat
+                                    cd test_suite
+                                    mkdir script
+                                    echo "%SCRIPT NONE" > script\\tipauto.scp
+                                    echo "%END SCRIPT" >> script\\tipauto.scp
+                                    del crfilev2.dsc
+                                    perl testsuite.pl -s
+                                '''
+                            }
+                        }                        stage('MinGW Build') {                      // Run the build
                             steps {
                                 bat '''
                                     call build\\setupenv.SAYRE.bat
