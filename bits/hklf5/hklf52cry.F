@@ -450,7 +450,11 @@ C
       CALL DTRM(B,3,D1,INDX)
       WRITE(13,502) JJ+1,((R(I,J,JJ),J=1,3),I=1,3)
       IF(D1.LT.0.95.OR.D1.GT.1.05) WRITE(13,505)
-  170 WRITE(13,503) D1
+      if(d1.lt.0) then
+        write(13,503) d1
+        write(13,5051)
+      endif
+  170 CONTINUE
 
 C     DJW: SAVE THE MATRIX BEFORE IT IS OVERWRITTEN 
 C     (SIGNS WERE LOST FROM LAST ROW) 
@@ -619,9 +623,10 @@ C     AND CLEAR THE ACCUMULATORS
   504 FORMAT(/' DETERMINANT = ',F8.3, ' ERROR: ENTER TWIN LAW BY HAND '
      1,/,' AND/OR CHECK INPUT DATA')
   505 FORMAT(/
-     1 'Determinant is quite far from 1.0. inspect twin law for errors'
-     1 /
-     1 'if determinant is ca. -1.0, reprocess data without averaging'
+     1 'Determinant is quite far from 1.0.',
+     2 ' Inspect TLAT_OUT.LIS for errors')
+5051  format(/
+     1 'The determinant is negative. Reprocess data without averaging'
      2)
   506 FORMAT((/' NO. OF SETS FOR COMPONENT ',I4, ' = ',I7))
   507 FORMAT((/' No. unmatched for component ',I4, ' = ', I5))
@@ -636,7 +641,9 @@ C     AND CLEAR THE ACCUMULATORS
      6 'The twin law is redetermined without these unreliable'/
      7 'reflections.' //
      8 'The very unreliable reflections are marked with an "*" in'/
-     9 'the list below'
+     9 'the list below'/
+     1 'CRYSTALS will re-process the data omitting these reflections'/
+     2 'See the bottom of TLAT_OUT.LIS for the final results'
      1 //)
 
   509 FORMAT(//,

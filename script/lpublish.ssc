@@ -1,0 +1,37 @@
+%SCRIPT PUBLISH
+%  VARIABLE CHARACTER QLINE1 QLINE2 QTITLE BUTTOK
+%  COPY '#PAUSE 2
+%  COPY '#RELEASE PUNCH bfile.pch'
+%  COPY '$DEL PUBLISH.cif'
+%  COPY '#RELEASE PUNCH publish.cif'
+%    CLEAR
+%    COPY '#CIF '
+%    COPY 'END'
+%    COPY '#PARAMETERS'
+%    COPY 'LAYOUT INSET = 1 NCHAR = 120'
+%    COPY 'COORD SELECT=ALL MONITOR=LOW PRINT=YES PUNCH=CIF NCHAR=18'
+%    COPY "U'S MONITOR=OFF, PRINT=NO, PUNCH=NO, NCHAR=18"
+%    COPY 'END'
+%    COPY '#DIST'
+%    COPY 'E.S.D YES'
+%    COPY 'OUTPUT MON=DIST PUNCH = CIF'
+%    COPY 'END'
+%  COPY '#RELEASE PUNCH bfile.pch'
+%  COPY '#SPAWN echo open galena.xtl.ox.ac.uk >galena.ftp'
+%  COPY '#SPAWN echo user student >>galena.ftp'
+%% NB This is an old password, contact the demonstrator for a new one..
+%  COPY '#SPAWN echo askthede >>galena.ftp'
+%  COPY '#SPAWN echo put publish.cif printout.cif >>galena.ftp'
+%  COPY '#SPAWN echo bye >>galena.ftp'
+%  COPY '#SPAWN ftp -n -s:galena.ftp'
+%  EVALUATE QTITLE = 'Publish results'
+%  EVALUATE BUTTOK = '&Ok'
+%  EVALUATE QLINE1 = 'A typeset cif will appear on the printer within'
+%  EVALUATE QLINE2 = '2 minutes. (Only between 9am-7pm Monday-Friday.)'
+
+        A printout of your cif file will appear on the printer
+        in room28 within 2 minutes. This service is only available
+        9am-7pm Monday-Friday.
+
+%  COPY '#SCRIPT XMESSAGE'
+%END SCRIPT

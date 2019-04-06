@@ -1,4 +1,6 @@
 %SCRIPT XGETL6
+%% Note - dies for twinned reflections (djw 2019)
+%% Puts reflections into a window for sorting
 % VARIABLE CHARACTER HVAL
 ^^WI WINDOW PROGMETER 'Please wait'
 ^^WI GRID  PG1 NROWS=5 NCOLS=5
