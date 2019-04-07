@@ -1,4 +1,4 @@
-%SCRIPT CIF
+%SCRIPT SUM
 % VARIABLE LOGICAL SCRIPTEXT
 % VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
 % VARIABLE LOGICAL   ANSWER
@@ -28,7 +28,7 @@
 %      COPY 'REFINE'
 %      COPY 'SHIFT GENERAL=0.0'
 %      COPY 'END'
-{I * Perfomrmied one round of least squares, but shifts not applied.
+{I * Perfomrmed one round of least squares, but shifts not applied.
 %    END IF
 %    COPY '#RELEASE PUNCH summary.lis'
 %    TRANSFER ' ' TO PUNCH
@@ -81,7 +81,7 @@
 %      TRANSFER 'Reflections:' TO PUNCH
 %      TRANSFER '============' TO PUNCH
 %      TRANSFER ' ' TO PUNCH
-%      COPY '#PUNCH 6 C'
+%      COPY '#PUNCH 6 I'
 %      COPY 'END'
 %    END IF
 %    COPY '#RELEASE PUNCH logs/bfile.pch'
