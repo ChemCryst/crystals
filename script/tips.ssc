@@ -300,7 +300,7 @@ in use, depending upon what you have set as your default text editor.
 On the tab, note the name of the current file, and then on the Command 
 Line type (for example):
 
-$notapad logs/bfile#02.lis
+$notepad logs/bfile#02.lis
 
 %   END BLOCK                                                                   
 %   BLOCK % TIP30

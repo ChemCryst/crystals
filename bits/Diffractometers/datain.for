@@ -282,13 +282,14 @@ c       get a rough volume
 c
 C
 C Look at scattering factors to see if they suggest neutrons
+      probably_neutrons = .false.
 C     probably_neutrons only true if a1 coeff are present and all zero.
 180   continue
       f2 = numb_('_atom_type_scat_Cromer_Mann_a1',  x, sx)
 	  if (.not.(f2)) goto 182
 	  if ( abs ( x ) .lt. 0.000001 ) then
 	    probably_neutrons = .true.
-      else
+          else
 	    probably_neutrons = .false.
 		goto 182 !stop looping
 	  end if
@@ -312,7 +313,7 @@ c
 c
 c
 c.....  wavelength
-      F1=NUMB_('_diffrn_radiation_wavelength',num,DUM)
+      F1=NUMB_('_diffrn_radiation_wavelength',adum,DUM)
       if(f1) then
        FW=NUMB_('_diffrn_radiation_wavelength',WAV,DUM)
       endif
