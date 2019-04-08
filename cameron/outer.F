@@ -139,7 +139,6 @@ C CHECK IF THERE IS A CAMERON.INI
           CALL ZMORE('There is no CAMERON.INI',0)
           CALL ZMORE1('There is no CAMERON.INI',0)
         ENDIF
-        CHRBUF = ' '
         CALL ZCONTR
 c      ELSE
 c        CALL ZSMALL (RCRYST , NSTORE , IDEVIC)
