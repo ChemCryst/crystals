@@ -348,13 +348,22 @@ C      CUPPER = CLOWER
         RETURN
       END IF
       
-      READ(CLOWER,'(A)') CUPPER
+C      READ(CLOWER,'(A)') CUPPER  ! This fails in gfortran if CLOWER contains a comma.
+C Instead, do the copy one char at a time below while testing for case.
 C
 C
 C -- SEARCH FOR LOWERCASE CHARACTERS AND CONVERT TO UPPERCASE
       DO 2000 I = 1 , LENGTH
         IPOS = INDEX ( CALPHA , CLOWER(I:I) )
-        IF ( IPOS .GT. 0 ) CUPPER(I:I) = CEQUIV(IPOS:IPOS)
+        IF ( IPOS .GT. 0 ) THEN
+           CUPPER(I:I) = CEQUIV(IPOS:IPOS)
+        ELSE 
+           CUPPER(I:I) = CLOWER(I:I)
+        ENDIF
+c        if (i .lt. 80) then
+c        print *, i, clower(I:I), ' ', ipos, ' ', 
+c     1    CEQUIV(IPOS:IPOS), CUPPER(I:I), ' ', CUPPER(1:40)
+c        end if 
 2000  CONTINUE
 C
 C

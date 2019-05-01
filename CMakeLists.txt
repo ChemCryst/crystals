@@ -10,6 +10,7 @@ SET(CMAKE_VERBOSE_MAKEFILE OFF)
 SET(CMAKE_COLOR_MAKEFILE ON)
 
 option (verbose "verbose" OFF)
+option (useMULTIDEF_WORKAROUND "useMULTIDEF_WORKAROUND" OFF)  #temporary while multiply defined symbols exist in MinGW64 libs.
 option (useGUI "useGUI" ON)
 option (usePY "usePY" OFF)
 option (use32 "use32" OFF)
@@ -38,6 +39,7 @@ if(useSTATIC)
     SET(BUILD_SHARED_LIBRARIES OFF)
     SET(CMAKE_EXE_LINKER_FLAGS "-static")
     SET(wxWidgets_USE_STATIC ON)
+    set(wxSTATICEXTRA_LIBS "-loleacc -luxtheme")
     message(STATUS "Building static version")
 endif ()
 
@@ -623,7 +625,11 @@ if ( useGUI )
     include_directories( ${OPENGL_INCLUDE_DIRS}  )
     target_link_libraries(crystals ${OPENGL_LIBRARIES} )
 
-    TARGET_LINK_LIBRARIES(crystals CrystalsFortran CameronFortran ${wxWidgets_LIBRARIES} ${MSYS2LIBS})
+if ( useMULTIDEF_WORKAROUND )
+    set (CMAKE_EXE_LINKER_FLAGS -Wl,--allow-multiple-definition )
+endif()
+
+    TARGET_LINK_LIBRARIES(crystals CrystalsFortran CameronFortran ${wxWidgets_LIBRARIES} ${MSYS2LIBS} ${wxSTATICEXTRA_LIBS})
     SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_GUI)
     SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES Fortran_MODULE_DIRECTORY ${Fortran_MODULE_DIRECTORY} )    
     
