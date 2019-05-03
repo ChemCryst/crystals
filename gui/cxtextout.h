@@ -65,6 +65,10 @@ typedef struct _tagCOLOURCODE
 #define COLOUR_PINK         13
 #define COLOUR_GREY         14
 #define COLOUR_LIGHTGREY    15
+#define COLOUR_BGREEN       16
+#define COLOUR_DGREEN       17
+#define COLOUR_MAGENTA      18
+#define COLOUR_RED          19
 
 //End of user code.
 
@@ -137,13 +141,13 @@ class CxTextOut : public BASETEXTOUT
     LOGFONT         m_lfFont;           // Font as a LOGFONT
     COLORREF        m_BackCol;          // Background Colour
     HCURSOR         m_hCursor;          // Cursor for the window
-    COLORREF        m_ColTable[ 16 ];   // Colour Table
+    COLORREF        m_ColTable[ 20 ];   // Colour Table
 #else
     wxFont*         m_pFont;            // Font we are using
     wxBrush*        m_brush;
     wxPen*          m_pen;
     wxColour        m_BackCol;
-    wxColour        m_ColTable[16];
+    wxColour        m_ColTable[20];
 #endif
     int             m_nHead;            // Head of the buffer
     unsigned int    m_nMaxLines;            // Maximum buffer size
