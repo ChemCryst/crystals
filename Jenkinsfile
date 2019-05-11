@@ -6,7 +6,7 @@ pipeline {
     stages {
         stage("Build and test on all platforms") {
             parallel {
-                stage("Win64-Intel") {
+/*                stage("Win64-Intel") {
                     agent { label 'Dunitz' }
                     options {
                         timeout(time: 1, unit: 'HOURS') 
@@ -90,10 +90,11 @@ pipeline {
                             archiveArtifacts artifacts: 'INW_OMP.org/*.out', fingerprint: true
                         }
                     }
-                }
+                } 
+*/
                 
 // Single Dunitz node can't cope with this at the moment in parallel with 64 bit build.
-                stage("Win32-Intel") {
+/*                stage("Win32-Intel") {
                     agent { label 'Dunitz' }
                     options {
                         timeout(time: 1, unit: 'HOURS') 
@@ -178,13 +179,14 @@ pipeline {
                         }
                     }
                 }
+*/
                                 
 
                 
                 stage("MinGW") {
                     agent { label 'master' }
                     options {
-                        timeout(time: 1, unit: 'HOURS') 
+                        timeout(time: 2, unit: 'HOURS') 
                     }
                     environment {
                         COMPCODE = 'MIN'
@@ -263,7 +265,7 @@ pipeline {
                 }
                 
                 
-                stage("Linux") {
+/*                stage("Linux") {
                     agent {label 'Orion'}    
                     options {
                         timeout(time: 1, unit: 'HOURS') 
@@ -349,6 +351,8 @@ pipeline {
                                 }
                     }
                 }
+*/
+/*
                 stage("OSX") {
                     agent {label 'Flack'}    
                     options {
@@ -392,6 +396,7 @@ pipeline {
                             }
                     }
                 }
+*/
             }
         }
        
