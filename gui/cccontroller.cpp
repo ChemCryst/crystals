@@ -4560,7 +4560,7 @@ std::string GetExePath() {
   std::string crysdir = path + string("/");
   return crysdir;
 #else
-  std::string crysdir = wxStandardPaths::Get().GetDataDir().ToStdString() + wxFileName::GetPathSeparator();
+  std::string crysdir = wxStandardPaths::Get().GetDataDir().ToStdString() + string(wxFileName::GetPathSeparator());
   return crysdir;
 #endif     
 }
