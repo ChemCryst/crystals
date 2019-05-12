@@ -47,17 +47,6 @@ CrMenu::~CrMenu()
        delete *mili;
     }
     mMenuList.clear();
-
-
-#ifdef CRY_USEMFC
-//for wx version, only delete the top level menu bar.
-    if ( ptr_to_cxObject != nil )
-    {
-        delete (CxMenu*)ptr_to_cxObject;
-        ptr_to_cxObject = nil;
-    }
-#endif
-
 }
 
 CcParse CrMenu::ParseInput( deque<string> &  tokenList )
@@ -167,6 +156,13 @@ CcParse CrMenu::ParseInput( deque<string> &  tokenList )
                             tokenList.pop_front();
                             break;
                         }
+                        case kTMenuIcon:
+                        {
+                            tokenList.pop_front();
+                            menuItem->bitmappath = string(tokenList.front() );
+                            tokenList.pop_front();
+                            break;
+                        }
                         default:
                         {
                             moreTokens = false;
@@ -174,7 +170,7 @@ CcParse CrMenu::ParseInput( deque<string> &  tokenList )
                         }
                     }
                 }
-                menuItem->id = ((CxMenu*)ptr_to_cxObject)->AddItem((char*)menuItem->text.c_str());
+                menuItem->id = ((CxMenu*)ptr_to_cxObject)->AddItem((char*)menuItem->text.c_str(), menuItem->bitmappath);
                 mMenuList.push_back(menuItem);
                 AddMenuItem(menuItem);
 

@@ -29,6 +29,7 @@ public:
         string originaltext;
         string command;
         string originalcommand;
+		string bitmappath;
         CrMenu* ptr;
         int disable;
         int enable;
