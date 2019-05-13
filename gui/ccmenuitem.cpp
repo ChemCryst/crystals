@@ -32,6 +32,7 @@ CcMenuItem::CcMenuItem(CrMenu* parentmenu)
     disable = 0;
     enable = 0;
     parent = parentmenu;
+	bitmappath = "";
 
 }
 

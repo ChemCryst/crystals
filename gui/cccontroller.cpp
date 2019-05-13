@@ -3367,6 +3367,7 @@ int CcController::GetDescriptor( string &token, int descriptorClass )
                DESCRIPTOR(Save)
                DESCRIPTOR(Load)
                DESCRIPTOR(ShowH)
+			   DESCRIPTOR(MenuIcon)
              break;
 
       case kChartClass:
@@ -4559,7 +4560,8 @@ std::string GetExePath() {
   std::string crysdir = path + string("/");
   return crysdir;
 #else
-  std::string crysdir = wxStandardPaths::Get().GetDataDir().ToStdString() + wxFileName::GetPathSeparator();
+  std::string pathsep = string(wxString(wxFileName::GetPathSeparator()).ToStdString());
+  std::string crysdir = wxStandardPaths::Get().GetDataDir().ToStdString() + pathsep;
   return crysdir;
 #endif     
 }
