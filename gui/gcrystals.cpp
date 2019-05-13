@@ -314,8 +314,9 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
     {
 	//Find CRYSDIR from local executable path.
 	
-      std::string crysdir = wxStandardPaths::Get().GetDataDir().ToStdString() + wxFileName::GetPathSeparator();
-	
+	  std::string pathsep = string(wxString(wxFileName::GetPathSeparator()).ToStdString());
+      std::string crysdir = wxStandardPaths::Get().GetDataDir().ToStdString() + pathsep;
+
 	
 	
 // // Use the registry to fetch keys.
