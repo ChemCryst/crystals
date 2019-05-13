@@ -17,12 +17,6 @@ int CxMenu::mMenuCount = kMenuBase;
 CxMenu *    CxMenu::CreateCxMenu( CrMenu * container, CxMenu * guiParent, bool popup )
 {
     CxMenu  *theMenu = new CxMenu( container );
-#ifdef CRY_USEMFC
-    if(popup)
-        theMenu->CreatePopupMenu();
-    else
-        theMenu->CreateMenu();
-#endif
       return theMenu;
 }
 
@@ -41,92 +35,100 @@ CxMenu::~CxMenu()
 int CxMenu::AddMenu(CxMenu * menuToAdd, const string & text, int position)
 {
       int id = CrMenu::FindFreeMenuId();
-#ifdef CRY_USEMFC
-      InsertMenu( (UINT)-1, MF_BYPOSITION|MF_STRING|MF_POPUP, (UINT)menuToAdd->m_hMenu, text.c_str());
-#else
       Append( id, text.c_str(), menuToAdd);
       ostringstream strm;
-      strm <<  "cxmenu " << (uintptr_t)this << " adding submenu called " << 
-text;
+      strm <<  "cxmenu " << (uintptr_t)this << " adding submenu called " << text;
       LOGSTAT ( strm.str() );
-#endif
       return id;
 }
 
-int CxMenu::AddItem(const string & text, int position)
+int CxMenu::AddItem(const string & text, const string & iconfile, int position)
 {
       int id = CrMenu::FindFreeMenuId();
-#ifdef CRY_USEMFC
-      InsertMenu( (UINT)-1, MF_BYPOSITION|MF_STRING, (UINT)id, text.c_str());
-#else
-      Append( id, wxString(text.c_str()), wxString("") );
+      wxMenuItem* item = new wxMenuItem( this, id,  wxString(text.c_str()) );
+
+      if ( iconfile.length() > 0 ) {
+
+		  string crysdir ( getenv("CRYSDIR") );
+		  if ( crysdir.length() > 0 ) {
+			  int nEnv = (CcController::theController)->EnvVarCount( crysdir );
+			  int i = 0;
+			  bool noLuck = true;
+			  while ( noLuck && i < nEnv )
+			  {
+				  string dir = (CcController::theController)->EnvVarExtract( crysdir, i );
+				  i++;
+		#ifdef CRY_OSWIN32
+				  string file = dir + "script\\" + iconfile;
+		#else
+				  string file = dir + "script/" + iconfile;
+		#endif
+
+	//             wxMessageBox(file,"CcController");
+
+
+		//  	LOGERR("Adding script dir icon");
+				  struct stat buf;
+				  if ( stat(file.c_str(),&buf)==0 ) {
+					wxImage myimage ( file.c_str(), wxBITMAP_TYPE_BMP );
+					unsigned char tr = myimage.GetRed(0,0);
+					unsigned char tg = myimage.GetGreen(0,0);
+					unsigned char tb = myimage.GetBlue(0,0);
+					wxColour ncol = wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT);
+					for (int x = 0; x < myimage.GetWidth(); ++x ) {
+						for (int y = 0; y < myimage.GetHeight(); ++y ) {
+							if ( myimage.GetRed(x,y) == tr ) {
+								if ( myimage.GetGreen(x,y) == tg ) {
+									if ( myimage.GetBlue(x,y) == tb ) {
+										myimage.SetRGB(x,y,ncol.Red(),ncol.Green(),ncol.Blue());
+									}
+								}
+							}
+						}
+					}
+					wxBitmap mymap ( myimage, -1 );
+					if( mymap.Ok() )
+					  noLuck = false;
+					  item->SetBitmap(mymap);
+				  }
+			  }
+		  }
+	  }
+	  
+	  Append(item);
+//	  Append( id, wxString(text.c_str()), wxString("") );
+	  
       ostringstream strm;
       strm << "cxmenu " << (uintptr_t)this << " adding item called " << text ;
       LOGSTAT (strm.str());
-#endif
     return id;
 }
 
 int CxMenu::AddItem(int position)
 {
       int id = CrMenu::FindFreeMenuId();
-#ifdef CRY_USEMFC
-      InsertMenu( (UINT)-1, MF_BYPOSITION|MF_SEPARATOR, (UINT)id);
-#else
       AppendSeparator();
-#endif
     return id;
 }
 
 
 void CxMenu::SetText(const string & theText, int id)
 {
-#ifdef CRY_USEMFC
-    ModifyMenu(id, MF_BYCOMMAND|MF_STRING, id, theText.c_str());
-#else
       SetLabel( id, theText.c_str() );
-#endif
 }
 
 void CxMenu::SetTitle(const string & theText, CxMenu* ptr)
 {
-#ifdef CRY_USEMFC
-    for ( int i = 0; i < (int)GetMenuItemCount() ; i++ )
-    {
-       CxMenu* subm = (CxMenu*)GetSubMenu(i);
-       if (!subm) continue;
-       if (!subm->m_hMenu) continue;
-
-       if ( subm == ptr ) {
-          ModifyMenu(i, MF_BYPOSITION|MF_STRING, i, theText.c_str());
-          break;
-       }
-    }
-#else
       wxMenu::SetTitle( theText.c_str() );
-#endif
 }
 
 void CxMenu::PopupMenuHere(int x, int y, void *window)
 {
-#ifdef CRY_USEMFC
-      TrackPopupMenu(
-                 TPM_LEFTALIGN | TPM_LEFTBUTTON | TPM_RIGHTBUTTON,
-                  x, y, (CWnd*)window);
-#else
 // This is handled by the window class. But that's easy:
       ((wxWindow*)window)->PopupMenu(this, x, y);
-#endif
 }
 
 void CxMenu::EnableItem( int id, bool enable )
 {
-#ifdef CRY_USEMFC
-      if (enable)
-         EnableMenuItem( id, MF_ENABLED|MF_BYCOMMAND);
-      else
-         EnableMenuItem( id, MF_GRAYED|MF_BYCOMMAND);
-#else
          Enable( id, enable );
-#endif
 }

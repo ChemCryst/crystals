@@ -62,7 +62,7 @@ class CxMenu : public BASEMENU
         void SetText(const string & theText, int id);
         void SetTitle(const string & theText, CxMenu* ptr);
         int AddItem(int position = -1);
-        int AddItem(const string & text, int position = -1);
+        int AddItem(const string & text, const string & iconfile = "", int position = -1);
         int AddMenu(CxMenu* menuToAdd, const string & text, int position = -1);
         // methods
         static CxMenu * CreateCxMenu( CrMenu * container, CxMenu * guiParent, bool popup = FALSE );
