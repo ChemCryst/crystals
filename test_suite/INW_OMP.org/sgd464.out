@@ -7570,7 +7570,7 @@ LS-scale=  0.440   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Block No  1.  Single precision relative error:  4.41E-05
+Block No  1.  Single precision relative error:  4.40E-05
 [13]  LARGE     2           2             0.0       0.3E+00    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -14004,7 +14004,7 @@ Mean C-C su =   0.0365
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      38000          39790            5200                                    On scale of /FC/
+[33]      38000          39800            5200                                    On scale of /FC/
 
 [32]      17090          17690            2330                0.33 E+04          On scale of /FO/
 
