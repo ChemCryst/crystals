@@ -1,15 +1,15 @@
 pipeline {
     agent none
     options {
-        timeout(time: 1, unit: 'HOURS') 
+        timeout(time: 2, unit: 'HOURS') 
     }
     stages {
         stage("Build and test on all platforms") {
             parallel {
-/*                stage("Win64-Intel") {
-                    agent { label 'Dunitz' }
+                stage("Win64-Intel") {
+                    agent { label 'master' }
                     options {
-                        timeout(time: 1, unit: 'HOURS') 
+                        timeout(time: 2, unit: 'HOURS') 
                     }
                     environment {
                         COMPCODE = 'INW'
@@ -21,7 +21,7 @@ pipeline {
                         stage('Win64-Intel Build') {                      // Run the build
                             steps {
                                 bat '''
-                                    call build\\setupenv.DUNITZ.bat
+                                    call build\\setupenv.ifort_vc.SAYRE.bat
                                     set _MSPDBSRV_ENDPOINT_=%RANDOM%
                                     echo %_MSPDBSRV_ENDPOINT_%
                                     start mspdbsrv -start -spawn -shutdowntime 90000
@@ -39,7 +39,7 @@ pipeline {
                             }
                             steps {
                                 bat '''
-                                    call build\\setupenv.DUNITZ.bat
+                                    call build\\setupenv.ifort_vc.SAYRE.bat
                                     cd test_suite
                                     mkdir script
                                     echo "%SCRIPT NONE" > script\\tipauto.scp
@@ -91,7 +91,7 @@ pipeline {
                         }
                     }
                 } 
-*/
+
                 
 // Single Dunitz node can't cope with this at the moment in parallel with 64 bit build.
 /*                stage("Win32-Intel") {
