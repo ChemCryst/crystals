@@ -61,7 +61,7 @@ pipeline {
                             }
                             steps {
                                 bat '''
-                                    call build\\setupenv.DUNITZ.bat
+                                    call build\\setupenv.ifort_vc.SAYRE.bat
                                     cd build
                                     call make_w32.bat dist
                                     xcopy /s /y ..\\debuginfo e:\\omp17-x64\\
