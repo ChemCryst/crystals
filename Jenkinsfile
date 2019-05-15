@@ -77,7 +77,7 @@ pipeline {
                             }
                             steps {
                                 ftpPublisher alwaysPublishFromMaster: false, masterNodeName: 'master', continueOnError: false, failOnError: false, paramPublish: [parameterName:""], publishers: [
-                                    [configName: 'crystals.xtl', transfers: [
+                                    [configName: 'CRYSTALSXTL', transfers: [
                                         [asciiMode: false, cleanRemote: false, excludes: '', flatten: true, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: "/", remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'installer/**.exe']
                                     ], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true]
                                 ]
