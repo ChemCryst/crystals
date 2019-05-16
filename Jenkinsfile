@@ -33,6 +33,7 @@ pipeline {
 						BUILD_NUMBER=  
 						BUILD_TAG=  
 						BUILD_URL=  
+						OMP_NUM_THREADS=1
                     }
                     stages {
                         stage('Win64-Intel Build') {                      // Run the build
