@@ -21,18 +21,18 @@ pipeline {
 						MKL_THREADING_LAYER=SEQUENTIAL
 						OMP_DYNAMIC=FALSE
 						OMP_NUM_THREADS=1
-						BUILD_CAUSE=
-						BUILD_CAUSE_MANUALTRIGGER=
-						BUILD_CAUSE_SCMTRIGGER=
-						BUILD_CAUSE_UPSTREAMTRIGGER=
-						ROOT_BUILD_CAUSE=
-						ROOT_BUILD_CAUSE_SCMTRIGGER=
-						ROOT_BUILD_CAUSE_TIMERTRIGGER=
-						BUILD_DISPLAY_NAME=
-						BUILD_ID=
-						BUILD_NUMBER=
-						BUILD_TAG=
-						BUILD_URL= 
+						BUILD_CAUSE=  
+						BUILD_CAUSE_MANUALTRIGGER=  
+						BUILD_CAUSE_SCMTRIGGER=  
+						BUILD_CAUSE_UPSTREAMTRIGGER=  
+						ROOT_BUILD_CAUSE=  
+						ROOT_BUILD_CAUSE_SCMTRIGGER=  
+						ROOT_BUILD_CAUSE_TIMERTRIGGER=  
+						BUILD_DISPLAY_NAME=  
+						BUILD_ID=  
+						BUILD_NUMBER=  
+						BUILD_TAG=  
+						BUILD_URL=  
                     }
                     stages {
                         stage('Win64-Intel Build') {                      // Run the build
