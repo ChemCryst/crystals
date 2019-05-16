@@ -63,6 +63,7 @@ pipeline {
                                     echo "%SCRIPT NONE" > script\\tipauto.scp
                                     echo "%END SCRIPT" >> script\\tipauto.scp
                                     del crfilev2.dsc
+                                    echo 'Here are the env variables'
                                     set
                                     perl testsuite.pl
                                 '''
