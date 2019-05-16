@@ -57,6 +57,18 @@ pipeline {
                             }
                             steps {
                                 bat '''
+                                    for /f "tokens=1* delims==" %%a in ('set') do (
+                                      if NOT "%%a"=="PATH" set %%a=
+                                    )
+                                    set CRYSDIR=.\\,..\\build\\
+                                    set COMPCODE=INW_OMP
+                                    set CROPENMP=TRUE
+                                    set CR64BIT=TRUE
+                                    set MKL_DYNAMIC=FALSE
+                                    set MKL_NUM_THREADS=1
+                                    set MKL_THREADING_LAYER=SEQUENTIAL
+                                    set OMP_DYNAMIC=FALSE
+                                    set OMP_NUM_THREADS=1
                                     call build\\setupenv.ifort_vc.SAYRE.bat
                                     cd test_suite
                                     mkdir script
