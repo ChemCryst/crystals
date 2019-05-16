@@ -42,6 +42,7 @@ pipeline {
                                     set _MSPDBSRV_ENDPOINT_=%RANDOM%
                                     echo %_MSPDBSRV_ENDPOINT_%
                                     start mspdbsrv -start -spawn -shutdowntime 90000
+                                    set
                                     cd build
                                     call make_w32.bat
                                     mspdbsrv -stop
@@ -62,6 +63,7 @@ pipeline {
                                     echo "%SCRIPT NONE" > script\\tipauto.scp
                                     echo "%END SCRIPT" >> script\\tipauto.scp
                                     del crfilev2.dsc
+                                    set
                                     perl testsuite.pl
                                 '''
                             }
