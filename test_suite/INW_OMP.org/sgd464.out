@@ -7570,7 +7570,7 @@ LS-scale=  0.440   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
-Block No  1.  Single precision relative error:  4.40E-05
+Block No  1.  Single precision relative error:  4.41E-05
 [13]  LARGE     2           2             0.0       0.3E+00    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -20189,7 +20189,7 @@ T tensor:
 [78]          1  1  0  0  0    4.7E-02     4.7E-02     5.9E-05    0.999    U33 - Utls33 == 0
 [78]          1  1  0  0  0    9.1E-04     1.0E-03    -1.3E-04    0.999    U12 - Utls12 == 0
 [78]          1  1  0  0  0   -4.5E-03    -4.1E-03    -3.2E-04    0.999    U23 - Utls23 == 0
-[78]          1  1  0  0  0   -1.1E-03    -1.1E-03     1.2E-06    0.999    U13 - Utls13 == 0
+[78]          1  1  0  0  0   -1.1E-03    -1.1E-03     1.1E-06    0.999    U13 - Utls13 == 0
     Atom C(26)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
 [78]          1  1  0  0  0    3.7E-02     3.7E-02     2.8E-05    0.999    U11 - Utls11 == 0
