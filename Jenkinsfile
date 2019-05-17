@@ -69,6 +69,7 @@ pipeline {
                                     set MKL_THREADING_LAYER=SEQUENTIAL
                                     set OMP_DYNAMIC=FALSE
                                     set OMP_NUM_THREADS=1
+									set MKL_CBWR=COMPATIBLE
                                     call build\\setupenv.ifort_vc.SAYRE.bat
                                     cd test_suite
                                     mkdir script
