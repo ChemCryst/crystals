@@ -58,7 +58,7 @@ pipeline {
                             steps {
                                 bat '''
                                     for /f "tokens=1* delims==" %%a in ('set') do (
-                                      if NOT "%%a"=="PATH" set %%a=
+                                      if /i NOT "%%a"=="PATH" set %%a=
                                     )
                                     set CRYSDIR=.\\,..\\build\\
                                     set COMPCODE=INW_OMP
