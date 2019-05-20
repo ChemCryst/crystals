@@ -2088,7 +2088,7 @@ C      MATCH EVERY ATOM ( I.E. ALL BUT , '    ' WOULD PRINT NOTHING )
 C
       DIMENSION KDEV(4)
 c----- nspbuf - a buffer for special shape lines
-      parameter (nspbuf=5)
+      parameter (nspbuf=50)
 cdjwapr10      character *84 cspbuf(nspbuf)
       character *94 cspbuf(nspbuf)
       character *8 cshape(3)

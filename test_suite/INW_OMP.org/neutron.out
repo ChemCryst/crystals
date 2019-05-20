@@ -4738,8 +4738,6 @@ Space group symbol is   P    1    21/N 1
                               Y axis from  0.000 to  0.500
                               Z axis from  0.000 to  0.500
 #COMPOSITION
- System files contain no resonant scattering data for wavelength  0.8308 using calculated values instead.
- Can't compute interaction cross section for H falling back on data from closest wavelength =  0.71070
 #LIST 3
 #LIST 29
 # OH, HANG ON, IT'S A NEUTRON STRUCTURE. TRY THESE SCATTERING
@@ -9439,8 +9437,6 @@ Space group symbol is   P    1    21/N 1
                               Y axis from  0.000 to  0.500
                               Z axis from  0.000 to  0.500
 #COMPOSITION
- System files contain no resonant scattering data for wavelength  0.8308 using calculated values instead.
- Can't compute interaction cross section for H falling back on data from closest wavelength =  0.71070
 #LIST 3
 #LIST 29
 # OH, HANG ON, IT'S A NEUTRON STRUCTURE. TRY THESE SCATTERING
@@ -13910,8 +13906,6 @@ Space group symbol is   P    1    21/N 1
                               Y axis from  0.000 to  0.500
                               Z axis from  0.000 to  0.500
 #COMPOSITION
- System files contain no resonant scattering data for wavelength  0.8308 using calculated values instead.
- Can't compute interaction cross section for H falling back on data from closest wavelength =  0.71070
 #LIST 3
 #LIST 29
 # OH, HANG ON, IT'S A NEUTRON STRUCTURE. TRY THESE SCATTERING

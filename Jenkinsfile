@@ -1,30 +1,48 @@
 pipeline {
     agent none
     options {
-        timeout(time: 1, unit: 'HOURS') 
+        timeout(time: 2, unit: 'HOURS') 
     }
     stages {
         stage("Build and test on all platforms") {
             parallel {
                 stage("Win64-Intel") {
-                    agent { label 'Dunitz' }
+                    agent { label 'master' }
                     options {
-                        timeout(time: 1, unit: 'HOURS') 
+                        timeout(time: 2, unit: 'HOURS') 
                     }
                     environment {
                         COMPCODE = 'INW'
                         CRBUILDEXIT = 'TRUE'   // exit build script on fail
                         CROPENMP = 'TRUE'
                         CR64BIT = 'TRUE'
+						MKL_DYNAMIC='FALSE'
+						MKL_NUM_THREADS='1'
+						MKL_THREADING_LAYER='SEQUENTIAL'
+						OMP_DYNAMIC='FALSE'
+						OMP_NUM_THREADS='1'
+						BUILD_CAUSE= ''
+						BUILD_CAUSE_MANUALTRIGGER=  ''
+						BUILD_CAUSE_SCMTRIGGER=  ''
+						BUILD_CAUSE_UPSTREAMTRIGGER=  ''
+						ROOT_BUILD_CAUSE=  ''
+						ROOT_BUILD_CAUSE_SCMTRIGGER=  ''
+						ROOT_BUILD_CAUSE_TIMERTRIGGER=  ''
+						BUILD_DISPLAY_NAME=  ''
+						BUILD_ID=  ''
+						BUILD_NUMBER=  ''
+						BUILD_TAG= ''
+						BUILD_URL=  ''
                     }
                     stages {
                         stage('Win64-Intel Build') {                      // Run the build
                             steps {
                                 bat '''
-                                    call build\\setupenv.DUNITZ.bat
+                                    call build\\setupenv.ifort_vc.SAYRE.bat
                                     set _MSPDBSRV_ENDPOINT_=%RANDOM%
                                     echo %_MSPDBSRV_ENDPOINT_%
                                     start mspdbsrv -start -spawn -shutdowntime 90000
+                                    set
                                     cd build
                                     call make_w32.bat
                                     mspdbsrv -stop
@@ -39,12 +57,27 @@ pipeline {
                             }
                             steps {
                                 bat '''
-                                    call build\\setupenv.DUNITZ.bat
+                                    for /f "tokens=1* delims==" %%a in ('set') do (
+                                      if /i NOT "%%a"=="PATH" set %%a=
+                                    )
+                                    set CRYSDIR=.\\,..\\build\\
+                                    set COMPCODE=INW_OMP
+                                    set CROPENMP=TRUE
+                                    set CR64BIT=TRUE
+                                    set MKL_DYNAMIC=FALSE
+                                    set MKL_NUM_THREADS=1
+                                    set MKL_THREADING_LAYER=SEQUENTIAL
+                                    set OMP_DYNAMIC=FALSE
+                                    set OMP_NUM_THREADS=1
+									set MKL_CBWR=COMPATIBLE
+                                    call build\\setupenv.ifort_vc.SAYRE.bat
                                     cd test_suite
                                     mkdir script
                                     echo "%SCRIPT NONE" > script\\tipauto.scp
                                     echo "%END SCRIPT" >> script\\tipauto.scp
                                     del crfilev2.dsc
+                                    echo 'Here are the env variables'
+                                    set
                                     perl testsuite.pl
                                 '''
                             }
@@ -61,10 +94,10 @@ pipeline {
                             }
                             steps {
                                 bat '''
-                                    call build\\setupenv.DUNITZ.bat
+                                    call build\\setupenv.ifort_vc.SAYRE.bat
                                     cd build
                                     call make_w32.bat dist
-                                    xcopy /s /y ..\\debuginfo e:\\omp17-x64\\
+                                    xcopy /s /y ..\\debuginfo c:\\omp17-x64\\
                                 '''
                             }
                         }
@@ -77,7 +110,7 @@ pipeline {
                             }
                             steps {
                                 ftpPublisher alwaysPublishFromMaster: false, masterNodeName: 'master', continueOnError: false, failOnError: false, paramPublish: [parameterName:""], publishers: [
-                                    [configName: 'crystals.xtl', transfers: [
+                                    [configName: 'CRYSTALSXTL', transfers: [
                                         [asciiMode: false, cleanRemote: false, excludes: '', flatten: true, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: "/", remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'installer/**.exe']
                                     ], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true]
                                 ]
@@ -90,10 +123,11 @@ pipeline {
                             archiveArtifacts artifacts: 'INW_OMP.org/*.out', fingerprint: true
                         }
                     }
-                }
+                } 
+
                 
 // Single Dunitz node can't cope with this at the moment in parallel with 64 bit build.
-                stage("Win32-Intel") {
+/*                stage("Win32-Intel") {
                     agent { label 'Dunitz' }
                     options {
                         timeout(time: 1, unit: 'HOURS') 
@@ -178,13 +212,14 @@ pipeline {
                         }
                     }
                 }
+*/
                                 
 
                 
                 stage("MinGW") {
                     agent { label 'master' }
                     options {
-                        timeout(time: 1, unit: 'HOURS') 
+                        timeout(time: 2, unit: 'HOURS') 
                     }
                     environment {
                         COMPCODE = 'MIN'
@@ -263,7 +298,7 @@ pipeline {
                 }
                 
                 
-                stage("Linux") {
+/*                stage("Linux") {
                     agent {label 'Orion'}    
                     options {
                         timeout(time: 1, unit: 'HOURS') 
@@ -349,6 +384,8 @@ pipeline {
                                 }
                     }
                 }
+*/
+/*
                 stage("OSX") {
                     agent {label 'Flack'}    
                     options {
@@ -392,6 +429,7 @@ pipeline {
                             }
                     }
                 }
+*/
             }
         }
        
