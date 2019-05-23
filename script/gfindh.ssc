@@ -1,11 +1,11 @@
 %SCRIPT GFINDH                                                                  
 % VARIABLE CHARACTER CTYPE                                                      
 % VARIABLE INTEGER HFOUND  DOCALC
-% VARIABLE REAL SERIAL                                                          
+% VARIABLE REAL SERIAL SMIN SMAX MINP
 %%                                                                              
 % VARIABLE CHARACTER CATOM CEL CTYPE                                            
 % VARIABLE REAL SX SY SZ SS SERI                                                
-% VARIABLE LOGICAL HQEXEC L12SMASK T                                            
+% VARIABLE LOGICAL HQEXEC L12SMASK T 
 % VARIABLE LOGICAL HDONE HMASK FOUREF AHFOUND REGUL RENUMB                      
 % VARIABLE INTEGER L12SER                                                       
 %% The variables needed by XQUESTIO                                             
@@ -48,9 +48,9 @@
 ^^WI       @ 2,1 STATIC T2                                                      
 ^^WI 'On exit, all white H atoms will be retained, and all pink atoms deleted.' 
 ^^WI       @ 3,1 STATIC T3                                                      
-^^WI 'If necessary, change (pink) QH peaks to H by clicking them.'              
+^^WI ' '              
 ^^WI       @ 4,1 STATIC T4                                                      
-^^WI 'Delete any computed (white) H atoms you do not want to keep.'             
+^^WI 'If necessary, change (pink) QH peaks to H by clicking them. Delete any computed (white) H atoms you do not want to keep.'             
 ^^WI       @ 5,1 STATIC T5                                                      
 ^^WI 'If the structure is complete, check "All H atoms have been found" below.' 
 ^^WI       @ 6,1 STATIC T6                                                      
@@ -69,10 +69,19 @@
 ^^WI           @ 2,1 LISTBOX _ELS VISLINES=6 ADDTOLIST                          
 ^^WI             'H' 'QH' 'Delete' 'NULL'                                       
 ^^WI        }                                                                   
-^^WI      }                                                                     
-^^WI      @ 1,3 MODELWINDOW MODELRE 'N' NROWS=5 NCOLS=65                        
+^^WI      }
+^^WI      @ 1,3 GRID SLIDEMOD NROWS=2 NCOLS=1 
+^^WI      {
+^^WI         @ 1,1 GRID GSLIDE NROWS=1 NCOLS=3
+^^WI         {
+^^WI            @ 1,1 STATIC STEXT 'Peak display threshold: '                                                                 
+^^WI            @ 1,2 STATIC STHR  '-0.000000'                                                                 
+^^WI            @ 1,3 SLIDER SLIDE01 
+^^WI         }
+^^WI         @ 2,1 MODELWINDOW MODELRE 'N' NROWS=5 NCOLS=65                        
 ^^WI            ATTACH L5 RADSCALE=250 RADTYPE=COV                              
 ^^WI            MOUSEACTION=HEADERATOM                                          
+^^WI      }
 ^^WI   }                                                                        
 ^^WI   @ 6,2 GRID CHECKB NROWS=1 NCOLS=7                                        
 ^^WI     @ 1,1 CHECKBOX AHFOUND                                                 
@@ -165,9 +174,12 @@
 %% removed djw Jan08 because it may eliminate split atoms                       
 %% COPY '#PEAK 5 5'                                                             
 %% COPY 'SELECT TYPE=AVERAGE'                                                   
-%% COPY 'END'                                                                   
+%% COPY 'END'                                              
 %% Copy peaks from L10 into L5                                                  
 % QUEUE REWIND                                                                  
+%%  Remember min and max electron density in H peaks                                                                              
+% EVALUATE SMIN = 10000.0
+% EVALUATE SMAX = -10000.0
 % COPY '#GENERALEDIT 10'                                                        
 % COPY "LOCATE RECORDTYPE=101"                                                  
 % COPY "ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR"             
@@ -181,6 +193,11 @@
 %     COPY 'TRANSFER FROM OFFSET=5 TO SY'                                       
 %     COPY 'TRANSFER FROM OFFSET=6 TO SZ'                                       
 %     COPY 'TRANSFER FROM OFFSET=13 TO SS'                                      
+%     IF ( SS .GT. SMAX ) THEN                    
+%          EVALUATE SMAX = SS
+%     ELSE IF ( SS .LT. SMIN ) THEN
+%          EVALUATE SMIN = SS
+%     END IF
 %     CLEAR                                                                     
 %     INSERT 'ATOM QH'                                                          
 %     STORE INTEGER INTEGER SERI                                                
@@ -195,6 +212,8 @@
 %   COPY 'NEXT'                                                                 
 % END LOOP                                                                      
 % COPY 'END'                                                                    
+%% All for fencepost error with slider.
+% EVALUATE SMAX = SMAX + 0.01
 % COPY '#EDIT'                                                                  
 % QUEUE PROCESS                                                                 
 % COPY 'END'                                                                    
@@ -206,10 +225,10 @@
 % COPY 'CLASH FIXLATTER'                                                        
 % COPY 'EXEC'                                                                   
 ^^CO DISPOSE XABORT                                                             
-% LOOP                                                                          
-%   VERIFY FHBOK FHBXX ATOM FHBHELP                                             
-%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                
-%   CASE VALUE                                                                  
+% LOOP
+%   VERIFY FHBOK FHBXX ATOM FHBHELP SLIDE01 
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' ' 
+%   CASE VALUE                                
 %    BLOCK      %FHBOK                                                          
 %      COPY 'END'                                                               
 ^^??   FOUREF STATE                                                             
@@ -413,6 +432,20 @@
                                                                                 
 %      COPY '#SCRIPT XHELP2'                                                    
 %    END BLOCK                                                                  
+%    BLOCK    % SLIDE01 Update Q atom visibility.                       
+%       GET SILENT NOSTORE REAL ' '                                
+%       EVALUATE MINP = SMIN + ( VALUE * ( SMAX - SMIN ) )
+%       CLEAR
+%       INSERT '^^CO SET STHR TEXT'
+%       STORE FORMAT /(F8.3)/ LENGTH 8 REAL MINP
+%       OUTPUT
+%% 1000x scale (and integer for CrModel)
+%       EVALUATE MINP = MINP * 1000.0
+%       CLEAR
+%       INSERT '^^CO SET MODELRE MINPEAK '
+%       STORE FORMAT /(I7)/ LENGTH 7 INTEGER INTEGER ( MINP )
+%       OUTPUT
+%    END BLOCK                                                                
 %   END CASE                                                                    
 % END LOOP                                                                      
 %END SCRIPT                                                                     
