@@ -946,7 +946,7 @@ C                           THE INTERNAL COPY OF LIST 5 IS UPDATED.
 C                           THIS WILL BE WRITTEN TO DISC IF THIS HAS
 C                           BEEN REQUESTED.
 C 
-C -- THERE ARE 4 WAYS coded for CALCULATING THE BEST FIT MATRIX.
+C -- THERE ARE 5 WAYS coded for CALCULATING THE BEST FIT MATRIX.
 C    THE PARTICULAR ONE OF THESE USED IN EACH CASE DEPENDS ON THE
 C    VALUE OF THE VARIABLE 'IMETHD'.
 
@@ -2312,7 +2312,7 @@ CODE FOR XRGCKB
       SUBROUTINE XRGCKB(imethd, RESULT)
 c
 C   Find transformation by Kabsch Method, Acta Cryst 1976, A32, 922-923
-c                                         Acta Cryst 1978, A43, 828-829
+c                                         Acta Cryst 1978, A34, 827-828
 c
 c      imethd 3 = pure rotation
 c      imethd 4 = permit rotary inversion

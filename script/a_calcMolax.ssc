@@ -309,7 +309,7 @@
 %    TRANSFER "EVAL 0.0 0.0 0.0" TO PUNCH
 %  END IF
 %  TRANSFER "END  0.0 0.0 0.0" TO PUNCH
-%  COPY '#RELEASE PUNCH bfile.pch'
+%  COPY '#RELEASE PUNCH logs/bfile.pch'
 %%
 %  TRANSFER "{I Number of atoms defining the " // CMODES // " is " // CHARACTER ( IMOLAX ) // "." TO DISPLAY
 %  IF IMOLAX .EQ. 2 THEN

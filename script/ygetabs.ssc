@@ -1,16 +1,6 @@
 %SCRIPT YGETABS
 % VARIABLE INTEGER ABSPRINT ABSTOTAL
 % VARIABLE LOGICAL ABSFILE2
-% EVALUATE ABSFILE2 = FALSE
-% IF ( FILEEXISTS ( 'absences2.dat' ) ) THEN
-{I      Reading from absences2.dat
-%   EVALUATE ABSFILE2 = TRUE
-% ELSE  IF ( FILEEXISTS ( 'absences.dat' ) ) THEN
-{I      Reading from absences.dat
-% ELSE
-{E      File absences.dat does not exist
-%   FINISH
-% END IF 
 %LOOP
 % ON ERROR TERMINATE
 % EXTRACT NEXT

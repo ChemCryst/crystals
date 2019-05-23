@@ -4872,10 +4872,10 @@ Rsigma=  2.79
       1 outliers in Normal Probability Plot at delta(Z) >  0.33
 
 #SCRIPT COPY67
-#RELEASE PUNCH LIST7.TMP
+#RELEASE PUNCH TMP/LIST7.TMP
 #COPY 6 7
-#RELEASE PUNCH BFILE.PCH
-#USE LIST7.TMP
+#RELEASE PUNCH LOGS/BFILE.PCH
+#IMPORT TMP/LIST7.TMP
 # PUNCHING LIST  6 AS LIST  7 WITH ALL KEYS SET
 # NBGNXT=    46
 #LIST   7
@@ -4984,7 +4984,7 @@ LS-scale=  2.709   Wilson Scale=  0.000
  After   1 pass     904 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
 #PURGE  LIST=7
- List type    5  serial number   65 from    51363 to    51589 will not be copied ( deleted )         
+ List type    5  serial number   65 from    51365 to    51591 will not be copied ( deleted )         
 
 
  ************************************************************************
@@ -5109,7 +5109,7 @@ I represents Fsquared
 For Io
              136         25.848         57.365          164        -24.628        50.191
 For Ic
-             149         20.531         42.375          151        -18.777        38.358
+             149         20.531         42.375          151        -18.778        38.358
 
 
 Quadrant averages: N, Mean(Do), Mean(Ds) [Summary of scatterplot]
@@ -5139,7 +5139,7 @@ Quadrant averages: N, Mean(Do), Mean(Ds) [Summary of scatterplot]
  Minimum signal : noise used =  1.1941
  No. Available  300
   Range    No.Same  No.Opposite  Signal:noise   Prob Wrong Hand
-  0   10       10      0          7.2240           0.000
+  0   10       10      0          7.2241           0.000
   0   20       20      0          5.7162           0.000
   0   50       50      0          3.4944           0.000
   0  100       95      5          2.0325           0.000
@@ -5149,7 +5149,7 @@ Quadrant averages: N, Mean(Do), Mean(Ds) [Summary of scatterplot]
   0  150      139     11          1.2046           0.000
 
 
-  0   10       10      0          7.2240           0.000
+  0   10       10      0          7.2241           0.000
  10   20       10      0          5.7162           0.000
  20   50       30      0          3.4944           0.000
  50  100       45      5          2.0325           0.000
@@ -5163,7 +5163,7 @@ Quadrant averages: N, Mean(Do), Mean(Ds) [Summary of scatterplot]
  Using counting statistics weights
        Hooft Parameter & su -0.005  0.012  $ 
            Hole-in-one & su -0.004  0.009    
-    Bijvoet Difference & su  0.006  0.009  £  (Using   300 reflections. Correl Coef =  90%)
+    Bijvoet Difference & su  0.006  0.009  %  (Using   300 reflections. Correl Coef =  90%)
 
  Histogram re-weighted,   226 reflections,  71.0% within interval x= -.5 to 1.5
     Bijvoet Difference & su -0.004  0.013    
@@ -5172,7 +5172,7 @@ Quadrant averages: N, Mean(Do), Mean(Ds) [Summary of scatterplot]
 
 
 @  Flack,1983, Acta Cryst A39, 876-881
-£  Thompson & Watkin, 2011, J Appl Cryst, 44, 1077-1022
+%  Thompson & Watkin, 2011, J Appl Cryst, 44, 1077-1022
 $  Hooft et al, 2008, J Appl Cryst, 41, 96-103
 &  Cooper et al, to be published
 

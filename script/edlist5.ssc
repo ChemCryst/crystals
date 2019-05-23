@@ -12,7 +12,7 @@
 %    COPY '#RELEASE PUNCH scplst5.dat'
 %    COPY '#PUNCH 5'
 %    COPY 'END'
-%    COPY '#RELEASE PUNCH bfile.pch'
+%    COPY '#RELEASE PUNCH logs/bfile.pch'
 %%
 %    CLEAR
 %    INSERT '#use crysdir:script/edlist5.dat'

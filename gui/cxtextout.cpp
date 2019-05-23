@@ -107,6 +107,10 @@ CxTextOut::CxTextOut( CrTextOut * container )
     m_ColTable[ COLOUR_PINK ]       = RGB( 255, 0, 255 );
     m_ColTable[ COLOUR_GREY ]       = RGB( 128, 128, 128 );
     m_ColTable[ COLOUR_LIGHTGREY ]  = RGB( 192, 192, 192 );  //15
+    m_ColTable[ COLOUR_BGREEN ]     = RGB( 200, 250,  25 );  
+    m_ColTable[ COLOUR_DGREEN ]     = RGB(  75, 100,   0 );  
+    m_ColTable[ COLOUR_MAGENTA ]    = RGB( 250,   0, 150 );  
+    m_ColTable[ COLOUR_RED ]        = RGB( 200,   0,   0 );  
 #endif
 #ifdef CRY_USEWX
     m_ColTable[ COLOUR_WHITE ]      = wxColour( 255, 255, 255 );  //0
@@ -125,6 +129,10 @@ CxTextOut::CxTextOut( CrTextOut * container )
     m_ColTable[ COLOUR_PINK ]       = wxColour( 255, 0, 255 );
     m_ColTable[ COLOUR_GREY ]       = wxColour( 128, 128, 128 );
     m_ColTable[ COLOUR_LIGHTGREY ]  = wxColour( 192, 192, 192 );  //15
+    m_ColTable[ COLOUR_BGREEN ]     = wxColour( 200, 250,  25 );  
+    m_ColTable[ COLOUR_DGREEN ]     = wxColour(  75, 100,   0 );  
+    m_ColTable[ COLOUR_MAGENTA ]    = wxColour( 250,   0, 150 );  
+    m_ColTable[ COLOUR_RED ]        = wxColour( 200,   0,   0 );  
 #endif
 #ifdef CRY_USEMFC
     m_hCursor = AfxGetApp()->LoadStandardCursor( IDC_IBEAM );

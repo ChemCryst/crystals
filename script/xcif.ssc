@@ -336,7 +336,7 @@
 %        END IF
 %        COPY 'END'
 %      END IF
-%      COPY '#RELEASE FRN1 BFILE.FRN'
+%      COPY '#RELEASE FRN1 logs/bfile.frn'
   Reflections saved in {&publish.fcf{&
 %    END IF
 %%

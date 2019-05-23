@@ -118,11 +118,14 @@
 %  else
 %    EVALUATE RUNNOW = FALSE
 
-{E  CRYSTALS is having problems understanding the hkl5 file.
+{E  CRYSTALS is having problems understanding the hkl5 file
+{E  and cannot find a convincing twin law.
+{E
 {E  The most common reason is that the HKLF5 file
 {E  contains merged reflections.
+{E
 {E  Create an unmerged file which will be merged in CRYSTALS.
-{E  Look in the LOG file (TLAW_OUT.LIS) for details.
+{E  Look in TLAW_OUT.LIS for details.
 
 %  end if
 %%  
@@ -130,7 +133,7 @@
 ^^WI CANCEL='RF_BXX'
 ^^WI GRID MAIN NROWS=2 NCOLS=3
 ^^WI {
-^^WI   @ 1,2 GRID TEXT NROWS=4  NCOLS=1
+^^WI   @ 1,1 GRID TEXT NROWS=4  NCOLS=3 OUTLINE = ' '
 ^^WI   {
 ^^WI    @ 1,1 STATIC TEXT1 
 ^^WI    'If CRYSTALS has found the correct twin law, choose Input Matrix'
@@ -141,7 +144,7 @@
 ^^WI    @ 4,1 STATIC TEXT1 
 ^^WI    'If you need more facts. look at the log file'
 ^^WI   }
-^^WI   @ 2,2 GRID BTNS NROWS=4 NCOLS=3 OUTLINE=' '
+^^WI   @ 2,1 GRID BTNS NROWS=4 NCOLS=3 OUTLINE=' '
 ^^WI   {
 ^^WI       @ 1,1 RADIOBUTTON ITYP11 'Input Matrix file'    STATE=OFF INFORM
 ^^WI       @ 1,2 RADIOBUTTON IPUN12 'Look at LOG file'     STATE=OFF INFORM
@@ -151,6 +154,15 @@
 ^^WI       @ 4,2 BUTTON RF_CONT 'Continue' 
 ^^WI       @ 4,3 BUTTON RF_HELP 'Help'        
 ^^WI   }     
+%      if runnow .eq. false then
+^^WI   @ 1,3 GRID TEXT NROWS=2 NCOLS=3 OUTLINE=' '
+^^WI   {
+^^WI     @ 1,2 STATIC TEXT1
+^^WI     'CRYSTALS failed to find a matrix.'
+^^WI     @ 2,2 STATIC TEXT2
+^^WI     'You should probably abort processing the reflections'
+^^WI   }
+%      end if
 ^^WI }
 ^^WI SHOW
 ^^CR
@@ -170,6 +182,7 @@
 %   BLOCK                                           %READ MATRIX%
 %    IF FILEEXISTS ( 'l25.cry' ) THEN
 %     COPY '#USE l25.cry'
+%     EVALUATE RUNNOW = TRUE
 %     EVALUATE NEW25 = TRUE
 %     EVALUATE USE6 = TRUE
 %     EVALUATE LOOPCOUNTER = LOOPEND
@@ -212,8 +225,11 @@
 %%
 %   BLOCK                                           %MANUAL MATRIX%
 %    copy '#script IN25'
-%    EVALUATE NEW25 = TRUE
-%    EVALUATE USE6 = TRUE
+%    IF ( EXISTS 25 .EQ. 1 ) THEN
+%     EVALUATE RUNNOW = TRUE
+%     EVALUATE NEW25 = TRUE
+%     EVALUATE USE6 = TRUE
+%    END IF
 %    EVALUATE LOOPCOUNTER = LOOPEND
 %%
 %   END BLOCK
@@ -300,7 +316,7 @@ Resetting element scale factors
 %% Only import reflections if LIST 25 exists
 %  IF ( .NOT. RUNNOW ) THEN
 
-{E  HKLF 5 Reflection processing was unsuccessful.
+{E  A matrix could not be extracted from the HKLF5 file.
 {E  The most common reason is that the HKLF5 file
 {E  contains merged reflections.
 {E  Create an unmerged file which will be merged in CRYSTALS.

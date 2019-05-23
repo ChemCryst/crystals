@@ -89,7 +89,7 @@
 %  END LOOP
 %  TRANSFER 'END' TO PUNCH
 %  COPY '#CLOSE SCPDATA'
-%  COPY '#RELEASE PUNCH bfile.pch'
+%  COPY '#RELEASE PUNCH logs/bfile.pch'
 %  EVALUATE T = FILEDELETE ( 'Residues.dat' )
 %  EVALUATE T = FILEDELETE ( 'Parts.dat' )
 %%

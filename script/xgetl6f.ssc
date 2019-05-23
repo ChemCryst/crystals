@@ -1,4 +1,6 @@
-%SCRIPT XGETL6
+%SCRIPT XGETL6F
+%% Note: Dies for twinned reflections - djw 2019
+%% Puts reflection details into a window for sorting
 % VARIABLE REAL OSCALE DIFF FC
 % COPY '#GENERALEDIT 5'
 % COPY 'LOCATE RECORDTYPE = 102'
@@ -19,7 +21,7 @@
 %  COPY '#RELEASE PUNCH SCPLST06.DAT'
 %  COPY '#PUNCH 6 C'
 %  COPY 'END'
-%  COPY '#RELEASE PUNCH bfile.pch'
+%  COPY '#RELEASE PUNCH logs/bfile.pch'
 %  COPY '#OPEN SCPDATA SCPLST06.DAT'
 Skipping first 10 lines...
 %  LOOP

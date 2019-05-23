@@ -3,5 +3,5 @@
 % COPY '#RELE PUNCH atoms.pch'
 % COPY '#PUNCH 5'
 % COPY 'END'
-% COPY '#RELE PUNCH bfile.pch'
+% COPY '#RELE PUNCH logs/bfile.pch'
 %END SCRIPT

@@ -1,4 +1,6 @@
 %SCRIPT XGETL6
+%% Note - dies for twinned reflections (djw 2019)
+%% Puts reflections into a window for sorting
 % VARIABLE CHARACTER HVAL
 ^^WI WINDOW PROGMETER 'Please wait'
 ^^WI GRID  PG1 NROWS=5 NCOLS=5
@@ -32,7 +34,7 @@
 % COPY '#RELEASE PUNCH SCPLST06.DAT'
 % COPY '#PUNCH 6 C'
 % COPY 'END'
-% COPY '#RELEASE PUNCH bfile.pch'
+% COPY '#RELEASE PUNCH logs/bfile.pch'
 % COPY '#OPEN SCPDATA SCPLST06.DAT'
 % LOOP 
 %  ON ERROR TERMINATE

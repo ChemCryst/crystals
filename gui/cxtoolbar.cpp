@@ -207,12 +207,7 @@ CxToolBar::~CxToolBar()
 
 void CxToolBar::CxDestroyWindow()
 {
-  #ifdef CRY_USEMFC
-DestroyWindow();
-#endif
-#ifdef CRY_USEWX
 Destroy();
-#endif
 }
 
 bool    CxToolBar::AddTool( CcTool* newTool )
@@ -222,20 +217,8 @@ bool    CxToolBar::AddTool( CcTool* newTool )
 //  LOGERR("Adding something");
   if ( newTool->toolType == CT_SEP )
   {
-#ifdef CRY_USEMFC
-    TBBUTTON sepButton;
-    sepButton.idCommand = 0;
-    sepButton.fsStyle = TBSTYLE_SEP;
-    sepButton.fsState = TBSTATE_ENABLED;
-    sepButton.iString = 0;
-    sepButton.iBitmap = 0;
-    sepButton.dwData = 0;
-    m_ToolBar->AddButtons(1,&sepButton);
-#endif
-#ifdef CRY_USEWX
     m_ToolBar->AddSeparator();
     m_totWidth += 8;
-#endif                    
     newTool->CxID = 0;
     return true;
   }
@@ -249,16 +232,6 @@ bool    CxToolBar::AddTool( CcTool* newTool )
   if ( newTool->toolType == CT_APPICON )
   {
     string file = newTool->tImage;
-#ifdef CRY_USEMFC
-    HICON hIcon = ExtractIcon( AfxGetInstanceHandle( ), file.c_str(), 0 );
-    if( hIcon )
-    {
-      m_ImageList->Add( hIcon );
-      bitmapIndex = m_ImageIndex++;
-      DestroyIcon(hIcon);
-    }
-#endif
-#ifdef CRY_USEWX
     wxIcon mycon( file.c_str(), wxBITMAP_TYPE_ICO_RESOURCE, -1, -1 );
 //   LOGERR("Adding App icon");
     if ( mycon.Ok() )
@@ -275,14 +248,9 @@ bool    CxToolBar::AddTool( CcTool* newTool )
        //Something wrong
        return false;
     }
-#endif
   }
   else
   {
-#ifdef CRY_USEMFC
-    CBitmap* abitmap = new CBitmap();
-    HBITMAP hBmp;
-#endif
     string crysdir ( getenv("CRYSDIR") );
     if ( crysdir.length() == 0 )
     {
@@ -304,7 +272,6 @@ bool    CxToolBar::AddTool( CcTool* newTool )
       string file = dir + "script/" + newTool->tImage;
 #endif
 
-#ifdef CRY_USEWX
 //  	LOGERR("Adding script dir icon");
     struct stat buf;
       if ( stat(file.c_str(),&buf)==0 )
@@ -362,52 +329,7 @@ bool    CxToolBar::AddTool( CcTool* newTool )
         return false;
       }
     }
-#endif
-#ifdef CRY_USEMFC
-      hBmp = (HBITMAP)::LoadImage( NULL, file.c_str(), IMAGE_BITMAP, 0,0, LR_LOADFROMFILE|LR_CREATEDIBSECTION);
-      if( hBmp )
-      {
-        noLuck = false;
-      }
-      else if ( i >= nEnv )
-      {
-        LOGERR ( "Bitmap not found " + newTool->tImage );
-        return false;
-      }
-    }
-    abitmap->Attach( hBmp );
-
-    BITMAP bm;
-    abitmap->GetBitmap(&bm);
-//    if ( bm.bmWidth == 16 && bm.bmHeight == 15)
-    //{
-      ReplaceBackgroundColor ( *abitmap );
-//      m_bitmapList.push_back( abitmap );
-      m_ImageList->Add( abitmap,  ::GetSysColor (COLOR_3DFACE));
-      bitmapIndex = m_ImageIndex++;
-    //}
-    //else
-    //{
-       //LOGERR ("Bitmap, "+newTool->tImage+" is wrong height or width, must be 16 wide and 15 high.");
-       //return false;
-    //}
-    delete abitmap;
-#endif
   }
-
-#ifdef CRY_USEMFC
-  m_ToolBar->SetImageList(m_ImageList);
-  TBBUTTON tbbutton;
-  tbbutton.iBitmap = bitmapIndex;
-//  tbbutton.iString = m_ToolBar->AddStrings(newTool->tText.c_str());
-  tbbutton.iString = 0;
-  tbbutton.dwData = 0;
-  tbbutton.fsState = TBSTATE_ENABLED;
-  tbbutton.fsStyle = TBSTYLE_BUTTON;
-  tbbutton.idCommand = newTool->CxID;
-  if ( newTool->toggleable ) tbbutton.fsStyle = TBSTYLE_BUTTON|TBSTYLE_CHECK   ;
-  m_ToolBar->AddButtons(1,&tbbutton);
-#endif
 
   return true;
 
@@ -415,17 +337,9 @@ bool    CxToolBar::AddTool( CcTool* newTool )
 
 void    CxToolBar::SetGeometry( int top, int left, int bottom, int right )
 {
-#ifdef CRY_USEMFC
-      MoveWindow(left,top,right-left,bottom-top);
-      m_ToolBar->MoveWindow(0,0,right-left,bottom-top);
-#endif
-#ifdef CRY_USEWX
       SetSize(left,top,right-left,bottom-top);
       m_ToolBar->SetSize(0,0,right-left,bottom-top);
 // LOGSTAT ("CxToolbar: Setting width: " + string(right-left) );
-
-#endif
-
 }
 
 

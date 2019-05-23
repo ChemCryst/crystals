@@ -20,7 +20,7 @@
 %  COPY 'OUT MON=ANGLE PUNCH=MOGUL'
 %  COPY 'EXCLUDE H'
 %  COPY 'END'
-%  COPY '#RELEASE PUNCH bfile.pch'
+%  COPY '#RELEASE PUNCH logs/bfile.pch'
 %  COPY '#SPAWN + "CRYSDIR:mogul.bat" -ins crystals.qf'
 %  COPY '#SCRIPT MOGULRES'
 %END SCRIPT

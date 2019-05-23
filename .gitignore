@@ -51,5 +51,65 @@ CTestTestfile.cmake
 # End of https://www.gitignore.io/api/cmake
 
 *.bak
+
+#common build folders
 b/
+d/
 g/
+i/
+
+build/*.exe
+build/*.pdb
+build/*.srt
+build/*.log
+build/*.dll
+build/*.ilk
+build/*.ini
+build/*.manifest
+build/*.res
+build/*.srt~
+build/*.txt
+build/oshell.bat
+build/form.dat
+build/crdelbf.bat
+build/crashrpt_lang.ini
+build/commands.dsc
+build/missing.log
+
+build/.vs
+build/builder/
+build/demo
+build/dscbuild/
+build/manual/
+build/MCE
+build/script/
+
+
+debuginfo
+
+
+#generated files
+test_suite/data
+test_suite/logs
+test_suite/*.temp
+test_suite/*.CIF
+test_suite/*.out
+test_suite/*.lis
+test_suite/*.log
+test_suite/*.dat
+installer/*.exe
+test_suite/*.dsc
+test_suite/*.tmp
+test_suite/*.map
+test_suite/*.mon
+test_suite/*.spq
+test_suite/*.cif
+test_suite/*.ini
+test_suite/*.l5i
+test_suite/*.oby
+
+
+
+
+#editor backups
+*~

@@ -225,8 +225,8 @@ sub obscureMachinePrecision() {
 	   } elsif($line =~ m/^(\s+\d+\.\d\d)\d\d((?:\s+-?\d+\.\d\d\d\d){7})\s*$/ ) {
               print $fho "[22] $1 $2\n";
 # Some shifts (7)   "                     0.8165           -0.0117  -0.0117  -0.0117  -0.0117  -0.0117  -0.0117  -0.0117"
-	   } elsif($line =~ m/^(\s+\d+\.\d\d)\d\d((?:\s+-?\d+\.\d\d\d\d){6})\s*$/ ) {
-              print $fho "[23] $1 $2\n";
+	   } elsif($line =~ m/^(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d\s*$/ ) {
+              print $fho "[23] $1 $2 $3 $4 $5 $6 $7\n";
 # "All cycle   shift/esd            0.30E-01       0.53E-04       0.10E+05"			
 #	   } elsif($line =~ m/^(All cycle.*\d\.\d\dE.\d\d\s+\d\.\d)\d(E.\d\d\s+\d\.\d\dE.\d\d\s*)/ ) {
 #              print $fho "$1 $2\n";
@@ -410,9 +410,13 @@ sub obscureMachinePrecision() {
 #The minimum and maximum map densities are -0.378     0.423    electrons /A^3
  	  } elsif($line =~ m/^(.*The minimum and maximum map densities are\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(.*)$/ ) {
               print $fho "[68] $1 $2 $3\n";
+#         1  1  0  0  0    5.70E-02     5.70E-02    -3.22E-05    1.000    U33_local - <U33_local> == 0
+ 	  } elsif($line =~ m/^(\s+1\s+1\s+0\s+0\s+0\s+-?\d+\.\d)\d(E.\d\d\s+-?\d+\.\d)\d(E.\d\d\s+-?\d+\.\d)\d(.*)$/ ) {
+              print $fho "[78] $1$2$3$4\n";
+      
       } else {
               print $fho "$line\n";
-	   }
+	  }
  	}
         close ($fhi);
         close ($fho); 

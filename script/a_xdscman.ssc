@@ -23,7 +23,7 @@ Spotted by DJW, April 2016. Not fixed
 %  COPY '#DISK'
 %  COPY 'PRINT DISK YES 5'
 %  COPY 'END'
-%  COPY '#RELEASE PUNCH bfile.pch'
+%  COPY '#RELEASE PUNCH logs/bfile.pch'
 %  COPY '#OPEN SCPDATA dscdata.pch'
 %%
 %%
@@ -219,7 +219,7 @@ Spotted by DJW, April 2016. Not fixed
 %  COPY '#DISK'
 %  COPY 'PRINT DISK YES 5'
 %  COPY 'END'
-%  COPY '#RELEASE PUNCH bfile.pch'
+%  COPY '#RELEASE PUNCH logs/bfile.pch'
 %  COPY '#OPEN SCPDATA dscdata.pch'
 ^^CO FOCUS DS_RES
 %      END BLOCK
@@ -239,7 +239,7 @@ Spotted by DJW, April 2016. Not fixed
 %  COPY '#DISK'
 %  COPY 'PRINT DISK YES 5'
 %  COPY 'END'
-%  COPY '#RELEASE PUNCH bfile.pch'
+%  COPY '#RELEASE PUNCH logs/bfile.pch'
 %  COPY '#OPEN SCPDATA dscdata.pch'
 ^^CO FOCUS DS_RES
 %      END BLOCK
