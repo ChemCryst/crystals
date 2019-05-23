@@ -24,7 +24,7 @@
 %  COPY '#RELEASE PUNCH bad12.pch'                                              
 %  COPY '#PUNCH 12'                                                             
 %  COPY 'END'                                                                   
-%  COPY '#RELEASE PUNCH bfile.pch'                                              
+%  COPY '#RELEASE PUNCH logs/bfile.pch'                                              
 {I  Bad refinement directives saved to: {&bad12.pch{&                           
 %%                                                                              
 %  BLOCK                                                                        

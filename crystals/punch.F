@@ -1765,10 +1765,10 @@ C
       IF (ISTAT .LT. 0) GOTO 1850
 C--check if filtered reflections need printing
       if(l28filter) then
-         if(KALLOW(IALLOW)<0) then
+         if(iallow/=0) then
            goto 1840
          end if
-      end if
+      endif
 
       IDREF=IDREF+1
       I = NINT(STORE(M6))
@@ -1800,7 +1800,10 @@ C
 C
       IDJW = KALLOW(IALLOW)
 C
-      IF ( STORE(M6+20) .LT. S6SIG) THEN
+      IF (IDJW.EQ. -70) THEN
+        IALW = 3                    !Manually excluded.
+        WT = 0.0
+      ELSE IF ( STORE(M6+20) .LT. S6SIG) THEN
         IALW = 2                    !Rejected by sigma cutoff.
         WT = 0.0
       ELSE IF (idjw.eq.-17) THEN

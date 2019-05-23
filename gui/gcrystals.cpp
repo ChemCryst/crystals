@@ -25,6 +25,9 @@ using namespace std;
     #include <wx/msw/regconf.h>
   #endif
   #include <wx/clipbrd.h>
+  #include <wx/stdpaths.h>
+  #include <wx/filename.h>
+
 #endif
 
 
@@ -37,169 +40,7 @@ extern"C" {
 void hdf5_dsc_use_set();
 }
 
-#ifdef CRY_USEMFC
-  #ifdef __CRDEBUG__
-    #undef THIS_FILE
-    static char THIS_FILE[] = __FILE__;
-  #endif
 
-  /*
-  static struct _test
-  {
-    _test()
-    {
-      InitAllocCheck(ACOutput_XML);
-    }
-  
-    ~_test()
-    {
-      DeInitAllocCheck();
-    }
-  } _myLeakFinder;
-  */
-
-  // CCrystalsApp
-  BEGIN_MESSAGE_MAP(CCrystalsApp, CWinApp)
-	  ON_THREAD_MESSAGE(WM_CRYSTALS_COMMAND, CCrystalsApp::OnCrystCommand)
-  END_MESSAGE_MAP()
-
-  // CCrystalsApp construction
-
-  CCrystalsApp::CCrystalsApp()
-  {
-  }
-
-  // The one and only CCrystalsApp object
-  CCrystalsApp theApplication;
-
-  // CCrystalsApp initialization
-
-  BOOL CCrystalsApp::InitInstance()
-  {
-    // Standard initialization
-    // If you are not using these features and wish to reduce the size
-    //  of your final executable, you should remove from the following
-    //  the specific initialization routines you do not need.
-
-    InitCommonControls();
-
-    CWinApp::InitInstance();
-
-  // The user can override the ini file settings by setting
-  // CRYSDIR to the crystals directory.
- 
-    if ( getenv("CRYSDIR") == nil )
-    {
-
- // Use the registry to fetch keys.
-      string location;
-      string subkey = "Software\\Chem Cryst\\Crystals\\";
-      HKEY hkey;
-      DWORD dwdisposition, dwtype, dwsize;
-      int dwresult = RegCreateKeyEx( HKEY_LOCAL_MACHINE, subkey.c_str(),
-                     0, NULL,  0, KEY_READ, NULL, &hkey, &dwdisposition );
-      if ( dwresult == ERROR_SUCCESS )
-      {
-         dwtype=REG_SZ;
-         dwsize = 1024; // NB limits max key size to 1K of text.
-         char buf [ 1024];
-         dwresult = RegQueryValueEx( hkey, TEXT("Crysdir"), 0, &dwtype,
-                                     (PBYTE)buf,&dwsize);
-         if ( dwresult == ERROR_SUCCESS )  location = string(buf);
-         RegCloseKey(hkey);
-      }
-      if ( dwresult != ERROR_SUCCESS )  // Try HK_CURRENT_USER instead
-      {
-         dwresult = RegCreateKeyEx( HKEY_CURRENT_USER, subkey.c_str(),
-                     0, NULL,  0, KEY_READ, NULL, &hkey, &dwdisposition );
-         if ( dwresult == ERROR_SUCCESS )
-         {
-            dwtype=REG_SZ;
-            dwsize = 1024; // NB limits max key size to 1K of text.
-            char buf [ 1024];
-            dwresult = RegQueryValueEx( hkey, TEXT("Crysdir"), 0, &dwtype,
-                                     (PBYTE)buf,&dwsize);
-            if ( dwresult == ERROR_SUCCESS )  location = string(buf);
-            RegCloseKey(hkey);
-         }
-      }
-
-      location = location.insert( 0, "CRYSDIR=" );
-      _putenv( location.c_str() );
-
-    }
-
-    string directory = "";
-    string dscfile = "";
-	
-    for ( int i = 1; i < __argc; i++ )
-    {
-       string command = __argv[i];
-
-       if ( command == "/d" )
-       {
-         if ( i + 2 >= __argc )
-         {
-           MessageBox(NULL,"/d requires two arguments - envvar and value!","Command line error",MB_OK);
-         }
-         else
-         {
-           string envvar = __argv[i+1];
-           string value  = __argv[i+2];
-           _putenv( (envvar+"="+value).c_str() );
-           i = i + 2;
-         }
-       }
-       else
-       {
-         string command = __argv[i];
-
-         if ( command.length() > 0 )
-         {
-// we need a directory name. Look for last slash
-           string::size_type ils = command.find_last_of('\\');
-//Check: is there a directory name?
-           if ( ils != string::npos )
-                directory = command.substr(0,ils);
-//Check: is there a dscfilename?
-           int remain = command.length() - ils - 1;
-           if ( remain > 0 )
-                dscfile = command.substr(ils+1,remain);
-         }
-       }
-     }
-     LoadStandardCursor(IDC_APPSTARTING);
-     theControl = new CcController(directory,dscfile);
-     LoadStandardCursor(IDC_ARROW);
-     return true;
-  }
-
-  BOOL CCrystalsApp::OnIdle(LONG lCount)
-  {
-    if ( CWinApp::OnIdle(lCount) ) return TRUE; // Allow system processing first.
-    if ( theControl->DoCommandTransferStuff() ) return TRUE;
-    return FALSE;
-  }
- 
-  void CCrystalsApp::OnCrystCommand(UINT wp, LONG p)
-  {
-	theControl->DoCommandTransferStuff();
-  }
-  
-  LRESULT CCrystalsApp::OnStuffToProcess(WPARAM wp, LPARAM)
-  {
-    theControl->DoCommandTransferStuff();
-    return 0;
-  }
-
-  int CCrystalsApp::ExitInstance()
-  {
-    int exit = theControl->m_ExitCode;
-    delete theControl;
-    delete (CFrameWnd*)m_pMainWnd;
-    return exit;
-  }
-#else
   // The one and only CCrystalsApp object
   IMPLEMENT_APP(CCrystalsApp)
 
@@ -265,6 +106,36 @@ void hdf5_dsc_use_set();
   #include <Carbon/Carbon.h>
   #include <stdlib.h>
   #include <iostream>
+
+
+std::string GetExePath() {
+#ifdef CRY_OSLINUX
+  // Code taken from: http://www.gamedev.net/community/forums/topic.asp?topic_id=459511
+  std::string path = "";
+  pid_t pid = getpid();
+  char buf[20] = {0};
+  sprintf(buf,"%d",pid);
+  std::string _link = "/proc/";
+  _link.append( buf );
+  _link.append( "/exe");
+  char proc[512];
+  int ch = readlink(_link.c_str(),proc,512);
+  if (ch != -1) {
+    proc[ch] = 0;
+    path = proc;
+    std::string::size_type t = path.find_last_of("/");
+    path = path.substr(0,t);
+  }
+
+  std::string crysdir = path + string("/");
+  return crysdir;
+#else
+  std::string crysdir = wxStandardPaths::GetDataDir().ToStdString();
+  return crysdir;
+#endif     
+}
+
+
 
 wxString macWorkingDir()
   {
@@ -437,16 +308,25 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
       macSetCRYSDIR((char*)tPath);
     }
 #else
+
+
     if ( getenv("CRYSDIR") == nil )
     {
- // Use the registry to fetch keys.
+	//Find CRYSDIR from local executable path.
+	
+	  std::string pathsep = string(wxString(wxFileName::GetPathSeparator()).ToStdString());
+      std::string crysdir = wxStandardPaths::Get().GetDataDir().ToStdString() + pathsep;
+
+	
+	
+// // Use the registry to fetch keys.
       string location;
-      wxString str;
-      wxConfig * config = new wxConfig("Chem Cryst");
-      if ( config->Read("Crystals/Crysdir", &str ) ) {
-        location = str.c_str();
-      }
-      delete config;
+//      wxString str;
+//      wxConfig * config = new wxConfig("Chem Cryst");
+//      if ( config->Read("Crystals/Crysdir", &str ) ) {
+          location = crysdir.c_str();
+//      }
+//      delete config;
       location = location.insert( 0, "CRYSDIR=" );
       char * env = new char[location.size()+1];
       strcpy(env, location.c_str());
@@ -559,76 +439,8 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
     return wxApp::OnExit();
   }
 
-#endif
 
 
 
 
 
-
-#ifdef CRY_USEMFC
-
-  // Remove dependency of new MFC library on OLEACC.DLL, by 
-  // providing our own proxy functions, which do nothing if 
-  // OLEACC.DLL cannot be loaded.
-
-  extern "C" LRESULT _stdcall AccessibleObjectFromWindow(HWND hwnd, DWORD dwId, 
-                                                       REFIID riid, void **ppvObject)
-  {
-    COleaccProxy::Init();
-    return COleaccProxy::m_pfnAccessibleObjectFromWindow ? 
-       COleaccProxy::m_pfnAccessibleObjectFromWindow(hwnd, dwId, riid, ppvObject) : 0;
-  }
-
-  extern "C" LRESULT _stdcall CreateStdAccessibleObject(HWND hwnd, LONG idObject, 
-                                                      REFIID riid, void** ppvObject)
-  {
-    COleaccProxy::Init();
-    return COleaccProxy::m_pfnCreateStdAccessibleObject ? 
-       COleaccProxy::m_pfnCreateStdAccessibleObject(hwnd, idObject, riid, ppvObject) : 0;
-  }
-
-  extern "C" LRESULT _stdcall LresultFromObject(REFIID riid, WPARAM wParam, LPUNKNOWN punk)
-  {
-    COleaccProxy::Init();
-    return COleaccProxy::m_pfnLresultFromObject ? 
-       COleaccProxy::m_pfnLresultFromObject(riid, wParam, punk) : 0;
-  }
-
-  HMODULE COleaccProxy::m_hModule = NULL;
-  BOOL COleaccProxy::m_bFailed = FALSE;
-
-  pfnAccessibleObjectFromWindow COleaccProxy::m_pfnAccessibleObjectFromWindow = NULL;
-  pfnCreateStdAccessibleObject COleaccProxy::m_pfnCreateStdAccessibleObject = NULL;
-  pfnLresultFromObject COleaccProxy::m_pfnLresultFromObject = NULL;
-
-  COleaccProxy::COleaccProxy(void)
-  {
-  }
-
-  COleaccProxy::~COleaccProxy(void)
-  {
-  }
-
-  void COleaccProxy::Init(void)
-  {
-    if (!m_hModule && !m_bFailed)
-    {
-        m_hModule = ::LoadLibrary(_T("oleacc.dll"));
-        if (!m_hModule)
-        {
-            m_bFailed = TRUE;
-            return;
-        }
-
-        m_pfnAccessibleObjectFromWindow
-             = (pfnAccessibleObjectFromWindow)::GetProcAddress(m_hModule, 
-                                                          _T("AccessibleObjectFromWindow"));
-        m_pfnCreateStdAccessibleObject
-             = (pfnCreateStdAccessibleObject)::GetProcAddress(m_hModule, 
-                                                          _T("CreateStdAccessibleObject"));
-        m_pfnLresultFromObject = (pfnLresultFromObject)::GetProcAddress(m_hModule, 
-                                                          _T("LresultFromObject"));
-    }
-  }
-#endif

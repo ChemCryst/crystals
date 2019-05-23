@@ -22,7 +22,7 @@
 %  TRANSFER "# lines from this file before saving." TO PUNCH
 %  COPY '#PUNCH 12'
 %  COPY 'END'
-%  COPY '#RELEASE PUNCH bfile.pch'
+%  COPY '#RELEASE PUNCH logs/bfile.pch'
 %%
 %  VARIABLE LOGICAL ISERR
 %%

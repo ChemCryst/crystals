@@ -119,7 +119,7 @@
 %  END LOOP
 %  COPY '#CLOSE SCPDATA'
 %  TRANSFER 'END' TO PUNCH
-%  TRANSFER '#RELEASE PUNCH bfile.pch' TO CRYSTALS
+%  TRANSFER '#RELEASE PUNCH logs/bfile.pch' TO CRYSTALS
 %%
 %  TRANSFER "{I Now assign labels to " // CHARACTER ( IRINGCNT - ICNT ) // " atoms to be created..." TO DISPLAY
 %%

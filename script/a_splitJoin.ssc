@@ -465,7 +465,7 @@
 %%
 %% We close the punch, from now on all values will be stored in variables
 %%
-%  COPY '#RELEASE PUNCH bfile.pch'
+%  COPY '#RELEASE PUNCH logs/bfile.pch'
 %%
 %% Deciding on which assemly to take or if a new one is created
 %%

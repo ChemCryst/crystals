@@ -357,6 +357,7 @@
 %         EVALUATE EL9 = RVAL
 %       END CASE
 %     END BLOCK
+%%
 %     BLOCK       %BOK25 - gosh, lots to do. Don't forget inverse matrices.
 %%
 %% For each matrix in L25, put the inverse matrix in L25I
@@ -521,9 +522,9 @@
 %%  Write a pretwin6.dat for later recovery.
 {S * Backing-up the existing observations to 'pretwin6.dat'
 %         COPY '#RELEASE PUNCH pretwin6.dat'
-%         COPY '#PUNCH 6 C'
+%         COPY '#PUNCH 6 I'
 %         COPY 'END'
-%         COPY '#RELEASE PUNCH bfile.pch'
+%         COPY '#RELEASE PUNCH logs/bfile.pch'
 %       END IF
 {S * Converting the reflection list to twinned (FOT) format.
 %       COPY '#LIST 6'

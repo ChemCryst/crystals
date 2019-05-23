@@ -58,9 +58,9 @@
 %%
 {S *  Backing-up the existing observations to 'pretwin6.dat'
 % COPY '#RELEASE PUNCH pretwin6.dat'
-% COPY '#PUNCH 6 C'
+% COPY '#PUNCH 6 I'
 % COPY 'END'
-% COPY '#RELEASE PUNCH bfile.pch'
+% COPY '#RELEASE PUNCH logs/bfile.pch'
 {S *  Converting the reflection list format
 % COPY '#LIST 6'
 % COPY 'READ TYPE=TWIN'
@@ -68,9 +68,9 @@
 {R A minimal LIST 12 will be created to refine only the
 {R twin elements. You can edit it to add other parameters
 {R {Ior{R choose guided refinement for automatic inclusion of
-{R two element twin scales.
+{R twin element scales.
 % copy '#list 12'
 % copy 'block scale'
-% copy '#use crysdir:script/2twin12.dat'
+% copy 'SUMFIX ELEMENT SCALES'
 % copy 'end'
 % end script

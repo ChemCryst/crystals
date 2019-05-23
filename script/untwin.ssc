@@ -57,7 +57,7 @@
 %   COPY '#RELEASE PUNCH untwin5.dat'
 %   COPY '#PUNCH 5'
 %   COPY 'END'
-%   COPY '#RELEASE PUNCH bfile.pch'
+%   COPY '#RELEASE PUNCH logs/bfile.pch'
 %   COPY '#USE untwin5.dat'
 %%   COPY '#SUM L 5'
 %%   COPY 'END'

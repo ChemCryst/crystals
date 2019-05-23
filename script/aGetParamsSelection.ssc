@@ -35,7 +35,7 @@
 %      END LOOP
 %      COPY '#CLOSE SCPDATA'
 %      TRANSFER 'END' TO PUNCH
-%%     TRANSFER '#RELEASE PUNCH bfile.pch' TO CRYSTALS
+%%     TRANSFER '#RELEASE PUNCH logs/bfile.pch' TO CRYSTALS
 %    END IF
 %  END IF
 %%
@@ -57,7 +57,7 @@
 %   TRANSFER CVALUE TO PUNCH
 %  END LOOP
 %  TRANSFER 'END' TO PUNCH
-%  TRANSFER '#RELEASE PUNCH bfile.pch' TO CRYSTALS
+%  TRANSFER '#RELEASE PUNCH logs/bfile.pch' TO CRYSTALS
 %%
 %  CASE IMODE
 %    TRANSFER '{I Required operation is store selection.' TO DISPLAY

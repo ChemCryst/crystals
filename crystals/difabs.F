@@ -180,7 +180,7 @@ C   OUTPUT HEADER.
       CALL XPRVDU(NCVDU, 1,0)
 c      WRITE(NCAWU, '(A)') trim(CMON(1))
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
-1200  FORMAT(' DIFABS Version ', F5.2, ' Applied to Fo or Fc')
+1200  FORMAT(' DIFABS Version ', F5.2, ' Includes area detectors')
 C
 C     *********
       NACOEF=34
@@ -218,13 +218,14 @@ CDJWMAR2001
       IF (A .GT. ZERO) THEN
 C----- COPY OVER THE ORIENTATION MATRIX
         CALL XMOVE (STORE(L13OM),ORIENT(1,1),9)
-      ELSE
-        WRITE(CMON,'(A/A)')' There is no orientation matrix.',
+      ELSE 
+        IF (IDIFRT.NE. 5) THEN
+          WRITE(CMON,'(A/A)')' There is no orientation matrix.',
      1  ' DIFABS correction will not be optimal'
-      CALL XPRVDU(NCVDU, 2,0)
-c      WRITE(NCAWU, '(A)') (trim(CMON( II)),II=1,2)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') (trim(CMON(II)),II=1,2)
-C----- COPY OVER THE ORTHOGONALISATION MATRIX
+          CALL XPRVDU(NCVDU, 2,0)
+          IF (ISSPRT.EQ.0) WRITE(NCWU, '(A)') (trim(CMON(II)),II=1,2)
+        ENDIF
+C-----  COPY OVER THE ORTHOGONALISATION MATRIX
         CALL XMOVE (STORE(L1O2), ORIENT(1,1), 9)
         CALL MTRANS(ORIENT)
       ENDIF
@@ -301,13 +302,13 @@ c Area Detector. Compute the scattering vector
 c
       if (idifrt .eq.5) then
         ih=nint(store(m6)*store(m2+0)+store(m6+1)*store(m2+1)+
-     1     store(m6+2)*store(m2+1))
+     1                                store(m6+2)*store(m2+2))
 
         ik=nint(store(m6)*store(m2+3)+store(m6+1)*store(m2+4)+
-     1     store(m6+2)*store(m2+5))
+     1                                store(m6+2)*store(m2+5))
 
         il=nint(store(m6)*store(m2+6)+store(m6+1)*store(m2+7)+
-     1     store(m6+2)*store(m2+8))
+     1                                store(m6+2)*store(m2+8))
       else
        IH=NINT(STORE(M6))
        IK=NINT(STORE(M6+1))
@@ -350,36 +351,38 @@ C   MAX THETA
 c$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
       if (idifrt.eq.5) then
 c      x() are h,k,l
-      DO  I=1,3
-      djw(I)=0.
-       DO  J=1,3
-        djw(I)=djw(I)+ORIENT(I,J)*X(J)
-       enddo
-       djw(I)=djw(I)/DST
-      enddo 
+       do  i=1,3
+        djw(I)=0.
+        do  j=1,3
+         djw(I)=djw(I)+ORIENT(I,J)*X(J)
+        enddo
+        djw(I)=djw(I)/DST
+       enddo 
 
-      D = SQRT(djw(2)*djw(2)+djw(3)*djw(3))
-      PHI(1) = ATAN2(djw(2),djw(3))*rtd
-      if (phi(1).lt. 0.0) phi(1)=phi(1)+360.
-      MU(1) = ATAN2(djw(1),D)*rtd
-      if (mu(1) .lt. 0.0) then
+       D = SQRT(djw(2)*djw(2)+djw(3)*djw(3))
+       PHI(1) = ATAN2(djw(2),djw(3))*rtd
+c move into upper hemisphere assuming a centre of symmetry
+       if (phi(1).lt. 0.0) phi(1)=phi(1)+360.
+        MU(1) = ATAN2(djw(1),D)*rtd
+c      write(123,'(/2f 10.2)') phi(1), mu(1)
+        if (mu(1) .lt. 0.0) then
             mu(1) = -mu(1)
            phi(1) = phi(1)+180
-      endif
-      if (mu(1).gt.90.) then
+        endif
+        if (mu(1).gt.90.) then
             mu(1)=180.-mu(1)
             phi(1)=180.+phi(1)
+        endif
+        if(phi(1) .ge. 360.) phi(1)=phi(1)-360.
+        if(phi(1) .lt.   0.) phi(1)=phi(1)+360.
+c      write(123,'(2f 10.2)') phi(1), mu(1)
+        mu(2) = mu(1)
+        phi(2) = phi(1)
+c      write(123,'(3f4.0,2(2f10.2,4x), 5x, 3f6.2, 5x, f10.7)')
+c     1 x,  phi, mu, djw, dst
+       goto 1488
       endif
-      if(NINT(phi(1)) .ge. 360) phi(1)=phi(1)-360.
-
-       mu(2) = mu(1)
-       phi(2) = phi(1)
-
-c      write(125,'(3f4.0,3(2f10.2,4x), 5x, 3f6.2, 5x, f10.7)')
-c     1 x,  phi, mu, djw
-      goto 1488
 c$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-      endif
 
 
       CALL ANGLES (OMEGA,PHIE,CHIE,X,IERR)
@@ -396,7 +399,7 @@ C   or for the general case
       IF(IPOS.NE.0.OR.IDIFRT.EQ.3) CALL GEN4C (OMEGA,CHIE,PHIE)
 C
 1488  continue
-c      write(125,'(3f4.0,2(2f7.2,4x),3f8.2)') x,phi,mu, omega,phie,chie
+c      write(123,'(3f4.0,2(2f7.2,4x),3f8.2)') x,phi,mu, omega,phie,chie
 C   MIN AND MAX MU
       IF(MU(1).LT.MUMIN) MUMIN=MU(1)
       IF(MU(1).GT.MUMAX) MUMAX=MU(1)
@@ -410,9 +413,9 @@ C   MIN AND MAX MU
 C
 149   CONTINUE
 C  STORE THE DISTRIBUTION OF OBSERVATIONS
-      ndjwp = abs(int(phi(1)/10.) + 1)
+      ndjwp = abs(nint(phi(1)/10.) + 1)
       if(ndjwp.gt.40)ndjwp=40
-      ndjwm = abs(int(2.*mu(1)/10.) + 1)
+      ndjwm = abs(nint(2.*mu(1)/10.) + 1)
       if(ndjwm.gt.20)ndjwm=20
       ndjwmap(ndjwp,ndjwm) = ndjwmap(ndjwp,ndjwm) +1
 C
@@ -1282,12 +1285,10 @@ CDJW99[
 CDJW99]
       IF (ISSPRT .EQ. 0)  WRITE(NCWU,200)II,A
 200   FORMAT(I4,1X,18F5.2)
-c£££££££££££££££££££££££££££££££££££££££££££££££££££££
 c      if(j .eq.2)then
 c       jj = kmap+(i-1)*36
 c      write(123,201)jj,ii,(store(jj+idjw),idjw=0,35)
 201   FORMAT(2I6,1X,40F5.2)
-c£££££££££££££££££££££££££££££££££££££££££££££££££££££
 90    CONTINUE
 C
 100   CONTINUE
@@ -1319,21 +1320,18 @@ c----- TRANSPOSE  AND SCALE MAP FOR BETTER VIEWING
         endif
 101    CONTINUE
        CALL XTRANS (STORE(KMAP), STORE(JMAP), 36, MRANGE)
-c£££££££££££££££££££££££££££££££££££££££££££££££££££££
 C      do i=1,mrange
 C      ii = kmap+(muf+i-1)*36
 C        jj = mpf
 C        kk = jj + mprange-1
 C        write(123,201)ii,jj,(0.01*store(ii+idjw),idjw=jj,kk)
 C       enddo
-c£££££££££££££££££££££££££££££££££££££££££££££££££££££
 c      do i=1,mprange
 c      ii = jmap+(mpf+i-1)*mrange
 c        jj = muf
 c        kk = jj + mrange-1
 c        write(123,201)ii,jj,(0.01*store(ii+idjw),idjw=jj,kk)
 c       enddo
-c£££££££££££££££££££££££££££££££££££££££££££££££££££££
       IF (IMAP .GE. 1) THEN
 C - DEFUNCT CODE
        REWIND MT1
@@ -1653,13 +1651,20 @@ C
       lmax = lmin + lstep*nstep
 c
       write(cmon,'(a, i3,a, i3, a,i3,a,i4)') 
-     1 ' For a contour map we suggest', nstep,
+     1 ' For the contour map we suggest', nstep,
      2 ' steps of', lstep, ' from', lmin, ' to', lmax-1
       call xprvdu(ncvdu,1,0)
       write(cmon,'(A)') 'e.g. '
       call xprvdu(ncvdu,1,0)
       write(cmon,'(20i4)') (lmin+i*lstep,i=0,nstep-1)
       call xprvdu(ncvdu,1,0)
+      if ( idifrt.eq.5) then
+        write(cmon,'(/a/a/a )')
+     1 ' For the MoO contour plot (press /) we suggest 6 steps',
+     2 ' such as:',
+     3 ' 5, 10, 15, 20, 50, 100'
+      call xprvdu(ncvdu,4,0)
+      endif
 c
       IF (IACTN .GE. 0) THEN
 C----- UPDATE AND STORE LIST 30

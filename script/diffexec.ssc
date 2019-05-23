@@ -15,9 +15,9 @@ DIFEXEC:
 %    COPY '#DISK'  
 %    COPY 'EXTEND SIZE = 10 TRIES = 1000'  
 %    COPY 'END'  
-Files INITIAL.* will be created in your directory. They may be important.  
-%    COPY '#RELEASE PRINT initial.lis'  
-%    COPY '#RELEASE LOG initial.dat'  
+Files INITIAL.* will be created in your logs/ folder. They may be important.  
+%    COPY '#RELEASE PRINT logs/initial.lis'  
+%    COPY '#RELEASE LOG logs/initial.dat'  
 %  END BLOCK  
 %%  
 %% Read bits and pieces from Bruker pcf file  

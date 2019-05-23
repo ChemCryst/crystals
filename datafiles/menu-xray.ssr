@@ -2,7 +2,8 @@
 ^^WI  MENU _START   '&Data'
 ^^WI   ITEM _REF '&Open file	Ctrl+O' '#SCRIPT XFILE_ANY'  DISABLEIF='IN'
 ^^WI   SPLIT
-^^WI   ITEM _REF 'Open import guide' '#SCRIPT XGUIDEI'  DISABLEIF='IN'
+^^WI   ITEM _REF 'Open import guide' '#SCRIPT XGUIDEI' ICON='tool_guid.bmp' 
+^^WI                                 DISABLEIF='IN'
 ^^WI   MENU _FILES 'Data Files (Current)'
 ^^WI       ITEM XIN5    'Import S&helx files (ins, res, hkl, hklf5)'
 ^^WI                '#SCRIPT XFILES' DISABLEIF='IN'

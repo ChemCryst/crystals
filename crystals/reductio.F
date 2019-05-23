@@ -469,11 +469,11 @@ C
       INCLUDE 'XERVAL.INC'
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'XIOBUF.INC'
-      CHARACTER *13 CFILE
-      CHARACTER *13 CFILE2
+      CHARACTER *18 CFILE
+      CHARACTER *18 CFILE2
       DIMENSION JFRN(4), JFRN2(4)
-      DATA CFILE / 'absences2.dat' /    ! now contains a column with resolution^3
-      DATA CFILE2/ 'histogram.dat' /
+      DATA CFILE / 'data/absences2.dat' /    ! now contains a column with resolution^3
+      DATA CFILE2/ 'data/histogram.dat' /
 #ifdef _HOL_
       DATA JFRN  /1HF, 1HR, 1HN, 1H1/
       DATA JFRN2 /1HF, 1HR, 1HN, 1H2/
@@ -575,8 +575,8 @@ C----- ACCUMULATORS
       ENDDO
 C
       IF ( IULN .EQ. 6 ) THEN
-        CALL XRDOPN ( 5 , JFRN(1) , CFILE, 13 )
-        CALL XRDOPN ( 5 , JFRN2(1) , CFILE2, 13 )
+        CALL XRDOPN ( 5 , JFRN(1) , CFILE, 18 )
+        CALL XRDOPN ( 5 , JFRN2(1) , CFILE2, 18 )
         IF (IERFLG .LE. 0) GOTO 9900               !EXIT ON ERROR
         WRITE(NCFPU1,'(A,A)')'   H   K   L   Fobs^2/Sigma      Fobs^2',
      1  ' (Sintheta/lambda)^3'
@@ -1204,14 +1204,14 @@ C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST30.INC'
       EQUIVALENCE (PROCS(1),ITYP06)
-      CHARACTER *12 CFILE
-      CHARACTER *11 CFILE2
+      CHARACTER *17 CFILE
+      CHARACTER *16 CFILE2
       DIMENSION JFRN(4), JFRN2(4)
       SAVE
 C
       DATA IVERSN / 500 /
-      DATA CFILE / 'mergingr.dat' /
-      DATA CFILE2/ 'sigmas2.dat' /      !'2' added to indicate a new 2-table format
+      DATA CFILE / 'data/mergingr.dat' /
+      DATA CFILE2/ 'data/sigmas2.dat' /      !'2' added to indicate a new 2-table format
 #ifdef _HOL_
       DATA JFRN  /1HF, 1HR, 1HN, 1H1/
       DATA JFRN2 /1HF, 1HR, 1HN, 1H2/
@@ -1337,8 +1337,8 @@ C--SET UP THE CORE BUFFER FLAGS
       NREF=0
       NEND=0
       IF ( IULN .EQ. 6 ) THEN
-        CALL XRDOPN ( 5 , JFRN(1) , CFILE, 12 )
-        CALL XRDOPN ( 5 , JFRN2(1) , CFILE2, 11 ) !sigmas2
+        CALL XRDOPN ( 5 , JFRN(1) , CFILE, 17 )
+        CALL XRDOPN ( 5 , JFRN2(1) , CFILE2, 16 ) !sigmas2
         IF (IERFLG .LE. 0) GOTO 9900               !EXIT ON ERROR
 c       write internal and external standard errors to sigma.dat
         WRITE(NCFPU2,'(A,A)') 
@@ -1732,12 +1732,12 @@ c     Process sigmas2.dat to find possible equations.
         moo = 5   !minimum acceptable multiplicity for regression
         CALL MRGLSQ(moo,ibin,nbin,jbin,binres)
 c       close sigmas2.dat
-        CALL XRDOPN ( 7 , JFRN2(1) , CFILE2, 11 ) !sigmas2
+        CALL XRDOPN ( 7 , JFRN2(1) , CFILE2, 16 ) !sigmas2
 c
 c
 c Now write out the Multiplicity of observation histogram
-        CFILE2 = 'moo2.dat' 
-        CALL XRDOPN ( 5 , JFRN2(1) , CFILE2, 8 )
+        CFILE2 = 'data/moo2.dat' 
+        CALL XRDOPN ( 5 , JFRN2(1) , CFILE2, 13 )
         write(ncfpu2,'(A)')
      1  '  Mult     nRef  Resol      nRef'
         do i=1,nbin
@@ -1749,7 +1749,7 @@ c Now write out the Multiplicity of observation histogram
         WRITE(NCFPU2,'(i5,i10,f6.2,i10)')
      1  i,ibin(i),float(i)*binres,idjw
         enddo
-        CALL XRDOPN ( 7 , JFRN2(1) , CFILE2, 8 )  !close the moo file
+        CALL XRDOPN ( 7 , JFRN2(1) , CFILE2, 13 )  !close the moo file
         CALL XOPMSG ( IOPMER , IOPEND , IVERSN )
         CALL XTIME2(2)
       endif

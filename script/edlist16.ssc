@@ -34,7 +34,7 @@
 %  TRANSFER "#     END" TO PUNCH
 %  COPY '#PUNCH 16'
 %  COPY 'END'
-%  COPY '#RELEASE PUNCH bfile.pch'
+%  COPY '#RELEASE PUNCH logs/bfile.pch'
 %%
 %  VARIABLE LOGICAL ISERR
 %%

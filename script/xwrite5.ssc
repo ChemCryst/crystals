@@ -933,8 +933,8 @@
 %     COPY 'notbonded'                                                          
 %     COPY '#use someh.12'                                                      
 %     COPY 'END'                                                                
-%     COPY '#RELEASE PUNCH bfile.pch'                                           
-%     COPY '#RELEASE SCPQ bfile.spq'                                            
+%     COPY '#RELEASE PUNCH logs/bfile.pch'                                           
+%     COPY '#RELEASE SCPQ logs/bfile.spq'                                            
 %%                                                                              
 %% Now take all the atoms in restdat.12 and set their refine flag to 1,         
 %% (or 2 if HMODE=2). Set STUCK true so that a custom L12 is written.           
@@ -1060,7 +1060,7 @@
 %     COPY 'BONDED'                                                             
 %     QUEUE PROCESS                                                             
 %     COPY 'END'                                                                
-%     COPY '#RELEASE PUNCH bfile.pch'                                           
+%     COPY '#RELEASE PUNCH logs/bfile.pch'                                           
 %  END IF                                                                       
 %%                                                                              
 %  IF ( STUCK ) THEN                                                            
@@ -1183,7 +1183,7 @@
 %      QUEUE COPY #USE ridedat.12                                               
 %    END IF                                                                     
 %    QUEUE COPY END                                                             
-%    COPY '#RELEASE SCPQUEUE bfile.spq'                                         
+%    COPY '#RELEASE SCPQUEUE logs/bfile.spq'                                         
 %    COPY '#USE l12.spq'                                                        
 %%                                                                              
 %% Very simple L12's:                                                           

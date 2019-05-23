@@ -33,9 +33,6 @@
 %  IF ( FILEEXISTS ( 'sflip.sflog' ) ) THEN                                     
 %    EVALUATE T = FILEDELETE ( 'sflip.sflog' )                                  
 %  END IF                                                                       
-%  IF ( FILEEXISTS ( 'sflip.inflip' ) ) THEN                                    
-%    EVALUATE T = FILEDELETE ( 'sflip.inflip' )                                 
-%  END IF                                                                       
 %  IF ( FILEEXISTS ( 'sflip.ins' ) ) THEN                                       
 %    EVALUATE T = FILEDELETE ( 'sflip.ins' )                                    
 %  END IF                                                                       

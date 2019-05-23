@@ -15,7 +15,7 @@
 %  COPY '#RELEASE PUNCH scplst16.dat'
 %  COPY '#PUNCH 16'
 %  COPY 'END'
-%  COPY '#RELEASE PUNCH bfile.pch'
+%  COPY '#RELEASE PUNCH logs/bfile.pch'
 %  COPY '#OPEN SCPDATA scplst16.dat'
 %  COPY '#RELEASE SCPQUEUE scplst16a.dat'
 %  QUEUE REWIND
@@ -78,7 +78,7 @@
 %       END IF
 %  END LOOP
 % 
-%  COPY '#RELEASE SCPQUEUE bfile.spq'
+%  COPY '#RELEASE SCPQUEUE logs/bfile.spq'
 %  EXTRACT CLOSE
 %  COPY '#USE scplst16a.dat'
 %%  COPY '#SUM L 16'

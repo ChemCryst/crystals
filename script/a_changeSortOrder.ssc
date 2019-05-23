@@ -39,7 +39,7 @@
 %    END IF
 %  END LOOP
 %  TRANSFER "END" TO PUNCH
-%  COPY '#RELEASE PUNCH bfile.pch'
+%  COPY '#RELEASE PUNCH logs/bfile.pch'
 %  COPY '#CLOSE SCPDATA'
 %%
 %% Now the selection process starts
@@ -61,12 +61,12 @@
 %        EVALUATE NEWSORTORDER = CVALUE
 %        COPY '#RELEASE PUNCH SortOrderNew.dat'
 %          TRANSFER CVALUE TO PUNCH
-%        COPY '#RELEASE PUNCH bfile.pch'
+%        COPY '#RELEASE PUNCH logs/bfile.pch'
 %      ELSE
 %        EVALUATE NEWSORTORDER = NEWSORTORDER // " " // CVALUE
 %        COPY '#APPEND PUNCH SortOrderNew.dat'
 %          TRANSFER CVALUE TO PUNCH
-%        COPY '#RELEASE PUNCH bfile.pch'
+%        COPY '#RELEASE PUNCH logs/bfile.pch'
 %      END IF
 %      EVALUATE LCHANGED = FALSE
 %      COPY '#CLOSE SCPDATA'
@@ -91,7 +91,7 @@
 %        END IF
 %      END LOOP
 %      TRANSFER "END" TO PUNCH
-%      COPY '#RELEASE PUNCH bfile.pch'
+%      COPY '#RELEASE PUNCH logs/bfile.pch'
 %      COPY '#CLOSE SCPDATA'
 %%
 %      EVALUATE NITEM = 0
@@ -115,7 +115,7 @@
 %        END IF
 %      END LOOP
 %      TRANSFER "END" TO PUNCH
-%      COPY '#RELEASE PUNCH bfile.pch'
+%      COPY '#RELEASE PUNCH logs/bfile.pch'
 %      COPY '#CLOSE SCPDATA'
 %      EVALUATE T = FILEDELETE ( 'NewSortOrder.dat' )
 %%
@@ -131,7 +131,7 @@
 %      END IF
 %      COPY '#APPEND PUNCH SortOrderNew.dat'
 %        TRANSFER "END" TO PUNCH
-%      COPY '#RELEASE PUNCH bfile.pch'
+%      COPY '#RELEASE PUNCH logs/bfile.pch'
 %      EVALUATE L_OK = TRUE
 %    END IF
 %%
@@ -212,7 +212,7 @@
 %        END IF
 %      END LOOP
 %      TRANSFER "END" TO PUNCH
-%      COPY '#RELEASE PUNCH bfile.pch'
+%      COPY '#RELEASE PUNCH logs/bfile.pch'
 %      COPY '#CLOSE SCPDATA'
 %%
 %      IF ( FILEEXISTS ( 'SortOrderBck.dat' ) ) THEN
@@ -250,7 +250,7 @@
 %        END IF
 %      END LOOP
 %      TRANSFER "END" TO PUNCH
-%      COPY '#RELEASE PUNCH bfile.pch'
+%      COPY '#RELEASE PUNCH logs/bfile.pch'
 %      COPY '#CLOSE SCPDATA'
 %%
 %      IF ( FILEEXISTS ( 'SortOrderBck.dat' ) ) THEN

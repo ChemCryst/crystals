@@ -132,7 +132,7 @@ Trying to delete old SQUEEZED reflections
 %  COPY '#RELE PUNCH PLATON6'
 %  COPY '#PUNCH 6 C'
 %  COPY 'END'
-%  COPY '#RELE PUNCH bfile.pch'
+%  COPY '#RELE PUNCH logs/bfile.pch'
 %%
 %%
 ^^CO GETKEY PLATONDIR

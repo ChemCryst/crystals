@@ -381,6 +381,7 @@ _refine_diff_density_max          0.42
 # situation where the reflections used for refinement were 
 # selected by a user-defined sigma threshold 
  
+# Explicitly named reflections are ALWAYS excluded from R&wR 
  
 # The values actually used during refinement 
 _oxford_refine_reflns_threshold_expression_ref   I>-10.0\s(I)
@@ -394,12 +395,12 @@ _refine_ls_goodness_of_fit_ref    1.6682
 [02] _refine_ls_shift/su_mean          0.0000
  
  
-# The values computed with all filters except I/sigma 
+# Computed with no filters except I/sigma = -10 
 _oxford_reflns_number_all         1133 
 _refine_ls_R_factor_all           0.0879 
 _refine_ls_wR_factor_all          0.2170 
  
-# The values computed with a 2 sigma cutoff - a la SHELX 
+# Computed with no filters except I/sigma = +2 a la SHELX 
 _reflns_threshold_expression                I>2.0\s(I)
 _reflns_number_gt                 1016 
 _refine_ls_R_factor_gt            0.0785 

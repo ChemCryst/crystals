@@ -53,7 +53,7 @@
 %        END IF
 %        COPY '#RELEASE PUNCH SortR.dat'
 %        TRANSFER CRECORD1 TO PUNCH
-%        COPY '#RELEASE PUNCH bfile.pch'
+%        COPY '#RELEASE PUNCH logs/bfile.pch'
 %        EVALUATE ICOUNT = ICOUNT + 1
 %      ELSE
 %        EVALUATE LNEWRECFOUND = TRUE
@@ -79,7 +79,7 @@
 %          END IF
 %          COPY '#APPEND PUNCH SortR.dat'
 %          TRANSFER CRECORD1 TO PUNCH
-%          COPY '#RELEASE PUNCH bfile.pch'
+%          COPY '#RELEASE PUNCH logs/bfile.pch'
 %          EVALUATE ICOUNT = ICOUNT + 1
 %        END IF
 %      END IF
@@ -152,7 +152,7 @@
 %    TRANSFER CHARACTER ( IMIN ) TO PUNCH
 %    EVALUATE ILASTMIN = IMIN
 %  END LOOP
-%  COPY '#RELEASE PUNCH bfile.pch'
+%  COPY '#RELEASE PUNCH logs/bfile.pch'
 %  EVALUATE T = FILEDELETE ( 'SortR.dat' )
 %%
 %  EVALUATE NEXTFREER = IMIN + 1
@@ -182,7 +182,7 @@
 %        END IF
 %        COPY '#RELEASE PUNCH SortP.dat'
 %        TRANSFER CRECORD1 TO PUNCH
-%        COPY '#RELEASE PUNCH bfile.pch'
+%        COPY '#RELEASE PUNCH logs/bfile.pch'
 %        EVALUATE ICOUNT = ICOUNT + 1
 %      ELSE
 %        EVALUATE LNEWRECFOUND = TRUE
@@ -208,7 +208,7 @@
 %          END IF
 %          COPY '#APPEND PUNCH SortP.dat'
 %          TRANSFER CRECORD1 TO PUNCH
-%          COPY '#RELEASE PUNCH bfile.pch'
+%          COPY '#RELEASE PUNCH logs/bfile.pch'
 %          EVALUATE ICOUNT = ICOUNT + 1
 %        END IF
 %      END IF
@@ -281,7 +281,7 @@
 %    TRANSFER CHARACTER ( IMIN ) TO PUNCH
 %    EVALUATE ILASTMIN = IMIN
 %  END LOOP
-%  COPY '#RELEASE PUNCH bfile.pch'
+%  COPY '#RELEASE PUNCH logs/bfile.pch'
 %  EVALUATE T = FILEDELETE ( 'SortP.dat' )
 %%
 %  EVALUATE NEXTFREEA = IMIN / 1000 + 1

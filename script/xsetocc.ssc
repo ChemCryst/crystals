@@ -188,7 +188,7 @@
 ^^CO    DISPOSE XGROUPS                                                         
 %% SHOW PART1 OCC1 PART2 OCC2
 %       QUEUE COPY END
-%       COPY '#RELEASE SCPQUEUE bfile.spq'                                           
+%       COPY '#RELEASE SCPQUEUE logs/bfile.spq'                                           
 %       IF ( PART1 .EQ. 0 ) .OR. ( PART2 .EQ. 0 ) THEN
 {E You have not selected enough parts
 %       ELSE
@@ -207,7 +207,7 @@
 %%                                                                              
 %     BLOCK                                                %PR_QUIT%           
 ^^CO    DISPOSE XGROUPS                                                         
-%       COPY '#RELEASE SCPQUEUE bfile.spq'                                           
+%       COPY '#RELEASE SCPQUEUE logs/bfile.spq'                                           
 %       FINISH
 %     END BLOCK                                                                 
 %%                                                                              

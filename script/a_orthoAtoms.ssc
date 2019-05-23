@@ -71,7 +71,7 @@
 %    END IF
 %  END LOOP
 %  COPY '#CLOSE SCPDATA'
-%  COPY '#RELEASE PUNCH bfile.pch'
+%  COPY '#RELEASE PUNCH logs/bfile.pch'
 %% EVALUATE T = FILEDELETE ( 'AtomsToWorkOn.dat' )
 %%
 %% TRANSFER "Number of atoms transformed to orthogonal system is " // CHARACTER ( IATOMCOUNT ) // "." TO DISPLAY

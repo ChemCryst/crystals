@@ -33,7 +33,7 @@
 %    COPY '#PUNCH 40 B'                                                         
 %    COPY 'END'                                                                 
 %  END BLOCK                                                                    
-%  COPY '#RELEASE PUNCH bfile.pch'                                              
+%  COPY '#RELEASE PUNCH logs/bfile.pch'                                              
 %%                                                                              
 %  MESSAGE USER1 'CRYSTALS cannot find a LIST 40 to edit'                       
 %  ON ERROR TERMINATE USER1                                                     

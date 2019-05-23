@@ -121,6 +121,7 @@
 #define kSEmpty                "EMPTY"
 #define kSMenuDisableCondition  "DISABLEIF"
 #define kSMenuEnableCondition   "ENABLEIF"
+#define kSMenuIcon        "ICON"
 #define kSMenuSplit     "SPLIT"
 #define kSItem          "ITEM"
 #define kSEndGrid             "}"
@@ -207,7 +208,8 @@ enum
  kTRemove,
  kTAttachModel,
  kTSave,
- kTQNLines
+ kTQNLines,
+ kTMenuIcon
 };
 
 

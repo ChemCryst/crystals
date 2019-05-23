@@ -35,7 +35,7 @@
 %  COPY '#DISK'
 %  COPY 'PRINT DISK YES 5'
 %  COPY 'END'
-%  COPY '#RELEASE PUNCH bfile.pch'
+%  COPY '#RELEASE PUNCH logs/bfile.pch'
 %  COPY '#OPEN SCPDATA dscdata.pch'
 %%
 %%
@@ -93,7 +93,7 @@
 %    COPY '#DISK'
 %    COPY 'PRINT DISK YES 5'
 %    COPY 'END'
-%    COPY '#RELEASE PUNCH bfile.pch'
+%    COPY '#RELEASE PUNCH logs/bfile.pch'
 %    COPY '#OPEN SCPDATA dscdata.pch'
 ^^WI SET DS_RES REMOVE 0 ADDTOLIST
 %%
@@ -267,7 +267,7 @@
 %        COPY '#DISK'
 %        COPY 'PRINT DISK YES 5'
 %        COPY 'END'
-%        COPY '#RELEASE PUNCH bfile.pch'
+%        COPY '#RELEASE PUNCH logs/bfile.pch'
 %        COPY '#OPEN SCPDATA dscdata.pch'
 ^^CO FOCUS DS_RES
 %   END BLOCK
@@ -291,7 +291,7 @@
 %        COPY '#DISK'
 %        COPY 'PRINT DISK YES 5'
 %        COPY 'END'
-%        COPY '#RELEASE PUNCH bfile.pch'
+%        COPY '#RELEASE PUNCH logs/bfile.pch'
 %        COPY '#OPEN SCPDATA dscdata.pch'
 ^^CO FOCUS DS_RES
 %   END BLOCK

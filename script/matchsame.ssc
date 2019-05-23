@@ -96,7 +96,7 @@
 %             TRANSFER 'CONT ' // CVALUE TO PUNCH
 %           END LOOP
 %           EXTRACT CLOSE
-%           COPY '#RELE PUNCH bfile.pch'
+%           COPY '#RELE PUNCH logs/bfile.pch'
 %           EVALUATE KEYBREAK = 'SAME'
 %           COPY '#SCRIPT ZADDLI16'
  * Done. Similarity restraints added.

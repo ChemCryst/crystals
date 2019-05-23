@@ -282,13 +282,14 @@ c       get a rough volume
 c
 C
 C Look at scattering factors to see if they suggest neutrons
+      probably_neutrons = .false.
 C     probably_neutrons only true if a1 coeff are present and all zero.
 180   continue
       f2 = numb_('_atom_type_scat_Cromer_Mann_a1',  x, sx)
 	  if (.not.(f2)) goto 182
 	  if ( abs ( x ) .lt. 0.000001 ) then
 	    probably_neutrons = .true.
-      else
+          else
 	    probably_neutrons = .false.
 		goto 182 !stop looping
 	  end if
@@ -312,7 +313,7 @@ c
 c
 c
 c.....  wavelength
-      F1=NUMB_('_diffrn_radiation_wavelength',num,DUM)
+      F1=NUMB_('_diffrn_radiation_wavelength',adum,DUM)
       if(f1) then
        FW=NUMB_('_diffrn_radiation_wavelength',WAV,DUM)
       endif
@@ -459,6 +460,7 @@ c         endif
       write(6,'(A,3x,a)') 'Crystal Colour Found', ccol(1:nctrim(ccol))
 c
 c
+      nref=0
 c 
 c -TO DO - SEPTEMBER 2012 - TEST FOR OLD-STYLE F REFINEMENT
 C....... Read and process the reflections
@@ -475,7 +477,6 @@ c-------------------------------------------------
        MAXH=-10000
        MAXK=-10000
        MAXL=-10000
-       nref=0
 c
 cdjw oct07 - read reflections
 
@@ -1190,15 +1191,17 @@ C----- WRITING LIST 30
          WRITE (NOUTF,'(a,a)')    'cont instrument= ', cinst
          WRITE (NOUTF,'(a)')      'GENERAL'
          WRITE (NOUTF,'(a,f7.1)') 'cont Z=',zm
-         WRITE (NOUTF,'(a,a)')    'COLOUR ',ccoL
+         WRITE (NOUTF,'(a,a)')    'COLOUR ',ccol(1:nctrim(ccol))
          WRITE (NOUTF,'(a,a)')    'SHAPE ',cshape
          WRITE (NOUTF,'(a)')      'INDEXRAN'
-         WRITE (NOUTF,'(a,i7)')   'cont hmin=',MINH
-         WRITE (NOUTF,'(a,i7)')   'cont hmax=',MAXH
-         WRITE (NOUTF,'(a,i7)')   'cont kmin=',MINK
-         WRITE (NOUTF,'(a,i7)')   'cont kmax=',MAXK
-         WRITE (NOUTF,'(a,i7)')   'cont lmin=',MINL
-         WRITE (NOUTF,'(a,i7)')   'cont lmax=',MAXL
+         if ( nref .gt. 0 ) then
+             WRITE (NOUTF,'(a,i7)')   'cont hmin=',MINH
+             WRITE (NOUTF,'(a,i7)')   'cont hmax=',MAXH
+             WRITE (NOUTF,'(a,i7)')   'cont kmin=',MINK
+             WRITE (NOUTF,'(a,i7)')   'cont kmax=',MAXK
+             WRITE (NOUTF,'(a,i7)')   'cont lmin=',MINL
+             WRITE (NOUTF,'(a,i7)')   'cont lmax=',MAXL
+         end if
          WRITE (NOUTF,'(a,i7)')   'END'
 c
 c--------------------------------------------------------------
