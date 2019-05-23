@@ -3367,7 +3367,9 @@ int CcController::GetDescriptor( string &token, int descriptorClass )
                DESCRIPTOR(Save)
                DESCRIPTOR(Load)
                DESCRIPTOR(ShowH)
-			   DESCRIPTOR(MenuIcon)
+  			       DESCRIPTOR(MenuIcon)
+               DESCRIPTOR(CycleResidue)
+               DESCRIPTOR(ShowResidues)
              break;
 
       case kChartClass:

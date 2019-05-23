@@ -138,14 +138,9 @@
 
 #ifndef     __CxModel_H__
 #define     __CxModel_H__
-#include    "crguielement.h"
 
-#ifdef CRY_USEMFC
- #include    <GL\gl.h>
- #include    <GL\glu.h>
- #include    <afxwin.h>
- #define BASEMODEL CWnd
-#else
+ #include    "crguielement.h"
+
  #include  <wx/defs.h>
  #include  <wx/app.h>
  #include  <wx/menu.h>
@@ -166,7 +161,6 @@
 		void OnRButtonUp(wxMouseEvent & event);
 		DECLARE_EVENT_TABLE()
  };
-#endif
 
 
 
@@ -228,12 +222,7 @@ class CxModel : public BASEMODEL
 
 // The usual functions:
     static CxModel *    CreateCxModel( CrModel * container, CxGrid * guiParent );
-#ifdef CRY_USEMFC
-    CxModel(CrModel* container);
-#else
-//    CxModel(wxWindow* parent, wxWindowID id = -1, int* args = NULL, long style = 0, const wxString& name = "GLWindow");
     CxModel(wxWindow* parent, int* args);
-#endif
     ~CxModel();
     void SetGeometry( int top, int left, int bottom, int right );
     void CxDestroyWindow();
@@ -291,6 +280,8 @@ class CxModel : public BASEMODEL
 
     void DeletePopup();
     void CreatePopup(string atomname, CcPoint point);
+    void DeleteMessagePopup();
+    void CreateMessagePopup(string message);
 
 //    void LoadDIBitmap(string filename);
 
@@ -394,33 +385,8 @@ protected:
     
 
 
-
-#ifdef CRY_USEMFC
-    HPALETTE m_hPalette;
-    CStatic* m_TextPopup;
-
-    HGLRC m_hGLContext;                                  //The rendering context handle.
-    HDC m_hdc;
-    static HDC last_hdc;   //only one thread, so static approximates thread based object.
-
-    BOOL SetWindowPixelFormat();
-    BOOL CreateViewGLContext();
-
-//    CBitmap m_bitmap;
-//    CPalette m_pal;
-
-    afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
-    afx_msg void OnPaint();
-    afx_msg void OnLButtonUp( UINT nFlags, CPoint point );
-    afx_msg void OnRButtonUp( UINT nFlags, CPoint point );
-    afx_msg void OnMouseMove( UINT nFlags, CPoint point );
-    afx_msg void OnLButtonDown( UINT nFlags, CPoint point );
-    afx_msg BOOL OnEraseBkgnd( CDC* pDC );
-    afx_msg void OnMenuSelected (UINT nID);
-    afx_msg LRESULT OnMouseLeave(WPARAM wParam, LPARAM lParam);
-    DECLARE_MESSAGE_MAP()
-#else
     mywxStaticText * m_TextPopup;
+    mywxStaticText * m_MessagePopup;
     bool m_DoNotPaint;
     bool m_NotSetupYet;
     bool m_MouseCaught;
@@ -439,7 +405,6 @@ protected:
     DECLARE_EVENT_TABLE()
 
 	wxCursor m_selectcursor;
-#endif
 
 };
 #endif

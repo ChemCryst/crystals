@@ -217,8 +217,10 @@ class CcModelDoc
 
         void    ApplyIndexColour( GLuint indx );
         void    SendInsertText( string s );
+        int     FindNextResidueNumber(int current);
 
 	protected:
+
 
     private:
         void     FlagFrag ( const string & atomname );

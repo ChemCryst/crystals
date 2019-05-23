@@ -179,6 +179,13 @@ void CcModelBond::Render(CcModelStyle *style, bool feedback)
 		}
 	}
 
+	if ( style->showres ) {
+		if (m_patms.size() > 1 ) {
+			if ( (m_patms[0]->m_refflag != style->showres) && (m_patms[1]->m_refflag != style->showres) ) return;
+		}
+	}
+
+    
 
 
    float vecX, vecY, vecZ;

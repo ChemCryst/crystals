@@ -103,6 +103,7 @@ public:
    float radius_scale;
    int normal_res;
    bool showh;
+   int showres;
    int bond_style;
    CxModel* m_modview;
    int min_peak_height_to_show;
@@ -209,6 +210,9 @@ class   CrModel : public CrGUIElement
 #define kSSelectFrag        "SELFRAG"
 #define kSLoadBitmap        "LOADBITMAP"
 #define kSShowH             "SHOWH"
+#define kSCycleResidue      "CYCLER"
+#define kSShowResidues      "SHOWR"
+
 
 enum
 {
@@ -255,7 +259,9 @@ enum
  kTZoomSelected,
  kTSelectFrag,
  kTLoadBitmap,
- kTShowH
+ kTShowH,
+ kTCycleResidue,
+ kTShowResidues
 };
 
 

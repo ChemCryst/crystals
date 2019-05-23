@@ -192,7 +192,6 @@ void CxModList::Focus()
 CXONCHAR(CxModList)
 
 
-
 void CxModList::StartUpdate() {
 #ifdef CRY_USEMFC
       SetRedraw(FALSE);
