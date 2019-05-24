@@ -52,6 +52,7 @@ CcModelAtom::CcModelAtom(const string & llabel,int lx1,int ly1,int lz1,
   m_spare = fspare;
   m_isflg = isflg;
   m_nbonds = 0;
+  m_nQbonds = 0;
   
   localmatrix[0]=x11;
   localmatrix[1]=x12;
@@ -108,6 +109,7 @@ void CcModelAtom::Init()
   frac_z = 0.0;
   m_spare = 0.0;
   m_nbonds = 0;
+  m_nQbonds = 0;
   m_isflg = 0;
   m_sflags = "";
 }
@@ -206,6 +208,18 @@ void CcModelAtom::Render(CcModelStyle *style, bool feedback)
 
   } else if ( m_label.length() && ( m_label[0] == 'Q' ) && ( sparerad < style->min_peak_height_to_show  ) ) {
   // do not show
+		GLfloat Surface[] = { (float)r/255.0f,(float)g/255.0f,(float)b/255.0f, 0.05f };
+		glColor4fv( Surface );
+  } else if ( m_label.length() && ( m_label[0] == 'Q' ) && ( sparerad > style->max_peak_height_to_show  ) ) {
+  // do not show
+		GLfloat Surface[] = { (float)r/255.0f,(float)g/255.0f,(float)b/255.0f, 0.05f };
+		glColor4fv( Surface );
+  } else if ( m_label.length() && ( m_label[0] == 'Q' ) && ( style->showlonepeaks == kTShowBonded ) && m_nbonds == 0 ) {  //Hide lone peaks
+  // do not show 
+		GLfloat Surface[] = { (float)r/255.0f,(float)g/255.0f,(float)b/255.0f, 0.05f };
+		glColor4fv( Surface );
+  } else if ( m_label.length() && ( m_label[0] == 'Q' ) && ( style->showlonepeaks == kTShowAtomBonded ) && m_nbonds == m_nQbonds ) {  //Hide lone peaks
+  // do not show 
 		GLfloat Surface[] = { (float)r/255.0f,(float)g/255.0f,(float)b/255.0f, 0.05f };
 		glColor4fv( Surface );
   } else if ( style->radius_type == CRTINY ) {  //make invisible (unless selected or no bonds)

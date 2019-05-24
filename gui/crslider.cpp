@@ -123,6 +123,14 @@ CcParse CrSlider::ParseInput( deque<string> &  tokenList )
                 tokenList.pop_front();
                 break;
             }
+            case kTValue:
+            {
+                tokenList.pop_front(); // Remove that token!
+                LOGSTAT( "Slider set value = " + tokenList.front());
+                ((CxSlider*)ptr_to_cxObject)->SetValue( atof( tokenList.front().c_str() ) );
+                tokenList.pop_front();
+                break;
+            }
             default:
             {
                 hasTokenForMe = false;

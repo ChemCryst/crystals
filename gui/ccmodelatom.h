@@ -56,6 +56,7 @@ class CcModelAtom : public CcModelObject
     int m_assembly;
     int m_group;
     int m_nbonds;
+    int m_nQbonds;
     int m_isflg;
     string m_elem;
     string m_sflags;

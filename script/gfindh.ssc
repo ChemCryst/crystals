@@ -5,7 +5,7 @@
 %%                                                                              
 % VARIABLE CHARACTER CATOM CEL CTYPE                                            
 % VARIABLE REAL SX SY SZ SS SERI                                                
-% VARIABLE LOGICAL HQEXEC L12SMASK T 
+% VARIABLE LOGICAL HQEXEC L12SMASK T NEUTH
 % VARIABLE LOGICAL HDONE HMASK FOUREF AHFOUND REGUL RENUMB                      
 % VARIABLE INTEGER L12SER                                                       
 %% The variables needed by XQUESTIO                                             
@@ -17,6 +17,7 @@
 % VARIABLE LOGICAL XGRETURN
 %%                                                                              
 % VARIABLE INTEGER OLDSER                                                       
+% EVALUATE NEUTH = FALSE
 % COPY '#GENERALEDIT 5'                                                         
 % COPY 'GETSERIAL OLDSER'                                                       
 % COPY 'END'                                                                    
@@ -37,52 +38,59 @@
 ^^WI WINDOW FINDH 'Add Hydrogen' MODAL KEEP SIZE LARGE COMMIT='FHBOK'           
 ^^WI CANCEL='FHBXX'                                                             
 ^^WI GRID MAIN NROWS=9 NCOLS=3                                                  
-^^WI {                                                                          
-^^WI   @ 2,2 GRID GRIDQ NROWS=1 NCOLS=3 OUTLINE=''                              
-^^WI   {                                                                        
-^^WI     @ 1,1 ICON IM INFO                                                     
-^^WI     @ 1,3 GRID EXP2 NROWS=7 NCOLS=1                                        
-^^WI     {                                                                      
-^^WI       @ 1,1 STATIC T1                                                      
+^^WI { 
+^^WI   @ 2,2 RESIZE _RSZ3 HORIZONTAL {
+^^WI       ITEM GRID GRIDQ NROWS=1 NCOLS=3 OUTLINE=''                              
+^^WI       {                                                                        
+^^WI         @ 1,1 ICON IM INFO                                                     
+^^WI         @ 1,3 GRID EXP2 NROWS=7 NCOLS=1                                        
+^^WI         {                                                                      
+^^WI           @ 1,1 STATIC T1                                                      
 ^^WI 'Key: H (white) - Geometric H positions, QH (pink) - Diff Fourier peaks.'  
-^^WI       @ 2,1 STATIC T2                                                      
+^^WI           @ 2,1 STATIC T2                                                      
 ^^WI 'On exit, all white H atoms will be retained, and all pink atoms deleted.' 
-^^WI       @ 3,1 STATIC T3                                                      
-^^WI ' '              
-^^WI       @ 4,1 STATIC T4                                                      
+%% T3 is reserved for neutron info - filled in later. Leave it blank here.
+^^WI           @ 3,1 STATIC T3  ' '              
+^^WI           @ 4,1 STATIC T4                                                      
 ^^WI 'If necessary, change (pink) QH peaks to H by clicking them. Delete any computed (white) H atoms you do not want to keep.'             
-^^WI       @ 5,1 STATIC T5                                                      
+^^WI           @ 5,1 STATIC T5                                                      
 ^^WI 'If the structure is complete, check "All H atoms have been found" below.' 
-^^WI       @ 6,1 STATIC T6                                                      
+^^WI           @ 6,1 STATIC T6                                                      
 ^^WI 'Renumbering will create systematic numbers for changed atoms'             
-^^WI       @ 7,1 STATIC T7                                                      
+^^WI           @ 7,1 STATIC T7                                                      
 ^^WI 'Regularisation will optimise the H positions using the X-ray data'        
-^^WI     }                                                                      
-^^WI   }                                                                        
-^^WI   @ 4,2 GRID TEXT NROWS=1 NCOLS=3                                          
-^^WI   {                                                                        
-^^WI      @ 1,1 GRID OPTIONS NROWS=3 NCOLS=1                                    
-^^WI      {                                                                     
-^^WI        @ 1,1 GRID CLICK NROWS=2 NCOLS=3 OUTLINE='Click action'             
-^^WI        {                                                                   
-^^WI           @ 1,1 STATIC _ELT 'change to:'                                   
-^^WI           @ 2,1 LISTBOX _ELS VISLINES=6 ADDTOLIST                          
-^^WI             'H' 'QH' 'Delete' 'NULL'                                       
-^^WI        }                                                                   
-^^WI      }
-^^WI      @ 1,3 GRID SLIDEMOD NROWS=2 NCOLS=1 
-^^WI      {
-^^WI         @ 1,1 GRID GSLIDE NROWS=1 NCOLS=3
-^^WI         {
-^^WI            @ 1,1 STATIC STEXT 'Peak display threshold: '                                                                 
-^^WI            @ 1,2 STATIC STHR  '-0.000000'                                                                 
-^^WI            @ 1,3 SLIDER SLIDE01 
-^^WI         }
-^^WI         @ 2,1 MODELWINDOW MODELRE 'N' NROWS=5 NCOLS=65                        
-^^WI            ATTACH L5 RADSCALE=250 RADTYPE=COV                              
-^^WI            MOUSEACTION=HEADERATOM                                          
-^^WI      }
-^^WI   }                                                                        
+^^WI         }                                                                      
+^^WI       }                                                                        
+^^WI       ITEM GRID TEXT NROWS=1 NCOLS=3                                          
+^^WI       {                                                                        
+^^WI          @ 1,1 GRID OPTIONS NROWS=3 NCOLS=1                                    
+^^WI          {                                                                     
+^^WI            @ 1,1 GRID CLICK NROWS=2 NCOLS=3 OUTLINE='Show peaks'
+^^WI            {                                                                   
+^^WI               @ 2,1 LISTBOX PEAKSHOW VISLINES=3 INFORM=YES ADDTOLIST                          
+^^WI                 'All' 'Connected' 'Bonded to atom' 'NULL'                                       
+^^WI            }                                                                   
+^^WI            @ 3,1 GRID CLICK NROWS=2 NCOLS=3 OUTLINE='Click action'             
+^^WI            {                                                                   
+^^WI               @ 1,1 STATIC _ELT 'change to:'                                   
+^^WI               @ 2,1 LISTBOX _ELS VISLINES=6 ADDTOLIST                          
+^^WI                 'H' 'QH' 'Delete' 'NULL'                                       
+^^WI            }                                                                   
+^^WI          }
+^^WI          @ 1,3 GRID SLIDEMOD NROWS=2 NCOLS=1 
+^^WI          {
+^^WI             @ 1,1 GRID GSLIDE NROWS=1 NCOLS=3
+^^WI             {
+^^WI                @ 1,1 STATIC STEXT 'Peak display threshold: '                                                                 
+^^WI                @ 1,2 STATIC STHR  '-0.000000'                                                                 
+^^WI                @ 1,3 SLIDER SLIDE01 
+^^WI             }
+^^WI             @ 2,1 MODELWINDOW MODELRE 'N' NROWS=5 NCOLS=65                        
+^^WI                ATTACH L5 RADSCALE=250 RADTYPE=COV                              
+^^WI                MOUSEACTION=HEADERATOM                                          
+^^WI          }
+^^WI       }                                                                        
+^^WI     }
 ^^WI   @ 6,2 GRID CHECKB NROWS=1 NCOLS=7                                        
 ^^WI     @ 1,1 CHECKBOX AHFOUND                                                 
 ^^WI       'All H atoms have been found' STATE=OFF                              
@@ -140,7 +148,24 @@
 %      COPY 'END'                     
 ^^CO SET RENUMB STATE=OFF
 %   END IF                                                                      
-% END IF                                                                        
+% END IF                     
+% IF ( NEUTRONS ) THEN
+%   EVALUATE QTITLE = 'Neutron H map'                                         
+%   EVALUATE QLINE1 = 'Search for hydrogen (negative peaks) or' 
+%   EVALUATE QLINE2 = 'deuterium (positive peaks)?'
+%   EVALUATE BUTTOK = '&Hydrogen'                                                     
+%   EVALUATE BUTTXX = '&Deuterium'                                      
+%   COPY '#SCRIPT XQUESTIO'
+%% NeutH is true for search for H (default) or false for D (new feature)
+%   EVALUATE NEUTH = ANSWER
+%   IF NEUTH THEN
+^^CO SET T3 TEXT 'Map of negative scatterers from neutron data. QH should reveal hydrogen atom positions.'
+^^CO SET SLIDE01 VALUE=1.0
+%   ELSE
+^^CO SET T3 TEXT 'Map of positive scatterers from neutron data. QH should reveal deuterium atom positions.'
+%   END IF
+% END IF                     
+^^CO SET MODELRE LONEPEAK=ALL
 %%                                                                              
 ^^CO SET GFT1 TEXT 'Calculating phases from model.'                             
 % EVALUATE DOCALC = 1
@@ -149,12 +174,19 @@
 %%                                                                              
 ^^CO SET GFT1 TEXT 'Difference Fourier map.'                                    
 % COPY '#SCRIPT PREFOUR'
-% IF ( NEUTRONS ) THEN
-% COPY 'MAP TYPE=DIFF NMAP=YES'
-% COPY 'PEAK HEIGHT=3'                                                          
+%%
+%% NEUTH is FALSE by default (e.g. for X-ray), and only true if NEUTRONS and use requested for H. 
+% IF ( NEUTH ) THEN
+%   COPY 'MAP TYPE=DIFF NMAP=YES'
 % ELSE
-% COPY 'MAP TYPE=DIFF'
-% COPY 'PEAK HEIGHT=1'                                                          
+%   COPY 'MAP TYPE=DIFF'
+% END IF
+%%
+%% However NEUTRONS has differnt peak height parameters for either map:
+% IF ( NEUTRONS ) THEN
+%   COPY 'PEAK HEIGHT=3'                                                          
+% ELSE
+%   COPY 'PEAK HEIGHT=1'                                                          
 % END IF
 % COPY 'END'                                                                    
 % COPY '#SCRIPT POSTFOUR'                                                       
@@ -179,7 +211,7 @@
 % QUEUE REWIND                                                                  
 %%  Remember min and max electron density in H peaks                                                                              
 % EVALUATE SMIN = 10000.0
-% EVALUATE SMAX = -10000.0
+% EVALUATE SMAX = - 10000.0
 % COPY '#GENERALEDIT 10'                                                        
 % COPY "LOCATE RECORDTYPE=101"                                                  
 % COPY "ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR"             
@@ -216,7 +248,15 @@
 % EVALUATE SMAX = SMAX + 0.01
 % COPY '#EDIT'                                                                  
 % QUEUE PROCESS                                                                 
-% COPY 'END'                                                                    
+% COPY 'END' 
+% CLEAR
+% INSERT '^^CO SET STHR TEXT'
+% IF ( NEUTH ) THEN
+%   STORE FORMAT /(F8.3)/ LENGTH 8 REAL SMAX
+% ELSE
+%   STORE FORMAT /(F8.3)/ LENGTH 8 REAL SMIN
+% END IF
+% OUTPUT
 %%                                                                              
 ^^CO SET GFT1 TEXT 'Changing Q to QH.'                                          
 % COPY '#EDIT'                                                                  
@@ -226,7 +266,7 @@
 % COPY 'EXEC'                                                                   
 ^^CO DISPOSE XABORT                                                             
 % LOOP
-%   VERIFY FHBOK FHBXX ATOM FHBHELP SLIDE01 
+%   VERIFY FHBOK FHBXX ATOM FHBHELP SLIDE01 PEAKSHOW
 %   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' ' 
 %   CASE VALUE                                
 %    BLOCK      %FHBOK                                                          
@@ -306,12 +346,10 @@
 %        COPY 'GETSERIAL L12SER'                                                
 %        COPY 'END'                                                             
 %        EVALUATE L12SMASK = TRUE                                               
-                                                                                
 % VARIABLE LOGICAL HRMASK                                                       
 % VARIABLE INTEGER HRTYP                                                        
 % EVALUATE HRMASK = TRUE                                                        
 % EVALUATE HRTYP = 10                                                           
-                                                                                
 %        COPY '#SCRIPT XPUTINFO'                                                
 %      END IF                                                                   
  * Remember - the data may not be good enough to reveal all H atoms.            
@@ -433,6 +471,8 @@
 %      COPY '#SCRIPT XHELP2'                                                    
 %    END BLOCK                                                                  
 %    BLOCK    % SLIDE01 Update Q atom visibility.                       
+%% If NEUTH is TRUE we've got negative densities, so need to reverse the threshold logic
+%% otherwise you cut out the good peaks by sliding. MINPEAK is going to be a problem here.
 %       GET SILENT NOSTORE REAL ' '                                
 %       EVALUATE MINP = SMIN + ( VALUE * ( SMAX - SMIN ) )
 %       CLEAR
@@ -442,9 +482,27 @@
 %% 1000x scale (and integer for CrModel)
 %       EVALUATE MINP = MINP * 1000.0
 %       CLEAR
-%       INSERT '^^CO SET MODELRE MINPEAK '
+%       IF ( NEUTH ) THEN
+%         INSERT '^^CO SET MODELRE MAXPEAK '
+%       ELSE
+%         INSERT '^^CO SET MODELRE MINPEAK '
+%       END IF
 %       STORE FORMAT /(I7)/ LENGTH 7 INTEGER INTEGER ( MINP )
 %       OUTPUT
+%    END BLOCK                                                                
+%    BLOCK    % PEAKSHOW
+%       GET SILENT NOSTORE INTEGER ' ' 
+%       CASE VALUE
+%          BLOCK
+^^CO SET MODELRE LONEPEAK=ALL
+%          END BLOCK
+%          BLOCK
+^^CO SET MODELRE LONEPEAK=BONDED
+%          END BLOCK
+%          BLOCK
+^^CO SET MODELRE LONEPEAK=ATOMBONDED
+%          END BLOCK
+%       END CASE 
 %    END BLOCK                                                                
 %   END CASE                                                                    
 % END LOOP                                                                      

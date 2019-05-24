@@ -127,6 +127,7 @@
 #define kSEndGrid             "}"
 #define kSOpenGrid            "{"
 #define kSRemove   "REMOVE"
+#define kSValue   "VALUE"
 
 
 // Query types:
@@ -209,7 +210,8 @@ enum
  kTAttachModel,
  kTSave,
  kTQNLines,
- kTMenuIcon
+ kTMenuIcon,
+ kTValue
 };
 
 
@@ -226,7 +228,8 @@ enum {
     kPositionalClass,
     kQueryClass,
     kPlotClass,
-    kPanePositionClass
+    kPanePositionClass,
+    kPeakShowClass
 };
 
 

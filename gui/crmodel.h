@@ -107,6 +107,8 @@ public:
    int bond_style;
    CxModel* m_modview;
    int min_peak_height_to_show;
+   int max_peak_height_to_show;
+   int showlonepeaks;
 };
 
 class   CrModel : public CrGUIElement
@@ -175,6 +177,8 @@ class   CrModel : public CrGUIElement
 #define kSRadiusType        "RADTYPE"
 #define kSRadiusScale       "RADSCALE"
 #define kSMinPeakHeight     "MINPEAK"
+#define kSMaxPeakHeight     "MAXPEAK"
+#define kSLonePeak          "LONEPEAK"
 #define kSBondStyle         "BONDSTYLE"
 #define kSNormal            "NORMAL"
 #define kSElement           "ELEMENT"
@@ -212,6 +216,9 @@ class   CrModel : public CrGUIElement
 #define kSShowH             "SHOWH"
 #define kSCycleResidue      "CYCLER"
 #define kSShowResidues      "SHOWR"
+#define kSShowAll           "ALL"
+#define kSShowAtomBonded    "ATOMBONDED"
+#define kSShowBonded        "BONDED"
 
 
 enum
@@ -225,6 +232,8 @@ enum
  kTRadiusType,
  kTRadiusScale,
  kTMinPeakHeight,
+ kTMaxPeakHeight,
+ kTLonePeak,
  kTBondStyle,
  kTVDW,
  kTThermal,
@@ -261,7 +270,10 @@ enum
  kTLoadBitmap,
  kTShowH,
  kTCycleResidue,
- kTShowResidues
+ kTShowResidues,
+ kTShowAll,
+ kTShowAtomBonded,
+ kTShowBonded
 };
 
 

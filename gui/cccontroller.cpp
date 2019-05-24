@@ -3296,6 +3296,8 @@ int CcController::GetDescriptor( string &token, int descriptorClass )
                DESCRIPTOR(RadiusType)
                DESCRIPTOR(RadiusScale)
                DESCRIPTOR(MinPeakHeight)
+               DESCRIPTOR(MaxPeakHeight)
+               DESCRIPTOR(LonePeak)
                DESCRIPTOR(BondStyle)
                DESCRIPTOR(VDW)
                DESCRIPTOR(Normal)
@@ -3367,9 +3369,10 @@ int CcController::GetDescriptor( string &token, int descriptorClass )
                DESCRIPTOR(Save)
                DESCRIPTOR(Load)
                DESCRIPTOR(ShowH)
-  			       DESCRIPTOR(MenuIcon)
+               DESCRIPTOR(MenuIcon)
                DESCRIPTOR(CycleResidue)
                DESCRIPTOR(ShowResidues)
+               DESCRIPTOR(Value)
              break;
 
       case kChartClass:
@@ -3428,6 +3431,12 @@ int CcController::GetDescriptor( string &token, int descriptorClass )
                DESCRIPTOR(ModelCell)
                DESCRIPTOR(ModelTri)
                DESCRIPTOR(ModelClear)
+             break;
+
+      case kPeakShowClass:
+               DESCRIPTOR(ShowAll)
+               DESCRIPTOR(ShowAtomBonded)
+               DESCRIPTOR(ShowBonded)
              break;
             
       case kInstructionClass:
