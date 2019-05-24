@@ -1,7 +1,7 @@
-del/p bf*.*
+del bf*.*
 if %errorlevel% == 0 (
 echo "Deleting Log Files"
 dir .\logs
-if exist logs\NUL del/p .\logs\bf*.*
+if exist logs\NUL del .\logs\bf*.*
 )
 
