@@ -874,12 +874,13 @@ C
       IF ( IOUFIL .EQ. 2 ) THEN
           CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
           CALL XRDOPN(7, KDEV , CSSMAP, LSSMAP)  !Close unit
+          INQUIRE(IOLENGTH=IRECSIZ) 1.0
           OPEN ( UNIT   = NCFPU1,                !Special open
      1         FILE = CSSMAP(1:LSSMAP),
      1         STATUS = 'UNKNOWN' ,
      1         ACCESS = 'DIRECT' ,
      1         FORM   = 'UNFORMATTED' ,
-     1         RECL   = 1 ,
+     1         RECL   = IRECSIZ ,
      1         IOSTAT = IOS ,
      1         ERR    = 9900 )
 
