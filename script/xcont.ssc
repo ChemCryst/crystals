@@ -1,7 +1,10 @@
 %SCRIPT XCONT                                                                   
 %%                                                                              
-% VARIABLE REAL XMIN XMAX YMIN YMAX STEPX STEPY MINX MINY                       
-% VARIABLE REAL ZSECT MINZ STEPZ RESOL BORDER WIDTH                             
+% VARIABLE REAL XMIN XMAX STEPX MINX XSTART XEND
+% VARIABLE REAL YMIN YMAX STEPY MINY YSTART YEND               
+% VARIABLE REAL ZMIN ZMAX STEPZ MINZ ZSTART ZEND
+% VARIABLE INTEGER IX IY IZ
+% VARIABLE REAL ZSECT  RESOL BORDER 
 % VARIABLE CHARACTER CFILE                                                      
 % VARIABLE INTEGER IMAP DOSCALE DOCALC RUNVIEWER OLDSER DOVOID STEREO           
 %%                                                                              
@@ -9,21 +12,6 @@
 % VARIABLE LOGICAL TWINNED LMCE LMAPV                                           
 % EVALUATE TWINNED = FALSE                                                      
 %                                                                               
-%%                                                                              
-% COPY '#MOLAX'                                                                 
-% COPY 'ATOM '                                                                  
-% BLOCK                                                                         
-% LOOP                                                                          
-%   ON END TERMINATE                                                            
-%   CLEAR                                                                       
-%   INSERT 'CONTINUE '                                                          
-%   GET SILENT FINAL TEXT 'Plane defining atom labels (END to finish)'          
-%   SEND                                                                        
-% END LOOP                                                                      
-% END BLOCK                                                                     
-% COPY 'PLANE'                                                                  
-% COPY 'SAVE'                                                                   
-% COPY 'END'                                                                    
 %%                                                                              
 %     EVALUATE LMCE = FALSE                                                     
 % IF FILEEXISTS 'c:/progra~1/marchi~1/MarchingCubeELD.exe' -                    
@@ -61,23 +49,36 @@
 ^^WI    {                                                                       
 ^^WI      @ 1,1 STATIC TEXT1 'Compute a'                                        
 ^^WI      @ 1,3 DROPDOWN XFLIST                                                 
-^^WI            ADDTOLIST 'Difference'   'F-Obs'                                   
+^^WI            ADDTOLIST 'F-Obs'        'Difference'                                   
 ^^WI                      '2Fo-Fc'       'F-Calc'                               
 ^^WI                      'Fo-Patterson' 'Fc-Patterson'                         
 ^^WI                      'NULL'                                                
 ^^WI      @ 1,5 STATIC TEXT1 'map'                                              
 ^^WI    }                                                                       
-^^WI    @ 6,2 GRID GSIZE NROWS=3 NCOLS=5                                        
+^^WI    @ 6,2 GRID GSIZE NROWS=4 NCOLS=9
 ^^WI    {                                                                       
-^^WI      @ 1,1 STATIC T1 'Section width'                                       
-^^WI      @ 1,3 EDITBOX EW '8.0' CHARS=8 REAL                                   
-^^WI      @ 1,5 STATIC T2 'angstroms.'                                          
-^^WI      @ 2,1 STATIC T3 'Resolution'                                          
-^^WI      @ 2,3 EDITBOX ER '0.25' CHARS=8 REAL                                  
-^^WI      @ 2,5 STATIC T4 'angstroms.'                                          
-^^WI      @ 3,1 STATIC T5 'Compute an extra'                                    
-^^WI      @ 3,3 EDITBOX ES '8' CHARS=8 INTEGER                                  
-^^WI      @ 3,5 STATIC T5 'sections each side.'                                 
+^^WI      @ 1,1 STATIC T3 'Resolution'                                          
+^^WI      @ 1,3 EDITBOX ER '0.25' CHARS=8 REAL                                  
+^^WI      @ 1,5 STATIC T4 'angstroms.'  
+%%
+^^WI      @ 2,1 STATIC T1 'Section start (x)'                                       
+^^WI      @ 2,3 EDITBOX   _XSTART '-8.0' CHARS=8 REAL                                   
+^^WI      @ 2,5 STATIC T1 'Section end (x)'                                       
+^^WI      @ 2,7 EDITBOX   _XEND '8.0' CHARS=8  REAL                                   
+^^WI      @ 2,9 STATIC T2 'angstroms.'  
+%%
+^^WI      @ 3,1 STATIC T1 'Section start (y)'                                       
+^^WI      @ 3,3 EDITBOX   _YSTART '-8.0' CHARS=8  REAL                                   
+^^WI      @ 3,5 STATIC T1 'Section end (y)'                                       
+^^WI      @ 3,7 EDITBOX   _YEND '8.0' CHARS=8  REAL                                   
+^^WI      @ 3,9 STATIC T2 'angstroms.'  
+%%
+^^WI      @ 4,1 STATIC T5 'Box bottom (z)'                                    
+^^WI      @ 4,3 EDITBOX   _ZSTART '-8.0' CHARS=8 REAL
+^^WI      @ 4,5 STATIC T1 'Box top (z)'                                       
+^^WI      @ 4,7 EDITBOX   _ZEND '8.0' CHARS=8  REAL                                   
+^^WI      @ 4,9 STATIC T2 'angstroms.'  
+
 ^^WI    }                                                                       
 ^^WI   }                                                                        
 ^^WI  }                                                                         
@@ -124,6 +125,22 @@
 ^^WI }                                                                          
 ^^WI SHOW                                                                       
 ^^CR                                                                            
+%%
+% COPY '#MOLAX'                                                                 
+% COPY 'ATOM '                                                                  
+% BLOCK                                                                         
+% LOOP                                                                          
+%   ON END TERMINATE                                                            
+%   CLEAR                                                                       
+%   INSERT 'CONTINUE '                                                          
+%   GET SILENT FINAL TEXT 'Plane defining atom labels (END to finish)'          
+%   SEND                                                                        
+% END LOOP                                                                      
+% END BLOCK                                                                     
+% COPY 'PLANE'                                                                  
+% COPY 'SAVE'                                                                   
+% COPY 'END'                                                                    
+%%                                                                              
 % LOOP                                                                          
 %   VERIFY XC XM XV XN BXX BROWSE BMOLAX BHELP MCEHH  BOK                       
 %   GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '                                
@@ -186,18 +203,36 @@ view the generated sections.
 %%                                                                              
 %     BLOCK                       % BOK                                         
 %%                                                                              
-^^??    EW TEXT                                                                 
-%       GET NOSTORE SILENT REAL ' ' '8.5'                                       
-%       EVALUATE WIDTH = VALUE / 2.0                                            
-%%                                                                              
 ^^??    ER TEXT                                                                 
 %       GET NOSTORE SILENT REAL ' ' '0.25'                                      
 %       EVALUATE RESOL = VALUE                                                  
 %%                                                                              
-^^??    ES TEXT                                                                 
-%       GET NOSTORE SILENT REAL ' ' '2'                                         
-%       EVALUATE ZSECT = VALUE                                                  
+^^??    _XSTART TEXT                                                                 
+%       GET NOSTORE SILENT REAL ' ' '8.5'                                       
+%       EVALUATE XSTART = VALUE                         
 %%                                                                              
+^^??    _YSTART TEXT                                                                 
+%       GET NOSTORE SILENT REAL ' ' '8.5'                                       
+%       EVALUATE YSTART = VALUE    
+%%                                                                              
+^^??    _ZSTART TEXT                                                                 
+%       GET NOSTORE SILENT REAL ' ' '8.5'                                         
+%       EVALUATE ZSTART = VALUE                                                  
+%%                                                                              
+%%                                                                              
+^^??    _XEND TEXT                                                                 
+%       GET NOSTORE SILENT REAL ' ' '8.5'                                       
+%       EVALUATE XEND = VALUE                         
+%%                                                                              
+^^??    _YEND TEXT                                                                 
+%       GET NOSTORE SILENT REAL ' ' '8.5'                                       
+%       EVALUATE YEND = VALUE    
+%%                                                                              
+^^??    _ZEND TEXT                                                                 
+%       GET NOSTORE SILENT REAL ' ' '8.5'                                         
+%       EVALUATE ZEND = VALUE                                                  
+%%                                                                              
+%%
 ^^??    XFLIST SELECTED                                                         
 %       GET NOSTORE SILENT INTEGER ' ' '1'                                      
 %       EVALUATE IMAP = VALUE                                                   
@@ -286,26 +321,49 @@ view the generated sections.
 %           INSERT 'RESET 5 '                                                   
 %           STORE INTEGER OLDSER                                                
 %           SEND                                                                
-%           COPY '#SUM L 5'                                                     
-%           COPY 'END'                                                          
+%%           COPY '#SUM L 5'                                                     
+%%           COPY 'END'                                                          
 %         END IF                                                                
-%         EVALUATE XMIN = 0.0 - WIDTH                                           
-%         EVALUATE XMAX = WIDTH                                                 
-%         EVALUATE YMIN = 0.0 - WIDTH                                           
-%         EVALUATE YMAX = WIDTH                                                 
-%         EVALUATE BORDER = 0.25                                                
+%         EVALUATE BORDER = 0.75                                               
+%%
+%         EVALUATE XMIN = XSTART                                           
+%         EVALUATE XMAX = XEND
 %         EVALUATE MINX = ( XMIN - BORDER )                                     
-%         EVALUATE MINY = ( YMIN - BORDER )                                     
 %         EVALUATE STEPX = ( ( XMAX + BORDER ) - MINX ) / RESOL                 
-%         EVALUATE STEPY = ( ( YMAX + BORDER ) - MINY ) / RESOL                 
 %         EVALUATE STEPX = 1. + STEPX                                           
+%%
+%         EVALUATE YMIN = YSTART                                          
+%         EVALUATE YMAX = YEND 
+%         EVALUATE MINY = ( YMIN - BORDER )                                     
+%         EVALUATE STEPY = ( ( YMAX + BORDER ) - MINY ) / RESOL                 
 %         EVALUATE STEPY = 1. + STEPY                                           
+%%
+%         EVALUATE ZMIN = ZSTART                                           
+%         EVALUATE ZMAX = ZEND 
+%         EVALUATE MINZ = ( ZMIN - BORDER )                                     
+%         EVALUATE STEPZ = ( ( ZMAX + BORDER ) - MINZ ) / RESOL                 
+%         EVALUATE STEPZ = 1. + STEPZ                                           
+
+%         EVALUATE IX =  NINT ( STEPX  )
+%         EVALUATE IY =  NINT ( STEPY  )
+%         EVALUATE IZ =  NINT ( STEPZ  )
+
+% SHOW XSTART YSTART ZSTART
+
+% SHOW XEND YEND ZEND
+
+% SHOW MINX MINY MINZ 
+
+% SHOW STEPX STEPY STEPZ 
+
+% SHOW IX IY IZ
+
 %         QUEUE REWIND                                                          
 %         CLEAR                                                                 
 %         INSERT 'MAP TYPE = '                                                  
 %         CASE IMAP                                                             
-%           INSERT 'DIF'                                                        
 %           INSERT 'F-O'                                                        
+%           INSERT 'DIF'                                                        
 %           INSERT '2FO-FC'                                                     
 %           INSERT 'F-C'                                                        
 %           INSERT 'FO-PAT'                                                     
@@ -327,22 +385,20 @@ view the generated sections.
 %         QUEUE SEND                                                            
 %         CLEAR                                                                 
 %         INSERT 'DOWN '                                                        
-%         STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINX                              
-%         STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPX                             
+%         STORE FORMAT /(F7.2)/ LENGTH 7 REAL MINX                              
+%         STORE FORMAT /(I7)/   LENGTH 7 INTEGER IX
 %         STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL                             
 %         QUEUE SEND                                                            
 %         CLEAR                                                                 
 %         INSERT 'ACROSS '                                                      
-%         STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINY                              
-%         STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPY                             
+%         STORE FORMAT /(F7.2)/ LENGTH 7 REAL MINY                              
+%         STORE FORMAT /(I7)/   LENGTH 7 INTEGER IY
 %         STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL                             
 %         QUEUE SEND                                                            
 %         CLEAR                                                                 
 %         INSERT 'SECTION '                                                     
-%         EVALUATE MINZ = - 1.0 * RESOL * ZSECT                                 
-%         EVALUATE STEPZ = 1.0 + 2.0 * ZSECT                                    
 %         STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINZ                              
-%         STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPZ                             
+%         STORE FORMAT /(I7)/   LENGTH 7 INTEGER IZ
 %         STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL                             
 %         QUEUE SEND                                                            
 %       END BLOCK                                                               
@@ -411,8 +467,6 @@ view the generated sections.
 %        QUEUE SEND                                                             
 %        CLEAR                                                                  
 %        INSERT 'SECTION '                                                      
-%        EVALUATE MINZ = - 1.0 * RESOL * ZSECT                                  
-%        EVALUATE STEPZ = 1.0 + 2.0 * ZSECT                                     
 %        STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINZ                               
 %        STORE FORMAT /(F7.2)/ LENGTH 7 REAL STEPZ                              
 %        STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL                              

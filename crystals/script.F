@@ -15,7 +15,7 @@ C     1                'FIRSTINT','SQRT','GETPATH','GETFILE',       !41-44   !un
 C     2                'GETTITLE','FILEEXISTS','FILEDELETE',        !45-47   !un 17-19
 C     3                'FILEISOPEN','GETEXTN','GETCWD','RANDOM' ,   !48-51   !un 20-23
 C     4                'GETENV','COMPRESS','SPGTOCRY','ABS','PACK', !52-56   !un 24-28
-C     5                'LEN'/                                       !57      !un 29
+C     5                'LEN', 'NINT' /                              !57-58   !un 29-30
 C
 C $Log: not supported by cvs2svn $
 C Revision 1.75  2013/09/19 21:35:39  rich
@@ -2844,7 +2844,7 @@ cdjwMar-2017
 C       CHAR=PACK(CHAR) - REMOVES ALL SPACES AND LEFT-PACKS
 C
 cdjwdec08
-      PARAMETER ( NOPER = 58 , NUBASE = 29 )
+      PARAMETER ( NOPER = 59 , NUBASE = 29 )
       PARAMETER ( NARGMX = 3 , NOTYPE = 14 )
 C
       PARAMETER ( JNONE = 0 )
@@ -2889,7 +2889,7 @@ C
 CJAN99  abs dec08
      4           8 , 9 ,  9 , 10 ,  8 , 10 ,  4 , 12 , 13 , 10 ,
      5          12 ,12 , 12,   4 , 12 , 12 , 12 , 12 , 12 , 12 ,
-     6          12 ,12 , 13,  12 , 12 , 12 ,  4 , 12 , 12 /
+     6          12 ,12 , 13,  12 , 12 , 12 ,  4 , 12 , 12 ,  4 /
 C
       DATA NARGS  /0 , 2 , 2 , 1 , 2 , 2 , 3 , 1 , 1 , 1 , 2 , 1 , 1, 0/
       DATA NRESLT /0 , 1 , 1 , 1 , 1 , 2 , 1 , 1 , 1 , 1 , 1 , 1 , 1, 1/
@@ -3286,7 +3286,8 @@ CJAN99  abs dec08
      3        5090 , 5100,  5110 , 5120 , 5130 ,
      3        5140 , 5150,  5160 , 5170 , 5180 , 
      4        5190 , 5200,  5210 , 5220 , 5230 ,
-     5        5240 , 5250,  5260 , 5270 , 9940 ) , IUOPER
+     5        5240 , 5250,  5260 , 5270 , 5255 ,
+     6        9940 ) , IUOPER
       GO TO 9940
 C
 C
@@ -3907,6 +3908,15 @@ C
         ICODE(JVTYPE,IARG(1)) = 2
       GO TO 8000
 C
+5255  CONTINUE
+C -- 'NINT'
+C
+          ICODE(JVALUE,IARG(1)) = NINT ( XCODE(JVALUE,IARG(1)) )
+        ICODE(JVTYPE,IARG(1)) = 1
+C
+      GO TO 8000
+C
+C
 5260  CONTINUE
 C
 C -- 'PACK'
@@ -4173,7 +4183,7 @@ C
       PARAMETER ( IBASBR = 1               , NBROPR =  2 )
       PARAMETER ( IBASBI = IBASBR + NBROPR , NBOPER = 27 )
 CJAN99  'ABS' dec08
-      PARAMETER ( IBASUN = IBASBI + NBOPER , NUOPER = 29 )
+      PARAMETER ( IBASUN = IBASBI + NBOPER , NUOPER = 30 )
       PARAMETER ( NOPER = IBASUN + NUOPER - 1 )
       PARAMETER ( LOPER = 10 )
 C
@@ -4219,7 +4229,7 @@ CJAN99 'ABS' dec08
      2                'GETTITLE','FILEEXISTS','FILEDELETE',        !45-47   !un 17-19
      3                'FILEISOPEN','GETEXTN','GETCWD','RANDOM' ,   !48-51   !un 20-23
      4                'GETENV','COMPRESS','SPGTOCRY','ABS','PACK', !52-56   !un 24-28
-     5                'LEN'/                                       !57      !un 29
+     5                'LEN', 'NINT' /                              !57-58   !un 29-30
 C
       DATA IPRECD /      0    ,   200   ,    0    ,
      2                  100   ,   100   ,   120   ,   120   ,
@@ -4238,7 +4248,7 @@ CJAN99 'ABS' dec08
      2                  180   ,   180   ,   180   ,
      3                  180   ,   180   ,   180   ,   200   ,
      4                  180   ,   180   ,   180   ,   180   ,
-     5                  180   ,   180 /
+     5                  180   ,   180   ,   180   /
 C
       DATA CDATAT / '<invalid>', 'integer', 'real', 'logical',
      2             'character' /
