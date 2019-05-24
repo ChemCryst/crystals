@@ -439,11 +439,18 @@ C--PRINT THE CO-ORDINATES OF THE ATOMS DEFINING THE PLANE:/LINE
       ENDIF
 C
       IF (JPUNCH .NE. 0) WRITE(NCPU,'(''# Plane no '',I4)') NP
-C--COMPUTE A FEW ADDRESSES
 cdjwjun08  compute mean and esd deviation
       nitem = 0
       sumdev = 0.
       sumdsq = 0.
+c set minimum and maximum x,y,z
+      xstart=0.
+      ystart=0.
+      zstart=0.
+      xend=0.0
+      yend=0.0
+      zend=0.0
+C--COMPUTE A FEW ADDRESSES
       JO = JBASE + (N-1) * MD5A
       I=JO
 C--LOOP OVER EACH ATOM IN TURN
@@ -455,13 +462,19 @@ C--LOOP OVER EACH ATOM IN TURN
        sumdsq = sumdsq + store(I+12)*store(I+12)
        nitem = nitem + 1
        DEL = SQRT( STORE(I+10)**2+ STORE(I+11)**2 )
+       XSTART=MIN(XSTART,(STORE(I+10)))
+       YSTART=MIN(YSTART,(STORE(I+11)))
+       ZSTART=MIN(ZSTART,(STORE(I+12)))
+       XEND=MAX(XEND,(STORE(I+10)))
+       YEND=MAX(YEND,(STORE(I+11)))
+       ZEND=MAX(ZEND,(STORE(I+12)))
        IF (ISSPRT .EQ. 0) THEN
         IF (JTYPE .EQ. 1) THEN
           WRITE(NCWU,2800)STORE(I),STORE(I+1),STORE(I+7),STORE(I+10),
-     2 STORE(I+11),STORE(I+12), DEL
+     2    STORE(I+11),STORE(I+12), DEL
         ELSE
           WRITE(NCWU,2800)STORE(I),STORE(I+1),STORE(I+7),STORE(I+10),
-     2 STORE(I+11),STORE(I+12)
+     2    STORE(I+11),STORE(I+12)
         ENDIF
        ENDIF
 2800   FORMAT(5X,A4,F9.0,5X,F9.3,1X,4F10.3)
@@ -487,6 +500,27 @@ C--LOOP OVER EACH ATOM IN TURN
 2802    FORMAT('ATOM ',A4,F9.0,' X= ',3F10.3)
       I=I-MD5A
 2850  CONTINUE
+C SAVE THE X,Y,Z LIMITS FOR THE GUI
+       WRITE(CMON,'(A,F8.2,A)')
+     1 '^^CO SAFESET [ _XSTART TEXT ', XSTART,' ]'
+       CALL XPRVDU(NCVDU, 1,0)
+       WRITE(CMON,'(A,F8.2,A)')
+     1 '^^CO SAFESET [ _YSTART TEXT ', YSTART,' ]'
+       CALL XPRVDU(NCVDU, 1,0)
+       WRITE(CMON,'(A,F8.2,A)')
+     1 '^^CO SAFESET [ _ZSTART TEXT ', ZSTART,' ]'
+       CALL XPRVDU(NCVDU, 1,0)
+C
+       WRITE(CMON,'(A,F8.2,A)')
+     1 '^^CO SAFESET [ _XEND TEXT ', XEND,' ]'
+       CALL XPRVDU(NCVDU, 1,0)
+       WRITE(CMON,'(A,F8.2,A)')
+     1 '^^CO SAFESET [ _YEND TEXT ', YEND,' ]'
+       CALL XPRVDU(NCVDU, 1,0)
+       WRITE(CMON,'(A,F8.2,A)')
+     1 '^^CO SAFESET [ _ZEND TEXT ', ZEND,' ]'
+       CALL XPRVDU(NCVDU, 1,0)
+
 cdjwjun08
       if ( nitem .eq. 0 ) then
        meand = 0

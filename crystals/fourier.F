@@ -208,6 +208,7 @@ C          FACTOR IF 'SCAN' IS ZERO.
 C  NPEAK   THE NUMBER OF PEAKS ALLOWED.
 C  INTAPE  A MAP CAN BE READ FROM TAPE IS THIS PARAMETER IS NON-ZERO.
 C  IOUTAP  THE MAP SHOULD BE OUTPUT TO TAPE IS THIS PARAMETER IS NON-ZER
+C  IOUFIL  OUTPUT TO PLOTTING UTILITY (0/1/2 = NO/YES/ MAPVIEW)
 C  F000    THE VALUE OF F(000) TO BE USED.
 C  ISC     TYPE OF SCALING REQUIRED :
 C
@@ -648,9 +649,10 @@ cfeb03
         ENDIF
        ENDIF
       ENDIF
-cdjwmay09
-c---- commented out - list 5 has been overwritten with list 29 info
+
+c----  list 5 has been overwritten with list 29 info
       IF (IOUFIL .EQ. 1) THEN
+      CALL XFAL05  ! YET AGAIN
 3301  FORMAT(A)
 3302  FORMAT(I8)
 3303  FORMAT(F15.8)
@@ -1310,6 +1312,24 @@ C--CHECK THAT THE ORIENTATION PARAMETERS ARE VALID
       IF ( IAXIS(I) - IAXIS(J+1) ) 1100 , 9910 , 1100
 1100  CONTINUE
 1150  CONTINUE
+c compute the whole cell so that we can see what MCE is up to!
+c      m14=l14
+c      do jdjw=1,n14
+c       m14=m14+md14
+c      enddo
+c      if (ioufil.eq.1) then
+c       store(l14+2)=1.0
+c       store(l14+md14+2)=1.0
+c       store(l14+md14+md14+2)=1.0
+c      set the orientation to x,y,z
+c       iaxis(1)=1
+c       iaxis(2)=2
+c       iaxis(3)=3
+c      endif
+c      m14=l14
+c      do jdjw=1,n14
+c       m14=m14+md14
+c      enddo
 C--INTERCHANGE THE LIST 14 DIRECTIVES
       CALL XFSWOP(STORE(L14),3*MD14,MD14,1,MD14)
 C--KEEP ORIGINAL CELL PARAMS
@@ -1627,7 +1647,6 @@ C NB The original logic here said IF(IOUTAP)3800,3750,3750
 C which is .GE. 0 rather than .GT. 0. I have changed it to
 C prevent the FOURIER from writing to an unopen file.
       IF ( IOUTAP .GT. 0 ) THEN
-
 CDJW99[
 C THE MAP IS GENERATED LINE BY LINE IN EACH SECTION. ONCE ALL THE
 C LINES HAVE BEEN GENERATED, THE WHOLE SECTION IS WRITTEN TO THE
@@ -1678,7 +1697,6 @@ C SET UP TRANSFORMATION MATRIX  (BRIEFLY)
           STORE(NFL+2+IAXIS(2)) = 1.0
           STORE(NFL+5+IAXIS(3)) = 1.0
           IF (XDETR3 (STORE(NFL)) .LE. 0) STORE(NFL+5+IAXIS(3)) = -1.0
-
 C WRITE THE M/T HEADER  DETAILS
           WRITE (MT1) 'INFO  DOWN, ACROSS AND SECTION '
           WRITE (MT1) 'TRAN', (STORE(I), I=NFL,NFL+8)
@@ -1689,7 +1707,6 @@ C WRITE THE M/T HEADER  DETAILS
       ENDIF
 
       IF ( IOUFIL .EQ. 1 ) THEN
-
 C AN OUTPUT FILE IS REQUIRED
           CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
           CALL XRDOPN(6, KDEV , CSSMAP, LSSMAP)
@@ -1720,27 +1737,27 @@ c          WRITE (NCFPU1,3752) ((STORE(J),J=I,I+3),I=L14,2*MD14+L14,MD14)
             m14=l14
             do k=1,3
              write(ncfpu1,3752) (store(l1p1+iaxis(k)-1)*store(m14+j)
-     1       ,j = 0,3)
+     1       ,j = 0,2), 1.0
              m14 = m14+md14
             end do
           WRITE (NCFPU1,3751) 'SIZE'
           WRITE (NCFPU1,3753) (NUM(I),I=1,3)
-
       ENDIF
+c
       IF ( IOUFIL .EQ. 2 ) THEN
 
 C AN OUTPUT FILE IS REQUIRED
           CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
           CALL XRDOPN(7, KDEV , CSSMAP, LSSMAP)
+          INQUIRE(IOLENGTH=IRECSIZ) 1.0
           OPEN ( UNIT   = NCFPU1,
      1         FILE = CSSMAP(1:LSSMAP),
      1         STATUS = 'UNKNOWN' ,
      1         ACCESS = 'DIRECT' ,
      1         FORM   = 'UNFORMATTED' ,
-     1         RECL   = 1 ,
+     1         RECL   = irecsiz ,
      1         IOSTAT = IOS ,
      1         ERR    = 9905 )
-
 
 C SET UP TRANSFORMATION MATRIX  (BRIEFLY)
           CALL XZEROF (STORE(NFL), 12)
@@ -1765,7 +1782,6 @@ C TRANSFORMED CELL
           DO I = 3,5
             WRITE (NCFPU1,REC=I+7) STORE(L1P1+I) * RTD
           END DO
-
           WRITE(cmon,'(a,3F15.5)')'Cell: ',(STORE(L1P1+I),I=0,2)
           call xprvdu(ncvdu,1,0)
           WRITE(cmon,'(a,3F15.5)')'      ',(STORE(L1P1+I)*RTD,I=3,5)
