@@ -59,6 +59,12 @@ CcModelBond::CcModelBond(int x1,int y1,int z1, int x2, int y2, int z2,
 		  m_patms.push_back(atom);
 	  }
   }
+// Check atom at other end of bond. Inc count if it is a Q.
+  if (m_patms.size() > 1 ) {
+ 	  if ( (m_patms[0]->Label().length() > 1) && (m_patms[0]->Label()[0] == 'Q')) m_patms[1]->m_nQbonds++;
+	  if ( (m_patms[1]->Label().length() > 1) && (m_patms[1]->Label()[0] == 'Q')) m_patms[0]->m_nQbonds++;
+  }
+  
   m_label = label;
   m_slabel = cslabl;
   m_xrot = 0;
@@ -211,8 +217,18 @@ void CcModelBond::Render(CcModelStyle *style, bool feedback)
    
    if (m_patms.size() > 1 ) {
 	// do not show
-       if ( (m_patms[0]->Label().length() > 1) && (m_patms[0]->Label()[0] == 'Q')&& (m_patms[0]->sparerad < style->min_peak_height_to_show ) ) transparency = 0.05;
-       if ( (m_patms[1]->Label().length() > 1) && (m_patms[1]->Label()[0] == 'Q')&& (m_patms[1]->sparerad < style->min_peak_height_to_show ) ) transparency = 0.05;
+       if ( (m_patms[0]->Label().length() >= 1) && (m_patms[0]->Label()[0] == 'Q')&& (m_patms[0]->sparerad < style->min_peak_height_to_show ) ) transparency = 0.05;
+       if ( (m_patms[1]->Label().length() >= 1) && (m_patms[1]->Label()[0] == 'Q')&& (m_patms[1]->sparerad < style->min_peak_height_to_show ) ) transparency = 0.05;
+       if ( (m_patms[0]->Label().length() >= 1) && (m_patms[0]->Label()[0] == 'Q')&& (m_patms[0]->sparerad > style->max_peak_height_to_show ) ) transparency = 0.05;
+       if ( (m_patms[1]->Label().length() >= 1) && (m_patms[1]->Label()[0] == 'Q')&& (m_patms[1]->sparerad > style->max_peak_height_to_show ) ) transparency = 0.05;
+
+//If both ends are Q, and each only bonded to Qs, and ShowAtomBonded style -> don't show.
+       if ( (style->showlonepeaks == kTShowAtomBonded ) &&
+            (m_patms[0]->Label().length() >= 1) && (m_patms[0]->Label()[0] == 'Q')&& 
+            (m_patms[1]->Label().length() >= 1) && (m_patms[1]->Label()[0] == 'Q')&& 
+            (m_patms[0]->m_nbonds == m_patms[0]->m_nQbonds)&&
+            (m_patms[1]->m_nbonds == m_patms[1]->m_nQbonds) )                            transparency = 0.05;
+
    }   
    
    int detail = style->normal_res;

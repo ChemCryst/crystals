@@ -5469,7 +5469,9 @@ cdjwjun04
       store(ibase+1)=0.0
       istore(ibase+nterm)=KHYD
       store(ibase+nterm+1)=0.0
-      nbase=2
+      istore(ibase+nterm*2)=KDET
+      store(ibase+nterm*2+1)=0.0
+      nbase=3
       do 1510 m29=l29,l29+(n29-1)*md29,md29
 c-----  get the character form of the name, as a unique code
          write (ctype,'(a4)') istore(m29)
@@ -5492,8 +5494,8 @@ c
          nbase=nbase+1
 1510  continue
 c----- now sort on unique code, startting after (possible) h
-      i=ibase+2*nterm
-      j=max(0,nbase-2)
+      i=ibase+3*nterm
+      j=max(0,nbase-3)
       k=nterm
       l=4
       call ssorti (i,j,k,l)
@@ -5543,7 +5545,9 @@ C - FORMULA FROM LIST 5
       STORE(IBASE+1)=0.0
       ISTORE(IBASE+NTERM)=KHYD
       STORE(IBASE+NTERM+1)=0.0
-      NBASE=2
+      ISTORE(IBASE+NTERM*2)=KDET
+      STORE(IBASE+NTERM*2+1)=0.0
+      NBASE=3
       DO 1500 M5=L5,L5+(N5-1)*MD5,MD5
 C-----  GET THE CHARACTER FORM OF THE NAME, AS A UNIQUE CODE
          WRITE (CTYPE,'(A4)') ISTORE(M5)
@@ -5566,8 +5570,8 @@ C
          NBASE=NBASE+1
 1500  CONTINUE
 C----- NOW SORT ON UNIQUE CODE, STARTTING AFTER (POSSIBLE) H
-      I=IBASE+2*NTERM
-      J=MAX(0,NBASE-2)
+      I=IBASE+3*NTERM
+      J=MAX(0,NBASE-3)
       K=NTERM
       L=4
       CALL SSORTI (I,J,K,L)

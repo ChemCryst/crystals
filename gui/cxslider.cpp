@@ -98,7 +98,7 @@ void    CxSlider::SetCharWidth( int count )
 void CxSlider::SetValue(float frac)
 {
       int step = frac * m_slidersteps;
-      SetValue(step);
+      wxSlider::SetValue(step);
 }
 
 void CxSlider::OnSlide(wxCommandEvent & event) {
