@@ -298,7 +298,8 @@ C     c 63,30,30,
 C     c 35,0,50,
 C     c 63,63,0,
 C     c 63,63,63/
-      DATA IGREYC /0,0,0,
+      DATA IGREYC /
+     c 0,0,0,
      c 4,4,4,
      c 8,8,8,
      c 12,12,12,
@@ -312,7 +313,10 @@ C     c 63,63,63/
      c 44,44,44,
      c 48,48,48,
      c 52,52,52,
+     c 63,63,63,
      c 56,56,56,
+     c 63,63,63,    !THESE 3 ARE DUMMIES
+     c 63,63,63,
      c 63,63,63,
      c 36,36,36/
 C DATA FOR THE COLOURS
@@ -338,7 +342,8 @@ C     c 'CYAN  ','MAGENT','LGREY ','GREY  ','LGREEN', 'LBLUE ',
 C     c 'LRED  ','PINK  ','PURPLE','YELLOW','WHITE '/
       DATA COLGRY /'BLACK ','GREY1 ','GREY2 ','GREY3 ','GREY4 ',
      c 'GREY5 ','GREY6 ','GREY7 ','GREY8 ','GREY9 ' ,'GREY10',
-     c 'GREY11','GREY12', 'GREY13','GREY14','WHITE', 'GREY9'/
+     c 'GREY11','GREY12', 'GREY13','WHITE','GREY14', 'GREY9',
+     c 'GREY15','GREY16','GREY17'/
       DATA IFIRST /0/
 C DATA FOR SOME INITIALISATIONS
       DATA IELTYP /4/
@@ -349,7 +354,7 @@ C DATA FOR SOME INITIALISATIONS
 C Test edit 2
 
       SUBROUTINE CAMSET
-	  
+         
       INCLUDE 'CAMPAR.INC'
       INCLUDE 'CAMCOM.INC'
       INCLUDE 'CAMANA.INC'
@@ -370,8 +375,8 @@ C Test edit 2
       INCLUDE 'CAMKMS.INC'
 
       INEVEN = 0 
-	  IREVEN =1 
-	  IWEVEN =1
+      IREVEN =1 
+      IWEVEN =1
 C DATA FOR THE MAXIMUM NUMBER OF KNOWN ELEMENT TYPES
       NELM = 250
 C DATA FOR THE PC KEYS
