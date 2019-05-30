@@ -1124,7 +1124,7 @@ CRIC13:3557  FORMAT(' The largest (shift/esd) =',F10.6,
 3557  FORMAT(' The largest (shift/esd) =',F10.2,
      1 ', for Parameter ', I4,', ', A/)
       WRITE ( CMON, 
-     1 '('' Shift/su: sumsq='',f12.5,'' rms='',f12.5,
+     1 '(''{I Shift/su: sumsq='',f12.5,'' rms='',f12.5,
      2 '' max='',f12.5,'' for '',A)')
      3 F, RMSS, SHMAX, CSAVE(1:LENNAM)
       CALL XPRVDU(NCVDU, 1,0)
