@@ -13,16 +13,17 @@
 %        EVALUATE ABORT = TRUE
 % END IF                                                                        
 % VARIABLE LOGICAL SIG SIG2                                                     
-% EVALUATE SIG2 = FILEEXISTS 'sigmas2.dat'                                   
+% EVALUATE SIG2 = FILEEXISTS 'data\sigmas2.dat'                                   
 % IF .NOT. SIG2 THEN
 {E
-{E The file data/SIGMAS2.DAT does not exist    
+{E The file data\SIGMAS2.DAT does not exist!!    
 {E
 %        copy '#script xhelp1'
 
- The file data/SIGMAS2.DAT was created during input of reflections.
+ The file data\SIGMAS2.DAT was created during input of reflections.
  It no longer exists, or is in a different folder
- Re-input your reflection data.
+ Since April 2019 this file should reside in the data\ subfolder.
+  Re-input your reflection data.
 
 %        copy '#script xhelp2'  
 %        EVALUATE ABORT = TRUE
