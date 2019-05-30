@@ -2031,6 +2031,8 @@ CODE FOR XSUM06
       SUBROUTINE XSUM06 (iuln,  LEVEL )
       use m_mrgrnk
 C
+C     OFF            LOW            MEDIUM         HIGH        
+C     PLOT           NORMPP         SIGMA          OBSERVED
 C -- ROUTINE TO DISPLAY SUMMARY OF LIST 6
 C
       CHARACTER *8 CNAME(35)
@@ -2233,16 +2235,20 @@ C - FSQ REFINENENT
 
         IF ( LEVEL.EQ.5 ) THEN
           if(.not. allocated(reflections)) then
-            allocate(reflections(16384, 4))
+            allocate(reflections(16384, 6))
           else if(n6acc>ubound(reflections, 1)) then
             ! array too small, need to extend
             call move_alloc(reflections, temp2d)
-            allocate(reflections(ubound(temp2d, 1)+16384, 4))
+            allocate(reflections(ubound(temp2d, 1)+16384, 6))
             reflections(1:ubound(temp2d, 1),:)=temp2d
             deallocate(temp2d)
           end if
           reflections(n6acc,1:3)=STORE(M6:M6+2)
           reflections(n6acc, 4)=wdel
+          reflections(n6acc, 5)=Fo
+          reflections(n6acc, 6)=Fc
+c      write(124,*) nint(reflections(n6acc,1)),      
+c     1 nint(reflections(n6acc,2)),nint(reflections(n6acc,2))
         END IF
 
         IF ( LEVEL.EQ.6 ) THEN
@@ -2502,18 +2508,22 @@ C
         ML=nint(reflections(sort_keys(I),3))
         ZH = reflections(sort_keys(I),4)
         ston=abs(Zcalc-ZH)
+        Fo=reflections(sort_keys(I),5)
+        Fc=reflections(sort_keys(I),6)
 C
         IF((zh.lt.zcalc-.1*z_max).or.(zh.gt.zcalc+0.1*z_max)) THEN
               IF (issprt.eq.0) THEN
                 IF (noutl.eq.0) THEN
+                WRITE(NCWU,'(/A)')
+     1 ' Zo = w.Delta, where delta is (Fo-Fc) or (Fo^2-Fc^2)'
                 WRITE (ncwu,
-     1 '(/A,F4.2/4x,a,7x,a,7x,a,4x,a,3x,a)')
+     1 '(/A,F4.2/4x,a,7x,a,7x,a,4x,a,8x,a,8x,a)')
      1 ' Outliers in Normal Probability Plot at delta(Z) > ',
      2   0.1*Z_MAX, 
-     2   'Indices',' Zo ',' Zc ', '/Zc-Zo/'
+     2   'Indices',' Zo ',' Zc ', '/Zc-Zo/', 'Fo', 'Fc'
                 END IF
-                WRITE (ncwu,'(3i4, 6f10.3)')
-     1           mh,mk,ml,    zh,zcalc,ston
+                WRITE (ncwu,'(3i4, 8f10.3)')
+     1           mh,mk,ml,    zh,zcalc,ston, Fo, Fc
               END IF
               noutl=noutl+1
         END IF
