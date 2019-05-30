@@ -866,8 +866,8 @@ C
 C NOW WE HAVE ALL THE VALUES STORED, LOOK FOR THE TURNING POINT.
 C
       IRES=50
-      mloc=minloc(fow,dim=1)
-      if ((mloc .ge. 30) .and. (mloc .lt. 48)) then     !ignore low angle data
+      mloc=minloc(fow,dim=1)                         !ignore low angle data
+      if ((mloc .ge. 20) .and. (mloc .lt. 48)) then  !and top 3 points  
             do l=mloc, 50
                   if(fow(l+2)-fow(l+1) .ge. 0.0) then
                         ires=l
