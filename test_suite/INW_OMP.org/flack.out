@@ -4865,9 +4865,11 @@ Rsigma=  2.79
 
  CRYSTALS suggests that you check your weighting scheme
 
+ Zo = w.Delta, where delta is (Fo-Fc) or (Fo^2-Fc^2)
+
  Outliers in Normal Probability Plot at delta(Z) > 0.33
-    Indices        Zo         Zc     /Zc-Zo/
-  -2   3   1     5.763     2.684     3.079
+    Indices        Zo         Zc     /Zc-Zo/        Fo        Fc
+[12]   -2   3   1     5.76      2.68      3.079    17.930     9.002
 
       1 outliers in Normal Probability Plot at delta(Z) >  0.33
 
