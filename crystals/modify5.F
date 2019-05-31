@@ -2191,6 +2191,9 @@ C----- Y
             ELSE IF (JV.EQ.6) THEN
 C----- Z
                Z=Z/STORE(L1P1+2)
+            ELSE IF (JV.GT.9) THEN
+C------U(IJ) - DONT FIDDLE WITH CROSS TERMS FOR FEAR OF GOING NPD
+               GOTO 6155
             END IF
          END IF
          STORE(JU)=STORE(JU)+Z
@@ -2200,6 +2203,7 @@ C----- Z
      1    ISTORE(IMONBF))
          IPOSIT=IPOSIT+1
          ICHNG=ICHNG+1
+6155     CONTINUE
          M5A=M5A+MD5A
 6200  CONTINUE
       IF (IDIRNM.EQ.5) THEN

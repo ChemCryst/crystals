@@ -22,9 +22,16 @@
 % ELSE  IF ( FILEEXISTS ( 'absences.dat' ) ) THEN
 %
 % ELSE
-{E      Absences file does not exist
-% END IF 
+{E The file absences file no longer exists
+%        copy '#script xhelp1'
 
+ The file data/ABSENCES2.DAT was created during input of reflections.
+ It no longer exists, or is in a different folder.
+ Since April 2019 this file should reside in the data/ subfolder.
+ Re-input your reflection data.
+
+%        copy '#script xhelp2'  
+% END IF 
 %%                                                                              
 % IF ( EXISTS 6 .NE. 1 ) THEN                                                   
                                                                                 
@@ -134,7 +141,9 @@
 ^^WI       @ 1,1 STATIC XFW1
 ^^WI 'You are looking at the distribution of I/\sigma(I) against sin\**3\theta/\lambda\**3'                                                   
 ^^WI       @ 2,1 STATIC XWF2
-^^WI 'The first value under the pointer is sin\**2\theta/\lambda\**2'
+^^WI 'The values under the cursor are sin\**2\theta/\lambda\**2', ( sin\**3\theta/\lambda\**3,
+^^WI       @ 2,2 STATIC XWF2
+^^WI '<I/sigma> )'
 ^^WI       @ 3,1 STATIC XFW3 'Right-click a point for data cut-off options.'    
 ^^WI       @ 1,2 BUTTON XC_RES 'Help'                                            
 ^^WI      }                                                                     

@@ -2217,12 +2217,18 @@ C LOOP TO READ THE DATA
       READ (IINPT,'(A6,6I5)',ERR=9999) CNAME,IVALS
 C STORE THE RESULT
       COLNAM(IPOS) = CNAME
+C      write(77,*) 'Colnam=', colnam(ipos), iclmax
       DO 20 I = 1 , 3
         IVGACL(I,IPOS) = nint(float(IVALS(I))*0.63)
         IPSTCL(I,IPOS) = IVALS(I+3)
+C        write(77,*) ivgacl(I,ipos), ipstcl(i,ipos)
 20    CONTINUE
       IPOS = IPOS + 1
-      IF (IPOS.LE.17) GOTO 10
+      IF (IPOS.LE.ICLMAX) THEN
+            GOTO 10
+      ELSE
+        CALL ZMORE('Too many input colours',0)
+      ENDIF
 C CLOSE THE FILE
       IF (.NOT.LFILES(0,' ',IINPT)) THEN
         CALL ZMORE('Error on closing COLOUR.CMN',0)

@@ -19,6 +19,7 @@
 
  The file 'moo2.dat' was created during input of reflections.
  It no longer exists, or is in a different folder
+ Since April 2019 this file should reside in the data/ subfolder.
  Re-input your reflection data.
 
 %        copy '#script xhelp2'  
