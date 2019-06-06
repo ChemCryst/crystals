@@ -24,6 +24,7 @@ UnitCellLineSize	1.300000
 Organic	1
 LoadMapSettings	1
 MapsEdgesVisible	0
-ProjectionMode	1
+ProjectionMode	0
 PickingMode	0
 MaxDistance	3.000000
+BackgroundColor	255.000000 255.000000 255.000000

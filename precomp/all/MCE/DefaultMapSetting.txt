@@ -5,15 +5,21 @@ Map_NB:				0
 Map_Mode:			2
 Reverse_normals:		0
 Surface_like_lines:		0
-Surface_transparency:		0.70000
+Surface_transparency:		0.700000
 Map_limits:			0.1, 0.4, 0.7
 Map_visibility:			1, 1, 1
 2DMap:				0, 0
+Layer1Color:				0.000000, 255.000000, 0.000000
+Layer2Color:				0.000000, 0.000000, 255.000000
+Layer3Color:				255.000000, 0.000000, 0.000000 
 Map_NB:				1
 Map_Mode:			2
 Reverse_normals:		0
 Surface_like_lines:		0
-Surface_transparency:		0.70000
+Surface_transparency:		0.700000
 Map_limits:			0.1, 0.4, 0.7
 Map_visibility:			1, 1, 1
 2DMap:				0, 0
+Layer1Color:				255.000000, 255.000000, 0.000000
+Layer2Color:				0.000000, 255.000000, 255.000000
+Layer3Color:				255.000000, 0.000000, 255.000000 
