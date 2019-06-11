@@ -1,5 +1,29 @@
 %SCRIPT XCONT                                                                   
 %%                                                                              
+%% Start by getting the space group
+% VARIABLE LOGICAL SPACETEXT
+% VARIABLE CHARACTER L2 A2 B2 C2 
+% VARIABLE CHARACTER SPACENAME
+%  EVALUATE SPACENAME = 'P1'
+%  IF EXISTS 2 .LE. 0 THEN
+%    EVALUATE L2 = 'P   '
+%    EVALUATE A2 = '1'
+%    EVALUATE B2 = ' '
+%    EVALUATE C2 = ' '
+%  ELSE
+%%
+%    COPY '#GENERALEDIT 2'
+%    COPY 'LOCATE RECORDTYPE = 106'
+%    COPY 'TOP'
+%    COPY 'TRANSFER FROM OFFSET =  0 TO L2'
+%    COPY 'TRANSFER FROM OFFSET =  1 TO A2'
+%    COPY 'TRANSFER FROM OFFSET =  2 TO B2'
+%    COPY 'TRANSFER FROM OFFSET =  3 TO C2'
+%    COPY 'END'
+%  END IF
+%  EVALUATE SPACENAME = L2 // ' ' // A2 // ' ' // B2 // ' ' // C2
+%  EVALUATE SPACENAME = '"' // SPACENAME // '"'
+%%
 % VARIABLE REAL XMIN XMAX STEPX MINX XSTART XEND
 % VARIABLE REAL YMIN YMAX STEPY MINY YSTART YEND               
 % VARIABLE REAL ZMIN ZMAX STEPZ MINZ ZSTART ZEND
@@ -8,8 +32,8 @@
 % VARIABLE CHARACTER CFILE                                                      
 % VARIABLE INTEGER IMAP DOSCALE DOCALC RUNVIEWER OLDSER DOVOID STEREO           
 %%                                                                              
-% VARIABLE INTEGER F67                      
-% VARIABLE LOGICAL TWINNED LMCE LMAPV                                           
+% VARIABLE INTEGER F67                     
+% VARIABLE LOGICAL TWINNED LMCE LMAPV  T                                           
 % EVALUATE TWINNED = FALSE                                                      
 %                                                                               
 %%                                                                              
@@ -22,7 +46,10 @@
 % IF FILEEXISTS 'WINGXDIR:/for_prog/mapview.exe' THEN                           
 %       EVALUATE LMAPV = TRUE                                                   
 %     END IF                                                                    
-%%                                                                              
+%%
+% IF FILEEXISTS ( 'newatoms.dat' ) then
+%  EVALUATE T = FILEDELETE ( 'newatoms.dat' )                                                                              
+% END IF
 %%                                                                              
 ^^WI WINDOW XCONT 'Slant Fourier' MODAL                                         
 ^^WI COMMIT='BOK' CANCEL='BXX'                                                  
@@ -347,17 +374,11 @@ view the generated sections.
 %         EVALUATE IX =  NINT ( STEPX  )
 %         EVALUATE IY =  NINT ( STEPY  )
 %         EVALUATE IZ =  NINT ( STEPZ  )
-
-% SHOW XSTART YSTART ZSTART
-
-% SHOW XEND YEND ZEND
-
-% SHOW MINX MINY MINZ 
-
-% SHOW STEPX STEPY STEPZ 
-
-% SHOW IX IY IZ
-
+%% SHOW XSTART YSTART ZSTART
+%% SHOW XEND YEND ZEND
+%% SHOW MINX MINY MINZ 
+%% SHOW STEPX STEPY STEPZ 
+%% SHOW IX IY IZ
 %         QUEUE REWIND                                                          
 %         CLEAR                                                                 
 %         INSERT 'MAP TYPE = '                                                  
@@ -491,7 +512,7 @@ view the generated sections.
 %           END BLOCK                                                           
 %%                                                                              
 %           BLOCK    %Run contour                                               
-%             TRANSFER '#SPAWN "CRYSDIR:contour.exe" ' // CFILE TO CRYSTALS     
+%             TRANSFER '#SPAWN + "CRYSDIR:contour.exe" ' // CFILE TO CRYSTALS     
 %           END BLOCK                                                           
 %%                                                                              
 %           BLOCK    %Run marchingcubesELD viewer                               
@@ -503,18 +524,27 @@ view the generated sections.
 %             IF DOVOID .EQ. 1 THEN                                             
 %                EVALUATE CFILE = CFILE // ' void.fou'                          
 %             END IF                                                            
- * Starting MCE Fourier viewer by Michal Husak. Please wait while it loads ...  
+%%             EVALUATE CFILE = CFILE // ' -sg ' // SPACENAME    %Commented out because 
+%%                                                               the SG is always automatically applied
+%             EVALUATE CFILE = CFILE // ' -sg P1' // ' -color bg 255 255 255 '
+ * Starting MCE Fourier viewer by Jan Rohlicek & Michal Husak. Please wait while it loads ...  
 % IF FILEEXISTS 'CRYSDIR:mce/mce.exe' THEN                                      
-%   TRANSFER '#SPAWN "CRYSDIR:mce/mce.exe" ' // CFILE TO CRYSTALS               
+%   TRANSFER '#SPAWN + "CRYSDIR:mce/mce.exe" ' // CFILE TO display
+%   TRANSFER '#SPAWN + "CRYSDIR:mce/mce.exe" ' // CFILE TO CRYSTALS               
 % ELSE                                                                          
-%   TRANSFER '#SPAWN "C:/PROGRA~1/MARCHI~1/MarchingCubeELD.exe" ' -             
+%   TRANSFER '#SPAWN + "C:/PROGRA~1/MARCHI~1/MarchingCubeELD.exe" ' -             
+    // CFILE TO display
+%   TRANSFER '#SPAWN + "C:/PROGRA~1/MARCHI~1/MarchingCubeELD.exe" ' -             
     // CFILE TO CRYSTALS                                                        
-% END IF                                                                        
+% END IF                               
+% IF FILEEXISTS ( 'newatoms.dat' ) THEN
+%   COPY '#USE newatoms.dat'
+% END IF                                         
 %%                                                                              
 %           END BLOCK                                                           
 %%                                                                              
 %           BLOCK    %Run MapView                                               
-%             TRANSFER '#SPAWN "WINGXDIR:/for_prog/mapview.exe" Mapfile' -      
+%             TRANSFER '#SPAWN + "WINGXDIR:/for_prog/mapview.exe" Mapfile' -      
               TO CRYSTALS                                                       
 %           END BLOCK                                                           
 %         END CASE                                                              

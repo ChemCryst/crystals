@@ -26,4 +26,5 @@ LoadMapSettings	0
 MapsEdgesVisible	0
 ProjectionMode	0
 PickingMode	0
-MaxDistance	3.000000 
+MaxDistance	3.000000
+BackgroundColor	255.0000 255.0000 255.0000
