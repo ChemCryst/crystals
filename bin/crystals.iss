@@ -75,8 +75,7 @@ Name: {app}\MCE\mce_manual_soubory
 [Files]                                                     
 Source: ..\build\*.*; DestDir: {app}\; Excludes: "make*,buildfile.bat,code.bat"; Flags: ignoreversion;
 Source: ..\build\script\*.*; DestDir: {app}\script\;
-Source: ..\build\mce\*.*; DestDir: {app}\mce\;  Flags: ignoreversion;            
-Source: ..\build\mce\mce_manual_soubory\*.*; DestDir: {app}\mce\mce_manual_soubory\;
+Source: ..\build\mce\*.*; DestDir: {app}\mce\;  Flags: ignoreversion recursesubdirs;            
 Source: ..\build\manual\*.*; DestDir: {app}\manual\;
 Source: ..\build\manual\analyse\*.*; DestDir: {app}\manual\analyse\;
 Source: ..\build\manual\Xray-data\*.*; DestDir: {app}\manual\Xray-data\;
