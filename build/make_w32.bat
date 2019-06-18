@@ -22,8 +22,8 @@ mkdir ..\debuginfo
 mkdir ..\debuginfo\%CRYSVNSAFE%
 copy crystals.pdb ..\debuginfo\%CRYSVNSAFE%\
 copy crystals.exe ..\debuginfo\%CRYSVNSAFE%\
-copy CrashRpt*.dll ..\debuginfo\%CRYSVNSAFE%\
-copy CrashRpt*.pdb ..\debuginfo\%CRYSVNSAFE%\
+@rem copy CrashRpt*.dll ..\debuginfo\%CRYSVNSAFE%\
+@rem copy CrashRpt*.pdb ..\debuginfo\%CRYSVNSAFE%\
 
 @goto exit
 
@@ -51,10 +51,13 @@ copy CrashRpt*.pdb ..\debuginfo\%CRYSVNSAFE%\
 @call make_w32_bits.bat tidy
 @del crystals.pst
 @del cameron.pst
+@del *~
+@del *.bak
+@del CrashSender*.exe
 @mkdir ..\installer
 @cd ..\installer
 @echo Running the setup compiler...
-"%INNOSETUP%"\iscc.exe ../bin/crystals.iss
+"%INNOSETUP%"\iscc.exe ../bin/crystals.iss || ( echo InnoSetup returned an error & exit /b 1 )
 @echo Setup.exe will be in the ..\installer folder if it
 @echo was successful.
 @echo If unsuccessful take out the ECHO OFF statement from the batch file
