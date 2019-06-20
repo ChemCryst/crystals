@@ -1,7 +1,7 @@
-%SCRIPT YGETSIG
+%SCRIPT YGETSIG 
 %%    read internal and external sigmas from the SIGMAS.DAT files
 %%    called from XVARIANCE.SSC and XVARIANCE2
-%     VARIABLE REAL INTERNAL EXTERNAL SXX SXY GRADIENT  NREFMES 
+%     VARIABLE REAL INTERNAL EXTERNAL WT SS SX SY SXX SXY GRADIENT  NREFMES 
 %     VARIABLE INTEGER JSTEP
 %     VARIABLE LOGICAL SIG SIG2
 %%SHOW SIG SIG2
@@ -66,10 +66,14 @@
 %       STORE FORMAT /(F10.2)/ LENGTH 10 REAL EXTERNAL
 %       STORE FORMAT /(F10.2)/ LENGTH 10 REAL INTERNAL
 %      END IF
-%      IF NITEMS .GE. 3 THEN
+%      IF NITEMS .GE. 5 THEN     %set to same values as moo in reductio.F
 %        OUTPUT
-%        EVALUATE SXX = SXX + EXTERNAL * EXTERNAL * REAL ( NITEMS )
-%        EVALUATE SXY = SXY + EXTERNAL * INTERNAL * REAL ( NITEMS )
+%        EVALUATE WT = REAL ( NITEMS )
+%        EVALUATE SS = SS + EXTERNAL * EXTERNAL * WT
+%        EVALUATE SX = SX +  EXTERNAL * WT
+%        EVALUATE SY = SY +  INTERNAL * WT
+%        EVALUATE SXX = SXX + EXTERNAL * EXTERNAL * WT
+%        EVALUATE SXY = SXY + EXTERNAL * INTERNAL * WT
 %        EVALUATE NSIGMAS = NSIGMAS + 1
 %      END IF
 %%
@@ -78,7 +82,8 @@
 %     TRANSFER '^^CO SET _MW_USED TEXT ' // CHARACTER NSIGMAS TO DISPLAY                             
 %     IF ( NSIGMAS .GT. 1 ) THEN
 %      EVALUATE GRADIENT = SXY / SXX    
-%      transfer '^^CO SET _MW_GRAD TEXT ' // CHARACTER GRADIENT TO DISPLAY                             
+%      EVALUATE GRADIENT = ( SS * SXY - SX * SX ) / ( SS * SXX - SX * SX )
+%      TRANSFER '^^CO SET _MW_GRAD TEXT ' // CHARACTER GRADIENT TO DISPLAY                             
 %     ELSE
 {E Insufficient equivalent reflections for variance plot in "sigmas2.dat" 
 %      TRANSFER '{E   ' //  CHARACTER NSIGMAS // ' equivalents found' TO DISPLAY

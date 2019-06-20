@@ -113,3 +113,5 @@ test_suite/*.oby
 
 #editor backups
 *~
+gitstat.int
+gitstat.bat

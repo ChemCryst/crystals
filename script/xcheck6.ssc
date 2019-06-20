@@ -141,9 +141,9 @@
 ^^WI       @ 1,1 STATIC XFW1
 ^^WI 'You are looking at the distribution of I/\sigma(I) against sin\**3\theta/\lambda\**3'                                                   
 ^^WI       @ 2,1 STATIC XWF2
-^^WI 'The values under the cursor are sin\**2\theta/\lambda\**2', ( sin\**3\theta/\lambda\**3,
+^^WI 'The values under the cursor are Curve-ID, sin\**2\theta/\lambda\**2'
 ^^WI       @ 2,2 STATIC XWF2
-^^WI '<I/sigma> )'
+^^WI '(sin\**3\theta/\lambda\**3, Frequency)'
 ^^WI       @ 3,1 STATIC XFW3 'Right-click a point for data cut-off options.'    
 ^^WI       @ 1,2 BUTTON XC_RES 'Help'                                            
 ^^WI      }                                                                     

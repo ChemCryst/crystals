@@ -1543,6 +1543,7 @@ C--OUTPUT THE REFLECTION
 C--ASSIGN THE NEW VALUES OF /FO/ **2 AND SIGMA
       JFO=M6+IFO
       STORE(JFO)=WORK(5)
+c nchop =1 for rms deviation, 2 for mean esd
       STORE(M6+12)=WORK(NCHOP+8)
 cdjw2012
       store(m6+5) = work(7) !Fc
@@ -2290,13 +2291,20 @@ c
       endif
       if( linfit(3,x,y,wt,
      1 a,sa,b,sb,t,tsq,r,rsq,mitem,tensor).lt.0) goto 999
-      if (issprt.eq.0) write(ncwu,210) nobs, moo
-210   format(/' Analysis of', i6, ' reflection variances ',
-     1 'with MoO of at least',i4)
-      if (issprt.eq.0) write(ncwu,230) b, sb, a, sa
-230   format('The internal variance (rms deviation) = ',f6.3,'(',f6.3,
-     1 ')', ' times the external variance (mean variance)',
-     2 f6.2,'(',f6.2,')')
+      if (issprt.eq.0) then
+            write(ncwu,210) nobs, moo
+210         format(/' Analysis of', i6, ' reflection variances ',
+     1      'with MoO of at least',i4)
+             write(ncwu,230) ' ', b, sb
+230    format(A,' The internal variance (rms deviation) = ',f6.3,'(',
+     1 f6.3,')', ' times the external variance (mean variance)')
+      end if
+      if (( b.gt. 1.1).or.(1./b.gt. 1.1)) then
+      write(cmon,230) '{E ', b,sb
+      call xprvdu(ncvdu,1,1)
+      WRITE (CMON,'(/)')
+      call xprvdu(ncvdu,1,1)
+      endif
       return
 
 999   continue
