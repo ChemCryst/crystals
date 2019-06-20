@@ -650,11 +650,11 @@ Initialisation:
 %         IF ( XQMERGE ) THEN                                                   
 {S * Merging equivalent reflections                                             
 %           CLEAR                                                               
-%           COPY '#MERGE'                                                       
+%           COPY '#MERGE'   
+%           copy 'reject sigma=2'                                                    
 %           COPY 'END'                                                          
 %         END IF                                                                
 %                                                                               
-{S * Final copy to DSC file                                                     
 %         COPY '#LIST 6'                                                        
 %         COPY 'READ TYPE = COPY'                                               
 %         COPY 'END'                                                            
