@@ -1,0 +1,97 @@
+#YFile processing#
+#PWhen CRYSTALS is running, instructions stored in a data file can be executed
+ with:
+#N   3#
+#J
+             !\USE  filename
+#
+#PTo find out what is in a file without obeying it, issue:
+#N   3#
+#J
+            !\TYPE  filename
+#
+#PCRYSTALS automatically hooks in suitable files or devices to input and output
+ channels. These can be changed while the program is running. For example, the
+ listings can be directed to a new file, so that the previous file can be
+ printed without stopping CRYSTALS. Output can also be directed to specially
+ named files, or devices. The command used is:
+#P
+\RELEASE devicename filename
+#PPermitted devices include:
+#N   5#
+#J
+      MONITOR   The screen for online work, otherwise the .MON file (not PCs)
+      PRINTER   The main listing file
+      LOG   The copy (log) of all input
+      PUNCH A card image file
+#
+#PThe filenames can be any system permitted file name.
+ If omitted, a new file with the  default name is opened, possibly
+ over-writing the previous file.
+ Special devices are often available
+#N  10#
+#J
+      :TT   The terminal screen (not PCs)
+      :LP   The line printer itself
+      :NL   The null device (dustbin)
+
+ e.g.
+    !\RELEASE PRINTER LP:
+        sends output directly to the printer
+    !\RELEASE LOG
+        releases the log file, which could then
+        be edited and used as input
+    !\RELEASE PRINTER NL:
+        sends the full listing to the dustbin.
+#
+#Q
+#YDOS file name limitaions.#
+#PUnder VMS file generation numbers prevent accidental over-writing of
+ previous output. Under DOS and UNIX this facility is not available, nor
+ is it always permitted to switch output to and from the screen or printer
+ directly. The command
+#N   3#
+#J
+      !\SET GENERATE ON
+#
+ causes the second part of the file names to be modified to help reduce this
+ problem. This command could be put in the CRYSINIT file.
+ Under DOS, all files for a given structure gave the specific part
+ set to CRFILE, and the extension identifies the type of file.
+#Q
+#YAutomatic Disc extension.#
+#PIf the .DSC file becomes full, CRYSTALS makes an attempt to extend it. The
+ number of attempts and the increment are set by the program installer. The
+ user can over -ride the defaults. See the section \DISK. The
+ following commands permits very substantial disk  extensions.
+#N   5#
+#J
+      !\DISK
+      !EXTEND SIZE=10 TRIES=100
+      !END
+#
+ These commands could be put in the CRYSINIT file.
+#Q
+#YCRYSINIT files.#
+#PTheir function is similar to a LOGIN.COM or AUTOEXEC.BAT file, and they
+ contain commands the user
+ always wants executing when CRYSTALS starts. The special instruction
+ \USE CONTROL by-passes SCRIPT mode startup.
+
+#N  10#
+#J
+      !\ A CRYSINIT file to minimise output and pass directly
+      !\ into command mode. Disc extensions are set large.
+      !\DISK
+      !EXTEND FREE=100 SIZE=10 TRIES=100
+      !END
+      !\SET TIMING OFF
+      !\SET WATCH 5
+      !\SET LISTS WRITE
+      !\SET SRQ OFF
+      !\SET SPEED FAST
+      !\USE CONTROL
+#
+#PThe file CRYSTALS.SRT, usually in the directory CRIMAGES, is a master
+CRYSINIT file obeyed every time CRYSTALS starts. You may edit this, but
+take care.

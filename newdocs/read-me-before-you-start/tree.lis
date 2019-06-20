@@ -1,0 +1,312 @@
+Folder PATH listing for volume Old-Q
+Volume serial number is DEF9-0CBC
+H:.
+|   cameron.rst
+|   CMakelists.bak
+|   CMakeLists.txt
+|   conf.py.in
+|   crystalsmanual.rst
+|   index.rst
+|   tree.docx
+|   tree.lis
+|   userguide.rst
+|   
++---b
+|   |   CMakeCache.txt
+|   |   cmake_install.cmake
+|   |   Makefile
+|   |   
+|   +---CMakeFiles
+|   |   |   cmake.check_cache
+|   |   |   CMakeDirectoryInformation.cmake
+|   |   |   CMakeOutput.log
+|   |   |   CMakeRuleHashes.txt
+|   |   |   feature_tests.bin
+|   |   |   feature_tests.c
+|   |   |   feature_tests.cxx
+|   |   |   Makefile.cmake
+|   |   |   Makefile2
+|   |   |   progress.marks
+|   |   |   TargetDirectories.txt
+|   |   |   
+|   |   +---3.6.2
+|   |   |   |   CMakeCCompiler.cmake
+|   |   |   |   CMakeCXXCompiler.cmake
+|   |   |   |   CMakeDetermineCompilerABI_C.bin
+|   |   |   |   CMakeDetermineCompilerABI_CXX.bin
+|   |   |   |   CMakeRCCompiler.cmake
+|   |   |   |   CMakeSystem.cmake
+|   |   |   |   
+|   |   |   +---CompilerIdC
+|   |   |   |       a.exe
+|   |   |   |       CMakeCCompilerId.c
+|   |   |   |       
+|   |   |   \---CompilerIdCXX
+|   |   |           a.exe
+|   |   |           CMakeCXXCompilerId.cpp
+|   |   |           
+|   |   +---CMakeTmp
+|   |   \---my_project_docs.dir
+|   |           build.make
+|   |           cmake_clean.cmake
+|   |           depend.internal
+|   |           depend.make
+|   |           DependInfo.cmake
+|   |           progress.make
+|   |           
+|   +---html
+|   |   |   .buildinfo
+|   |   |   cameron.html
+|   |   |   crystalsmanual.html
+|   |   |   genindex.html
+|   |   |   index.html
+|   |   |   objects.inv
+|   |   |   search.html
+|   |   |   searchindex.js
+|   |   |   userguide.html
+|   |   |   
+|   |   +---crystals
+|   |   |       analysis.html
+|   |   |       fourier.html
+|   |   |       initial.html
+|   |   |       intro.html
+|   |   |       matrix.html
+|   |   |       obsolete.html
+|   |   |       parameters.html
+|   |   |       reflectiondata.html
+|   |   |       secret.html
+|   |   |       sfls.html
+|   |   |       twin.html
+|   |   |       
+|   |   +---userguide
+|   |   |       commandline.html
+|   |   |       examples.html
+|   |   |       faqs.html
+|   |   |       gettingstarted.html
+|   |   |       install.html
+|   |   |       userinterface.html
+|   |   |       
+|   |   +---_images
+|   |   |       addhguid.jpg
+|   |   |       addhpic.jpg
+|   |   |       ballelli.jpg
+|   |   |       browseforfolder.jpg
+|   |   |       changeguide.jpg
+|   |   |       chebychev.jpg
+|   |   |       cyclo.jpg
+|   |   |       demodialog.jpg
+|   |   |       drag.jpg
+|   |   |       extguid.jpg
+|   |   |       filter.jpg
+|   |   |       forf2.jpg
+|   |   |       fovsfc.jpg
+|   |   |       friedel.jpg
+|   |   |       guidetool.jpg
+|   |   |       infotabs.jpg
+|   |   |       inhkl.jpg
+|   |   |       initanal.jpg
+|   |   |       initguide.jpg
+|   |   |       loadres.jpg
+|   |   |       lsqsetup.jpg
+|   |   |       lsqsetup2.jpg
+|   |   |       overview.jpg
+|   |   |       pubtable.jpg
+|   |   |       rename.jpg
+|   |   |       renumber.jpg
+|   |   |       scheme.jpg
+|   |   |       sir92.jpg
+|   |   |       sirimp.jpg
+|   |   |       sirini.jpg
+|   |   |       spaceinput.jpg
+|   |   |       startup.jpg
+|   |   |       tidyup.jpg
+|   |   |       valid.jpg
+|   |   |       
+|   |   +---_sources
+|   |   |   |   cameron.rst.txt
+|   |   |   |   crystalsmanual.rst.txt
+|   |   |   |   index.rst.txt
+|   |   |   |   userguide.rst.txt
+|   |   |   |   
+|   |   |   +---crystals
+|   |   |   |       analysis.rst.txt
+|   |   |   |       fourier.rst.txt
+|   |   |   |       initial.rst.txt
+|   |   |   |       intro.rst.txt
+|   |   |   |       matrix.rst.txt
+|   |   |   |       obsolete.rst.txt
+|   |   |   |       parameters.rst.txt
+|   |   |   |       reflectiondata.rst.txt
+|   |   |   |       secret.rst.txt
+|   |   |   |       sfls.rst.txt
+|   |   |   |       twin.rst.txt
+|   |   |   |       
+|   |   |   \---userguide
+|   |   |           commandline.rst.txt
+|   |   |           examples.rst.txt
+|   |   |           faqs.rst.txt
+|   |   |           gettingstarted.rst.txt
+|   |   |           install.rst.txt
+|   |   |           userinterface.rst.txt
+|   |   |           
+|   |   \---_static
+|   |       |   ajax-loader.gif
+|   |       |   basic.css
+|   |       |   comment-bright.png
+|   |       |   comment-close.png
+|   |       |   comment.png
+|   |       |   doctools.js
+|   |       |   documentation_options.js
+|   |       |   down-pressed.png
+|   |       |   down.png
+|   |       |   file.png
+|   |       |   jquery-3.2.1.js
+|   |       |   jquery.js
+|   |       |   minus.png
+|   |       |   plus.png
+|   |       |   pygments.css
+|   |       |   searchtools.js
+|   |       |   underscore-1.3.1.js
+|   |       |   underscore.js
+|   |       |   up-pressed.png
+|   |       |   up.png
+|   |       |   websupport.js
+|   |       |   
+|   |       +---css
+|   |       |       badge_only.css
+|   |       |       theme.css
+|   |       |       
+|   |       +---fonts
+|   |       |   |   fontawesome-webfont.eot
+|   |       |   |   fontawesome-webfont.svg
+|   |       |   |   fontawesome-webfont.ttf
+|   |       |   |   fontawesome-webfont.woff
+|   |       |   |   fontawesome-webfont.woff2
+|   |       |   |   
+|   |       |   +---Lato
+|   |       |   |       lato-bold.eot
+|   |       |   |       lato-bold.ttf
+|   |       |   |       lato-bold.woff
+|   |       |   |       lato-bold.woff2
+|   |       |   |       lato-bolditalic.eot
+|   |       |   |       lato-bolditalic.ttf
+|   |       |   |       lato-bolditalic.woff
+|   |       |   |       lato-bolditalic.woff2
+|   |       |   |       lato-italic.eot
+|   |       |   |       lato-italic.ttf
+|   |       |   |       lato-italic.woff
+|   |       |   |       lato-italic.woff2
+|   |       |   |       lato-regular.eot
+|   |       |   |       lato-regular.ttf
+|   |       |   |       lato-regular.woff
+|   |       |   |       lato-regular.woff2
+|   |       |   |       
+|   |       |   \---RobotoSlab
+|   |       |           roboto-slab-v7-bold.eot
+|   |       |           roboto-slab-v7-bold.ttf
+|   |       |           roboto-slab-v7-bold.woff
+|   |       |           roboto-slab-v7-bold.woff2
+|   |       |           roboto-slab-v7-regular.eot
+|   |       |           roboto-slab-v7-regular.ttf
+|   |       |           roboto-slab-v7-regular.woff
+|   |       |           roboto-slab-v7-regular.woff2
+|   |       |           
+|   |       \---js
+|   |               modernizr.min.js
+|   |               theme.js
+|   |               
+|   +---_build
+|   |       conf.py
+|   |       
+|   \---_doctrees
+|       |   cameron.doctree
+|       |   crystalsmanual.doctree
+|       |   environment.pickle
+|       |   index.doctree
+|       |   userguide.doctree
+|       |   
+|       +---crystals
+|       |       analysis.doctree
+|       |       fourier.doctree
+|       |       initial.doctree
+|       |       intro.doctree
+|       |       matrix.doctree
+|       |       obsolete.doctree
+|       |       parameters.doctree
+|       |       reflectiondata.doctree
+|       |       secret.doctree
+|       |       sfls.doctree
+|       |       twin.doctree
+|       |       
+|       \---userguide
+|               commandline.doctree
+|               examples.doctree
+|               faqs.doctree
+|               gettingstarted.doctree
+|               install.doctree
+|               userinterface.doctree
+|               
++---crystals
+|       analysis.rst
+|       fourier.rst
+|       initial.rst
+|       intro.rst
+|       matrix.rst
+|       obsolete.rst
+|       parameters.rst
+|       reflectiondata.rst
+|       secret.rst
+|       sfls.rst
+|       twin.rst
+|       
+\---userguide
+    |   commandline.rst
+    |   examples.rst
+    |   faqs.rst
+    |   gettingstarted.rst
+    |   install.rst
+    |   userinterface.rst
+    |   
+    \---images
+            addhguid.jpg
+            addhpic.jpg
+            ballelli.jpg
+            browseforfolder.jpg
+            changeguide.jpg
+            chebychev.jpg
+            corner.jpg
+            crystals_now.gif
+            cyclo.jpg
+            demodialog.jpg
+            drag.jpg
+            extguid.jpg
+            filter.jpg
+            forf2.jpg
+            fovsfc.jpg
+            friedel.jpg
+            guidetool.jpg
+            infotabs.jpg
+            inhkl.jpg
+            initanal.jpg
+            initguide.jpg
+            line.gif
+            loadres.jpg
+            lsqsetup.jpg
+            lsqsetup2.jpg
+            manlogo.gif
+            manuals_now.gif
+            overview.jpg
+            parksback.jpg
+            pubtable.jpg
+            rename.jpg
+            renumber.jpg
+            scheme.jpg
+            sir92.jpg
+            sirimp.jpg
+            sirini.jpg
+            spaceinput.jpg
+            startup.jpg
+            s_9parks.gif
+            tidyup.jpg
+            valid.jpg
+            

@@ -1,0 +1,23 @@
+Needs Python 3 (Anaconda)
+Anaconda3-5.2.0-Windows-x86_64.exe
+python-2.7.12.msi
+
+
+Anaconda.bat, 2016-sphinx.bat  and sphinx.bat are in CRBUILD
+
+2016-sphinx (the DOS-shell script) runs anaconda to create the environment
+
+
+Add new files to appropriate doctree
+
+
+type sphinx to run mingw32-make to (re)build \b folder
+
+
+The TOOLS-HELp files (structure,Xray-data,refinement,analyse) live in 5 places:
+
+Manual 
+Precomp/all/manual
+docs/djw-docs/tools-manual
+docs/b/html/tools
+b/manual

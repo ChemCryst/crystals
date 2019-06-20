@@ -1,0 +1,77 @@
+=====
+Files
+=====
+
+
+When CRYSTALS runs it stores all crystallographic data in a single file,
+by default named crfilev2.dsc. This is a binary file and should not be
+opened with any other program.
+
+
+CRYSTALS outputs results and analysis to several places:
+
+
+*The listing file:*
+
+
+this will be called bfilenn.lis where nn is a number
+from 00-99, incremented each time the program is run. When nn reaches 99
+this file will be continuously overwritten every time CRYSTALS is run.
+
+
+The listing file contains verbose output about all the calculations that
+take place.
+
+
+*The punch file:*
+
+
+called bfile.pch by default. The idea of 'punching' data
+is a throwback to the days of punched cards. This file is used to write out
+specific bits of data *as* *commands* that can then be read back into the 
+program. For example, the parameters defining the crystallographic model 
+are stored in CRYSTALS as a 'List 5'. Then 'Punching List 5':
+::
+
+
+     \PUNCH 5
+     END
+
+
+
+
+will result in a full \\LIST 5 command being written to the file bfile.pch.
+You can then recover that version of the model parameters by typing
+::
+
+
+     \USE bfile.pch
+
+
+
+
+which causes the commands written in that file to be executed by CRYSTALS.
+
+
+*The monitor file:*
+
+
+called bfilenn.mon this is obsolete. If there is any
+output in it, it is from a bit of the program that hasn't been looked at
+recently.
+
+
+*The log file:*
+
+
+called bfilenn.log, this contains everything that you typed into CRYSTALS, 
+and commands that were issued on your behalf by the menu system or script
+processor.
+
+
+
+.. index:: Errors
+
+
+.. index:: Warnings
+

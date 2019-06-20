@@ -1,0 +1,47 @@
+body {
+    font-family: Tahoma, Verdana, Arial, Geneva, sans-serif;
+    font: 16px Tahoma, Verdana, Arial, Geneva, sans-serif;
+    color: #000;
+    line-height: 20px;
+    text-align: justify;
+}
+p  {
+    line-height: 20px;
+    font-size: 12px;
+    margin-bottom: 20px;
+}
+.wy-menu-vertical a {
+    line-height: 18px;
+    padding: .4045em 1.618em;
+    display: block;
+    position: relative;
+    font-size: 120%;
+    color: #d9d9d9;
+}
+h1 {
+     font-size: 200%;
+}
+h2 {
+     color: blue;
+     font-size: 150%;
+}
+h3 {
+     color: teal;
+     font-size: 125%;
+     font-style: italic;
+}
+h4 {
+     font-size: 100%;
+     font-weight: bold;
+     font-style: italic;
+}
+hr {
+     border-top: solid;
+     color: blue;
+     height: 6px;
+}
+body {
+    font: 12px Tahoma, Verdana, Arial, Geneva, sans-serif;
+    color: #000;
+    text-align: justify;
+}
