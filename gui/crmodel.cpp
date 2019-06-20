@@ -151,6 +151,7 @@ CrModel::CrModel( CrGUIElement * mParentPtr )
   m_style.max_peak_height_to_show = 99999;
   m_style.showlonepeaks = kTShowAll;
   m_style.showres = 0;
+  m_style.showgroup = 0;
 }
 
 CrModel::~CrModel()
@@ -341,6 +342,13 @@ CcParse CrModel::ParseInput( deque<string> &  tokenList )
         bool select = (CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTYes);
         tokenList.pop_front();
         m_style.showh = select;
+        if ( ptr_to_cxObject ) {
+            if ( select ) {
+                ((CxModel*)ptr_to_cxObject)->DeleteMessagePopup( kShowH );
+            } else {
+                ((CxModel*)ptr_to_cxObject)->CreateMessagePopup( "Hydrogen hidden", kShowH );
+            }
+        }
         Update(true);
         break;
       }
@@ -353,9 +361,26 @@ CcParse CrModel::ParseInput( deque<string> &  tokenList )
             if ( m_style.showres ) {
                 ostringstream s;
                 s << "Showing residue #" << m_style.showres;
-                if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->CreateMessagePopup( s.str() );
+                if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->CreateMessagePopup( s.str(), kResidue );
             } else {
-                if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->DeleteMessagePopup( );
+                if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->DeleteMessagePopup( kResidue );
+            }
+        }
+        Update(true);
+        break;
+      }
+      case kTCycleGroup:
+      {
+        tokenList.pop_front(); // Remove that token!
+        if(m_ModelDoc) { //No point if there is no model.
+            m_style.showgroup++;  // keep incrementing - model code (with access to residue list) will detect if we go off the end of residue numbers and reset appropriately.
+            m_style.showgroup = m_ModelDoc->FindNextGroupNumber(m_style.showgroup);
+            if ( m_style.showgroup ) {
+                ostringstream s;
+                s << "Showing parts *" << m_style.showgroup;
+                if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->CreateMessagePopup( s.str(), kGroup );
+            } else {
+                if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->DeleteMessagePopup( kGroup );
             }
         }
         Update(true);
@@ -365,7 +390,15 @@ CcParse CrModel::ParseInput( deque<string> &  tokenList )
       {
         tokenList.pop_front(); // Remove that token!
         m_style.showres = 0;
-        if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->DeleteMessagePopup( );
+        if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->DeleteMessagePopup( kResidue );
+        Update(true);
+        break;
+      }
+      case kTShowGroups:
+      {
+        tokenList.pop_front(); // Remove that token!
+        m_style.showgroup = 0;
+        if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->DeleteMessagePopup( kGroup );
         Update(true);
         break;
       }

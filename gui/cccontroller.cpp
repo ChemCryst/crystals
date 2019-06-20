@@ -3372,6 +3372,8 @@ int CcController::GetDescriptor( string &token, int descriptorClass )
                DESCRIPTOR(MenuIcon)
                DESCRIPTOR(CycleResidue)
                DESCRIPTOR(ShowResidues)
+               DESCRIPTOR(CycleGroup)
+               DESCRIPTOR(ShowGroups)
                DESCRIPTOR(Value)
              break;
 

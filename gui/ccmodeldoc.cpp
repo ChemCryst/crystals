@@ -610,6 +610,7 @@ CcRect CcModelDoc::FindModel2DExtent(float * mat, CcModelStyle * style) {
 	{
 
         if ( (style->showres != 0) && ( (*atom).m_refflag != style->showres )) continue;
+        if ( (style->showgroup != 0) && ( (*atom).m_group != 0 ) && ( (*atom).m_group != style->showgroup ) )  continue;
 //not excluded
 		if ( !((*atom).m_excluded) ) {
 			CcPoint c = (*atom).GetAtom2DCoord(mat);
@@ -677,6 +678,38 @@ int CcModelDoc::FindNextResidueNumber(int current)
      return nextres;
 }
 
+// Input: An atom group number
+// Returns: Same number if that group exists,
+//          Next highest group number, if it exists
+//          Or zero.
+// Usage - for cycling, increment current number, call this routine, use returned value.
+//
+int CcModelDoc::FindNextGroupNumber(int current)
+{
+     int nextgroup = 0;
+     bool groupnotfound = true;
+
+//TODO: Loop through donut and sphere lists -> need to update to pass in and store this info.
+     for ( list<CcModelAtom>::iterator atom=mAtomList.begin();       atom != mAtomList.end();     ++atom) {
+         int ar = (*atom).m_group;
+         if ( ar == current ){
+             nextgroup = ar;
+             groupnotfound = false;
+             break;
+         }
+         // check if ar might be the next group to cycle to.
+         if  ( ar > current ) {  //Only need an update if atom group# is > showgroup, subject to following conditions:
+            if ( nextgroup < current ) { //defo needs updating to something (unless only one group?)
+                nextgroup = ar;
+             } else {                  // nextgroup is bigger than showgroup. Make it the smallest of nextgroup and ar.
+                if ( ar < nextgroup ) {
+                    nextgroup = ar;
+                }
+            }
+        }
+     }
+     return nextgroup;
+}
 
 bool CcModelDoc::RenderAtoms( CcModelStyle * style, bool feedback)
 {
@@ -697,7 +730,10 @@ bool CcModelDoc::RenderAtoms( CcModelStyle * style, bool feedback)
      }
 // Non Q atoms
 	 for ( list<CcModelAtom>::iterator atom=mAtomList.begin();       atom != mAtomList.end();     ++atom) {
-        if (((*atom).Label().length() == 0 || (*atom).Label()[0] != 'Q' ) && ( (style->showres == 0) || ( (*atom).m_refflag == style->showres )) ) {
+        if (   ((*atom).Label().length() == 0 || (*atom).Label()[0] != 'Q' ) 
+            && ( (style->showres == 0) || ( (*atom).m_refflag == style->showres )) 
+            && ( (style->showgroup == 0) || ( (*atom).m_group == 0 ) || ( (*atom).m_group == style->showgroup ) ) )    
+            {
 		   (*atom).Render(style, feedback);
 	    }
      }

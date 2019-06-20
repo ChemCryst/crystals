@@ -47,6 +47,7 @@
 #include    "crconstants.h"
 #include    "crtoolbar.h"
 #include    "crwindow.h"
+#include    "crmenu.h"
 #include    "crgrid.h"
 #include    "cxtoolbar.h"
 #include    "ccrect.h"
@@ -130,6 +131,7 @@ CcParse CrToolBar::ParseInput( deque<string> & tokenList )
         newTool->toolType = CT_NORMAL;
         newTool->toggleable = false;
         newTool->tTool = this;
+        newTool->m_popupToolMenu = nil;
 
         bool moreTokens = true;
         while ( moreTokens && !tokenList.empty() )
@@ -162,6 +164,31 @@ CcParse CrToolBar::ParseInput( deque<string> & tokenList )
               newTool->toolType = CT_APPICON;
               break;
             }
+
+            case kTDefinePopupMenu:
+            {
+                tokenList.pop_front();
+                LOGSTAT("Defining Popup Tool Menu...");
+                CrMenu* mMenuPtr = new CrMenu( this, POPUP_MENU );
+                if ( mMenuPtr != nil )
+                {
+        // ParseInput generates all objects in the menu
+                   CcParse menuP = mMenuPtr->ParseInput( tokenList );
+                   if ( ! menuP.OK() )
+                   {
+                     delete mMenuPtr;
+                     mMenuPtr = nil;
+                   }
+                   newTool->m_popupToolMenu = mMenuPtr;
+                }
+                break;
+            }
+            case kTEndDefineMenu:   //Not used - for compatibility
+            {
+                tokenList.pop_front();
+                LOGSTAT("Popup Model Menu Definined.");
+                break;
+            }
             default:
             {
               moreTokens = false;
@@ -193,6 +220,7 @@ CcParse CrToolBar::ParseInput( deque<string> & tokenList )
         newTool->tEnableFlags = 0;
         newTool->toggleable = false;
         newTool->tTool = nil;
+        newTool->m_popupToolMenu = nil;
         ((CxToolBar*)ptr_to_cxObject)->AddTool( newTool );
         break;
       }

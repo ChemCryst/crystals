@@ -27,8 +27,6 @@
 ^^WI                 TOOL _MADP tool_adp.bmp 'Show displacement parameters'             
 ^^WI                 '#SCRIPT XMODVIEW_NTHERM' TOGGLE
 ^^WI                   DISABLEIF='IN' ENABLEIF='L5'
-^^WI                 TOOL _MOPT tool_opt.bmp 'Atom and bond display options'                           
-^^WI                 '#SCRIPT XVIEWOPT' TOGGLE DISABLEIF='IN'
 ^^WI                 SPLIT                                                      
 ^^WI                 TOOL _MSHOWH tool_showh.bmp 'Show H'           
 ^^WI                 '#SCRIPT XMODVIEW_NTOGGLEH' TOGGLE
@@ -36,8 +34,20 @@
 ^^WI                 ITEM _MSHOWH STATE=ON 
 ^^WI                 TOOL _MCYCLER cycle.bmp 'Cycle residues'           
 ^^WI                 '#SCRIPT XMODVIEW_NCYCLER' DISABLEIF='IN' ENABLEIF='L5'
-^^WI                 TOOL _MSHOWR nocycle.bmp 'Show all residues'           
-^^WI                 '#SCRIPT XMODVIEW_NSHOWR' DISABLEIF='IN' ENABLEIF='L5'
+^^WI                 DEFINEPOPUPMENU POP 'Cycle'
+^^WI                 ITEM _SHOR '&Show all residues' '#SCRIPT XMODVIEW_NSHOWR'
+^^WI                      ICON='nocycle.bmp' DISABLEIF='IN' ENABLEIF='L5'
+^^WI                 ITEM _ASSIGNR '&Assign residues' '#EDIT_NINSERT RESIDUE_NEND'
+^^WI                                 DISABLEIF='IN' ENABLEIF='L5'
+^^WI                 ENDDEFINEMENU
+^^WI                 TOOL _MCYCLEG cycle.bmp 'Cycle group'           
+^^WI                 '#SCRIPT XMODVIEW_NCYCLEG' DISABLEIF='IN' ENABLEIF='L5'
+^^WI                 DEFINEPOPUPMENU POP 'Cycle group'
+^^WI                 ITEM _SHOR '&Show all disorder parts' '#SCRIPT XMODVIEW_NSHOWG'
+^^WI                      ICON='nocycle.bmp' DISABLEIF='IN' ENABLEIF='L5'
+^^WI                 ENDDEFINEMENU
+^^WI                 TOOL _MOPT tool_opt.bmp 'Atom and bond display options'                           
+^^WI                 '#SCRIPT XVIEWOPT' TOGGLE DISABLEIF='IN'
 ^^WI               }                                                            
 %%END SSR                                                                       
                                                                                 

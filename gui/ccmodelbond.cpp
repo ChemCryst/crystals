@@ -190,6 +190,12 @@ void CcModelBond::Render(CcModelStyle *style, bool feedback)
 			if ( (m_patms[0]->m_refflag != style->showres) && (m_patms[1]->m_refflag != style->showres) ) return;
 		}
 	}
+	if ( style->showgroup ) {
+		if (m_patms.size() > 1 ) {
+            if ( ( m_patms[0]->m_group != 0 ) && (m_patms[0]->m_group != style->showgroup) ) return; //Atom 0 not shown - no bond
+            if ( ( m_patms[1]->m_group != 0 ) && (m_patms[1]->m_group != style->showgroup) ) return; //Atom 0 not shown - no bond
+		}
+	}
 
     
 

@@ -218,6 +218,7 @@ class CcModelDoc
         void    ApplyIndexColour( GLuint indx );
         void    SendInsertText( string s );
         int     FindNextResidueNumber(int current);
+        int     FindNextGroupNumber(int current);
 
 	protected:
 

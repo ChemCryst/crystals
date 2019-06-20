@@ -125,6 +125,8 @@
 
 #include    "crtoolbar.h"
 #include    "cxtoolbar.h"
+#include    "crmenu.h"
+#include    "cxmenu.h"
 #include    "cxgrid.h"
 #include    "cccontroller.h"
 
@@ -268,8 +270,10 @@ bool    CxToolBar::AddTool( CcTool* newTool )
       i++;
 #ifdef CRY_OSWIN32
       string file = dir + "script\\" + newTool->tImage;
+      string disabledfile = dir + "script\\d_" + newTool->tImage;
 #else
       string file = dir + "script/" + newTool->tImage;
+      string disabledfile = dir + "script/d_" + newTool->tImage;
 #endif
 
 //  	LOGERR("Adding script dir icon");
@@ -292,22 +296,36 @@ bool    CxToolBar::AddTool( CcTool* newTool )
 				}
 			}
 		}
-
-
         wxBitmap mymap ( myimage, -1 );
+
+        wxBitmap mydmap;
+//        {
+//            ostringstream strstrm;
+//            strstrm << "Checking disabled image: " << disabledfile;
+//            LOGERR(strstrm.str() );
+//        }
+        if ( stat(disabledfile.c_str(),&buf)==0 )   // Look for disabled version of image (prefix d_ to bitmap filename)
+        {
+//			ostringstream strstrm;
+//			strstrm << "Disabled image: " << disabledfile;
+//			LOGERR(strstrm.str() );
+            mydmap.LoadFile( disabledfile.c_str(), wxBITMAP_TYPE_BMP  );
+        }
+//		ostringstream strstrm;
+//		strstrm << "Disabled image: " << mydmap.Ok()?"OK":"NOT OK";
+//		LOGERR(strstrm.str() );
+        
         if( mymap.Ok() )
         {
           noLuck = false;
-// Deprecated:m_ToolBar->AddTool(newTool->CxID, mymap, newTool->tText.c_str(), "" );
-//          m_ToolBar->AddTool(newTool->CxID, "text", 
-			                 //mymap, wxEmptyString, 
-							 //(newTool->toggleable ? wxITEM_CHECK : wxITEM_NORMAL) );
             if (newTool->toggleable) {
                 m_ToolBar->AddCheckTool(newTool->CxID, newTool->tText.c_str(),
-			                 mymap, wxNullBitmap, newTool->tText.c_str());
+			                 mymap, mydmap.Ok()?mydmap:wxNullBitmap, newTool->tText.c_str());
             } else {
-                m_ToolBar->AddTool(newTool->CxID, newTool->tText.c_str(),
-                                   mymap, newTool->tText.c_str());
+                m_ToolBar->AddTool(newTool->CxID, newTool->tText.c_str(),          // id and label
+                                   mymap, mydmap.Ok()?mydmap:wxNullBitmap,         // bitmap and disabled bitmap
+                                   newTool->m_popupToolMenu ? wxITEM_DROPDOWN : wxITEM_NORMAL,  // kind
+                                   newTool->tText.c_str() );                      // help string
             }
 
 //		  if ( newTool->toggleable ) {
@@ -316,7 +334,9 @@ bool    CxToolBar::AddTool( CcTool* newTool )
 //			LOGERR(strstrm.str() );
 //		  }
 
-
+          if ( newTool->m_popupToolMenu ) {
+            m_ToolBar->SetDropdownMenu(newTool->CxID, (CxMenu *) newTool->m_popupToolMenu->GetWidget()); 
+          }
 		  m_ToolBar->Realize();
           m_ImageIndex++;
             //          m_totWidth += 23;
