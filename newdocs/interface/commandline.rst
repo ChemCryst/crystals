@@ -28,10 +28,11 @@
 
 .. |F2| replace:: F\ :sup:`2`
 
+.. index:: The Command Line
+
 
 .. _command-line: 
 
-.. index:: The Command Line
 
 ################
 The Command Line

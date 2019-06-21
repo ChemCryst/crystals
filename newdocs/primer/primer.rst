@@ -35,7 +35,11 @@ This Primer gives an introduction to the  main features.
 A more detailed introduction to the program
 is available in the GUIDE (#Uhttp://www.xtl.ox.ac.uk/guide.html#).
 
-#YBackground to structure analysis#
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Background to structure analysis
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 #PNo two crystal structure analyses follow exactly the same path, so
 that it is impossible to give a definitive step-by-step procedure for
 the general case. The principal causes for deviation from a linear
@@ -84,7 +88,12 @@ Final refinement, possibly including extinction, final difference
  folder for each separate structure. Keep the primary data
 from the diffractometer in this folder, together with the files created
 during the analysis.
-#YFiles#
+
+
+^^^^^
+Files
+^^^^^
+
 #PCRYSTALS uses a many files during a structure analysis. Under most
 operating systems the user can choose the filenames. Under DOS they are
 pre-defined.
@@ -138,7 +147,13 @@ need to know:
 # 
 The merging 'R' factor (Rint)
 #
-#YReflection Data#
+
+
+
+^^^^^^^^^^^^^^^
+Reflection Data
+^^^^^^^^^^^^^^^
+
 #PAs an introduction to the system, it is assumed that the reflections
 have been pre-processed and are in  SHELX  'HKLF 4' format, ie each line
 of the file contains h,k,l, Fsq and sigma(Fsq) in fixed columns. You will need
@@ -173,7 +188,12 @@ COMMAND-LINE in which the user enters commands in the order he chooses.
  You should  create a subdirectory and then copy the data into it.
  The directory NKET contains files for a simple structure determination.
  Some of them are for Command mode, others for Script mode.
-#YScript mode#
+
+
+^^^^^^^^^^^
+Script mode
+^^^^^^^^^^^
+
 #PThe file to be used is:
 #J
       NKET.DOC      A brief description of the structure
@@ -199,7 +219,12 @@ column are comments. User responses shown in square brackets [YES]
 indicate a response chosen from a menu list. DO NOT include the '[]'. <cr>
 represents 'ENTER' or 'RETURN'.
 #
-#YStarting CRYSTALS#
+
+
+^^^^^^^^^^^^^^^^^
+Starting CRYSTALS
+^^^^^^^^^^^^^^^^^
+
 #P On a PC, type CRYSTALS or double click the CRYSTALS icon.
 #
 #J
@@ -397,7 +422,12 @@ Some atoms are 'physically unreasonable'. Check the atomic type assignments.
 Many atoms are physically unreasonable. Incorrect data reduction, serious
 absorption.
 #
-#YCommand mode#
+
+
+^^^^^^^^^^^^
+Command mode
+^^^^^^^^^^^^
+
 #P The files to be used in Command mode are:
 #J
 NKET.REF    Reflections in SHELX format
@@ -600,9 +630,10 @@ Disc file extended by   0 record(s) (      0 integer words )
  END
 #
 #Q
-*****************************
+
+***********
 #ZOVERVIEW#
-*****************************
+***********
 
 #PCRYSTALS is a single program for performing most calculations required in
  single crystal structure analysis, including graphics, but  with the
@@ -611,7 +642,12 @@ Disc file extended by   0 record(s) (      0 integer words )
  methods.
 
 #Q
-#YModes of Use#
+
+
+^^^^^^^^^^^^
+Modes of Use
+^^^^^^^^^^^^
+
 #PThe program has the same command set for both interactive and batch use.
  In batch mode the program executes commands taken from  data files,
  and the  results are returned as files.
@@ -627,7 +663,12 @@ Disc file extended by   0 record(s) (      0 integer words )
  the users through the analysis. See the section  SCRIPTS for details,
 and the chapter Example of a Simple Structure.
 #Q
-#YData Formats#
+
+
+^^^^^^^^^^^^
+Data Formats
+^^^^^^^^^^^^
+
 #PAll the user input to CRYSTALS is in normal ASCII characters. Reflection
  data can be input in fixed format to speed processing, but in general all
  data is free format with _I{<space> or _I{<cr> as delimiters. For most commands
@@ -670,7 +711,12 @@ e.g.
      END
 #
 #Q
-#YOutput#
+
+
+^^^^^^
+Output
+^^^^^^
+
 #PThere are two main plain text output channels. One, *.LI*, is
  intended as a detailed record of a task, and may be printed on a
  lineprinter. The other, *.MON, is displayed on the terminal during
@@ -680,7 +726,12 @@ e.g.
  for details.
 
 #Q
-#YStarting the program#
+
+
+^^^^^^^^^^^^^^^^^^^^
+Starting the program
+^^^^^^^^^^^^^^^^^^^^
+
 #PIt is intended that a subdirectory will be used to hold the files associated
  with a structure. Most of the permanent files created by
  CRYSTALS have the same  filename, and extensions indicating their
@@ -724,7 +775,12 @@ e.g.
                 !\USE JOB.DAT
 #
 #Q
-#YGetting out of the program#
+
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+Getting out of the program
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 #PIf you are running CRYSTALS and suddenly wish to do something with SCL, e.g.
  list a directory to find a file name, it is not necessary to close down the
  program (SCL means the System Control Language, such as DOS or DCL).
@@ -740,13 +796,22 @@ e.g.
  you. When you wish to return to CRYSTALS, logout of the subprocess (type LO),
  and answer C (for continue) to the CRYSTALS question.
 #Q
-#YGetting out of SCRIPTS#
+
+
+^^^^^^^^^^^^^^^^^^^^^^
+Getting out of SCRIPTS
+^^^^^^^^^^^^^^^^^^^^^^
+
  The response 'DIRECT' can be made to any SCRIPT question, and has the effect
  of returning the user IMMEDIATELY to direct CRYSTALS input mode. Any half
  completed tasks being performed by the SCRIPT may need terminating (or
       aborting) with an 'END'.
 #Q
-#YStopping the program#
+
+
+^^^^^^^^^^^^^^^^^^^^
+Stopping the program
+^^^^^^^^^^^^^^^^^^^^
 
 #PCRYSTALS is stopped by issuing:
 #N   2#
@@ -757,9 +822,11 @@ e.g.
 there ia a small chance that the binary data base will not be correctly
 closed, and become corrupted.
 #Q
-*****************************
+
+*******************
 #ZBASIC DATA INPUT#
-*****************************
+*******************
+
 #PCRYSTALS has powerful reflection processing features,
  described in the Reference Manual. A simplified input is available if
  the
@@ -768,7 +835,12 @@ closed, and become corrupted.
  Sigma(Fsq),
  one per line.
 #Q
-#YStart up#
+
+
+^^^^^^^^
+Start up
+^^^^^^^^
+
 #N  12#
 #J
       !\QUICKSTART
@@ -799,14 +871,21 @@ closed, and become corrupted.
 #PThese SCRIPTS takes as input the files produced
  by the CAD4 data processing program RC93 (or RC85).
 #Q
-*****************************
+
+************
 #ZTHE MODEL#
-*****************************
+************
+
 #PThe refinable parameters that define the model are kept in LIST 5.
  These consist of atomic parameters, and overall parameters such as
  scale factors and extinction.
 #Q
-#YDirect Methods#
+
+
+^^^^^^^^^^^^^^
+Direct Methods
+^^^^^^^^^^^^^^
+
 #PCRYSTALS contains no code for direct methods, but can prepare data
  for other programs. It can also submit batch jobs for the other programs.
  SIR and the recompiled version of SHELXS (distributed in CRYSTALS with
@@ -823,7 +902,12 @@ closed, and become corrupted.
       !\SCRIPT  STRUCTUR
 #
 #Q
-#YInputting a trial model#
+
+
+^^^^^^^^^^^^^^^^^^^^^^^
+Inputting a trial model
+^^^^^^^^^^^^^^^^^^^^^^^
+
 #P In interactive mode the files produced
  by the Direct Methods programs may be read into CRYSTALS with
 #N   3#
@@ -850,7 +934,11 @@ closed, and become corrupted.
  and that there are defaults of 1.0 for occupancies, and 0.05 for Uiso.
 
 #Q
-#YModifying the Model#
+
+^^^^^^^^^^^^^^^^^^^
+Modifying the Model
+^^^^^^^^^^^^^^^^^^^
+
 #PThe model from SIR may already have some real atom type assigned to each
  peak. SHELXS names all atoms as type 'Q'. The SHELXS.CRY file may be edited
  with a system editor, or the atoms can be edited inside CRYSTALS. In
@@ -873,7 +961,11 @@ closed, and become corrupted.
       !\SCRIPT PLOT
 #
 #Q
-#YAtom identifiers#
+
+^^^^^^^^^^^^^^^^
+Atom identifiers
+^^^^^^^^^^^^^^^^
+
 #PAtom identifiers consist of two parts, a letter string (TYPE)
  which is used
  to associate the atom with atomic properties (form factor, radius etc), and
@@ -894,7 +986,11 @@ closed, and become corrupted.
  specification.
 
 #Q
-#YAtom parameter identifiers#
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+Atom parameter identifiers
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 #PAtomic parameters are specified in an analogous way. The name of the
  parameter being operated on is included with the atom serial number inside
  the parentheses. The parameter being changed above is TYPE.
@@ -931,9 +1027,11 @@ e.g.
 #
 #PBatch, layer and twin scale factors are also permitted.
 #
-*****************************
+
+***************
 #ZFOURIER MAPS#
-*****************************
+***************
+
 #N   8#
 #J
  e.g.
@@ -945,7 +1043,11 @@ e.g.
       !END
 #
 #Q
-#YFobs maps#
+
+^^^^^^^^^
+Fobs maps
+^^^^^^^^^
+
 #PBy default CRYSTALS computes an Fobs Fourier synthesis, with a peak
  search and without printing the figure field. There are very many options.
  Phases must be computed before the map, and normally Fobs is put
@@ -958,7 +1060,11 @@ original atoms in a LIST 10. To convert this to a parameter list, use
  try to assemble the peaks into a molecule, use
  \COLLECT or \REGROUP after \PEAKS.
 #Q
-#YSpecial maps#
+
+^^^^^^^^^^^^
+Special maps
+^^^^^^^^^^^^
+
 #PThe MAP directive controls the sort of map to be computed and how it is
  to be treated. The REFLECTION directive controls the treatment of reflections,
  and the PEAKS directive controls the peak search.
@@ -976,9 +1082,11 @@ original atoms in a LIST 10. To convert this to a parameter list, use
  10xelectrons is set
  in LIST 14).
 #
-*****************************
+
+***************************
 #ZPREPARATION OF THE MODEL#
-*****************************
+***************************
+
  This may be the input from SIR etc, from finding additional
  atoms in Fourier maps, or modifying the existing model (with \PEAKS, \EDIT,
  \COLLECT, \REGROUP,
@@ -989,13 +1097,21 @@ It is a good idea to assign a final atom numbering scheme as soon as
 possible in the analysis. This will save a lot of hastle later.
 #
 #Q
-#Y\Peaks#
+
+^^^^^^
+\Peaks
+^^^^^^
+
 #PThis command converts the output from a Fourier peak search (held as a
  LIST 10) into a parameter list, LIST 5. It associates any new PEAKS with
  existing atoms. It can also be used for Fourier refinement, and for
  rejecting duplicate atoms, e.g. after changing space group.
 #Q
-#Y\Collect & \Regroup#
+
+^^^^^^^^^^^^^^^^^^^
+\Collect & \Regroup
+^^^^^^^^^^^^^^^^^^^
+
 #PThese commands assist in assembling molecules from peaks lists. REGROUP
  applies symmetry and
  reorders the atoms in LIST 5, COLLECT only applies symmetry. Both can be
@@ -1021,7 +1137,11 @@ possible in the analysis. This will save a lot of hastle later.
  atoms, and the exclusion of spurious peaks. REGROUP tries to number the
  atoms so that adjacent ones have sequential serial numbers.
 #Q
-#Y\Edit#
+
+^^^^^
+\Edit
+^^^^^
+
 #PThe CRYSTALS editor, \EDIT, is designed to perform crystallograhic
  edits on the atom parameters, in LIST 5. If anything needs to be done
  on groups of atoms, \EDIT is likely to be more convenient than using a text
@@ -1048,7 +1168,11 @@ possible in the analysis. This will save a lot of hastle later.
  the edit without saving the results. The original values are unchanged.
 
 #Q
-#Y\Molax, \Regularise, \Aniso#
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+\Molax, \Regularise, \Aniso
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 #PThese commands are used to examine the geometry of the model. They can
  also be used to force certain geometries onto the model. MOLAX computes
  best planes and lines (molecular axes), REGULARISE compares and
@@ -1057,16 +1181,22 @@ possible in the analysis. This will save a lot of hastle later.
  parameters.
 
 #Q
-*****************************
+
+*************
 #ZREFINEMENT#
-*****************************
+*************
+
 #PCRYSTALS was originally developed to perform difficult or complex
  refinements, and was subsequently modified to simplify the treatment of
  routine cases. There are seven components of a refinement strategy.
 
 
 #Q
-#YStructure factor control list#
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Structure factor control list
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
  On slow computers or for large structures,
  the structure factor computation can be speeded up by disabling the
  contributions from parameters or data that have null or default values. These
@@ -1088,7 +1218,11 @@ or
       !END
 #
 #Q
-#YRefinement definition#
+
+^^^^^^^^^^^^^^^^^^^^^
+Refinement definition
+^^^^^^^^^^^^^^^^^^^^^
+
 #PDefining the parameters to be refined. This information is held separately
  from the atom coordinates, in LIST 12. This list also contains information
  about the matrix blocking, constrained parameters, riding parameters, rigid
@@ -1127,7 +1261,11 @@ or
  sections on ADVANCED REFINEMENT and on CRYSINIT files.
 
 #Q
-#YSpecial positions#
+
+^^^^^^^^^^^^^^^^^
+Special positions
+^^^^^^^^^^^^^^^^^
+
 #PTreatment of atoms on special positions. This can be done automatically, by
  a switch in LIST 23, on demand by issuing \SPECIAL, or manually in LIST 12.
 
@@ -1138,7 +1276,11 @@ or
  with partial occupancy due to disorder, etc.
 
 #Q
-#YTreatment of reflections#
+
+^^^^^^^^^^^^^^^^^^^^^^^^
+Treatment of reflections
+^^^^^^^^^^^^^^^^^^^^^^^^
+
  Reflections may be included or excluded from computations
  depending on values of screens set in LIST 28. Relections are not actually
  deleted from the reflection list, but merely flagged.
@@ -1154,7 +1296,11 @@ or
 #
 
 #Q
-#YWeighting the reflections #
+
+^^^^^^^^^^^^^^^^^^^^^^^^^
+Weighting the reflections 
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
  A large number of schemes are possible,  defined in LIST 4. Schemes are
 available for F or Fsq refinement.
 
@@ -1193,7 +1339,11 @@ For Fsq refinement, try
  <w*deltasq> should be more or less constant for suitable weights.
 
 #Q
-#YRestraints#
+
+^^^^^^^^^^
+Restraints
+^^^^^^^^^^
+
 #PTreatment of restraints. These are stored in LIST 16, and applied or
  not depending on a switch in LIST 23.
 #PCRYSTALS offers many restraints. They are stored in symbolic form in
@@ -1232,7 +1382,10 @@ For Fsq refinement, try
  If there are several phenyl groups, all equivalent bonds can be added into
  the same mean.
 #Q
-#YLeast Squares#
+
+^^^^^^^^^^^^^
+Least Squares
+^^^^^^^^^^^^^
 
 #PLeast squares are initiated once the preparations are completed. For large
  structures it is sensible to do the preparations interactively, and run the
@@ -1249,11 +1402,17 @@ For Fsq refinement, try
       !END
 #
 #Q
-*****************************
+
+***********************
 #ZSEEING THE STRUCTURE#
-*****************************
+***********************
+
 #Q
-#YListing the coordinates#
+
+^^^^^^^^^^^^^^^^^^^^^^^
+Listing the coordinates
+^^^^^^^^^^^^^^^^^^^^^^^
+
 #PThe atomic parameters are kept in LIST 5. They can be displayed on the
  screen or printer file with:
 #N   4#
@@ -1262,7 +1421,11 @@ For Fsq refinement, try
       !END
 #
 #Q
-#YSimple plots#
+
+^^^^^^^^^^^^
+Simple plots
+^^^^^^^^^^^^
+
 #PA join-the-dots diagram of all or part of the current structure can be
  displayed on  the line printer and text terminal with MOLAX.
 #N  11#
@@ -1282,7 +1445,11 @@ For Fsq refinement, try
  the execution of the preceeding commands  without waiting for the END.
 
 #Q
-#YGraphics#
+
+^^^^^^^^
+Graphics
+^^^^^^^^
+
 #PThe graphics program 'CAMERON' is integrated into CRYSTALS, and can be
  accessed on suitable terminals (VGA on PCs, TEKTRONIX 4010 on VAXs) directly.
  If the structure is modified in Cameron, it may be re-input to the CRYSTALS
@@ -1297,15 +1464,21 @@ For Fsq refinement, try
       !\USE CAMERON.L5
 #
 #Q
-*****************************
+
+*********************
 #ZMOLECULAR GEOMETRY#
-*****************************
+*********************
+
 #PDetails of the molecular geometry can be computed in CRYSTALS. Most
  calculations send a summary to the screen, and a detailed listing to the
  printer file. Some will also produce a .PCH file (fixed format ASCII) suitable
  for incorporation into publications in either tabular of 'cif' format.
 #Q
-#YDistances and angles#
+
+^^^^^^^^^^^^^^^^^^^^
+Distances and angles
+^^^^^^^^^^^^^^^^^^^^
+
 #PThe user has a lot of fine control over the distance-angle routine, which
  should help minimise unwanted output. For many cases the default settings are
  suitable. A text file suitable for editing into documents may also be
@@ -1316,7 +1489,11 @@ For Fsq refinement, try
       !END
 #
 #Q
-#YBest planes, lines and dihedral angles#
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Best planes, lines and dihedral angles
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 #PPlanes, lines and the angles between them are computed with MOLAX (molecular
  axes). This routine also produces simple plots.
 #N  10#
@@ -1343,7 +1520,11 @@ For Fsq refinement, try
  EXEC, as in EDIT, forces immediate execution of the preceeding directive.
 
 #Q
-#YTorsion angles#
+
+^^^^^^^^^^^^^^
+Torsion angles
+^^^^^^^^^^^^^^
+
 #PTorsion angles are computed with
 #N   6#
 #J
@@ -1356,7 +1537,11 @@ For Fsq refinement, try
  The output can be sent to a text file.
 
 #Q
-#YThermal analysis#
+
+^^^^^^^^^^^^^^^^
+Thermal analysis
+^^^^^^^^^^^^^^^^
+
 #PDuring the course of refinement, CRYSTALS keep a watch on the thermal
  parameters and issues warnings if they go too small or too aspherical.
  However, it is often instructive for the user to examine both the principal
@@ -1377,9 +1562,11 @@ For Fsq refinement, try
  preceeding commands.
 
 #Q
-*****************************
+
+***********************
 #ZPUBLICATION LISTINGS#
-*****************************
+***********************
+
 #PAtomic coordinate and structure factor listings are organised to fit onto
  A4 paper or a continuous listing.
  Bond length, angle and torsion angle listings are a continuous
@@ -1410,9 +1597,11 @@ For Fsq refinement, try
  type and format of the output. The SCRIPT \SCRIPT PUBLISH helps prepare
  tables for publication.
 #
-*****************************
+
+************
 #ZCIF FILES#
-*****************************
+************
+
 #PThe Crystallographic Information File data format (cif) is gaining popularity
  as a means of submitting numerical data for publication. With _I{Acta Cryst.}
  submission of a cif file with an article can speed up processing of the
@@ -1445,20 +1634,30 @@ For Fsq refinement, try
 #PThe script \SCRIPT CIF or \SCRIPT PUBLISH helps with the preparation
 of cif files.
 #Q
-*****************************
+
+****************
 #ZDOCUMENTATION#
-*****************************
+****************
+
 #PThe main documentation is the Reference Manual.
 #PWhile CRYSTALS is running, the user can also get various types of
  information on-line.
 #Q
-#YThe Manual#
+
+^^^^^^^^^^
+The Manual
+^^^^^^^^^^
+
 #PThe Manual is voluminous but moderately complete and accurate. The
  chapters are organised to roughly follow the path of an analysis, but
  tables are appended to this guide as aide-memoires for commands and
  data lists.
 #Q
-#YOn-line HELP#
+
+^^^^^^^^^^^^
+On-line HELP
+^^^^^^^^^^^^
+
 #PThe on-line documentation consists of text files giving tips and
 advice.
 #N   9#
@@ -1471,7 +1670,10 @@ advice.
  or
      !\INDEX             topic
 #
-#YCommand summary#
+
+^^^^^^^^^^^^^^^
+Command summary
+^^^^^^^^^^^^^^^
 
 #PCRYSTALS uses a master system-data-base containig the definitions of all
  COMMANDS  and LISTS. This can be interogated to get terse aide-memoires
@@ -1506,16 +1708,22 @@ advice.
  types, and the default choice.
 
 #Q
-*****************************
+
+****************
 #ZTHE DATA BASE#
-*****************************
+****************
+
 #PThe data base is held in the binary file *.DSC, called 'the disk'. This
  file MUST NOT BE PRINTED. It will grow with use, and cannot be shortened.
  Instructions exist for recovering space within the disk. See the section
  DISK for details.
 
 #Q
-#YIndex to the disk#
+
+^^^^^^^^^^^^^^^^^
+Index to the disk
+^^^^^^^^^^^^^^^^^
+
 #PThe disk index can be examined with
 #N   7#
 #J
@@ -1526,7 +1734,11 @@ advice.
       !END
 #
 #Q
-#YListing LISTs#
+
+^^^^^^^^^^^^^
+Listing LISTs
+^^^^^^^^^^^^^
+
 #PThe data in a CRYSTALS LIST can be examined with:
 #N   8#
 #J
@@ -1539,7 +1751,11 @@ advice.
      Which sends a detailed listing to the .LIS file.
 #
 #Q
-#YRecovering previous lists#
+
+^^^^^^^^^^^^^^^^^^^^^^^^^
+Recovering previous lists
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
 #PWhenever a LIST is stored in the disk, its serial number is incremented.
  In general, previous lists are over written, but new parameters lists,
  LIST 5, are always created. Previous versions can be made current or
@@ -1558,7 +1774,10 @@ advice.
  the current active version.
 
 #Q
-#YPurging the disk file#
+
+^^^^^^^^^^^^^^^^^^^^^
+Purging the disk file
+^^^^^^^^^^^^^^^^^^^^^
 
 #PThe disc file slowly grows as lists are accumulated in it.
  Non-currently
@@ -1577,16 +1796,22 @@ advice.
 #
 
 #Q
-*****************************
+
+************************
 #ZTAILORING THE PROGRAM#
-*****************************
+************************
+
 #PThe user has some control over the run-time aspects of the program.
   Commands put into a CRYSINIT file are
  automatically obeyed each time CRYSTALS is started. Under VMS this file
 is in the users root directory, under DOS it is in the current working 
 directory.
 #Q
-#YGeneral Instructions#
+
+^^^^^^^^^^^^^^^^^^^^
+General Instructions
+^^^^^^^^^^^^^^^^^^^^
+
 #N  10#
 #J
 \TITLE                       Any text for a title
@@ -1605,7 +1830,11 @@ directory.
 \SET PRINTER state           On or Off
 #
 #Q
-#YFile processing#
+
+^^^^^^^^^^^^^^^
+File processing
+^^^^^^^^^^^^^^^
+
 #PWhen CRYSTALS is running, instructions stored in a data file can be executed
  with:
 #N   3#
@@ -1652,7 +1881,11 @@ directory.
         sends the full listing to the dustbin.
 #
 #Q
-#YDOS file name limitaions.#
+
+^^^^^^^^^^^^^^^^^^^^^^^^^
+DOS file name limitaions.
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
 #PUnder VMS file generation numbers prevent accidental over-writing of
  previous output. Under DOS and UNIX this facility is not available, nor
  is it always permitted to switch output to and from the screen or printer
@@ -1666,7 +1899,11 @@ directory.
  Under DOS, all files for a given structure gave the specific part
  set to CRFILE, and the extension identifies the type of file.
 #Q
-#YAutomatic Disc extension.#
+
+^^^^^^^^^^^^^^^^^^^^^^^^^
+Automatic Disc extension.
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
 #PIf the .DSC file becomes full, CRYSTALS makes an attempt to extend it. The
  number of attempts and the increment are set by the program installer. The
  user can over -ride the defaults. See the section \DISK. The
@@ -1679,7 +1916,11 @@ directory.
 #
  These commands could be put in the CRYSINIT file.
 #Q
-#YCRYSINIT files.#
+
+^^^^^^^^^^^^^^^
+CRYSINIT files.
+^^^^^^^^^^^^^^^
+
 #PTheir function is similar to a LOGIN.COM or AUTOEXEC.BAT file, and they
  contain commands the user
  always wants executing when CRYSTALS starts. The special instruction
@@ -1702,7 +1943,11 @@ directory.
 #PThe file CRYSTALS.SRT, usually in the directory CRIMAGES, is a master
 CRYSINIT file obeyed every time CRYSTALS starts. You may edit this, but
 take care.
-#YEnvironment Variables#
+
+^^^^^^^^^^^^^^^^^^^^^
+Environment Variables
+^^^^^^^^^^^^^^^^^^^^^
+
  Enviroment variables (VMS Logicals) point to important directories or
 folders.
 #J
@@ -1711,9 +1956,11 @@ folders.
       CRSCP The directory containing the SCRIPTS
 #
 #Q
-*****************************
+
+***********************
 #ZADVANCED REFINEMENTS#
-*****************************
+***********************
+
 #PCRYSTALS was originally conceived as a refinement program, and continuing
  developments have maintained it as one of the best. The following examples
  illustrate some common situations. Remember that  constraints are set in LIST
@@ -1723,7 +1970,11 @@ folders.
  parameters. Parameters cn be linked to have the same shift, even if the
  staring values are (and will remain) different.
 #Q
-#YMixed isotropic and anisotropic refinement#
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Mixed isotropic and anisotropic refinement
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 #N   9#
 #J
       !\LIST 12
@@ -1746,7 +1997,11 @@ folders.
  internally if the user forgets.
 
 #Q
-#YLarge structures#
+
+^^^^^^^^^^^^^^^^
+Large structures
+^^^^^^^^^^^^^^^^
+
 #PThe user can refine different groups of parameters is  sucessive refinement
  cycles, by issuing a new LIST 12 command between each cycle. It is also
  possible to define a multi block refinement, a very effective method if the
@@ -1790,7 +2045,11 @@ folders.
 #PThis defines a three block matrix for a structure containing two
  uncorrelated (i.e. not related by pseudo -symmetry) fragments or molecules.
 #Q
-#YTied parameters#
+
+^^^^^^^^^^^^^^^
+Tied parameters
+^^^^^^^^^^^^^^^
+
 #PParameters can be tied individually, on a per atom basis, or for whole
  groups of atoms.
 
@@ -1816,7 +2075,11 @@ folders.
  total of their occupancies is therefore constant.
 
 #Q
-#YRigid groups refinement#
+
+^^^^^^^^^^^^^^^^^^^^^^^
+Rigid groups refinement
+^^^^^^^^^^^^^^^^^^^^^^^
+
 #PInitial refinements of large or disordered structures are best done by
  defining groups of atoms with well known geometries as rigid groups. The
  geometry of the groups should first be idealised with \REGULAR. Each atom
@@ -1843,7 +2106,11 @@ folders.
  starting temperature factor values.
 
 #Q
-#YPseudo-symmetry #
+
+^^^^^^^^^^^^^^^
+Pseudo-symmetry 
+^^^^^^^^^^^^^^^
+
 #PWhen a structure contains whole groups of highly correlated coordinates,
  for example when a symmetry operator is lowered by generating atoms and
  removing a symmetry operator, the refinement will be unstable. This can often
@@ -1865,7 +2132,11 @@ folders.
  fragment with those from the generated fragment - see the reference
  Manual.
 #
-#YAbsolute Configuration#
+
+^^^^^^^^^^^^^^^^^^^^^^
+Absolute Configuration
+^^^^^^^^^^^^^^^^^^^^^^
+
 #PCRYSTALS permits the refinement of either the Rogers _I{eta or the
 Flack _I{x parameter. The Flack parameter is more stable, and has a
 physical interpretation throughout its permitted range (0 to 1). Its
@@ -1892,7 +2163,11 @@ remain in the refinement.
      ~1.0         >0.5      Hand undertermined
      ~0.5         >0.5      Twinning undertermined
 #
-#YEnantiomorphic Space Groups#
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Enantiomorphic Space Groups
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 For most space groups the hand of the structure can be inverted simply
 by inverting the sign of all the atomic coordinates. For some, the space
 group must also be changed, possible with a change in origin.
@@ -1909,9 +2184,11 @@ group must also be changed, possible with a change in origin.
 #
 
 #Q
-*****************************
+
+**********
 #ZSCRIPTS#
-*****************************
+**********
+
 #PThe CRYSTALS SCRIPT environment is similar to the menus found in many
  modern PC programs. Superficially it is rather like a command tree, with
  a root, branches, twigs and finally leaves which perform discrete
@@ -1931,12 +2208,20 @@ group must also be changed, possible with a change in origin.
  script to corrupt the CRYSTALS program.
 
 #Q
-#YEscaping from SCRIPT mode#
+
+^^^^^^^^^^^^^^^^^^^^^^^^^
+Escaping from SCRIPT mode
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
 #PControl can be passed to the command mode at any time by replying DIRECT
  (in full) to any SCRIPT question. The users is passed to the CRYSTALS prompt
  '!'.
 #Q
-#YEntering SCRIPT  mode#
+
+^^^^^^^^^^^^^^^^^^^^^
+Entering SCRIPT  mode
+^^^^^^^^^^^^^^^^^^^^^
+
 #PControl can be passed to  script mode by issuing the CRYSTALS command.
 #N  3    #
 #J
@@ -1964,7 +2249,11 @@ group must also be changed, possible with a change in origin.
  refer to lists. A table of the lists and the data they contain is
  appended to this document.
 #
-#YPrincipal Menued Scripts - Feb 1997#
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Principal Menued Scripts - Feb 1997
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 The SCRIPT CONTROL is the master controlling script. Most of the
 sub-scripts called from it are also menued.
 #ICONTROL.SCP#
@@ -2117,7 +2406,11 @@ sub-scripts called from it are also menued.
       QUESTIONS   Format of SCRIPT questions
       DIRECT      Go to CRYSTALS direct command input.
 #
-#YAvailable Scripts - Feb 1997#
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Available Scripts - Feb 1997
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 #J
 AFOUR      ANALYSE    ARCHIVE    AUTO12     AXES       BATCHLSQ
 CADQUICK   CADSLOW    CHECK      CIF        COLLECT    COMMANDS
@@ -2143,11 +2436,16 @@ TERMINAL   TEXT       TIDYUP     TLS        TODOS      TORSION
 TPP16      TYPE       USE        VALIDATE   VERIFY     WEIGHTS
 #
 #
-*****************************
+
+******************************
 #ZDATA LISTS and INSTRUCTIONS#
-*****************************
+******************************
 #Q
-#YAvailable LISTS#
+
+^^^^^^^^^^^^^^^
+Available LISTS
+^^^^^^^^^^^^^^^
+
 #N   10#
 #J
     Lists marked * cannot be input by the User
@@ -2183,7 +2481,11 @@ TPP16      TYPE       USE        VALIDATE   VERIFY     WEIGHTS
     33*   Internal - Refinement control
 #
 #Q
-#YAvailable Instructions#
+
+^^^^^^^^^^^^^^^^^^^^^^
+Available Instructions
+^^^^^^^^^^^^^^^^^^^^^^
+
 #N  10#
 #J
 General system instructions.
@@ -2216,7 +2518,11 @@ Analysis of results
         \AXES         \DISTANCES \MOLAX        \TORSION
         \PARAMETERS   \ANISO     \CIFOUT       \CAMERON
 #
-#YGeneral Commands#
+
+^^^^^^^^^^^^^^^^
+General Commands
+^^^^^^^^^^^^^^^^
+
 #IImmediate (System) Commands#
 #J
  \FINISH
@@ -2289,7 +2595,11 @@ Analysis of results
  \FOREIGN PROGRAM= MODE=
  END
 #
-#YInitial Data Input#
+
+^^^^^^^^^^^^^^^^^^
+Initial Data Input
+^^^^^^^^^^^^^^^^^^
+
 #I\QUICKSTART - Abbreviated startup command#
 #N   8#
 #J
@@ -2391,7 +2701,11 @@ Analysis of results
  SHAPE
  END
 #
-#YReflection Data Input#
+
+^^^^^^^^^^^^^^^^^^^^^
+Reflection Data Input
+^^^^^^^^^^^^^^^^^^^^^
+
 #I\LIST 6 - Simple input of F or Fsq#
 #N   4#
 #J
@@ -2476,7 +2790,11 @@ Analysis of results
  PARAMETERS p .....
  END
 #
-#YAtomic and Structural Parameters#
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Atomic and Structural Parameters
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 #I\LIST 5 - Atoms and other Parameters#
 #N  10#
 #J
@@ -2593,7 +2911,11 @@ Analysis of results
  TETRAHEDRON x
  END
 #
-#YStructure Factors and Least Squares#
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Structure Factors and Least Squares
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 #I\LIST 23 Structure Factor Control List#
 #N   7#
 #J
@@ -2743,7 +3065,11 @@ Analysis of results
  DIFFRACTION geometry= mode=
  END
 #
-#YFourier Routines#
+
+^^^^^^^^^^^^^^^^
+Fourier Routines
+^^^^^^^^^^^^^^^^
+
 #I\LIST 14 - Fourier Section Limits#
 #N   9#
 #J
@@ -2789,7 +3115,11 @@ Analysis of results
  SECTION minimum= number= step=
  END
 #
-#YAnalysis of Results#
+
+^^^^^^^^^^^^^^^^^^^
+Analysis of Results
+^^^^^^^^^^^^^^^^^^^
+
 #I\DISTANCE - Distance angles calculations#
 #N  13#
 #J

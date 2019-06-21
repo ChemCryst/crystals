@@ -341,7 +341,7 @@ Text Window:
 ^^^^^^^^^^^^
 A summary of what CRYSTALS is doing (the full details are in 
 *bfile##.lis*).  The window can be widened by dragging the right hand edge, and
-can be scrolled back with the side scroll bar.#
+can be scrolled back with the side scroll bar.
 |br|\
 Hyper-links to other output and files appear in blue.
 
@@ -367,7 +367,8 @@ a special character. The end is indicated by the word END.
 The permitted special characters are: "#", "\" and "&".
 |br|\ See the section :ref:`Syntax of Commands` for more details.
 |br|\  
-This is where you would enter CRYSTALS commands directly.  Most 
+This is where you would enter CRYSTALS commands directly.  See :ref:`command-line` for 
+more details. Most 
 complicated sets of commands are now generally created via the SCRIPTS, but some useful 
 commands are:  
 
