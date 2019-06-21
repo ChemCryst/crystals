@@ -3,36 +3,36 @@
 %                                                                               
 ^^WI               @ 1,1 TOOLBAR _MODBAR                                        
 ^^WI               {                                                            
-^^WI                 TOOL _MROT tool_rot.bmp 'Rotate structure'                           
+^^WI                 TOOL _MROT arrow.png 'Rotate structure'                           
 ^^WI                 '#SCRIPT XMODVIEW_NROT' TOGGLE DISABLEIF='IN'                     
 ^^WI                 ITEM _MROT STATE=ON                                        
-^^WI                 TOOL _MRECT tool_rect.bmp 'Drag to select atoms'                         
+^^WI                 TOOL _MRECT select.png 'Drag to select atoms'                         
 ^^WI                 '#SCRIPT XMODVIEW_NSEL' TOGGLE DISABLEIF='IN'                     
-^^WI                 TOOL _MPOLY tool_poly.bmp 'Draw polygon to select atoms'                        
+^^WI                 TOOL _MPOLY poly.png 'Draw polygon to select atoms'                        
 ^^WI                 '#SCRIPT XMODVIEW_NPOLY' TOGGLE DISABLEIF='IN'                    
-^^WI                 TOOL _UNSEL tool_unsl.bmp 'Unselect all atoms'                       
+^^WI                 TOOL _UNSEL unselect.png 'Unselect all atoms'                       
 ^^WI                 '^^CO SET MODEL01 SELECT ALL=NO'                           
 ^^WI                 ENABLEIF='L1 L2 L5' DISABLEIF='SEL0'                       
 ^^WI                 SPLIT                                                      
-^^WI                 TOOL _MZOOM tool_zoom.bmp 'Zoom to selected atoms'                           
+^^WI                 TOOL _MZOOM tool_zoom.png 'Zoom to selected atoms'                           
 ^^WI                 '^^CO SET MODEL01 ZOOMATOMS YES SELECT ALL=NO' DISABLEIF='SEL0'
-^^WI                 TOOL _MZOOM tool_norm.bmp 'Unzoom'                         
+^^WI                 TOOL _MZOOM tool_norm.png 'Unzoom'                         
 ^^WI                 '^^CO SET MODEL01 AUTOSIZE=YES ZOOMATOMS=NO'               
 ^^WI                 ENABLEIF='ZOOMED'                                          
 ^^WI                 SPLIT                                                      
-^^WI                 TOOL _MBALL tool_ball.bmp 'Ball and stick view'                           
+^^WI                 TOOL _MBALL ball.png 'Ball and stick view'                           
 ^^WI                 '#SCRIPT XMODVIEW_NCOV' TOGGLE
 ^^WI                   DISABLEIF='IN' ENABLEIF='L5'
 ^^WI                 ITEM _MBALL STATE=ON                                       
-^^WI                 TOOL _MADP tool_adp.bmp 'Show displacement parameters'             
+^^WI                 TOOL _MADP elli.png 'Show displacement parameters'             
 ^^WI                 '#SCRIPT XMODVIEW_NTHERM' TOGGLE
 ^^WI                   DISABLEIF='IN' ENABLEIF='L5'
 ^^WI                 SPLIT                                                      
-^^WI                 TOOL _MSHOWH tool_showh.bmp 'Show H'           
+^^WI                 TOOL _MSHOWH showh.png 'Show H'           
 ^^WI                 '#SCRIPT XMODVIEW_NTOGGLEH' TOGGLE
 ^^WI                   DISABLEIF='IN' ENABLEIF='L5'
 ^^WI                 ITEM _MSHOWH STATE=ON 
-^^WI                 TOOL _MCYCLER cycle.bmp 'Cycle residues'           
+^^WI                 TOOL _MCYCLER cycler.png 'Cycle residues'           
 ^^WI                 '#SCRIPT XMODVIEW_NCYCLER' DISABLEIF='IN' ENABLEIF='L5'
 ^^WI                 DEFINEPOPUPMENU POP 'Cycle'
 ^^WI                 ITEM _SHOR '&Show all residues' '#SCRIPT XMODVIEW_NSHOWR'
@@ -40,13 +40,13 @@
 ^^WI                 ITEM _ASSIGNR '&Assign residues' '#EDIT_NINSERT RESIDUE_NEND'
 ^^WI                                 DISABLEIF='IN' ENABLEIF='L5'
 ^^WI                 ENDDEFINEMENU
-^^WI                 TOOL _MCYCLEG cycle.bmp 'Cycle group'           
+^^WI                 TOOL _MCYCLEG cycleg.png 'Cycle group'           
 ^^WI                 '#SCRIPT XMODVIEW_NCYCLEG' DISABLEIF='IN' ENABLEIF='L5'
 ^^WI                 DEFINEPOPUPMENU POP 'Cycle group'
 ^^WI                 ITEM _SHOR '&Show all disorder parts' '#SCRIPT XMODVIEW_NSHOWG'
 ^^WI                      ICON='nocycle.bmp' DISABLEIF='IN' ENABLEIF='L5'
 ^^WI                 ENDDEFINEMENU
-^^WI                 TOOL _MOPT tool_opt.bmp 'Atom and bond display options'                           
+^^WI                 TOOL _MOPT setting.png 'Atom and bond display options'                           
 ^^WI                 '#SCRIPT XVIEWOPT' TOGGLE DISABLEIF='IN'
 ^^WI               }                                                            
 %%END SSR                                                                       
