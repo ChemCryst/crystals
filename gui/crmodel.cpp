@@ -106,6 +106,7 @@
 #include    "crconstants.h"
 #include    <string>
 #include    <sstream>
+#include    <iomanip>
 using namespace std;
 #include    "ccrect.h"
 #include    "crgrid.h"
@@ -377,7 +378,7 @@ CcParse CrModel::ParseInput( deque<string> &  tokenList )
             m_style.showgroup = m_ModelDoc->FindNextGroupNumber(m_style.showgroup);
             if ( m_style.showgroup ) {
                 ostringstream s;
-                s << "Showing parts *" << m_style.showgroup;
+                s << "Showing parts *" << std::setfill('0') << std::setw(3) << m_style.showgroup;
                 if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->CreateMessagePopup( s.str(), kGroup );
             } else {
                 if ( ptr_to_cxObject ) ((CxModel*)ptr_to_cxObject)->DeleteMessagePopup( kGroup );
