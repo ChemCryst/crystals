@@ -157,6 +157,8 @@ CxToolBar * CxToolBar::CreateCxToolBar( CrToolBar * container, CxGrid * guiParen
 // so this gets around that by letting us control the position of the
 // parent window.
 
+    wxImage::AddHandler(new wxPNGHandler);  // For handling PNGs.
+
     CxToolBar *theCxToolBar = new CxToolBar( container );
 
 
@@ -280,22 +282,24 @@ bool    CxToolBar::AddTool( CcTool* newTool )
     struct stat buf;
       if ( stat(file.c_str(),&buf)==0 )
       {
-        wxImage myimage ( file.c_str(), wxBITMAP_TYPE_BMP );
-		unsigned char tr = myimage.GetRed(0,0);
-		unsigned char tg = myimage.GetGreen(0,0);
-		unsigned char tb = myimage.GetBlue(0,0);
-		wxColour ncol = wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT);
-		for (int x = 0; x < myimage.GetWidth(); ++x ) {
-			for (int y = 0; y < myimage.GetHeight(); ++y ) {
-				if ( myimage.GetRed(x,y) == tr ) {
-					if ( myimage.GetGreen(x,y) == tg ) {
-						if ( myimage.GetBlue(x,y) == tb ) {
-							myimage.SetRGB(x,y,ncol.Red(),ncol.Green(),ncol.Blue());
-						}
-					}
-				}
-			}
-		}
+        wxImage myimage ( file.c_str(), wxBITMAP_TYPE_ANY );
+        if ( ! myimage.HasAlpha() ) {  //If no transparency, assume 0,0 pixel is background colour and remove it.
+            unsigned char tr = myimage.GetRed(0,0);
+            unsigned char tg = myimage.GetGreen(0,0);
+            unsigned char tb = myimage.GetBlue(0,0);
+            wxColour ncol = wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT);
+            for (int x = 0; x < myimage.GetWidth(); ++x ) {
+                for (int y = 0; y < myimage.GetHeight(); ++y ) {
+                    if ( myimage.GetRed(x,y) == tr ) {
+                        if ( myimage.GetGreen(x,y) == tg ) {
+                            if ( myimage.GetBlue(x,y) == tb ) {
+                                myimage.SetRGB(x,y,ncol.Red(),ncol.Green(),ncol.Blue());
+                            }
+                        }
+                    }
+                }
+            }
+        }
         wxBitmap mymap ( myimage, -1 );
 
         wxBitmap mydmap;
@@ -309,7 +313,7 @@ bool    CxToolBar::AddTool( CcTool* newTool )
 //			ostringstream strstrm;
 //			strstrm << "Disabled image: " << disabledfile;
 //			LOGERR(strstrm.str() );
-            mydmap.LoadFile( disabledfile.c_str(), wxBITMAP_TYPE_BMP  );
+            mydmap.LoadFile( disabledfile.c_str(), wxBITMAP_TYPE_ANY  );
         }
 //		ostringstream strstrm;
 //		strstrm << "Disabled image: " << mydmap.Ok()?"OK":"NOT OK";
