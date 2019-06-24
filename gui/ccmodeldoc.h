@@ -117,6 +117,9 @@
 
 #include <string>
 #include <list>
+#include <map>
+#include <set>
+
 using namespace std;
 
 #include "ccpoint.h"
@@ -219,6 +222,10 @@ class CcModelDoc
         void    SendInsertText( string s );
         int     FindNextResidueNumber(int current);
         int     FindNextGroupNumber(int current);
+
+        bool VisibleAtomStyle( CcModelStyle * style, CcModelAtom & atom );
+
+        map<int, set<int>> m_assemblies;    // Store set of group numbers for each assembly.
 
 	protected:
 
