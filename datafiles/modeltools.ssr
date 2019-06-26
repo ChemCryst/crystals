@@ -37,7 +37,7 @@
 ^^WI                   DISABLEIF='IN' ENABLEIF='L5'
 ^^WI                 ITEM _MSHOWH STATE=ON 
 ^^WI                 TOOL _MCYCLER cycler.png 'Cycle residues'           
-^^WI                 '^^CO SET MODEL02 CYCLER' DISABLEIF='IN' ENABLEIF='L5'
+^^WI                 '^^CO SET MODEL01 CYCLER' DISABLEIF='IN' ENABLEIF='L5'
 ^^WI                 DEFINEPOPUPMENU POP 'Cycle'
 ^^WI                 ITEM _SHOR '&Show all residues' '^^CO SET MODEL01 SHOWR'
 ^^WI                      ICON='nocycle.bmp' DISABLEIF='IN' ENABLEIF='L5'
@@ -45,7 +45,7 @@
 ^^WI                                 DISABLEIF='IN' ENABLEIF='L5'
 ^^WI                 ENDDEFINEMENU
 ^^WI                 TOOL _MCYCLEG cycleg.png 'Cycle group'           
-^^WI                 '^^CO SET MODEL02 CYCLEG' DISABLEIF='IN' ENABLEIF='L5'
+^^WI                 '^^CO SET MODEL01 CYCLEG' DISABLEIF='IN' ENABLEIF='L5'
 ^^WI                 DEFINEPOPUPMENU POP 'Cycle group'
 ^^WI                 ITEM _SHOR '&Show all disorder parts' '^^CO SET MODEL01 SHOWG'
 ^^WI                      ICON='nocycle.bmp' DISABLEIF='IN' ENABLEIF='L5'
