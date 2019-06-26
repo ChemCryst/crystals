@@ -51,14 +51,14 @@ Using user-specified editor.
 ^^WI          @ 1,1 TOOLBAR _XB                                        
 ^^WI               {                                                            
 ^^WI                 TOOL _XROT arrow.png 'Rotate structure'                           
-^^WI '^^CO SET _XB ITEM _XRECT STATE OFF ITEM _XPOLY STATE OFF SET MODEL02 MODROTATE MOUSEACTION INSERTIN TEXT5'
+^^WI '^^CO SET _XB ITEM _XROT STATE ON ITEM _XRECT STATE OFF ITEM _XPOLY STATE OFF SET MODEL02 MODROTATE MOUSEACTION INSERTIN TEXT5'
 ^^WI                 TOGGLE 
 ^^WI                 ITEM _XROT STATE=ON                                        
 ^^WI                 TOOL _XRECT select.png 'Drag to select atoms'                         
-^^WI '^^CO SET _XB ITEM _XROT STATE OFF ITEM _XPOLY STATE OFF SET MODEL02 MODSELECT MOUSEACTION SELECTATOM'
+^^WI '^^CO SET _XB ITEM _XRECT STATE ON ITEM _XROT STATE OFF ITEM _XPOLY STATE OFF SET MODEL02 MODSELECT MOUSEACTION SELECTATOM'
 ^^WI                 TOGGLE 
 ^^WI                 TOOL _XPOLY poly.png 'Draw polygon to select atoms'                        
-^^WI '^^CO SET _XB ITEM _XROT STATE OFF ITEM _XRECT STATE OFF SET MODEL02 MODSELECT POLY MOUSEACTION SELECTATOM'
+^^WI '^^CO SET _XB ITEM _XPOLY STATE ON ITEM _XROT STATE OFF ITEM _XRECT STATE OFF SET MODEL02 MODSELECT POLY MOUSEACTION SELECTATOM'
 ^^WI                 TOGGLE 
 ^^WI                 TOOL _UNSEL unselect.png 'Unselect all atoms'                       
 ^^WI '^^CO SET _XB ITEM _XROT STATE ON ITEM _XPOLY STATE OFF ITEM _XRECT STATE OFF SET MODEL02 SELECT ALL=NO MODROTATE MOUSEACTION INSERTIN TEXT5'                           
