@@ -341,6 +341,18 @@ IF (Fortran_COMPILER_NAME MATCHES "gfortran")  # gfortran
     SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -std=gnu++11 -O1 -g")
     SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O1 -g")
 
+
+    ENABLE_LANGUAGE(RC)
+#    set(_WINDRES_INCLUDE_DIRS -I${CMAKE_CURRENT_SOURCE_DIR})
+    foreach(wx_include_dir ${wxWidgets_INCLUDE_DIRS})
+        set(_WINDRES_INCLUDE_DIRS "${_WINDRES_INCLUDE_DIRS} -I${wx_include_dir}")
+    endforeach(wx_include_dir ${wxWidgets_INCLUDE_DIRS})  
+    set(CMAKE_RC_COMPILER_INIT windres)
+    SET(CMAKE_RC_COMPILE_OBJECT
+    "<CMAKE_RC_COMPILER> -O coff <DEFINES> -i <SOURCE> -o <OBJECT> ${_WINDRES_INCLUDE_DIRS}")
+
+    message(STATUS ${CMAKE_RC_COMPILE_OBJECT})
+
 ELSEIF ( IFORT_COMPILER ) # ifort (untested)
 
   IF (UNIX)
@@ -610,7 +622,7 @@ ENDFOREACH()
 
 if ( useGUI )
     INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/crys_fortran)
-    ADD_EXECUTABLE (crystals WIN32 ${scpfiles} ${datfiles} ${srtfiles} $<TARGET_OBJECTS:CrystalsUserInterface> ${CMAKE_SOURCE_DIR}/gui/fwrapper_gui.F90 ${CMAKE_SOURCE_DIR}/gui/fwrapperimp_gui.F90 gui/gcrystals.cpp crystals/crystals.F)
+    ADD_EXECUTABLE (crystals WIN32 ${scpfiles} ${datfiles} ${srtfiles} $<TARGET_OBJECTS:CrystalsUserInterface> ${CMAKE_SOURCE_DIR}/gui/fwrapper_gui.F90 ${CMAKE_SOURCE_DIR}/gui/fwrapperimp_gui.F90 gui/gcrystals.cpp crystals/crystals.F gui/wx.rc)
     ADD_EXECUTABLE (crystalscl ${scpfiles} ${datfiles} ${srtfiles} crystals/crystals-cl.F ${CMAKE_SOURCE_DIR}/gui/fwrapperimp_cl.F90 )
 
     if(MSYS)
