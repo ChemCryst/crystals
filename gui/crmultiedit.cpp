@@ -1,4 +1,4 @@
-////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
 
 //   CRYSTALS Interface      Class CrMultiEdit
 
@@ -171,17 +171,29 @@ CcParse CrMultiEdit::ParseInput( deque<string> &  tokenList )
                 mNoEcho = true;
                 break;
             }
-                  case kTSpew:
-                  {
+            case kTSpew:
+            {
                         tokenList.pop_front(); //Remove kTSpew tokens.
                         // Dump whole text window to Crystals input.
                         ((CxMultiEdit*)ptr_to_cxObject)->Spew();
                         break;
-                  }
+            }
             case kTEmpty:
             {
                    tokenList.pop_front(); //Remove kTEmpty tokens.
                    ((CxMultiEdit*)ptr_to_cxObject)->Empty();
+                   break;
+            }
+            case kTFind:
+            {
+                   tokenList.pop_front(); //Remove kTEmpty tokens.
+                   ((CxMultiEdit*)ptr_to_cxObject)->FindDialog();
+                   break;
+            }
+            case kTFindNext:
+            {
+                   tokenList.pop_front(); //Remove kTEmpty tokens.
+                   ((CxMultiEdit*)ptr_to_cxObject)->FindNext();
                    break;
             }
 

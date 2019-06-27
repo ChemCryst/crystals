@@ -39,6 +39,10 @@ Using user-specified editor.
 ^^WI   ITEM REVERT  '&Reload original file	Ctrl+R'  'BRR'
 ^^WI   ITEM CLOSE   '&Close	ALT+F4'  'BXX'
 ^^WI  ENDMENU
+^^WI  MENU _SEARCH    '&Search'
+^^WI   ITEM FIND    '&Find	Ctrl+F' 'FIND' 
+^^WI   ITEM FIND    '&Find next	F3' 'NEXT' 
+^^WI  ENDMENU
 ^^WI ENDDEFINEMENU
 ^^WI GRID OUTER NROWS=1 NCOLS=3
 ^^WI {
@@ -118,7 +122,7 @@ Using user-specified editor.
 %TRANSFER "^^CO SET TEXT5 LOAD '" // EDITOR_FILE // "'" TO DISPLAY
 %%
 % LOOP
-%   VERIFY BOK BXX BRR BSS TOGGLEH ASSIGN
+%   VERIFY BOK BXX BRR BSS FIND NEXT
 %   GET SILENT NOSTORE FINAL ABBREVIATED 'BOK?' ' '
 %   IF VALUE .EQ. 1 THEN
 %% save and close
@@ -172,28 +176,14 @@ Using user-specified editor.
 ^^??   _ANYTHING_ EXISTS
 %      GET NOSTORE SILENT TEXT 'Waiting for save' ' '
 %      EVALUATE EDITOR_OK = TRUE
-%% TOGGLEH
 %   ELSE IF ( VALUE .EQ. 5 ) THEN
-%      BLOCK                                                                        
-^^?? _XB STATE _XSHOWH
-%        VERIFY ON OFF
-%        GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                  
-%        CASE VALUE
-%          BLOCK
-%% ^^CO SET _XB ITEM _XSHOWH STATE OFF
-^^CO SET MODEL02 SHOWH NO
-%          END BLOCK                                                                    
-%          BLOCK
-%% ^^CO SET _XB ITEM _XSHOWH STATE ON
-^^CO SET MODEL02 SHOWH YES
-%          END BLOCK                                                                    
-%        END CASE                                                                      
-%      END BLOCK
-%% ASSIGN
+%% Search
+%TRANSFER "^^CO SET TEXT5 FIND" TO DISPLAY
+%      EVALUATE EDITOR_OK = TRUE
 %   ELSE IF ( VALUE .EQ. 6 ) THEN
-%      COPY '#EDIT'
-%      COPY 'INSERT RESIDUE'
-%      COPY 'END'
+%% Search
+%TRANSFER "^^CO SET TEXT5 NEXT" TO DISPLAY
+%      EVALUATE EDITOR_OK = TRUE
 %   END IF
 % END LOOP
 %END SCRIPT
