@@ -74,11 +74,15 @@ class CxMultiEdit;
 #define kSNoEcho        "NOECHO"
 #define kSSpew          "SPEW"
 #define kSLoad          "LOAD"
+#define kSFind          "FIND"
+#define kSFindNext      "NEXT"
 
 enum {
  kTNoEcho     = 1900,
  kTSpew,
- kTLoad
+ kTLoad,
+ kTFind,
+ kTFindNext
 };
 
 
