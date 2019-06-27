@@ -103,6 +103,9 @@ CxMultiEdit::CxMultiEdit( CrMultiEdit * container )
       mHeight = 40;
       lastsearch = "";
       lastflags = 0;
+      m_dlgFind =
+      m_dlgReplace = NULL;
+
 }
 
 wxBEGIN_EVENT_TABLE(CxMultiEdit, wxStyledTextCtrl)
