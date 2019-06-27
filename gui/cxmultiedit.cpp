@@ -59,6 +59,7 @@
 
 #include    "crystalsinterface.h"
 #include    <string>
+#include    <wx/utils.h>
 using namespace std;
 
 #include    "cxmultiedit.h"
@@ -67,7 +68,6 @@ using namespace std;
 #include    "crmultiedit.h"
 #include    "crgrid.h"
 
-#ifdef CRY_USEWX
 enum
 {
     MARGIN_LINE_NUMBERS,
@@ -81,7 +81,6 @@ enum
  #ifdef DrawText
   #undef DrawText
  #endif
-#endif
 
 
 int CxMultiEdit::mMultiEditCount = kMultiEditBase;
@@ -172,6 +171,7 @@ bool CxMultiEdit::Find(wxString &text, int flags){
 
 
     if ( found == wxSTC_INVALID_POSITION ) {   //Not found anywhere
+            wxBell();
             if ( m_dlgReplace )  m_dlgReplace->RequestUserAttention();
         return false;
     } else {
