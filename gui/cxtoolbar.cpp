@@ -125,6 +125,8 @@
 
 #include    "crtoolbar.h"
 #include    "cxtoolbar.h"
+#include    "crmenu.h"
+#include    "cxmenu.h"
 #include    "cxgrid.h"
 #include    "cccontroller.h"
 
@@ -154,6 +156,8 @@ CxToolBar * CxToolBar::CreateCxToolBar( CrToolBar * container, CxGrid * guiParen
 // MFC likes to move the toolbar to the top or bottom of the parent window,
 // so this gets around that by letting us control the position of the
 // parent window.
+
+    wxImage::AddHandler(new wxPNGHandler);  // For handling PNGs.
 
     CxToolBar *theCxToolBar = new CxToolBar( container );
 
@@ -268,46 +272,64 @@ bool    CxToolBar::AddTool( CcTool* newTool )
       i++;
 #ifdef CRY_OSWIN32
       string file = dir + "script\\" + newTool->tImage;
+      string disabledfile = dir + "script\\d_" + newTool->tImage;
 #else
       string file = dir + "script/" + newTool->tImage;
+      string disabledfile = dir + "script/d_" + newTool->tImage;
 #endif
 
 //  	LOGERR("Adding script dir icon");
     struct stat buf;
       if ( stat(file.c_str(),&buf)==0 )
       {
-        wxImage myimage ( file.c_str(), wxBITMAP_TYPE_BMP );
-		unsigned char tr = myimage.GetRed(0,0);
-		unsigned char tg = myimage.GetGreen(0,0);
-		unsigned char tb = myimage.GetBlue(0,0);
-		wxColour ncol = wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT);
-		for (int x = 0; x < myimage.GetWidth(); ++x ) {
-			for (int y = 0; y < myimage.GetHeight(); ++y ) {
-				if ( myimage.GetRed(x,y) == tr ) {
-					if ( myimage.GetGreen(x,y) == tg ) {
-						if ( myimage.GetBlue(x,y) == tb ) {
-							myimage.SetRGB(x,y,ncol.Red(),ncol.Green(),ncol.Blue());
-						}
-					}
-				}
-			}
-		}
-
-
+        wxImage myimage ( file.c_str(), wxBITMAP_TYPE_ANY );
+        if ( ! myimage.HasAlpha() ) {  //If no transparency, assume 0,0 pixel is background colour and remove it.
+            unsigned char tr = myimage.GetRed(0,0);
+            unsigned char tg = myimage.GetGreen(0,0);
+            unsigned char tb = myimage.GetBlue(0,0);
+            wxColour ncol = wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT);
+            for (int x = 0; x < myimage.GetWidth(); ++x ) {
+                for (int y = 0; y < myimage.GetHeight(); ++y ) {
+                    if ( myimage.GetRed(x,y) == tr ) {
+                        if ( myimage.GetGreen(x,y) == tg ) {
+                            if ( myimage.GetBlue(x,y) == tb ) {
+                                myimage.SetRGB(x,y,ncol.Red(),ncol.Green(),ncol.Blue());
+                            }
+                        }
+                    }
+                }
+            }
+        }
         wxBitmap mymap ( myimage, -1 );
+
+        wxBitmap mydmap;
+//        {
+//            ostringstream strstrm;
+//            strstrm << "Checking disabled image: " << disabledfile;
+//            LOGERR(strstrm.str() );
+//        }
+        if ( stat(disabledfile.c_str(),&buf)==0 )   // Look for disabled version of image (prefix d_ to bitmap filename)
+        {
+//			ostringstream strstrm;
+//			strstrm << "Disabled image: " << disabledfile;
+//			LOGERR(strstrm.str() );
+            mydmap.LoadFile( disabledfile.c_str(), wxBITMAP_TYPE_ANY  );
+        }
+//		ostringstream strstrm;
+//		strstrm << "Disabled image: " << mydmap.Ok()?"OK":"NOT OK";
+//		LOGERR(strstrm.str() );
+        
         if( mymap.Ok() )
         {
           noLuck = false;
-// Deprecated:m_ToolBar->AddTool(newTool->CxID, mymap, newTool->tText.c_str(), "" );
-//          m_ToolBar->AddTool(newTool->CxID, "text", 
-			                 //mymap, wxEmptyString, 
-							 //(newTool->toggleable ? wxITEM_CHECK : wxITEM_NORMAL) );
             if (newTool->toggleable) {
                 m_ToolBar->AddCheckTool(newTool->CxID, newTool->tText.c_str(),
-			                 mymap, wxNullBitmap, newTool->tText.c_str());
+			                 mymap, mydmap.Ok()?mydmap:wxNullBitmap, newTool->tText.c_str());
             } else {
-                m_ToolBar->AddTool(newTool->CxID, newTool->tText.c_str(),
-                                   mymap, newTool->tText.c_str());
+                m_ToolBar->AddTool(newTool->CxID, newTool->tText.c_str(),          // id and label
+                                   mymap, mydmap.Ok()?mydmap:wxNullBitmap,         // bitmap and disabled bitmap
+                                   newTool->m_popupToolMenu ? wxITEM_DROPDOWN : wxITEM_NORMAL,  // kind
+                                   newTool->tText.c_str() );                      // help string
             }
 
 //		  if ( newTool->toggleable ) {
@@ -316,7 +338,9 @@ bool    CxToolBar::AddTool( CcTool* newTool )
 //			LOGERR(strstrm.str() );
 //		  }
 
-
+          if ( newTool->m_popupToolMenu ) {
+            m_ToolBar->SetDropdownMenu(newTool->CxID, (CxMenu *) newTool->m_popupToolMenu->GetWidget()); 
+          }
 		  m_ToolBar->Realize();
           m_ImageIndex++;
             //          m_totWidth += 23;

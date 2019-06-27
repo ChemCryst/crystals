@@ -212,7 +212,7 @@ CxModel::~CxModel()
   delete [] mat;
   delete m_pixels;
   DeletePopup();
-  DeleteMessagePopup();
+  DeleteMessagePopup(0);
 #ifdef CRY_USEWX
   delete m_context;
 #endif
@@ -1709,26 +1709,38 @@ void CxModel::DeletePopup()
 {
   if ( m_TextPopup )
   {
-#ifdef CRY_USEMFC
-//    m_TextPopup->DestroyWindow();
-    delete m_TextPopup;
-#else
     m_TextPopup->Destroy();
 //    m_DoNotPaint = false;
 	NeedRedraw(false);
-#endif
     m_TextPopup=nil;
   }
 }
 
-void CxModel::DeleteMessagePopup()
+void CxModel::OrganizeMessagePopups() 
 {
-  if ( m_MessagePopup )
-  {
-    m_MessagePopup->Destroy();
-    NeedRedraw(false);
-    m_MessagePopup=nil;
+    map<int,mywxStaticText*>::iterator mi;
+    int offset = 2;
+    for ( mi=messages.begin(); mi != messages.end(); ++mi) {
+          mywxStaticText* mst = (*mi).second;
+         mst->Move(2,offset);
+
+         offset += mst->GetSize().GetHeight() + 2;
+    }
+    
+}
+
+void CxModel::DeleteMessagePopup(int id)   // default remove all messages
+{
+  map<int,mywxStaticText*>::iterator mi = messages.find(id);
+  if ( mi != messages.end() ){
+      (*mi).second->Destroy();
+      messages.erase(mi);
+//      m_MessagePopup->Destroy();
+      OrganizeMessagePopups();
+      NeedRedraw(false);
   }
+//      m_MessagePopup=nil;
+
 }
 
 void CxModel::CreatePopup(string atomname, CcPoint point)
@@ -1746,17 +1758,19 @@ void CxModel::CreatePopup(string atomname, CcPoint point)
 }
 
 //Popup a status / info / warning message at top left corner. Message replaces previous message.
-void CxModel::CreateMessagePopup(string message)
+void CxModel::CreateMessagePopup(string message, int id)
 {
-  DeleteMessagePopup();
+  DeleteMessagePopup(id);
 
   int cx,cy;
   GetTextExtent( message.c_str(), &cx, &cy ); //using cxmodel's DC to work out text extent before creation.
                                                    //then can create in one step.
-  m_MessagePopup = new mywxStaticText(this, -1, message.c_str(),
+  mywxStaticText* messagePopup = new mywxStaticText(this, -1, message.c_str(),
                                  wxPoint(2,2),
                                  wxSize(cx+4,cy+4),
                                  wxALIGN_CENTER|wxSIMPLE_BORDER) ;
+  messages.insert(make_pair(id, messagePopup));
+  OrganizeMessagePopups();
 }
 
 

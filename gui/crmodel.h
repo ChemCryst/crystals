@@ -104,6 +104,7 @@ public:
    int normal_res;
    bool showh;
    int showres;
+   int showgroup;
    int bond_style;
    CxModel* m_modview;
    int min_peak_height_to_show;
@@ -219,6 +220,15 @@ class   CrModel : public CrGUIElement
 #define kSShowAll           "ALL"
 #define kSShowAtomBonded    "ATOMBONDED"
 #define kSShowBonded        "BONDED"
+#define kSCycleGroup        "CYCLEG"
+#define kSShowGroups        "SHOWG"
+
+enum
+{
+  kResidue = 1,
+  kShowH,
+  kGroup
+};
 
 
 enum
@@ -273,7 +283,9 @@ enum
  kTShowResidues,
  kTShowAll,
  kTShowAtomBonded,
- kTShowBonded
+ kTShowBonded,
+ kTCycleGroup,
+ kTShowGroups
 };
 
 

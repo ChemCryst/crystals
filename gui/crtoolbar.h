@@ -30,6 +30,7 @@ using namespace std;
 
 class CrToolBar;
 class CcStatus;
+class CrMenu;
 
 class CcTool
 {
@@ -44,6 +45,7 @@ public:
   bool toggleable;
   int CxID;
   CrToolBar* tTool;
+  CrMenu* m_popupToolMenu;
 };
 
 #define CT_NORMAL 0

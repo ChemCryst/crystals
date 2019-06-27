@@ -51,11 +51,62 @@ Using user-specified editor.
 ^^WI       @ 1,1 MULTIEDIT TEXT5 '' NROWS=25 NCOLS=80
 ^^WI         IGNORE DISABLED=NO
 ^^WI     }
-^^WI     ITEM GRID _GREDMOD NROWS=3 NCOLS=1 {
-^^WI       @ 1,1 MODELWINDOW MODEL01 'N' NROWS=5 NCOLS=65                     
+^^WI     ITEM GRID _GREDMOD NROWS=4 NCOLS=1 {
+^^WI          @ 1,1 TOOLBAR _XB                                        
+^^WI               {                                                            
+^^WI                 TOOL _XROT arrow.png 'Rotate structure'                           
+^^WI '^^CO SET _XB ITEM _XROT STATE ON ITEM _XRECT STATE OFF ITEM _XPOLY STATE OFF SET MODEL02 MODROTATE MOUSEACTION INSERTIN TEXT5'
+^^WI                 TOGGLE 
+^^WI                 ITEM _XROT STATE=ON                                        
+^^WI                 TOOL _XRECT select.png 'Drag to select atoms'                         
+^^WI '^^CO SET _XB ITEM _XRECT STATE ON ITEM _XROT STATE OFF ITEM _XPOLY STATE OFF SET MODEL02 MODSELECT MOUSEACTION SELECTATOM'
+^^WI                 TOGGLE 
+^^WI                 TOOL _XPOLY poly.png 'Draw polygon to select atoms'                        
+^^WI '^^CO SET _XB ITEM _XPOLY STATE ON ITEM _XROT STATE OFF ITEM _XRECT STATE OFF SET MODEL02 MODSELECT POLY MOUSEACTION SELECTATOM'
+^^WI                 TOGGLE 
+^^WI                 TOOL _UNSEL unselect.png 'Unselect all atoms'                       
+^^WI '^^CO SET _XB ITEM _XROT STATE ON ITEM _XPOLY STATE OFF ITEM _XRECT STATE OFF SET MODEL02 SELECT ALL=NO MODROTATE MOUSEACTION INSERTIN TEXT5'                           
+^^WI                 ENABLEIF='L1 L2 L5' DISABLEIF='SEL0'                       
+^^WI                 SPLIT                                                      
+^^WI                 TOOL _XZOOM tool_zoom.png 'Zoom to selected atoms'                           
+^^WI '^^CO SET MODEL02 ZOOMATOMS YES SELECT ALL=NO MODROTATE MOUSEACTION INSERTIN TEXT5 SET _XB ITEM _XROT STATE ON ITEM _XPOLY STATE OFF ITEM _XRECT STATE OFF' 
+^^WI                 DISABLEIF='SEL0'
+^^WI                 TOOL _XZOOM tool_norm.png 'Unzoom'                         
+^^WI                 '^^CO SET MODEL02 AUTOSIZE=YES ZOOMATOMS=NO'               
+^^WI                 ENABLEIF='ZOOMED'                                          
+^^WI                 SPLIT                                                      
+^^WI                 TOOL _XBALL ball.png 'Ball and stick view'                           
+^^WI '^^CO SET _XB ITEM _XBALL STATE ON ITEM _XADP STATE OFF SET MODEL02 RADTYPE=COV RADSCALE=250' 
+^^WI                 TOGGLE
+^^WI                 ENABLEIF='L5'
+^^WI                 ITEM _XBALL STATE=ON                                       
+^^WI                 TOOL _XADP elli.png 'Show displacement parameters'             
+^^WI '^^CO SET _XB ITEM _XADP STATE ON ITEM _XBALL STATE OFF SET MODEL02 RADTYPE=THERMAL RADSCALE=250' 
+^^WI                 TOGGLE
+^^WI                   ENABLEIF='L5'
+^^WI                 SPLIT                                                      
+^^WI                 TOOL _XSHOWH showh.png 'Show H'           
+^^WI                 'TOGGLEH' TOGGLE ENABLEIF='L5'
+^^WI                 ITEM _XSHOWH STATE=ON 
+^^WI                 TOOL _XCYCLER cycler.png 'Cycle residues'           
+^^WI                 '^^CO SET MODEL02 CYCLER' ENABLEIF='L5'
+^^WI                 DEFINEPOPUPMENU POP 'Cycle'
+^^WI                 ITEM _SHOR '&Show all residues' '^^CO SET MODEL02 SHOWR'
+^^WI                      ICON='nocycle.bmp' ENABLEIF='L5'
+^^WI                 ITEM _ASSIGNR '&Assign residues' 'ASSIGN'
+^^WI                                 ENABLEIF='L5'
+^^WI                 ENDDEFINEMENU
+^^WI                 TOOL _XCYCLEG cycleg.png 'Cycle group'           
+^^WI                 '^^CO SET MODEL02 CYCLEG' ENABLEIF='L5'
+^^WI                 DEFINEPOPUPMENU POP 'Cycle group'
+^^WI                 ITEM _SHOR '&Show all disorder parts' '^^CO SET MODEL02 SHOWG'
+^^WI                      ICON='nocycle.bmp' ENABLEIF='L5'
+^^WI                 ENDDEFINEMENU
+^^WI               }                                                            
+^^WI       @ 2,1 MODELWINDOW MODEL02 'N' NROWS=5 NCOLS=65                     
 ^^WI            ATTACH L5 RADSCALE=250 RADTYPE=COV                              
 ^^WI            MOUSEACTION INSERTIN TEXT5
-^^WI       @ 3,1 STATIC T1 'Click an atom to insert into editor'
+^^WI       @ 4,1 STATIC T1 'Click an atom to insert into editor'
 ^^WI     }
 ^^WI   }
 ^^WI   @ 1,3 GRID BTNS NROWS=9 NCOLS=3
