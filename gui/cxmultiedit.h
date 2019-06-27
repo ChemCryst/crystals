@@ -43,13 +43,9 @@
 #include "crystalsinterface.h"
 #include "ciinputcontrol.h"
 
-#ifdef CRY_USEMFC
- #include <afxwin.h>
- #define BASEMULTIEDIT CRichEditCtrl
-#else
- #include <wx/stc/stc.h>
- #define BASEMULTIEDIT wxStyledTextCtrl
-#endif
+#include <wx/stc/stc.h>
+#include    <wx/fdrepdlg.h>
+#define BASEMULTIEDIT wxStyledTextCtrl
 
 
 class CrMultiEdit;
@@ -64,6 +60,9 @@ class CxMultiEdit : public BASEMULTIEDIT, public IInputControl
         void Spew();
 		bool CxIsModified();
         void Focus();
+        void FindDialog();
+        void FindNext();
+        void OnFindDialog(wxFindDialogEvent& event);
 
 // methods
         static CxMultiEdit * CreateCxMultiEdit( CrMultiEdit * container, CxGrid * guiParent );
@@ -101,18 +100,18 @@ class CxMultiEdit : public BASEMULTIEDIT, public IInputControl
         int             mIdealHeight;
         int             mIdealWidth;
         int             mHeight;
+        wxFindReplaceData m_findData;
+        wxFindReplaceDialog *m_dlgFind,
+                        *m_dlgReplace;
+        wxString        lastsearch;
+        int             lastflags;
+        bool Find(wxString &text, int flags);
+        bool Replace(wxString &text, wxString &replace, int flags);
+        bool ReplaceAll(wxString &text, wxString &replace, int flags);
 
-#ifdef CRY_USEMFC
-
-        static DWORD CALLBACK MyStreamOutCallback(DWORD dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb);
-
-        afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
-        DECLARE_MESSAGE_MAP()
-#else
     public:
         void OnChar(wxKeyEvent & event );
         DECLARE_EVENT_TABLE()
-#endif
 
 };
 #endif
