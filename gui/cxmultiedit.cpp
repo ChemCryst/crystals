@@ -89,14 +89,8 @@ int CxMultiEdit::mMultiEditCount = kMultiEditBase;
 CxMultiEdit *   CxMultiEdit::CreateCxMultiEdit( CrMultiEdit * container, CxGrid * guiParent )
 {
         CxMultiEdit *theMEdit = new CxMultiEdit (container);
-#ifdef CRY_USEMFC
-        theMEdit->Create(ES_LEFT| ES_AUTOHSCROLL| ES_AUTOVSCROLL| WS_VSCROLL| WS_HSCROLL| WS_VISIBLE| WS_CHILD| ES_MULTILINE, CRect(0,0,10,10), guiParent, mMultiEditCount++);
-        theMEdit->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);
-        theMEdit->Init();
-#else
        theMEdit->Create(guiParent, -1, wxPoint(0,0), wxSize(10,10), 0 , "CRYSTALS Editor");
         theMEdit->Init();
-#endif
         return theMEdit;
 }
 
@@ -107,7 +101,19 @@ CxMultiEdit::CxMultiEdit( CrMultiEdit * container )
       mIdealHeight = 30;
       mIdealWidth  = 70;
       mHeight = 40;
+      lastsearch = "";
+      lastflags = 0;
 }
+
+wxBEGIN_EVENT_TABLE(CxMultiEdit, wxStyledTextCtrl)
+    EVT_FIND(wxID_ANY, CxMultiEdit::OnFindDialog)
+    EVT_FIND_NEXT(wxID_ANY, CxMultiEdit::OnFindDialog)
+    EVT_FIND_REPLACE(wxID_ANY, CxMultiEdit::OnFindDialog)
+    EVT_FIND_REPLACE_ALL(wxID_ANY, CxMultiEdit::OnFindDialog)
+    EVT_FIND_CLOSE(wxID_ANY, CxMultiEdit::OnFindDialog)
+wxEND_EVENT_TABLE()
+
+
 
 CxMultiEdit::~CxMultiEdit()
 {
@@ -116,17 +122,144 @@ CxMultiEdit::~CxMultiEdit()
 
 void CxMultiEdit::CxDestroyWindow()
 {
-#ifdef CRY_USEMFC
-    DestroyWindow();
-#else
     Destroy();
-#endif
 }
+
+void CxMultiEdit::FindDialog()
+{
+
+    if ( m_dlgReplace )
+    {
+        wxDELETE(m_dlgReplace);
+    }
+    else
+    {
+        m_dlgReplace = new wxFindReplaceDialog
+                           (
+                            this,
+                            &m_findData,
+                            "Find and replace dialog",
+                            wxFR_REPLACEDIALOG
+                           );
+
+        m_dlgReplace->Show(true);
+    }
+
+}
+
+bool CxMultiEdit::Find(wxString &text, int flags){
+    
+    if (text.length() == 0 ) return false;
+
+
+    
+    int found = FindText(	GetCurrentPos(), 
+                                    GetLength(), 
+                                    text,   
+                                    (flags&wxFR_WHOLEWORD)?wxSTC_FIND_WHOLEWORD:0 | (flags&wxFR_MATCHCASE)?wxSTC_FIND_MATCHCASE:0 );
+
+    if ( found == wxSTC_INVALID_POSITION ) {  // Try from start
+                found = FindText(	0, 
+                                    GetCurrentPos(), 
+                                    text, 
+                                    (flags&wxFR_WHOLEWORD)?wxSTC_FIND_WHOLEWORD:0 | (flags&wxFR_MATCHCASE)?wxSTC_FIND_MATCHCASE:0  );
+    }                
+
+//    wxLogMessage("Find %s %d %d",text, flags, found);
+
+
+    if ( found == wxSTC_INVALID_POSITION ) {   //Not found anywhere
+            if ( m_dlgReplace )  m_dlgReplace->RequestUserAttention();
+        return false;
+    } else {
+                ShowPosition(found);
+                SetSelection(found, found+text.length() );
+    }
+    
+    return true;
+}
+
+bool CxMultiEdit::Replace(wxString &text, wxString &replace, int flags){   //First call does a search and highlights.
+                                                                           //Subsequent calls replace current highlight and move to next position.
+    
+    if (text.length() == 0 ) return false;
+
+// Check if current selection is search text:
+
+    if ( text == GetStringSelection() ) {  // yes - replace
+        
+            ReplaceSelection(replace);
+            
+    }
+        
+// Find and highlight next example
+    return Find ( text, flags );
+}
+
+//First call does a search and highlights.
+//Subsequent calls replace current highlight and move to next position.
+bool CxMultiEdit::ReplaceAll(wxString &text, wxString &replace, int flags) {   
+    while ( Replace( text, replace, flags) );
+   
+    return true;
+}
+
+ 
+void CxMultiEdit::FindNext(){   //Repeat last search
+
+        Find(lastsearch, lastflags);
+    
+}
+ 
+void CxMultiEdit::OnFindDialog(wxFindDialogEvent& event)
+{
+    wxEventType type = event.GetEventType();
+
+    if ( type == wxEVT_FIND || type == wxEVT_FIND_NEXT )
+    {
+        lastsearch = event.GetFindString();
+        lastflags = event.GetFlags();
+        Find(lastsearch, lastflags);
+    }
+    else if ( type == wxEVT_FIND_REPLACE )
+    {
+        lastsearch = event.GetFindString();
+        lastflags = event.GetFlags();
+        wxString replace = event.GetReplaceString();
+        Replace(lastsearch, replace, lastflags);
+    }
+    else if ( type == wxEVT_FIND_REPLACE_ALL )
+    {
+        lastsearch = event.GetFindString();
+        lastflags = event.GetFlags();
+        wxString replace = event.GetReplaceString();
+        ReplaceAll(lastsearch, replace , lastflags);
+    }
+    else if ( type == wxEVT_FIND_CLOSE )
+    {
+        wxFindReplaceDialog *dlg = event.GetDialog();
+
+        int idMenu;
+        if ( dlg == m_dlgFind )
+        {
+            m_dlgFind = NULL;
+        }
+        else if ( dlg == m_dlgReplace )
+        {
+            m_dlgReplace = NULL;
+        }
+        dlg->Destroy();
+    }
+    else
+    {
+        wxLogError("Unknown find dialog event!");
+    }
+}
+    
 
 // Part of the IInputControl interface - insert text at cursor.
 void CxMultiEdit::InsertText(const string text) {
 
-#ifdef CRY_USEWX
 	long pos = GetInsertionPoint();
 	bool insertspacebefore = false;
 	bool insertspaceafter = false;
@@ -158,57 +291,23 @@ void CxMultiEdit::InsertText(const string text) {
 	SetCurrentPos(pos + in.length());
 	SetInsertionPoint(pos + in.length());
 	GotoPos(pos + in.length());
-#endif
-// Not implemented for MFC version
 }
 
 
 void  CxMultiEdit::SetText( const string & cText )
 {
 // Add the text.
-#ifdef CRY_USEMFC
-      int oldend = GetWindowTextLength();
-      SetSel( oldend, oldend );
-      ReplaceSel(cText.c_str());
-#else
       AppendText(cText.c_str());
-#endif
 
 //Now scroll the text so that the last line is at the bottom of the screen.
 //i.e. so that the line at lastline-firstvisline is the first visible line.
-#ifdef CRY_USEMFC
-/*      int charheight = mHeight;
-      LineScroll ( GetLineCount() - GetFirstVisibleLine() - (int)( (float)GetHeight() / (float)charheight ) );
-*/
-      SetRedraw(false);
-      SCROLLINFO si = { sizeof(si) };
-      GetScrollInfo(SB_VERT, &si, SIF_ALL);
-      int nTotalLines = GetLineCount();
-      int nUpLine = 0;
-
-      if (nTotalLines > 0  &&  si.nMax > 0  &&  si.nMax / nTotalLines > 0) {      
-    nUpLine = (si.nMax - si.nPos - (si.nPage - 1)) / (si.nMax / nTotalLines);
-      }
-
-      if (nUpLine > 0) {
-           LineScroll(nUpLine);
-      }
-      SetRedraw(true);
-      Invalidate();
-#else
       ShowPosition ( GetLastPosition () );
-#endif
 }
 
 
 int CxMultiEdit::GetNLines()
 {
- #ifdef CRY_USEMFC
-    return GetLineCount();
- #endif          
- #ifdef CRY_USEWX
     return GetNumberOfLines();
- #endif
 }
 
 int CxMultiEdit::GetIdealWidth()
@@ -222,26 +321,12 @@ int CxMultiEdit::GetIdealHeight()
 
 void CxMultiEdit::SetIdealHeight(int nCharsHigh)
 {
-#ifdef CRY_USEMFC
-      mIdealHeight = nCharsHigh * mHeight;
-#endif
-#ifdef CRY_USEWX
       mIdealHeight = nCharsHigh * GetCharHeight();
-#endif
 }
 
 void CxMultiEdit::SetIdealWidth(int nCharsWide)
 {
-#ifdef CRY_USEMFC
-    CClientDC cdc(this);
-    TEXTMETRIC textMetric;
-    cdc.GetTextMetrics(&textMetric);
-      int owidth = textMetric.tmAveCharWidth;
-      mIdealWidth = nCharsWide * owidth;
-#endif
-#ifdef CRY_USEWX
       mIdealWidth = nCharsWide * GetCharWidth();
-#endif
 }
 
 
@@ -256,50 +341,12 @@ void CxMultiEdit::Focus()
     SetFocus();
 }
 
-#ifdef CRY_USEMFC
-BEGIN_MESSAGE_MAP(CxMultiEdit, CRichEditCtrl)
-    ON_WM_CHAR()
-END_MESSAGE_MAP()
-#endif
-#ifdef CRY_USEWX
-//wx Message Table
-BEGIN_EVENT_TABLE(CxMultiEdit, wxStyledTextCtrl)
-//      EVT_CHAR( CxMultiEdit::OnChar )
-END_EVENT_TABLE()
-#endif
 
-#ifdef CRY_USEMFC
-void CxMultiEdit::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
-{
-    NOTUSED(nRepCnt);
-    NOTUSED(nFlags);
-    switch(nChar)
-    {
-        case 9:     //TAB. Shift focus back or forwards.
-        {
-            bool shifted = ( HIWORD(GetKeyState(VK_SHIFT)) != 0) ? true : false;
-            ptr_to_crObject->NextFocus(shifted);
-            break;
-        }
-        default:
-        {
-            if(ptr_to_crObject->mDisabled)
-                ptr_to_crObject->FocusToInput((char)nChar);
-            else
-                CRichEditCtrl::OnChar( nChar, nRepCnt, nFlags );
-        }
-    }
-}
-#endif
 
 
 bool CxMultiEdit::CxIsModified()
 {
-#ifdef CRY_USEWX
 	return IsModified();
-#else
-	return true; // We don't know on this platform (MFC), so best to assume it *is* modified.
-#endif 
 }
 
 void CxMultiEdit::Spew()
@@ -307,18 +354,11 @@ void CxMultiEdit::Spew()
 //Send all text to crystals a line at a time.
     char theLine[80];
     int line = 0;
-#ifdef CRY_USEMFC
-    while ( LineIndex(line) >= 0 )
-    {
-       int cp = GetLine(line, theLine, 79);
-#endif
-#ifdef CRY_USEWX
     for (int i=0; i<GetNumberOfLines(); i++)
     {
        wxString aline = GetLineText(i);
        int cp = CRMIN ( aline.length(), 80 );
        strcpy ( (char*)&theLine, aline.c_str() );
-#endif
        theLine[cp]='\0';
        string sline = string( theLine );
        string::size_type cut;
@@ -335,68 +375,18 @@ void CxMultiEdit::Spew()
 
 void CxMultiEdit::Empty()
 {
-#ifdef CRY_USEMFC
-      SetSel( 0, GetWindowTextLength() );
       Clear();
-#endif
-#ifdef CRY_USEWX
-      Clear();
-#endif
 }
 
 void CxMultiEdit::SetFontHeight( int height )
 {
 
-#ifdef CRY_USEMFC
-      CHARFORMAT cf;
-      cf.dwMask = ( CFM_SIZE ) ; //Use the CFM_SIZE attribute
-      mHeight = (int)((height + 20) / 10.0);
-      cf.yHeight = height;
-
-      SetSel(0, -1);
-      SetSelectionCharFormat( cf );
-      SetSel(GetTextLength(),-1);
-#endif
 
 }
 
 void CxMultiEdit::Init()
 {
-#ifdef CRY_USEMFC
-    CHARFORMAT cf;
-    GetDefaultCharFormat( cf );
-    string face = (CcController::theController)->GetKey( "FontFace" );
-    for (string::size_type i=0;i<LF_FACESIZE;i++)
-    {
-      if ( i < face.length() )
-          cf.szFaceName[i] = face[i];
-      else
-          cf.szFaceName[i] = 0;
-    }
-    cf.dwMask = ( cf.dwMask | CFM_FACE ) ; //Add the CFM_FACE attribute
-    cf.bPitchAndFamily = (FIXED_PITCH|FF_MODERN);
-    SetDefaultCharFormat( cf );
-#else
 
-
-//    wxFont pFont(12, wxFONTFAMILY_MODERN  ,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL);
-//   wxFont* pFont = new wxFont(12,wxMODERN,wxNORMAL,wxNORMAL);
-//#ifndef _WINNT
-//    wxFont & pFont = ;
-//#else
-//   *pFont = wxSystemSettings::GetFont( wxDEVICE_DEFAULT_FONT );
-//#endif  // !_WINNT
-
-//    string temp;
-//    temp = (CcController::theController)->GetKey( "FontInfo" );
-//    if ( temp.length() ) pFont->SetNativeFontInfo( temp.c_str() );
-
-	/*temp = (CcController::theController)->GetKey( "FontHeight" );
-    if ( temp.length() )  pFont->SetPointSize( CRMAX( 2, atoi( temp.c_str() ) ) );
-    temp = (CcController::theController)->GetKey( "FontFace" );
-    if ( temp.length() )  pFont->SetFaceName( temp.c_str() );*/
-//    SetFont ( *pFont );
-    
     SetMarginWidth (MARGIN_LINE_NUMBERS, 50);
     StyleSetForeground (wxSTC_STYLE_LINENUMBER, wxColour (75, 75, 75) );
     StyleSetBackground (wxSTC_STYLE_LINENUMBER, wxColour (220, 220, 220));
@@ -405,10 +395,6 @@ void CxMultiEdit::Init()
 	SetEdgeColumn(80);
 	SetEdgeMode(wxSTC_EDGE_BACKGROUND);
 	SetWordChars(" ");
-//	SetScrollWidth(5);
-
-//    StyleSetFont 	(  0, &pFont );
-//    StyleSetFont 	(  1, &pFont );
     wxFont f =  wxSystemSettings::GetFont( wxSYS_ANSI_FIXED_FONT );
     StyleSetFont 	(  wxSTC_STYLE_DEFAULT, f);
 
@@ -416,27 +402,10 @@ void CxMultiEdit::Init()
 	SetEOLMode(wxSTC_EOL_CRLF);
 #endif
 
-//	this->SetFont       ( pFont );
-	
-//	wxMessageBox("this is definitely running");
-//    StyleClearAll();
-    
-/*    SetProperty (wxT("font"),             wxT("font:courier,size:12") );
-    SetProperty (wxT("font.base"),             wxT("font:courier,size:12") );
-    SetProperty (wxT("font.small"),            wxT("font:courier,size:12") );
-    SetProperty (wxT("font.comment"),          wxT("font:courier,size:12") );
-    SetProperty (wxT("font.text"),             wxT("font:courier,size:12") );
-    SetProperty (wxT("font.text.comment"),     wxT("font:courier,size:12") );
-    SetProperty (wxT("font.embedded.base"),    wxT("font:courier,size:12") );
-    SetProperty (wxT("font.embedded.comment"), wxT("font:courier,size:12") );
-    SetProperty (wxT("font.vbs"),              wxT("font:courier,size:12") );*/
-//    SetFont( wxSystemSettings::GetFont( wxSYS_ANSI_FIXED_FONT ));
-#endif
 
 }
 
 
-#ifdef CRY_USEWX
 void CxMultiEdit::SaveAs(string filename)
 {
     SaveFile( filename.c_str() );
@@ -447,41 +416,3 @@ void CxMultiEdit::Load(string filename)
         LoadFile( filename.c_str() );
         ClearSelections();
 }
-#endif
-
-#ifdef CRY_USEMFC
-void CxMultiEdit::Load(string filename)
-{
-     // Not implemented (or used) on MFC
-}
-
-    void CxMultiEdit::SaveAs(string filename)
-{
-    CFile file;
-    file.Open(filename.c_str(), CFile::modeCreate | CFile::modeWrite);
-    
-    EDITSTREAM es;
-    es.dwCookie = (DWORD) &file;
-    es.pfnCallback = CxMultiEdit::MyStreamOutCallback; 
-
-    StreamOut(SF_TEXT, es);
-    file.Close();
-}
-
-DWORD CALLBACK CxMultiEdit::MyStreamOutCallback(DWORD dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb)
-{
-   CFile* pFile = (CFile*) dwCookie;
-
-   pFile->Write(pbBuff, cb);
-   *pcb = cb;
-
-   return 0;
-}
-#endif
-
-/*
-void CxMultiEdit::Open(string filename)
-{
-
-}
-*/
