@@ -11,7 +11,7 @@ Getting to Know CRYSTALS
 
 
 
-   interface/about
+   interface/history
    interface/understanding
    interface/menus
    interface/model-window

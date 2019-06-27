@@ -13,6 +13,7 @@ Getting Started with CRYSTALS
 
 
 
+   userguide/about
    userguide/install
    userguide/gettingstarted
    userguide/examples
