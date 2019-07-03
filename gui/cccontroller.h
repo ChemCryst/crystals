@@ -43,7 +43,7 @@
 std::string GetExePath();
 
 #ifndef CRY_USEMFC   //  if using wxWidgets
-//DECLARE_EVENT_TYPE(ccEVT_COMMAND_ADDED, 1238) //Made up number 
+//DECLARE_EVENT_TYPE(ccEVT_COMMAND_ADDED, 1238) //Made up number
 extern const wxEventType ccEVT_COMMAND_ADDED;
 #endif
 
@@ -60,7 +60,7 @@ class   CcController
   public:
     CcController( const string & directory, const string & dscfile );
     ~CcController();
-     
+
     class MyException { public: MyException(){}; ~MyException(){}; };
     class MyBadException { public: MyBadException(){}; ~MyBadException(){}; };
 
@@ -159,8 +159,8 @@ class   CcController
 
   private:
 
-    
-    
+
+
     void AddCrystalsCommand(const string &line , bool jumpQueue = false); // Called by SendCommand
     bool GetInterfaceCommand( string & line );                    // Called by DoCommandTransferStuff
     void GetValue (deque<string> & tokenlist);
@@ -299,6 +299,7 @@ class CcPipe {
 #define kSOpenGroup           "["
 #define kSCloseGroup           "]"
 #define kSBatch               "BATCH"
+#define kSPythonScript        "PYSCRIPT"
 
 enum
 {
@@ -324,7 +325,8 @@ enum
  kTOpenGroup,
  kTBatch,
  kTCloseGroup,
- kTGetRegValue
+ kTGetRegValue,
+ kTPythonScript
 };
 #endif
 
@@ -509,4 +511,3 @@ enum
 //   Also some new classes for updating the toolbar, and buttons, and windows based on the old ENABLEIF, DISABLEIF status flags.
 //   Layout code majorly overhauled.
 //
-
