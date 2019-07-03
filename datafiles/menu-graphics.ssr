@@ -13,11 +13,10 @@
 ^^WI             '#USE CAMERON.L5I' DISABLEIF='IN'
 ^^WI   SPLIT
 ^^WI   ITEM _MER 'View the structure in Mercury'
-^^WI             '#SCRIPT MERCURY' ICON='mercury.png' DISABLEIF='IN'
+^^WI         '#SCRIPT MERCURY' ICON='mercury.png' DISABLEIF='IN' ENABLEIF='L5'
 ^^WI    ITEM HUS  'Mapviewer' '#SCRIPT HUSAK' DISABLEIF='IN'
 ^^WI   SPLIT
 ^^WI   ITEM XH      'Graphics menu &help'
 ^^WI        '$ "crysdir:manual/tools-menus.html"'
 ^^WI  ENDMENU
 %%SSR END
-
