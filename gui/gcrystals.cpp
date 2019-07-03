@@ -10,7 +10,7 @@
 
 #ifdef __WITH_CRASHRPT__
 #include "CrashRpt.h"
-#endif 
+#endif
 using namespace std;
 
 
@@ -50,8 +50,8 @@ void hdf5_dsc_use_set();
 
 //	DEFINE_EVENT_TYPE(ccEVT_COMMAND_ADDED)
 	const wxEventType ccEVT_COMMAND_ADDED = wxNewEventType();
-	
-	
+
+
 //#define wxID_ANY -1
 
 
@@ -132,7 +132,7 @@ std::string GetExePath() {
 #else
   std::string crysdir = wxStandardPaths::GetDataDir().ToStdString();
   return crysdir;
-#endif     
+#endif
 }
 
 
@@ -189,7 +189,7 @@ void macSetCRYSDIR(string pPath)
     writable[tResources.size()] = '\0'; // don't forget the terminating 0
     putenv(writable);
   }
-#endif    
+#endif
 class BriefMessageBox;
 
 class MyBriefMessageTimer :  public wxTimer   // Used by BriefMessageBox.  Notify() kills the BriefMessageBox when the timer 'fires'
@@ -212,7 +212,7 @@ const int DEFAULT_BRIEFMESSAGEBOX_TIME = 5;
 BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= -1*/, wxString Caption /*= wxEmptyString*/ ) : wxDialog( NULL, -1, Caption )
 {
 	wxStaticBox* staticbox = new wxStaticBox( this, -1, wxT("") );
-	wxStaticBoxSizer *textsizer = new wxStaticBoxSizer( staticbox, wxHORIZONTAL );   
+	wxStaticBoxSizer *textsizer = new wxStaticBoxSizer( staticbox, wxHORIZONTAL );
 	textsizer->Add( CreateTextSizer( Message ), 1, wxCENTRE | wxALL, 10 );
 
 	wxBoxSizer *mainsizer = new wxBoxSizer( wxHORIZONTAL );
@@ -227,11 +227,11 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
 	if ( secondsdisplayed <= 0 )    // Minus number means default, and zero would mean infinite which we don't want here
 		length = DEFAULT_BRIEFMESSAGEBOX_TIME;
 	else length = secondsdisplayed;
- 
+
 	BriefTimer.Start( (int)(length * 1000), wxTIMER_ONE_SHOT );  // Start timer as one-shot.  *1000 gives seconds
 
 	ShowModal();
-} 
+}
 
 
 
@@ -245,52 +245,52 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
 
   string vers = STR( CRYSVNVER );
   vers.erase ( std::remove(vers.begin(), vers.end(), ':'), vers.end());
-  string vers2 =  "Crystals " + vers +  " Error Report";  
+  string vers2 =  "Crystals " + vers +  " Error Report";
 //  tstring vers2;
 
   // Define CrashRpt configuration parameters
-  CR_INSTALL_INFOA info;  
-  memset(&info, 0, sizeof(CR_INSTALL_INFO));  
-  info.cb = sizeof(CR_INSTALL_INFO);    
-  info.pszAppName = "Crystals";  
+  CR_INSTALL_INFOA info;
+  memset(&info, 0, sizeof(CR_INSTALL_INFO));
+  info.cb = sizeof(CR_INSTALL_INFO);
+  info.pszAppName = "Crystals";
   info.pszAppVersion = vers2.c_str();
-  info.pszEmailSubject = vers2.c_str(); 
-  info.pszEmailTo = "richard.cooper@chem.ox.ac.uk";    
-  info.pszUrl = "http://crystals.xtl.org.uk/tools/crashrpt.php";  
-  info.uPriorities[CR_HTTP] = 3;  // First try send report over HTTP 
-  info.uPriorities[CR_SMTP] = 2;  // Second try send report over SMTP  
-  info.uPriorities[CR_SMAPI] = 1; // Third try send report over Simple MAPI    
+  info.pszEmailSubject = vers2.c_str();
+  info.pszEmailTo = "richard.cooper@chem.ox.ac.uk";
+  info.pszUrl = "http://crystals.xtl.org.uk/tools/crashrpt.php";
+  info.uPriorities[CR_HTTP] = 3;  // First try send report over HTTP
+  info.uPriorities[CR_SMTP] = 2;  // Second try send report over SMTP
+  info.uPriorities[CR_SMAPI] = 1; // Third try send report over Simple MAPI
   // Install all available exception handlers
   info.dwFlags |= CR_INST_ALL_POSSIBLE_HANDLERS;
-  // Restart the app on crash 
-  info.dwFlags |= CR_INST_APP_RESTART; 
-  info.dwFlags |= CR_INST_SEND_QUEUED_REPORTS; 
+  // Restart the app on crash
+  info.dwFlags |= CR_INST_APP_RESTART;
+  info.dwFlags |= CR_INST_SEND_QUEUED_REPORTS;
   info.pszRestartCmdLine = "";
-  // Define the Privacy Policy URL 
-  info.pszPrivacyPolicyURL = "http://crytals.xtl.org.uk/tools/privacypolicy.html"; 
-  
+  // Define the Privacy Policy URL
+  info.pszPrivacyPolicyURL = "http://crytals.xtl.org.uk/tools/privacypolicy.html";
+
   // Install crash reporting
   int nResult = crInstallA(&info);
-  if(nResult!=0)  
+  if(nResult!=0)
 
-  {   
+  {
 	  TCHAR szErrorMsg[256];
 	  crGetLastErrorMsg(szErrorMsg, 256);
       BriefMessageBox(wxString(szErrorMsg));
   }
 //    // Something goes wrong. Get error message.
-//    TCHAR szErrorMsg[512] = _T("");        
-//    crGetLastErrorMsg(szErrorMsg, 512);    
-//    _tprintf_s(_T("%s\n"), szErrorMsg);    
+//    TCHAR szErrorMsg[512] = _T("");
+//    crGetLastErrorMsg(szErrorMsg, 512);
+//    _tprintf_s(_T("%s\n"), szErrorMsg);
 //    return 1;
-//  } 
-  
-#endif	  
-	  
-	  
-	  
+//  }
+
+#endif
+
+
+
 	m_locale.Init(wxLANGUAGE_ENGLISH_US);
-   
+
     string directory;
     string dscfile;
 
@@ -302,7 +302,7 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
  	directory = macWorkingDir();
 	directory += "/";
       }
-    CFURLGetFileSystemRepresentation(CFBundleCopyResourcesDirectoryURL(CFBundleGetMainBundle()), true, tPath, PATH_MAX); 
+    CFURLGetFileSystemRepresentation(CFBundleCopyResourcesDirectoryURL(CFBundleGetMainBundle()), true, tPath, PATH_MAX);
     if (getenv("CRYSDIR") == NULL)
     {
       macSetCRYSDIR((char*)tPath);
@@ -313,12 +313,15 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
     if ( getenv("CRYSDIR") == nil )
     {
 	//Find CRYSDIR from local executable path.
-	
-	  std::string pathsep = string(wxString(wxFileName::GetPathSeparator()).ToStdString());
-      std::string crysdir = wxStandardPaths::Get().GetDataDir().ToStdString() + pathsep;
 
-	
-	
+	  std::string pathsep = string(wxString(wxFileName::GetPathSeparator()).ToStdString());
+//      std::string crysdir = wxStandardPaths::Get().GetDataDir().ToStdString() + pathsep;
+// For CRYSDIR CONCATENATE application directory (GetDataDir), user data (GetUserDataDir), and common app data (GetConfigDir)
+// The first is always used, the second for non-admin installs, the third for admin installed copies.
+      std::string crysdir = wxStandardPaths::Get().GetDataDir().ToStdString() + pathsep + "," + wxStandardPaths::Get().GetUserDataDir().ToStdString() + pathsep + "," + wxStandardPaths::Get().GetConfigDir().ToStdString() + pathsep ;
+
+
+
 // // Use the registry to fetch keys.
       string location;
 //      wxString str;
@@ -331,11 +334,11 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
       char * env = new char[location.size()+1];
       strcpy(env, location.c_str());
       stringlist.push_back(env);
-#ifdef CRY_OSWIN32      
+#ifdef CRY_OSWIN32
       _putenv( env );
-#else     
+#else
       putenv( env );
-#endif      
+#endif
     }
 #endif
 
@@ -365,16 +368,16 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
           putenv( env );
 #endif
           i = i + 2;
-        }	
+        }
       }
       else if (command=="--hdf5" || command=="/hdf5")
       {
         hdf5_dsc_use_set();
-      }      
+      }
       else
       {
         string command = string(argv[i]);
-        
+
         if ( command.length() > 0 )
         {
 // we need a directory name. Look for last slash or back slash
@@ -386,7 +389,7 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
           int remain = command.length() - ils - 1;
           if ( remain > 0 )
             dscfile = command.substr(ils+1,remain);
-            
+
         }
         std::cerr << "DSCfile to be opened: " << dscfile << "\n";
         std::cerr << "Working directory:    " << directory << "\n";
@@ -415,7 +418,7 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
 		bRun= wxApp::OnRun();
 		bExit=1;
 	}
-	
+
 
      wxTheClipboard->Flush();
 
@@ -426,7 +429,7 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
 
 	return bRun;
 }
-  
+
   int CCrystalsApp::OnExit()
   {
     delete theControl;
@@ -438,9 +441,3 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
     }
     return wxApp::OnExit();
   }
-
-
-
-
-
-
