@@ -424,10 +424,12 @@ view the generated sections.
 %         QUEUE SEND                                                            
 %       END BLOCK                                                               
 %%                 
-%       IF DOCALC .EQ. 2 THEN     %ERROR CONDITION                                                             
-{I  Slant Fourier abandoned
-
-            FINISH
+%       IF DOCALC .EQ. 2 THEN     %
+{I  Slant Fourier without calc requires using unmerged L6 data. Map quality may be lower.
+%          COPY '#SLANT 6 '                                                    
+%          QUEUE PROCESS                                                           
+%          COPY 'END'                                                              
+{R * Done. Sub-optimal slant fourier complete.                                              
 %       ELSE 
 %% show f67  (MAPS SHOULD ALWAYS BE DONE ON LIST 7)
 %        IF F67 .EQ. 6 THEN  
@@ -463,7 +465,7 @@ view the generated sections.
 %           END BLOCK                                                           
 %       END IF                                                                  
 %      END IF                                                                   
-                                                                                
+%%
 %      IF DOVOID .EQ. 1 THEN                                                    
 %       BLOCK                                                                   
 %        TRANSFER "#STORE CSYS MAP 'void.fou'" TO CRYSTALS                      
@@ -500,7 +502,6 @@ view the generated sections.
 %%                                                                              
 %      END IF                                                                   
 %%                                                                              
-                                                                                
 ^^CO DISPOSE XCONT                                                              
 ^^CO SET PROGOUTPUT TEXT='Slant Fourier complete.'                              
 %%                                                                              
