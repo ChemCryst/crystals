@@ -443,12 +443,12 @@ view the generated sections.
 %%
 %           EVALUATE MINZ = - RESOL * REAL ( IZ - 1 ) / 2.0
 %%
-% SHOW XSTART YSTART ZSTART
-% SHOW XEND YEND ZEND
-% SHOW MINX MINY MINZ 
-% SHOW STEPX STEPY STEPZ 
-% SHOW IX IY IZ
-% SHOW RESOL
+%% SHOW XSTART YSTART ZSTART
+%% SHOW XEND YEND ZEND
+%% SHOW MINX MINY MINZ 
+%% SHOW STEPX STEPY STEPZ 
+%% SHOW IX IY IZ
+%% SHOW RESOL
 %           QUEUE REWIND                                                          
 %           CLEAR                                                                 
 %           INSERT 'MAP TYPE = '                                                  
