@@ -26,7 +26,7 @@
 %%
 % VARIABLE REAL XMIN XMAX STEPX MINX XSTART XEND
 % VARIABLE REAL YMIN YMAX STEPY MINY YSTART YEND               
-% VARIABLE REAL ZMIN ZMAX STEPZ MINZ ZSTART ZEND
+% VARIABLE REAL ZMIN ZMAX STEPZ MINZ ZSTART ZEND ZMAX
 % VARIABLE INTEGER IX IY IZ
 % VARIABLE REAL ZSECT  RESOL BORDER 
 % VARIABLE CHARACTER CFILE                                                      
@@ -168,7 +168,22 @@
 % COPY 'PLANE'                                                                  
 % COPY 'SAVE'                                                                   
 % COPY 'END'                                                                    
-%%                                                                              
+%%
+%% Make ZSTART and ZEND the same magnitude (max)
+%%
+^^??    _ZSTART TEXT                                                                 
+%       GET NOSTORE SILENT REAL ' ' '1.5'                                         
+%       EVALUATE ZSTART = VALUE 
+^^??    _ZEND TEXT                                                                 
+%       GET NOSTORE SILENT REAL ' ' '1.5'                                         
+%       EVALUATE ZEND = VALUE 
+%       EVALUATE ZMAX = - ZSTART
+%       IF ZMAX .LT. ZEND THEN
+%           EVALUATE ZMAX = ZEND
+%       END IF
+%       TRANSFER '^^CO SET _ZSTART TEXT ' // CHARACTER ( - ZMAX ) TO DISPLAY
+%       TRANSFER '^^CO SET _ZEND TEXT ' // CHARACTER ( ZMAX ) TO DISPLAY
+%%                                                                             
 % LOOP                                                                          
 %   VERIFY XC XM XV XN BXX BROWSE BMOLAX BHELP MCEHH BADD BOK                       
 %   GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '                                
@@ -399,20 +414,32 @@ view the generated sections.
 %           EVALUATE STEPY = ( ( YMAX + BORDER ) - MINY ) / RESOL                 
 %           EVALUATE STEPY = 1. + STEPY                                           
 %%
+%%
 %           EVALUATE ZMIN = ZSTART                                           
 %           EVALUATE ZMAX = ZEND 
-%           EVALUATE MINZ = ( ZMIN - BORDER )                                     
+%           EVALUATE MINZ = ( ZMIN - BORDER )
 %           EVALUATE STEPZ = ( ( ZMAX + BORDER ) - MINZ ) / RESOL                 
-%           EVALUATE STEPZ = 1. + STEPZ                                           
-
+%           EVALUATE STEPZ = 1. + STEPZ                                     
 %           EVALUATE IX =  NINT ( STEPX  )
 %           EVALUATE IY =  NINT ( STEPY  )
 %           EVALUATE IZ =  NINT ( STEPZ  )
-%% SHOW XSTART YSTART ZSTART
-%% SHOW XEND YEND ZEND
-%% SHOW MINX MINY MINZ 
-%% SHOW STEPX STEPY STEPZ 
-%% SHOW IX IY IZ
+%%
+%% IZ must be an odd number (to centre map on middle plane)
+%%
+%           IF  ( IZ MOD 2 ) .EQ. 0 THEN
+%               EVALUATE IZ = IZ + 1
+%           END IF
+%%
+%% MINZ must be an integer number of resolution steps from zero to centre map on selected atom plane.
+%%
+%           EVALUATE MINZ = - RESOL * REAL ( IZ - 1 ) / 2.0
+%%
+% SHOW XSTART YSTART ZSTART
+% SHOW XEND YEND ZEND
+% SHOW MINX MINY MINZ 
+% SHOW STEPX STEPY STEPZ 
+% SHOW IX IY IZ
+% SHOW RESOL
 %           QUEUE REWIND                                                          
 %           CLEAR                                                                 
 %           INSERT 'MAP TYPE = '                                                  
@@ -452,7 +479,7 @@ view the generated sections.
 %           QUEUE SEND                                                            
 %           CLEAR                                                                 
 %           INSERT 'SECTION '                                                     
-%           STORE FORMAT /(F7.1)/ LENGTH 7 REAL MINZ                              
+%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL MINZ                              
 %           STORE FORMAT /(I7)/   LENGTH 7 INTEGER IZ
 %           STORE FORMAT /(F7.2)/ LENGTH 7 REAL RESOL                             
 %           QUEUE SEND                                                            
