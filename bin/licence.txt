@@ -2,7 +2,7 @@
 THE CRYSTALLOGRAPHIC SYSTEM 'CRYSTALS' LICENCE AGREEMENT
 --------------------------------------------------------
 
-This releaase of CRYSTALS comes complete with authorised versions of 
+This releaase of CRYSTALS comes complete with authorised versions of
 SHELXS and SIR92.  These are covered by separate licences listed below.
 
 BY INSTALLING THIS SOFTWARE YOU ACCEPT ALL THE TERMS AND
@@ -38,18 +38,10 @@ diffraction data and extract from it a detailed description of the molecules in 
 software has two major parts: the underlying mathematical and crystallographic utilities written
 in FORTRAN and a graphical user interface written in C++.
 
-Icons
------
 
-A number of the toolbar icons are from the free 'Silk' icons set available from 
-http://www.famfamfam.com/lab/icons/silk/. The icons are licensed under a Creative
-Commons Attribution 2.5 License (see http://creativecommons.org/licenses/by/2.5/) 
-
-
-
-     CRYSTALS uses some functions from the LAPACK and BLAS mathematical libraries. 
-     See the LAPACK user's guide, Anderson, E. and Bai, Z. and Bischof, C. and 
-     Blackford, S. and Demmel, J. and Dongarra, J. and Du Croz, J. and Greenbaum, A. 
+     CRYSTALS uses some functions from the LAPACK and BLAS mathematical libraries.
+     See the LAPACK user's guide, Anderson, E. and Bai, Z. and Bischof, C. and
+     Blackford, S. and Demmel, J. and Dongarra, J. and Du Croz, J. and Greenbaum, A.
      and Hammarling, S. and McKenney, A. and Sorensen, D. Third edition published
      by Society for Industrial and Applied Mathematics, 1999.
 
@@ -103,29 +95,29 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
              THE CRYSTALLOGRAPHIC SYSTEM SIR92 LICENCE AGREEMENT
-            -----------------------------------------------------              
- This AGREEMENT is made between:  
+            -----------------------------------------------------
+ This AGREEMENT is made between:
 
      Istituto di Ricerca per lo Sviluppo di Metodologie Cristallografiche,
      CNR, Bari, Italy
 
  representative also of
 
-     Dipartimento di Scienze della Terra, Universita' di Perugia, 
-     Ist. di Strutturistica Chimica "G. Giacomello", CNR, Roma  
-                                       (ISMEC from now on) 
+     Dipartimento di Scienze della Terra, Universita' di Perugia,
+     Ist. di Strutturistica Chimica "G. Giacomello", CNR, Roma
+                                       (ISMEC from now on)
 
- and 
+ and
                                        You ( the user )
 
  By installing this software, you agree to the following licencing
  conditions.
 
- 1.  'SIR92' is free of charge to academics for non-commercial use only, 
-     subject to the condition that it is acknowledged in all publications 
+ 1.  'SIR92' is free of charge to academics for non-commercial use only,
+     subject to the condition that it is acknowledged in all publications
      which report structures solved with it.
 
- 2.  'SIR92' will normally be distributed on 1.4 Mb or via E-Mail. 
+ 2.  'SIR92' will normally be distributed on 1.4 Mb or via E-Mail.
 
  3.  Any modifications to 'SIR92' supplied by or an behalf of ISMEC will be covered by the
      terms of this AGREEMENT.
@@ -141,10 +133,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
      following conditions:
       You will notify ISMEC of the modifications as practicable.
       You will provide ISMEC with full details of the modifications if requested to.
-      All intellectual property in the modification will rest in ISMEC who will 
-      have the right to distribute it to other institutions under the same terms 
-      as 'SIR92'. 
-      ISMEC will clearly show in the distribution of such modifications the authorship 
+      All intellectual property in the modification will rest in ISMEC who will
+      have the right to distribute it to other institutions under the same terms
+      as 'SIR92'.
+      ISMEC will clearly show in the distribution of such modifications the authorship
       of the modification.
 
  7.  The program system 'SIR92' will not be distributed to any third party without written
@@ -152,21 +144,21 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
  8.  The user guide may be copied and distributed to users of Sir92.
 
- 9.  Published references to 'SIR92' will be:   
+ 9.  Published references to 'SIR92' will be:
 
   A. Altomare, M. C. Burla, M. Camalli, G. Cascarano, C. Giacovazzo, A. Guagliardi,G. Polidori,
   (1994). J. Appl. Cryst., in preparation.
 
-10.       This Agreement shall be governed by Italian law.   
+10.       This Agreement shall be governed by Italian law.
 
-                     Agent for ISMECAgent for the INSTITUTION  
+                     Agent for ISMECAgent for the INSTITUTION
 
 
  By installing this software you indicate acceptance of this agreement.
 
 
              THE SHELX-86/PATSEE LICENCE AGREEMENT
-            ---------------------------------------              
+            ---------------------------------------
 
 SHELXS-86/PATSEE USER REGISTRATION FORM     | Do not write here
 !
