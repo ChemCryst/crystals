@@ -70,7 +70,7 @@ Name: {app}\MCE\mce_manual_soubory
 
 [Files]
 Source: ..\build\*.*; DestDir: {app}\; Excludes: "make*,buildfile.bat,code.bat"; Flags: ignoreversion;
-Source: ..\build\script\*.*; DestDir: {app}\script\;
+Source: ..\build\script\*.*; DestDir: {app}\script\; Excludes: "*~";
 Source: ..\build\mce\*.*; DestDir: {app}\mce\;  Flags: ignoreversion recursesubdirs;
 Source: ..\build\manual\*.*; DestDir: {app}\manual\; Flags: ignoreversion recursesubdirs;
 Source: ..\build\demo\*; DestDir: {autoappdata}\crystals\demo\; Flags: recursesubdirs; Excludes: "*.doc"; Permissions: users-modify;
@@ -86,6 +86,8 @@ Name: "{group}\HTML help";                      Filename: "{app}\Manual\Crystcon
 Name: "{group}\Getting Started";                Filename: "{app}\manual\readme.html";  WorkingDir: "{app}"
 Name: "{group}\Uninstall CRYSTALS";             Filename: "{uninstallexe}";
 Name: "{group}\Example structures";             Filename: "{autoappdata}\crystals\demo\"
+
+
 
 [INI]
 ;
@@ -103,10 +105,81 @@ Filename: wincrys.ini; Section: Latest; Key: Strdir; String: "{autoappdata}\crys
 ;#endif
 
 
+[Code]
+
+// see https://stackoverflow.com/questions/2000296/inno-setup-how-to-automatically-uninstall-previous-installed-version
+
+/////////////////////////////////////////////////////////////////////
+function GetUninstallString(): String;
+var
+  sUnInstPath: String;
+  sUnInstallString: String;
+begin
+  sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\CRYSTALS_is1');
+  sUnInstallString := '';
+  if not RegQueryStringValue(HKLM, sUnInstPath, 'UninstallString', sUnInstallString) then
+    RegQueryStringValue(HKCU, sUnInstPath, 'UninstallString', sUnInstallString);
+  Result := sUnInstallString;
+end;
+
+
+/////////////////////////////////////////////////////////////////////
+function IsUpgrade(): Boolean;
+begin
+  Result := (GetUninstallString() <> '');
+end;
+
+
+/////////////////////////////////////////////////////////////////////
+function UnInstallOldVersion(): Integer;
+var
+  sUnInstallString: String;
+  iResultCode: Integer;
+begin
+// Return Values:
+// 1 - uninstall string is empty
+// 2 - error executing the UnInstallString
+// 3 - successfully executed the UnInstallString
+
+  // default return value
+  Result := 0;
+
+  // get the uninstall string of the old app
+  sUnInstallString := GetUninstallString();
+  if sUnInstallString <> '' then begin
+    sUnInstallString := RemoveQuotes(sUnInstallString);
+    if Exec(sUnInstallString, '/SILENT /NORESTART /SUPPRESSMSGBOXES','', SW_HIDE, ewWaitUntilTerminated, iResultCode) then
+      Result := 3
+    else
+      Result := 2;
+  end else
+    Result := 1;
+end;
+
+/////////////////////////////////////////////////////////////////////
+procedure CurStepChanged(CurStep: TSetupStep);
+begin
+  if (CurStep=ssInstall) then
+  begin
+    if (IsUpgrade()) then
+    begin
+	// Ask the user a Yes/No question
+      if MsgBox('Uninstall previous version of CRYSTALS?', mbConfirmation, MB_YESNO) = IDYES then
+        begin
+        // user clicked Yes
+          UnInstallOldVersion();
+        end;
+    end;
+  end;
+end;
+
+
+
+
+[Registry]
 ;NB. CRYSDIR is no longer stored in the registry, so don't set it - it will mess up left-over old versions of CRYSTALS (which we can't uninstall without admin privileges.)
 ;    Location is no longer used by crysload to find the .exe - it just assumes it will be alongside.
 
-[Registry]
 Root: HKA32; Subkey: "Software\Chem Cryst"; Flags: uninsdeletekeyifempty
 Root: HKA32; Subkey: "Software\Chem Cryst\Crystals"; Flags: uninsdeletekey
 ;Root: HKA32; Subkey: "Software\Chem Cryst\Crystals"; ValueType: string; ValueName: "Location"; ValueData: "{app}"
