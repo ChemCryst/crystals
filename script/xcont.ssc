@@ -30,6 +30,7 @@
 % VARIABLE INTEGER IX IY IZ
 % VARIABLE REAL ZSECT  RESOL BORDER 
 % VARIABLE CHARACTER CFILE                                                      
+% VARIABLE CHARACTER FMAPV
 % VARIABLE INTEGER IMAP DOSCALE DOCALC RUNVIEWER OLDSER DOVOID STEREO           
 %%                                                                              
 % VARIABLE INTEGER F67                     
@@ -43,9 +44,6 @@
 %       EVALUATE LMCE = TRUE                                                    
 %     END IF                                                                    
 %     EVALUATE LMAPV = FALSE                                                    
-% IF FILEEXISTS 'WINGXDIR:/for_prog/mapview.exe' THEN                           
-%       EVALUATE LMAPV = TRUE                                                   
-%     END IF                                                                    
 %%
 % IF FILEEXISTS ( 'newatoms.dat' ) then
 %  EVALUATE T = FILEDELETE ( 'newatoms.dat' )                                                                              
@@ -106,7 +104,6 @@
 ^^WI      @ 4,5 STATIC T1 'Box top (z)'                                       
 ^^WI      @ 4,7 EDITBOX   _ZEND '8.0' CHARS=8  REAL                                   
 ^^WI      @ 4,9 STATIC T2 'angstroms.'  
-
 ^^WI    }                                                                       
 ^^WI   }                                                                        
 ^^WI  }                                                                         
@@ -183,6 +180,18 @@
 %       END IF
 %       TRANSFER '^^CO SET _ZSTART TEXT ' // CHARACTER ( - ZMAX ) TO DISPLAY
 %       TRANSFER '^^CO SET _ZEND TEXT ' // CHARACTER ( ZMAX ) TO DISPLAY
+%%
+%% Check registry for location of WinGX stuff
+%%                                                                              
+^^CO GETREG "Software\Microsoft\Windows\CurrentVersion\Uninstall\WinGX_is1\" "InstallLocation"
+% GET SILENT NOSTORE TEXT 'WinGX path?' ' '
+% EVALUATE FMAPV = CVALUE // 'bin\wgxMapView.exe'                                      
+% TRANSFER FMAPV TO DISPLAY
+%%                                                                              
+% IF ( FILEEXISTS FMAPV ) THEN                                            
+%    EVALUATE LMAPV = TRUE
+^^CO SET XV DISABLED=NO
+% END IF
 %%                                                                             
 % LOOP                                                                          
 %   VERIFY XC XM XV XN BXX BROWSE BMOLAX BHELP MCEHH BADD BOK                       
@@ -434,12 +443,12 @@ view the generated sections.
 %%
 %           EVALUATE MINZ = - RESOL * REAL ( IZ - 1 ) / 2.0
 %%
-% SHOW XSTART YSTART ZSTART
-% SHOW XEND YEND ZEND
-% SHOW MINX MINY MINZ 
-% SHOW STEPX STEPY STEPZ 
-% SHOW IX IY IZ
-% SHOW RESOL
+%% SHOW XSTART YSTART ZSTART
+%% SHOW XEND YEND ZEND
+%% SHOW MINX MINY MINZ 
+%% SHOW STEPX STEPY STEPZ 
+%% SHOW IX IY IZ
+%% SHOW RESOL
 %           QUEUE REWIND                                                          
 %           CLEAR                                                                 
 %           INSERT 'MAP TYPE = '                                                  
@@ -606,8 +615,7 @@ view the generated sections.
 %           END BLOCK                                                           
 %%                                                                              
 %           BLOCK    %Run MapView                                               
-%             TRANSFER '#SPAWN + "WINGXDIR:/for_prog/mapview.exe" Mapfile' -      
-              TO CRYSTALS                                                       
+%             TRANSFER '#SPAWN + "' // FMAPV // '" Mapfile' TO CRYSTALS
 %           END BLOCK                                                           
 %       END CASE                                                              
 %       FINISH                                                                
