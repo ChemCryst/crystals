@@ -117,8 +117,10 @@ var
 begin
   sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\CRYSTALS_is1');
   sUnInstallString := '';
-  if not RegQueryStringValue(HKLM, sUnInstPath, 'UninstallString', sUnInstallString) then
-    RegQueryStringValue(HKCU, sUnInstPath, 'UninstallString', sUnInstallString);
+// We're only interested in uninstalling admin-installed copies, so only check HKLM.
+//  if not RegQueryStringValue(HKLM, sUnInstPath, 'UninstallString', sUnInstallString) then
+//    RegQueryStringValue(HKCU, sUnInstPath, 'UninstallString', sUnInstallString);
+  RegQueryStringValue(HKLM, sUnInstPath, 'UninstallString', sUnInstallString);
   Result := sUnInstallString;
 end;
 
@@ -160,17 +162,20 @@ end;
 procedure CurStepChanged(CurStep: TSetupStep);
 begin
   if (CurStep=ssInstall) then
-  begin
-    if (IsUpgrade()) then
     begin
-	// Ask the user a Yes/No question
-      if MsgBox('Uninstall previous version of CRYSTALS?', mbConfirmation, MB_YESNO) = IDYES then
+      if (not IsAdminInstallMode) then   //Admin install will just overwrite, no problem.
         begin
-        // user clicked Yes
-          UnInstallOldVersion();
+          if (IsUpgrade()) then
+            begin
+  	// Ask the user a Yes/No question
+              if MsgBox('Uninstall previous version of CRYSTALS?', mbConfirmation, MB_YESNO) = IDYES then
+                begin
+                // user clicked Yes
+                  UnInstallOldVersion();
+                end;
+            end;
         end;
     end;
-  end;
 end;
 
 
