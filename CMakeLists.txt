@@ -482,6 +482,10 @@ endif()
 if ( usePY )
     ADD_SUBDIRECTORY(pyinterface)
 endif()
+#if (IFORT_COMPILER)
+#	add_subdirectory(mklbuilder)
+#endif
+
 
 # Because external project call cmake externally too we need to pass the compiler and module path via cmake_args
 if(compileHDF5)
