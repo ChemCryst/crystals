@@ -28,7 +28,7 @@
 % VARIABLE REAL YMIN YMAX STEPY MINY YSTART YEND               
 % VARIABLE REAL ZMIN ZMAX STEPZ MINZ ZSTART ZEND ZMAX
 % VARIABLE INTEGER IX IY IZ
-% VARIABLE REAL ZSECT  RESOL BORDER 
+% VARIABLE REAL ZSECT  RESOL BORDER MAPSC
 % VARIABLE CHARACTER CFILE                                                      
 % VARIABLE CHARACTER FMAPV
 % VARIABLE INTEGER IMAP DOSCALE DOCALC RUNVIEWER OLDSER DOVOID STEREO           
@@ -63,7 +63,7 @@
 ^^WI     @ 10,2 BUTTON BMOLAX  '&Define plane'                                  
 ^^WI     @ 12,2 BUTTON BADD  '&Expand plane (+1.0A)'
 ^^WI   }                                                                        
-^^WI   @ 1,1 GRID GRIDA NROWS=7 NCOLS=3                                         
+^^WI   @ 1,1 GRID GRIDA NROWS=9 NCOLS=3                                         
 ^^WI   {                                                                        
 ^^WI    @ 2,2 GRID GRIDAA NROWS=1 NCOLS=3 OUTLINE='Recompute'                   
 ^^WI    {                                                                       
@@ -104,7 +104,12 @@
 ^^WI      @ 4,5 STATIC T1 'Box top (z)'                                       
 ^^WI      @ 4,7 EDITBOX   _ZEND '8.0' CHARS=8  REAL                                   
 ^^WI      @ 4,9 STATIC T2 'angstroms.'  
-^^WI    }                                                                       
+^^WI    }
+^^WI    @ 8,2 GRID GSCAL NROWS=1 NCOLS=3
+^^WI    {
+^^WI      @ 1,1 STATIC T9 'Map scale'                                          
+^^WI      @ 1,3 EDITBOX MS '1.0' CHARS=5 REAL 
+^^WI    }
 ^^WI   }                                                                        
 ^^WI  }                                                                         
 ^^WI  @ 2,1 GRID BOTTOM NROWS=2 NCOLS=3                                         
@@ -290,7 +295,11 @@ view the generated sections.
 %%                                                                              
 ^^??    ER TEXT                                                                 
 %       GET NOSTORE SILENT REAL ' ' '0.25'                                      
-%       EVALUATE RESOL = VALUE                                                  
+%       EVALUATE RESOL = VALUE          
+%%                                        
+^^??    MS TEXT                                                                 
+%       GET NOSTORE SILENT REAL ' ' '1.0'                                      
+%       EVALUATE MAPSC = VALUE                                                  
 %%                                                                              
 ^^??    _XSTART TEXT                                                                 
 %       GET NOSTORE SILENT REAL ' ' '8.5'                                       
@@ -461,14 +470,15 @@ view the generated sections.
 %            INSERT 'FC-PAT'                                                     
 %           END CASE                                                              
 %           IF ( IMAP .EQ. 2 ) THEN                                               
-%             INSERT ' MIN-RHO = -1000'                                           
+%             INSERT ' MIN-RHO = -1000 '                                           
 %           ELSE                                                                  
-%             INSERT ' MIN-RHO = 0'                                               
+%             INSERT ' MIN-RHO = 0 '                                               
 %           END IF                                                                
+%           STORE FORMAT /(F7.2)/ LENGTH 7 REAL MAPSC                              
 %           IF RUNVIEWER .EQ. 3 THEN                                              
-%             INSERT ' 10 FILE=MAPVIEW'                                           
+%             INSERT ' FILE=MAPVIEW'                                           
 %           ELSE                                                                  
-%             INSERT ' 10 FILE=YES'                                               
+%             INSERT ' FILE=YES'                                               
 %           END IF                                                                
 %           QUEUE SEND                                                            
 %           CLEAR                                                                 
