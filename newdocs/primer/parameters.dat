@@ -1,0 +1,173 @@
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Atomic and Structural Parameters
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+====================================
+\LIST 5 - Atoms and other Parameters
+====================================
+
+ 
+::
+
+ \LIST 5
+ OVERALL scale= du[iso]= ou[iso]= polarity= enantio= extparam=
+ READ natom= nlayer= nelement= nbatch=
+ ATOM type= serial= occ= u[iso]= x= y= z= u[11]= ....u[12]=
+ INDEX p= q= r= s= absolute=
+ LAYERS scale=
+ ELEMENTS scale=
+ BATCH scale=
+
+
+
+=====================================
+\EDIT - Editing structural parameters
+=====================================
+
+
+ 
+::
+
+ \EDIT inputlist= outputlist=
+ EXECUTE
+ SAVE
+ QUIT
+ MONITOR level
+ LIST level
+ DELETE  atom specifications  .  .
+ ATOM type= serial= occ= u[iso]= x= y= z= u11= ..
+ CREATE z atom-specification  ...
+ SPLIT z atom-specification ...
+ CENTROID z atom-specification ...
+ KEEP  z atom-specifications ...
+ AFTER  atom-specification
+ MOVE z atom-specification  ...
+ SELECT atom-parameter  operator  value, . .
+ SORT type1 type2 ...
+ SORT keyword
+ DSORT type1 type2 ...
+ RENAME atom1  atom2  (, atom1  atom2) ...
+ TYPECHANGE keyword operator value new-atom-type
+ CHANGE  parameter-specification value ...
+ ADD  value parameters  ...
+ SUBTRACT  value  parameters  ...
+ MULTIPLY  value  parameters  ...
+ DIVIDE  value  parameters  ...
+ PERTURB value parameters ...
+ SHIFT  v1, v2, v3   atom-specification . .
+ TRANSFORM  r11, r21, r31, . . . r33  atom-specification . .
+ DEORTHOGINAL  atom-specification . .
+ UEQUIV  atom-specifications  .  .
+ ANISO  atom-specifications  .  .
+ INSERT identifier=name
+ END
+
+
+
+===========================================
+\REGROUP - Reorganisation of lists 5 and 10
+===========================================
+
+
+ 
+::
+
+ \REGROUP inputlist= outputlist=
+ SELECT move= keep= monitor= sequence= symmetry= translation=
+ END
+
+
+
+=================================
+\COLLECT - Repositioning of atoms
+=================================
+
+ 
+::
+
+ \COLLECT inputlist= outputlist=
+ SELECT monitor= tolerance= type= symmetry= translation=
+ END
+
+
+
+============================================
+\CONVERT - Conversion of temperature factors
+============================================
+
+
+ 
+::
+
+ \CONVERT inputlist= outputlist= crossterms=
+ END
+
+
+
+=============================
+\HYDROGENS - Hydrogen placing
+=============================
+
+
+ 
+::
+
+ \HYDROGENS inputlist= outputlist=
+ DISTANCE  d
+ SERIAL    n
+ U[ISO]    u
+ U[ISO]    next   mult
+ AFTER     type(serial)
+ PHENYL    x r(1) r(2) r(3) r(4) r(5)
+ H33       x r(1) r(2)
+ H23       x r(1) r(2)
+ H13       x r(1) r(2) r(3)
+ H22       x r(1) r(2)
+ H12       x r(1) r(2)
+ H11       x r(1)
+ END
+
+
+
+============================
+\PERHYDRO - Perhydrogenation
+============================
+
+
+ 
+::
+
+ \PERHYDRO
+ U[ISO] next 1.2
+ END
+
+
+=============================================
+\REGULARISE - Regularisation of atomic groups
+=============================================
+
+
+ 
+::
+
+ \REGULARISE    mode
+ COMPARE
+ KEEP
+ REPLACE
+ AUGMENT
+ METHOD number
+ GROUP number
+ TARGET aTOM sPECIFICATIONS
+ IDEAL  aTOM sPECIFICATIONS
+ SYSTEM a b c alpha beta gamma
+ ATOM    x    y    z
+ HEXAGON x
+ PHENYL
+ SQUARE x y
+ OCTAHEDRON x y z
+ SQP x y z
+ TBP x z
+ TETRAHEDRON x
+ END
+

@@ -1,0 +1,142 @@
+
+###Cameron Manual
+
+      ===HOW TO CONTROL THE PROGRAM
+
+      ===Command Groups
+
+      ===ERROR HANDLING
+
+      ===The HELP facility
+
+      ===Mouse Activation
+
+      ===General Input Syntax
+
+      ===Input of CRYSTALS List 5 files
+
+      ===OUTPUT
+
+      ===RENAME
+
+      ===RETYPE
+
+      ===OBEY
+
+      ===ARCHIVE
+
+      ===RETRIEVE
+
+      ===SCREEN
+
+      ===HARDCOPY
+
+      ===BASIC CONTROL
+
+      ===ORIENTATION COMMANDS
+
+      ===Other related commands
+
+      ===PHOTOGRAPHS
+
+      ===INCLUDE
+
+      ===EXCLUDE
+
+      ===Further related commands
+
+      ===Generation of Dummy atoms
+
+      ===Example
+
+      ===LINE
+
+      ===BALL
+
+      ===ELLIPSE
+
+      ===ALL
+
+      ===FRAGMENT
+
+      ===GROUP
+
+      ===LINE commands.
+
+      ===BALL commands.
+
+      ===ELLIPSE commands
+
+      ===CONNECT
+
+      ===Miscellaneous CONNECT commands
+
+      ===COLOUR
+
+      ===Example
+
+      ===LABEL
+
+      ===NOLABEL
+
+      ===FONT
+
+      ===TEXT
+
+      ===MAXIMISE
+
+      ===SCALE
+
+      ===Input of symmetry operators
+
+      ===Example of Space Group Input
+
+      ===Other symmetry related operations
+
+      ===PACK
+
+      ===Dealing with connectivity
+
+      ===EXAMPLES
+
+      ===ENCLOSURE
+
+      ===Choice of enclosure "origin"
+
+      ===Type of volume to be used
+
+      ===EXAMPLE
+
+      ===PACKING MORE COMPLICATED STRUCTURES
+
+      ===UNPACK
+
+      ===ADD
+
+      ===EXAMPLES
+
+      ===MOVE
+
+      ===DISTANCE
+
+      ===Method of Calculation
+
+      ===INFORMATION
+
+      ===DEFGROUP
+
+      ===Example
+
+      ===RESET
+
+      ===LOG
+
+      ===EDIT
+
+      ===MENUS
+
+      ===ISSUE
+
+      ===PRINT
+
+      ===END

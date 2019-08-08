@@ -3,17 +3,17 @@
    :caption: Contents:
 
    
-**************************
+##########################
 Frequently asked questions
-**************************
+##########################
 
 
 Needs updating - March 2019
 
 
-=======================================
+**************************************=
 Getting Started: Organisation of files.
-=======================================
+**************************************=
 
 
 
@@ -66,7 +66,7 @@ incremented with each run of the program. These files can generally be deleted w
 looking at them unless the analysis begins to go wrong. They provide
 post-mortem information.
 
-**PUBLISH.*** files. These are final listings for preparing papers.
+**PUBLISH.### files. These are final listings for preparing papers.
 
 
 
@@ -74,9 +74,9 @@ post-mortem information.
 
 
 
-===================================
+**********************************=
 General: Who is responsible for it?
-===================================
+**********************************=
 
 
 David Watkin is in charge of most of the code (with the
@@ -98,9 +98,9 @@ SGI and is pleased with it.
 
 
 
-=============================
+****************************=
 General: Where is the manual?
-=============================
+****************************=
 
 
 The CRYSTALS documentation is currently being revised and updated.
@@ -136,9 +136,9 @@ http://www.xtl.ox.ac.uk/guide.html
 14/01/97 A summary of the features available - not quite finished.
 
 
-=============================================
+********************************************=
 General: Is there an example to work through?
-=============================================
+********************************************=
 
 
 Yes. The distribution contains two old data sets:
@@ -161,9 +161,9 @@ the "Crystals Worked Examples" manual distributed with CRYSTALS.
 
 
 
-===========================================================================
+**************************************************************************=
 General: Can I prepare commands to run CRYSTALS in batch mode (like SHELX)?
-===========================================================================
+**************************************************************************=
 
 
 Type the commands into a file with your favourite text editor. Then
@@ -177,9 +177,9 @@ the end of a run, which contains atomic co-ordinates and
 refinement setup instructions, which may be edited for the next run.
 
 
-========================================
+****************************************
 General: Is there any command line help?
-========================================
+****************************************
 
 
 As a basic memory aid, you can type ? at any point and
@@ -187,9 +187,9 @@ you will be given a list of relevant options. (i.e. if you
 have already typed a \\Instruction, you will see a list of directives.)
 
 
-==============================================================
+**************************************************************
 General: How can I switch the left and right CRYSTALS windows?
-==============================================================
+**************************************************************
 
 
 
@@ -219,9 +219,9 @@ Find the section beginning:
 want to back up your old guimenu.srt when first experimenting.
 
 
-===============================================================
+**************************************************************=
 Solving structures: How do I prepare a job for SIR92 or SHELXS?
-===============================================================
+**************************************************************=
 
 
  Input the necessary data:
@@ -244,9 +244,9 @@ Exit CRYSTALS (*\\END)* and run the direct methods
 program (Sir92 or Shelxs).
 
 
-================================================================
+****************************************************************
 Solving structures: It failed. How do I prepare a different job?
-================================================================
+****************************************************************
 
 
  Type: *\\FOREIGN* *SIR92* **DIFFICULT** or *\\FOREIGN* *SHELX* **DIFFICULT** 
@@ -256,9 +256,9 @@ Exit CRYSTALS (*\\END)* and run the direct methods
 program (Sir92 or Shelxs).
 
 
-====================================================================
+********************************************************************
 Solving structures: How do I import the solution back into CRYSTALS?
-====================================================================
+********************************************************************
 
 
 Type *\\SCRIPT* *INEMAP* and follow the
@@ -266,9 +266,9 @@ instructions given. (You will be asked which program you
 used to solve the structure.)
 
 
-==============================================
+**********************************************
 CAMERON: How do I see a plot of the structure?
-==============================================
+**********************************************
 
 
 Type:*\\SCRIPT* *PLOT*
@@ -276,9 +276,9 @@ Type:*\\SCRIPT* *PLOT*
 To exit CAMERON, type *END* or click File/Exit in the menus.
 
 
-=============================================
+********************************************=
 CAMERON: Can I rotate it and label the atoms?
-=============================================
+********************************************=
 
 
 Some basic commands:
@@ -305,9 +305,9 @@ Some basic commands:
 **MENU** **ON** - turn on the menu bar
 
 
-===============================
+******************************=
 CAMERON: How do I delete atoms?
-===============================
+******************************=
 
 
 Type *EXCL* followed by the atom name (or
@@ -318,9 +318,9 @@ atom by typing *INCL* followed by the atom name, or
 
 
 
-================================================================
+****************************************************************
 Fourier: How do I calculate a Fourier map to find missing atoms?
-================================================================
+****************************************************************
 
 
 You must have already entered the following required information:
@@ -359,9 +359,9 @@ geometrically on carbon skeletons **and** allow you to compare
 these positions with a difference Fourier map.
 
 
-===============================================
+**********************************************=
 Refinement: What infomation does CRYSTALS need?
-===============================================
+**********************************************=
 
 
 
@@ -386,9 +386,9 @@ Refinement: What infomation does CRYSTALS need?
 **List** **29** - Asymmetric unit contents
 
 
-===================================
+**********************************=
 Refinement: Refinement instructions
-===================================
+**********************************=
 
 
 
@@ -417,9 +417,9 @@ Alternatively, choose *Guided* *Automatic* from the
 current state of progress.
 
 
-====================================================================
+********************************************************************
 Refinement: Occupancies of an atom or fragment split over two sites?
-====================================================================
+********************************************************************
 
 
 Use constraints. Constraints are set up using List 12, so you must be
@@ -539,9 +539,9 @@ you intended to refine have in fact been refined.
 
 
 
-====================================
+************************************
 Refinement: How do I add restraints?
-====================================
+************************************
 
 
 Restraints are set up using list 16.
@@ -608,9 +608,9 @@ almost no effect unless the shift due to the X-ray observations is
 huge.
 
 
-==========================================================
+**********************************************************
 Refinement: How do you use Platon's Squeeze from CRYSTALS?
-==========================================================
+**********************************************************
 
 
 
@@ -667,9 +667,9 @@ correction if you don't like it.
 
 
 
-=================================================
+************************************************=
 Refinement: What are parts assemblies and groups?
-=================================================
+************************************************=
 
 Please could you tell me briefly how can I make use of 'PART' for 
 disordered groups.
@@ -712,9 +712,9 @@ This stuff is quite new, so try to verify it's doing what you think
 it's doing! If in doubt send me the .dsc file for checking.
 
 
-=============================================================================
+****************************************************************************=
 Structure: How can I adjust a molecule or fragment to have ideal coordinates?
-=============================================================================
+****************************************************************************=
 
 This assumes you've got some known coordinates for, say, a solvent
 molecule and you want to tidy up a molecule in your structure because
@@ -755,9 +755,9 @@ of the structure that the ideal molecule is taken from.
 Note that for pdb-type coordinates, you should give "SYSTEM 1 1 1 90 90 90".
 
 
-============================================================
+************************************************************
 Analysis: Find the angle between a plane of atoms and a bond
-============================================================
+************************************************************
 
 To find the angle between a plane of atoms and a bond use the \\GEOMETRY instruction:
 
@@ -791,9 +791,9 @@ Changing PLANE to LINE, or LINE to PLANE will allow you to find the
 angle between two planes or the angle between two lines!
 
 
-============================================
+********************************************
 Analysis: Calculate intermolecular distances
-============================================
+********************************************
 
 For intermolecular bond lengths, the syntax is quite flexible - it's just
 a matter of telling the program what distance range to look in - try
@@ -843,14 +843,14 @@ The manual details other options for selecting atoms such as exclude,
 pivot etc.
 
 
-========================================================================
+************************************************************************
 Analysis: Find LIKELY H-BONDS with donors or acceptors other the O and N
-========================================================================
+************************************************************************
 
-The action for the 'Likely H bonds' menu option is to find any H--A 
+The action for the 'Likely H bonds' menu option is to find any H^^A 
 distances in the range 1.5-2.2 angstroms, where A is O or N. It also 
-lists D-H--A angles where DH and AH are in the range 0.7-2.2 angstroms, 
-so that you can check that a give H--A bond forms a reasonable D-H--A angle.
+lists D-H^^A angles where DH and AH are in the range 0.7-2.2 angstroms, 
+so that you can check that a give H^^A bond forms a reasonable D-H^^A angle.
 
 
 The instruction that is executed is:
@@ -874,20 +874,20 @@ other end of the bond.
 
 
 For other acceptors, add element to the BONDED directive (e.g. CL) in the above 
-command and extend the bonding limits to something reasonable for a H--CL distance
-e.g. from 2.2 to about 3.7(?). It will then find all H--CL bonds and O-H--CL, or
-N-H--CL angles.
+command and extend the bonding limits to something reasonable for a H^^CL distance
+e.g. from 2.2 to about 3.7(?). It will then find all H^^CL bonds and O-H^^CL, or
+N-H^^CL angles.
 
 
 Becuase the distance command doesn't let you specify different limits for each
 side of an angle no distinction can be made between donors and acceptors, (i.e. you
-cannot get separate listings of O--H-N and N--H-O angles)
+cannot get separate listings of O^^H-N and N^^H-O angles)
 
 
 
-===================================================
+**************************************************=
 Analysis: How do I use ROTAX to test for twin laws?
-===================================================
+**************************************************=
 
 
 1. Choose Analyse-> Rotax Analysis/Twins-> ROTAX from the menu.
@@ -935,9 +935,9 @@ Laws.
 
 
 
-=========================================================
+********************************************************=
 Analysis: How do I add hydrogen atoms to water molecules?
-=========================================================
+********************************************************=
 
 
 The following will work to find short O--O or O--N contacts
@@ -981,9 +981,9 @@ i.e. O(6) is the donor and O(21) is the acceptor.
 
 
 
-================================================================
+****************************************************************
 Publication: Editor wants completeness of the data at 25 degrees
-================================================================
+****************************************************************
 
 
 Is there a way to get that from CRYSTALS?
@@ -1020,9 +1020,9 @@ value)", and change the value to -25.00
 
 
 
-======================================================================
+**********************************************************************
 Publication: What's the difference between _theta_max and _theta_full?
-======================================================================
+**********************************************************************
 ::
 
 
@@ -1056,9 +1056,9 @@ in CRYSTALS.
 
 
 
-========================================================
+********************************************************
 Publication: Diagram shows wrong enantiomer. What to do?
-========================================================
+********************************************************
 
 
 
@@ -1129,9 +1129,9 @@ have a structure in one of these, get help!
 
 
 
-================================================
+************************************************
 References: What References should I know about?
-================================================
+************************************************
 
 
 Please note the references for CRYSTALS and CAMERON, and cite them with each
@@ -1225,9 +1225,9 @@ DIFABS References
 
 
 
-====================================
+************************************
 Miscellaneous: Environment variables
-====================================
+************************************
 
 
 CRYSTALS will substitute for any environment variables when

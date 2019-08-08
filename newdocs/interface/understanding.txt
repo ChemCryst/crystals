@@ -1,0 +1,24 @@
+### Understanding  CRYSTALS
+   *** You Need to Know:
+      ^^^ Structure database:
+      ^^^ Lists:
+      ^^^ Atoms:
+      ^^^ Reflections:
+      ^^^ Commands and Scripts
+      ^^^ Help Files
+   *** Organising your data:
+   *** About SCRIPTS
+      ^^^ Getting out of SCRIPTS
+   *** Layout of the Screen:
+      ^^^ Main Toolbar:
+      ^^^ Top Menu:
+      ^^^ The Guide:
+      ^^^ Text Window: 
+      ^^^ Summary Tabs: 
+      ^^^ Command Line:  
+      ^^^ Graphics Window:  
+   *** Customising Crystals
+   *** Using The Guide
+   *** Using Menus
+   *** Inputting Data
+   *** Using CAMERON

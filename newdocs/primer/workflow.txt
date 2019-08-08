@@ -1,0 +1,24 @@
+### Crystals Workflow                      ### COMMAND Overview                               ### Advanced Facilities
+   *** Background to structure analysis       *** PREPARATION OF THE MODEL                       *** DOCUMENTATION
+      ^^^ Principal Stages of analysis           ^^^ \Peaks                                         ^^^ The Manual
+      ^^^ Preparations for the analysis          ^^^ \Collect & \Regroup                            ^^^ On-line HELP
+   *** Routine Analysis using the Guide          ^^^ \Edit                                          ^^^ Command summary
+   *** Reflection Data                           ^^^ \Molax, \Regularise, \Aniso                       === \COMMANDS
+                                              *** REFINEMENT                                           === Query facility
+                                                 ^^^ Structure factor control list               *** THE DATA BASE
+                                                 ^^^ Refinement definition                          ^^^ Listing LISTs
+                                                 ^^^ Special positions                              ^^^ Index to the disk
+                                                 ^^^ Treatment of reflections                       ^^^ Recovering previous lists
+                                                 ^^^ Weighting the reflections                      ^^^ Purging the disk file
+                                                 ^^^ Restraints                                  *** TAILORING THE PROGRAM
+                                                 ^^^ Least Squares                                  ^^^ General Instructions
+                                              *** SEEING THE STRUCTURE                           *** File processing
+                                                 ^^^ Listing the coordinates                        ^^^ Using and typing files
+                                                 ^^^ Graphics                                          === \RELEASE devicename filename
+                                              *** MOLECULAR GEOMETRY                                ^^^ Automatic Disc extension.
+                                                 ^^^ Distances and angles                           ^^^ CRYSINIT files.
+                                                 ^^^ Best planes, lines and dihedral angles      *** SCRIPTS
+                                                 ^^^ Torsion angles                                 ^^^ Entering SCRIPT  mode
+                                                 ^^^ Thermal analysis                               ^^^ Escaping from SCRIPT mode
+                                              *** PUBLICATION LISTINGS                                 === \DISK - Disk management
+                                                                                                       === \PURGE - Deletion of Old Versions of Lists

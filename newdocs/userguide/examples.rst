@@ -26,17 +26,34 @@
 .. |F2| replace:: F\ :sup:`2`
 
 
+.. _examples:
+
+
+
+.. index:: Worked Examples
+
+:ref:`Cylo - A Routine Analysis <Cyclo>`
+|br|\
+:ref:`Tetraphenylene - A weak data set <tetraphenylene>`
+|br|\
+:ref:`NKET - Introduction to the COMMAND LINE <nket>`
    
-***************
+###############
 Worked examples
-***************
+###############
+
 These (and other) examples can be found in the *Wincrys/demo* folder.
 Each demo subfolder contains data and instructions exploring a differenct crystallographic 
-problem. In this section of the manual we look at just two simple cases.
+problem. In this section of the manual we look at three simple cases.
 
-====================================
+
+.. _Cyclo:
+.. index:: Cyclo
+
+
+************************************
 Cyclo - a routine structure analysis
-====================================
+************************************
 This natty material was supplied as very poor colourless crystals found congealed 
 in the bottom of a half-abandoned flask.
 |br|\
@@ -49,9 +66,9 @@ The space group is P 21 21 21
 .. image:: images/cyclo.jpg
 
 
--------------------
+^^^^^^^^^^^^^^^^^^^
 Video demonstration
--------------------
+^^^^^^^^^^^^^^^^^^^
 The video is explained step by step after it finishes.
 
 .. raw:: html
@@ -59,11 +76,13 @@ The video is explained step by step after it finishes.
     <div style="position: relative; padding-bottom: 16.25%; height: 0; overflow: hidden; max-width: 100%; height: auto;">
     <iframe width="560" height="315" src="https://www.youtube.com/embed/KDUIFE_epXE?rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
     </div>
+
+
+.. _discussion:	
 	
-	
-----------
+^^^^^^^^^^
 Discussion
-----------
+^^^^^^^^^^
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 Step one: SHELX-style data
@@ -348,18 +367,20 @@ Click OK
 |br|\
 The extinction check graph is displayed:
 
-.. image:: images/fovsfc.png
+.. image:: images/extinction_proc.jpg
+.. image:: images/fovsfc_proc.jpg
+
 
 This plots Fo against Fc. If extinction is a problem for the
-crystal, the graph will flatten out (drop under the blue Fo=Fc
-line) at high values of Fc.
+crystal, the graph will flatten out (drop under the green Fo=Fc
+line above left) at high values of Fc.
 |br|\
-Extinction isn't a problem here, however, three of the reflections
-are clearly outliers. (Lie far from the Fo/Fc line).
+Extinction isn't a problem with this data. However, three of the reflections
+are clearly outliers. (Lie far from the Fo/Fc line, above right).
 |br|\
 Exclude the outliers from the refinement 
 by right-clicking on the offending points and
-choosing "Omit". However, you should investigate why there are outliers.
+choosing "Omit". However, you should investigate why they are outliers.
 |br|\
 The most common cause is that the beam trap was
 partially obscuring the image on the diffractometer due to a misplaced
@@ -396,7 +417,8 @@ The red bars in the plots are the residuals with unit weights, the green bars
 are the weighted residuals. The green bars should all be very small, centred about
 the unity line. The dark blue line shows the number of reflections in each
 bin. Bins contailing small numbers of reflections may have un-typical 
-average residuals.
+average residuals. The pale blue line in 1000 times the average Fo over the average Fc,
+and should be close to 1000.
 |br|\
 The Help button brings up a short description of the functions of the 
 different schemes.
@@ -472,24 +494,32 @@ checks.
 |br|\
 The cif is c:\\wincrys\\demo\\cyclo\\publish.cif.
 |br|\
+
 To close CRYSTALS choose Exit Crystals from the File menu.
 
 
-==================================
+.. _tetraphenylene:
+
+.. index:: Tetraphenylene
+
+....
+
+
+**********************************
 Poor Quality Data - Tetraphenylene
-==================================
+**********************************
 
 
-----------
+^^^^^^^^^^
 Background
-----------
+^^^^^^^^^^
 
 
 
-This is a hard, well crystalline organic material. Melting point 232-235 C.
+This is a hard, well crystalline organic material, melting point 232-235 C.
 The crystals are in the form of prisms terminated with brilliant pyramidal
 faces. It was selected as a potential test crystal for analysing data
-collection and processing strategies, since its internal symmetry
+collection and processing strategies because its internal symmetry
 permits non-crystallographic statistical tests to be applied.  A
 crystal 0.04 x 0.05 x 0.17 mm was Araldited to a fine glass capilliary.
 A hemisphere of data was collected using the parameter settings selected
@@ -503,7 +533,7 @@ a redundancy of 5 or more.
 
 
 
-Chemical formula C24 H16|br|\
+Chemical formula C24 H16 |br|\
 The instrument which collected this data only output
 the point group, C2. The actual Space group monoclinic C2/c.
 
@@ -701,13 +731,224 @@ different filters, and use the optimise weights dialogue to experiment
 with weighting.
 
 
-===============
+....
+
+.. _nket:
+
+
+***********************************
+NKET - Introduction to Command mode
+***********************************
+
+The native mode for using CRYSTALS consists of inputting commands either
+from the keyboard, or from pre-prepared files.  CRYSTALS has an extensive 
+vocabulary of commands and sub-commands. An ability to use the command mode 
+interface gives the user access to advanced facilities which have not been
+packaged up into *SCRIPTS*. |br|\
+Now that most instruments produce basic data in SHELX format, the SCRIPT
+that processes *.INS* and *.RES* files is the most convenient way to start
+an analysis. However, is the data is in some way exotic, it can be input 
+via the COMMAND line.
+
+^^^^^^^^^^
+Background
+^^^^^^^^^^
+
+
+The demonstration data set *NKET* is a quick introduction to the command line.
+You could print out the files listed below and input each piece of information
+line by line, but in practice it is more convenient to instruct CRYSTALS to 
+read the information from each file - to |blue| *USE* |xblue| the named file
+|br|\
+The files to be used in Command mode are:
+
+
+::
+
+ NKET.QCK    Initial data, including a set of trial coordinates
+ NKET.LSQ    Isotropic refinement and molecule assembly
+ NKET.ANI    Anisotropic refienement
+ NKET.FOU    Difference Fourier
+ NKET.REF    Reflections in SHELX format - you would almost never type this in!
+
+
+
+Start CRYSTALS as described else where. The `COMMAND`_  LINE 
+is near the bottom of
+the left hand side of the screen. To *USE* a file (i.e. input the contents of a file)
+type **#USE fole-name**.  If you wish to see the contents of a file before you execute it, type
+**#TYPE file-name** .
+
+.. _command: ../_images/layout.png 
+ 
+
+|blue| #USE NKET.QCK |xblue|
+
+This file inputs the basic information needed for an analysis, including an
+atomic model obtained from elsewhere. It also refines the scael factor and 
+carries out an analysis of variance.  It does NOT contain all the information
+needed to create a fully valid cif file.
+  
+
+::
+
+
+      #QUICKSTART
+      CELL 7.5330  7.5336 15.7802
+      SPACEGROUP P 41
+      CONTENT C 32 H 32 N 4 O 16
+      DATA 1.5418 FSQ
+      FILE NKET.REF
+      FORMAT (3F4.0, 2F8.2 )
+      END
+      #LIST 6
+      READ TYPE=COPY
+      END
+      #LIST      5
+      READ NATOM =     13
+      ATOM C       1 X=0.819200   0.697300   0.118000
+      ATOM C       2 X=0.502300   0.661800   0.030100
+      ATOM C       3 X=0.809300   0.322200   0.053100
+      ATOM C       4 X=0.739400   0.046200   0.091800
+      ATOM C       5 X=0.936400   0.463600   0.025800
+      ATOM C       6 X=1.059800   0.461400   0.171800
+      ATOM C       7 X=0.836400   0.629600   0.033900
+      ATOM C       8 X=0.634800   0.560100   0.004300
+      ATOM C       9 X=1.106300   0.435500   0.091400
+      ATOM C      10 X=1.180100   0.263500   0.070100
+      ATOM C      11 X=1.048600   0.109000   0.096000
+      ATOM C      12 X=0.857800   0.160100   0.077100
+      ATOM C      13 X=0.630000   0.381500   0.040500
+      END
+      #SFLS
+      SCALE
+      END
+      #ANALYSE
+      END
+                
+
+|blue| #USE NKET.LSQ |xblue|
+
+  This file specifies that the x,yz and isotropic adp coordinates of
+  all the atoms should be refined by two cycles of least squares, that
+  the atoms should be collected to form a single molecule, and that
+  the atom list should be sorted on the magnitude of Uiso. The DISPLAY
+  HIGH instruction lists the atomic parameters in the text window.
+  The MOLAX
+  instruction is now essentially obsolete. It computes a simple plot
+  in the text window of all the atoms between and including the first
+  and last (i.e. all) atoms in the list.
+
+::
+
+ #LIST 12
+ FULL X'S U[ISO]
+ END
+ #SFLS
+ REFINE
+ REFINE
+ CALC
+ END
+ #COLLECT
+ END
+ #EDIT
+ SORT U[ISO]
+ END
+ #DISPLAY HIGH
+ END
+ #MOLAX
+ ATOM FIRST UNTIL LAST
+ PLOT
+ END
+ 
+
+
+
+|blue| #USE NKET.ANI  |xblue|
+
+ The structure outline looks OK - now use the structure editor to rename 
+ some of the atoms. Note that keywords can be shortened to a unique string
+ in the current context (RENAME becomes REN).
+
+ The overall scale factor is refined followed by 
+ the atomic positions (X's = x,y,z) and adps (U's = U[11], U[22] etc) 
+ 
+
+::
+
+ #EDIT
+ RENAME C(1) O(1), C(2) O(2), C(4) O(4), C(6) O(6)
+ REN C(3) N(3)
+ EXEC
+ END
+ #LIST 12
+ FULL X'S U'S
+ END
+ #SFLS
+ SCALE
+ REFINE
+ REFINE
+ END
+
+
+
+|blue| #USE NKET.FOU |xblue|
+
+ Compute a difference Fourier map, scans it for peaks and bring these peaks
+ into close contact with the existing atoms. The positive peaks are named
+ Q( ), the deepest hole QN(1). You should rename the peaks that look like
+ hydrogen to H( ) and delete spurious peaks, including QN(1). |br|\
+ PERHYDRO tries to fill in any missing hydrogen atoms based on standard
+ geometries. |br|\
+ The refinement directive specifies the list of atoms to be refined i.e. 
+ the hydrogen atoms are omitted. The implicit specification used above
+ would also work here since it automatically omits hydrogen atoms.
+ #FINISH (or #END) closes CRYSTALS down.
+
+::
+
+ #FOURIER
+ MAP TYP=DIFF
+ PEAK HEIGHT=2
+ END
+ #PEAK
+ END
+ #COLLECT
+ SEL TYPE=PEAK
+ END
+ #PERHYDRO
+ END
+ #LIST 12
+ BLOCK SCALE O(1,X'S,U'S) UNTIL C(9)
+ END
+ #SFLS
+ REFINE
+ REFINE
+ END
+ #FINISH
+
+
+The interested user might wish to delete the .dsc file which was created for this
+example and start again by just importing NKET.QCK and then using the GUIDE to
+complete the analysis.
+ 
+
+
+
+
+
+
+
+
+
+***************
 Spacegroup Quiz
-===============
+***************
 
 
 
-From the Development menu, choose Space group quiz.
+From the Tools menu, choose Space group quiz - a simple test of your understanding of 
+space groups. 
 
 
 

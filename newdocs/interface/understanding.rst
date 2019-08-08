@@ -45,7 +45,8 @@ You Need to Know:
        Lists
        Atoms
        Reflections
-       Commands and Scripts
+       Commands
+       Scripts
 
 .. _database:
 
@@ -79,6 +80,8 @@ You will most frequently see references to *LIST 5*, the refinable parameters
 
 .. index:: Atom Name Syntax
 
+.. index:: Atom Identifiers
+
 ^^^^^^
 Atoms:
 ^^^^^^
@@ -99,7 +102,7 @@ Atoms are held in LIST 5, and are identified by a two-part symbol, the atom ID:
    occurrence. See :ref:`Fixing clashes <fix clashes>`
    |br|\
    Atom names can also include symmetry information.
-   See the section :ref:`atomparams` .
+   See the section :ref:`atoms` and :ref:`atomparams`.
 
 .. see crystals/initial.rst
 .. see crystals/parameters.rst
@@ -123,16 +126,18 @@ necessary, a merged copy will be created for special purposes, e.g. computing a
 Fourier Synthesis.
 
 
-^^^^^^^^^^^^^^^^^^^^^
-Commands and Scripts:
-^^^^^^^^^^^^^^^^^^^^^
+.. index:: Commands
+
+^^^^^^^^^^^^^^^^^^^^
+Commands and Scripts
+^^^^^^^^^^^^^^^^^^^^
 CRYSTALS works by performing operations given in the form of *COMMANDS*.  For 
 convenience in day-to-day use, COMMANDS and suitable parameters have been packaged up
 into *SCRIPTS*.  These SCRIPTs are usually accessed via the *GUI* Menus, Tool Bar or 
 Model window.  The experienced user can access many SCRIPTS directly via the *Command 
 Line*.
-|br|\ See the section :ref:`Syntax of Commands`.
-|br|\
+|br|\ See the section :ref:`Syntax of Commands`
+|br|\ and the example :ref:`nket`
 
 
 .. index:: Help
@@ -143,13 +148,16 @@ Help Files
 There are a variety of help files, which are slowly being rationalised. Many menus have
 a brief help text as the bottom item on the menu.
 |br|\
-Some menus also have hyperlinks to illustrated texts
+Some menus also have hyperlinks to illustrated texts.
 |br|\
 Some menu items having a basic choice between *Continue* or *Cancel* also have an 
-optional help button.  This button only shows if you have |blue| Tools-Help |xblue|
+optional *Help* button.  This button only shows if you have |blue| Tools-Help |xblue|
 enabled. 
 :ref:`See the section Tools Help <Tools Help>`. These little help files explain what will
 happen if you choose to continue.
+
+
+
 
 
 *********************
@@ -166,6 +174,38 @@ inacessible.
 |br|\
 
 
+
+
+.. index:: About SCRIPTS
+
+*************
+About SCRIPTS
+*************
+The SCRIPTS are pre-packaged groups of COMMANDS which are commonly used in sequence.
+They also are able to ask the user for information or to make choices. They can make
+their own decisions based on the available crystallographic information.  They 
+communicate with CRYSTALS by issuing standard COMMANDs, which are mirrored to the log
+file, *bfile#.log*.  |br|\
+Text from the log file may be copied into a new file, e.g. newtask.job, edited to
+change the detailed action, and the new COMMANDS input into CRYSTALS with #USE 
+newtask.job. |br|\
+
+.. index:: Getting out of SCRIPTS
+.. _Getting out of SCRIPTS:
+
+
+^^^^^^^^^^^^^^^^^^^^^^
+Getting out of SCRIPTS
+^^^^^^^^^^^^^^^^^^^^^^
+Occasionally a SCRIPT will start looping, producing copious error messages, either 
+through a programming error or the SCRIPTS failure to understand the user-input. Pressing 
+the close icon (an X in the top right had corner) several times **SLOWLY** will eventually 
+abort the SCRIPT. |br|\
+The response 'DIRECT' can be made to SCRIPT questions, and has the effect
+of returning the user IMMEDIATELY to direct CRYSTALS input mode. Any half
+completed tasks being performed by the SCRIPT may need terminating (or
+aborting) with an 'END'.
+ 
 
 
 
@@ -203,78 +243,44 @@ Please see `layout`_ for a high resolution image
 .. image:: images/layout.png
    :target: ../_images/layout.png
 
+.. |guide| image:: images/tool_guid.bmp
+.. |four|  image:: images/toolfour.bmp
+.. |perh|  image:: images/tl_perh.bmp
+.. |delq|  image:: images/tl_delq.bmp
+.. |delh|  image:: images/tl_delh.bmp
+.. |undo|  image:: images/undo.bmp
+.. |ed5|  image:: images/ed5.bmp
+.. |ed12|  image:: images/ed12.bmp
+.. |ed16|  image:: images/ed16.bmp
+.. |refine|  image:: images/refine.bmp
+.. |cam|  image:: images/toolcam.bmp
+.. |hg|  image:: images/mercury.bmp
+.. |note|  image:: images/notepad.bmp
+.. |expl|  image:: images/tool_norm.bmp
+
+
 ^^^^^^^^^^^^^
 Main Toolbar:
 ^^^^^^^^^^^^^
    The Main Toolbar contains just the few items that are most commonly used during an 
-   analysis.  They ar a subset of items available via the Menu bar.
+   analysis.  They are a subset of items available via the Menu bar.
 
    * |guide| *Guide* starts up the Guide to advise on the next appropriate step.
-
-   .. |guide| image:: images/tool_guid.bmp
-
    * |four| *Fourier* links to most commonly required Fourier maps.
-
-   .. |four|  image:: images/toolfour.bmp
-
    * |perh| *Perhydrogenation*  uses geometrical and Fourier methods to locate hydrogen 
      atoms.
-
-   .. |perh|  image:: images/tl_perh.bmp
-
    * |delq|  *Delete* **Q** peaks.
-
-   .. |delq|  image:: images/tl_delq.bmp
-
-
    * |delh|  *Delete* all hydrogen atoms.
-
-   .. |delh|  image:: images/tl_delh.bmp
-
-
    * |undo|  *Undo* enables you to revert to an earlier version of the model.
-
-   .. |undo|  image:: images/undo.bmp
-
-
    * |ed5|  *Edit Atoms* enables you to edit the atomic parameters with a normal text editor.
-
-   .. |ed5|  image:: images/ed5.bmp
-
-
    * |ed12|  *Edit Constraints* enables you to set up the the refinement details with a normal text editor.
-
-   .. |ed12|  image:: images/ed12.bmp
-
-
    * |ed16|  *Edit Restraints* enables you to set up the the refinement restraints with a normal text editor.
-
-   .. |ed16|  image:: images/ed16.bmp
-
-
    * |refine|  *Refine* initiates a user-defined number of cycles of refinement
-
-   .. |refine|  image:: images/refine.bmp
-
-
    * |cam|  *CAMERON* Graphical structure viewer, printer and manipulator.
-
-   .. |cam|  image:: images/toolcam.bmp
-
-
    * |hg|  *Mercury* A link to the CCDC Mercury structure viewer.
-
-   .. |hg|  image:: images/mercury.bmp
-
-
    * |note|  *Text Editor* Usually Notepad on Windows machines.
-
-   .. |note|  image:: images/notepad.bmp
-
-
    * |expl|  *Explorer* opens Windows explorer in the current working directory.
 
-   .. |expl|  image:: images/tool_norm.bmp
 
 
 ^^^^^^^^^
@@ -306,7 +312,7 @@ See :ref:`menus` for details.
    * Fourier:  Various Fourier syntheses.
  
    * Refinement:  Setting up refinement details, constraints and restraints. Choosing 
-     refinement weights and *SQUEEZing* the structure (see :ref:`squeeze <squeeze>` )
+     refinement weights and *SQUEEZing* the structure (see :ref:`SQUEEZE <squeeze>` )
 
    * Analyse: Many analytical and graphical tools to help validate an analysis, or to 
      trouble-shoot problem structures/data sets.  
@@ -325,13 +331,16 @@ See :ref:`menus` for details.
 
    * Help:  Access to the guides and manuals.
 
+
 ^^^^^^^^^^
 The Guide:
 ^^^^^^^^^^
-Tries to suggest what to do next at each stage in an analysis.
+The Guide tries to suggest what to do next at each stage in an analysis.
 The drop-down contains alternative suggestions.
 The Guide can be turned off at any time and turned back on from the Top Menu.
 |br|\
+See :ref:`The Guide <The Guide>` under Workflow for more details. 
+
 |g-ref|
 
 .. |g-ref|  image:: images/guide-ref.png
@@ -361,22 +370,29 @@ Display information from the data base (.dsc file).
 ^^^^^^^^^^^^^
 Command Line:  
 ^^^^^^^^^^^^^
+A |blue| COMMAND |xblue| is a group of directives and data which must be 
+taken together to have any meaning - a bit like a natural language sentence.
 The start of a command is indicated by the COMMAND name preceded immediately by
 a special character. The end is indicated by the word END.
 |br|\
-The permitted special characters are: "#", "\" and "&".
-|br|\ See the section :ref:`Syntax of Commands` for more details.
+The permitted special characters are: "#", "\\\\" and "&".
+|br|\ 
 |br|\  
-This is where you would enter CRYSTALS commands directly.  See :ref:`command-line` for 
+This is where you can enter CRYSTALS commands directly.  See :ref:`command-line` 
+and  :ref:`Syntax of Commands` for 
 more details. Most 
 complicated sets of commands are now generally created via the SCRIPTS, but some useful 
 commands are:  
 
    * *#SUMMARY LIST 5* followed by the optional low/medium/high displays less or more of 
      the contents of LIST 5, the atom parameter list.
-   * *#DISK* enables you to see and manage the LISTS in the data base.
+   * *#DISK* enables you to see and manage the LISTS in the data base. See
+     :ref:`The CRYSTALS Database <crysdatabase>` for details.
    * *#USE* followed by a file name to cause CRYSTALS to read input from the named file.
    * *#EDIT* starts the powerful atomic parameter editor. See  :ref:`Editing Atoms`
+
+
+
 
 
 ^^^^^^^^^^^^^^^^
@@ -386,11 +402,12 @@ The model window both displays the structure and enables you to perform
 some atom-based operations, such as computing Fourier sections, selecting or deleting 
 atoms or groups of atoms, setting atom parameters, computing geometrical parameters.
 See :ref:`Using the Model Window <the model window>` for operations which can be performed on 
-the  model
-|br|\
-|gui|
+the  model.
 
 .. |gui|  image:: images/gui.png
+
+|gui|
+
 
 .. index:: Customising CRYSTALS
 
@@ -417,9 +434,8 @@ most commonly it contains :ref:`Immediate Commands <Immediate Commands>`
 Using The Guide
 ***************
 
-
-To be done!
-
+The worked examples :ref:`CYCLO <Cyclo>` and :ref:`Tetraphenylene <tetraphenylene>`
+illustrate the main fatures of The Guide.
 
 
 .. index:: Using Menus
@@ -431,16 +447,26 @@ Using Menus
 
 The menus provide short cuts for many common tasks.
 
-
-
-
 .. image:: images/menus.png
 
  
-:ref:`These are described in detail in the Menus section <menus>` 
+These are described in detail in the :ref:` Menus section <menus>` 
 
 
-.. see userguide/userinterface.rst
+----
+
+.. _cameron:
+
+*************
+Using CAMERON
+*************
+
+|blue| CAMERON |xblue| is a built-in graphical tool for both examining 
+the structure and modifying it. It differs from the GUI model window
+in that it has complex packing and connectivity options. 
+
+:ref:`See the old Cameron reference manual <cameron-manual>`
+
 
 
 
@@ -454,21 +480,19 @@ The menus provide short cuts for many common tasks.
 
 .. _`Inputting Data`:
 
-
-**************
+##############
 Inputting Data
-**************
+##############
 
 Select *Data* and then *Open File* from the GUI Menu.  
 This should open a window showing all files with
-suitable extensions. Use the drop-down at the bottom right to 
-show *All Files* if your file has an unusual extension.  If you click on 
+suitable extensions. If your file has an unusual extension,
+use the drop-down at the bottom right to 
+show *All Files* .  If you click on 
 your data file, CRYSTALS will try to identify the type of data based
-on the file extension.  Check and change the automatic selection if necessary.
+on the file extension.  Check and  if necessary change the automatic selection.
 
 * From Shelx:
-
-
   *.ins* and *.res* files will be pre-processed by the module *shelx2cry*,
   written by Pascal Parois. This will extract any useful information it can
   and save it in CRYSTALS format. Rather than look for the space group symbol
@@ -476,7 +500,7 @@ on the file extension.  Check and change the automatic selection if necessary.
   elements.
 
   * Atom Names in SHELX
-    |br|\
+
     Remember that SHELX has a quite different atom naming syntax from CRYSTALS. 
     The automatic conversion from SHELX to CRYSTALS may lead to ambiguity.  If you 
     resolve this either manually or automatically by  CRYSTALS, there is a real
@@ -485,21 +509,22 @@ on the file extension.  Check and change the automatic selection if necessary.
     See the section :ref:`Atom Identifiers <Atom ID>` for a brief explanation of naming in CRYSTALS,
     and :ref:`atomparams` for the full syntax in CRYSTALS.
 
-
   * Site Occupancy
-    |br|\
+
     The atomic site occupancy used in CRYSTALS is the 'chemical' occupancy, *i.e.* the 
     fraction of an atom expected at that site without reference to the crystallographic
     symmetry. Any modification required because the atom lies on a Special Position is
-    applied internally by CRYSTALS. This feature can be turned off by setting a flag in
-    :ref:`List 13` .
+    applied internally by CRYSTALS. 
+    If you have a disordered structure with an atom near a special
+    position, this feature may have to be turned off by setting a flag in
+    :ref:`List 13` .  Then site occupance will then have to be set by hand.
 
   If there is a reflection file (.hkl) with the same name as the *ins* or *res* file,
   this is automatically processed.
   |br|\
-  |br|\
   If a SHELX *cif* file contains embedded *res* and *hkl* files, these can be extracted
   with *shelx2cry* and then processed.
+  |br|\
   |br|\
 
 
@@ -509,32 +534,19 @@ on the file extension.  Check and change the automatic selection if necessary.
   extracting reflections from *cif*, *fcf* and *cif_od* files.  If your *cif* file
   has the extension *hkl* take care to re-select the correct option from the menu.
 
-  * Twinned Data
-    |br|\
-    Twinned data in the SHELX hklf5 format can be processed with Bruce Foxman's *hklf52cry*
-    program.  Since CRYSTALS needs to know the twin laws, Bruce's program attempts
-    to derive these from the hklf5 file.  Note that the hklf5 file should be
-    **unmerged** data, which conserves the original reflection indices. If an *hklf5*
-    file simply has the extension *.hkl* take care to reselect the correct option from
-    the menu.
+* Twinned Data
+  |br|\
+  Twinned data in the SHELX hklf5 format can be processed with Bruce Foxman's *hklf52cry*
+  program.  Since CRYSTALS needs to know the twin laws, Bruce's program attempts
+  to derive these from the hklf5 file.  Note that the hklf5 file |blue| **MUST** |xblue|
+  be
+  **unmerged** data, which conserves the original reflection indices. If an *hklf5*
+  file simply has the extension *.hkl* take care to reselect the correct option from
+  the menu.
 
 * From  *CIF* files
   |br|\
   CRYSTALS can extract both structural and reflection data from *cif* or *fcf* files.
-
-
-
-----
-
-.. _cameron:
-
-*************
-Using CAMERON
-*************
-
-to be rewritten
-
-:ref:`See the old Cameron reference manual <cameron-manual>`
 
 
 

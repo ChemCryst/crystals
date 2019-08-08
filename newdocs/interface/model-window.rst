@@ -34,7 +34,7 @@ The Model Window
 Using the Model Window
 **********************
 The model window shows the current structure.  The image is updated automatically whenever 
-there is a significant change in the model. For very large structure (or slow computers) 
+there is a significant change in the model. For very large structures (or slow computers) 
 model display can be inhibited through the menu |blue| Appearance/Model/Auto Display OFF |xblue|.
 |br|\
 This window has its own little menu.  This provides tools for selecting atoms in a 
@@ -46,7 +46,8 @@ The image is sensitive to the mouse pointer:
 * Hovering over an atom displayes its name, and occupation number if that is not unity.
 * Hovering over a `bond`_ displays the names of the atoms involved and the bond length. If an 
   atom should be bonded to the main fragment but is in a symmetry equivalent position, the 
-  partial bonds from the atoms concerned are drawn in grey and hovering over the bod to 
+  partial bonds from the atoms concerned are drawn in grey and hovering over the bond to 
+  the  
   detatched atom also shows the symmetry operators involved. Clicking on the *ghost* bond
   in the main fragment enable you to move the disconnected atom to a bonding position.
 * Left-clicking an atom *selects* the atom. Left-clicking again deselects it.
@@ -57,7 +58,7 @@ The image is sensitive to the mouse pointer:
 * Right-clicking one of a pair of selected atoms brings up a menu of possible single or
   pairwise operations.
 * Right-clicking one of a group of more than 2 atoms brings up a menu of possible
-  operation operations on single atoms or the whole selected group.
+  operation operations on the whole selected group.
 
 ----
 
@@ -88,7 +89,7 @@ psudo atoms.
 ========
 Geometry
 ========
-Brings up an ancient question and answer dialogue. 
+Brings up a VAX-750 era (1980's) question and answer dialogue. 
 
 .. _mogul check:
 
@@ -103,14 +104,14 @@ order of decreasing significance.  Any serious differences might be important.
 .. image:: images/mogul.png
 
 In this example it is the carbon at the apex of the cyclopropyl group which is flagged as 
-anomalous.
+anomalous.  Idealised geometry restraints can be generated.
 
 
 .. _Right Click Atom:
 
-..index:: Right Click Atom
+.. index:: Right Click Atom
 
-..index:: GUI Right Click Atom
+.. index:: GUI Right Click Atom
 
 ^^^^^^^^^^^^^^^^
 Right Click Atom

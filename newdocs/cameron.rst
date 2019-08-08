@@ -1,15 +1,38 @@
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+
+.. _defandconv:
+
+.. |br| raw:: html
+
+   <br />
+
+.. |blue| raw:: html
+   
+   <font color="blue">
+
+.. |xblue|  raw:: html
+
+   </font>
+
+.. |vspace|  raw:: latex
+
+   \vspace{5mm}
+
+
+.. |F2| replace:: F\ :sup:`2`
+
+
 .. _cameron-manual:
+
 
 ##############
 Cameron Manual
 ##############
 
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
-   
 ************
 Introduction
 ************

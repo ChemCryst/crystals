@@ -79,13 +79,16 @@ for errors, perform the task.
    
 All command packages follow the same general format:
 |br|\
-The command is introduced with a special character and ends with the word 'END'.
-The alternative permitted special characters are: "#", "\\" and "&" (for convenience on 
-non-UK keyboards).
+The command is introduced with a special character followed **immediately** with the 
+COMMAND name, and ends with the word 'END'.
+The alternative permitted special characters are: "#", "\\\\" and "&" (for convenience on 
+non-UK keyboards). The special character followed by a space and then text is treated
+as a comment.
 
    
 ::
 
+     \ This is a comment
      \COMMAND ([keyword=]value ) ...
      (DIRECTIVE ([keyword=]value ) ...)
      END
@@ -101,7 +104,19 @@ item. Data items may either be preceded with the keyword and its '=' sign,
 or if the order given in the definition is strictly followed, just by
 the data values. COMMANDS, DIRECTIVES and KEYWORDS can be abbreviated to
 the minimum string which resolves ambiguity. Both types of identification can be 
-intermingled. Text is not case sensitive.
+intermingled. Text is not case sensitive and decimal points are optional for exact
+real values (e.g. 2 is the same as 2.0).
+
+::
+
+ e.g. Cell parameter input
+
+   REAL  10.4 12.3 19.5 90.0 113.7 90
+   or
+   REAL a=10.4 b=12.3 19.5  beta=113.7
+
+
+
 |br|\
 The following examples are all identical to the program. They use
 the command \\DISTANCES to compute all interatomic distances in the range

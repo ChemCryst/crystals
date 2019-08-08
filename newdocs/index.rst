@@ -1,32 +1,30 @@
-
-
-
+=============================
 CRYSTALS documentation  (djw)
-====================================
+=============================
 
 .. toctree::
    :hidden:
 
    self
 
+
+
+
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: Contents:
+
+
    
    userguide
    interface
+   primer
    crystalsmanual
    cameron
 
 
-
+   genindex
    
    
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
 
 

@@ -1089,7 +1089,7 @@ Errors Detected During the Creation of a LIST
    
    
 .. _crysdatabase:
-
+.. _The Disk file:
  
 
 *********************
@@ -2043,6 +2043,8 @@ For example:
    
    
 .. index:: Atom name syntax
+
+.. index:: Element name syntax
 
 
 .. _ATOMSYNTAX:

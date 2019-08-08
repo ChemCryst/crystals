@@ -1,0 +1,21 @@
+### Worked examples
+   *** Cyclo - a routine structure analysis
+      ^^^ Video demonstration
+      ^^^ Discussion
+      ^^^ Step one: SHELX-style data
+      ^^^ Step two: Initial assessment of the data
+      ^^^ Step three: Structure solution
+      ^^^ Step four: Commence refinement
+      ^^^ Step five: Adding Hydrogen Atoms
+      ^^^ Step six: More refinement & Extinction
+      ^^^ Step seven: Choose a suitable weighting scheme
+      ^^^ Step eight: Validation and CIF archival
+   *** Poor Quality Data - Tetraphenylene
+      ^^^ Background
+      ^^^ Analysis and solution
+      ^^^ Refinement
+      ^^^ But what of the e.s.d's?
+   *** NKET - Introduction to Command mode
+      ^^^ Background
+   *** Spacegroup Quiz
+   

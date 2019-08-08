@@ -115,3 +115,7 @@ test_suite/*.oby
 *~
 gitstat.int
 gitstat.bat
+/manual/ps-build/guide.man
+/manual/ps-build/guide.pdf
+/manual/ps-build/primer.man
+/manual/ps-build/primer.pdf

@@ -1,0 +1,32 @@
+### Frequently asked questions
+   *** Getting Started: Organisation of files.
+   *** General: Who is responsible for it?
+   *** General: Where is the manual?
+   *** General: Is there an example to work through?
+   *** General: Can I prepare commands to run CRYSTALS in batch mode (like SHELX)?
+   *** General: Is there any command line help?
+   *** General: How can I switch the left and right CRYSTALS windows?
+   *** Solving structures: How do I prepare a job for SIR92 or SHELXS?
+   *** Solving structures: It failed. How do I prepare a different job?
+   *** Solving structures: How do I import the solution back into CRYSTALS?
+   *** CAMERON: How do I see a plot of the structure?
+   *** CAMERON: Can I rotate it and label the atoms?
+   *** CAMERON: How do I delete atoms?
+   *** Fourier: How do I calculate a Fourier map to find missing atoms?
+   *** Refinement: What infomation does CRYSTALS need?
+   *** Refinement: Refinement instructions
+   *** Refinement: Occupancies of an atom or fragment split over two sites?
+   *** Refinement: How do I add restraints?
+   *** Refinement: How do you use Platon's Squeeze from CRYSTALS?
+   *** Refinement: What are parts assemblies and groups?
+   *** Structure: How can I adjust a molecule or fragment to have ideal coordinates?
+   *** Analysis: Find the angle between a plane of atoms and a bond
+   *** Analysis: Calculate intermolecular distances
+   *** Analysis: Find LIKELY H-BONDS with donors or acceptors other the O and N
+   *** Analysis: How do I use ROTAX to test for twin laws?
+   *** Analysis: How do I add hydrogen atoms to water molecules?
+   *** Publication: Editor wants completeness of the data at 25 degrees
+   *** Publication: What's the difference between _theta_max and _theta_full?
+   *** Publication: Diagram shows wrong enantiomer. What to do?
+   *** References: What References should I know about?
+   *** Miscellaneous: Environment variables

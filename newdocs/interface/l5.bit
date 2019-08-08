@@ -1,0 +1,16 @@
+
+
+::
+ e.g.
+      !\LIST 5
+      !READ      NATOM = 3
+      !ATOM      C 1 X=.23  .37   .45
+      !ATOM      C 2 X=.31  Y=.06 .78
+      !ATOM      O 6 OCC=.5 X=0.5  0   .25
+      !END
+#
+
+Note that the parameters x, y, z are in sequence, so only the first keyword is
+ requires, and that the parameters for atoms on special positions are not coded
+ (as required by SHELX),
+ and that there are defaults of 1.0 for occupancies, and 0.05 for Uiso.

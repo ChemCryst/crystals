@@ -1,0 +1,233 @@
+Received: from CWXP265MB1510.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:8::19) by
+ LNXP265MB1514.GBRP265.PROD.OUTLOOK.COM with HTTPS via
+ LO2P265CA0079.GBRP265.PROD.OUTLOOK.COM; Thu, 1 Aug 2019 07:41:20 +0000
+Received: from LO2P265CA0380.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:a3::32)
+ by CWXP265MB1510.GBRP265.PROD.OUTLOOK.COM (2603:10a6:401:46::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2115.13; Thu, 1 Aug
+ 2019 07:41:18 +0000
+Received: from AM5EUR02FT040.eop-EUR02.prod.protection.outlook.com
+ (2a01:111:f400:7e1e::201) by LO2P265CA0380.outlook.office365.com
+ (2603:10a6:600:a3::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2136.14 via Frontend
+ Transport; Thu, 1 Aug 2019 07:41:18 +0000
+Authentication-Results: spf=softfail (sender IP is 163.1.154.215)
+ smtp.mailfrom=lists.wisc.edu; UniOxfordNexus.mail.onmicrosoft.com; dkim=none
+ (message not signed) header.d=none;UniOxfordNexus.mail.onmicrosoft.com;
+ dmarc=fail action=none header.from=lists.wisc.edu;
+Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
+ lists.wisc.edu discourages use of 163.1.154.215 as permitted sender)
+Received: from smtp.nexus.ox.ac.uk (163.1.154.215) by
+ AM5EUR02FT040.mail.protection.outlook.com (10.152.9.8) with Microsoft SMTP
+ Server (version=TLS1_0, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id
+ 15.20.2136.14 via Frontend Transport; Thu, 1 Aug 2019 07:41:18 +0000
+Received: from relay16.mail.ox.ac.uk (163.1.2.166) by HUB04.ad.oak.ox.ac.uk
+ (163.1.154.215) with Microsoft SMTP Server (TLS) id 14.3.439.0; Thu, 1 Aug
+ 2019 08:41:08 +0100
+Received: from ioutemea7.hes.trendmicro.eu ([52.58.62.223])	by
+ relay16.mail.ox.ac.uk with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.89)	(envelope-from <bounce-56458889-2843960@lists.wisc.edu>)	id
+ 1ht5hz-0002CJ-so	for david.watkin@chem.ox.ac.uk; Thu, 01 Aug 2019 08:41:08
+ +0100
+Received: from 144.92.197.146_hes.trendmicro.com (unknown [192.168.14.81])	by
+ ioutemea7.hes.trendmicro.eu (Postfix) with SMTP id BD39F73202B	for
+ <david.watkin@chem.ox.ac.uk>; Thu,  1 Aug 2019 07:41:07 +0000 (UTC)
+Received: from smtp8.wiscmail.wisc.edu (unknown [144.92.197.146])	by
+ inpreemea4.hes.trendmicro.eu (TrendMicro Hosted Email Security) with ESMTPS
+ id DD5672EE05E	for <david.watkin@chem.ox.ac.uk>; Thu,  1 Aug 2019 07:41:04
+ +0000 (UTC)
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Received: from lists.wisc.edu ([144.92.9.130]) by smtp8.wiscmail.wisc.edu
+ (Oracle Communications Messaging Server 8.0.1.2.20170621 64bit (built Jun 21
+ 2017)) with SMTP id <0PVJ03HZDS0D0OEG@smtp8.wiscmail.wisc.edu> for
+ david.watkin@chem.ox.ac.uk; Thu, 01 Aug 2019 02:41:03 -0500 (CDT)
+Reply-To: <wadepohl@uni-heidelberg.de>
+Subject: Re: [bruker-axs] Crystallographic su according Joint Committee for
+ Guides in Metrology
+To: <bruker-axs@lists.wisc.edu>
+From: <bruker-axs@lists.wisc.edu>
+Message-ID: <WISCLIST-2843960-56458889-2019.08.01-02.40.57--david.watkin#chem.ox.ac.uk@lists.wisc.edu>
+Date: Thu, 1 Aug 2019 09:40:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+In-Reply-To: <WISCLIST-2843924-56457605-2019.07.31-17.09.01--Wadepohl#uni-heidelberg.de@lists.wisc.edu>
+Content-Language: en-US
+List-Unsubscribe: <mailto:leave-56458889-2843960.2a16d74d8ae48cb702c0b8b6d2715ecd@lists.wisc.edu>
+X-Spam-Score:
+X-Wisc-DMARC-Fix: No action taken - local policy
+X-Wisc-Spoof-Check: Skip WiscList
+X-Spam-Report: TrustedSender=yes, SecureList=yes
+X-Spam-PmxInfo: Server=avs-14, Version=6.4.7.2805085,
+ Antispam-Engine: 2.7.2.2107409, Antispam-Data: 2019.8.1.73017,
+ AntiVirus-Engine: 5.63.0, AntiVirus-Data: 2019.7.31.5630002,
+ SenderIP=[144.92.9.130]
+X-Spam-Report: IsSpam=no, Probability=11%, Hits= TO_IN_SUBJECT 0.5,
+ RCVD_FROM_IP_DATE 0.1, FROM_NAME_ONE_WORD 0.05, HTML_00_01 0.05,
+ HTML_00_10 0.05, BODY_SIZE_3000_3999 0, BODY_SIZE_5000_LESS 0,
+ BODY_SIZE_7000_LESS 0, ECARD_KNOWN_DOMAINS 0, IN_REP_TO 0, KNOWN_MTA_TFX 0,
+ LEGITIMATE_SIGNS 0, MSG_THREAD 0, REFERENCES 0, REPLYTO_SAMEAS_FROM 0,
+ SPF_PASS 0, SXL_IP_TFX_WM 0, URI_ENDS_IN_HTML 0, __ANY_URI 0,
+ __BODY_NO_MAILTO 0, __BOUNCE_CHALLENGE_SUBJ 0, __BOUNCE_NDR_SUBJ_EXEMPT 0,
+ __BUSINESS_SIGNATURE 0, __CP_MEDIA_BODY 0, __CP_URI_IN_BODY 0, __CT 0,
+ __CTE 0, __CT_TEXT_PLAIN 0, __DQ_NEG_HEUR 0, __DQ_NEG_IP 0, __FORWARDED_MSG 0,
+ __FRAUD_CONTACT_NUM 0, __FRAUD_MONEY_CURRENCY 0,
+ __FRAUD_MONEY_CURRENCY_POUND 0, __HAS_FROM 0, __HAS_MSGID 0,
+ __HAS_REFERENCES 0, __HAS_REPLYTO 0, __HTTPS_URI 0, __IN_REP_TO 0,
+ __MIME_TEXT_ONLY 0, __MIME_TEXT_P 0, __MIME_TEXT_P1 0, __MIME_VERSION 0,
+ __MOZILLA_USER_AGENT 0, __MULTIPLE_URI_TEXT 0, __NO_HTML_TAG_RAW 0,
+ __REFERENCES 0, __REPLYTO_SAMEAS_FROM_ACC               0, __REPLYTO_SAMEAS_
+X-Wisc-Doma: bounce-56458889-2843960@lists.wisc.edu,lists.wisc.edu
+X-Wisc-Env-From-B64: Ym91bmNlLTU2NDU4ODg5LTI4NDM5NjBAbGlzdHMud2lzYy5lZHU=
+X-Spam-PmxInfo: Server=avs-10, Version=6.4.7.2805085,
+ Antispam-Engine: 2.7.2.2107409, Antispam-Data: 2019.8.1.73616,
+ AntiVirus-Engine: 5.63.0, AntiVirus-Data: 2019.7.9.5630003,
+ SenderIP=[129.206.119.212]
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2DlFwDElkJd//xkzoFmDggIAQYHBoF?=
+	=?us-ascii?q?nghhtA08yKoQejz2CD48jhECFNIFnCQEBAQEBAQEBASANCgEBhEACglMjOBM?=
+	=?us-ascii?q?BAwEBBQEBAQEGbYUeDIVLAQEBAwEiDwEFORYCCwkPAgImAgIbDS8TBgIBAYM?=
+	=?us-ascii?q?eAYIKD6t5gTKEMwEDBXwQgyiBSAWBByiKQoEeF4E/QCZrJ4IbUD6CSA4LAgE?=
+	=?us-ascii?q?BGIEAD0QEARuCX4JYBIwIBxydeG0JgTljgW2Eb4gyRIRCIYIuLz6GOoNiBYp?=
+	=?us-ascii?q?blRKFNYxuITeBIXEUggmBHgkKgjsXFIJRaTOEYYUEPT0zAY4yAQE?=
+X-Wisc-SecureList: Mem
+X-Auto-Response-Suppress: OOF
+X-TM-Authentication-Results: dkim=pass; No processed signatures and verification is not enforced
+X-TMASE-Version: StarCloud-1.3-8.5.1020-24814.005
+X-TMASE-Result: 10--30.130800-10.000000
+X-TMASE-MatchedRID: qsaWi0FWcYvhYHdRIVs+3wI6GksNBIxVnvaslq58J5yrBgb5EJjDqNGh
+	lWqZdaREdO75Ert8kpBVC/pOQZhoYzPullMulW9D+WXEPQl9ghzw8KkWaae8FH61fklg8PREG82
+	AsEdTWF9C9UBgZjqUQiQUfW6C4J4ICaloae8rSjetBybNxXyi/DfUJ77hi/xqkTSTId4nmi4Bvq
+	c+q4JdO4XVQYc2L3D+Rodo9/GXhRg+D3J+ThgLRv48iDghCUMxrkGhd90/DD50b9gfOpwitUsIx
+	i34LbJSG3wAgf/+3nEuzCnaKOBv7AIb6NCUnHLUZdorcofH/GkgzM7cbVibEmmJ+7V5rRczXbJY
+	5AzcIUm5KnO9/K/+GbCPAYM80+h9EKoJj3lSGHFL2yLVHAwrl8lsT2v0cElP1y0aXF5eX+jIoxe
+	FHjlGU76lx1V3SoiS7phItSi3XznltmCWilxjDuIfK/Jd5eHmDvc/j9oMIgXsSqjNEdY27jutgU
+	dR/wwMrwn2bteHbDl2YTBGBl8dciQ1rV5SXzlMloI4PDrlRXK/yN2q8U674mQfUiTR37cS4P2k6
+	c8cDOFqLeKhGgv80Bn04dPgZKeAniBDAHYtZxeeAiCmPx4NwMJDuFVBDUR0LPUYrlSS/46+Env9
+	L9UdvvRWVvxTWW5rC24oEZ6SpSk+Mqg+CyrtwA==
+X-TMASE-SNAP-Result: 1.821001.0001-0-2-1:0,12:0,22:0,33:0,34:0-0
+X-TM-AS-ERS: 144.92.197.146-127.9.0.1
+X-TM-Deliver-Signature: F0388369DF13F528C2CC03EEDA956BCE
+Return-Path: bounce-56458889-2843960@lists.wisc.edu
+X-OrganizationHeadersPreserved: HUB04.ad.oak.ox.ac.uk
+X-MS-Exchange-Organization-ExpirationStartTime: 01 Aug 2019 07:41:18.4880
+ (UTC)
+X-MS-Exchange-Organization-ExpirationStartTimeReason: OriginalSubmit
+X-MS-Exchange-Organization-ExpirationInterval: 1:00:00:00.0000000
+X-MS-Exchange-Organization-ExpirationIntervalReason: OriginalSubmit
+X-MS-Exchange-Organization-Network-Message-Id:
+ 300da493-27ec-4b92-5c30-08d71653a3f2
+X-EOPAttributedMessage: 0
+X-MS-Exchange-Organization-MessageDirectionality: Originating
+X-CrossPremisesHeadersPromoted:
+ AM5EUR02FT040.eop-EUR02.prod.protection.outlook.com
+X-CrossPremisesHeadersFiltered:
+ AM5EUR02FT040.eop-EUR02.prod.protection.outlook.com
+X-Forefront-Antispam-Report:
+ CIP:163.1.154.215;IPV:NLI;CTRY:GB;EFV:NLI;SFV:NSPM;SFS:(2980300002)(199004)(6262002)(189003)(146002)(53376002)(26005)(65806001)(53386004)(5024004)(58126008)(156004)(65956001)(6666004)(6200100001)(88552002)(69226011)(47776003)(6306002)(37006003)(476003)(356004)(50466002)(14444005)(2616005)(587094005)(2870700001)(126002)(956004)(75432002)(486006)(65826007)(7696005)(5660300002)(23676004)(2351001)(6862004)(336012)(55176004)(4006050)(2171002)(55016002)(966005)(11346002)(64126003)(2486003)(43066004)(75640400001)(6246003)(246002)(19273905006)(229853002)(66574012)(8936002)(67846002)(1096003)(305945005)(53416004)(2876002)(58536013)(8676002)(53546011)(102196002)(96276002)(562404015)(563064011)(16193025007);DIR:INB;SFP:;SCL:1;SRVR:CWXP265MB1510;H:smtp.nexus.ox.ac.uk;FPR:;SPF:SoftFail;LANG:en;PTR:hub04.nexus.ox.ac.uk;A:1;MX:1;
+X-MS-Exchange-Organization-AuthSource: HUB04.ad.oak.ox.ac.uk
+X-MS-Exchange-Organization-AuthAs: Anonymous
+X-OriginatorOrg: nexus.ox.ac.uk
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 300da493-27ec-4b92-5c30-08d71653a3f2
+X-Microsoft-Antispam:
+ BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(8559020)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328);SRVR:CWXP265MB1510;
+X-MS-TrafficTypeDiagnostic: CWXP265MB1510:
+X-MS-Exchange-PUrlCount: 9
+X-MS-Oob-TLC-OOBClassifiers: OLM:37;
+X-MS-Exchange-Organization-SCL: 1
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Aug 2019 07:41:18.2468
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 300da493-27ec-4b92-5c30-08d71653a3f2
+X-MS-Exchange-CrossTenant-Id: cc95de1b-97f5-4f93-b4ba-fe68b852cf91
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=cc95de1b-97f5-4f93-b4ba-fe68b852cf91;Ip=[163.1.154.215];Helo=[smtp.nexus.ox.ac.uk]
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWXP265MB1510
+X-MS-Exchange-Transport-EndToEndLatency: 00:00:01.9482732
+X-MS-Exchange-Processed-By-BccFoldering: 15.20.2094.013
+X-Microsoft-Antispam-Mailbox-Delivery:
+	ucf:0;jmr:0;ex:0;auth:0;dest:I;ENG:(20160514016)(750119)(520011016)(944506383)(944626516);
+X-Microsoft-Antispam-Message-Info:
+	cBenXp6FeB90SydSc5ZF+lzWhWRCKK0FImTgT2D/+Of9yCJvV714AVDz7ndjXe0S7JfaYjK2l0RK0bu7qVBh5a1DFUvVmEnIIJ5WaqmLe06MX1yq0B/s2Ml6h0AOpBaCH8B/DCxBgg2p/OEKO8O5zr81E+Pkpj09YfSLcCyO67cL8d5+i4rT1GEziWjKOnZ+nN9OYFYkL020pW/+5fh8vdnT/Nb/nVGjIIznMAquEEUzDBEUHjneDA4FFDJ/yGge2yG5Phrmpj6qtADnBSYam9katWkstmg6S7C/HYOWXFgtqcMNlDyjHgQDj5pR9uPZotEHvPgDIYaFXt7nomW6o47d0JtpF6dRZncxMpi6VqfRUe+7Tqcy5C1ksqn9TivdPpOQSihGV4cg74ZDL1WbNRvzJwyZ2jqvocNidnwGUUBapqAPTswc7IkW1ojforkGHMtYuOlv3Tqv8CV6bvxW8sVq5mA5PN3I1lIZJ83bn2Tj6xBZeAwQTWd2lJD7GhOR/aID2pLZmBR7XJ4wNhgYFkSs/sB/1T+ZZEkF5Y5WEgj6mS1EGkq/tmqsW9XEEqKI8nxnXxR7gzy1pIsyDKDQR8tjSzG+G9I9wcbcRg0IXBZkDK3T/kqvPdQKS4vgYRhCkaWdm74KBp71Xxu2+M1JizMqSFzWqeOBVs42X2rEGeIzz4yQqboIsfAq6Zhzpu0vYxNjnT8us0xXLT1b9isO5TaO2FW4T7bD5CPVb/dToMA+1YmFahl6eeKD+GmJfsW/LZyxg3IHYNJuXdhTAjuFzhqbfN60abHkH3drZJbs0X9iWAOHQtRmrfr/+6kKjoX4+93XbgGXJLiTQn8eDZDcg3Xuy0daV56NUhFL1eZ00WSP7XEGVdOumsHgKgWOSAvOKEICHjRra7ulsdCaVKy2AG+T/URs5js2svBnm5/+7dzO2PHRRyAPhjNoKg1C2TvL
+MIME-Version: 1.0
+
+D. Schwarzenbach, S. C. Abrahams,  H. D. Flack, E. Prince, A. J. C. 
+Wilson, Acta Cryst. 1995, A51, 565.
+
+and
+
+http://ww1.iucr.org/comm/cnom/statdes/preface.html
+
+Cheers
+
+Hubert
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Prof. Dr. Hubert Wadepohl
+Anorganisch-Chemisches Institut der Universitaet
+Im Neuenheimer Feld 270, D-69120 Heidelberg, Germany
+e-mail  wadepohl@uni-heidelberg.de
+WWW  http://wadepohl.uni-hd.de
+Phone (49) 6221-544827   FAX (49) 6221-544197
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+----------------------------------------------------------------------
+Diese elektronische Nachricht enthält vertrauliche und/oder rechtlich
+geschützte Informationen. Wenn Sie nicht der/die richtige Adressat/in
+sind oder diese Nachricht irrtümlich erhalten haben, informieren Sie
+bitte sofort den Absender und vernichten Sie diese Nachricht. Das
+unerlaubte Kopieren sowie die unbefugte Weitergabe dieser Nachricht
+ist nicht gestattet.
+----------------------------------------------------------------------
+Confidentiality Notice - This e-mail message including any attachments
+is for the sole use of the intended recipient(s) and may contain
+confidential and privileged information. Any unauthorized review, use,
+disclosure or distribution is prohibited. If you are not the intended
+recipient, please contact the sender by reply e-mail and destroy all
+copies of the original message.
+----------------------------------------------------------------------
+
+On 8/1/19 12:08 AM, bruker-axs@lists.wisc.edu wrote:
+> Dear all,
+> 
+> Sorry for a non-Bruker question but I am facing a problem and I need your
+> help. I am trying to publish a crystal structure in Thermochimica Acta but
+> they are not happy with the IUCR recommendation for the expression of su of
+> Crystallographic parameter. Specifically, they ask to express “Uncertainties
+> as confidence intervals following the Joint Committee for Guides in
+> Metrology recommendation”. That´s in principle does not seems to be a
+> problem, just a matter to express, for example, a as 11.4110±0.0003.
+> However, they also ask for "the uncertainty type (standard uncertainty)
+> defined in the table footnote". This last point is my question. As far as I
+> recall they are a "Type A combined standard uncertainties obtained by least
+> squares refinement of diffraction intensities". However, I would like to
+> know if there are some kind of IUCr recommendation for these cases since is
+> the first time I face this problem.
+> 
+> 
+> Best Regards
+> 
+> 
+> 
+> *Prof. Dr. Javier Ellena*
+> 
+> 
+> [image: Imagem Não Exibida]
+> <http://www.ifsc.usp.br/%7Eemu-xtal/lamucres/>Laboratório
+> Multiusuário de Cristalografia Estrutural
+> <http://www.ifsc.usp.br/%7Eemu-xtal/lamucres/> *São Carlos Institute of
+> Physics **– University of São Paulo*
+> 
+> Av. Trabalhador Sãocarlense, 400 - CP 369, CEP 13560 570 - São Carlos/SP -
+> Brazil - *DGP CNPq* <http://dgp.cnpq.br/dgp/espelhogrupo/4064211061317136>
+> 
+> *Phone:*    +55 (016) 3373-8096 / 3373-9876* Mobile*:+55 (16) 992144561
+> 
+> *Researcher ID* <http://www.researcherid.com/rid/B-9104-2012>* - **ORCID *
+> <http://orcid.org/0000-0002-0676-3098>*- **Google Scholar*
+> <https://scholar.google.com/citations?user=P8zjqREAAAAJ&hl=en>* - **Lattes*
+> <http://lattes.cnpq.br/6309436191619392>* - *
+> *Scopus*
+> <http://www.scopus.com/inward/authorDetails.url?authorID=7006754403&partnerID=MN8TOARS>
+> 
+

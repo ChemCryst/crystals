@@ -11,7 +11,10 @@ Anaconda.bat, 2016-sphinx.bat  and sphinx.bat are in CRBUILD
 Add new files to appropriate doctree
 
 
-type sphinx to run mingw32-make to (re)build \b folder
+Type "makesphinx" to create makefiles
+
+
+Type "sphinx" to run mingw32-make to (re)build \b folder
 
 
 The TOOLS-HELp files (structure,Xray-data,refinement,analyse) live in 5 places:

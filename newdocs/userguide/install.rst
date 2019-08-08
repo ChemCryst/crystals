@@ -4,9 +4,9 @@
    :caption: Contents:
 
    
-************
+############
 Installation
-************
+############
 
 
 Download the latest CRYSTALS installer from http://www.xtl.ox.ac.uk/.

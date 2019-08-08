@@ -16,6 +16,7 @@ Getting to Know CRYSTALS
    interface/menus
    interface/model-window
    interface/commandline
+   interface/atoms
    interface/f-and-f
 
 

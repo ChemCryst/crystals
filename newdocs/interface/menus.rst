@@ -28,6 +28,8 @@
 
 .. |F2| replace:: F\ :sup:`2`
 
+.. |2| replace:: \ :sup:`2`
+
 
 .. _menus: 
 
@@ -47,9 +49,9 @@ will happen if that menu is chosen.  This menu-specific help option can be turne
 .. index:: Files
 
 
-****
-File
-****
+*****
+Files
+*****
 
 ::
 
@@ -84,7 +86,7 @@ an existing crfilev2.dsc, this will be opened.
 
 
 ^^^^^^^^^^^^^
-Open dsc file
+Open DSC file
 ^^^^^^^^^^^^^
 Choose this item to open a new CRYSTALS dsc file. The current dsc
 file will be closed, and the new one opened. The working directory
@@ -236,7 +238,8 @@ parsed. Also, check that structural formula has been interpreted correctly.
 The selection by instrument type is to enable CRYSTALS to enter
 the correct details into the final cif.
 Try the WinGX option if your instrument is not listed, but remember to 
-use |blue| "Edit Cif Goodies" |xblue| to manually set the instrument type.
+use |blue| "Edit Cif Goodies" |xblue| in the Results menu
+to manually set the instrument type.
 
 
 
@@ -250,9 +253,9 @@ Data Files (Current)
 * Import Shelx files (ins, res, hkl, hklf5)
   |br|\
 * Short cuts to common data formats
-* Import Agilent data (cif_od)
+* Import Agilent data (Oxford Diffraction cif_od)
 * Import Nonius Kappa data
-* Import Rigaku data
+* Import Rigaku data (not Oxford Diffraction cif_od)
 * Import other CIF data
             
 .. index:: SHELX ins or ref Files Menu
@@ -325,7 +328,7 @@ single file. If there is only one structure, it can be imported directly into
 CRYSTALS, otherwise the user must choose which structure to import.
 If the "cif" file contains a Z'=2 structure, the two 
 molecules can be 'matched', 
-i.e. tested for similarity :ref:`See Structure Matching <#MATCH>`
+i.e. tested for similarity. See :ref:`Structure Matching <MATCH>`
 
 
 If the *cif* contains embedded .res and .hkl data, this can be exteacted 
@@ -482,7 +485,7 @@ CRYSTALS prepares data files for the selected program and executes the program.
 If a trial structure is generated, this can be input to CRYSTALS for futher
 development and refinement.
 |br|\
-See the section :ref:`Structure Menu:   <structure menu>` 
+See the section :ref:`Structure Menu   <structure menu>` 
 for utilities used to modify the initial model.
 
 
@@ -565,6 +568,9 @@ Structure
 
 .. _revert:
 
+.. index:: Revert: Revert to Earlier Models
+
+.. _UNDO:
 
 .. index:: Undo: Revert to Earlier Models
 
@@ -578,7 +584,7 @@ explicitly delete them using this dialog.
 Note: If you use the GUIDE an automatic purge occurs after you have
 checked for extinction - any models marked explicitly as 'to be retained'
 will not be PURGED.  
-|br|\ See the section :ref:`Structure Database` for more details
+|br|\ See the section :ref:`Structure Database <structure database>` for more details
    
 
 
@@ -599,7 +605,7 @@ Input of structural models.
 
 * From Other Programs
   |br|\
-  Open the general input dialogue.  The User must select the desired file
+  Open the general input dialogue.  The user must select the desired file.
 
 .. _input an existing Cameron.l5 file:
 
@@ -608,7 +614,8 @@ Input of structural models.
 * Cameron.l5 file
   |br|\
   This is the file containing any modifications made to the structure using CAMERON. 
-  Re-inputting it returns the structure to the situation after the last use of CAMERON.
+  Re-inputting it returns the structure to the situation after the last modifications
+  made by CAMERON.
 
 .. _Input from Various Direct Method solutions:
 
@@ -633,8 +640,8 @@ Opens the refineable parameter list in a text editor.  The number of atoms in th
 is given at the top of the list as a cross check.  Don't forget to 
 change this value if you add or remove atoms.
 |br|\
-CRYSTALS comes with an simple internal editor but you can change this for another editor
-in |blue| TOOLS/PREFERENCES |xblue|
+CRYSTALS comes with a simple internal editor but you can change this for another editor
+in :ref:`TOOLS\\Preferences <preferences>`
 
 
 .. _Invert the Structure:
@@ -645,7 +652,7 @@ in |blue| TOOLS/PREFERENCES |xblue|
 ^^^^^^^^^^^^^^^^^^^^ 
 Invert the Structure
 ^^^^^^^^^^^^^^^^^^^^ 
-Use this module if an analysis of the absolute structure shows that the structure needs 
+Use this module if an analysis of the absolute structure shows that the model needs 
 inverting.  The module works for all space groups.
 |br|\
 See `Structure Inversion <../tools/structure/structure-inversion.html>`_ for more 
@@ -712,8 +719,10 @@ Brings up a dialogue box which enables you to select automatic renumbering, or l
 you number atoms via a graphical interface. Automatic will avoid H atom name clashes
 later.  If you number the non-H atoms manually, you might like to then choose
 :ref:`Renumber Hydrogen <renumber hydrogen>` from lower down this menu to 
-ensure that the hydrogen atoms
-are named after their parent atom.
+ensure that the hydrogen atoms are named after their parent atom.
+|br|\
+See the ssection on  :ref:`Atom Identifiers <Atom  ID>` for a brief introduction to atom 
+naming.
 
 .. _Re-sequence atoms:
 
@@ -788,7 +797,7 @@ Allocate Part Numbers
 ^^^^^^^^^^^^^^^^^^^
 Remove Part Numbers
 ^^^^^^^^^^^^^^^^^^^
-In CRYSTALS PARTs are used to define groups of atoms which which may be subgroups of a 
+In CRYSTALS, PARTs are used to define groups of atoms which may be subgroups of a 
 residue and are to be handled together.
 Most commonly this is used for defining alternative groups of atoms in a disordered 
 fragment.  The graphics window displays the bonds of different parts in different 
@@ -802,34 +811,32 @@ colours.
 
 
 
+|br|\
+A **PART** has an identifier built up of two components:
+
+* An Assembly.
   |br|\
-  A **PART** has an identifier built up of two components:
+  All of the atoms in a single disordered region belong to the same Assembly.
+* A Group.
+  |br|\
+  All of the atoms in each of the disorderd moieties is assigned to a single group.
+  |br|\
+  The PART_ID = 1000 * ASSEMBLY_ID + GROUP_ID
+  |br|\
+  Thus in the molecule above, all of the atoms could be put into the same RESIDUE.
+  |br|\
+  The six oxygen are also in a single assembly (1), while those with the blue bonds
+  are in one group (1), and those with the green bonds in another (2).
+  |br|\
+  e.g. the blue bonds are in PART(1001) and the green ones in PART(1002) and all 
+  eleven (whole plus partial) atoms are in RESIDUE(1)
 
-  * An Assembly.
-    |br|\
-    All of the atoms in a single disordered region belong to the same Assembly.
-  * A Group.
-    |br|\
-    All of the atoms in each of the disorderd moieties is assigned to a single group.
-    |br|\
-    The PART_ID = 1000 * ASSEMBLY_ID + GROUP_ID
-    |br|\
-    Thus in the SO3 group above, the six O atoms could be put into the same RESIDUE.
-    |br|\
-    The six oxygen are also in a single assembly (1), while those with the blue bonds
-    are in one group (1), and those with the green bonds in another (2).
-    |br|\
-    e.g. the blue bonds are in PART(1001) and the green ones in PART(1002) and all six atoms
-    are in RESIDUE(1)
-    |br|\
-    This hierarchy can be used to refer to atoms and atom parameters:
-    |br|\
-  * RESET OCC 0.5 RESIDUE(1) sets the occupation number of all six O to 0.5
-
-    |br|\
-  * RESET OCC 0.6 PART(1001)
-  * RESET OCC 0.4 PART(1002) These two lines together set different occupancies to the
-    two different parts
+  This hierarchy can be used to refer to atoms and atom parameters:
+  |br|\
+* #EDIT
+* RESET OCC 0.6 PART(1001)
+* RESET OCC 0.4 PART(1002) These lines together set different occupancies to the
+  two different parts
 
 .. _Interatomic Distances:
 
@@ -915,13 +922,13 @@ removes all manually set bonding information and restores the default rules.
 ^^^^^^^^^^^^^^^^^^^^^
 Add Hydrogens+Fourier
 ^^^^^^^^^^^^^^^^^^^^^
-Compute a difference Fourier map based on the current model and superpose on it
+Computes a difference Fourier map based on the current model and superpose on it
 hydrogen atoms at positions computed from the molecular geometry. New peaks found in the 
 map are named "Q" atoms.  The user can then delete Q or H atoms, manually convert 
 Q atoms to H, or delete all remaining Q atoms.
 |br|\
-If selected, CRYSTALS will refine the just the hydrogen atoms subject to mild geometry
-related restraints. 
+If selected, CRYSTALS will compute a few cycles refining just the hydrogen atoms,
+subject to mild geometry related restraints. 
 
   .. figure:: images/difference.png
 
@@ -954,8 +961,9 @@ second neighbour to the carbon.
 Add Hydrogen Manually
 ^^^^^^^^^^^^^^^^^^^^^
 A pop-up window permits  the user to select from a number of common situations.  The 
-user has to select (using the graphical window) 1, 2 or 3 adjacent atoms to the pivot
-atom.  If the pivot is not a carbon, the user can input a non-standard distance. This 
+user has to select (using the graphical window) 1, 2 or 3 atoms adjacent to the pivot
+atom.  The user can select pivot atoms which are not carbon and
+input a non-standard distance. This 
 enables the user to place a  non-hydrogen atom into a structure, by first pretending it
 is hydrogen, and then re-naming it.
 |br|\
@@ -981,9 +989,9 @@ See :ref:`Atom Identifiers <Atom ID>`
 Refine Hydrogen
 ^^^^^^^^^^^^^^^
 Refine only the hydrogen atoms subject to mild geometrical restraints. U[iso] may
-also be refined to be similar to that of the bonded heavier atom. 
+also be restrained to be similar to that of the bonded heavier atom. 
 |br|\
-Deuterium is treated the same as hydrogen. 
+Deuterium is treated in the same way as hydrogen. 
 |br|\
 A useful refinement strategy is to use this utility to optimise just the hydrogen 
 atoms with respect to both the data and normal geometry, and then refine them
@@ -1017,8 +1025,15 @@ re-used later providing no atoms are removed or renamed.
      This file contains instructions for deleting all the hydrogen atoms  originally
      placed during perhydrogenation.
 
-   DELH and PERH can thus be used to repeatedly remove and replace hydrogen atoms if
-   there is appreciable movement of the parent atoms during refinement.  
+   DELH and PERH can thus be used to repeatedly remove and re-idealise hydrogen atoms if
+   there is appreciable movement of the parent atoms during refinement with constrained
+   (RIDING) hydrogen.  
+
+::
+
+      #USE DELH.DAT
+      #USE PERH.DAT
+
 
 
 .. _Hydrogen Restraints:
@@ -1107,8 +1122,13 @@ in which Friedel pairs are merged, created from the unmerged ones in LIST 6.
 In addition, if the structure is twinned, the Fo values need to be de-twinned using the 
 refined values of the twin fractions (TWIN ELEMENTS).
 |br|\
-CRYSTALS stores negative Fo values for use during least squares refinement - these cannot 
-be used in maps because they would create a phase inversion.
+These transformations are done automatically when maps are computed via the gui.  If you 
+choose to do maps from the COMMAND LINE (#FOURIER) you will need to organise these 
+transformations yourself  using the SCRIPT *COPY67*. 
+:ref:`The section FOURIERS gives more details <fouandpat>`
+|br|\
+CRYSTALS stores negative Fo values for use during least squares refinement. These cannot 
+be used in maps because they would create a phase inversion so are automatically excluded.
 |br|\
 The Menu offers you the opportunity to recompute the overall scale factor or recalculate
 the phases (with the current scale factor).
@@ -1129,11 +1149,7 @@ or delete them
 
 The computed map can be saved as figure-fields in the listing file (BFILEnn.LIS) or can be 
 passed to graphical plotting programs.
-|br|\
-These transformations are done automatically when maps are computed via the gui.  If you 
-choose to do maps from the COMMAND LINE (#FOURIER) you will need to organise these 
-transformations yourself  using the SCRIPT *COPY67*. 
-:ref:`The section FOURIERS gives more details <fouandpat>`
+
 
 ^^^^^^^^^^
 Difference
@@ -1171,7 +1187,7 @@ correctly, and there is no advantage in changing to the FFT for non-macromolecul
 materials. Only a unique part of the unit cell is normally computed.  CRYSTALS derives a 
 unique volume from the symmetry elements, but for many space groups there are alternative 
 unique volumes.  These may be entered by the user.  The unique volume for a Patterson map 
-may be different from that for a Fourier - CRYSTALS also derives a unique volume for this
+may be different from that for a Fourier - CRYSTALS also derives a unique volume for this.
 
 ----
 
@@ -1222,7 +1238,7 @@ made a mistake in the specification of the refinement.
 |br|\
 In CRYSTALS it is not necessary to refine all the parameters all the time.  If, in a
 disordered structure, a substantial part of the model is well behaved, the partially 
-refined atoms may be left out of the computations until the disorder is sorted out, after 
+refined atoms may be kept fixed until the disorder is sorted out, after 
 which they can be included again for the final refinement.
 |br|\
 For well behaved structures, the normal procedure is full matrix on everything. The GUIDE 
@@ -1236,7 +1252,8 @@ For a good read, go to `J Appl Cryst, Volume 41, Part 3, June 2008, Pages 491-52
 ^^^^^^^^^
 The Guide
 ^^^^^^^^^
-Opens **The Guide**, which leads the user through a routine structure analysis
+
+This opens :ref:`The Guide <THE GUIDE>`, which leads the user through a routine structure analysis
 
 .. index:: Refinement Directives and Constraints
 
@@ -1247,7 +1264,8 @@ Setup Directives and Constraints
 .. image:: images/setupref.png
 
 
-This item sets up the conditions for refinement.  *Sticky* settings are special conditions 
+This item sets up the conditions for refinement.  |blue|\ **Sticky** |xblue|\
+settings are special conditions 
 which the user wishes to impose an an individual atom.  They are set via the model window.
 
 * General
@@ -1260,7 +1278,7 @@ which the user wishes to impose an an individual atom.  They are set via the mod
 
 * Hydrogen Restraints
   |br|\
-  Hydrogen atoms can be refined freely, with Constraints or with Restraints.
+  Hydrogen atoms can be refined freely, with constraints or with restraints.
   See the `hydrogen atom HELP <../tools/refinement/refine-h.html>`_ for more details
   |br|\
 
@@ -1339,12 +1357,12 @@ This enables LIST 12 to be edited by a text editor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 F or Fsq and Advanced Options
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-CRYSTALS can refine against both F and F squared. Usually there is little to choose 
+CRYSTALS can refine against both F and |F2| . Usually there is little to choose 
 between the two procedures, though the older F refinement is less sensitive to data with 
 serious outliers.  The user can switch back and forth between the two methods at will.  
-For poor data a possible strategy is to start with F refinement and then switch to F 
-squared one the outliers have been eliminated. **It is important to remember that 
-different weighting schemes are required for F and F squared** refinements.
+For poor data a possible strategy is to start with F refinement and then switch to |F2| 
+one the outliers have been eliminated. **It is important to remember that 
+different weighting schemes are required for F and |F2| refinements**.
 
 .. index:: Special Positions, snapping to
 
@@ -1380,13 +1398,13 @@ During refinement reflections must be weighted in a way that reflects your confi
 the measured values *and* the ability of the model to represent the data.
 |br|\
 |blue| Simple Statistical. |xblue| With modern diffractometer data the standard uncertainties
-provide good starting values for an F squared refinement. They can be switched
+provide good starting values for an |F2| refinement. They can be switched
 to the |blue| Modified SHELX |xblue| scheme once the structure is complete and refinement is 
 progressing well.
 |br|\
 |blue| Quasi-Unit. |xblue| 
 For F refinement unit weights provide a good starting point, switching to a Chebychev 
-polynomial for the final convergence. If this option is chosen for an Fsq refinement, 
+polynomial for the final convergence. If this option is chosen for an |F2| refinement, 
 the appropriate quasi-unit weights are 1/2F.
 |br|\
 The empirical SHELX and the Chebychev schemes aim to provide a uniform distribution of 
@@ -1411,8 +1429,8 @@ request of a user group. Its effect is just cosmetic.
 Filter Reflections
 ^^^^^^^^^^^^^^^^^^
 The systematic absences are the only reflections rejected by CRYSTALS. However, it is 
-possible to filter out reflections on the fly according to preset conditions. These can be 
-removed or altered at any time.
+possible to filter out reflections on the fly according to preset conditions. These 
+conditions can be removed or altered at any time.
 |br|\
 The user is recommended to experiment with filtering in order to obtain optimal results.
 |br|\
@@ -1446,9 +1464,9 @@ oscillate in sign between one cycle and the next. They are mathematically differ
 :ref:`partial shift factors. <Partial Shift Factors>`
 |br|\
 The default values are set in the pop-up, and applied to all atomic parameters. You might 
-want to reduce the *esd* of the adp cross-terms if one of the U[ij] is unstable.
+want to reduce the *esd* of the adp cross-terms if one of the U[ij] is unstable because 
+two of the U[ii] are almost identical.
 |br|\
-You can also apply a restraint to just one or more parameters.
 ::
 
       EXAMPLE:
@@ -1514,8 +1532,10 @@ applied selectively to a few specific atoms.
 ^^^^^^^^^^^^^^^^^^^^^^
 Calculate Scale Factor
 ^^^^^^^^^^^^^^^^^^^^^^
-Calculate the overall scale factor for the current model without performing any 
-refinenemt.
+Refine the overall scale factor for the current model without refining any other 
+parameters. Note the CRYSTALS also estimates the scale factor by other methods, and
+displays these in the text window. Substantial disagreements between the methods
+should be investigated.
 
 .. _Recalculate Phases:
 
@@ -1536,8 +1556,9 @@ Calculate Fc and the phases for the current model without recomputing the scale 
 ^^^^^^^^^^^^^^
 PLATON Squeeze
 ^^^^^^^^^^^^^^
-The Squeeze utility in PLATON is used to detect voids in a structure large enough to hold 
-a molecule of solvent or a counter ion.  The discrete Fourier transform of the difference 
+The Squeeze utility in PLATON is used to detect voids large enough to hold 
+a molecule of solvent or a counter ion in a structure.  
+The discrete Fourier transform of the difference 
 electron density in the void is added to structure factors computed from the rest of the 
 structure.  This procedure is used when no reasonable atomic model can by assigned 
 to the electron density in the void. 
@@ -1604,8 +1625,8 @@ See `Structure Evaluation <../tools/analyse/analysis.html>`_ for details and exa
 Agreement analysis
 ^^^^^^^^^^^^^^^^^^
 Displays graphs of four different analyses of variance. The red bars are the unweighted 
-residuals (Fo-Fc)^2 in the specified intervals, the green bars are the weighted residuals, 
-w(Fo-Fc)^2.  The green bars should all be small if the weights are appropriate.
+residuals (Fo-Fc) |2| in the specified intervals, the green bars are the weighted residuals, 
+w(Fo-Fc) |2|.  The green bars should all be small if the weights are appropriate.
    
 .. image:: images/agree.png  
 
@@ -1640,13 +1661,13 @@ indicative of the need to include an extinction parameter into the refinement.
 Difabs analysis
 ^^^^^^^^^^^^^^^
 Creates a bit map or contour plot of the ratio of Fo to Fc as a function of diffraction 
-geometry. For serial difftactometers with simgle observations of each reflections, 
+geometry. For serial difftactometers with single observations of each reflection, 
 the geometrical parameters are the 
 azimuth and declination of the incident and emergent beams.
 |br|\
 With area detector instruments every reflection is generally measured several times at 
 quite different geometrical settings (for example, a pair of equivalent reflections may 
-occur, at different locations, on a simgle image). The only geometrical features in common 
+occur, at different locations, on a single image). The only geometrical features in common 
 for a batch of equivalent reflections (and hence for the merged refelction) are the 
 azimuth and declination of the scattering vector.
 In the original paper the average ratio Fo/Fc was used as the basis for an absorption
@@ -1713,7 +1734,7 @@ uncertainty (sigma) of the observations *and the ability of the model to match t
 A reflection whose magnitude is likely to be uncertain should be down-weighted, as should 
 a reflection for which the current model cannot provide a reliable estimate. |blue| 
 Remember the least squares cannot increase the complexity of a model |xblue|, but simply 
-optimise the current parameters. 
+optimises the current parameters. 
 
 .. _Multiplicity of Observation:
 
@@ -1753,7 +1774,7 @@ Absolute Configuration
 ^^^^^^^^^^^^^^^^^^^^^^
 Compute the Flack, Hooft and other parameters for non-centrosymmetric structures.
 |br|\
-See the 'absolute structure HELP <../tools/analyse/absolute.html>`_ file for details on 
+See `absolute structure HELP <../tools/analyse/absolute.html>`_ for details on 
 how to interpret the output
 
 
@@ -1791,7 +1812,8 @@ Figures closer to zero are best, but beware figures of exactly zero
 (corresponding to exact lattice overlap), since they are probably just
 part of the point group symmetry of your structure.
 |br|\
-You may choose a twin law to be applied
+Choose a twin law to be applied and set the starting values for the twin
+components.
    
    
 
@@ -1840,7 +1862,7 @@ The alternatives may disappear in the future.
 |br|\
 See |blue| Results |xblue| below and the `HELP file <../tools/analyse/cifcheck.html>`_ for more details
 
-If you have **PLATON** installed, |blue| Checkcif in Platon |xblue| Writes files for 
+If you have **PLATON** installed, |blue| Checkcif in Platon |xblue| writes files for 
 Platon and checks your cif without using the web.  ,If you haven't run PLATON before, you
 will be asked to browse for the PLATON.EXE file on your hard disk.
 
@@ -1964,7 +1986,7 @@ Edit CIF goodies
 
 Allows you to view and edit some of the values that will be put in the final CIF. These 
 are generally things not systematically stored, including for example crystal shape and 
-colour. This information is help in LIST 30, which can also be displayed by typing:
+colour. This information is held in LIST 30, which can also be displayed by typing:
 
 ::
 
@@ -2048,7 +2070,7 @@ Import last Cameron output
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 Reads the model which CAMERON wrote at the end of its last run back into CRYSTALS.
 Could be useful if you've trashed the model since then (although, see also:
-Structure -> Undo, section :ref:`undo`).
+Structure -> Undo, section :ref:`undo <undo>`).
    
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -2057,7 +2079,7 @@ Import last Cameron input
 Reads the model which CRYSTALS last wrote to CAMERON back into CRYSALS.
 Could be useful if you trashed the model in CAMERON and then accidentally
 brought it back into CRYSTALS. (Although, see also:
-Structure -> Undo, section :ref:`undo`).
+Structure -> Undo, section :ref:`undo <undo>`).
    
 
 ^^^^^^^^^
@@ -2202,7 +2224,7 @@ you are demonstrating command line features on a high-res screen.
 
 
 
-
+.. _tools:
 
 
 *****
@@ -2233,6 +2255,8 @@ Tools
       Information
 
 
+.. _preferences:
+
 ^^^^^^^^^^^
 Preferences
 ^^^^^^^^^^^
@@ -2258,7 +2282,7 @@ the *pwt* folder.
 =================
 SHELXT Executable
 =================
-SHELXT is a structure solution program which nust be downloaded by the user.
+SHELXT is a structure solution program which must be downloaded by the user.
 
 ===============
 External Editor
@@ -2282,7 +2306,7 @@ A Tip of the Day is displayed on startup.  This can be enabled/disabled here.
 Enable TOOLS HELP
 ^^^^^^^^^^^^^^^^^
 Some menu items offer you a brief Help File before you choose whether to continue or 
-quit. Disabling this feature removes the HELP button from the menu.
+quit. Disabling this feature removes the HELP button from the current menu.
 
 
 ----
@@ -2296,8 +2320,10 @@ Opens the MS plain text editor. Dont' forget to save the edits in a file in the 
 ^^^^^^^^^^^^^^^
 Delete 'bfiles'
 ^^^^^^^^^^^^^^^
-CRYSTALS creates a number of files with *bfile##* as the root, and an extension 
-indicating the kind of data it contains.
+CRYSTALS creates a number of files with *bfile##* as the root in the *logs* subfolder,
+with an extension indicating the kind of data it contains.  You can browse to this
+folder and delete the files manually or use this option to delete all except the current
+version.  
 See :ref:`Files and Folders <Files and Folders>` for information about the file 
 contents.
 
@@ -2371,7 +2397,8 @@ fractional indices are rejected.
 Benchmark
 =========
 This largely obsolete feature runs a simulation of a refinement cycle to estimate the 
-speed of the computer.  In 1995 the benchmark took 1899 seconds (32 minutes!).
+speed of the computer.  In 1988 the benchmark took 1899 seconds (32 minutes!). In 2019
+it is taking less than one second.
 
 
 

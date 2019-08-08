@@ -9,9 +9,9 @@
 .. index:: History of CRYSTALS
 
    
-*******************
+###################
 History of CRYSTALS
-*******************
+###################
 
    
 Version 14 of CRYSTALS is based on a
@@ -28,7 +28,7 @@ John Rollett. Keith Prout raised much of the funding for the on-going work.
 
 CRYSTALS continues to be developed, and now contains significant
 contributions by  many of the students and visitors to the Chemical
-Crystallography Laboratory, Oxford. 
+Crystallography Laboratory, Oxford, and from collaborators world wide. 
 
 * The SCRIPT processor was devised and implemented by Paul Betteridge in the
   1980's to provide an interactive user interface.

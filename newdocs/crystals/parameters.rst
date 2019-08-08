@@ -4,6 +4,16 @@
 
 
 
+
+
+.. index:: Atom name syntax
+
+
+.. _atomparams:
+
+
+
+
 ********************************
 Atomic And Structural Parameters
 ********************************
@@ -29,17 +39,10 @@ The areas covered are:
     Per-hydrogenation                                - \PERHYDRO
     Re-numbering hydrogen atoms                      - \HNAME
     Regularisation of groups in LIST 5               - \REGULARISE
+    Matching two molecules                           - \MATCH
 
 
 
-
-
-
-
-.. index:: Atom name syntax
-
-
-.. _atomparams:
 
 
 ============================================
@@ -4167,12 +4170,11 @@ Uses of \\REGULARISE
    
    
    
+.. _MATCH:
    
 .. index:: MATCH
-
    
 .. index:: Map two atomic groups together
-
 
 ========================================
 Map two atomic groups together - \\MATCH

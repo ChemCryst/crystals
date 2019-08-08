@@ -17,7 +17,7 @@ Getting Started with CRYSTALS
    userguide/install
    userguide/gettingstarted
    userguide/examples
-   userguide/faqs
+..    userguide/faqs
 
 
 

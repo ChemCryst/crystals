@@ -24,7 +24,4 @@ Crystals Reference Manual
 
 
 
-   
-   
-   
 

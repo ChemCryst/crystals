@@ -1,0 +1,153 @@
+
+Numerical data for a structure is stored in a CRYSTALS data-base,
+filename.DSC. This accumulates information as an analysis progresses.
+In this file, data is grouped by function into 'LISTS'. Most of the
+scripts refer to data by its type (e.g. CELL parameters), but
+occasionally they refer by LIST number (in this case, LIST 1),
+and many CRYSTALS output messages
+refer to lists. A table of the lists and the data they contain is
+appended to this document.
+
+
+**********************
+LISTS and INSTRUCTIONS
+**********************
+ 
+
+^^^^^^^^^^^^^^^
+Available LISTS
+^^^^^^^^^^^^^^^
+
+ 
+::
+
+    Lists marked * cannot be input by the User
+    Lists marked \ are not currently available
+
+   List   Type of data
+  number
+
+     1    Cell parameters
+     2    Unit cell symmetry
+     3    Atomic scattering factors
+     4    Weighting parameters
+     5    Atomic parameters
+     6    Reflection data
+     7\   Reflection data not used for refinement
+    10*   Peak coordinates from Fourier
+    11    Least squares matrix
+    12    Refinement directives
+    13    Crystal and collection data
+    14    Fourier directives
+    16    General Restraint instructions
+    17    Special Restraint instructions
+    22    Refinement directives in internal format
+    23    Structure factor control list
+    24*   Least squares shift list
+    25    Twin component operators
+    26*   Constraints in internal format
+    27    Diffractometer scales
+    28    Reflection condition list
+    29    Contents of asymmetric unit and
+                       elemental properties
+    31    Cell parameter E.S.D.'s
+    33*   Internal - Refinement control
+
+ 
+
+^^^^^^^^^^^^^^^^^^^^^^
+Available Instructions
+^^^^^^^^^^^^^^^^^^^^^^
+
+ 
+::
+
+ General system instructions.
+        \FINISH       \ text     \TITLE        \COMMANDS
+        \HIDE         \SHOW      \LOG          \USE
+        \PAUSE        \TYPE      \MANUAL       \DISK
+        \PURGE        \RELEASE   \SUMMARY      \FOREIGN
+        \PRINT        \PUNCH
+
+ Initial data input
+        \SPACEGROUP  \COMPOSITION \QUICKSTART
+
+ Reflection handling
+        \HKLI         \LP        \SYSTEMATIC   \SORT
+        \MERGE        \REORDER   \REFLECTIONS
+
+ Atomic and structural parameters
+        \EDIT         \CONVERT   \HYDROGENS    \REGULARISE
+        \COLLECT      \REGROUP   \PERHYDRO     \DISPLAY
+
+ Structure factors and refinement
+        \SFLS         \LIST 22   \LIST 26      \SPECIAL
+        \CHECK        \CLEAR     \ANALYSE      \WEIGHT
+        \DIFABS
+
+ Fourier maps
+        \FOURIER      \SLANT     \PEAKS
+
+ Analysis of results
+        \AXES         \DISTANCES \MOLAX        \TORSION
+        \PARAMETERS   \ANISO     \CIFOUT       \CAMERON
+
+
+
+^^^^^^^^^^^^^^^^
+General Commands
+^^^^^^^^^^^^^^^^
+
+===========================
+Immediate (System) Commands
+===========================
+
+
+::
+
+ \FINISH
+ \ ..... COMMENTS ....
+ \TITLE ..... A title to be printed .....
+ \SPAWN      DCL command
+ \$      DCL command
+ \COMMANDS   instruction
+ \SET
+      EXPORT          on/off
+      FILECASE        lower/mixed/upper
+      GENERATE        on/off
+      LISTS           none/read/write/both
+      LOG             on/off
+      MAPS            on/off
+      MESSAGE         on/off
+      MONITOR         on/off
+      OPENMESSAGE     on/off
+      PAGE            'length'
+      PAUSE           'time'
+      PRINTER         on/off
+      COMMUNUCATION   slow/fast
+      SRQ             on/off
+      TERMINAL        unknown/vt52/vt100/vga
+      TIMING          on/off
+      UEQUIV          arihtmetic/geometric
+      WATCH           'number'
+
+ \USE      source
+ \PAUSE    interval
+ \TYPE     'filename'
+ \RELEASE  devicename filename
+ \MANUAL   'name'
+ \HELP     'topic'
+ \OPEN     devicename filename
+ \SCRIPT   filename
+ $ DCLcommand
+
+
+=============================
+Summary of Contents of a List
+=============================
+
+
+::
+
+ \SUMMARY OF= TYPE= LEVEL=
+
