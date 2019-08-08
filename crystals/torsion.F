@@ -210,7 +210,7 @@ C--PRINT THE INITIAL CAPTIONS
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1)(3:))
 C
-      WRITE ( CMON,1150)
+      WRITE ( CMON,1149)
       CALL XPRVDU(NCVDU, 1,0)
       IF (ISSPRT .EQ. 0) THEN
         IF (IESD .EQ. 1) THEN
@@ -219,6 +219,7 @@ C
             WRITE(NCWU, 1150) 
         ENDIF
       ENDIF
+1149  FORMAT(33X, ' Torsion angle & su')
 1150  FORMAT(53X, ' Torsion angle & su')
 1151  FORMAT(53X, ' Torsion angle & su    VcV-su')
 C--SET THE ERROR COUNTERS
@@ -510,6 +511,7 @@ c
         WRITE ( CMON ,2806) (
      1 CBLANK(1: 10-LATOM(II)), CATOM(II)(1:LATOM(II)),II=1,4)
      2 ,ANGLE, ESD
+      CALL XCREMS(CMON,CMON,LENTXT)
       CALL XPRVDU(NCVDU, 1,0)
 c
       IF (ISSPRT .EQ. 0) THEN
@@ -523,7 +525,7 @@ c
      2 ,ANGLE, ESD1
         ENDIF
       ENDIF
-2806  FORMAT (2A, ' to ', 2A, ' to ', 2A, ' to ', 2A, T60,4F7.1)
+2806  FORMAT (2A,' to ',2A,' to ',2A,' to ',2A,' = ', T60,4F7.1)
 c
 C--CHECK IF THERE ARE MORE ATOMS
       IF(NATOM)1200,1200,2500
