@@ -1,0 +1,20 @@
+%SCRIPT XSTICKH
+
+{1,11            Sticky Atoms
+{1,11 
+{1,11 This SCRIPT enables you to single out selected
+{1,11 atoms for special treatment during refinement
+{1,11 - the so-called STICKY ATOMS.
+{1,11 
+{1,8 After selecting how you want to treat the selected atoms
+{1,8 you will need to set up the constraints and restraints
+{1,8 in the normal way from the Refinement Menu.
+{1,11 
+{1,11 CRYSTALS will modify the normal refinement so that the
+{1,11 sticky atoms are treated as you selected.
+{1,11 
+{1,11 The option CLEAR removes the sticky settings from the 
+{1,11 selected atoms.
+{1,11 
+
+%END SCRIPT
