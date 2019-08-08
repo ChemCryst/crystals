@@ -1028,7 +1028,7 @@ C         (J     removed - was CARMELO'S SIM WEIGHT TEST)
 C      J     F^2 ALL Keys set, Sigmas adjusted for old and new scales
 C                                                           XPCH6N(LSTNO,LSTNO,2 OR 3,l28filter)
 C
-C      XF    Same subroutine but l28filter flag set to True
+C      X*    Same as * above but with l28filter flag set to True
 C
 
 CODE FOR XPCH6S                                                      !PUNCH 6 C
@@ -1719,7 +1719,7 @@ C
      7 '_twin_refln_F_meas'/
      6 '_twin_refln_F_calc'/
      8 '_twin_refln_F_sigma'/
-     9 '_twin_refln_include_status'/)
+     9 '_twin_refln_include_status')
 C
 1002  FORMAT(/,'loop_',/
      1 '_twin_refln_datum_id'/
@@ -1730,19 +1730,12 @@ C
      7 '_twin_refln_F_squared_meas'/
      6 '_twin_refln_F_squared_calc'/
      8 '_twin_refln_F_squared_sigma'/
-     9 '_twin_refln_include_status'/)
+     9 '_twin_refln_include_status')
 C
-      IF ( TWINNED ) THEN
-        IF (KFOUT .EQ. KFR) THEN
-          WRITE(NCFPU1,1003)
-1003      FORMAT('_twin_refln_refinement_weight')
-        ENDIF
-      ELSE 
         IF (KFOUT .EQ. KFR) THEN
          WRITE(NCFPU1,1004)
 1004     FORMAT('_refln_refinement_weight')
         ENDIF
-      ENDIF
 
 C---- GET SIGMA THRESHOLD FROM L28
       S6SIG = -200.0
@@ -1792,7 +1785,7 @@ c
        S =  s / SCALE6
        sigma = sigma/(scale6*scale6)
        IF(KFR .EQ. 2) WT = WT * SCALWT
-      ELSE                           !scale of Fobs
+      ELSE                              !scale of Fobs
        FC = FC * SCALE6
        fcs = fcs*scale6*scale6
       ENDIF
@@ -1800,11 +1793,15 @@ C
 C
       IDJW = KALLOW(IALLOW)
 C
+c ialw = 1 permitted
+c ialw = 2 Sigma cutoff
+c ialw = 3 manual or other rejection
+c ialw = 4 high resolution
+c ialw = 5 low resolution 
+c 3,4 & 5 take precedence over 2 (sigma cutoff). See SHEL command in SHELX
+c
       IF (IDJW.EQ. -70) THEN
         IALW = 3                    !Manually excluded.
-        WT = 0.0
-      ELSE IF ( STORE(M6+20) .LT. S6SIG) THEN
-        IALW = 2                    !Rejected by sigma cutoff.
         WT = 0.0
       ELSE IF (idjw.eq.-17) THEN
 c       Fails sin-theta/lambda test
@@ -1815,6 +1812,9 @@ c       Fails sin-theta/lambda test
          ialw = 4                    ! rejected by high resolution
          WT = 0.0
         endif
+      ELSE IF ( STORE(M6+20) .LT. S6SIG) THEN
+        IALW = 2                    !Rejected by sigma cutoff.
+        WT = 0.0
       ELSE IF (idjw.LT.0) THEN
         IALW = 3                    !Rejected by something else.
         WT = 0.0

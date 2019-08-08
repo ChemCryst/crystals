@@ -1223,9 +1223,17 @@ c BEWARE that data isn't truncated by LIST 28
         ENDIF
         STORE(L30RF+8 ) = STORE(L11P+24)           ! NUMBER OF REFLECTIONS USED
         ISTORE(L30RF+12 ) = NV + 2                 ! REFINEMENT TYPE
-       ENDIF
+      ENDIF
 C      update LIST 30 CIFEXTRA R and Rw values if only CALC has been asked for
-       IF( SFLS_TYPE .EQ. SFLS_CALC ) THEN                       
+c July 2019:
+c      As I understand it, CHECKCIF computes R and wR from the fcf file omitting
+c      any reflections flagged *,l,h and using I/sig(I) threshold 0f -2 on the fly.
+c      There are no very negative reflections in the SHELX fcf because GMS sets
+c      re-sets them to the signed value of their sigma.
+c      l and h are not set by SX, it simply ignores reflections outside the SHEL
+c      limits
+       IF( SFLS_TYPE .EQ. SFLS_CALC ) THEN
+         IF(IULN.NE.7) THEN                       !Dont update L30 for LIST 7
 c                 The fltered data
                              STORE(L30CF+0)=RALL(1)
                              STORE(L30CF+1)=RALL(2)
@@ -1234,9 +1242,10 @@ c                 The fltered data
 c                 all the data
                              STORE(L30CF+4)=RALL(7)
                              STORE(L30CF+5)=RALL(8)
-          IF(RALL(9).GT.ZERO)STORE(L30CF+6)=100.* RALL(9)/RALL(10)
-          IF(RALL(11).GT.ZERO)
+          IF(RALL(10).GT.ZERO)STORE(L30CF+6)=100.* RALL(9)/RALL(10)
+          IF(RALL(12).GT.ZERO)
      1                      STORE(L30CF+7)=100.*SQRT(RALL(11)/RALL(12))
+         ENDIF
 c
 6261      FORMAT (2X,I7,' reflections   R ',F5.2,
      1    '% Rw ',F5.2,'% with I/u(I) >',F6.1,2x,A)
@@ -1256,26 +1265,26 @@ C 'ratio' AS USED           (NOTE WE SHOULD CHECK THE DENOMINATIOS ARE NOT ZERO)
             CALL XPRVDU(NCVDU, 1, 0)
 
             IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
-C AT -10 SIGAM
+C AT -10 SIGMA
             WRITE ( CMON, 6261)
-     1       NINT(STORE(L30CF+5)), MIN(99.99,STORE(L30CF+6)),
-     2                      MIN(99.99,STORE(L30CF+7)), -10.0,
-     3       '(Exclude very bad data)'
+     1       NINT(RALL(8)), MIN(99.99,(100.* RALL(9)/RALL(10))),
+     2       MIN(99.99,(100.*SQRT(RALL(11)/RALL(12)))), 
+     3       -10.0,'(Exclude very bad data)'
             CALL XPRVDU(NCVDU, 1, 0)
 
 
             IF (ISSPRT .EQ. 0) WRITE(NCWU, 6261) 
-     1       NINT(STORE(L30CF+5)), MIN(99.99,STORE(L30CF+6)),
-     2                      MIN(99.99,STORE(L30CF+7)), -10.0    
+     1       NINT(RALL(8)), MIN(99.99,100.* RALL(9)/RALL(10)),
+     2       MIN(99.99,100.*SQRT(RALL(11)/RALL(12))), -10.0
 C AT +2 SIGMA
             WRITE ( CMON, 6261)  
-     1       NINT(STORE(L30CF+1)), MIN(99.99,STORE(L30CF+2)),
-     2                      MIN(99.99,STORE(L30CF+3)), RALL(1),
+     1       NINT(RALL(2)), MIN(99.99,100.* RALL(3)/RALL(4)),
+     2       MIN(99.99,100.*SQRT(RALL(5)/RALL(6))), RALL(1),
      3      '(a la SHELX)'
             CALL XPRVDU(NCVDU, 1, 0)
             IF (ISSPRT .EQ. 0) WRITE(NCWU, 6261) 
-     1       NINT(STORE(L30CF+1)), MIN(99.99,STORE(L30CF+2)),
-     2                      MIN(99.99,STORE(L30CF+3)), RALL(1)
+     1       NINT(RALL(2)), MIN(99.99,100.* RALL(3)/RALL(4)),
+     2           MIN(99.99,100.*SQRT(RALL(5)/RALL(6))), RALL(1)
             CALL OUTCOL(1)
        ENDIF
        CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
@@ -2523,10 +2532,9 @@ c     1                 STORE(L12B), N12B*MD12B, MD12B )
 
         k=kallow(iallow)
         IF(SFLS_TYPE .eq. SFLS_CALC) THEN ! ADD DETAILS FOR ALL DATA WHEN 'CALC'
-C  DO THIS FOR ALL TYPES OF CALCULATION  EXCEPT NAMED REFLECTIONS
-         IF(K.NE.-70) THEN                   !OMIT NAMED REFLECTIONS
+         IF((K.GE.0).OR.(K.EQ.-21)) THEN           !use accepted reflections & less-thans
 !  (-10 sigma,  RALL(7) used
-          if (STORE(M6+20) .GE. RALL(7)) THEN      ! 2 sigma only
+          if (STORE(M6+20) .GE. RALL(7)) THEN      ! -10 sigma only
            RALL(8) = RALL(8) + 1.
            RALL(9) = RALL(9) + ABS(ABS(FO)-FCEXS)
            RALL(10) = RALL(10) + ABS(FO)
@@ -2534,7 +2542,7 @@ C  DO THIS FOR ALL TYPES OF CALCULATION  EXCEPT NAMED REFLECTIONS
            RALL(12) = RALL(12) + A*A
           end if
 ! SHELX emulation   (2 sigma)
-          IF (STORE(M6+20) .GE. RALL(1)) THEN     ! -10 sigme
+          IF (STORE(M6+20) .GE. RALL(1)) THEN     ! +2 sigma
            RALL(2) = RALL(2) + 1.                 ! refs used
            RALL(3) = RALL(3) + ABS(ABS(FO)-FCEXS) ! sum Abs(Fo-Fc)
            RALL(4) = RALL(4) + ABS(FO)            ! sum Fo
@@ -2542,7 +2550,7 @@ C  DO THIS FOR ALL TYPES OF CALCULATION  EXCEPT NAMED REFLECTIONS
            RALL(6) = RALL(6) + A*A                ! 
           ENDIF
 ! (user-sigma sigma)
-          if (k.eq.0) then                           ! use all LIST28 items
+          IF (K.EQ.0) THEN                           ! use all LIST28 items
 c          IF (STORE(M6+20) .GE. RALL(13)) THEN      ! user-sigma 
             RALL(14) = RALL(14) + 1.                 ! refs used
             RALL(15) = RALL(15) + ABS(ABS(FO)-FCEXS) ! sum Abs(Fo-Fc)
