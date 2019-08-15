@@ -125,7 +125,7 @@ C--LOAD THE RELEVANT LISTS
       CALL XFAL01
       CALL XFAL02
       CALL XFAL30
-C----- STORE MEAN SIGMA - THIS IS USED WITH THE nARDELI APPROXIMATION
+C----- STORE MEAN SIGMA - THIS IS USED WITH THE NARDELI APPROXIMATION
 C      AND CAN BE REMOVED ONE DAY.
       DO I=1,3
         DO J=1,4
@@ -156,11 +156,14 @@ C----- LOAD LIST 12
          JS = 1
 C--LOAD LIST 12
          CALL XFAL12 (JS,JQ,JU,JV)
+C - if LIST 5 and 11 are out of synch, XFAL12 generates an error
+c   and abandons the input file. Looks ugly in XTORS2.SSC
+c   Implement Pascals nostop optional parameter?
          IF (IERFLG.GE.0) I = KSET52(0,-1)
 C--LOAD LIST 11
          IF (IERFLG.GE.0) CALL XFAL11 (1,0)
          IF (IERFLG.LT.0) THEN
-C        CLEAR ERROR FLAG 
+C         CLEAR ERROR FLAG
           IERFLG = 0
          ELSE
           IF (ISTORE(L11P+15).GE.0) THEN
@@ -168,18 +171,18 @@ C        CLEAR ERROR FLAG
             WRITE (CMON,200)
             CALL XPRVDU (NCVDU,3,0)
 200         FORMAT (' Matrix is wrong type for e.s.d.''s')
-            CALL XERHND (IERWRN)
+            CALL XERHND (IERWRN)  ! should not be an error now
           ELSE
-C        APPLY THE CORRECT MULTIPLICATION FACTOR TO THE MATRIX
-C        NOTE THAT PUNCH 11 C LISTS JUST THE UNSCALED INVERSE MATRIX
+C           APPLY THE CORRECT MULTIPLICATION FACTOR TO THE MATRIX
+C           NOTE THAT PUNCH 11 C LISTS JUST THE UNSCALED INVERSE MATRIX
             C = STORE(L11P+17)/STORE(L11P+16)
             M11 = L11+N11-1
             DO 250 I = L11,M11
               STR11(I) = STR11(I)*C
  250        CONTINUE
             IESD = 1
+          ENDIF
          ENDIF
-        ENDIF
        ENDIF
       ENDIF
 C--LIST READ IN OKAY  -  SET UP THE INITIAL CONTROL FLAGS
@@ -188,13 +191,7 @@ C-----------------------------------------------------------
 c
 C--PRINT THE INITIAL CAPTIONS
       CALL XPRTCN
-      WRITE ( CMON,1100)
-      CALL XPRVDU(NCVDU, 2,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
-1100  FORMAT(' A positive rotation is',
-     2 ' clockwise from atom 1 to 4,',
-     3 ' when viewed from atom 2 to 3')
-
+c
       IF (JESD .GE.1)  THEN
         IF  (IESD .LE. 0) THEN
             WRITE(CMON,'(A)') 
@@ -210,6 +207,13 @@ C--PRINT THE INITIAL CAPTIONS
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1)(3:))
 C
+      WRITE ( CMON,1100)
+      CALL XPRVDU(NCVDU, 1,0)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
+1100  FORMAT(' A positive rotation is',
+     2 ' clockwise from atom 1 to 4,',
+     3 ' when viewed from atom 2 to 3')
+c
       WRITE ( CMON,1149)
       CALL XPRVDU(NCVDU, 1,0)
       IF (ISSPRT .EQ. 0) THEN
@@ -221,7 +225,7 @@ C
       ENDIF
 1149  FORMAT(33X, ' Torsion angle & su')
 1150  FORMAT(53X, ' Torsion angle & su')
-1151  FORMAT(53X, ' Torsion angle & su    VcV-su')
+1151  FORMAT(53X, ' Torsion angle & VcV-su')
 C--SET THE ERROR COUNTERS
       LEF=0
       LSTLEF=0

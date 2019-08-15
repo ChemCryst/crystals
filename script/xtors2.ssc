@@ -5,10 +5,14 @@
 %  COPY '#DISPLAY'
 %  COPY 'END'
 {1,11  
-{1,11  Computes torsion angleS 
+{1,11            Computes torsion angles 
 {1,11  
-{1,11  You must select at least four atoms
+{1,11        You must select at least four atoms
 {1,11  Atom1-Atom2-Atom3-(each additonal atom in turn)
+{1,11  
+{12,11        Output is appended to publish.cif 
+{12,11         You may need to edit this file.
+{1,11  
 {1,11  
 
 {1,0
