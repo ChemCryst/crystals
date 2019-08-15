@@ -149,6 +149,7 @@
  #include  <wx/glcanvas.h>
  #include  <wx/event.h>
  #include <wx/stattext.h>
+ #include <map>
  #define BASEMODEL wxGLCanvas
 
  class mywxStaticText : public wxStaticText
@@ -280,8 +281,11 @@ class CxModel : public BASEMODEL
 
     void DeletePopup();
     void CreatePopup(string atomname, CcPoint point);
-    void DeleteMessagePopup();
-    void CreateMessagePopup(string message);
+    void DeleteMessagePopup(int id);
+    void CreateMessagePopup(string message, int id);
+
+    map<int,mywxStaticText*> messages;
+    void OrganizeMessagePopups();
 
 //    void LoadDIBitmap(string filename);
 

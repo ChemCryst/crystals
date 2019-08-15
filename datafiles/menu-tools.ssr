@@ -8,7 +8,7 @@
 %%
 %%
 ^^WI   SPLIT
-^^WI   ITEM NOTE '&Notepad' '$notepad' ICON='notepad.bmp' DISABLEIF='IN'
+^^WI   ITEM NOTE '&Notepad' '$notepad' ICON='notepad.png' DISABLEIF='IN'
 ^^WI   ITEM XDL '&Delete BFILES' '#spawn + "crysdir:crdelbf.bat"' 
 ^^WI     DISABLEIF='IN'
 ^^WI   ITEM CANON '&Systematic Naming' '#SCRIPT DCANON'                         

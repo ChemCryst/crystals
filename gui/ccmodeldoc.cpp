@@ -320,6 +320,7 @@ void CcModelDoc::Clear()
     nSelected = 0;
 	m_glIDs = 1;
     (CcController::theController)->status.SetNumSelectedAtoms( 0 );
+    m_assemblies.clear();
 }
 
 void CcModelDoc::AddModelView(CrModel * aView)
@@ -361,6 +362,10 @@ void CcModelDoc::DrawViews(bool rescaled)
             (*alist)->Update(mAtomList.size());
 }
 
+/* 
+Ensure that the atom given is visible in the list views 
+of this ccmodeldoc (by scrolling to the right place).
+*/
 void CcModelDoc::EnsureVisible(CcModelAtom* va)
 {
     for ( list<CrModList*>::const_iterator alist=attachedLists.begin(); alist != attachedLists.end(); alist++)
@@ -610,6 +615,7 @@ CcRect CcModelDoc::FindModel2DExtent(float * mat, CcModelStyle * style) {
 	{
 
         if ( (style->showres != 0) && ( (*atom).m_refflag != style->showres )) continue;
+        if ( (style->showgroup != 0) && ( (*atom).m_group != 0 ) && ( (*atom).m_group != style->showgroup ) )  continue;
 //not excluded
 		if ( !((*atom).m_excluded) ) {
 			CcPoint c = (*atom).GetAtom2DCoord(mat);
@@ -677,6 +683,38 @@ int CcModelDoc::FindNextResidueNumber(int current)
      return nextres;
 }
 
+// Input: An atom group number
+// Returns: Same number if that group exists,
+//          Next highest group number, if it exists
+//          Or zero.
+// Usage - for cycling, increment current number, call this routine, use returned value.
+//
+int CcModelDoc::FindNextGroupNumber(int current)
+{
+     int nextgroup = 0;
+     bool groupnotfound = true;
+
+//TODO: Loop through donut and sphere lists -> need to update to pass in and store this info.
+     for ( list<CcModelAtom>::iterator atom=mAtomList.begin();       atom != mAtomList.end();     ++atom) {
+         int ar = (*atom).m_group;
+         if ( ar == current ){
+             nextgroup = ar;
+             groupnotfound = false;
+             break;
+         }
+         // check if ar might be the next group to cycle to.
+         if  ( ar > current ) {  //Only need an update if atom group# is > showgroup, subject to following conditions:
+            if ( nextgroup < current ) { //defo needs updating to something (unless only one group?)
+                nextgroup = ar;
+             } else {                  // nextgroup is bigger than showgroup. Make it the smallest of nextgroup and ar.
+                if ( ar < nextgroup ) {
+                    nextgroup = ar;
+                }
+            }
+        }
+     }
+     return nextgroup;
+}
 
 bool CcModelDoc::RenderAtoms( CcModelStyle * style, bool feedback)
 {
@@ -697,7 +735,11 @@ bool CcModelDoc::RenderAtoms( CcModelStyle * style, bool feedback)
      }
 // Non Q atoms
 	 for ( list<CcModelAtom>::iterator atom=mAtomList.begin();       atom != mAtomList.end();     ++atom) {
-        if (((*atom).Label().length() == 0 || (*atom).Label()[0] != 'Q' ) && ( (style->showres == 0) || ( (*atom).m_refflag == style->showres )) ) {
+        if (   ((*atom).Label().length() == 0 || (*atom).Label()[0] != 'Q' ) 
+             && VisibleAtomStyle(style,*atom) )            
+//            && ( (style->showres == 0) || ( (*atom).m_refflag == style->showres )) 
+//            && ( (style->showgroup == 0) || ( (*atom).m_group == 0 ) || ( (*atom).m_group == style->showgroup ) ) )    
+            {
 		   (*atom).Render(style, feedback);
 	    }
      }
@@ -714,6 +756,47 @@ bool CcModelDoc::RenderAtoms( CcModelStyle * style, bool feedback)
 }
 
 
+/* This helper function determines whether an atom is visible according to the current CcModelStyle parameters which
+are held in each CrModel view. Bundling the logic here allows it to be consistently applied for bonds and atoms, because
+it can get a bit complicated.
+*/
+bool CcModelDoc::VisibleAtomStyle( CcModelStyle * style, CcModelAtom & atom ) {
+
+
+/*    if ( atom.m_assembly != 0 ) {
+    ostringstream strm;
+    strm << atom.Label() << " showgrp: " << style->showgroup << " atomgrp: " << atom.m_group 
+         << " size(assm): " << m_assemblies[atom.m_assembly].size() << " first group: " << *(m_assemblies[atom.m_assembly].begin())
+         << " in set? " << (m_assemblies[atom.m_assembly].find(style->showgroup)!= m_assemblies[atom.m_assembly].end()) ? "yes":"no";
+	LOGERR ( strm.str() );
+    }*/ 
+    
+    if (  
+            (  
+                (style->showres == 0) || ( atom.m_refflag == style->showres ) // OK if showres 0, or if residue matches showres
+            )
+         && 
+            (   
+                (style->showgroup == 0) ||  ( atom.m_group == 0 ) 
+              || ( atom.m_group == style->showgroup )   //OK if showgroup 0, or if group matches showgroup.
+              || ( 
+                      ( m_assemblies[atom.m_assembly].size() != 0 )
+                   && ( atom.m_group == *(m_assemblies[atom.m_assembly].begin()) )  //is the first group of this assembly
+                   && ( m_assemblies[atom.m_assembly].find(style->showgroup)== m_assemblies[atom.m_assembly].end() )
+                 )
+// Show group if showgroup is 0 or atom group is 0, OR
+//            if group matches showgroup, OR
+//            if this is the first group of an assembly and there is no instance of showgroup in this assembly.
+// (This logic prevents whole assemblies disappearing when they don't match any group numbers).
+            )     
+        ) { return true; }
+
+
+    return false;
+
+}
+
+
 bool CcModelDoc::RenderBonds( CcModelStyle * style, bool feedback )
 {
    bool ret = false;
@@ -722,7 +805,16 @@ bool CcModelDoc::RenderBonds( CcModelStyle * style, bool feedback )
    if ( ! mBondList.empty() ) {
      for ( list<CcModelBond>::iterator bond=mBondList.begin();    bond != mBondList.end();   bond++) {
        if ( !((*bond).m_excluded) ) {
-         (*bond).Render(style,feedback);
+           if (     ( (*bond).m_patms.size() < 2 )  
+                 || (  VisibleAtomStyle(style,*((*bond).m_patms[0])) &&  VisibleAtomStyle(style,*((*bond).m_patms[1])) )
+              ) 
+                (*bond).Render(style,feedback);
+                
+                // Only display bond if 
+                //   (i) not excluded
+                //   (ii) <2 atoms (never?) - but does test valid atom list before next condition.
+                //   (iii) both atoms are visible with current style.
+                
        }
      }
 	 ret = true;
@@ -981,6 +1073,11 @@ void CcModelDoc::FastAtom(const string & label,int x1,int y1,int z1,
         item.id = m_nAtoms + mDonutList.size() + mSphereList.size();
 		item.m_glID = m_glIDs++;
         mAtomList.push_back(item);
+        
+        m_assemblies[assembly].insert(group);                       // Store PART info for quick access later for whole structure.
+                                               // m_assemblies is a std::map where the key is the assembly number
+                                               // and the value is a std::set of group numbers in that assembly.
+        
     m_thread_critical_section.Leave();
 
 }
