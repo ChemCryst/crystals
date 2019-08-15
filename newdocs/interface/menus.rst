@@ -2398,7 +2398,9 @@ Benchmark
 =========
 This largely obsolete feature runs a simulation of a refinement cycle to estimate the 
 speed of the computer.  In 1988 the benchmark took 1899 seconds (32 minutes!). In 2019
-it is taking less than one second.
+it is taking less than one second. We can now do in one day what would have taken three 
+days in 2005, and almost five years in 1990
+
 
 
 

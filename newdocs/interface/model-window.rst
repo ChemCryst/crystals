@@ -86,10 +86,7 @@ Remove Fourier Peaks
 Removes any **Q** peaks left over from a peak search or other operation which generates
 psudo atoms.
 
-========
-Geometry
-========
-Brings up a VAX-750 era (1980's) question and answer dialogue. 
+
 
 .. _mogul check:
 
@@ -286,9 +283,9 @@ this can sometimes be resolve by renaming some of the equivalent atoms in both r
 .. index:: GUI Right Click Pair
 
 
-^^^^^^^^^^^^^^^^
-Right Click Pair
-^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^
+Right Click Selected Pair
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. image:: images/select-pair.png
 
@@ -301,9 +298,13 @@ Additional operations are:
 
       Swap Labels
       Swap Coordinates
+      BEST Line
+      ADP Axes
       Break Bond
       Add Bond
       Restrain Selection
+      Refine Mode
+      Refine Block
 
 
 .. _swap labels:
@@ -330,6 +331,20 @@ and 10n+1 labels or coordinates for a pair might need interchanging to create na
 consistency, *i.e.* all the 10n atoms are in one residue, and the 10n+1 in the other.
 The order of the atom IDs in LIST 5 is not altered, but the coordinates are interchanged.
 
+=========
+Best Line
+=========
+Computes the orientation of the line joining the two atoms
+
+
+========
+ADP Axes
+========
+Computes the axes and other properties of the anisotropic displacement (thermal)
+parameter
+
+
+
 ==========
 Break Bond
 ==========
@@ -353,6 +368,19 @@ Set up restraints between the pair of atoms:
 * Vibration along the bond (Hirshfeld restriants)
 * Thermal Similarity
 
+===========
+Refine Mode
+===========
+This sets the *sticky* refinement directive for the chosen atom. These sticky conditions 
+over ride any general conditions sset by other menus.
+
+
+============
+Refine Block
+============
+Sets special refinement conditions for the selected atoms. All other atoms will
+not be refines when the refinement menu is used.
+
 
 .. _Right Click Selection:
 
@@ -375,6 +403,8 @@ Additional operations are:
 
       Slant Fourier Map
       Voids Map
+      Best Plane
+      TLS Analysis
 
 
 
@@ -399,6 +429,21 @@ ouside. The contour levels can be adjusted with the sliders.
 
 
 .. image:: images/void.png
+
+
+
+==========
+Best Plane
+==========
+Computes the best plane through the selected atoms, its orientation, and 
+deviations of the atoms from the plane.
+
+
+============
+TLS Analysis
+===========
+COmputes the torsion and libration tensors for the selection, and the screw matrix
+which links them.
 
 
 .. _bond:  ../_images/rc-bond-1.png
