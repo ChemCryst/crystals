@@ -160,7 +160,7 @@ C--LOAD LIST 12
 C--LOAD LIST 11
          IF (IERFLG.GE.0) CALL XFAL11 (1,0)
          IF (IERFLG.LT.0) THEN
-C         CLEAR ERROR FLAG
+C        CLEAR ERROR FLAG 
           IERFLG = 0
          ELSE
           IF (ISTORE(L11P+15).GE.0) THEN
@@ -168,7 +168,7 @@ C         CLEAR ERROR FLAG
             WRITE (CMON,200)
             CALL XPRVDU (NCVDU,3,0)
 200         FORMAT (' Matrix is wrong type for e.s.d.''s')
-c            CALL XERHND (IERWRN)  ! should not be an error now
+            CALL XERHND (IERWRN)
           ELSE
 C        APPLY THE CORRECT MULTIPLICATION FACTOR TO THE MATRIX
 C        NOTE THAT PUNCH 11 C LISTS JUST THE UNSCALED INVERSE MATRIX
@@ -188,7 +188,13 @@ C-----------------------------------------------------------
 c
 C--PRINT THE INITIAL CAPTIONS
       CALL XPRTCN
-c
+      WRITE ( CMON,1100)
+      CALL XPRVDU(NCVDU, 2,0)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
+1100  FORMAT(' A positive rotation is',
+     2 ' clockwise from atom 1 to 4,',
+     3 ' when viewed from atom 2 to 3')
+
       IF (JESD .GE.1)  THEN
         IF  (IESD .LE. 0) THEN
             WRITE(CMON,'(A)') 
@@ -204,13 +210,6 @@ c
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1)(3:))
 C
-      WRITE ( CMON,1100)
-      CALL XPRVDU(NCVDU, 2,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
-1100  FORMAT(' A positive rotation is',
-     2 ' clockwise from atom 1 to 4,',
-     3 ' when viewed from atom 2 to 3')
-c
       WRITE ( CMON,1149)
       CALL XPRVDU(NCVDU, 1,0)
       IF (ISSPRT .EQ. 0) THEN
@@ -222,7 +221,7 @@ c
       ENDIF
 1149  FORMAT(33X, ' Torsion angle & su')
 1150  FORMAT(53X, ' Torsion angle & su')
-1151  FORMAT(53X, ' Torsion angle & VcV-su')
+1151  FORMAT(53X, ' Torsion angle & su    VcV-su')
 C--SET THE ERROR COUNTERS
       LEF=0
       LSTLEF=0
