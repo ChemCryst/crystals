@@ -144,7 +144,7 @@ contains
       !H1N   2    0.426149    0.251251    0.038448    11.00000   -1.20000
       read (shelxline%line, *, iostat=iostatus) label, atomtype, coordinates
       if (iostatus == 0) then
-        call shelxl_atomiso(label, atomtype, coordinates, 1.0, 0.05, shelxline)
+        call shelxl_atomiso(label, atomtype, coordinates, 100.0, 0.05, shelxline)
       end if
     end if
 
@@ -909,7 +909,9 @@ contains
         end do ! end loop over lattice translation
 
         ! extracting occupancy from sof
-        if (atomslist(i)%sof >= 10.0 .and. atomslist(i)%sof < 20.0) then
+        if (atomslist(i)%sof >= 100.0) then     ! No occupancy was found - set it to unity
+          occ = 1.0
+        else if (atomslist(i)%sof >= 10.0 .and. atomslist(i)%sof < 20.0) then
           ! fixed occupancy
           occ = atomslist(i)%sof-10.0
           !list12index=list12index+1
@@ -940,7 +942,9 @@ contains
         else
           occ = atomslist(i)%sof
         end if
-        occ = occ*real(atomslist(i)%multiplicity)
+        if (atomslist(i)%sof < 100.0) then 
+          occ = occ*real(atomslist(i)%multiplicity)
+        end if
 
         ! a check for consistency of sof
         ! 11.000, 21.000, 31.000 then site symmetry multiplicity should be 1

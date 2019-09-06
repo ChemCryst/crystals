@@ -51,7 +51,7 @@
 ^^WI             ITEM _SENVN '&Environment of _A'
 ^^WI                   '#DIST_NOUT MON=ALL_NPIVOT _A_NEND' DISABLEIF='IN'
 
-^^WI             MENU _SREFT 'Refine &mode OF _A'
+^^WI             MENU _SREFT 'Refine &mode of _A'
 ^^WI                 ITEM _F '&Fix' '#SCRIPT XSTICK_N_A_NFIX'
 ^^WI                                 DISABLEIF='IN'
 ^^WI                 ITEM _X '&Xs' '#SCRIPT XSTICK_N_A_NXS'
@@ -68,7 +68,7 @@
 ^^WI                 ITEM _H '&Help' '#SCRIPT XSTICKH_N'
 ^^WI             ENDMENU
 
-^^WI             MENU _SREFB 'Refine Block OF _A'
+^^WI             MENU _SREFB 'Refine Block of _A'
 ^^WI                 ITEM _X '&Xs' '#SCRIPT XSTICKB_N_A_NXS'
 ^^WI                                 DISABLEIF='IN'
 ^^WI                 ITEM _I 'Xs and U&iso' '#SCRIPT XSTICKB_N_A_NISO'
@@ -134,6 +134,7 @@
 ^^WI                                 DISABLEIF='IN' ENABLEIF='SEL2'
 ^^WI             ITEM _DIST 'Swap &coordinates' '#SCRIPT YASWAP_N_G'
 ^^WI                                 DISABLEIF='IN' ENABLEIF='SEL2'
+
 ^^WI             SPLIT
 ^^WI             ITEM _GDELA 'Centroid of &selection'
 ^^WI                         '#SCRIPT XCENTRO_N_GEND' DISABLEIF='IN SEL1'
@@ -141,8 +142,19 @@
 ^^WI                                                 DISABLEIF='SEL1 SEL2 IN'
 ^^WI             ITEM _SVMAP 'Voids map' '#SCRIPT VCONT_N_GEND'
 ^^WI                                                 DISABLEIF='SEL1 SEL2 IN'
+
+^^WI             ITEM _PLANE 'Best Plane' '#SCRIPT XMOLAX_N_GEND'
+^^WI                                            DISABLEIF='SEL1 SEL2  IN'
+ 
+^^WI             ITEM _LINE 'Best LINE' '#SCRIPT XLINE_N_GEND'
+^^WI                                            DISABLEIF='SEL1   IN'
+
+^^WI             ITEM _AXES 'APD Axes' '#SCRIPT XAXES_N_GEND'
+^^WI                                            DISABLEIF='IN'
+
 ^^WI             ITEM _TLS 'TLS analysis' '#SCRIPT XTLS_N_GEND'
 ^^WI                                            DISABLEIF='SEL1 SEL2 SEL3 IN'
+
 ^^WI             SPLIT
 ^^WI             ITEM _SELEC '&Break bond' 
 ^^WI                '#SCRIPT XBRBOND_N_G' DISABLEIF='IN' ENABLEIF='SEL2'

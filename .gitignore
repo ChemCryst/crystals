@@ -108,7 +108,7 @@ test_suite/*.cif
 test_suite/*.ini
 test_suite/*.l5i
 test_suite/*.oby
-
+test_suite/*.job
 
 
 

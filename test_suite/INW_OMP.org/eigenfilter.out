@@ -2438,9 +2438,6 @@ Mean C-C su =   0.0000
 #CYCLENDS
 #PERH
            Per-hydrogenation of Carbon atoms
-C(1)  sp3 delta   0.03 sp3 delta  0.08 planarity  999.00 angle delta  999.00
-C(1) hybridisation uncertain (3/0)  4 Bonds, sp0 used
- Unassignable carbon - C(1)
 H33 C(4) O(3) C(2) 
 H33 C(9) C(7) N(6) 
 H23 C(10) C(11) C(1) 
@@ -5454,9 +5451,6 @@ Mean C-C su =   0.0000
 #CYCLENDS
 #PERH
            Per-hydrogenation of Carbon atoms
-C(1)  sp3 delta   0.03 sp3 delta  0.08 planarity  999.00 angle delta  999.00
-C(1) hybridisation uncertain (3/0)  4 Bonds, sp0 used
- Unassignable carbon - C(1)
 H33 C(4) O(3) C(2) 
 H33 C(9) C(7) N(6) 
 H23 C(10) C(11) C(1) 
@@ -8466,9 +8460,6 @@ Mean C-C su =   0.0000
 #CYCLENDS
 #PERH
            Per-hydrogenation of Carbon atoms
-C(1)  sp3 delta   0.03 sp3 delta  0.09 planarity  999.00 angle delta  999.00
-C(1) hybridisation uncertain (3/0)  4 Bonds, sp0 used
- Unassignable carbon - C(1)
 H33 C(4) O(3) C(2) 
 H33 C(9) C(7) N(6) 
 H23 C(10) C(11) C(1) 
@@ -11489,9 +11480,6 @@ Mean C-C su =   0.0000
 #CYCLENDS
 #PERH
            Per-hydrogenation of Carbon atoms
-C(1)  sp3 delta   0.03 sp3 delta  0.09 planarity  999.00 angle delta  999.00
-C(1) hybridisation uncertain (3/0)  4 Bonds, sp0 used
- Unassignable carbon - C(1)
 H33 C(4) O(3) C(2) 
 H33 C(9) C(7) N(6) 
 H23 C(10) C(11) C(1) 

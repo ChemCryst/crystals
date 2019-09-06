@@ -1,4 +1,4 @@
-%SCRIPT XTLS
+%SCRIPT XAXES
 %%
 %%
 %   COPY '#ANISO'
@@ -10,7 +10,6 @@
 %     GET SILENT TEXT 'Atom?'
 %     SEND
 %   END LOOP
-%   COPY 'TLS'
-%   COPY 'DISTANCE'
+%   COPY 'AXES'
 %   COPY 'END'
 %END SCRIPT

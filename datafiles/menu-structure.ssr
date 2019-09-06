@@ -43,6 +43,11 @@
 ^^WI   SPLIT                                                                    
 ^^WI   ITEM DIST '&Distances' '#DISTANCES_NEND' DISABLEIF='IN'                  
 ^^WI                                            ENABLEIF='L2 L1 L5'             
+
+^^WI   ITEM DIST '&Torsion' '#SCRIPT XTORS2' DISABLEIF='IN'                  
+^^WI                                            ENABLEIF='L2 L1 L5'             
+
+
 ^^WI   ITEM XBONDS '&Add and remove bonds'                                      
 ^^WI       '#SCRIPT EDBONDS' DISABLEIF='IN' ENABLEIF='L2 L1 L5'                 
 ^^WI   SPLIT                                                                    
