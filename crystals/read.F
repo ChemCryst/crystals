@@ -1456,14 +1456,13 @@ C -- INTERNAL ERROR
       GO TO 9000
 9980  CONTINUE
 C -- GENERAL HELP ON USING SYSTEM INSTRUCTIONS HANDLED BY THIS ROUTINE
-      WRITE ( CMON,9985) (IH,J=1,7)
+      WRITE ( CMON,9985) (IH,J=1,6)
       CALL XPRVDU(NCEROR, 5,0)
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9985 ) ( IH , J = 1 , 7 )
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9985 ) ( IH , J = 1 , 6 )
 9985  FORMAT ( 1X , 'Specify a filename for ',A1,'TYPE or ',A1,'USE',/,
      2 1X , 'Specify a topic for ',A1,'HELP or ',A1,'MANUAL' , / ,
      3 1X , 'Specify a script name for ', A1 , 'SCRIPT' , / ,
-     4 1X , 'Specify a time interval for ' , A1 , 'PAUSE' , / ,
-     5 1X , 'Use the command ',A1,'HELP HELP for more information' )
+     4 1X , 'Specify a time interval for ' , A1 , 'PAUSE'  )
       IERROR = IERWRN
       IF ( ISYSIN .EQ. IUSE ) IERROR = IERERR
       CALL XERHND ( IERROR )

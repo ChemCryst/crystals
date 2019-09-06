@@ -51,7 +51,7 @@
 ^^WI             ITEM _SENVN '&Environment of _A'
 ^^WI                   '#DIST_NOUT MON=ALL_NPIVOT _A_NEND' DISABLEIF='IN'
 
-^^WI             MENU _SREFT 'Refine &mode OF _A'
+^^WI             MENU _SREFT 'Refine &mode of _A'
 ^^WI                 ITEM _F '&Fix' '#SCRIPT XSTICK_N_A_NFIX'
 ^^WI                                 DISABLEIF='IN'
 ^^WI                 ITEM _X '&Xs' '#SCRIPT XSTICK_N_A_NXS'
@@ -68,7 +68,7 @@
 ^^WI                 ITEM _H '&Help' '#SCRIPT XSTICKH_N'
 ^^WI             ENDMENU
 
-^^WI             MENU _SREFB 'Refine Block OF _A'
+^^WI             MENU _SREFB 'Refine Block of _A'
 ^^WI                 ITEM _X '&Xs' '#SCRIPT XSTICKB_N_A_NXS'
 ^^WI                                 DISABLEIF='IN'
 ^^WI                 ITEM _I 'Xs and U&iso' '#SCRIPT XSTICKB_N_A_NISO'
