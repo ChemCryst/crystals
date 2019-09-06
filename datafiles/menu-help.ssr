@@ -1,10 +1,10 @@
 %%SSR MENU-HELP
 ^^WI  MENU HELP '&Help'                                                         
 ^^WI   ITEM HGUIDE '&Start the Guide'                                             
-^^WI   '#SCRIPT GUIDESTART' ICON='tool_guid.bmp' DISABLEIF='IN'                                            
+^^WI   '#SCRIPT GUIDESTART' ICON='guide.png' DISABLEIF='IN'                                            
 ^^WI   ITEM HSTAR '&Read me first' '#SCRIPT XREADME' DISABLEIF='IN'             
 ^^WI   ITEM HSTAR '&Getting started'                                            
-^^WI     '#SPAWN "CRYSDIR:manual/readme.html"' ICON='tool_help.bmp' 
+^^WI     '#SPAWN "CRYSDIR:manual/readme.html"' ICON='tool_help.png' 
 ^^WI                          DISABLEIF='IN'  
 ^^WI   ITEM HSTAR '&Beginners Guide' 
 ^^WI     '#SPAWN "CRYSDIR:manual/beginnersguide.pdf"' DISABLEIF='IN'  

@@ -25,7 +25,9 @@ static int __stdcall BrowseCallbackProc(HWND hwnd, UINT uMsg, LPARAM lParam, LPA
 
 int WINAPI WinMain ( HINSTANCE hIn, HINSTANCE hPrIn, LPSTR lpCmdLine, int nCmdShow )
 {
-      string lastPath, location, firstTime;
+      string lastPath, firstTime;
+
+//lastPath is set from HKCU only (per user setting)
 
  // Use the registry to fetch keys.
       string subkey = "Software\\Chem Cryst\\Crystals\\";
@@ -35,13 +37,13 @@ int WINAPI WinMain ( HINSTANCE hIn, HINSTANCE hPrIn, LPSTR lpCmdLine, int nCmdSh
       int dwresult = RegCreateKeyEx( HKEY_CURRENT_USER, subkey.c_str(),
                               0, NULL,  0, KEY_READ, NULL,
                               &hkey, &dwdisposition );
-                              
+
       if ( dwresult == ERROR_SUCCESS )
       {
          dwtype=REG_SZ;
          dwsize = 1024; // NB limits max key size to 1K of text.
          char buf [ 1024];
-      
+
          dwresult = RegQueryValueEx( hkey, TEXT("Strdir"), 0, &dwtype,
                                   (PBYTE)buf,&dwsize);
          if ( dwresult == ERROR_SUCCESS )  lastPath = string(buf);
@@ -49,16 +51,27 @@ int WINAPI WinMain ( HINSTANCE hIn, HINSTANCE hPrIn, LPSTR lpCmdLine, int nCmdSh
          RegCloseKey(hkey);
       }
 
-      dwresult = RegCreateKeyEx( HKEY_LOCAL_MACHINE, subkey.c_str(),
-                                   0, NULL,  0, KEY_READ, NULL,
-                                   &hkey, &dwdisposition );
-                              
+// Ditch the registry method (below) and just use current path to crysload to infer path to crystals.
+      char pathBuf[MAX_PATH];
+      GetModuleFileName(0, pathBuf, MAX_PATH);
+      string location(pathBuf);
+
+      string::size_type pos = location.find_last_of( "\\/" );
+      location =  location.substr( 0, pos);
+
+//Location is used to find the executable (TODO: arguably it should be alongside this executable)
+//RIC19: swapped search order - if HKCU value set, use it.
+/*
+      dwresult = RegCreateKeyEx( HKEY_CURRENT_USER, subkey.c_str(),
+                             0, NULL,  0, KEY_READ, NULL,
+                             &hkey, &dwdisposition );
+
       if ( dwresult == ERROR_SUCCESS )
       {
          dwtype=REG_SZ;
          dwsize = 1024; // NB limits max key size to 1K of text.
          char buf [ 1024];
-     
+
          dwresult = RegQueryValueEx( hkey, TEXT("Location"), 0, &dwtype,
                                   (PBYTE)buf,&dwsize);
          if ( dwresult == ERROR_SUCCESS ) location = string(buf);
@@ -66,32 +79,35 @@ int WINAPI WinMain ( HINSTANCE hIn, HINSTANCE hPrIn, LPSTR lpCmdLine, int nCmdSh
          RegCloseKey(hkey);
       }
 
+
       if ( dwresult != ERROR_SUCCESS )  // Try HK_CURRENT_USER instead.
       {
-         dwresult = RegCreateKeyEx( HKEY_CURRENT_USER, subkey.c_str(),
-                                      0, NULL,  0, KEY_READ, NULL,
-                                      &hkey, &dwdisposition );
-                              
+        dwresult = RegCreateKeyEx( HKEY_LOCAL_MACHINE, subkey.c_str(),
+                                     0, NULL,  0, KEY_READ, NULL,
+                                     &hkey, &dwdisposition );
+
+
          if ( dwresult == ERROR_SUCCESS )
          {
             dwtype=REG_SZ;
             dwsize = 1024; // NB limits max key size to 1K of text.
             char buf [ 1024];
-     
+
             dwresult = RegQueryValueEx( hkey, TEXT("Location"), 0, &dwtype,
                                   (PBYTE)buf,&dwsize);
             if ( dwresult == ERROR_SUCCESS ) location = string(buf);
-    
+
             RegCloseKey(hkey);
          }
       }
+*/
 
-
+//Check 'offer to show help' flag
 
       dwresult = RegCreateKeyEx( HKEY_CURRENT_USER, subkey.c_str(),
                                    0, NULL,  0, KEY_READ|KEY_WRITE, NULL,
                                    &hkey, &dwdisposition );
-                              
+
       if ( dwresult == ERROR_SUCCESS )
       {
          dwtype=REG_SZ;
@@ -161,7 +177,7 @@ int WINAPI WinMain ( HINSTANCE hIn, HINSTANCE hPrIn, LPSTR lpCmdLine, int nCmdSh
       bi.pidlRoot = NULL;
       bi.pszDisplayName = buffer2;
       bi.lpszTitle = (char*)&title;
-      bi.ulFlags = BIF_RETURNONLYFSDIRS;
+      bi.ulFlags = BIF_RETURNONLYFSDIRS|BIF_USENEWUI;
       bi.iImage = NULL;
       bi.lpfn = NULL ;
       bi.lParam = NULL;
@@ -189,7 +205,7 @@ int WINAPI WinMain ( HINSTANCE hIn, HINSTANCE hPrIn, LPSTR lpCmdLine, int nCmdSh
              dwresult = RegCreateKeyEx( HKEY_CURRENT_USER, subkey.c_str(),
                                      0, NULL,  0, KEY_WRITE, NULL,
                                      &hkey, &dwdisposition );
-                              
+
              if ( dwresult == ERROR_SUCCESS )
              {
                dwtype = REG_SZ;
@@ -249,14 +265,14 @@ int __stdcall BrowseCallbackProc(HWND hwnd, UINT uMsg, LPARAM lParam, LPARAM lpD
 
 //Work around for deployment on old Win95 platforms.
 
-//Remove dependency of new MFC library on OLEACC.DLL, by providing our own 
+//Remove dependency of new MFC library on OLEACC.DLL, by providing our own
 //proxy functions, which do nothing if OLEACC.DLL cannot be loaded.
 
-typedef LRESULT (_stdcall *pfnAccessibleObjectFromWindow)(HWND hwnd, DWORD dwId, 
+typedef LRESULT (_stdcall *pfnAccessibleObjectFromWindow)(HWND hwnd, DWORD dwId,
                                                     REFIID riid, void **ppvObject);
-typedef LRESULT (_stdcall *pfnCreateStdAccessibleObject)(HWND hwnd, LONG idObject, 
+typedef LRESULT (_stdcall *pfnCreateStdAccessibleObject)(HWND hwnd, LONG idObject,
                                                     REFIID riid, void** ppvObject);
-typedef LRESULT (_stdcall *pfnLresultFromObject)(REFIID riid, WPARAM wParam, 
+typedef LRESULT (_stdcall *pfnLresultFromObject)(REFIID riid, WPARAM wParam,
                                                     LPUNKNOWN punk);
 
 class COleaccProxy
@@ -268,7 +284,7 @@ public:
 private:
     static HMODULE m_hModule;
     static BOOL m_bFailed;
-    
+
 public:
     static void Init(void);
     static pfnAccessibleObjectFromWindow m_pfnAccessibleObjectFromWindow;
@@ -279,26 +295,26 @@ public:
 
 
 
-extern "C" LRESULT _stdcall AccessibleObjectFromWindow(HWND hwnd, DWORD dwId, 
+extern "C" LRESULT _stdcall AccessibleObjectFromWindow(HWND hwnd, DWORD dwId,
                                                        REFIID riid, void **ppvObject)
 {
     COleaccProxy::Init();
-    return COleaccProxy::m_pfnAccessibleObjectFromWindow ? 
+    return COleaccProxy::m_pfnAccessibleObjectFromWindow ?
        COleaccProxy::m_pfnAccessibleObjectFromWindow(hwnd, dwId, riid, ppvObject) : 0;
 }
 
-extern "C" LRESULT _stdcall CreateStdAccessibleObject(HWND hwnd, LONG idObject, 
+extern "C" LRESULT _stdcall CreateStdAccessibleObject(HWND hwnd, LONG idObject,
                                                       REFIID riid, void** ppvObject)
 {
     COleaccProxy::Init();
-    return COleaccProxy::m_pfnCreateStdAccessibleObject ? 
+    return COleaccProxy::m_pfnCreateStdAccessibleObject ?
        COleaccProxy::m_pfnCreateStdAccessibleObject(hwnd, idObject, riid, ppvObject) : 0;
 }
 
 extern "C" LRESULT _stdcall LresultFromObject(REFIID riid, WPARAM wParam, LPUNKNOWN punk)
 {
     COleaccProxy::Init();
-    return COleaccProxy::m_pfnLresultFromObject ? 
+    return COleaccProxy::m_pfnLresultFromObject ?
        COleaccProxy::m_pfnLresultFromObject(riid, wParam, punk) : 0;
 }
 
@@ -329,12 +345,12 @@ void COleaccProxy::Init(void)
         }
 
         m_pfnAccessibleObjectFromWindow
-             = (pfnAccessibleObjectFromWindow)::GetProcAddress(m_hModule, 
+             = (pfnAccessibleObjectFromWindow)::GetProcAddress(m_hModule,
                                                           "AccessibleObjectFromWindow");
         m_pfnCreateStdAccessibleObject
-             = (pfnCreateStdAccessibleObject)::GetProcAddress(m_hModule, 
+             = (pfnCreateStdAccessibleObject)::GetProcAddress(m_hModule,
                                                           "CreateStdAccessibleObject");
-        m_pfnLresultFromObject = (pfnLresultFromObject)::GetProcAddress(m_hModule, 
+        m_pfnLresultFromObject = (pfnLresultFromObject)::GetProcAddress(m_hModule,
                                                           "LresultFromObject");
     }
 }
