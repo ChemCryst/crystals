@@ -7845,9 +7845,6 @@ Mean C-C su =   0.0039
 #              PUT IN SOME GEOMETRIC H
 #PERHYDRO 5 5
            Per-hydrogenation of Carbon atoms
-C(1)  sp3 delta   0.09 sp3 delta  0.10 planarity  999.00 angle delta  999.00
-C(1) hybridisation uncertain (3/0)  4 Bonds, sp0 used
- Unassignable carbon - C(1)
 H12 C(3) N(2) N(4) 
 H12 C(5) C(6) N(4) 
 H12 C(6) C(5) N(2) 
@@ -17414,9 +17411,6 @@ Mean C-C su =   0.0041
 #              PUT IN SOME GEOMETRIC H
 #PERHYDRO 5 5
            Per-hydrogenation of Carbon atoms
-C(1)  sp3 delta   0.09 sp3 delta  0.10 planarity  999.00 angle delta  999.00
-C(1) hybridisation uncertain (3/0)  4 Bonds, sp0 used
- Unassignable carbon - C(1)
 H12 C(3) N(2) N(4) 
 H12 C(5) C(6) N(4) 
 H12 C(6) C(5) N(2) 
@@ -26449,9 +26443,6 @@ Mean C-C su =   0.0039
 #              PUT IN SOME GEOMETRIC H
 #PERHYDRO 5 5
            Per-hydrogenation of Carbon atoms
-C(1)  sp3 delta   0.09 sp3 delta  0.10 planarity  999.00 angle delta  999.00
-C(1) hybridisation uncertain (3/0)  4 Bonds, sp0 used
- Unassignable carbon - C(1)
 H12 C(3) N(2) N(4) 
 H12 C(5) C(6) N(4) 
 H12 C(6) C(5) N(2) 
@@ -35960,9 +35951,6 @@ Mean C-C su =   0.0041
 #              PUT IN SOME GEOMETRIC H
 #PERHYDRO 5 5
            Per-hydrogenation of Carbon atoms
-C(1)  sp3 delta   0.09 sp3 delta  0.10 planarity  999.00 angle delta  999.00
-C(1) hybridisation uncertain (3/0)  4 Bonds, sp0 used
- Unassignable carbon - C(1)
 H12 C(3) N(2) N(4) 
 H12 C(5) C(6) N(4) 
 H12 C(6) C(5) N(2) 
