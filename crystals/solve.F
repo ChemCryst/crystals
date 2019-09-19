@@ -652,9 +652,10 @@ C----- CHOOSE INVERTOR
      &        'out of bounds in methodtxt(method)'
             CALL XPRVDU(NCVDU, 1,0)
         end if
-        WRITE ( CMON, '(A,A)') 'Inversion method: ', 
+        IF (ISSPRT .EQ. 0) 
+     &    WRITE ( NCWU, '(A,A)') 'Inversion method: ', 
      &    trim(methodtxt(method))
-        CALL XPRVDU(NCVDU, 1,0)
+C        CALL XPRVDU(NCVDU, 1,0)
         istore(L11P+30)=method
 
 c        allocate(ref(JY*(JY+1)/2))

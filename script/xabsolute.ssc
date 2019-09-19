@@ -1,0 +1,82 @@
+% SCRIPT XABSOLUTE
+%% SEE IF THE STRUCTURE NEEDS INVERTING
+%% GET THE FRIEDELPAIRS FLAG FROM LIST 13
+%   VARIABLE INTEGER FRIEDELF
+%   COPY '#GENERALEDIT 13'                                                      
+%   COPY 'LOCATE RECORDTYPE=101'                                                
+%   COPY 'TRANSFER FROM OFFSET=0 TO FRIEDELF'                                   
+%   COPY 'WRITE'                                                                
+%   COPY 'END'                                                                  
+%  IF FRIEDELF .EQ. 0 THEN
+
+Centrosymmetric
+
+%  ELSE
+
+Non-Centro
+
+% copy '#set monitor fast'
+%       COPY '#SCRIPT TONSWORK'
+%       COPY '#SCRIPT FLACK39'
+%       COPY '#TON TYPE=DODC PLOT=NO PUNCH=NO'
+%       COPY 'END'
+%  END IF
+%  VARIABLE CHARACTER CFLACK
+%  VARIABLE REAL SERIAL DO DSIG
+%  COPY '#GENERALEDIT 39'
+%  COPY 'LOCATE RECORDTYPE = 102'
+%  COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%  COPY 'TOP'
+%  LOOP
+%    ON EDITERROR TERMINATE
+%    COPY 'TRANSFER FROM OFFSET=0 TO CFLACK'
+%    COPY 'TRANSFER FROM OFFSET=1 TO SERIAL'
+%    IF CFLACK .EQ. 'FLAC' THEN
+%       IF SERIAL .EQ. 0. THEN
+%        COPY 'TRANSFER FROM OFFSET=6 TO DO'
+%        COPY 'TRANSFER FROM OFFSET=7 TO DSIG'
+%        EVALUATE LOOPCOUNTER = LOOPEND
+%       END IF
+%    END IF
+%    COPY 'NEXT'
+%  END LOOP
+%  COPY 'END'
+%  COPY '#SET MONITOR ON'
+%  CLEAR
+%  INSERT  '{S The current value of the Flack parameter is '
+%  STORE FORMAT '(F8.4)' LENGTH 8 REAL DO
+%  INSERT ', '
+%  STORE FORMAT '(F8.4)' LENGTH 8 REAL DSIG
+%  OUTPUT
+%% variables used by the question box                                           
+%  VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2  
+%  VARIABLE CHARACTER BUTINFO  BUTFILE
+%  VARIABLE LOGICAL ANSWER 
+%  IF DO .GT. 0.5  THEN
+%     EVALUATE QTITLE = 'Absolute Structure'                                
+%     EVALUATE QLINE1 = 'Invert the absolute structure?'     
+%     EVALUATE QLINE2 = 'Choose'        
+%     EVALUATE BUTFILE = 'xabsolute.dat'
+%     EVALUATE BUTTOK = 'Yes'                             
+%     EVALUATE BUTTXX = 'No' 
+%     EVALUATE BUTINFO = 'Info'                   
+%     COPY '#SCRIPT XHELPQUEST'                                           
+%     IF ANSWER .EQ. TRUE THEN                                          
+%       COPY '#SCRIPT XINVERT'
+%       COPY '#SET MONITOR FAST'     % HIDE THE SFLS ETC
+%       COPY '#SCRIPT TONSWORK'
+%       COPY '#SCRIPT FLACK39'
+%       COPY '#SET MONITOR ON'
+%       COPY '#TON TYPE=DODC PLOT=NO PUNCH=NO'
+%       COPY 'END'
+%     ELSE                                                                
+
+{I Structure not inverted
+      
+%     END IF  
+%  ELSE
+
+{I The structure probably does not need inverting
+                                                            
+%  END IF
+% END SCRIPT

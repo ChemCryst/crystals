@@ -1150,7 +1150,8 @@ contains
         return
       else ! carry on ldldt double precision
 
-        WRITE (CMON, '(1X,3(A, 1PE9.2,1X))') '(dp inverse) 1-norm: ', donenorm, &
+        IF(ISSPRT.EQ.0) &
+        & WRITE (NCWU, '(1X,3(A, 1PE9.2,1X))') '(dp inverse) 1-norm: ', donenorm, &
         &   'cond. number: ', 1.0d0/drcond, &
         &   'rel. error: ', 1.0d0/drcond*epsilon(1.0d0)
         CALL XPRVDU(NCVDU, 1, 0)
@@ -1214,7 +1215,8 @@ contains
       end if
     else ! all good for single precision inversion
 
-      WRITE (CMON, '(1X,3(A, 1PE9.2,1X))') '(sp inverse) 1-norm: ', onenorm, &
+      IF(ISSPRT.EQ.0) &
+      & WRITE (NCWU, '(1X,3(A, 1PE9.2,1X))') '(sp inverse) 1-norm: ', onenorm, &
       &   'cond. number: ', 1.0/rcond, &
       &   'rel. error: ', 1.0/rcond*epsilon(1.0)
       CALL XPRVDU(NCVDU, 1, 0)

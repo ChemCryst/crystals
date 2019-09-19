@@ -2609,13 +2609,15 @@ C----- END OF CARD - TIDY UP
 C----- 'AND' REQUIRED
       IF(ISET) 2115, 2115, 2117
 2115  CONTINUE
+      ISSMON=0 ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE(NCWU ,2116)
       WRITE( CMON ,2116)
       CALL XPRVDU(NCVDU, 1,0)
-2116  FORMAT (' AND sequence missing')
+2116  FORMAT ('{E AND sequence missing')
 C
 C----- TOO MANY ERRORS - PROCESSING ABANDONED
 2050  CONTINUE
+      ISSMON=0 ! Turn monitoring back on
       CALL XPCA( ISTORE(MD+4) )
 2117  CONTINUE
 C----- AUTO-LINKED PARAMETERS

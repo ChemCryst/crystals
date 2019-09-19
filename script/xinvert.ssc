@@ -27,8 +27,6 @@
 %  END IF
 %% _______________________________________________________________
 %%
-
-
 %%
 % IF ( EXISTS 2 .ne. 1 ) THEN
 {E No LIST 2 available
@@ -78,7 +76,7 @@
 % END IF
 %% 
 % IF L2 .EQ. 'NONE' THEN
- No SG name available. Use Cell/Sym to input current SG
+{E  No SG name available. Use Cell/Sym TAB to input current SG
 %   FINISH
 % ELSE
 %   EVALUATE L2 = COMPRESS ( L2 // ' ' // A2 // ' ' // B2 // -
@@ -103,7 +101,6 @@
 %          EVALUATE LOOPEND = LOOPCOUNTER
 %       END IF
 %     END LOOP
-
 % VERIFY P43 P4322 P43212 P32   P3212 P3221 P65 -
          P64 P6522 P6422  P4332 
 %%
@@ -142,7 +139,7 @@
 %%
 % IF LSG .EQ. FALSE THEN
 
-{I Normal inversion is appropriate
+{I   Normal inversion is appropriate
 
 %   COPY '#EDIT'
 %   COPY 'MONITOR OFF'
@@ -152,19 +149,23 @@
 %%
 % ELSE IF ITEM .LE. 22 THEN
 %%
+
+{I  Enantiomeric Pairs
+
 %   COPY '#SCRIPT XSPGRPAIRS' 
 %%
 % ELSE IF ITEM .LE. 29 THEN
 %%
+
+{I  Change of Origin Required
+
 %   COPY '#SCRIPT XSPGRSHIFT'
 %%
 % ELSE
 
-{I Something wrong
+{E   Something wrong
 
 % END IF
-
-
 %  EVALUATE QTITLE = 'Recentre Structure in Cell'
 %  EVALUATE QLINE1 = 'Inverting a structure may move it out of the cell'
 %  EVALUATE QLINE2 = 'Would you like to try to re-centre it?'
@@ -174,9 +175,4 @@
 %  IF ( ANSWER .EQ. TRUE ) THEN
 %   COPY '#SCRIPT XSHIFT'
 %  END IF
-
-
-
-
-
 %END SCRIPT

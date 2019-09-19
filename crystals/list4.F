@@ -1346,6 +1346,7 @@ C
       CALL XOPMSG ( IOPWEI , IOPINT , IVERSN )
       GO TO 9900
 9990  CONTINUE
+      ISSMON=0 ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE(NCWU,9991)
       WRITE(CMON,9991)
       CALL XPRVDU(NCVDU, 1,0)
