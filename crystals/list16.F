@@ -686,9 +686,10 @@ C Also fill in the include/exclude vector (LATVC) for KDIST4.
         END IF
         MS=KATOMU(IRCZAP)
         IF ( MS .LE. 0 ) THEN
-          WRITE (CMON,'(A)') 'Error reading atom from SAME directive.'
+          WRITE (CMON,'(A)') 
+     1    '{E Error reading atom from SAME directive.'
           CALL XPRVDU(NCVDU,1,0)
-          if (issprt.eq.0) write(ncwu,'(a)') trim(CMON(1))
+          if (issprt.eq.0) write(ncwu,'(a)') trim(CMON(1)(3:))
           GOTO 5850
         END IF
         INDATM = ( M5A - L5 ) / MD5
@@ -823,9 +824,9 @@ C Find the pivot atom (M5A) in the first group.
         END DO
 cdjwfeb11 delu and simu can have more than one argument string
         IF (( IND1 .GE. 0 ) .and. (mg .eq. 21))  THEN
-          WRITE (CMON,'(A,i5,a)')'Programming error [1]',
+          WRITE (CMON,'(A,i5,a)')'{E Programming error [1]',
      1    mg,' in XPRC16.'
-          if (issprt.eq.0) write(ncwu,'(a)') trim(CMON(1))
+          if (issprt.eq.0) write(ncwu,'(a)') trim(CMON(1)(3:))
           CALL XPRVDU(NCVDU,1,0)  
           GOTO 5850
         END IF
@@ -865,9 +866,9 @@ C Find the second atom in the first group.
           END DO
 cdjwfeb11 delu and simu can have more than one argument string
         IF (( IND2 .GE. 0 ) .and. (mg .eq. 21))  THEN
-          WRITE (CMON,'(A,i5,a)')'Programming error [2]',
+          WRITE (CMON,'(A,i5,a)')'{E Programming error [2]',
      1    mg,' in XPRC16.'
-            if (issprt.eq.0) write(ncwu,'(a)') trim(CMON(1))
+            if (issprt.eq.0) write(ncwu,'(a)') trim(CMON(1)(3:))
             CALL XPRVDU(NCVDU,1,0)  
             GOTO 5850
           END IF
@@ -1030,9 +1031,9 @@ C Find third atom of angle in the first group of SAME.
               END IF
             END DO
             IF ( IND3 .GE. 0 ) THEN
-              WRITE (CMON,'(A)') 'Programming error [3] in XPRC16.'
+              WRITE (CMON,'(A)') '{E Programming error [3] in XPRC16.'
               CALL XPRVDU(NCVDU,1,0)  
-            if (issprt.eq.0) write(ncwu,'(a)') trim(CMON(1))
+            if (issprt.eq.0) write(ncwu,'(a)') trim(CMON(1)(3:))
               GOTO 5850
             END IF
             IND3 = -IND3 ! Now index into the vector at JATD
@@ -1663,12 +1664,13 @@ C--'ABORT' CARD  -  RESET THE ABORTION LIMIT FOR 'EQUATE'
       IF(KNUMBR(ABORT))2350,5750,2350
 C--ERROR BECAUSE THERE IS NO ARGUMENT
 2350  CONTINUE
+      ISSMON = 1
       CALL XPCL16
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,2400)
 C      WRITE(NCAWU,2400)
       WRITE ( CMON ,2400)
       CALL XPRVDU(NCVDU, 1,0)
-2400  FORMAT(' This instruction requires one numeric argument')
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')CMON(1)(3:)
+2400  FORMAT('{E This instruction requires one numeric argument')
       GOTO 5850
 C
 C--AN 'EQUATE' CARD  -  SET UP THE INITIAL D/A LIMITS
@@ -1990,9 +1992,10 @@ C--CHECK THE PRINT FLAG
       GOTO 5900
 C--ERROR RETURN  -  PRINT THE CARD ABANDONED MESSAGE
 5850  CONTINUE
+      ISSMON=0 ! Turn monitoring back on
       if (issprt.eq.0)
-     1 write(ncwu,'(a)') 'Error label 5850. Card abandoned'
-      write(cmon,'(a)') 'Error label 5850. Card abandoned'
+     1 write(ncwu,'(a)') ' Card (Line) abandoned'
+      write(CMON,'(a)') ' Card (Line) abandoned'
       CALL XPRVDU(NCVDU, 1,0)
       CALL XPCA(ISTORE(MD+4))
       LEF=LEF+1
@@ -2032,11 +2035,13 @@ C--AND NOW RETURN
 C
 C--CORE OVERFLOW
 6150  CONTINUE
+      ISSMON=0 ! Turn monitoring back on
       CALL XOPMSG ( IOPL16 , IOPSPC , 0 )
       GO TO 9900
 C
 C--ERRORS FOUND
 6200  CONTINUE
+      ISSMON=0 ! Turn monitoring back on
       CALL XALTES ( KE , -1 )
       CALL XERHND ( IERERR )
       GO TO 9900
@@ -2047,6 +2052,7 @@ C -- ERRORS
       GO TO 6020
 9910  CONTINUE
 C -- INPUT ERRORS
+      ISSMON=0 ! Turn monitoring back on
       CALL XOPMSG ( IOPL16 , IOPCMI , 0 )
       GO TO 9900
       END

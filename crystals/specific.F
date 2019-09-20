@@ -832,6 +832,7 @@ C
       CALL XCTRIM( NAME, NCHARS )
       IF ( ( IMSG .GT. 1 ) .AND. ( IRDCMS(IFLIND) .GT. 0 ) ) THEN
         IF ( I .GT. 0 ) THEN
+          IF(IMSG.EQ.2) ISSMON=0 ! Turn monitoring back on
           WRITE ( CMON,1005) ACTION(IMSG) , NAME(1:NCHARS)
           CALL XPRVDU(NCEROR, 2, 0)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU, 1005 )ACTION(IMSG),NAME(1:NCHARS)
@@ -2362,7 +2363,7 @@ c#endif
       INCLUDE 'OUTCOL.INC'
       CHARACTER*(*) CBUF(LINBUF)
       CHARACTER(len=len(cbuf(1))+6) CEXTRA
-      CHARACTER*1 CFIRST, CLAST
+      CHARACTER*1 CFIRST, CLAST, CSECOND
       CHARACTER*10 CFRMAT
       DATA CFRMAT /'(1X,A)'/
 
@@ -2385,7 +2386,19 @@ C- PRINT A WARNING SOMEWHERE
                CALL XCTRIM(CBUF(J),N)
                N = MAX(1,N)         ! SET N TO LAST NON-BLANK
                CFIRST = CBUF(J)(1:1)
+               CSECOND = CBUF(J)(2:2)
                CLAST = CBUF(J)(N:N)
+C
+C IF ISSMON .EQ. 2 THEN SUPPRESS MOST TEXT OUTPUT. WE NEED TO 
+C SWITCH IT BACK ON IF SOMETHING HAS GONE WRONG.
+C Mostly done by resetting issmon before an ABANDON message
+c in individual files.
+      IF(ISSMON.EQ.2) THEN
+            IF ((CFIRST .NE. '^') .AND.
+     1      (CSECOND.NE. '{' ))CYCLE
+      ENDIF
+
+
 c         if defined(__GIL__)  || defined(__MAC__) ||defined (__INW__)
 #ifdef CRY_GUI
                N = MIN(N,256)         ! SET N TO LAST NON-BLANK

@@ -155,7 +155,7 @@ Bonds: Update required - There is no list 41
      1232 reflections   R  3.70% Rw  3.98% with I/u(I) >   2.0
 [29] SumFo/SumFc=  1.00    SumFoFc/SumFc^2=  1.01    SumwFoFc/SumwFc^2=  1.01
 LS-scale=  1.023   Wilson Scale=  0.000
-<Fo>-<Fc> =   -0.720    100*(<Fo>-<Fc>)/<Fo> =    -1.70
+<Fo>-<Fc> = -0.720    100*(<Fo>-<Fc>)/<Fo> =    -1.70
 #CYCLENDS
 #LIST 4
 #TITLE GROUP TORSION
@@ -317,7 +317,7 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
  Structure factor least squares calculation    2  ends  2
 [29] SumFo/SumFc=  1.00    SumFoFc/SumFc^2=  1.01    SumwFoFc/SumwFc^2=  1.01
 LS-scale=  1.023   Wilson Scale=  0.000
-<Fo>-<Fc> =   -0.720    100*(<Fo>-<Fc>)/<Fo> =    -1.70
+<Fo>-<Fc> = -0.720    100*(<Fo>-<Fc>)/<Fo> =    -1.70
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -338,7 +338,9 @@ LS-scale=  1.023   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.65E-06
+ (sp inverse) 1-norm:  2.67E+00 cond. number:  1.39E+01 rel. error:  1.65E-06
 
                                                 for           6 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -548,7 +550,7 @@ Refining    52 parameters in    2 block :     1022 elements in the LS matrix.
  Structure factor least squares calculation    3  ends  2
 [29] SumFo/SumFc=  1.00    SumFoFc/SumFc^2=  1.01    SumwFoFc/SumwFc^2=  1.01
 LS-scale=  1.023   Wilson Scale=  0.000
-<Fo>-<Fc> =   -0.720    100*(<Fo>-<Fc>)/<Fo> =    -1.70
+<Fo>-<Fc> = -0.720    100*(<Fo>-<Fc>)/<Fo> =    -1.70
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -569,8 +571,12 @@ LS-scale=  1.023   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.58E-06
+ (sp inverse) 1-norm:  3.41E+00 cond. number:  2.17E+01 rel. error:  2.58E-06
+Inversion method: Automatic
 Block No  2.  Single precision relative error:  3.90E-07
+ (sp inverse) 1-norm:  1.63E+00 cond. number:  3.27E+00 rel. error:  3.90E-07
 
                                                 for          52 parameters
 [64]                                  The rms (shift/su)  =           0.

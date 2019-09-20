@@ -1,5 +1,10 @@
 %SCRIPT PASCAL-HELP
-% COPY '#SCRIPT XHELP1'
+% COPY '#SCRIPT XHELP1M'
+
+Ao is the average of the observed Friedel pairs. 
+As is the average of the compued Friedel pairs assuming the crystal is
+an enantiopure Singe crystal.
+Do and Ds are the corresponding differences.
 
 
                                 PASCAL

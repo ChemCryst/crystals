@@ -1,7 +1,14 @@
 %SCRIPT FLACK-HELP
-% COPY '#SCRIPT XHELP1'
+% COPY '#SCRIPT XHELP1M'
+Ao is the average of the observed Friedel pairs.
+As is the average of the compued Friedel pairs assuming the crystal is
+an enantiopure Singe crystal.
+Do and Ds are the corresponding differences
 
-Direct refinement od the Flack parameter does not NEED Friedel pairs, though
+      
+
+
+Direct refinement of the Flack parameter does not NEED Friedel pairs, though
 the calculation is strengthened if pairs are present.
 Similarly, Hole-in-One does not NEED pairs, but if they are present they 
 improve the calculation.

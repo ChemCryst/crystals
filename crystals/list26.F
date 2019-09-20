@@ -3319,7 +3319,7 @@ C     U Matrices in 3x3 matrix
         temp_M=Udata(icpt)%RABUBAR
         call DSYEVJ3(temp_M, Udata(icpt)%Q, Udata(icpt)%W, info)   
         if(info<0) then
-          WRITE(CMON,'("{I", A)') 
+          WRITE(CMON,'("{E", A)') 
      1      'ULIJ: DSYEVJ3 failed to converged'
           CALL XPRVDU(NCVDU, 1,0)   
           Udata(icpt)%W=-1.0d0   
@@ -3485,7 +3485,7 @@ C--CLEAR THE P.D. SLOSTS FOR THE NEXT COORD.
 !> This subroutine calculate the restraints that align the principal axes of n atoms
 !! to a common average direction
       SUBROUTINE XCVCUALIGN(results)
-      use xssval_mod, only: issapp, issprt
+      use xssval_mod, only: issapp, issprt, issmon
       use list26_mod
       use xiobuf_mod, only:CMON
       use math_mod, only: DSYEVJ3, outer_product, matrixtoquaternions
@@ -3581,6 +3581,7 @@ C--SET UP A FEW CONSTANTS
 
         IF(ABS(STORE(ISTORE(JA+16)+6))/=0.0 ) THEN ! check if atom is isotropic
           if(present(results)) then
+            issmon=0 !turn on monitor
             WRITE(CMON,'("{E",1X, "(",I0,")",1X, A)')
      1         results%user_index, trim(results%restraint_text)
             CALL XPRVDU(NCVDU, 1,0)      
@@ -3610,7 +3611,8 @@ C     U Matrices in 3x3 matrix
         ! eigen decomposition
         call DSYEVJ3(Udata(icpt)%U_C, Udata(icpt)%Q, Udata(icpt)%W,info)      
         if(info<0) then
-          WRITE(CMON,'("{I", A)') 
+          issmon=0 !turn on monitor
+          WRITE(CMON,'("{E", A)') 
      1      'UALIGN: DSYEVJ3 failed to converged'
           CALL XPRVDU(NCVDU, 1,0)   
           Udata(icpt)%W=-1.0d0   
@@ -3637,6 +3639,7 @@ C     U Matrices in 3x3 matrix
       end do
       
       if(count(Udata(:)%tobeused)==0) then
+        issmon=0 !turn on monitor
         WRITE(CMON,'("{I", A, A)') 
      1      'UALIGN: All atoms are non positive definite ',
      2      'or nearly isotropic'
@@ -3745,7 +3748,7 @@ C--CLEAR THE P.D. SLOSTS FOR THE NEXT COORD.
 CODE FOR XCVCURIGU
 !> RIGU shelxl type of restraint
       SUBROUTINE XCVCURIGU(iasym, results)
-      use xssval_mod, only: issapp, issprt
+      use xssval_mod, only: issapp, issprt, issmon
       use list26_mod
       use xiobuf_mod, only: cmon
       use math_mod, only: DSYEVJ3
@@ -3991,7 +3994,7 @@ C
 C--
 !> Restrain the 2 smallest eigenvalue of a restraint to be equal
       SUBROUTINE XCVCUEIG(results)
-      use xssval_mod, only: issapp, issprt
+      use xssval_mod, only: issapp, issprt, issmon, ISSMON
       use list26_mod
       use xiobuf_mod, only:CMON
       use math_mod, only: DSYEVJ3
@@ -4077,10 +4080,11 @@ C--SET UP THE ADDRESSES OF THE ATOMS
 
         IF(ABS(STORE(ISTORE(JA+16)+6))/=0.0 ) THEN ! check if atom is isotropic
           if(present(results)) then
+            issmon=0 !turn on monitor
             WRITE(CMON,'("{I",1X, "(",I0,")",1X,A)') results%user_index,
      1        trim(results%restraint_text)
             CALL XPRVDU(NCVDU, 1,0)      
-              WRITE(CMON,'("{I", 4X, A, A, "(",I0,")", A)') 
+              WRITE(CMON,'("{E", 4X, A, A, "(",I0,")", A)') 
      1          'Error: atom ',trim(c_store(JA+2)),
      2          nint(store(JA+3)), 'is isotropic'
             CALL XPRVDU(NCVDU, 1,0)      
@@ -4120,7 +4124,8 @@ C       U Matrices in 3x3 matrix
         ! eigen decomposition
         call DSYEVJ3(U_C_1, Q_1, W_1, info)      
         if(info<0) then
-          WRITE(CMON,'("{I", A)') 
+          issmon=0 !turn on monitor
+          WRITE(CMON,'("{E", A)') 
      1      'UEIG: DSYEVJ3 failed to converged'
           CALL XPRVDU(NCVDU, 1,0)   
           cycle
@@ -4221,7 +4226,7 @@ C
 CODE FOR XCVCUQISO
 !> Restrain the adp to isotropic or nearly if low weight is used
       SUBROUTINE XCVCUQISO(results)
-      use xssval_mod, only: issapp, issprt
+      use xssval_mod, only: issapp, issprt, ISSMON
       use list26_mod
       use xiobuf_mod, only:CMON
       use math_mod, only: DSYEVJ3
@@ -4305,10 +4310,11 @@ C--SET UP A FEW CONSTANTS
 
         IF(ABS(STORE(ISTORE(JA+16)+6))/=0.0 ) THEN ! check if atom is isotropic
           if(present(results)) then
+            issmon=0 !turn on monitor
             WRITE(CMON,'("{I",1X, "(",I0,")",1X,A)') results%user_index,
      1        trim(results%restraint_text)
             CALL XPRVDU(NCVDU, 1,0)      
-              WRITE(CMON,'("{I", 4X, A, A, "(",I0,")", A)') 
+              WRITE(CMON,'("{E", 4X, A, A, "(",I0,")", A)') 
      1          'Error: atom ',trim(c_store(JA+2)),
      2          nint(store(JA+3)), 'already isotropic'
             CALL XPRVDU(NCVDU, 1,0)      
@@ -4459,7 +4465,7 @@ CODE FOR XCVCUVOL
 !! 
 !! d(a_1 b_1 c_1) = [ d(a_1)(b_1 c_1) + d(b_1)(a_1 c_1) + d(c_1)(a_1 b_1) ] / [3*(a_1 b_1 c_1)**(2.0/3.0)]
       SUBROUTINE XCVCUVOL(results)
-      use xssval_mod, only: issapp, issprt
+      use xssval_mod, only: issapp, issprt, issmon
       use list26_mod
       use xiobuf_mod, only:CMON
       use math_mod, only: DSYEVJ3
@@ -4531,6 +4537,7 @@ C--SET UP A FEW CONSTANTS
 
         IF(ABS(STORE(ISTORE(JA+16)+6))/=0.0 ) THEN ! check if atom is isotropic
           if(present(results)) then
+            issmon=0 !turn on monitor
             WRITE(CMON,'("{E",1X, "(",I0,")",1X, A)')
      1         results%user_index, trim(results%restraint_text)
             CALL XPRVDU(NCVDU, 1,0)      
@@ -4553,7 +4560,8 @@ C     U Matrices in 3x3 matrix
         ! eigen decomposition
         call DSYEVJ3(Udata(icpt)%U_C, Udata(icpt)%Q, Udata(icpt)%W,info)      
         if(info<0) then
-          WRITE(CMON,'("{I", A)') 
+          issmon=0 !turn on monitor
+          WRITE(CMON,'("{E", A)') 
      1      'UVOL: DSYEVJ3 failed to converged'
           CALL XPRVDU(NCVDU, 1,0)   
           Udata(icpt)%W=-1.0d0   
@@ -4629,7 +4637,8 @@ C-- RUN RABUBAR MULTIPLICATION (no need to calculate)
       do icpt=1, nca ! loop over each atom to setup restraints        
         if(.not. Udata(icpt)%tobeused) then
           if(present(results)) then
-            WRITE(CMON,'("{I", 4X, A, A, A, "(",I0,")")') 
+            issmon=0 !turn on monitor
+            WRITE(CMON,'("{E", 4X, A, A, A, "(",I0,")")') 
      1        'UVOL: ',
      4        ' Non positive definite adp, restraint not applied to ',
      2        trim(c_store(JA+2)),
@@ -4687,7 +4696,7 @@ CODE FOR XCVCUEQIV
 !> 
 !> d(a_1 + b_1 + c_1) = d(a_1) + d(b_1) + d(c_1)
       SUBROUTINE XCVCUEQIV(results)
-      use xssval_mod, only: issapp, issprt
+      use xssval_mod, only: issapp, issprt, issmon
       use list26_mod
       use xiobuf_mod, only:CMON
       use math_mod, only: DSYEVJ3
@@ -4776,6 +4785,7 @@ C--SET UP A FEW CONSTANTS
 
         IF(ABS(STORE(ISTORE(JA+16)+6))/=0.0 ) THEN ! check if atom is isotropic
           if(present(results)) then
+            issmon=0 !turn on monitor
             WRITE(CMON,'("{E",1X, "(",I0,")",1X, A)')
      1         results%user_index, trim(results%restraint_text)
             CALL XPRVDU(NCVDU, 1,0)      
@@ -4802,7 +4812,8 @@ C     U Matrices in 3x3 matrix
         ! eigen decomposition
         call DSYEVJ3(Udata(icpt)%U_C, Udata(icpt)%Q, Udata(icpt)%W,info)      
         if(info<0) then
-          WRITE(CMON,'("{I", A)') 
+          issmon=0 !turn on monitor
+          WRITE(CMON,'("{E", A)') 
      1      'UEQIV: DSYEVJ3 failed to converged'
           CALL XPRVDU(NCVDU, 1,0)   
           Udata(icpt)%W=-1.0d0   
@@ -6415,10 +6426,11 @@ C--CHECK THAT THERE IS ENOUGH ROOM
 C--NOT ENOUGH CORE AVAILABLE
 1000  CONTINUE
       CALL XERHDR(0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,1050)
+      issmon=0 !turn on monitor
       WRITE ( CMON ,1050)
       CALL XPRVDU(NCVDU, 1,0)
-1050  FORMAT(' Insufficient memory for ''PLANAR'' restraint' )
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')TRIM(CMON(1)(3:))
+1050  FORMAT('{E Insufficient memory for ''PLANAR'' restraint' )
 C--SET THE ERROR RETURN VALUE
 1100  CONTINUE
       KPLANE=-1
@@ -6467,10 +6479,10 @@ C--CALCULATE THE MEAN PLANE
 C--NOT ENOUGH ATOMS IN THE GROUP
 1400  CONTINUE
       CALL XERHDR(0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,1450)
       WRITE ( CMON ,1450)
       CALL XPRVDU(NCVDU, 1,0)
-1450  FORMAT(' Insufficient atoms to define a plane')
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')TRIM(CMON(1)(3:))
+1450  FORMAT('{E Insufficient atoms to define a plane')
       GOTO 1100
 C--CALCULATE THE EQUATION OF THE PLANE
 1500  CONTINUE
@@ -6572,10 +6584,10 @@ C--CHECK FOR CORE OVERFLOW
 C--NOT ENOUGH CORE AVAILABLE
 1000  CONTINUE
       CALL XERHDR(0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,1050)
       WRITE ( CMON ,1050)
       CALL XPRVDU(NCVDU, 1,0)
-1050  FORMAT(' Insufficient core for ''AVERAGE'' restraint ')
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')TRIM(CMON(1)(3:))
+1050  FORMAT('{E Insufficient core for ''AVERAGE'' restraint ')
       KAVERG=-1
 C--AND NOW RETURN
 1100  CONTINUE
@@ -7309,7 +7321,7 @@ c     skip shift limiting and origin fixing.
       if ((itemp .ne. 18).and.(itemp .ne. 20)) then
         L26WRN=L26WRN+1
         IF(L26TYP .EQ. 1) THEN
-         WRITE(CMON,'(A,1x,A,A)') '{I Directive ', 
+         WRITE(CMON,'(A,1x,A,A)') '{E Directive ', 
      1  COPERATION(ioper)(1:nctrim(COPERATION(ioper))),
      1 ': No derivatives found during Evaluation'
 C         CALL XPRVDU(NCVDU,1,0)
@@ -7895,7 +7907,7 @@ CODE FOR XCVCTLS
       SUBROUTINE XCVCTLS(results)
       use, intrinsic :: iso_fortran_env, only : stdout=>output_unit
       use list26_mod
-      use xssval_mod
+      use xssval_mod, only: issmon
       use store_mod, only: store, c_store, istore=>i_store
       implicit none
 
@@ -7992,6 +8004,7 @@ C--SET UP THE ADDRESSES OF THE ATOMS
         IF(ABS(STORE(ISTORE(JA+16)+6))/=0.0) THEN ! check if atom is isotropic
           flag=.true.
           if(present(results)) then
+            ISSMON=0
             WRITE(CMON,'("{E",1X, "(",I0,")",1X, A)') 
      1        results%user_index, trim(results%restraint_text)
             CALL XPRVDU(NCVDU, 1,0)      
@@ -8106,9 +8119,10 @@ C---RESET COUNTERS
          JB=istore(JB)
       end do
       IF (NATOM2.LT.4) THEN
+         issmon=0
          WRITE (CMON,950) NATOM2
          CALL XPRVDU (NCVDU,1,0)
-950      FORMAT (' Insufficient anisotropic atoms for tls -',I5)
+950      FORMAT ('{E Insufficient anisotropic atoms for tls -',I5)
          if(present(results)) then
            deallocate(results%subrestraints)
            results%groups=0
@@ -8135,7 +8149,8 @@ C---SOLVE NORMAL EQUATIONS, STORING INVERSE MATRIX AS AI AND RESULTS AS
       CALL RLTNT(abdp, DAA, DAR, DAI, info)
       if(info/=0) then
         if(present(results)) then
-          write(cmon, '("{I", 1X, A)') 'The TLS restraint is aborted'
+          ISSMON=0
+          write(cmon, '("{E", 1X, A)') 'The TLS restraint is aborted'
           CALL XPRVDU(NCVDU, 1,0)      
           deallocate(results%subrestraints)
         end if
@@ -8256,7 +8271,7 @@ C
 CODE FOR XCHIV
 !> CHIV shelxl type of restraint
       SUBROUTINE XCHIV(results)
-      use xssval_mod, only: issapp, issprt
+      use xssval_mod, only: issapp, issprt, issmon
       use list26_mod
       use xiobuf_mod, only: cmon
       use math_mod, only: DSYEVJ3

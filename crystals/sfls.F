@@ -1337,7 +1337,7 @@ cdjwsep09
         call outcol(1)
         delfofc = (foav-fcav*scale)
 cRIC13:        write(cmon,'(a,f8.3,4x,a,f8.3)')'<Fo>-<Fc> = ', 
-        write(cmon,'(a,f8.3,4x,a,f8.2)')'<Fo>-<Fc> = ', 
+        write(cmon,'(a,f6.3,4x,a,f8.2)')'<Fo>-<Fc> = ', 
      1  delfofc/scale, 
      2  '100*(<Fo>-<Fc>)/<Fo> = ',100.*delfofc/foav
         call xprvdu(NCVDU,1,0)

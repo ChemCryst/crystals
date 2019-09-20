@@ -1608,6 +1608,7 @@ C
 C
 C
 2150  CONTINUE
+      ISSMON=0 ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 2200 )
       ENDIF
@@ -1730,8 +1731,8 @@ C----- SET TYPE OF LIST TO BE PURGED
         CALL XPRVDU(NCVDU, 1,0)
         CSSNDA=''
         LSSNDA = 0
-        WRITE (CMON,'(A)') 'Opening temporary dsc file '
-        CALL XPRVDU(NCVDU, 1,0)
+c        WRITE (CMON,'(A)') 'Opening temporary dsc file '
+c        CALL XPRVDU(NCVDU, 1,0)
       END IF
 C
 CDJWOCT20000 - THE 'NEW DSC' NAME SET IN CSSNDA IS NO LONGER USED
@@ -1753,7 +1754,7 @@ C----- REMOVE ANY '.'
         CALL XCRAS(CSSNDA(1:LSSNDA), LSSNDA)
         CALL FCASE(CSSNDA, CSSNDA, ISSFLC)
         WRITE (CMON,'(A,A)') 'Opening new dsc file: ', CSSNDA(1:LSSNDA)
-        CALL XPRVDU(NCEROR, 1,0)
+c        CALL XPRVDU(NCEROR, 1,0)
         IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) trim(CMON(1))
       ENDIF
 CDJWAPR99}
@@ -2253,20 +2254,21 @@ C
 C
 2010  CONTINUE
 C
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 2015 )
       WRITE ( CMON, 2015)
       CALL XPRVDU(NCEROR, 2,0)
-2015  FORMAT ( 1X , 'An initial size has been requested even though ',
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')trim(CMON(1)(3:)),
+     1 trim(CMON(2))
+2015  FORMAT ( '{I An initial size has been requested even though ',
      1 'an old file is being used' , / ,
      2 1X , 'Value ignored' )
       CALL XERHND ( IERWRN )
       GO TO 8000
 C
 2020  CONTINUE
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 2025 ) IPARAM
       WRITE ( CMON, 2025 ) IPARAM
       CALL XPRVDU(NCEROR, 1,0)
-2025  FORMAT ( 1X , 'An illegal initial size of ' , I8 ,
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')TRIM(CMON(1)(3:))
+2025  FORMAT ('{I An illegal initial size of ' , I8 ,
      1 ' has been requested' )
       GO TO 8000
 C
@@ -2291,7 +2293,7 @@ C
      3 ' will not be copied ' , A )
       WRITE ( CMON, 2055 ) IULN , IULSN , REASON(IREASN)
       CALL XPRVDU(NCEROR, 1,0)
-2055  FORMAT ( 1X , 'List type ' , I3 , ' serial number ' , I4 ,
+2055  FORMAT ( '{I List type ' , I3 , ' serial number ' , I4 ,
      2 ' will not be copied ' , A20 )
 C
       GO TO 8000
@@ -2306,25 +2308,26 @@ C
 2110  CONTINUE
       CALL XDANAM ( IPARAM , FILNAM )
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 2115 ) FILNAM
-      WRITE ( CMON, 2115 ) FILNAM
-      CALL XPRVDU(NCVDU, 1,0)
+C      WRITE ( CMON, 2115 ) FILNAM
+C      CALL XPRVDU(NCVDU, 1,0)
 2115  FORMAT ( 1X , 'Disc index completely restored' , // ,
      1 1X , 'Listing of file index of ' , A10 , ' file ' )
       GO TO 8000
 C
 2120  CONTINUE
       CALL XDANAM ( IPARAM , FILNAM )
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1750 ) FILNAM
       WRITE ( CMON, 1750 ) FILNAM
       CALL XPRVDU(NCEROR, 2,0)
-1750  FORMAT (' The ' , A10 , ' file is being rebuilt -'
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')TRIM(CMON(1)(3:)),
+     1 TRIM(CMON(2))
+1750  FORMAT ('{I The ' , A10 , ' file is being rebuilt -'
      1 /' DO NOT abort the program' )
       GO TO 8000
 C
 2130  CONTINUE
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 2135 )
-      WRITE ( CMON, 2135 )
-      CALL XPRVDU(NCEROR, 1,0)
+C      WRITE ( CMON, 2135 )
+C      CALL XPRVDU(NCEROR, 1,0)
 2135  FORMAT ( 1X , 'The new disc index has been re-written ')
       GO TO 8000
 C
@@ -2336,10 +2339,10 @@ C
 C
 C
 9910  CONTINUE
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9915 ) MSGNUM
       WRITE ( CMON, 9915 ) MSGNUM
       CALL XPRVDU(NCEROR, 1,0)
-9915  FORMAT ( 1X , 'Illegal or unexpected message code ' , I8 )
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')TRIM(CMON(1)(3:))
+9915  FORMAT ( '{E Illegal or unexpected message code ' , I8 )
       CALL XERHND ( IERPRG )
 C -- DUMMY RETURN
       RETURN
