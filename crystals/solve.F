@@ -652,9 +652,9 @@ C----- CHOOSE INVERTOR
      &        'out of bounds in methodtxt(method)'
             CALL XPRVDU(NCVDU, 1,0)
         end if
-        IF (ISSPRT .EQ. 0) 
-     &    WRITE ( NCWU, '(A,A)') 'Inversion method: ', 
-     &    trim(methodtxt(method))
+c        IF (ISSPRT .EQ. 0)          ! it would be nice to print these, but Jenkins objects
+c     &    WRITE ( NCWU, '(A,A)') 'Inversion method: ', 
+c     &    trim(methodtxt(method))
 C        CALL XPRVDU(NCVDU, 1,0)
         istore(L11P+30)=method
 
