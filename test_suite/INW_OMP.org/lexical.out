@@ -78,6 +78,7 @@ E ------------------^^^^^^^
 E Error: atom C(128) is not present in the model
  The last card contains unaccessed parameter(s) beyond column    6
 #END
+ Input of list type    16 (General Restraint instructions) abandoned
 
 
           : Job ends ok       with     0 warnings and     0 errors
