@@ -1327,8 +1327,8 @@ cdjwsep09
      1  'SumFo/SumFc=', rscle, 
      1  'SumFoFc/SumFc^2=', sfofc/sfcfc,
      1  'SumwFoFc/SumwFc^2=', wsfofc/wsfcfc,
-     2  '   LS-scale=', scale,
-     3  '   Wilson Scale=', wscle
+     2  'LS-scale=', scale,
+     3  'Wilson Scale=', wscle
         if (min(scale, rscle)/max(scale,rscle) .lt. 0.8) then
           call outcol(9)
         endif
@@ -1337,7 +1337,7 @@ cdjwsep09
         call outcol(1)
         delfofc = (foav-fcav*scale)
 cRIC13:        write(cmon,'(a,f8.3,4x,a,f8.3)')'<Fo>-<Fc> = ', 
-        write(cmon,'(a,f6.3,4x,a,f8.2)')'<Fo>-<Fc> = ', 
+        write(cmon,'(a,f8.3,4x,a,f8.2)')'<Fo>-<Fc> = ', 
      1  delfofc/scale, 
      2  '100*(<Fo>-<Fc>)/<Fo> = ',100.*delfofc/foav
         call xprvdu(NCVDU,1,0)
