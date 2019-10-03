@@ -635,12 +635,11 @@ C -- END OF CURRENT INPUT FILE. THIS IS AN ERROR UNLESS WE ARE COPYING
 C    A TEXT FILE
 C
       IF ( IFLIND .LE. 1 ) THEN
+        ISSMON = 0 ! Turn monitoring back on
         WRITE ( CMON,3005)
         CALL XPRVDU(NCEROR, 1,0)
-      IF (ISSPRT .EQ. 0) THEN
-        WRITE ( NCWU , 3005 )
-      ENDIF
-3005    FORMAT ( 1X , 'Attempt to read past end of CONTROL' )
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')TRIM(CMON(1)(3:))
+3005    FORMAT ( '{E ' , 'Attempt to read past end of CONTROL' )
         CALL XERHND ( IERERR )
         GO TO 1000
       ELSE IF ( IRDCMS(IFLIND) .LE. 0 ) THEN
@@ -664,6 +663,7 @@ C
 9910  CONTINUE
 C -- READ ERROR
 C    FOR COPY TYPE OPERATIONS, RESTORE CONTROL
+      ISSMON = 0 ! Turn monitoring back on
       IF ( IRDCPY(IFLIND) .EQ. 1 ) GO TO 3000
       CALL XERHND ( IERERR )
       GO TO 1000
@@ -827,14 +827,15 @@ C
 C
 C
 9910  CONTINUE
+      ISSMON = 0 ! Turn monitoring back on
       WRITE ( CMON,9915)
       CALL XPRVDU(NCEROR, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9915 )
-9915  FORMAT ( 1X , 'Error during read. Line ignored' )
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')TRIM(CMON(1)(3:))
+9915  FORMAT ( '{E ' , 'Error during read. Line ignored' )
       CALL XERIOM ( IUNIT , IOS )
-C
       KRDLIN = -1
       RETURN
+
 9920  CONTINUE
 C -- END OF FILE
       KRDLIN = 0
@@ -1211,14 +1212,15 @@ C -- DISPLAY THE CURRENT CARD BEFORE WE LOSE THE CHANCE
 C --      FILE OPEN FAILED ( ERROR FOR USE, SCRIPT
 C         WARN FOR TYPE ETC. , 
 C         IGNORE FOR STARTUP )
+          ISSMON = 0 ! Turn monitoring back on
           IF ( ISSSTA .LE. 0 ) THEN
             CALL XCTRIM( CRFILE, NCHAR)
             WRITE ( CMON,3105) CRFILE(1:NCHAR)
             CALL XPRVDU(NCEROR, 1,0)
 cdjwdec11            IF (ISSPRT .EQ. 0) THEN
-              WRITE ( NCWU , 3105 ) CRFILE
+              WRITE ( NCWU , 3105 ) CRFILE(3:NCHAR)
 cdjwdec11            ENDIF
-3105        FORMAT ( 1X , 'Error opening specified file - ' , A )
+3105        FORMAT ( '{E ' , 'Error opening specified file - ' , A )
             CALL XERIOM ( NCUFU(IFLIND) , I )
             IERROR = IERWRN
             IF ( ISYSIN .EQ. IUSE ) IERROR = IERERR
@@ -1428,7 +1430,6 @@ C
 C -- Flush
       CALL XRDOPN ( 9, IDEV, CFILE, LFILE )
       GO TO 9000
-
 C
 9000  CONTINUE
       RETURN
@@ -1436,6 +1437,7 @@ C
 C
 9920  CONTINUE
 C -- INTERNAL ERROR
+      ISSMON = 0 ! Turn monitoring back on
       CALL XOPMSG ( IOPCRY , IOPINT , 0 )
       GO TO 9000
 9930  CONTINUE
@@ -2224,9 +2226,11 @@ C
 C
 9900  CONTINUE
 C -- ERRORS DURING 'SET' INSTRUCTION
+      ISSMON = 0 ! Turn monitoring back on
       CALL XERHND ( IERWRN )
       GO TO 9000
 9910  CONTINUE
+      ISSMON = 0 ! Turn monitoring back on
       WRITE ( CMON,9915)
       CALL XPRVDU(NCEROR, 2,0)
 9915  FORMAT ( 1X , 'Illegal or missing keyword in SET instruction' /
@@ -2255,6 +2259,7 @@ C -- ERRORS DURING 'SET' INSTRUCTION
       CALL XOPMSG ( IOPCRY , IOPINT , 0 )
       GO TO 9900
 9930  CONTINUE
+        ISSMON = 0 ! Turn monitoring back on
         WRITE ( CMON,9935)
         CALL XPRVDU(NCEROR, 2,0)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9935 )
@@ -2828,9 +2833,8 @@ C
 9010  CONTINUE
       RETURN
 C
-CDJWMAR99[
 9900  CONTINUE
-CDJWMAR99[
+      ISSMON = 0 ! Turn monitoring back on
       IF (JFUNC .GT. MAXFNC) THEN
        CALL XCTRIM( CFILE, NCHARS )
        WRITE(CMON,
@@ -3035,6 +3039,7 @@ C -- ERRORS DURING 'START' INSTRUCTION
       CALL XERHND ( IERWRN )
       GO TO 9000
 9910  CONTINUE
+      ISSMON = 0 ! Turn monitoring back on
       WRITE ( CMON,9915)
       CALL XPRVDU(NCEROR, 1,0)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9915 )
@@ -3381,9 +3386,11 @@ C
 C
 9900  CONTINUE
 C -- ERRORS DURING 'STORE' INSTRUCTION
+      ISSMON = 0 ! Turn monitoring back on
       CALL XERHND ( IERWRN )
       GO TO 9000
 9910  CONTINUE
+      ISSMON = 0 ! Turn monitoring back on
       WRITE ( CMON,9915)
       CALL XPRVDU(NCEROR, 1,0)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9915 )
@@ -3393,12 +3400,14 @@ C -- ERRORS DURING 'STORE' INSTRUCTION
       CALL XOPMSG ( IOPCRY , IOPINT , 0 )
       GO TO 9900
 9930  CONTINUE
+      ISSMON = 0 ! Turn monitoring back on
       WRITE ( CMON,9935)
       CALL XPRVDU(NCEROR, 1,0)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9935 )
 9935  FORMAT ( 1X , 'Illegal or missing value in STORE instruction' )
       GO TO 9900
 9940  CONTINUE
+      ISSMON = 0 ! Turn monitoring back on
       WRITE ( CMON,9945)
       CALL XPRVDU(NCEROR, 1,0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,9945)
@@ -4306,6 +4315,7 @@ C
           IUSFLG = IFLCHR(IFLIND)
         ELSE
 C -- FILE OPEN FAILED
+        ISSMON = 0 ! Turn monitoring back on
         WRITE ( CMON,1015)
         CALL XPRVDU(NCEROR, 1,0)
           IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1015 )
@@ -4545,6 +4555,7 @@ C--ALL OKAY  -  RESET THE CURRENT COUNTER POSITION
       GOTO 1050
 C--THE KEYWORD INPUT IS TOO LONG
 1250  CONTINUE
+      ISSMON = 0 ! Turn monitoring back on
       CALL XMONTR(0)
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1300)(ITEXT(I),I=1,M)
@@ -4586,6 +4597,7 @@ C--
 C
       CALL XMONTR(0)
 C--THE INPUT KEYWORD DEFINES MORE THAN ONE PROVIDED KEYWORD
+      ISSMON = 0 ! Turn monitoring back on
       J=ND-1
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1000)(IDTYPE(I,ITYPFL),I=1,3),(IMAGE(I),I=NC,J)
@@ -4717,6 +4729,7 @@ C--READ THE NUMBER
       IF(KINPUT(A(I)))1100,1150,1100
 C--ERROR IN READING THE LAST NUMBER
 1100  CONTINUE
+      ISSMON = 0 ! Turn monitoring back on
       CALL XSPCH
       KREADB=-1
       NC=KEQUAL(NC,IB)
@@ -4911,6 +4924,7 @@ C--ERROR DOES NOT OCCUR ON THE FIRST CHARACTER
       GOTO 1300
 C--ERROR OCCURS ON THE FIRST CHARACTER
 1550  CONTINUE
+      ISSMON = 0 ! Turn monitoring back on
       KINPUT=1
       GOTO 1300
       END
@@ -4929,6 +4943,7 @@ C
 C
       DATA I/0/
 C
+      ISSMON = 0 ! Turn monitoring back on
 C--PRESERVE THE MONITORING CATEGORY
       JCAT=ICAT
 C--PRINT THE CARD AND INDICATE THE POSITION OF THE SP. CH.
@@ -5022,7 +5037,7 @@ C
 C--PRINT THE CARD AND ITS NUMBER
       WRITE ( CMON,1151) NUMB(K+1),NUMB(L+1),NUMB(M+1),
      2  NUMB(N+1),(LCMAGE(I),I=1,MIN(72,IFIN))
-1151  FORMAT(1X,4A1,1X,80A1,2A1)
+1151  FORMAT('{N ',4A1,1X,80A1,2A1)
       IF (IND .GE. 0) CMON(1)(60:) = ' IGNORED/ERRORS'
 cdjwdec99 slightly re-organied
       IF ( ICAT .GT. 0 ) THEN

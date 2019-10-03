@@ -4,7 +4,37 @@
 %% Decide on a course of action.                                                
 %% Display non-modal window with available options.                             
 %% Exit. - The window will callback XGUIDERC.SCP with events.                   
-%%                                                                              
+%%
+%%  XGUIDER:
+%%        XGETWZ
+%%        CHECK29                                                       
+%%        XGETINFO                                                      
+%%        ASSESS5                                                       
+%%        RFACTOR                                                       
+%%        XSCALE
+%%        RFACTOR                                                     
+%%        XGUIDERC 
+%%              PLOT                                                  
+%%              XAFOUR                                                
+%%              XWRITE5                                               
+%%              XWRITE5                                               
+%%              XWRITE5                                               
+%%              GFINDH                                                
+%%              XEXTIN12                                              
+%%              XWRITE5                                             
+%%              XWEIGHTS                                              
+%%              XREFINE                                              
+%%              SIXCYCLE                                              
+%%              ACTA                                                  
+%%              XPUBL                                                 
+%%              GXREFH
+%%              XHELP12                                                   
+%%              XGUIDEK 
+%%                    XGETINFO
+%%                    XPUTINFO
+%%              XGUIDE                                                        
+%%
+%%                                                                             
 %  VARIABLE LOGICAL HDONE EDONE WDONE HINCELL                                   
 %  VARIABLE INTEGER ADP                                                         
 %  VARIABLE INTEGER FOLD                                                        

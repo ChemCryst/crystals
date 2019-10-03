@@ -1323,6 +1323,9 @@ cdjwjan05
 cdjwsep09
         istat = ksctrn (1,'sfls:rscale', rscle, 1)
         istat = ksctrn (1,'sfls:scale',  scale, 1)
+        write(cmon,'(A)')
+     1  ' Estimates of the overall scale by 5 methods'
+        call xprvdu(NCVDU,1,0)
         write(cmon,'(3(a,f7.3,3x))') 
      1  'SumFo/SumFc=', rscle, 
      1  'SumFoFc/SumFc^2=', sfofc/sfcfc,
@@ -2838,12 +2841,12 @@ CRIC13:6150  FORMAT(/,' New scale factor (G) is ',F10.5,
 
       IF (S .GT. ZERO) S = A/S
 
-      WRITE ( CMON, 6260) JI, N12, MIN(R,99.99), MIN(RW,99.99), AMINF,
+      WRITE ( CMON, 6260) JI, N12, MIN(R,99.99), MIN(RW,99.99), 
      1 MIN(999.99,S)
 
-6260  FORMAT (' Cycle',I5,' Params',I5,' R{9,1 ',F5.2,
+6260  FORMAT ('{  Cycle',I5,' Params',I5,'{8,1 R{9,1 ',F5.2,
      2 '%{8,1 Rw{9,1 ',F5.2,
-     1 '%{8,1 MinFunc ',G9.2,' SumFo/SumFc ',F6.2)
+     1 '{8,1 SumFo/SumFc{9,1 ',F6.2)
       CALL OUTCOL(6)
       CALL XPRVDU(NCVDU, 1, 0)
       CALL OUTCOL(1)

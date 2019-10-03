@@ -103,7 +103,7 @@
 %  IF ( DOFLACK .EQ. TRUE ) THEN
 %    CLEAR
 %    INSERT '{R   Flack parameter is: '
-%    STORE FORMAT /(F15.5)/ LENGTH 15 REAL FLACKP
+%    STORE FORMAT /(F8.5)/ LENGTH 15 REAL FLACKP
 %    OUTPUT
 %  END IF
 %  IF ( DOTWIN .EQ. TRUE ) THEN
@@ -112,7 +112,7 @@
 %    OUTPUT
 %  END IF
 %  IF ( DOSORT .EQ. TRUE ) THEN
-{R The hydrogens in the list are not at the end. They may
-{R be resorted in a moment.
+{R The hydrogens in the list are not at the end. 
+{R They may be resorted in a moment.
 %  END IF
 %END SCRIPT

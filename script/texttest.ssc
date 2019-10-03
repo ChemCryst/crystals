@@ -130,9 +130,11 @@ Black on:
 {15,1  15,1  lgrey on black
 
 
+{  TEST curly bracket space (white on whatever background set)
 {I TEST curly bracket I
 {S TEST curly bracket S
 {R TEST curly bracket R
 {E TEST curly bracket E
+{N TEST curly bracket N
 
 %END SCRIPT
