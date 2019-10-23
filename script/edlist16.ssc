@@ -70,7 +70,7 @@
 %    VARIABLE LOGICAL EDITOR_OK
 %    EVALUATE EDITOR_FILE = 'scplst16.dat'
 %    EVALUATE EDITOR_ORIG = 'scporg16.dat'
-%    COPY '#SCRIPT xeditorgl'
+%    COPY '#SCRIPT xeditor16'
 %    IF ( .NOT. EDITOR_OK ) THEN
 %      IF ( EDITED_ONCE ) THEN
 %        COPY '#USE scporg16.dat'
