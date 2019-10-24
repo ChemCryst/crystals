@@ -1611,7 +1611,7 @@ contains
     type(atom_t) :: atom
     integer i, j, m5, n, m, image_text_nchar
     logical found
-    character(len=8), dimension(17), parameter :: ignore = (/ &
+    character(len=8), dimension(52), parameter :: ignore = (/ &
                                                   'DRENAME ', &
                                                   'RENAME  ', &
                                                   'LAYER   ', &
@@ -1628,7 +1628,42 @@ contains
                                                   'TYPE    ', &
                                                   'FIRST   ', &
                                                   'UNTIL   ', &
-                                                  'MOVE    '/)
+                                                  'MOVE    ', &
+                                                  'RESTRAIN', &
+                                                  'ANGLES  ', &
+                                                  'VIBRATIO', &
+                                                  'U(IJ)''S ', &
+                                                  'PLANAR  ', &
+                                                  'SUM     ', &
+                                                  'AVERAGE ', &
+                                                  'LIMIT   ', &
+                                                  'NONBONDE', &
+                                                  'SAME    ', &
+                                                  'DELU    ', &
+                                                  'SIMU    ', &
+                                                  'A-VIBRAT', &
+                                                  'A-U(IJ)''', &
+                                                  'UXZBAR  ', &
+                                                  'UYZBAR  ', &
+                                                  'UZZBAR  ', &
+                                                  'UPERP   ', &
+                                                  'UALIGN  ', &
+                                                  'URIGU   ', &
+                                                  'ULIJ    ', &
+                                                  'UPLANE  ', &
+                                                  'UXXQIV  ', &
+                                                  'UXYQIV  ', &
+                                                  'UXZQIV  ', &
+                                                  'UYYQIV  ', &
+                                                  'UYZQIV  ', &
+                                                  'UZZQIV  ', &
+                                                  'UEIG    ', &
+                                                  'UQISO   ', &
+                                                  'UVOL    ', &
+                                                  'UEQIV   ', &
+                                                  'UTLS    ', &
+                                                  'XCHIV   ', &
+                                                  'XRIGU   '/)
 
     ierror = 0
     image_text_nchar = index(image_text,' ')-1  !look for abbreviated directiv$
