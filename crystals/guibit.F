@@ -618,6 +618,9 @@ c         loaded by the calling routine.
       INCLUDE 'XLST13.INC'
       INCLUDE 'XLST29.INC'
       INCLUDE 'XLST30.INC'
+      INCLUDE 'XLST40.INC'
+      INCLUDE 'ICOM40.INC'
+      INCLUDE 'QLST40.INC'
       INCLUDE 'XLST41.INC'
       INCLUDE 'XLSVAL.INC'
       INCLUDE 'HEADES.INC'
@@ -663,6 +666,7 @@ c         loaded by the calling routine.
       DATA CBONDS / 'unassigned', 'single',    'double',      'triple',
      c'quadruple',  'aromatic',   'polymeric', 'delocalised', 'strange',
      c'pi-bond'/
+      INCLUDE 'IDIM40.INC'
 
 
 C The QSINl5 flag is set here, if there are Q atoms in list 5.
@@ -767,6 +771,24 @@ c               CALL XPRVDU (NCVDU,1,0)
                END IF
 
                IF(KEXIST(29).LE.0) CYCLE
+
+C Shouldn't need to load L40 explicitly, but if it doesn't exist we have to create
+C it manually.
+c               IF(KHUNTR(40,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL40
+c               IF (IERFLG .LT. 0) THEN ! L40 load failed. Create a new one.
+               IF(KEXIST(40).LE.0) Then
+                  IERFLG = 1
+                  IDWZAP = 0
+                  CALL XFILL (IDWZAP, ICOM40, IDIM40)
+                  N40T = 1
+                  N40E = 0
+                  N40P = 0
+                  N40M = 0
+                  N40B = 0
+                  CALL XCELST ( 40, ICOM40, IDIM40 )
+                  CALL XWLSTD ( 40, ICOM40, IDIM40, 0, 1)
+                END IF
+
 
 C Ensure list 41 dependencies are up to date:
                IF ( K41DEP() .LT. 0 ) THEN
