@@ -245,7 +245,9 @@ contains
 
     ! check atoms
     call check_atom(image_text, ierror)
-    if (ierror /= 0) return
+! check_atom just prints warnings at the parsing stage. Erroring here prevents input of L16 
+! which wipes the whole list. Restraint will be ignored in processing.
+!    if (ierror /= 0) return
 
     ! Look for variable definition: define a = 0.01
     call define_variable(image_text, ierror)
@@ -1611,7 +1613,7 @@ contains
     type(atom_t) :: atom
     integer i, j, m5, n, m, image_text_nchar
     logical found
-    character(len=8), dimension(52), parameter :: ignore = (/ &
+    character(len=8), dimension(17), parameter :: ignore = (/ &
                                                   'DRENAME ', &
                                                   'RENAME  ', &
                                                   'LAYER   ', &
@@ -1628,42 +1630,7 @@ contains
                                                   'TYPE    ', &
                                                   'FIRST   ', &
                                                   'UNTIL   ', &
-                                                  'MOVE    ', &
-                                                  'RESTRAIN', &
-                                                  'ANGLES  ', &
-                                                  'VIBRATIO', &
-                                                  'U(IJ)''S ', &
-                                                  'PLANAR  ', &
-                                                  'SUM     ', &
-                                                  'AVERAGE ', &
-                                                  'LIMIT   ', &
-                                                  'NONBONDE', &
-                                                  'SAME    ', &
-                                                  'DELU    ', &
-                                                  'SIMU    ', &
-                                                  'A-VIBRAT', &
-                                                  'A-U(IJ)''', &
-                                                  'UXZBAR  ', &
-                                                  'UYZBAR  ', &
-                                                  'UZZBAR  ', &
-                                                  'UPERP   ', &
-                                                  'UALIGN  ', &
-                                                  'URIGU   ', &
-                                                  'ULIJ    ', &
-                                                  'UPLANE  ', &
-                                                  'UXXQIV  ', &
-                                                  'UXYQIV  ', &
-                                                  'UXZQIV  ', &
-                                                  'UYYQIV  ', &
-                                                  'UYZQIV  ', &
-                                                  'UZZQIV  ', &
-                                                  'UEIG    ', &
-                                                  'UQISO   ', &
-                                                  'UVOL    ', &
-                                                  'UEQIV   ', &
-                                                  'UTLS    ', &
-                                                  'XCHIV   ', &
-                                                  'XRIGU   '/)
+                                                  'MOVE    ' /)
 
     ierror = 0
     image_text_nchar = index(image_text,' ')-1  !look for abbreviated directiv$
@@ -1700,16 +1667,16 @@ contains
         ! metric tensor!
         if (atom%serial < 1 .or. atom%serial > 3) then
           n = index(image_text, trim(elements(i)))
-          call print_to_mon('{E Error: '//trim(image_text))
+          call print_to_mon('{E Warning: '//trim(image_text))
           call print_to_mon('{E '//repeat('-', n+6)//repeat('^', len_trim(elements(i))))
-          call print_to_mon('{E Error: index out of bound for the metric tensor '//trim(elements(i)))
+          call print_to_mon('{E Warning: index out of bound for the metric tensor '//trim(elements(i)))
           ierror = -1
         end if
         if (atom%sym_op%S < 1 .or. atom%sym_op%S > 3) then
           n = index(image_text, trim(elements(i)))
-          call print_to_mon('{E Error: '//trim(image_text))
+          call print_to_mon('{E Warning: '//trim(image_text))
           call print_to_mon('{E '//repeat('-', n+6)//repeat('^', len_trim(elements(i))))
-          call print_to_mon('{E Error: index out of bound for the metric tensor '//trim(elements(i)))
+          call print_to_mon('{E Warning: index out of bound for the metric tensor '//trim(elements(i)))
           ierror = -1
         end if
         cycle
@@ -1735,9 +1702,9 @@ contains
           else
             m = len_trim(image_text)-fieldpos(i)
           end if
-          call print_to_mon('{E Error: '//trim(image_text))
+          call print_to_mon('{E Warning: '//trim(image_text))
           call print_to_mon('{E '//repeat('-', n+6)//repeat('^', m))
-          call print_to_mon('{E Error: atom '//trim(elements(i))//' is not present in the model')
+          call print_to_mon('{E Warning: atom '//trim(elements(i))//' is not present in the model')
           ierror = -1
         end if
       end if
