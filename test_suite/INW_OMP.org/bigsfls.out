@@ -5233,11 +5233,11 @@ LS-scale=  0.909   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =  0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
 #CYCLENDS
 #FINISH
- Physical reads      13095 Physical writes      10075 Cache hits     223408
- Cache hit distribution   203789   13053    2307     703     500     395
- Cache hit distribution      204     233     222     213     188     138
- Cache hit distribution      228     143     223      92     163     151
- Cache hit distribution      110      48      44      73      89      99
+ Physical reads      13096 Physical writes      10075 Cache hits     223418
+ Cache hit distribution   203799   13052    2307     703     500     395
+ Cache hit distribution      203     233     222     213     184     137
+ Cache hit distribution      228     140     217      94     167     152
+ Cache hit distribution      111      48      43      81      89     100
 
 
           : Job ends ok       with     0 warnings and     0 errors
