@@ -1,7 +1,7 @@
 %SCRIPT ASSESS5
 %% A Script to determine the current state of the list 5 refinement.
 %  VARIABLE LOGICAL DOEXTNC DOFLACK DOSORT DOTWIN
-%  VARIABLE INTEGER ADP ISER HCOUNT NES
+%  VARIABLE INTEGER ADP ISER HCOUNT NES N5
 %  VARIABLE REAL U11 FLAG UONE EXTP FLACKP HFIRST
 %  VARIABLE CHARACTER CTYPE
 %% Return values:
@@ -28,6 +28,14 @@
 %  EVALUATE HCOUNT  = 0
 %%
 %  IF EXISTS 5 .LE. 0 THEN
+{R   WARNING - You have no atoms to refine
+{S * Done.
+%    FINISH
+%  END IF
+%  COPY '#GENERALEDIT 5'
+%  COPY 'TRANSHEAD FROM OFFSET=3 TO N5' 
+%  COPY 'END'
+%  IF N5 .EQ. 0 THEN
 {R   WARNING - You have no atoms to refine
 {S * Done.
 %    FINISH

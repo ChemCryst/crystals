@@ -6,15 +6,21 @@
 %      EVALUATE RATIO = 100.
 %      VARIABLE CHARACTER CR CR2
 %      VARIABLE REAL  FO FC
+%      VARIABLE INTEGER N5
 %      VARIABLE LOGICAL ERROR6
 %      EVALUATE ERROR6 = TRUE
 %      ON END TERMINATE
 %      ON ERROR TERMINATE
 %% get the overall scale factor
 %      COPY '#GENERALEDIT 5'
+%      COPY 'TRANSHEAD FROM OFFSET=3 TO N5'                                          
 %      COPY 'LOCATE RECORDTYPE = 102'
 %      COPY 'TRANSFER FROM OFFSET = 0 TO OSCALE'
 %      COPY 'END'
+%      IF N5 .EQ. 0 THEN
+Script rfactor: no atoms in model (L5).
+%        FINISH
+%      END IF
 %      BLOCK
 %        ON ERROR TERMINATE
 %        COPY "#GENERALEDIT 6"
