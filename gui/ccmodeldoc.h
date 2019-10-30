@@ -215,7 +215,7 @@ class CcModelDoc
         friend bool operator==(CcModelDoc* doc, const string& st0); // Called by CcController
 
         int NumSelected();                                          // Called by CrModList
-        void EnsureVisible(CcModelAtom* va);                        // Called by CcModelAtom, Bond etc.
+        void EnsureVisible(CcModelObject* va);                        // Called by CcModelAtom, Bond etc.
 
         void Select(bool selected);                                 // Called by CcModelAtom, Donut etc.
 

@@ -210,6 +210,10 @@ void CxModList::EndUpdate() {
 void CxModList::AddRow(int id, vector<string> & rowOfStrings, bool selected,
                                bool disabled)
 {
+//	ostringstream oo;
+//	oo << "Adding row id " << id << " " << rowOfStrings[0] << " " <<  rowOfStrings[1] << " " << rowOfStrings[2];
+//	LOGERR(oo.str());
+
     if ( id <= (int)IDlist.size() )
     {
 //Find ID in existing list.
@@ -217,9 +221,8 @@ void CxModList::AddRow(int id, vector<string> & rowOfStrings, bool selected,
       {
         if ( IDlist[i] == id )
         {
-
 //			ostringstream oo;
-//			oo << "Adding row id " << id << " " << rowOfStrings[0] << " " <<  rowOfStrings[1] << " " << rowOfStrings[2];
+//			oo << "Replacing row " << i << " with id " << id << " " << rowOfStrings[0] << " " <<  rowOfStrings[1] << " " << rowOfStrings[2];
 //			LOGERR(oo.str());
 
 #ifdef CRY_USEMFC
@@ -266,7 +269,8 @@ void CxModList::AddRow(int id, vector<string> & rowOfStrings, bool selected,
 
 // A new item. Extend id list.
 
-    IDlist.push_back(IDlist.size()+1);
+//    IDlist.push_back(IDlist.size()+1);
+    IDlist.push_back(id);
 
 #ifdef CRY_USEMFC
     int nItem = InsertItem(IDlist.size(), _T(""));
@@ -1281,7 +1285,9 @@ void CxModList::Update(int newsize)
 
        if (newsize != IDlist.size())
        {
-//		   LOGERR("New size");
+//          ostringstream oo;
+//          oo << "New size: " << newsize << " old list " << IDlist.size();
+//          LOGERR(oo.str());
           DeleteAllItems();
           IDlist.clear();
        }
@@ -1403,7 +1409,7 @@ void CxModList::OnMenuSelected(UINT nID)
 }
 #endif
 
-void CxModList::CxEnsureVisible(CcModelAtom* va)
+void CxModList::CxEnsureVisible(CcModelObject* va)
 {
 //Find atom id in list
        int id;
@@ -1411,6 +1417,7 @@ void CxModList::CxEnsureVisible(CcModelAtom* va)
        {
           if ( IDlist[id] == va->id ) break;
        }
+       if ( id == IDlist.size() ) return; // Ran off end
 #ifdef CRY_USEMFC
        EnsureVisible(id,false); //Call library function to ensure it is shown.
 #else

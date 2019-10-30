@@ -39,8 +39,6 @@ class CcModelDonut : public CcModelObject
   public:
 
     int x, y, z;
-    int r, g, b;
-    int id;
     int occ;
     int covrad, vdwrad, sparerad;
     int x11;

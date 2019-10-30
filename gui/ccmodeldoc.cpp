@@ -229,7 +229,7 @@ static CcLock m_thread_critical_section(true);
 
 CcModelDoc::CcModelDoc( )
 {
-    m_nAtoms = 0;
+//    m_nAtoms = 0;
     nSelected = 0;
     sm_ModelDocList.push_back(this);
     sm_CurrentModelDoc = this;
@@ -270,9 +270,8 @@ bool CcModelDoc::ParseInput(deque<string> &  tokenList )
                 tokenList.pop_front(); // Remove that token!
                 CcModelAtom item(this);
                 item.ParseInput(tokenList);
-				item.m_glID = m_glIDs++;
-                m_nAtoms++;
-                item.id = m_nAtoms;
+                item.m_glID = m_glIDs++;
+                item.id = mAtomList.size() + mDonutList.size() + mSphereList.size() + 1;
                 m_thread_critical_section.Enter();
                 mAtomList.push_back(item);
                 m_thread_critical_section.Leave();
@@ -316,7 +315,7 @@ void CcModelDoc::Clear()
     mSphereList.clear();
     mDonutList.clear();
     m_thread_critical_section.Leave();
-    m_nAtoms = 0;
+//    m_nAtoms = 0;
     nSelected = 0;
 	m_glIDs = 1;
     (CcController::theController)->status.SetNumSelectedAtoms( 0 );
@@ -359,14 +358,14 @@ void CcModelDoc::DrawViews(bool rescaled)
     for ( list<CrModel*>::const_iterator aview=attachedViews.begin(); aview != attachedViews.end(); aview++)
             (*aview)->Update(rescaled);
     for ( list<CrModList*>::const_iterator alist=attachedLists.begin(); alist != attachedLists.end(); alist++)
-            (*alist)->Update(mAtomList.size());
+            (*alist)->Update(mAtomList.size()+mDonutList.size()+mSphereList.size());
 }
 
 /* 
 Ensure that the atom given is visible in the list views 
 of this ccmodeldoc (by scrolling to the right place).
 */
-void CcModelDoc::EnsureVisible(CcModelAtom* va)
+void CcModelDoc::EnsureVisible(CcModelObject* va)
 {
     for ( list<CrModList*>::const_iterator alist=attachedLists.begin(); alist != attachedLists.end(); alist++)
             (*alist)->EnsureVisible(va);
@@ -1183,9 +1182,9 @@ void CcModelDoc::FastAtom(const string & label,int x1,int y1,int z1,
                           u1,u2,u3,u4,u5,u6,u7,u8,u9,frac_x,
                           frac_y,frac_z,elem,serial,refflag,
                           assembly, group, ueq,fspare,iflag,this);
-        m_nAtoms++;
-        item.id = m_nAtoms + mDonutList.size() + mSphereList.size();
-		item.m_glID = m_glIDs++;
+//        m_nAtoms++;
+        item.id = mAtomList.size() + mDonutList.size() + mSphereList.size() + 1;
+        item.m_glID = m_glIDs++;
         mAtomList.push_back(item);
         
         m_assemblies[assembly].insert(group);                       // Store PART info for quick access later for whole structure.

@@ -260,7 +260,7 @@ void CcModelDonut::SendAtom(int style, bool output)
   {
     case CR_SELECT:
     {
-      Select();
+      if ( Select() )  mp_parent->EnsureVisible(this);
       mp_parent->DrawViews();
       break;
     }

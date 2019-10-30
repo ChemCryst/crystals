@@ -41,8 +41,6 @@ class CcModelSphere : public CcModelObject
 
     int x, y, z;
     float frac_x, frac_y, frac_z;
-    int r, g, b;
-    int id;
     int occ;
     int covrad, vdwrad, sparerad;
     int x11;

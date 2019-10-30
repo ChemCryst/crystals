@@ -27,7 +27,7 @@ using namespace std;
 
 class CrModList;
 class CxGrid;
-class CcModelAtom;
+class CcModelObject;
 
 class CxModList : public BASEMODLIST
 {
@@ -56,7 +56,7 @@ class CxModList : public BASEMODLIST
         static void RemoveModList( void ) { mModListCount--; };
         int GetValue();
         void Update(int newsize) ;
-        void CxEnsureVisible(CcModelAtom* va);
+        void CxEnsureVisible(CcModelObject* va);
         void StartUpdate();
         void EndUpdate();
 
