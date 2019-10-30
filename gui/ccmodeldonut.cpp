@@ -25,7 +25,11 @@ CcModelDonut::~CcModelDonut()
 CcModelDonut::CcModelDonut(string llabel,int lx1,int ly1,int lz1, 
                           int lr, int lg, int lb, int locc,int lcov, int lvdw,
                           int lspare, int lflag,
-                          int iso, int irad, int idec, int iaz, CcModelDoc* parentptr)
+                          int iso, int irad, int idec, int iaz, 
+                          float fx, float fy, float fz,
+                          const string & elem, int serial, int refflag,
+                          int assembly, int group, float ueq, float fspare, int isflg,
+                          CcModelDoc* parentptr)
 {
   mp_parent = parentptr;
   Init();
@@ -38,7 +42,26 @@ CcModelDonut::CcModelDonut(string llabel,int lx1,int ly1,int lz1,
   dec = idec;
   az = iaz;
   m_label = llabel;
-
+  frac_x = fx;
+  frac_y = fy;
+  frac_z = fz;
+  m_ueq = ueq;
+  m_serial = serial;
+  m_refflag = refflag;
+  m_assembly = assembly;
+  m_group = group;
+  m_elem = elem;
+  m_spare = fspare;
+  m_isflg = isflg;
+  switch (m_isflg) {
+    case 0: m_sflags = ""; break;
+    case 1: m_sflags = "refine X's"; break;
+    case 2: m_sflags = "refine X's,Uiso"; break;
+    case 3: m_sflags = "refine X's,Uijs"; break;
+    case 4: m_sflags = "fix atom"; break;
+    case 10: m_sflags = "ride atom"; break;
+    default: m_sflags = "unknown flags"; break;
+  }
 
 }
 
@@ -102,9 +125,23 @@ int CcModelDonut::Z()
 {
     return z;
 }
+
 int CcModelDonut::R()
 {
     return covrad;
+}
+int CcModelDonut::Radius(CcModelStyle * style) {
+
+  int radius = ((float) rad + (float) covrad ) * style->radius_scale;
+  
+  return radius;
+}
+
+
+CcPoint CcModelDonut::Get2DCoord(float * mat) {
+	int x2 = (int)((mat[0] * (float)x) + (mat[4] * (float)y) + (mat[8] * (float)z));
+	int y2 = (int)((mat[1] * (float)x) + (mat[5] * (float)y) + (mat[9] * (float)z));
+	return CcPoint(x2,y2);
 }
 
 
