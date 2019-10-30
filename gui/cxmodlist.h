@@ -11,15 +11,10 @@
 #define     __CxModList_H__
 #include    "crguielement.h"
 
-#ifdef CRY_USEMFC
- #include <afxwin.h>
- #define BASEMODLIST CListCtrl
-#else
  #include <wx/event.h>
  #include <wx/imaglist.h>
  #include <wx/listctrl.h>
  #define BASEMODLIST wxListCtrl
-#endif
 
 #include <string>
 #include <vector>
@@ -60,32 +55,12 @@ class CxModList : public BASEMODLIST
         void StartUpdate();
         void EndUpdate();
 
-#ifdef CRY_USEMFC
-        void RepaintSelectedItems();
-
-        afx_msg void OnKillFocus(CWnd* pNewWnd);
-        afx_msg void OnSetFocus(CWnd* pOldWnd);
-        afx_msg void OnPaint() ;
-//      afx_msg void DoubleClicked();
-//      afx_msg void Selected();
-        afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
-        virtual void DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct);
-        afx_msg void OnHeaderClicked(NMHDR* pNMHDR, LRESULT* pResult);
-        afx_msg void ItemChanged( NMHDR * pNMHDR, LRESULT* pResult );
-        afx_msg void RightClick( NMHDR * pNMHDR, LRESULT* pResult );
-//        afx_msg BOOL OnEraseBkgnd( CDC* pDC );
-        afx_msg void OnMenuSelected (UINT nID);
-        DECLARE_MESSAGE_MAP()
-
-        CxGrid* m_listboxparent;
-#else
     void ItemSelected ( wxListEvent & event );
     void ItemDeselected ( wxListEvent & event );
     void RightClick ( wxListEvent & event );
     void OnChar(wxKeyEvent & event );
     void HeaderClicked( wxListEvent & wxle );
     DECLARE_EVENT_TABLE()
-#endif
 
         // attributes
         CrGUIElement *  ptr_to_crObject;
