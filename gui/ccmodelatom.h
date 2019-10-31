@@ -39,11 +39,9 @@ class CcModelAtom : public CcModelObject
     void ParseInput(deque<string> &  tokenList);
 
   public:
-    int x, y, z;
     float frac_x, frac_y, frac_z;
-    int r, g, b;
-    int id;
     int occ;
+    int x, y, z;
     int vdwrad, sparerad;
     float covrad;
     float x11, x12, x13, x21, x22, x23, x31, x32, x33;

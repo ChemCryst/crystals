@@ -1152,7 +1152,7 @@ C This block detects sticky flag and sets ISFLAG to pass info to GUI.
                
                IF ( NINT(STORE(I5+3)) .LE. 1 ) THEN
 
-                     CALL PRTGRP(ISTORE(I5+14),JPRT,JGRP,1)
+                   CALL PRTGRP(ISTORE(I5+14),JPRT,JGRP,1)
 
 #ifdef CRY_GUI
                 CALL FSTATM(CATTYP,NINT(STORE(I5+1)),LLAB,CLAB,
@@ -1171,19 +1171,25 @@ C This block detects sticky flag and sets ISFLAG to pass info to GUI.
 #endif
                ELSE IF ( NINT(STORE(I5+3)) .EQ. 2 ) THEN
 
+                   CALL PRTGRP(ISTORE(I5+14),JPRT,JGRP,1)
+
 #ifdef CRY_GUI
-               CALL FSTSPH(LLAB,CLAB,NINT(STR11(IPLACE)*GSCALE),
-     5         NINT(STR11(IPLACE+1)*GSCALE),
-     6         NINT(STR11(IPLACE+2)*GSCALE),
-     7         NINT(IRED*2.55),NINT(IGRE*2.55),NINT(IBLU*2.55),
-     8         NINT(1000*STORE(I5+2)), NINT(COV*GSCALE),
-     2         NINT(VDW*GSCALE),ISPARE,NINT(SPAREV),
-     3         NINT( SQRT(ABS(STORE(I5+7))) * GSCALE),
-     4         NINT(STORE(I5+8) * GSCALE) )
+               CALL FSTSPH(LLAB,CLAB,NINT(STR11(IPLACE)*GSCALE),   ! 1,2,3
+     5         NINT(STR11(IPLACE+1)*GSCALE),                       ! 4
+     6         NINT(STR11(IPLACE+2)*GSCALE),                       ! 5
+     7         NINT(IRED*2.55),NINT(IGRE*2.55),NINT(IBLU*2.55),    ! 6,7,8
+     8         NINT(1000*STORE(I5+2)), NINT(COV*GSCALE),           ! 9,10
+     2         NINT(VDW*GSCALE),ISPARE,NINT(SPAREV),               ! 11,12,13
+     3         NINT( SQRT(ABS(STORE(I5+7))) * GSCALE),             ! 14
+     4         NINT(STORE(I5+8) * GSCALE),                         ! 15
+     4         STORE(I5+4),STORE(I5+5),STORE(I5+6),                ! 16,17,18
+     5         CATTYP,NINT(STORE(I5+1)),                           ! 19,20
+     5         ISTORE(I5+16), JGRP, JPRT, UEQUIV, STORE(I5+13),ISFLAG)   !21,22,23,24,25,26
 
 #endif
                ELSE IF ( NINT(STORE(I5+3)) .EQ. 4 ) THEN
 
+                   CALL PRTGRP(ISTORE(I5+14),JPRT,JGRP,1)
 #ifdef CRY_GUI
                CALL FSTRNG(LLAB,CLAB,NINT(STR11(IPLACE)*GSCALE),
      5         NINT(STR11(IPLACE+1)*GSCALE),
@@ -1193,7 +1199,11 @@ C This block detects sticky flag and sets ISFLAG to pass info to GUI.
      2         NINT(VDW*GSCALE),ISPARE,NINT(SPAREV),
      3         NINT( SQRT(ABS(STORE(I5+7))) * GSCALE),
      4         NINT(STORE(I5+8) * GSCALE),
-     5         NINT(STORE(I5+9)*100.0),NINT(STORE(I5+10)*100.0))
+     5         NINT(STORE(I5+9)*100.0),NINT(STORE(I5+10)*100.0),
+     4         STORE(I5+4),STORE(I5+5),STORE(I5+6),                ! 16,17,18
+     5         CATTYP,NINT(STORE(I5+1)),                           ! 19,20
+     5         ISTORE(I5+16), JGRP, JPRT, UEQUIV, STORE(I5+13),ISFLAG)   !21,22,23,24,25,26
+
 
 #endif
                END IF

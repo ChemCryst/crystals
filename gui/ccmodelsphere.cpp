@@ -20,7 +20,11 @@ CcModelSphere::CcModelSphere(CcModelDoc* parentptr)
 CcModelSphere::CcModelSphere(string llabel,int lx1,int ly1,int lz1, 
                           int lr, int lg, int lb, int locc,int lcov, int lvdw,
                           int lspare, int lflag,
-                          int iso, int irad, CcModelDoc* parentptr)
+                          int iso, int irad, 
+                          float fx, float fy, float fz,
+                          const string & elem, int serial, int refflag,
+                          int assembly, int group, float ueq, float fspare, int isflg,
+                          CcModelDoc* parentptr)
 {
   mp_parent = parentptr;
   Init();
@@ -31,6 +35,29 @@ CcModelSphere::CcModelSphere(string llabel,int lx1,int ly1,int lz1,
   x11 = iso;
   rad = irad;
   m_label = llabel;
+  
+  m_serial = serial;
+  m_refflag = refflag;
+  m_assembly = assembly;
+  m_group = group;
+  m_elem = elem;
+  m_spare = fspare;
+  m_isflg = isflg;
+  m_ueq = ueq;
+  frac_x = fx;
+  frac_y = fy;
+  frac_z = fz;
+
+  switch (m_isflg) {
+    case 0: m_sflags = ""; break;
+    case 1: m_sflags = "refine X's"; break;
+    case 2: m_sflags = "refine X's,Uiso"; break;
+    case 3: m_sflags = "refine X's,Uijs"; break;
+    case 4: m_sflags = "fix atom"; break;
+    case 10: m_sflags = "ride atom"; break;
+    default: m_sflags = "unknown flags"; break;
+  }
+
 
 
 }
@@ -80,6 +107,9 @@ void CcModelSphere::ParseInput(deque<string> &  tokenList)
       x11       = atoi ( tokenList[12].c_str() );
       rad       = atoi ( tokenList[13].c_str() );
       for ( int i = 0; i<14; i++ ) tokenList.pop_front();
+      
+      
+      
 
 }
 
@@ -99,6 +129,21 @@ int CcModelSphere::R()
 {
     return covrad;
 }
+
+int CcModelSphere::Radius(CcModelStyle * style) {
+
+  int radius = ((float) rad + (float) covrad ) * style->radius_scale;
+  
+  return radius;
+}
+
+
+CcPoint CcModelSphere::Get2DCoord(float * mat) {
+	int x2 = (int)((mat[0] * (float)x) + (mat[4] * (float)y) + (mat[8] * (float)z));
+	int y2 = (int)((mat[1] * (float)x) + (mat[5] * (float)y) + (mat[9] * (float)z));
+	return CcPoint(x2,y2);
+}
+
 
 void CcModelSphere::Render(CcModelStyle *style, bool feedback)
 {
@@ -220,7 +265,7 @@ void CcModelSphere::SendAtom(int style, bool output)
   {
     case CR_SELECT:
     {
-      Select();
+      if ( Select() )  mp_parent->EnsureVisible(this);
       mp_parent->DrawViews();
       break;
     }
