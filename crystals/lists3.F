@@ -2310,18 +2310,19 @@ C
       WRITE ( CMON, 2115 ) FILNAM
       CALL XPRVDU(NCVDU, 1,0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')TRIM(CMON(1)(3:33))
-2115  FORMAT ('{I Disc index completely restored - you may continue'
+2115  FORMAT ('   Disc index completely restored - you may continue'
      1  , // ,1X , 'Listing of file index of ' , A10 , ' file ' )
       GO TO 8000
 C
 2120  CONTINUE
       CALL XDANAM ( IPARAM , FILNAM )
-      WRITE ( CMON, 1750 ) FILNAM
-      CALL XPRVDU(NCEROR, 2,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')TRIM(CMON(1)(3:)),
-     1 TRIM(CMON(2))
-1750  FORMAT ('{I The ' , A10 , ' file is being rebuilt -'
-     1 /' DO NOT abort the program' )
+      WRITE ( CMON, 1750 ) 
+      CALL XPRVDU(NCVDU, 2,0)
+1750  FORMAT ('{N The Database is being rebuilt -'
+     1 /'{I      DO NOT abort the program' )
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1751) FILNAM
+1751  FORMAT (' The ' , A10 , ' file is being rebuilt -'
+     1 /' DO NOT abort the program' )     
       GO TO 8000
 C
 2130  CONTINUE

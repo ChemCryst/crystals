@@ -35,7 +35,7 @@
 %%              XGUIDE                                                        
 %%
 %%                                                                             
-%  VARIABLE LOGICAL HDONE EDONE WDONE HINCELL                                   
+%  VARIABLE LOGICAL HDONE EDONE WDONE HINCELL FDONE                                   
 %  VARIABLE INTEGER ADP                                                         
 %  VARIABLE INTEGER FOLD                                                        
 %%                                                                              
@@ -218,6 +218,7 @@
  Medium R factor.                                                               
    Recommended:   Refine positions and Uiso.                                    
    Other options: View the structure                                            
+                  Check the absolute structure
 %      EVALUATE KTDEFA = 4                                                      
 %%___________________________________________________________________           
 %%                                                                              

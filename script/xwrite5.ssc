@@ -70,8 +70,9 @@
 %%    Preferred H treatment       (HRTYP) 0=fix, 1=pos, 2=x&u, 3&10=ride
 %%    Last list 12 written        (L12SER)
 %%    Preferred H restraints      (HRESTF) 2=none, 1=all, 0=N&O
-%  VARIABLE INTEGER HRTYP L12SER HRESTF                                         
-%  VARIABLE LOGICAL HRMASK L12SMASK HRESTM                                      
+%%    Absolute configutation tested (FDONE T/F DOABS 0/1
+%  VARIABLE INTEGER HRTYP L12SER HRESTF DOABS                                       
+%  VARIABLE LOGICAL HRMASK L12SMASK HRESTM FDONE                                      
 %%                                                                              
 %% The variables needed by XQUESTIO                                             
 %  VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX                        
@@ -367,12 +368,13 @@
 ^^CO SET INVERTLIST DISABLED=NO                                                        
 %%                                                                              
 %  IF ( SETADP .LE. 0 ) THEN                                                    
-{S * Direct call of XWRITE5 - setting default refinement                        
-{S   mode to current assessment by ASSESS5.                                     
+ * Direct call of XWRITE5 - setting default refinement                        
+   mode to current assessment by ASSESS5.                                     
 %    EVALUATE SETADP = ADP                                                      
 %  END IF                                                                       
 %  CASE ( SETADP + 1 )                                                          
 %    BLOCK   % Zero                                                             
+%    
 {E No atomic parameters to refine.                                              
 %    END BLOCK                                                                  
 %    BLOCK   % setadp is 1 - pos only                                           
@@ -531,7 +533,7 @@
 %     EVALUATE BUTTXX = '&No'                                               
 %     COPY '#SCRIPT XQUESTIO'                                                   
 %     IF ANSWER .EQ. TRUE THEN                                                 
- {I Flack parameter and su reset to zero                            
+{I Flack parameter and su reset to zero                            
 %      COPY "#GENERALEDIT 5"                                                      
 %      COPY 'LOCATE RECORDTYPE=102'                                               
 %      COPY 'TRANSFER TO OFFSET=4 FROM WORK1'                                     
@@ -714,7 +716,7 @@
 %  END IF                                                                       
 %  IF EXISTS 5 .GE. 1 THEN                                                      
 %    IF OVERRIDE .EQ. TRUE THEN                                                 
-{S * CRYSTALS is setting refinement modes for all atoms.                        
+ * CRYSTALS is setting refinement modes for all atoms.                        
 %    ELSE                                                                       
 %%{S * CRYSTALS is setting refinement modes for non-sticky atoms.               
 %    END IF                                                                     

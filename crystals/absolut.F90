@@ -1665,10 +1665,10 @@ contains
       refls_size = ubound(reflections_data, 2)
 
       if (store(l30ge+7) .le. zero) then
-        call outcol(9)
-        write (cmon, '(/a/)') '{I You should refine the Flack(x) parameter'
+!        call outcol(9)
+        write (cmon, '(/a/)') '{I The Flack(x) parameter has not been refined'
         call xprvdu(ncvdu, 3, 0)
-        call outcol(1)
+!        call outcol(1)
         xflack = 0.0
         qflack = 0.0
       else

@@ -1,9 +1,13 @@
 % SCRIPT XABSOLUTE
 %% SEE IF THE STRUCTURE NEEDS INVERTING
 %%
+%   VARIABLE REAL FCENTRO
 %   VARIABLE INTEGER FRIEDELF
 %   VARIABLE LOGICAL DOFLACK          !Include Flack Parameter in LSQ
 %   VARIABLE LOGICAL FDONE            !Flack parameter determined from Parsons method
+%%
+%%  DOABS  Require Absolute config flag:  0=Its done, 1=it's to be done
+%%
 %   EVALUATE FDONE = FALSE
 %   
 %% variables used by the question box                                           
@@ -11,21 +15,72 @@
 %   VARIABLE CHARACTER BUTINFO  BUTFILE
 %   VARIABLE LOGICAL ANSWER 
 %%
+%   IF ( EXISTS ( 13 ) .NE. 1 ) THEN                                          
+%       COPY '#LIST 13'                                                         
+%       COPY 'END'                                                              
+%   END IF                                                                    
+%   IF ( EXISTS ( 39 ) .NE. 1 ) THEN                                          
+%       COPY '#SCRIPT FLACK39'                                                         
+%   END IF                                                                    
+%% Look to see if this has been called before
+%  VARIABLE CHARACTER CABS
+%  VARIABLE INTEGER ISERIAL DOABS
+%  EVALUATE DOABS =  0
+%  COPY '#GENERALEDIT 39'
+%  COPY 'LOCATE RECORDTYPE = 101'
+%  COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%  COPY 'TOP'
+%  LOOP
+%    ON EDITERROR TERMINATE
+%    COPY 'TRANSFER FROM OFFSET=0 TO CABS'
+%    COPY 'TRANSFER FROM OFFSET=1 TO ISERIAL'
+%    IF CABS .EQ. 'INFO' THEN
+%       IF ISERIAL .EQ. 1 THEN
+%        COPY 'TRANSFER FROM OFFSET=2 TO DOABS'
+%        IF  DOABS  .EQ. 0 THEN
+%          EVALUATE FDONE = TRUE         !Flack parameter determined from Parsons method      
+%        END IF
+%        EVALUATE LOOPCOUNTER = LOOPEND
+%% We are about to determine the Parsons parameter, so set DOABS (offset 2) to 0
+%        EVALUATE DOABS = 0
+%        COPY 'TRANSFER TO OFFSET=2 FROM DOABS'
+%       END IF
+%    END IF
+%    COPY 'NEXT'
+%  END LOOP
+%  COPY 'WRITE OVERWRITE = OVERWRITE'
+%  COPY 'END'
+%%
+%%
+%%
+%   EVALUATE FRIEDELF = - 1                                                    
+%   COPY '#GENERALEDIT 2'                                                       
+%   COPY 'LOCATE RECORDTYPE=101'                                                
+%   COPY 'TRANSFER FROM OFFSET=0 TO FCENTRO'                                    
+%   COPY 'END'                                                                  
 %% GET THE FRIEDELPAIRS FLAG FROM LIST 13
 %   COPY '#GENERALEDIT 13'                                                      
 %   COPY 'LOCATE RECORDTYPE=101'                                                
 %   COPY 'TRANSFER FROM OFFSET=0 TO FRIEDELF'                                   
 %   COPY 'WRITE'                                                                
 %   COPY 'END'                                                                  
-%  IF FRIEDELF .EQ. 0 THEN
+% IF ( FCENTRO .GT. 0.9 ) THEN                                                  
+%   EVALUATE DOFLACK = FALSE
+                                                                                
+{I Centro-symmetric space-group.                                                
+{I Absolute structure not determined.
 
-No Friedel Pairs available.
-Absolute structure not determined.
+%   FINISH
+%  ELSE IF FRIEDELF .EQ. 0 THEN
+%   EVALUATE DOFLACK = FALSE
 
+{I No Friedel Pairs available.
+{I Absolute structure not determined.
 
+%   FINISH
 %  ELSE
 
-Friedel Pairs are available
+{I Friedel Pairs are available
 
 % copy '#set monitor fast'
 %       COPY '#SCRIPT TONSWORK'
@@ -33,6 +88,9 @@ Friedel Pairs are available
 %       COPY '#TON TYPE=PASCAL PLOT=NO PUNCH=NO'
 %       COPY 'END'
 %  END IF
+%%
+%%  Get the Flack parameter and esd to see if structure needs inverting.
+%%  If the value lies between 0.25 and 0.75 suggest refinement of ENANTIO
 %  VARIABLE CHARACTER CFLACK
 %  VARIABLE REAL SERIAL DO DSIG
 %  COPY '#GENERALEDIT 39'
@@ -57,8 +115,8 @@ Friedel Pairs are available
 %  END LOOP
 %  COPY 'END'
 %%
+%  copy '#set monitor on'
 %  IF FDONE .EQ. TRUE THEN
-%   COPY '#SET MONITOR ON'
 %   CLEAR
 %   INSERT  '{S The current value of the Flack parameter is '
 %   STORE FORMAT '(F7.3)' LENGTH 8 REAL DO
@@ -66,6 +124,8 @@ Friedel Pairs are available
 %   STORE FORMAT '(F7.3)' LENGTH 8 REAL DSIG
 %   OUTPUT
 %    IF DO .GT. 0.75  THEN
+%%    Value is large - structure may need inverting. If it is
+%%    inverted, redo #TON to update LIST 39 with new values
 %     EVALUATE QTITLE = 'Absolute Structure'                                
 %     EVALUATE QLINE1 = 'Invert the absolute structure?'     
 %     EVALUATE QLINE2 = 'Choose'        
@@ -82,6 +142,7 @@ Friedel Pairs are available
 %       COPY '#SET MONITOR ON'
 %       COPY '#TON TYPE=PASCAL PLOT=NO PUNCH=NO'
 %       COPY 'END'
+%       copy '#set monitor on        % restore monitoring
 %       VARIABLE CHARACTER CFLACK
 %       VARIABLE REAL SERIAL DO DSIG
 %       COPY '#GENERALEDIT 39'
@@ -106,7 +167,7 @@ Friedel Pairs are available
 %       END LOOP
 %       COPY 'END'
 %       CLEAR
-%       INSERT  '{S The current value of the Flack parameter is '
+%       INSERT  '{S The new value of the Flack parameter is '
 %       STORE FORMAT '(F7.3)' LENGTH 8 REAL DO
 %       INSERT ', '
 %       STORE FORMAT '(F7.3)' LENGTH 8 REAL DSIG
@@ -116,7 +177,7 @@ Friedel Pairs are available
 
 %     ELSE                                                                
 
-{I Structure not inverted
+{I You chose not to invert the structure
       
 %     END IF  
 %    ELSE IF DO .LT. 0.25 THEN
@@ -129,7 +190,8 @@ Friedel Pairs are available
 {I You should refine the Flack Parameter
 
 
-%      evaluate DOFLACK =  TRUE
+%      EVALUATE DOFLACK =  TRUE
 %    END IF
 %  END IF
+%%  COPY '#PAUSE 4'
 % END SCRIPT

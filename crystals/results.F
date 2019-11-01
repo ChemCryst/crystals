@@ -4821,8 +4821,8 @@ CRICJUN02 - Last minute SFLS calc to get threshold cutoffs into 30.
      2          'as no refinement has been carried out yet.')
       ELSE
 C----- SET REFLECTION LISTING TYPE (LIST 6)
-         ITYP06 = 1
-         CALL XSFLSB(-1,ITYP06)
+c-Nov-19         ITYP06 = 1              !Remove call to sfls because of problems
+c         CALL XSFLSB(-1,ITYP06)         !re-using LIST 33 if previous task involved LIST 7
 C-JAN-19         CALL XPCH5E(2)          !CREATE A LIST 9 (ESDS)
       ENDIF
 CRICJUN02 - Last minute SFLS calc to get threshold cutoffs into 30.
@@ -6600,18 +6600,20 @@ cdjwnov2011 - make all text lowercase - requested by ALT
 
 
 C 
-      call xpcif
+           CALL XPCIF
      1 ('# The current dictionary definitions do not cover the')
-      call xpcif
+           CALL XPCIF
      1 ('# situation where the reflections used for refinement were')
-      call xpcif
+           CALL XPCIF
      1 ('# selected by a user-defined sigma threshold ')
            CALL XPCIF (' ')
-      call xpcif
+           CALL XPCIF
      1 ('# Explicitly named reflections are ALWAYS excluded from R&wR')
            CALL XPCIF (' ')
            CALL XPCIF 
      1     ('# The values actually used during refinement')
+           CALL XPCIF
+     1     ('# These are labelled "all" for compatibility with PLATON')
 #ifdef __MAC__
            WRITE(CBUF,'(''I>'',F6.1,''\\s(I)'')') STORE(L30RF+3)
 #else
@@ -6631,12 +6633,21 @@ C
            WRITE (CLINE,'(A, ''number_reflns '', I10)') CBUF(1:11),
      1                    NINT(STORE(L30RF+8))
            CALL XPCIF (CLINE)
+c
            WRITE (CLINE,'(A,A,''R_factor_ref '',F10.4)') '_oxford',
      1                   CBUF(1:11), STORE(L30RF+0)*0.01
            CALL XPCIF (CLINE)
-           WRITE (CLINE,'(A, ''wR_factor_ref '', F10.4)') CBUF(1:11),
-     1                   STORE(L30RF+1)*0.01
+           WRITE (CLINE,'(A,''R_factor_all '',F10.4)') 
+     1                   CBUF(1:11), STORE(L30RF+0)*0.01
            CALL XPCIF (CLINE)
+c
+           WRITE (CLINE,'(A,A, ''wR_factor_ref '', F10.4)') '_oxford',
+     1                   CBUF(1:11), STORE(L30RF+1)*0.01
+           CALL XPCIF (CLINE)
+           WRITE (CLINE,'(A, ''wR_factor_all '', F10.4)') 
+     1                   CBUF(1:11),STORE(L30RF+1)*0.01
+           CALL XPCIF (CLINE)
+c
            WRITE (CLINE,'(A, ''goodness_of_fit_ref '', F10.4)')
      1                   CBUF(1:11),STORE(L30RF+4)
            CALL XPCIF (CLINE)
@@ -6659,10 +6670,10 @@ C
      1                  NINT(STORE(L30CF+5))
            CALL XPCIF (CLINE)
 c
-           WRITE (CLINE,'(''_refine_ls_R_factor_all '', F10.4)')
+           WRITE (CLINE,'(''_oxford_refine_ls_R_factor_all '', F10.4)')
      1                  STORE(L30CF+6)*0.01
            CALL XPCIF (CLINE)
-           WRITE (CLINE,'(''_refine_ls_wR_factor_all '', F10.4)')
+           WRITE (CLINE,'(''_oxford_refine_ls_wR_factor_all '', F10.4)')
      1                  STORE(L30CF+7)*0.01
            CALL XPCIF (CLINE)
 C
@@ -7793,11 +7804,11 @@ C
       enddo
 c
       if(store(l30ge+7).le.zero) then
-            call outcol(9)
+c            call outcol(9)
             write(cmon,'(/a/)')
-     1      '{I You should refine the Flack(x) parameter'
+     1      '{I The Flack(x) parameter has not been refined'
             call xprvdu (ncvdu, 3, 0)
-            call outcol(1)
+c            call outcol(1)
       endif
       xflack = store(l5o+4)
       qflack = store(l30ge+7)

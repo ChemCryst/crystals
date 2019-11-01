@@ -1,10 +1,12 @@
 %SCRIPT XPUTINFO
-%%
+%% Extensively hacked Oct 2019 to handle second info record, INFO(1)
 %% Store, in LIST 39, information about whether:
 %%    H have all been found       (HDONE)
 %%    Extinction has been checked (EDONE)
 %%    Weights have been chosen    (WDONE)
 %%    Purge of 11 done            (PDONE)
+%%
+%% NOTE FDONE [INFO(1)] is set in XABSOLUTE 
 %
 %%    Twintolerance value last used (TTVAL)
 %%
@@ -18,28 +20,39 @@
 %  VARIABLE REAL    TTVAL
 %%
 %  IF EXISTS 39 .LT. 1 THEN
-%%{S * Creating new L39.
 %      COPY '#LIST 39'
 %      COPY 'READ NINT=1 '
 %      COPY 'INTEGER INFO 0'
 %      COPY 'END'
 %  END IF
-%  VARIABLE INTEGER I1
+%  VARIABLE INTEGER ITEMP
 %  VARIABLE LOGICAL DOINSERT
+%  VARIABLE CHARACTER CNAME
+%  VARIABLE INTEGER ISERIAL
+%  EVALUATE DOINSERT = TRUE
 %  COPY '#GENERALEDIT 39'
 %  COPY 'LOCATE RECORDTYPE = 101'
 %  COPY 'KEY OFFSET = 0 LENGTH = 1 MODE = CHARACTER'
 %  COPY 'GROUP MODE = INTEGER'
 %  COPY 'RECORD MODE = INTEGER'
-%  COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%  COPY 'ERROR MESS=YES SIGN=WARN ACTI=CONT NAME=EDITERROR'
+%  COPY 'TOP'
 %%
-%  EVALUATE DOINSERT = TRUE
-%  BLOCK
+%  LOOP
+%    EVALUATE ITEMP = LOOPCOUNTER
+%    COPY 'NEXT'
 %    ON EDITERROR TERMINATE
-%    COPY 'CHECK'
-%    COPY 'SEARCH CHAR = INFO'
-%    EVALUATE DOINSERT = FALSE
-%  END BLOCK
+%    COPY 'TRANSFER FROM OFFSET=0 TO CNAME'
+%    COPY 'TRANSFER FROM OFFSET=1 TO ISERIAL'
+%    IF CNAME .EQ. 'INFO' THEN
+%      IF ISERIAL .EQ. 0 THEN
+%        EVALUATE DOINSERT = FALSE
+%        EVALUATE LOOPCOUNTER = LOOPEND
+%      END IF
+%    END IF
+%  END LOOP
+%%
+%%
 %  IF DOINSERT THEN
 %     COPY 'INSERT'
 %  END IF
