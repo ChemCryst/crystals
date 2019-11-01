@@ -142,7 +142,7 @@
 %       COPY '#SET MONITOR ON'
 %       COPY '#TON TYPE=PASCAL PLOT=NO PUNCH=NO'
 %       COPY 'END'
-%       copy '#set monitor on        % restore monitoring
+%       copy '#set monitor on'        % restore monitoring
 %       VARIABLE CHARACTER CFLACK
 %       VARIABLE REAL SERIAL DO DSIG
 %       COPY '#GENERALEDIT 39'
