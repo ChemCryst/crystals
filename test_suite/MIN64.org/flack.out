@@ -4885,7 +4885,6 @@ Mean C-C su =   0.0062
 [24]  F       8.    0.043     0.161     0.483     0.229     0.150     1.801     Might be split
 #CYCLENDS
 #SCRIPT TONSWORK
-#SET MONITOR FAST
 #GENERALEDIT 2
 #GENERALEDIT 23
 #SCRIPT FLACK39
@@ -4897,6 +4896,9 @@ Mean C-C su =   0.0062
 #GENERALEDIT 39
 #GENERALEDIT 39
 #SCRIPT ADD39F
+#GENERALEDIT 39
+#GENERALEDIT 39
+#SCRIPT ADD39I
 #GENERALEDIT 39
 #SUM LIST 6 LEVEL=NORM
  Summary of contents of list  6 - Reflection data
@@ -5041,7 +5043,7 @@ LS-scale=  2.709   Wilson Scale=  0.000
  After   1 pass     904 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
 #PURGE  LIST=7
- List type    5  serial number   65 from    51365 to    51591 will not be copied ( deleted )         
+ List type    5  serial number   65 from    51461 to    51687 will not be copied ( deleted )         
 
 
  ************************************************************************
@@ -5056,7 +5058,6 @@ LS-scale=  2.709   Wilson Scale=  0.000
  The new disc index has been re-written 
  Disc index completely restored
  Copied:     88 dsc records.
-#SET MONITOR ON
 #TON PLOT=NO PUNCH=NO
            Notification of SPECIAL conditions
  Initialising Special positions
