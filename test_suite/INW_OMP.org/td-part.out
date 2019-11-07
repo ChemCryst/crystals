@@ -15360,8 +15360,6 @@ END
  DO NOT abort the program
  The new disc index has been re-written 
  Disc index completely restored
-
- Listing of file index of    Data    file 
 #TITLE PASS 2, INCLUDE ANOMALOUS SCATTERING
 #LIST 3
 #LIST 23

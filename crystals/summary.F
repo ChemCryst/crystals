@@ -2426,26 +2426,26 @@ c      determinant
             idjwerr = 0
             if ( (slope .gt. 1.1) .or. (slope .lt. 0.9) ) then
               idjwerr = 1
-              write(cmon,'(a)')'{E The slope should be unity'
+              write(cmon,'(a)')' The slope should be unity'
               call xprvdu(ncvdu, 1,0)
               if (issprt.eq.0) then
-                write (ncwu,'(/a)') cmon(1)(3:len_trim(cmon(1)))
+                write (ncwu,'(/a)') cmon(1)(1:len_trim(cmon(1)))
               end if
             endif
             if ((cutter .lt. -.05) .or. (cutter .gt. .05) ) then
               idjwerr = 1
-              write(cmon,'(a)')'{E The intercept should be zero'
+              write(cmon,'(a)')' The intercept should be zero'
               call xprvdu(ncvdu, 1,0)
               if (issprt.eq.0) then
-                write (ncwu,'(/a)') cmon(1)(3:len_trim(cmon(1)))
+                write (ncwu,'(/a)') cmon(1)(1:len_trim(cmon(1)))
               end if
             endif
             if(idjwerr .ne .0) then
                 write(cmon,'(a)') 
-     1 '{E CRYSTALS suggests that you check your weighting scheme'
+     1 ' CRYSTALS suggests that you check your weighting scheme'
                 call xprvdu(ncvdu, 1,0)
                 if (issprt.eq.0) then 
-                  write (ncwu,'(/a)') cmon(1)(3:len_trim(cmon(1)))
+                  write (ncwu,'(/a)') cmon(1)(1:len_trim(cmon(1)))
                 end if
             endif
 c-----      update list 39 - assumes value is in FLAC record 0

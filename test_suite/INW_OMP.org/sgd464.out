@@ -85,6 +85,7 @@ ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
           - Derivatives not found, do a refinement cycle to get leverages -
+#SET MONITOR FAST
 #SFLS
 #LIST 4
 #WEIGHT
@@ -1687,6 +1688,7 @@ All cycle   Min function          0.0           0.33E+04       0.10E+16
 [31]                                         0.010    0.012    0.009 
 Mean C-C su =   0.0094
 #CYCLENDS
+#SET MONITOR ON
 #CHECK HI
 
 
@@ -1783,6 +1785,7 @@ ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
           - Derivatives not found, do a refinement cycle to get leverages -
+#SET MONITOR FAST
 #SFLS
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -3374,6 +3377,7 @@ All cycle   Min function          0.0           0.30E+04       0.10E+16
 [31]                                         0.009    0.011    0.009 
 Mean C-C su =   0.0090
 #CYCLENDS
+#SET MONITOR ON
 #CHECK HI
 
 
@@ -3466,6 +3470,7 @@ ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
           - Derivatives not found, do a refinement cycle to get leverages -
+#SET MONITOR FAST
 #SFLS
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -5064,6 +5069,7 @@ All cycle   Min function          0.0           0.30E+04       0.10E+16
 [31]                                         0.009    0.011    0.009 
 Mean C-C su =   0.0090
 #CYCLENDS
+#SET MONITOR ON
 #CHECK HI
 
 
@@ -5178,6 +5184,7 @@ ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
           - Derivatives not found, do a refinement cycle to get leverages -
+#SET MONITOR FAST
 #SFLS
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -6776,6 +6783,7 @@ All cycle   Min function          0.0           0.31E+04       0.10E+16
 [31]                                         0.010    0.012    0.009 
 Mean C-C su =   0.0098
 #CYCLENDS
+#SET MONITOR ON
 #CHECK HI
 
 
@@ -6892,6 +6900,7 @@ ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
           - Derivatives not found, do a refinement cycle to get leverages -
+#SET MONITOR FAST
 #SFLS
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -8482,6 +8491,7 @@ All cycle   Min function          0.0           0.30E+04       0.10E+16
 [31]                                         0.009    0.011    0.009 
 Mean C-C su =   0.0090
 #CYCLENDS
+#SET MONITOR ON
 #CHECK HI
 
 
@@ -8593,6 +8603,7 @@ ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
           - Derivatives not found, do a refinement cycle to get leverages -
+#SET MONITOR FAST
 #SFLS
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -10181,6 +10192,7 @@ All cycle   Min function          0.0           0.31E+04       0.10E+16
 [31]                                         0.009    0.011    0.009 
 Mean C-C su =   0.0090
 #CYCLENDS
+#SET MONITOR ON
 #CHECK HI
 
 
@@ -10298,6 +10310,7 @@ ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
           - Derivatives not found, do a refinement cycle to get leverages -
+#SET MONITOR FAST
 #SFLS
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -11895,6 +11908,7 @@ All cycle   Min function          0.0           0.31E+04       0.10E+16
 [31]                                         0.028    0.033    0.026 
 Mean C-C su =   0.0254
 #CYCLENDS
+#SET MONITOR ON
 #CHECK HI
 
 
@@ -12009,6 +12023,7 @@ ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
           - Derivatives not found, do a refinement cycle to get leverages -
+#SET MONITOR FAST
 #SFLS
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -13602,6 +13617,7 @@ All cycle   Min function          0.0           0.37E+04       0.10E+16
 [31]                                         0.010    0.012    0.010 
 Mean C-C su =   0.0098
 #CYCLENDS
+#SET MONITOR ON
 #CHECK HI
 
 
@@ -13706,6 +13722,7 @@ ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
           - Derivatives not found, do a refinement cycle to get leverages -
+#SET MONITOR FAST
 #SFLS
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -15296,6 +15313,7 @@ All cycle   Min function          0.0           0.34E+04       0.10E+16
 [31]                                         0.010    0.012    0.009 
 Mean C-C su =   0.0094
 #CYCLENDS
+#SET MONITOR ON
 #CHECK HI
 
 
@@ -15384,6 +15402,7 @@ ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
           - Derivatives not found, do a refinement cycle to get leverages -
+#SET MONITOR FAST
 #SFLS
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -16976,6 +16995,7 @@ All cycle   Min function          0.0           0.34E+04       0.10E+16
 [31]                                         0.010    0.012    0.009 
 Mean C-C su =   0.0095
 #CYCLENDS
+#SET MONITOR ON
 #CHECK HI
 
 
@@ -17111,6 +17131,7 @@ ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
           - Derivatives not found, do a refinement cycle to get leverages -
+#SET MONITOR FAST
 #SFLS
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -20277,6 +20298,7 @@ All cycle   Min function          0.0           0.31E+04       0.10E+16
 [31]                                         0.009    0.011    0.008 
 Mean C-C su =   0.0089
 #CYCLENDS
+#SET MONITOR ON
 #CHECK HI
 
 

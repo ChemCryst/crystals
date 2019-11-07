@@ -1665,10 +1665,10 @@ contains
       refls_size = ubound(reflections_data, 2)
 
       if (store(l30ge+7) .le. zero) then
-        call outcol(9)
-        write (cmon, '(/a/)') '{I You should refine the Flack(x) parameter'
+!        call outcol(9)
+        write (cmon, '(/a/)') '{I The Flack(x) parameter has not been refined'
         call xprvdu(ncvdu, 3, 0)
-        call outcol(1)
+!        call outcol(1)
         xflack = 0.0
         qflack = 0.0
       else
@@ -3804,8 +3804,8 @@ contains
       call xprvdu(ncvdu, 1, 0)
 
       if (nint(v3(1)) .gt. 0) then
-        write (cmon, '(I0, 1X, a)') nint(v3(1)), 'Reflections in all filters summary:'
-        write (ncwu, '(I0, 1X, a)') nint(v3(1)), 'Reflections in all filters summary:'
+        write (cmon, '(I0, 1X, a)') nint(v3(1)), 'Reflections with all filters set:'
+        write (ncwu, '(I0, 1X, a)') nint(v3(1)), 'Reflections with all filters set:'
         call xprvdu(ncvdu, 1, 0)
         write (cmon, '(a,a)') '_______________________________', repeat('_', n+i+25)
         write (ncwu, '(a,a)') '_______________________________', repeat('_', n+i+25)
@@ -3893,6 +3893,8 @@ contains
         write (ncwu, '(a,a)') '_______________________________', repeat('_', n+i+25)
         call xprvdu(ncvdu, 1, 0)
       end if
+! djw - write (some) goodies to LIST 39
+        call pascal39(v3,sv3)
 
       !C ------------------------------------------------
       !C Plot all the graphs

@@ -11,6 +11,7 @@ UPERP 0.0001 cl(1) to c(2), cl(3) to c(2), cl(4) to c(2)
 END
 \CHECK HI
 END
+#set monitor fast
 \SFLS
 REFINE
 END
@@ -26,6 +27,7 @@ END
 \SFLS
 REFINE
 END
+#set monitor on
 \CHECK HI
 END
 rem =========================================================
@@ -36,6 +38,7 @@ UPERP 0.0001 c(24) to c(29) to c(25), c(25) to c(24) to c(26)
 END
 \CHECK HI
 END
+#set monitor fast
 \SFLS
 REFINE
 END
@@ -51,6 +54,7 @@ END
 \SFLS
 REFINE
 END
+#set monitor on
 \CHECK HI
 END
 rem =========================================================
@@ -61,6 +65,7 @@ UPLANE 0.0001 c(24) to c(29) to c(25), c(25) to c(24) to c(26)
 END
 \CHECK HI
 END
+#set monitor fast
 \SFLS
 REFINE
 END
@@ -76,6 +81,7 @@ END
 \SFLS
 REFINE
 END
+#set monitor on
 \CHECK HI
 END
 rem =========================================================
@@ -86,6 +92,7 @@ UALIGN 0.0001 c(24) c(25) c(26) c(27) c(28) c(29)
 END
 \CHECK HI
 END
+#set monitor fast
 \SFLS
 REFINE
 END
@@ -101,6 +108,7 @@ END
 \SFLS
 REFINE
 END
+#set monitor on
 \CHECK HI
 END
 rem =========================================================
@@ -111,6 +119,7 @@ URIGU 0.0001 c(7) to c(9), c(9) to c(11)
 END
 \CHECK HI
 END
+#set monitor fast
 \SFLS
 REFINE
 END
@@ -126,6 +135,7 @@ END
 \SFLS
 REFINE
 END
+#set monitor on
 \CHECK HI
 END
 rem =========================================================
@@ -137,6 +147,7 @@ cont c(26) to c(27) to c(28)
 END
 \CHECK HI
 END
+#set monitor fast
 \SFLS
 REFINE
 END
@@ -152,6 +163,7 @@ END
 \SFLS
 REFINE
 END
+#set monitor on
 \CHECK HI
 END
 rem =========================================================
@@ -162,6 +174,7 @@ UEIG 0.0001 CL(1) cl(3)
 END
 \CHECK HI
 END
+#set monitor fast
 \SFLS
 REFINE
 END
@@ -177,6 +190,7 @@ END
 \SFLS
 REFINE
 END
+#set monitor on
 \CHECK HI
 END
 rem =========================================================
@@ -187,6 +201,7 @@ UQISO 0.0001 CL(1) cl(3)
 END
 \CHECK HI
 END
+#set monitor fast
 \SFLS
 REFINE
 END
@@ -202,6 +217,7 @@ END
 \SFLS
 REFINE
 END
+#set monitor on
 \CHECK HI
 END
 rem =========================================================
@@ -212,6 +228,7 @@ UVOL 0.0001 CL(1) cl(3)
 END
 \CHECK HI
 END
+#set monitor fast
 \SFLS
 REFINE
 END
@@ -227,6 +244,7 @@ END
 \SFLS
 REFINE
 END
+#set monitor on
 \CHECK HI
 END
 rem =========================================================
@@ -237,6 +255,7 @@ UEQIV 0.0001 CL(1) cl(3)
 END
 \CHECK HI
 END
+#set monitor fast
 \SFLS
 REFINE
 END
@@ -252,6 +271,7 @@ END
 \SFLS
 REFINE
 END
+#set monitor on
 \CHECK HI
 END
 rem =========================================================
@@ -262,6 +282,7 @@ UTLS 0.0001 6 c(24) c(25) c(26) c(27) c(28) c(29) c(23)
 END
 \CHECK HI
 END
+#set monitor fast
 \SFLS
 REFINE
 END
@@ -292,6 +313,7 @@ END
 \SFLS
 REFINE
 END
+#set monitor on
 \CHECK HI
 END
 rem =========================================================

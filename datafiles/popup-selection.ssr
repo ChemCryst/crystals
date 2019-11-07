@@ -123,7 +123,7 @@
 ^^wI                    DISABLEIF= 'IN'
 ^^WI             ITEM _GUISO 'Change selection to Uequiv' '#SCRIPT XUEQUIVS_N_GEND'
 ^^WI                    DISABLEIF='SEL0'
-^^WI             ITEM _GUSET 'Set U[iso] of selection'  '#SCRIPT XUSETS_N_GEND'
+^^WI             ITEM _GUSET 'Set U[iso] of selection'  '#SCRIPT XUSETS'
 ^^WI                    DISABLEIF='SEL0'
 ^^WI             SPLIT
 ^^WI             ITEM _RPSS 'Spli&t selection' '#SCRIPT XSPLITS_N_GEND' 

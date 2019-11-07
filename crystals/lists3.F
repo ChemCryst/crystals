@@ -2256,9 +2256,9 @@ C
 C
       WRITE ( CMON, 2015)
       CALL XPRVDU(NCEROR, 2,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')trim(CMON(1)(3:)),
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')trim(CMON(1)),
      1 trim(CMON(2))
-2015  FORMAT ( '{I An initial size has been requested even though ',
+2015  FORMAT ( ' An initial size has been requested even though ',
      1 'an old file is being used' , / ,
      2 1X , 'Value ignored' )
       CALL XERHND ( IERWRN )
@@ -2267,8 +2267,8 @@ C
 2020  CONTINUE
       WRITE ( CMON, 2025 ) IPARAM
       CALL XPRVDU(NCEROR, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')TRIM(CMON(1)(3:))
-2025  FORMAT ('{I An illegal initial size of ' , I8 ,
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')TRIM(CMON(1))
+2025  FORMAT (' An illegal initial size of ' , I8 ,
      1 ' has been requested' )
       GO TO 8000
 C
@@ -2293,7 +2293,7 @@ C
      3 ' will not be copied ' , A )
       WRITE ( CMON, 2055 ) IULN , IULSN , REASON(IREASN)
       CALL XPRVDU(NCEROR, 1,0)
-2055  FORMAT ( '{I List type ' , I3 , ' serial number ' , I4 ,
+2055  FORMAT ( ' List type ' , I3 , ' serial number ' , I4 ,
      2 ' will not be copied ' , A20 )
 C
       GO TO 8000
@@ -2307,21 +2307,22 @@ C
 C
 2110  CONTINUE
       CALL XDANAM ( IPARAM , FILNAM )
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 2115 ) FILNAM
-C      WRITE ( CMON, 2115 ) FILNAM
-C      CALL XPRVDU(NCVDU, 1,0)
-2115  FORMAT ( 1X , 'Disc index completely restored' , // ,
-     1 1X , 'Listing of file index of ' , A10 , ' file ' )
+      WRITE ( CMON, 2115 ) FILNAM
+      CALL XPRVDU(NCVDU, 1,0)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')TRIM(CMON(1)(3:33))
+2115  FORMAT ('   Disc index completely restored - you may continue'
+     1  , // ,1X , 'Listing of file index of ' , A10 , ' file ' )
       GO TO 8000
 C
 2120  CONTINUE
       CALL XDANAM ( IPARAM , FILNAM )
-      WRITE ( CMON, 1750 ) FILNAM
-      CALL XPRVDU(NCEROR, 2,0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')TRIM(CMON(1)(3:)),
-     1 TRIM(CMON(2))
-1750  FORMAT ('{I The ' , A10 , ' file is being rebuilt -'
-     1 /' DO NOT abort the program' )
+      WRITE ( CMON, 1750 ) 
+      CALL XPRVDU(NCVDU, 2,0)
+1750  FORMAT ('{N The Database is being rebuilt -'
+     1 /'{I      DO NOT abort the program' )
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1751) FILNAM
+1751  FORMAT (' The ' , A10 , ' file is being rebuilt -'
+     1 /' DO NOT abort the program' )     
       GO TO 8000
 C
 2130  CONTINUE
