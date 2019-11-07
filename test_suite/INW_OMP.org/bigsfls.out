@@ -1394,8 +1394,6 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
  DO NOT abort the program
  The new disc index has been re-written 
  Disc index completely restored
-
- Listing of file index of    Data    file 
 # ADD CHECK TO LOCATE FAILING RESTRAINT (RESTRAINT NO 28)
 #CHECK
 #LIST 26
@@ -3275,8 +3273,6 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
  DO NOT abort the program
  The new disc index has been re-written 
  Disc index completely restored
-
- Listing of file index of    Data    file 
 #LIST 26
 #SFLS
 #SPEC LIS  NO
@@ -3904,8 +3900,6 @@ Mean C-C su =   0.0009
  DO NOT abort the program
  The new disc index has been re-written 
  Disc index completely restored
-
- Listing of file index of    Data    file 
  Disc file extended by 117 record(s) (  59904 integer words ) 
 #LIST 12
 #SFLS
@@ -5142,8 +5136,6 @@ Mean C-C su =   0.0121
  DO NOT abort the program
  The new disc index has been re-written 
  Disc index completely restored
-
- Listing of file index of    Data    file 
 #SPEC  NO  NO
 #CALCULAT   1
  Initialising Special positions

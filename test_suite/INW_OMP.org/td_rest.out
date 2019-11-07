@@ -232,8 +232,6 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
  DO NOT abort the program
  The new disc index has been re-written 
  Disc index completely restored
-
- Listing of file index of    Data    file 
 #LIST 12
 #USE TD_REST.L5
 #
@@ -1420,8 +1418,6 @@ ___________
  DO NOT abort the program
  The new disc index has been re-written 
  Disc index completely restored
-
- Listing of file index of    Data    file 
 #TITLE NOW TEST ASYMMETRIC RESTRAINTS
 #USE TD_REST.L5
 #
@@ -2418,8 +2414,6 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
  DO NOT abort the program
  The new disc index has been re-written 
  Disc index completely restored
-
- Listing of file index of    Data    file 
 #CHECK HI
 #LIST 22
  Initialising Special positions
@@ -2665,8 +2659,6 @@ ___________
  DO NOT abort the program
  The new disc index has been re-written 
  Disc index completely restored
-
- Listing of file index of    Data    file 
 #LIST     16
 #LIST 26
 #SFLS
