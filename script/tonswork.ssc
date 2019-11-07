@@ -3,7 +3,7 @@
 %% Prepare for the absolute structure determination
 %% Create a LIST 7 from 6, gather together FRIEDEL pairs                                                                              
 %%
-%  copy '#set monitor fast'
+%%  copy '#set monitor fast'
 %%                                                 
 %  VARIABLE LOGICAL FLACKERROR                             
 %  EVALUATE FLACKERROR = TRUE
@@ -113,5 +113,5 @@
 %%
 % EVALUATE FLACKERROR = FALSE
 %%        
-%  copy '#set monitor on'
+%%  copy '#set monitor on'
 % END SCRIPT
