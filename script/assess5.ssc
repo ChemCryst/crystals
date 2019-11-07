@@ -67,11 +67,8 @@
 %  IF ( FLACKP .GE. 0.25 ) .AND. ( FLACKP .LE. 0.75 ) THEN
 %    EVALUATE DOFLACK = TRUE
 %  END IF
-% SHOW DOFLACK
-
-
-
-%  EVALUATE ISER = - 1
+%% SHOW DOFLACK
+  EVALUATE ISER = - 1
 %  EVALUATE DOSORT = FALSE
 %  COPY "#GENERALEDIT 5"
 %  COPY "LOCATE RECORDTYPE=101"
@@ -144,9 +141,5 @@
 %    CLEAR
 %    INSERT '{R   There are twin element parameters '
 %    OUTPUT
-%  END IF
-%  IF ( DOSORT .EQ. TRUE ) THEN
-{R The hydrogens in the list are not at the end. 
-{R They may be resorted in a moment.
 %  END IF
 %END SCRIPT
