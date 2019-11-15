@@ -16,7 +16,11 @@ class CcModelDonut : public CcModelObject
     CcModelDonut(string label,int x1,int y1,int z1, 
                     int r, int g, int b, int occ,int cov, int vdw,
                     int spare, int flag,
-                    int iso, int irad, int idec, int iaz, CcModelDoc* parentptr);
+                    int iso, int irad, int idec, int iaz, 
+                    float fx, float fy, float fz,
+                    const string & elem, int serial, int refflag,
+                    int assembly, int group, float ueq, float fspare, int isflg,
+                    CcModelDoc* parentptr);
 
     void Init();
     ~CcModelDonut();
@@ -28,19 +32,29 @@ class CcModelDonut : public CcModelObject
     int Y();
     int Z();
     int R();
+    int Radius(CcModelStyle * style);
+    CcPoint Get2DCoord(float * mat);
     void ParseInput(deque<string> & tokenList);
 
   public:
 
     int x, y, z;
-    int r, g, b;
-    int id;
     int occ;
     int covrad, vdwrad, sparerad;
     int x11;
     int rad;
     int dec;
     int az;
+    float frac_x, frac_y, frac_z;
+    float m_ueq;
+    float m_spare;
+    int m_serial;
+    int m_refflag;
+    int m_assembly;
+    int m_group;
+    int m_isflg;
+    string m_elem;
+    string m_sflags;
 };
 
 #endif

@@ -846,6 +846,8 @@ C
        WRITE(NCWU,1006) IFLIND, IUNIT, NAME(1:NCHARS)
 1006   FORMAT('SPECIFIC  Closing File index=',I8, ': Unit =',I8,1X,A)
       ENDIF
+      WRITE ( NCLU, 1007 )ACTION(IMSG),NAME(1:NCHARS)  !useful to track script closure in logs for investigations
+1007  FORMAT ( '# File ' , A, ' :- ', A )
       IFLIND = IFLIND - 1
       GO TO 1000
 C
@@ -2393,12 +2395,27 @@ C IF ISSMON .EQ. 2 THEN SUPPRESS MOST TEXT OUTPUT. WE NEED TO
 C SWITCH IT BACK ON IF SOMETHING HAS GONE WRONG.
 C Mostly done by resetting issmon before an ABANDON message
 c in individual files.
+CNOTE Lines may begin ^^ or space^^
+C
       IF(ISSMON.EQ.2) THEN
-            IF ((CFIRST .NE. '^') .AND.
-     1      (CSECOND.NE. '{' ))CYCLE
+c       write(123,*)'0 Control = ', cfirst, csecond
+       IF      (CFIRST.EQ.'^') THEN
+C       write(123,*)'1 Control = ', cfirst, csecond
+            CONTINUE
+       ELSE IF (CFIRST.EQ.'{') THEN
+C       write(123,*)'2 Control = ', cfirst, csecond
+            CONTINUE
+       ELSE IF (CSECOND.EQ.'^') THEN
+C       write(123,*)'3 Control = ', cfirst, csecond
+            CONTINUE
+       ELSE IF (CSECOND.EQ.'{') THEN
+C       write(123,*)'4 Control = ', cfirst, csecond
+            CONTINUE
+       ELSE
+            CYCLE
+       ENDIF
       ENDIF
-
-
+C
 c         if defined(__GIL__)  || defined(__MAC__) ||defined (__INW__)
 #ifdef CRY_GUI
                N = MIN(N,256)         ! SET N TO LAST NON-BLANK

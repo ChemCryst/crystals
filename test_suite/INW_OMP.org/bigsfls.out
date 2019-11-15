@@ -1394,8 +1394,6 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
  DO NOT abort the program
  The new disc index has been re-written 
  Disc index completely restored
-
- Listing of file index of    Data    file 
 # ADD CHECK TO LOCATE FAILING RESTRAINT (RESTRAINT NO 28)
 #CHECK
 #LIST 26
@@ -3275,8 +3273,6 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
  DO NOT abort the program
  The new disc index has been re-written 
  Disc index completely restored
-
- Listing of file index of    Data    file 
 #LIST 26
 #SFLS
 #SPEC LIS  NO
@@ -3904,8 +3900,6 @@ Mean C-C su =   0.0009
  DO NOT abort the program
  The new disc index has been re-written 
  Disc index completely restored
-
- Listing of file index of    Data    file 
  Disc file extended by 117 record(s) (  59904 integer words ) 
 #LIST 12
 #SFLS
@@ -5142,8 +5136,6 @@ Mean C-C su =   0.0121
  DO NOT abort the program
  The new disc index has been re-written 
  Disc index completely restored
-
- Listing of file index of    Data    file 
 #SPEC  NO  NO
 #CALCULAT   1
  Initialising Special positions
@@ -5233,11 +5225,11 @@ LS-scale=  0.909   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =  0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
 #CYCLENDS
 #FINISH
- Physical reads      13095 Physical writes      10075 Cache hits     223408
- Cache hit distribution   203789   13053    2307     703     500     395
- Cache hit distribution      204     233     222     213     188     138
- Cache hit distribution      228     143     223      92     163     151
- Cache hit distribution      110      48      44      73      89      99
+ Physical reads      13096 Physical writes      10075 Cache hits     223418
+ Cache hit distribution   203799   13052    2307     703     500     395
+ Cache hit distribution      203     233     222     213     184     137
+ Cache hit distribution      228     140     217      94     167     152
+ Cache hit distribution      111      48      43      81      89     100
 
 
           : Job ends ok       with     0 warnings and     0 errors

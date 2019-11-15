@@ -373,9 +373,10 @@ CODE FOR XSFLSB
 C--MAIN CONTROL ROUTINE FOR THE S.F.L.S. ROUTINES
 C
 C--
-C      IF MODE EQ -1, DON'T READ DATA STREAM, USE I/u(I)>2 if no value
-C                                             in L28.
-C      IF MODE EQ 0,  DON'T READ DATA STREAM, USE EXISTING L33 THRESHOLD
+C      IF MODE LE 0, DON'T READ DATA STREAM
+C This caused problems in XCIF if the preceeding SFLS had been a de-twinned LIST 7
+C because the LIST 33 common block was not correctly formed.
+C An internal call can still be made from FOURIER - BEWARE
 C      IF MODE EQ 1, READ DATA STREAM
 C
 C      ITYP06 - LIST TYPE INDICATOR. 1=6, 2=7
@@ -508,7 +509,7 @@ C--SET THE VALUES FOR A S.F.L.S. CALCULATION
 C--CLEAR THE CORE
       CALL XRSL
 C--LOAD LIST 13  -  THE EXPERIMENTAL CONDITIONS LIST
-      CALL XFAL13
+      IF (KHUNTR (13,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL13 
       IF ( IERFLG .LT. 0 ) GO TO 9900
 C--SET THE TWINNED/NON-TWINNED FLAG
       TWINNED = .FALSE.
@@ -520,7 +521,7 @@ C--FETCH THE POLARISATION CONSTANTS
       THETA1=STORE(L13DC+1)
       THETA2=STORE(L13DC+2)
 C--LOAD LIST 23  -  DEFINES CONDITIONS FOR S.F.L.S. CALCULATIONS
-      CALL XFAL23
+      IF (KHUNTR (23,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL23 
       IF ( IERFLG .LT. 0 ) GO TO 9900
 C--SET THE ANOMALOUS DISPERSION FLAG
 C SET TO -1 FOR NO ANOMALOUS DISPERSION, ELSE 0 Replaced by ANOMAL
@@ -580,9 +581,8 @@ C--CLEAR THE CORE OUT AGAIN
 C----- SAVE SOME SPACE FOR THE U AXES
       IADDU = KCHLFL (4)
 C--LOAD LIST 33  -  THE CONDITIONS FOR THIS S.F.L.S. CALCULATION
-      CALL XFAL33
-
-c Check if the flag normalise is used (m33cd+15).
+      IF (KHUNTR (33,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL33 
+c Check if the flag normalise is used (m33cd+15). 
 c Normalisation of the normal matrix for inversion is done automatically
 c see solve_helper.F90
       if(istore(M33CD+15)/=0) then
@@ -632,10 +632,10 @@ c
       NF=-1
       REFPRINT = .FALSE.
 C----- READ DOWN SOME LISTS
-      CALL XFAL01
-      CALL XFAL02
-      CALL XFAL05
-      CALL XFAL30
+      IF (KHUNTR (01,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL01 
+      IF (KHUNTR (02,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL02  
+      IF (KHUNTR (05,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL05  
+      IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL30 
       IF (IERFLG .LT. 0) GOTO 9900
 C
 C--CHECK THAT ALL THE TEMPERATURE FACTORS ARE REASONABLE
@@ -810,19 +810,6 @@ C -- INVALID TEMPERATURE FACTOR
         M5 = M5 + MD5
       END DO
       NFL= J
-cdjwapr09 Check the Flack Enantiopole Parameter.
-c If this is the first time it has been refined, set it to 0.5
-c
-c moved to LIST12.fpp because it can clash with POLARITY refinement
-c if the user forgets to reset list 23
-c
-c      if (( enantio .eqv. .true.) .and. (abs(store (L5o+4)) .le. zerosq)
-c     1 .and. (abs(store(l30ge+6)) .le. zero)) then
-c            store(L5O+4) = 0.5
-c            WRITE ( CMON, '(A)')'Starting FLACK refinement from 0.5'
-c            CALL XPRVDU(NCVDU, 1,0)
-c            IF (ISSPRT .EQ. 0)  WRITE(NCWU, '(A)') trim(CMON(1))
-c      endif
 c
       SCALE = STORE(L5O)
       IF (SCALE .LE. 0.000001) THEN  ! CHECK THAT THE SCALE FACTOR GIVEN IS NOT ZERO
@@ -852,7 +839,7 @@ c
             IF(ISTORE(M33CD+4).GE.0) SCALED_FOT = .TRUE.   ! SCALED /FOT/ IS REQUIRED
          END IF
 
-         CALL XFAL03            ! Scattering factors
+         IF (KHUNTR (03,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL03  ! Scattering factors
          IULN = KTYP06(ITYP06)  ! FIND THE REFELCTIONLIST TYPE
          CALL XFAL06(IULN,1)
 c
@@ -908,7 +895,8 @@ cric11           CALL XIRTAC(4)     ! INITIALISE THE DETAILS FOR /FO/
            IF(.NOT. REFPRINT) NF = -1          ! SUPPRESS ELEMENT PRINTING
 
            IF ( IERFLG .LT. 0 ) GO TO 9900
-           CALL XFAL25                  ! LOAD THE TWIN OPERATORS
+           IF (KHUNTR (25,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL25 
+                                                          ! LOAD THE TWIN OPERATORS
 
            IF ( MD5ES .NE. N25 ) GO TO 9910 ! CHECK THAT THE NUMBER OF OPERATORS EQUALS THE NUMBER OF ELEMENTS
 
@@ -1126,7 +1114,7 @@ C--CHECK IF WE SHOULD DUMP ANY OTHER GOODIES
           END IF
         END IF
 c        call cpu_time(time_begin)
-        CALL XSFLSC ( STORE(JO), JP-JO+1, istore(iresults), nresults) ! CALL THE CALCULATION LINK
+        CALL XSFLSC(STORE(JO),JP-JO+1,ISTORE(IRESULTS),NRESULTS,IULN) ! CALL THE CALCULATION LINK
 c        call cpu_time(time_end)
 c        print *, (time_end - time_begin)
       ENDIF
@@ -1247,33 +1235,32 @@ c                 all the data
      1                      STORE(L30CF+7)=100.*SQRT(RALL(11)/RALL(12))
          ENDIF
 c
-6261      FORMAT (2X,I7,' reflections   R ',F5.2,
+6261      FORMAT ('{N',I7,' reflections   R ',F5.2,
      1    '% Rw ',F5.2,'% with I/u(I) >',F6.1,2x,A)
-
-6262      FORMAT (2X,I7,' reflections   R ',F5.2,
+6262      FORMAT ('{N',I7,' reflections   R ',F5.2,
      1    '% Rw ',F5.2,'% with I/u(I) from List 28, I/Sig=',f7.2)
-
+62611      FORMAT (2X,I7,' reflections   R ',F5.2,
+     1    '% Rw ',F5.2,'% with I/u(I) >',F6.1,2x,A)
+62621      FORMAT (2X,I7,' reflections   R ',F5.2,
+     1    '% Rw ',F5.2,'% with I/u(I) from List 28, I/Sig=',f7.2)
 c (writes to NCWU don't have final text to prevent lots of messages from the
 c test decks.
             if (issprt .eq.0) write(ncwu,'(//)')
-            CALL OUTCOL(6)
+C            CALL OUTCOL(6)
 C 'ratio' AS USED           (NOTE WE SHOULD CHECK THE DENOMINATIOS ARE NOT ZERO)
             WRITE ( CMON, 6262)
      1       NINT(RALL(14)), MIN(99.99,100.*RALL(15)/RALL(16)),
      2       MIN(99.99,100.*SQRT(RALL(17)/RALL(18))),
      2       RALL(13)
             CALL XPRVDU(NCVDU, 1, 0)
-
-            IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
+            IF (ISSPRT .EQ. 0) WRITE(NCWU, '(2X,A)') trim(CMON(1)(3:))
 C AT -10 SIGMA
             WRITE ( CMON, 6261)
      1       NINT(RALL(8)), MIN(99.99,(100.* RALL(9)/RALL(10))),
      2       MIN(99.99,(100.*SQRT(RALL(11)/RALL(12)))),
      3       -10.0,'(Exclude very bad data)'
             CALL XPRVDU(NCVDU, 1, 0)
-
-
-            IF (ISSPRT .EQ. 0) WRITE(NCWU, 6261)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU, 62611) 
      1       NINT(RALL(8)), MIN(99.99,100.* RALL(9)/RALL(10)),
      2       MIN(99.99,100.*SQRT(RALL(11)/RALL(12))), -10.0
 C AT +2 SIGMA
@@ -1282,10 +1269,10 @@ C AT +2 SIGMA
      2       MIN(99.99,100.*SQRT(RALL(5)/RALL(6))), RALL(1),
      3      '(a la SHELX)'
             CALL XPRVDU(NCVDU, 1, 0)
-            IF (ISSPRT .EQ. 0) WRITE(NCWU, 6261)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU, 62611) 
      1       NINT(RALL(2)), MIN(99.99,100.* RALL(3)/RALL(4)),
      2           MIN(99.99,100.*SQRT(RALL(5)/RALL(6))), RALL(1)
-            CALL OUTCOL(1)
+C            CALL OUTCOL(1)
        ENDIF
        CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
       endif
@@ -1323,8 +1310,11 @@ cdjwjan05
 cdjwsep09
         istat = ksctrn (1,'sfls:rscale', rscle, 1)
         istat = ksctrn (1,'sfls:scale',  scale, 1)
-        write(cmon,'(3(a,f7.3,3x))')
-     1  'SumFo/SumFc=', rscle,
+        write(cmon,'(A)')
+     1  ' Estimates of the overall scale by 5 methods'
+        call xprvdu(NCVDU,1,0)
+        write(cmon,'(3(a,f7.3,3x))') 
+     1  'SumFo/SumFc=', rscle, 
      1  'SumFoFc/SumFc^2=', sfofc/sfcfc,
      1  'SumwFoFc/SumwFc^2=', wsfofc/wsfcfc,
      2  'LS-scale=', scale,
@@ -1367,6 +1357,7 @@ c abandon processing the SRQ
       CALL XABSRQ
       IF (MODE .LE. 0)  RETURN
       RETURN            !WHAT'S THE POINT OF THE TWO RETURNS?
+c                       ! See the 1995 version. they were different then
 9910  CONTINUE
 C -- NUMBERS DON'T MATCH
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9915 )
@@ -1401,7 +1392,7 @@ C -- NOTHING TO REFINE
       END
 C
 CODE FOR XSFLSC
-      SUBROUTINE XSFLSC ( DERIVS, NDERIV, IRESULTS, NRESULTS)
+      SUBROUTINE XSFLSC(DERIVS,NDERIV,IRESULTS,NRESULTS,IULN)
 !$    use OMP_LIB
       use sfls_punch_mod
       DIMENSION DERIVS(NDERIV)
@@ -1764,6 +1755,7 @@ c     getenv is a deprecated extension
 #ifdef CRY_OSLINUX
       print *, 'Number of threads used around DSYRK: ', tid
 #endif
+C--INITIALISE THE TIMING FUNCTION
 
       CALL CPU_TIME ( time_begin )
 
@@ -1804,7 +1796,6 @@ C----- SET PRINT COUNTER
       ILEVPR = 0
 C----- SET BAD R FACTOR COUNTER
       IBADR = -1
-C--INITIALISE THE TIMING FUNCTION
       CENTRO = .FALSE.
       IF ( IC .EQ. 1 ) CENTRO = .TRUE.
 c      JD=-IC
@@ -1830,9 +1821,11 @@ C----- GET THE OLD R FACTOR AND SET PRINT RATIO
       SFO=0.0
       SFC=0.0
       sfofc=0.0
+      sfofo=0.0
       sfcfc=0.0
       wsfofc=0.0
       wsfcfc=0.0
+      nrefused=0
       NT=0
       ACE=0.
       ACF = 0.
@@ -2016,10 +2009,11 @@ C       CHECK IF THIS IS TWINNED CALCULATION
           NL=0
           CALL XSFLSX
           JREF_STACK_PTR=ISTORE(JREF_STACK_START)
-          CALL XAB2FC  ! DERIVE THE TOTALS AGAINST /FC/ FROM THOSE W.R.T. A AND B
+          CALL XAB2FC    ! DERIVE THE TOTALS AGAINST /FC/ FROM THOSE W.R.T. A AND B
           CALL XACRT(4)  ! ACCUMULATE THE /FO/ TOTALS
-        ELSE ! THIS IS A TWINNED CALCULATION
-          PH=STORE(M6)  ! PRESERVE THE NOMINAL INDICES
+        ELSE             ! THIS IS A TWINNED CALCULATION  
+C Start of Twinned 
+          PH=STORE(M6)   ! PRESERVE THE NOMINAL INDICES
           PK=STORE(M6+1)
           PL=STORE(M6+2)
           NJ=NINT(STORE(M6+11))
@@ -2145,6 +2139,7 @@ C--PRINT THIS CONTRIBUTOR
                 A=STORE(JREF_STACK_PTR+7)*D   ! defined as 180/pi above
                 C=STORE(JREF_STACK_PTR+6)*STORE(LJV)
                 IF (ISSPRT .EQ. 0) THEN
+c Indices, Fc, phase, Fc', integer(twin numnber?)
                   WRITE(NCWU,3350)
      1               (STORE(LJT+3),LJT=JREF_STACK_PTR,LJS),A,C,NI
                 ENDIF
@@ -2243,8 +2238,9 @@ c             FETCH THE INFORMATION FOR THE NEXT ELEMENT SCALE FACTOR
             END DO
           END IF
         END IF  ! end of twinned calculations
-
-C--FINISH OFF THIS REFLECTION
+C end of twinned
+c                
+C--FINISH OFF THIS REFLECTION  
 C
 C--CHECK IF WE SHOULD INCLUDE EXTINCTION
         IF(EXTINCT)THEN ! WE SHOULD INCLUDE EXTINCTION
@@ -2262,53 +2258,56 @@ C--CHECK IF WE SHOULD INCLUDE EXTINCTION
            EXT2=1.0+EXT*FC*FC*DELTA
            EXT3=EXT2/(EXT1**(1.25))
            EXT4=(EXT1**(-.25))
-          FCEXT=FC*EXT4   ! COMPUTE THE MODIFIED /FC/
         ELSE
-          EXT4=1.
-          FCEXT=FC
+           EXT4=1.
         END IF
-C
-        FCEXS=FCEXT*SCALEG ! THE VALUE OF /FC/ AFTER SCALE FACTOR APPLIED
-c
-        IF(TWINNED)THEN
-          STORE(M6+5)=STORE(M6+5)*EXT4*SCALES
-        ELSE
-          STORE(M6+5)=FCEXT*SCALES ! STORE FC AND PHASE IN THE LIST 6 SLOTS
+        FCEXT=FC*EXT4               ! COMPUTE THE MODIFIED /FC/
+        FCEXS=FCEXT*SCALEG          ! THE VALUE OF /FC/ AFTER SCALE FACTOR APPLIED
+        IF (TWINNED .EQV. .FALSE.) THEN
+         STORE(M6+5)=FCEXT*SCALES    ! STORE FC AND PHASE IN THE LIST 6 SLOTS
+         STORE(M6+6)=P
         ENDIF
-        STORE(M6+6)=P
 C
 c
 CJan2017    Storage of A&B parts moved into XAB2FC
 C           so that real and imaginary parts are available
 C
-c COMPUTE BIS AND PIECES FOR THE WEIGHTED R-FACTOR
+C COMPUTE BIS AND PIECES FOR THE WEIGHTED R-FACTOR, wR2
+C      write(123,*)Fo, store(m6+3), fcexs, store(m6+5), w
 C
-c Add abs to deniminator
-        A=abs(FO)*W    ! ADD IN THE COMPUTED VALUES OF /FC/ ETC., TO THE OVERALL TOTALS
-        DF=FO-FCEXS
-        WDF=W*DF
-        S=SCALEK
-C
-        IF(NV.GE.0)THEN ! 4500,4450,4450 ! CHECK IF WE REFINING AGAINST /FO/ **2
-          A=FO*FO*W                    !  w*Fo^2
+        IF(NV.GE.0)THEN 
+C Refining on F**2
+          WFO=abs(FO)*FO*W               !  w*Fo^2
           DF=ABS(FO)*FO-FCEXS*FCEXS    !  (Fo^2-Fc^2) Abs in case Fo is -ve, to give Fo^2 -ve
           WDF=W*DF
           S=SCALEK*SCALEK
+        ELSE
+C Refining on F
+c         note abs to denominator.  This is for compatibility, but is probably wrong.
+          WFO=ABS(FO)*W    
+          DF=FO-FCEXS
+          WDF=W*DF
+          S=SCALEK
         END IF
         AMINF=AMINF+WDF*WDF  ! COMPUTE THE MINIMISATION FUNCTION
-
+c        
         ik = KALLOW(IALLOW)
         IF ((SFLS_TYPE.NE.SFLS_CALC) .OR.(ik.GE.0)) THEN
 C If #CALC, then L28 was adjusted earlier. Call KALLOW again to get normal R
-C NO LONGER DONE SINCE WE WANT ALL THE REFLECTIONS CALCULATING - fEB 2019
-          NT=NT+1     ! UPDATE THE REFLECTION COUNTER FLAG
+C NO LONGER DONE SINCE WE WANT ALL THE REFLECTIONS CALCULATING - FEB 2019
+C         ADD IN THE COMPUTED VALUES OF /FC/ ETC., TO THE OVERALL TOTALS
+          NT=NT+1     ! UPDATE THE REFLECTION COU0NTER FLAG
           FOT=FOT+FO   ! COMPUTE THE TERMS FOR THE NORMAL R-VALUE
           FOABS = FOABS + ABS(FO)
           FCT=FCT+FCEXS
           DFT=DFT+ABS(ABS(FO) - FCEXS)
-          WDFT=WDFT+WDF*WDF  ! COMPUTE THE TERMS FOR THE WEIGHTED R-VALUE
-          RW=RW+A*A
+C COMPUTE THE TERMS FOR THE WEIGHTED R-VALUE
+          WDFT=WDFT+WDF*WDF  
+          RW=RW+WFO*WFO
+c Terms for various scale factors
+          nrefused=nrefused+1
           sfofc = sfofc + fo * fcext
+          sfofo = sfofo + fo * abs(fo)
           sfcfc = sfcfc + fcext * fcext
           wsfofc = wsfofc + w * fo * fcext
           wsfcfc = wsfcfc + w * fcext * fcext
@@ -2529,7 +2528,7 @@ c     1                 STORE(L12B), N12B*MD12B, MD12B )
         CALL XACRT(6)  ! ACCUMULATE TOTALS FOR /FC/
         CALL XACRT(7)  ! AND THE PHASE
         CALL XACRT(16)
-
+C
         k=kallow(iallow)
         IF(SFLS_TYPE .eq. SFLS_CALC) THEN ! ADD DETAILS FOR ALL DATA WHEN 'CALC'
          IF((K.GE.0).OR.(K.EQ.-21)) THEN           !use accepted reflections & less-thans
@@ -2539,7 +2538,7 @@ c     1                 STORE(L12B), N12B*MD12B, MD12B )
            RALL(9) = RALL(9) + ABS(ABS(FO)-FCEXS)
            RALL(10) = RALL(10) + ABS(FO)
            RALL(11) = RALL(11) + WDF*WDF
-           RALL(12) = RALL(12) + A*A
+           RALL(12) = RALL(12) + WFO*WFO
           end if
 ! SHELX emulation   (2 sigma)
           IF (STORE(M6+20) .GE. RALL(1)) THEN     ! +2 sigma
@@ -2547,7 +2546,7 @@ c     1                 STORE(L12B), N12B*MD12B, MD12B )
            RALL(3) = RALL(3) + ABS(ABS(FO)-FCEXS) ! sum Abs(Fo-Fc)
            RALL(4) = RALL(4) + ABS(FO)            ! sum Fo
            RALL(5) = RALL(5) + WDF*WDF            ! sum wdelta sq
-           RALL(6) = RALL(6) + A*A                !
+           RALL(6) = RALL(6) + WFO*WFO                ! 
           ENDIF
 ! (user-sigma sigma)
           IF (K.EQ.0) THEN                           ! use all LIST28 items
@@ -2556,7 +2555,7 @@ c          IF (STORE(M6+20) .GE. RALL(13)) THEN      ! user-sigma
             RALL(15) = RALL(15) + ABS(ABS(FO)-FCEXS) ! sum Abs(Fo-Fc)
             RALL(16) = RALL(16) + ABS(FO)            ! sum Fo
             RALL(17) = RALL(17) + WDF*WDF            ! sum wdelta sq
-            RALL(18) = RALL(18) + A*A                !
+            RALL(18) = RALL(18) + WFO*WFO                ! 
           ENDIF
          ENDIF
 
@@ -2759,16 +2758,16 @@ C--END OF THE REFLECTIONS  -  PRINT THE R-VALUES ETC.
          RW = 0.
          S = 0.
       ELSE
-      IF (FOABS .LE. 0.0) GOTO 19940
-      R=DFT/FOABS*100.0
+         IF (FOABS .LE. 0.0) GOTO 19940
+         R=DFT/FOABS*100.0
 C----- PATCH TO AVOID INCIPIENT DIVISION BY ZERO
-      IF(RW .LE. 0) GOTO 19930
-      RW=SQRT(WDFT/RW)*100.0
-      A=FOT/SCALEO
-      S=FCT/SCALEO
-      T=DFT/SCALEO
+         IF(RW .LE. 0) GOTO 19930
+         RW=SQRT(WDFT/RW)*100.0
+         A=FOT/SCALEO
+         S=FCT/SCALEO
+         T=DFT/SCALEO
       ENDIF
-
+C      write(123,*)'sfofo=',sfofo,' sfcfc=',sfcfc, ' nrefused=',nrefused
       IF(SFLS_TYPE .EQ. SFLS_SCALE) THEN  ! WE ARE TO CALCULATE A NEW SCALE FACTOR HERE
         BSCR=0.
         IF (SFC.GT.ZEROSQ) BSCR=SFO/SFC
@@ -2820,11 +2819,10 @@ C
      2  12('*'),14X,12('*')/27X,13('*'),2X,'HERE IT IS',2X,12('*')/
      3  F7.2,F12.2,9X,12('*'),14X,12('*')/29X,3('*')/30X,3('*')//
      4  ' Sum of /FO/    Sum of /FC/    Sum of /Delta/',
-cRIC13:     5  '    Minimization function',//F11.1,F15.1,F16.1,34X,
      5  '    Minimization function',//F11.0,F15.0,F16.0,34X,
      6  ' On scale of /FC/')
+c
         WRITE(NCWU,5950)FOT,FCT,DFT,AMINF
-CRIC13:5950    FORMAT(/F11.1,F15.1,F16.1,E25.8,9X,' On scale of /FO/')
 5950    FORMAT(/F11.0,F15.0,F16.0,E25.4,9X,' On scale of /FO/')
         WRITE(NCWU,6150) STORE(L5O), NT
         WRITE(NCWU,6250)JI,LJX
@@ -2835,15 +2833,15 @@ CRIC13:6150  FORMAT(/,' New scale factor (G) is ',F10.5,
      1 ',  ',I6,' reflections used in refinement')
 6250  FORMAT(/,' Structure factor least squares calculation',I5,
      2 '  ends',I3)
-
+C
       IF (S .GT. ZERO) S = A/S
-
-      WRITE ( CMON, 6260) JI, N12, MIN(R,99.99), MIN(RW,99.99), AMINF,
+      IF (IULN .EQ. 6) THEN
+      WRITE ( CMON, 6260) JI, N12, MIN(R,99.99), MIN(RW,99.99), 
      1 MIN(999.99,S)
-
-6260  FORMAT (' Cycle',I5,' Params',I5,' R{9,1 ',F5.2,
-     2 '%{8,1 Rw{9,1 ',F5.2,
-     1 '%{8,1 MinFunc ',G9.2,' SumFo/SumFc ',F6.2)
+      ENDIF
+6260  FORMAT ('{  Cycle',I5,' Params',I5,'{8,1 R ',F5.2,
+     2 '%{8,1 Rw ',F5.2,
+     1 '{8,1 SumFo/SumFc ',F6.2)
       CALL OUTCOL(6)
       CALL XPRVDU(NCVDU, 1, 0)
       CALL OUTCOL(1)
@@ -3538,7 +3536,7 @@ c
 c      STACK seems to work like this:
 c      A reflection is processed and ACT, BCT, Pshift, derivs are put on
 c      the stack.
-c      It it is twinned, the corresponding components are also put on the stack
+c      If it is twinned, the corresponding components are also put on the stack
 c      If the next reflection is a symmetry equivalent of something already on the
 c      stack, the info is taken from the stack.
 c      If not, the stack is cleared and the current info put on the stack
