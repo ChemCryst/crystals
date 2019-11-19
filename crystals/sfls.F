@@ -642,6 +642,7 @@ C--CHECK THAT ALL THE TEMPERATURE FACTORS ARE REASONABLE
 C-C-C-CHECK THAT ALL T.F. AND SPECIAL PARAMETERS ARE REASONABLE
 C-C-C-SIMILAR CHECKS ALSO IN XSFLSG (NO CHANGE OF LIST 5 BY XSFLSB)
       M5=L5
+      write(1234, *) "in xsflsb = ", STORE(L5 + 12)
 C--CHECK THAT THERE IS AT LEAST ONE ATOM IN LIST 5
       IF(N5 .LE. 0) GOTO 9940
 C--LOOP OVER EACH ATOM
@@ -3085,7 +3086,7 @@ C-C-C-CALC. OF THE TRICLINIC COORD. OF LINE IN REAL SPACE
       LINZ=LINCX*CATRI31+LINCY*CATRI32+LINCZ*CATRI33
 C-C-C-CALC. OF SYMMETRY-EQUIVALENT DIRECTIONS (TRANSF. OF VECTOR-
 C-C-C-END-POINT BY ROTATIONAL PART ONLY)
-      LINX=LINX*STORE(M2LI)+LINY*STORE(M2LI+1)+LINZ*STORE(M2LI+2)
+      LINX=LINX*STORE(M2LI)+LINY*STORE(M2LI+1)+LINZ*STORE(M2LI+2)  !Crazy - check this overwrite.
       LINY=LINX*STORE(M2LI+3)+LINY*STORE(M2LI+4)+LINZ*STORE(M2LI+5)
       LINZ=LINX*STORE(M2LI+6)+LINY*STORE(M2LI+7)+LINZ*STORE(M2LI+8)
 C-C-C-CALC. DOT-PRODUCT OF HKL-VECTOR AND LINE-VECTOR IN REC. SPACE
@@ -3270,7 +3271,7 @@ C-C-C-CALC. OF THE TRICLINIC COORD. OF RING-NORMAL IN REAL SPACE
       LINZ=LINCX*CATRI31+LINCY*CATRI32+LINCZ*CATRI33
 C-C-C-CALC. OF SYMMETRY-EQUIVALENT DIRECTIONS (TRANSF. OF VECTOR-
 C-C-C-END-POINT BY ROTATIONAL PART ONLY)
-      LINX=LINX*STORE(M2RI)+LINY*STORE(M2RI+1)+LINZ*STORE(M2RI+2)
+      LINX=LINX*STORE(M2RI)+LINY*STORE(M2RI+1)+LINZ*STORE(M2RI+2) !TODO: check this bit !!!
       LINY=LINX*STORE(M2RI+3)+LINY*STORE(M2RI+4)+LINZ*STORE(M2RI+5)
       LINZ=LINX*STORE(M2RI+6)+LINY*STORE(M2RI+7)+LINZ*STORE(M2RI+8)
 C-C-C-CALC. DOT-PROD. OF HKL-VECT. AND RING-NORMAL-VECT. IN REC. SPACE
@@ -3457,6 +3458,7 @@ C
 C Any attempt to used OpenMP here is useless, there is too much overhead
 
       real aimag, ap, at, bd, bf, bp, bt, focc, fried, a
+      real API, BPI, AROTOR, BROTOR
       real pshift, smax, smin, t, tfocc
       integer icpt, j, ljt, ljx, lju, ljv, ljw, ljy, ljz, n
       integer m3tr, m3ti, m5a, l12a, m2t, m2, m12a, md12a, m12
@@ -3488,6 +3490,7 @@ C-C-C-...FOR DERIVATIVES
 !    1         'Flag is ', NINT(flag)
 !           CALL XPRVDU(NCVDU, 1,0)
 
+      write(1234, *) "start of xsflsx = ", STORE(L5 + 12)
       ISTACK=-1   ! CLEAR OUT A FEW CONSTANTS
       ACR=0.
       BCR=0.
@@ -3794,9 +3797,10 @@ c
 #endif
       end do
 
-      DO LJY=1,N5
+      DO LJY=1,N5  !todo: this is where the loop over atoms starts
         AT=0.  ! CLEAR THE ACCUMULATION VARIABLES
         BT=0.
+        write(1234, *) "start of loop m5a+12 = ", STORE(M5A + 12)
 
         ATOM_REFINE = .FALSE.
 
@@ -3852,7 +3856,8 @@ c Special shapes
             ELSE IF (NINT(FLAG) .EQ. 4) THEN   ! CALC RING TF
               CALL XRING (M2, ST, M5A,M6,SLRFAC,DSIZE,DDECLINA,DAZIMUTH)
             ELSE IF (NINT(FLAG)==5) THEN
-              CALL XROTOR (3, M5A, M6, SST, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH)
+              write(1234, *) "STORE(M5ARI+12) = ", STORE(M5A + 12)
+              CALL XROTOR (4, M5A, M6, M2T, SST, AROTOR, BROTOR) !, DSIZE, DDECLINA, DAZIMUTH) todo: add these extra inputs
             END IF
 
             T=Tiso(LJY)
@@ -3863,12 +3868,17 @@ c iso-temperature factor
             T=Tiso(LJY)
           ENDIF
 
-C--CALCULATE THE B CONTRIBUTION
-          BP=Sina(ljy,ljx)*TFOCC
+C--CALCULATE THE A & B CONTRIBUTION
+          BPI=Sina(ljy,ljx)*TFOCC
+          API=Cosa(ljy,ljx)*TFOCC
+          IF (NINT(FLAG) .EQ. 5) THEN
+           AP=API*AROTOR-BPI*BROTOR
+           BP=BPI*AROTOR+API*BROTOR
+          ELSE
+           AP = API
+           BP=BPI
+          END IF
           BT=BT+BP
-c
-C--CALCULATE THE A CONTRIBUTION
-          AP=Cosa(ljy,ljx)*TFOCC
           AT=AT+AP
 c          WRITE(NCWU,'(A,Z0,1X,F15.6)')'AT:',AT,AT
 c          WRITE(NCWU,'(A,Z0,1X,F15.6)')'BT:',BT,BT

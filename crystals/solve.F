@@ -1023,8 +1023,8 @@ C-C-C-LINE (---> SHIFT OF "U[ISO]", I.E. THICKNESS OF LINE)
 C-C-C-RING (---> SHIFT OF "U[ISO]", I.E. THICKN. OF RING)
                ELSE IF (NINT(STORE(M5+3)) .EQ. 4) THEN
                   JD=JC+20*MW
-               ELSE IF (NINT(STORE(M5+3)) .EQ. 5) THEN
-                  JD=JC+20*MW
+!              ELSE IF (NINT(STORE(M5+3)) .EQ. 5) THEN
+!                 JD=JC+20*MW todo: this has been added to try and stop it crashing but need to deal with all the other situations
                ENDIF
 C-C-C-SHIFT OF U[22]/SIZE (AMBIGUOUS)
             ELSE IF (JS .EQ. 9) THEN

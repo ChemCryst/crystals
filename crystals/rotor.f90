@@ -65,13 +65,30 @@ SUBROUTINE XROTOR (NORD, M5ARI, M6RI, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUT
     Q5 = STORE(L1O2 + 5)
     Q6 = STORE(L1O2 + 8)
 
+    write(123,*) "These are the values that come from M5ARI or M6RI:"
+    write(123,*) "REFLH = STORE(M6RI) = ", REFLH
+    write(123,*) "REFLK = STORE(M6RI+1) = ", REFLK
+    write(123,*) "REFLL = STORE(M6RI+2) = ", REFLL
+    write(123,*) "GP = STORE(M5ARI + 2) = ", GP
+    write(123,*) "XC = STORE(M5ARI + 4) = ", XC
+    write(123,*) "YC = STORE(M5ARI + 5) = ", YC
+    write(123,*) "ZC = STORE(M5ARI + 6) = ", ZC
+    write(123,*) "BB = STORE(M5ARI + 7) = ", BB
+    write(123,*) "RIRA = STORE(M5ARI + 8) = ", RIRA
+    write(123,*) "ANGLEDD = STORE(M5ARI + 9) = ", ANGLEDD
+    write(123,*) "ANGLEED = STORE(M5ARI + 10) = ", ANGLEED
+    write(123,*) " XXID = STORE(M5ARI + 11) = ", XXID
+    write(123,*) "BD = STORE(M5ARI + 12) = ", BD
+
     !SET I0
     call BESSELI(BSUM, 0, BD)
     BIO = bsum
+    write (123,*) "BD= ", BD, "BIO=", BIO
     !SET Ip FROM 1 TO 20
     DO JP = 1, 20
         call BESSELI(BSUM, JP, BD)
         BIA(JP) = bsum
+        write (123,*) "JP=", JP, "BD= ", BD, "BIA=", BIA(JP)
     END DO
     
 
@@ -103,7 +120,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M6RI, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUT
     !        CALL SYM
     !        PHI = TWOPI * (REFLH * XC + REFLK * YC + REFLL * ZC + T)
     !        CP = COS(PHI) !* TF
-    !        SP = SIN(PHI) !* TF
+    !        SP = SIN(PHI) !* TF+
     !calculate c(CC) and d(DD) and then a'
     XK1 = REFLH * Q1 + REFLK * Q2 + REFLL * Q3
     XK2 = REFLL * Q6
@@ -252,6 +269,8 @@ SUBROUTINE XROTOR (NORD, M5ARI, M6RI, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUT
     IF (NAD==2) GO TO 40
     BT = DELMC(2, 6) + DELMS(1, 6)
     BCAL = BCAL + BT
+    WRITE(123,*) "AT= ", AT
+    WRITE(123,*) "BT= ", BT
     40    IF(MODE==1) GO TO 9
     !    !!!CALCULATION OF DELF(POPULATION FACTOR) [39] (calculated at a higher level)
     !    IF(KSEL(L)==0) GO TO 58
