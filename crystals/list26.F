@@ -553,6 +553,7 @@ c
       ircpt=ircpt+1
       
       if(.not. allocated(restraints_list)) then
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         write(cmon,'(A,A)') "{E Error: Run a refinement cycle ",
      1    "before issuing \check"
         call xprvdu(ncvdu,1,0)
@@ -675,7 +676,7 @@ C--CHECK IF ANY DERIVATIVES HAVE BEEN PRODUCED
 C--NO DERIVATIVES
 1400  CONTINUE
       CALL XMOVE(IQ1(1),KF1(1),1)
-       WRITE(CMON,'(A)')'{I  General Restraint: No derivatives found'
+       WRITE(CMON,'(A)')'{E  General Restraint: No derivatives found'
        CALL XPRVDU(NCVDU,1,0)
        IF(ISSPRT.EQ.0)
      1 WRITE(NCWU,'(A)')'   General Restraint: No derivatives found'
@@ -1132,7 +1133,7 @@ c per atom - dealt with under Uij
       if(i.ne.12) then
         CALL XMOVE(IB1(1),KF1(1),1)
         IF(ISTORE(L22PD).eq.4) THEN
-         WRITE(CMON,'(A,2x,A,A,A)')'{I ', 
+         WRITE(CMON,'(A,2x,A,A,A)')'{E ', 
      1   COPERATION(I)(1:NCTRIM(COPERATION(I))),
      1 ' restraint:', ' No derivatives found'
          CALL XPRVDU(NCVDU,1,0)
@@ -1824,7 +1825,7 @@ c       write(123,'(10f8.5)') (store(idjw),idjw=jt+14,jt+24,2)
 C--CHECK IF THIS RESTRAINT IS USEFUL
       CALL XMOVE(IB1(1),KF1(1),1)
       IF(ISTORE(L22PD).eq.4) THEN
-         WRITE(CMON,'(A,2x,A,A,A)')'{I ', 
+         WRITE(CMON,'(A,2x,A,A,A)')'{E ', 
      1   COPERATION(I)(1:NCTRIM(COPERATION(I))),
      1 ' restraint:', ' No derivatives found'
          CALL XPRVDU(NCVDU,1,0)
@@ -1936,6 +1937,7 @@ C--TERMINATION AND APPLICATION OF THE STORED DERIVATIVES
 C
 C--ERRORS
 3900  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE(NCWU,3950)A
 3950  FORMAT(/1H ,F4.0,20H   Restraint ignored)
       GOTO 1050
@@ -2390,7 +2392,7 @@ C--JUMP ON THE FUNCTION
      1         index(r%restraint_text,'COMP')==0 .and.
      1         index(r%restraint_text,'EXEC')==0
      1         ) then
-     
+              if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
               icptn=index(r%restraint_text, char(10)) ! Checking for end of line in restraints
               if(icptn>0) then
                 ! Printing one line at a time
@@ -2630,6 +2632,7 @@ C--TERMINATION AND APPLICATION OF THE STORED DERIVATIVES
 C
 C--ERRORS
 1850  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       J=16
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1900)IULN
 1900  FORMAT(
@@ -3141,7 +3144,7 @@ C
 !> Calculate ULIJ restraints. Each local Uij is restrained to the mean \<Uij\> of all atoms.
 !! The first atom of the group is the atom to be restrainted, the 2 other atoms are used to form the local basis      
       SUBROUTINE XCVCULIJ(results)
-      use xssval_mod, only: issapp, issprt
+      use xssval_mod, only: issapp, issprt, issmon
       use list26_mod
       use xiobuf_mod, only:CMON
       use math_mod, only: DSYEVJ3
@@ -3260,6 +3263,7 @@ C--SET UP A FEW CONSTANTS
 
         IF(ABS(STORE(ISTORE(JA+16)+6))/=0.0 ) THEN ! check if atom is isotropic
           if(present(results)) then
+            if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
             WRITE(CMON,'("{E",1X, "(",I0,")",1X, A)')
      1         results%user_index, trim(results%restraint_text)
             CALL XPRVDU(NCVDU, 1,0)      
@@ -3581,7 +3585,7 @@ C--SET UP A FEW CONSTANTS
 
         IF(ABS(STORE(ISTORE(JA+16)+6))/=0.0 ) THEN ! check if atom is isotropic
           if(present(results)) then
-            issmon=0 !turn on monitor
+            if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
             WRITE(CMON,'("{E",1X, "(",I0,")",1X, A)')
      1         results%user_index, trim(results%restraint_text)
             CALL XPRVDU(NCVDU, 1,0)      
@@ -3611,7 +3615,7 @@ C     U Matrices in 3x3 matrix
         ! eigen decomposition
         call DSYEVJ3(Udata(icpt)%U_C, Udata(icpt)%Q, Udata(icpt)%W,info)      
         if(info<0) then
-          issmon=0 !turn on monitor
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
           WRITE(CMON,'("{E", A)') 
      1      'UALIGN: DSYEVJ3 failed to converged'
           CALL XPRVDU(NCVDU, 1,0)   
@@ -3639,7 +3643,7 @@ C     U Matrices in 3x3 matrix
       end do
       
       if(count(Udata(:)%tobeused)==0) then
-        issmon=0 !turn on monitor
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         WRITE(CMON,'("{I", A, A)') 
      1      'UALIGN: All atoms are non positive definite ',
      2      'or nearly isotropic'
@@ -4080,7 +4084,7 @@ C--SET UP THE ADDRESSES OF THE ATOMS
 
         IF(ABS(STORE(ISTORE(JA+16)+6))/=0.0 ) THEN ! check if atom is isotropic
           if(present(results)) then
-            issmon=0 !turn on monitor
+            if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
             WRITE(CMON,'("{I",1X, "(",I0,")",1X,A)') results%user_index,
      1        trim(results%restraint_text)
             CALL XPRVDU(NCVDU, 1,0)      
@@ -4124,7 +4128,7 @@ C       U Matrices in 3x3 matrix
         ! eigen decomposition
         call DSYEVJ3(U_C_1, Q_1, W_1, info)      
         if(info<0) then
-          issmon=0 !turn on monitor
+          if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
           WRITE(CMON,'("{E", A)') 
      1      'UEIG: DSYEVJ3 failed to converged'
           CALL XPRVDU(NCVDU, 1,0)   
@@ -4310,7 +4314,7 @@ C--SET UP A FEW CONSTANTS
 
         IF(ABS(STORE(ISTORE(JA+16)+6))/=0.0 ) THEN ! check if atom is isotropic
           if(present(results)) then
-            issmon=0 !turn on monitor
+            if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
             WRITE(CMON,'("{I",1X, "(",I0,")",1X,A)') results%user_index,
      1        trim(results%restraint_text)
             CALL XPRVDU(NCVDU, 1,0)      
@@ -4537,7 +4541,7 @@ C--SET UP A FEW CONSTANTS
 
         IF(ABS(STORE(ISTORE(JA+16)+6))/=0.0 ) THEN ! check if atom is isotropic
           if(present(results)) then
-            issmon=0 !turn on monitor
+            if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
             WRITE(CMON,'("{E",1X, "(",I0,")",1X, A)')
      1         results%user_index, trim(results%restraint_text)
             CALL XPRVDU(NCVDU, 1,0)      
@@ -4560,7 +4564,7 @@ C     U Matrices in 3x3 matrix
         ! eigen decomposition
         call DSYEVJ3(Udata(icpt)%U_C, Udata(icpt)%Q, Udata(icpt)%W,info)      
         if(info<0) then
-          issmon=0 !turn on monitor
+          if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
           WRITE(CMON,'("{E", A)') 
      1      'UVOL: DSYEVJ3 failed to converged'
           CALL XPRVDU(NCVDU, 1,0)   
@@ -4637,7 +4641,7 @@ C-- RUN RABUBAR MULTIPLICATION (no need to calculate)
       do icpt=1, nca ! loop over each atom to setup restraints        
         if(.not. Udata(icpt)%tobeused) then
           if(present(results)) then
-            issmon=0 !turn on monitor
+            if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
             WRITE(CMON,'("{E", 4X, A, A, A, "(",I0,")")') 
      1        'UVOL: ',
      4        ' Non positive definite adp, restraint not applied to ',
@@ -4785,7 +4789,7 @@ C--SET UP A FEW CONSTANTS
 
         IF(ABS(STORE(ISTORE(JA+16)+6))/=0.0 ) THEN ! check if atom is isotropic
           if(present(results)) then
-            issmon=0 !turn on monitor
+            if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
             WRITE(CMON,'("{E",1X, "(",I0,")",1X, A)')
      1         results%user_index, trim(results%restraint_text)
             CALL XPRVDU(NCVDU, 1,0)      
@@ -4812,7 +4816,7 @@ C     U Matrices in 3x3 matrix
         ! eigen decomposition
         call DSYEVJ3(Udata(icpt)%U_C, Udata(icpt)%Q, Udata(icpt)%W,info)      
         if(info<0) then
-          issmon=0 !turn on monitor
+          if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
           WRITE(CMON,'("{E", A)') 
      1      'UEQIV: DSYEVJ3 failed to converged'
           CALL XPRVDU(NCVDU, 1,0)   
@@ -6426,7 +6430,6 @@ C--CHECK THAT THERE IS ENOUGH ROOM
 C--NOT ENOUGH CORE AVAILABLE
 1000  CONTINUE
       CALL XERHDR(0)
-      issmon=0 !turn on monitor
       WRITE ( CMON ,1050)
       CALL XPRVDU(NCVDU, 1,0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')TRIM(CMON(1)(3:))
@@ -7209,6 +7212,7 @@ C
 C
       if(mca<0) then
          ! serious programming error, mca should be set
+         if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
          write(ncwu, *) 'Serious programing error, MCA in XFMPDQ ',
      1     'should be set. Aborting...'
 #ifdef CRY_OSLINUX
@@ -8004,7 +8008,7 @@ C--SET UP THE ADDRESSES OF THE ATOMS
         IF(ABS(STORE(ISTORE(JA+16)+6))/=0.0) THEN ! check if atom is isotropic
           flag=.true.
           if(present(results)) then
-            ISSMON=0
+            if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
             WRITE(CMON,'("{E",1X, "(",I0,")",1X, A)') 
      1        results%user_index, trim(results%restraint_text)
             CALL XPRVDU(NCVDU, 1,0)      
@@ -8119,7 +8123,7 @@ C---RESET COUNTERS
          JB=istore(JB)
       end do
       IF (NATOM2.LT.4) THEN
-         issmon=0
+         if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
          WRITE (CMON,950) NATOM2
          CALL XPRVDU (NCVDU,1,0)
 950      FORMAT ('{E Insufficient anisotropic atoms for tls -',I5)
@@ -8149,7 +8153,7 @@ C---SOLVE NORMAL EQUATIONS, STORING INVERSE MATRIX AS AI AND RESULTS AS
       CALL RLTNT(abdp, DAA, DAR, DAI, info)
       if(info/=0) then
         if(present(results)) then
-          ISSMON=0
+          if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
           write(cmon, '("{E", 1X, A)') 'The TLS restraint is aborted'
           CALL XPRVDU(NCVDU, 1,0)      
           deallocate(results%subrestraints)

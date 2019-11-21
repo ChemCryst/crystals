@@ -5508,6 +5508,7 @@ C - Hand back the work area.
       GOTO 9900
 C
 9000  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE(NCWU,9100)
       WRITE ( CMON ,9100)
       CALL XPRVDU(NCVDU, 1,0)
@@ -6238,6 +6239,7 @@ C
 C
 C-------ERROR EXIT FOR THESE ROUTINES
 4200  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCA(ISTORE(MD+4))
       LEF=LEF+1
 4250  CONTINUE
@@ -6783,6 +6785,7 @@ C Copy info for atom into the output stack.
         IADDR = IADDR + 7
         IGTONE = 1
 C -- If no more things on this CARD, then error!
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         IF (ME.LE.0) THEN
           MF=MF-LK2
           CALL XADE(ISTORE(MF+1))
@@ -7527,6 +7530,7 @@ C -- INPUT ERROR
       CALL XOPMSG ( IOPBND , IOPCMI , 0 )
       GO TO 9900
 9920  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
 C -- SINGULAR MATRIX
       WRITE ( CMON, 9925 )
       CALL XPRVDU(NCVDU, 1,0)

@@ -465,7 +465,7 @@ C--A FEW SPARE LINES AT THE END
 C
 9900  CONTINUE
 C -- ERRORS
-      ISSMON=0 ! Turn monitoring back on
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9905 )
       WRITE ( CMON, 9905 )
       CALL XPRVDU(NCVDU, 1,0)

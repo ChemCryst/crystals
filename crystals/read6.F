@@ -169,10 +169,12 @@ C
       RETURN
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPREF , IOPABN , 0 )
       GO TO 1810
 9910  CONTINUE
 C -- INPUT ERROR
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPREF , IOPCMI , 0 )
       GO TO 9900
       END
@@ -965,7 +967,9 @@ c      endif
 C--BRANCH ON THE TYPE OF OUTPUT
       GO TO (5000,2550,3250,3450,5000,4050,4050,4050,2500),ITYPE6
 C3600  STOP 'LIST 6 ERROR'
-2500  CALL GUEXIT (2019)
+2500   CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
+      CALL GUEXIT (2019)
 C
 C--FIXED FORMAT INPUT
 2550  CONTINUE
@@ -1009,6 +1013,7 @@ c123  ! for compatibility with long cards
       WRITE (CFORM,'(64A4)') (IFORM(IZZ),IZZ=1,LFORM)
 CNOV2000 CHECK THAT THE FORMAT IS ALL-FLOATING
       IF (KCITOF(CFORM).LE.0) THEN
+         if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
          WRITE (CMON,'(A)') 'FORMAT card error'
          CALL XPRVDU (NCVDU,1,0)
          GO TO 5200
@@ -1066,6 +1071,7 @@ C--CHECK FOR THE END OF THE REFLECTIONS
 C--END OF FILE DURING THE READ  -  CHECK IF THIS IS ON THE INPUT UNIT
 C----- ERROR DURING READ -
 3100  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (NCARDS.LE.0) THEN
         if (iuln .ne. 7) then
          call outcol(3)
@@ -1081,6 +1087,7 @@ C----- ERROR DURING READ -
         end if
 CDJW2003         LEF=-1
       ELSE
+         if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
          WRITE (CMON,3150) N6W
          CALL OUTCOL(9)
          CALL XPRVDU (NCVDU,4,0)
@@ -1525,9 +1532,11 @@ C--END OF THE INPUT  -  RESTORE THE INPUT CARD IMAGE
       GO TO 5300
 C--ERROR(S) DURING INPUT  -  RESTORE THE CURRENT CARD IMAGE
 5200  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XMOVE (YCARD2(1),YCARD1(1),NCARD)
 C--PRINT THE ERROR TERMINATION MESSAGE
 5250  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG (IOPLSI,IOPLSP,IULN)
       CALL XLSALT (IULN,0,0,ILSERF,ILSSET)
 C--REWIND THE M/T BEFORE WE LEAVE
@@ -1543,6 +1552,7 @@ C--INPUT FROM THE MAIN CHANNEL  -  ALTER THE COUNTERS
 5400  CONTINUE
 C--AND NOW RETURN
       if(n6theta.gt.0) then
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         call outcol(9)
         write(cmon,'(i10,a)')n6theta, 
      1 ' reflections have sintheta/lambda > 1.0'
@@ -1606,6 +1616,7 @@ C
 C
 5450  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       GO TO 5200
 C
       END
@@ -1841,6 +1852,7 @@ C--THIS MULTIPLIER IS NOT BIG ENOUGH
       GO TO 650
 1250  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       MSCALE=-1
       RETURN
       END
@@ -1941,6 +1953,7 @@ C--SPURIOUS CHARACTER IN THE DATA
      1    81A1)
 C--GENERAL ERROR RETURN FROM THIS ROUTINE
 400      CONTINUE
+         if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
          IF (ISSPRT.EQ.0) THEN
             WRITE (NCWU,450) LN,IUNIT
          END IF

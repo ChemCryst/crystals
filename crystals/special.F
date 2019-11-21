@@ -248,9 +248,10 @@ C
 C----- FORCE INITIALISATION OF THE SPECIAL POSITION VARIABLES
       IFORCE = -1
       IF (KSPINI (IFORCE, ABTOL ) .LE. 0) THEN
-         WRITE ( CMON, '(A)') ' Error initialising special positions'
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
+         WRITE ( CMON, '(A)') '{E Error initialising special positions'
          CALL XPRVDU(NCVDU, 1,0)
-         IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')trim(CMON(1))
+         IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')trim(CMON(1)(3:))
          GOTO 9000
       ENDIF
 C

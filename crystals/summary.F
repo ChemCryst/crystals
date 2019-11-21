@@ -740,7 +740,7 @@ C
 C
 C
 9900  CONTINUE
-      ISSMON=0 ! Turn monitoring back on
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9905 ) LSTYPE
       WRITE ( CMON , 9905 ) LSTYPE
       CALL XPRVDU(NCVDU, 1,0)

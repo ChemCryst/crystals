@@ -167,6 +167,7 @@ C         CLEAR ERROR FLAG
           IERFLG = 0
          ELSE
           IF (ISTORE(L11P+15).GE.0) THEN
+            if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
             IF (ISSPRT.EQ.0) WRITE (NCWU,200)
             WRITE (CMON,200)
             CALL XPRVDU (NCVDU,3,0)
@@ -193,6 +194,7 @@ C--PRINT THE INITIAL CAPTIONS
       CALL XPRTCN
 c
       IF (JESD .GE.1)  THEN
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         IF  (IESD .LE. 0) THEN
             WRITE(CMON,'(A)') 
      1 '{E Matrix for e.s.ds missing. Using mean errors instead'

@@ -1,5 +1,5 @@
 %SCRIPT XREFINE
-%%
+%%  
 %  VARIABLE INTEGER LSQ:FLAG 
 %  EVALUATE LSQ:FLAG = 3
 %  VARIABLE REAL SHIFT  FREESHIFT
@@ -13,6 +13,8 @@
 %  VARIABLE REAL L5:OK
 %  VARIABLE REAL CONVERGE
 %  VARIABLE INTEGER INVERTSTATUS
+%  VARIABLE LOGICAL MONITORING
+%  EVALUATE MONITORING = FALSE
 %%
 %%
 %% make sure SFLS record exists in LIST 39
@@ -50,7 +52,7 @@
 ^^WI COMMIT='RF_BOK' CANCEL='RF_BXX'
 ^^WI GRID MAIN NROWS=4 NCOLS=7
 ^^WI {
-^^WI  @ 2,2 GRID L NROWS=7 NCOLS=1
+^^WI  @ 2,2 GRID L NROWS=7 NCOLS=2
 ^^WI  {
 ^^WI   @ 1,1 GRID NCYC NROWS=3 NCOLS=3
 ^^WI   {
@@ -65,15 +67,20 @@
 ^^WI   }
 ^^WI   @ 3,1 CHECKBOX NF
 ^^WI   'Stop cycling if convergence is detected       '
-%    IF CONVRG THEN
+%       IF CONVRG THEN
 ^^WI     STATE=ON
-%    ELSE
+%       ELSE
 ^^WI     STATE=OFF
-%    END IF
+%       END IF
 %%
-^^WI    @ 5,1  CHECKBOX ND
+^^WI   @ 5,1  GRID CBX NROWS=1 NCOLS=3
+^^WI     {
+^^WI     @ 1,1  CHECKBOX ND
 ^^WI         'Minimise disk useage' STATE=ON
-^^WI    @ 7,1 GRID LED NROWS=1 NCOLS=5
+^^WI     @ 1,3  CHECKBOX NM
+^^WI         'Minimise text output' STATE=ON
+^^WI     }
+^^WI   @ 7,1 GRID LED NROWS=1 NCOLS=5
 ^^WI   {
 ^^WI    @ 1,1 BUTTON RF_B12 'Edit directives'
 ^^WI    @ 1,3 BUTTON RF_B16 'Edit restraints'
@@ -98,6 +105,10 @@
 %      CASE VALUE
 %       BLOCK
 ^^CO      DISPOSE XREFINE
+%         IF MONITORING .EQ. TRUE THEN
+%           COPY '#SET MONI ON'
+%           EVALUATE MONITORING = FALSE
+%         END IF
 %         FINISH
 %       END BLOCK
 %       BLOCK
@@ -123,10 +134,14 @@
 {E An error of some type occured. The xrefine script has stopped just
 {E in case it is serious. A possible cause is an invalid List 12 - maybe
 {E it refers to non-existant atoms.
+%         IF MONITORING .EQ. TRUE THEN
+%          COPY '#SET MONI ON'
+%          EVALUATE MONITORING = FALSE
+%         END IF
 %         FINISH
 %    END IF
 %%
-
+%%
 ^^??   ND STATE
 %      VERIFY ON OFF
 %      GET NOSTORE SILENT FINAL ABBREVIATED 'ONorOFF' ' '
@@ -145,6 +160,17 @@
 %       COPY 'END'
 %       COPY '#LIST 22'
 %       COPY 'END'
+%      END IF
+%%
+^^??   NM STATE
+% SHOW MONITORING
+%      VERIFY ON OFF
+%      GET NOSTORE SILENT FINAL ABBREVIATED 'ONorOFF' ' '
+^^CR
+%      IF VALUE .EQ. 1 THEN
+%       EVALUATE MONITORING = TRUE
+% SHOW MONITORING
+%       COPY '#SET MONI FAST'
 %      END IF
 %%
 ^^?? NC TEXT
@@ -306,4 +332,8 @@
 %%
 %  EVALUATE RMIN = R
 %%
+%  IF MONITORING .EQ. TRUE THEN
+%   COPY '#SET MONI ON'
+%   EVALUATE MONITORING = FALSE
+%  END IF
 %END SCRIPT

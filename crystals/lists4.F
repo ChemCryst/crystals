@@ -351,6 +351,7 @@ C--SET THE RETURN VALUE AND EXIT
       GOTO 1800
 C--ERRORS FOUND
 1750  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       KFRM01=-1
 1800  CONTINUE
       RETURN
@@ -798,6 +799,7 @@ C--CHECK FOR END OF CARD
 C
 C--ERROR IN THIS SYMMETRY OPERATOR
 1750  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       JCAT=ICAT
       ICAT=1
       CALL XMONTR(0)
@@ -2736,6 +2738,7 @@ C
       LEF = LEF + 1
       GO TO 1000
 9810  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XMONTR(0)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9815 )
       WRITE ( CMON, 9815 )
@@ -2743,12 +2746,14 @@ C
 9815  FORMAT ( 1X, 'Illegal data card. ' )
       GO TO 9800
 9820  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0)   WRITE ( NCWU , 9825 )
       WRITE ( CMON, 9825 )
       CALL XPRVDU(NCVDU, 1,0)
 9825  FORMAT (' ERRORS during input')
       GOTO 9800
 9830  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0)  WRITE ( NCWU , 9835 )
       WRITE ( CMON, 9835 )
       CALL XPRVDU(NCVDU, 1,0)
@@ -3007,6 +3012,7 @@ C       EXPECT A NUMBER NEXT TIME
         IARG = +1
       ELSE
 C----- ERROR
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       GOTO 9850
       END IF
       IF (IEND .NE. 1)  GOTO 5000
@@ -3365,6 +3371,7 @@ C
 C
 C
 9710  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XERIOM (NCEXTR, IABS(I))
       WRITE ( CMON, 9711) CLINE(1:ISIZE), CARG
       IF (ISSPRT .EQ. 0) WRITE ( NCWU, '(A)') trim(CMON(1))
@@ -3372,6 +3379,7 @@ C
 9711  FORMAT (' End of file ', A, ' - item  "',A,'"  not found')
       GOTO 9900
 9720  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XERIOM (NCEXTR, IABS(I))
       WRITE ( CMON, 9721) CLINE(1:ISIZE), CARG
       IF (ISSPRT .EQ. 0) WRITE ( NCWU, '(A)') trim(CMON(1))
@@ -3379,14 +3387,17 @@ C
 9721  FORMAT (' Error in file ', A, ' - item  "',A,'"  not found')
       GOTO 9900
 9730  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE ( NCWU, 9731) CLINE(1:ISIZE)
       WRITE ( CMON, 9731) CLINE(1:ISIZE)
       CALL XPRVDU(NCVDU, 1,0)
 9731  FORMAT( ' Zero length element name')
 9800  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       LEF = LEF + 1
       GO TO 1000
 9810  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XMONTR(0)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9815 )
       WRITE ( CMON, 9815)
@@ -3394,18 +3405,21 @@ C
 9815  FORMAT ( 1X, 'Illegal data card. ' )
       GO TO 9800
 9820  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0)   WRITE ( NCWU , 9825 )
       WRITE ( CMON, 9825 )
       CALL XPRVDU(NCVDU, 1,0)
 9825  FORMAT (' ERRORS during input')
       GOTO 9800
 9830  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0)   WRITE ( NCWU , 9835 )
       WRITE ( CMON, 9835 )
       CALL XPRVDU(NCVDU, 1,0)
 9835  FORMAT ( ' ERRORS during internal read/writes')
       GOTO 9800
 9840  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XERIOM (NCEXTR, IABS(I))
       IF (ISSPRT .EQ. 0) WRITE ( NCWU, 9841)  NCEXTR, CLINE(1:ISIZE)
       WRITE ( CMON, 9841)  NCEXTR, CLINE(1:ISIZE)
@@ -3413,17 +3427,20 @@ C
 9841  FORMAT( ' FILE open error, UNIT ', I6, ' ', A)
       GOTO 9900
 9850  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE ( NCWU, 9851)
       WRITE ( CMON, 9851)
       CALL XPRVDU(NCVDU, 1,0)
 9851  FORMAT ( ' ERROR in formula card')
       GOTO 9900
 9860  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE ( NCWU, 9861)
       WRITE ( CMON, 9861)
       CALL XPRVDU(NCVDU, 1,0)
 9861  FORMAT ( ' No data on formula card')
 9870  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE ( NCWU, 9871)
       WRITE ( CMON, 9871)
       CALL XPRVDU(NCVDU, 1,0)

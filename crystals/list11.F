@@ -40,6 +40,7 @@ C--CHECK THAT THE LIST MAY BE PRINTED AND THEN LOAD IT
       IF(KPRTLN(I,J))1000,1050,1050
 C--LIST 11 IS NOT AVAILABLE
 1000  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XLINES
       GOTO 1150
 C--CLEAR THE STORE ALLOCATION
@@ -95,6 +96,7 @@ C--CHECK THAT THE LIST CAN LOADED AND THEN BRING IT DOWN
       IF(KPRTLN(I,J))1000,1050,1050
 C--LIST 11 CANNOT BE PRINTED
 1000  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XLINES
       GOTO 1100
 C--CLEAR THE SORE ALLOCATION
@@ -428,6 +430,8 @@ C
       RETURN
 C -- ERROR AND GENERAL RETURN
 9900  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
+c What happens if we get here? Just stop??
       END
 C
 CODE FOR XTYP11
@@ -940,6 +944,7 @@ C use KHUNTR to return IADDR, just to be on the safe side.
 C
 9900  CONTINUE
 C -- ERROR EXIT
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         IF ( IERFLG .LT. 0 ) THEN
            IF (ISSPRT .EQ. 0) WRITE(NCWU,1405)
            WRITE ( CMON ,1405)

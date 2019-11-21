@@ -862,6 +862,7 @@ C
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       KLEXAN = -1
       RETURN
 C
@@ -1147,6 +1148,7 @@ C--CREATE THE NECESSARY DATA RECORD AND SET THE COMMON BLOCK POINTERS
       IF(KCDRFI(ICOMMN,IDIMN,1))1200,1300,1300
 C--ERROR WHILE PERFORMING THE RECORD CREATION
 1200  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       GO TO 9900
 C--CHECK IF THE RECORD IS IN CORE
 1300  CONTINUE
@@ -1195,6 +1197,7 @@ C--RESET THE UPPER CORE LIMIT
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9905 ) IULN , ISTORE(MR61+11)
       WRITE ( CMON, 9905 ) IULN , ISTORE(MR61+11)
       CALL XPRVDU(NCEROR, 1,0)
@@ -1292,6 +1295,7 @@ C--SEARCH FOR THE PARAMETER KEYWORD
       IF(KFNDNP(IDWZAP))1150,1150,1300
 C--ERROR DURING PROCESSING OF THE NEW TITLE
 1150  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XMONTR(0)
       CALL XERHDR(0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1200)
@@ -1608,7 +1612,7 @@ C
 C
 C
 2150  CONTINUE
-      ISSMON=0 ! Turn monitoring back on
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 2200 )
       ENDIF
@@ -1621,6 +1625,7 @@ C
 C
 C -- ERROR - NEGATIVE NUMBER OF RECORDS
 C
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9905 ) IRECS
       ENDIF
@@ -1814,6 +1819,7 @@ C----- CHECKIF ITS A DELETED LIST
       IF(ISTORE(KD+4))1050,1150,1150
 C--ERROR BECAUSE THE LIST IS OPEN FOR WRITING
 1050  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPUMSG ( 6 , KD )
       GOTO 1200
 C--ALLOCATE SPACE FOR THIS LIST
@@ -2049,6 +2055,7 @@ c            print *, NRECOR, ios
         END DO
         GOTO 2740
 2735    CONTINUE
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         WRITE (CMON,'(A,I4)') 'Error copying scratch back to dsc: ',IOS
         CALL XPRVDU(NCVDU, 1,0)
         IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) trim(CMON(1))
@@ -2096,6 +2103,7 @@ C -- NEGATIVE INITIAL SIZE
 9920  CONTINUE
 C -- INPUT ERRORS
 CDJWAPR99
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE(CMON,'(A)') 'Filename limited to 16 characters'
       CALL XPRVDU(NCEROR, 1,0)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) trim(CMON(1))
@@ -2814,6 +2822,7 @@ C--PRINT THE LIST TYPE AND DETAILS
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9905 ) LN
       WRITE ( CMON, 9905 ) LN
       CALL XPRVDU(NCEROR, 1,0)

@@ -103,7 +103,6 @@
 ^^WI               @ 1,1 STATIC HPN 
 ^^WI               ' Number of reflections used is  '
 ^^WI               @ 1,2 STATIC _DIS_NREF '0     '
-
 ^^WI               @ 2,1 STATIC HPN 
 ^^WI               ' Number of filtered reflections '
 ^^WI               @ 2,2 STATIC _DIS_NFIL '0     '

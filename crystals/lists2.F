@@ -155,6 +155,7 @@ C--CHECK IF SUCH A LIST EXISTS
 C--LIST DOES NOT EXIST  -  PRINT THE ERROR MESSAGE
 1500  CONTINUE
       K=K+1
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       if(.not. present(nostop)) then
         IF (ISSPRT .EQ. 0) THEN
           WRITE(NCWU,1550)LN,IBUFF(1)
@@ -173,6 +174,7 @@ C--CHECK THE VALUE
 C--NOT THE CORRECT SERIAL NUMBER
 1650  CONTINUE
       K=K+1
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       if(.not. present(nostop)) then
         if(ILSMSG>0) then
           CALL OUTCOL(3)
@@ -224,6 +226,7 @@ C--LOAD THE RELEVANT INFORMATION FROM THE NEXT RECORD
 9900  CONTINUE
       RETURN
 9910  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       if(.not. present(nostop)) then
         IF (ISSPRT .EQ. 0) THEN
           WRITE ( NCWU , 9915 ) LN
@@ -239,6 +242,7 @@ C--LOAD THE RELEVANT INFORMATION FROM THE NEXT RECORD
       end if
       GO TO 9900
 9920  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       if(.not. present(nostop)) then
         IF (ISSPRT .EQ. 0) THEN
           WRITE ( NCWU , 9925 ) LN
@@ -255,6 +259,7 @@ C--LOAD THE RELEVANT INFORMATION FROM THE NEXT RECORD
       GO TO 9900
 9930  CONTINUE
 C -- LIST CANNOT BE LOADED BECAUSE OF INTERDEPENDCIES
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       if(.not. present(nostop)) then
         if(ILSMSG>0) then
           IF (ISSPRT .EQ. 0) THEN
@@ -1442,6 +1447,7 @@ C--TOO MUCH CORE HAS BEEN ALLOCATED
      2 1X,'record type ',I8)
 C--ERROR TERMINATION
 1100  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCM(0)
       CALL XERHND ( IERCAT )
 C--CHECK THAT THE ALLOCATED STORE CAN BE USED

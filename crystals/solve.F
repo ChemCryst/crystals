@@ -824,6 +824,7 @@ c Cholesky inversion + preconditioning
 c                print *, STR11(L11C:L11C+5)
                
             case default
+                if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
                 WRITE ( CMON, '(A,I8)') 
      1            '{E Error unknown invertor ', method
                 CALL XPRVDU(NCVDU, 1,0)
@@ -2981,6 +2982,7 @@ C -- ERRORS
       RETURN
 9910  CONTINUE
 C -- CORE OVEFLOW
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XICA
       CALL XERHND ( IERERR )
       GO TO 9900

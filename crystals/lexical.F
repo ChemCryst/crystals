@@ -381,7 +381,7 @@ C--
       use store_mod, only: istore=>i_store, store, c_store, i_store_set
       use store_mod, only: lfl
       use xopval_mod, only: iopcry, iopint, iopspc
-      use xssval_mod, only: issprt
+      use xssval_mod, only: issprt, issmon
       use xlexic_mod, only: lk, lk2, ma, mb, mc, md, me, mg, nwcard
       use xunits_mod, only: nceror, ncwu
       use xlisti_mod, only: lef
@@ -675,7 +675,7 @@ C--CHECK THAT THE LAST OPERAND IS ALLOWED
       IF (ISSPRT .EQ. 0) WRITE(NCWU,2450)J
       WRITE ( CMON, 2450) J
       CALL XPRVDU(NCEROR, 1,0)
-2450  FORMAT(' Illegal combination of arguments or characters',
+2450  FORMAT('{N Illegal combination of arguments or characters',
      2 ' at or before column ',I5)
 C--ERROR TERMINATION FOR THIS DIRECTIVE
       LEF=LEF+1
@@ -796,12 +796,12 @@ C -- INTERNAL ERROR
       CALL XOPMSG ( IOPCRY , IOPINT , 0 )
       GO TO 9900
 9930  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9935 )
       WRITE ( CMON, 9935 )
       CALL XPRVDU(NCEROR, 1,0)
-9935  FORMAT ( 1X , 'The numbers of ( and ) do not match ' )
+9935  FORMAT ( '{N The numbers of ( and ) do not match ' )
       GO TO 9900
-C
       END
 C
 C
@@ -1001,6 +1001,7 @@ C
       MF=MF-LK2
 
 1050  CONTINUE     !ERROR IN ATOM DEFINITION
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XADE(ISTORE(MF+1))
 
 1100  CONTINUE     !SET THE RETURN VALUE AND EXIT
@@ -1021,6 +1022,7 @@ C--SEARCH FOR THE ATOM IN LIST 5
 
 C--ATOM NOT IN LIST 5
 1300  CONTINUE
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       II=MQ+2
       CALL XPCLNN(LN)
       CALL XMISL5(1,ISTORE(MQ+1),II)
@@ -1052,6 +1054,7 @@ C--CHECK IF THIS IS AN 'UNTIL' TYPE OF COMMAND
 1650  CONTINUE                   !ERROR IN AN 'UNTIL' SEQUENCE
       MF=MF-LK2
 1700  CONTINUE
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN(LN)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1750)BLANKS(1:ISTORE(MF+1)+6),
      1                                   ISTORE(MF+1)
@@ -1130,6 +1133,7 @@ C--CHECK THE REPLY
       IF(KA)1100,1100,1150
 C--ERROR DURING THE PROCESSING
 1100  CONTINUE
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       KATOMH=0
       GOTO 1200
 C--ATOM HEADER OUTPUT OKAY
@@ -1397,6 +1401,7 @@ c----- store the orginal parameter index in the list
 
 C--GENERAL ERROR ROUTINE
 1000  CONTINUE
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       KATOMG=-1
 
 1050  CONTINUE
@@ -2013,6 +2018,7 @@ C--CHECK THE REPLY
 C--ERROR DURING THE PROCESSING OF AN OVERALL PARAMETER
 1000  CONTINUE
       MF=MF-LK2
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XSFDE(ISTORE(MF+1))
 C--ASSIGN THE VALUE AND RETURN
 1050  CONTINUE
@@ -2062,6 +2068,7 @@ C--'UNTIL' SEQUENCE ERROR
 1600  CONTINUE
       LEF=LEF+1
       MF=MF-LK2
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1650)ISTORE(MF+1)
       WRITE ( CMON, 1650) ISTORE(MF+1)
       CALL XPRVDU(NCEROR, 1,0)
@@ -2238,6 +2245,7 @@ C--CHECK FOR A '(' AFTER THE TYPE OF SCALE
       IF(KOP(6))1400,1600,1450
 C--NO MORE ON THE CARD  -  THIS IS AN ERROR
 1400  CONTINUE
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       LEF=LEF+1
       KOVPMG=-1
       GOTO 1100
@@ -2336,6 +2344,7 @@ C--CHECK IF THERE ARE ANY SCALES OF THIS TYPE STORED
       IF(J)1050,1050,1150
 C--SET THE ERROR FLAG AND RETURN
 1050  CONTINUE
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       LEF=LEF+1
       KOVPMF=-1
 1100  CONTINUE
@@ -2403,7 +2412,7 @@ C
       INCLUDE 'QSTORE.INC'
 C
 C--CHECK IF A ANY LINES SHOULD BE OUTPUT
-      ISSMON=0 !TURN ON MONITORING
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF(IADV)1150,1150,1000
 C--OUTPUT SOME BLANK LINES
 1000  CONTINUE
@@ -2415,6 +2424,7 @@ C--OUTPUT SOME BLANK LINES
 1100  CONTINUE
 C--UPDATE THE ERROR COUNTER
 1150  CONTINUE
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       LEF=LEF+1
 C--COMPUTE THE TRUE TYPE
       JTYPE=ITYPE-ITYPE/1024*1024
@@ -2613,6 +2623,7 @@ C--CHECK FOR END OF CARD
 C--END OF CARD FOUND
 1000  CONTINUE
       MF=MF-LK2
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XILARG(ISTORE(MF+1))
       GOTO 1250
 C--CHECK THE TYPE OF THE NEXT ARGUMENT(S)
@@ -2620,10 +2631,12 @@ C--CHECK THE TYPE OF THE NEXT ARGUMENT(S)
       IF(KSYNUM(ZZ))1100,1200,1150
 C--ILLEGAL VARIABLE
 1100  CONTINUE
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XILOPD(ISTORE(MF+1))
       GOTO 1250
 C--ILLEGAL OPERATOR
 1150  CONTINUE
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XILOP(ISTORE(MF+1))
       GOTO 1250
 C--NUMBER FOUND OKAY
@@ -2910,7 +2923,7 @@ C
       
       integer l
 C
-      ISSMON = 0
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN(LN)
       l=min(len(blanks)-6, in)
       WRITE ( CMON, 1000) BLANKS(1:l+6),IN
@@ -2933,7 +2946,7 @@ C
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XCONST.INC'
 C
-      ISSMON = 0
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN(LN)
       IN = MIN ( IN, 88-6 ) ! Calls for some continued L16 
       IN = MAX ( IN, 0  ) ! records will otherwise fail.
@@ -2957,7 +2970,7 @@ C
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XCONST.INC'
 C
-      ISSMON = 0
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN(LN)
       WRITE ( CMON, 1000) BLANKS(1:IN+6),IN
       CALL XPRVDU(NCEROR, 2,0)
@@ -2979,7 +2992,7 @@ C
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XIOBUF.INC'
 C
-      ISSMON=0 ! Turn monitoring back on
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IDWZAP = IN
       CALL XPCLNN(LN)
       WRITE ( CMON, 1000)
@@ -3001,7 +3014,7 @@ C
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XCONST.INC'
 C
-      ISSMON=0 ! Turn monitoring back on
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN(LN)
       WRITE ( CMON, 1000) BLANKS(1:IN+6),IN
       CALL XPRVDU(NCEROR, 2,0)
@@ -3022,7 +3035,7 @@ C
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XCONST.INC'
 C
-      ISSMON = 0
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN(LN)
       WRITE ( CMON, 1000) BLANKS(1:IN+6),IN
       CALL XPRVDU(NCEROR, 2,0)
@@ -3047,7 +3060,7 @@ C--
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XCONST.INC'
 C
-      ISSMON=0 ! Turn monitoring back on
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN(LN)
       WRITE ( CMON, 1000) BLANKS(1:IN+6),IN
       CALL XPRVDU(NCEROR, 2,0)
@@ -3073,7 +3086,7 @@ C--
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XCONST.INC'
 C
-      ISSMON=0 ! Turn monitoring back on
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN(LN)
       WRITE ( CMON, 1000) BLANKS(1:IN+6),IN
       CALL XPRVDU(NCEROR, 2,0)
@@ -3095,7 +3108,7 @@ C
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XCONST.INC'
 C
-      ISSMON=0 ! Turn monitoring back on
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN(LN)
       WRITE ( CMON, 1000) BLANKS(1:IN+6),OP,IN
       CALL XPRVDU(NCEROR, 2,0)
@@ -3125,7 +3138,7 @@ C
 C
       INCLUDE 'QSTORE.INC'
 C
-      ISSMON=0 ! Turn monitoring back on
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
 C--CHECK IF THIS CARD IMAGE HAS ALREADY BEEN PRINTED
       IF(MA-LARG)1000,1350,1000
 C--CHECK IF IT IS NECESSARY TO PRINT THE HEADING
@@ -3178,7 +3191,7 @@ C --
       XLXRDV=VALUE
       RETURN
 9500  CONTINUE
-      ISSMON=0 ! Turn monitoring back on
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE ( CMON, 9510)
       CALL XPRVDU(NCEROR, 1,0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')TRIM(CMON(1)(3:))
@@ -3207,7 +3220,7 @@ C -- READ A VALUE
       RETURN
 9500  CONTINUE
 C -- ERROR NO VALUE HAS BEEN GIVEN
-      ISSMON=0 ! Turn monitoring back on
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE ( CMON, 9510)
       CALL XPRVDU(NCEROR, 1,0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')TRIM(CMON(1)(3:))

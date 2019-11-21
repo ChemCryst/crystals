@@ -202,6 +202,7 @@ C--CHECK FOR SOME ARGUMENTS
       IF(KFDARG(I))1300,1320,1320
 C--ERROR(S)  -  INCREMENT THE ERROR COUNT
 1300  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       LEF1=LEF1+1
       GOTO 1100
 C--CHECK IF THERE ARE MORE ARGUMENTS ON THIS CARD
@@ -268,6 +269,7 @@ C      CONVERT TO COLUMN-WISE
 C
 C--ERROR IN THE INPUT NUMBER
 3950  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN(LN)
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,4000)
@@ -1643,6 +1645,7 @@ C -- RELEASE WORK SPACE
       CALL XSTRLL(ISCALE)
       RETURN
 9800  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) THEN
       WRITE (NCWU,9801)
       ENDIF
@@ -1652,6 +1655,7 @@ C -- RELEASE WORK SPACE
 9801  FORMAT (' Inversion process has failed to converge  ')
       GO TO 9900
 9810  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) THEN
       WRITE (NCWU,9811)
       ENDIF
@@ -1660,6 +1664,7 @@ C -- RELEASE WORK SPACE
       CALL XPRVDU(NCVDU, 1,0)
 9811  FORMAT (' Trace of inverse has become zero   ')
 9900  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) THEN
       WRITE (NCWU,9901)
       ENDIF

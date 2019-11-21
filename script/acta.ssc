@@ -364,7 +364,7 @@
 %    END IF
 %  END BLOCK
 %%
-%% Flack parameter.
+%% Flack parameter.  Think about calling XABSOLUTE instead
 %%
 {I Checking Flack parameter (if refined).
 %  BLOCK

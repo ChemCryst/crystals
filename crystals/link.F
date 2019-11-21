@@ -394,6 +394,7 @@ c
       IF (LSTNUM .EQ. 0 ) GOTO 1300
         IF (  KEXIST ( LSTNUM )  ) 1210 , 1200 , 1220
 1200    CONTINUE
+          if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
           WRITE ( NCAWU , 1205 ) LSTNUM
           IF ( ISSPRT .EQ. 0) WRITE(NCWU, 1205) LSTNUM
           WRITE ( CMON, 1205 ) LSTNUM
@@ -402,6 +403,7 @@ c
           IERROR = -1
           GOTO 1300
 1210    CONTINUE
+          if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
           WRITE ( NCAWU , 1215 ) LSTNUM
           IF ( ISSPRT .EQ. 0) WRITE(NCWU, 1215) LSTNUM
           WRITE ( CMON, 1215 ) LSTNUM
@@ -1899,6 +1901,7 @@ C
 9000  CONTINUE
       RETURN
 9100  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE ( CMON, 9150 ) ILINK
       CALL XPRVDU(NCVDU, 1,0)
       IF (ISSPRT .EQ. 0) THEN
@@ -1909,6 +1912,7 @@ C
       GO TO 9900
 C
 9200  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE ( CMON, 9250 )
       CALL XPRVDU(NCVDU, 1,0)
       IF (ISSPRT .EQ. 0) THEN
@@ -1920,6 +1924,7 @@ C
 C
 9900  CONTINUE
 C -- ERRORS DETECTED
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       I = KFLCLS(NCFPU1)
       I = KFLCLS(NCFPU2)
       CALL XERHND ( IERWRN )
@@ -2367,6 +2372,7 @@ c
         IF (  KEXIST ( LSTNUM )  ) 1210 , 1200 , 1220
 C
 1200    CONTINUE
+       if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         WRITE ( NCAWU , 1205 ) LSTNUM
         IF ( ISSPRT .EQ. 0) WRITE(NCWU, 1205) LSTNUM
         WRITE ( CMON, 1205 ) LSTNUM
@@ -2376,6 +2382,7 @@ C
         GOTO 1300
 C
 1210    CONTINUE
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         WRITE ( NCAWU , 1215 ) LSTNUM
         IF ( ISSPRT .EQ. 0) WRITE(NCWU, 1215) LSTNUM
         WRITE ( CMON, 1215 ) LSTNUM
@@ -2483,6 +2490,7 @@ C
       RETURN
 C
 9930      CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE(NCAWU,9940)
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,9940)

@@ -380,6 +380,7 @@ C--AND NOW THE 'END'
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 5 )
       RETURN
       END
@@ -453,6 +454,7 @@ C      IF(ABS(STORE(M5+3))-UISO)1250,1350,1350
       RETURN
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 5 )
       END
 C
@@ -612,6 +614,7 @@ C-C-C-ISO/SPHERE/LINE/RING
       RETURN
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 5 )
       RETURN
       END
@@ -959,6 +962,7 @@ C
 C----- ANY ATOM CARDS ?
       IF (ISTORE(M38LK +1)) 1300,1300,1400
 1300  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE(NCAWU,1350)
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1350)
@@ -999,6 +1003,7 @@ C--AND NOW THE 'END'
       RETURN
 C
 8200  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,8300)
       ENDIF
@@ -1009,6 +1014,7 @@ C
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 38 )
       RETURN
       END
@@ -1174,6 +1180,7 @@ C--TERMINATE THE LIST
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 6 )
       RETURN
       END
@@ -1252,6 +1259,7 @@ C--TERMINATE THE LIST
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 6 )
       RETURN
       END
@@ -1439,6 +1447,7 @@ C--END OF THE REFLECTIONS  -  OUTPUT THE TERMINATOR
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 6 )
       END
 CODE FOR XPCH6C                                                       !PUNCH 6 B, E, H
@@ -1527,6 +1536,7 @@ C   OPEN A DEFAULT FILE IF ONE ISN'T ALREADY ATTACHED
         CALL XFAL25
         IF (IERFLG .LT. 0) GOTO 9900
         IF (KEXIST(9) .LT. 1) THEN
+         if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
          WRITE(CMON,'('' No ESDS available'')')
          CALL XPRVDU(NCVDU, 1,0)
 C        NOTE: esds set to zero below if L 9 does not exist
@@ -2176,6 +2186,7 @@ C--PUNCH THE REFLECTION
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 6 )
       RETURN
       END
@@ -2334,6 +2345,7 @@ C--TERMINATE THE LIST
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 6 )
       RETURN
       END
@@ -2490,6 +2502,7 @@ c      WRITE(NCPU,1200)I
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 6 )
       RETURN
       END
@@ -2843,6 +2856,7 @@ C--AND NOW THE 'END'
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 38 )
       RETURN
       END
@@ -2898,6 +2912,7 @@ C--AND NOW THE 'END'
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 38 )
       RETURN
       END
@@ -3031,6 +3046,7 @@ C--AND NOW THE 'END'
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 38 )
       RETURN
       END
@@ -3372,7 +3388,7 @@ C
       WRITE(NCPU,100) ISTORE(L4C), MD4,  CVALUE(1:LVALUE),
      1    STORE(L4F),STORE(L4F+1), CNY(ISTORE(L4C+2)+1),
      2    CNY(ISTORE(L4C+3)+1), STORE(L4F+2), STORE(L4F+3),
-     3    STORE(L4F+4),STORE(L4F+5)
+     3    STORE(L4F+4),STORE(L4F+6)
       
 101   FORMAT('PARAM ',9F12.6)
       IF ( MD4 .GT. 0 ) THEN
@@ -4225,6 +4241,7 @@ C--TERMINATE THE LOOP
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 6 )
       RETURN
       END
