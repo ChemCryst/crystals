@@ -3086,7 +3086,7 @@ C-C-C-CALC. OF THE TRICLINIC COORD. OF LINE IN REAL SPACE
       LINZ=LINCX*CATRI31+LINCY*CATRI32+LINCZ*CATRI33
 C-C-C-CALC. OF SYMMETRY-EQUIVALENT DIRECTIONS (TRANSF. OF VECTOR-
 C-C-C-END-POINT BY ROTATIONAL PART ONLY)
-      LINX=LINX*STORE(M2LI)+LINY*STORE(M2LI+1)+LINZ*STORE(M2LI+2)  !Crazy - check this overwrite.
+      LINX=LINX*STORE(M2LI)+LINY*STORE(M2LI+1)+LINZ*STORE(M2LI+2)  !todo: Crazy - check this overwrite.
       LINY=LINX*STORE(M2LI+3)+LINY*STORE(M2LI+4)+LINZ*STORE(M2LI+5)
       LINZ=LINX*STORE(M2LI+6)+LINY*STORE(M2LI+7)+LINZ*STORE(M2LI+8)
 C-C-C-CALC. DOT-PRODUCT OF HKL-VECTOR AND LINE-VECTOR IN REC. SPACE
@@ -3629,10 +3629,13 @@ c--calculate the information for the symmetry positions
 c compute h' = S.h
         STORE(M2T)=STORE(M6)*STORE(M2)+STORE(M6+1)*STORE(M2+3)
      2   +STORE(M6+2)*STORE(M2+6)
+      write(1234,*) "store(m2t) = ", store(m2t)
         STORE(M2T+1)=STORE(M6)*STORE(M2+1)+STORE(M6+1)*STORE(M2+4)
      2   +STORE(M6+2)*STORE(M2+7)
+      write(1234,*) "store(m2t+1) = ", store(m2t+1)
         STORE(M2T+2)=STORE(M6)*STORE(M2+2)+STORE(M6+1)*STORE(M2+5)
      2   +STORE(M6+2)*STORE(M2+8)
+      write(1234,*) "store(m2t+2) = ", store(m2t+2)
 c calculate the h.t terms
         STORE(M2T+3)=(STORE(M6)*STORE(M2+9)+STORE(M6+1)*STORE(M2+10)
      2   +STORE(M6+2)*STORE(M2+11))
@@ -3857,7 +3860,7 @@ c Special shapes
               CALL XRING (M2, ST, M5A,M6,SLRFAC,DSIZE,DDECLINA,DAZIMUTH)
             ELSE IF (NINT(FLAG)==5) THEN
               write(1234, *) "STORE(M5ARI+12) = ", STORE(M5A + 12)
-              CALL XROTOR (4, M5A, M6, M2T, SST, AROTOR, BROTOR) !, DSIZE, DDECLINA, DAZIMUTH) todo: add these extra inputs
+              CALL XROTOR (3, M5A, M6, M2T, SST, AROTOR, BROTOR) !, DSIZE, DDECLINA, DAZIMUTH) todo: add these extra inputs
             END IF
 
             T=Tiso(LJY)

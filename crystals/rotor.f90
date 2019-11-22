@@ -1,11 +1,11 @@
-SUBROUTINE XROTOR (NORD, M5ARI, M6RI, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH)
+SUBROUTINE XROTOR (NORD, M5ARI, M6RI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH)
     use xconst_mod, only : twopi
     use xlst01_mod
     COMMON/BESS/DBJB(20), DBIB, LM(6), RIRA, TD, TE, MODE
     COMMON/ROTOR/ ACAL, BCAL, KSEL(100)
     INCLUDE 'ISTORE.INC'
     INTEGER NORD, QW, NK, PA, PNA, INV1, NAA, NAD
-    REAL REFLH, REFLK, REFLL
+    REAL REFLH, REFLK, REFLL, HT
     REAL Q1, Q2, Q3, Q4, Q5, Q6
     REAL XC, YC, ZC, GP, BB, BD, CC, DD
     REAL XETA, ANGLE, ANGLEDD, ANGLEED, ANGLEE, ANGLED, TCOM, BIO
@@ -32,11 +32,12 @@ SUBROUTINE XROTOR (NORD, M5ARI, M6RI, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUT
     BEA = 0.
     MODE = 0
 
-    PA = 2 !todo: this DEFINITELY needs changing/setting somewhere else
+    PA = 2 !todo: this shouldn't be set to this
 
-    REFLH = STORE(M6RI)
-    REFLK = STORE(M6RI + 1)
-    REFLL = STORE(M6RI + 2)
+    REFLH = STORE(M2T) / TWOPI      ! Wasteful, but required.
+    REFLK = STORE(M2T + 1) / TWOPI
+    REFLL = STORE(M2T + 2) / TWOPI
+    HT = STORE(M2T + 3) / TWOPI
     RIRA = STORE(M5ARI + 8)
 
     CLIMIT = 0.001
@@ -69,28 +70,27 @@ SUBROUTINE XROTOR (NORD, M5ARI, M6RI, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUT
     write(123,*) "REFLH = STORE(M6RI) = ", REFLH
     write(123,*) "REFLK = STORE(M6RI+1) = ", REFLK
     write(123,*) "REFLL = STORE(M6RI+2) = ", REFLL
-    write(123,*) "GP = STORE(M5ARI + 2) = ", GP
-    write(123,*) "XC = STORE(M5ARI + 4) = ", XC
-    write(123,*) "YC = STORE(M5ARI + 5) = ", YC
-    write(123,*) "ZC = STORE(M5ARI + 6) = ", ZC
-    write(123,*) "BB = STORE(M5ARI + 7) = ", BB
-    write(123,*) "RIRA = STORE(M5ARI + 8) = ", RIRA
-    write(123,*) "ANGLEDD = STORE(M5ARI + 9) = ", ANGLEDD
-    write(123,*) "ANGLEED = STORE(M5ARI + 10) = ", ANGLEED
-    write(123,*) " XXID = STORE(M5ARI + 11) = ", XXID
+    !    write(123,*) "GP = STORE(M5ARI + 2) = ", GP
+    !    write(123,*) "XC = STORE(M5ARI + 4) = ", XC
+    !    write(123,*) "YC = STORE(M5ARI + 5) = ", YC
+    !    write(123,*) "ZC = STORE(M5ARI + 6) = ", ZC
+    !    write(123,*) "BB = STORE(M5ARI + 7) = ", BB
+    !    write(123,*) "RIRA = STORE(M5ARI + 8) = ", RIRA
+    !    write(123,*) "ANGLEDD = STORE(M5ARI + 9) = ", ANGLEDD
+    !    write(123,*) "ANGLEED = STORE(M5ARI + 10) = ", ANGLEED
+    !    write(123,*) " XXID = STORE(M5ARI + 11) = ", XXID
     write(123,*) "BD = STORE(M5ARI + 12) = ", BD
 
     !SET I0
     call BESSELI(BSUM, 0, BD)
     BIO = bsum
-    write (123,*) "BD= ", BD, "BIO=", BIO
+!    write (123,*) "BD= ", BD, "BIO=", BIO
     !SET Ip FROM 1 TO 20
     DO JP = 1, 20
         call BESSELI(BSUM, JP, BD)
         BIA(JP) = bsum
-        write (123,*) "JP=", JP, "BD= ", BD, "BIA=", BIA(JP)
+!        write (123,*) "JP=", JP, "BD= ", BD, "BIA=", BIA(JP)
     END DO
-    
 
     TE = 0.
     TD = 0.
@@ -118,9 +118,9 @@ SUBROUTINE XROTOR (NORD, M5ARI, M6RI, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUT
 
     ICODE = 0
     !        CALL SYM
-    !        PHI = TWOPI * (REFLH * XC + REFLK * YC + REFLL * ZC + T)
-    !        CP = COS(PHI) !* TF
-    !        SP = SIN(PHI) !* TF+
+    !    PHI = TWOPI * (REFLH * XC + REFLK * YC + REFLL * ZC + HT )  ! + T)
+    !    CP = COS(PHI) !* TF
+    !    SP = SIN(PHI) !* TF
     !calculate c(CC) and d(DD) and then a'
     XK1 = REFLH * Q1 + REFLK * Q2 + REFLL * Q3
     XK2 = REFLL * Q6
@@ -240,37 +240,37 @@ SUBROUTINE XROTOR (NORD, M5ARI, M6RI, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUT
     12    IF (MODE==1) GO TO 7
     SUM(1) = (SUM(1) - SUM(6) * DBIB) / BIO
     DO IA = 1, 5
-        !            DELMC(NAA, IA) = SUM(IA) * CP + DELMS(NAA, IA)
-        DELMC(NAA, IA) = SUM(IA) + DELMS(NAA, IA)
-        !            DELMS(NAA, IA) = SUM(IA) * SP + DELMS(NAA, IA)
-        DELMS(NAA, IA) = SUM(IA) + DELMS(NAA, IA)
+!        DELMC(NAA, IA) = SUM(IA) * CP + DELMS(NAA, IA)
+                DELMC(NAA, IA) = SUM(IA) + DELMS(NAA, IA)
+!        DELMS(NAA, IA) = SUM(IA) * SP + DELMS(NAA, IA)
+                DELMS(NAA, IA) = SUM(IA) + DELMS(NAA, IA)
     end do
 !    IF((KSEL(L + 1) + KSEL(L + 2) + KSEL(L + 3))==0) GO TO 7 !todo: what is KSEL
-    !        DELC(NAA, 1) = DELC(NAA, 1) + CP * SUM(6) * RH
-    !        DELC(NAA, 2) = DELC(NAA, 2) + CP * SUM(6) * RK
-    !        DELC(NAA, 3) = DELC(NAA, 3) + CP * SUM(6) * RL
-    !        DELS(NAA, 1) = DELS(NAA, 1) + SP * SUM(6) * RH
-    !        DELS(NAA, 2) = DELS(NAA, 2) + SP * SUM(6) * RK
-    !        DELS(NAA, 3) = DELS(NAA, 3) + SP * SUM(6) * RL
-    DELC(NAA, 1) = DELC(NAA, 1) + SUM(6) * REFLH
-    DELC(NAA, 2) = DELC(NAA, 2) + SUM(6) * REFLK
-    DELC(NAA, 3) = DELC(NAA, 3) + SUM(6) * REFLL
-    DELS(NAA, 1) = DELS(NAA, 1) + SUM(6) * REFLH
-    DELS(NAA, 2) = DELS(NAA, 2) + SUM(6) * REFLK
-    DELS(NAA, 3) = DELS(NAA, 3) + SUM(6) * REFLL
-    !        7     DELMC(NAA, 6) = SUM(6) * CP + DELMC(NAA, 6)
-    7     DELMC(NAA, 6) = SUM(6) + DELMC(NAA, 6)
-    !        DELMC(NAA, 6) = SUM(6) * SP + DELMS(NAA, 6)
-    DELMC(NAA, 6) = SUM(6) + DELMS(NAA, 6)
+!    DELC(NAA, 1) = DELC(NAA, 1) + CP * SUM(6) * REFLH
+!    DELC(NAA, 2) = DELC(NAA, 2) + CP * SUM(6) * REFLK
+!    DELC(NAA, 3) = DELC(NAA, 3) + CP * SUM(6) * REFLL
+!    DELS(NAA, 1) = DELS(NAA, 1) + SP * SUM(6) * REFLH
+!    DELS(NAA, 2) = DELS(NAA, 2) + SP * SUM(6) * REFLK
+!    DELS(NAA, 3) = DELS(NAA, 3) + SP * SUM(6) * REFLL
+        DELC(NAA, 1) = DELC(NAA, 1) + SUM(6) * REFLH
+        DELC(NAA, 2) = DELC(NAA, 2) + SUM(6) * REFLK
+        DELC(NAA, 3) = DELC(NAA, 3) + SUM(6) * REFLL
+        DELS(NAA, 1) = DELS(NAA, 1) + SUM(6) * REFLH
+        DELS(NAA, 2) = DELS(NAA, 2) + SUM(6) * REFLK
+        DELS(NAA, 3) = DELS(NAA, 3) + SUM(6) * REFLL
+!    7     DELMC(NAA, 6) = SUM(6) * CP + DELMC(NAA, 6)
+        7     DELMC(NAA, 6) = SUM(6) + DELMC(NAA, 6)
+!    DELMC(NAA, 6) = SUM(6) * SP + DELMS(NAA, 6)
+        DELMC(NAA, 6) = SUM(6) + DELMS(NAA, 6)
     IF(NAA==2) GO TO 15
 
     AT = DELMC(1, 6) - DELMS(2, 6)
-    ACAL = ACAL + AT
+!    ACAL = ACAL + AT !ACAL isn't actually used anywhere
     IF (NAD==2) GO TO 40
     BT = DELMC(2, 6) + DELMS(1, 6)
-    BCAL = BCAL + BT
-    WRITE(123,*) "AT= ", AT
-    WRITE(123,*) "BT= ", BT
+!    BCAL = BCAL + BT !this isn't used anywhere either
+    WRITE(123,*) "AROTOR= ", AT
+    WRITE(123,*) "BROTOR= ", BT
     40    IF(MODE==1) GO TO 9
     !    !!!CALCULATION OF DELF(POPULATION FACTOR) [39] (calculated at a higher level)
     !    IF(KSEL(L)==0) GO TO 58
