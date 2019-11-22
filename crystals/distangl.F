@@ -1300,10 +1300,10 @@ c     3     'You must do another cycle of refinement')
            GO TO 9900
         ENDIF
         IF(ISTORE(L11P+15).GE.0) THEN
-           IF (ISSPRT .EQ. 0) WRITE(NCWU,1500)
            WRITE ( CMON ,1500)
            CALL XPRVDU(NCVDU, 3,0)
-1500       FORMAT(' Matrix is wrong type for e.s.d.''s')
+           IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') TRIM(CMON(1)(3:))
+1500       FORMAT('{E Matrix is wrong type for e.s.d.''s')
            CALL XERHND ( IERWRN )
            IESD=-1
            GOTO 9900
@@ -5509,16 +5509,15 @@ C - Hand back the work area.
 C
 9000  CONTINUE
       if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,9100)
       WRITE ( CMON ,9100)
       CALL XPRVDU(NCVDU, 1,0)
-9100  FORMAT(' Error allocating space for e.s.d. calculation')
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')TRIM(CMON(1)(3:))
+9100  FORMAT('{E Error allocating space for e.s.d. calculation')
 9900  CONTINUE
 c dec09
 c      write(ncwu,'(a,5i8,(10x,5i8))') 'Xcovar out', 
 c     1 LS, NS, NW, LF, JA,
 c     2 (IPART(itemp), itemp=1, NATOM)
-
       RETURN
       END
 C
@@ -6707,7 +6706,7 @@ C -- INPUT ERRORS
       GO TO 9900
 9920  CONTINUE
 C -- Default card more than once.
-      WRITE(CMON,'(A)')'The DEFAULTS card may only appear once.'
+      WRITE(CMON,'(A)')'{E The DEFAULTS card may only appear once.'
       CALL XPRVDU(NCVDU, 1,0)
       GO TO 9900
 

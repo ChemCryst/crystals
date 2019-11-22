@@ -2753,7 +2753,7 @@ C--END OF THE REFLECTIONS  -  PRINT THE R-VALUES ETC.
        WRITE ( CMON, 5851)
        CALL XPRVDU(NCVDU, 1,0)
        IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') trim(cmon(1)(3:))
-       5851   FORMAT(
+5851   FORMAT(
      1 '{E No reflections have been used for the Structure Factor',
      2 ' calculation')
          R = 0.
@@ -2899,7 +2899,7 @@ C------ SIGMA FO .LE. ZERO ---- SUGGESTS PROBABLY NO CALCULATION
       WRITE ( CMON, 19945)
       CALL XPRVDU(NCVDU, 2,0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(a)') trim(cmon(1)(3:)),
-     1 trim(cmon(2)(3:)
+     1 trim(cmon(2)(3:))
 19945 FORMAT('{E The denominator for the R factor ',
      1 'is less than or equal to zero.',/,
      2 '{E No structure factors have been stored.')

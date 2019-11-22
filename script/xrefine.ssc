@@ -169,7 +169,6 @@
 ^^CR
 %      IF VALUE .EQ. 1 THEN
 %       EVALUATE MONITORING = TRUE
-% SHOW MONITORING
 %       COPY '#SET MONI FAST'
 %      END IF
 %%

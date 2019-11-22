@@ -37,7 +37,6 @@
 %          EVALUATE SETADP = 2                                                  
 %          COPY '#SCRIPT XWRITE5'                                               
 {S Is this a good place to check absolute configuration?
-% show fdone
 %          if .not. fdone then
 {S Checking abs config
 %          copy '#set monitor fast'

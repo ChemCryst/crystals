@@ -96,7 +96,7 @@ C----- CHECK IF LIST 23 IS TO BE CHECKED
       END IF
       IF (IUPDAT .GE. 0) IACTN=MAX0(0,IACTN)
       WRITE ( CMON,886) TOLER
-      CALL XPRVDU(NCVDU, 1,0)
+c      CALL XPRVDU(NCVDU, 1,0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
 886   FORMAT(5X,' Checking SPECIAL positions subject to tolerance of ',
      1 G10.5, ' Angstrom')
