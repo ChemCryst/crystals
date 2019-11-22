@@ -32,7 +32,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M6RI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DA
     BEA = 0.
     MODE = 0
 
-    PA = 2 !todo: this shouldn't be set to this
+    PA = 2 !todo: this needs changing/setting somewhere else
 
     REFLH = STORE(M2T) / TWOPI      ! Wasteful, but required.
     REFLK = STORE(M2T + 1) / TWOPI
