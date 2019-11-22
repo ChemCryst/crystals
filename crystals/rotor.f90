@@ -4,7 +4,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M6RI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DA
     COMMON/BESS/DBJB(20), DBIB, LM(6), RIRA, TD, TE, MODE
     COMMON/ROTOR/ ACAL, BCAL, KSEL(100)
     INCLUDE 'ISTORE.INC'
-    INTEGER NORD, QW, NK, PA, PNA, INV1, NAA, NAD
+    INTEGER NORD, QW, NK, PNA, INV1, NAA, NAD
     REAL REFLH, REFLK, REFLL, HT
     REAL Q1, Q2, Q3, Q4, Q5, Q6
     REAL XC, YC, ZC, GP, BB, BD, CC, DD
@@ -32,8 +32,6 @@ SUBROUTINE XROTOR (NORD, M5ARI, M6RI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DA
     BEA = 0.
     MODE = 0
 
-    PA = 2 !todo: this needs changing/setting somewhere else
-
     REFLH = STORE(M2T) / TWOPI      ! Wasteful, but required.
     REFLK = STORE(M2T + 1) / TWOPI
     REFLL = STORE(M2T + 2) / TWOPI
@@ -58,6 +56,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M6RI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DA
     ANGLED = ANGLEDD * TWOPI / 3.6
     ANGLEE = ANGLEED * TWOPI / 3.6
     XXI = XXID * TWOPI / 3.6
+    write(12345,*) "XI =", XXI
     !GET THE MATRIC ELEMENTS (Q1-Q6) todo: name change?
     Q1 = STORE(L1O2 + 0)
     Q2 = STORE(L1O2 + 1)
@@ -95,8 +94,6 @@ SUBROUTINE XROTOR (NORD, M5ARI, M6RI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DA
     TE = 0.
     TD = 0.
     QW = 0.
-    !    BPOS = 1.0
-    BNEG = -1.0
     NK = MOD(NORD, 2) + 1 !ORDER OF RING EVEN, NK=1. ORDER ODD, NK=2
     CD = COS(ANGLED)
     SD = SIN(ANGLED)
@@ -129,6 +126,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M6RI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DA
     DD = TWOPI * RIRA * (XK1 * SD * SE + XK3 * CE * SD)
     AP = SQRT(CC**2 + DD**2)
     XETA = ACOS(CC / AP)
+    write(12345,*) "ETA =", XETA
     IF (DD<0.0) XETA = -XETA
     ANGLE = NORD * (XXI - XETA) !THIS IS THE ANGLE n(xi - nu)
     IF (MODE==1) GO TO 2
@@ -193,11 +191,21 @@ SUBROUTINE XROTOR (NORD, M5ARI, M6RI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DA
         !        PA = FLOAT(JP)
         !        PNA = PA * NORD
         PNA = JP * NORD
-        CU = COS(PA * ANGLE) !cos(pn(xi-eta))
-        SU = SIN(PA * ANGLE) !sin(pn(xi-eta))
+        CU = COS(JP * ANGLE) !cos(pn(xi-eta))
+        SU = SIN(JP * ANGLE) !sin(pn(xi-eta))
         TCOM = 2. * SIGN * BIA(JP) / BIO
         E = SNGL(AP) !E=a' CONVERTED TO A REAL NUMBER
         CALL BESSELJ (BJ, PNA, E)
+        write(12345,*) "BJ =", BJ
+        write(12345,*) "PNA =", PNA
+        write(12345,*) "E (a') =", E
+        write(12345,*) "JP =", JP
+        write(12345,*) "NK =", NK
+        write(12345,*) "SIGN =", SIGN
+        write(12345,*) "ANGLE =", ANGLE
+        write(12345,*) "NAA =", NAA
+        write(12345,*) "NPRIME =", NPRIME
+        write(12345,*) "****"
         IF (MODE==1) GO TO 34 !i.e. skip a load of derivation bits
         IF (LM(1)==0) GO TO 30
         !!!CALCULATION OF dM/d(Bd) [42]
@@ -306,9 +314,8 @@ END
 
 SUBROUTINE BESSELI(BSUM, PP, XZ) !BSIGN=1.0
     COMMON/BESS/DBJB(20), DBIB, LM(6), RIRA, TD, TE, MODE
-    REAL BTERM, BRTERM, DRTERM, BJTERM
+    REAL BTERM, BRTERM, DRTERM, BJTERM, CLIMIT
     INTEGER LB(5), PP
-    REAL CLIMIT
 
     JP = 0
     BTERM = 1.
@@ -389,9 +396,8 @@ END
 
 SUBROUTINE BESSELJ (BSUM, PP, XZ) !BSIGN = -1.0
     COMMON/BESS/DBJB(20), DBIB, LM(6), RIRA, TD, TE, MODE
-    REAL BTERM, BRTERM, DRTERM, BJTERM
+    REAL BTERM, BRTERM, DRTERM, BJTERM, CLIMIT
     INTEGER LB(5), PP
-    REAL CLIMIT
 
     BTERM = 1.
     BRTERM = 0.
