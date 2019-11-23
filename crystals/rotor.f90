@@ -65,6 +65,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M6RI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DA
     Q5 = STORE(L1O2 + 5)
     Q6 = STORE(L1O2 + 8)
 
+    write(123,*) "Q1-6 = ", Q1, Q2, Q3, Q4, Q5, Q6
     write(123,*) "These are the values that come from M5ARI or M6RI:"
     write(123,*) "REFLH = STORE(M6RI) = ", REFLH
     write(123,*) "REFLK = STORE(M6RI+1) = ", REFLK
@@ -122,8 +123,11 @@ SUBROUTINE XROTOR (NORD, M5ARI, M6RI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DA
     XK1 = REFLH * Q1 + REFLK * Q2 + REFLL * Q3
     XK2 = REFLL * Q6
     XK3 = REFLK * Q4 + REFLL * Q5
+    ! When angles are zero, CC = 2piR * xk1
+    !                       DD = 0
+
     CC = TWOPI * RIRA * (XK1 * CD - XK2 * SE)
-    DD = TWOPI * RIRA * (XK1 * SD * SE + XK3 * CE * SD)
+    DD = TWOPI * RIRA * (XK1 * SD * SE + XK3 * CD + XK2 * CE * SD)
     AP = SQRT(CC**2 + DD**2)
     XETA = ACOS(CC / AP)
     write(12345,*) "ETA =", XETA
@@ -461,4 +465,3 @@ SUBROUTINE BESSELJ (BSUM, PP, XZ) !BSIGN = -1.0
     end do
     3     RETURN
 END
-
