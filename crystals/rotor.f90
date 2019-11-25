@@ -1,4 +1,4 @@
-SUBROUTINE XROTOR (NORD, M5ARI, M6RI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH)
+SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH)
     use xconst_mod, only : twopi
     use xlst01_mod
     COMMON/BESS/DBJB(20), DBIB, LM(6), RIRA, TD, TE, MODE
@@ -57,7 +57,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M6RI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DA
     ANGLEE = ANGLEED * TWOPI / 3.6
     XXI = XXID * TWOPI / 3.6
     write(12345,*) "XI =", XXI
-    !GET THE MATRIC ELEMENTS (Q1-Q6) todo: name change?
+    !GET THE MATRIC ELEMENTS (Q1-Q6)
     Q1 = STORE(L1O2 + 0)
     Q2 = STORE(L1O2 + 1)
     Q3 = STORE(L1O2 + 2)
@@ -66,7 +66,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M6RI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DA
     Q6 = STORE(L1O2 + 8)
 
     write(123,*) "Q1-6 = ", Q1, Q2, Q3, Q4, Q5, Q6
-    write(123,*) "These are the values that come from M5ARI or M6RI:"
+    write(123,*) "Values for reflection:"
     write(123,*) "REFLH = STORE(M6RI) = ", REFLH
     write(123,*) "REFLK = STORE(M6RI+1) = ", REFLK
     write(123,*) "REFLL = STORE(M6RI+2) = ", REFLL
@@ -104,7 +104,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M6RI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DA
     !    IF (NAD==2) TF = TF * 2 !todo: don't know what NAD is/for
     DO IWA = 1, 2 !do two loops
         DO IW = 1, 6 !do 6 loops
-            DELMC(IWA, IW) = 0 !todo: what are DELMC and DELMS
+            DELMC(IWA, IW) = 0
             DELMS(IWA, IW) = 0.0
             IF (IW>3) GO TO 10
             DELC(IWA, IW) = 0.
@@ -126,7 +126,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M6RI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DA
     ! When angles are zero, CC = 2piR * xk1
     !                       DD = 0
 
-    CC = TWOPI * RIRA * (XK1 * CD - XK2 * SE)
+    CC = TWOPI * RIRA * (XK1 * CE - XK2 * SE)
     DD = TWOPI * RIRA * (XK1 * SD * SE + XK3 * CD + XK2 * CE * SD)
     AP = SQRT(CC**2 + DD**2)
     XETA = ACOS(CC / AP)
@@ -283,6 +283,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M6RI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DA
 !    BCAL = BCAL + BT !this isn't used anywhere either
     WRITE(123,*) "AROTOR= ", AT
     WRITE(123,*) "BROTOR= ", BT
+    write(123,*) "***********************"
     40    IF(MODE==1) GO TO 9
     !    !!!CALCULATION OF DELF(POPULATION FACTOR) [39] (calculated at a higher level)
     !    IF(KSEL(L)==0) GO TO 58
