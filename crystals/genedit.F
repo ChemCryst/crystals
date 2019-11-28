@@ -1,4 +1,4 @@
-C $Log: not supported by cvs2svn $
+C $Log: not supported by cvs2svn $ 
 C Revision 1.12  2005/01/23 08:29:11  rich
 C Reinstated CVS change history for all FPP files.
 C History for very recent (January) changes may be lost.
@@ -382,6 +382,7 @@ C
 2700  CONTINUE
 C -- 'ERROR' DIRECTIVE
       ILEVEL = ISTORE(ICOMBL)
+ctemp      write(ncwu,*)'genedit: ILEVEL=',ilevel,ciform
       ILVSEL = ISTORE(ICOMBL+1)
       ILVACT = ISTORE(ICOMBL+2)
       CEVARI = CIFORM
@@ -716,25 +717,24 @@ C
 C
 8900  CONTINUE
       IF ( ILEVEL .GT. 0 ) THEN
-        WRITE ( NCAWU , 8905 )
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
+         WRITE ( NCAWU , 8905 )
          WRITE ( CMON, 8905 )
          CALL XPRVDU(NCVDU, 1,0)
 8905     FORMAT ( 1X , 'The line above has been ignored' )
       ENDIF
-C
       CALL XERHND ( IERROR )
-C
       IF ( ILVACT .EQ. 1 ) THEN
         ISTAT = KSCTRN ( 1 , CEVARI , 1, 1 )
       ELSE IF ( ILVACT .EQ. 2 ) THEN
         ISTAT = KSCACT ( CEVARI )
       ENDIF
-C
       GO TO 1050
 C
 C
 8910  CONTINUE
       IF ( ILEVEL .GT. 0 ) THEN
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         WRITE ( CMON, 8915 ) IRTYPE , ILTYPE
         CALL XPRVDU(NCVDU, 1,0)
         WRITE ( NCAWU ,  8915 ) IRTYPE , ILTYPE
@@ -748,6 +748,7 @@ c      being zeroed
 C
 8920  CONTINUE
       IF ( ILEVEL .GT. 0 ) THEN
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         WRITE ( CMON, 8925 )
         CALL XPRVDU(NCVDU, 1,0)
         WRITE ( NCAWU , 8925 )
@@ -757,6 +758,7 @@ C
 C
 8930  CONTINUE
       IF ( ILEVEL .GT. 0 ) THEN
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         WRITE ( CMON, 8935 )
         CALL XPRVDU(NCVDU, 1,0)
         WRITE ( NCAWU , 8935 )
@@ -766,6 +768,7 @@ C
 C
 8940  CONTINUE
       IF ( ILEVEL .GT. 0 ) THEN
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         WRITE ( CMON , 8945 )
         CALL XPRVDU(NCVDU, 1,0)
         WRITE ( NCAWU , 8945 )
@@ -775,6 +778,7 @@ C
 C
 8950  CONTINUE
       IF ( ILEVEL .GT. 0 ) THEN
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         WRITE ( CMON, 8955 )
         CALL XPRVDU(NCVDU, 1,0)
         WRITE ( NCAWU , 8955 )
@@ -784,15 +788,16 @@ C
       GO TO 8900
 8960  CONTINUE
       IF ( ILEVEL .GT. 0 ) THEN
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         WRITE ( CMON, 8965 )
         CALL XPRVDU(NCVDU, 1,0)
         WRITE ( NCAWU , 8965 )
 8965    FORMAT ( 1X , 'No data stored at present' )
       ENDIF
       GO TO 8900
-C
 8970  CONTINUE
       IF ( ILEVEL .GT. 0 ) THEN
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         WRITE ( CMON, 8975 )
         CALL XPRVDU(NCVDU, 1,0)
         WRITE ( NCAWU , 8975 )
@@ -826,8 +831,6 @@ C -- ERRORS
 C -- INTERNAL ERROR
       CALL XOPMSG ( IOPDSP , IOPINT , 0 )
       GO TO 9900
-C
-C
 C
       END
 

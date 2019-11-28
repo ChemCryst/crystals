@@ -1866,6 +1866,7 @@ C
    62 OMEGA=OMZ+OMEGA/PLUS(1)
       GO TO 90
    64 IERR=1
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0)  WRITE (NCWU,1220) 
      1 nint(x(1)),nint(x(2)),nint(x(3)),  e(1),e(2),e(3)
 1220  FORMAT('ERROR IN SETTING ANGLES FOR REFLECTION',3I4,4x,3f8.4)

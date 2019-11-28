@@ -496,9 +496,11 @@ C--ADJUST THE NUMBER OF ATOMS IN THE LIST 5
 C
 C--ERROR EXIT FOR THESE ROUTINES
 4200  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCA(ISTORE(MD+4))
       LEF=LEF+1
 4250  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       GOTO 1100
 C
 C
@@ -1347,6 +1349,7 @@ C
 C
 C--ERROR EXIT FOR THESE ROUTINES
 2400  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCA (ISTORE(MD+4))
       LEF=LEF+1
 2450  CONTINUE

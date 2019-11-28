@@ -205,6 +205,7 @@ C--CHECK FOR SOME ARGUMENTS
       IF (KFDARG(I)) 350,450,450
 C--ERROR(S)  -  INCREMENT THE ATOM ERROR COUNT
 350   CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       LEF2 = LEF2+1
       IERR = -1
       GO TO 50
@@ -223,6 +224,7 @@ C--PROCESS THE OUTPUT FROM THE LEXICAL SCANNER TO FIND ATOMS
       IF (KATOMU(LN)) 600,600,650
 C--ERRORS  -  INCREMENT THE ATOM ERROR COUNT
 600   CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       LEF2 = LEF2+1
       IERR = -1
       GO TO 1750
@@ -305,6 +307,7 @@ C   cOULD BE USED TO COMPUTE FUNCTIONS OF ATOMS AND THE ESDS
       IF (LEF1) 900,1000,900
 C--ERROR BECAUSE NO GROUP HAS BEEN PROCESSED
 900   CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN (LN)
       IF (ISSPRT.EQ.0) WRITE (NCWU,950) CTYPE
       WRITE (NCWU,950) CTYPE
@@ -666,6 +669,7 @@ C      SAVE THE SYMMETRY MATRIX
 C 
 C--ERRORS FOUND
 450   CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       I = LOCD
       J = LOCD+4
       CALL XERHDR (0)
@@ -816,6 +820,7 @@ C        CLEAR ERROR FLAG
           IERFLG = 0
          ELSE
           IF (ISTORE(L11P+15).GE.0) THEN
+            if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
             IF (ISSPRT.EQ.0) WRITE (NCWU,200)
             WRITE (CMON,200)
             CALL XPRVDU (NCVDU,3,0)
@@ -847,6 +852,7 @@ C--PRINT THE INITIAL CAPTIONS
 
       IF (JESD .GE.1)  THEN
         IF  (IESD .LE. 0) THEN
+            if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
             WRITE(CMON,'(A)') 
      1 '{E Matrix for e.s.ds missing. Using mean errors instead'
         ELSE

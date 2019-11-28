@@ -913,6 +913,7 @@ c turn on red
            CALL OUTCOL(9)
            DO I=1,MD5ES   ! FORM THE SQUARE ROOT OF THE ELEMENT SCALES
              IF (STORE(K) .LT. 0) THEN
+               if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
                IF (ISSPRT .EQ. 0) WRITE(NCWU,2301) I, STORE(K)
                WRITE ( CMON, 2301)  I, STORE(K)
                CALL XPRVDU(NCVDU, 1,0)
@@ -1354,6 +1355,7 @@ C--'#TITLE' INSTRUCTION
 C -- ERRORS
 C LIST 33 IS STILL WAITING TO BE PROCESSED.
 c abandon processing the SRQ 
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XABSRQ
       IF (MODE .LE. 0)  RETURN
       RETURN            !WHAT'S THE POINT OF THE TWO RETURNS?
@@ -2570,6 +2572,7 @@ c          IF (STORE(M6+20) .GE. RALL(13)) THEN      ! user-sigma
       END DO  ! END OF REFLECTION LOOP
 
       if(numnegative>0) then
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         WRITE(CMON, '(A,I0,A)')
      1    '{E Error: an element scale is negative causing ',numnegative,
      1    ' reflections to have a negative Fc'
@@ -2746,11 +2749,12 @@ c Looks OK.
 C--END OF THE REFLECTIONS  -  PRINT THE R-VALUES ETC.
 
       IF (NT .LE. 0) THEN
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,5851)
-      WRITE ( CMON, 5851)
-      CALL XPRVDU(NCVDU, 1,0)
-5851  FORMAT(
-     1 ' No reflections have been used for the Structure Factor',
+       if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
+       WRITE ( CMON, 5851)
+       CALL XPRVDU(NCVDU, 1,0)
+       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') trim(cmon(1)(3:))
+5851   FORMAT(
+     1 '{E No reflections have been used for the Structure Factor',
      2 ' calculation')
          R = 0.
          A = 0.
@@ -2858,6 +2862,7 @@ C -- ERRORS
       RETURN
 19910 CONTINUE
 C -- INCORRECT ELEMENT NUMBER
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 19915 ) LJX , PH , PK , PL
       WRITE ( CMON, 19915) LJX , PH , PK , PL
       CALL XPRVDU(NCVDU, 1,0)
@@ -2868,6 +2873,7 @@ C -- INCORRECT ELEMENT NUMBER
 C
 19920 CONTINUE
 C -- TOO MANY ELEMENTS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 19925 ) PH , PK , PL
       WRITE ( CMON , 19925 ) PH , PK , PL
       CALL XPRVDU(NCVDU, 1,0)
@@ -2877,6 +2883,7 @@ C -- TOO MANY ELEMENTS
 C
 19930 CONTINUE
 C------ SIGMA W*FO*FO .LE. ZERO ---- SUGGESTS PROBABLY NO WEIGHTS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE(NCWU,19935)
       WRITE ( CMON, 19935)
       CALL XPRVDU(NCVDU, 2,0)
@@ -2888,13 +2895,15 @@ C------ SIGMA W*FO*FO .LE. ZERO ---- SUGGESTS PROBABLY NO WEIGHTS
 C
 19940 CONTINUE
 C------ SIGMA FO .LE. ZERO ---- SUGGESTS PROBABLY NO CALCULATION
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,19945)
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE ( CMON, 19945)
       CALL XPRVDU(NCVDU, 2,0)
-19945 FORMAT(1X,'The denominator for the R factor ',
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(a)') trim(cmon(1)(3:)),
+     1 trim(cmon(2)(3:))
+19945 FORMAT('{E The denominator for the R factor ',
      1 'is less than or equal to zero.',/,
-     2 ' No structure factors have been stored.')
-
+     2 '{E No structure factors have been stored.')
+C
       END
 
 

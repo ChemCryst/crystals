@@ -674,6 +674,7 @@ C--CHECK FOR SOME ARGUMENTS
       IF (KFDARG(I)) 250,350,350
 C--ERROR(S)  -  SET THE ATOM ERROR COUNT
 250   CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IERR=-1
       GO TO 100
 C--CHECK IF THERE ARE MORE ARGUMENTS ON THIS CARD
@@ -690,6 +691,7 @@ C--READ THE NEXT GROUP OF ATOMS
       IF (KATOMU(LN)) 500,500,550
 C--ERRORS  -  SET THE ATOM ERROR COUNT
 500   CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IERR=-1
       GO TO 3200
 C--MOVE ATOMS TO STACK WITH CORRECT CO-ORDINATES
@@ -699,6 +701,7 @@ C--MOVE ATOMS TO STACK WITH CORRECT CO-ORDINATES
          IF (NFL+27-LFL) 650,600,600
 C--ERRORS
 600      CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
          IERR=-1
          GO TO 3250
 C--TRANSFORM THE ATOM AND MOVE IT ACROSS
@@ -740,6 +743,7 @@ C--INCREMENT THE NUMBER OF GROUP CARDS READ
 C--CHECK IF ANY ERRORS HAVE BEEN GENERATED DURING THE INPUT OF THE ATOMS
       IF (IERR) 1000,1000,1100
 1000  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN (LN)
       IF (ISSPRT.EQ.0) THEN
          WRITE (NCWU,1050)
@@ -959,7 +963,9 @@ cfeb08         WRITE (NCAWU,2850) CCALC(ISHIFT-1)
 C
 C
 C---ERROR MODES FOR 'CENTRE' INSTRUCTION
-2900  CALL XPCLNN (LN)
+2900  continue
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
+      CALL XPCLNN (LN)
       I=ISTORE(MF+1)
       IF (ISSPRT.EQ.0) THEN
          WRITE (NCWU,2950) I
@@ -969,7 +975,9 @@ cfeb08      WRITE (NCAWU,2950)
       CALL XPRVDU (NCVDU,1,0)
 2950  FORMAT (' Spurious character at about column',I5)
       GO TO 3200
-3000  CALL XPCLNN (LN)
+3000  continue
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
+      CALL XPCLNN (LN)
       IF (ISSPRT.EQ.0) THEN
          WRITE (NCWU,3050)
       END IF
@@ -981,6 +989,7 @@ cfeb08      WRITE (NCAWU,3050)
 C
 C--ERROR BECAUSE TLS  HAS NOT BEEN CALCULATED
 3100  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN (LN)
       IF (ISSPRT.EQ.0) THEN
          WRITE (NCWU,3150)
@@ -994,6 +1003,7 @@ cfeb08      WRITE (NCAWU,3150)
 C
 C--ERROR EXIT FOR THESE ROUTINES
 3200  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCA (I)
       GO TO 100
 C
@@ -1032,6 +1042,7 @@ C
 C
 3450  CONTINUE
       IF (IMOD5.GT.0) THEN
+         if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
          N=5
          IF (ISSPRT.EQ.0) THEN
             WRITE (NCWU,3500) N
@@ -1066,6 +1077,7 @@ C -- INPUT ERRORS
       GO TO 3600
 3700  CONTINUE
 C
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT.EQ.0) THEN
          WRITE (NCWU,3750)
       END IF
@@ -1195,7 +1207,7 @@ cfeb08     1          ,J=JJ,JJJ),STORE(ISTART+7)
 200   CONTINUE
       GO TO 400
 250   CONTINUE
-cfeb08      WRITE (NCAWU,300)
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT.EQ.0) THEN
          WRITE (NCWU,300)
       END IF

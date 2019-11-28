@@ -82,7 +82,7 @@
 
 {I Friedel Pairs are available
 
-% copy '#set monitor fast'
+%% copy '#set monitor fast'
 %       COPY '#SCRIPT TONSWORK'
 %       COPY '#SCRIPT FLACK39'
 %       COPY '#TON TYPE=PASCAL PLOT=NO PUNCH=NO'
@@ -115,13 +115,14 @@
 %  END LOOP
 %  COPY 'END'
 %%
-%  copy '#set monitor on'
+%%  copy '#set monitor on'
 %  IF FDONE .EQ. TRUE THEN
 %   CLEAR
 %   INSERT  '{S The current value of the Flack parameter is '
 %   STORE FORMAT '(F7.3)' LENGTH 8 REAL DO
-%   INSERT ', '
+%   INSERT '('
 %   STORE FORMAT '(F7.3)' LENGTH 8 REAL DSIG
+%   INSERT ')'
 %   OUTPUT
 %    IF DO .GT. 0.75  THEN
 %%    Value is large - structure may need inverting. If it is
@@ -136,13 +137,10 @@
 %     COPY '#SCRIPT XHELPQUEST'                                           
 %     IF ANSWER .EQ. TRUE THEN                                          
 %       COPY '#SCRIPT XINVERT'
-%       COPY '#SET MONITOR FAST'     % HIDE THE SFLS ETC
 %       COPY '#SCRIPT TONSWORK'
 %       COPY '#SCRIPT FLACK39'
-%       COPY '#SET MONITOR ON'
 %       COPY '#TON TYPE=PASCAL PLOT=NO PUNCH=NO'
 %       COPY 'END'
-%       copy '#set monitor on'        % restore monitoring
 %       VARIABLE CHARACTER CFLACK
 %       VARIABLE REAL SERIAL DO DSIG
 %       COPY '#GENERALEDIT 39'

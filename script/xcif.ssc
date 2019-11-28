@@ -20,7 +20,7 @@
 %    COPY 'END'
 %    IF ( INVERTTYPE .LT. 0 ) THEN
 {E Cannot ouput cif file with esds. Inverted matrix cannot be trusted
-%      copy '#set moni on'
+%%      copy '#set moni on'
 %      FINISH
 %    END IF
 %%
@@ -155,7 +155,7 @@
 %      END BLOCK
 %      BLOCK   % CIFXX
 ^^CO    DISPOSE XCIF
-%       copy '#set moni on'
+%%       copy '#set moni on'
 %       FINISH
 %      END BLOCK
 %      BLOCK   % CIFHELP
@@ -219,10 +219,10 @@
 %    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %    IF ( VALUE .EQ. 1 ) THEN
 %%      IF ICENTRIC .EQ. 0 THEN           % NOTE: commented out
-%%       COPY '#SCRIPT TONSWORK'
-%%       COPY '#TON PLOT=NO PUNCH =NO'                                                         
-%%       COPY 'END'
-%%      END IF
+%%       COPY '#SCRIPT TONSWORK'          % NOTE: commented out
+%%       COPY '#TON PLOT=NO PUNCH =NO'    % NOTE: commented out                                                     
+%%       COPY 'END'                       % NOTE: commented out
+%%      END IF                            % NOTE: commented out
 %       COPY '#SCRIPT XABSOLUTE'
 %    END IF
 %%

@@ -3804,17 +3804,17 @@ contains
       call xprvdu(ncvdu, 1, 0)
 
       if (nint(v3(1)) .gt. 0) then
-        write (cmon, '(I0, 1X, a)') nint(v3(1)), 'Reflections with all filters set:'
+        write (cmon, '(a,I0, 1X, a)')'{I', nint(v3(1)), 'Reflections with all filters set:'
         write (ncwu, '(I0, 1X, a)') nint(v3(1)), 'Reflections with all filters set:'
         call xprvdu(ncvdu, 1, 0)
-        write (cmon, '(a,a)') '_______________________________', repeat('_', n+i+25)
+        write (cmon, '(a,a)') '{I_______________________________', repeat('_', n+i+25)
         write (ncwu, '(a,a)') '_______________________________', repeat('_', n+i+25)
         call xprvdu(ncvdu, 1, 0)
 
         if (nint(v3(1)) > 0) then
 
           if (v3(2) /= 0.0 .and. sv3(2) /= 0.0) then
-            write (cmon, '(a, a)') 'Flack parameter from refinement ', &
+            write (cmon, '(a, a)') '{I Flack parameter from refinement ', &
             &    print_value(v3(2), sv3(2), opt_fixedform=.true., &
             &    opt_length=n+i+2, opt_decimal_pos=n)
             write (ncwu, '(a, a)') 'Flack parameter from refinement ', &
@@ -3822,12 +3822,12 @@ contains
             &    opt_length=n+i+2, opt_decimal_pos=n)
             call xprvdu(ncvdu, 1, 0)
           else
-            write (cmon, '(a)') 'Flack parameter has not been refined '
+            write (cmon, '(a)') '{EFlack parameter has not been refined '
             write (ncwu, '(a)') 'Flack parameter has not been refined '
             call xprvdu(ncvdu, 1, 0)
           end if
           write (cmon, '(a, a, 1X, "(",I0, " outliers)")') &
-          &    'Hole-in-one                     ', &
+          &    '{I Hole-in-one                     ', &
           &    print_value(v3(3), sv3(3), opt_fixedform=.true.,&
           &    opt_length=n+i+2, opt_decimal_pos=n), hole_in_one_outliers(3)
           write (ncwu, '(a, a, 1X, "(",I0, " outliers)")') &
@@ -3835,7 +3835,7 @@ contains
           &    print_value(v3(3), sv3(3), opt_fixedform=.true.,&
           &    opt_length=n+i+2, opt_decimal_pos=n), hole_in_one_outliers(3)
           call xprvdu(ncvdu, 1, 0)
-          write (cmon, '(a, a)') 'Hooft method                    ', &
+          write (cmon, '(a, a)') '{I Hooft method                    ', &
           &    print_value(v3(4), sv3(4), opt_fixedform=.true.,&
           &    opt_length=n+i+2, opt_decimal_pos=n)
           write (ncwu, '(a, a)') 'Hooft method                    ', &
@@ -3843,7 +3843,7 @@ contains
           &    opt_length=n+i+2, opt_decimal_pos=n)
           call xprvdu(ncvdu, 1, 0)
           write (cmon, '(a, a, 1X, "(", I0, " refls truncated)")') &
-          &    'Truncated average of ratios (x) ', &
+          &    '{I Truncated average of ratios (x) ', &
           &    print_value(v3(5), sv3(5), opt_fixedform=.true.,&
           &    opt_length=n+i+2, opt_decimal_pos=n), 2*nint(v3(1))/10
           write (ncwu, '(a, a, 1X, "(", I0, " refls truncated)")') &
@@ -3852,7 +3852,7 @@ contains
           &    opt_length=n+i+2, opt_decimal_pos=n), 2*nint(v3(1))/10
           call xprvdu(ncvdu, 1, 0)
           write (cmon, '(a, a, 1X, "(",I0, " outliers)")') &
-          &    'Bijvoet differences             ', &
+          &    '{I Bijvoet differences             ', &
           &    print_value(v3(6), sv3(6), opt_fixedform=.true.,&
           &    opt_length=n+i+2, opt_decimal_pos=n), bijvoet_outliers(3)
           write (ncwu, '(a, a, 1X, "(",I0, " outliers)")') &
@@ -3861,7 +3861,7 @@ contains
           &    opt_length=n+i+2, opt_decimal_pos=n), bijvoet_outliers(3)
           call xprvdu(ncvdu, 1, 0)
           write (cmon, '(a, a, 1X, "(",I0, " outliers)")') &
-          &    'Parsons quotients               ',  &
+          &    '{I Parsons quotients               ',  &
           &    print_value(v3(7), sv3(7), opt_fixedform=.true.,&
           &    opt_length=n+i+2, opt_decimal_pos=n), parsons_outliers(3)
           write (ncwu, '(a, a, 1X, "(",I0, " outliers)")') &
@@ -3872,13 +3872,13 @@ contains
 
         else
 
-          write (cmon, '(a)') 'No reflection available'
+          write (cmon, '(a)') '{E No reflection available'
           write (ncwu, '(a)') 'No reflection available'
           call xprvdu(ncvdu, 1, 0)
 
         end if
 
-        write (cmon, '(a,a)') '_______________________________', repeat('_', n+i+25)
+        write (cmon, '(a,a)') '{I _______________________________', repeat('_', n+i+25)
         write (ncwu, '(a,a)') '_______________________________', repeat('_', n+i+25)
         call xprvdu(ncvdu, 1, 0)
         write (cmon, '(a)') ''

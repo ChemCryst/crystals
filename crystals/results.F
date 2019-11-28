@@ -860,6 +860,7 @@ C--ERROR ROUTINES
 1850  CONTINUE
 C
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPPR , IOPLSP , 6 )
       GO TO 1720
       END
@@ -911,6 +912,7 @@ C--CHECK THE LINE LENGTH
       IF(IBAR-LSTX)1050,1200,1200
 C--LINE LENGTH IS TOO LARGE
 1050  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1100)IBAR
       WRITE ( CMON,1100) IBAR
       CALL XPRVDU(NCVDU, 1,0)
@@ -1076,13 +1078,16 @@ C--NEW K,L PAIR  -  SET THE FLAGS AND RETURN
 C
 C--ERROR BECAUSE /FO/ IS TOO LARGE TO PRINT
 1500  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IT=IFO
       GOTO 1600
 C--ERROR BECAUSE /FC/ IS TOO LARGE
 1550  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IT=IFC
 C--PRINT THE ERROR MESSAGE
 1600  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       JHFFS=-1
       CALL XERHDR(0)
       IF (ISSPRT .EQ. 0)
@@ -1445,14 +1450,17 @@ C----- OUTPUT THE TWIN SCALE PARAMETERS
       CALL XPP5TW(MCFUNC)
 CRIC0103 - Exit path - don't output parameters after errors - might be no L12.
 2300  CONTINUE
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPPR , IOPLSE , 5 )
       CALL XTIME2 ( 2 )
       RETURN
 C
 2450  CONTINUE
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPPR , IOPLSP , 5 )
       GO TO 2300
 9910  CONTINUE
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPPR , IOPCMI , 0 )
       GO TO 2450
 C
@@ -1495,6 +1503,7 @@ C--CHECK THE WIDTH OF A COORD. PAGE
       IF(IBAR-LSTX-IFIR)1050,1200,1200
 C--FIELD WIDTH IS WRONG
 1050  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1100)IBAR
       WRITE ( CMON, 1100) IBAR
       CALL XPRVDU(NCVDU, 1,0)
@@ -2595,6 +2604,7 @@ C -- DISPLAY ON MONITOR CHANNEL
 C
       RETURN
 9910  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE ( CMON, '(A)') 'ERROR in overall parameter print'
       CALL XPRVDU(NCVDU, 1,0)
       RETURN
@@ -2744,6 +2754,7 @@ C
 C
       RETURN
 9910  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE ( CMON, '(A)') 'ERROR in twin scale parameter print'
       CALL XPRVDU(NCVDU, 1,0)
       RETURN
@@ -2832,6 +2843,7 @@ C--CALCULATE THE E.S.D.
           BPD(JP)=XVAR(JS,JZ,4,JR)
           IF ( IERFLG .LT. 0 ) GO TO 9900
           IF(BPD(JP) .LT. 0.0 ) THEN
+            if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
             IF (ITYPE .EQ. 1 ) THEN
               IF (ISSPRT .EQ. 0)
      1        WRITE(NCWU,1770) STORE(M5), STORE(M5+1), BPD(JP)
@@ -2858,6 +2870,7 @@ C--CALCULATE THE E.S.D.
       GOTO 9999
 9900  CONTINUE
 9910  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE ( CMON,'(A)') ' Error computing parameter e.s.d '
       CALL XPRVDU(NCVDU, 1,0)
 9999  CONTINUE
@@ -2958,10 +2971,12 @@ C--PERFORM THE CALCULATIONS
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       XVAR = 0
       RETURN
 9910  CONTINUE
 C -- CORE OVERFLOW
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XICA
       CALL XERHND ( IERERR )
       GO TO 9900
@@ -3266,6 +3281,7 @@ C--CALCULATE THE E.S.D.
             IF ( IERFLG .LT. 0 ) GO TO 9900
             IF(BPD(JP)) 1760,1790,1790
 1760        CONTINUE
+            if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
             WRITE ( CMON, 1770) STORE(M5), STORE(M5+1), BPD(JP)
             CALL XPRVDU(NCVDU, 1,0)
             IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') 
@@ -3286,6 +3302,7 @@ C
 C -- ERRORS
       RETURN
 9910  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XICA
       CALL XERHND ( IERERR )
       RETURN
@@ -3758,6 +3775,7 @@ C----- NO MATCH -
 
 C----- COMPUTE MU AND M
         IF (ICHECK .NE. 0 ) THEN
+          if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
           WRITE ( CMON, 1545) ICHECK, 29
           CALL XPRVDU(NCVDU, 1,0)
           IF (ISSPRT .EQ. 0)  WRITE(NCWU,'(A)') 
@@ -3999,6 +4017,7 @@ C--CHECK THE WIDTH OF A PAGE
       IF(IBAR-KLEN)1050,1200,1200
 C--FIELD WIDTH IS WRONG
 1050  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE ( CMON, 1100) IBAR
       CALL XPRVDU(NCVDU, 1,0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1100)IBAR
@@ -4797,6 +4816,7 @@ CRICFEB03: Output one of 0=CIF, 1=PLAIN, 2=HTML
       CALL XCSAE
       I = KRDDPV ( IPUNCH , 1 )
       IF (I.LT.0) THEN
+         if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
          IF (ISSPRT .EQ. 0) WRITE(NCWU, 51)
          WRITE ( CMON ,51)
          CALL XPRVDU(NCVDU, 1,0)
@@ -4941,11 +4961,13 @@ C FYI:    DATA LSTNUM /1,2,3,4,5,13,23,29,30,31, 6,28 /
          LSTYPE=LSTNUM(MLST)
          IF (KEXIST(LSTYPE)) 400,300,500
 300      CONTINUE
+           if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
            WRITE (CMON,350) LSTYPE
            CALL XPRVDU (NCVDU,1,0)
 350        FORMAT (1X,'List ',I2,' contains errors')
            CYCLE
 400      CONTINUE
+           if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
            WRITE (CMON,450) LSTYPE
 450        FORMAT (1X,'List',I2,' does not exist')
            CALL XPRVDU (NCVDU,1,0)
@@ -7351,6 +7373,7 @@ C----- ERROR EXIT
 2600  CONTINUE
 C 
 2650  CONTINUE
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (IEPROP.NE.1) THEN
          WRITE (CMON,2700)
 2700     FORMAT (' Error in computing molecular properties',/' Re-input 
@@ -7409,6 +7432,7 @@ C -- ALLOCATE SPACE TO HOLD RETURN VALUES FROM INPUT
       CALL XZEROF (STORE(ICOMBF), ICOMSZ)
       I = KRDDPV ( ISTORE(ICOMBF) , ICOMSZ )
       IF (I.LT.0) THEN
+         if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
          IF (ISSPRT .EQ. 0) WRITE(NCWU, 51)
          WRITE ( CMON ,51)
          CALL XPRVDU(NCVDU, 1,0)
@@ -7690,6 +7714,7 @@ c
         IF (LSTNUM.EQ.0) GO TO 300
         IF (KEXIST(LSTNUM)) 150,50,250
 50      CONTINUE
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         IF (ISSPRT.EQ.0) WRITE (NCWU,100) LSTNUM
         WRITE (CMON,100) LSTNUM
         CALL XPRVDU (NCEROR, 1, 0)
@@ -7697,6 +7722,7 @@ c
         IERROR=-1
         GO TO 300
 150     CONTINUE
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         IF (ISSPRT.EQ.0) WRITE (NCWU,200) LSTNUM
         WRITE (CMON,200) LSTNUM
         CALL XPRVDU (NCEROR, 1, 0)
@@ -9910,9 +9936,8 @@ C                           ----------- All done.
 2750  CONTINUE
 C
       IF ( MFRIED .LE. 0) THEN
-        WRITE (CMON,'(/)')
-c        CALL XPRVDU (NCVDU, 1, 0)
         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)')trim(CMON(1))
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         WRITE (CMON,'(10(a,i7))') ' No of Reflections processed =',
      1   NREFIN
         CALL XPRVDU (NCVDU, 1, 0)
@@ -9928,6 +9953,7 @@ c       ERROR EXIT
 C                  ------Test Error Condition
 2760  continue
       if(IERROR .LE. 0) then                              !Error set
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
          call outcol(9)
         if(float(nfried)/float(mfried) .le. 0.1) THEN
          WRITE (CMON,'(10(a,2x,i7))') ' No of Friedel Pairs found =',
@@ -10178,6 +10204,7 @@ c      call xprvdu(ncvdu, 1,0)
       GOTO 2860
 2850  CONTINUE
 C -- ERRORS DETECTED
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XERHND (IERWRN)
       GO TO 2860
 2860  CONTINUE
