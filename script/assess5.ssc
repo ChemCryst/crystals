@@ -1,7 +1,7 @@
 %SCRIPT ASSESS5
 %% A Script to determine the current state of the list 5 refinement.
 %  VARIABLE LOGICAL DOEXTNC DOFLACK DOSORT DOTWIN
-%  VARIABLE INTEGER ADP ISER HCOUNT NES
+%  VARIABLE INTEGER ADP ISER HCOUNT NES N5
 %  VARIABLE REAL U11 FLAG UONE EXTP FLACKP HFIRST
 %  VARIABLE CHARACTER CTYPE
 %% Return values:
@@ -28,6 +28,14 @@
 %  EVALUATE HCOUNT  = 0
 %%
 %  IF EXISTS 5 .LE. 0 THEN
+{R   WARNING - You have no atoms to refine
+{S * Done.
+%    FINISH
+%  END IF
+%  COPY '#GENERALEDIT 5'
+%  COPY 'TRANSHEAD FROM OFFSET=3 TO N5' 
+%  COPY 'END'
+%  IF N5 .EQ. 0 THEN
 {R   WARNING - You have no atoms to refine
 {S * Done.
 %    FINISH
@@ -59,7 +67,6 @@
 %  IF ( FLACKP .GE. 0.25 ) .AND. ( FLACKP .LE. 0.75 ) THEN
 %    EVALUATE DOFLACK = TRUE
 %  END IF
-%%
 %  EVALUATE ISER = - 1
 %  EVALUATE DOSORT = FALSE
 %  COPY "#GENERALEDIT 5"
@@ -133,9 +140,5 @@
 %    CLEAR
 %    INSERT '{R   There are twin element parameters '
 %    OUTPUT
-%  END IF
-%  IF ( DOSORT .EQ. TRUE ) THEN
-{R The hydrogens in the list are not at the end. 
-{R They may be resorted in a moment.
 %  END IF
 %END SCRIPT

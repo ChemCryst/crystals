@@ -59,6 +59,10 @@ g/
 i/
 n/
 
+#IDE config
+.idea/
+
+
 build/*.exe
 build/*.pdb
 build/*.srt
@@ -85,6 +89,7 @@ build/manual/
 build/MCE
 build/script/
 
+cmake-build-debug/
 
 debuginfo
 

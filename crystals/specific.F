@@ -849,6 +849,8 @@ C
        WRITE(NCWU,1006) IFLIND, IUNIT, NAME(1:NCHARS)
 1006   FORMAT('SPECIFIC  Closing File index=',I8, ': Unit =',I8,1X,A)
       ENDIF
+      WRITE ( NCLU, 1007 )ACTION(IMSG),NAME(1:NCHARS)  !useful to track script closure in logs for investigations
+1007  FORMAT ( '# File ' , A, ' :- ', A )
       IFLIND = IFLIND - 1
       GO TO 1000
 C
