@@ -7,7 +7,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     INTEGER NORD, QW, NK, PNA, INV1, NAA, NAD
     REAL REFLH, REFLK, REFLL, HT
     REAL Q1, Q2, Q3, Q4, Q5, Q6
-    REAL XC, YC, ZC, GP, BB, BD, CC, DD
+    REAL XC, YC, ZC, GP, BD, CC, DD
     REAL XETA, ANGLE, ANGLEDD, ANGLEED, ANGLEE, ANGLED, TCOM, BIO
     REAL DA(180), DB(180), BIA(20)
     REAL BDTERM, RTERM, DTERM, ETERM, GTERM, MTERM !, LTERM
@@ -30,7 +30,8 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     BR = 0.
     BDD = 0.
     BEA = 0.
-    MODE = 0
+    MODE = 1
+    LM(6) = 1
 
     REFLH = STORE(M2T) / TWOPI      ! Wasteful, but required.
     REFLK = STORE(M2T + 1) / TWOPI
@@ -46,7 +47,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     !GET OCCUPANCY
     GP = STORE(M5ARI + 2)
     !TEMPERATURE FACTOR
-    BB = STORE(M5ARI + 7)
+!    BB = STORE(M5ARI + 7)
     BD = STORE(M5ARI + 12)
     !POLAR ANGLES IN UNITS OF 100 DEGREES
     ANGLEDD = STORE(M5ARI + 9)
@@ -84,12 +85,12 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     !SET I0
     call BESSELI(BSUM, 0, BD)
     BIO = bsum
-!    write (123,*) "BD= ", BD, "BIO=", BIO
+    write (321,*) "BD= ", BD, "BIO=", BIO
     !SET Ip FROM 1 TO 20
     DO JP = 1, 20
         call BESSELI(BSUM, JP, BD)
         BIA(JP) = bsum
-!        write (123,*) "JP=", JP, "BD= ", BD, "BIA=", BIA(JP)
+        write (321,*) "JP=", JP, "BD= ", BD, "BIA=", BIA(JP)
     END DO
 
     TE = 0.
@@ -129,6 +130,15 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     CC = TWOPI * RIRA * (XK1 * CE - XK2 * SE)
     DD = TWOPI * RIRA * (XK1 * SD * SE + XK3 * CD + XK2 * CE * SD)
     AP = SQRT(CC**2 + DD**2)
+!    AP=1
+!    do counter=0, 3.0, 0.2
+!    AP = counter
+
+    write(99, *) "NORD= ", NORD
+    write(99, *) "CC= ", CC
+    write(99, *) "DD= ", DD
+    write(99, *) "a'= ", AP
+    write(99, *) "BD= ", BD
     XETA = ACOS(CC / AP)
     write(12345,*) "ETA =", XETA
     IF (DD<0.0) XETA = -XETA
@@ -273,17 +283,23 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
 !    7     DELMC(NAA, 6) = SUM(6) * CP + DELMC(NAA, 6)
         7     DELMC(NAA, 6) = SUM(6) + DELMC(NAA, 6)
 !    DELMC(NAA, 6) = SUM(6) * SP + DELMS(NAA, 6)
-        DELMC(NAA, 6) = SUM(6) + DELMS(NAA, 6)
+        DELMS(NAA, 6) = SUM(6) + DELMS(NAA, 6)
     IF(NAA==2) GO TO 15
 
     AT = DELMC(1, 6) - DELMS(2, 6)
 !    ACAL = ACAL + AT !ACAL isn't actually used anywhere
     IF (NAD==2) GO TO 40
     BT = DELMC(2, 6) + DELMS(1, 6)
+
 !    BCAL = BCAL + BT !this isn't used anywhere either
     WRITE(123,*) "AROTOR= ", AT
+    WRITE(99,*) "AROTOR= ", AT
     WRITE(123,*) "BROTOR= ", BT
     write(123,*) "***********************"
+    write(99,*) "***********************"
+
+!    end do
+
     40    IF(MODE==1) GO TO 9
     !    !!!CALCULATION OF DELF(POPULATION FACTOR) [39] (calculated at a higher level)
     !    IF(KSEL(L)==0) GO TO 58

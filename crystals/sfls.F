@@ -3874,7 +3874,7 @@ c iso-temperature factor
 C--CALCULATE THE A & B CONTRIBUTION
           BPI=Sina(ljy,ljx)*TFOCC
           API=Cosa(ljy,ljx)*TFOCC
-          IF (NINT(FLAG) .EQ. 5) THEN
+          IF (NINT(FLAG) == 5) THEN
            AP=API*AROTOR-BPI*BROTOR
            BP=BPI*AROTOR+API*BROTOR
           ELSE
