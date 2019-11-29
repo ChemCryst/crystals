@@ -31,7 +31,6 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     BDD = 0.
     BEA = 0.
     MODE = 1
-    LM(6) = 1
 
     REFLH = STORE(M2T) / TWOPI      ! Wasteful, but required.
     REFLK = STORE(M2T + 1) / TWOPI
@@ -92,6 +91,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
         BIA(JP) = bsum
         write (321,*) "JP=", JP, "BD= ", BD, "BIA=", BIA(JP)
     END DO
+    call BESSELJ(BSUM, )
 
     TE = 0.
     TD = 0.
@@ -168,6 +168,8 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
 !    GO TO 21 !sets LM(1-5)=KSEL(IA+L+4) and LM(6)=0 then comes straight back if NAA=1 (which it will be)
     22    E = SNGL(AP) !converts a' to real type for use in bessel
     CALL BESSELJ(BJ, QW, E)
+    write(1975,*) "bessel J when p=0 is ", BJ
+    write(1975,*) "dbib = ", DBIB
     SUM(1) = DBIB * BJ
     SUM(2) = BR !todo: what is BR
     SUM(3) = BDD !todo:what is BDD
@@ -210,6 +212,8 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
         TCOM = 2. * SIGN * BIA(JP) / BIO
         E = SNGL(AP) !E=a' CONVERTED TO A REAL NUMBER
         CALL BESSELJ (BJ, PNA, E)
+        write(1975, *) "pna= ", PNA, "BJ= ", BJ
+        write(1975, *) "****"
         write(12345,*) "BJ =", BJ
         write(12345,*) "PNA =", PNA
         write(12345,*) "E (a') =", E
@@ -248,7 +252,8 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
         GTERM = -PNA * TCOM * SU * BJ
         SUM(5) = SUM(5) + GTERM
         IF (ABS(GTERM / SUM(5))<CLIMIT) LM(5) = 0
-        34      IF(LM(6)==0) GO TO 35
+        34 GO TO 35
+!        34      IF(LM(6)==0) GO TO 35
         !!!CALCULATION OF M !todo: I think this is Mr (from [33])???
         MTERM = TCOM * CU * BJ
         SUM(6) = SUM(6) + MTERM
