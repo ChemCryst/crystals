@@ -31,6 +31,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     BDD = 0.
     BEA = 0.
     MODE = 1
+    LM(6) = 1
 
     REFLH = STORE(M2T) / TWOPI      ! Wasteful, but required.
     REFLK = STORE(M2T + 1) / TWOPI
@@ -46,7 +47,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     !GET OCCUPANCY
     GP = STORE(M5ARI + 2)
     !TEMPERATURE FACTOR
-!    BB = STORE(M5ARI + 7)
+    !    BB = STORE(M5ARI + 7)
     BD = STORE(M5ARI + 12)
     !POLAR ANGLES IN UNITS OF 100 DEGREES
     ANGLEDD = STORE(M5ARI + 9)
@@ -56,7 +57,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     ANGLED = ANGLEDD * TWOPI / 3.6
     ANGLEE = ANGLEED * TWOPI / 3.6
     XXI = XXID * TWOPI / 3.6
-    write(12345,*) "XI =", XXI
+    write(12345, *) "XI =", XXI
     !GET THE MATRIC ELEMENTS (Q1-Q6)
     Q1 = STORE(L1O2 + 0)
     Q2 = STORE(L1O2 + 1)
@@ -65,33 +66,23 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     Q5 = STORE(L1O2 + 5)
     Q6 = STORE(L1O2 + 8)
 
-    write(123,*) "Q1-6 = ", Q1, Q2, Q3, Q4, Q5, Q6
-    write(123,*) "Values for reflection:"
-    write(123,*) "REFLH = STORE(M6RI) = ", REFLH
-    write(123,*) "REFLK = STORE(M6RI+1) = ", REFLK
-    write(123,*) "REFLL = STORE(M6RI+2) = ", REFLL
-    !    write(123,*) "GP = STORE(M5ARI + 2) = ", GP
-    !    write(123,*) "XC = STORE(M5ARI + 4) = ", XC
-    !    write(123,*) "YC = STORE(M5ARI + 5) = ", YC
-    !    write(123,*) "ZC = STORE(M5ARI + 6) = ", ZC
-    !    write(123,*) "BB = STORE(M5ARI + 7) = ", BB
-    !    write(123,*) "RIRA = STORE(M5ARI + 8) = ", RIRA
-    !    write(123,*) "ANGLEDD = STORE(M5ARI + 9) = ", ANGLEDD
-    !    write(123,*) "ANGLEED = STORE(M5ARI + 10) = ", ANGLEED
-    !    write(123,*) " XXID = STORE(M5ARI + 11) = ", XXID
-    write(123,*) "BD = STORE(M5ARI + 12) = ", BD
+    write(12345, *) "Q1-6 = ", Q1, Q2, Q3, Q4, Q5, Q6
+    write(12345, *) "Values for reflection:"
+    write(12345, *) "REFLH = STORE(M6RI) = ", REFLH
+    write(12345, *) "REFLK = STORE(M6RI+1) = ", REFLK
+    write(12345, *) "REFLL = STORE(M6RI+2) = ", REFLL
+    write(12345, *) "BD = STORE(M5ARI + 12) = ", BD
 
     !SET I0
     call BESSELI(BSUM, 0, BD)
     BIO = bsum
-    write (321,*) "BD= ", BD, "BIO=", BIO
+    write (321, *) "BD= ", BD, "BIO=", BIO
     !SET Ip FROM 1 TO 20
     DO JP = 1, 20
         call BESSELI(BSUM, JP, BD)
         BIA(JP) = bsum
-        write (321,*) "JP=", JP, "BD= ", BD, "BIA=", BIA(JP)
+        write (321, *) "JP=", JP, "BD= ", BD, "BIA=", BIA(JP)
     END DO
-    call BESSELJ(BSUM, )
 
     TE = 0.
     TD = 0.
@@ -130,17 +121,17 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     CC = TWOPI * RIRA * (XK1 * CE - XK2 * SE)
     DD = TWOPI * RIRA * (XK1 * SD * SE + XK3 * CD + XK2 * CE * SD)
     AP = SQRT(CC**2 + DD**2)
-!    AP=1
-!    do counter=0, 3.0, 0.2
-!    AP = counter
+    !    AP=1
+    !    do counter=0, 3.0, 0.2
+    !    AP = counter
 
-    write(99, *) "NORD= ", NORD
-    write(99, *) "CC= ", CC
-    write(99, *) "DD= ", DD
-    write(99, *) "a'= ", AP
-    write(99, *) "BD= ", BD
+    write(12345, *) "NORD= ", NORD
+    write(12345, *) "CC= ", CC
+    write(12345, *) "DD= ", DD
+    write(12345, *) "a'= ", AP
+    write(12345, *) "BD= ", BD
     XETA = ACOS(CC / AP)
-    write(12345,*) "ETA =", XETA
+    write(12345, *) "ETA =", XETA
     IF (DD<0.0) XETA = -XETA
     ANGLE = NORD * (XXI - XETA) !THIS IS THE ANGLE n(xi - nu)
     IF (MODE==1) GO TO 2
@@ -165,11 +156,11 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     !!!CALCULATION OF REAL TERMS
     15    NPRIME = NK * NORD / 2 !SO n'=n if n odd; n'=n/2 if n even
     NAA = 1
-!    GO TO 21 !sets LM(1-5)=KSEL(IA+L+4) and LM(6)=0 then comes straight back if NAA=1 (which it will be)
+    !    GO TO 21 !sets LM(1-5)=KSEL(IA+L+4) and LM(6)=0 then comes straight back if NAA=1 (which it will be)
     22    E = SNGL(AP) !converts a' to real type for use in bessel
     CALL BESSELJ(BJ, QW, E)
-    write(1975,*) "bessel J when p=0 is ", BJ
-    write(1975,*) "dbib = ", DBIB
+    write(1975, *) "bessel J when p=0 is ", BJ
+    write(1975, *) "dbib = ", DBIB
     SUM(1) = DBIB * BJ
     SUM(2) = BR !todo: what is BR
     SUM(3) = BDD !todo:what is BDD
@@ -183,9 +174,9 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
         SUM(IA) = 0.
     end do
     NAA = 2
-!    21    DO IA = 1, 5
-!!        LM(IA) = KSEL(IA + L + 4)
-!    end do
+    !    21    DO IA = 1, 5
+    !!        LM(IA) = KSEL(IA + L + 4)
+    !    end do
     LM(6) = 1
     IF(NAA==1) GO TO 22
     5     PSIGN = 1.
@@ -203,7 +194,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     IF (NAA/=NK) NL = 2
     !!!CALCULATION OF M AND DERIVATIVES
     DO JP = NL, 20, NK !I.E. DO THE DO LOOP FROM NL (WHICH IS 1 IS N IS ODD, 2 OTHERWISE) TO 20, WITH INCREMENT OF NK
-!        JPA = JP !SET JPA TO THE VALUE OF THE COUNTER
+        !        JPA = JP !SET JPA TO THE VALUE OF THE COUNTER
         !        PA = FLOAT(JP)
         !        PNA = PA * NORD
         PNA = JP * NORD
@@ -214,16 +205,16 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
         CALL BESSELJ (BJ, PNA, E)
         write(1975, *) "pna= ", PNA, "BJ= ", BJ
         write(1975, *) "****"
-        write(12345,*) "BJ =", BJ
-        write(12345,*) "PNA =", PNA
-        write(12345,*) "E (a') =", E
-        write(12345,*) "JP =", JP
-        write(12345,*) "NK =", NK
-        write(12345,*) "SIGN =", SIGN
-        write(12345,*) "ANGLE =", ANGLE
-        write(12345,*) "NAA =", NAA
-        write(12345,*) "NPRIME =", NPRIME
-        write(12345,*) "****"
+        write(12345, *) "BJ =", BJ
+        write(12345, *) "PNA =", PNA
+        write(12345, *) "E (a') =", E
+        write(12345, *) "JP =", JP
+        write(12345, *) "NK =", NK
+        write(12345, *) "SIGN =", SIGN
+        write(12345, *) "ANGLE =", ANGLE
+        write(12345, *) "NAA =", NAA
+        write(12345, *) "NPRIME =", NPRIME
+        write(12345, *) "****"
         IF (MODE==1) GO TO 34 !i.e. skip a load of derivation bits
         IF (LM(1)==0) GO TO 30
         !!!CALCULATION OF dM/d(Bd) [42]
@@ -252,8 +243,8 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
         GTERM = -PNA * TCOM * SU * BJ
         SUM(5) = SUM(5) + GTERM
         IF (ABS(GTERM / SUM(5))<CLIMIT) LM(5) = 0
-        34 GO TO 35
-!        34      IF(LM(6)==0) GO TO 35
+        !        34 GO TO 35
+        34      IF(LM(6)==0) GO TO 35
         !!!CALCULATION OF M !todo: I think this is Mr (from [33])???
         MTERM = TCOM * CU * BJ
         SUM(6) = SUM(6) + MTERM
@@ -267,43 +258,41 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     12    IF (MODE==1) GO TO 7
     SUM(1) = (SUM(1) - SUM(6) * DBIB) / BIO
     DO IA = 1, 5
-!        DELMC(NAA, IA) = SUM(IA) * CP + DELMS(NAA, IA)
-                DELMC(NAA, IA) = SUM(IA) + DELMS(NAA, IA)
-!        DELMS(NAA, IA) = SUM(IA) * SP + DELMS(NAA, IA)
-                DELMS(NAA, IA) = SUM(IA) + DELMS(NAA, IA)
+        !        DELMC(NAA, IA) = SUM(IA) * CP + DELMS(NAA, IA)
+        DELMC(NAA, IA) = SUM(IA) + DELMS(NAA, IA)
+        !        DELMS(NAA, IA) = SUM(IA) * SP + DELMS(NAA, IA)
+        DELMS(NAA, IA) = SUM(IA) + DELMS(NAA, IA)
     end do
-!    IF((KSEL(L + 1) + KSEL(L + 2) + KSEL(L + 3))==0) GO TO 7 !todo: what is KSEL
-!    DELC(NAA, 1) = DELC(NAA, 1) + CP * SUM(6) * REFLH
-!    DELC(NAA, 2) = DELC(NAA, 2) + CP * SUM(6) * REFLK
-!    DELC(NAA, 3) = DELC(NAA, 3) + CP * SUM(6) * REFLL
-!    DELS(NAA, 1) = DELS(NAA, 1) + SP * SUM(6) * REFLH
-!    DELS(NAA, 2) = DELS(NAA, 2) + SP * SUM(6) * REFLK
-!    DELS(NAA, 3) = DELS(NAA, 3) + SP * SUM(6) * REFLL
-        DELC(NAA, 1) = DELC(NAA, 1) + SUM(6) * REFLH
-        DELC(NAA, 2) = DELC(NAA, 2) + SUM(6) * REFLK
-        DELC(NAA, 3) = DELC(NAA, 3) + SUM(6) * REFLL
-        DELS(NAA, 1) = DELS(NAA, 1) + SUM(6) * REFLH
-        DELS(NAA, 2) = DELS(NAA, 2) + SUM(6) * REFLK
-        DELS(NAA, 3) = DELS(NAA, 3) + SUM(6) * REFLL
-!    7     DELMC(NAA, 6) = SUM(6) * CP + DELMC(NAA, 6)
-        7     DELMC(NAA, 6) = SUM(6) + DELMC(NAA, 6)
-!    DELMC(NAA, 6) = SUM(6) * SP + DELMS(NAA, 6)
-        DELMS(NAA, 6) = SUM(6) + DELMS(NAA, 6)
+    !    IF((KSEL(L + 1) + KSEL(L + 2) + KSEL(L + 3))==0) GO TO 7 !todo: what is KSEL
+    !    DELC(NAA, 1) = DELC(NAA, 1) + CP * SUM(6) * REFLH
+    !    DELC(NAA, 2) = DELC(NAA, 2) + CP * SUM(6) * REFLK
+    !    DELC(NAA, 3) = DELC(NAA, 3) + CP * SUM(6) * REFLL
+    !    DELS(NAA, 1) = DELS(NAA, 1) + SP * SUM(6) * REFLH
+    !    DELS(NAA, 2) = DELS(NAA, 2) + SP * SUM(6) * REFLK
+    !    DELS(NAA, 3) = DELS(NAA, 3) + SP * SUM(6) * REFLL
+    DELC(NAA, 1) = DELC(NAA, 1) + SUM(6) * REFLH
+    DELC(NAA, 2) = DELC(NAA, 2) + SUM(6) * REFLK
+    DELC(NAA, 3) = DELC(NAA, 3) + SUM(6) * REFLL
+    DELS(NAA, 1) = DELS(NAA, 1) + SUM(6) * REFLH
+    DELS(NAA, 2) = DELS(NAA, 2) + SUM(6) * REFLK
+    DELS(NAA, 3) = DELS(NAA, 3) + SUM(6) * REFLL
+    !    7     DELMC(NAA, 6) = SUM(6) * CP + DELMC(NAA, 6)
+    7     DELMC(NAA, 6) = SUM(6) + DELMC(NAA, 6)
+    !    DELMC(NAA, 6) = SUM(6) * SP + DELMS(NAA, 6)
+!    DELMS(NAA, 6) = SUM(6) + DELMS(NAA, 6)
     IF(NAA==2) GO TO 15
 
     AT = DELMC(1, 6) - DELMS(2, 6)
-!    ACAL = ACAL + AT !ACAL isn't actually used anywhere
+    !    ACAL = ACAL + AT !ACAL isn't actually used anywhere
     IF (NAD==2) GO TO 40
     BT = DELMC(2, 6) + DELMS(1, 6)
 
-!    BCAL = BCAL + BT !this isn't used anywhere either
-    WRITE(123,*) "AROTOR= ", AT
-    WRITE(99,*) "AROTOR= ", AT
-    WRITE(123,*) "BROTOR= ", BT
-    write(123,*) "***********************"
-    write(99,*) "***********************"
+    !    BCAL = BCAL + BT !this isn't used anywhere either
+    WRITE(12345, *) "AROTOR= ", AT
+    WRITE(12345, *) "BROTOR= ", BT
+    write(12345, *) "***********************"
 
-!    end do
+    !    end do
 
     40    IF(MODE==1) GO TO 9
     !    !!!CALCULATION OF DELF(POPULATION FACTOR) [39] (calculated at a higher level)
@@ -313,26 +302,26 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     !    58    L = L + 1
     !!!DERIVATIVES WRT CENTRE OF RING [40]
     DO IA = 1, 3 !I.E. GO THROUGH THE DO LOOP THREE TIMES
-!        IF(KSEL(L)==0) GO TO 55
-!        DA(K) = -TWOPI * (DELS(1, IA) + DELC(2, IA)) todo: taken out this line
+        !        IF(KSEL(L)==0) GO TO 55
+        !        DA(K) = -TWOPI * (DELS(1, IA) + DELC(2, IA)) todo: taken out this line
         K = K + 1
-!        55      L = L + 1
+        !        55      L = L + 1
     end do
-!    IF (KSEL(L)==0) GO TO 53
+    !    IF (KSEL(L)==0) GO TO 53
     !!!CALCULATION OF DELF(TEMP) [41]
     DA(K) = -RHOSQ * (DELMC(1, 6) - DELMS(2, 6))
     IF(INV1==1) GO TO 54
     DB(K) = -RHOSQ * (DELMC(2, 6) - DELMS(2, 6))
     54    K = K + 1
-!    53    L = L + 1
+    !    53    L = L + 1
     !!!CALCULATION OF DELFD TO DFLF3 todo: don't know what this is
     DO IA = 1, 5
-!        IF(KSEL(L)==0) GO TO 51
+        !        IF(KSEL(L)==0) GO TO 51
         DA(K) = DELMC(1, IA) - DELMS(2, IA)
         IF(INV1==1) GO TO 52
         DB(K) = DELMC(2, IA) + DELMS(1, IA)
         52      K = K + 1
-!        51      L = L + 1
+        !        51      L = L + 1
     end do
     9     RETURN
     !!!THERE'S ANOTHER LINE (201) HERE BUT IDK WHAT THAT IS
