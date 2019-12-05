@@ -4146,9 +4146,9 @@ QUICKSTART         6    0
    5.DATA               3    1    0    0
          2    3    2
     .WAVELENGTH         5    0    1    0    0 0.7107
-    .REFLECTIONS        6    0    1    3    1 FOBS
+    .REFLECTIONS        6    0    1    3    1 FSQUARED
      FOBS           FSQUARED       I
-    .RATIO             13    0    1    0    0 3.0
+    .RATIO             13    0    1    0    0 -3.0
    6.CELL               6    1    0    0
          2    2    2    2    2    2
      A                  7   -1    1    0    0

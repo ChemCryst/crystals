@@ -854,7 +854,7 @@ CDJW DEBUGGING
              CALL XPRVDU(NCVDU, 1,0)
 2804         FORMAT ( 6x, A,' ',F6.3,'A from ',A)
              IF (ISSPRT.EQ.0) WRITE(NCWU,'(A)') trim(CMON(1))
-             WRITE(NCAWU,'(A)') trim(CMON(1))
+c             WRITE(NCAWU,'(A)') trim(CMON(1))
            END IF
           endif
 CDJW DEBUGGING
@@ -945,7 +945,7 @@ CDJW - DEBUGGING
                write(cmon,'(a,i5)') ' Processing group ',K+1
                CALL XPRVDU(NCVDU,1,0)
                if (issprt.eq.0) WRITE(NCWU,'(A)') trim(CMON(1))
-               WRITE(NCAWU,'(A)') trim(CMON(1))
+c               WRITE(NCAWU,'(A)') trim(CMON(1))
                CALL CATSTR(STORE(M5P),STORE(M5P+1),1,1,0,0,0,
      1         CATOM1,LATOM1)
                CALL CATSTR (STORE(M5Q), STORE(M5Q+1),
@@ -956,7 +956,7 @@ CDJW - DEBUGGING
      2         CATOM2(1:25)
                CALL XPRVDU(NCVDU,1,0)
                if (issprt .eq.0) WRITE(NCWU,'(A)') trim(CMON(1))
-               WRITE(NCAWU,'(A)') trim(CMON(1))
+c               WRITE(NCAWU,'(A)') trim(CMON(1))
               endif
 CDJW - DEBUGGING
               MQ=MCG ! Next free word (we'll store atom1 header here)
@@ -1023,7 +1023,7 @@ cdjwdebugging
              CALL XPRVDU(NCVDU, 1,0)
 2805         FORMAT ( 6x, A, ' to ', A, ' to ', A)
              if(issprt.eq.0) WRITE(NCWU,'(A)') trim(CMON(1))
-             WRITE(NCAWU,'(A)') trim(CMON(1))
+c             WRITE(NCAWU,'(A)') trim(CMON(1))
             endif
 cdjwdebugging
 C Find third atom of angle in the first group of SAME.
@@ -1116,7 +1116,7 @@ cdjwdebugging
                WRITE(CMON,2805)CATOM2(1:LATOM2),CATOM1(1:LATOM1),
      1         CATOM3(1:25)
                CALL XPRVDU(NCVDU,1,0)
-               WRITE(NCAWU,'(A)') trim(CMON(1))
+c               WRITE(NCAWU,'(A)') trim(CMON(1))
               endif
 cdjwdebugging
 

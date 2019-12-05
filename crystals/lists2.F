@@ -107,7 +107,7 @@ C -- New style date format.
 901    FORMAT
      1 (' List',I3,' Serial',I5,' Original',I4,' Address',I7,' Size',
      2 I7,' Write flag',I3,' Date ',A24,' From Disc')
-        WRITE ( NCAWU,911) LN,LSN,CDT
+c        WRITE ( NCAWU,911) LN,LSN,CDT
         WRITE ( CMON, 911) LN,LSN,CDT
         CALL XPRVDU(NCVDU, 1,0)
 911     FORMAT(1X,'List ',I4,' Serial ',I4,'  Date ',A24,
@@ -160,7 +160,7 @@ C--LIST DOES NOT EXIST  -  PRINT THE ERROR MESSAGE
         IF (ISSPRT .EQ. 0) THEN
           WRITE(NCWU,1550)LN,IBUFF(1)
         ENDIF
-        WRITE(NCAWU,1550) LN,IBUFF(1)
+c        WRITE(NCAWU,1550) LN,IBUFF(1)
         WRITE ( CMON, 1550) LN,IBUFF(1)
         CALL XPRVDU(NCEROR, 1,0)
 1550    FORMAT(' List type ',I5,'  depends upon list type ',I5,
@@ -183,13 +183,13 @@ C--NOT THE CORRECT SERIAL NUMBER
           CALL XPRVDU(NCEROR, 5,0)
           IF (ISSPRT .EQ. 0) WRITE(NCWU,'(/A/A/A/)') trim(CMON(2)), 
      1    trim(CMON(3)), trim(CMON(4))
-          WRITE(NCAWU,'(/A/A/A/)')trim(CMON(2)), 
-     1    trim(CMON(3)), trim(CMON(4))
+c          WRITE(NCAWU,'(/A/A/A/)')trim(CMON(2)), 
+c     1    trim(CMON(3)), trim(CMON(4))
           IF((LN.EQ.11).AND.(IBUFF(1).EQ.5))THEN
            WRITE(CMON,'(a)')
      1    ' You must do a cycle of refinement to compute esds'
            CALL XPRVDU(NCEROR, 1,0)
-           WRITE(NCAWU,'(/A/)')trim(CMON(1))
+c           WRITE(NCAWU,'(/A/)')trim(CMON(1))
           ENDIF
           CALL OUTCOL(1)
         END IF
@@ -231,7 +231,7 @@ C--LOAD THE RELEVANT INFORMATION FROM THE NEXT RECORD
         IF (ISSPRT .EQ. 0) THEN
           WRITE ( NCWU , 9915 ) LN
         ENDIF
-        WRITE ( NCAWU , 9915 ) LN
+c        WRITE ( NCAWU , 9915 ) LN
         WRITE ( CMON, 9915 ) LN
         CALL XPRVDU(NCEROR, 1,0)
 9915    FORMAT ( 1X , 'A previous job failed when writing list ' , I5 ,
@@ -247,7 +247,7 @@ C--LOAD THE RELEVANT INFORMATION FROM THE NEXT RECORD
         IF (ISSPRT .EQ. 0) THEN
           WRITE ( NCWU , 9925 ) LN
         ENDIF
-        WRITE ( NCAWU , 9925 ) LN
+c        WRITE ( NCAWU , 9925 ) LN
         WRITE ( CMON, 9925 ) LN
         CALL XPRVDU(NCEROR, 1,0)
 9925    FORMAT ( 1X , 'List type ' , I5 , ' is marked as an error list',
@@ -265,7 +265,7 @@ C -- LIST CANNOT BE LOADED BECAUSE OF INTERDEPENDCIES
           IF (ISSPRT .EQ. 0) THEN
             WRITE ( NCWU , 9935 ) LN
           ENDIF
-          WRITE ( NCAWU , 9935 ) LN
+c          WRITE ( NCAWU , 9935 ) LN
           WRITE ( CMON, 9935 ) LN
           CALL XPRVDU(NCEROR, 1,0)
 9935      FORMAT ( 1X , 'List type ' , I5 , ' cannot be loaded' )
@@ -625,7 +625,7 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 2005 ) IREC , IULN , IREQ
       ENDIF
-      WRITE ( NCAWU , 2005 ) IREC , IULN , IREQ
+c      WRITE ( NCAWU , 2005 ) IREC , IULN , IREQ
 2005  FORMAT ( 1X , 'Space required for record type ' , I6 ,
      2 ' in list ' , I4 , ' is ' , I6 , ' word(s)' )
       GO TO 2000
@@ -639,7 +639,7 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 3005 ) IULN , ISPACE , IBLCK , IREC
       ENDIF
-      WRITE ( NCAWU , 3005 ) IULN , ISPACE , IBLCK , IREC
+c      WRITE ( NCAWU , 3005 ) IULN , ISPACE , IBLCK , IREC
 3005  FORMAT ( 1X , 'Total space required for new list ' , I3 ,
      2 ' is ' , I7 , ' word(s)' )
 C
@@ -649,7 +649,7 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 3015 ) IADD , IULN
       ENDIF
-      WRITE ( NCAWU , 3015 ) IADD , IULN
+c      WRITE ( NCAWU , 3015 ) IADD , IULN
 3015  FORMAT ( 1X , 'Disc file extended by ' , I5 , ' record(s) ' ,
      2 'for new list ' , I4 )
 3100  CONTINUE
@@ -853,7 +853,7 @@ C--LINKAGE ERROR
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1200)LN,LASTAD,IADDR,(IBUFF(I),I=1,MD0)
       ENDIF
-      WRITE(NCAWU,1200) LN,LASTAD,IADDR,(IBUFF(I),I=1,MD0)
+c      WRITE(NCAWU,1200) LN,LASTAD,IADDR,(IBUFF(I),I=1,MD0)
       WRITE ( CMON, 1200) LN,LASTAD,IADDR, (IBUFF(I),I=1,MD0)
       CALL XPRVDU(NCEROR, 3,0)
 1200  FORMAT(' Chain break on disc for list type ',I5,/,1X,2I10,
@@ -1122,7 +1122,7 @@ C--ERROR PRINT FOR NO SUCH LIST
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1200)IULN
       ENDIF
-      WRITE(NCAWU,1200)IULN
+c      WRITE(NCAWU,1200)IULN
       WRITE ( CMON, 1200)IULN
       CALL XPRVDU(NCEROR, 1,0)
 1200  FORMAT(' List type ',I5,' is not present in core')
@@ -1150,7 +1150,7 @@ C--ERROR TERMINATION  -  OMITTED RECORD.
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1500)IULN,IUREC
       ENDIF
-      WRITE(NCAWU,1500) IULN,IUREC
+c      WRITE(NCAWU,1500) IULN,IUREC
       WRITE ( CMON, 1500) IULN,IUREC
       CALL XPRVDU(NCEROR, 1,0)
 1500  FORMAT(' List type ',I5,' and record type ',I8,
@@ -1203,7 +1203,7 @@ C--SOME SORT OF ERROR
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1150)LN,IREC
       ENDIF
-      WRITE(NCAWU,1150) LN,IREC
+c      WRITE(NCAWU,1150) LN,IREC
       WRITE ( CMON, 1150) LN,IREC
       CALL XPRVDU(NCEROR, 1,0)
 1150  FORMAT(' Corrupt data record chain in core ',
@@ -1440,7 +1440,7 @@ C--TOO MUCH CORE HAS BEEN ALLOCATED
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1050)LN,IREC
       ENDIF
-      WRITE(NCAWU,1050) LN,IREC
+c      WRITE(NCAWU,1050) LN,IREC
       WRITE ( CMON, 1050) LN,IREC
       CALL XPRVDU(NCEROR, 1,0)
 1050  FORMAT(' Insufficient core store available for list type ',I5,
@@ -1459,7 +1459,7 @@ C--ATTEMPT TO USE CORE STORE THAT CANNOT BE USED
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1250)LN,IREC,NFLMIN,NFL,NFW,NLW,LFL,LFLMAX
       ENDIF
-      WRITE(NCAWU,1250)LN,IREC,NFLMIN,NFL,NFW,NLW,LFL,LFLMAX
+c      WRITE(NCAWU,1250)LN,IREC,NFLMIN,NFL,NFW,NLW,LFL,LFLMAX
       WRITE ( CMON, 1250) LN,IREC,NFLMIN,NFL,NFW,NLW,LFL,LFLMAX
       CALL XPRVDU(NCEROR, 1,0)
 1250  FORMAT(' Illegal store reference for list type ',I5,1X,
@@ -1525,7 +1525,7 @@ C--NO CORE CHAIN  -  PRINT A MESSAGE
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1200)
       ENDIF
-      WRITE(NCAWU,1200)
+c      WRITE(NCAWU,1200)
       WRITE ( CMON, 1200)
       CALL XPRVDU(NCEROR, 1,0)
 1200  FORMAT(' No core chain established')
@@ -1538,7 +1538,7 @@ C--INVALID CHAIN OF SOME TYPE
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1350)
       ENDIF
-      WRITE(NCAWU,1350)
+c      WRITE(NCAWU,1350)
       WRITE ( CMON, 1350)
       CALL XPRVDU(NCEROR, 1,0)
 1350  FORMAT(' Chain break')
@@ -1565,7 +1565,7 @@ C--CHAIN BREAK FOR THE RECORDS
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1700)
       ENDIF
-      WRITE(NCAWU,1700)
+c      WRITE(NCAWU,1700)
       WRITE ( CMON, 1700)
       CALL XPRVDU(NCEROR, 1,0)
 1700  FORMAT(1X,'Chain break')
@@ -1592,14 +1592,14 @@ C--PRINT THE DETAILS FOR THIS RECORD
      2 ISTORE(L+2),(IB,I=1,J)
       ENDIF
 2000  FORMAT(1X,30X,3I10,I11,I10,2I9,2A1,3X,'Inconsistent')
-      WRITE ( NCAWU, '(''See the listing file for details'')')
+c      WRITE ( NCAWU, '(''See the listing file for details'')')
       WRITE ( CMON, '(''See the listing file for details'')')
       CALL XPRVDU(NCEROR, 1,0)
       GOTO 1600
 C--AND NOW EXIT
 2050  CONTINUE
       IF (ISSPRT .EQ. 0) WRITE(NCWU,2100)NULMAX,NUL
-      WRITE ( NCAWU,2100) NULMAX,NUL
+c      WRITE ( NCAWU,2100) NULMAX,NUL
       WRITE ( CMON, 2100) NULMAX, NUL
       CALL XPRVDU(NCVDU, 1,0)
 2100  FORMAT(' Max. free word(s) ',I8,5X,'Current free word(s) ',I8)

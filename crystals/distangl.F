@@ -6064,7 +6064,7 @@ C-------MAIN TERMINATION ROUTINES
 C(****CHANGE THIS****)
 2110  FORMAT ('Dist. of contacts is',F6.2/'Grid resolution is'
      2,F6.2/'Contact are R gt ',I2,',L lt ',I2,',else M atoms')
-      WRITE(NCAWU,2110) AC,RES,INCONT(1),INCONT(2)
+c      WRITE(NCAWU,2110) AC,RES,INCONT(1),INCONT(2)
 C
 C-------ASSYMETRIC UNIT DIMENSIONS
       AS1=STORE(L14+2)-STORE(L14)
@@ -6223,7 +6223,7 @@ C
       CSRQ(1:80) = 'END'
       CALL XISRC(CSRQ)
       END IF
-      WRITE (NCAWU,*) 'no. of pseudo atoms=',IATOM
+c      WRITE (NCAWU,*) 'no. of pseudo atoms=',IATOM
 C
 C-------REINSTATE PREVIOUS SRQ
 C

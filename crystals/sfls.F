@@ -1386,7 +1386,7 @@ C -- NOTHING TO REFINE
       GOTO 9900
 9950  CONTINUE
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9955 )
-      WRITE ( NCAWU , 9955 )
+c      WRITE ( NCAWU , 9955 )
       WRITE ( CMON, 9955 )
       CALL XPRVDU(NCVDU, 1,0)
 9955  FORMAT(1X ,'No additional arguments permitted')
