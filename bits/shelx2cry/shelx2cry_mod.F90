@@ -2173,7 +2173,11 @@ contains
 !#CLOSE HKLI
 !#SCRIPT XPROC6
 
-    i = max(index(hklfile_path, "/", .true.), index(hklfile_path, backslash, .true.))
+
+! The following removes path before filename - we need the path if we are to process the hkl file from
+! a different folder.
+!    i = max(index(hklfile_path, "/", .true.), index(hklfile_path, backslash, .true.))
+     i = 0
 
     write (crystals_fileunit, '(a)') '# read in reflections'
     write (crystals_fileunit, '(a)') '#CLOSE HKLI'

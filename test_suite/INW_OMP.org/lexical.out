@@ -73,12 +73,10 @@ DIST 1.000000 , .010000 = CL(1) TO CL(3)
 DIST 1.000000 , .010000 = CL(1) TO CL(3)
 # INVALID ATOM
 #LIST 16
-E Error: UQISO 0.01 C(128) C(2, 128)
+E Warning: UQISO 0.01 C(128) C(2, 128)
 E ------------------^^^^^^^
-E Error: atom C(128) is not present in the model
- The last card contains unaccessed parameter(s) beyond column    6
+E Warning: atom C(128) is not present in the model
 #END
- Input of list type    16 (General Restraint instructions) abandoned
 
 
           : Job ends ok       with     0 warnings and     0 errors
