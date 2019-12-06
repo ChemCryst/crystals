@@ -3262,7 +3262,7 @@ cdjwoct2001
       if (igroup .ge. 0) then
        if (istore(m5a+16) .le. 0) then
             ifrag = ifrag+1
-            istore(m5a+16)=ifrag*1000
+            istore(m5a+16)=ifrag
        endif
       endif
       NFL=JE
