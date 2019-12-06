@@ -177,7 +177,7 @@ C  2  THE VALUE TO BE PLACED IN THE WORK STACK.
 C
 C--
       use lists2_mod, only: xldlst
-      
+
       INCLUDE 'ICOM26.INC'
 C
       INCLUDE 'STORE.INC'
@@ -821,17 +821,14 @@ C-C-C-TRANSF. OF "ISOTR. TEMP.FACT." AND SIZE
       STORE(I)=0.
 1410  CONTINUE
       ELSE IF(NINT(ABS(STORE(LOCB+3))).GE.3) THEN
-C-C-C-"ATOM" IS A LINE OR RING
+C-C-C-"ATOM" IS A LINE, RING OR ROTOR
 C-C-C-TRANSF. OF "ISOTR. TEMP.FACT.", SIZE, DECLINAT, AZIMUTH
       STORE(LOCB+7)=STORE(LOCA+7)
       STORE(LOCB+8)=STORE(LOCA+8)
       STORE(LOCB+9)=STORE(LOCA+9)
       STORE(LOCB+10)=STORE(LOCA+10)
-      J=LOCB+11
-      K=J+1
-      DO 1420 I=J,K
-      STORE(I)=0.
-1420  CONTINUE
+      STORE(LOCB+11)=STORE(LOCA+11)
+      STORE(LOCB+12)=STORE(LOCA+12)
       ENDIF
 1450  CONTINUE
 C----- ARE THERE ANY PEAK HEIGHTS
@@ -1070,13 +1067,13 @@ C
       INCLUDE 'XCNTRL.INC'
 C
       INCLUDE 'QSTORE.INC'
-            
+
       if(present(results)) then
           call extend(results%subrestraints, 1, .true.)
           results%subrestraints(1)%description='Define'
           results%subrestraints(1)%rvalue=XVALUE(LC)
-      end if      
-      
+      end if
+
 C
 C--FIND THE LOCATION TO STORE THE COMPUTED VALUE
       I=ISTORE(LCG+2)+LC
@@ -1300,4 +1297,3 @@ C--AND NOW RETURN
 1100  CONTINUE
       RETURN
       END
-
