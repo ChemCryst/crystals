@@ -3484,6 +3484,9 @@ C-C-C-...FOR DERIVATIVES
       ALPD=0.0
       BLPD=0.0
 
+      AROTOR = 1.0
+      BROTOR = 1.0
+
 !     write (123,*) 'Hello'
 !
 !       WRITE ( CMON, '(a)')
@@ -3860,8 +3863,10 @@ c Special shapes
               CALL XRING (M2, ST, M5A,M6,SLRFAC,DSIZE,DDECLINA,DAZIMUTH)
             ELSE IF (NINT(FLAG)==5) THEN
               write(1234, *) "STORE(M5ARI+12) = ", STORE(M5A + 12)
-              CALL XROTOR (2, M5A, M2T, SST, AROTOR, BROTOR) !, DSIZE, DDECLINA, DAZIMUTH) todo: add these extra inputs
+              CALL XROTOR (4, M5A, M2T, SST, AROTOR, BROTOR) !, DSIZE, DDECLINA, DAZIMUTH) todo: add these extra inputs?
             END IF
+!           write(567,*) "*", STORE(M6), STORE(M6+1), STORE(M6+2),
+!    1      AROTOR, BROTOR
 
             T=Tiso(LJY)
             TFOCC=T*FOCC
@@ -3871,22 +3876,28 @@ c iso-temperature factor
             T=Tiso(LJY)
           ENDIF
 
-C--CALCULATE THE A & B CONTRIBUTION
-          BPI=Sina(ljy,ljx)*TFOCC
-          API=Cosa(ljy,ljx)*TFOCC
-          IF (NINT(FLAG) == 5) THEN
-           AP=API*AROTOR-BPI*BROTOR
-           BP=BPI*AROTOR+API*BROTOR
-          ELSE
-           AP = API
-           BP=BPI
-          END IF
-          BT=BT+BP
-          AT=AT+AP
-c          WRITE(NCWU,'(A,Z0,1X,F15.6)')'AT:',AT,AT
-c          WRITE(NCWU,'(A,Z0,1X,F15.6)')'BT:',BT,BT
-c         WRITE(NCWU,'(A,2(1X,Z0,1X,F20.16))')'SIN:',S,S, aaas, aaas
-c         WRITE(NCWU,'(A,2(1X,Z0,1X,F20.16))')'COS:',C,C, aaac, aaac
+C--CALCULATE THE A & B CONTRIBUTIONS
+          BP=Sina(ljy,ljx)*TFOCC
+          AP=Cosa(ljy,ljx)*TFOCC
+
+          BT=BT+BP*AROTOR+AP*BROTOR
+          AT=AT+AP*AROTOR-BP*BROTOR
+!         write(567,*) "&", STORE(M6), STORE(M6+1), STORE(M6+2), AT, BT,
+!    1    AP, BP
+
+!--CALCULATE THE A & B CONTRIBUTION
+!         BPI=Sina(ljy,ljx)*TFOCC
+!         API=Cosa(ljy,ljx)*TFOCC
+!         IF (NINT(FLAG) == 5) THEN
+!          AP=API*AROTOR-BPI*BROTOR
+!          BP=BPI*AROTOR+API*BROTOR
+!         ELSE
+!          AP = API
+!          BP=BPI
+!         END IF
+!         BT=BT+BP
+!         AT=AT+AP
+
 
 C--CHECK IF ANY REFINEMENT IS BEING DONE
           IF(ATOM_REFINE)THEN
@@ -4056,6 +4067,8 @@ C--CALCULATE THE PARTIAL DERIVATIVES W.R.T. B FOR U[ISO]
         END IF
         M5A=M5A+MD5A
       END DO             ! END OF ATOM CYCLING LOOP
+
+      write(567,*) " ", STORE(M6), STORE(M6+1), STORE(M6+2), ACR, BCR
 
       IF(CENTRO) THEN ! CHECK IF THIS STRUCTURE IS CENTRO
         BCR=0.         ! Zero appropriate parts.

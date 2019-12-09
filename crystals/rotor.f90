@@ -47,7 +47,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     !GET OCCUPANCY
     GP = STORE(M5ARI + 2)
     !TEMPERATURE FACTOR
-    !    BB = STORE(M5ARI + 7)
+    !    BB = STORE(M5ARI + 7) (never used)
     BD = STORE(M5ARI + 12)
     !POLAR ANGLES IN UNITS OF 100 DEGREES
     ANGLEDD = STORE(M5ARI + 9)
@@ -76,13 +76,15 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     !SET I0
     call BESSELI(BSUM, 0, BD)
     BIO = bsum
-    write (321, *) "BD= ", BD, "BIO=", BIO
     !SET Ip FROM 1 TO 20
     DO JP = 1, 20
         call BESSELI(BSUM, JP, BD)
         BIA(JP) = bsum
-        write (321, *) "JP=", JP, "BD= ", BD, "BIA=", BIA(JP)
     END DO
+
+!    do i=0,10
+!        write(555,*) i, dbjb(i)
+!    end do
 
     TE = 0.
     TD = 0.
@@ -159,8 +161,8 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     !    GO TO 21 !sets LM(1-5)=KSEL(IA+L+4) and LM(6)=0 then comes straight back if NAA=1 (which it will be)
     22    E = SNGL(AP) !converts a' to real type for use in bessel
     CALL BESSELJ(BJ, QW, E)
-    write(1975, *) "bessel J when p=0 is ", BJ
-    write(1975, *) "dbib = ", DBIB
+    write(1975, *) "bessel J", QW, E, BJ
+    !    write(1975, *) "dbib = ", DBIB
     SUM(1) = DBIB * BJ
     SUM(2) = BR !todo: what is BR
     SUM(3) = BDD !todo:what is BDD
@@ -203,7 +205,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
         TCOM = 2. * SIGN * BIA(JP) / BIO
         E = SNGL(AP) !E=a' CONVERTED TO A REAL NUMBER
         CALL BESSELJ (BJ, PNA, E)
-        write(1975, *) "pna= ", PNA, "BJ= ", BJ
+        write(1975, *) "pna= ", PNA, "a'=", E, "BJ= ", BJ
         write(1975, *) "****"
         write(12345, *) "BJ =", BJ
         write(12345, *) "PNA =", PNA
@@ -279,7 +281,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     !    7     DELMC(NAA, 6) = SUM(6) * CP + DELMC(NAA, 6)
     7     DELMC(NAA, 6) = SUM(6) + DELMC(NAA, 6)
     !    DELMC(NAA, 6) = SUM(6) * SP + DELMS(NAA, 6)
-!    DELMS(NAA, 6) = SUM(6) + DELMS(NAA, 6)
+    !    DELMS(NAA, 6) = SUM(6) + DELMS(NAA, 6)
     IF(NAA==2) GO TO 15
 
     AT = DELMC(1, 6) - DELMS(2, 6)
@@ -340,6 +342,7 @@ SUBROUTINE BESSELI(BSUM, PP, XZ) !BSIGN=1.0
     DRTERM = 0.
     BJTERM = 0.
     CLIMIT = 0.0001
+    XM = 1
 
     LB(5) = 1
     IF(PP==0) then
@@ -348,8 +351,7 @@ SUBROUTINE BESSELI(BSUM, PP, XZ) !BSIGN=1.0
     else
         jp = pp
     END IF
-    !    JP = PP
-    !    if (JP==0) JP=1
+
     DO M = 1, JP
         XM = FLOAT(M)
         BTERM = BTERM * XZ / (2. * XM)
@@ -357,12 +359,12 @@ SUBROUTINE BESSELI(BSUM, PP, XZ) !BSIGN=1.0
     !!!CALCULATION OF I TERMS
     17  LB(1) = 1
     DO M = 2, 4
-        LB(M) = 0  !!this bit is setting all the markers to 0
+        LB(M) = 0
     end do
     IF(PP/=0) BJTERM = PP * BTERM / XZ
     !    DBJB(JPA) = BJTERM
-    IF (JP==0) then
-        DBIB = BJTERM
+    IF (PP==0) then
+        DBIB = BTERM * XZ / (2. * XM)
     else
         DBJB(JP) = BJTERM
     END IF
