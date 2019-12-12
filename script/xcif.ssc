@@ -281,7 +281,8 @@
 %      COPY '#PUNCH 16 C'
 %      COPY 'END'
 %%
-%%  Write manually omitted reflections to end of cif
+%    copy '#set moni on'
+%%   Write manually omitted reflections to end of cif
 %      COPY '#SUM LIST 28 HI'
 %      COPY 'END'
 %%
@@ -308,7 +309,7 @@
 %      END IF
 %    END IF
 %%
-  Parameters saved in {&publish.cif{&
+{I  Parameters saved in {&publish.cif{&
 %%
 %%
 %%
@@ -344,7 +345,7 @@
 %        COPY 'END'
 %      END IF
 %      COPY '#RELEASE FRN1 logs/bfile.frn'
-  Reflections saved in {&publish.fcf{&
+{I  Reflections saved in {&publish.fcf{&
 %    END IF
 %%
 ^^?? CFNOTE STATE
