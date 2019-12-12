@@ -82,9 +82,14 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
         BIA(JP) = bsum
     END DO
 
-!    do i=0,10
-!        write(555,*) i, dbjb(i)
-!    end do
+    write(555, *) "0", dbib
+    write(555, *) "1", dbjb(1)
+    write(555, *) "2", dbjb(2)
+    write(555, *) "3", dbjb(3)
+    write(555, *) "4", dbjb(4)
+    write(555, *) "5", dbjb(5)
+    write(555, *) "10", dbjb(10)
+    write(555, *) "15", dbjb(15)
 
     TE = 0.
     TD = 0.
@@ -109,10 +114,6 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     CODE = 0
 
     ICODE = 0
-    !        CALL SYM
-    !    PHI = TWOPI * (REFLH * XC + REFLK * YC + REFLL * ZC + HT )  ! + T)
-    !    CP = COS(PHI) !* TF
-    !    SP = SIN(PHI) !* TF
     !calculate c(CC) and d(DD) and then a'
     XK1 = REFLH * Q1 + REFLK * Q2 + REFLL * Q3
     XK2 = REFLL * Q6
@@ -120,12 +121,9 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     ! When angles are zero, CC = 2piR * xk1
     !                       DD = 0
 
-    CC = TWOPI * RIRA * (XK1 * CE - XK2 * SE)
-    DD = TWOPI * RIRA * (XK1 * SD * SE + XK3 * CD + XK2 * CE * SD)
+    CC = TWOPI * RIRA * (XK1 * CD * CE + XK3 * CD * SE - XK2 * SD)
+    DD = TWOPI * RIRA * (-XK1*SE+XK3*CE)
     AP = SQRT(CC**2 + DD**2)
-    !    AP=1
-    !    do counter=0, 3.0, 0.2
-    !    AP = counter
 
     write(12345, *) "NORD= ", NORD
     write(12345, *) "CC= ", CC
