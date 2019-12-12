@@ -122,7 +122,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     !                       DD = 0
 
     CC = TWOPI * RIRA * (XK1 * CD * CE + XK3 * CD * SE - XK2 * SD)
-    DD = TWOPI * RIRA * (-XK1*SE+XK3*CE)
+    DD = TWOPI * RIRA * (-XK1 * SE + XK3 * CE)
     AP = SQRT(CC**2 + DD**2)
 
     write(12345, *) "NORD= ", NORD
@@ -137,9 +137,9 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     IF (MODE==1) GO TO 2
     !    IF (KSEL(L + 7)==0.AND.KSEL(L + 8)==0) GO TO 2 !todo: KSEL?
     !calculate some derivative bits (AS WLH DOES)
-    DELCE = -TWOPI * RIRA * (XK1 * SE + XK2 * CE) ![51]
-    DELDE = TWOPI * RIRA * (XK1 * SD * CE - XK2 * SD * SE) ![51]
-    DELDD = TWOPI * RIRA * (CD * SE * XK1 - SD * XK3 + CE * CD * XK2) ![49]
+    DELCE = TWOPI * RIRA * (-XK1 * CD * SE + XK3 * CD * CE) ![51]
+    DELDE = TWOPI * RIRA * (-XK1 * CD * SE + XK3 * CD * CE) ![51]
+    DELDD = -TWOPI * RIRA * (XK1 * SD * CE + XK2 * CD + XK3 * SD * SE) ![49]
     DELAPD = DD * DELDD / AP ![49]
     DELAPE = (CC * DELCE + DD * DELDE) / AP !todo: I can't find this in WLH
     TE = DELAPE / AP
