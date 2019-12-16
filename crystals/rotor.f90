@@ -1,7 +1,7 @@
 SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH)
     use xconst_mod, only : twopi
     use xlst01_mod
-    COMMON/BESS/DBJB(20), DBIB, LM(6), RIRA, TD, TE, MODE
+    COMMON/BESS/DBJB(20), DBIB, LM(6), RIRA, TD, TE, MODE, BR, BEA, BDD
     COMMON/ROTOR/ ACAL, BCAL, KSEL(100)
     INCLUDE 'ISTORE.INC'
     INTEGER NORD, QW, NK, PNA, INV1, NAA, NAD
@@ -11,10 +11,10 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     REAL XETA, ANGLE, ANGLEDD, ANGLEED, ANGLEE, ANGLED, TCOM, BIO
     REAL DA(180), DB(180), BIA(20)
     REAL BDTERM, RTERM, DTERM, ETERM, GTERM, MTERM !, LTERM
-    REAL AP, CD, SD, CE, SE, CW, TE, TD, CU, SU
+    REAL AP, CD, SD, CE, SE, CW, CU, SU
     REAL XK1, XK2, XK3
     REAL DELCE, DELDE, DELDD, DELAPD, DELAPE, DXETA, DXETAD, DXETAE, XXI
-    REAL DMD, DME, BEA, AT, BT, SUM(6)
+    REAL DMD, DME, AT, BT, SUM(6)
     DOUBLE PRECISION CLIMIT
     REAL DELMC(2, 6), DELMS(2, 6), DELC(2, 3), DELS(2, 3)
 
@@ -25,11 +25,9 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     !todo: I've just initiated these arbitrarily
     INV1 = 0.
     NAD = 0.
-    TD = 0.
-    TE = 0.
-    BR = 0.
-    BDD = 0.
-    BEA = 0.
+!    BR = 0.
+!    BDD = 0.
+!    BEA = 0.
     MODE = 1
     LM(6) = 1
 
@@ -275,160 +273,11 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     9     RETURN
 END
 
-SUBROUTINE BESSELI(BSUM, PP, XZ) !BSIGN=1.0
-    COMMON/BESS/DBJB(20), DBIB, LM(6), RIRA, TD, TE, MODE
-    REAL BTERM, BRTERM, DRTERM, BJTERM, CLIMIT
-    INTEGER LB(5), PP
-
-    JP = 0
-    BTERM = 1.
-    BRTERM = 0.
-    ERTERM = 0.
-    FTERM = 0.
-    DRTERM = 0.
-    BJTERM = 0.
-    CLIMIT = 0.0001
-    XM = 1
-
-    LB(5) = 1
-    IF(PP==0) then
-        JP = 1
-        GO TO 17
-    else
-        jp = pp
-    END IF
-
-    DO M = 1, JP
-        XM = FLOAT(M)
-        BTERM = BTERM * XZ / (2. * XM)
-    end do
-    !!!CALCULATION OF I TERMS
-    17  LB(1) = 1
-    DO M = 2, 4
-        LB(M) = 0
-    end do
-    IF(PP/=0) BJTERM = PP * BTERM / XZ
-    !    DBJB(JPA) = BJTERM
-    IF (PP==0) then
-        DBIB = BTERM * XZ / (2. * XM)
-    else
-        DBJB(JP) = BJTERM
-    END IF
-
-    !!!CALCULATION OF M TERMS
-    BSUM = BTERM
-    BR = BRTERM
-    BEA = ERTERM
-    BDD = DRTERM
-    !    DBJB(JP) = BJTERM
-    DO M = 1, 30
-        BTERM = (BTERM * XZ * XZ) / (4. * M * (M + PP))
-        IF(MODE==1) GO TO 11
-        IF(LB(1)==0) GO TO 6
-        !!!CALCULATION OF dM/dBd TERM [42]
-        BJTERM = (2. * M + PP) * BTERM / XZ ![43]
-        !        DBJB(JPA) = DBJB(JPA) + BJTERM
-        DBJB(JP) = DBJB(JP) + BJTERM
-        !        IF(ABS(BJTERM / DBJB(JPA))<CLIMIT) LB(1) = 0
-        IF(ABS(BJTERM / DBJB(JP))<CLIMIT) LB(1) = 0
-        6     IF (LB(2)==0) GO TO 7
-        !!!CALCULATION OF dM/dR TERM [45]
-        BRTERM = BTERM * (2. * M + PP) / RIRA
-        BR = BR + BRTERM
-        IF(ABS(BRTERM / BR)<CLIMIT) LB(2) = 0
-        7     IF (LB(3)==0) GO TO 8
-        !!!CALCULATION OF dM/dD TERM [48]
-        DRTERM = BTERM * (2. * M + PP) * TD
-        BDD = BDD + DRTERM
-        IF(ABS(DRTERM / BDD)<CLIMIT) LB(3) = 0
-        8     IF (LB(4)==0) GO TO 11
-        !!!CALCULATION OF dM/dE TERM [50]
-        ERTERM = BTERM * (2. * M + PP) * TE
-        BEA = BEA + ERTERM
-        IF(ABS(ERTERM / BEA)<CLIMIT) LB(4) = 0
-        11    IF (LB(5)==0) GO TO 12
-        !!!CALCULATION OF BESSEL SUMMATION
-        BSUM = BSUM + BTERM
-        IF (ABS(BTERM / BSUM)<CLIMIT) LB(5) = 0
-        12    LSUM = LB(1) + LB(2) + LB(3) + LB(4) + LB(5)
-        IF (MODE==1) LSUM = LB(5)
-        IF (LSUM==0) GO TO 3
-    end do
-    3     RETURN
-END
-
-SUBROUTINE BESSELJ (BSUM, PP, XZ) !BSIGN = -1.0
-    COMMON/BESS/DBJB(20), DBIB, LM(6), RIRA, TD, TE, MODE
-    REAL BTERM, BRTERM, DRTERM, BJTERM, CLIMIT
-    INTEGER LB(5), PP
-
-    BTERM = 1.
-    BRTERM = 0.
-    FTERM = 0.
-    DRTERM = 0.
-    BJTERM = 0.
-    CLIMIT = 0.0001
-
-    LB(5) = 1
-    IF(PP==0) GO TO 17 !IF P IN BESSEL SUM IS 0
-    JP = PP
-    DO M = 1, JP
-        XM = FLOAT(M)
-        BTERM = BTERM * XZ / (2. * XM)
-    end do
-    !!!CALCULATION OF M TERMS
-    17    LB(1) = 0
-    DO M = 2, 4
-        LB(M) = LM(M) !set the LB markers to same values as LM markers (don't calculate derivatives that are too small)
-    end do
-    IF (PP==0) GO TO 5
-    BRTERM = BTERM * PP / RIRA
-    ERTERM = PP * BTERM !* TF
-    DRTERM = PP * BTERM * TD !todo: look up these bits
-    5     BSUM = BTERM
-    BR = BRTERM
-    BEA = ERTERM
-    BDD = DRTERM
-    DO M = 1, 30
-        BTERM = (-BTERM * XZ * XZ) / (4. * M * (M + PP))
-        IF(MODE==1) GO TO 11
-        IF(LB(1)==0) GO TO 6
-        !!!CALCULATION OF dM/dBd TERM [42]
-        BJTERM = (2. * M + PP) * BTERM / XZ ![43]
-        !        DBJB(JPA) = DBJB(JPA) + BJTERM
-        DBJB(JP) = DBJB(JP) + BJTERM
-        !        IF(ABS(BJTERM / DBJB(JPA))<CLIMIT) LB(1) = 0
-        IF(ABS(BJTERM / DBJB(JP))<CLIMIT) LB(1) = 0
-        6     IF (LB(2)==0) GO TO 7
-        !!!CALCULATION OF dM/dR TERM [45]
-        BRTERM = BTERM * (2. * M + PP) / RIRA
-        BR = BR + BRTERM
-        IF(ABS(BRTERM / BR)<CLIMIT) LB(2) = 0
-        7     IF (LB(3)==0) GO TO 8
-        !!!CALCULATION OF dM/dD TERM [48]
-        DRTERM = BTERM * (2. * M + PP) * TD
-        BDD = BDD + DRTERM
-        IF(ABS(DRTERM / BDD)<CLIMIT) LB(3) = 0
-        8     IF (LB(4)==0) GO TO 11
-        !!!CALCULATION OF dM/dE TERM [50]
-        ERTERM = BTERM * (2. * M + PP) * TE
-        BEA = BEA + ERTERM
-        IF(ABS(ERTERM / BEA)<CLIMIT) LB(4) = 0
-        11    IF (LB(5)==0) GO TO 12
-        !!!CALCULATION OF BESSEL SUMMATION
-        BSUM = BSUM + BTERM
-        IF (ABS(BTERM / BSUM)<CLIMIT) LB(5) = 0
-        12    LSUM = LB(1) + LB(2) + LB(3) + LB(4) + LB(5)
-        IF (MODE==1) LSUM = LB(5)
-        IF (LSUM==0) GO TO 3
-    end do
-    3     RETURN
-END
 
 SUBROUTINE BESSEL(BSUM, PP, XZ, BSIGN) !BSUM IS THE OUTPUT, PP IS P IN THE SUM. NOT SURE ABOUT THE OTHER TWO
-    COMMON/BESS/DBJB(20), DBIB
+    COMMON/BESS/DBJB(20), DBIB, LM(6), RIRA, TD, TE, MODE, BR, BEA, BDD
     REAL BTERM, BRTERM, FRTERM, DRTERM, BJTERM, BSIGN
-    INTEGER LB(5), LM(5), PP
+    INTEGER LB(5), PP
     REAL CLIMIT, TF, TD
 
     JP = 0
@@ -470,7 +319,7 @@ SUBROUTINE BESSEL(BSUM, PP, XZ, BSIGN) !BSUM IS THE OUTPUT, PP IS P IN THE SUM. 
         LB(M) = LM(M) !set the LB markers to same values as LM markers (don't calculate derivatives that are too small)
     end do
     IF (PP==0) GO TO 5
-    BRTERM = BTERM * PP / RID
+    BRTERM = BTERM * PP / RIRA
     ERTERM = PP * BTERM * TF
     DRTERM = PP * BTERM * TD !todo: look up these bits
     5     BSUM = BTERM
@@ -490,7 +339,7 @@ SUBROUTINE BESSEL(BSUM, PP, XZ, BSIGN) !BSUM IS THE OUTPUT, PP IS P IN THE SUM. 
         IF(ABS(BJTERM / DBJB(JP))<CLIMIT) LB(1) = 0
         6     IF (LB(2)==0) GO TO 7
         !!!CALCULATION OF dM/dR TERM [45]
-        BRTERM = BTERM * (2. * M + PP) / RID !todo: what is RID
+        BRTERM = BTERM * (2. * M + PP) / RIRA
         BR = BR + BRTERM
         IF(ABS(BRTERM / BR)<CLIMIT) LB(2) = 0
         7     IF (LB(3)==0) GO TO 8
