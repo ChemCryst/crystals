@@ -66,11 +66,13 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     Q6 = STORE(L1O2 + 8)
 
     !SET I0 (BIO)
-    call BESSELI(BSUM, 0, BD)
+!    call BESSELI(BSUM, 0, BD)
+    call BESSEL(BSUM, 0, BD, 1.0)
     BIO = bsum
     !SET Ip FROM 1 TO 20 (BIA)
     DO JP = 1, 20
-        call BESSELI(BSUM, JP, BD)
+!        call BESSELI(BSUM, JP, BD)
+        call BESSEL(BSUM, JP, BD, 1.0)
         BIA(JP) = bsum
     END DO
 
@@ -135,8 +137,10 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     NAA = 1
     !    GO TO 21 !sets LM(1-5)=KSEL(IA+L+4) and LM(6)=0 then comes straight back if NAA=1 (which it will be)
     22    E = SNGL(AP) !converts a' to real type for use in bessel
-    CALL BESSELJ(BJ, QW, E)
+!    CALL BESSELJ(BJ, QW, E)
+    CALL BESSEL(BJ, QW, E, -1.0)
     write(1975, *) "bessel J", QW, E, BJ
+    write(5678,*) "DBIB=", DBIB, "BD=", BD
     SUM(1) = DBIB * BJ
     SUM(2) = BR
     SUM(3) = BDD
@@ -175,9 +179,11 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
         SU = SIN(JP * ANGLE) !sin(pn(xi-eta))
         TCOM = 2. * SIGN * BIA(JP) / BIO
         E = SNGL(AP) !E=a' CONVERTED TO A REAL NUMBER
-        CALL BESSELJ (BJ, PNA, E)
+!        CALL BESSELJ (BJ, PNA, E)
+        CALL BESSEL (BJ, PNA, E, -1.0)
         write(1975, *) "pna= ", PNA, "a'=", E, "BJ= ", BJ
         write(1975, *) "****"
+        write(5678,*) "JP=", JP, "DBJB=", DBJB(JP), "BD=", BD
         IF (MODE==1) GO TO 34 !i.e. skip a load of derivation bits
         IF (LM(1)==0) GO TO 30
         !!!CALCULATION OF dM/d(Bd) [42]
@@ -396,6 +402,95 @@ SUBROUTINE BESSELJ (BSUM, PP, XZ) !BSIGN = -1.0
         6     IF (LB(2)==0) GO TO 7
         !!!CALCULATION OF dM/dR TERM [45]
         BRTERM = BTERM * (2. * M + PP) / RIRA
+        BR = BR + BRTERM
+        IF(ABS(BRTERM / BR)<CLIMIT) LB(2) = 0
+        7     IF (LB(3)==0) GO TO 8
+        !!!CALCULATION OF dM/dD TERM [48]
+        DRTERM = BTERM * (2. * M + PP) * TD
+        BDD = BDD + DRTERM
+        IF(ABS(DRTERM / BDD)<CLIMIT) LB(3) = 0
+        8     IF (LB(4)==0) GO TO 11
+        !!!CALCULATION OF dM/dE TERM [50]
+        ERTERM = BTERM * (2. * M + PP) * TE
+        BEA = BEA + ERTERM
+        IF(ABS(ERTERM / BEA)<CLIMIT) LB(4) = 0
+        11    IF (LB(5)==0) GO TO 12
+        !!!CALCULATION OF BESSEL SUMMATION
+        BSUM = BSUM + BTERM
+        IF (ABS(BTERM / BSUM)<CLIMIT) LB(5) = 0
+        12    LSUM = LB(1) + LB(2) + LB(3) + LB(4) + LB(5)
+        IF (MODE==1) LSUM = LB(5)
+        IF (LSUM==0) GO TO 3
+    end do
+    3     RETURN
+END
+
+SUBROUTINE BESSEL(BSUM, PP, XZ, BSIGN) !BSUM IS THE OUTPUT, PP IS P IN THE SUM. NOT SURE ABOUT THE OTHER TWO
+    COMMON/BESS/DBJB(20), DBIB
+    REAL BTERM, BRTERM, FRTERM, DRTERM, BJTERM, BSIGN
+    INTEGER LB(5), LM(5), PP
+    REAL CLIMIT, TF, TD
+
+    JP = 0
+    BTERM = 1.
+    BRTERM = 0.
+    ERTERM = 0.
+    FTERM = 0.
+    DRTERM = 0.
+    BJTERM = 0.
+    CLIMIT = 0.0001
+    XM = 1
+
+    LB(5) = 1
+    IF(PP==0) then
+        JP = 1
+        GO TO 17
+    else
+        jp = pp
+    END IF
+    FACP = 1.
+
+    DO M = 1, JP
+        XM = FLOAT(M)
+        BTERM = BTERM * XZ / (2. * XM)
+    end do
+    17    IF (BSIGN<0.) GO TO 22 !if calculating a J term (rather than I)
+    !!!CALCULATION OF I TERMS (only hits this bit if doing I not J)
+    LB(1) = 1
+    DO M = 2, 4
+        LB(M) = 0  !!this bit is setting all the markers to 0
+    end do
+    IF(PP/=0) BJTERM = PP * BTERM / XZ
+    !    DBJB(JPA) = BJTERM
+    DBJB(JP) = BJTERM
+    GO TO 5
+    !!!CALCULATION OF M TERMS
+    22    LB(1) = 0
+    DO M = 2, 4
+        LB(M) = LM(M) !set the LB markers to same values as LM markers (don't calculate derivatives that are too small)
+    end do
+    IF (PP==0) GO TO 5
+    BRTERM = BTERM * PP / RID
+    ERTERM = PP * BTERM * TF
+    DRTERM = PP * BTERM * TD !todo: look up these bits
+    5     BSUM = BTERM
+    BR = BRTERM
+    BEA = ERTERM
+    BDD = DRTERM
+    IF(BSIGN>0) DBJB(JP) = BJTERM
+    DO M = 1, 30
+        BTERM = (BSIGN * BTERM * XZ * XZ) / (4. * M * (M + PP))
+        IF(MODE==1) GO TO 11
+        IF(LB(1)==0) GO TO 6
+        !!!CALCULATION OF dM/dBd TERM [42]
+        BJTERM = (2. * M + PP) * BTERM / XZ ![43]
+        !        DBJB(JPA) = DBJB(JPA) + BJTERM
+        DBJB(JP) = DBJB(JP) + BJTERM
+        !        IF(ABS(BJTERM / DBJB(JPA))<CLIMIT) LB(1) = 0
+        IF(ABS(BJTERM / DBJB(JP))<CLIMIT) LB(1) = 0
+        6     IF (LB(2)==0) GO TO 7
+        !!!CALCULATION OF dM/dR TERM [45]
+        BRTERM = BTERM * (2. * M + PP) / RID !todo: what is RID
         BR = BR + BRTERM
         IF(ABS(BRTERM / BR)<CLIMIT) LB(2) = 0
         7     IF (LB(3)==0) GO TO 8
