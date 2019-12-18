@@ -17,6 +17,7 @@ endif()
 
 add_library(CrystalsFortran STATIC
 helper.c
+python.c
 mrgrnk.f90
 crystals_hdf5.F90
 numpy.F90
@@ -170,5 +171,3 @@ SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_GUI)
 else()
 SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_NOGUI)
 endif()
-
-

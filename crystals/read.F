@@ -1,4 +1,4 @@
-C $Log: read.F,v $ 
+C $Log: read.F,v $
 C Revision 1.67  2013/06/11 12:30:39  pascal
 C Linux changes
 C
@@ -379,7 +379,7 @@ CDJW DEC 99 ADD GLOBAL SCRIPT VARIABLES SO WE CAN GET 'VERIFY'
       INCLUDE 'XSCGBL.INC'
       INCLUDE 'XSCCHK.INC'
       INCLUDE 'XMENUC.INC'
-      
+
       character(len=16) :: cformat
 C
 C
@@ -711,7 +711,7 @@ CTest
 C
 C
 CDJWAPR2011 ADD & FOR FRENCH USERS
-      DATA  CTRAN3 / '&?' /      
+      DATA  CTRAN3 / '&?' /
       DATA  CTRAN2 / '#?' /, CDOLAR /'$'/
 C------ THE FOLLOWING LINE WOULD BE BACKSLASH* IN THE DATA STATEMENT
 C       ABOVE, EXCEPT THAT SOME WEIRD UNIX DICTATE WHAT YOU CAN DO
@@ -781,14 +781,14 @@ cC This section is used to test the CSDCODE.
 cC Typing '#BONDTY' generates a list of bonds and automatically assigns
 cC their bond types.
 cC----- SPOT LINES BEGINNING WITH #BONDTY, AND CALL BONDTY
-c      IF (CLINE(1:7) .EQ. '#BONDTY') THEN                               
+c      IF (CLINE(1:7) .EQ. '#BONDTY') THEN
 c          LENUSE = 1
 c          CLINE = ' '
 c          CALL BONDTY(0)
 cC Typing '#BONDCK' compares bond lengths and angles to the CSD data.
 cC It writes quest files if the data is not available..
-cC----- SPOT LINES BEGINNING WITH #BONDCK, AND CALL KBNDCH               
-c      ELSE IF (CLINE(1:7) .EQ. '#BONDCK') THEN                               
+cC----- SPOT LINES BEGINNING WITH #BONDCK, AND CALL KBNDCH
+c      ELSE IF (CLINE(1:7) .EQ. '#BONDCK') THEN
 c          LENUSE = 1
 c          CLINE = ' '
 c        IDV4 = KBNDCH ( RDV,  IDV, RDV2,
@@ -798,8 +798,8 @@ c     1                  1,    RDV5 )
 
 C '#EMAP2' is put in the SRQ by '#EMAP' so that we can come back
 C and analyse the results of a #FIND.
-cC----- SPOT LINES BEGINNING WITH #EMAP2, AND CALL EMAP2D               
-c      ELSE IF (CLINE(1:6) .EQ. '#EMAP2') THEN                               
+cC----- SPOT LINES BEGINNING WITH #EMAP2, AND CALL EMAP2D
+c      ELSE IF (CLINE(1:6) .EQ. '#EMAP2') THEN
 c          LENUSE = 1
 c          CLINE = ' '
 c        ICODE = 2
@@ -808,8 +808,8 @@ C '#EMAP2D' reads in a 'GUESS.DAT' file which describes the
 C bonding of a molecule (CSD quest format). It gets the relevant
 C bond length and angle data from the local database and then
 C checks the results of #FIND with this.
-cC----- SPOT LINES BEGINNING WITH #EMAP, AND CALL EMAP2D               
-c      ELSE IF (CLINE(1:5) .EQ. '#EMAP') THEN                               
+cC----- SPOT LINES BEGINNING WITH #EMAP, AND CALL EMAP2D
+c      ELSE IF (CLINE(1:5) .EQ. '#EMAP') THEN
 c          LENUSE = 1
 c          CLINE = ' '
 c        ICODE = 0
@@ -879,6 +879,13 @@ C
 C
 CODE FOR KRDSYS
       RECURSIVE FUNCTION KRDSYS ( IN )
+      use iso_c_binding, only: C_CHAR, C_NULL_CHAR
+      interface
+        integer function runpy(string) bind(C, name="runpy")
+          use iso_c_binding, only: c_char
+          character(kind=c_char) :: string(*)
+        end function runpy
+      end interface
 C -- CHECK IF THE CURRENT CARD CONTAINS A SYSTEM INSTRUCTION. IF IT
 C    DOES, EXECUTE THE INSTRUCTION.
 C
@@ -905,7 +912,9 @@ C
       CHARACTER *1  CFILE
       CHARACTER *256 CCMND
       CHARACTER *256 CUFILE, CRFILE
+      CHARACTER *256 CRYSPY
 C
+
       INCLUDE 'XSTR11.INC'
       INCLUDE 'TDVNAM.INC'
       INCLUDE 'TRDDAT.INC'
@@ -933,7 +942,7 @@ C
       DATA ITYPE  / 9 / , IREMOV / 10 / , ISTRE  / 11 / , ISTART / 12 /
       DATA ISCRIP / 13 /, ICOMND / 14 / , ICLOSE / 15 / , ISPAWN / 16 /
       DATA IDOLLA / 17 /, IAPEND / 18 / , IBENCH / 19 / , IDEFIN / 20 /
-      DATA IFLUSH / 21 /, IIMPOR / 22 /
+      DATA IFLUSH / 21 /, IIMPOR / 22 / , IPYTHO / 23 /
 C
       DATA NUSE / 2 / , LUSE / 4 /
 C
@@ -986,7 +995,7 @@ C      PAUS(E)     HELP        SET         ATTACH      OPEN
 C      RELE(ASE)   USE         MANUAL      TYPE        REMO(VE)
 C      STOR(E)     STAR(T)     SCRI(PT)    COMM(ANDS)  CLOS(E)
 C      SPAW(N)     $           APPE(ND)    BENCH       DEFI(NE)
-C      FLUS(H)     IMPO(RT)
+C      FLUS(H)     IMPO(RT)    PY(THON)
 C
 C --  IF LOGGING WRITE LINE BACK TO LOG CHANNEL
       IF ( ABS(IRDLOG(IFLIND)) .EQ. 1 ) THEN
@@ -1005,9 +1014,9 @@ C
 CDJWMAR99
       GO TO ( 1100 , 1200 , 1300 , 1400 , 1500 ,
      2        1600 , 1700 , 1200 , 1200 , 2000 ,
-     3        2100 , 2200 , 2300 , 2400 , 2500 , 
-     4        2600 , 2600 , 1550 , 3000 , 3200 , 
-     5        3300 , 1701 , 9920 ) , ISYSIN
+     3        2100 , 2200 , 2300 , 2400 , 2500 ,
+     4        2600 , 2600 , 1550 , 3000 , 3200 ,
+     5        3300 , 1701 , 2610, 9920 ) , ISYSIN
       GO TO 9920
 C
 C
@@ -1210,7 +1219,7 @@ C -- DISPLAY THE CURRENT CARD BEFORE WE LOSE THE CHANCE
           CALL XFLUNW ( 4 , 1 )
         ELSE
 C --      FILE OPEN FAILED ( ERROR FOR USE, SCRIPT
-C         WARN FOR TYPE ETC. , 
+C         WARN FOR TYPE ETC. ,
 C         IGNORE FOR STARTUP )
           if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
           IF ( ISSSTA .LE. 0 ) THEN
@@ -1236,7 +1245,7 @@ C            close back to top level if a SCRIPT does not exist
      3      '{EProbably a bug.',
      4      '{EPlease send the .log and .lis files to Oxford'
              CALL XPRVDU(NCVDU, 4, 0)
-             write(ncwu,'(a)') trim(CMON(1)), trim(cmon(2)), 
+             write(ncwu,'(a)') trim(CMON(1)), trim(cmon(2)),
      1         trim(cmon(3)), trim(cmon(4))
              CALL XFLUNW ( 1 , 3 )
             ELSE
@@ -1359,6 +1368,36 @@ c        LENGTH = 80 - NC
       ENDIF
       CALL XDETCH ( CCMND(1:LCMND) )
       GOTO 9000
+
+2610  CONTINUE
+C -- Run Python script
+      LSTART = KCCEQL ( CRDLWC, 1,' ' )
+      IF (LSTART .GE. 0 ) THEN
+         LSTART = KCCNEQ (CRDLWC, LSTART, ' ')    !skip spaces
+      END IF
+      LLAST  = KCLNEQ ( CRDLWC,-1,' ' )
+      LENGTH = 1 + LLAST - LSTART
+      CCMND  = ' '
+      IF ( LENGTH .GT. 0 ) THEN
+        LENGTH = 256 - LSTART
+        LCMND = LENGTH + 1
+        CCMND(1:LCMND) = CRDLWC(LSTART:256)
+      ENDIF
+
+      WRITE(CMON,'(2A)')'Run python script: ',CCMND
+      CALL XPRVDU(NCVDU, 1,0)
+C -- find python module (script) path (CRYSDIR:/py)
+
+c      CRYSPY = 'CRYSDIR:py'
+c      CALL MTRNLG(CRYSPY,'UNKNOWN',ILENG)
+c      WRITE(CMON,'(2A)')'Python script folder: ',cryspy
+c      CALL XPRVDU(NCVDU, 1,0)
+
+
+
+      LTEST = runpy (trim(ccmnd)//C_NULL_CHAR)
+
+      GOTO 9000
 C
 3000  CONTINUE
 C----- SPEED BENCHMARK
@@ -1373,7 +1412,7 @@ C -- IDENTIFY 1ST ARGUMENT
       ELSE
             I = KREADC ( PAUSE(1) , 1 )
             IF ( I .LT. 0 ) GO TO 9930
-C -- CONVERT VALUE READ TO INTEGER NUMBER 
+C -- CONVERT VALUE READ TO INTEGER NUMBER
             NVAR = NINT ( PAUSE(1))
       ENDIF
 C -- IDENTIFY 2ND ARGUMENT
@@ -1384,7 +1423,7 @@ C -- IDENTIFY 2ND ARGUMENT
       ELSE
             I = KREADC ( PAUSE(1) , 1 )
             IF ( I .LT. 0 ) GO TO 9930
-C -- CONVERT VALUE READ TO INTEGER NUMBER 
+C -- CONVERT VALUE READ TO INTEGER NUMBER
             NREF = NINT ( PAUSE(1))
       ENDIF
 C      WRITE(NCAWU,*) LFLD, NFLD, NVAR
@@ -1401,7 +1440,7 @@ C      WRITE(NCAWU,*) LFLD, NFLD, NVAR
 3200  CONTINUE
 C -- Define instruction
 C
-      NCDFU = NCIFU                ! IF A STARTUP FILE IS USED, THIS  
+      NCDFU = NCIFU                ! IF A STARTUP FILE IS USED, THIS
       ISTAT = KRDREC ( IN )        ! WILL CREATE A DISK ON UNUT NCDFU
       NU = NCIFU          ! ALL REFERENCES ARE TO THE NEW COMMAND FILE
 C----- CREATE A NEW FILE
@@ -1706,7 +1745,7 @@ C
 C
 C
 C      MAPS        MIRR(OR)    LOG         PAGE        LIST(S)
-C      COMMUNICAT  TIME        WATCH       SRQ         TERM(INAL) 
+C      COMMUNICAT  TIME        WATCH       SRQ         TERM(INAL)
 C      FILE(CASE)  MESS(AGE)   PRIN(TER)   GENE(RATE)  OPEN(MESSAGE)
 C      PAUS(E)     EXPO(RT)    UEQU(IV)    AUTO(UPDATE) BOND(TYPE)
 C      CACHEMESSAGE RATIO      MONITOR
@@ -1860,7 +1899,7 @@ C
       DATA KEYVAL(1,17)/ 1HL / , KEYVAL(2,17)/ 1HO /
       DATA KEYVAL(3,17)/ 1HW / , KEYVAL(4,17)/ 1HE /
       DATA KEYVAL(1,18)/ 1HU / , KEYVAL(2,18)/ 1HP /
-      DATA KEYVAL(3,18)/ 1HP / , KEYVAL(4,18)/ 1HE / 
+      DATA KEYVAL(3,18)/ 1HP / , KEYVAL(4,18)/ 1HE /
       DATA KEYVAL(1,19)/ 1HM / , KEYVAL(2,19)/ 1HI /
       DATA KEYVAL(3,19)/ 1HX / , KEYVAL(4,19)/ 1HE /
       DATA KEYVAL(1,20)/ 1HA / , KEYVAL(2,20)/ 1HR /
@@ -1879,7 +1918,7 @@ C
       DATA KEYVAL(3,26)/ 1HG / , KEYVAL(4,26)/ 1HH /
 #else
 C      MAPS        MIRR(OR)    LOG         PAGE        LIST(S)
-C      COMMUNICAT  TIME        WATCH       SRQ         TERM(INAL)   
+C      COMMUNICAT  TIME        WATCH       SRQ         TERM(INAL)
 C      FILE(CASE)  MESS(AGE)   PRIN(TER)   GENE(RATE)  OPEN(MESSAGE)
 C      PAUS(E)     EXPO(RT)    UEQU(IV)    AUTO(UPDATE) BOND(TYPE)
 C      CACHEMESSAGE RATIO      MONITOR
@@ -2607,11 +2646,11 @@ C
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'XSSCHR.INC'
       INCLUDE 'XIOBUF.INC'
-      DATA COPER / ' output sent to ', ' connected to ', 'closed', 
+      DATA COPER / ' output sent to ', ' connected to ', 'closed',
      1 ' appended to ', 'flushed'/
       DATA CRESLT / 'released' , 'opened  ' , 'closed  '
      1 , 'appended', 'flushed' /
-      DATA CACTN  / 'releases' , ' opens  ' , ' closes ', 
+      DATA CACTN  / 'releases' , ' opens  ' , ' closes ',
      1 'appends ', 'flushed' /
       DATA CINSTR / 'RELEASE' , 'OPEN   ' , 'CLOSE  ' , 'APPEND ',
      1 'FLUSH'/
@@ -2675,7 +2714,7 @@ C
       IF (JFUNC.EQ.9) THEN
         CALL FLUSH(IDEV)
         GOTO 9010
-      ENDIF     
+      ENDIF
 C
 CC
 C -- CHECK THAT THE OPERATION MAY BE PERFORMED ON THIS DEVICE
@@ -2841,7 +2880,7 @@ C
       IF (JFUNC .GT. MAXFNC) THEN
        CALL XCTRIM( CFILE, NCHARS )
        WRITE(CMON,
-     1 '('' Internal file handling - '', I4,2X,4A1,2X,A,2X,I4)') 
+     1 '('' Internal file handling - '', I4,2X,4A1,2X,A,2X,I4)')
      2 JFUNC , JDEV, CFILE(1:NCHARS), NCHARS
       CALL XPRVDU(NCVDU, 1,0)
       ENDIF
@@ -2936,7 +2975,7 @@ CDJWMAR99[
      1 NEWFIL(1:NCHARS), ( KEYFIL(J,IFIND) , J = 1 , LNAM )
       CALL XPRVDU(NCEROR, 2,0)
       IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9985 ) 
+      WRITE ( NCWU , 9985 )
      1 NEWFIL(1:NCHARS), ( KEYFIL(J,IFIND) , J = 1 , LNAM )
       ENDIF
 9985  FORMAT ( 1X , 'Error opening ' , A ,/ ' on ', 8A1 )
@@ -3705,7 +3744,7 @@ C    DIRECTIVE DETAILS FOR THIS INSTRUCTION
 C
 C
       use lists1_mod, only: klschk
-      
+
       INCLUDE 'ISTORE.INC'
 C
       INCLUDE 'STORE.INC'
@@ -3719,7 +3758,7 @@ C
       INCLUDE 'XIOBUF.INC'
 C
       INCLUDE 'QSTORE.INC'
-      
+
       real, dimension(1) :: value
 C
 C
@@ -4164,7 +4203,7 @@ C
      1          ((NAME(J,K),J=NAMBEG,NAMEND),(IB,J=INTBEG,INTEND),
      2          K =NSTART,NEND)
                 CALL XPRVDU(NCVDU, NROW, 0)
-                IF (ISSPRT .EQ. 0) 
+                IF (ISSPRT .EQ. 0)
      1          WRITE ( NCWU, '(A)') (trim(CMON(IDJW)),IDJW=1,NROW)
               NSTART = NEND+1
 97531       CONTINUE
@@ -4451,7 +4490,7 @@ CODE FOR XABSRQ
 C--
 C PROBLEM: Label 9900 (return) in SFLSB still leaves CRYSTALS loading
 C LIST 33, which may then generate an error in (say) DORESTRAIN because
-C there is no LIST 11 to load. 
+C there is no LIST 11 to load.
 C ABANDON PROCESSING OF THE srq FOR LIST 33 IF THERE IS AN ERROR
 C CONDITION IN PROCESSING AN SFLS INSTRUCTION
 
@@ -5055,7 +5094,7 @@ cdjwdec99 slightly re-organied
           CALL OUTCOL(1)
       ENDIF
       IF ((ISCVER .GT. 0) .OR. (ICAT .GT. 0)) THEN
-         IF (ISSPRT .EQ. 0) 
+         IF (ISSPRT .EQ. 0)
      1   WRITE(NCWU,1150)NUMB(K+1),NUMB(L+1),NUMB(M+1),NUMB(N+1),
      2   (LCMAGE(I),I=1,IFIN),(IB,I=1,J)
 1150     FORMAT(1X,4A1,'*  ',80A1,2A1,'*** IGNORED/ERROR(S) *** ')
@@ -5228,11 +5267,10 @@ CODE FOR SETISSMON
       if(issmon .ne. ivalue) then
 ctemp       WRITE(NCWU,'(A,I6,A,I6)') 'ISSMON: Old value=',issmon,
 ctemp     1 '  New value=', ivalue
-       WRITE ( CMON,'(a,i6,a,i6)') 
+       WRITE ( CMON,'(a,i6,a,i6)')
      1 '{W Setting ISSMON from  ',issmon,' to', ivalue
        CALL XPRVDU(NCVDU, 1,0)
        ISSMON = IVALUE
       endif
       RETURN
       END
-

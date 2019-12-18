@@ -377,7 +377,7 @@ C
 C -- SUCCESS - SEE IF WE SHOULD WIND TO THE END
       IF (IFMODE .EQ. ISSAPP) THEN
 2100   CONTINUE
-        READ (IUNIT, '(A)', END=2200) 
+        READ (IUNIT, '(A)', END=2200)
         GOTO 2100
 2200   CONTINUE
        BACKSPACE(IUNIT)
@@ -480,7 +480,7 @@ C      **** MACHINE SPECIFIC ****
 C
 C    THIS ROUTINE WILL ATTEMPT TO CREATE A NEW DISC FILE IF THE
 C    PARAMETER 'IFSTAT' HAS THE VALUE 'ISSCIF' AND AN OLD FILE CANNOT
-C    BE OPENED . 
+C    BE OPENED .
 C
 C       IF IT IS NOT POSSIBLE ON ANY PARTICULAR SYSTEM TO CREATE A NEW
 C    DIRECT ACCESS FILE IN THE WAY THIS ROUTINE DOES IT,
@@ -519,7 +519,7 @@ C            -VE         FAILURE ( RETURNS IOSTAT VALUE )
 C            +VE         SUCCESS
 C
       use hdf5_dsc
-      
+
       logical lexist, ierr
 C
       INTEGER IDUNIT , IFSTAT , IFMODE
@@ -530,7 +530,7 @@ C
 C
       CHARACTER*7 FLSTAT(4)
       CHARACTER*7 ACSTAT
-      character(len=9) :: faction 
+      character(len=9) :: faction
       integer recordsize, iposition
       integer     ::   error ! error flag
       type(t_dsc_hdf5), pointer :: crfile
@@ -549,7 +549,7 @@ C
       ! Used with ISSDAR
       inquire(iolength=recordsize) 1.0
 
-      NAMLEN = len_trim(FILNAM) 
+      NAMLEN = len_trim(FILNAM)
       IF (ISSFLC .EQ. 0) THEN
 C----- CONVERT NAME TO LOWER CASE
             IF (NAMLEN .GT. 0) CALL XCCLWC (FILNAM, CLCNAM(1:NAMLEN) )
@@ -585,7 +585,7 @@ c
 cdjwapr08 - autoincrement file root
 !2010   continue
         do while(lexist) !if (lexist) then
-       
+
           write(cmon,'(a,a,a)')
      1      ' The D/A file ( ', clcnam(1:namlen) ,
      2      ' )already exists'
@@ -602,7 +602,7 @@ c
               call xprvdu(nceror, 1, 0)
               if (issprt .eq. 0) write (ncwu, '(A)' ) trim(CMON(1))
               ierr=.true. !goto 9920
-            else            
+            else
               if (j .le. 0) then ! no number in name, inserting one
                 do k  = namlen, namlen-3, -1
                   clcnam(k+2:k+2)= clcnam(k:k)
@@ -612,12 +612,12 @@ cdjwjan09 - replace # with -
                 namlen=namlen+2
               else ! incrementing file number
                 clcnam(i:i)=cnumber(j+1:j+1)
-              endif          
+              endif
             endif
           else ! Cannot find ".", not a valid file name
             ierr=.true. !goto 9920
           end if
-        
+
           if(ierr) then
             CALL XCTRIM(CLCNAM, ILEN)
             write(cmon,'(a,a,a)')
@@ -631,11 +631,11 @@ C -- INTERNAL ERROR DETECTED
             KDAOPN = ISIGN ( IOS , -1 )
             RETURN
           end if
-        
+
           inquire(file=clcnam(1:namlen), exist=lexist) ! Is the new file exist?
-          
+
         end do !if (lexist ) goto 2010
-        
+
         write(cmon,'(a,a,a)')
      1    ' A new D/A file ( ', clcnam(1:namlen) ,
      2    ' )will be created'
@@ -651,14 +651,14 @@ c
       else
         faction='READWRITE'
       end if
-      
+
       !print *, 'Opening unit ', idunit, ' filename ', trim(clcnam)
-      
+
       !2500  CONTINUE
       IF ( FILNAM .EQ. ' ' ) THEN
         ! read only scratch file, surely this must be a mistake?
         OPEN ( UNIT   = IDUNIT ,
-     1         ACTION = faction, 
+     1         ACTION = faction,
      1         STATUS = ACSTAT ,
      1         ACCESS = 'DIRECT' ,
      1         FORM   = 'UNFORMATTED' ,
@@ -668,7 +668,7 @@ c
       ELSE
         CALL MTRNLG(CLCNAM,ACSTAT,NAMLEN)
         !print *, 'idunit ', idunit, trim(clcnam)
-        
+
         ! dsc filename is not always specified
         ! hack to do part of the job of mtrnlg before mtrlng refactoring
         iposition=index(CLCNAM, 'CRDSC:')
@@ -676,7 +676,7 @@ c
           CLCNAM=CLCNAM(1:iposition-1)//'crfilev2.dsc'//
      1      CLCNAM(iposition+6:len_trim(clcnam))
         end if
-        
+
         if(hdf5_in_use) then
           iposition=index(CLCNAM, '.dsc')
           if(iposition==0) iposition=index(CLCNAM, '.DSC')
@@ -684,10 +684,10 @@ c
             CLCNAM(iposition:iposition+3)='.h5 '
           end if
         end if
-        
+
         ! check if an 'old' file do exist, otherwise open it as 'new'
         ! only if the file is "create if not exist"
-        if (trim(CLCNAM)/='' .and. FLSTAT(IFSTAT)=='CIF') then         
+        if (trim(CLCNAM)/='' .and. FLSTAT(IFSTAT)=='CIF') then
           inquire(file=trim(CLCNAM), exist=lexist)
           if(.not. lexist) then
             ACSTAT = FLSTAT(ISSNEW)
@@ -704,7 +704,7 @@ c
           !if(ios/=0) then
           !  print *, 'Error in hdf5_dsc_open'
           !end if
-        else          
+        else
           OPEN ( UNIT   = IDUNIT ,
      1         FILE   = CLCNAM ,
      1         ACTION = faction,
@@ -714,16 +714,16 @@ c
      1         RECL   = ISSDAR*recordsize ,
      1         IOSTAT = IOS )
         end if
-     
+
       ENDIF
 
       IF (IOS/=0) then !GOTO 3000
 c3000  CONTINUE
 C
-C -- OPEN FAILED -- 
+C -- OPEN FAILED --
 C
         KDAOPN = ISIGN ( IOS , -1 )
-        RETURN          
+        RETURN
       end if
 C -- SUCCESS
 
@@ -734,7 +734,7 @@ C    MUST BE PERFORMED IMMEDIATELY
         !print *, 'init ', acstat
         call XDAINI(IDUNIT)
       end if
-    
+
       KDAOPN = 1
       END function
 C
@@ -752,7 +752,7 @@ C
 
       integer error
       type(t_dsc_hdf5), pointer :: crfile
-      
+
 C
 
       call hdf5_dic_get(crfile, IUNIT, error)
@@ -768,7 +768,7 @@ C
 
 2000    CONTINUE
       else
-        call hdf5_dsc_close(crfile, error)  
+        call hdf5_dsc_close(crfile, error)
       end if
 C
       KFLCLS = 1
@@ -810,7 +810,7 @@ C
 C
       IF ( IFUNC .EQ. 1 ) THEN
         ILSTLV = 1
-#ifdef _PRI_ 
+#ifdef _PRI_
       ISSSTA = 0
 #endif
       ELSE IF ( IFUNC .EQ. 2 ) THEN
@@ -920,7 +920,7 @@ C      J SOME MEASURE OF PROGRESS
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XDRIVE.INC'
       INCLUDE 'XIOBUF.INC'
-#ifdef __MAC__ 
+#ifdef __MAC__
       DATA CLOCK / '|', '/', '-', '\\' /
 #else
       DATA CLOCK / '|', '/', '-', '\' /
@@ -981,8 +981,8 @@ C
       INCLUDE 'XUNITS.INC'
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XERVAL.INC'
-      
-      type(t_dsc_hdf5), pointer :: crfile   
+
+      type(t_dsc_hdf5), pointer :: crfile
       integer error
 C
 C
@@ -1034,7 +1034,7 @@ C      ELSE    LENGTH
 C
       CHARACTER*(*) CPATH
       CHARACTER*256 CNAME
-#ifdef _WIN32      
+#ifdef _WIN32
       character(len=2), parameter :: delimiter = '/\'
 #else
       character, parameter :: delimiter = '/'
@@ -1046,7 +1046,7 @@ C
 C
       KPATH = 0
       CPATH = ' '
-      
+
       IF (KFLNAM( NCDFU, CNAME) .GT. 0) THEN
         KPATH = scan(cname, delimiter, .true.)
         if(kpath>0) then
@@ -1180,7 +1180,7 @@ C -- THE VALUE RETURNED BY THIS ROUTINE IS USED IN THE MESSAGES
 C    PRODUCED AFTER THE COMPLETION OF EACH FACILITY WHICH SHOW THE
 C    PROCESSOR TIME USED SO FAR. A PATCH WOULD BE
 C    TO ALWAYS RETURN THE VALUE 0.0 FROM THIS ROUTINE
-C    THE VARIABLE 'ISSTIM' IN THE 
+C    THE VARIABLE 'ISSTIM' IN THE
 C    COMMON BLOCK 'XSSVAL' CAN BE USED TO DISABLE THESE MESSAGES.
 C
 #ifdef CRY_FORTDIGITAL
@@ -1201,7 +1201,7 @@ C RICMAY99 ITIME is an intrinsic on some systems. Renamed JTIME.
       implicit none
       integer, intent(out) :: i
       integer, dimension(8) :: values
-      
+
       call date_and_time(values=values)
       I=values(5)*3600+values(6)*60+values(7)
       END
@@ -1234,7 +1234,7 @@ C
         CTIME2=' '
         RETURN
       END IF
-                      
+
       CALL date_and_time(values=ITIM)
       WRITE ( CTIME2, '(I2.2,'':'',I2.2,'':'',I2.2)' ) ITIM(5:7)
       END
@@ -1256,7 +1256,7 @@ C
 C
       CHARACTER*8 CDATE
       DIMENSION IDAT(8)
-      
+
       IF ( ISSTIM .EQ. 2 ) THEN
          CDATE = ' '
          RETURN
@@ -1283,17 +1283,17 @@ C
       KAND = IAND ( I , J )
       END
 C
-CODE FOR XMOVE 
+CODE FOR XMOVE
       SUBROUTINE XMOVE ( SRCE , RESLT , N )
       implicit none
 C
 C -- MOVES REALS FROM 'SRCE'
-C    TO 'RESLT' 
+C    TO 'RESLT'
 C
-C    SRCE and RESLT are actually part of the same memory space 
+C    SRCE and RESLT are actually part of the same memory space
 C    through equivalence so the use of a temporary variable is compulsory
       integer, intent(in) :: N
-      real, dimension(N), intent(in) :: SRCE 
+      real, dimension(N), intent(in) :: SRCE
       real, dimension(N), intent(out) :: RESLT
       real, dimension(N) :: temp
       integer i
@@ -1308,12 +1308,12 @@ CODE FOR XMOVEI (modern replacement)
       implicit none
 C
 C -- MOVES INTEGERS FROM 'ISRCE'
-C    TO 'IRESLT' 
+C    TO 'IRESLT'
 C
-C    ISRCE and IRESLT are actually part of the same memory space 
+C    ISRCE and IRESLT are actually part of the same memory space
 C    through equivalence so the use of a temporary variable is compulsory
       integer, intent(in) :: N
-      integer, dimension(N), intent(in) :: ISRCE 
+      integer, dimension(N), intent(in) :: ISRCE
       integer, dimension(N), intent(out) :: IRESLT
       integer, dimension(N) :: temp
       integer i
@@ -1472,10 +1472,10 @@ C Now run command
 #if defined(CRY_GUI)
       CALL GDETCH(COMMND)
       RETURN
-#elif defined(__DVF__) 
+#elif defined(__DVF__)
       IFAIL = SYSTEM(COMMND)
       IF (IFAIL .EQ. 0 ) RETURN
-#elif defined(__LIN__) 
+#elif defined(__LIN__)
       CALL SYSTEM(COMMND,IFAIL)
       IF (IFAIL .EQ. 0 ) RETURN
 #else
@@ -1615,7 +1615,7 @@ C----- RECOVER SCRIPT NAME
       CLSTNM = CSCPNM(1:LENNM)
 
 cdjwjun07
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a,a)' ) 
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a,a)' )
      1 'Testing',cscpnm(1:lennm)
       IF ( CPRVNM(1:3) .NE. CSPACE(1:3) ) THEN
       WRITE(CMON(1),'(5A)')
@@ -1767,7 +1767,7 @@ C
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'XERVAL.INC'
       INCLUDE 'XIOBUF.INC'
-            
+
 C
 C NOW WE SEARCH FOR THE LENGTH OF OUR FILE NAME AND REMOVE BLANKS.
 C
@@ -1795,7 +1795,7 @@ c1     CONTINUE
 C Check for http: links.
       CALL XCCUPC(NAME(1),INQNAM)
       IF ( INQNAM(1:5) .EQ. 'HTTP:' ) GOTO 9999   !No need to subst variables.
-      
+
 
 C CHECK ON FILE NAME NAMLEN OVERFLOW
 
@@ -1844,7 +1844,7 @@ C on all platforms.
 c      WRITE(126,*) 'Looking for :', NAME(LEVEL)(1:NAMLEN(LEVEL))
 C TEST IF SOMETHING CAN BE DONE
 
-      IF(COLPOS(LEVEL).LT.3) THEN   
+      IF(COLPOS(LEVEL).LT.3) THEN
 
 c        WRITE(126,*)'Inquiring: ',NAME(LEVEL)(1:NAMLEN(LEVEL))
 
@@ -1863,11 +1863,11 @@ c anchors specified after filename. e.g. myfile.html#sect1
         INQUIRE(FILE=INQNAM,EXIST=LEXIST, iostat=iotest)
 c        write(126,*) 'File test ', LEXIST, IOTEST, INQNAM
         if( (iotest .eq. 0) .and. (LEXIST))  GOTO 9999
-#ifdef __INW__ 
+#ifdef __INW__
         INQUIRE(DIRECTORY=INQNAM,EXIST=LEXIST, iostat=iotest)
 c        write(126,*) 'Dir test ', LEXIST, IOTEST, INQNAM
         if( (iotest .eq. 0) .and. (LEXIST))  GOTO 9999
-#endif 
+#endif
         LEVEL=LEVEL-1
         IF(LEVEL.GE.1) GOTO 3
         LEVEL=1
@@ -1882,7 +1882,7 @@ C LOOK FOR AN ENVIRONMENT STRING IF NONE WAS ASSIGNED UP TO NOW
         LIST(LEVEL) = ' '
 #if defined (CRY_FORTDIGITAL)
       CALL GETENV(NAME(LEVEL)(1:COLPOS(LEVEL)-1),LIST(LEVEL))
-#else 
+#else
           call GET_ENVIRONMENT_VARIABLE(NAME(LEVEL)(1:COLPOS(LEVEL)-1),
      &      LIST(LEVEL))
 #endif
@@ -1893,7 +1893,7 @@ CNOV98 IF THERE IS NO ENVIRONMENT VARIABLE, CHECK THE PRESETS
           ELSE IF (NAME(LEVEL)(1:COLPOS(LEVEL)-1) .EQ. 'CRSCP') THEN
             LIST(LEVEL) = CSCPDV(1:LSCPDV)
           ELSE IF (NAME(LEVEL)(1:COLPOS(LEVEL)-1) .EQ. 'CRDIR') THEN
-#ifdef CRY_OSWIN32 
+#ifdef CRY_OSWIN32
              LIST(LEVEL) = '.\'
 #else
              LIST(LEVEL) = './'
@@ -2008,7 +2008,7 @@ CODE FOR KSTRLN
       KSTRLN=J
       RETURN
       END
-C      
+C
 CODE FOR FRAND
       real function frand()
 c------ returns a value between 0 and 1 from the compiler library's
@@ -2016,7 +2016,7 @@ c       random number generator.
 
       call random_number(frand)
       end
-          
+
 CODE FOR XRAND
       real FUNCTION XRAND(REQVAR, ISEED)
 C------ RETURNS A VALUE DISTRIBUTED ABOUT ZERO FROM A DISTRIBUTION
@@ -2047,10 +2047,10 @@ C----- CREATE NEW SEQUENCE
           end do
           call random_seed(put= seeds )
         ENDIF
-        
+
       ENDIF
-      
-      
+
+
       IF (ISET .EQ. 0) THEN
 1       V1 = 2. * FRAND() -1.
         V2 = 2. * FRAND() -1.
@@ -2094,8 +2094,8 @@ c            ENDIF
 c      ENDIF
       RETURN
       END
-      
-      
+
+
 
 
 ccode for dumio (keep the program going while we test it)
@@ -2203,7 +2203,7 @@ c&DOS      DO 200 I = J, IBFLEN
 c&DOS        IF (CIOBUF(I:I) .EQ. CCRCHR(1:1)) THEN
 c&DOS          K = MAX(J,I-1)
 c&DOS       WRITE ( NCAWU , CFRMAT, IOSTAT = IOS ) CIOBUF(J:K)
-c&DOS       IF ( IOS .NE. 0 ) WRITE ( NCEROR , '(1X,A,I4)' )             
+c&DOS       IF ( IOS .NE. 0 ) WRITE ( NCEROR , '(1X,A,I4)' )
 c&DOS     1  '*** OUTPUT ERROR! IOS = ',IOS
 c&DOS          J = K + 3
 c&DOS          IF (J .LT. IBFLEN ) GOTO 100
@@ -2241,7 +2241,7 @@ C
 C
 C---- SET CARRIAGE CONTROL SYMBOLS
 C
-#ifdef _UNIX_ 
+#ifdef _UNIX_
       CCRCHR(1:1) = CHAR(32)
       CCRCHR(2:2) = CHAR(10)
 C
@@ -2344,9 +2344,9 @@ C NOTE THAT XPRTDV CLEARS THE CCVDU BUFFER
       INCLUDE 'XSSVAL.INC'
       IF (NLIN.LE.0) RETURN
       DO I=1,NLIN
-       IF((CCVDU(I)(1:2).EQ.'^^').AND.(ISSMON.EQ.0))  THEN 
+       IF((CCVDU(I)(1:2).EQ.'^^').AND.(ISSMON.EQ.0))  THEN
             CONTINUE
-       ELSE 
+       ELSE
             WRITE(NCAWU,'(A)') TRIM(CCVDU(I))
        ENDIF
       ENDDO
@@ -2393,7 +2393,7 @@ C- PRINT A WARNING SOMEWHERE
                CSECOND = CBUF(J)(2:2)
                CLAST = CBUF(J)(N:N)
 C
-C IF ISSMON .EQ. 2 THEN SUPPRESS MOST TEXT OUTPUT. WE NEED TO 
+C IF ISSMON .EQ. 2 THEN SUPPRESS MOST TEXT OUTPUT. WE NEED TO
 C SWITCH IT BACK ON IF SOMETHING HAS GONE WRONG.
 C Mostly done by resetting issmon before an ABANDON message
 c in individual files.
@@ -2430,12 +2430,12 @@ c              WRITE(123,*)'INW version', N
        IF (CBUF(J)(2:2).NE.'^') THEN
           IF ((IOFORE.EQ.-1).OR.(IOBACK.EQ.-1)) THEN
              WRITE( CEXTRA,'(A)') CBUF(J)
-          ELSE 
+          ELSE
              WRITE( CEXTRA,'(2(A,I2.2),A)')
      1       '{', IOFORE, ',', IOBACK, CBUF(J)
              N = N + 6
-          ENDIF 
-       ELSE 
+          ENDIF
+       ELSE
           WRITE( CEXTRA,'(A)') CBUF(J) !Line not limited (^^ command)
        END IF
 #endif
@@ -2465,7 +2465,7 @@ c       WRITE(123,'(A,I5)') 'N: ',N
                     CFRMAT = '(/,A)'
 #ifdef CRY_NOGUI
             WRITE(NCDEV ,CFRMAT) CBUF(J)(1:LENBUF)
-#else 
+#else
             CALL fcallc ( CEXTRA(1:N))
 #endif
                ELSE
@@ -2493,14 +2493,14 @@ c      use fwrappergui_mod, only: GUEXEC
       CHARACTER*262 CEXTRA
       INTEGER RET, ISTAT
       integer, external :: FWEXEC
-      
+
       CEXTRA = ' '
       WRITE(CEXTRA,'(A)')CLINE
       RET = FWEXEC ( CEXTRA//CHAR(0) )
 
 C     Move return value into the script value EXITSTATUS
       ISTAT = KSCTRN ( 1 , "EXITSTATUS" , RET, 1 )
-      
+
       RETURN
       END
 #endif
@@ -2509,10 +2509,10 @@ C     Move return value into the script value EXITSTATUS
 
 CODE FOR GETCWD
       SUBROUTINE GETCWD ( CWORK )
-#ifdef CRY_FORTDIGITAL 
+#ifdef CRY_FORTDIGITAL
       USE DFPORT
 #endif
-#ifdef CRY_FORTINTEL 
+#ifdef CRY_FORTINTEL
       USE IFPORT
 #endif
       CHARACTER*(*) CWORK
@@ -2546,7 +2546,7 @@ CODE FOR XNDATE
       USE DFPORT
 #endif
 #ifdef CRY_FORTINTEL
-      USE IFPORT 
+      USE IFPORT
 #endif
 C--SET THE # SECS SINCE 1970 IN ISECS
       ISECS = TIME()
@@ -2555,10 +2555,10 @@ C--SET THE # SECS SINCE 1970 IN ISECS
 
 CODE FOR XCDATE
       SUBROUTINE XCDATE(ISECS,CT)
-#ifdef CRY_FORTDIGITAL 
+#ifdef CRY_FORTDIGITAL
       USE DFPORT
 #endif
-#ifdef CRY_FORTINTEL 
+#ifdef CRY_FORTINTEL
       USE IFPORT
 #endif
 C--CONVERT SECS SINCE 1970 INTO 24CHAR STRING
@@ -2595,7 +2595,7 @@ C Checks a path, makes a subdirectory if it doesn't exist.
 #else
       IMPLICIT NONE
 #endif
-      CHARACTER*(*) FILEPATH 
+      CHARACTER*(*) FILEPATH
       CHARACTER*1024 WORKPATH
       CHARACTER*1024 CMDLINE  !Allow space for quite long paths
       CHARACTER*256 DIRTEST  !Allow for quite long directory names
@@ -2620,10 +2620,10 @@ c         write(129,*) 'Checking from ', NPOS, ' ', WORKPATH(NPOS:)
 c         write(129,*) 'Dirtest is ', NPOS, ' ', DIRTEST
 
 #ifdef CRY_FORTINTEL
-         INQUIRE( DIRECTORY=DIRTEST, EXIST=LEXISTS )         
-#else        
-         INQUIRE( FILE=TRIM(DIRTEST)//'/.', EXIST=LEXISTS )  
-#endif 
+         INQUIRE( DIRECTORY=DIRTEST, EXIST=LEXISTS )
+#else
+         INQUIRE( FILE=TRIM(DIRTEST)//'/.', EXIST=LEXISTS )
+#endif
          IF ( .NOT. LEXISTS ) THEN
 c            write(129,*)'Directory does not exist, creating: '//DIRTEST
 #ifdef CRY_FORTINTEL
@@ -2644,4 +2644,25 @@ C            call SYSTEM( CMDLINE )
          IF ( ICOUNT .GT. 10 ) EXIT  ! Debugging - avoid infinity loop
       END DO
       RETURN
-      END 
+      END
+
+
+      subroutine lineout(message, mlen) bind(C, name="lineout")
+      use, intrinsic :: ISO_C_BINDING
+      integer(C_INT), intent(IN), VALUE :: mlen
+      character(kind = c_char) :: message(*)
+      character(len=mlen) normal_string
+      INCLUDE 'XIOBUF.INC'
+
+c      if ( mlen == 0 ) return
+
+      normal_string = ' '
+      do i = 1, mlen
+        normal_string(i:i) = message(i)
+      end do
+
+      WRITE (CMON,'(A)') normal_string(1:nctrim(normal_string))
+      CALL XPRVDU (6,1,0)
+
+      RETURN
+      END
