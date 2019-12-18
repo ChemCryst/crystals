@@ -49,15 +49,26 @@ int runpy(const char *filename)
 {
     PyObject *pName, *pModule;   //, *pFunc;
 //    PyObject *pArgs, *pValue;
-//    int i;
-//    char message[256];
 
-//    setenv("PYTHONHOME","c:/msys64/mingw64/lib/python3.8",1);
+// Set the PYTHONHOME to the CRYSTALS install folder + /pyembed
+
+    wchar_t myPath[_MAX_PATH+1];
+    GetModuleFileNameW(NULL,myPath,_MAX_PATH);
+
+    wchar_t drive[_MAX_DRIVE];
+    wchar_t dir[_MAX_DIR];
+    _wsplitpath_s( myPath, drive, _MAX_DRIVE, dir, _MAX_DIR, NULL, 0, NULL, 0 );
+    _wmakepath_s( myPath, _MAX_PATH+1, drive, dir, L"pyembed", NULL );
+
 //    Py_SetPythonHome(L"c:/msys64/mingw64");
-    Py_SetPythonHome(L"c:/users/richard.cooper/Documents/Github/crystals/p/pyembed");
+//    Py_SetPythonHome(L"c:/users/richard.cooper/Documents/Github/crystals/p/pyembed");
+    Py_SetPythonHome(myPath);
 
 
-/*    AllocConsole();
+/*
+// If initialization fails, uncomment
+// this section to find out what is going wrong.
+    AllocConsole();
     freopen("CONIN$", "r", stdin);
     freopen("CONOUT$", "a", stdout);
     freopen("CONOUT$", "a", stderr);
@@ -66,8 +77,7 @@ int runpy(const char *filename)
     sprintf(message,"Top of call\n");
     lineout(message,256);*/
 
-    wchar_t* fullpath = Py_GetProgramFullPath();
-
+// Add the stdoutRedirect module
     PyImport_AppendInittab("stdoutRedirect", PyInit_stdoutRedirect);
 
     Py_Initialize();
@@ -77,14 +87,21 @@ int runpy(const char *filename)
 import stdoutRedirect\n\
 import sys\n\
 class StdoutCatcher:\n\
+    def __init__(self):\n\
+        self.errcatch = False \n\
     def write(self, textoutput):\n\
         if len(textoutput.rstrip()) != 0:\n\
           for s in textoutput.splitlines():\n\
+            if self.errcatch:\n\
+                s = '{E ' + s \n\
             stdoutRedirect.stdoutredirect(s)\n\
+            \n\
     def flush(self):\n\
         pass\n\
+        \n\
 sys.stdout = StdoutCatcher()\n\
-sys.stderr = StdoutCatcher()\n");
+sys.stderr = StdoutCatcher()\n\
+sys.stderr.errcatch = True\n");
 
 
     pName = PyUnicode_DecodeFSDefault(filename);
