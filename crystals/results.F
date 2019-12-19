@@ -7762,26 +7762,32 @@ c look fo the FLACK records
         if (n39f.gt.0) then
          m39f = l39f
          do i=1,n39f                                !Find record FLACK(0)
-          iflack0=m39f
           if ((istore(m39f) .eq. icflac) .and. 
-     1       (nint(store(m39f+1)) .eq. 0)) exit
-           m39f=m39f+md39f
+     1       (nint(store(m39f+1)) .eq. 0)) then 
+             iflack0=m39f
+             exit
+          endif
+          m39f=m39f+md39f
          enddo
 c
          m39f = l39f
          do i=1,n39f                                !Find record FLACK(1)
-          iflack1=m39f
           if ((istore(m39f) .eq. icflac) .and. 
-     1       (nint(store(m39f+1)) .eq. 1)) exit
-           m39f=m39f+md39f
+     1       (nint(store(m39f+1)) .eq. 1)) then
+             iflack1=m39f
+             exit
+          endif
+          m39f=m39f+md39f
          enddo
 C
          m39f = l39f
          do i=1,n39f                                !Find record HOOFT(0)
-          ihooft=m39f
           if ((istore(m39f) .eq. ichooft) .and. 
-     1       (nint(store(m39f+1)) .eq. 0)) exit
-           m39f=m39f+md39f
+     1       (nint(store(m39f+1)) .eq. 0)) then
+             ihooft=m39f
+             exit
+          endif
+          m39f=m39f+md39f
          enddo
         endif 
 c
@@ -11966,26 +11972,32 @@ c look fo the FLACK records
         if (n39f.gt.0) then
          m39f = l39f
          do i=1,n39f                                !Find record FLACK(0)
-          iflack0=m39f
           if ((istore(m39f) .eq. icflac) .and. 
-     1       (nint(store(m39f+1)) .eq. 0)) exit
-           m39f=m39f+md39f
+     1       (nint(store(m39f+1)) .eq. 0)) then
+             iflack0=m39f
+             exit
+          endif 
+          m39f=m39f+md39f
          enddo
 c
          m39f = l39f
          do i=1,n39f                                !Find record FLACK(1)
-          iflack1=m39f
           if ((istore(m39f) .eq. icflac) .and. 
-     1       (nint(store(m39f+1)) .eq. 1)) exit
-           m39f=m39f+md39f
+     1       (nint(store(m39f+1)) .eq. 1)) then
+             iflack1=m39f
+             exit
+          endif
+          m39f=m39f+md39f
          enddo
 C
          m39f = l39f
          do i=1,n39f                                !Find record HOOFT(0)
-          ihooft=m39f
           if ((istore(m39f) .eq. ichooft) .and. 
-     1       (nint(store(m39f+1)) .eq. 0)) exit
-           m39f=m39f+md39f
+     1       (nint(store(m39f+1)) .eq. 0)) then
+             ihooft=m39f
+             exit
+          endif
+          m39f=m39f+md39f
          enddo
         endif 
 c
@@ -12008,12 +12020,12 @@ c          Note that 'Parsons' might be quotient or difference
 c FLACK(1) record
             continue
          if (iflack1.gt.0) then
-            store(iflack1+2) = 0.0 ! mfried
-            store(iflack1+3) = 0.0 ! nnpp
-            store(iflack1+4) = 0.0 ! nfried
-            store(iflack1+6) = 0.0 ! nfofc
-            store(iflack1+8) = 0.0 ! nfofc
-            store(iflack1+10) = 0.0 ! ngood
+            store(iflack1+2) = v3(1) ! mfried
+            store(iflack1+3) = v3(1) ! nnpp
+            store(iflack1+4) = v3(1) ! nfried
+            store(iflack1+6) = v3(1) ! nfofc
+            store(iflack1+8) = v3(1) ! nfofc
+            store(iflack1+10) = v3(1) ! ngood
              do i=5,11,2
                   store(iflack1+i)=0.
              enddo

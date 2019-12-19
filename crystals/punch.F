@@ -963,7 +963,7 @@ C----- ANY ATOM CARDS ?
       IF (ISTORE(M38LK +1)) 1300,1300,1400
 1300  CONTINUE
       if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
-      WRITE(NCAWU,1350)
+c      WRITE(NCAWU,1350)
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1350)
       ENDIF
@@ -1007,7 +1007,7 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,8300)
       ENDIF
-      WRITE(NCAWU,8300)
+c      WRITE(NCAWU,8300)
 8300  FORMAT(' There are no GROUP definitions stored')
       GOTO 9900
 C
@@ -4351,7 +4351,7 @@ C -- NO ATOMS IN LIST 5 FOR SIM WEIGHTS
          end if
          WRITE(CMON,100)
          CALL XPRVDU(NCVDU,2,0)
-         WRITE (NCAWU,100)
+c         WRITE (NCAWU,100)
 100      FORMAT (1X,' LIST 5 contains no atoms for SIM weighting.' 
      1   /1X,'Unit Weights used')
          SSV=1.0
@@ -4389,7 +4389,7 @@ C --   ATOM NOT IN LIST 29
             END IF
             WRITE(CMON,200)
             CALL XPRVDU(NCVDU,1,0)
-            WRITE (NCAWU,200)
+c            WRITE (NCAWU,200)
 200         FORMAT (1X,'Atom in list 5 but not in list 29')
             CALL XPRTCO (2,M5A,I)
             CALL XERHND (IERERR)
@@ -4412,7 +4412,7 @@ C----- NO ATOMS LEFT IN LIST 29
          IF (ISSPRT.EQ.0) THEN
             WRITE (NCWU,350)
          END IF
-         WRITE (NCAWU,350)
+c         WRITE (NCAWU,350)
          WRITE(CMON,350)
          CALL XPRVDU(NCVDU,5,0)
 350      FORMAT (1X,//'  Sim weighting inapplicable.',

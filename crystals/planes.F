@@ -253,7 +253,7 @@ C--NO ATOMS ON THIS CARD
 1900  CONTINUE
       CALL XPCLNN(LN)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1950)
-      WRITE(NCAWU,1950)
+c      WRITE(NCAWU,1950)
       WRITE ( CMON ,1950)
       CALL XPRVDU(NCVDU, 1,0)
 1950  FORMAT(' No atoms found')
@@ -293,7 +293,7 @@ C--CHECK IF ANY ERRORS HAVE BEEN GENERATED DURING THE INPUT OF THE ATOMS
       if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN(LN)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,2100)
-      WRITE(NCAWU,2100)
+c      WRITE(NCAWU,2100)
       WRITE ( CMON ,2100)
       CALL XPRVDU(NCVDU, 1,0)
 2100  FORMAT(' Instruction ignored because of previous errors')
@@ -303,7 +303,7 @@ C--PRINT THE PAGE HEADING
       CALL XPRTCN
 C--PRINT THE AXIS CARD AND ITS NUMBER
       IF (ISSPRT .EQ. 0) WRITE (NCWU,2300) NP
-      WRITE(NCAWU,2300) NP
+c      WRITE(NCAWU,2300) NP
       WRITE ( CMON ,2300) NP
       CALL XPRVDU(NCVDU, 1,0)
 2300  FORMAT(' Results for axis number ',I4)
@@ -331,7 +331,7 @@ C
 C--ATOMS DO NOT DEFINE A PLANE/LINE
       CALL XPCLNN(LN)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,2400) CTYPE(JTYPE)
-      WRITE(NCAWU,2400) CTYPE(JTYPE)
+c      WRITE(NCAWU,2400) CTYPE(JTYPE)
       WRITE ( CMON ,2400) CTYPE(JTYPE)
       CALL XPRVDU(NCVDU, 1,0)
 2400  FORMAT(' Input atoms do not define a ', A)
@@ -405,8 +405,8 @@ C-C-C-PRINT EQUATION OF PLANE/LINE AND ORIENT. VECTOR IN POLAR COORD.
      2       'Input ONLY in units of 100 DEGREES !!!',//,
      3       'DECLINAT =',F9.2,5X,'DECLINAT/100 =',F9.4,/,
      4       'AZIMUTH  =',F9.2,5X,'AZIMUTH /100 =',F9.4)
-        WRITE ( NCAWU , 2715 ) CTYPE(JTYPE), ( EQU(I),I=1,3 ) , F
-        WRITE(NCAWU,2720)CTYPE(JTYPE),VECPD,VECPD/100, VECPA,VECPA/100
+c        WRITE ( NCAWU , 2715 ) CTYPE(JTYPE), ( EQU(I),I=1,3 ) , F
+c        WRITE(NCAWU,2720)CTYPE(JTYPE),VECPD,VECPD/100, VECPA,VECPA/100
 2715    FORMAT( / , 1X , 'Equation of the ',A,' :' , / ,
      2 11X, F10.5,'*X + ' , F10.5, '*Y + ' , F10.5, '*Z = ' , F10.3 ,/,
      3 1X , 20X , 'X, Y and Z are in crystal fractions' )
@@ -418,7 +418,7 @@ C
 C--PRINT AN EXPLANATORY CAPTION
       IF (JJ .NE. 1) THEN
       IF (ISSPRT .EQ. 0) WRITE(NCWU,2900) CTYPE(JTYPE), CDEV(JTYPE)
-      WRITE(NCAWU,2900) CTYPE(JTYPE), CDEV(JTYPE)
+c      WRITE(NCAWU,2900) CTYPE(JTYPE), CDEV(JTYPE)
       WRITE ( CMON ,2900) CTYPE(JTYPE), CDEV(JTYPE)
       CALL XPRVDU(NCVDU, 1,0)
 2900  FORMAT(' Deviations from the ',A,
@@ -431,7 +431,7 @@ C--PRINT THE CO-ORDINATES OF THE ATOMS DEFINING THE PLANE:/LINE
 2750  FORMAT(1X,' Co-ordinates of the defining atoms' ,
      2 ' projected onto the ', A, ' plane'//4X,'Type',5X,'Serial',7X,
      3 'Weight',7X,'XP',8X,'YP',8X,'ZP', 7X, A /)
-      WRITE(NCAWU,2751) CQUAL(JTYPE), CDEL(JTYPE)
+c      WRITE(NCAWU,2751) CQUAL(JTYPE), CDEL(JTYPE)
       WRITE ( CMON ,2751) CQUAL(JTYPE), CDEL(JTYPE)
       CALL XPRVDU(NCVDU, 3,0)
 2751  FORMAT(' Co-ordinates of the defining atoms' ,
@@ -480,14 +480,14 @@ C--LOOP OVER EACH ATOM IN TURN
        ENDIF
 2800   FORMAT(5X,A4,F9.0,5X,F9.3,1X,4F10.3)
        IF (JTYPE .EQ. 1) THEN
-        WRITE ( NCAWU,2801)STORE(I),STORE(I+1),STORE(I+10),
-     2 STORE(I+11),STORE(I+12), DEL
+c        WRITE ( NCAWU,2801)STORE(I),STORE(I+1),STORE(I+10),
+c     2 STORE(I+11),STORE(I+12), DEL
         WRITE ( CMON ,2801)STORE(I),STORE(I+1),STORE(I+10),
      2 STORE(I+11),STORE(I+12), DEL
         CALL XPRVDU(NCVDU, 1,0)
        ELSE
-        WRITE ( NCAWU,2801)STORE(I),STORE(I+1),STORE(I+10),
-     2 STORE(I+11),STORE(I+12)
+c        WRITE ( NCAWU,2801)STORE(I),STORE(I+1),STORE(I+10),
+c     2 STORE(I+11),STORE(I+12)
         WRITE ( CMON ,2801)STORE(I),STORE(I+1),STORE(I+10),
      2 STORE(I+11),STORE(I+12)
         CALL XPRVDU(NCVDU, 1,0)
@@ -541,9 +541,9 @@ C---- COMPUTE AXIS RATIOS
      1 1. - (PAXIS(2)+ PAXIS(3))/ (2.*PAXIS(1)),
      2 1. - (2.*PAXIS(3)) / (PAXIS(1) + PAXIS(2))
       ENDIF
-      WRITE(NCAWU,2505) PAXIS(3)/PAXIS(1),
-     1 1. - (PAXIS(2)+ PAXIS(3))/ (2.*PAXIS(1)),
-     2 1. - (2.*PAXIS(3)) / (PAXIS(1) + PAXIS(2))
+c      WRITE(NCAWU,2505) PAXIS(3)/PAXIS(1),
+c     1 1. - (PAXIS(2)+ PAXIS(3))/ (2.*PAXIS(1)),
+c     2 1. - (2.*PAXIS(3)) / (PAXIS(1) + PAXIS(2))
       WRITE ( CMON ,2505) PAXIS(3)/PAXIS(1),
      1 1. - (PAXIS(2)+ PAXIS(3))/ (2.*PAXIS(1)),
      2 1. - (2.*PAXIS(3)) / (PAXIS(1) + PAXIS(2))
@@ -553,8 +553,8 @@ C---- COMPUTE AXIS RATIOS
      2    ' Value closest to unity is best descriptor.',
      3    ' See D. M. P. Mingos and A. L. Rohl'/
      4    '  J. Chem. Soc. Dalton Trans. (1991), 3419-3425')
-        WRITE(NCAWU,2510) ( XCF(I), I = 1,3),
-     1           ( (RCA(I,J), J=1,3), I=1,3)
+c        WRITE(NCAWU,2510) ( XCF(I), I = 1,3),
+c     1           ( (RCA(I,J), J=1,3), I=1,3)
 2510    FORMAT (/,' Centroid, in crystal fractions ',
      1  ' Transformation from crystal fractions ',/ 33X,
      2  ' to best plane, (orthogonal angstroms)',
@@ -599,7 +599,7 @@ C--ERROR BECAUSE NO PLANE/LINE HAS BEEN CALCULATED
       if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN(LN)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,3150) CTYPE(JTYPE)
-      WRITE(NCAWU,3150) CTYPE(JTYPE)
+c      WRITE(NCAWU,3150) CTYPE(JTYPE)
       WRITE ( CMON ,3150) CTYPE(JTYPE)
       CALL XPRVDU(NCVDU, 1,0)
 3150  FORMAT(' Instruction ignored' ,
@@ -659,8 +659,8 @@ C--SUBTRACT THE CENTROID
      2 ,STORE(LFL+9)
       ENDIF
 3650  FORMAT(5X,A4,F9.0,15X,3F10.3)
-      WRITE(NCAWU,3651)STORE(LFL),STORE(LFL+1),STORE(LFL+7)
-     2 ,STORE(LFL+8),STORE(LFL+9)
+c      WRITE(NCAWU,3651)STORE(LFL),STORE(LFL+1),STORE(LFL+7)
+c     2 ,STORE(LFL+8),STORE(LFL+9)
       WRITE ( CMON ,3651)STORE(LFL),STORE(LFL+1),STORE(LFL+7)
      2 ,STORE(LFL+8),STORE(LFL+9)
       CALL XPRVDU(NCVDU, 1,0)
@@ -689,8 +689,8 @@ C--PRINT ALL THE ATOMS IN LIST 5
             WRITE(NCWU,3650) STORE(J),STORE(J+1), STORE(JWORK),
      1      STORE(JWORK+1), STORE(JWORK+2)
       ENDIF
-            WRITE(NCAWU,3651) STORE(J),STORE(J+1), STORE(JWORK),
-     1      STORE(JWORK+1), STORE(JWORK+2)
+c            WRITE(NCAWU,3651) STORE(J),STORE(J+1), STORE(JWORK),
+c     1      STORE(JWORK+1), STORE(JWORK+2)
       ELSE
 C----- FLATTEN THE STRUCTURE
             STORE(JWORK+2) = 0.
@@ -717,7 +717,7 @@ C--ERROR IN THE INPUT NUMBER
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,4000)
       ENDIF
-      WRITE(NCAWU,4000)
+c      WRITE(NCAWU,4000)
 4000  FORMAT(/34H Argument missing or of wrong type)
       GOTO 4850
 C--READ THE NUMBER
@@ -743,7 +743,7 @@ C--ILLEGAL PLANE OR PLANE SERIAL  -  PRINT OUT THE ERROR MESSAGE
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,4300)JA
       ENDIF
-      WRITE(NCAWU,4300) JA
+c      WRITE(NCAWU,4300) JA
 4300  FORMAT(/1X,' There is no axis  with serial number ',I4)
       GOTO 4850
 C--CHECK IF THIS IS THE FIRST OR SECOND PLANE
@@ -791,7 +791,7 @@ cdjwdec09      F=0.
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,4800)JH,JK,F
       ENDIF
-      WRITE(NCAWU,4800) JH, JK, F
+c      WRITE(NCAWU,4800) JH, JK, F
       WRITE (CMON ,4800) JH, JK, F
       CALL XPRVDU(NCVDU, 5,0)
 4800  FORMAT(//1X,' Angle between axis ',I4,' and axis ',I4,' is ' ,
@@ -827,7 +827,7 @@ C
 4910  CONTINUE
       IF (IMOD5 .GT. 0 ) THEN
             CALL XSTR05( IULN5, 0, 1)
-            WRITE(NCAWU,4911)
+c            WRITE(NCAWU,4911)
       IF (ISSPRT .EQ. 0) THEN
             WRITE(NCWU,4911)
       ENDIF
@@ -835,7 +835,7 @@ C
       ENDIF
       IF (IUPDT .GT. 0) THEN
             CALL XSTR20 ( 20, 0, 1)
-            WRITE(NCAWU,4912)
+c            WRITE(NCAWU,4912)
       IF (ISSPRT .EQ. 0) THEN
             WRITE(NCWU,4912)
       ENDIF
@@ -849,13 +849,13 @@ C
       IF (ISSPRT .EQ. 0) THEN
             WRITE(NCWU,4951) N
       ENDIF
-            WRITE(NCAWU,4951)N
+c            WRITE(NCAWU,4951)N
 4951        FORMAT(//' WARNING. The requested update to LIST ',
      1      I4,' has not been performed',//)
       ENDIF
       IF (IUPDT .GT. 0) THEN
             N = 20
-            WRITE(NCAWU,4951)
+c            WRITE(NCAWU,4951)
       IF (ISSPRT .EQ. 0) THEN
             WRITE(NCWU,4951)
       ENDIF
@@ -878,7 +878,7 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9925 ) CTYPE(JTYPE)
       ENDIF
-      WRITE ( NCAWU , 9925 ) CTYPE(JTYPE)
+c      WRITE ( NCAWU , 9925 ) CTYPE(JTYPE)
 9925  FORMAT ( 1X , 'No atoms have been specified to define a ', A )
       CALL XERHND ( IERWRN )
       GO TO 3000

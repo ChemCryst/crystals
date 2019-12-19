@@ -274,7 +274,7 @@ C--ERROR IN THE INPUT NUMBER
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,4000)
       ENDIF
-      WRITE(NCAWU,4000)
+c      WRITE(NCAWU,4000)
 4000  FORMAT(/34H Argument missing or of wrong type)
       GOTO 4910
 C
@@ -1050,7 +1050,7 @@ C
           !do i=1, n
           !    print *, real(ab(i, :), 4)
           !end do
-          WRITE(NCAWU,*)' Inverter fails (dgetrf) '
+c          WRITE(NCAWU,*)' Inverter fails (dgetrf) '
           IF (ISSPRT .EQ. 0) THEN
               WRITE(NCWU,*)' Inverter fails (dgetrf) '
           ENDIF
@@ -1067,7 +1067,7 @@ C
       if(info/=0) then
           KINV2=info
           if ( KINV2 .GT. 0 ) goto 3100  ! Singular value. Flag and return
-          WRITE(NCAWU,*)' Inverter fails (dgetri) '
+c          WRITE(NCAWU,*)' Inverter fails (dgetri) '
           IF (ISSPRT .EQ. 0) THEN
               WRITE(NCWU,*)' Inverter fails (dgetri) '
           ENDIF
@@ -1157,7 +1157,7 @@ C
           !do i=1, n
           !    print *, real(ab(i, :), 4)
           !end do
-          WRITE(NCAWU,*)' Inverter fails (dgetrf) '
+c          WRITE(NCAWU,*)' Inverter fails (dgetrf) '
           IF (ISSPRT .EQ. 0) THEN
               WRITE(NCWU,*)' Inverter fails (dgetrf) '
           ENDIF
@@ -1174,7 +1174,7 @@ C
       if(info/=0) then
           KINV2DP=info
           if ( KINV2DP .GT. 0 ) goto 3100  ! Singular value. Flag and return
-          WRITE(NCAWU,*)' Inverter fails (dgetri) '
+c          WRITE(NCAWU,*)' Inverter fails (dgetri) '
           IF (ISSPRT .EQ. 0) THEN
               WRITE(NCWU,*)' Inverter fails (dgetri) '
           ENDIF
@@ -1510,7 +1510,7 @@ C
       INCLUDE 'QSTR11.INC'
 C
       LS=NOC+1
-      WRITE(NCAWU,1000) LS
+c      WRITE(NCAWU,1000) LS
       WRITE ( CMON, 1000) LS
       CALL XPRVDU(NCVDU, 1,0)
 1000  FORMAT('{E Singularity - relative parameter',I5)
@@ -1649,7 +1649,7 @@ C -- RELEASE WORK SPACE
       IF (ISSPRT .EQ. 0) THEN
       WRITE (NCWU,9801)
       ENDIF
-      WRITE (NCAWU,9801)
+c      WRITE (NCAWU,9801)
       WRITE ( CMON, 9801)
       CALL XPRVDU(NCVDU, 1,0)
 9801  FORMAT (' Inversion process has failed to converge  ')
@@ -1659,7 +1659,7 @@ C -- RELEASE WORK SPACE
       IF (ISSPRT .EQ. 0) THEN
       WRITE (NCWU,9811)
       ENDIF
-      WRITE (NCAWU,9811)
+c      WRITE (NCAWU,9811)
       WRITE ( CMON, 9811)
       CALL XPRVDU(NCVDU, 1,0)
 9811  FORMAT (' Trace of inverse has become zero   ')
@@ -1668,7 +1668,7 @@ C -- RELEASE WORK SPACE
       IF (ISSPRT .EQ. 0) THEN
       WRITE (NCWU,9901)
       ENDIF
-      WRITE (NCAWU,9901)
+c      WRITE (NCAWU,9901)
       WRITE ( CMON, 9901)
       CALL XPRVDU(NCVDU, 1,0)
 9901  FORMAT (' Error in Moore-Penrose inverter   ')

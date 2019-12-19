@@ -167,7 +167,7 @@ C
 cfeb08         WRITE (NCAWU,150)
             WRITE (CMON,150)
             CALL XPRVDU (NCVDU,2,0)
-            write(ncawu,'(a)') cmon(1),trim(CMON(2))
+c            write(ncawu,'(a)') cmon(1),trim(CMON(2))
 150      FORMAT (' Principal axes of the thermal ellipsoids, A**2'/
      1 14x,' Min  ',4x,' Med  ',4x,' Max  ',4x,' Uarith     Ugeom',
      2 4x,'Uprime')
@@ -366,7 +366,7 @@ cfeb08                  WRITE (NCAWU,500)
                WRITE (CMON,550) STORE(M5B),STORE(M5B+1),(STORE(III),III=
      1          NE,J),UARITH, UGEOM, UPRIME, CTEXT
                CALL XPRVDU (NCVDU,1,0)
-               write(ncawu,'(a)') trim(CMON(1))
+c               write(ncawu,'(a)') trim(CMON(1))
 550            FORMAT (1X,A4,F6.0,6F10.4,3X,A24)
                IF (ISSPRT.EQ.0) WRITE (NCWU,600) STORE(M5B),STORE(M5B+1)
      1          ,(STORE(I),I=NF,K),UARITH, UGEOM, UPRIME, CTEXT
