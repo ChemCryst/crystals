@@ -340,7 +340,9 @@ LS-scale=  1.023   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.65E-06
+ (sp inverse) 1-norm:  2.67E+00 cond. number:  1.39E+01 rel. error:  1.65E-06
 
                                                 for           6 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -454,9 +456,9 @@ Mean C-C su =   0.0032
  GROUP TORSION                                                                        Date              Time          
 
 
- A positive rotation is clockwise from atom 1 to 4, when viewed from atom 2 to 3
  The SU is computed from the full VcV matrix if available
-                                                      Torsion angle & su    VcV-su
+ A positive rotation is clockwise from atom 1 to 4, when viewed from atom 2 to 3
+                                                      Torsion angle & VcV-su
 C       9   1   1   0   0   0  0.2143 -0.0357  0.2087
 C       7   1   1   0   0   0  0.3167 -0.0199  0.3183
 O       6   1   1   0   0   0  0.3149 -0.0894  0.3993
@@ -479,7 +481,7 @@ Variance-covariance matrix of selected atoms (x10^6)
 
 
 
-      C(9) to       C(7) to       O(6) to       O(8)         179.7    0.6    0.1
+      C(9) to       C(7) to       O(6) to       O(8) =       179.7    0.6    0.1
 #TITLE NORMAL TORSION
 #LIST     12
 #SFLS
@@ -571,8 +573,12 @@ LS-scale=  1.023   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.58E-06
+ (sp inverse) 1-norm:  3.41E+00 cond. number:  2.17E+01 rel. error:  2.58E-06
+Inversion method: Automatic
 Block No  2.  Single precision relative error:  3.90E-07
+ (sp inverse) 1-norm:  1.63E+00 cond. number:  3.27E+00 rel. error:  3.90E-07
 
                                                 for          52 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -717,26 +723,26 @@ Mean C-C su =   0.0057
  NORMAL TORSION                                                                       Date              Time          
 
 
- A positive rotation is clockwise from atom 1 to 4, when viewed from atom 2 to 3
  The SU is computed from the full VcV matrix if available
-                                                      Torsion angle & su    VcV-su
-     CU(1) to       O(2) to       C(3) to       C(5)        -176.8    0.4    0.8
-     CU(1) to       O(2) to       C(3) to       C(5)        -176.8    0.4    0.8
-     CU(1) to       O(6) to       C(7) to       O(8)          -3.1    0.9    1.2
-     CU(1) to       O(6) to       C(7) to       C(9)         176.5    0.4    0.7
-      C(7) to       O(6) to      CU(1) to      O(10)         176.4    0.5    0.7
-      C(7) to       O(6) to      CU(1) to       C(3)          61.1    0.5    0.7
+ A positive rotation is clockwise from atom 1 to 4, when viewed from atom 2 to 3
+                                                      Torsion angle & VcV-su
+     CU(1) to       O(2) to       C(3) to       C(5) =      -176.8    0.4    0.8
+     CU(1) to       O(2) to       C(3) to       C(5) =      -176.8    0.4    0.8
+     CU(1) to       O(6) to       C(7) to       O(8) =        -3.1    0.9    1.2
+     CU(1) to       O(6) to       C(7) to       C(9) =       176.5    0.4    0.7
+      C(7) to       O(6) to      CU(1) to      O(10) =       176.4    0.5    0.7
+      C(7) to       O(6) to      CU(1) to       C(3) =        61.1    0.5    0.7
      O(10) to      CU(1) to CU(1,1,1,0,1) to O(10,1,1,0,1)     0.0    0.4    0.0
-      C(5) to       C(3) to      CU(1) to C(3,-1,1,1,0,1)   -176.4    0.7    2.1
+      C(5) to       C(3) to      CU(1) to C(3,-1,1,1,0,1) = -176.4    0.7    2.1
 #TORS
 
 
  NORMAL TORSION                                                                       Date              Time          
 
 
- A positive rotation is clockwise from atom 1 to 4, when viewed from atom 2 to 3
  The SU is computed from the full VcV matrix if available
-                                                      Torsion angle & su    VcV-su
+ A positive rotation is clockwise from atom 1 to 4, when viewed from atom 2 to 3
+                                                      Torsion angle & VcV-su
 O      10   1   1   0   0   0  0.3764 -0.2090  0.6334
 CU      1   1   1   0   0   0  0.4496 -0.0846  0.5450
 CU      1   1   1   0   1   0  0.4496  0.9154  0.5450
@@ -766,9 +772,9 @@ Variance-covariance matrix of selected atoms (x10^6)
  NORMAL TORSION                                                                       Date              Time          
 
 
- A positive rotation is clockwise from atom 1 to 4, when viewed from atom 2 to 3
  The SU is computed from the full VcV matrix if available
-                                                      Torsion angle & su    VcV-su
+ A positive rotation is clockwise from atom 1 to 4, when viewed from atom 2 to 3
+                                                      Torsion angle & VcV-su
      O(10) to      CU(1) to CU(1,2,1,0,1) to O(10,2,1,0,1)  -131.3    0.3    1.1
 # THE MIS-MATCH BETWEEN LISTS 5 AND 12 CAUSES THE FILE TO
 # BE ABANDONED AND CONTROL PASSED TO THE USER.
@@ -796,17 +802,17 @@ Variance-covariance matrix of selected atoms (x10^6)
  BAD LIST 5/12                                                                        Date              Time          
 
 
- A positive rotation is clockwise from atom 1 to 4, when viewed from atom 2 to 3
  Matrix for e.s.ds missing. Using mean errors instead
+ A positive rotation is clockwise from atom 1 to 4, when viewed from atom 2 to 3
                                                       Torsion angle & su
-     CU(1) to       O(2) to       C(3) to       C(5)        -176.8    0.4
-     CU(1) to       O(2) to       C(3) to       C(5)        -176.8    0.4
-     CU(1) to       O(6) to       C(7) to       O(8)          -3.1    0.9
-     CU(1) to       O(6) to       C(7) to       C(9)         176.5    0.4
-      C(7) to       O(6) to      CU(1) to      O(10)         176.4    0.5
-      C(7) to       O(6) to      CU(1) to       C(3)          61.1    0.5
+     CU(1) to       O(2) to       C(3) to       C(5) =      -176.8    0.4
+     CU(1) to       O(2) to       C(3) to       C(5) =      -176.8    0.4
+     CU(1) to       O(6) to       C(7) to       O(8) =        -3.1    0.9
+     CU(1) to       O(6) to       C(7) to       C(9) =       176.5    0.4
+      C(7) to       O(6) to      CU(1) to      O(10) =       176.4    0.5
+      C(7) to       O(6) to      CU(1) to       C(3) =        61.1    0.5
      O(10) to      CU(1) to CU(1,1,1,0,1) to O(10,1,1,0,1)     0.0    0.4
-      C(5) to       C(3) to      CU(1) to C(3,-1,1,1,0,1)   -176.4    0.7
+      C(5) to       C(3) to      CU(1) to C(3,-1,1,1,0,1) = -176.4    0.7
 
 
           : Job ends ok       with     0 warnings and     1 error 

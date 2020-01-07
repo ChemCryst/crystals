@@ -143,7 +143,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.19E-07
+ (sp inverse) 1-norm:  1.00E+00 cond. number:  1.00E+00 rel. error:  1.19E-07
 
                                                 for           1 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -288,7 +290,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.19E-07
+ (sp inverse) 1-norm:  1.00E+00 cond. number:  1.00E+00 rel. error:  1.19E-07
 
                                                 for           1 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -471,7 +475,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.19E-07
+ (sp inverse) 1-norm:  1.00E+00 cond. number:  1.00E+00 rel. error:  1.19E-07
 [13]  LARGE     1           1             2.0       0.0E+00    0.3 E+00          6.0                           POLARITY
 
                                                 for           1 parameters
@@ -608,7 +614,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.19E-07
+ (sp inverse) 1-norm:  1.00E+00 cond. number:  1.00E+00 rel. error:  1.19E-07
 
                                                 for           1 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -776,7 +784,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.19E-07
+ (sp inverse) 1-norm:  1.00E+00 cond. number:  1.00E+00 rel. error:  1.19E-07
 
                                                 for           1 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -921,7 +931,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.19E-07
+ (sp inverse) 1-norm:  1.00E+00 cond. number:  1.00E+00 rel. error:  1.19E-07
 
                                                 for           1 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -1104,7 +1116,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.19E-07
+ (sp inverse) 1-norm:  1.00E+00 cond. number:  1.00E+00 rel. error:  1.19E-07
 [13]  LARGE     1           1             2.0       0.0E+00    0.3 E+00          6.0                           POLARITY
 
                                                 for           1 parameters
@@ -1241,7 +1255,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.19E-07
+ (sp inverse) 1-norm:  1.00E+00 cond. number:  1.00E+00 rel. error:  1.19E-07
 
                                                 for           1 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -1410,7 +1426,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.19E-07
+ (sp inverse) 1-norm:  1.00E+00 cond. number:  1.00E+00 rel. error:  1.19E-07
 [13]  LARGE     1           1            -0.0       0.0E+00    0.4 E-02         -0.2                           POLARITY
 
                                                 for           1 parameters
@@ -1556,7 +1574,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.19E-07
+ (sp inverse) 1-norm:  1.00E+00 cond. number:  1.00E+00 rel. error:  1.19E-07
 
                                                 for           1 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -1739,7 +1759,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.19E-07
+ (sp inverse) 1-norm:  1.00E+00 cond. number:  1.00E+00 rel. error:  1.19E-07
 [13]  LARGE     1           1            -2.0       0.0E+00    0.3 E+00         -6.0                           POLARITY
 
                                                 for           1 parameters
@@ -1876,7 +1898,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.19E-07
+ (sp inverse) 1-norm:  1.00E+00 cond. number:  1.00E+00 rel. error:  1.19E-07
 [13]  LARGE     1           1             0.0      -0.9E-03    0.4 E-02          0.4                           POLARITY
 
                                                 for           1 parameters
@@ -2046,7 +2070,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.19E-07
+ (sp inverse) 1-norm:  1.00E+00 cond. number:  1.00E+00 rel. error:  1.19E-07
 [13]  LARGE     1           1            -0.0       0.0E+00    0.1 E-02         -0.5                           ENANTIO 
 
                                                 for           1 parameters
@@ -2193,7 +2219,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.19E-07
+ (sp inverse) 1-norm:  1.00E+00 cond. number:  1.00E+00 rel. error:  1.19E-07
 
                                                 for           1 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -2376,7 +2404,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.19E-07
+ (sp inverse) 1-norm:  1.00E+00 cond. number:  1.00E+00 rel. error:  1.19E-07
 [13]  LARGE     1           1            -0.9       0.0E+00    0.1 E+00         -6.7                           ENANTIO 
 
                                                 for           1 parameters
@@ -2513,7 +2543,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.19E-07
+ (sp inverse) 1-norm:  1.00E+00 cond. number:  1.00E+00 rel. error:  1.19E-07
 [13]  LARGE     1           1            -0.0       0.6E-02    0.2 E-02         -3.1                           ENANTIO 
 
                                                 for           1 parameters
@@ -2705,7 +2737,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.19E-07
+ (sp inverse) 1-norm:  1.00E+00 cond. number:  1.00E+00 rel. error:  1.19E-07
 [14]  S/ESD     1           1            0.010       0.0E+00    0.19 E-02          5.5         CL     1 Z       
 
                                                 for           1 parameters
@@ -2846,7 +2880,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.19E-07
+ (sp inverse) 1-norm:  1.00E+00 cond. number:  1.00E+00 rel. error:  1.19E-07
 
                                                 for           1 parameters
 [64]                                  The rms (shift/su)  =           6.
@@ -2991,7 +3027,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.19E-07
+ (sp inverse) 1-norm:  1.00E+00 cond. number:  1.00E+00 rel. error:  1.19E-07
 
                                                 for           1 parameters
 [64]                                  The rms (shift/su)  =           6.
@@ -3131,7 +3169,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.19E-07
+ (sp inverse) 1-norm:  1.00E+00 cond. number:  1.00E+00 rel. error:  1.19E-07
 
                                                 for           1 parameters
 [64]                                  The rms (shift/su)  =           4.
@@ -3332,7 +3372,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.25E-07
+ (sp inverse) 1-norm:  1.02E+00 cond. number:  1.05E+00 rel. error:  1.25E-07
 [14]  S/ESD     2           2            0.010       0.0E+00    0.19 E-02          5.5         CL     1 Z       
 
                                                 for           2 parameters
@@ -3474,7 +3516,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.28E-07
+ (sp inverse) 1-norm:  1.04E+00 cond. number:  1.08E+00 rel. error:  1.28E-07
 
                                                 for           2 parameters
 [64]                                  The rms (shift/su)  =           4.
@@ -3619,7 +3663,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.20E-07
+ (sp inverse) 1-norm:  1.01E+00 cond. number:  1.01E+00 rel. error:  1.20E-07
 
                                                 for           2 parameters
 [64]                                  The rms (shift/su)  =           4.
@@ -3759,7 +3805,9 @@ LS-scale=  1.000   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.20E-07
+ (sp inverse) 1-norm:  1.00E+00 cond. number:  1.01E+00 rel. error:  1.20E-07
 
                                                 for           2 parameters
 [64]                                  The rms (shift/su)  =           3.
@@ -4275,7 +4323,9 @@ LS-scale=  2.699   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  9.86E-06
+ (sp inverse) 1-norm:  6.59E+00 cond. number:  8.27E+01 rel. error:  9.86E-06
  S/ESD     1           1             0.052      0.0E+00    0.335E-01          1.56                          SCALE   
 [13]  LARGE     2           2             0.0       0.0E+00    0.2 E-01          0.1                           ENANTIO 
 
@@ -4486,7 +4536,9 @@ LS-scale=  2.709   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  9.83E-06
+ (sp inverse) 1-norm:  6.58E+00 cond. number:  8.24E+01 rel. error:  9.83E-06
 [13]  LARGE     2           2             0.0       0.3E+00    0.2 E-01          0.0                           ENANTIO 
 
                                                 for          56 parameters
@@ -4700,7 +4752,9 @@ LS-scale=  2.709   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  9.82E-06
+ (sp inverse) 1-norm:  6.57E+00 cond. number:  8.24E+01 rel. error:  9.82E-06
 
                                                 for          56 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -4844,6 +4898,9 @@ Mean C-C su =   0.0062
 #GENERALEDIT 39
 #SCRIPT ADD39F
 #GENERALEDIT 39
+#GENERALEDIT 39
+#SCRIPT ADD39I
+#GENERALEDIT 39
 #SUM LIST 6 LEVEL=NORM
  Summary of contents of list  6 - Reflection data
  Quantity            Minimum        Maximum
@@ -4866,9 +4923,11 @@ Rsigma=  2.79
 
  CRYSTALS suggests that you check your weighting scheme
 
+ Zo = w.Delta, where delta is (Fo-Fc) or (Fo^2-Fc^2)
+
  Outliers in Normal Probability Plot at delta(Z) > 0.33
-    Indices        Zo         Zc     /Zc-Zo/
-  -2   3   1     5.763     2.684     3.079
+    Indices        Zo         Zc     /Zc-Zo/        Fo        Fc
+[12]   -2   3   1     5.76      2.68      3.079    17.930     9.002
 
       1 outliers in Normal Probability Plot at delta(Z) >  0.33
 
@@ -4985,7 +5044,7 @@ LS-scale=  2.709   Wilson Scale=  0.000
  After   1 pass     904 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
 #PURGE  LIST=7
- List type    5  serial number   65 from    51095 to    51321 will not be copied ( deleted )         
+ List type    5  serial number   65 from    51191 to    51417 will not be copied ( deleted )         
 
 
  ************************************************************************
@@ -4999,8 +5058,6 @@ LS-scale=  2.709   Wilson Scale=  0.000
  DO NOT abort the program
  The new disc index has been re-written 
  Disc index completely restored
-
- Listing of file index of  New data  file 
  Copied:     88 dsc records.
 #TON PLOT=NO PUNCH=NO
            Notification of SPECIAL conditions
@@ -5137,14 +5194,14 @@ Quadrant averages: N, Mean(Do), Mean(Ds) [Summary of scatterplot]
 
    LePage Analysis (Assuming Enantio-purity)
  Data are ranked by the Signal:Noise
- Minimum signal : noise used =  1.1942
+ Minimum signal : noise used =  1.1941
  No. Available  300
   Range    No.Same  No.Opposite  Signal:noise   Prob Wrong Hand
   0   10       10      0          7.2240           0.000
   0   20       20      0          5.7162           0.000
   0   50       50      0          3.4944           0.000
   0  100       95      5          2.0325           0.000
-  0  151      139     12          1.1942           0.000
+  0  151      139     12          1.1941           0.000
 
  Top 50% of data
   0  150      139     11          1.2046           0.000
@@ -5154,7 +5211,7 @@ Quadrant averages: N, Mean(Do), Mean(Ds) [Summary of scatterplot]
  10   20       10      0          5.7162           0.000
  20   50       30      0          3.4944           0.000
  50  100       45      5          2.0325           0.000
-100  200       44      7          1.1942           0.000
+100  200       44      7          1.1941           0.000
 
 
 

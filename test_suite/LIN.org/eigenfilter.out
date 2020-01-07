@@ -466,6 +466,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
 
                                                 for          34 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -686,6 +687,7 @@ LS-scale=  1.457   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
 
                                                 for          34 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -910,6 +912,7 @@ LS-scale=  1.457   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
 
                                                 for          34 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -1143,6 +1146,7 @@ LS-scale=  1.457   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
  S/ESD     1           1             0.026      0.0E+00    0.143E-01          1.79                          SCALE   
 [14]  S/ESD    21          21            0.012       0.0E+00    0.15 E-02          7.8         O      5 U[ISO]  
 [14]  S/ESD    25          25           -0.016       0.0E+00    0.23 E-02         -7.1         N      6 U[ISO]  
@@ -1366,6 +1370,7 @@ LS-scale=  1.483   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
 
                                                 for          45 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -1590,6 +1595,7 @@ LS-scale=  1.488   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
 
                                                 for          45 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -1814,6 +1820,7 @@ LS-scale=  1.488   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
 
                                                 for          45 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -2053,6 +2060,7 @@ LS-scale=  1.488   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
 [13]  LARGE     1           1             0.1       0.0E+00    0.1 E-01         10.6                           SCALE   
 [13]  LARGE     2           2           655.0       0.0E+00    0.3 E+02         18.1                           EXTPARAM
 [14]  S/ESD    15          15            0.025       0.0E+00    0.38 E-02          6.7         O      3 U[11]   
@@ -2288,6 +2296,7 @@ LS-scale=  1.664   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
  S/ESD     1           1             0.069      0.4E+00    0.176E-01          3.94                          SCALE   
 [43] Resetting shift for Extinction  Shift=     856.   Esd=     10   New shift=     131.0
 [13]  LARGE     2           2           131.0       0.1E+01    0.1 E+03          8.3                           EXTPARAM
@@ -2440,9 +2449,6 @@ Mean C-C su =   0.0000
 #CYCLENDS
 #PERH
            Per-hydrogenation of Carbon atoms
-C(1)  sp3 delta   0.03 sp3 delta  0.08 planarity  999.00 angle delta  999.00
-C(1) hybridisation uncertain (3/0)  4 Bonds, sp0 used
- Unassignable carbon - C(1)
 H33 C(4) O(3) C(2) 
 H33 C(9) C(7) N(6) 
 H23 C(10) C(11) C(1) 
@@ -2928,6 +2934,7 @@ LS-scale=  1.733   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
  S/ESD     1           1            -0.116      0.0E+00    0.119E-01         -9.77                          SCALE   
 [14]  S/ESD    22          22           -0.045       0.0E+00    0.41 E-02        -10.9         C      4 U[ISO]  
 
@@ -3474,6 +3481,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
 
                                                 for          34 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -3694,6 +3702,7 @@ LS-scale=  1.457   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
 
                                                 for          34 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -3918,6 +3927,7 @@ LS-scale=  1.457   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
 
                                                 for          34 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -4155,6 +4165,7 @@ LS-scale=  1.457   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
  S/ESD     1           1             0.025      0.0E+00    0.143E-01          1.76                          SCALE   
 [14]  S/ESD    21          21            0.012       0.0E+00    0.15 E-02          7.7         O      5 U[ISO]  
 [14]  S/ESD    25          25           -0.016       0.0E+00    0.23 E-02         -7.0         N      6 U[ISO]  
@@ -4378,6 +4389,7 @@ LS-scale=  1.482   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
 
                                                 for          45 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -4602,6 +4614,7 @@ LS-scale=  1.488   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
 
                                                 for          45 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -4826,6 +4839,7 @@ LS-scale=  1.488   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
 
                                                 for          45 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -5065,6 +5079,7 @@ LS-scale=  1.488   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
 [13]  LARGE     1           1             0.1       0.0E+00    0.1 E-01         10.6                           SCALE   
 [13]  LARGE     2           2           655.3       0.0E+00    0.3 E+02         18.1                           EXTPARAM
 [14]  S/ESD    15          15            0.025       0.0E+00    0.38 E-02          6.7         O      3 U[11]   
@@ -5300,6 +5315,7 @@ LS-scale=  1.664   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
  S/ESD     1           1             0.069      0.4E+00    0.176E-01          3.91                          SCALE   
 [43] Resetting shift for Extinction  Shift=     855.   Esd=     10   New shift=     131.0
 [13]  LARGE     2           2           131.0       0.1E+01    0.1 E+03          8.3                           EXTPARAM
@@ -5452,9 +5468,6 @@ Mean C-C su =   0.0000
 #CYCLENDS
 #PERH
            Per-hydrogenation of Carbon atoms
-C(1)  sp3 delta   0.03 sp3 delta  0.08 planarity  999.00 angle delta  999.00
-C(1) hybridisation uncertain (3/0)  4 Bonds, sp0 used
- Unassignable carbon - C(1)
 H33 C(4) O(3) C(2) 
 H33 C(9) C(7) N(6) 
 H23 C(10) C(11) C(1) 
@@ -5938,6 +5951,7 @@ LS-scale=  1.733   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
  S/ESD     1           1            -0.116      0.0E+00    0.119E-01         -9.77                          SCALE   
 [14]  S/ESD    22          22           -0.045       0.0E+00    0.41 E-02        -10.9         C      4 U[ISO]  
 
@@ -6484,6 +6498,7 @@ LS-scale=  1.010   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
 [13]  LARGE     1           1             0.9       0.0E+00    0.3 E-01         25.5                           SCALE   
 
                                                 for          34 parameters
@@ -6705,6 +6720,7 @@ LS-scale=  1.401   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
 
                                                 for          34 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -6929,6 +6945,7 @@ LS-scale=  1.401   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
 
                                                 for          34 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -7166,6 +7183,7 @@ LS-scale=  1.401   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
  S/ESD     1           1             0.039      0.0E+00    0.376E-01          1.04                          SCALE   
 [14]  S/ESD    25          25           -0.016       0.0E+00    0.24 E-02         -6.9         N      6 U[ISO]  
 
@@ -7388,6 +7406,7 @@ LS-scale=  1.415   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
 
                                                 for          45 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -7612,6 +7631,7 @@ LS-scale=  1.420   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
 
                                                 for          45 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -7836,6 +7856,7 @@ LS-scale=  1.418   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
 
                                                 for          45 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -8071,6 +8092,7 @@ LS-scale=  1.418   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
 [13]  LARGE     1           1             0.5       0.0E+00    0.4 E-01         12.3                           SCALE   
 [13]  LARGE     2           2           563.2       0.0E+00    0.2 E+02         19.7                           EXTPARAM
 [14]  S/ESD     4           4            0.011       0.0E+00    0.44 E-02          2.5         C      1 U[22]   
@@ -8308,6 +8330,7 @@ LS-scale=  1.604   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
 [13]  LARGE     1           1             0.2       0.5E+00    0.4 E-01          5.4                           SCALE   
 [43] Resetting shift for Extinction  Shift=     837.   Esd=      7   New shift=     112.6
 [13]  LARGE     2           2           112.6       0.1E+01    0.7 E+02         10.6                           EXTPARAM
@@ -8460,9 +8483,6 @@ Mean C-C su =   0.0000
 #CYCLENDS
 #PERH
            Per-hydrogenation of Carbon atoms
-C(1)  sp3 delta   0.03 sp3 delta  0.09 planarity  999.00 angle delta  999.00
-C(1) hybridisation uncertain (3/0)  4 Bonds, sp0 used
- Unassignable carbon - C(1)
 H33 C(4) O(3) C(2) 
 H33 C(9) C(7) N(6) 
 H23 C(10) C(11) C(1) 
@@ -8957,6 +8977,7 @@ LS-scale=  1.687   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
 [13]  LARGE     1           1            -0.3       0.0E+00    0.3 E-01         -8.8                           SCALE   
 [14]  S/ESD    22          22           -0.045       0.0E+00    0.40 E-02        -11.3         C      4 U[ISO]  
 
@@ -9503,6 +9524,7 @@ LS-scale=  1.010   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
 [13]  LARGE     1           1             0.9       0.0E+00    0.3 E-01         25.5                           SCALE   
 
                                                 for          34 parameters
@@ -9724,6 +9746,7 @@ LS-scale=  1.401   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
 
                                                 for          34 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -9948,6 +9971,7 @@ LS-scale=  1.401   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
 
                                                 for          34 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -10185,6 +10209,7 @@ LS-scale=  1.401   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
  S/ESD     1           1             0.039      0.0E+00    0.376E-01          1.04                          SCALE   
 [14]  S/ESD    25          25           -0.016       0.0E+00    0.24 E-02         -6.9         N      6 U[ISO]  
 
@@ -10407,6 +10432,7 @@ LS-scale=  1.415   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
 
                                                 for          45 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -10631,6 +10657,7 @@ LS-scale=  1.420   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
 
                                                 for          45 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -10855,6 +10882,7 @@ LS-scale=  1.418   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
 
                                                 for          45 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -11090,6 +11118,7 @@ LS-scale=  1.418   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
 [13]  LARGE     1           1             0.5       0.0E+00    0.4 E-01         12.3                           SCALE   
 [13]  LARGE     2           2           563.2       0.0E+00    0.2 E+02         19.7                           EXTPARAM
 [14]  S/ESD     4           4            0.011       0.0E+00    0.44 E-02          2.5         C      1 U[22]   
@@ -11327,6 +11356,7 @@ LS-scale=  1.604   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
 [13]  LARGE     1           1             0.2       0.5E+00    0.4 E-01          5.4                           SCALE   
 [43] Resetting shift for Extinction  Shift=     837.   Esd=      7   New shift=     112.6
 [13]  LARGE     2           2           112.6       0.1E+01    0.7 E+02         10.6                           EXTPARAM
@@ -11479,9 +11509,6 @@ Mean C-C su =   0.0000
 #CYCLENDS
 #PERH
            Per-hydrogenation of Carbon atoms
-C(1)  sp3 delta   0.03 sp3 delta  0.09 planarity  999.00 angle delta  999.00
-C(1) hybridisation uncertain (3/0)  4 Bonds, sp0 used
- Unassignable carbon - C(1)
 H33 C(4) O(3) C(2) 
 H33 C(9) C(7) N(6) 
 H23 C(10) C(11) C(1) 
@@ -11976,6 +12003,7 @@ LS-scale=  1.687   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Eigen filtering
 [13]  LARGE     1           1            -0.3       0.0E+00    0.3 E-01         -8.8                           SCALE   
 [14]  S/ESD    22          22           -0.045       0.0E+00    0.40 E-02        -11.3         C      4 U[ISO]  
 

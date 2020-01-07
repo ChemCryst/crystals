@@ -233,6 +233,7 @@ RE
  Parameter   3  has no default value and has been omitted
  Parameter keyword : C           
 
+ Input of list type     1 (Cell parameters) abandoned
 #LIST 1
  A directive has been omitted leaving the parameters below undefined
  Directive : REAL        
@@ -243,6 +244,7 @@ RE
  Parameter   3  has no default value and has been omitted
  Parameter keyword : C           
 
+ Input of list type     1 (Cell parameters) abandoned
  The user directive has been omitted or does not begin in column one
 #LIST 1
  A directive has been omitted leaving the parameters below undefined
@@ -254,6 +256,7 @@ RE
  Parameter   3  has no default value and has been omitted
  Parameter keyword : C           
 
+ Input of list type     1 (Cell parameters) abandoned
  The directive on the last card is illegal with this '#Instruction'
 #LIST 1
  A directive has been omitted leaving the parameters below undefined
@@ -265,12 +268,15 @@ RE
  Parameter   3  has no default value and has been omitted
  Parameter keyword : C           
 
+ Input of list type     1 (Cell parameters) abandoned
  The directive above may not follow a card containing the directive : 
 REAL        
 #LIST 1
+ Input of list type     1 (Cell parameters) abandoned
  The last directive has appeared too many times,
  or should not have appeared at all
 #LIST 1
+ Input of list type     1 (Cell parameters) abandoned
 #LIST 1
  A directive has been omitted leaving the parameters below undefined
  Directive : REAL        
@@ -281,8 +287,10 @@ REAL
  Parameter   3  has no default value and has been omitted
  Parameter keyword : C           
 
+ Input of list type     1 (Cell parameters) abandoned
  Parameter     1  has appeared too many times
  Parameter keyword : A           
+ Input of list type     1 (Cell parameters) abandoned
 #LIST 2
 #PRINT 2
 #LIST 2
@@ -391,6 +399,7 @@ REAL
  Symmetry operator format error, marked by an '*'
              *
  Symmetry operator format error, marked by an '*'
+ Input of list type     2 (Unit cell symmetry) abandoned
 
  CRYSTALS -- ERROR
 
@@ -648,6 +657,7 @@ REAL
 
  CRYSTALS -- ERROR
 
+ Input of list type     4 (LSQ Weighting scheme) abandoned
 #LIST 2
  A directive has been omitted leaving the parameters below undefined
  Directive : CELL        
@@ -656,6 +666,7 @@ REAL
 
  Previous errors prevent processing of the last directive
  The last directive should have appeared before and will be ignored here
+ Input of list type     2 (Unit cell symmetry) abandoned
 
  CRYSTALS -- ERROR
 
@@ -702,12 +713,13 @@ REAL
 
 
  Unknown parameter keyword : 
- U[ISO]
+[ISO]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 #PRINT 5
  CRYSTALS command input error 
 
  CRYSTALS -- ERROR
 
+ Input of list type     5 (Atomic parameters) abandoned
  No list of type        5 stored
 
  CRYSTALS -- ERROR
@@ -1060,6 +1072,7 @@ REAL
 
  CRYSTALS -- ERROR
 
+ Input of list type    28 (Reflection exclusion limits) abandoned
  No list of type       28 stored
 
  CRYSTALS -- ERROR

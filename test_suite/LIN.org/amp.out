@@ -466,7 +466,9 @@ LS-scale=  1.456   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.84E-07
+ (sp inverse) 1-norm:  1.82E+00 cond. number:  3.22E+00 rel. error:  3.84E-07
 
                                                 for          34 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -687,7 +689,9 @@ LS-scale=  1.457   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.80E-07
+ (sp inverse) 1-norm:  1.79E+00 cond. number:  3.19E+00 rel. error:  3.80E-07
 
                                                 for          34 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -912,7 +916,9 @@ LS-scale=  1.457   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.79E-07
+ (sp inverse) 1-norm:  1.79E+00 cond. number:  3.18E+00 rel. error:  3.79E-07
 
                                                 for          34 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -1146,7 +1152,9 @@ LS-scale=  1.457   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  5.02E-06
+ (sp inverse) 1-norm:  4.49E+00 cond. number:  4.21E+01 rel. error:  5.02E-06
  S/ESD     1           1             0.026      0.0E+00    0.143E-01          1.79                          SCALE   
 [14]  S/ESD    21          21            0.012       0.0E+00    0.15 E-02          7.8         O      5 U[ISO]  
 [14]  S/ESD    25          25           -0.016       0.0E+00    0.23 E-02         -7.1         N      6 U[ISO]  
@@ -1370,7 +1378,9 @@ LS-scale=  1.483   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  5.04E-06
+ (sp inverse) 1-norm:  4.51E+00 cond. number:  4.23E+01 rel. error:  5.04E-06
 
                                                 for          45 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -1595,7 +1605,9 @@ LS-scale=  1.488   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  5.04E-06
+ (sp inverse) 1-norm:  4.51E+00 cond. number:  4.22E+01 rel. error:  5.04E-06
 
                                                 for          45 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -1820,7 +1832,9 @@ LS-scale=  1.488   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  5.04E-06
+ (sp inverse) 1-norm:  4.51E+00 cond. number:  4.23E+01 rel. error:  5.04E-06
 
                                                 for          45 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -2060,7 +2074,9 @@ LS-scale=  1.488   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.68E-05
+ (sp inverse) 1-norm:  8.27E+00 cond. number:  1.41E+02 rel. error:  1.68E-05
 [13]  LARGE     1           1             0.1       0.0E+00    0.1 E-01         10.6                           SCALE   
 [13]  LARGE     2           2           655.0       0.0E+00    0.3 E+02         18.1                           EXTPARAM
 [14]  S/ESD    15          15            0.025       0.0E+00    0.38 E-02          6.7         O      3 U[11]   
@@ -2296,7 +2312,9 @@ LS-scale=  1.664   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.61E-05
+ (sp inverse) 1-norm:  8.66E+00 cond. number:  2.19E+02 rel. error:  2.61E-05
  S/ESD     1           1             0.069      0.4E+00    0.176E-01          3.94                          SCALE   
 [43] Resetting shift for Extinction  Shift=     856.   Esd=     10   New shift=     131.0
 [13]  LARGE     2           2           131.0       0.1E+01    0.1 E+03          8.3                           EXTPARAM
@@ -2449,9 +2467,6 @@ Mean C-C su =   0.0000
 #CYCLENDS
 #PERH
            Per-hydrogenation of Carbon atoms
-C(1)  sp3 delta   0.03 sp3 delta  0.08 planarity  999.00 angle delta  999.00
-C(1) hybridisation uncertain (3/0)  4 Bonds, sp0 used
- Unassignable carbon - C(1)
 H33 C(4) O(3) C(2) 
 H33 C(9) C(7) N(6) 
 H23 C(10) C(11) C(1) 
@@ -2937,7 +2952,9 @@ LS-scale=  1.733   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  4.99E-06
+ (sp inverse) 1-norm:  4.94E+00 cond. number:  4.19E+01 rel. error:  4.99E-06
  S/ESD     1           1            -0.116      0.0E+00    0.119E-01         -9.77                          SCALE   
 [14]  S/ESD    22          22           -0.045       0.0E+00    0.41 E-02        -10.9         C      4 U[ISO]  
 
@@ -3160,7 +3177,9 @@ LS-scale=  1.617   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  5.11E-06
+ (sp inverse) 1-norm:  5.00E+00 cond. number:  4.29E+01 rel. error:  5.11E-06
 
                                                 for          55 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -3385,7 +3404,9 @@ LS-scale=  1.621   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  5.09E-06
+ (sp inverse) 1-norm:  4.99E+00 cond. number:  4.27E+01 rel. error:  5.09E-06
 
                                                 for          55 parameters
 [64]                                  The rms (shift/su)  =           0.

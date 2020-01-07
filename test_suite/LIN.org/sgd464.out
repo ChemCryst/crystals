@@ -85,6 +85,7 @@ ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
           - Derivatives not found, do a refinement cycle to get leverages -
+#SET MONITOR FAST
 #SFLS
 #LIST 4
 #WEIGHT
@@ -170,9 +171,11 @@ LS-scale=  0.436   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.00E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  3.72E-12
+ (dp inverse) 1-norm:  1.34E+01 cond. number:  1.68E+04 rel. error:  3.72E-12
 [13]  LARGE     2           2            -0.7       0.0E+00    0.2 E+01         -0.3                           ENANTIO 
 [14]  S/ESD     6           6           -0.018       0.0E+00    0.11 E-01         -1.7         CL     1 U[11]   
 [14]  S/ESD    24          24            0.021       0.0E+00    0.19 E-01          1.1         CL     3 U[11]   
@@ -491,9 +494,11 @@ LS-scale=  0.437   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.00E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  3.72E-12
+ (dp inverse) 1-norm:  1.38E+01 cond. number:  1.68E+04 rel. error:  3.72E-12
 [13]  LARGE     2           2             0.0      -0.1E+00    0.2 E+00          0.3                           ENANTIO 
 [14]  S/ESD    24          24            0.010       0.5E+00    0.23 E-02          4.2         CL     3 U[11]   
 [14]  S/ESD    26          26            0.011      -0.2E+00    0.32 E-02          3.4         CL     3 U[33]   
@@ -809,9 +814,11 @@ LS-scale=  0.439   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.11E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  3.93E-12
+ (dp inverse) 1-norm:  1.38E+01 cond. number:  1.77E+04 rel. error:  3.93E-12
 [13]  LARGE     2           2            -0.0      -0.6E+00    0.2 E+00         -0.2                           ENANTIO 
 
                                                 for         263 parameters
@@ -1125,9 +1132,11 @@ LS-scale=  0.439   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.11E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  3.93E-12
+ (dp inverse) 1-norm:  1.38E+01 cond. number:  1.77E+04 rel. error:  3.93E-12
 [13]  LARGE     2           2             0.0      -0.5E+00    0.2 E+00          0.1                           ENANTIO 
 
                                                 for         263 parameters
@@ -1441,9 +1450,11 @@ LS-scale=  0.439   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.11E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  3.94E-12
+ (dp inverse) 1-norm:  1.38E+01 cond. number:  1.77E+04 rel. error:  3.94E-12
 [13]  LARGE     2           2            -0.0      -0.7E+00    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -1677,6 +1688,7 @@ All cycle   Min function          0.0           0.33E+04       0.10E+16
 [31]                                         0.010    0.012    0.009 
 Mean C-C su =   0.0094
 #CYCLENDS
+#SET MONITOR ON
 #CHECK HI
 
 
@@ -1773,6 +1785,7 @@ ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
           - Derivatives not found, do a refinement cycle to get leverages -
+#SET MONITOR FAST
 #SFLS
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -1858,7 +1871,9 @@ LS-scale=  0.436   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  9.81E-04
+ (sp inverse) 1-norm:  1.44E+01 cond. number:  8.23E+03 rel. error:  9.81E-04
 [13]  LARGE     2           2            -0.1       0.0E+00    0.4 E+00         -0.2                           ENANTIO 
 [14]  S/ESD   168         168           -0.011       0.0E+00    0.89 E-02         -1.2         C     19 U[11]   
 [14]  S/ESD   170         170            0.013       0.0E+00    0.75 E-02          1.8         C     19 U[33]   
@@ -2176,9 +2191,11 @@ LS-scale=  0.441   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.16E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  2.15E-12
+ (dp inverse) 1-norm:  1.42E+01 cond. number:  9.69E+03 rel. error:  2.15E-12
 [13]  LARGE     2           2             0.0      -0.3E+00    0.2 E+00          0.1                           ENANTIO 
 
                                                 for         263 parameters
@@ -2492,7 +2509,9 @@ LS-scale=  0.441   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  9.05E-04
+ (sp inverse) 1-norm:  1.42E+01 cond. number:  7.59E+03 rel. error:  9.05E-04
 [13]  LARGE     2           2             0.0       0.4E-01    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -2806,7 +2825,9 @@ LS-scale=  0.441   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  9.07E-04
+ (sp inverse) 1-norm:  1.42E+01 cond. number:  7.61E+03 rel. error:  9.07E-04
 [13]  LARGE     2           2            -0.0      -0.5E+01    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -3120,7 +3141,9 @@ LS-scale=  0.441   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  9.14E-04
+ (sp inverse) 1-norm:  1.42E+01 cond. number:  7.67E+03 rel. error:  9.14E-04
 [13]  LARGE     2           2             0.0      -0.2E+01    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -3354,6 +3377,7 @@ All cycle   Min function          0.0           0.30E+04       0.10E+16
 [31]                                         0.009    0.011    0.009 
 Mean C-C su =   0.0090
 #CYCLENDS
+#SET MONITOR ON
 #CHECK HI
 
 
@@ -3446,6 +3470,7 @@ ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
           - Derivatives not found, do a refinement cycle to get leverages -
+#SET MONITOR FAST
 #SFLS
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -3531,9 +3556,11 @@ LS-scale=  0.436   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.73E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  3.23E-12
+ (dp inverse) 1-norm:  1.43E+01 cond. number:  1.45E+04 rel. error:  3.23E-12
 [13]  LARGE     2           2            -0.1       0.0E+00    0.6 E+00         -0.1                           ENANTIO 
 [14]  S/ESD   170         170            0.013       0.0E+00    0.11 E-01          1.1         C     19 U[33]   
 [14]  S/ESD   213         213            0.015       0.0E+00    0.80 E-02          1.8         C     24 U[11]   
@@ -3850,9 +3877,11 @@ LS-scale=  0.441   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.83E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  3.41E-12
+ (dp inverse) 1-norm:  1.42E+01 cond. number:  1.54E+04 rel. error:  3.41E-12
 [13]  LARGE     2           2             0.0      -0.3E+00    0.2 E+00          0.1                           ENANTIO 
 
                                                 for         263 parameters
@@ -4166,9 +4195,11 @@ LS-scale=  0.440   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.81E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  3.38E-12
+ (dp inverse) 1-norm:  1.42E+01 cond. number:  1.52E+04 rel. error:  3.38E-12
 [13]  LARGE     2           2            -0.0      -0.5E+00    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -4482,9 +4513,11 @@ LS-scale=  0.440   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.91E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  3.55E-12
+ (dp inverse) 1-norm:  1.49E+01 cond. number:  1.60E+04 rel. error:  3.55E-12
 [13]  LARGE     2           2             0.0      -0.1E+01    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -4798,9 +4831,11 @@ LS-scale=  0.440   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.82E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  3.39E-12
+ (dp inverse) 1-norm:  1.42E+01 cond. number:  1.53E+04 rel. error:  3.39E-12
 [13]  LARGE     2           2            -0.0      -0.7E+00    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -5034,6 +5069,7 @@ All cycle   Min function          0.0           0.30E+04       0.10E+16
 [31]                                         0.009    0.011    0.009 
 Mean C-C su =   0.0090
 #CYCLENDS
+#SET MONITOR ON
 #CHECK HI
 
 
@@ -5148,6 +5184,7 @@ ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
           - Derivatives not found, do a refinement cycle to get leverages -
+#SET MONITOR FAST
 #SFLS
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -5233,9 +5270,11 @@ LS-scale=  0.436   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.59E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  2.96E-12
+ (dp inverse) 1-norm:  1.33E+01 cond. number:  1.33E+04 rel. error:  2.96E-12
 [13]  LARGE     2           2            -0.1       0.0E+00    0.1 E+01         -0.0                           ENANTIO 
 [14]  S/ESD   234         234           -0.022       0.0E+00    0.42 E-02         -5.2         C     26 U[23]   
 [14]  S/ESD   252         252            0.013       0.0E+00    0.38 E-02          3.4         C     28 U[23]   
@@ -5552,9 +5591,11 @@ LS-scale=  0.440   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.48E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  2.75E-12
+ (dp inverse) 1-norm:  1.35E+01 cond. number:  1.24E+04 rel. error:  2.75E-12
 [13]  LARGE     2           2             0.0      -0.5E+00    0.2 E+00          0.2                           ENANTIO 
 
                                                 for         263 parameters
@@ -5868,9 +5909,11 @@ LS-scale=  0.440   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.56E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  2.92E-12
+ (dp inverse) 1-norm:  1.35E+01 cond. number:  1.31E+04 rel. error:  2.92E-12
 [13]  LARGE     2           2            -0.0      -0.3E+00    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -6184,9 +6227,11 @@ LS-scale=  0.440   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.54E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  2.86E-12
+ (dp inverse) 1-norm:  1.36E+01 cond. number:  1.29E+04 rel. error:  2.86E-12
 [13]  LARGE     2           2             0.0      -0.5E+00    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -6500,9 +6545,11 @@ LS-scale=  0.440   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.75E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  3.27E-12
+ (dp inverse) 1-norm:  1.35E+01 cond. number:  1.47E+04 rel. error:  3.27E-12
 [13]  LARGE     2           2            -0.0      -0.8E-01    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -6736,6 +6783,7 @@ All cycle   Min function          0.0           0.31E+04       0.10E+16
 [31]                                         0.010    0.012    0.009 
 Mean C-C su =   0.0098
 #CYCLENDS
+#SET MONITOR ON
 #CHECK HI
 
 
@@ -6852,6 +6900,7 @@ ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
           - Derivatives not found, do a refinement cycle to get leverages -
+#SET MONITOR FAST
 #SFLS
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -6937,7 +6986,9 @@ LS-scale=  0.436   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.35E-05
+ (sp inverse) 1-norm:  1.50E+01 cond. number:  2.81E+02 rel. error:  3.35E-05
 [13]  LARGE     2           2            -0.1       0.0E+00    0.2 E+00         -0.4                           ENANTIO 
 [14]  S/ESD   168         168           -0.010       0.0E+00    0.53 E-02         -2.0         C     19 U[11]   
 [14]  S/ESD   170         170            0.013       0.0E+00    0.45 E-02          2.9         C     19 U[33]   
@@ -7256,7 +7307,9 @@ LS-scale=  0.441   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.33E-05
+ (sp inverse) 1-norm:  1.49E+01 cond. number:  2.80E+02 rel. error:  3.33E-05
 [13]  LARGE     2           2             0.0      -0.3E+00    0.2 E+00          0.1                           ENANTIO 
 
                                                 for         263 parameters
@@ -7570,7 +7623,9 @@ LS-scale=  0.440   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  4.40E-05
+ (sp inverse) 1-norm:  1.95E+01 cond. number:  3.69E+02 rel. error:  4.40E-05
 [13]  LARGE     2           2             0.0       0.3E+00    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -7884,7 +7939,9 @@ LS-scale=  0.440   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.33E-05
+ (sp inverse) 1-norm:  1.49E+01 cond. number:  2.79E+02 rel. error:  3.33E-05
 [13]  LARGE     2           2            -0.0      -0.3E+01    0.2 E+00         -0.1                           ENANTIO 
 
                                                 for         263 parameters
@@ -8198,7 +8255,9 @@ LS-scale=  0.440   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.33E-05
+ (sp inverse) 1-norm:  1.49E+01 cond. number:  2.79E+02 rel. error:  3.33E-05
 [13]  LARGE     2           2             0.0      -0.7E+00    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -8432,6 +8491,7 @@ All cycle   Min function          0.0           0.30E+04       0.10E+16
 [31]                                         0.009    0.011    0.009 
 Mean C-C su =   0.0090
 #CYCLENDS
+#SET MONITOR ON
 #CHECK HI
 
 
@@ -8543,6 +8603,7 @@ ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
           - Derivatives not found, do a refinement cycle to get leverages -
+#SET MONITOR FAST
 #SFLS
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -8628,7 +8689,9 @@ LS-scale=  0.436   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.85E-05
+ (sp inverse) 1-norm:  1.39E+01 cond. number:  2.39E+02 rel. error:  2.85E-05
 [13]  LARGE     2           2            -0.1       0.0E+00    0.1 E+01         -0.0                           ENANTIO 
 [14]  S/ESD   213         213            0.021       0.0E+00    0.64 E-03         32.9         C     24 U[11]   
 [14]  S/ESD   232         232           -0.022       0.0E+00    0.65 E-03        -34.8         C     26 U[22]   
@@ -8945,7 +9008,9 @@ LS-scale=  0.440   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.82E-05
+ (sp inverse) 1-norm:  1.38E+01 cond. number:  2.37E+02 rel. error:  2.82E-05
 [13]  LARGE     2           2             0.0      -0.2E+00    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -9259,7 +9324,9 @@ LS-scale=  0.440   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.80E-05
+ (sp inverse) 1-norm:  1.38E+01 cond. number:  2.35E+02 rel. error:  2.80E-05
 [13]  LARGE     2           2             0.0       0.6E-01    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -9573,7 +9640,9 @@ LS-scale=  0.440   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.82E-05
+ (sp inverse) 1-norm:  1.38E+01 cond. number:  2.36E+02 rel. error:  2.82E-05
 [13]  LARGE     2           2            -0.0      -0.2E+02    0.2 E+00         -0.1                           ENANTIO 
 
                                                 for         263 parameters
@@ -9887,7 +9956,9 @@ LS-scale=  0.440   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.81E-05
+ (sp inverse) 1-norm:  1.38E+01 cond. number:  2.35E+02 rel. error:  2.81E-05
 [13]  LARGE     2           2             0.0      -0.1E+01    0.2 E+00          0.1                           ENANTIO 
 
                                                 for         263 parameters
@@ -10121,6 +10192,7 @@ All cycle   Min function          0.0           0.31E+04       0.10E+16
 [31]                                         0.009    0.011    0.009 
 Mean C-C su =   0.0090
 #CYCLENDS
+#SET MONITOR ON
 #CHECK HI
 
 
@@ -10238,6 +10310,7 @@ ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
           - Derivatives not found, do a refinement cycle to get leverages -
+#SET MONITOR FAST
 #SFLS
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -10323,9 +10396,11 @@ LS-scale=  0.436   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.98E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  3.69E-12
+ (dp inverse) 1-norm:  1.35E+01 cond. number:  1.66E+04 rel. error:  3.69E-12
 [13]  LARGE     2           2            -0.1       0.0E+00    0.1 E+01         -0.1                           ENANTIO 
 [14]  S/ESD     9           9           -0.012       0.0E+00    0.49 E-02         -2.5         CL     1 U[23]   
 
@@ -10640,9 +10715,11 @@ LS-scale=  0.441   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.75E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  3.25E-12
+ (dp inverse) 1-norm:  1.35E+01 cond. number:  1.46E+04 rel. error:  3.25E-12
 [13]  LARGE     2           2             0.0      -0.4E+00    0.3 E+00          0.1                           ENANTIO 
 
                                                 for         263 parameters
@@ -10956,9 +11033,11 @@ LS-scale=  0.441   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.72E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  3.21E-12
+ (dp inverse) 1-norm:  1.36E+01 cond. number:  1.44E+04 rel. error:  3.21E-12
 [13]  LARGE     2           2             0.0       0.1E-01    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -11272,9 +11351,11 @@ LS-scale=  0.442   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.44E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  2.68E-12
+ (dp inverse) 1-norm:  1.36E+01 cond. number:  1.21E+04 rel. error:  2.68E-12
 [13]  LARGE     2           2             0.0       0.9E+01    0.6 E+00          0.0                           ENANTIO 
 [14]  S/ESD    11          11           -0.012      -0.9E+01    0.41 E-02         -2.8         CL     1 U[12]   
 
@@ -11589,9 +11670,11 @@ LS-scale=  0.442   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.74E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  3.25E-12
+ (dp inverse) 1-norm:  1.35E+01 cond. number:  1.46E+04 rel. error:  3.25E-12
 [13]  LARGE     2           2            -0.0      -0.4E+01    0.7 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -11825,6 +11908,7 @@ All cycle   Min function          0.0           0.31E+04       0.10E+16
 [31]                                         0.028    0.033    0.026 
 Mean C-C su =   0.0255
 #CYCLENDS
+#SET MONITOR ON
 #CHECK HI
 
 
@@ -11939,6 +12023,7 @@ ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
           - Derivatives not found, do a refinement cycle to get leverages -
+#SET MONITOR FAST
 #SFLS
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -12024,7 +12109,9 @@ LS-scale=  0.436   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.13E-05
+ (sp inverse) 1-norm:  1.35E+01 cond. number:  1.78E+02 rel. error:  2.13E-05
 [13]  LARGE     2           2            -0.1       0.0E+00    0.4 E+01         -0.0                           ENANTIO 
 [14]  S/ESD     6           6           -0.014       0.0E+00    0.22 E-02         -6.4         CL     1 U[11]   
 [14]  S/ESD     9           9           -0.026       0.0E+00    0.13 E-02        -19.7         CL     1 U[23]   
@@ -12346,7 +12433,9 @@ LS-scale=  0.447   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.40E-05
+ (sp inverse) 1-norm:  1.53E+01 cond. number:  2.02E+02 rel. error:  2.40E-05
 [13]  LARGE     2           2             0.0      -0.6E+00    0.2 E+00          0.3                           ENANTIO 
 
                                                 for         263 parameters
@@ -12660,7 +12749,9 @@ LS-scale=  0.439   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.39E-05
+ (sp inverse) 1-norm:  1.53E+01 cond. number:  2.00E+02 rel. error:  2.39E-05
 [13]  LARGE     2           2             0.0       0.3E+00    0.2 E+00          0.1                           ENANTIO 
 
                                                 for         263 parameters
@@ -12974,7 +13065,9 @@ LS-scale=  0.439   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.40E-05
+ (sp inverse) 1-norm:  1.53E+01 cond. number:  2.01E+02 rel. error:  2.40E-05
 [13]  LARGE     2           2            -0.0      -0.8E+00    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -13288,7 +13381,9 @@ LS-scale=  0.439   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.39E-05
+ (sp inverse) 1-norm:  1.53E+01 cond. number:  2.01E+02 rel. error:  2.39E-05
 [13]  LARGE     2           2             0.0      -0.2E+00    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -13522,6 +13617,7 @@ All cycle   Min function          0.0           0.37E+04       0.10E+16
 [31]                                         0.010    0.012    0.010 
 Mean C-C su =   0.0098
 #CYCLENDS
+#SET MONITOR ON
 #CHECK HI
 
 
@@ -13626,6 +13722,7 @@ ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
           - Derivatives not found, do a refinement cycle to get leverages -
+#SET MONITOR FAST
 #SFLS
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -13711,7 +13808,9 @@ LS-scale=  0.436   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  5.06E-04
+ (sp inverse) 1-norm:  1.35E+01 cond. number:  4.24E+03 rel. error:  5.06E-04
 [13]  LARGE     2           2            -0.1       0.0E+00    0.1 E+01         -0.1                           ENANTIO 
 [14]  S/ESD     6           6            0.014       0.0E+00    0.84 E-02          1.7         CL     1 U[11]   
 [14]  S/ESD     7           7            0.019       0.0E+00    0.69 E-02          2.8         CL     1 U[22]   
@@ -14030,7 +14129,9 @@ LS-scale=  0.444   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.72E-04
+ (sp inverse) 1-norm:  1.42E+01 cond. number:  3.12E+03 rel. error:  3.72E-04
 [13]  LARGE     2           2             0.1      -0.1E+01    0.2 E+00          0.6                           ENANTIO 
 
                                                 for         263 parameters
@@ -14344,7 +14445,9 @@ LS-scale=  0.441   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.80E-04
+ (sp inverse) 1-norm:  1.42E+01 cond. number:  3.19E+03 rel. error:  3.80E-04
 [13]  LARGE     2           2            -0.0      -0.1E+00    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -14658,7 +14761,9 @@ LS-scale=  0.441   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.73E-04
+ (sp inverse) 1-norm:  1.42E+01 cond. number:  3.13E+03 rel. error:  3.73E-04
 [13]  LARGE     2           2             0.0      -0.7E+00    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -14972,7 +15077,9 @@ LS-scale=  0.441   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.72E-04
+ (sp inverse) 1-norm:  1.42E+01 cond. number:  3.12E+03 rel. error:  3.72E-04
 [13]  LARGE     2           2            -0.0      -0.7E+00    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -15206,6 +15313,7 @@ All cycle   Min function          0.0           0.34E+04       0.10E+16
 [31]                                         0.010    0.012    0.009 
 Mean C-C su =   0.0094
 #CYCLENDS
+#SET MONITOR ON
 #CHECK HI
 
 
@@ -15294,6 +15402,7 @@ ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
           - Derivatives not found, do a refinement cycle to get leverages -
+#SET MONITOR FAST
 #SFLS
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -15379,7 +15488,9 @@ LS-scale=  0.436   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  5.07E-04
+ (sp inverse) 1-norm:  1.36E+01 cond. number:  4.26E+03 rel. error:  5.07E-04
  S/ESD     1           1             0.012      0.0E+00    0.691E-02          1.73                          SCALE   
 [13]  LARGE     2           2            -0.1       0.0E+00    0.1 E+01         -0.1                           ENANTIO 
 [14]  S/ESD     6           6            0.024       0.0E+00    0.95 E-02          2.5         CL     1 U[11]   
@@ -15700,7 +15811,9 @@ LS-scale=  0.448   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.77E-04
+ (sp inverse) 1-norm:  1.44E+01 cond. number:  3.16E+03 rel. error:  3.77E-04
 [13]  LARGE     2           2             0.1      -0.7E+00    0.2 E+00          0.3                           ENANTIO 
 
                                                 for         263 parameters
@@ -16014,7 +16127,9 @@ LS-scale=  0.442   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.71E-04
+ (sp inverse) 1-norm:  1.43E+01 cond. number:  3.11E+03 rel. error:  3.71E-04
 [13]  LARGE     2           2            -0.0      -0.3E+00    0.2 E+00         -0.1                           ENANTIO 
 
                                                 for         263 parameters
@@ -16328,7 +16443,9 @@ LS-scale=  0.442   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.71E-04
+ (sp inverse) 1-norm:  1.43E+01 cond. number:  3.11E+03 rel. error:  3.71E-04
 [13]  LARGE     2           2             0.0      -0.3E+00    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -16642,7 +16759,9 @@ LS-scale=  0.442   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.71E-04
+ (sp inverse) 1-norm:  1.43E+01 cond. number:  3.11E+03 rel. error:  3.71E-04
 [13]  LARGE     2           2            -0.0      -0.7E-01    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -16876,6 +16995,7 @@ All cycle   Min function          0.0           0.34E+04       0.10E+16
 [31]                                         0.010    0.012    0.009 
 Mean C-C su =   0.0095
 #CYCLENDS
+#SET MONITOR ON
 #CHECK HI
 
 
@@ -17011,6 +17131,7 @@ ___________
  (2) ORIGIN  Y
    2. The sum is restrained to be   150.36      with an E.S.D. of  0.10000E-01
           - Derivatives not found, do a refinement cycle to get leverages -
+#SET MONITOR FAST
 #SFLS
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -17096,7 +17217,9 @@ LS-scale=  0.436   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.44E-05
+ (sp inverse) 1-norm:  1.33E+01 cond. number:  2.05E+02 rel. error:  2.44E-05
 [13]  LARGE     2           2            -0.1       0.0E+00    0.6 E+00         -0.1                           ENANTIO 
 [14]  S/ESD   170         170            0.013       0.0E+00    0.12 E-01          1.0         C     19 U[33]   
 
@@ -17411,7 +17534,9 @@ LS-scale=  0.439   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.44E-05
+ (sp inverse) 1-norm:  1.33E+01 cond. number:  2.05E+02 rel. error:  2.44E-05
 [13]  LARGE     2           2             0.0      -0.2E+00    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -17725,7 +17850,9 @@ LS-scale=  0.438   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.44E-05
+ (sp inverse) 1-norm:  1.33E+01 cond. number:  2.05E+02 rel. error:  2.44E-05
 [13]  LARGE     2           2            -0.0      -0.4E+00    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -18039,7 +18166,9 @@ LS-scale=  0.438   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.45E-05
+ (sp inverse) 1-norm:  1.33E+01 cond. number:  2.05E+02 rel. error:  2.45E-05
 [13]  LARGE     2           2            -0.0       0.1E+01    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -18353,7 +18482,9 @@ LS-scale=  0.438   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.44E-05
+ (sp inverse) 1-norm:  1.33E+01 cond. number:  2.04E+02 rel. error:  2.44E-05
 [13]  LARGE     2           2             0.0      -0.1E+01    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -18667,7 +18798,9 @@ LS-scale=  0.438   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.45E-05
+ (sp inverse) 1-norm:  1.33E+01 cond. number:  2.05E+02 rel. error:  2.45E-05
 [13]  LARGE     2           2            -0.0      -0.1E+01    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -18981,7 +19114,9 @@ LS-scale=  0.438   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.44E-05
+ (sp inverse) 1-norm:  1.33E+01 cond. number:  2.04E+02 rel. error:  2.44E-05
 [13]  LARGE     2           2             0.0      -0.1E+01    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -19295,7 +19430,9 @@ LS-scale=  0.438   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.45E-05
+ (sp inverse) 1-norm:  1.33E+01 cond. number:  2.05E+02 rel. error:  2.45E-05
 [13]  LARGE     2           2            -0.0      -0.1E+01    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -19609,7 +19746,9 @@ LS-scale=  0.438   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.44E-05
+ (sp inverse) 1-norm:  1.33E+01 cond. number:  2.05E+02 rel. error:  2.44E-05
 [13]  LARGE     2           2             0.0      -0.6E+00    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -19923,7 +20062,9 @@ LS-scale=  0.438   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.45E-05
+ (sp inverse) 1-norm:  1.33E+01 cond. number:  2.05E+02 rel. error:  2.45E-05
 [13]  LARGE     2           2            -0.0      -0.2E+01    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -20157,6 +20298,7 @@ All cycle   Min function          0.0           0.31E+04       0.10E+16
 [31]                                         0.009    0.011    0.008 
 Mean C-C su =   0.0089
 #CYCLENDS
+#SET MONITOR ON
 #CHECK HI
 
 
@@ -20189,7 +20331,7 @@ T tensor:
 [78]          1  1  0  0  0    4.7E-02     4.7E-02     5.9E-05    0.999    U33 - Utls33 == 0
 [78]          1  1  0  0  0    9.1E-04     1.0E-03    -1.3E-04    0.999    U12 - Utls12 == 0
 [78]          1  1  0  0  0   -4.5E-03    -4.1E-03    -3.2E-04    0.999    U23 - Utls23 == 0
-[78]          1  1  0  0  0   -1.1E-03    -1.1E-03     1.2E-06    0.999    U13 - Utls13 == 0
+[78]          1  1  0  0  0   -1.1E-03    -1.1E-03     1.1E-06    0.999    U13 - Utls13 == 0
     Atom C(26)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
 [78]          1  1  0  0  0    3.7E-02     3.7E-02     2.8E-05    0.999    U11 - Utls11 == 0
