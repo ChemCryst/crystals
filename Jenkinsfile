@@ -82,6 +82,7 @@ pipeline {
                                 '''
                             }
                         }
+/*  Move to outside parallel section so any fail stops deployment
                         stage('Win64-Intel Installer') {
                             when {
                               expression {
@@ -102,7 +103,6 @@ pipeline {
                             }
                         }
                         
-/*  Move to outside parallel section so any fail stops deployment
                         stage('Deploy Win64 - master branch only') {
                             when {
                               expression {
@@ -214,6 +214,9 @@ pipeline {
                         }
                     }
                 }
+				
+				Git was at C:\Program Files\Git\bin\git.exe
+				
 */
                                 
 
@@ -433,6 +436,26 @@ pipeline {
                 }
 */
             }
+        }
+
+        stage('Win64-Intel Installer') {
+                            when {
+                              expression {
+                                   env.BRANCH_NAME == 'master'
+                              }
+                            }
+                            environment {
+                                CRYSDIR = '.\\,..\\build\\'
+                                COMPCODE = 'INW_OMP'
+                            }
+                            steps {
+                                bat '''
+                                    call build\\setupenv.ifort_vc.SAYRE.bat
+                                    cd build
+                                    call make_w32.bat dist
+                                    xcopy /s /y ..\\debuginfo c:\\omp17-x64\\
+                                '''
+                            }
         }
         stage('Deploy Win64 - master branch only') {
                             when {
