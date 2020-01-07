@@ -341,17 +341,20 @@ IF (Fortran_COMPILER_NAME MATCHES "gfortran")  # gfortran
     SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -std=gnu++11 -O1 -g")
     SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O1 -g")
 
+    if ( WIN32 )
 
-    ENABLE_LANGUAGE(RC)
-#    set(_WINDRES_INCLUDE_DIRS -I${CMAKE_CURRENT_SOURCE_DIR})
-    foreach(wx_include_dir ${wxWidgets_INCLUDE_DIRS})
-        set(_WINDRES_INCLUDE_DIRS "${_WINDRES_INCLUDE_DIRS} -I${wx_include_dir}")
-    endforeach(wx_include_dir ${wxWidgets_INCLUDE_DIRS})  
-    set(CMAKE_RC_COMPILER_INIT windres)
-    SET(CMAKE_RC_COMPILE_OBJECT
-    "<CMAKE_RC_COMPILER> -O coff <DEFINES> -i <SOURCE> -o <OBJECT> ${_WINDRES_INCLUDE_DIRS}")
+		ENABLE_LANGUAGE(RC)
+	#    set(_WINDRES_INCLUDE_DIRS -I${CMAKE_CURRENT_SOURCE_DIR})
+		foreach(wx_include_dir ${wxWidgets_INCLUDE_DIRS})
+			set(_WINDRES_INCLUDE_DIRS "${_WINDRES_INCLUDE_DIRS} -I${wx_include_dir}")
+		endforeach(wx_include_dir ${wxWidgets_INCLUDE_DIRS})  
+		set(CMAKE_RC_COMPILER_INIT windres)
+		SET(CMAKE_RC_COMPILE_OBJECT
+		"<CMAKE_RC_COMPILER> -O coff <DEFINES> -i <SOURCE> -o <OBJECT> ${_WINDRES_INCLUDE_DIRS}")
 
-    message(STATUS ${CMAKE_RC_COMPILE_OBJECT})
+		message(STATUS ${CMAKE_RC_COMPILE_OBJECT})
+
+    endif()
 
 ELSEIF ( IFORT_COMPILER ) # ifort (untested)
 
