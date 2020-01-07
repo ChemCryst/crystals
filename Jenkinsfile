@@ -102,6 +102,7 @@ pipeline {
                             }
                         }
                         
+/*  Move to outside parallel section so any fail stops deployment
                         stage('Deploy Win64 - master branch only') {
                             when {
                               expression {
@@ -116,6 +117,7 @@ pipeline {
                                 ]
                             }
                         }
+*/
                     }
                     post {
                         always {
@@ -298,8 +300,8 @@ pipeline {
                 }
                 
                 
-/*                stage("Linux") {
-                    agent {label 'Orion'}    
+                stage("Linux") {
+                    agent {label 'orion'}    
                     options {
                         timeout(time: 1, unit: 'HOURS') 
                     }
@@ -384,7 +386,7 @@ pipeline {
                                 }
                     }
                 }
-*/
+
 /*
                 stage("OSX") {
                     agent {label 'Flack'}    
@@ -432,7 +434,21 @@ pipeline {
 */
             }
         }
-       
+        stage('Deploy Win64 - master branch only') {
+                            when {
+                              expression {
+                                   env.BRANCH_NAME == 'master'
+                              }
+                            }
+                            steps {
+                                ftpPublisher alwaysPublishFromMaster: false, masterNodeName: 'master', continueOnError: false, failOnError: false, paramPublish: [parameterName:""], publishers: [
+                                    [configName: 'CRYSTALSXTL', transfers: [
+                                        [asciiMode: false, cleanRemote: false, excludes: '', flatten: true, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: "/", remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'installer/**.exe']
+                                    ], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true]
+                                ]
+                            }
+        }
+
     }
 }
 
