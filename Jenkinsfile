@@ -3,6 +3,9 @@ pipeline {
     options {
         timeout(time: 2, unit: 'HOURS') 
     }
+    environment {
+       WIN_DEPLOY_WORKSPACE = ""
+    }
     stages {
         stage("Build and test on all platforms") {
             parallel {
@@ -37,6 +40,9 @@ pipeline {
                     stages {
                         stage('Win64-Intel Build') {                      // Run the build
                             steps {
+                                script {
+                                      WIN_DEPLOY_WORKSPACE = WORKSPACE
+                                }
                                 bat '''
                                     call build\\setupenv.ifort_vc.SAYRE.bat
                                     set _MSPDBSRV_ENDPOINT_=%RANDOM%
@@ -453,12 +459,14 @@ pipeline {
                 COMPCODE = 'INW_OMP'
             }
             steps {
-                bat '''
-                    call build\\setupenv.ifort_vc.SAYRE.bat
-                    cd build
-                    call make_w32.bat dist
-                    xcopy /s /y ..\\debuginfo c:\\omp17-x64\\
-                '''
+                dir ( WIN_DEPLOY_WORKSPACE ) {
+                    bat '''
+                        call build\\setupenv.ifort_vc.SAYRE.bat
+                        cd build
+                        call make_w32.bat dist
+                        xcopy /s /y ..\\debuginfo c:\\omp17-x64\\
+                    '''
+                }
             }
         }
         stage('Deploy Win64 - master branch only') {
@@ -472,11 +480,13 @@ pipeline {
                 timeout(time: 2, unit: 'HOURS') 
             }
             steps {
-                ftpPublisher alwaysPublishFromMaster: false, masterNodeName: 'master', continueOnError: false, failOnError: false, paramPublish: [parameterName:""], publishers: [
-                    [configName: 'CRYSTALSXTL', transfers: [
-                        [asciiMode: false, cleanRemote: false, excludes: '', flatten: true, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: "/", remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'installer/**.exe']
-                    ], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true]
-                ]
+                dir ( WIN_DEPLOY_WORKSPACE ) {
+                    ftpPublisher alwaysPublishFromMaster: false, masterNodeName: 'master', continueOnError: false, failOnError: false, paramPublish: [parameterName:""], publishers: [
+                        [configName: 'CRYSTALSXTL', transfers: [
+                            [asciiMode: false, cleanRemote: false, excludes: '', flatten: true, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: "/", remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'installer/**.exe']
+                        ], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true]
+                    ]
+                }
             }
         }
 
