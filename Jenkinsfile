@@ -445,12 +445,12 @@ pipeline {
         }
 
         stage('Win64-Intel Installer') {
-            when {
+/*            when {
               expression {
                    env.BRANCH_NAME == 'master'
               }
             }
-            agent { label 'master' }
+*/            agent { label 'master' }
             options {
                 timeout(time: 2, unit: 'HOURS') 
             }
@@ -461,6 +461,7 @@ pipeline {
             steps {
                 dir ( WIN_DEPLOY_WORKSPACE ) {
                     bat '''
+                        echo %WIN_DEPLOY_WORKSPACE%
                         call build\\setupenv.ifort_vc.SAYRE.bat
                         cd build
                         call make_w32.bat dist
