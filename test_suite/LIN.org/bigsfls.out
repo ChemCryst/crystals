@@ -2065,7 +2065,7 @@ ___________
  Structure factor least squares calculation    1  ends  2
 [29] SumFo/SumFc=  0.91    SumFoFc/SumFc^2=  0.91    SumwFoFc/SumwFc^2=  0.91
 LS-scale=  0.909   Wilson Scale=  0.000
-[27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
  Directive  DISTANCE: No derivatives found during Evaluation
 #INVERT  DEFA
@@ -3258,9 +3258,9 @@ Mean C-C su =   0.0076
 [24]  F       6.    0.066     0.224     0.384     0.225     0.178     1.306     Might be split
 #CYCLENDS
 #DISK
- List type  11 with serial number     4 is the current version. 
+ List type  11 with serial number     4 is the current version.
  You may still save this list with DELETE n ACTION=NO
- List type  22 with serial number     1 is the current version. 
+ List type  22 with serial number     1 is the current version.
  You may still save this list with DELETE n ACTION=NO
 #LIST 12
 #LIST 22
@@ -3338,7 +3338,7 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
  Structure factor least squares calculation    2  ends  2
 [29] SumFo/SumFc=  0.91    SumFoFc/SumFc^2=  0.91    SumwFoFc/SumwFc^2=  0.91
 LS-scale=  0.909   Wilson Scale=  0.000
-[27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
 #INVERT  DEFA
 #NEWSHIFTS
@@ -3890,9 +3890,9 @@ Mean C-C su =   0.0009
 [24]  F       6.    0.063     0.203     0.446     0.237     0.179     1.427     Might be split
 #CYCLENDS
 #DISK
- List type  22 with serial number     2 is the current version. 
+ List type  22 with serial number     2 is the current version.
  You may still save this list with DELETE n ACTION=NO
- List type  11 with serial number     4 is the current version. 
+ List type  11 with serial number     4 is the current version.
  You may still save this list with DELETE n ACTION=NO
 #PURGE
 #DISK
@@ -3972,7 +3972,7 @@ Refining   261 parameters in    1 block :    34729 elements in the LS matrix.
  Structure factor least squares calculation    3  ends  2
 [29] SumFo/SumFc=  0.91    SumFoFc/SumFc^2=  0.91    SumwFoFc/SumwFc^2=  0.91
 LS-scale=  0.909   Wilson Scale=  0.000
-[27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -4584,7 +4584,7 @@ Mean C-C su =   0.0129
  Structure factor least squares calculation    4  ends  2
 [29] SumFo/SumFc=  0.91    SumFoFc/SumFc^2=  0.91    SumwFoFc/SumwFc^2=  0.91
 LS-scale=  0.909   Wilson Scale=  0.000
-[27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -5126,9 +5126,9 @@ Mean C-C su =   0.0121
 [24]  F       6.    0.063     0.203     0.446     0.237     0.179     1.427     Might be split
 #CYCLENDS
 #DISK
- List type  22 with serial number     1 is the current version. 
+ List type  22 with serial number     1 is the current version.
  You may still save this list with DELETE n ACTION=NO
- List type  11 with serial number     8 is the current version. 
+ List type  11 with serial number     8 is the current version.
  You may still save this list with DELETE n ACTION=NO
 #PURGE
 #SFLS
@@ -5224,7 +5224,7 @@ Mean C-C su =   0.0121
     12575 reflections   R  3.72% Rw  4.96% with I/u(I) >   2.0
 [29] SumFo/SumFc=  0.91    SumFoFc/SumFc^2=  0.91    SumwFoFc/SumwFc^2=  0.91
 LS-scale=  0.909   Wilson Scale=  0.000
-[27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
 #CYCLENDS
 #FINISH
  Physical reads      12242 Physical writes      10033 Cache hits     211971

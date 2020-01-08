@@ -282,7 +282,7 @@ ___________
  Structure factor least squares calculation    1  ends  2
 [29] SumFo/SumFc=  1.59    SumFoFc/SumFc^2=  1.60    SumwFoFc/SumwFc^2=  1.58
 LS-scale=  1.598   Wilson Scale=  0.000
-<Fo>-<Fc> =   -0.029    100*(<Fo>-<Fc>)/<Fo> =    -0.45
+<Fo>-<Fc> = -0.029    100*(<Fo>-<Fc>)/<Fo> =    -0.45
 #DORESTRAIN
  Directive  DISTANCE: No derivatives found during Evaluation
  Directive  DISTANCE: No derivatives found during Evaluation
@@ -737,7 +737,7 @@ ___________
  Structure factor least squares calculation    2  ends  2
 [29] SumFo/SumFc=  1.59    SumFoFc/SumFc^2=  1.60    SumwFoFc/SumwFc^2=  1.58
 LS-scale=  1.598   Wilson Scale=  0.000
-<Fo>-<Fc> =   -0.029    100*(<Fo>-<Fc>)/<Fo> =    -0.45
+<Fo>-<Fc> = -0.029    100*(<Fo>-<Fc>)/<Fo> =    -0.45
 #DORESTRAIN
  Directive  DISTANCE: No derivatives found during Evaluation
  Directive  DISTANCE: No derivatives found during Evaluation
@@ -1113,7 +1113,7 @@ ___________
  Structure factor least squares calculation    3  ends  2
 [29] SumFo/SumFc=  1.59    SumFoFc/SumFc^2=  1.60    SumwFoFc/SumwFc^2=  1.58
 LS-scale=  1.598   Wilson Scale=  0.000
-<Fo>-<Fc> =   -0.029    100*(<Fo>-<Fc>)/<Fo> =    -0.45
+<Fo>-<Fc> = -0.029    100*(<Fo>-<Fc>)/<Fo> =    -0.45
 #DORESTRAIN
  Directive  MEAN DIST: No derivatives found during Evaluation
  Directive  MEAN ANGLE: No derivatives found during Evaluation

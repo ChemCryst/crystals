@@ -5752,7 +5752,7 @@ Upating List 13 for twinned data
  Structure factor least squares calculation    1  ends  5
 [29] SumFo/SumFc= 14.33    SumFoFc/SumFc^2= 12.39    SumwFoFc/SumwFc^2= 12.39
 LS-scale= 12.394   Wilson Scale=  0.000
-[27] <Fo>-<Fc> =    1.5     100*(<Fo>-<Fc>)/<Fo> =    13.
+[27] <Fo>-<Fc> =  1.5     100*(<Fo>-<Fc>)/<Fo> =    13.
 #CYCLENDS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -5817,7 +5817,7 @@ Refining    44 parameters in    1 block :     1094 elements in the LS matrix.
  Structure factor least squares calculation    2  ends  6
 [29] SumFo/SumFc= 14.33    SumFoFc/SumFc^2= 12.39    SumwFoFc/SumwFc^2= 12.39
 LS-scale= 12.394   Wilson Scale=  0.000
-[27] <Fo>-<Fc> =    1.5     100*(<Fo>-<Fc>)/<Fo> =    13.
+[27] <Fo>-<Fc> =  1.5     100*(<Fo>-<Fc>)/<Fo> =    13.
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -6102,7 +6102,7 @@ Mean C-C su =   0.0000
       270 reflections   R 27.04% Rw 32.02% with I/u(I) >   2.0
 [29] SumFo/SumFc= 12.67    SumFoFc/SumFc^2= 12.13    SumwFoFc/SumwFc^2= 12.13
 LS-scale= 11.239   Wilson Scale=  0.000
-[27] <Fo>-<Fc> =    1.4     100*(<Fo>-<Fc>)/<Fo> =    11.
+[27] <Fo>-<Fc> =  1.4     100*(<Fo>-<Fc>)/<Fo> =    11.
 #CYCLENDS
 #DISTANCES
 #LIST 31
@@ -7169,7 +7169,7 @@ Refining    14 parameters in    4 block :       89 elements in the LS matrix.
  Structure factor least squares calculation    1  ends  2
 [29] SumFo/SumFc=  1.02    SumFoFc/SumFc^2=  1.00    SumwFoFc/SumwFc^2=  1.00
 LS-scale=  1.000   Wilson Scale=  0.000
-[27] <Fo>-<Fc> =    0.5     100*(<Fo>-<Fc>)/<Fo> =     2.
+[27] <Fo>-<Fc> =  0.5     100*(<Fo>-<Fc>)/<Fo> =     2.
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -7361,7 +7361,7 @@ Mean C-C su =   0.0282
  Structure factor least squares calculation    2  ends  2
 [29] SumFo/SumFc=  1.01    SumFoFc/SumFc^2=  1.00    SumwFoFc/SumwFc^2=  1.00
 LS-scale=  1.014   Wilson Scale=  0.000
-<Fo>-<Fc> =   -0.001    100*(<Fo>-<Fc>)/<Fo> =     0.00
+<Fo>-<Fc> = -0.001    100*(<Fo>-<Fc>)/<Fo> =     0.00
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -7712,7 +7712,7 @@ Refining    37 parameters in    1 block :      793 elements in the LS matrix.
  Structure factor least squares calculation    1  ends  2
 [29] SumFo/SumFc=  1.99    SumFoFc/SumFc^2=  2.02    SumwFoFc/SumwFc^2=  1.99
 LS-scale=  1.992   Wilson Scale=  0.000
-[27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -7950,7 +7950,7 @@ ___________
  Structure factor least squares calculation    2  ends  2
 [29] SumFo/SumFc=  1.99    SumFoFc/SumFc^2=  2.02    SumwFoFc/SumwFc^2=  1.99
 LS-scale=  1.992   Wilson Scale=  0.000
-[27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
 #INVERT  DEFA
 #NEWSHIFTS
@@ -8616,7 +8616,7 @@ ___________
        92 reflections   R 47.68% Rw 47.80% with I/u(I) >   2.0
 [29] SumFo/SumFc=  1.88    SumFoFc/SumFc^2=  1.66    SumwFoFc/SumwFc^2=  1.66
 LS-scale=  1.000   Wilson Scale=  0.000
-[27] <Fo>-<Fc> =   12.2     100*(<Fo>-<Fc>)/<Fo> =    46.
+[27] <Fo>-<Fc> = 12.2     100*(<Fo>-<Fc>)/<Fo> =    46.
 #CYCLENDS
 #PRINT 6
 

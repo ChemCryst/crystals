@@ -732,7 +732,7 @@ I/sig(i) vs resolution
  Structure factor least squares calculation    1  ends  1
 [29] SumFo/SumFc=  5.05    SumFoFc/SumFc^2=  4.48    SumwFoFc/SumwFc^2=  4.36
 LS-scale=  4.136   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    2.1     100*(<Fo>-<Fc>)/<Fo> =    18.
+[27] <Fo>-<Fc> =  2.1     100*(<Fo>-<Fc>)/<Fo> =    18.
 #CYCLENDS
 #SFLS
 #SPEC  NO  NO
@@ -795,7 +795,7 @@ LS-scale=  4.136   Wilson Scale=  4.723
  Structure factor least squares calculation    2  ends  1
 [29] SumFo/SumFc=  5.05    SumFoFc/SumFc^2=  4.48    SumwFoFc/SumwFc^2=  4.36
 LS-scale=  4.136   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    2.1     100*(<Fo>-<Fc>)/<Fo> =    18.
+[27] <Fo>-<Fc> =  2.1     100*(<Fo>-<Fc>)/<Fo> =    18.
 #CYCLENDS
 #
 #                      NO RESTRAINTS
@@ -881,7 +881,7 @@ Refining    41 parameters in    1 block :      959 elements in the LS matrix.
  Structure factor least squares calculation    3  ends  2
 [29] SumFo/SumFc=  5.05    SumFoFc/SumFc^2=  4.48    SumwFoFc/SumwFc^2=  4.36
 LS-scale=  4.136   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    2.1     100*(<Fo>-<Fc>)/<Fo> =    18.
+[27] <Fo>-<Fc> =  2.1     100*(<Fo>-<Fc>)/<Fo> =    18.
 #DORESTRAIN
 #INVERT  DEFA
 #NEWSHIFTS
@@ -1102,7 +1102,7 @@ Mean C-C su =   0.0149
  Structure factor least squares calculation    4  ends  2
 [29] SumFo/SumFc=  5.25    SumFoFc/SumFc^2=  4.59    SumwFoFc/SumwFc^2=  4.57
 LS-scale=  4.303   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    2.0     100*(<Fo>-<Fc>)/<Fo> =    18.
+[27] <Fo>-<Fc> =  2.0     100*(<Fo>-<Fc>)/<Fo> =    18.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -1324,7 +1324,7 @@ Mean C-C su =   0.0139
  Structure factor least squares calculation    5  ends  2
 [29] SumFo/SumFc=  5.24    SumFoFc/SumFc^2=  4.58    SumwFoFc/SumwFc^2=  4.56
 LS-scale=  4.294   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    2.0     100*(<Fo>-<Fc>)/<Fo> =    18.
+[27] <Fo>-<Fc> =  2.0     100*(<Fo>-<Fc>)/<Fo> =    18.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -1546,7 +1546,7 @@ Mean C-C su =   0.0136
  Structure factor least squares calculation    6  ends  2
 [29] SumFo/SumFc=  5.24    SumFoFc/SumFc^2=  4.58    SumwFoFc/SumwFc^2=  4.56
 LS-scale=  4.294   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    2.0     100*(<Fo>-<Fc>)/<Fo> =    18.
+[27] <Fo>-<Fc> =  2.0     100*(<Fo>-<Fc>)/<Fo> =    18.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -1768,7 +1768,7 @@ Mean C-C su =   0.0136
  Structure factor least squares calculation    7  ends  2
 [29] SumFo/SumFc=  5.24    SumFoFc/SumFc^2=  4.58    SumwFoFc/SumwFc^2=  4.56
 LS-scale=  4.293   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    2.0     100*(<Fo>-<Fc>)/<Fo> =    18.
+[27] <Fo>-<Fc> =  2.0     100*(<Fo>-<Fc>)/<Fo> =    18.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -1987,7 +1987,7 @@ Mean C-C su =   0.0136
  Structure factor least squares calculation    8  ends  2
 [29] SumFo/SumFc=  5.24    SumFoFc/SumFc^2=  4.58    SumwFoFc/SumwFc^2=  4.56
 LS-scale=  4.293   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    2.0     100*(<Fo>-<Fc>)/<Fo> =    18.
+[27] <Fo>-<Fc> =  2.0     100*(<Fo>-<Fc>)/<Fo> =    18.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -2218,7 +2218,7 @@ Refining    91 parameters in    1 block :     4384 elements in the LS matrix.
  Structure factor least squares calculation    9  ends  2
 [29] SumFo/SumFc=  5.24    SumFoFc/SumFc^2=  4.58    SumwFoFc/SumwFc^2=  4.56
 LS-scale=  4.293   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    2.0     100*(<Fo>-<Fc>)/<Fo> =    18.
+[27] <Fo>-<Fc> =  2.0     100*(<Fo>-<Fc>)/<Fo> =    18.
 #DORESTRAIN
 #INVERT  DEFA
 #NEWSHIFTS
@@ -2450,7 +2450,7 @@ Mean C-C su =   0.0138
  Structure factor least squares calculation   10  ends  2
 [29] SumFo/SumFc=  5.13    SumFoFc/SumFc^2=  4.52    SumwFoFc/SumwFc^2=  4.50
 LS-scale=  4.287   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    1.8     100*(<Fo>-<Fc>)/<Fo> =    16.
+[27] <Fo>-<Fc> =  1.8     100*(<Fo>-<Fc>)/<Fo> =    16.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -2673,7 +2673,7 @@ Mean C-C su =   0.0128
  Structure factor least squares calculation   11  ends  2
 [29] SumFo/SumFc=  5.19    SumFoFc/SumFc^2=  4.56    SumwFoFc/SumwFc^2=  4.55
 LS-scale=  4.308   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    1.8     100*(<Fo>-<Fc>)/<Fo> =    16.
+[27] <Fo>-<Fc> =  1.8     100*(<Fo>-<Fc>)/<Fo> =    16.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -2895,7 +2895,7 @@ Mean C-C su =   0.0131
  Structure factor least squares calculation   12  ends  2
 [29] SumFo/SumFc=  5.19    SumFoFc/SumFc^2=  4.56    SumwFoFc/SumwFc^2=  4.55
 LS-scale=  4.311   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    1.8     100*(<Fo>-<Fc>)/<Fo> =    16.
+[27] <Fo>-<Fc> =  1.8     100*(<Fo>-<Fc>)/<Fo> =    16.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -3117,7 +3117,7 @@ Mean C-C su =   0.0131
  Structure factor least squares calculation   13  ends  2
 [29] SumFo/SumFc=  5.19    SumFoFc/SumFc^2=  4.56    SumwFoFc/SumwFc^2=  4.55
 LS-scale=  4.312   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    1.8     100*(<Fo>-<Fc>)/<Fo> =    16.
+[27] <Fo>-<Fc> =  1.8     100*(<Fo>-<Fc>)/<Fo> =    16.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -3599,7 +3599,7 @@ Upating List 13 for twinned data
  Structure factor least squares calculation    1  ends  5
 [29] SumFo/SumFc=  4.92    SumFoFc/SumFc^2=  4.85    SumwFoFc/SumwFc^2=  4.81
 LS-scale=  4.747   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     3.
+[27] <Fo>-<Fc> =  0.3     100*(<Fo>-<Fc>)/<Fo> =     3.
 #CYCLENDS
 #              MAKE SURE WEIGHTS ARE RIGHT. (UNIT OR QUASI-UNIT).
 #LIST 4
@@ -3690,7 +3690,7 @@ Refining    32 parameters in    1 block :      608 elements in the LS matrix.
  Structure factor least squares calculation    2  ends  6
 [29] SumFo/SumFc=  4.92    SumFoFc/SumFc^2=  4.85    SumwFoFc/SumwFc^2=  4.85
 LS-scale=  4.747   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     3.
+[27] <Fo>-<Fc> =  0.3     100*(<Fo>-<Fc>)/<Fo> =     3.
 #DORESTRAIN
 #INVERT  DEFA
 #NEWSHIFTS
@@ -3923,7 +3923,7 @@ Mean C-C su =   0.0082
  Structure factor least squares calculation    3  ends  6
 [29] SumFo/SumFc=  4.91    SumFoFc/SumFc^2=  4.85    SumwFoFc/SumwFc^2=  4.86
 LS-scale=  4.748   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     3.
+[27] <Fo>-<Fc> =  0.3     100*(<Fo>-<Fc>)/<Fo> =     3.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -4158,7 +4158,7 @@ Mean C-C su =   0.0066
  Structure factor least squares calculation    4  ends  6
 [29] SumFo/SumFc=  4.91    SumFoFc/SumFc^2=  4.85    SumwFoFc/SumwFc^2=  4.86
 LS-scale=  4.748   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     3.
+[27] <Fo>-<Fc> =  0.3     100*(<Fo>-<Fc>)/<Fo> =     3.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -4391,7 +4391,7 @@ Mean C-C su =   0.0064
  Structure factor least squares calculation    5  ends  6
 [29] SumFo/SumFc=  4.91    SumFoFc/SumFc^2=  4.85    SumwFoFc/SumwFc^2=  4.86
 LS-scale=  4.749   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     3.
+[27] <Fo>-<Fc> =  0.3     100*(<Fo>-<Fc>)/<Fo> =     3.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -4624,7 +4624,7 @@ Mean C-C su =   0.0064
  Structure factor least squares calculation    6  ends  6
 [29] SumFo/SumFc=  4.91    SumFoFc/SumFc^2=  4.85    SumwFoFc/SumwFc^2=  4.86
 LS-scale=  4.750   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     3.
+[27] <Fo>-<Fc> =  0.3     100*(<Fo>-<Fc>)/<Fo> =     3.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -4880,7 +4880,7 @@ Refining    33 parameters in    1 block :      643 elements in the LS matrix.
  Structure factor least squares calculation    7  ends  6
 [29] SumFo/SumFc=  4.91    SumFoFc/SumFc^2=  4.85    SumwFoFc/SumwFc^2=  4.86
 LS-scale=  4.751   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     3.
+[27] <Fo>-<Fc> =  0.3     100*(<Fo>-<Fc>)/<Fo> =     3.
 #DORESTRAIN
 #INVERT  DEFA
 #NEWSHIFTS
@@ -5111,7 +5111,7 @@ Mean C-C su =   0.0064
  Structure factor least squares calculation    8  ends  6
 [29] SumFo/SumFc=  4.81    SumFoFc/SumFc^2=  4.78    SumwFoFc/SumwFc^2=  4.76
 LS-scale=  4.751   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
+[27] <Fo>-<Fc> =  0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -5344,7 +5344,7 @@ Mean C-C su =   0.0061
  Structure factor least squares calculation    9  ends  6
 [29] SumFo/SumFc=  4.81    SumFoFc/SumFc^2=  4.79    SumwFoFc/SumwFc^2=  4.77
 LS-scale=  4.751   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
+[27] <Fo>-<Fc> =  0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -5597,7 +5597,7 @@ Refining    47 parameters in    1 block :     1238 elements in the LS matrix.
  Structure factor least squares calculation   10  ends  6
 [29] SumFo/SumFc=  4.81    SumFoFc/SumFc^2=  4.79    SumwFoFc/SumwFc^2=  4.77
 LS-scale=  4.751   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
+[27] <Fo>-<Fc> =  0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
 #INVERT  DEFA
 #NEWSHIFTS
@@ -5829,7 +5829,7 @@ Mean C-C su =   0.0062
  Structure factor least squares calculation   11  ends  6
 [29] SumFo/SumFc=  4.74    SumFoFc/SumFc^2=  4.74    SumwFoFc/SumwFc^2=  4.70
 LS-scale=  4.751   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.018    100*(<Fo>-<Fc>)/<Fo> =    -0.17
+<Fo>-<Fc> = -0.018    100*(<Fo>-<Fc>)/<Fo> =    -0.17
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -6062,7 +6062,7 @@ Mean C-C su =   0.0049
  Structure factor least squares calculation   12  ends  6
 [29] SumFo/SumFc=  4.76    SumFoFc/SumFc^2=  4.75    SumwFoFc/SumwFc^2=  4.73
 LS-scale=  4.751   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -6295,7 +6295,7 @@ Mean C-C su =   0.0049
  Structure factor least squares calculation   13  ends  6
 [29] SumFo/SumFc=  4.76    SumFoFc/SumFc^2=  4.75    SumwFoFc/SumwFc^2=  4.73
 LS-scale=  4.750   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -6528,7 +6528,7 @@ Mean C-C su =   0.0049
  Structure factor least squares calculation   14  ends  6
 [29] SumFo/SumFc=  4.76    SumFoFc/SumFc^2=  4.75    SumwFoFc/SumwFc^2=  4.73
 LS-scale=  4.750   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -6785,7 +6785,7 @@ Refining    92 parameters in    1 block :     4478 elements in the LS matrix.
  Structure factor least squares calculation   15  ends  6
 [29] SumFo/SumFc=  4.76    SumFoFc/SumFc^2=  4.75    SumwFoFc/SumwFc^2=  4.73
 LS-scale=  4.750   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
 #INVERT  DEFA
 #NEWSHIFTS
@@ -7027,7 +7027,7 @@ Mean C-C su =   0.0049
  Structure factor least squares calculation   16  ends  6
 [29] SumFo/SumFc=  4.72    SumFoFc/SumFc^2=  4.73    SumwFoFc/SumwFc^2=  4.71
 LS-scale=  4.750   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.049    100*(<Fo>-<Fc>)/<Fo> =    -0.48
+<Fo>-<Fc> = -0.049    100*(<Fo>-<Fc>)/<Fo> =    -0.48
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -7262,7 +7262,7 @@ Mean C-C su =   0.0039
  Structure factor least squares calculation   17  ends  6
 [29] SumFo/SumFc=  4.74    SumFoFc/SumFc^2=  4.74    SumwFoFc/SumwFc^2=  4.72
 LS-scale=  4.749   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.011    100*(<Fo>-<Fc>)/<Fo> =    -0.11
+<Fo>-<Fc> = -0.011    100*(<Fo>-<Fc>)/<Fo> =    -0.11
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -7495,7 +7495,7 @@ Mean C-C su =   0.0039
  Structure factor least squares calculation   18  ends  6
 [29] SumFo/SumFc=  4.74    SumFoFc/SumFc^2=  4.74    SumwFoFc/SumwFc^2=  4.72
 LS-scale=  4.749   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.009    100*(<Fo>-<Fc>)/<Fo> =    -0.08
+<Fo>-<Fc> = -0.009    100*(<Fo>-<Fc>)/<Fo> =    -0.08
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -7728,7 +7728,7 @@ Mean C-C su =   0.0039
  Structure factor least squares calculation   19  ends  6
 [29] SumFo/SumFc=  4.74    SumFoFc/SumFc^2=  4.74    SumwFoFc/SumwFc^2=  4.72
 LS-scale=  4.749   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.008    100*(<Fo>-<Fc>)/<Fo> =    -0.08
+<Fo>-<Fc> = -0.008    100*(<Fo>-<Fc>)/<Fo> =    -0.08
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -8047,7 +8047,7 @@ H33 C(9) C(1) N(2)
      1913 reflections   R  3.75% Rw  8.12% with I/u(I) >   2.0
 [29] SumFo/SumFc=  4.73    SumFoFc/SumFc^2=  4.70    SumwFoFc/SumwFc^2=  4.71
 LS-scale=  4.749   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.020    100*(<Fo>-<Fc>)/<Fo> =    -0.27
+<Fo>-<Fc> = -0.020    100*(<Fo>-<Fc>)/<Fo> =    -0.27
 #CYCLENDS
 #FOUR
  Initialising Special positions
@@ -8196,7 +8196,7 @@ Refining    92 parameters in    1 block :     4478 elements in the LS matrix.
  Structure factor least squares calculation   21  ends  6
 [29] SumFo/SumFc=  4.73    SumFoFc/SumFc^2=  4.70    SumwFoFc/SumwFc^2=  4.72
 LS-scale=  4.749   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.041    100*(<Fo>-<Fc>)/<Fo> =    -0.40
+<Fo>-<Fc> = -0.041    100*(<Fo>-<Fc>)/<Fo> =    -0.40
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -8430,7 +8430,7 @@ Mean C-C su =   0.0026
  Structure factor least squares calculation   22  ends  6
 [29] SumFo/SumFc=  4.72    SumFoFc/SumFc^2=  4.70    SumwFoFc/SumwFc^2=  4.72
 LS-scale=  4.746   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.046    100*(<Fo>-<Fc>)/<Fo> =    -0.45
+<Fo>-<Fc> = -0.046    100*(<Fo>-<Fc>)/<Fo> =    -0.45
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -8664,7 +8664,7 @@ Mean C-C su =   0.0021
  Structure factor least squares calculation   23  ends  6
 [29] SumFo/SumFc=  4.72    SumFoFc/SumFc^2=  4.70    SumwFoFc/SumwFc^2=  4.72
 LS-scale=  4.743   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.039    100*(<Fo>-<Fc>)/<Fo> =    -0.39
+<Fo>-<Fc> = -0.039    100*(<Fo>-<Fc>)/<Fo> =    -0.39
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -8898,7 +8898,7 @@ Mean C-C su =   0.0021
  Structure factor least squares calculation   24  ends  6
 [29] SumFo/SumFc=  4.72    SumFoFc/SumFc^2=  4.70    SumwFoFc/SumwFc^2=  4.71
 LS-scale=  4.739   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.039    100*(<Fo>-<Fc>)/<Fo> =    -0.38
+<Fo>-<Fc> = -0.039    100*(<Fo>-<Fc>)/<Fo> =    -0.38
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -9132,7 +9132,7 @@ Mean C-C su =   0.0021
  Structure factor least squares calculation   25  ends  6
 [29] SumFo/SumFc=  4.71    SumFoFc/SumFc^2=  4.70    SumwFoFc/SumwFc^2=  4.71
 LS-scale=  4.736   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.038    100*(<Fo>-<Fc>)/<Fo> =    -0.38
+<Fo>-<Fc> = -0.038    100*(<Fo>-<Fc>)/<Fo> =    -0.38
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -9566,7 +9566,7 @@ The slope and correlation coefficient should be small
 [65]      TOTALS          2016     96782.      97080.        0.242E+06       0.977E+00     3.19    7.03     .  .  *  .  .
                                                                                                        -2 -1  0  1  2
 #DISK
- List type  11 with serial number   136 is the current version. 
+ List type  11 with serial number   136 is the current version.
  You may still save this list with DELETE n ACTION=NO
 #PURGE
  List type   11  serial number  136 from   183471 to   187909 will not be copied ( deleted )         
@@ -9636,7 +9636,7 @@ The slope and correlation coefficient should be small
  Structure factor least squares calculation   26  ends  6
 [29] SumFo/SumFc=  4.71    SumFoFc/SumFc^2=  4.70    SumwFoFc/SumwFc^2=  4.72
 LS-scale=  4.733   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.038    100*(<Fo>-<Fc>)/<Fo> =    -0.37
+<Fo>-<Fc> = -0.038    100*(<Fo>-<Fc>)/<Fo> =    -0.37
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -9866,7 +9866,7 @@ Mean C-C su =   0.0019
  Structure factor least squares calculation   27  ends  6
 [29] SumFo/SumFc=  4.70    SumFoFc/SumFc^2=  4.69    SumwFoFc/SumwFc^2=  4.71
 LS-scale=  4.731   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.054    100*(<Fo>-<Fc>)/<Fo> =    -0.54
+<Fo>-<Fc> = -0.054    100*(<Fo>-<Fc>)/<Fo> =    -0.54
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -10100,7 +10100,7 @@ Mean C-C su =   0.0018
  Structure factor least squares calculation   28  ends  6
 [29] SumFo/SumFc=  4.70    SumFoFc/SumFc^2=  4.69    SumwFoFc/SumwFc^2=  4.70
 LS-scale=  4.729   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.054    100*(<Fo>-<Fc>)/<Fo> =    -0.53
+<Fo>-<Fc> = -0.054    100*(<Fo>-<Fc>)/<Fo> =    -0.53
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -10334,7 +10334,7 @@ Mean C-C su =   0.0018
  Structure factor least squares calculation   29  ends  6
 [29] SumFo/SumFc=  4.70    SumFoFc/SumFc^2=  4.69    SumwFoFc/SumwFc^2=  4.70
 LS-scale=  4.728   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.053    100*(<Fo>-<Fc>)/<Fo> =    -0.52
+<Fo>-<Fc> = -0.053    100*(<Fo>-<Fc>)/<Fo> =    -0.52
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -10568,7 +10568,7 @@ Mean C-C su =   0.0018
  Structure factor least squares calculation   30  ends  6
 [29] SumFo/SumFc=  4.70    SumFoFc/SumFc^2=  4.69    SumwFoFc/SumwFc^2=  4.70
 LS-scale=  4.726   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.053    100*(<Fo>-<Fc>)/<Fo> =    -0.52
+<Fo>-<Fc> = -0.053    100*(<Fo>-<Fc>)/<Fo> =    -0.52
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -10828,7 +10828,7 @@ Mean C-C su =   0.0018
      1913 reflections   R  2.87% Rw  6.68% with I/u(I) >   2.0
 [29] SumFo/SumFc=  4.70    SumFoFc/SumFc^2=  4.69    SumwFoFc/SumwFc^2=  4.70
 LS-scale=  4.724   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.47
+<Fo>-<Fc> = -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.47
 #CYCLENDS
 #FOURIER
  Initialising Special positions
@@ -10957,7 +10957,7 @@ LS-scale=  4.724   Wilson Scale=  4.723
  Structure factor least squares calculation   32  ends  6
 [29] SumFo/SumFc=  4.70    SumFoFc/SumFc^2=  4.69    SumwFoFc/SumwFc^2=  4.70
 LS-scale=  4.724   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.052    100*(<Fo>-<Fc>)/<Fo> =    -0.51
+<Fo>-<Fc> = -0.052    100*(<Fo>-<Fc>)/<Fo> =    -0.51
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -11188,7 +11188,7 @@ Mean C-C su =   0.0018
  Structure factor least squares calculation   33  ends  6
 [29] SumFo/SumFc=  4.69    SumFoFc/SumFc^2=  4.68    SumwFoFc/SumwFc^2=  4.70
 LS-scale=  4.723   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.052    100*(<Fo>-<Fc>)/<Fo> =    -0.51
+<Fo>-<Fc> = -0.052    100*(<Fo>-<Fc>)/<Fo> =    -0.51
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -11419,7 +11419,7 @@ Mean C-C su =   0.0018
  Structure factor least squares calculation   34  ends  6
 [29] SumFo/SumFc=  4.69    SumFoFc/SumFc^2=  4.68    SumwFoFc/SumwFc^2=  4.70
 LS-scale=  4.721   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.051    100*(<Fo>-<Fc>)/<Fo> =    -0.51
+<Fo>-<Fc> = -0.051    100*(<Fo>-<Fc>)/<Fo> =    -0.51
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -11650,7 +11650,7 @@ Mean C-C su =   0.0018
  Structure factor least squares calculation   35  ends  6
 [29] SumFo/SumFc=  4.69    SumFoFc/SumFc^2=  4.68    SumwFoFc/SumwFc^2=  4.70
 LS-scale=  4.720   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.051    100*(<Fo>-<Fc>)/<Fo> =    -0.50
+<Fo>-<Fc> = -0.051    100*(<Fo>-<Fc>)/<Fo> =    -0.50
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -11881,7 +11881,7 @@ Mean C-C su =   0.0018
  Structure factor least squares calculation   36  ends  6
 [29] SumFo/SumFc=  4.69    SumFoFc/SumFc^2=  4.68    SumwFoFc/SumwFc^2=  4.69
 LS-scale=  4.718   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.051    100*(<Fo>-<Fc>)/<Fo> =    -0.50
+<Fo>-<Fc> = -0.051    100*(<Fo>-<Fc>)/<Fo> =    -0.50
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -12112,7 +12112,7 @@ Mean C-C su =   0.0018
  Structure factor least squares calculation   37  ends  6
 [29] SumFo/SumFc=  4.69    SumFoFc/SumFc^2=  4.68    SumwFoFc/SumwFc^2=  4.69
 LS-scale=  4.717   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.050    100*(<Fo>-<Fc>)/<Fo> =    -0.49
+<Fo>-<Fc> = -0.050    100*(<Fo>-<Fc>)/<Fo> =    -0.49
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -12369,7 +12369,7 @@ Mean C-C su =   0.0018
      1913 reflections   R  2.85% Rw  6.64% with I/u(I) >   2.0
 [29] SumFo/SumFc=  4.69    SumFoFc/SumFc^2=  4.68    SumwFoFc/SumwFc^2=  4.69
 LS-scale=  4.715   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.032    100*(<Fo>-<Fc>)/<Fo> =    -0.44
+<Fo>-<Fc> = -0.032    100*(<Fo>-<Fc>)/<Fo> =    -0.44
 #CYCLENDS
 #FOUR
  Initialising Special positions
@@ -12686,7 +12686,7 @@ LS-scale=  4.715   Wilson Scale=  4.723
  Structure factor least squares calculation   39  ends  5
 [29] SumFo/SumFc=  4.92    SumFoFc/SumFc^2=  4.85    SumwFoFc/SumwFc^2=  4.81
 LS-scale=  4.746   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     3.
+[27] <Fo>-<Fc> =  0.3     100*(<Fo>-<Fc>)/<Fo> =     3.
 #CYCLENDS
 #              MAKE SURE WEIGHTS ARE RIGHT. (UNIT OR QUASI-UNIT).
 #LIST 4
@@ -12777,7 +12777,7 @@ Refining    32 parameters in    1 block :      608 elements in the LS matrix.
  Structure factor least squares calculation   40  ends  6
 [29] SumFo/SumFc=  4.92    SumFoFc/SumFc^2=  4.85    SumwFoFc/SumwFc^2=  4.85
 LS-scale=  4.746   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     3.
+[27] <Fo>-<Fc> =  0.3     100*(<Fo>-<Fc>)/<Fo> =     3.
 #DORESTRAIN
 #INVERT  DEFA
 #NEWSHIFTS
@@ -13011,7 +13011,7 @@ Mean C-C su =   0.0085
  Structure factor least squares calculation   41  ends  6
 [29] SumFo/SumFc=  4.91    SumFoFc/SumFc^2=  4.85    SumwFoFc/SumwFc^2=  4.85
 LS-scale=  4.779   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.2     100*(<Fo>-<Fc>)/<Fo> =     2.
+[27] <Fo>-<Fc> =  0.2     100*(<Fo>-<Fc>)/<Fo> =     2.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -13247,7 +13247,7 @@ Mean C-C su =   0.0067
  Structure factor least squares calculation   42  ends  6
 [29] SumFo/SumFc=  4.91    SumFoFc/SumFc^2=  4.85    SumwFoFc/SumwFc^2=  4.85
 LS-scale=  4.813   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
+[27] <Fo>-<Fc> =  0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -13481,7 +13481,7 @@ Mean C-C su =   0.0064
  Structure factor least squares calculation   43  ends  6
 [29] SumFo/SumFc=  4.91    SumFoFc/SumFc^2=  4.85    SumwFoFc/SumwFc^2=  4.85
 LS-scale=  4.832   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
+[27] <Fo>-<Fc> =  0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -13715,7 +13715,7 @@ Mean C-C su =   0.0063
  Structure factor least squares calculation   44  ends  6
 [29] SumFo/SumFc=  4.91    SumFoFc/SumFc^2=  4.85    SumwFoFc/SumwFc^2=  4.85
 LS-scale=  4.843   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
+[27] <Fo>-<Fc> =  0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -13971,7 +13971,7 @@ Refining    33 parameters in    1 block :      643 elements in the LS matrix.
  Structure factor least squares calculation   45  ends  6
 [29] SumFo/SumFc=  4.91    SumFoFc/SumFc^2=  4.85    SumwFoFc/SumwFc^2=  4.85
 LS-scale=  4.848   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
+[27] <Fo>-<Fc> =  0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
 #INVERT  DEFA
 #NEWSHIFTS
@@ -14203,7 +14203,7 @@ Mean C-C su =   0.0063
  Structure factor least squares calculation   46  ends  6
 [29] SumFo/SumFc=  4.84    SumFoFc/SumFc^2=  4.81    SumwFoFc/SumwFc^2=  4.81
 LS-scale=  4.831   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -14437,7 +14437,7 @@ Mean C-C su =   0.0063
  Structure factor least squares calculation   47  ends  6
 [29] SumFo/SumFc=  4.83    SumFoFc/SumFc^2=  4.80    SumwFoFc/SumwFc^2=  4.80
 LS-scale=  4.818   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -14670,7 +14670,7 @@ Mean C-C su =   0.0063
  Structure factor least squares calculation   48  ends  6
 [29] SumFo/SumFc=  4.83    SumFoFc/SumFc^2=  4.80    SumwFoFc/SumwFc^2=  4.80
 LS-scale=  4.810   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -14903,7 +14903,7 @@ Mean C-C su =   0.0063
  Structure factor least squares calculation   49  ends  6
 [29] SumFo/SumFc=  4.82    SumFoFc/SumFc^2=  4.79    SumwFoFc/SumwFc^2=  4.79
 LS-scale=  4.804   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -15160,7 +15160,7 @@ Refining    47 parameters in    1 block :     1238 elements in the LS matrix.
  Structure factor least squares calculation   50  ends  6
 [29] SumFo/SumFc=  4.82    SumFoFc/SumFc^2=  4.79    SumwFoFc/SumwFc^2=  4.79
 LS-scale=  4.799   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
 #INVERT  DEFA
 #NEWSHIFTS
@@ -15393,7 +15393,7 @@ Mean C-C su =   0.0063
  Structure factor least squares calculation   51  ends  6
 [29] SumFo/SumFc=  4.75    SumFoFc/SumFc^2=  4.75    SumwFoFc/SumwFc^2=  4.75
 LS-scale=  4.781   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.053    100*(<Fo>-<Fc>)/<Fo> =    -0.52
+<Fo>-<Fc> = -0.053    100*(<Fo>-<Fc>)/<Fo> =    -0.52
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -15627,7 +15627,7 @@ Mean C-C su =   0.0051
  Structure factor least squares calculation   52  ends  6
 [29] SumFo/SumFc=  4.75    SumFoFc/SumFc^2=  4.75    SumwFoFc/SumwFc^2=  4.75
 LS-scale=  4.764   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.016    100*(<Fo>-<Fc>)/<Fo> =    -0.16
+<Fo>-<Fc> = -0.016    100*(<Fo>-<Fc>)/<Fo> =    -0.16
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -15861,7 +15861,7 @@ Mean C-C su =   0.0051
  Structure factor least squares calculation   53  ends  6
 [29] SumFo/SumFc=  4.74    SumFoFc/SumFc^2=  4.74    SumwFoFc/SumwFc^2=  4.74
 LS-scale=  4.751   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.014    100*(<Fo>-<Fc>)/<Fo> =    -0.13
+<Fo>-<Fc> = -0.014    100*(<Fo>-<Fc>)/<Fo> =    -0.13
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -16094,7 +16094,7 @@ Mean C-C su =   0.0051
  Structure factor least squares calculation   54  ends  6
 [29] SumFo/SumFc=  4.73    SumFoFc/SumFc^2=  4.73    SumwFoFc/SumwFc^2=  4.73
 LS-scale=  4.742   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.012    100*(<Fo>-<Fc>)/<Fo> =    -0.12
+<Fo>-<Fc> = -0.012    100*(<Fo>-<Fc>)/<Fo> =    -0.12
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -16351,7 +16351,7 @@ Refining    92 parameters in    1 block :     4478 elements in the LS matrix.
  Structure factor least squares calculation   55  ends  6
 [29] SumFo/SumFc=  4.73    SumFoFc/SumFc^2=  4.73    SumwFoFc/SumwFc^2=  4.73
 LS-scale=  4.736   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.011    100*(<Fo>-<Fc>)/<Fo> =    -0.11
+<Fo>-<Fc> = -0.011    100*(<Fo>-<Fc>)/<Fo> =    -0.11
 #DORESTRAIN
 #INVERT  DEFA
 #NEWSHIFTS
@@ -16592,7 +16592,7 @@ Mean C-C su =   0.0052
  Structure factor least squares calculation   56  ends  6
 [29] SumFo/SumFc=  4.70    SumFoFc/SumFc^2=  4.71    SumwFoFc/SumwFc^2=  4.71
 LS-scale=  4.730   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.054    100*(<Fo>-<Fc>)/<Fo> =    -0.54
+<Fo>-<Fc> = -0.054    100*(<Fo>-<Fc>)/<Fo> =    -0.54
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -16827,7 +16827,7 @@ Mean C-C su =   0.0041
  Structure factor least squares calculation   57  ends  6
 [29] SumFo/SumFc=  4.71    SumFoFc/SumFc^2=  4.72    SumwFoFc/SumwFc^2=  4.72
 LS-scale=  4.730   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.022    100*(<Fo>-<Fc>)/<Fo> =    -0.22
+<Fo>-<Fc> = -0.022    100*(<Fo>-<Fc>)/<Fo> =    -0.22
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -17060,7 +17060,7 @@ Mean C-C su =   0.0041
  Structure factor least squares calculation   58  ends  6
 [29] SumFo/SumFc=  4.72    SumFoFc/SumFc^2=  4.73    SumwFoFc/SumwFc^2=  4.73
 LS-scale=  4.730   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.021    100*(<Fo>-<Fc>)/<Fo> =    -0.21
+<Fo>-<Fc> = -0.021    100*(<Fo>-<Fc>)/<Fo> =    -0.21
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -17293,7 +17293,7 @@ Mean C-C su =   0.0041
  Structure factor least squares calculation   59  ends  6
 [29] SumFo/SumFc=  4.72    SumFoFc/SumFc^2=  4.73    SumwFoFc/SumwFc^2=  4.73
 LS-scale=  4.730   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.021    100*(<Fo>-<Fc>)/<Fo> =    -0.20
+<Fo>-<Fc> = -0.021    100*(<Fo>-<Fc>)/<Fo> =    -0.20
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -17608,7 +17608,7 @@ H33 C(9) C(1) N(2)
      1913 reflections   R  3.69% Rw  4.04% with I/u(I) >   2.0
 [29] SumFo/SumFc=  4.70    SumFoFc/SumFc^2=  4.69    SumwFoFc/SumwFc^2=  4.69
 LS-scale=  4.730   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.033    100*(<Fo>-<Fc>)/<Fo> =    -0.45
+<Fo>-<Fc> = -0.033    100*(<Fo>-<Fc>)/<Fo> =    -0.45
 #CYCLENDS
 #FOUR
  Initialising Special positions
@@ -17757,7 +17757,7 @@ Refining    92 parameters in    1 block :     4478 elements in the LS matrix.
  Structure factor least squares calculation   61  ends  6
 [29] SumFo/SumFc=  4.70    SumFoFc/SumFc^2=  4.69    SumwFoFc/SumwFc^2=  4.69
 LS-scale=  4.730   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.053    100*(<Fo>-<Fc>)/<Fo> =    -0.53
+<Fo>-<Fc> = -0.053    100*(<Fo>-<Fc>)/<Fo> =    -0.53
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -17991,7 +17991,7 @@ Mean C-C su =   0.0027
  Structure factor least squares calculation   62  ends  6
 [29] SumFo/SumFc=  4.65    SumFoFc/SumFc^2=  4.65    SumwFoFc/SumwFc^2=  4.65
 LS-scale=  4.668   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.33
+<Fo>-<Fc> = -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.33
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -18225,7 +18225,7 @@ Mean C-C su =   0.0023
  Structure factor least squares calculation   63  ends  6
 [29] SumFo/SumFc=  4.62    SumFoFc/SumFc^2=  4.63    SumwFoFc/SumwFc^2=  4.63
 LS-scale=  4.641   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.027    100*(<Fo>-<Fc>)/<Fo> =    -0.26
+<Fo>-<Fc> = -0.027    100*(<Fo>-<Fc>)/<Fo> =    -0.26
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -18458,7 +18458,7 @@ Mean C-C su =   0.0022
  Structure factor least squares calculation   64  ends  6
 [29] SumFo/SumFc=  4.62    SumFoFc/SumFc^2=  4.63    SumwFoFc/SumwFc^2=  4.63
 LS-scale=  4.633   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.025    100*(<Fo>-<Fc>)/<Fo> =    -0.24
+<Fo>-<Fc> = -0.025    100*(<Fo>-<Fc>)/<Fo> =    -0.24
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -18691,7 +18691,7 @@ Mean C-C su =   0.0022
  Structure factor least squares calculation   65  ends  6
 [29] SumFo/SumFc=  4.61    SumFoFc/SumFc^2=  4.63    SumwFoFc/SumwFc^2=  4.63
 LS-scale=  4.630   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.025    100*(<Fo>-<Fc>)/<Fo> =    -0.24
+<Fo>-<Fc> = -0.025    100*(<Fo>-<Fc>)/<Fo> =    -0.24
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -19120,7 +19120,7 @@ The slope and correlation coefficient should be small
 [65]      TOTALS          2016     96782.      96998.        0.473E+01       0.115E+01     3.03    3.83     .  .  *  .  .
                                                                                                        -2 -1  0  1  2
 #DISK
- List type  11 with serial number   144 is the current version. 
+ List type  11 with serial number   144 is the current version.
  You may still save this list with DELETE n ACTION=NO
 #PURGE
  List type   11  serial number  144 from    96230 to   100668 will not be copied ( deleted )         
@@ -19190,7 +19190,7 @@ The slope and correlation coefficient should be small
  Structure factor least squares calculation   66  ends  6
 [29] SumFo/SumFc=  4.61    SumFoFc/SumFc^2=  4.62    SumwFoFc/SumwFc^2=  4.63
 LS-scale=  4.630   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.025    100*(<Fo>-<Fc>)/<Fo> =    -0.24
+<Fo>-<Fc> = -0.025    100*(<Fo>-<Fc>)/<Fo> =    -0.24
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -19419,7 +19419,7 @@ Mean C-C su =   0.0018
  Structure factor least squares calculation   67  ends  6
 [29] SumFo/SumFc=  4.62    SumFoFc/SumFc^2=  4.63    SumwFoFc/SumwFc^2=  4.63
 LS-scale=  4.637   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.036    100*(<Fo>-<Fc>)/<Fo> =    -0.35
+<Fo>-<Fc> = -0.036    100*(<Fo>-<Fc>)/<Fo> =    -0.35
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -19652,7 +19652,7 @@ Mean C-C su =   0.0018
  Structure factor least squares calculation   68  ends  6
 [29] SumFo/SumFc=  4.62    SumFoFc/SumFc^2=  4.63    SumwFoFc/SumwFc^2=  4.63
 LS-scale=  4.640   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.037    100*(<Fo>-<Fc>)/<Fo> =    -0.35
+<Fo>-<Fc> = -0.037    100*(<Fo>-<Fc>)/<Fo> =    -0.35
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -19907,7 +19907,7 @@ Mean C-C su =   0.0018
      1913 reflections   R  2.74% Rw  3.58% with I/u(I) >   2.0
 [29] SumFo/SumFc=  4.62    SumFoFc/SumFc^2=  4.63    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.641   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.023    100*(<Fo>-<Fc>)/<Fo> =    -0.30
+<Fo>-<Fc> = -0.023    100*(<Fo>-<Fc>)/<Fo> =    -0.30
 #CYCLENDS
 #FOURIER
  Initialising Special positions
@@ -20036,7 +20036,7 @@ LS-scale=  4.641   Wilson Scale=  4.723
  Structure factor least squares calculation   70  ends  6
 [29] SumFo/SumFc=  4.62    SumFoFc/SumFc^2=  4.63    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.641   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.037    100*(<Fo>-<Fc>)/<Fo> =    -0.36
+<Fo>-<Fc> = -0.037    100*(<Fo>-<Fc>)/<Fo> =    -0.36
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -20266,7 +20266,7 @@ Mean C-C su =   0.0018
  Structure factor least squares calculation   71  ends  6
 [29] SumFo/SumFc=  4.62    SumFoFc/SumFc^2=  4.63    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.642   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.037    100*(<Fo>-<Fc>)/<Fo> =    -0.36
+<Fo>-<Fc> = -0.037    100*(<Fo>-<Fc>)/<Fo> =    -0.36
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -20496,7 +20496,7 @@ Mean C-C su =   0.0018
  Structure factor least squares calculation   72  ends  6
 [29] SumFo/SumFc=  4.62    SumFoFc/SumFc^2=  4.63    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.642   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.037    100*(<Fo>-<Fc>)/<Fo> =    -0.36
+<Fo>-<Fc> = -0.037    100*(<Fo>-<Fc>)/<Fo> =    -0.36
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -20726,7 +20726,7 @@ Mean C-C su =   0.0018
  Structure factor least squares calculation   73  ends  6
 [29] SumFo/SumFc=  4.62    SumFoFc/SumFc^2=  4.63    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.642   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.037    100*(<Fo>-<Fc>)/<Fo> =    -0.36
+<Fo>-<Fc> = -0.037    100*(<Fo>-<Fc>)/<Fo> =    -0.36
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -20956,7 +20956,7 @@ Mean C-C su =   0.0018
  Structure factor least squares calculation   74  ends  6
 [29] SumFo/SumFc=  4.62    SumFoFc/SumFc^2=  4.63    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.642   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.037    100*(<Fo>-<Fc>)/<Fo> =    -0.36
+<Fo>-<Fc> = -0.037    100*(<Fo>-<Fc>)/<Fo> =    -0.36
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -21186,7 +21186,7 @@ Mean C-C su =   0.0018
  Structure factor least squares calculation   75  ends  6
 [29] SumFo/SumFc=  4.62    SumFoFc/SumFc^2=  4.63    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.642   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.037    100*(<Fo>-<Fc>)/<Fo> =    -0.36
+<Fo>-<Fc> = -0.037    100*(<Fo>-<Fc>)/<Fo> =    -0.36
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -21442,7 +21442,7 @@ Mean C-C su =   0.0018
      1913 reflections   R  2.74% Rw  3.58% with I/u(I) >   2.0
 [29] SumFo/SumFc=  4.62    SumFoFc/SumFc^2=  4.63    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.642   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.023    100*(<Fo>-<Fc>)/<Fo> =    -0.31
+<Fo>-<Fc> = -0.023    100*(<Fo>-<Fc>)/<Fo> =    -0.31
 #CYCLENDS
 #FOUR
  Initialising Special positions
@@ -21708,7 +21708,7 @@ LS-scale=  4.642   Wilson Scale=  4.723
  Structure factor least squares calculation   77  ends  5
 [29] SumFo/SumFc=  4.92    SumFoFc/SumFc^2=  4.85    SumwFoFc/SumwFc^2=  4.77
 LS-scale=  4.646   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.5     100*(<Fo>-<Fc>)/<Fo> =     5.
+[27] <Fo>-<Fc> =  0.5     100*(<Fo>-<Fc>)/<Fo> =     5.
 #CYCLENDS
 #              MAKE SURE WEIGHTS ARE RIGHT. (UNIT OR QUASI-UNIT).
 #LIST 4
@@ -21799,7 +21799,7 @@ Refining    32 parameters in    1 block :      608 elements in the LS matrix.
  Structure factor least squares calculation   78  ends  6
 [29] SumFo/SumFc=  4.92    SumFoFc/SumFc^2=  4.85    SumwFoFc/SumwFc^2=  4.84
 LS-scale=  4.646   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.5     100*(<Fo>-<Fc>)/<Fo> =     5.
+[27] <Fo>-<Fc> =  0.5     100*(<Fo>-<Fc>)/<Fo> =     5.
 #DORESTRAIN
 #INVERT  DEFA
 #NEWSHIFTS
@@ -22033,7 +22033,7 @@ Mean C-C su =   0.0087
  Structure factor least squares calculation   79  ends  6
 [29] SumFo/SumFc=  4.91    SumFoFc/SumFc^2=  4.85    SumwFoFc/SumwFc^2=  4.85
 LS-scale=  4.647   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.5     100*(<Fo>-<Fc>)/<Fo> =     5.
+[27] <Fo>-<Fc> =  0.5     100*(<Fo>-<Fc>)/<Fo> =     5.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -22269,7 +22269,7 @@ Mean C-C su =   0.0072
  Structure factor least squares calculation   80  ends  6
 [29] SumFo/SumFc=  4.91    SumFoFc/SumFc^2=  4.85    SumwFoFc/SumwFc^2=  4.85
 LS-scale=  4.649   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.5     100*(<Fo>-<Fc>)/<Fo> =     5.
+[27] <Fo>-<Fc> =  0.5     100*(<Fo>-<Fc>)/<Fo> =     5.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -22503,7 +22503,7 @@ Mean C-C su =   0.0070
  Structure factor least squares calculation   81  ends  6
 [29] SumFo/SumFc=  4.91    SumFoFc/SumFc^2=  4.85    SumwFoFc/SumwFc^2=  4.85
 LS-scale=  4.650   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.5     100*(<Fo>-<Fc>)/<Fo> =     5.
+[27] <Fo>-<Fc> =  0.5     100*(<Fo>-<Fc>)/<Fo> =     5.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -22737,7 +22737,7 @@ Mean C-C su =   0.0070
  Structure factor least squares calculation   82  ends  6
 [29] SumFo/SumFc=  4.91    SumFoFc/SumFc^2=  4.85    SumwFoFc/SumwFc^2=  4.85
 LS-scale=  4.652   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.5     100*(<Fo>-<Fc>)/<Fo> =     5.
+[27] <Fo>-<Fc> =  0.5     100*(<Fo>-<Fc>)/<Fo> =     5.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -22994,7 +22994,7 @@ Refining    33 parameters in    1 block :      643 elements in the LS matrix.
  Structure factor least squares calculation   83  ends  6
 [29] SumFo/SumFc=  4.91    SumFoFc/SumFc^2=  4.85    SumwFoFc/SumwFc^2=  4.85
 LS-scale=  4.654   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.5     100*(<Fo>-<Fc>)/<Fo> =     5.
+[27] <Fo>-<Fc> =  0.5     100*(<Fo>-<Fc>)/<Fo> =     5.
 #DORESTRAIN
 #INVERT  DEFA
 #NEWSHIFTS
@@ -23225,7 +23225,7 @@ Mean C-C su =   0.0070
  Structure factor least squares calculation   84  ends  6
 [29] SumFo/SumFc=  4.73    SumFoFc/SumFc^2=  4.73    SumwFoFc/SumwFc^2=  4.68
 LS-scale=  4.654   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
+[27] <Fo>-<Fc> =  0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -23458,7 +23458,7 @@ Mean C-C su =   0.0064
  Structure factor least squares calculation   85  ends  6
 [29] SumFo/SumFc=  4.74    SumFoFc/SumFc^2=  4.74    SumwFoFc/SumwFc^2=  4.69
 LS-scale=  4.655   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.2     100*(<Fo>-<Fc>)/<Fo> =     1.
+[27] <Fo>-<Fc> =  0.2     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -23691,7 +23691,7 @@ Mean C-C su =   0.0064
  Structure factor least squares calculation   86  ends  6
 [29] SumFo/SumFc=  4.74    SumFoFc/SumFc^2=  4.74    SumwFoFc/SumwFc^2=  4.70
 LS-scale=  4.655   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.2     100*(<Fo>-<Fc>)/<Fo> =     1.
+[27] <Fo>-<Fc> =  0.2     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -23924,7 +23924,7 @@ Mean C-C su =   0.0064
  Structure factor least squares calculation   87  ends  6
 [29] SumFo/SumFc=  4.74    SumFoFc/SumFc^2=  4.74    SumwFoFc/SumwFc^2=  4.70
 LS-scale=  4.656   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.2     100*(<Fo>-<Fc>)/<Fo> =     1.
+[27] <Fo>-<Fc> =  0.2     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -24181,7 +24181,7 @@ Refining    47 parameters in    1 block :     1238 elements in the LS matrix.
  Structure factor least squares calculation   88  ends  6
 [29] SumFo/SumFc=  4.75    SumFoFc/SumFc^2=  4.74    SumwFoFc/SumwFc^2=  4.70
 LS-scale=  4.657   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.2     100*(<Fo>-<Fc>)/<Fo> =     1.
+[27] <Fo>-<Fc> =  0.2     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
 #INVERT  DEFA
 #NEWSHIFTS
@@ -24413,7 +24413,7 @@ Mean C-C su =   0.0064
  Structure factor least squares calculation   89  ends  6
 [29] SumFo/SumFc=  4.65    SumFoFc/SumFc^2=  4.67    SumwFoFc/SumwFc^2=  4.61
 LS-scale=  4.657   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.003    100*(<Fo>-<Fc>)/<Fo> =    -0.03
+<Fo>-<Fc> = -0.003    100*(<Fo>-<Fc>)/<Fo> =    -0.03
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -24646,7 +24646,7 @@ Mean C-C su =   0.0049
  Structure factor least squares calculation   90  ends  6
 [29] SumFo/SumFc=  4.68    SumFoFc/SumFc^2=  4.69    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.657   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -24879,7 +24879,7 @@ Mean C-C su =   0.0049
  Structure factor least squares calculation   91  ends  6
 [29] SumFo/SumFc=  4.68    SumFoFc/SumFc^2=  4.69    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.657   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -25112,7 +25112,7 @@ Mean C-C su =   0.0049
  Structure factor least squares calculation   92  ends  6
 [29] SumFo/SumFc=  4.68    SumFoFc/SumFc^2=  4.69    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.658   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -25369,7 +25369,7 @@ Refining    92 parameters in    1 block :     4478 elements in the LS matrix.
  Structure factor least squares calculation   93  ends  6
 [29] SumFo/SumFc=  4.68    SumFoFc/SumFc^2=  4.69    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.658   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
 #INVERT  DEFA
 #NEWSHIFTS
@@ -25611,7 +25611,7 @@ Mean C-C su =   0.0050
  Structure factor least squares calculation   94  ends  6
 [29] SumFo/SumFc=  4.64    SumFoFc/SumFc^2=  4.66    SumwFoFc/SumwFc^2=  4.62
 LS-scale=  4.658   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.031    100*(<Fo>-<Fc>)/<Fo> =    -0.31
+<Fo>-<Fc> = -0.031    100*(<Fo>-<Fc>)/<Fo> =    -0.31
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -25846,7 +25846,7 @@ Mean C-C su =   0.0039
  Structure factor least squares calculation   95  ends  6
 [29] SumFo/SumFc=  4.66    SumFoFc/SumFc^2=  4.68    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.658   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -26079,7 +26079,7 @@ Mean C-C su =   0.0039
  Structure factor least squares calculation   96  ends  6
 [29] SumFo/SumFc=  4.66    SumFoFc/SumFc^2=  4.68    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.659   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -26312,7 +26312,7 @@ Mean C-C su =   0.0039
  Structure factor least squares calculation   97  ends  6
 [29] SumFo/SumFc=  4.66    SumFoFc/SumFc^2=  4.68    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.659   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -26631,7 +26631,7 @@ H33 C(9) C(1) N(2)
      1913 reflections   R  3.57% Rw  7.44% with I/u(I) >   2.0
 [29] SumFo/SumFc=  4.65    SumFoFc/SumFc^2=  4.64    SumwFoFc/SumwFc^2=  4.63
 LS-scale=  4.660   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.007    100*(<Fo>-<Fc>)/<Fo> =    -0.10
+<Fo>-<Fc> = -0.007    100*(<Fo>-<Fc>)/<Fo> =    -0.10
 #CYCLENDS
 #FOUR
  Initialising Special positions
@@ -26780,7 +26780,7 @@ Refining    92 parameters in    1 block :     4478 elements in the LS matrix.
  Structure factor least squares calculation   99  ends  6
 [29] SumFo/SumFc=  4.64    SumFoFc/SumFc^2=  4.65    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.660   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.023    100*(<Fo>-<Fc>)/<Fo> =    -0.22
+<Fo>-<Fc> = -0.023    100*(<Fo>-<Fc>)/<Fo> =    -0.22
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -27013,7 +27013,7 @@ Mean C-C su =   0.0023
  Structure factor least squares calculation  100  ends  6
 [29] SumFo/SumFc=  4.64    SumFoFc/SumFc^2=  4.65    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.659   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.031    100*(<Fo>-<Fc>)/<Fo> =    -0.30
+<Fo>-<Fc> = -0.031    100*(<Fo>-<Fc>)/<Fo> =    -0.30
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -27247,7 +27247,7 @@ Mean C-C su =   0.0019
  Structure factor least squares calculation  101  ends  6
 [29] SumFo/SumFc=  4.64    SumFoFc/SumFc^2=  4.65    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.658   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.025    100*(<Fo>-<Fc>)/<Fo> =    -0.24
+<Fo>-<Fc> = -0.025    100*(<Fo>-<Fc>)/<Fo> =    -0.24
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -27481,7 +27481,7 @@ Mean C-C su =   0.0019
  Structure factor least squares calculation  102  ends  6
 [29] SumFo/SumFc=  4.64    SumFoFc/SumFc^2=  4.64    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.657   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.025    100*(<Fo>-<Fc>)/<Fo> =    -0.24
+<Fo>-<Fc> = -0.025    100*(<Fo>-<Fc>)/<Fo> =    -0.24
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -27715,7 +27715,7 @@ Mean C-C su =   0.0019
  Structure factor least squares calculation  103  ends  6
 [29] SumFo/SumFc=  4.64    SumFoFc/SumFc^2=  4.64    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.655   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.024    100*(<Fo>-<Fc>)/<Fo> =    -0.24
+<Fo>-<Fc> = -0.024    100*(<Fo>-<Fc>)/<Fo> =    -0.24
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -28153,7 +28153,7 @@ The slope and correlation coefficient should be small
 [65]      TOTALS          2016     96782.      96988.        0.126E+06       0.977E+00     3.02    6.41     .  .  *  .  .
                                                                                                        -2 -1  0  1  2
 #DISK
- List type  11 with serial number   136 is the current version. 
+ List type  11 with serial number   136 is the current version.
  You may still save this list with DELETE n ACTION=NO
 #PURGE
  List type   11  serial number  136 from    95232 to    99670 will not be copied ( deleted )         
@@ -28223,7 +28223,7 @@ The slope and correlation coefficient should be small
  Structure factor least squares calculation  104  ends  6
 [29] SumFo/SumFc=  4.64    SumFoFc/SumFc^2=  4.64    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.654   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.024    100*(<Fo>-<Fc>)/<Fo> =    -0.23
+<Fo>-<Fc> = -0.024    100*(<Fo>-<Fc>)/<Fo> =    -0.23
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -28452,7 +28452,7 @@ Mean C-C su =   0.0018
  Structure factor least squares calculation  105  ends  6
 [29] SumFo/SumFc=  4.63    SumFoFc/SumFc^2=  4.64    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.654   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.035    100*(<Fo>-<Fc>)/<Fo> =    -0.34
+<Fo>-<Fc> = -0.035    100*(<Fo>-<Fc>)/<Fo> =    -0.34
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -28685,7 +28685,7 @@ Mean C-C su =   0.0017
  Structure factor least squares calculation  106  ends  6
 [29] SumFo/SumFc=  4.63    SumFoFc/SumFc^2=  4.64    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.654   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.33
+<Fo>-<Fc> = -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.33
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -28918,7 +28918,7 @@ Mean C-C su =   0.0017
  Structure factor least squares calculation  107  ends  6
 [29] SumFo/SumFc=  4.63    SumFoFc/SumFc^2=  4.64    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.653   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.33
+<Fo>-<Fc> = -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.33
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -29151,7 +29151,7 @@ Mean C-C su =   0.0017
  Structure factor least squares calculation  108  ends  6
 [29] SumFo/SumFc=  4.63    SumFoFc/SumFc^2=  4.64    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.653   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.33
+<Fo>-<Fc> = -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.33
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -29410,7 +29410,7 @@ Mean C-C su =   0.0017
      1913 reflections   R  2.74% Rw  6.17% with I/u(I) >   2.0
 [29] SumFo/SumFc=  4.64    SumFoFc/SumFc^2=  4.64    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.653   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.020    100*(<Fo>-<Fc>)/<Fo> =    -0.26
+<Fo>-<Fc> = -0.020    100*(<Fo>-<Fc>)/<Fo> =    -0.26
 #CYCLENDS
 #FOURIER
  Initialising Special positions
@@ -29539,7 +29539,7 @@ LS-scale=  4.653   Wilson Scale=  4.723
  Structure factor least squares calculation  110  ends  6
 [29] SumFo/SumFc=  4.63    SumFoFc/SumFc^2=  4.64    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.653   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.33
+<Fo>-<Fc> = -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.33
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -29769,7 +29769,7 @@ Mean C-C su =   0.0017
  Structure factor least squares calculation  111  ends  6
 [29] SumFo/SumFc=  4.63    SumFoFc/SumFc^2=  4.64    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.652   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.33
+<Fo>-<Fc> = -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.33
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -29999,7 +29999,7 @@ Mean C-C su =   0.0017
  Structure factor least squares calculation  112  ends  6
 [29] SumFo/SumFc=  4.63    SumFoFc/SumFc^2=  4.64    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.652   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.33
+<Fo>-<Fc> = -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.33
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -30229,7 +30229,7 @@ Mean C-C su =   0.0017
  Structure factor least squares calculation  113  ends  6
 [29] SumFo/SumFc=  4.63    SumFoFc/SumFc^2=  4.64    SumwFoFc/SumwFc^2=  4.63
 LS-scale=  4.652   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.33
+<Fo>-<Fc> = -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.33
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -30459,7 +30459,7 @@ Mean C-C su =   0.0017
  Structure factor least squares calculation  114  ends  6
 [29] SumFo/SumFc=  4.63    SumFoFc/SumFc^2=  4.64    SumwFoFc/SumwFc^2=  4.63
 LS-scale=  4.651   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.33
+<Fo>-<Fc> = -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.33
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -30689,7 +30689,7 @@ Mean C-C su =   0.0017
  Structure factor least squares calculation  115  ends  6
 [29] SumFo/SumFc=  4.63    SumFoFc/SumFc^2=  4.64    SumwFoFc/SumwFc^2=  4.63
 LS-scale=  4.651   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.33
+<Fo>-<Fc> = -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.33
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -30945,7 +30945,7 @@ Mean C-C su =   0.0017
      1913 reflections   R  2.73% Rw  6.16% with I/u(I) >   2.0
 [29] SumFo/SumFc=  4.63    SumFoFc/SumFc^2=  4.64    SumwFoFc/SumwFc^2=  4.63
 LS-scale=  4.651   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.019    100*(<Fo>-<Fc>)/<Fo> =    -0.26
+<Fo>-<Fc> = -0.019    100*(<Fo>-<Fc>)/<Fo> =    -0.26
 #CYCLENDS
 #FOUR
  Initialising Special positions
@@ -31212,7 +31212,7 @@ LS-scale=  4.651   Wilson Scale=  4.723
  Structure factor least squares calculation  117  ends  5
 [29] SumFo/SumFc=  4.92    SumFoFc/SumFc^2=  4.85    SumwFoFc/SumwFc^2=  4.80
 LS-scale=  4.746   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     3.
+[27] <Fo>-<Fc> =  0.3     100*(<Fo>-<Fc>)/<Fo> =     3.
 #CYCLENDS
 #              MAKE SURE WEIGHTS ARE RIGHT. (UNIT OR QUASI-UNIT).
 #LIST 4
@@ -31303,7 +31303,7 @@ Refining    32 parameters in    1 block :      608 elements in the LS matrix.
  Structure factor least squares calculation  118  ends  6
 [29] SumFo/SumFc=  4.92    SumFoFc/SumFc^2=  4.85    SumwFoFc/SumwFc^2=  4.85
 LS-scale=  4.746   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.3     100*(<Fo>-<Fc>)/<Fo> =     3.
+[27] <Fo>-<Fc> =  0.3     100*(<Fo>-<Fc>)/<Fo> =     3.
 #DORESTRAIN
 #INVERT  DEFA
 #NEWSHIFTS
@@ -31537,7 +31537,7 @@ Mean C-C su =   0.0085
  Structure factor least squares calculation  119  ends  6
 [29] SumFo/SumFc=  4.90    SumFoFc/SumFc^2=  4.85    SumwFoFc/SumwFc^2=  4.85
 LS-scale=  4.779   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.2     100*(<Fo>-<Fc>)/<Fo> =     2.
+[27] <Fo>-<Fc> =  0.2     100*(<Fo>-<Fc>)/<Fo> =     2.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -31773,7 +31773,7 @@ Mean C-C su =   0.0067
  Structure factor least squares calculation  120  ends  6
 [29] SumFo/SumFc=  4.91    SumFoFc/SumFc^2=  4.85    SumwFoFc/SumwFc^2=  4.85
 LS-scale=  4.813   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
+[27] <Fo>-<Fc> =  0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -32007,7 +32007,7 @@ Mean C-C su =   0.0064
  Structure factor least squares calculation  121  ends  6
 [29] SumFo/SumFc=  4.90    SumFoFc/SumFc^2=  4.85    SumwFoFc/SumwFc^2=  4.85
 LS-scale=  4.832   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
+[27] <Fo>-<Fc> =  0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -32241,7 +32241,7 @@ Mean C-C su =   0.0063
  Structure factor least squares calculation  122  ends  6
 [29] SumFo/SumFc=  4.90    SumFoFc/SumFc^2=  4.85    SumwFoFc/SumwFc^2=  4.85
 LS-scale=  4.842   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
+[27] <Fo>-<Fc> =  0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -32497,7 +32497,7 @@ Refining    33 parameters in    1 block :      643 elements in the LS matrix.
  Structure factor least squares calculation  123  ends  6
 [29] SumFo/SumFc=  4.90    SumFoFc/SumFc^2=  4.85    SumwFoFc/SumwFc^2=  4.85
 LS-scale=  4.848   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
+[27] <Fo>-<Fc> =  0.1     100*(<Fo>-<Fc>)/<Fo> =     1.
 #DORESTRAIN
 #INVERT  DEFA
 #NEWSHIFTS
@@ -32729,7 +32729,7 @@ Mean C-C su =   0.0063
  Structure factor least squares calculation  124  ends  6
 [29] SumFo/SumFc=  4.84    SumFoFc/SumFc^2=  4.81    SumwFoFc/SumwFc^2=  4.81
 LS-scale=  4.830   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -32963,7 +32963,7 @@ Mean C-C su =   0.0063
  Structure factor least squares calculation  125  ends  6
 [29] SumFo/SumFc=  4.83    SumFoFc/SumFc^2=  4.80    SumwFoFc/SumwFc^2=  4.80
 LS-scale=  4.818   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -33196,7 +33196,7 @@ Mean C-C su =   0.0063
  Structure factor least squares calculation  126  ends  6
 [29] SumFo/SumFc=  4.83    SumFoFc/SumFc^2=  4.80    SumwFoFc/SumwFc^2=  4.80
 LS-scale=  4.809   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -33429,7 +33429,7 @@ Mean C-C su =   0.0063
  Structure factor least squares calculation  127  ends  6
 [29] SumFo/SumFc=  4.82    SumFoFc/SumFc^2=  4.79    SumwFoFc/SumwFc^2=  4.79
 LS-scale=  4.803   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -33686,7 +33686,7 @@ Refining    47 parameters in    1 block :     1238 elements in the LS matrix.
  Structure factor least squares calculation  128  ends  6
 [29] SumFo/SumFc=  4.82    SumFoFc/SumFc^2=  4.79    SumwFoFc/SumwFc^2=  4.79
 LS-scale=  4.799   Wilson Scale=  4.723
-[27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
 #INVERT  DEFA
 #NEWSHIFTS
@@ -33919,7 +33919,7 @@ Mean C-C su =   0.0063
  Structure factor least squares calculation  129  ends  6
 [29] SumFo/SumFc=  4.75    SumFoFc/SumFc^2=  4.75    SumwFoFc/SumwFc^2=  4.75
 LS-scale=  4.780   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.053    100*(<Fo>-<Fc>)/<Fo> =    -0.53
+<Fo>-<Fc> = -0.053    100*(<Fo>-<Fc>)/<Fo> =    -0.53
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -34153,7 +34153,7 @@ Mean C-C su =   0.0051
  Structure factor least squares calculation  130  ends  6
 [29] SumFo/SumFc=  4.75    SumFoFc/SumFc^2=  4.75    SumwFoFc/SumwFc^2=  4.75
 LS-scale=  4.763   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.016    100*(<Fo>-<Fc>)/<Fo> =    -0.16
+<Fo>-<Fc> = -0.016    100*(<Fo>-<Fc>)/<Fo> =    -0.16
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -34387,7 +34387,7 @@ Mean C-C su =   0.0051
  Structure factor least squares calculation  131  ends  6
 [29] SumFo/SumFc=  4.74    SumFoFc/SumFc^2=  4.74    SumwFoFc/SumwFc^2=  4.74
 LS-scale=  4.751   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.014    100*(<Fo>-<Fc>)/<Fo> =    -0.14
+<Fo>-<Fc> = -0.014    100*(<Fo>-<Fc>)/<Fo> =    -0.14
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -34620,7 +34620,7 @@ Mean C-C su =   0.0051
  Structure factor least squares calculation  132  ends  6
 [29] SumFo/SumFc=  4.73    SumFoFc/SumFc^2=  4.73    SumwFoFc/SumwFc^2=  4.73
 LS-scale=  4.742   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.012    100*(<Fo>-<Fc>)/<Fo> =    -0.12
+<Fo>-<Fc> = -0.012    100*(<Fo>-<Fc>)/<Fo> =    -0.12
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -34877,7 +34877,7 @@ Refining    92 parameters in    1 block :     4478 elements in the LS matrix.
  Structure factor least squares calculation  133  ends  6
 [29] SumFo/SumFc=  4.73    SumFoFc/SumFc^2=  4.73    SumwFoFc/SumwFc^2=  4.73
 LS-scale=  4.736   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.011    100*(<Fo>-<Fc>)/<Fo> =    -0.11
+<Fo>-<Fc> = -0.011    100*(<Fo>-<Fc>)/<Fo> =    -0.11
 #DORESTRAIN
 #INVERT  DEFA
 #NEWSHIFTS
@@ -35118,7 +35118,7 @@ Mean C-C su =   0.0052
  Structure factor least squares calculation  134  ends  6
 [29] SumFo/SumFc=  4.70    SumFoFc/SumFc^2=  4.71    SumwFoFc/SumwFc^2=  4.71
 LS-scale=  4.730   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.055    100*(<Fo>-<Fc>)/<Fo> =    -0.54
+<Fo>-<Fc> = -0.055    100*(<Fo>-<Fc>)/<Fo> =    -0.54
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -35353,7 +35353,7 @@ Mean C-C su =   0.0041
  Structure factor least squares calculation  135  ends  6
 [29] SumFo/SumFc=  4.71    SumFoFc/SumFc^2=  4.72    SumwFoFc/SumwFc^2=  4.72
 LS-scale=  4.729   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.023    100*(<Fo>-<Fc>)/<Fo> =    -0.22
+<Fo>-<Fc> = -0.023    100*(<Fo>-<Fc>)/<Fo> =    -0.22
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -35586,7 +35586,7 @@ Mean C-C su =   0.0041
  Structure factor least squares calculation  136  ends  6
 [29] SumFo/SumFc=  4.72    SumFoFc/SumFc^2=  4.73    SumwFoFc/SumwFc^2=  4.73
 LS-scale=  4.730   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.021    100*(<Fo>-<Fc>)/<Fo> =    -0.21
+<Fo>-<Fc> = -0.021    100*(<Fo>-<Fc>)/<Fo> =    -0.21
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -35819,7 +35819,7 @@ Mean C-C su =   0.0041
  Structure factor least squares calculation  137  ends  6
 [29] SumFo/SumFc=  4.72    SumFoFc/SumFc^2=  4.73    SumwFoFc/SumwFc^2=  4.73
 LS-scale=  4.730   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.021    100*(<Fo>-<Fc>)/<Fo> =    -0.21
+<Fo>-<Fc> = -0.021    100*(<Fo>-<Fc>)/<Fo> =    -0.21
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -36134,7 +36134,7 @@ H33 C(9) C(1) N(2)
      1913 reflections   R  3.69% Rw  4.04% with I/u(I) >   2.0
 [29] SumFo/SumFc=  4.70    SumFoFc/SumFc^2=  4.69    SumwFoFc/SumwFc^2=  4.69
 LS-scale=  4.730   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.46
+<Fo>-<Fc> = -0.034    100*(<Fo>-<Fc>)/<Fo> =    -0.46
 #CYCLENDS
 #FOUR
  Initialising Special positions
@@ -36283,7 +36283,7 @@ Refining    92 parameters in    1 block :     4478 elements in the LS matrix.
  Structure factor least squares calculation  139  ends  6
 [29] SumFo/SumFc=  4.70    SumFoFc/SumFc^2=  4.69    SumwFoFc/SumwFc^2=  4.69
 LS-scale=  4.730   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.054    100*(<Fo>-<Fc>)/<Fo> =    -0.53
+<Fo>-<Fc> = -0.054    100*(<Fo>-<Fc>)/<Fo> =    -0.53
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -36517,7 +36517,7 @@ Mean C-C su =   0.0027
  Structure factor least squares calculation  140  ends  6
 [29] SumFo/SumFc=  4.65    SumFoFc/SumFc^2=  4.65    SumwFoFc/SumwFc^2=  4.65
 LS-scale=  4.668   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.035    100*(<Fo>-<Fc>)/<Fo> =    -0.34
+<Fo>-<Fc> = -0.035    100*(<Fo>-<Fc>)/<Fo> =    -0.34
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -36751,7 +36751,7 @@ Mean C-C su =   0.0023
  Structure factor least squares calculation  141  ends  6
 [29] SumFo/SumFc=  4.62    SumFoFc/SumFc^2=  4.63    SumwFoFc/SumwFc^2=  4.63
 LS-scale=  4.641   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.027    100*(<Fo>-<Fc>)/<Fo> =    -0.26
+<Fo>-<Fc> = -0.027    100*(<Fo>-<Fc>)/<Fo> =    -0.26
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -36984,7 +36984,7 @@ Mean C-C su =   0.0022
  Structure factor least squares calculation  142  ends  6
 [29] SumFo/SumFc=  4.62    SumFoFc/SumFc^2=  4.63    SumwFoFc/SumwFc^2=  4.63
 LS-scale=  4.633   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.026    100*(<Fo>-<Fc>)/<Fo> =    -0.25
+<Fo>-<Fc> = -0.026    100*(<Fo>-<Fc>)/<Fo> =    -0.25
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -37217,7 +37217,7 @@ Mean C-C su =   0.0022
  Structure factor least squares calculation  143  ends  6
 [29] SumFo/SumFc=  4.61    SumFoFc/SumFc^2=  4.63    SumwFoFc/SumwFc^2=  4.63
 LS-scale=  4.630   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.025    100*(<Fo>-<Fc>)/<Fo> =    -0.24
+<Fo>-<Fc> = -0.025    100*(<Fo>-<Fc>)/<Fo> =    -0.24
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -37646,7 +37646,7 @@ The slope and correlation coefficient should be small
 [65]      TOTALS          2016     96782.      97003.        0.473E+01       0.115E+01     3.03    3.83     .  .  *  .  .
                                                                                                        -2 -1  0  1  2
 #DISK
- List type  11 with serial number   144 is the current version. 
+ List type  11 with serial number   144 is the current version.
  You may still save this list with DELETE n ACTION=NO
 #PURGE
  List type   11  serial number  144 from    96230 to   100668 will not be copied ( deleted )         
@@ -37716,7 +37716,7 @@ The slope and correlation coefficient should be small
  Structure factor least squares calculation  144  ends  6
 [29] SumFo/SumFc=  4.61    SumFoFc/SumFc^2=  4.62    SumwFoFc/SumwFc^2=  4.63
 LS-scale=  4.629   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.025    100*(<Fo>-<Fc>)/<Fo> =    -0.24
+<Fo>-<Fc> = -0.025    100*(<Fo>-<Fc>)/<Fo> =    -0.24
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -37945,7 +37945,7 @@ Mean C-C su =   0.0018
  Structure factor least squares calculation  145  ends  6
 [29] SumFo/SumFc=  4.62    SumFoFc/SumFc^2=  4.63    SumwFoFc/SumwFc^2=  4.63
 LS-scale=  4.636   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.036    100*(<Fo>-<Fc>)/<Fo> =    -0.35
+<Fo>-<Fc> = -0.036    100*(<Fo>-<Fc>)/<Fo> =    -0.35
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -38178,7 +38178,7 @@ Mean C-C su =   0.0018
  Structure factor least squares calculation  146  ends  6
 [29] SumFo/SumFc=  4.62    SumFoFc/SumFc^2=  4.63    SumwFoFc/SumwFc^2=  4.63
 LS-scale=  4.640   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.037    100*(<Fo>-<Fc>)/<Fo> =    -0.36
+<Fo>-<Fc> = -0.037    100*(<Fo>-<Fc>)/<Fo> =    -0.36
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -38433,7 +38433,7 @@ Mean C-C su =   0.0018
      1913 reflections   R  2.74% Rw  3.58% with I/u(I) >   2.0
 [29] SumFo/SumFc=  4.62    SumFoFc/SumFc^2=  4.63    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.641   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.023    100*(<Fo>-<Fc>)/<Fo> =    -0.31
+<Fo>-<Fc> = -0.023    100*(<Fo>-<Fc>)/<Fo> =    -0.31
 #CYCLENDS
 #FOURIER
  Initialising Special positions
@@ -38562,7 +38562,7 @@ LS-scale=  4.641   Wilson Scale=  4.723
  Structure factor least squares calculation  148  ends  6
 [29] SumFo/SumFc=  4.62    SumFoFc/SumFc^2=  4.63    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.641   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.037    100*(<Fo>-<Fc>)/<Fo> =    -0.36
+<Fo>-<Fc> = -0.037    100*(<Fo>-<Fc>)/<Fo> =    -0.36
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -38792,7 +38792,7 @@ Mean C-C su =   0.0018
  Structure factor least squares calculation  149  ends  6
 [29] SumFo/SumFc=  4.62    SumFoFc/SumFc^2=  4.63    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.641   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.037    100*(<Fo>-<Fc>)/<Fo> =    -0.36
+<Fo>-<Fc> = -0.037    100*(<Fo>-<Fc>)/<Fo> =    -0.36
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -39022,7 +39022,7 @@ Mean C-C su =   0.0018
  Structure factor least squares calculation  150  ends  6
 [29] SumFo/SumFc=  4.62    SumFoFc/SumFc^2=  4.63    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.641   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.038    100*(<Fo>-<Fc>)/<Fo> =    -0.36
+<Fo>-<Fc> = -0.038    100*(<Fo>-<Fc>)/<Fo> =    -0.36
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -39252,7 +39252,7 @@ Mean C-C su =   0.0018
  Structure factor least squares calculation  151  ends  6
 [29] SumFo/SumFc=  4.62    SumFoFc/SumFc^2=  4.63    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.642   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.038    100*(<Fo>-<Fc>)/<Fo> =    -0.36
+<Fo>-<Fc> = -0.038    100*(<Fo>-<Fc>)/<Fo> =    -0.36
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -39482,7 +39482,7 @@ Mean C-C su =   0.0018
  Structure factor least squares calculation  152  ends  6
 [29] SumFo/SumFc=  4.62    SumFoFc/SumFc^2=  4.63    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.642   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.038    100*(<Fo>-<Fc>)/<Fo> =    -0.36
+<Fo>-<Fc> = -0.038    100*(<Fo>-<Fc>)/<Fo> =    -0.36
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -39712,7 +39712,7 @@ Mean C-C su =   0.0018
  Structure factor least squares calculation  153  ends  6
 [29] SumFo/SumFc=  4.62    SumFoFc/SumFc^2=  4.63    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.642   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.038    100*(<Fo>-<Fc>)/<Fo> =    -0.36
+<Fo>-<Fc> = -0.038    100*(<Fo>-<Fc>)/<Fo> =    -0.36
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -39968,7 +39968,7 @@ Mean C-C su =   0.0018
      1913 reflections   R  2.74% Rw  3.58% with I/u(I) >   2.0
 [29] SumFo/SumFc=  4.62    SumFoFc/SumFc^2=  4.63    SumwFoFc/SumwFc^2=  4.64
 LS-scale=  4.642   Wilson Scale=  4.723
-<Fo>-<Fc> =   -0.023    100*(<Fo>-<Fc>)/<Fo> =    -0.31
+<Fo>-<Fc> = -0.023    100*(<Fo>-<Fc>)/<Fo> =    -0.31
 #CYCLENDS
 #FOUR
  Initialising Special positions
