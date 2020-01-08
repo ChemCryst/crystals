@@ -4,7 +4,7 @@ pipeline {
         timeout(time: 2, unit: 'HOURS') 
     }
     environment {
-       WIN_DEPLOY_WORKSPACE = ""
+       WIN_DEPLOY_WORKSPACE = ''
     }
     stages {
         stage("Build and test on all platforms") {
@@ -40,10 +40,9 @@ pipeline {
                     stages {
                         stage('Win64-Intel Build') {                      // Run the build
                             steps {
-                                script {
-                                      WIN_DEPLOY_WORKSPACE = WORKSPACE
-                                }
                                 bat '''
+                                    set WIN_DEPLOY_WORKSPACE=%WORKSPACE%
+                                    echo WDS = %WIN_DEPLOY_WORKSPACE%
                                     call build\\setupenv.ifort_vc.SAYRE.bat
                                     set _MSPDBSRV_ENDPOINT_=%RANDOM%
                                     echo %_MSPDBSRV_ENDPOINT_%
@@ -63,6 +62,7 @@ pipeline {
                             }
                             steps {
                                 bat '''
+                                    echo WDS2 = %WIN_DEPLOY_WORKSPACE%
                                     for /f "tokens=1* delims==" %%a in ('set') do (
                                       if /i NOT "%%a"=="PATH" set %%a=
                                     )
@@ -461,7 +461,7 @@ pipeline {
             steps {
                 dir ( WIN_DEPLOY_WORKSPACE ) {
                     bat '''
-                        echo %WIN_DEPLOY_WORKSPACE%
+                        echo WDS3 %WIN_DEPLOY_WORKSPACE%
                         call build\\setupenv.ifort_vc.SAYRE.bat
                         cd build
                         call make_w32.bat dist
