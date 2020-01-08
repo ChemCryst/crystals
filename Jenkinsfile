@@ -302,6 +302,11 @@ pipeline {
                 '''
             }
         }
+        post {
+            always {
+                archiveArtifacts artifacts: 'installer/*.exe', fingerprint: true
+            }
+        }
         stage('Deploy Win64 - master branch only') {
             when {
               expression {
