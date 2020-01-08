@@ -1,20 +1,20 @@
 pipeline {
     agent none
     options {
-        timeout(time: 2, unit: 'HOURS') 
+        timeout(time: 2, unit: 'HOURS')
     }
     stages {
         stage("Build and test on all platforms") {
             parallel {
                 stage("Win64-Intel") {
-                    agent { 
+                    agent {
                         node {
-                            label 'master' 
+                            label 'master'
                             customWorkspace "E:/jenkins-pool/${BRANCH_NAME}"
                         }
                     }
                     options {
-                        timeout(time: 2, unit: 'HOURS') 
+                        timeout(time: 2, unit: 'HOURS')
                     }
                     environment {
                         COMPCODE = 'INW'
@@ -97,15 +97,15 @@ pipeline {
                             archiveArtifacts artifacts: 'INW_OMP.org/*.out', fingerprint: true
                         }
                     }
-                
-                } 
+
+                }
 
 
-                
+
                 stage("MinGW") {
                     agent { label 'master' }
                     options {
-                        timeout(time: 2, unit: 'HOURS') 
+                        timeout(time: 2, unit: 'HOURS')
                     }
                     environment {
                         COMPCODE = 'MIN'
@@ -182,12 +182,12 @@ pipeline {
                         }
                     }
                 }
-                
-                
+
+
                 stage("Linux") {
-                    agent {label 'orion'}    
+                    agent {label 'orion'}
                     options {
-                        timeout(time: 1, unit: 'HOURS') 
+                        timeout(time: 1, unit: 'HOURS')
                     }
                     environment {
                         LD_LIBRARY_PATH = '~/lib64:~/lib:/files/ric/pparois/root/lib64:/files/ric/pparois/root/lib:${env.LD_LIBRARY_PATH}'
@@ -281,15 +281,16 @@ pipeline {
                    env.BRANCH_NAME == 'master'
               }
             }
-*/            
-            agent { 
+*/
+            agent {
                 node {
-                    label 'master' 
+                    label 'master'
                     customWorkspace "E:/jenkins-pool/${BRANCH_NAME}"
                 }
             }
             options {
-                timeout(time: 2, unit: 'HOURS') 
+                timeout(time: 2, unit: 'HOURS')
+                skipDefaultCheckout()
             }
             environment {
                 CRYSDIR = '.\\,..\\build\\'
@@ -311,14 +312,15 @@ pipeline {
                    env.BRANCH_NAME == 'master'
               }
             }
-            agent { 
+            agent {
                 node {
-                    label 'master' 
+                    label 'master'
                     customWorkspace "E:/jenkins-pool/${BRANCH_NAME}"
                 }
             }
             options {
-                timeout(time: 2, unit: 'HOURS') 
+                timeout(time: 2, unit: 'HOURS')
+                skipDefaultCheckout()
             }
             steps {
                     ftpPublisher alwaysPublishFromMaster: false, masterNodeName: 'master', continueOnError: false, failOnError: false, paramPublish: [parameterName:""], publishers: [
@@ -327,14 +329,8 @@ pipeline {
                         ], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true]
                     ]
             }
-            
+
         }
 
     }
 }
-
-
-
-
-
-
