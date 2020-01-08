@@ -3,7 +3,6 @@ pipeline {
     options {
         timeout(time: 2, unit: 'HOURS') 
     }
-    def extWorkspace = exwsAllocate 'master-pool'
     stages {
         stage("Build and test on all platforms") {
             parallel {
