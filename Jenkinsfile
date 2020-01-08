@@ -3,9 +3,7 @@ pipeline {
     options {
         timeout(time: 2, unit: 'HOURS') 
     }
-    environment {
-       WIN_DEPLOY_WORKSPACE = "x"
-    }
+    def extWorkspace = exwsAllocate 'master-pool'
     stages {
         stage("Build and test on all platforms") {
             parallel {
@@ -37,194 +35,68 @@ pipeline {
                         BUILD_TAG= ''
                         BUILD_URL=  ''
                     }
-                    stages {
-                        stage('Win64-Intel Build') {                      // Run the build
-                            steps {
-                                bat '''
-                                    set WIN_DEPLOY_WORKSPACE=%WORKSPACE%
-                                    echo WDS = %WIN_DEPLOY_WORKSPACE%
-                                    call build\\setupenv.ifort_vc.SAYRE.bat
-                                    set _MSPDBSRV_ENDPOINT_=%RANDOM%
-                                    echo %_MSPDBSRV_ENDPOINT_%
-                                    start mspdbsrv -start -spawn -shutdowntime 90000
-                                    set
-                                    cd build
-                                    call make_w32.bat
-                                    mspdbsrv -stop
-                                    echo "Build step complete"
-                                '''
+                    exws (extWorkspace) {
+                        stages {
+                            stage('Win64-Intel Build') {                      // Run the build
+                                steps {
+                                    bat '''
+                                        set WIN_DEPLOY_WORKSPACE=%WORKSPACE%
+                                        echo WDS = %WIN_DEPLOY_WORKSPACE%
+                                        call build\\setupenv.ifort_vc.SAYRE.bat
+                                        set _MSPDBSRV_ENDPOINT_=%RANDOM%
+                                        echo %_MSPDBSRV_ENDPOINT_%
+                                        start mspdbsrv -start -spawn -shutdowntime 90000
+                                        set
+                                        cd build
+                                        call make_w32.bat
+                                        mspdbsrv -stop
+                                        echo "Build step complete"
+                                    '''
+                                }
+                            }
+                            stage('Win64-Intel Test') {
+                                environment {
+                                    CRYSDIR = '.\\,..\\build\\'
+                                    COMPCODE = 'INW_OMP'
+                                }
+                                steps {
+                                    bat '''
+                                        echo WDS2 = %WIN_DEPLOY_WORKSPACE%
+                                        for /f "tokens=1* delims==" %%a in ('set') do (
+                                          if /i NOT "%%a"=="PATH" set %%a=
+                                        )
+                                        set CRYSDIR=.\\,..\\build\\
+                                        set COMPCODE=INW_OMP
+                                        set CROPENMP=TRUE
+                                        set CR64BIT=TRUE
+                                        set MKL_DYNAMIC=FALSE
+                                        set MKL_NUM_THREADS=1
+                                        set MKL_THREADING_LAYER=SEQUENTIAL
+                                        set OMP_DYNAMIC=FALSE
+                                        set OMP_NUM_THREADS=1
+                                        set MKL_CBWR=COMPATIBLE
+                                        call build\\setupenv.ifort_vc.SAYRE.bat
+                                        cd test_suite
+                                        mkdir script
+                                        echo "%SCRIPT NONE" > script\\tipauto.scp
+                                        echo "%END SCRIPT" >> script\\tipauto.scp
+                                        del crfilev2.dsc
+                                        echo 'Here are the env variables'
+                                        set
+                                        perl testsuite.pl
+                                    '''
+                                }
                             }
                         }
-                        stage('Win64-Intel Test') {
-                            environment {
-                                CRYSDIR = '.\\,..\\build\\'
-                                COMPCODE = 'INW_OMP'
+                        post {
+                            always {
+                                bat 'ren test_suite INW_OMP.org'  // Change path here to get unique archive path.
+                                archiveArtifacts artifacts: 'INW_OMP.org/*.out', fingerprint: true
                             }
-                            steps {
-                                bat '''
-                                    echo WDS2 = %WIN_DEPLOY_WORKSPACE%
-                                    for /f "tokens=1* delims==" %%a in ('set') do (
-                                      if /i NOT "%%a"=="PATH" set %%a=
-                                    )
-                                    set CRYSDIR=.\\,..\\build\\
-                                    set COMPCODE=INW_OMP
-                                    set CROPENMP=TRUE
-                                    set CR64BIT=TRUE
-                                    set MKL_DYNAMIC=FALSE
-                                    set MKL_NUM_THREADS=1
-                                    set MKL_THREADING_LAYER=SEQUENTIAL
-                                    set OMP_DYNAMIC=FALSE
-                                    set OMP_NUM_THREADS=1
-                                    set MKL_CBWR=COMPATIBLE
-                                    call build\\setupenv.ifort_vc.SAYRE.bat
-                                    cd test_suite
-                                    mkdir script
-                                    echo "%SCRIPT NONE" > script\\tipauto.scp
-                                    echo "%END SCRIPT" >> script\\tipauto.scp
-                                    del crfilev2.dsc
-                                    echo 'Here are the env variables'
-                                    set
-                                    perl testsuite.pl
-                                '''
-                            }
-                        }
-/*  Move to outside parallel section so any fail stops deployment
-                        stage('Win64-Intel Installer') {
-                            when {
-                              expression {
-                                   env.BRANCH_NAME == 'master'
-                              }
-                            }
-                            environment {
-                                CRYSDIR = '.\\,..\\build\\'
-                                COMPCODE = 'INW_OMP'
-                            }
-                            steps {
-                                bat '''
-                                    call build\\setupenv.ifort_vc.SAYRE.bat
-                                    cd build
-                                    call make_w32.bat dist
-                                    xcopy /s /y ..\\debuginfo c:\\omp17-x64\\
-                                '''
-                            }
-                        }
-                        
-                        stage('Deploy Win64 - master branch only') {
-                            when {
-                              expression {
-                                   env.BRANCH_NAME == 'master'
-                              }
-                            }
-                            steps {
-                                ftpPublisher alwaysPublishFromMaster: false, masterNodeName: 'master', continueOnError: false, failOnError: false, paramPublish: [parameterName:""], publishers: [
-                                    [configName: 'CRYSTALSXTL', transfers: [
-                                        [asciiMode: false, cleanRemote: false, excludes: '', flatten: true, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: "/", remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'installer/**.exe']
-                                    ], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true]
-                                ]
-                            }
-                        }
-*/
-                    }
-                    post {
-                        always {
-                            bat 'ren test_suite INW_OMP.org'  // Change path here to get unique archive path.
-                            archiveArtifacts artifacts: 'INW_OMP.org/*.out', fingerprint: true
                         }
                     }
                 } 
 
-                
-// Single Dunitz node can't cope with this at the moment in parallel with 64 bit build.
-/*                stage("Win32-Intel") {
-                    agent { label 'Dunitz' }
-                    options {
-                        timeout(time: 1, unit: 'HOURS') 
-                    }
-                    environment {
-                        COMPCODE = 'INW'
-                        CRBUILDEXIT = 'TRUE'   // exit build script on fail
-                        CROPENMP = 'TRUE'
-                        CR64BIT = 'FALSE'
-                    }
-                    stages {
-                        stage('Win32-Intel Build') {                      // Run the build
-                            steps {
-                                bat '''
-                                    call build\\setupenv.DUNITZ.bat
-                                    set _MSPDBSRV_ENDPOINT_=%RANDOM%
-                                    echo %_MSPDBSRV_ENDPOINT_%
-                                    start mspdbsrv -start -spawn -shutdowntime 90000
-                                    cd build
-                                    call make_w32.bat
-                                    mspdbsrv -stop
-                                    echo "Build step complete"
-                                '''
-                            }
-                        }
-                        stage('Win32-Intel Test') {
-                            environment {
-                                CRYSDIR = '.\\,..\\build\\'
-                                COMPCODE = 'INW32'
-                            }
-                            steps {
-                                bat '''
-                                    call build\\setupenv.DUNITZ.bat
-                                    cd test_suite
-                                    mkdir script
-                                    echo "%SCRIPT NONE" > script\\tipauto.scp
-                                    echo "%END SCRIPT" >> script\\tipauto.scp
-                                    del crfilev2.dsc
-                                    perl testsuite.pl
-                                '''
-                            }
-                        }
-                        stage('Win32-Intel Installer') {
-                            when {
-                              expression {
-                                   env.BRANCH_NAME == 'master'
-                              }
-                            }
-                            environment {
-                                CRYSDIR = '.\\,..\\build\\'
-                                COMPCODE = 'INW'
-                            }
-                            steps {
-                                bat '''
-                                    call build\\setupenv.DUNITZ.bat
-                                    cd build
-                                    call make_w32.bat dist
-                                '''
-                            }
-                        }
-                        stage('Deploy Win32 - master branch only') {
-                            when {
-                              expression {
-                                   env.BRANCH_NAME == 'master'
-                              }
-                            }
-                            steps {
-                                ftpPublisher alwaysPublishFromMaster: false, masterNodeName: 'master', continueOnError: false, failOnError: false, paramPublish: [parameterName:""], publishers: [
-                                    [configName: 'crystals.xtl', transfers: [
-                                        [asciiMode: false, cleanRemote: false, excludes: '', flatten: true, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: "/", remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'installer/**.exe']
-                                    ], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true]
-                                ]
-                            }
-                        }
-                        
-                        
-                    }
-                    post {
-                        always {
-                            bat 'ren test_suite INW32.org'  // Change path here to get unique archive path.
-                            archiveArtifacts artifacts: 'INW32.org/*.out', fingerprint: true
-                        }
-                    }
-                }
-                
-                Git was at C:\Program Files\Git\bin\git.exe
-                
-*/
-                                
 
                 
                 stage("MinGW") {
@@ -396,51 +268,7 @@ pipeline {
                     }
                 }
 
-/*
-                stage("OSX") {
-                    agent {label 'Flack'}    
-                    options {
-                        timeout(time: 1, unit: 'HOURS') 
-                    }
-                    environment {
-                        PATH = "/Applications/CMake.app/Contents/bin:$PATH"
-                    }
-                    stages {
-                        stage('OSX Build') {                // Run the build
-                            steps {
-                                    sh '''
-                                        rm -Rf b
-                                        mkdir b
-                                        cd b
-                                        cmake -DCMAKE_NOCOLOR=yes -DMINGW=1 -DuseGUI=off -G"Unix Makefiles" ..
-                                        make -j6 || exit 1
-                                    '''
-                            }
-                        }
-                        stage('OSX Test') {
-                            environment {
-                                CRYSDIR = './,../b/'
-                                COMPCODE = 'OSXCLI'
-                            }
-                            steps {
-                                    sh '''
-                                        cd test_suite
-                                        mkdir -p script
-                                        rm -f crfilev2.dsc
-                                        rm -f gui.tst
-                                        perl testsuite.pl
-                                    '''
-                            }
-                        }
-                    }
-                    post {
-                            always {
-                                sh 'mv test_suite OSXCLI.org'      // Change path here to get unique archive path.
-                                archiveArtifacts artifacts: 'OSXCLI.org/*.out', fingerprint: true
-                            }
-                    }
-                }
-*/
+
             }
         }
 
@@ -458,8 +286,8 @@ pipeline {
                 CRYSDIR = '.\\,..\\build\\'
                 COMPCODE = 'INW_OMP'
             }
-            steps {
-                dir ( WIN_DEPLOY_WORKSPACE ) {
+            exws (extWorkspace) {
+                steps {
                     bat '''
                         echo WDS3 %WIN_DEPLOY_WORKSPACE%
                         call build\\setupenv.ifort_vc.SAYRE.bat
@@ -480,14 +308,14 @@ pipeline {
             options {
                 timeout(time: 2, unit: 'HOURS') 
             }
-            steps {
-                dir ( WIN_DEPLOY_WORKSPACE ) {
-                    ftpPublisher alwaysPublishFromMaster: false, masterNodeName: 'master', continueOnError: false, failOnError: false, paramPublish: [parameterName:""], publishers: [
-                        [configName: 'CRYSTALSXTL', transfers: [
-                            [asciiMode: false, cleanRemote: false, excludes: '', flatten: true, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: "/", remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'installer/**.exe']
-                        ], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true]
-                    ]
-                }
+            exws (extWorkspace) {
+                steps {
+                        ftpPublisher alwaysPublishFromMaster: false, masterNodeName: 'master', continueOnError: false, failOnError: false, paramPublish: [parameterName:""], publishers: [
+                            [configName: 'CRYSTALSXTL', transfers: [
+                                [asciiMode: false, cleanRemote: false, excludes: '', flatten: true, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: "/", remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'installer/**.exe']
+                            ], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true]
+                        ]
+                    }
             }
         }
 
