@@ -10,7 +10,7 @@ pipeline {
                     agent {
                         node {
                             label 'master'
-                            customWorkspace "E:/jenkins-pool/${BRANCH_NAME}"
+                            customWorkspace "E:/jenkins-pool/${BRANCH_NAME}/${BUILD_NUMBER}"
                         }
                     }
                     options {
@@ -43,8 +43,6 @@ pipeline {
                         stage('Win64-Intel Build') {                      // Run the build
                             steps {
                                 bat '''
-                                    set WIN_DEPLOY_WORKSPACE=%WORKSPACE%
-                                    echo WDS = %WIN_DEPLOY_WORKSPACE%
                                     call build\\setupenv.ifort_vc.SAYRE.bat
                                     set _MSPDBSRV_ENDPOINT_=%RANDOM%
                                     echo %_MSPDBSRV_ENDPOINT_%
@@ -64,7 +62,6 @@ pipeline {
                             }
                             steps {
                                 bat '''
-                                    echo WDS2 = %WIN_DEPLOY_WORKSPACE%
                                     for /f "tokens=1* delims==" %%a in ('set') do (
                                       if /i NOT "%%a"=="PATH" set %%a=
                                     )
@@ -285,7 +282,7 @@ pipeline {
             agent {
                 node {
                     label 'master'
-                    customWorkspace "E:/jenkins-pool/${BRANCH_NAME}"
+                    customWorkspace "E:/jenkins-pool/${BRANCH_NAME}/${BUILD_NUMBER}"
                 }
             }
             options {
@@ -298,7 +295,6 @@ pipeline {
             }
             steps {
                 bat '''
-                    echo WDS3 %WIN_DEPLOY_WORKSPACE%
                     call build\\setupenv.ifort_vc.SAYRE.bat
                     cd build
                     call make_w32.bat dist
@@ -315,7 +311,7 @@ pipeline {
             agent {
                 node {
                     label 'master'
-                    customWorkspace "E:/jenkins-pool/${BRANCH_NAME}"
+                    customWorkspace "E:/jenkins-pool/${BRANCH_NAME}/${BUILD_NUMBER}"
                 }
             }
             options {
