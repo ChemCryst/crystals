@@ -439,6 +439,7 @@ pipeline {
         }
 
         stage('Win64-Intel Installer') {
+            agent { label 'master' }
             when {
               expression {
                    env.BRANCH_NAME == 'master'
@@ -462,6 +463,7 @@ pipeline {
             }
         }
         stage('Deploy Win64 - master branch only') {
+            agent { label 'master' }
             when {
               expression {
                    env.BRANCH_NAME == 'master'
