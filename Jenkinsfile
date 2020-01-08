@@ -8,8 +8,10 @@ pipeline {
             parallel {
                 stage("Win64-Intel") {
                     agent { 
-                        label 'master' 
-                        customWorkspace "E:/jenkins-pool/${BRANCH_NAME}"
+                        node {
+                            label 'master' 
+                            customWorkspace "E:/jenkins-pool/${BRANCH_NAME}"
+                        }
                     }
                     options {
                         timeout(time: 2, unit: 'HOURS') 
@@ -281,8 +283,10 @@ pipeline {
             }
 */            
             agent { 
-                label 'master' 
-                customWorkspace "E:/jenkins-pool/${BRANCH_NAME}"
+                node {
+                    label 'master' 
+                    customWorkspace "E:/jenkins-pool/${BRANCH_NAME}"
+                }
             }
             options {
                 timeout(time: 2, unit: 'HOURS') 
@@ -308,8 +312,10 @@ pipeline {
               }
             }
             agent { 
-                label 'master' 
-                customWorkspace "E:/jenkins-pool/${BRANCH_NAME}"
+                node {
+                    label 'master' 
+                    customWorkspace "E:/jenkins-pool/${BRANCH_NAME}"
+                }
             }
             options {
                 timeout(time: 2, unit: 'HOURS') 
