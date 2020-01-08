@@ -8,7 +8,10 @@ pipeline {
         stage("Build and test on all platforms") {
             parallel {
                 stage("Win64-Intel") {
-                    agent { label 'master' }
+                    agent { 
+                        label 'master' 
+                        customWorkspace "E:/jenkins-pool/${BRANCH_NAME}"
+                    }
                     options {
                         timeout(time: 2, unit: 'HOURS') 
                     }
@@ -35,66 +38,65 @@ pipeline {
                         BUILD_TAG= ''
                         BUILD_URL=  ''
                     }
-                    exws (extWorkspace) {
-                        stages {
-                            stage('Win64-Intel Build') {                      // Run the build
-                                steps {
-                                    bat '''
-                                        set WIN_DEPLOY_WORKSPACE=%WORKSPACE%
-                                        echo WDS = %WIN_DEPLOY_WORKSPACE%
-                                        call build\\setupenv.ifort_vc.SAYRE.bat
-                                        set _MSPDBSRV_ENDPOINT_=%RANDOM%
-                                        echo %_MSPDBSRV_ENDPOINT_%
-                                        start mspdbsrv -start -spawn -shutdowntime 90000
-                                        set
-                                        cd build
-                                        call make_w32.bat
-                                        mspdbsrv -stop
-                                        echo "Build step complete"
-                                    '''
-                                }
-                            }
-                            stage('Win64-Intel Test') {
-                                environment {
-                                    CRYSDIR = '.\\,..\\build\\'
-                                    COMPCODE = 'INW_OMP'
-                                }
-                                steps {
-                                    bat '''
-                                        echo WDS2 = %WIN_DEPLOY_WORKSPACE%
-                                        for /f "tokens=1* delims==" %%a in ('set') do (
-                                          if /i NOT "%%a"=="PATH" set %%a=
-                                        )
-                                        set CRYSDIR=.\\,..\\build\\
-                                        set COMPCODE=INW_OMP
-                                        set CROPENMP=TRUE
-                                        set CR64BIT=TRUE
-                                        set MKL_DYNAMIC=FALSE
-                                        set MKL_NUM_THREADS=1
-                                        set MKL_THREADING_LAYER=SEQUENTIAL
-                                        set OMP_DYNAMIC=FALSE
-                                        set OMP_NUM_THREADS=1
-                                        set MKL_CBWR=COMPATIBLE
-                                        call build\\setupenv.ifort_vc.SAYRE.bat
-                                        cd test_suite
-                                        mkdir script
-                                        echo "%SCRIPT NONE" > script\\tipauto.scp
-                                        echo "%END SCRIPT" >> script\\tipauto.scp
-                                        del crfilev2.dsc
-                                        echo 'Here are the env variables'
-                                        set
-                                        perl testsuite.pl
-                                    '''
-                                }
+                    stages {
+                        stage('Win64-Intel Build') {                      // Run the build
+                            steps {
+                                bat '''
+                                    set WIN_DEPLOY_WORKSPACE=%WORKSPACE%
+                                    echo WDS = %WIN_DEPLOY_WORKSPACE%
+                                    call build\\setupenv.ifort_vc.SAYRE.bat
+                                    set _MSPDBSRV_ENDPOINT_=%RANDOM%
+                                    echo %_MSPDBSRV_ENDPOINT_%
+                                    start mspdbsrv -start -spawn -shutdowntime 90000
+                                    set
+                                    cd build
+                                    call make_w32.bat
+                                    mspdbsrv -stop
+                                    echo "Build step complete"
+                                '''
                             }
                         }
-                        post {
-                            always {
-                                bat 'ren test_suite INW_OMP.org'  // Change path here to get unique archive path.
-                                archiveArtifacts artifacts: 'INW_OMP.org/*.out', fingerprint: true
+                        stage('Win64-Intel Test') {
+                            environment {
+                                CRYSDIR = '.\\,..\\build\\'
+                                COMPCODE = 'INW_OMP'
+                            }
+                            steps {
+                                bat '''
+                                    echo WDS2 = %WIN_DEPLOY_WORKSPACE%
+                                    for /f "tokens=1* delims==" %%a in ('set') do (
+                                      if /i NOT "%%a"=="PATH" set %%a=
+                                    )
+                                    set CRYSDIR=.\\,..\\build\\
+                                    set COMPCODE=INW_OMP
+                                    set CROPENMP=TRUE
+                                    set CR64BIT=TRUE
+                                    set MKL_DYNAMIC=FALSE
+                                    set MKL_NUM_THREADS=1
+                                    set MKL_THREADING_LAYER=SEQUENTIAL
+                                    set OMP_DYNAMIC=FALSE
+                                    set OMP_NUM_THREADS=1
+                                    set MKL_CBWR=COMPATIBLE
+                                    call build\\setupenv.ifort_vc.SAYRE.bat
+                                    cd test_suite
+                                    mkdir script
+                                    echo "%SCRIPT NONE" > script\\tipauto.scp
+                                    echo "%END SCRIPT" >> script\\tipauto.scp
+                                    del crfilev2.dsc
+                                    echo 'Here are the env variables'
+                                    set
+                                    perl testsuite.pl
+                                '''
                             }
                         }
                     }
+                    post {
+                        always {
+                            bat 'ren test_suite INW_OMP.org'  // Change path here to get unique archive path.
+                            archiveArtifacts artifacts: 'INW_OMP.org/*.out', fingerprint: true
+                        }
+                    }
+                
                 } 
 
 
@@ -278,7 +280,11 @@ pipeline {
                    env.BRANCH_NAME == 'master'
               }
             }
-*/            agent { label 'master' }
+*/            
+            agent { 
+                label 'master' 
+                customWorkspace "E:/jenkins-pool/${BRANCH_NAME}"
+            }
             options {
                 timeout(time: 2, unit: 'HOURS') 
             }
@@ -286,16 +292,14 @@ pipeline {
                 CRYSDIR = '.\\,..\\build\\'
                 COMPCODE = 'INW_OMP'
             }
-            exws (extWorkspace) {
-                steps {
-                    bat '''
-                        echo WDS3 %WIN_DEPLOY_WORKSPACE%
-                        call build\\setupenv.ifort_vc.SAYRE.bat
-                        cd build
-                        call make_w32.bat dist
-                        xcopy /s /y ..\\debuginfo c:\\omp17-x64\\
-                    '''
-                }
+            steps {
+                bat '''
+                    echo WDS3 %WIN_DEPLOY_WORKSPACE%
+                    call build\\setupenv.ifort_vc.SAYRE.bat
+                    cd build
+                    call make_w32.bat dist
+                    xcopy /s /y ..\\debuginfo c:\\omp17-x64\\
+                '''
             }
         }
         stage('Deploy Win64 - master branch only') {
@@ -304,19 +308,21 @@ pipeline {
                    env.BRANCH_NAME == 'master'
               }
             }
-            agent { label 'master' }
+            agent { 
+                label 'master' 
+                customWorkspace "E:/jenkins-pool/${BRANCH_NAME}"
+            }
             options {
                 timeout(time: 2, unit: 'HOURS') 
             }
-            exws (extWorkspace) {
-                steps {
-                        ftpPublisher alwaysPublishFromMaster: false, masterNodeName: 'master', continueOnError: false, failOnError: false, paramPublish: [parameterName:""], publishers: [
-                            [configName: 'CRYSTALSXTL', transfers: [
-                                [asciiMode: false, cleanRemote: false, excludes: '', flatten: true, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: "/", remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'installer/**.exe']
-                            ], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true]
-                        ]
-                    }
+            steps {
+                    ftpPublisher alwaysPublishFromMaster: false, masterNodeName: 'master', continueOnError: false, failOnError: false, paramPublish: [parameterName:""], publishers: [
+                        [configName: 'CRYSTALSXTL', transfers: [
+                            [asciiMode: false, cleanRemote: false, excludes: '', flatten: true, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: "/", remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'installer/**.exe']
+                        ], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true]
+                    ]
             }
+            
         }
 
     }
