@@ -4,7 +4,7 @@ pipeline {
         timeout(time: 2, unit: 'HOURS') 
     }
     environment {
-       WIN_DEPLOY_WORKSPACE = ''
+       WIN_DEPLOY_WORKSPACE = "x"
     }
     stages {
         stage("Build and test on all platforms") {
