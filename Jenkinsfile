@@ -300,10 +300,6 @@ pipeline {
                     call make_w32.bat dist
                     xcopy /s /y ..\\debuginfo c:\\omp17-x64\\
                 '''
-            }
-        }
-        post {
-            always {
                 archiveArtifacts artifacts: 'installer/*.exe', fingerprint: true
             }
         }
