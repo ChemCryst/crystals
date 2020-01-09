@@ -26,7 +26,8 @@
 %       EVALUATE OLDRESIDUE = 0                                                 
 %%                                                                              
 %  IF EXISTS 5 .LE. 0 THEN                                                      
-WARNING - You have no atoms                                                     
+%    COPY '#SET MONITOR ON'
+[E   WARNING - You have no atoms                                                     
 %    FINISH                                                                     
 %  END IF
 %% Do not continue if PARTS have been set

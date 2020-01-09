@@ -989,26 +989,26 @@ C
       ENDIF
 C 
       IF (FN) THEN
-        IDJW=NCTRIM(INFIL)
-
-        DO ITEMP=IDJW,1,-1
-            JTEMP=ITEMP
-            IF(INFIL(ITEMP:ITEMP).EQ. '.') EXIT
-            JTEMP=IDJW+1   !IN CASE THERE IS NO '.'
-        ENDDO
-        DO KTEMP=JTEMP,1,-1
-            LTEMP=KTEMP
-            IF(INFIL(KTEMP:KTEMP).EQ.'\') EXIT
-            LTEMP=LTEMP-1  !IN CASE THERE IS NO '\'
-        ENDDO
-        LTEMP=LTEMP+1
-        JTEMP=JTEMP-1
-        JDJW=JTEMP-LTEMP
-        JDJW=MIN(55,JDJW) !25 CHARACTERS USED FOR #TITLE AND CDATE
-        JTEMP=LTEMP+JDJW
-c      write(123,*)LTEMP,JTEMP
-        WRITE (NOUTF,'(//a,2X,A,2x,a)') '#TITLE ',
-     1  INFIL(LTEMP:JTEMP),CDATE
+c        IDJW=NCTRIM(ENAME)
+c        DO ITEMP=IDJW,1,-1
+c            JTEMP=ITEMP
+c            IF(INFIL(ITEMP:ITEMP).EQ. '.') EXIT
+c            JTEMP=IDJW+1   !IN CASE THERE IS NO '.'
+c        ENDDO
+c        DO KTEMP=JTEMP,1,-1
+c            LTEMP=KTEMP
+c            IF(INFIL(KTEMP:KTEMP).EQ.'\') EXIT
+c            LTEMP=LTEMP-1  !IN CASE THERE IS NO '\'
+c        ENDDO
+c        LTEMP=LTEMP+1
+c        JTEMP=JTEMP-1
+c        JDJW=JTEMP-LTEMP
+c        JDJW=MIN(55,JDJW) !25 CHARACTERS USED FOR #TITLE AND CDATE
+c        JTEMP=LTEMP+JDJW
+cc      write(123,*)LTEMP,JTEMP
+c        WRITE (NOUTF,'(//a,2X,A,2x,a)') '#TITLE ',
+c     1  INFIL(LTEMP:JTEMP),CDATE
+        WRITE (NOUTF,'(//,2a)') '#TITLE ', ename(1:LEN_TRIM(ename))
       ENDIF
 c
 c

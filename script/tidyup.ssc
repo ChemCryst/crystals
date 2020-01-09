@@ -57,7 +57,12 @@
 {E You have {RFAR{E too few X-ray observations for the number of variables      
 {E you are trying to refine. Think again or seek help.                          
 %    COPY '#SCRIPT DIRECT'                                                      
-%  END IF                                                                       
+%  END IF
+%%
+{R Checking the absolute structure
+%  copy '#set moni fast'
+%  copy '#script xabsolute'
+%  copy '#set moni on'                                                                       
 %%                                                                              
 %  EVALUATE ZMAX = 4.0
 %  COPY '#GENERALEDIT 29'

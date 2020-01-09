@@ -181,12 +181,19 @@ class CcModelDoc
         void FastSphere(const string & label,int x1,int y1,int z1, 
                           int r, int g, int b, int occ,int cov, int vdw,
                           int spare, int flag,
-                          int iso, int irad);
+                          int iso, int irad,
+                          float frac_x, float frac_y, float frac_z,
+                          const string & elem, int serial, int refflag,
+                          int assembly, int group, float ueq, float fspare, int iflag);
+
 
         void FastDonut(const string & label,int x1,int y1,int z1,
                           int r, int g, int b, int occ,int cov, int vdw,
                           int spare, int flag,
-                          int iso, int irad, int idec, int iaz);
+                          int iso, int irad, int idec, int iaz,
+                          float frac_x, float frac_y, float frac_z,
+                          const string & elem, int serial, int refflag,
+                          int assembly, int group, float ueq, float fspare, int iflag);
 
 
         CcModelObject * FindObjectByGLName(GLuint name);            // Called by CrModel
@@ -208,7 +215,7 @@ class CcModelDoc
         friend bool operator==(CcModelDoc* doc, const string& st0); // Called by CcController
 
         int NumSelected();                                          // Called by CrModList
-        void EnsureVisible(CcModelAtom* va);                        // Called by CcModelAtom, Bond etc.
+        void EnsureVisible(CcModelObject* va);                        // Called by CcModelAtom, Bond etc.
 
         void Select(bool selected);                                 // Called by CcModelAtom, Donut etc.
 

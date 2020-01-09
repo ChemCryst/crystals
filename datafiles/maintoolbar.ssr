@@ -36,13 +36,13 @@
 ^^WI          '#SCRIPT EDLIST16' DISABLEIF='IN' ENABLEIF='L5'
 ^^WI         TOOL _DO33 dorefine.png
 ^^WI 'Setup refinement'
-^^WI          '#SCRIPT XWRITE5' DISABLEIF='IN'
+^^WI          '#SCRIPT SWRITE5' DISABLEIF='IN'
 ^^WI         TOOL _DO33 runref.png
 ^^WI 'Initiate some cycles of refinement'
 ^^WI          '#SCRIPT XREFINE' DISABLEIF='IN'
 ^^WI         SPLIT
 ^^WI         TOOL _MCA cam.png
-^^WI 'Manupulate the structure with Cameron graphics'
+^^WI 'Manipulate the structure with Cameron graphics'
 ^^WI         '#SCRIPT XCAMNORM'
 ^^WI         DISABLEIF='IN' ENABLEIF='L5 L1 L2'
 ^^WI         TOOL _MRC 'mercury.png'
@@ -53,9 +53,9 @@
 ^^WI 'Open Notepad'
 ^^WI         '$notepad'   DISABLEIF='IN'
 #ifdef CRY_OSWIN32
-^^WI         TOOL _MCM 'pifmgr.dll'
+^^WI         TOOL _MCM 'cmd.png'
 ^^WI 'Open a Command shell'
-^^WI         '$"CRYSDIR:oshell.bat" P'   APPICON DISABLEIF='IN'
+^^WI         '$cmd' DISABLEIF='IN'
 #endif
 ^^WI         TOOL _MEX 'explorer.png'
 ^^WI 'Explore the current working folder'

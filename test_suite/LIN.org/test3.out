@@ -5631,16 +5631,16 @@ AZIMUTH  =    59.34     AZIMUTH /100 =   0.5934
  BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                            Date              Time          
 
 
- A positive rotation is clockwise from atom 1 to 4, when viewed from atom 2 to 3
  The su is computed from the mean atomic variances
+ A positive rotation is clockwise from atom 1 to 4, when viewed from atom 2 to 3
                                                       Torsion angle & su
-      P(1) to       C(1) to       C(2) to       C(3)        -176.7    0.0
-      P(1) to       C(1) to       C(2) to       C(4)        -177.7    0.0
-      P(1) to       C(1) to       C(2) to       C(5)        -178.0    0.0
-      P(1) to       C(1) to       C(2) to       C(6)        -178.3    0.0
-      P(1) to       C(1) to       C(2) to       O(7)        -178.2    0.0
-      P(1) to       C(1) to       C(2) to       C(8)         142.3    0.0
-      P(1) to       C(1) to       C(2) to C(9,-2,1,-1)      -127.4    0.0
+      P(1) to       C(1) to       C(2) to       C(3) =      -176.7    0.0
+      P(1) to       C(1) to       C(2) to       C(4) =      -177.7    0.0
+      P(1) to       C(1) to       C(2) to       C(5) =      -178.0    0.0
+      P(1) to       C(1) to       C(2) to       C(6) =      -178.3    0.0
+      P(1) to       C(1) to       C(2) to       O(7) =      -178.2    0.0
+      P(1) to       C(1) to       C(2) to       C(8) =       142.3    0.0
+      P(1) to       C(1) to       C(2) to C(9,-2,1,-1) =    -127.4    0.0
 
 
  BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                            Date              Time          
@@ -5656,7 +5656,7 @@ AZIMUTH  =    59.34     AZIMUTH /100 =   0.5934
  An atom has appeared more than once in the list
  Processing of the card above has been abandoned
                                                       Torsion angle & su
-      P(1) to       C(1) to       C(2) to       P(1)           0.0    0.0
+      P(1) to       C(1) to       C(2) to       P(1) =         0.0    0.0
 #TITLE SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !
 #LIST 1
 #LIST 2
@@ -5752,7 +5752,7 @@ Upating List 13 for twinned data
  Structure factor least squares calculation    1  ends  5
 [29] SumFo/SumFc= 14.33    SumFoFc/SumFc^2= 12.39    SumwFoFc/SumwFc^2= 12.39
 LS-scale= 12.394   Wilson Scale=  0.000
-[27] <Fo>-<Fc> =    1.5     100*(<Fo>-<Fc>)/<Fo> =    13.
+[27] <Fo>-<Fc> =  1.5     100*(<Fo>-<Fc>)/<Fo> =    13.
 #CYCLENDS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -5817,7 +5817,7 @@ Refining    44 parameters in    1 block :     1094 elements in the LS matrix.
  Structure factor least squares calculation    2  ends  6
 [29] SumFo/SumFc= 14.33    SumFoFc/SumFc^2= 12.39    SumwFoFc/SumwFc^2= 12.39
 LS-scale= 12.394   Wilson Scale=  0.000
-[27] <Fo>-<Fc> =    1.5     100*(<Fo>-<Fc>)/<Fo> =    13.
+[27] <Fo>-<Fc> =  1.5     100*(<Fo>-<Fc>)/<Fo> =    13.
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -5848,7 +5848,9 @@ LS-scale= 12.394   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  4.44E-05
+ (sp inverse) 1-norm:  7.96E+00 cond. number:  3.72E+02 rel. error:  4.44E-05
  S/ESD     1           1            -1.155      0.0E+00    0.628E+00         -1.84                          SCALE   
  LARGE     2           2           -0.1928      0.0E+00    0.702E-01         -2.75        SI     1 U[11]   
                                                                                                             Composite
@@ -6100,7 +6102,7 @@ Mean C-C su =   0.0000
       270 reflections   R 27.04% Rw 32.02% with I/u(I) >   2.0
 [29] SumFo/SumFc= 12.67    SumFoFc/SumFc^2= 12.13    SumwFoFc/SumwFc^2= 12.13
 LS-scale= 11.239   Wilson Scale=  0.000
-[27] <Fo>-<Fc> =    1.4     100*(<Fo>-<Fc>)/<Fo> =    11.
+[27] <Fo>-<Fc> =  1.4     100*(<Fo>-<Fc>)/<Fo> =    11.
 #CYCLENDS
 #DISTANCES
 #LIST 31
@@ -7167,7 +7169,7 @@ Refining    14 parameters in    4 block :       89 elements in the LS matrix.
  Structure factor least squares calculation    1  ends  2
 [29] SumFo/SumFc=  1.02    SumFoFc/SumFc^2=  1.00    SumwFoFc/SumwFc^2=  1.00
 LS-scale=  1.000   Wilson Scale=  0.000
-[27] <Fo>-<Fc> =    0.5     100*(<Fo>-<Fc>)/<Fo> =     2.
+[27] <Fo>-<Fc> =  0.5     100*(<Fo>-<Fc>)/<Fo> =     2.
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -7188,14 +7190,22 @@ LS-scale=  1.000   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.34E-06
+ (sp inverse) 1-norm:  1.84E+00 cond. number:  1.12E+01 rel. error:  1.34E-06
  S/ESD     1           1             0.029      0.0E+00    0.189E-01          1.52                          SCALE   
 [13]  LARGE     2           2             0.0       0.0E+00    0.4 E-02          1.4                           DU[ISO] 
+Inversion method: Automatic
 Block No  2.  Single precision relative error:  1.72E-07
+ (sp inverse) 1-norm:  1.19E+00 cond. number:  1.44E+00 rel. error:  1.72E-07
  Block   2
+Inversion method: Automatic
 Block No  3.  Single precision relative error:  1.68E-07
+ (sp inverse) 1-norm:  1.17E+00 cond. number:  1.41E+00 rel. error:  1.68E-07
  Block   3
+Inversion method: Automatic
 Block No  4.  Single precision relative error:  1.47E-07
+ (sp inverse) 1-norm:  1.11E+00 cond. number:  1.24E+00 rel. error:  1.47E-07
  Block   4
 [14]  S/ESD    11           1           -0.022       0.0E+00    0.36 E-02         -6.3         C      1 X       
 [14]  S/ESD    13           3            0.017       0.0E+00    0.40 E-02          4.2         C      1 Z       
@@ -7351,7 +7361,7 @@ Mean C-C su =   0.0282
  Structure factor least squares calculation    2  ends  2
 [29] SumFo/SumFc=  1.01    SumFoFc/SumFc^2=  1.00    SumwFoFc/SumwFc^2=  1.00
 LS-scale=  1.014   Wilson Scale=  0.000
-<Fo>-<Fc> =   -0.001    100*(<Fo>-<Fc>)/<Fo> =     0.00
+<Fo>-<Fc> = -0.001    100*(<Fo>-<Fc>)/<Fo> =     0.00
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -7702,7 +7712,7 @@ Refining    37 parameters in    1 block :      793 elements in the LS matrix.
  Structure factor least squares calculation    1  ends  2
 [29] SumFo/SumFc=  1.99    SumFoFc/SumFc^2=  2.02    SumwFoFc/SumwFc^2=  1.99
 LS-scale=  1.992   Wilson Scale=  0.000
-[27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -7723,7 +7733,9 @@ LS-scale=  1.992   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  9.23E-05
+ (sp inverse) 1-norm:  7.15E+00 cond. number:  7.74E+02 rel. error:  9.23E-05
 
                                                 for          37 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -7938,7 +7950,7 @@ ___________
  Structure factor least squares calculation    2  ends  2
 [29] SumFo/SumFc=  1.99    SumFoFc/SumFc^2=  2.02    SumwFoFc/SumwFc^2=  1.99
 LS-scale=  1.992   Wilson Scale=  0.000
-[27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
 #INVERT  DEFA
 #NEWSHIFTS
@@ -7957,7 +7969,9 @@ LS-scale=  1.992   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  9.09E-05
+ (sp inverse) 1-norm:  7.15E+00 cond. number:  7.63E+02 rel. error:  9.09E-05
 
                                                 for          37 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -8602,7 +8616,7 @@ ___________
        92 reflections   R 47.68% Rw 47.80% with I/u(I) >   2.0
 [29] SumFo/SumFc=  1.88    SumFoFc/SumFc^2=  1.66    SumwFoFc/SumwFc^2=  1.66
 LS-scale=  1.000   Wilson Scale=  0.000
-[27] <Fo>-<Fc> =   12.2     100*(<Fo>-<Fc>)/<Fo> =    46.
+[27] <Fo>-<Fc> = 12.2     100*(<Fo>-<Fc>)/<Fo> =    46.
 #CYCLENDS
 #PRINT 6
 

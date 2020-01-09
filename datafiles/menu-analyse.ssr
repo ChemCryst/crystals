@@ -20,7 +20,7 @@
 ^^WI   ITEM AGREE '&Tabbed initial analyses' '#SCRIPT XCHECK6'                  
 ^^WI               ENABLEIF='L6' DISABLEIF='IN'                                 
 ^^WI   SPLIT                                                                    
-^^WI   ITEM HOOFT '&Absolute config' '#SCRIPT XFLACKPASCAL'                          
+^^WI   ITEM HOOFT '&Check Absolute config' '#SCRIPT XFLACKPASCAL'                          
 ^^WI               ENABLEIF='L5 L6 L30' DISABLEIF='IN'                              
 ^^WI   ITEM HBON  '&Likely H-bonds'                                             
 ^^WI   '#dist_Nou mo=al_Nsel ran=li_Nli 1.5 2.2 .7 2.2_Npi h_Nbo o n_Nen'

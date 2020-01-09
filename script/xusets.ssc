@@ -1,41 +1,35 @@
 %SCRIPT XUSETS
 %%Get U[ISO].  CMESSAGE is text to be displayed
 % VARIABLE CHARACTER CATOM CMESSAGE
+% VARIABLE LOGICAL CALLED
+% EVALUATE CALLED = TRUE
 % VARIABLE REAL APART AVALUE
 % EVALUATE CMESSAGE = 'Example: 0.05'
 % EVALUATE AVALUE = 0.05
 %%
-%% FILL THE QUEUE WITH SELECTED ATOM NAMES
-% QUEUE REWIND
-% LOOP
-%  ON END TERMINATE
-%  CLEAR
-%  INSERT 'CONT '
-%  GET silent TEXT 'Atom?' ' '
-%  QUEUE SEND
-% END LOOP
 %%
 % COPY '#SCRIPT XGETVAL'
 % EVALUATE APART = AVALUE
-
-%%  PROCESS THE QUEUE TO AMKE ATOMS ISOTROPIC
-%   COPY '#EDIT'
-%   CLEAR
-%   INSERT 'UEQUIV '
-%   SEND
-%   CLEAR
-%   QUEUE PROCESS
-%   COPY 'END'
+% EVALUATE CALLED = TRUE
+% SHOW APART
 %%
-%% REWIND THE QUEUE AND USE IT AGAIN TO SET U[ISO]
-%   QUEUE REWIND
-%   COPY '#EDIT'
-%   CLEAR
-%   INSERT 'RESET U[11] '
-%   STORE FORMAT /(F7.4)/ LENGTH 7 REAL APART
-%   SEND
-%   CLEAR
-%
-%   QUEUE PROCESS
-%   COPY 'END'
+%% edit was still activated even if part number selection cancelled
+%  if avalue .lt. - 1000. then
+%    finish
+%  end if                                                                             
+%%
+%%
+% QUEUE REWIND
+%%
+^^CO GETVALUE MODEL01
+%%
+% LOOP
+%   ON END TERMINATE
+%   GET SILENT NOSTORE FINAL KEYWORD 'Atom?' ' '
+%   EVALUATE CATOM = CVALUE
+%   COPY '#SCRIPT YREUSET'
+% END LOOP
+% COPY '#EDIT'
+% QUEUE PROCESS
+% COPY 'END'
 %END SCRIPT

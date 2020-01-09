@@ -384,12 +384,15 @@ _refine_diff_density_max          0.42
 # Explicitly named reflections are ALWAYS excluded from R&wR 
  
 # The values actually used during refinement 
+# These are labelled "all" for compatibility with PLATON 
 _oxford_refine_reflns_threshold_expression_ref   I>-10.0\s(I)
 _refine_ls_number_restraints      0 
 _refine_ls_number_parameters      55 
 _refine_ls_number_reflns          1133 
 _oxford_refine_ls_R_factor_ref    0.0879 
-_refine_ls_wR_factor_ref          0.2170 
+_refine_ls_R_factor_all           0.0879 
+_oxford_refine_ls_wR_factor_ref   0.2170 
+_refine_ls_wR_factor_all          0.2170 
 _refine_ls_goodness_of_fit_ref    1.6682 
 [01] _refine_ls_shift/su_max           0.0000
 [02] _refine_ls_shift/su_mean          0.0000
@@ -397,14 +400,14 @@ _refine_ls_goodness_of_fit_ref    1.6682
  
 # Computed with no filters except I/sigma = -10 
 _oxford_reflns_number_all         1133 
-_refine_ls_R_factor_all           0.0879 
-_refine_ls_wR_factor_all          0.2170 
+_oxford_refine_ls_R_factor_all    0.0880 
+_oxford_refine_ls_wR_factor_all   0.2290 
  
 # Computed with no filters except I/sigma = +2 a la SHELX 
 _reflns_threshold_expression                I>2.0\s(I)
 _reflns_number_gt                 1016 
-_refine_ls_R_factor_gt            0.0785 
-_refine_ls_wR_factor_gt           0.1968 
+_refine_ls_R_factor_gt            0.0783 
+_refine_ls_wR_factor_gt           0.2020 
  
  
 # choose from: 

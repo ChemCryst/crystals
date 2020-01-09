@@ -1,0 +1,43 @@
+# This file will be read by CRYSTALS
+# when you close it, so save any changes that you make.
+# To abandon changes: either don't save, or, delete all
+# lines from this file before saving.
+# 
+# To remove all restraints, replace them with the
+# single keyword NO, so that the file reads:
+#     #LIST 16
+#     NO
+#     END
+#
+# Punched on 25/10/19 at 11:39:08
+#
+#LIST     16                                                                    
+PLANAR F(1) F(2) F(4) F(5) 
+VIBRATION 0.0, 0.020000 = C(3) TO C(5) 
+REM   DELU   START (DO NOT REMOVE THIS LINE) 
+VIBR .0, 0.00200 = C(3) TO N(4) 
+VIBR .0, 0.00200 = C(3) TO C(5) 
+VIBR .0, 0.00500 = C(5) TO N(4) 
+VIBR .0, 0.00200 = C(5) TO N(6) 
+VIBR .0, 0.00200 = C(5) TO C(10) 
+VIBR .0, 0.00200 = C(5) TO C(11) 
+VIBR .0, 0.00500 = N(6) TO C(3) 
+VIBR .0, 0.00500 = C(10) TO C(3) 
+VIBR .0, 0.00500 = C(10) TO N(6) 
+VIBR .0, 0.00500 = C(11) TO C(3) 
+VIBR .0, 0.00500 = C(11) TO N(6) 
+VIBR .0, 0.00500 = C(11) TO C(10) 
+VIBR .0, 0.00200 = N(6) TO C(7) 
+VIBR .0, 0.00500 = C(7) TO C(5) 
+VIBR .0, 0.00200 = C(7) TO N(8) 
+VIBR .0, 0.00200 = C(7) TO C(9) 
+VIBR .0, 0.00500 = N(8) TO N(6) 
+VIBR .0, 0.00500 = C(9) TO N(6) 
+VIBR .0, 0.00500 = C(9) TO N(8) 
+VIBR .0, 0.00200 = C(10) TO C(11) 
+VIBR .0, 0.00500 = C(11) TO C(5) 
+VIBR .0, 0.00500 = C(10) TO C(5) 
+REM   DELU   END (DO NOT REMOVE THIS LINE) 
+END                                                                             
+# Remove space after hash to activate next line
+# USE LAST

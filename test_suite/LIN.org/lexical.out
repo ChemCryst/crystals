@@ -73,10 +73,9 @@ DIST 1.000000 , .010000 = CL(1) TO CL(3)
 DIST 1.000000 , .010000 = CL(1) TO CL(3)
 # INVALID ATOM
 #LIST 16
-Error: UQISO 0.01 C(128) C(2, 128)
+Warning: UQISO 0.01 C(128) C(2, 128)
 ------------------^^^^^^^
-Error: atom C(128) is not present in the model
- The last card contains unaccessed parameter(s) beyond column    6
+Warning: atom C(128) is not present in the model
 #END
 
 

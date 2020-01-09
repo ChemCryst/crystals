@@ -36,7 +36,6 @@ class CcModelBond : public CcModelObject
   private:
     int m_x1,m_y1,m_z1;
     int m_x2,m_y2,m_z2;
-    int m_r,m_g,m_b;
     int m_rad;
     float m_length;
     float m_xrot, m_yrot;

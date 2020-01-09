@@ -229,7 +229,7 @@ static CcLock m_thread_critical_section(true);
 
 CcModelDoc::CcModelDoc( )
 {
-    m_nAtoms = 0;
+//    m_nAtoms = 0;
     nSelected = 0;
     sm_ModelDocList.push_back(this);
     sm_CurrentModelDoc = this;
@@ -270,9 +270,8 @@ bool CcModelDoc::ParseInput(deque<string> &  tokenList )
                 tokenList.pop_front(); // Remove that token!
                 CcModelAtom item(this);
                 item.ParseInput(tokenList);
-				item.m_glID = m_glIDs++;
-                m_nAtoms++;
-                item.id = m_nAtoms;
+                item.m_glID = m_glIDs++;
+                item.id = mAtomList.size() + mDonutList.size() + mSphereList.size() + 1;
                 m_thread_critical_section.Enter();
                 mAtomList.push_back(item);
                 m_thread_critical_section.Leave();
@@ -316,7 +315,7 @@ void CcModelDoc::Clear()
     mSphereList.clear();
     mDonutList.clear();
     m_thread_critical_section.Leave();
-    m_nAtoms = 0;
+//    m_nAtoms = 0;
     nSelected = 0;
 	m_glIDs = 1;
     (CcController::theController)->status.SetNumSelectedAtoms( 0 );
@@ -359,14 +358,14 @@ void CcModelDoc::DrawViews(bool rescaled)
     for ( list<CrModel*>::const_iterator aview=attachedViews.begin(); aview != attachedViews.end(); aview++)
             (*aview)->Update(rescaled);
     for ( list<CrModList*>::const_iterator alist=attachedLists.begin(); alist != attachedLists.end(); alist++)
-            (*alist)->Update(mAtomList.size());
+            (*alist)->Update(mAtomList.size()+mDonutList.size()+mSphereList.size());
 }
 
 /* 
 Ensure that the atom given is visible in the list views 
 of this ccmodeldoc (by scrolling to the right place).
 */
-void CcModelDoc::EnsureVisible(CcModelAtom* va)
+void CcModelDoc::EnsureVisible(CcModelObject* va)
 {
     for ( list<CrModList*>::const_iterator alist=attachedLists.begin(); alist != attachedLists.end(); alist++)
             (*alist)->EnsureVisible(va);
@@ -585,6 +584,74 @@ void CcModelDoc::DocToList( CrModList* ml )
                    (*atom).IsSelected(),
                    (*atom).m_disabled || (*atom).m_excluded);
     }
+    for ( list<CcModelSphere>::iterator sphere=mSphereList.begin(); sphere != mSphereList.end(); sphere++) 
+    {
+      row.clear();
+      ostringstream strm;
+      strm << (*sphere).id;
+      row.push_back( strm.str() );
+      row.push_back( (*sphere).m_elem);
+      strm.str(""); strm << (*sphere).m_serial;
+      row.push_back( strm.str() );
+      strm.str(""); strm << setprecision(3) << fixed << (*sphere).frac_x;
+      row.push_back( strm.str() );
+      strm.str(""); strm << (*sphere).frac_y;
+      row.push_back( strm.str() );
+      strm.str(""); strm << (*sphere).frac_z;
+      row.push_back( strm.str() );
+      strm.str(""); strm << (float)(*sphere).occ/1000.0f;
+      row.push_back( strm.str() );
+      row.push_back( "Shell" );
+      strm.str(""); strm << (*sphere).m_ueq;
+      row.push_back( strm.str() );
+      strm.str(""); strm << (*sphere).m_spare;
+      row.push_back( strm.str() );
+      strm.str(""); strm << (*sphere).m_refflag;
+      row.push_back( strm.str() );
+      strm.str(""); strm << (*sphere).m_assembly;
+      row.push_back( strm.str() );
+      strm.str(""); strm << (*sphere).m_group;
+      row.push_back( strm.str() );
+      strm.str(""); strm << (*sphere).m_sflags;
+      row.push_back( strm.str() );
+      ml -> AddRow((*sphere).id,            row,
+                   (*sphere).IsSelected(),
+                   (*sphere).m_disabled || (*sphere).m_excluded);
+    }
+    for ( list<CcModelDonut>::iterator ring=mDonutList.begin();    ring != mDonutList.end();   ring++)
+    {
+      row.clear();
+      ostringstream strm;
+      strm << (*ring).id;
+      row.push_back( strm.str() );
+      row.push_back( (*ring).m_elem);
+      strm.str(""); strm << (*ring).m_serial;
+      row.push_back( strm.str() );
+      strm.str(""); strm << setprecision(3) << fixed << (*ring).frac_x;
+      row.push_back( strm.str() );
+      strm.str(""); strm << (*ring).frac_y;
+      row.push_back( strm.str() );
+      strm.str(""); strm << (*ring).frac_z;
+      row.push_back( strm.str() );
+      strm.str(""); strm << (float)(*ring).occ/1000.0f;
+      row.push_back( strm.str() );
+      row.push_back( "Ring" );
+      strm.str(""); strm << (*ring).m_ueq;
+      row.push_back( strm.str() );
+      strm.str(""); strm << (*ring).m_spare;
+      row.push_back( strm.str() );
+      strm.str(""); strm << (*ring).m_refflag;
+      row.push_back( strm.str() );
+      strm.str(""); strm << (*ring).m_assembly;
+      row.push_back( strm.str() );
+      strm.str(""); strm << (*ring).m_group;
+      row.push_back( strm.str() );
+      strm.str(""); strm << (*ring).m_sflags;
+      row.push_back( strm.str() );
+      ml -> AddRow((*ring).id,            row,
+                   (*ring).IsSelected(),
+                   (*ring).m_disabled || (*ring).m_excluded);
+    }
     ml->EndUpdate();
 
   }
@@ -620,6 +687,52 @@ CcRect CcModelDoc::FindModel2DExtent(float * mat, CcModelStyle * style) {
 		if ( !((*atom).m_excluded) ) {
 			CcPoint c = (*atom).GetAtom2DCoord(mat);
 			int extra = (*atom).Radius(style);
+			if ( !extentinit ){
+				extentinit = true;
+				extent.mRight = c.X() + extra;
+				extent.mLeft = c.X() - extra;
+				extent.mTop = c.Y() - extra;
+				extent.mBottom = c.Y() + extra;
+			} else {
+				if ( c.X() + extra > extent.Right() ) extent.mRight = c.X() + extra;
+				if ( c.X() - extra < extent.Left() ) extent.mLeft = c.X() - extra;
+				if ( c.Y() + extra > extent.Bottom() ) extent.mBottom = c.Y() + extra;
+				if ( c.Y() - extra < extent.Top() ) extent.mTop = c.Y() - extra;
+			}
+		}
+	}
+	for ( list<CcModelSphere>::iterator sphere=mSphereList.begin();       sphere != mSphereList.end();     sphere++)
+	{
+
+        if ( (style->showres != 0) && ( (*sphere).m_refflag != style->showres )) continue;
+        if ( (style->showgroup != 0) && ( (*sphere).m_group != 0 ) && ( (*sphere).m_group != style->showgroup ) )  continue;
+//not excluded
+		if ( !((*sphere).m_excluded) ) {
+			CcPoint c = (*sphere).Get2DCoord(mat);
+			int extra = (*sphere).Radius(style);
+			if ( !extentinit ){
+				extentinit = true;
+				extent.mRight = c.X() + extra;
+				extent.mLeft = c.X() - extra;
+				extent.mTop = c.Y() - extra;
+				extent.mBottom = c.Y() + extra;
+			} else {
+				if ( c.X() + extra > extent.Right() ) extent.mRight = c.X() + extra;
+				if ( c.X() - extra < extent.Left() ) extent.mLeft = c.X() - extra;
+				if ( c.Y() + extra > extent.Bottom() ) extent.mBottom = c.Y() + extra;
+				if ( c.Y() - extra < extent.Top() ) extent.mTop = c.Y() - extra;
+			}
+		}
+	}
+	for ( list<CcModelDonut>::iterator donut=mDonutList.begin();       donut != mDonutList.end();     donut++)
+	{
+
+        if ( (style->showres != 0) && ( (*donut).m_refflag != style->showres )) continue;
+        if ( (style->showgroup != 0) && ( (*donut).m_group != 0 ) && ( (*donut).m_group != style->showgroup ) )  continue;
+//not excluded
+		if ( !((*donut).m_excluded) ) {
+			CcPoint c = (*donut).Get2DCoord(mat);
+			int extra = (*donut).Radius(style);
 			if ( !extentinit ){
 				extentinit = true;
 				extent.mRight = c.X() + extra;
@@ -1069,9 +1182,9 @@ void CcModelDoc::FastAtom(const string & label,int x1,int y1,int z1,
                           u1,u2,u3,u4,u5,u6,u7,u8,u9,frac_x,
                           frac_y,frac_z,elem,serial,refflag,
                           assembly, group, ueq,fspare,iflag,this);
-        m_nAtoms++;
-        item.id = m_nAtoms + mDonutList.size() + mSphereList.size();
-		item.m_glID = m_glIDs++;
+//        m_nAtoms++;
+        item.id = mAtomList.size() + mDonutList.size() + mSphereList.size() + 1;
+        item.m_glID = m_glIDs++;
         mAtomList.push_back(item);
         
         m_assemblies[assembly].insert(group);                       // Store PART info for quick access later for whole structure.
@@ -1084,12 +1197,18 @@ void CcModelDoc::FastAtom(const string & label,int x1,int y1,int z1,
 
 void CcModelDoc::FastSphere(const string & label,int x1,int y1,int z1, 
                           int r, int g, int b, int occ,int cov, int vdw,
-                          int spare, int flag, int iso, int irad)
+                          int spare, int flag, int iso, int irad,
+                          float frac_x, float frac_y, float frac_z,
+                          const string & elem, int serial, int refflag,
+                          int assembly, int group, float ueq, float fspare, int iflag)
 {
         m_thread_critical_section.Enter();
             CcModelSphere item(label,x1,y1,z1, 
                           r,g,b,occ,cov,vdw,spare,flag,
-                          iso,irad,this);
+                          iso,irad,frac_x, frac_y, frac_z, elem, serial,refflag,
+                          assembly, group, ueq,fspare,iflag,this);
+            item.id = mAtomList.size() + mDonutList.size() + mSphereList.size() + 1;
+            item.m_glID = m_glIDs++;
             mSphereList.push_back(item);
         m_thread_critical_section.Leave();
 
@@ -1097,13 +1216,19 @@ void CcModelDoc::FastSphere(const string & label,int x1,int y1,int z1,
 
 void CcModelDoc::FastDonut(const string & label,int x1,int y1,int z1,
                           int r, int g, int b, int occ,int cov, int vdw,
-                          int spare, int flag, int iso, int irad, int idec, int iaz)
+                          int spare, int flag, int iso, int irad, int idec, int iaz,
+                          float frac_x, float frac_y, float frac_z,
+                          const string & elem, int serial, int refflag,
+                          int assembly, int group, float ueq, float fspare, int iflag)
 {
     m_thread_critical_section.Enter();
         CcModelDonut item(label,x1,y1,z1, 
                           r,g,b,occ,cov,vdw,spare,flag,
-                          iso,irad,idec,iaz,this);
-		item.m_glID = m_glIDs++;
+                          iso,irad,idec,iaz,
+                          frac_x, frac_y, frac_z, elem, serial,refflag,
+                          assembly, group, ueq,fspare,iflag,this);
+        item.id = mAtomList.size() + mDonutList.size() + mSphereList.size() + 1;
+        item.m_glID = m_glIDs++;
         mDonutList.push_back(item);
     m_thread_critical_section.Leave();
 }
@@ -1124,10 +1249,17 @@ void fastatom  (char* elem,int serial,char* label,int x1,int y1,int z1,
                 int refflag, int assembly, int group, float ueq, float fspare, int iflag);
 void fastsphere  (char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,int cov, int vdw,
-                int spare, int flag, int iso, int irad);
+                int spare, int flag, int iso, int irad, 
+                float frac_x, float frac_y, float frac_z,
+                char* elem, int serial, int refflag,
+                int assembly, int group, float ueq, float fspare, int iflag);
+                
 void fastdonut  (char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,int cov, int vdw,
-                int spare, int flag, int iso, int irad, int idec, int iaz);
+                int spare, int flag, int iso, int irad, int idec, int iaz,
+                float frac_x, float frac_y, float frac_z,
+                char* elem, int serial, int refflag,
+                int assembly, int group, float ueq, float fspare, int iflag);
 }
 
 //implementations:
@@ -1161,27 +1293,45 @@ void fastatom  (char* elem,int serial,char* label,int x1,int y1,int z1,
 
 }
 
-void fastsphere  (char* label,int x1,int y1,int z1, 
-                int r, int g, int b, int occ,int cov, int vdw,
-                int spare, int flag, int iso, int irad)
+//  subroutine fastsphere (dl,jx,jy,jz,jr,jg,jb,joc,jco,jvd, & ! 1, 2,3,4, 5,6,7, 8,9,10
+//  &  jsp,jfl,jiso,jrad,sfx,sfy,sfz,de,jl,jrf,ja,jgr,fue,fsp,isflg) bind(c)  ! 11,12,13,14, 15,16,17, 18, 19,20,21,22,23,24,25
+
+
+void fastsphere  (char* label,int x1,int y1,int z1,              // 1, 2,3,4
+                int r, int g, int b, int occ,int cov, int vdw,   // 5,6,7, 8,9,10
+                int spare, int flag, int iso, int irad,          //  11,12,13,14
+                float frac_x, float frac_y, float frac_z,        // 15,16,17
+                char* elem, int serial, int refflag,             // 18,19,20
+                int assembly, int group, float ueq, float fspare, int iflag) // 21,22,23,24,25
 {
+      string celem  = elem;
       string clabel = label;
       LOGSTAT ( "-----------Fastsphere added:" + clabel );
       if ( CcModelDoc::sm_CurrentModelDoc )
             CcModelDoc::sm_CurrentModelDoc->FastSphere(clabel,x1,y1,z1, 
-                          r,g,b,occ,cov,vdw,spare,flag,iso,irad) ;
+                          r,g,b,occ,cov,vdw,spare,flag,iso,irad,
+                          frac_x, frac_y, frac_z,
+                          celem, serial, refflag,
+                          assembly, group, ueq, fspare, iflag ) ;
 
 }
 
-	void fastdonut  (char* label,int x1,int y1,int z1, 
+void fastdonut  (char* label,int x1,int y1,int z1, 
                 int r, int g, int b, int occ,int cov, int vdw,
-                int spare, int flag, int iso, int irad, int idec, int iaz)
+                int spare, int flag, int iso, int irad, int idec, int iaz,
+                float frac_x, float frac_y, float frac_z,
+                char* elem, int serial, int refflag,
+                int assembly, int group, float ueq, float fspare, int iflag)
 {
+      string celem  = elem;
       string clabel = label;
       LOGSTAT ( "-----------Fastdonut added:" + clabel );
       if ( CcModelDoc::sm_CurrentModelDoc )
             CcModelDoc::sm_CurrentModelDoc->FastDonut(clabel,x1,y1,z1, 
-                          r,g,b,occ,cov,vdw,spare,flag,iso,irad,idec,iaz) ;
+                          r,g,b,occ,cov,vdw,spare,flag,iso,irad,idec,iaz,
+                          frac_x, frac_y, frac_z,
+                          celem, serial, refflag,
+                          assembly, group, ueq, fspare, iflag) ;
 
 }
 

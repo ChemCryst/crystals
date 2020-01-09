@@ -71,6 +71,7 @@ C<ric02/>
       data hmin    /0.0/
       data kmin    /0.0/
       data lmin    /0.0/
+      data rsigma    /0.0/
       data r    /0.0/
       data rw    /0.0/
       data s    /0.0/

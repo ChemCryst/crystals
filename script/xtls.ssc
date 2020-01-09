@@ -7,7 +7,7 @@
 %     CLEAR
 %     INSERT 'CONTINUE '
 %     ON END TERMINATE
-%     GET SILENT TEXT 'Plane defining atom labels (END to finish)'
+%     GET SILENT TEXT 'Atom?'
 %     SEND
 %   END LOOP
 %   COPY 'TLS'

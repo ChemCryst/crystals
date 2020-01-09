@@ -496,9 +496,11 @@ C--ADJUST THE NUMBER OF ATOMS IN THE LIST 5
 C
 C--ERROR EXIT FOR THESE ROUTINES
 4200  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCA(ISTORE(MD+4))
       LEF=LEF+1
 4250  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       GOTO 1100
 C
 C
@@ -648,6 +650,7 @@ C----- SET THE SYMBOL FOR CARBON AND NITROGEN
 CAPR06 USE THE OLD COMMON BLOCK FILE AS A WORK FILE
       DATA LFRN /4HE   , 4HX   , 4HC   , 4HO   /
       DATA ICARB /4HC      /, INTRO/4HN    /
+      DATA IHYD  /4HH      /, IDEUT/4HD    /
       DATA INEXT(1) / 4HNEXT /
       DATA IACT / 4HNORM, 4HBOTH, 4HPUNC /
 #else
@@ -656,6 +659,7 @@ CAPR06 USE THE OLD COMMON BLOCK FILE AS A WORK FILE
 CAPR06 USE THE OLD COMMON BLOCK FILE AS A WORK FILE
       DATA LFRN /'E', 'X', 'C', 'O'/
       DATA ICARB /'C   '/, INTRO/'N   '/
+      DATA IHYD  /'H   '/, IDEUT/'D   '/
       DATA INEXT(1) / 'NEXT' /
       DATA IACT / 'NORM', 'BOTH', 'PUNC' /
 #endif
@@ -670,6 +674,8 @@ C--READ THE INPUT DATA
 C--DATA INPUT  -  CLEAR THE STORE
       CALL XRSL
       CALL XCSAE
+C----- SET NUMBER OF HYDROGENS ADDED
+      NHADD = 0
 C----- CLEAR A BUFFER
       IEQUIV=NFL
       NFL=NFL+5
@@ -843,8 +849,6 @@ C--MAIN TERMINATION ROUTINES
 1400  CONTINUE
 C
 C
-C----- SET NUMBER OF HYDROGENS ADDED
-      NHADD = 0
 C----- OPEN A FILE FOR THE RIDING RESTRAINTS
       IF (JACT.GE.2) THEN
          WRITE (CMON,'(11X,A)') 'Putting Perhydro commands in PERH.TMP'
@@ -925,18 +929,18 @@ C --  COMPUTE DISTANCE STACK TO A TWO BOND MAXIMUM
 cdjwaug06
 c      NDIST=KDIST1(N5,JL,JT,0,TOLER,ITRANS,0,4,0)
 c      NDIST=KDIST1(N5,JL,JT,0,TOLER,ITRANS,0,4,1)
-       NDIST = KDIST4( JL, JT, 0, JPART)
+c NOTE: KDIST4 only looks for first neighbours!
+      NDIST = KDIST4( JL, JT, 0, JPART)
 C---- JK IS CURRENT NEXT FREE ADDRESS - SAVE AND SET LAST ENTRY
       NFL=JL
       JK=JL-JT
 C
 C-------- CHECK FOR ERRORS AND ISOLATED ATOMS
       IF (NDIST.LE.0) THEN
-         IF (ISSPRT.EQ.0) WRITE (NCWU,1601) STORE(M5A),NINT(STORE(M5A+1)
-     1    )
-         WRITE (CMON,1601) STORE(M5A),NINT(STORE(M5A+1))
-         CALL XPRVDU (NCVDU,1,0)
-         GO TO 2250
+        IF (ISSPRT.EQ.0) WRITE(NCWU,1601)STORE(M5A),NINT(STORE(M5A+1))
+        WRITE (CMON,1601) STORE(M5A),NINT(STORE(M5A+1))
+        CALL XPRVDU (NCVDU,1,0)
+        GO TO 2250
       END IF
 1601     FORMAT (10X,' Non-bonded ',A4,I5)
 
@@ -944,8 +948,7 @@ C TODO: Check for bonding to more than one non-zero part. If this happens,
 C each part should be treated independently.
 cdjwmar09
 c       if (issprt .eq. 0) then
-
-c         WRITE(ncwu,'(A,I3,6X,A4,I4)')'Bonds found: ',NDIST,
+c         WRITE(ncwu,'(////i3,2x,A,6X,A4,I4)')NDIST, 'Bonds found to:',
 c     1   ISTORE(M5A),NINT(STORE(M5A+1))
 c         DO MMMI=JE,JE+JT*(NDIST-1),JT
 c          WRITE(ncwu,'(A,A4,I4,f6.3)')'Found bond to:',
@@ -953,18 +956,18 @@ c     1    ISTORE(ISTORE(MMMI)),NINT(STORE(ISTORE(MMMI)+1)),
 c     2    STORE(MMMI+10)
 c         END DO
 c      endif
-
+c
       IF (NDIST .GE. 2) THEN   !If there are more than two atoms found:
         L = JE     ! 1st atom
 1960    CONTINUE
         LV = L+JT  ! Next atom
         NREJ = 0
         DO M =  LV, JK, JT !Go from atom after L, to the end of the stack:
-C ARE ATOM ADDRESSES SAME?
+C         ARE ATOM ADDRESSES SAME?
           IF   (ISTORE(L) .EQ. ISTORE(M))  THEN
-C ARE DISTANCES SAME?
+C           ARE DISTANCES SAME?
             IF (ABS(STORE(L+10) - STORE(M+10)) .LE. CHECK) THEN
-C ARE ATOMS COINCIDENT?
+C             ARE ATOMS COINCIDENT?
               IF ( XDSTN2 (STORE(L+7), STORE(M+7)) .LE. CHECK) THEN
                 NREJ = NREJ + 1
                 CYCLE
@@ -972,7 +975,7 @@ C ARE ATOMS COINCIDENT?
             ENDIF
           ENDIF
           IF (LV .NE. M) THEN
-C SHUFFLE ITEMS UP IF ADDRESSES DIFFERENT
+C            SHUFFLE ITEMS UP IF ADDRESSES DIFFERENT
              CALL XMOVE (STORE(M), STORE(LV), JT)
           ENDIF
           LV = LV + JT
@@ -981,13 +984,13 @@ C SHUFFLE ITEMS UP IF ADDRESSES DIFFERENT
         JL = JL - NREJ*JT !Shorten stack if atoms were rejected.
         NDIST = NDIST - NREJ      !Reduce number of finds.
         IF (L .LT. JL-JT) GOTO 1960
-
         JK=JL-JT
       ENDIF
-
+c
 cdjwmar09
 c      if (issprt .eq. 0) then
-c         WRITE(ncwu,'(/A,I3,6X,A4,I4)')'Filtered bonds found: ',NDIST,
+c         WRITE(ncwu,'(I3, 2x,A,6X,A4,i4)')ndist,
+c     1   'Filtered bonds found to: ',
 c     1   ISTORE(M5A),NINT(STORE(M5A+1))
 c       DO MMMI=JE,JE+JT*(NDIST-1),JT
 c         WRITE(ncwu,'(A,A4,I4,f6.3)')'Found bond to:',
@@ -995,8 +998,6 @@ c     1   ISTORE(ISTORE(MMMI)),NINT(STORE(ISTORE(MMMI)+1)),
 c     2    STORE(MMMI+10)
 c       END DO
 c      endif
-c
-C
 C
 C----CALCULATE THE NUMBER OF BONDED ATOMS AND THEIR ADDRESSES IN
 C----THE FIRST STACK.
@@ -1004,18 +1005,45 @@ cdjwmar09
 c----- get the pivot atom id
       write (ctemp,'(a4,''('',i4,'')'')') store(m5a),nint(store(m5a+1))
       call xcras (ctemp,ltemp)
-c      if (issprt .eq. 0) then
-c       write(ncwu,'(a,a)') 'Atoms bonded to ', ctemp(1:ltemp)
-c      endif
+C      if (issprt .eq. 0) then
+C       write(ncwu,'(///a,a)') 'Atoms bonded to ', ctemp(1:ltemp)
+C      endif
+c---- Get list of bonded atoms in order of increasing length
       NBONDS=KBNDED(JE,JK,JT,IADD,DIST)
 cdjwmar09
-c         if ((issprt .eq. 0) .and. (nbonds .gt. 0)) then
-c          do idjw=1,nbonds
-c            jdjw=iadd(idjw)
-c            write(ncwu,'(10x, a4,i2,f6.2)') istore(istore(jdjw)),
-c     1       nint(store(istore(jdjw)+1)),store(jdjw+10)
-c          enddo
-c         endif
+C         write(ncwu,'(a,i6,f6.2)')'Nbonds= ', nbonds, dist
+C----- find first non-H atom
+         knext=0
+         i1=0
+         if (nbonds .gt. 0) then
+          do idjw=1,nbonds
+            jdjw=iadd(idjw)
+            if (knext.eq.0) then
+             itemp = istore(istore(jdjw))
+             if((itemp.ne.ihyd).and.(itemp.ne.ideut)) then
+              i1=idjw
+              knext=jdjw
+              dist=store(knext+10)
+             endif
+            endif
+c            if (issprt .eq. 0) 
+c     1       write(ncwu,'(10x, a4,i4,f6.2)') istore(istore(jdjw)),
+c     2       nint(store(istore(jdjw)+1)),store(jdjw+10)
+          enddo
+         endif
+c
+C         if (issprt .eq. 0) then
+C           write(ncwu,'(2(a,i6),6x,a,6i8 )')
+C     1     'knext= ',knext, 'jdjw= ',jdjw,'iadd= ',iadd
+c
+C           write(ncwu,'(10x,a, i4,a4,i4,f6.2)') 
+C     1     'Atom at jdjw  ', jdjw,istore(istore(jdjw)),
+C     1     nint(store(istore(jdjw)+1)),store(jdjw+10)
+c
+C           write(ncwu,'(10x,a, i4,a4,i4,f6.2)') 
+C     1     'atom at knext ', knext,istore(istore(knext)),
+C     1     nint(store(istore(knext)+1)),store(knext+10)
+C         endif
 C
 C-------- CHECK FOR ERRORS AND ISOLATED ATOMS
 
@@ -1031,24 +1059,33 @@ C-------- CHECK FOR ERRORS AND ISOLATED ATOMS
          CALL XPRVDU (NCVDU,1,0)
 1600     FORMAT (10X,' Non-bonded ',A4,' - ',A)
       ELSE IF (ISTORE(M5A).EQ.ICARB) THEN
+c
+c
 C----   WE HAVE CONTACTS.
 C       CALCULATE THE HYBRIDISATION BASED ON SHORTEST BOND
-         NHYB=KHYB(IADD(1),DIST,DELTA)
+c original code started from beginning of stack, whatever the atom type
+c new code looks for the first non-H atom
+         NHYB=KHYB(iadd(i1),DIST,DELTA) !New - starts from first Non H
          MHYB=0
          DELTA2=0.
-         IF (NBONDS.GE.2) THEN
-C           GET THE NEXT SHORTEST BOND
-            MHYB=KHYB(IADD(2),STORE(IADD(2)+10),DELTA2)
+c         IF (NBONDS.GE.2) THEN
+         if(nbonds-i1 .ge. 2) then
+C           GET THE HYBRIDISATION OF THE NEXT SHORTEST BOND
+            MHYB=KHYB(IADD(i1+1),STORE(IADD(2)+10),DELTA2)
          END IF
+c         write(ncwu,'(a,a4,6i6)')
+c     1   'Hybridisation  ', istore(m5a),nhyb,mhyb,i1,nbonds
 C-----  LOOK FOR SECONDARY CONTACTS
 c         ISEC=KSEC(AOTEMP,APTEMP,NDTEMP,IADD,NBONDS,IZ)
+c        isec is address in STORE, iz is address in IADD (bond No.)
          ISEC=KSEC2(AOTEMP,APTEMP,NDTEMP,IADD,NBONDS,IZ)
+c         write(ncwu,'(a,2i6)')'Secondary contact = ', isec, iz
          LHYB=0
          DELTAA=999.
          DEV=999.
          IF (NBONDS.EQ.3) THEN
-C         1 ON SP3 OR 0 ON SP2
-C         COMPUTE A PLANE
+c            WRITE(NCWU,'(a)')'CAN BE 1 ON SP3 OR 0 ON SP2'
+C           COMPUTE A PLANE
             CALL XMOVE (STORE(M5A+4),STORE(IMOLAX),3)
             CALL XMOVE (STORE(IADD(1)+7),STORE(IMOLAX+4),3)
             CALL XMOVE (STORE(IADD(2)+7),STORE(IMOLAX+8),3)
@@ -1057,38 +1094,43 @@ C         COMPUTE A PLANE
             STORE(IMOLAX+7)=1.
             STORE(IMOLAX+11)=1.
             STORE(IMOLAX+15)=1.
+c      write(ncwu,'( 4f10.4)') (store(itemp),itemp=imolax, imolax+15)
             I=KMOLAX(STORE(IMOLAX),4,4,STORE(IMOLAX+16),STORE(IMOLAX+19)
-     1       ,STORE(IMOLAX+2),STORE(IMOLAX+31),STORE(IMOLAX+40))
+     1       ,STORE(IMOLAX+22),STORE(IMOLAX+31),STORE(IMOLAX+40))
+c      write(ncwu,'(/,4f10.4)')(store(itemp),itemp=imolax+19,imolax+21)
             DEV=STORE(IMOLAX+21)
-            IF (DEV.GE.0.1) THEN
+c      write(ncwu,'(a,f8.4)')'DEV ',dev 
+           IF (DEV.GE.0.07) THEN !0.07 is lower limit for latent root of CH3
                LHYB=3
             ELSE
                LHYB=2
             END IF
          ELSE IF (NBONDS.EQ.2) THEN
-C         2 ON SP3 , 1 ON SP2 OR 0 ON SP1
-            SOP=XDSTN2(STORE(IADD(1)+7),STORE(IADD(2)+7))
+c            write(ncwu,'(A)') 'CAN BE 2 ON SP3 , 1 ON SP2 OR 0 ON SP1'
+            SOP=XDSTN2(STORE(IADD(1)+7),STORE(IADD(1+1)+7))
             SOP=SQRT(SOP)
-            ANG=XANG(STORE(IADD(1)+10),STORE(IADD(2)+10),SOP)
-            IF (ANG.GT.160.) THEN
+            ANG=XANG(STORE(IADD(1)+10),STORE(IADD(1+1)+10),SOP)
+c            WRITE(NCWU,'(a,2F10.3)')'SOP,ANG',SOP,ANG
+            IF (ANG.GT.160.) THEN ! POSSIBLY LINEAR - SP1
                LHYB=1
                DELTAA=180.-ANG
             ELSE
-               IF (DELTA.GE..05) THEN
+c               IF (DELTA.GE..05) THEN  !DEVIATION FROM THRESHOLD
                   LHYB=NHYB
-               ELSE
-                  LHYB=MIN(NHYB,MHYB)
-               END IF
+c               ELSE
+c                  LHYB=MIN(NHYB,MHYB)
+c               END IF
             END IF
          ELSE IF (NBONDS.EQ.1) THEN
-C         3 ON SP3 , 2 ON SP2 OR 1 ON SP1
-cdjwapr06            IF (DELTA.GE..05) THEN
+c            write(ncwu,'(a)') '3 ON SP3 , 2 ON SP2 OR 1 ON SP1'
             IF (DELTA.GE. .01) THEN    !Pretty certain of hybridisation from distance
                LHYB=NHYB
             ELSE                       !Not certain - check angles
-               SOP=XDSTN2(STORE(IADD(1)+7),STORE(ISEC+7))   !First use of ISEC - if 1 bond to target =CH2 or -CH3 or ==CH
+C              !First use of ISEC - if 1 bond to target =CH2 or -CH3 or ==CH
+               SOP=XDSTN2(STORE(IADD(1)+7),STORE(ISEC+7))
                SOP=SQRT(SOP)
                ANG=XANG(STORE(IADD(1)+10),SOP,STORE(ISEC+10))
+c               WRITE(NCWU,'(a,2F10.3)')'SOP,ANG',SOP,ANG
                IF (ANG.GT.160.) THEN    ! >160 - SP1
                   LHYB=1
                   DELTAA=180.-ANG
@@ -1101,27 +1143,29 @@ cdjwapr06            IF (DELTA.GE..05) THEN
                END IF
             END IF
          END IF
+C
+c         WRITE(NCWU,'(a,2I5)')'lhyb,nhyb ',lhyb,nhyb
          IF (LHYB.NE.NHYB) THEN
-            IF (NHYB.NE.0) THEN
+            IF ((NHYB.NE.0.and.(nbOnds.ne.4))) THEN
                WRITE (CMON,1700) CTEMP(1:LTEMP),NHYB,LHYB,NBONDS,LHYB
                CALL XPRVDU (NCVDU,1,0)
+1700           FORMAT (A,' hybridisation uncertain (',I1,'/',I1,')',I3,
+     1         ' Bonds,',' sp',I1,' used')
                IF (ISSPRT.EQ.0) THEN
-                  WRITE (NCWU,1650) CTEMP(1:LTEMP),NHYB,DELTA,MHYB,
-     1             DELTA2,DEV,DELTAA
+                  WRITE (NCWU,1650) CTEMP(1:LTEMP),NHYB,DELTA,
+     1            MHYB,DELTA2,  DEV,DELTAA
                   WRITE (NCWU,'(A)') trim(CMON(1))
                END IF
             END IF
 1650        FORMAT (A,1X,' sp',I1,' delta ',F6.2,' sp',I1,' delta',F6.2,
      1' planarity ',F7.2,' angle delta ',F7.2)
-1700        FORMAT (A,' hybridisation uncertain (',I1,'/',I1,')',I3,
-     1' Bonds,',' sp',I1,' used')
             NHYB=LHYB
          END IF
          IF (NHYB.GT.0) THEN
 C----   WRITE COMMAND TO FILE.
             CALL HPLACE (NBONDS,NHYB,M5A,IADD,AOTEMP,APTEMP,NDTEMP,JACT,
      1       ISEC, NHADD)
-         ELSE
+         ELSE IF (NBONDS.NE. 4) THEN
             IF (ISSPRT.EQ.0) WRITE (NCWU,1750) CTEMP(1:LTEMP)
             WRITE (CMON,1750) CTEMP(1:LTEMP)
             CALL XPRVDU (NCVDU,1,0)
@@ -1305,6 +1349,7 @@ C
 C
 C--ERROR EXIT FOR THESE ROUTINES
 2400  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCA (ISTORE(MD+4))
       LEF=LEF+1
 2450  CONTINUE
@@ -1312,6 +1357,8 @@ C--ERROR EXIT FOR THESE ROUTINES
 C
 C -- FINAL MESSAGES
 2500  CONTINUE
+      WRITE(CMON,'(I9,A)') NHADD,' Hydrogen atoms added'
+      CALL XPRVDU (NCVDU,1,0)
 C
 C----- CLOSE THE RIDING RESTRAINT FILE
       CALL XRDOPN (7,JFRN(1),CPATH(1:LPATH)//'rideh.dat',LPATH+9)
@@ -1322,8 +1369,6 @@ C^MAY06
             ISTAT = KSCTRN ( 1 , 'PERH:NHADD' , nhadd, 1 )
             CALL XRDOPN (7,LFRN(1),CPATH2(1:LPATH2)//'delh.tmp'
      1        ,LPATH+8)
-            WRITE(CMON,'(I9,A)') NHADD,' Hydrogen atoms added'
-            CALL XPRVDU (NCVDU,1,0)
 C----- IF SOME HATOMS CREATED, COPY TEMP FILES TO DAT FILES
         IF (NHADD .GT. 0) THEN
             REWIND (NCFPU2)
@@ -1660,41 +1705,39 @@ C----- KNOWN ATOM SYMBOL LIST
 C
 C THRESHOLD VALUES FOR BOND LENGTHS FOR COMPARISON WITH SHORTEST BOND.
 C       3/2, 2/1 THRESHOLD PAIRS
-      DATA THRESH
+      DATA THRESH              !(use in pairs along row)
      2   / 1.43, 1.23, 1.41, 1.22, 1.35, 1.17, 1.34, 1.15,
-     3     1.82, 1.60, 1.60, 1.40, 1.50, 1.40, 1.78, 1.70 /
+     3     1.82, 1.60, 1.60, 1.40, 1.50, 1.40, 1.76, 1.70 /
+c See D Kinna PartII thesis, 1990
 C
       KHYB = 0
       DELTA= 1000.
       MMIN=ISTORE(ISTORE(IADD))
       WRITE(CTARG,'(A4)') MMIN
+c      write(ncwu,'(10x,a,a,f6.3)')'In KHYB ',
+c     1 ctarg,store(1+istore(iadd))
       I = INDEX (CATOMS, CTARG)
       IF (I .LE. 0) RETURN
 C
       I = (I+3)/4
       D1 = DIST - THRESH(1,I)
       D2 = DIST - THRESH(2,I)
+c      write(ncwu,'(a,2f8.2,a,4f8.2)')
+c     1 'Thresholds ',thresh(1,i),thresh(2,i),
+c     2 'Dist,D1,D2 ', dist, d1, d2
 capr06      IF (ABS(D1) .LT. ABS(D2)) THEN
 C----- SP2/SP3 INTERFACE
             IF (D1 .GT. 0.) THEN
                   KHYB = 3
                   DELTA = D1
-            ELSE if (d2 .le. 0) then
+            ELSE IF (D2 .LE. 0) THEN
 C----- SP1/SP2 INTERFACE
                   KHYB = 1
                   DELTA = D2
-            else 
-                  khyb = 2
-                  delta = min(abs(d1), abs(d2))
+            ELSE 
+                  KHYB = 2
+                  DELTA = MIN(ABS(D1), ABS(D2))
             ENDIF
-capr06      ELSE
-capr06            IF (D2 .GT. 0.) THEN
-capr06                  KHYB = 2
-capr06            ELSE
-capr06                  KHYB = 1
-capr06            ENDIF
-capr06            DELTA = D2
-capr06      ENDIF
       RETURN
       END
 C
@@ -1714,6 +1757,7 @@ C
 C      NO OF HYDROGENS REQUIRED = N
        N=NHYB+1-NBONDS
 C
+c      WRITE(123,*)'NHADD IN  =',NHADD
       IF (NHYB .EQ. 3) THEN
 C SP3
              IF (NBONDS .EQ. 1) THEN
@@ -1732,6 +1776,7 @@ C
                 NHADD = NHADD + 2
              ELSE IF (NBONDS .EQ. 3) THEN
                 CALL XWRT13(IADD,M5A, JACT)
+                NHADD = NHADD + 1
 C
              ENDIF
 C
@@ -1766,6 +1811,7 @@ C
 C
 C
       ENDIF
+c      WRITE(123,*)'NHADD OUT =',NHADD
       RETURN
       END
 C

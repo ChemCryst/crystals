@@ -27,7 +27,7 @@ CcModelBond::CcModelBond(CcModelDoc * pointer)
 {
     m_x1 = m_y1 = m_z1 = 0;
     m_x2 = m_y2 = m_z2 = 0;
-    m_r = m_g = m_b = 0;
+    r = g = b = 0;
     m_rad = 0;
     m_xrot = 0;
     m_yrot = 0;
@@ -39,7 +39,7 @@ CcModelBond::CcModelBond(CcModelDoc * pointer)
 }
 
 CcModelBond::CcModelBond(int x1,int y1,int z1, int x2, int y2, int z2,
-            int r, int g, int b,  int rad,int btype,
+            int xr, int xg, int xb,  int rad,int btype,
             int np, int * ptrs, const string & label, 
             const string & cslabl,
             CcModelDoc* ptr)
@@ -47,7 +47,7 @@ CcModelBond::CcModelBond(int x1,int y1,int z1, int x2, int y2, int z2,
   mp_parent = ptr;
   m_x1 = x1; m_y1 = y1; m_z1 = z1;
   m_x2 = x2; m_y2 = y2; m_z2 = z2;
-  m_r = r; m_g = g; m_b = b;
+  r = xr; g = xg; b = xb;
   m_rad = rad;
   m_bondtype = abs(btype);
   m_bsym = ( btype < 0 );
@@ -100,9 +100,9 @@ void CcModelBond::ParseInput(deque<string> &  tokenList)
     m_x2 =  atoi( tokenList[3].c_str() );
     m_y2 =  atoi( tokenList[4].c_str() );
     m_z2 =  atoi( tokenList[5].c_str() );
-    m_r =   atoi( tokenList[6].c_str() );
-    m_g =   atoi( tokenList[7].c_str() );
-    m_b =   atoi( tokenList[8].c_str() );
+    r =   atoi( tokenList[6].c_str() );
+    g =   atoi( tokenList[7].c_str() );
+    b =   atoi( tokenList[8].c_str() );
     m_rad = atoi( tokenList[9].c_str() );
     string catom1 = string(tokenList[10]);
     string catom2 = string(tokenList[11]);
@@ -227,8 +227,8 @@ void CcModelBond::Render(CcModelStyle *style, bool feedback)
 
 //   GLUquadricObj* cylinder;
 
-   GLfloat Surface1[] = { (float)m_r/255.0f,(float)m_g/255.0f,(float)m_b/255.0f, transparency };
-   GLfloat Surface2[] = { (float)m_r/255.0f,(float)m_g/255.0f,(float)m_b/255.0f, transparency };
+   GLfloat Surface1[] = { (float)r/255.0f,(float)g/255.0f,(float)b/255.0f, transparency };
+   GLfloat Surface2[] = { (float)r/255.0f,(float)g/255.0f,(float)b/255.0f, transparency };
 //   GLfloat White[] = { 255.0f,255.0f,255.0f, 1.0f };
 
    if ( style->bond_style == BONDSTYLE_HALFPARENTELEMENT && m_patms.size() == 2 ) {

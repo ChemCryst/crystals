@@ -132,32 +132,39 @@ subroutine fstatm(ce,is,ll,cl,ix,iy,iz,ir,ig,ib,ioc,rco, &
     &   iff, ifa, ifg, rue, rus, isflg)
 end subroutine
 
-subroutine fstsph(ll,cl,ix,iy,iz,ir,ig,ib,ioc,ico,ivd, &
-&   isp,ifl,iso,irad)
+subroutine fstsph(ll,cl,ix,iy,iz,ir,ig,ib,ioc,ico,ivd, &            ! 1,2,3,4,5, 6,7,8, 9,10,11
+&   isp,ifl,iso,irad,  sfx,sfy,sfz, de,jl,jrf,ja,jgr,fue,fsp,isflg ) ! 12,13,14,15, 16,17,18, 19,20,21,22,23,24,25,26
     use fwrappergui_mod, only: fastsphere
 
     integer ll,ix,iy,iz,ir,ig,ib,ioc,ico,ivd
-    integer isp,ifl,iso,irad
+    integer isp,ifl,iso,irad, jl, jrf, ja, jgr, isflg
+    real sfx, sfy, sfz, fue, fsp
     character*(*) cl
+    character*(*) de
     character*(ll+1) bl
+    character be*5
 
     bl = cl(1:ll)  // char(0)
+    be = de(1:4)  // char(0)
 
-    call fastsphere(bl,ix,iy,iz,ir,ig,ib,ioc,ico,ivd, &
-    &   isp,ifl,iso,irad)
+    call fastsphere(bl,ix,iy,iz,ir,ig,ib,ioc,ico,ivd, & ! 1, 2,3,4, 5,6,7, 8,9,10
+    &   isp,ifl,iso,irad, sfx,sfy,sfz, be, jl,jrf,ja,jgr,fue,fsp,isflg) ! 11,12,13,14, 15,16,17, 18, 19,20,21,22,23,24,25
 end subroutine
 
 subroutine fstrng(ll,cl,ix,iy,iz,ir,ig,ib,ioc,ico,ivd, &
-&   isp,ifl,iso,irad, idec, iaz)
+&   isp,ifl,iso,irad, idec, iaz, sfx,sfy,sfz, de,jl,jrf,ja,jgr,fue,fsp,isflg )
     use fwrappergui_mod, only: fastdonut
 
     integer ll,ix,iy,iz,ir,ig,ib,ioc,ico,ivd
-    integer isp,ifl,iso,irad,idec,iaz
-    character*(*) cl
+    integer isp,ifl,iso,irad,idec,iaz,jl, jrf, ja, jgr, isflg
+    real sfx, sfy, sfz, fue, fsp
+    character*(*) cl, de
     character*(ll+1) bl
+    character be*5
 
     bl = cl(1:ll)  // char(0)
+    be = de(1:4)  // char(0)
 
     call fastdonut(bl,ix,iy,iz,ir,ig,ib,ioc,ico,ivd, &
-    &   isp,ifl,iso,irad, idec,iaz)
+    &   isp,ifl,iso,irad, idec,iaz, sfx,sfy,sfz, be, jl,jrf,ja,jgr,fue,fsp,isflg)
 end subroutine

@@ -11,9 +11,12 @@
 ^^WI    ITEM SIN5 'Sir9&2 file' '#SCRIPT XSIR92IN' DISABLEIF='IN'               
 ^^WI    ITEM S7N5 'Sir9&7 file' '#SCRIPT XSIR97IN' DISABLEIF='IN'               
 ^^WI    ITEM SFN5 'Superflip file' '#SCRIPT XFLIPIN' DISABLEIF='IN'             
-^^WI   ENDMENU                                                                  
+^^WI   ENDMENU 
+^^wi   split                                                                 
 ^^WI   ITEM EIN5 '&Edit co-ordinates' '#SCRIPT SYSED5'                          
-^^WI    ICON='edit5.png'  DISABLEIF='IN' ENABLEIF='L5'                                         
+^^WI       ICON='edit5.png'  DISABLEIF='IN' ENABLEIF='L5' 
+^^WI   ITEM ABS5 '&Check Abs Config' '#SCRIPT XABSOLUTE'                                        
+^^WI       DISABLEIF='IN' ENABLEIF='L5'                                         
 ^^WI   ITEM INV5 '&Invert co-ordinates' '#SCRIPT XINVERT'                       
 ^^WI       DISABLEIF='IN' ENABLEIF='L5'                                         
 ^^WI   SPLIT                                                                    
@@ -43,6 +46,11 @@
 ^^WI   SPLIT                                                                    
 ^^WI   ITEM DIST '&Distances' '#DISTANCES_NEND' DISABLEIF='IN'                  
 ^^WI                                            ENABLEIF='L2 L1 L5'             
+
+^^WI   ITEM DIST '&Torsion' '#SCRIPT XTORS2' DISABLEIF='IN'                  
+^^WI                                            ENABLEIF='L2 L1 L5'             
+
+
 ^^WI   ITEM XBONDS '&Add and remove bonds'                                      
 ^^WI       '#SCRIPT EDBONDS' DISABLEIF='IN' ENABLEIF='L2 L1 L5'                 
 ^^WI   SPLIT                                                                    

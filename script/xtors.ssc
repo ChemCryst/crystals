@@ -1,0 +1,30 @@
+%SCRIPT XTORS
+%% Compute torsion angles
+%  VARIABLE INTEGER  N5 NCHOSEN
+%  VARIABLE CHARACTER CTEXT1 CTEXT2
+%  COPY '#DISPLAY'
+%  COPY 'END'
+{1,11  
+{1,11  Computes the torsion angleS for 4 or more atoms
+{1,11  
+{1,11  Atom1-Atom2-Atom3-(each additonal atom in turn)
+{1,11  
+
+{1,0
+% QUEUE REWIND
+% EVALUATE CTEXT1 = 'Select'
+% COPY '#SCRIPT DCHOOSE'
+% IF NCHOSEN .LE. 3 THEN
+{1,11
+{1,11 You must select at least four atoms
+{1,11
+
+% ELSE
+%  COPY '#TORSION'
+%  COPY 'ATOM'
+%  QUEUE PROCESS
+%  COPY 'END'
+% END IF
+^^CO SET MODEL01 DISABLEATOM ALL NO
+%END SCRIPT
+

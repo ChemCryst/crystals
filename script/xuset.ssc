@@ -1,4 +1,4 @@
-%SCRIPT XUISO
+%SCRIPT XUSET
 %%Get a Uequiv. CMESSAGE is text to be displayed
 % VARIABLE CHARACTER CATOM CMESSAGE
 % VARIABLE LOGICAL CALLED
@@ -16,16 +16,12 @@
 % EVALUATE CALLED = TRUE
 %%
 %% edit was still activated even if part number selection cancelled
-%  if avalue .lt. 0. then
+%  if avalue .lt. - 1000. then
 %    finish
 %  end if                                                                             
 %%
 % QUEUE REWIND
-%%
-%%^^CO GETVALUE MODEL01
-%%
 % COPY '#SCRIPT YREUSET'
-%%
 % COPY '#EDIT'
 % QUEUE PROCESS
 % COPY 'END'

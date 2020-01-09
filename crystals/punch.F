@@ -380,6 +380,7 @@ C--AND NOW THE 'END'
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 5 )
       RETURN
       END
@@ -453,6 +454,7 @@ C      IF(ABS(STORE(M5+3))-UISO)1250,1350,1350
       RETURN
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 5 )
       END
 C
@@ -612,6 +614,7 @@ C-C-C-ISO/SPHERE/LINE/RING
       RETURN
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 5 )
       RETURN
       END
@@ -959,7 +962,8 @@ C
 C----- ANY ATOM CARDS ?
       IF (ISTORE(M38LK +1)) 1300,1300,1400
 1300  CONTINUE
-      WRITE(NCAWU,1350)
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
+c      WRITE(NCAWU,1350)
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1350)
       ENDIF
@@ -999,16 +1003,18 @@ C--AND NOW THE 'END'
       RETURN
 C
 8200  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,8300)
       ENDIF
-      WRITE(NCAWU,8300)
+c      WRITE(NCAWU,8300)
 8300  FORMAT(' There are no GROUP definitions stored')
       GOTO 9900
 C
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 38 )
       RETURN
       END
@@ -1028,7 +1034,7 @@ C         (J     removed - was CARMELO'S SIM WEIGHT TEST)
 C      J     F^2 ALL Keys set, Sigmas adjusted for old and new scales
 C                                                           XPCH6N(LSTNO,LSTNO,2 OR 3,l28filter)
 C
-C      XF    Same subroutine but l28filter flag set to True
+C      X*    Same as * above but with l28filter flag set to True
 C
 
 CODE FOR XPCH6S                                                      !PUNCH 6 C
@@ -1174,6 +1180,7 @@ C--TERMINATE THE LIST
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 6 )
       RETURN
       END
@@ -1252,6 +1259,7 @@ C--TERMINATE THE LIST
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 6 )
       RETURN
       END
@@ -1439,6 +1447,7 @@ C--END OF THE REFLECTIONS  -  OUTPUT THE TERMINATOR
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 6 )
       END
 CODE FOR XPCH6C                                                       !PUNCH 6 B, E, H
@@ -1527,6 +1536,7 @@ C   OPEN A DEFAULT FILE IF ONE ISN'T ALREADY ATTACHED
         CALL XFAL25
         IF (IERFLG .LT. 0) GOTO 9900
         IF (KEXIST(9) .LT. 1) THEN
+         if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
          WRITE(CMON,'('' No ESDS available'')')
          CALL XPRVDU(NCVDU, 1,0)
 C        NOTE: esds set to zero below if L 9 does not exist
@@ -1719,7 +1729,7 @@ C
      7 '_twin_refln_F_meas'/
      6 '_twin_refln_F_calc'/
      8 '_twin_refln_F_sigma'/
-     9 '_twin_refln_include_status'/)
+     9 '_twin_refln_include_status')
 C
 1002  FORMAT(/,'loop_',/
      1 '_twin_refln_datum_id'/
@@ -1730,19 +1740,12 @@ C
      7 '_twin_refln_F_squared_meas'/
      6 '_twin_refln_F_squared_calc'/
      8 '_twin_refln_F_squared_sigma'/
-     9 '_twin_refln_include_status'/)
+     9 '_twin_refln_include_status')
 C
-      IF ( TWINNED ) THEN
-        IF (KFOUT .EQ. KFR) THEN
-          WRITE(NCFPU1,1003)
-1003      FORMAT('_twin_refln_refinement_weight')
-        ENDIF
-      ELSE 
         IF (KFOUT .EQ. KFR) THEN
          WRITE(NCFPU1,1004)
 1004     FORMAT('_refln_refinement_weight')
         ENDIF
-      ENDIF
 
 C---- GET SIGMA THRESHOLD FROM L28
       S6SIG = -200.0
@@ -1792,7 +1795,7 @@ c
        S =  s / SCALE6
        sigma = sigma/(scale6*scale6)
        IF(KFR .EQ. 2) WT = WT * SCALWT
-      ELSE                           !scale of Fobs
+      ELSE                              !scale of Fobs
        FC = FC * SCALE6
        fcs = fcs*scale6*scale6
       ENDIF
@@ -1800,11 +1803,15 @@ C
 C
       IDJW = KALLOW(IALLOW)
 C
+c ialw = 1 permitted
+c ialw = 2 Sigma cutoff
+c ialw = 3 manual or other rejection
+c ialw = 4 high resolution
+c ialw = 5 low resolution 
+c 3,4 & 5 take precedence over 2 (sigma cutoff). See SHEL command in SHELX
+c
       IF (IDJW.EQ. -70) THEN
         IALW = 3                    !Manually excluded.
-        WT = 0.0
-      ELSE IF ( STORE(M6+20) .LT. S6SIG) THEN
-        IALW = 2                    !Rejected by sigma cutoff.
         WT = 0.0
       ELSE IF (idjw.eq.-17) THEN
 c       Fails sin-theta/lambda test
@@ -1815,6 +1822,9 @@ c       Fails sin-theta/lambda test
          ialw = 4                    ! rejected by high resolution
          WT = 0.0
         endif
+      ELSE IF ( STORE(M6+20) .LT. S6SIG) THEN
+        IALW = 2                    !Rejected by sigma cutoff.
+        WT = 0.0
       ELSE IF (idjw.LT.0) THEN
         IALW = 3                    !Rejected by something else.
         WT = 0.0
@@ -2176,6 +2186,7 @@ C--PUNCH THE REFLECTION
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 6 )
       RETURN
       END
@@ -2334,6 +2345,7 @@ C--TERMINATE THE LIST
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 6 )
       RETURN
       END
@@ -2490,6 +2502,7 @@ c      WRITE(NCPU,1200)I
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 6 )
       RETURN
       END
@@ -2843,6 +2856,7 @@ C--AND NOW THE 'END'
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 38 )
       RETURN
       END
@@ -2898,6 +2912,7 @@ C--AND NOW THE 'END'
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 38 )
       RETURN
       END
@@ -3031,6 +3046,7 @@ C--AND NOW THE 'END'
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 38 )
       RETURN
       END
@@ -3372,7 +3388,7 @@ C
       WRITE(NCPU,100) ISTORE(L4C), MD4,  CVALUE(1:LVALUE),
      1    STORE(L4F),STORE(L4F+1), CNY(ISTORE(L4C+2)+1),
      2    CNY(ISTORE(L4C+3)+1), STORE(L4F+2), STORE(L4F+3),
-     3    STORE(L4F+4),STORE(L4F+5)
+     3    STORE(L4F+4),STORE(L4F+6)
       
 101   FORMAT('PARAM ',9F12.6)
       IF ( MD4 .GT. 0 ) THEN
@@ -4225,6 +4241,7 @@ C--TERMINATE THE LOOP
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 6 )
       RETURN
       END
@@ -4334,7 +4351,7 @@ C -- NO ATOMS IN LIST 5 FOR SIM WEIGHTS
          end if
          WRITE(CMON,100)
          CALL XPRVDU(NCVDU,2,0)
-         WRITE (NCAWU,100)
+c         WRITE (NCAWU,100)
 100      FORMAT (1X,' LIST 5 contains no atoms for SIM weighting.' 
      1   /1X,'Unit Weights used')
          SSV=1.0
@@ -4372,7 +4389,7 @@ C --   ATOM NOT IN LIST 29
             END IF
             WRITE(CMON,200)
             CALL XPRVDU(NCVDU,1,0)
-            WRITE (NCAWU,200)
+c            WRITE (NCAWU,200)
 200         FORMAT (1X,'Atom in list 5 but not in list 29')
             CALL XPRTCO (2,M5A,I)
             CALL XERHND (IERERR)
@@ -4395,7 +4412,7 @@ C----- NO ATOMS LEFT IN LIST 29
          IF (ISSPRT.EQ.0) THEN
             WRITE (NCWU,350)
          END IF
-         WRITE (NCAWU,350)
+c         WRITE (NCAWU,350)
          WRITE(CMON,350)
          CALL XPRVDU(NCVDU,5,0)
 350      FORMAT (1X,//'  Sim weighting inapplicable.',

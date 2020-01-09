@@ -1,4 +1,4 @@
-C $Log: not supported by cvs2svn $
+C $Log: not supported by cvs2svn $ 
 C Revision 1.9  2011/01/17 15:40:14  rich
 C Fix o/w of disk lexical data in dsc file when disk index block is extended.
 C
@@ -548,7 +548,7 @@ CODE FOR KFETCH
       integer FUNCTION KFETCH ( NU , I , J , NWORD )
       use hdf5_dsc
       use xunits_mod, only:nceror, ncwu
-      use xssval_mod, only:issokf, issprt
+      use xssval_mod, only:issokf, issprt, issmon
       use xerval_mod, only:
       use xdaval_mod, only:idaaut, idaqua, idatot, idatry
       use xiobuf_mod, only:cmon
@@ -635,6 +635,7 @@ C
         IF ( IDAERR .LE. 0 ) exit ! too many errors!
         IDAERR = IDAERR - 1
 C
+ctemp        if (issmon.ne.1) ISSMON = 0 ! Turn monitoring back on
         CALL XDAEND ( NU , INEXT )
 C 
         IF ( IDAQUA<0 ) then 
@@ -657,18 +658,20 @@ C
       end do !GO TO 1000
 C
 C -- REPEATED READ ERROR ON THIS UNIT
+
+C -- ERROR EXIT FROM THIS ROUTINE
 C
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU,9910 ) NU , N
       ENDIF
 cjan08      WRITE ( NCAWU,9910 ) NU , N
       WRITE ( CMON, 9910 ) NU, N
+      if (issmon.ne.1) ISSMON = 0 ! Turn monitoring back on
       CALL XPRVDU(NCEROR, 2,0)
 9910  FORMAT ( 1X , 'Fatal read error on unit ' , I3 ,
      1 ' -- record ', I8, /, ' You may need to extend your DISC file')
       CALL XERIOM ( NU , IOS )
 
-C -- ERROR EXIT FROM THIS ROUTINE
       KFETCH = ISIGN ( IOS , -1 )
       RETURN
 C
@@ -695,7 +698,7 @@ CODE FOR KSTORE
       FUNCTION KSTORE ( NU , I , J , NWORD )
       use hdf5_dsc
       use xunits_mod, only: nceror, ncwu
-      use xssval_mod, only: issokf, issprt
+      use xssval_mod, only: issokf, issprt, issmon
       use xiobuf_mod, only: cmon
       implicit none
 C
@@ -745,6 +748,7 @@ C
       ! Error when writing data       
 100   CONTINUE
 cjan08       WRITE(NCAWU,200) NU,N
+      if (issmon.ne.1) ISSMON = 0 ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) THEN
         WRITE(NCWU,200) NU,N
       ENDIF
@@ -873,7 +877,7 @@ CODE FOR XDAXTN
       SUBROUTINE XDAXTN ( IUNIT,IBEGIN,ICOUNT )
       use hdf5_dsc
       use xunits_mod, only: nceror, ncwu
-      use xssval_mod, only: issokf, issprt
+      use xssval_mod, only: issokf, issprt, issmon
       use xerval_mod, only: iercat
       use xdaval_mod, only: idamax
       use xiobuf_mod, only: cmon
@@ -933,6 +937,7 @@ C
 C
 9900    CONTINUE
 C -- ERROR WHILE EXTENDING DISC FILE
+        if (issmon.ne.1) ISSMON = 0 ! Turn monitoring back on
         IF (ISSPRT .EQ. 0) THEN
         WRITE ( NCWU , 9910 ) IUNIT
         ENDIF
@@ -946,6 +951,7 @@ cjan08      WRITE ( NCAWU , 9910 ) IUNIT
         
 9920    CONTINUE
 C -- SIZE TOO GREAT
+        if (issmon.ne.1) ISSMON = 0 ! Turn monitoring back on
         IF (ISSPRT .EQ. 0) THEN
         WRITE ( NCWU , 9925 ) IUNIT
         ENDIF

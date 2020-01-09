@@ -17,7 +17,7 @@ using namespace std;
 
 class CcModelDoc;
 class CrMenu;
-class CcModelAtom;
+class CcModelObject;
 
 class   CrModList : public CrGUIElement
 {
@@ -43,7 +43,7 @@ class   CrModList : public CrGUIElement
         void    MenuSelected(int id);
         void SelectAtomByPosn (int id, bool select);
         void ContextMenu(int x, int y, int iitem, int mtype);
-        void EnsureVisible(CcModelAtom* va);
+        void EnsureVisible(CcModelObject* va);
         void StartUpdate();
         void EndUpdate();
     private:

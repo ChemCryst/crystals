@@ -1017,6 +1017,7 @@ C
 C -- CHECK FOR ERRORS.
       IF ( IERFLG .LT. 0 ) THEN
 C
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
 C -- CHECK IF AN ERROR CONTINGENCY HAS BEEN DECLARED AT THIS LEVEL
         ISTAT = KSCACT ( 'ERROR' )
         IF ( ISTAT .GT. 0 ) THEN
@@ -1710,49 +1711,49 @@ C
 C
 9910  CONTINUE
       ISCCOM = 0
-      CALL XSCMSG ( MILLEG , MCOMND , CLOWER(NDIREC:NEND) , 0 )
+      CALL XSCMSG ( MILLEG , MCOMND , CLOWER(NDIREC:NEND) , -1 )
       GO TO 9900
 9920  CONTINUE
-      CALL XSCMSG ( MTOOMY , MAVKEY , 'The maximum is' , 0 )
+      CALL XSCMSG ( MTOOMY , MAVKEY , 'The maximum is' , -1 )
       GO TO 9900
 9930  CONTINUE
-      CALL XSCMSG ( MNOTFD , MLABEL , CSERCH , 0 )
+      CALL XSCMSG ( MNOTFD , MLABEL , CSERCH , -1 )
       GO TO 9900
 9940  CONTINUE
-      CALL XSCMSG ( MMISSG , MLABEL , ' ' , 0 )
+      CALL XSCMSG ( MMISSG , MLABEL , ' ' , -1 )
       GO TO 9900
 9950  CONTINUE
-      CALL XSCMSG ( MMISSG , MDATA , ' ' , 0 )
+      CALL XSCMSG ( MMISSG , MDATA , ' ' , -1 )
       GO TO 9900
 9960  CONTINUE
-      CALL XSCMSG ( MILLMS , MCONST , ' ' , 0 )
+      CALL XSCMSG ( MILLMS , MCONST , ' ' , -1 )
       GO TO 9900
 9970  CONTINUE
-      CALL XSCMSG ( MWRONG , MVARIA , CVARIB , 0 )
+      CALL XSCMSG ( MWRONG , MVARIA , CVARIB , -1 )
       GO TO 9900
 9980  CONTINUE
-      CALL XSCMSG ( MMISSG , MSTRUC , ' '  , 0 )
+      CALL XSCMSG ( MMISSG , MSTRUC , ' '  , -1 )
       GO TO 9900
 9988  CONTINUE
-      CALL XSCMSG ( MINTRN , MCMMND , 'Internal error in KSCPRC' , 0 )
+      CALL XSCMSG ( MINTRN , MCMMND , 'Internal error in KSCPRC' , -1 )
       CALL XOPMSG ( IOPSCP , IOPINT , 0 )
       GO TO 9900
 9990  CONTINUE
-      CALL XSCMSG ( MILLEG , MSTRUC , CUPPER(NARG:NEND) , 0 )
+      CALL XSCMSG ( MILLEG , MSTRUC , CUPPER(NARG:NEND) , -1 )
       GO TO 9900
 9992  CONTINUE
       CALL XSCMSG ( MUNEXP , MSTRUC ,
-     2 'Expected: '//CSTRUC(ICTYPE)//' Found: '//CSTRUC(ISTRUC) , 0 )
+     2 'Expected: '//CSTRUC(ICTYPE)//' Found: '//CSTRUC(ISTRUC) , -1 )
       GO TO 9900
 9994  CONTINUE
       CALL XSCMSG ( MINCLY , MINITD ,
-     2              'Scripts should begin with SCRIPT' , 0 )
+     2              'Scripts should begin with SCRIPT' , -1 )
       GO TO 9900
 9996  CONTINUE
-      CALL XSCMSG ( MMISSG , MCONTT , ' ' , 0 )
+      CALL XSCMSG ( MMISSG , MCONTT , ' ' , -1 )
       GO TO 9900
 9998  CONTINUE
-      CALL XSCMSG ( MILLEG , MCONTT , CUPPER(NARG:NEND) , 0 )
+      CALL XSCMSG ( MILLEG , MCONTT , CUPPER(NARG:NEND) , -1 )
       GO TO 9900
 C
 C
@@ -1861,7 +1862,7 @@ C
       RETURN
 C
 9910  CONTINUE
-      CALL XSCMSG ( MILLEG , MCONTI , ' ' , 0 )
+      CALL XSCMSG ( MILLEG , MCONTI , ' ' , -1 )
       GO TO 9900
       END
 CODE FOR KSCADR
@@ -1928,7 +1929,7 @@ C
 C
 9910  CONTINUE
 C -- NO VARIABLE NAME
-      CALL XSCMSG ( MMISSG , MVARIA , ' ' , 0 )
+      CALL XSCMSG ( MMISSG , MVARIA , ' ' , -1 )
       GO TO 9900
       END
 CODE FOR KSCCNT
@@ -1998,6 +1999,7 @@ C -- CHECK TO SEE IF THERE IS A MESSAGE SPECIFIER
       IF ( KCCARG ( CUPPER , IDIRPS , 1 , NARG , NEND ) .GT. 0 ) THEN
         IMSG = KCCOMP ( CUPPER(NARG:NEND) , CMSG , NMSG , 1 )
         IF ( IMSG .LE. 0 ) GO TO 9930
+        IF ((IMSG.EQ.1).and.(issmon.ne.1)) CALL SETISSMON(0) ! Turn monitoring back on
         IMSG = ITMSG(IMSG)
       ENDIF
 C
@@ -2012,13 +2014,13 @@ C
       RETURN
 C
 9910  CONTINUE
-      CALL XSCMSG ( MMISSG , MCONTT , ' ' , 0 )
+      CALL XSCMSG ( MMISSG , MCONTT , ' ' , -1 )
       GO TO 9900
 9920  CONTINUE
-      CALL XSCMSG ( MILLMS , MCONTI , ' ' , 0 )
+      CALL XSCMSG ( MILLMS , MCONTI , ' ' , -1 )
       GO TO 9900
 9930  CONTINUE
-      CALL XSCMSG ( MILLEG , MMESSG , CUPPER(NARG:NEND) , 0 )
+      CALL XSCMSG ( MILLEG , MMESSG , CUPPER(NARG:NEND) , -1 )
       GO TO 9900
       END
 CODE FOR KSCELS
@@ -2107,19 +2109,19 @@ C
       RETURN
 C
 9910  CONTINUE
-      CALL XSCMSG ( MILLEG, MCOMND, 'ELSE should appear in IF block',0)
+      CALL XSCMSG (MILLEG,MCOMND, 'ELSE should appear in IF block',-1)
       GO TO 9900
 9920  CONTINUE
-      CALL XSCMSG ( MILLEG , MKEYWD , CUPPER(NARG:NEND) , 0 )
+      CALL XSCMSG ( MILLEG , MKEYWD , CUPPER(NARG:NEND) , -1 )
       GO TO 9900
 9930  CONTINUE
-      CALL XSCMSG ( MMISSG , MEXPRE , ' ' , 0 )
+      CALL XSCMSG ( MMISSG , MEXPRE , ' ' , -1 )
       GO TO 9900
 9940  CONTINUE
-      CALL XSCMSG ( MWRONG , MEXPRE , ' ' , 0 )
+      CALL XSCMSG ( MWRONG , MEXPRE , ' ' , -1 )
       GO TO 9900
 9950  CONTINUE
-      CALL XSCMSG ( MMISSG , MKEYWD , ' ' , 0 )
+      CALL XSCMSG ( MMISSG , MKEYWD , ' ' , -1 )
       GO TO 9900
       END
 CODE FOR KSCEST
@@ -2425,6 +2427,7 @@ C
 C
 8900  CONTINUE
 C -- SET ERROR FLAG, SO SCRIPT CAN TAKE APPROPRIATE ACTION
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XERHND ( IERSFL )
       GO TO 9000
 8910  CONTINUE
@@ -2444,13 +2447,13 @@ C
 9900  CONTINUE
       GO TO 9000
 9910  CONTINUE
-      CALL XSCMSG ( MILLEG , MKEYWD , CUPPER(NTYPE:NEND) , 0 )
+      CALL XSCMSG ( MILLEG , MKEYWD , CUPPER(NTYPE:NEND) , -1 )
       GO TO 9900
 9940  CONTINUE
-      CALL XSCMSG ( MMISSG , MKEYWD , ' ' , 0 )
+      CALL XSCMSG ( MMISSG , MKEYWD , ' ' , -1 )
       GO TO 9900
 9950  CONTINUE
-      CALL XSCMSG ( MMISSG , MDATA , ' ' , 0 )
+      CALL XSCMSG ( MMISSG , MDATA , ' ' , -1 )
       GO TO 9900
 C
 C
@@ -2627,13 +2630,13 @@ C
 9900  CONTINUE
       GO TO 9000
 9910  CONTINUE
-      CALL XSCMSG ( MILLEG , MKEYWD , CUPPER(NTYPE:NEND) , 0 )
+      CALL XSCMSG ( MILLEG , MKEYWD , CUPPER(NTYPE:NEND) , -1 )
       GO TO 9900
 9940  CONTINUE
-      CALL XSCMSG ( MMISSG , MKEYWD , ' ' , 0 )
+      CALL XSCMSG ( MMISSG , MKEYWD , ' ' , -1 )
       GO TO 9900
 9950  CONTINUE
-      CALL XSCMSG ( MMISSG , MDATA , ' ' , 0 )
+      CALL XSCMSG ( MMISSG , MDATA , ' ' , -1 )
       GO TO 9900
 C
 C
@@ -2702,15 +2705,15 @@ C
 C
 9910  CONTINUE
 C -- INCORRECT '='
-      CALL XSCMSG ( MILLMS , MEQUAL , ' ' , 0 )
+      CALL XSCMSG ( MILLMS , MEQUAL , ' ' , -1 )
       GO TO 9900
 9920  CONTINUE
 C -- INCORRECT EXPRESSION TYPE
-      CALL XSCMSG ( MINCOR , MEXPRE , ' ' , 0 )
+      CALL XSCMSG ( MINCOR , MEXPRE , ' ' , -1 )
       GO TO 9900
 9930  CONTINUE
 C -- NO EXPRESSION
-      CALL XSCMSG ( MMISSG , MEXPRE , ' ' , 0 )
+      CALL XSCMSG ( MMISSG , MEXPRE , ' ' , -1 )
       GO TO 9900
 C
 C
@@ -3960,23 +3963,24 @@ C
 C
 9910  CONTINUE
 C -- NOT ENOUGH DATA FOR THIS OPERATOR
-      CALL XSCMSG ( MINSUF, MOPERA, '* This is a programming error', 0 )
+      CALL XSCMSG ( MINSUF, MOPERA, '* This is a programming error',-1)
       GO TO 9900
 9920  CONTINUE
 C -- MIXED OR INAPPROPRIATE ARGUMENT TYPES
-      CALL XSCMSG ( MMIXED , MARGTP , ' ' , 0 )
+      CALL XSCMSG ( MMIXED , MARGTP , ' ' , -1 )
       GO TO 9990
 9930  CONTINUE
 C -- VALUE OUT OF RANGE
-      CALL XSCMSG ( MOUTRG , MARGUM , ' ' , 0 )
+      CALL XSCMSG ( MOUTRG , MARGUM , ' ' , -1 )
       GO TO 9990
 9940  CONTINUE
-      CALL XSCMSG ( MINTRN , MEXPRE , 'Internal error in KSCEXE' , 0 )
+      CALL XSCMSG ( MINTRN , MEXPRE , 'Internal error in KSCEXE' , -1)
       GO TO 9900
 9990  CONTINUE
 C
 C -- DESCRIBE FAILING OPERATION
 C
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE ( CMON, 9991)
       CALL XPRVDU(NCVDU, 6,0)
 9991  FORMAT ( / , 1X, 'Failing components of input string are :' , // ,
@@ -4550,23 +4554,23 @@ C
 C
 9910  CONTINUE
 C -- MISSING ARGUMENT
-      CALL XSCMSG ( MMISSG , MARGUM , ' ' , 0 )
+      CALL XSCMSG ( MMISSG , MARGUM , ' ' , -1 )
       GO TO 9900
 9920  CONTINUE
 C -- OUTPUT LIST OVERFLOW
-      CALL XSCMSG ( MOVERF , MOUTLS , ' ' , 0 )
+      CALL XSCMSG ( MOVERF , MOUTLS , ' ' , -1 )
       GO TO 9900
 9930  CONTINUE
 C -- OPERATOR STACK OVERFLOW
-      CALL XSCMSG ( MOVERF , MOPRST , ' '  , 0 )
+      CALL XSCMSG ( MOVERF , MOPRST , ' '  , -1 )
       GO TO 9900
 9940  CONTINUE
 C -- ILLEGAL NUMBER OF BRACKETS
-      CALL XSCMSG ( MILLEG , MBRACK , ' ' , 0 )
+      CALL XSCMSG ( MILLEG , MBRACK , ' ' , -1 )
       GO TO 9900
 9950  CONTINUE
 C -- ILLEGAL TOKEN IN EXPRESSION
-      CALL XSCMSG ( MILLEG , MTOKEN , CTEXT(NARG:NEND) , 0 )
+      CALL XSCMSG ( MILLEG , MTOKEN , CTEXT(NARG:NEND) , -1 )
       GO TO 9900
 C
 C
@@ -4629,7 +4633,7 @@ C
       RETURN
 C
 9910  CONTINUE
-      CALL XSCMSG ( MILLMS , MKEYWD , ' ' , 0 )
+      CALL XSCMSG ( MILLMS , MKEYWD , ' ' , -1 )
       GO TO 9900
       END
 CODE FOR KSCIDN
@@ -4926,17 +4930,17 @@ C
       RETURN
 C
 9910  CONTINUE
-      CALL XSCMSG ( MINCON , MIDENT , CNAME , 0 )
+      CALL XSCMSG ( MINCON , MIDENT , CNAME , -1 )
       GO TO 9900
 9920  CONTINUE
-      CALL XSCMSG ( MOVERF , MIDNLS , ' ' , 0 )
+      CALL XSCMSG ( MOVERF , MIDNLS , ' ' , -1 )
       GO TO 9900
 9930  CONTINUE
       IF ( NOTFND .LE. 0 ) GO TO 9900
-      CALL XSCMSG ( MUNKNW , MIDENT , CNAME , 0 )
+      CALL XSCMSG ( MUNKNW , MIDENT , CNAME , -1 )
       GO TO 9900
 9940  CONTINUE
-      CALL XSCMSG ( MOUTRG , MIDNNM , ' ' , 0 )
+      CALL XSCMSG ( MOUTRG , MIDNNM , ' ' , -1 )
       GO TO 9900
       END
 CODE FOR KSCINT
@@ -5082,16 +5086,16 @@ C
       GO TO 9000
 C
 9920  CONTINUE
-      CALL XSCMSG ( MILLMS , MVARIA , ' ' , 0 )
+      CALL XSCMSG ( MILLMS , MVARIA , ' ' , -1 )
       GO TO 9900
 9940  CONTINUE
-      CALL XSCMSG ( MMISSG , MINDEX , ' ' , 0 )
+      CALL XSCMSG ( MMISSG , MINDEX , ' ' , -1 )
       GO TO 9900
 9950  CONTINUE
-      CALL XSCMSG ( MWRONG , MINDEX , ' ' , 0 )
+      CALL XSCMSG ( MWRONG , MINDEX , ' ' , -1 )
       GO TO 9900
 9960  CONTINUE
-      CALL XSCMSG ( MWRONG , MEXPRE , ' ' , 0 )
+      CALL XSCMSG ( MWRONG , MEXPRE , ' ' , -1 )
       GO TO 9900
 C
       END
@@ -5235,20 +5239,20 @@ C
 9900  CONTINUE
       GO TO 9000
 9910  CONTINUE
-      CALL XSCMSG ( MILLEG , MKEYWD , CUPPER(NTYPE:NEND) , 0 )
+      CALL XSCMSG ( MILLEG , MKEYWD , CUPPER(NTYPE:NEND) , -1 )
       GO TO 9900
 9920  CONTINUE
-      CALL XSCMSG ( MINSUF , MCHANL , ' ' , 0 )
+      CALL XSCMSG ( MINSUF , MCHANL , ' ' , -1 )
       GO TO 9900
 9930  CONTINUE
-      CALL XSCMSG ( MERROR , MOPENF , ' ' , 0 )
+      CALL XSCMSG ( MERROR , MOPENF , ' ' , -1 )
       CALL XERIOM ( NCQUE , ISTAT )
       GO TO 9900
 9940  CONTINUE
-      CALL XSCMSG ( MMISSG , MKEYWD , ' ' , 0 )
+      CALL XSCMSG ( MMISSG , MKEYWD , ' ' , -1 )
       GO TO 9900
 9950  CONTINUE
-      CALL XSCMSG ( MMISSG , MDATA , ' ' , 0 )
+      CALL XSCMSG ( MMISSG , MDATA , ' ' , -1 )
       GO TO 9900
 C
 C
@@ -5391,6 +5395,7 @@ C
       RETURN
 9910  CONTINUE
 C -- OUTPUT ERROR MESSAGE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE ( CMON, 9915 )
       CALL XPRVDU(NCVDU, 1,0)
 9915  FORMAT ( 1X , 'No more descriptors' )
@@ -5958,16 +5963,16 @@ C
       RETURN
 C
 9910  CONTINUE
-      CALL XSCMSG ( MILLEG , MSTRUC , 'Internal error' , 0 )
+      CALL XSCMSG ( MILLEG , MSTRUC , 'Internal error' , -1 )
       GO TO 9900
 9920  CONTINUE
-      CALL XSCMSG ( MILLMS , MPARAM , ' ' , 0 )
+      CALL XSCMSG ( MILLMS , MPARAM , ' ' , -1 )
       GO TO 9900
 9930  CONTINUE
-      CALL XSCMSG ( MWRONG , MEXPRE , ' ' , 0 )
+      CALL XSCMSG ( MWRONG , MEXPRE , ' ' , -1 )
       GO TO 9900
 9940  CONTINUE
-      CALL XSCMSG ( MILLEG , MEXPRE , ' ' , 0 )
+      CALL XSCMSG ( MILLEG , MEXPRE , ' ' , -1 )
       GO TO 9900
 C
 C
@@ -6164,13 +6169,13 @@ C
       GO TO 9000
 C
 9910  CONTINUE
-      CALL XSCMSG ( MILLMS , MKEYWD , ' ' , 0 )
+      CALL XSCMSG ( MILLMS , MKEYWD , ' ' , -1 )
       GO TO 9900
 9920  CONTINUE
-      CALL XSCMSG ( MILLMS , MEXPRE , ' ' , 0 )
+      CALL XSCMSG ( MILLMS , MEXPRE , ' ' , -1 )
       GO TO 9900
 9930  CONTINUE
-      CALL XSCMSG ( MWRONG , MEXPRE , ' ' , 0 )
+      CALL XSCMSG ( MWRONG , MEXPRE , ' ' , -1 )
       GO TO 9900
 C
       END
@@ -6280,7 +6285,7 @@ C
       KSCSHW = 0
       RETURN
 9910  CONTINUE
-      CALL XSCMSG ( MMISSG , MVARIA , ' ' , 0 )
+      CALL XSCMSG ( MMISSG , MVARIA , ' ' , -1 )
       GO TO 9900
 C
 C
@@ -6418,10 +6423,10 @@ C
       KSCSTK = -1
       RETURN
 9910  CONTINUE
-      CALL XSCMSG ( MILLEG , MSTKIT , ' ' , 0 )
+      CALL XSCMSG ( MILLEG , MSTKIT , ' ' , -1 )
       GO TO 9900
 9920  CONTINUE
-      CALL XSCMSG ( MILLEG , MSTKLV , ' ' , 0 )
+      CALL XSCMSG ( MILLEG , MSTKLV , ' ' , -1 )
       GO TO 9900
 C
 C
@@ -6623,16 +6628,16 @@ C
       RETURN
 C
 9910  CONTINUE
-      CALL XSCMSG ( MILLMS , MKEYWD , ' ' , 0 )
+      CALL XSCMSG ( MILLMS , MKEYWD , ' ' , -1 )
       GO TO 9900
 9920  CONTINUE
-      CALL XSCMSG ( MMISSG , MEXPRE , ' ' , 0 )
+      CALL XSCMSG ( MMISSG , MEXPRE , ' ' , -1)
       GO TO 9900
 9930  CONTINUE
-      CALL XSCMSG ( MWRONG , MEXPRE , ' ' , 0 )
+      CALL XSCMSG ( MWRONG , MEXPRE , ' ' , -1 )
       GO TO 9900
 9940  CONTINUE
-      CALL  XSCMSG ( MILLMS , MLENGT , ' ' , 0 )
+      CALL  XSCMSG ( MILLMS , MLENGT , ' ' , -1 )
       GO TO 9900
 C
       END
@@ -6809,16 +6814,16 @@ C
       RETURN
 C
 9910  CONTINUE
-      CALL XSCMSG ( MMISSG , MEXPRE , ' ' , 0 )
+      CALL XSCMSG ( MMISSG , MEXPRE , ' ' , -1 )
       GO TO 9900
 9920  CONTINUE
-      CALL XSCMSG ( MWRONG , MEXPRE , ' ' , 0 )
+      CALL XSCMSG ( MWRONG , MEXPRE , ' ' , -1 )
       GO TO 9900
 9930  CONTINUE
-      CALL XSCMSG ( MMISSG , MKEYWD , ' ' , 0 )
+      CALL XSCMSG ( MMISSG , MKEYWD , ' ' , -1 )
       GO TO 9900
 9940  CONTINUE
-      CALL XSCMSG ( MILLEG , MKEYWD , CUPPER(NARG:NEND) , 0 )
+      CALL XSCMSG ( MILLEG , MKEYWD , CUPPER(NARG:NEND) , -1 )
       GO TO 9900
       END
 CODE FOR KSCTRN
@@ -6994,6 +6999,7 @@ C
 C
       ITYPE = KCCOMP ( CUPPER(NTYPE:NEND) , CTYPE , NTYP , 2 )
       IF ( ITYPE .LE. 0 ) GO TO 9910
+      IF ((IMSG.EQ.6).and.(issmon.ne.1)) CALL SETISSMON(0) ! Turn monitoring back on
 C
 C -- READ NEW MESSAGE TEXT
 C
@@ -7011,10 +7017,10 @@ C
       RETURN
 C
 9910  CONTINUE
-      CALL XSCMSG ( MILLMS , MKEYWD , ' ' , 0 )
+      CALL XSCMSG ( MILLMS , MKEYWD , ' ' , -1 )
       GO TO 9900
 9920  CONTINUE
-      CALL XSCMSG ( MILLMS , MMESSG , ' ' , 0 )
+      CALL XSCMSG ( MILLMS , MMESSG , ' ' , -1 )
       GO TO 9900
       END
 CODE FOR KSCVAL
@@ -7691,25 +7697,25 @@ C -- ERROR IN THE SCRIPT COMMAND.
       GO TO 9000
 C
 9810  CONTINUE
-      CALL XSCMSG ( MMISSG , MKEYWD , ' ' , 0 )
+      CALL XSCMSG ( MMISSG , MKEYWD , ' ' , -1 )
       GO TO 9800
 9820  CONTINUE
-      CALL XSCMSG ( MILLEG , MKEYWD , CLOWER(NMODIF:NEND) , 0 )
+      CALL XSCMSG ( MILLEG , MKEYWD , CLOWER(NMODIF:NEND) , -1 )
       GO TO 9800
 9830  CONTINUE
-      CALL XSCMSG ( MILLMS , MPRMPT , ' ' , 0 )
+      CALL XSCMSG ( MILLMS , MPRMPT , ' ' , -1 )
       GO TO 9800
 9840  CONTINUE
-      CALL XSCMSG ( MILLEG , MDEFLT , ' ' , 0 )
+      CALL XSCMSG ( MILLEG , MDEFLT , ' ' , -1 )
       GO TO 9800
 9850  CONTINUE
-      CALL XSCMSG ( MILLEG , MVLDEX , ' ' , 0 )
+      CALL XSCMSG ( MILLEG , MVLDEX , ' ' , -1 )
       GO TO 9800
 9860  CONTINUE
-      CALL XSCMSG ( MOVERF , 37 , ' ' , 0 )
+      CALL XSCMSG ( MOVERF , 37 , ' ' , -1 )
       GO TO 9800
 9870  CONTINUE
-      CALL XSCMSG ( MTOOMY , MIDENT , ' Menu Items ' , 0 )
+      CALL XSCMSG ( MTOOMY , MIDENT , ' Menu Items ' , -1 )
       GO TO 9800
 C
 C
@@ -7902,13 +7908,13 @@ C
 C
       RETURN
 9910  CONTINUE
-      CALL XSCMSG ( MMISSG , MVARIA , ' ' , 0 )
+      CALL XSCMSG ( MMISSG , MVARIA , ' ' , -1 )
       GO TO 9900
 9920  CONTINUE
-      CALL XSCMSG ( MINCON , MVARIA , CVARIB , 0 )
+      CALL XSCMSG ( MINCON , MVARIA , CVARIB , -1 )
       GO TO 9900
 9930  CONTINUE
-      CALL XSCMSG ( MILLMS , MKEYWD , ' ' , 0 )
+      CALL XSCMSG ( MILLMS , MKEYWD , ' ' , -1 )
       GO TO 9900
 C
       END
@@ -8100,10 +8106,10 @@ C
       RETURN
 C
 9910  CONTINUE
-      CALL XSCMSG ( MINCOR, MORDER, 'SCRIPT should be first in file',0)
+      CALL XSCMSG (MINCOR,MORDER, 'SCRIPT should be first in file',-1)
       GO TO 9900
 9920  CONTINUE
-      CALL XSCMSG ( MOVERF , MSTACK , ' ' , 0 )
+      CALL XSCMSG ( MOVERF , MSTACK , ' ' , -1 )
       GO TO 9900
 C
 C
@@ -8177,7 +8183,7 @@ C
 C      IERROR      ERROR TYPE
 C      ITYPE       DATA TYPE
 C      CPARAM      OPTIONAL CHARACTER TEXT
-C      IPARAM      OPTIONAL NUMERIC PARAMETER ( IGNORED )
+C      IPARAM      NUMERIC PARAMETER ( -1 to restore monitoring )
 C
 C -- THESE MESSAGES ARE USED TO INDICATE SYNTAX ERRORS IN THE SCRIPT
 C    SOURCE TEXT, RATHER THAN THE ERRORS OF THE FINAL USER.
@@ -8258,7 +8264,10 @@ C
 C
       IF ( ISCMSG .LE. 0 ) RETURN
 C
-C
+      IF (IPARAM .LT. 0) THEN
+            if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
+      ENDIF
+
 C
 C -- CHECK SUPPLIED ARGUMENTS
 C
@@ -8505,10 +8514,10 @@ C
 9900  CONTINUE
       RETURN
 9910  CONTINUE
-      CALL XSCMSG ( MILLEG , MSTKIT , ' ' , 0 )
+      CALL XSCMSG ( MILLEG , MSTKIT , ' ' , -1 )
       GO TO 9900
 9920  CONTINUE
-      CALL XSCMSG ( MILLEG , MSTKLV , ' ' , 0 )
+      CALL XSCMSG ( MILLEG , MSTKLV , ' ' , -1 )
       GO TO 9900
 C
 C

@@ -1308,6 +1308,15 @@ int CxTextOut::GetColourCodes( string& strData, COLOURCODE* pColourCode )
         strData.erase(0,1);
         strData += " ";                         // Remove the N
     }
+    else if ( strData[0] == WARNING_BYTE )
+    {
+        m_bInLink = false;
+        pColourCode->nFore = 0;                 // white on
+        pColourCode->nBack = 2;                 // blue
+        nBytesToSkip = 2;                       // Skip the B
+        strData.erase(0,1);
+        strData += " ";                         // Remove the B
+    }
     else
     {
 

@@ -862,6 +862,7 @@ C
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       KLEXAN = -1
       RETURN
 C
@@ -1067,7 +1068,7 @@ C--NOT THE FIRST CARD
 cdjwMar2010 - allow full line length
 
       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(1X,A)')  CLINE(1:NCHARS)
-         WRITE(NCAWU,'(1X,A)')  CLINE(1:NCHARS)
+c         WRITE(NCAWU,'(1X,A)')  CLINE(1:NCHARS)
          WRITE ( CMON, '(1X,A)') CLINE(1:NCHARS)
          CALL XPRVDU(NCVDU, 1,0)
 c      KK = MIN0 ( 78, NCHARS)
@@ -1147,6 +1148,7 @@ C--CREATE THE NECESSARY DATA RECORD AND SET THE COMMON BLOCK POINTERS
       IF(KCDRFI(ICOMMN,IDIMN,1))1200,1300,1300
 C--ERROR WHILE PERFORMING THE RECORD CREATION
 1200  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       GO TO 9900
 C--CHECK IF THE RECORD IS IN CORE
 1300  CONTINUE
@@ -1195,6 +1197,7 @@ C--RESET THE UPPER CORE LIMIT
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9905 ) IULN , ISTORE(MR61+11)
       WRITE ( CMON, 9905 ) IULN , ISTORE(MR61+11)
       CALL XPRVDU(NCEROR, 1,0)
@@ -1292,6 +1295,7 @@ C--SEARCH FOR THE PARAMETER KEYWORD
       IF(KFNDNP(IDWZAP))1150,1150,1300
 C--ERROR DURING PROCESSING OF THE NEW TITLE
 1150  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XMONTR(0)
       CALL XERHDR(0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1200)
@@ -1608,6 +1612,7 @@ C
 C
 C
 2150  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 2200 )
       ENDIF
@@ -1620,6 +1625,7 @@ C
 C
 C -- ERROR - NEGATIVE NUMBER OF RECORDS
 C
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9905 ) IRECS
       ENDIF
@@ -1730,8 +1736,8 @@ C----- SET TYPE OF LIST TO BE PURGED
         CALL XPRVDU(NCVDU, 1,0)
         CSSNDA=''
         LSSNDA = 0
-        WRITE (CMON,'(A)') 'Opening temporary dsc file '
-        CALL XPRVDU(NCVDU, 1,0)
+c        WRITE (CMON,'(A)') 'Opening temporary dsc file '
+c        CALL XPRVDU(NCVDU, 1,0)
       END IF
 C
 CDJWOCT20000 - THE 'NEW DSC' NAME SET IN CSSNDA IS NO LONGER USED
@@ -1753,7 +1759,7 @@ C----- REMOVE ANY '.'
         CALL XCRAS(CSSNDA(1:LSSNDA), LSSNDA)
         CALL FCASE(CSSNDA, CSSNDA, ISSFLC)
         WRITE (CMON,'(A,A)') 'Opening new dsc file: ', CSSNDA(1:LSSNDA)
-        CALL XPRVDU(NCEROR, 1,0)
+c        CALL XPRVDU(NCEROR, 1,0)
         IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) trim(CMON(1))
       ENDIF
 CDJWAPR99}
@@ -1813,6 +1819,7 @@ C----- CHECKIF ITS A DELETED LIST
       IF(ISTORE(KD+4))1050,1150,1150
 C--ERROR BECAUSE THE LIST IS OPEN FOR WRITING
 1050  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPUMSG ( 6 , KD )
       GOTO 1200
 C--ALLOCATE SPACE FOR THIS LIST
@@ -2048,6 +2055,7 @@ c            print *, NRECOR, ios
         END DO
         GOTO 2740
 2735    CONTINUE
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         WRITE (CMON,'(A,I4)') 'Error copying scratch back to dsc: ',IOS
         CALL XPRVDU(NCVDU, 1,0)
         IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) trim(CMON(1))
@@ -2095,6 +2103,7 @@ C -- NEGATIVE INITIAL SIZE
 9920  CONTINUE
 C -- INPUT ERRORS
 CDJWAPR99
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE(CMON,'(A)') 'Filename limited to 16 characters'
       CALL XPRVDU(NCEROR, 1,0)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(a)' ) trim(CMON(1))
@@ -2253,20 +2262,21 @@ C
 C
 2010  CONTINUE
 C
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 2015 )
       WRITE ( CMON, 2015)
       CALL XPRVDU(NCEROR, 2,0)
-2015  FORMAT ( 1X , 'An initial size has been requested even though ',
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')trim(CMON(1)),
+     1 trim(CMON(2))
+2015  FORMAT ( ' An initial size has been requested even though ',
      1 'an old file is being used' , / ,
      2 1X , 'Value ignored' )
       CALL XERHND ( IERWRN )
       GO TO 8000
 C
 2020  CONTINUE
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 2025 ) IPARAM
       WRITE ( CMON, 2025 ) IPARAM
       CALL XPRVDU(NCEROR, 1,0)
-2025  FORMAT ( 1X , 'An illegal initial size of ' , I8 ,
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')TRIM(CMON(1))
+2025  FORMAT (' An illegal initial size of ' , I8 ,
      1 ' has been requested' )
       GO TO 8000
 C
@@ -2291,7 +2301,7 @@ C
      3 ' will not be copied ' , A )
       WRITE ( CMON, 2055 ) IULN , IULSN , REASON(IREASN)
       CALL XPRVDU(NCEROR, 1,0)
-2055  FORMAT ( 1X , 'List type ' , I3 , ' serial number ' , I4 ,
+2055  FORMAT ( ' List type ' , I3 , ' serial number ' , I4 ,
      2 ' will not be copied ' , A20 )
 C
       GO TO 8000
@@ -2305,26 +2315,28 @@ C
 C
 2110  CONTINUE
       CALL XDANAM ( IPARAM , FILNAM )
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 2115 ) FILNAM
       WRITE ( CMON, 2115 ) FILNAM
       CALL XPRVDU(NCVDU, 1,0)
-2115  FORMAT ( 1X , 'Disc index completely restored' , // ,
-     1 1X , 'Listing of file index of ' , A10 , ' file ' )
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')TRIM(CMON(1)(3:33))
+2115  FORMAT ('   Disc index completely restored - you may continue'
+     1  , // ,1X , 'Listing of file index of ' , A10 , ' file ' )
       GO TO 8000
 C
 2120  CONTINUE
       CALL XDANAM ( IPARAM , FILNAM )
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1750 ) FILNAM
-      WRITE ( CMON, 1750 ) FILNAM
-      CALL XPRVDU(NCEROR, 2,0)
-1750  FORMAT (' The ' , A10 , ' file is being rebuilt -'
-     1 /' DO NOT abort the program' )
+      WRITE ( CMON, 1750 ) 
+      CALL XPRVDU(NCVDU, 2,0)
+1750  FORMAT ('{N The Database is being rebuilt -'
+     1 /'{I      DO NOT abort the program' )
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,1751) FILNAM
+1751  FORMAT (' The ' , A10 , ' file is being rebuilt -'
+     1 /' DO NOT abort the program' )     
       GO TO 8000
 C
 2130  CONTINUE
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 2135 )
-      WRITE ( CMON, 2135 )
-      CALL XPRVDU(NCEROR, 1,0)
+C      WRITE ( CMON, 2135 )
+C      CALL XPRVDU(NCEROR, 1,0)
 2135  FORMAT ( 1X , 'The new disc index has been re-written ')
       GO TO 8000
 C
@@ -2336,10 +2348,10 @@ C
 C
 C
 9910  CONTINUE
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9915 ) MSGNUM
       WRITE ( CMON, 9915 ) MSGNUM
       CALL XPRVDU(NCEROR, 1,0)
-9915  FORMAT ( 1X , 'Illegal or unexpected message code ' , I8 )
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')TRIM(CMON(1)(3:))
+9915  FORMAT ( '{E Illegal or unexpected message code ' , I8 )
       CALL XERHND ( IERPRG )
 C -- DUMMY RETURN
       RETURN
@@ -2810,6 +2822,7 @@ C--PRINT THE LIST TYPE AND DETAILS
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9905 ) LN
       WRITE ( CMON, 9905 ) LN
       CALL XPRVDU(NCEROR, 1,0)

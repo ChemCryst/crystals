@@ -49,6 +49,9 @@ class CcModelObject
      bool m_disabled;
      bool m_excluded;
 
+     int id;
+     int r, g, b;
+
 
    protected:
      CcModelDoc * mp_parent;

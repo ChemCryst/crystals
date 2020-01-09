@@ -204,6 +204,8 @@ C
 C
 C
 C
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
+C
       WRITE ( CMON,1015) IUNIT, IOS
       CALL XPRVDU(NCEROR, 1, 0)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1015 ) IUNIT , IOS
@@ -448,6 +450,7 @@ C
 C
 C
 9900  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
 C
 C -- ERROR EXIT
 C
@@ -832,6 +835,7 @@ C
       CALL XCTRIM( NAME, NCHARS )
       IF ( ( IMSG .GT. 1 ) .AND. ( IRDCMS(IFLIND) .GT. 0 ) ) THEN
         IF ( I .GT. 0 ) THEN
+          IF(IMSG.EQ.2) CALL SETISSMON(0) ! Turn monitoring back on
           WRITE ( CMON,1005) ACTION(IMSG) , NAME(1:NCHARS)
           CALL XPRVDU(NCEROR, 2, 0)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU, 1005 )ACTION(IMSG),NAME(1:NCHARS)
@@ -845,6 +849,8 @@ C
        WRITE(NCWU,1006) IFLIND, IUNIT, NAME(1:NCHARS)
 1006   FORMAT('SPECIFIC  Closing File index=',I8, ': Unit =',I8,1X,A)
       ENDIF
+      WRITE ( NCLU, 1007 )ACTION(IMSG),NAME(1:NCHARS)  !useful to track script closure in logs for investigations
+1007  FORMAT ( '# File ' , A, ' :- ', A )
       IFLIND = IFLIND - 1
       GO TO 1000
 C
@@ -1002,8 +1008,7 @@ C
       IF (ISSPRT .EQ. 0) THEN
          WRITE(NCWU,2010) J
       ENDIF
-2010  FORMAT (1X, 'File is too long -- more than ', I6,' records' , / )
- 
+2010  FORMAT ('{W File is too long -- more than ', I6,' records' , / )
       CALL XERHND ( IERCAT )
 C      STOP 100
       CALL GUEXIT(100)
@@ -2339,10 +2344,16 @@ C NOTE THAT XPRTDV CLEARS THE CCVDU BUFFER
       INCLUDE 'XSSVAL.INC'
       IF (NLIN.LE.0) RETURN
       DO I=1,NLIN
-       IF((CCVDU(I)(1:2).EQ.'^^').AND.(ISSMON.EQ.0))  THEN 
+c      write(ncawu,*)'ISSMON in prtmon=',issmon, CCVDU(I)(1:3)
+c Found some lines begining with space, so ^^ are in 2:3, not 1:2)
+       IF((CCVDU(I)(2:2).EQ.'^').AND.(ISSMON.NE.1))  THEN 
             CONTINUE
        ELSE 
+          IF(CCVDU(I)(1:1).EQ.'{' )THEN
+            WRITE(NCAWU,'(A)') TRIM(CCVDU(I)(3:))
+          ELSE
             WRITE(NCAWU,'(A)') TRIM(CCVDU(I))
+          ENDIF
        ENDIF
       ENDDO
       RETURN
@@ -2362,7 +2373,7 @@ c#endif
       INCLUDE 'OUTCOL.INC'
       CHARACTER*(*) CBUF(LINBUF)
       CHARACTER(len=len(cbuf(1))+6) CEXTRA
-      CHARACTER*1 CFIRST, CLAST
+      CHARACTER*1 CFIRST, CLAST, CSECOND
       CHARACTER*10 CFRMAT
       DATA CFRMAT /'(1X,A)'/
 
@@ -2385,7 +2396,30 @@ C- PRINT A WARNING SOMEWHERE
                CALL XCTRIM(CBUF(J),N)
                N = MAX(1,N)         ! SET N TO LAST NON-BLANK
                CFIRST = CBUF(J)(1:1)
+               CSECOND = CBUF(J)(2:2)
                CLAST = CBUF(J)(N:N)
+C
+C IF ISSMON .EQ. 2 THEN SUPPRESS MOST TEXT OUTPUT. WE NEED TO 
+C SWITCH IT BACK ON IF SOMETHING HAS GONE WRONG.
+C Mostly done by resetting issmon before an ABANDON message
+c in individual files.
+CNOTE Lines may begin ^^ or space^^
+C
+      IF(ISSMON.EQ.2) THEN
+       IF      (CFIRST.EQ.'^') THEN
+            CONTINUE
+       ELSE IF (CFIRST.EQ.'{') THEN
+            CONTINUE
+       ELSE IF (CSECOND.EQ.'^') THEN
+            CONTINUE
+       ELSE IF (CSECOND.EQ.'{') THEN
+            CONTINUE
+       ELSE
+            CYCLE
+       ENDIF
+C       write(123,*)'In Control = ', cfirst, csecond
+      ENDIF
+C
 c         if defined(__GIL__)  || defined(__MAC__) ||defined (__INW__)
 #ifdef CRY_GUI
                N = MIN(N,256)         ! SET N TO LAST NON-BLANK

@@ -242,6 +242,7 @@ C
       IF ( ISSSFI .GT. 0 ) THEN
         ISTAT = KFLOPN ( NCRU ,CSSCST(1:LSSCST),ISSOLD,ISSREA,1,ISSSEQ)
         IF ( ISTAT .LE. 0 ) THEN
+         if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
             WRITE(6,*) 'UNIT =', NCRU, 'FILE =', CSSCST
             CALL XERIOM ( NCRU, ISTAT)
 C            STOP 'ERROR OPENING STARTUP FILE'
@@ -335,6 +336,7 @@ C
 C
 9990  CONTINUE
 C      STOP 'CRYSTALS START ERROR'
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL GUEXIT (2004)
       END
 

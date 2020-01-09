@@ -13,7 +13,7 @@
 % EVALUATE CALLED = TRUE
 %%
 %% edit was still activated even if part number selection cancelled
-%  if avalue .lt. 0. then
+%  if avalue .lt. - 1000. then
 %    finish
 %  end if                                                                             
 %%

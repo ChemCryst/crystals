@@ -84,8 +84,6 @@ Upating List 13 for twinned data
  DO NOT abort the program
  The new disc index has been re-written 
  Disc index completely restored
-
- Listing of file index of    Data    file 
 #PUNCH 7 I
 # punching LIST  7 as LIST  7 with all keys set
 # NBGNXT=    67
@@ -518,8 +516,6 @@ Upating List 13 for twinned data
  DO NOT abort the program
  The new disc index has been re-written 
  Disc index completely restored
-
- Listing of file index of    Data    file 
 #USE TD-SYST-SORT.L7
 # PUNCHING LIST  7 AS LIST  7 WITH ALL KEYS SET
 # NBGNXT=    67

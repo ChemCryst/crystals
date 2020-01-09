@@ -432,7 +432,7 @@
 %         END IF                                                                
 %       END IF                                                                  
 %% See if any atoms were found                                                  
-%       copy '#set moni off'                                                    
+%%       copy '#set moni off'                                                    
 %       COPY '#GENERALEDIT 10'                                                  
 %       COPY 'TRANSHEAD FROM OFFSET=3 TO N10'                                   
 %       COPY 'END'                                                              
@@ -639,5 +639,5 @@ Diff  -  Subtract model structure factors from the observed
 %   END BLOCK                                                                   
 % END CASE                                                                      
 % END LOOP                                                                      
-% copy '#set moni off'                                                          
+%% copy '#set moni off'                                                          
 %END SCRIPT                                                                     

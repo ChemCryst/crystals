@@ -466,17 +466,20 @@ interface
   end subroutine fastatom
 end interface
 
+!    call fastsphere(bl,ix,iy,iz,ir,ig,ib,ioc,ico,ivd, & ! 1, 2,3,4, 5,6,7, 8,9,10
+!    &   isp,ifl,iso,irad, sfx,sfy,sfz, be, jl,jrf,ja,jgr,fue,fsp,isflg) ! 11,12,13,14, 15,16,17, 18, 19,20,21,22,23,24,25
 
 interface
 !> interface to C function fastsphere (iso_c_bindings)
 !! Unkwown function call from guibits.F
-  subroutine fastsphere (dl,jx,jy,jz,jr,jg,jb,joc,jco,jvd, &
-  &  jsp,jfl,jiso,jrad) bind(c)
+  subroutine fastsphere (dl,jx,jy,jz,jr,jg,jb,joc,jco,jvd, & ! 1, 2,3,4, 5,6,7, 8,9,10
+  &  jsp,jfl,jiso,jrad,sfx,sfy,sfz,de,jl,jrf,ja,jgr,fue,fsp,isflg) bind(c)  ! 11,12,13,14, 15,16,17, 18, 19,20,21,22,23,24,25
     use, intrinsic :: ISO_C_BINDING
     implicit none
     integer, value :: jx,jy,jz,jr,jg,jb,joc,jco,jvd
-    integer, value :: jsp,jfl,jiso,jrad
-    character dl
+    integer, value :: jsp,jfl,jiso,jrad,jl,jrf,ja,jgr,isflg
+    character dl,de
+    real, value :: sfx,sfy,sfz,fue,fsp
   end subroutine fastsphere
 end interface
 
@@ -485,12 +488,13 @@ interface
 !> interface to C function fastdonut (iso_c_bindings)
 !! Unkwown function call from guibits.F
   subroutine fastdonut (dl,jx,jy,jz,jr,jg,jb,joc,jco,jvd, &
-  & jsp,jfl,jiso,jrad, jdec, jaz) bind(c)
+  & jsp,jfl,jiso,jrad, jdec, jaz,sfx,sfy,sfz,de,jl,jrf,ja,jgr,fue,fsp,isflg) bind(c)
     use, intrinsic :: ISO_C_BINDING
     implicit none
     integer, value :: jx,jy,jz,jr,jg,jb,joc,jco,jvd
-    integer, value :: jsp,jfl,jiso,jrad, jdec, jaz
-    character dl
+    integer, value :: jsp,jfl,jiso,jrad, jdec, jaz,jl,jrf,ja,jgr,isflg
+    character dl,de
+    real, value :: sfx,sfy,sfz,fue,fsp
   end subroutine fastdonut
 end interface
 #endif

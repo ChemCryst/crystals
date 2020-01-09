@@ -14,6 +14,7 @@
 %  EVALUATE ALERTFLAG = 0
 %  EVALUATE WARNFLAG = 0
 %%
+%  COPY '#SET MONI FAST'
 %%   Re-calculate the electron density.
 {S * Recalculating min and max electron density.
 %  COPY '#SCRIPT PREFOUR'
@@ -30,6 +31,7 @@
 %   EVALUATE ERRFLAG = 0
 %  END BLOCK
 %  IF ERRFLAG .NE. 0 THEN
+%  COPY '#SET MONI ON'
  
 {E **** Fatal: Error in calculating phases.
 {R Do you have Fourier peaks ('Q,L,R or M') in your model?
@@ -49,6 +51,7 @@
 %%
 %  BLOCK
 %    IF ( EXISTS 30 .NE. 1 ) THEN
+%      COPY '#SET MONI ON'
 {E **** FATAL: There in no LIST 30 with the general details available
 {R             Have you actually carried out an analysis?
 %      FINISH
@@ -246,19 +249,19 @@
 %    COPY 'END'
 %    IF WORK1 .GT. 0.20 THEN
 {E *** FAIL:  Shift / esd > 0.20
-            Consider carrying out some unconditional cycles of refinement.
+{N            Consider carrying out some unconditional cycles of refinement.
 %       EVALUATE ERRFLAG = ERRFLAG + 1
 %       EVALUATE VALIDCYCLE = TRUE
 %    ELSE
 %       IF WORK1 .GE. 0.10 THEN
 {E **  WARN:  Shift / esd > 0.10
-            Consider carrying out some unconditional cycles of refinement.
+{N            Consider carrying out some unconditional cycles of refinement.
 %          EVALUATE WARNFLAG = WARNFLAG + 1
 %          EVALUATE VALIDCYCLE = TRUE
 %       ELSE
 %          IF WORK1 .GE. 0.05 THEN
 {I *   ALERT: Shift / esd > 0.05
-            Consider carrying out some unconditional cycles of refinement.
+{N            Consider carrying out some unconditional cycles of refinement.
 %             EVALUATE ALERTFLAG = ALERTFLAG + 1
 %             EVALUATE VALIDCYCLE = TRUE
 %          END IF
@@ -276,11 +279,13 @@
 %%
 %   BLOCK
 %     IF ( EXISTS 29 .NE. 1 ) THEN
+%       COPY '#SET MONI ON'
 {E **** FATAL: No list 29 (atomic properties) present
 {R             Have you carried out an analysis?
         FINISH
 %     END IF
 %     IF ( EXISTS 2 .NE. 1 ) THEN
+%       COPY '#SET MONI ON'
 {E **** FATAL: No list 2 (symmetry) present
 {R             Have you carried out an analysis?
         FINISH
@@ -315,21 +320,21 @@
 %%   DelRhoMin
 %%
 %    IF WORK1 .LT. ( - ZMAX * 2.0 ) THEN
-{E *** FAIL:  Minimum electron density difference is too negative ( less than
-            twice ZMAX / - 10 )
-            There may be disorder, missing atoms or unlocated solvent.
+{E *** FAIL:  Minimum electron density difference is too negative 
+{N            ( less than twice ZMAX / - 10 )
+{N            There may be disorder, missing atoms or unlocated solvent.
 %       EVALUATE ERRFLAG = ERRFLAG + 1
 %    ELSE
 %       IF WORK1 .LT. ( - ZMAX ) THEN
-{E ** WARN:  Minimum electron density difference is too negative ( less than
-            ZMAX / - 10 )
-            There may be disorder, missing atoms or unlocated solvent.
+{E ** WARN:  Minimum electron density difference is too negative 
+{N            ( less than ZMAX / - 10 )
+{N            There may be disorder, missing atoms or unlocated solvent.
 %          EVALUATE WARNFLAG = WARNFLAG + 1
 %       ELSE
 %          IF WORK1 .LT. ( - ZMAX * 0.75 ) THEN
-{I * ALERT: Minimum electron density difference is too negative ( less than
-            0.75 * ZMAX / - 10 )
-            There may be disorder, missing atoms or unlocated solvent.
+{I * ALERT: Minimum electron density difference is too negative 
+{N            ( less than 0.75 * ZMAX / - 10 )
+{N            There may be disorder, missing atoms or unlocated solvent.
 %             EVALUATE ALERTFLAG = ALERTFLAG + 1
 %          END IF
 %       END IF
@@ -338,28 +343,28 @@
 %%   DelRhoMax
 %%
 %    IF WORK2 .GT. ( ZMAX * 2.0 ) THEN
-{E *** FAIL:  Maximum electron density difference is too high ( more than
-            twice ZMAX / 10 )
-            There may be disorder, missing atoms or unlocated solvent.
+{E *** FAIL:  Maximum electron density difference is too high 
+{N            ( more than twice ZMAX / 10 )
+{N            There may be disorder, missing atoms or unlocated solvent.
 %       EVALUATE ERRFLAG = ERRFLAG + 1
 %    ELSE
 %       IF WORK2 .LT. ( - ZMAX ) THEN
-{E ** WARN:  Maximum electron density difference is too high ( more than
-            ZMAX / 10 )
-            There may be disorder, missing atoms or unlocated solvent.
+{E ** WARN:  Maximum electron density difference is too high 
+{N            ( more than ZMAX / 10 )
+{N            There may be disorder, missing atoms or unlocated solvent.
 %          EVALUATE WARNFLAG = WARNFLAG + 1
 %       ELSE
 %          IF WORK2 .LT. ( - ZMAX * 0.75 ) THEN
-{I * ALERT: Maximum electron density difference is too high ( more than
-            0.75 * ZMAX / 10 )
-            There may be disorder, missing atoms or unlocated solvent.
+{I * ALERT: Maximum electron density difference is too high 
+{N            ( more than 0.75 * ZMAX / 10 )
+{N            There may be disorder, missing atoms or unlocated solvent.
 %             EVALUATE ALERTFLAG = ALERTFLAG + 1
 %          END IF
 %       END IF
 %    END IF
 %  END BLOCK
 %%
-%% Flack parameter.
+%% Flack parameter.  Think about calling XABSOLUTE instead
 %%
 {I Checking Flack parameter (if refined).
 %  BLOCK
@@ -406,19 +411,19 @@
 {E *** FAIL: Ratio of reflections to parameters is unacceptable ( < 6.0 )
 {I     INFO: Observation:parameter ratio = !
 %        OUTPUT
-            Reduce the number of parameters, or seek help.
+{N            Reduce the number of parameters, or seek help.
 %       EVALUATE ERRFLAG = ERRFLAG + 1
 %      ELSE
 %         IF WORK3 .LE. 8.0 THEN
 {E **  WARN:  Ratio of reflections to parameters is unacceptable ( < 8.0 )
 %           OUTPUT
-            Reduce the number of parameters, or seek help.
+{N            Reduce the number of parameters, or seek help.
 %           EVALUATE WARNFLAG = WARNFLAG + 1
 %         ELSE
 %           IF WORK3 .LE. 10.0 THEN
 %             OUTPUT
 {I *   ALERT: Ratio of reflections to parameters is quite low ( < 10.0 )
-            You should reduce the number of parameters in the refinement.
+{N            You should reduce the number of parameters in the refinement.
 %             EVALUATE ALERTFLAG = ALERTFLAG + 1
 %           END IF
 %         END IF
@@ -428,19 +433,19 @@
 %      IF WORK3 .LE. 4.0 THEN
 {E *** FAIL:  Ratio of reflections to parameters is unacceptable ( < 4.0 )
 %             OUTPUT
-            Reduce the number of parameters, or seek help.
+{N            Reduce the number of parameters, or seek help.
 %       EVALUATE ERRFLAG = ERRFLAG + 1
 %      ELSE
 %         IF WORK3 .LE. 6.0 THEN
 {E **  WARN:  Ratio of reflections to parameters is unacceptable ( < 6.0 )
 %             OUTPUT
-            Reduce the number of parameters, or seek help.
+{N            Reduce the number of parameters, or seek help.
 %           EVALUATE WARNFLAG = WARNFLAG + 1
 %         ELSE
 %           IF WORK3 .LE. 8.0 THEN
 {I *   ALERT: Ratio of reflections to parameters is quite low ( < 8.0 )
 %             OUTPUT
-            You should reduce the number of parameters in the refinement.
+{N            You should reduce the number of parameters in the refinement.
 %             EVALUATE ALERTFLAG = ALERTFLAG + 1
 %           END IF
 %         END IF

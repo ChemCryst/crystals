@@ -234,6 +234,7 @@ C
       INCLUDE 'QSTORE.INC'
 C
 C----- WE COULD COME HERE AFTER AN ERROR - TRY A RESTART.
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
 C--CHECK FOR A '#INSTRUCTION' CARD
       I=KFNHF(LSTOP,LSTNO,ICLASS)
 C--CHECK IF WE MUST CHANGE PROGRAMS
@@ -321,6 +322,7 @@ C--OUTPUT THE MESSAGE
       IF(1)1150,1250,1250
 C--ERROR DURING THE ASSIGN
 1150  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XMONTR(0)
       CALL XERHDR(-1)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1200)
@@ -755,6 +757,7 @@ C--CHECK IF THE CURRENT CARD CONTAINS A '#INSTRUCTION' CARD
       IF(IHFLAG)1100,1150,1150
 C--NO '#INSTRUCTION'  -  READ THE NEXT RECORD
 1100  CONTINUE
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XMONTR(I)
 C--ALL SUBSEQUENT CARDS ARE IN ERROR
       I=0
@@ -1014,6 +1017,7 @@ C--END OF THE DATA  -  CHECK FOR ERRORS
       IF(LEF)1300,1350,1300
 C--ERRORS FOUND
 1300  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       KRDDPV=-1
 1350  CONTINUE
       RETURN
@@ -1145,14 +1149,16 @@ C--THIS IS A NORMAL CARD WITHOUT A '#' IN COLUMN ONE
 C--THIS CARD HAS NOTHING IN COLUMN ONE  -  THIS IS AN ERROR
       I=KCHKPV(IDIRFL,ICOMMN,IDIMN,1)
 C--NOW PRINT SOME ERROR MESSAGE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XMONTR(0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,1250)
       WRITE ( CMON, 1250)
       CALL XPRVDU(NCEROR, 1,0)
-1250  FORMAT(' The user directive has been omitted',
+1250  FORMAT('{W The user directive has been omitted',
      2 ' or does not begin in column one')
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')CMON(1)(3:)
 C--GENERAL ERROR AREA
 1300  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       LEF=LEF+1
       IDIRFL=-1
       CALL XMONTR(0)
@@ -1172,6 +1178,7 @@ C--SUCCESS  -  CHECK THAT THERE IS NOT AN IDENTITY CLASH
       IF(KCNXTS(MDR60-1,ISTORE(LR60),NR60,MDR60))1150,1500,1450
 C--DIRECTIVE NAME CLASH  -  ERROR
 1450  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       I=KCHKPV(IDIRFL,ICOMMN,IDIMN,1)
       CALL XMDCS
       GOTO 1150
@@ -1200,12 +1207,13 @@ C    FILE, IF THERE ARE ANY
 C--NOT A USER DIRECTIVE EITHER  -  PRINT AN ERROR MESSAGE
 1750  CONTINUE
       I=KCHKPV(IDIRFL,ICOMMN,IDIMN,1)
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XMONTR(0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,1800)IH
       WRITE ( CMON, 1800) IH
       CALL XPRVDU(NCEROR, 1,0)
-1800  FORMAT(' The directive on the last card is illegal',
+1800  FORMAT('{W The directive on the last card is illegal',
      2 ' with this ''',A1,'Instruction''')
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')CMON(1)(3:)
       GOTO 1300
 C--ENSURE THAT THE LAST USER DIRECTIVE TERMINATED OKAY
 1850  CONTINUE
@@ -1217,13 +1225,14 @@ C--CHECK IF THIS DIRECTIVE HAS BEEN ENABLED
       IF(KINCLD(ICOMMN,IDIMN))1900,2000,2000
 C--THIS DIRECTIVE HAS NOT BEEN ENABLED FOR INPUT FOR CREATION
 1900  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XMONTR(0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,1950)
       WRITE ( CMON, 1950)
       CALL XPRVDU(NCEROR, 2,0)
-1950  FORMAT(' At least one other directive or parameter',
-     2 ' has been omitted'/' The directive above',
+1950  FORMAT('{W At least one other directive or parameter',
+     2 ' has been omitted'/'{W The directive above',
      3 ' cannot be processed')
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')CMON(1)(3:),CMON(2)(3:)
       GOTO 1300
 C--CREATE ANY DATA AREAS THAT ARE REQUIRED
 2000  CONTINUE
@@ -1266,6 +1275,7 @@ C RIC: If max directive count is 9999, then ignore this check.
       IF((ISTORE(MR61+8).GT.ISTORE(MR61+7)).AND.
      1   (ISTORE(MR61+7).LT.9999)) THEN
 C--THIS DIRECTIVE HAS APPEARED TOO MANY TIMES
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         CALL XMONTR(0)
         IF (ISSPRT .EQ. 0) WRITE(NCWU,2500)
         WRITE ( CMON, 2500)
@@ -1596,14 +1606,17 @@ C--CHECK FOR SUCCESS
       IF(IPARAM)1250,1150,1350
 C--NO MATCH  -  ERROR MESSAGE
 1150  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XMONTR(0)
       ND=ND-1
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,1200)(IMAGE(I),I=NC,ND)
       WRITE ( CMON, 1200) (IMAGE(I),I=NC,ND)
       CALL XPRVDU(NCEROR, 2,0)
-1200  FORMAT(' Unknown parameter keyword : ',/,1X, 80A1)
+1200  FORMAT('{W Unknown parameter keyword : ',/,1X, 80A1)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')
+     1 CMON(1)(3:),CMON(2)(3:)
 C--ERROR RETURN
 1250  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IDIRFL=-1
       LEF=LEF+1
       KFNDNP=-1
@@ -1707,11 +1720,12 @@ C--VALUE CAN BE PROCESSED HERE  -  CHECK THAT THERE IS AN ARGUMENT
       IF(ND)1050,1050,1250
 C--NO ARGUMENT  -  THIS IS AN ERROR
 1050  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XMONTR(0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,1100)LASTCH
       WRITE ( CMON, 1100) LASTCH
       CALL XPRVDU(NCEROR, 1,0)
-1100  FORMAT(' Missing parameter value at about column ',I4)
+1100  FORMAT('{W Missing parameter value at about column ',I4)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')CMON(1)(3:)
 C--ERROR RETURN
 1150  CONTINUE
       IDIRFL=-1
@@ -1731,6 +1745,7 @@ C--NUMBER TO BE READ  -  INPUT IT
       IF(KINPUT(A))1350,1400,1350
 C--ERROR DURING THE NUMBER
 1350  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XSPCH
       GOTO 1150
 C--CHECK IF WE ARE READING AN INTEGER OR FLOATING POINT NUMBER
@@ -1766,13 +1781,16 @@ C--UPDATE FOR THE NEXT PERMITTED  VALUE
 1800  CONTINUE
 C--NO MATCH  -  THIS IS AN ERROR
 1850  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XMONTR(0)
       J=MR62N+MDR62N-2
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,1900)NNC,(ISTORE(I+1),I=MR62N,J)
       WRITE ( CMON, 1900) NNC,(ISTORE(I+1),I=MR62N,J)
       CALL XPRVDU(NCEROR, 2,0)
-1900  FORMAT(' Value provided at about column ',I4,
-     2 '  is not one of those expected.'/' Parameter keyword : ',20A1)
+1900  FORMAT('{W Value provided at about column ',I4,
+     2 '  is not one of those expected.'/
+     3 '{W Parameter keyword : ',20A1)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')
+     1 CMON(1)(3:),CMON(2)(3:)
       GOTO 1150
 C--CHECK IF THIS VALUE IS TO BE STORED IN A DATA RECORD
 1950  CONTINUE
@@ -1893,6 +1911,7 @@ C--DATA RECORD USED  -  CHECK IF THIS IS THE FIRST TIME FOR THIS RECORD
       IF(ISTORE(MR61+8))1100,1150,1100
 C--ERROR  -  RECORD CANNOT BE SET UP
 1050  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       KCDRFI=-1
 1100  CONTINUE
       RETURN
@@ -1901,15 +1920,17 @@ C--FIND THE NUMBER OF ELEMENTS PER REPEAT GROUP
       IF(KINVAL(ISTORE(MR61+9),I,ICOMMN,IDIMN))1200,1400,1400
 C--ERROR IN FINDING THIS PARAMETER
 1200  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF(ITYPE)1250,1350,1350
 C--CARD INPUT  -  PRINT THE CARD AND AN ERROR MESSAGE
 1250  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XMONTR(0)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,1300)
       WRITE ( CMON, 1300 )
       CALL XPRVDU(NCEROR, 1,0)
-1300  FORMAT(' Previous errors prevent processing',
+1300  FORMAT('{W Previous errors prevent processing',
      2 ' of the last directive')
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')CMON(1)(3:)
 1350  CONTINUE
       IDIRFL=-1
       LEF=LEF+1
@@ -2110,6 +2131,7 @@ C--THIS IS THE PARAMETER  -  CHECK IF IT HAS BEEN INPUT
       IF(KCHKPV(JA,ICOMMN,IDIMN,0))1300,1400,1400
 C--NO PROCESSING IS POSSIBLE
 1300  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       KINVAL=-1
       RETURN
 C--PARAMETER SET OKAY  -  STOP ANY FURTHER INPUT OF THIS DIRECTIVE
@@ -2211,16 +2233,19 @@ C--NO DEFAULT VALUE  -  CHECK FOR AN EXCLUDED DIRECTIVE
       IF(ISTORE(MR61+6))1950,1450,1450
 C--ERROR  -  CHECK ON THE TYPE OF STATEMENT PRINT REQUIRED
 1450  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF(JTYPE)1600,1500,1650
 C--NOT A READ  -  SIMPLY A CHECK
 1500  CONTINUE
       L=MR60+MDR60-2
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,1550)(ISTORE(J+1),J=MR60,L)
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE ( CMON, 1550) (ISTORE(J+1),J=MR60,L)
       CALL XPRVDU(NCEROR, 1,0)
-1550  FORMAT(' A directive has been omitted',
+1550  FORMAT('{W A directive has been omitted',
      2 ' leaving the parameters below undefined',
-     3 /' Directive : ', 20A1)
+     3 /'{W Directive : ', 20A1)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')
+     1 CMON(1)(3:),CMON(2)(3:)
 C--MARK THIS DIRECTIVE AS TOO LATE
       ISTORE(MR61+8)=-1
       GOTO 1650
@@ -2229,16 +2254,19 @@ C--INPUT FROM CARDS  -  PRINT THE LAST CARD IF NECESSARY
       CALL XMONTR(0)
 C--JUMP ON THE TYPE OF ERROR GENERATED
 1650  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       JTYPE=1
       K=MR62N+MDR62N-2
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,1700)I,(ISTORE(J+1),J=MR62N,K)
       WRITE ( CMON, 1700) I,(ISTORE(J+1),J=MR62N,K)
       CALL XPRVDU(NCEROR, 2,0)
-1700  FORMAT(' Parameter ',I3,
+1700  FORMAT('{W Parameter ',I3,
      2 '  has no default value and has been omitted',/
-     3 ' Parameter keyword : ',20A1)
+     3 '{W Parameter keyword : ',20A1)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')
+     1 CMON(1)(3:),CMON(2)(3:)
 C--UPDATE THE ERROR COUNTER
       LEF=LEF+1
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       KCHKPV=-1
       GOTO 1950
 C--CHECK IF THIS IS A DATA AREA OR A COMMON BLOCK
@@ -2268,6 +2296,7 @@ C--CHECK IF WE GENERATED ANY ERRORS
       IF(LEF-MYLEF)2100,2200,2100
 C--ERRORS  -  PRINT A BLANK LINE
 2100  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE(NCWU,2150)
 2150  FORMAT(1X)
 C--AND NOW RETURN

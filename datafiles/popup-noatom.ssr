@@ -36,8 +36,6 @@
 ^^WI                      DISABLEIF='IN' ENABLEIF='L1 L2 L5'
 ^^WI                    ITEM _REMF '&Remove Fourier peaks' '#SCRIPT XDELQ'
 ^^WI                       DISABLEIF='IN'  ENABLEIF='QS'
-^^WI               ITEM _GEOM '&Geometry' '#SCRIPT GEOMETRY'  DISABLEIF='IN'
-^^WI                      ENABLEIF='L1 L2 L5'
 ^^WI                    ITEM CSDV '&Mogul Geometry Check'
 ^^WI                    '#SCRIPT XMOGULGO' DISABLEIF='IN'
 ^^WI                      ENABLEIF='L1 L2 L5'

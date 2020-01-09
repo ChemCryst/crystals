@@ -1,6 +1,21 @@
 %SCRIPT XSCALE
 %%  compute and set overall scale
-%  IF EXISTS 6 .GE. 1 .AND. EXISTS 5 .GE. 1 THEN                                                     
+%  VARIABLE INTEGER N5
+%%
+%  IF EXISTS 5 .LE. 0 THEN
+{R   WARNING - You have no atoms to refine
+{S * Done.
+%    FINISH
+%  END IF
+%  COPY '#GENERALEDIT 5'
+%  COPY 'TRANSHEAD FROM OFFSET=3 TO N5' 
+%  COPY 'END'
+%  IF N5 .EQ. 0 THEN
+{R   WARNING - You have no atoms to refine
+{S * Done.
+%    FINISH
+%  END IF
+%  IF EXISTS 6 .GE. 1 THEN                                                     
 %    COPY '#SFLS'
 %    COPY 'CALC'
 %    COPY 'END'

@@ -7,7 +7,6 @@
 % EVALUATE CMESSAGE = 'Example: 0.5'
 % EVALUATE AVALUE = 1.0
 %%
-%%
 % GET SILENT NOSTORE FINAL KEYWORD 'Atom?' ' '
 % EVALUATE CATOM = CVALUE
 %%
@@ -16,16 +15,12 @@
 % EVALUATE CALLED = TRUE
 %%
 %% edit was still activated even if selection cancelled
-%  if avalue .lt. 0. then
+%  if avalue .lt. - 1000. then
 %    finish
 %  end if                                                                             
 %%
 % QUEUE REWIND
-%%
-%%^^CO GETVALUE MODEL01
-%%
 % COPY '#SCRIPT YREOCC'
-%%
 % COPY '#EDIT'
 % QUEUE PROCESS
 % COPY 'END'

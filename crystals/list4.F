@@ -444,8 +444,8 @@ C  WHILE NOTING THAT THE USER CAN ALWAYS INCLUDE TYPE=/FO/ IN THE COMMAND
             IF (ISSPRT .EQ. 0) WRITE(NCWU,100) TRIM(CTYPE(JTYPE+1))
           ENDIF
         ENDIF
-        WRITE(CMON,100) TRIM(CTYPE(JTYPE+1))
-        CALL XPRVDU(NCVDU,1,0)
+c        WRITE(CMON,100) TRIM(CTYPE(JTYPE+1))
+c        CALL XPRVDU(NCVDU,1,0)
 C
         WMX = STORE(L4F+1)               ! SET THE MAXIMUM WEIGHT
         IF (JTYPE.EQ.2) WMX=WMX*WMX      ! WORKING WITH F-SQUARED
@@ -481,7 +481,6 @@ C
         SCALE=1.  ! SET UP THE DEFAULT SCALE FACTOR
         NGW=0 ! SET THE NUMBER OF NEGATIVE WEIGHTS FOUND TO ZERO
         NOUTLIERS = 0
-
         IF(KEXIST(5).GE.1)THEN             ! THERE IS A LIST 5  -  LOAD IT
           CALL XFAL05
           IF ( IERFLG .LT. 0 ) GO TO 9900
@@ -929,6 +928,11 @@ c123   just use stored sigma(F)
           AW = Q / 
      1     (SFCSIG*SFCSIG + (P*STORE(L4))*(P*STORE(L4)) +
      2     STORE(L4+1)*P + STORE(L4+3) + STORE(L4+4)*STH) 
+          AW1 = SFCSIG*SFCSIG
+          AW2 = (P*STORE(L4))*(P*STORE(L4)) +
+     2    STORE(L4+1)*P + STORE(L4+3) + STORE(L4+4)*STH 
+          AW3 = Q / (AW1 + AW2)
+C          WRITE(123,*)AW,AW1,AW2,AW3,STHOLS, SFCFO
 C -- Convert weight back onto scale of FO:
           IF ( JTYPE .EQ. 2 ) THEN
             AW = AW / SCALE**4
@@ -1282,11 +1286,13 @@ C
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XALTES (4,-1)
       CALL XOPMSG ( IOPWEI , IOPABN , IVERSN )
       GO TO 5590
 9910  CONTINUE
 C -- TOO FEW COEFFICIENTS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9915 )
       WRITE ( CMON , 9915 )
       CALL XPRVDU(NCVDU, 1,0)
@@ -1303,6 +1309,7 @@ C -- NEGATIVE WEIGHTS
       GOTO 5570
 9930  CONTINUE
 C -- ILLEGAL WEIGHTING SCHEME
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9935 ) ITYPE4
       WRITE ( CMON , 9935 ) ITYPE4
       CALL XPRVDU(NCVDU, 1,0)
@@ -1311,6 +1318,7 @@ C -- ILLEGAL WEIGHTING SCHEME
       GO TO 9900
 9940  CONTINUE
 C -- INSUFFICIENT PARAMETERS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9945 )
       WRITE ( CMON , 9945 )
       CALL XPRVDU(NCVDU, 1,0)
@@ -1319,6 +1327,7 @@ C -- INSUFFICIENT PARAMETERS
       GO TO 9900
 9950  CONTINUE
 C -- FIRST PARAMETER ZERO
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9955 ) ITYPE4
       WRITE ( CMON , 9955 ) ITYPE4
       CALL XPRVDU(NCVDU, 1,0)
@@ -1328,6 +1337,7 @@ C -- FIRST PARAMETER ZERO
       GO TO 9900
 9960  CONTINUE
 C -- ALL HAVE BAD WEIGHTS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9965 )
       WRITE ( CMON , 9965 )
       CALL XPRVDU(NCVDU, 1,0)
@@ -1346,6 +1356,7 @@ C
       CALL XOPMSG ( IOPWEI , IOPINT , IVERSN )
       GO TO 9900
 9990  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE(NCWU,9991)
       WRITE(CMON,9991)
       CALL XPRVDU(NCVDU, 1,0)
@@ -2988,6 +2999,7 @@ C -- ERRORS
       GO TO 3100
 9910  CONTINUE
 C -- NOT ALL REFLECTIONS PROCESSED
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9915 ) NOCC
 9915  FORMAT ( 1X , I5 , ' reflections left unprocessed' )
       ISTAT = IERWRN
@@ -2998,9 +3010,8 @@ C -- IF A NEW LIST 6 WAS TO HAVE BEEN PRODUCED , THIS IS AN ERROR
 9930  CONTINUE
       CALL XOPMSG ( IOPANA , IOPCMI , 0 )
       GO TO 9900
-C
-C
       END
+c
 C
 CODE FOR GCOMPL
       SUBROUTINE GCOMPL
@@ -3685,6 +3696,7 @@ C      FIRST - READ LIST 6
       CALL XFAL06(IULN1,0)
 C-----CHECK REFLECTIONS ALREADY ON DISK
       IF (L6D .LE. 0) THEN
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
        WRITE(CMON,'(A)')' Reflections not in DSC file'
        CALL XPRVDU (NCVDU,1,0)
        IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
@@ -3915,7 +3927,6 @@ C
                WRITE(NCWU,'(A)') trim(CMON(1)),trim(CMON(2))
              end if
              WDTO = 0.0
-
              CALL XFAL06(IULN06, 0)   ! Load READ ONLY
              IF ( IERFLG .LT. 0 ) THEN
                   ICASE17=0
@@ -4020,6 +4031,8 @@ C>> ALERT C for > 5
       ENDIF
 c
       CALL XCSAE                     ! CLEAR THE LIST ENTRIES
+C     RE-LOAD LIST 1 BECAUSE LIST 28 NEEDS IT TO GET SINTHETA/LAMBDA
+      CALL XFAL01      
       IRCZAP = 0
       INCLUDE 'IDIM04.INC'
 C          CALL XFILL (IRCZAP, ICOM04, IDIM04)

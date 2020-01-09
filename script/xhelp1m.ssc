@@ -1,4 +1,4 @@
-%SCRIPT XHELP1
+%SCRIPT XHELP1M
 % VARIABLE INTEGER HELPSIZE
 %%
 %% First check if this window already exsits.

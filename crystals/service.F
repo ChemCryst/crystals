@@ -1,5 +1,5 @@
 C $Log: not supported by cvs2svn $
-C Revision 1.50  2012/07/12 08:14:24  rich
+C Revision 1.50  2012/07/12 08:14:24  richxopm
 C Save CRC lookup table after it is initialised.
 C
 C Revision 1.49  2012/03/23 13:50:32  rich
@@ -126,6 +126,7 @@ C
       INCLUDE 'XIOBUF.INC'
 C
 C
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1000)
       ENDIF
@@ -138,7 +139,7 @@ C--SYSTEM TYPE ERROR, PRODUCED BY A PROGRAMMING MISTAKE
       WRITE ( CMON,1100)
       CALL XPRVDU(NCEROR, 3,0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1100)
-      WRITE(NCAWU,1100)
+c      WRITE(NCAWU,1100)
 1100  FORMAT(/,
      1 ' Programming error, not a user error.',
      2 ' Consult a CRYSTALS expert '/)
@@ -150,7 +151,7 @@ C--USER ERROR
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1200)
       WRITE ( CMON,1200)
       CALL XPRVDU(NCEROR, 2,0)
-      WRITE(NCAWU,1200)
+c      WRITE(NCAWU,1200)
 1200  FORMAT(' User error ', / 'Check your',
      2 ' input data and your job control cards and parameters')
       CALL OUTCOL(1)
@@ -161,7 +162,7 @@ C--UNDETERMINED TYPE OF ERROR
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1300)
       WRITE ( CMON,1300)
       CALL XPRVDU(NCEROR, 1,0)
-      WRITE(NCAWU,1300)
+c      WRITE(NCAWU,1300)
 1300  FORMAT(' Probably a user error -',
      2 ' Possibly a programming error')
       IF (ISSPRT .EQ. 0) THEN
@@ -173,7 +174,7 @@ C--AND NOW RETURN
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1400)
       ENDIF
-      WRITE(NCAWU,1400)
+c      WRITE(NCAWU,1400)
 1400  FORMAT(1X)
       RETURN
       END
@@ -360,33 +361,37 @@ C
       IF ( MSGNUM .GT. ISYMSG ) GO TO 9910
 C
 C----- CHECK IF WE ARE OUTPUTTING NON FATAL MESSAGES
+      IF((MSGNUM.EQ.3).OR.(MSGNUM.EQ.8).OR.(MSGNUM.EQ.9))THEN
+            CONTINUE
+      ELSE
+ctemp          if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
+ctemp      write(ncwu,*)'Should turn monitor on', msgnum
+      ENDIF            
       IF (ISSMSG .EQ. 0) THEN
           GO TO ( 1010 , 1020 , 8000 , 1040 , 1050 ,
-     1    8000 , 1070 , 8000 , 8000 , 9910 ) , MSGNUM
+     1    1060 , 1070 , 8000 , 8000 , 9910 ) , MSGNUM
       ELSE
-      GO TO ( 1010 , 1020 , 1030 , 1040 , 1050 ,
-     1 1060 , 1070 , 1080 , 1090 , 9910 ) , MSGNUM
+          GO TO ( 1010 , 1020 , 1030 , 1040 , 1050 ,
+     1    1060 , 1070 , 1080 , 1090 , 9910 ) , MSGNUM
       ENDIF
       GO TO 9910
 C
 1010  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 1015 ) NAME(1:LENGTH)
-      ENDIF
       WRITE ( CMON,1015) NAME(1:LENGTH)
       CALL XPRVDU(NCEROR, 1,0)
-      WRITE ( NCAWU , 1015 ) NAME(1:LENGTH)
-1015  FORMAT ( 1X , A , ' abandoned' )
+      IF (ISSPRT .EQ. 0) THEN
+      WRITE ( NCWU , '(A)' ) TRIM(CMON(1)(3:))
+      ENDIF
+1015  FORMAT ( '{E ' , A , ' abandoned' )
       GO TO 8000
 C
 1020  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 1025 ) NAME(1:LENGTH)
-      ENDIF
       WRITE ( CMON,1025) NAME(1:LENGTH)
       CALL XPRVDU(NCEROR, 1,0)
-      WRITE ( NCAWU , 1025 ) NAME(1:LENGTH)
-1025  FORMAT ( 1X , A , ' command input error ' )
+      IF (ISSPRT .EQ. 0) THEN
+      WRITE ( NCWU , '(A)' ) TRIM(CMON(1)(3:))
+      ENDIF
+1025  FORMAT ( '{E ' , A , ' command input error ' )
       CALL XERHND ( IERERR )
       GO TO 8000
 1030  CONTINUE
@@ -394,77 +399,72 @@ C
       IV2 = IPARAM - ( 100 * IV1 )
       IV3 = IV2 / 10
       IV4 = IV2 - ( IV3 * 10 )
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 1035 ) NAME(1:LENGTH) , IV1 , IV3 , IV4
-      ENDIF
       WRITE ( CMON,1035) NAME(1:LENGTH), IV1, IV2, IV3,IV4
       CALL XPRVDU(NCEROR, 2,0)
-      WRITE ( NCAWU , 1035 ) NAME(1:LENGTH) , IV1 , IV3 , IV4
-1035  FORMAT ( /,1X,A,' ends ' , 10X , ' Version ' , I2 , '.' , I1,I1)
+      IF (ISSPRT .EQ. 0) THEN
+      WRITE ( NCWU , '(A)' ) TRIM(CMON(1)),TRIM(CMON(2)(3:))
+      ENDIF
+1035  FORMAT ( /,'{E ',A,' ends ' , 10X , ' Version ' , I2 , '.' , 
+     1 I1,I1)
       GO TO 8000
 1040  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 1045 ) NAME(1:LENGTH)
-      ENDIF
       WRITE ( CMON,1045) NAME(1:LENGTH)
       CALL XPRVDU(NCEROR, 1,0)
-      WRITE ( NCAWU , 1045 ) NAME(1:LENGTH)
-1045  FORMAT ( 1X , 'Error during ' , A , ' processing' )
+      IF (ISSPRT .EQ. 0) THEN
+      WRITE ( NCWU , '(A)' ) TRIM(CMON(1)(3:))
+      ENDIF
+1045  FORMAT ( '{E ' , 'Error during ' , A , ' processing' )
       CALL XERHND ( IERERR )
       GO TO 8000
 1050  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 1055 ) NAME(1:LENGTH)
-      ENDIF
       WRITE ( CMON,1055) NAME(1:LENGTH)
       CALL XPRVDU(NCEROR, 1,0)
-      WRITE ( NCAWU , 1055 ) NAME(1:LENGTH)
-1055  FORMAT ( 1X , A , ' requires more store' )
+      IF (ISSPRT .EQ. 0) THEN
+      WRITE ( NCWU , '(A)' ) TRIM(CMON(1)(3:))
+      ENDIF
+1055  FORMAT ( '{E ' , A , ' requires more store' )
       CALL XERHND ( IERERR )
       GO TO 8000
 1060  CONTINUE
       CALL OUTCOL(3)
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 1065 ) NAME(1:LENGTH) , IPARAM, CLISTS(IPARAM)
-      ENDIF
-      WRITE ( CMON,1065) NAME(1:LENGTH), IPARAM, CLISTS(IPARAM)
+      WRITE ( CMON,1065) NAME(1:LENGTH), IPARAM, 
+     1 trim(CLISTS(IPARAM))
       CALL XPRVDU(NCEROR, 1,0)
-      WRITE ( NCAWU , 1065 ) NAME(1:LENGTH) , IPARAM, CLISTS(IPARAM)
-1065  FORMAT ( 1X , A , ' of list type ' , I5 ,
+      IF (ISSPRT .EQ. 0) THEN
+      WRITE ( NCWU , '(A)' ) TRIM(CMON(1)(3:))
+      ENDIF
+1065  FORMAT ( '{E ' , A , ' of list type ' , I5 ,
      1 ' (',A,') abandoned' )
       CALL OUTCOL(1)
       GO TO 8000
 1070  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 1075 ) NAME(1:LENGTH)
-      ENDIF
       WRITE ( CMON,1075) NAME(1:LENGTH)
       CALL XPRVDU(NCEROR, 1,0)
-      WRITE ( NCAWU , 1075 ) NAME(1:LENGTH)
-1075  FORMAT ( 1X , A , ' -- Internal consistency check failed' )
+      IF (ISSPRT .EQ. 0) THEN
+      WRITE ( NCWU , '(A)' ) TRIM(CMON(1)(3:))
+      ENDIF
+1075  FORMAT ( '{E ' , A , ' -- Internal consistency check failed' )
       CALL XERHND ( IERPRG )
       GO TO 8000
 1080  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 1085 ) NAME(1:LENGTH) , IPARAM
-      ENDIF
       WRITE ( CMON,1085) NAME(1:LENGTH), IPARAM
       CALL XPRVDU(NCEROR, 1,0)
-      WRITE ( NCAWU , 1085 ) NAME(1:LENGTH) , IPARAM
-1085  FORMAT ( 1X , A , ' of list type ' , I5 , ' ends' )
+      IF (ISSPRT .EQ. 0) THEN
+      WRITE ( NCWU , '(A)' ) TRIM(CMON(1)(3:))
+      ENDIF
+1085  FORMAT ( '{E ' , A , ' of list type ' , I5 , ' ends' )
       GO TO 8000
 1090  CONTINUE
       IV1 = IPARAM / 100
       IV2 = IPARAM - ( 100 * IV1 )
       IV3 = IV2 / 10
       IV4 = IV2 - ( IV3 * 10 )
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 1095 ) NAME(1:LENGTH) , IV1 , IV3 , IV4
-      ENDIF
       WRITE ( CMON,1095) NAME(1:LENGTH), IV1, IV3, IV4
       CALL XPRVDU(NCEROR, 1,0)
-      WRITE ( NCAWU , 1095 ) NAME(1:LENGTH) , IV1 , IV3 , IV4
-1095  FORMAT ( 1X , A , ' version ' , I2 , '.' , I1,I1)
+      IF (ISSPRT .EQ. 0) THEN
+      WRITE ( NCWU , '(A)' ) TRIM(CMON(1)(3:))
+      ENDIF
+1095  FORMAT ( '{E ' , A , ' version ' , I2 , '.' , I1,I1)
       GO TO 8000
 C
 C
@@ -476,23 +476,21 @@ C
 C -- ERRORS
       GO TO 8000
 9910  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9915 ) IMSG
-      ENDIF
       WRITE ( CMON,9915) IMSG
       CALL XPRVDU(NCEROR, 1,0)
-      WRITE ( NCAWU , 9915 ) IMSG
-9915  FORMAT ( 1X , 'Illegal message number : ' , I8 )
+      IF (ISSPRT .EQ. 0) THEN
+      WRITE ( NCWU , '(A)' ) TRIM(CMON(1)(3:))
+      ENDIF
+9915  FORMAT ( '{E ' , 'Illegal message number : ' , I8 )
       CALL XERHND ( IERPRG )
       GO TO 9900
 9920  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 9925 ) IFAC
-      ENDIF
       WRITE ( CMON,9925) IFAC
       CALL XPRVDU(NCEROR, 1,0)
-      WRITE ( NCAWU , 9925 ) IFAC
-9925  FORMAT ( 1X , 'Illegal facility number : ' , I8 )
+      IF (ISSPRT .EQ. 0) THEN
+      WRITE ( NCWU , '(A)' ) TRIM(CMON(1)(3:))
+      ENDIF
+9925  FORMAT ( '{E ' , 'Illegal facility number : ' , I8 )
       CALL XERHND ( IERPRG )
       GO TO 9900
 C
@@ -656,6 +654,8 @@ C
 2000  CONTINUE
 C
 C -- PRODUCE REQUIRED MESSAGES.
+ctemp      if ((issmon.ne.1) .and. (iermsg.gt.1))
+ctemp     1 CALL SETISSMON(0) ! Turn monitoring back on
       if (iermsg(icode) .gt. 1) CALL OUTCOL(9)
       GO TO ( 4100 , 4200 , 4300 , 4400 , 4500 ,
      2 4600 , 9920 ) , IERMSG(ICODE)
@@ -663,51 +663,39 @@ C -- PRODUCE REQUIRED MESSAGES.
 C
 4100  CONTINUE
       GO TO 6000
+C
+C
 4200  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 4205 )
-      ENDIF
       WRITE ( CMON,4205)
-      CALL XPRVDU(NCEROR, 3,0)
-      WRITE ( NCAWU , 4205 )
-4205  FORMAT ( / , ' CRYSTALS - WARNING' , / )
-      GO TO 6000
+      CALL XPRVDU(NCEROR, 1,0)
+4205  FORMAT (  '{I CRYSTALS - WARNING'  )
+      GO TO 4610
 4300  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 4305 )
-      ENDIF
       WRITE ( CMON,4305)
-      CALL XPRVDU(NCEROR, 3,0)
-      WRITE ( NCAWU , 4305 )
-4305  FORMAT ( / , ' CRYSTALS -- ERROR' , / )
-      GO TO 6000
+      CALL XPRVDU(NCEROR, 1,0)
+4305  FORMAT (  '{E CRYSTALS -- ERROR'  )
+      GO TO 4610
 4400  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 4405 )
-      ENDIF
       WRITE ( CMON,4405)
-      CALL XPRVDU(NCEROR, 3,0)
-      WRITE ( NCAWU , 4405 )
-4405  FORMAT ( / , ' CRYSTALS -- SEVERE ERROR' , / )
-      GO TO 6000
+      CALL XPRVDU(NCEROR, 1,0)
+4405  FORMAT (  '{E CRYSTALS -- SEVERE ERROR'  )
+      GO TO 4610
 4500  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 4505 )
-      ENDIF
       WRITE ( CMON,4505)
-      CALL XPRVDU(NCEROR, 3,0)
-      WRITE ( NCAWU , 4505 )
-4505  FORMAT ( / , ' CRYSTALS -- CATASTROPHE' , / )
-      GO TO 6000
+      CALL XPRVDU(NCEROR, 1,0)
+4505  FORMAT (  '{E CRYSTALS -- CATASTROPHE'  )
+      GO TO 4610
 4600  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 4605 )
-      ENDIF
       WRITE ( CMON,4605)
-      CALL XPRVDU(NCEROR, 3,0)
-      WRITE ( NCAWU , 4605 )
-4605  FORMAT ( / , ' CRYSTALS -- PROGRAMMING ERROR' , / )
-      GO TO 6000
+      CALL XPRVDU(NCEROR, 1,0)
+4605  FORMAT (  '{E CRYSTALS -- PROGRAMMING ERROR'  )
+      GO TO 4610
+C
+4610  CONTINUE
+      IF (ISSPRT .EQ. 0) THEN
+      WRITE ( NCWU , '(/,A,/)' ) TRIM(CMON(1)(3:))
+      ENDIF
+
 C
 6000  CONTINUE
 c     restore normal colours
@@ -775,7 +763,7 @@ C -- ABORT PROGRAM WITH REPORT
       ENDIF
       WRITE ( CMON,8305)
       CALL XPRVDU(NCEROR, 1,0)
-      WRITE ( NCAWU , 8305 )
+c      WRITE ( NCAWU , 8305 )
 8305  FORMAT ( 1X , 'Program aborted' )
       CALL XFINAL ( 3 )
 8400  CONTINUE
@@ -785,7 +773,7 @@ C -- ABORT PROGRAM
       ENDIF
       WRITE ( CMON,8305)
       CALL XPRVDU(NCEROR, 1,0)
-      WRITE ( NCAWU , 8305 )
+c      WRITE ( NCAWU , 8305 )
       CALL XFINAL ( 2 )
 C
 9910  CONTINUE
@@ -795,7 +783,7 @@ C -- ERROR CODE GIVEN WAS ILLEGAL.
       ENDIF
       WRITE ( CMON,9915)
       CALL XPRVDU(NCEROR, 2,0)
-      WRITE ( NCAWU , 9915 ) ICODE
+c      WRITE ( NCAWU , 9915 ) ICODE
 9915  FORMAT ( / , ' An illegal error code found -- ' , I8 ,
      2 ' -- Programming error'   )
       CALL XFINAL ( 2 )
@@ -806,7 +794,7 @@ C -- INTERNAL ERROR
       ENDIF
       WRITE ( CMON,9925)
       CALL XPRVDU(NCEROR, 1,0)
-      WRITE ( NCAWU , 9925 )
+c      WRITE ( NCAWU , 9925 )
 9925  FORMAT ( 1X , 'An illegal code has been found in ' ,
      2 'the error routine -- Programming error' )
       CALL XFINAL ( 2 )
@@ -848,11 +836,25 @@ C--STANDARD TERMINATION SUBROUTINE
        CALL XRSL
        CALL XCSAE
        CALL XMOVEI(KEYFIL(1,5), ISTORE(NFL), 4)
-       CALL XRDOPN (5, ISTORE(NFL), 'export.dat', 10)
+       CALL XRDOPN (5, ISTORE(NFL), 'data\export.cry', 15)
+       IF (KEXIST(1) .EQ. 1) CALL XPCH1
+       IF (KEXIST(2) .EQ. 1) CALL XPCH2(2)
+       IF (KEXIST(3) .EQ. 1) CALL XPCH3
+       IF (KEXIST(4) .EQ. 1) CALL XPCH4
        IF (KEXIST(5) .EQ. 1) CALL XPCH5S(1)
        IF (KEXIST(12) .EQ. 1) CALL XPRTLX (12, 1,NCPU)
+       IF (KEXIST(13) .EQ. 1) CALL XPCH13
        IF (KEXIST(16) .EQ. 1) CALL XPRTLX (16, 1,NCPU)
-       CALL XRDOPN (6, ISTORE(NFL), 'export.dat', 10)
+       IF (KEXIST(23) .EQ. 1) CALL XPCH23
+       IF (KEXIST(25) .EQ. 1) CALL XPCH25
+       IF (KEXIST(28) .EQ. 1) CALL XPCH28
+       IF (KEXIST(29) .EQ. 1) CALL XPCH29
+       IF (KEXIST(30) .EQ. 1) CALL XPCH30
+       IF (KEXIST(31) .EQ. 1) CALL XPCH31
+       IF (KEXIST(39) .EQ. 1) CALL XPCH39
+       IF (KEXIST(40) .EQ. 1) CALL XPCH40(1)
+       IF (KEXIST(6) .EQ. 1) CALL XPCH6n(6,6,2,.false.)
+       CALL XRDOPN (6, ISTORE(NFL), 'data\export.cry', 15)
       ENDIF
 CDJW99 SET TERMINAL UNKNOWN
 C       IF TERMINAL CURRENTLY VGA, SWITCH TO BLACK AND WHITE
@@ -938,8 +940,8 @@ C
       WRITE ( NCWU , 1005 ) IA , IB , RESULT(ICODE) , NWARN , WARNPL ,
      2 NERR , ERRPL
       ENDIF
-      WRITE ( NCAWU , 1005 ) IA , IB , RESULT(ICODE) , NWARN , WARNPL ,
-     2 NERR , ERRPL
+c      WRITE ( NCAWU , 1005 ) IA , IB , RESULT(ICODE) , NWARN , WARNPL ,
+c     2 NERR , ERRPL
       WRITE ( CMON,1005)   IA , IB ,
      2                        RESULT(ICODE), NWARN, WARNPL, NERR, ERRPL
       CALL XPRVDU(NCVDU, 3,0)
@@ -1065,9 +1067,9 @@ C
      2 CSSOPS(1:LSSOPS), CSSDAT(1:LSSDAT)
       ENDIF
 C
-      WRITE ( NCAWU, 2015 ) 0.01*FLOAT(ISSVER), CSSSVN(1:LSSSVN),
-     1 CSSMAC(1:LSSMAC),
-     2 CSSOPS(1:LSSOPS), CSSDAT(1:LSSDAT)
+c      WRITE ( NCAWU, 2015 ) 0.01*FLOAT(ISSVER), CSSSVN(1:LSSSVN),
+c     1 CSSMAC(1:LSSMAC),
+c     2 CSSOPS(1:LSSOPS), CSSDAT(1:LSSDAT)
       WRITE ( CMON,2015)  0.01*FLOAT(ISSVER), CSSSVN(1:LSSSVN),
      1 CSSMAC(1:LSSMAC),
      2 CSSOPS(1:LSSOPS), CSSDAT(1:LSSDAT)
@@ -1157,7 +1159,7 @@ C--DAY HAS CHANGED
       WRITE ( CMON,1150) IA,IB,I,J,K,L
       CALL XPRVDU(NCVDU,1,0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') trim(CMON(1))
-      WRITE(NCAWU,'(A)') trim(CMON(1))
+c      WRITE(NCAWU,'(A)') trim(CMON(1))
 1150  FORMAT(1X,2A4,' : Processor time ',I4,' min',I4,
      2 ' sec : Elapsed time ',I4,' min',I4,' sec')
       RETURN
@@ -1999,7 +2001,7 @@ C      TO USE THE SYSTEM VARIABLE SET WITH #SET FILECASE
          WRITE ( CMON,100)FILNAM(1:NAMLEN)
 100      FORMAT ( 'Filename truncated to 256 characters',A )
          CALL XPRVDU(NCEROR, 3,0)
-         WRITE ( NCAWU , '(A)' ) trim(CMON(1))
+c         WRITE ( NCAWU , '(A)' ) trim(CMON(1))
          IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) trim(CMON(1))
         ENDIF
         IF (ICASE .EQ. 0) THEN

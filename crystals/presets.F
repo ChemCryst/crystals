@@ -341,7 +341,7 @@ C
        DATA CLISTS(1)     /'Cell parameters'/
        DATA CLISTS(2)     /'Unit cell symmetry'/
        DATA CLISTS(3)     /'Atomic scattering factors'/
-       DATA CLISTS(4)     /'SLQ Weighting scheme'/
+       DATA CLISTS(4)     /'LSQ Weighting scheme'/
        DATA CLISTS(5)     /'Atomic parameters'/
        DATA CLISTS(6)     /'Reflections'/
        DATA CLISTS(7)     /'Internal use'/
@@ -1545,7 +1545,7 @@ C      ISSTML      TERMINAL TYPE (UNKNOWN, VT52, VT100)
 C      ISSFLC      FILE NAME CHARACTERISTICS (LOWER, UPPER, MIXED CASE)
 C      ISSMSG      SET TERMINATION MESSAGES (OFF, ON)
 C      ISSPRT      SET PRINTER (OFF, ON)
-C      ISSMON      SET MONITO (OFF,ON)
+C      ISSMON      SET MONITO (OFF,ON,SLOW,FAST)
 C      ISSGEN      GENERATE
 C      ISSFLM      OPENMESSAGE
 C      ISSPAS      PAUSE

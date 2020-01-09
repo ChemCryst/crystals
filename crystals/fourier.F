@@ -911,6 +911,7 @@ C -- INPUT ERRORS
       GO TO 9900
 9920  CONTINUE
 C -- ILLEGAL MAP TYPE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9925 )
       WRITE ( CMON , 9925 )
       CALL XPRVDU(NCVDU, 1,0)
@@ -919,6 +920,7 @@ C -- ILLEGAL MAP TYPE
       GO TO 9900
 9930  CONTINUE
 C -- NO OPERATION
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9935 )
       WRITE ( CMON , 9935 )
       CALL XPRVDU(NCVDU, 1,0)
@@ -927,6 +929,7 @@ C -- NO OPERATION
       CALL XERHND ( IERERR )
       GO TO 9900
 9942  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE ( CMON , 9943 )
       CALL XPRVDU(NCVDU, 1,0)
 9943  FORMAT ( 1X , ' No list of type 42 stored, run #MASK first. ' )
@@ -1182,6 +1185,7 @@ C----- AND NOW RETURN OK
 C -- ERRORS
 9910  CONTINUE
 C -- NO ATOMS IN LIST 5 FOR SIM WEIGHTS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9915 )
       WRITE ( CMON , 9915 )
       CALL XPRVDU(NCVDU, 1,0)
@@ -1804,9 +1808,11 @@ C Min max values
 
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       GO TO 3700
 9905  CONTINUE
 C -- FILE OPEN ERROR
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9908 ),IOS
       WRITE ( CMON , 9915 ) ,IOS
       CALL XPRVDU(NCVDU, 1,0)
@@ -1815,6 +1821,7 @@ C -- FILE OPEN ERROR
       GO TO 9900
 9910  CONTINUE
 C -- INVALID ORIENTATION PARAMETER
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9915 ) IAXIS
       WRITE ( CMON , 9915 ) IAXIS
       CALL XPRVDU(NCVDU, 1,0)
@@ -1823,6 +1830,7 @@ C -- INVALID ORIENTATION PARAMETER
       GO TO 9900
 9920  CONTINUE
 C -- ILLEGAL NUMBER OF POINTS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9925 ) IXYZ(J) , NUM(J)
       WRITE ( CMON , 9925 ) IXYZ(J) , NUM(J)
       CALL XPRVDU(NCVDU, 1,0)
@@ -2066,9 +2074,11 @@ C--ALLOCATE SPACE FOR THE FINAL ENTRY
       RETURN
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       RETURN
 9910  CONTINUE
 C -- NOT ENOUGH SPACE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       N = ( JW + 2 ) * JY + NFL - LFL + 1
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9915 )
       WRITE ( CMON , 9915 )
@@ -2076,7 +2086,6 @@ C -- NOT ENOUGH SPACE
 9915  FORMAT(1X, ' Insufficient memory for 1 layer')
       CALL XOPMSG ( IOPFOU , IOPSPC , N )
       GO TO 9900
-C
       END
 C
 CODE FOR XFOURN
@@ -2558,16 +2567,17 @@ C---- PEAK HEIGHT NORMALISATION
       RETURN
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       RETURN
 9910  CONTINUE
 C -- NO REFLECTIONS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9915 )
       WRITE ( CMON , 9915 )
       CALL XPRVDU(NCVDU, 1,0)
 9915  FORMAT ( 1X , 'No reflections for Fourier' )
       CALL XERHND ( IERERR )
       GO TO 9900
-C
       END
 C
 CODE FOR XFOURO
@@ -3156,8 +3166,8 @@ C--NO ATOMS EITHER  -  NO LIST 10 TO OUTPUT
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       RETURN
-C
       END
 C
 CODE FOR XMLTVR
@@ -4369,6 +4379,7 @@ C -- INPUT ERROR
       GO TO 9900
 9920  CONTINUE
 C -- NOT ENOUGH STORE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE ( CMON, 9925 )
       CALL XPRVDU(NCVDU, 1,0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
@@ -4377,11 +4388,9 @@ C -- NOT ENOUGH STORE
       CALL XERHND ( IERERR )
       GO TO 9900
 9930  CONTINUE
-C
 C-------INSUFFICIENT SPACE
       CALL XOPMSG ( IOPHYD , IOPSPC , 0 )
       GO TO 9900
-
       END
 
 

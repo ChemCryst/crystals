@@ -1082,7 +1082,19 @@ C IS THERE A FILE OPEN ALREADY?
          call zmore(cline,0)
          return
       ENDIF
-      READ (IVOUT)
+
+
+c ICLMAX and line lengths have changed - revert to older values if read fails.
+
+      ICLMX = ICLMAX !Number of colours
+      IBFL = 4096   !Length of CMON and related buffers
+      DO NK =1, 2 
+        IF (NK .EQ. 2) THEN  ! Failed to read using new common block dimensions, try some 2008 ones:
+           ICLMX = 17
+           IBFL = 256
+        END IF
+ 
+      READ (IVOUT, ERR=1984)
 C COMMON BLOCK /ZCOMAN/ (CAMANA.INC) (35*4)
      c IPROC,IMENCN,ILINE,IBEG,IEND,IN,IR,IC,IINT
      c ,IRL,ICHARS,ICTYPE,INCOM,IPREV,IHEAD,ICC,ICN,ICR,ISTORE,IFOBEY,
@@ -1113,16 +1125,20 @@ C COMMON BLOCK /ZCHARA/ (CAMCHR.INC) (3587*4+21*ICLEN4+80*IMENCL*4)
      c LINE,CHELP,CSUB,CTCOMD,LLINE,CGRAPH,
      c CMENUS , CBUFF , CLINE, CTITLE ,
 C COMMON BLOCK /ZCOLOU/ (CAMCHR.INC)  (2*ICLMAX*6)
-     c COLNAM, COLGRY,
+     c COLNAM(1:ICLMX), COLGRY(1:ICLMX),
 C COMMON BLOCK /ZGRAPH/ (CAMGRP.INC (44*4+3*ICLMAX*4)
      c YCEN,XCEN,SCLLIM,JPAGE,RES,IPOST,IFONT,
      c IHAND,XCP,YCP,SCALE,IVCHAN,ISLCNT, RELSCL,IBUFF,SCLFIX,
-     c IDEVCH,IDEVCS,IDEVCL,XCENS,XCENH,YCENS,YCENH,SCLIMS,SCLIMH,
+     c IDEVCH(1:ICLMX),IDEVCS(1:ICLMX),IDEVCL(1:ICLMX),XCENS,XCENH,
+     c YCENS,YCENH,SCLIMS,SCLIMH,
      c IBACKS,IBACKH,IFOREH,IFORES,ILABCS,ILABCH,IBNDCS,IBNDCH,ICLDES,
      c ICLDEH,ISCALS,ISCALH, INLINE, XOFF, YOFF,XEMIN,XEMAX,YEMIN,
      c YEMAX, STRANG, PMAXX, PMAXY ,
 C COMMON BLOCK /ZCOLNU/ (CAMCOL.INC) (4*3*ICLMAX*4)
-     c IVGACL,IGREYC, ICOLS, IPSTCL,
+     c ((IVGACL(NI,NJ),NI=1,3),NJ=1,ICLMX),
+     c ((IGREYC(NI,NJ),NI=1,3),NJ=1,ICLMX), 
+     c ((ICOLS (NI,NJ),NI=1,3),NJ=1,ICLMX),
+     c ((IPSTCL(NI,NJ),NI=1,3),NJ=1,ICLMX),
 C COMMON BLOCK /ZFLGSS/ (CAMFLG.INC) (49*4)
      c ISCRN,IELTYP,IOVER,IDEV,IHARD,
      c ISQR,IDOKEY,NKEY,ICOLL,IPPCK,ITYPCK,IAXIS,IMAXIM,DBDMAX,RNUISO,
@@ -1147,7 +1163,10 @@ C COMMON BLOCK /CAMLOG/ (CAMBLK.INC) (1)
 C COMMON BLOCK /XIOBUF/ (XIOBUF.INC) (136)
      c CIOBUF, CCRCHR, MACDUM ,
 C COMMON BLOCK /XCIOBF/ (XIOBUF.INC) (3*LINBUF*256)
-     c CCVDU, CCEROR, CMON ,
+C      CHARACTER(len=256) CXCVDU(24), CXCEROR(24), CXMON(24)
+     c (CCVDU(NI)(1:IBFL),NI=1,24),
+     c (CCEROR(NI)(1:IBFL),NI=1,24),
+     c (CMON(NI)(1:IBFL),NI=1,24),
 C COMMON /XIIOBF/ (XIOBUF.INC) (4*4)
      c LVDU, MVDU, LEROR, MEROR,
 C writing the relevant parts of RSTORE and CSTORE
@@ -1160,6 +1179,19 @@ C writing the relevant parts of RSTORE and CSTORE
 cavdl set ivchan = 1 because there is a new view matrix
       IVCHAN = 1
 1233  FORMAT ('An archived  view was read from file ',A60)
+      EXIT ! Loop completed successfully
+1984  CONTINUE !Read failed. Loop back
+      IF ( NK.EQ.1 ) THEN
+        WRITE (CLINE,1985) FILENM
+        REWIND (IVOUT)
+      ELSE
+        WRITE (CLINE,1986) FILENM
+      END IF
+      CALL ZMORE(CLINE,0)
+      CALL ZMORE1(CLINE,0)
+1985  FORMAT ('Retreival failed, retry for old format ',A60)
+1986  FORMAT ('Retreival failed ',A60)
+      END DO
       CLOSE(IVOUT)
       GOTO 9999
 125   CONTINUE

@@ -189,7 +189,7 @@ C----- COMPUTE AND STORE R-VALUES
       STORE(L6P+1) = RFACT
       STORE(L6P+2) = WRFAC
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1215 ) N6D , N6ACC
-      WRITE ( NCAWU , 1215 ) N6D, N6ACC
+c      WRITE ( NCAWU , 1215 ) N6D, N6ACC
       WRITE ( CMON , 1215 ) N6D, N6ACC
       CALL XPRVDU(NCVDU, 1,0)
 1215  FORMAT ( 1X , 'List 6 contains ' , I5 , ' reflections' ,
@@ -201,7 +201,7 @@ C -- PRINT THE R VALUE ETC.
       M6P = L6P+2
       IF (ISSPRT .EQ. 0)
      1 WRITE ( NCWU , 1235 ) J , ( STORE(I+1) , I=L6P,M6P )
-      WRITE ( NCAWU , 1235 ) J , ( STORE(I+1) , I=L6P,M6P )
+c      WRITE ( NCAWU , 1235 ) J , ( STORE(I+1) , I=L6P,M6P )
       WRITE ( CMON , 1235 ) J , ( STORE(I+1) , I=L6P,M6P )
       CALL XPRVDU(NCVDU, 2,0)
 1235  FORMAT (1X , 'After ' , I5 ,

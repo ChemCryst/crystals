@@ -1334,7 +1334,7 @@ int CxModel::IsAtomClicked(int xPos, int yPos, string *atomname, CcModelObject *
 		glDisable(GL_LIGHT0);
 	  
 		 
-                ok_to_draw = ((CrModel*)ptr_to_crObject)->RenderAtoms(true);
+        ok_to_draw = ((CrModel*)ptr_to_crObject)->RenderAtoms(true);
 		ok_to_draw |= ((CrModel*)ptr_to_crObject)->RenderBonds(true);
 
 

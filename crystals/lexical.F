@@ -381,7 +381,7 @@ C--
       use store_mod, only: istore=>i_store, store, c_store, i_store_set
       use store_mod, only: lfl
       use xopval_mod, only: iopcry, iopint, iopspc
-      use xssval_mod, only: issprt
+      use xssval_mod, only: issprt, issmon
       use xlexic_mod, only: lk, lk2, ma, mb, mc, md, me, mg, nwcard
       use xunits_mod, only: nceror, ncwu
       use xlisti_mod, only: lef
@@ -675,7 +675,7 @@ C--CHECK THAT THE LAST OPERAND IS ALLOWED
       IF (ISSPRT .EQ. 0) WRITE(NCWU,2450)J
       WRITE ( CMON, 2450) J
       CALL XPRVDU(NCEROR, 1,0)
-2450  FORMAT(' Illegal combination of arguments or characters',
+2450  FORMAT('{N Illegal combination of arguments or characters',
      2 ' at or before column ',I5)
 C--ERROR TERMINATION FOR THIS DIRECTIVE
       LEF=LEF+1
@@ -796,12 +796,12 @@ C -- INTERNAL ERROR
       CALL XOPMSG ( IOPCRY , IOPINT , 0 )
       GO TO 9900
 9930  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9935 )
       WRITE ( CMON, 9935 )
       CALL XPRVDU(NCEROR, 1,0)
-9935  FORMAT ( 1X , 'The numbers of ( and ) do not match ' )
+9935  FORMAT ( '{N The numbers of ( and ) do not match ' )
       GO TO 9900
-C
       END
 C
 C
@@ -1001,6 +1001,7 @@ C
       MF=MF-LK2
 
 1050  CONTINUE     !ERROR IN ATOM DEFINITION
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XADE(ISTORE(MF+1))
 
 1100  CONTINUE     !SET THE RETURN VALUE AND EXIT
@@ -1021,6 +1022,7 @@ C--SEARCH FOR THE ATOM IN LIST 5
 
 C--ATOM NOT IN LIST 5
 1300  CONTINUE
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       II=MQ+2
       CALL XPCLNN(LN)
       CALL XMISL5(1,ISTORE(MQ+1),II)
@@ -1052,6 +1054,7 @@ C--CHECK IF THIS IS AN 'UNTIL' TYPE OF COMMAND
 1650  CONTINUE                   !ERROR IN AN 'UNTIL' SEQUENCE
       MF=MF-LK2
 1700  CONTINUE
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN(LN)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1750)BLANKS(1:ISTORE(MF+1)+6),
      1                                   ISTORE(MF+1)
@@ -1130,6 +1133,7 @@ C--CHECK THE REPLY
       IF(KA)1100,1100,1150
 C--ERROR DURING THE PROCESSING
 1100  CONTINUE
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       KATOMH=0
       GOTO 1200
 C--ATOM HEADER OUTPUT OKAY
@@ -1397,6 +1401,7 @@ c----- store the orginal parameter index in the list
 
 C--GENERAL ERROR ROUTINE
 1000  CONTINUE
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       KATOMG=-1
 
 1050  CONTINUE
@@ -2013,6 +2018,7 @@ C--CHECK THE REPLY
 C--ERROR DURING THE PROCESSING OF AN OVERALL PARAMETER
 1000  CONTINUE
       MF=MF-LK2
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XSFDE(ISTORE(MF+1))
 C--ASSIGN THE VALUE AND RETURN
 1050  CONTINUE
@@ -2062,6 +2068,7 @@ C--'UNTIL' SEQUENCE ERROR
 1600  CONTINUE
       LEF=LEF+1
       MF=MF-LK2
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1650)ISTORE(MF+1)
       WRITE ( CMON, 1650) ISTORE(MF+1)
       CALL XPRVDU(NCEROR, 1,0)
@@ -2238,6 +2245,7 @@ C--CHECK FOR A '(' AFTER THE TYPE OF SCALE
       IF(KOP(6))1400,1600,1450
 C--NO MORE ON THE CARD  -  THIS IS AN ERROR
 1400  CONTINUE
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       LEF=LEF+1
       KOVPMG=-1
       GOTO 1100
@@ -2336,6 +2344,7 @@ C--CHECK IF THERE ARE ANY SCALES OF THIS TYPE STORED
       IF(J)1050,1050,1150
 C--SET THE ERROR FLAG AND RETURN
 1050  CONTINUE
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       LEF=LEF+1
       KOVPMF=-1
 1100  CONTINUE
@@ -2403,6 +2412,7 @@ C
       INCLUDE 'QSTORE.INC'
 C
 C--CHECK IF A ANY LINES SHOULD BE OUTPUT
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF(IADV)1150,1150,1000
 C--OUTPUT SOME BLANK LINES
 1000  CONTINUE
@@ -2414,6 +2424,7 @@ C--OUTPUT SOME BLANK LINES
 1100  CONTINUE
 C--UPDATE THE ERROR COUNTER
 1150  CONTINUE
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       LEF=LEF+1
 C--COMPUTE THE TRUE TYPE
       JTYPE=ITYPE-ITYPE/1024*1024
@@ -2424,27 +2435,27 @@ C--AN ATOM IS MISSING  -  CHECK IF THE DATA INDICATES 'FIRST' OR 'LAST'
       IF(KCOMP(1,STORE(IPOINT),IFIRST,2,1))1350,1350,1250
 C--SOME FORM OF ILLEGAL 'FIRST' OR 'LAST' DIRECTIVE
 1250  CONTINUE
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,1300)(IFIRST(I),I=1,2)
       WRITE ( CMON, 1300) (IFIRST(I),I=1,2)
       CALL XPRVDU(NCEROR, 1,0)
-1300  FORMAT(' Misplaced ''',A4,'T'' or ''',A4,
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')TRIM(CMON(1)(3:))
+1300  FORMAT('{E Misplaced ''',A4,'T'' or ''',A4,
      2 ''' directive in an atom definition')
       GOTO 1800
 C--A SPECIFIC ATOM IS MISSING FROM LIST 5
 1350  CONTINUE
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,1400)LN5
       WRITE ( CMON, 1400) LN5
       CALL XPRVDU(NCEROR, 1,0)
-1400  FORMAT(' Atom not in list ',I5,
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')TRIM(CMON(1)(3:))
+1400  FORMAT('{E Atom not in list ',I5,
      2 ' or out of order for an ''UNTIL'' sequence')
       CALL XPRTCO(2,IPOINT,1)
       GOTO 1800
 C--SIMPLE OVERALL PARAMETER NOT IN LIST 5
 1450  CONTINUE
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,1500)LN5,(KVP(J,IPOINT),J=1,NWKO)
       WRITE ( CMON, 1500) LN5,(KVP(J,IPOINT),J=1,NWKO)
       CALL XPRVDU(NCEROR, 1,0)
-1500  FORMAT(' Overall parameter not in list ',I5,5X,': ',5A4)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')TRIM(CMON(1)(3:))
+1500  FORMAT('{E Overall parameter not in list ',I5,5X,': ',5A4)
       GOTO 1800
 C--SOME FORM LAYER, ELEMENT OR BATCH SCALE FACTOR MISSING  -  CHECK FOR
 1550  CONTINUE
@@ -2453,17 +2464,18 @@ C----- INCREMENT TO FIRST REAL PARAMETER
       IF(IPOINT)1600,1600,1700
 C--THE COMPLETE GROUP IS MISSING
 1600  CONTINUE
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,1650)(KSCAL(J,JTYPE),J=1,2),LN5
       WRITE ( CMON, 1650) (KSCAL(J,JTYPE),J=1,2),LN5
       CALL XPRVDU(NCEROR, 1,0)
-1650  FORMAT(' No ',2A4,'Scales in list ',I5)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')TRIM(CMON(1)(3:))
+1650  FORMAT('{E No ',2A4,'Scales in list ',I5)
       GOTO 1800
 C--AN INDIVIDUAL SCALE FACTOR IS MISSING
 1700  CONTINUE
-      IF(ISSPRT.EQ.0)WRITE(NCWU,1750)(KSCAL(J,JTYPE),J=1,2),IPOINT,LN5
       WRITE ( CMON, 1750) (KSCAL(J,JTYPE),J=1,2),IPOINT,LN5
       CALL XPRVDU(NCEROR, 1,0)
-1750  FORMAT(1X,2A4,'Scale factor number ',I3,' is not in list ',I3)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')TRIM(CMON(1)(3:))
+1750  FORMAT('{E ',2A4,'Scale factor number ',I3,
+     1 ' is not in list ',I3)
 C--AND NOW RETURN
 1800  CONTINUE
       RETURN
@@ -2502,33 +2514,28 @@ C--BRANCH ON THE TYPE OF PRINT
 1000  CONTINUE
       CALL XERHND ( IERCAT )
 1050  CONTINUE
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,1100)STORE(MQ)
       WRITE ( CMON, 1100) STORE(MQ)
       CALL XPRVDU(NCVDU, 1,0)
-1100  FORMAT(' Atom type : ',A4,A4,'serial no. : ',F6.0,A4,
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')TRIM(CMON(1)(3:))
+1100  FORMAT('{E Atom type : ',A4,A4,'serial no. : ',F6.0,A4,
      2 'Parameter : ',5A4)
       GOTO 1350
 1150  CONTINUE
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,1100)STORE(MQ),IB,STORE(MQ+1)
       WRITE ( CMON, 1100) STORE(MQ),IB,STORE(MQ+1)
       CALL XPRVDU(NCVDU, 1,0)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')TRIM(CMON(1)(3:))
       GOTO 1350
 1200  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1100)STORE(MQ),IB,STORE(MQ+1),IB,(ICOORD(I,MT),I=1,
-     2 NWKA)
-      ENDIF
       WRITE ( CMON, 1100) STORE(MQ),IB,STORE(MQ+1),IB,
      2 (ICOORD(I,MT),I=1,NWKA)
       CALL XPRVDU(NCVDU, 1,0)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')TRIM(CMON(1)(3:))
       GOTO 1350
 1250  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE(NCWU,1300)(ICOORD(I,MT),I=1,NWKA)
-      ENDIF
       WRITE ( CMON, 1300) (ICOORD(I,MT),I=1,NWKA)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')TRIM(CMON(1)(3:))
       CALL XPRVDU(NCVDU, 1,0)
-1300  FORMAT(A2,' Atomic parameter : ',5A4)
+1300  FORMAT('{E ',A2,' Atomic parameter : ',5A4)
 C
 1350  CONTINUE
       RETURN
@@ -2616,6 +2623,7 @@ C--CHECK FOR END OF CARD
 C--END OF CARD FOUND
 1000  CONTINUE
       MF=MF-LK2
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XILARG(ISTORE(MF+1))
       GOTO 1250
 C--CHECK THE TYPE OF THE NEXT ARGUMENT(S)
@@ -2623,10 +2631,12 @@ C--CHECK THE TYPE OF THE NEXT ARGUMENT(S)
       IF(KSYNUM(ZZ))1100,1200,1150
 C--ILLEGAL VARIABLE
 1100  CONTINUE
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XILOPD(ISTORE(MF+1))
       GOTO 1250
 C--ILLEGAL OPERATOR
 1150  CONTINUE
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XILOP(ISTORE(MF+1))
       GOTO 1250
 C--NUMBER FOUND OKAY
@@ -2913,12 +2923,14 @@ C
       
       integer l
 C
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN(LN)
       l=min(len(blanks)-6, in)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,1000)BLANKS(1:l+6),IN
       WRITE ( CMON, 1000) BLANKS(1:l+6),IN
       CALL XPRVDU(NCEROR, 2,0)
-1000  FORMAT(A,'*',/,
+      IF (ISSPRT .EQ. 0)
+     1 WRITE(NCWU,'(A)')TRIM(CMON(1)(3:)),TRIM(CMON(2))
+1000  FORMAT('{E ',A,'*',/,
      1 ' Error in scale factor definition at about column',I5)
       LEF=LEF+1
       RETURN
@@ -2934,13 +2946,16 @@ C
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XCONST.INC'
 C
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN(LN)
       IN = MIN ( IN, 88-6 ) ! Calls for some continued L16 
       IN = MAX ( IN, 0  ) ! records will otherwise fail.
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,1000)BLANKS(1:IN+6),IN
       WRITE ( CMON, 1000) BLANKS(1:IN+6),IN
       CALL XPRVDU(NCEROR, 2,0)
-1000  FORMAT(A,'*',/,' Error in atom definition at about column',I5)
+      IF (ISSPRT .EQ. 0) 
+     1 WRITE(NCWU,'(A)')TRIM(CMON(1)(3:)),TRIM(CMON(2))
+1000  FORMAT('{E ',A,'*',/,' Error in atom definition at about column',
+     1 I5)
       LEF=LEF+1
       RETURN
       END
@@ -2955,11 +2970,14 @@ C
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XCONST.INC'
 C
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN(LN)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,1000)BLANKS(1:IN+6),IN
       WRITE ( CMON, 1000) BLANKS(1:IN+6),IN
       CALL XPRVDU(NCEROR, 2,0)
-1000  FORMAT(A,'*',/,' Compiler requires more core at about column',I5)
+      IF (ISSPRT .EQ. 0) 
+     1 WRITE(NCWU,'(A)')TRIM(CMON(1)(3:)),TRIM(CMON(2))
+1000  FORMAT('{E ',A,'*',/,
+     1 ' Compiler requires more core at about column',I5)
       LEF=LEF+1
       RETURN
       END
@@ -2974,12 +2992,14 @@ C
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XIOBUF.INC'
 C
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IDWZAP = IN
       CALL XPCLNN(LN)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,1000)
       WRITE ( CMON, 1000)
       CALL XPRVDU(NCEROR, 1,0)
-1000  FORMAT(' Processing of the card above has been abandoned')
+      IF (ISSPRT .EQ. 0) 
+     1 WRITE(NCWU,'(A)')TRIM(CMON(1)(3:))
+1000  FORMAT('{E Processing of the card above has been abandoned')
       LEF=LEF+1
       RETURN
       END
@@ -2994,11 +3014,13 @@ C
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XCONST.INC'
 C
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN(LN)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,1000)IN
       WRITE ( CMON, 1000) BLANKS(1:IN+6),IN
       CALL XPRVDU(NCEROR, 2,0)
-1000  FORMAT(A,'*',/,' Illegal number at about column',I5)
+      IF (ISSPRT .EQ. 0) 
+     1 WRITE(NCWU,'(A)')TRIM(CMON(1)(3:)),TRIM(CMON(2))
+1000  FORMAT('{E ',A,'*',/,' Illegal number at about column',I5)
       LEF=LEF+1
       RETURN
       END
@@ -3013,11 +3035,13 @@ C
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XCONST.INC'
 C
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN(LN)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,1000)BLANKS(1:IN+6),IN
       WRITE ( CMON, 1000) BLANKS(1:IN+6),IN
       CALL XPRVDU(NCEROR, 2,0)
-1000  FORMAT(A,'*',/,' Illegal operator at about column',I5)
+      IF (ISSPRT .EQ. 0) 
+     1 WRITE(NCWU,'(A)')TRIM(CMON(1)(3:)),TRIM(CMON(2))
+1000  FORMAT('{E ',A,'*',/,' Illegal operator at about column',I5)
       LEF=LEF+1
       RETURN
       END
@@ -3036,11 +3060,14 @@ C--
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XCONST.INC'
 C
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN(LN)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,1000)BLANKS(1:IN+6),IN
       WRITE ( CMON, 1000) BLANKS(1:IN+6),IN
       CALL XPRVDU(NCEROR, 2,0)
-1000  FORMAT(A,'*',/,' Illegal operand or variable at about column',I5)
+      IF (ISSPRT .EQ. 0) 
+     1 WRITE(NCWU,'(A)')TRIM(CMON(1)(3:)),TRIM(CMON(2))
+1000  FORMAT('{E ',A,'*',/,
+     1 ' Illegal operand or variable at about column',I5)
       LEF=LEF+1
       RETURN
       END
@@ -3059,11 +3086,13 @@ C--
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XCONST.INC'
 C
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN(LN)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,1000)BLANKS(1:IN+6),IN
       WRITE ( CMON, 1000) BLANKS(1:IN+6),IN
       CALL XPRVDU(NCEROR, 2,0)
-1000  FORMAT(A,'*',/,' An argument is incorrect or has been',
+      IF (ISSPRT .EQ. 0) 
+     1 WRITE(NCWU,'(A)')TRIM(CMON(1)(3:)),TRIM(CMON(2))
+1000  FORMAT('{E ',A,'*',/,' An argument is incorrect or has been',
      2 ' omitted at or just after column',I5)
       LEF=LEF+1
       RETURN
@@ -3079,11 +3108,14 @@ C
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XCONST.INC'
 C
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN(LN)
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,1000)BLANKS(1:IN+6),OP,IN
       WRITE ( CMON, 1000) BLANKS(1:IN+6),OP,IN
       CALL XPRVDU(NCEROR, 2,0)
-1000  FORMAT(A,'*'/' Operator ''',A1,''' not found at about column',I5)
+      IF (ISSPRT .EQ. 0) 
+     1 WRITE(NCWU,'(A)')TRIM(CMON(1)(3:)),TRIM(CMON(2))
+1000  FORMAT('{E ',A,'*'/' Operator ''',A1,
+     1 ''' not found at about column',I5)
       LEF=LEF+1
       RETURN
       END
@@ -3106,6 +3138,7 @@ C
 C
       INCLUDE 'QSTORE.INC'
 C
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
 C--CHECK IF THIS CARD IMAGE HAS ALREADY BEEN PRINTED
       IF(MA-LARG)1000,1350,1000
 C--CHECK IF IT IS NECESSARY TO PRINT THE HEADING
@@ -3114,10 +3147,11 @@ C--CHECK IF IT IS NECESSARY TO PRINT THE HEADING
 C--PRINT THE INITIAL HEADING
 1050  CONTINUE
       CALL XPRTCN
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,1100)IN
       WRITE ( CMON, 1100) IN
       CALL XPRVDU(NCEROR, 1,0)
-1100  FORMAT(' Print symbolic list ',I5)
+      IF (ISSPRT .EQ. 0) 
+     1 WRITE(NCWU,'(A)')TRIM(CMON(1)(3:))
+1100  FORMAT('{E Print symbolic list ',I5)
 C--LOAD THE NEXT DATA RECORD HEADER
 1150  CONTINUE
       IF(KLDDRH(MB,MA,IBUFF))1350,1200,1200
@@ -3157,10 +3191,11 @@ C --
       XLXRDV=VALUE
       RETURN
 9500  CONTINUE
-      IF (ISSPRT .EQ. 0) WRITE (NCWU,9510)
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE ( CMON, 9510)
       CALL XPRVDU(NCEROR, 1,0)
-9510  FORMAT ( ' The item given is not a number ')
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')TRIM(CMON(1)(3:))
+9510  FORMAT ( '{E The item given is not a number ')
       CALL XERHND(4)
 C FINAL ASSIGNEMENT TO CLOSE IN ORDER: MARKUS NEUBURGER.
       XLXRDV=DEFVAL
@@ -3185,10 +3220,11 @@ C -- READ A VALUE
       RETURN
 9500  CONTINUE
 C -- ERROR NO VALUE HAS BEEN GIVEN
-      IF (ISSPRT .EQ. 0) WRITE (NCWU,9510)
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE ( CMON, 9510)
       CALL XPRVDU(NCEROR, 1,0)
-9510  FORMAT (' No default value is availible for parameter ')
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')TRIM(CMON(1)(3:))
+9510  FORMAT ('{E No default value is availible for parameter ')
       CALL XERHND(4)
 C FINAL ASSIGNEMENT TO CLOSE IN ORDER: MARKUS NEUBURGER.
       XLXRVN=0
@@ -3222,3 +3258,4 @@ c9510  FORMAT ( ' The item given is not a number ')
 c      CALL XERHND(4)
 c      RETURN
 c      END
+C      IF (ISSPRT .EQ. 0) WRITE(NCWU,1000)BLANKS(1:IN+6),IN

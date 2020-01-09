@@ -368,7 +368,7 @@ contains
 
     if (.not. allocated(restraints_derivatives)) then
       if (output == -1 .or. output == 1) then
-        write (cmon, '(10X, a)') '- Derivatives not found, do a refinement cycle to get leverages -'
+        write (cmon, '(10X, a)') '{W - Derivatives not found, do a refinement cycle to get leverages -'
         CALL XPRVDU(NCVDU, 1, 0)
       end if
       if (output == -1 .or. output == 2) then
@@ -471,7 +471,8 @@ contains
 
 !> print the derivatives in the lis output file
   subroutine printderivatives(rindex)
-    use xunits_mod, only: ncwu
+    use xiobuf_mod, only: cmon
+    use xunits_mod, only: ncvdu, ncwu
     implicit none
     integer, intent(in) :: rindex
     integer i, k, cpt
@@ -481,7 +482,9 @@ contains
     character(len=24), dimension(:), allocatable :: listname, listlabel
 
     if (.not. allocated(restraints_derivatives)) then
-      WRITE (NCWU, '(4X, A)') 'No derivatives stored, do a refinement cycle'
+      WRITE (CMON, '(4X, A)') '{W No derivatives stored, do a refinement cycle'
+      CALL XPRVDU(NCVDU,1,0)
+      WRITE (NCWU, '(4X, A)') ' No derivatives stored, do a refinement cycle'
       WRITE (NCWU, '(4X, A)') ''
       return
     end if

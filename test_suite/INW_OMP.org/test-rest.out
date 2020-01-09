@@ -282,7 +282,7 @@ ___________
  Structure factor least squares calculation    1  ends  2
 [29] SumFo/SumFc=  1.59    SumFoFc/SumFc^2=  1.60    SumwFoFc/SumwFc^2=  1.58
 LS-scale=  1.598   Wilson Scale=  0.000
-<Fo>-<Fc> =   -0.029    100*(<Fo>-<Fc>)/<Fo> =    -0.45
+<Fo>-<Fc> = -0.029    100*(<Fo>-<Fc>)/<Fo> =    -0.45
 #DORESTRAIN
  Directive  DISTANCE: No derivatives found during Evaluation
  Directive  DISTANCE: No derivatives found during Evaluation
@@ -307,7 +307,9 @@ LS-scale=  1.598   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.11E-05
+ (sp inverse) 1-norm:  9.65E+00 cond. number:  1.77E+02 rel. error:  2.11E-05
 
                                                 for         131 parameters
 [64]                                  The rms (shift/su)  =           1.
@@ -735,7 +737,7 @@ ___________
  Structure factor least squares calculation    2  ends  2
 [29] SumFo/SumFc=  1.59    SumFoFc/SumFc^2=  1.60    SumwFoFc/SumwFc^2=  1.58
 LS-scale=  1.598   Wilson Scale=  0.000
-<Fo>-<Fc> =   -0.029    100*(<Fo>-<Fc>)/<Fo> =    -0.45
+<Fo>-<Fc> = -0.029    100*(<Fo>-<Fc>)/<Fo> =    -0.45
 #DORESTRAIN
  Directive  DISTANCE: No derivatives found during Evaluation
  Directive  DISTANCE: No derivatives found during Evaluation
@@ -765,7 +767,9 @@ LS-scale=  1.598   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.45E-05
+ (sp inverse) 1-norm:  8.83E+00 cond. number:  1.22E+02 rel. error:  1.45E-05
 
                                                 for         121 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -1109,7 +1113,7 @@ ___________
  Structure factor least squares calculation    3  ends  2
 [29] SumFo/SumFc=  1.59    SumFoFc/SumFc^2=  1.60    SumwFoFc/SumwFc^2=  1.58
 LS-scale=  1.598   Wilson Scale=  0.000
-<Fo>-<Fc> =   -0.029    100*(<Fo>-<Fc>)/<Fo> =    -0.45
+<Fo>-<Fc> = -0.029    100*(<Fo>-<Fc>)/<Fo> =    -0.45
 #DORESTRAIN
  Directive  MEAN DIST: No derivatives found during Evaluation
  Directive  MEAN ANGLE: No derivatives found during Evaluation
@@ -1129,7 +1133,9 @@ LS-scale=  1.598   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.01E-04
+ (sp inverse) 1-norm:  8.45E+00 cond. number:  2.53E+03 rel. error:  3.01E-04
 [14]  S/ESD    98          98           -0.010       0.1E+01    0.10 E-01         -1.0         H    101 X       
 
                                                 for         121 parameters

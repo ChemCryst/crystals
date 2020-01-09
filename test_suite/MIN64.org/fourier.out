@@ -363,7 +363,7 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
  Structure factor least squares calculation    1  ends  1
 [29] SumFo/SumFc=  1.45    SumFoFc/SumFc^2=  1.45    SumwFoFc/SumwFc^2=  1.45
 LS-scale=  1.456   Wilson Scale=  0.000
-<Fo>-<Fc> =   -0.023    100*(<Fo>-<Fc>)/<Fo> =    -0.32
+<Fo>-<Fc> = -0.023    100*(<Fo>-<Fc>)/<Fo> =    -0.32
 #CYCLENDS
 #FOUR
  Initialising Special positions
@@ -27923,7 +27923,7 @@ Refining    34 parameters in    1 block :      679 elements in the LS matrix.
  Structure factor least squares calculation    2  ends  2
 [29] SumFo/SumFc=  1.45    SumFoFc/SumFc^2=  1.45    SumwFoFc/SumwFc^2=  1.45
 LS-scale=  1.456   Wilson Scale=  0.000
-<Fo>-<Fc> =   -0.023    100*(<Fo>-<Fc>)/<Fo> =    -0.32
+<Fo>-<Fc> = -0.023    100*(<Fo>-<Fc>)/<Fo> =    -0.32
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -27944,7 +27944,9 @@ LS-scale=  1.456   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.84E-07
+ (sp inverse) 1-norm:  1.82E+00 cond. number:  3.22E+00 rel. error:  3.84E-07
 
                                                 for          34 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -28148,7 +28150,7 @@ Mean C-C su =   0.0111
  Structure factor least squares calculation    3  ends  2
 [29] SumFo/SumFc=  1.45    SumFoFc/SumFc^2=  1.45    SumwFoFc/SumwFc^2=  1.45
 LS-scale=  1.457   Wilson Scale=  0.000
-<Fo>-<Fc> =   -0.026    100*(<Fo>-<Fc>)/<Fo> =    -0.35
+<Fo>-<Fc> = -0.026    100*(<Fo>-<Fc>)/<Fo> =    -0.35
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -28165,7 +28167,9 @@ LS-scale=  1.457   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.80E-07
+ (sp inverse) 1-norm:  1.79E+00 cond. number:  3.19E+00 rel. error:  3.80E-07
 
                                                 for          34 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -28373,7 +28377,7 @@ Mean C-C su =   0.0110
  Structure factor least squares calculation    4  ends  2
 [29] SumFo/SumFc=  1.45    SumFoFc/SumFc^2=  1.45    SumwFoFc/SumwFc^2=  1.45
 LS-scale=  1.457   Wilson Scale=  0.000
-<Fo>-<Fc> =   -0.028    100*(<Fo>-<Fc>)/<Fo> =    -0.38
+<Fo>-<Fc> = -0.028    100*(<Fo>-<Fc>)/<Fo> =    -0.38
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -28390,7 +28394,9 @@ LS-scale=  1.457   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.79E-07
+ (sp inverse) 1-norm:  1.79E+00 cond. number:  3.18E+00 rel. error:  3.79E-07
 
                                                 for          34 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -28603,7 +28609,7 @@ Refining    45 parameters in    1 block :     1141 elements in the LS matrix.
  Structure factor least squares calculation    5  ends  2
 [29] SumFo/SumFc=  1.45    SumFoFc/SumFc^2=  1.45    SumwFoFc/SumwFc^2=  1.45
 LS-scale=  1.457   Wilson Scale=  0.000
-<Fo>-<Fc> =   -0.028    100*(<Fo>-<Fc>)/<Fo> =    -0.38
+<Fo>-<Fc> = -0.028    100*(<Fo>-<Fc>)/<Fo> =    -0.38
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -28624,7 +28630,9 @@ LS-scale=  1.457   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  5.02E-06
+ (sp inverse) 1-norm:  4.49E+00 cond. number:  4.21E+01 rel. error:  5.02E-06
  S/ESD     1           1             0.026      0.0E+00    0.143E-01          1.79                          SCALE   
 [14]  S/ESD    21          21            0.012       0.0E+00    0.15 E-02          7.8         O      5 U[ISO]  
 [14]  S/ESD    25          25           -0.016       0.0E+00    0.23 E-02         -7.1         N      6 U[ISO]  
@@ -28831,7 +28839,7 @@ Mean C-C su =   0.0111
  Structure factor least squares calculation    6  ends  2
 [29] SumFo/SumFc=  1.47    SumFoFc/SumFc^2=  1.47    SumwFoFc/SumwFc^2=  1.47
 LS-scale=  1.483   Wilson Scale=  0.000
-<Fo>-<Fc> =   -0.062    100*(<Fo>-<Fc>)/<Fo> =    -0.86
+<Fo>-<Fc> = -0.062    100*(<Fo>-<Fc>)/<Fo> =    -0.86
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -28848,7 +28856,9 @@ LS-scale=  1.483   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  5.04E-06
+ (sp inverse) 1-norm:  4.51E+00 cond. number:  4.23E+01 rel. error:  5.04E-06
 
                                                 for          45 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -29056,7 +29066,7 @@ Mean C-C su =   0.0104
  Structure factor least squares calculation    7  ends  2
 [29] SumFo/SumFc=  1.48    SumFoFc/SumFc^2=  1.48    SumwFoFc/SumwFc^2=  1.48
 LS-scale=  1.488   Wilson Scale=  0.000
-[27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -29073,7 +29083,9 @@ LS-scale=  1.488   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  5.04E-06
+ (sp inverse) 1-norm:  4.51E+00 cond. number:  4.22E+01 rel. error:  5.04E-06
 
                                                 for          45 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -29281,7 +29293,7 @@ Mean C-C su =   0.0104
  Structure factor least squares calculation    8  ends  2
 [29] SumFo/SumFc=  1.48    SumFoFc/SumFc^2=  1.48    SumwFoFc/SumwFc^2=  1.48
 LS-scale=  1.488   Wilson Scale=  0.000
-[27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -29298,7 +29310,9 @@ LS-scale=  1.488   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  5.04E-06
+ (sp inverse) 1-norm:  4.51E+00 cond. number:  4.23E+01 rel. error:  5.04E-06
 
                                                 for          45 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -29517,7 +29531,7 @@ Refining    68 parameters in    1 block :     2498 elements in the LS matrix.
  Structure factor least squares calculation    9  ends  2
 [29] SumFo/SumFc=  1.48    SumFoFc/SumFc^2=  1.48    SumwFoFc/SumwFc^2=  1.48
 LS-scale=  1.488   Wilson Scale=  0.000
-[27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -29538,7 +29552,9 @@ LS-scale=  1.488   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.68E-05
+ (sp inverse) 1-norm:  8.27E+00 cond. number:  1.41E+02 rel. error:  1.68E-05
 [13]  LARGE     1           1             0.1       0.0E+00    0.1 E-01         10.6                           SCALE   
 [13]  LARGE     2           2           655.0       0.0E+00    0.3 E+02         18.1                           EXTPARAM
 [14]  S/ESD    15          15            0.025       0.0E+00    0.38 E-02          6.7         O      3 U[11]   
@@ -29757,7 +29773,7 @@ Mean C-C su =   0.0000
  Structure factor least squares calculation   10  ends  2
 [29] SumFo/SumFc=  1.64    SumFoFc/SumFc^2=  1.64    SumwFoFc/SumwFc^2=  1.64
 LS-scale=  1.664   Wilson Scale=  0.000
-<Fo>-<Fc> =   -0.095    100*(<Fo>-<Fc>)/<Fo> =    -1.49
+<Fo>-<Fc> = -0.095    100*(<Fo>-<Fc>)/<Fo> =    -1.49
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -29774,7 +29790,9 @@ LS-scale=  1.664   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.61E-05
+ (sp inverse) 1-norm:  8.66E+00 cond. number:  2.19E+02 rel. error:  2.61E-05
  S/ESD     1           1             0.069      0.4E+00    0.176E-01          3.94                          SCALE   
 [43] Resetting shift for Extinction  Shift=     856.   Esd=     10   New shift=     131.0
 [13]  LARGE     2           2           131.0       0.1E+01    0.1 E+03          8.3                           EXTPARAM
