@@ -481,7 +481,6 @@ C
         SCALE=1.  ! SET UP THE DEFAULT SCALE FACTOR
         NGW=0 ! SET THE NUMBER OF NEGATIVE WEIGHTS FOUND TO ZERO
         NOUTLIERS = 0
-
         IF(KEXIST(5).GE.1)THEN             ! THERE IS A LIST 5  -  LOAD IT
           CALL XFAL05
           IF ( IERFLG .LT. 0 ) GO TO 9900
@@ -929,6 +928,11 @@ c123   just use stored sigma(F)
           AW = Q / 
      1     (SFCSIG*SFCSIG + (P*STORE(L4))*(P*STORE(L4)) +
      2     STORE(L4+1)*P + STORE(L4+3) + STORE(L4+4)*STH) 
+          AW1 = SFCSIG*SFCSIG
+          AW2 = (P*STORE(L4))*(P*STORE(L4)) +
+     2    STORE(L4+1)*P + STORE(L4+3) + STORE(L4+4)*STH 
+          AW3 = Q / (AW1 + AW2)
+C          WRITE(123,*)AW,AW1,AW2,AW3,STHOLS, SFCFO
 C -- Convert weight back onto scale of FO:
           IF ( JTYPE .EQ. 2 ) THEN
             AW = AW / SCALE**4
@@ -3923,7 +3927,6 @@ C
                WRITE(NCWU,'(A)') trim(CMON(1)),trim(CMON(2))
              end if
              WDTO = 0.0
-
              CALL XFAL06(IULN06, 0)   ! Load READ ONLY
              IF ( IERFLG .LT. 0 ) THEN
                   ICASE17=0
@@ -4028,6 +4031,8 @@ C>> ALERT C for > 5
       ENDIF
 c
       CALL XCSAE                     ! CLEAR THE LIST ENTRIES
+C     RE-LOAD LIST 1 BECAUSE LIST 28 NEEDS IT TO GET SINTHETA/LAMBDA
+      CALL XFAL01      
       IRCZAP = 0
       INCLUDE 'IDIM04.INC'
 C          CALL XFILL (IRCZAP, ICOM04, IDIM04)
