@@ -1,18 +1,20 @@
 pipeline {
     agent none
     options {
-        timeout(time: 2, unit: 'HOURS') 
-    }
-    environment {
-       WIN_DEPLOY_WORKSPACE = ""
+        timeout(time: 2, unit: 'HOURS')
     }
     stages {
         stage("Build and test on all platforms") {
             parallel {
                 stage("Win64-Intel") {
-                    agent { label 'master' }
+                    agent {
+                        node {
+                            label 'master'
+                            customWorkspace "E:/jenkins-pool/${BRANCH_NAME}/${BUILD_NUMBER}"
+                        }
+                    }
                     options {
-                        timeout(time: 2, unit: 'HOURS') 
+                        timeout(time: 2, unit: 'HOURS')
                     }
                     environment {
                         COMPCODE = 'INW'
@@ -40,9 +42,6 @@ pipeline {
                     stages {
                         stage('Win64-Intel Build') {                      // Run the build
                             steps {
-                                script {
-                                      WIN_DEPLOY_WORKSPACE = WORKSPACE
-                                }
                                 bat '''
                                     call build\\setupenv.ifort_vc.SAYRE.bat
                                     set _MSPDBSRV_ENDPOINT_=%RANDOM%
@@ -88,42 +87,6 @@ pipeline {
                                 '''
                             }
                         }
-/*  Move to outside parallel section so any fail stops deployment
-                        stage('Win64-Intel Installer') {
-                            when {
-                              expression {
-                                   env.BRANCH_NAME == 'master'
-                              }
-                            }
-                            environment {
-                                CRYSDIR = '.\\,..\\build\\'
-                                COMPCODE = 'INW_OMP'
-                            }
-                            steps {
-                                bat '''
-                                    call build\\setupenv.ifort_vc.SAYRE.bat
-                                    cd build
-                                    call make_w32.bat dist
-                                    xcopy /s /y ..\\debuginfo c:\\omp17-x64\\
-                                '''
-                            }
-                        }
-                        
-                        stage('Deploy Win64 - master branch only') {
-                            when {
-                              expression {
-                                   env.BRANCH_NAME == 'master'
-                              }
-                            }
-                            steps {
-                                ftpPublisher alwaysPublishFromMaster: false, masterNodeName: 'master', continueOnError: false, failOnError: false, paramPublish: [parameterName:""], publishers: [
-                                    [configName: 'CRYSTALSXTL', transfers: [
-                                        [asciiMode: false, cleanRemote: false, excludes: '', flatten: true, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: "/", remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'installer/**.exe']
-                                    ], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true]
-                                ]
-                            }
-                        }
-*/
                     }
                     post {
                         always {
@@ -131,106 +94,15 @@ pipeline {
                             archiveArtifacts artifacts: 'INW_OMP.org/*.out', fingerprint: true
                         }
                     }
-                } 
 
-                
-// Single Dunitz node can't cope with this at the moment in parallel with 64 bit build.
-/*                stage("Win32-Intel") {
-                    agent { label 'Dunitz' }
-                    options {
-                        timeout(time: 1, unit: 'HOURS') 
-                    }
-                    environment {
-                        COMPCODE = 'INW'
-                        CRBUILDEXIT = 'TRUE'   // exit build script on fail
-                        CROPENMP = 'TRUE'
-                        CR64BIT = 'FALSE'
-                    }
-                    stages {
-                        stage('Win32-Intel Build') {                      // Run the build
-                            steps {
-                                bat '''
-                                    call build\\setupenv.DUNITZ.bat
-                                    set _MSPDBSRV_ENDPOINT_=%RANDOM%
-                                    echo %_MSPDBSRV_ENDPOINT_%
-                                    start mspdbsrv -start -spawn -shutdowntime 90000
-                                    cd build
-                                    call make_w32.bat
-                                    mspdbsrv -stop
-                                    echo "Build step complete"
-                                '''
-                            }
-                        }
-                        stage('Win32-Intel Test') {
-                            environment {
-                                CRYSDIR = '.\\,..\\build\\'
-                                COMPCODE = 'INW32'
-                            }
-                            steps {
-                                bat '''
-                                    call build\\setupenv.DUNITZ.bat
-                                    cd test_suite
-                                    mkdir script
-                                    echo "%SCRIPT NONE" > script\\tipauto.scp
-                                    echo "%END SCRIPT" >> script\\tipauto.scp
-                                    del crfilev2.dsc
-                                    perl testsuite.pl
-                                '''
-                            }
-                        }
-                        stage('Win32-Intel Installer') {
-                            when {
-                              expression {
-                                   env.BRANCH_NAME == 'master'
-                              }
-                            }
-                            environment {
-                                CRYSDIR = '.\\,..\\build\\'
-                                COMPCODE = 'INW'
-                            }
-                            steps {
-                                bat '''
-                                    call build\\setupenv.DUNITZ.bat
-                                    cd build
-                                    call make_w32.bat dist
-                                '''
-                            }
-                        }
-                        stage('Deploy Win32 - master branch only') {
-                            when {
-                              expression {
-                                   env.BRANCH_NAME == 'master'
-                              }
-                            }
-                            steps {
-                                ftpPublisher alwaysPublishFromMaster: false, masterNodeName: 'master', continueOnError: false, failOnError: false, paramPublish: [parameterName:""], publishers: [
-                                    [configName: 'crystals.xtl', transfers: [
-                                        [asciiMode: false, cleanRemote: false, excludes: '', flatten: true, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: "/", remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'installer/**.exe']
-                                    ], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true]
-                                ]
-                            }
-                        }
-                        
-                        
-                    }
-                    post {
-                        always {
-                            bat 'ren test_suite INW32.org'  // Change path here to get unique archive path.
-                            archiveArtifacts artifacts: 'INW32.org/*.out', fingerprint: true
-                        }
-                    }
                 }
-                
-                Git was at C:\Program Files\Git\bin\git.exe
-                
-*/
-                                
 
-                
+
+
                 stage("MinGW") {
                     agent { label 'master' }
                     options {
-                        timeout(time: 2, unit: 'HOURS') 
+                        timeout(time: 2, unit: 'HOURS')
                     }
                     environment {
                         COMPCODE = 'MIN'
@@ -307,12 +179,12 @@ pipeline {
                         }
                     }
                 }
-                
-                
+
+
                 stage("Linux") {
-                    agent {label 'orion'}    
+                    agent {label 'orion'}
                     options {
-                        timeout(time: 1, unit: 'HOURS') 
+                        timeout(time: 1, unit: 'HOURS')
                     }
                     environment {
                         LD_LIBRARY_PATH = '~/lib64:~/lib:/files/ric/pparois/root/lib64:/files/ric/pparois/root/lib:${env.LD_LIBRARY_PATH}'
@@ -396,77 +268,39 @@ pipeline {
                     }
                 }
 
-/*
-                stage("OSX") {
-                    agent {label 'Flack'}    
-                    options {
-                        timeout(time: 1, unit: 'HOURS') 
-                    }
-                    environment {
-                        PATH = "/Applications/CMake.app/Contents/bin:$PATH"
-                    }
-                    stages {
-                        stage('OSX Build') {                // Run the build
-                            steps {
-                                    sh '''
-                                        rm -Rf b
-                                        mkdir b
-                                        cd b
-                                        cmake -DCMAKE_NOCOLOR=yes -DMINGW=1 -DuseGUI=off -G"Unix Makefiles" ..
-                                        make -j6 || exit 1
-                                    '''
-                            }
-                        }
-                        stage('OSX Test') {
-                            environment {
-                                CRYSDIR = './,../b/'
-                                COMPCODE = 'OSXCLI'
-                            }
-                            steps {
-                                    sh '''
-                                        cd test_suite
-                                        mkdir -p script
-                                        rm -f crfilev2.dsc
-                                        rm -f gui.tst
-                                        perl testsuite.pl
-                                    '''
-                            }
-                        }
-                    }
-                    post {
-                            always {
-                                sh 'mv test_suite OSXCLI.org'      // Change path here to get unique archive path.
-                                archiveArtifacts artifacts: 'OSXCLI.org/*.out', fingerprint: true
-                            }
-                    }
-                }
-*/
+
             }
         }
 
         stage('Win64-Intel Installer') {
-            when {
+/*            when {
               expression {
                    env.BRANCH_NAME == 'master'
               }
             }
-            agent { label 'master' }
+*/
+            agent {
+                node {
+                    label 'master'
+                    customWorkspace "E:/jenkins-pool/${BRANCH_NAME}/${BUILD_NUMBER}"
+                }
+            }
             options {
-                timeout(time: 2, unit: 'HOURS') 
+                timeout(time: 2, unit: 'HOURS')
+                skipDefaultCheckout()
             }
             environment {
                 CRYSDIR = '.\\,..\\build\\'
                 COMPCODE = 'INW_OMP'
             }
             steps {
-                dir ( WIN_DEPLOY_WORKSPACE ) {
-                    bat '''
-                        call build\\setupenv.ifort_vc.SAYRE.bat
-                        cd build
-                        call make_w32.bat dist
-                        xcopy /s /y ..\\debuginfo c:\\omp17-x64\\
-                    '''
-                }
+                bat '''
+                    call build\\setupenv.ifort_vc.SAYRE.bat
+                    cd build
+                    call make_w32.bat dist
+                    xcopy /s /y ..\\debuginfo c:\\omp17-x64\\
+                '''
+                archiveArtifacts artifacts: 'installer/*.exe', fingerprint: true
             }
         }
         stage('Deploy Win64 - master branch only') {
@@ -475,26 +309,25 @@ pipeline {
                    env.BRANCH_NAME == 'master'
               }
             }
-            agent { label 'master' }
+            agent {
+                node {
+                    label 'master'
+                    customWorkspace "E:/jenkins-pool/${BRANCH_NAME}/${BUILD_NUMBER}"
+                }
+            }
             options {
-                timeout(time: 2, unit: 'HOURS') 
+                timeout(time: 2, unit: 'HOURS')
+                skipDefaultCheckout()
             }
             steps {
-                dir ( WIN_DEPLOY_WORKSPACE ) {
                     ftpPublisher alwaysPublishFromMaster: false, masterNodeName: 'master', continueOnError: false, failOnError: false, paramPublish: [parameterName:""], publishers: [
                         [configName: 'CRYSTALSXTL', transfers: [
                             [asciiMode: false, cleanRemote: false, excludes: '', flatten: true, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: "/", remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'installer/**.exe']
                         ], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true]
                     ]
-                }
             }
+
         }
 
     }
 }
-
-
-
-
-
-
