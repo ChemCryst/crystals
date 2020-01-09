@@ -291,7 +291,9 @@ pipeline {
             }
             environment {
                 CRYSDIR = '.\\,..\\build\\'
-                COMPCODE = 'INW_OMP'
+                COMPCODE = 'INW'
+                CROPENMP = 'TRUE'
+                CR64BIT = 'TRUE'
             }
             steps {
                 bat '''
