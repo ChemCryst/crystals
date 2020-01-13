@@ -1983,7 +1983,7 @@ c
       CHARACTER*9  C6FORM(N6MAX)
       INTEGER N6KEYS(N6MAX)
       INTEGER N6LEN(N6MAX), I6PCH(N6MAX)
-      CHARACTER*256 CBGFMT   
+      CHARACTER*256 CBGFMT,CSBGFMT   
       character(len=12), dimension(:), allocatable :: CBGFMTa ! CBGFMT as array
 C
       INCLUDE 'QSTORE.INC'
@@ -2117,7 +2117,10 @@ c
 105   FORMAT('OUTPUT',6(1X,A11),5(/,'CONT  ',6(1X,A11)))
       WRITE(NCPU,102) (C6KEYS(I6PCH(J)),J=1,M6PCH)
 102   FORMAT('INPUT ',6(1X,A11),5(/,'CONT  ',6(1X,A11)))
-      WRITE(NCPU,103) CBGFMT(1:NBGNXT)
+C      WRITE(123,*)'A ',CBGFMT(2:LEN_TRIM(CBGFMT))
+C      WRITE(123,*)'B ',CBGFMT(2:LEN_TRIM(CBGFMT)-1)
+      CALL CCOMPRESS(CBGFMT(2:LEN_TRIM(CBGFMT)-1),CSBGFMT)
+      WRITE(NCPU,103) CSBGFMT(1:LEN_TRIM(CSBGFMT))
 103   FORMAT('FOR ', A)
       WRITE(NCPU,'(A)')'END'
 c
@@ -2191,6 +2194,68 @@ C -- ERRORS
       RETURN
       END
 C
+CODE FOR CCOMPRESS
+      SUBROUTINE CCOMPRESS (cform,cnform)
+c compress repeated FORMAT terms
+      character *(*) cform,cnform
+      character *16 cbit(64), citem
+      nform=len_trim(cform)
+c - PART 1 - break the expression up into components
+      j=1
+      k=1
+      cbit(j)(:)=' '
+      do i=1,nform
+      if((cform(i:i).ne.',').and.(cform(i:i).ne.'/')) then
+            cbit(j)(k:k)=cform(i:i)
+            k=k+1
+      else
+            k=1
+            j=j+1
+            cbit(j)(:)=' '
+      endif
+      enddo
+c - PART 2 - gather together repeated items
+      n=1
+      cnform=' '
+      jform=1
+      citem=cbit(1)
+      mbit=len_trim(citem)
+      do i=2,j
+            nbit=len_trim(cbit(i)(:))
+            if(cbit(i).eq.citem) then
+              n=n+1
+              if(i.eq.j)then
+c                  write(*,'(a)') citem(1:mbit) 
+                  write(cnform(jform:),'(a,i1,a)')',',n,citem(1:mbit)
+                  jform=len_trim(cnform)+1
+              endif
+            else
+              if(n.eq.1) then
+c                  write(*,'(a)') citem(1:mbit)
+                  write(cnform(jform:),'(a,a)')',',citem(1:mbit)
+                  jform=len_trim(cnform)+1
+              else
+c                  write(*,'(i1,a)') n,citem(1:mbit)
+                  write(cnform(jform:),'(a,i1,a)')',',n,citem(1:mbit)
+                  jform=len_trim(cnform)+1
+              endif
+              n=1
+              citem=cbit(i)(1:nbit)
+              mbit=nbit
+              if(i.eq.j)then
+c                  write(*,'(a)') citem(1:mbit) 
+                  write(cnform(jform:),'(a,a)')',',citem(1:mbit)
+                  jform=len_trim(cnform)+1
+              endif
+            endif
+      enddo
+      cnform(1:1) = '('
+      cnform(jform:jform) = ')'
+C      write(123,'(a)') cform(1:len_trim(cform))
+C      write(123,'(a)') cnform(1:len_trim(cnform))
+      return 
+      end
+
 C
 C
 CODE FOR XPCH6Y

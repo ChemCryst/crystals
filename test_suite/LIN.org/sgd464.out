@@ -20327,11 +20327,11 @@ T tensor:
     Atom C(25)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
 [78]          1  1  0  0  0    3.5E-02     3.4E-02     4.8E-05    0.999    U11 - Utls11 == 0
-[78]          1  1  0  0  0    4.4E-02     4.4E-02    -4.3E-06    1.000    U22 - Utls22 == 0
+[78]          1  1  0  0  0    4.4E-02     4.4E-02    -4.4E-06    1.000    U22 - Utls22 == 0
 [78]          1  1  0  0  0    4.7E-02     4.7E-02     5.9E-05    0.999    U33 - Utls33 == 0
 [78]          1  1  0  0  0    9.1E-04     1.0E-03    -1.3E-04    0.999    U12 - Utls12 == 0
 [78]          1  1  0  0  0   -4.5E-03    -4.1E-03    -3.2E-04    0.999    U23 - Utls23 == 0
-[78]          1  1  0  0  0   -1.1E-03    -1.1E-03     1.1E-06    0.999    U13 - Utls13 == 0
+[78]          1  1  0  0  0   -1.1E-03    -1.1E-03     1.2E-06    0.999    U13 - Utls13 == 0
     Atom C(26)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
 [78]          1  1  0  0  0    3.7E-02     3.7E-02     2.8E-05    0.999    U11 - Utls11 == 0
