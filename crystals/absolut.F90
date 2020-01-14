@@ -3589,8 +3589,7 @@ contains
         ! number of zeros before eny digit
         if (sig > tiny(1.0)) then
           i = 0
-! integer overflows at 10^9, make it a float.
-          do while (10.**i*sig <= 1.0d0)
+          do while (10**i*sig <= 1.0d0)
             i = i+1
           end do
           ! add decimal part, esd and ( and )
@@ -3684,8 +3683,7 @@ contains
         ! number of zeros before eny digit
         i = 0
         if (sig > tiny(1.0)) then
-! integer overflows after 10**9, make 10 into a float.
-          do while (10.0**i*sig <= 1.0d0)
+          do while (10**i*sig <= 1.0d0)
             i = i+1
           end do
         end if
@@ -3792,8 +3790,7 @@ contains
         ! number of zeros before eny digit
         i = 0
         if (sig > tiny(1.0)) then
-! integer overflows after 10^9, make 10 a float.
-          do while (10.**i*sig <= 1.0d0)
+          do while (10**i*sig <= 1.0d0)
             i = i+1
           end do
         end if
