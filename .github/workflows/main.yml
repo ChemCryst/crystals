@@ -15,8 +15,6 @@ jobs:
     - name: Extra setup
       run: msys2do pacman --noconfirm -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-openblas mingw-w64-x86_64-cmake mingw-w64-x86_64-perl mingw-w64-x86_64-wxWidgets
     - name: Build
-      with:
-        msystem: MINGW64
       working-directory: ci
       run: |
         cmake .. -G"MinGW Makefiles" -DuseGUI=no 
