@@ -19,4 +19,4 @@ jobs:
       msys2do cd ci
       msys2do cmake .. -G"MinGW Makefiles" -DuseGUI=no 
       msys2do mingw32-make -j2
-      - 
+
