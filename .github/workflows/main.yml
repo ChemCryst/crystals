@@ -12,10 +12,11 @@ jobs:
       uses: actions/checkout@v1
     - name: Setup
       uses: numworks/setup-msys2@v1
-      with:
-        msystem: MINGW64
+    - name: Extra setup
       run: msys2do pacman --noconfirm -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-openblas mingw-w64-x86_64-cmake mingw-w64-x86_64-perl mingw-w64-x86_64-wxWidgets
     - name: Build
+      with:
+        msystem: MINGW64
       working-directory: ci
       run: |
         cmake .. -G"MinGW Makefiles" -DuseGUI=no 
