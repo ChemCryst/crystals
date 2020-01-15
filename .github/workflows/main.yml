@@ -25,5 +25,5 @@ jobs:
         where gcc.exe
         cmake --version
         cmake .. -G"MinGW Makefiles" -DuseGUI=no -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND"
-        mingw32-make 
+        mingw32-make VERBOSE=1
 
