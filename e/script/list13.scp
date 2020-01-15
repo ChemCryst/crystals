@@ -1,0 +1,19 @@
+%SCRIPT LIST13
+  The experimental conditions list, LIST 13
+%    IF ( EXISTS 13 .EQ. 1 ) THEN
+%      VERIFY YES NO
+%      GET FINAL ABBREVIATED  -
+     'Do you want to see or change LIST 13' 'NO'
+%      IF VALUE .EQ. 1 THEN
+%        COPY '#SUMMARY LIST 13'
+%        COPY 'END'
+%        VERIFY YES NO
+%        GET FINAL ABBREVIATED  'Do you want to reinput LIST 13' 'NO'
+%        IF ( VALUE .EQ. 1 ) THEN
+%          COPY '#SCRIPT INLIST13'
+%        END IF
+%      END IF
+%    ELSE
+%        COPY '#SCRIPT INLIST13'
+%    END IF
+%END SCRIPT

@@ -1,0 +1,152 @@
+%SCRIPT SORTATOMSMENU
+%%
+%% Variable to call a_findElements.scp
+%%
+%  VARIABLE CHARACTER SORTORDER
+%%
+%  VARIABLE CHARACTER CTITLE CPOSITION
+%  VARIABLE INTEGER NEDIT
+%  VARIABLE LOGICAL LAR LSS LSA LSP LSR T
+%%
+%  COPY '#SCRIPT A_FINDELEMENTS'
+%%
+%  EVALUATE CTITLE = "Sort atoms"
+%  EVALUATE CPOSITION = "=CENTERED '_MAINTEXTOUTPUT'"
+%%
+^^WI WINDOW XSA
+% TRANSFER "^^WI '" // CTITLE // "'" TO DISPLAY
+^^WI MODAL
+% TRANSFER "^^WI POSITION" // CPOSITION TO DISPLAY
+^^WI GRID M NROWS=5 NCOLS=3 {
+^^WI   @ 2,2 GRID B NROWS=12 NCOLS=5 {
+^^WI     @ 2,2   CHECKBOX ARN 'allocate residue numbers' STATE=ON
+^^WI     @ 4,2   CHECKBOX SSN 'sort by serial numbers' STATE=ON
+^^WI     @ 6,2   CHECKBOX SAT 'sort by atom types' STATE=ON
+% TRANSFER "^^WI     @ 7,2 STATIC T1 'Actual sort order is " // SORTORDER // "  '" TO DISPLAY
+^^WI     @ 7,4 BUTTON BCS '&Change' DISABLED=NO
+^^WI     @ 9,2   CHECKBOX SPN 'sort by part numbers' STATE=ON
+^^WI     @ 11,2   CHECKBOX SRN 'sort by residue numbers' STATE=ON
+^^WI   }
+^^WI   @ 4,2 GRID B NROWS=1 NCOLS=5 {
+^^WI     @ 1,1 STRETCH S1 HORIZONTAL
+^^WI     @ 1,2 BUTTON BCL '&Cancel' DISABLED=NO
+^^WI     @ 1,4 BUTTON BOK '&Sort' DEFAULT COMMIT CANCEL
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+%%
+%  LOOP
+%%
+%  VERIFY BCS BCL BOK
+%  GET SILENT FINAL NOSTORE ABBREVIATED ' ' ' '
+%  CASE VALUE
+%%
+%    BLOCK        % BCS - Change sort order
+%%
+%      TRANSFER "{I Sort order will be changed" TO DISPLAY
+%      COPY '#SCRIPT A_CHANGESORTORDER'
+%      TRANSFER "^^CO     SET T1 TEXT 'Actual sort order is " // SORTORDER // "  '" TO DISPLAY
+%%
+%    END BLOCK
+%%
+%    BLOCK        % BCL - CLOSE window
+%%
+%      TRANSFER "{I Quit without changes." TO DISPLAY
+%      EVALUATE LOOPEND = LOOPCOUNTER
+^^CO   DISPOSE XSA
+%      FINISH
+%%
+%    END BLOCK
+%%
+%    BLOCK        % BOK - take this value
+%%
+%      TRANSFER "{I Atoms will be sorted." TO DISPLAY
+%%
+^^??   ARN STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      CASE VALUE
+%        EVALUATE LAR = TRUE
+%        EVALUATE LAR = FALSE
+%      END CASE
+%%
+^^??   SSN STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      CASE VALUE
+%        EVALUATE LSS = TRUE
+%        EVALUATE LSS = FALSE
+%      END CASE
+%%
+^^??   SAT STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      CASE VALUE
+%        EVALUATE LSA = TRUE
+%        EVALUATE LSA = FALSE
+%      END CASE
+%%
+^^??   SPN STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      CASE VALUE
+%        EVALUATE LSP = TRUE
+%        EVALUATE LSP = FALSE
+%      END CASE
+%%
+^^??   SRN STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      CASE VALUE
+%        EVALUATE LSR = TRUE
+%        EVALUATE LSR = FALSE
+%      END CASE
+%%
+%      EVALUATE NEDIT = 0
+%%
+%      QUEUE REWIND
+%      QUEUE COPY #EDIT
+%      QUEUE COPY MONITOR OFF
+%      IF LAR THEN
+%        QUEUE COPY INSERT RESIDUE
+%        EVALUATE NEDIT = NEDIT + 1
+%      END IF
+%      IF LSS THEN
+%        QUEUE COPY SORT SERIAL
+%        EVALUATE NEDIT = NEDIT + 1
+%      END IF
+%      IF LSA THEN
+%        CLEAR
+%        INSERT "SORT "
+%        STORE CHARACTER SORTORDER
+%        QUEUE SEND
+%        EVALUATE NEDIT = NEDIT + 1
+%      END IF
+%      IF LSP THEN
+%        QUEUE COPY SORT PART
+%        EVALUATE NEDIT = NEDIT + 1
+%      END IF
+%      IF LSR THEN
+%        QUEUE COPY SORT RESIDUE
+%        EVALUATE NEDIT = NEDIT + 1
+%      END IF
+%      QUEUE COPY END
+%%
+%      IF NEDIT .GT. 0 THEN
+%        QUEUE PROCESS
+%      ELSE
+%        TRANSFER "{I No edits executed." TO DISPLAY
+%      END IF
+%%
+%      EVALUATE LOOPEND = LOOPCOUNTER
+^^CO   DISPOSE XSA
+%      FINISH
+%%
+%    END BLOCK
+%%
+%  END CASE
+%%
+%  END LOOP
+%%
+%END SCRIPT

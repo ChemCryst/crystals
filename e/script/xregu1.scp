@@ -1,0 +1,72 @@
+%SCRIPT XREGU1
+% VARIABLE INTEGER REGTYPE LOOPAGAIN IDEALTYPE
+% LOOP
+% EVALUATE LOOPAGAIN = 0
+%%
+^^WI WINDOW XREGU 'Regularise' MODAL COMMIT='NEXT' CANCEL='CANCEL'
+^^WI GRID GRIDM NROWS=5 NCOLS=3
+^^WI {
+^^WI  @ 4,2 GRID GRIDB NROWS=1 NCOLS=6
+^^WI  {
+^^WI   @ 1,2 BUTTON BACK '<Back'
+^^WI   @ 1,3 BUTTON NEXT 'Next>'
+^^WI   @ 1,5 BUTTON FINISH 'Finish' DISABLED=YES
+^^WI  }
+^^WI  @ 2,2 GRID GRIDC NROWS=6 NCOLS=1
+^^WI  {
+^^WI   @ 1,1 STATIC T1 'You may compare geometry to an existing'
+^^WI   @ 2,1 STATIC T2 'fragment or to an ideal geometrical shape:'
+^^WI   @ 4,1 RADIOBUTTON R1 'geometric shape' STATE=ON
+^^WI   @ 5,1 RADIOBUTTON R2 'another fragment in the structure'
+^^WI   @ 6,1 RADIOBUTTON R3 'an imported fragment'
+^^WI  }
+^^WI }
+^^WI SHOW
+^^CR
+%   VERIFY NEXT BACK CANCEL
+%   GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
+%   CASE VALUE
+%     BLOCK       %NEXT%
+%%
+%% Determine which radiobutton is selected and store
+%% result in IDEALTYPE.
+%%
+^^??    R1 STATE
+%       VERIFY ON OFF
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%       CASE VALUE
+%         BLOCK                     %R1 ON%
+%           EVALUATE IDEALTYPE = 1
+%         END BLOCK
+%         BLOCK                     %R1 OFF%
+^^??        R2 STATE
+%           VERIFY ON OFF
+%           GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%           CASE VALUE
+%             BLOCK               %R2 ON%
+%               EVALUATE IDEALTYPE = 2
+%             END BLOCK
+%             BLOCK               %R2 OFF%
+%               EVALUATE IDEALTYPE = 3
+%             END BLOCK
+%           END CASE
+%         END BLOCK
+%       END CASE
+^^CO   DISPOSE XREGU
+%     END BLOCK
+%     BLOCK       %BACK%
+%       EVALUATE LOOPAGAIN = 1
+^^CO    DISPOSE XREGU
+%       FINISH
+%     END BLOCK
+%     BLOCK       %CANCEL%
+^^CO    DISPOSE XREGU
+%       FINISH
+%     END BLOCK
+%   END CASE
+%   COPY '#SCRIPT XREGU2'
+%   IF LOOPAGAIN .EQ. 0 THEN
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%   END IF
+% END LOOP
+%END SCRIPT

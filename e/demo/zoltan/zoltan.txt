@@ -1,0 +1,29 @@
+
+Thanks
+======
+We are grateful to Drs. Zoltan Gal and Simon Clarke for allowing this
+data to be included in the CRYSTALS distribution. The structure is
+published in Inorg. Chem. 2004, 43, 3998-4006. "Synthesis and Structure
+of Alkaline Earth Silicon Nitrides: BaSiN2, SrSiN2 and CaSiN2".
+Zoltan A. Gal, Phillip M. Mallinson, Heston J. Orchard, and Simon J. Clarke.
+
+Data collection
+===============
+The data were collected by X-ray diffraction from a single crystal
+at 150K, using a Nonius Kappa CCD diffractometer. BaSiN2 crystallises
+in the space group C m c a, with Z=8.
+
+Solution
+========
+The structure will solve in Sir92 or SHELXS, but the second N atom
+will probably not be located. It will show up clearly in a Fourier
+map and the structure will refine anisotropically and with extinction
+down to an R1 of about 2.5%.
+
+Structure
+=========
+The structure consists of pairs of SiN4 tetrahedra edge-linked to form
+bow-tie shaped Si2N6 dimers which share vertices to form layers.
+
+
+

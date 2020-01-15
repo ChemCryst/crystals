@@ -1,0 +1,3 @@
+%SCRIPT INCARDIF
+% COPY '#SCRIPT not-here'
+%END SCRIPT

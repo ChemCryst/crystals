@@ -1,0 +1,48 @@
+%SCRIPT XRESETTORP
+%%
+%% A script to go back to a previously defined restore point.
+%%
+%  VARIABLE INTEGER ISER5 ISER12 ISER16
+%  VARIABLE LOGICAL LEX5 LEX12 LEX16
+%%
+%% Mark the lists in the discfile
+%%
+%  COPY '#DISK'
+%%
+%  IF LEX5 THEN
+%    IF ISER5 .LT. 0 THEN
+%      EVALUATE ISER5 = ISER5 * - 1
+%    END IF
+%    CLEAR
+%    INSERT 'RESET 5 '
+%    STORE INTEGER ISER5
+%    SEND
+%  END IF
+%%
+%  IF LEX12 THEN
+%    IF ISER12 .LT. 0 THEN
+%      EVALUATE ISER12 = ISER12 * - 1
+%    END IF
+%    CLEAR
+%    INSERT 'RESET 12 '
+%    STORE INTEGER ISER12
+%    SEND
+%  END IF
+%%
+%  IF LEX5 THEN
+%    IF ISER16 .LT. 0 THEN
+%      EVALUATE ISER16 = ISER16 * - 1
+%    END IF
+%    CLEAR
+%    INSERT 'RESET 16 '
+%    STORE INTEGER ISER16
+%    SEND
+%  END IF
+%%
+%  COPY 'END'
+%%
+%% Do something
+%%
+%  TRANSFER "Operation cancelled, we are back at the restore point." TO DISPLAY
+%%
+%END SCRIPT

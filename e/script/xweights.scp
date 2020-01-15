@@ -1,0 +1,152 @@
+%SCRIPT XWEIGHTS                                                                
+% VARIABLE LOGICAL SCRIPTEXT LED23                                              
+A SCRIPT to assist with the weighting of least squares refinement               
+%  IF EXISTS 6 .LT. 1 THEN                                                      
+ * You have no reflection data stored. You cannot use this script!              
+%    FINISH                                                                     
+%  END IF                                                                       
+%  VARIABLE LOGICAL WMASK WDONE                                                 
+%  EVALUATE WMASK = TRUE                                                        
+%  EVALUATE WDONE = TRUE                                                        
+%  COPY '#SCRIPT XPUTINFO' 
+%%
+%% Set the SQRT filter in LIST 28 to ZERO to ensure that all reflections
+%% are used whatever the WEIGHT.
+%% Later, in Robust Statisical weighting, the filter is set to 0.0000001 
+%% It should probably be set to this value for all Robust schemes - WIP.  
+%  COPY '#SCRIPT LIST28-ZERO-WT'                                              
+%%                                                                              
+%% FIND OUT IF F OR FSQ REFINEMENT                                              
+%  VARIABLE INTEGER FTYPE                                                       
+%  COPY '#GENERALEDIT 23'                                                       
+%  COPY 'LOCATE RECORDTYPE=103'                                                 
+%  COPY 'TRANSFER FROM OFFSET=1 TO FTYPE'                                       
+%  COPY 'END'                                                                   
+%  evaluate ftype = ftype + 1                                                   
+^^WI WINDOW XWEIGHT 'Weighting schemes' MODAL                                   
+^^WI COMMIT='BOK' CANCEL='BXX'                                                  
+^^WI GRID OUTER NROWS=3 NCOLS=7                                                 
+^^WI {                                                                          
+^^WI   @ 2,2 GRID WORD NROWS=3 NCOLS=1                                          
+^^WI   {                                                                        
+% IF ( LED23 ) THEN                                                             
+^^WI     @ 1,1 STATIC TO 'Choose a weighting scheme. When swapping'             
+^^WI     @ 2,1 STATIC T1 'to Fsq refinement, simple Statistical weights '        
+^^WI     @ 3,1 STATIC T2 'are essential until after a cycle of refinement.'     
+% ELSE                                                                          
+^^WI     @ 1,1 STATIC TO 'Choose a weighting scheme,'                        
+^^WI     @ 2,1 STATIC T1 'or Analyse to see the current'                           
+^^WI     @ 3,1 STATIC T2 'agreement analysis.'                                  
+% END IF                                                                        
+^^WI   }                                                                        
+^^WI   @ 2,4 LISTBOX XW_LIST VISLINES=9 ADDTOLIST                               
+^^WI         'Quasi-Unit' 'Simple-statistical' 'Robust-statistical'
+^^WI         'Modified-SHELX' 'Automatic Chebychev'  
+^^WI         'Chebychev(F)' 'Chebychev(Fsq)' NULL                               
+^^WI   @ 2,6 GRID BTNS NROWS=7 NCOLS=1                                          
+^^WI   {                                                                        
+^^WI     @ 1,1 BUTTON BOK '&Ok' DEFAULT COMMIT                                  
+^^WI     @ 3,1 BUTTON BAA '&Analyse'                                            
+^^WI     @ 5,1 BUTTON BXX '&Cancel' CANCEL                                      
+^^WI     @ 7,1 BUTTON BHH '&Help'                                               
+^^WI   }                                                                        
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR                                                                            
+% IF ( LED23 ) THEN                                                             
+%  IF ( FTYPE .eq. 0 ) THEN                                                     
+^^CO SET XW_LIST SELECTION=1         
+%  ELSE                                                                         
+^^CO SET XW_LIST SELECTION=2         
+%  END IF                                                            
+% ELSE                                                                          
+%  IF ( FTYPE .eq. 0 ) THEN                                                     
+^^CO SET XW_LIST SELECTION=5         
+%  ELSE                                                                       
+^^CO SET XW_LIST SELECTION=4         
+%  END IF                                                                       
+% END IF                                                                        
+%  LOOP                                                                         
+%    VERIFY BXX BHH BAA BOK                                                     
+%    GET SILENT NOSTORE ABBREVIATED 'Option' 'BXX'                              
+%    CLEAR                                                                      
+%    CASE VALUE                                                                 
+%      BLOCK                            %BXX%                                   
+^^WI       DISPOSE XWEIGHT                                                      
+^^CR                                                                            
+%          FINISH                                                               
+%      END BLOCK                                                                
+%      BLOCK                            %BHH%                                   
+%          COPY '#SPAWN CRYSDIR:manual/analyse/weights.html'
+%      END BLOCK                                                                
+%      BLOCK                                          %BAA%                     
+%          COPY '#ANALYSE'                                                      
+%          COPY 'END'                                                           
+%      END BLOCK                                                                
+%      BLOCK                                          %BOK%                     
+^^?? XW_LIST SELECTED                                                           
+%         GET SILENT NOSTORE INTEGER 'Choice number'                            
+^^WI DISPOSE XWEIGHT                                                            
+^^CR                                                                            
+%         CASE VALUE                                                            
+%            BLOCK                                    %1 UNIT%                    
+ *   Unit weighting                                                             
+%                COPY '#LIST 4'                                                 
+%                COPY 'END'                                                     
+%                COPY '#ANALYSE'                                                
+%                COPY 'END'                                                     
+%%                COPY '#PAUSE 5'                                               
+%                EVALUATE WMASK = TRUE                                          
+%                EVALUATE WDONE = FALSE                                         
+%                COPY '#SCRIPT XPUTINFO'                                        
+%            END BLOCK                                                          
+%            BLOCK                                    %2 SIMPLE STATISTICAL%             
+ *   Simple Statistical weighting
+%                COPY '#SCRIPT STATWT'                                          
+%            END BLOCK                                                          
+%            BLOCK                                    %3 ROBUST SCHEME 8%
+ *   Robust Statistical Weighting
+%                COPY '#LIST 4 '
+%                COPY 'SCHEME  8 NPARAM= 0 TYPE=CHOOSE '
+%                COPY 'CONT WEIGHT=   2.0000000 MAX=  10000.0000 ROBUST=Y '
+%                COPY 'CONT TOLER=      6.0000 '
+%                COPY 'END'
+%                COPY '#SCRIPT LIST28-SET-WT'  %% BEWARE IF/WHEN RETURNING TO NORMAL WTS
+%                COPY '#WEIGHT'                                                 
+%                COPY 'END'                                                     
+%                COPY '#SCRIPT XANAL'                                           
+%            END BLOCK
+%            BLOCK                                   %4 SHELX%                
+ *   SHELX-type Weighting
+%                COPY '#LIST 4'                                                 
+%                COPY 'SCHEME 17'                                               
+%                COPY 'END'                                                     
+%                COPY '#WEIGHT'                                                 
+%                COPY 'END'                                                     
+%                COPY '#SCRIPT XANAL'                                           
+%            END BLOCK                                                          
+%            BLOCK                                    %5 AUTOMATIC CHEBYCHEV%       
+%                IF FTYPE .EQ. 0 THEN                                           
+ * Chebychev Fo refinement                                                                
+%                    COPY '#SCRIPT XFOPTWT-19'                                     
+%                ELSE                                                           
+ * Chebychev Fsq refinement                                                                
+%                    COPY '#SCRIPT XFSQWT'                                      
+%                END IF                                                         
+%            END BLOCK                                                          
+%            BLOCK                                    %6 CHEBYCHEV(F)%            
+ * Chebychev Fo refinement                                                                
+
+%                    COPY '#SCRIPT XFOPTWT-19'                                     
+%            END BLOCK                                                          
+%%                                                                              
+%            BLOCK                                    %7 CHEBYCHEV(Fsq)%          
+ * Chebychev Fsq refinement                                                                
+%                    COPY '#SCRIPT XFSQWT'                                      
+%            END BLOCK                                                          
+%         END CASE                                                              
+%         FINISH                                                                
+%      END BLOCK                                                                
+%    END CASE                                                                   
+%  END LOOP                                                                     
+%END SCRIPT                                                                     

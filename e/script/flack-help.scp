@@ -1,0 +1,43 @@
+%SCRIPT FLACK-HELP
+% COPY '#SCRIPT XHELP1M'
+Ao is the average of the observed Friedel pairs.
+As is the average of the compued Friedel pairs assuming the crystal is
+an enantiopure Singe crystal.
+Do and Ds are the corresponding differences
+
+      
+
+
+Direct refinement of the Flack parameter does not NEED Friedel pairs, though
+the calculation is strengthened if pairs are present.
+Similarly, Hole-in-One does not NEED pairs, but if they are present they 
+improve the calculation.
+
+Difference and quotient methods MUST have Friedel pairs.
+
+                         DIFFERENCE & QUOTIENT
+
+The Difference and Quotient analyses implemented here are old procedures, and 
+will probably be replaced by the semi-automatic 'Pascal' method in due course.
+
+If no plots appear, try reducing the value of Filter(1), the minimum
+acceptable (calculated signal) : (observed noise)
+
+                             HISTOGRAM Graph
+If the end bins of the Ds/sigma(Do) curves are almost empty it indicates
+that you have very few enantiomer-sensitive reflections.  
+
+
+                               SIGNAL Graph
+
+The 'Signal' graph plots the average (computed signal):(observed noise) ratio 
+for equal intervals in (Sin(theta)/Lambda)**3.  This ensues that each bin 
+contains roughly the same number of reciprocal lattice points.  Some points 
+may then be rejected because of the filters.
+
+The number of bins is selected to give about 100 rlu points in each bin.
+
+See Resolution Table to see relationship between functions of theta
+
+% COPY '#SCRIPT XHELP2'
+% END SCRIPT

@@ -1,0 +1,97 @@
+%SCRIPT TRANSSELECTION
+%%
+%  VARIABLE CHARACTER CLINE CELE SELATOM
+%  VARIABLE INTEGER ISER NMOVE
+%  VARIABLE LOGICAL T LSELECTATOMS
+%%
+%  VARIABLE CHARACTER ATOM ATOM1 ATOM2 SYMM
+%%
+%% To get the symmetry information we take the second atom and extract it there
+%%
+%  IF ( .NOT. FILEEXISTS ( 'SymmDefinition.dat' ) ) THEN
+%    TRANSFER '{E No symmetry information available, CRYSTALS has to stop.' TO DISPLAY
+%    FINISH
+%  ELSE
+%    COPY '#OPEN SCPDATA SymmDefinition.dat'
+%    BLOCK
+%      LOOP
+%        ON ERROR TERMINATE
+%        ON END TERMINATE
+%        EXTRACT NEXT
+%        EXTRACT TRANSFER INPUT
+%        CLEAR
+%%       GET KEYWORD 'Entry'
+%        GET TEXT 'Entry'
+%% force an exit from loop on reading an END card
+%        IF CVALUE .EQ. 'END' THEN
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%        ELSE
+%          IF LOOPCOUNTER .EQ. 1 THEN
+%            EVALUATE ATOM1 = CVALUE
+%          ELSE IF LOOPCOUNTER .EQ. 2 THEN
+%            EXTRACT TRANSFER INPUT
+%            GET KEYWORD 'Entry'
+%            EVALUATE ATOM2 = CVALUE // ")"
+%            GET TEXT 'Symmetry'
+%            EVALUATE SYMM = CVALUE
+%          END IF
+%        END IF
+%      END LOOP
+%    END BLOCK
+%    COPY '#CLOSE SCPDATA'
+%  END IF
+%%
+%% TRANSFER '{I Parameters passed: ' // ATOM1 // ', ' // ATOM2 // ', ' // SYMM TO DISPLAY
+%%
+%  IF ( FILEEXISTS ( 'SymmDefinition.dat' ) ) THEN
+%    EVALUATE T = FILEDELETE ( 'SymmDefinition.dat' )
+%  END IF
+%%
+%  IF ( FILEEXISTS ( 'AtomsToWorkOn.dat' ) ) THEN
+%    EVALUATE NMOVE = 0
+%    QUEUE REWIND
+%    QUEUE COPY #EDIT
+%    QUEUE COPY MONITOR OFF
+%    COPY '#OPEN SCPDATA AtomsToWorkOn.dat'
+%    BLOCK
+%      LOOP
+%        ON ERROR TERMINATE
+%        ON END TERMINATE
+%        EXTRACT NEXT
+%        EXTRACT TRANSFER INPUT
+%        CLEAR
+%        GET KEYWORD 'Entry'
+%% force an exit from loop on reading an END card
+%        IF CVALUE .EQ. 'END' THEN
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%        ELSE
+%          EVALUATE ATOM = CVALUE
+%          IF ATOM .EQ. ATOM1 THEN
+%            TRANSFER '{I Atom ' // ATOM1 // ' will not be moved.' TO DISPLAY
+%          ELSE
+%%           TRANSFER '{I Working on atom ' // ATOM // '...' TO DISPLAY
+%            EVALUATE CELE = FIRSTSTR ( ATOM )
+%            EVALUATE ISER = FIRSTINT ( ATOM )
+%            CLEAR
+%            INSERT 'TRANSFORM 1 0 0 0 1 0 0 0 1 '
+%            STORE CHARACTER CELE
+%            INSERT '('
+%            STORE INTEGER ISER
+%            INSERT ','
+%            STORE CHARACTER SYMM
+%            QUEUE SEND
+%            EVALUATE NMOVE = NMOVE + 1
+%          END IF
+%        END IF
+%      END LOOP
+%    END BLOCK
+%    COPY '#CLOSE SCPDATA'
+%    QUEUE COPY END
+%    IF NMOVE .GT. 0 THEN
+%      QUEUE PROCESS
+%    END IF
+%  END IF
+%%
+%FINISH
+%%
+%END SCRIPT

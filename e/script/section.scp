@@ -1,0 +1,29 @@
+%SCRIPT SECTION
+% VARIABLE LOGICAL SCRIPTEXT
+% IF SCRIPTEXT .EQ. TRUE THEN
+ 
+  The script SECTION inputs the CRYSTALS data list, LIST 14, which
+  defines the volume of the cell to be used for a Fourier calculation
+  You may either input the required resolution and minimum and maximum
+  in the x, y, and z directions for both the real and vector space, or
+  let CRYSTALS compute an asymmetric volume from the space group symbol.
+   This second option also ensures that the space group symmetry matrices
+  are valid for the space group.
+  The code for interpreting the space group symbol was written by Alan
+  Larson and Eric Gabe, and is used with their kind permission.
+ 
+% ELSE
+A SCRIPT to help you define the asymmetric part of the unit cell for
+Fourier map calculations.
+You may get CRYSTALS to compute it for you from the space group symbol,
+  or you may input the limits by hand
+% END IF
+%  VERIFY YES NO ABANDON
+%  GET NOSTORE FINAL ABBREVIATED  -
+  'Do you want to input the Space group symbol' 'YES'
+%% SHOW VALUE
+%  CASE VALUE
+%    COPY '#SCRIPT INSPACE'
+%    COPY '#SCRIPT INLIST14'
+%  END CASE
+%END SCRIPT

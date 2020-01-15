@@ -1,0 +1,38 @@
+%SCRIPT SELECTSYMMATOM
+%%
+%% We take the second atom and select it
+%%
+%  VARIABLE CHARACTER CLINE CELE SELATOM
+%  VARIABLE INTEGER ISER
+%%
+%  IF ( FILEEXISTS ( 'AtomsToWorkOn.dat' ) ) THEN
+%    COPY '#OPEN SCPDATA AtomsToWorkOn.dat'
+%    BLOCK
+%      LOOP
+%        ON ERROR TERMINATE
+%        ON END TERMINATE
+%        EXTRACT NEXT
+%        EXTRACT TRANSFER INPUT
+%        CLEAR
+%%       GET KEYWORD 'Entry'
+%        GET TEXT 'Entry'
+%% force an exit from loop on reading an END card
+%        IF CVALUE .EQ. 'END' THEN
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%        ELSE
+%          IF LOOPCOUNTER .EQ. 2 THEN
+%%           TRANSFER CVALUE TO DISPLAY
+%            EVALUATE CELE = FIRSTSTR ( CVALUE )
+%            EVALUATE ISER = FIRSTINT ( CVALUE )
+%            EVALUATE SELATOM = CELE // "(" // CHARACTER ( ISER ) // ")"
+%            EVALUATE CLINE = "^^CO SET MODEL01 SELECT " // SELATOM // " YES"
+%            TRANSFER CLINE TO DISPLAY
+%%           TRANSFER SELATOM TO DISPLAY
+%          END IF
+%        END IF
+%      END LOOP
+%    END BLOCK
+%    COPY '#CLOSE SCPDATA'
+%  END IF
+%%
+%END SCRIPT

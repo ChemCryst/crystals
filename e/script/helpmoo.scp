@@ -1,0 +1,20 @@
+%SCRIPT HELPMOO
+% COPY '#SCRIPT XHELP1'
+
+
+The left histogram shows the number of reflections with a given multiplicity.
+The end bin contains reflections having a multiplicity of 20 or more.
+
+
+
+The right histogram shows the average multiplicity as a function of resolution.
+
+
+
+ The observed theta range is divided into 20 equal intervals in
+ (sin(theta) / lambda)**3.  This ensues that each bin 
+ contains roughly the same number of reciprocal lattice points.
+
+% COPY '#SCRIPT XHELP2'
+% END SCRIPT
+

@@ -1,0 +1,11 @@
+%SCRIPT REG
+% CLEAR
+% INSERT '^^CO GETREG '
+% GET TEXT 'Registry key?' '"Software\Chem Cryst\Crystals\"'
+% INSERT ' '
+% GET TEXT 'Name?' 'Crysdir'
+% OUTPUT
+% CLEAR
+% GET TEXT 'Result:' ' '
+% OUTPUT
+%END SCRIPT

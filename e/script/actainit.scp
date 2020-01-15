@@ -1,0 +1,191 @@
+%SCRIPT ACTA
+%%
+%% A Script to check initial data constants against some of the ACTA
+%% submission requirements.
+%%
+%  VARIABLE INTEGER ERRFLAG ALERTFLAG WARNFLAG
+%  VARIABLE CHARACTER CDLINE
+%  VARIABLE REAL WORK1 WORK2 WORK3 ZMAX CENTRO
+%  VARIABLE LOGICAL VALIDPASS VALIDFAIL
+%  EVALUATE VALIDFAIL = TRUE
+%  EVALUATE VALIDPASS = FALSE
+%  EVALUATE ALERTFLAG = 0
+%  EVALUATE WARNFLAG = 0
+ 
+{S * Checking data against some IUCr validation criteria...
+ 
+{I A quick guide to possible warnings:
+{I
+{I *    ALERT = Not too serious, may indicate problems
+{I **   WARN  = Problem - will need correcting or thorough investigation.
+{I ***  FAIL  = Serious problem or incomplete refinement.
+{I **** FATAL = Missing data prevents checking.
+ 
+%%
+%% Check List 30 exists.
+%%
+%  BLOCK
+%    IF ( EXISTS 30 .NE. 1 ) THEN
+{E **** FATAL: There in no LIST 30 with the general details available
+{R             Have you actually carried out an analysis?
+%      FINISH
+%    END IF
+%  END BLOCK
+%%
+%% Crystals Size
+%%
+{I Checking crystal size.
+%  BLOCK
+%    COPY '#GENERALEDIT 30'
+%    COPY 'LOCATE RECORDTYPE = 102'
+%    COPY 'TRANSFER FROM OFFSET = 0 TO WORK1'
+%    COPY 'TRANSFER FROM OFFSET = 1 TO WORK2'
+%    COPY 'TRANSFER FROM OFFSET = 2 TO WORK3'
+%    COPY 'END'
+%    TRANSFER '{R Min: ' // CHARACTER WORK1 // 'mm, med: ' // -
+ CHARACTER WORK2 // 'mm, max: ' // CHARACTER WORK3 // 'mm' TO DISPLAY
+%    IF WORK1 .GT. 0.6 THEN
+{E **  WARN:  Minimum crystal dimension greater then 0.6mm
+{R            This value is set in "X-ray Data"->"Edit goodies".
+%       EVALUATE WARNFLAG = WARNFLAG + 1
+%    END IF
+%    IF WORK2 .GT. 0.8 THEN
+{E **  WARN:  Medium crystal dimension greater then 0.8mm
+{R            This value is set in "X-ray Data"->"Edit goodies".
+%       EVALUATE WARNFLAG = WARNFLAG + 1
+%    END IF
+%    IF WORK3 .GT. 1.0 THEN
+{E **  WARN:  Maximum crystal dimension greater then 1.0mm
+{R            This value is set in "X-ray Data"->"Edit goodies".
+%       EVALUATE WARNFLAG = WARNFLAG + 1
+%    END IF
+%    IF WORK1 .LT. 0.0001 THEN
+{E **  WARN:  Minimum crystal dimension less then 0.0001mm
+{R     Are you sure?         Use "X-ray Data"->"Edit goodies" to correct.
+%       EVALUATE WARNFLAG = WARNFLAG + 1
+%    END IF
+%    IF WORK2 .LT. 0.0001 THEN
+{E **  WARN:  Medium crystal dimension less then 0.0001mm
+{R     Are you sure?         Use "X-ray Data"->"Edit goodies" to correct.
+%       EVALUATE WARNFLAG = WARNFLAG + 1
+%    END IF
+%    IF WORK3 .LT. 0.0001 THEN
+{E **  WARN:  Maximum crystal dimension less then 0.0001mm
+{R     Are you sure?         Use "X-ray Data"->"Edit goodies" to correct.
+%       EVALUATE WARNFLAG = WARNFLAG + 1
+%    END IF
+%  END BLOCK
+%%
+%% Temperature
+%%
+{I Checking experimental temperature is reasonable.
+%  BLOCK
+%    COPY '#GENERALEDIT 30'
+%    COPY 'LOCATE RECORDTYPE = 102'
+%    COPY 'TRANSFER FROM OFFSET = 6 TO WORK1'
+%    COPY 'END'
+%    TRANSFER '{R Temperature: ' // CHARACTER WORK1 // 'K' TO DISPLAY
+%    IF WORK1 .LT. 25.0 THEN
+{I *   ALERT: Experiment Temperaure < 25K. Are you sure?
+{R            This value is set in "X-ray Data"->"Edit goodies".
+%       EVALUATE ALERTFLAG = ALERTFLAG + 1
+%    END IF
+%  END BLOCK
+%%
+%% Sigma cutoff
+%%
+{I Checking I/u(I) cutoff is reasonable.
+%  BLOCK
+%    COPY '#GENERALEDIT 30'
+%    COPY 'LOCATE RECORDTYPE = 103'
+%    COPY 'TRANSFER FROM OFFSET = 3 TO WORK1'
+%    COPY 'END'
+%    TRANSFER '{R I > ' // CHARACTER WORK1 // ' u(I)' TO DISPLAY
+%    IF WORK1 .GE. 12.0 THEN
+{E *** FAIL:  I/u(I) >= 12.0
+{R            This value is set in "X-ray Data"->"Filter reflections".
+%       EVALUATE ERRFLAG = ERRFLAG + 1
+%    ELSE
+%       IF WORK1 .GE. 10.0 THEN
+{E **  WARN:  I/u(I) >= 10.0
+{R            This value is set in "X-ray Data"->"Filter reflections".
+%          EVALUATE WARNFLAG = WARNFLAG + 1
+%       ELSE
+%          IF WORK1 .GE. 8.0 THEN
+{I *   ALERT: I/u(I) >= 8.0
+{R            This value is set in "X-ray Data"->"Filter reflections".
+%             EVALUATE ALERTFLAG = ALERTFLAG + 1
+%          END IF
+%       END IF
+%    END IF
+%  END BLOCK
+%%
+%% Rint
+%%
+{I Checking merging R.
+%  BLOCK
+%    COPY '#GENERALEDIT 30'
+%    COPY 'LOCATE RECORDTYPE = 101'
+%    COPY 'TRANSFER FROM OFFSET = 3 TO WORK1'
+%    COPY 'END'
+%    TRANSFER '{R R merge ' // CHARACTER ( WORK1 * 100.0 ) // '%' TO DISPLAY
+%    IF WORK1 .GT. 0.20 THEN
+{E *** FAIL:  Merging R-Factor greater than 20%
+{R            Your data may be very poor quality.
+%       EVALUATE ERRFLAG = ERRFLAG + 1
+%    ELSE
+%       IF WORK1 .GE. 0.15 THEN
+{E **  WARN:  Merging R-Factor greater than 15%
+{R            Your data may be very poor quality.
+%          EVALUATE WARNFLAG = WARNFLAG + 1
+%       ELSE
+%          IF WORK1 .GE. 0.10 THEN
+{I *   ALERT: Merging R-Factor greater than 10%
+{R            Your data may be of low quality.
+%             EVALUATE ALERTFLAG = ALERTFLAG + 1
+%          END IF
+%       END IF
+%    END IF
+%  END BLOCK
+%%
+%% Check results
+%%
+%  IF ERRFLAG .GT. 0 THEN
+%    CLEAR
+%    INSERT ! {S * !
+%    STORE FORMAT /(I4)/ LENGTH 4 INTEGER ERRFLAG
+%    IF ERRFLAG .EQ. 1 THEN
+%      INSERT ! check failed. !
+%    ELSE
+%      INSERT ! checks failed. !
+%    END IF
+%    OUTPUT
+%  END IF
+%  IF WARNFLAG .GT. 0 THEN
+%    CLEAR
+%    INSERT ! {S * !
+%    STORE FORMAT /(I4)/ LENGTH 4 INTEGER WARNFLAG
+%    IF WARNFLAG .EQ. 1 THEN
+%      INSERT ! warning issued. !
+%    ELSE
+%      INSERT ! warnings issued. !
+%    END IF
+%    OUTPUT
+%  END IF
+%  IF ALERTFLAG .GT. 0 THEN
+%    CLEAR
+%    INSERT ! {S * !
+%    STORE FORMAT /(I4)/ LENGTH 4 INTEGER ALERTFLAG
+%    IF ALERTFLAG .EQ. 1 THEN
+%      INSERT ! alert issued. !
+%    ELSE
+%      INSERT ! alerts issued. !
+%    END IF
+%    OUTPUT
+%  END IF
+%%
+%  IF ( ALERTFLAG .EQ. 0 ) .AND. ( ERRFLAG .EQ. 0 ) .AND. -
+      (  WARNFLAG .EQ. 0 ) THEN
+{S * All checks passed successfully.
+%  END IF
+%END SCRIPT

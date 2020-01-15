@@ -1,0 +1,26 @@
+%  SCRIPT RESETSELECTION
+%%
+%  VARIABLE CHARACTER CLINE
+%%
+%  COPY '#OPEN SCPDATA AtomsToWorkOn.dat'
+%  BLOCK
+%    LOOP
+%      ON ERROR TERMINATE
+%      ON END TERMINATE
+%      EXTRACT NEXT
+%      EXTRACT TRANSFER INPUT
+%      CLEAR
+%      GET KEYWORD 'Entry'
+%% force an exit from loop on reading an END card
+%      IF CVALUE .EQ. 'END' THEN
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%      ELSE
+%        EVALUATE CLINE = "^^CO SET MODEL01 SELECT " // CVALUE // " NO"
+%        TRANSFER CLINE TO DISPLAY
+%      END IF
+%    END LOOP
+%  END BLOCK
+%  COPY '#CLOSE SCPDATA'
+%  TRANSFER "{I Current selection stored in file AtomsToWorkOn.dat" TO DISPLAY
+%%
+%END SCRIPT

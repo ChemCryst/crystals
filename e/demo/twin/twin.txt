@@ -1,0 +1,7 @@
+This crystal of HSnMe3 suffers from non-merohedral twinning. The data is
+supplied in SHELX format (me3snh.ins, me3snh.hkl). Solve and refine as
+best you can, then invoke ROTAX to identify the twin law, and complete
+the refinement.
+
+Data kindly supplied by Dr. Simon Parsons in Edinburgh.
+

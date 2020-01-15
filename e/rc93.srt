@@ -1,0 +1,63 @@
+C     This is a sample version of the RC93.INI file.  
+Any lines beginning with a non blank character are comment lines and are 
+ignored.
+The diffractometer type is indicated by a code 01.
+The format is (1X,I2,2X,A15)  The program variable is CMACH
+c     NORMAL            Normal beam Weissenberg geometry
+c     EQUI              Equi-inclination Weissenberg geometry
+c     ANTI              Anti-equi-inclination Weissenberg geometry
+c     PRECESSION        Precession Weissenberg geometry
+c     CAD4              Nonius CAD4 diffractometer Eulerian angles
+c     ROLLETT           page 28, Computing Methods in Crystallography
+c     Y290              Hilger-Watts Y290 4-circle diffractometer
+c     KAPPA             Nonius CAD4 in kappa geometry
+c     NONE              The default value
+c
+c     FOR THE MOMENT IF THE DIFFRACTOMETER IS NOT KAPPA OR IS LEFT BLANK 
+THEN RC93 WILL ISSUE WARNINGS AND STOP
+c
+ 01  Kappa
+C
+C     Code 02 indicates whether or not RC93 should capitalise filenames.
+This may become important for non DOS and VMS machines.
+All inputs except filenames are capitalised within the program.
+A zero indicates capitalise filenames, non-zero indicates do not.
+The format is (1X,I2,2X,I2).  The program variable is LCAPPR
+ 02  01
+C
+C     Code 03 indicates whether or not the user should be prompted to 
+write a new version of a file if that file already exists.  For DOS 
+and probably UNIX this should be set to 0 (ie: prompt) to check before 
+overwriting an existing file.  For VMS it should be set to 1, because 
+the operating system will create a new version and not destroy the old 
+one, so the prompt is unnecessary.
+C     
+C     The format is (1X, I2, 2X, I2)  The program variable is LOVRWR.
+ 03  01
+C
+c      Code 04 indicates the name and path for the HELP file.  Note that
+quotation marks are NOT needed.
+The format is 1X, I2, 2X, A80
+ 04  CRYSDIR:RC93.HLP
+C
+C     The code 05 indicates the path,etc for ATTENUATOR COEFFICIENT DATA 
+file.
+ 05  CRYSDIR:SCRIPT\RCATT.DAT
+C
+C     The code 06 indicates the path,etc for SPHERICAL ABSORPTION 
+CORRECTION DATA file.
+ 06  CRYSDIR:SCRIPT\SPHABS.DAT
+C
+C     The code 07 indicates the path,etc for ATOMIC SCATTERING FACTORS 
+for all radiation types.
+ 07  CRYSDIR:SCRIPT\SCATT.DAT
+C
+C     ******!! code 08 now redundant !!******
+C     The code 08 indicates the path,etc for At. Scattering Factors for
+copper radiation.
+C 08  CRYSDIR:SCRIPT\SCATCU.DAT
+C
+C     The code 09 indicates the path,etc for ATOMIC PROPERTIES DATA 
+file.
+ 09  CRYSDIR:SCRIPT\PROPWIN.DAT
+C

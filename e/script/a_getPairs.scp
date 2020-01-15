@@ -1,0 +1,103 @@
+%SCRIPT GETPAIRS
+%%
+%% The file connected to scpdata must be open, or LSCP2 must be TRUE
+%%
+%  VARIABLE CHARACTER CATOMLABEL CPAIRLABEL
+%  VARIABLE INTEGER IRCOUNT
+%  VARIABLE LOGICAL LSCP2 LPAIRFOUND
+%%
+%% Local variable
+%%
+%  VARIABLE CHARACTER CLABEL1 CLABEL2
+%%
+%  EVALUATE LPAIRFOUND = FALSE
+%  EVALUATE CPAIRLABEL = CATOMLABEL
+%%
+%  IF LSCP2 THEN
+%%
+%    TRANSFER "{I Working on second unit SCP2..." TO DISPLAY
+%%
+%    COPY '#OPEN SCP2 pairs.dat'
+%    LOOP
+%      ON ERROR TERMINATE
+%      ON END TERMINATE
+%%     EXTRACT2 NEXT
+%%     EXTRACT2 TRANSFER INPUT
+%      CLEAR
+%      GET TEXT 'Record'
+%      IF CVALUE .EQ. "END" THEN
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%      ELSE
+%%       EXTRACT2 TRANSFER INPUT
+%        GET KEYWORD 'Atom 1'
+%        EVALUATE CLABEL1 = CVALUE
+%        GET TEXT 'Atom 2'
+%        EVALUATE CLABEL2 = CVALUE
+%        IF CLABEL1 .EQ. CATOMLABEL THEN
+%          EVALUATE LPAIRFOUND = TRUE
+%          EVALUATE CPAIRLABEL = CLABEL2
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%        ELSE IF CLABEL2 .EQ. CATOMLABEL THEN
+%          EVALUATE LPAIRFOUND = TRUE
+%          EVALUATE CPAIRLABEL = CLABEL1
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%        END IF
+%      END IF
+%    END LOOP
+%%
+%%   EXTRACT2 CLOSE
+%    COPY '#CLOSE SCP2'
+%%
+%  ELSE
+%%
+%   TRANSFER "{I Working on same unit SCPDATA..." TO DISPLAY
+%%
+%% The pairs are written down at the beginning of the file
+%%   TRANSFER "We are at record " // CHARACTER ( IRCOUNT ) TO DISPLAY
+%%
+%    EXTRACT REWIND
+%%
+%    LOOP
+%      ON ERROR TERMINATE
+%      ON END TERMINATE
+%      EXTRACT NEXT
+%      EXTRACT TRANSFER INPUT
+%      CLEAR
+%      GET TEXT 'Record'
+%      IF CVALUE .EQ. "END" THEN
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%      ELSE
+%        EXTRACT TRANSFER INPUT
+%        GET KEYWORD 'Atom 1'
+%        EVALUATE CLABEL1 = CVALUE
+%        GET TEXT 'Atom 2'
+%        EVALUATE CLABEL2 = CVALUE
+%        IF CLABEL1 .EQ. CATOMLABEL THEN
+%          EVALUATE LPAIRFOUND = TRUE
+%          EVALUATE CPAIRLABEL = CLABEL2
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%        ELSE IF CLABEL2 .EQ. CATOMLABEL THEN
+%          EVALUATE LPAIRFOUND = TRUE
+%          EVALUATE CPAIRLABEL = CLABEL1
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%        END IF
+%      END IF
+%    END LOOP
+%%
+%% Now we go back to the place where we were before searching the pair
+%%
+%    EXTRACT REWIND
+%    LOOP IRCOUNT TIMES
+%      ON ERROR TERMINATE
+%      ON END TERMINATE
+%      EXTRACT NEXT
+%    END LOOP
+%%
+%%   EXTRACT TRANSFER INPUT
+%%   CLEAR
+%%   GET TEXT 'Record' '?'
+%%   TRANSFER "We are at record /" // CVALUE // "/" TO DISPLAY
+%%
+%  END IF
+%%
+%END SCRIPT

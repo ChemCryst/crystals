@@ -1,0 +1,69 @@
+%SCRIPT XPASCAL
+%% Exactly the same as XFILES except for INS/RES files
+%% 
+%% To do - how to resolve HKLF5 from 4
+%%                               
+%   VARIABLE LOGICAL T
+%   VARIABLE CHARACTER INSTITLE HKLTITLE
+%   VARIABLE CHARACTER C_FILE CEXTN CROOT CARG CLASS
+%%
+%% get rid of any old TRANSFORM.CRY FILES
+%      IF FILEEXISTS ( 'crystalsinput-extra.cry' )  THEN
+%       EVALUATE T =  FILEDELETE ( 'crystalsinput-extra.cry' )
+%      END IF
+
+%%
+%% If INSTITLE is already set, just use it
+%%
+% IF ( INSTITLE .EQ. ' ' ) .OR. ( .NOT. ( FILEEXISTS INSTITLE ) ) THEN
+%%
+^^WI SYSOPENFILE 'All files (*.*)|*.*;'
+^^WI          'SHELX (*.ins,res,hkl,hklf5,cif)|*.ins;*.res;*.hkl;*.hklf5;*.cif'
+^^CR
+%%
+%   GET SILENT NOSTORE TEXT 'New filename:' 'CANCEL'                                                                              
+%   IF CVALUE .EQ. 'CANCEL' THEN
+%     FINISH
+%   END IF
+%%
+%   EVALUATE C_FILE = CVALUE
+%%
+% ELSE
+%   EVALUATE C_FILE = INSTITLE
+% END IF
+%%
+%   IF ( .NOT. ( FILEEXISTS C_FILE ) ) THEN
+{E Error: Filename given does not exist.
+%     FINISH
+%   END IF 
+%%   
+%   EVALUATE CEXTN = GETEXTN ( C_FILE )
+%   EVALUATE CEXTN = UPPERCASE ( CEXTN )
+%%   EVALUATE INSTITLE = GETPATH ( C_FILE ) // GETTITLE ( C_FILE )
+%   IF ( CEXTN .EQ. 'INS' ) .OR. ( CEXTN .EQ. 'RES' ) .or.  ( CEXTN .EQ. 'CIF' ) THEN
+%      EVALUATE INSTITLE = C_FILE
+%      IF FILEEXISTS ( 'crystalsinput.cry' )  THEN
+%       EVALUATE T =  FILEDELETE ( 'crystalsinput.cry' )
+%      END IF
+%      TRANSFER '#SPAWN % "CRYSDIR:shelx2cry.exe"  -o crystalsinput.cry "' - 
+      // C_FILE // '"' TO CRYSTALS
+%%
+%      IF FILEEXISTS ( 'crystalsinput.cry' ) THEN
+%%      don't just #USE it because we need to check other things
+%       COPY '#SCRIPT DIFFEXEC' 
+%      ELSE
+ {E The INS/RES files have not been processed          
+%      END IF
+%      FINISH
+%   ELSE IF ( CEXTN .EQ. 'HKL' ) THEN
+%      EVALUATE HKLTITLE = C_FILE
+%      COPY '#SCRIPT XINLIST6' 
+%      FINISH
+%   ELSE IF ( CEXTN .EQ. 'HKLF5' ) THEN
+%      COPY '#SCRIPT HKLF52CRY'
+%      FINISH
+%   END IF
+%%
+%   COPY '#SCRIPT XFILE_ANY'
+%
+%END SCRIPT

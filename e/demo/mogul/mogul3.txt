@@ -1,0 +1,7 @@
+
+ 1) Try running Mogul on this structure.
+ 2) Look at an Fo vs Fc graph (from the Analyse menu)
+    Cut out any suspicious data
+ 3) Run some cycles of least squares refinement.
+ 4) Run Mogul again.
+ 

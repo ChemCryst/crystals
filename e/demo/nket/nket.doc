@@ -1,0 +1,45 @@
+                                   NKET
+ 
+This is a complete data set for a small organic structure.
+
+      Formula:          C8 H13 N O4
+      Space Group:      P 41
+      Unit Cell:        7.533 7.533 15.780
+      Z:                4
+      Cell Contents:    C32 H52 N4 O16
+      Radiation:        Cu
+      Reflections:      Fsq in HKLF file NKET.REF, FORMAT(3I4,2F8.0)
+      Size:             .2x.2x.7 mm
+
+It will easily solve with SIR, SHELXS or MULTAN.
+The primary data from an ENREAF-NONIUS CAD4 is:
+
+            NKET.DAT          the reflection data
+            NKET.PSI          the psi profile.
+ 
+The data can be processed through RC93, to give the files:
+ 
+            NKET.HKL          the processed reflection data
+            NKET.SCF          the unit cell, scale factors etc.
+            NKET.ABS          the processed phi scan.
+ 
+ 
+      This preprocessed data can be entered into CRYSTALS in SCRIPT mode,
+when the dialogue ROUTINE should lead you to solve and refine the structure.
+ 
+      The same data can be entered in COMMAND mode, (as USE files) and
+provides a small but interesting test set for getting acquainted with CRYSTALS
+facilities. 
+
+      The file NKET.SLX is the result of a SHELXS run, and can be copied to
+SHELXS.CRY if you don't wish to run SHELXS but just use the output.
+ 
+      For users migrating from other systems, the folowing files may be run in
+the order give as an example of the principal steps.
+ 
+            NKET.QCK          Getting the basic data in
+            NKET.LSQ          A bit of refinement
+            NKET.ANISO        Sorting out the non-C atoms and aniso refinement
+            NKET.FOUR         Looking for hydrogen
+            NKET.REF          HKLF format reflections (Fsq)
+ 

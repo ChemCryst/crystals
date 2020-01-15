@@ -1,0 +1,1362 @@
+%SCRIPT REFINEASSMENU
+%%
+%% Variables used by calling script
+%%
+%% VARIABLE INTEGER IMODE
+%  VARIABLE INTEGER IOPTION
+%%
+%% Variables to call script a_getBondsAngles
+%%
+%  VARIABLE LOGICAL LDISTEXT LDISTEQEXT LDISTEQEXTM LDIST LDISTEQINT LDISTEQINTM
+%  VARIABLE REAL RDISTEXTVAL RDISTEXTESD RDISTVAL RDISTESD
+%  VARIABLE LOGICAL LANGL LANGLEQALL LANGLEQMEAN
+%  VARIABLE REAL RANGLVAL RANGLESD
+%  VARIABLE LOGICAL LVIBR LVIBRPAIRS
+%  VARIABLE REAL RVIBRESD
+%  VARIABLE LOGICAL LUIJS LUIJSPAIRS
+%  VARIABLE REAL RUIJSESD
+%  VARIABLE LOGICAL LSAME LDELU LSIMU
+%%
+%% Local variables
+%%
+%  VARIABLE INTEGER IASSEMBLY NREC NCOM IRADIO1 IRADIO2
+%% VARIABLE INTEGER IRADIO3
+%  VARIABLE REAL RVALUE
+%  VARIABLE CHARACTER CCOM CLINE
+%  VARIABLE LOGICAL LFILEOPEN
+%%
+%% VARIABLE LOGICAL LSELECTATOMS LATOMSFOUND
+%  VARIABLE LOGICAL LDEBUG T
+%%
+%% Variables for message window
+%%
+%  VARIABLE CHARACTER CTITLE CPOSITION CTEXT1 CTEXT2
+%%
+%% Variables for script genL12Parts and to find part numbers
+%%
+%  VARIABLE INTEGER PRTNUM OPTNUM
+%  VARIABLE LOGICAL LPOS LGRP LUISOEQ LUISO LUANI LOCC
+%%
+%% Variables to control refinement
+%%
+%  VARIABLE INTEGER ICYCLE
+%%
+%% Variables for restore point
+%%
+%  VARIABLE INTEGER ISER5 IBCK5
+%  VARIABLE LOGICAL LEX5 LBEX5
+%%
+%% We set a restore point for security
+%%
+%% COPY '#SCRIPT A_RESTOREPOINT'
+%%
+%  EVALUATE LDEBUG = FALSE
+%% EVALUATE LDEBUG = TRUE
+%%
+%% Get assembly number of selected atom
+%%
+%% COPY '#SCRIPT A_GETASSEMBLYANDPARTS'
+%  EVALUATE IASSEMBLY = 1
+%%
+%% Some checks on the assembly. We get the assembly number as variable IASSEMBLY from the calling script
+%% The following call gets the first part number of the assembly
+%%
+%  COPY '#SCRIPT A_GETFIRSTPART'
+%%
+%% The part number is now stored in PRTNUM: If it is 0, some error occured
+%%
+%  IF PRTNUM = 0 THEN
+%    EVALUATE CTITLE = "Error searching first group of assembly " // CHARACTER ( IASSEMBLY )
+%    EVALUATE CTEXT1 = "Something is odd if the first part number of the"
+%    EVALUATE CTEXT2 = "assembly is returned as being zero. We have to stop."
+%    EVALUATE CPOSITION = "=CENTERED '_MAINTEXTOUTPUT'"
+%%
+%    COPY '#SCRIPT A_XMESSAGE'
+%    FINISH
+%  END IF
+%%
+%% Now we get the second part number of the assembly
+%%
+%  COPY '#SCRIPT A_GETOTHERPART'
+%%
+%% If OPTNUM = 0 then some error occured. There could be user choices to handle that.
+%%
+%  IF OPTNUM = 0 THEN
+%    EVALUATE CTITLE = "Error searching second group of assembly " // CHARACTER ( IASSEMBLY )
+%    EVALUATE CTEXT1 = "This script is designed to generate restraints for two component"
+%    EVALUATE CTEXT2 = "disorder assemblies. Please repeat after fixing this problem."
+%    EVALUATE CPOSITION = "=CENTERED '_MAINTEXTOUTPUT'"
+%%
+%    COPY '#SCRIPT A_XMESSAGE'
+%    FINISH
+%  END IF
+%%
+%  IF LDEBUG THEN
+%    TRANSFER "{I Assembly contains groups " // CHARACTER ( PRTNUM ) // " and " // CHARACTER ( OPTNUM ) // "." TO DISPLAY
+%  END IF
+%%
+%% Store the serial numbers of the lists at the start of the refinement
+%%
+%  EVALUATE ISER5 = 0
+%  EVALUATE LEX5 = FALSE
+%%
+%% Get the list number
+%%
+%  IF ( EXISTS 5 .EQ. 1 ) THEN
+%    COPY '#GENERALEDIT 5'
+%    COPY 'GETSERIAL ISER5'
+%    COPY 'END'
+%    EVALUATE LEX5 = TRUE
+%  END IF
+%%
+%  TRANSFER "{I Serial of list 5 is " // CHARACTER ( ISER5 ) // "." TO DISPLAY
+%%
+%% The big main window!
+%%
+^^WI WINDOW XREFA
+% TRANSFER "^^WI 'refine assembly " // CHARACTER ( IASSEMBLY ) // "'" TO DISPLAY
+^^WI POSITION=CENTERED '_MAINTEXTOUTPUT'
+%%^^WI MODAL
+^^WI GRID M NROWS=9 NCOLS=3 {
+^^WI   @ 2,2 GRID A NROWS=9 NCOLS=1 OUTLINE='Refinement directives' {
+^^WI     @ 1,1 GRID AA NROWS=1 NCOLS=7 {
+^^WI       @ 1,1 BUTTON BD1 '&sof alone'
+^^WI       @ 1,3 BUTTON BD2 '&common U[iso] alone'
+^^WI       @ 1,5 BUTTON BD3 '&pos. as group alone'
+^^WI       @ 1,7 BUTTON BD4 '&pos. as group, common U[iso] and sof'
+^^WI     }
+^^WI     @ 3,1 GRID AB NROWS=1 NCOLS=7 {
+^^WI       @ 1,1 BUTTON BD5 '&positions, common U[iso] and sof'
+^^WI       @ 1,3 BUTTON BD6 '&positions, U[iso] and sof'
+^^WI       @ 1,5 BUTTON BD7 '&positions, anisotropic U-values and sof'
+^^WI       @ 1,7 BUTTON BD8 '&link'
+^^WI     }
+^^WI     @ 5,1 GRID AC NROWS=1 NCOLS=6 OUTLINE='Positions' {
+^^WI       @ 1,1 CHECKBOX XRPP 'Refine positions' STATE=ON
+^^WI       @ 1,3 RADIOBUTTON XRPG 'as a group' STATE=ON
+^^WI       @ 1,4 RADIOBUTTON XRPI 'individually' STATE=OFF
+^^WI       @ 1,5 STRETCH XRPS HORIZONTAL
+^^WI       @ 1,6 CHECKBOX XRPL 'link positions between corresponding atoms' STATE=OFF DISABLED=YES
+^^WI     }
+^^WI     @ 7,1 GRID AD NROWS=1 NCOLS=7 OUTLINE='U-values' {
+^^WI       @ 1,1 CHECKBOX XRUP 'Refine' STATE=ON
+^^WI       @ 1,3 RADIOBUTTON XRUG 'common U-value' STATE=ON
+^^WI       @ 1,4 RADIOBUTTON XRUI 'individual isotropic' STATE=OFF
+^^WI       @ 1,5 RADIOBUTTON XRUA 'anisotropic U-values' STATE=OFF
+^^WI       @ 1,6 STRETCH XRUS HORIZONTAL
+^^WI       @ 1,7 CHECKBOX XRUL 'link U-values between corresponding atoms' STATE=OFF DISABLED=YES
+^^WI     }
+^^WI     @ 9,1 GRID AE NROWS=1 NCOLS=1 OUTLINE='Site occupancy factor' {
+^^WI       @ 1,1 CHECKBOX XROF 'Refine site occupancy factor keeping the total occupancy at 1' STATE=ON
+^^WI     }
+^^WI   }
+^^WI   @ 4,2 GRID B NROWS=17 NCOLS=1 OUTLINE='Restraints' {
+^^WI     @ 1,1 GRID BA NROWS=1 NCOLS=15 {
+^^WI       @ 1,1 BUTTON BGN '&Generate new restraints'
+^^WI       @ 1,3 BUTTON BER '&Edit restraints'
+^^WI       @ 1,5 BUTTON BUE '&Update esd´s'
+^^WI       @ 1,6 STRETCH XR1S HORIZONTAL
+^^WI       @ 1,7 BUTTON BR01 '&reset'
+^^WI       @ 1,8 STRETCH XR2S HORIZONTAL
+^^WI       @ 1,9 BUTTON BR02 '&very tight'
+^^WI       @ 1,11 BUTTON BR03 '&tight'
+^^WI       @ 1,13 BUTTON BR04 '&medium'
+^^WI       @ 1,15 BUTTON BR05 '&relaxed'
+^^WI     }
+^^WI     @ 3,1 GRID BB NROWS=1 NCOLS=15 {
+^^WI       @ 1,1 BUTTON BR06 '&Explicit restraints'
+^^WI       @ 1,3 BUTTON BR07 '&Implicit restraints'
+^^WI       @ 1,5 BUTTON BR08 '&Restrain pairwise'
+^^WI       @ 1,7 BUTTON BR09 '&Keep all equal'
+^^WI       @ 1,9 BUTTON BR10 '&Mean value'
+^^WI       @ 1,11 BUTTON BR11 '&Specified values'
+^^WI       @ 1,12 STRETCH XR23 HORIZONTAL
+^^WI       @ 1,13 BUTTON BR12 '&sp3'
+^^WI       @ 1,15 BUTTON BR13 '&sp2'
+^^WI     }
+^^WI     @ 5,1 GRID BC NROWS=5 NCOLS=3 OUTLINE='Distances' {
+^^WI       @ 1,1 GRID BCA NROWS=1 NCOLS=1 {
+^^WI         @ 1,1 STATIC XERT 'Bond distances to the bulk structure'
+^^WI       }
+^^WI       @ 1,3 GRID BCB NROWS=1 NCOLS=1 {
+^^WI       }
+^^WI       @ 2,1 GRID BCC NROWS=1 NCOLS=4 {
+^^WI         @ 1,1 CHECKBOX XXRU 'Keep' STATE=ON
+^^WI         @ 1,3 RADIOBUTTON XXRP 'pairs of /' STATE=ON
+^^WI         @ 1,4 RADIOBUTTON XXRA 'all distances at' STATE=OFF
+^^WI       }
+^^WI       @ 2,3 GRID BCD NROWS=1 NCOLS=12 {
+^^WI         @ 1,1 RADIOBUTTON XXRM 'the common mean /' STATE=ON
+^^WI         @ 1,2 RADIOBUTTON XXRS 'this value:' STATE=OFF
+^^WI         @ 1,4 EDITBOX XXRV '1.54' CHARS=7 INFORM=NO
+^^WI         @ 1,6 STATIC XXRC 'su:'
+^^WI         @ 1,8 EDITBOX XXRE '0.001' CHARS=7 INFORM=NO
+^^WI         @ 1,10 BUTTON BXT '&+'
+^^WI         @ 1,12 BUTTON BXR '&-'
+^^WI       }
+^^WI       @ 4,1 GRID BCE NROWS=1 NCOLS=1 {
+^^WI         @ 1,1 STATIC XDRT 'Bond distances inside the assembly'
+^^WI       }
+^^WI       @ 4,3 GRID BCF NROWS=1 NCOLS=1 {
+^^WI       }
+^^WI       @ 5,1 GRID BCG NROWS=1 NCOLS=4 {
+^^WI         @ 1,1 CHECKBOX XDRU 'Keep' STATE=ON
+^^WI         @ 1,3 RADIOBUTTON XDRP 'pairs of /' STATE=ON
+^^WI         @ 1,4 RADIOBUTTON XDRA 'all distances at' STATE=OFF
+^^WI       }
+^^WI       @ 5,3 GRID BCH NROWS=1 NCOLS=12 {
+^^WI         @ 1,1 RADIOBUTTON XDRM 'the common mean /' STATE=ON
+^^WI         @ 1,2 RADIOBUTTON XDRS 'this value:' STATE=OFF
+^^WI         @ 1,4 EDITBOX XDRV '1.54' CHARS=7 INFORM=NO
+^^WI         @ 1,6 STATIC XDRC 'su:'
+^^WI         @ 1,8 EDITBOX XDRE '0.001' CHARS=7 INFORM=NO
+^^WI         @ 1,10 BUTTON BDT '&+'
+^^WI         @ 1,12 BUTTON BDR '&-'
+^^WI       }
+^^WI     }
+^^WI     @ 7,1 GRID BD NROWS=1 NCOLS=3 OUTLINE='Angles' {
+^^WI       @ 1,1 GRID BDA NROWS=1 NCOLS=4 {
+^^WI         @ 1,1 CHECKBOX XARU 'Keep' STATE=ON
+^^WI         @ 1,3 RADIOBUTTON XARP 'pairs of /' STATE=ON
+^^WI         @ 1,4 RADIOBUTTON XARA 'all angles at     ' STATE=OFF
+^^WI       }
+^^WI       @ 1,3 GRID BDB NROWS=1 NCOLS=12 {
+^^WI         @ 1,1 RADIOBUTTON XARM 'the common mean /' STATE=ON
+^^WI         @ 1,2 RADIOBUTTON XARS 'this value:' STATE=OFF
+^^WI         @ 1,4 EDITBOX XARV '109.5' CHARS=7 INFORM=NO
+^^WI         @ 1,6 STATIC XARC 'su:'
+^^WI         @ 1,8 EDITBOX XARE '0.01' CHARS=7 INFORM=NO
+^^WI         @ 1,10 BUTTON BAT '&+'
+^^WI         @ 1,12 BUTTON BAR '&-'
+^^WI       }
+^^WI     }
+^^WI     @ 9,1 GRID BE NROWS=1 NCOLS=9 OUTLINE='Vibrations' {
+^^WI       @ 1,1 CHECKBOX XVRU 'Keep contributions along bonding axis similar' STATE=ON
+^^WI       @ 1,2 STRETCH XVRS HORIZONTAL
+^^WI       @ 1,3 CHECKBOX XVRP 'apply same rules to corresponding atoms, su:' STATE=ON
+^^WI       @ 1,5 EDITBOX XVRE '0.001' CHARS=7 INFORM=NO
+^^WI       @ 1,7 BUTTON BVT '&+'
+^^WI       @ 1,9 BUTTON BVR '&-'
+^^WI     }
+^^WI     @ 11,1 GRID BF NROWS=1 NCOLS=9 OUTLINE='Similar U-values' {
+^^WI       @ 1,1 CHECKBOX XSRU 'Keep the adp`s of bonded atoms similar' STATE=ON
+^^WI       @ 1,2 STRETCH XSRS HORIZONTAL
+^^WI       @ 1,3 CHECKBOX XSRP 'apply same rules to corresponding atoms, su' STATE=ON
+^^WI       @ 1,5 EDITBOX XSRE '0.002' CHARS=7 INFORM=NO
+^^WI       @ 1,7 BUTTON BST '&+'
+^^WI       @ 1,9 BUTTON BSR '&-'
+^^WI     }
+^^WI     @ 13,1 GRID BF NROWS=1 NCOLS=5 OUTLINE='Implicit similarity restraints' {
+^^WI       @ 1,1 CHECKBOX XSAU 'Use SAME, take su values from distances and angles' STATE=OFF
+^^WI       @ 1,2 STRETCH XSAS HORIZONTAL
+^^WI       @ 1,3 CHECKBOX XDEU 'Use DELU, take su value from vibrations' STATE=OFF
+^^WI       @ 1,4 STRETCH XSBS HORIZONTAL
+^^WI       @ 1,5 CHECKBOX XSIU 'Use SIMU, take su value from U-value restraint' STATE=OFF
+^^WI     }
+^^WI     @ 15,1 GRID BF NROWS=1 NCOLS=3 OUTLINE='Planes' {
+^^WI       @ 1,1 GRID BFA NROWS=1 NCOLS=5 {
+^^WI         @ 1,1 BUTTON BR14 '&Create restraints for planes'
+^^WI         @ 1,3 BUTTON BR15 '&Edit restraints for planes'
+^^WI         @ 1,5 BUTTON BR16 '&Remove restraints for planes'
+^^WI       }
+^^WI       @ 1,2 STRETCH XPRS HORIZONTAL
+^^WI       @ 1,3 GRID BFB NROWS=1 NCOLS=7 {
+^^WI         @ 1,1 STATIC XCPC 'su:'
+^^WI         @ 1,3 EDITBOX XPRE '0.01' CHARS=7 INFORM=NO
+^^WI         @ 1,5 BUTTON BPT '&+'
+^^WI         @ 1,7 BUTTON BPR '&-'
+^^WI       }
+^^WI     }
+^^WI     @ 17,1 GRID BF NROWS=1 NCOLS=4 OUTLINE='General restraints' {
+^^WI       @ 1,1 BUTTON BR17 '&Apply shift limiting restraints'
+^^WI       @ 1,3 BUTTON BR18 '&Remove shift limiting restraints'
+^^WI       @ 1,4 STRETCH XSLS HORIZONTAL
+^^WI     }
+^^WI   }
+^^WI   @ 6,2 GRID C NROWS=1 NCOLS=9 OUTLINE='Refine' {
+^^WI     @ 1,1 BUTTON BC1 '&One cycle'
+^^WI     @ 1,3 BUTTON BC2 '&Add one cycle'
+^^WI     @ 1,5 EDITBOX XREC '1' CHARS=7 INFORM=NO
+^^WI     @ 1,7 BUTTON BRN '&cycles: go'
+^^WI     @ 1,8 STRETCH XRES HORIZONTAL
+%% dropdown
+^^WI     @ 1,9 BUTTON BRE '&Execute'
+^^WI   }
+^^WI   @ 8,2 GRID D NROWS=1 NCOLS=7 OUTLINE='Model and controls' {
+^^WI     @ 1,1 BUTTON BGS '&Go back to starting model'
+^^WI     @ 1,3 BUTTON BGB '&Go back one step'
+^^WI     @ 1,5 BUTTON BMI '&Make model isotropic'
+^^WI     @ 1,6 STRETCH XMCS HORIZONTAL
+^^WI     @ 1,7 BUTTON BOK '&OK' DEFAULT
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+%%
+%  EVALUATE LFILEOPEN = FALSE
+%%
+%  LOOP
+%%
+%   IF LFILEOPEN THEN
+%%    TRANSFER "File is open..." TO DISPLAY
+%     IF CCOM .EQ. "BOK" THEN
+%       EVALUATE NCOM = 2
+%     ELSE IF CCOM .EQ. "BGS" THEN
+%       EVALUATE NCOM = 3
+%     ELSE IF CCOM .EQ. "BGB" THEN
+%       EVALUATE NCOM = 4
+%     ELSE IF CCOM .EQ. "BMI" THEN
+%       EVALUATE NCOM = 5
+%     ELSE IF CCOM .EQ. "BC1" THEN
+%       EVALUATE NCOM = 6
+%     ELSE IF CCOM .EQ. "BC2" THEN
+%       EVALUATE NCOM = 7
+%     ELSE IF CCOM .EQ. "BRN" THEN
+%       EVALUATE NCOM = 8
+%     ELSE IF CCOM .EQ. "BRE" THEN
+%       EVALUATE NCOM = 9
+%     ELSE IF CCOM .EQ. "BGN" THEN
+%       EVALUATE NCOM = 10
+%     ELSE IF CCOM .EQ. "BER" THEN
+%       EVALUATE NCOM = 11
+%     ELSE IF CCOM .EQ. "BUE" THEN
+%       EVALUATE NCOM = 12
+%     ELSE IF CCOM .EQ. "BD1" THEN
+%       EVALUATE NCOM = 13
+%     ELSE IF CCOM .EQ. "BD2" THEN
+%       EVALUATE NCOM = 14
+%     ELSE IF CCOM .EQ. "BD3" THEN
+%       EVALUATE NCOM = 15
+%     ELSE IF CCOM .EQ. "BD4" THEN
+%       EVALUATE NCOM = 16
+%     ELSE IF CCOM .EQ. "BD5" THEN
+%       EVALUATE NCOM = 17
+%     ELSE IF CCOM .EQ. "BD6" THEN
+%       EVALUATE NCOM = 18
+%     ELSE IF CCOM .EQ. "BD7" THEN
+%       EVALUATE NCOM = 19
+%     ELSE IF CCOM .EQ. "BD8" THEN
+%       EVALUATE NCOM = 20
+%     ELSE IF CCOM .EQ. "BR01" THEN
+%       EVALUATE NCOM = 21
+%     ELSE IF CCOM .EQ. "BR02" THEN
+%       EVALUATE NCOM = 22
+%     ELSE IF CCOM .EQ. "BR03" THEN
+%       EVALUATE NCOM = 23
+%     ELSE IF CCOM .EQ. "BR04" THEN
+%       EVALUATE NCOM = 24
+%     ELSE IF CCOM .EQ. "BR05" THEN
+%       EVALUATE NCOM = 25
+%     ELSE IF CCOM .EQ. "BR06" THEN
+%       EVALUATE NCOM = 26
+%     ELSE IF CCOM .EQ. "BR07" THEN
+%       EVALUATE NCOM = 27
+%     ELSE IF CCOM .EQ. "BR08" THEN
+%       EVALUATE NCOM = 28
+%     ELSE IF CCOM .EQ. "BR09" THEN
+%       EVALUATE NCOM = 29
+%     ELSE IF CCOM .EQ. "BR10" THEN
+%       EVALUATE NCOM = 30
+%     ELSE IF CCOM .EQ. "BR11" THEN
+%       EVALUATE NCOM = 31
+%     ELSE IF CCOM .EQ. "BR12" THEN
+%       EVALUATE NCOM = 32
+%     ELSE IF CCOM .EQ. "BR13" THEN
+%       EVALUATE NCOM = 33
+%     ELSE IF CCOM .EQ. "BR14" THEN
+%       EVALUATE NCOM = 34
+%     ELSE IF CCOM .EQ. "BR15" THEN
+%       EVALUATE NCOM = 35
+%     ELSE IF CCOM .EQ. "BR16" THEN
+%       EVALUATE NCOM = 36
+%     ELSE IF CCOM .EQ. "BR17" THEN
+%       EVALUATE NCOM = 37
+%     ELSE IF CCOM .EQ. "BR18" THEN
+%       EVALUATE NCOM = 38
+%     ELSE
+%       EVALUATE NCOM = 1
+%     END IF
+%   ELSE
+%     VERIFY BDN BOK BGS BGB BMI BC1 BC2 BRN BRE BGN BER BUE BD1 BD2 BD3 BD4 BD5 BD6 BD7 BD8 BR01 BR02 BR03 BR04 BR05 BR06 BR07 BR08 BR09 BR10 BR11 BR12 BR13 BR14 BR15 BR16 BR17 BR18
+%     GET SILENT FINAL NOSTORE ABBREVIATED ' ' ' '
+%     EVALUATE NCOM = VALUE
+%   END IF
+%%
+%%  CASE VALUE
+%   CASE NCOM
+%%
+%    BLOCK        % BDN - do nothing or display comment
+%      TRANSFER "BDN - do nothing or display comment" TO DISPLAY
+%%
+%      IF LFILEOPEN THEN
+%%       TRANSFER "{1,14 " // CCOM TO DISPLAY
+%        TRANSFER CCOM TO DISPLAY
+%      END IF
+%%
+%    END BLOCK
+%%
+%    BLOCK        % BOK - CLOSE window
+%      TRANSFER "BOK - normal completion of script" TO DISPLAY
+%%
+%      IF LFILEOPEN THEN
+%        TRANSFER "{E BOK command not accessible in batch mode." TO DISPLAY
+%      ELSE
+^^CO     DISPOSE XREFA
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%      END IF
+%%
+%    END BLOCK
+%%
+%%
+%    BLOCK        % BGS - go to starting model
+%      TRANSFER "BGS - go to starting model" TO DISPLAY
+%%
+%      COPY '#DISK'
+%      IF LEX5 THEN
+%        IF ISER5 .LT. 0 THEN
+%          EVALUATE ISER5 = ISER5 * - 1
+%        END IF
+%        CLEAR
+%        INSERT 'RESET 5 '
+%        STORE INTEGER ISER5
+%        SEND
+%      END IF
+%      COPY 'END'
+%%
+%    END BLOCK
+%%
+%    BLOCK        % BGB - go back one step
+%      TRANSFER "BGB - go back one step" TO DISPLAY
+%%
+%      COPY '#DISK'
+%      IF LBEX5 THEN
+%        IF IBCK5 .LT. 0 THEN
+%          EVALUATE IBCK5 = IBCK5 * - 1
+%        END IF
+%        CLEAR
+%        INSERT 'RESET 5 '
+%        STORE INTEGER IBCK5
+%        SEND
+%      END IF
+%      COPY 'END'
+%%
+%    END BLOCK
+%%
+%    BLOCK        % BMI - make model isotropic
+%      TRANSFER "BMI - make model isotropic" TO DISPLAY
+%%
+%%
+%    END BLOCK
+%%
+%%
+%    BLOCK        % BC1 - one refinement cycle
+%      TRANSFER "BC1 - one refinement cycle" TO DISPLAY
+%%
+^^CO   SET XREC TEXT '1'
+%%
+%    END BLOCK
+%%
+%    BLOCK        % BC2 - add one refinement cycle
+%      TRANSFER "BC2 - add one refinement cycle" TO DISPLAY
+%%
+^^??   XREC TEXT
+%      GET NOSTORE SILENT INTEGER ' ' ' '
+%      EVALUATE ICYCLE = VALUE + 1
+%      EVALUATE CLINE = "^^CO   SET XREC TEXT '" // CHARACTER ( ICYCLE ) // "'"
+%      TRANSFER CLINE TO DISPLAY
+%%
+%    END BLOCK
+%%
+%    BLOCK        % BRN - refine n cycles
+%      TRANSFER "BRN - refine n cycles" TO DISPLAY
+%%
+^^??   XRPP STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      CASE VALUE
+%        EVALUATE LPOS = TRUE
+%        EVALUATE LPOS = FALSE
+%      END CASE
+%%
+%% There is no need to check the state of both XRPG and XRPI
+%%
+%      IF LPOS THEN
+^^??   XRPG STATE
+%        VERIFY ON OFF
+%        GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%        CASE VALUE
+%          EVALUATE LGRP = TRUE
+%          EVALUATE LGRP = FALSE
+%        END CASE
+%      ELSE
+%        EVALUATE LGRP = FALSE
+%      END IF
+%%
+%% Here we see the flags for the displacement parameters
+%%
+^^??   XRUP STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      CASE VALUE
+%        BLOCK
+%%
+^^??   XRUG STATE
+%          VERIFY ON OFF
+%          GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%          CASE VALUE
+%            EVALUATE LUISOEQ = TRUE
+%            EVALUATE LUISOEQ = FALSE
+%          END CASE
+%%
+^^??   XRUI STATE
+%          VERIFY ON OFF
+%          GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%          CASE VALUE
+%            EVALUATE LUISO = TRUE
+%            EVALUATE LUISO = FALSE
+%          END CASE
+%%
+^^??   XRUA STATE
+%          VERIFY ON OFF
+%          GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%          CASE VALUE
+%            EVALUATE LUANI = TRUE
+%            EVALUATE LUANI = FALSE
+%          END CASE
+%%
+%        END BLOCK
+%        BLOCK
+%          EVALUATE LUISOEQ = FALSE
+%          EVALUATE LUISO = FALSE
+%          EVALUATE LUANI = FALSE
+%        END BLOCK
+%      END CASE
+%%
+%% XROF is for the sof`s
+%%
+^^??   XROF STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      CASE VALUE
+%        EVALUATE LOCC = TRUE
+%        EVALUATE LOCC = FALSE
+%      END CASE
+%%
+%      COPY '#SCRIPT A_GENL12ASSEMBLY'
+%%     COPY '#SCRIPT EDLIST12'
+%%
+%% Store the serial number of list 5
+%%
+%      EVALUATE IBCK5 = 0
+%      EVALUATE LBEX5 = FALSE
+%%
+%% Get the list number
+%%
+%      IF ( EXISTS 5 .EQ. 1 ) THEN
+%        COPY '#GENERALEDIT 5'
+%        COPY 'GETSERIAL IBCK5'
+%        COPY 'END'
+%        EVALUATE LBEX5 = TRUE
+%      END IF
+%%
+%      TRANSFER "{I Serial of list 5 is now " // CHARACTER ( IBCK5 ) // "." TO DISPLAY
+%%
+%% Now get the number of cycles
+%%
+^^??   XREC TEXT
+%      GET NOSTORE SILENT INTEGER ' ' ' '
+%      EVALUATE ICYCLE = VALUE
+%%
+%      TRANSFER "{I Refining " // CHARACTER ( ICYCLE ) // " cycles..." TO DISPLAY
+%%
+%      COPY '#SCRIPT A_REFINEN'
+%%
+%    END BLOCK
+%%
+%    BLOCK        % BRE - execute batch file
+%      TRANSFER "BRE - execute batch file" TO DISPLAY
+%      IF LFILEOPEN THEN
+%        TRANSFER "{E Batch file already open." TO DISPLAY
+%      ELSE
+%        EVALUATE LFILEOPEN = TRUE
+%        EVALUATE NREC = 0
+%      END IF
+%    END BLOCK
+%%
+%%
+%    BLOCK        % BGN - generate new restraints
+%      TRANSFER "BGN - generate new restraints" TO DISPLAY
+%% First we need all the values from the form
+%%
+%% Distances
+%%
+%% External bond distances
+%%
+^^??   XXRU STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      CASE VALUE
+%        EVALUATE LDISTEXT = TRUE
+%        EVALUATE LDISTEXT = FALSE
+%      END CASE
+%%
+%      EVALUATE LDISTEQEXT = FALSE
+%%
+^^??   XXRP STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      EVALUATE IRADIO1 = VALUE
+%%
+^^??   XXRA STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      EVALUATE IRADIO2 = VALUE
+%%
+%      IF ( IRADIO1 .EQ. 2 ) .AND. ( IRADIO2 .EQ. 1 ) THEN
+%        EVALUATE LDISTEQEXT = TRUE
+%      END IF
+%%
+%      EVALUATE LDISTEQEXTM = TRUE
+%%
+^^??   XXRM STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      EVALUATE IRADIO1 = VALUE
+%%
+^^??   XXRS STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      EVALUATE IRADIO2 = VALUE
+%%
+%      IF ( IRADIO1 .EQ. 2 ) .AND. ( IRADIO2 .EQ. 1 ) THEN
+%        EVALUATE LDISTEQEXTM = FALSE
+%      END IF
+%%
+^^??   XXRV TEXT
+%      GET NOSTORE SILENT REAL ' ' ' '
+%      EVALUATE RDISTEXTVAL = VALUE
+%%
+^^??   XXRE TEXT
+%      GET NOSTORE SILENT REAL ' ' ' '
+%      EVALUATE RDISTEXTESD = VALUE
+%%
+%% Internal bond distances
+%%
+^^??   XDRU STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      CASE VALUE
+%        EVALUATE LDIST = TRUE
+%        EVALUATE LDIST = FALSE
+%      END CASE
+%%
+%      EVALUATE LDISTEQINT = FALSE
+%%
+^^??   XDRP STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      EVALUATE IRADIO1 = VALUE
+%%
+^^??   XDRA STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      EVALUATE IRADIO2 = VALUE
+%%
+%      IF ( IRADIO1 .EQ. 2 ) .AND. ( IRADIO2 .EQ. 1 ) THEN
+%        EVALUATE LDISTEQINT = TRUE
+%      END IF
+%%
+%      EVALUATE LDISTEQINTM = TRUE
+%%
+^^??   XDRM STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      EVALUATE IRADIO1 = VALUE
+%%
+^^??   XDRS STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      EVALUATE IRADIO2 = VALUE
+%%
+%      IF ( IRADIO1 .EQ. 2 ) .AND. ( IRADIO2 .EQ. 1 ) THEN
+%        EVALUATE LDISTEQINTM = FALSE
+%      END IF
+%%
+^^??   XDRV TEXT
+%      GET NOSTORE SILENT REAL ' ' ' '
+%      EVALUATE RDISTVAL = VALUE
+%%
+^^??   XDRE TEXT
+%      GET NOSTORE SILENT REAL ' ' ' '
+%      EVALUATE RDISTESD = VALUE
+%%
+%% Angles
+%%
+^^??   XARU STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      CASE VALUE
+%        EVALUATE LANGL = TRUE
+%        EVALUATE LANGL = FALSE
+%      END CASE
+%%
+%      EVALUATE LANGLEQALL = FALSE
+%%
+^^??   XARP STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      EVALUATE IRADIO1 = VALUE
+%%
+^^??   XARA STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      EVALUATE IRADIO2 = VALUE
+%%
+%      IF ( IRADIO1 .EQ. 2 ) .AND. ( IRADIO2 .EQ. 1 ) THEN
+%        EVALUATE LANGLEQALL = TRUE
+%      END IF
+%%
+%      EVALUATE LANGLEQMEAN = TRUE
+%%
+^^??   XARM STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      EVALUATE IRADIO1 = VALUE
+%%
+^^??   XARS STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      EVALUATE IRADIO2 = VALUE
+%%
+%      IF ( IRADIO1 .EQ. 2 ) .AND. ( IRADIO2 .EQ. 1 ) THEN
+%        EVALUATE LANGLEQMEAN = FALSE
+%      END IF
+%%
+^^??   XARV TEXT
+%      GET NOSTORE SILENT REAL ' ' ' '
+%      EVALUATE RANGLVAL = VALUE
+%%
+^^??   XARE TEXT
+%      GET NOSTORE SILENT REAL ' ' ' '
+%      EVALUATE RANGLESD = VALUE
+%%
+%% Vibrations
+%%
+^^??   XVRU STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      CASE VALUE
+%        EVALUATE LVIBR = TRUE
+%        EVALUATE LVIBR = FALSE
+%      END CASE
+%%
+%%
+^^??   XVRP STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      CASE VALUE
+%        EVALUATE LVIBRPAIRS = TRUE
+%        EVALUATE LVIBRPAIRS = FALSE
+%      END CASE
+%%
+^^??   XVRE TEXT
+%      GET NOSTORE SILENT REAL ' ' ' '
+%      EVALUATE RVIBRESD = VALUE
+%%
+%% U(IJ)'S
+%%
+^^??   XSRU STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      CASE VALUE
+%        EVALUATE LUIJS = TRUE
+%        EVALUATE LUIJS = FALSE
+%      END CASE
+%%
+^^??   XSRP STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      CASE VALUE
+%        EVALUATE LUIJSPAIRS = TRUE
+%        EVALUATE LUIJSPAIRS = FALSE
+%      END CASE
+%%
+^^??   XSRE TEXT
+%      GET NOSTORE SILENT REAL ' ' ' '
+%      EVALUATE RUIJSESD = VALUE
+%%
+%% SAME, DELU and SIMU
+%%
+^^??   XSAU STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      CASE VALUE
+%        EVALUATE LSAME = TRUE
+%        EVALUATE LSAME = FALSE
+%      END CASE
+%%
+^^??   XDEU STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      CASE VALUE
+%        EVALUATE LDELU = TRUE
+%        EVALUATE LDELU = FALSE
+%      END CASE
+%%
+^^??   XSIU STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      CASE VALUE
+%        EVALUATE LSIMU = TRUE
+%        EVALUATE LSIMU = FALSE
+%      END CASE
+%%
+%% The value of IASSEMBLY is passed to the script, then the part numbers are worked out there
+%      COPY '#SCRIPT A_GETBONDSANGLES'
+%    END BLOCK
+%%
+%    BLOCK        % BER - edit restraints
+%      TRANSFER "BER - edit restraints" TO DISPLAY
+%% Here we call an existing CRYSTALS script
+%      COPY '#SCRIPT EDLIST16'
+%    END BLOCK
+%%
+%    BLOCK        % BUE - update esd's
+%      TRANSFER "BUE - update esd's" TO DISPLAY
+%%     COPY '#SCRIPT A_REPLACESU'
+%    END BLOCK
+%%
+%%
+%    BLOCK        % BD1 - refine site occupancy factor alone
+%      TRANSFER "BD1 - refine site occupancy factor alone" TO DISPLAY
+%%
+^^CO     SET XRPP STATE=OFF
+^^CO     SET XRPG STATE=OFF
+^^CO     SET XRPI STATE=OFF
+^^CO     SET XRPL STATE=OFF
+%%
+^^CO     SET XRUP STATE=OFF
+^^CO     SET XRUG STATE=OFF
+^^CO     SET XRUI STATE=OFF
+^^CO     SET XRUA STATE=OFF
+^^CO     SET XRUL STATE=OFF
+%%
+^^CO     SET XROF STATE=ON
+%%
+%    END BLOCK
+%%
+%    BLOCK        % BD2 - refine common isotropic U-value alone
+%      TRANSFER "BD2 - refine common isotropic U-value alone" TO DISPLAY
+%%
+^^CO     SET XRPP STATE=OFF
+^^CO     SET XRPG STATE=OFF
+^^CO     SET XRPI STATE=OFF
+^^CO     SET XRPL STATE=OFF
+%%
+^^CO     SET XRUP STATE=ON
+^^CO     SET XRUG STATE=ON
+^^CO     SET XRUI STATE=OFF
+^^CO     SET XRUA STATE=OFF
+^^CO     SET XRUL STATE=OFF
+%%
+^^CO     SET XROF STATE=OFF
+%%
+%    END BLOCK
+%%
+%    BLOCK        % BD3 - refine positions as group alone
+%      TRANSFER "BD3 - refine positions as group alone" TO DISPLAY
+%%
+^^CO     SET XRPP STATE=ON
+^^CO     SET XRPG STATE=ON
+^^CO     SET XRPI STATE=OFF
+^^CO     SET XRPL STATE=OFF
+%%
+^^CO     SET XRUP STATE=OFF
+^^CO     SET XRUG STATE=OFF
+^^CO     SET XRUI STATE=OFF
+^^CO     SET XRUA STATE=OFF
+^^CO     SET XRUL STATE=OFF
+%%
+^^CO     SET XROF STATE=OFF
+%%
+%    END BLOCK
+%%
+%    BLOCK        % BD4 - refine positions as group, common isotropic U-value and sof
+%      TRANSFER "BD4 - refine positions as group, common isotropic U-value and sof" TO DISPLAY
+%%
+^^CO     SET XRPP STATE=ON
+^^CO     SET XRPG STATE=ON
+^^CO     SET XRPI STATE=OFF
+^^CO     SET XRPL STATE=OFF
+%%
+^^CO     SET XRUP STATE=ON
+^^CO     SET XRUG STATE=ON
+^^CO     SET XRUI STATE=OFF
+^^CO     SET XRUA STATE=OFF
+^^CO     SET XRUL STATE=OFF
+%%
+^^CO     SET XROF STATE=ON
+%%
+%    END BLOCK
+%%
+%    BLOCK        % BD5 - refine positions, common isotropic U-value and sof
+%      TRANSFER "BD5 - refine positions, common isotropic U-value and sof" TO DISPLAY
+%%
+^^CO     SET XRPP STATE=ON
+^^CO     SET XRPG STATE=OFF
+^^CO     SET XRPI STATE=ON
+^^CO     SET XRPL STATE=OFF
+%%
+^^CO     SET XRUP STATE=ON
+^^CO     SET XRUG STATE=ON
+^^CO     SET XRUI STATE=OFF
+^^CO     SET XRUA STATE=OFF
+^^CO     SET XRUL STATE=OFF
+%%
+^^CO     SET XROF STATE=ON
+%%
+%    END BLOCK
+%%
+%    BLOCK        % BD6 - refine positions, individual isotropic U-values and sof
+%      TRANSFER "BD6 - refine positions, individual isotropic U-values and sof" TO DISPLAY
+%%
+^^CO     SET XRPP STATE=ON
+^^CO     SET XRPG STATE=OFF
+^^CO     SET XRPI STATE=ON
+^^CO     SET XRPL STATE=OFF
+%%
+^^CO     SET XRUP STATE=ON
+^^CO     SET XRUG STATE=OFF
+^^CO     SET XRUI STATE=ON
+^^CO     SET XRUA STATE=OFF
+^^CO     SET XRUL STATE=OFF
+%%
+^^CO     SET XROF STATE=ON
+%%
+%    END BLOCK
+%%
+%    BLOCK        % BD7 - refine positions, anisotropic U-values and sof
+%      TRANSFER "BD7 - refine positions, anisotropic U-values and sof" TO DISPLAY
+%%
+^^CO     SET XRPP STATE=ON
+^^CO     SET XRPG STATE=OFF
+^^CO     SET XRPI STATE=ON
+^^CO     SET XRPL STATE=OFF
+%%
+^^CO     SET XRUP STATE=ON
+^^CO     SET XRUG STATE=OFF
+^^CO     SET XRUI STATE=OFF
+^^CO     SET XRUA STATE=ON
+^^CO     SET XRUL STATE=OFF
+%%
+^^CO     SET XROF STATE=ON
+%%
+%    END BLOCK
+%%
+%    BLOCK        % BD8 - link positions and U-values between corresponding atoms
+%      TRANSFER "BD8 - link positions and U-values between corresponding atoms" TO DISPLAY
+%%
+^^CO     SET XRPL STATE=ON
+^^CO     SET XRUL STATE=ON
+%%
+%    END BLOCK
+%%
+%    BLOCK        % BR01 - reset all settings for restraints generation
+%      TRANSFER "BR01 - reset all settings for restraints generation" TO DISPLAY
+%%
+^^CO     SET XXRU STATE=OFF
+^^CO     SET XXRP STATE=ON
+^^CO     SET XXRM STATE=ON
+^^CO     SET XXRV TEXT '1.54'
+^^CO     SET XXRE TEXT '0.01'
+%%
+^^CO     SET XDRU STATE=OFF
+^^CO     SET XDRP STATE=ON
+^^CO     SET XDRM STATE=ON
+^^CO     SET XDRV TEXT '1.54'
+^^CO     SET XDRE TEXT '0.01'
+%%
+^^CO     SET XARU STATE=OFF
+^^CO     SET XARP STATE=ON
+^^CO     SET XARM STATE=ON
+^^CO     SET XARV TEXT '109.5'
+^^CO     SET XARE TEXT '0.1'
+%%
+^^CO     SET XVRU STATE=OFF
+^^CO     SET XVRP STATE=OFF
+^^CO     SET XVRE TEXT '0.01'
+%%
+^^CO     SET XSRU STATE=OFF
+^^CO     SET XSRP STATE=OFF
+^^CO     SET XSRE TEXT '0.02'
+%%
+^^CO     SET XPRE TEXT '0.1'
+%%
+%    END BLOCK
+%%
+%    BLOCK        % BR02 - set very tight standard uncertainties
+%      TRANSFER "BR02 - set very tight standard uncertainties" TO DISPLAY
+%%
+^^CO     SET XXRE TEXT '0.001'
+^^CO     SET XDRE TEXT '0.001'
+^^CO     SET XARE TEXT '0.01'
+^^CO     SET XVRE TEXT '0.001'
+^^CO     SET XSRE TEXT '0.002'
+^^CO     SET XPRE TEXT '0.01'
+%%
+%    END BLOCK
+%%
+%    BLOCK        % BR03 - set tight standard uncertainties
+%      TRANSFER "BR03 - set tight standard uncertainties" TO DISPLAY
+%%
+^^CO     SET XXRE TEXT '0.005'
+^^CO     SET XDRE TEXT '0.005'
+^^CO     SET XARE TEXT '0.05'
+^^CO     SET XVRE TEXT '0.005'
+^^CO     SET XSRE TEXT '0.01'
+^^CO     SET XPRE TEXT '0.05'
+%%
+%    END BLOCK
+%%
+%    BLOCK        % BR04 - set medium standard uncertainties
+%      TRANSFER "BR04 - set medium standard uncertainties" TO DISPLAY
+%%
+^^CO     SET XXRE TEXT '0.01'
+^^CO     SET XDRE TEXT '0.01'
+^^CO     SET XARE TEXT '0.1'
+^^CO     SET XVRE TEXT '0.01'
+^^CO     SET XSRE TEXT '0.02'
+^^CO     SET XPRE TEXT '0.1'
+%%
+%    END BLOCK
+%%
+%    BLOCK        % BR05 - set relaxed standard uncertainties
+%      TRANSFER "BR05 - set relaxed standard uncertainties" TO DISPLAY
+%%
+^^CO     SET XXRE TEXT '0.05'
+^^CO     SET XDRE TEXT '0.05'
+^^CO     SET XARE TEXT '0.5'
+^^CO     SET XVRE TEXT '0.05'
+^^CO     SET XSRE TEXT '0.1'
+^^CO     SET XPRE TEXT '0.5'
+%%
+%    END BLOCK
+%%
+%    BLOCK        % BR06 - use explicit restraints
+%      TRANSFER "BR06 - use explicit restraints" TO DISPLAY
+%%
+^^CO     SET XXRU STATE=ON
+^^CO     SET XDRU STATE=ON
+^^CO     SET XARU STATE=ON
+^^CO     SET XVRU STATE=ON
+^^CO     SET XSRU STATE=ON
+^^CO     SET XSAU STATE=OFF
+^^CO     SET XDEU STATE=OFF
+^^CO     SET XSIU STATE=OFF
+%%
+%    END BLOCK
+%%
+%    BLOCK        % BR07 - use implicit restraints
+%      TRANSFER "BR07 - use implicit restraints" TO DISPLAY
+%%
+^^CO     SET XSAU STATE=ON
+^^CO     SET XDEU STATE=ON
+^^CO     SET XSIU STATE=ON
+^^CO     SET XXRU STATE=OFF
+^^CO     SET XDRU STATE=OFF
+^^CO     SET XARU STATE=OFF
+^^CO     SET XVRU STATE=OFF
+^^CO     SET XSRU STATE=OFF
+%%
+%    END BLOCK
+%%
+%    BLOCK        % BR08 - restrain pairwise
+%      TRANSFER "BR08 - restrain pairwise" TO DISPLAY
+%%
+^^CO     SET XXRP STATE=ON
+^^CO     SET XDRP STATE=ON
+^^CO     SET XARP STATE=ON
+%%^^CO     SET XVRP STATE=ON
+%%^^CO     SET XSRP STATE=ON
+%%
+%    END BLOCK
+%%
+%    BLOCK        % BR09 - restrain all to common value
+%      TRANSFER "BR09 - restrain all to common value" TO DISPLAY
+%%
+^^CO     SET XXRA STATE=ON
+^^CO     SET XDRA STATE=ON
+^^CO     SET XARA STATE=ON
+%%^^CO     SET XVRP STATE=OFF
+%%^^CO     SET XSRP STATE=OFF
+%%
+%    END BLOCK
+%%
+%    BLOCK        % BR10 - restrain to common mean
+%      TRANSFER "BR10 - restrain to common mean" TO DISPLAY
+%%
+^^CO     SET XXRM STATE=ON
+^^CO     SET XDRM STATE=ON
+^^CO     SET XARM STATE=ON
+%%
+%    END BLOCK
+%%
+%    BLOCK        % BR11 - restrain to specified values
+%      TRANSFER "BR11 - restrain to specified values" TO DISPLAY
+%%
+^^CO     SET XXRS STATE=ON
+^^CO     SET XDRS STATE=ON
+^^CO     SET XARS STATE=ON
+%%
+%    END BLOCK
+%%
+%    BLOCK        % BR12 - Set values for sp3 C-C bonds and angles
+%      TRANSFER "BR12 - Set values for sp3 C-C bonds and angles" TO DISPLAY
+%%
+^^CO     SET XXRV TEXT '1.54'
+^^CO     SET XDRV TEXT '1.54'
+^^CO     SET XARV TEXT '109.5'
+%%
+%    END BLOCK
+%%
+%    BLOCK        % BR13 - Set values for sp2 C-C bonds and angles
+%      TRANSFER "BR13 - Set values for sp2 C-C bonds and angles" TO DISPLAY
+%%
+^^CO     SET XXRV TEXT '1.39'
+^^CO     SET XDRV TEXT '1.39'
+^^CO     SET XARV TEXT '120.0'
+%%
+%    END BLOCK
+%%
+%%
+%    BLOCK        % BR14 - Create restraints for planes
+%      TRANSFER "BR14 - Create restraints for planes" TO DISPLAY
+%%
+%      EVALUATE CTITLE = "No code to execute!"
+%      EVALUATE CTEXT1 = "It is a plan to write this script, so"
+%      EVALUATE CTEXT2 = "please klick this button later again!"
+%      EVALUATE CPOSITION = "=CENTERED '_MAINTEXTOUTPUT'"
+%%
+%      COPY '#SCRIPT A_XMESSAGE'
+%%
+%    END BLOCK
+%%
+%%
+%    BLOCK        % BR15 - Edit restraints for planes
+%      TRANSFER "BR15 - Edit restraints for planes" TO DISPLAY
+%%
+%      EVALUATE CTITLE = "No code to execute!"
+%      EVALUATE CTEXT1 = "It is a plan to write this script, so"
+%      EVALUATE CTEXT2 = "please klick this button later again!"
+%      EVALUATE CPOSITION = "=CENTERED '_MAINTEXTOUTPUT'"
+%%
+%      COPY '#SCRIPT A_XMESSAGE'
+%%
+%    END BLOCK
+%%
+%%
+%    BLOCK        % BR16 - Remove restraints for planes
+%      TRANSFER "BR16 - Remove restraints for planes" TO DISPLAY
+%%
+%      EVALUATE CTITLE = "No code to execute!"
+%      EVALUATE CTEXT1 = "It is a plan to write this script, so"
+%      EVALUATE CTEXT2 = "please klick this button later again!"
+%      EVALUATE CPOSITION = "=CENTERED '_MAINTEXTOUTPUT'"
+%%
+%      COPY '#SCRIPT A_XMESSAGE'
+%%
+%    END BLOCK
+%%
+%%
+%    BLOCK        % BR17 - Add shiftlimiting restraints
+%      TRANSFER "BR17 - Add shiftlimiting restraints" TO DISPLAY
+%%
+%      COPY '#SCRIPT XSHIFTL'
+%%
+%    END BLOCK
+%%
+%%
+%    BLOCK        % BR18 - Remove shiftlimiting restraints
+%      TRANSFER "BR18 - Remove shiftlimiting restraints" TO DISPLAY
+%%
+%      COPY '#SCRIPT A_REMSHIFTL'
+%%
+%    END BLOCK
+%%
+%   END CASE
+%%
+%   IF LFILEOPEN THEN
+%%
+%     IF NREC .EQ. 0 THEN
+%       TRANSFER "{I Opening batch file..." TO DISPLAY
+%       EVALUATE NREC = NREC + 1
+%     END IF
+%%
+%     IF NREC .GT. 0 THEN
+%%      TRANSFER "{I Reading record " // CHARACTER ( NREC ) // " from batch file..." TO DISPLAY
+%%
+%       COPY '#OPEN SCPDATA CRYSDIR:script/a_batch.bat'
+%       ON ERROR TERMINATE
+%       ON END TERMINATE
+%       LOOP NREC TIMES
+%         EXTRACT NEXT
+%       END LOOP
+%       EXTRACT TRANSFER INPUT
+%       CLEAR
+%       GET TEXT 'Record'
+%%      TRANSFER CVALUE TO DISPLAY
+%       COPY '#CLOSE SCPDATA'
+%       EVALUATE CCOM = CVALUE
+%%
+%       EVALUATE NREC = NREC + 1
+%%
+%       IF CCOM .EQ. "END" THEN
+%         TRANSFER "{I Closing batch file." TO DISPLAY
+%         EVALUATE LFILEOPEN = FALSE
+%         EVALUATE NREC = 0
+%       END IF
+%%
+%     END IF
+%   END IF
+%%
+%  END LOOP
+%%
+%END SCRIPT
+
+bits and pieces
+
+%     ELSE IF CCOM .EQ. "BXT" THEN
+%       EVALUATE NCOM = 13
+%     ELSE IF CCOM .EQ. "BXR" THEN
+%       EVALUATE NCOM = 14
+%     ELSE IF CCOM .EQ. "BDT" THEN
+%       EVALUATE NCOM = 15
+%     ELSE IF CCOM .EQ. "BDR" THEN
+%       EVALUATE NCOM = 16
+%     ELSE IF CCOM .EQ. "BAT" THEN
+%       EVALUATE NCOM = 17
+%     ELSE IF CCOM .EQ. "BAR" THEN
+%       EVALUATE NCOM = 18
+%     ELSE IF CCOM .EQ. "BVT" THEN
+%       EVALUATE NCOM = 19
+%     ELSE IF CCOM .EQ. "BVR" THEN
+%       EVALUATE NCOM = 20
+%     ELSE IF CCOM .EQ. "BST" THEN
+%       EVALUATE NCOM = 21
+%     ELSE IF CCOM .EQ. "BSR" THEN
+%       EVALUATE NCOM = 22
+%     ELSE IF CCOM .EQ. "BPT" THEN
+%       EVALUATE NCOM = 23
+%     ELSE IF CCOM .EQ. "BPR" THEN
+%       EVALUATE NCOM = 24
+
+ BXT BXR BDT BDR BAT BAR BVT BVR BST BSR BPT BPR
+
+%    BLOCK        % BXT - tighten esd's on external distance restraints
+%      TRANSFER "BXT - tighten esd's on external distance restraints" TO DISPLAY
+^^??   XXRE TEXT
+%      GET NOSTORE SILENT REAL ' ' ' '
+%      EVALUATE RVALUE = VALUE / 2.0
+%      EVALUATE CLINE = "^^CO   SET XXRE TEXT '" // CHARACTER ( RVALUE ) // "'"
+%      TRANSFER CLINE TO DISPLAY
+%    END BLOCK
+%%
+%    BLOCK        % BXR - release esd's on external distance restraints
+%      TRANSFER "BXR - release esd's on external distance restraints" TO DISPLAY
+^^??   XXRE TEXT
+%      GET NOSTORE SILENT REAL ' ' ' '
+%      EVALUATE RVALUE = VALUE + 0.001
+%      EVALUATE CLINE = "^^CO   SET XXRE TEXT '" // CHARACTER ( RVALUE ) // "'"
+%      TRANSFER CLINE TO DISPLAY
+%    END BLOCK
+%%
+%    BLOCK        % BDT - tighten esd's on distance restraints
+%      TRANSFER "BDT - tighten esd's on distance restraints" TO DISPLAY
+^^??   XDRE TEXT
+%      GET NOSTORE SILENT REAL ' ' ' '
+%      EVALUATE RVALUE = VALUE / 2.0
+%      EVALUATE CLINE = "^^CO   SET XDRE TEXT '" // CHARACTER ( RVALUE ) // "'"
+%      TRANSFER CLINE TO DISPLAY
+%    END BLOCK
+%%
+%    BLOCK        % BDR - release esd's on distance restraints
+%      TRANSFER "BDR - release esd's on distance restraints" TO DISPLAY
+^^??   XDRE TEXT
+%      GET NOSTORE SILENT REAL ' ' ' '
+%      EVALUATE RVALUE = VALUE + 0.001
+%      EVALUATE CLINE = "^^CO   SET XDRE TEXT '" // CHARACTER ( RVALUE ) // "'"
+%      TRANSFER CLINE TO DISPLAY
+%    END BLOCK
+%%
+%    BLOCK        % BAT - tighten esd's on angle restraints
+%      TRANSFER "BAT - tighten esd's on angle restraints" TO DISPLAY
+^^??   XARE TEXT
+%      GET NOSTORE SILENT REAL ' ' ' '
+%      EVALUATE RVALUE = VALUE / 2.0
+%      EVALUATE CLINE = "^^CO   SET XARE TEXT '" // CHARACTER ( RVALUE ) // "'"
+%      TRANSFER CLINE TO DISPLAY
+%    END BLOCK
+%%
+%    BLOCK        % BAR - release esd's on angle restraints
+%      TRANSFER "BAR - release esd's on angle restraints" TO DISPLAY
+^^??   XARE TEXT
+%      GET NOSTORE SILENT REAL ' ' ' '
+%      EVALUATE RVALUE = VALUE + 0.001
+%      EVALUATE CLINE = "^^CO   SET XARE TEXT '" // CHARACTER ( RVALUE ) // "'"
+%      TRANSFER CLINE TO DISPLAY
+%    END BLOCK
+%%
+%    BLOCK        % BVT - tighten esd's on vibration restraints
+%      TRANSFER "BVT - tighten esd's on vibration restraints" TO DISPLAY
+^^??   XVRE TEXT
+%      GET NOSTORE SILENT REAL ' ' ' '
+%      EVALUATE RVALUE = VALUE / 2.0
+%      EVALUATE CLINE = "^^CO   SET XVRE TEXT '" // CHARACTER ( RVALUE ) // "'"
+%      TRANSFER CLINE TO DISPLAY
+%    END BLOCK
+%%
+%    BLOCK        % BVR - release esd's on vibration restraints
+%      TRANSFER "BVR - release esd's on vibration restraints" TO DISPLAY
+^^??   XVRE TEXT
+%      GET NOSTORE SILENT REAL ' ' ' '
+%      EVALUATE RVALUE = VALUE + 0.001
+%      EVALUATE CLINE = "^^CO   SET XVRE TEXT '" // CHARACTER ( RVALUE ) // "'"
+%      TRANSFER CLINE TO DISPLAY
+%    END BLOCK
+%%
+%    BLOCK        % BST - tighten esd's on similarity restraints
+%      TRANSFER "BST - tighten esd's on similarity restraints" TO DISPLAY
+^^??   XSRE TEXT
+%      GET NOSTORE SILENT REAL ' ' ' '
+%      EVALUATE RVALUE = VALUE / 2.0
+%      EVALUATE CLINE = "^^CO   SET XSRE TEXT '" // CHARACTER ( RVALUE ) // "'"
+%      TRANSFER CLINE TO DISPLAY
+%    END BLOCK
+%%
+%    BLOCK        % BSR - release esd's on similarity restraints
+%      TRANSFER "BSR - release esd's on similarity restraints" TO DISPLAY
+^^??   XSRE TEXT
+%      GET NOSTORE SILENT REAL ' ' ' '
+%      EVALUATE RVALUE = VALUE + 0.001
+%      EVALUATE CLINE = "^^CO   SET XSRE TEXT '" // CHARACTER ( RVALUE ) // "'"
+%      TRANSFER CLINE TO DISPLAY
+%    END BLOCK
+%%
+%    BLOCK        % BPT - tighten esd's on planar restraints
+%      TRANSFER "BPT - tighten esd's on planar restraints" TO DISPLAY
+^^??   XPRE TEXT
+%      GET NOSTORE SILENT REAL ' ' ' '
+%      EVALUATE RVALUE = VALUE / 2.0
+%      EVALUATE CLINE = "^^CO   SET XPRE TEXT '" // CHARACTER ( RVALUE ) // "'"
+%      TRANSFER CLINE TO DISPLAY
+%    END BLOCK
+%%
+%    BLOCK        % BPR - release esd's on planar restraints
+%      TRANSFER "BPR - release esd's on planar restraints" TO DISPLAY
+^^??   XPRE TEXT
+%      GET NOSTORE SILENT REAL ' ' ' '
+%      EVALUATE RVALUE = VALUE + 0.001
+%      EVALUATE CLINE = "^^CO   SET XPRE TEXT '" // CHARACTER ( RVALUE ) // "'"
+%      TRANSFER CLINE TO DISPLAY
+%    END BLOCK
+%%

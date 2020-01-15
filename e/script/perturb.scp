@@ -1,0 +1,44 @@
+%script perturb
+% variable integer expected 
+% variable real perturb 
+
+
+% CLEAR                                                                       
+% insert "% GET INTEGER 'How many atoms do you want to keep' '"               
+% store integer EXPECTED                                                      
+% insert "'"                                                                  
+% execute                                                                     
+% EVALUATE EXPECTED = VALUE                                                   
+
+% CLEAR                                                                       
+% insert "% GET REAL 'What perturbtion?' '"               
+% store real perturb                                    
+% insert "'"                                                                  
+% execute                                                                     
+% EVALUATE perturb = VALUE                                                   
+
+% copy '#edit'
+% clear
+% insert '%copy "select serial le '
+% store integer expected
+% insert '"'
+% execute
+% copy 'execute'
+% clear
+% insert '%copy "pert '
+% store real perturb
+% insert ' x"'
+% execute
+% clear
+% insert '%copy "pert '
+% store real perturb
+% insert ' y"'
+% execute
+% clear
+% insert '%copy "pert '
+% store real perturb
+% insert ' z"'
+% execute
+% copy 'execute'
+% copy 'end'
+%end script

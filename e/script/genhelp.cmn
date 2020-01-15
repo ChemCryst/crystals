@@ -1,0 +1,18 @@
+GENERAL HELP                                                                    
+                                                                                
+The HELP facility within CAMERON can be accessed by using either HELP or        
+?. HELP provides the user with more detailed help on any available sub          
+commands.                                                                       
+If HELP/? is used at the beginning of an input line then help                   
+information is supplied on the following command -                              
+HELP VIEW will give help on the command VIEW.                                   
+                                                                                
+Alternatively HELP/? may be used further along a line and will then give        
+information on the preceding command -                                          
+SPHERE ALL FILL HELP will give help on FILL.                                    
+                                                                                
+If the help facility is entered in this way the user is given the option        
+to abandon any un-executed commands or continue with the command input.         
+                                                                                
+The following commands are all available as header commands and HELP xxx        
+will give information on the commands that lie beneath them.                    

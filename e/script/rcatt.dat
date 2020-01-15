@@ -1,0 +1,65 @@
+                  This is the data file for RC93
+      In this file comment statements should have two (or more) blank
+   spaces at the beginning of each line. 
+      It contains the attenuator cofficients for Mo and Cu radiation. 
+      If they are not zero, the values in the CAD4 output file will 
+   take priority over the values in this file. 
+      Entries later in this file replace earlier ones.
+
+       There are two Nonius output file formats:
+
+  <sp>nm ............ (Mark 1 type)
+  and
+  <sp><sp>nm .......... (Mark 2 type)
+
+                              where nm is the record ID. 
+
+   The format of the attenuator record is:
+                      A2,I2,1X,F7.3
+
+   Column 2 contains 1 for a Mark 1 type machine
+                     2            2
+                     * for input of radiation information
+         
+   Column 4 contains 1 for copper radiation
+                     2     molybdenum
+
+   Columns 6-12 contain the attenuation factor
+   ___________________________________________________________________
+   DATA:
+   Mark 1 machine
+   C Bannister and RH Jones   7/6/84   
+   1 1  15.965  (Mo)
+   1 2  19.790  (Cu)
+
+   Mark 2 
+   C Briant and DJ Watkin   July 1982  
+   2 2  19.200  (M0)
+   CAD4(2) Cu
+   DJWatkin Dec 1991
+   2 1  12.060
+
+   MACH 3 December, 1995, Cu only
+ 1 1  12.396
+ 1 2  12.396
+ 2 1  12.396
+ 2 2  12.396
+_____________________________________________________________________________
+
+   Radiation types in use in this laboratory (see Int Tables vol.III p59ff):
+   format used is * as a marker for type of statement, number assigned to this
+   radiation type (see above), lambda(1), lambda(2), label for this radiation 
+   type, the following line holds the CONDITION statement for Crystals 
+   appropriate for this radiation.
+   Overall:-    (A2,I2,1X,F7.5,1X,F7.5,1X,A10)
+                (5X,A75)
+
+ * 2 0.70926 0.71354 MOLYBDENUM
+     0.71069 6.05 90 0.587277 0.6424350 0.0001788
+
+ * 1 1.54056 1.54439 COPPER
+     1.5418 13.218 90 0.587277 0.6424350 0.0001788
+
+   The CONDITION statements are in the following format (detailed in 
+   Crystals manual):
+      Wavelength  Theta1 Theta2 Constant(1)...Constant(4)

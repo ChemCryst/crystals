@@ -1,0 +1,3 @@
+%SCRIPT FOPTWT
+% COPY '#SCRIPT not-here'
+%END SCRIPT

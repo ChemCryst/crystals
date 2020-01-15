@@ -1,0 +1,41 @@
+%SCRIPT TIDYUP
+%%
+%  VARIABLE LOGICAL T
+%%
+%  IF ( FILEEXISTS ( 'AtomSelected.dat' ) ) THEN
+%    EVALUATE T = FILEDELETE ( 'AtomSelected.dat' )
+%  END IF
+%  IF ( FILEEXISTS ( 'MolaxDefinition.dat' ) ) THEN
+%    EVALUATE T = FILEDELETE ( 'MolaxDefinition.dat' )
+%  END IF
+%  IF ( FILEEXISTS ( 'AtomsToWorkOn.dat' ) ) THEN
+%    EVALUATE T = FILEDELETE ( 'AtomsToWorkOn.dat' )
+%  END IF
+%% IF ( FILEEXISTS ( 'PartsToWorkOn.dat' ) ) THEN
+%%   EVALUATE T = FILEDELETE ( 'PartsToWorkOn.dat' )
+%% END IF
+%  IF ( FILEEXISTS ( 'AtomsEvaluated.dat' ) ) THEN
+%    EVALUATE T = FILEDELETE ( 'AtomsEvaluated.dat' )
+%  END IF
+%  IF ( FILEEXISTS ( 'AtomsOrtho.dat' ) ) THEN
+%    EVALUATE T = FILEDELETE ( 'AtomsOrtho.dat' )
+%  END IF
+%  IF ( FILEEXISTS ( 'Residues.dat' ) ) THEN
+%    EVALUATE T = FILEDELETE ( 'Residues.dat' )
+%  END IF
+%  IF ( FILEEXISTS ( 'Parts.dat' ) ) THEN
+%    EVALUATE T = FILEDELETE ( 'Parts.dat' )
+%  END IF
+%  IF ( FILEEXISTS ( 'AllDistances.dat' ) ) THEN
+%    EVALUATE T = FILEDELETE ( 'AllDistances.dat' )
+%  END IF
+%  IF ( FILEEXISTS ( 'DistanceRanges.dat' ) ) THEN
+%    EVALUATE T = FILEDELETE ( 'DistanceRanges.dat' )
+%  END IF
+%  IF ( FILEEXISTS ( 'BondDefs.dat' ) ) THEN
+%    EVALUATE T = FILEDELETE ( 'BondDefs.dat' )
+%  END IF
+%%
+%  TRANSFER "{I All scratch files deleted." TO DISPLAY
+%%
+%END SCRIPT

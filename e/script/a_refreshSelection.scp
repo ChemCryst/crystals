@@ -1,0 +1,25 @@
+%  SCRIPT REFRESHSELECTION
+%%
+%  IF ( FILEEXISTS ( 'AtomsToWorkOn.dat' ) ) THEN
+%    COPY '#OPEN SCPDATA AtomsToWorkOn.dat'
+%    BLOCK
+%      LOOP
+%        ON ERROR TERMINATE
+%        ON END TERMINATE
+%        EXTRACT NEXT
+%        EXTRACT TRANSFER INPUT
+%        CLEAR
+%        GET KEYWORD 'Entry'
+%% force an exit from loop on reading an END card
+%        IF CVALUE .EQ. 'END' THEN
+%          EVALUATE LOOPEND = LOOPCOUNTER
+%        ELSE
+%          EVALUATE CLINE = "^^CO SET MODEL01 SELECT " // CVALUE // " YES"
+%          TRANSFER CLINE TO DISPLAY
+%        END IF
+%      END LOOP
+%    END BLOCK
+%    COPY '#CLOSE SCPDATA'
+%  END IF
+%%
+%END SCRIPT

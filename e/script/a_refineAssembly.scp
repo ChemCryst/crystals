@@ -1,0 +1,186 @@
+%SCRIPT REFINEASSEMBLY
+%%
+%% Variables used by calling script
+%%
+%% VARIABLE INTEGER IMODE
+%  VARIABLE INTEGER IOPTION
+%%
+%  VARIABLE CHARACTER CTITLE CPOSITION CTEXT1 CTEXT2
+%% VARIABLE INTEGER ISELECTED
+%  VARIABLE LOGICAL LSELECTATOMS LATOMSFOUND LDEBUG T
+%%
+%% Variables for script genL12Parts
+%%
+%  VARIABLE LOGICAL LPOS LGRP LUISO LUANI LUISOEQ LOCC
+%%
+%% Variables for restore point
+%%
+%  VARIABLE INTEGER ISER5 ISER12 ISER16
+%  VARIABLE LOGICAL LEX5 LEX12 LEX16
+%%
+%% We set a restore point for security
+%%
+%  COPY '#SCRIPT A_RESTOREPOINT'
+%%
+%  EVALUATE LDEBUG = FALSE
+%% EVALUATE LDEBUG = TRUE
+%%
+%% Get assembly number of selected atom
+%%
+%  COPY '#SCRIPT A_GETASSEMBLYANDPARTS'
+%%
+%% and initialize all flags
+%%
+%  EVALUATE LPOS = FALSE
+%  EVALUATE LGRP = FALSE
+%  EVALUATE LUISO = FALSE
+%  EVALUATE LUANI = FALSE
+%  EVALUATE LUISOEQ = FALSE
+%  EVALUATE LOCC = FALSE
+%%
+%  CASE IOPTION
+%%
+%    BLOCK                   % 1, as groups, sof alone
+%%
+%      EVALUATE LPOS = FALSE
+%      EVALUATE LGRP = FALSE
+%      EVALUATE LUISO = FALSE
+%      EVALUATE LUANI = FALSE
+%      EVALUATE LUISOEQ = FALSE
+%      EVALUATE LOCC = TRUE
+%%
+%    END BLOCK
+%%
+%    BLOCK                   % 2, as groups, positions alone
+%%
+%      EVALUATE LPOS = TRUE
+%      EVALUATE LGRP = TRUE
+%      EVALUATE LUISO = FALSE
+%      EVALUATE LUANI = FALSE
+%      EVALUATE LUISOEQ = FALSE
+%      EVALUATE LOCC = FALSE
+%%
+%    END BLOCK
+%%
+%    BLOCK                   % 3, as groups, positions and sof
+%%
+%      EVALUATE LPOS = TRUE
+%      EVALUATE LGRP = TRUE
+%      EVALUATE LUISO = FALSE
+%      EVALUATE LUANI = FALSE
+%      EVALUATE LUISOEQ = FALSE
+%      EVALUATE LOCC = TRUE
+%%
+%    END BLOCK
+%%
+%    BLOCK                   % 4, as groups, positions, sof and 1 U[iso]
+%%
+%      EVALUATE LPOS = TRUE
+%      EVALUATE LGRP = TRUE
+%      EVALUATE LUISO = TRUE
+%      EVALUATE LUANI = FALSE
+%      EVALUATE LUISOEQ = TRUE
+%      EVALUATE LOCC = TRUE
+%%
+%    END BLOCK
+%%
+%    BLOCK                   % 5, as groups, positions, sof and U[iso]
+%%
+%      EVALUATE LPOS = TRUE
+%      EVALUATE LGRP = TRUE
+%      EVALUATE LUISO = TRUE
+%      EVALUATE LUANI = FALSE
+%      EVALUATE LUISOEQ = FALSE
+%      EVALUATE LOCC = TRUE
+%%
+%    END BLOCK
+%%
+%    BLOCK                   % 6, as groups, positions, sof and U's
+%%
+%      EVALUATE LPOS = TRUE
+%      EVALUATE LGRP = TRUE
+%      EVALUATE LUISO = FALSE
+%      EVALUATE LUANI = TRUE
+%      EVALUATE LUISOEQ = FALSE
+%      EVALUATE LOCC = TRUE
+%%
+%    END BLOCK
+%%
+%    BLOCK                   % 7, positions alone
+%%
+%      EVALUATE LPOS = TRUE
+%      EVALUATE LGRP = FALSE
+%      EVALUATE LUISO = FALSE
+%      EVALUATE LUANI = FALSE
+%      EVALUATE LUISOEQ = FALSE
+%      EVALUATE LOCC = FALSE
+%%
+%    END BLOCK
+%%
+%    BLOCK                   % 8, positions and sof
+%%
+%      EVALUATE LPOS = TRUE
+%      EVALUATE LGRP = FALSE
+%      EVALUATE LUISO = FALSE
+%      EVALUATE LUANI = FALSE
+%      EVALUATE LUISOEQ = FALSE
+%      EVALUATE LOCC = TRUE
+%%
+%    END BLOCK
+%%
+%    BLOCK                   % 9, positions, sof and 1 U[iso]
+%%
+%      EVALUATE LPOS = TRUE
+%      EVALUATE LGRP = FALSE
+%      EVALUATE LUISO = TRUE
+%      EVALUATE LUANI = FALSE
+%      EVALUATE LUISOEQ = TRUE
+%      EVALUATE LOCC = TRUE
+%%
+%    END BLOCK
+%%
+%    BLOCK                   % 10, positions, sof and U[iso]
+%%
+%      EVALUATE LPOS = TRUE
+%      EVALUATE LGRP = FALSE
+%      EVALUATE LUISO = TRUE
+%      EVALUATE LUANI = FALSE
+%      EVALUATE LUISOEQ = FALSE
+%      EVALUATE LOCC = TRUE
+%%
+%    END BLOCK
+%%
+%    BLOCK                   % 11, positions, sof and U's
+%%
+%      EVALUATE LPOS = TRUE
+%      EVALUATE LGRP = FALSE
+%      EVALUATE LUISO = FALSE
+%      EVALUATE LUANI = TRUE
+%      EVALUATE LUISOEQ = FALSE
+%      EVALUATE LOCC = TRUE
+%%
+%    END BLOCK
+%%
+%  END CASE
+%%
+%% EVALUATE ISELECTED = 0
+%  EVALUATE LATOMSFOUND = FALSE
+%%
+%  COPY '#SCRIPT A_GENL12PARTS'
+%%
+%% IF ISELECTED .GT. 0 THEN
+%  IF LATOMSFOUND THEN
+%    COPY '#SCRIPT A_REFINE5'
+%%   COPY '#SCRIPT A_RESET1216'
+%    IF LSELECTATOMS THEN
+%      COPY '#SCRIPT A_REFRESHSELECTION'
+%    END IF
+%  ELSE
+%    EVALUATE CTITLE = "No atoms selected!"
+%    EVALUATE CTEXT1 = "CRYSTALS cannot refine if no valid assembly specified"
+%    EVALUATE CTEXT2 = "Please repeat with atom that is part of a assembly"
+%    EVALUATE CPOSITION = "=CENTERED '_MAINTEXTOUTPUT'"
+%    COPY '#SCRIPT A_XMESSAGE'
+%  END IF
+%%
+%END SCRIPT

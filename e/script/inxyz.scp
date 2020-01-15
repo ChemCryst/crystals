@@ -1,0 +1,43 @@
+%SCRIPT INXYZ
+Input the positional coordinates of a model
+%  VARIABLE INTEGER ATOMCOUNT
+%  ON ERROR REPEAT
+%  CLEAR
+%      QUEUE REWIND
+%      EVALUATE ATOMCOUNT = 0
+Enter element symbol, serial, x, y, z
+                                            use  END  to terminate input
+%      LOOP
+%        ON END TERMINATE
+%        CLEAR
+%%       read the element type  without storing iot to check for an 'END'
+%        GET NOSTORE NOREMOVE KEYWORD 'Element ( END to end input )'
+%        BLOCK
+%          CLEAR
+%          INSERT 'ATOM '
+%%         now re-read in properly
+%          GET NOPROMPT KEYWORD 'no-prompt'
+%          INSERT ' '
+%          GET REAL 'Serial'
+%          INSERT ' X= '
+%          GET REAL 'x coordinate'
+%          GET REAL 'y coordinate'
+%          GET FINAL REAL 'z coordinate'
+%          EVALUATE ATOMCOUNT = ATOMCOUNT + 1
+%          QUEUE SEND
+%        END BLOCK
+%      END LOOP
+%  IF ATOMCOUNT .EQ. 0 THEN
+      You have not specified any new atoms. No model has been stored
+%    FINISH
+%  ELSE
+%    COPY '#LIST 5'
+%    CLEAR
+%    INSERT 'READ NATOM = '
+%    STORE INTEGER ATOMCOUNT
+%    SEND
+%    QUEUE PROCESS
+%    COPY 'END'
+%  END IF
+%%
+%END SCRIPT
