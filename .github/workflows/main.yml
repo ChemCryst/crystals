@@ -24,6 +24,6 @@ jobs:
         pwd
         where gcc.exe
         cmake --version
-        cmake .. -G"MinGW Makefiles" -DuseGUI=no -DCMAKE_SH="CMAKE_SH-NOTFOUND"
+        cmake .. -G"MinGW Makefiles" -DuseGUI=no -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND"
         mingw32-make -j2
 
