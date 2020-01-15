@@ -16,6 +16,8 @@ jobs:
       uses: numworks/setup-msys2@v1
     - name: Extra setup
       run: msys2do pacman --noconfirm -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-openblas mingw-w64-x86_64-perl mingw-w64-x86_64-wxWidgets
+    - name: More setup
+      run: mkdir ci
     - name: Build
       working-directory: ci
       run: |
