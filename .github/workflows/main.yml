@@ -8,6 +8,8 @@ jobs:
     runs-on: windows-latest
 
     steps:
+    - name: Testing
+      run: cmake --version
     - name: Checkout
       uses: actions/checkout@v1
     - name: Setup
