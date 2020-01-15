@@ -1,0 +1,22 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - uses: numworks/setup-msys2@v1
+      with:
+        msystem: MINGW64
+    - run: msys2do makepkg-mingw -sCLfc --noconfirm --noprogressbar
+    - run: msys2do pacman --noconfirm -U mingw-w64-*-any.pkg.tar.xz
+    - run: |
+      msys2do mkdir ci
+      msys2do cd ci
+      msys2do cmake .. -G"MinGW Makefiles" -DuseGUI=no 
+      msys2do mingw32-make -j2
+      - 
