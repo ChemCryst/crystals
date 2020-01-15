@@ -12,11 +12,11 @@ jobs:
     - uses: numworks/setup-msys2@v1
       with:
         msystem: MSYS2
+    - run: msys2do pacman --noconfirm -S mingw-w64-x86_64-gcc
+    - run: msys2do pacman --noconfirm -S mingw-w64-x86_64-make
+    - run: msys2do pacman --noconfirm -S mingw-w64-x86_64-toolchain
+    - run: msys2do pacman --noconfirm -S mingw-w64-x86_64-openblas
     - run: msys2do makepkg-mingw -sCLfc --noconfirm --noprogressbar
-    - run: msys2do pacman --noconfirm -U mingw-w64-x86_64-gcc
-    - run: msys2do pacman --noconfirm -U mingw-w64-x86_64-make
-    - run: msys2do pacman --noconfirm -U mingw-w64-x86_64-toolchain
-    - run: msys2do pacman --noconfirm -U mingw-w64-x86_64-openblas
     - run: |
         set MSYSTEM=MINGW64
         msys2do mkdir ci
