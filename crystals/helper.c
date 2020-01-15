@@ -1,6 +1,6 @@
 // Helper functions that do things that Fortran can't do so portably.
 
-
+#include <direct.h>
 
 #ifdef CRY_FORTINTEL
 // Not this one.
