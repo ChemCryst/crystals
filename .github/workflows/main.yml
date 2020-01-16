@@ -30,6 +30,6 @@ jobs:
         mkdir script
         echo "%SCRIPT NONE" > script\\tipauto.scp
         echo "%END SCRIPT" >> script\\tipauto.scp
-        $env:CRYSDIR=..\ci\
-        $env:COMPCODE=MIN64
+        $env:CRYSDIR = "..\ci\"
+        $env:COMPCODE = "MIN64"
         perl testsuite.pl
