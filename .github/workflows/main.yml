@@ -23,6 +23,9 @@ jobs:
     - name: Build
       working-directory: ci
       run: |
-        msys2do cmake .. -G"MinGW Makefiles" -DuseGUI=no -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND"
-        msys2do mingw32-make
+        dir D:\a\_temp\msys\\msys64\
+        dir D:\a\_temp\msys\\msys64\mingw64\
+        set PATH=D:\a\_temp\msys\\msys64\mingw64\bin;%PATH%
+        cmake .. -G"MinGW Makefiles" -DuseGUI=no -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND"
+        mingw32-make
 
