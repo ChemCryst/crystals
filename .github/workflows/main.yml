@@ -8,24 +8,28 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: Testing
-      run: cmake --version
-    - name: Checkout
+    - name: Checkout crystals
       uses: actions/checkout@v1
-    - name: Setup
+    - name: Setup MSYS2 environment
       uses: numworks/setup-msys2@v1
       with:
         msystem: MINGW64
-    - name: Extra setup
+    - name: Install compiler and tools
       run: msys2do pacman --noconfirm -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-openblas mingw-w64-x86_64-perl msys2-w32api-runtime mingw-w64-x86_64-wxWidgets
-    - name: More setup
+    - name: Create build folder
       run: mkdir ci
-    - name: Build
+    - name: Build crystals
       working-directory: ci
       run: |
-        dir D:\a\_temp\msys\\msys64\
-        dir D:\a\_temp\msys\\msys64\mingw64\
         $env:Path = "D:\a\_temp\msys\\msys64\mingw64\bin;$env:Path"
         cmake .. -G"MinGW Makefiles" -DuseGUI=no -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND"
         mingw32-make -j2
-
+    - name: Test crystals
+      working-directory: test_suite
+        mkdir script
+        echo "%SCRIPT NONE" > script\\tipauto.scp
+        echo "%END SCRIPT" >> script\\tipauto.scp
+        del crfilev2.dsc
+        $env:CRYSDIR=..\ci\
+        $env:COMPCODE=MIN64
+        perl testsuite.pl
