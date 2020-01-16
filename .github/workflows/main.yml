@@ -30,6 +30,7 @@ jobs:
         mkdir script
         echo "%SCRIPT NONE" > script\\tipauto.scp
         echo "%END SCRIPT" >> script\\tipauto.scp
+        $env:Path = "D:\a\_temp\msys\\msys64\mingw64\bin;$env:Path"
         $env:CRYSDIR = "../ci/"
         $env:COMPCODE = "MIN64"
         perl testsuite.pl
