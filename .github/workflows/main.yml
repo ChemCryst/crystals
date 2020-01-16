@@ -25,7 +25,7 @@ jobs:
       run: |
         dir D:\a\_temp\msys\\msys64\
         dir D:\a\_temp\msys\\msys64\mingw64\
-        set PATH=D:\a\_temp\msys\\msys64\mingw64\bin;%PATH%
+        $env:Path = "D:\a\_temp\msys\\msys64\mingw64\bin;$env:Path"
         cmake .. -G"MinGW Makefiles" -DuseGUI=no -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND"
         mingw32-make
 
