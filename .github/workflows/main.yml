@@ -26,6 +26,7 @@ jobs:
         mingw32-make -j2
     - name: Test crystals
       working-directory: test_suite
+      run: |
         mkdir script
         echo "%SCRIPT NONE" > script\\tipauto.scp
         echo "%END SCRIPT" >> script\\tipauto.scp
