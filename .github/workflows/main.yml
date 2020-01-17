@@ -32,6 +32,7 @@ jobs:
         echo "%SCRIPT NONE" > script\\tipauto.scp
         echo "%END SCRIPT" >> script\\tipauto.scp
         set PATH=D:\a\_temp\msys\\msys64\mingw64\bin;%PATH%
-        set CRYSDIR=..\ci\
+        set CRYSDIR=.\,..\ci\
+        echo %CRYSDIR%
         set COMPCODE=MIN64
         perl testsuite.pl
