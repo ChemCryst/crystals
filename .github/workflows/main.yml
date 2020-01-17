@@ -26,11 +26,12 @@ jobs:
         mingw32-make -j2
     - name: Test crystals
       working-directory: test_suite
+      shell: cmd
       run: |
         mkdir script
         echo "%SCRIPT NONE" > script\\tipauto.scp
         echo "%END SCRIPT" >> script\\tipauto.scp
-        $env:Path = "D:\a\_temp\msys\\msys64\mingw64\bin;$env:Path"
-        $env:CRYSDIR = "../ci/"
-        $env:COMPCODE = "MIN64"
+        set PATH=D:\a\_temp\msys\\msys64\mingw64\bin;%PATH%
+        set CRYSDIR="..\ci\"
+        set COMPCODE=MIN64
         perl testsuite.pl
