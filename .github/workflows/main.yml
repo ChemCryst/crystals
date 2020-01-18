@@ -35,6 +35,10 @@ jobs:
         echo "%END SCRIPT" >> script\\guideauto.scp
         set PATH=D:\a\_temp\msys\\msys64\mingw64\bin;%PATH%
         set CRYSDIR=.\,..\ci\
-        echo %CRYSDIR%
-        set COMPCODE=MIN64
+        set COMPCODE=MIN64GH
+        - uses: actions/upload-artifact@v1
         perl testsuite.pl
+    - name: Build crystals
+      with:
+        name: test-outputs
+        path: test_suite/*.out
