@@ -26,9 +26,9 @@ jobs:
         mingw32-make -j2
     - name: Stash build
       uses: actions/upload-artifact@v1
-        with:
-      name: my-artifact
-      path: ./ci
+      with:
+        name: my-artifact
+        path: ./ci
     - name: Test crystals
       working-directory: test_suite
       shell: cmd
