@@ -24,15 +24,21 @@ jobs:
         $env:Path = "D:\a\_temp\msys\\msys64\mingw64\bin;$env:Path"
         cmake .. -G"MinGW Makefiles" -DuseGUI=no -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND"
         mingw32-make -j2
+    - name: Stash build
+      uses: actions/upload-artifact@v1
+        with:
+      name: my-artifact
+      path: ./ci
     - name: Test crystals
       working-directory: test_suite
       shell: cmd
       run: |
         mkdir script
-        echo "%SCRIPT NONE" > script\\tipauto.scp
-        echo "%END SCRIPT" >> script\\tipauto.scp
+        echo "%SCRIPT NONE" > script\tipauto.scp
+        echo "%END SCRIPT" >> script\tipauto.scp
+        dir script
+        type tipauto.scp
         set PATH=D:\a\_temp\msys\\msys64\mingw64\bin;%PATH%
-        set CRYSDIR=.\,..\ci\
-        echo %CRYSDIR%
+        set CRYSDIR=..\ci\
         set COMPCODE=MIN64
         perl testsuite.pl
