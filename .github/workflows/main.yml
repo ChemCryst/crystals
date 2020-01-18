@@ -38,7 +38,8 @@ jobs:
         set COMPCODE=MIN64GH
         - uses: actions/upload-artifact@v1
         perl testsuite.pl
-    - name: Build crystals
+    - name: Upload crystals test outputs
+      uses: actions/upload-artifact@v1
       with:
         name: test-outputs
         path: test_suite/*.out
