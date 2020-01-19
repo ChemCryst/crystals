@@ -1,0 +1,121 @@
+%SCRIPT TONSWORK
+%%                                                                   
+%% Prepare for the absolute structure determination
+%% Create a LIST 7 from 6, gather together FRIEDEL pairs                                                                              
+%%
+%%  copy '#set monitor fast'
+%%                                                 
+%  VARIABLE LOGICAL FLACKERROR                             
+%  EVALUATE FLACKERROR = TRUE
+%  VARIABLE LOGICAL SERR
+%  VARIABLE INTEGER L5SER L5NEW
+%%
+%% Check SG in non centro
+%  BLOCK
+%   VARIABLE INTEGER CENTRO
+%   COPY '#GENERALEDIT 2'
+%   COPY 'LOCATE RECORDTYPE=101'
+%   COPY 'TRANSFER FROM OFFSET=0 TO CENTRO'
+%   COPY 'END'
+%   IF CENTRO .NE. 0 THEN
+{E **** FATAL: The Space Group is Centrosymmetric
+%    FINISH
+%   END IF                            
+%  END BLOCK
+%% Anomalous scattering
+%%
+{I Checking anomalous scattering is used.
+%  BLOCK
+%  VARIABLE INTEGER IANOMA
+%    COPY '#GENERALEDIT 23'
+%    COPY 'LOCATE RECORDTYPE = 101'
+%    COPY 'TRANSFER FROM OFFSET = 0 TO IANOMA'
+%    COPY 'END'
+%    IF ( IANOMA .EQ. - 1 ) THEN
+%%  copy '#set monitor on'
+{E *** FATAL:  You should include anomalous scattering
+%      COPY '#SCRIPT ED23'
+{I *** You probably now need some cycles of refinement
+%       FINISH
+%    END IF
+%  END BLOCK
+%%                                                                              
+%  BLOCK                                                                        
+%    IF ( EXISTS 6 .NE. 1 ) THEN                                                
+%%  copy '#set monitor on'
+{E **** FATAL: There are no reflections to work with                            
+%      FINISH                                                                   
+%    END IF                                                                     
+%  END BLOCK 
+%%
+%% make sure FLAC record exists in LIST 39
+%    COPY '#SCRIPT FLACK39'
+%%
+%% Make sure npp gradient is stored in L39
+%  copy '#sum list 6 level=norm'
+%  copy 'end'                                                                   
+%  IF ( EXISTS 7 .EQ. 1 ) THEN                                                  
+%    COPY '#DISK'                                                               
+%    COPY 'DELETE 7'                                                            
+%    COPY 'END'                                                                 
+%  END IF                                                                       
+%%
+%% Create special LIST 7 with F+ and F- in adjacent slots                       
+%%
+%COPY '#SCRIPT COPY67'                                                          
+%  BLOCK                                                                        
+%    IF ( EXISTS 7 .NE. 1 ) THEN                                                
+%%  copy '#set monitor on'
+{E **** FATAL: The reflection convertion failed                                 
+%      FINISH                                                                   
+%    END IF                                                                     
+%  END BLOCK                                                                    
+%copy '#disk'                                                                   
+%copy 'retain 5'                                                                
+%copy 'end'                                                                     
+%copy '#generaledit 5'                                                          
+%copy 'getserial l5ser'                                                         
+%copy 'end'                                                                     
+% if l5ser .lt. 0 then                                                          
+%  evaluate l5ser = - l5ser                                                     
+% end if                                                                        
+%copy '#edit'
+%copy 'monitor off'                                                                   
+%copy 'change enantio 0'                                                        
+%copy 'end'                                                                     
+%%
+%copy '#sfls in=7'                                                              
+%copy 'calc'                                                                    
+%copy 'end'                                                                     
+%%
+%copy '#generaledit 5'                                                          
+%copy 'getserial l5new'                                                         
+%copy 'end'                                                                     
+%%
+%copy '#disk'                                                                   
+%clear                                                                          
+%insert 'reset 5 '                                                              
+%store integer  l5ser 
+%send                                                                           
+%%
+%clear                                                                          
+%insert 'delete 5 '   
+%if l5new .lt. 0 then
+%evaluate l5new = abs ( l5new )
+%end if                                                          
+%store integer l5new                                                          
+%send                                                                           
+%%
+%copy 'retain 5 action=no'                                                      
+%copy 'end'                                                                     
+%copy '#syst in=7 fried=yes'                                                    
+%copy 'end'                                                                     
+%copy '#sort in=7'                                                              
+%copy 'end'                                                                     
+%copy '#purge  list=7'                                                          
+%copy 'end'                                                                     
+%%
+% EVALUATE FLACKERROR = FALSE
+%%        
+%%  copy '#set monitor on'
+% END SCRIPT

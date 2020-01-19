@@ -1,0 +1,12 @@
+%SCRIPT SFLS2-HELP
+%% twinned and partials
+% COPY '#SCRIPT XHELP1'
+
+Partial contributions to the structure factor (A&B parts) can
+only be stored for the major twin component.
+Therefor the contributions from the minor twin components cannot 
+be calculated correctly.
+This means (for example) that twinned structures cannot be SQUEEZED
+
+% COPY '#SCRIPT XHELP2'
+%END SCRIPT

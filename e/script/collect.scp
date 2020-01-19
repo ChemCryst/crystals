@@ -1,0 +1,31 @@
+%SCRIPT COLLECT
+A SCRIPT to help collect atoms into a molecule, or bring new peaks close
+to existing atoms.
+%% check we have an atom list
+%  IF EXISTS 5 .NE. 1 THEN
+  You do not have an atom list.
+%  FINISH
+%  END IF
+%  BLOCK
+%    ON ERROR REPEAT
+%    QUEUE REWIND
+%    CLEAR
+%      VERIFY ALL NEW NONE
+%      GET NOSTORE FINAL ABBREVIATED -
+  'Collect all the atoms, or just the new peaks' 'NEW'
+%      IF VALUE .EQ. 1 THEN
+%        INSERT 'SELECT TYPE = ALL'
+%        QUEUE SEND
+%        CLEAR
+%      ELSE IF VALUE .EQ. 2 THEN
+%        INSERT 'SELECT TYPE = PEAKS'
+%        QUEUE SEND
+%        CLEAR
+%      ELSE
+%        FINISH
+%      END IF
+%  END BLOCK
+%  COPY '#COLLECT'
+%  QUEUE PROCESS
+%  COPY 'END'
+%END SCRIPT

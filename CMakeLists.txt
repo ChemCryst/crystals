@@ -323,7 +323,7 @@ IF (Fortran_COMPILER_NAME MATCHES "gfortran")  # gfortran
     if(useFAST)
         SET (CMAKE_Fortran_FLAGS_RELEASE "-fno-f2c -O3 -g -march=native -Wfatal-errors -ftree-vectorize -flto -fwhole-program")
     else ()
-        SET (CMAKE_Fortran_FLAGS_RELEASE "-fno-f2c -O3 -g -Wfatal-errors -ftree-vectorize -msse2")
+        SET (CMAKE_Fortran_FLAGS_RELEASE "-fno-f2c -O3 -g -Wfatal-errors -ftree-vectorize -msse2 -w")
     endif ()
     SET (CMAKE_Fortran_FLAGS_DEBUG   "-fno-f2c -O0 -g -Wfatal-errors -Wall -Wextra")
     if(CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER "4.5")

@@ -1,0 +1,6 @@
+Data collected and provided by Simon Parsons at Edinburgh. I believe it
+is a standard Bruker-Nonius test crystal. Anyway, it's a Sulphur ylid.
+
+The data can be input from ylid.ins and ylid.hkl
+
+

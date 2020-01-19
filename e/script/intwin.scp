@@ -1,0 +1,76 @@
+%SCRIPT INTWIN
+% VARIABLE INTEGER NELEM
+%%
+{I CRYSTALS has no special difficulty in refining twins - your
+{I problem will be to collect and index the data, and solve the
+{I the structure.
+
+{R This SCRIPT assumes that you have a recognisable structure 
+{R either already in CRYSTALS, or available in SHELX format files. 
+
+{I For a two element twin:
+{R You will be asked for the twin law.
+{R The reflection file will be converted automatically.
+{R The twin element scales will be added to list 5, and the guided
+{R refinement will allow you to refine the two elements along with
+{R the rest of the structure.
+
+{I For three or more element twins:
+{R You will need to edit list 5 for yourself (instructions are provided),
+{R and create appropriate restraints for the refinement.
+
+%  VERIFY YES NO
+%  GET NOSTORE FINAL ABBREVIATED 'Do you want to continue? ' 'NO'
+%  IF ( VALUE .EQ. 2 ) THEN
+%    FINISH
+%  END IF
+%  IF ( EXISTS 1 + EXISTS 2 + EXISTS 3 + EXISTS 13 + EXISTS 23 -
+     + EXISTS 29 + EXISTS 5 + EXISTS 6 .ne. 8 ) THEN
+{E   You have not loaded the basic data. 
+{I   You MUST have an intial structure to proceed
+{I   If you have a trial structure from SHELX, you can import it
+{I   now, otherwise return to the main menu and start as normal
+%    ON ERROR REPEAT
+%    VERIFY YES NO
+%    GET FINAL ABBREVIATED -
+                   'Do you want to import SHELX structure files? ' 'NO'
+%    IF ( VALUE .EQ. 1 ) THEN
+%      COPY '#SCRIPT XPASCAL'
+%      COPY '#SCRIPT XINLIST6'
+%    ELSE
+%      FINISH
+%    END IF
+%  END IF
+%  COPY '#script inlist25'
+%  IF ( NELEM .EQ. 2 ) THEN
+%    COPY '#SCRIPT addtwin'
+%  ELSE
+{I Edit the head of the parameters (list 5) to include the number of
+{I twin elements, and their starting values
+{I e.g.
+
+{R #LIST      5                                                                    
+{R READ NATOM =   39, NLAYER =  0, {1,4NELEMENT =  3,{R NBATCH =  0
+{R {1,4element 0.5 0.25 0.25{R
+
+%    COPY '#SCRIPT sysed5'
+%  END IF
+%%
+{S *  Backing-up the existing observations to 'pretwin6.dat'
+% COPY '#RELEASE PUNCH pretwin6.dat'
+% COPY '#PUNCH 6 I'
+% COPY 'END'
+% COPY '#RELEASE PUNCH logs/bfile.pch'
+{S *  Converting the reflection list format
+% COPY '#LIST 6'
+% COPY 'READ TYPE=TWIN'
+% COPY 'END'
+{R A minimal LIST 12 will be created to refine only the
+{R twin elements. You can edit it to add other parameters
+{R {Ior{R choose guided refinement for automatic inclusion of
+{R twin element scales.
+% copy '#list 12'
+% copy 'block scale'
+% copy 'SUMFIX ELEMENT SCALES'
+% copy 'end'
+% end script

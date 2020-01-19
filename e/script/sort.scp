@@ -1,0 +1,61 @@
+%SCRIPT SORT
+%  VARIABLE CHARACTER CTYPE
+%  COPY '#EDIT'
+%    VERIFY   TYPE SERIAL RHO NOTHING
+%    GET FINAL FILL NOSTORE ABBREVIATED -
+ 'Sort by TYPE, SERIAL or ELECTRON DENSITY (RHO) ? ' 'NOTHING'
+%    EVALUATE CTYPE = CVALUE
+%    IF ( CTYPE .EQ. 'TYPE' ) THEN
+%      ON ERROR REPEAT
+%      BLOCK
+%        CLEAR
+%        INSERT 'SORT '
+ Give element TYPES (separated by spaces) in the order you want
+ them sorting into.
+%        GET FINAL APPEND TEXT 'Element TYPES' NULLSTRING
+%        SEND
+%        COPY 'EXECUTE'
+%      END BLOCK
+%    ELSE IF ( CTYPE .EQ. 'RHO' ) THEN
+%      COPY 'DSORT SPARE'
+%      COPY 'EXECUTE'
+%    ELSE IF ( CTYPE .EQ. 'SERIAL' ) THEN
+%      COPY 'DSORT SERIAL'
+%      COPY 'EXECUTE'
+%    ELSE
+%      COPY 'EXECUTE'
+%    END IF
+The atom list will be displayed, after which you can :
+      keep all atoms                                            - ALL
+      keep atoms with serial numbers under a given value        - SERIAL
+      keep atoms with temperature factor under a given value    - U
+      keep atoms with electron density ABOVE a given value      - RHO
+%    COPY '#PAUSE 5'
+%    COPY 'LIST HIGH'
+%    COPY 'EXECUTE'
+%    CLEAR
+%    VERIFY   ALL SERIAL  U  RHO
+%    GET FINAL FILL NOSTORE ABBREVIATED -
+ 'Keep all, or select by  property ? ' 'ALL'
+%    EVALUATE CTYPE = CVALUE
+%    IF ( CTYPE .NE. 'ALL' ) THEN
+%      IF ( CTYPE .EQ. 'SERIAL' ) THEN
+%        INSERT 'SELECT SERIAL LE '
+%      ELSE IF CTYPE .EQ. 'U' THEN
+%        INSERT 'SELECT U[ISO] LE '
+%      ELSE IF CTYPE .EQ. 'RHO' THEN
+%        INSERT 'SELECT SPARE GE '
+%      END IF
+%    GET INTEGER 'Limiting value '
+%    SEND
+%    END IF
+%    COPY 'LIST HIGH'
+%    COPY 'EXECUTE'
+%    VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+ 'Do you want to re-sequence the atom serial numbers?' 'NO'
+%    IF VALUE .EQ. 1 THEN
+%      COPY 'KEEP 1 FIRST UNTIL LAST '
+%    END IF
+%    COPY 'END'
+%END SCRIPT

@@ -1,0 +1,22 @@
+%SCRIPT WRITEPAIRS
+%%
+%% The file connected to the punch must be open
+%%
+%  COPY '#OPEN SCPDATA pairs.dat'
+%  LOOP
+%    ON ERROR TERMINATE
+%    ON END TERMINATE
+%    EXTRACT NEXT
+%    EXTRACT TRANSFER INPUT
+%    CLEAR
+%    GET TEXT 'Record'
+%    IF CVALUE .EQ. "END" THEN
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%    ELSE
+%      TRANSFER CVALUE TO PUNCH
+%    END IF
+%  END LOOP
+%  TRANSFER "END" TO PUNCH
+%  COPY '#CLOSE SCPDATA'
+%%
+%END SCRIPT

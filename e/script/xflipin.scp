@@ -1,0 +1,23 @@
+%SCRIPT XFLIPIN                                                                 
+%% READ IN SUPERFLIP RESULTS                                                    
+%%AvdL it is here that the output file should be read                           
+%%AvdL Do a collect atoms by symmetry, necessary!                               
+%%                                                                              
+%% variables used by the question box below                                     
+% VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2                         
+% VARIABLE LOGICAL ANSWER                                                       
+%%    DID SUPERFLIP WORK?                                                       
+%  IF  ( FILEEXISTS ( 'sflip.ins' ) ) THEN                                      
+%%                                                                              
+%          COPY '#SCRIPT XFRESH'                                                 
+%          COPY '#SCRIPT XFLIPIN2'                                              
+%  ELSE                                                                         
+{E No superflip output - job may have failed                                    
+                                                                                
+   If the structure will not solve:                                             
+   1) Try the "Alternative Superflip parameters" option.                        
+   2) Try DirDif or Sir92.                                                      
+   3) Read the Superflip manual for help.                                       
+   4) Be sure that the space group is correct.                                  
+%  END IF                                                                       
+%END SCRIPT                                                                     

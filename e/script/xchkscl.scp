@@ -1,0 +1,17 @@
+%SCRIPT XCHKSCL
+%% cHECK THE OVERALL SCALEFACTOR IS NOT UNITY EXACTLY
+%
+%  VARIABLE REAL  OSCALE 
+%      ON END TERMINATE
+%      ON ERROR TERMINATE
+%% get the overall scale factor
+%      COPY '#GENERALEDIT 5'
+%      COPY 'LOCATE RECORDTYPE = 102'
+%      COPY 'TRANSFER FROM OFFSET = 0 TO OSCALE'
+%      COPY 'END'
+% if ( oscale - 1.000 .ge. - .0001 ) .and. ( oscale - 1.000 .le. .0001 ) then
+%      copy '#sfls'
+%      copy 'scale'
+%      copy 'end'
+%      end if
+% end script

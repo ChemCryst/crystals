@@ -1,0 +1,92 @@
+%SCRIPT XVIEWOPT
+%% Display non-modal window with available options. 
+%% Exit. - The window will callback xviewoptc.scp with events.
+%%
+%% Check for close or open window by toggle of button
+^^?? _MODBAR STATE _MOPT
+%   VERIFY ON OFF
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                  
+%   CASE VALUE
+%    BLOCK
+^^CO  DISPOSE XVIEWOPT
+%     FINISH
+%    END BLOCK                                                                    
+%    BLOCK
+%    END BLOCK                                                                    
+%   END CASE
+%%
+%% Check for windows already open
+%%
+^^?? XVIEWOPT EXISTS
+%  VERIFY TRUE FALSE
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%  IF VALUE .EQ. 2  THEN
+%    CLEAR
+%    ON ERROR TERMINATE
+%%
+^^WI WINDOW XVIEWOPT 'Options' POSITION LEFTOF 'MODEL01'
+^^WI COMMAND='#SCRIPT XVIEWOPTC' DISABLEIF='IN' CANCEL='VO_BXX'
+^^WI GRID HO NROWS=5 NCOLS=3
+^^WI {
+^^WI  @ 2,2 GRID MID NROWS=3 NCOLS=3 
+^^WI  {
+^^WI   @ 1,1 STATIC TD 'Atom style:'
+^^WI   @ 1,3 DROPDOWN AOPT INFORM=YES ADDTOLIST
+^^WI     'Covalent'
+^^WI     'Van der Waals'
+^^WI     'Displacement parameter(s)'
+^^WI     'Spare'
+^^WI     'None'
+^^WI     NULL
+^^WI   @ 3,1 STATIC TD 'Bond colour:'
+^^WI   @ 3,3 DROPDOWN BOPT INFORM=YES ADDTOLIST
+^^WI     'Normal'
+^^WI     'Element'
+^^WI     'Disorder groups'
+^^WI     NULL
+^^WI  }
+^^WI  @ 4,2 GRID BTNS NROWS=1 NCOLS=3
+^^WI  {
+^^WI   @ 1,1 BUTTON VO_BRR '&Reset' DISABLEIF='IN' 
+^^WI   @ 1,3 BUTTON VO_BXX '&Close' DISABLEIF='IN' DEFAULT COMMIT CANCEL
+^^WI  }
+^^WI }
+^^WI SHOW
+^^CR
+%  END IF
+^^?? MODEL01 BONDSTYLE
+%  VERIFY NORMAL ELEMENT PART
+%  GET SILENT NOSTORE ABBREVIATED 'Continue?' 'NORMAL'
+%  CASE VALUE
+%    BLOCK  %NORMAL%
+^^CO SET BOPT SELECTION=1
+%    END BLOCK
+%    BLOCK  %ELEMENT%
+^^CO SET BOPT SELECTION=2
+%    END BLOCK
+%    BLOCK  %PART%
+^^CO SET BOPT SELECTION=3
+%    END BLOCK
+%  END CASE
+^^?? MODEL01 ATOMSTYLE
+%  VERIFY COVALENT VDW THERMAL SPARE TINY
+%  GET SILENT NOSTORE ABBREVIATED 'Continue?' 'COVALENT'
+%  CASE VALUE
+%    BLOCK  %COVALENT%
+^^CO   SET AOPT SELECTION=1
+%    END BLOCK
+%    BLOCK  %VDW%
+^^CO   SET AOPT SELECTION=2
+%    END BLOCK
+%    BLOCK  %THERMAL%
+^^CO   SET AOPT SELECTION=3
+%    END BLOCK
+%    BLOCK  %SPARE%
+^^CO   SET AOPT SELECTION=4
+%    END BLOCK
+%    BLOCK  %TINY%
+^^CO   SET AOPT SELECTION=5
+%    END BLOCK
+%  END CASE
+^^CO FOCUS XVIEWOPT
+%END SCRIPT

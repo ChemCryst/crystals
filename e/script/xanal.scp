@@ -1,0 +1,182 @@
+%SCRIPT XANAL                                                                   
+% VARIABLE LOGICAL SOMEERROR                                                    
+% EVALUATE SOMEERROR = TRUE                                                     
+% IF ( EXISTS 6 ) .NE. 1 THEN                                                   
+  No reflections have been stored.                                              
+  Agreement analysis is not possible.                                           
+% ELSE                                                                          
+^^WI WINDOW A1 'Agreement analysis' SIZE LARGE KEEP MODAL                       
+^^WI GRID MAIN NROWS=8 NCOLS=3                                                  
+^^WI {                                                                          
+^^WI  @ 2,2 GRID TOP NROWS=1 NCOLS=1                                            
+^^WI  {                                                                         
+^^WI   @ 1,1 TABCTRL _MAINTABS                                                  
+^^WI   {                                                                        
+^^WI    TAB _TAB1 'Residual' GRID _MAINTG2 NROWS=5 NCOLS=3                      
+^^WI    {                                                                       
+^^WI          @ 2,2 RESIZE _XARSZ2 HORIZONTAL                                   
+^^WI          {                                                                 
+^^WI            ITEM GRID GRAPH NROWS=2 NCOLS=1                                 
+^^WI            {                                                               
+^^WI              @ 1,1 PLOTWINDOW _VFO NROWS=20 NCOLS=48                       
+^^WI              @ 2,1 GRID RB NROWS=1 NCOLS=2
+^^WI              {
+^^WI                 @ 1,1 STRETCH VB HORIZONTAL
+^^WI                 @ 1,2 BUTTON SAVEVFO 'Save Image'
+^^WI              }                                                               
+^^WI            }                                                               
+^^WI            ITEM GRID GRAPH NROWS=2 NCOLS=1                                 
+^^WI            {                                                               
+^^WI              @ 1,1 PLOTWINDOW _VSINT NROWS=20 NCOLS=64                     
+^^WI              @ 2,1 GRID RB NROWS=1 NCOLS=2
+^^WI              {
+^^WI                 @ 1,1 STRETCH VB HORIZONTAL
+^^WI                 @ 1,2 BUTTON SAVEVSINT 'Save Image'
+^^WI              }                                                               
+^^WI            }                                                               
+^^WI          }
+^^WI    }
+^^WI    TAB _TAB2 'Residual by class/parity' GRID _MAINTG2 NROWS=3 NCOLS=3      
+^^WI    {                                                                       
+^^WI          @ 2,2 RESIZE _XARSZ3 HORIZONTAL                                   
+^^WI          {                                                                 
+^^WI            ITEM GRID GRAPH NROWS=1 NCOLS=1                                 
+^^WI            {                                                               
+^^WI             @ 1,1 PLOTWINDOW _VCLASS NROWS=20 NCOLS=64                     
+^^WI            }                                                               
+^^WI            ITEM GRID GRAPH NROWS=1 NCOLS=1                                 
+^^WI            {                                                               
+^^WI             @ 1,1 PLOTWINDOW _VPAR NROWS=20 NCOLS=64                       
+^^WI            }                                                               
+^^WI          }                                                                 
+^^WI    }                                                                       
+^^WI    TAB _TAB3 'Residual by index' GRID _MAINTG2 NROWS=7 NCOLS=3             
+^^WI    {                                                                       
+^^WI      @ 2,2 PLOTWINDOW _VINDEXh NROWS=20 NCOLS=64                           
+^^WI      @ 4,2 PLOTWINDOW _VINDEXk NROWS=20 NCOLS=64                           
+^^WI      @ 6,2 PLOTWINDOW _VINDEXl NROWS=20 NCOLS=64                           
+^^WI    }                                                                       
+^^WI    TAB _TAB4 'R factor' GRID _MAINTG2 NROWS=3 NCOLS=3                      
+^^WI    {                                                                       
+^^WI          @ 2,2 RESIZE _XARSZ2 HORIZONTAL                                   
+^^WI          {                                                                 
+^^WI            ITEM GRID GRAPH NROWS=1 NCOLS=1                                 
+^^WI            {                                                               
+^^WI              @ 1,1 PLOTWINDOW _VFOR NROWS=20 NCOLS=48                      
+^^WI            }                                                               
+^^WI            ITEM GRID GRAPH NROWS=1 NCOLS=1                                 
+^^WI            {                                                               
+^^WI              @ 1,1 PLOTWINDOW _VSINTR NROWS=20 NCOLS=64                    
+^^WI            }                                                               
+^^WI          }                                                                 
+^^WI    }                                                                       
+^^WI    TAB _TAB5 'R by class/parity' GRID _MAINTG2 NROWS=3 NCOLS=3             
+^^WI    {                                                                       
+^^WI          @ 2,2 RESIZE _XARSZ3 HORIZONTAL                                   
+^^WI          {                                                                 
+^^WI            ITEM GRID GRAPH NROWS=1 NCOLS=1                                 
+^^WI            {                                                               
+^^WI             @ 1,1 PLOTWINDOW _VCLASSR NROWS=20 NCOLS=64                    
+^^WI            }                                                               
+^^WI            ITEM GRID GRAPH NROWS=1 NCOLS=1                                 
+^^WI            {                                                               
+^^WI             @ 1,1 PLOTWINDOW _VPARR NROWS=20 NCOLS=64                      
+^^WI            }                                                               
+^^WI          }                                                                 
+^^WI    }                                                                       
+^^WI    TAB _TAB6 'R by index' GRID _MAINTG2 NROWS=7 NCOLS=3                    
+^^WI    {                                                                       
+^^WI      @ 2,2 PLOTWINDOW _VINDEXRh NROWS=20 NCOLS=64                          
+^^WI      @ 4,2 PLOTWINDOW _VINDEXRk NROWS=20 NCOLS=64                          
+^^WI      @ 6,2 PLOTWINDOW _VINDEXRl NROWS=20 NCOLS=64                          
+^^WI    }                                                                       
+^^WI   }                                                                        
+^^WI  }                                                                         
+^^WI  @ 4,2 GRID BTNS NROWS=1 NCOLS=5                                           
+^^WI  {                                                                         
+^^WI    @ 1,2 STATIC _TSWD 'Average w(del**2): '                                
+^^WI    @ 1,4 STATIC _WDSQ '     .0   '                                         
+^^WI  }                                                                         
+^^WI  @ 6,2 GRID BTNS NROWS=1 NCOLS=5                                           
+^^WI  {                                                                         
+^^WI    @ 1,1 STRETCH VB HORIZONTAL
+^^WI    @ 1,2 BUTTON HELP '&Help'                                               
+^^WI    @ 1,4 BUTTON CLOSE '&Close' COMMIT CANCEL DEFAULT                       
+^^WI  }                                                                         
+^^WI  @ 8,2 PROGRESS _XANAPR 'Please wait'                                      
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR                                                                            
+^^CO SENDPROGRESSTO _XANAPR                                                     
+% BLOCK                                                                         
+%    ON ERROR TERMINATE                                                         
+%    COPY '#ANALYSE'                                                            
+%    COPY 'LIST LEVEL=HIGH'                                                     
+%    COPY 'PLOTCLASS  DELTA ON'                                                 
+%    COPY 'PLOTPARITY DELTA OFF'                                                
+%    COPY 'PLOTFO     DELTA ON WDELSQ'                                          
+%    COPY 'PLOTTHETA  DELTA OFF'                                                
+%    COPY 'PLOTINDEX  DELTA ON'                                                 
+%    COPY 'END'                                                                 
+%    COPY '#ANALYSE'                                                            
+%    COPY 'LIST LEVEL=HIGH'                                                     
+%    COPY 'PLOTCLASS  RFACTOR ON'                                               
+%    COPY 'PLOTPARITY RFACTOR OFF'                                              
+%    COPY 'PLOTFO     RFACTOR ON'                                               
+%    COPY 'PLOTTHETA  RFACTOR OFF'                                              
+%    COPY 'PLOTINDEX  RFACTOR ON'                                               
+%    COPY 'END'                                                                 
+%    EVALUATE SOMEERROR = FALSE                                                 
+% END BLOCK                                                                     
+% IF ( SOMEERROR ) THEN                                                         
+^^CO DISPOSE A1                                                                 
+%    FINISH                                                                     
+% END IF                                                                        
+% LOOP                                                                          
+%   VERIFY CLOSE SAVEVSINT SAVEVFO HELP                                                           
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                
+%   CASE VALUE                                                                  
+%     BLOCK  %CLOSE%                                                            
+%        EVALUATE LOOPEND = LOOPCOUNTER                                         
+%     END BLOCK                                                                 
+%     BLOCK  %SAVEVSINT%
+^^CO SET _VSINT SAVE 800 600 agreement_angle
+%     END BLOCK
+%     BLOCK  %SAVEVFO%
+^^CO SET _VFO SAVE 800 600 agreement_f
+%     END BLOCK                                                                 
+%     BLOCK  %HELP%                                                             
+%        COPY '#SCRIPT XHELP1'                                                  
+                                                                                
+The residual, Fo-Fc, is analysed for systematic trends.
+There are more details in the chapter "Structure              
+Factors and Least Squares" in the CRYSTALS manual.
+See also Watkin, J Appl Cryst (2008), 41, 491-522                              
+                                                                                
+The two graphs provide a comparison between Fo and Fc as a function of          
+the ranges of Fo, and the ranges of sin(theta)/lambda.
+
+For a well behaved structure with suitable weights, <Fo>/<Fc> should be 
+about unity (times 1000 on the chart) for all Fo ranges and also for all
+sin(theta)/lambda ranges (except empty bins). 
+A serious imbalance in <Fo>/<Fc> may mean the structure is incorrect, 
+incomplete, has unsuitable weights or there are problems with the 
+data reduction.  A large ratio for weak reflection bins may indicate
+an incorrect space group (see Walker et al, Acta Cryst (1999) B55, 
+607-616). The maximum value of <Fo>/<Fc> is limited to 2 (i.e. 2000)
+on the plot. 
+
+When suitable weights have been applied, the weighted residual
+- w(Fo^2-Fc^2) - should be approximately constant across the chart, 
+though there may be deviations for bins containing only a few 
+reflections.
+
+%        COPY '#SCRIPT XHELP2'                                                  
+%     END BLOCK                                                                 
+%   END CASE                                                                    
+% END LOOP                                                                      
+^^CO DISPOSE A1                                                                 
+% END IF                                                                        
+% copy '#sum l 4'                                                               
+% copy 'end'                                                                    
+%END SCRIPT                                                                     

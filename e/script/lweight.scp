@@ -1,0 +1,62 @@
+%SCRIPT LWEIGHT
+%  VARIABLE INTEGER LEXTINCT
+^^WI WINDOW _WEIGHT 'Weighting analysis' SIZE MODAL
+^^WI GRID MAIN NROWS=6 NCOLS=3
+^^WI {
+^^WI  @ 1,2 GRID TOP NROWS=2 NCOLS=1
+^^WI  {
+^^WI   @ 2,1 STATIC T1
+^^WI 'Delta(F)^2 vs F followed by analysis of residuals.'
+^^WI  }
+^^WI  @ 2,2 TEXTOUT _ANALTEXT '' NROWS=25 NCOLS=90
+^^WI  @ 3,2 GRID MID NROWS=5 NCOLS=1
+^^WI  {
+^^WI   @ 2,1 STATIC T3
+^^WI  'The first curve shows estimated delta(F)^2 as a function of F.'
+^^WI   @ 3,1 STATIC T4
+^^WI  'It should vary smoothly, and not show any pronounced local'
+^^WI   @ 4,1 STATIC T5
+^^WI  'maxima. The values should parallel those in the <Delta^2> '
+^^WI   @ 5,1 STATIC T6
+^^WI  'column in the agreement analysis that follows.'
+^^WI  }
+^^WI  @ 4,2 GRID LOW NROWS=3 NCOLS=3
+^^WI  {
+^^WI   @ 2,1 BUTTON  AL 'Use these &weights' COMMIT DEFAULT
+^^WI   @ 2,3 BUTTON  XX '&Remove weighting scheme.' CANCEL
+^^WI  }
+^^WI }
+^^WI SHOW
+^^CR
+^^WI SENDTEXTTO _ANALTEXT
+^^CR
+^^WI SET TEXTOUTPUT FIXEDFONT=YES
+^^CR
+%          COPY '#LIST 4'
+%          COPY 'SCHEME NUMBER=14, NPARAM=3'
+%          COPY 'END'
+            Chebychev weighting with 3 parameters
+^^WI SET TEXTOUTPUT FIXEDFONT=YES
+^^CR
+%          COPY '#ANALYSE'
+%          COPY 'END'
+^^WI SET TEXTOUTPUT FIXEDFONT=YES
+^^CR
+ 
+Finished. Scroll back to see results...
+ 
+^^WI SET _ANALTEXT NOECHO
+^^CR
+%  VERIFY AL XX
+%  GET NOSTORE FINAL ABBREVIATED ' ' ' '
+%  IF VALUE .EQ. 2 THEN
+%               COPY '#LIST 4'
+   Resetting to unit weights
+%               COPY 'END'
+%               COPY '#ANALYSE'
+%               COPY 'END'
+   Unit weights reapplied.
+%  END IF
+^^WI DISPOSE _WEIGHT
+^^CR
+%END SCRIPT

@@ -1,0 +1,115 @@
+%SCRIPT RESTOREPARTIAL
+%  VARIABLE INTEGER ATOMCOUNT LOOPCOUNT SCRIPTDONE
+  This script helps you to update LIST 5 after a partial refinement of a
+ fragment and to restore the normal values in LIST 23.
+  First we punch out your LISTS 12 and 16 on the files NEWL12.DAT and
+ NEWL16.DAT respectively. You may use the data afterwards...
+%  COPY '#RELEASE PUNCH NEWL12.DAT'
+%  COPY '#PUNCH 12'
+%  COPY 'END'
+%  COPY '#RELEASE PUNCH NEWL16.DAT'
+%  COPY '#PUNCH 16'
+%  COPY 'END'
+%  COPY '#RELEASE PUNCH'
+%%
+%  EVALUATE ATOMCOUNT = 0
+%%
+%  QUEUE REWIND
+  Reading atoms from the file MAJOR.DAT to update LIST 5...
+%  COPY '#OPEN SCPDATA MAJOR.DAT'
+%%
+%  CLEAR
+%%
+%  LOOP
+%    ON ERROR TERMINATE
+%    ON END TERMINATE
+%    CLEAR
+%%    Get the next record
+%    EXTRACT NEXT
+%    EXTRACT TRANSFER COMMAND
+%    EXECUTE SEND
+%    EXTRACT TRANSFER INPUT
+%    CLEAR
+%    GET  NOSTORE NOREMOVE KEYWORD 'TYPE'
+%%    force an exit from loop on reading an END card
+%    IF CVALUE .EQ. 'END' THEN
+%%    Remove 'END' from buffer
+%      GET NOSTORE KEYWORD 'JUNK'
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%    ELSE
+%      IF CVALUE .EQ. 'ATOM' THEN
+%        INSERT 'ATOM '
+%%    Read from first record all items and skip the first one.
+%        GET NOSTORE NOPROMPT KEYWORD ' '
+%        GET NOPROMPT KEYWORD ' '
+%        LOOP 6 TIMES
+%          GET NOPROMPT REAL ' '
+%        END LOOP
+%        QUEUE SEND
+%        EVALUATE ATOMCOUNT = ATOMCOUNT + 1
+%      ELSE
+%        IF CVALUE .EQ. 'CONTINUE ' THEN
+%          INSERT 'CONT U[11]='
+%%    Read from second record all items and skip the first one.
+%          GET NOSTORE NOPROMPT KEYWORD ' '
+%          LOOP 6 TIMES
+%            GET NOPROMPT REAL ' '
+%          END LOOP
+%          QUEUE SEND
+%        END IF
+%      END IF
+%    END IF
+%  END LOOP
+%  COPY '#CLOSE SCPDATA'
+%%
+%  IF ATOMCOUNT .EQ. 0 THEN
+  Any new atoms found in MAJOR.DAT. LIST 5 has not been updated.
+%    FINISH
+%  ELSE
+%    COPY '#EDIT'
+%    CLEAR
+%    QUEUE PROCESS
+%    COPY 'END'
+%  END IF
+%%
+%%   ##########    PREPARE LIST 23 TO CALCULATE    ############
+%%   ##########STRUCTURE FACTORS OF THE WHOLE MODEL############
+%%
+  Now we reset LIST 23 to its original state...
+% CLEAR
+% COPY '#GENERALEDIT 23'
+% COPY 'LOCATE RECORDTYPE=101'
+%% SET MODIFY PARTIAL=NO
+% COPY 'CHANGE OFFSET=4 MODE=INTEGER INTEGER=-1'
+% COPY 'WRITE'
+%% SET MODIFY UPDATE=NO
+% COPY 'CHANGE OFFSET=5 MODE=INTEGER INTEGER=-1'
+% COPY 'WRITE'
+% COPY 'END'
+%%
+%%   ##########    CALCULATE STRUCTURE FACTORS     ############
+%%   ##########         OF THE WHOLE MODEL         ############
+%%
+  and calculate the structure factors of the whole model.
+% COPY '#SFLS'
+% COPY 'CALC'
+% COPY 'END'
+%%
+% COPY '#LIST 12'
+% COPY 'FULL X Y Z'
+% COPY 'END'
+%%
+  Now you have to check your LIST 5, LIST 12 and, if present, LIST 16.
+ For LIST 12 a default list has been restored which refines all positiones.
+ LIST 16 has been cleared. If you have used the SCRIPT to do your partial
+ refinement, there will be copies of these LISTS reflecting their state
+ before and after the partial refinement in the following files:
+ LIST 12: OLDL12.DAT and NEWL12.DAT
+ LIST 16: OLDL16.DAT and NEWL16.DAT
+  You can use the INCLUDE instruction of the system editor to merge the
+ information stored there.
+%%
+% COPY '#PAUSE 10'
+% EVALUATE SCRIPTDONE = 1
+%%
+%END SCRIPT

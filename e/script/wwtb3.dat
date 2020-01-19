@@ -1,0 +1,113 @@
+!QUESTION
+Which of these space groups is the mirror image of P41?
+!ANSWERS
+P 43
+P 41
+P 4m
+P 14
+!EXPLAIN
+P 43.
+P 41 contains a four fold screw axis along the c-axis of the crystal.
+Given a screw axis, Nm, N denotes the rotational symmetry of the screw
+axis. The translation along the axis is m/N. Changing the translation
+from 1/4 to 3/4 effectively mirrors the screw axis in this case.
+!QUESTION
+The flack parameter of a material in P 43,
+refines to 1.0 with a standard uncertainty
+of 0.05. What do we know about the chirality?
+!ANSWERS
+Model probably needs inverting.
+Nothing.
+Model is probably correct hand.
+Material is a racemate.
+!EXPLAIN
+The su (0.05) tells us that the flack parameter
+is well determined. The flack parameter refines
+towards 1.0 when the model is the opposite hand
+to the material on the diffractometer.
+!QUESTION
+The Bragg equation states that lambda (the wavelength
+of the X-rays) multiplied by an integer, n, is:
+!ANSWERS
+Twice interplanar spacing multiplied by sin (theta)
+Half interplanar spacing multiplied by sin (theta)
+Zero
+Interplanar spacing multiplied by sin (theta)
+!EXPLAIN
+n * lambda = 2 d sin (theta)
+Reinforcement of X-ray beams occur at this angle because the
+path length between beams diffracted from successive layers
+is an integer number.
+!QUESTION
+The 112 reflection of an "ordinary" material has Fobs=10 and 
+Fcalc=500. The R factor is 8%. What is the likely cause?
+!ANSWERS
+Beam trap in way
+Extinction
+Power failure
+Noisy data
+!EXPLAIN
+As the R-factor is quite low it is highly likely that something
+is wrong with the measurement of Fobs. Give that the reflection
+is at a low angle, the beam trap is the most likely explanation.
+!EXPLAIN
+As the R-factor is quite low, and the difference between Fo and Fc
+is not huge, it is likely that extinction is affecting this reflection. 
+The best way to test this explanation is to examine other strong
+reflections for signs of extinction.
+!QUESTION
+An oxygen atom is being refined as a carbon. What
+effect on the model would you expect to see?
+!ANSWERS
+Thermal ellipse very small
+Thermal ellipse very large
+Nothing
+Severe distortions in the model
+!EXPLAIN
+The carbon atom is two electrons short of the oxygen
+that it is trying to model. As a result the thermal 
+ellipse will shrink (creating a model atom with
+high electron density) in order to compensate.
+!QUESTION
+A spherical crystal sample has mu.R of 5.0 for 
+molybdenum radiation. What is the ratio of the 
+absorption correction at 0 degrees and 25
+degrees.
+!ANSWERS
+3:1
+1:2
+1:1
+2:1
+!EXPLAIN
+The correction includes an e**(mu.R) term and thus 
+changes quickly for large Mu.R. 
+It is tabulated to mu.R = 10.0 in TABLE 5.3.6B of 
+Int Tab Vol 2, but only up to mu.R of 2.5 in
+TABLE 6.3.3.3 in Int Tab Vol C.
+!QUESTION
+Why should hydrogen atoms always be included for organic 
+structures, even if only at estimated positions.
+!ANSWERS
+To enable the other atoms to be better located
+To produce better diagrams
+Because the Journals demand them
+So that the hybridisation of C atoms can be calculated
+!EXPLAIN
+The values of ALL parameters depend on Fo-Fc (or their
+squares).  Omission of H will lead to a systematic error
+in Fc, and hence on all parameters.
+!QUESTION
+In which of the following space groups 
+can the polar dispersion error occur?
+!ANSWERS
+P n a 21
+P n m a
+P n a m
+C 2/c
+!EXPLAIN
+The Polar Dispersion Error can arise in non-centro symmetric
+space groups where there is a strong anomalous scatterer
+and the correct absolute structure has not been determined 
+P n a 21 is non-centro, and thus a candidate even though it
+could contain both hands of a chiral molecule.  
+!END

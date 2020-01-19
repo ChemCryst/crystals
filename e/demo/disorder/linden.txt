@@ -1,0 +1,21 @@
+
+
+
+
+
+
+
+
+
+This is a small organic structure showing some quite obvious disorder.
+
+Thanks to Dr Tony Linden of the University of Zurich
+for providing the data, the reference to the published structure is:
+C.Fu, A.Linden, H.Heimgartner, Helv.Chim.Acta, 84, 3319 (2001).
+
+{I The data is in a file import.cif, as if it had been created
+{I on a Nonius Kappa CCD machine. Use "X-ray data"->"Use KCCDin output"
+{I to get the data. You will have to work out the space group with
+{I the help of the KCCDin program.
+
+

@@ -8,15 +8,45 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v1
-    - uses: numworks/setup-msys2@v1
+    - name: Checkout crystals
+      uses: actions/checkout@v1
+    - name: Setup MSYS2 environment
+      uses: numworks/setup-msys2@v1
       with:
         msystem: MINGW64
-    - run: msys2do makepkg-mingw -sCLfc --noconfirm --noprogressbar
-    - run: msys2do pacman --noconfirm -U mingw-w64-*-any.pkg.tar.xz
-    - run: |
-      msys2do mkdir ci
-      msys2do cd ci
-      msys2do cmake .. -G"MinGW Makefiles" -DuseGUI=no 
-      msys2do mingw32-make -j2
-
+    - name: Install compiler and tools
+      run: msys2do pacman --noconfirm -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-openblas mingw-w64-x86_64-perl msys2-w32api-runtime mingw-w64-x86_64-wxWidgets
+    - name: Create build folder
+      run: mkdir ci
+    - name: Build crystals
+      working-directory: ci
+      run: |
+        $env:Path = "D:\a\_temp\msys\\msys64\mingw64\bin;$env:Path"
+        cmake .. -G"MinGW Makefiles" -DuseGUI=no -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND"
+        mingw32-make -j2
+    - name: Test crystals
+      working-directory: test_suite
+      shell: cmd
+# Prevent interactive scripts from running
+# Prevent gui test from running for this cl version
+# Setup environment
+# Compcode sets folder with reference test outputs
+# Go
+      run: |
+        mkdir script
+        set CRYSDIR=.\,..\ci\
+        echo "%SCRIPT NONE" > script\\tipauto.scp
+        echo "%END SCRIPT" >> script\\tipauto.scp
+        echo "%SCRIPT NONE" > script\\guideauto.scp
+        echo "%END SCRIPT" >> script\\guideauto.scp
+        del gui.tst
+        set PATH=D:\a\_temp\msys\\msys64\mingw64\bin;%PATH%
+        set COMPCODE=MIN64GH
+        perl testsuite.pl
+# If failures, save the test outputs for later comparisons
+    - name: Upload crystals test outputs
+      uses: actions/upload-artifact@v1
+      if: failure()
+      with:
+        name: test-outputs
+        path: test_suite

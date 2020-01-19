@@ -1,0 +1,15 @@
+%SCRIPT CURL
+
+
+
+See also the curly bracket colours availabe from FORTRAN or SCRIPTS
+
+{  TEST curly bracket space (white on whatever background set)
+{I TEST curly bracket I  light blue on grey
+{S TEST curly bracket S  white on purple
+{R TEST curly bracket R  red on grey
+{E TEST curly bracket E  white on red
+{N TEST curly bracket N  black on white
+{W TEST curly bracket W  white on blue
+
+%END SCRIPT

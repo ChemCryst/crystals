@@ -1,0 +1,35 @@
+%SCRIPT YCSWAP
+%%
+%% 1 -> X
+%%           2 -> 1
+%%      X -> 2
+%%
+%     VARIABLE CHARACTER CATOM1 CATOM2
+%     GET SILENT NOSTORE TEXT 'Atom1 ?' ' '
+%     EVALUATE CATOM1 = CVALUE
+%     GET SILENT NOSTORE TEXT 'Atom2 ?' ' '
+%     EVALUATE CATOM2 = CVALUE
+%%
+%     COPY '#EDIT'
+%%
+%     CLEAR
+%     INSERT 'RENAME '
+%     STORE CHARACTER CATOM1
+%     INSERT 'Q(-101)'
+%     SEND
+%%
+%     CLEAR
+%     INSERT 'RENAME '
+%     STORE CHARACTER CATOM2
+%     INSERT ' '
+%     STORE CHARACTER CATOM1
+%     SEND
+%%
+%     CLEAR
+%     INSERT 'RENAME '
+%     INSERT 'Q(-101)'
+%     STORE CHARACTER CATOM2
+%     SEND
+%%
+%     COPY 'END'
+%END SCRIPT

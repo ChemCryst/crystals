@@ -1,0 +1,17 @@
+
+<tr>
+<td width="40%">
+                                                     <a name="IvE" id="IvE"></a>
+<h2> Analyse: Data Quality</h2>
+<h3> Internal vs External</h3>
+<p>
+
+
+</p>
+</td>
+<td>
+&nbsp;
+<img id="10 " src="./difabs-1.jpg"  align="top"
+ alt="Not Available">
+</td>
+</tr>
