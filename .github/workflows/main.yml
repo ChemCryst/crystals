@@ -45,8 +45,8 @@ jobs:
         perl testsuite.pl
 # If failures, save the test outputs for later comparisons
     - name: Upload crystals test outputs
-      working-directory: test_suite
       uses: actions/upload-artifact@v1
+      working-directory: test_suite
       if: failure()
       with:
         name: test-outputs
