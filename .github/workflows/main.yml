@@ -49,4 +49,4 @@ jobs:
       if: failure()
       with:
         name: test-outputs
-        path: test_suite/*.out
+        path: test_suite
