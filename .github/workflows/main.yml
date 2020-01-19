@@ -50,4 +50,4 @@ jobs:
       if: failure()
       with:
         name: test-outputs
-        path: *.out
+        path: ./*.out
