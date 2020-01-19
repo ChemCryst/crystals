@@ -2325,7 +2325,7 @@ Summary of Deviations
                   0.000004  0.000016 -1.000000       0.531518 -0.537622 -0.654562       0.642848 -0.365583 -0.507309
 
 
- Trace =-1.000 Determinant = 1.000 Tr+Det =-0.000
+ Trace =-1.000 Determinant = 1.000 Tr+Det = 0.000
  see Giacovazzo, Sect 1.D
  Element:  1  2  3  4  6 -1 -2 -3 -4 -6
  Tr_det:   4  0  1  2  3 -4  0 -1 -2 -3

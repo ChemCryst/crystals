@@ -476,7 +476,7 @@ LS-scale=  1.000   Wilson Scale=  0.000
          Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part
                                    Uiso  Size D/100 A/100
    C 250 0.50 0.420-0.273 0.000 1 0.040 0.000 0.000 0.00 0.00 0.00     0.000      0
-   C 251 0.50 0.446-0.227-0.000 1 0.040 0.000 0.000 0.00 0.00 0.00     0.000      0
+   C 251 0.50 0.446-0.227 0.000 1 0.040 0.000 0.000 0.00 0.00 0.00     0.000      0
  List   5 now contains      9 atom(s)
 Bonds: Update required - List5 length change
 #MOLAX
@@ -629,7 +629,7 @@ AZIMUTH  =    45.02     AZIMUTH /100 =   0.4502
 
 
 
- Centre for which s is symmetric :                   0.0000  0.0000 -0.0000
+ Centre for which s is symmetric :                   0.0000  0.0000  0.0000
  Axial displacements for which S becomes diagonal  (Angstroms along principal axes of L)
                                  Shift directions
                               1         2         3
