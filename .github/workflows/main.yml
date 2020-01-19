@@ -43,9 +43,10 @@ jobs:
         set PATH=D:\a\_temp\msys\\msys64\mingw64\bin;%PATH%
         set COMPCODE=MIN64GH
         perl testsuite.pl
-# Save the test outputs for later comparisons
+# If failures, save the test outputs for later comparisons
     - name: Upload crystals test outputs
       uses: actions/upload-artifact@v1
+      if: failure()
       with:
         name: test-outputs
         path: test_suite/*.out
