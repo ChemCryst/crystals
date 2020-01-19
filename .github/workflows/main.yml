@@ -29,15 +29,21 @@ jobs:
       shell: cmd
       run: |
         mkdir script
+# Prevent interactive scripts from running
+        set CRYSDIR=.\,..\ci\
         echo "%SCRIPT NONE" > script\\tipauto.scp
         echo "%END SCRIPT" >> script\\tipauto.scp
         echo "%SCRIPT NONE" > script\\guideauto.scp
         echo "%END SCRIPT" >> script\\guideauto.scp
+# Prevent gui test from running for this cl version
+        del gui.tst
+# Setup environment
         set PATH=D:\a\_temp\msys\\msys64\mingw64\bin;%PATH%
-        set CRYSDIR=.\,..\ci\
+# Compcode sets folder with reference test outputs
         set COMPCODE=MIN64GH
-        - uses: actions/upload-artifact@v1
+# Go
         perl testsuite.pl
+# Save the test outputs for later comparisons
     - name: Upload crystals test outputs
       uses: actions/upload-artifact@v1
       with:
