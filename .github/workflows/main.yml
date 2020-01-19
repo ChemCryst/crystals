@@ -27,21 +27,21 @@ jobs:
     - name: Test crystals
       working-directory: test_suite
       shell: cmd
+# Prevent interactive scripts from running
+# Prevent gui test from running for this cl version
+# Setup environment
+# Compcode sets folder with reference test outputs
+# Go
       run: |
         mkdir script
-# Prevent interactive scripts from running
         set CRYSDIR=.\,..\ci\
         echo "%SCRIPT NONE" > script\\tipauto.scp
         echo "%END SCRIPT" >> script\\tipauto.scp
         echo "%SCRIPT NONE" > script\\guideauto.scp
         echo "%END SCRIPT" >> script\\guideauto.scp
-# Prevent gui test from running for this cl version
         del gui.tst
-# Setup environment
         set PATH=D:\a\_temp\msys\\msys64\mingw64\bin;%PATH%
-# Compcode sets folder with reference test outputs
         set COMPCODE=MIN64GH
-# Go
         perl testsuite.pl
 # Save the test outputs for later comparisons
     - name: Upload crystals test outputs
