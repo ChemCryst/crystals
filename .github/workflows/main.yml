@@ -5,27 +5,40 @@ on: [push]
 jobs:
   build:
 
-    runs-on: windows-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+        cl: [gui, nogui]
 
     steps:
     - name: Checkout crystals
       uses: actions/checkout@v1
+
     - name: Setup MSYS2 environment
       uses: numworks/setup-msys2@v1
+      if: matrix.os == 'windows-latest'
       with:
         msystem: MINGW64
+
     - name: Install compiler and tools
+      if: matrix.os == 'windows-latest'
       run: msys2do pacman --noconfirm -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-openblas mingw-w64-x86_64-perl msys2-w32api-runtime mingw-w64-x86_64-wxWidgets
+
     - name: Create build folder
       run: mkdir ci
+
     - name: Build crystals
       working-directory: ci
+      if: matrix.os == 'windows-latest'
       run: |
         $env:Path = "D:\a\_temp\msys\\msys64\mingw64\bin;$env:Path"
         cmake .. -G"MinGW Makefiles" -DuseGUI=no -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND"
         mingw32-make -j2
+
     - name: Test crystals
       working-directory: test_suite
+      if: matrix.os == 'windows-latest'
       shell: cmd
 # Prevent interactive scripts from running
 # Prevent gui test from running for this cl version
@@ -43,6 +56,7 @@ jobs:
         set PATH=D:\a\_temp\msys\\msys64\mingw64\bin;%PATH%
         set COMPCODE=MIN64GH
         perl testsuite.pl
+
 # If failures, save the test outputs for later comparisons
     - name: Upload crystals test outputs
       uses: actions/upload-artifact@v1
