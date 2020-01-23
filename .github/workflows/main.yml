@@ -22,6 +22,10 @@ jobs:
       if: matrix.os == 'windows-latest'
       with:
         msystem: MINGW64
+# WIN ONLY
+    - name: Install compiler and tools
+      if: matrix.os == 'windows-latest'
+      run: msys2do pacman --noconfirm -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-openblas mingw-w64-x86_64-perl msys2-w32api-runtime mingw-w64-x86_64-curl
 # 
 # Install wxWidgets - GUI only
 #
@@ -32,10 +36,6 @@ jobs:
         curl -sS https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.3/wxWidgets-3.1.3-headers.7z > head.7z
         7z e dev.7z -o wx -y
         7z e head.7z -o wx -y
-#
-    - name: Install compiler and tools
-      if: matrix.os == 'windows-latest'
-      run: msys2do pacman --noconfirm -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-openblas mingw-w64-x86_64-perl msys2-w32api-runtime mingw-w64-x86_64-wxWidgets
 #
     - name: Create build folder
       run: mkdir ci
