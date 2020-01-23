@@ -26,16 +26,18 @@ jobs:
     - name: Install compiler and tools
       if: matrix.os == 'windows-latest'
       run: msys2do pacman --noconfirm -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-openblas mingw-w64-x86_64-perl msys2-w32api-runtime mingw-w64-x86_64-curl
-# 
+#
 # Install wxWidgets - GUI only
 #
-    - name: Setup wxWidgets 
+    - name: Setup wxWidgets
       if: matrix.os == 'windows-latest' && matrix.cl == 'gui'
+      shell: cmd
       run: |
         curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.3/wxMSW-3.1.3_gcc810_x64_Dev.7z > dev.7z
         dir
         curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.3/wxWidgets-3.1.3-headers.7z > head.7z
         dir
+        where 7z.exe
         7z x dev.7z -o wx -y
         dir
         7z x head.7z -o wx -y
