@@ -60,7 +60,7 @@ jobs:
       if: matrix.os == 'windows-latest' && matrix.cl == 'gui'
       shell: cmd
       run: |
-        set PATH="D:\a\_temp\msys\msys64\mingw64\bin;%PATH%"
+        set PATH=D:\a\_temp\msys\msys64\mingw64\bin;%PATH%
         cmake .. -G"MinGW Makefiles" -DuseGUI=yes -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND" -DwxWidgets_ROOT_DIR=..\wx -DwxWidgets_LIB_DIR=..\wx\lib\gcc810_x64_dll -DwxWidgets_CONFIGURATION=mswu || echo Try again
         cmake .. -G"MinGW Makefiles" -DuseGUI=yes -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND" -DwxWidgets_ROOT_DIR=..\wx -DwxWidgets_LIB_DIR=..\wx\lib\gcc810_x64_dll -DwxWidgets_CONFIGURATION=mswu
         mingw32-make -j2
