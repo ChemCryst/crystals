@@ -52,9 +52,14 @@ CTestTestfile.cmake
 
 *.bak
 *.lis
+*.bit
 BAT-files/
 old-FORTRAN/
 script/old-bak-files
+crystals/old-bak-files
+manual/ps-build
+manual\ps-build\crystals.man
+manujal\january-2020.pdf
 
 #common build folders
 b/
@@ -125,3 +130,8 @@ test_suite/*.job
 *~
 gitstat.int
 gitstat.bat
+manual/ps-build
+
+manual/january-2020.pdf
+
+
