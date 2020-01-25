@@ -65,7 +65,7 @@ jobs:
         cmake .. -G"MinGW Makefiles" -DuseGUI=yes -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND" -DwxWidgets_ROOT_DIR=..\wx -DwxWidgets_LIB_DIR=..\wx\lib\gcc810_x64_dll -DwxWidgets_CONFIGURATION=mswu || echo Try again
         cmake .. -G"MinGW Makefiles" -DuseGUI=yes -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND" -DwxWidgets_ROOT_DIR=..\wx -DwxWidgets_LIB_DIR=..\wx\lib\gcc810_x64_dll -DwxWidgets_CONFIGURATION=mswu
         mingw32-make -j2
-        echo "::set-env name=COMPCODE::MIN64GHGUI"
+        echo ::set-env name=COMPCODE::MIN64GHGUI
 #
     - name: Test crystals
       working-directory: test_suite
