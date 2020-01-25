@@ -44,7 +44,7 @@ jobs:
 #
 # Build WIN / NOGUI
 #
-    - name: Build crystals
+    - name: Build CRYSTALS: win64, nogui
       working-directory: ci
       if: matrix.os == 'windows-latest' && matrix.cl == 'nogui'
       run: |
@@ -53,10 +53,12 @@ jobs:
         mingw32-make -j2
         del ..\test_suite\gui.tst
         echo "::set-env name=COMPCODE::MIN64GH"
+        echo "::set-env name=CRYSDIR::.\,..\ci\"
+        echo "::add-path D:\a\_temp\msys\msys64\mingw64\bin;..\wx\lib\gcc810_x64_dll;"
 #
 # Build WIN / GUI
 #
-    - name: Build crystals
+    - name: Build CRYSTALS win64, gui
       working-directory: ci
       if: matrix.os == 'windows-latest' && matrix.cl == 'gui'
       shell: cmd
@@ -66,8 +68,22 @@ jobs:
         cmake .. -G"MinGW Makefiles" -DuseGUI=yes -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND" -DwxWidgets_ROOT_DIR=..\wx -DwxWidgets_LIB_DIR=..\wx\lib\gcc810_x64_dll -DwxWidgets_CONFIGURATION=mswu
         mingw32-make -j2
         echo ::set-env name=COMPCODE::MIN64GHGUI
+        echo ::set-env name=CRYSDIR::.\,..\ci\
+        echo ::add-path D:\a\_temp\msys\msys64\mingw64\bin;..\wx\lib\gcc810_x64_dll;
 #
-    - name: Test crystals
+# Build WIN / NOGUI
+#
+    - name: Build CRYSTALS linux, nogui
+      working-directory: ci
+      if: matrix.os == 'ubuntu-latest' && matrix.cl == 'nogui'
+      run: |
+        $env:Path = "D:\a\_temp\msys\\msys64\mingw64\bin;$env:Path"
+        cmake -DuseGUI=off -DuseOPENMP=no  ..
+        make -j2
+        echo "::set-env name=COMPCODE::LINUXGH"
+        echo "::set-env name=CRYSDIR::./,../ci/"
+#
+    - name: Test CRYSTALS windows
       working-directory: test_suite
       if: matrix.os == 'windows-latest'
       shell: cmd
@@ -79,13 +95,28 @@ jobs:
       run: |
         mkdir script
         mkdir testartifacts
-        set PATH=D:\a\_temp\msys\msys64\mingw64\bin;..\wx\lib\gcc810_x64_dll;%PATH%
-        set CRYSDIR=.\,..\ci\
         echo "%SCRIPT NONE" > script\\tipauto.scp
         echo "%END SCRIPT" >> script\\tipauto.scp
         echo "%SCRIPT NONE" > script\\guideauto.scp
         echo "%END SCRIPT" >> script\\guideauto.scp
-        set PATH=D:\a\_temp\msys\\msys64\mingw64\bin;%PATH%
+        perl testsuite.pl
+        copy *.out testartifacts\
+#
+    - name: Test CRYSTALS linux
+      working-directory: test_suite
+      if: matrix.os == 'ubuntu-latest'
+# Prevent interactive scripts from running
+# Prevent gui test from running for this cl version
+# Setup environment
+# Compcode sets folder with reference test outputs
+# Go
+      run: |
+        mkdir script
+        mkdir testartifacts
+        echo "%SCRIPT NONE" > script/tipauto.scp
+        echo "%END SCRIPT" >> script/tipauto.scp
+        echo "%SCRIPT NONE" > script/guideauto.scp
+        echo "%END SCRIPT" >> script/guideauto.scp
         perl testsuite.pl
         copy *.out testartifacts\
 #
