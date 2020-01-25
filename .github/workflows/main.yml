@@ -52,6 +52,7 @@ jobs:
         cmake .. -G"MinGW Makefiles" -DuseGUI=no -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND"
         mingw32-make -j2
         del ..\test_suite\gui.tst
+        echo "::set-env name=COMPCODE::MIN64GH"
 #
 # Build WIN / GUI
 #
@@ -64,6 +65,7 @@ jobs:
         cmake .. -G"MinGW Makefiles" -DuseGUI=yes -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND" -DwxWidgets_ROOT_DIR=..\wx -DwxWidgets_LIB_DIR=..\wx\lib\gcc810_x64_dll -DwxWidgets_CONFIGURATION=mswu || echo Try again
         cmake .. -G"MinGW Makefiles" -DuseGUI=yes -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND" -DwxWidgets_ROOT_DIR=..\wx -DwxWidgets_LIB_DIR=..\wx\lib\gcc810_x64_dll -DwxWidgets_CONFIGURATION=mswu
         mingw32-make -j2
+        echo "::set-env name=COMPCODE::MIN64GHGUI"
 #
     - name: Test crystals
       working-directory: test_suite
@@ -76,6 +78,7 @@ jobs:
 # Go
       run: |
         mkdir script
+        mkdir testartifacts
         set PATH=D:\a\_temp\msys\msys64\mingw64\bin;..\wx\lib\gcc810_x64_dll;%PATH%
         set CRYSDIR=.\,..\ci\
         echo "%SCRIPT NONE" > script\\tipauto.scp
@@ -83,8 +86,8 @@ jobs:
         echo "%SCRIPT NONE" > script\\guideauto.scp
         echo "%END SCRIPT" >> script\\guideauto.scp
         set PATH=D:\a\_temp\msys\\msys64\mingw64\bin;%PATH%
-        set COMPCODE=MIN64GH
         perl testsuite.pl
+        copy *.out testartifacts\
 #
 # If failures, save the test outputs for later comparisons
     - name: Upload crystals test outputs
@@ -92,4 +95,4 @@ jobs:
       if: failure()
       with:
         name: test-outputs
-        path: test_suite
+        path: test_suite\testartifacts
