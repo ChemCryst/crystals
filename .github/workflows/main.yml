@@ -44,7 +44,7 @@ jobs:
 #
 # Build WIN / NOGUI
 #
-    - name: Build CRYSTALS: win64, nogui
+    - name: Build CRYSTALS win64 nogui
       working-directory: ci
       if: matrix.os == 'windows-latest' && matrix.cl == 'nogui'
       run: |
