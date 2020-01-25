@@ -76,6 +76,7 @@ jobs:
 # Go
       run: |
         mkdir script
+        set PATH=D:\a\_temp\msys\msys64\mingw64\bin;..\wx\lib\gcc810_x64_dll;%PATH%
         set CRYSDIR=.\,..\ci\
         echo "%SCRIPT NONE" > script\\tipauto.scp
         echo "%END SCRIPT" >> script\\tipauto.scp
