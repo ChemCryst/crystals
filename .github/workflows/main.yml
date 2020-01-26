@@ -84,7 +84,6 @@ jobs:
         cmake .. -G"MinGW Makefiles" -DuseGUI=yes -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND" -DwxWidgets_ROOT_DIR=..\wx -DwxWidgets_LIB_DIR=..\wx\lib\gcc810_x64_dll -DwxWidgets_CONFIGURATION=mswu
         mingw32-make -j2
         echo ::set-env name=COMPCODE::MIN64GHGUI
-        echo ::set-env name=CRYSDIR::.\\,..\\ci\\
         echo ::add-path D:\a\_temp\msys\msys64\mingw64\bin;..\wx\lib\gcc810_x64_dll;
 #
 # Build LINUX / NOGUI
@@ -97,11 +96,10 @@ jobs:
         make -j2
         rm ../test_suite/gui.tst
         echo "::set-env name=COMPCODE::LINUXGH"
-        echo "::set-env name=CRYSDIR::./,../ci/"
 #
 # Build LINUX / GUI
 #
-    - name: Build CRYSTALS linux, nogui
+    - name: Build CRYSTALS linux, gui
       working-directory: ci
       if: matrix.os == 'ubuntu-latest' && matrix.cl == 'gui'
       run: |
@@ -123,6 +121,7 @@ jobs:
       run: |
         echo CRYSDIR is %CRYSDIR%
         echo PATH is %PATH%
+        set CRYSDIR=..\,..\ci\
         mkdir script
         mkdir testartifacts
         echo "%SCRIPT NONE" > script\\tipauto.scp
@@ -131,7 +130,26 @@ jobs:
         echo "%END SCRIPT" >> script\\guideauto.scp
         perl testsuite.pl
 #
-    - name: Test CRYSTALS linux
+    - name: Test CRYSTALS linux no gui
+      working-directory: test_suite
+      if: matrix.os == 'ubuntu-latest' && matrix.cl == 'nogui'
+# Prevent interactive scripts from running
+# Prevent gui test from running for this cl version
+# Setup environment
+# Compcode sets folder with reference test outputs
+# Go
+      run: |
+        mkdir script
+        mkdir testartifacts
+        echo "%SCRIPT NONE" > script/tipauto.scp
+        echo "%END SCRIPT" >> script/tipauto.scp
+        echo "%SCRIPT NONE" > script/guideauto.scp
+        echo "%END SCRIPT" >> script/guideauto.scp
+        perl testsuite.pl
+#
+#
+#
+    - name: Test CRYSTALS linux gui
       working-directory: test_suite
       if: matrix.os == 'ubuntu-latest'
 # Prevent interactive scripts from running
@@ -146,7 +164,7 @@ jobs:
         echo "%END SCRIPT" >> script/tipauto.scp
         echo "%SCRIPT NONE" > script/guideauto.scp
         echo "%END SCRIPT" >> script/guideauto.scp
-        perl testsuite.pl
+        xvfb-run -a perl testsuite.pl
 #
 # If failures, save the test outputs for later comparisons
     - name: Upload crystals test outputs
