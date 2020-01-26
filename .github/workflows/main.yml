@@ -23,9 +23,13 @@ jobs:
       with:
         msystem: MINGW64
 # WIN ONLY
-    - name: Install compiler and tools
+    - name: Install MinGW compiler and tools
       if: matrix.os == 'windows-latest'
       run: msys2do pacman --noconfirm -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-openblas mingw-w64-x86_64-perl msys2-w32api-runtime mingw-w64-x86_64-curl
+# LINUX ONLY
+    - name: Install Ubuntu compiler and tools
+      if: matrix.os == 'ubuntu-latest'
+      run: sudo apt-get install -y gfortran
 #
 # Install wxWidgets - win GUI only
 #
