@@ -76,7 +76,7 @@ jobs:
         cmake .. -G"MinGW Makefiles" -DuseGUI=yes -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND" -DwxWidgets_ROOT_DIR=..\wx -DwxWidgets_LIB_DIR=..\wx\lib\gcc810_x64_dll -DwxWidgets_CONFIGURATION=mswu
         mingw32-make -j2
         echo ::set-env name=COMPCODE::MIN64GHGUI
-        echo ::set-env name=CRYSDIR::.\,..\ci\
+        echo ::set-env name=CRYSDIR::.\\,..\\ci\\
         echo ::add-path D:\a\_temp\msys\msys64\mingw64\bin;..\wx\lib\gcc810_x64_dll;
 #
 # Build LINUX / NOGUI
@@ -101,6 +101,8 @@ jobs:
 # Compcode sets folder with reference test outputs
 # Go
       run: |
+        echo CRYSDIR is %CRYSDIR%
+        echo PATH is %PATH%
         mkdir script
         mkdir testartifacts
         echo "%SCRIPT NONE" > script\\tipauto.scp
