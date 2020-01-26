@@ -10,6 +10,10 @@ jobs:
       matrix:
         os: [windows-latest, ubuntu-latest]
         cl: [gui, nogui]
+# Do not build linux gui, yet.
+        exclude:
+        - os: ubuntu-latest
+          cl: gui
 
     steps:
     - name: Checkout crystals
@@ -29,7 +33,7 @@ jobs:
 # LINUX ONLY
     - name: Install Ubuntu compiler and tools
       if: matrix.os == 'ubuntu-latest'
-      run: sudo apt-get install -y gfortran
+      run: sudo apt-get install -y gfortran libopenblas-dev
 #
 # Install wxWidgets - win GUI only
 #
