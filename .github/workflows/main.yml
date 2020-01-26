@@ -27,9 +27,9 @@ jobs:
       if: matrix.os == 'windows-latest'
       run: msys2do pacman --noconfirm -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-openblas mingw-w64-x86_64-perl msys2-w32api-runtime mingw-w64-x86_64-curl
 #
-# Install wxWidgets - GUI only
+# Install wxWidgets - win GUI only
 #
-    - name: Setup wxWidgets
+    - name: Setup wxWidgets for Win64 gui
       if: matrix.os == 'windows-latest' && matrix.cl == 'gui'
       shell: cmd
       run: |
@@ -77,7 +77,6 @@ jobs:
       working-directory: ci
       if: matrix.os == 'ubuntu-latest' && matrix.cl == 'nogui'
       run: |
-        $env:Path = "D:\a\_temp\msys\\msys64\mingw64\bin;$env:Path"
         cmake -DuseGUI=off -DuseOPENMP=no  ..
         make -j2
         echo "::set-env name=COMPCODE::LINUXGH"
