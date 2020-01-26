@@ -126,7 +126,7 @@ jobs:
         echo "%SCRIPT NONE" > script/guideauto.scp
         echo "%END SCRIPT" >> script/guideauto.scp
         perl testsuite.pl
-        copy *.out testartifacts\
+        copy *.out testartifacts/
 #
 # If failures, save the test outputs for later comparisons
     - name: Upload crystals test outputs
@@ -134,4 +134,4 @@ jobs:
       if: failure()
       with:
         name: test-outputs
-        path: test_suite\testartifacts
+        path: test_suite/testartifacts
