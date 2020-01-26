@@ -79,7 +79,7 @@ jobs:
         echo ::set-env name=CRYSDIR::.\,..\ci\
         echo ::add-path D:\a\_temp\msys\msys64\mingw64\bin;..\wx\lib\gcc810_x64_dll;
 #
-# Build WIN / NOGUI
+# Build LINUX / NOGUI
 #
     - name: Build CRYSTALS linux, nogui
       working-directory: ci
@@ -87,6 +87,7 @@ jobs:
       run: |
         cmake -DuseGUI=off -DuseOPENMP=no  ..
         make -j2
+        rm ../test_suite/gui.tst
         echo "::set-env name=COMPCODE::LINUXGH"
         echo "::set-env name=CRYSDIR::./,../ci/"
 #
