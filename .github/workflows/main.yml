@@ -122,6 +122,7 @@ jobs:
         echo CRYSDIR is %CRYSDIR%
         echo PATH is %PATH%
         set CRYSDIR=..\,..\ci\
+        set PATH=D:\a\_temp\msys\msys64\mingw64\bin;..\wx\lib\gcc810_x64_dll;%path%
         mkdir script
         mkdir testartifacts
         echo "%SCRIPT NONE" > script\\tipauto.scp
@@ -141,6 +142,8 @@ jobs:
       run: |
         mkdir script
         mkdir testartifacts
+        echo CRYSDIR is $CRYSDIR
+        echo PATH is $PATH
         echo "%SCRIPT NONE" > script/tipauto.scp
         echo "%END SCRIPT" >> script/tipauto.scp
         echo "%SCRIPT NONE" > script/guideauto.scp
@@ -151,7 +154,7 @@ jobs:
 #
     - name: Test CRYSTALS linux gui
       working-directory: test_suite
-      if: matrix.os == 'ubuntu-latest'
+      if: matrix.os == 'ubuntu-latest' && matrix.cl == 'gui'
 # Prevent interactive scripts from running
 # Prevent gui test from running for this cl version
 # Setup environment
@@ -160,6 +163,8 @@ jobs:
       run: |
         mkdir script
         mkdir testartifacts
+        echo CRYSDIR is $CRYSDIR
+        echo PATH is $PATH
         echo "%SCRIPT NONE" > script/tipauto.scp
         echo "%END SCRIPT" >> script/tipauto.scp
         echo "%SCRIPT NONE" > script/guideauto.scp
