@@ -123,6 +123,7 @@ jobs:
         echo PATH is %PATH%
         set CRYSDIR=..\,..\ci\
         set PATH=D:\a\_temp\msys\msys64\mingw64\bin;..\wx\lib\gcc810_x64_dll;%path%
+        echo CRYSDIR, again, is %CRYSDIR%
         mkdir script
         mkdir testartifacts
         echo "%SCRIPT NONE" > script\\tipauto.scp
