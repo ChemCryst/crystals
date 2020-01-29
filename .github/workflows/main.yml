@@ -16,20 +16,9 @@ jobs:
 #Exclude for testing.
         include:
         - os: ubuntu-latest
-        - cl: nogui
-        - archivepath: ubuntu-nogui
-        include:
-        - os: ubuntu-latest
-        - cl: gui
-        - archivepath: ubuntu-gui
-        include:
+          oscode: ubuntu
         - os: windows-latest
-        - cl: nogui
-        - archivepath: windows-nogui
-        include:
-        - os: windows-latest
-        - cl: gui
-        - archivepath: windows-gui
+          oscode: win64
     steps:
     - name: Checkout crystals
       uses: actions/checkout@v1
@@ -191,5 +180,5 @@ jobs:
       uses: actions/upload-artifact@v1
       if: failure()
       with:
-        name: test-outputs
+        name: test-outputs-${{ matrix.oscode }}-${{ matrix.cl }}
         path: test_suite
