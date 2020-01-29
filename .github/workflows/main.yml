@@ -9,15 +9,27 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, ubuntu-latest]
-        cl: [gui, nogui]
+#        os: [windows-latest, ubuntu-latest]
+#        cl: [gui, nogui]
+        os: [ubuntu-latest]
+        cl: [gui]
 #Exclude for testing.
-        exclude:
-        - os: windows-latest
-        exclude:
+        include:
         - os: ubuntu-latest
         - cl: nogui
-
+        - archivepath: ubuntu-nogui
+        include:
+        - os: ubuntu-latest
+        - cl: gui
+        - archivepath: ubuntu-gui
+        include:
+        - os: windows-latest
+        - cl: nogui
+        - archivepath: windows-nogui
+        include:
+        - os: windows-latest
+        - cl: gui
+        - archivepath: windows-gui
     steps:
     - name: Checkout crystals
       uses: actions/checkout@v1
