@@ -11,10 +11,12 @@ jobs:
       matrix:
         os: [windows-latest, ubuntu-latest]
         cl: [gui, nogui]
-# Do not build linux gui, yet.
-#        exclude:
-#        - os: ubuntu-latest
-#          cl: gui
+#Exclude for testing.
+        exclude:
+        - os: windows-latest
+        exclude:
+        - os: ubuntu-latest
+        - cl: nogui
 
     steps:
     - name: Checkout crystals
@@ -106,7 +108,6 @@ jobs:
       run: |
         cmake -DuseGUI=on -DuseOPENMP=no  ..
         make -j2
-        rm ../test_suite/gui.tst
         echo "::set-env name=COMPCODE::LINUXGHGUI"
         echo "::set-env name=CRYSDIR::./,../ci/"
 #
