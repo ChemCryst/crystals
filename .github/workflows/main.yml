@@ -162,6 +162,7 @@ jobs:
 # Setup environment
 # Compcode sets folder with reference test outputs
 # Go
+      timeout-minutes: 30
       run: |
         mkdir script
         mkdir testartifacts
