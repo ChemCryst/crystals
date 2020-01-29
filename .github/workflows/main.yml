@@ -69,8 +69,8 @@ jobs:
         mingw32-make -j2
         del ..\test_suite\gui.tst
         echo "::set-env name=COMPCODE::MIN64GH"
-        echo "::set-env name=CRYSDIR::.\,..\ci\"
-        echo "::add-path D:\a\_temp\msys\msys64\mingw64\bin;..\wx\lib\gcc810_x64_dll;"
+#        echo "::set-env name=CRYSDIR::.\,..\ci\"
+#        echo "::add-path D:\a\_temp\msys\msys64\mingw64\bin;..\wx\lib\gcc810_x64_dll;"
 #
 # Build WIN / GUI
 #
@@ -84,7 +84,7 @@ jobs:
         cmake .. -G"MinGW Makefiles" -DuseGUI=yes -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND" -DwxWidgets_ROOT_DIR=..\wx -DwxWidgets_LIB_DIR=..\wx\lib\gcc810_x64_dll -DwxWidgets_CONFIGURATION=mswu
         mingw32-make -j2
         echo ::set-env name=COMPCODE::MIN64GHGUI
-        echo ::add-path D:\a\_temp\msys\msys64\mingw64\bin;..\wx\lib\gcc810_x64_dll;
+#        echo ::add-path D:\a\_temp\msys\msys64\mingw64\bin;..\wx\lib\gcc810_x64_dll;
 #
 # Build LINUX / NOGUI
 #
@@ -96,6 +96,7 @@ jobs:
         make -j2
         rm ../test_suite/gui.tst
         echo "::set-env name=COMPCODE::LINUXGH"
+        echo "::set-env name=CRYSDIR::./,../ci/"
 #
 # Build LINUX / GUI
 #
@@ -119,11 +120,10 @@ jobs:
 # Compcode sets folder with reference test outputs
 # Go
       run: |
-        echo CRYSDIR is %CRYSDIR%
-        echo PATH is %PATH%
-        set CRYSDIR=..\,..\ci\
+        set CRYSDIR=.\,..\ci\
         set PATH=D:\a\_temp\msys\msys64\mingw64\bin;..\wx\lib\gcc810_x64_dll;%path%
-        echo CRYSDIR, again, is %CRYSDIR%
+        echo PATH is %PATH%
+        echo CRYSDIR is %CRYSDIR%
         mkdir script
         mkdir testartifacts
         echo "%SCRIPT NONE" > script\\tipauto.scp
