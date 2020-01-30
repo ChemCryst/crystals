@@ -163,7 +163,7 @@ jobs:
 # Setup environment
 # Compcode sets folder with reference test outputs
 # Go
-      timeout-minutes: 30
+      timeout-minutes: 10
       run: |
         mkdir script
         mkdir testartifacts
@@ -173,6 +173,8 @@ jobs:
         echo "%END SCRIPT" >> script/tipauto.scp
         echo "%SCRIPT NONE" > script/guideauto.scp
         echo "%END SCRIPT" >> script/guideauto.scp
+        ls script
+        ls ../ci/script
         xvfb-run -a perl testsuite.pl
 #
 # If failures, save the test outputs for later comparisons
