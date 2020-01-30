@@ -37,6 +37,14 @@ jobs:
           cl: gui
           removeguitst:
           fbrunner: xvfb -a
+        - os: windows-latest
+          cl: nogui
+          removeguitst: del gui.tst
+          wxoptions:
+        - os: windows-latest
+          cl: gui
+          removeguitst:
+          wxoptions: -DwxWidgets_ROOT_DIR=..\wx -DwxWidgets_LIB_DIR=..\wx\lib\gcc810_x64_dll -DwxWidgets_CONFIGURATION=mswu
     steps:
     - name: Checkout crystals
       uses: actions/checkout@v1
@@ -84,15 +92,12 @@ jobs:
     - name: Build CRYSTALS win64 nogui
       working-directory: ci
       if: matrix.os == 'windows-latest' && matrix.cl == 'nogui'
+      shell: cmd
       run: |
-        echo "Gui on or off? ${{ matrix.guiflag }}"
-        $env:Path = "D:\a\_temp\msys\\msys64\mingw64\bin;$env:Path"
-        cmake .. -G"MinGW Makefiles" -DuseGUI=no -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND"
+        set PATH=D:\a\_temp\msys\msys64\mingw64\bin;%PATH%
+        cmake .. -G"MinGW Makefiles" -DuseGUI=no -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }}
         mingw32-make -j2
-        del ..\test_suite\gui.tst
-        echo "::set-env name=COMPCODE::MIN64GH"
-#        echo "::set-env name=CRYSDIR::.\,..\ci\"
-#        echo "::add-path D:\a\_temp\msys\msys64\mingw64\bin;..\wx\lib\gcc810_x64_dll;"
+#        del ..\test_suite\gui.tst
 #
 # Build WIN / GUI
 #
@@ -102,36 +107,21 @@ jobs:
       shell: cmd
       run: |
         set PATH=D:\a\_temp\msys\msys64\mingw64\bin;%PATH%
-        cmake .. -G"MinGW Makefiles" -DuseGUI=yes -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND" -DwxWidgets_ROOT_DIR=..\wx -DwxWidgets_LIB_DIR=..\wx\lib\gcc810_x64_dll -DwxWidgets_CONFIGURATION=mswu || echo Try again
-        cmake .. -G"MinGW Makefiles" -DuseGUI=yes -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND" -DwxWidgets_ROOT_DIR=..\wx -DwxWidgets_LIB_DIR=..\wx\lib\gcc810_x64_dll -DwxWidgets_CONFIGURATION=mswu
+        cmake .. -G"MinGW Makefiles" -DuseGUI=yes -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} || echo Try again
+        cmake .. -G"MinGW Makefiles" -DuseGUI=yes -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }}
         mingw32-make -j2
-        echo ::set-env name=COMPCODE::MIN64GHGUI
-#        echo ::add-path D:\a\_temp\msys\msys64\mingw64\bin;..\wx\lib\gcc810_x64_dll;
 #
-# Build LINUX / NOGUI
+# Build LINUX
 #
-    - name: Build CRYSTALS linux, nogui
+    - name: Build CRYSTALS linux
       working-directory: ci
-      if: matrix.os == 'ubuntu-latest' && matrix.cl == 'nogui'
+      if: matrix.os == 'ubuntu-latest'
       run: |
         echo ${{ matrix.guiflag }}
         cmake -DuseGUI=${{ matrix.guiflag }} -DuseOPENMP=no  ..
         make -j2
-#        rm ../test_suite/gui.tst
-#        echo "::set-env name=COMPCODE::LINUXGH"
-#        echo "::set-env name=CRYSDIR::./,../ci/"
-#
-# Build LINUX / GUI
-#
-    - name: Build CRYSTALS linux, gui
-      working-directory: ci
-      if: matrix.os == 'ubuntu-latest' && matrix.cl == 'gui'
-      run: |
-        cmake -DuseGUI=on -DuseOPENMP=no  ..
-        make -j2
-#        echo "::set-env name=COMPCODE::LINUXGHGUI"
-#        echo "::set-env name=CRYSDIR::./,../ci/"
-#
+
+# Tests
     - name: Test CRYSTALS windows
       working-directory: test_suite
       if: matrix.os == 'windows-latest'
@@ -142,12 +132,13 @@ jobs:
 # Compcode sets folder with reference test outputs
 # Go
       run: |
-        set CRYSDIR=.\,..\ci\
+        set CRYSDIR=${{ matrix.crysdir }}
+        set COMPCODE=${{ matrix.testprefix }}${{ matrix.testsuffix }}
         set PATH=D:\a\_temp\msys\msys64\mingw64\bin;..\wx\lib\gcc810_x64_dll;%path%
         echo PATH is %PATH%
         echo CRYSDIR is %CRYSDIR%
+        ${{ matrix.removeguitst }}
         mkdir script
-        mkdir testartifacts
         echo "%SCRIPT NONE" > script\\tipauto.scp
         echo "%END SCRIPT" >> script\\tipauto.scp
         echo "%SCRIPT NONE" > script\\guideauto.scp
@@ -166,7 +157,8 @@ jobs:
       run: |
         mkdir script
         ${{ matrix.removeguitst }}
-        set COMPCODE=${{ matrix.testprefix }}${{ matrix.testsuffix }}
+        export COMPCODE=${{ matrix.testprefix }}${{ matrix.testsuffix }}
+        export CRYSDIR=${{ matrix.crysdir }}
         echo CRYSDIR is $CRYSDIR
         echo PATH is $PATH
         echo "%SCRIPT NONE" > script/tipauto.scp
