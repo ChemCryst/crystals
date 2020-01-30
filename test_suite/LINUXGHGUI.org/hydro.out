@@ -9,6 +9,7 @@
 #SET MIRROR OFF
 # DJW JUN09
 #LIST 13
+Bonds: Update required - There is no list 41
 #COMPOSITION
 #LIST 3
 #LIST 29
@@ -112,6 +113,7 @@ Space group symbol is   P    -1
 
            H         21.0    1.00000        1.    0.6023    0.6702    0.0677    0.0600
  List now contains    39 atoms
+Bonds: Update required - List5 length change
 #DISP HI
  Summary of contents of list  5 - Parameters
  The list currently contains    39 atoms
@@ -126,7 +128,7 @@ Space group symbol is   P    -1
    H  19 1.00 0.642 0.568 0.045 1 0.060 0.000 0.000 0.00 0.00 0.00     0.000      0
    H   6 1.00 0.554 0.817 0.207 1 0.067 0.000 0.000 0.00 0.00 0.00     0.000      0
    O   1 1.00 0.533 0.379 0.387 0 0.067 0.057 0.071-0.01-0.04-0.02     0.000      0
-   C   2 1.00 0.777 0.016 0.006 0 0.072 0.053 0.088 0.00-0.03-0.03     0.000      0
+   C   2 1.00 0.777 0.016 0.006 0 0.072 0.053 0.088-0.00-0.03-0.03     0.000      0
    C   3 1.00 0.924-0.079-0.093 0 0.071 0.072 0.068 0.00-0.03-0.04     0.000      0
    C   4 1.00 0.950-0.239-0.100 0 0.066 0.084 0.065-0.02-0.01-0.04     0.000      0
    C   5 1.00 0.825-0.303-0.009 0 0.057 0.071 0.061-0.02-0.01-0.03     0.000      0
@@ -142,7 +144,7 @@ Space group symbol is   P    -1
    C   8 1.00 0.251 0.578 0.331 0 0.048 0.047 0.050-0.01-0.02-0.02     0.000      0
    C   9 1.00 0.192 0.663 0.450 0 0.056 0.070 0.052-0.02-0.01-0.03     0.000      0
    C  10 1.00 0.022 0.767 0.498 0 0.058 0.070 0.059-0.02-0.01-0.02     0.000      0
-   C  11 1.00-0.088 0.782 0.432 0 0.048 0.059 0.063 0.00-0.01-0.02     0.000      0
+   C  11 1.00-0.088 0.782 0.432 0 0.048 0.059 0.063-0.00-0.01-0.02     0.000      0
    C  12 1.00-0.025 0.693 0.316 0 0.055 0.063 0.073-0.01-0.03-0.03     0.000      0
    C  13 1.00 0.143 0.591 0.264 0 0.052 0.058 0.065-0.01-0.02-0.02     0.000      0
    H   7 1.00 0.265 0.651 0.498 1 0.069 0.000 0.000 0.00 0.00 0.00     0.000      0
@@ -162,14 +164,12 @@ Space group symbol is   P    -1
  SCALE       8.987  DU[ISO]     0.050  OU[ISO]     0.050  POLARITY    1.000
  ENANTIO     0.000  EXTPARAM    0.000
 #EDIT
-#BONDCALC
-Bonds: Update required - There is no list 41
-#EDIT
  The following atom(s) will be selected
     O   2      N   1      C   1      S   1      O   1      C   2      C   3
     C   4      C   5      C   6      C   7      C   8      C   9      C  10
     C  11      C  12      C  13      C  14
  List   5 now contains     18 atom(s)
+Bonds: Update required - List5 length change
 # NOTE THAT THE PHENYL GROUP IS REALLY BONDED TO C1
 #PERHYDRO
            Per-hydrogenation of Carbon atoms
@@ -266,6 +266,7 @@ H33 C(14) C(11) C(10)
            H        142.0    1.00000        1.   -0.2837    1.0109    0.4658    0.1092
            H        143.0    1.00000        1.   -0.3187    0.8585    0.5931    0.1092
  List now contains    32 atoms
+Bonds: Update required - List5 length change
 #FINI
 
 

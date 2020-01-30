@@ -31,6 +31,7 @@ Space group symbol is   P    1
 #LIST 3
 #LIST 29
 #LIST      5
+Bonds: Update required - There is no list 41
 #LIST 23
 #USE PARTIAL.HKL
 #LIST      6
@@ -52,9 +53,6 @@ Space group symbol is   P    1
 #LIST  16
 #CLEAR 17
 #LIST  17
-#LIST 26
-#BONDCALC
-Bonds: Update required - There is no list 41
 #LIST 26
 #SFLS
 #SPEC  NO  NO
@@ -1689,7 +1687,7 @@ Mean C-C su =   0.0284
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    23     serial number        3     Address    33947     Length      78     Created on                          
+ Print list type    23     serial number        3     Address    35149     Length      78     Created on                          
 
 
 
@@ -3711,7 +3709,7 @@ Mean C-C su =   0.0273
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    23     serial number        4     Address    33947     Length      78     Created on                          
+ Print list type    23     serial number        4     Address    35149     Length      78     Created on                          
 
 
 

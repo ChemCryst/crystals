@@ -36,6 +36,7 @@ Space group symbol is   C    1    2/C  1
 # PUNCHED ON 27/07/11 AT 08:25:58
 #
 #LIST      5
+Bonds: Update required - There is no list 41
 #CLOSE HKLI
 #OPEN HKLI  "TD-TORS.HKL"
 #HKLI
@@ -64,9 +65,6 @@ Space group symbol is   C    1    2/C  1
 #LIST  16
 #CLEAR 17
 #LIST  17
-#LIST 26
-#BONDCALC
-Bonds: Update required - There is no list 41
 #LIST 26
 #WEIGHT
                      LIST 4 weighting type is NORMAL

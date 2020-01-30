@@ -37,6 +37,7 @@ Space group symbol is   P    1
 #LIST 3
 #LIST 29
 #LIST      5
+Bonds: Update required - There is no list 41
 #
 #LIST      6
 #LIST 28
@@ -55,9 +56,6 @@ Space group symbol is   P    1
 #CLEAR 17
 #LIST  17
 #LIST 23
-#LIST 26
-#BONDCALC
-Bonds: Update required - There is no list 41
 #LIST 26
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -6741,7 +6739,7 @@ Mean C-C su =   0.0481
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number       26     Address   224648     Length      90     Created on                          
+ Print list type    24     serial number       26     Address   227492     Length      90     Created on                          
 
 
 
@@ -10615,7 +10613,7 @@ Mean C-C su =   0.0477
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number       40     Address   333902     Length      90     Created on                          
+ Print list type    24     serial number       40     Address   336746     Length      90     Created on                          
 
 
 
@@ -14387,7 +14385,7 @@ Mean C-C su =   0.0481
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number       54     Address   445590     Length      90     Created on                          
+ Print list type    24     serial number       54     Address   448434     Length      90     Created on                          
 
 
 

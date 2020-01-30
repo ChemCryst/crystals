@@ -44,6 +44,7 @@ Space group symbol is   P    21   21   21
 #
 #           COORDINATES TAKEN FROM PARTIAL REFINEMENT DONE ELSEWHERE.
 #
+Bonds: Update required - There is no list 41
 #LIST 4
 #                                         WEISSENBERG DIFFRACTOMETER.
 #LIST 13
@@ -304,9 +305,6 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 #SFLS
 #CLEAR 17
 #LIST  17
-#LIST 26
-#BONDCALC
-Bonds: Update required - There is no list 41
 #LIST 26
 #WEIGHT
                      LIST 4 weighting type is 1/FO
@@ -2509,6 +2507,7 @@ H23 C(11) C(10) C(1)
            H        111.0    1.00000        1.    1.2600   -0.0670    0.1838    0.0600
            H        112.0    1.00000        1.    1.1433   -0.0424    0.0914    0.0600
  List now contains    21 atoms
+Bonds: Update required - List5 length change
 #SFLS
 #SPEC  NO  NO
 #CALCULAT   1
@@ -2677,6 +2676,7 @@ LS-scale=  1.687   Wilson Scale=  0.000
 
      C        11.         Q         2.      1   1    1   -1    0    0.352      Deleted    0.086   0.985   0.149      3.8
  List now contains    25 atoms
+Bonds: Update required - List5 length change
 #EDIT
  The following atom(s) will be changed
          Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part
@@ -2693,6 +2693,7 @@ LS-scale=  1.687   Wilson Scale=  0.000
     H  91      H  92      H  93      H 101      H 102      H 111      H 112
     H   1
  List   5 now contains     22 atom(s)
+Bonds: Update required - List5 length change
 #LIST 12
 #DISTANCE
 #LIST 31
@@ -4594,7 +4595,7 @@ Mean C-C su =   0.0060
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    20     serial number        3     Address    82164     Length     234     Created on                          
+ Print list type    20     serial number        3     Address    83582     Length     234     Created on                          
 
 
 
@@ -4826,7 +4827,7 @@ Mean C-C su =   0.0060
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    20     serial number        4     Address    82398     Length     234     Created on                          
+ Print list type    20     serial number        4     Address    83816     Length     234     Created on                          
 
 
 
@@ -5061,7 +5062,7 @@ Mean C-C su =   0.0060
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    20     serial number        5     Address    82632     Length     234     Created on                          
+ Print list type    20     serial number        5     Address    84050     Length     234     Created on                          
 
 
 
@@ -5308,7 +5309,7 @@ Mean C-C su =   0.0060
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    20     serial number        6     Address    82866     Length     234     Created on                          
+ Print list type    20     serial number        6     Address    84284     Length     234     Created on                          
 
 
 

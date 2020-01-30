@@ -38,6 +38,7 @@
 # PUNCHED ON  5-OCT84 AT 16:49:57
 #
 #LIST 5
+Bonds: Update required - There is no list 41
 #LIST 3
 #LIST 23
 #LIST 12
@@ -46,9 +47,6 @@
 #LIST  16
 #CLEAR 17
 #LIST  17
-#LIST 26
-#BONDCALC
-Bonds: Update required - There is no list 41
 #LIST 26
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -2643,7 +2641,7 @@ Mean C-C su =   0.0000
  The following atom(s) will be arithmetically modified
          Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part
                                    Uiso  Size D/100 A/100
-  CL   1 1.00-0.195-0.200-0.143 0 0.050 0.087 0.048 0.00-0.01 0.01     1.000      0
+  CL   1 1.00-0.195-0.200-0.143 0 0.050 0.087 0.048-0.00-0.01 0.01     1.000      0
  List   5 now contains     22 atom(s)
 #LIST 12
 #SFLS
@@ -3278,7 +3276,7 @@ Mean C-C su =   0.0000
  The following atom(s) will be arithmetically modified
          Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part
                                    Uiso  Size D/100 A/100
-  CL   1 1.00-0.195-0.200-0.143 0 0.050 0.087 0.048 0.00-0.01 0.01     1.000      0
+  CL   1 1.00-0.195-0.200-0.143 0 0.050 0.087 0.048-0.00-0.01 0.01     1.000      0
  List   5 now contains     22 atom(s)
 #LIST 12
 #SFLS
@@ -3933,6 +3931,7 @@ Space group symbol is   P    -4
 #LIST 4
 #LIST 3
 #LIST      5
+Bonds: Update required - List5 length change
 #
 # PUNCHED ON 03/04/14 AT 08:39:39
 #
@@ -5044,7 +5043,7 @@ LS-scale=  2.709   Wilson Scale=  0.000
  After   1 pass     904 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
 #PURGE  LIST=7
- List type    5  serial number   65 from    51191 to    51417 will not be copied ( deleted )         
+ List type    5  serial number   65 from    51461 to    51687 will not be copied ( deleted )         
 
 
  ************************************************************************

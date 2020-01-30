@@ -44,6 +44,7 @@ Space group symbol is   P    21   21   21
 #
 #           COORDINATES TAKEN FROM PARTIAL REFINEMENT DONE ELSEWHERE.
 #
+Bonds: Update required - There is no list 41
 #LIST 4
 #                                         WEISSENBERG DIFFRACTOMETER.
 #LIST 13
@@ -241,9 +242,6 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 #SFLS
 #CLEAR 17
 #LIST  17
-#LIST 26
-#BONDCALC
-Bonds: Update required - There is no list 41
 #LIST 26
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -2865,6 +2863,7 @@ H23 C(11) C(10) C(1)
            H        111.0    1.00000        1.    1.2561   -0.0676    0.1861    0.0587
            H        112.0    1.00000        1.    1.1461   -0.0420    0.0930    0.0587
  List now contains    21 atoms
+Bonds: Update required - List5 length change
 #SFLS
 #SPEC  NO  NO
 #CALCULAT   1
@@ -3924,6 +3923,7 @@ Space group symbol is   P    21   21   21
 #
 #           COORDINATES TAKEN FROM PARTIAL REFINEMENT DONE ELSEWHERE.
 #
+Bonds: Update required - List5 length change
 #LIST 4
 #                                         WEISSENBERG DIFFRACTOMETER.
 #LIST 13
@@ -6467,7 +6467,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number        7     Address   125630     Length     318     Created on                          
+ Print list type    22     serial number        7     Address   126246     Length     318     Created on                          
 
 
              74 parameter(s) in    1 block(s) - as follows:
@@ -6559,7 +6559,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    24     serial number       28     Address   129232     Length     168     Created on                          
+ Print list type    24     serial number       28     Address   129848     Length     168     Created on                          
 
 
 
@@ -6739,6 +6739,7 @@ H23 C(11) C(10) C(1)
            H        111.0    1.00000        1.    1.2560   -0.0676    0.1861    0.0587
            H        112.0    1.00000        1.    1.1461   -0.0420    0.0930    0.0587
  List now contains    21 atoms
+Bonds: Update required - List5 length change
 #SFLS
 #SPEC  NO  NO
 #CALCULAT   1
@@ -7796,6 +7797,7 @@ Space group symbol is   P    21   21   21
 #
 #           COORDINATES TAKEN FROM PARTIAL REFINEMENT DONE ELSEWHERE.
 #
+Bonds: Update required - List5 length change
 #LIST 4
 #                                         WEISSENBERG DIFFRACTOMETER.
 #LIST 13
@@ -10344,7 +10346,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       11     Address   187964     Length     318     Created on                          
+ Print list type    22     serial number       11     Address   189087     Length     318     Created on                          
 
 
              74 parameter(s) in    1 block(s) - as follows:
@@ -10436,7 +10438,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    24     serial number       44     Address   191566     Length     168     Created on                          
+ Print list type    24     serial number       44     Address   192689     Length     168     Created on                          
 
 
 
@@ -10616,6 +10618,7 @@ H23 C(11) C(10) C(1)
            H        111.0    1.00000        1.    1.2574   -0.0652    0.1853    0.0601
            H        112.0    1.00000        1.    1.1456   -0.0399    0.0924    0.0601
  List now contains    21 atoms
+Bonds: Update required - List5 length change
 #SFLS
 #SPEC  NO  NO
 #CALCULAT   1
@@ -11679,6 +11682,7 @@ Space group symbol is   P    21   21   21
 #
 #           COORDINATES TAKEN FROM PARTIAL REFINEMENT DONE ELSEWHERE.
 #
+Bonds: Update required - List5 length change
 #LIST 4
 #                                         WEISSENBERG DIFFRACTOMETER.
 #LIST 13
@@ -14227,7 +14231,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       15     Address   250140     Length     318     Created on                          
+ Print list type    22     serial number       15     Address   252133     Length     318     Created on                          
 
 
              74 parameter(s) in    1 block(s) - as follows:
@@ -14319,7 +14323,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    24     serial number       60     Address   253742     Length     168     Created on                          
+ Print list type    24     serial number       60     Address   255735     Length     168     Created on                          
 
 
 
@@ -14499,6 +14503,7 @@ H23 C(11) C(10) C(1)
            H        111.0    1.00000        1.    1.2574   -0.0652    0.1853    0.0601
            H        112.0    1.00000        1.    1.1456   -0.0399    0.0924    0.0601
  List now contains    21 atoms
+Bonds: Update required - List5 length change
 #SFLS
 #SPEC  NO  NO
 #CALCULAT   1

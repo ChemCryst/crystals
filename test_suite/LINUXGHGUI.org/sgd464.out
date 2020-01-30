@@ -52,8 +52,8 @@ Refining   263 parameters in    1 block :    35258 elements in the LS matrix.
 #LIST 26
 #BONDCALC
 #LIST 29
-#BONDCALC
 Bonds: Update required - There is no list 41
+#BONDCALC
 #LIST 26
 #CHECK HI
 
@@ -1708,7 +1708,7 @@ ___________
     Atom CL(3), basis: CL(3),C(2)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
 [78]          1  1  0  0  0   -2.3E-05     0.0E+00    -2.3E-05    0.999    Uc[1,3]==0
-[78]          1  1  0  0  0   -1.6E-05     0.0E+00    -1.6E-05    0.999    Uc[2,3]==0
+[78]          1  1  0  0  0   -1.6E-05     0.0E+00    -1.6E-05    0.998    Uc[2,3]==0
     Atom CL(4), basis: CL(4),C(2)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
 [78]          1  1  0  0  0    2.0E-04     0.0E+00     2.0E-04    0.999    Uc[1,3]==0
