@@ -19,6 +19,10 @@ jobs:
           oscode: ubuntu
         - os: windows-latest
           oscode: win64
+        - cl: gui
+          guiflag: yes
+        - cl: nogui
+          guiflag: no
     steps:
     - name: Checkout crystals
       uses: actions/checkout@v1
@@ -67,7 +71,7 @@ jobs:
       working-directory: ci
       if: matrix.os == 'windows-latest' && matrix.cl == 'nogui'
       run: |
-        echo "Gui on or off? {{ matrix.cl == 'gui' ? 'on':'off' }}"
+        echo "Gui on or off? {{ matrix.guiflag }}"
         $env:Path = "D:\a\_temp\msys\\msys64\mingw64\bin;$env:Path"
         cmake .. -G"MinGW Makefiles" -DuseGUI=no -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND"
         mingw32-make -j2
