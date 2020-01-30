@@ -67,6 +67,7 @@ jobs:
       working-directory: ci
       if: matrix.os == 'windows-latest' && matrix.cl == 'nogui'
       run: |
+        echo "Gui on or off? {{ matrix.cl == 'gui' ? 'on':'off' }}"
         $env:Path = "D:\a\_temp\msys\\msys64\mingw64\bin;$env:Path"
         cmake .. -G"MinGW Makefiles" -DuseGUI=no -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND"
         mingw32-make -j2
