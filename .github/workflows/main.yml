@@ -17,12 +17,24 @@ jobs:
         include:
         - os: ubuntu-latest
           oscode: ubuntu
+          crysdir: ./,../ci/
+          testprefix: LINUXGH
         - os: windows-latest
           oscode: win64
+          crysdir: .\,..\ci\
+          testprefix: MIN64GH
         - cl: gui
           guiflag: yes
+          testsuffix: GUI
         - cl: nogui
           guiflag: no
+          testsuffix:
+        - os: ubuntu-latest
+          cl: nogui
+          removeguitst: rm gui.tst
+        - os: ubuntu-latest
+          cl: gui
+          removeguitst:
     steps:
     - name: Checkout crystals
       uses: actions/checkout@v1
@@ -104,8 +116,8 @@ jobs:
         cmake -DuseGUI=${{ matrix.guiflag }} -DuseOPENMP=no  ..
         make -j2
         rm ../test_suite/gui.tst
-        echo "::set-env name=COMPCODE::LINUXGH"
-        echo "::set-env name=CRYSDIR::./,../ci/"
+#        echo "::set-env name=COMPCODE::LINUXGH"
+#        echo "::set-env name=CRYSDIR::./,../ci/"
 #
 # Build LINUX / GUI
 #
@@ -115,8 +127,8 @@ jobs:
       run: |
         cmake -DuseGUI=on -DuseOPENMP=no  ..
         make -j2
-        echo "::set-env name=COMPCODE::LINUXGHGUI"
-        echo "::set-env name=CRYSDIR::./,../ci/"
+#        echo "::set-env name=COMPCODE::LINUXGHGUI"
+#        echo "::set-env name=CRYSDIR::./,../ci/"
 #
     - name: Test CRYSTALS windows
       working-directory: test_suite
@@ -150,7 +162,8 @@ jobs:
 # Go
       run: |
         mkdir script
-        mkdir testartifacts
+        ${{ removeguitst }}
+        set COMPCODE=${{ matrix.testprefix }}${{ matrix.testsuffix }}
         echo CRYSDIR is $CRYSDIR
         echo PATH is $PATH
         echo "%SCRIPT NONE" > script/tipauto.scp
@@ -172,6 +185,8 @@ jobs:
       timeout-minutes: 10
       run: |
         mkdir script
+        ${{ removeguitst }}
+        set COMPCODE=${{ matrix.testprefix }}${{ matrix.testsuffix }}
         echo CRYSDIR is $CRYSDIR
         echo PATH is $PATH
         echo "%SCRIPT NONE" > script/tipauto.scp
