@@ -36,7 +36,7 @@ jobs:
         - os: ubuntu-latest
           cl: gui
           removeguitst:
-          fbrunner: xvfb -a
+          fbrunner: xvfb-run -a
         - os: windows-latest
           cl: nogui
           removeguitst: del gui.tst
@@ -45,6 +45,8 @@ jobs:
           cl: gui
           removeguitst:
           wxoptions: -DwxWidgets_ROOT_DIR=..\wx -DwxWidgets_LIB_DIR=..\wx\lib\gcc810_x64_dll -DwxWidgets_CONFIGURATION=mswu
+
+
     steps:
     - name: Checkout crystals
       uses: actions/checkout@v1
@@ -55,14 +57,17 @@ jobs:
       if: matrix.os == 'windows-latest'
       with:
         msystem: MINGW64
+
 # WIN ONLY
     - name: Install MinGW compiler and tools
       if: matrix.os == 'windows-latest'
       run: msys2do pacman --noconfirm -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-openblas mingw-w64-x86_64-perl msys2-w32api-runtime mingw-w64-x86_64-curl
+
 # LINUX ONLY
     - name: Install Ubuntu compiler and tools
       if: matrix.os == 'ubuntu-latest'
       run: sudo apt-get install -y gfortran libopenblas-dev
+
 # LINUX ONLY
     - name: Install Ubuntu wxWidgets
       if: matrix.os == 'ubuntu-latest' && matrix.cl == 'gui'
@@ -71,7 +76,7 @@ jobs:
         sudo apt-add-repository 'deb http://repos.codelite.org/wx3.1.0/ubuntu/ artful universe'
         sudo apt-get update
         sudo apt-get install -y libwxbase3.1-0-unofficial libwxbase3.1-dev libwxgtk3.1-0-unofficial libwxgtk3.1-dev wx3.1-headers wx-common libwxgtk-webview3.1-0-unofficial libwxgtk-webview3.1-dev libwxgtk-media3.1-0-unofficial libwxgtk-media3.1-dev libwxbase3.1-0-unofficial-dbg libwxgtk3.1-0-unofficial-dbg libwxgtk-webview3.1-0-unofficial-dbg libwxgtk-media3.1-0-unofficial-dbg wx3.1-i18n wx3.1-examples
-#
+
 # Install wxWidgets - win GUI only
 #
     - name: Setup wxWidgets for Win64 gui
@@ -86,29 +91,17 @@ jobs:
 #
     - name: Create build folder
       run: mkdir ci
+
+# Build WIN64
 #
-# Build WIN / NOGUI
-#
-    - name: Build CRYSTALS win64 nogui
+    - name: Build CRYSTALS win64
       working-directory: ci
-      if: matrix.os == 'windows-latest' && matrix.cl == 'nogui'
+      if: matrix.os == 'windows-latest'
       shell: cmd
       run: |
         set PATH=D:\a\_temp\msys\msys64\mingw64\bin;%PATH%
-        cmake .. -G"MinGW Makefiles" -DuseGUI=no -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }}
-        mingw32-make -j2
-#        del ..\test_suite\gui.tst
-#
-# Build WIN / GUI
-#
-    - name: Build CRYSTALS win64, gui
-      working-directory: ci
-      if: matrix.os == 'windows-latest' && matrix.cl == 'gui'
-      shell: cmd
-      run: |
-        set PATH=D:\a\_temp\msys\msys64\mingw64\bin;%PATH%
-        cmake .. -G"MinGW Makefiles" -DuseGUI=yes -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} || echo Try again
-        cmake .. -G"MinGW Makefiles" -DuseGUI=yes -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }}
+        cmake .. -G"MinGW Makefiles" -DuseGUI=${{ matrix.guiflag }} -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} || echo Try again
+        cmake .. -G"MinGW Makefiles" -DuseGUI=${{ matrix.guiflag }} -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }}
         mingw32-make -j2
 #
 # Build LINUX
@@ -117,7 +110,6 @@ jobs:
       working-directory: ci
       if: matrix.os == 'ubuntu-latest'
       run: |
-        echo ${{ matrix.guiflag }}
         cmake -DuseGUI=${{ matrix.guiflag }} -DuseOPENMP=no  ..
         make -j2
 
