@@ -95,7 +95,7 @@ jobs:
       working-directory: ci
       if: matrix.os == 'ubuntu-latest' && matrix.cl == 'nogui'
       run: |
-        cmake -DuseGUI=off -DuseOPENMP=no  ..
+        cmake -DuseGUI={{ matrix.cl == 'gui' ? 'on':'off' }} -DuseOPENMP=no  ..
         make -j2
         rm ../test_suite/gui.tst
         echo "::set-env name=COMPCODE::LINUXGH"
