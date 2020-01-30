@@ -1,6 +1,6 @@
 # Created by https://www.gitignore.io/api/fortran
 # Edit at https://www.gitignore.io/?templates=fortran
-
+Not-used
 ### Fortran ###
 # Prerequisites
 *.d

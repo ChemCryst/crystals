@@ -766,14 +766,12 @@ Device names
 \\SET MIRROR state
 ------------------
 
-
+Mirroring input line to the output devices.
    
-   If 'state' = ON, then all input is reflected in the monitor or list file.
-   If 'state' = OFF, monitoring.
-   is suppressed. Any change made to
-   the monitoring state applies only to the current level of USE file and
-   any
-   USE file called by it.
+   If 'state' = ON, then all input is reflected in the monitor and list file.
+   If 'state' = OFF, mirroring of input  is suppressed. Any change made to
+   the mirroring state apply only to the current level of USE file and
+   any    USE file called by it.
 
 -----------------
 \\SET PAGE length
@@ -865,7 +863,12 @@ Device names
        ON   copy screen output to monitor
        SLOW copy all screen output PLUS output for graphics to monitor.
        (Mainly used for debuging graphics)
-   
+       FAST SUppress text output (except { lines) to text pane, keep 
+       sending GUI items to model window.
+       Useful for SCRIPTS which generate a lot of repeated output. 
+       State resets to "ON" after error condition encountered if state 
+       was not SLOW.
+      
 
 
    
@@ -1213,9 +1216,10 @@ The database contains two indices which control access to it.
 .. index:: Retreiving old data lists
 
 
-==========================================
-General List-control Directives  -  \\DISK
-==========================================
+
+========================
+\\DISK - Disk management
+========================
 
 
 
@@ -1243,32 +1247,20 @@ For example:
 
 
     \DISK
-    \  Print the current list index
-    PRINT INDEX=CURRENT
-    \ Print the index containing all the lists stored
-    \ on the disk
-    PRINT INDEX=DISK
-    \ Reset LIST 5 (the model parameters) to the one with serial number 4
-    RESET 5 4
-    \ Reset LIST 10 (Fourier peaks) to the 'current serial number - 1'
-    RESET 10 0 -1
-    \ Retain LIST 5 with serial number 6 when the disk
-    \ is purged
-    RETAIN 5 6
-    \ Delete current LIST 11 (normal/inverted least squares matrix)
-    DELETE 11
+    PRINT CURRENT    Print the current list index
+    PRINT DISK       Print the index containing all the lists stored
+                     on the disk
+    RESET 5 4        Reset LIST 5 (the model parameters) to the one 
+                     with serial number 4
+    RESET 10 0 -1    Reset LIST 10 (Fourier peaks) to the previous one
+    RETAIN 5 6       Retain LIST 5 with serial number 6 when the disk 
+                     is purged
+    DELETE 11        Delete current LIST 11 (normal/inverted least 
+                     squares matrix)
     END
 
 
 
-
-
-------
-\\DISK
-------
-
-
-   
    This is the command which initiates the
    routines to modify the list control table.
    The directives MARKERROR,
@@ -1550,7 +1542,9 @@ For example:
    
 
 
-   
+.. _Extend_disk:
+
+.. index:: Extending the Disk   
    
 
 **EXTEND RECORDS= FREE= TRIES= SIZE=**
@@ -1559,7 +1553,7 @@ For example:
    This directive 
    allows the user to extend the database by a specified number
    of records, and to control the auto-extension. On modern
-   platforms the extension of the database is automatic by
+   platforms the extension of the database is automatic and unlimited by
    default.
    
 
@@ -1590,12 +1584,14 @@ For example:
 
 
    This is the size, in records, that the system will increase the disk by
-   to try to accommodate the current operation. The usual default is 5.
+   to try to accommodate the current operation. 
+
+
    If the write still fails after TRIES x SIZE records have been added it 
    produces an error. Setting SIZE to zero enables uncontrolled
    extension of the disk file. This is the default, but if the
    user gets carried away doing crystallography, they may fill their 
-   disk.
+   physical disk.
    
    
    

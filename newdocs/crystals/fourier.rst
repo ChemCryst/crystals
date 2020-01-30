@@ -657,6 +657,8 @@ meanings
    Accordingly, reflections where /Fc/ < 0.001 are normally rejected
    for such Fouriers, and this is the default option of  SMALL.
 
+   Reflections where Fo is negative are always omitted since this implies an 
+   unjustified phase shift of 180 degrees.
    
    Some users like to omit reflections if Fc is smaller then a fraction of
    Fo. The options QUARTER and HALF are available.

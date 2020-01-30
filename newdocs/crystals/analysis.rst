@@ -159,7 +159,6 @@ q
 .. index:: Angle calculations
 
 
-.. index:: Geometry calculations
 
 
 ============================================
@@ -882,7 +881,7 @@ the surface.
    
    
    
-   
+.. _GEOMETRY:   
    
    
 .. index:: GEOMETRY
@@ -912,9 +911,9 @@ the surface.
 .. index:: Principal atomic displacement directions
 
 
-==================================================
-TLS analysis, best planes and lines  -  \\GEOMETRY
-==================================================
+=====================================================
+Best planes and lines and TLS analysis  -  \\GEOMETRY
+=====================================================
 
 
 ::
@@ -931,7 +930,7 @@ TLS analysis, best planes and lines  -  \\GEOMETRY
      REPLACE ATOM SPECIFICATIONS . . .
      PUNCH
      SAVE
-     DIHEDRAL  NP(1)  AND  NP(2)
+     DIHEDRAL  1  AND  2
      QUIT
      CENTRE   X=, Y=, Z=
      REJECT   NV=

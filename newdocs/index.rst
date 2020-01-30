@@ -16,9 +16,9 @@ CRYSTALS documentation  (djw)
 
 
    
-   userguide
-   interface
-   primer
+   chapter-1
+   chapter-2
+   chapter-3
    crystalsmanual
    cameron
 

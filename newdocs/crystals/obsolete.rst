@@ -1002,7 +1002,19 @@ The atoms to be moved around are taken directly from LIST 5.
    
 
 
+
+^^^^^^^^^^^^
+On-line HELP
+^^^^^^^^^^^^
+The on-line documentation consists of text files giving tips and
+advice.
+ 
+::
+
+     \HELP             HELP
+ or
+     \HELP             topic
    
    
-   
+This command is no longer supported   
    

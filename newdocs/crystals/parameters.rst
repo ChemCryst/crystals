@@ -31,7 +31,6 @@ The areas covered are:
     Input of atoms and other parameters              - \LIST 5
     Re-order the atom list                           - \REGROUP
     Collect atoms together by symmetry               - \COLLECT
-    Move the structure into the cell                 - \ORIGIN
     Modification of lists 5 and 10 on the disc       - \EDIT
     Applying permitted origin shifts                 - \ORIGIN
     Conversion of temperature factors                - \CONVERT
@@ -2367,12 +2366,13 @@ are given.
    
    
    
-   
+.. _REGROUP:   
    
 .. index:: REGROUP
 
    
 .. index:: Reorganising atoms and peaks
+
 
 
 ==============================================
@@ -2400,6 +2400,10 @@ Reorganisation of lists 5 and 10  -  \\REGROUP
 
 
 
+C Added code to \REGROUP, so that if the MOVE parameter is -ve, then
+C a covalent radius vector is provided to KDIST1, and the absolute
+C value of MOVE is used as a TOLERANCE, such that bonds are formed
+C if D < COV1+COV2+TOLERANCE.
 
 
 
@@ -2597,6 +2601,7 @@ between isolated parts of the structure.
    
 .. index:: Repositioning atoms and peaks
 
+.. _COLLECT:
 
 ====================================
 Repositioning of atoms  -  \\COLLECT

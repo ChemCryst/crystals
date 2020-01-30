@@ -1,5 +1,0 @@
-### Getting Started
-   *** Organisation of data
-   *** Starting the program
-   *** Customising CRYSTALS to suit your screen size
-

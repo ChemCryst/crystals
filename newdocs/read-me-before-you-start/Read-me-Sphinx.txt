@@ -8,6 +8,9 @@ Anaconda.bat, 2016-sphinx.bat  and sphinx.bat are in CRBUILD
 2016-sphinx (the DOS-shell script) runs anaconda to create the environment
 
 
+edit CMakeLists.txt to enable/disable Latex - see CmakeLists.good for full copy
+
+
 Add new files to appropriate doctree
 
 
@@ -15,6 +18,8 @@ Type "makesphinx" to create makefiles
 
 
 Type "sphinx" to run mingw32-make to (re)build \b folder
+
+CONTENTS in CRBUILD scans an rst file and creates offset lists of the headings
 
 
 The TOOLS-HELp files (structure,Xray-data,refinement,analyse) live in 5 places:

@@ -1403,12 +1403,55 @@ specifies relationships between those parameters.
 ::
 
 
+
     \LIST 12
     BLOCK SCALE X'S U'S
     END
 
-
-
+    Examples.
+       1. Full matrix isotropic refinement of a structure without H atoms
+      
+            \LIST 12
+            BLOCK SCALE X'S U[ISO]
+            END
+      
+       2. Full matrix anisotropic of a structure with C(25) as the last
+       non-hydrogen, not refining the H atoms.
+      
+            \LIST 12
+            BLOCK SCALE FIRST(X'S,U'S) UNTIL C(25)
+            END
+      
+       3. Refine all positions, aniso non-H, iso H atoms
+      
+            \LIST 12
+            BLOCK SCALE X'S
+            CONTINUE FIRST(U'S) UNTIL C(25)
+            CONTINUE H(1,U[ISO]) UNTIL LAST
+            END
+      
+       4. Ride H(1) positions on C(21) positions, etc. There are 2 H on C(25)
+      
+            \LIST 12
+            BLOCK SCALE X'S
+            CONTINUE FIRST(U'S) UNTIL C(25)
+            CONTINUE H(1,U[ISO]) UNTIL LAST
+            RIDE C(21,X'S) H(211,X'S)
+            RIDE C(22,X'S) H(221,X'S)
+            RIDE C(23,X'S) H(231,X'S)
+            RIDE C(24,X'S) H(241,X'S)
+            RIDE C(25,X'S) H(251,X'S) H(252,X'S)
+            END
+      
+       5. A fragment is distributed over 2 sites. The fragments are
+       C(100) C(101) O(102) C(103) and C(200) C(201) O(202) C(203)
+      
+            \LIST 12
+            BLOCK SCALE X'S
+            ... ...
+            EQUIVALENCE C(100,OCC) UNTIL C(103) C(200,OCC) UNTIL C(203)
+            WEIGHT -1 C(200,OCC) UNTIL C(203)
+            END
 
 
 ---------
@@ -4231,7 +4274,7 @@ the maximum shift for any parameter group is limited to a given value.
 Sorting of LIST 6 for structure factor calculations
 ===================================================
 
-
+..  see h:\absolute_config\Why-etc\New-RESULTS\HDF-gg3205
 
 During a structure factor least squares calculation, the values
 for the real and imaginary parts of  A  and  B  and their derivatives

@@ -1,6 +1,3 @@
-.. toctree::
-   :maxdepth: 1
-   :caption: Contents:
 
 
 .. _defandconv:
@@ -17,9 +14,20 @@
 
    </font>
 
+.. |red| raw:: html
+
+   <font color="red">
+
+.. |xred|   raw:: html
+
+   </font>
+
 .. |vspace|  raw:: latex
 
    \vspace{5mm}
 
 
 .. |F2| replace:: F\ :sup:`2`
+
+.. |2| replace:: \ :sup:'2'
+
