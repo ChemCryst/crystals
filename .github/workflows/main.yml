@@ -71,7 +71,7 @@ jobs:
       working-directory: ci
       if: matrix.os == 'windows-latest' && matrix.cl == 'nogui'
       run: |
-        echo "Gui on or off? {{ matrix.guiflag }}"
+        echo "Gui on or off? ${{ matrix.guiflag }}"
         $env:Path = "D:\a\_temp\msys\\msys64\mingw64\bin;$env:Path"
         cmake .. -G"MinGW Makefiles" -DuseGUI=no -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND"
         mingw32-make -j2
@@ -100,7 +100,9 @@ jobs:
       working-directory: ci
       if: matrix.os == 'ubuntu-latest' && matrix.cl == 'nogui'
       run: |
-        cmake -DuseGUI={{ matrix.cl == 'gui' ? 'on':'off' }} -DuseOPENMP=no  ..
+        echo ${{ matrix.guiflag }}
+        echo Tern ${{ matrix.cl == 'gui' ? 'yes':'no' }}
+        cmake -DuseGUI=${{ matrix.guiflag }} -DuseOPENMP=no  ..
         make -j2
         rm ../test_suite/gui.tst
         echo "::set-env name=COMPCODE::LINUXGH"
