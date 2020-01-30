@@ -162,7 +162,7 @@ jobs:
 # Go
       run: |
         mkdir script
-        ${{ removeguitst }}
+        ${{ matrix.removeguitst }}
         set COMPCODE=${{ matrix.testprefix }}${{ matrix.testsuffix }}
         echo CRYSDIR is $CRYSDIR
         echo PATH is $PATH
@@ -185,7 +185,7 @@ jobs:
       timeout-minutes: 10
       run: |
         mkdir script
-        ${{ removeguitst }}
+        ${{ matrix.removeguitst }}
         set COMPCODE=${{ matrix.testprefix }}${{ matrix.testsuffix }}
         echo CRYSDIR is $CRYSDIR
         echo PATH is $PATH
