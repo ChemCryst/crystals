@@ -101,7 +101,6 @@ jobs:
       if: matrix.os == 'ubuntu-latest' && matrix.cl == 'nogui'
       run: |
         echo ${{ matrix.guiflag }}
-        echo Tern ${{ "matrix.cl == 'gui' ? 'yes':'no'" }}
         cmake -DuseGUI=${{ matrix.guiflag }} -DuseOPENMP=no  ..
         make -j2
         rm ../test_suite/gui.tst
