@@ -32,9 +32,11 @@ jobs:
         - os: ubuntu-latest
           cl: nogui
           removeguitst: rm gui.tst
+          fbrunner:
         - os: ubuntu-latest
           cl: gui
           removeguitst:
+          fbrunner: xvfb -a
     steps:
     - name: Checkout crystals
       uses: actions/checkout@v1
@@ -115,7 +117,7 @@ jobs:
         echo ${{ matrix.guiflag }}
         cmake -DuseGUI=${{ matrix.guiflag }} -DuseOPENMP=no  ..
         make -j2
-        rm ../test_suite/gui.tst
+#        rm ../test_suite/gui.tst
 #        echo "::set-env name=COMPCODE::LINUXGH"
 #        echo "::set-env name=CRYSDIR::./,../ci/"
 #
@@ -152,31 +154,9 @@ jobs:
         echo "%END SCRIPT" >> script\\guideauto.scp
         perl testsuite.pl
 #
-    - name: Test CRYSTALS linux no gui
+    - name: Test CRYSTALS linux
       working-directory: test_suite
-      if: matrix.os == 'ubuntu-latest' && matrix.cl == 'nogui'
-# Prevent interactive scripts from running
-# Prevent gui test from running for this cl version
-# Setup environment
-# Compcode sets folder with reference test outputs
-# Go
-      run: |
-        mkdir script
-        ${{ matrix.removeguitst }}
-        set COMPCODE=${{ matrix.testprefix }}${{ matrix.testsuffix }}
-        echo CRYSDIR is $CRYSDIR
-        echo PATH is $PATH
-        echo "%SCRIPT NONE" > script/tipauto.scp
-        echo "%END SCRIPT" >> script/tipauto.scp
-        echo "%SCRIPT NONE" > script/guideauto.scp
-        echo "%END SCRIPT" >> script/guideauto.scp
-        perl testsuite.pl
-#
-#
-#
-    - name: Test CRYSTALS linux gui
-      working-directory: test_suite
-      if: matrix.os == 'ubuntu-latest' && matrix.cl == 'gui'
+      if: matrix.os == 'ubuntu-latest'
 # Prevent interactive scripts from running
 # Prevent gui test from running for this cl version
 # Setup environment
@@ -193,7 +173,7 @@ jobs:
         echo "%END SCRIPT" >> script/tipauto.scp
         echo "%SCRIPT NONE" > script/guideauto.scp
         echo "%END SCRIPT" >> script/guideauto.scp
-        xvfb-run -a perl testsuite.pl
+        ${{ matrix.fbrunner }} perl testsuite.pl
 #
 # If failures, save the test outputs for later comparisons
     - name: Upload crystals test outputs
