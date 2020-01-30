@@ -9,10 +9,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-#        os: [windows-latest, ubuntu-latest]
-#        cl: [gui, nogui]
-        os: [ubuntu-latest]
-        cl: [gui]
+        os: [windows-latest, ubuntu-latest]
+        cl: [gui, nogui]
+#        os: [ubuntu-latest]
+#        cl: [gui]
 #Exclude for testing.
         include:
         - os: ubuntu-latest
@@ -166,15 +166,12 @@ jobs:
       timeout-minutes: 10
       run: |
         mkdir script
-        mkdir testartifacts
         echo CRYSDIR is $CRYSDIR
         echo PATH is $PATH
         echo "%SCRIPT NONE" > script/tipauto.scp
         echo "%END SCRIPT" >> script/tipauto.scp
         echo "%SCRIPT NONE" > script/guideauto.scp
         echo "%END SCRIPT" >> script/guideauto.scp
-        ls script
-        ls ../ci/script
         xvfb-run -a perl testsuite.pl
 #
 # If failures, save the test outputs for later comparisons
