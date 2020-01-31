@@ -290,7 +290,7 @@ this file take great care - errors may make CRYSTALS inoperable.
       \SET SRQ state
       \SET TIME state
 
-   Obsolete
+   Obsolete: These commands have no action in the Windows environement
       \MANUAL  'name'
       \HELP   'topic'
       \SET COMMUNICATION speed
@@ -568,56 +568,6 @@ to enable processor speeds to be compared. See :ref:`Benchmark under Menus <benc
 
 Times for a Microvax 3800 (circa 1995) are printed for comparison.
 
-====================
-\\COMMANDS   command
-====================
-This command, which takes other command-names as a parameter 
-(without the \\ ), produces a listing of the available parameters,
-keywords and defaults for those commands. The listing is
-derived directly from the 'command file', and is thus
-completely up to date for the program being run. This command will
-not operate correctly if the preceding command ended in error. Clear
-the error flag by performing some successful operation.
-The facility
-is an aide-memoire, and not intended to replace the manual.
-The full significance of the output is detailed in :ref:`crysdatabase` .
-
-==============
-? Command-name
-==============
-This facility allows the user to make brief inquiries from the command
-file on the commands, directives, and parameters available at the
-current point in the job. 
-
-* If a command is not being processed, and
-  **?** is entered alone, a list of the commands is displayed. 
-* If **? COMMAND**
-  is entered, a list of the directives available with that command is
-  displayed. 
-* If **? COMMAND DIRECTIVE** is entered, a list of parameters for
-  the given command and directive is displayed, and so on.
-
-   
-If a command is currently being processed, the behaviour is similar,
-but no command name is allowed. Then **?** alone gives a list of 
-directives, while **? DIRECTIVE** gives a list of parameters, and so 
-on. In this case care should be taken: After a **?**, CRYSTALS loses track
-of the last parameter that was input so using CONTINUE
-will have unpredictable results. To work around this, specify the parameter
-explicitly on the command line, for example:
-::
-
-      \EDIT
-      \              Start entering a new atom to be added to the model:
-      ATOM U 1.0
-      \              Refresh your memory as to the rest of the syntax:
-      ?atom
-      \              Carry on entering the atom, but give the 
-      \              parameter name, X, explicitly.
-      CONTINUE X=0.2 0.4 0.5
-      END
-   
-
 =====
 \\END
 =====
@@ -797,73 +747,3 @@ is "OFF" the messages are not displayed. If 'state' is "ON" the messages
 are   displayed.
 
 
-^^^^^^^^
-Obsolete
-^^^^^^^^
-These Immediate Commands have no functionality in the current MS Windows implementation.
-
-================
-\\MANUAL  'name'
-================
-   The 'name' parameter is the name of the volume whose index is required.
-   The
-   special name 'INDEX' gives a list of subjects for each volume. The special
-   name 'LISTS' gives a list of the function of each LIST.
-
-================
-\\HELP   'topic'
-================
-   
-   The topic 'HELP' contains a list of topics for which help is given. This
-   is likely to be very site-specific.
-
-   
-=========================
-\\SET COMMUNICATION speed
-=========================
-   This command is used to indicate to the program the speed of the
-   communication line or terminal
-   on which it is being run. This indication is used by some facilities to
-   determine how much output to produce on the monitor channel. The possible
-   values for the speed are "SLOW" and "FAST". These keywords are not associated
-   with any particular terminal speed, and the appropriate value will depend
-   on
-   the user's patience. The initial value is "FAST"
-
-
-=====================
-\\SET TERMINAL device
-=====================
-   This command controls the display of SCRIPT menus on some
-   terminals. Possible device types are
-   
-   ::
-
-       UNKNOWN This is the default, and requires no special terminal.
-       VT52    For use on terminals with limited screen management facilities.
-       VT100   For use on advanced terminals.
-       VGA     For use on PC VGA terminals
-       WIN     For use under Win32 and X-windows.
-
-=================
-\\SET PAGE length
-=================
-This command is used to change the length of the assumed 'page' when
-displaying files on the monitor channel, using the commands 'HELP', 'MANUAL',
-and 'TYPE'. The initial length is 20 lines. After the number of lines
-specified have been typed, the listing stops and a message indicates the
-program is waiting. A blank line or carriage return
-at this point will cause the listing to
-continue. Any other input is executed normally. If the length is set to
-zero,
-or a negative number, the feature is disabled.
-
-
-=================
-\\SET PAUSE value
-=================
-   This command sets a time, in seconds, for which the program will pause
-   at
-   the end of each screen full of output. It is only effective on DOS machines,
-   and enables the user to use the 'pause' key to hold a selected screen.
-   The maximum value of 'interval' is 200 seconds.
