@@ -74,9 +74,9 @@ print (" using $CRYSEXE \n");
   exit $exitcode;
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
- # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+ # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
- # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+ # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 
 sub cleanUp   # Delete unwanted output files
@@ -108,10 +108,10 @@ sub obscureMachinePrecision() {
 
 	open(my $fhi, '<', "$CROUTPUT.temp") or die $!;
         open(my $fho, '>', "$CROUTPUT") or die $!;
-        while (<$fhi>) { 
+        while (<$fhi>) {
 	   my $line = $_;
 #Catch negative zero formats from MINGW compiler.
-	   $line =~ s/(\s)-(0+\.0*\s)/$1 $2/g;   
+	   $line =~ s/(\s)-(0+\.0*\s)/$1 $2/g;
 
 	   chomp($line);
 
@@ -145,13 +145,13 @@ sub obscureMachinePrecision() {
               print $fho "[76] $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11 $12 $13 $14 $15 $16 $17 $18 $19 $20 $21\n";
 # Reversal stats are unstable wrt very tiny changes in shifts
 	  } elsif($line =~ m/^( Reversals).*$/ ) {
-              print $fho "[03] $1\n"; 
+              print $fho "[03] $1\n";
 # Shift/esd stats unstable for very small shifts
 #	  } elsif($line =~ m/^( The largest \(shift\/esd\) =      0.00).*$/ ) {
 #              print $fho "[04] $1\n";
 	  } elsif($line =~ m/^( The largest \(shift\/esd\) =      \d+\.\d)\d(.*)$/ ) {
               print $fho "[05] $1 $2\n";
-# Shift/esd stats unstable 
+# Shift/esd stats unstable
 	  } elsif($line =~ m/^(All cycle\s+shift\/esd).*$/ ) {
               print $fho "[06] $1\n";
 # Unstable appears sometimes
@@ -160,7 +160,7 @@ sub obscureMachinePrecision() {
 # Unstable appears sometimes
 	  } elsif($line =~ m/^\s+Param\.\s+Rel\.\s+param\.\s+Calc\.\sshift.*$/ ) {
 #              print $fho "$1\n";
-# Shift/esd stats unstable 
+# Shift/esd stats unstable
 	  } elsif($line =~ m/^( SRATIO ).*$/ ) {
 #              print $fho "$1\n"; #print nothing
 # Sum of the squares of the ratio unstable
@@ -215,7 +215,7 @@ sub obscureMachinePrecision() {
 # Fourier 'collect' edge cases  " Q        1.     0.6250    0.9375    0.2500       -1.7  Poor Shape"
 	   } elsif($line =~ m/^( Q\s+\d+\.).*(\d+\.\d\s+Poor Shape\s*)/ ) { #Get rid of coords, keep height
               print $fho "[19] $1 $2\n";
-# Fourier 'collect' edge cases  
+# Fourier 'collect' edge cases
 	   } elsif($line =~ m/^(\s+The deepest hole is at\s+).*/ ) { #Get rid of coords, keep message
               print $fho "[20] $1\n";
 # " Distances about atom  Q      2.          X =  0.24208     Y = -0.12688     Z = 0.74464 "
@@ -227,13 +227,13 @@ sub obscureMachinePrecision() {
 # Some shifts (7)   "                     0.8165           -0.0117  -0.0117  -0.0117  -0.0117  -0.0117  -0.0117  -0.0117"
 	   } elsif($line =~ m/^(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d\s*$/ ) {
               print $fho "[23] $1 $2 $3 $4 $5 $6 $7\n";
-# "All cycle   shift/esd            0.30E-01       0.53E-04       0.10E+05"			
+# "All cycle   shift/esd            0.30E-01       0.53E-04       0.10E+05"
 #	   } elsif($line =~ m/^(All cycle.*\d\.\d\dE.\d\d\s+\d\.\d)\d(E.\d\d\s+\d\.\d\dE.\d\d\s*)/ ) {
 #              print $fho "$1 $2\n";
 # " C      14.    0.0494    0.1250    0.8787    0.3510    0.1757    2.2240    Might be split"
 	   } elsif($line =~ m/^(.*\d+\.\d\d\d)\d(\s+\d+\.\d\d\d)\d(\s+\d+\.\d\d\d)\d(\s+\d+\.\d\d\d)\d(\s+\d+\.\d\d\d)\d(\s+\d+\.\d\d\d)\d(\s+Might be split)\s*/ ) {
               print $fho "[24] $1 $2 $3 $4 $5 $6 $7\n";
-# "Inter cycle shift/esd* 
+# "Inter cycle shift/esd*
 	   } elsif($line =~ m/^(Inter cycle shift\/esd)/ ) {
               print $fho "[69] $1\n";
 # "Inter cycle R*                   -5.0           0.11E-02       0.10E+03"
@@ -376,7 +376,7 @@ sub obscureMachinePrecision() {
 	                       (\s+\d+\.\d\d)\d\d  #U33
 	                       (\s+-?\d+\.\d\d)\d\d  #U32
 	                       (\s+-?\d+\.\d\d)\d\d  #U31
-	                       (\s+-?\d+\.\d\d)\d\d.*/x ) 
+	                       (\s+-?\d+\.\d\d)\d\d.*/x )
 						   {
               print $fho "[60] $1 $2 $3 $4 $5 $6 $7 $8 $9\n";
 #    5.   5.   1.     1.85     2.86
@@ -392,35 +392,37 @@ sub obscureMachinePrecision() {
 # Version number in CIF changes
 	   } elsif($line =~ m/^_audit_creation_method.*$/ ) {
               print $fho "[63] _audit_creation_method CRYSTALS\n";
-#     TOTALS          2016     96782.09     96957.7       0.105E+06       0.960E+00     3.01    6.37     .  .  *  
+#     TOTALS          2016     96782.09     96957.7       0.105E+06       0.960E+00     3.01    6.37     .  .  *
  	  } elsif($line =~ m/^(\s+TOTALS\s+\d+\s+\d+\.)\d+(\s+\d+\.)\d+(.*)$/ ) {
               print $fho "[65] $1 $2 $3\n";
-#  Best fit this cycle:      0.017     0.298 .0 .0 .0 .333     
+#  Best fit this cycle:      0.017     0.298 .0 .0 .0 .333
  	  } elsif($line =~ m/^(\s*Best fit this cycle.\s+\d+\.\d\d\d\s+\d+.\d)\d\d(.*)$/ ) {
               print $fho "[66] $1 $2\n";
-#    <wdelsq> :      0.979          S :      1.013 
+#    <wdelsq> :      0.979          S :      1.013
  	  } elsif($line =~ m/^(\s*<wdelsq>\s\S\s+\d+\.\d)\d\d(.*\d+\.\d).*$/ ) {
               print $fho "[67] $1 $2\n";
 # With parameter(s) :      0.1656E-01     0.2975E+00     0.0000E+00     0.0000E+00     0.0000E+00     0.3333E+00
  	  } elsif($line =~ m/^(\s*With parameter\S+\s\S\s+0\.\d\d)\d\d(E\S\d\d\s+0\.\d\d)\d\d(E\S\d\d.*)$/ ) {
               print $fho "[67] $1 $2 $3\n";
-#     H   = 2N         1002        47.07        47.1       0.101E+06       0.106E+01     3.25    6.72           *      
+#     H   = 2N         1002        47.07        47.1       0.101E+06       0.106E+01     3.25    6.72           *
  	  } elsif($line =~ m/^(\s*\S+\s+(?:=|#)\s\S+\s+\d+\s+\d+\.\d\d\s+\d+\.\d\s+0\.\d\d\dE\S\d\d\s+0\.\d)\d\d(E\S\d\d\s+\d+\.)\d\d(\s+\d+\.)\d\d(\s+.*)$/ ) {
               print $fho "[68] $1 $2 $3 $4\n";
 #The minimum and maximum map densities are -0.378     0.423    electrons /A^3
  	  } elsif($line =~ m/^(.*The minimum and maximum map densities are\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(.*)$/ ) {
               print $fho "[68] $1 $2 $3\n";
 #         1  1  0  0  0    5.70E-02     5.70E-02    -3.22E-05    1.000    U33_local - <U33_local> == 0
- 	  } elsif($line =~ m/^(\s+1\s+1\s+0\s+0\s+0\s+-?\d+\.\d)\d(E.\d\d\s+-?\d+\.\d)\d(E.\d\d\s+-?\d+\.\d)\d(.*)$/ ) {
-              print $fho "[78] $1$2$3$4\n";
-      
+#         (           1       )(     2    )(      3    )(           4                                  )
+} elsif($line =~ m/^(\s+1\s+1\s+0\s+0\s+0\s+-?\d+\.\d)\d(E.\d\d\s+-?\d+\.\d)\d(E.\d\d\s+-?\d+\.\d)\d(E.\d\d\s+-?\d+\.\d)\d\d(.*)$/ ) {
+#                                          1                         2                        3          4                    5
+              print $fho "[78] $1$2$3$4$5\n";
+
       } else {
               print $fho "$line\n";
 	  }
  	}
         close ($fhi);
-        close ($fho); 
-#RIC Feb16 - leave this here so we can inspect the original 
+        close ($fho);
+#RIC Feb16 - leave this here so we can inspect the original
 		#        unlink ($new_file);
 }
 
@@ -430,9 +432,9 @@ sub runTest      # Run each .tst file through both versions of CRYSTALS.
     foreach $currentFileName (@files)
     {
         $CRYUSEFILE=$currentFileName;
-        $name = $currentFileName;   
+        $name = $currentFileName;
         $name =~ s\.tst\\g;           # Remove the .tst extension.
-	
+
         $CROUTPUT="$name.out";        # Set environment variable
         unlink "$CROUTPUT";
         unlink "crfilev2.dsc";
@@ -443,9 +445,9 @@ sub runTest      # Run each .tst file through both versions of CRYSTALS.
         print "CRYSTALS exit code: $?\n";
         if ( "$?" != "0" ) {
            $exitcode = 1;
-        } 
+        }
 
-        if ( not $smoketest ) {		
+        if ( not $smoketest ) {
 			obscureMachinePrecision();
 
 
@@ -454,20 +456,20 @@ sub runTest      # Run each .tst file through both versions of CRYSTALS.
 				cleanUp(@cleanup);
 			}
 			print `$diff $CROUTPUT $COMPCODE.org/$CROUTPUT`;
-			
+
 			print "diff exitcode: $?\n";
 			if ( "$?" != "0" ) {
 			   $exitcode = 1;
-			}	
+			}
 		}
-	
+
 #        $CROUTPUT="$name.d.out";      # Set environment variable
 #        print("Deleting files... ");
 # 	unlink "$CROUTPUT";
 # 	unlink "crfilev2.dsc";
 #        print("Running Crystals (debug version) on $name.tst\n");
 #        `$CRYSDEXE`;                  # Run it
-#	
+#
 #        if (TRUE ne contains("-l", @ARGV)) {
 #            print("Removing bfiles (use '-l' to leave in place)\n");
 #	    cleanUp(@cleanup);
@@ -477,4 +479,3 @@ sub runTest      # Run each .tst file through both versions of CRYSTALS.
     }
 #print `compare.bat`
 }
-
