@@ -5228,8 +5228,8 @@ CODE FOR SETISSMON
       if(issmon .ne. ivalue) then
 ctemp       WRITE(NCWU,'(A,I6,A,I6)') 'ISSMON: Old value=',issmon,
 ctemp     1 '  New value=', ivalue
-       WRITE ( CMON,'(a,i6,a,i6)') 
-     1 '{W Setting ISSMON from  ',issmon,' to', ivalue
+ctemp       WRITE ( CMON,'(a,i6,a,i6)') 
+ctemp     1 '{W Setting ISSMON from  ',issmon,' to', ivalue
        CALL XPRVDU(NCVDU, 1,0)
        ISSMON = IVALUE
       endif
