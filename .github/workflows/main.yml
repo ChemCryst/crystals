@@ -130,7 +130,7 @@ jobs:
         echo PATH is %PATH%
         echo CRYSDIR is %CRYSDIR%
         ren ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org safe.dir
-        rmdir /q/s *.org
+        for /d %%G in ("*.org") do rd /s /q "%%~G"      
         ren safe.dir ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org 
         ${{ matrix.removeguitst }}
         mkdir script
