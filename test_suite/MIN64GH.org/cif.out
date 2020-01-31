@@ -391,7 +391,7 @@ _refine_ls_number_parameters      55
 _refine_ls_number_reflns          1133 
 _oxford_refine_ls_R_factor_ref    0.0879 
 _refine_ls_R_factor_all           0.0879 
-_oxford_refine_ls_wR_factor_ref   0.2170 
+_refine_ls_wR_factor_ref          0.2170 
 _refine_ls_wR_factor_all          0.2170 
 _refine_ls_goodness_of_fit_ref    1.6682 
 [01] _refine_ls_shift/su_max           0.0000
