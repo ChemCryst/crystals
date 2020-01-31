@@ -129,6 +129,9 @@ jobs:
         set PATH=D:\a\_temp\msys\msys64\mingw64\bin;..\wx\lib\gcc810_x64_dll;%path%
         echo PATH is %PATH%
         echo CRYSDIR is %CRYSDIR%
+        ren ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org safe.dir
+        rmdir /q/s *.org
+        ren safe.dir ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org 
         ${{ matrix.removeguitst }}
         mkdir script
         echo "%SCRIPT NONE" > script\\tipauto.scp
@@ -153,6 +156,9 @@ jobs:
         export CRYSDIR=${{ matrix.crysdir }}
         echo CRYSDIR is $CRYSDIR
         echo PATH is $PATH
+        mv ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org safe.dir
+        rm -Rf *.org
+        mv safe.dir ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org 
         echo "%SCRIPT NONE" > script/tipauto.scp
         echo "%END SCRIPT" >> script/tipauto.scp
         echo "%SCRIPT NONE" > script/guideauto.scp
