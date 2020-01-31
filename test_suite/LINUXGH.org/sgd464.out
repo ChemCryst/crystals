@@ -52,8 +52,8 @@ Refining   263 parameters in    1 block :    35258 elements in the LS matrix.
 #LIST 26
 #BONDCALC
 #LIST 29
-Bonds: Update required - There is no list 41
 #BONDCALC
+Bonds: Update required - There is no list 41
 #LIST 26
 #CHECK HI
 
@@ -6655,7 +6655,7 @@ All cycle   Min function          0.0           0.31E+04       0.10E+16
 [37]      CL         4.    1.00    0.00    0.89    0.27    0.00    0.19
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00   -0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.006    0.005    0.004 
+[31]                                         0.006    0.006    0.004 
 
 [37]      O          5.    1.00    0.00    0.46    0.78    0.24    0.03
 [37]                       0.00             0.00   -0.00    0.00   -0.00    0.00    0.00   -0.00   -0.00    0.00
@@ -6670,7 +6670,7 @@ All cycle   Min function          0.0           0.31E+04       0.10E+16
 [37]      C          7.    1.00    0.00    0.43    0.92    0.41    0.03
 [37]                       0.00            -0.00   -0.00   -0.00   -0.00    0.00   -0.00   -0.00   -0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.008    0.008    0.007 
+[31]                                         0.008    0.008    0.008 
 
 [37]      O          8.    1.00    0.00    0.56    0.96    0.42    0.03
 [37]                       0.00             0.00    0.00    0.00    0.00   -0.00    0.00   -0.00    0.00    0.00
@@ -6798,22 +6798,22 @@ ___________
 
     Atom C(24)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-[79]          1  1  0  0  0    5.4E-06     0.0E+00     5.4E-06    0.9    Ul_12 = 0.0
+[79]          1  1  0  0  0    5.3E-06     0.0E+00     5.3E-06    0.9    Ul_12 = 0.0
 [79]          1  1  0  0  0   -1.0E-05     0.0E+00    -1.0E-05    0.9    Ul_23 = 0.0
 [79]          1  1  0  0  0    5.6E-07     0.0E+00     5.6E-07    0.9    Ul_13 = 0.0
     Atom C(25)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-[79]          1  1  0  0  0    3.4E-07     0.0E+00     3.4E-07    0.9    Ul_12 = 0.0
+[79]          1  1  0  0  0    3.3E-07     0.0E+00     3.3E-07    0.9    Ul_12 = 0.0
 [79]          1  1  0  0  0   -2.4E-06     0.0E+00    -2.4E-06    0.9    Ul_23 = 0.0
 [79]          1  1  0  0  0    2.3E-06     0.0E+00     2.3E-06    0.9    Ul_13 = 0.0
     Atom C(26)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-[79]          1  1  0  0  0    7.5E-06     0.0E+00     7.5E-06    1.0    Ul_12 = 0.0
+[79]          1  1  0  0  0    7.4E-06     0.0E+00     7.4E-06    1.0    Ul_12 = 0.0
 [79]          1  1  0  0  0    1.2E-05     0.0E+00     1.2E-05    1.0    Ul_23 = 0.0
 [79]          1  1  0  0  0    6.0E-06     0.0E+00     6.0E-06    0.9    Ul_13 = 0.0
     Atom C(27)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-[79]          1  1  0  0  0    6.5E-06     0.0E+00     6.5E-06    1.0    Ul_12 = 0.0
+[79]          1  1  0  0  0    6.4E-06     0.0E+00     6.4E-06    1.0    Ul_12 = 0.0
 [79]          1  1  0  0  0   -1.8E-07     0.0E+00    -1.8E-07    0.9    Ul_23 = 0.0
 [79]          1  1  0  0  0   -9.3E-06     0.0E+00    -9.3E-06    0.9    Ul_13 = 0.0
     Atom C(28)
@@ -6825,7 +6825,7 @@ ___________
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
 [79]          1  1  0  0  0   -1.7E-06     0.0E+00    -1.7E-06    1.0    Ul_12 = 0.0
 [79]          1  1  0  0  0    8.5E-07     0.0E+00     8.5E-07    0.9    Ul_23 = 0.0
-[79]          1  1  0  0  0   -3.4E-07     0.0E+00    -3.4E-07    0.9    Ul_13 = 0.0
+[79]          1  1  0  0  0   -3.3E-07     0.0E+00    -3.3E-07    0.9    Ul_13 = 0.0
 ___________
  (1) NO
 ___________
@@ -14428,7 +14428,7 @@ Mean C-C su =   0.0094
  Structure factor least squares calculation    3  ends  2
 [29] SumFo/SumFc=  0.43    SumFoFc/SumFc^2=  0.44    SumwFoFc/SumwFc^2=  0.44
 LS-scale=  0.441   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.204    100*(<Fo>-<Fc>)/<Fo> =    -2.66
+<Fo>-<Fc> = -0.205    100*(<Fo>-<Fc>)/<Fo> =    -2.66
 #DORESTRAIN
 #INVERT  DEFA
 
