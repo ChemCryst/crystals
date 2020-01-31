@@ -1,0 +1,40 @@
+%SCRIPT XINVERT
+%%
+%% A script to invert the structure
+%%
+%% The coordinates are shifetd back to the unit cell
+%% In case of enantiomeric pairs of space groups are changed
+%%
+% VARIABLE REAL CENTRO
+%% The variables needed by XQUESTIO
+% VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
+% VARIABLE LOGICAL   ANSWER
+%%
+%%
+% COPY '#GENERALEDIT 2'
+% COPY 'LOCATE RECORDTYPE=101'
+% COPY 'TRANSFER FROM OFFSET=0 TO CENTRO'
+% COPY 'END'
+% IF ( CENTRO .GT. 0.9 ) THEN
+%
+%  EVALUATE QTITLE = 'Centrosymmetric Spacegroup'
+%  EVALUATE QLINE1 = 'In a centrosymmetric spacegroup (like this'
+%  EVALUATE QLINE2 = 'one) inverting the structure is pointless.'
+%  EVALUATE BUTTOK = '&Cancel'
+%  EVALUATE BUTTXX = '&Invert anyway'
+%  COPY '#SCRIPT XQUESTIO'
+%  IF ( ANSWER .EQ. TRUE ) THEN
+%   FINISH
+%  END IF
+% END IF
+%%
+% COPY '#EDIT'
+% COPY 'MONITOR OFF'
+% COPY 'TRANSFORM -1 0 0 0 -1 0 0 0 -1 FIRST UNTIL LAST'
+% COPY 'END'
+%%
+% COPY '#SCRIPT A_CENTERTOCELL'
+%%
+% COPY '#SCRIPT A_SPGRPAIRS'
+%%
+%END SCRIPT

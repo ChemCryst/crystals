@@ -1,0 +1,43 @@
+%SCRIPT HELPSIGMA
+% COPY '#SCRIPT XHELP1'
+
+{S The menu "Variance of Reflections" provide information
+{S about the intensity statistics
+
+{S Wt vs Sigma plots the reciprocal of the LSQ weight versus the reciprocal
+{S of the Standard Uncertainty of the Mean.
+ 
+{I Once the structure is solved and partially refined, look at the plot of
+{I weight versus sigma (Analyse/Wt vs sigma graph) to visualise how the weights
+{I deviate from those expected from the observed variances (the green line).
+{I Usually the points lie below the green line, indicating that the
+{I sigmas have been augmented to produce a flat analysis of variance or that
+{I the weight of outliers have been reduced.
+{I
+
+
+{S Standard Uncertainty plots the Internal Population su against the 
+{S External Population su
+
+{I The Internal is the rms deviation of equivalents, i.e. the self consistency 
+{I The mean su is the average of the manufacturers estimate of the 
+{I individual reflection su.
+
+{I The gradient should be about unity, indicating that the manufacturers estimates
+{I are in line with the measured reproducibility.
+
+{I A gradient greater than unity indicates: 
+{I a) that the dispersion amongst equivalents is greater than expected
+{I or
+{I b) that the manufacturers variances are underestimated.
+
+{I  Case (a) could arise if there are experimental problems such as uncorrected
+{I absorption, ice formation on crystal, crystal movement etc.
+{I
+
+{S  REMEMBER that the s.u. stored in the .DSC file is the s.u. of the Mean.
+{S  s.u.(Mean) = (population s.u.) / square_root(multiplicity)
+{S  and is therefor reduced for high multiplicity reflections.
+ 
+
+% COPY '#SCRIPT XHELP2'

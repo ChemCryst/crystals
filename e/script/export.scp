@@ -1,0 +1,42 @@
+%SCRIPT EXPORT
+%% A SCRIPT TO MOVE THE RESULTS OF LSQ  BETWEEN MACHINES
+%  COPY '#RELEASE PUNCH data\exchange.dat'
+%  COPY '#PUNCH 1'
+%  COPY 'END'
+%  COPY '#PUNCH 2 B'
+%  COPY 'END'
+%  COPY '#PUNCH 3'
+%  COPY 'END'
+%  COPY '#PUNCH 4'
+%  COPY 'END'
+%  COPY '#PUNCH 13'
+%  COPY 'END'
+%  COPY '#PUNCH 23'
+%  COPY 'END'
+%  COPY '#PUNCH 28'
+%  COPY 'END'
+%  COPY '#PUNCH 29'
+%  COPY 'END'
+%  COPY '#PUNCH 30'
+%  COPY 'END'
+%  COPY '#PUNCH 31'
+%  COPY 'END'
+%  COPY '#PUNCH 39'
+%  COPY 'END'
+%  COPY '#PUNCH 40'
+%  COPY 'END'
+%  COPY '#PUNCH 6 I'
+%  COPY 'END'
+%  COPY '#PUNCH 5'
+%  COPY 'END'
+%  COPY '#PUNCH 12'
+%  COPY 'END'
+%  COPY '#PUNCH 16'
+%  COPY 'END'
+%  COPY '#RELEASE PUNCH logs/bfile.pch'
+{1,11
+{1,11
+{1,11       Your ASCII data has been saved to EXCHANGE.DAT
+{1,11
+{1,11
+%END SCRIPT

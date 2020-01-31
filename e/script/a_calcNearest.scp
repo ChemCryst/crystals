@@ -1,0 +1,141 @@
+%SCRIPT CALCNEAREST
+%%
+%% Variables used by calling script
+%%
+%  VARIABLE CHARACTER CCOMMON CANCHOR
+%  VARIABLE REAL SBOND
+%%
+%  VARIABLE CHARACTER CAT1 CAT2 CATM CATD CATS
+%  VARIABLE REAL RATX RATY RATZ BDISTS BDIST
+%  VARIABLE REAL AT1X AT1Y AT1Z AT2X AT2Y AT2Z
+%  VARIABLE LOGICAL LDEBUG LDEFSFOUND LATOMSFOUND
+%  VARIABLE INTEGER ISER IPIVOT
+%%
+%  EVALUATE LDEBUG = FALSE
+%% EVALUATE LDEBUG = TRUE
+%%
+%  EVALUATE LDEFSFOUND = FALSE
+%  EVALUATE LATOMSFOUND = FALSE
+%%
+%  IF ( FILEEXISTS ( 'AtomsEvaluated.dat' ) ) THEN
+%    COPY '#OPEN SCPDATA AtomsEvaluated.dat'
+%%
+%    TRANSFER "{I Finding nearest bond between line or plane and evaluated atoms..." TO DISPLAY
+%%
+%    EVALUATE IPIVOT = 0
+%    EVALUATE SBOND = 0.0
+%%
+%    LOOP
+%    EVALUATE IPIVOT = IPIVOT + 1
+%%     TRANSFER "Increasing IPIVOT to " // CHARACTER ( IPIVOT ) TO DISPLAY
+%      ON ERROR TERMINATE
+%%     ON END TERMINATE
+%      LOOP IPIVOT TIMES
+%        EXTRACT NEXT
+%      END LOOP
+%      EXTRACT TRANSFER INPUT
+%      CLEAR
+%      GET KEYWORD 'Atom'
+%      EVALUATE CATM = CVALUE
+%      GET REAL 'x'
+%      EVALUATE AT1X = VALUE
+%      GET REAL 'y'
+%      EVALUATE AT1Y = VALUE
+%      GET REAL 'z'
+%      EVALUATE AT1Z = VALUE
+%%
+%      IF ( CATM .EQ. 'EVAL' ) .OR. ( CATM .EQ. 'END' ) THEN
+%%
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%%       TRANSFER "End outer loop found." TO DISPLAY
+%%
+%      ELSE IF ( CATM .EQ. 'LINE' ) .OR. ( CATM .EQ. 'PLANE' ) THEN
+%%
+%        EVALUATE LDEFSFOUND = TRUE
+%%       TRANSFER "Defs found." TO DISPLAY
+%%
+%      ELSE IF FIRSTSTR ( CATM ) .EQ. "QH" THEN
+%%
+%%       TRANSFER "Centroid found." TO DISPLAY
+%%
+%      ELSE IF LDEFSFOUND THEN
+%%
+%        EVALUATE CAT1 = CATM
+%        LOOP
+%          ON ERROR TERMINATE
+%%         ON END TERMINATE
+%          EXTRACT NEXT
+%          EXTRACT TRANSFER INPUT
+%          CLEAR
+%          GET KEYWORD 'Atom'
+%          EVALUATE CATM = CVALUE
+%          GET REAL 'x'
+%          EVALUATE AT2X = VALUE
+%          GET REAL 'y'
+%          EVALUATE AT2Y = VALUE
+%          GET REAL 'z'
+%          EVALUATE AT2Z = VALUE
+%%
+%          IF CATM .EQ. 'END' THEN
+%%
+%            EVALUATE LOOPEND = LOOPCOUNTER
+%            EVALUATE LATOMSFOUND = FALSE
+%%           TRANSFER "End inner loop found." TO DISPLAY
+%%
+%          ELSE IF CATM .EQ. 'EVAL' THEN
+%%
+%            EVALUATE LATOMSFOUND = TRUE
+%%           TRANSFER "Atoms found." TO DISPLAY
+%%
+%          ELSE IF LATOMSFOUND THEN
+%%
+%            EVALUATE CAT2 = CATM
+%            IF LDEBUG THEN
+%              TRANSFER CAT1 // " " // CHARACTER ( AT1X ) // " " // CHARACTER ( AT1Y ) // " " // CHARACTER ( AT1Z ) TO DISPLAY
+%              TRANSFER CAT2 // " " // CHARACTER ( AT2X ) // " " // CHARACTER ( AT2Y ) // " " // CHARACTER ( AT2Z ) TO DISPLAY
+%            END IF
+%%           TRANSFER "Now calculating the bond..." TO DISPLAY
+%% Subtract the vectors...
+%            EVALUATE RATX = AT2X - AT1X
+%            EVALUATE RATY = AT2Y - AT1Y
+%            EVALUATE RATZ = AT2Z - AT1Z
+%% and compute the distance...
+%            EVALUATE BDISTS = RATX * RATX + RATY * RATY + RATZ * RATZ
+%            EVALUATE BDIST = SQRT ( BDISTS )
+%% see which one is shortest of all...
+%            IF ( SBOND .EQ. 0.0 ) .OR. ( SBOND .GT. BDIST ) THEN
+%              EVALUATE SBOND = BDIST
+%              EVALUATE CANCHOR = CAT1
+%              EVALUATE CCOMMON = CAT2
+%            END IF
+%% and tell us the result
+%            IF LDEBUG THEN
+%              CLEAR
+%              INSERT 'Bond distance is '
+%              STORE FORMAT /(F8.5)/ LENGTH 9 REAL BDIST
+%              OUTPUT
+%              CLEAR
+%              INSERT 'Shortest bond is between '
+%              STORE CHARACTER CANCHOR
+%              INSERT ' and '
+%              STORE CHARACTER CCOMMON
+%              INSERT ': '
+%              STORE FORMAT /(F8.5)/ LENGTH 9 REAL SBOND
+%              OUTPUT
+%            END IF
+%
+%          END IF
+%%
+%        END LOOP
+%%
+%      END IF
+%%
+%      EXTRACT REWIND
+%%
+%    END LOOP
+%    COPY '#CLOSE SCPDATA'
+%  ELSE
+%    TRANSFER "File AtomsEvaluated.dat not found." TO DISPLAY
+%  END IF
+%%
+%END SCRIPT

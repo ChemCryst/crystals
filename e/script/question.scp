@@ -1,0 +1,14 @@
+%SCRIPT QUESTIONS
+ The SCRIPT questions are always asked in a standard format :-
+( <PERMITTED RESPONSES> )
+<PROMPTING TEXT>  (<DATA TYPE>)  [<DEFAULT VALUE>] :
+<PERMITTED RESPONSES> only appears if there is a restricted list of
+                      allowed values from which you must pick an item.
+<PROMPTING STRING>    poses the actual question.
+<DATA TYPE>           The type of data (integer, real, text etc)
+                      required
+<DEFAULT VALUE>       If this appears as '-', there is no default,
+                      and an answer must be supplied. In other cases,
+                      the default value will be used if you do not
+                      provide an answer.
+%END SCRIPT

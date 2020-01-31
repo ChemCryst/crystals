@@ -1,0 +1,84 @@
+%SCRIPT XGUIDEK
+%%
+%% Alloes user to alter gathered information about
+%% what's been done to the structure so far.
+%
+%  VARIABLE LOGICAL HDONE EDONE WDONE PDONE
+%  VARIABLE LOGICAL HMASK EMASK WMASK PMASK
+%  COPY '#SCRIPT XGETINFO'
+%%
+^^WI WINDOW XGUIDEK 'The facts:' MODAL
+^^WI COMMIT='BOK' CANCEL='BXX'
+^^WI GRID MAIN NROWS=5 NCOLS=3
+^^WI {
+^^WI  @ 2,2 STATIC KS1
+^^WI   'Tick indicates that program thinks action has been done'
+^^WI  @ 4,2 GRID B NROWS=1 NCOLS=3
+^^WI  {
+^^WI   @ 1,1 GRID L NROWS=6 NCOLS=1
+^^WI   {
+^^WI    @ 3,1 CHECKBOX HD 'All H atoms found'
+% IF ( HDONE ) THEN
+^^WI                   STATE=ON
+% END IF
+^^WI    @ 4,1 CHECKBOX ED 'Checked for extinction'
+% IF ( EDONE ) THEN
+^^WI                   STATE=ON
+% END IF
+^^WI    @ 5,1 CHECKBOX WD 'Chosen a weighting scheme'
+% IF ( WDONE ) THEN
+^^WI                   STATE=ON
+% END IF
+^^WI    @ 6,1 CHECKBOX PD 'Purged database to save space'
+% IF ( PDONE ) THEN
+^^WI                   STATE=ON
+% END IF
+^^WI   }
+^^WI   @ 1,3 GRID R NROWS=3 NCOLS=1
+^^WI   {
+^^WI    @ 1,1 BUTTON BOK '&OK'
+^^WI    @ 3,1 BUTTON BXX '&Cancel'
+^^WI   }
+^^WI  }
+^^WI }
+^^WI SHOW
+^^CR
+% VERIFY BOK BXX
+% GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
+% IF VALUE .EQ. 1 THEN
+^^??  HD STATE
+%     VERIFY ON OFF
+%     GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
+%     CASE VALUE
+%       EVALUATE HDONE = TRUE
+%       EVALUATE HDONE = FALSE
+%     END CASE
+^^??  ED STATE
+%     VERIFY ON OFF
+%     GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
+%     CASE VALUE
+%       EVALUATE EDONE = TRUE
+%       EVALUATE EDONE = FALSE
+%     END CASE
+^^??  WD STATE
+%     VERIFY ON OFF
+%     GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
+%     CASE VALUE
+%       EVALUATE WDONE = TRUE
+%       EVALUATE WDONE = FALSE
+%     END CASE
+^^??  PD STATE
+%     VERIFY ON OFF
+%     GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
+%     CASE VALUE
+%       EVALUATE PDONE = TRUE
+%       EVALUATE PDONE = FALSE
+%     END CASE
+%     EVALUATE HMASK = TRUE
+%     EVALUATE EMASK = TRUE
+%     EVALUATE WMASK = TRUE
+%     EVALUATE PMASK = TRUE
+%     COPY '#SCRIPT XPUTINFO'
+% END IF
+^^CO DISPOSE XGUIDEK
+%END SCRIPT

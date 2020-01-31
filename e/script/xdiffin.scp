@@ -1,0 +1,73 @@
+%SCRIPT XDIFFIN  
+%%Script for quick input of diffractometer cif files%                          
+%  VARIABLE INTEGER INBASICS 
+%  VARIABLE LOGICAL LFILE IFILE HFILE
+%%                                                                              
+%  VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX                        
+%  VARIABLE LOGICAL ANSWER LCANCEL XQMERGE                                      
+%  VARIABLE CHARACTER CNULL CDLINE                                              
+%%                                                                              
+%  EVALUATE LFILE = FILEEXISTS ( 'from-cif.cry' )
+%  IF LFILE .EQ. TRUE THEN
+%    LOOP                                                                          
+%%                                                                              
+%%%% Definition %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%          
+^^WI WINDOW XDIFFIN 'Input Diffractometer data' MODAL                                     
+^^WI COMMIT='BTNOK' CANCEL='BTNXX'                                              
+^^WI GRID MAIN NROWS=2 NCOLS=1                                                  
+^^WI {                                                                          
+^^WI   @ 1,1 GRID LEFT NROWS=4 NCOLS=3                                          
+^^WI   {                                                                        
+^^WI    @ 2,2 STATIC T1 'Click OK to read in data'                              
+^^WI    @ 3,2 STATIC T2 'from the file from-cif.cry.'                               
+^^WI   }                                                                        
+^^WI   @ 2,1 GRID RIGHT NROWS=3 NCOLS=7                                         
+^^WI   {                                                                        
+^^WI    @ 2,2 BUTTON BTNOK '&Ok' DEFAULT COMMIT                                 
+% IF .NOT. LFILE THEN                                                           
+^^WI         DISABLED=YES                                                       
+% END IF                                                                        
+^^WI    @ 2,4 BUTTON BTNXX '&Cancel' CANCEL                                     
+^^WI    @ 2,6 BUTTON BTNRR                                                      
+% IF LFILE THEN                                                                 
+^^WI '&Re-process data now'                                                        
+% ELSE                                                                          
+^^WI '&Pre-process data now'                                                          
+% END IF
+^^WI  }                                                                         
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR                                                                            
+^^CO FOCUS BTNOK                                                                
+%%                                                                              
+%%%% Processing %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%         
+%%                                                                              
+%    VERIFY BTNOK BTNXX BTNRR                                                     
+%    GET SILENT NOSTORE FINAL ABBREVIATED 'Option:' ' '                           
+%    CASE VALUE                                                                   
+%      BLOCK              %OK%                                                    
+%         EVALUATE LOOPEND = LOOPCOUNTER                                        
+^^CO      DISPOSE XDIFFIN                                                       
+%      END BLOCK                                                                  
+%      BLOCK             %CANCEL%                                                 
+^^CO      DISPOSE XDIFFIN                                                       
+%         FINISH                                                                
+%      END BLOCK                                                                  
+%      BLOCK             %RUN DIFFIN%                                             
+^^CO      DISPOSE XDIFFIN                                                       
+{S * Running Pre-processor.                                                            
+%         COPY '#SCRIPT xdiffopn'                                     
+{R   Done.                                                                      
+%      END BLOCK                                                                  
+%    END CASE                                                                     
+%   END LOOP
+% ELSE
+{S * Running Pre-processor.                                                            
+%         COPY '#SCRIPT xdiffopn'                                     
+{R   Done.                                                                      
+% END IF
+%%                                                                              
+%%                                                                              
+%%%% Execution %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%         
+% COPY '#SCRIPT diffexec'
+%END SCRIPT                                                                     

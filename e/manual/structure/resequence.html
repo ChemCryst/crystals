@@ -1,0 +1,77 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta name="generator" content=
+  "HTML Tidy for Linux (vers 25 March 2009), see www.w3.org" />
+
+  <title></title>
+  <style type="text/css">
+/*<![CDATA[*/
+  div.c1 {text-align: center}
+  /*]]>*/
+  </style>
+</head>
+
+<body>
+  <div class="c1">
+    <h1>Resequence</h1>
+
+ Tidy up the atom coordinate list<br />
+
+  <hr color="blue" />
+  </div>
+
+
+ This routine offers another
+ way of re-ordering the atoms or Fourier peaks so that
+ related atoms or peaks
+ form a sequential group in the list, with sequential serial numbers and coordinates which 
+ put the atoms as close together as possible.
+
+  It should be used once the main part (or all
+  the non-hydrogen atoms) have been located<br />
+  <br />
+
+  <div class="c1">
+    <h2>Method</h2>
+  </div>The first atom is chosen as a pivot and a set of distances is calculated about
+ each non-hydrogen  atom or peak in the list in turn.
+ For each atom or peak in the list below the current pivot, the
+ minimum contact distance is chosen, and if this is less than 
+ 0.2A+ sum of the covalent radii, the atom or peak is moved up the list to
+ a position directly below the pivot.  As well as reordering the list,
+ the necessary symmetry operators are
+ applied to the positional and thermal parameters to bring the atom
+ or peak into the same part of the unit cell as the current pivot
+ atom. 
+
+  <br />  <br />
+  The next atom after the moved atoms is then made the new pivot and
+  the process repeated and repeated until an atom is found which forms no bonds to the
+  remaining atoms.  When more than one atom or peak is moved, their relative order is
+  preserved as they are inserted behind the current pivot atom.
+
+  <br />  <br />
+  If there are no atoms amongst the remainders bonding to the first pivot, the list is
+  searched for atoms bonding to the next pivot, and so on and so on until the process is
+  exhausted.<br />
+  This procedure leads to long chains of adjacent atoms being sequantially connected 
+  and re-numbered.
+
+  <br />  <br />
+  Hydrogen atoms are not included in this process, but are re-numbered to match their parent atom.
+
+<br />
+ 
+ Isolated parts of the structure are put into different PARTS
+
+
+  <hr color="blue" />
+
+
+</body>
+</html>
+
+
+
+
+

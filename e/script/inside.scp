@@ -1,0 +1,65 @@
+% SCRIPT INSIDE
+%% ensure Q/QC is in cell                                                         
+%  VARIABLE REAL SERIAL X Y Z XS YS ZS 
+%  VARIABLE INTEGER RESIDUE TEMP
+%  VARIABLE CHARACTER CTYPE 
+%%                                                                              
+%% FIND QC                                                                      
+%  TRANSFER "#GENERALEDIT 5" TO CRYSTALS                                         
+%  TRANSFER "LOCATE RECORDTYPE=101" TO CRYSTALS                                  
+%  TRANSFER "ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR" - 
+   TO CRYSTALS                                                                   
+%  TRANSFER "TOP" TO CRYSTALS                                                    
+%% GET SERIAL AND TYPE                                                          
+% EVALUATE SERIAL = - 1.0 
+% QUEUE REWIND                                                                  
+% LOOP                                                                          
+%   ON EDITERROR TERMINATE                                                      
+%%  get element type                                                            
+%   TRANSFER "TRANSFER FROM OFFSET=0 TO CTYPE" TO CRYSTALS                      
+%   IF ( ctype  .EQ. "Q" ) .OR. ( ctype  .EQ. "QC" ) THEN                                                
+%%    GET SERIAL, X,Y,Z,RESIDUE
+%     TRANSFER "TRANSFER FROM OFFSET=1 TO SERIAL" TO CRYSTALS                   
+%     TRANSFER "TRANSFER FROM OFFSET=4 TO X" TO CRYSTALS                        
+%     TRANSFER "TRANSFER FROM OFFSET=5 TO Y" TO CRYSTALS                        
+%     TRANSFER "TRANSFER FROM OFFSET=6 TO Z" TO CRYSTALS                        
+%     TRANSFER "TRANSFER FROM OFFSET=16 TO RESIDUE" TO CRYSTALS                        
+%% START SHIFTING ATOMS - WE REALLY NEED A /MOD/ INSTRUCTION IN SCRIPTS         
+%     EVALUATE XS = 0.                                                        
+%     EVALUATE YS = 0.                                                        
+%     EVALUATE ZS = 0.  
+%%
+% EVALUATE TEMP = INTEGER ( X )
+%     EVALUATE XS = - REAL ( TEMP )
+%     IF X + XS .LT. 0.0 THEN 
+%        EVALUATE XS = XS + 1.0
+%     END IF
+% EVALUATE TEMP = INTEGER ( Y )
+%     EVALUATE YS = - REAL ( TEMP )
+%     IF Y + YS .LT. 0.0 THEN  
+%        EVALUATE YS = YS + 1.0 
+%     END IF
+% EVALUATE TEMP = INTEGER ( Z )
+%     EVALUATE ZS = - REAL ( TEMP )
+%     IF Z + ZS .LT. 0.0 THEN  
+%        EVALUATE ZS = ZS + 1.0 
+%     END IF
+%%                                                                              
+%     CLEAR                                                                      
+%     INSERT 'SHIFT'                                                             
+%     STORE FORMAT "(F12.4)" REAL XS YS ZS                                       
+%     INSERT ' residue ( '                                                         
+%     STORE FORMAT "(i6)" integer  residue 
+%     INSERT ' ) '                                                                
+%     QUEUE SEND                                                                  
+%   END IF                                                                      
+%   TRANSFER "NEXT" TO CRYSTALS                                                 
+% END LOOP  
+% IF SERIAL .GE. 0.0 THEN                                                                     
+%   COPY '#EDIT'                                                              
+%   COPY 'MONITOR  OFF'
+%   QUEUE PROCESS                                                                 
+%   copy 'END'                                                           
+% END IF
+% QUEUE REWIND       
+% END SCRIPT

@@ -1,0 +1,42 @@
+%SCRIPT MODIFY
+A SCRIPT to help you modify data lists
+%  LOOP
+%  ON ERROR RESTART
+%    VERIFY BACK HELP PLOT CELL SYMMETRY SPACEGROUP ELEMENTS ATOMS RENAME -
+     OMIT VARIABLES RESTRAINT
+%    GET NOSTORE FINAL ABBREVIATED 'Script required' 'BACK'
+%    CASE VALUE
+%      FINISH                                      %BACK%
+%      BLOCK                                       %HELP%
+      BACK        Finish with this facility
+      HELP        Display this help text
+      PLOT        Plot (and possibly modify) the structure
+      CELL        Modify cell parameters         (LIST 1)
+      SYMMETRY    Input new symmetry information (LIST 2)
+      SPACEGROUP  Input new space group symbol   (LIST 2)
+      ELEMENTS    Modify elemental properties    (LIST 29)
+      ATOMS       Tidy up an atom list           (LIST 5)
+      RENAME      Rename or renumber atoms       (LIST 5)
+      OMIT        Set maximum I/sigma(I) omitted (LIST 28)
+                  The choices VARIABLES and RESTRAIN require you to
+                  understand how to use a system editor.
+      VARIABLES   Change the refinable variables (LIST 12)
+      RESTRAIN    Modify the restraints          (LIST 16)
+%      END BLOCK
+%%
+%     BLOCK
+%       COPY '#SCRIPT PLOT'
+%     END BLOCK
+%%
+%      COPY '#SCRIPT EDLIST1'                         %CELL%
+%      COPY '#SCRIPT INLIST2'                     %SYMMETRY%
+%      COPY '#SCRIPT INSPACE'                   %SPACEGROUP%
+%      COPY '#SCRIPT EDLIST29'                    %ELEMENTS%
+%      COPY '#SCRIPT EDLIST5'                        %ATOMS%
+%      COPY '#SCRIPT RENAME'                        %RENAME%
+%      COPY '#SCRIPT INLIST28'                    %INLIST28%
+%      COPY '#SCRIPT EDLIST12'                    %EDLIST12%
+%      COPY '#SCRIPT EDLIST16'                    %EDLIST16%
+%    END CASE
+%  END LOOP
+%END SCRIPT

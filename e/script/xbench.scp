@@ -1,0 +1,69 @@
+%SCRIPT XBENCH
+%% Bench mark the cpu speed
+%%
+%  VARIABLE INTEGER NPARAM NREF
+%%
+%%
+%%
+^^WI WINDOW XBENCHW 'Bench mark the CPU Speed' MODAL
+^^WI COMMIT='RF_BOK' CANCEL='RF_BXX'
+^^WI GRID MAIN NROWS=4 NCOLS=7
+^^WI {
+^^WI  @ 2,2 GRID L NROWS=5 NCOLS=1
+^^WI  {
+^^WI   @ 1,1 GRID M NROWS=1 NCOLS=3
+^^WI   {
+^^WI    @ 1,1 STATIC T1 'Number of parameters'
+^^WI    @ 1,3 EDITBOX NP ' 500' CHARS=5 INTEGER
+^^WI   }
+^^WI   @ 3,1 GRID F NROWS=1 NCOLS=3
+^^WI   {
+^^WI    @ 1,1 STATIC T2 'Number of reflections'
+^^WI    @ 1,3 EDITBOX NR ' 5000' CHARS=6 INTEGER
+^^WI   }
+^^WI  }
+^^WI  @ 2,6 GRID R NROWS=3 NCOLS=1
+^^WI  {
+^^WI   @ 1,1 BUTTON RF_BOK '&OK' DEFAULT
+^^WI   @ 3,1 BUTTON RF_BXX '&Cancel'
+^^WI  }
+^^WI }
+^^WI SHOW
+^^CR
+%%
+%%
+% LOOP
+%  ON ERROR TERMINATE
+%  VERIFY RF_BXX RF_BOK 
+%  GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
+%  CASE VALUE
+%   BLOCK
+^^WI  DISPOSE XBENCHW 
+^^CR
+%     FINISH
+%   END BLOCK
+%   BLOCK
+^^??  NP TEXT
+%     GET NOSTORE SILENT FINAL INTEGER 'How many parameters' '500'
+%     EVALUATE NPARAM = VALUE
+^^??  NR TEXT
+%     GET NOSTORE SILENT FINAL INTEGER 'How many reflections' '5000'
+%     EVALUATE NREF = VALUE
+%     QUEUE REWIND
+%     CLEAR
+%     INSERT '#BENCH  '
+%     IF NPARAM .GT. 0 THEN
+%      STORE FORMAT /(I8)/ LENGTH 8 INTEGER NPARAM
+%      IF NREF .GT. 0 THEN
+%        STORE FORMAT /(I8)/ LENGTH 8 INTEGER NREF
+%      END IF
+%     END IF
+%     QUEUE SEND
+^^WI  DISPOSE XBENCHW 
+^^CR
+%     QUEUE PROCESS
+%     FINISH
+%   END BLOCK
+%  END CASE
+% END LOOP
+%END SCRIPT

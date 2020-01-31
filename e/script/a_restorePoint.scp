@@ -1,0 +1,87 @@
+%SCRIPT XRESTOREPOINT
+%%
+%% A script to manage (reset, delete, retain) the List 5's in the DSC file.
+%%
+%  VARIABLE INTEGER ISER5 ISER12 ISER16
+%  VARIABLE LOGICAL LEX5 LEX12 LEX16
+%%
+%  EVALUATE ISER5 = 0
+%  EVALUATE ISER12 = 0
+%  EVALUATE ISER16 = 0
+%  EVALUATE LEX5 = FALSE
+%  EVALUATE LEX12 = FALSE
+%  EVALUATE LEX16 = FALSE
+%%
+%% Get the list numbers
+%%
+%  IF ( EXISTS 5 .EQ. 1 ) THEN
+%    COPY '#GENERALEDIT 5'
+%    COPY 'GETSERIAL ISER5'
+%    COPY 'END'
+%    EVALUATE LEX5 = TRUE
+%  END IF
+%%
+%  IF ( EXISTS 12 .EQ. 1 ) THEN
+%    COPY '#GENERALEDIT 12'
+%    COPY 'GETSERIAL ISER12'
+%    COPY 'END'
+%    EVALUATE LEX12 = TRUE
+%  END IF
+%%
+%  IF ( EXISTS 16 .EQ. 1 ) THEN
+%    COPY '#GENERALEDIT 16'
+%    COPY 'GETSERIAL ISER16'
+%    COPY 'END'
+%    EVALUATE LEX16 = TRUE
+%  END IF
+%%
+%% Mark the lists in the discfile
+%%
+%  COPY '#DISK'
+%%
+%  IF ( LEX5 ) .AND. ( ISER5 .GT. 0 ) THEN
+%    CLEAR
+%    INSERT 'RETAIN 5 '
+%    STORE INTEGER ISER5
+%    SEND
+%    CLEAR
+%    INSERT 'DELETE 5 '
+%    STORE INTEGER ISER5
+%    INSERT ' ACTION=NO'
+%    SEND
+%  END IF
+%%
+%  IF ( LEX12 ) .AND. ( ISER12 .GT. 0 ) THEN
+%    CLEAR
+%    INSERT 'RETAIN 12 '
+%    STORE INTEGER ISER12
+%    SEND
+%    CLEAR
+%    INSERT 'DELETE 12 '
+%    STORE INTEGER ISER12
+%    INSERT ' ACTION=NO'
+%    SEND
+%  END IF
+%%
+%  IF ( LEX16 ) .AND. ( ISER16 .GT. 0 ) THEN
+%    CLEAR
+%    INSERT 'RETAIN 16 '
+%    STORE INTEGER ISER16
+%    SEND
+%    CLEAR
+%    INSERT 'DELETE 16 '
+%    STORE INTEGER ISER16
+%    INSERT ' ACTION=NO'
+%    SEND
+%  END IF
+%%
+%  COPY 'END'
+%%
+%% Do something
+%%
+%% TRANSFER "List 5,  serial " // CHARACTER ( ISER5 ) TO DISPLAY
+%% TRANSFER "List 12, serial " // CHARACTER ( ISER12 ) TO DISPLAY
+%% TRANSFER "List 16, serial " // CHARACTER ( ISER16 ) TO DISPLAY
+%  TRANSFER "The current lists 5, 12 and 16 are kept as a restore point." TO DISPLAY
+%%
+%END SCRIPT

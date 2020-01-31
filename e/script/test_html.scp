@@ -1,0 +1,517 @@
+%SCRIPT test_html
+%% Test if files exist
+The following file cannot be found in the correct directories
+% variable character file
+%%
+%evaluate file = 'CRYSDIR:manual/primer-9.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/cameron.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/cameron-1.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/cameron-2.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/cameron-3.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/cameron-4.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/cameron-5.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/cameron-6.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/cameron-7.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/cameron-8.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/cameron-9.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/cameron-10.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/cameron-11.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/cameron-12.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/cameron-13.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/cameron-14.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/cameron-15.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/cameron-16.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/cameron-17.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/cameron-18.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/cameron-19.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/cameron-20.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/cameron-21.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/cameron-22.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/cameron-23.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/cameron-24.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/cameron-25.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/analyse/mce.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'crysdir:manual/primer-1.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'crysdir:manual/faq-1.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/crystalsmanual-sfls.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/analyse/analysis.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/analyse/Difficult.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:script/layout.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:script/pale-layout.pdf'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/readme.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:DEMO/CYCLO/CYCLO-ROUTINE.PDF'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:DEMO/YLID/YLID.PDF'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:DEMO/PEACH/PEACH.PDF'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:DEMO/EDITOR/EDITORS.PDF'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:DEMO/LLEWELLYN/Llewellyn.PDF'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:DEMO/QUICK/Tetra.PDF'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:DEMO/DISORDER/DISORDER.PDF'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:DEMO/SHAPE/SHAPE.PDF'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:DEMO/KEEN/KEEN-TWIN.PDF'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:DEMO/TWIN/TIN-TWIN.PDF'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:DEMO/TWIN2/TWIN-2.PDF'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:DEMO/Advanced.PDF'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/faq-1.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/primer-1.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/primer-2.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/primer-3.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/primer-4.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/primer-5.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/primer-6.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/primer-7.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/primer-8.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/primer-9.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/primer-10.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/primer-11.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/primer-12.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/primer-13.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/primer-14.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/primer-15.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/primer-16.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/primer-17.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/primer-18.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/guide-1.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/guide-2.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/guide-3.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/guide-4.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/guide-5.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/guide-6.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/guide-7.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/guide-8.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/guide-9.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/guide-10.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/crystalsmanual-intro.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/crystalsmanual-definition.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/crystalsmanual-database.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/crystalsmanual-initial.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/crystalsmanual-reflectionin.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/crystalsmanual-atomic.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/crystalsmanual-sfls.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/crystalsmanual-fourier.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/crystalsmanual-analysis.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/crystalsmanual-twinning.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/crystalsmanual-matrix.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/crystalsmanual-obsolete.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:manual/manindex.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'CRYSDIR:CRYSTALS.PDF'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'http://www.xtl.ox.ac.uk/download.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'http://www.xtl.ox.ac.uk/'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'http://www.xtl.ox.ac.uk/bug.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'http://www.xtl.ox.ac.uk/news.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'www.xtl.ox.ac.uk/primer.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'http://www.xtl.ox.ac.uk/download.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'http://www.xtl.ox.ac.uk/bug.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'http://www.xtl.ox.ac.uk/news.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'http://www.xtl.ox.ac.uk/mogul.html '
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'http://www.xtl.ox.ac.uk/wiki.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%evaluate file = 'www.xtl.ox.ac.uk/primer.html'
+% if .not. fileexists  file then 
+% transfer 'Fail' to display
+% show file
+% end if
+%%
+%END SCRIPT                                                                     

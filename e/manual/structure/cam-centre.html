@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta name="generator" content=
+  "HTML Tidy for Linux (vers 25 March 2009), see www.w3.org" />
+
+  <title></title>
+  <style type="text/css">
+/*<![CDATA[*/
+  div.c1 {text-align: center}
+  /*]]>*/
+  </style>
+  <style type="text/css">
+/*<![CDATA[*/
+  span.c1 {color: blue; font-style: italic}
+  /*]]>*/
+  </style>
+</head>
+
+<body>
+  <div class="c1">
+    <h1>Packing a Cell with CAMERON</h1>
+  </div>Because it is dirctly linked to CRYSTALS, CAMERON can be used to manipulate
+  structures. CAMERON can also produce publication quality structural diagrams.<br />
+  When a structure is composed of more than one discrete residues, you can use CAMERON to
+  select which instances of the symmetry related residues to include in the model.<br />
+  <br />
+
+  <div class="c1">
+    <h1>Method</h1>
+  </div>
+
+  <table border="1">
+    <tr>
+      <td>Allocate a GROUP name to each of the different residues by typing into the text
+      input bar at the bottom of the window. The group names are arbitary.</td>
+
+      <td>DEFGROUP g1 FRAG c11 VIEW<br />
+      <span class="c1">The atom c11 was selected by clicking on one of the atoms in the
+      chosen residue.</span></td>
+    </tr>
+
+    <tr>
+      <td>Colour each of the different residues in a different colour so that they can be
+      easily recognised in a packed cell.</td>
+
+      <td>COLOUR GROUP g1 blue VIEW <span class="c1">If a group colour is not chosen, the
+      group retaines the original atom-type colouring.</span></td>
+    </tr>
+
+    <tr>
+      <td>Repeat the above operations for each of the residues.</td>
+
+      <td>&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td>Click on SHOW CELL from the right hand menu and pack each of the groups
+      separately into the unit cell.</td>
+
+      <td>PACK GROUP g1 CELL COMPLETE VIEW <span class="c1">COMPLETE indicates that if any
+      atom in the slected group lies within the cell, the whole group is to be rendered.
+      <br />An alternative keyword is CENTROID, which only includes groups whose centroid 
+      lies within the cell.<br /><br />
+      Pack each of the groups</span></td>
+    </tr>
+
+    <tr>
+      <td>EXAMPLE.<br />
+      Group 1 was coloured blue, group 2 retained the atom-type colouring.</td>
+
+      <td><img src="cam-centre-1.png" width="292" /></td>
+    </tr>
+
+    <tr>
+      <td>Begin to prune unwanted residues from the diagram. This can be done either by
+      EXCLUDING fragments explicitly, or excluding areas by drawing round them. Remember
+      that when excluding fragments explicity in a diagram viewed along a cell axis,
+      there may be an exact copy of the excluded fragment hiding behind the one
+      selected.<br />
+      Use the tools in the right hand menu to view along a chosen axis, or to apply
+      rotations to the image.</td>
+
+      <td>EXCLUDE FRAG atom_clicked_with_mouse VIEW. <span class="c1">Clicking on any
+      atom in the chosen residue will excluse it from the diagram.<br />
+      or</span><br />
+      Choose EXCL AREA <span class="c1">from the menu and draw round the area you want to
+      delete. You will probably want to view down more than one axis when excluding
+      areas.</span></td>
+    </tr>
+
+    <tr>
+      <td><img src="cam-centre-3.png" width="300" /></td>
+
+      <td><img src="cam-centre-2.png" width="300" /></td>
+    </tr>
+
+    <tr>
+      <td>Remove any remaining unwanted fragments and verify that you really do have only
+      one instance or each residue be viewing along each axis in turn.</td>
+
+      <td><img src="cam-centre-4.png" width="300" /></td>
+    </tr>
+  </table>
+</body>
+</html>

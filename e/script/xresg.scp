@@ -1,0 +1,25 @@
+%SCRIPT XRESG                                                                  
+%%Get a RESIDUE number                                                             
+% VARIABLE CHARACTER CATOM CMESSAGE                                             
+% VARIABLE INTEGER IRES NVALUE                                                 
+% VARIABLE LOGICAL CALLED                                                       
+% EVALUATE CMESSAGE = 'Example: 2'                                           
+%%                                                                              
+% GET SILENT NOSTORE TEXT 'Get atom name' ' '                                   
+% EVALUATE CATOM = CVALUE                                                       
+%%                                                                              
+% COPY '#SCRIPT XGETINT'                                                        
+% EVALUATE IRES = NVALUE                                                       
+% EVALUATE CALLED = TRUE                                                        
+%% 
+%% edit was still activated even if part number selection cancelled
+%  if nvalue .lt. 0 then
+%    finish
+%  end if                                                                             
+%%                                                                              
+% QUEUE REWIND                                                                  
+% COPY '#SCRIPT YRERES'                                                        
+% COPY '#EDIT'                                                                  
+% QUEUE PROCESS                                                                 
+% COPY 'END'                                                                    
+%END SCRIPT                                                                     

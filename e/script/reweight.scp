@@ -1,0 +1,36 @@
+%SCRIPT REWEIGHT
+%% Try to normalise the GOF.
+%% _______________________________________________________________
+%% See if GLOBAL help is needed
+%%
+%  VARIABLE CHARACTER TOOL-FOLDER
+%  VARIABLE LOGICAL TOOL-HELP
+%  VARIABLE CHARACTER TOOL-TEXT TOOL-FILE
+%  VARIABLE LOGICAL RUNNOW
+%  EVALUATE TOOL-FOLDER = 'refinement'
+%  EVALUATE TOOL-FILE = 'reweight'
+%  EVALUATE TOOL-TEXT = 'Ensure the GoF is approximately unity'
+%  COPY '#SCRIPT CALL-TOOL-HELP'
+%  IF .NOT. RUNNOW THEN 
+%    FINISH
+%  END IF
+%% _______________________________________________________________
+%%
+
+
+% COPY '#SCRIPT XANAL'
+% COPY '#weight'
+% COPY 'end'
+% COPY '#sfls'
+% COPY 'refINE'
+% COPY 'shift general=0'
+% COPY 'end'
+% COPY '#weight factor=0'
+% COPY 'end'
+% COPY '#sfls'
+% COPY 'refine'
+% COPY 'shift general=0'
+% COPY 'end'
+% COPY '#SCRIPT XANAL'
+%END SCRIPT
+
