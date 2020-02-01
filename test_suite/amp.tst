@@ -18,5 +18,7 @@ MINIMISE F-SQ=NO
 END
 &USE ampref.dat
 
+&sum l 5
+end
 &                                         And close the program.
 &FINISH

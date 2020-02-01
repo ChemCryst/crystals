@@ -177,7 +177,7 @@ jobs:
         ${{ matrix.fbrunner }} perl testsuite.pl ${{ matrix.testoption }}
 #
 # If failures, set variable to trigger next two stages (one to tidy, one to upload)
-    - name: Check crystals test outputs win64
+    - name: Tidy failed test outputs win64
       if: failure() && matrix.os == 'windows-latest'
       run: |
         echo "::set-env name=testfail::true"
@@ -185,18 +185,17 @@ jobs:
         copy *.out ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org
         del /q *.*
 
-    - name: Upload outputs win64
-      uses: actions/upload-artifact@v1
-      if:  env.testfail == 'true' 
-      with:
-        name: test-outputs-${{ matrix.oscode }}-${{ matrix.cl }}
-        path: test_suite
+    - name: Tidy failed test outputs ubuntu
+      if: failure() && matrix.os == 'ubuntu-latest'
+      run: |
+        echo "::set-env name=testfail::true"
+        rm -f ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org/*
+        cp *.out ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org
+        rm *
 
-#
-# If failures, save the test outputs for later comparisons
-    - name: Upload crystals test outputs
+    - name: Upload outputs if failures
       uses: actions/upload-artifact@v1
-      if: failure()
+      if:  env.testfail == 'true'
       with:
         name: test-outputs-${{ matrix.oscode }}-${{ matrix.cl }}
         path: test_suite
