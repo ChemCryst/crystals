@@ -194,7 +194,7 @@ jobs:
         echo "::set-env name=testfail::true"
         rm -f ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org/*
         cp *.out ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org
-        rm *
+        rm -f * || echo 
 
     - name: Upload outputs if failures
       uses: actions/upload-artifact@v1
