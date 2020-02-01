@@ -178,7 +178,9 @@ jobs:
 #
 # If failures, set variable to trigger next two stages (one to tidy, one to upload)
     - name: Tidy failed test outputs win64
+      working-directory: test_suite
       if: failure() && matrix.os == 'windows-latest'
+      shell: cmd
       run: |
         echo "::set-env name=testfail::true"
         del /q ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org
@@ -186,6 +188,7 @@ jobs:
         del /q *.*
 
     - name: Tidy failed test outputs ubuntu
+      working-directory: test_suite
       if: failure() && matrix.os == 'ubuntu-latest'
       run: |
         echo "::set-env name=testfail::true"
