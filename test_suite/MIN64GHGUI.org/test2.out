@@ -9540,7 +9540,7 @@ The slope and correlation coefficient should be small
  Agreement analysis on [sin(theta)/lambda]sq
 
 
-  SINTH/L RANGE  No. of data     </Fo/>      </Fc/>     <Delta**2>     <W*Delta**2>    R(%)   RW(%)  LOG(<W*DELTA**2>)
+(SinT/L)^2 RANGE No. of data     </Fo/>      </Fc/>     <Delta**2>     <W*Delta**2>    R(%)   RW(%)  LOG(<W*DELTA**2>)
 
       0.00000                                                                                                 . 
                        43       137.98       141.4       0.859E+07       0.233E+01     3.05    6.67           .*     
@@ -19169,7 +19169,7 @@ The slope and correlation coefficient should be small
  Agreement analysis on [sin(theta)/lambda]sq
 
 
-  SINTH/L RANGE  No. of data     </Fo/>      </Fc/>     <Delta**2>     <W*Delta**2>    R(%)   RW(%)  LOG(<W*DELTA**2>)
+(SinT/L)^2 RANGE No. of data     </Fo/>      </Fc/>     <Delta**2>     <W*Delta**2>    R(%)   RW(%)  LOG(<W*DELTA**2>)
 
       0.00000                                                                                                 . 
 [17]                        43       137.98       138.9       0.10 E+02       0.2 E+01     1.     3.            *      
@@ -28277,7 +28277,7 @@ The slope and correlation coefficient should be small
  Agreement analysis on [sin(theta)/lambda]sq
 
 
-  SINTH/L RANGE  No. of data     </Fo/>      </Fc/>     <Delta**2>     <W*Delta**2>    R(%)   RW(%)  LOG(<W*DELTA**2>)
+(SinT/L)^2 RANGE No. of data     </Fo/>      </Fc/>     <Delta**2>     <W*Delta**2>    R(%)   RW(%)  LOG(<W*DELTA**2>)
 
       0.00000                                                                                                 . 
 [17]                        43       137.98       139.5       0.34 E+07       0.1 E+01     1.     4.            *      
@@ -37845,7 +37845,7 @@ The slope and correlation coefficient should be small
  Agreement analysis on [sin(theta)/lambda]sq
 
 
-  SINTH/L RANGE  No. of data     </Fo/>      </Fc/>     <Delta**2>     <W*Delta**2>    R(%)   RW(%)  LOG(<W*DELTA**2>)
+(SinT/L)^2 RANGE No. of data     </Fo/>      </Fc/>     <Delta**2>     <W*Delta**2>    R(%)   RW(%)  LOG(<W*DELTA**2>)
 
       0.00000                                                                                                 . 
 [17]                        43       137.98       138.9       0.10 E+02       0.2 E+01     1.     3.            *      

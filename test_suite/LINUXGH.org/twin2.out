@@ -950,7 +950,7 @@ The slope and correlation coefficient should be small
  Agreement analysis on [sin(theta)/lambda]sq
 
 
-  SINTH/L RANGE  No. of data     </Fo/>      </Fc/>     <Delta**2>     <W*Delta**2>    R(%)   RW(%)  LOG(<W*DELTA**2>)
+(SinT/L)^2 RANGE No. of data     </Fo/>      </Fc/>     <Delta**2>     <W*Delta**2>    R(%)   RW(%)  LOG(<W*DELTA**2>)
 
       0.00000                                                                                                 . 
                        18       212.55       213.8       0.126E+03       0.335E+01     4.26    5.42           .*     
@@ -1137,7 +1137,7 @@ The slope and correlation coefficient should be small
  Agreement analysis on [sin(theta)/lambda]sq
 
 
-  SINTH/L RANGE  No. of data     </Fo/>      </Fc/>     <Delta**2>     <W*Delta**2>    R(%)   RW(%)  LOG(<W*DELTA**2>)
+(SinT/L)^2 RANGE No. of data     </Fo/>      </Fc/>     <Delta**2>     <W*Delta**2>    R(%)   RW(%)  LOG(<W*DELTA**2>)
 
       0.00000                                                                                                 . 
                        18       212.55       213.8       0.126E+03       0.324E+01     4.26    5.29           .*     

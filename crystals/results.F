@@ -6663,7 +6663,9 @@ c
      1                   CBUF(1:11), STORE(L30RF+0)*0.01
            CALL XPCIF (CLINE)
 c
-           WRITE (CLINE,'(A,A, ''wR_factor_ref '', F10.4)') '_oxford',
+c           WRITE (CLINE,'(A,A, ''wR_factor_ref '', F10.4)') '_oxford',
+c _oxford prefix removed for checkcif compatability
+           WRITE (CLINE,'(A, ''wR_factor_ref '', F10.4)') 
      1                   CBUF(1:11), STORE(L30RF+1)*0.01
            CALL XPCIF (CLINE)
            WRITE (CLINE,'(A, ''wR_factor_all '', F10.4)') 
