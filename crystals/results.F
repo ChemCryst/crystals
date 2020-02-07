@@ -4660,11 +4660,11 @@ C
       CHARACTER*35 CPAGE(NROW,NCOL)
       CHARACTER*76 CREFMK
       PARAMETER (IDIFMX=14)
-      PARAMETER (IREDMX=7)
       DIMENSION IREFCD(3,IDIFMX)
+      PARAMETER (IREDMX=7)
       DIMENSION IREDCD(IREDMX)
 CAVDL more solution packages in cif-goodies
-      PARAMETER (ISOLMX=10)
+      PARAMETER (ISOLMX=12)
       DIMENSION ISOLCD(ISOLMX)
       PARAMETER (IABSMX=16)
       DIMENSION IABSCD(IABSMX)
@@ -4695,6 +4695,7 @@ C
       CHARACTER*22 CFM, CFMC ! 'F<sub>obs</sub>&sup2;'
       CHARACTER*35 CMOD
       CHARACTER*6 CSOLVE
+      CHARACTER*64 CREFER
 cdjwapr09
       INTEGER  IFARG      ! F OR F^2^ FOR WEIGHTING SCHEME
 C
@@ -4762,7 +4763,7 @@ C------ REFERENCE CODES FOR DATA REDUCTION
       DATA IREDCD /5,24,17,27,19,36,45/
 C------ REFERENCE CODES FOR DIRECT METHODS
 CAVDLdec06 updating references in reftab.sda with numbers 42, 43, and 44
-      DATA ISOLCD /1,18,30,11,22,28,29,42,43,44/
+      DATA ISOLCD /1,18,30,11,22,28,29,42,43,44,51,52/
 C------ REFERENCE CODES FOR ABSORPTION METHOD
       DATA IABSCD /7,21,16,17,31,32,33,39,40,40,39,7,7,16,45,36/
 
@@ -5402,7 +5403,18 @@ C          SET ABSOLUTE STRUCTURE FLAG
          END IF
       END IF
 C 
-C----- LIST 3
+C----- LIST 3 - Needs LIST 13 to get radiation type
+      if (jload(6).ge. 1) then
+       IF (ISTORE(L13DT+1) .EQ. -1) THEN
+        crefer='''International Tables Vol C 4.2.6.8 and 6.1.1.4'''
+       ELSE IF (ISTORE(L13DT+1) .EQ. 0) THEN
+        crefer='''International Tables Vol IV PAGES 270-271'''
+       ELSE
+        crefer='''L.M. Peng, Micron (1999) pages 625-648'''
+       ENDIF
+      else
+          crefer = 'Unknown'
+      endif
 C 
       IF (JLOAD(3).GE.1) THEN
         IF ( IPUNCH .EQ. 0 ) THEN
@@ -5418,9 +5430,9 @@ C
              WRITE (CTEMP,'(A4)') ISTORE(M3)
              CBUF=CTEMP(2:4)
              CALL XCCLWC (CBUF(1:3),CTEMP(2:4))
-             WRITE (NCFPU1,1300) CTEMP(1:4),(STORE(M),M=M3+1,M3+11)
-1300         FORMAT (1X,A4,1X,8F9.4,/,3F9.4,1X,
-     1       '''International Tables Vol C 4.2.6.8 and 6.1.1.4''')
+             WRITE (NCFPU1,1300) CTEMP(1:4),(STORE(M),M=M3+1,M3+11),
+     1       TRIM(CREFER)
+1300         FORMAT (1X,A4,1X,8F9.4,/,3F9.4,1X,A)
            END DO
         END IF
       END IF
@@ -5669,14 +5681,14 @@ C     UNKNOWN CAD4 MACH3 KAPPACCD DIP SMART IPDS XCALIBUR APEX2 GEMINI
 C        1     2       3     4    5     6    7      8      9      10
 c     SUPERNOVA SYNCHROTRON SPALLATION REACTOR
 C       11       12           13        14
-C----- PARAMETER 13 ON DIRECTIVE 2 IS A CHATACTER STRING: DIFFRACTOMETER MAKE
+C----- PARAMETER 13 ON DIRECTIVE 2 IS A CHARACTER STRING: DIFFRACTOMETER MAKE
         IPARAM=13
         IDIR=2
         IVAL=ISTORE(L30CD+IPARAM-1)
         IZZZ=KGVAL(CINSTR,CDIR,CPARAM,CVALUE,CDEF,30+3,IDIR,IPARAM,
      1    IVAL,JVAL,VAL,JTYPE)
         IDIFNO = IVAL+1
-
+c      write(123,*) 'IDIFNO=',IDIFNO
 C----- PARAMETER 13 ON DIRECTIVE 1 IS A CHATACTER STRING: REDUCTION NAME
         IPARAM=13
         IDIR=1
@@ -5684,6 +5696,7 @@ C----- PARAMETER 13 ON DIRECTIVE 1 IS A CHATACTER STRING: REDUCTION NAME
         IZZZ=KGVAL(CINSTR,CDIR,CPARAM,CVALUE,CDEF,30+3,IDIR,IPARAM,
      1    IVAL,JVAL,VAL,JTYPE)
         IREDNO = IVAL+1
+c      write(123,*)'IREDNO=',IREDNO
 c
 c
 c
@@ -5848,12 +5861,13 @@ C----- PARAMETER 9 ON DIRECTIVE 5 IS A CHARACTER STRING: ABSORPTION TYPE
         IVAL=ISTORE(L30AB+IPARAM-1)
         IZZZ=KGVAL(CINSTR,CDIR,CPARAM,CVALUE,CDEF,30+3,IDIR,IPARAM,
      1    IVAL,JVAL,VAL,JTYPE)
-        IABVAL = MIN (IABSMX, IVAL + 1)
+        IABVAL = MIN (IABSMX, IVAL+1)
+c      WRITE(123,*)'IABVAL=',IABVAL
 C
 C NONE DIFABS EMPIRICAL MULTI-SCAN SADABS SORTAV SHELXA GAUSS ANALYT
 C   1     2       3         4         5      6      7     8      9
-C NUMER INTEGERATION SPHERICAL CYLINDRICAL PSI-SCAN 
-c   10       11         12         13        14
+C NUMER INTEGERATION SPHERICAL CYLINDRICAL PSI-SCAN SAINT
+c   10       11         12         13        14      15
 C
         CMON(1) = ' '
         IF (TMIN.GT.3.0) THEN
@@ -6107,10 +6121,15 @@ C
      1      T35,'''''''',A,'''''''')') CTEMP(1:NCHAR-1)
            CALL XPCIF (CLINE)
 c
-           IF (IDIFNO .LE. 3) THEN
+           IF (IDIFNO .EQ. 1) THEN
+             CTEMP = 'Unknown'
+           ELSE IF (IDIFNO .GT. IDIFMX) THEN
+             CTEMP='Unknown'
+             IDIFNO = 1
+           ELSE IF (IDIFNO .LE. 3) THEN
             CTEMP = 'Serial'
            ELSE
-            CTEMP = 'Area'
+             CTEMP = 'Area'
            ENDIF
            CALL XCTRIM (CTEMP,NCHAR)
 C
@@ -6118,7 +6137,11 @@ C
      1      T35,'''''''',A,'''''''')') CTEMP(1:NCHAR-1)
            CALL XPCIF (CLINE)
 C
-           IF (IDIFNO .LE. 10) THEN   !Graphite monochromator
+           IF (IDIFNO .EQ. 1) THEN
+             WRITE (CLINE,'(A)') 
+     1     '_diffrn_radiation_monochromator      ''Unknown'''
+             CALL XPCIF (CLINE)
+           ELSE IF (IDIFNO .LE. 10) THEN   !Graphite monochromator
              WRITE (CLINE,'(A)') 
      1     '_diffrn_radiation_monochromator      ''graphite'''
              CALL XPCIF (CLINE)
@@ -6134,11 +6157,7 @@ C
 C    LIST 13
       IF (JLOAD(6).GE.1) THEN
          CBUF = ' ? '
-         IF ( IDIFNO .EQ. 12 ) THEN
-            CBUF = 'synchrotron'
-         ELSE IF ( IDIFNO .GE. 13 ) THEN
-            CBUF = 'neutrons'
-         ELSE IF (NINT(100.*STORE(L13DC)).EQ.71) THEN
+         IF (NINT(100.*STORE(L13DC)).EQ.71) THEN
 #ifdef __MAC__
             CBUF = 'Mo K\\a'
 #else
@@ -6151,6 +6170,20 @@ C    LIST 13
             CBUF = 'Cu K\a'
 #endif
          END IF
+c get the radiation from the DETAILS Card
+         IF (ISTORE(L13DT+1) .EQ. -1) THEN
+C-Set above based on lambda             CBUF = 'XRAYS'
+         ELSE IF (ISTORE(L13DT+1) .EQ. 0) THEN
+             CBUF = 'NEUTRONS'
+         ELSE
+             CBUF = 'ELECTRONS'
+         ENDIF
+C Update for special conditions
+         IF ( IDIFNO .EQ. 12 ) THEN
+            CBUF = 'synchrotron'
+         ELSE IF ( IDIFNO .GE. 13 ) THEN
+            CBUF = 'neutrons'
+         ENDIF         
          IF ( IPUNCH .EQ. 0 ) THEN
            WRITE (NCFPU1,'(''_diffrn_radiation_type       '', 
      1                       T35, '''''''',A,'''''''')')

@@ -36,7 +36,7 @@ contains
     implicit none
     type(dict_t) :: this
 
-    allocate (this%tuples(80))
+    allocate (this%tuples(81))
     associate (tuples=>this%tuples)
       tuples(1)%key = 'ABIN'
       tuples(1)%func => shelx_abin
@@ -133,7 +133,7 @@ contains
       tuples(47)%key = 'NCSY'
       tuples(47)%func => shelx_unsupported
       tuples(48)%key = 'NEUT'
-      tuples(48)%func => shelx_unsupported
+      tuples(48)%func => shelx_neut
       tuples(49)%key = 'OMIT'
       tuples(49)%func => shelx_omit
       tuples(50)%key = 'PART'
@@ -198,6 +198,8 @@ contains
       tuples(79)%func => shelx_deprecated
       tuples(80)%key = 'MOLE'
       tuples(80)%func => shelx_deprecated
+      tuples(81)%key = 'ELEC'
+      tuples(81)%func => shelx_elec      
     end associate
 
   end function

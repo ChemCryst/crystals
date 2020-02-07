@@ -48,6 +48,8 @@ module crystal_data_m
   real, dimension(:), allocatable :: fvar !< list of free variables (sfac from shelx)
   real, dimension(6) :: unitcell = 0.0 !< Array holding the unit cell parameters (a,b,c, alpha,beta,gamma). ANgle sin degree
   real wavelength !< wavelengh from shelx CELL card
+  character(len=10) :: target = 'Unknown'  !< Type of target used
+  character(len=9) :: radiation = 'unknown' !< Type of radiation used
   integer :: part = 0 !< current part
   real :: part_sof = -1.0 !< Overriding subsequent site occupation factor
 
