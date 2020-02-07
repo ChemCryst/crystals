@@ -889,8 +889,8 @@ DATA PERTAINING TO THE METHOD OF DATA COLLECTION FOR THE PRESENT LIST 6
     .GEOMETRY           0    0    1   10    1 UNKNOWN
      NORMAL         EQUI           ANTI           PRECESSION     UNKNOWN
      CAD4           ROLLETT        Y290           KAPPA          AREA
-    .RADIATION          0    0    1    2   -1 XRAYS
-     XRAYS          NEUTRONS
+    .RADIATION          0    0    1    3   -1 XRAYS
+     XRAYS          NEUTRONS       ELECTRONS
     .INPUT-TYPE         0    0    0    0    0         0
    3.CONDITIONS         7    0    0    0    7    1  103    9   13
          1    1    1    1    1    1    0    0    0    0
@@ -1602,7 +1602,7 @@ Data collection details
      2THETA/OMEGA   OMEGA          PHI            PHIOMEGA       UNKNOWN
     .INTERVAL           0    0    1    0    1 0.
     .COUNT              0    0    1    0    1 0.
-    .INSTRUMENT         0    0    1   12    0 UNKNOWN
+    .INSTRUMENT         0    0    1   14    0 UNKNOWN
      UNKNOWN        CAD4           MACH3          KAPPACCD       DIP
      SMART          IPDS           XCALIBUR       APEX2          GEMINI
      SUPERNOVA      SYNCHROTRON    SPALLATION     REACTOR 
@@ -1676,10 +1676,10 @@ Various bits and pieces
     .ANALYSE-NREF       0    0    1    0    1 0.
     .ANALYSE-R          0    0    1    0    1 0.
     .ANALYSE-RW         0    0    1    0    1 0.
-    .SOLUTION           0    0    1   11    0 UNKNOWN
+    .SOLUTION           0    0    1   12    0 UNKNOWN
      UNKNOWN        SHELXS         SIR88          SIR92          PATTERSON
      SIR97          DIRDIF         SUPERFLIP      SIR02          SIR04
-     SIR11
+     SIR11          SHELXT
    7.COLOUR             8    1    0    0    8    1  107   25   30
          1    1    0    0    1    1    0    0    0    0
 Crystal colour
