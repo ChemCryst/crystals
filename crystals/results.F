@@ -5404,7 +5404,7 @@ C          SET ABSOLUTE STRUCTURE FLAG
       END IF
 C 
 C----- LIST 3 - Needs LIST 13 to get radiation type
-      if (jload(13).ge. 1) then
+      if (jload(6).ge. 1) then
        IF (ISTORE(L13DT+1) .EQ. -1) THEN
         crefer='''International Tables Vol C 4.2.6.8 and 6.1.1.4'''
        ELSE IF (ISTORE(L13DT+1) .EQ. 0) THEN
