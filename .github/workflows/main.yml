@@ -6,6 +6,10 @@ jobs:
   build:
 
     runs-on: ${{ matrix.os }}
+
+    env:
+      testfail: false
+
     strategy:
       fail-fast: false
       matrix:
@@ -53,7 +57,7 @@ jobs:
           testoption: -s
         - release: release
           testoption:
-       
+
     steps:
     - name: Checkout crystals
       uses: actions/checkout@v1
@@ -137,8 +141,8 @@ jobs:
         echo PATH is %PATH%
         echo CRYSDIR is %CRYSDIR%
         ren ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org safe.dir
-        for /d %%G in ("*.org") do rd /s /q "%%~G"      
-        ren safe.dir ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org 
+        for /d %%G in ("*.org") do rd /s /q "%%~G"
+        ren safe.dir ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org
         ${{ matrix.removeguitst }}
         mkdir script
         echo "%SCRIPT NONE" > script\\tipauto.scp
@@ -165,17 +169,36 @@ jobs:
         echo PATH is $PATH
         mv ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org safe.dir
         rm -Rf *.org
-        mv safe.dir ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org 
+        mv safe.dir ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org
         echo "%SCRIPT NONE" > script/tipauto.scp
         echo "%END SCRIPT" >> script/tipauto.scp
         echo "%SCRIPT NONE" > script/guideauto.scp
         echo "%END SCRIPT" >> script/guideauto.scp
         ${{ matrix.fbrunner }} perl testsuite.pl ${{ matrix.testoption }}
 #
-# If failures, save the test outputs for later comparisons
-    - name: Upload crystals test outputs
+# If failures, set variable to trigger next two stages (one to tidy, one to upload)
+    - name: Tidy failed test outputs win64
+      working-directory: test_suite
+      if: failure() && matrix.os == 'windows-latest'
+      shell: cmd
+      run: |
+        echo "::set-env name=testfail::true"
+        del /q ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org
+        copy *.out ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org
+        del /q *.*
+
+    - name: Tidy failed test outputs ubuntu
+      working-directory: test_suite
+      if: failure() && matrix.os == 'ubuntu-latest'
+      run: |
+        echo "::set-env name=testfail::true"
+        rm -f ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org/*
+        cp *.out ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org
+        rm -f * || echo
+
+    - name: Upload outputs if failures
       uses: actions/upload-artifact@v1
-      if: failure()
+      if:  failure()
       with:
         name: test-outputs-${{ matrix.oscode }}-${{ matrix.cl }}
         path: test_suite
