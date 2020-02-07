@@ -6122,7 +6122,7 @@ C
            CALL XPCIF (CLINE)
 c
            IF (IDIFNO .EQ. 1) THEN
-             CTEMP = 'Uknown'
+             CTEMP = 'Unknown'
            ELSE IF (IDIFNO .GT. IDIFMX) THEN
              CTEMP='Unknown'
              IDIFNO = 1
