@@ -1,3 +1,0 @@
-%SCRIPT ZCONTROL %The master controlling script%
-% COPY '#SCRIPT not-here'
-%END SCRIPT
