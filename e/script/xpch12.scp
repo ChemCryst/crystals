@@ -1,7 +1,0 @@
-%SCRIPT XPCH12
-%% PUNCH CONSTRAINTS
-% COPY '#RELE PUNCH constraint.pch'
-% COPY '#PUNCH 12'
-% COPY 'END'
-% COPY '#RELE PUNCH logs/bfile.pch'
-%END SCRIPT
