@@ -3863,10 +3863,9 @@ c Special shapes
               CALL XRING (M2, ST, M5A,M6,SLRFAC,DSIZE,DDECLINA,DAZIMUTH)
             ELSE IF (NINT(FLAG)==5) THEN
               write(1234, *) "STORE(M5ARI+12) = ", STORE(M5A + 12)
-              CALL XROTOR (4, M5A, M2T, SST, AROTOR, BROTOR) !, DSIZE, DDECLINA, DAZIMUTH) todo: add these extra outputs?
+              CALL XROTOR (5, M5A, M2T, SST, AROTOR, BROTOR) !, DSIZE, DDECLINA, DAZIMUTH) todo: add these extra outputs?
             END IF
-!           write(567,*) "*", STORE(M6), STORE(M6+1), STORE(M6+2),
-!    1      AROTOR, BROTOR
+
 
             T=Tiso(LJY)
             TFOCC=T*FOCC
@@ -3876,13 +3875,6 @@ c iso-temperature factor
             T=Tiso(LJY)
           ENDIF
 
-C--CALCULATE THE A & B CONTRIBUTIONS
-!         BP=Sina(ljy,ljx)*TFOCC
-!         AP=Cosa(ljy,ljx)*TFOCC
-!!         BT=BT+BP*AROTOR+AP*BROTOR
-!         AT=AT+AP*AROTOR-BP*BROTOR
-!         write(567,*) "&", STORE(M6), STORE(M6+1), STORE(M6+2), AT, BT,
-!    1    AP, BP
 
 !--CALCULATE THE A & B CONTRIBUTION
           BPI=Sina(ljy,ljx)*TFOCC
