@@ -1,3 +1,0 @@
-%SCRIPT DIRECT  %Return to CRYSTALS command mode%
-%COPY '#USE CONTROL'
-%END SCRIPT

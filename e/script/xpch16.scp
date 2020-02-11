@@ -1,7 +1,0 @@
-%SCRIPT XPCH16
-%% PUNCH RESTRAINTS
-% COPY '#RELE PUNCH restraint.pch'
-% COPY '#PUNCH 16'
-% COPY 'END'
-% COPY '#RELE PUNCH logs/bfile.pch'
-%END SCRIPT

@@ -1,7 +1,0 @@
-%SCRIPT XPCH6
-%% PUNCH REFLECTION DETAILS
-% COPY '#RELE PUNCH reflections.pch'
-% COPY '#PUNCH 6 I'
-% COPY 'END'
-% COPY '#RELE PUNCH logs/bfile.pch'
-%END SCRIPT

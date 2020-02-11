@@ -1,9 +1,0 @@
-%SCRIPT LIST1F
-  The unit cell parameters, LIST 1
-%    VERIFY YES NO
-%    IF ( EXISTS 1 .EQ. 1 ) THEN
-  Cell parameters - LIST 1
-%    ELSE
-%        COPY '#SCRIPT INLIST1'
-%    END IF
-%END SCRIPT
