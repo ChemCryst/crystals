@@ -144,7 +144,7 @@ contains
       !H1N   2    0.426149    0.251251    0.038448    11.00000   -1.20000
       read (shelxline%line, *, iostat=iostatus) label, atomtype, coordinates
       if (iostatus == 0) then
-        call shelxl_atomiso(label, atomtype, coordinates, 100.0, 0.05, shelxline)
+        call shelxl_atom_minimal(label, atomtype, coordinates, shelxline)
       end if
     end if
 
@@ -909,55 +909,57 @@ contains
         end do ! end loop over lattice translation
 
         ! extracting occupancy from sof
-        if (atomslist(i)%sof >= 100.0) then     ! No occupancy was found - set it to unity
-          occ = 1.0
-        else if (atomslist(i)%sof >= 10.0 .and. atomslist(i)%sof < 20.0) then
-          ! fixed occupancy
-          occ = atomslist(i)%sof-10.0
-          !list12index=list12index+1
-          !write(list12(list12index), '("FIX ",a,"(",I0,", occ)")') &
-          !&   trim(sfac(atomslist(i)%sfac)), shelx2crystals_serial(i)%crystals_serial
-        else if (abs(atomslist(i)%sof) >= 20.0) then
-          ! occupancy depends on a free variable
-          fvar_index = int(abs(atomslist(i)%sof)/10.0)
-          if (fvar_index > size(fvar) .or. fvar_index <= 0) then
-            write (*, '(2a)') 'Error: Free variable missing for sof=', atomslist(i)%sof
-            write (*, '("Line ", I0, ": ", a)') atomslist(i)%line_number, trim(atomslist(i)%shelxline)
-            write (log_unit, '(2a)') 'Error: Free variable missing for sof=', atomslist(i)%sof
-            write (log_unit, '("Line ", I0, ": ", a)') atomslist(i)%line_number, trim(atomslist(i)%shelxline)
-            summary%error_no = summary%error_no+1
-            occ = 1.0
-          else
-            occ = abs(atomslist(i)%sof)-fvar_index*10.0
-            if (atomslist(i)%sof > 0) then
-              occ = occ*fvar(fvar_index)
+        if (allocated(atomslist(i)%sof)) then
+          if (atomslist(i)%sof >= 10.0 .and. atomslist(i)%sof < 20.0) then
+            ! fixed occupancy
+            occ = atomslist(i)%sof-10.0
+            !list12index=list12index+1
+            !write(list12(list12index), '("FIX ",a,"(",I0,", occ)")') &
+            !&   trim(sfac(atomslist(i)%sfac)), shelx2crystals_serial(i)%crystals_serial
+          else if (abs(atomslist(i)%sof) >= 20.0) then
+            ! occupancy depends on a free variable
+            fvar_index = int(abs(atomslist(i)%sof)/10.0)
+            if (fvar_index > size(fvar) .or. fvar_index <= 0) then
+              write (*, '(2a)') 'Error: Free variable missing for sof=', atomslist(i)%sof
+              write (*, '("Line ", I0, ": ", a)') atomslist(i)%line_number, trim(atomslist(i)%shelxline)
+              write (log_unit, '(2a)') 'Error: Free variable missing for sof=', atomslist(i)%sof
+              write (log_unit, '("Line ", I0, ": ", a)') atomslist(i)%line_number, trim(atomslist(i)%shelxline)
+              summary%error_no = summary%error_no+1
+              occ = 1.0
             else
-              occ = occ*(1.0-fvar(fvar_index))
+              occ = abs(atomslist(i)%sof)-fvar_index*10.0
+              if (atomslist(i)%sof > 0) then
+                occ = occ*fvar(fvar_index)
+              else
+                occ = occ*(1.0-fvar(fvar_index))
+              end if
+              ! restraints done automatically using parts later. See below
             end if
-            ! restraints done automatically using parts later. See below
+          else if (atomslist(i)%sof < 0.0) then
+            write (log_unit, '(a)') "don't know what to do with a sof between -20.0 < sof < 0.0"
+            stop
+          else
+            occ = atomslist(i)%sof
           end if
-        else if (atomslist(i)%sof < 0.0) then
-          write (log_unit, '(a)') "don't know what to do with a sof between -20.0 < sof < 0.0"
-          stop
-        else
-          occ = atomslist(i)%sof
-        end if
-        if (atomslist(i)%sof < 100.0) then 
           occ = occ*real(atomslist(i)%multiplicity)
+        else
+          occ = 1.0
         end if
 
         ! a check for consistency of sof
         ! 11.000, 21.000, 31.000 then site symmetry multiplicity should be 1
         ! it is just a warning, that would only refine well if multiplicity is taking into account in a free variable
         ! so in the end the chemical occupancy is fine
-        d = real(nint((atomslist(i)%sof-1.0)/10.0), kind(d))
-        if (atomslist(i)%multiplicity > 1 .and. abs(abs(atomslist(i)%sof-d*10.0)-1.0) < 0.01e-3) then
-          write (log_unit, '("Line ", I0, ": ", a)') atomslist(i)%line_number, trim(atomslist(i)%shelxline)
-          write (log_unit, '(a)') 'Warning: double check s.o.f'
-          write (log_unit, '(a, I0)') '         Atom sit on special position with multiplicty ', atomslist(i)%multiplicity
-          write (log_unit, '(a, I0)') '         but s.o.f is 1.0'
+        if (allocated(atomslist(i)%sof)) then
+          d = real(nint((atomslist(i)%sof-1.0)/10.0), kind(d))
+          if (atomslist(i)%multiplicity > 1 .and. abs(abs(atomslist(i)%sof-d*10.0)-1.0) < 0.01e-3) then
+            write (log_unit, '("Line ", I0, ": ", a)') atomslist(i)%line_number, trim(atomslist(i)%shelxline)
+            write (log_unit, '(a)') 'Warning: double check s.o.f'
+            write (log_unit, '(a, I0)') '         Atom sit on special position with multiplicty ', atomslist(i)%multiplicity
+            write (log_unit, '(a, I0)') '         but s.o.f is 1.0'
+          end if
         end if
-
+        
         if (atomslist(i)%iso /= 0.0) then
           flag = 1
         else
@@ -985,20 +987,23 @@ contains
         if (atomslist(i)%resi%number > 0) then
           write (crystals_fileunit, '("CONT RESIDUE=",I0)') atomslist(i)%resi%number
         end if
-        ! We are not using shelx part instruction, part is constructed from the free variable
-        ! In shelx part is only used for connectivity
-        !if(atomslist(i)%part>0) then
-        !    write(crystals_fileunit, '("CONT PART=",I0)') atomslist(i)%part+1000
-        !end if
-        ! if using free variable, setting parts:
-        if (abs(atomslist(i)%sof) >= 20.0) then
-          if (atomslist(i)%sof > 0.0) then
-            flag = 1
-          else
-            flag = 2
+        
+        if (allocated(atomslist(i)%sof)) then
+          ! We are not using shelx part instruction, part is constructed from the free variable
+          ! In shelx part is only used for connectivity
+          !if(atomslist(i)%part>0) then
+          !    write(crystals_fileunit, '("CONT PART=",I0)') atomslist(i)%part+1000
+          !end if
+          ! if using free variable, setting parts:
+          if (abs(atomslist(i)%sof) >= 20.0) then
+            if (atomslist(i)%sof > 0.0) then
+              flag = 1
+            else
+              flag = 2
+            end if
+            atompart = (int(abs(atomslist(i)%sof)/10.0)-1)*1000+flag
+            write (crystals_fileunit, '("CONT PART=",I0)') atompart
           end if
-          atompart = (int(abs(atomslist(i)%sof)/10.0)-1)*1000+flag
-          write (crystals_fileunit, '("CONT PART=",I0)') atompart
         end if
       end do ! end loop over atoms coordinates
       write (crystals_fileunit, '(a)') 'END'
@@ -1421,6 +1426,7 @@ contains
         summary%error_no = summary%error_no+1
       end if
     end if
+    allocate(atomslist(atomslist_index)%sof)
     atomslist(atomslist_index)%sof = sof
     if (current_resi_index > 0) then
       atomslist(atomslist_index)%resi = resi_list(current_resi_index)
@@ -1547,7 +1553,73 @@ contains
         summary%error_no = summary%error_no+1
       end if
     end if
+    allocate(atomslist(atomslist_index)%sof)
     atomslist(atomslist_index)%sof = sof
+    if (current_resi_index > 0) then
+      atomslist(atomslist_index)%resi = resi_list(current_resi_index)
+    else
+      call atomslist(atomslist_index)%resi%init()
+    end if
+    atomslist(atomslist_index)%part = part
+    atomslist(atomslist_index)%shelxline = shelxline%line
+    atomslist(atomslist_index)%line_number = shelxline%line_number
+
+  end subroutine
+
+!> Parse the atom parameters when adps, temperature factors and sof are not present.
+  subroutine shelxl_atom_minimal(label, atomtype, coordinates, shelxline)
+    use crystal_data_m
+    implicit none
+    character(len=*), intent(in) :: label!< shelxl label
+    integer, intent(in) :: atomtype !< atom type as integer (position in sfac)
+    real, dimension(:), intent(in) :: coordinates !< atomic coordinates
+    type(line_t), intent(in) :: shelxline !< Current line of the res file
+    integer i
+    real, dimension(3, 3) :: orthogonalisation, metric, rmetric
+    real, dimension(6) :: unitcellradian
+    real rgamma
+    logical ok_flag
+    type(atom_t), dimension(:), allocatable :: templist
+
+    unitcellradian(1:3) = unitcell(1:3)
+    unitcellradian(4:6) = unitcell(4:6)*2.0*3.14159/360.0
+
+    rgamma = acos((cos(unitcellradian(4))*cos(unitcellradian(5))-cos(unitcellradian(6)))/&
+    &   (sin(unitcellradian(4))*sin(unitcellradian(5))))
+    orthogonalisation = 0.0
+    orthogonalisation(1, 1) = unitcellradian(1)*sin(unitcellradian(5))*sin(rgamma)
+    orthogonalisation(2, 1) = -unitcellradian(1)*sin(unitcellradian(5))*cos(rgamma)
+    orthogonalisation(2, 2) = unitcellradian(2)*sin(unitcellradian(4))
+    orthogonalisation(3, 1) = unitcellradian(1)*cos(unitcellradian(5))
+    orthogonalisation(3, 2) = unitcellradian(2)*cos(unitcellradian(4))
+    orthogonalisation(3, 3) = unitcellradian(3)
+    metric = matmul(transpose(orthogonalisation), orthogonalisation)
+    call m33inv(metric, rmetric, ok_flag)
+
+    if (.not. allocated(atomslist)) then
+      allocate (atomslist(1024))
+    end if
+
+    atomslist_index = atomslist_index+1
+    if (atomslist_index > size(atomslist)) then
+      call move_alloc(atomslist, templist)
+      allocate (atomslist(size(templist)+1024))
+      atomslist(1:size(templist)) = templist
+      deallocate (templist)
+    end if
+
+    atomslist(atomslist_index)%label = label
+    call to_upper(atomslist(atomslist_index)%label)
+    atomslist(atomslist_index)%sfac = atomtype
+    atomslist(atomslist_index)%coordinates = coordinates
+    do i = 1, 3
+      if (atomslist(atomslist_index)%coordinates(i) > 9.0) then
+        atomslist(atomslist_index)%coordinates(i) = atomslist(atomslist_index)%coordinates(i)-10.0
+      end if
+    end do
+
+    atomslist(atomslist_index)%iso = 0.05
+
     if (current_resi_index > 0) then
       atomslist(atomslist_index)%resi = resi_list(current_resi_index)
     else
@@ -2156,8 +2228,6 @@ contains
     implicit none
     character(len=*), intent(in) :: hklfile_path
     integer i
-! The backslash character causes problem in doxygen, using the following workaround instead
-    character(len=1), parameter :: backslash = char(92) !< the back slash character
 
 !# read in reflections
 !#CLOSE HKLI

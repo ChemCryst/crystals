@@ -101,7 +101,7 @@ module crystal_data_m
     real, dimension(3) :: coordinates = 0.0 !< x,y,z fractional coordinates from shelx
     real, dimension(6) :: aniso = 0.0 !< Anistropic displacement parameters U11 U22 U33 U23 U13 U12 from shelx
     real :: iso = 0.0 !< isotropic temperature factor from shelx
-    real :: sof = 0.0 !< Site occupation factor from shelx
+    real, allocatable :: sof !< Site occupation factor from shelx
     integer :: multiplicity = 0 !< multiplicity (calculated)
     type(resi_t) :: resi  !< residue from shelx
     integer :: part = 0 !< group from shelx
