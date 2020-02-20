@@ -18,20 +18,12 @@ program shelx2cry
   logical file_exists
   integer i
   integer error
-  real, dimension(9) :: transform
   type(cif_t), dimension(:), allocatable :: cif_content
 
   summary%error_no = 0
   summary%warning_no = 0
   hkl_file = ''
   shelx_filepath = ''
-
-! RC: Initialize hklf transform, in case no HKLF card present
-transform = 0.0
-transform(1) = 1.0
-transform(5) = 1.0
-transform(9) = 1.0
-hklf%transform = transpose(reshape(transform, (/3, 3/)))
 
 ! Default length
   allocate (character(len=1) :: arg_val)
