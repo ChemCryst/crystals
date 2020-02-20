@@ -491,7 +491,7 @@ contains
     use crystal_data_m, only: radiation, line_t, list13index, list13
     implicit none
     type(line_t), intent(in) :: shelxline
-    integer iostatus, i, j
+    integer i, j
 !    write(123,*)'list13index=',list13index
     if (list13index.ge.1) then
       do i=1,list13index
@@ -513,7 +513,7 @@ contains
     use crystal_data_m, only: radiation, line_t, list13index, list13
     implicit none
     type(line_t), intent(in) :: shelxline
-    integer iostatus, i, j
+    integer i, j
 !    write(123,*)'list13index=',list13index
     if (list13index.ge.1) then
       do i=1,list13index

@@ -82,6 +82,7 @@ contains
     type(line_t), intent(in) :: shelxline !< line from res/ins file
     character(len=4) :: keyword
     logical found
+    character :: letter 
 
     character(len=lenlabel) :: label
     integer atomtype, iostatus
@@ -94,14 +95,37 @@ contains
 
     found = .false.
     keywords2functions = dict_t()
-
+    
+    !special command `+` to include an external file
+    if(shelxline%line(1:1)=="+") then
+      write (*, *) 'Error: Include command `+` not supported'
+      write (*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+      return
+    end if
+            
     if (len_trim(shelxline%line) < 3) then
       return
+    end if
+    
+    ! ignore 5 plus characters long command (does not exist), it must be a comment
+    if (len_trim(shelxline%line) > 4) then
+      keyword = shelxline%line(1:4)
+      ! checking the following character, it has to be space or a digit to be a valid command
+      if (len_trim(keyword)>3) then
+        letter = shelxline%line(5:5)
+        call to_upper(letter)
+        if ( iachar(letter)>64 .and. iachar(letter)<91 ) then
+          ! 5 letters command (not possible) or a misplaced comment, ignoring the line
+          write (*, *) 'Info: Invalid command or misplaced comment, ignored.'
+          write (*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+          return
+        end if
+      end if
     end if
 
     ! 4 letters keywords first
     if (len_trim(shelxline%line) > 3) then
-      keyword = shelxline%line(1:4)
+      keyword = shelxline%line(1:4)      
       call to_upper(keyword)
       call keywords2functions%getvalue(keyword, proc)
       if (associated(proc)) then
