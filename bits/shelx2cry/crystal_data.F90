@@ -12,9 +12,9 @@ module crystal_data_m
   integer, parameter :: shelxline_length = 1024
 
   type hklf_t !< hold information from hklf card
-    integer :: code = 4 !< hklf code (1,2,3,4,5 or 6)
-    real, dimension(3, 3) :: transform = reshape( (/1.0,0.0,0.0, 0.0,1.0,0.0, 0.0,0.0,1.0/), (/3, 3/)) !< transformation matrix for h,k,l indices
-    real :: scale = 1.0 !< Unused in crystals, scaling factors for the intensities and sigmas
+    integer :: code !< hklf code (1,2,3,4,5 or 6)
+    real, dimension(3, 3) :: transform !< transformation matrix for h,k,l indices
+    real :: scale !< Unused in crystals, scaling factors for the intensities and sigmas
   end type
   type(hklf_t) :: hklf
 
