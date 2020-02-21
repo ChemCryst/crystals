@@ -178,7 +178,7 @@ jobs:
         echo "............ Exec folder"
         ls -l ..
         cd ../bits/shelx2cry
-        ln -s shelx2cry ../../shelx2cry
+        ln -s shelx2cry ../../ci/shelx2cry
         cd regressions_tests
         echo "............ shelx2cry folder"
         ls -l ..
