@@ -175,8 +175,10 @@ jobs:
         echo "%SCRIPT NONE" > script/guideauto.scp
         echo "%END SCRIPT" >> script/guideauto.scp
         ${{ matrix.fbrunner }} perl testsuite.pl ${{ matrix.testoption }}
+        ls -l ..
         ln -s ../shelx2cry ../bits/shelx2cry/shelx2cry
         cd ../bits/shelx2cry/regressions_tests
+        ls -l ..
         ./run.sh
 #
 # If failures, set variable to trigger next two stages (one to tidy, one to upload)
