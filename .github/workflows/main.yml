@@ -175,6 +175,7 @@ jobs:
         echo "%SCRIPT NONE" > script/guideauto.scp
         echo "%END SCRIPT" >> script/guideauto.scp
         ${{ matrix.fbrunner }} perl testsuite.pl ${{ matrix.testoption }}
+        ln -s ../shelx2cry ../bits/shelx2cry/shelx2cry
         cd ../bits/shelx2cry/regressions_tests
         ./run.sh
 #
