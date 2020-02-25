@@ -108,13 +108,12 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     !    IF (KSEL(L + 7)==0.AND.KSEL(L + 8)==0) GO TO 2
     !calculate some derivative bits (AS WLH DOES)
     DELCE = TWOPI * RIRA * (-XK1 * CD * SE + XK3 * CD * CE) ![51]
-    DELDE = TWOPI * RIRA * (-XK1 * CD * SE + XK3 * CD * CE) ![51]
-    DELDD = -TWOPI * RIRA * (XK1 * SD * CE + XK2 * CD + XK3 * SD * SE) ![49]
+    DELDE = -TWOPI * RIRA * (XK1 * CE + XK3 * SE) ![51]
+    DELDD = 0 ![49]
     DELAPD = DD * DELDD / AP ![49]
     DELAPE = (CC * DELCE + DD * DELDE) / AP !todo: I can't find this in WLH
     TE = DELAPE / AP
     TD = DELAPD / AP
-    !WLH then does this stuff (WHICH WILL CAUSE /0 ERRORS IF D OR E ARE 0/90/180/270 DEGREES)
     CW = AP * AP * SQRT(1. - CC * CC / (AP * AP)) !see [49]
     IF (ABS(CW)<0.00001) GO TO 1 !TO AVOID /0 ERROR?
     DXETA = 1. / CW !see [49]
@@ -128,6 +127,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     NAA = 1
     !    GO TO 21 !sets LM(1-5)=KSEL(IA+L+4) and LM(6)=0 then comes straight back if NAA=1 (which it will be)
     22    E = SNGL(AP) !converts a' to real type for use in bessel
+    write(666,*) "before bessel call, h k l", reflh, reflk, refll
     CALL BESSEL(BJ, QW, E, -1.0)
     write(1975, *) "bessel J", QW, E, BJ
     SUM(1) = DBIB * BJ
@@ -168,9 +168,13 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
         SU = SIN(JP * ANGLE) !sin(pn(xi-eta))
         TCOM = 2. * SIGN * BIA(JP) / BIO
         E = SNGL(AP) !E=a' CONVERTED TO A REAL NUMBER
+        write(222, *) "BR BDD BEA h k l p n a' angled anglee RIRA xk1 xk2 xk3 DELCE"
+        write(222, *)  BR, BDD, BEA, REFLH, REFLK, REFLL, jp, nord, E, ANGLED, ANGLEE, RIRA, XK1, XK2, XK3, DELCE
+        write(555, *) "h k l p n a' angled anglee RIRA xk1 xk2 xk3"
+        write(555, *)  REFLH, REFLK, REFLL, jp, nord, E, ANGLED, ANGLEE, RIRA, XK1, XK2, XK3
+        write(666, *) "BR BDD BEA h k l p n a' angled anglee RIRA xk1 xk2 xk3 DELCE"
+        write(666, *)  BR, BDD, BEA, REFLH, REFLK, REFLL, jp, nord, E, ANGLED, ANGLEE, RIRA, XK1, XK2, XK3, DELCE
         CALL BESSEL (BJ, PNA, E, -1.0)
-        write(222, *) "BR BDD BEA h k l p n a' angled anglee RIRA"
-        write(222, *)  BR, BDD, BEA, REFLH, REFLK, REFLL, jp, nord, E, ANGLED, ANGLEE, RIRA
         IF (MODE==1) GO TO 34 !i.e. skip a load of derivation bits
         IF (LM(1)==0) GO TO 30
         !!!CALCULATION OF dM/d(Bd) [42]
@@ -303,6 +307,8 @@ SUBROUTINE BESSEL(BSUM, PP, XZ, BSIGN)
     CLIMIT = 0.0001
     XM = 1
 
+    write(666,*) "at start, PP(pn) BTERM, BRTERM", PP, BTERM, BRTERM
+
     LB(5) = 1
     IF(PP==0) then
         JP = 1
@@ -315,6 +321,7 @@ SUBROUTINE BESSEL(BSUM, PP, XZ, BSIGN)
     DO M = 1, JP
         XM = FLOAT(M)
         BTERM = BTERM * XZ / (2. * XM)
+        write(666,*) "M BTERM", M, BTERM
     end do
     17    IF (BSIGN<0.) GO TO 22 !if calculating a J term (rather than I)
     !!!CALCULATION OF I TERMS (only hits this bit if doing I not J)
@@ -333,15 +340,18 @@ SUBROUTINE BESSEL(BSUM, PP, XZ, BSIGN)
     end do
     IF (PP==0) GO TO 5
     BRTERM = BTERM * PP / RIRA
+    write(666,*) "BRTERM", BRTERM
     ERTERM = PP * BTERM * TE
     DRTERM = PP * BTERM * TD
     5     BSUM = BTERM
     BR = BRTERM
+    write(666,*) "BR", BR
     BEA = ERTERM
     BDD = DRTERM
     IF(BSIGN>0) DBJB(JP) = BJTERM
     DO M = 1, 30
         BTERM = (BSIGN * BTERM * XZ * XZ) / (4. * M * (M + PP))
+        write(666,*) "M BTERM(355)", M, PP, BTERM
         IF(MODE==1) GO TO 11
         IF(LB(1)==0) GO TO 6
         !!!CALCULATION OF dM/dBd TERM [42]
@@ -353,7 +363,11 @@ SUBROUTINE BESSEL(BSUM, PP, XZ, BSIGN)
         6     IF (LB(2)==0) GO TO 7
         !!!CALCULATION OF dM/dR TERM [45]
         BRTERM = BTERM * (2. * M + PP) / RIRA
+        write(666,*) "M BRTERM=BTERM(2M+PP/RIRA)", M, BTERM, PP, RIRA, BRTERM
+        write(555, *) "M PP RIRA BRTERM BR"
+        write(555, *) M, PP, RIRA, BRTERM, BR
         BR = BR + BRTERM
+        write(666,*) "M", M, "BR", BR
         IF(ABS(BRTERM / BR)<CLIMIT) LB(2) = 0
         7     IF (LB(3)==0) GO TO 8
         !!!CALCULATION OF dM/dD TERM [48]
