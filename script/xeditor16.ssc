@@ -47,16 +47,19 @@ Using user-specified editor.
 ^^WI GRID OUTER NROWS=1 NCOLS=3
 ^^WI {
 ^^WI   @ 1,1 RESIZE _RSZXED VERTICAL {
-^^WI     ITEM GRID _GRXEDIT NROWS=4 NCOLS=1 {
-^^WI       @ 1,1 MULTIEDIT TEXT5 '' NROWS=25 NCOLS=80
+^^WI     ITEM GRID _GRXEDIT NROWS=3 NCOLS=1 {
+^^WI       @ 3,1 MULTIEDIT TEXT5 '' NROWS=25 NCOLS=80
 ^^WI         IGNORE DISABLED=NO
-^^WI       @ 3,1 GRID _INSL NROWS=1 NCOLS=5 {
-^^WI          @ 1,1 STATIC T1 'Insert template at cursor:'
-^^WI          @ 1,3 DROPDOWN XRINS 
+^^WI       @ 1,1 GRID _INSL NROWS=2 NCOLS=6 {
+^^WI          @ 2,2 STATIC T1 'Insert template at cursor:'
+^^WI          @ 2,4 DROPDOWN XRINS 
 ^^WI           ADDTOLIST 'Planar' 'Average Distance' 'Average angle'                                  
 ^^WI                     'Distance' 'Angle' 'Uij similarity' 'Vibration' 
+^^WI                     'Repulsion' 'Asymm-Uij' 'Asymm-vib' 'U-TLS'
+^^WI                     'U-Equiv' 'U-Vol' 'U-Qiso' 'U-eig' 'U-align'
+^^WI                     'U-Rigu' 'U-Perp' 'U-Plane' 'U-Lij'
 ^^WI                     'NULL'              
-^^WI          @ 1,5 BUTTON XINS 'Insert'
+^^WI          @ 2,6 BUTTON XINS 'Insert'
 ^^WI       }                    
 ^^WI     }
 ^^WI     ITEM GRID _GREDMOD NROWS=4 NCOLS=1 {
@@ -204,7 +207,10 @@ Using user-specified editor.
 %      EVALUATE EDITOR_OK = TRUE
 ^^??    XRINS SELECTED                                                         
 %% 'Planar' 'Average Distance' 'Average angle' 'Distance' 'Angle' 'Uij similarity' 'Vibration' 
-%       VERIFY 1 2 3 4 5 6 7 
+%% 'Repulsion' 'Asymm-Uij' 'Asymm-vib' 'U-TLS'   8 9 10 11
+%% 'U-Equiv' 'U-Vol' 'U-Qiso' 'U-eig' 'U-align'   12 13 14 15 16
+%% 'U-Rigu' 'U-Perp' 'U-Plane' 'U-Lij'            17 18 19 20
+%       VERIFY 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
 %       GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %       IF VALUE .EQ. 1 THEN                                                
 ^^CO            SET TEXT5 INSERT 'planar 0.0, 0.01 = X(1) X(2) X(3) X(4)' 
@@ -220,6 +226,41 @@ Using user-specified editor.
 ^^CO            SET TEXT5 INSERT 'u(ij) 0.0, 0.01 = X(1) TO X(2)' 
 %       ELSE IF VALUE .EQ. 7 THEN
 ^^CO            SET TEXT5 INSERT 'vib 0.0, 0.01 = X(1) to X(2)' 
+%       ELSE IF VALUE .EQ. 8 THEN
+^^CO            SET TEXT5 INSERT '# repulsive restraint w = (value/actual)**(power*12)' 
+^^CO            SET TEXT5 INSERT '# will become rapidly repulsive if actual distance drops below requested value' 
+^^CO            SET TEXT5 INSERT 'non-bonded 0.8, 1.0 = X(1) to X(2)' 
+%       ELSE IF VALUE .EQ. 9 THEN
+^^CO            SET TEXT5 INSERT '# restrain adps to be equal, restraint only applied to second atom.' 
+^^CO            SET TEXT5 INSERT 'a-u(ij) 0.0, 0.02 = X(1) to X(2)' 
+%       ELSE IF VALUE .EQ. 10 THEN
+^^CO            SET TEXT5 INSERT '# restrain component of adp along bond to be equal, restraint only applied to second atom.' 
+^^CO            SET TEXT5 INSERT 'a-vib 0.0, 0.01 = X(1) to X(2)' 
+%       ELSE IF VALUE .EQ. 11 THEN
+^^CO            SET TEXT5 INSERT '# restrain adps to fit TLS model of displacement motion' 
+^^CO            SET TEXT5 INSERT '# use syntax "UTLS 0.01 m x(1) ..." to only apply restraint to first m atoms.' 
+^^CO            SET TEXT5 INSERT 'utls 0.01 X(1) X(2) X(3) X(4)' 
+%       ELSE IF VALUE .EQ. 12 THEN
+^^CO            SET TEXT5 INSERT 'ueqiv 0.01 X(1) X(2) X(3)' 
+%       ELSE IF VALUE .EQ. 13 THEN
+^^CO            SET TEXT5 INSERT 'uvol 0.01 X(1) X(2) X(3)' 
+%       ELSE IF VALUE .EQ. 14 THEN
+^^CO            SET TEXT5 INSERT 'uqusi 0.01 X(1)' 
+%       ELSE IF VALUE .EQ. 15 THEN
+^^CO            SET TEXT5 INSERT 'ueig 0.01 X(1)' 
+%       ELSE IF VALUE .EQ. 16 THEN
+^^CO            SET TEXT5 INSERT 'ualign 0.01 X(1) X(2) X(3)' 
+%       ELSE IF VALUE .EQ. 17 THEN
+^^CO            SET TEXT5 INSERT '# restrain adps of atoms to be physically sensible see Thorn et al., 2012, Acta A68, 448' 
+^^CO            SET TEXT5 INSERT 'urigu 0.01 X(1) to X(2)' 
+%       ELSE IF VALUE .EQ. 18 THEN
+^^CO            SET TEXT5 INSERT 'uperp 0.01 X(1) X(2) X(3)' 
+%       ELSE IF VALUE .EQ. 19 THEN
+^^CO            SET TEXT5 INSERT '# restrain adp of X(1) to lie in plane defined by all three atoms' 
+^^CO            SET TEXT5 INSERT 'uplane 0.01 X(1) to X(2) to X(3)' 
+%       ELSE IF VALUE .EQ. 20 THEN
+^^CO            SET TEXT5 INSERT '# restrain adp of x(1) and x(4) to be same in local coord system defined by other two atoms' 
+^^CO            SET TEXT5 INSERT 'ulij 0.01 X(1) to X(2) to X(3), X(4) to X(5) to X(6)' 
 %       END IF                                                                  
 %     END BLOCK 
 %   END CASE
