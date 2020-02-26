@@ -284,7 +284,7 @@ program shelx2cry
   do while (iostatus == 0)
     call readline(shelxf_id, line, iostatus)
     !print *, 'reading: ', line%line_number, iostatus, trim(line%line)
-    call call_shelxprocess(line)
+    if (iostatus == 0) call call_shelxprocess(line)
     if (the_end) exit
   end do
   close (shelxf_id)
