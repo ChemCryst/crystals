@@ -38,7 +38,7 @@ module crystal_data_m
   integer :: list13index = 0 !< index in list13
   character(len=512), dimension(512) :: list12 !< Array holding list12 instructions
   integer :: list12index = 0  !< index in list12
-  character(len=512), dimension(4) :: list31 = ''  !< Array holding list31 instructions
+  character(len=512), dimension(5) :: list31 = ''  !< Array holding list31 instructions
   character(len=512), dimension(5) :: composition = ''  !< Array holding composition instructions
 
   character(len=3), dimension(128) :: sfac = '' !< List of atom types (sfac from shelx)
