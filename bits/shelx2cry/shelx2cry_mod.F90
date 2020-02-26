@@ -245,7 +245,7 @@ contains
     implicit none
     integer i, j, k, start, maxresidue, maxresiduelen
     character(len=128) :: label, residueformat, residuetext, serialtext
-    character(len=128) :: buffer, line
+    character(len=128) :: buffer, line, tbuffer
     logical found
     type crystals_resi_t
       integer :: crystals_resi
@@ -384,8 +384,8 @@ contains
     line = ''
     do i = 1, atomslist_index
       write (buffer, '(a,"_",I0)') trim(atomslist(i)%label), atomslist(i)%resi%number
-      write (buffer, '(a8,1X,I8)') trim(buffer), atomslist(i)%crystals_serial
-      line = trim(line)//' | '//trim(buffer)
+      write (tbuffer, '(a8,1X,I8)') trim(buffer), atomslist(i)%crystals_serial
+      line = trim(line)//' | '//trim(tbuffer)
       if (mod(i, 4) == 0) then
         write (log_unit, '(a)') trim(line)
         line = ''
