@@ -11,6 +11,7 @@
 %%   Remember that XCIF includes a call to 
 %%   TO #CIF, and hence XSFLB and #esd to ensure that values are up to date
 %%
+%    copy '#set moni fast'
 %%
 %%
 %    COPY '#GENERALEDIT 11'
@@ -19,6 +20,7 @@
 %    COPY 'END'
 %    IF ( INVERTTYPE .LT. 0 ) THEN
 {E Cannot ouput cif file with esds. Inverted matrix cannot be trusted
+%%      copy '#set moni on'
 %      FINISH
 %    END IF
 %%
@@ -153,6 +155,7 @@
 %      END BLOCK
 %      BLOCK   % CIFXX
 ^^CO    DISPOSE XCIF
+%%       copy '#set moni on'
 %       FINISH
 %      END BLOCK
 %      BLOCK   % CIFHELP
@@ -215,11 +218,12 @@
 %    VERIFY ON OFF
 %    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
 %    IF ( VALUE .EQ. 1 ) THEN
-%      IF ICENTRIC .EQ. 0 THEN
-%       COPY '#SCRIPT TONSWORK'
-%       COPY '#TON PLOT=NO PUNCH =NO'                                                         
-%       COPY 'END'
-%      END IF
+%%      IF ICENTRIC .EQ. 0 THEN           % NOTE: commented out
+%%       COPY '#SCRIPT TONSWORK'          % NOTE: commented out
+%%       COPY '#TON PLOT=NO PUNCH =NO'    % NOTE: commented out                                                     
+%%       COPY 'END'                       % NOTE: commented out
+%%      END IF                            % NOTE: commented out
+%       COPY '#SCRIPT XABSOLUTE'
 %    END IF
 %%
 %%
@@ -237,6 +241,9 @@
 {I Difference Fourier complete.
 %    END IF
 %%
+%    copy '#sfls'  %Internal call to SFLS from XCIF removed Nov 2019 because
+%    copy 'calc'   %LIST 33 common block was not correclty loaded, causing 
+%    copy 'end'    %comotation errors if previous sfls had been on a de-twinned LIST 7
 %    COPY "#BONDCALC FORCE"
 %    COPY "END"
 %    COPY "#STORE CSYS CIF 'publish.cif'"
@@ -245,13 +252,13 @@
 %    COPY 'END'
 %    COPY '#PARAMETERS'
 %    COPY 'LAYOUT INSET = 1 NCHAR = 120 ESD=EXCLRH'
-%    COPY 'COORD SELECT=ALL MONITOR=LOW PRINT=YES PUNCH=CIF NCHAR=14'
+%    COPY 'COORD SELECT=ALL MONITOR=OFF PRINT=NO PUNCH=CIF NCHAR=14'
 %    COPY "U'S MONITOR=OFF, PRINT=NO, PUNCH=NO, NCHAR=14"
 %    COPY 'END'
 %    COPY '#DIST'
 %    COPY 'E.S.D YES YES'
 %    COPY 'SELECT RANGE=L41'
-%    COPY 'OUTPUT MON=DIST PUNCH = CIF HESD=NONFIXED'
+%    COPY 'OUTPUT MON=OFF PUNCH = CIF HESD=NONFIXED'
 %    COPY 'END'
 %%
 ^^?? XHBD STATE
@@ -274,7 +281,8 @@
 %      COPY '#PUNCH 16 C'
 %      COPY 'END'
 %%
-%%  Write manually omitted reflections to end of cif
+%    copy '#set moni on'
+%%   Write manually omitted reflections to end of cif
 %      COPY '#SUM LIST 28 HI'
 %      COPY 'END'
 %%
@@ -301,7 +309,7 @@
 %      END IF
 %    END IF
 %%
-  Parameters saved in {&publish.cif{&
+{I  Parameters saved in {&publish.cif{&
 %%
 %%
 %%
@@ -337,7 +345,7 @@
 %        COPY 'END'
 %      END IF
 %      COPY '#RELEASE FRN1 logs/bfile.frn'
-  Reflections saved in {&publish.fcf{&
+{I  Reflections saved in {&publish.fcf{&
 %    END IF
 %%
 ^^?? CFNOTE STATE
@@ -388,4 +396,5 @@
 %    END IF
 ^^CO DISPOSE XBLOCK DISPOSE XCIF
 %%
+%    copy '#set moni on'
 %END SCRIPT

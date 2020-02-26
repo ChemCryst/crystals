@@ -452,6 +452,7 @@ C----- VERSION 510 INCLUDES ALL LUDGER SCHROEDERS CHANGES
 C
 C -- **** INITIALISATION SECTION ****
       CALL XTIME1 (2)
+c      write(ncwu,*)'1-In MODIFY5', issmon
 C
 C -- CLEAR LIST CHAIN ( XRSL IS NOT CALLED , AS THE INFORMATION IN
 C    LIST 50 MUST REMAIN AVAILABLE FOR COMMAND PROCESSING THROUGHOUT
@@ -999,6 +1000,7 @@ C--END OF CARD  -  BACKSPACE ONE ARGUMENT
       MF=MF-LK2
 C--ERROR IN ATOM DEFINITION
 2450  CONTINUE
+c      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       GO TO 7500
 C--CHECK FOR THIS ATOM IN LIST 5
 2500  CONTINUE
@@ -1077,6 +1079,7 @@ C--END OF CARD  -  BACKSPACE ONE ARGUMENT
       MF=MF-LK2
 C--ERROR IN ATOM DEFINITION
 2451  CONTINUE
+c      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       GO TO 7500
 C--CHECK FOR THIS ATOM IN LIST 5
 2501  CONTINUE
@@ -2114,6 +2117,7 @@ C    ATOMIC PARAMETER
       ISCALE=KOVPCH(I)
       IF (ISCALE.LT.0) THEN
 C -- ERROR IN SPECIFICATION
+c      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
          GO TO 7100
       ELSE IF (ISCALE.EQ.0) THEN
 C -- ASSUME ATOMIC PARAMETER
@@ -2537,6 +2541,7 @@ C Normalise the vector, and compute rotation matrix in ortho space.
 C (See matrix.src)
 
       IF ( NROT(BPD(1),ROTATE,APD(1)) .LT. 0 ) THEN
+c      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
          WRITE(CMON,'(A)')'{E Rotate error: Vector has zero length.'
          CALL XPRVDU(NCVDU,1,0)
          GOTO 7100
@@ -2876,14 +2881,17 @@ C
 7050  CONTINUE
 C -- **** FINAL MESSAGES ****
 C
+c      write(ncwu,*)'2-In MODIFY5', issmon
       CALL XOPMSG (IOPLSM,IOPEND,IVERSN)
       CALL XTIME2 (2)
+c      write(ncwu,*)'3-In MODIFY5', issmon
       RETURN
 C
 C
 7100  CONTINUE
 C -- **** NON-FATAL ERRORS AND WARNINGS ****
 C
+c      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE (CMON,7150)
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)')CMON(1)(3:)
@@ -2893,6 +2901,7 @@ C
       GO TO 100
 C
 7200  CONTINUE
+c      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE (CMON,7250)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)')CMON(1)(3:)
       CALL XPRVDU (NCVDU,1,0)
@@ -2901,6 +2910,7 @@ C
       GO TO 7100
 C
 7300  CONTINUE
+c      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE (CMON,7350)
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)')CMON(1)(3:)
@@ -2908,6 +2918,7 @@ C
       GO TO 7100
 C
 7400  CONTINUE
+c      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE (CMON,7450)
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)')CMON(1)(3:)
@@ -2916,6 +2927,7 @@ C
       GO TO 7100
 C
 7500  CONTINUE
+c      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE (CMON,7550)
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)')CMON(1)(3:)
@@ -2923,6 +2935,7 @@ C
       GO TO 7100
 C
 7600  CONTINUE
+c      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE (CMON,7650)
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)')CMON(1)(3:)
@@ -2930,6 +2943,7 @@ C
       GO TO 7100
 C
 7700  CONTINUE
+c      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE (CMON,7750)
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)')CMON(1)(3:)
@@ -2937,6 +2951,7 @@ C
       GO TO 7100
 C
 7800  CONTINUE
+c      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE (CMON,7850)
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)')CMON(1)(3:)
@@ -2945,6 +2960,7 @@ C
       GO TO 7100
 C
 7900  CONTINUE
+c      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE (CMON,7950)
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)')CMON(1)(3:)
@@ -2952,6 +2968,7 @@ C
       GO TO 7100
 C
 8000  CONTINUE
+c      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE (CMON,8050)
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)')CMON(1)(3:)
@@ -2959,6 +2976,7 @@ C
       GO TO 7100
 C
 8100  CONTINUE
+c      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE (CMON,8150)
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)')CMON(1)(3:)
@@ -2968,7 +2986,7 @@ C
 C
 8200  CONTINUE
 C -- **** TERMINATING ERRORS ****
-      ISSMON = 0
+c      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
 C
       CALL XOPMSG (IOPMOD,IOPLSP,LA)
       GO TO 7050
@@ -2987,6 +3005,7 @@ C      X - ATOMIC COORDINATES
 C      A - WORKSPACE
 C      D - CONVERSION TERM
       DIMENSION X(3), A(9), D(3)
+      INCLUDE 'XSSVAL.INC'
       INCLUDE 'XUNITS.INC'
       SAVE NTERM
       IF (KEY.EQ.0) THEN
@@ -3023,8 +3042,10 @@ C      SUM[(X-A)*(Y-B)]= SUM(X*Y) - 1/N * SUM(X)*SUM(Y)
 200      CONTINUE
       ELSE
 C            STOP 'ERROR'
+c      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
          CALL GUEXIT (2017)
       END IF
+c      write(ncwu,*)'4-In MODIFY5', issmon
       RETURN
       END
 CODE FOR XBUC
@@ -3096,8 +3117,10 @@ C--CHECK IF 0.5 FACTOR REQUIRED
       CALL XSTR05 (LNOUT,0,NEW)
 C--FINAL TERMINATION MESSAGES
 450   CONTINUE
+c      write(ncwu,*)'5-In MODIFY5', issmon
       CALL XOPMSG (IOPTFC,IOPEND,410)
       CALL XTIME2 (2)
+c      write(ncwu,*)'6-In MODIFY5', issmon
       RETURN
 C
 500   CONTINUE
@@ -3164,10 +3187,11 @@ C -- WRITE THE LIST TO DISC
 C
 150   CONTINUE
 C
+c      write(ncwu,*)'7-In MODIFY5', issmon
       RETURN
 C
 200   CONTINUE
-      ISSMON=0 ! Turn monitoring back on
+c      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT.EQ.0) WRITE (NCWU,250) LB
       IF ( MONLVL .GT. 0 ) THEN
 cfeb08        WRITE (NCAWU,250) LB
@@ -3178,6 +3202,7 @@ cfeb08        WRITE (NCAWU,250) LB
       END IF
       GO TO 150
 300   CONTINUE
+c      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT.EQ.0) WRITE (NCWU,350) LA
 cfeb08      WRITE (NCAWU,350) LA
 *issmon      WRITE (CMON,350) LA
@@ -3187,6 +3212,7 @@ cfeb08      WRITE (NCAWU,350) LA
 350   FORMAT (1X,'List ',I3,' has not been changed ')
       GO TO 150
 400   CONTINUE
+c      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT.EQ.0) WRITE (NCWU,450) LA
 cfeb08      WRITE (NCAWU,450) LA
       WRITE (CMON,450) LA
@@ -3196,6 +3222,7 @@ C -- THIS CONDITION IS AN ERROR
       IERROR=IERERR
       GO TO 200
 500   CONTINUE
+c      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT.EQ.0) WRITE (NCWU,550) LA
 cfeb08      WRITE (NCAWU,550) LA
       IF ( MONLVL .GT. 0 ) THEN
@@ -3431,6 +3458,7 @@ C -- CHECK IF PRINT HAS BEEN FORCED
          ICONTL(IMDITM)=0
       END IF
 C
+c      write(ncwu,*)'8-In MODIFY5', issmon
       RETURN
 C
 600   CONTINUE
@@ -3439,7 +3467,9 @@ cfeb08      WRITE (NCAWU,650)
       WRITE (CMON,650)
       CALL XPRVDU (NCVDU,1,0)
 650   FORMAT (1X,'Illegal LEVEL value selected')
+c      write(ncwu,*)'9-In MODIFY5', issmon
       CALL XERHND (IERPRG)
+c      write(ncwu,*)'10-In MODIFY5', issmon
       RETURN
       END
 CODE FOR XMDPRT
@@ -3652,10 +3682,13 @@ cfeb08      WRITE (NCAWU,950) (A(I),I=1,NA)
 C
 1000  CONTINUE
       NA=0
+c      write(ncwu,*)'11-In MODIFY5', issmon
       RETURN
 C
 1050  CONTINUE
+c      write(ncwu,*)'12-In MODIFY5', issmon
       CALL XOPMSG (IOPLSM,IOPINT,0)
+c      write(ncwu,*)'13-In MODIFY5', issmon
       RETURN
       END
 CODE FOR KMDMOV
@@ -3798,10 +3831,12 @@ C
 C
 250   CONTINUE
       CALL XSTRLL (ITEMP)
+c      write(ncwu,*)'14-In MODIFY5', issmon
       RETURN
 C
 300   CONTINUE
 C -- ERRORS
+c      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       KMDMOV=-1
       GO TO 250
 C
@@ -3874,6 +3909,7 @@ C
 C
       IF ( N5 .LE. 1 ) THEN ! Zero or one atom = atoms in order already. 
          KMDSRT = 1
+c      write(ncwu,*)'15-In MODIFY5', issmon
          RETURN
       END IF
 C -- **** INITIALISATION SECTION ****
@@ -3996,6 +4032,7 @@ C
 C
       CALL XSTRLL (IFOUND)
 C
+c      write(ncwu,*)'16-In MODIFY5', issmon
       RETURN
 C
 C
@@ -4062,7 +4099,9 @@ cfeb08      WRITE (NCAWU,150) ICOMP
       WRITE (CMON,150) ICOMP
       CALL XPRVDU (NCVDU,1,0)
 150   FORMAT (1X,'Type ',A4,' has been repeated')
+c      write(ncwu,*)'17-In MODIFY5', issmon
       CALL XERHND (IERWRN)
+c      write(ncwu,*)'18-In MODIFY5', issmon
       RETURN
       END
 CODE FOR XMDSRK
@@ -4487,8 +4526,10 @@ C Assume it's an atom
 
 C--FINAL TERMINATION MESSAGES
 450   CONTINUE
+c      write(ncwu,*)'18-In MODIFY5', issmon
       CALL XOPMSG (IOPTFC,IOPEND,410)
       CALL XTIME2 (2)
+c      write(ncwu,*)'19-In MODIFY5', issmon
       RETURN
 C
 500   CONTINUE
@@ -4731,8 +4772,10 @@ C
       CALL XSTR05 (LNOUT,0,NEW)
 C--FINAL TERMINATION MESSAGES
 450   CONTINUE
+c      write(ncwu,*)'20-In MODIFY5', issmon
       CALL XOPMSG (IOPTFC,IOPEND,410)
       CALL XTIME2 (2)
+c      write(ncwu,*)'21-In MODIFY5', issmon
       RETURN
 C
 500   CONTINUE

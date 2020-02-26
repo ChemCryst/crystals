@@ -2,6 +2,8 @@
 %%                                                                   
 %% Prepare for the absolute structure determination
 %% Create a LIST 7 from 6, gather together FRIEDEL pairs                                                                              
+%%
+%%  copy '#set monitor fast'
 %%                                                 
 %  VARIABLE LOGICAL FLACKERROR                             
 %  EVALUATE FLACKERROR = TRUE
@@ -30,6 +32,7 @@
 %    COPY 'TRANSFER FROM OFFSET = 0 TO IANOMA'
 %    COPY 'END'
 %    IF ( IANOMA .EQ. - 1 ) THEN
+%%  copy '#set monitor on'
 {E *** FATAL:  You should include anomalous scattering
 %      COPY '#SCRIPT ED23'
 {I *** You probably now need some cycles of refinement
@@ -39,6 +42,7 @@
 %%                                                                              
 %  BLOCK                                                                        
 %    IF ( EXISTS 6 .NE. 1 ) THEN                                                
+%%  copy '#set monitor on'
 {E **** FATAL: There are no reflections to work with                            
 %      FINISH                                                                   
 %    END IF                                                                     
@@ -61,6 +65,7 @@
 %COPY '#SCRIPT COPY67'                                                          
 %  BLOCK                                                                        
 %    IF ( EXISTS 7 .NE. 1 ) THEN                                                
+%%  copy '#set monitor on'
 {E **** FATAL: The reflection convertion failed                                 
 %      FINISH                                                                   
 %    END IF                                                                     
@@ -78,6 +83,7 @@
 %copy 'monitor off'                                                                   
 %copy 'change enantio 0'                                                        
 %copy 'end'                                                                     
+%%
 %copy '#sfls in=7'                                                              
 %copy 'calc'                                                                    
 %copy 'end'                                                                     
@@ -89,12 +95,15 @@
 %copy '#disk'                                                                   
 %clear                                                                          
 %insert 'reset 5 '                                                              
-%store integer l5ser                                                            
+%store integer  l5ser 
 %send                                                                           
 %%
 %clear                                                                          
-%insert 'delete 5 '                                                              
-%store integer l5new                                                            
+%insert 'delete 5 '   
+%if l5new .lt. 0 then
+%evaluate l5new = abs ( l5new )
+%end if                                                          
+%store integer l5new                                                          
 %send                                                                           
 %%
 %copy 'retain 5 action=no'                                                      
@@ -108,4 +117,5 @@
 %%
 % EVALUATE FLACKERROR = FALSE
 %%        
+%%  copy '#set monitor on'
 % END SCRIPT

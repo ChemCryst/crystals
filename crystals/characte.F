@@ -1019,10 +1019,11 @@ C----- ERROR MESSAGE FROM HNN WRITER
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XIOBUF.INC'
 C
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,100) 'Unable to get atom type in routine', CTYPE
       ENDIF
-      WRITE(NCAWU,100) 'Unable to get atom type in routine', CTYPE
+c      WRITE(NCAWU,100) 'Unable to get atom type in routine', CTYPE
       WRITE ( CMON, 100) 'Unable to get atom type in routine', CTYPE
       CALL XPRVDU(NCVDU, 1,0)
 100   FORMAT( 3X,A,A)
@@ -1071,6 +1072,7 @@ C----- LOOP UNTIL NO MORE INTEGERS
       GOTO 50
 250   CONTINUE
 C----- ERROR CONDITION
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       KCITOF = -1
 C      WRITE(*,*) 'ERROR CONDITION'
 300   CONTINUE

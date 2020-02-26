@@ -317,6 +317,7 @@ C--CHECK THE VALUE OF SIN(THETA)**2
       IF(T-1.)1850,1850,1800
 C--PRINT OUT THE ERROR MESSAGE
 1800  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XL6RRP ( N , 100 , IFO , CCAPT(L) )
       GOTO  1550
 C
@@ -397,10 +398,12 @@ C
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPLPC , IOPABN , 0 )
       GO TO 2610
 9910  CONTINUE
 C -- INPUT ERROR
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPLPC , IOPCMI , 0 )
       GO TO 9900
 9915  CONTINUE
@@ -793,10 +796,12 @@ c                                  !absences have been removed
 
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPSSM , IOPABN , 0 )
       GO TO 1810
 9910  CONTINUE
 C -- INPUT ERROR
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPSSM , IOPCMI , 0 )
       GO TO 9900
 C
@@ -1763,10 +1768,12 @@ C--TERMINATE BECAUSE OF ERRORS
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPMER , IOPABN , 0 )
       GO TO 4200
 9910  CONTINUE
 C -- INPUT ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPMER , IOPCMI , 0 )
       GO TO 9900
 C
@@ -2246,6 +2253,7 @@ c
       write (cmon,'(a)')'Premature end of sigmas.dat found'
       call xprvdu(ncvdu,1,1)
 20    continue
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       write (cmon,'(a)')'Error in sigmas.dat'
       call xprvdu(ncvdu,1,1)
       goto 999
@@ -2308,6 +2316,7 @@ c
       return
 
 999   continue
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       write(cmon,*)'Error during analysis of variances'
       call xprvdu(ncvdu, 1,0)
 cundo      if (issprt .eq. 0) write(ncwu,'(a)') trim(CMON(1))

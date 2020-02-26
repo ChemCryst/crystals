@@ -86,6 +86,7 @@ Name: "{group}\HTML help";                      Filename: "{app}\Manual\Crystcon
 Name: "{group}\Getting Started";                Filename: "{app}\manual\readme.html";  WorkingDir: "{app}"
 Name: "{group}\Uninstall CRYSTALS";             Filename: "{uninstallexe}";
 Name: "{group}\Example structures";             Filename: "{autoappdata}\crystals\demo\"
+Name: "{group}\Script folder";                  Filename: "{app}\script\";
 
 
 

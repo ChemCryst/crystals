@@ -1,0 +1,100 @@
+%SCRIPT PWT                                                                  
+%  VARIABLE CHARACTER CDIR CFILE
+%  VARIABLE CHARACTER C_UPP CEXTN CROOT CARG CLASS CLOC
+%  VARIABLE LOGICAL VALID11 T                                                   
+%%                                                                              
+%    COPY "#BONDCALC FORCE"                                                     
+%    COPY "END"                                                                 
+%    COPY "#STORE CSYS CIF 'crysplat.cif'"                                        
+%    COPY '#APPEND PUNCH '                                                      
+%% Check list 11 is up to date                                                  
+%    COPY '#SCRIPT VALID11'                                                     
+%%                                                                              
+%%                                                                              
+%    IF ( VALID11 .EQ. TRUE ) THEN                                              
+%     COPY '#CIF '                                                              
+%     COPY 'END'                                                                
+%     COPY '#PARAMETERS'                                                        
+%     COPY 'LAYOUT INSET = 1 NCHAR = 120 ESD=EXCLRH'                            
+%     COPY 'COORD SELECT=ALL MONITOR=LOW PRINT=YES PUNCH=CIF NCHAR=14'          
+%     COPY "U'S MONITOR=OFF, PRINT=NO, PUNCH=NO, NCHAR=14"                      
+%     COPY 'END'                                                                
+%     COPY '#DIST'                                                              
+%     COPY 'E.S.D YES YES'                                                      
+%     COPY 'SELECT RANGE=L41'                                                   
+%     COPY 'OUTPUT MON=DIST PUNCH = CIF HESD=NONFIXED'                          
+%     COPY 'END'                                                                
+%    ELSE 
+%     COPY '#CIF '                                                              
+%     COPY 'END'                                                                
+%     COPY '#PARAMETERS'                                                        
+%     COPY 'LAYOUT INSET = 1 NCHAR = 120 ESD=NO'                                
+%     COPY 'COORD SELECT=ALL MONITOR=LOW PRINT=YES PUNCH=CIF NCHAR=14'          
+%     COPY "U'S MONITOR=OFF, PRINT=NO, PUNCH=NO, NCHAR=14"                      
+%     COPY 'END'                                                                
+%     COPY '#DIST'                                                              
+%     COPY 'SELECT RANGE=L41'                                                   
+%     COPY 'OUTPUT MON=DIST PUNCH=CIF'                                          
+%     COPY 'END'                                                                
+%    END IF                                                                     
+%% 
+%      COPY '#OPEN FRN1 crysplat.fcf'                                            
+%      COPY '#PUNCH 6 E'                                                      
+%      COPY 'END'                                                               
+  Reflections saved in {&crysplat.fcf{&                                          
+                                                                             
+%  COPY '#RELEASE PUNCH bfile.pch'                                              
+%  COPY '#RELEASE FRN1 BFILE.FRN'                                           
+%  EVALUATE T = FILEDELETE ( 'publish.chk' )                                    
+%%                                                                              
+^^CO GETKEY PLATONDIR                                                           
+%% 
+%%                                                                              
+%  GET SILENT NOSTORE FINAL TEXT '1' '1'                                        
+%  EVALUATE CFILE = CVALUE                                                      
+%%  SHOW CFILE
+%  EVALUATE C_UPP = UPPERCASE ( CFILE )
+%  EVALUATE CDIR = GETPATH ( CFILE )                                            
+%  EVALUATE CEXTN = GETEXTN ( CFILE )
+%  EVALUATE CEXTN = UPPERCASE ( CEXTN )
+%  EVALUATE CROOT = GETTITLE ( CFILE )
+%  EVALUATE CROOT = UPPERCASE ( CROOT )
+%  EVALUATE CLOC = CROOT // '.' // CEXTN
+%  IF CROOT .EQ. 'PLATON' THEN
+%    EVALUATE CFILE = CDIR // 'PWT.EXE'
+%  END IF
+%  
+%%  SHOW CROOT CLOC 
+%  IF CFILE .EQ. '1' .OR. FILEEXISTS ( CFILE ) .EQ. FALSE THEN                  
+                                                                                
+  Where is the PWT executable?                                               
+                                                                                
+^^CO SYSOPENFILE 'PWT*.exe' 'PWT executable'                              
+%    CLEAR                                                                      
+%    INSERT '^^CO SETKEY PLATONDIR "'                                           
+%    GET SILENT TEXT 'PWT location:'                                         
+%    IF CVALUE .NE. 'CANCEL' THEN                                               
+%      EVALUATE CFILE = CVALUE                                                  
+%      INSERT '"'                                                               
+%      OUTPUT                                                                   
+%    ELSE                                                                       
+%      FINISH                                                                   
+%    END IF                                                                     
+%  END IF                                                                       
+%%                                                                              
+%%                                                                              
+%  IF FILEEXISTS ( CDIR // 'check.def' ) .EQ. FALSE THEN                        
+%   TRANSFER '#spawn +copy "' // CDIR // 'check.def" .' TO DISPLAY              
+%   TRANSFER '#spawn +copy "' // CDIR // 'check.def" .' TO CRYSTALS             
+%  END IF      
+%%                                                                 
+%% Run PWT
+%%
+
+  You will probably need to browse to crysplat.cif, in the current folder
+
+%  TRANSFER '#SPAWN + "' // CFILE // '"  ' TO DISPLAY                  
+%  TRANSFER '#SPAWN + "' // CFILE // '"   ' TO CRYSTALS                 
+%%
+%%                                                                              
+%END SCRIPT                                                                     

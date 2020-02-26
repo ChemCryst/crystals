@@ -5,8 +5,6 @@
 %  VARIABLE REAL AVALUE
 %%                                                                              
 %%                                                                              
-%%                                                                              
-%%                                                                              
 ^^WI WINDOW XGETVALUE 'Get a real value' MODAL                            
 ^^WI COMMIT='RF_BOK' CANCEL='RF_BXX'                                            
 ^^WI GRID MAIN NROWS=3 NCOLS=7                                                  
@@ -38,14 +36,14 @@
 ^^CO FOCUS NC
 %%                                                                              
 %%                                                                              
-%%                                                                              
 %    LOOP                                                                       
 %      ON ERROR TERMINATE                                                       
 %      VERIFY RF_BXX RF_BOK 
 %      GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '                             
 %      CASE VALUE                                                               
 %       BLOCK                                                                   
-^^CO      DISPOSE XGETVALUE                                                       
+^^CO      DISPOSE XGETVALUE 
+%         EVALUATE AVALUE = - 10001.                                                      
 %         FINISH                                                                
 %       END BLOCK                                                               
 %       BLOCK                                                                   
@@ -55,7 +53,8 @@
 %    END LOOP
 ^^?? NC TEXT                                                                    
 %    GET NOSTORE SILENT FINAL REAL 'Value?' '0.0'                     
-%    EVALUATE AVALUE = VALUE                                                    
+%    EVALUATE AVALUE = VALUE  
+% show avalue                                                  
 ^^CO DISPOSE XGETVALUE                                                            
 %%          
 % END SCRIPT

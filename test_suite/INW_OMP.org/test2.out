@@ -9569,7 +9569,7 @@ The slope and correlation coefficient should be small
 [65]      TOTALS          2016     96782.      97080.        0.242E+06       0.977E+00     3.19    7.03     .  .  *  .  .
                                                                                                        -2 -1  0  1  2
 #DISK
- List type  11 with serial number   136 is the current version. 
+ List type  11 with serial number   136 is the current version.
  You may still save this list with DELETE n ACTION=NO
 #PURGE
  List type   11  serial number  136 from   183875 to   188313 will not be copied ( deleted )         
@@ -9577,8 +9577,6 @@ The slope and correlation coefficient should be small
  DO NOT abort the program
  The new disc index has been re-written 
  Disc index completely restored
-
- Listing of file index of    Data    file 
 #SFLS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -19200,7 +19198,7 @@ The slope and correlation coefficient should be small
 [65]      TOTALS          2016     96782.      96998.        0.473E+01       0.115E+01     3.03    3.83     .  .  *  .  .
                                                                                                        -2 -1  0  1  2
 #DISK
- List type  11 with serial number   144 is the current version. 
+ List type  11 with serial number   144 is the current version.
  You may still save this list with DELETE n ACTION=NO
 #PURGE
  List type   11  serial number  144 from    96451 to   100889 will not be copied ( deleted )         
@@ -19208,8 +19206,6 @@ The slope and correlation coefficient should be small
  DO NOT abort the program
  The new disc index has been re-written 
  Disc index completely restored
-
- Listing of file index of    Data    file 
 #SFLS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -28310,7 +28306,7 @@ The slope and correlation coefficient should be small
 [65]      TOTALS          2016     96782.      96988.        0.126E+06       0.977E+00     3.02    6.41     .  .  *  .  .
                                                                                                        -2 -1  0  1  2
 #DISK
- List type  11 with serial number   136 is the current version. 
+ List type  11 with serial number   136 is the current version.
  You may still save this list with DELETE n ACTION=NO
 #PURGE
  List type   11  serial number  136 from    95453 to    99891 will not be copied ( deleted )         
@@ -28318,8 +28314,6 @@ The slope and correlation coefficient should be small
  DO NOT abort the program
  The new disc index has been re-written 
  Disc index completely restored
-
- Listing of file index of    Data    file 
 #SFLS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -37880,7 +37874,7 @@ The slope and correlation coefficient should be small
 [65]      TOTALS          2016     96782.      97003.        0.473E+01       0.115E+01     3.03    3.83     .  .  *  .  .
                                                                                                        -2 -1  0  1  2
 #DISK
- List type  11 with serial number   144 is the current version. 
+ List type  11 with serial number   144 is the current version.
  You may still save this list with DELETE n ACTION=NO
 #PURGE
  List type   11  serial number  144 from    96451 to   100889 will not be copied ( deleted )         
@@ -37888,8 +37882,6 @@ The slope and correlation coefficient should be small
  DO NOT abort the program
  The new disc index has been re-written 
  Disc index completely restored
-
- Listing of file index of    Data    file 
 #SFLS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom

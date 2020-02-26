@@ -36,7 +36,7 @@
 ^^WI          '#SCRIPT EDLIST16' DISABLEIF='IN' ENABLEIF='L5'
 ^^WI         TOOL _DO33 dorefine.png
 ^^WI 'Setup refinement'
-^^WI          '#SCRIPT XWRITE5' DISABLEIF='IN'
+^^WI          '#SCRIPT SWRITE5' DISABLEIF='IN'
 ^^WI         TOOL _DO33 runref.png
 ^^WI 'Initiate some cycles of refinement'
 ^^WI          '#SCRIPT XREFINE' DISABLEIF='IN'

@@ -380,6 +380,7 @@ C--AND NOW THE 'END'
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 5 )
       RETURN
       END
@@ -453,6 +454,7 @@ C      IF(ABS(STORE(M5+3))-UISO)1250,1350,1350
       RETURN
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 5 )
       END
 C
@@ -612,6 +614,7 @@ C-C-C-ISO/SPHERE/LINE/RING
       RETURN
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 5 )
       RETURN
       END
@@ -959,7 +962,8 @@ C
 C----- ANY ATOM CARDS ?
       IF (ISTORE(M38LK +1)) 1300,1300,1400
 1300  CONTINUE
-      WRITE(NCAWU,1350)
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
+c      WRITE(NCAWU,1350)
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1350)
       ENDIF
@@ -999,16 +1003,18 @@ C--AND NOW THE 'END'
       RETURN
 C
 8200  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,8300)
       ENDIF
-      WRITE(NCAWU,8300)
+c      WRITE(NCAWU,8300)
 8300  FORMAT(' There are no GROUP definitions stored')
       GOTO 9900
 C
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 38 )
       RETURN
       END
@@ -1174,6 +1180,7 @@ C--TERMINATE THE LIST
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 6 )
       RETURN
       END
@@ -1252,6 +1259,7 @@ C--TERMINATE THE LIST
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 6 )
       RETURN
       END
@@ -1439,6 +1447,7 @@ C--END OF THE REFLECTIONS  -  OUTPUT THE TERMINATOR
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 6 )
       END
 CODE FOR XPCH6C                                                       !PUNCH 6 B, E, H
@@ -1527,6 +1536,7 @@ C   OPEN A DEFAULT FILE IF ONE ISN'T ALREADY ATTACHED
         CALL XFAL25
         IF (IERFLG .LT. 0) GOTO 9900
         IF (KEXIST(9) .LT. 1) THEN
+         if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
          WRITE(CMON,'('' No ESDS available'')')
          CALL XPRVDU(NCVDU, 1,0)
 C        NOTE: esds set to zero below if L 9 does not exist
@@ -1973,7 +1983,7 @@ c
       CHARACTER*9  C6FORM(N6MAX)
       INTEGER N6KEYS(N6MAX)
       INTEGER N6LEN(N6MAX), I6PCH(N6MAX)
-      CHARACTER*256 CBGFMT   
+      CHARACTER*256 CBGFMT,CSBGFMT   
       character(len=12), dimension(:), allocatable :: CBGFMTa ! CBGFMT as array
 C
       INCLUDE 'QSTORE.INC'
@@ -2107,7 +2117,10 @@ c
 105   FORMAT('OUTPUT',6(1X,A11),5(/,'CONT  ',6(1X,A11)))
       WRITE(NCPU,102) (C6KEYS(I6PCH(J)),J=1,M6PCH)
 102   FORMAT('INPUT ',6(1X,A11),5(/,'CONT  ',6(1X,A11)))
-      WRITE(NCPU,103) CBGFMT(1:NBGNXT)
+C      WRITE(123,*)'A ',CBGFMT(2:LEN_TRIM(CBGFMT))
+C      WRITE(123,*)'B ',CBGFMT(2:LEN_TRIM(CBGFMT)-1)
+      CALL CCOMPRESS(CBGFMT(2:LEN_TRIM(CBGFMT)-1),CSBGFMT)
+      WRITE(NCPU,103) CSBGFMT(1:LEN_TRIM(CSBGFMT))
 103   FORMAT('FOR ', A)
       WRITE(NCPU,'(A)')'END'
 c
@@ -2176,10 +2189,73 @@ C--PUNCH THE REFLECTION
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 6 )
       RETURN
       END
 C
+CODE FOR CCOMPRESS
+      SUBROUTINE CCOMPRESS (cform,cnform)
+c compress repeated FORMAT terms
+      character *(*) cform,cnform
+      character *16 cbit(64), citem
+      nform=len_trim(cform)
+c - PART 1 - break the expression up into components
+      j=1
+      k=1
+      cbit(j)(:)=' '
+      do i=1,nform
+      if((cform(i:i).ne.',').and.(cform(i:i).ne.'/')) then
+            cbit(j)(k:k)=cform(i:i)
+            k=k+1
+      else
+            k=1
+            j=j+1
+            cbit(j)(:)=' '
+      endif
+      enddo
+c - PART 2 - gather together repeated items
+      n=1
+      cnform=' '
+      jform=1
+      citem=cbit(1)
+      mbit=len_trim(citem)
+      do i=2,j
+            nbit=len_trim(cbit(i)(:))
+            if(cbit(i).eq.citem) then
+              n=n+1
+              if(i.eq.j)then
+c                  write(*,'(a)') citem(1:mbit) 
+                  write(cnform(jform:),'(a,i1,a)')',',n,citem(1:mbit)
+                  jform=len_trim(cnform)+1
+              endif
+            else
+              if(n.eq.1) then
+c                  write(*,'(a)') citem(1:mbit)
+                  write(cnform(jform:),'(a,a)')',',citem(1:mbit)
+                  jform=len_trim(cnform)+1
+              else
+c                  write(*,'(i1,a)') n,citem(1:mbit)
+                  write(cnform(jform:),'(a,i1,a)')',',n,citem(1:mbit)
+                  jform=len_trim(cnform)+1
+              endif
+              n=1
+              citem=cbit(i)(1:nbit)
+              mbit=nbit
+              if(i.eq.j)then
+c                  write(*,'(a)') citem(1:mbit) 
+                  write(cnform(jform:),'(a,a)')',',citem(1:mbit)
+                  jform=len_trim(cnform)+1
+              endif
+            endif
+      enddo
+      cnform(1:1) = '('
+      cnform(jform:jform) = ')'
+C      write(123,'(a)') cform(1:len_trim(cform))
+C      write(123,'(a)') cnform(1:len_trim(cnform))
+      return 
+      end
+
 C
 C
 CODE FOR XPCH6Y
@@ -2334,6 +2410,7 @@ C--TERMINATE THE LIST
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 6 )
       RETURN
       END
@@ -2490,6 +2567,7 @@ c      WRITE(NCPU,1200)I
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 6 )
       RETURN
       END
@@ -2843,6 +2921,7 @@ C--AND NOW THE 'END'
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 38 )
       RETURN
       END
@@ -2898,6 +2977,7 @@ C--AND NOW THE 'END'
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 38 )
       RETURN
       END
@@ -3031,6 +3111,7 @@ C--AND NOW THE 'END'
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 38 )
       RETURN
       END
@@ -3372,7 +3453,7 @@ C
       WRITE(NCPU,100) ISTORE(L4C), MD4,  CVALUE(1:LVALUE),
      1    STORE(L4F),STORE(L4F+1), CNY(ISTORE(L4C+2)+1),
      2    CNY(ISTORE(L4C+3)+1), STORE(L4F+2), STORE(L4F+3),
-     3    STORE(L4F+4),STORE(L4F+5)
+     3    STORE(L4F+4),STORE(L4F+6)
       
 101   FORMAT('PARAM ',9F12.6)
       IF ( MD4 .GT. 0 ) THEN
@@ -4225,6 +4306,7 @@ C--TERMINATE THE LOOP
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPCH , IOPLSP , 6 )
       RETURN
       END
@@ -4334,7 +4416,7 @@ C -- NO ATOMS IN LIST 5 FOR SIM WEIGHTS
          end if
          WRITE(CMON,100)
          CALL XPRVDU(NCVDU,2,0)
-         WRITE (NCAWU,100)
+c         WRITE (NCAWU,100)
 100      FORMAT (1X,' LIST 5 contains no atoms for SIM weighting.' 
      1   /1X,'Unit Weights used')
          SSV=1.0
@@ -4372,7 +4454,7 @@ C --   ATOM NOT IN LIST 29
             END IF
             WRITE(CMON,200)
             CALL XPRVDU(NCVDU,1,0)
-            WRITE (NCAWU,200)
+c            WRITE (NCAWU,200)
 200         FORMAT (1X,'Atom in list 5 but not in list 29')
             CALL XPRTCO (2,M5A,I)
             CALL XERHND (IERERR)
@@ -4395,7 +4477,7 @@ C----- NO ATOMS LEFT IN LIST 29
          IF (ISSPRT.EQ.0) THEN
             WRITE (NCWU,350)
          END IF
-         WRITE (NCAWU,350)
+c         WRITE (NCAWU,350)
          WRITE(CMON,350)
          CALL XPRVDU(NCVDU,5,0)
 350      FORMAT (1X,//'  Sim weighting inapplicable.',

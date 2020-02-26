@@ -824,6 +824,7 @@ c Cholesky inversion + preconditioning
 c                print *, STR11(L11C:L11C+5)
                
             case default
+                if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
                 WRITE ( CMON, '(A,I8)') 
      1            '{E Error unknown invertor ', method
                 CALL XPRVDU(NCVDU, 1,0)
@@ -2638,11 +2639,11 @@ C--OUTPUT THE NEW LIST 5
       CALL XWLSTD(5,ICOM05,IDIM05,0,-1)
 C----- SAVE THE MEAN C-C ESD
       WRITE ( CMON,'(a,f8.4)' ) 
-     1  'Mean C-C su = ',AESDC/MAX(1.0, FLOAT(NESDC))
+     1  ' Mean C-C su = ',AESDC/MAX(1.0, FLOAT(NESDC))
       call outcol(7)
       CALL XPRVDU(NCVDU, 1,0)
       call outcol(1)
-      IF (ISSPRT .EQ.0) WRITE(NCWU,'(A)')trim(CMON(1))
+      IF (ISSPRT .EQ.0) WRITE(NCWU,'(A)')trim(CMON(1)(2:))
 c
 c
       STORE(L30CF+14) = AESDC/MAX(1.0, FLOAT(NESDC))
@@ -2981,6 +2982,7 @@ C -- ERRORS
       RETURN
 9910  CONTINUE
 C -- CORE OVEFLOW
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XICA
       CALL XERHND ( IERERR )
       GO TO 9900
