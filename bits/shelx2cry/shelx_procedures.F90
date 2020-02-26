@@ -417,9 +417,10 @@ contains
   subroutine shelx_zerr(shelxline)
     use crystal_data_m
     implicit none
-    real, parameter :: dtr = 0.01745329252
+    double precision, parameter :: dtr = 0.01745329252d0
+    double precision, parameter :: amult = 0.000001d0
     type(line_t), intent(in) :: shelxline
-    real, dimension(7) :: esds
+    double precision, dimension(7) :: esds
     integer iostatus, i
     character(len=256) :: iomessage
     character(len=:), allocatable :: stripline
@@ -454,8 +455,8 @@ contains
     
     write (list31(1), '(a)') '\LIST 31'
     write (list31(2), '(a)') 'AMULT 0.000001'  ! Make this multiplier explicit, in case the default ever changes.
-    write (list31(3), '("MATRIX V(11)=",F0.5, ", V(22)=",F0.5, ", V(33)=",F0.5)') (esds(2:4)**2)/0.000001
-    write (list31(4), '("CONT V(44)=",F0.5, ", V(55)=",F0.5, ", V(66)=",F0.5)') ((esds(5:7)*DTR)**2)/0.000001
+    write (list31(3), '("MATRIX V(11)=",F0.5, ", V(22)=",F0.5, ", V(33)=",F0.5)') (esds(2:4)**2)/amult
+    write (list31(4), '("CONT V(44)=",F0.5, ", V(55)=",F0.5, ", V(66)=",F0.5)') ((esds(5:7)*DTR)**2)/amult
     write (list31(5), '(a)') 'END'
 
   end subroutine
