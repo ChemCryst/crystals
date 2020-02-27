@@ -210,8 +210,7 @@ Using user-specified editor.
 %% 'Repulsion' 'Asymm-Uij' 'Asymm-vib' 'U-TLS'   8 9 10 11
 %% 'U-Equiv' 'U-Vol' 'U-Qiso' 'U-eig' 'U-align'   12 13 14 15 16
 %% 'U-Rigu' 'U-Perp' 'U-Plane' 'U-Lij'            17 18 19 20
-%       VERIFY 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
-%       GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%       GET SILENT NOSTORE INTEGER ' ' ' '
 %       IF VALUE .EQ. 1 THEN                                                
 ^^CO            SET TEXT5 INSERT 'planar 0.0, 0.01 = X(1) X(2) X(3) X(4)' 
 %       ELSE IF VALUE .EQ. 2 THEN
