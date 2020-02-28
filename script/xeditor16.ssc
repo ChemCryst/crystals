@@ -47,10 +47,14 @@ Using user-specified editor.
 ^^WI GRID OUTER NROWS=1 NCOLS=3
 ^^WI {
 ^^WI   @ 1,1 RESIZE _RSZXED VERTICAL {
-^^WI     ITEM GRID _GRXEDIT NROWS=3 NCOLS=1 {
-^^WI       @ 3,1 MULTIEDIT TEXT5 '' NROWS=25 NCOLS=80
+^^WI     ITEM GRID _GRXEDIT NROWS=5 NCOLS=1 {
+^^WI       @ 5,1 MULTIEDIT TEXT5 '' NROWS=25 NCOLS=80
 ^^WI         IGNORE DISABLED=NO
-^^WI       @ 1,1 GRID _INSL NROWS=2 NCOLS=6 {
+^^WI       @ 3,1 GRID _INSL NROWS=1 NCOLS=3 {
+^^WI         @ 1,2 STATIC RED 
+^^WI           'Double click template atom, e.g. X(1), to select. Click atom in model to replace.'
+^^WI       }
+^^WI       @ 1,1 GRID _INSL NROWS=2 NCOLS=8 {
 ^^WI          @ 2,2 STATIC T1 'Insert template at cursor:'
 ^^WI          @ 2,4 DROPDOWN XRINS 
 ^^WI           ADDTOLIST 'Planar' 'Average Distance' 'Average angle'                                  
@@ -60,6 +64,7 @@ Using user-specified editor.
 ^^WI                     'U-Rigu' 'U-Perp' 'U-Plane' 'U-Lij'
 ^^WI                     'NULL'              
 ^^WI          @ 2,6 BUTTON XINS 'Insert'
+^^WI          @ 2,8 BUTTON XHELP 'Help'
 ^^WI       }                    
 ^^WI     }
 ^^WI     ITEM GRID _GREDMOD NROWS=4 NCOLS=1 {
@@ -133,7 +138,7 @@ Using user-specified editor.
 %TRANSFER "^^CO SET TEXT5 LOAD '" // EDITOR_FILE // "'" TO DISPLAY
 %%
 % LOOP
-%   VERIFY BOK BXX BRR BSS FIND NEXT XINS
+%   VERIFY BOK BXX BRR BSS FIND NEXT XHELP XINS
 %   GET SILENT NOSTORE FINAL ABBREVIATED 'BOK?' ' '
 %   CASE VALUE
 %     BLOCK 
@@ -202,6 +207,9 @@ Using user-specified editor.
 %TRANSFER "^^CO SET TEXT5 NEXT" TO DISPLAY
 %      EVALUATE EDITOR_OK = TRUE
 %     END BLOCK 
+%     BLOCK
+%       COPY '$ "CRYSDIR:/Manual/crystalsmanual-sfls.html#sfls.list16"'
+%     END BLOCK
 %     BLOCK 
 %% Insert text at cursor
 %      EVALUATE EDITOR_OK = TRUE
