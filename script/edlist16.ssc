@@ -9,6 +9,9 @@
 %  END IF
 %%
 %  COPY '#RELEASE PUNCH scporg16.dat'
+%  COPY '#PUNCH 16'
+%  COPY 'END'
+%  TRANSFER "  " TO PUNCH
 %  TRANSFER "# This file will be read by CRYSTALS" TO PUNCH
 %  TRANSFER "# when you close it, so save any changes that you make." TO PUNCH
 %  TRANSFER "# To abandon changes: either don't save, or, delete all" TO PUNCH
@@ -19,9 +22,10 @@
 %  TRANSFER "#     #LIST 16" TO PUNCH
 %  TRANSFER "#     NO" TO PUNCH
 %  TRANSFER "#     END" TO PUNCH
-%  COPY '#PUNCH 16'
-%  COPY 'END'
 %  COPY '#RELEASE PUNCH scplst16.dat'
+%  COPY '#PUNCH 16'
+%  COPY 'END'
+%  TRANSFER "  " TO PUNCH
 %  TRANSFER "# This file will be read by CRYSTALS" TO PUNCH
 %  TRANSFER "# when you close it, so save any changes that you make." TO PUNCH
 %  TRANSFER "# To abandon changes: either don't save, or, delete all" TO PUNCH
@@ -32,8 +36,6 @@
 %  TRANSFER "#     #LIST 16" TO PUNCH
 %  TRANSFER "#     NO" TO PUNCH
 %  TRANSFER "#     END" TO PUNCH
-%  COPY '#PUNCH 16'
-%  COPY 'END'
 %  COPY '#RELEASE PUNCH logs/bfile.pch'
 %%
 %  VARIABLE LOGICAL ISERR
