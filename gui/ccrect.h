@@ -49,8 +49,8 @@ class   CcRect
         const int   Left();
         const int   Bottom();
         const int   Right();
-        const int   Height();
-        const int   Width();
+        const int   Height() const;
+        const int   Width() const;
         const int   MidX();
         const int   MidY();
         CcRect& operator=( const CcRect &inRect );

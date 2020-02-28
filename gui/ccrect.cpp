@@ -118,12 +118,12 @@ const int   CcRect::Right()
     return mRight;
 }
 
-const int   CcRect::Height()
+const int   CcRect::Height() const
 {
     return mBottom - mTop;
 }
 
-const int   CcRect::Width()
+const int   CcRect::Width() const
 {
     return mRight - mLeft;
 }
