@@ -640,6 +640,7 @@ c         loaded by the calling routine.
       CHARACTER CBUF*86
       CHARACTER * 4 CNAME
       LOGICAL WEXIST, LSPARE
+	  INTEGER ICNTRO
       CHARACTER*8 CINST(6)
       INTEGER IUNKN
       CHARACTER*8 CRADTN(3)
@@ -655,6 +656,7 @@ c         loaded by the calling routine.
 
       DATA ISERnn /50*0/
       DATA NCLINF /0/
+	  DATA ICNTRO /-1/   ! Indicate no L2 found.
 
       DATA    CINST /'Unknown','CAD4','Mach3','KappaCCD','Dip','Smart'/
 #ifdef _HOL_
@@ -1511,6 +1513,9 @@ c             CALL XPRVDU(NCVDU, 1,0)
                IF(KHUNTR(2,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL02
             END IF
             CALL XRLIND(2, L02SR, NFW, LL, IOW, NOS, ID)
+! Store centro flag if L2 is loaded. Otherwise it remains as -1.
+            ICNTRO = 0
+            IF ( IC .EQ. 1 ) ICNTRO = 1
             IF ( L02SR.NE.ISERnn(2) )THEN
               ISERnn(2)  = L02SR
               WRITE(CMON,'(A)')
@@ -1539,7 +1544,7 @@ c             CALL XPRVDU(NCVDU, 1,0)
                WRITE (CMON,2) '^^CO SAFESET [ _MT_REF_COEF TEXT ''F'' ]'
               ELSE IF ( ISTORE ( L23MN + 1 ) .EQ. 0 ) THEN
                WRITE (CMON,2)
-     1                '^^CO SAFESET [ _MT_REF_COEF TEXT ''F squared'' ]'
+     1                '^^CO SAFESET [ _MT_REF_COEF TEXT ''F\**2'' ]'
               ELSE
                WRITE(CMON,2)
      1                '^^CO SAFESET [ _MT_REF_COEF TEXT ''Unknown'' ]'
@@ -1606,6 +1611,28 @@ c             CALL XPRVDU(NCVDU, 1,0)
             CALL XRLIND(30, L30SR, NFW, LL, IOW, NOS, ID)
             IF ( L30SR.NE.ISERnn(30) )THEN
               ISERnn(30)  = L30SR
+              IF (ICNTRO .EQ. -1) THEN
+                 WRITE ( CMON,237 )
+237              FORMAT(/'^^WI SAFESET [ _MT_REF_FLACK TEXT unknown ]',
+     1                    ' SAFESET [ _MT_REF_UFLACK TEXT unknown ]',/,
+     1                '^^CR')
+              ELSE IF ( ICNTRO .EQ. 1 ) THEN
+                 WRITE ( CMON,238 )
+238              FORMAT(/'^^WI SAFESET [ _MT_REF_FLACK TEXT n/a ]',
+     1                   ' SAFESET [ _MT_REF_UFLACK TEXT n/a ]',/,
+     1                '^^CR')
+              ELSE IF ( STORE(L30GE+7) .LT. ZERO ) then
+               WRITE ( CMON,239 ) STORE(L30GE+6)
+239            FORMAT(/'^^WI SAFESET [ _MT_REF_FLACK TEXT ',F8.4,' ]',
+     1             ' SAFESET [ _MT_REF_UFLACK TEXT "not refined" ]',/,
+     1              '^^CR')
+              ELSE
+			     WRITE ( CMON,240 ) STORE(L30GE+6), STORE(L30GE+7)
+240              FORMAT(/'^^WI SAFESET [ _MT_REF_FLACK TEXT ',F8.4,' ]',
+     1                   ' SAFESET [ _MT_REF_UFLACK TEXT ',F9.5,' ]',/,
+     1                '^^CR')
+              END IF
+              CALL XPRVDU(NCVDU, 2, 0)
 
 241           FORMAT ('^^WI SAFESET [ _MT_CR_MIN TEXT ',F8.4,' ]',
      1                ' SAFESET [ _MT_CR_MED TEXT ',F8.4,' ]',/,
@@ -1823,7 +1850,7 @@ c             CALL XPRVDU(NCVDU, 1,0)
            END IF
 
 1107       FORMAT ('^^CO SAFESET [ _MT_WAVE TEXT "',F8.5,1X,
-     2             'Angstroms (',A,')" ]')
+     2             '\AA (',A,')" ]')
            WRITE(CMON,1107) STORE(L13DC),
      2  CRADTN(ISTORE(L13DT+1)+2)(1:LEN_TRIM(CRADTN(ISTORE(L13DT+1)+2)))
            CALL XPRVDU(NCVDU, 1,0)

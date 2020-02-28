@@ -545,8 +545,15 @@
 %      COPY 'TRANSFER TO OFFSET=4 FROM WORK1'
 %      COPY 'WRITE OVERWRITE=OVERWRITE'
 %      COPY 'END'
-%     END IF
 %%    Dont reset LIST 30 - may need to know what the values were
+%% Ignored. I'm going to reset it anyway otherwise it ends up in the CIF
+%      COPY "#GENERALEDIT 30"
+%      COPY 'LOCATE RECORDTYPE=106'
+%      COPY 'TRANSFER TO OFFSET=6 FROM 0.0'
+%      COPY 'TRANSFER TO OFFSET=7 FROM 0.0'
+%      COPY 'WRITE OVERWRITE=OVERWRITE'
+%      COPY 'END'
+%     END IF
 %  ELSE
 %    EVALUATE DOFLACK = FALSE
 %  END IF
