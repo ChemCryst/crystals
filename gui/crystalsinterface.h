@@ -334,7 +334,7 @@ enum {
  #define LOGWARNINGS  //        Log warnings       (LOGWARN macro)
  #define LOGSTATUS    //Log lots of things (LOGSTAT macro)
 #else
-// #define LOGSTATUS    //Log lots of things (LOGSTAT macro)
+ #define LOGSTATUS    //Log lots of things (LOGSTAT macro)
  #define LOGERRORS    //        Log errors         (LOGERR macro)
  #define LOGWARNINGS  //        Log warnings       (LOGWARN macro)
 #endif
@@ -425,7 +425,7 @@ int a ::GetWidth() { return ( GetSize().GetWidth());}\
 int a ::GetHeight(){ return ( GetSize().GetHeight());}
 
 #define CXSETGEOMETRY(a)   \
-void a ::SetGeometry(int t,int l,int b,int r){SetSize(l,t,r-l,b-t);}
+void a ::SetGeometry(int t,int l,int b,int r){SetSize(l,t,r-l,b-t);Refresh();}
 
 #define CXONCHAR(a)  \
 void a ::OnChar(wxKeyEvent &event){ \
