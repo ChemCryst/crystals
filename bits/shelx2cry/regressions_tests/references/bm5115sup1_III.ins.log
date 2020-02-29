@@ -142,6 +142,8 @@ DISTANCE .85000,.02000 = N(2) TO H(214)
 
 Processing RIGUs...
 RIGU C1 > C5 0.001
+RIGU C1 > C5 0.001
+Warning: invalid RIGU command, esd should not be at the end 0.001       
 XRIGU 0.00100 0.00400 C(1) C(2) C(3) C(4) C(5)
 
 ## Warning: Could not find the corresponding hkl file insfiles/bm5115sup1_III.hkl
