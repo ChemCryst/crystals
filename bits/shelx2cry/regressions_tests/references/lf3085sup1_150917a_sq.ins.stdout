@@ -1,0 +1,28 @@
+ Crystals output file: lf3085sup1_150917a_sq.ins.out
+ Processing res file insfiles/lf3085sup1_150917a_sq.ins
+ 
+ Reading of res file done
+ Processing Unit cell
+ Processing space group and symmetry
+ Processing experimental set up
+ Processing chemical composition
+ Processing scattering factors
+ Processing weighting scheme
+ Processing reflections filters
+ Processing atomic model
+ Processing constraints
+ Processing restraints
+Line 54: isor 0.01
+Warning: ISOR on all atoms is not supported, restraint is ignored
+ 
+List of ignored shexl commands:
+    SIMU: 1 time(s)
+    FREE: 7 time(s)
+    TEMP: 1 time(s)
+    AFIX: 17 time(s)
+ 
+## Warning: Structure has been SQUEEZED
+## Warning: Could not find the corresponding hkl file insfiles/lf3085sup1_150917a_sq.hkl
+##          You will have to import it manually
+ 
+ All done.
