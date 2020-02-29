@@ -171,7 +171,6 @@ Processing ISORs...
 isor 0.01
 Line 54: isor 0.01
 Warning: ISOR on all atoms is not supported, restraint is ignored 
-UQISO 0.01000
 
 ## Warning: Structure has been SQUEEZED
 ## Warning: Could not find the corresponding hkl file insfiles/lf3085sup1_150917a_sq.hkl

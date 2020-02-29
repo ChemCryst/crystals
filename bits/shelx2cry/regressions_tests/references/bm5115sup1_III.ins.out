@@ -240,7 +240,7 @@ DISTANCE .85000,.02000 = N(2) TO H(214)
 DISTANCE .85000,.02000 = O(1) TO H(115)
 DISTANCE .85000,.02000 = N(2) TO H(214)
 # RIGU C1 > C5 0.001
-XRIGU 0.00400 0.00400 C(1) C(2) C(3) C(4) C(5)
+XRIGU 0.00100 0.00400 C(1) C(2) C(3) C(4) C(5)
 END
 # Remove space after hash to activate next line
 # USE LAST

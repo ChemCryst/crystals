@@ -284,7 +284,6 @@ CONT N(1) TO C(14)
 # eadp o8 c12
 U(IJ) 0.0, 0.001 =  O(8) TO C(12) 
 # isor 0.01
-UQISO 0.01000
 END
 # Remove space after hash to activate next line
 # USE LAST
