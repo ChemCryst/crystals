@@ -2517,6 +2517,8 @@ contains
               if (iostatus==0) then
                 write (*, '(a)') trim(rigu_table(i)%shelxline)
                 write (*, '(a, a)') 'Warning: invalid RIGU command, esd should not be at the end ', atom_shelx%text
+                write (log_unit, '(a)') trim(rigu_table(i)%shelxline)
+                write (log_unit, '(a, a)') 'Warning: invalid RIGU command, esd should not be at the end ', atom_shelx%text
                 rigu_table(i)%esd12 = esd
                 cycle
               end if
