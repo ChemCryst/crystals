@@ -242,7 +242,7 @@ void CxMultiEdit::OnFindDialog(wxFindDialogEvent& event)
     {
         wxFindReplaceDialog *dlg = event.GetDialog();
 
-        int idMenu;
+//        int idMenu;
         if ( dlg == m_dlgFind )
         {
             m_dlgFind = NULL;
@@ -261,8 +261,10 @@ void CxMultiEdit::OnFindDialog(wxFindDialogEvent& event)
     
 
 // Part of the IInputControl interface - insert text at cursor.
+// If some text is selected, replace it.
 void CxMultiEdit::InsertText(const string text) {
 
+	ReplaceSelection("");
 	long pos = GetInsertionPoint();
 	bool insertspacebefore = false;
 	bool insertspaceafter = false;
@@ -296,6 +298,21 @@ void CxMultiEdit::InsertText(const string text) {
 	GotoPos(pos + in.length());
 }
 
+// Used for template insertion - insert text as a whole line after this one
+// unless cursor is at start of line, in which case insert it here...
+void CxMultiEdit::InsertLine(const string text) {
+
+	long pos = GetInsertionPoint();
+	int line = LineFromPosition(pos);
+    int inspos = PositionFromLine(line);
+	
+	if ( inspos != pos ) inspos = PositionFromLine(line+1);  // not at start, go to next line
+
+	wxStyledTextCtrl::InsertText(inspos, text);
+	SetCurrentPos(pos + text.length());
+	SetInsertionPoint(inspos + text.length());
+	GotoPos(inspos + text.length());
+}
 
 void  CxMultiEdit::SetText( const string & cText )
 {

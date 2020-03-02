@@ -1,0 +1,275 @@
+%SCRIPT XEDITORGL
+%%
+% VARIABLE CHARACTER EDITOR_FILE EDITOR_ORIG
+% VARIABLE LOGICAL EDITOR_OK
+% EVALUATE EDITOR_OK = FALSE
+%% The variables needed by XQUESTIO                                             
+% VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX                         
+% VARIABLE LOGICAL   ANSWER                                                     
+%% 
+%% Check it exists
+%%
+% IF ( .NOT. ( FILEEXISTS ( EDITOR_FILE ) ) ) THEN
+
+ The file passed to xeditor for editing does not exist.
+%    SHOW EDITOR_FILE
+%    FINISH
+% END IF 
+%%
+%%
+%% Check for alternative editor user setting
+%%
+^^CO GETKEY CRYEDITOR
+%  GET SILENT NOSTORE FINAL TEXT '1' '1'                                        
+%  IF CVALUE .NE. '1' .AND. FILEEXISTS ( CVALUE ) THEN 
+Using user-specified editor.
+%%    TRANSFER "#SPAWN +'" // CVALUE // "' " // EDITOR_FILE TO DISPLAY
+%    TRANSFER '#SPAWN +"' // CVALUE // '" ' // EDITOR_FILE TO CRYSTALS
+%    EVALUATE EDITOR_OK = TRUE
+%    FINISH
+%  END IF
+%%
+%%
+%TRANSFER "^^WI WINDOW XEDITOR 'Editing " // EDITOR_FILE // "'" TO DISPLAY
+^^WI SIZE MODAL KEEP
+^^WI DEFINEMENU MAIN 'NULL'
+^^WI  MENU _FILE    '&File'
+^^WI   ITEM SAVE    '&Save	Ctrl+S' 'BSS' 
+^^WI   ITEM EXIT    'Save and E&xit'  'BOK'
+^^WI   ITEM REVERT  '&Reload original file	Ctrl+R'  'BRR'
+^^WI   ITEM CLOSE   '&Close	ALT+F4'  'BXX'
+^^WI  ENDMENU
+^^WI  MENU _SEARCH    '&Search'
+^^WI   ITEM FIND    '&Find	Ctrl+F' 'FIND' 
+^^WI   ITEM FIND    '&Find next	F3' 'NEXT' 
+^^WI  ENDMENU
+^^WI ENDDEFINEMENU
+^^WI GRID OUTER NROWS=1 NCOLS=3
+^^WI {
+^^WI   @ 1,1 RESIZE _RSZXED VERTICAL {
+^^WI     ITEM GRID _GRXEDIT NROWS=5 NCOLS=1 {
+^^WI       @ 5,1 MULTIEDIT TEXT5 '' NROWS=25 NCOLS=80
+^^WI         IGNORE DISABLED=NO
+^^WI       @ 3,1 GRID _INSL NROWS=1 NCOLS=3 {
+^^WI         @ 1,2 STATIC RED 
+^^WI           'Double click template atom, e.g. X(1), to select. Click atom in model to replace.'
+^^WI       }
+^^WI       @ 1,1 GRID _INSL NROWS=2 NCOLS=8 {
+^^WI          @ 2,2 STATIC T1 'Insert template at cursor:'
+^^WI          @ 2,4 DROPDOWN XRINS 
+^^WI           ADDTOLIST 'Planar' 'Average Distance' 'Average angle'                                  
+^^WI                     'Distance' 'Angle' 'Uij similarity' 'Vibration' 
+^^WI                     'Repulsion' 'Asymm-Uij' 'Asymm-vib' 'U-TLS'
+^^WI                     'U-Equiv' 'U-Vol' 'U-Qiso' 'U-eig' 'U-align'
+^^WI                     'U-Rigu' 'U-Perp' 'U-Plane' 'U-Lij'
+^^WI                     'NULL'              
+^^WI          @ 2,6 BUTTON XINS 'Insert'
+^^WI          @ 2,8 BUTTON XHELP 'Help'
+^^WI       }                    
+^^WI     }
+^^WI     ITEM GRID _GREDMOD NROWS=4 NCOLS=1 {
+^^WI          @ 1,1 TOOLBAR _XB                                        
+^^WI               {                                                            
+^^WI                 TOOL _XROT arrow.png 'Rotate structure'                           
+^^WI '^^CO SET _XB ITEM _XROT STATE ON ITEM _XRECT STATE OFF ITEM _XPOLY STATE OFF SET MODEL02 MODROTATE MOUSEACTION INSERTIN TEXT5'
+^^WI                 TOGGLE 
+^^WI                 ITEM _XROT STATE=ON                                        
+^^WI                 TOOL _XRECT select.png 'Drag to select atoms'                         
+^^WI '^^CO SET _XB ITEM _XRECT STATE ON ITEM _XROT STATE OFF ITEM _XPOLY STATE OFF SET MODEL02 MODSELECT MOUSEACTION SELECTATOM'
+^^WI                 TOGGLE 
+^^WI                 TOOL _XPOLY poly.png 'Draw polygon to select atoms'                        
+^^WI '^^CO SET _XB ITEM _XPOLY STATE ON ITEM _XROT STATE OFF ITEM _XRECT STATE OFF SET MODEL02 MODSELECT POLY MOUSEACTION SELECTATOM'
+^^WI                 TOGGLE 
+^^WI                 TOOL _UNSEL unselect.png 'Unselect all atoms'                       
+^^WI '^^CO SET _XB ITEM _XROT STATE ON ITEM _XPOLY STATE OFF ITEM _XRECT STATE OFF SET MODEL02 SELECT ALL=NO MODROTATE MOUSEACTION INSERTIN TEXT5'                           
+^^WI                 ENABLEIF='L1 L2 L5' DISABLEIF='SEL0'                       
+^^WI                 SPLIT                                                      
+^^WI                 TOOL _XZOOM tool_zoom.png 'Zoom to selected atoms'                           
+^^WI '^^CO SET MODEL02 ZOOMATOMS YES SELECT ALL=NO MODROTATE MOUSEACTION INSERTIN TEXT5 SET _XB ITEM _XROT STATE ON ITEM _XPOLY STATE OFF ITEM _XRECT STATE OFF' 
+^^WI                 DISABLEIF='SEL0'
+^^WI                 TOOL _XZOOM tool_norm.png 'Unzoom'                         
+^^WI                 '^^CO SET MODEL02 AUTOSIZE=YES ZOOMATOMS=NO'               
+^^WI                 ENABLEIF='ZOOMED'                                          
+^^WI                 SPLIT                                                      
+^^WI                 TOOL _XBALL ball.png 'Ball and stick view'                           
+^^WI '^^CO SET _XB ITEM _XBALL STATE ON ITEM _XADP STATE OFF SET MODEL02 RADTYPE=COV RADSCALE=250' 
+^^WI                 TOGGLE
+^^WI                 ENABLEIF='L5'
+^^WI                 ITEM _XBALL STATE=ON                                       
+^^WI                 TOOL _XADP elli.png 'Show displacement parameters'             
+^^WI '^^CO SET _XB ITEM _XADP STATE ON ITEM _XBALL STATE OFF SET MODEL02 RADTYPE=THERMAL RADSCALE=250' 
+^^WI                 TOGGLE
+^^WI                   ENABLEIF='L5'
+^^WI                 SPLIT                                                      
+^^WI                 TOOL _XSHOWH showh.png 'Show H'           
+^^WI                 'TOGGLEH' TOGGLE ENABLEIF='L5'
+^^WI                 ITEM _XSHOWH STATE=ON 
+^^WI                 TOOL _XCYCLER cycler.png 'Cycle residues'           
+^^WI                 '^^CO SET MODEL02 CYCLER' ENABLEIF='L5'
+^^WI                 DEFINEPOPUPMENU POP 'Cycle'
+^^WI                 ITEM _SHOR '&Show all residues' '^^CO SET MODEL02 SHOWR'
+^^WI                      ICON='nocycle.bmp' ENABLEIF='L5'
+^^WI                 ITEM _ASSIGNR '&Assign residues' 'ASSIGN'
+^^WI                                 ENABLEIF='L5'
+^^WI                 ENDDEFINEMENU
+^^WI                 TOOL _XCYCLEG cycleg.png 'Cycle group'           
+^^WI                 '^^CO SET MODEL02 CYCLEG' ENABLEIF='L5'
+^^WI                 DEFINEPOPUPMENU POP 'Cycle group'
+^^WI                 ITEM _SHOR '&Show all disorder parts' '^^CO SET MODEL02 SHOWG'
+^^WI                      ICON='nocycle.bmp' ENABLEIF='L5'
+^^WI                 ENDDEFINEMENU
+^^WI               }                                                            
+^^WI       @ 2,1 MODELWINDOW MODEL02 'N' NROWS=5 NCOLS=65                     
+^^WI            ATTACH L5 RADSCALE=250 RADTYPE=COV                              
+^^WI            MOUSEACTION INSERTIN TEXT5
+^^WI       @ 4,1 STATIC T1 'Click an atom to insert into editor'
+^^WI     }
+^^WI   }
+^^WI   @ 1,3 GRID BTNS NROWS=9 NCOLS=3
+^^WI   {
+^^WI     @ 2,2 BUTTON BOK 'Save and e&xit' DEFAULT COMMIT
+^^WI     @ 4,2 BUTTON BSS '&Save' 
+^^WI     @ 6,2 BUTTON BRR '&Reload original'
+^^WI     @ 8,2 BUTTON BXX '&Close' CANCEL
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+%TRANSFER "^^CO SET TEXT5 LOAD '" // EDITOR_FILE // "'" TO DISPLAY
+%%
+% LOOP
+%   VERIFY BOK BXX BRR BSS FIND NEXT XHELP XINS
+%   GET SILENT NOSTORE FINAL ABBREVIATED 'BOK?' ' '
+%   CASE VALUE
+%     BLOCK 
+%% save and close
+%TRANSFER "^^CO SET TEXT5 EDITSAVE '" // EDITOR_FILE // "'" TO DISPLAY
+^^??   _ANYTHING_ EXISTS
+%      GET NOSTORE SILENT TEXT 'Waiting for save' ' '
+^^CO   DISPOSE XEDITOR
+%      EVALUATE EDITOR_OK = TRUE
+%      FINISH
+%     END BLOCK 
+%     BLOCK 
+%% cancel - check for mods first
+^^??   TEXT5 MODIFIED
+%      VERIFY YES NO
+%      GET SILENT NOSTORE FINAL ABBREVIATED 'Mod?' ' '
+%      IF ( VALUE .EQ. 1 ) THEN
+%         EVALUATE QTITLE = 'Unsaved changes'                                       
+%         EVALUATE QLINE1 = 'Closing the editor will lose your recent changes.'              
+%         EVALUATE QLINE2 = 'Are you sure?'                           
+%         EVALUATE BUTTOK = 'Clo&se'                                              
+%         EVALUATE BUTTXX = '&Cancel'                                               
+%         COPY '#SCRIPT XQUESTIO'                                               
+%         IF ANSWER .EQ. TRUE THEN                                              
+^^CO         DISPOSE XEDITOR
+%            FINISH
+%         END IF
+%      ELSE
+^^CO     DISPOSE XEDITOR
+%        FINISH
+%      END IF
+%     END BLOCK 
+%     BLOCK 
+%% revert - check for mods first
+^^??   TEXT5 MODIFIED
+%      VERIFY YES NO
+%      GET SILENT NOSTORE FINAL ABBREVIATED 'Mod?' ' '
+%      IF ( VALUE .EQ. 1 ) THEN
+%         EVALUATE QTITLE = 'Unsaved changes'                                       
+%         EVALUATE QLINE1 = 'Reverting the text will lose your changes.'              
+%         EVALUATE QLINE2 = 'Are you sure?'                           
+%         EVALUATE BUTTOK = '&Revert'                                              
+%         EVALUATE BUTTXX = '&Cancel'                                               
+%         COPY '#SCRIPT XQUESTIO'                                               
+%         IF ANSWER .EQ. TRUE THEN                                              
+%TRANSFER "^^CO SET TEXT5 LOAD '" // EDITOR_ORIG // "'" TO DISPLAY
+%         END IF
+%      ELSE
+%TRANSFER "^^CO SET TEXT5 LOAD '" // EDITOR_ORIG // "'" TO DISPLAY
+%      END IF
+%     END BLOCK 
+%     BLOCK 
+%% Save
+%TRANSFER "^^CO SET TEXT5 EDITSAVE '" // EDITOR_FILE // "'" TO DISPLAY
+^^??   _ANYTHING_ EXISTS
+%      GET NOSTORE SILENT TEXT 'Waiting for save' ' '
+%      EVALUATE EDITOR_OK = TRUE
+%     END BLOCK 
+%     BLOCK 
+%% Search
+%TRANSFER "^^CO SET TEXT5 FIND" TO DISPLAY
+%      EVALUATE EDITOR_OK = TRUE
+%     END BLOCK 
+%     BLOCK 
+%% Search
+%TRANSFER "^^CO SET TEXT5 NEXT" TO DISPLAY
+%      EVALUATE EDITOR_OK = TRUE
+%     END BLOCK 
+%     BLOCK
+%       COPY '$ "CRYSDIR:/Manual/crystalsmanual-sfls.html#sfls.list16"'
+%     END BLOCK
+%     BLOCK 
+%% Insert text at cursor
+%      EVALUATE EDITOR_OK = TRUE
+^^??    XRINS SELECTED                                                         
+%% 'Planar' 'Average Distance' 'Average angle' 'Distance' 'Angle' 'Uij similarity' 'Vibration' 
+%% 'Repulsion' 'Asymm-Uij' 'Asymm-vib' 'U-TLS'   8 9 10 11
+%% 'U-Equiv' 'U-Vol' 'U-Qiso' 'U-eig' 'U-align'   12 13 14 15 16
+%% 'U-Rigu' 'U-Perp' 'U-Plane' 'U-Lij'            17 18 19 20
+%       GET SILENT NOSTORE INTEGER ' ' ' '
+%       IF VALUE .EQ. 1 THEN                                                
+^^CO            SET TEXT5 INSERT 'planar 0.0, 0.01 = X(1) X(2) X(3) X(4)' 
+%       ELSE IF VALUE .EQ. 2 THEN
+^^CO            SET TEXT5 INSERT 'dist 0.0, 0.01 = mean X(1) to X(2), X(3) to X(4)' 
+%       ELSE IF VALUE .EQ. 3 THEN
+^^CO            SET TEXT5 INSERT 'angle 0.0, 0.01 = mean X(1) to X(2) to x(3), X(4) to X(5) to x(6)' 
+%       ELSE IF VALUE .EQ. 4 THEN
+^^CO            SET TEXT5 INSERT 'dist 1.54, 0.01 = X(1) to X(2)' 
+%       ELSE IF VALUE .EQ. 5 THEN
+^^CO            SET TEXT5 INSERT 'angle 109.5, .1 = X(1) to X(2) to x(3)' 
+%       ELSE IF VALUE .EQ. 6 THEN
+^^CO            SET TEXT5 INSERT 'u(ij) 0.0, 0.01 = X(1) TO X(2)' 
+%       ELSE IF VALUE .EQ. 7 THEN
+^^CO            SET TEXT5 INSERT 'vib 0.0, 0.01 = X(1) to X(2)' 
+%       ELSE IF VALUE .EQ. 8 THEN
+^^CO            SET TEXT5 INSERT '# repulsive restraint w = (value/actual)**(power*12)' 
+^^CO            SET TEXT5 INSERT '# will become rapidly repulsive if actual distance drops below requested value' 
+^^CO            SET TEXT5 INSERT 'non-bonded 0.8, 1.0 = X(1) to X(2)' 
+%       ELSE IF VALUE .EQ. 9 THEN
+^^CO            SET TEXT5 INSERT '# restrain adps to be equal, restraint only applied to second atom.' 
+^^CO            SET TEXT5 INSERT 'a-u(ij) 0.0, 0.02 = X(1) to X(2)' 
+%       ELSE IF VALUE .EQ. 10 THEN
+^^CO            SET TEXT5 INSERT '# restrain component of adp along bond to be equal, restraint only applied to second atom.' 
+^^CO            SET TEXT5 INSERT 'a-vib 0.0, 0.01 = X(1) to X(2)' 
+%       ELSE IF VALUE .EQ. 11 THEN
+^^CO            SET TEXT5 INSERT '# restrain adps to fit TLS model of displacement motion' 
+^^CO            SET TEXT5 INSERT '# use syntax "UTLS 0.01 m x(1) ..." to only apply restraint to first m atoms.' 
+^^CO            SET TEXT5 INSERT 'utls 0.01 X(1) X(2) X(3) X(4)' 
+%       ELSE IF VALUE .EQ. 12 THEN
+^^CO            SET TEXT5 INSERT 'ueqiv 0.01 X(1) X(2) X(3)' 
+%       ELSE IF VALUE .EQ. 13 THEN
+^^CO            SET TEXT5 INSERT 'uvol 0.01 X(1) X(2) X(3)' 
+%       ELSE IF VALUE .EQ. 14 THEN
+^^CO            SET TEXT5 INSERT 'uqusi 0.01 X(1)' 
+%       ELSE IF VALUE .EQ. 15 THEN
+^^CO            SET TEXT5 INSERT 'ueig 0.01 X(1)' 
+%       ELSE IF VALUE .EQ. 16 THEN
+^^CO            SET TEXT5 INSERT 'ualign 0.01 X(1) X(2) X(3)' 
+%       ELSE IF VALUE .EQ. 17 THEN
+^^CO            SET TEXT5 INSERT '# restrain adps of atoms to be physically sensible see Thorn et al., 2012, Acta A68, 448' 
+^^CO            SET TEXT5 INSERT 'urigu 0.01 X(1) to X(2)' 
+%       ELSE IF VALUE .EQ. 18 THEN
+^^CO            SET TEXT5 INSERT 'uperp 0.01 X(1) X(2) X(3)' 
+%       ELSE IF VALUE .EQ. 19 THEN
+^^CO            SET TEXT5 INSERT '# restrain adp of X(1) to lie in plane defined by all three atoms' 
+^^CO            SET TEXT5 INSERT 'uplane 0.01 X(1) to X(2) to X(3)' 
+%       ELSE IF VALUE .EQ. 20 THEN
+^^CO            SET TEXT5 INSERT '# restrain adp of x(1) and x(4) to be same in local coord system defined by other two atoms' 
+^^CO            SET TEXT5 INSERT 'ulij 0.01 X(1) to X(2) to X(3), X(4) to X(5) to X(6)' 
+%       END IF                                                                  
+%     END BLOCK 
+%   END CASE
+% END LOOP
+%END SCRIPT

@@ -82,7 +82,7 @@ Name: "{commondesktop}\Crystals";                 Filename: "{app}\crysload.exe"
 Name: "{commondesktop}\Crystals Getting Started"; Filename: "{app}\manual\readme.html";  WorkingDir: "{app}"; Check: IsAdminInstallMode;
 
 Name: "{group}\Crystals";                       Filename: "{app}\crysload.exe";        WorkingDir: "{app}"; IconFilename: "{app}\crystals.exe"; IconIndex: 0;
-Name: "{group}\HTML help";                      Filename: "{app}\Manual\Crystcon.htm"; WorkingDir: "{app}"
+Name: "{group}\HTML help";                      Filename: "{app}\Manual\primer.html"; WorkingDir: "{app}"
 Name: "{group}\Getting Started";                Filename: "{app}\manual\readme.html";  WorkingDir: "{app}"
 Name: "{group}\Uninstall CRYSTALS";             Filename: "{uninstallexe}";
 Name: "{group}\Example structures";             Filename: "{autoappdata}\crystals\demo\"
