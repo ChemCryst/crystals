@@ -1,7 +1,7 @@
 %SCRIPT ASSESS5
 %% A Script to determine the current state of the list 5 refinement.
 %  VARIABLE LOGICAL DOEXTNC DOFLACK DOSORT DOTWIN
-%  VARIABLE INTEGER ADP ISER HCOUNT NES
+%  VARIABLE INTEGER ADP ISER HCOUNT NES N5
 %  VARIABLE REAL U11 FLAG UONE EXTP FLACKP HFIRST
 %  VARIABLE CHARACTER CTYPE
 %% Return values:
@@ -32,7 +32,45 @@
 {S * Done.
 %    FINISH
 %  END IF
+%  COPY '#GENERALEDIT 5'
+%  COPY 'TRANSHEAD FROM OFFSET=3 TO N5' 
+%  COPY 'END'
+%  IF N5 .EQ. 0 THEN
+{R   WARNING - You have no atoms to refine
+{S * Done.
+%    FINISH
+%  END IF
 %%
+%        IF EXISTS 39 .LE. 0 THEN
+%          COPY '#LIST 39'
+%          COPY 'END'
+%       END IF
+%       VARIABLE CHARACTER CFLACK
+%       VARIABLE REAL SERIAL DSIG
+%       COPY '#GENERALEDIT 39'
+%       COPY 'LOCATE RECORDTYPE = 102'
+%       COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%       COPY 'TOP'
+%       LOOP
+%        ON EDITERROR TERMINATE
+%        COPY 'TRANSFER FROM OFFSET=0 TO CFLACK'
+%        COPY 'TRANSFER FROM OFFSET=1 TO SERIAL'
+%        IF CFLACK .EQ. 'FLAC' THEN
+%         IF SERIAL .EQ. 0. THEN
+%          COPY 'TRANSFER FROM OFFSET=6 TO FLACKP'
+%          COPY 'TRANSFER FROM OFFSET=7 TO DSIG'
+%          IF  DSIG  .GT. 0.00001 THEN
+%            EVALUATE FDONE = TRUE
+%          END IF
+%          EVALUATE LOOPCOUNTER = LOOPEND
+%         END IF
+%        END IF
+%        COPY 'NEXT'
+%       END LOOP
+%       COPY 'END'
+%  IF ( FLACKP .GE. 0.25 ) .AND. ( FLACKP .LE. 0.75 ) THEN
+%    EVALUATE DOFLACK = TRUE
+%  END IF
 %  EVALUATE ISER = - 1
 %  EVALUATE DOSORT = FALSE
 %  COPY "#GENERALEDIT 5"
@@ -41,10 +79,6 @@
 %  COPY "TOP"
 %  COPY 'LOCATE RECORDTYPE=102'
 %  COPY 'TOP'
-%  COPY 'TRANSFER FROM OFFSET=4 TO FLACKP'
-%  IF ( FLACKP .GE. 0.0001 ) .OR. ( FLACKP .LE. - 0.0001 ) THEN
-%    EVALUATE DOFLACK = TRUE
-%  END IF
 %%
 %  COPY 'TRANSFER FROM OFFSET=5 TO EXTP'
 %  IF EXTP .GE. 0.001 THEN
@@ -103,16 +137,12 @@
 %  IF ( DOFLACK .EQ. TRUE ) THEN
 %    CLEAR
 %    INSERT '{R   Flack parameter is: '
-%    STORE FORMAT /(F15.5)/ LENGTH 15 REAL FLACKP
+%    STORE FORMAT /(F8.5)/ LENGTH 15 REAL FLACKP
 %    OUTPUT
 %  END IF
 %  IF ( DOTWIN .EQ. TRUE ) THEN
 %    CLEAR
 %    INSERT '{R   There are twin element parameters '
 %    OUTPUT
-%  END IF
-%  IF ( DOSORT .EQ. TRUE ) THEN
-{R The hydrogens in the list are not at the end. They may
-{R be resorted in a moment.
 %  END IF
 %END SCRIPT

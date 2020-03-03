@@ -2226,8 +2226,9 @@ C        write(77,*) ivgacl(I,ipos), ipstcl(i,ipos)
       IPOS = IPOS + 1
       IF (IPOS.LE.ICLMAX) THEN
             GOTO 10
-      ELSE
-        CALL ZMORE('Too many input colours',0)
+c Don't print this every time, just stop.
+c      ELSE
+c        CALL ZMORE('Too many input colours',0)
       ENDIF
 C CLOSE THE FILE
       IF (.NOT.LFILES(0,' ',IINPT)) THEN
@@ -3725,7 +3726,7 @@ CODE FOR ZSTUP
 C THIS ROUTINE OBEYS THE STARTUP FILE CAMERON.SRT
 C THIS IS CALLED EVERY TIME A DATA FILE IS LOADED.
       LOGICAL LEXIST
-      CHARACTER*60 FILENM
+      CHARACTER*512 FILENM
       
       INCLUDE 'CAMPAR.INC'
       INCLUDE 'CAMCOM.INC'

@@ -17,6 +17,8 @@
 % EVALUATE FILTER4 = 0.001
 % EVALUATE FILTER5 = 2.5
 % VARIABLE INTEGER _BADNPP 
+% VARIABLE INTEGER HELPSIZE
+% EVALUATE HELPSIZE = 2
 %%
 % VARIABLE INTEGER ICENTRIC
 %      IF ( EXISTS 2 .GT. 0 ) THEN
@@ -101,7 +103,6 @@
 ^^WI               @ 1,1 STATIC HPN 
 ^^WI               ' Number of reflections used is  '
 ^^WI               @ 1,2 STATIC _DIS_NREF '0     '
-
 ^^WI               @ 2,1 STATIC HPN 
 ^^WI               ' Number of filtered reflections '
 ^^WI               @ 2,2 STATIC _DIS_NFIL '0     '

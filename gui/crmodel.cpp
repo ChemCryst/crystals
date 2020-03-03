@@ -148,8 +148,8 @@ CrModel::CrModel( CrGUIElement * mParentPtr )
   m_style.m_modview = (CxModel*)ptr_to_cxObject;
   m_style.showh = true;
   m_style.bond_style = BONDSTYLE_HALFPARENTPART;
-  m_style.min_peak_height_to_show = -99999;
-  m_style.max_peak_height_to_show = 99999;
+  m_style.min_peak_height_to_show = INT_MIN;
+  m_style.max_peak_height_to_show = INT_MAX;
   m_style.showlonepeaks = kTShowAll;
   m_style.showres = 0;
   m_style.showgroup = 0;
@@ -452,7 +452,7 @@ CcParse CrModel::ParseInput( deque<string> &  tokenList )
 			m_InsertWindow = (CrMultiEdit*) GetRootWidget()->FindObject(tokenList.front());
 			if ( m_InsertWindow == nil ) {
 //		        LOGERR("Insert editor window not found");
-				m_InsertWindow = (CrMultiEdit*) (CcController::theController)->FindObject(tokenList.front());				
+				m_InsertWindow = (CrMultiEdit*) (CcController::theController)->FindObject(tokenList.front());
 				if ( m_InsertWindow == nil ) {
 			        LOGERR("Insert editor window not found.");
 				} //else {
@@ -789,7 +789,7 @@ void CrModel::ContextMenu(int x, int y, string atomname, int selection, string a
         string::size_type pos1 = atomname.find('(');
 //        string::size_type pos2 = atomname.find(')');
 //        if ( (pos1 != string::npos ) && ( pos2 != string::npos ) )
-        if (pos1 != string::npos ) 
+        if (pos1 != string::npos )
         {
           element = atomname.substr(0,pos1);
           (CcController::theController)->status.SetAtomFlags(element);

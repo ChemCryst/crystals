@@ -860,6 +860,7 @@ C--ERROR ROUTINES
 1850  CONTINUE
 C
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPPR , IOPLSP , 6 )
       GO TO 1720
       END
@@ -911,6 +912,7 @@ C--CHECK THE LINE LENGTH
       IF(IBAR-LSTX)1050,1200,1200
 C--LINE LENGTH IS TOO LARGE
 1050  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1100)IBAR
       WRITE ( CMON,1100) IBAR
       CALL XPRVDU(NCVDU, 1,0)
@@ -1076,13 +1078,16 @@ C--NEW K,L PAIR  -  SET THE FLAGS AND RETURN
 C
 C--ERROR BECAUSE /FO/ IS TOO LARGE TO PRINT
 1500  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IT=IFO
       GOTO 1600
 C--ERROR BECAUSE /FC/ IS TOO LARGE
 1550  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IT=IFC
 C--PRINT THE ERROR MESSAGE
 1600  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       JHFFS=-1
       CALL XERHDR(0)
       IF (ISSPRT .EQ. 0)
@@ -1445,14 +1450,17 @@ C----- OUTPUT THE TWIN SCALE PARAMETERS
       CALL XPP5TW(MCFUNC)
 CRIC0103 - Exit path - don't output parameters after errors - might be no L12.
 2300  CONTINUE
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPPR , IOPLSE , 5 )
       CALL XTIME2 ( 2 )
       RETURN
 C
 2450  CONTINUE
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPPR , IOPLSP , 5 )
       GO TO 2300
 9910  CONTINUE
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPPPR , IOPCMI , 0 )
       GO TO 2450
 C
@@ -1495,6 +1503,7 @@ C--CHECK THE WIDTH OF A COORD. PAGE
       IF(IBAR-LSTX-IFIR)1050,1200,1200
 C--FIELD WIDTH IS WRONG
 1050  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1100)IBAR
       WRITE ( CMON, 1100) IBAR
       CALL XPRVDU(NCVDU, 1,0)
@@ -2595,6 +2604,7 @@ C -- DISPLAY ON MONITOR CHANNEL
 C
       RETURN
 9910  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE ( CMON, '(A)') 'ERROR in overall parameter print'
       CALL XPRVDU(NCVDU, 1,0)
       RETURN
@@ -2744,6 +2754,7 @@ C
 C
       RETURN
 9910  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE ( CMON, '(A)') 'ERROR in twin scale parameter print'
       CALL XPRVDU(NCVDU, 1,0)
       RETURN
@@ -2832,6 +2843,7 @@ C--CALCULATE THE E.S.D.
           BPD(JP)=XVAR(JS,JZ,4,JR)
           IF ( IERFLG .LT. 0 ) GO TO 9900
           IF(BPD(JP) .LT. 0.0 ) THEN
+            if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
             IF (ITYPE .EQ. 1 ) THEN
               IF (ISSPRT .EQ. 0)
      1        WRITE(NCWU,1770) STORE(M5), STORE(M5+1), BPD(JP)
@@ -2858,6 +2870,7 @@ C--CALCULATE THE E.S.D.
       GOTO 9999
 9900  CONTINUE
 9910  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE ( CMON,'(A)') ' Error computing parameter e.s.d '
       CALL XPRVDU(NCVDU, 1,0)
 9999  CONTINUE
@@ -2958,10 +2971,12 @@ C--PERFORM THE CALCULATIONS
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       XVAR = 0
       RETURN
 9910  CONTINUE
 C -- CORE OVERFLOW
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XICA
       CALL XERHND ( IERERR )
       GO TO 9900
@@ -3266,6 +3281,7 @@ C--CALCULATE THE E.S.D.
             IF ( IERFLG .LT. 0 ) GO TO 9900
             IF(BPD(JP)) 1760,1790,1790
 1760        CONTINUE
+            if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
             WRITE ( CMON, 1770) STORE(M5), STORE(M5+1), BPD(JP)
             CALL XPRVDU(NCVDU, 1,0)
             IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') 
@@ -3286,6 +3302,7 @@ C
 C -- ERRORS
       RETURN
 9910  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XICA
       CALL XERHND ( IERERR )
       RETURN
@@ -3758,6 +3775,7 @@ C----- NO MATCH -
 
 C----- COMPUTE MU AND M
         IF (ICHECK .NE. 0 ) THEN
+          if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
           WRITE ( CMON, 1545) ICHECK, 29
           CALL XPRVDU(NCVDU, 1,0)
           IF (ISSPRT .EQ. 0)  WRITE(NCWU,'(A)') 
@@ -3999,6 +4017,7 @@ C--CHECK THE WIDTH OF A PAGE
       IF(IBAR-KLEN)1050,1200,1200
 C--FIELD WIDTH IS WRONG
 1050  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE ( CMON, 1100) IBAR
       CALL XPRVDU(NCVDU, 1,0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1100)IBAR
@@ -4641,11 +4660,11 @@ C
       CHARACTER*35 CPAGE(NROW,NCOL)
       CHARACTER*76 CREFMK
       PARAMETER (IDIFMX=14)
-      PARAMETER (IREDMX=7)
       DIMENSION IREFCD(3,IDIFMX)
+      PARAMETER (IREDMX=7)
       DIMENSION IREDCD(IREDMX)
 CAVDL more solution packages in cif-goodies
-      PARAMETER (ISOLMX=10)
+      PARAMETER (ISOLMX=12)
       DIMENSION ISOLCD(ISOLMX)
       PARAMETER (IABSMX=16)
       DIMENSION IABSCD(IABSMX)
@@ -4676,6 +4695,7 @@ C
       CHARACTER*22 CFM, CFMC ! 'F<sub>obs</sub>&sup2;'
       CHARACTER*35 CMOD
       CHARACTER*6 CSOLVE
+      CHARACTER*64 CREFER
 cdjwapr09
       INTEGER  IFARG      ! F OR F^2^ FOR WEIGHTING SCHEME
 C
@@ -4743,7 +4763,7 @@ C------ REFERENCE CODES FOR DATA REDUCTION
       DATA IREDCD /5,24,17,27,19,36,45/
 C------ REFERENCE CODES FOR DIRECT METHODS
 CAVDLdec06 updating references in reftab.sda with numbers 42, 43, and 44
-      DATA ISOLCD /1,18,30,11,22,28,29,42,43,44/
+      DATA ISOLCD /1,18,30,11,22,28,29,42,43,44,51,52/
 C------ REFERENCE CODES FOR ABSORPTION METHOD
       DATA IABSCD /7,21,16,17,31,32,33,39,40,40,39,7,7,16,45,36/
 
@@ -4797,6 +4817,7 @@ CRICFEB03: Output one of 0=CIF, 1=PLAIN, 2=HTML
       CALL XCSAE
       I = KRDDPV ( IPUNCH , 1 )
       IF (I.LT.0) THEN
+         if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
          IF (ISSPRT .EQ. 0) WRITE(NCWU, 51)
          WRITE ( CMON ,51)
          CALL XPRVDU(NCVDU, 1,0)
@@ -4821,8 +4842,8 @@ CRICJUN02 - Last minute SFLS calc to get threshold cutoffs into 30.
      2          'as no refinement has been carried out yet.')
       ELSE
 C----- SET REFLECTION LISTING TYPE (LIST 6)
-         ITYP06 = 1
-         CALL XSFLSB(-1,ITYP06)
+c-Nov-19         ITYP06 = 1              !Remove call to sfls because of problems
+c         CALL XSFLSB(-1,ITYP06)         !re-using LIST 33 if previous task involved LIST 7
 C-JAN-19         CALL XPCH5E(2)          !CREATE A LIST 9 (ESDS)
       ENDIF
 CRICJUN02 - Last minute SFLS calc to get threshold cutoffs into 30.
@@ -4941,11 +4962,13 @@ C FYI:    DATA LSTNUM /1,2,3,4,5,13,23,29,30,31, 6,28 /
          LSTYPE=LSTNUM(MLST)
          IF (KEXIST(LSTYPE)) 400,300,500
 300      CONTINUE
+           if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
            WRITE (CMON,350) LSTYPE
            CALL XPRVDU (NCVDU,1,0)
 350        FORMAT (1X,'List ',I2,' contains errors')
            CYCLE
 400      CONTINUE
+           if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
            WRITE (CMON,450) LSTYPE
 450        FORMAT (1X,'List',I2,' does not exist')
            CALL XPRVDU (NCVDU,1,0)
@@ -5380,7 +5403,18 @@ C          SET ABSOLUTE STRUCTURE FLAG
          END IF
       END IF
 C 
-C----- LIST 3
+C----- LIST 3 - Needs LIST 13 to get radiation type
+      if (jload(6).ge. 1) then
+       IF (ISTORE(L13DT+1) .EQ. -1) THEN
+        crefer='''International Tables Vol C 4.2.6.8 and 6.1.1.4'''
+       ELSE IF (ISTORE(L13DT+1) .EQ. 0) THEN
+        crefer='''International Tables Vol IV PAGES 270-271'''
+       ELSE
+        crefer='''L.M. Peng, Micron (1999) pages 625-648'''
+       ENDIF
+      else
+          crefer = 'Unknown'
+      endif
 C 
       IF (JLOAD(3).GE.1) THEN
         IF ( IPUNCH .EQ. 0 ) THEN
@@ -5396,9 +5430,9 @@ C
              WRITE (CTEMP,'(A4)') ISTORE(M3)
              CBUF=CTEMP(2:4)
              CALL XCCLWC (CBUF(1:3),CTEMP(2:4))
-             WRITE (NCFPU1,1300) CTEMP(1:4),(STORE(M),M=M3+1,M3+11)
-1300         FORMAT (1X,A4,1X,8F9.4,/,3F9.4,1X,
-     1       '''International Tables Vol C 4.2.6.8 and 6.1.1.4''')
+             WRITE (NCFPU1,1300) CTEMP(1:4),(STORE(M),M=M3+1,M3+11),
+     1       TRIM(CREFER)
+1300         FORMAT (1X,A4,1X,8F9.4,/,3F9.4,1X,A)
            END DO
         END IF
       END IF
@@ -5647,14 +5681,14 @@ C     UNKNOWN CAD4 MACH3 KAPPACCD DIP SMART IPDS XCALIBUR APEX2 GEMINI
 C        1     2       3     4    5     6    7      8      9      10
 c     SUPERNOVA SYNCHROTRON SPALLATION REACTOR
 C       11       12           13        14
-C----- PARAMETER 13 ON DIRECTIVE 2 IS A CHATACTER STRING: DIFFRACTOMETER MAKE
+C----- PARAMETER 13 ON DIRECTIVE 2 IS A CHARACTER STRING: DIFFRACTOMETER MAKE
         IPARAM=13
         IDIR=2
         IVAL=ISTORE(L30CD+IPARAM-1)
         IZZZ=KGVAL(CINSTR,CDIR,CPARAM,CVALUE,CDEF,30+3,IDIR,IPARAM,
      1    IVAL,JVAL,VAL,JTYPE)
         IDIFNO = IVAL+1
-
+c      write(123,*) 'IDIFNO=',IDIFNO
 C----- PARAMETER 13 ON DIRECTIVE 1 IS A CHATACTER STRING: REDUCTION NAME
         IPARAM=13
         IDIR=1
@@ -5662,6 +5696,7 @@ C----- PARAMETER 13 ON DIRECTIVE 1 IS A CHATACTER STRING: REDUCTION NAME
         IZZZ=KGVAL(CINSTR,CDIR,CPARAM,CVALUE,CDEF,30+3,IDIR,IPARAM,
      1    IVAL,JVAL,VAL,JTYPE)
         IREDNO = IVAL+1
+c      write(123,*)'IREDNO=',IREDNO
 c
 c
 c
@@ -5826,12 +5861,13 @@ C----- PARAMETER 9 ON DIRECTIVE 5 IS A CHARACTER STRING: ABSORPTION TYPE
         IVAL=ISTORE(L30AB+IPARAM-1)
         IZZZ=KGVAL(CINSTR,CDIR,CPARAM,CVALUE,CDEF,30+3,IDIR,IPARAM,
      1    IVAL,JVAL,VAL,JTYPE)
-        IABVAL = MIN (IABSMX, IVAL + 1)
+        IABVAL = MIN (IABSMX, IVAL+1)
+c      WRITE(123,*)'IABVAL=',IABVAL
 C
 C NONE DIFABS EMPIRICAL MULTI-SCAN SADABS SORTAV SHELXA GAUSS ANALYT
 C   1     2       3         4         5      6      7     8      9
-C NUMER INTEGERATION SPHERICAL CYLINDRICAL PSI-SCAN 
-c   10       11         12         13        14
+C NUMER INTEGERATION SPHERICAL CYLINDRICAL PSI-SCAN SAINT
+c   10       11         12         13        14      15
 C
         CMON(1) = ' '
         IF (TMIN.GT.3.0) THEN
@@ -6085,10 +6121,15 @@ C
      1      T35,'''''''',A,'''''''')') CTEMP(1:NCHAR-1)
            CALL XPCIF (CLINE)
 c
-           IF (IDIFNO .LE. 3) THEN
+           IF (IDIFNO .EQ. 1) THEN
+             CTEMP = 'Unknown'
+           ELSE IF (IDIFNO .GT. IDIFMX) THEN
+             CTEMP='Unknown'
+             IDIFNO = 1
+           ELSE IF (IDIFNO .LE. 3) THEN
             CTEMP = 'Serial'
            ELSE
-            CTEMP = 'Area'
+             CTEMP = 'Area'
            ENDIF
            CALL XCTRIM (CTEMP,NCHAR)
 C
@@ -6096,7 +6137,11 @@ C
      1      T35,'''''''',A,'''''''')') CTEMP(1:NCHAR-1)
            CALL XPCIF (CLINE)
 C
-           IF (IDIFNO .LE. 10) THEN   !Graphite monochromator
+           IF (IDIFNO .EQ. 1) THEN
+             WRITE (CLINE,'(A)') 
+     1     '_diffrn_radiation_monochromator      ''Unknown'''
+             CALL XPCIF (CLINE)
+           ELSE IF (IDIFNO .LE. 10) THEN   !Graphite monochromator
              WRITE (CLINE,'(A)') 
      1     '_diffrn_radiation_monochromator      ''graphite'''
              CALL XPCIF (CLINE)
@@ -6112,11 +6157,7 @@ C
 C    LIST 13
       IF (JLOAD(6).GE.1) THEN
          CBUF = ' ? '
-         IF ( IDIFNO .EQ. 12 ) THEN
-            CBUF = 'synchrotron'
-         ELSE IF ( IDIFNO .GE. 13 ) THEN
-            CBUF = 'neutrons'
-         ELSE IF (NINT(100.*STORE(L13DC)).EQ.71) THEN
+         IF (NINT(100.*STORE(L13DC)).EQ.71) THEN
 #ifdef __MAC__
             CBUF = 'Mo K\\a'
 #else
@@ -6129,6 +6170,20 @@ C    LIST 13
             CBUF = 'Cu K\a'
 #endif
          END IF
+c get the radiation from the DETAILS Card
+         IF (ISTORE(L13DT+1) .EQ. -1) THEN
+C-Set above based on lambda             CBUF = 'XRAYS'
+         ELSE IF (ISTORE(L13DT+1) .EQ. 0) THEN
+             CBUF = 'NEUTRONS'
+         ELSE
+             CBUF = 'ELECTRONS'
+         ENDIF
+C Update for special conditions
+         IF ( IDIFNO .EQ. 12 ) THEN
+            CBUF = 'synchrotron'
+         ELSE IF ( IDIFNO .GE. 13 ) THEN
+            CBUF = 'neutrons'
+         ENDIF         
          IF ( IPUNCH .EQ. 0 ) THEN
            WRITE (NCFPU1,'(''_diffrn_radiation_type       '', 
      1                       T35, '''''''',A,'''''''')')
@@ -6600,18 +6655,20 @@ cdjwnov2011 - make all text lowercase - requested by ALT
 
 
 C 
-      call xpcif
+           CALL XPCIF
      1 ('# The current dictionary definitions do not cover the')
-      call xpcif
+           CALL XPCIF
      1 ('# situation where the reflections used for refinement were')
-      call xpcif
+           CALL XPCIF
      1 ('# selected by a user-defined sigma threshold ')
            CALL XPCIF (' ')
-      call xpcif
+           CALL XPCIF
      1 ('# Explicitly named reflections are ALWAYS excluded from R&wR')
            CALL XPCIF (' ')
            CALL XPCIF 
      1     ('# The values actually used during refinement')
+           CALL XPCIF
+     1     ('# These are labelled "all" for compatibility with PLATON')
 #ifdef __MAC__
            WRITE(CBUF,'(''I>'',F6.1,''\\s(I)'')') STORE(L30RF+3)
 #else
@@ -6631,12 +6688,23 @@ C
            WRITE (CLINE,'(A, ''number_reflns '', I10)') CBUF(1:11),
      1                    NINT(STORE(L30RF+8))
            CALL XPCIF (CLINE)
+c
            WRITE (CLINE,'(A,A,''R_factor_ref '',F10.4)') '_oxford',
      1                   CBUF(1:11), STORE(L30RF+0)*0.01
            CALL XPCIF (CLINE)
-           WRITE (CLINE,'(A, ''wR_factor_ref '', F10.4)') CBUF(1:11),
-     1                   STORE(L30RF+1)*0.01
+           WRITE (CLINE,'(A,''R_factor_all '',F10.4)') 
+     1                   CBUF(1:11), STORE(L30RF+0)*0.01
            CALL XPCIF (CLINE)
+c
+c           WRITE (CLINE,'(A,A, ''wR_factor_ref '', F10.4)') '_oxford',
+c _oxford prefix removed for checkcif compatability
+           WRITE (CLINE,'(A, ''wR_factor_ref '', F10.4)') 
+     1                   CBUF(1:11), STORE(L30RF+1)*0.01
+           CALL XPCIF (CLINE)
+           WRITE (CLINE,'(A, ''wR_factor_all '', F10.4)') 
+     1                   CBUF(1:11),STORE(L30RF+1)*0.01
+           CALL XPCIF (CLINE)
+c
            WRITE (CLINE,'(A, ''goodness_of_fit_ref '', F10.4)')
      1                   CBUF(1:11),STORE(L30RF+4)
            CALL XPCIF (CLINE)
@@ -6659,10 +6727,10 @@ C
      1                  NINT(STORE(L30CF+5))
            CALL XPCIF (CLINE)
 c
-           WRITE (CLINE,'(''_refine_ls_R_factor_all '', F10.4)')
+           WRITE (CLINE,'(''_oxford_refine_ls_R_factor_all '', F10.4)')
      1                  STORE(L30CF+6)*0.01
            CALL XPCIF (CLINE)
-           WRITE (CLINE,'(''_refine_ls_wR_factor_all '', F10.4)')
+           WRITE (CLINE,'(''_oxford_refine_ls_wR_factor_all '', F10.4)')
      1                  STORE(L30CF+7)*0.01
            CALL XPCIF (CLINE)
 C
@@ -7340,6 +7408,7 @@ C----- ERROR EXIT
 2600  CONTINUE
 C 
 2650  CONTINUE
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (IEPROP.NE.1) THEN
          WRITE (CMON,2700)
 2700     FORMAT (' Error in computing molecular properties',/' Re-input 
@@ -7398,6 +7467,7 @@ C -- ALLOCATE SPACE TO HOLD RETURN VALUES FROM INPUT
       CALL XZEROF (STORE(ICOMBF), ICOMSZ)
       I = KRDDPV ( ISTORE(ICOMBF) , ICOMSZ )
       IF (I.LT.0) THEN
+         if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
          IF (ISSPRT .EQ. 0) WRITE(NCWU, 51)
          WRITE ( CMON ,51)
          CALL XPRVDU(NCVDU, 1,0)
@@ -7679,6 +7749,7 @@ c
         IF (LSTNUM.EQ.0) GO TO 300
         IF (KEXIST(LSTNUM)) 150,50,250
 50      CONTINUE
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         IF (ISSPRT.EQ.0) WRITE (NCWU,100) LSTNUM
         WRITE (CMON,100) LSTNUM
         CALL XPRVDU (NCEROR, 1, 0)
@@ -7686,6 +7757,7 @@ c
         IERROR=-1
         GO TO 300
 150     CONTINUE
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         IF (ISSPRT.EQ.0) WRITE (NCWU,200) LSTNUM
         WRITE (CMON,200) LSTNUM
         CALL XPRVDU (NCEROR, 1, 0)
@@ -7725,26 +7797,32 @@ c look fo the FLACK records
         if (n39f.gt.0) then
          m39f = l39f
          do i=1,n39f                                !Find record FLACK(0)
-          iflack0=m39f
           if ((istore(m39f) .eq. icflac) .and. 
-     1       (nint(store(m39f+1)) .eq. 0)) exit
-           m39f=m39f+md39f
+     1       (nint(store(m39f+1)) .eq. 0)) then 
+             iflack0=m39f
+             exit
+          endif
+          m39f=m39f+md39f
          enddo
 c
          m39f = l39f
          do i=1,n39f                                !Find record FLACK(1)
-          iflack1=m39f
           if ((istore(m39f) .eq. icflac) .and. 
-     1       (nint(store(m39f+1)) .eq. 1)) exit
-           m39f=m39f+md39f
+     1       (nint(store(m39f+1)) .eq. 1)) then
+             iflack1=m39f
+             exit
+          endif
+          m39f=m39f+md39f
          enddo
 C
          m39f = l39f
          do i=1,n39f                                !Find record HOOFT(0)
-          ihooft=m39f
           if ((istore(m39f) .eq. ichooft) .and. 
-     1       (nint(store(m39f+1)) .eq. 0)) exit
-           m39f=m39f+md39f
+     1       (nint(store(m39f+1)) .eq. 0)) then
+             ihooft=m39f
+             exit
+          endif
+          m39f=m39f+md39f
          enddo
         endif 
 c
@@ -7793,11 +7871,11 @@ C
       enddo
 c
       if(store(l30ge+7).le.zero) then
-            call outcol(9)
+c            call outcol(9)
             write(cmon,'(/a/)')
-     1      '{I You should refine the Flack(x) parameter'
+     1      '{I The Flack(x) parameter has not been refined'
             call xprvdu (ncvdu, 3, 0)
-            call outcol(1)
+c            call outcol(1)
       endif
       xflack = store(l5o+4)
       qflack = store(l30ge+7)
@@ -9899,9 +9977,8 @@ C                           ----------- All done.
 2750  CONTINUE
 C
       IF ( MFRIED .LE. 0) THEN
-        WRITE (CMON,'(/)')
-c        CALL XPRVDU (NCVDU, 1, 0)
         IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)')trim(CMON(1))
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         WRITE (CMON,'(10(a,i7))') ' No of Reflections processed =',
      1   NREFIN
         CALL XPRVDU (NCVDU, 1, 0)
@@ -9917,6 +9994,7 @@ c       ERROR EXIT
 C                  ------Test Error Condition
 2760  continue
       if(IERROR .LE. 0) then                              !Error set
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
          call outcol(9)
         if(float(nfried)/float(mfried) .le. 0.1) THEN
          WRITE (CMON,'(10(a,2x,i7))') ' No of Friedel Pairs found =',
@@ -10167,6 +10245,7 @@ c      call xprvdu(ncvdu, 1,0)
       GOTO 2860
 2850  CONTINUE
 C -- ERRORS DETECTED
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XERHND (IERWRN)
       GO TO 2860
 2860  CONTINUE
@@ -11882,3 +11961,147 @@ C -- INPUT ERRORS
 
       END
   
+CODE FOR PASCAL39
+      subroutine pascal39(v3,sv3)
+
+C     Copy Pascal's results to LIST 39
+C     HACKED FROM CODE FOR TON
+C
+      dimension v3(7), sv3(7)
+
+      dimension tempdjw(20), itempdjw(20)
+      equivalence (tempdjw(1), itempdjw(1))
+
+C
+      INCLUDE  'ISTORE.INC'
+      INCLUDE  'STORE.INC'
+      INCLUDE  'QSTORE.INC'
+      INCLUDE  'XLISTI.INC'
+      INCLUDE  'XLST50.INC'
+
+      INCLUDE  'XUNITS.INC'
+      INCLUDE  'XSSVAL.INC'
+      INCLUDE  'XERVAL.INC'
+      INCLUDE  'XOPVAL.INC'
+      INCLUDE  'XIOBUF.INC'
+C
+      INCLUDE  'XLST39.INC'
+      INCLUDE  'QLST39.INC'
+      INCLUDE  'ICOM39.INC'
+
+#ifdef _HOL_
+      DATA ICFLAC/4HFLAC/
+      DATA ICHOOFT/4HHOOF/
+#else
+      DATA ICFLAC/'FLAC'/
+      DATA ICHOOFT/'HOOF'/
+#endif
+C
+       IF (KHUNTR(39,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL39
+c
+c look fo the FLACK records
+       iflack0=0                  !indicate there are no records 0 or 1
+       iflack1=0
+       ihooft=0
+       m39f=0
+        if (n39f.gt.0) then
+         m39f = l39f
+         do i=1,n39f                                !Find record FLACK(0)
+          if ((istore(m39f) .eq. icflac) .and. 
+     1       (nint(store(m39f+1)) .eq. 0)) then
+             iflack0=m39f
+             exit
+          endif 
+          m39f=m39f+md39f
+         enddo
+c
+         m39f = l39f
+         do i=1,n39f                                !Find record FLACK(1)
+          if ((istore(m39f) .eq. icflac) .and. 
+     1       (nint(store(m39f+1)) .eq. 1)) then
+             iflack1=m39f
+             exit
+          endif
+          m39f=m39f+md39f
+         enddo
+C
+         m39f = l39f
+         do i=1,n39f                                !Find record HOOFT(0)
+          if ((istore(m39f) .eq. ichooft) .and. 
+     1       (nint(store(m39f+1)) .eq. 0)) then
+             ihooft=m39f
+             exit
+          endif
+          m39f=m39f+md39f
+         enddo
+        endif 
+c
+c now update LIST 39
+       if (iflack0*iflack1.gt.0) then
+         if (iflack0.gt.0) then
+c FLAC(0) record
+c            store(iflack0+2)= set elsewhere !MAIN NPP Note: Used in tempdjw(20)
+             store(iflack0+3)=0.0            !BIJVOET NPP
+             store(iflack0+4)=v3(2)          !Hin1
+             store(iflack0+5)=sv3(2)         !
+c          Note that 'Parsons' might be quotient or difference
+             store(iflack0+6)=v3(7)          !Parsons
+             store(iflack0+7)=sv3(7)         !
+             store(iflack0+8)=v3(4)          !Hooft
+             store(iflack0+9)=sv3(4)         !
+             store(iflack0+10)=v3(6)     !Histogram
+             store(iflack0+11)=sv3(6)     !
+         endif
+c FLACK(1) record
+            continue
+         if (iflack1.gt.0) then
+            store(iflack1+2) = v3(1) ! mfried
+            store(iflack1+3) = v3(1) ! nnpp
+            store(iflack1+4) = v3(1) ! nfried
+            store(iflack1+6) = v3(1) ! nfofc
+            store(iflack1+8) = v3(1) ! nfofc
+            store(iflack1+10) = v3(1) ! ngood
+             do i=5,11,2
+                  store(iflack1+i)=0.
+             enddo
+         endif
+       endif   
+       goto 100  !skip round the HOOTF block
+c  left here in case needed sometime in future
+c?       m39f = 0
+       if (ihooft .gt. 0) then
+c            Ton has now 'invented' (known to PLATON-CheckCIF) 
+c            datanames for P2, P3 etc.
+c            _platon_Bijvoet-pair_Hooft_y
+c            _platon_Bijvoet-pair_Hooft_P2-true
+c            _platon_Bijvoet-pair_Hooft_P2-false
+c            _platon_Bijvoet-pair_Hooft_P3-true
+c            _platon_Bijvoet-pair_Hooft_P3-rac-twin
+c            _platon_Bijvoet-pair_Hooft_P3-false
+c            _platon_Bijvoet-pair_Parsons_z
+c
+             if(xpll2 .lt. 0.0) then
+              xpll2 = 0.                 ! P2 does not compute
+              xpln2 = 0.
+             else
+              xpln2 = 1.-xpll2
+             endif
+             if(xsmll .le. zerosq) then
+               xplll = 0.                ! P3 does not compute
+               xtwll = 0.
+               xmnll = 0.
+             endif
+             store(ihooft+2)=xpll2         !p2-true
+             store(ihooft+3)=xpln2         !p2-false
+             store(ihooft+4)=xplll         !p3-true
+             store(ihooft+5)=xtwll         !p3-rac-twin
+             store(ihooft+6)=xmnll         !p3-false
+             do i=7,11
+                  store(ihooft+i)=0.
+             enddo
+        endif
+100     continue
+        call xwlstd(39, icom39, idim39, -1, -1)
+
+      return
+      end

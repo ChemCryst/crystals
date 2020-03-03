@@ -51,12 +51,21 @@ CTestTestfile.cmake
 # End of https://www.gitignore.io/api/cmake
 
 *.bak
+*.lis
+BAT-files/
+old-FORTRAN/
+script/old-bak-files
 
 #common build folders
 b/
 d/
 g/
 i/
+n/
+
+#IDE config
+.idea/
+
 
 build/*.exe
 build/*.pdb
@@ -84,6 +93,7 @@ build/manual/
 build/MCE
 build/script/
 
+cmake-build-debug/
 
 debuginfo
 
@@ -107,7 +117,7 @@ test_suite/*.cif
 test_suite/*.ini
 test_suite/*.l5i
 test_suite/*.oby
-
+test_suite/*.job
 
 
 

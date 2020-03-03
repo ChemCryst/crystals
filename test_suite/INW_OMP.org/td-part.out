@@ -173,7 +173,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
  Structure factor least squares calculation    1  ends  2
 [29] SumFo/SumFc=  6.23    SumFoFc/SumFc^2=  6.13    SumwFoFc/SumwFc^2=  6.19
 LS-scale=  6.285   Wilson Scale=  0.000
-<Fo>-<Fc> =   -0.098    100*(<Fo>-<Fc>)/<Fo> =    -0.82
+<Fo>-<Fc> = -0.098    100*(<Fo>-<Fc>)/<Fo> =    -0.82
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -194,7 +194,9 @@ LS-scale=  6.285   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.19E-07
+ (sp inverse) 1-norm:  1.00E+00 cond. number:  1.00E+00 rel. error:  1.19E-07
 [44] Resetting shift for Enantio     Shift=       0.4   Esd=       0.0   New shift=       0.43
 [13]  LARGE     1           1             0.4       0.0E+00    0.2 E-01         16.4                           ENANTIO 
 
@@ -357,7 +359,7 @@ Mean C-C su =   0.0000
  Structure factor least squares calculation    2  ends  2
 [29] SumFo/SumFc=  6.23    SumFoFc/SumFc^2=  6.13    SumwFoFc/SumwFc^2=  6.20
 LS-scale=  6.285   Wilson Scale=  0.000
-<Fo>-<Fc> =   -0.100    100*(<Fo>-<Fc>)/<Fo> =    -0.83
+<Fo>-<Fc> = -0.100    100*(<Fo>-<Fc>)/<Fo> =    -0.83
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -374,7 +376,9 @@ LS-scale=  6.285   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.19E-07
+ (sp inverse) 1-norm:  1.00E+00 cond. number:  1.00E+00 rel. error:  1.19E-07
  S/ESD     1           1             0.041      0.1E+00    0.270E-01          1.50                          ENANTIO 
 
                                                 for           1 parameters
@@ -540,7 +544,7 @@ Mean C-C su =   0.0000
  Structure factor least squares calculation    3  ends  2
 [29] SumFo/SumFc=  6.23    SumFoFc/SumFc^2=  6.13    SumwFoFc/SumwFc^2=  6.20
 LS-scale=  6.285   Wilson Scale=  0.000
-<Fo>-<Fc> =   -0.100    100*(<Fo>-<Fc>)/<Fo> =    -0.83
+<Fo>-<Fc> = -0.100    100*(<Fo>-<Fc>)/<Fo> =    -0.83
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -557,7 +561,9 @@ LS-scale=  6.285   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.19E-07
+ (sp inverse) 1-norm:  1.00E+00 cond. number:  1.00E+00 rel. error:  1.19E-07
 
                                                 for           1 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -668,7 +674,7 @@ OUTPUT INDICES     /FO/        SQRTW       /FC/        BATCH/PHASE RATIO/JCODE
 CONT   SIGMA(/FO/) CORRECTIONS
 INPUT  H           K           L           /FO/        SQRTW       /FC/       
 CONT   BATCH       PHASE       JCODE       SIGMA(/FO/) CORRECTIONS
-FOR (I4,I4,I4,F10.2,1X,G10.3,F10.2,F4.0,F6.2,F4.0,F8.2,F7.4)
+FOR (3I4,F10.2,1X,G10.3,F10.2,F4.0,F6.2,F4.0,F8.2,F7.4)
 END
  -10   1   0     23.91  0.304E-01      4.15  1.  0.14  1.    0.69 1.0000 
   10  -1   0     17.96  0.321E-01      4.13  1.  0.29  1.    0.87 1.0000 
@@ -3614,7 +3620,7 @@ Rsigma=  0.91
      2805 reflections   R  6.66% Rw 16.67% with I/u(I) >   2.0
 [29] SumFo/SumFc=  6.30    SumFoFc/SumFc^2=  6.19    SumwFoFc/SumwFc^2=  6.27
 LS-scale=  6.285   Wilson Scale=  0.000
-[27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #CYCLENDS
 # RE-INPUT LIST 5
 #USE TD-PART-5.DAT
@@ -3723,7 +3729,7 @@ LS-scale=  6.285   Wilson Scale=  0.000
      2805 reflections   R  6.66% Rw 16.67% with I/u(I) >   2.0
 [29] SumFo/SumFc=  6.30    SumFoFc/SumFc^2=  6.19    SumwFoFc/SumwFc^2=  6.27
 LS-scale=  6.285   Wilson Scale=  0.000
-[27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #CYCLENDS
 #TITLE A&B KEYS SET, F' & F" SET TO ZERO
 #PUNCH 6 I
@@ -3738,7 +3744,7 @@ CONT
 INPUT  H           K           L           /FO/        SQRTW       /FC/       
 CONT   BATCH       PHASE       JCODE       SIGMA(/FO/) CORRECTIONS A-PART     
 CONT   B-PART      A-IMAG      B-IMAG     
-FOR (I4,I4,I4,F10.2,1X,G10.3,F10.2,F4.0,F6.2,F4.0,F8.2,F7.4,F10.2,F10.2,F10.2,F10.2)
+FOR (3I4,F10.2,1X,G10.3,F10.2,F4.0,F6.2,F4.0,F8.2,F7.4,4F10.2)
 END
  -10   1   0     23.91  0.304E-01      4.04  1. -0.08  1.    0.69 1.0000     15.96     -1.12      0.00      0.00
  
@@ -9533,7 +9539,7 @@ END
      2805 reflections   R 22.28% Rw 77.59% with I/u(I) >   2.0
 [29] SumFo/SumFc=  6.59    SumFoFc/SumFc^2=  6.62    SumwFoFc/SumwFc^2=  5.91
 LS-scale=  6.285   Wilson Scale=  0.000
-[27] <Fo>-<Fc> =    0.5     100*(<Fo>-<Fc>)/<Fo> =     4.
+[27] <Fo>-<Fc> =  0.5     100*(<Fo>-<Fc>)/<Fo> =     4.
 #CYCLENDS
 # SET ALL OCCUPANCIES EXCEPT RU TO UNITY, SET RU TO ZERO
 # USE STORED PARTS
@@ -9703,7 +9709,7 @@ Rsigma=  0.91
      2805 reflections   R  6.66% Rw 16.67% with I/u(I) >   2.0
 [29] SumFo/SumFc=  6.30    SumFoFc/SumFc^2=  6.19    SumwFoFc/SumwFc^2=  6.27
 LS-scale=  6.285   Wilson Scale=  0.000
-[27] <Fo>-<Fc> =    0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
+[27] <Fo>-<Fc> =  0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #CYCLENDS
 #SUM L 6
  Summary of contents of list  6 - Reflection data
@@ -9731,7 +9737,7 @@ CONT
 INPUT  H           K           L           /FO/        SQRTW       /FC/       
 CONT   BATCH       PHASE       JCODE       SIGMA(/FO/) CORRECTIONS A-PART     
 CONT   B-PART      A-IMAG      B-IMAG     
-FOR (I4,I4,I4,F10.2,1X,G10.3,F10.2,F4.0,F6.2,F4.0,F8.2,F7.4,F10.2,F10.2,F10.2,F10.2)
+FOR (3I4,F10.2,1X,G10.3,F10.2,F4.0,F6.2,F4.0,F8.2,F7.4,4F10.2)
 END
  -10   1   0     23.91  0.304E-01      4.04  1. -0.08  1.    0.69 1.0000      5.60     -1.39      0.00      0.00
  
@@ -15346,7 +15352,7 @@ END
 -512
 #   2805 reflections output
 #DISK
- List type   6 with serial number    36 is the current version. 
+ List type   6 with serial number    36 is the current version.
  You may still save this list with DELETE n ACTION=NO
 #PURG
  List type    6  serial number   36 from    66831 to   100762 will not be copied ( deleted )         
@@ -15354,8 +15360,6 @@ END
  DO NOT abort the program
  The new disc index has been re-written 
  Disc index completely restored
-
- Listing of file index of    Data    file 
 #TITLE PASS 2, INCLUDE ANOMALOUS SCATTERING
 #LIST 3
 #LIST 23
@@ -15479,7 +15483,7 @@ Rsigma=  0.91
      2805 reflections   R  7.02% Rw 17.80% with I/u(I) >   2.0
 [29] SumFo/SumFc=  6.23    SumFoFc/SumFc^2=  6.13    SumwFoFc/SumwFc^2=  6.19
 LS-scale=  6.285   Wilson Scale=  0.000
-<Fo>-<Fc> =   -0.098    100*(<Fo>-<Fc>)/<Fo> =    -0.82
+<Fo>-<Fc> = -0.098    100*(<Fo>-<Fc>)/<Fo> =    -0.82
 #CYCLENDS
 #TITLE NORMAL LIST 6, F2 & F" SET
 #PUNCH 6 I
@@ -15492,7 +15496,7 @@ OUTPUT INDICES     /FO/        SQRTW       /FC/        BATCH/PHASE RATIO/JCODE
 CONT   SIGMA(/FO/) CORRECTIONS
 INPUT  H           K           L           /FO/        SQRTW       /FC/       
 CONT   BATCH       PHASE       JCODE       SIGMA(/FO/) CORRECTIONS
-FOR (I4,I4,I4,F10.2,1X,G10.3,F10.2,F4.0,F6.2,F4.0,F8.2,F7.4)
+FOR (3I4,F10.2,1X,G10.3,F10.2,F4.0,F6.2,F4.0,F8.2,F7.4)
 END
  -10   1   0     23.91  0.304E-01      4.24  1.  0.14  1.    0.69 1.0000 
   10  -1   0     17.96  0.321E-01      4.03  1.  0.29  1.    0.87 1.0000 
@@ -18408,7 +18412,7 @@ END
      2805 reflections   R  7.02% Rw 17.80% with I/u(I) >   2.0
 [29] SumFo/SumFc=  6.23    SumFoFc/SumFc^2=  6.13    SumwFoFc/SumwFc^2=  6.19
 LS-scale=  6.285   Wilson Scale=  0.000
-<Fo>-<Fc> =   -0.098    100*(<Fo>-<Fc>)/<Fo> =    -0.82
+<Fo>-<Fc> = -0.098    100*(<Fo>-<Fc>)/<Fo> =    -0.82
 #CYCLENDS
 #TITLE A&B KEYS SET, F' & F" SET
 #PUNCH 6 I
@@ -18423,7 +18427,7 @@ CONT
 INPUT  H           K           L           /FO/        SQRTW       /FC/       
 CONT   BATCH       PHASE       JCODE       SIGMA(/FO/) CORRECTIONS A-PART     
 CONT   B-PART      A-IMAG      B-IMAG     
-FOR (I4,I4,I4,F10.2,1X,G10.3,F10.2,F4.0,F6.2,F4.0,F8.2,F7.4,F10.2,F10.2,F10.2,F10.2)
+FOR (3I4,F10.2,1X,G10.3,F10.2,F4.0,F6.2,F4.0,F8.2,F7.4,4F10.2)
 END
  -10   1   0     23.91  0.304E-01      4.24  1.  0.14  1.    0.69 1.0000     15.96     -1.12      0.00      0.00
  
@@ -24218,7 +24222,7 @@ END
      2805 reflections   R 22.19% Rw 78.38% with I/u(I) >   2.0
 [29] SumFo/SumFc=  6.52    SumFoFc/SumFc^2=  6.57    SumwFoFc/SumwFc^2=  5.85
 LS-scale=  6.285   Wilson Scale=  0.000
-[27] <Fo>-<Fc> =    0.4     100*(<Fo>-<Fc>)/<Fo> =     3.
+[27] <Fo>-<Fc> =  0.4     100*(<Fo>-<Fc>)/<Fo> =     3.
 #CYCLENDS
 # SET ALL OCCUPANCIES EXCEPT RU TO UNITY, SET RU TO ZERO
 # USE STORED PARTS
@@ -24388,7 +24392,7 @@ Rsigma=  0.91
      2805 reflections   R  7.02% Rw 17.80% with I/u(I) >   2.0
 [29] SumFo/SumFc=  6.23    SumFoFc/SumFc^2=  6.13    SumwFoFc/SumwFc^2=  6.19
 LS-scale=  6.285   Wilson Scale=  0.000
-<Fo>-<Fc> =   -0.098    100*(<Fo>-<Fc>)/<Fo> =    -0.82
+<Fo>-<Fc> = -0.098    100*(<Fo>-<Fc>)/<Fo> =    -0.82
 #CYCLENDS
 #SUM L 6
  Summary of contents of list  6 - Reflection data
@@ -24416,7 +24420,7 @@ CONT
 INPUT  H           K           L           /FO/        SQRTW       /FC/       
 CONT   BATCH       PHASE       JCODE       SIGMA(/FO/) CORRECTIONS A-PART     
 CONT   B-PART      A-IMAG      B-IMAG     
-FOR (I4,I4,I4,F10.2,1X,G10.3,F10.2,F4.0,F6.2,F4.0,F8.2,F7.4,F10.2,F10.2,F10.2,F10.2)
+FOR (3I4,F10.2,1X,G10.3,F10.2,F4.0,F6.2,F4.0,F8.2,F7.4,4F10.2)
 END
  -10   1   0     23.91  0.304E-01      4.24  1.  0.14  1.    0.69 1.0000      5.62     -1.40      0.22      0.87
  
@@ -30102,7 +30106,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
  Structure factor least squares calculation    4  ends  2
 [29] SumFo/SumFc=  6.23    SumFoFc/SumFc^2=  6.13    SumwFoFc/SumwFc^2=  6.19
 LS-scale=  6.285   Wilson Scale=  0.000
-<Fo>-<Fc> =   -0.098    100*(<Fo>-<Fc>)/<Fo> =    -0.82
+<Fo>-<Fc> = -0.098    100*(<Fo>-<Fc>)/<Fo> =    -0.82
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -30123,7 +30127,9 @@ LS-scale=  6.285   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.19E-07
+ (sp inverse) 1-norm:  1.00E+00 cond. number:  1.00E+00 rel. error:  1.19E-07
 [44] Resetting shift for Enantio     Shift=       0.4   Esd=       0.0   New shift=       0.43
 [13]  LARGE     1           1             0.4       0.0E+00    0.2 E-01         16.4                           ENANTIO 
 
@@ -30286,7 +30292,7 @@ Mean C-C su =   0.0000
  Structure factor least squares calculation    5  ends  2
 [29] SumFo/SumFc=  6.23    SumFoFc/SumFc^2=  6.13    SumwFoFc/SumwFc^2=  6.20
 LS-scale=  6.285   Wilson Scale=  0.000
-<Fo>-<Fc> =   -0.100    100*(<Fo>-<Fc>)/<Fo> =    -0.83
+<Fo>-<Fc> = -0.100    100*(<Fo>-<Fc>)/<Fo> =    -0.83
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -30303,7 +30309,9 @@ LS-scale=  6.285   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.19E-07
+ (sp inverse) 1-norm:  1.00E+00 cond. number:  1.00E+00 rel. error:  1.19E-07
  S/ESD     1           1             0.041      0.1E+00    0.270E-01          1.50                          ENANTIO 
 
                                                 for           1 parameters
@@ -30469,7 +30477,7 @@ Mean C-C su =   0.0000
  Structure factor least squares calculation    6  ends  2
 [29] SumFo/SumFc=  6.23    SumFoFc/SumFc^2=  6.13    SumwFoFc/SumwFc^2=  6.20
 LS-scale=  6.285   Wilson Scale=  0.000
-<Fo>-<Fc> =   -0.100    100*(<Fo>-<Fc>)/<Fo> =    -0.83
+<Fo>-<Fc> = -0.100    100*(<Fo>-<Fc>)/<Fo> =    -0.83
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -30486,7 +30494,9 @@ LS-scale=  6.285   Wilson Scale=  0.000
             and/or there is a relatively large shift.
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
+Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.19E-07
+ (sp inverse) 1-norm:  1.00E+00 cond. number:  1.00E+00 rel. error:  1.19E-07
 
                                                 for           1 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -30599,7 +30609,7 @@ CONT
 INPUT  H           K           L           /FO/        SQRTW       /FC/       
 CONT   BATCH       PHASE       JCODE       SIGMA(/FO/) CORRECTIONS A-PART     
 CONT   B-PART      A-IMAG      B-IMAG     
-FOR (I4,I4,I4,F10.2,1X,G10.3,F10.2,F4.0,F6.2,F4.0,F8.2,F7.4,F10.2,F10.2,F10.2,F10.2)
+FOR (3I4,F10.2,1X,G10.3,F10.2,F4.0,F6.2,F4.0,F8.2,F7.4,4F10.2)
 END
  -10   1   0     23.91  0.304E-01      4.15  1.  0.14  1.    0.69 1.0000      5.62     -1.40      0.22      0.87
  

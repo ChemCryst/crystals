@@ -686,9 +686,11 @@ C Also fill in the include/exclude vector (LATVC) for KDIST4.
         END IF
         MS=KATOMU(IRCZAP)
         IF ( MS .LE. 0 ) THEN
-          WRITE (CMON,'(A)') 'Error reading atom from SAME directive.'
+         if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
+          WRITE (CMON,'(A)') 
+     1    '{E Error reading atom from SAME directive.'
           CALL XPRVDU(NCVDU,1,0)
-          if (issprt.eq.0) write(ncwu,'(a)') trim(CMON(1))
+          if (issprt.eq.0) write(ncwu,'(a)') trim(CMON(1)(3:))
           GOTO 5850
         END IF
         INDATM = ( M5A - L5 ) / MD5
@@ -702,6 +704,7 @@ C Fill in the distance/angle include vectors for this atom.
 C Check types match.
             IF ( ISTORE(M5A+J*MD5) .NE.
      1           ISTORE(L5+MD5*ISTORE(JATD+(NGROUP-1)*NATOMS)) ) THEN
+ctemp              if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
               IATI = JATOMS + 1 + J
               IATD = MIN(4,MOD(IATI,10))
               CALL CATSTR(STORE(M5A+J*MD5),STORE(M5A+J*MD5+1),1,1,0,0,0,
@@ -786,6 +789,7 @@ C Get the distances and angles. One at a time.
         NFL = NFLORIG       ! RESET NFL 
 
         IF ( K .LT. 0 ) THEN
+           if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
            WRITE (CMON,'(A)')'{E "KDIST4" returned an error.'
            CALL XPRVDU(NCVDU,1,0)
            if (issprt.eq.0) then
@@ -823,9 +827,10 @@ C Find the pivot atom (M5A) in the first group.
         END DO
 cdjwfeb11 delu and simu can have more than one argument string
         IF (( IND1 .GE. 0 ) .and. (mg .eq. 21))  THEN
-          WRITE (CMON,'(A,i5,a)')'Programming error [1]',
+          if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
+          WRITE (CMON,'(A,i5,a)')'{E Programming error [1]',
      1    mg,' in XPRC16.'
-          if (issprt.eq.0) write(ncwu,'(a)') trim(CMON(1))
+          if (issprt.eq.0) write(ncwu,'(a)') trim(CMON(1)(3:))
           CALL XPRVDU(NCVDU,1,0)  
           GOTO 5850
         END IF
@@ -849,7 +854,7 @@ CDJW DEBUGGING
              CALL XPRVDU(NCVDU, 1,0)
 2804         FORMAT ( 6x, A,' ',F6.3,'A from ',A)
              IF (ISSPRT.EQ.0) WRITE(NCWU,'(A)') trim(CMON(1))
-             WRITE(NCAWU,'(A)') trim(CMON(1))
+c             WRITE(NCAWU,'(A)') trim(CMON(1))
            END IF
           endif
 CDJW DEBUGGING
@@ -865,9 +870,10 @@ C Find the second atom in the first group.
           END DO
 cdjwfeb11 delu and simu can have more than one argument string
         IF (( IND2 .GE. 0 ) .and. (mg .eq. 21))  THEN
-          WRITE (CMON,'(A,i5,a)')'Programming error [2]',
+          if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
+          WRITE (CMON,'(A,i5,a)')'{E Programming error [2]',
      1    mg,' in XPRC16.'
-            if (issprt.eq.0) write(ncwu,'(a)') trim(CMON(1))
+            if (issprt.eq.0) write(ncwu,'(a)') trim(CMON(1)(3:))
             CALL XPRVDU(NCVDU,1,0)  
             GOTO 5850
           END IF
@@ -939,7 +945,7 @@ CDJW - DEBUGGING
                write(cmon,'(a,i5)') ' Processing group ',K+1
                CALL XPRVDU(NCVDU,1,0)
                if (issprt.eq.0) WRITE(NCWU,'(A)') trim(CMON(1))
-               WRITE(NCAWU,'(A)') trim(CMON(1))
+c               WRITE(NCAWU,'(A)') trim(CMON(1))
                CALL CATSTR(STORE(M5P),STORE(M5P+1),1,1,0,0,0,
      1         CATOM1,LATOM1)
                CALL CATSTR (STORE(M5Q), STORE(M5Q+1),
@@ -950,7 +956,7 @@ CDJW - DEBUGGING
      2         CATOM2(1:25)
                CALL XPRVDU(NCVDU,1,0)
                if (issprt .eq.0) WRITE(NCWU,'(A)') trim(CMON(1))
-               WRITE(NCAWU,'(A)') trim(CMON(1))
+c               WRITE(NCAWU,'(A)') trim(CMON(1))
               endif
 CDJW - DEBUGGING
               MQ=MCG ! Next free word (we'll store atom1 header here)
@@ -1017,7 +1023,7 @@ cdjwdebugging
              CALL XPRVDU(NCVDU, 1,0)
 2805         FORMAT ( 6x, A, ' to ', A, ' to ', A)
              if(issprt.eq.0) WRITE(NCWU,'(A)') trim(CMON(1))
-             WRITE(NCAWU,'(A)') trim(CMON(1))
+c             WRITE(NCAWU,'(A)') trim(CMON(1))
             endif
 cdjwdebugging
 C Find third atom of angle in the first group of SAME.
@@ -1030,9 +1036,10 @@ C Find third atom of angle in the first group of SAME.
               END IF
             END DO
             IF ( IND3 .GE. 0 ) THEN
-              WRITE (CMON,'(A)') 'Programming error [3] in XPRC16.'
+              if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
+              WRITE (CMON,'(A)') '{E Programming error [3] in XPRC16.'
               CALL XPRVDU(NCVDU,1,0)  
-            if (issprt.eq.0) write(ncwu,'(a)') trim(CMON(1))
+            if (issprt.eq.0) write(ncwu,'(a)') trim(CMON(1)(3:))
               GOTO 5850
             END IF
             IND3 = -IND3 ! Now index into the vector at JATD
@@ -1109,7 +1116,7 @@ cdjwdebugging
                WRITE(CMON,2805)CATOM2(1:LATOM2),CATOM1(1:LATOM1),
      1         CATOM3(1:25)
                CALL XPRVDU(NCVDU,1,0)
-               WRITE(NCAWU,'(A)') trim(CMON(1))
+c               WRITE(NCAWU,'(A)') trim(CMON(1))
               endif
 cdjwdebugging
 
@@ -1660,15 +1667,17 @@ C-- END XCHIV
 C
 C--'ABORT' CARD  -  RESET THE ABORTION LIMIT FOR 'EQUATE'
 2300  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF(KNUMBR(ABORT))2350,5750,2350
 C--ERROR BECAUSE THERE IS NO ARGUMENT
 2350  CONTINUE
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCL16
-      IF (ISSPRT .EQ. 0) WRITE(NCWU,2400)
 C      WRITE(NCAWU,2400)
       WRITE ( CMON ,2400)
       CALL XPRVDU(NCVDU, 1,0)
-2400  FORMAT(' This instruction requires one numeric argument')
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')CMON(1)(3:)
+2400  FORMAT('{E This instruction requires one numeric argument')
       GOTO 5850
 C
 C--AN 'EQUATE' CARD  -  SET UP THE INITIAL D/A LIMITS
@@ -1681,6 +1690,7 @@ C--CHECK IF THERE IS MORE INFORMATION ON THE CARD
       IF(ME)2550,2550,2600
 C--FORMAT ERROR IN THE DEFINITION OF A RESTRAINT
 2550  CONTINUE
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XCFE
       GOTO 5850
 C--CHECK THE TYPE OF THE NEXT ARGUMENT
@@ -1990,9 +2000,10 @@ C--CHECK THE PRINT FLAG
       GOTO 5900
 C--ERROR RETURN  -  PRINT THE CARD ABANDONED MESSAGE
 5850  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       if (issprt.eq.0)
-     1 write(ncwu,'(a)') 'Error label 5850. Card abandoned'
-      write(cmon,'(a)') 'Error label 5850. Card abandoned'
+     1 write(ncwu,'(a)') ' Card (Line) abandoned'
+      write(CMON,'(a)') ' Card (Line) abandoned'
       CALL XPRVDU(NCVDU, 1,0)
       CALL XPCA(ISTORE(MD+4))
       LEF=LEF+1
@@ -2032,11 +2043,13 @@ C--AND NOW RETURN
 C
 C--CORE OVERFLOW
 6150  CONTINUE
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPL16 , IOPSPC , 0 )
       GO TO 9900
 C
 C--ERRORS FOUND
 6200  CONTINUE
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XALTES ( KE , -1 )
       CALL XERHND ( IERERR )
       GO TO 9900
@@ -2235,6 +2248,7 @@ C--CHECK FOR END OF CARD
       IF(ME)1200,1200,1250
 C--RESTRAINT FORMAT ERROR
 1200  CONTINUE
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XCFE
       GOTO 2300
 C--CHECK THE TYPE OF THE NEXT ARGUMENT
@@ -2282,6 +2296,7 @@ C--AN 'UNTIL' SEQUENCE THAT IS ALLOWED  -  ADJUST THE LINK ADDRESS
       GOTO 1850
 C--ATOM DEFINITION ERROR
 1800  CONTINUE
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       MF=MF-LK2
       CALL XADE(ISTORE(MF+1))
       GOTO 2300
@@ -2352,6 +2367,7 @@ C
 C
       INCLUDE 'QSTORE.INC'
 C
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCL16
 C--CHECK IF WE CAN PRINT THE CARD POSITION
       IF(ME)1000,1000,1100

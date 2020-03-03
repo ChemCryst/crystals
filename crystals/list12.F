@@ -744,6 +744,7 @@ C--INSERT THE DUMMY OVERALL TEMPERATURE FACTOR
       IF(KOVPIN(1, 2, 1, IMP, 0))1950,2050,1950
 C--ERROR WHILE ADJUSTING THE OVERALL PARAMETERS FOR THE FIRST CARD
 1950  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCL12
       IF (ISSPRT .EQ. 0) WRITE(NCWU,2000)
       WRITE ( CMON ,2000)
@@ -1327,6 +1328,7 @@ C----- ANY SPECIAL MODIFIERS REQUESTED (EXTINCTION,POLARITY,ENANTIOPOLE)
         M = M / 2
 6100    CONTINUE
 C        IF (MOD23 .NE. 0) STOP 'MOD23 ERROR IN PRC12'
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         IF (MOD23 .NE. 0) CALL GUEXIT(2012)
 C----- ANY GROUPS?
         IF(NGPDIR .GT. 0) THEN
@@ -1394,16 +1396,19 @@ C
 C
 C--ERRORS FOUND
 5850  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XERHND ( IERERR )
       GO TO 9900
 C
 9800  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE(NCWU, 9801)
       WRITE ( CMON , 9801)
       CALL XPRVDU(NCVDU, 1,0)
 9801  FORMAT (' Error initialising special positions')
       GOTO 9900
 9901  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE(NCWU, 9902)
       WRITE ( CMON , 9902)
       CALL XPRVDU(NCVDU, 1,0)
@@ -1411,6 +1416,7 @@ C
       GOTO 5850
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XALTES ( KE , -1 )
       CALL XOPMSG ( IOPLSC , IOPLSP , KE )
       GO TO 5750
@@ -2613,13 +2619,15 @@ C----- END OF CARD - TIDY UP
 C----- 'AND' REQUIRED
       IF(ISET) 2115, 2115, 2117
 2115  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE(NCWU ,2116)
       WRITE( CMON ,2116)
       CALL XPRVDU(NCVDU, 1,0)
-2116  FORMAT (' AND sequence missing')
+2116  FORMAT ('{E AND sequence missing')
 C
 C----- TOO MANY ERRORS - PROCESSING ABANDONED
 2050  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCA( ISTORE(MD+4) )
 2117  CONTINUE
 C----- AUTO-LINKED PARAMETERS
@@ -2646,6 +2654,7 @@ C--OPERATOR  -  CHECK FOR A ','
 C
 C--UNREFINABLE PARAMETER  -  PRINT THE ERROR MESSAGE
 2350  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCL12
       IF (ISSPRT .EQ. 0) WRITE(NCWU,2400)
       WRITE( CMON , 2400)
@@ -2736,6 +2745,7 @@ C--UPDATE FOR THE NEXT PARAMETER
       GOTO 1000
 C--ERROR BECAUSE AN UNREFINABLE PARAMETER
 1300  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCL12
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1350)
 1350  FORMAT(' Unrefinable overall parameter')
@@ -2939,6 +2949,7 @@ C--CHECK IF THE IMPLICIT/EXPLICIT STATUS IS COMPATIBLE
       IF(KAND(ISTORE(I+2),IEC(MH)))1450,1550,1450
 C--ERROR BECAUSE OF TWO INCOMPATIBLE DEFINITIONS OF A PARAMETER
 1450  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCL12
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1500)
       WRITE( CMON ,1500)

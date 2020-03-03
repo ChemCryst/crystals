@@ -105,8 +105,8 @@ CODE FOR XCPY67
       SUBROUTINE XCPY67
 C
 C------ RE-WRITE TO AVOID PROBLEMS WITH GETTING DISK POINTERS 
-c------ simply writes out one list as another
 C       ALIGNED
+c------ simply writes out one list as another
       DIMENSION IBUF(7)
       DIMENSION PROCS(2)
 C
@@ -150,7 +150,7 @@ C---- NOTHING TO DO IF NO LIST 6
       IF (KEXIST(IULN1) .LE. 0) THEN
         WRITE (CMON,'(A,I3)') '{E No LIST 6', IULN1
         CALL XPRVDU(NCVDU,1,0)
-        WRITE (NCAWU,'(a)') trim(CMON(1))
+c        WRITE (NCAWU,'(a)') trim(CMON(1))
         IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
       RETURN
       ENDIF
@@ -169,10 +169,12 @@ C
       RETURN
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPREF , IOPABN , 0 )
       GO TO 1810
 9910  CONTINUE
 C -- INPUT ERROR
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPREF , IOPCMI , 0 )
       GO TO 9900
       END
@@ -498,8 +500,8 @@ C--READ THE NEXT DIRECTIVE CARD FROM THE INPUT STREAM
       LAST=IDIR
       IDIR=KRDNDC(ISTORE(KX),KY)
 C--CHECK THE REPLY
-C      WRITE(123,'(/,A,I6,(/4I6,2X,4I6,2X,4I6,2X,4I6))')'IDIR=',IDIR,
-C     1(ISTORE(IIDJW),IIDJW=KX,KX+KY-1)
+c      WRITE(123,'(/,A,I6,(/4I6,2X,4I6,2X,4I6,2X,4I6))')'IDIR=',IDIR,
+c     1(ISTORE(IIDJW),IIDJW=KX,KX+KY-1)
       IF (IDIR) 600,100,150
 C--CONTINUATION CARD  -  RESET THE POINTER
 100   CONTINUE
@@ -538,7 +540,7 @@ C--FORMAT STATEMNT IS TOO LONG
       CALL XERHDR (0)
       WRITE (CMON,400)
       CALL XPRVDU (NCVDU,1,0)
-      WRITE (NCAWU,'(a)') trim(CMON(1))
+c      WRITE (NCAWU,'(a)') trim(CMON(1))
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
 400   FORMAT (' Format statement is too large')
       GO TO 5250
@@ -602,8 +604,8 @@ C        1     2    3       4        5           6    7    8
       IF (ITYPE6.GT.8) THEN
          WRITE (CMON,'(a)') 'Invalid READ type'
          CALL XPRVDU (NCVDU,1,0)
-         WRITE (NCAWU,'(a)') trim(CMON(1))
-         IF (ISSPRT.EQ.0) WRITE (NCAWU,'(a)') trim(CMON(1))
+c         WRITE (NCAWU,'(a)') trim(CMON(1))
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
          GO TO 5250
       END IF
       IF (ITYPE6.EQ.5) THEN
@@ -678,8 +680,8 @@ C----- set default to untwinned
          IF (N25.LE.1) THEN
             WRITE (CMON,'(a)') 'Warning - You have no twin law'
             CALL XPRVDU (NCVDU,1,0)
-            WRITE (NCAWU,'(a)') trim(CMON(1))
-            IF (ISSPRT.EQ.0) WRITE (NCAWU,'(a)') trim(CMON(1))
+c            WRITE (NCAWU,'(a)') trim(CMON(1))
+c            IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
          END IF
       END IF
       IF (ISTORE(KZ+3)) 950,950,1150
@@ -696,7 +698,7 @@ C--NO OUTPUT DATA
       CALL XERHDR (0)
       WRITE (CMON,1050)
       CALL XPRVDU (NCVDU,1,0)
-      WRITE (NCAWU,'(a)') trim(CMON(1))
+c      WRITE (NCAWU,'(a)') trim(CMON(1))
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
 1050  FORMAT (' Insufficient output coefficients per reflection',' have
      1been indicated')
@@ -721,7 +723,7 @@ Cdjwoct200
          call outcol(3)
          CALL XPRVDU (NCVDU,2,0)
          call outcol(1)
-         WRITE (NCAWU,'(a)') CMON(1),trim(CMON(2))
+c         WRITE (NCAWU,'(a)') CMON(1),trim(CMON(2))
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1)),trim(CMON(2))
          GO TO 5450
       END IF
@@ -965,7 +967,9 @@ c      endif
 C--BRANCH ON THE TYPE OF OUTPUT
       GO TO (5000,2550,3250,3450,5000,4050,4050,4050,2500),ITYPE6
 C3600  STOP 'LIST 6 ERROR'
-2500  CALL GUEXIT (2019)
+2500   CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
+      CALL GUEXIT (2019)
 C
 C--FIXED FORMAT INPUT
 2550  CONTINUE
@@ -1009,6 +1013,7 @@ c123  ! for compatibility with long cards
       WRITE (CFORM,'(64A4)') (IFORM(IZZ),IZZ=1,LFORM)
 CNOV2000 CHECK THAT THE FORMAT IS ALL-FLOATING
       IF (KCITOF(CFORM).LE.0) THEN
+         if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
          WRITE (CMON,'(A)') 'FORMAT card error'
          CALL XPRVDU (NCVDU,1,0)
          GO TO 5200
@@ -1066,27 +1071,29 @@ C--CHECK FOR THE END OF THE REFLECTIONS
 C--END OF FILE DURING THE READ  -  CHECK IF THIS IS ON THE INPUT UNIT
 C----- ERROR DURING READ -
 3100  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (NCARDS.LE.0) THEN
         if (iuln .ne. 7) then
          call outcol(3)
          WRITE(CMON,'(A)') 'No reflections found'
          CALL XPRVDU (NCVDU,1,0)
-         WRITE (NCAWU,'(A)') trim(CMON(1))
+c         WRITE (NCAWU,'(A)') trim(CMON(1))
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
          WRITE (CMON,'(A)') ' Check the reflection filename, and format'
          CALL XPRVDU (NCVDU,1,0)
-         WRITE (NCAWU,'(A)') trim(CMON(1))
+c         WRITE (NCAWU,'(A)') trim(CMON(1))
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
          call outcol(1)
         end if
 CDJW2003         LEF=-1
       ELSE
+         if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
          WRITE (CMON,3150) N6W
          CALL OUTCOL(9)
          CALL XPRVDU (NCVDU,4,0)
          CALL OUTCOL(1)
          IF (ISSPRT.EQ.0) WRITE (NCWU,3150) N6W
-         WRITE (NCAWU,3150)
+c         WRITE (NCAWU,3150)
 3150     FORMAT (' Error during reading reflections'/
      1   ' At about reflection',i10/
      1   ' Some reflections may be lost'/
@@ -1399,7 +1406,7 @@ C--BRANCH ON THE TYPE OF INPUT
 4900  CONTINUE
       WRITE (CMON,4950)
       CALL XPRVDU (NCVDU,1,0)
-      WRITE (NCAWU,'(/A/)') trim(CMON(1))
+c      WRITE (NCAWU,'(/A/)') trim(CMON(1))
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A/)') trim(CMON(1))
 4950  FORMAT (' Unsupported input data format')
       GO TO 5200
@@ -1525,9 +1532,11 @@ C--END OF THE INPUT  -  RESTORE THE INPUT CARD IMAGE
       GO TO 5300
 C--ERROR(S) DURING INPUT  -  RESTORE THE CURRENT CARD IMAGE
 5200  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XMOVE (YCARD2(1),YCARD1(1),NCARD)
 C--PRINT THE ERROR TERMINATION MESSAGE
 5250  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG (IOPLSI,IOPLSP,IULN)
       CALL XLSALT (IULN,0,0,ILSERF,ILSSET)
 C--REWIND THE M/T BEFORE WE LEAVE
@@ -1543,11 +1552,12 @@ C--INPUT FROM THE MAIN CHANNEL  -  ALTER THE COUNTERS
 5400  CONTINUE
 C--AND NOW RETURN
       if(n6theta.gt.0) then
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         call outcol(9)
         write(cmon,'(i10,a)')n6theta, 
      1 ' reflections have sintheta/lambda > 1.0'
         call xprvdu (ncvdu,1,0)
-        write (ncawu,'(a)') trim(cmon(1))
+c        write (ncawu,'(a)') trim(cmon(1))
         if (issprt.eq.0) write (ncwu,'(a)') trim(cmon(1))
         write(cmon,'(A/A/A//A)')
      1  'This could be due to errors in the reflection file',
@@ -1606,6 +1616,7 @@ C
 C
 5450  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       GO TO 5200
 C
       END
@@ -1841,6 +1852,7 @@ C--THIS MULTIPLIER IS NOT BIG ENOUGH
       GO TO 650
 1250  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       MSCALE=-1
       RETURN
       END
@@ -1930,8 +1942,8 @@ C--READ THE NEXT NUMBER OFF THIS CARD
 C--SPURIOUS CHARACTER IN THE DATA
 250      CONTINUE
          CALL XERHDR (0)
-         WRITE (NCAWU,350) NCARDS,IMAGE,(IB,J=1,NC),IA
-         WRITE (NCAWU,300)
+c         WRITE (NCAWU,350) NCARDS,IMAGE,(IB,J=1,NC),IA
+c         WRITE (NCAWU,300)
          IF (ISSPRT.EQ.0) THEN
             WRITE (NCWU,350) NCARDS,IMAGE,(IB,J=1,NC),IA
             WRITE (NCWU,300)
@@ -1941,10 +1953,11 @@ C--SPURIOUS CHARACTER IN THE DATA
      1    81A1)
 C--GENERAL ERROR RETURN FROM THIS ROUTINE
 400      CONTINUE
+         if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
          IF (ISSPRT.EQ.0) THEN
             WRITE (NCWU,450) LN,IUNIT
          END IF
-         WRITE (NCAWU,450) LN,IUNIT
+c         WRITE (NCAWU,450) LN,IUNIT
 450      FORMAT (/,' Input of list ',I5,'  on unit ',I5,'  fails')
          KRD06=1
          GO TO 800
@@ -1964,7 +1977,7 @@ C--ILLEGAL END OF FILE
          IF (ISSPRT.EQ.0) THEN
             WRITE (NCWU,700) NCARDS
          END IF
-         WRITE (NCAWU,700) NCARDS
+c         WRITE (NCAWU,700) NCARDS
 700      FORMAT (' End of file detected after ',I5,' records, in the mid
      1dle of a reflection'/'Check that all columns are separated by at l
      2east 1 space')

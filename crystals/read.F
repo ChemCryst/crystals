@@ -635,12 +635,11 @@ C -- END OF CURRENT INPUT FILE. THIS IS AN ERROR UNLESS WE ARE COPYING
 C    A TEXT FILE
 C
       IF ( IFLIND .LE. 1 ) THEN
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         WRITE ( CMON,3005)
         CALL XPRVDU(NCEROR, 1,0)
-      IF (ISSPRT .EQ. 0) THEN
-        WRITE ( NCWU , 3005 )
-      ENDIF
-3005    FORMAT ( 1X , 'Attempt to read past end of CONTROL' )
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')TRIM(CMON(1)(3:))
+3005    FORMAT ( '{E ' , 'Attempt to read past end of CONTROL' )
         CALL XERHND ( IERERR )
         GO TO 1000
       ELSE IF ( IRDCMS(IFLIND) .LE. 0 ) THEN
@@ -664,6 +663,7 @@ C
 9910  CONTINUE
 C -- READ ERROR
 C    FOR COPY TYPE OPERATIONS, RESTORE CONTROL
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF ( IRDCPY(IFLIND) .EQ. 1 ) GO TO 3000
       CALL XERHND ( IERERR )
       GO TO 1000
@@ -827,14 +827,15 @@ C
 C
 C
 9910  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE ( CMON,9915)
       CALL XPRVDU(NCEROR, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9915 )
-9915  FORMAT ( 1X , 'Error during read. Line ignored' )
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)')TRIM(CMON(1)(3:))
+9915  FORMAT ( '{E ' , 'Error during read. Line ignored' )
       CALL XERIOM ( IUNIT , IOS )
-C
       KRDLIN = -1
       RETURN
+
 9920  CONTINUE
 C -- END OF FILE
       KRDLIN = 0
@@ -1211,14 +1212,15 @@ C -- DISPLAY THE CURRENT CARD BEFORE WE LOSE THE CHANCE
 C --      FILE OPEN FAILED ( ERROR FOR USE, SCRIPT
 C         WARN FOR TYPE ETC. , 
 C         IGNORE FOR STARTUP )
+          if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
           IF ( ISSSTA .LE. 0 ) THEN
             CALL XCTRIM( CRFILE, NCHAR)
             WRITE ( CMON,3105) CRFILE(1:NCHAR)
             CALL XPRVDU(NCEROR, 1,0)
 cdjwdec11            IF (ISSPRT .EQ. 0) THEN
-              WRITE ( NCWU , 3105 ) CRFILE
+              WRITE ( NCWU , 3105 ) CRFILE(3:NCHAR)
 cdjwdec11            ENDIF
-3105        FORMAT ( 1X , 'Error opening specified file - ' , A )
+3105        FORMAT ( '{E ' , 'Error opening specified file - ' , A )
             CALL XERIOM ( NCUFU(IFLIND) , I )
             IERROR = IERWRN
             IF ( ISYSIN .EQ. IUSE ) IERROR = IERERR
@@ -1428,7 +1430,6 @@ C
 C -- Flush
       CALL XRDOPN ( 9, IDEV, CFILE, LFILE )
       GO TO 9000
-
 C
 9000  CONTINUE
       RETURN
@@ -1436,6 +1437,7 @@ C
 C
 9920  CONTINUE
 C -- INTERNAL ERROR
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPCRY , IOPINT , 0 )
       GO TO 9000
 9930  CONTINUE
@@ -1456,14 +1458,13 @@ C -- INTERNAL ERROR
       GO TO 9000
 9980  CONTINUE
 C -- GENERAL HELP ON USING SYSTEM INSTRUCTIONS HANDLED BY THIS ROUTINE
-      WRITE ( CMON,9985) (IH,J=1,7)
+      WRITE ( CMON,9985) (IH,J=1,6)
       CALL XPRVDU(NCEROR, 5,0)
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9985 ) ( IH , J = 1 , 7 )
+      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9985 ) ( IH , J = 1 , 6 )
 9985  FORMAT ( 1X , 'Specify a filename for ',A1,'TYPE or ',A1,'USE',/,
      2 1X , 'Specify a topic for ',A1,'HELP or ',A1,'MANUAL' , / ,
      3 1X , 'Specify a script name for ', A1 , 'SCRIPT' , / ,
-     4 1X , 'Specify a time interval for ' , A1 , 'PAUSE' , / ,
-     5 1X , 'Use the command ',A1,'HELP HELP for more information' )
+     4 1X , 'Specify a time interval for ' , A1 , 'PAUSE'  )
       IERROR = IERWRN
       IF ( ISYSIN .EQ. IUSE ) IERROR = IERERR
       CALL XERHND ( IERROR )
@@ -1573,21 +1574,23 @@ C
 C
 C
 9900  CONTINUE
-      KRDARG = -1
+      KRDARG=-1
       RETURN
 9960  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XMONTR ( 0 )
       WRITE ( CMON,9965)
       CALL XPRVDU(NCEROR, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9965 )
-9965  FORMAT ( 1X , 'A required parameter has been omitted' )
+      IF (ISSPRT.EQ.0) WRITE ( NCWU,'(A)')CMON(1)(3:)
+9965  FORMAT ( '{W A required parameter has been omitted' )
       GO TO 9900
 9970  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XMONTR ( 0 )
       WRITE ( CMON,9975)
       CALL XPRVDU(NCEROR, 1,0)
-      IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9975 )
-9975  FORMAT ( 1X , 'Too many parameters have been given' )
+      IF (ISSPRT .EQ.0)WRITE(NCWU,'(A)')CMON(1)(3:)
+9975  FORMAT ( '{W Too many parameters have been given' )
       GO TO 9900
 C
 C
@@ -1599,6 +1602,8 @@ C
 C
 CODE FOR XRDSET
       SUBROUTINE XRDSET ( IFNSET , IVLSET , IFUNC , IVAL )
+C
+C    IMPLEMENTS #SET
 C
 C -- THIS ROUTINE IS USED TO SET SYSTEM CONSTANTS. IT CAN FUNCTION IN
 C    THREE DIFFERENT WAYS.
@@ -2072,7 +2077,7 @@ C
       DATA NUMVAL(12) /  2/, NUMVAL(13) / 2/ , NUMVAL(14) /  2 /
       DATA NUMVAL(15) /  2/, NUMVAL(16) / 0/ , NUMVAL(17) /  2 /
       DATA NUMVAL(18) /  2/, NUMVAL(19) / 2/ , NUMVAL(20) /  2/
-      DATA NUMVAL(21) /  2/, NUMVAL(22) / 2/ , NUMVAL(23) /  3/
+      DATA NUMVAL(21) /  2/, NUMVAL(22) / 2/ , NUMVAL(23) /  4/  !Allow FAST
 C
 C----- NUMERIC VALUE CORRESPONDING TO FIRST KEYWORD
 C
@@ -2210,7 +2215,8 @@ c              ENDIF
       ELSE IF ( IRQFNC .EQ. 22 ) THEN
         ISSRAT = IRQVAL
       ELSE IF ( IRQFNC .EQ. 23 ) THEN
-        ISSMON = IRQVAL
+        call setissmon(IRQVAL)
+ctemp        write(ncwu,*)'In krdset in READ.F'
       ELSE
         GO TO 9920
       ENDIF
@@ -2223,9 +2229,11 @@ C
 C
 9900  CONTINUE
 C -- ERRORS DURING 'SET' INSTRUCTION
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XERHND ( IERWRN )
       GO TO 9000
 9910  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE ( CMON,9915)
       CALL XPRVDU(NCEROR, 2,0)
 9915  FORMAT ( 1X , 'Illegal or missing keyword in SET instruction' /
@@ -2254,6 +2262,7 @@ C -- ERRORS DURING 'SET' INSTRUCTION
       CALL XOPMSG ( IOPCRY , IOPINT , 0 )
       GO TO 9900
 9930  CONTINUE
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         WRITE ( CMON,9935)
         CALL XPRVDU(NCEROR, 2,0)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9935 )
@@ -2827,9 +2836,8 @@ C
 9010  CONTINUE
       RETURN
 C
-CDJWMAR99[
 9900  CONTINUE
-CDJWMAR99[
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (JFUNC .GT. MAXFNC) THEN
        CALL XCTRIM( CFILE, NCHARS )
        WRITE(CMON,
@@ -3034,6 +3042,7 @@ C -- ERRORS DURING 'START' INSTRUCTION
       CALL XERHND ( IERWRN )
       GO TO 9000
 9910  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE ( CMON,9915)
       CALL XPRVDU(NCEROR, 1,0)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9915 )
@@ -3380,9 +3389,11 @@ C
 C
 9900  CONTINUE
 C -- ERRORS DURING 'STORE' INSTRUCTION
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XERHND ( IERWRN )
       GO TO 9000
 9910  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE ( CMON,9915)
       CALL XPRVDU(NCEROR, 1,0)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9915 )
@@ -3392,12 +3403,14 @@ C -- ERRORS DURING 'STORE' INSTRUCTION
       CALL XOPMSG ( IOPCRY , IOPINT , 0 )
       GO TO 9900
 9930  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE ( CMON,9935)
       CALL XPRVDU(NCEROR, 1,0)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9935 )
 9935  FORMAT ( 1X , 'Illegal or missing value in STORE instruction' )
       GO TO 9900
 9940  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE ( CMON,9945)
       CALL XPRVDU(NCEROR, 1,0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,9945)
@@ -4305,6 +4318,7 @@ C
           IUSFLG = IFLCHR(IFLIND)
         ELSE
 C -- FILE OPEN FAILED
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         WRITE ( CMON,1015)
         CALL XPRVDU(NCEROR, 1,0)
           IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1015 )
@@ -4444,6 +4458,7 @@ C CONDITION IN PROCESSING AN SFLS INSTRUCTION
 C
       INCLUDE 'XCARDS.INC'
       INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
 C
       DO 1100 I=1,nrec
         READ(NUSRQ,1050,END=99)cline
@@ -4454,7 +4469,7 @@ C
       IPOSRQ = 0
       REWIND(NUSRQ)
       IEOF = 0
-      RETURN
+      if (issmon.ne.1) ISSMON=0 ! Turn monitoring back on
       RETURN
       END
 C
@@ -4543,6 +4558,7 @@ C--ALL OKAY  -  RESET THE CURRENT COUNTER POSITION
       GOTO 1050
 C--THE KEYWORD INPUT IS TOO LONG
 1250  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XMONTR(0)
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1300)(ITEXT(I),I=1,M)
@@ -4584,6 +4600,7 @@ C--
 C
       CALL XMONTR(0)
 C--THE INPUT KEYWORD DEFINES MORE THAN ONE PROVIDED KEYWORD
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       J=ND-1
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1000)(IDTYPE(I,ITYPFL),I=1,3),(IMAGE(I),I=NC,J)
@@ -4694,6 +4711,7 @@ C
 C
       INCLUDE 'XCARDS.INC'
       INCLUDE 'XCHARS.INC'
+      INCLUDE 'XSSVAL.INC'
 C
 C
       DATA I/0/,M/0/
@@ -4715,6 +4733,7 @@ C--READ THE NUMBER
       IF(KINPUT(A(I)))1100,1150,1100
 C--ERROR IN READING THE LAST NUMBER
 1100  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XSPCH
       KREADB=-1
       NC=KEQUAL(NC,IB)
@@ -4909,6 +4928,7 @@ C--ERROR DOES NOT OCCUR ON THE FIRST CHARACTER
       GOTO 1300
 C--ERROR OCCURS ON THE FIRST CHARACTER
 1550  CONTINUE
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       KINPUT=1
       GOTO 1300
       END
@@ -4927,6 +4947,7 @@ C
 C
       DATA I/0/
 C
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
 C--PRESERVE THE MONITORING CATEGORY
       JCAT=ICAT
 C--PRINT THE CARD AND INDICATE THE POSITION OF THE SP. CH.
@@ -4995,7 +5016,7 @@ C -- CHECK IF PRINTING IS REQUIRED
 C----- CHECK IF WE ARE MONITORING THE SRQ
       IF ((IEOF .GT. 0) .AND. (IMNSRQ .EQ. 0)) RETURN
 C--SET THE TYPE OF CARD CORRECTLY
-      J=MAX0(1,MIN0(IND+2,2))
+      J=MAX0(1,MIN0(IND+2,2))     ! j = 1 or 2
 C--SET THE CARD NUMBER UP PROPERLY
       N=MOD(MAX0(NI,0),10000)
 C--COMPUTE THE CARD NUMBER, INCLUDING LEADING ZEROES
@@ -5014,13 +5035,14 @@ C
       IFIN = I
 1120  CONTINUE
 C
-      IFILL = size(IMAGE) - IFIN
+      IFILL = size(IMAGE) - IFIN   !Print overflow if all 8092 characters OP
+      ifill=80-ifin   !This routine only prints the #function, never more than 80
       IF ( J .GT. 1 ) J = J + IFILL
 C
 C--PRINT THE CARD AND ITS NUMBER
       WRITE ( CMON,1151) NUMB(K+1),NUMB(L+1),NUMB(M+1),
      2  NUMB(N+1),(LCMAGE(I),I=1,MIN(72,IFIN))
-1151  FORMAT(1X,4A1,1X,80A1,2A1)
+1151  FORMAT('{N ',4A1,1X,80A1,2A1)
       IF (IND .GE. 0) CMON(1)(60:) = ' IGNORED/ERRORS'
 cdjwdec99 slightly re-organied
       IF ( ICAT .GT. 0 ) THEN
@@ -5194,6 +5216,23 @@ C---- SIMULATE MATRIX INVERSION
       CALL XTIME2(3)
 C----- RESTORE THE TIMER STATUS
       ISSTIM = ITEMP
+      RETURN
+      END
+C
+CODE FOR SETISSMON
+      SUBROUTINE SETISSMON(IVALUE)
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XIOBUF.INC'
+      if(issmon .ne. ivalue) then
+ctemp       WRITE(NCWU,'(A,I6,A,I6)') 'ISSMON: Old value=',issmon,
+ctemp     1 '  New value=', ivalue
+ctemp       WRITE ( CMON,'(a,i6,a,i6)') 
+ctemp     1 '{W Setting ISSMON from  ',issmon,' to', ivalue
+       CALL XPRVDU(NCVDU, 1,0)
+       ISSMON = IVALUE
+      endif
       RETURN
       END
 

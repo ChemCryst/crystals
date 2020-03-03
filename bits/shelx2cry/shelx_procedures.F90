@@ -371,7 +371,7 @@ contains
     implicit none
     type(line_t), intent(in) :: shelxline
     character dummy
-    integer iostatus
+    integer iostatus, wave
 
     !CELL 1.54187 14.8113 13.1910 14.8119 90 98.158 90
     read (shelxline%line, *, iostat=iostatus) dummy, wavelength, unitcell
@@ -385,6 +385,31 @@ contains
     write (list1(list1index), '(a5,1X,6(F0.5,1X))') 'REAL ', unitcell
     list13index = list13index+1
     write (list13(list13index), '(a,F0.5)') 'COND WAVE= ', wavelength
+
+    radiation = 'neutrons'
+!    write(123,*) 'Lambda = ', wavelength, target, radiation
+      wave = nint(100.*wavelength)
+!      write(123,*)' Wave=', wave 
+      if(wave .eq. 154) then
+            target = 'copper'
+            radiation = 'xrays'
+      else if (wave .eq. 134) then
+            target = 'gallium'
+            radiation = 'xrays'
+      else if (wave .eq. 71) then
+            target = 'molybdenum'
+            radiation = 'xrays'
+      else if (wave .eq. 56) then
+            target = 'silver'
+            radiation = 'xrays'
+      else if (wave .le. 10) then
+            target = 'none'
+            radiation = 'electrons'
+      end if
+!      write(123,*) 'target=', wave, target, '  ', radiation
+    list13index = list13index+1
+    write (list13(list13index), '(a,a)') 'DIFF  RADIATION= ', radiation
+
 
   end subroutine
 
@@ -459,6 +484,52 @@ contains
     end if
 
   end subroutine
+
+
+!> Parse the NEUT keyword. Find the radiation type
+  subroutine shelx_neut(shelxline)
+    use crystal_data_m, only: radiation, line_t, list13index, list13
+    implicit none
+    type(line_t), intent(in) :: shelxline
+    integer i, j
+!    write(123,*)'list13index=',list13index
+    if (list13index.ge.1) then
+      do i=1,list13index
+!       write(123,*)i, list13(i)
+        if(list13(i)(1:4) .eq. 'DIFF' ) then
+        j=i
+        exit
+       endif
+      enddo
+    else
+      j = 1     
+    endif
+    radiation = 'neutrons'
+    write (list13(j), '(a,a)') 'DIFF  RADIATION= ', radiation
+  end subroutine
+
+!> Parse the ELEC keyword. Find the radiation type(Guess that GMS calls it ELEC)
+  subroutine shelx_elec(shelxline)
+    use crystal_data_m, only: radiation, line_t, list13index, list13
+    implicit none
+    type(line_t), intent(in) :: shelxline
+    integer i, j
+!    write(123,*)'list13index=',list13index
+    if (list13index.ge.1) then
+      do i=1,list13index
+!       write(123,*)i, list13(i)
+       if(list13(i)(1:4) .eq. 'DIFF' ) then
+         j=i
+         exit
+       endif
+      enddo
+    else
+      j = 1     
+    endif
+    radiation = 'electrons'
+    write (list13(j), '(a,a)') 'DIFF  RADIATION= ', radiation
+  end subroutine
+
 
 !> Parse the SFAC keyword. Extract the atoms type use in the file.
   subroutine shelx_sfac(shelxline)
@@ -609,7 +680,14 @@ contains
       composition(2) = trim(composition(2))//' '//trim(sfac(i))//' '//trim(buffer)
     end do
     ! SCATTERING CRSCP:SCATT.DAT
-    composition(3) = 'SCATTERING CRYSDIR:script/scatt.dat'
+!    write(123,*) 'radiation type= ', radiation
+    if (radiation .eq. 'electrons') then
+      composition(3) = 'SCATTERING CRYSDIR:script/escatt.dat'
+    else if (radiation .eq. 'neutrons') then
+      composition(3) = 'SCATTERING CRYSDIR:script/nscatt.dat'
+    else
+      composition(3) = 'SCATTERING CRYSDIR:script/scatt.dat'
+    end if    
     ! PROPERTIES CRSCP:PROPERTIES.DAT
     composition(4) = 'PROPERTIES CRYSDIR:script/propwin.dat'
     ! END

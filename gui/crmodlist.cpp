@@ -314,7 +314,7 @@ void CrModList::Update(int newsize)
   ((CxModList*)ptr_to_cxObject)->Update(newsize);
 }
 
-void CrModList::EnsureVisible(CcModelAtom* va)
+void CrModList::EnsureVisible(CcModelObject* va)
 {
   ((CxModList*)ptr_to_cxObject)->CxEnsureVisible(va);
 }

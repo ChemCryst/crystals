@@ -618,6 +618,9 @@ c         loaded by the calling routine.
       INCLUDE 'XLST13.INC'
       INCLUDE 'XLST29.INC'
       INCLUDE 'XLST30.INC'
+      INCLUDE 'XLST40.INC'
+      INCLUDE 'ICOM40.INC'
+      INCLUDE 'QLST40.INC'
       INCLUDE 'XLST41.INC'
       INCLUDE 'XLSVAL.INC'
       INCLUDE 'HEADES.INC'
@@ -639,7 +642,7 @@ c         loaded by the calling routine.
       LOGICAL WEXIST, LSPARE
       CHARACTER*8 CINST(6)
       INTEGER IUNKN
-      CHARACTER*8 CRADTN(2)
+      CHARACTER*8 CRADTN(3)
       CHARACTER*11 CBONDS(0:9)
       DIMENSION ID(2)
 
@@ -659,10 +662,11 @@ c         loaded by the calling routine.
 #else
       DATA    IUNKN /'UNKN'/
 #endif
-      DATA CRADTN / 'X-rays' , 'neutrons' /
+      DATA CRADTN / 'X-rays' , 'neutrons' , 'electrons' /
       DATA CBONDS / 'unassigned', 'single',    'double',      'triple',
      c'quadruple',  'aromatic',   'polymeric', 'delocalised', 'strange',
      c'pi-bond'/
+      INCLUDE 'IDIM40.INC'
 
 
 C The QSINl5 flag is set here, if there are Q atoms in list 5.
@@ -767,6 +771,24 @@ c               CALL XPRVDU (NCVDU,1,0)
                END IF
 
                IF(KEXIST(29).LE.0) CYCLE
+
+C Shouldn't need to load L40 explicitly, but if it doesn't exist we have to create
+C it manually.
+c               IF(KHUNTR(40,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL40
+c               IF (IERFLG .LT. 0) THEN ! L40 load failed. Create a new one.
+               IF(KEXIST(40).LE.0) Then
+                  IERFLG = 1
+                  IDWZAP = 0
+                  CALL XFILL (IDWZAP, ICOM40, IDIM40)
+                  N40T = 1
+                  N40E = 0
+                  N40P = 0
+                  N40M = 0
+                  N40B = 0
+                  CALL XCELST ( 40, ICOM40, IDIM40 )
+                  CALL XWLSTD ( 40, ICOM40, IDIM40, 0, 1)
+                END IF
+
 
 C Ensure list 41 dependencies are up to date:
                IF ( K41DEP() .LT. 0 ) THEN
@@ -1130,7 +1152,7 @@ C This block detects sticky flag and sets ISFLAG to pass info to GUI.
                
                IF ( NINT(STORE(I5+3)) .LE. 1 ) THEN
 
-                     CALL PRTGRP(ISTORE(I5+14),JPRT,JGRP,1)
+                   CALL PRTGRP(ISTORE(I5+14),JPRT,JGRP,1)
 
 #ifdef CRY_GUI
                 CALL FSTATM(CATTYP,NINT(STORE(I5+1)),LLAB,CLAB,
@@ -1149,19 +1171,25 @@ C This block detects sticky flag and sets ISFLAG to pass info to GUI.
 #endif
                ELSE IF ( NINT(STORE(I5+3)) .EQ. 2 ) THEN
 
+                   CALL PRTGRP(ISTORE(I5+14),JPRT,JGRP,1)
+
 #ifdef CRY_GUI
-               CALL FSTSPH(LLAB,CLAB,NINT(STR11(IPLACE)*GSCALE),
-     5         NINT(STR11(IPLACE+1)*GSCALE),
-     6         NINT(STR11(IPLACE+2)*GSCALE),
-     7         NINT(IRED*2.55),NINT(IGRE*2.55),NINT(IBLU*2.55),
-     8         NINT(1000*STORE(I5+2)), NINT(COV*GSCALE),
-     2         NINT(VDW*GSCALE),ISPARE,NINT(SPAREV),
-     3         NINT( SQRT(ABS(STORE(I5+7))) * GSCALE),
-     4         NINT(STORE(I5+8) * GSCALE) )
+               CALL FSTSPH(LLAB,CLAB,NINT(STR11(IPLACE)*GSCALE),   ! 1,2,3
+     5         NINT(STR11(IPLACE+1)*GSCALE),                       ! 4
+     6         NINT(STR11(IPLACE+2)*GSCALE),                       ! 5
+     7         NINT(IRED*2.55),NINT(IGRE*2.55),NINT(IBLU*2.55),    ! 6,7,8
+     8         NINT(1000*STORE(I5+2)), NINT(COV*GSCALE),           ! 9,10
+     2         NINT(VDW*GSCALE),ISPARE,NINT(SPAREV),               ! 11,12,13
+     3         NINT( SQRT(ABS(STORE(I5+7))) * GSCALE),             ! 14
+     4         NINT(STORE(I5+8) * GSCALE),                         ! 15
+     4         STORE(I5+4),STORE(I5+5),STORE(I5+6),                ! 16,17,18
+     5         CATTYP,NINT(STORE(I5+1)),                           ! 19,20
+     5         ISTORE(I5+16), JGRP, JPRT, UEQUIV, STORE(I5+13),ISFLAG)   !21,22,23,24,25,26
 
 #endif
                ELSE IF ( NINT(STORE(I5+3)) .EQ. 4 ) THEN
 
+                   CALL PRTGRP(ISTORE(I5+14),JPRT,JGRP,1)
 #ifdef CRY_GUI
                CALL FSTRNG(LLAB,CLAB,NINT(STR11(IPLACE)*GSCALE),
      5         NINT(STR11(IPLACE+1)*GSCALE),
@@ -1171,7 +1199,11 @@ C This block detects sticky flag and sets ISFLAG to pass info to GUI.
      2         NINT(VDW*GSCALE),ISPARE,NINT(SPAREV),
      3         NINT( SQRT(ABS(STORE(I5+7))) * GSCALE),
      4         NINT(STORE(I5+8) * GSCALE),
-     5         NINT(STORE(I5+9)*100.0),NINT(STORE(I5+10)*100.0))
+     5         NINT(STORE(I5+9)*100.0),NINT(STORE(I5+10)*100.0),
+     4         STORE(I5+4),STORE(I5+5),STORE(I5+6),                ! 16,17,18
+     5         CATTYP,NINT(STORE(I5+1)),                           ! 19,20
+     5         ISTORE(I5+16), JGRP, JPRT, UEQUIV, STORE(I5+13),ISFLAG)   !21,22,23,24,25,26
+
 
 #endif
                END IF
@@ -2049,18 +2081,22 @@ c             CALL XPRVDU(NCVDU, 1,0)
       RETURN
 
 9900  CONTINUE
+c      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE ( CMON, '(A,/,A)')'Failed to open file : ',CFILEN(1:ILENG)
       CALL XPRVDU(NCVDU, 2,0)
       RETURN
 9910  CONTINUE
+c      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
 c      WRITE ( CMON, '(A)')'GUI-UP: Some required lists not loaded.'
 c      CALL XPRVDU(NCVDU, 1,0)
       RETURN
 9915  CONTINUE
+c      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
 c      WRITE ( CMON, '(A)')'GUI-UP: Some required lists not present.'
 c      CALL XPRVDU(NCVDU, 1,0)
       RETURN
 9920  CONTINUE
+c      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE ( CMON, '(A)')'GUI-UP: Error loading list 41.'
       CALL XPRVDU(NCVDU, 1,0)
       RETURN

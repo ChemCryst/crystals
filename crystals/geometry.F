@@ -267,6 +267,7 @@ C--CHECK FOR SOME ARGUMENTS
       IF (KFDARG(I)) 60,80,80
 C--ERROR(S)  -  INCREMENT THE ATOM ERROR COUNT
 60    CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       LEF2=LEF2+1
       IERR=-1
       GO TO 20
@@ -284,6 +285,7 @@ C--READ THE NEXT GROUP OF ATOMS
       IF (KATOMU(LN)) 110,110,120
 C--ERRORS  -  INCREMENT THE ATOM ERROR COUNT
 110   CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       LEF2=LEF2+1
       IERR=-1
       GO TO 3650
@@ -315,7 +317,7 @@ C--NO ATOMS ON THIS CARD
 180   CONTINUE
       CALL XPCLNN (LN)
       IF (ISSPRT.EQ.0) WRITE (NCWU,190)
-      WRITE (NCAWU,190)
+c      WRITE (NCAWU,190)
       WRITE (CMON,190)
       CALL XPRVDU (NCVDU,1,0)
 190   FORMAT (' No atoms found')
@@ -349,9 +351,10 @@ C -- CHECK THERE ARE SOME ATOMS WHOSE PLANE/LINE  CAN BE CALCULATED
 C--CHECK IF ANY ERRORS HAVE BEEN GENERATED DURING THE INPUT OF THE ATOMS
       IF (LEF2) 280,280,260
 260   CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN (LN)
       IF (ISSPRT.EQ.0) WRITE (NCWU,270)
-      WRITE (NCAWU,270)
+c      WRITE (NCAWU,270)
       WRITE (CMON,270)
       CALL XPRVDU (NCVDU,1,0)
 270   FORMAT (' Instruction ignored because of previous errors')
@@ -389,7 +392,7 @@ C
 C--ATOMS DO NOT DEFINE A PLANE/LINE
       CALL XPCLNN (LN)
       IF (ISSPRT.EQ.0) WRITE (NCWU,310) CTYPE(JTYPE)
-      WRITE (NCAWU,310) CTYPE(JTYPE)
+c      WRITE (NCAWU,310) CTYPE(JTYPE)
       WRITE (CMON,310) CTYPE(JTYPE)
       CALL XPRVDU (NCVDU,1,0)
 310   FORMAT (' Input atoms do not define a ',A)
@@ -401,7 +404,7 @@ C--PLANE/LINE COMPUTED OK. INCREMENT THE  PLANE/LINE NUMBER
       NP=NP+1
 C--PRINT THE AXIS CARD AND ITS NUMBER
       IF (ISSPRT.EQ.0) WRITE (NCWU,290) NP
-      WRITE (NCAWU,290) NP
+c      WRITE (NCAWU,290) NP
       WRITE (CMON,290) NP
       CALL XPRVDU (NCVDU,1,0)
 290   FORMAT (' Results for axis number ',I4)
@@ -473,8 +476,8 @@ C-C-C-PRINT EQUATION OF PLANE/LINE AND ORIENT. VECTOR IN POLAR COORD.
 390      FORMAT (/,A,'-vector (in polar coord.):',
      1   //,'DECLINAT =',F9.2,5X,'DECLINAT/100 =',F9.4,/
      2    ,'AZIMUTH  =',F9.2,5X,'AZIMUTH /100 =',F9.4)
-         WRITE (NCAWU,400) CTYPE(JTYPE),(EQU(I),I=1,3),F
-         WRITE (NCAWU,410) CTYPE(JTYPE),VECPD,VECPD/100,VECPA,VECPA/100
+c         WRITE (NCAWU,400) CTYPE(JTYPE),(EQU(I),I=1,3),F
+c         WRITE (NCAWU,410) CTYPE(JTYPE),VECPD,VECPD/100,VECPA,VECPA/100
 400      FORMAT (/,1X,'Equation of the ',A,' :',/,11X,F10.5,'*X + ',F10.
      1    5,'*Y + ',F10.5,'*Z = ',F10.3,/,1X,20X,'X, Y and Z are in crys
      2tal fractions')
@@ -542,8 +545,8 @@ C
             END IF
 450         FORMAT (5X,A4,F9.0,5X,F9.3,1X,4F10.3,2X,A5)
 c
-               WRITE (NCAWU,460) STORE(I),STORE(I+1),STORE(I+10),
-     1          STORE(I+11),STORE(I+12),DEL,CESD(5:9)
+c               WRITE (NCAWU,460) STORE(I),STORE(I+1),STORE(I+10),
+c     1          STORE(I+11),STORE(I+12),DEL,CESD(5:9)
                WRITE (CMON,460) STORE(I),STORE(I+1),STORE(I+10),
      1          STORE(I+11),STORE(I+12),DEL,CESD(5:9)
                CALL XPRVDU (NCVDU,1,0)
@@ -573,7 +576,7 @@ c     1    PAXIS(1)),1.-(2.*PAXIS(3))/(PAXIS(1)+PAXIS(2))
      2    ' Value closest to unity is best descriptor.',
      3    ' See D. M. P. Mingos and A. L. Rohl'/
      4    '  J. Chem. Soc. Dalton Trans. (1991), 3419-3425')
-         WRITE (NCAWU,500) (XCF(I),I=1,3),((RCA(I,J),J=1,3),I=1,3)
+c         WRITE (NCAWU,500) (XCF(I),I=1,3),((RCA(I,J),J=1,3),I=1,3)
 500      FORMAT (/,' Centroid, in crystal fractions ',' Transformation f
      1rom crystal fractions ',/33X,' to best plane, (orthogonal angstrom
      2s)',/3F9.4,3(/,32X,3F9.4))
@@ -615,9 +618,10 @@ C--'EVALUATE' INSTRUCTION  -  CHECK IF WE CAN PRINT THE ATOMS
       IF (JTYPE .LE. 0) THEN
 C--ERROR BECAUSE NO PLANE/LINE/TLS HAS BEEN CALCULATED
 570   CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN (LN)
       IF (ISSPRT.EQ.0) WRITE (NCWU,580) CTYPE(JTYPE)
-      WRITE (NCAWU,580) CTYPE(JTYPE)
+c      WRITE (NCAWU,580) CTYPE(JTYPE)
       WRITE (CMON,580) CTYPE(JTYPE)
       CALL XPRVDU (NCVDU,1,0)
 580   FORMAT (' Instruction ignored','  -  no ',A,' has been calculated'
@@ -691,8 +695,8 @@ c      write(123,'(3(3f8.3,5x))') bnesd, esd, ans
      1          STORE(LFL+8),STORE(LFL+9),DEL, CESD(5:9)
             END IF
 680         FORMAT (5X,A4,F9.0,15X,4F10.3,2X,A5)
-            WRITE (NCAWU,690) STORE(LFL),STORE(LFL+1),STORE(LFL+7),
-     1       STORE(LFL+8),STORE(LFL+9),DEL,CESD(5:9)
+c            WRITE (NCAWU,690) STORE(LFL),STORE(LFL+1),STORE(LFL+7),
+c     1       STORE(LFL+8),STORE(LFL+9),DEL,CESD(5:9)
             WRITE (CMON,690) STORE(LFL),STORE(LFL+1),STORE(LFL+7),
      1       STORE(LFL+8),STORE(LFL+9),DEL,CESD(5:9)
             CALL XPRVDU (NCVDU,1,0)
@@ -722,7 +726,7 @@ C--START TO PROCESS THE CARD
 C--PRINT A CAPTION
 3510  CONTINUE
       IF (IRPL.EQ.0) THEN
-         WRITE (NCAWU,3520)
+c         WRITE (NCAWU,3520)
          IF (ISSPRT.EQ.0) THEN
             WRITE (NCWU,3520)
          END IF
@@ -765,11 +769,12 @@ C--CHECK IF THERE IS A NUMBER NEXT ON THE CARD
       IF (ME) 750,750,770
 C--ERROR IN THE INPUT NUMBER
 750   CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN (LN)
       IF (ISSPRT.EQ.0) THEN
          WRITE (NCWU,760)
       END IF
-      WRITE (NCAWU,760)
+c      WRITE (NCAWU,760)
 760   FORMAT (/' Argument missing or of wrong type')
       GO TO 3650
 C--READ THE NUMBER
@@ -790,11 +795,12 @@ C--NOW CHECK IF THIS PLANE HAS BEEN PROCESSED
       IF (ISTORE(K)) 810,830,830
 C--ILLEGAL PLANE OR PLANE SERIAL  -  PRINT OUT THE ERROR MESSAGE
 810   CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN (LN)
       IF (ISSPRT.EQ.0) THEN
          WRITE (NCWU,820) JA
       END IF
-      WRITE (NCAWU,820) JA
+c      WRITE (NCAWU,820) JA
 820   FORMAT (/1X,' There is no axis  with serial number ',I4)
       GO TO 3650
 C--CHECK IF THIS IS THE FIRST OR SECOND PLANE
@@ -842,7 +848,7 @@ cdjwdec09
       IF (ISSPRT.EQ.0) THEN
          WRITE (NCWU,920) JH,JK,F
       END IF
-      WRITE (NCAWU,920) JH,JK,F
+c      WRITE (NCAWU,920) JH,JK,F
       WRITE (CMON,920) JH,JK,F
       CALL XPRVDU (NCVDU,5,0)
 920   FORMAT (//1X,' Angle between axis ',I4,' and axis ',I4,' is ',F6.
@@ -893,17 +899,18 @@ C--INCREMENT THE NUMBER OF GROUP CARDS READ
 C--CHECK IF ANY ERRORS HAVE BEEN GENERATED DURING THE INPUT OF THE ATOMS
       IF (IERR) 3210,3210,3230
 3210  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN (LN)
       IF (ISSPRT.EQ.0) THEN
          WRITE (NCWU,3220)
       END IF
-      WRITE (NCAWU,3220)
+c      WRITE (NCAWU,3220)
       WRITE (CMON,3220)
       CALL XPRVDU (NCVDU,1,0)
 3220  FORMAT (' Instruction ignored because of previous errors')
       GO TO 20
 3230  CONTINUE
-      WRITE (NCAWU,3240) NGP
+c      WRITE (NCAWU,3240) NGP
       IF (ISSPRT.EQ.0) THEN
          WRITE (NCWU,3240) NGP
       END IF
@@ -933,7 +940,7 @@ C----- TRANSCRIBE LATENT VECTORS
       CALL XTRANS(STORE(KWORK+21), ROF, 3,3)
          GOTO 520
       ELSE
-         WRITE (NCAWU,3250)
+c         WRITE (NCAWU,3250)
          IF (ISSPRT.EQ.0) THEN
             WRITE (NCWU,3250)
          END IF
@@ -1051,6 +1058,7 @@ C--CHECK FOR SOME ARGUMENTS
       IF(KFDARG(I))1300,1320,1320
 C--ERROR(S)  -  INCREMENT THE ERROR COUNT
 1300  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       LEF1=LEF1+1
       GOTO 3610
 C--CHECK IF THERE ARE MORE ARGUMENTS ON THIS CARD
@@ -1096,6 +1104,7 @@ C--ABANDON AND RECYCLE EXIT FOR THESE ROUTINES
 C
 3750  CONTINUE
 C----- NO ATOMS SPECIFIED
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT.EQ.0) THEN
          if(jtype<1 .or. jtype>size(ctype)) then
            write(ncwu, '(a)') 'Error: Atom does not exist'
@@ -1116,6 +1125,7 @@ C----- NO ATOMS SPECIFIED
 C
 C--ERROR BECAUSE TLS  HAS NOT BEEN CALCULATED
 3630  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN (LN)
       IF (ISSPRT.EQ.0) THEN
          WRITE (NCWU,3640)
@@ -1142,7 +1152,7 @@ C
 3670  CONTINUE
       IF (IMOD5.GT.0) THEN
          CALL XSTR05 (IULN5,0,1)
-         WRITE (NCAWU,3680)
+c         WRITE (NCAWU,3680)
          IF (ISSPRT.EQ.0) THEN
             WRITE (NCWU,3680)
          END IF
@@ -1152,7 +1162,7 @@ C
       END IF
       IF (IUPDT.GT.0) THEN
          CALL XSTR20 (20,0,1)
-         WRITE (NCAWU,3690)
+c         WRITE (NCAWU,3690)
          IF (ISSPRT.EQ.0) THEN
             WRITE (NCWU,3690)
          END IF
@@ -1165,12 +1175,13 @@ C
 C
 C---ERROR MODES FOR 'CENTRE' INSTRUCTION
 3590  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN (LN)
       I=ISTORE(MF+1)
       IF (ISSPRT.EQ.0) THEN
          WRITE (NCWU,3600) I
       END IF
-      WRITE (NCAWU,3600)
+c      WRITE (NCAWU,3600)
       WRITE (CMON,3600)
       CALL XPRVDU (NCVDU,1,0)
 3600  FORMAT (' Spurious character at about column',I5)
@@ -1179,7 +1190,7 @@ C---ERROR MODES FOR 'CENTRE' INSTRUCTION
       IF (ISSPRT.EQ.0) THEN
          WRITE (NCWU,3620)
       END IF
-      WRITE (NCAWU,3620)
+c      WRITE (NCAWU,3620)
       WRITE (CMON,3620)
       CALL XPRVDU (NCVDU,1,0)
 3620  FORMAT (' Too many or too few numbers')
@@ -1191,7 +1202,7 @@ C
          IF (ISSPRT.EQ.0) THEN
             WRITE (NCWU,3710) N
          END IF
-         WRITE (NCAWU,3710) N
+c         WRITE (NCAWU,3710) N
          WRITE (CMON,3710) N
          CALL XPRVDU (NCVDU,1,0)
 3710     FORMAT (' WARNING. The requested update to LIST ',I4,' has not
@@ -1199,7 +1210,7 @@ C
       END IF
       IF (IUPDT.GT.0) THEN
          N=20
-         WRITE (NCAWU,3710) N
+c         WRITE (NCAWU,3710) N
          IF (ISSPRT.EQ.0) THEN
             WRITE (NCWU,3710) N
             WRITE (CMON,3710) N
@@ -1229,6 +1240,7 @@ C -- INPUT ERRORS
 C
 C--NOT ENOUGH CORE
 3660  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       I=0
       J=0
       CALL XSTICA (I,J)
