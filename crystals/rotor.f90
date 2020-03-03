@@ -61,12 +61,10 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     !SET I0 (BIO)
     call BESSEL(BSUM, 0, BD, 1.0)
     BIO = bsum
-    !    write(777,*) "BIO", BIO
     !SET Ip FROM 1 TO 20 (BIA)
     DO JP = 1, 20
         call BESSEL(BSUM, JP, BD, 1.0)
         BIA(JP) = bsum
-        !        write(777,*) "BIA JP", JP, BIA(JP)
     END DO
 
     DBIB = BIA(1)
@@ -93,7 +91,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     CODE = 0
 
     ICODE = 0
-    !calculate c(CC) and d(DD) and then a'
+    !calculate c and d and then a'
     XK1 = REFLH * Q1 + REFLK * Q2 + REFLL * Q3
     XK2 = REFLL * Q6
     XK3 = REFLK * Q4 + REFLL * Q5
@@ -113,13 +111,15 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
 
     TE = DELAPE / AP
     TD = DELAPD / AP
-    CW = AP * AP * SQRT(1. - CC * CC / (AP * AP)) !see [49]
+
+    CW = - AP * SQRT(1. - CC * CC / (AP * AP))
+
     IF (ABS(CW)<0.00001) GO TO 1 !TO AVOID /0 ERROR?
-    DXETA = 1. / CW !see [49]
-    !    DXETAE = -DXETA * (AP * DELCE - CC * DELAPE) !todo: name suggests what it is but it doesn't seem to be in WLH?
-    !    DXETAD = DXETA * CC * DELAPD !-[49] !todo:missing - ?
-    DXETAD = -CW * DELAPD
-    !    DXETAE =
+
+    DXETA = 1. / CW
+    DXETAD = DXETA * (DELCD - CC * DELAPD / AP)
+    DXETAE = DXETA * (DELCE - CC * DELAPE / AP)
+
     GO TO 2
     1     ICODE = 1
     2     IF (NK==2) GO TO 3
@@ -127,13 +127,10 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     15    NPRIME = NK * NORD / 2 !so n'=n if n odd; n'=n/2 if n even
     NAA = 1
     GO TO 21
-    22    E = SNGL(AP) !converts a' to real type for use in bessel
-    !    write(666, *) "before bessel call, h k l", reflh, reflk, refll
+    22    E = SNGL(AP)
     CALL BESSEL(BJ, QW, E, -1.0)
-    !    write(1975, *) "bessel J", QW, E, BJ
     SUM(1) = DBIB * BJ
     SUM(2) = BR
-    write(999, *) "BR QW E", BR, QW, E
     SUM(3) = BDD
     SUM(4) = BEA
     SUM(5) = 0.
