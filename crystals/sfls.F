@@ -3863,7 +3863,7 @@ c Special shapes
               CALL XRING (M2, ST, M5A,M6,SLRFAC,DSIZE,DDECLINA,DAZIMUTH)
             ELSE IF (NINT(FLAG)==5) THEN
               write(1234, *) "STORE(M5ARI+12) = ", STORE(M5A + 12)
-              CALL XROTOR (3, M5A, M2T, SST, AROTOR, BROTOR) !, DSIZE, DDECLINA, DAZIMUTH) todo: add these extra outputs?
+              CALL XROTOR (1, M5A, M2T, SST, AROTOR, BROTOR) !, DSIZE, DDECLINA, DAZIMUTH) todo: add these extra outputs?
             END IF
 
 
