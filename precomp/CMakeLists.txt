@@ -49,6 +49,19 @@ if ( WIN32 )
 	endforeach( precomp_file )
 endif()
 
+if ( UNIX )
+	file( GLOB_RECURSE precomp_files RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/GIL/" "GIL/*" )
+	foreach( precomp_file ${precomp_files} )
+	  add_custom_command(
+		OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}"
+		COMMAND ${CMAKE_COMMAND} -E copy
+    	    "${CMAKE_CURRENT_SOURCE_DIR}/GIL/${precomp_file}"
+	        "${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}"
+		DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/GIL/${precomp_file}"
+		)
+	  list( APPEND precomp_files_dest "${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}" )
+	endforeach( precomp_file )
+endif()
 
 
 add_custom_target( CopyPrecomp ALL DEPENDS ${precomp_files_dest} ) 

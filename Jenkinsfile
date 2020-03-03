@@ -99,175 +99,175 @@ pipeline {
 
 
 
-                stage("MinGW") {
-                    agent { label 'master' }
-                    options {
-                        timeout(time: 2, unit: 'HOURS')
-                    }
-                    environment {
-                        COMPCODE = 'MIN'
-                        CRBUILDEXIT = 'TRUE'   // exit build script on fail
-                        CROPENMP = 'TRUE'
-                        CR64BIT = 'TRUE'
-                    }
-                    stages {
-                        stage('MinGW debug build') {                      // Run the build
-                            steps {
-                                bat '''
-                                    call build\\setupenv.SAYRE.bat
-                                    rmdir /q/s b
-                                    mkdir b
-                                    cd b
-                                    cmake -DCMAKE_BUILD_TYPE=Debug -DBLA_VENDOR=OpenBLAS -DMINGW=1 -DwxWidgets_ROOT_DIR=%WXWIN% -DwxWidgets_LIB_DIR=%WXLIB% -DwxWidgets_CONFIGURATION=mswu -G"MinGW Makefiles" ..
-                                    mingw32-make -j3 || exit 1
-                                    echo "Build step complete"
-                                '''
-                            }
-                        }
-                        stage('MinGW Smoketest') {
-                            environment {
-                                CRYSDIR = '.\\,..\\b\\'
-                                COMPCODE = 'MIN64'
-                            }
-                            steps {
-                                bat '''
-                                    call build\\setupenv.SAYRE.bat
-                                    cd test_suite
-                                    mkdir script
-                                    echo "%SCRIPT NONE" > script\\tipauto.scp
-                                    echo "%END SCRIPT" >> script\\tipauto.scp
-                                    del crfilev2.dsc
-                                    perl testsuite.pl -s
-                                '''
-                            }
-                        }
-                        stage('MinGW Build') {                      // Run the build
-                            steps {
-                                bat '''
-                                    call build\\setupenv.SAYRE.bat
-                                    rmdir /q/s b
-                                    mkdir b
-                                    cd b
-                                    cmake -DBLA_VENDOR=OpenBLAS -DMINGW=1 -DwxWidgets_ROOT_DIR=%WXWIN% -DwxWidgets_LIB_DIR=%WXLIB% -DwxWidgets_CONFIGURATION=mswu -G"MinGW Makefiles" ..
-                                    mingw32-make -j3 || exit 1
-                                    echo "Build step complete"
-                                '''
-                            }
-                        }
-                        stage('MinGW Test') {
-                            environment {
-                                CRYSDIR = '.\\,..\\b\\'
-                                COMPCODE = 'MIN64'
-                            }
-                            steps {
-                                bat '''
-                                    call build\\setupenv.SAYRE.bat
-                                    cd test_suite
-                                    mkdir script
-                                    echo "%SCRIPT NONE" > script\\tipauto.scp
-                                    echo "%END SCRIPT" >> script\\tipauto.scp
-                                    del crfilev2.dsc
-                                    perl testsuite.pl
-                                '''
-                            }
-                        }
-                    }
-                    post {
-                        always {
-                            bat 'ren test_suite MIN64.org'  // Change path here to get unique archive path.
-                            archiveArtifacts artifacts: 'MIN64.org/*.out', fingerprint: true
-                        }
-                    }
-                }
+//                stage("MinGW") {
+//                    agent { label 'master' }
+//                    options {
+//                        timeout(time: 2, unit: 'HOURS')
+//                    }
+//                    environment {
+//                        COMPCODE = 'MIN'
+//                        CRBUILDEXIT = 'TRUE'   // exit build script on fail
+//                        CROPENMP = 'TRUE'
+//                        CR64BIT = 'TRUE'
+//                    }
+//                    stages {
+//                        stage('MinGW debug build') {                      // Run the build
+//                            steps {
+//                                bat '''
+//                                    call build\\setupenv.SAYRE.bat
+//                                    rmdir /q/s b
+//                                    mkdir b
+//                                    cd b
+//                                    cmake -DCMAKE_BUILD_TYPE=Debug -DBLA_VENDOR=OpenBLAS -DMINGW=1 -DwxWidgets_ROOT_DIR=%WXWIN% -DwxWidgets_LIB_DIR=%WXLIB% -DwxWidgets_CONFIGURATION=mswu -G"MinGW Makefiles" ..
+//                                    mingw32-make -j3 || exit 1
+//                                    echo "Build step complete"
+//                                '''
+//                            }
+//                        }
+//                        stage('MinGW Smoketest') {
+//                            environment {
+//                                CRYSDIR = '.\\,..\\b\\'
+//                                COMPCODE = 'MIN64'
+//                            }
+//                            steps {
+//                                bat '''
+//                                    call build\\setupenv.SAYRE.bat
+//                                    cd test_suite
+//                                    mkdir script
+//                                    echo "%SCRIPT NONE" > script\\tipauto.scp
+//                                    echo "%END SCRIPT" >> script\\tipauto.scp
+//                                    del crfilev2.dsc
+//                                    perl testsuite.pl -s
+//                                '''
+//                            }
+//                        }
+//                        stage('MinGW Build') {                      // Run the build
+//                            steps {
+//                                bat '''
+//                                    call build\\setupenv.SAYRE.bat
+//                                    rmdir /q/s b
+//                                    mkdir b
+//                                    cd b
+//                                    cmake -DBLA_VENDOR=OpenBLAS -DMINGW=1 -DwxWidgets_ROOT_DIR=%WXWIN% -DwxWidgets_LIB_DIR=%WXLIB% -DwxWidgets_CONFIGURATION=mswu -G"MinGW Makefiles" ..
+//                                    mingw32-make -j3 || exit 1
+//                                    echo "Build step complete"
+//                                '''
+//                            }
+//                        }
+//                        stage('MinGW Test') {
+//                            environment {
+//                              CRYSDIR = '.\\,..\\b\\'
+//                              COMPCODE = 'MIN64'
+//                          }
+//                          steps {
+//                              bat '''
+//                                  call build\\setupenv.SAYRE.bat
+//                                    cd test_suite
+//                                    mkdir script
+//                                    echo "%SCRIPT NONE" > script\\tipauto.scp
+//                                    echo "%END SCRIPT" >> script\\tipauto.scp
+//                                    del crfilev2.dsc
+//                                    perl testsuite.pl
+//                                '''
+//                            }
+//                        }
+//                    }
+//                    post {
+//                        always {
+//                            bat 'ren test_suite MIN64.org'  // Change path here to get unique archive path.
+//                            archiveArtifacts artifacts: 'MIN64.org/*.out', fingerprint: true
+//                        }
+//                    }
+//                }
+//
 
-
-                stage("Linux") {
-                    agent {label 'orion'}
-                    options {
-                        timeout(time: 1, unit: 'HOURS')
-                    }
-                    environment {
-                        LD_LIBRARY_PATH = '~/lib64:~/lib:/files/ric/pparois/root/lib64:/files/ric/pparois/root/lib:${env.LD_LIBRARY_PATH}'
-                        PATH = "~/bin:/files/ric/pparois/root/bin:$PATH"
-                        LD_RUN_PATH = '~/lib64:~/lib:/files/ric/pparois/root/lib64:/files/ric/pparois/root/lib:${env.LD_RUN_PATH}'
-                        CPLUS_INCLUDE_PATH = '/files/ric/pparois/root/include/'
-                    }
-                    stages {
-                        stage('Build Linux Smoketest') {                // Run the build
-                            steps {
-                                            sh '''
-                                                echo $PATH
-                                                module load intel/2017
-                                                rm -Rf d
-                                                mkdir d
-                                                cd d
-                                                cmake3 -DCMAKE_BUILD_TYPE=Debug -DuseGUI=off -DCMAKE_Fortran_COMPILER=gfortran73 -DCMAKE_C_COMPILER=gcc73 -DCMAKE_CXX_COMPILER=g++73 -DuseOPENMP=off -DBLA_VENDOR=OpenBLAS -DBLAS_LIBRARIES=/files/ric/pparois/root/lib/libopenblas.so -DLAPACK_LIBRARIES=/files/ric/pparois/root/lib/libopenblas.so ..
-                                                nice -7 make -j6 || exit 1
-                                                pwd
-                                            '''
-                            }
-                        }
-                        stage('Run Linux Smoketest') {
-                            environment {
-                                CRYSDIR = './,../d/'
-                                COMPCODE = 'LIN'
-                            }
-                            steps {
-                                    sh '''
-                                        pwd
-                                        cd test_suite
-                                        mkdir -p script
-                                        echo "%SCRIPT NONE" > script/tipauto.scp
-                                        echo "%END SCRIPT" >> script/tipauto.scp
-                                        rm -f crfilev2.dsc
-                                        rm -f crfilev2.h5
-                                        rm -f gui.tst
-                                        nice -10 perl testsuite.pl -s
-                                    '''
-                           }
-                        }
-                        stage('Linux Build') {                // Run the build
-                            steps {
-                                    sh '''
-                                                echo $PATH
-                                                module load intel/2017
-                                                rm -Rf b
-                                                mkdir b
-                                                cd b
-                                                cmake3 -DuseGUI=off -DuseOPENMP=no -DCMAKE_Fortran_COMPILER=gfortran73 -DCMAKE_C_COMPILER=gcc73 -DCMAKE_CXX_COMPILER=g++73 -DBLA_VENDOR=Intel10_64lp  ..
-                                                nice -7 make -j6 || exit 1
-                                                pwd
-                                    '''
-                            }
-                        }
-                        stage('Linux Test') {
-                            environment {
-                                CRYSDIR = './,../b/'
-                                COMPCODE = 'LIN'
-                            }
-                            steps {
-                                    sh '''
-                                                pwd
-                                                cd test_suite
-                                                mkdir -p script
-                                                echo "%SCRIPT NONE" > script/tipauto.scp
-                                                echo "%END SCRIPT" >> script/tipauto.scp
-                                                rm -f crfilev2.dsc
-                                                rm -f crfilev2.h5
-                                                rm -f gui.tst
-                                                nice -10 perl testsuite.pl
-                                    '''
-                            }
-                        }
-                    }
-                    post {
-                                always {
-                                    sh 'mv test_suite LIN.org'      // Change path here to get unique archive path.
-                                    archiveArtifacts artifacts: 'LIN.org/*.out', fingerprint: true
-                                }
-                    }
-                }
-
+//                stage("Linux") {
+//                    agent {label 'orion'}
+//                    options {
+//                        timeout(time: 1, unit: 'HOURS')
+//                    }
+//                    environment {
+//                        LD_LIBRARY_PATH = '~/lib64:~/lib:/files/ric/pparois/root/lib64:/files/ric/pparois/root/lib:${env.LD_LIBRARY_PATH}'
+//                        PATH = "~/bin:/files/ric/pparois/root/bin:$PATH"
+//                        LD_RUN_PATH = '~/lib64:~/lib:/files/ric/pparois/root/lib64:/files/ric/pparois/root/lib:${env.LD_RUN_PATH}'
+//                        CPLUS_INCLUDE_PATH = '/files/ric/pparois/root/include/'
+//                    }
+//                    stages {
+//                        stage('Build Linux Smoketest') {                // Run the build
+//                            steps {
+//                                            sh '''
+//                                                echo $PATH
+//                                                module load intel/2017
+//                                                rm -Rf d
+//                                                mkdir d
+//                                                cd d
+//                                                cmake3 -DCMAKE_BUILD_TYPE=Debug -DuseGUI=off -DCMAKE_Fortran_COMPILER=gfortran73 -DCMAKE_C_COMPILER=gcc73 -DCMAKE_CXX_COMPILER=g++73 -DuseOPENMP=off -DBLA_VENDOR=OpenBLAS -DBLAS_LIBRARIES=/files/ric/pparois/root/lib/libopenblas.so -DLAPACK_LIBRARIES=/files/ric/pparois/root/lib/libopenblas.so ..
+//                                                nice -7 make -j6 || exit 1
+//                                                pwd
+//                                            '''
+//                            }
+//                        }
+//                        stage('Run Linux Smoketest') {
+//                            environment {
+//                                CRYSDIR = './,../d/'
+//                                COMPCODE = 'LIN'
+//                            }
+//                            steps {
+//                                    sh '''
+//                                        pwd
+//                                        cd test_suite
+//                                        mkdir -p script
+//                                        echo "%SCRIPT NONE" > script/tipauto.scp
+//                                        echo "%END SCRIPT" >> script/tipauto.scp
+//                                        rm -f crfilev2.dsc
+//                                        rm -f crfilev2.h5
+//                                        rm -f gui.tst
+//                                        nice -10 perl testsuite.pl -s
+//                                    '''
+//                           }
+//                        }
+//                        stage('Linux Build') {                // Run the build
+//                            steps {
+//                                    sh '''
+//                                                echo $PATH
+//                                                module load intel/2017
+//                                                rm -Rf b
+//                                                mkdir b
+//                                                cd b
+//                                                cmake3 -DuseGUI=off -DuseOPENMP=no -DCMAKE_Fortran_COMPILER=gfortran73 -DCMAKE_C_COMPILER=gcc73 -DCMAKE_CXX_COMPILER=g++73 -DBLA_VENDOR=Intel10_64lp  ..
+//                                                nice -7 make -j6 || exit 1
+//                                                pwd
+//                                    '''
+//                            }
+//                        }
+//                        stage('Linux Test') {
+//                            environment {
+//                                CRYSDIR = './,../b/'
+//                                COMPCODE = 'LIN'
+//                            }
+//                            steps {
+//                                    sh '''
+//                                                pwd
+//                                                cd test_suite
+//                                                mkdir -p script
+//                                                echo "%SCRIPT NONE" > script/tipauto.scp
+//                                                echo "%END SCRIPT" >> script/tipauto.scp
+//                                                rm -f crfilev2.dsc
+//                                                rm -f crfilev2.h5
+//                                                rm -f gui.tst
+//                                                nice -10 perl testsuite.pl
+//                                    '''
+//                            }
+//                        }
+//                    }
+//                    post {
+//                                always {
+//                                    sh 'mv test_suite LIN.org'      // Change path here to get unique archive path.
+//                                    archiveArtifacts artifacts: 'LIN.org/*.out', fingerprint: true
+//                                }
+//                    }
+//                }
+//
 
             }
         }

@@ -1,0 +1,38 @@
+ Warning: EADP implemented as a restraint
+Line 14: EADP Mo1 Al1
+ Warning: EADP implemented as a restraint
+Line 15: EADP Cr1 Al2
+Warning: `EXYZ` Not supported 
+Line 16: EXYZ Mo1 Al1
+Warning: `EXYZ` Not supported 
+Line 17: EXYZ Cr1 Al2
+Warning: `SUMP` Not supported 
+Line 18: SUMP 1 0.003 1 2 1 3
+Warning: `SUMP` Not supported 
+Line 19: SUMP 0.333 0.003 1 4 1 5
+Warning: `EXTI` Not supported 
+Line 30: EXTI    0.000455
+
+Processing shelxl labels into crystals serials
+Table of converted serial numbers
+ |    Shelx Crystals |    Shelx Crystals |    Shelx Crystals |    Shelx Crystals
+ |    MO1_0        1 |    AL1_0        1 |    CR1_0        1 |    AL2_0        2
+ |    NA1_0        1 |     O1_0        1 |     O2_0        2
+Done
+Line 36: CR1   2    0.000000    0.000000    0.638537    41.00000    0.01174    0.01174          0.00924    0.00000    0.00000    0.00587
+Warning: double check s.o.f
+         Atom sit on special position with multiplicty 3
+         but s.o.f is 1.0
+Line 38: AL2   5    0.000000    0.000000    0.638537    51.00000    0.01174    0.01174          0.00924    0.00000    0.00000    0.00587
+Warning: double check s.o.f
+         Atom sit on special position with multiplicty 3
+         but s.o.f is 1.0
+
+Processing EADPs...
+EADP Mo1 Al1
+U(IJ) 0.0, 0.001 =  MO(1) TO AL(1) 
+EADP Cr1 Al2
+U(IJ) 0.0, 0.001 =  CR(1) TO AL(2) 
+
+## Warning: Could not find the corresponding hkl file insfiles/nohklf.hkl
+##          You will have to import it manually

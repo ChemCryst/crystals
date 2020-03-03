@@ -11,7 +11,7 @@
 % VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX                         
 % VARIABLE LOGICAL   ANSWER                                                     
 %%                                                                              
-%% Ensure we have a LIST 13
+ Ensure we have a LIST 13
 % IF ( EXISTS 13 .NE. 1 ) THEN                                                  
 %   copy '#script inlist13'                                                     
 % END IF                                                                        
@@ -40,12 +40,15 @@
 %   ELSE IF ( WAVE .GT. 1.5417 ) .AND. ( WAVE .LT. 1.5419 ) THEN                     
 %     EVALUATE CWAVE = 'CU'                                       
 %   ELSE IF ( WAVE .GT. 0.7107 ) .AND. ( WAVE .LT. 0.7108 ) THEN                 
-%     EVALUATE CWAVE = 'MO'                                       
+%     EVALUATE CWAVE = 'MO'   
+%   ELSE IF ( WAVE .LE. 0.1 ) THEN
+%     EVALUATE CWAVE = 'EL'                                    
 %   ELSE
 %     EVALUATE CWAVE = 'XX'
 %   END IF
 %%  See also below
 %%  
+Here we are
 %%
 %%
 % EVALUATE LCANCEL = FALSE                                                      
@@ -55,7 +58,7 @@
 ^^WI COMMIT=BOKI3 CANCEL=BXXI3                                                  
 ^^WI GRID             G1 NROWS=9 NCOLS=5                                        
 ^^WI {                                                                          
-^^WI  @ 2,2 GRID G2 NROWS=4 NCOLS=2 OUTLINE='Diffraction Experiment'            
+^^WI  @ 2,2 GRID G2 NROWS=5 NCOLS=2 OUTLINE='Diffraction Experiment:'            
 ^^WI  {                                                                         
 ^^WI   @ 1,1 RADIOBUTTON COP 'Copper' 
 %      IF CWAVE .EQ. 'CU' THEN
@@ -75,7 +78,13 @@
 %      ELSE
 ^^WI     STATE=OFF INFORM
 %      END IF
-^^WI   @ 4,1 RADIOBUTTON OTH 'Other X-ray:'                           
+^^WI   @ 4,1 RADIOBUTTON ELE 'Electrons' 
+%      IF CWAVE .EQ. 'EL' THEN
+^^WI     STATE=ON INFORM
+%      ELSE
+^^WI     STATE=OFF INFORM
+%      END IF
+^^WI   @ 5,1 RADIOBUTTON OTH 'Other X-ray:'                           
 %      IF CWAVE .EQ. 'XX' THEN
 ^^WI     STATE=ON INFORM
 %      ELSE
@@ -116,6 +125,8 @@
 ^^CO   SET COP STATE=ON                                        
 %   ELSE IF ( WAVE .GT. 0.7107 ) .AND. ( WAVE .LT. 0.7108 ) THEN                 
 ^^CO   SET MOL STATE=ON  
+%   ELSE IF ( WAVE .LE. 0.1 ) THEN                 
+^^CO   SET ELE STATE=ON  
 %   ELSE
 ^^CO   SET OTH STATE=ON SET WAVEL DISABLED=NO                 
 %% OTHER greyed out inexplicably, sometimes
@@ -186,7 +197,7 @@
 %  IF ( LNEW29 ) THEN                                                           
 %   EVALUATE SWITCH = 2                                                         
 %  ELSE                                                                         
-%   VERIFY BXXI3 BOKI3 MOL COP OTH NEU
+%   VERIFY BXXI3 BOKI3 MOL COP OTH NEU ELE
 %   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                
 %   EVALUATE SWITCH = VALUE                                                     
 %  END IF                                                                       
@@ -248,14 +259,22 @@
 %        GET SILENT NOSTORE VERIFIED 'ON or Off' ' '                            
 %        IF VALUE .EQ. 1 THEN                                                   
 %          EVALUATE RADIATION = 2                                               
+
 %        ELSE                                                                   
-^^??       OTH STATE                                                              
+^^??       ELE STATE                                                              
 %          VERIFY ON OFF                                                          
 %          GET SILENT NOSTORE VERIFIED 'ON or Off' ' '                            
 %          IF VALUE .EQ. 1 THEN                                                   
-%            EVALUATE RADIATION = 3
+%            EVALUATE RADIATION = 5
 %          ELSE                                                                   
-%            EVALUATE RADIATION = 4                                             
+^^??         OTH STATE                                                              
+%            VERIFY ON OFF                                                          
+%            GET SILENT NOSTORE VERIFIED 'ON or Off' ' '                            
+%            IF VALUE .EQ. 1 THEN                                                   
+%              EVALUATE RADIATION = 3
+%            ELSE                                                                   
+%              EVALUATE RADIATION = 4                                             
+%            END IF                                                                 
 %          END IF                                                                 
 %        END IF                                                                 
 %      END IF                                                                   
@@ -287,6 +306,13 @@
 %         EVALUATE CTEST = CHARACTER ( VALUE )                                  
 %         EVALUATE ADJW = VALUE                                                 
 %       END BLOCK                                                               
+%       BLOCK                     %ELECTRON%
+^^??      WAVEL TEXT                                                            
+%         GET SILENT REAL 'Wave' '0.1'                                       
+%         EVALUATE CTEST = CHARACTER ( VALUE )                                  
+%         EVALUATE ADJW = VALUE                                                 
+%       END BLOCK                                                               
+
 %      END CASE                                                                 
 %      COPY 'LOCATE RECORD=103'                                                 
 %      COPY 'TRANSFER TO OFFSET=0 FROM ADJW'                                    
@@ -302,6 +328,8 @@
 %%                                                                              
 %      IF ( RADIATION .EQ. 4 ) THEN
 %        QUEUE COPY SCATT CRYSDIR:script/nscatt.dat
+%      ELSE IF ( RADIATION .EQ. 5 ) THEN
+%        QUEUE COPY SCATT CRYSDIR:script/escatt.dat
 %      ELSE
 %        QUEUE COPY SCATT CRYSDIR:script/scatt.dat
 %      END IF

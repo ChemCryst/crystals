@@ -1,0 +1,27 @@
+ Crystals output file: bm5115sup1_III.ins.out
+ Processing res file insfiles/bm5115sup1_III.ins
+ 
+ Reading of res file done
+ Processing Unit cell
+ Processing space group and symmetry
+ Processing experimental set up
+ Processing chemical composition
+ Processing scattering factors
+ Processing weighting scheme
+ Processing reflections filters
+ Processing atomic model
+ Processing constraints
+ Processing restraints
+RIGU C1 > C5 0.001
+Warning: invalid RIGU command, esd should not be at the end 0.001       
+ 
+List of ignored shexl commands:
+    TWIN: 1 time(s)
+    TEMP: 1 time(s)
+    BASF: 1 time(s)
+    AFIX: 22 time(s)
+ 
+## Warning: Could not find the corresponding hkl file insfiles/bm5115sup1_III.hkl
+##          You will have to import it manually
+ 
+ All done.

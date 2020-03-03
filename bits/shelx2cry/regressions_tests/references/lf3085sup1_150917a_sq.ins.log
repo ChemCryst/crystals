@@ -1,0 +1,177 @@
+Warning: `SIMU` Not supported 
+Line 52: simu 0.01 0.03 3.8 $c
+ Warning: EADP implemented as a restraint
+Line 57: eadp o8 c12
+Warning: `FREE` Not supported 
+Line 58: FREE C15  C14
+Warning: `FREE` Not supported 
+Line 59: FREE C15  C12
+Warning: `FREE` Not supported 
+Line 60: FREE O8   N1
+Warning: `FREE` Not supported 
+Line 61: FREE Sm1  C9
+Warning: `FREE` Not supported 
+Line 62: FREE Sm1  C1
+Warning: `FREE` Not supported 
+Line 63: FREE C4   C15
+Warning: `FREE` Not supported 
+Line 64: FREE O8   C15
+ Warning: Structure has been SQUEEZED 
+          65 ABIN
+Warning: `TEMP` Not supported 
+Line 66: TEMP 25
+Warning: `AFIX` Not supported 
+Line 85: AFIX   3
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 86: H7B   2    0.996711    0.042940    0.812685    11.00000   -1.20000
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 87: H7C   2    0.871131    0.077730    0.802595    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 88: AFIX   0
+Warning: `AFIX` Not supported 
+Line 95: AFIX  66
+Warning: `AFIX` Not supported 
+Line 100: AFIX  43
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 101: H3    2    0.934790    0.380859    0.469350    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 102: AFIX  65
+Warning: `AFIX` Not supported 
+Line 107: AFIX  43
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 108: H5    2    1.147183    0.545845    0.647681    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 109: AFIX  65
+Warning: `AFIX` Not supported 
+Line 114: AFIX  43
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 115: H7    2    1.190545    0.332046    0.757884    11.00000   -1.20000
+Warning: `AFIX` Not supported 
+Line 116: AFIX   0
+Warning: `AFIX` Not supported 
+Line 123: AFIX 137
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 124: H10A  2    1.297538    0.070500    0.245797    11.00000   -1.50000
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 125: H10B  2    1.336558    0.002489    0.329685    11.00000   -1.50000
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 126: H10C  2    1.403055    0.081768    0.357628    11.00000   -1.50000
+Warning: `AFIX` Not supported 
+Line 127: AFIX   0
+Warning: `AFIX` Not supported 
+Line 132: AFIX 137
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 133: H13A  2    0.713251    0.174928    0.904201    11.00000   -1.50000
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 134: H13B  2    0.711806    0.254060    0.843608    11.00000   -1.50000
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 135: H13C  2    0.852337    0.206956    0.856156    11.00000   -1.50000
+Warning: `AFIX` Not supported 
+Line 136: AFIX   0
+Warning: `AFIX` Not supported 
+Line 139: AFIX 137
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 140: H14A  2    0.608508    0.109295    0.544837    11.00000   -1.50000
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 141: H14B  2    0.503644    0.173870    0.503059    11.00000   -1.50000
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 142: H14C  2    0.452132    0.108719    0.582240    11.00000   -1.50000
+Warning: `AFIX` Not supported 
+Line 143: AFIX   0
+Warning: `AFIX` Not supported 
+Line 146: AFIX 137
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 147: H15A  2    0.429071    0.198884    0.788757    11.00000   -1.50000
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 148: H15B  2    0.387217    0.235212    0.665338    11.00000   -1.50000
+Warning: isotropic thermal parameter depends on previous atom
+         Thermal parameter will be fixed at current value
+Line 149: H15C  2    0.501182    0.273896    0.752692    11.00000   -1.50000
+Warning: `AFIX` Not supported 
+Line 150: AFIX   0
+
+Processing shelxl labels into crystals serials
+Table of converted serial numbers
+ |    Shelx Crystals |    Shelx Crystals |    Shelx Crystals |    Shelx Crystals
+ |     N1_0        1 |     O1_0        1 |     O2_0        2 |     O3_0        3
+ |     O4_0        4 |     O5_0        5 |     O6_0        6 |     O7_0        7
+ |    H7B_0       72 |    H7C_0       73 |     O8_0        8 |    SM1_0        1
+ |     C1_0        1 |     C2_0        2 |     C3_0        3 |     H3_0        3
+ |     C4_0        4 |     C5_0        5 |     H5_0        5 |     C6_0        6
+ |     C7_0        7 |     H7_0        7 |     C8_0        8 |     C9_0        9
+ |    C10_0       10 |   H10A_0      101 |   H10B_0      102 |   H10C_0      103
+ |    C12_0       12 |    C13_0       13 |   H13A_0      131 |   H13B_0      132
+ |   H13C_0      133 |    C14_0       14 |   H14A_0      141 |   H14B_0      142
+ |   H14C_0      143 |    C15_0       15 |   H15A_0      151 |   H15B_0      152
+ |   H15C_0      153
+Done
+
+Processing FLATs...
+flat 0.02 C2 C3 C4 C5 C6 C7
+PLANAR 0.02000 C(2) C(3) C(4) C(5) C(6) C(7)
+
+Processing DFIXs/DANGs...
+dfix 1.45 0.01 c4 c4_$1
+DISTANCE 1.45000,.01000 = C(4) TO C(4,0,0,.000,.000,.000)
+DFIX 1.24 0.01 C12 O8
+DISTANCE 1.24000,.01000 = C(12) TO O(8)
+DFIX 1.47 0.01 N1 C14 N1 C15
+DISTANCE 1.47000,.01000 = N(1) TO C(14)
+DISTANCE 1.47000,.01000 = N(1) TO C(15)
+DFIX 1.47 0.01 N1 C14 N1 C15
+DISTANCE 1.47000,.01000 = N(1) TO C(14)
+DISTANCE 1.47000,.01000 = N(1) TO C(15)
+DFIX 2.49 0.01 C14 C15
+DISTANCE 2.49000,.01000 = C(14) TO C(15)
+DFIX 2.45 0.01 C12 C14 C12 C14
+DISTANCE 2.45000,.01000 = C(12) TO C(14)
+DISTANCE 2.45000,.01000 = C(12) TO C(14)
+DFIX 2.45 0.01 C12 C14 C12 C14
+DISTANCE 2.45000,.01000 = C(12) TO C(14)
+DISTANCE 2.45000,.01000 = C(12) TO C(14)
+DFIX 1.50 0.01 C12 C13
+DISTANCE 1.50000,.01000 = C(12) TO C(13)
+DFIX 1.33 0.01 C12 N1
+DISTANCE 1.33000,.01000 = C(12) TO N(1)
+dfix 1.50 0.01 n1 c14 n1 c15
+DISTANCE 1.50000,.01000 = N(1) TO C(14)
+DISTANCE 1.50000,.01000 = N(1) TO C(15)
+dfix 1.50 0.01 n1 c14 n1 c15
+DISTANCE 1.50000,.01000 = N(1) TO C(14)
+DISTANCE 1.50000,.01000 = N(1) TO C(15)
+
+Processing SADIs...
+SADI 0.01 N1 C12 N1 C15 N1 C14
+DISTANCE 0.0,  .01000 = MEAN 
+CONT N(1) TO C(12),
+CONT N(1) TO C(15),
+CONT N(1) TO C(14) 
+
+Processing EADPs...
+eadp o8 c12
+U(IJ) 0.0, 0.001 =  O(8) TO C(12) 
+
+Processing ISORs...
+isor 0.01
+Line 54: isor 0.01
+Warning: ISOR on all atoms is not supported, restraint is ignored 
+
+## Warning: Structure has been SQUEEZED
+## Warning: Could not find the corresponding hkl file insfiles/lf3085sup1_150917a_sq.hkl
+##          You will have to import it manually

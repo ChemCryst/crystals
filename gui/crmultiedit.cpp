@@ -196,6 +196,14 @@ CcParse CrMultiEdit::ParseInput( deque<string> &  tokenList )
                    ((CxMultiEdit*)ptr_to_cxObject)->FindNext();
                    break;
             }
+            case kTInsert:
+            {
+                   tokenList.pop_front(); //Remove kTInsert tokens.
+                   ((CxMultiEdit*)ptr_to_cxObject)->InsertLine(tokenList.front() + "\n");
+                   LOGSTAT( "Inserting text at cursor" + tokenList.front() );
+                   tokenList.pop_front(); //Remove Text token.
+                   break;
+            }
 
             default:
             {

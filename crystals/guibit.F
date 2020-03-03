@@ -642,7 +642,7 @@ c         loaded by the calling routine.
       LOGICAL WEXIST, LSPARE
       CHARACTER*8 CINST(6)
       INTEGER IUNKN
-      CHARACTER*8 CRADTN(2)
+      CHARACTER*8 CRADTN(3)
       CHARACTER*11 CBONDS(0:9)
       DIMENSION ID(2)
 
@@ -662,7 +662,7 @@ c         loaded by the calling routine.
 #else
       DATA    IUNKN /'UNKN'/
 #endif
-      DATA CRADTN / 'X-rays' , 'neutrons' /
+      DATA CRADTN / 'X-rays' , 'neutrons' , 'electrons' /
       DATA CBONDS / 'unassigned', 'single',    'double',      'triple',
      c'quadruple',  'aromatic',   'polymeric', 'delocalised', 'strange',
      c'pi-bond'/

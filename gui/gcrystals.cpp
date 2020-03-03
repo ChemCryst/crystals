@@ -27,6 +27,7 @@ using namespace std;
   #include <wx/clipbrd.h>
   #include <wx/stdpaths.h>
   #include <wx/filename.h>
+  #include <wx/log.h>
 
 #endif
 
@@ -395,6 +396,7 @@ BriefMessageBox::BriefMessageBox( wxString Message, double secondsdisplayed /*= 
         std::cerr << "Working directory:    " << directory << "\n";
       }
     }
+    wxLogNull logNo; //suspend logging.
     theControl = new CcController(directory,dscfile);
    // kickTimer = new wxTimer(this, 5241);
    // kickTimer->Start(500);      //Call OnKickTimer every 1/2 second while idle.

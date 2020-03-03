@@ -371,7 +371,7 @@ contains
     implicit none
     type(line_t), intent(in) :: shelxline
     character dummy
-    integer iostatus
+    integer iostatus, wave
 
     !CELL 1.54187 14.8113 13.1910 14.8119 90 98.158 90
     read (shelxline%line, *, iostat=iostatus) dummy, wavelength, unitcell
@@ -386,14 +386,41 @@ contains
     list13index = list13index+1
     write (list13(list13index), '(a,F0.5)') 'COND WAVE= ', wavelength
 
+    radiation = 'neutrons'
+!    write(123,*) 'Lambda = ', wavelength, target, radiation
+      wave = nint(100.*wavelength)
+!      write(123,*)' Wave=', wave 
+      if(wave .eq. 154) then
+            target = 'copper'
+            radiation = 'xrays'
+      else if (wave .eq. 134) then
+            target = 'gallium'
+            radiation = 'xrays'
+      else if (wave .eq. 71) then
+            target = 'molybdenum'
+            radiation = 'xrays'
+      else if (wave .eq. 56) then
+            target = 'silver'
+            radiation = 'xrays'
+      else if (wave .le. 10) then
+            target = 'none'
+            radiation = 'electrons'
+      end if
+!      write(123,*) 'target=', wave, target, '  ', radiation
+    list13index = list13index+1
+    write (list13(list13index), '(a,a)') 'DIFF  RADIATION= ', radiation
+
+
   end subroutine
 
 !> Parse the ZERR keyword. Extract the esds on the unit cell parameters
   subroutine shelx_zerr(shelxline)
     use crystal_data_m
     implicit none
+    double precision, parameter :: dtr = 0.01745329252d0
+    double precision, parameter :: amult = 0.000001d0
     type(line_t), intent(in) :: shelxline
-    real, dimension(7) :: esds
+    double precision, dimension(7) :: esds
     integer iostatus, i
     character(len=256) :: iomessage
     character(len=:), allocatable :: stripline
@@ -421,10 +448,16 @@ contains
       end if
     end do
 
+    ! CRYSTALS stores variances, not esds. 
+    ! In addition it applies a default multiplier of 0.000001 to input values, so we need to divide by this before output.
+    ! Furthermore, the angle variances need to be in radians^2.
+    
+    
     write (list31(1), '(a)') '\LIST 31'
-    write (list31(2), '("MATRIX V(11)=",F0.5, ", V(22)=",F0.5, ", V(33)=",F0.5)') esds(2:4)
-    write (list31(3), '("CONT V(44)=",F0.5, ", V(55)=",F0.5, ", V(66)=",F0.5)') esds(5:7)
-    write (list31(4), '(a)') 'END'
+    write (list31(2), '(a)') 'AMULT 0.000001'  ! Make this multiplier explicit, in case the default ever changes.
+    write (list31(3), '("MATRIX V(11)=",F0.5, ", V(22)=",F0.5, ", V(33)=",F0.5)') (esds(2:4)**2)/amult
+    write (list31(4), '("CONT V(44)=",F0.5, ", V(55)=",F0.5, ", V(66)=",F0.5)') ((esds(5:7)*DTR)**2)/amult
+    write (list31(5), '(a)') 'END'
 
   end subroutine
 
@@ -459,6 +492,52 @@ contains
     end if
 
   end subroutine
+
+
+!> Parse the NEUT keyword. Find the radiation type
+  subroutine shelx_neut(shelxline)
+    use crystal_data_m, only: radiation, line_t, list13index, list13
+    implicit none
+    type(line_t), intent(in) :: shelxline
+    integer i, j
+!    write(123,*)'list13index=',list13index
+    if (list13index.ge.1) then
+      do i=1,list13index
+!       write(123,*)i, list13(i)
+        if(list13(i)(1:4) .eq. 'DIFF' ) then
+        j=i
+        exit
+       endif
+      enddo
+    else
+      j = 1     
+    endif
+    radiation = 'neutrons'
+    write (list13(j), '(a,a)') 'DIFF  RADIATION= ', radiation
+  end subroutine
+
+!> Parse the ELEC keyword. Find the radiation type(Guess that GMS calls it ELEC)
+  subroutine shelx_elec(shelxline)
+    use crystal_data_m, only: radiation, line_t, list13index, list13
+    implicit none
+    type(line_t), intent(in) :: shelxline
+    integer i, j
+!    write(123,*)'list13index=',list13index
+    if (list13index.ge.1) then
+      do i=1,list13index
+!       write(123,*)i, list13(i)
+       if(list13(i)(1:4) .eq. 'DIFF' ) then
+         j=i
+         exit
+       endif
+      enddo
+    else
+      j = 1     
+    endif
+    radiation = 'electrons'
+    write (list13(j), '(a,a)') 'DIFF  RADIATION= ', radiation
+  end subroutine
+
 
 !> Parse the SFAC keyword. Extract the atoms type use in the file.
   subroutine shelx_sfac(shelxline)
@@ -609,7 +688,14 @@ contains
       composition(2) = trim(composition(2))//' '//trim(sfac(i))//' '//trim(buffer)
     end do
     ! SCATTERING CRSCP:SCATT.DAT
-    composition(3) = 'SCATTERING CRYSDIR:script/scatt.dat'
+!    write(123,*) 'radiation type= ', radiation
+    if (radiation .eq. 'electrons') then
+      composition(3) = 'SCATTERING CRYSDIR:script/escatt.dat'
+    else if (radiation .eq. 'neutrons') then
+      composition(3) = 'SCATTERING CRYSDIR:script/nscatt.dat'
+    else
+      composition(3) = 'SCATTERING CRYSDIR:script/scatt.dat'
+    end if    
     ! PROPERTIES CRSCP:PROPERTIES.DAT
     composition(4) = 'PROPERTIES CRYSDIR:script/propwin.dat'
     ! END

@@ -81,6 +81,17 @@
 %   END IF
 %   EVALUATE DOTRANSFER = FALSE
 %   COPY 'TOP'
+%% Some sanity checks
+%   IF HRESTF .GT. 2 then
+%     EVALUATE HRESTF = 2
+%   ELSE IF HRESTF .LT. 0 then
+%     EVALUATE HRESTF = 0
+%   END IF
+%   IF HRTYP .LT. 0 then
+%     EVALUATE HRTYP = 0
+%   ELSE IF HRTYP .GT. 10 then
+%     EVALUATE HRTYP = 10
+%   END IF
 %%
 %   LOOP
 %   EVALUATE ITEMP = LOOPCOUNTER
