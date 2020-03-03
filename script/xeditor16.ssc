@@ -208,7 +208,7 @@ Using user-specified editor.
 %      EVALUATE EDITOR_OK = TRUE
 %     END BLOCK 
 %     BLOCK
-%       COPY '$ "CRYSDIR:/Manual/crystalsmanual-sfls.html#sfls.list16"'
+%       COPY '#SPAWN "CRYSDIR:/Manual/crystalsmanual-sfls.html#sfls.list16"'
 %     END BLOCK
 %     BLOCK 
 %% Insert text at cursor
@@ -222,9 +222,9 @@ Using user-specified editor.
 %       IF VALUE .EQ. 1 THEN                                                
 ^^CO            SET TEXT5 INSERT 'planar 0.0, 0.01 = X(1) X(2) X(3) X(4)' 
 %       ELSE IF VALUE .EQ. 2 THEN
-^^CO            SET TEXT5 INSERT 'dist 0.0, 0.01 = mean X(1) to X(2), X(3) to X(4)' 
+^^CO            SET TEXT5 INSERT 'dist 0.0, 0.01 = mean X(1) to X(2) , X(3) to X(4)' 
 %       ELSE IF VALUE .EQ. 3 THEN
-^^CO            SET TEXT5 INSERT 'angle 0.0, 0.01 = mean X(1) to X(2) to x(3), X(4) to X(5) to x(6)' 
+^^CO            SET TEXT5 INSERT 'angle 0.0, 0.01 = mean X(1) to X(2) to x(3) , X(4) to X(5) to x(6)' 
 %       ELSE IF VALUE .EQ. 4 THEN
 ^^CO            SET TEXT5 INSERT 'dist 1.54, 0.01 = X(1) to X(2)' 
 %       ELSE IF VALUE .EQ. 5 THEN
@@ -252,7 +252,7 @@ Using user-specified editor.
 %       ELSE IF VALUE .EQ. 13 THEN
 ^^CO            SET TEXT5 INSERT 'uvol 0.01 X(1) X(2) X(3)' 
 %       ELSE IF VALUE .EQ. 14 THEN
-^^CO            SET TEXT5 INSERT 'uqusi 0.01 X(1)' 
+^^CO            SET TEXT5 INSERT 'uqiso 0.01 X(1)' 
 %       ELSE IF VALUE .EQ. 15 THEN
 ^^CO            SET TEXT5 INSERT 'ueig 0.01 X(1)' 
 %       ELSE IF VALUE .EQ. 16 THEN
@@ -267,7 +267,7 @@ Using user-specified editor.
 ^^CO            SET TEXT5 INSERT 'uplane 0.01 X(1) to X(2) to X(3)' 
 %       ELSE IF VALUE .EQ. 20 THEN
 ^^CO            SET TEXT5 INSERT '# restrain adp of x(1) and x(4) to be same in local coord system defined by other two atoms' 
-^^CO            SET TEXT5 INSERT 'ulij 0.01 X(1) to X(2) to X(3), X(4) to X(5) to X(6)' 
+^^CO            SET TEXT5 INSERT 'ulij 0.01 X(1) to X(2) to X(3) , X(4) to X(5) to X(6)' 
 %       END IF                                                                  
 %     END BLOCK 
 %   END CASE
