@@ -1986,13 +1986,21 @@ contains
           start = 3
         end if
 
-        ! third element is the esd of terminal atoms (optional)
-        read (splitbuffer(3), *, iostat=iostatus) esd2
-        if (iostatus /= 0) then
-          esd2 = 0.2
+        if (size(splitbuffer)>2) then
+          ! third element is the esd of terminal atoms (optional)
+          read (splitbuffer(3), *, iostat=iostatus) esd2
+          if (iostatus /= 0) then
+            esd2 = 0.2
+          else
+            start = start+1
+            write (log_unit, '(a)') 'Warning: [st] esd in ISOR not supported, using [s] instead'
+          end if
         else
-          start = start+1
-          write (log_unit, '(a)') 'Warning: [st] esd in ISOR not supported, using [s] instead'
+          write (*, '("Line ", I0, ": ", a)') isor_table(i)%line_number, trim(isor_table(i)%shelxline)
+          write (*, '(a)') 'Warning: ISOR on all atoms is not supported, restraint is ignored'
+          write (log_unit, '("Line ", I0, ": ", a)') isor_table(i)%line_number, trim(isor_table(i)%shelxline)
+          write (log_unit, '(a)') 'Warning: ISOR on all atoms is not supported, restraint is ignored '
+          cycle isor_loop
         end if
 
         write (buffertemp, '(a, F7.5, 1X)') 'UQISO ', esd1
@@ -2430,6 +2438,7 @@ contains
     integer start, iostatus
     type(atom_shelx_t) :: atom_shelx
     character(len=:), dimension(:), allocatable :: broadcast
+    real :: esd
 
     if (rigu_table_index > 0) then
       write (log_unit, '(a)') ''
@@ -2503,10 +2512,21 @@ contains
           atom_shelx = atom_shelx_t(splitbuffer(k))
 
           if (atom_shelx%crystals_label() == '') then
+            if (trim(atom_shelx%text)/='') then
+              read(atom_shelx%text, *, iostat=iostatus) esd
+              if (iostatus==0) then
+                write (*, '(a)') trim(rigu_table(i)%shelxline)
+                write (*, '(a, a)') 'Warning: invalid RIGU command, esd should not be at the end ', atom_shelx%text
+                write (log_unit, '(a)') trim(rigu_table(i)%shelxline)
+                write (log_unit, '(a, a)') 'Warning: invalid RIGU command, esd should not be at the end ', atom_shelx%text
+                rigu_table(i)%esd12 = esd
+                cycle
+              end if
+            end if
             write (*, '(a)') trim(rigu_table(i)%shelxline)
             write (*, '(a)') trim(broadcast(j))
             write (*, '(a)') splitbuffer(k)
-            write (*, '(a)') 'Error: check your res file. I cannot find the atom'
+            write (*, '(a, a)') 'Error: check your res file. I cannot find the atom ', atom_shelx%text
             call abort()
           end if
 
