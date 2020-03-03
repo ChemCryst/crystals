@@ -166,47 +166,36 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
         SU = SIN(JP * ANGLE) !sin(pn(xi-eta))
         TCOM = 2. * SIGN * BIA(JP) / BIO
         E = SNGL(AP) !E=a' CONVERTED TO A REAL NUMBER
-        !        write(222, *) "BR BDD BEA h k l p n a' angled anglee RIRA xk1 xk2 xk3 DELCE"
-        !        write(222, *)  BR, BDD, BEA, REFLH, REFLK, REFLL, jp, nord, E, ANGLED, ANGLEE, RIRA, XK1, XK2, XK3, DELCE
         write(555, *) "h k l p n a' angled anglee anglexi eta RIRA xk1 xk2 xk3"
         write(555, *)  REFLH, REFLK, REFLL, jp, nord, E, ANGLED, ANGLEE, anglexi, XETA, RIRA, XK1, XK2, XK3
-        !        write(666, *) "BR BDD BEA h k l p n a' angled anglee RIRA xk1 xk2 xk3 DELCE"
-        !        write(666, *)  BR, BDD, BEA, REFLH, REFLK, REFLL, jp, nord, E, ANGLED, ANGLEE, RIRA, XK1, XK2, XK3, DELCE
         CALL BESSEL (BJ, PNA, E, -1.0)
         IF (MODE==1) GO TO 34 !i.e. skip a load of derivation bits
         IF (LM(1)==0) GO TO 30
         !!!CALCULATION OF dM/d(Bd) [42]
         BDTERM = 2. * SIGN * CU * DBJB(JP) * BJ
         SUM(1) = SUM(1) + BDTERM
-        !        write(444,*) "LM(1) test:", ABS(BDTERM / SUM(1))
         IF (ABS(BDTERM / SUM(1))<CLIMIT) LM(1) = 0
         30      IF(LM(2)==0) GO TO 31
         !!!CALCULATION OF dM/dR [45] (DSIZE)
         RTERM = TCOM * BR * CU
-        write(888, *) "JP SIGN RTERM", JP, SIGN, RTERM
         SUM(2) = SUM(2) + RTERM
-        write(888, *) "sum", sum(2)
-        !        write(444,*) "LM(2) test:", ABS(RTERM / SUM(2))
         IF (ABS(RTERM / SUM(2))<CLIMIT) LM(2) = 0
         31      IF (LM(3)==0) GO TO 32
         !!!CALCULATION OF DELMD (I ASSUME THIS IS dM/dD [48]?) (this is DDECLINA)
         DMD = SU * PNA * DXETAD
         DTERM = TCOM * (BDD * CU + BJ * DMD)
         SUM(3) = SUM(3) + DTERM
-        !        write(444,*) "LM(3) test:", ABS(DTERM / SUM(3))
         IF (ABS(DTERM / SUM(3))<CLIMIT) LM(3) = 0
         32      IF(LM(4)==0) GO TO 33
         !!!CALCULATION OF dM/dE [50] (this is DAZIMUTH)
         DME = SU * PNA * DXETAE
         ETERM = TCOM * (BEA * CU + BJ * DME)
         SUM(4) = SUM(4) + ETERM
-        !        write(444,*) "LM(4) test:", ABS(ETERM / SUM(4))
         IF (ABS(ETERM / SUM(4))<CLIMIT) LM(4) = 0
         33      IF (LM(5)==0) GO TO 34
         !!!CALCULATION OF dM/dG [47]
         GTERM = -PNA * TCOM * SU * BJ
         SUM(5) = SUM(5) + GTERM
-        !        write(444,*) "LM(5) test:", ABS(GTERM / SUM(5))
         IF (ABS(GTERM / SUM(5))<CLIMIT) LM(5) = 0
         34      IF(LM(6)==0) GO TO 35
         !!!CALCULATION OF M [33]
@@ -215,9 +204,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
         IF(ABS(MTERM / SUM(6))<CLIMIT) LM(5) = 0
         35      LSUM = LM(1) + LM(2) + LM(3) + LM(4) + LM(5) + LM(6)
         IF (MODE==1) LSUM = LM(6)
-        write(444, *) "end of loop ", JP, ":", LM(1), LM(2), LM(3), LM(4), LM(5), LM(6)
-        IF (LSUM==0) GO TO 12 !jump out of loop if contribution to all parts is really small (and their
-        !markers (LM(I)) have been set to zero)
+        IF (LSUM==0) GO TO 12 !jump out of loop if contribution to all parts is really small
         SIGN = SIGN * PSIGN
     end do
     12    IF (MODE==1) GO TO 7
@@ -239,56 +226,35 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     IF (NAD==2) GO TO 40
     BT = DELMC(2, 6) + DELMS(1, 6)
 
-    !    WRITE(12345, *) "AROTOR= ", AT
-    !    WRITE(12345, *) "BROTOR= ", BT
-    !    write(12345, *) "***********************"
-    !
-    !    write(444, *) "LM(1-6) at end of calculations=", LM(1), LM(2), LM(3), LM(4), LM(5), LM(6)
-    !    write(444, *) "*****************"
-    !    write(444, *) "hkl", REFLH, REFLK, REFLL
-    !    WRITE(444, *) "AROTOR BROTOR B(TEMP) BD R D E XI"
-    !    WRITE(444, *) AT, BT, BB, BD, RIRA, ANGLED, ANGLEE, ANGLEXI
-    !    write(444, *) "*****************"
     40    IF(MODE==1) GO TO 9
     !    !!!DERIVATIVES WRT CENTRE OF RING [40]
     !    DO IA = 1, 3 !loop three time for each of x,y,z coordinates
-    !        write(444, *) "wrt ring, loop number ", IA
     !        !        IF(KSEL(L)==0) GO TO 55
     !        DA(K) = -TWOPI * (DELS(1, IA) + DELC(2, IA))
-    !        write(444, *) "DA(K) = ", DA(K)
     !        IF(INV1==1) GO TO 57
     !        DB(K) = TWOPI * (-DELS(2, IA) + DELC(1, IA))
-    !        write(444, *) "DB(K) = ", DB(K)
     !        57    K = K + 1
     !        !        55      L = L + 1
     !    end do
     !BECAUSE TAKEN THIS AND DELF(POPULATION FACTOR) OUT, NEED TO START K AT 5 NOT 1
     !!!CALCULATION OF DELF(TEMP) [41] this one is also done elsewhere
-    !    write(444, *) "DELF(TEMP)"
     !    DA(K) = -RHOSQ * (DELMC(1, 6) - DELMS(2, 6))
-    !    write(444, *) "DA(K) = ", DA(K), "K=", K
     !    IF(INV1==1) GO TO 54
     !    DB(K) = -RHOSQ * (DELMC(2, 6) - DELMS(2, 6))
-    !    write(444, *) "DB(K) = ", DB(K), "K=", K
     54    K = K + 1
     !    53    L = L + 1
     !!!CALCULATION OF DELFD TO DFLF3
     DO IA = 1, 5 !loop 5 times for derivatives of D,E,xi, Bd, and R (?)
         !        IF(KSEL(L)==0) GO TO 51
-        !        write(444, *) "DELFD to DELF3, loop number ", IA
         DA(K) = DELMC(1, IA) - DELMS(2, IA)
-        !        write(444, *) "DA(K) = ", DA(K), "K=", K
         IF(INV1==1) GO TO 52
         DB(K) = DELMC(2, IA) + DELMS(1, IA)
-        !        write(444, *) "DB(K) = ", DB(K), "K=", K
         if (K==7) THEN
             !            WRITE(333, *) "RADIUS", RIRA, REFLH, REFLK, REFLL, AT, BT, DA(K), DB(K)
         end if
         52      K = K + 1
         !        51      L = L + 1
     end do
-    !    write(444, *) "*****************"
-    !    write(444, *) "*****************"
     9     RETURN
 END
 
@@ -307,8 +273,6 @@ SUBROUTINE BESSEL(BSUM, PP, XZ, BSIGN)
     CLIMIT = 0.0001
     XM = 1
 
-    write(666, *) "at start, PP(pn) BTERM, BRTERM", PP, BTERM, BRTERM
-
     LB(5) = 1
     IF(PP==0) then
         JP = 1
@@ -321,7 +285,6 @@ SUBROUTINE BESSEL(BSUM, PP, XZ, BSIGN)
     DO M = 1, JP
         XM = FLOAT(M)
         BTERM = BTERM * XZ / (2. * XM)
-        !        write(666, *) "M BTERM", M, BTERM
     end do
     17    IF (BSIGN<0.) GO TO 22 !if calculating a J term (rather than I)
     !!!CALCULATION OF I TERMS (only hits this bit if doing I not J)
@@ -340,7 +303,6 @@ SUBROUTINE BESSEL(BSUM, PP, XZ, BSIGN)
     end do
     IF (PP==0) GO TO 5
     BRTERM = BTERM * PP / RIRA
-    !    write(666, *) "BRTERM", BRTERM
     ERTERM = PP * BTERM * TE
     DRTERM = PP * BTERM * TD
     5     BSUM = BTERM
@@ -350,7 +312,6 @@ SUBROUTINE BESSEL(BSUM, PP, XZ, BSIGN)
     IF(BSIGN>0) DBJB(JP) = BJTERM
     DO M = 1, 30
         BTERM = (BSIGN * BTERM * XZ * XZ) / (4. * M * (M + PP))
-        !        write(666, *) "M BTERM(355)", M, PP, BTERM
         IF(MODE==1) GO TO 11
         IF(LB(1)==0) GO TO 6
         !!!CALCULATION OF dM/dBd TERM [42]
@@ -362,11 +323,7 @@ SUBROUTINE BESSEL(BSUM, PP, XZ, BSIGN)
         6     IF (LB(2)==0) GO TO 7
         !!!CALCULATION OF dM/dR TERM [45]
         BRTERM = BTERM * (2. * M + PP) / RIRA
-        !        write(666, *) "M BRTERM=BTERM(2M+PP/RIRA)", M, BTERM, PP, RIRA, BRTERM
-        write(555, *) "M PN RIRA BRTERM BR"
-        write(555, *) M, PP, RIRA, BRTERM, BR
         BR = BR + BRTERM
-        !        write(666, *) "M", M, "BR", BR
         IF(ABS(BRTERM / BR)<CLIMIT) LB(2) = 0
         7     IF (LB(3)==0) GO TO 8
         !!!CALCULATION OF dM/dD TERM [48]
