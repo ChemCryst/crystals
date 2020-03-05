@@ -1001,7 +1001,8 @@ contains
           ! look for all atoms with same type
           m5 = savedl5
           do j = 1, savedn5
-            if (transfer(l5store(m5), '    ') == var_name) then
+            if ( (trim(var_name) == '*' .and. transfer(l5store(m5), '    ') /= 'H   ') .or. &
+            & transfer(l5store(m5), '    ') == var_name) then
               write (atom_name, '(A,"(",I0,")")') trim(transfer(l5store(m5), '    ')), &
               & nint(l5store(m5+1))
               image_text = trim(image_text)//' '//trim(atom_name)
@@ -1813,16 +1814,12 @@ contains
           do while (image_text(n-m:n-m) == ' ')
             m = m+1
           end do
-          if (n-m > s .and. iachar(image_text(n-m:n-m)) > 64 .and. iachar(image_text(n-m:n-m)) < 89) then ! text already upper case at this point
+          if ( n-m > s .and. &
+          & (image_text(n-m:n-m) == '*' .or. (iachar(image_text(n-m:n-m)) > 64 .and. iachar(image_text(n-m:n-m)) < 89)) &
+          & ) then ! text already upper case at this point
             ! removing the spaces
             image_text = image_text(1:n-m)//trim(image_text(n:))
             n = n-m
-          end if
-        else
-          if (iachar(image_text(n-1:n-1)) > 64 .and. iachar(image_text(n-1:n-1)) < 89) then
-            ! atom label, we are ok
-          else
-            image_text = image_text(1:n-1)//' '//trim(image_text(n:))
           end if
         end if
       end if
