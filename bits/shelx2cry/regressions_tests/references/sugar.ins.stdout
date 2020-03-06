@@ -1,8 +1,6 @@
- Crystals output file: hb7731.ins.out
- Processing res file insfiles/hb7731.ins
+ Crystals output file: sugar.ins.out
+ Processing res file insfiles/sugar.ins
  
- Info: Invalid command or misplaced comment, ignored.
-Line 1: SHELXL97 (Sheldrick  2008)
  Reading of res file done
  Processing Unit cell
  Processing space group and symmetry
@@ -15,11 +13,5 @@ Line 1: SHELXL97 (Sheldrick  2008)
  Processing constraints
  Processing restraints
  Processing hkl file header
- 
-List of ignored shexl commands:
-    TEMP: 2 time(s)
-    SIZE: 1 time(s)
-    AFIX: 20 time(s)
- 
  
  All done.

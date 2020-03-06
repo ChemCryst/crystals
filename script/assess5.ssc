@@ -41,6 +41,10 @@
 %    FINISH
 %  END IF
 %%
+%        IF EXISTS 39 .LE. 0 THEN
+%          COPY '#LIST 39'
+%          COPY 'END'
+%       END IF
 %       VARIABLE CHARACTER CFLACK
 %       VARIABLE REAL SERIAL DSIG
 %       COPY '#GENERALEDIT 39'

@@ -1,8 +1,6 @@
- Crystals output file: hb7731.ins.out
- Processing res file insfiles/hb7731.ins
+ Crystals output file: nohklf.ins.out
+ Processing res file insfiles/nohklf.ins
  
- Info: Invalid command or misplaced comment, ignored.
-Line 1: SHELXL97 (Sheldrick  2008)
  Reading of res file done
  Processing Unit cell
  Processing space group and symmetry
@@ -14,12 +12,13 @@ Line 1: SHELXL97 (Sheldrick  2008)
  Processing atomic model
  Processing constraints
  Processing restraints
- Processing hkl file header
  
 List of ignored shexl commands:
-    TEMP: 2 time(s)
-    SIZE: 1 time(s)
-    AFIX: 20 time(s)
+    EXYZ: 2 time(s)
+    SUMP: 2 time(s)
+    EXTI: 1 time(s)
  
+## Warning: Could not find the corresponding hkl file insfiles/nohklf.hkl
+##          You will have to import it manually
  
  All done.

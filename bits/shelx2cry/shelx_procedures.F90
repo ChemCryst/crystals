@@ -417,8 +417,10 @@ contains
   subroutine shelx_zerr(shelxline)
     use crystal_data_m
     implicit none
+    double precision, parameter :: dtr = 0.01745329252d0
+    double precision, parameter :: amult = 0.000001d0
     type(line_t), intent(in) :: shelxline
-    real, dimension(7) :: esds
+    double precision, dimension(7) :: esds
     integer iostatus, i
     character(len=256) :: iomessage
     character(len=:), allocatable :: stripline
@@ -446,10 +448,16 @@ contains
       end if
     end do
 
+    ! CRYSTALS stores variances, not esds. 
+    ! In addition it applies a default multiplier of 0.000001 to input values, so we need to divide by this before output.
+    ! Furthermore, the angle variances need to be in radians^2.
+    
+    
     write (list31(1), '(a)') '\LIST 31'
-    write (list31(2), '("MATRIX V(11)=",F0.5, ", V(22)=",F0.5, ", V(33)=",F0.5)') esds(2:4)
-    write (list31(3), '("CONT V(44)=",F0.5, ", V(55)=",F0.5, ", V(66)=",F0.5)') esds(5:7)
-    write (list31(4), '(a)') 'END'
+    write (list31(2), '(a)') 'AMULT 0.000001'  ! Make this multiplier explicit, in case the default ever changes.
+    write (list31(3), '("MATRIX V(11)=",F0.5, ", V(22)=",F0.5, ", V(33)=",F0.5)') (esds(2:4)**2)/amult
+    write (list31(4), '("CONT V(44)=",F0.5, ", V(55)=",F0.5, ", V(66)=",F0.5)') ((esds(5:7)*DTR)**2)/amult
+    write (list31(5), '(a)') 'END'
 
   end subroutine
 
@@ -491,7 +499,7 @@ contains
     use crystal_data_m, only: radiation, line_t, list13index, list13
     implicit none
     type(line_t), intent(in) :: shelxline
-    integer iostatus, i, j
+    integer i, j
 !    write(123,*)'list13index=',list13index
     if (list13index.ge.1) then
       do i=1,list13index
@@ -513,7 +521,7 @@ contains
     use crystal_data_m, only: radiation, line_t, list13index, list13
     implicit none
     type(line_t), intent(in) :: shelxline
-    integer iostatus, i, j
+    integer i, j
 !    write(123,*)'list13index=',list13index
     if (list13index.ge.1) then
       do i=1,list13index
