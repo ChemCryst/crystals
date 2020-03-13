@@ -77,7 +77,9 @@ jobs:
 # LINUX ONLY
     - name: Install Ubuntu compiler and tools
       if: matrix.os == 'ubuntu-latest'
-      run: sudo apt-get install -y gfortran libopenblas-dev
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gfortran libopenblas-dev
 
 # LINUX ONLY
     - name: Install Ubuntu wxWidgets
