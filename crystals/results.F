@@ -4600,7 +4600,7 @@ C----- H-bonds AND ESDs
           CALL SNUM ( store(itmp), 0.0,  -2, 0, 10, IVEC )
         else
 C set esd to 0.0 to keep Ton happy - switch back on for Bruce 2020
-          CALL SNUM ( store(itmp),store(itmp+1),  -3, 0, 10, IVEC )
+          CALL SNUM ( store(itmp),store(itmp+1),  -3, 0, 15, IVEC )
 c         CALL SNUM ( store(itmp),0.0,  -3, 0, 10, IVEC )
         endif
         WRITE( CBUF, '(20A1)') (IVEC(I), I=1, 20)
