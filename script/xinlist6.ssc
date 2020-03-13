@@ -532,7 +532,7 @@ Initialisation:
 %           INSERT 'STORE NCOEF=6'                                              
 %           QUEUE SEND                                                          
 %           CLEAR                                                               
-%  INSERT 'OUTPUT INDICES /FO/ SIGMA(/FO/) RATIO/JCODE CORRECTIONS SERIAL '     
+%  INSERT 'OUTPUT INDICES /FO/ SIGMA(/FO/) RATIO CORRECTIONS SERIAL '     
 %           QUEUE SEND                                                          
 %           CLEAR 
 %           IF HTRANS THEN
@@ -651,7 +651,8 @@ Initialisation:
 {S * Merging equivalent reflections                                             
 %           CLEAR                                                               
 %           COPY '#MERGE'   
-%           copy 'reject sigma=2'                                                    
+%           COPY 'REFLECTIONS LIST=HI'
+%           COPY 'REJECT SIGMA=2'
 %           COPY 'END'                                                          
 %         END IF                                                                
 %                                                                               

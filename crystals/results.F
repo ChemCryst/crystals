@@ -8033,7 +8033,7 @@ C     Excluded reflection categories
 c
 c
 c      initialisr hole in one
-      i = LINFIT(1,x,y,wt,a,sa,b,sb,t,tsq,r,rsq,nitem, tensor)
+      i = LINFIT(1,x,y,wt,a,sa,b,sb,c,t,tsq,r,rsq,nitem, tensor)
       nhin1 = 0
 c
 C
@@ -8217,11 +8217,11 @@ c Hole in one
         x = fck2-fck1
         y = fok1-fck1
         wt = 1./(sig1*sig1)
-        i = LINFIT(2,x,y,wt,a,sa,b,sb,t,tsq,r,rsq,mitem,tensor)
+        i = LINFIT(2,x,y,wt,a,sa,b,sb,c,t,tsq,r,rsq,mitem,tensor)
         x = fck1-fck2
         y = fok2-fck2
         wt = 1./(sig2*sig2)
-        i = LINFIT(2,x,y,wt,a,sa,b,sb,t,tsq,r,rsq,mitem,tensor)
+        i = LINFIT(2,x,y,wt,a,sa,b,sb,c,t,tsq,r,rsq,mitem,tensor)
       endif
 c End Hole in one
 C
@@ -8394,7 +8394,7 @@ C
 C
 C                                ---- ALL REFELCTIONS NOW PROCESSED.
 c
-      i = LINFIT(3,x,y,wt,a,sa,b,sb,t,tsq,r,rsq,mitem,tensor)
+      i = LINFIT(3,x,y,wt,a,sa,b,sb,c,t,tsq,r,rsq,mitem,tensor)
 c     hole-in-1
       hin1 = b
       hin1su = sb
@@ -8876,7 +8876,7 @@ c         watch out for unreasonably large Do
 C
 C       initialise best line fitting
 C
-        i = LINFIT(1,x,y,wt,a,sa,b,sb,t,tsq,r,rsq,nitem, tensor)
+        i = LINFIT(1,x,y,wt,a,sa,b,sb,c,t,tsq,r,rsq,nitem, tensor)
 C
         NFOFC=0
         m6acc=l6acc
@@ -8915,7 +8915,7 @@ C
           ymax=max(ymax,abs(yaxis))
           nfofc=nfofc+1
           itemp =
-     1    LINFIT(2,XAXIS,YAXIS,wt,a,sa,b,sb,t,tsq,r,rsq,nitem,tensor)
+     1    LINFIT(2,XAXIS,YAXIS,wt,a,sa,b,sb,c,t,tsq,r,rsq,nitem,tensor)
 c
           IF  (IPUNCH.EQ.3) then
 c disabled april 2016
@@ -8948,7 +8948,7 @@ c
               goto 2840
         endif
 c
-        IDJW=LINFIT(3,X,Y,WT,YCUT,SIGCUT,SLOPE,SIGSLOP,T,TSQ,CORREL,
+        IDJW=LINFIT(3,X,Y,WT,YCUT,SIGCUT,SLOPE,SIGSLOP,c,T,TSQ,CORREL,
      1  COOD,NFOFC,tensor)
 C
         IF (IDJW.GE.0) THEN
@@ -10870,11 +10870,12 @@ C----- CLOSE THE 'CIF' OUTPUT FILE
       END
 c
 CODE FOR LINFIT
-      function LINFIT(mode,x,y,wt,a,sa,b,sb,t,tsq,r,rsq,mitem,tensor)
+      function LINFIT(mode,x,y,wt,a,sa,b,sb,C,t,tsq,r,rsq,mitem,tensor)
 c     1  root, xcoord, ycoord, grad)
 c least squares best line, based on Bevington, Chapter 6 
 c  see also http://mathworld.wolfram.com/LeastSquaresFitting.html
 c  y = a + bx
+C  and y = cx (i.e. line passes through origin)
 c
 c verified against Watts & Halliwell, Essential Environmental
 c Science, Routledge, 1996.
@@ -10918,6 +10919,7 @@ c
         if(abs(denom) .gt. zero) then
             a = (sy*sxx - sx*sxy)/denom
             b = (ss*sxy - sx*sy)/denom
+            c = sxy/sxx
 
 c This bit based on Wolfram world but including weights (derived by DJW so 
 c beware)

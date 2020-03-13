@@ -1598,7 +1598,7 @@ C   REPORT CORRECTION SUMMARY
          WRITE ( CMON,197) NTOT
 c         WRITE(NCAWU, '(A)') trim(CMON(1))
          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
-197   FORMAT(I6,' Reflections corrected')
+197   FORMAT(I6,' Reflections compared')
          WRITE ( CMON,198) AMIN,APHINP,AMUNP
 c         WRITE(NCAWU, '(A)') trim(CMON(1))
          IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
@@ -1622,12 +1622,12 @@ C----- WRITE MINIMUM INFO TO VDU
          WRITE ( CMON,202) NTOT, AVER, AMIN, AMAX
          CALL XPRVDU(NCVDU, 2,0)
       ELSE
-         WRITE ( CMON,202) NTOT, AVER, AMIN, AMAX
+         WRITE ( CMON,202) NTOT, AMIN, AVER, AMAX
          CALL XPRVDU(NCVDU, 2,0)
-202      FORMAT( I6, ' Reflections corrected.',
-     +      ' Average correction =',F6.3,' (On Fo)',
-     +   /'   Minimum correction =',F6.3,
-     +      ' Maximum correction =',F6.3)
+202      FORMAT( I6, ' Reflections processed.',
+     +   /'   Minimum excursion =',F6.3,
+     +   /'   Average excursion =',F6.3,' (On Fo)',
+     +   /'   Maximum excursion =',F6.3)
       ENDIF
 C
       IF ( IDIFRT.EQ.5) THEN
