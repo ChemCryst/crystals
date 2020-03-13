@@ -400,12 +400,12 @@ $      'shell command'
 
 
         \EDIT
-        \  Start entering a new atom to be added to the model:
+        \                    Start entering a new atom to be added to the model:
         ATOM U 1.0
-        \  Refresh your memory as to the rest of the syntax:
+        \                    Refresh your memory as to the rest of the syntax:
         ?atom
-        \  Carry on entering the atom, but give the 
-        \ parameter name, X, explicitly.
+        \                    Carry on entering the atom, but give the 
+        \                    parameter name, X, explicitly.
         CONTINUE X=0.2 0.4 0.5
         END
    

@@ -2155,6 +2155,8 @@ Merging equivalent reflections  -  \\MERGE
     PARAMETERS P .....
     END
 
+    Feb 2020. Todo: Remove all references to JCODE from MERGE. Should probably remove it 
+    from COMMANDS too. 
 
 
 
@@ -2250,14 +2252,14 @@ WEIGHTING SCHEMES FOR THE DATA MERGE
 
 
    
-   At present there are three different weighting schemes available
+   At present there are four different weighting schemes available
    for merging equivalent reflections.
    These are :
    
             #. Each reflection is given equal weight (unit weights).
             #. Weights based on a Gaussian distribution.
             #. :math:`w_i = 1.0/\sigma_i^2`  for each reflection.
-   
+            #. Robust/resistant weights (Blessing 1997)
 
 
    
