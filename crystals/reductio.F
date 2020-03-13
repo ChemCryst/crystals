@@ -2026,7 +2026,7 @@ C--           APPLY THE SPECIAL WEIGHT FOR THIS JCODE
 1550        CONTINUE
 c
 c
-            IF (NSCH.EQ.4) THEN
+            IF ((NSCH.EQ.4).AND.(NREF.GE.5)) THEN                  !ONLY IF ENOUGH EQUIV TO MAKE SENSE
 c Robust weighting - see Blessing, Acta 1997, page 424
              zmax=6.
              z=abs(delta)/sigmode

@@ -4599,9 +4599,9 @@ C----- H-bonds AND ESDs
         if (esd .le. 0.) then
           CALL SNUM ( store(itmp), 0.0,  -2, 0, 10, IVEC )
         else
-C set esd to 0.0 to keep Ton happy
-c          CALL SNUM ( store(itmp),store(itmp+1),  -3, 0, 10, IVEC )
-          CALL SNUM ( store(itmp),0.0,  -3, 0, 10, IVEC )
+C set esd to 0.0 to keep Ton happy - switch back on for Bruce 2020
+          CALL SNUM ( store(itmp),store(itmp+1),  -3, 0, 10, IVEC )
+c         CALL SNUM ( store(itmp),0.0,  -3, 0, 10, IVEC )
         endif
         WRITE( CBUF, '(20A1)') (IVEC(I), I=1, 20)
         CALL XCRAS ( CBUF, N)
