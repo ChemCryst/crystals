@@ -90,7 +90,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     end do
     CODE = 0
 
-    ICODE = 0
+    ICODE = 0 !todo: get rid of ICODE completely
     !calculate c and d and then a'
     XK1 = REFLH * Q1 + REFLK * Q2 + REFLL * Q3
     XK2 = REFLL * Q6
@@ -178,19 +178,25 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
         30      IF(LM(2)==0) GO TO 31
         !!!CALCULATION OF dM/dR [45] (DSIZE)
         RTERM = TCOM * BR * CU
+        !        write(111,*) "PNA BR", pna, BR
         SUM(2) = SUM(2) + RTERM
+!        write(111, *) "pn rterm sum(2)", pna, rterm, sum(2)
         IF (ABS(RTERM / SUM(2))<CLIMIT) LM(2) = 0
         31      IF (LM(3)==0) GO TO 32
         !!!CALCULATION OF DELMD (I ASSUME THIS IS dM/dD [48]?) (this is DDECLINA)
         DMD = SU * PNA * DXETAD
         DTERM = TCOM * (BDD * CU + BJ * DMD)
+        !        write(222,*) "PNA BDD", pna, BDD
         SUM(3) = SUM(3) + DTERM
+!        write(222, *) "pn dterm sum(3)", pna, dterm, sum(3)
         IF (ABS(DTERM / SUM(3))<CLIMIT) LM(3) = 0
         32      IF(LM(4)==0) GO TO 33
         !!!CALCULATION OF dM/dE [50] (this is DAZIMUTH)
         DME = SU * PNA * DXETAE
         ETERM = TCOM * (BEA * CU + BJ * DME)
+        !        write(333,*) "PNA BEA", pna, BEA
         SUM(4) = SUM(4) + ETERM
+!        write(333, *) "pn eterm sum(4)", pna, eterm, sum(4)
         IF (ABS(ETERM / SUM(4))<CLIMIT) LM(4) = 0
         33      IF (LM(5)==0) GO TO 34
         !!!CALCULATION OF dM/dG [47]
@@ -201,6 +207,9 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
         !!!CALCULATION OF M [33]
         MTERM = TCOM * CU * BJ
         SUM(6) = SUM(6) + MTERM
+        write(222, *) "h k l p n a' angled anglee anglexi eta RIRA xk1 xk2 xk3"
+        write(222, *)  REFLH, REFLK, REFLL, jp, nord, E, ANGLED, ANGLEE, anglexi, XETA, RIRA, XK1, XK2, XK3
+        write(222,*) "MTERM SUM 6", MTERM, sum(6)
         IF(ABS(MTERM / SUM(6))<CLIMIT) LM(5) = 0
         35      LSUM = LM(1) + LM(2) + LM(3) + LM(4) + LM(5) + LM(6)
         IF (MODE==1) LSUM = LM(6)
@@ -218,12 +227,16 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     DELC(NAA, 3) = DELC(NAA, 3) + SUM(6) * REFLL
     DELS(NAA, 1) = DELS(NAA, 1) + SUM(6) * REFLH
     DELS(NAA, 2) = DELS(NAA, 2) + SUM(6) * REFLK
-    DELS(NAA, 3) = DELS(NAA, 3) + SUM(6) * REFLL !these are used for derivatives wrt centre of ring
+    DELS(NAA, 3) = DELS(NAA, 3) + SUM(6) * REFLL
     7     DELMC(NAA, 6) = SUM(6) + DELMC(NAA, 6)
+    DELMS(NAA, 6) = SUM(6) + DELMS(NAA, 6)
+
     IF(NAA==2) GO TO 15
 
     AT = DELMC(1, 6) - DELMS(2, 6)
+
     IF (NAD==2) GO TO 40
+
     BT = DELMC(2, 6) + DELMS(1, 6)
 
     40    IF(MODE==1) GO TO 9
@@ -249,8 +262,8 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
         DA(K) = DELMC(1, IA) - DELMS(2, IA)
         IF(INV1==1) GO TO 52
         DB(K) = DELMC(2, IA) + DELMS(1, IA)
-        if (K==7) THEN
-            !            WRITE(333, *) "RADIUS", RIRA, REFLH, REFLK, REFLL, AT, BT, DA(K), DB(K)
+        if (K==9) THEN
+!                        WRITE(999, *) "E", ANGLEE, REFLH, REFLK, REFLL, AT, BT, DA(K), DB(K)
         end if
         52      K = K + 1
         !        51      L = L + 1
@@ -316,9 +329,7 @@ SUBROUTINE BESSEL(BSUM, PP, XZ, BSIGN)
         IF(LB(1)==0) GO TO 6
         !!!CALCULATION OF dM/dBd TERM [42]
         BJTERM = (2. * M + PP) * BTERM / XZ ![43]
-        !        DBJB(JPA) = DBJB(JPA) + BJTERM
         DBJB(JP) = DBJB(JP) + BJTERM
-        !        IF(ABS(BJTERM / DBJB(JPA))<CLIMIT) LB(1) = 0
         IF(ABS(BJTERM / DBJB(JP))<CLIMIT) LB(1) = 0
         6     IF (LB(2)==0) GO TO 7
         !!!CALCULATION OF dM/dR TERM [45]

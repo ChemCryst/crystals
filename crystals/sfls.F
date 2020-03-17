@@ -3889,6 +3889,7 @@ c iso-temperature factor
           BT=BT+BP
           AT=AT+AP
 
+          write(111,*) "AT BT", AT, BT
 
 C--CHECK IF ANY REFINEMENT IS BEING DONE
           IF(ATOM_REFINE)THEN
