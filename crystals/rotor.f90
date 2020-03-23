@@ -207,7 +207,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
         SUM(6) = SUM(6) + MTERM
         write(222, *) "h k l p n a' angled anglee anglexi eta RIRA xk1 xk2 xk3"
         write(222, *)  REFLH, REFLK, REFLL, jp, nord, E, ANGLED, ANGLEE, anglexi, XETA, RIRA, XK1, XK2, XK3
-        write(222,*) "MTERM SUM 6", MTERM, sum(6)
+        write(222, *) "MTERM SUM 6", MTERM, sum(6)
         IF(ABS(MTERM / SUM(6))<CLIMIT) LM(5) = 0
         35      LSUM = LM(1) + LM(2) + LM(3) + LM(4) + LM(5) + LM(6)
         IF (MODE==1) LSUM = LM(6)
@@ -218,7 +218,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     SUM(1) = (SUM(1) - SUM(6) * DBIB) / BIO
     DO IA = 1, 5
         DELMC(NAA, IA) = SUM(IA) + DELMC(NAA, IA)
-        DELMS(NAA, IA) = SUM(IA) + DELMS(NAA, IA)
+!        DELMS(NAA, IA) = SUM(IA) + DELMS(NAA, IA)
     end do
     DELC(NAA, 1) = DELC(NAA, 1) + SUM(6) * REFLH
     DELC(NAA, 2) = DELC(NAA, 2) + SUM(6) * REFLK
@@ -261,7 +261,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
         IF(INV1==1) GO TO 52
         DB(K) = DELMC(2, IA) + DELMS(1, IA)
         if (K==9) THEN
-            !                        WRITE(999, *) "E", ANGLEE, REFLH, REFLK, REFLL, AT, BT, DA(K), DB(K)
+            WRITE(999, *) "E", ANGLEE, REFLH, REFLK, REFLL, AT, BT, DA(K), DB(K)
         end if
         52      K = K + 1
         !        51      L = L + 1
