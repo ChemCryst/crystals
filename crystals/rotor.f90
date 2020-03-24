@@ -16,7 +16,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     REAL DELCE, DELDE, DELDD, DELAPD, DELAPE, DXETA, DXETAD, DXETAE
     REAL DMD, DME, AT, BT, SUM(6)
     DOUBLE PRECISION CLIMIT
-    REAL DELMC(2, 6), DELMS(2, 6), DELC(2, 3), DELS(2, 3)
+    REAL DELMC(2, 6), DELMS(2, 6) !, DELC(2, 3), DELS(2, 3)
 
     INCLUDE 'STORE.INC'
     INCLUDE 'QSTORE.INC'
@@ -34,6 +34,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     REFLK = STORE(M2T + 1) / TWOPI
     REFLL = STORE(M2T + 2) / TWOPI
     HT = STORE(M2T + 3) / TWOPI !this is only used here
+!    write(11, *) "H K L HT", REFLH, REFLK, REFLL, HT
     RIRA = STORE(M5ARI + 8)
     CLIMIT = 0.001
     XC = STORE(M5ARI + 4)
@@ -81,14 +82,15 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
         DO IW = 1, 6 !do 6 loops
             DELMC(IWA, IW) = 0
             DELMS(IWA, IW) = 0.0
-            IF (IW>3) GO TO 10
-            DELC(IWA, IW) = 0.
-            DELS(IWA, IW) = 0.
-            10    CONTINUE
+!            IF (IW>3) GO TO 10
+!            DELC(IWA, IW) = 0.
+!            DELS(IWA, IW) = 0.
+!            10    CONTINUE
         end do
     end do
     CODE = 0
     ICODE = 0 !todo: get rid of ICODE completely
+
     !calculate c and d and then a'
     XK1 = REFLH * Q1 + REFLK * Q2 + REFLL * Q3
     XK2 = REFLL * Q6
@@ -218,14 +220,14 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     SUM(1) = (SUM(1) - SUM(6) * DBIB) / BIO
     DO IA = 1, 5
         DELMC(NAA, IA) = SUM(IA) + DELMC(NAA, IA)
-!        DELMS(NAA, IA) = SUM(IA) + DELMS(NAA, IA)
+!        DELMS(NAA, IA) = SUM*SP + DELMS(NAA, IA)
     end do
-    DELC(NAA, 1) = DELC(NAA, 1) + SUM(6) * REFLH
-    DELC(NAA, 2) = DELC(NAA, 2) + SUM(6) * REFLK
-    DELC(NAA, 3) = DELC(NAA, 3) + SUM(6) * REFLL
-    DELS(NAA, 1) = DELS(NAA, 1) + SUM(6) * REFLH
-    DELS(NAA, 2) = DELS(NAA, 2) + SUM(6) * REFLK
-    DELS(NAA, 3) = DELS(NAA, 3) + SUM(6) * REFLL
+!    DELC(NAA, 1) = DELC(NAA, 1) + SUM(6) * REFLH
+!    DELC(NAA, 2) = DELC(NAA, 2) + SUM(6) * REFLK
+!    DELC(NAA, 3) = DELC(NAA, 3) + SUM(6) * REFLL
+!    DELS(NAA, 1) = DELS(NAA, 1) + SUM(6) * REFLH !not sure these are used anywhere -> take these 6 lines out
+!    DELS(NAA, 2) = DELS(NAA, 2) + SUM(6) * REFLK
+!    DELS(NAA, 3) = DELS(NAA, 3) + SUM(6) * REFLL
     7     DELMC(NAA, 6) = SUM(6) + DELMC(NAA, 6)
 !    DELMS(NAA, 6) = SUM(6) + DELMS(NAA, 6)
 
