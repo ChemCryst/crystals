@@ -642,7 +642,6 @@ C--CHECK THAT ALL THE TEMPERATURE FACTORS ARE REASONABLE
 C-C-C-CHECK THAT ALL T.F. AND SPECIAL PARAMETERS ARE REASONABLE
 C-C-C-SIMILAR CHECKS ALSO IN XSFLSG (NO CHANGE OF LIST 5 BY XSFLSB)
       M5=L5
-      write(1234, *) "in xsflsb = ", STORE(L5 + 12)
 C--CHECK THAT THERE IS AT LEAST ONE ATOM IN LIST 5
       IF(N5 .LE. 0) GOTO 9940
 C--LOOP OVER EACH ATOM
@@ -737,7 +736,7 @@ C-C-C-PRINT WARNING, GIVE AZIMUTH ARBITRARY VALUE
      4                  ' and should not be refined !',
      5            /,' (change in LIST 5 only in case of refinement !)')
 C-C-C-PERHAPS IT'S REASONABLE TO REMOVE THE AUTOMATICAL CHANGE
-                STORE(M5+10) = 0.0
+!               STORE(M5+10) = 0.0 !todo: 2/4/20 this is the bit that's setting E to 0 if D=0
               ELSE
 C-C-C-CHECK WHETHER AZIMUTH MIGHT BE GIVEN IN DEGREES
 C-C-C-(SUPPOSED IF ANGLES BIGGER THAN 5.0)
@@ -3493,7 +3492,6 @@ C-C-C-...FOR DERIVATIVES
 !    1         'Flag is ', NINT(flag)
 !           CALL XPRVDU(NCVDU, 1,0)
 
-      write(1234, *) "start of xsflsx = ", STORE(L5 + 12)
       ISTACK=-1   ! CLEAR OUT A FEW CONSTANTS
       ACR=0.
       BCR=0.
@@ -3632,13 +3630,11 @@ c--calculate the information for the symmetry positions
 c compute h' = S.h
         STORE(M2T)=STORE(M6)*STORE(M2)+STORE(M6+1)*STORE(M2+3)
      2   +STORE(M6+2)*STORE(M2+6)
-      write(1234,*) "store(m2t) = ", store(m2t)
         STORE(M2T+1)=STORE(M6)*STORE(M2+1)+STORE(M6+1)*STORE(M2+4)
      2   +STORE(M6+2)*STORE(M2+7)
-      write(1234,*) "store(m2t+1) = ", store(m2t+1)
         STORE(M2T+2)=STORE(M6)*STORE(M2+2)+STORE(M6+1)*STORE(M2+5)
      2   +STORE(M6+2)*STORE(M2+8)
-      write(1234,*) "store(m2t+2) = ", store(m2t+2)
+
 c calculate the h.t terms
         STORE(M2T+3)=(STORE(M6)*STORE(M2+9)+STORE(M6+1)*STORE(M2+10)
      2   +STORE(M6+2)*STORE(M2+11))
@@ -3806,7 +3802,6 @@ c
       DO LJY=1,N5  !todo: this is where the loop over atoms starts
         AT=0.  ! CLEAR THE ACCUMULATION VARIABLES
         BT=0.
-        write(1234, *) "start of loop m5a+12 = ", STORE(M5A + 12)
 
         ATOM_REFINE = .FALSE.
 
@@ -3862,7 +3857,6 @@ c Special shapes
             ELSE IF (NINT(FLAG) .EQ. 4) THEN   ! CALC RING TF
               CALL XRING (M2, ST, M5A,M6,SLRFAC,DSIZE,DDECLINA,DAZIMUTH)
             ELSE IF (NINT(FLAG)==5) THEN
-              write(1234, *) "STORE(M5ARI+12) = ", STORE(M5A + 12)
               CALL XROTOR (3, M5A, M2T, SST, AROTOR, BROTOR) !, DSIZE, DDECLINA, DAZIMUTH) todo: add these extra outputs?
             END IF
             T=Tiso(LJY)
@@ -3884,7 +3878,7 @@ c iso-temperature factor
           END IF
           BT=BT+BP
           AT=AT+AP
-          write(111,*) "AT BT", AT, BT
+
 C--CHECK IF ANY REFINEMENT IS BEING DONE
           IF(ATOM_REFINE)THEN
 c
