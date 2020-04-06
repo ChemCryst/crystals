@@ -57,7 +57,6 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     Q4 = STORE(L1O2 + 4)
     Q5 = STORE(L1O2 + 5)
     Q6 = STORE(L1O2 + 8)
-    write(555, *) "Q1-6", Q1, Q2, Q3, Q4, Q5, Q6
     !SET I0 (BIO)
     call BESSEL(BSUM, 0, BD, 1.0)
     BIO = bsum
@@ -93,8 +92,8 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     CC = TWOPI * RIRA * (XK1 * CD * CE + XK3 * CD * SE - XK2 * SD)
     DD = TWOPI * RIRA * (-XK1 * SE + XK3 * CE)
     AP = SQRT(CC**2 + DD**2)
-    !    XETA = ACOS(CC / AP)
-    XETA = ATAN2(CC, DD)
+!    XETA = ACOS(CC / AP)
+        XETA = ATAN2(DD, CC)
     !    IF (DD<0.0) XETA = -XETA
     ANGLE = NORD * (ANGLEXI - XETA)
     IF (MODE==1) GO TO 2
@@ -103,17 +102,20 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     DELDD = 0
     DELCD = -TWOPI * RIRA * (XK1 * SD * CE + XK2 * CD + XK3 * SD * SE)
     DELAPD = CC * DELCD / AP
-    DELAPE = (CC * DELCE + DD * DELDE) / AP
+    DELAPE = CC * DELCE / AP + DD * DELDE / AP
 
     TE = DELAPE / AP
     TD = DELAPD / AP
 
-    CW = 1 / SQRT((AP * AP) - (DD * DD))
+    CW = 1 / (AP * SQRT((AP * AP) - (DD * DD)))
 
     IF (ABS(CW)<0.00001) GO TO 1 !TO AVOID /0 ERROR?
 
     DXETAD = - DD * CW * DELAPD
     DXETAE = CW * (AP * DELDE - DD * DELAPE)
+
+    write(111, *) "ETA D E DELCD DELCE DELDE DELAPD DELAPE DXETAD DXETAE", &
+     XETA, ANGLED, ANGLEE, DELCD, DELCE, DELDE, DELAPD, DELAPE, DXETAD, DXETAE
 
     GO TO 2
     1     ICODE = 1
@@ -180,14 +182,12 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
         DMD = SU * PNA * DXETAD
         DTERM = TCOM * (BDD * CU + BJ * DMD)
         SUM(3) = SUM(3) + DTERM
-        !        write(666, *) "h k l pn BDD dterm sum(3)", REFLH, REFLK, REFLL, pna, BDD, dterm, sum(3)
         IF (ABS(DTERM / SUM(3))<CLIMIT) LM(3) = 0
         32      IF(LM(4)==0) GO TO 33
         !!!CALCULATION OF dM/dE [50] (this is DAZIMUTH)
         DME = SU * PNA * DXETAE
         ETERM = TCOM * (BEA * CU + BJ * DME)
         SUM(4) = SUM(4) + ETERM
-        !        write(777, *) "h k l pn BEA eterm sum(4)", REFLH, REFLK, REFLL, pna, BEA, eterm, sum(4)
         IF (ABS(ETERM / SUM(4))<CLIMIT) LM(4) = 0
         33      IF (LM(5)==0) GO TO 34
         !!!CALCULATION OF dM/dG [47]
@@ -206,13 +206,10 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     end do
     12    IF (MODE==1) GO TO 7
     SUM(1) = (SUM(1) - SUM(6) * DBIB) / BIO
-    !    write(777, *) "NAA SUM(4) DELMC(NAA,4)", NAA, SUM(4), DELMC(NAA, 4)
     DO IA = 1, 5
         DELMC(NAA, IA) = DELMC(NAA, IA) + SUM(IA) * CP
         DELMS(NAA, IA) = DELMS(NAA, IA) + SUM(IA) * SP
     end do
-    !    write(777, *) "DELMC(NAA,4)", DELMC(NAA, 4)
-    !    write(777, *) "DELMS(NAA,4)", DELMS(NAA, 4)
     7     DELMC(NAA, 6) = DELMC(NAA, 6) + SUM(6) * CP
     DELMS(NAA, 6) = DELMS(NAA, 6) + SUM(6) * SP
 
@@ -230,8 +227,8 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
         DA(K) = DELMC(1, IA) - DELMS(2, IA)
         IF(INV1==1) GO TO 52
         DB(K) = DELMC(2, IA) + DELMS(1, IA)
-        if (K==8) THEN
-            WRITE(999, *) "E", ANGLEE, REFLH, REFLK, REFLL, AT, BT, DA(K), DB(K)
+        if (K==6) THEN
+            WRITE(999, *) "BD", BD, REFLH, REFLK, REFLL, AT, BT, DA(K), DB(K)
         end if
         52      K = K + 1
     end do
