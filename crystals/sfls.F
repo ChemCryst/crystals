@@ -509,7 +509,7 @@ C--SET THE VALUES FOR A S.F.L.S. CALCULATION
 C--CLEAR THE CORE
       CALL XRSL
 C--LOAD LIST 13  -  THE EXPERIMENTAL CONDITIONS LIST
-      IF (KHUNTR (13,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL13 
+      IF (KHUNTR (13,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL13
       IF ( IERFLG .LT. 0 ) GO TO 9900
 C--SET THE TWINNED/NON-TWINNED FLAG
       TWINNED = .FALSE.
@@ -521,7 +521,7 @@ C--FETCH THE POLARISATION CONSTANTS
       THETA1=STORE(L13DC+1)
       THETA2=STORE(L13DC+2)
 C--LOAD LIST 23  -  DEFINES CONDITIONS FOR S.F.L.S. CALCULATIONS
-      IF (KHUNTR (23,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL23 
+      IF (KHUNTR (23,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL23
       IF ( IERFLG .LT. 0 ) GO TO 9900
 C--SET THE ANOMALOUS DISPERSION FLAG
 C SET TO -1 FOR NO ANOMALOUS DISPERSION, ELSE 0 Replaced by ANOMAL
@@ -581,8 +581,8 @@ C--CLEAR THE CORE OUT AGAIN
 C----- SAVE SOME SPACE FOR THE U AXES
       IADDU = KCHLFL (4)
 C--LOAD LIST 33  -  THE CONDITIONS FOR THIS S.F.L.S. CALCULATION
-      IF (KHUNTR (33,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL33 
-c Check if the flag normalise is used (m33cd+15). 
+      IF (KHUNTR (33,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL33
+c Check if the flag normalise is used (m33cd+15).
 c Normalisation of the normal matrix for inversion is done automatically
 c see solve_helper.F90
       if(istore(M33CD+15)/=0) then
@@ -632,10 +632,10 @@ c
       NF=-1
       REFPRINT = .FALSE.
 C----- READ DOWN SOME LISTS
-      IF (KHUNTR (01,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL01 
-      IF (KHUNTR (02,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL02  
-      IF (KHUNTR (05,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL05  
-      IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL30 
+      IF (KHUNTR (01,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL01
+      IF (KHUNTR (02,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL02
+      IF (KHUNTR (05,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL05
+      IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL30
       IF (IERFLG .LT. 0) GOTO 9900
 C
 C--CHECK THAT ALL THE TEMPERATURE FACTORS ARE REASONABLE
@@ -895,7 +895,7 @@ cric11           CALL XIRTAC(4)     ! INITIALISE THE DETAILS FOR /FO/
            IF(.NOT. REFPRINT) NF = -1          ! SUPPRESS ELEMENT PRINTING
 
            IF ( IERFLG .LT. 0 ) GO TO 9900
-           IF (KHUNTR (25,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL25 
+           IF (KHUNTR (25,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL25
                                                           ! LOAD THE TWIN OPERATORS
 
            IF ( MD5ES .NE. N25 ) GO TO 9910 ! CHECK THAT THE NUMBER OF OPERATORS EQUALS THE NUMBER OF ELEMENTS
@@ -1260,7 +1260,7 @@ C AT -10 SIGMA
      2       MIN(99.99,(100.*SQRT(RALL(11)/RALL(12)))),
      3       -10.0,'(Exclude very bad data)'
             CALL XPRVDU(NCVDU, 1, 0)
-            IF (ISSPRT .EQ. 0) WRITE(NCWU, 62611) 
+            IF (ISSPRT .EQ. 0) WRITE(NCWU, 62611)
      1       NINT(RALL(8)), MIN(99.99,100.* RALL(9)/RALL(10)),
      2       MIN(99.99,100.*SQRT(RALL(11)/RALL(12))), -10.0
 C AT +2 SIGMA
@@ -1269,7 +1269,7 @@ C AT +2 SIGMA
      2       MIN(99.99,100.*SQRT(RALL(5)/RALL(6))), RALL(1),
      3      '(a la SHELX)'
             CALL XPRVDU(NCVDU, 1, 0)
-            IF (ISSPRT .EQ. 0) WRITE(NCWU, 62611) 
+            IF (ISSPRT .EQ. 0) WRITE(NCWU, 62611)
      1       NINT(RALL(2)), MIN(99.99,100.* RALL(3)/RALL(4)),
      2           MIN(99.99,100.*SQRT(RALL(5)/RALL(6))), RALL(1)
 C            CALL OUTCOL(1)
@@ -1313,8 +1313,8 @@ cdjwsep09
         write(cmon,'(A)')
      1  ' Estimates of the overall scale by 5 methods'
         call xprvdu(NCVDU,1,0)
-        write(cmon,'(3(a,f7.3,3x))') 
-     1  'SumFo/SumFc=', rscle, 
+        write(cmon,'(3(a,f7.3,3x))')
+     1  'SumFo/SumFc=', rscle,
      1  'SumFoFc/SumFc^2=', sfofc/sfcfc,
      1  'SumwFoFc/SumwFc^2=', wsfofc/wsfcfc,
      2  'LS-scale=', scale,
@@ -2011,8 +2011,8 @@ C       CHECK IF THIS IS TWINNED CALCULATION
           JREF_STACK_PTR=ISTORE(JREF_STACK_START)
           CALL XAB2FC    ! DERIVE THE TOTALS AGAINST /FC/ FROM THOSE W.R.T. A AND B
           CALL XACRT(4)  ! ACCUMULATE THE /FO/ TOTALS
-        ELSE             ! THIS IS A TWINNED CALCULATION  
-C Start of Twinned 
+        ELSE             ! THIS IS A TWINNED CALCULATION
+C Start of Twinned
           PH=STORE(M6)   ! PRESERVE THE NOMINAL INDICES
           PK=STORE(M6+1)
           PL=STORE(M6+2)
@@ -2239,8 +2239,8 @@ c             FETCH THE INFORMATION FOR THE NEXT ELEMENT SCALE FACTOR
           END IF
         END IF  ! end of twinned calculations
 C end of twinned
-c                
-C--FINISH OFF THIS REFLECTION  
+c
+C--FINISH OFF THIS REFLECTION
 C
 C--CHECK IF WE SHOULD INCLUDE EXTINCTION
         IF(EXTINCT)THEN ! WE SHOULD INCLUDE EXTINCTION
@@ -2275,7 +2275,7 @@ C
 C COMPUTE BIS AND PIECES FOR THE WEIGHTED R-FACTOR, wR2
 C      write(123,*)Fo, store(m6+3), fcexs, store(m6+5), w
 C
-        IF(NV.GE.0)THEN 
+        IF(NV.GE.0)THEN
 C Refining on F**2
           WFO=abs(FO)*FO*W               !  w*Fo^2
           DF=ABS(FO)*FO-FCEXS*FCEXS    !  (Fo^2-Fc^2) Abs in case Fo is -ve, to give Fo^2 -ve
@@ -2284,13 +2284,13 @@ C Refining on F**2
         ELSE
 C Refining on F
 c         note abs to denominator.  This is for compatibility, but is probably wrong.
-          WFO=ABS(FO)*W    
+          WFO=ABS(FO)*W
           DF=FO-FCEXS
           WDF=W*DF
           S=SCALEK
         END IF
         AMINF=AMINF+WDF*WDF  ! COMPUTE THE MINIMISATION FUNCTION
-c        
+c
         ik = KALLOW(IALLOW)
         IF ((SFLS_TYPE.NE.SFLS_CALC) .OR.(ik.GE.0)) THEN
 C If #CALC, then L28 was adjusted earlier. Call KALLOW again to get normal R
@@ -2302,7 +2302,7 @@ C         ADD IN THE COMPUTED VALUES OF /FC/ ETC., TO THE OVERALL TOTALS
           FCT=FCT+FCEXS
           DFT=DFT+ABS(ABS(FO) - FCEXS)
 C COMPUTE THE TERMS FOR THE WEIGHTED R-VALUE
-          WDFT=WDFT+WDF*WDF  
+          WDFT=WDFT+WDF*WDF
           RW=RW+WFO*WFO
 c Terms for various scale factors
           nrefused=nrefused+1
@@ -2546,7 +2546,7 @@ C
            RALL(3) = RALL(3) + ABS(ABS(FO)-FCEXS) ! sum Abs(Fo-Fc)
            RALL(4) = RALL(4) + ABS(FO)            ! sum Fo
            RALL(5) = RALL(5) + WDF*WDF            ! sum wdelta sq
-           RALL(6) = RALL(6) + WFO*WFO                ! 
+           RALL(6) = RALL(6) + WFO*WFO                !
           ENDIF
 ! (user-sigma sigma)
           IF (K.EQ.0) THEN                           ! use all LIST28 items
@@ -2555,7 +2555,7 @@ c          IF (STORE(M6+20) .GE. RALL(13)) THEN      ! user-sigma
             RALL(15) = RALL(15) + ABS(ABS(FO)-FCEXS) ! sum Abs(Fo-Fc)
             RALL(16) = RALL(16) + ABS(FO)            ! sum Fo
             RALL(17) = RALL(17) + WDF*WDF            ! sum wdelta sq
-            RALL(18) = RALL(18) + WFO*WFO                ! 
+            RALL(18) = RALL(18) + WFO*WFO                !
           ENDIF
          ENDIF
 
@@ -2836,7 +2836,7 @@ CRIC13:6150  FORMAT(/,' New scale factor (G) is ',F10.5,
 C
       IF (S .GT. ZERO) S = A/S
       IF (IULN .EQ. 6) THEN
-      WRITE ( CMON, 6260) JI, N12, MIN(R,99.99), MIN(RW,99.99), 
+      WRITE ( CMON, 6260) JI, N12, MIN(R,99.99), MIN(RW,99.99),
      1 MIN(999.99,S)
       ENDIF
 6260  FORMAT ('{  Cycle',I5,' Params',I5,'{8,1 R ',F5.2,
@@ -3469,6 +3469,7 @@ C-C-C-...FOR STRUCTURE FACTOR-CALCULATION
       DOUBLE PRECISION SLRFAC
 C-C-C-...FOR DERIVATIVES
       DOUBLE PRECISION DSIZE, DDECLINA, DAZIMUTH
+      DOUBLE PRECISION DMADBD, DMBDBD, DMADR, DMBDR, DMADXI, DMBDXI
 
       real, dimension(:), allocatable :: Tiso, Tisoin
       real, dimension(:,:), allocatable :: Taniso, Ttemp, atemp
@@ -3842,6 +3843,12 @@ c  slrfac starting-values for special shape factors and derivatives
           DSIZE=1.0d0
           DDECLINA=1.0d0
           DAZIMUTH=1.0d0
+          DMADBD = 1.0d0
+          DMBDBD = 1.0d0
+          DMADR = 1.0d0
+          DMBDR = 1.0d0
+          DMADXI = 1.0d0
+          DMBDXI = 1.0d0
 
           IF (NINT(FLAG) .EQ. 0) THEN
 c aniso-temperature factor
@@ -3857,7 +3864,8 @@ c Special shapes
             ELSE IF (NINT(FLAG) .EQ. 4) THEN   ! CALC RING TF
               CALL XRING (M2, ST, M5A,M6,SLRFAC,DSIZE,DDECLINA,DAZIMUTH)
             ELSE IF (NINT(FLAG)==5) THEN
-              CALL XROTOR (3, M5A, M2T, SST, AROTOR, BROTOR) !, DSIZE, DDECLINA, DAZIMUTH) todo: add these extra outputs?
+              CALL XROTOR (3, M5A, M2T, SST, AROTOR, BROTOR,
+     1        DMADBD, DMBDBD, DMADR, DMBDR, DMADXI, DMBDXI ) !, DSIZE, DDECLINA, DAZIMUTH) todo: add these extra outputs?
             END IF
             T=Tiso(LJY)
             TFOCC=T*FOCC
@@ -3897,12 +3905,20 @@ C-C-C-CHECK WHETHER WE HAVE SPHERE, LINE OR RING
               IF (NINT(FLAG) .LE. 1) THEN
 C--CALCULATE THE PARTIAL DERIVATIVES W.R.T. A FOR THE ANISO-TERMS
                 ALPD(6:11)=ALPD(6:11)+STORE(M2T+4:M2T+9)*AP
-              ELSE
+              ELSE IF (NINT(FLAG) .LE. 4) THEN
 C-C-C-CALC. THE PART. DERIV. W.R.T. A FOR ISO-TERM + SPECIAL FIGURES
                 ALPD(6)=ALPD(6)+TC*AP
                 ALPD(7)=ALPD(7)+((DSIZE*AP)/SLRFAC)
                 ALPD(8)=ALPD(8)+((DDECLINA*AP)/SLRFAC)
                 ALPD(9)=ALPD(9)+((DAZIMUTH*AP)/SLRFAC)
+              ELSE
+C-C-C-CALC. THE PART. DERIV. W.R.T. A FOR ISO-TERM + SPECIAL FIGURES
+                ALPD(6)=ALPD(6)+TC*AP
+                ALPD(7)=ALPD(7)+(DMADR*AP)
+                ALPD(8)=ALPD(8)+(DDECLINA*AP)
+                ALPD(9)=ALPD(9)+(DAZIMUTH*AP)
+                ALPD(10)=ALPD(10)+(DMADXI*AP)
+                ALPD(11)=ALPD(11)+(DMADBD*AP)
               ENDIF
             ELSE
 C--CALCULATE THE PARTIAL DERIVATIVES W.R.T. A FOR U[ISO]
@@ -3923,6 +3939,14 @@ C-C-C-CHECK WHETHER WE HAVE SPHERE, LINE OR RING
                 IF (NINT(FLAG) .LE. 1) THEN
 C--CALCULATE THE PARTIAL DERIVATIVES W.R.T. B FOR THE ANISO-TERMS
                   BLPD(6:11)=BLPD(6:11)+STORE(M2T+4:M2T+9)*BP
+                ELSE IF (NINT(FLAG) .LE. 4) THEN
+C Natalie / Bruce rotor
+                  BLPD(6)=BLPD(6)+TC*BP
+                  BLPD(7)=BLPD(7)+(DMBDR*BP)
+                  BLPD(8)=BLPD(8)+(DDECLINA*BP)
+                  BLPD(9)=BLPD(9)+(DAZIMUTH*BP)
+                  BLPD(10)=BLPD(10)+(DMADXI*BP)
+                  BLPD(11)=BLPD(11)+(DMADBD*BP)
                 ELSE
 C-C-C-CALC. THE PART. DERIV. W.R.T. B FOR ISO-TERM + SPECIAL FIGURES
                   BLPD(6)=BLPD(6)+TC*BP
@@ -4278,4 +4302,3 @@ C--SET UP THE LIST 12 FLAGS
       END IF
       RETURN
       END
-
