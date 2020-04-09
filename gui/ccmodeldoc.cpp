@@ -240,7 +240,7 @@ CcModelDoc::~CcModelDoc()
     for ( list<CrModel*>::const_iterator aview=attachedViews.begin(); aview != attachedViews.end(); aview++)
             (*aview)->DocRemoved();
 // Remove from list of ModelDoc objects:
-    sm_ModelDocList.remove(this); 
+    sm_ModelDocList.remove(this);
 }
 
 
@@ -271,7 +271,7 @@ bool CcModelDoc::ParseInput(deque<string> &  tokenList )
                 CcModelAtom item(this);
                 item.ParseInput(tokenList);
                 item.m_glID = m_glIDs++;
-                item.id = mAtomList.size() + mDonutList.size() + mSphereList.size() + 1;
+                item.id = mAtomList.size() + mDonutList.size() + mSphereList.size() + mRotorList.size() + 1;
                 m_thread_critical_section.Enter();
                 mAtomList.push_back(item);
                 m_thread_critical_section.Leave();
@@ -314,6 +314,7 @@ void CcModelDoc::Clear()
     mBondList.clear();
     mSphereList.clear();
     mDonutList.clear();
+    mRotorList.clear();
     m_thread_critical_section.Leave();
 //    m_nAtoms = 0;
     nSelected = 0;
@@ -358,11 +359,11 @@ void CcModelDoc::DrawViews(bool rescaled)
     for ( list<CrModel*>::const_iterator aview=attachedViews.begin(); aview != attachedViews.end(); aview++)
             (*aview)->Update(rescaled);
     for ( list<CrModList*>::const_iterator alist=attachedLists.begin(); alist != attachedLists.end(); alist++)
-            (*alist)->Update(mAtomList.size()+mDonutList.size()+mSphereList.size());
+            (*alist)->Update(mAtomList.size()+mDonutList.size()+mSphereList.size()+mRotorList.size());
 }
 
-/* 
-Ensure that the atom given is visible in the list views 
+/*
+Ensure that the atom given is visible in the list views
 of this ccmodeldoc (by scrolling to the right place).
 */
 void CcModelDoc::EnsureVisible(CcModelObject* va)
@@ -415,6 +416,10 @@ void CcModelDoc::DisableAtomByLabel(const string & atomname, bool select)
       {
         ((CcModelDonut*)item)->Disable(select);
       }
+      else if ( item->Type() == CC_ROTOR )
+      {
+        ((CcModelRotor*)item)->Disable(select);
+      }
       DrawViews();
     }
 }
@@ -429,6 +434,8 @@ void CcModelDoc::DisableAllAtoms(bool select)
             (*sphere).Disable(select);
   for ( list<CcModelDonut>::iterator donut=mDonutList.begin();    donut != mDonutList.end();   donut++)
             (*donut).Disable(select);
+  for ( list<CcModelRotor>::iterator rotor=mRotorList.begin();    rotor != mRotorList.end();   rotor++)
+            (*rotor).Disable(select);
   m_thread_critical_section.Leave();
   DrawViews();
 
@@ -452,6 +459,10 @@ CcModelObject* CcModelDoc::FindAtomByLabel(const string & atomname)
   for ( list<CcModelDonut>::iterator donut=mDonutList.begin();    donut != mDonutList.end();   donut++)
   {
         if((*donut).Label() == nAtomname) ratom = &(*donut);
+  }
+  for ( list<CcModelRotor>::iterator rotor=mRotorList.begin();    rotor != mRotorList.end();   rotor++)
+  {
+        if((*rotor).Label() == nAtomname) ratom = &(*rotor);
   }
   m_thread_critical_section.Leave();
   return ratom;
@@ -484,12 +495,14 @@ void CcModelDoc::SelectAllAtoms(bool select)
             (*sphere).Select(select);
   for ( list<CcModelDonut>::iterator donut=mDonutList.begin();    donut != mDonutList.end();   donut++)
             (*donut).Select(select);
+  for ( list<CcModelRotor>::iterator rotor=mRotorList.begin();    rotor != mRotorList.end();   rotor++)
+            (*rotor).Select(select);
   m_thread_critical_section.Leave();
 
   DrawViews();
 
   if ( select )
-    (CcController::theController)->status.SetNumSelectedAtoms( mAtomList.size() + mSphereList.size() + mDonutList.size() );
+    (CcController::theController)->status.SetNumSelectedAtoms( mAtomList.size() + mSphereList.size() + mDonutList.size() + mRotorList.size() );
   else
     (CcController::theController)->status.SetNumSelectedAtoms( 0 );
 
@@ -531,6 +544,8 @@ void CcModelDoc::InvertSelection()
             if ( (*sphere).Select() ) i++;
   for ( list<CcModelDonut>::iterator donut=mDonutList.begin();    donut != mDonutList.end();   donut++)
             if ( (*donut).Select() ) i++;
+  for ( list<CcModelRotor>::iterator rotor=mRotorList.begin();    rotor != mRotorList.end();   rotor++)
+            if ( (*rotor).Select() ) i++;
   m_thread_critical_section.Leave();
   (CcController::theController)->status.SetNumSelectedAtoms( i );
   DrawViews();
@@ -584,7 +599,7 @@ void CcModelDoc::DocToList( CrModList* ml )
                    (*atom).IsSelected(),
                    (*atom).m_disabled || (*atom).m_excluded);
     }
-    for ( list<CcModelSphere>::iterator sphere=mSphereList.begin(); sphere != mSphereList.end(); sphere++) 
+    for ( list<CcModelSphere>::iterator sphere=mSphereList.begin(); sphere != mSphereList.end(); sphere++)
     {
       row.clear();
       ostringstream strm;
@@ -652,11 +667,45 @@ void CcModelDoc::DocToList( CrModList* ml )
                    (*ring).IsSelected(),
                    (*ring).m_disabled || (*ring).m_excluded);
     }
+    for ( list<CcModelRotor>::iterator ring=mRotorList.begin();    ring != mRotorList.end();   ring++)
+    {
+      row.clear();
+      ostringstream strm;
+      strm << (*ring).id;
+      row.push_back( strm.str() );
+      row.push_back( (*ring).m_elem);
+      strm.str(""); strm << (*ring).m_serial;
+      row.push_back( strm.str() );
+      strm.str(""); strm << setprecision(3) << fixed << (*ring).frac_x;
+      row.push_back( strm.str() );
+      strm.str(""); strm << (*ring).frac_y;
+      row.push_back( strm.str() );
+      strm.str(""); strm << (*ring).frac_z;
+      row.push_back( strm.str() );
+      strm.str(""); strm << (float)(*ring).occ/1000.0f;
+      row.push_back( strm.str() );
+      row.push_back( "Rotor" );
+      strm.str(""); strm << (*ring).m_ueq;
+      row.push_back( strm.str() );
+      strm.str(""); strm << (*ring).m_spare;
+      row.push_back( strm.str() );
+      strm.str(""); strm << (*ring).m_refflag;
+      row.push_back( strm.str() );
+      strm.str(""); strm << (*ring).m_assembly;
+      row.push_back( strm.str() );
+      strm.str(""); strm << (*ring).m_group;
+      row.push_back( strm.str() );
+      strm.str(""); strm << (*ring).m_sflags;
+      row.push_back( strm.str() );
+      ml -> AddRow((*ring).id,            row,
+                   (*ring).IsSelected(),
+                   (*ring).m_disabled || (*ring).m_excluded);
+    }
     ml->EndUpdate();
 
   }
   m_thread_critical_section.Leave();
-  
+
 }
 
 bool CcModelDoc::RenderModel( CcModelStyle * style )
@@ -747,6 +796,30 @@ CcRect CcModelDoc::FindModel2DExtent(float * mat, CcModelStyle * style) {
 			}
 		}
 	}
+  for ( list<CcModelRotor>::iterator rotor=mRotorList.begin();       rotor != mRotorList.end();     rotor++)
+	{
+
+        if ( (style->showres != 0) && ( (*rotor).m_refflag != style->showres )) continue;
+        if ( (style->showgroup != 0) && ( (*rotor).m_group != 0 ) && ( (*rotor).m_group != style->showgroup ) )  continue;
+//not excluded
+		if ( !((*rotor).m_excluded) ) {
+			CcPoint c = (*rotor).Get2DCoord(mat);
+			int extra = (*rotor).Radius(style);
+			if ( !extentinit ){
+				extentinit = true;
+				extent.mRight = c.X() + extra;
+				extent.mLeft = c.X() - extra;
+				extent.mTop = c.Y() - extra;
+				extent.mBottom = c.Y() + extra;
+			} else {
+				if ( c.X() + extra > extent.Right() ) extent.mRight = c.X() + extra;
+				if ( c.X() - extra < extent.Left() ) extent.mLeft = c.X() - extra;
+				if ( c.Y() + extra > extent.Bottom() ) extent.mBottom = c.Y() + extra;
+				if ( c.Y() - extra < extent.Top() ) extent.mTop = c.Y() - extra;
+			}
+		}
+	}
+
 	return extent;
 }
 
@@ -835,7 +908,7 @@ bool CcModelDoc::RenderAtoms( CcModelStyle * style, bool feedback)
    m_thread_critical_section.Enter();
 
 
-   if ( !( mAtomList.empty() && mSphereList.empty() && mDonutList.empty() ) ) {
+   if ( !( mAtomList.empty() && mSphereList.empty() && mDonutList.empty()  && mRotorList.empty()) ) {
 
 // Render atoms last if 'TINY' style (transparent).
 // Render q peaks last  - might be transparent.
@@ -846,12 +919,16 @@ bool CcModelDoc::RenderAtoms( CcModelStyle * style, bool feedback)
      for ( list<CcModelDonut>::iterator donut=mDonutList.begin();    donut != mDonutList.end();   ++donut) {
        (*donut).Render(style, feedback);
      }
+     for ( list<CcModelRotor>::iterator rotor=mRotorList.begin();    rotor != mRotorList.end();   ++rotor) {
+       (*rotor).Render(style, feedback);
+     }
+
 // Non Q atoms
 	 for ( list<CcModelAtom>::iterator atom=mAtomList.begin();       atom != mAtomList.end();     ++atom) {
-        if (   ((*atom).Label().length() == 0 || (*atom).Label()[0] != 'Q' ) 
-             && VisibleAtomStyle(style,*atom) )            
-//            && ( (style->showres == 0) || ( (*atom).m_refflag == style->showres )) 
-//            && ( (style->showgroup == 0) || ( (*atom).m_group == 0 ) || ( (*atom).m_group == style->showgroup ) ) )    
+        if (   ((*atom).Label().length() == 0 || (*atom).Label()[0] != 'Q' )
+             && VisibleAtomStyle(style,*atom) )
+//            && ( (style->showres == 0) || ( (*atom).m_refflag == style->showres ))
+//            && ( (style->showgroup == 0) || ( (*atom).m_group == 0 ) || ( (*atom).m_group == style->showgroup ) ) )
             {
 		   (*atom).Render(style, feedback);
 	    }
@@ -878,21 +955,21 @@ bool CcModelDoc::VisibleAtomStyle( CcModelStyle * style, CcModelAtom & atom ) {
 
 /*    if ( atom.m_assembly != 0 ) {
     ostringstream strm;
-    strm << atom.Label() << " showgrp: " << style->showgroup << " atomgrp: " << atom.m_group 
+    strm << atom.Label() << " showgrp: " << style->showgroup << " atomgrp: " << atom.m_group
          << " size(assm): " << m_assemblies[atom.m_assembly].size() << " first group: " << *(m_assemblies[atom.m_assembly].begin())
          << " in set? " << (m_assemblies[atom.m_assembly].find(style->showgroup)!= m_assemblies[atom.m_assembly].end()) ? "yes":"no";
 	LOGERR ( strm.str() );
-    }*/ 
-    
-    if (  
-            (  
+    }*/
+
+    if (
+            (
                 (style->showres == 0) || ( atom.m_refflag == style->showres ) // OK if showres 0, or if residue matches showres
             )
-         && 
-            (   
-                (style->showgroup == 0) ||  ( atom.m_group == 0 ) 
+         &&
+            (
+                (style->showgroup == 0) ||  ( atom.m_group == 0 )
               || ( atom.m_group == style->showgroup )   //OK if showgroup 0, or if group matches showgroup.
-              || ( 
+              || (
                       ( m_assemblies[atom.m_assembly].size() != 0 )
                    && ( atom.m_group == *(m_assemblies[atom.m_assembly].begin()) )  //is the first group of this assembly
                    && ( m_assemblies[atom.m_assembly].find(style->showgroup)== m_assemblies[atom.m_assembly].end() )
@@ -901,7 +978,7 @@ bool CcModelDoc::VisibleAtomStyle( CcModelStyle * style, CcModelAtom & atom ) {
 //            if group matches showgroup, OR
 //            if this is the first group of an assembly and there is no instance of showgroup in this assembly.
 // (This logic prevents whole assemblies disappearing when they don't match any group numbers).
-            )     
+            )
         ) { return true; }
 
 
@@ -918,16 +995,16 @@ bool CcModelDoc::RenderBonds( CcModelStyle * style, bool feedback )
    if ( ! mBondList.empty() ) {
      for ( list<CcModelBond>::iterator bond=mBondList.begin();    bond != mBondList.end();   bond++) {
        if ( !((*bond).m_excluded) ) {
-           if (     ( (*bond).m_patms.size() < 2 )  
+           if (     ( (*bond).m_patms.size() < 2 )
                  || (  VisibleAtomStyle(style,*((*bond).m_patms[0])) &&  VisibleAtomStyle(style,*((*bond).m_patms[1])) )
-              ) 
+              )
                 (*bond).Render(style,feedback);
-                
-                // Only display bond if 
+
+                // Only display bond if
                 //   (i) not excluded
                 //   (ii) <2 atoms (never?) - but does test valid atom list before next condition.
                 //   (iii) both atoms are visible with current style.
-                
+
        }
      }
 	 ret = true;
@@ -939,12 +1016,12 @@ bool CcModelDoc::RenderBonds( CcModelStyle * style, bool feedback )
 bool CcModelDoc::RenderExcluded( CcModelStyle * style )
 {
    m_thread_critical_section.Enter();
-   if ( mAtomList.empty() && mBondList.empty() && mSphereList.empty() && mDonutList.empty() )
+   if ( mAtomList.empty() && mBondList.empty() && mSphereList.empty() && mDonutList.empty() && mRotorList.empty() )
    {
      m_thread_critical_section.Leave();
      return false;
    }
-       
+
    glPolygonMode(GL_FRONT, GL_POINT);
    glPolygonMode(GL_BACK, GL_POINT);
    for ( list<CcModelAtom>::iterator atom=mAtomList.begin();       atom != mAtomList.end();     atom++)
@@ -984,6 +1061,11 @@ void CcModelDoc::FlagFrag(const string & atomname)
    if ( ! mDonutList.empty() )
      for ( list<CcModelDonut>::iterator donut=mDonutList.begin();    donut != mDonutList.end();   donut++)
         (*donut).spare = false;
+
+   if ( ! mRotorList.empty() )
+     for ( list<CcModelRotor>::iterator rotor=mRotorList.begin();    rotor != mRotorList.end();   rotor++)
+        (*rotor).spare = false;
+
    m_thread_critical_section.Leave();
 
    int nChanged=0;
@@ -1034,6 +1116,8 @@ void CcModelDoc::SelectFrag(const string & atomname, bool select)
       if ( (*sphere).spare ) (*sphere).Select(select);
   for ( list<CcModelDonut>::iterator donut=mDonutList.begin();    donut != mDonutList.end();   donut++)
       if ( (*donut).spare ) (*donut).Select(select);
+  for ( list<CcModelRotor>::iterator rotor=mRotorList.begin();    rotor != mRotorList.end();   rotor++)
+      if ( (*rotor).spare ) (*rotor).Select(select);
   m_thread_critical_section.Leave();
   DrawViews();
 }
@@ -1051,6 +1135,8 @@ string CcModelDoc::FragAsString( const string & atomname, string delimiter )
         if ( (*sphere).spare ) result += (*sphere).Label() + delimiter;
   for ( list<CcModelDonut>::iterator donut=mDonutList.begin();    donut != mDonutList.end();   donut++)
         if ( (*donut).spare ) result += (*donut).Label() + delimiter;
+  for ( list<CcModelRotor>::iterator rotor=mRotorList.begin();    rotor != mRotorList.end();   rotor++)
+        if ( (*rotor).spare ) result += (*rotor).Label() + delimiter;
   m_thread_critical_section.Leave();
   return result;
 }
@@ -1068,6 +1154,8 @@ string CcModelDoc::SelectedAsString( string delimiter )
         if ( (*sphere).IsSelected() ) result += (*sphere).Label() + delimiter;
   for ( list<CcModelDonut>::iterator donut=mDonutList.begin();    donut != mDonutList.end();   donut++)
         if ( (*donut).IsSelected() ) result += (*donut).Label() + delimiter;
+  for ( list<CcModelRotor>::iterator rotor=mRotorList.begin();    rotor != mRotorList.end();   rotor++)
+        if ( (*rotor).IsSelected() ) result += (*rotor).Label() + delimiter;
    m_thread_critical_section.Leave();
   return result;
 }
@@ -1083,6 +1171,8 @@ void CcModelDoc::SendAtoms( int style, bool sendonly )
         if ( (*sphere).IsSelected() ) (*sphere).SendAtom (style, sendonly);
   for ( list<CcModelDonut>::iterator donut=mDonutList.begin();    donut != mDonutList.end();   donut++)
         if ( (*donut).IsSelected() ) (*donut).SendAtom (style, sendonly);
+  for ( list<CcModelRotor>::iterator rotor=mRotorList.begin();    rotor != mRotorList.end();   rotor++)
+        if ( (*rotor).IsSelected() ) (*rotor).SendAtom (style, sendonly);
    m_thread_critical_section.Leave();
 }
 
@@ -1103,6 +1193,10 @@ void CcModelDoc::ZoomAtoms( bool doZoom )
     for ( list<CcModelDonut>::iterator donut=mDonutList.begin();    donut != mDonutList.end();   donut++)
         if ( (*donut).IsSelected() ) (*donut).m_excluded = false;
         else                         (*donut).m_excluded = doZoom;
+  if ( ! mRotorList.empty() )
+    for ( list<CcModelRotor>::iterator rotor=mRotorList.begin();    rotor != mRotorList.end();   rotor++)
+        if ( (*rotor).IsSelected() ) (*rotor).m_excluded = false;
+        else                         (*rotor).m_excluded = doZoom;
 
   if ( ! mBondList.empty() )
      for ( list<CcModelBond>::iterator bond=mBondList.begin();    bond != mBondList.end();   bond++)
@@ -1120,31 +1214,38 @@ CcModelObject * CcModelDoc::FindObjectByGLName(GLuint name)
   m_thread_critical_section.Enter();
   if ( ! mAtomList.empty() )
     for ( list<CcModelAtom>::iterator atom=mAtomList.begin();       atom != mAtomList.end();     atom++)
-        if ( (*atom).m_glID == name )  { 
+        if ( (*atom).m_glID == name )  {
               ratom = &(*atom);
               break;
-        } 
+        }
 
   if ( ! mBondList.empty() && !ratom )
     for ( list<CcModelBond>::iterator bond=mBondList.begin();    bond != mBondList.end();   bond++)
         if ( (*bond).m_glID == name )  {
               ratom = &(*bond);
               break;
-        } 
+        }
 
   if ( ! mSphereList.empty() && !ratom)
     for ( list<CcModelSphere>::iterator sphere=mSphereList.begin(); sphere != mSphereList.end(); sphere++)
        if ( (*sphere).m_glID == name )  {
               ratom = &(*sphere);
               break;
-        } 
+        }
 
   if ( ! mDonutList.empty() && !ratom)
     for ( list<CcModelDonut>::iterator donut=mDonutList.begin();    donut != mDonutList.end();   donut++)
         if ( (*donut).m_glID == name )  {
               ratom = &(*donut);
               break;
-        } 
+        }
+  if ( ! mRotorList.empty() && !ratom)
+    for ( list<CcModelRotor>::iterator rotor=mRotorList.begin();    rotor != mRotorList.end();   rotor++)
+        if ( (*rotor).m_glID == name )  {
+              ratom = &(*rotor);
+              break;
+        }
+
 
   m_thread_critical_section.Leave();
   return ratom;
@@ -1166,7 +1267,7 @@ void CcModelDoc::FastBond(int x1,int y1,int z1, int x2, int y2, int z2,
         m_thread_critical_section.Leave();
 }
 
-void CcModelDoc::FastAtom(const string & label,int x1,int y1,int z1, 
+void CcModelDoc::FastAtom(const string & label,int x1,int y1,int z1,
                           int r, int g, int b, int occ,float cov, int vdw,
                           int spare, int flag,
                           float u1,float u2,float u3,float u4,float u5,
@@ -1177,25 +1278,25 @@ void CcModelDoc::FastAtom(const string & label,int x1,int y1,int z1,
 
 {
     m_thread_critical_section.Enter();
-        CcModelAtom item(label,x1,y1,z1, 
+        CcModelAtom item(label,x1,y1,z1,
                           r,g,b,occ,cov,vdw,spare,flag,
                           u1,u2,u3,u4,u5,u6,u7,u8,u9,frac_x,
                           frac_y,frac_z,elem,serial,refflag,
                           assembly, group, ueq,fspare,iflag,this);
 //        m_nAtoms++;
-        item.id = mAtomList.size() + mDonutList.size() + mSphereList.size() + 1;
+        item.id = mAtomList.size() + mDonutList.size() + mRotorList.size() + mSphereList.size() + 1;
         item.m_glID = m_glIDs++;
         mAtomList.push_back(item);
-        
+
         m_assemblies[assembly].insert(group);                       // Store PART info for quick access later for whole structure.
                                                // m_assemblies is a std::map where the key is the assembly number
                                                // and the value is a std::set of group numbers in that assembly.
-        
+
     m_thread_critical_section.Leave();
 
 }
 
-void CcModelDoc::FastSphere(const string & label,int x1,int y1,int z1, 
+void CcModelDoc::FastSphere(const string & label,int x1,int y1,int z1,
                           int r, int g, int b, int occ,int cov, int vdw,
                           int spare, int flag, int iso, int irad,
                           float frac_x, float frac_y, float frac_z,
@@ -1203,11 +1304,11 @@ void CcModelDoc::FastSphere(const string & label,int x1,int y1,int z1,
                           int assembly, int group, float ueq, float fspare, int iflag)
 {
         m_thread_critical_section.Enter();
-            CcModelSphere item(label,x1,y1,z1, 
+            CcModelSphere item(label,x1,y1,z1,
                           r,g,b,occ,cov,vdw,spare,flag,
                           iso,irad,frac_x, frac_y, frac_z, elem, serial,refflag,
                           assembly, group, ueq,fspare,iflag,this);
-            item.id = mAtomList.size() + mDonutList.size() + mSphereList.size() + 1;
+            item.id = mAtomList.size() + mDonutList.size() + mRotorList.size() + mSphereList.size() + 1;
             item.m_glID = m_glIDs++;
             mSphereList.push_back(item);
         m_thread_critical_section.Leave();
@@ -1222,7 +1323,7 @@ void CcModelDoc::FastDonut(const string & label,int x1,int y1,int z1,
                           int assembly, int group, float ueq, float fspare, int iflag)
 {
     m_thread_critical_section.Enter();
-        CcModelDonut item(label,x1,y1,z1, 
+        CcModelDonut item(label,x1,y1,z1,
                           r,g,b,occ,cov,vdw,spare,flag,
                           iso,irad,idec,iaz,
                           frac_x, frac_y, frac_z, elem, serial,refflag,
@@ -1233,6 +1334,25 @@ void CcModelDoc::FastDonut(const string & label,int x1,int y1,int z1,
     m_thread_critical_section.Leave();
 }
 
+void CcModelDoc::FastRotor(const string & label,int x1,int y1,int z1,
+                          int r, int g, int b, int occ,int cov, int vdw,
+                          int spare, int flag, int iso, int irad, int idec, int iaz,
+                          int ixi, int ibd,
+                          float frac_x, float frac_y, float frac_z,
+                          const string & elem, int serial, int refflag,
+                          int assembly, int group, float ueq, float fspare, int iflag)
+{
+    m_thread_critical_section.Enter();
+        CcModelRotor item(label,x1,y1,z1,
+                          r,g,b,occ,cov,vdw,spare,flag,
+                          iso,irad,idec,iaz,ixi,ibd,
+                          frac_x, frac_y, frac_z, elem, serial,refflag,
+                          assembly, group, ueq,fspare,iflag,this);
+        item.id = mAtomList.size() + mDonutList.size() + mSphereList.size() + mRotorList.size() + 1;
+        item.m_glID = m_glIDs++;
+        mRotorList.push_back(item);
+    m_thread_critical_section.Leave();
+}
 
 
 extern "C" {
@@ -1242,21 +1362,29 @@ extern "C" {
 void fastbond  (int x1,int y1,int z1, int x2, int y2, int z2,
                 int r, int g, int b,  int rad,int btype,
                 int np, int * ptrs, char label[80], char slabel[80] );
-void fastatom  (char* elem,int serial,char* label,int x1,int y1,int z1, 
+void fastatom  (char* elem,int serial,char* label,int x1,int y1,int z1,
                 int r, int g, int b, int occ,float cov, int vdw,
                 int spare, int flag, float u1,float u2,float u3,float u4,float u5,
                 float u6,float u7,float u8,float u9, float fx, float fy, float fz,
                 int refflag, int assembly, int group, float ueq, float fspare, int iflag);
-void fastsphere  (char* label,int x1,int y1,int z1, 
+void fastsphere  (char* label,int x1,int y1,int z1,
                 int r, int g, int b, int occ,int cov, int vdw,
-                int spare, int flag, int iso, int irad, 
+                int spare, int flag, int iso, int irad,
                 float frac_x, float frac_y, float frac_z,
                 char* elem, int serial, int refflag,
                 int assembly, int group, float ueq, float fspare, int iflag);
-                
-void fastdonut  (char* label,int x1,int y1,int z1, 
+
+void fastdonut  (char* label,int x1,int y1,int z1,
                 int r, int g, int b, int occ,int cov, int vdw,
                 int spare, int flag, int iso, int irad, int idec, int iaz,
+                float frac_x, float frac_y, float frac_z,
+                char* elem, int serial, int refflag,
+                int assembly, int group, float ueq, float fspare, int iflag);
+
+void fastrotor  (char* label,int x1,int y1,int z1,
+                int r, int g, int b, int occ,int cov, int vdw,
+                int spare, int flag, int iso, int irad, int idec, int iaz,
+                int ixi, int ibd,
                 float frac_x, float frac_y, float frac_z,
                 char* elem, int serial, int refflag,
                 int assembly, int group, float ueq, float fspare, int iflag);
@@ -1276,7 +1404,7 @@ void fastbond  (int x1,int y1,int z1, int x2, int y2, int z2,
                                          np,ptrs,clabel,slabel);
 }
 
-void fastatom  (char* elem,int serial,char* label,int x1,int y1,int z1, 
+void fastatom  (char* elem,int serial,char* label,int x1,int y1,int z1,
                 int r, int g, int b, int occ,float cov, int vdw,
                 int spare, int flag, float u1,float u2,float u3,float u4,float u5,
                 float u6,float u7,float u8,float u9, float fx, float fy, float fz,
@@ -1286,7 +1414,7 @@ void fastatom  (char* elem,int serial,char* label,int x1,int y1,int z1,
       string celem  = elem;
       LOGSTAT ( "-----------Fastatom added:" + clabel );
       if ( CcModelDoc::sm_CurrentModelDoc )
-            CcModelDoc::sm_CurrentModelDoc->FastAtom(clabel,x1,y1,z1, 
+            CcModelDoc::sm_CurrentModelDoc->FastAtom(clabel,x1,y1,z1,
                           r,g,b,occ,cov,vdw,spare,flag,
                           u1,u2,u3,u4,u5,u6,u7,u8,u9,fx,fy,fz,
                           celem,serial,refflag,assembly,group,ueq, fspare,iflag) ;
@@ -1308,7 +1436,7 @@ void fastsphere  (char* label,int x1,int y1,int z1,              // 1, 2,3,4
       string clabel = label;
       LOGSTAT ( "-----------Fastsphere added:" + clabel );
       if ( CcModelDoc::sm_CurrentModelDoc )
-            CcModelDoc::sm_CurrentModelDoc->FastSphere(clabel,x1,y1,z1, 
+            CcModelDoc::sm_CurrentModelDoc->FastSphere(clabel,x1,y1,z1,
                           r,g,b,occ,cov,vdw,spare,flag,iso,irad,
                           frac_x, frac_y, frac_z,
                           celem, serial, refflag,
@@ -1316,7 +1444,7 @@ void fastsphere  (char* label,int x1,int y1,int z1,              // 1, 2,3,4
 
 }
 
-void fastdonut  (char* label,int x1,int y1,int z1, 
+void fastdonut  (char* label,int x1,int y1,int z1,
                 int r, int g, int b, int occ,int cov, int vdw,
                 int spare, int flag, int iso, int irad, int idec, int iaz,
                 float frac_x, float frac_y, float frac_z,
@@ -1327,7 +1455,7 @@ void fastdonut  (char* label,int x1,int y1,int z1,
       string clabel = label;
       LOGSTAT ( "-----------Fastdonut added:" + clabel );
       if ( CcModelDoc::sm_CurrentModelDoc )
-            CcModelDoc::sm_CurrentModelDoc->FastDonut(clabel,x1,y1,z1, 
+            CcModelDoc::sm_CurrentModelDoc->FastDonut(clabel,x1,y1,z1,
                           r,g,b,occ,cov,vdw,spare,flag,iso,irad,idec,iaz,
                           frac_x, frac_y, frac_z,
                           celem, serial, refflag,
@@ -1335,3 +1463,23 @@ void fastdonut  (char* label,int x1,int y1,int z1,
 
 }
 
+void fastrotor  (char* label,int x1,int y1,int z1,
+                int r, int g, int b, int occ,int cov, int vdw,
+                int spare, int flag, int iso, int irad, int idec, int iaz,
+                int ixi, int ibd,
+                float frac_x, float frac_y, float frac_z,
+                char* elem, int serial, int refflag,
+                int assembly, int group, float ueq, float fspare, int iflag)
+{
+      string celem  = elem;
+      string clabel = label;
+      LOGSTAT ( "-----------FastRotor added:" + clabel );
+      if ( CcModelDoc::sm_CurrentModelDoc )
+            CcModelDoc::sm_CurrentModelDoc->FastRotor(clabel,x1,y1,z1,
+                          r,g,b,occ,cov,vdw,spare,flag,iso,irad,idec,iaz,
+                          ixi, ibd,
+                          frac_x, frac_y, frac_z,
+                          celem, serial, refflag,
+                          assembly, group, ueq, fspare, iflag) ;
+
+}
