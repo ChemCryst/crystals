@@ -19,11 +19,11 @@ option (useOPENMP "useOPENMP" ON)
 option (useHDF5 "useHDF5" OFF) # hdf5 storage, use system library
 option (compileHDF5 "compileHDF5" OFF) # hdf5 storage, download and compile hdf5
 option (useGGDB3 "useGGDB3" OFF) # used for orion (old dgb)
-option (usepFUnit "usepFUnit" OFF)  
-option (useFAST "useFAST" OFF)  
+option (usepFUnit "usepFUnit" OFF)
+option (useFAST "useFAST" OFF)
 
-option (withSUPERFLIP "withSUPERFLIP" OFF)  
-option (withEDMA "withEDMA" OFF)  
+option (withSUPERFLIP "withSUPERFLIP" OFF)
+option (withEDMA "withEDMA" OFF)
 
 if(verbose)
     SET(CMAKE_VERBOSE_MAKEFILE ON)
@@ -49,7 +49,7 @@ IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.0)
     include(CheckFortranCompilerFlag)
 Endif()
 
-if (${CMAKE_SYSTEM_NAME} MATCHES "MINGW64_NT" OR ${CMAKE_SYSTEM_NAME} MATCHES "MINGW32_NT") 
+if (${CMAKE_SYSTEM_NAME} MATCHES "MINGW64_NT" OR ${CMAKE_SYSTEM_NAME} MATCHES "MINGW32_NT")
     message(STATUS "Building using MSYS2, Mingw64 toolchain")
     SET(MSYS ON)
 endif ()
@@ -62,11 +62,11 @@ if(CMAKE_COMPILER_IS_GNUCC)
       OUTPUT_VARIABLE _compiler_output)
   string(REGEX REPLACE "^.*([0-9]\\.[0-9]\\.[0-9]).*$" "\\1" gcc_compiler_version ${_compiler_output})
   message(STATUS "C compiler version: ${gcc_compiler_version} [${CMAKE_C_COMPILER}]")
-  
+
   if(gcc_compiler_version VERSION_LESS "4.6")
       message(FATAL_ERROR "Your C compiler is too old")
   elseif(gcc_compiler_version VERSION_LESS "4.6")
-      message(WARNING "Your C compiler might be too old")  
+      message(WARNING "Your C compiler might be too old")
   endif ()
 
   exec_program(
@@ -75,11 +75,11 @@ if(CMAKE_COMPILER_IS_GNUCC)
       OUTPUT_VARIABLE _compiler_output)
   string(REGEX REPLACE "^.*([0-9]\\.[0-9]\\.[0-9]).*$" "\\1" gcc_compiler_version ${_compiler_output})
   message(STATUS "C++ compiler version: ${gcc_compiler_version} [${CMAKE_CXX_COMPILER}]")
-  
+
   if(gcc_compiler_version VERSION_LESS "4.6")
       message(FATAL_ERROR "Your C compiler is too old")
   elseif(gcc_compiler_version VERSION_LESS "4.6")
-      message(WARNING "Your C compiler might be too old")  
+      message(WARNING "Your C compiler might be too old")
   endif ()
 
   exec_program(
@@ -88,18 +88,18 @@ if(CMAKE_COMPILER_IS_GNUCC)
       OUTPUT_VARIABLE _compiler_output)
   string(REGEX REPLACE "^.*([0-9]\\.[0-9]\\.[0-9]).*$" "\\1" gcc_compiler_version ${_compiler_output})
   message(STATUS "Fortran compiler version: ${gcc_compiler_version} [${CMAKE_Fortran_COMPILER}]")
-  
+
   if(gcc_compiler_version VERSION_LESS "4.6")
       message(FATAL_ERROR "Your C compiler is too old")
   elseif(gcc_compiler_version VERSION_LESS "4.6")
-      message(WARNING "Your C compiler might be too old")  
+      message(WARNING "Your C compiler might be too old")
   endif ()
 endif ()
 
 # FFLAGS depend on the compiler
 GET_FILENAME_COMPONENT (Fortran_COMPILER_NAME "${CMAKE_Fortran_COMPILER}" NAME)
 if ((Fortran_COMPILER_NAME MATCHES "ifort") OR (Fortran_COMPILER_NAME MATCHES "ifort.exe")) # ifort (untested)
-    message(WARNING "Using Intel Fortran compiler.")  
+    message(WARNING "Using Intel Fortran compiler.")
     SET (IFORT_COMPILER 1)
 endif()
 
@@ -170,7 +170,7 @@ else ()
         else ()
             message(STATUS "Using builtin BLASS library")
             add_definitions(-DCRY_OWNLAPACK)
-        endif ()    
+        endif ()
     endif()
 endif ()
 
@@ -221,7 +221,7 @@ if ( useGUI )
         FIND_PACKAGE(wxWidgets REQUIRED html stc adv core gl base)
     endif ()
     INCLUDE(${wxWidgets_USE_FILE})
-    
+
 
 
     if(APPLE)
@@ -229,7 +229,7 @@ if ( useGUI )
     elseif(UNIX)
         add_definitions(-D__GIL__)
     endif()
-    
+
 else()
     add_definitions(-DCRY_NOGUI)
     if(UNIX)
@@ -286,14 +286,14 @@ set (CRYSVNVER "$ENV{CRYSVNVER}")
 set (CRYHOST "${CMAKE_SYSTEM_NAME}")
 
 if("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
-    MESSAGE("++ 64 bit architecture") 
+    MESSAGE("++ 64 bit architecture")
     if(use32)
-        set(CRYARCH "x86") 
+        set(CRYARCH "x86")
     else ()
-        set(CRYARCH "x86_64") 
+        set(CRYARCH "x86_64")
     endif ()
-else() 
-    set(CRYARCH "x86") 
+else()
+    set(CRYARCH "x86")
 endif()
 
 IF (NOT CRYSVNVER)  # not set
@@ -317,9 +317,9 @@ string(TOUPPER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE)
 
 
 IF (Fortran_COMPILER_NAME MATCHES "gfortran")  # gfortran
-    
+
     add_definitions(-DCRY_GNU)
-    
+
     if(useFAST)
         SET (CMAKE_Fortran_FLAGS_RELEASE "-fno-f2c -O3 -g -march=native -Wfatal-errors -ftree-vectorize -flto -fwhole-program")
     else ()
@@ -346,7 +346,7 @@ IF (Fortran_COMPILER_NAME MATCHES "gfortran")  # gfortran
 #    set(_WINDRES_INCLUDE_DIRS -I${CMAKE_CURRENT_SOURCE_DIR})
     foreach(wx_include_dir ${wxWidgets_INCLUDE_DIRS})
         set(_WINDRES_INCLUDE_DIRS "${_WINDRES_INCLUDE_DIRS} -I${wx_include_dir}")
-    endforeach(wx_include_dir ${wxWidgets_INCLUDE_DIRS})  
+    endforeach(wx_include_dir ${wxWidgets_INCLUDE_DIRS})
     set(CMAKE_RC_COMPILER_INIT windres)
     SET(CMAKE_RC_COMPILE_OBJECT
     "<CMAKE_RC_COMPILER> -O coff <DEFINES> -i <SOURCE> -o <OBJECT> ${_WINDRES_INCLUDE_DIRS}")
@@ -383,16 +383,16 @@ ELSEIF ( IFORT_COMPILER ) # ifort (untested)
     ENDIF()
 
 	add_definitions(-DCRYSVNVER=${CRYSVNVER})
-	
+
     IF(CMAKE_BUILD_TYPE MATCHES Debug)
 		add_definitions(-DDEBUG)
 	else()
 		add_definitions(-DNDEBUG)
 	endif()
-	
+
 	include_directories(gui)
-	
-	
+
+
 
 
 ELSEIF (Fortran_COMPILER_NAME MATCHES "g77")   # g77
@@ -414,14 +414,14 @@ ENDIF ()
 
 
 IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.0)
-    check_fortran_compiler_flag("-std=legacy" _std_legacy_flag)
+#    check_fortran_compiler_flag("-std=legacy" _std_legacy_flag)
     check_fortran_compiler_flag("-fexceptions" _f_exceptions)
     check_fortran_compiler_flag("-fno-sign-zero" _f_no_signzero)
 
-    if(_std_legacy_flag)
-      set(CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -std=legacy")
-      set(CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -std=gnu")
-    endif()
+#    if(_std_legacy_flag)
+#      set(CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -std=legacy")
+#      set(CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -std=gnu")
+#    endif()
     if(_f_exceptions)
       set(CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -fexceptions")
       set(CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -fexceptions")
@@ -431,7 +431,7 @@ IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.0)
       set(CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -fno-sign-zero")
     endif()
 ELSE ()
-    set(CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -std=legacy")
+#    set(CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -std=legacy")
     set(CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -std=gnu")
     set(CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -fexceptions")
     set(CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -fexceptions")
@@ -490,10 +490,10 @@ if(compileHDF5)
     message(STATUS "Building hdf5")
 
     find_package(ZLIB REQUIRED STATIC)
-    
+
     set(HDF5_prefix "${CMAKE_BINARY_DIR}/hdf5")
     file(MAKE_DIRECTORY "${HDF5_prefix}")
-    
+
     set(hdf5url "https://www.hdfgroup.org/package/cmake-unix/?wpdmdl=4301")
 
     #see http://hdf-forum.184993.n3.nabble.com/Compilation-of-HDF5-1-10-1-with-MSYS-and-MiNGW-td4029696.html
@@ -515,16 +515,16 @@ if(compileHDF5)
                             -G${CMAKE_GENERATOR}
              SOURCE_SUBDIR "../hdf5_project/hdf5-1.10.1/"
     )
-    
+
     # move mod files so that crystals can find them when its been built
     ExternalProject_Add_Step(
         hdf5_project mvmod
         DEPENDEES  install
-        DEPENDERS 
+        DEPENDERS
         ALWAYS 1
-        COMMAND ${CMAKE_COMMAND} -E copy_directory  "${HDF5_prefix}/include/static" "${Fortran_MODULE_DIRECTORY}/"        
+        COMMAND ${CMAKE_COMMAND} -E copy_directory  "${HDF5_prefix}/include/static" "${Fortran_MODULE_DIRECTORY}/"
     )
-    
+
     # fix h5Config_f.inc files on windows. No harm to do on other platforms
     ExternalProject_Add_Step(
         hdf5_project fixh5sa
@@ -539,28 +539,28 @@ if(compileHDF5)
         DEPENDERS build
         COMMAND ${CMAKE_BINARY_DIR}/fixh5  ${CMAKE_BINARY_DIR}/hdf5_project-prefix/src/hdf5_project-build/fortran/H5fort_type_defines.h
     )
-     
+
 
     set(HDF5_LIBRARY_DIR "${HDF5_prefix}/lib")
-    set(HDF5_LIBRARY 
+    set(HDF5_LIBRARY
     "${HDF5_LIBRARY_DIR}/${CMAKE_STATIC_LIBRARY_PREFIX}hdf5_fortran-static.a;${HDF5_LIBRARY_DIR}/${CMAKE_STATIC_LIBRARY_PREFIX}hdf5_f90cstub-static.a;${HDF5_LIBRARY_DIR}/${CMAKE_STATIC_LIBRARY_PREFIX}hdf5-static.a")
-    set(HDF5_HL_LIBRARY 
+    set(HDF5_HL_LIBRARY
     "${HDF5_LIBRARY_DIR}/${CMAKE_STATIC_LIBRARY_PREFIX}hdf5_hl_fortran-static.a;${HDF5_LIBRARY_DIR}/${CMAKE_STATIC_LIBRARY_PREFIX}hdf5_hl_f90cstub-static.a;${HDF5_LIBRARY_DIR}/${CMAKE_STATIC_LIBRARY_PREFIX}hdf5_hl-static.a")
 
     set(HDF5_LIBRARIES "${HDF5_HL_LIBRARY};${HDF5_LIBRARY}")
     INCLUDE_DIRECTORIES("${HDF5_prefix}/include")
 
     message(STATUS "Using hdf5 libraries [${HDF5_LIBRARIES}]")
-    
+
 
     message(STATUS "End Building hdf5")
 endif()
 
 
 
-add_dependencies(CameronFortran CrystalsFortran) 
+add_dependencies(CameronFortran CrystalsFortran)
 if( compileHDF5 )
-    add_dependencies(CrystalsFortran hdf5_project) 
+    add_dependencies(CrystalsFortran hdf5_project)
 endif ()
 
 # Executables
@@ -643,8 +643,8 @@ endif()
 
     TARGET_LINK_LIBRARIES(crystals CrystalsFortran CameronFortran ${wxWidgets_LIBRARIES} ${MSYS2LIBS} ${wxSTATICEXTRA_LIBS})
     SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_GUI)
-    SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES Fortran_MODULE_DIRECTORY ${Fortran_MODULE_DIRECTORY} )    
-    
+    SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES Fortran_MODULE_DIRECTORY ${Fortran_MODULE_DIRECTORY} )
+
 #    SET_TARGET_PROPERTIES(crystalscl PROPERTIES LINKER_LANGUAGE Fortran)
     TARGET_LINK_LIBRARIES(crystalscl CrystalsFortran CameronFortran)
 #    SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_NOGUI)
@@ -691,5 +691,3 @@ ADD_CUSTOM_TARGET ( dscbuild ALL DEPENDS commands.dsc crystals )
 
 # Unit testing
 ADD_SUBDIRECTORY(pFunit)
-
-
