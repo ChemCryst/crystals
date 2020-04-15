@@ -970,7 +970,7 @@ contains
     character(len=len(image_text)) :: buffer
     character(len=split_len), dimension(:), allocatable :: elements
     integer m5, count_multiples
-    integer i, j
+    integer i, j, serial_addr
     type(atom_t) :: atom
     logical, dimension(4) :: founds
     character(len=24) :: atom_name
@@ -1001,6 +1001,7 @@ contains
         end if
 
         m5 = savedl5
+        serial_addr = -1
         do j = 1, savedn5
           founds = .true.
           if (atom%label /= "") then
@@ -1015,6 +1016,15 @@ contains
           if (atom%serial /= huge(0)) then
             if (atom%serial /= nint(l5store(m5 + 1))) then
               founds(2) = .false.
+            else
+              ! List 5 can contain duplicated serials
+              ! the workaround here is to use the first one and ignore the following ones
+              ! otherwise you will end with duplicated atoms in the list (one for each serial found)
+              if (serial_addr == -1 .or. serial_addr == m5) then
+                serial_addr = m5
+              else
+                founds(2) = .false.
+              end if
             end if
           end if
           if (atom%part /= huge(0)) then
