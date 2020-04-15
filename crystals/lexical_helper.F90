@@ -973,6 +973,7 @@ contains
     integer i, j, serial_addr
     type(atom_t) :: atom
     logical, dimension(4) :: founds
+    logical :: atom_in_l5
     character(len=24) :: atom_name
 
     ierror = 0
@@ -980,9 +981,8 @@ contains
     original = image_text
 
     call explode(image_text, split_len, elements)
-    print *, elements
-    image_text = ""
-    do i = 1, size(elements)
+    image_text = elements(1)
+    do i = 2, size(elements)
       buffer = ''
       count_multiples = 0
       atom = read_atom(elements(i))
@@ -1002,6 +1002,7 @@ contains
 
         m5 = savedl5
         serial_addr = -1
+        atom_in_l5 = .false.
         do j = 1, savedn5
           founds = .true.
           if (atom%label /= "") then
@@ -1037,16 +1038,20 @@ contains
               founds(4) = .false.
             end if
           end if
-          print *, atom%serial, transfer(l5store(m5), '    '), nint(l5store(m5 + 1)), transfer(l5store(m5 + 16), 1), founds
 
           if (all(founds)) then
             count_multiples = count_multiples + 1
+            atom_in_l5 = .true.
             write (atom_name, '(A,"(",I0,")")') trim(transfer(l5store(m5), '    ')), nint(l5store(m5 + 1))
             image_text = trim(image_text)//" "//trim(atom_name)//trim(atom%suffix)
           end if
 
           m5 = m5 + savedmd5
         end do
+        
+        if (.not. atom_in_l5) then
+          image_text = trim(image_text)//" "//elements(i)
+        end if
       else
         image_text = trim(image_text)//" "//trim(elements(i))
       end if
@@ -1278,8 +1283,6 @@ contains
         end if
       end if
     end if
-    print *, "rigu ", trim(image_text)
-
   end subroutine
 
   !> Parse an atom definition TYPE(SERIAL,S,L,TX,TY,TZ)
