@@ -82,7 +82,7 @@ module lexical_mod
   integer savedl5, savedn5, savedmd5
   integer savedl41b, savedmd41b, savedn41b
 
-  real, dimension(:), allocatable :: l5store, l41store !< local copy of l5 and l41 in store
+  real, dimension(:), allocatable :: l5store, l41store !< local copy of l2, l5 and l41 in store
 
   public lexical_preprocessing, lexical_list_init, lexical_print_changes
 
@@ -98,6 +98,8 @@ contains
     integer, dimension(idim05) :: icom05
     integer, parameter :: idim41 = 16
     integer, dimension(idim41) :: icom41
+    integer, parameter :: idim02 = 32
+    integer, dimension(idim02) :: icom02
     integer n0old, nflold, nulold, lflold
 
     integer, external :: kexist
@@ -732,7 +734,7 @@ contains
     self%label = ''
     self%serial = huge(0)
     self%sym_op%S = huge(0)
-    self%sym_op%L = -1
+    self%sym_op%L = 1
     self%sym_op%translation = 0.0
     self%sym_mat%R = 0.0
     self%sym_mat%T = 0.0
@@ -740,6 +742,7 @@ contains
     self%part = huge(0)
     self%resi = huge(0)
     self%error = 0
+    self%suffix = ''
   end subroutine
 
   !> pretty print for atom_t type
@@ -749,20 +752,24 @@ contains
     character(len=:), allocatable ::atom_text
     character(len=256) :: buffer
 
-    if (any(abs(self%sym_op%translation) > 1e-6)) then
-      write (buffer, '(A,"(",3(I0,","),2(F8.4,","),F8.4,")")') &
-      & trim(self%label), self%serial, self%sym_op%S, self%sym_op%L, self%sym_op%translation
-    else if (self%sym_op%L > 1) then
-      write (buffer, '(A,"(",2(I0,","),I0,")")') &
-      & trim(self%label), self%serial, self%sym_op%S, self%sym_op%L
-    else if (self%sym_op%S > 1 .and. self%sym_op%S /= huge(1)) then
-      write (buffer, '(A,"(",1(I0,","),I0,")")') &
-      & trim(self%label), self%serial, self%sym_op%S
+    if (self%serial == huge(0)) then
+      write (buffer, '(A,"(",A,")", A)') &
+      & trim(self%label), "*", trim(self%suffix)
     else
-      write (buffer, '(A,"(",I0,")")') &
-      & trim(self%label), self%serial
+      if (any(abs(self%sym_op%translation) > 1e-6)) then
+        write (buffer, '(A,"(",3(I0,","),2(F8.4,","),F8.4,")", A)') &
+        & trim(self%label), self%serial, self%sym_op%S, self%sym_op%L, self%sym_op%translation, trim(self%suffix)
+      else if (self%sym_op%L > 1) then
+        write (buffer, '(A,"(",2(I0,","),I0,")", A)') &
+        & trim(self%label), self%serial, self%sym_op%S, self%sym_op%L, trim(self%suffix)
+      else if (self%sym_op%S > 1 .and. self%sym_op%S /= huge(1)) then
+        write (buffer, '(A,"(",1(I0,","),I0,")", A)') &
+        & trim(self%label), self%serial, self%sym_op%S, trim(self%suffix)
+      else
+        write (buffer, '(A,"(",I0,")", A)') &
+        & trim(self%label), self%serial, trim(self%suffix)
+      end if
     end if
-
     atom_text = trim(buffer)
   end function
 
@@ -971,7 +978,7 @@ contains
     character(len=split_len), dimension(:), allocatable :: elements
     integer m5, count_multiples
     integer i, j, serial_addr
-    type(atom_t) :: atom
+    type(atom_t) :: atom, new_atom
     logical, dimension(4) :: founds
     logical :: atom_in_l5
     character(len=24) :: atom_name
@@ -1042,14 +1049,17 @@ contains
           if (all(founds)) then
             count_multiples = count_multiples + 1
             atom_in_l5 = .true.
-            write (atom_name, '(A,"(",I0,")")') trim(transfer(l5store(m5), '    ')), nint(l5store(m5 + 1))
-            image_text = trim(image_text)//" "//trim(atom_name)//trim(atom%suffix)
+            new_atom = atom
+            new_atom%label = trim(transfer(l5store(m5), '    '))
+            new_atom%serial = nint(l5store(m5 + 1))
+            image_text = trim(image_text)//" "//trim(new_atom%text())
           end if
 
           m5 = m5 + savedmd5
         end do
-        
+
         if (.not. atom_in_l5) then
+          print *, "atom not found ", trim(elements(i))
           image_text = trim(image_text)//" "//elements(i)
         end if
       else
@@ -1065,6 +1075,7 @@ contains
       end if
 
     end do
+    print *, trim(image_text)
     image_text = adjustl(image_text)
 
   end subroutine
@@ -1312,7 +1323,7 @@ contains
     i = index(text, '(')
     j = index(text, ')')
     atom%label = text(1:i - 1)
-    atom%suffix = text(j + 1:)
+    atom%suffix = trim(text(j + 1:))
 
     if (len_trim(atom%label) > 3) then
       ! ok, not an atom could be command like type, first...
@@ -1417,7 +1428,7 @@ contains
     integer i, j
     character(len=256) :: logtext
 
-    if (self%sym_op%S == huge(0) .or. self%sym_op%L == -1) then
+    if (self%sym_op%S == huge(0)) then
       self%sym_mat%R = 0.0
       self%sym_mat%T = 0.0
       return
@@ -1459,6 +1470,8 @@ contains
     integer, intent(in) :: l41addr
     type(atom_t), dimension(2) :: atom
     integer l5addr
+
+    call atom%init()
 
     l5addr = savedl5 + transfer(l41store(l41addr), 1)*savedmd5
     atom(1)%l5addr = l5addr
@@ -1622,7 +1635,7 @@ contains
     character(len=split_len), dimension(:), allocatable :: elements
     integer, dimension(:), allocatable :: fieldpos
     type(atom_t) :: atom
-    integer i, j, m5, n, m, image_text_nchar
+    integer i, j, m2, m5, n, m, image_text_nchar
     logical found
     character(len=8), dimension(17), parameter :: ignore = (/ &
                                                   'DRENAME ', &
@@ -1644,6 +1657,14 @@ contains
                                                   'MOVE    '/)
 
     ierror = 0
+
+    if (savedl5 == -1) then
+      call print_to_mon('{E Warning: '//trim(image_text))
+      call print_to_mon('{E Warning: List 5 not loaded, cannot check atom')
+      ierror = -1
+      return
+    end if
+
     image_text_nchar = index(image_text, ' ') - 1  !look for abbreviated directiv$
     image_text_nchar = min(image_text_nchar, 8) ! can't compare beyond leng$
     if (image_text_nchar <= 1) then    ! should never get to this point
@@ -1696,6 +1717,7 @@ contains
       if (atom%error == 0 .and. atom%serial /= huge(0)) then
         ! check list 5
         m5 = savedl5
+        found = .false.
         do j = 1, savedn5
           if (transfer(l5store(m5), '    ') == atom%label .and. &
           & nint(l5store(m5 + 1)) == atom%serial) then
@@ -1735,6 +1757,10 @@ contains
           ierror = -1
         end if
       end if
+
+      ! checking symmetry operators
+      ! Already checked when reading the atom
+
     end do
   end subroutine
 
