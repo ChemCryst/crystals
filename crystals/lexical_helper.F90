@@ -98,8 +98,6 @@ contains
     integer, dimension(idim05) :: icom05
     integer, parameter :: idim41 = 16
     integer, dimension(idim41) :: icom41
-    integer, parameter :: idim02 = 32
-    integer, dimension(idim02) :: icom02
     integer n0old, nflold, nulold, lflold
 
     integer, external :: kexist
@@ -1059,7 +1057,6 @@ contains
         end do
 
         if (.not. atom_in_l5) then
-          print *, "atom not found ", trim(elements(i))
           image_text = trim(image_text)//" "//elements(i)
         end if
       else
@@ -1075,7 +1072,6 @@ contains
       end if
 
     end do
-    print *, trim(image_text)
     image_text = adjustl(image_text)
 
   end subroutine
