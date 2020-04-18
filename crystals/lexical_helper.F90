@@ -1439,13 +1439,15 @@ contains
     end if
 
     if (i > l2 + ((n2 - 1)*md2) .or. i < l2 .or. l2 < 1) then
-      write (logtext, '(A,I0)') '{E Error: invalid symmetry operator index ', self%sym_op%S
+      write (logtext, '(A,I0,A, A)') '{W Warning: invalid symmetry operator index ', self%sym_op%S, &
+      & ' in atom ', self%text()
       call print_to_mon(logtext)
       ierror = -1
       return
     end if
     if (j > l2p + ((n2p - 1)*md2p) .or. j < l2p .or. l2p < 1) then
-      write (logtext, '(A,I0)') '{E Error: invalid lattice translation index ', self%sym_op%L
+      write (logtext, '(A,I0,A,A)') '{W Warning: invalid lattice translation index ', self%sym_op%L, &
+      & ' in atom ', self%text()
       call print_to_mon(logtext)
       ierror = -1
       return
@@ -1766,195 +1768,135 @@ contains
     implicit none
     character(len=*), intent(inout) :: image_text
     character, dimension(5), parameter :: operators = (/'/', '*', '-', '+', '='/)
-    integer n, m, i, s, lenbuf
+    character(len=5), dimension(4), parameter :: keywords = (/'TO   ', 'AND  ', 'FROM ', 'UNTIL'/)
+    integer n, m, i, s, lenbuf, j, pos_keyword
     logical founda, foundb
-    character(len=4) :: buffer
+    character(len=4) :: buffer, bond_type_text
+
+    ! removed all duplicated spaces
+    do i = len_trim(image_text) - 1, 2, -1
+      if (image_text(i:i) == ' ' .and. image_text(i - 1:i - 1) == ' ') then
+        image_text = image_text(1:i - 1)//image_text(i + 1:)
+      end if
+    end do
 
     ! insert spaces around operators if missing
-    s = index(image_text, ' ') ! look for the first space, do not touch the first keyword
     do i = 1, size(operators)
-      n = s
-      do
-        n = n + 1
-
-        if (n > len_trim(image_text)) exit
-
-        if (image_text(n:n) == operators(i)) then
-          founda = .false. !after
-          foundb = .false. !before
-
-          ! spaces after operator
-          founda = .false. !after
-          if (iachar(image_text(n + 1:n + 1)) > 64 .and. iachar(image_text(n + 1:n + 1)) < 91) then! A-Z, no need for a-z already all upper case
-            !we need a space except if it is a bond definition
-            if ((iachar(image_text(n - 1:n - 1)) > 32 .and. iachar(image_text(n - 1:n - 1)) < 39) .or. &
-            &   (iachar(image_text(n - 1:n - 1)) > 41 .and. iachar(image_text(n - 1:n - 1)) < 48) .or. &
-            &   (iachar(image_text(n - 1:n - 1)) > 57 .and. iachar(image_text(n - 1:n - 1)) < 65) .or. &
-            &   (iachar(image_text(n - 1:n - 1)) > 89 .and. iachar(image_text(n - 1:n - 1)) < 97) .or. &
-            &   (iachar(image_text(n - 1:n - 1)) > 122 .and. iachar(image_text(n - 1:n - 1)) < 127)) then ! not [ A-Za-z0-9)]
-              founda = .false.
-            else
-              founda = .true.
-            end if
-          else if (image_text(n + 1:n + 1) == '(') then
-            founda = .true.
-          end if
-
-          if (founda) then
-            image_text = image_text(1:n)//' '//trim(image_text(n + 1:))
-          end if
-
-          if (n > 1) then
-            if (iachar(image_text(n - 1:n - 1)) > 64 .and. iachar(image_text(n - 1:n - 1)) < 91) then ! A-Z, no need for a-z already all upper case
-              !we need a space except if it is a bond definition
-              if ((iachar(image_text(n + 1:n + 1)) > 32 .and. iachar(image_text(n + 1:n + 1)) < 48) .or. &
-              &   (iachar(image_text(n + 1:n + 1)) > 41 .and. iachar(image_text(n + 1:n + 1)) < 48) .or. &
-              &   (iachar(image_text(n + 1:n + 1)) > 57 .and. iachar(image_text(n + 1:n + 1)) < 65) .or. &
-              &   (iachar(image_text(n + 1:n + 1)) > 89 .and. iachar(image_text(n + 1:n + 1)) < 97) .or. &
-              &   (iachar(image_text(n + 1:n + 1)) > 122 .and. iachar(image_text(n + 1:n + 1)) < 127)) then ! not [ A-Za-z0-9]
-                foundb = .false.
-              else
-                foundb = .true.
-              end if
-            else if (image_text(n - 1:n - 1) == ')') then
-              foundb = .true.
-            end if
-
-            if (foundb) then
-              image_text = image_text(1:n - 1)//' '//trim(image_text(n:))
-            end if
-          end if
-
-          if (founda) n = n + 1
-          if (foundb) n = n + 1
-
+      do j = len_trim(image_text) - 1, 2, -1
+        if (image_text(j:j) == operators(i) .and. &
+        &   image_text(j - 1:j - 1) /= ' ' .and. &
+        &   .not. check_for_bond(image_text, j) .and. &
+        &   image_text(j - 1:j - 1) /= '(') then
+          image_text = image_text(1:j - 1)//' '//image_text(j:)
+        end if
+      end do
+      do j = len_trim(image_text) - 1, 2, -1
+        if (image_text(j:j) == operators(i) .and. &
+        &   image_text(j + 1:j + 1) /= ' ' .and. &
+        &   .not. check_for_bond(image_text, j) .and. &
+        &   image_text(j + 1:j + 1) /= ')') then
+          image_text = image_text(1:j)//' '//image_text(j + 1:)
         end if
       end do
     end do
 
-    ! always have a space after `)`
-    s = index(image_text, ' ') ! look for the first space, do not touch the first keyword
-    n = s
-    do
-      n = n + 1
-      if (n > len_trim(image_text)) exit
-
-      if (image_text(n:n) == ')') then
-        if (image_text(n + 1:n + 1) /= ' ') then
-          image_text = image_text(1:n)//' '//trim(image_text(n + 1:))
-          n = n + 1
+    ! insert spaces around keywords if missing
+    do i = 1, size(keywords)
+      do j = len_trim(image_text) - len_trim(keywords(i)), 2, -1
+        if (image_text(j:j + len_trim(keywords(i)) - 1) == trim(keywords(i)) .and. &
+        &   image_text(j - 1:j - 1) /= ' ') then
+          image_text = image_text(1:j - 1)//' '//image_text(j:)
         end if
+      end do
+      do j = len_trim(image_text) - len_trim(keywords(i)), 2, -1
+        if (image_text(j:j + len_trim(keywords(i)) - 1) == trim(keywords(i)) .and. &
+        &   image_text(j + len_trim(keywords(i)):j + len_trim(keywords(i))) /= ' ') then
+          image_text = image_text(1:j + len_trim(keywords(i)) - 1)//' '//image_text(j + len_trim(keywords(i)):)
+        end if
+      end do
+    end do
+
+    ! insert space after `,` and remove it before
+    do j = len_trim(image_text) - 1, 2, -1
+      if (image_text(j:j) == ',' .and. image_text(j - 1:j - 1) == ' ') then
+        image_text = image_text(1:j - 2)//image_text(j:)
+      end if
+    end do
+    do j = len_trim(image_text) - 1, 2, -1
+      if (image_text(j:j) == ',' .and. image_text(j + 1:j + 1) /= ' ') then
+        image_text = image_text(1:j)//' '//image_text(j + 1:)
       end if
     end do
 
-    ! remove spaces between label and serial in an atom definition
-    ! or add space otherwise if missing
-    ! ie. C  (1) => c(1)
-    s = index(image_text, ' ') ! look for the first space, do not touch the first keyword
-    n = s
-    do
-      n = n + 1
-      if (n > len_trim(image_text)) exit
+    ! insert space after ) and remove it before
+    do j = len_trim(image_text) - 1, 2, -1
+      if (image_text(j:j) == ')' .and. image_text(j - 1:j - 1) == ' ') then
+        image_text = image_text(1:j - 2)//image_text(j:)
+      end if
+    end do
+    do j = len_trim(image_text) - 1, 2, -1
+      if (image_text(j:j) == ')' .and. image_text(j + 1:j + 1) /= ' ' .and. image_text(j + 1:j + 1) /= ',') then
+        image_text = image_text(1:j)//' '//image_text(j + 1:)
+      end if
+    end do
 
-      if (image_text(n:n) == '(' .and. n > 1) then
-        if (image_text(n - 1:n - 1) == ' ') then
-          m = 1
-          do while (image_text(n - m:n - m) == ' ')
-            m = m + 1
-          end do
-          if (n - m > s .and. ( &
-          & image_text(n - m:n - m) == '*' .or. &
-              & (iachar(image_text(n - m:n - m)) > 64 .and. &
-              & iachar(image_text(n - m:n - m)) < 89)) &
-          & ) then ! text already upper case at this point
-            ! removing the spaces
-            image_text = image_text(1:n - m)//trim(image_text(n:))
-            n = n - m
+    ! insert space before ( and remove it before only if not a letter
+    do j = len_trim(image_text) - 1, 2, -1
+      if (image_text(j:j) == '(') then
+        if (image_text(j - 1:j - 1) == ' ') then
+          if (iachar(image_text(j - 2:j - 2)) > 64 .and. iachar(image_text(j - 2:j - 2)) < 91) then
+            image_text = image_text(1:j - 2)//image_text(j:)
+          end if
+        else
+          if (iachar(image_text(j - 1:j - 1)) < 65 .or. iachar(image_text(j - 1:j - 1)) > 90) then
+            image_text = image_text(1:j - 1)//' '//image_text(j:)
           end if
         end if
       end if
     end do
-
-    ! remove spaces after ( or before )
-    s = index(image_text, ' ') ! look for the first space, do not touch the first keyword
-    n = s
-    do
-      n = n + 1
-      if (n > len_trim(image_text)) exit
-
-      if (image_text(n:n) == '(') then
-        m = 0
-        do while (image_text(n + m + 1:n + m + 1) == ' ')
-          m = m + 1
-        end do
-        if (m > 0) then
-          image_text = image_text(1:n)//trim(image_text(n + m + 1:))
-        end if
-      else if (image_text(n:n) == ')') then
-        m = 1
-        do while (image_text(n - m:n - m) == ' ')
-          m = m + 1
-        end do
-        if (m > 1) then
-          image_text = image_text(1:n - m)//trim(image_text(n:))
-          n = n - m
-        end if
+    do j = len_trim(image_text) - 1, 2, -1
+      if (image_text(j:j) == '(' .and. image_text(j + 1:j + 1) == ' ') then
+        image_text = image_text(1:j)//image_text(j + 2:)
       end if
     end do
 
-    ! remove spaces aroud bond definitions
-    s = index(image_text, ' ') ! look for the first space, do not touch the first keyword
-    do i = 1, size(bond_list_definition)
-      n = s
-      do
-        n = n + 1
-        if (n > len_trim(image_text)) exit
-
-        if (image_text(n:n + 1) == bond_list_definition(i)) then
-          m = 0
-          do while (image_text(n + 1 + m + 1:n + 1 + m + 1) == ' ')
-            m = m + 1
-          end do
-          if (m > 0) then
-            image_text = image_text(1:n + 1)//trim(image_text(n + 1 + m + 1:))
-          end if
-
-          m = 1
-          do while (image_text(n - m:n - m) == ' ')
-            m = m + 1
-          end do
-          if (m > 1) then
-            image_text = image_text(1:n - m)//trim(image_text(n:))
-            n = n - m
+    ! remove spaces around bonds
+    do j = 1, size(bond_list_definition)
+      do i = len_trim(image_text) - 1, 2, -1
+        if (image_text(i:i + len_trim(bond_list_definition(j)) - 1) == bond_list_definition(j)) then
+          if (image_text(i - 1:i - 1) == ' ') then
+            image_text = image_text(1:i - 2)//image_text(i:)
           end if
         end if
       end do
     end do
-    do i = 1, size(bond_list_definition)
-      n = s
-      write (buffer, '("-",I0,"-")') i
-      lenbuf = len_trim(buffer)
-
-      do
-        n = n + 1
-        if (n > len_trim(image_text)) exit
-
-        if (image_text(n:n + lenbuf - 1) == trim(buffer)) then
-          m = 0
-          do while (image_text(n + m + lenbuf:n + m + lenbuf) == ' ')
-            m = m + 1
-          end do
-          if (m > 0) then
-            image_text = image_text(1:n + lenbuf - 1)//trim(image_text(n + m + lenbuf:))
+    do j = 1, size(bond_list_definition)
+      do i = len_trim(image_text) - 1, 2, -1
+        if (image_text(i:i + len_trim(bond_list_definition(j)) - 1) == bond_list_definition(j)) then
+          if (image_text(i + len_trim(bond_list_definition(j)):i + len_trim(bond_list_definition(j))) == ' ') then
+            image_text = image_text(1:i + len_trim(bond_list_definition(j)) - 1)// &
+            &  image_text(i + len_trim(bond_list_definition(j)) + 1:)
           end if
-
-          m = 1
-          do while (image_text(n - m:n - m) == ' ')
-            m = m + 1
-          end do
-          if (m > 1) then
-            image_text = image_text(1:n - m)//trim(image_text(n:))
-            n = n - m
+        end if
+      end do
+    end do
+    do j = 1, size(bond_list_definition)
+      write (bond_type_text, '("-",I0,"-")') j
+      do i = len_trim(image_text) - 1, 2, -1
+        if (image_text(i:i + len_trim(bond_type_text) - 1) == bond_type_text) then
+          if (image_text(i - 1:i - 1) == ' ') then
+            image_text = image_text(1:i - 2)//image_text(i:)
+          end if
+        end if
+      end do
+    end do
+    do j = 1, size(bond_list_definition)
+      write (bond_type_text, '("-",I0,"-")') j
+      do i = len_trim(image_text) - 1, 2, -1
+        if (image_text(i:i + len_trim(bond_type_text) - 1) == bond_type_text) then
+          if (image_text(i + len_trim(bond_type_text):i + len_trim(bond_type_text)) == ' ') then
+            image_text = image_text(1:i + len_trim(bond_type_text) - 1)// &
+            &  image_text(i + len_trim(bond_type_text) + 1:)
           end if
         end if
       end do
@@ -1979,5 +1921,35 @@ contains
       end do
     end if
   end subroutine
+
+  function check_for_bond(text, current_pos) result(is_bond)
+    logical :: is_bond
+    character(len=*), intent(in) :: text
+    integer, intent(in) :: current_pos
+    integer i, j
+    character(len=4) :: bond_type_text
+
+    is_bond = .false.
+
+    do j = 1, size(bond_list_definition)
+      do i = current_pos - 1, current_pos + 1
+        if (text(i:i + len_trim(bond_list_definition(j)) - 1) == bond_list_definition(j)) then
+          is_bond = .true.
+          return
+        end if
+      end do
+    end do
+
+    do j = 1, size(bond_list_definition)
+      write (bond_type_text, '("-",I0,"-")') j
+      do i = current_pos - len_trim(bond_type_text) + 1, current_pos + len_trim(bond_type_text) - 1
+        if (text(i:i + len_trim(bond_type_text) - 1) == bond_type_text) then
+          is_bond = .true.
+          return
+        end if
+      end do
+    end do
+
+  end function
 
 end module
