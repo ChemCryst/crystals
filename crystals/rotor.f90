@@ -77,7 +77,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
     SE = SIN(ANGLEE)
     DO IWA = 1, 2
         DO IW = 1, 6
-            DELMC(IWA, IW) = 0
+            DELMC(IWA, IW) = 0.0
             DELMS(IWA, IW) = 0.0
         end do
     end do
@@ -86,6 +86,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT) !, DSIZE, DDECLINA, DAZIMUTH
 
     CP = cos(HT)
     SP = sin(HT)
+
     !calculate c and d and then a'
     XK1 = REFLH * Q1 + REFLK * Q2 + REFLL * Q3
     XK2 = REFLL * Q6
