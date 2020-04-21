@@ -290,7 +290,6 @@ contains
         image_text = restraint%original
       end if
     end associate
-
   end subroutine
 
   !> Split a string into different pieces given a separator. Defaul separator is space.
@@ -789,50 +788,47 @@ contains
     logical, intent(out) :: change
     character(len=4) :: bond_type_text, left, right
     integer bond_type, location, motif_len
-    integer i, j
+    integer i, j, cpt
     ! atoms pairs
     type(atom_t), dimension(2) :: atoms
     type(atom_t), dimension(:, :), allocatable :: pairs
     character(len=8000) :: replacement
-    logical found, empty
+    logical found
 
     found = .false. ! true if a bond definition is found
-    empty = .true. ! true if all bond definitions are empty
     change = .false.
+    cpt = 0
 
     do ! loop until everything is found
       bond_type = -1
       do i = 1, size(bond_list_definition)
-        write (bond_type_text, '("-",I0,"-")') i
-        if (index(text, bond_list_definition(i)) > 0 .or. &
-        & index(text, bond_type_text) > 0) then
+        if (index(text, bond_list_definition(i)) > 0) then
           bond_type = i
+          location = index(text, bond_list_definition(i))
+          motif_len = len_trim(bond_list_definition(i))
+          cpt = cpt + 1
+          exit
+        end if
+        write (bond_type_text, '("-",I0,"-")') i
+        if (index(text, trim(bond_type_text)) > 0) then
+          bond_type = i
+          location = index(text, trim(bond_type_text))
+          motif_len = len_trim(bond_type_text)
+          cpt = cpt + 1
           exit
         end if
       end do
 
       ! special case for -0- which is any bond like -10-
       write (bond_type_text, '("-",I0,"-")') 0
-      if (index(text, bond_type_text) > 0) then
+      if (index(text, trim(bond_type_text)) > 0) then
         bond_type = size(bond_list_definition)
+        location = index(text, trim(bond_type_text))
+        motif_len = len_trim(bond_type_text)
       end if
 
       if (bond_type <= 0) then
         exit
-      else
-        found = .true. ! if true, we have found at least a bond definition
-      end if
-
-      ! we found a bond definition, we now fetch the atom type
-      ! get which bond text is used first, numeric or characters
-      change = .true.
-      location = index(text, bond_list_definition(bond_type))
-      if (location > 0) then
-        motif_len = len(bond_list_definition(bond_type))
-      else
-        write (bond_type_text, '("-",I0,"-")') bond_type
-        location = index(text, bond_type_text)
-        motif_len = len_trim(bond_type_text)
       end if
 
       i = 1
@@ -871,7 +867,7 @@ contains
         replacement = ''
         do i = 1, ubound(pairs, 2)
           replacement = trim(replacement)//' '//pairs(1, i)%text()//' TO '//pairs(2, i)%text()//','
-          empty = .false.
+          change = .true.
         end do
         replacement(len_trim(replacement):len_trim(replacement)) = ' '
 
@@ -882,13 +878,12 @@ contains
       end if
     end do
 
-    if (found .and. empty) then
+    if (cpt > 0 .and. .not. change) then
       ! nothing have been found, commenting out the restraint
       call print_to_mon('{I No bond found in restraint:')
       call print_to_mon('{I '//trim(text))
       text = 'REM '//trim(text)
     end if
-
   end subroutine
 
   !> define a variable for later use using the DEFINE `restraint`
@@ -990,7 +985,6 @@ contains
     type(atom_t) :: atom, new_atom
     logical, dimension(4) :: founds
     logical :: atom_in_l5
-    character(len=24) :: atom_name
 
     ierror = 0
     modified = .false.
@@ -1649,7 +1643,7 @@ contains
     character(len=split_len), dimension(:), allocatable :: elements
     integer, dimension(:), allocatable :: fieldpos
     type(atom_t) :: atom
-    integer i, j, m2, m5, n, m, image_text_nchar
+    integer i, j, m5, n, m, image_text_nchar
     logical found
     character(len=8), dimension(17), parameter :: ignore = (/ &
                                                   'DRENAME ', &
@@ -1785,9 +1779,8 @@ contains
     character(len=*), intent(inout) :: image_text
     character, dimension(5), parameter :: operators = (/'/', '*', '-', '+', '='/)
     character(len=5), dimension(4), parameter :: keywords = (/'TO   ', 'AND  ', 'FROM ', 'UNTIL'/)
-    integer n, m, i, s, lenbuf, j, pos_keyword
-    logical founda, foundb
-    character(len=4) :: buffer, bond_type_text
+    integer i, j
+    character(len=4) :: bond_type_text
 
     ! removed all duplicated spaces
     do i = len_trim(image_text) - 1, 2, -1
@@ -1896,7 +1889,7 @@ contains
         end if
       end do
     end do
-    do j = 1, size(bond_list_definition)
+    do j = 0, size(bond_list_definition)
       write (bond_type_text, '("-",I0,"-")') j
       do i = len_trim(image_text) - 1, 2, -1
         if (image_text(i:i + len_trim(bond_type_text) - 1) == bond_type_text) then
@@ -1906,7 +1899,7 @@ contains
         end if
       end do
     end do
-    do j = 1, size(bond_list_definition)
+    do j = 0, size(bond_list_definition)
       write (bond_type_text, '("-",I0,"-")') j
       do i = len_trim(image_text) - 1, 2, -1
         if (image_text(i:i + len_trim(bond_type_text) - 1) == bond_type_text) then
