@@ -411,11 +411,11 @@ contains
     end do
     if (maxel < size(elements)) then
       if (maxel == 0) then
-        deallocate(elements)
-        allocate(elements(1))
+        deallocate (elements)
+        allocate (elements(1))
         elements(1) = line
         if (present(fieldpos)) then
-          deallocate(fieldpos)
+          deallocate (fieldpos)
           allocate (fieldpos(1))
           fieldpos = 0
         end if
@@ -1467,7 +1467,7 @@ contains
       return
     end if
     if (j > l2p + ((n2p - 1)*md2p) .or. j < l2p .or. l2p < 1) then
-      write (logtext, '(A,I0,A,A)') '{§rning: invalid lattice translation index ', self%sym_op%L, &
+      write (logtext, '(A,I0,A,A)') '{E Warning: invalid lattice translation index ', self%sym_op%L, &
       & ' in atom ', self%text()
       call print_to_mon(logtext)
       ierror = -1
