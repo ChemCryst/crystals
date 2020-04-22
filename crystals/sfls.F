@@ -3857,7 +3857,7 @@ c Special shapes
             ELSE IF (NINT(FLAG) .EQ. 4) THEN   ! CALC RING TF
               CALL XRING (M2, ST, M5A,M6,SLRFAC,DSIZE,DDECLINA,DAZIMUTH)
             ELSE IF (NINT(FLAG)==5) THEN
-              CALL XROTOR (3, M5A, M2T, SST, AROTOR, BROTOR) !, DSIZE, DDECLINA, DAZIMUTH) todo: add these extra outputs?
+              CALL XROTOR (3, M5A, M2T, SST, AROTOR, BROTOR)
             END IF
             T=Tiso(LJY)
             TFOCC=T*FOCC
