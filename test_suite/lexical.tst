@@ -14,6 +14,8 @@ end
 \list 16
 uqiso 1.0 Cl(resi=1)
 ueqiv 1.0 C(*)
+ueqiv *(*)
+uqiso 1.0 Cl(*, resi=1)
 end
 \ rigu restraint
 \list 16
