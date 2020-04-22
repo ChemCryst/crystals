@@ -1460,14 +1460,14 @@ contains
     end if
 
     if (i > l2 + ((n2 - 1)*md2) .or. i < l2 .or. l2 < 1) then
-      write (logtext, '(A,I0,A, A)') '{W Warning: invalid symmetry operator index ', self%sym_op%S, &
+      write (logtext, '(A,I0,A, A)') '{E Warning: invalid symmetry operator index ', self%sym_op%S, &
       & ' in atom ', self%text()
       call print_to_mon(logtext)
       ierror = -1
       return
     end if
     if (j > l2p + ((n2p - 1)*md2p) .or. j < l2p .or. l2p < 1) then
-      write (logtext, '(A,I0,A,A)') '{W Warning: invalid lattice translation index ', self%sym_op%L, &
+      write (logtext, '(A,I0,A,A)') '{§rning: invalid lattice translation index ', self%sym_op%L, &
       & ' in atom ', self%text()
       call print_to_mon(logtext)
       ierror = -1
