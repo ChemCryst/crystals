@@ -410,24 +410,13 @@ contains
       i = i + 1
     end do
     if (maxel < size(elements)) then
-      if (maxel == 0) then
-        deallocate(elements)
-        allocate(elements(1))
-        elements(1) = line
-        if (present(fieldpos)) then
-          deallocate(fieldpos)
-          allocate (fieldpos(1))
-          fieldpos = 0
-        end if
-      else
-        call move_alloc(elements, temp)
-        allocate (elements(maxel))
-        elements = temp(1:maxel)
-        if (present(fieldpos)) then
-          call move_alloc(fieldpos, fieldpostemp)
-          allocate (fieldpos(maxel))
-          fieldpos = fieldpostemp(1:maxel)
-        end if
+      call move_alloc(elements, temp)
+      allocate (elements(maxel))
+      elements = temp(1:maxel)
+      if (present(fieldpos)) then
+        call move_alloc(fieldpos, fieldpostemp)
+        allocate (fieldpos(maxel))
+        fieldpos = fieldpostemp(1:maxel)
       end if
     end if
   end subroutine
