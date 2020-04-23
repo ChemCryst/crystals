@@ -6,7 +6,7 @@ integer function fwexec(cc)
     implicit none
     character*(*) cc
     fwexec = guexec(cc)
-    return 
+    return
 end function
 
 
@@ -26,7 +26,7 @@ subroutine fstlin(ix1, iy1, ix2, iy2)
 
     call fastline(ix1, iy1, ix2, iy2)
 end subroutine
-      
+
 subroutine fstfel(ix, iy, iw, ih)
     use fwrappergui_mod, only: fastfelli
     implicit none
@@ -34,7 +34,7 @@ subroutine fstfel(ix, iy, iw, ih)
 
     call fastfelli(ix, iy, iw, ih)
 end subroutine
-    
+
 subroutine fsteel(ix, iy, iw, ih)
     use fwrappergui_mod, only: fasteelli
     implicit none
@@ -167,4 +167,23 @@ subroutine fstrng(ll,cl,ix,iy,iz,ir,ig,ib,ioc,ico,ivd, &
 
     call fastdonut(bl,ix,iy,iz,ir,ig,ib,ioc,ico,ivd, &
     &   isp,ifl,iso,irad, idec,iaz, sfx,sfy,sfz, be, jl,jrf,ja,jgr,fue,fsp,isflg)
+end subroutine
+
+subroutine fstrot(ll,cl,ix,iy,iz,ir,ig,ib,ioc,ico,ivd, &
+    isp,ifl,iso,irad, idec, iaz, ixi, ibd, sfx,sfy,sfz, de,jl,jrf,ja,jgr,fue,fsp,isflg )
+    use fwrappergui_mod, only: fastrotor
+
+    integer ll,ix,iy,iz,ir,ig,ib,ioc,ico,ivd
+    integer isp,ifl,iso,irad,idec,iaz,ixi,ibd
+    integer jl, jrf, ja, jgr, isflg
+    real sfx, sfy, sfz, fue, fsp
+    character*(*) cl, de
+    character*(ll+1) bl
+    character be*5
+
+    bl = cl(1:ll)  // char(0)
+    be = de(1:4)  // char(0)
+
+    call fastrotor(bl,ix,iy,iz,ir,ig,ib,ioc,ico,ivd, &
+    &   isp,ifl,iso,irad, idec,iaz, ixi, ibd, sfx,sfy,sfz, be, jl,jrf,ja,jgr,fue,fsp,isflg)
 end subroutine

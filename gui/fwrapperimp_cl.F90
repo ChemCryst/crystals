@@ -20,13 +20,13 @@ subroutine fstlin(ix1, iy1, ix2, iy2)
     integer ix1, ix2, iy1, iy2
 
 end subroutine
-      
+
 subroutine fstfel(ix, iy, iw, ih)
     implicit none
     integer ix, iy, iw, ih
 
 end subroutine
-    
+
 subroutine fsteel(ix, iy, iw, ih)
     implicit none
     integer ix, iy, iw, ih
@@ -104,7 +104,17 @@ subroutine fstsph(ll,cl,ix,iy,iz,ir,ig,ib,ioc,ico,ivd, &
 end subroutine
 
 subroutine fstrng(ll,cl,ix,iy,iz,ir,ig,ib,ioc,ico,ivd, &
-&   isp,ifl,iso,irad, idec, iaz)
+    isp,ifl,iso,irad, idec, iaz, sfx,sfy,sfz, de,jl,jrf,ja,jgr,fue,fsp,isflg )
+
+    integer ll,ix,iy,iz,ir,ig,ib,ioc,ico,ivd
+    integer isp,ifl,iso,irad,idec,iaz
+    character*(*) cl
+    character*(ll+1) bl
+end subroutine
+
+subroutine fstrot(ll,cl,ix,iy,iz,ir,ig,ib,ioc,ico,ivd, &
+   isp,ifl,iso,irad, idec, iaz, ixi, ibd, sfx,sfy,sfz, &
+   de,jl,jrf,ja,jgr,fue,fsp,isflg )
 
     integer ll,ix,iy,iz,ir,ig,ib,ioc,ico,ivd
     integer isp,ifl,iso,irad,idec,iaz

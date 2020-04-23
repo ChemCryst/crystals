@@ -14,7 +14,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT,   &
     REAL BDTERM, RTERM, DTERM, ETERM, GTERM, MTERM !, LTERM
     REAL AP, CD, SD, CE, SE, CW, CU, SU
     REAL XK1, XK2, XK3
-    REAL DELCE, DELDE, DELDD, DELAPD, DELAPE, DXETA, DXETAD, DXETAE
+    REAL DELCE, DELDE, DELDD, DELAPD, DELAPE, DXETAD, DXETAE
     REAL DMD, DME, AT, BT, SUM(6)
     DOUBLE PRECISION CLIMIT
     REAL DELMC(2, 6), DELMS(2, 6) !, DELC(2, 3), DELS(2, 3)
@@ -35,7 +35,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT,   &
     REFLH = STORE(M2T) / TWOPI      ! Wasteful, but required.
     REFLK = STORE(M2T + 1) / TWOPI
     REFLL = STORE(M2T + 2) / TWOPI
-    HT = STORE(M2T + 3) !/ TWOPI !this is only used here
+    HT = STORE(M2T + 3) !/ TWOPI
     RIRA = STORE(M5ARI + 8)
     CLIMIT = 0.001
     XC = STORE(M5ARI + 4)
@@ -59,6 +59,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT,   &
     Q4 = STORE(L1O2 + 4)
     Q5 = STORE(L1O2 + 5)
     Q6 = STORE(L1O2 + 8)
+
     !SET I0 (BIO)
     call BESSEL(BSUM, 0, BD, 1.0)
     BIO = bsum
@@ -78,15 +79,13 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT,   &
     SE = SIN(ANGLEE)
     DO IWA = 1, 2
         DO IW = 1, 6
-            DELMC(IWA, IW) = 0
+            DELMC(IWA, IW) = 0.0
             DELMS(IWA, IW) = 0.0
         end do
     end do
     CODE = 0
     ICODE = 0 !todo: get rid of ICODE completely
 
-    CP = cos(HT)
-    SP = sin(HT)
     !calculate c and d and then a'
     XK1 = REFLH * Q1 + REFLK * Q2 + REFLL * Q3
     XK2 = REFLL * Q6
@@ -94,8 +93,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT,   &
     CC = TWOPI * RIRA * (XK1 * CD * CE + XK3 * CD * SE - XK2 * SD)
     DD = TWOPI * RIRA * (-XK1 * SE + XK3 * CE)
     AP = SQRT(CC**2 + DD**2)
-!    XETA = ACOS(CC / AP)
-        XETA = ATAN2(DD, CC)
+    XETA = ATAN2(DD, CC)
     !    IF (DD<0.0) XETA = -XETA
     ANGLE = NORD * (ANGLEXI - XETA)
     IF (MODE==1) GO TO 2
@@ -104,20 +102,17 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT,   &
     DELDD = 0
     DELCD = -TWOPI * RIRA * (XK1 * SD * CE + XK2 * CD + XK3 * SD * SE)
     DELAPD = CC * DELCD / AP
-    DELAPE = CC * DELCE / AP + DD * DELDE / AP
+    DELAPE = (CC * DELCE / AP) + (DD * DELDE / AP)
 
     TE = DELAPE / AP
     TD = DELAPD / AP
 
-    CW = 1 / (AP * SQRT((AP * AP) - (DD * DD)))
+    CW = 1 / (AP * CC)
 
     IF (ABS(CW)<0.00001) GO TO 1 !TO AVOID /0 ERROR?
 
     DXETAD = - DD * CW * DELAPD
     DXETAE = CW * (AP * DELDE - DD * DELAPE)
-
-    write(111, *) "ETA D E DELCD DELCE DELDE DELAPD DELAPE DXETAD DXETAE", &
-     XETA, ANGLED, ANGLEE, DELCD, DELCE, DELDE, DELAPD, DELAPE, DXETAD, DXETAE
 
     GO TO 2
     1     ICODE = 1
@@ -165,8 +160,6 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT,   &
         SU = SIN(JP * ANGLE)
         TCOM = 2. * SIGN * BIA(JP) / BIO
         E = SNGL(AP)
-        write(555, *) "h k l n D E XI eta RIRA xk1 xk2 xk3"
-        write(555, *)  REFLH, REFLK, REFLL, nord, ANGLED, ANGLEE, anglexi, XETA, RIRA, XK1, XK2, XK3
         CALL BESSEL (BJ, PNA, E, -1.0)
         IF (MODE==1) GO TO 34 !i.e. skip a load of derivation bits
         IF (LM(1)==0) GO TO 30
@@ -209,11 +202,11 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT,   &
     12    IF (MODE==1) GO TO 7
     SUM(1) = (SUM(1) - SUM(6) * DBIB) / BIO
     DO IA = 1, 5
-        DELMC(NAA, IA) = DELMC(NAA, IA) + SUM(IA) * CP
-        DELMS(NAA, IA) = DELMS(NAA, IA) + SUM(IA) * SP
+        DELMC(NAA, IA) = DELMC(NAA, IA) + SUM(IA)
+        DELMS(NAA, IA) = DELMS(NAA, IA)
     end do
-    7     DELMC(NAA, 6) = DELMC(NAA, 6) + SUM(6) * CP
-    DELMS(NAA, 6) = DELMS(NAA, 6) + SUM(6) * SP
+    7     DELMC(NAA, 6) = DELMC(NAA, 6) + SUM(6)
+    DELMS(NAA, 6) = DELMS(NAA, 6)
 
     IF(NAA==2) GO TO 15
 
@@ -224,13 +217,14 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT,   &
     BT = DELMC(2, 6) + DELMS(1, 6)
 
     40    IF(MODE==1) GO TO 9
+
     !!!CALCULATION OF DELFD TO DFLF3
-    DO IA = 1, 5 !loop 5 times for derivatives of D,E,xi, Bd, and R (?)
+    DO IA = 1, 5
         DA(K) = DELMC(1, IA) - DELMS(2, IA)
         IF(INV1==1) GO TO 52
         DB(K) = DELMC(2, IA) + DELMS(1, IA)
-        if (K==6) THEN
-            WRITE(999, *) "BD", BD, REFLH, REFLK, REFLL, AT, BT, DA(K), DB(K)
+        if (K==9) THEN
+            WRITE(999, *) "E", anglee, REFLH, REFLK, REFLL, AT, BT, DA(K), DB(K)
         end if
         52      K = K + 1
     end do

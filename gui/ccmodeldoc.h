@@ -127,6 +127,7 @@ using namespace std;
 #include "ccmodelbond.h"
 #include "ccmodelsphere.h"
 #include "ccmodeldonut.h"
+#include "ccmodelrotor.h"
 
 class CrModel;
 class CcRect;
@@ -169,7 +170,7 @@ class CcModelDoc
                           int r, int g, int b,  int rad,int btype,
                           int np, int * ptrs, const string & label, const string & cslabl);
 
-        void FastAtom(const string & label,int x1,int y1,int z1, 
+        void FastAtom(const string & label,int x1,int y1,int z1,
                           int r, int g, int b, int occ,float cov, int vdw,
                           int spare, int flag,
                           float u1,float u2,float u3,float u4,float u5,
@@ -178,7 +179,7 @@ class CcModelDoc
                           const string &  elem, int serial, int refflag,
                           int assembly, int group, float ueq, float fspare, int isflg);
 
-        void FastSphere(const string & label,int x1,int y1,int z1, 
+        void FastSphere(const string & label,int x1,int y1,int z1,
                           int r, int g, int b, int occ,int cov, int vdw,
                           int spare, int flag,
                           int iso, int irad,
@@ -191,6 +192,15 @@ class CcModelDoc
                           int r, int g, int b, int occ,int cov, int vdw,
                           int spare, int flag,
                           int iso, int irad, int idec, int iaz,
+                          float frac_x, float frac_y, float frac_z,
+                          const string & elem, int serial, int refflag,
+                          int assembly, int group, float ueq, float fspare, int iflag);
+
+        void FastRotor(const string & label,int x1,int y1,int z1,
+                          int r, int g, int b, int occ,int cov, int vdw,
+                          int spare, int flag,
+                          int iso, int irad, int idec, int iaz,
+                          int ixi, int ibd,
                           float frac_x, float frac_y, float frac_z,
                           const string & elem, int serial, int refflag,
                           int assembly, int group, float ueq, float fspare, int iflag);
@@ -219,7 +229,7 @@ class CcModelDoc
 
         void Select(bool selected);                                 // Called by CcModelAtom, Donut etc.
 
-        list <CrModel*> attachedViews;          
+        list <CrModel*> attachedViews;
         list <CrModList*> attachedLists;
         static list<CcModelDoc*> sm_ModelDocList;
         static CcModelDoc* sm_CurrentModelDoc;
@@ -240,18 +250,19 @@ class CcModelDoc
     private:
         void     FlagFrag ( const string & atomname );
         string Compress(const string & atomname);
-        
+
 		GLuint m_glIDs;
         int nSelected;
         int m_nAtoms;
         int m_TotX;
         int m_TotY;
         int m_TotZ;
-  
+
         list<CcModelAtom> mAtomList;
         list<CcModelBond> mBondList;
         list<CcModelSphere> mSphereList;
         list<CcModelDonut> mDonutList;
+        list<CcModelRotor> mRotorList;
 };
 
 #endif
