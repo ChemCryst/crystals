@@ -1,0 +1,38 @@
+%SCRIPT ATOMSCIF 
+%% Based on MERCURY.
+%% The LIST6 problems noted by RIC still on to-do-list                                                                             
+%%  Check for reflections. Make dummy list 6 if none found.                      
+%%  No need for a LIST 6 for Mercury - the Null list creates NaNs
+% VARIABLE CHARACTER FMERC
+%%
+%   IF ( EXISTS 23 .NE. 1 ) THEN                                                
+{I Creating dummy list 23 (refinement control) to keep the CIF routines happy.  
+%    COPY '#LIST 23'                                                            
+%    COPY 'END'                                                                 
+%   END IF                                                                      
+%   IF ( EXISTS 31 .NE. 1 ) THEN                                                
+{I Creating dummy list 31 (cell esds) to keep the CIF routines happy.           
+%    COPY '#LIST 31'                                                            
+%    COPY 'END'                                                                 
+%   END IF                                                                      
+%%
+%%   No Need to check LIST 3 since esd are not used                                                                              
+%%   COPY '#SCRIPT CHECK3'                                                       
+%%                                                                              
+%% CIF listing of all data                                                      
+%%                                                                              
+%%                                                                              
+{I Creating a CIF                                                               
+%   COPY "#STORE CSYS CIF 'atomscif.cif'"                                        
+%   COPY '#APPEND PUNCH '                                                       
+%   COPY '#QCKCIF '                                                                
+%   COPY 'END'                                                                  
+%   COPY '#PARAMETERS'                                                          
+%   COPY 'LAYOUT INSET = 1 NCHAR = 120 ESD=NO'                                  
+%   COPY 'COORD SELECT=ALL MONITOR=LOW PRINT=YES PUNCH=CIF NCHAR=14'            
+%   COPY "U'S MONITOR=OFF, PRINT=NO, PUNCH=NO, NCHAR=14"                        
+%   COPY 'END'                                                                  
+%%                                                                              
+%%  COPY '#RELEASE PUNCH BFILE.PCH'                                                                              
+%%                                                                              
+%END SCRIPT                                                                     
