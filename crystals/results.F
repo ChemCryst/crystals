@@ -6582,7 +6582,8 @@ C----- RELECTION LIMITS IN DATA COLLECTION
          END IF
 
          IF ( IPUNCH .EQ. 0 ) THEN
-           IF (JLOAD(12).GE.1) THEN  !REFLECTION LIMITS IN COMPUTATIONS
+           IF (JLOAD(11).GE.1) THEN  !REFLECTION LIMITS IN COMPUTATIONS
+c                              was JLOAD(12) (LIST 28) which is now loaded by LIST 6
              JLOAD(11)=1
              M6DTL=L6DTL
              IF (N6DTL.GE.4) THEN
