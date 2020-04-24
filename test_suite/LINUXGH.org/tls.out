@@ -70,36 +70,36 @@ Space group symbol is   P    21   21   21
 
 
 
-                               H     K     L     I or /FO/     Sigma      JCODE    Serial
+                               H     K     L     I or /FO/     Sigma      Serial
 
- Systematic absence            0.    0.    3.         1.9        0.2         0.        0.
- Systematic absence            0.    0.    5.        -0.8        0.3         0.        0.
- Systematic absence            0.    0.    7.         1.0        0.3         0.        0.
- Systematic absence            0.    0.    9.         0.5        0.6         0.        0.
- Systematic absence            0.    0.   11.         0.9        0.2         0.        0.
- Systematic absence            0.    0.   13.         1.0        0.1         0.        0.
- Systematic absence            0.    0.   15.        -1.5        0.9         0.        0.
- Systematic absence            0.    0.   17.         2.0        0.8         0.        0.
- Systematic absence            0.    3.    0.         1.5        0.3         0.        0.
- Systematic absence            0.    5.    0.         1.4        0.5         0.        0.
- Systematic absence            0.    7.    0.        -1.4        0.5         0.        0.
- Systematic absence            0.    9.    0.         2.1        0.6         0.        0.
- Systematic absence            0.   11.    0.        -1.6        0.7         0.        0.
- Systematic absence            0.   13.    0.         1.8        0.9         0.        0.
- Systematic absence            1.    0.    0.         1.6        0.3         0.        0.
- Systematic absence            3.    0.    0.         1.8        0.4         0.        0.
- Systematic absence            5.    0.    0.         1.2        0.8         0.        0.
+ Systematic absence            0.    0.    3.         1.9        0.2         1.
+ Systematic absence            0.    0.    5.        -0.8        0.3         2.
+ Systematic absence            0.    0.    7.         1.0        0.3         4.
+ Systematic absence            0.    0.    9.         0.5        0.6         6.
+ Systematic absence            0.    0.   11.         0.9        0.2         8.
+ Systematic absence            0.    0.   13.         1.0        0.1        10.
+ Systematic absence            0.    0.   15.        -1.5        0.9        12.
+ Systematic absence            0.    0.   17.         2.0        0.8        14.
+ Systematic absence            0.    3.    0.         1.5        0.3        53.
+ Systematic absence            0.    5.    0.         1.4        0.5        91.
+ Systematic absence            0.    7.    0.        -1.4        0.5       129.
+ Systematic absence            0.    9.    0.         2.1        0.6       162.
+ Systematic absence            0.   11.    0.        -1.6        0.7       193.
+ Systematic absence            0.   13.    0.         1.8        0.9       217.
+ Systematic absence            1.    0.    0.         1.6        0.3       231.
+ Systematic absence            3.    0.    0.         1.8        0.4      1029.
+ Systematic absence            5.    0.    0.         1.2        0.8      1642.
  The updated reflections are now on UNIT 52
 
 
 
      17 absences,   mean Fo =   0.800,   rms Fo/sigma(Fo)=   4.497
 
-Fo range            -ve   1.000   2.000   4.000   8.000  16.000  Remainder
+Fo range       -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 Mean Fo          -1.321   0.721   1.474   2.085   0.000   0.000   0.000
 Number                4       2       9       2       0       0       0
 
-Fo/sigma range      -ve   1.000   2.000   4.000   8.000  16.000  Remainder
+Fo/sigma range -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 rms (Fo/sigma)    2.451   0.857   1.690   3.405   5.459  11.667   0.000
 Number                4       1       2       5       4       1       0
 
@@ -113,8 +113,8 @@ Number                4       1       2       5       4       1       0
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
-                                                    F-squared     Delta     sigma   E-param    Weight   JCODE    Serial
-    H   K   L  F-squared    rmsdev    <sigma>           Nref $   rmsdev    av-sig
+                                                    F-squared     Delta     sigma   1st-Dif    Weight   Serial    I/sigma
+    H   K   L  F-squared    rmsdev    <sigma>           Nref $   rmsdev    av-sig      Mode      Rint
 
  The updated reflections are now on UNIT 52
 
@@ -4594,7 +4594,7 @@ Mean C-C su =   0.0060
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    20     serial number        3     Address    82164     Length     234     Created on                          
+ Print list type    20     serial number        3     Address    82165     Length     234     Created on                          
 
 
 
@@ -4826,7 +4826,7 @@ Mean C-C su =   0.0060
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    20     serial number        4     Address    82398     Length     234     Created on                          
+ Print list type    20     serial number        4     Address    82399     Length     234     Created on                          
 
 
 
@@ -5061,7 +5061,7 @@ Mean C-C su =   0.0060
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    20     serial number        5     Address    82632     Length     234     Created on                          
+ Print list type    20     serial number        5     Address    82633     Length     234     Created on                          
 
 
 
@@ -5308,7 +5308,7 @@ Mean C-C su =   0.0060
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    20     serial number        6     Address    82866     Length     234     Created on                          
+ Print list type    20     serial number        6     Address    82867     Length     234     Created on                          
 
 
 

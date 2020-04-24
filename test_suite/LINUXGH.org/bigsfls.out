@@ -69,7 +69,7 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
  LARGE TEST JOB FOR CYBER                                                             Date              Time          
 
 
- Print list type    22     serial number        1     Address   437171     Length    7131     Created on                          
+ Print list type    22     serial number        1     Address   437174     Length    7131     Created on                          
 
 
             206 parameter(s) in    1 block(s) - as follows:
@@ -3270,7 +3270,7 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
 #LIST 17
 #PURGE
 #SFLS
- List type   11  serial number    4 from   458887 to   480482 will not be copied ( deleted )         
+ List type   11  serial number    4 from   458888 to   480483 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
@@ -3896,8 +3896,8 @@ Mean C-C su =   0.0009
  You may still save this list with DELETE n ACTION=NO
 #PURGE
 #DISK
- List type   11  serial number    4 from   456603 to   456698 will not be copied ( deleted )         
- List type   22  serial number    2 from   449441 to   453855 will not be copied ( deleted )         
+ List type   11  serial number    4 from   456604 to   456699 will not be copied ( deleted )         
+ List type   22  serial number    2 from   449442 to   453856 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
@@ -5132,8 +5132,8 @@ Mean C-C su =   0.0121
  You may still save this list with DELETE n ACTION=NO
 #PURGE
 #SFLS
- List type   11  serial number    8 from   453027 to   487547 will not be copied ( deleted )         
- List type   22  serial number    1 from   449041 to   450279 will not be copied ( deleted )         
+ List type   11  serial number    8 from   453028 to   487548 will not be copied ( deleted )         
+ List type   22  serial number    1 from   449042 to   450280 will not be copied ( deleted )         
  The    Data    file is being rebuilt -
  DO NOT abort the program
  The new disc index has been re-written 
@@ -5227,11 +5227,11 @@ LS-scale=  0.909   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =  0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
 #CYCLENDS
 #FINISH
- Physical reads      12268 Physical writes      10033 Cache hits     211984
- Cache hit distribution   193697   12469    2321     700     475     247
- Cache hit distribution      192     201     244     239     138     176
- Cache hit distribution      159     145     110      97      34      78
- Cache hit distribution       65      43      45      43      33      33
+ Physical reads      12279 Physical writes      10033 Cache hits     212153
+ Cache hit distribution   193725   12513    2317     740     311     425
+ Cache hit distribution      163     112     168     237     315     161
+ Cache hit distribution      145     200     177      53      43      72
+ Cache hit distribution       84      43      29      47      38      35
 
 
           : Job ends ok       with     0 warnings and     0 errors
