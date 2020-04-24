@@ -1345,6 +1345,7 @@ C
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XCONST.INC'
       INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XERVAL.INC'
 C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST30.INC'
@@ -1352,6 +1353,33 @@ C
       EXTERNAL RCTHETA
       REAL RH,RK,RL
       
+C     Initialise limits
+c
+      IKLAST = -99999
+      ILLAST = -99999
+      IHTOT = 0
+      IKTOT = 0
+      ILTOT = 0
+      THMAX = 0.0
+      THMIN = 999.0
+      IMAXH = 0
+      IMINH = 0
+      IMAXK = 0
+      IMINK = 0
+      IMAXL = 0
+      IMINL = 0
+      
+        if (kexist(6) .ge. 1)  then
+         if (khuntr (6,0, iaddl,iaddr,iaddd, -1) . lt. 0) call xfal06
+        else
+         if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
+         WRITE(CMON,'(A)')' No LIST 6 found. We should never get here'
+         CALL XPRVDU(NCVDU, 1,0)
+         IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
+         goto 9990
+        endif
+
+
         if (kexist(25) .ge. 1)  then
          if (khuntr (25,0, iaddl,iaddr,iaddd, -1) . lt. 0) call xfal25
         else
@@ -1367,21 +1395,6 @@ c
       
 
 C -- SCAN LIST 6 FOR ALL REFLECTIONS
-
-      IKLAST = -99999
-      ILLAST = -99999
-      IHTOT = 0
-      IKTOT = 0
-      ILTOT = 0
-      THMAX = 0.0
-      THMIN = 999.0
-      IMAXH = 0
-      IMINH = 0
-      IMAXK = 0
-      IMINK = 0
-      IMAXL = 0
-      IMINL = 0
-      
 
 
 1100  CONTINUE
@@ -1713,7 +1726,7 @@ c rather than an estimate based on index ranges.  DJW 2017
       STORE(L30CF+9)=THMCMP
 
       CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
-
+9990  CONTINUE
       RETURN
       END
 c

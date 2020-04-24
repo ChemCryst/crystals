@@ -4679,7 +4679,7 @@ CDJWMAR99 MANY CHANGES TO BRING UP TO DATE WITH NEW CIFDIC
       PARAMETER (NTERM=4)
       PARAMETER (NNAMES=30)
       DIMENSION A(12), JDEV(4), KDEV(4)
-      PARAMETER (NLST=12)
+      PARAMETER (NLST=11)
       DIMENSION LSTNUM(NLST), JLOAD(NLST)
       DIMENSION IVEC(16), ESD(6)
       CHARACTER CCELL(3)*1,CANG(3)*5,CSIZE(3)*3,CINDEX(3)*2
@@ -4778,8 +4778,9 @@ C
 c
       DATA UPPER/'ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
       DATA LOWER/'abcdefghijklmnopqrstuvwxyz'/
-C                  1 2 3 4 5 6  7  8  9  10 11 12 
-      DATA LSTNUM/1,2,3,4,5,13,23,29,30,31,6,28/
+C                  1 2 3 4 5 6  7  8  9  10 11 
+c                             (12 was LIST 28 - L28 loaded by L6) 
+      DATA LSTNUM/1,2,3,4,5,13,23,29,30,31,6/
       DATA CCELL/'a','b','c'/
       DATA CANG/'alpha','beta','gamma'/
       DATA CSIZE/'min','mid','max'/
@@ -4954,13 +4955,16 @@ C----- CLOSE THE FILE
 
 C################################################################
  
-C                      1 2 3 4 5 6  7  8  9  10 11 12 
+C                      1 2 3 4 5 6  7  8  9  10 11 (12 not used) 
 C FYI:    DATA LSTNUM /1,2,3,4,5,13,23,29,30,31, 6,28 /
 
       DO MLST=1,NLST
          JLOAD(MLST)=0                   !INDICATE LIST NOT LOADED
          LSTYPE=LSTNUM(MLST)
-         IF (KEXIST(LSTYPE)) 400,300,500
+c      write(123,*)'Checking Lists', mlst, lstype
+         idjw=KEXIST(LSTYPE)
+c      write(123,*) 'kexist',lstype, idjw
+         IF (idjw) 400,300,500
 300      CONTINUE
            if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
            WRITE (CMON,350) LSTYPE
@@ -4987,7 +4991,9 @@ C FYI:    DATA LSTNUM /1,2,3,4,5,13,23,29,30,31, 6,28 /
             CALL XLDR05 (LSTYPE)
          ELSE IF (LSTYPE.EQ.6) THEN
             IULN = 6
+c      write(123,*) 'Just starting XFAL06'
             CALL XFAL06 (IULN, 0)
+c      write(123,*) 'Just finished XFAL06'
          ELSE IF (LSTYPE.EQ.10) THEN
             CALL XLDR05 (LSTYPE)
          ELSE IF (LSTYPE.EQ.13) THEN
@@ -5010,10 +5016,12 @@ C----- LOADED BY XFAL06          CALL XFAL28
          END IF
          IF (IERFLG.GE.0) JLOAD(MLST)=1
       END DO
+        IF (KEXIST(6) .GE. 1)  THEN
 c call this here since it updates list 30. THLIM only loads not-loaded lists
           IGLS = 0
           CALL XTHLIM (THMIN, THMAX,THMCMP, THBEST,THBCMP,
      1    INRIC,IULN,IGLS)
+        ENDIF
 c we dont need LIST 25, but it it exists, we should use it
         IF (KEXIST(25) .GE. 1)  THEN
          IF (KHUNTR (25,0, IADDL,IADDR,IADDD, -1) . LT. 0) CALL XFAL25
@@ -6676,7 +6684,7 @@ C
 #endif
            CALL XCRAS (CBUF,NCHAR)
            WRITE (NCFPU1,
-     1    '(''_oxford_refine_reflns_threshold_expression_ref '',
+     1    '(''_oxford_refine_reflns_threshold_expression '',
      1                    T50,A)')  CBUF(1:NCHAR) 
            CBUF(1:11)='_refine_ls_'
            WRITE (CLINE,'(A, ''number_restraints '', I10)') CBUF(1:11),
@@ -6721,7 +6729,7 @@ c-try to catch old DSC files where +11 held minimisation function
 C
            CALL XPCIF (' ')
            CALL XPCIF 
-     1     ('# Computed with no filters except I/sigma = -10')
+     1     ('# Computed with I/sigma = -10')
 
            WRITE (CLINE,'(''_oxford_reflns_number_all '', I10)')
      1                  NINT(STORE(L30CF+5))
