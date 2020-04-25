@@ -472,6 +472,9 @@ c----- un-set data keys
       irft = nowt
       jnfo = nowt
       jnft = nowt
+c set an initial serial  number of zero.
+c If the input doe not include a serial, this will be auto-incremented
+      serial = 0.
 C--BLANK OUT THE FORMAT ARRAY
       CALL XMVSPD (IB,IFORM(1),NFORM)
       INCLUDE 'IDIM06.INC'
@@ -1038,7 +1041,9 @@ c
 c
 C--READ THE NEXT REFLECTION
 2950  CONTINUE
+c initialise the input and output buffers
       CALL XZEROF (STORE(L6IB),M6IB)
+c      CALL XZEROF(STORE(L6),MD6)
 C
 cdjw2003
 c----- if a list 7 read no reflections
@@ -1049,10 +1054,10 @@ C      if (iuln .ne. 7) then
             IF ( IRDLOG(IFLIND).EQ.1) WRITE(NCLU,'(A)')TRIM(CRLINE(J))
          END DO
          READ (CRLINE,CFORM,END=3200,ERR=3100) (STORE(I),I=L6IB,M6IB)
-c         write (ncwu,*) 'hkl: ',(STORE(I),I=L6IB, M6IB)
       else
          READ (IUNIT,CFORM,END=3200,ERR=3100) (STORE(I),I=L6IB,M6IB)
       end if
+c      write (123,*) 'hkl: ',(STORE(I),I=L6IB, M6IB)
       NCARDS=NCARDS+INCREM
 C--CHECK FOR BLANK ENTRY
       DO 3000 I=L6IB,M6IB
@@ -1197,6 +1202,7 @@ C--LOOP OVER EACH INPUT GROUP
          STORE(M6+27)=1.
          STORE(M6+11)=0.
          STORE(M6+12)=0.
+         STORE(M6+19)=0. !Serial
 C--MOVE THE DATA FROM THE INPUT BUFFER TO THE CORE BUFFER
          DO 4150 I=L6IMP,M6IMP
             J=ISTORE(I)
@@ -1297,7 +1303,13 @@ C--ENSURE A MINIMUM BATCH NUMBER OF ONE
 C----- ENSURE POSITIVE JCODES AND LESS THAN 10
          STORE(M6+18)=AMIN1(9.,AMAX1(0.,STORE(M6+18)))
 C--ENSURE A MINIMUM SERIAL OF ZERO
-         STORE(M6+19)=AMAX1(STORE(M6+19),0.)
+c         STORE(M6+19)=AMAX1(STORE(M6+19),0.)
+c if there is no serial number, insert a suitable value. This enables us to correlate a 
+c reflection listed in the MERGE output with the original in the input HKLI file.
+         if(store(m6+19) .le. zero) then
+            serial=serial+1.
+            store(m6+19) = serial
+         endif
 C--CHECK IF WE SHOULD COMPUTE THE A-PART AND B-PART FROM /FC/ AND PHASE
          IF (KD) 4450,4400,4400
 C--COMPUTE THE PARTS

@@ -4,6 +4,9 @@
 ^^WI                                ENABLEIF='L1 L2 L3 L5 L6'                   
 ^^WI   ITEM PUSU 'Output &CIF file no esds' '#SCRIPT XCIFNOSU'  DISABLEIF='IN'         
 ^^WI                                ENABLEIF='L1 L2 L3 L5' 
+^^WI   ITEM PUAT 'Output Atoms-only &CIF' '#SCRIPT ATOMSCIF'  DISABLEIF='IN'         
+^^WI                                ENABLEIF='L1 L2 L3 L5' 
+
 ^^WI   ITEM SUMM 'Output &HTML summary' '#SCRIPT XHTML' DISABLEIF='IN QS'       
 ^^WI                                ENABLEIF='L1 L2 L3 L5 L6'                   
 ^^WI   ITEM SUMM 'Output &Summary file' '#SCRIPT SUM' DISABLEIF='IN QS'         

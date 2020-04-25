@@ -153,7 +153,7 @@ Files INITIAL.* will be created in your logs/ folder. They may be important.
 %    INSERT 'STORE NCOEF=6'                                                     
 %    QUEUE SEND                                                                 
 %    CLEAR                                                                      
-%    INSERT 'OUTPUT INDICES /FO/ SIGMA(/FO/) RATIO/JCODE CORRECTIONS SERIAL '   
+%    INSERT 'OUTPUT INDICES /FO/ SIGMA(/FO/) RATIO CORRECTIONS SERIAL '   
 %    QUEUE SEND                                                                 
 %    CLEAR                                                                      
 %  END BLOCK                                                                    
@@ -185,6 +185,8 @@ Files INITIAL.* will be created in your logs/ folder. They may be important.
 {S * Merging equivalent reflections                                             
 %      CLEAR                                                                    
 %      COPY '#MERGE'                                                            
+%      COPY 'REFLECTIONS LIST=HI'
+%      COPY 'REJECT SIGMA=2'
 %      COPY 'END'                                                               
 %  END IF                                                                       
 %                                                                               

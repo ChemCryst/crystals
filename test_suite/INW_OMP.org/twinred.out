@@ -60,8 +60,8 @@
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
-                                                    F-squared     Delta     sigma   E-param    Weight   JCODE    Serial
-    H   K   L  F-squared    rmsdev    <sigma>           Nref $   rmsdev    av-sig
+                                                    F-squared     Delta     sigma   1st-Dif    Weight   Serial    I/sigma
+    H   K   L  F-squared    rmsdev    <sigma>           Nref $   rmsdev    av-sig      Mode      Rint
 
  The updated reflections are now on UNIT 52
 
@@ -291,9 +291,9 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
 
-                               H     K     L     I or /FO/     Sigma      JCODE    Serial
+                               H     K     L     I or /FO/     Sigma      Serial
 
-                 Zero esd      2.    0.    0.        55.1        0.0         0.        0.
+                 Zero esd      2.    0.    0.        55.1        0.0         1.
  The updated reflections are now on UNIT 53
 
 

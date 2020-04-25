@@ -172,6 +172,7 @@ C
 C -- ENSURE THAT THE SYSTEM IS INITIALISED
       CALL XLC
 C
+c      write(123,*)'                    In KLSCHK', LN, LSN, LRSN, IREQ
 C -- SET READ FILE INDEX FLAG
       IRDFIL = -1
       IF ( LSN .NE. 0 ) IRDFIL = 1
@@ -240,23 +241,23 @@ C
 9910  CONTINUE
       IF ( IMSG .LT. 0 ) GO TO 9990
       if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
-ctemp      write(ncwu,*)'In LISTS1 9930, List=', LN,imsg
+c      write(123,*)'In LISTS1 9910, List=', LN,imsg
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9915 ) LN
       ENDIF
-cfeb08      WRITE ( NCAWU , 9915 ) LN
+c      WRITE(123 , 9915 ) LN
       WRITE ( CMON, 9915 ) LN
       CALL XPRVDU(NCEROR, 1,0)
-9915  FORMAT ( 1X , I8 , ' is not a valid list type number' )
+9915  FORMAT ( 1X , I12 , ' is not a valid list type number' )
       GO TO 9990
 9920  CONTINUE
       IF ( IMSG .LT. 0 ) GO TO 9990
       if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
-ctemp      write(ncwu,*)'In LISTS1 9920, List=', LN,imsg
+c      write(123,*)'In LISTS1 9920, List=', LN,imsg
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9925 ) LSER
       ENDIF
-cfeb08      WRITE ( NCAWU , 9925 ) LSER
+c      WRITE(123 , 9925 ) LSER
       WRITE ( CMON, 9925 ) LSER
       CALL XPRVDU(NCEROR, 1,0)
 9925  FORMAT ( 1X , I8 , ' is not a valid list serial number' )
@@ -264,11 +265,11 @@ cfeb08      WRITE ( NCAWU , 9925 ) LSER
 9930  CONTINUE
       IF ( IMSG .LT. 0 ) GO TO 9992
       if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
-ctemp      write(ncwu,*)'In LISTS1 9930, List=', LN,imsg
+c      write(123,*)'In LISTS1 9930, List=', LN,imsg
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9935 ) LN
       ENDIF
-cfeb08      WRITE ( NCAWU , 9935 ) LN
+c      WRITE(123 , 9935 ) LN
       WRITE ( CMON, 9935 ) LN
       CALL XPRVDU(NCEROR, 1,0)
 9935  FORMAT ( 1X , 'No list of type ' , I8 , ' stored' )
@@ -276,11 +277,11 @@ cfeb08      WRITE ( NCAWU , 9935 ) LN
 9940  CONTINUE
       IF ( IMSG .LT. 0 ) GO TO 9992
       if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
-ctemp      write(ncwu,*)'In LISTS1 9940, List=', LN,imsg
+c      write(123,*)'In LISTS1 9940, List=', LN,imsg
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9945 ) LN , LSER
       ENDIF
-cfeb08      WRITE ( NCAWU , 9945 ) LN , LSER
+c      WRITE(123, 9945 ) LN , LSER
       WRITE ( CMON, 9945 ) LN , LSER
       CALL XPRVDU(NCEROR, 1,0)
 9945  FORMAT ( 1X , 'No list of type ' , I8 , ' and serial ' , I8 ,
@@ -289,11 +290,11 @@ cfeb08      WRITE ( NCAWU , 9945 ) LN , LSER
 9950  CONTINUE
       IF ( IMSG .LT. 0 ) GO TO 9992
       if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
-ctemp      write(ncwu,*)'In LISTS1 9950, List=', LN,imsg
+c      write(123,*)'In LISTS1 9950, List=', LN,imsg
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9955 ) LN , LSER
       ENDIF
-cfeb08      WRITE ( NCAWU , 9955 ) LN , LSER
+c      WRITE(123 , 9955 ) LN , LSER
       WRITE ( CMON, 9955 ) LN , LSER
       CALL XPRVDU(NCEROR, 1,0)
 9955  FORMAT ( 1X , 'List type ' , I8 , ' with serial ' , I8 ,
@@ -302,11 +303,11 @@ cfeb08      WRITE ( NCAWU , 9955 ) LN , LSER
 9960  CONTINUE
       IF ( IMSG .LT. 0 ) GO TO 9992
       if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
-ctemp      write(ncwu,*)'In LISTS1 9960, List=', LN,imsg
+c      write(123,*)'In LISTS1 9960, List=', LN,imsg
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9965 ) LN , LSER
       ENDIF
-cfeb08      WRITE ( NCAWU , 9965 ) LN , LSER
+c      WRITE(123 , 9965 ) LN , LSER
       WRITE ( CMON, 9965 ) LN , LSER
       CALL XPRVDU(NCEROR, 1,0)
 9965  FORMAT ( 1X , 'List type ' , I8 , ' with serial ' , I8 ,
@@ -315,11 +316,11 @@ cfeb08      WRITE ( NCAWU , 9965 ) LN , LSER
 9970  CONTINUE
       IF ( IMSG .LT. 0 ) GO TO 9992
       if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
-ctemp      write(ncwu,*)'In LISTS1 9970, List=', LN,imsg
+c      write(123,*)'In LISTS1 9970, List=', LN,imsg
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9975 ) LN , LSER
       ENDIF
-cfeb08      WRITE ( NCAWU , 9975 ) LN , LSER
+c      WRITE(123, 9975 ) LN , LSER
       WRITE ( CMON, 9975 ) LN , LSER
       CALL XPRVDU(NCEROR, 1,0)
 9975  FORMAT ( 1X , 'List type ' , I8 , ' with serial ' , I8 ,

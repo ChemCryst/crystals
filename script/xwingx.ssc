@@ -20,6 +20,8 @@
 {S * Merging equivalent reflections
 %    CLEAR
 %    COPY '#MERGE'
+%    COPY 'REFLECTIONS LIST=HI'
+%    COPY 'REJECT SIGMA=2'
 %    COPY 'END'
 %   END IF
 %

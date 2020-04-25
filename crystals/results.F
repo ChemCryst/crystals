@@ -4599,9 +4599,9 @@ C----- H-bonds AND ESDs
         if (esd .le. 0.) then
           CALL SNUM ( store(itmp), 0.0,  -2, 0, 10, IVEC )
         else
-C set esd to 0.0 to keep Ton happy
-c          CALL SNUM ( store(itmp),store(itmp+1),  -3, 0, 10, IVEC )
-          CALL SNUM ( store(itmp),0.0,  -3, 0, 10, IVEC )
+C set esd to 0.0 to keep Ton happy - switch back on for Bruce 2020
+          CALL SNUM ( store(itmp),store(itmp+1),  -3, 0, 15, IVEC )
+c         CALL SNUM ( store(itmp),0.0,  -3, 0, 10, IVEC )
         endif
         WRITE( CBUF, '(20A1)') (IVEC(I), I=1, 20)
         CALL XCRAS ( CBUF, N)
@@ -4679,7 +4679,7 @@ CDJWMAR99 MANY CHANGES TO BRING UP TO DATE WITH NEW CIFDIC
       PARAMETER (NTERM=4)
       PARAMETER (NNAMES=30)
       DIMENSION A(12), JDEV(4), KDEV(4)
-      PARAMETER (NLST=12)
+      PARAMETER (NLST=11)
       DIMENSION LSTNUM(NLST), JLOAD(NLST)
       DIMENSION IVEC(16), ESD(6)
       CHARACTER CCELL(3)*1,CANG(3)*5,CSIZE(3)*3,CINDEX(3)*2
@@ -4778,8 +4778,9 @@ C
 c
       DATA UPPER/'ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
       DATA LOWER/'abcdefghijklmnopqrstuvwxyz'/
-C                  1 2 3 4 5 6  7  8  9  10 11 12 
-      DATA LSTNUM/1,2,3,4,5,13,23,29,30,31,6,28/
+C                  1 2 3 4 5 6  7  8  9  10 11 
+c                             (12 was LIST 28 - L28 loaded by L6) 
+      DATA LSTNUM/1,2,3,4,5,13,23,29,30,31,6/
       DATA CCELL/'a','b','c'/
       DATA CANG/'alpha','beta','gamma'/
       DATA CSIZE/'min','mid','max'/
@@ -4954,13 +4955,16 @@ C----- CLOSE THE FILE
 
 C################################################################
  
-C                      1 2 3 4 5 6  7  8  9  10 11 12 
+C                      1 2 3 4 5 6  7  8  9  10 11 (12 not used) 
 C FYI:    DATA LSTNUM /1,2,3,4,5,13,23,29,30,31, 6,28 /
 
       DO MLST=1,NLST
          JLOAD(MLST)=0                   !INDICATE LIST NOT LOADED
          LSTYPE=LSTNUM(MLST)
-         IF (KEXIST(LSTYPE)) 400,300,500
+c      write(123,*)'Checking Lists', mlst, lstype
+         idjw=KEXIST(LSTYPE)
+c      write(123,*) 'kexist',lstype, idjw
+         IF (idjw) 400,300,500
 300      CONTINUE
            if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
            WRITE (CMON,350) LSTYPE
@@ -4987,7 +4991,9 @@ C FYI:    DATA LSTNUM /1,2,3,4,5,13,23,29,30,31, 6,28 /
             CALL XLDR05 (LSTYPE)
          ELSE IF (LSTYPE.EQ.6) THEN
             IULN = 6
+c      write(123,*) 'Just starting XFAL06'
             CALL XFAL06 (IULN, 0)
+c      write(123,*) 'Just finished XFAL06'
          ELSE IF (LSTYPE.EQ.10) THEN
             CALL XLDR05 (LSTYPE)
          ELSE IF (LSTYPE.EQ.13) THEN
@@ -5010,10 +5016,12 @@ C----- LOADED BY XFAL06          CALL XFAL28
          END IF
          IF (IERFLG.GE.0) JLOAD(MLST)=1
       END DO
+        IF (KEXIST(6) .GE. 1)  THEN
 c call this here since it updates list 30. THLIM only loads not-loaded lists
           IGLS = 0
           CALL XTHLIM (THMIN, THMAX,THMCMP, THBEST,THBCMP,
      1    INRIC,IULN,IGLS)
+        ENDIF
 c we dont need LIST 25, but it it exists, we should use it
         IF (KEXIST(25) .GE. 1)  THEN
          IF (KHUNTR (25,0, IADDL,IADDR,IADDD, -1) . LT. 0) CALL XFAL25
@@ -6574,7 +6582,8 @@ C----- RELECTION LIMITS IN DATA COLLECTION
          END IF
 
          IF ( IPUNCH .EQ. 0 ) THEN
-           IF (JLOAD(12).GE.1) THEN  !REFLECTION LIMITS IN COMPUTATIONS
+           IF (JLOAD(11).GE.1) THEN  !REFLECTION LIMITS IN COMPUTATIONS
+c                              was JLOAD(12) (LIST 28) which is now loaded by LIST 6
              JLOAD(11)=1
              M6DTL=L6DTL
              IF (N6DTL.GE.4) THEN
@@ -6676,7 +6685,7 @@ C
 #endif
            CALL XCRAS (CBUF,NCHAR)
            WRITE (NCFPU1,
-     1    '(''_oxford_refine_reflns_threshold_expression_ref '',
+     1    '(''_oxford_refine_reflns_threshold_expression '',
      1                    T50,A)')  CBUF(1:NCHAR) 
            CBUF(1:11)='_refine_ls_'
            WRITE (CLINE,'(A, ''number_restraints '', I10)') CBUF(1:11),
@@ -6721,7 +6730,7 @@ c-try to catch old DSC files where +11 held minimisation function
 C
            CALL XPCIF (' ')
            CALL XPCIF 
-     1     ('# Computed with no filters except I/sigma = -10')
+     1     ('# Computed with I/sigma = -10')
 
            WRITE (CLINE,'(''_oxford_reflns_number_all '', I10)')
      1                  NINT(STORE(L30CF+5))
@@ -8033,7 +8042,7 @@ C     Excluded reflection categories
 c
 c
 c      initialisr hole in one
-      i = LINFIT(1,x,y,wt,a,sa,b,sb,t,tsq,r,rsq,nitem, tensor)
+      i = LINFIT(1,x,y,wt,a,sa,b,sb,c,t,tsq,r,rsq,nitem, tensor)
       nhin1 = 0
 c
 C
@@ -8217,11 +8226,11 @@ c Hole in one
         x = fck2-fck1
         y = fok1-fck1
         wt = 1./(sig1*sig1)
-        i = LINFIT(2,x,y,wt,a,sa,b,sb,t,tsq,r,rsq,mitem,tensor)
+        i = LINFIT(2,x,y,wt,a,sa,b,sb,c,t,tsq,r,rsq,mitem,tensor)
         x = fck1-fck2
         y = fok2-fck2
         wt = 1./(sig2*sig2)
-        i = LINFIT(2,x,y,wt,a,sa,b,sb,t,tsq,r,rsq,mitem,tensor)
+        i = LINFIT(2,x,y,wt,a,sa,b,sb,c,t,tsq,r,rsq,mitem,tensor)
       endif
 c End Hole in one
 C
@@ -8394,7 +8403,7 @@ C
 C
 C                                ---- ALL REFELCTIONS NOW PROCESSED.
 c
-      i = LINFIT(3,x,y,wt,a,sa,b,sb,t,tsq,r,rsq,mitem,tensor)
+      i = LINFIT(3,x,y,wt,a,sa,b,sb,c,t,tsq,r,rsq,mitem,tensor)
 c     hole-in-1
       hin1 = b
       hin1su = sb
@@ -8876,7 +8885,7 @@ c         watch out for unreasonably large Do
 C
 C       initialise best line fitting
 C
-        i = LINFIT(1,x,y,wt,a,sa,b,sb,t,tsq,r,rsq,nitem, tensor)
+        i = LINFIT(1,x,y,wt,a,sa,b,sb,c,t,tsq,r,rsq,nitem, tensor)
 C
         NFOFC=0
         m6acc=l6acc
@@ -8915,7 +8924,7 @@ C
           ymax=max(ymax,abs(yaxis))
           nfofc=nfofc+1
           itemp =
-     1    LINFIT(2,XAXIS,YAXIS,wt,a,sa,b,sb,t,tsq,r,rsq,nitem,tensor)
+     1    LINFIT(2,XAXIS,YAXIS,wt,a,sa,b,sb,c,t,tsq,r,rsq,nitem,tensor)
 c
           IF  (IPUNCH.EQ.3) then
 c disabled april 2016
@@ -8948,7 +8957,7 @@ c
               goto 2840
         endif
 c
-        IDJW=LINFIT(3,X,Y,WT,YCUT,SIGCUT,SLOPE,SIGSLOP,T,TSQ,CORREL,
+        IDJW=LINFIT(3,X,Y,WT,YCUT,SIGCUT,SLOPE,SIGSLOP,c,T,TSQ,CORREL,
      1  COOD,NFOFC,tensor)
 C
         IF (IDJW.GE.0) THEN
@@ -10870,11 +10879,12 @@ C----- CLOSE THE 'CIF' OUTPUT FILE
       END
 c
 CODE FOR LINFIT
-      function LINFIT(mode,x,y,wt,a,sa,b,sb,t,tsq,r,rsq,mitem,tensor)
+      function LINFIT(mode,x,y,wt,a,sa,b,sb,C,t,tsq,r,rsq,mitem,tensor)
 c     1  root, xcoord, ycoord, grad)
 c least squares best line, based on Bevington, Chapter 6 
 c  see also http://mathworld.wolfram.com/LeastSquaresFitting.html
 c  y = a + bx
+C  and y = cx (i.e. line passes through origin)
 c
 c verified against Watts & Halliwell, Essential Environmental
 c Science, Routledge, 1996.
@@ -10918,6 +10928,7 @@ c
         if(abs(denom) .gt. zero) then
             a = (sy*sxx - sx*sxy)/denom
             b = (ss*sxy - sx*sy)/denom
+            c = sxy/sxx
 
 c This bit based on Wolfram world but including weights (derived by DJW so 
 c beware)

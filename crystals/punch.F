@@ -1119,7 +1119,7 @@ C-------      TWINNED
      3 'FORMAT (3F4.0, F10.2, F8.2, F10.2, F8.4, F10.2, ',
      4 'F10.0, / G12.5, F4.0)'/
      4 'store ncoef=9'/
-     5 'outPUT indices /FO/ SIGMA SQRTW /FC/ PHASE RATIO/JCODE ',
+     5 'outPUT indices /FO/ SIGMA SQRTW /FC/ PHASE RATIO ',
      5 ' /FOT/ ELEMENTS',/
      2 'INPUT H K L /FO/ SIGMA /FC/ PHASE /FOT/ ELEMENTS'
      4 ,' SQRTW JCODE' /
@@ -1131,7 +1131,7 @@ C------      NOT TWINNED
      2 'INPUT H K L /FO/ SIGMA /FC/ PHASE SQRTW JCODE' /
      3 'FORMAT (3F4.0, F10.2, F8.2, F10.2, F8.4, G12.5, F4.0)'/
      4 'store ncoef=7'/
-     5 'outPUT indices /FO/ SIGMA SQRTW /FC/ PHASE RATIO/JCODE ',/
+     5 'outPUT indices /FO/ SIGMA SQRTW /FC/ PHASE RATIO ',/
      6 'END')
 C<DJW280896
 C--FETCH THE NEXT REFLECTION
@@ -2064,7 +2064,7 @@ C     1 c6keys(istore(i)-l6+1)
       ELSE IF (IBIN.EQ.32) THEN      !RATIO/JCODE
        I6PCH(M6PCH) = 21             !DUMP THE RATIO-ITS COMPUTED LATER
        I6PCH(M6PCH) = 19
-       M6PCH = M6PCH+0
+       M6PCH = M6PCH+0               !Dump them both
       ELSE
        I6PCH(M6PCH) = IBIN
       ENDIF  
@@ -2355,7 +2355,7 @@ C-------      TWINNED
      3 'FORMAT (3F4.0, F10.2, F8.2, F10.2, F8.4, F10.2, ',
      4 'F10.0, / G12.5, F4.0)'/
      4 'store ncoef=9'/
-     5 'outPUT indices /FO/ SIGMA SQRTW /FC/ PHASE RATIO/JCODE ',
+     5 'outPUT indices /FO/ SIGMA SQRTW /FC/ PHASE RATIO ',
      5 ' /FOT/ ELEMENTS',/
      2 'INPUT H K L /FO/ SIGMA /FC/ PHASE /FOT/ ELEMENTS'
      4 ,' SQRTW JCODE' /
@@ -2367,7 +2367,7 @@ C------      NOT TWINNED
      2 'INPUT H K L /FO/ SIGMA /FC/ PHASE SQRTW JCODE' /
      3 'FORMAT (3F4.0, F10.2, F8.2, F10.2, F8.4, G12.5, F4.0)'/
      4 'store ncoef=7'/
-     5 'outPUT indices /FO/ SIGMA SQRTW /FC/ PHASE RATIO/JCODE ',/
+     5 'outPUT indices /FO/ SIGMA SQRTW /FC/ PHASE RATIO ',/
      6 'END')
 C<DJW280896
 C--FETCH THE NEXT REFLECTION
@@ -4533,7 +4533,7 @@ C--PUNCH THE INITIAL HEADING
      2 'INPUT H K L /FO/ SIGMA /FC/ SQRTW ' /
      3 'FORMAT (3F4.0, 4F10.2 )'/
      4 'store ncoef=7'/
-     5 'outPUT indices /FO/ SIGMA SQRTW /FC/ PHASE RATIO/JCODE ',/
+     5 'outPUT indices /FO/ SIGMA SQRTW /FC/ PHASE RATIO ',/
      6 'END')
 C----- AND NOW RETURN OK
 550   CONTINUE

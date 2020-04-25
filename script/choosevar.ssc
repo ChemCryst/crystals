@@ -1,20 +1,26 @@
 %SCRIPT CHOOSEVAR
 %%
 %% DECIDE WHETHER TO READ OLD-STYLE sigmas.dat OR New sigmas2.dat
-% VARIABLE LOGICAL SIG SIG2                                                      
+% VARIABLE LOGICAL SIG SIG2 SIG3                                                     
 % EVALUATE SIG = FILEEXISTS 'sigmas.dat'                                   
 % EVALUATE SIG2 = FILEEXISTS 'data\sigmas2.dat'                                   
-%     if  sig2 then
+% EVALUATE SIG3 = FILEEXISTS 'data\sigmas3.dat'    
+%     if  sig3 then
 %            copy '#script xvariance2'
+ Found sigmas3.dat file
+%     else if sig2 then
+%            copy '#script xvariance2'
+ Found sigmas2.dat file
 %     else if sig then
 %            copy '#script xvariance'
+ Found sigmas.dat file
 %     else
 {E
-{E The file data/SIGMAS2.DAT does not exist    
+{E The file data/SIGMASn.DAT does not exist    
 {E
 %        copy '#script xhelp1'
 
- The file data\SIGMAS2.DAT was created during input of reflections.
+ The file data\SIGMASn.DAT was created during input of reflections.
  It no longer exists, or is in a different folder.
  Since April 2019 this file should reside in the data/ subfolder.
    Re-input your reflection data.

@@ -162,7 +162,7 @@
 %%                                                                              
 %  IF CIFDONE .EQ. FALSE THEN                                                   
                                                                                 
-{I * Info: You have not saved a CIF file.                                       
+{I * Info: You have not saved an output file.                                       
                                                                                 
 %%    VERIFY YES NO                                                             
 %%    GET NOSTORE FINAL ABBREVIATED 'Do you want a CIF file?' 'YES'             

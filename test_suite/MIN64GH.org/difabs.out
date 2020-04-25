@@ -73,7 +73,7 @@
  For the  2057 reflections
  the relative residual was 0.0037   and the relative rms residual was 0.0050
 
-  2553 Reflections corrected
+  2553 Reflections compared
  Minimum absorption correction = 0.750     at  PHI(P)= 257.5 MU(P)=  23.0
                                                PHI(S)=  65.7 MU(S)=  23.0
  Maximum absorption correction = 0.896     at  PHI(P)= 159.1 MU(P)=   0.1
@@ -172,7 +172,7 @@
   SINTH/L**2       0.226373E-02   0.352818E+00   0.212114E+00   0.231404E+00
   FO/FC           No details available
   JCODE           No details available
-  SERIAL          No details available
+  SERIAL           0.100000E+01   0.255300E+04   0.127700E+04   0.147441E+04
   RATIO            0.334303E-03   0.116556E+03   0.179969E+02   0.259837E+02
   THETA           No details available
   OMEGA           No details available
