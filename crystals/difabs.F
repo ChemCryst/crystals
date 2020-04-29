@@ -1620,10 +1620,10 @@ c         WRITE(NCAWU, '(A)') (trim(CMON(II)),II=1,2)
      2 ' Average absorption correction =',F6.3)
 C----- WRITE MINIMUM INFO TO VDU
          WRITE ( CMON,202) NTOT, AVER, AMIN, AMAX
-         CALL XPRVDU(NCVDU, 2,0)
+         CALL XPRVDU(NCVDU, 4,0)
       ELSE
          WRITE ( CMON,202) NTOT, AMIN, AVER, AMAX
-         CALL XPRVDU(NCVDU, 2,0)
+         CALL XPRVDU(NCVDU, 4,0)
 202      FORMAT( I6, ' Reflections processed.',
      +   /'   Minimum excursion =',F6.3,
      +   /'   Average excursion =',F6.3,' (On Fo)',
