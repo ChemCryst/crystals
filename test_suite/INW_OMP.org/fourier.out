@@ -71,36 +71,36 @@ Bonds: Update required - There is no list 41
 
 
 
-                               H     K     L     I or /FO/     Sigma      JCODE    Serial
+                               H     K     L     I or /FO/     Sigma      Serial
 
- Systematic absence            0.    0.    3.         1.9        0.2         0.        0.
- Systematic absence            0.    0.    5.        -0.8        0.3         0.        0.
- Systematic absence            0.    0.    7.         1.0        0.3         0.        0.
- Systematic absence            0.    0.    9.         0.5        0.6         0.        0.
- Systematic absence            0.    0.   11.         0.9        0.2         0.        0.
- Systematic absence            0.    0.   13.         1.0        0.1         0.        0.
- Systematic absence            0.    0.   15.        -1.5        0.9         0.        0.
- Systematic absence            0.    0.   17.         2.0        0.8         0.        0.
- Systematic absence            0.    3.    0.         1.5        0.3         0.        0.
- Systematic absence            0.    5.    0.         1.4        0.5         0.        0.
- Systematic absence            0.    7.    0.        -1.4        0.5         0.        0.
- Systematic absence            0.    9.    0.         2.1        0.6         0.        0.
- Systematic absence            0.   11.    0.        -1.6        0.7         0.        0.
- Systematic absence            0.   13.    0.         1.8        0.9         0.        0.
- Systematic absence            1.    0.    0.         1.6        0.3         0.        0.
- Systematic absence            3.    0.    0.         1.8        0.4         0.        0.
- Systematic absence            5.    0.    0.         1.2        0.8         0.        0.
+ Systematic absence            0.    0.    3.         1.9        0.2         1.
+ Systematic absence            0.    0.    5.        -0.8        0.3         2.
+ Systematic absence            0.    0.    7.         1.0        0.3         4.
+ Systematic absence            0.    0.    9.         0.5        0.6         6.
+ Systematic absence            0.    0.   11.         0.9        0.2         8.
+ Systematic absence            0.    0.   13.         1.0        0.1        10.
+ Systematic absence            0.    0.   15.        -1.5        0.9        12.
+ Systematic absence            0.    0.   17.         2.0        0.8        14.
+ Systematic absence            0.    3.    0.         1.5        0.3        53.
+ Systematic absence            0.    5.    0.         1.4        0.5        91.
+ Systematic absence            0.    7.    0.        -1.4        0.5       129.
+ Systematic absence            0.    9.    0.         2.1        0.6       162.
+ Systematic absence            0.   11.    0.        -1.6        0.7       193.
+ Systematic absence            0.   13.    0.         1.8        0.9       217.
+ Systematic absence            1.    0.    0.         1.6        0.3       231.
+ Systematic absence            3.    0.    0.         1.8        0.4      1029.
+ Systematic absence            5.    0.    0.         1.2        0.8      1642.
  The updated reflections are now on UNIT 52
 
 
 
      17 absences,   mean Fo =   0.800,   rms Fo/sigma(Fo)=   4.497
 
-Fo range            -ve   1.000   2.000   4.000   8.000  16.000  Remainder
+Fo range       -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 Mean Fo          -1.321   0.721   1.474   2.085   0.000   0.000   0.000
 Number                4       2       9       2       0       0       0
 
-Fo/sigma range      -ve   1.000   2.000   4.000   8.000  16.000  Remainder
+Fo/sigma range -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 rms (Fo/sigma)    2.451   0.857   1.690   3.405   5.459  11.667   0.000
 Number                4       1       2       5       4       1       0
 
@@ -114,8 +114,8 @@ Number                4       1       2       5       4       1       0
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
-                                                    F-squared     Delta     sigma   E-param    Weight   JCODE    Serial
-    H   K   L  F-squared    rmsdev    <sigma>           Nref $   rmsdev    av-sig
+                                                    F-squared     Delta     sigma   1st-Dif    Weight   Serial    I/sigma
+    H   K   L  F-squared    rmsdev    <sigma>           Nref $   rmsdev    av-sig      Mode      Rint
 
  The updated reflections are now on UNIT 52
 
@@ -2000,7 +2000,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number        1     Address    54242     Length     299     Created on                          
+ Print list type    10     serial number        1     Address    54243     Length     299     Created on                          
 
 
 
@@ -3750,7 +3750,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number        2     Address    54541     Length     479     Created on                          
+ Print list type    10     serial number        2     Address    54542     Length     479     Created on                          
 
 
 
@@ -5530,7 +5530,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number        3     Address    55020     Length     479     Created on                          
+ Print list type    10     serial number        3     Address    55021     Length     479     Created on                          
 
 
 
@@ -7310,7 +7310,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number        4     Address    55499     Length     479     Created on                          
+ Print list type    10     serial number        4     Address    55500     Length     479     Created on                          
 
 
 
@@ -9120,7 +9120,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number        5     Address    55978     Length     731     Created on                          
+ Print list type    10     serial number        5     Address    55979     Length     731     Created on                          
 
 
 
@@ -10355,7 +10355,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number        6     Address    56709     Length     335     Created on                          
+ Print list type    10     serial number        6     Address    56710     Length     335     Created on                          
 
 
 
@@ -11529,7 +11529,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number        7     Address    57044     Length     335     Created on                          
+ Print list type    10     serial number        7     Address    57045     Length     335     Created on                          
 
 
 
@@ -12699,7 +12699,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number        8     Address    57379     Length     335     Created on                          
+ Print list type    10     serial number        8     Address    57380     Length     335     Created on                          
 
 
 
@@ -13877,7 +13877,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number        9     Address    57714     Length     335     Created on                          
+ Print list type    10     serial number        9     Address    57715     Length     335     Created on                          
 
 
 
@@ -15635,7 +15635,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       10     Address    58049     Length     299     Created on                          
+ Print list type    10     serial number       10     Address    58050     Length     299     Created on                          
 
 
 
@@ -17421,7 +17421,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       11     Address    58348     Length     731     Created on                          
+ Print list type    10     serial number       11     Address    58349     Length     731     Created on                          
 
 
 
@@ -19276,7 +19276,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       12     Address    59079     Length     731     Created on                          
+ Print list type    10     serial number       12     Address    59080     Length     731     Created on                          
 
 
 
@@ -21129,7 +21129,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       13     Address    59810     Length     731     Created on                          
+ Print list type    10     serial number       13     Address    59811     Length     731     Created on                          
 
 
 
@@ -22981,7 +22981,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       14     Address    60541     Length     731     Created on                          
+ Print list type    10     serial number       14     Address    60542     Length     731     Created on                          
 
 
 
@@ -24216,7 +24216,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       15     Address    61272     Length     335     Created on                          
+ Print list type    10     serial number       15     Address    61273     Length     335     Created on                          
 
 
 
@@ -25390,7 +25390,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       16     Address    61607     Length     335     Created on                          
+ Print list type    10     serial number       16     Address    61608     Length     335     Created on                          
 
 
 
@@ -26560,7 +26560,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       17     Address    61942     Length     335     Created on                          
+ Print list type    10     serial number       17     Address    61943     Length     335     Created on                          
 
 
 
@@ -27738,7 +27738,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       18     Address    62277     Length     335     Created on                          
+ Print list type    10     serial number       18     Address    62278     Length     335     Created on                          
 
 
 
@@ -31615,7 +31615,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       19     Address    74091     Length     299     Created on                          
+ Print list type    10     serial number       19     Address    74092     Length     299     Created on                          
 
 
 
@@ -33370,7 +33370,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       20     Address    74390     Length     479     Created on                          
+ Print list type    10     serial number       20     Address    74391     Length     479     Created on                          
 
 
 
@@ -35155,7 +35155,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       21     Address    74869     Length     479     Created on                          
+ Print list type    10     serial number       21     Address    74870     Length     479     Created on                          
 
 
 
@@ -36940,7 +36940,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       22     Address    75348     Length     479     Created on                          
+ Print list type    10     serial number       22     Address    75349     Length     479     Created on                          
 
 
 
@@ -38747,7 +38747,7 @@ Mean C-C su =   0.0000
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    10     serial number       23     Address    75827     Length     731     Created on                          
+ Print list type    10     serial number       23     Address    75828     Length     731     Created on                          
 
 
 

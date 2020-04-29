@@ -1,6 +1,6 @@
 data_global 
 _audit_creation_date        "20  -  -  "
-_audit_creation_method 'CRYSTALS_ver_14.61_build_0000 '
+[63] _audit_creation_method CRYSTALS
 
 _oxford_structure_analysis_title  'Cyclo in P 21 21 21'
 _chemical_name_systematic         .
@@ -394,8 +394,8 @@ _refine_ls_R_factor_all           0.0879
 _refine_ls_wR_factor_ref          0.2170 
 _refine_ls_wR_factor_all          0.2170 
 _refine_ls_goodness_of_fit_ref    1.6682 
-_refine_ls_shift/su_max           0.0000404 
-_refine_ls_shift/su_mean          0.0000094 
+[01] _refine_ls_shift/su_max           0.0000
+[02] _refine_ls_shift/su_mean          0.0000
  
  
 # Computed with I/sigma = -10 
