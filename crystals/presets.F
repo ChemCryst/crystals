@@ -1,5 +1,5 @@
 !> \ingroup crystals
-C $Log: presets.F,v $ 
+C $Log: presets.F,v $
 C Revision 1.66  2012/03/23 13:54:08  rich
 C Changed some common block variables into constants.
 C
@@ -335,9 +335,9 @@ C
 
       DATA VCVVSZ/0/
       DATA VCVVEC/8192*0.0/
-      
+
 C LOAD THE LIST NAMES
-C      
+C
        DATA CLISTS(1)     /'Cell parameters'/
        DATA CLISTS(2)     /'Unit cell symmetry'/
        DATA CLISTS(3)     /'Atomic scattering factors'/
@@ -408,7 +408,7 @@ C
 C      INITIALISE THE SCRIPT STACK
       DATA ILEVEL/NFILVL*0/, ISTACK/IDMSTK*0/
 C
- 
+
 C In this table, the CAPITAL characters in FORLOGNAM are used to identif
 C unit in STORE instructions.
 C        Keywords used in ATTATCH instructions to change the above values
@@ -486,7 +486,7 @@ C      THE COMMAND FILE SOURCE
       DATA NUCOM /4/
 C      THE OUTPUT DEVICES
 C       VDU, MONITOR, PRINTER, PUNCH, LOG, ERROR
-#ifdef _H_P_ 
+#ifdef _H_P_
 C      REASSIGN PRINTER IN STARTUP FILE
       DATA NCVDU/6/, NCAWU/6/, NCWU/6/, NCPU/7/, NCLU/8/, NCEROR/6/
 #elif defined (__VAX__)
@@ -498,7 +498,7 @@ C      REASSIGN PRINTER IN STARTUP FILE
 #endif
 
       DATA NCADU/40/, NCMU/41/, NCCHW/42/, NCPDU/43/, NCDBU/44/
-      
+
 C      THE AUXILLIARY INPUT DEVICE (REFLECTIONS)
       DATA NCARU /2/
 C      THE SYSTEM SPY FILE
@@ -564,12 +564,12 @@ C      USE10, USE11, USE12, USE13, USE14,
 C      USE15, USE16, USE17, USE18, USE19
 C      NCADU, NCMU, NCCHW, NCPDU, NCDBU, SCP2
 C
- 
+
 C
       DATA NFLUSD / 50 /
 C
       DATA IFLUNI(1)  /  1 / , IFLUNI(2)  /  2 / , IFLUNI(3)  /  5 /
-#ifdef __VAX__ 
+#ifdef __VAX__
       DATA IFLUNI(4)  /  9 / , IFLUNI(5)  /  7 / , IFLUNI(6)  /  8 /
 #else
       DATA IFLUNI(4)  /  6 / , IFLUNI(5)  /  7 / , IFLUNI(6)  /  8 /
@@ -1126,7 +1126,7 @@ C
       DATA IFILE/1000000/,ILIST/1100000/,IEND/1111111/
       DATA LNFLE/416/,LNLST/416/,IACCL/-1/
 C
-#ifdef _HOL_ 
+#ifdef _HOL_
       DATA KTITL( 1)/4HTHIS/,KTITL( 2)/4H IS /,KTITL( 3)/4HTHE /
       DATA KTITL( 4)/4HDEFA/,KTITL( 5)/4HULT /,KTITL( 6)/4HSETT/
       DATA KTITL( 7)/4HING /,KTITL( 8)/4HFOR /,KTITL( 9)/4HTHE /
@@ -1198,7 +1198,7 @@ C
      7           'S', 'C', 'R', 'I', 'C', 'O', 'M', 'M',
      8           'C', 'L', 'O', 'S', 'S', 'P', 'A', 'W',
      9           '$', ' ', ' ', ' ', 'A', 'P', 'P', 'E',
-     1           'B', 'E', 'N', 'C', 'D', 'E', 'F', 'I',  
+     1           'B', 'E', 'N', 'C', 'D', 'E', 'F', 'I',
      2           'F', 'L', 'U', 'S', 'I', 'M', 'P', 'O'  /
 #endif
 C
@@ -1246,7 +1246,7 @@ C
       DATA LCOM/13/,MCOM/29/,MDCOM/4/,NCOM/5/
       DATA MULT50/10000/,IDIM50/32/,LSTOFF/3/
 C
-#ifdef _HOL_ 
+#ifdef _HOL_
       DATA KPRGNM( 1)/4H    /,KPRGNM( 2)/4H    /,KPRGNM( 3)/4H    /
       DATA KPRGNM( 4)/4H    /,KPRGNM( 5)/4H    /,KPRGNM( 6)/4H    /
       DATA KPRGNM( 7)/4H    /,KPRGNM( 8)/4H    /,KPRGNM( 9)/4H    /
@@ -1287,7 +1287,7 @@ C    JAN01 NKAV IS THE NUMBER OF REFINABLE PARAMETERS PER ATOM
 CDJWSEP2000      DATA NWKA/2/, NKA/18/, LKA/2/, NKAS/15/, NKAO/7/
 CDJWNOV2000      DATA NWKA/2/, NKA/20/, LKA/2/, NKAS/17/, NKAO/9/
 CDJWJAN2001      DATA NWKA/2/, NKA/22/, LKA/2/, NKAS/19/, NKAO/11/
-      DATA NWKA/2/, NKA/22/, LKA/2/, NKAS/19/, NKAO/11/, NKAV/11/
+      DATA NWKA/2/, NKA/24/, LKA/2/, NKAS/19/, NKAO/11/, NKAV/11/
 #ifdef _HOL_ 
       DATA ICOORD(1, 1)/4HTYPE/,ICOORD(2, 1)/4H    /
       DATA ICOORD(1, 2)/4HSERI/,ICOORD(2, 2)/4HAL  /
@@ -1318,11 +1318,13 @@ C----- THE EXTENDED PARAMETER NAMES
       DATA ICOORD(1,20)/4HSIZE/,ICOORD(2,20)/4H    /
       DATA ICOORD(1,21)/4HDECL/,ICOORD(2,21)/4HINAT/
       DATA ICOORD(1,22)/4HAZIM/,ICOORD(2,22)/4HUTH /
+      DATA ICOORD(1,23)/4HXI  /,ICOORD(2,23)/4H    /
+      DATA ICOORD(1,24)/4HBD   /,ICOORD(2,24)/4H    /
 C
 #else
       DATA ICOORD(1, 1)/'TYPE'/,ICOORD(2, 1)/'    '/
 #endif
-#if !defined(_HOL_) 
+#if !defined(_HOL_)
       DATA ICOORD(1, 2)/'SERI'/,ICOORD(2, 2)/'AL  '/
       DATA ICOORD(1, 3)/'OCC '/,ICOORD(2, 3)/'    '/
 C      DATA ICOORD(1, 4)/'U[IS'/,ICOORD(2, 4)/'O]  '/
@@ -1355,11 +1357,13 @@ C
       DATA ICOORD(1,20)/'SIZE'/,ICOORD(2,20)/'    '/
       DATA ICOORD(1,21)/'DECL'/,ICOORD(2,21)/'INAT'/
       DATA ICOORD(1,22)/'AZIM'/,ICOORD(2,22)/'UTH '/
+      DATA ICOORD(1,23)/'XI  '/,ICOORD(2,23)/'    '/
+      DATA ICOORD(1,24)/'BD  '/,ICOORD(2,24)/'    '/
 C
 C
 #endif
       DATA NWKO/2/,NKO/6/,LKO/2/
-#ifdef _HOL_ 
+#ifdef _HOL_
       DATA KVP(1,1)/4HSCAL/,KVP(2,1)/4HE   /
       DATA KVP(1,2)/4HDU[I/,KVP(2,2)/4HSO] /
       DATA KVP(1,3)/4HOU[I/,KVP(2,3)/4HSO] /
@@ -1370,7 +1374,7 @@ C
 #else
       DATA KVP(1,1)/'SCAL'/,KVP(2,1)/'E   '/
 #endif
-#if !defined(_HOL_) 
+#if !defined(_HOL_)
       DATA KVP(1,2)/'DU[I'/,KVP(2,2)/'SO] '/
       DATA KVP(1,3)/'OU[I'/,KVP(2,3)/'SO] '/
       DATA KVP(1,4)/'POLA'/,KVP(2,4)/'RITY'/
@@ -1381,7 +1385,7 @@ C
 #endif
       DATA NWSC/2/,NSC/6/,LSC/2/
 C
-#ifdef _HOL_ 
+#ifdef _HOL_
       DATA KSCAL(1,1)/4HSCAL/,KSCAL(2,1)/4HES  /
       DATA KSCAL(1,2)/4HPARA/,KSCAL(2,2)/4HMETE/
       DATA KSCAL(1,3)/4HLAYE/,KSCAL(2,3)/4HR   /
@@ -1554,17 +1558,17 @@ C      ISSUEQ      UEQUIV
 C      ISSUPD      UPDATE OF MODEL WINDOW
 C      ISSBND      BOND TYPING FOR MODEL WINDOW
 C      ISSCSH      CASHING MESSAGES (OFF/ON)
-C      ISSRAT      RATIO = (IO OR IC)/SIGMA (0/1) 
+C      ISSRAT      RATIO = (IO OR IC)/SIGMA (0/1)
 C
 C (THE FOLLOWING 4 DEFINITIONS ARE REDUNDANT, AND ARE REPLACED BY
 C  THE CHARACTER DEFINITIONS 'CSS***)
-#if defined(_DOS_) 
+#if defined(_DOS_)
       DATA ISSMAC(1) / ' 486' / , ISSMAC(2) / '  PC' /
       DATA ISSOPS(1) / ' DOS' / , ISSOPS(2) / '6.22' /
       DATA ISSDAT(1) / '    ' / , ISSDAT(2) / ' Feb' /
       DATA ISSDAT(3) / '  19' / , ISSDAT(4) / '97  ' /
- 
-#elif defined(__DVF__) || defined(__GID__) 
+
+#elif defined(__DVF__) || defined(__GID__)
       DATA ISSMAC(1) / 'Pent' / , ISSMAC(2) / 'ium ' /
       DATA ISSOPS(1) / ' WIN' / , ISSOPS(2) / '32  ' /
       DATA ISSDAT(1) / '    ' / , ISSDAT(2) / ' Dec' /
@@ -1605,7 +1609,7 @@ C  THE CHARACTER DEFINITIONS 'CSS***)
       DATA ISSDAT(1) / '    ' / , ISSDAT(2) / ' Dec' /
       DATA ISSDAT(3) / '  20' / , ISSDAT(4) / '13  ' /
 #endif
-#elif defined(__VAX__) 
+#elif defined(__VAX__)
       DATA ISSMAC(1) / ' DEC' / , ISSMAC(2) / ' VAX' /
       DATA ISSOPS(1) / ' VMS' / , ISSOPS(2) / ' 5.0' /
       DATA ISSDAT(1) / '    ' / , ISSDAT(2) / ' Feb' /
@@ -1662,7 +1666,7 @@ C^      DATA ISSNBF / 6 / , ISSBFS / 3200 /
       DATA ISSNBF / 24 / , ISSBFS / 12928 /
 C
       DATA ISSPAG / 128 /
-#if !defined(_H_P_) 
+#if !defined(_H_P_)
       DATA ISSRLI / 512 / , ISSBLI / 128 / , ISSWLI / 4 /
       DATA ISSRLF / 512 / , ISSBLF / 128 / , ISSWLF / 4 /
 #else
@@ -1686,7 +1690,7 @@ C
 C
       DATA ISSL11 / 1 /
       DATA ISSLNM / 5 /
-#if !defined(_H_P_) 
+#if !defined(_H_P_)
       DATA ISSINI / 1 / , ISSSTA / 1 / , ISSBAN / 0 /
 #else
       DATA ISSINI / 1 / , ISSSTA / 1 / , ISSBAN / 1 /
@@ -1721,12 +1725,12 @@ C
       DATA LSSDAT / 14 /
       DATA CSSSVN / '5555' /
       DATA LSSSVN / 4 /
-#ifdef _H_P_ 
+#ifdef _H_P_
       DATA CSSMAC / 'HP UNIX' /
       DATA LSSMAC / 7 /
       DATA CSSOPS / 'Version X.X' /
       DATA LSSOPS / 11 /
-#elif defined(_DOS_) 
+#elif defined(_DOS_)
       DATA CSSMAC / 'Intel 80X86' /
       DATA LSSMAC / 11 /
       DATA CSSOPS / 'DOS 7.0' /
@@ -1746,12 +1750,12 @@ C
       DATA LSSMAC / 5 /
       DATA CSSOPS / 'MacOS' /
       DATA LSSOPS / 5 /
-#elif defined(__VAX__) 
+#elif defined(__VAX__)
       DATA CSSMAC / 'DEC VAX' /
       DATA LSSMAC / 7 /
       DATA CSSOPS / 'VMS 5' /
       DATA LSSOPS / 5 /
-#else 
+#else
       DATA CSSMAC / 'Unknown' /
       DATA LSSMAC / 7 /
       DATA CSSOPS / 'None' /
@@ -1771,12 +1775,12 @@ C
       DATA CSSDST / 'CRYSDIR:crysdef.srt' /
       DATA LSSDST / 19 /
 C
-#ifdef _H_P_ 
+#ifdef _H_P_
       DATA CSSSCT / '/users/oxford/scatt.dat' /
       DATA LSSSCT / 23 /
       DATA CSSELE / '/users/oxford/propwin.dat' /
       DATA LSSELE / 24 /
-#elif defined(__VAX__) 
+#elif defined(__VAX__)
       DATA CSSSCT / 'CRSCP:scatt.dat' /
       DATA LSSSCT / 15 /
       DATA CSSELE / 'CRSCP:propwin.dat' /
@@ -1787,10 +1791,10 @@ C
       DATA CSSELE / ' ' /
       DATA LSSELE / 1 /
 #endif
-#ifdef _H_P_ 
+#ifdef _H_P_
       DATA CSSVDU  / 'VDU' /
       DATA LSSVDU / 3 /
-#elif defined(__VAX__) 
+#elif defined(__VAX__)
       DATA CSSVDU  / 'SYS$COMMAND' /
       DATA LSSVDU / 11 /
 #else
@@ -1798,10 +1802,10 @@ C
       DATA LSSVDU / 3 /
 #endif
 C
-#ifdef _H_P_ 
+#ifdef _H_P_
       DATA CSSLPT  / 'LPT' /
       DATA LSSLPT / 3 /
-#elif defined(__VAX__) 
+#elif defined(__VAX__)
       DATA CSSLPT  / 'SYS$PRINT' /
       DATA LSSLPT / 9 /
 #else
@@ -1814,7 +1818,7 @@ C
 
       DATA CSSMAP / 'fourier.map' /
       DATA LSSMAP / 11 /
-C          
+C
 C -- 'DEVICE' AND 'EXTENSION' REQUIRED FOR 'HELP' , 'MANUAL' , AND
 C    'SCRIPT' INSTRUCTIONS
 C
@@ -2014,7 +2018,7 @@ C Implemented so far: G,R,D,U,P   To do: S,T
 C
 C
 C      THE NAMES OF THE VARIOUS RESTRAINTS
-      DATA 
+      DATA
      1 coperation(1  ) /'DEFINE'/,
      1 coperation(2  ) /'RESTRAIN'/,
      1 coperation(3  ) /'DISTANCE'/,
@@ -2253,19 +2257,19 @@ CODE FOR MACBLK
       INCLUDE 'XFILEC.INC'
       INCLUDE 'XGUIOV.INC'
 
-      
+
       EQUIVALENCE ( IRIC,ZRIC )
 
 C --- XSSVAL ---
       ISSLSM = 3
       ISSSPD = 2
       ISSTIM = 1
-      ISSL11 = 1 
+      ISSL11 = 1
       ISSLNM = 5
       ISSINI = 1
       ISSSTA = 1
-#if !defined(_H_P_) 
-      ISSBAN = 0 
+#if !defined(_H_P_)
+      ISSBAN = 0
 #else
       ISSBAN = 1
 #endif
@@ -2276,7 +2280,7 @@ C --- XSSVAL ---
       ISSPRT = -1
       ISSMON = -1
       ISSEXP = 1
-      ISSUEQ = 1 
+      ISSUEQ = 1
 
 C --- XCARDS ---
       NC=-1
@@ -2315,7 +2319,7 @@ C --- UFILE ---
         IRDFND(I)=0
         IRDHGH(I)=0
       END DO
-      IFLCHR(1) = 1 
+      IFLCHR(1) = 1
       IFLCHR(2) = 2
       IRDLOG(2) = 0
 c reinstate logging of all input lines except GENERALEDIT
@@ -2332,10 +2336,10 @@ c      IRDLOG(2) = 1
 
 
 
-      IFLUNI(1)  =  1  
+      IFLUNI(1)  =  1
       IFLUNI(2)  =  2
-      IFLUNI(3)  =  5  
-#ifdef __VAX__ 
+      IFLUNI(3)  =  5
+#ifdef __VAX__
       IFLUNI(4)  =  9
 #else
       IFLUNI(4)  =  6
@@ -2369,7 +2373,7 @@ c      IRDLOG(2) = 1
       IFLUNI(31)= 27
       IFLUNI(32)= 28
       IFLUNI(33)=  6
-      IFLUNI(34)=  6             
+      IFLUNI(34)=  6
       IFLUNI(35)= 29
       IFLUNI(36)= 30
       IFLUNI(37)= 31
@@ -2379,7 +2383,7 @@ c      IRDLOG(2) = 1
       IFLUNI(41)= 35
       IFLUNI(42)= 36
       IFLUNI(43)= 37
-      IFLUNI(44)= 38             
+      IFLUNI(44)= 38
       IFLUNI(45)= 40
       IFLUNI(46)= 41
       IFLUNI(47)= 42
@@ -2411,7 +2415,7 @@ c      IRDLOG(2) = 1
 C --- XUNITS ---
       NCRU =20
       NCRRU =1
-#ifdef __VAX__ 
+#ifdef __VAX__
       NCWU=9
 #else
       NCWU=6
@@ -2424,14 +2428,14 @@ C --- XUNITS ---
       IPAGE(5)=20
       NCARU=2
       NCAWU=3
-#ifdef __VAX__ 
+#ifdef __VAX__
       IQUN=2
       JQUN=0
 #else
       IQUN=2
       JQUN=2
 #endif
-      IUSFLG = 0 
+      IUSFLG = 0
       NCSU = 11
       NCEXTR = 88
       NCEXTR2 = 87
@@ -2493,7 +2497,7 @@ C --- XCBVAL ---
 
       ICBDIM = 9
       ICBLDD = -1
-      ICBDAD = 0 
+      ICBDAD = 0
       ICBNFL = 1
       ICBMRN = 2
       ICBFIN = 3
@@ -2616,4 +2620,3 @@ C --- XGUIOV ---
 
       RETURN
       END
-
