@@ -1,5 +1,7 @@
 SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT,   &
-   DMADBD, DMBDBD, DMADR, DMBDR, DMADXI, DMBDXI )      !, DSIZE, DDECLINA, DAZIMUTH)
+   DMADBD, DMBDBD, DMADR, DMBDR, DMADXI, DMBDXI, &
+  DMADDC, DMBDDC, DMADAZ, DMBDAZ ) 
+
     use xconst_mod, only : twopi
     use xlst01_mod
     COMMON/BESS/DBJB(20), LM(6), TD, TE, MODE, RIRA, BR, BEA, BDD
@@ -19,6 +21,8 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT,   &
     DOUBLE PRECISION CLIMIT
     REAL DELMC(2, 6), DELMS(2, 6) !, DELC(2, 3), DELS(2, 3)
     DOUBLE PRECISION DMADBD, DMBDBD, DMADR, DMBDR, DMADXI, DMBDXI
+    DOUBLE PRECISION DMADDC, DMBDDC, DMADAZ, DMBDAZ
+
 
     INCLUDE 'STORE.INC'
     INCLUDE 'QSTORE.INC'
@@ -35,7 +39,7 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT,   &
     REFLH = STORE(M2T) / TWOPI      ! Wasteful, but required.
     REFLK = STORE(M2T + 1) / TWOPI
     REFLL = STORE(M2T + 2) / TWOPI
-    HT = STORE(M2T + 3) !/ TWOPI
+!    HT = STORE(M2T + 3) !/ TWOPI
     RIRA = STORE(M5ARI + 8)
     CLIMIT = 0.001
     XC = STORE(M5ARI + 4)
@@ -223,20 +227,27 @@ SUBROUTINE XROTOR (NORD, M5ARI, M2T, RHOSQ, AT, BT,   &
         DA(K) = DELMC(1, IA) - DELMS(2, IA)
         IF(INV1==1) GO TO 52
         DB(K) = DELMC(2, IA) + DELMS(1, IA)
-        if (K==9) THEN
-            WRITE(999, *) "E", anglee, REFLH, REFLK, REFLL, AT, BT, DA(K), DB(K)
-        end if
+!        if (K==9) THEN
+!            WRITE(999, *) "E", anglee, REFLH, REFLK, REFLL, AT, BT, DA(K), DB(K)
+!        end if
         52      K = K + 1
     end do
 
     DMADBD = DA(6)
     DMBDBD = DB(6)
-    DMADR = DA(7)
-    DMBDR = DB(7)
-    DMADXI = DA(10)
-    DMBDXI = DB(10)
+    DMADR  = DA(7)
+    DMBDR  = DB(7)
+    DMADDC = DA(8) *  TWOPI / 3.6 !Change units back to 100th of degree. (reciprocal)
+    DMBDDC = DB(8) *  TWOPI / 3.6
+    DMADAZ = DA(9) *  TWOPI / 3.6
+    DMBDAZ = DB(9) *  TWOPI / 3.6
+    DMADXI = DA(10) *  TWOPI / 3.6
+    DMBDXI = DB(10) *  TWOPI / 3.6
 
-    9     RETURN
+!    write(911,*) REFLH, REFLK, REFLL, AT, BT, DMADXI, DMBDXI, ANGLEXID, ANGLEXI
+!    write(912,*) REFLH, REFLK, REFLL, AT, BT, DMADR, DMBDR, RIRA
+
+   9     RETURN
 END
 
 SUBROUTINE BESSEL(BSUM, PP, XZ, BSIGN)

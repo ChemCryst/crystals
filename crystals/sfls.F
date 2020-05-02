@@ -3470,6 +3470,8 @@ C-C-C-...FOR STRUCTURE FACTOR-CALCULATION
 C-C-C-...FOR DERIVATIVES
       DOUBLE PRECISION DSIZE, DDECLINA, DAZIMUTH
       DOUBLE PRECISION DMADBD, DMBDBD, DMADR, DMBDR, DMADXI, DMBDXI
+      DOUBLE PRECISION DMADDC, DMBDDC, DMADAZ, DMBDAZ
+
 
       real, dimension(:), allocatable :: Tiso, Tisoin
       real, dimension(:,:), allocatable :: Taniso, Ttemp, atemp
@@ -3849,6 +3851,10 @@ c  slrfac starting-values for special shape factors and derivatives
           DMBDR = 1.0d0
           DMADXI = 1.0d0
           DMBDXI = 1.0d0
+          DMADDC = 1.0d0
+          DMBDDC = 1.0d0
+          DMADAZ = 1.0d0
+          DMBDAZ = 1.0d0
 
           IF (NINT(FLAG) .EQ. 0) THEN
 c aniso-temperature factor
@@ -3865,7 +3871,8 @@ c Special shapes
               CALL XRING (M2, ST, M5A,M6,SLRFAC,DSIZE,DDECLINA,DAZIMUTH)
             ELSE IF (NINT(FLAG)==5) THEN
               CALL XROTOR (3, M5A, M2T, SST, AROTOR, BROTOR,
-     1        DMADBD, DMBDBD, DMADR, DMBDR, DMADXI, DMBDXI ) !, DSIZE, DDECLINA, DAZIMUTH) todo: add these extra outputs?
+     1        DMADBD, DMBDBD, DMADR, DMBDR, DMADXI, DMBDXI,
+     2        DMADDC, DMBDDC, DMADAZ, DMBDAZ ) ! declination and azimuth
             END IF
             T=Tiso(LJY)
             TFOCC=T*FOCC
@@ -3898,27 +3905,31 @@ c
 C-CALCULATE THE PARTIAL DERIVATIVES W.R.T. A FOR X,Y AND Z
 C-C-C-CALCULATE THE PARTIAL DERIVATIVES W.R.T. A FOR OCC,X,Y AND Z
             ALPD(1)=ALPD(1)+T*Cosa(ljy,ljx)*SLRFAC
-            ALPD(3:5)=ALPD(3:5)-STORE(M2T:M2T+2)*BP
 C--CHECK THE TEMPERATURE FACTOR TYPE
             IF(NINT(FLAG) .NE. 1) THEN
 C-C-C-CHECK WHETHER WE HAVE SPHERE, LINE OR RING
               IF (NINT(FLAG) .LE. 1) THEN
 C--CALCULATE THE PARTIAL DERIVATIVES W.R.T. A FOR THE ANISO-TERMS
+                ALPD(3:5)=ALPD(3:5)-STORE(M2T:M2T+2)*BP
                 ALPD(6:11)=ALPD(6:11)+STORE(M2T+4:M2T+9)*AP
               ELSE IF (NINT(FLAG) .LE. 4) THEN
 C-C-C-CALC. THE PART. DERIV. W.R.T. A FOR ISO-TERM + SPECIAL FIGURES
+                ALPD(3:5)=ALPD(3:5)-STORE(M2T:M2T+2)*BP
                 ALPD(6)=ALPD(6)+TC*AP
                 ALPD(7)=ALPD(7)+((DSIZE*AP)/SLRFAC)
                 ALPD(8)=ALPD(8)+((DDECLINA*AP)/SLRFAC)
                 ALPD(9)=ALPD(9)+((DAZIMUTH*AP)/SLRFAC)
               ELSE
-C-C-C-CALC. THE PART. DERIV. W.R.T. A FOR ISO-TERM + SPECIAL FIGURES
+C-C-C-CALC. THE PART. DERIV. W.R.T. A FOR Natalie / Bruce rotor
+                ALPD(3)=ALPD(3)-STORE(M2T)*BP
+                ALPD(4)=ALPD(4)-STORE(M2T+1)*BP
+                ALPD(5)=ALPD(5)-STORE(M2T+2)*BP
                 ALPD(6)=ALPD(6)+TC*AP
-                ALPD(7)=ALPD(7)+(DMADR*AP)
-                ALPD(8)=ALPD(8)+(DDECLINA*AP)
-                ALPD(9)=ALPD(9)+(DAZIMUTH*AP)
-                ALPD(10)=ALPD(10)+(DMADXI*AP)
-                ALPD(11)=ALPD(11)+(DMADBD*AP)
+                ALPD(7)=ALPD(7)  +(DMADR*API) -(DMBDR*BPI)
+                ALPD(8)=ALPD(8)  +(DMADDC*API)-(DMBDDC*BPI)
+                ALPD(9)=ALPD(9)  +(DMADAZ*API)-(DMBDAZ*BPI)
+                ALPD(10)=ALPD(10)+(DMADXI*API)-(DMBDXI*BPI)
+                ALPD(11)=ALPD(11)+(DMADBD*API)-(DMBDBD*BPI)
               ENDIF
             ELSE
 C--CALCULATE THE PARTIAL DERIVATIVES W.R.T. A FOR U[ISO]
@@ -3940,19 +3951,31 @@ C-C-C-CHECK WHETHER WE HAVE SPHERE, LINE OR RING
 C--CALCULATE THE PARTIAL DERIVATIVES W.R.T. B FOR THE ANISO-TERMS
                   BLPD(6:11)=BLPD(6:11)+STORE(M2T+4:M2T+9)*BP
                 ELSE IF (NINT(FLAG) .LE. 4) THEN
-C Natalie / Bruce rotor
-                  BLPD(6)=BLPD(6)+TC*BP
-                  BLPD(7)=BLPD(7)+(DMBDR*BP)
-                  BLPD(8)=BLPD(8)+(DDECLINA*BP)
-                  BLPD(9)=BLPD(9)+(DAZIMUTH*BP)
-                  BLPD(10)=BLPD(10)+(DMADXI*BP)
-                  BLPD(11)=BLPD(11)+(DMADBD*BP)
-                ELSE
-C-C-C-CALC. THE PART. DERIV. W.R.T. B FOR ISO-TERM + SPECIAL FIGURES
                   BLPD(6)=BLPD(6)+TC*BP
                   BLPD(7)=BLPD(7)+((DSIZE*BP)/SLRFAC)
                   BLPD(8)=BLPD(8)+((DDECLINA*BP)/SLRFAC)
                   BLPD(9)=BLPD(9)+((DAZIMUTH*BP)/SLRFAC)
+                ELSE
+C Natalie / Bruce rotor
+                  BLPD(6)=BLPD(6)+TC*BP	
+                  BLPD(7)=BLPD(7)  +(DMBDR*API) +(DMADR*BPI)
+                  BLPD(8)=BLPD(8)  +(DMBDDC*API)+(DMADDC*BPI)
+                  BLPD(9)=BLPD(9)  +(DMBDAZ*API)+(DMADAZ*BPI)
+                  BLPD(10)=BLPD(10)+(DMBDXI*API)+(DMADXI*BPI)
+                  BLPD(11)=BLPD(11)+(DMBDBD*API)+(DMADBD*BPI)
+
+!    write(911,*) REFLH, REFLK, REFLL, AT, BT, DMADXI, DMBDXI, ANGLEXID, ANGLEXI
+
+!       write(903,*)  AP, BP, STORE(M5A+4),
+!     4 (STORE(M2T)*BPI) , STORE(M2T)*AP
+!     2 , STORE(M5A+4), ALPD(3), BLPD(3)  ! X
+!     3 ,STORE(M5A+9), ALPD(8), BLPD(8)  ! Dec
+!     3 ,STORE(M5A+10), ALPD(9), BLPD(9)  ! Azi
+!     3 ,STORE(M5A+11), ALPD(10), BLPD(10)  ! Xi
+!     3 ,STORE(M5A+12), ALPD(11), BLPD(11)  ! Bd
+
+
+C-C-C-CALC. THE PART. DERIV. W.R.T. B FOR ISO-TERM + SPECIAL FIGURES
                 ENDIF
               ELSE
 C--CALCULATE THE PARTIAL DERIVATIVES W.R.T. B FOR U[ISO]
@@ -4072,7 +4095,7 @@ C--CALCULATE THE PARTIAL DERIVATIVES W.R.T. B FOR U[ISO]
         M5A=M5A+MD5A
       END DO             ! END OF ATOM CYCLING LOOP
 
-      write(567,*) " ", STORE(M6), STORE(M6+1), STORE(M6+2), ACR, BCR
+!      write(567,*) " ", STORE(M6), STORE(M6+1), STORE(M6+2), ACR, BCR
 
       IF(CENTRO) THEN ! CHECK IF THIS STRUCTURE IS CENTRO
         BCR=0.         ! Zero appropriate parts.
@@ -4262,6 +4285,7 @@ C--COMPUTE /FC/ AND THE PHASE FOR THE GIVEN ENANTIOMER
       INCLUDE 'ISTORE.INC'
       INCLUDE 'STORE.INC'
       INCLUDE 'XLST12.INC'
+      INCLUDE 'XUNITS.INC'
       INCLUDE 'QSTORE.INC'
 
 C--ROUTINE TO ADD P.D.'S WITH RESPECT TO /FC/ FOR THE OVERALL PARAMETER
@@ -4275,10 +4299,6 @@ C And in common:
 C  M12   ADDRESS OF THE HEADER FOR THE PARAMETER IN LIST 12
 
 C--SET UP THE LIST 12 FLAGS
-      if(isnan(a)) then
-        print *, 'the derivative is NaN, the refinement will crash'
-        call abort
-      end if
       L12A=ISTORE(M12+1)
       IF(ISTORE(M12+1).GT.0) THEN
         DO WHILE ( L12A .GT. 0 )
@@ -4297,6 +4317,16 @@ C--SET UP THE LIST 12 FLAGS
               END IF
             END IF
           END IF
+
+          if(isnan(a)) then
+            WRITE ( NCWU , '(a,i5,a)' ) ' Derivative ', LJT-JO,
+     2 ' is NaN, the refinement will crash: aborting.'
+#ifdef CRY_OSLINUX
+            print *, 'the derivative is NaN, the refinement will crash'
+#endif
+            call abort
+          end if
+
           L12A=ISTORE(L12A)  ! PASS ONTO THE NEXT PART
         END DO
       END IF
