@@ -195,7 +195,7 @@ exit /b 1
 @del crystals.exe
 
 :tidy
-@del *.obj *.lis *.res *.ilk *.opt *.pdb *.mod
+@del *.obj *.lis *.ilk *.opt *.pdb *.mod
 
 :next1
 @time /t

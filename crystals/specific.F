@@ -204,6 +204,8 @@ C
 C
 C
 C
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
+C
       WRITE ( CMON,1015) IUNIT, IOS
       CALL XPRVDU(NCEROR, 1, 0)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1015 ) IUNIT , IOS
@@ -448,6 +450,7 @@ C
 C
 C
 9900  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
 C
 C -- ERROR EXIT
 C
@@ -832,7 +835,7 @@ C
       CALL XCTRIM( NAME, NCHARS )
       IF ( ( IMSG .GT. 1 ) .AND. ( IRDCMS(IFLIND) .GT. 0 ) ) THEN
         IF ( I .GT. 0 ) THEN
-          IF(IMSG.EQ.2) ISSMON=0 ! Turn monitoring back on
+          IF(IMSG.EQ.2) CALL SETISSMON(0) ! Turn monitoring back on
           WRITE ( CMON,1005) ACTION(IMSG) , NAME(1:NCHARS)
           CALL XPRVDU(NCEROR, 2, 0)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU, 1005 )ACTION(IMSG),NAME(1:NCHARS)
@@ -1005,8 +1008,7 @@ C
       IF (ISSPRT .EQ. 0) THEN
          WRITE(NCWU,2010) J
       ENDIF
-2010  FORMAT (1X, 'File is too long -- more than ', I6,' records' , / )
- 
+2010  FORMAT ('{W File is too long -- more than ', I6,' records' , / )
       CALL XERHND ( IERCAT )
 C      STOP 100
       CALL GUEXIT(100)
@@ -2342,10 +2344,16 @@ C NOTE THAT XPRTDV CLEARS THE CCVDU BUFFER
       INCLUDE 'XSSVAL.INC'
       IF (NLIN.LE.0) RETURN
       DO I=1,NLIN
-       IF((CCVDU(I)(1:2).EQ.'^^').AND.(ISSMON.EQ.0))  THEN 
+c      write(ncawu,*)'ISSMON in prtmon=',issmon, CCVDU(I)(1:3)
+c Found some lines begining with space, so ^^ are in 2:3, not 1:2)
+       IF((CCVDU(I)(2:2).EQ.'^').AND.(ISSMON.NE.1))  THEN 
             CONTINUE
        ELSE 
+          IF(CCVDU(I)(1:1).EQ.'{' )THEN
+            WRITE(NCAWU,'(A)') TRIM(CCVDU(I)(3:))
+          ELSE
             WRITE(NCAWU,'(A)') TRIM(CCVDU(I))
+          ENDIF
        ENDIF
       ENDDO
       RETURN
@@ -2398,22 +2406,18 @@ c in individual files.
 CNOTE Lines may begin ^^ or space^^
 C
       IF(ISSMON.EQ.2) THEN
-c       write(123,*)'0 Control = ', cfirst, csecond
        IF      (CFIRST.EQ.'^') THEN
-C       write(123,*)'1 Control = ', cfirst, csecond
             CONTINUE
        ELSE IF (CFIRST.EQ.'{') THEN
-C       write(123,*)'2 Control = ', cfirst, csecond
             CONTINUE
        ELSE IF (CSECOND.EQ.'^') THEN
-C       write(123,*)'3 Control = ', cfirst, csecond
             CONTINUE
        ELSE IF (CSECOND.EQ.'{') THEN
-C       write(123,*)'4 Control = ', cfirst, csecond
             CONTINUE
        ELSE
             CYCLE
        ENDIF
+C       write(123,*)'In Control = ', cfirst, csecond
       ENDIF
 C
 c         if defined(__GIL__)  || defined(__MAC__) ||defined (__INW__)

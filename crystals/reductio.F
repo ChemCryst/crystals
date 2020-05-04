@@ -1,4 +1,4 @@
-C $Log: reductio.F,v $
+C $Log: reductio.F,v $ 
 C Revision 1.55  2013/12/06 12:44:52  djw
 C Problem spooed by Arie.  RATIO was rouinded to 1 sig fig during packing with JCODE, so that filtering
 C by LIST 28 was not compatible with JANA (or any code using more precision).  Also noted that no special
@@ -20,7 +20,7 @@ C Revision 1.51  2012/07/27 15:57:29  djw
 C Don't output sums - totals could be very large for a centred cell
 C
 C Revision 1.50  2012/07/26 14:08:15  djw
-C Create file "histogram.dat" containing details of the systematic absences
+C Create file "histogram.dat" containing details of the systematic absences{
 C
 C Revision 1.49  2012/03/20 11:39:46  rich
 C Ensure avfc is set if only one contributor during merge.
@@ -317,6 +317,7 @@ C--CHECK THE VALUE OF SIN(THETA)**2
       IF(T-1.)1850,1850,1800
 C--PRINT OUT THE ERROR MESSAGE
 1800  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XL6RRP ( N , 100 , IFO , CCAPT(L) )
       GOTO  1550
 C
@@ -397,10 +398,12 @@ C
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPLPC , IOPABN , 0 )
       GO TO 2610
 9910  CONTINUE
 C -- INPUT ERROR
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPLPC , IOPCMI , 0 )
       GO TO 9900
 9915  CONTINUE
@@ -741,10 +744,10 @@ C
       CALL XPRVDU(NCVDU, 9,0)
       IF (ISSPRT .EQ. 0)  WRITE(NCWU,'(A)') (trim(CMON(I)),I=1,9)
 1760  FORMAT(/
-     1'Fo range       ', '     -ve', 5F8.3,  '  Remainder',/
+     1'Fo range       ', '-ve', 5F8.1,  '  Remainder',/
      2'Mean Fo        ', 7F8.3,/
      3'Number         ', 7I8,//
-     *'Fo/sigma range ', '     -ve', 5F8.3,  '  Remainder',/
+     *'Fo/sigma range ', '-ve', 5F8.1,  '  Remainder',/
      4'rms (Fo/sigma) ', 7F8.3,/
      5'Number         ', 7I8,//
      6 )
@@ -793,10 +796,12 @@ c                                  !absences have been removed
 
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPSSM , IOPABN , 0 )
       GO TO 1810
 9910  CONTINUE
 C -- INPUT ERROR
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPSSM , IOPCMI , 0 )
       GO TO 9900
 C
@@ -1158,9 +1163,9 @@ C
 C  0 TO (MD6-1) CONTAIN THE INPUT VALUES FROM M/T OR TAPE. THE WORDS
 C               FROM 'MD6' ONWARDS ARE ARRANGED AS FOLLOWS :
 C
-C  NTERM-4 JCODE AS AN INTEGER
+C  NTERM-4 JCODE AS AN INTEGER          (No longer used - slot used for Friedel info)
 C  NTERM-3 SERIAL NUMBER AS AN INTEGER
-C  NTERM-2 'E' PARAMETER
+C  NTERM-2 'E' PARAMETER  (changed to 1st difference, djw feb 2020)
 C  NTERM-1 WEIGHT FOR THIS REFLECTION
 C
 C
@@ -1211,7 +1216,8 @@ C
 C
       DATA IVERSN / 500 /
       DATA CFILE / 'data/mergingr.dat' /
-      DATA CFILE2/ 'data/sigmas2.dat' /      !'2' added to indicate a new 2-table format
+      DATA CFILE2/ 'data/sigmas3.dat' /      !'3' added indicates table with MoO, 
+C                                                 resolution and Rint
 #ifdef _HOL_
       DATA JFRN  /1HF, 1HR, 1HN, 1H1/
       DATA JFRN2 /1HF, 1HR, 1HN, 1H2/
@@ -1231,7 +1237,7 @@ C--READ THE CONTROL DATA
 C--FIND THE TYPE OF LIST 6
       IULN=KTYP06(ITYP06)
 C--SET THE END OF THE JCODE ARRAY
-      JCODE=ICODE+(NCODE-1)*MDCODE
+      JCODE=ICODE+(NCODE-1)*MDCODE        !JCODE code should all be removed(one day)
 C--SET UP LIST 6 FOR THE I/O OPERATIONS
       CALL XFLT06(IULN,0)
       IF ( IERFLG .LT. 0 ) GO TO 9900
@@ -1346,7 +1352,7 @@ c       write internal and external standard errors to sigma.dat
      2 ' of the mean (standard error of the mean)'
         WRITE(NCFPU2,'(A,A)')
      1'     Index        Fo^2   External  Internal contributors',
-     2 ' Resolution'
+     2 ' Resolution Rint'
       endif
       IF(IPRINT)1550,1450,1450
 C--PRINT THE CAPTIONS
@@ -1354,11 +1360,11 @@ C--PRINT THE CAPTIONS
       CALL XPRTCN
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1500)
 1500  FORMAT(52x,
-     2 'F-squared',5X,'Delta',5X,'sigma',3X,'E-param',4X,
-     3 'Weight',3X,'JCODE',4X,'Serial',/,
+     2 'F-squared',5X,'Delta',5X,'sigma',3X,'1st-Dif',4X,
+     3 'Weight',3X,'Serial',4x,'I/sigma'/,
      1 4X,'H',3X,'K',3X,'L',2X,'F-squared',4X,'rmsdev',4X,
      2 '<sigma>',11X,     
-     5 'Nref $',3x,'rmsdev',4x,'av-sig'/)
+     5 'Nref $',3x,'rmsdev',4x,'av-sig',6x,'Mode',6x,'Rint'/)
 C
 C--CHECK IF THERE ARE ANY REFLECTIONS
 1550  CONTINUE
@@ -1410,9 +1416,11 @@ C We should also square Fc and the un-changed Fo/FoT
       else
        store(kref+3)=store(kref+3)*store(kref+3)
       endif
-C--FIX THE SERIAL AND JCODE
+C--FIX THE JCODE AND SERIAL
 2050  CONTINUE
-      ISTORE(JREF-4)=NINT(STORE(IBUF+18))
+C      ISTORE(JREF-4)=NINT(STORE(IBUF+18)) !NO LONGER USED
+      ISTORE(JREF-4)=0
+
       ISTORE(JREF-3)=NINT(STORE(IBUF+19))
 C--SET THE 'E' PARAMETER
       STORE(JREF-2)=0.
@@ -1430,8 +1438,14 @@ C
 C--ALL THE REFLECTIONS WITH COMMON INDICES ARE IN CORE  -  CHECK THE JCODE
 2250  CONTINUE
       IF(NCODE)2700,2700,2300
-C--ELIMINATE ANY REFLECTIONS WITH ZERO WEIGHT ASSIGNED TO THEIR JCODES
 2300  CONTINUE
+C JCODE slot (+18) now used to hold Friedel pair information. 
+c all code down to label 2700 could be removed one day
+      WRITE(CMON,'(A)')'JCODEs are no longer supported.'
+      CALL XPRVDU(NCVDU, 1,0)
+      IF(ISSPRT.EQ.0) WRITE(NCWU,'(A)') TRIM(CMON(1))
+      GOTO 9910
+C--ELIMINATE ANY REFLECTIONS WITH ZERO WEIGHT ASSIGNED TO THEIR JCODES
       I=IREF
       J=IREF
       K=NREF
@@ -1531,6 +1545,15 @@ C--RECORD ITS VALUE
 
 C--CALL THE MERGE ROUTINES
 3350  CONTINUE
+      idjw=iref
+      do i=1,nref
+c signal:noise
+      store(idjw+20)=store(idjw+3)/store(idjw+12)
+      idjw=idjw+nterm
+      enddo
+c sort on magnitude of Fo
+      call ssort(iref, nref, nterm , 4)
+c
       IF(KMERGE(IULN))3700,3400,3400
 
 C--OUTPUT THE REFLECTION
@@ -1568,7 +1591,8 @@ C--MORE THAN ONE CONTRIBUTOR  -  ZERO THE WEIGHT AND BATCH
       STORE(M6+4)=0.
       IF (IBCH .EQ. 0) STORE(M6+13)=0.
 C----- STORE THE MINIMUM JCODE
-      STORE(M6+18) = WORK(29)
+C      STORE(M6+18) = WORK(29)               NO LONGER USED
+       STORE(M6+18) = 0.
 c---- if not twinned, set ELEMENTS to unity
       if (imtwin .lt. 0) store(m6+11) = 1.
 C--ZERO THE REMAINING CONSTANTS
@@ -1612,6 +1636,7 @@ C--RESET THE POINTERS AND CHECK FOR THE END OF THE DATA
 C
 C--END OF THE TAPE  -  TERMINATE THE WRITE
 3800  CONTINUE
+      WRITE(NCFPU2,'(/)') !  A BLANK LINE
       DO 3850 I=1,MD6
       CALL XCRD(I)
 3850  CONTINUE
@@ -1732,15 +1757,15 @@ c     Process sigmas2.dat to find possible equations.
       if (iuln.eq.6) then
         moo = 5   !minimum acceptable multiplicity for regression
         CALL MRGLSQ(moo,ibin,nbin,jbin,binres)
-c       close sigmas2.dat
-        CALL XRDOPN ( 7 , JFRN2(1) , CFILE2, 16 ) !sigmas2
+c       close sigmas.dat
+        CALL XRDOPN ( 7 , JFRN2(1) , CFILE2, 16 ) !sigmas2/3
 c
 c
 c Now write out the Multiplicity of observation histogram
         CFILE2 = 'data/moo2.dat' 
         CALL XRDOPN ( 5 , JFRN2(1) , CFILE2, 13 )
         write(ncfpu2,'(A)')
-     1  '  Mult     nRef  Resol      nRef'
+     1  '  Mult num(MoO)  Resol     <MoO>at given resolution'
         do i=1,nbin
           if(jbin(i,2).gt.0)then
            idjw=nint(float(jbin(i,1))/float(jbin(i,2)))
@@ -1763,10 +1788,12 @@ C--TERMINATE BECAUSE OF ERRORS
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPMER , IOPABN , 0 )
       GO TO 4200
 9910  CONTINUE
 C -- INPUT ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPMER , IOPCMI , 0 )
       GO TO 9900
 C
@@ -1799,7 +1826,7 @@ C
       INCLUDE 'QSTORE.INC'
 C
 C--BRANCH ON THE WEIGHTING SCHEME TYPE
-      GOTO(1050,1100,1050,1000),NSCH
+      GOTO(1050,1100,1050,1050,1000),NSCH
 C1000  STOP 225
 1000  CALL GUEXIT(225)
 1050  CONTINUE
@@ -1844,7 +1871,7 @@ C
 C  0 TO (MD6-1) CONTAIN THE INPUT VALUES FROM M/T OR TAPE. THE WORDS
 C               FROM 'MD6' ONWARDS ARE ARRANGED AS FOLLOWS :
 C
-C  NTERM-4 JCODE AS AN INTEGER
+C  NTERM-4 JCODE AS AN INTEGER            NO LONGER USED
 C  NTERM-3 SERIAL NUMBER AS AN INTEGER
 C  NTERM-2 'E' PARAMETER
 C  NTERM-1 WEIGHT FOR THIS REFLECTION
@@ -1874,6 +1901,7 @@ C
 C
       INCLUDE 'XLISTI.INC'
       INCLUDE 'XUNITS.INC'
+      INCLUDE 'XIOBUF.INC'
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XCONST.INC'
       INCLUDE 'XCHARS.INC'
@@ -1895,34 +1923,48 @@ C     2 store(iref+3),store(iref+12),store(iref+5),
 C     3 rtd*store(iref+6)
 c
 cdjwfeb12 save initial Fo, Fc and Fot
-      fo = store(iref+3)
-      fc = store(iref+5)
-      fot = store(iref+10)
+      FO = STORE(IREF+3)
+      FC = STORE(IREF+5)
+      FOT = STORE(IREF+10)
 c      
 C--CHECK FOR ONLY ONE REFLECTION
       IF(NREF-1)1000,1000,1050
 C--ONLY ONE CONTRIBUTOR
 1000  CONTINUE
       JFO=IFO+IREF
-C--WORK(5) = FO
-C--WORK(9) = SIGMA
-      WORK(5)=STORE(JFO)
-      WORK(9)=AMAX1(0.01,STORE(IREF+12))
-      WORK(10)=WORK(9)
-      work(7) = fc
-      avfo = fo
-      avfc = fc
-      avfot = fot
+C--IREF acts like M6 IN LOCAL STACK
+      WORK(5) = STORE(JFO)                              !FO OR FOT
+      WORK(7) = FC                                      !FC
+      WORK(9) = AMAX1(0.01,STORE(IREF+12))              !SIGMA
+      WORK(10)= WORK(9)                                 !SIGMA
+      AVFO = FO                                         !SUM(FO)
+      AVFC = FC                                         !SUM(FC)
+      AVFOT = FOT                                       !SUM(FOT)
 C----- SET THE PRINT LEVEL FOR SINGLE REFLECTIONS
       JPRINT = IPRINT
       GOTO 2500
 
 C--MORE THAN ONE REFLCTION  -  INITIAL PREPARATION
 1050  CONTINUE
-      GOTO(1150,1200,1250,1100),NSCH
+C FIND THE MIDDLE REFLECTION OF THE GROUP (THE MODE)
+      AMODE = FLOAT(NREF)/2.
+      IMODE = MAX(1,NREF/2)
+      JMODE = (IMODE-1)*NTERM + IREF
+      JMODE = JMODE
+      IF (AMODE-FLOAT(IMODE).LE. ZERO) THEN
+        YMODE= 0.5*(STORE(JMODE+3)+STORE(JMODE+3+NTERM))     !AVERAGE OF TWO MIDDLE POINTS
+        SIGMODE=0.5*(STORE(JMODE+12)+STORE(JMODE+12+NTERM))     
+      ELSE
+        YMODE=STORE(JMODE+3+NTERM)                             !MID POINT
+        SIGMODE=STORE(JMODE+12+NTERM)         !sigma of MODE, should be mode of SIGMAS
+      ENDIF
+c      write(123,1) iref, nref, nterm, amode, imode, jmode, ymode
+1     FORMAT(3I8,F8.2,2I8,F12.1)
+C
+      GOTO(1150,1200,1250,1150,1100),NSCH
 C1100  STOP 225
 1100  CALL GUEXIT(225)
-C--UNIT WEIGHTS
+C--UNIT and ROBUST WEIGHTS
 1150  CONTINUE
       ASSIGN 1700 TO LABEL
       GOTO 1350
@@ -1936,8 +1978,8 @@ C--STATISTICAL WEIGHTS
       JREF=IREF
       DO 1300 J=1,NREF
       KREF=JREF+NTERM
-      STORE(KREF-1)=1./(STORE(JREF+12)*STORE(JREF+12)+1.)
-      STORE(KREF-2)=0.
+      STORE(KREF-1)=1./(STORE(JREF+12)*STORE(JREF+12)+1.)   !WEIGHT FOR THIS REFLECTION
+      STORE(KREF-2)=0.                                      ! 'E' PARAMETER
       JREF=JREF+NTERM
 1300  CONTINUE
       GOTO 1350
@@ -1945,62 +1987,89 @@ C
 C--ASSIGN WEIGHTS  -  ALL CALCULATIONS ARE DONE ON THE SCALE OF /FO/ **2
 1350  CONTINUE
       DO 1950 L=1,NCYC
-C--WORK3 = SIGMA W* /FO/ **2
-      WORK(3)=0.
-C--WORK4 = SIGMA W
-      WORK(4)=0.
-C--WORK8 = WEIGHTED VARIANCE
-      WORK(8)=0.
-cdjw2017 Prepare to average Fo, Fc and FoT
-      sumfo = 0.
-      sumfc = 0.
-      sumfot = 0.
+      WORK(3)=0.                              !SUM W* /FO/ **2
+      WORK(4)=0.                              !SUM W
+      WORK(8)=0.                              !WEIGHTED VARIANCE = (W SIGSQ)
+c                                           Prepare to average Fo, Fc and FoT
+      SUMFO = 0.
+      SUMFC = 0.
+      SUMFOT = 0.
+      SUMDELTA = 0.
       JREF=IREF
+      SUMWFO = 0.
+      SUMWFC = 0.
+      SUMWFOT = 0.
+      SUMWDELTA = 0.
 c
 c
+      JREF=IREF
       DO 1600 J=1,NREF
+            KREF=JREF+NTERM                  !KREF TO COUNT BACKWARDS FROM END
+            JFO=JREF+IFO
+            DELTA = STORE(JREF+3)-YMODE
+C-   -      CHECK IF ANY JCODES ARE TO BE SPECIALLY WEIGHTED
+            IF(NCODE)1550,1550,1400
+C There shouldn't be any.  JCODES abandoned Feb 2020
+C JCODE slot (+18) now used to hold Friedel pair information. 
+c all code down to label 1550 could be removed one day
+             WRITE(CMON,'(A)')'JCODEs are no longer supported.'
+             CALL XPRVDU(NCVDU, 1,0)
+             IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) trim(CMON(1))
+C--          CHECK IF THIS REFLECTION IS ONE OF THE SPECIAL JCODES
+1400        CONTINUE
+            DO 1500 K=ICODE,JCODE,MDCODE
+              IF(ISTORE(KREF-4)-ISTORE(K))1500,1450,1500
+C--           APPLY THE SPECIAL WEIGHT FOR THIS JCODE
+1450          CONTINUE
+              STORE(KREF-1)=STORE(K+1)
+1500        CONTINUE
+1550        CONTINUE
 c
-C      write(123,'(i6, 3f3.0, 4f12.2)') jref,
-C     1 store(jref),store(jref+1),store(jref+2), 
-C     2 store(jref+3),store(jref+12),store(jref+5),
-C     3 rtd*store(jref+6)
 c
-      KREF=JREF+NTERM
-      JFO=JREF+IFO
-C--CHECK IF ANY JCODES ARE TO BE SPECIALLY WEIGHTED
-      IF(NCODE)1550,1550,1400
-C--CHECK IF THIS REFLECTION IS ONE OF THE SPECIAL JCODES
-1400  CONTINUE
-      DO 1500 K=ICODE,JCODE,MDCODE
-      IF(ISTORE(KREF-4)-ISTORE(K))1500,1450,1500
-C--APPLY THE SPECIAL WEIGHT FOR THIS JCODE
-1450  CONTINUE
-      STORE(KREF-1)=STORE(K+1)
-1500  CONTINUE
-C--SIGMA[X(I)*W(I)]
-1550  CONTINUE
-      WORK(3)=WORK(3)+STORE(JFO)*STORE(KREF-1)
-      sumfo = sumfo+store(jref+3)*STORE(KREF-1)
-      sumfc = sumfc+store(jref+5)*STORE(KREF-1)
-      sumfot = sumfot+store(jref+10)*STORE(KREF-1)
-C--SIGMA [W(I)]
-      WORK(4)=WORK(4)+STORE(KREF-1)
-      WORK(8)=WORK(8)+STORE(JREF+12)*STORE(JREF+12)*STORE(KREF-1)
-      JREF=KREF
+            IF ((NSCH.EQ.4).AND.(NREF.GE.5)) THEN                  !ONLY IF ENOUGH EQUIV TO MAKE SENSE
+c Robust weighting - see Blessing, Acta 1997, page 424
+             zmax=6.
+             z=abs(delta)/sigmode
+c      write(123,*)'Delta, sigma', abs(delta), sigmode, z
+             zr=(z/zmax)
+             zr=zr*zr
+             if(zr.ge.1.) then
+                  wz=0.
+             else
+                  wz=(1.-zr)**2
+             endif
+C            write(123,*)'Zi=',delta,sigmode,z, zr, wz
+             store(kref-1)=store(kref-1)*wz
+            ENDIF
+c
+C   ACCUMULATE SUMS
+c      write(123,*)'kref=',store(kref-1)
+            WORK(3)=WORK(3)+STORE(JFO)*STORE(KREF-1)                  !SUM( JFO * SPECIAL WEIGHT)
+            SUMFO = SUMFO+STORE(JREF+3)                               !sum( FO)
+            SUMFC = SUMFC+STORE(JREF+5)                               !SUM( FC)
+            SUMFOT = SUMFOT+STORE(JREF+10)                            !SUM(FOT)
+            SUMDELTA = SUMDELTA+ABS(DELTA)                            !SUM(ABS DELTA)
+            SUMWFO = SUMFO+STORE(JREF+3)*STORE(KREF-1)                !SUM(W.FO)
+            SUMWFC = SUMFC+STORE(JREF+5)*STORE(KREF-1)                !SUM(W.FC)
+            SUMWFOT = SUMFOT+STORE(JREF+10)*STORE(KREF-1)             !SUM(W.FOT)
+            WORK(4)= WORK(4)+STORE(KREF-1)                                   !SUM(W)
+            WORK(8)=WORK(8)+STORE(JREF+12)*STORE(JREF+12)*STORE(KREF-1)      !SUM(W.SIGSQ)
+            JREF=KREF
 1600  CONTINUE
 C--WEIGHTED AVERAGE
-      IF (WORK(4) .GT. ZERO) THEN
-      WORK(5)=WORK(3)/WORK(4)
-      avfo=sumfo/work(4)
-      avfc=sumfc/work(4)
-      avfot=sumfot/work(4)
-      WORK(10)=SQRT(WORK(8)/WORK(4))
+      IF (WORK(4) .GT. ZERO) THEN                              !sum weight
+            WORK(5)=WORK(3)/WORK(4)                            !SUM (W.FO) / SUM (W)
+            WORK(10)=SQRT(WORK(8)/WORK(4))                     !SQRT(SUM(W.SIGSQ)/SUM(W))
+            AVFO=SUMFO/WORK(4)
+            AVFC=SUMFC/WORK(4)
+            AVFOT=SUMFOT/WORK(4)
+
       ELSE
             WORK(5) = WORK(3) / FLOAT(NREF)
             WORK(10) = WORK(8) / FLOAT(NREF)
-            avfo = sumfo / float(nref)
-            avfc = sumfc / float(nref)
-            avfot = sumfot / float(nref)
+            AVFO = SUMFO / FLOAT(NREF)
+            AVFC = SUMFC / FLOAT(NREF)
+            AVFOT = SUMFOT / FLOAT(NREF)
       ENDIF
 C--CHECK IF THIS IS THE LAST CYCLE  -  EXIT IF IT IS
       IF(L-NCYC)1650,1900,1900
@@ -2013,33 +2082,28 @@ C--STATISTICAL WTS
 C--EXPONENTIAL WEIGHTS
 1800  JREF=IREF
       DO 1850 J=1,NREF
-      KREF=JREF+NTERM
-      JFO=JREF+IFO
-C--COMPUTE THE DELTA'S
-      WORK(3)=WORK(5)-STORE(JFO)
-C--COMPUTE THE GAUSSIAN WEIGHT - AN ESTIMATE OF THE REAL VARIABILITY
-CDJWMAP99[
-      CALL XSQRT(STORE(JFO), FSIGN, FABS, STORE(jref+12), SIG)
-CDJWMAP99]
-      BTEMP=STORE(ICT+2)+(STORE(ICT+3)*STORE(JREF+12)+STORE(ICT+4)
-     2 *STORE(JREF+12)*FABS+STORE(ICT+5)
-     3 *STORE(JFO)*STORE(JREF+12))
-C--KREF-2='E'
-      STORE(KREF-2)=BTEMP
-C
-C
-C--    -1=WT
-      STORE(KREF-1)= ZERO
-      ATEMP=WORK(3)*WORK(3)*STORE(ICT)/(STORE(KREF-2)*STORE(KREF-2))
+        KREF=JREF+NTERM
+        JFO=JREF+IFO
+C--     COMPUTE THE DELTA'S
+        WORK(3)=WORK(5)-STORE(JFO)
+C--     COMPUTE THE GAUSSIAN WEIGHT - AN ESTIMATE OF THE REAL VARIABILITY
+        CALL XSQRT(STORE(JFO), FSIGN, FABS, STORE(jref+12), SIG)
+        BTEMP=STORE(ICT+2)+(STORE(ICT+3)*STORE(JREF+12)+STORE(ICT+4)
+     2  *STORE(JREF+12)*FABS+STORE(ICT+5)
+     3  *STORE(JFO)*STORE(JREF+12))
+        STORE(KREF-2)=BTEMP                               ! 'E'
+        STORE(KREF-1)= ZERO                               !WEIGHT
+        ATEMP=WORK(3)*WORK(3)*STORE(ICT)/(STORE(KREF-2)*STORE(KREF-2))
 C--CHECK IF THIS VALUE IS TOO SMALL TO 'EXP'
-      IF(ATEMP+170.)1840,1810,1810
+        IF(ATEMP+170.)1840,1810,1810
 C--TAKE THE EXPONENTIAL
-1810  CONTINUE
-      STORE(KREF-1)=EXP(ATEMP)
+1810    CONTINUE
+        STORE(KREF-1)=EXP(ATEMP)
 C--UPDATE FOR THE NEXT REFLECTION
-1840  CONTINUE
-      JREF=KREF
+1840    CONTINUE
+        JREF=KREF
 1850  CONTINUE
+C
 1900  CONTINUE
 1950  CONTINUE
 C
@@ -2050,6 +2114,7 @@ C--CHECK THE NUMBER OF BAD AGREEMENTS AFTER THE FINAL CYCLE
       JFO=JREF+IFO
       KREF=JREF+NTERM
 C--CHECK THE DISCREPANCY FOR THIS CONTRIBUTOR
+c     print if Fo-av(Fo) > aprint * av(sigma). Default aprint is 3
       IF(ABS(STORE(JFO)-WORK(5))-APRINT*WORK(10))2100,2100,2000
 C--DISCREPANCY EXCEEDS 'APRINT'*E.S.D.
 2000  CONTINUE
@@ -2067,21 +2132,21 @@ C--ACCUMULATE THE TOTALS AND DO THE PRINTING IF NECESSARY
 C----- SET A MAXIMUM JCODE
       WORK(29) = 9.
       JREF=IREF
+      OLDVALUE=STORE(JREF+IFO)
+      DIFFERENCE = 0.
       DO 2450 J=1,NREF
       KREF=JREF+NTERM
       JFO=JREF+IFO
-C--WORK7 = DELTA
-      WORK(7) = STORE(JFO) - WORK(5)
-C--WORK6 = SIGMA W*DEL.SQ
-      WORK(6)=WORK(6)+WORK(7)*WORK(7)*STORE(KREF-1)
-C--WORK 8 = SIGMA W*VAR
-      WORK(8)=STORE(JREF+12)*STORE(JREF+12)*STORE(KREF-1)+WORK(8)
-C--WORK25=21= SIGMA /DELTA/
-      WORK(25)=WORK(25)+ABS(WORK(7))
-C--WORK26 = 22 = SIGMA AVERAGE
-      WORK(26)=WORK(26)+WORK(5)
-C--WORK27 = 23 = SIGMA W AV SQ
-      WORK(27)=WORK(27)+WORK(5)*WORK(5)*STORE(KREF-1)
+      IF(J.GT.1) THEN
+       DIFFERENCE=STORE(JFO)-OLDVALUE
+       OLDVALUE=STORE(JFO)
+      ENDIF
+      WORK(7) = STORE(JFO) - WORK(5)                              !DELTA=(STORE(JFO) - AV(FO))
+      WORK(6)=WORK(6)+WORK(7)*WORK(7)*STORE(KREF-1)               ! SUM(W.DELSQ)
+      WORK(8)=STORE(JREF+12)*STORE(JREF+12)*STORE(KREF-1)+WORK(8) ! SUM(W.SIGSQ)
+      WORK(25)=WORK(25)+ABS(WORK(7))                              ! SUM( /DELTA/)
+      WORK(26)=WORK(26)+WORK(5)                                   ! SUM (AVERAGE(FO))
+      WORK(27)=WORK(27)+WORK(5)*WORK(5)*STORE(KREF-1)             ! SUM (W AVFO^2)
 C----- COMPUTE TOTALS FOR PARTIAL RINT
       IF (STORE(JFO) .GE. 10.*STORE(JREF+12)) THEN
             IRINT = 1
@@ -2090,10 +2155,7 @@ C----- COMPUTE TOTALS FOR PARTIAL RINT
       ELSE
             IRINT = 3
       ENDIF
-c      WRITE(NCWU,'(I1,3(1X,F15.9))') IRINT, STORE(JFO), STORE(JREF+12),
-c     1  10. * STORE(JREF+12)
-c      WRITE(NCWU,'(I1,3(1X,Z0))') IRINT, STORE(JFO), STORE(JREF+12),
-c     1  10. * STORE(JREF+12)
+C Compute R(int)
       RINT(IRINT) = RINT(IRINT) + STORE(JFO)
       RINT(IRINT+3) = RINT(IRINT+3) + ABS(WORK(7))
 C----- COMPUTE TOTALS FOR FINER GRAINED RINT
@@ -2106,22 +2168,25 @@ C----- COMPUTE TOTALS FOR FINER GRAINED RINT
       RINTF(JRINTF+100)= RINTF(JRINTF+100)+ ABS(WORK(7))
       RINTF(JRINTF+200)= RINTF(JRINTF+200)+ 1.0
       KKK=IB
+c /Fo-Av(Fo)/ > PRINT-LEVEL * <SIGMA>: Print level defaults to 3
       IF(ABS(STORE(JFO)-WORK(5))-APRINT*WORK(10))2300,2300,2250
 C--OUTSIDE THE LIMTS
 2250  CONTINUE
       KKK=IA
 2300  CONTINUE
-C--PRINT THIS CONTRIBUTOR
 C--CHECK IF A PRINT IS REQUIRED OF THE CONTRIBUTORS
       IF(JPRINT)2400,2400,2200
 C--PRINT THE RESULTS  - PARTIAL CONTRIBUTIONS
 2200  CONTINUE
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,2350)STORE(JFO),KKK,WORK(7),STORE(JREF+12),
-     2 STORE(KREF-2),STORE(KREF-1),ISTORE(KREF-4),ISTORE(KREF-3)
+C     2 STORE(KREF-2),STORE(KREF-1),ISTORE(KREF-3),
+     2 DIFFERENCE,STORE(KREF-1),ISTORE(KREF-3),
+     3 STORE(JFO)/STORE(JREF+12)
       ENDIF
-2350  FORMAT(51X,F10.2,A1,F9.2,2F10.2,E11.2,I6,I10)
+2350  FORMAT(51X,F10.2,A1,F9.2,2F10.2,E11.2,I8,F10.1)
 2400  CONTINUE
+C SHOULD WE WRITE LARGE NREF REFELCTIONS TO THE SCREEN?
 c
 C----- WORK(29) IS MINIMUM JCODE
       WORK(29) = AMIN1( WORK(20), STORE(JREF+18) )
@@ -2136,7 +2201,7 @@ C--WEIGHTED AVERAGE
       IF (WORK(4) .LE. ZERO) work(4) = FLOAT(NREF)
       WORK(9)=WORK(6)/WORK(4)
       WORK(10)=WORK(8)/WORK(4)
-c123
+c
 C
 c save the unadjusted averages
       work9 = sqrt(work(9))
@@ -2181,24 +2246,32 @@ C--ONLY ONE CONTRIBUTOR
       WORK9=WORK(9)
       WORK10=WORK(10)
 2751  CONTINUE      
+C     compute (sintheta/lambda)**3
+      res3=rcstl3(float(istore(iref)),float(istore(iref+1)),
+     1 float(istore(iref+2)),store(L1S))
 C--PRINT THE TOTALS FOR THE NEW REFLECTION
       IF(JPRINT)2900,2900,2800
 C--PRINT THE REFLECTION
 2800  CONTINUE
+      
+      IF(SUMFO.GT.ZERO) THEN
+            R_INT=SUMDELTA/SUMFO                
+      ELSE
+            R_INT=0.
+      ENDIF
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,2850)(ISTORE(I),I=IREF,IREF+2),WORK(5),
-     2 (WORK(I),I=9,10),nref,'$',work9, work10
+     2 (WORK(I),I=9,10),nref,'$',work9, work10, 
+     2 ymode, r_int
       ENDIF
-2850  FORMAT(/1X,3I4,1X,3F10.2,8x,i8,1x,a1,f9.2,f10.2/)
+2850  FORMAT(/1X,3I4,1X,3F10.2,8x,i8,1x,a1,f9.2,3f10.2/)
 C--FIND THE STATISTICS IF NECESSARY
 2900  CONTINUE
-C     compute (sintheta/lambda)**3
-      res3=rcstl3(float(istore(iref)),float(istore(iref+1)),
-     1 float(istore(iref+2)),store(L1S))
 c     write to sigmas2.dat
       IF ( IULN .EQ. 6 )
-     1 WRITE(NCFPU2,'(3i4,f10.2,1x,2f10.2,i10,f9.3)')
-     2 (istore(i),i=iref,iref+2),work(5),work10, work9, nref, res3
+     1 WRITE(NCFPU2,'(3i4,f10.2,1x,2f10.2,i10,f9.3,f10.2)')
+     2 (ISTORE(I),I=IREF,IREF+2),WORK(5),WORK10, WORK9, NREF, RES3,
+     3 R_INT
 c
       IF(J-2)2950,3000,3000
 C--COMPUTE THE POINT
@@ -2216,7 +2289,7 @@ cdjw2012 save <fo>, Fc ad Fot
 c
       RETURN
       END
-C
+c
 CODE FOR MRGLSQ
       SUBROUTINE  MRGLSQ(MOO,ibin,nbin,jbin,binres)
       character*80 cterm
@@ -2234,7 +2307,7 @@ C
             jbin(j,2)=0
       enddo
 c
-      i= linfit(1,x,y,wt,a,sa,b,sb,t,tsq,r,rsq,mitem,tensor)
+      i= linfit(1,x,y,wt,a,sa,b,sb,c,t,tsq,r,rsq,mitem,tensor)
 c
       nobs=0
       mobs=0
@@ -2246,19 +2319,21 @@ c
       write (cmon,'(a)')'Premature end of sigmas.dat found'
       call xprvdu(ncvdu,1,1)
 20    continue
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       write (cmon,'(a)')'Error in sigmas.dat'
       call xprvdu(ncvdu,1,1)
       goto 999
 c
-100   continue
-      read(NCFPU2,101,end=200,err=20) x,y,imoo,res3
+100   continue                       !internal, external, MoO, resol
+      read(NCFPU2,101,end=200,err=20) x,y,imoo,res3 
 101   format(12x,10x,f11.2,f10.2,i10,f9.3)
+      IF(X.LE.0.0) GOTO 100
       mobs=mobs+1
       j = min(imoo,nbin)
       if(j.gt.0) ibin(j)=ibin(j)+1
       if(imoo .lt. moo) goto 150
       if(x.lt.0.) goto 150
-      i= linfit(2,x,y,float(imoo),a,sa,b,sb,t,tsq,r,rsq,mitem,tensor)
+      i= linfit(2,x,y,float(imoo),a,sa,b,sb,c,t,tsq,r,rsq,mitem,tensor)
       nobs=nobs+1
 150   continue
       j=nint(res3/binres)
@@ -2290,24 +2365,35 @@ c
        call xprvdu(ncvdu,3,1)
       endif
       if( linfit(3,x,y,wt,
-     1 a,sa,b,sb,t,tsq,r,rsq,mitem,tensor).lt.0) goto 999
+     1 a,sa,b,sb,c,t,tsq,r,rsq,mitem,tensor).lt.0) goto 999
+c      write(123,*)maxval(tensor)
+c      tmax=maxval(tensor)
+c      write(123,'(a,10f12.2)')
+c     1 'a,b,c=',a,b,c,tensor(1)/tmax,tensor(2)/tmax,tensor(3)/tmax
+c
+c a,b intercept and gradient in y=a+bx !Unsafe if only a few hi-MoO data
+c   c gradient in y=cx                 ! Unsafe if there is a bias in either x or y
+        gradient = c
       if (issprt.eq.0) then
             write(ncwu,210) nobs, moo
 210         format(/' Analysis of', i6, ' reflection variances ',
      1      'with MoO of at least',i4)
-             write(ncwu,230) ' ', b, sb
-230    format(A,' The internal variance (rms deviation) = ',f6.3,'(',
-     1 f6.3,')', ' times the external variance (mean variance)')
+             write(ncwu,230) ' ', gradient
+230    format(A,' The internal variance (rms deviation) = ',f6.3,
+     1 ' times the external variance (mean variance)')
       end if
-      if (( b.gt. 1.1).or.(1./b.gt. 1.1)) then
-      write(cmon,230) '{E ', b,sb
+      if (( gradient.gt. 1.1).or.(1./gradient.gt. 1.1)) then
+       write(cmon,230) '{E ', gradient
+      else
+       write(cmon,230) '{I ', gradient
+      endif
       call xprvdu(ncvdu,1,1)
       WRITE (CMON,'(/)')
       call xprvdu(ncvdu,1,1)
-      endif
       return
 
 999   continue
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       write(cmon,*)'Error during analysis of variances'
       call xprvdu(ncvdu, 1,0)
 cundo      if (issprt .eq. 0) write(ncwu,'(a)') trim(CMON(1))
@@ -2436,7 +2522,7 @@ C--FIRST REFLECTION  -  OUTPUT THE REJECTED REFLECTIONS CAPTION
       WRITE(NCWU,1050)
       ENDIF
 1050  FORMAT(//21X,10X,'H',5X,'K',5X,'L',5X,
-     2 'I or /FO/',5X,'Sigma',6X,'JCODE',4X,'Serial'/)
+     2 'I or /FO/',5X,'Sigma',6X,'Serial'/)
       GOTO 1250
 C--CHECK IF TOO MANY REFLECTIONS HAVE BEEN REJECTED
 1100  CONTINUE
@@ -2452,7 +2538,7 @@ C--PRINT THE REJECTED REFLECTION
       JFO=IFO+M6
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1300)CCAPT,STORE(M6),STORE(M6+1),STORE(M6+2),
-     2 STORE(JFO),STORE(M6+12),STORE(M6+18),STORE(M6+19)
+     2 STORE(JFO),STORE(M6+12),STORE(M6+19)
       ENDIF
 1300  FORMAT ( 1X, A, 2X, 3F6.0, F12.1, F11.1, F11.0, F10.0 )
 C--UPDATE THE NUMBER OF REJECTED REFLECTIONS

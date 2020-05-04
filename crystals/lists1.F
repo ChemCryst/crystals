@@ -172,6 +172,7 @@ C
 C -- ENSURE THAT THE SYSTEM IS INITIALISED
       CALL XLC
 C
+c      write(123,*)'                    In KLSCHK', LN, LSN, LRSN, IREQ
 C -- SET READ FILE INDEX FLAG
       IRDFIL = -1
       IF ( LSN .NE. 0 ) IRDFIL = 1
@@ -239,40 +240,48 @@ C
 C
 9910  CONTINUE
       IF ( IMSG .LT. 0 ) GO TO 9990
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
+c      write(123,*)'In LISTS1 9910, List=', LN,imsg
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9915 ) LN
       ENDIF
-cfeb08      WRITE ( NCAWU , 9915 ) LN
+c      WRITE(123 , 9915 ) LN
       WRITE ( CMON, 9915 ) LN
       CALL XPRVDU(NCEROR, 1,0)
-9915  FORMAT ( 1X , I8 , ' is not a valid list type number' )
+9915  FORMAT ( 1X , I12 , ' is not a valid list type number' )
       GO TO 9990
 9920  CONTINUE
       IF ( IMSG .LT. 0 ) GO TO 9990
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
+c      write(123,*)'In LISTS1 9920, List=', LN,imsg
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9925 ) LSER
       ENDIF
-cfeb08      WRITE ( NCAWU , 9925 ) LSER
+c      WRITE(123 , 9925 ) LSER
       WRITE ( CMON, 9925 ) LSER
       CALL XPRVDU(NCEROR, 1,0)
 9925  FORMAT ( 1X , I8 , ' is not a valid list serial number' )
       GO TO 9990
 9930  CONTINUE
       IF ( IMSG .LT. 0 ) GO TO 9992
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
+c      write(123,*)'In LISTS1 9930, List=', LN,imsg
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9935 ) LN
       ENDIF
-cfeb08      WRITE ( NCAWU , 9935 ) LN
+c      WRITE(123 , 9935 ) LN
       WRITE ( CMON, 9935 ) LN
       CALL XPRVDU(NCEROR, 1,0)
 9935  FORMAT ( 1X , 'No list of type ' , I8 , ' stored' )
       GO TO 9992
 9940  CONTINUE
       IF ( IMSG .LT. 0 ) GO TO 9992
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
+c      write(123,*)'In LISTS1 9940, List=', LN,imsg
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9945 ) LN , LSER
       ENDIF
-cfeb08      WRITE ( NCAWU , 9945 ) LN , LSER
+c      WRITE(123, 9945 ) LN , LSER
       WRITE ( CMON, 9945 ) LN , LSER
       CALL XPRVDU(NCEROR, 1,0)
 9945  FORMAT ( 1X , 'No list of type ' , I8 , ' and serial ' , I8 ,
@@ -280,10 +289,12 @@ cfeb08      WRITE ( NCAWU , 9945 ) LN , LSER
       GO TO 9992
 9950  CONTINUE
       IF ( IMSG .LT. 0 ) GO TO 9992
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
+c      write(123,*)'In LISTS1 9950, List=', LN,imsg
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9955 ) LN , LSER
       ENDIF
-cfeb08      WRITE ( NCAWU , 9955 ) LN , LSER
+c      WRITE(123 , 9955 ) LN , LSER
       WRITE ( CMON, 9955 ) LN , LSER
       CALL XPRVDU(NCEROR, 1,0)
 9955  FORMAT ( 1X , 'List type ' , I8 , ' with serial ' , I8 ,
@@ -291,10 +302,12 @@ cfeb08      WRITE ( NCAWU , 9955 ) LN , LSER
       GO TO 9992
 9960  CONTINUE
       IF ( IMSG .LT. 0 ) GO TO 9992
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
+c      write(123,*)'In LISTS1 9960, List=', LN,imsg
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9965 ) LN , LSER
       ENDIF
-cfeb08      WRITE ( NCAWU , 9965 ) LN , LSER
+c      WRITE(123 , 9965 ) LN , LSER
       WRITE ( CMON, 9965 ) LN , LSER
       CALL XPRVDU(NCEROR, 1,0)
 9965  FORMAT ( 1X , 'List type ' , I8 , ' with serial ' , I8 ,
@@ -302,10 +315,12 @@ cfeb08      WRITE ( NCAWU , 9965 ) LN , LSER
       GO TO 9992
 9970  CONTINUE
       IF ( IMSG .LT. 0 ) GO TO 9992
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
+c      write(123,*)'In LISTS1 9970, List=', LN,imsg
       IF (ISSPRT .EQ. 0) THEN
       WRITE ( NCWU , 9975 ) LN , LSER
       ENDIF
-cfeb08      WRITE ( NCAWU , 9975 ) LN , LSER
+c      WRITE(123, 9975 ) LN , LSER
       WRITE ( CMON, 9975 ) LN , LSER
       CALL XPRVDU(NCEROR, 1,0)
 9975  FORMAT ( 1X , 'List type ' , I8 , ' with serial ' , I8 ,
@@ -313,6 +328,7 @@ cfeb08      WRITE ( NCAWU , 9975 ) LN , LSER
       GO TO 9992
 C
 9990  CONTINUE
+c      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       ISTAT = IERR
       IF ( IREQ .EQ. ILSAVI ) ISTAT = IERPRG
       GO TO 9995
@@ -364,6 +380,7 @@ C  -1  LIST EXISTS, BUT IS MARKED AS AN ERROR LIST.
 C   0  NO SUCH LIST EXISTS.
       use lists1_mod, only: klschk
       
+      INCLUDE 'XUNITS.INC'
       INCLUDE 'XERVAL.INC'
       INCLUDE 'XLSVAL.INC'
 C
@@ -387,6 +404,7 @@ C          +1  THIS LIST IS BEING CAREFULLY UPDATED.
 C
       use lists1_mod, only: klschk
       
+      INCLUDE 'XUNITS.INC'
       INCLUDE 'XERVAL.INC'
       INCLUDE 'XLSVAL.INC'
 
@@ -932,6 +950,7 @@ C--CHECK IF THIS INDICATES A NEW ENTRY
       IF(L)1000,1000,1100
 C--NEW ENTRY  -  LIST DOES NOT EXIST
 1000  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       ISTAT = IERERR
       IF ( ITYPE .LT. 0 ) ISTAT = IERPRG
       IF (ISSPRT .EQ. 0) THEN
@@ -974,7 +993,9 @@ C
       COMMON /XFINDC/I,J,K,L,M,N,LASTA,LASTL,NSER,NNN
 C
       INCLUDE 'QFILE.INC'
+      INCLUDE 'XUNITS.INC'
       INCLUDE 'QLISTS.INC'
+      include 'XSSVAL.INC'
       INCLUDE 'QFILEC.INC'
 C
 C--CHECK IF THIS IS AN INITIAL ENTRY OR A RESUME
@@ -1057,6 +1078,7 @@ C--LOAD THE NEWLY CREATED BLOCK FROM THE DISC AGAIN
 C
 C--ERROR BECAUSE THE FILE INDEX HAS BEEN CORRUPTED
 1650  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XDSMSG ( 2 )
 C      STOP
       CALL GUEXIT(2011)
@@ -1666,34 +1688,31 @@ C
       GO TO 9910
 C
 2100  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 2105 )
-      ENDIF
-cfeb08      WRITE ( NCAWU , 2105 )
       WRITE ( CMON, 2105 )
       CALL XPRVDU(NCEROR, 1,0)
-2105  FORMAT ( 1X , 'The disc file has been corrupted or is ' ,
+      IF (ISSPRT .EQ. 0) THEN
+      WRITE ( NCWU , '(A)' ) TRIM(CMON(1)(3:))
+      ENDIF
+2105  FORMAT ( '{E The disc file has been corrupted or is ' ,
      2 'not a system file' )
       GO TO 8000
 C
 2200  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 2205 )
-      ENDIF
-cfeb08      WRITE ( NCAWU , 2205 )
       WRITE ( CMON, 2205 )
       CALL XPRVDU(NCEROR, 1,0)
-2205  FORMAT ( 1X , 'The file index has been corrupted' )
+      IF (ISSPRT .EQ. 0) THEN
+      WRITE ( NCWU , '(A)' ) TRIM(CMON(1)(3:))
+      ENDIF
+2205  FORMAT ( '{E The file index has been corrupted' )
       GO TO 8000
 C
 2300  CONTINUE
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 2305 )
-      ENDIF
-cfeb08      WRITE ( NCAWU , 2305 )
       WRITE ( CMON, 2305 )
       CALL XPRVDU(NCEROR, 1,0)
-2305  FORMAT ( 1X , 'The current list index has been corrupted' )
+      IF (ISSPRT .EQ. 0) THEN
+      WRITE ( NCWU , '(A)' ) TRIM(CMON(1)(3:))
+      ENDIF
+2305  FORMAT ( '{E The current list index has been corrupted' )
       GO TO 8000
 C
 8000  CONTINUE
@@ -1799,15 +1818,15 @@ C -- ALTER 'DELETE' FLAG
       IF ( .NOT. REQCUR ) GO TO 3100
 C -- CURRENT VERSION TO BE ALTERED. WARN USER, IF DELETE FLAG SET
       IF ( IVALUE .NE. ILSSET ) GO TO 3100
-      IF (ISSPRT .EQ. 0) THEN
-      WRITE ( NCWU , 3005 ) LN , LSNCUR
-      ENDIF
-cfeb08      WRITE ( NCAWU , 3005 ) LN , LSNCUR
+ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE ( CMON, 3005 ) LN , LSNCUR
       CALL XPRVDU(NCEROR, 2,0)
-3005  FORMAT ( 1X , 'List type ' , I3 , ' with serial number ' , I5 ,
+      IF (ISSPRT .EQ. 0) THEN
+      WRITE ( NCWU , '(A/A)' ) TRIM(CMON(1)(3:)),TRIM(CMON(2)(3:))
+      ENDIF
+3005  FORMAT ('{N List type ' , I3 , ' with serial number ' , I5 ,
      2 ' is the current version. ' ,/
-     3 ' You may still save this list with DELETE n ACTION=NO' )
+     3 '{N You may still save this list with DELETE n ACTION=NO' )
 C RIC04: Don't issue warning, scares people.
 c      CALL XERHND ( IERWRN )
 3100  CONTINUE
@@ -1846,6 +1865,7 @@ C -- ERRORS
       RETURN
 9910  CONTINUE
 C -- INTERNAL ERROR
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPCRY , IOPINT , 0 )
       GO TO 9900
       END

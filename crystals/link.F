@@ -218,7 +218,7 @@ c      IULN6 = KTYP06(ITYP06)
 C
 C-     LINKS ARE  1:SNOOPI, 2:CAMERON, 3:SHELXS86, 4:MULTAN81
 C-                5:SIR88, 6:SIR92, 7:SIR97, 8:PLATON 9:CSD 10:MOL2
-C                 11:SUPERFLIP         12:SIR02    13:SIR11
+C                 11:SUPERFLIP     12:SIR02 13:SIR11 14:SHELXT
       CALL XLNK (ISTORE(ICOMBF), ITYPE, IMETH, ityp06)
 C
 C
@@ -343,11 +343,11 @@ C
 C
 C- ILINKS ARE  1:SNOOPI, 2:CAMERON, 3:SHELXS86, 4:MULTAN81
 C-                 5:SIR88,  6:SIR92,   7:SIR97,    8:PLATON,  9:CSD 10:MOL2
-C                 11:SUPERFLIP         12:SIR02    13:SIR11
+C                 11:SUPERFLIP         12:SIR02    13:SIR11 14:SHELXT
 C- POINTER TO LIST
       DATA LISTS /1, 2, 5, 0, 0,  0,  0,  0,
      2            1, 2, 5, 0, 0,  0,  0,  0,
-     3            1, 2, 3, 0, 6, 13, 29, 31,
+     3            1, 2, 3, 0, 0, 13, 29, 31, !L6 removed -looked for as required
      4            1, 2, 3, 0, 6, 13, 29,  0,
      5            1, 2, 3, 0, 6, 13, 29,  0,
      6            1, 2, 3, 0, 6, 13, 29,  0,
@@ -394,6 +394,7 @@ c
       IF (LSTNUM .EQ. 0 ) GOTO 1300
         IF (  KEXIST ( LSTNUM )  ) 1210 , 1200 , 1220
 1200    CONTINUE
+          if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
           WRITE ( NCAWU , 1205 ) LSTNUM
           IF ( ISSPRT .EQ. 0) WRITE(NCWU, 1205) LSTNUM
           WRITE ( CMON, 1205 ) LSTNUM
@@ -402,6 +403,7 @@ c
           IERROR = -1
           GOTO 1300
 1210    CONTINUE
+          if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
           WRITE ( NCAWU , 1215 ) LSTNUM
           IF ( ISSPRT .EQ. 0) WRITE(NCWU, 1215) LSTNUM
           WRITE ( CMON, 1215 ) LSTNUM
@@ -462,6 +464,7 @@ C
 C            SNOOPI, CAMERON, SHELXS86,
 C            MULTAN, SIR88,   SIR92, SIR97
 C            PLATON,  CSD,   MOL2 , SUPERFLIP, SIR02, SIR11
+C            SHELXT
 CAVDLdec06 added superflip
       GOTO ( 1600,   1700,    1800,
      1       2000,   1900,    1900,   1900,   
@@ -664,6 +667,12 @@ C----- REQUEST STRUCTURE SOLUTION
       ELSE
             WRITE(NCFPU1, '(''TREF '')')
       ENDIF
+C CHECK FOR A LIST 6 (NOT DONE ABOVE SO THAT WE CAN GET A .ins FILE)
+      IF (KEXIST(6) .NE. 1)  THEN
+        WRITE(CMON,'(A)') 'No reflections for SHELX.HKL file' 
+        CALL XPRVDU(NCVDU,1,0)
+        GOTO 1850
+      ENDIF
 C----- OUTPUT ON ACTUAL SCALE
 cdjwoct08
 c----- rescale incase there are any very big numbers
@@ -677,8 +686,8 @@ C----- FIND SCALE FROM MAXIMUM FO (ITEM 3)
       write(ncwu,*) store(in+1),store(in+2),store(in+3)
       write(ncwu,'(a,f12.5)') 'Scale', scale
 C
+C----- LOOP OVER LIST 6 DATA
       WRITE(NCFPU1, '(''HKLF  -4'' )')
-C----- LOOP OVER DATA
       IN = 0
 1840  CONTINUE
       ISTAT = KLDRNR (IN)
@@ -713,11 +722,13 @@ CDJWMAR99]
 C----- END OF DATA - WRITE A BLANK LINE
       WRITE (NCFPU1,'(/)')
 C----- END OF SHELXS DATA
+      WRITE(CMON,'(A)') 'Shelx ins written: {&SHELXS.INS{&'
+      CALL XPRVDU(NCVDU,1,0)
       GOTO 8000
       
       
 1841  CONTINUE
-C     LINK TO WRITE OUTPUT FOR SHELXS86 ---------------------
+C     LINK TO WRITE OUTPUT FOR SHELXT ---------------------
 C
 C----- OUTPUT A TITLE, FIRST 40 CHARACTERS ONLY
       WRITE(NCFPU1,'(''TITL '',10A4)') (KTITL(I),I=1,10)
@@ -1899,6 +1910,7 @@ C
 9000  CONTINUE
       RETURN
 9100  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE ( CMON, 9150 ) ILINK
       CALL XPRVDU(NCVDU, 1,0)
       IF (ISSPRT .EQ. 0) THEN
@@ -1909,6 +1921,7 @@ C
       GO TO 9900
 C
 9200  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE ( CMON, 9250 )
       CALL XPRVDU(NCVDU, 1,0)
       IF (ISSPRT .EQ. 0) THEN
@@ -1920,6 +1933,7 @@ C
 C
 9900  CONTINUE
 C -- ERRORS DETECTED
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       I = KFLCLS(NCFPU1)
       I = KFLCLS(NCFPU2)
       CALL XERHND ( IERWRN )
@@ -2065,10 +2079,10 @@ C
 1000  CONTINUE
 
       CALL XRDOPN ( 5 , JFRN(1,JFILE) ,
-
      1 CPATH(1:LPATH)// CFILE(IFILE)(1:LFILE(IFILE)),
      2 LPATH+LFILE(IFILE))
-
+c      write(123,*)'Opening'
+c      write(123,*)cpath(1:lpath), CFILE(IFILE)(1:LFILE(IFILE))
 C------ EXIT ON ERROR
       IF (IERFLG .LE. 0) GOTO 9900
       IF (JLOOP .LT. KLOOP) THEN
@@ -2367,6 +2381,7 @@ c
         IF (  KEXIST ( LSTNUM )  ) 1210 , 1200 , 1220
 C
 1200    CONTINUE
+       if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         WRITE ( NCAWU , 1205 ) LSTNUM
         IF ( ISSPRT .EQ. 0) WRITE(NCWU, 1205) LSTNUM
         WRITE ( CMON, 1205 ) LSTNUM
@@ -2376,6 +2391,7 @@ C
         GOTO 1300
 C
 1210    CONTINUE
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         WRITE ( NCAWU , 1215 ) LSTNUM
         IF ( ISSPRT .EQ. 0) WRITE(NCWU, 1215) LSTNUM
         WRITE ( CMON, 1215 ) LSTNUM
@@ -2483,6 +2499,7 @@ C
       RETURN
 C
 9930      CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE(NCAWU,9940)
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,9940)

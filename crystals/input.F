@@ -237,7 +237,7 @@ C--LEXICAL SCANNER INPUT
 3900  CONTINUE
 C -- LIST NUMBER NOT ALLOWED
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 3905 ) LSTNO
-      WRITE ( NCAWU , 3905 ) LSTNO
+c      WRITE ( NCAWU , 3905 ) LSTNO
       WRITE ( CMON, 3905) LSTNO
       CALL XPRVDU(NCVDU, 1,0)
 3905  FORMAT ( 1X , 'List number ' , I4 , ' is not allowed' )
@@ -254,7 +254,7 @@ C----- SEE IF WE WANT THIS LIST
       IF ( (LSTNO .NE. 12) .AND. (LSTNO .NE. 16) .AND.
      1  (LSTNO .NE. 17)) THEN
         IF (ISSPRT .EQ. 0) WRITE(NCWU,4150) LSTNO
-        WRITE(NCAWU,4150) LSTNO
+c        WRITE(NCAWU,4150) LSTNO
         WRITE ( CMON, 4150) LSTNO
         CALL XPRVDU(NCVDU, 1,0)
 4150    FORMAT(' List type ',I6, ' may not be CLEARed ')
@@ -421,7 +421,7 @@ c
 C----- NOT PERMITTED
 7100  CONTINUE
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 7200 ) IH
-      WRITE ( NCAWU , 7200 ) IH
+c      WRITE ( NCAWU , 7200 ) IH
       WRITE ( CMON, 7200) IH
       CALL XPRVDU(NCVDU, 1,0)
 7200  FORMAT ( 1X , 'Illegal list number for ' , A1 , 'PUNCH' )

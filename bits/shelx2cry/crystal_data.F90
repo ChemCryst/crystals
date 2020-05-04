@@ -12,9 +12,9 @@ module crystal_data_m
   integer, parameter :: shelxline_length = 1024
 
   type hklf_t !< hold information from hklf card
-    integer :: code !< hklf code (1,2,3,4,5 or 6)
-    real, dimension(3, 3) :: transform !< transformation matrix for h,k,l indices
-    real :: scale !< Unused in crystals, scaling factors for the intensities and sigmas
+    integer :: code = 4 !< hklf code (1,2,3,4,5 or 6)
+    real, dimension(3, 3) :: transform = reshape( (/1.0,0.0,0.0, 0.0,1.0,0.0, 0.0,0.0,1.0/), (/3, 3/)) !< transformation matrix for h,k,l indices
+    real :: scale = 1.0 !< Unused in crystals, scaling factors for the intensities and sigmas
   end type
   type(hklf_t) :: hklf
 
@@ -38,7 +38,7 @@ module crystal_data_m
   integer :: list13index = 0 !< index in list13
   character(len=512), dimension(512) :: list12 !< Array holding list12 instructions
   integer :: list12index = 0  !< index in list12
-  character(len=512), dimension(4) :: list31 = ''  !< Array holding list31 instructions
+  character(len=512), dimension(5) :: list31 = ''  !< Array holding list31 instructions
   character(len=512), dimension(5) :: composition = ''  !< Array holding composition instructions
 
   character(len=3), dimension(128) :: sfac = '' !< List of atom types (sfac from shelx)
@@ -48,6 +48,8 @@ module crystal_data_m
   real, dimension(:), allocatable :: fvar !< list of free variables (sfac from shelx)
   real, dimension(6) :: unitcell = 0.0 !< Array holding the unit cell parameters (a,b,c, alpha,beta,gamma). ANgle sin degree
   real wavelength !< wavelengh from shelx CELL card
+  character(len=10) :: target = 'Unknown'  !< Type of target used
+  character(len=9) :: radiation = 'unknown' !< Type of radiation used
   integer :: part = 0 !< current part
   real :: part_sof = -1.0 !< Overriding subsequent site occupation factor
 
@@ -99,7 +101,7 @@ module crystal_data_m
     real, dimension(3) :: coordinates = 0.0 !< x,y,z fractional coordinates from shelx
     real, dimension(6) :: aniso = 0.0 !< Anistropic displacement parameters U11 U22 U33 U23 U13 U12 from shelx
     real :: iso = 0.0 !< isotropic temperature factor from shelx
-    real :: sof = 0.0 !< Site occupation factor from shelx
+    real, allocatable :: sof !< Site occupation factor from shelx
     integer :: multiplicity = 0 !< multiplicity (calculated)
     type(resi_t) :: resi  !< residue from shelx
     integer :: part = 0 !< group from shelx

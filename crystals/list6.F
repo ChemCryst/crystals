@@ -465,7 +465,7 @@ C--A FEW SPARE LINES AT THE END
 C
 9900  CONTINUE
 C -- ERRORS
-      ISSMON=0 ! Turn monitoring back on
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9905 )
       WRITE ( CMON, 9905 )
       CALL XPRVDU(NCVDU, 1,0)
@@ -553,7 +553,7 @@ c        write(cmon,'(A,2x,f6.4)') '{R this is an old-type L6', xthresh
 c        write(cmon,'(A,2x,f6.4)') '{R this is a new-type L6', xthresh
          write(cmon,'(1x)')         !Dont show anything
       ELSE
-        write(cmon,'(A,2x,f6.4)') '{R this is an  unknown type L6'
+        write(cmon,'(A,2x,f6.4)') '{R this is an unknown type L6'
       ENDIF
       call xprvdu(ncvdu, 1,0)
       RETURN
@@ -575,6 +575,7 @@ C--
 C
 C--CALL THE MAIN LOADING ROUTINE
       CALL XFLT06(IULN,IOWF)
+c      write(123,*) 'iowf in xfal06', iowf, ierflg
       IF ( IERFLG .LT. 0 ) RETURN
 C--INITIALISE LIST 28 IF POSSIBLE
       CALL XFAL28
@@ -640,8 +641,10 @@ C--ZERO THE COMMON BLOCK FOR LIST 28
       CALL XZEROF(ICOM28(1),IDIM28)
       INCLUDE 'IDIM06.INC'
       LN6=IULN
+C      write(123,*)'in xflt06 iuln, iowf',iuln, iowf
 C--LOAD THE DATA FROM THE DISC
       CALL XLDLST(IULN,ICOM06,IDIM06,IOWF)
+c      write(123,*) 'in xflt06 ierflg',ierflg
 C
 C  SET THE THRESHOLD FOR SIGMA CONVERSION
       CALL ZTHRESH
@@ -1082,7 +1085,8 @@ C----- FIX STEP AND STORE IT IN MD28SK
 C--CHECK IF LIST 1 IS IN CORE
 1250  CONTINUE
       IF(KHUNTR(1,0,I,J,K,-1))1300,1350,1350
-C--LIST 1 IS NOT IN CORE  -  FLAG ITS CONTROL VARIABLE
+C--LIST 1 IS NOT IN CORE
+C  -  SET L1S TO INDICATE THAT SINTHETA/LAMBDA  CANNOT BE COMPUTED
 1300  CONTINUE
       L1S=NOWT
 C--AND NOW RETURN

@@ -51,6 +51,10 @@ CTestTestfile.cmake
 # End of https://www.gitignore.io/api/cmake
 
 *.bak
+*.lis
+BAT-files/
+old-FORTRAN/
+script/old-bak-files
 
 #common build folders
 b/

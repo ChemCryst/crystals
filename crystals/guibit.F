@@ -642,7 +642,7 @@ c         loaded by the calling routine.
       LOGICAL WEXIST, LSPARE
       CHARACTER*8 CINST(6)
       INTEGER IUNKN
-      CHARACTER*8 CRADTN(2)
+      CHARACTER*8 CRADTN(3)
       CHARACTER*11 CBONDS(0:9)
       DIMENSION ID(2)
 
@@ -662,7 +662,7 @@ c         loaded by the calling routine.
 #else
       DATA    IUNKN /'UNKN'/
 #endif
-      DATA CRADTN / 'X-rays' , 'neutrons' /
+      DATA CRADTN / 'X-rays' , 'neutrons' , 'electrons' /
       DATA CBONDS / 'unassigned', 'single',    'double',      'triple',
      c'quadruple',  'aromatic',   'polymeric', 'delocalised', 'strange',
      c'pi-bond'/
@@ -2098,18 +2098,22 @@ c             CALL XPRVDU(NCVDU, 1,0)
       RETURN
 
 9900  CONTINUE
+c      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE ( CMON, '(A,/,A)')'Failed to open file : ',CFILEN(1:ILENG)
       CALL XPRVDU(NCVDU, 2,0)
       RETURN
 9910  CONTINUE
+c      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
 c      WRITE ( CMON, '(A)')'GUI-UP: Some required lists not loaded.'
 c      CALL XPRVDU(NCVDU, 1,0)
       RETURN
 9915  CONTINUE
+c      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
 c      WRITE ( CMON, '(A)')'GUI-UP: Some required lists not present.'
 c      CALL XPRVDU(NCVDU, 1,0)
       RETURN
 9920  CONTINUE
+c      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE ( CMON, '(A)')'GUI-UP: Error loading list 41.'
       CALL XPRVDU(NCVDU, 1,0)
       RETURN

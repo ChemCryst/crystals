@@ -875,6 +875,7 @@ C -- RELEASE STORE ALLOCATED
       GOTO 9300
 C
 9250  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG( IOPREG, 2, IVERS)
 C
 9300  CONTINUE
@@ -887,6 +888,7 @@ C
 C -- THE FOLLOWING SECTION DEALS WITH ERRORS DETECTED IN THIS
 C    SUBROUTINE
 9500  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE ( CMON,9510)
       CALL XPRVDU(NCVDU, 1,0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
@@ -1237,6 +1239,7 @@ C           IF THERE ARE NO NON-ZERO VALUES FOR THIS COORDINATE
                INDNEW=J+I
                IF (ABS(STORE(INDNEW)).GT.ZERO) GO TO 650
 C -- ERROR
+               if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
                NUMATM=((J-LNEW)/MDNEW)+1
                WRITE (CMON,630) CAXIS(I),NUMATM
                CALL XPRVDU (NCVDU,1,0)
@@ -2003,6 +2006,7 @@ C----- DJWAPR01 - INDICATE THAT ATOMS HAVE BEEN PROCESSED
 C 
 C 
 1950  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE (CMON,2000) NOLD
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
@@ -2010,6 +2014,7 @@ C
       CALL XERHND (4)
       RETURN
 2050  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE (CMON,2100) NNEW
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
@@ -2020,6 +2025,7 @@ C
 C 
 C -- **** ERRORS ****
 C 
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XLINES
       WRITE (CMON,2200) IGRPNO
       CALL XPRVDU (NCVDU,1,0)
@@ -2029,10 +2035,12 @@ C
 C 
 2250  CONTINUE
 C -- INTERNAL ERROR
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG (IOPREG,IOPINT,0)
       GO TO 2150
 C 
 2300  CONTINUE
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       WRITE (CMON,2350)
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
@@ -2526,6 +2534,7 @@ c
 c
 9500  CONTINUE
 C -- ERROR
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         WRITE(CMON,9510) NNEW
         CALL XPRVDU(NCVDU,1,0)
         IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') trim(CMON(1))
@@ -2843,6 +2852,7 @@ C
 C
 C
 9800  CONTINUE
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         WRITE(CMON,9801)
         CALL XPRVDU(NCVDU,1,0)
         IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') trim(CMON(1))
@@ -2850,6 +2860,7 @@ C
       CALL XERHND(4)
       RETURN
 9810  CONTINUE
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         WRITE(CMON,9811)
         CALL XPRVDU(NCVDU,1,0)
         IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') trim(CMON(1))
@@ -2857,10 +2868,12 @@ C
       CALL XERHND(4)
       RETURN
 9820  CONTINUE
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XMISL5 (1,0,IHEADA+2)
       CALL XERHND(4)
       RETURN
 9830  CONTINUE
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         WRITE(CMON,9831)
         CALL XPRVDU(NCVDU,1,0)
         IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') trim(CMON(1))
@@ -2868,6 +2881,7 @@ C
       CALL XERHND(4)
       RETURN
 9840  CONTINUE
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         WRITE(CMON,9841)
         CALL XPRVDU(NCVDU,1,0)
         IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') trim(CMON(1))
@@ -2875,6 +2889,7 @@ C
       CALL XERHND(4)
       RETURN
 9850  CONTINUE
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         WRITE(CMON,9851) NOLD
         CALL XPRVDU(NCVDU,1,0)
         IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') trim(CMON(1))
@@ -2882,6 +2897,7 @@ C
       CALL XERHND(4)
       RETURN
 9860  CONTINUE
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         WRITE(CMON,9861)ISTORE(IADATM),NINT(STORE(IADATM+1))
         CALL XPRVDU(NCVDU,1,0)
         IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') trim(CMON(1))
@@ -2890,6 +2906,7 @@ C
       CALL XERHND(4)
       RETURN
 9870  CONTINUE
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         WRITE(CMON,9871)
         CALL XPRVDU(NCVDU,1,0)
         IF (ISSPRT .EQ. 0) WRITE (NCWU,'(A)') trim(CMON(1))
@@ -3250,6 +3267,7 @@ c
         NFL = NFLORIG       ! RESET NFL 
 
         IF ( K .LT. 0 ) THEN
+           if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
            WRITE (CMON,'(A)')'"KDIST4" returned an error.'
            CALL XPRVDU(NCVDU,1,0)
            IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
@@ -3381,6 +3399,7 @@ c        CALL XPRVDU(NCVDU,1,0)
         NFL = NFLORIG       ! RESET NFL 
 
         IF ( K .LT. 0 ) THEN
+           if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
            WRITE (CMON,'(A)')'"KDIST4" returned an error.'
            CALL XPRVDU(NCVDU,1,0)
            CYCLE
@@ -3413,6 +3432,7 @@ C Find list of bonds around atom B. Keep well clear of current list.
           NFL     = NFLORIG                     ! RESET NFL 
 
           IF ( K .LT. 0 ) THEN
+           if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
            WRITE (CMON,'(A)')'"KDIST4" returned an error. In DLOOP.'
            CALL XPRVDU(NCVDU,1,0)
            CYCLE
@@ -4117,7 +4137,7 @@ C Swap atoms at LMAP(I) and LMAP(J)
           ENDIF
 
          ELSE
-
+          if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
           WRITE(CMON,'(A)') '{E Programming error. No match found for:'
           CALL XPRVDU(NCVDU,1,0)
           WRITE(CMON,'( A4,2F6.1)')
@@ -4154,6 +4174,7 @@ C Create a list of bond to this atom. (A)
           NFL = NFLORIG       ! RESET NFL 
 
           IF ( K .LT. 0 ) THEN
+           if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
            WRITE (CMON,'(A)')'"KDIST4" returned an error.'
            CALL XPRVDU(NCVDU,1,0)
            CYCLE
@@ -4183,6 +4204,7 @@ C Find list of bonds to this atom.
                   NFL = NFLORIG       ! RESET NFL 
 
                   IF ( K .LT. 0 ) THEN
+                  if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
                    WRITE (CMON,'(A)')'"KDIST4" returned an error.'
                    CALL XPRVDU(NCVDU,1,0)
                    CYCLE
@@ -4305,6 +4327,7 @@ c                    CALL XPRVDU(NCVDU,1,0)
 
                   ELSE
 
+                    if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
                     WRITE(CMON,'(A)')
      1                '{E Programming error. No match found for:'
                     CALL XPRVDU(NCVDU,1,0)
@@ -4317,7 +4340,8 @@ c                    CALL XPRVDU(NCVDU,1,0)
               END IF
             END DO
             IF ( MOFND .EQ. 0 ) THEN
-              WRITE(CMON,'(A)') '{E Pththerror. No match found for:'
+              if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
+              WRITE(CMON,'(A)') '{E Error. No match found for:'
               CALL XPRVDU(NCVDU,1,0)
               WRITE(CMON,'( A4,2F6.1)')
      1        STORE(MOBND),STORE(MOBND+1),STORE(MOBND+13)
@@ -4692,6 +4716,7 @@ C -- SET METHOD TO THIS VALUE
          CALL XRGSMD(METH)
 
         CASE DEFAULT   !ERROR
+          if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
           GOTO 9910
 
         END SELECT
@@ -4818,6 +4843,7 @@ C Sort each set of atoms into order of uniqueness.
 
 C Ensure fragments are 2D identical.
       IF ( ( NMAP .EQ. 0 ) .OR. ( NMAP .NE. NONTO ) ) THEN
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         WRITE (CMON,'(A)') '{E Fragments are different sizes.'
         CALL XPRVDU(NCVDU,1,0)
         IF (IPCHRE.GE.0)THEN
@@ -4839,6 +4865,7 @@ c        CALL XPRVDU(NCVDU,1,0)
 
         IF ((ISTORE(3+LMAP+I*MDATVC).NE. ISTORE(3+LONTO+I*MDATVC)).OR.
      1      (ISTORE(4+LMAP+I*MDATVC).NE. ISTORE(4+LONTO+I*MDATVC)))THEN
+          if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
           WRITE (CMON,'(A)') '{E Fragment bonding is different.'
           CALL XPRVDU(NCVDU,1,0)
           IF (IPCHRE.GE.0)THEN
@@ -4906,6 +4933,7 @@ C Find first atom in residue 1 with uniqueness of 2.
          END DO
 
          IF ( IRS1AT .EQ. -1 ) THEN
+           if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
            WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1     CHAR(9)//'Uniqueness 2 in residue 1 not found'
            ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 3, 1 )
@@ -4949,12 +4977,14 @@ C as IRS1AT
          END DO
 
          IF ( IRS2A1 .EQ. -1 ) THEN
+           if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
            WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1     CHAR(9)//'Uniqueness 2 in residue 2 not found'
            ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 4, 1 )
            GOTO 9900
          END IF
          IF ( IRS2A2 .EQ. -1 ) THEN
+           if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
            WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1     CHAR(9)//'Second Uniqueness 2 in residue 2 not found'
            ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 5, 1 )
@@ -5122,6 +5152,7 @@ c           END DO
 
 C Ensure fragments are 2D identical.
            IF ( ( NMAP .EQ. 0 ) .OR. ( NMAP .NE. NONTO ) ) THEN
+            if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
             WRITE (CMON,'(A)') '{E Fragments are different sizes.'
             CALL XPRVDU(NCVDU,1,0)
             IF (IPCHRE.GE.0)THEN
@@ -5136,6 +5167,7 @@ C Further ensure fragments are 2D identical.
            DO I = 0, NMAP-1
             IF((ISTORE(3+LMAP+I*MDATVC).NE.ISTORE(3+LONTO+I*MDATVC)).OR.
      1        (ISTORE(4+LMAP+I*MDATVC).NE.ISTORE(4+LONTO+I*MDATVC)))THEN
+              if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
               WRITE (CMON,'(A)') '{E Fragment bonding is different.'
               CALL XPRVDU(NCVDU,1,0)
               IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
@@ -5158,12 +5190,14 @@ C 2ND CALL
 C
               ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 0, 1 )
             ELSE IF (IPCHRE.GE.0)THEN
+              if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
               WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1        CHAR(9)//'Linear_matching_fragments'
               ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 10, 1 )
               GOTO 9900
             END IF
            ELSE IF (IPCHRE.GE.0)THEN
+             if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
              WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1       CHAR(9)//'Still_not_enough_unique_matches'
              ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 11, 1 )
@@ -5171,24 +5205,28 @@ C
 
            IF (JOBDON.EQ.0) THEN
             IF ( IDOUB .GE. 1 ) THEN 
+               if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
                INTSYM = INTSYM + 2
                IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1         CHAR(9)//'More_Internal_symmetry_2'
                ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 12, 1 )
                GOTO 9900
             ELSE IF ( ITRIP .GE. 1 ) THEN 
+               if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
                INTSYM = INTSYM + 3
                IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1         CHAR(9)//'More_Internal_symmetry_3'
                ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 13, 1 )
                GOTO 9900
             ELSE IF ( IQUAD .GE. 1 ) THEN
+               if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
                INTSYM = INTSYM + 4
                IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1         CHAR(9)//'More_Internal_symmetry_4'
                ISTAT = KSCTRN ( 1 , 'MATCH:ERROR' , 14, 1 )
                GOTO 9900
             ELSE
+               if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
                INTSYM = INTSYM + 5
                IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1         CHAR(9)//'Internal_symmetry_lots'
@@ -5199,6 +5237,7 @@ C
          END DO
 
        ELSE IF ( ITRIP .GE. 1 ) THEN ! Try to break sym. Three times.
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         INTSYM = INTSYM + 1
         IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1   CHAR(9)//'Internal_symmetry_3'
@@ -5206,6 +5245,7 @@ C
           GOTO 9900
 
        ELSE IF ( IQUAD .GE. 1 ) THEN ! Try to break sym. Four times.
+       if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
        INTSYM = INTSYM + 1
         IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1   CHAR(9)//'Internal_symmetry_4'
@@ -5213,6 +5253,7 @@ C
           GOTO 9900
 
        ELSE
+        if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
         INTSYM = INTSYM + 1
         IF (IPCHRE.GE.0)WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1   CHAR(9)//'Internal_symmetry_lots'
@@ -5248,6 +5289,7 @@ C--TERMINATION MESSAGES
 C
 9900  CONTINUE
 C -- ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPREG , IOPABN , 0 )
       IF ( IPCHRE .GE. 0 ) WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1 CHAR(9)//'errors'
@@ -5258,6 +5300,7 @@ C -- ERRORS
       GO TO 6050
 9910  CONTINUE
 C -- INPUT ERRORS
+      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XOPMSG ( IOPDIS , IOPCMI , 0 )
       IF ( IPCHRE .GE. 0 ) WRITE(CPCH(LEN_TRIM(CPCH)+1:),'(A)')
      1 CHAR(9)//'command_input_error'
@@ -5471,6 +5514,7 @@ c        END DO
 
           IF ((I.EQ.N5) .OR. ( ISTORE(LTEMP+I) .NE. LASTID)) THEN
             IF ( MOD(NCONSE,2) .EQ. 1 ) THEN
+              if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
               WRITE(CMON,'(A,I8)')
      1          '{E Error. Odd # consecutive IDs',LASTID
               CALL XPRVDU(NCVDU,1,0)

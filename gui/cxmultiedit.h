@@ -86,7 +86,8 @@ class CxMultiEdit : public BASEMULTIEDIT, public IInputControl
         void            SaveAs(string filename);
         void            Load(string filename);
 
-		void			InsertText(const string text);
+        void            InsertText(const string text);
+        void            InsertLine(const string text);
     private:
         static int      AddMultiEdit( void) { mMultiEditCount++; return mMultiEditCount; };
         static void     RemoveMultiEdit( void) { mMultiEditCount--; };

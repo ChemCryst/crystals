@@ -1,1 +1,0 @@
-MCE -s slant.fou void.fou
