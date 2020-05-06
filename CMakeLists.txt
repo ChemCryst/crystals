@@ -327,7 +327,7 @@ IF (Fortran_COMPILER_NAME MATCHES "gfortran")  # gfortran
     endif ()
     SET (CMAKE_Fortran_FLAGS_DEBUG   "-fno-f2c -O0 -g -Wfatal-errors -Wall -Wextra")
     if(CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER "4.5")
-        SET (CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -fcheck=all -ffpe-trap=zero,invalid,overflow,underflow")
+        SET (CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -fcheck=all")
     else ()
         SET (CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -fbounds-check")
     endif()
