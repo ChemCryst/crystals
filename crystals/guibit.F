@@ -440,12 +440,12 @@ C
       RETURN
       END
 C
- 
- 
- 
- 
- 
- 
+
+
+
+
+
+
 C
 CODE FOR CRDIST2
       SUBROUTINE CRDIST2
@@ -493,7 +493,7 @@ C
       XDSTNCR=C(1)
       RETURN
       END
- 
+
 
 
 CODE FOR KDIST2
@@ -578,7 +578,7 @@ C--MOVE BACK ONE MORE UNIT CELL
 
 CODE FOR XGUIUP
       SUBROUTINE XGUIUP ( IULN )
-C#if defined(CRY_GUI)      
+C#if defined(CRY_GUI)
 C      use fwrappergui_mod, only : fstbnd, fstatm, fstsph, fstrng
 C#endif
 C----- UPDATE THE GUI
@@ -634,7 +634,7 @@ c         loaded by the calling routine.
       REAL TENSOR(3,3), TEMPOR(3,3), ROTN(3,3), AXES(3,3)
       CHARACTER CCOL*6, WCLINE*80, CFILEN*256, CATTYP*4,CLAB*32,CLAB2*32
       character *80 ctext(4)
-      CHARACTER*5 CWT 
+      CHARACTER*5 CWT
       CHARACTER*22 CFM, CFMC ! 'Fo**2'
       CHARACTER*35 CMOD
       CHARACTER CBUF*86
@@ -729,7 +729,7 @@ C 'ISSUPD' CAN  BE RESET BY '#SET AUTO = OFF/ON (VALUE 0/1)
             IF ( ISSUPD .EQ. 0 ) THEN
 c      WRITE(CMON,'(a)')' XGUIUP: Model update suppressed by user.'
 c      CALL XPRVDU (NCVDU,1,0)
-             ISERnn(5)  = 0         ! Ensure update if/when ISSUPD is 
+             ISERnn(5)  = 0         ! Ensure update if/when ISSUPD is
              ISERnn(41) = 0         ! switched back on.
              CYCLE ! The model may be switched off for speed reasons.
             ENDIF
@@ -838,7 +838,7 @@ C Set old list number to current list number.
 C Calculate and store orthogonal coords....
 C Calculate sum of x, y and z as we go.
             XMAX = -100000.0
-            XMIN =  100000.0 
+            XMIN =  100000.0
             YMAX = -100000.0
             YMIN =  100000.0
             ZMAX = -100000.0
@@ -1067,10 +1067,10 @@ C Colour info still not found, use and cache default values:
                  TENSOR(3,2) = TENSOR(2,3)
                  TENSOR(3,1) = TENSOR(1,3)
                  TENSOR(2,1) = TENSOR(1,2)
-      
+
 c                WRITE(99,'(A)') 'CRY: TENSOR, ORTHTENSOR, AXES, ELOR: '
 c                WRITE(99,'(9(1X,F7.4))') ((TENSOR(KI,KJ),KI=1,3),KJ=1,3)
-                     
+
                  CALL XMLTMM(GUMTRX(19), TENSOR,     TEMPOR,3,3,3)
                  CALL XMLTMT(TEMPOR,     GUMTRX(19), TENSOR,3,3,3)
 
@@ -1089,7 +1089,7 @@ C Filter out tiny axes
                  TENSOR(2,2) = MAX ( TENSOR(2,2), TENSOR(3,3)/100 )
                  TENSOR(3,3) = MAX ( TENSOR(3,3), TENSOR(1,1)/100 )
                  TENSOR(3,3) = MAX ( TENSOR(3,3), TENSOR(2,2)/100 )
-            
+
                  DO KI=1,3
                    DO KJ=1,3
                      AXES(KI,KJ) =   ROTN(KJ,KI)
@@ -1117,7 +1117,7 @@ C Work out UEQUIV:
                  AXES(1,1) = SQRT(ABS(STORE(I5+7))) * GSCALE
                END IF
 
-        
+
                SPAREV = 0.0
 
                IF ( LSPARE .AND. ( NINT(STORE(I5+3)) .LE. 1 )) THEN
@@ -1145,11 +1145,11 @@ C This block catches old negative sticky flag and fixes it to look like new form
                   ISTORE(I5+15) = -ISTORE(I5+15)
                   ISTORE(I5+15) = OR ( ISTORE(I5+15), 128 ) ! Set bit7
                END IF
-C This block detects sticky flag and sets ISFLAG to pass info to GUI.               
+C This block detects sticky flag and sets ISFLAG to pass info to GUI.
                IF( AND( ISTORE(I5+15), 128 ) .NE. 0 ) THEN
                  ISFLAG = AND(ISTORE(I5+15), 127)  ! Pass lower 7 bits.
                ENDIF
-               
+
                IF ( NINT(STORE(I5+3)) .LE. 1 ) THEN
 
                    CALL PRTGRP(ISTORE(I5+14),JPRT,JGRP,1)
@@ -1187,6 +1187,25 @@ C This block detects sticky flag and sets ISFLAG to pass info to GUI.
      5         ISTORE(I5+16), JGRP, JPRT, UEQUIV, STORE(I5+13),ISFLAG)   !21,22,23,24,25,26
 
 #endif
+! Rotor
+              ELSE IF ( NINT(STORE(I5+3)) .EQ. 5 ) THEN
+
+                   CALL PRTGRP(ISTORE(I5+14),JPRT,JGRP,1)
+#ifdef CRY_GUI
+               CALL FSTROT(LLAB,CLAB,NINT(STR11(IPLACE)*GSCALE),
+     5         NINT(STR11(IPLACE+1)*GSCALE),
+     6         NINT(STR11(IPLACE+2)*GSCALE),
+     7         NINT(IRED*2.55),NINT(IGRE*2.55),NINT(IBLU*2.55),
+     8         NINT(1000*STORE(I5+2)), NINT(COV*GSCALE),
+     2         NINT(VDW*GSCALE),ISPARE,NINT(SPAREV),
+     3         NINT( SQRT(ABS(STORE(I5+7))) * GSCALE), !Uiso
+     4         NINT(STORE(I5+8) * GSCALE),  !Radius
+     5         NINT(STORE(I5+9)*100.0),NINT(STORE(I5+10)*100.0), ! dec, azi
+     6         NINT(STORE(I5+11)*100.0),NINT(STORE(I5+12)*100.0), ! xi, Bd
+     4         STORE(I5+4),STORE(I5+5),STORE(I5+6),                ! 16,17,18
+     5         CATTYP,NINT(STORE(I5+1)),                           ! 19,20
+     5         ISTORE(I5+16), JGRP, JPRT, UEQUIV, STORE(I5+13),ISFLAG)   !21,22,23,24,25,26
+#endif
                ELSE IF ( NINT(STORE(I5+3)) .EQ. 4 ) THEN
 
                    CALL PRTGRP(ISTORE(I5+14),JPRT,JGRP,1)
@@ -1203,8 +1222,6 @@ C This block detects sticky flag and sets ISFLAG to pass info to GUI.
      4         STORE(I5+4),STORE(I5+5),STORE(I5+6),                ! 16,17,18
      5         CATTYP,NINT(STORE(I5+1)),                           ! 19,20
      5         ISTORE(I5+16), JGRP, JPRT, UEQUIV, STORE(I5+13),ISFLAG)   !21,22,23,24,25,26
-
-
 #endif
                END IF
 
@@ -1278,7 +1295,7 @@ C -- Centre with the rest of the molecule.
                   TXYZ(3)   = TXYZ(3) - GCENTZ
 
 C -- Apply symmetry to atom 2:
-                  M2 =  L2 + (MIN(N2,ABS(ISTORE(M41B+7))) - 1) * MD2 
+                  M2 =  L2 + (MIN(N2,ABS(ISTORE(M41B+7))) - 1) * MD2
                   M2P = L2P+ (MIN(N2P,ISTORE(M41B+8))    - 1) * MD2P
                   CALL XMLTTM(STORE(M2),STORE(4+IAT2P),TXYZ(4),3,3,1)
                   IF(ISTORE(M41B+7).LT.0)CALL XNEGTR(TXYZ(4),TXYZ(4),3)
@@ -1384,9 +1401,9 @@ c                 CALL XPRVDU(NCVDU,1,0)
                CALL CATSTR (STORE(IAT2P),STORE(IAT2P+1),1,1,0,0,0,
      1                      CLAB2,LLAB2)
 
-               ICENT = KNF11     
-               IROOT = KNF11 + 3 
-               IVECT = KNF11 + 6 
+               ICENT = KNF11
+               IROOT = KNF11 + 3
+               IVECT = KNF11 + 6
                ICSNE = KNF11 + 15
                IWORK = KNF11 + 24
                KNF11 = KNF11 + 28
@@ -1734,7 +1751,7 @@ c             CALL XPRVDU(NCVDU, 1,0)
 
 
 600   FORMAT ('^^WI SAFESET [ _MT_L',I2,' TEXT "',A,'" ]')
-                                                            
+
                DO WHILE(INNN.GT.0)   ! CHECK IF THERE ARE MORE CARDS TO PRINT
                  CALL XDOWNF(INNL,CARD(1),INNK)
                  INNL=INNL+KINCRF(INNM) ! UPDATE THE POINTERS
@@ -1862,8 +1879,8 @@ c             CALL XPRVDU(NCVDU, 1,0)
 
 
               JTYPE = ICON41
-              IF (JTYPE .EQ. 3) THEN 
-                IF (ISTORE(L23MN+1) .GE. 0) THEN 
+              IF (JTYPE .EQ. 3) THEN
+                IF (ISTORE(L23MN+1) .GE. 0) THEN
                   IF (  (ITYPE .EQ. 10) .OR. (ITYPE .EQ. 11) .OR.
      1                  (ITYPE .EQ. 14) .OR. (ITYPE .EQ. 15) .OR.
      1                  (ITYPE .EQ. 17) .OR. (ITYPE .EQ. 16) ) THEN
@@ -1915,7 +1932,7 @@ c             CALL XPRVDU(NCVDU, 1,0)
      1           STORE(L4)
                  CALL XCREMS(CMON(1),CMON(1),NOCARE)
                  CALL XPRVDU(NCVDU,1,0)
-              CASE (2)  
+              CASE (2)
                  WRITE(CMON,604) CWT, CMOD(1:LMOD),
      1           '1 if '//CFM(1:LFM)//' <= ',STORE(L4)
                  CALL XCREMS(CMON(1),CMON(1),NOCARE)
@@ -2116,18 +2133,18 @@ c
 c\STORE
 c\ISTORE
 c\QSTORE
-c\TLST18                           
+c\TLST18
 c
 c      KBDDEV = 0
 c      DEVN = 0.0
 c
-c      IAT1N = ISTORE(IAT1P)     
-c      IAT1S = NINT(STORE(IAT1P+1))     
-c      IAT2N = ISTORE(IAT2P)     
-c      IAT2S = NINT(STORE(IAT2P+1))     
-c      
+c      IAT1N = ISTORE(IAT1P)
+c      IAT1S = NINT(STORE(IAT1P+1))
+c      IAT2N = ISTORE(IAT2P)
+c      IAT2S = NINT(STORE(IAT2P+1))
+c
 c        DO 800 I = 1, NB18
-c                        
+c
 c            JAT1N = IBLK(I,1)
 c            JAT1S = NINT(BBLK(I,2))
 c            JAT2N = IBLK(I,3)
@@ -2147,5 +2164,3 @@ c800   CONTINUE
 c
 c      RETURN
 c      END
-
-
