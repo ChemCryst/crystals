@@ -132,7 +132,6 @@ regular.F
 restr.F
 results.F
 rotax.F
-rotor.F90
 script.F
 service.F
 setting.F

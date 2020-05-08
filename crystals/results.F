@@ -2099,8 +2099,8 @@ C
 c----- nspbuf - a buffer for special shape lines
       parameter (nspbuf=50)
 cdjwapr10      character *84 cspbuf(nspbuf)
-      character *120 cspbuf(nspbuf)
-      character *8 cshape(4)
+      character *94 cspbuf(nspbuf)
+      character *8 cshape(3)
       CHARACTER *160 CLINE
       CHARACTER *4 CTEM
       CHARACTER *20 CHTML
@@ -2147,7 +2147,6 @@ cdjwapr10
       cshape(1)=' Sphere'
       cshape(2)=' Rod'
       cshape(3)=' Annulus'
-      cshape(4)=' Rotor'
 c
 1450  FORMAT ( // , 2X , 118A1 )
 1460  FORMAT(15X,A6,6X,A4,8X,A5,7X,A5)
@@ -2254,8 +2253,6 @@ C--LOOP OVER THE PARAMETERS
             ll = 4
       else if (iflag .eq. 4) then
             ll = 4
-      else if (iflag .eq. 5) then
-            ll = 6
       endif
 c      write(123,'(a,b34)')'Uij', istore(m5+15)
       DO 1750 L=1,ll
@@ -2287,8 +2284,8 @@ c
 c---- save special shape
             if (jspbuf .lt. nspbuf) then
                   jspbuf = jspbuf + 1
-                  write(cspbuf(jspbuf)(:),'(i1,118a1)')
-     1            iflag, (linea(jr), jr=1,118)
+                  write(cspbuf(jspbuf)(:),'(i1,80a1)')
+     1            iflag, (linea(jr), jr=1,80)
             else
                    write(cmon,'(a)') 'Too many special shapes'
                    call xprvdu(ncvdu, 1,0)
@@ -2416,8 +2413,6 @@ c--- write special shapes to cif file
      3  '# or the radius of the annulus or sphere'/
      4  '# special_declination and azimuth define the direction'/
      5  '# of the line or normal to the annulus'/
-     5  '# special_xi gives the orientation of first maximum in rotor'/
-     5  '# special_bd gives barrier to rotation in the rotor'/
      6  '# Because CHECKCIF rejects occupancies greater than unity'/
      7  '# it will generate incorrect formulae, and derived values')
         WRITE( NCFPU1, 3001)
@@ -2427,16 +2422,12 @@ c--- write special shapes to cif file
      2 '_oxford_atom_site_special_size'/
      3 '_oxford_atom_site_special_declination'/
      4 '_oxford_atom_site_special_azimuth'/
-     4 '_oxford_atom_site_special_xi'/
-     4 '_oxford_atom_site_special_bd'/
      4 '_oxford_atom_site_special_shape')
 c
         do 3100 j = 1,jspbuf
         read(cspbuf(j), '(i1,a)') iflag,cmon(1)
         call xctrim(cmon(1), nchar)
-        if (iflag .eq. 2) write(cmon(1)(nchar+1:),'(a)') ' . . . .'
-        if (iflag .eq. 3) write(cmon(1)(nchar+1:),'(a)') ' . . '
-        if (iflag .eq. 4) write(cmon(1)(nchar+1:),'(a)') ' . . '
+        if (iflag .eq. 2) write(cmon(1)(nchar+1:),'(a)') ' . . '
         call xcrems(cmon(1), cmon(1), nchar)
         write(cmon(1)(nchar+1:),'(a8)') cshape(iflag-1)(:)
         call xcrems(cmon(1), cmon(1), nchar)

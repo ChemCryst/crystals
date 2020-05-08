@@ -142,11 +142,11 @@ C Revision 1.65  2010/08/06 07:10:10  djw
 C Further attempts to fix twinniNg for Centred cells and those with reflections from component 2
 C
 C Revision 1.64  2010/07/21 16:11:10  djw
-C Watch out for twinned centred cells. Originally Fc was obtained by doubling the contributio from the
-C unique operators. This works for the 'presences', but gives non-zero results for the absences.
-C These must be kept incase a twin element contribution overlaps it.
-C Treat the left-most element as the parent. However, his leads to problems if the key is,
-C for example, 21. because 2,1 are used to identify the twin scale factor (correclty) but
+C Watch out for twinned centred cells. Originally Fc was obtained by doubling the contributio from the 
+C unique operators. This works for the 'presences', but gives non-zero results for the absences.  
+C These must be kept incase a twin element contribution overlaps it.   
+C Treat the left-most element as the parent. However, his leads to problems if the key is, 
+C for example, 21. because 2,1 are used to identify the twin scale factor (correclty) but 
 C the twin matix (incorreclty).
 C
 C TO BE SORTED OUT.
@@ -433,14 +433,14 @@ C
 C
       EQUIVALENCE (IWORKA(1),JI)
 C----- V 810 INCLUDES THE SPECIAL SHAPES
-#if !defined(_HOL_)
+#if !defined(_HOL_) 
       DATA JFRN /'F', 'R', 'N', '1',
      1           'F', 'R', 'N', '2'/
 #else
       DATA JFRN /1HF, 1HR, 1HN, 1H1,
      1           1HF, 1HR, 1HN, 1H2/
 #endif
-      DATA IVERSN /811/
+     DATA IVERSN /811/
       integer sfls_punch_flag
 
 C----- ACCEPT -VE FLACK PARAMETER
@@ -509,7 +509,7 @@ C--SET THE VALUES FOR A S.F.L.S. CALCULATION
 C--CLEAR THE CORE
       CALL XRSL
 C--LOAD LIST 13  -  THE EXPERIMENTAL CONDITIONS LIST
-      IF (KHUNTR (13,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL13
+      IF (KHUNTR (13,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL13 
       IF ( IERFLG .LT. 0 ) GO TO 9900
 C--SET THE TWINNED/NON-TWINNED FLAG
       TWINNED = .FALSE.
@@ -521,10 +521,10 @@ C--FETCH THE POLARISATION CONSTANTS
       THETA1=STORE(L13DC+1)
       THETA2=STORE(L13DC+2)
 C--LOAD LIST 23  -  DEFINES CONDITIONS FOR S.F.L.S. CALCULATIONS
-      IF (KHUNTR (23,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL23
+      IF (KHUNTR (23,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL23 
       IF ( IERFLG .LT. 0 ) GO TO 9900
 C--SET THE ANOMALOUS DISPERSION FLAG
-C SET TO -1 FOR NO ANOMALOUS DISPERSION, ELSE 0 Replaced by ANOMAL
+C SET TO -1 FOR NO ANOMALOUS DISPERSION, ELSE 0 Replaced by ANOMAL      
       ANOMAL = .FALSE.
       IF ( ISTORE(L23M) .EQ. 0 ) ANOMAL = .TRUE.
 C--SET THE EXTINCTION FLAG
@@ -547,7 +547,7 @@ C----- SET THE ENANTIOPOLE REFINEMENT FLAG
       ENANTIO = .FALSE.
       IF ( ISTORE(L23M+6) .EQ. 0 ) ENANTIO = .TRUE.
       if(twinned .and. enantio) then
-      write(cmon,'(A/A)')
+      write(cmon,'(A/A)') 
      1 'You cannot refine Twin components and Flack directly',
      2 'You must Include inversion twinning in LIST 25 and LIST 12'
          CALL OUTCOL(9)
@@ -557,7 +557,7 @@ C----- SET THE ENANTIOPOLE REFINEMENT FLAG
       endif
 c
       if((twinned .and. partials).or.(twinned .and. update_part))then
-      write(cmon,'(A/A)')
+      write(cmon,'(A/A)') 
      1 'You cannot refine Twin components with Partial contributions',
      2 'This could include SQUEEZED data'
          CALL OUTCOL(9)
@@ -581,33 +581,33 @@ C--CLEAR THE CORE OUT AGAIN
 C----- SAVE SOME SPACE FOR THE U AXES
       IADDU = KCHLFL (4)
 C--LOAD LIST 33  -  THE CONDITIONS FOR THIS S.F.L.S. CALCULATION
-      IF (KHUNTR (33,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL33
-c Check if the flag normalise is used (m33cd+15).
+      IF (KHUNTR (33,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL33 
+c Check if the flag normalise is used (m33cd+15). 
 c Normalisation of the normal matrix for inversion is done automatically
 c see solve_helper.F90
       if(istore(M33CD+15)/=0) then
-        IF (ISSPRT .EQ. 0) then
-          WRITE ( NCWU , '(a)' )
+        IF (ISSPRT .EQ. 0) then 
+          WRITE ( NCWU , '(a)' ) 
      1     ' Normalise option is deprecated (option has been ignored).',
      2     ' Normal matrix is always nomalised for inversion'
         end if
-        WRITE ( CMON, '(a)')
+        WRITE ( CMON, '(a)') 
      1     ' Normalise option is deprecated (option has been ignored).',
      2     ' Normal matrix is always nomalised for inversion'
         CALL XPRVDU(NCVDU, 2,0)
         ISTORE(M33CD+15)=0
       end if
-
+      
 C Check the number of blocks, if more than one block
 C punch matrices cannot be written
       if(N12B>1 .and. ISTORE(M33CD+5)>0) then
-        IF (ISSPRT .EQ. 0) then
-          WRITE ( NCWU , '(a, I0, a)' )
-     1      ' More than one block, cannot punch matrices ',
+        IF (ISSPRT .EQ. 0) then 
+          WRITE ( NCWU , '(a, I0, a)' ) 
+     1      ' More than one block, cannot punch matrices ', 
      2      N12B, ' blocks'
         end if
-        WRITE ( CMON, '(a, I0, a)')
-     1    ' More than one block, cannot punch matrices ',
+        WRITE ( CMON, '(a, I0, a)') 
+     1    ' More than one block, cannot punch matrices ', 
      2    N12B, ' blocks'
         CALL XPRVDU(NCVDU, 1,0)
         ISTORE(M33CD+5)=0
@@ -617,9 +617,9 @@ C punch matrices cannot be written
       if(sfls_calcul_flag>0 .and. sfls_punch_flag<=0) then
         sfls_punch_flag=3 ! numpy is default
       end if
-
+      
       IF ( IERFLG .LT. 0 ) GO TO 9900
-!----
+!----      
 !      M33CD+5 is the address of the flag for punch
 !      It does not make sense when use for rall
 !      Plus rall(1) is initialised again later
@@ -632,10 +632,10 @@ c
       NF=-1
       REFPRINT = .FALSE.
 C----- READ DOWN SOME LISTS
-      IF (KHUNTR (01,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL01
-      IF (KHUNTR (02,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL02
-      IF (KHUNTR (05,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL05
-      IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL30
+      IF (KHUNTR (01,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL01 
+      IF (KHUNTR (02,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL02  
+      IF (KHUNTR (05,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL05  
+      IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL30 
       IF (IERFLG .LT. 0) GOTO 9900
 C
 C--CHECK THAT ALL THE TEMPERATURE FACTORS ARE REASONABLE
@@ -736,7 +736,7 @@ C-C-C-PRINT WARNING, GIVE AZIMUTH ARBITRARY VALUE
      4                  ' and should not be refined !',
      5            /,' (change in LIST 5 only in case of refinement !)')
 C-C-C-PERHAPS IT'S REASONABLE TO REMOVE THE AUTOMATICAL CHANGE
-!               STORE(M5+10) = 0.0 !todo: 2/4/20 this is the bit that's setting E to 0 if D=0
+                STORE(M5+10) = 0.0
               ELSE
 C-C-C-CHECK WHETHER AZIMUTH MIGHT BE GIVEN IN DEGREES
 C-C-C-(SUPPOSED IF ANGLES BIGGER THAN 5.0)
@@ -796,7 +796,7 @@ C -- INVALID TEMPERATURE FACTOR
       ENDIF
 
       IF (IUPDAT .GE. 0)  I = KSPINI( -1, STOLER) ! SET THE OCCUPANCIES
-      NUPDAT = 0
+      NUPDAT = 0  
       J =NFL
       I = KCHNFL(40)  ! SAVE SOME WORK SPACE
       M5 = L5
@@ -811,7 +811,7 @@ C -- INVALID TEMPERATURE FACTOR
       END DO
       NFL= J
 c
-      SCALE = STORE(L5O)
+      SCALE = STORE(L5O) 
       IF (SCALE .LE. 0.000001) THEN  ! CHECK THAT THE SCALE FACTOR GIVEN IS NOT ZERO
         IF (ISSPRT .EQ. 0) WRITE(NCWU,1420)
         WRITE ( CMON, 1420)
@@ -879,7 +879,7 @@ c
          ELSE                         ! THIS IS A TWINNED REFINEMENT
 
            IF ( EXTINCT ) THEN
-             WRITE(CMON,'(6X,A)')
+             WRITE(CMON,'(6X,A)') 
      1       'It is unwise to refine extinction for twinned data'
              CALL OUTCOL(9)
              CALL XPRVDU(NCVDU, 1,0)
@@ -895,7 +895,7 @@ cric11           CALL XIRTAC(4)     ! INITIALISE THE DETAILS FOR /FO/
            IF(.NOT. REFPRINT) NF = -1          ! SUPPRESS ELEMENT PRINTING
 
            IF ( IERFLG .LT. 0 ) GO TO 9900
-           IF (KHUNTR (25,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL25
+           IF (KHUNTR (25,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL25 
                                                           ! LOAD THE TWIN OPERATORS
 
            IF ( MD5ES .NE. N25 ) GO TO 9910 ! CHECK THAT THE NUMBER OF OPERATORS EQUALS THE NUMBER OF ELEMENTS
@@ -976,11 +976,11 @@ c---- Opening and initailising file for punching least square data
         IF (sfls_punch_flag>0) THEN
           call sfls_punch_reset_filename()
           call sfls_punch_init_design(sfls_punch_flag)
-          call sfls_punch_init_reflections( sfls_punch_flag,
-     1      (/ "Fobs    ", "s(Fobs) ", "Fcalc   ", "weight  ",
+          call sfls_punch_init_reflections( sfls_punch_flag, 
+     1      (/ "Fobs    ", "s(Fobs) ", "Fcalc   ", "weight  ", 
      2         "Scale   ", "sin(t)/l" /) )
         END IF
-
+        
         IF ( IERFLG .LT. 0 ) GO TO 9900
         ISO_ONLY = .TRUE. ! SET THE INITIAL DETAILS FOR LINKING LISTS 12 AND 5
         IF(KSET52(0,0).GE.0)THEN    ! LINK LIST 12 AND LIST 5
@@ -1003,13 +1003,13 @@ c---- Opening and initailising file for punching least square data
           ELSE                       ! WE ONLY NEED THE R.H.S. MATRIX=OLD (Old LHS will be loaded later)
             CALL XSET11(0,0,1)
             IF ( IERFLG .LT. 0 ) GO TO 9900
-            M11R=L11R+N11R-1
+            M11R=L11R+N11R-1  
             DO I=L11R,M11R  ! CLEAR THE R.H.S. OF THE OLD NUMBERS
               STR11(I)=0.
             END DO
           END IF
         END IF
-
+        
 C--CHECK THAT THERE IS ROOM TO OUTPUT THE MATRIX
         CALL XCL11(11)
 CC--INITIALISE THE MATRIX ACCUMULATION ROUTINES
@@ -1089,7 +1089,7 @@ c - there is always at least one twin element: the identity.
         IF(ISTAT2 .NE. 0) THEN   ! PRINT THE ALLOCATED CORE STORE IF NECESSARY
           CALL XPCM(1)
 C--CHECK IF WE SHOULD DUMP ANY OTHER GOODIES
-          IF(ISTAT2.GE.1) THEN
+          IF(ISTAT2.GE.1) THEN 
             IF (ISSPRT .EQ. 0) WRITE(NCWU,3750)IWORKA
 3750        FORMAT('IWK:',13I9)
             M2=L2+MD2*N2-1
@@ -1104,7 +1104,7 @@ C--CHECK IF WE SHOULD DUMP ANY OTHER GOODIES
             DO I=L5,M5,MD5
               L=I+2
               M=I+MD5-1
-              IF (ISSPRT .EQ. 0)
+              IF (ISSPRT .EQ. 0) 
      1      WRITE(NCWU,3900)ISTORE(I),ISTORE(I+1),(STORE(K),K=L,M)
 3900          FORMAT(1X,2I4,11F9.5)
             END DO
@@ -1157,11 +1157,11 @@ c        IF(TWINNED) CALL XCRD(4)  ! CHECK FOR A TWINNED REFINEMENT
         CALL XCRD(7)
         CALL XCRD(16)
 C--
-
+      
         IF(ND.GE.0) THEN   ! CHECK IF WE HAVE UPDATED THE A AND B PARTS
           CALL XCRD(8)
           CALL XCRD(9) ! UPDATE THEIR DETAILS
-          CALL XCRD(33)
+          CALL XCRD(33)   
           CALL XCRD(34)
         END IF
 
@@ -1183,21 +1183,21 @@ C DONT UPDATE LIST 30 FOR SFLS 7
        IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL30  ! CALC or REF
        IF ((SFLS_TYPE .EQ. SFLS_SCALE) .OR.                    ! scale requested
      1    (KHUNTR (11,0, IADDL,IADDR,IADDD, -1) .EQ. 0)) THEN  !LIST 11 is loaded
-c                                                       or we are probably doing REFINE,
+c                                                       or we are probably doing REFINE, 
 c                                                       update the RF record
 c
 cdjwmay07 L30GE (GENERAL) used to be set here, now
 c         L30GE is filled in ANALYSE and lets the user see the effect
 c         of changing the thresholds.
 C
-        STORE(L30RF+0 ) = R
+        STORE(L30RF+0 ) = R  
         STORE(L30RF+1 ) = RW
         if(.not. isnan(STORE(L11P+23))) then ! workaround. The origin of NaN here not found
           IF(STORE(L11P+23).GT.ZERO)
      1    STORE(L30RF+2 ) = STORE(L11P+23)
         end if
         STORE(L30RF+3) = RALL(13)                 ! SIGMA THRESHOLD FOR REFINEMENT
-        IF(STORE(L11P+16).GT.ZERO)
+        IF(STORE(L11P+16).GT.ZERO) 
      1  STORE(L30RF+4 ) = SQRT(AMINF / STORE(L11P+16))
 c djw Sep 2017. L30IX+6&7 are theta limits
 c For some reason I cannot follow, they are commented out of READ6
@@ -1207,7 +1207,7 @@ c Values set here are limits used in SFLS, and are 'true' values.
 c BEWARE that data isn't truncated by LIST 28
         THMAX = RTD*ASIN(WAVE*SMAX)
         IF (STORE(L30IX+7).LT. THMAX) THEN
-          STORE(L30IX+6) = RTD*ASIN(WAVE*SMIN)
+          STORE(L30IX+6) = RTD*ASIN(WAVE*SMIN)   
           STORE(L30IX+7) = THMAX
         ENDIF
         STORE(L30RF+8 ) = STORE(L11P+24)           ! NUMBER OF REFLECTIONS USED
@@ -1249,7 +1249,7 @@ c test decks.
             if (issprt .eq.0) write(ncwu,'(//)')
 C            CALL OUTCOL(6)
 C 'ratio' AS USED           (NOTE WE SHOULD CHECK THE DENOMINATIOS ARE NOT ZERO)
-            WRITE ( CMON, 6262)
+            WRITE ( CMON, 6262) 
      1       NINT(RALL(14)), MIN(99.99,100.*RALL(15)/RALL(16)),
      2       MIN(99.99,100.*SQRT(RALL(17)/RALL(18))),
      2       RALL(13)
@@ -1258,19 +1258,19 @@ C 'ratio' AS USED           (NOTE WE SHOULD CHECK THE DENOMINATIOS ARE NOT ZERO)
 C AT -10 SIGMA
             WRITE ( CMON, 6261)
      1       NINT(RALL(8)), MIN(99.99,(100.* RALL(9)/RALL(10))),
-     2       MIN(99.99,(100.*SQRT(RALL(11)/RALL(12)))),
+     2       MIN(99.99,(100.*SQRT(RALL(11)/RALL(12)))), 
      3       -10.0,'(Exclude very bad data)'
             CALL XPRVDU(NCVDU, 1, 0)
-            IF (ISSPRT .EQ. 0) WRITE(NCWU, 62611)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU, 62611) 
      1       NINT(RALL(8)), MIN(99.99,100.* RALL(9)/RALL(10)),
      2       MIN(99.99,100.*SQRT(RALL(11)/RALL(12))), -10.0
 C AT +2 SIGMA
-            WRITE ( CMON, 6261)
+            WRITE ( CMON, 6261)  
      1       NINT(RALL(2)), MIN(99.99,100.* RALL(3)/RALL(4)),
      2       MIN(99.99,100.*SQRT(RALL(5)/RALL(6))), RALL(1),
      3      '(a la SHELX)'
             CALL XPRVDU(NCVDU, 1, 0)
-            IF (ISSPRT .EQ. 0) WRITE(NCWU, 62611)
+            IF (ISSPRT .EQ. 0) WRITE(NCWU, 62611) 
      1       NINT(RALL(2)), MIN(99.99,100.* RALL(3)/RALL(4)),
      2           MIN(99.99,100.*SQRT(RALL(5)/RALL(6))), RALL(1)
 C            CALL OUTCOL(1)
@@ -1314,8 +1314,8 @@ cdjwsep09
         write(cmon,'(A)')
      1  ' Estimates of the overall scale by 5 methods'
         call xprvdu(NCVDU,1,0)
-        write(cmon,'(3(a,f7.3,3x))')
-     1  'SumFo/SumFc=', rscle,
+        write(cmon,'(3(a,f7.3,3x))') 
+     1  'SumFo/SumFc=', rscle, 
      1  'SumFoFc/SumFc^2=', sfofc/sfcfc,
      1  'SumwFoFc/SumwFc^2=', wsfofc/wsfcfc,
      2  'LS-scale=', scale,
@@ -1327,9 +1327,9 @@ cdjwsep09
         if(issprt.eq.0) write(ncwu, '(a)') trim(CMON(1)),trim(CMON(2))
         call outcol(1)
         delfofc = (foav-fcav*scale)
-cRIC13:        write(cmon,'(a,f8.3,4x,a,f8.3)')'<Fo>-<Fc> = ',
-        write(cmon,'(a,f6.3,4x,a,f8.2)')'<Fo>-<Fc> = ',
-     1  delfofc/scale,
+cRIC13:        write(cmon,'(a,f8.3,4x,a,f8.3)')'<Fo>-<Fc> = ', 
+        write(cmon,'(a,f6.3,4x,a,f8.2)')'<Fo>-<Fc> = ', 
+     1  delfofc/scale, 
      2  '100*(<Fo>-<Fc>)/<Fo> = ',100.*delfofc/foav
         call xprvdu(NCVDU,1,0)
         if(issprt.eq.0) write(ncwu, '(a)') trim(CMON(1))
@@ -1712,7 +1712,7 @@ C
 #endif
 
       ! Accumulation is done is double precision to avoid precision loss
-      ! single precision seems to introduce errors of about 1e-3 in Fc and
+      ! single precision seems to introduce errors of about 1e-3 in Fc and 
       ! other parameters
       double precision, dimension(:,:), allocatable :: designmatrix
       double precision, dimension(:,:,:), allocatable :: normalmatrix!, ref
@@ -1734,18 +1734,18 @@ C
         real :: fc !< Fcalc
         integer, dimension(3) :: hkl !< hkl indices
       end type
-      type(minfc_t), dimension(10) :: minfc_list !< List of the 10 most negative fcalc
+      type(minfc_t), dimension(10) :: minfc_list !< List of the 10 most negative fcalc 
       integer :: numnegative !< number of negative Fc set to zero
 
 c     Working out the number of threadings available
 c     Using at most 6 of them
 c     each thread has a chunk of reflections and a normal matrix
       tid=1
-!$    tid =  omp_get_max_threads()
+!$    tid =  omp_get_max_threads() 
 
 c     To be replaced by GET_ENVIRONMENT_VARIABLE f2003 feature
-c     getenv is a deprecated extension
-      CALL GETENV('OMP_NUM_THREADS', buffer)
+c     getenv is a deprecated extension      
+      CALL GETENV('OMP_NUM_THREADS', buffer) 
       if(buffer/='    ') then
           read(buffer, '(I4)') i
           if(i>0) then
@@ -1774,7 +1774,7 @@ C----- INITIALISE THE SORT BUFFER
       NSORT = 30
       CALL SRTDWN(LSORT,MDSORT,NSORT, JSORT, LTEMPR, XVALUR,0)
       JSORT = 5
-
+      
       ! Check for the huge flag
       call xfal23
       if(ISTORE(M33CD)==-1) then
@@ -1792,7 +1792,7 @@ C----- INITIALISE THE SORT BUFFER
       if(sfls_calcul_flag>0 .and. sfls_punch_flag<=0) then
         sfls_punch_flag=3 ! numpy is default in this case
       end if
-
+      
 C----- SET PRINT COUNTER
       IENPRT = -1
       ILEVPR = 0
@@ -1868,7 +1868,7 @@ cdjwoct2010 POL2 had found itself outside of the IF clause
       END IF
 
 C--CHECK IF A PRINT IS REQUIRED
-      IF(REFPRINT) THEN
+      IF(REFPRINT) THEN 
         IF (ISSPRT .EQ. 0)  WRITE(NCWU,1750)
 1750  FORMAT(/7X,'H',5X,'K',5X,'L',6X,'/FO/',5X,'/FC/',4X,'Phase',5X,
      2 'Delta    SQRT(W)*Delta',2X,'/FC''/',2X,'/FC''''/',2X,'D/F/ **2',
@@ -1881,7 +1881,7 @@ C--CHECK IF A PRINT IS REQUIRED
 #if defined(CRY_OSLINUX)
         print *, 'Size of normal matrices: ', (JP-JO+1)*(JP-JO+1)*tid*
      1    sizeof(1.0d0)/1024.0**2, 'MB'
-#endif
+#endif       
         allocate(normalmatrix(JP-JO+1,JP-JO+1, tid))
         !allocate(ref(JP-JO+1,JP-JO+1))
         normalmatrix=0.0d0
@@ -1889,7 +1889,7 @@ C--CHECK IF A PRINT IS REQUIRED
 #if defined(CRY_OSLINUX)
         print *, 'Size of normal matrices: ', (JP-JO+1)*(JP-JO+1)*tid*
      1    sizeof(1.0)/1024.0**2, 'MB'
-#endif
+#endif       
         allocate(normalmatrix_sp(JP-JO+1,JP-JO+1, tid))
         !allocate(ref(JP-JO+1,JP-JO+1))
         normalmatrix_sp=0.0
@@ -1903,22 +1903,22 @@ C--CHECK IF A PRINT IS REQUIRED
         allocate(righthandside(n11r))
         righthandside=0.0d0
 #if defined(CRY_OSLINUX)
-        print *, 'Size of design matrix block: ',
+        print *, 'Size of design matrix block: ', 
      1    sizeof(designmatrix)/1024.0, 'kB'
-        print *, 'Size of the right hand size: ',
+        print *, 'Size of the right hand size: ', 
      1    sizeof(righthandside)/1024.0, 'kB'
-#endif
+#endif       
       else
         allocate(designmatrix_sp(JP-JO+1,designchunk*tid))
         designmatrix_sp=0.0
         allocate(righthandside_sp(n11r))
         righthandside_sp=0.0
 #if defined(CRY_OSLINUX)
-        print *, 'Size of design matrix block: ',
+        print *, 'Size of design matrix block: ', 
      1    sizeof(designmatrix_sp)/1024.0, 'kB'
-        print *, 'Size of the right hand size: ',
+        print *, 'Size of the right hand size: ', 
      1    sizeof(righthandside_sp)/1024.0, 'kB'
-#endif
+#endif       
       end if
       allocate(hkllist(3,designchunk*tid))
       hkllist=0
@@ -1941,7 +1941,7 @@ c      write(123,'(/)')
       do ipp=1, 3
         minfc_list%hkl(ipp)=0
       end do
-
+ 
       DO WHILE (.TRUE.)  ! START OF THE LOOP OVER REFLECTIONS
 
         IF( SFLS_TYPE .EQ. SFLS_CALC ) THEN
@@ -1987,9 +1987,9 @@ C--CLEAR THE PARTIAL CONTRIBUTION FLAGS FOR THIS REFLECTION
 C--CHECK IF THE PARTIAL CONTRIBUTIONS ARE TO BE ADDED IN
         IF(PARTIALS) THEN
 C may 2015
-C       retrieve A'&B' into ACT and BCT slots.
+C       retrieve A'&B' into ACT and BCT slots. 
 C       Both real and imaginary parts are required from DSC Version 124
-C       If anomalous contributions were not computed and stored,
+C       If anomalous contributions were not computed and stored, 
 C       imaginary parts, m6+33/34, should be zero
           ACT=STORE(M6+7) + STORE(M6+33)
           BCT=STORE(M6+8) + STORE(M6+34)
@@ -2000,12 +2000,12 @@ C       imaginary parts, m6+33/34, should be zero
         FO=STORE(M6+3)  ! SET UP /FO/ ETC. FOR THIS REFLECTION
         W=STORE(M6+4)
         SCALEW=SCALEG*W
-
+ 
         NM=0  ! INITIALISE THE HOLDING STACK, DUMP ENTRIES
         NN=0
         JO=NO  ! Point JO back to beginning of PD list.
         JP=NP
-
+      
 C       CHECK IF THIS IS TWINNED CALCULATION
         IF(.NOT.TWINNED)THEN   ! NOT TWINNED
           NL=0
@@ -2013,19 +2013,19 @@ C       CHECK IF THIS IS TWINNED CALCULATION
           JREF_STACK_PTR=ISTORE(JREF_STACK_START)
           CALL XAB2FC    ! DERIVE THE TOTALS AGAINST /FC/ FROM THOSE W.R.T. A AND B
           CALL XACRT(4)  ! ACCUMULATE THE /FO/ TOTALS
-        ELSE             ! THIS IS A TWINNED CALCULATION
-C Start of Twinned
+        ELSE             ! THIS IS A TWINNED CALCULATION  
+C Start of Twinned 
           PH=STORE(M6)   ! PRESERVE THE NOMINAL INDICES
           PK=STORE(M6+1)
           PL=STORE(M6+2)
           NJ=NINT(STORE(M6+11))
           IF (NJ .EQ. 0) NJ = 12 ! IF THERE IS NO ELEMENT KEY, SET IT TO MOROHEDRAL TWINNING
           NK=NJ  ! FIND THE ELEMENT FOR WHICH THE INDICES ARE GIVEN  (LEFT-MOST VALUE)
-          DO WHILE ( NK .GT. 0 )
+          DO WHILE ( NK .GT. 0 ) 
             NL=NK
             NK=NK/10
             LJX=NL-NK*10
-            IF ( LJX .LE. 0 ) GO TO 19910    ! CHECK THAT THIS IS A
+            IF ( LJX .LE. 0 ) GO TO 19910    ! CHECK THAT THIS IS A 
             IF ( LJX .GT. N25 ) GO TO 19910  ! VALID ELEMENT NUMBER
           END DO
 C CHECK IF 'NL' HOLDS THE ELEMENT NUMBER OF THE GIVEN INDICES.
@@ -2039,15 +2039,15 @@ c          SL=STORE(M25I+6)*PH+STORE(M25I+7)*PK+STORE(M25I+8)*PL
            sl=pl
 c      write(ncawu,'(i4,6x,3f4.0, 6x, 3f4.0)') nl, ph, pk, pl, sh,sk,sl
 c  For centred cells, CRYSTALS used the optimisation page 45 Rollett which
-c  adds together the contributions to A from atoms at x and x+1/2
+c  adds together the contributions to A from atoms at x and x+1/2 
 c  (ie multiplies A by 2)
-c  For a systematic absence it should subtract the contribution from x+1/2,
+c  For a systematic absence it should subtract the contribution from x+1/2, 
 c  ie A=0 etc.
 c  As originally written, the program gets FC > 0 for absences.
-c  This should not matter for untwinned crystals, since the absences should
+c  This should not matter for untwinned crystals, since the absences should 
 c  have been removed.
-c  For twins, the second component may overlap with a systematic absence
-c  from the first component so we must check for this an ensure the
+c  For twins, the second component may overlap with a systematic absence 
+c  from the first component so we must check for this an ensure the 
 c  contribution from the first is zero.
 c
           NK=NJ  ! RESET THE FLAGS FOR THIS GROUP OF TWIN ELEMENTS, e.g. 1234
@@ -2072,7 +2072,7 @@ c
             store(m6+2) = sl
            endif
 c
-c  save the multiplier
+c  save the multiplier 
             g2sav = g2
 c  check if the current reflection is a centring absence
             IF(N2P .gt. 1)then
@@ -2096,7 +2096,7 @@ c     1 store(m6+1),store(m6+2), g2, store(m6+3),a,k
 c
             CALL XSFLSX  ! ENTER THE S.F.L.S MAIN LOOP. G2 may be zero
             g2 = g2sav
-          END DO  ! END OF THIS TWINNED REFLECTION
+          END DO  ! END OF THIS TWINNED REFLECTION  
 c
 c
 c       save the current generated indices in case we need them for error
@@ -2113,7 +2113,7 @@ c
           FCEXT=0.  !  WIND UP AND CALCULATE THE TOTAL VA
           JREF_STACK_PTR=JREF_STACK_START  ! CALCULATE /FC/ AND ITS DERIVATIVES FOR EACH ELEMENT
           NQ=NM
-
+          
           DO WHILE ( NQ .GT. 0 )  ! ACCESS THE NEXT ELEMENT IN THE STACK
             JREF_STACK_PTR=ISTORE(JREF_STACK_PTR)
 C--COMPUTE THE TOTALS AGAINST /FC/ FOR THIS ELEMENT
@@ -2121,7 +2121,7 @@ C--COMPUTE THE TOTALS AGAINST /FC/ FOR THIS ELEMENT
             BCT=0.
             JO=ISTORE(JREF_STACK_PTR+1)  ! SET THE POINTER FOR THE DERIVATIVES WITH RESPECT TO /FC/
             JP=ISTORE(JREF_STACK_PTR+2)
-
+  
             CALL XAB2FC   ! CONVERT A AND B PARTS TO FC
 
             NI=ISTORE(JREF_STACK_PTR+8) ! ACCUMULATE /FCT/
@@ -2164,7 +2164,7 @@ c Indices, Fc, phase, Fc', integer(twin numnber?)
                 minfc_list(2:size(minfc_list))=
      1            minfc_list(1:size(minfc_list)-1)
                 minfc_list(1)%fc=fcext
-                minfc_list(1)%hkl=(/idjwh,idjwk,idjwl/)
+                minfc_list(1)%hkl=(/idjwh,idjwk,idjwl/)              
               else
                 minfc_list(ipp+2:size(minfc_list))=
      1            minfc_list(ipp+1:size(minfc_list)-1)
@@ -2174,7 +2174,7 @@ c Indices, Fc, phase, Fc', integer(twin numnber?)
             end if
             fcext=0.0
           end if
-
+            
           FC=SQRT(FCEXT)  ! COMPUTE THE OVERALL /FCT/ VALUE
           JO=NO
           JP=NP
@@ -2186,7 +2186,7 @@ C           SAVE THE TOTAL OVER ALL ELEMENTS
             STORE(M6+6)=0.
           ELSE
 c           SAVE THE VALUE FOR THE MAIN ELEMENT
-            JREF_STACK_PTR=ISTORE(JREF_STACK_START)
+            JREF_STACK_PTR=ISTORE(JREF_STACK_START) 
             LJV=ISTORE(JREF_STACK_PTR+8)+M5ES
             if(fc>0.0) then ! Value can be exactly zero due to negative element scale
               STORE(M6+3)=STORE(M6+10)
@@ -2197,7 +2197,7 @@ c           SAVE THE VALUE FOR THE MAIN ELEMENT
             STORE(M6+5)=STORE(JREF_STACK_PTR+6)*STORE(LJV)
             STORE(M6+6)=STORE(JREF_STACK_PTR+7)
           END IF
-          FO=STORE(M6+10)
+          FO=STORE(M6+10)      
           STORE(M6+5)=STORE(M6+5)*SCALES
 c          P=0. !cdjwjul2010 why set P to zero? Should it be M6+6?
           p=store(m6+6)
@@ -2206,7 +2206,7 @@ c          P=0. !cdjwjul2010 why set P to zero? Should it be M6+6?
             DO LJV=JO,JP  ! CALCULATE THE NECESSARY P.D.'S WITH RESPECT TO /FCT/.
               STORE(LJV)=0.
             END DO
-            JREF_STACK_PTR=JREF_STACK_START
+            JREF_STACK_PTR=JREF_STACK_START  
             DO LJU=1,NM ! PASS AMONGST THE VARIOUS CONTRIBUTORS
               JREF_STACK_PTR=ISTORE(JREF_STACK_PTR) ! FIND THE ADDRESS OF THIS CONTRIBUTOR
               LJV=ISTORE(JREF_STACK_PTR+8)+L5ES
@@ -2216,7 +2216,7 @@ c          P=0. !cdjwjul2010 why set P to zero? Should it be M6+6?
                 A=0.0
               end if
               LJS=ISTORE(JREF_STACK_PTR+1)
-              N = JP - JO
+              N = JP - JO 
               DO J = 0, N  ! ADD IN THE DERIVATIVES
                 STORE(JO+J) = STORE(JO+J) + STORE(LJS+J)*A
               END DO
@@ -2236,13 +2236,13 @@ c             FETCH THE INFORMATION FOR THE NEXT ELEMENT SCALE FACTOR
                 A=0.0
               end if
               NI=NI-1
-              CALL XADDPD ( A, LJX, JO, JQ, JR)
+              CALL XADDPD ( A, LJX, JO, JQ, JR) 
             END DO
           END IF
         END IF  ! end of twinned calculations
 C end of twinned
-c
-C--FINISH OFF THIS REFLECTION
+c                
+C--FINISH OFF THIS REFLECTION  
 C
 C--CHECK IF WE SHOULD INCLUDE EXTINCTION
         IF(EXTINCT)THEN ! WE SHOULD INCLUDE EXTINCTION
@@ -2271,13 +2271,13 @@ C--CHECK IF WE SHOULD INCLUDE EXTINCTION
         ENDIF
 C
 c
-CJan2017    Storage of A&B parts moved into XAB2FC
+CJan2017    Storage of A&B parts moved into XAB2FC 
 C           so that real and imaginary parts are available
 C
 C COMPUTE BIS AND PIECES FOR THE WEIGHTED R-FACTOR, wR2
 C      write(123,*)Fo, store(m6+3), fcexs, store(m6+5), w
 C
-        IF(NV.GE.0)THEN
+        IF(NV.GE.0)THEN 
 C Refining on F**2
           WFO=abs(FO)*FO*W               !  w*Fo^2
           DF=ABS(FO)*FO-FCEXS*FCEXS    !  (Fo^2-Fc^2) Abs in case Fo is -ve, to give Fo^2 -ve
@@ -2286,13 +2286,13 @@ C Refining on F**2
         ELSE
 C Refining on F
 c         note abs to denominator.  This is for compatibility, but is probably wrong.
-          WFO=ABS(FO)*W
+          WFO=ABS(FO)*W    
           DF=FO-FCEXS
           WDF=W*DF
           S=SCALEK
         END IF
         AMINF=AMINF+WDF*WDF  ! COMPUTE THE MINIMISATION FUNCTION
-c
+c        
         ik = KALLOW(IALLOW)
         IF ((SFLS_TYPE.NE.SFLS_CALC) .OR.(ik.GE.0)) THEN
 C If #CALC, then L28 was adjusted earlier. Call KALLOW again to get normal R
@@ -2304,7 +2304,7 @@ C         ADD IN THE COMPUTED VALUES OF /FC/ ETC., TO THE OVERALL TOTALS
           FCT=FCT+FCEXS
           DFT=DFT+ABS(ABS(FO) - FCEXS)
 C COMPUTE THE TERMS FOR THE WEIGHTED R-VALUE
-          WDFT=WDFT+WDF*WDF
+          WDFT=WDFT+WDF*WDF  
           RW=RW+WFO*WFO
 c Terms for various scale factors
           nrefused=nrefused+1
@@ -2326,7 +2326,7 @@ C----  H,K,L,FO,FC,/WDELTA/,FO/FC
             STORE(LTEMPR+4) = FCEXT
             STORE(LTEMPR+5) = RDJW
             STORE(LTEMPR+6) = MIN(99., UJ / MAX(FCEXT , ZERO))
-            CALL SRTDWN(LSORT,MDSORT,NSORT, JSORT, LTEMPR,
+            CALL SRTDWN(LSORT,MDSORT,NSORT, JSORT, LTEMPR, 
      1              XVALUR, 0)
             !$OMP END CRITICAL
           ENDIF
@@ -2337,15 +2337,15 @@ C
           VJ=WDF*S
           WJ=DF*S
           !A=SQRT(ACR*ACR+BCR*BCR)
-          A=SQRT( STORE(JREF_STACK_PTR+13)**2 +
+          A=SQRT( STORE(JREF_STACK_PTR+13)**2 + 
      1        STORE(JREF_STACK_PTR+15)**2 )
           !S=SQRT(ACI*ACI+BCI*BCI)
-          S=SQRT( STORE(JREF_STACK_PTR+14)**2 +
+          S=SQRT( STORE(JREF_STACK_PTR+14)**2 + 
      1        STORE(JREF_STACK_PTR+16)**2 )
-          T=4.*( STORE(JREF_STACK_PTR+15)*STORE(JREF_STACK_PTR+16) +
-     1        STORE(JREF_STACK_PTR+13)*STORE(JREF_STACK_PTR+14) )
+          T=4.*( STORE(JREF_STACK_PTR+15)*STORE(JREF_STACK_PTR+16) + 
+     1        STORE(JREF_STACK_PTR+13)*STORE(JREF_STACK_PTR+14) )          
           C=T*200.0/(2.*FC*FC-T)
-          IF (ISSPRT .EQ. 0) THEN
+          IF (ISSPRT .EQ. 0) THEN 
 c   H, K, L, FO
 c   FC, Phase, Delta, SQRT(W)*Delta, FC', FC'', D/F/**2, T.B.R.(%), SINTH/L
             WRITE(NCWU,4600)STORE(M6),STORE(M6+1),STORE(M6+2),UJ,
@@ -2361,7 +2361,7 @@ c
 4651          FORMAT(10X,' Bad agreements ',/
      1      /1X,'   h    k    l      Fo        Fc '/)
             ELSE IF (IBADR .LT. 25) THEN
-              IF (ISSPRT .EQ. 0)
+              IF (ISSPRT .EQ. 0) 
      1          WRITE(NCWU,4652)STORE(M6),STORE(M6+1),
      2                          STORE(M6+2),UJ,FCEXT
 4652            FORMAT(1X,3F5.0,2F9.2)
@@ -2377,7 +2377,7 @@ c
 
         IF(SFLS_TYPE .NE. SFLS_REFINE)THEN    ! NO REFINEMENT
           IF(SFLS_TYPE .EQ. SFLS_SCALE)THEN ! CHECK IF WE ARE REFINING ONLY THE SCALE FACTOR
-
+ 
 C--COMPUTE THE TOTALS FOR REFINEMENT OF THE SCALE FACTOR ONLY
             A=W*SCALES*FCEXT
             IF(NV.GE.0) A=A*SCALES*FCEXT  ! IF WE ARE REFINING AGAINST /FO/ **2
@@ -2403,7 +2403,7 @@ C---- TO REFINE SCALE OF F**2 (RATHER THAN F), SQUARE AND
 C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
 
           IF(NV .GE. 0) then
-            if(fcexs==0.0) then
+            if(fcexs==0.0) then 
               A=0.0
             else
               A = A * FCEXT * SCALES / ( 2. * FCEXS )
@@ -2411,19 +2411,19 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
           end if
           LJX=0
           M12=L12O
-          CALL XADDPD ( A, 0, JO, JQ, JR)
+          CALL XADDPD ( A, 0, JO, JQ, JR) 
 
           A=W*FCEXS*TC/EXT3       ! OVERALL TEMPERATURE FACTORS NEXT
-          CALL XADDPD ( A, 1, JO, JQ, JR)
-          CALL XADDPD ( A, 2, JO, JQ, JR)
-
+          CALL XADDPD ( A, 1, JO, JQ, JR) 
+          CALL XADDPD ( A, 2, JO, JQ, JR) 
+ 
           CALL XADDPD ( ACF, 3, JO, JQ, JR)   ! THE POLARITY PARAMETER
 
           CALL XADDPD ( ACE, 4, JO, JQ, JR)  ! THE ENANTIOPOLE PARAMETER - HOWARD FLACK ACTA 1983,A39,876
 
           A=-0.5*SCALEW*FC*FC*FC*DELTA/EXT2   ! NOW THE EXTINCTION PARAMETER DERIVED BY LARSON
-          CALL XADDPD ( A, 5, JO, JQ, JR)
-
+          CALL XADDPD ( A, 5, JO, JQ, JR) 
+ 
           IF(LAYER.GE.0)THEN                 ! CHECK IF LAYER SCALES ARE BEING USED
             A=W*SCALEO*SCALEB*FCEXT/EXT3
             M12=L12LS
@@ -2433,7 +2433,7 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
           IF(IBATCH.GE.0) THEN           ! CHECK IF BATCH SCALES ARE BEING USED
             A=W*SCALEO*SCALEL*FCEXT/EXT3
             M12=L12BS
-            CALL XADDPD ( A, IBATCH, JO, JQ, JR)  ! THE BATCH SCALES
+            CALL XADDPD ( A, IBATCH, JO, JQ, JR)  ! THE BATCH SCALES  
           END IF
 
           IF ( ( NV.GE.0 ) .OR. EXTINCT ) THEN  ! Either FO^2, or extinction correction required.
@@ -2453,14 +2453,14 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
             righthandside=righthandside+STORE(JO:JP)*WDF   ! ACCUMULATE THE RIGHT HAND SIDES
           else
             righthandside_sp=righthandside_sp+STORE(JO:JP)*WDF   ! ACCUMULATE THE RIGHT HAND SIDES
-          end if
-
+          end if 
+          
           if(sfls_punch_flag>0) then
               call sfls_punch_addtowdf(wdf, sfls_punch_flag)
           end if
 
           IF(NEWLHS)THEN   ! ACCUMULATE THE LEFT HAND SIDES
-
+ 
              ! Store a chunk of the design matrix
              ! When the chunk is full, accumulate the normal matrix
              designindex=designindex+1
@@ -2468,17 +2468,17 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
                  ! Output design matrix to disk
                  if(sfls_punch_flag>0) then
                      if(sfls_sp_normalm<1) then
-                         call sfls_punch_addtodesign(designmatrix,
+                         call sfls_punch_addtodesign(designmatrix, 
      1                       hkllist, sfls_punch_flag)
                      else
                          call sfls_punch_addtodesign(
-     1                       designmatrix_sp,
+     1                       designmatrix_sp, 
      2                       hkllist, sfls_punch_flag)
                      end if
                  end if
-
+              
                  ! accumulate normal matrix
-!$OMP PARALLEL default(none)
+!$OMP PARALLEL default(none) 
 !$OMP& shared(designmatrix, JP, JO, normalmatrix, tid, sfls_sp_normalm)
 !$OMP& shared(designmatrix_sp, normalmatrix_sp)
 
@@ -2487,12 +2487,12 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
                      ! passing first element as array to avoid temporary copy
                      if(sfls_sp_normalm<1) then
                        call DSYRK('L','N',JP-JO+1,designchunk,
-     1                   1.0d0,
+     1                   1.0d0, 
      2                   designmatrix(1,designchunk*(i-1)+1),
      3                   JP-JO+1,1.0d0,normalmatrix(1,1,i),JP-JO+1)
                      else
                        call SSYRK('L','N',JP-JO+1,designchunk,
-     1                   1.0,
+     1                   1.0, 
      2                   designmatrix_sp(1,designchunk*(i-1)+1),
      3                   JP-JO+1,1.0,
      4                   normalmatrix_sp(1,1,i),JP-JO+1)
@@ -2520,14 +2520,14 @@ C      TAKE OUT THE CORRECTION FACTOR TO BE APPLIED LATER, NEAR LABEL 5300
              if(sfls_punch_flag>0) then
                  hkllist(:, designindex)=nint(STORE(M6:M6+2))
              end if
-
+             
 c                  CALL XADLHS( STORE(JO), JP-JO+1, STR11(L11), N11,
 c     1                 STORE(L12B), N12B*MD12B, MD12B )
           end if
         END IF
 
         CALL XSLR(1)  ! STORE THE LAST REFLECTION ON THE DISC
-        CALL XACRT(6)  ! ACCUMULATE TOTALS FOR /FC/
+        CALL XACRT(6)  ! ACCUMULATE TOTALS FOR /FC/ 
         CALL XACRT(7)  ! AND THE PHASE
         CALL XACRT(16)
 C
@@ -2548,27 +2548,27 @@ C
            RALL(3) = RALL(3) + ABS(ABS(FO)-FCEXS) ! sum Abs(Fo-Fc)
            RALL(4) = RALL(4) + ABS(FO)            ! sum Fo
            RALL(5) = RALL(5) + WDF*WDF            ! sum wdelta sq
-           RALL(6) = RALL(6) + WFO*WFO                !
+           RALL(6) = RALL(6) + WFO*WFO                ! 
           ENDIF
 ! (user-sigma sigma)
           IF (K.EQ.0) THEN                           ! use all LIST28 items
-c          IF (STORE(M6+20) .GE. RALL(13)) THEN      ! user-sigma
+c          IF (STORE(M6+20) .GE. RALL(13)) THEN      ! user-sigma 
             RALL(14) = RALL(14) + 1.                 ! refs used
             RALL(15) = RALL(15) + ABS(ABS(FO)-FCEXS) ! sum Abs(Fo-Fc)
             RALL(16) = RALL(16) + ABS(FO)            ! sum Fo
             RALL(17) = RALL(17) + WDF*WDF            ! sum wdelta sq
-            RALL(18) = RALL(18) + WFO*WFO                !
+            RALL(18) = RALL(18) + WFO*WFO                ! 
           ENDIF
          ENDIF
 
          if(sfls_punch_flag>0 .and. SFLS_TYPE==SFLS_REFINE) then
              !hkl=nint(STORE(M6:M6+2))
-             call sfls_punch_addtoreflections(nint(STORE(M6:M6+2)),
-     1         (/ Fo, STORE(M6+12), FCEXS, w, scale, st/),
+             call sfls_punch_addtoreflections(nint(STORE(M6:M6+2)), 
+     1         (/ Fo, STORE(M6+12), FCEXS, w, scale, st/), 
      2         sfls_punch_flag)
          end if
-        ENDIF
-
+        ENDIF          
+          
       END DO  ! END OF REFLECTION LOOP
 
       if(numnegative>0) then
@@ -2579,15 +2579,15 @@ c          IF (STORE(M6+20) .GE. RALL(13)) THEN      ! user-sigma
         CALL XPRVDU(NCVDU, 1,0)
         WRITE(CMON, '(A,I0,A)')
      1    '{E Below the ',size(minfc_list),' most negative reflections'
-        CALL XPRVDU(NCVDU, 1,0)
+        CALL XPRVDU(NCVDU, 1,0)   
         do ipp=1, size(minfc_list)
           if(.not. all(minfc_list(ipp)%hkl==0)) then
-            WRITE(CMON, '(A,3I5,2X,1PG12.2)') '{E ',
+            WRITE(CMON, '(A,3I5,2X,1PG12.2)') '{E ', 
      1        minfc_list(ipp)%hkl, minfc_list(ipp)%fc
-            CALL XPRVDU(NCVDU, 1,0)
+            CALL XPRVDU(NCVDU, 1,0) 
           end if
         end do
-
+        
         IF (ISSPRT .EQ. 0) then
           WRITE(NCWU, '(A,I0,A)')
      1      'Error: an element scale is negative causing ',numnegative,
@@ -2596,21 +2596,21 @@ c          IF (STORE(M6+20) .GE. RALL(13)) THEN      ! user-sigma
      1      'Below the ',size(minfc_list),' most negative reflections'
           do ipp=1, size(minfc_list)
             if(.not. all(minfc_list(ipp)%hkl==0)) then
-              WRITE(NCWU, '(3I5,2X,1PG12.2)')
+              WRITE(NCWU, '(3I5,2X,1PG12.2)') 
      1          minfc_list(ipp)%hkl, minfc_list(ipp)%fc
             end if
           end do
         end if
       end if
-
+        
       if(sfls_punch_flag>0 .and. SFLS_TYPE==SFLS_REFINE) then
           ! close reflections file
-          call sfls_punch_addtoreflections(nint(STORE(M6:M6+2)),
-     1      (/ Fo, STORE(M6+12), FCEXS, w, scale, st/),
+          call sfls_punch_addtoreflections(nint(STORE(M6:M6+2)), 
+     1      (/ Fo, STORE(M6+12), FCEXS, w, scale, st/), 
      2      sfls_punch_flag, .true.)
       end if
 
-
+      
       ! put back right hand side into original storage
       if(sfls_sp_normalm<1) then
         str11(l11r:l11R+n11r-1)=righthandside
@@ -2626,34 +2626,34 @@ c          IF (STORE(M6+20) .GE. RALL(13)) THEN      ! user-sigma
              if(designindex>0) then
                ! Output design matrix to disk
                if(sfls_punch_flag>0) then
-                  if(sfls_sp_normalm<1) then
+                  if(sfls_sp_normalm<1) then                  
                        call sfls_punch_addtodesign(
-     1                     designmatrix(:,1:designindex),
-     2                     hkllist(:,1:designindex),
+     1                     designmatrix(:,1:designindex), 
+     2                     hkllist(:,1:designindex), 
      3                     sfls_punch_flag)
                   else
                        call sfls_punch_addtodesign(
-     1                     designmatrix_sp(:,1:designindex),
-     2                     hkllist(:,1:designindex),
+     1                     designmatrix_sp(:,1:designindex), 
+     2                     hkllist(:,1:designindex), 
      3                     sfls_punch_flag)
                   end if
                end if
 
                ! Accumulate the normal matrix
-!$OMP PARALLEL default(none)
-!$OMP& shared(designmatrix, JP, JO, normalmatrix, tid, sfls_sp_normalm)
+!$OMP PARALLEL default(none) 
+!$OMP& shared(designmatrix, JP, JO, normalmatrix, tid, sfls_sp_normalm) 
 !$OMP& shared(designmatrix_sp, normalmatrix_sp)
 
 !$OMP DO schedule(static)
             do i=1, tid
                  if(sfls_sp_normalm<1) then
                      call DSYRK('L','N',JP-JO+1,designchunk,
-     1                   1.0d0,
+     1                   1.0d0, 
      2                   designmatrix(1,designchunk*(i-1)+1),
      3                   JP-JO+1,1.0d0,normalmatrix(1,1,i),JP-JO+1)
                  else
                      call SSYRK('L','N',JP-JO+1,designchunk,
-     1                   1.0,
+     1                   1.0, 
      2                   designmatrix_sp(1,designchunk*(i-1)+1),
      3                   JP-JO+1,1.0,normalmatrix_sp(1,1,i),JP-JO+1)
                  end if
@@ -2679,14 +2679,14 @@ c Only vectorized with gfortran 4.8 not 4.4
                       end do
                  end do
              end if
-
-             ! Pack normal matrix back into original crystals storage
+             
+             ! Pack normal matrix back into original crystals storage     
              IBL = 1                  ! Parameter # at start of current block
              IBS = L11                ! Packed storage address.
 
-             DO MB = 1, N12B*MD12B, MD12B
+             DO MB = 1, N12B*MD12B, MD12B      
                MNR  = ISTORE(L12B+MB)  ! Dimension of this block
-               MSTR = (MNR*(MNR+1))/2 ! Storage space for this block
+               MSTR = (MNR*(MNR+1))/2 ! Storage space for this block    
                do i=1,MNR
                  j = ((i-1)*(2*(MNR)-i+2))/2
                  k = j + MNR - i
@@ -2717,9 +2717,9 @@ c          str11(L11+3:L11+4) = norm(3:4, 3)
 c          j = 2; k = 2
 c          str11(L11+5:L11+5) = norm(4:4, 4)
 c Looks OK.
-
+                
                end do
-
+    
                IBS = IBS + MSTR       ! Increment the storage pointer
                IBL = IBL + MNR        ! Increment the derivative pointer
              END DO
@@ -2727,7 +2727,7 @@ c Looks OK.
           END IF
 
       END IF
-
+      
 
 #ifdef CRY_OSLINUX
       call date_and_time(VALUES=measuredtime)
@@ -2738,13 +2738,13 @@ c Looks OK.
         print *, 'Single precision accumulation'
       end if
 #endif
-
+      
       if(sfls_sp_normalm<1) then
         deallocate(designmatrix)
-        deallocate(normalmatrix)
+        deallocate(normalmatrix)      
       else
         deallocate(designmatrix_sp)
-        deallocate(normalmatrix_sp)
+        deallocate(normalmatrix_sp)      
       end if
 C--END OF THE REFLECTIONS  -  PRINT THE R-VALUES ETC.
 
@@ -2773,7 +2773,7 @@ C----- PATCH TO AVOID INCIPIENT DIVISION BY ZERO
       ENDIF
 C      write(123,*)'sfofo=',sfofo,' sfcfc=',sfcfc, ' nrefused=',nrefused
       IF(SFLS_TYPE .EQ. SFLS_SCALE) THEN  ! WE ARE TO CALCULATE A NEW SCALE FACTOR HERE
-        BSCR=0.
+        BSCR=0.               
         IF (SFC.GT.ZEROSQ) BSCR=SFO/SFC
 C6100    CONTINUE. Scale factor shift is wrt F**2, change is necessary.
         IF (NV .GE. 0) THEN   ! REMEMBER THE SHIFT IS IN F**2
@@ -2796,7 +2796,7 @@ C--STORE THE SCALE AND PRINT IT
 C
 C Only print disagreeable reflections during calc.
       IF( SFLS_TYPE .EQ. SFLS_CALC ) THEN
-        WRITE (CMON ,'(/'' Target Weighted Residual ='',F6.2)')
+        WRITE (CMON ,'(/'' Target Weighted Residual ='',F6.2)') 
      1  SQRT(AMINF/FLOAT(NT))
         CALL XPRVDU(NCVDU, 2,0)
         IF(ISSPRT.EQ.0) WRITE(NCWU, '(//)')
@@ -2840,7 +2840,7 @@ CRIC13:6150  FORMAT(/,' New scale factor (G) is ',F10.5,
 C
       IF (S .GT. ZERO) S = A/S
       IF (IULN .EQ. 6) THEN
-      WRITE ( CMON, 6260) JI, N12, MIN(R,99.99), MIN(RW,99.99),
+      WRITE ( CMON, 6260) JI, N12, MIN(R,99.99), MIN(RW,99.99), 
      1 MIN(999.99,S)
       ENDIF
 6260  FORMAT ('{  Cycle',I5,' Params',I5,'{8,1 R ',F5.2,
@@ -2928,7 +2928,7 @@ C  -1  NO LAYER SCALES IN LIST 5.
 C  >0  THE LAYER SCALE INDEX.
 C
 C--
-
+      
       integer, intent(in) :: m6 !< reflection address
       integer :: klayer !< Layer index or -1 if no layer index found
       real a
@@ -2946,7 +2946,7 @@ C--
         I=NINT(A+STORE(L5LSC+3))  ! COMPUTE THE OUTPUT INDEX
 
         IF((I.LE.0).OR.(I.GT.MD5LS))THEN  ! ILLEGAL LAYER SCALE VALUE
-          !$OMP CRITICAL
+          !$OMP CRITICAL            
           CALL XERHDR(0)
           IF (ISSPRT .EQ. 0)
      1     WRITE(NCWU,1200)NINT(STORE(M6)),NINT(STORE(M6+1)),
@@ -2994,8 +2994,8 @@ C--
       IF (MD5BS.GT.0) THEN   ! ARE ANY BATCH SCALES STORED
         I=NINT(STORE(M6+13))  ! COMPUTE THE INDEX VALUE
 C--CHECK IF THE VALUE IS LARGE ENOUGH
-        IF((I.LE.0).OR.(I.GT.MD5BS))THEN
-          !$OMP CRITICAL
+        IF((I.LE.0).OR.(I.GT.MD5BS))THEN 
+          !$OMP CRITICAL            
           CALL XERHDR(0)  ! ILLEGAL BATCH SCALE VALUE
           IF (ISSPRT .EQ. 0)
      1     WRITE(NCWU,1100)NINT(STORE(M6)),NINT(STORE(M6+1)),
@@ -3006,7 +3006,7 @@ C--CHECK IF THE VALUE IS LARGE ENOUGH
 1100      FORMAT(' Reflection : ',3I5,
      2 '  generates an illegal batch scale index of ',I4)
           CALL XERHND ( IERERR )
-          !$OMP END CRITICAL
+          !$OMP END CRITICAL            
           RETURN
         END IF
         KBATCH=I
@@ -3094,7 +3094,7 @@ C-C-C-CALC. OF THE TRICLINIC COORD. OF LINE IN REAL SPACE
       LINZ=LINCX*CATRI31+LINCY*CATRI32+LINCZ*CATRI33
 C-C-C-CALC. OF SYMMETRY-EQUIVALENT DIRECTIONS (TRANSF. OF VECTOR-
 C-C-C-END-POINT BY ROTATIONAL PART ONLY)
-      LINX=LINX*STORE(M2LI)+LINY*STORE(M2LI+1)+LINZ*STORE(M2LI+2)  !todo: Crazy - check this overwrite.
+      LINX=LINX*STORE(M2LI)+LINY*STORE(M2LI+1)+LINZ*STORE(M2LI+2)
       LINY=LINX*STORE(M2LI+3)+LINY*STORE(M2LI+4)+LINZ*STORE(M2LI+5)
       LINZ=LINX*STORE(M2LI+6)+LINY*STORE(M2LI+7)+LINZ*STORE(M2LI+8)
 C-C-C-CALC. DOT-PRODUCT OF HKL-VECTOR AND LINE-VECTOR IN REC. SPACE
@@ -3279,7 +3279,7 @@ C-C-C-CALC. OF THE TRICLINIC COORD. OF RING-NORMAL IN REAL SPACE
       LINZ=LINCX*CATRI31+LINCY*CATRI32+LINCZ*CATRI33
 C-C-C-CALC. OF SYMMETRY-EQUIVALENT DIRECTIONS (TRANSF. OF VECTOR-
 C-C-C-END-POINT BY ROTATIONAL PART ONLY)
-      LINX=LINX*STORE(M2RI)+LINY*STORE(M2RI+1)+LINZ*STORE(M2RI+2) !TODO: check this bit !!!
+      LINX=LINX*STORE(M2RI)+LINY*STORE(M2RI+1)+LINZ*STORE(M2RI+2)
       LINY=LINX*STORE(M2RI+3)+LINY*STORE(M2RI+4)+LINZ*STORE(M2RI+5)
       LINZ=LINX*STORE(M2RI+6)+LINY*STORE(M2RI+7)+LINZ*STORE(M2RI+8)
 C-C-C-CALC. DOT-PROD. OF HKL-VECT. AND RING-NORMAL-VECT. IN REC. SPACE
@@ -3439,9 +3439,6 @@ CODE FOR XSFLSX
       use xlst06_mod, only:m6 ! read only
       use xlst12_mod, only:l12, n12 ! read only
       implicit none
-      INCLUDE 'XIOBUF.INC'
-      INCLUDE 'XUNITS.INC'
-
 C
 C--MAIN S.F.L.S. LOOP  -  CALCULATES A AND B AND THEIR DERIVATIVES
 C
@@ -3466,11 +3463,10 @@ C
 C Any attempt to used OpenMP here is useless, there is too much overhead
 
       real aimag, ap, at, bd, bf, bp, bt, focc, fried, a
-      real API, BPI, AROTOR, BROTOR
       real pshift, smax, smin, t, tfocc
       integer icpt, j, ljt, ljx, lju, ljv, ljw, ljy, ljz, n
       integer m3tr, m3ti, m5a, l12a, m2t, m2, m12a, md12a, m12
-
+      
       REAL FLAG
       LOGICAL ATOM_REFINE
 
@@ -3478,10 +3474,7 @@ C-C-C-...FOR STRUCTURE FACTOR-CALCULATION
       DOUBLE PRECISION SLRFAC
 C-C-C-...FOR DERIVATIVES
       DOUBLE PRECISION DSIZE, DDECLINA, DAZIMUTH
-      DOUBLE PRECISION DMADBD, DMBDBD, DMADR, DMBDR, DMADXI, DMBDXI
-      DOUBLE PRECISION DMADDC, DMBDDC, DMADAZ, DMBDAZ
-
-
+      
       real, dimension(:), allocatable :: Tiso, Tisoin
       real, dimension(:,:), allocatable :: Taniso, Ttemp, atemp
       real, dimension(:,:), allocatable :: cosa, sina
@@ -3490,19 +3483,8 @@ C-C-C-...FOR DERIVATIVES
 
       INTEGER ISTACK
 
-!     LOGICAL :: printed
-
       ALPD=0.0
       BLPD=0.0
-
-      AROTOR = 1.0
-      BROTOR = 1.0
-
-!     write (123,*) 'Hello'
-!
-!       WRITE ( CMON, '(a)')
-!    1         'Flag is ', NINT(flag)
-!           CALL XPRVDU(NCVDU, 1,0)
 
       ISTACK=-1   ! CLEAR OUT A FEW CONSTANTS
       ACR=0.
@@ -3529,14 +3511,14 @@ C--LOOP OVER THE EQUIVALENT POSITIONS STORED
 C--CHECK THE GIVEN INDICES
           BD = ABS(STORE(M6)  -STORE(LJW)  )  ! 0 if same indices
      1        +ABS(STORE(M6+1)-STORE(LJW+1))
-     2        +ABS(STORE(M6+2)-STORE(LJW+2))
+     2        +ABS(STORE(M6+2)-STORE(LJW+2))   
           BF = ABS(STORE(M6)+STORE(LJW)    )  ! 0 if Friedel opposite
      1        +ABS(STORE(M6+1)+STORE(LJW+1))
      2        +ABS(STORE(M6+2)+STORE(LJW+2))
 csjwsep2010 Check the BATCH numbers for refinement of dual Wave data
 c          bdf = abs(store(m6+13)-store(ni+20))
 c
-          IF ( BF .LT. 0.5 ) THEN
+          IF ( BF .LT. 0.5 ) THEN 
              PSHIFT=-PSHIFT   ! USE FRIEDEL'S LAW
              FRIED=-1.0
           END IF
@@ -3556,7 +3538,7 @@ c      If it is twinned, the corresponding components are also put on the stack
 c      If the next reflection is a symmetry equivalent of something already on the
 c      stack, the info is taken from the stack.
 c      If not, the stack is cleared and the current info put on the stack
-c      if there are 3 adjacent reflections hkl, -hkl, mnp the second on is not
+c      if there are 3 adjacent reflections hkl, -hkl, mnp the second on is not 
 c      computed but taken from the stack.
 c      if they are hkl, mnp, -hkl, the third will be computed from scratch.
 c
@@ -3564,8 +3546,8 @@ c      The utility #REORDER is supposed to maximise the adjacency of equivalents
 c      but may not work (sometimes it just loops forever)
 c
 c
-c         IF (((BD.LT.0.5) .OR. (BF.LT.0.5)) .and. twinned) THEN
-         IF (((BD.LT.0.5) .OR. (BF.LT.0.5)) ) THEN
+c         IF (((BD.LT.0.5) .OR. (BF.LT.0.5)) .and. twinned) THEN 
+         IF (((BD.LT.0.5) .OR. (BF.LT.0.5)) ) THEN 
 c        ! REFLECTION FOUND IN THE STACK
             LJY=NI
             IF(LJX.GT.0) THEN  ! CHECK IF WE HAVE USED IT BEFORE
@@ -3601,7 +3583,7 @@ C--WE NEED THIS REFLECTION TWICE
             END IF
             EXIT STACKSEARCH
          END IF
-        END DO
+        END DO 
 
 C--NOT THIS EQUIVALENT
 
@@ -3619,7 +3601,7 @@ C--THIS IS THE END OF THE STACK  -  WE MUST DO A CALCULATION HERE
       END DO STACKSEARCH
 
 
-      call i_store_set(JREF_STACK_PTR, ISTORE(NI)) ! SWITCH THE CURRENT BLOCK TO
+      call i_store_set(JREF_STACK_PTR, ISTORE(NI)) ! SWITCH THE CURRENT BLOCK TO 
       call i_store_set(NI, ISTORE(JREF_STACK_START))! THE TOP OF THE STACK
       call i_store_set(JREF_STACK_START, NI)
 
@@ -3646,14 +3628,13 @@ c compute h' = S.h
      2   +STORE(M6+2)*STORE(M2+7)
         STORE(M2T+2)=STORE(M6)*STORE(M2+2)+STORE(M6+1)*STORE(M2+5)
      2   +STORE(M6+2)*STORE(M2+8)
-
 c calculate the h.t terms
         STORE(M2T+3)=(STORE(M6)*STORE(M2+9)+STORE(M6+1)*STORE(M2+10)
      2   +STORE(M6+2)*STORE(M2+11))
-        IF ( ( LJZ .EQ. 1 ) .OR. ( .NOT. ISO_ONLY ) ) THEN
+        IF ( ( LJZ .EQ. 1 ) .OR. ( .NOT. ISO_ONLY ) ) THEN 
 c
 c aniso contributions are required
-c compute h'.h', h'.k' etc
+c compute h'.h', h'.k' etc 
 c
           STORE(M2T+4)=STORE(M2T)*STORE(M2T)
           STORE(M2T+5)=STORE(M2T+1)*STORE(M2T+1)
@@ -3682,7 +3663,7 @@ c--The temperature factor coefficient TC = -8 Pi^2 [sin(theta)/lambda]^2
 c
       TC=-SST*TWOPIS*4.
 C--CHECK IF THE ANISO TERMS ARE REQUIRED
-      IF(.NOT. ISO_ONLY) THEN
+      IF(.NOT. ISO_ONLY) THEN 
         M2T=L2T
         DO LJZ=1,N2
 c
@@ -3703,7 +3684,7 @@ c     1            C2,C2,C3,C3
 c      WRITE(NCWU,'(A,4(Z0,1X,F20.16,1X))')'SIN consts:',S0,S0,S1,S1,
 c     1            S2,S2,S3,S3
 
-
+  
 c
 c compute the ratio of imaginary to real form (scattering) factors
 c This will be a computational convenience later
@@ -3711,21 +3692,21 @@ c Results stored in a stack with one row per element type
 c G2 is number of Non-primitive lattice translations (*2 if centre of symmetry)
 C T2 is the total number of operators = G2*NOP
 c
-c For efficiency, the formfactor is multiplied by the number of
+c For efficiency, the formfactor is multiplied by the number of 
 c non-unique operators, G2 before summation over the unique operators
 c  Rollett, page 45
 c
-      M3TR=L3TR
+      M3TR=L3TR  
       M3TI=L3TI
       DO LJZ=1,N3
-C        M6+13 WAS USED AS THE OFFSET IN LIST 3 FOR THE ALTERNATIVE
+C        M6+13 WAS USED AS THE OFFSET IN LIST 3 FOR THE ALTERNATIVE 
 C        ANOMALOUS SCATTERING FACTORS IN DUAL WAVELENGTH REFINEMENTS
-c        STORE(M3TR)=STORE(M3TR+nint(store(m6+13))-1)*G2
+c        STORE(M3TR)=STORE(M3TR+nint(store(m6+13))-1)*G2   
 c        STORE(M3TI)=STORE(M3TI+nint(store(m6+13))-1)*G2
 c        WRITE(NCWU,'(A,F16.9,1x,Z0)')'M3TR1:',STORE(M3TR),STORE(M3TR)
         STORE(M3TR)=STORE(M3TR)*G2
         STORE(M3TI)=STORE(M3TI)*G2
-        IF(STORE(M3TR).LE.ZERO)THEN  ! REAL PART IS ZERO
+        IF(STORE(M3TR).LE.ZERO)THEN  ! REAL PART IS ZERO  
           STORE(M3TI)=0. ! SO IS THE IMAGINARY NOW
         ELSE   ! REAL PART IS OKAY
           STORE(M3TI)=STORE(M3TI)/STORE(M3TR)
@@ -3754,22 +3735,22 @@ C
       allocate(cosa(n5, n2t))
       allocate(sina(n5, n2t))
 !#if defined(CRY_OSLINUX)
-!      print *, 'Size of temporaries Tiso, Taniso, cosa, sina...: ',
+!      print *, 'Size of temporaries Tiso, Taniso, cosa, sina...: ', 
 !     1    (sizeof(Tiso)+5.0*sizeof(sina))/1024.0, 'kB'
-!#endif
+!#endif 
 
 c Pre-calculating some expensives values using optimised functions if available
 
 c calculate the iso-temperature factor coefficients for this atom
 c TC = -8 Pi^2 [sin(theta)/lambda]^2
 c T = exp(Uiso *TC)
-c
+c 
 #ifdef CRY_MKL
       allocate(Tisoin(n5))
       Tisoin=STORE(L5+7:L5+7+(N5-1)*MD5A:MD5A)*TC
       call vsExp( n5, Tisoin, Tiso )
 #else
-      Tiso=EXP(STORE(L5+7:L5+7+(N5-1)*MD5A:MD5A)*TC)
+      Tiso=EXP(STORE(L5+7:L5+7+(N5-1)*MD5A:MD5A)*TC)  
 #endif
 
 c  calculate the aniso-temperature factor
@@ -3792,7 +3773,7 @@ c  store(mt2+..) is h* where h* = h'.k'.a*.b* etc.
 #endif
       end do
 
-C--CALCULATE THE SIN/COS TERMS
+C--CALCULATE THE SIN/COS TERMS 
 c  dd = 1.0/twopi
 c  a = h'.x + h.t
 c
@@ -3801,37 +3782,37 @@ c
      1      STORE(L5+4:L5+4+(n5-1)*md5a:md5a)*STORE(L2T+MD2T*(icpt-1))
      1     +STORE(L5+5:L5+5+(n5-1)*md5a:md5a)*STORE(L2T+MD2T*(icpt-1)+1)
      2     +STORE(L5+6:L5+6+(n5-1)*md5a:md5a)*STORE(L2T+MD2T*(icpt-1)+2)
-     3     +                                  STORE(L2T+MD2T*(icpt-1)+3)
+     3     +                                  STORE(L2T+MD2T*(icpt-1)+3)       
 
 #ifdef CRY_MKL
-      call vssincos(n5, atemp(:,icpt), sina(:,icpt), cosa(:,icpt))
+      call vssincos(n5, atemp(:,icpt), sina(:,icpt), cosa(:,icpt))        
 #else
       cosa(:,icpt)=cos(atemp(:,icpt))
       sina(:,icpt)=sin(atemp(:,icpt))
 #endif
       end do
-
-      DO LJY=1,N5  !todo: this is where the loop over atoms starts
+      
+      DO LJY=1,N5
         AT=0.  ! CLEAR THE ACCUMULATION VARIABLES
         BT=0.
 
-        ATOM_REFINE = .FALSE.
+        ATOM_REFINE = .FALSE. 
 
         IF(SFLS_TYPE .EQ. SFLS_REFINE) THEN   ! CHECK IF REFINEMENT IS BEING DONE
           ALPD=0.0
-          BLPD=0.0
+          BLPD=0.0        
           L12A=ISTORE(M12+1)
           IF ( L12A .GE.0 ) ATOM_REFINE = .TRUE.  ! Set if any params of this atom are being refined
           M12=ISTORE(M12)
         END IF
-cdjwsep2010 extend to use dual wavelength anomalous scattering as appropriate
+cdjwsep2010 extend to use dual wavelength anomalous scattering as appropriate 
         M3TR=L3TR+ISTORE(M5A)*MD3TR  ! PICK UP THE FORM FACTORS FOR THIS ATOM
         M3TI=L3TI+ISTORE(M5A)*MD3TI
 c
 c focc   formfactor * site occ * chemical occ * difabs corection
-c modify focc for other fc corrections
+c modify focc for other fc corrections 
 c
-        FOCC = STORE(M3TR) * STORE(M5A+2) * STORE(M5A+13)
+        FOCC = STORE(M3TR) * STORE(M5A+2) * STORE(M5A+13) 
 
         FLAG=STORE(M5A+3)   ! PICK UP THE TYPE OF THIS ATOM
 
@@ -3850,22 +3831,12 @@ c
 c  calculate a = h'.x + h.t
         DO LJX=1,N2T
 c  slrfac starting-values for special shape factors and derivatives
-          SLRFAC=1.0d0
+          SLRFAC=1.0d0 
           DSIZE=1.0d0
           DDECLINA=1.0d0
           DAZIMUTH=1.0d0
-          DMADBD = 1.0d0
-          DMBDBD = 1.0d0
-          DMADR = 1.0d0
-          DMBDR = 1.0d0
-          DMADXI = 1.0d0
-          DMBDXI = 1.0d0
-          DMADDC = 1.0d0
-          DMBDDC = 1.0d0
-          DMADAZ = 1.0d0
-          DMBDAZ = 1.0d0
 
-          IF (NINT(FLAG) .EQ. 0) THEN
+          IF (NINT(FLAG) .EQ. 0) THEN   
 c aniso-temperature factor
             T=Taniso(LJY,LJX)
             TFOCC=T*FOCC
@@ -3878,35 +3849,32 @@ c Special shapes
               CALL XLINE (M2, M5A, M6, SLRFAC, DSIZE, DDECLINA,DAZIMUTH)
             ELSE IF (NINT(FLAG) .EQ. 4) THEN   ! CALC RING TF
               CALL XRING (M2, ST, M5A,M6,SLRFAC,DSIZE,DDECLINA,DAZIMUTH)
-            ELSE IF (NINT(FLAG)==5) THEN
-              CALL XROTOR (3, M5A, M2T, SST, AROTOR, BROTOR,
-     1        DMADBD, DMBDBD, DMADR, DMBDR, DMADXI, DMBDXI,
-     2        DMADDC, DMBDDC, DMADAZ, DMBDAZ ) ! declination and azimuth
             END IF
+
             T=Tiso(LJY)
             TFOCC=T*FOCC
-            TFOCC=TFOCC*SLRFAC
+            TFOCC=TFOCC*SLRFAC    
           else
 c iso-temperature factor
             T=Tiso(LJY)
           ENDIF
-!--CALCULATE THE A & B CONTRIBUTION
-          BPI=Sina(ljy,ljx)*TFOCC
-          API=Cosa(ljy,ljx)*TFOCC
-          IF (NINT(FLAG) == 5) THEN
-           AP=API*AROTOR-BPI*BROTOR
-           BP=BPI*AROTOR+API*BROTOR
-          ELSE
-           AP = API
-           BP=BPI
-          END IF
+     
+C--CALCULATE THE B CONTRIBUTION
+          BP=Sina(ljy,ljx)*TFOCC
           BT=BT+BP
+c
+C--CALCULATE THE A CONTRIBUTION
+          AP=Cosa(ljy,ljx)*TFOCC
           AT=AT+AP
+c          WRITE(NCWU,'(A,Z0,1X,F15.6)')'AT:',AT,AT
+c          WRITE(NCWU,'(A,Z0,1X,F15.6)')'BT:',BT,BT
+c         WRITE(NCWU,'(A,2(1X,Z0,1X,F20.16))')'SIN:',S,S, aaas, aaas
+c         WRITE(NCWU,'(A,2(1X,Z0,1X,F20.16))')'COS:',C,C, aaac, aaac
 
 C--CHECK IF ANY REFINEMENT IS BEING DONE
           IF(ATOM_REFINE)THEN
 c
-c  store(mt2+ 0 to 2) is h'
+c  store(mt2+ 0 to 2) is h' 
 c  store(mt2+ 4 to 9) is h* where h* = h'.k'.a*.b* etc.
 c  T=exp(h*Uij + ... ) where h* = h'.k'.a*.b* etc.
 c  c = cos(hx)
@@ -3921,20 +3889,12 @@ C-C-C-CHECK WHETHER WE HAVE SPHERE, LINE OR RING
               IF (NINT(FLAG) .LE. 1) THEN
 C--CALCULATE THE PARTIAL DERIVATIVES W.R.T. A FOR THE ANISO-TERMS
                 ALPD(6:11)=ALPD(6:11)+STORE(M2T+4:M2T+9)*AP
-              ELSE IF (NINT(FLAG) .LE. 4) THEN
+              ELSE
 C-C-C-CALC. THE PART. DERIV. W.R.T. A FOR ISO-TERM + SPECIAL FIGURES
                 ALPD(6)=ALPD(6)+TC*AP
                 ALPD(7)=ALPD(7)+((DSIZE*AP)/SLRFAC)
                 ALPD(8)=ALPD(8)+((DDECLINA*AP)/SLRFAC)
                 ALPD(9)=ALPD(9)+((DAZIMUTH*AP)/SLRFAC)
-              ELSE
-C-C-C-CALC. THE PART. DERIV. W.R.T. A FOR Natalie / Bruce rotor
-                ALPD(6)=ALPD(6)+TC*AP
-                ALPD(7)=ALPD(7)  +(DMADR*API) -(DMBDR*BPI)
-                ALPD(8)=ALPD(8)  +(DMADDC*API)-(DMBDDC*BPI)
-                ALPD(9)=ALPD(9)  +(DMADAZ*API)-(DMBDAZ*BPI)
-                ALPD(10)=ALPD(10)+(DMADXI*API)-(DMBDXI*BPI)
-                ALPD(11)=ALPD(11)+(DMADBD*API)-(DMBDBD*BPI)
               ENDIF
             ELSE
 C--CALCULATE THE PARTIAL DERIVATIVES W.R.T. A FOR U[ISO]
@@ -3955,32 +3915,12 @@ C-C-C-CHECK WHETHER WE HAVE SPHERE, LINE OR RING
                 IF (NINT(FLAG) .LE. 1) THEN
 C--CALCULATE THE PARTIAL DERIVATIVES W.R.T. B FOR THE ANISO-TERMS
                   BLPD(6:11)=BLPD(6:11)+STORE(M2T+4:M2T+9)*BP
-                ELSE IF (NINT(FLAG) .LE. 4) THEN
+                ELSE
+C-C-C-CALC. THE PART. DERIV. W.R.T. B FOR ISO-TERM + SPECIAL FIGURES
                   BLPD(6)=BLPD(6)+TC*BP
                   BLPD(7)=BLPD(7)+((DSIZE*BP)/SLRFAC)
                   BLPD(8)=BLPD(8)+((DDECLINA*BP)/SLRFAC)
                   BLPD(9)=BLPD(9)+((DAZIMUTH*BP)/SLRFAC)
-                ELSE
-C Natalie / Bruce rotor
-                  BLPD(6)=BLPD(6)+TC*BP	
-                  BLPD(7)=BLPD(7)  +(DMBDR*API) +(DMADR*BPI)
-                  BLPD(8)=BLPD(8)  +(DMBDDC*API)+(DMADDC*BPI)
-                  BLPD(9)=BLPD(9)  +(DMBDAZ*API)+(DMADAZ*BPI)
-                  BLPD(10)=BLPD(10)+(DMBDXI*API)+(DMADXI*BPI)
-                  BLPD(11)=BLPD(11)+(DMBDBD*API)+(DMADBD*BPI)
-
-!    write(911,*) REFLH, REFLK, REFLL, AT, BT, DMADXI, DMBDXI, ANGLEXID, ANGLEXI
-
-!       write(903,*)  AP, BP, STORE(M5A+4),
-!     4 (STORE(M2T)*BPI) , STORE(M2T)*AP
-!     2 , STORE(M5A+4), ALPD(3), BLPD(3)  ! X
-!     3 ,STORE(M5A+9), ALPD(8), BLPD(8)  ! Dec
-!     3 ,STORE(M5A+10), ALPD(9), BLPD(9)  ! Azi
-!     3 ,STORE(M5A+11), ALPD(10), BLPD(10)  ! Xi
-!     3 ,STORE(M5A+12), ALPD(11), BLPD(11)  ! Bd
-
-
-C-C-C-CALC. THE PART. DERIV. W.R.T. B FOR ISO-TERM + SPECIAL FIGURES
                 ENDIF
               ELSE
 C--CALCULATE THE PARTIAL DERIVATIVES W.R.T. B FOR U[ISO]
@@ -4011,7 +3951,7 @@ C--CALCULATE THE PARTIAL DERIVATIVES W.R.T. B FOR U[ISO]
 
 
         IF(ATOM_REFINE)THEN  ! CHECK IF ANY REFINEMENT IS BEING DONE
-          ALPD(1) = STORE(M3TR) * STORE(M5A+13) * ALPD(1)  ! CALCULATE THE PARTIAL DERIVATIVES
+          ALPD(1) = STORE(M3TR) * STORE(M5A+13) * ALPD(1)  ! CALCULATE THE PARTIAL DERIVATIVES 
           BLPD(1) = STORE(M3TR) * STORE(M5A+13) * BLPD(1)  ! W.R.T. A AND B FOR OCC
 
           DO WHILE (L12A.GT.0)  ! LOOP ADDING THE PARTIAL DERIVATIVES INTO THE TEMPORARY STACKS
@@ -4095,12 +4035,10 @@ C--CALCULATE THE PARTIAL DERIVATIVES W.R.T. B FOR U[ISO]
               END IF
             END IF
             L12A=ISTORE(L12A)
-          END DO
+          END DO            
         END IF
         M5A=M5A+MD5A
       END DO             ! END OF ATOM CYCLING LOOP
-
-!      write(567,*) " ", STORE(M6), STORE(M6+1), STORE(M6+2), ACR, BCR
 
       IF(CENTRO) THEN ! CHECK IF THIS STRUCTURE IS CENTRO
         BCR=0.         ! Zero appropriate parts.
@@ -4108,11 +4046,11 @@ c -check this        BCI=0.
         ACI=0.
       END IF
 
-      STORE(NI+13)=ACR   ! STORE THE RESULTS OF THIS
+      STORE(NI+13)=ACR   ! STORE THE RESULTS OF THIS 
       STORE(NI+14)=ACI  ! CALCULATION IN THE STACK
       STORE(NI+15)=BCR
       STORE(NI+16)=BCI
-c
+c     
       M2I=L2I
       LJU=ISTORE(NI+9)  ! STORE THE EQUIVALENT INDICES AND THE PHASE SHIFT
       LJV=ISTORE(NI+10)
@@ -4164,7 +4102,7 @@ C--FETCH A AND B ETC. FROM THE STACK
       PSHIFT=STORE(JREF_STACK_PTR+11)   !will cause problems if not set
       FRIED=STORE(JREF_STACK_PTR+12)
       IF ( ABS(FRIED) .LE. ZERO) FRIED = 1. !in case it comes from elsewhere
-c
+c      
 C-- ACT and BCT are in COMMON XSFWK.INC
 c
         IF(ND.GE.0)THEN !  THE PARTIAL CONTRIBUTIONS ARE TO BE OUTPUT
@@ -4172,7 +4110,7 @@ c
           STORE(M6+7)=ACR ! STORE THE NEW CONTRIBUTIONS
           STORE(M6+8)=BCR*FRIED   ! Do we need FRIED in here?
           STORE(M6+33)=ACI*FRIED  ! YES
-          STORE(M6+34)=BCI  ! See below.
+          STORE(M6+34)=BCI  ! See below. 
 c
           CALL XACRT(8)  ! ACCUMULATE THE TOTALS FOR THE NEW PARTS
           CALL XACRT(9)
@@ -4214,7 +4152,7 @@ C--COMPUTE /FC/ AND THE PHASE FOR THE GIVEN ENANTIOMER
           FC = SQRT(FESQ)
         ENDIF
 
-        COSA = CENANT * FP / FC   ! THE RELATIVE CONTRIBUTIONS
+        COSA = CENANT * FP / FC   ! THE RELATIVE CONTRIBUTIONS 
         SINA =  ENANT * FN / FC   ! OF THE COMPONENTS
       ELSE
         FNSQ = FCSQ
@@ -4281,16 +4219,15 @@ C--COMPUTE /FC/ AND THE PHASE FOR THE GIVEN ENANTIOMER
           STORE(JN+1)=0.0
           STORE(JN)=0.0
         END IF
-      END IF
+      END IF            
       RETURN
       END
 
 
-      SUBROUTINE XADDPD ( A, JX, JO, JQ, JR)
+      SUBROUTINE XADDPD ( A, JX, JO, JQ, JR) 
       INCLUDE 'ISTORE.INC'
       INCLUDE 'STORE.INC'
       INCLUDE 'XLST12.INC'
-      INCLUDE 'XUNITS.INC'
       INCLUDE 'QSTORE.INC'
 
 C--ROUTINE TO ADD P.D.'S WITH RESPECT TO /FC/ FOR THE OVERALL PARAMETER
@@ -4304,8 +4241,12 @@ C And in common:
 C  M12   ADDRESS OF THE HEADER FOR THE PARAMETER IN LIST 12
 
 C--SET UP THE LIST 12 FLAGS
+      if(isnan(a)) then
+        print *, 'the derivative is NaN, the refinement will crash'
+        call abort
+      end if
       L12A=ISTORE(M12+1)
-      IF(ISTORE(M12+1).GT.0) THEN
+      IF(ISTORE(M12+1).GT.0) THEN 
         DO WHILE ( L12A .GT. 0 )
           IF(ISTORE(L12A+4).LE.JX)THEN ! THE PART STARTS LOW ENOUGH DOWN
             MD12A=ISTORE(L12A+1)
@@ -4322,18 +4263,9 @@ C--SET UP THE LIST 12 FLAGS
               END IF
             END IF
           END IF
-
-          if(isnan(a)) then
-            WRITE ( NCWU , '(a,i5,a)' ) ' Derivative ', LJT-JO,
-     2 ' is NaN, the refinement will crash: aborting.'
-#ifdef CRY_OSLINUX
-            print *, 'the derivative is NaN, the refinement will crash'
-#endif
-            call abort
-          end if
-
           L12A=ISTORE(L12A)  ! PASS ONTO THE NEXT PART
         END DO
       END IF
       RETURN
       END
+

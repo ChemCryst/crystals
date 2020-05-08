@@ -551,7 +551,7 @@ All cycle   Min function          0.0           0.98E+04       0.10E+16
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.02
 [73]                       0.00             0.00    0.00    0.00    0.00
@@ -778,7 +778,7 @@ All cycle   Min function          0.0           0.97E+04       0.10E+16
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.02
 [73]                       0.00            -0.00    0.00    0.00    0.00
@@ -1001,7 +1001,7 @@ All cycle   Rw                    0.0            19.           0.10E+03
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.02
 [73]                       0.00             0.00    0.00    0.00    0.00
@@ -1240,7 +1240,7 @@ All cycle   Min function          0.0           0.97E+04       0.10E+16
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.02
 [73]                       0.00             0.00   -0.00   -0.00    0.00
@@ -1467,7 +1467,7 @@ Inter cycle Rw                   -5.0            1.1           0.10E+03
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.02
 [73]                       0.00             0.00    0.00    0.00    0.00
@@ -1694,7 +1694,7 @@ All cycle   Min function          0.0           0.86E+04       0.10E+16
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.02
 [73]                       0.00             0.00    0.00   -0.00   -0.00
@@ -1921,7 +1921,7 @@ All cycle   Min function          0.0           0.86E+04       0.10E+16
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.02
 [73]                       0.00             0.00    0.00    0.00    0.00
@@ -2174,7 +2174,7 @@ All cycle   Min function          0.0           0.86E+04       0.10E+16
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    0.00    0.89    0.04    0.19    0.02
 [37]                       0.00             0.00    0.00    0.00   -0.00    0.00    0.00   -0.00    0.00    0.00
@@ -2405,7 +2405,7 @@ Inter cycle Rw                   -5.0            3.7           0.10E+03
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    0.00    0.89    0.04    0.19    0.02
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00   -0.00   -0.00
@@ -3042,7 +3042,7 @@ All cycle   Min function          0.0           0.63E+04       0.10E+16
     22  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.03
 [73]                       0.00             0.00    0.00   -0.00    0.00
@@ -3269,7 +3269,7 @@ Inter cycle Rw                   -5.0            3.2           0.10E+03
     22  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.03
 [73]                       0.00            -0.00    0.00    0.00    0.00
@@ -3496,7 +3496,7 @@ All cycle   Min function          0.0           0.39E+04       0.10E+16
     22  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.03
 [73]                       0.00             0.00    0.00    0.00   -0.00
@@ -4045,7 +4045,7 @@ All cycle   Min function          0.0           0.98E+04       0.10E+16
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.02
 [73]                       0.00             0.00    0.00    0.00    0.00
@@ -4272,7 +4272,7 @@ All cycle   Min function          0.0           0.97E+04       0.10E+16
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.02
 [73]                       0.00            -0.00    0.00    0.00    0.00
@@ -4499,7 +4499,7 @@ All cycle   Min function          0.0           0.97E+04       0.10E+16
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.02
 [73]                       0.00             0.00    0.00    0.00    0.00
@@ -4738,7 +4738,7 @@ All cycle   Min function          0.0           0.97E+04       0.10E+16
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.02
 [73]                       0.00             0.00   -0.00   -0.00    0.00
@@ -4965,7 +4965,7 @@ Inter cycle Rw                   -5.0            1.1           0.10E+03
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.02
 [73]                       0.00             0.00    0.00    0.00    0.00
@@ -5192,7 +5192,7 @@ All cycle   Min function          0.0           0.86E+04       0.10E+16
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.02
 [73]                       0.00             0.00    0.00   -0.00   -0.00
@@ -5419,7 +5419,7 @@ All cycle   Min function          0.0           0.86E+04       0.10E+16
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.02
 [73]                       0.00             0.00    0.00    0.00    0.00
@@ -5673,7 +5673,7 @@ All cycle   Min function          0.0           0.86E+04       0.10E+16
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    0.00    0.89    0.04    0.19    0.02
 [37]                       0.00             0.00    0.00    0.00   -0.00    0.00    0.00   -0.00    0.00    0.00
@@ -5903,7 +5903,7 @@ Inter cycle Rw                   -5.0            1.9           0.10E+03
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    0.00    0.89    0.04    0.19    0.02
 [37]                       0.00             0.00    0.00    0.00    0.00   -0.00    0.00    0.00   -0.00    0.00
@@ -6555,7 +6555,7 @@ All cycle   Min function          0.0           0.66E+04       0.10E+16
     22  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.02
 [73]                       0.00             0.00    0.00   -0.00    0.00
@@ -6782,7 +6782,7 @@ Inter cycle Rw                   -5.0            2.2           0.10E+03
     22  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.02
 [73]                       0.00            -0.00    0.00    0.00   -0.00
@@ -7009,7 +7009,7 @@ All cycle   Min function          0.0           0.48E+04       0.10E+16
     22  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.02
 [73]                       0.00             0.00    0.00   -0.00    0.00
@@ -7558,7 +7558,7 @@ All cycle   Min function          0.0           0.21E+05       0.10E+16
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.02
 [73]                       0.00             0.00   -0.00    0.00    0.00
@@ -7785,7 +7785,7 @@ Inter cycle Rw                   -5.0            21.           0.10E+03
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.02
 [73]                       0.00            -0.00    0.00   -0.00    0.00
@@ -8012,7 +8012,7 @@ All cycle   Min function          0.0           0.85E+04       0.10E+16
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.02
 [73]                       0.00             0.00    0.00    0.00    0.00
@@ -8250,7 +8250,7 @@ All cycle   Min function          0.0           0.85E+04       0.10E+16
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.02
 [73]                       0.00             0.00   -0.00   -0.00   -0.00
@@ -8477,7 +8477,7 @@ Inter cycle Rw                   -5.0            1.6           0.10E+03
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.02
 [73]                       0.00             0.00    0.00    0.00    0.00
@@ -8704,7 +8704,7 @@ All cycle   Min function          0.0           0.77E+04       0.10E+16
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.02
 [73]                       0.00            -0.00    0.00    0.00   -0.00
@@ -8927,7 +8927,7 @@ All cycle   Rw                    0.0            35.           0.10E+03
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.02
 [73]                       0.00             0.00    0.00    0.00    0.00
@@ -9182,7 +9182,7 @@ All cycle   Min function          0.0           0.77E+04       0.10E+16
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    0.00    0.89    0.04    0.19    0.02
 [37]                       0.00             0.00    0.00    0.00   -0.00    0.01    0.00   -0.00   -0.00    0.00
@@ -9413,7 +9413,7 @@ Inter cycle Rw                   -5.0            8.0           0.10E+03
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    0.00    0.89    0.04    0.19    0.02
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00   -0.00    0.00    0.00
@@ -10059,7 +10059,7 @@ All cycle   Min function          0.0           0.62E+04       0.10E+16
     22  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.02
 [73]                       0.00             0.00    0.00   -0.00    0.00
@@ -10286,7 +10286,7 @@ Inter cycle Rw                   -5.0            9.1           0.10E+03
     22  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.03
 [73]                       0.00             0.00    0.00    0.00    0.00
@@ -10513,7 +10513,7 @@ All cycle   Min function          0.0           0.30E+04       0.10E+16
     22  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.03
 [73]                       0.00            -0.00    0.00    0.00    0.00
@@ -11062,7 +11062,7 @@ All cycle   Min function          0.0           0.21E+05       0.10E+16
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.02
 [73]                       0.00             0.00   -0.00    0.00    0.00
@@ -11289,7 +11289,7 @@ Inter cycle Rw                   -5.0            21.           0.10E+03
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.02
 [73]                       0.00            -0.00    0.00   -0.00    0.00
@@ -11516,7 +11516,7 @@ All cycle   Min function          0.0           0.85E+04       0.10E+16
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.02
 [73]                       0.00             0.00    0.00    0.00    0.00
@@ -11754,7 +11754,7 @@ All cycle   Min function          0.0           0.85E+04       0.10E+16
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.02
 [73]                       0.00             0.00   -0.00   -0.00   -0.00
@@ -11981,7 +11981,7 @@ Inter cycle Rw                   -5.0            1.6           0.10E+03
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.02
 [73]                       0.00             0.00    0.00    0.00    0.00
@@ -12208,7 +12208,7 @@ All cycle   Min function          0.0           0.77E+04       0.10E+16
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.02
 [73]                       0.00            -0.00    0.00    0.00   -0.00
@@ -12431,7 +12431,7 @@ All cycle   Rw                    0.0            35.           0.10E+03
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.02
 [73]                       0.00             0.00    0.00    0.00    0.00
@@ -12686,7 +12686,7 @@ All cycle   Min function          0.0           0.77E+04       0.10E+16
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    0.00    0.89    0.04    0.19    0.02
 [37]                       0.00             0.00    0.00    0.00   -0.00    0.01    0.00   -0.00   -0.00    0.00
@@ -12917,7 +12917,7 @@ Inter cycle Rw                   -5.0            8.0           0.10E+03
     11  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    0.00    0.89    0.04    0.19    0.02
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00   -0.00    0.00    0.00
@@ -13563,7 +13563,7 @@ All cycle   Min function          0.0           0.62E+04       0.10E+16
     22  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.02
 [73]                       0.00             0.00    0.00   -0.00    0.00
@@ -13790,7 +13790,7 @@ Inter cycle Rw                   -5.0            9.1           0.10E+03
     22  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.03
 [73]                       0.00             0.00    0.00    0.00    0.00
@@ -14017,7 +14017,7 @@ All cycle   Min function          0.0           0.30E+04       0.10E+16
     22  atom(s)
 
     TYPE     SERIAL   OCC      FLAG     X        Y        Z        U[11]    U[22]    U[33]    U[23]    U[13]    U[12]   
-                                                                   U[ISO]   SIZE     DECL/100 AZIM/100 XI  /100 BD  
+                                                                   U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      C          1.    1.00    1.00    0.89    0.04    0.19    0.03
 [73]                       0.00            -0.00    0.00    0.00    0.00

@@ -245,7 +245,7 @@ contains
 
     ! check atoms
     call check_atom(image_text, ierror)
-! check_atom just prints warnings at the parsing stage. Erroring here prevents input of L16
+! check_atom just prints warnings at the parsing stage. Erroring here prevents input of L16 
 ! which wipes the whole list. Restraint will be ignored in processing.
 !    if (ierror /= 0) return
 
@@ -1279,11 +1279,11 @@ contains
     character(len=128) :: msgstatus
     logical skip_position
 
-    character(len=6), dimension(23), parameter :: param_name = (/  &
+    character(len=6), dimension(21), parameter :: param_name = (/  &
     & 'X     ', 'Y     ', 'Z     ', 'OCC   ', 'U[ISO]', 'SPARE ',&
     & 'U[11] ', 'U[22] ', 'U[33] ', 'U[23] ', 'U[13] ', 'U[12] ',&
     & "X'S   ", "U'S   ", "UIJ'S ", "UII'S ", 'DECLIN', 'SIZE  ',&
-    & 'AZIMUT', 'SERIAL', 'TYPE  ', 'XI    ', 'BD    '/)
+    & 'AZIMUT', 'SERIAL', 'TYPE  '/)
 
     call atom%init()
 
