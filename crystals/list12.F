@@ -257,7 +257,6 @@ C
       use lists2_mod, only: xldlst
 
       CHARACTER *5 COORD(10), COORDIS(10), COORDSS(10), COORDLR(10)
-      CHARACTER *5 COORDRT(10)
       CHARACTER *3 PRE(3)
       CHARACTER *1 PLM(3)
       CHARACTER CEND*3
@@ -317,8 +316,6 @@ C
      1  '"UIS"', 'SIZE ', '*    ', '*    ', '*    ', '*    '/
         DATA COORDLR /'*    ', 'x    ', 'y    ', 'z    ',
      1  '"UIS"', 'SIZE ', 'DECLI', 'AZIMU', '*    ', '*    '/
-        DATA COORDRT /'*    ', 'x    ', 'y    ', 'z    ',
-     1  '"UIS"', 'SIZE ', 'DECLI', 'AZIMU', 'XI   ', 'BD   '/
         DATA PRE / '   ', '1/2', ' 2 ' /
         DATA PLM / '-', ' ', ' '/
 C
@@ -400,14 +397,14 @@ C      OF 2 FOR ANOMALOUS, ENANTIOPOLE, EXTINCTION
 C----- INDICATE NO CHANGES TO LIST 23 YET
       MOD23 = 0
       imod23 = 0
-      imod5 = 0
+      imod5 = 0 
       CALL XFAL23
-
-c      write (9,*) 'L23M+7, MD23M, L23M, N23M: ',
+      
+c      write (9,*) 'L23M+7, MD23M, L23M, N23M: ', 
 c     1          ISTORE(L23M+7), MD23M, L23M, N23M
-
+      
 c       write(9,*) '+ ',(ISTORE(L23M+I),I=0,7)
-
+      
 C----- GET THE ACTION AND UPDADTE CONDITIONS
       IACTN = ISTORE(L23SP)
       ABTOL = STORE(L23SP+5)
@@ -522,42 +519,35 @@ C-C-C-RING
           ENDIF
 C-C-C-DISTINCTION BETWEEN DIFFERENT ATOM-TYPES
 C-C-C-ANISOTROPIC ATOMS (AND UNREASONABLY SET FLAGS)
-          IF ((NINT(STORE(M5+3)) .LE. 0) .OR.
-     2        (NINT(STORE(M5+3)) .GT. 5)) THEN
+          IF ((NINT(STORE(M5+3)) .LE. 0.0) .OR.
+     2        (NINT(STORE(M5+3)) .GT. 4.0)) THEN
            IF (ISSPRT .EQ. 0) THEN
             WRITE(NCWU,532)
      2      (PLM(K1(IK)+2), PRE(K2(IK)+1), COORD(KEY(IK)+1) ,IK =1,9)
            ENDIF
 532        FORMAT (1X,(3(A1,A3,A2,1X),6(A1,A3,A5,1X)))
 C-C-C-ISOTROPIC ATOMS
-          ELSE IF (NINT(STORE(M5+3)) .EQ. 1) THEN
+          ELSE IF (NINT(STORE(M5+3)) .EQ. 1.0) THEN
            IF (ISSPRT .EQ. 0) THEN
             WRITE(NCWU,533)
      2      (PLM(K1(IK)+2), PRE(K2(IK)+1), COORDIS(KEY(IK)+1) ,IK =1,9)
            ENDIF
 533        FORMAT (1X,(3(A1,A3,A2,1X),6(A1,A3,A5,1X)))
 C-C-C-SURFACE OF A SPHERE
-          ELSE IF (NINT(STORE(M5+3)) .EQ. 2) THEN
+          ELSE IF (NINT(STORE(M5+3)) .EQ. 2.0) THEN
            IF (ISSPRT .EQ. 0) THEN
             WRITE(NCWU,534)
      2      (PLM(K1(IK)+2), PRE(K2(IK)+1), COORDSS(KEY(IK)+1) ,IK =1,9)
            ENDIF
 534        FORMAT (1X,(3(A1,A3,A2,1X),6(A1,A3,A5,1X)))
-C-C-C-ROTOR (Natalie / Bruce)
-          ELSE IF ((NINT(STORE(M5+3)) .GE. 5) .AND.
-     2        (NINT(STORE(M5+3)) .LE. 4.0)) THEN
-           IF (ISSPRT .EQ. 0) THEN
-            WRITE(NCWU,535)
-     2      (PLM(K1(IK)+2), PRE(K2(IK)+1), COORDRT(KEY(IK)+1) ,IK =1,9)
-           ENDIF
-535        FORMAT (1X,(3(A1,A3,A2,1X),6(A1,A3,A5,1X)))
 C-C-C-LINE OR RING
-          ELSE IF ((NINT(STORE(M5+3)) .GE. 3) .AND.
+          ELSE IF ((NINT(STORE(M5+3)) .GE. 3.0) .AND.
      2        (NINT(STORE(M5+3)) .LE. 4.0)) THEN
            IF (ISSPRT .EQ. 0) THEN
             WRITE(NCWU,535)
      2      (PLM(K1(IK)+2), PRE(K2(IK)+1), COORDLR(KEY(IK)+1) ,IK =1,9)
            ENDIF
+535        FORMAT (1X,(3(A1,A3,A2,1X),6(A1,A3,A5,1X)))
           ENDIF
       ENDIF
 110   CONTINUE
@@ -1147,7 +1137,7 @@ C----- CHECK OVERALL PARAMETERS?
         NUNREF = ISTORE(L12A+4)
 cdjwjun09
         ipos = 1
-        call xzerof(isdopee,6)
+        call xzerof(isdopee,6)      
         do  i = m12a , l , md12a
           isdopee(ipos) = istore(i)
           ipos = ipos + 1
@@ -1219,7 +1209,7 @@ c   check if it was refined (value in List 30) and if so, dont fiddle
      1 '{I Flack = ',store(l5o+4),
      2 '  Starting FLACK refinement from 0.5'
                   CALL XPRVDU(NCVDU, 1,0)
-                  IF (ISSPRT .EQ. 0)
+                  IF (ISSPRT .EQ. 0)  
      1            WRITE(NCWU, '(A)') CMON(1)(3:nctrim(cmon(1)))
                   store(L5O+4) = 0.5
                   imod5 = imod5 + 1
@@ -1370,10 +1360,10 @@ c       write(9,*) '+2 ICOM23: ', (ICOM23(I),I=1,24)
 C
 
 c       CALL XFAL23
-
-c      write (9,*) 'Reloaded L23M+7, MD23M, L23M, N23M: ',
-c     1           ISTORE(L23M+7), MD23M, L23M, N23M
-
+      
+c      write (9,*) 'Reloaded L23M+7, MD23M, L23M, N23M: ', 
+c     1           ISTORE(L23M+7), MD23M, L23M, N23M 
+      
 c       write(9,*) '+3 ',(ISTORE(L23M+I),I=0,7)
 c       write(9,*) '+3 ICOM23: ', (ICOM23(I),I=1,24)
 
@@ -1583,7 +1573,7 @@ C WE DONT NEED TO CHECK U'S IF K POINT TO X'S
                 JMX = JLP
               ENDIF
 
-              IF (K .LT. JMX) THEN
+              IF (K .LT. JMX) THEN     
 
                 DO 4000 J = K+1, JMX   ! LOOP OVER REMAINING PARAMETERS
                   JS = J - 3
@@ -1599,7 +1589,7 @@ C----- RELATED PARAMETER - IN CURRENT BLOCK?
                       JEQV = KBITS( ISTORE(JPA+2), IO(1) )
                       WTJ  = STORE(JPA +1)
 
-                      IF ( (KBLK .EQ. JBLK) .AND. !  IN SAME BLOCK, SO OK
+                      IF ( (KBLK .EQ. JBLK) .AND. !  IN SAME BLOCK, SO OK 
      1                  ((KEQV.EQ.0) .AND. (JEQV.EQ.0)) .AND. ! NO EQUIVALENCES SET, SO STILL OK
      1                  ((KFIX.EQ.0) .AND. (JFIX.EQ.0)) .AND. ! NO FIXES SET SO STILL OK
      1                  ((WTK.LE.ZEROSQ) .AND. (WTJ.LE.ZEROSQ)) ) THEN ! NO WEIGHT SET SO STILL OK
@@ -1870,7 +1860,7 @@ C        CALL XPRVDU(NCVDU,1,0)
 
 C GROUP: Quick pre-scan of atoms in group to check for incipient singularities
 C (e.g. linear group or otherwise not enough atoms).
-C We must make our way to the end of the card now,
+C We must make our way to the end of the card now, 
 C then skip back before general processing of atoms
 C
 C GROUP O(1) C(2) C(3)
@@ -1885,7 +1875,7 @@ C
            NCMATP = NCMATP + N5A
            GOTO 670
          ENDIF
-
+        
 
 
         IRATOM = 0
@@ -1902,7 +1892,7 @@ C
 
 C----- MUST BE AN ATOM WITH PARAMETERS
            KA=KATOMU(LN)
-           IF ( KA .LE. 0 ) GOTO 2050
+           IF ( KA .LE. 0 ) GOTO 2050    
            IF (N5A .LE. 0) GOTO 1950
 C----- GENERATE GROUP DERIVATIVES FROM COORDINATES
 C----- MAKE FIRST ATOM PIVOT
@@ -1925,11 +1915,11 @@ C----- DERIV WRTO CENTROID
 C             WRITE(NCWU,*) 'Rot derivs: ', (STORE(JOBA),JOBA=JBASE,JBASE+8)
              DO II = 10,17
                ROTACC(II) = 0.0
-             END DO
+             END DO      
              ROTACC(10) = 1.0
              ROTACC(14) = 1.0
              ROTACC(18) = 1.0
-
+             
 C- ROTACC now contains derivatives wrt phi, chi, omega, x,y,z.  Accumulate square.
 c             WRITE(NCWU,'(A,/,3(3F11.5,/))')'Rotacc:',(ROTACC(I),I=1,18)
 C- Step1. Square and add normal matrix accumulation. Simulates pre and post multiplication of this matrix onto lsq derivatives. Singularities will remain.
@@ -1937,14 +1927,14 @@ C- Step1. Square and add normal matrix accumulation. Simulates pre and post mult
 c             WRITE(NCWU,'(A,/,6(6F11.5,/))')'Rottmp:',(ROTTMP(I),I=1,36)
              DO I=1,36
                ROTSQR(I) = ROTSQR(I) + ROTTMP(I)
-             END DO
+             END DO      
 c             WRITE(NCWU,'(A,/,6(6F11.5,/))')'Rotsqr:',(ROTSQR(I),I=1,36)
            END DO
 670        CONTINUE
 C----- CHECK FOR END OF CARD
            IF(ME.LE.0) GOTO 669
         GOTO 668
-669     CONTINUE
+669     CONTINUE        
 c        WRITE(CMON,'(A,I8)')'GROUP # atoms found: ', IRATOM
 c        CALL XPRVDU(NCVDU,1,0)
         ME = OME
@@ -1967,7 +1957,7 @@ C--     Check for singularities
 C Check eigenvalues of 6x6 ROTSQR matrix; if abs > 'ZERO' then all good.
           DO II = 1,36
             ROTTMP(II) = ROTSQR(II)
-          END DO
+          END DO         
           CALL SSYEV('N','L', 6, ROTTMP, 6, EIGVAL, EIGWRK, 72, INFO)
 c          WRITE(NCWU,*)'Eigv:', (EIGVAL(II),II=1,6)
           NPTORM = 0  !Number of parameters to remove
@@ -1975,7 +1965,7 @@ c          WRITE(NCWU,*)'Eigv:', (EIGVAL(II),II=1,6)
              IF (EIGVAL(I).LT.ZERO) NPTORM = NPTORM + 1    !This is a harder tolerance than the subsequent checks
           END DO
           IF ( NPTORM .GT. 0 ) THEN
-            WRITE(CMON,'(A,I1,A)')
+            WRITE(CMON,'(A,I1,A)') 
      1      '{I Singularity in a rigid group rotation. Removing ',
      1       NPTORM,' rotation parameters.'
              CALL XPRVDU(NCVDU, 1,0)
@@ -1993,7 +1983,7 @@ c          WRITE(NCWU,*)'Eigv:', (EIGVAL(II),II=1,6)
             IPERM(5) = 6
             DO II = 1,5
               DO IJ = 1,5
-                ROTTMP(((II-1)*5)+IJ) =
+                ROTTMP(((II-1)*5)+IJ) = 
      1               ROTSQR(((IPERM(II)-1)*6)+IPERM(IJ))
               END DO
             END DO
@@ -2005,7 +1995,7 @@ c            WRITE(NCWU,*)'Eigs1',(EIGVAL(II),II=1,5)
             IPERM(1) = 1
             DO II = 1,5
               DO IJ = 1,5
-                ROTTMP(((II-1)*5)+IJ) =
+                ROTTMP(((II-1)*5)+IJ) = 
      1               ROTSQR(((IPERM(II)-1)*6)+IPERM(IJ))
               END DO
             END DO
@@ -2016,7 +2006,7 @@ c            WRITE(NCWU,*)'Eigs2',(EIGVAL(II),II=1,5)
             IPERM(2) = 2
             DO II = 1,5
               DO IJ = 1,5
-                ROTTMP(((II-1)*5)+IJ) =
+                ROTTMP(((II-1)*5)+IJ) = 
      1               ROTSQR(((IPERM(II)-1)*6)+IPERM(IJ))
               END DO
             END DO
@@ -2024,7 +2014,7 @@ c            WRITE(NCWU,*)'Eigs2',(EIGVAL(II),II=1,5)
 c            IF (EIGVAL(1).LT.0.001) LROWOK(3) = .FALSE.
             WRITE(NCWU,*)'Eigs3',(EIGVAL(II),II=1,5)
             EIG3 = EIGVAL(1)
-
+            
             IF ( ( EIG1 .LT. EIG2 ).AND.( EIG1 .LT. EIG3 )) THEN  ! Remove 1
                  LROWOK(1) = .FALSE.
               IF (NPTORM.EQ.2) THEN
@@ -2053,17 +2043,17 @@ c            IF (EIGVAL(1).LT.0.001) LROWOK(3) = .FALSE.
                 ENDIF
               ENDIF
             END IF
-
+                      
           END IF
         END IF
       END IF
-
+      
       NGDERI = 6 - NPTORM
-
+      
       NCMATC = 0
       NCMATR = 0
       NCMATP = 0 !Must match NCMATC (maybe remove ncols later.)
-
+      
       IF ( ML .EQ. 6 ) THEN ! MATRIX
 
 C MATRIX: Need to extract coefficients in advance of
@@ -2112,12 +2102,12 @@ C--THERE IS  NO NUMBER TO BE USED AS THE NROWS
 
         OME = ME                ! SAVE LEXICAL ADDRESSES OF POSITION
         OMF = MF                ! AFTER THE DIMENSIONS
-
+        
         WRITE(CMON,'(A,2(I4,1X))')'Matrix dimensions: ', NCMATR, NCMATC
         CALL XPRVDU(NCVDU,1,0)
 
         ICMAT = KSTALL(NCMATR * NCMATC)  ! Space for our coefficients
-
+        
 c850     CONTINUE   ! Parameter loop
         DO IXPCM = 1, NCMATC
 
@@ -2137,7 +2127,7 @@ c850     CONTINUE   ! Parameter loop
               GOTO 2050
            ENDIF
 
-
+        
 C----- MUST BE AN ATOM WITH PARAMETERS
            KA=KATOMU(LN)
            IF ( KA .LE. 0 ) GOTO 2050
@@ -2163,7 +2153,7 @@ c         IF(ME.GT.0) GOTO 850
         CALL XPRVDU(NCVDU,1,0)
         END DO
 
-
+        
         DO IYPCM = 1, NCMATR
           DO IXPCM = 1, NCMATC
             IF(KNUMBR(Z).NE.0) THEN
@@ -2180,15 +2170,15 @@ C--THERE IS  NO NUMBER TO BE USED AS THE COEFF
             WRITE(CMON,'(A,2I4,F10.3)')'Coeff ',IXPCM,IYPCM,Z
             CALL XPRVDU(NCVDU,1,0)
             STORE(ICMAT + (IYPCM-1) * NCMATC + IXPCM - 1 ) = Z
-          END DO
-        END DO
+          END DO        
+        END DO      
         ME = OME
         MF = OMF
       END IF
 
 c      WRITE(CMON,'(A)')'Loop ended '
 c      CALL XPRVDU(NCVDU,1,0)
-
+      
 
 C
 C--ASSIGN THE MAXIMUM ADDRESS AS ZERO INITIALLY
@@ -2440,7 +2430,7 @@ C--SET UP THE PARAMETER AND ATOM HEADER BLOCK POINTERS
 1750  CONTINUE
 CDJWOCT2000>
 C----- SKIP H FOR IMPLICIT PARAMETERS
-      if ((ijmh .eq. 1) .and.
+      if ((ijmh .eq. 1) .and. 
      1 ((istore(m5a).eq.khyd).or.(istore(m5a).eq.kdet)))goto 1850
 CDJWOCT2000>
       MR=ISTORE(MQ+5)
@@ -3027,7 +3017,7 @@ C C is a linear transformation.
 C
 C   dx = C.dx'
 C
-C        1  0  0  0
+C        1  0  0  0 
 C        0  1  0  0
 C   C =  0  0  1  0
 C        0  0  0  1
@@ -3908,8 +3898,6 @@ C-C-C-ATOM IS ANISOTROPIC
       ELSE IF(NINT(ABS(STORE(M5+3))) .EQ. 2) THEN
 C-C-C-"ATOM" IS A SPHERE
       GOTO 2310
-      ELSE IF(NINT(ABS(STORE(M5+3))) .EQ. 5) THEN
-      GOTO 2315
       ELSE IF(NINT(ABS(STORE(M5+3))) .GE. 3) THEN
 C-C-C-"ATOM" IS A LINE OR RING
       GOTO 2320
@@ -3951,8 +3939,6 @@ C      GOTO 2100
       GOTO 2400
       ELSE IF(NINT(ABS(STORE(M5+3))) .EQ. 2) THEN
       GOTO 2310
-      ELSE IF(NINT(ABS(STORE(M5+3))) .EQ. 5) THEN
-      GOTO 2315
       ELSE IF(NINT(ABS(STORE(M5+3))) .GE. 3) THEN
       GOTO 2320
       ENDIF
@@ -4003,26 +3989,11 @@ C-C-C-GIVE "SIZE" (RADIUS) A REASONABLE VALUE
 C-C-C-CLEAR THE OTHER NOT USED ENTRIES
       CALL XZEROF(STORE(M5+9),4)
       GOTO 2340
-2315  CONTINUE
-C-C-C-"ATOM" IS ROTOR
-      M5A=M5
-      DO I=1,3 !checking +8,+9,+10 (size, dec, azi)
-      IF(ABS(STORE(M5A+8)) .GE. UISO) GOTO 2318 !if negative, zero, positive go to different labels
-      M5A=M5A+1
-      END DO
-C-C-C-GIVE "SIZE", DECLINAT, AZIMUTH REASONABLE VALUES
-      STORE(M5+8)=1.0
-      STORE(M5+9)=0.45
-      STORE(M5+10)=0.45
-      STORE(M5+11)=0.4
-      STORE(M5+12)=0.5
-2318  CONTINUE
-      GOTO 2340
 2320  CONTINUE
 C-C-C-"ATOM" IS LINE OR RING
       M5A=M5
-      DO 2330 I=1,3 !checking +8,+9,+10 (size, dec, azi)
-      IF(ABS(STORE(M5A+8))-UISO)2325,2335,2335 !if negative, zero, positive go to different labels
+      DO 2330 I=1,3
+      IF(ABS(STORE(M5A+8))-UISO)2325,2335,2335
 2325  CONTINUE
       M5A=M5A+1
 2330  CONTINUE
@@ -4032,7 +4003,7 @@ C-C-C-GIVE "SIZE", DECLINAT, AZIMUTH REASONABLE VALUES
       STORE(M5+10)=0.45
 2335  CONTINUE
 C-C-C-CLEAR THE OTHER NOT USED ENTRIES
-      CALL XZEROF(STORE(M5+11),2) !todo: this is where 0.00000 is being set
+      CALL XZEROF(STORE(M5+11),2)
 2340  CONTINUE
 C-C-C-TELL PROGRAMM THAT NOT ONLY ISOTROPIC ATOMS ARE PRESENT
 C-C-C-SHOULDN'T BE NECESSARY ANY MORE, BECAUSE KSET52 IS ALWAYS 0 NOW
@@ -4274,3 +4245,4 @@ C--FIND THE LEAST SQUARES PARAMETER NUMBER
       KFPP=-1
       GOTO 1050
       END
+

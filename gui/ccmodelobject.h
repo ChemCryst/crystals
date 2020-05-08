@@ -25,7 +25,6 @@ using namespace std;
 #define CC_BOND 2
 #define CC_SPHERE 3
 #define CC_DONUT 4
-#define CC_ROTOR 5
 
 class CcModelStyle;
 
@@ -44,7 +43,7 @@ class CcModelObject
      bool Select();
      bool spare;
      bool IsSelected();
-     virtual void SendAtom(int style, bool output=false);
+     virtual void SendAtom(int style, bool output=false); 
      GLuint m_glID;
 
      bool m_disabled;
@@ -66,6 +65,5 @@ class CcModelObject
 #include    "ccmodelbond.h"
 #include        "ccmodelsphere.h"
 #include        "ccmodeldonut.h"
-#include        "ccmodelrotor.h"
 
 #endif

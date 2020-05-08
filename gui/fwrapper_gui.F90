@@ -92,7 +92,7 @@ end interface
 !> interface to C function fastclear (digital compiler)
 !! Clear screen in cameron component
 interface
-  subroutine fastclear ()
+  subroutine fastclear () 
     !dec$ attributes c :: fastclear
   end subroutine fastclear
 end interface
@@ -266,36 +266,6 @@ interface
     integer jsp,jfl,jiso,jrad, jdec, jaz
     character dl
   end subroutine fastdonut
-end interface
-!> interface to C function fastrotor (digital compiler)
-
-#error
-ERROR should not be including this section, as far as I can see.
-!! Unkwown function call from guibits.F
-interface
-  subroutine fastrotor (dl,jx,jy,jz,jr,jg,jb,joc,jco,jvd, &
-  & jsp,jfl,jiso,jrad, jdec, jaz, jxi, jbd)
-    !dec$ attributes c :: fastdonut
-    !dec$ attributes value :: jx
-    !dec$ attributes value :: jy
-    !dec$ attributes value :: jz
-    !dec$ attributes value :: jr
-    !dec$ attributes value :: jg
-    !dec$ attributes value :: jb
-    !dec$ attributes value :: joc
-    !dec$ attributes value :: jco
-    !dec$ attributes value :: jvd
-    !dec$ attributes value :: jsp
-    !dec$ attributes value :: jfl
-    !dec$ attributes value :: jiso
-    !dec$ attributes value :: jrad
-    !dec$ attributes value :: jdec
-    !dec$ attributes value :: jaz
-    !dec$ attributes reference :: dl
-    integer jx,jy,jz,jr,jg,jb,joc,jco,jvd
-    integer jsp,jfl,jiso,jrad, jdec, jaz
-    character dl
-  end subroutine fastrotor
 end interface
 #else
 
@@ -526,20 +496,6 @@ interface
     character dl,de
     real, value :: sfx,sfy,sfz,fue,fsp
   end subroutine fastdonut
-end interface
-
-interface
-!> interface to C function fastdonut (iso_c_bindings)
-!! Unkwown function call from guibits.F
-  subroutine fastrotor (dl,jx,jy,jz,jr,jg,jb,joc,jco,jvd, &
-  & jsp,jfl,jiso,jrad, jdec, jaz, jxi, jbd, sfx,sfy,sfz,de,jl,jrf,ja,jgr,fue,fsp,isflg) bind(c)
-    use, intrinsic :: ISO_C_BINDING
-    implicit none
-    integer, value :: jx,jy,jz,jr,jg,jb,joc,jco,jvd, jxi, jbd
-    integer, value :: jsp,jfl,jiso,jrad, jdec, jaz,jl,jrf,ja,jgr,isflg
-    character dl,de
-    real, value :: sfx,sfy,sfz,fue,fsp
-  end subroutine fastrotor
 end interface
 #endif
 

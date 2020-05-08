@@ -352,6 +352,8 @@ IF (Fortran_COMPILER_NAME MATCHES "gfortran")  # gfortran
 		SET(CMAKE_RC_COMPILE_OBJECT
 		"<CMAKE_RC_COMPILER> -O coff <DEFINES> -i <SOURCE> -o <OBJECT> ${_WINDRES_INCLUDE_DIRS}")
 
+		message(STATUS ${CMAKE_RC_COMPILE_OBJECT})
+
     endif()
 
 ELSEIF ( IFORT_COMPILER ) # ifort (untested)
@@ -415,7 +417,7 @@ ENDIF ()
 
 
 IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.0)
-#    check_fortran_compiler_flag("-std=legacy" _std_legacy_flag)
+    check_fortran_compiler_flag("-std=legacy" _std_legacy_flag)
     check_fortran_compiler_flag("-fexceptions" _f_exceptions)
     check_fortran_compiler_flag("-fno-sign-zero" _f_no_signzero)
 
