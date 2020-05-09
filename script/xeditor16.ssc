@@ -5,7 +5,8 @@
 % EVALUATE EDITOR_OK = FALSE
 %% The variables needed by XQUESTIO                                             
 % VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX                         
-% VARIABLE LOGICAL   ANSWER                                                     
+% VARIABLE LOGICAL   ANSWER      
+% VARIABLE INTEGER ISELV                                               
 %% 
 %% Check it exists
 %%
@@ -219,53 +220,54 @@ Using user-specified editor.
 %% 'U-Equiv' 'U-Vol' 'U-Qiso' 'U-eig' 'U-align'   12 13 14 15 16
 %% 'U-Rigu' 'U-Perp' 'U-Plane' 'U-Lij'            17 18 19 20
 %       GET SILENT NOSTORE INTEGER ' ' ' '
-%       IF VALUE .EQ. 1 THEN                                                
+%       EVALUATE ISELV = VALUE
+%       IF ISELV .EQ. 1 THEN                                                
 ^^CO            SET TEXT5 INSERT 'planar 0.0, 0.01 = X(1) X(2) X(3) X(4)' 
-%       ELSE IF VALUE .EQ. 2 THEN
+%       ELSE IF ISELV .EQ. 2 THEN
 ^^CO            SET TEXT5 INSERT 'dist 0.0, 0.01 = mean X(1) to X(2) , X(3) to X(4)' 
-%       ELSE IF VALUE .EQ. 3 THEN
+%       ELSE IF ISELV .EQ. 3 THEN
 ^^CO            SET TEXT5 INSERT 'angle 0.0, 0.01 = mean X(1) to X(2) to x(3) , X(4) to X(5) to x(6)' 
-%       ELSE IF VALUE .EQ. 4 THEN
+%       ELSE IF ISELV .EQ. 4 THEN
 ^^CO            SET TEXT5 INSERT 'dist 1.54, 0.01 = X(1) to X(2)' 
-%       ELSE IF VALUE .EQ. 5 THEN
+%       ELSE IF ISELV .EQ. 5 THEN
 ^^CO            SET TEXT5 INSERT 'angle 109.5, .1 = X(1) to X(2) to x(3)' 
-%       ELSE IF VALUE .EQ. 6 THEN
+%       ELSE IF ISELV .EQ. 6 THEN
 ^^CO            SET TEXT5 INSERT 'u(ij) 0.0, 0.01 = X(1) TO X(2)' 
-%       ELSE IF VALUE .EQ. 7 THEN
+%       ELSE IF ISELV .EQ. 7 THEN
 ^^CO            SET TEXT5 INSERT 'vib 0.0, 0.01 = X(1) to X(2)' 
-%       ELSE IF VALUE .EQ. 8 THEN
+%       ELSE IF ISELV .EQ. 8 THEN
 ^^CO            SET TEXT5 INSERT '# repulsive restraint w = (value/actual)**(power*12)' 
 ^^CO            SET TEXT5 INSERT '# will become rapidly repulsive if actual distance drops below requested value' 
 ^^CO            SET TEXT5 INSERT 'non-bonded 0.8, 1.0 = X(1) to X(2)' 
-%       ELSE IF VALUE .EQ. 9 THEN
+%       ELSE IF ISELV .EQ. 9 THEN
 ^^CO            SET TEXT5 INSERT '# restrain adps to be equal, restraint only applied to second atom.' 
 ^^CO            SET TEXT5 INSERT 'a-u(ij) 0.0, 0.02 = X(1) to X(2)' 
-%       ELSE IF VALUE .EQ. 10 THEN
+%       ELSE IF ISELV .EQ. 10 THEN
 ^^CO            SET TEXT5 INSERT '# restrain component of adp along bond to be equal, restraint only applied to second atom.' 
 ^^CO            SET TEXT5 INSERT 'a-vib 0.0, 0.01 = X(1) to X(2)' 
-%       ELSE IF VALUE .EQ. 11 THEN
+%       ELSE IF ISELV .EQ. 11 THEN
 ^^CO            SET TEXT5 INSERT '# restrain adps to fit TLS model of displacement motion' 
 ^^CO            SET TEXT5 INSERT '# use syntax "UTLS 0.01 m x(1) ..." to only apply restraint to first m atoms.' 
 ^^CO            SET TEXT5 INSERT 'utls 0.01 X(1) X(2) X(3) X(4)' 
-%       ELSE IF VALUE .EQ. 12 THEN
+%       ELSE IF ISELV .EQ. 12 THEN
 ^^CO            SET TEXT5 INSERT 'ueqiv 0.01 X(1) X(2) X(3)' 
-%       ELSE IF VALUE .EQ. 13 THEN
+%       ELSE IF ISELV .EQ. 13 THEN
 ^^CO            SET TEXT5 INSERT 'uvol 0.01 X(1) X(2) X(3)' 
-%       ELSE IF VALUE .EQ. 14 THEN
+%       ELSE IF ISELV .EQ. 14 THEN
 ^^CO            SET TEXT5 INSERT 'uqiso 0.01 X(1)' 
-%       ELSE IF VALUE .EQ. 15 THEN
+%       ELSE IF ISELV .EQ. 15 THEN
 ^^CO            SET TEXT5 INSERT 'ueig 0.01 X(1)' 
-%       ELSE IF VALUE .EQ. 16 THEN
+%       ELSE IF ISELV .EQ. 16 THEN
 ^^CO            SET TEXT5 INSERT 'ualign 0.01 X(1) X(2) X(3)' 
-%       ELSE IF VALUE .EQ. 17 THEN
+%       ELSE IF ISELV .EQ. 17 THEN
 ^^CO            SET TEXT5 INSERT '# restrain adps of atoms to be physically sensible see Thorn et al., 2012, Acta A68, 448' 
 ^^CO            SET TEXT5 INSERT 'urigu 0.01 X(1) to X(2)' 
-%       ELSE IF VALUE .EQ. 18 THEN
+%       ELSE IF ISELV .EQ. 18 THEN
 ^^CO            SET TEXT5 INSERT 'uperp 0.01 X(1) X(2) X(3)' 
-%       ELSE IF VALUE .EQ. 19 THEN
+%       ELSE IF ISELV .EQ. 19 THEN
 ^^CO            SET TEXT5 INSERT '# restrain adp of X(1) to lie in plane defined by all three atoms' 
 ^^CO            SET TEXT5 INSERT 'uplane 0.01 X(1) to X(2) to X(3)' 
-%       ELSE IF VALUE .EQ. 20 THEN
+%       ELSE IF ISELV .EQ. 20 THEN
 ^^CO            SET TEXT5 INSERT '# restrain adp of x(1) and x(4) to be same in local coord system defined by other two atoms' 
 ^^CO            SET TEXT5 INSERT 'ulij 0.01 X(1) to X(2) to X(3) , X(4) to X(5) to X(6)' 
 %       END IF                                                                  

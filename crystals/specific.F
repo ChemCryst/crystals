@@ -1754,7 +1754,7 @@ C      IMPLICIT NONE
       INTEGER MAXLVL
       PARAMETER (MAXLVL=30)
       CHARACTER*(*) FILNAM,STATUS
-      LOGICAL LEXIST
+      LOGICAL LEXIST, LSPACE
       INTEGER KSTRLN
       INTEGER I,J,K,LEVEL,IWHAT
       INTEGER NAMLEN(MAXLVL),COLPOS(MAXLVL)
@@ -1830,14 +1830,15 @@ C Don't subst things like C:\ - start search from third character.
 C FEB04: On Win32 platform, search for forward slashes and change
 C to back slashes - this will allow consistent file and path naming
 C on all platforms.
+C MAY20: Don't change leading slashes - could be command switch
 #ifdef CRY_OSWIN32
-      DO WHILE(.TRUE.)
-        ISLP = KCCEQL(NAME(LEVEL),1,'/')
-        IF ( ISLP .GT. 0 ) THEN
-          NAME(LEVEL)(ISLP:ISLP) = '\'
-        ELSE
-          EXIT
+      LSPACE = .TRUE.
+      DO I = 1, LEN(NAME(LEVEL)) 
+        IF ( ( .NOT. LSPACE ) .AND. ( NAME(LEVEL)(I:I) .EQ. '/' )) THEN
+          NAME(LEVEL)(I:I) = '\'
         END IF
+        LSPACE = .FALSE.
+        IF ( NAME(LEVEL)(I:I) .EQ. ' ' ) LSPACE = .TRUE.
       END DO
 #endif
 
