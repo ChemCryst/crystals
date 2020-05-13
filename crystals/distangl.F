@@ -7522,6 +7522,18 @@ c      END IF
 C
 9900  CONTINUE
 C -- ERRORS
+      IF ( INTERN .NE. 2 ) THEN
+        IF ( KEXIST(41) .LE. 0 ) THEN
+C -- C R E A T E   A   N E W   L I S T   4 1:
+          IDWZAP = 0
+          CALL XFILL (IDWZAP, ICOM41, IDIM41)
+          N41B = 0 !Bond list, no entries
+          N41A = 0 !Atom list, no entries
+          N41D = 1 !Dependencies, one record.
+          CALL XCELST ( 41, ICOM41, IDIM41 )
+          CALL XWLSTD (41,ICOM41,IDIM41,-1,-1)
+        END IF
+      END IF
       CALL XOPMSG ( IOPBND , IOPABN , 0 )
       GOTO 3350
 9910  CONTINUE
