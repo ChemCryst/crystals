@@ -1931,6 +1931,8 @@ C--CHECK FOR ONLY ONE REFLECTION
       IF(NREF-1)1000,1000,1050
 C--ONLY ONE CONTRIBUTOR
 1000  CONTINUE
+      ymode = 0.0
+	  sigmode = 0.0
       JFO=IFO+IREF
 C--IREF acts like M6 IN LOCAL STACK
       WORK(5) = STORE(JFO)                              !FO OR FOT
