@@ -1192,12 +1192,14 @@ C - 2, when clash, change serial of former atom.
         K5L = L5
         K5S = -MD5
       END IF
+      KCLASH = 0
 C  Outer loop over all but last atom.
       DO K5A = K5F,K5L-K5S,K5S
 C  Inner loop over atoms between current and last.
         DO K5B = K5A+K5S,K5L,K5S
           IF ( ( ISTORE(K5A)        .EQ. ISTORE(K5B)        ) .AND.
      1         ( NINT(STORE(K5A+1)) .EQ. NINT(STORE(K5B+1)) ) ) THEN
+           KCLASH = KCLASH + 1
            CALL CATSTR(STORE(K5A),STORE(K5A+1),1,1,0,0,0,CATOM1,LATOM1)
            call outcol(9)
            WRITE (CMON,'(''{I Clash detected, atom: '',A)')
@@ -1219,6 +1221,7 @@ C  Fix clash. Find highest serial and add one.
         END DO
       END DO
       IERROR=IERNOP   ! This function should not cause a warning if no changes to L5.
+      ISTAT = KSCTRN ( 1 , 'EDIT:CLASH' , KCLASH, 1 )
       GO TO 100
 C
 C-C-C

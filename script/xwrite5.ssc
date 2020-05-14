@@ -18,6 +18,8 @@
 %% _______________________________________________________________
 %%
 %  BLOCK
+%% quick check for clashing atom names
+%   COPY '#SCRIPT CLASHFIX'
 %% clear out the old ride and restraint files
 %   VARIABLE LOGICAL FD
 %   IF ( FILEEXISTS ( 'ridedat.12' ) ) THEN

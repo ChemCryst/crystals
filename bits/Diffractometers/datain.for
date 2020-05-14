@@ -579,14 +579,24 @@ C
          MAXK=MAX(MAXK,IK)
          MAXL=MAX(MAXL,IL)
 C
-        if (( rf .lt. 9999. ).and.( rc .lt. 9999. )) then
-          write ( noutr, '(3I4,3F10.3)' )ih,ik,il,rf,rs, rc
+        if ( rf .lt. -999999. ) then
+          write ( noutr, '(A)') 
+     1    'F8 format overflow. fcf values too negative'
+          write ( noutr, '(3I4,3F12.0)' )ih,ik,il,rf,rs, rc
+        else if ( rf .lt. -99999. ) then
+          write ( noutr, '(3I4,3F8.0)' )ih,ik,il,rf,rs, rc
+        else if ( rf .lt. -9999. ) then
+          write ( noutr, '(3I4,3F8.1)' )ih,ik,il,rf,rs, rc
+        else if ( rf .lt. -999. ) then
+          write ( noutr, '(3I4,3F8.2)' )ih,ik,il,rf,rs, rc
+        else if (( rf .lt. 9999. ).and.( rc .lt. 9999. )) then
+          write ( noutr, '(3I4,3F8.3)' )ih,ik,il,rf,rs, rc
         else if (( rf .lt. 99999. ).and.( rc .lt. 99999. )) then
-          write ( noutr, '(3I4,3F10.2)' )ih,ik,il,rf,rs, rc
+          write ( noutr, '(3I4,3F8.2)' )ih,ik,il,rf,rs, rc
         else if (( rf .lt. 999999. ).and.( rc .lt. 999999. )) then
-          write ( noutr, '(3I4,3F10.1)' )ih,ik,il,rf,rs, rc
+          write ( noutr, '(3I4,3F8.1)' )ih,ik,il,rf,rs, rc
         else if (( rf .lt. 9999999. ).and.( rc .lt. 9999999. )) then
-          write ( noutr, '(3I4,3F10.0)' )ih,ik,il,rf,rs, rc
+          write ( noutr, '(3I4,3F8.0)' )ih,ik,il,rf,rs, rc
         else
           write ( noutr, '(A)') 
      1    'F8 format overflow. fcf values too big'
@@ -1273,7 +1283,7 @@ c2018        write(noutf,'(a)')'#OPEN FRN2 ARCHIVE-HKL.CIF'
           write(NOUTF,'(a)')'READ F''S=FO NCOEF=6 TYPE=FIXED CHECK=NO'
         end if
         write(NOUTF,'(a)')'INPUT H K L /FO/ SIGMA(/FO/) /Fc/'
-        write(NOUTF,'(a)')'FORMAT (3F4.0, 3F10.0)'
+        write(NOUTF,'(a)')'FORMAT (3F4.0, 3F8.0)'
         write(NOUTF,'(a)')'STORE NCOEF=7'
         write(NOUTF,'(a)')'OUTP INDI /FO/ SIG RATIO/J CORR SERI /Fc/'
         write(NOUTF,'(a)')'END'
