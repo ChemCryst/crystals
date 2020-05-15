@@ -1370,7 +1370,8 @@ c
       IMINL = 0
       
         if (kexist(6) .ge. 1)  then
-         if (khuntr (6,0, iaddl,iaddr,iaddd, -1) . lt. 0) call xfal06
+         if (khuntr (6,0, iaddl,iaddr,iaddd, -1) . lt. 0) 
+     1      CALL XFAL06 (IULN, 0)
         else
          if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
          WRITE(CMON,'(A)')' No LIST 6 found. We should never get here'
@@ -1388,8 +1389,6 @@ c
 c
       IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
       IF (KHUNTR ( 2,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL02
-      IF (KHUNTR ( 6,0, IADDL,IADDR,IADDD, -1) .LT. 0) 
-     1                                      CALL XFAL06 (IULN, 0 )
       IF (KHUNTR (13,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL13
       IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL30
       

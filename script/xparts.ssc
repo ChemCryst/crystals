@@ -188,7 +188,7 @@
 %     LOOP                                                                      
 %       ON EDITERROR TERMINATE                                                  
 %       COPY 'TRANSFER FROM OFFSET=14 TO IGROUP'                                
-%       EVALUATE IASSEMB = ( IGROUP IDECMASK 001000 ) / 1000                    
+%       EVALUATE IASSEMB = ( IGROUP IDECMASK 111000 ) / 1000                    
 %       COPY 'TRANSFER TO OFFSET=13 FROM IASSEMB'                               
 %       IF ( IASSEMB .GT. MAXGR ) THEN                                          
 %         EVALUATE MAXGR = IASSEMB                                              
