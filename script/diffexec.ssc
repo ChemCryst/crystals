@@ -54,11 +54,14 @@ Files INITIAL.* will be created in your logs/ folder. They may be important.
 {W Converted file not found  
 {  
 %      FINISH  
-%  END IF                                
+%  END IF            
+% show filefound                    
 %  IF FILEFOUND .NE. 'NONE' THEN  
 %      ON END TERMINATE  
 %      ON ERROR TERMINATE  
-%      COPY '#SCRIPT X30BITS'  
+%      IF ( EXISTS 30 .NE. 1 ) THEN
+%        COPY '#SCRIPT X30BITS'  
+%      END IF
 %      EVALUATE INITSETUP = TRUE
 %      BLOCK  
 %        ON ERROR REPEAT  
