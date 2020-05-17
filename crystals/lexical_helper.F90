@@ -1932,14 +1932,14 @@ contains
 
     ! remove space after * if followed by an atom specification
     ! the case *(3) is considered not to be an atom but a math expression
-    do j = len_trim(image_text) - 1, 3, -1
-      if (image_text(j:j + 1) == '(' .and. image_text(j - 2:j - 1) == '* ') then
+    do j = len_trim(image_text) - 3, 1, -1
+      if (image_text(j:j + 2) == '* (') then
         ! look for end group
         found_atom = .false.
-        do k = j, len_trim(image_text)
+        do k = j+2, len_trim(image_text)
           if (image_text(k:k) == ')') then
             ! look for `=` or `,` inside the group. They only occur in atom specification
-            do l = j, k
+            do l = j+2, k
               if (image_text(l:l) == '=' .or. image_text(l:l) == ',') then
                 found_atom = .true.
                 exit
@@ -1949,18 +1949,17 @@ contains
             if (.not. found_atom) then
               ! look if only ` ` or `*` is inside the group. ie. we have ( * )
               found_atom = .true.
-              do l = j, k
-                if (image_text(l:l) /= ' ' .or. image_text(l:l) /= '*') then
+              do l = j+3, k-1
+                if (image_text(l:l) /= ' ' .and. image_text(l:l) /= '*') then
                   found_atom = .false.
                   exit
                 end if
               end do
-
             end if
           end if
         end do
         if (found_atom) then
-          image_text = image_text(1:j - 2)//image_text(j:)
+          image_text = image_text(1:j)//image_text(j+2:)
         end if
       end if
     end do
