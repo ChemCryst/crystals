@@ -1026,7 +1026,7 @@ contains
         atom_in_l5 = .false.
         do j = 1, savedn5
           founds = .true.
-          if (atom%label /= "") then
+          if (atom%label /= "" .and. atom%label /= "*") then
             if (atom%label /= transfer(l5store(m5), '    ')) then
               founds(1) = .false.
             end if
@@ -1313,11 +1313,11 @@ contains
     implicit none
     character(len=*), intent(in) :: text
     type(atom_t) :: atom
-    integer i, j, k, n, info, eoffset
+    integer i, j, k, n, eoffset
     character(len=len(text)) :: buffer
     character(len=split_len), dimension(:), allocatable :: elements
     character(len=128) :: msgstatus
-    logical named_only
+    logical named_only, found_named
 
     character(len=6), dimension(21), parameter :: param_name = (/  &
     & 'X     ', 'Y     ', 'Z     ', 'OCC   ', 'U[ISO]', 'SPARE ',&
@@ -1354,70 +1354,78 @@ contains
       call explode(buffer, split_len, elements, ',', greedy_arg=.false.)
       eoffset = 0
       named_only = .false.
-      do j = 1, size(elements)
-        info = 0
+      atomloop: do j = 1, size(elements)
         msgstatus = ''
         if (trim(elements(j)) /= '') then
           ! First we check for named parameters
           do k = 1, size(param_name)
             if (index(elements(j), trim(param_name(k))) > 0) then
               ! valid instruction but not used in restraints
-              named_only = .true.
-              exit
+              if (index(elements(j), "=") > 0) then
+                named_only = .true.
+              end if
+              cycle atomloop
             end if
           end do
 
+          found_named = .false.
           if (index(elements(j), 'PART') > 0) then
             n = index(elements(j), '=')
             if (n > 0) then
-              read (elements(j) (n + 1:), *, iostat=info, iomsg=msgstatus) atom%part
+              read (elements(j) (n + 1:), *, iostat=atom%error, iomsg=msgstatus) atom%part
               named_only = .true.
+              found_named = .true.
             end if
           else if (index(elements(j), 'RESI') > 0) then
             n = index(elements(j), '=')
             if (n > 0) then
-              read (elements(j) (n + 1:), *, iostat=info, iomsg=msgstatus) atom%resi
+              read (elements(j) (n + 1:), *, iostat=atom%error, iomsg=msgstatus) atom%resi
               named_only = .true.
+              found_named = .true.
             end if
           end if
 
           ! If not a named parameter, treat it as positional
-          if (.not. named_only) then
-            select case (j)
-            case (1) ! serial
-              if (trim(elements(j)) /= "*") then
-                read (elements(j), *, iostat=info, iomsg=msgstatus) atom%serial
-              end if
-            case (2) ! symmetry operator provided in the unit cell symmetry LIST 2
-              read (elements(j), *, iostat=info, iomsg=msgstatus) atom%sym_op%S
-            case (3) ! the non-primitive lattice translation that is to be added
-              read (elements(j), *, iostat=info, iomsg=msgstatus) atom%sym_op%L
-              if (atom%sym_op%L < 1 .or. atom%sym_op%L > 4) then
-                info = -1
-                msgstatus = 'Lattice translation number is not valid'
-              end if
-            case (4)
-              read (elements(j), *, iostat=info, iomsg=msgstatus) atom%sym_op%translation(1)
-            case (5)
-              read (elements(j), *, iostat=info, iomsg=msgstatus) atom%sym_op%translation(2)
-            case (6)
-              read (elements(j), *, iostat=info, iomsg=msgstatus) atom%sym_op%translation(3)
-            case default
-              write (msgstatus, '(A, I0, 1X, I0)') '{E Error: wrong offset in read_atom ', j, eoffset
-              info = -1
-              atom%error = -3
-            end select
+          if (.not. found_named) then
+            if (.not. named_only) then
+              select case (j)
+              case (1) ! serial
+                if (trim(elements(j)) /= "*") then
+                  read (elements(j), *, iostat=atom%error, iomsg=msgstatus) atom%serial
+                end if
+              case (2) ! symmetry operator provided in the unit cell symmetry LIST 2
+                read (elements(j), *, iostat=atom%error, iomsg=msgstatus) atom%sym_op%S
+              case (3) ! the non-primitive lattice translation that is to be added
+                read (elements(j), *, iostat=atom%error, iomsg=msgstatus) atom%sym_op%L
+                if (atom%sym_op%L < 1 .or. atom%sym_op%L > 4) then
+                  atom%error = -1
+                  msgstatus = 'Lattice translation number is not valid'
+                end if
+              case (4)
+                read (elements(j), *, iostat=atom%error, iomsg=msgstatus) atom%sym_op%translation(1)
+              case (5)
+                read (elements(j), *, iostat=atom%error, iomsg=msgstatus) atom%sym_op%translation(2)
+              case (6)
+                read (elements(j), *, iostat=atom%error, iomsg=msgstatus) atom%sym_op%translation(3)
+              case default
+                write (msgstatus, '(A, I0, 1X, I0)') '{E Error: wrong offset in read_atom ', j, eoffset
+                atom%error = -3
+              end select
+            else
+              write (msgstatus, '(A)') '{E positional parameter not allowed after a named parameter'
+              atom%error = -4
+            end if
           end if
-          if (info /= 0) then ! error when reading one of the values
+          if (atom%error /= 0) then ! error when reading one of the values
             call print_to_mon('{E Error: '//trim(text)//' is not a valid atom name')
             call print_to_mon('{E '//trim(msgstatus))
-            atom%error = -4
+            atom%error = -5
             return
           end if
         end if
-      end do
+      end do atomloop
     else
-      atom%error = -5
+      atom%error = -6
       return
     end if
 
@@ -1426,9 +1434,8 @@ contains
       atom%resi = 1
     end if
 
-    call atom%sym_mat_update(info)
-    if (info /= 0) then
-      atom%error = -6
+    call atom%sym_mat_update(atom%error)
+    if (atom%error /= 0) then
       return
     end if
 
@@ -1790,8 +1797,9 @@ contains
     character(len=*), intent(inout) :: image_text
     character, dimension(5), parameter :: operators = (/'/', '*', '-', '+', '='/)
     character(len=5), dimension(4), parameter :: keywords = (/'TO   ', 'AND  ', 'FROM ', 'UNTIL'/)
-    integer i, j
+    integer i, j, k, l
     character(len=4) :: bond_type_text
+    logical found_atom
 
     ! removed all duplicated spaces
     do i = len_trim(image_text) - 1, 2, -1
@@ -1920,6 +1928,41 @@ contains
           end if
         end if
       end do
+    end do
+
+    ! remove space after * if followed by an atom specification
+    ! the case *(3) is considered not to be an atom but a math expression
+    do j = len_trim(image_text) - 1, 3, -1
+      if (image_text(j:j + 1) == '(' .and. image_text(j - 2:j - 1) == '* ') then
+        ! look for end group
+        found_atom = .false.
+        do k = j, len_trim(image_text)
+          if (image_text(k:k) == ')') then
+            ! look for `=` or `,` inside the group. They only occur in atom specification
+            do l = j, k
+              if (image_text(l:l) == '=' .or. image_text(l:l) == ',') then
+                found_atom = .true.
+                exit
+              end if
+            end do
+
+            if (.not. found_atom) then
+              ! look if only ` ` or `*` is inside the group. ie. we have ( * )
+              found_atom = .true.
+              do l = j, k
+                if (image_text(l:l) /= ' ' .or. image_text(l:l) /= '*') then
+                  found_atom = .false.
+                  exit
+                end if
+              end do
+
+            end if
+          end if
+        end do
+        if (found_atom) then
+          image_text = image_text(1:j - 2)//image_text(j:)
+        end if
+      end if
     end do
 
   end subroutine
