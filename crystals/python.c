@@ -52,17 +52,27 @@ int runpy(const char *filename)
 
 // Set the PYTHONHOME to the CRYSTALS install folder + /pyembed
 
-    wchar_t myPath[_MAX_PATH+1];
-    GetModuleFileNameW(NULL,myPath,_MAX_PATH);
+    char homePath[_MAX_PATH+1], scriptPath[_MAX_PATH+1], exePath[_MAX_PATH+1];
+    char drive[_MAX_DRIVE],  dir[_MAX_DIR];
 
-    wchar_t drive[_MAX_DRIVE];
-    wchar_t dir[_MAX_DIR];
-    _wsplitpath_s( myPath, drive, _MAX_DRIVE, dir, _MAX_DIR, NULL, 0, NULL, 0 );
-    _wmakepath_s( myPath, _MAX_PATH+1, drive, dir, L"pyembed", NULL );
+    GetModuleFileNameA(NULL,exePath,_MAX_PATH+1);
 
-//    Py_SetPythonHome(L"c:/msys64/mingw64");
-//    Py_SetPythonHome(L"c:/users/richard.cooper/Documents/Github/crystals/p/pyembed");
-    Py_SetPythonHome(myPath);
+    _splitpath_s( exePath, drive, _MAX_DRIVE, dir, _MAX_DIR, NULL, 0, NULL, 0 );
+    _makepath_s( homePath, _MAX_PATH+1, drive, dir, "pyembed", NULL );
+    _makepath_s( scriptPath, _MAX_PATH+1, drive, dir, "script", NULL );
+
+// Replace backslashes as they look like escape sequences when passed to Python.
+    int index = 0;
+    while(scriptPath[index]) {   // loop until null terminator
+         if(scriptPath[index] == '\\')
+            scriptPath[index] = '/';
+         index++;
+    }
+
+    wchar_t *wHomePath = Py_DecodeLocale(homePath, NULL);
+    Py_SetPythonHome(wHomePath);
+
+
 
 
 /*
@@ -72,17 +82,14 @@ int runpy(const char *filename)
     freopen("CONIN$", "r", stdin);
     freopen("CONOUT$", "a", stdout);
     freopen("CONOUT$", "a", stderr);
+*/
 
-    printf("Top of call\n");
-    sprintf(message,"Top of call\n");
-    lineout(message,256);*/
-
-// Add the stdoutRedirect module
+// Add the stdoutRedirect module (defined above)
     PyImport_AppendInittab("stdoutRedirect", PyInit_stdoutRedirect);
 
     Py_Initialize();
 
-// This little bit tells python where to redirect stdout.
+// This little bit tells python where to redirect stdout and stderr.
     PyRun_SimpleString("\
 import stdoutRedirect\n\
 import sys\n\
@@ -103,23 +110,22 @@ sys.stdout = StdoutCatcher()\n\
 sys.stderr = StdoutCatcher()\n\
 sys.stderr.errcatch = True\n");
 
+// This little bit tells python where our scripts are.
+    char str[_MAX_PATH + 36];
+    sprintf(str, "import sys\nsys.path.append(\"%s\")\n", scriptPath);
+    PyRun_SimpleString( &str );
 
     pName = PyUnicode_DecodeFSDefault(filename);
     /* Error checking of pName left out */
-
-//    FILE* fp = fopen(filename, "rb");
-//    int pyret = PyRun_SimpleFile(fp, filename);
-
-//    return pyret;
-
 
     pModule = PyImport_Import(pName);
     Py_DECREF(pName);
     if (pModule != NULL) {
       Py_DECREF(pModule);
-    } else {
-      lineout("Couldn't find python module with that name",42);
     }
+
+    PyMem_RawFree(wHomePath);
+
 /*
     if (pModule != NULL) {
         pFunc = PyObject_GetAttrString(pModule, "__main__");
@@ -136,8 +142,6 @@ sys.stderr.errcatch = True\n");
                 Py_DECREF(pFunc);
                 Py_DECREF(pModule);
                 PyErr_Print();
-                sprintf(message,"Call failed\n");
-                lineout(message,256);
                 return 1;
             }
         }
