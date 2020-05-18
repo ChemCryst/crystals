@@ -3,7 +3,7 @@
 ^^WI   ITEM AGREE '&Agreement analysis	Ctrl+A' '#SCRIPT XANAL'                         
 ^^WI               ENABLEIF='L5 L6' DISABLEIF='IN'                              
 ^^WI   ITEM AGREE '&Fo vs Fc graph	Ctrl+F' '#SCRIPT XFOVSFC'                           
-^^WI               ENABLEIF='L6 L5 L1 L2' DISABLEIF='IN'                        
+^^WI      ICON='chart.png' ENABLEIF='L6 L5 L1 L2' DISABLEIF='IN'                        
 ^^WI   ITEM AGREE '&Normal probability plot' '#SCRIPT XNORMPP'                  
 ^^WI               ENABLEIF='L6 L5 L1 L2' DISABLEIF='IN' 
 ^^WI   ITEM DIFAB '&Difabs analysis' '#SCRIPT XDIFABS'                          

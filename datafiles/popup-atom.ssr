@@ -78,8 +78,7 @@
 ^^WI             ENDMENU
 ^^WI             ITEM _ZMFRG '&Zoom fragment containing _A'
 ^^WI              '^^CO SET MODEL01 SELFRAG _A YES ZOOMATOMS YES SELECT ALL=NO'
-^^WI                    DISABLEIF='IN'
-
+^^WI             ICON='tool_zoom.png'  DISABLEIF='IN'
 ^^WI             SPLIT
 ^^WI             ITEM _DELA '&Delete _A' '#EDIT_NDELETE _A_NEND'
 ^^WI                                 DISABLEIF='IN'

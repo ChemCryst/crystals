@@ -8,6 +8,8 @@
 %%
 %%
 ^^WI   SPLIT
+^^WI  ITEM _MEXT '&Explore current working folder'
+^^WI    '$explorer ./' ICON='explorer.png' DISABLEIF='IN'
 ^^WI   ITEM NOTE '&Notepad' '$notepad' ICON='notepad.png' DISABLEIF='IN'
 ^^WI   ITEM XDL '&Delete BFILES' '#spawn + "crysdir:crdelbf.bat"' 
 ^^WI     DISABLEIF='IN'
