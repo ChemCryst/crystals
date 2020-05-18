@@ -1345,6 +1345,7 @@ C
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XCONST.INC'
       INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XERVAL.INC'
 C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST30.INC'
@@ -1352,22 +1353,8 @@ C
       EXTERNAL RCTHETA
       REAL RH,RK,RL
       
-        if (kexist(25) .ge. 1)  then
-         if (khuntr (25,0, iaddl,iaddr,iaddd, -1) . lt. 0) call xfal25
-        else
-         n25=0
-        endif
+C     Initialise limits
 c
-      IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
-      IF (KHUNTR ( 2,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL02
-      IF (KHUNTR ( 6,0, IADDL,IADDR,IADDD, -1) .LT. 0) 
-     1                                      CALL XFAL06 (IULN, 0 )
-      IF (KHUNTR (13,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL13
-      IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL30
-      
-
-C -- SCAN LIST 6 FOR ALL REFLECTIONS
-
       IKLAST = -99999
       ILLAST = -99999
       IHTOT = 0
@@ -1382,6 +1369,31 @@ C -- SCAN LIST 6 FOR ALL REFLECTIONS
       IMAXL = 0
       IMINL = 0
       
+        if (kexist(6) .ge. 1)  then
+         if (khuntr (6,0, iaddl,iaddr,iaddd, -1) . lt. 0) 
+     1      CALL XFAL06 (IULN, 0)
+        else
+         if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
+         WRITE(CMON,'(A)')' No LIST 6 found. We should never get here'
+         CALL XPRVDU(NCVDU, 1,0)
+         IF (ISSPRT .EQ. 0) WRITE(NCWU, '(A)') trim(CMON(1))
+         goto 9990
+        endif
+
+
+        if (kexist(25) .ge. 1)  then
+         if (khuntr (25,0, iaddl,iaddr,iaddd, -1) . lt. 0) call xfal25
+        else
+         n25=0
+        endif
+c
+      IF (KHUNTR ( 1,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL01
+      IF (KHUNTR ( 2,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL02
+      IF (KHUNTR (13,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL13
+      IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .LT. 0) CALL XFAL30
+      
+
+C -- SCAN LIST 6 FOR ALL REFLECTIONS
 
 
 1100  CONTINUE
@@ -1713,7 +1725,7 @@ c rather than an estimate based on index ranges.  DJW 2017
       STORE(L30CF+9)=THMCMP
 
       CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
-
+9990  CONTINUE
       RETURN
       END
 c
@@ -2618,11 +2630,11 @@ CODE FOR XSUM13
 C
 C -- ROUTINE TO DISPLAY SUMMARY OF LIST 13
 C
-      PARAMETER ( NCRYST = 2 , NSPRED = 2 , NGEOMY = 10 , NRADTN = 2 )
+      PARAMETER ( NCRYST = 2 , NSPRED = 2 , NGEOMY = 10 , NRADTN = 3 )
       CHARACTER*30 CCRYST(NCRYST)
       CHARACTER*10 CSPRED(NSPRED)
       CHARACTER*10 CGEOMY(NGEOMY)
-      CHARACTER*8 CRADTN(NRADTN)
+      CHARACTER*10 CRADTN(NRADTN)
 C
       INCLUDE 'ISTORE.INC'
 C
@@ -2642,7 +2654,7 @@ C
      1 'NORMAL', 'EQUI', 'ANTI', 'PRECESSION', 'UNKNOWN',
      2 'CAD4', 'ROLLETT', 'Y290', 'KAPPA', 'AREA'
      3  /
-      DATA CRADTN / 'X-rays' , 'neutrons' /
+      DATA CRADTN / 'X-rays' , 'neutrons' , 'electrons' /
 C
 C -- BEGIN OUTPUT
 C

@@ -105,8 +105,8 @@ CODE FOR XCPY67
       SUBROUTINE XCPY67
 C
 C------ RE-WRITE TO AVOID PROBLEMS WITH GETTING DISK POINTERS 
-c------ simply writes out one list as another
 C       ALIGNED
+c------ simply writes out one list as another
       DIMENSION IBUF(7)
       DIMENSION PROCS(2)
 C
@@ -150,7 +150,7 @@ C---- NOTHING TO DO IF NO LIST 6
       IF (KEXIST(IULN1) .LE. 0) THEN
         WRITE (CMON,'(A,I3)') '{E No LIST 6', IULN1
         CALL XPRVDU(NCVDU,1,0)
-        WRITE (NCAWU,'(a)') trim(CMON(1))
+c        WRITE (NCAWU,'(a)') trim(CMON(1))
         IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
       RETURN
       ENDIF
@@ -472,6 +472,9 @@ c----- un-set data keys
       irft = nowt
       jnfo = nowt
       jnft = nowt
+c set an initial serial  number of zero.
+c If the input doe not include a serial, this will be auto-incremented
+      serial = 0.
 C--BLANK OUT THE FORMAT ARRAY
       CALL XMVSPD (IB,IFORM(1),NFORM)
       INCLUDE 'IDIM06.INC'
@@ -500,8 +503,8 @@ C--READ THE NEXT DIRECTIVE CARD FROM THE INPUT STREAM
       LAST=IDIR
       IDIR=KRDNDC(ISTORE(KX),KY)
 C--CHECK THE REPLY
-C      WRITE(123,'(/,A,I6,(/4I6,2X,4I6,2X,4I6,2X,4I6))')'IDIR=',IDIR,
-C     1(ISTORE(IIDJW),IIDJW=KX,KX+KY-1)
+c      WRITE(123,'(/,A,I6,(/4I6,2X,4I6,2X,4I6,2X,4I6))')'IDIR=',IDIR,
+c     1(ISTORE(IIDJW),IIDJW=KX,KX+KY-1)
       IF (IDIR) 600,100,150
 C--CONTINUATION CARD  -  RESET THE POINTER
 100   CONTINUE
@@ -540,7 +543,7 @@ C--FORMAT STATEMNT IS TOO LONG
       CALL XERHDR (0)
       WRITE (CMON,400)
       CALL XPRVDU (NCVDU,1,0)
-      WRITE (NCAWU,'(a)') trim(CMON(1))
+c      WRITE (NCAWU,'(a)') trim(CMON(1))
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
 400   FORMAT (' Format statement is too large')
       GO TO 5250
@@ -604,8 +607,8 @@ C        1     2    3       4        5           6    7    8
       IF (ITYPE6.GT.8) THEN
          WRITE (CMON,'(a)') 'Invalid READ type'
          CALL XPRVDU (NCVDU,1,0)
-         WRITE (NCAWU,'(a)') trim(CMON(1))
-         IF (ISSPRT.EQ.0) WRITE (NCAWU,'(a)') trim(CMON(1))
+c         WRITE (NCAWU,'(a)') trim(CMON(1))
+         IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
          GO TO 5250
       END IF
       IF (ITYPE6.EQ.5) THEN
@@ -680,8 +683,8 @@ C----- set default to untwinned
          IF (N25.LE.1) THEN
             WRITE (CMON,'(a)') 'Warning - You have no twin law'
             CALL XPRVDU (NCVDU,1,0)
-            WRITE (NCAWU,'(a)') trim(CMON(1))
-            IF (ISSPRT.EQ.0) WRITE (NCAWU,'(a)') trim(CMON(1))
+c            WRITE (NCAWU,'(a)') trim(CMON(1))
+c            IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
          END IF
       END IF
       IF (ISTORE(KZ+3)) 950,950,1150
@@ -698,7 +701,7 @@ C--NO OUTPUT DATA
       CALL XERHDR (0)
       WRITE (CMON,1050)
       CALL XPRVDU (NCVDU,1,0)
-      WRITE (NCAWU,'(a)') trim(CMON(1))
+c      WRITE (NCAWU,'(a)') trim(CMON(1))
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1))
 1050  FORMAT (' Insufficient output coefficients per reflection',' have
      1been indicated')
@@ -723,7 +726,7 @@ Cdjwoct200
          call outcol(3)
          CALL XPRVDU (NCVDU,2,0)
          call outcol(1)
-         WRITE (NCAWU,'(a)') CMON(1),trim(CMON(2))
+c         WRITE (NCAWU,'(a)') CMON(1),trim(CMON(2))
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(a)') trim(CMON(1)),trim(CMON(2))
          GO TO 5450
       END IF
@@ -1038,7 +1041,9 @@ c
 c
 C--READ THE NEXT REFLECTION
 2950  CONTINUE
+c initialise the input and output buffers
       CALL XZEROF (STORE(L6IB),M6IB)
+c      CALL XZEROF(STORE(L6),MD6)
 C
 cdjw2003
 c----- if a list 7 read no reflections
@@ -1049,10 +1054,10 @@ C      if (iuln .ne. 7) then
             IF ( IRDLOG(IFLIND).EQ.1) WRITE(NCLU,'(A)')TRIM(CRLINE(J))
          END DO
          READ (CRLINE,CFORM,END=3200,ERR=3100) (STORE(I),I=L6IB,M6IB)
-c         write (ncwu,*) 'hkl: ',(STORE(I),I=L6IB, M6IB)
       else
          READ (IUNIT,CFORM,END=3200,ERR=3100) (STORE(I),I=L6IB,M6IB)
       end if
+c      write (123,*) 'hkl: ',(STORE(I),I=L6IB, M6IB)
       NCARDS=NCARDS+INCREM
 C--CHECK FOR BLANK ENTRY
       DO 3000 I=L6IB,M6IB
@@ -1077,11 +1082,11 @@ C----- ERROR DURING READ -
          call outcol(3)
          WRITE(CMON,'(A)') 'No reflections found'
          CALL XPRVDU (NCVDU,1,0)
-         WRITE (NCAWU,'(A)') trim(CMON(1))
+c         WRITE (NCAWU,'(A)') trim(CMON(1))
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
          WRITE (CMON,'(A)') ' Check the reflection filename, and format'
          CALL XPRVDU (NCVDU,1,0)
-         WRITE (NCAWU,'(A)') trim(CMON(1))
+c         WRITE (NCAWU,'(A)') trim(CMON(1))
          IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
          call outcol(1)
         end if
@@ -1093,7 +1098,7 @@ CDJW2003         LEF=-1
          CALL XPRVDU (NCVDU,4,0)
          CALL OUTCOL(1)
          IF (ISSPRT.EQ.0) WRITE (NCWU,3150) N6W
-         WRITE (NCAWU,3150)
+c         WRITE (NCAWU,3150)
 3150     FORMAT (' Error during reading reflections'/
      1   ' At about reflection',i10/
      1   ' Some reflections may be lost'/
@@ -1197,6 +1202,7 @@ C--LOOP OVER EACH INPUT GROUP
          STORE(M6+27)=1.
          STORE(M6+11)=0.
          STORE(M6+12)=0.
+         STORE(M6+19)=0. !Serial
 C--MOVE THE DATA FROM THE INPUT BUFFER TO THE CORE BUFFER
          DO 4150 I=L6IMP,M6IMP
             J=ISTORE(I)
@@ -1297,7 +1303,13 @@ C--ENSURE A MINIMUM BATCH NUMBER OF ONE
 C----- ENSURE POSITIVE JCODES AND LESS THAN 10
          STORE(M6+18)=AMIN1(9.,AMAX1(0.,STORE(M6+18)))
 C--ENSURE A MINIMUM SERIAL OF ZERO
-         STORE(M6+19)=AMAX1(STORE(M6+19),0.)
+c         STORE(M6+19)=AMAX1(STORE(M6+19),0.)
+c if there is no serial number, insert a suitable value. This enables us to correlate a 
+c reflection listed in the MERGE output with the original in the input HKLI file.
+         if(store(m6+19) .le. zero) then
+            serial=serial+1.
+            store(m6+19) = serial
+         endif
 C--CHECK IF WE SHOULD COMPUTE THE A-PART AND B-PART FROM /FC/ AND PHASE
          IF (KD) 4450,4400,4400
 C--COMPUTE THE PARTS
@@ -1406,7 +1418,7 @@ C--BRANCH ON THE TYPE OF INPUT
 4900  CONTINUE
       WRITE (CMON,4950)
       CALL XPRVDU (NCVDU,1,0)
-      WRITE (NCAWU,'(/A/)') trim(CMON(1))
+c      WRITE (NCAWU,'(/A/)') trim(CMON(1))
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(/A/)') trim(CMON(1))
 4950  FORMAT (' Unsupported input data format')
       GO TO 5200
@@ -1557,7 +1569,7 @@ C--AND NOW RETURN
         write(cmon,'(i10,a)')n6theta, 
      1 ' reflections have sintheta/lambda > 1.0'
         call xprvdu (ncvdu,1,0)
-        write (ncawu,'(a)') trim(cmon(1))
+c        write (ncawu,'(a)') trim(cmon(1))
         if (issprt.eq.0) write (ncwu,'(a)') trim(cmon(1))
         write(cmon,'(A/A/A//A)')
      1  'This could be due to errors in the reflection file',
@@ -1942,8 +1954,8 @@ C--READ THE NEXT NUMBER OFF THIS CARD
 C--SPURIOUS CHARACTER IN THE DATA
 250      CONTINUE
          CALL XERHDR (0)
-         WRITE (NCAWU,350) NCARDS,IMAGE,(IB,J=1,NC),IA
-         WRITE (NCAWU,300)
+c         WRITE (NCAWU,350) NCARDS,IMAGE,(IB,J=1,NC),IA
+c         WRITE (NCAWU,300)
          IF (ISSPRT.EQ.0) THEN
             WRITE (NCWU,350) NCARDS,IMAGE,(IB,J=1,NC),IA
             WRITE (NCWU,300)
@@ -1957,7 +1969,7 @@ C--GENERAL ERROR RETURN FROM THIS ROUTINE
          IF (ISSPRT.EQ.0) THEN
             WRITE (NCWU,450) LN,IUNIT
          END IF
-         WRITE (NCAWU,450) LN,IUNIT
+c         WRITE (NCAWU,450) LN,IUNIT
 450      FORMAT (/,' Input of list ',I5,'  on unit ',I5,'  fails')
          KRD06=1
          GO TO 800
@@ -1977,7 +1989,7 @@ C--ILLEGAL END OF FILE
          IF (ISSPRT.EQ.0) THEN
             WRITE (NCWU,700) NCARDS
          END IF
-         WRITE (NCAWU,700) NCARDS
+c         WRITE (NCAWU,700) NCARDS
 700      FORMAT (' End of file detected after ',I5,' records, in the mid
      1dle of a reflection'/'Check that all columns are separated by at l
      2east 1 space')

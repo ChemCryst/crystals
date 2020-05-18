@@ -457,8 +457,13 @@ c      DO 1050 I=1,IDIM05
 c      ICOM05(I)=NOWT
 c1050  CONTINUE
 C Load list 5 into core (allows checking during processing).
-       CALL XFAL05
-       IF(IERFLG .LT. 0) GOTO 9900
+      IF ( KEXIST(5) .GE. 1 ) THEN
+        CALL XFAL05
+        IF(IERFLG .LT. 0) GOTO 9900
+      ELSE
+        L5 = 0
+        N5 = 0
+      END IF
        
 C - Clear all the bits that restraints could possibly set.
       IMASK = NOT ( OR ( KBREFB(4), KBREFB(6) ))
@@ -854,7 +859,7 @@ CDJW DEBUGGING
              CALL XPRVDU(NCVDU, 1,0)
 2804         FORMAT ( 6x, A,' ',F6.3,'A from ',A)
              IF (ISSPRT.EQ.0) WRITE(NCWU,'(A)') trim(CMON(1))
-             WRITE(NCAWU,'(A)') trim(CMON(1))
+c             WRITE(NCAWU,'(A)') trim(CMON(1))
            END IF
           endif
 CDJW DEBUGGING
@@ -945,7 +950,7 @@ CDJW - DEBUGGING
                write(cmon,'(a,i5)') ' Processing group ',K+1
                CALL XPRVDU(NCVDU,1,0)
                if (issprt.eq.0) WRITE(NCWU,'(A)') trim(CMON(1))
-               WRITE(NCAWU,'(A)') trim(CMON(1))
+c               WRITE(NCAWU,'(A)') trim(CMON(1))
                CALL CATSTR(STORE(M5P),STORE(M5P+1),1,1,0,0,0,
      1         CATOM1,LATOM1)
                CALL CATSTR (STORE(M5Q), STORE(M5Q+1),
@@ -956,7 +961,7 @@ CDJW - DEBUGGING
      2         CATOM2(1:25)
                CALL XPRVDU(NCVDU,1,0)
                if (issprt .eq.0) WRITE(NCWU,'(A)') trim(CMON(1))
-               WRITE(NCAWU,'(A)') trim(CMON(1))
+c               WRITE(NCAWU,'(A)') trim(CMON(1))
               endif
 CDJW - DEBUGGING
               MQ=MCG ! Next free word (we'll store atom1 header here)
@@ -1023,7 +1028,7 @@ cdjwdebugging
              CALL XPRVDU(NCVDU, 1,0)
 2805         FORMAT ( 6x, A, ' to ', A, ' to ', A)
              if(issprt.eq.0) WRITE(NCWU,'(A)') trim(CMON(1))
-             WRITE(NCAWU,'(A)') trim(CMON(1))
+c             WRITE(NCAWU,'(A)') trim(CMON(1))
             endif
 cdjwdebugging
 C Find third atom of angle in the first group of SAME.
@@ -1116,7 +1121,7 @@ cdjwdebugging
                WRITE(CMON,2805)CATOM2(1:LATOM2),CATOM1(1:LATOM1),
      1         CATOM3(1:25)
                CALL XPRVDU(NCVDU,1,0)
-               WRITE(NCAWU,'(A)') trim(CMON(1))
+c               WRITE(NCAWU,'(A)') trim(CMON(1))
               endif
 cdjwdebugging
 
@@ -2030,7 +2035,7 @@ C--TERMINATE THE COMPILER OUTPUT SEQUENCE
       CALL XTCO(KE)
 
 CRICJUN03 - store the list 5, with modified Spare values.
-      CALL XSTR05 (5,-1,-1)
+      IF ( N5 .GT. 0 ) CALL XSTR05 (5,-1,-1)
 6020  CONTINUE
 
 

@@ -3262,7 +3262,7 @@ cdjwoct2001
       if (igroup .ge. 0) then
        if (istore(m5a+16) .le. 0) then
             ifrag = ifrag+1
-            istore(m5a+16)=ifrag*1000
+            istore(m5a+16)=ifrag
        endif
       endif
       NFL=JE
@@ -6064,7 +6064,7 @@ C-------MAIN TERMINATION ROUTINES
 C(****CHANGE THIS****)
 2110  FORMAT ('Dist. of contacts is',F6.2/'Grid resolution is'
      2,F6.2/'Contact are R gt ',I2,',L lt ',I2,',else M atoms')
-      WRITE(NCAWU,2110) AC,RES,INCONT(1),INCONT(2)
+c      WRITE(NCAWU,2110) AC,RES,INCONT(1),INCONT(2)
 C
 C-------ASSYMETRIC UNIT DIMENSIONS
       AS1=STORE(L14+2)-STORE(L14)
@@ -6223,7 +6223,7 @@ C
       CSRQ(1:80) = 'END'
       CALL XISRC(CSRQ)
       END IF
-      WRITE (NCAWU,*) 'no. of pseudo atoms=',IATOM
+c      WRITE (NCAWU,*) 'no. of pseudo atoms=',IATOM
 C
 C-------REINSTATE PREVIOUS SRQ
 C
@@ -7522,6 +7522,18 @@ c      END IF
 C
 9900  CONTINUE
 C -- ERRORS
+      IF ( INTERN .NE. 2 ) THEN
+        IF ( KEXIST(41) .LE. 0 ) THEN
+C -- C R E A T E   A   N E W   L I S T   4 1:
+          IDWZAP = 0
+          CALL XFILL (IDWZAP, ICOM41, IDIM41)
+          N41B = 0 !Bond list, no entries
+          N41A = 0 !Atom list, no entries
+          N41D = 1 !Dependencies, one record.
+          CALL XCELST ( 41, ICOM41, IDIM41 )
+          CALL XWLSTD (41,ICOM41,IDIM41,-1,-1)
+        END IF
+      END IF
       CALL XOPMSG ( IOPBND , IOPABN , 0 )
       GOTO 3350
 9910  CONTINUE

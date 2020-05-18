@@ -1,6 +1,8 @@
  Crystals output file: hb7731.ins.out
  Processing res file insfiles/hb7731.ins
  
+ Info: Invalid command or misplaced comment, ignored.
+Line 1: SHELXL97 (Sheldrick  2008)
  Reading of res file done
  Processing Unit cell
  Processing space group and symmetry

@@ -1068,7 +1068,7 @@ C--NOT THE FIRST CARD
 cdjwMar2010 - allow full line length
 
       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(1X,A)')  CLINE(1:NCHARS)
-         WRITE(NCAWU,'(1X,A)')  CLINE(1:NCHARS)
+c         WRITE(NCAWU,'(1X,A)')  CLINE(1:NCHARS)
          WRITE ( CMON, '(1X,A)') CLINE(1:NCHARS)
          CALL XPRVDU(NCVDU, 1,0)
 c      KK = MIN0 ( 78, NCHARS)

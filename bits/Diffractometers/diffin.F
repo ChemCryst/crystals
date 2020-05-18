@@ -353,7 +353,7 @@ C.......  Enter the name of the output file
       if (i .le. 0) i=len_trim(output_name)+1
       lfr = i-1
       file_root = outfil(1:lfr)
-      output_hkl  = outfil(1:lfr)//'.hkl'
+      output_hkl  = outfil(1:lfr)//'v2.hkl'
 c
 c
 C....... Open our file for output of CRYSTALS instructions:
@@ -363,7 +363,7 @@ C       Name formed from blockname and extbl is used as extension:
         call noillegal(option)    !remove illegal characters
         output_name = option(1:LEN_TRIM(option))//extbl
         outfil = output_name
-        output_hkl  = option(1:LEN_TRIM(option))//'.hkl'
+        output_hkl  = option(1:LEN_TRIM(option))//'v2.hkl'
         OPEN (NOUTF,FILE=output_name,STATUS='UNKNOWN')
         OPEN (NCIF,FILE=output_name(1:len_trim(output_name))//'.cif',
      1  STATUS='UNKNOWN')
@@ -375,7 +375,7 @@ c          OPEN (NCIF,FILE=file_root(1:lfr)//'.cif',
 c     1    STATUS='UNKNOWN')
         end if
         output_hkl = file_root(1:lfr)
-        output_hkl(lfr+1:lfr+9) ='00000.hkl'
+        output_hkl(lfr+1:lfr+11) ='00000v2.hkl'
         write(output_hkl(lfr+1:lfr+5),  '(i5.5)') ndata
         write(ntext,'(a,a)')'HKL-file= ', output_hkl
       else
@@ -391,7 +391,7 @@ C       set default output filename - generalised to ease input
              lfn=12
             endif
          endif
-         output_hkl = output_name(1:lfn-4)//'.hkl'
+         output_hkl = output_name(1:lfn-4)//'v2.hkl'
          OPEN (NOUTF,FILE=output_name(1:lfn),STATUS='UNKNOWN')
 c         OPEN (NCIF,FILE=output_name(1:lfn-4)//'.cif',STATUS='UNKNOWN')
       end if

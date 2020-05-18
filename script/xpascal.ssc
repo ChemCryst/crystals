@@ -50,6 +50,8 @@
 %%
 %      IF FILEEXISTS ( 'crystalsinput.cry' ) THEN
 %%      don't just #USE it because we need to check other things
+%%djw-May2020. CARG was not set. Should it be set to FS?
+%       EVALUATE CARG = 'FS'
 %       COPY '#SCRIPT DIFFEXEC' 
 %      ELSE
  {E The INS/RES files have not been processed          

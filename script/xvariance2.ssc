@@ -1,6 +1,7 @@
 %SCRIPT XVARIANCE2                                                                 
 %%   
-%% Process the newer data/sigmas2.dat fle (with extra info)
+%% Process the newer data/sigmas2.dat and
+%% data/sigmas3.dat files (with extra info)
 %%
 % VARIABLE LOGICAL XWVSRUNNING XVARRUNNING 
 % VARIABLE LOGICAL ABORT
@@ -12,22 +13,30 @@
                                                                                 
 %        EVALUATE ABORT = TRUE
 % END IF                                                                        
-% VARIABLE LOGICAL SIG SIG2                                                     
+% VARIABLE LOGICAL SIG SIG2  sig3                                                   
+% EVALUATE SIG = FILEEXISTS 'data\sigmas.dat'                                   
 % EVALUATE SIG2 = FILEEXISTS 'data\sigmas2.dat'                                   
-% IF .NOT. SIG2 THEN
+% EVALUATE SIG3 = FILEEXISTS 'data\sigmas3.dat'
+%     if  sig3 then
+ Found sigmas3.dat file
+%     else if sig2 then
+ Found sigmas2.dat file
+%     else if sig then
+ Found sigmas.dat file
+%     else
 {E
-{E The file data\SIGMAS2.DAT does not exist!!    
+{E The file data/SIGMASn.DAT does not exist    
 {E
 %        copy '#script xhelp1'
 
- The file data\SIGMAS2.DAT was created during input of reflections.
- It no longer exists, or is in a different folder
- Since April 2019 this file should reside in the data\ subfolder.
-  Re-input your reflection data.
+ The file data\SIGMASn.DAT was created during input of reflections.
+ It no longer exists, or is in a different folder.
+ Since April 2019 this file should reside in the data/ subfolder.
+   Re-input your reflection data.
 
 %        copy '#script xhelp2'  
 %        EVALUATE ABORT = TRUE
-% END IF
+%     end if
 % IF ABORT .EQ. TRUE THEN
 
 {E  Abandoning SCRIPT
@@ -103,13 +112,16 @@
 ^^WI        }                                                                     
 ^^WI       }                                                                      
 ^^WI       @ 4,2 PLOTWINDOW _VSIGMA NROWS=20 NCOLS=64 
+%% ^^WI         DEFINEPOPUPMENU POPUP 'Selection'            
+%% ^^WI          ITEM _SDELA '&Show _L' 'OMIT_N_L'                                    
+%% ^^WI         ENDDEFINEMENU 
 ^^WI       @ 6,2 GRID XFS1 NROWS = 1 NCOLS = 11
 ^^WI       {   
 ^^WI        @ 1,1 STATIC XFS2 ' Number of data used ='
 ^^WI        @ 1,3 STATIC _MW_USED '00000'                                  
 ^^WI        @ 1,7 STATIC XFS 'Internal ='                        
-^^WI        @ 1,9 STATIC _MW_GRAD '000.00'                                  
-^^WI        @ 1,10 STATIC XFS2 'x External.'
+^^WI        @ 1,9 STATIC _MW_GRAD '0.00'                                  
+^^WI        @ 1,11 STATIC XFS2 ' x External.'
 ^^WI       }
 ^^WI      }
 %%
@@ -187,11 +199,13 @@
 %    COPY 'END'                                                                 
 %% output a dividing ruler
 {S 
-%    copy '#sum l 4'
-%    copy 'end'
+% IF ( EXISTS 4 .EQ. 1 ) THEN                                                   
+%     copy '#sum l 4'
+%     copy 'end'
+% END IF                                                                        
 %%
 %    VERIFY EXT_BOK SAVENPP X_HELP OMIT                                                        
-%    GET SILENT NOSTORE FINAL ABBREVIATED '?' 'EXT_BOK'                         
+%    GET SILENT NOSTORE FINAL ABBREVIATED '?' 'EXT_BOK'   
 %    IF VALUE .EQ. 1 THEN                                                       
 ^^CO    DISPOSE xwtvsig                                                
 %       EVALUATE XWVSRUNNING  = FALSE
@@ -203,7 +217,7 @@
 %       COPY '#SCRIPT HELPSIGMA'
 %     END BLOCK
 %    ELSE IF VALUE .EQ. 4 THEN
-%     BLOCK                                                                      
+%     BLOCK                       %only applies to wt v sigma plot
 %      ON EDITERROR TERMINATE                                                   
 %      COPY '#GENERALEDIT 28'                                                   
 %      COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'                  

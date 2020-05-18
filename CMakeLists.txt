@@ -326,7 +326,7 @@ IF (Fortran_COMPILER_NAME MATCHES "gfortran")  # gfortran
     if(useFAST)
         SET (CMAKE_Fortran_FLAGS_RELEASE "-fno-f2c -O3 -g -march=native -Wfatal-errors -ftree-vectorize -flto -fwhole-program")
     else ()
-        SET (CMAKE_Fortran_FLAGS_RELEASE "-fno-f2c -O3 -g -Wfatal-errors -ftree-vectorize -msse2")
+        SET (CMAKE_Fortran_FLAGS_RELEASE "-fno-f2c -O3 -g -Wfatal-errors -ftree-vectorize -msse2 -w")
     endif ()
     SET (CMAKE_Fortran_FLAGS_DEBUG   "-fno-f2c -O0 -g -Wfatal-errors -Wall -Wextra")
     if(CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER "4.5")
@@ -344,17 +344,20 @@ IF (Fortran_COMPILER_NAME MATCHES "gfortran")  # gfortran
     SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -std=gnu++11 -O1 -g")
     SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O1 -g")
 
+    if ( WIN32 )
 
-    ENABLE_LANGUAGE(RC)
-#    set(_WINDRES_INCLUDE_DIRS -I${CMAKE_CURRENT_SOURCE_DIR})
-    foreach(wx_include_dir ${wxWidgets_INCLUDE_DIRS})
-        set(_WINDRES_INCLUDE_DIRS "${_WINDRES_INCLUDE_DIRS} -I${wx_include_dir}")
-    endforeach(wx_include_dir ${wxWidgets_INCLUDE_DIRS})
-    set(CMAKE_RC_COMPILER_INIT windres)
-    SET(CMAKE_RC_COMPILE_OBJECT
-    "<CMAKE_RC_COMPILER> -O coff <DEFINES> -i <SOURCE> -o <OBJECT> ${_WINDRES_INCLUDE_DIRS}")
+		ENABLE_LANGUAGE(RC)
+	#    set(_WINDRES_INCLUDE_DIRS -I${CMAKE_CURRENT_SOURCE_DIR})
+		foreach(wx_include_dir ${wxWidgets_INCLUDE_DIRS})
+			set(_WINDRES_INCLUDE_DIRS "${_WINDRES_INCLUDE_DIRS} -I${wx_include_dir}")
+		endforeach(wx_include_dir ${wxWidgets_INCLUDE_DIRS})
+		set(CMAKE_RC_COMPILER_INIT windres)
+		SET(CMAKE_RC_COMPILE_OBJECT
+		"<CMAKE_RC_COMPILER> -O coff <DEFINES> -i <SOURCE> -o <OBJECT> ${_WINDRES_INCLUDE_DIRS}")
 
-    message(STATUS ${CMAKE_RC_COMPILE_OBJECT})
+		message(STATUS ${CMAKE_RC_COMPILE_OBJECT})
+
+    endif()
 
 ELSEIF ( IFORT_COMPILER ) # ifort (untested)
 
@@ -421,10 +424,10 @@ IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.0)
     check_fortran_compiler_flag("-fexceptions" _f_exceptions)
     check_fortran_compiler_flag("-fno-sign-zero" _f_no_signzero)
 
-#    if(_std_legacy_flag)
+    if(_std_legacy_flag)
 #      set(CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -std=legacy")
-#      set(CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -std=gnu")
-#    endif()
+      set(CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -std=gnu")
+    endif()
     if(_f_exceptions)
       set(CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -fexceptions")
       set(CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -fexceptions")
@@ -480,11 +483,15 @@ ADD_SUBDIRECTORY(datafiles)
 ADD_SUBDIRECTORY(precomp)
 if ( useGUI )
     ADD_SUBDIRECTORY(gui)
-    ADD_SUBDIRECTORY(bits)
 endif()
+ADD_SUBDIRECTORY(bits)
 if ( usePY )
     ADD_SUBDIRECTORY(pyinterface)
 endif()
+#if (IFORT_COMPILER)
+#	add_subdirectory(mklbuilder)
+#endif
+
 
 # Because external project call cmake externally too we need to pass the compiler and module path via cmake_args
 if(compileHDF5)

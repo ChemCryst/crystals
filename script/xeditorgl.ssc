@@ -6,6 +6,7 @@
 %% The variables needed by XQUESTIO                                             
 % VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX                         
 % VARIABLE LOGICAL   ANSWER                                                     
+% VARIABLE INTEGER ISELV
 %% 
 %% Check it exists
 %%
@@ -124,7 +125,8 @@ Using user-specified editor.
 % LOOP
 %   VERIFY BOK BXX BRR BSS FIND NEXT
 %   GET SILENT NOSTORE FINAL ABBREVIATED 'BOK?' ' '
-%   IF VALUE .EQ. 1 THEN
+%   EVALUATE ISELV = VALUE
+%   IF ISELV .EQ. 1 THEN
 %% save and close
 %TRANSFER "^^CO SET TEXT5 EDITSAVE '" // EDITOR_FILE // "'" TO DISPLAY
 ^^??   _ANYTHING_ EXISTS
@@ -132,7 +134,7 @@ Using user-specified editor.
 ^^CO   DISPOSE XEDITOR
 %      EVALUATE EDITOR_OK = TRUE
 %      FINISH
-%   ELSE IF ( VALUE .EQ. 2 ) THEN
+%   ELSE IF ( ISELV .EQ. 2 ) THEN
 %% cancel - check for mods first
 ^^??   TEXT5 MODIFIED
 %      VERIFY YES NO
@@ -152,7 +154,7 @@ Using user-specified editor.
 ^^CO     DISPOSE XEDITOR
 %        FINISH
 %      END IF
-%   ELSE IF ( VALUE .EQ. 3 ) THEN
+%   ELSE IF ( ISELV .EQ. 3 ) THEN
 %% revert - check for mods first
 ^^??   TEXT5 MODIFIED
 %      VERIFY YES NO
@@ -170,17 +172,17 @@ Using user-specified editor.
 %      ELSE
 %TRANSFER "^^CO SET TEXT5 LOAD '" // EDITOR_ORIG // "'" TO DISPLAY
 %      END IF
-%   ELSE IF ( VALUE .EQ. 4 ) THEN
+%   ELSE IF ( ISELV .EQ. 4 ) THEN
 %% Save
 %TRANSFER "^^CO SET TEXT5 EDITSAVE '" // EDITOR_FILE // "'" TO DISPLAY
 ^^??   _ANYTHING_ EXISTS
 %      GET NOSTORE SILENT TEXT 'Waiting for save' ' '
 %      EVALUATE EDITOR_OK = TRUE
-%   ELSE IF ( VALUE .EQ. 5 ) THEN
+%   ELSE IF ( ISELV .EQ. 5 ) THEN
 %% Search
 %TRANSFER "^^CO SET TEXT5 FIND" TO DISPLAY
 %      EVALUATE EDITOR_OK = TRUE
-%   ELSE IF ( VALUE .EQ. 6 ) THEN
+%   ELSE IF ( ISELV .EQ. 6 ) THEN
 %% Search
 %TRANSFER "^^CO SET TEXT5 NEXT" TO DISPLAY
 %      EVALUATE EDITOR_OK = TRUE

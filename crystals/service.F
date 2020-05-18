@@ -139,7 +139,7 @@ C--SYSTEM TYPE ERROR, PRODUCED BY A PROGRAMMING MISTAKE
       WRITE ( CMON,1100)
       CALL XPRVDU(NCEROR, 3,0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1100)
-      WRITE(NCAWU,1100)
+c      WRITE(NCAWU,1100)
 1100  FORMAT(/,
      1 ' Programming error, not a user error.',
      2 ' Consult a CRYSTALS expert '/)
@@ -151,7 +151,7 @@ C--USER ERROR
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1200)
       WRITE ( CMON,1200)
       CALL XPRVDU(NCEROR, 2,0)
-      WRITE(NCAWU,1200)
+c      WRITE(NCAWU,1200)
 1200  FORMAT(' User error ', / 'Check your',
      2 ' input data and your job control cards and parameters')
       CALL OUTCOL(1)
@@ -162,7 +162,7 @@ C--UNDETERMINED TYPE OF ERROR
       IF (ISSPRT .EQ. 0) WRITE(NCWU,1300)
       WRITE ( CMON,1300)
       CALL XPRVDU(NCEROR, 1,0)
-      WRITE(NCAWU,1300)
+c      WRITE(NCAWU,1300)
 1300  FORMAT(' Probably a user error -',
      2 ' Possibly a programming error')
       IF (ISSPRT .EQ. 0) THEN
@@ -174,7 +174,7 @@ C--AND NOW RETURN
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,1400)
       ENDIF
-      WRITE(NCAWU,1400)
+c      WRITE(NCAWU,1400)
 1400  FORMAT(1X)
       RETURN
       END
@@ -763,7 +763,7 @@ C -- ABORT PROGRAM WITH REPORT
       ENDIF
       WRITE ( CMON,8305)
       CALL XPRVDU(NCEROR, 1,0)
-      WRITE ( NCAWU , 8305 )
+c      WRITE ( NCAWU , 8305 )
 8305  FORMAT ( 1X , 'Program aborted' )
       CALL XFINAL ( 3 )
 8400  CONTINUE
@@ -773,7 +773,7 @@ C -- ABORT PROGRAM
       ENDIF
       WRITE ( CMON,8305)
       CALL XPRVDU(NCEROR, 1,0)
-      WRITE ( NCAWU , 8305 )
+c      WRITE ( NCAWU , 8305 )
       CALL XFINAL ( 2 )
 C
 9910  CONTINUE
@@ -783,7 +783,7 @@ C -- ERROR CODE GIVEN WAS ILLEGAL.
       ENDIF
       WRITE ( CMON,9915)
       CALL XPRVDU(NCEROR, 2,0)
-      WRITE ( NCAWU , 9915 ) ICODE
+c      WRITE ( NCAWU , 9915 ) ICODE
 9915  FORMAT ( / , ' An illegal error code found -- ' , I8 ,
      2 ' -- Programming error'   )
       CALL XFINAL ( 2 )
@@ -794,7 +794,7 @@ C -- INTERNAL ERROR
       ENDIF
       WRITE ( CMON,9925)
       CALL XPRVDU(NCEROR, 1,0)
-      WRITE ( NCAWU , 9925 )
+c      WRITE ( NCAWU , 9925 )
 9925  FORMAT ( 1X , 'An illegal code has been found in ' ,
      2 'the error routine -- Programming error' )
       CALL XFINAL ( 2 )
@@ -940,8 +940,8 @@ C
       WRITE ( NCWU , 1005 ) IA , IB , RESULT(ICODE) , NWARN , WARNPL ,
      2 NERR , ERRPL
       ENDIF
-      WRITE ( NCAWU , 1005 ) IA , IB , RESULT(ICODE) , NWARN , WARNPL ,
-     2 NERR , ERRPL
+c      WRITE ( NCAWU , 1005 ) IA , IB , RESULT(ICODE) , NWARN , WARNPL ,
+c     2 NERR , ERRPL
       WRITE ( CMON,1005)   IA , IB ,
      2                        RESULT(ICODE), NWARN, WARNPL, NERR, ERRPL
       CALL XPRVDU(NCVDU, 3,0)
@@ -1067,9 +1067,9 @@ C
      2 CSSOPS(1:LSSOPS), CSSDAT(1:LSSDAT)
       ENDIF
 C
-      WRITE ( NCAWU, 2015 ) 0.01*FLOAT(ISSVER), CSSSVN(1:LSSSVN),
-     1 CSSMAC(1:LSSMAC),
-     2 CSSOPS(1:LSSOPS), CSSDAT(1:LSSDAT)
+c      WRITE ( NCAWU, 2015 ) 0.01*FLOAT(ISSVER), CSSSVN(1:LSSSVN),
+c     1 CSSMAC(1:LSSMAC),
+c     2 CSSOPS(1:LSSOPS), CSSDAT(1:LSSDAT)
       WRITE ( CMON,2015)  0.01*FLOAT(ISSVER), CSSSVN(1:LSSSVN),
      1 CSSMAC(1:LSSMAC),
      2 CSSOPS(1:LSSOPS), CSSDAT(1:LSSDAT)
@@ -1159,7 +1159,7 @@ C--DAY HAS CHANGED
       WRITE ( CMON,1150) IA,IB,I,J,K,L
       CALL XPRVDU(NCVDU,1,0)
       IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') trim(CMON(1))
-      WRITE(NCAWU,'(A)') trim(CMON(1))
+c      WRITE(NCAWU,'(A)') trim(CMON(1))
 1150  FORMAT(1X,2A4,' : Processor time ',I4,' min',I4,
      2 ' sec : Elapsed time ',I4,' min',I4,' sec')
       RETURN
@@ -2001,7 +2001,7 @@ C      TO USE THE SYSTEM VARIABLE SET WITH #SET FILECASE
          WRITE ( CMON,100)FILNAM(1:NAMLEN)
 100      FORMAT ( 'Filename truncated to 256 characters',A )
          CALL XPRVDU(NCEROR, 3,0)
-         WRITE ( NCAWU , '(A)' ) trim(CMON(1))
+c         WRITE ( NCAWU , '(A)' ) trim(CMON(1))
          IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) trim(CMON(1))
         ENDIF
         IF (ICASE .EQ. 0) THEN

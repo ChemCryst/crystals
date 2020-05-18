@@ -77,7 +77,9 @@ jobs:
 # LINUX ONLY
     - name: Install Ubuntu compiler and tools
       if: matrix.os == 'ubuntu-latest'
-      run: sudo apt-get install -y gfortran libopenblas-dev
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gfortran libopenblas-dev
 
 # LINUX ONLY
     - name: Install Ubuntu wxWidgets
@@ -175,6 +177,10 @@ jobs:
         echo "%SCRIPT NONE" > script/guideauto.scp
         echo "%END SCRIPT" >> script/guideauto.scp
         ${{ matrix.fbrunner }} perl testsuite.pl ${{ matrix.testoption }}
+        cd ../bits/shelx2cry
+        ln -s ../../ci/shelx2cry shelx2cry
+        cd regressions_tests
+        ./run.sh
 #
 # If failures, set variable to trigger next two stages (one to tidy, one to upload)
     - name: Tidy failed test outputs win64

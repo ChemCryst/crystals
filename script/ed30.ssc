@@ -199,7 +199,8 @@
 ^^WI    @ 1,5 STATIC ED30T 'Structure solution'                                 
 ^^WI    @ 1,8 DROPDOWN SOLUTN INFORM=YES ADDTOLIST                              
 ^^WI    'Unknown' 'Shelxs' 'Sir88' 'Sir92' 'Patterson'                          
-^^WI    'Sir97' 'Dirdif' 'Superflip' 'Sir2002', 'Sir2004', 'NULL'               
+^^WI    'Sir97' 'Dirdif' 'Superflip' 'Sir2002' 'Sir2004'
+^^WI    'Sir2020' 'SHELXT' 'NULL'               
 ^^WI   }                                                                        
 ^^WI   @ 6,2 GRID GRIDAC NROWS=3 NCOLS=1 OUTLINE='Crystal'                      
 ^^WI              COMMAND='CRYSTAL'                                             

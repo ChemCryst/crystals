@@ -54,11 +54,14 @@ Files INITIAL.* will be created in your logs/ folder. They may be important.
 {W Converted file not found  
 {  
 %      FINISH  
-%  END IF                                
+%  END IF            
+% show filefound                    
 %  IF FILEFOUND .NE. 'NONE' THEN  
 %      ON END TERMINATE  
 %      ON ERROR TERMINATE  
-%      COPY '#SCRIPT X30BITS'  
+%      IF ( EXISTS 30 .NE. 1 ) THEN
+%        COPY '#SCRIPT X30BITS'  
+%      END IF
 %      EVALUATE INITSETUP = TRUE
 %      BLOCK  
 %        ON ERROR REPEAT  
@@ -103,30 +106,28 @@ Files INITIAL.* will be created in your logs/ folder. They may be important.
 %    end if  
 %%  
 %    if ( exists 2 .eq. 1 ) .and. ( exists 5 .eq. 1 ) then  
-{S sort out atoms  
+{S Sort atoms and renumber H atoms.
 %% variables used by the question box below  
-%      VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2  
-%      VARIABLE LOGICAL ANSWER  
-%%  
-%      EVALUATE QTITLE = 'Renumber Atoms?'  
-%      EVALUATE QLINE1 = 'Do you want to change atom numbers to CRYSTALS system?'  
-%      EVALUATE QLINE2 = 'This WILL invalidate restraints translated from SHELXL'  
-%      EVALUATE BUTTOK = '&Yes'  
-%      EVALUATE BUTTXX = '&No'  
-%      COPY '#SCRIPT XQUESTIO'  
-%      IF ANSWER .EQ. TRUE THEN  
-%        COPY '#EDIT'  
-%        COPY 'INSERT ELECTRON'  
-%        COPY 'DSORT SPARE'  
-%        COPY 'KEEP 1 ALL'  
-%        COPY 'END'  
-%        COPY '#SCRIPT XCENTRE'  
+%        VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2  
+%        EVALUATE QTITLE = 'Renumber and recentre atoms?'  
+%        EVALUATE QLINE1 = 'Do you want to change hydrogen atom serials to CRYSTALS default?'  
+%        EVALUATE QLINE2 = 'This WILL invalidate any restraints imported from SHELXL.'  
+%        EVALUATE BUTTXX = '&Renumber'  
+%        EVALUATE BUTTOK = '&Leave unchanged'  
+%        COPY '#SCRIPT XQUESTIO'  
+%        IF ANSWER .EQ. FALSE THEN  
+%         COPY '#EDIT'  
+%         COPY 'INSERT ELECTRON'  
+%         COPY 'DSORT SPARE'  
+%         COPY 'KEEP 1 ALL'  
+%         COPY 'END'  
+%         COPY '#SCRIPT XCENTRE'  
 %% RESOLVE H ATOMS  
-%        COPY '#SCRIPT HNAM'  
-%        copy '#EDIT'  
-%        COPY 'SORT SERIAL'  
-%        COPY 'END'  
-%      END IF  
+%         COPY '#SCRIPT HNAM'  
+%         copy '#EDIT'  
+%         COPY 'SORT SERIAL'  
+%         COPY 'END'  
+%        END IF  
 %%  
 %    end if  
 %%  

@@ -26,7 +26,9 @@
 %%   Friedel Pair merging is controlled by LIST 13                                                  
 {S * Merging equivalent reflections                                             
 %      CLEAR                                                                    
-%      COPY '#MERGE'                                                            
+%      COPY '#MERGE' 
+%      COPY 'REJECT SIGMA=2'
+%      COPY 'REFLECTION LIST=HI'
 %      COPY 'END'                                                               
 %    END IF                                                                       
 %                                                                               

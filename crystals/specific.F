@@ -1754,7 +1754,7 @@ C      IMPLICIT NONE
       INTEGER MAXLVL
       PARAMETER (MAXLVL=30)
       CHARACTER*(*) FILNAM,STATUS
-      LOGICAL LEXIST
+      LOGICAL LEXIST, LSPACE
       INTEGER KSTRLN
       INTEGER I,J,K,LEVEL,IWHAT
       INTEGER NAMLEN(MAXLVL),COLPOS(MAXLVL)
@@ -1830,14 +1830,15 @@ C Don't subst things like C:\ - start search from third character.
 C FEB04: On Win32 platform, search for forward slashes and change
 C to back slashes - this will allow consistent file and path naming
 C on all platforms.
+C MAY20: Don't change leading slashes - could be command switch
 #ifdef CRY_OSWIN32
-      DO WHILE(.TRUE.)
-        ISLP = KCCEQL(NAME(LEVEL),1,'/')
-        IF ( ISLP .GT. 0 ) THEN
-          NAME(LEVEL)(ISLP:ISLP) = '\'
-        ELSE
-          EXIT
+      LSPACE = .TRUE.
+      DO I = 1, LEN(NAME(LEVEL)) 
+        IF ( ( .NOT. LSPACE ) .AND. ( NAME(LEVEL)(I:I) .EQ. '/' )) THEN
+          NAME(LEVEL)(I:I) = '\'
         END IF
+        LSPACE = .FALSE.
+        IF ( NAME(LEVEL)(I:I) .EQ. ' ' ) LSPACE = .TRUE.
       END DO
 #endif
 
@@ -2344,10 +2345,16 @@ C NOTE THAT XPRTDV CLEARS THE CCVDU BUFFER
       INCLUDE 'XSSVAL.INC'
       IF (NLIN.LE.0) RETURN
       DO I=1,NLIN
-       IF((CCVDU(I)(1:2).EQ.'^^').AND.(ISSMON.EQ.0))  THEN
+c      write(ncawu,*)'ISSMON in prtmon=',issmon, CCVDU(I)(1:3)
+c Found some lines begining with space, so ^^ are in 2:3, not 1:2)
+       IF((CCVDU(I)(2:2).EQ.'^').AND.(ISSMON.NE.1))  THEN 
             CONTINUE
-       ELSE
+       ELSE 
+          IF(CCVDU(I)(1:1).EQ.'{' )THEN
+            WRITE(NCAWU,'(A)') TRIM(CCVDU(I)(3:))
+          ELSE
             WRITE(NCAWU,'(A)') TRIM(CCVDU(I))
+          ENDIF
        ENDIF
       ENDDO
       RETURN
@@ -2400,22 +2407,18 @@ c in individual files.
 CNOTE Lines may begin ^^ or space^^
 C
       IF(ISSMON.EQ.2) THEN
-c       write(123,*)'0 Control = ', cfirst, csecond
        IF      (CFIRST.EQ.'^') THEN
-C       write(123,*)'1 Control = ', cfirst, csecond
             CONTINUE
        ELSE IF (CFIRST.EQ.'{') THEN
-C       write(123,*)'2 Control = ', cfirst, csecond
             CONTINUE
        ELSE IF (CSECOND.EQ.'^') THEN
-C       write(123,*)'3 Control = ', cfirst, csecond
             CONTINUE
        ELSE IF (CSECOND.EQ.'{') THEN
-C       write(123,*)'4 Control = ', cfirst, csecond
             CONTINUE
        ELSE
             CYCLE
        ENDIF
+C       write(123,*)'In Control = ', cfirst, csecond
       ENDIF
 C
 c         if defined(__GIL__)  || defined(__MAC__) ||defined (__INW__)

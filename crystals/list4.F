@@ -481,7 +481,6 @@ C
         SCALE=1.  ! SET UP THE DEFAULT SCALE FACTOR
         NGW=0 ! SET THE NUMBER OF NEGATIVE WEIGHTS FOUND TO ZERO
         NOUTLIERS = 0
-
         IF(KEXIST(5).GE.1)THEN             ! THERE IS A LIST 5  -  LOAD IT
           CALL XFAL05
           IF ( IERFLG .LT. 0 ) GO TO 9900
@@ -929,6 +928,11 @@ c123   just use stored sigma(F)
           AW = Q / 
      1     (SFCSIG*SFCSIG + (P*STORE(L4))*(P*STORE(L4)) +
      2     STORE(L4+1)*P + STORE(L4+3) + STORE(L4+4)*STH) 
+          AW1 = SFCSIG*SFCSIG
+          AW2 = (P*STORE(L4))*(P*STORE(L4)) +
+     2    STORE(L4+1)*P + STORE(L4+3) + STORE(L4+4)*STH 
+          AW3 = Q / (AW1 + AW2)
+C          WRITE(123,*)AW,AW1,AW2,AW3,STHOLS, SFCFO
 C -- Convert weight back onto scale of FO:
           IF ( JTYPE .EQ. 2 ) THEN
             AW = AW / SCALE**4
@@ -1848,8 +1852,8 @@ C--HEADING FOR THE NORMAL PLOT TYPE ENTRIES
 C--DATA FOR THE VAIOUS CLASSES OF REFLECTION GROUPS
       DATA NOPE(1,1)/4H    /,NOPE(2,1)/4H /FO/,NOPE(3,1)/4H/ RA/
       DATA NOPE(4,1)/4HNGE /
-      DATA NOPE(1,2)/4H  SI/,NOPE(2,2)/4HNTH//,NOPE(3,2)/4HL RA/
-      DATA NOPE(4,2)/4HNGE /
+      DATA NOPE(1,2)/4H(Sin/,NOPE(2,2)/4HT/L)/,NOPE(3,2)/4H^2 R/
+      DATA NOPE(4,2)/4HANGE/
       DATA NOPE(1,3)/4H    /,NOPE(2,3)/4H   L/,NOPE(3,3)/4HAYER/
       DATA NOPE(4,3)/4H    /
       DATA NOPE(1,4)/4H  PA/,NOPE(2,4)/4HRITY/,NOPE(3,4)/4H GRO/
@@ -2864,10 +2868,12 @@ C--NO REFLECTIONS IN THIS GROUP  -  PRINT ONLY THE RANGE
       WRITE(NCWU,CFN)AC,ICE,IB,ISTORE(L+1),ICE
       ENDIF
       IF ( PLTHE .EQ. 1 ) THEN
-        WRITE(CMON,'(A,F7.3,1X,A)')'^^PL LABEL ',AC,' DATA 1.0 1.0'
+        WRITE(CMON,'(A,F7.3,1X,A)')'^^PL LABEL ',AC,
+     1 ' DATA 1.0 1.0 0 0.'
         CALL XPRVDU(NCVDU, 1,0)
       ELSE IF ( PLTHE .EQ. 2 ) THEN
-        WRITE(CMON,'(A,F7.3,1X,A)')'^^PL LABEL ',AC,' DATA 0.0 0.0'
+        WRITE(CMON,'(A,F7.3,1X,A)')'^^PL LABEL ',AC,
+     1 ' DATA 0.0 0.0 0 0.'
         CALL XPRVDU(NCVDU, 1,0)
       ENDIF
 5610  FORMAT(1H ,F7.4,   I6,2F9.0,2E10.2,2F5.0,F11.3)
@@ -3373,6 +3379,7 @@ C--COMPUTE THE MAX. /FO/ VALUE
       F=AMAX1(F,BP)
       CALL XSUM(L)
 C--SIN(THETA)/LAMBDA RANGES  -  COMPUTE SIN(THETA)/LAMBDA
+c--- Probably squared - djw 2020
       SS=H(1)*H(1)*STORE(L1S)+H(2)*H(2)*STORE(L1S+1)+H(3)*H(3)
      2 *STORE(L1S+2)+H(2)*H(3)*STORE(L1S+3)+H(1)*H(3)*STORE(L1S+4)+H(1)
      3 *H(2)*STORE(L1S+5)
@@ -3923,7 +3930,6 @@ C
                WRITE(NCWU,'(A)') trim(CMON(1)),trim(CMON(2))
              end if
              WDTO = 0.0
-
              CALL XFAL06(IULN06, 0)   ! Load READ ONLY
              IF ( IERFLG .LT. 0 ) THEN
                   ICASE17=0
@@ -4028,6 +4034,8 @@ C>> ALERT C for > 5
       ENDIF
 c
       CALL XCSAE                     ! CLEAR THE LIST ENTRIES
+C     RE-LOAD LIST 1 BECAUSE LIST 28 NEEDS IT TO GET SINTHETA/LAMBDA
+      CALL XFAL01      
       IRCZAP = 0
       INCLUDE 'IDIM04.INC'
 C          CALL XFILL (IRCZAP, ICOM04, IDIM04)

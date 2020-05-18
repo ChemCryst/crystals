@@ -1023,7 +1023,7 @@ C
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,100) 'Unable to get atom type in routine', CTYPE
       ENDIF
-      WRITE(NCAWU,100) 'Unable to get atom type in routine', CTYPE
+c      WRITE(NCAWU,100) 'Unable to get atom type in routine', CTYPE
       WRITE ( CMON, 100) 'Unable to get atom type in routine', CTYPE
       CALL XPRVDU(NCVDU, 1,0)
 100   FORMAT( 3X,A,A)

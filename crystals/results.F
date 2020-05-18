@@ -4599,9 +4599,9 @@ C----- H-bonds AND ESDs
         if (esd .le. 0.) then
           CALL SNUM ( store(itmp), 0.0,  -2, 0, 10, IVEC )
         else
-C set esd to 0.0 to keep Ton happy
-c          CALL SNUM ( store(itmp),store(itmp+1),  -3, 0, 10, IVEC )
-          CALL SNUM ( store(itmp),0.0,  -3, 0, 10, IVEC )
+C set esd to 0.0 to keep Ton happy - switch back on for Bruce 2020
+          CALL SNUM ( store(itmp),store(itmp+1),  -3, 0, 15, IVEC )
+c         CALL SNUM ( store(itmp),0.0,  -3, 0, 10, IVEC )
         endif
         WRITE( CBUF, '(20A1)') (IVEC(I), I=1, 20)
         CALL XCRAS ( CBUF, N)
@@ -4660,11 +4660,11 @@ C
       CHARACTER*35 CPAGE(NROW,NCOL)
       CHARACTER*76 CREFMK
       PARAMETER (IDIFMX=14)
-      PARAMETER (IREDMX=7)
       DIMENSION IREFCD(3,IDIFMX)
+      PARAMETER (IREDMX=7)
       DIMENSION IREDCD(IREDMX)
 CAVDL more solution packages in cif-goodies
-      PARAMETER (ISOLMX=10)
+      PARAMETER (ISOLMX=12)
       DIMENSION ISOLCD(ISOLMX)
       PARAMETER (IABSMX=16)
       DIMENSION IABSCD(IABSMX)
@@ -4679,7 +4679,7 @@ CDJWMAR99 MANY CHANGES TO BRING UP TO DATE WITH NEW CIFDIC
       PARAMETER (NTERM=4)
       PARAMETER (NNAMES=30)
       DIMENSION A(12), JDEV(4), KDEV(4)
-      PARAMETER (NLST=12)
+      PARAMETER (NLST=11)
       DIMENSION LSTNUM(NLST), JLOAD(NLST)
       DIMENSION IVEC(16), ESD(6)
       CHARACTER CCELL(3)*1,CANG(3)*5,CSIZE(3)*3,CINDEX(3)*2
@@ -4695,6 +4695,7 @@ C
       CHARACTER*22 CFM, CFMC ! 'F<sub>obs</sub>&sup2;'
       CHARACTER*35 CMOD
       CHARACTER*6 CSOLVE
+      CHARACTER*64 CREFER
 cdjwapr09
       INTEGER  IFARG      ! F OR F^2^ FOR WEIGHTING SCHEME
 C
@@ -4762,7 +4763,7 @@ C------ REFERENCE CODES FOR DATA REDUCTION
       DATA IREDCD /5,24,17,27,19,36,45/
 C------ REFERENCE CODES FOR DIRECT METHODS
 CAVDLdec06 updating references in reftab.sda with numbers 42, 43, and 44
-      DATA ISOLCD /1,18,30,11,22,28,29,42,43,44/
+      DATA ISOLCD /1,18,30,11,22,28,29,42,43,44,51,52/
 C------ REFERENCE CODES FOR ABSORPTION METHOD
       DATA IABSCD /7,21,16,17,31,32,33,39,40,40,39,7,7,16,45,36/
 
@@ -4777,8 +4778,9 @@ C
 c
       DATA UPPER/'ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
       DATA LOWER/'abcdefghijklmnopqrstuvwxyz'/
-C                  1 2 3 4 5 6  7  8  9  10 11 12 
-      DATA LSTNUM/1,2,3,4,5,13,23,29,30,31,6,28/
+C                  1 2 3 4 5 6  7  8  9  10 11 
+c                             (12 was LIST 28 - L28 loaded by L6) 
+      DATA LSTNUM/1,2,3,4,5,13,23,29,30,31,6/
       DATA CCELL/'a','b','c'/
       DATA CANG/'alpha','beta','gamma'/
       DATA CSIZE/'min','mid','max'/
@@ -4953,13 +4955,16 @@ C----- CLOSE THE FILE
 
 C################################################################
  
-C                      1 2 3 4 5 6  7  8  9  10 11 12 
+C                      1 2 3 4 5 6  7  8  9  10 11 (12 not used) 
 C FYI:    DATA LSTNUM /1,2,3,4,5,13,23,29,30,31, 6,28 /
 
       DO MLST=1,NLST
          JLOAD(MLST)=0                   !INDICATE LIST NOT LOADED
          LSTYPE=LSTNUM(MLST)
-         IF (KEXIST(LSTYPE)) 400,300,500
+c      write(123,*)'Checking Lists', mlst, lstype
+         idjw=KEXIST(LSTYPE)
+c      write(123,*) 'kexist',lstype, idjw
+         IF (idjw) 400,300,500
 300      CONTINUE
            if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
            WRITE (CMON,350) LSTYPE
@@ -4986,7 +4991,9 @@ C FYI:    DATA LSTNUM /1,2,3,4,5,13,23,29,30,31, 6,28 /
             CALL XLDR05 (LSTYPE)
          ELSE IF (LSTYPE.EQ.6) THEN
             IULN = 6
+c      write(123,*) 'Just starting XFAL06'
             CALL XFAL06 (IULN, 0)
+c      write(123,*) 'Just finished XFAL06'
          ELSE IF (LSTYPE.EQ.10) THEN
             CALL XLDR05 (LSTYPE)
          ELSE IF (LSTYPE.EQ.13) THEN
@@ -5009,10 +5016,12 @@ C----- LOADED BY XFAL06          CALL XFAL28
          END IF
          IF (IERFLG.GE.0) JLOAD(MLST)=1
       END DO
+        IF (KEXIST(6) .GE. 1)  THEN
 c call this here since it updates list 30. THLIM only loads not-loaded lists
           IGLS = 0
           CALL XTHLIM (THMIN, THMAX,THMCMP, THBEST,THBCMP,
      1    INRIC,IULN,IGLS)
+        ENDIF
 c we dont need LIST 25, but it it exists, we should use it
         IF (KEXIST(25) .GE. 1)  THEN
          IF (KHUNTR (25,0, IADDL,IADDR,IADDD, -1) . LT. 0) CALL XFAL25
@@ -5402,7 +5411,18 @@ C          SET ABSOLUTE STRUCTURE FLAG
          END IF
       END IF
 C 
-C----- LIST 3
+C----- LIST 3 - Needs LIST 13 to get radiation type
+      if (jload(6).ge. 1) then
+       IF (ISTORE(L13DT+1) .EQ. -1) THEN
+        crefer='''International Tables Vol C 4.2.6.8 and 6.1.1.4'''
+       ELSE IF (ISTORE(L13DT+1) .EQ. 0) THEN
+        crefer='''International Tables Vol IV PAGES 270-271'''
+       ELSE
+        crefer='''L.M. Peng, Micron (1999) pages 625-648'''
+       ENDIF
+      else
+          crefer = 'Unknown'
+      endif
 C 
       IF (JLOAD(3).GE.1) THEN
         IF ( IPUNCH .EQ. 0 ) THEN
@@ -5418,9 +5438,9 @@ C
              WRITE (CTEMP,'(A4)') ISTORE(M3)
              CBUF=CTEMP(2:4)
              CALL XCCLWC (CBUF(1:3),CTEMP(2:4))
-             WRITE (NCFPU1,1300) CTEMP(1:4),(STORE(M),M=M3+1,M3+11)
-1300         FORMAT (1X,A4,1X,8F9.4,/,3F9.4,1X,
-     1       '''International Tables Vol C 4.2.6.8 and 6.1.1.4''')
+             WRITE (NCFPU1,1300) CTEMP(1:4),(STORE(M),M=M3+1,M3+11),
+     1       TRIM(CREFER)
+1300         FORMAT (1X,A4,1X,8F9.4,/,3F9.4,1X,A)
            END DO
         END IF
       END IF
@@ -5669,14 +5689,14 @@ C     UNKNOWN CAD4 MACH3 KAPPACCD DIP SMART IPDS XCALIBUR APEX2 GEMINI
 C        1     2       3     4    5     6    7      8      9      10
 c     SUPERNOVA SYNCHROTRON SPALLATION REACTOR
 C       11       12           13        14
-C----- PARAMETER 13 ON DIRECTIVE 2 IS A CHATACTER STRING: DIFFRACTOMETER MAKE
+C----- PARAMETER 13 ON DIRECTIVE 2 IS A CHARACTER STRING: DIFFRACTOMETER MAKE
         IPARAM=13
         IDIR=2
         IVAL=ISTORE(L30CD+IPARAM-1)
         IZZZ=KGVAL(CINSTR,CDIR,CPARAM,CVALUE,CDEF,30+3,IDIR,IPARAM,
      1    IVAL,JVAL,VAL,JTYPE)
         IDIFNO = IVAL+1
-
+c      write(123,*) 'IDIFNO=',IDIFNO
 C----- PARAMETER 13 ON DIRECTIVE 1 IS A CHATACTER STRING: REDUCTION NAME
         IPARAM=13
         IDIR=1
@@ -5684,6 +5704,7 @@ C----- PARAMETER 13 ON DIRECTIVE 1 IS A CHATACTER STRING: REDUCTION NAME
         IZZZ=KGVAL(CINSTR,CDIR,CPARAM,CVALUE,CDEF,30+3,IDIR,IPARAM,
      1    IVAL,JVAL,VAL,JTYPE)
         IREDNO = IVAL+1
+c      write(123,*)'IREDNO=',IREDNO
 c
 c
 c
@@ -5848,12 +5869,13 @@ C----- PARAMETER 9 ON DIRECTIVE 5 IS A CHARACTER STRING: ABSORPTION TYPE
         IVAL=ISTORE(L30AB+IPARAM-1)
         IZZZ=KGVAL(CINSTR,CDIR,CPARAM,CVALUE,CDEF,30+3,IDIR,IPARAM,
      1    IVAL,JVAL,VAL,JTYPE)
-        IABVAL = MIN (IABSMX, IVAL + 1)
+        IABVAL = MIN (IABSMX, IVAL+1)
+c      WRITE(123,*)'IABVAL=',IABVAL
 C
 C NONE DIFABS EMPIRICAL MULTI-SCAN SADABS SORTAV SHELXA GAUSS ANALYT
 C   1     2       3         4         5      6      7     8      9
-C NUMER INTEGERATION SPHERICAL CYLINDRICAL PSI-SCAN 
-c   10       11         12         13        14
+C NUMER INTEGERATION SPHERICAL CYLINDRICAL PSI-SCAN SAINT
+c   10       11         12         13        14      15
 C
         CMON(1) = ' '
         IF (TMIN.GT.3.0) THEN
@@ -6107,10 +6129,15 @@ C
      1      T35,'''''''',A,'''''''')') CTEMP(1:NCHAR-1)
            CALL XPCIF (CLINE)
 c
-           IF (IDIFNO .LE. 3) THEN
+           IF (IDIFNO .EQ. 1) THEN
+             CTEMP = 'Unknown'
+           ELSE IF (IDIFNO .GT. IDIFMX) THEN
+             CTEMP='Unknown'
+             IDIFNO = 1
+           ELSE IF (IDIFNO .LE. 3) THEN
             CTEMP = 'Serial'
            ELSE
-            CTEMP = 'Area'
+             CTEMP = 'Area'
            ENDIF
            CALL XCTRIM (CTEMP,NCHAR)
 C
@@ -6118,7 +6145,11 @@ C
      1      T35,'''''''',A,'''''''')') CTEMP(1:NCHAR-1)
            CALL XPCIF (CLINE)
 C
-           IF (IDIFNO .LE. 10) THEN   !Graphite monochromator
+           IF (IDIFNO .EQ. 1) THEN
+             WRITE (CLINE,'(A)') 
+     1     '_diffrn_radiation_monochromator      ''Unknown'''
+             CALL XPCIF (CLINE)
+           ELSE IF (IDIFNO .LE. 10) THEN   !Graphite monochromator
              WRITE (CLINE,'(A)') 
      1     '_diffrn_radiation_monochromator      ''graphite'''
              CALL XPCIF (CLINE)
@@ -6134,11 +6165,7 @@ C
 C    LIST 13
       IF (JLOAD(6).GE.1) THEN
          CBUF = ' ? '
-         IF ( IDIFNO .EQ. 12 ) THEN
-            CBUF = 'synchrotron'
-         ELSE IF ( IDIFNO .GE. 13 ) THEN
-            CBUF = 'neutrons'
-         ELSE IF (NINT(100.*STORE(L13DC)).EQ.71) THEN
+         IF (NINT(100.*STORE(L13DC)).EQ.71) THEN
 #ifdef __MAC__
             CBUF = 'Mo K\\a'
 #else
@@ -6151,6 +6178,20 @@ C    LIST 13
             CBUF = 'Cu K\a'
 #endif
          END IF
+c get the radiation from the DETAILS Card
+         IF (ISTORE(L13DT+1) .EQ. -1) THEN
+C-Set above based on lambda             CBUF = 'XRAYS'
+         ELSE IF (ISTORE(L13DT+1) .EQ. 0) THEN
+             CBUF = 'NEUTRONS'
+         ELSE
+             CBUF = 'ELECTRONS'
+         ENDIF
+C Update for special conditions
+         IF ( IDIFNO .EQ. 12 ) THEN
+            CBUF = 'synchrotron'
+         ELSE IF ( IDIFNO .GE. 13 ) THEN
+            CBUF = 'neutrons'
+         ENDIF         
          IF ( IPUNCH .EQ. 0 ) THEN
            WRITE (NCFPU1,'(''_diffrn_radiation_type       '', 
      1                       T35, '''''''',A,'''''''')')
@@ -6541,7 +6582,8 @@ C----- RELECTION LIMITS IN DATA COLLECTION
          END IF
 
          IF ( IPUNCH .EQ. 0 ) THEN
-           IF (JLOAD(12).GE.1) THEN  !REFLECTION LIMITS IN COMPUTATIONS
+           IF (JLOAD(11).GE.1) THEN  !REFLECTION LIMITS IN COMPUTATIONS
+c                              was JLOAD(12) (LIST 28) which is now loaded by LIST 6
              JLOAD(11)=1
              M6DTL=L6DTL
              IF (N6DTL.GE.4) THEN
@@ -6643,7 +6685,7 @@ C
 #endif
            CALL XCRAS (CBUF,NCHAR)
            WRITE (NCFPU1,
-     1    '(''_oxford_refine_reflns_threshold_expression_ref '',
+     1    '(''_oxford_refine_reflns_threshold_expression '',
      1                    T50,A)')  CBUF(1:NCHAR) 
            CBUF(1:11)='_refine_ls_'
            WRITE (CLINE,'(A, ''number_restraints '', I10)') CBUF(1:11),
@@ -6663,7 +6705,9 @@ c
      1                   CBUF(1:11), STORE(L30RF+0)*0.01
            CALL XPCIF (CLINE)
 c
-           WRITE (CLINE,'(A,A, ''wR_factor_ref '', F10.4)') '_oxford',
+c           WRITE (CLINE,'(A,A, ''wR_factor_ref '', F10.4)') '_oxford',
+c _oxford prefix removed for checkcif compatability
+           WRITE (CLINE,'(A, ''wR_factor_ref '', F10.4)') 
      1                   CBUF(1:11), STORE(L30RF+1)*0.01
            CALL XPCIF (CLINE)
            WRITE (CLINE,'(A, ''wR_factor_all '', F10.4)') 
@@ -6686,7 +6730,7 @@ c-try to catch old DSC files where +11 held minimisation function
 C
            CALL XPCIF (' ')
            CALL XPCIF 
-     1     ('# Computed with no filters except I/sigma = -10')
+     1     ('# Computed with I/sigma = -10')
 
            WRITE (CLINE,'(''_oxford_reflns_number_all '', I10)')
      1                  NINT(STORE(L30CF+5))
@@ -7762,26 +7806,32 @@ c look fo the FLACK records
         if (n39f.gt.0) then
          m39f = l39f
          do i=1,n39f                                !Find record FLACK(0)
-          iflack0=m39f
           if ((istore(m39f) .eq. icflac) .and. 
-     1       (nint(store(m39f+1)) .eq. 0)) exit
-           m39f=m39f+md39f
+     1       (nint(store(m39f+1)) .eq. 0)) then 
+             iflack0=m39f
+             exit
+          endif
+          m39f=m39f+md39f
          enddo
 c
          m39f = l39f
          do i=1,n39f                                !Find record FLACK(1)
-          iflack1=m39f
           if ((istore(m39f) .eq. icflac) .and. 
-     1       (nint(store(m39f+1)) .eq. 1)) exit
-           m39f=m39f+md39f
+     1       (nint(store(m39f+1)) .eq. 1)) then
+             iflack1=m39f
+             exit
+          endif
+          m39f=m39f+md39f
          enddo
 C
          m39f = l39f
          do i=1,n39f                                !Find record HOOFT(0)
-          ihooft=m39f
           if ((istore(m39f) .eq. ichooft) .and. 
-     1       (nint(store(m39f+1)) .eq. 0)) exit
-           m39f=m39f+md39f
+     1       (nint(store(m39f+1)) .eq. 0)) then
+             ihooft=m39f
+             exit
+          endif
+          m39f=m39f+md39f
          enddo
         endif 
 c
@@ -7992,7 +8042,7 @@ C     Excluded reflection categories
 c
 c
 c      initialisr hole in one
-      i = LINFIT(1,x,y,wt,a,sa,b,sb,t,tsq,r,rsq,nitem, tensor)
+      i = LINFIT(1,x,y,wt,a,sa,b,sb,c,t,tsq,r,rsq,nitem, tensor)
       nhin1 = 0
 c
 C
@@ -8176,11 +8226,11 @@ c Hole in one
         x = fck2-fck1
         y = fok1-fck1
         wt = 1./(sig1*sig1)
-        i = LINFIT(2,x,y,wt,a,sa,b,sb,t,tsq,r,rsq,mitem,tensor)
+        i = LINFIT(2,x,y,wt,a,sa,b,sb,c,t,tsq,r,rsq,mitem,tensor)
         x = fck1-fck2
         y = fok2-fck2
         wt = 1./(sig2*sig2)
-        i = LINFIT(2,x,y,wt,a,sa,b,sb,t,tsq,r,rsq,mitem,tensor)
+        i = LINFIT(2,x,y,wt,a,sa,b,sb,c,t,tsq,r,rsq,mitem,tensor)
       endif
 c End Hole in one
 C
@@ -8353,7 +8403,7 @@ C
 C
 C                                ---- ALL REFELCTIONS NOW PROCESSED.
 c
-      i = LINFIT(3,x,y,wt,a,sa,b,sb,t,tsq,r,rsq,mitem,tensor)
+      i = LINFIT(3,x,y,wt,a,sa,b,sb,c,t,tsq,r,rsq,mitem,tensor)
 c     hole-in-1
       hin1 = b
       hin1su = sb
@@ -8835,7 +8885,7 @@ c         watch out for unreasonably large Do
 C
 C       initialise best line fitting
 C
-        i = LINFIT(1,x,y,wt,a,sa,b,sb,t,tsq,r,rsq,nitem, tensor)
+        i = LINFIT(1,x,y,wt,a,sa,b,sb,c,t,tsq,r,rsq,nitem, tensor)
 C
         NFOFC=0
         m6acc=l6acc
@@ -8874,7 +8924,7 @@ C
           ymax=max(ymax,abs(yaxis))
           nfofc=nfofc+1
           itemp =
-     1    LINFIT(2,XAXIS,YAXIS,wt,a,sa,b,sb,t,tsq,r,rsq,nitem,tensor)
+     1    LINFIT(2,XAXIS,YAXIS,wt,a,sa,b,sb,c,t,tsq,r,rsq,nitem,tensor)
 c
           IF  (IPUNCH.EQ.3) then
 c disabled april 2016
@@ -8907,7 +8957,7 @@ c
               goto 2840
         endif
 c
-        IDJW=LINFIT(3,X,Y,WT,YCUT,SIGCUT,SLOPE,SIGSLOP,T,TSQ,CORREL,
+        IDJW=LINFIT(3,X,Y,WT,YCUT,SIGCUT,SLOPE,SIGSLOP,c,T,TSQ,CORREL,
      1  COOD,NFOFC,tensor)
 C
         IF (IDJW.GE.0) THEN
@@ -10829,11 +10879,12 @@ C----- CLOSE THE 'CIF' OUTPUT FILE
       END
 c
 CODE FOR LINFIT
-      function LINFIT(mode,x,y,wt,a,sa,b,sb,t,tsq,r,rsq,mitem,tensor)
+      function LINFIT(mode,x,y,wt,a,sa,b,sb,C,t,tsq,r,rsq,mitem,tensor)
 c     1  root, xcoord, ycoord, grad)
 c least squares best line, based on Bevington, Chapter 6 
 c  see also http://mathworld.wolfram.com/LeastSquaresFitting.html
 c  y = a + bx
+C  and y = cx (i.e. line passes through origin)
 c
 c verified against Watts & Halliwell, Essential Environmental
 c Science, Routledge, 1996.
@@ -10877,6 +10928,7 @@ c
         if(abs(denom) .gt. zero) then
             a = (sy*sxx - sx*sxy)/denom
             b = (ss*sxy - sx*sy)/denom
+            c = sxy/sxx
 
 c This bit based on Wolfram world but including weights (derived by DJW so 
 c beware)
@@ -11966,26 +12018,32 @@ c look fo the FLACK records
         if (n39f.gt.0) then
          m39f = l39f
          do i=1,n39f                                !Find record FLACK(0)
-          iflack0=m39f
           if ((istore(m39f) .eq. icflac) .and. 
-     1       (nint(store(m39f+1)) .eq. 0)) exit
-           m39f=m39f+md39f
+     1       (nint(store(m39f+1)) .eq. 0)) then
+             iflack0=m39f
+             exit
+          endif 
+          m39f=m39f+md39f
          enddo
 c
          m39f = l39f
          do i=1,n39f                                !Find record FLACK(1)
-          iflack1=m39f
           if ((istore(m39f) .eq. icflac) .and. 
-     1       (nint(store(m39f+1)) .eq. 1)) exit
-           m39f=m39f+md39f
+     1       (nint(store(m39f+1)) .eq. 1)) then
+             iflack1=m39f
+             exit
+          endif
+          m39f=m39f+md39f
          enddo
 C
          m39f = l39f
          do i=1,n39f                                !Find record HOOFT(0)
-          ihooft=m39f
           if ((istore(m39f) .eq. ichooft) .and. 
-     1       (nint(store(m39f+1)) .eq. 0)) exit
-           m39f=m39f+md39f
+     1       (nint(store(m39f+1)) .eq. 0)) then
+             ihooft=m39f
+             exit
+          endif
+          m39f=m39f+md39f
          enddo
         endif 
 c
@@ -12008,12 +12066,12 @@ c          Note that 'Parsons' might be quotient or difference
 c FLACK(1) record
             continue
          if (iflack1.gt.0) then
-            store(iflack1+2) = 0.0 ! mfried
-            store(iflack1+3) = 0.0 ! nnpp
-            store(iflack1+4) = 0.0 ! nfried
-            store(iflack1+6) = 0.0 ! nfofc
-            store(iflack1+8) = 0.0 ! nfofc
-            store(iflack1+10) = 0.0 ! ngood
+            store(iflack1+2) = v3(1) ! mfried
+            store(iflack1+3) = v3(1) ! nnpp
+            store(iflack1+4) = v3(1) ! nfried
+            store(iflack1+6) = v3(1) ! nfofc
+            store(iflack1+8) = v3(1) ! nfofc
+            store(iflack1+10) = v3(1) ! ngood
              do i=5,11,2
                   store(iflack1+i)=0.
              enddo
