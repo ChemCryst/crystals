@@ -183,6 +183,8 @@ CcParse CrTab::ParseInput( deque<string> & tokenList )
 
   while ( hasTokenForMe && ! tokenList.empty() )
   {
+    bool hasInstr = true;
+    bool hasAttrib = true;
     switch ( CcController::GetDescriptor( tokenList.front(), kInstructionClass ) )
     {
       case kTCreateTab:
@@ -236,13 +238,36 @@ CcParse CrTab::ParseInput( deque<string> & tokenList )
         break;
       }
       case kTEndGrid:
+      {
         tokenList.pop_front();  //run on into default.
+      }
+      default:
+      {
+        hasInstr = false;
+      }
+    }
+    switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
+    {
+      case kTSetSelection:
+      {
+        tokenList.pop_front();  
+        int select = atoi ( tokenList.front().c_str() );
+        if (( select >= 0 ) && ( select < m_nTabs)) {
+          ((CxTab*)ptr_to_cxObject)->SetSelection(select);
+        } else {
+            LOGERR("CrTab: " + mName + ": Someone tried to change to non-existent tab: " + tokenList.front() );
+        }
+        tokenList.pop_front();
+        break;
+      }
       default:
       {
         ((CxTab*)ptr_to_cxObject)->RedrawTabs();
+        hasAttrib = false;
         hasTokenForMe = false;
-      }
+      }      
     }
+    hasTokenForMe = hasAttrib || hasInstr;
   }
   return CcParse(true,mXCanResize,mYCanResize);
 }
@@ -286,6 +311,8 @@ CrGUIElement *  CrTab::FindObject( const string & Name )
 {
   CrGUIElement* theElement = nil;
 
+  if ( Name == mName ) return this;
+
   list<CrGrid*>::iterator crgi = mTabsList.begin();
   for ( ; crgi != mTabsList.end(); crgi++ )
   {
@@ -308,9 +335,12 @@ void CrTab::ChangeTab(int tab)  //zero-based index of tab to change to
   list<CrGrid*>::iterator crgi = mTabsList.begin();
   for ( int i = 0; i < tab && crgi != mTabsList.end(); i++ ) { crgi++; }
 
-  m_currentTab = *crgi;
-  if ( m_currentTab ) m_currentTab->CrShowGrid(true);
-  ((CxTab*)ptr_to_cxObject)->RedrawTabs();
+  if (crgi != mTabsList.end()) 
+  {
+      m_currentTab = *crgi;
+      if ( m_currentTab ) m_currentTab->CrShowGrid(true);
+      ((CxTab*)ptr_to_cxObject)->RedrawTabs();
+  }
 }
 
 int CrTab::GetIdealWidth()
