@@ -44,7 +44,7 @@
 ^^WI 'Initiate some cycles of refinement'
 ^^WI          '#SCRIPT XREFINE' DISABLEIF='IN'
 ^^WI         SPLIT
-^^WI         TOOL _AGREE 'chart.png' 'Fo vs Fc graph' '#SCRIPT XFOVSFC' 
+^^WI         TOOL _AGREE 'scatter.png' 'Fo vs Fc graph' '#SCRIPT XFOVSFC' 
 ^^WI          ENABLEIF='L6 L5 L1 L2' DISABLEIF='IN' 
 ^^WI         TOOL _MGU 'export.png' 'Export' '#SCRIPT XCIF'  
 ^^WI           DISABLEIF='IN QS' ENABLEIF='L1 L2 L3 L5 L6'

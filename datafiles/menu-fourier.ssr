@@ -1,6 +1,6 @@
 %%SSR MENU-FOURIER                                                              
 ^^WI  MENU _FOURIER 'F&ourier'                                                  
-^^WI   ITEM _DIFF '&Difference' '#SCRIPT XFOUR_NDIFF' ICON='fourier.png'
+^^WI   ITEM _DIFF '&Difference	Alt+F' '#SCRIPT XFOUR_NDIFF' ICON='fourier.png'
 ^^WI               ENABLEIF='L1 L2 L5 L6' DISABLEIF='IN'                        
 ^^WI   ITEM _FOBS '&F-obs'      '#SCRIPT XFOUR_NFOBS'                           
 ^^WI               ENABLEIF='L1 L2 L5 L6' DISABLEIF='IN'                        

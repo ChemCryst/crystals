@@ -104,7 +104,7 @@
 ^^WI     '#SPAWN "CRYSDIR:manual/guide-10.html"' DISABLEIF='IN'                   
 ^^WI    ENDMENU                                                                 
 ^^WI   ENDMENU                                                                  
-^^WI   ITEM INFO 'Information' '#SCRIPT TOOLINF'
+^^WI   ITEM INFO 'Information' '#SCRIPT TOOLINF' ICON='tool_help_s.png'
 ^^WI     DISABLEIF='IN'
 ^^WI  ENDMENU                                                                   
 %%END SSR

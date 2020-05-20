@@ -44,9 +44,7 @@
 ^^WI '$ http://publcif.iucr.org/services/tools/printcif.php'                     
 ^^WI   SPLIT                                                                    
 ^^WI   ITEM RH      'Results menu he&lp'                                        
-^^WI        '$"crysdir:manual/tools-menus.html"'                  
-^^WI   ITEM RA      'Analyse menu he&lp'                                        
-^^WI        '$"crysdir:manual/analyse/analysis.html"'                  
+^^WI        '$"crysdir:manual/tools-menus.html"' ICON='tool_help_s.png'              
 ^^WI  ENDMENU                                                                   
 %%SSR END
 
