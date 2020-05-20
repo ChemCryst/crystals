@@ -216,6 +216,9 @@
 %  COPY '#LIST 22'
 %  COPY 'END'
 %%
+%% Switch infotabs view back to refinement.
+^^CO SET _MAINTABS SELECTION 0
+%%
 %  IF NCYCLE .GT. 0 THEN
 %    CASE NFORCE
 %%
@@ -274,6 +277,7 @@
 %  IF XREFINE .EQ. FALSE THEN
 ^^CO SETKEY XREFINE_CONVERGE 0
 %  END IF 
+%%
 ^^WI WINDOW XABORT 'Refining' MODAL GRID MAIN NROWS=3 NCOLS=5
 ^^WI { @ 2,2 STATIC T1 'Click to abort (after next cycle).'
 ^^WI   @ 2,4 BUTTON RF_BAB '&Abort' INFORM=NO DEFAULT DISABLED=NO } SHOW
