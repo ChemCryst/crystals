@@ -1,6 +1,6 @@
 %%SSR MENU-REFINE                                                               
 ^^WI  MENU _REFINE '&Refinement'                                                
-^^WI   ITEM _REF '&The Guide' '#SCRIPT XGUIDE' ICON='tool_guid.bmp' DISABLEIF='IN'                  
+^^WI   ITEM _REF '&The Guide	F4' '#SCRIPT XGUIDE' ICON='tool_guid.bmp' DISABLEIF='IN'                  
 ^^WI   ITEM _REF '&Setup directives and constraints' '#SCRIPT XWRITE5'          
 ^^WI          ENABLEIF='L1 L2 L3 L5 L6' DISABLEIF='QS IN'                       
 ^^WI   ITEM _REF 'Setu&p and refine	Ctrl+R' '#SCRIPT SWRITE5' ICON='dorefine.png'      
@@ -45,7 +45,7 @@
 ^^WI   ITEM _SQUEEZE 'Anomalous modified Squeeze' '#SCRIPT PLATANOM'                         
 ^^WI               ENABLEIF='L1 L2 L3 L5 L6'       DISABLEIF='IN'               
 ^^WI   ITEM INFO 'Information' '#SCRIPT REFINF'                                 
-^^WI              DISABLEIF='IN'                                                
+^^WI    ICON='tool_help_s.png'   DISABLEIF='IN'                                                
 ^^WI  ENDMENU                                                                   
 %%END SSR                                                                       
                                                                                 

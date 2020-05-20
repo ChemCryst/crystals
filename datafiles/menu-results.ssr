@@ -1,7 +1,7 @@
 %%SSR MENU-RESULTS
 ^^WI  MENU _RESULTS 'Res&ults'                                                  
-^^WI   ITEM PUBL 'Output &CIF file' '#SCRIPT XCIF'  DISABLEIF='IN QS'           
-^^WI                                ENABLEIF='L1 L2 L3 L5 L6'                   
+^^WI   ITEM PUBL 'Output &CIF file' '#SCRIPT XCIF'  ICON='export.png'
+^^WI   DISABLEIF='IN QS' ENABLEIF='L1 L2 L3 L5 L6'                   
 ^^WI   ITEM PUSU 'Output &CIF file no esds' '#SCRIPT XCIFNOSU'  DISABLEIF='IN'         
 ^^WI                                ENABLEIF='L1 L2 L3 L5' 
 ^^WI   ITEM PUAT 'Output Atoms-only &CIF' '#SCRIPT ATOMSCIF'  DISABLEIF='IN'         
@@ -44,9 +44,7 @@
 ^^WI '$ http://publcif.iucr.org/services/tools/printcif.php'                     
 ^^WI   SPLIT                                                                    
 ^^WI   ITEM RH      'Results menu he&lp'                                        
-^^WI        '$"crysdir:manual/tools-menus.html"'                  
-^^WI   ITEM RA      'Analyse menu he&lp'                                        
-^^WI        '$"crysdir:manual/analyse/analysis.html"'                  
+^^WI        '$"crysdir:manual/tools-menus.html"' ICON='tool_help_s.png'              
 ^^WI  ENDMENU                                                                   
 %%SSR END
 
