@@ -1,0 +1,82 @@
+%SCRIPT XGETEL
+%%        
+%% Input: CMESSAGE IS TEXT TO BE DISPLAYED
+%% Output: IRET +ve if value chosen, zero if cancel
+%%         CRET string containing atom type chosen
+%  VARIABLE CHARACTER CMESSAGE CRET
+%  VARIABLE INTEGER IRET
+%  VARIABLE INTEGER N29 
+%  VARIABLE CHARACTER CLTYPE
+%  VARIABLE LOGICAL RESET29
+%  EVALUATE RESET29 = TRUE
+%%   
+^^WI WINDOW XGETEL 'Get an element' MODAL 
+^^WI COMMIT='RF_BOK' CANCEL='RF_BXX'
+^^WI GRID MAIN NROWS=3 NCOLS=7  
+^^WI {    
+^^WI  @ 2,2 GRID L NROWS=5 NCOLS=1    
+^^WI  {   
+^^WI   @ 1,1 GRID NCYC NROWS=3 NCOLS=3
+^^WI   {  
+^^WI    @ 1,1 STATIC T1 'Choose an atom type' 
+^^WI    @ 3,1 LISTBOX _ELS VISLINES=12 ADDTOLIST 'Q' 'NULL'
+^^WI   }  
+^^WI  }   
+^^WI  @ 2,6 GRID R NROWS=3 NCOLS=1    
+^^WI  {   
+^^WI   @ 1,1 BUTTON RF_BOK '&OK' DEFAULT            
+^^WI   @ 3,1 BUTTON RF_BXX '&Cancel'  
+^^WI  }   
+^^WI }
+^^WI SHOW  
+^^CR  
+%  CLEAR
+%  LOOP
+%    ON ERROR TERMINATE
+%    IF ( RESET29 ) THEN
+^^CO   SET _ELS REMOVE 0
+^^WI   SET _ELS ADDTOLIST
+%      EVALUATE N29 = 0
+%      IF ( EXISTS 29 .EQ. 1 ) THEN
+%        COPY '#GENERALEDIT 29'
+%        COPY 'LOCATE RECORDTYPE=101'
+%        COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%        LOOP
+%          ON EDITERROR TERMINATE
+%          COPY 'TRANSFER FROM OFFSET=0 TO CLTYPE'
+%          TRANSFER '^^WI ' // CLTYPE TO DISPLAY
+%          EVALUATE N29 = N29 + 1
+%          COPY 'NEXT'
+%        END LOOP
+%        COPY 'END'
+%      END IF
+^^WI   'Q' 'NULL'
+^^CR
+%      EVALUATE RESET29 = FALSE
+%    END IF
+^^CO FOCUS _ELS
+%% 
+%    ON ERROR TERMINATE             
+%    VERIFY RF_BXX RF_BOK 
+%    GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' ' 
+%    CASE VALUE       
+%      BLOCK           
+^^CO      DISPOSE XGETEL
+%         EVALUATE IRET = - 1  
+%         FINISH        
+%      END BLOCK       
+%      BLOCK           
+%         EVALUATE LOOPEND = LOOPCOUNTER  
+%      END BLOCK       
+%    END CASE
+%  END LOOP
+%  CLEAR
+%  INSERT '^^?? _ELS LISTTEXT '
+^^?? _ELS SELECTED
+%  GET SILENT INTEGER ' '
+%  OUTPUT
+%  GET SILENT NOSTORE KEYWORD ' ' 'ERROR'
+%  EVALUATE CRET = CVALUE
+^^CO DISPOSE XGETEL
+%%          
+%END SCRIPT

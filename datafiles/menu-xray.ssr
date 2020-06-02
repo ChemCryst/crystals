@@ -60,7 +60,7 @@
 ^^WI                                                  DISABLEIF='IN'
 ^^WI   ITEM _CUT '&Filter reflections' '#SCRIPT XLIST28'
 ^^WI              ENABLEIF='L6'
-^^WI   ITEM ED05 'Edit &Coordinates' '#SCRIPT SYSED5' DISABLEIF='IN'
+^^WI   ITEM ED05 'Edit &Coordinates' '#SCRIPT SYSED5' ICON='edit5.png' DISABLEIF='IN'
 ^^WI   ITEM ED29 'Edit &Elemental properties' '#SCRIPT SYSED29' 
 ^^WI              DISABLEIF='IN'
 ^^WI   ITEM ED3  'Edit &Scattering Factors' '#SCRIPT EDLIST3' DISABLEIF='IN' 
@@ -86,8 +86,9 @@
 ^^WI   SPLIT
 
 ^^WI   ITEM XH      'CRYSTALS manual "X-ray &help"'
-^^WI        '$"crysdir:manual/tools-menus.html"'
+^^WI        '$"crysdir:manual/tools-menus.html"' ICON='tool_help_s.png'
 ^^WI   ITEM XA       'About Data Input'
-^^WI         '#SPAWN CRYSDIR:manual/Xray-data/table.html' DISABLEIF='IN'
+^^WI         '#SPAWN CRYSDIR:manual/Xray-data/table.html'
+^^WI     ICON='tool_help_s.png'  DISABLEIF='IN'
 ^^WI  ENDMENU
 %%SSR END

@@ -8,6 +8,8 @@
 %%
 %%
 ^^WI   SPLIT
+^^WI  ITEM _MEXT '&Explore current working folder'
+^^WI    '$explorer ./' ICON='explorer.png' DISABLEIF='IN'
 ^^WI   ITEM NOTE '&Notepad' '$notepad' ICON='notepad.png' DISABLEIF='IN'
 ^^WI   ITEM XDL '&Delete BFILES' '#spawn + "crysdir:crdelbf.bat"' 
 ^^WI     DISABLEIF='IN'
@@ -102,7 +104,7 @@
 ^^WI     '#SPAWN "CRYSDIR:manual/guide-10.html"' DISABLEIF='IN'                   
 ^^WI    ENDMENU                                                                 
 ^^WI   ENDMENU                                                                  
-^^WI   ITEM INFO 'Information' '#SCRIPT TOOLINF'
+^^WI   ITEM INFO 'Information' '#SCRIPT TOOLINF' ICON='tool_help_s.png'
 ^^WI     DISABLEIF='IN'
 ^^WI  ENDMENU                                                                   
 %%END SSR

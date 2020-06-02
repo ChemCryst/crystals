@@ -6,6 +6,9 @@
 ^^WI         TOOL _MGU 'guide.png' 'Guide' '#SCRIPT XGUIDE'
 ^^WI           DISABLEIF='IN'
 ^^WI         SPLIT
+^^WI         TOOL _MGU 'import.png' 'Import' '#SCRIPT XFILE_ANY'
+^^WI           DISABLEIF='IN'
+^^WI         SPLIT
 ^^WI         TOOL _MFO fourier.png
 ^^WI 'Fourier'
 ^^WI          '#SCRIPT XFOUR_NDIFF' DISABLEIF='IN QS' ENABLEIF='L5 L1 L2'
@@ -40,6 +43,11 @@
 ^^WI         TOOL _DO33 runref.png
 ^^WI 'Initiate some cycles of refinement'
 ^^WI          '#SCRIPT XREFINE' DISABLEIF='IN'
+^^WI         SPLIT
+^^WI         TOOL _AGREE 'scatter.png' 'Fo vs Fc graph' '#SCRIPT XFOVSFC' 
+^^WI          ENABLEIF='L6 L5 L1 L2' DISABLEIF='IN' 
+^^WI         TOOL _MGU 'export.png' 'Export' '#SCRIPT XCIF'  
+^^WI           DISABLEIF='IN QS' ENABLEIF='L1 L2 L3 L5 L6'
 ^^WI         SPLIT
 ^^WI         TOOL _MCA cam.png
 ^^WI 'Manipulate the structure with Cameron graphics'
