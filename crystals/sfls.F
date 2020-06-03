@@ -2561,13 +2561,13 @@ c          IF (STORE(M6+20) .GE. RALL(13)) THEN      ! user-sigma
           ENDIF
          ENDIF
 
-         if(sfls_punch_flag>0 .and. SFLS_TYPE==SFLS_REFINE) then
+        ENDIF          
+        if(sfls_punch_flag>0 .and. SFLS_TYPE==SFLS_REFINE) then
              !hkl=nint(STORE(M6:M6+2))
              call sfls_punch_addtoreflections(nint(STORE(M6:M6+2)), 
      1         (/ Fo, STORE(M6+12), FCEXS, w, scale, st/), 
      2         sfls_punch_flag)
-         end if
-        ENDIF          
+        end if
           
       END DO  ! END OF REFLECTION LOOP
 
