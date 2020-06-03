@@ -479,7 +479,7 @@ Variance-covariance matrix of selected atoms (x10^6)
 
 
 
-      C(9) to       C(7) to       O(6) to       O(8) =       179.7    0.6    0.1
+      C(9) to       C(7) to       O(6) to       O(8) =       179.7    0.6    0.1                                                                
 #TITLE NORMAL TORSION
 #LIST     12
 #SFLS
@@ -724,14 +724,14 @@ Mean C-C su =   0.0057
  The SU is computed from the full VcV matrix if available
  A positive rotation is clockwise from atom 1 to 4, when viewed from atom 2 to 3
                                                       Torsion angle & VcV-su
-     CU(1) to       O(2) to       C(3) to       C(5) =      -176.8    0.4    0.8
-     CU(1) to       O(2) to       C(3) to       C(5) =      -176.8    0.4    0.8
-     CU(1) to       O(6) to       C(7) to       O(8) =        -3.1    0.9    1.2
-     CU(1) to       O(6) to       C(7) to       C(9) =       176.5    0.4    0.7
-      C(7) to       O(6) to      CU(1) to      O(10) =       176.4    0.5    0.7
-      C(7) to       O(6) to      CU(1) to       C(3) =        61.1    0.5    0.7
-     O(10) to      CU(1) to CU(1,1,1,0,1) to O(10,1,1,0,1)     0.0    0.4    0.0
-      C(5) to       C(3) to      CU(1) to C(3,-1,1,1,0,1) = -176.4    0.7    2.1
+     CU(1) to       O(2) to       C(3) to       C(5) =      -176.8    0.4    0.8                                                                
+     CU(1) to       O(2) to       C(3) to       C(5) =      -176.8    0.4    0.8                                                                
+     CU(1) to       O(6) to       C(7) to       O(8) =        -3.1    0.9    1.2                                                                
+     CU(1) to       O(6) to       C(7) to       C(9) =       176.5    0.4    0.7                                                                
+      C(7) to       O(6) to      CU(1) to      O(10) =       176.4    0.5    0.7                                                                
+      C(7) to       O(6) to      CU(1) to       C(3) =        61.1    0.5    0.7                                                                
+     O(10) to      CU(1) to CU(1,1,1,0,1) to O(10,1,1,0,1)     0.0    0.4    0.0                                                                
+      C(5) to       C(3) to      CU(1) to C(3,-1,1,1,0,1) = -176.4    0.7    2.1                                                                
 #TORS
 
 
@@ -763,7 +763,7 @@ Variance-covariance matrix of selected atoms (x10^6)
 
 
 
-     O(10) to      CU(1) to CU(1,1,1,0,1) to O(10,1,1,0,1)     0.0    0.4    0.0
+     O(10) to      CU(1) to CU(1,1,1,0,1) to O(10,1,1,0,1)     0.0    0.4    0.0                                                                
 #TORS
 
 
@@ -773,7 +773,7 @@ Variance-covariance matrix of selected atoms (x10^6)
  The SU is computed from the full VcV matrix if available
  A positive rotation is clockwise from atom 1 to 4, when viewed from atom 2 to 3
                                                       Torsion angle & VcV-su
-     O(10) to      CU(1) to CU(1,2,1,0,1) to O(10,2,1,0,1)  -131.3    0.3    1.1
+     O(10) to      CU(1) to CU(1,2,1,0,1) to O(10,2,1,0,1)  -131.3    0.3    1.1                                                                
 # THE MIS-MATCH BETWEEN LISTS 5 AND 12 CAUSES THE FILE TO
 # BE ABANDONED AND CONTROL PASSED TO THE USER.
 # NOT MUCH USE IN BATCH MODE
@@ -803,14 +803,14 @@ Variance-covariance matrix of selected atoms (x10^6)
  Matrix for e.s.ds missing. Using mean errors instead
  A positive rotation is clockwise from atom 1 to 4, when viewed from atom 2 to 3
                                                       Torsion angle & su
-     CU(1) to       O(2) to       C(3) to       C(5) =      -176.8    0.4
-     CU(1) to       O(2) to       C(3) to       C(5) =      -176.8    0.4
-     CU(1) to       O(6) to       C(7) to       O(8) =        -3.1    0.9
-     CU(1) to       O(6) to       C(7) to       C(9) =       176.5    0.4
-      C(7) to       O(6) to      CU(1) to      O(10) =       176.4    0.5
-      C(7) to       O(6) to      CU(1) to       C(3) =        61.1    0.5
-     O(10) to      CU(1) to CU(1,1,1,0,1) to O(10,1,1,0,1)     0.0    0.4
-      C(5) to       C(3) to      CU(1) to C(3,-1,1,1,0,1) = -176.4    0.7
+     CU(1) to       O(2) to       C(3) to       C(5) =      -176.8    0.4                                                                
+     CU(1) to       O(2) to       C(3) to       C(5) =      -176.8    0.4                                                                
+     CU(1) to       O(6) to       C(7) to       O(8) =        -3.1    0.9                                                                
+     CU(1) to       O(6) to       C(7) to       C(9) =       176.5    0.4                                                                
+      C(7) to       O(6) to      CU(1) to      O(10) =       176.4    0.5                                                                
+      C(7) to       O(6) to      CU(1) to       C(3) =        61.1    0.5                                                                
+     O(10) to      CU(1) to CU(1,1,1,0,1) to O(10,1,1,0,1)     0.0    0.4                                                                
+      C(5) to       C(3) to      CU(1) to C(3,-1,1,1,0,1) = -176.4    0.7                                                                
 
 
           : Job ends ok       with     0 warnings and     1 error 

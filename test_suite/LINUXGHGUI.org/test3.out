@@ -5636,13 +5636,13 @@ AZIMUTH  =    59.34     AZIMUTH /100 =   0.5934
  The su is computed from the mean atomic variances
  A positive rotation is clockwise from atom 1 to 4, when viewed from atom 2 to 3
                                                       Torsion angle & su
-      P(1) to       C(1) to       C(2) to       C(3) =      -176.7    0.0
-      P(1) to       C(1) to       C(2) to       C(4) =      -177.7    0.0
-      P(1) to       C(1) to       C(2) to       C(5) =      -178.0    0.0
-      P(1) to       C(1) to       C(2) to       C(6) =      -178.3    0.0
-      P(1) to       C(1) to       C(2) to       O(7) =      -178.2    0.0
-      P(1) to       C(1) to       C(2) to       C(8) =       142.3    0.0
-      P(1) to       C(1) to       C(2) to C(9,-2,1,-1) =    -127.4    0.0
+      P(1) to       C(1) to       C(2) to       C(3) =      -176.7    0.0                                                                
+      P(1) to       C(1) to       C(2) to       C(4) =      -177.7    0.0                                                                
+      P(1) to       C(1) to       C(2) to       C(5) =      -178.0    0.0                                                                
+      P(1) to       C(1) to       C(2) to       C(6) =      -178.3    0.0                                                                
+      P(1) to       C(1) to       C(2) to       O(7) =      -178.2    0.0                                                                
+      P(1) to       C(1) to       C(2) to       C(8) =       142.3    0.0                                                                
+      P(1) to       C(1) to       C(2) to C(9,-2,1,-1) =    -127.4    0.0                                                                
 
 
  BENZAM  -  TEST HYDROGEN PLACING ROUTINES                                            Date              Time          
@@ -5658,7 +5658,7 @@ AZIMUTH  =    59.34     AZIMUTH /100 =   0.5934
  An atom has appeared more than once in the list
  Processing of the card above has been abandoned
                                                       Torsion angle & su
-      P(1) to       C(1) to       C(2) to       P(1) =         0.0    0.0
+      P(1) to       C(1) to       C(2) to       P(1) =         0.0    0.0                                                                
 #TITLE SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !
 #LIST 1
 #LIST 2
