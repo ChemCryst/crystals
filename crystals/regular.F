@@ -3598,7 +3598,16 @@ cdjwfeb11 Watch out for inversion
                   tp = tp + 360.
                endif
 
-CDJW OCT2010
+         IF (abs(angle3) .ge. 0.996) THEN
+          WRITE(CBUFF,'(A,F6.1)')' SKIPPED',rtd*acos(angle3)
+         ELSE
+          CBUFF=' OK'
+c  only include OK geometries in statistics
+          numt = numt + 1
+          tdevp = tdevp + tp*tp
+          tormax = max(tormax, abs(tp))
+          tormin = min(tormin, abs(tp))
+         ENDIF
 
               IF (IMATRIX .LT. 0) THEN
               IF (ISSPRT .EQ. 0) THEN
@@ -3621,16 +3630,7 @@ CDJW OCT2010
         CALL XCRAS(COLD,LOS)
         CALL XCRAS(CNEW,LNS)
         IF (ISSPRT .EQ. 0) THEN
-         IF (abs(angle3) .ge. 0.996) THEN
-          WRITE(CBUFF,'(A,F6.1)')' SKIPPED',rtd*acos(angle3)
-         ELSE
-          CBUFF=' OK'
-c  only include OK geometries in statistics
-          numt = numt + 1
-          tdevp = tdevp + tp*tp
-          tormax = max(tormax, abs(tp))
-          tormin = min(tormin, abs(tp))
-         ENDIF
+
          WRITE(NCWU,'(A,2X,A,4x,3F8.2,A)')
      1   COLD(1:36), CNEW(1:36), T1,T2,TP,CBUFF
         ENDIF
