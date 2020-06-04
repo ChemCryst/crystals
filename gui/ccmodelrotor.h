@@ -20,7 +20,7 @@ class CcModelRotor : public CcModelObject
                     int ixi, int ibd,
                     float fx, float fy, float fz,
                     const string & elem, int serial, int refflag,
-                    int assembly, int group, float ueq, float fspare, int isflg,
+                    int assembly, int group, float ueq, float fspare, int isflg, int iorder,
                     CcModelDoc* parentptr);
 
     void Init();
@@ -56,6 +56,7 @@ class CcModelRotor : public CcModelObject
     int m_assembly;
     int m_group;
     int m_isflg;
+	int m_order;
     string m_elem;
     string m_sflags;
 };

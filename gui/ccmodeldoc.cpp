@@ -468,11 +468,13 @@ CcModelObject* CcModelDoc::FindAtomByLabel(const string & atomname)
   return ratom;
 }
 
-CcModelAtom* CcModelDoc::FindAtomByPosn(int posn)  //posn is zero based, but id is 1 based.
+CcModelObject* CcModelDoc::FindAtomByPosn(int posn)  //posn is zero based, but id is 1 based.
 {
-  CcModelAtom* ret = nil;
+  CcModelObject* ret = nil;
   m_thread_critical_section.Enter();
-  if ( posn >= (int) mAtomList.size() ) posn = (int) mAtomList.size();
+  
+//  if ( posn >= (int) mAtomList.size() ) posn = (int) mAtomList.size();
+  
   list<CcModelAtom>::iterator atom=mAtomList.begin();
   for (;atom!=mAtomList.end();++atom) {
 	  if ( atom->id - 1 == posn ) {
@@ -480,6 +482,25 @@ CcModelAtom* CcModelDoc::FindAtomByPosn(int posn)  //posn is zero based, but id 
 		  break;
 	  }
   }
+  if ( ret == nil ) {
+	  list<CcModelDonut>::iterator ring=mDonutList.begin();
+	  for (;ring!=mDonutList.end();++ring) {
+		  if ( ring->id - 1 == posn ) {
+			  ret = &(*ring);
+			  break;
+		  }
+	  }
+  }
+  if ( ret == nil ) {
+	  list<CcModelRotor>::iterator rotor=mRotorList.begin();
+	  for (;rotor!=mRotorList.end();++rotor) {
+		  if ( rotor->id - 1 == posn ) {
+			  ret = &(*rotor);
+			  break;
+		  }
+	  }
+  }
+
   m_thread_critical_section.Leave();
   return ret;
 }
@@ -1340,14 +1361,14 @@ void CcModelDoc::FastRotor(const string & label,int x1,int y1,int z1,
                           int ixi, int ibd,
                           float frac_x, float frac_y, float frac_z,
                           const string & elem, int serial, int refflag,
-                          int assembly, int group, float ueq, float fspare, int iflag)
+                          int assembly, int group, float ueq, float fspare, int iflag, int iorder)
 {
     m_thread_critical_section.Enter();
         CcModelRotor item(label,x1,y1,z1,
                           r,g,b,occ,cov,vdw,spare,flag,
                           iso,irad,idec,iaz,ixi,ibd,
                           frac_x, frac_y, frac_z, elem, serial,refflag,
-                          assembly, group, ueq,fspare,iflag,this);
+                          assembly, group, ueq,fspare,iflag,iorder,this);
         item.id = mAtomList.size() + mDonutList.size() + mSphereList.size() + mRotorList.size() + 1;
         item.m_glID = m_glIDs++;
         mRotorList.push_back(item);
@@ -1387,7 +1408,7 @@ void fastrotor  (char* label,int x1,int y1,int z1,
                 int ixi, int ibd,
                 float frac_x, float frac_y, float frac_z,
                 char* elem, int serial, int refflag,
-                int assembly, int group, float ueq, float fspare, int iflag);
+                int assembly, int group, float ueq, float fspare, int iflag, int iorder);
 }
 
 //implementations:
@@ -1469,7 +1490,7 @@ void fastrotor  (char* label,int x1,int y1,int z1,
                 int ixi, int ibd,
                 float frac_x, float frac_y, float frac_z,
                 char* elem, int serial, int refflag,
-                int assembly, int group, float ueq, float fspare, int iflag)
+                int assembly, int group, float ueq, float fspare, int iflag, int iorder)
 {
       string celem  = elem;
       string clabel = label;
@@ -1480,6 +1501,6 @@ void fastrotor  (char* label,int x1,int y1,int z1,
                           ixi, ibd,
                           frac_x, frac_y, frac_z,
                           celem, serial, refflag,
-                          assembly, group, ueq, fspare, iflag) ;
+                          assembly, group, ueq, fspare, iflag, iorder) ;
 
 }

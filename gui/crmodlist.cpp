@@ -346,7 +346,7 @@ void CrModList::AddRow( int id, vector<string> & rowOfStrings, bool s, bool d )
 
 void CrModList::SelectAtomByPosn(int id, bool select)
 {
-  CcModelAtom* atom = nil;
+  CcModelObject* atom = nil;
 
   if(m_ModelDoc) atom = m_ModelDoc->FindAtomByPosn(id);
 
@@ -360,7 +360,7 @@ void CrModList::ContextMenu(int x, int y, int iitem, int mtype)
 {
   if ( m_ModelDoc == nil ) return;
 
-  CcModelAtom* atom = m_ModelDoc->FindAtomByPosn(iitem);
+  CcModelObject* atom = m_ModelDoc->FindAtomByPosn(iitem);
 
   if ( !atom ) return;
 

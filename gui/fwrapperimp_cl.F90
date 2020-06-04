@@ -114,10 +114,10 @@ end subroutine
 
 subroutine fstrot(ll,cl,ix,iy,iz,ir,ig,ib,ioc,ico,ivd, &
    isp,ifl,iso,irad, idec, iaz, ixi, ibd, sfx,sfy,sfz, &
-   de,jl,jrf,ja,jgr,fue,fsp,isflg )
+   de,jl,jrf,ja,jgr,fue,fsp,isflg, iorder )
 
     integer ll,ix,iy,iz,ir,ig,ib,ioc,ico,ivd
-    integer isp,ifl,iso,irad,idec,iaz
+    integer isp,ifl,iso,irad,idec,iaz,iorder
     character*(*) cl
     character*(ll+1) bl
 end subroutine

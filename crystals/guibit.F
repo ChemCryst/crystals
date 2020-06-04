@@ -1188,7 +1188,7 @@ C This block detects sticky flag and sets ISFLAG to pass info to GUI.
 
 #endif
 ! Rotor
-              ELSE IF ( NINT(STORE(I5+3)) .EQ. 5 ) THEN
+              ELSE IF ( NINT(STORE(I5+3)) .GE. 5 ) THEN
 
                    CALL PRTGRP(ISTORE(I5+14),JPRT,JGRP,1)
 #ifdef CRY_GUI
@@ -1204,7 +1204,8 @@ C This block detects sticky flag and sets ISFLAG to pass info to GUI.
      6         NINT(STORE(I5+11)*100.0),NINT(STORE(I5+12)*100.0), ! xi, Bd
      4         STORE(I5+4),STORE(I5+5),STORE(I5+6),                ! 16,17,18
      5         CATTYP,NINT(STORE(I5+1)),                           ! 19,20
-     5         ISTORE(I5+16), JGRP, JPRT, UEQUIV, STORE(I5+13),ISFLAG)   !21,22,23,24,25,26
+     5         ISTORE(I5+16), JGRP, JPRT, UEQUIV, STORE(I5+13),ISFLAG,  !21,22,23,24,25,26
+     6         NINT(STORE(I5+3)-4 ) )  !27
 #endif
                ELSE IF ( NINT(STORE(I5+3)) .EQ. 4 ) THEN
 

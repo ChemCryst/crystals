@@ -170,11 +170,11 @@ subroutine fstrng(ll,cl,ix,iy,iz,ir,ig,ib,ioc,ico,ivd, &
 end subroutine
 
 subroutine fstrot(ll,cl,ix,iy,iz,ir,ig,ib,ioc,ico,ivd, &
-    isp,ifl,iso,irad, idec, iaz, ixi, ibd, sfx,sfy,sfz, de,jl,jrf,ja,jgr,fue,fsp,isflg )
+    isp,ifl,iso,irad, idec, iaz, ixi, ibd, sfx,sfy,sfz, de,jl,jrf,ja,jgr,fue,fsp,isflg,iorder )
     use fwrappergui_mod, only: fastrotor
 
     integer ll,ix,iy,iz,ir,ig,ib,ioc,ico,ivd
-    integer isp,ifl,iso,irad,idec,iaz,ixi,ibd
+    integer isp,ifl,iso,irad,idec,iaz,ixi,ibd,iorder
     integer jl, jrf, ja, jgr, isflg
     real sfx, sfy, sfz, fue, fsp
     character*(*) cl, de
@@ -185,5 +185,5 @@ subroutine fstrot(ll,cl,ix,iy,iz,ir,ig,ib,ioc,ico,ivd, &
     be = de(1:4)  // char(0)
 
     call fastrotor(bl,ix,iy,iz,ir,ig,ib,ioc,ico,ivd, &
-    &   isp,ifl,iso,irad, idec,iaz, ixi, ibd, sfx,sfy,sfz, be, jl,jrf,ja,jgr,fue,fsp,isflg)
+    &   isp,ifl,iso,irad, idec,iaz, ixi, ibd, sfx,sfy,sfz, be, jl,jrf,ja,jgr,fue,fsp,isflg,iorder)
 end subroutine

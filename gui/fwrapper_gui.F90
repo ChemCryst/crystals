@@ -532,11 +532,11 @@ interface
 !> interface to C function fastdonut (iso_c_bindings)
 !! Unkwown function call from guibits.F
   subroutine fastrotor (dl,jx,jy,jz,jr,jg,jb,joc,jco,jvd, &
-  & jsp,jfl,jiso,jrad, jdec, jaz, jxi, jbd, sfx,sfy,sfz,de,jl,jrf,ja,jgr,fue,fsp,isflg) bind(c)
+  & jsp,jfl,jiso,jrad, jdec, jaz, jxi, jbd, sfx,sfy,sfz,de,jl,jrf,ja,jgr,fue,fsp,isflg,iorder) bind(c)
     use, intrinsic :: ISO_C_BINDING
     implicit none
     integer, value :: jx,jy,jz,jr,jg,jb,joc,jco,jvd, jxi, jbd
-    integer, value :: jsp,jfl,jiso,jrad, jdec, jaz,jl,jrf,ja,jgr,isflg
+    integer, value :: jsp,jfl,jiso,jrad, jdec, jaz,jl,jrf,ja,jgr,isflg,iorder
     character dl,de
     real, value :: sfx,sfy,sfz,fue,fsp
   end subroutine fastrotor

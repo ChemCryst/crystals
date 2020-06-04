@@ -577,6 +577,11 @@ CcParse CrModel::ParseInput( deque<string> &  tokenList )
               if (((CcModelDonut*)oitem)->IsSelected()) (CcController::theController)->SendCommand("SET");
               else                                     (CcController::theController)->SendCommand("UNSET");
             }
+            else if ( oitem->Type()==CC_ROTOR )
+            {
+              if (((CcModelRotor*)oitem)->IsSelected()) (CcController::theController)->SendCommand("SET");
+              else                                     (CcController::theController)->SendCommand("UNSET");
+            }
 
           }
           else LOGERR("CrModel:ParseInput:kTCheckValue No such atom:" + tokenList.front());

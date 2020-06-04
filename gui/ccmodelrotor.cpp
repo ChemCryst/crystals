@@ -28,7 +28,7 @@ CcModelRotor::CcModelRotor(string llabel,int lx1,int ly1,int lz1,
                           int iso, int irad, int idec, int iaz, int ixi, int ibd,
                           float fx, float fy, float fz,
                           const string & elem, int serial, int refflag,
-                          int assembly, int group, float ueq, float fspare, int isflg,
+                          int assembly, int group, float ueq, float fspare, int isflg, int iorder,
                           CcModelDoc* parentptr)
 {
   mp_parent = parentptr;
@@ -55,6 +55,7 @@ CcModelRotor::CcModelRotor(string llabel,int lx1,int ly1,int lz1,
   m_elem = elem;
   m_spare = fspare;
   m_isflg = isflg;
+  m_order = iorder;
   switch (m_isflg) {
     case 0: m_sflags = ""; break;
     case 1: m_sflags = "refine X's"; break;
@@ -70,7 +71,7 @@ CcModelRotor::CcModelRotor(string llabel,int lx1,int ly1,int lz1,
 
 void CcModelRotor::Init()
 {
-  m_type = CC_DONUT;
+  m_type = CC_ROTOR;
   x = y = z = 0;
   r = g = b = 0;
   id = 0;
@@ -208,8 +209,9 @@ void CcModelRotor::Render(CcModelStyle *style, bool feedback)
 //    glColor4fv( Surface );
   }
 
-  glColor4fv( Surface );
-
+  if ( !feedback ) {
+	  glColor4fv( Surface );
+  }
   float innerrad = ( (float) rad - (float) covrad ) * style->radius_scale;
   float outerrad = ( (float) rad + (float) covrad ) * style->radius_scale;
 
@@ -240,7 +242,8 @@ void CcModelRotor::Render(CcModelStyle *style, bool feedback)
         glRotatef((float)xi, 0,0,1);
 
         float rc = (outerrad-innerrad)/2.5f;  // torus thickness
-        int numt = CRMAX(10,detail);             // num of cylinders to make torus?
+ //       int numt = CRMAX(60,detail);             // num of cylinders to make torus
+	    int numt = CRMAX(2,m_order) * 10;
         float rt = (float)rad ;          // torus radius
         int numc = detail;             // num of sides to cylinder?
         float s, t;
@@ -251,11 +254,14 @@ void CcModelRotor::Render(CcModelStyle *style, bool feedback)
         for (int i = 0; i < numc; i++) {
            glBegin(GL_QUAD_STRIP);
            for (int j = 0; j <= numt; j++) {
-             if (j%(numt/3) == 0) {
-                  glColor4fv( Black );
-             } else {
-               glColor4fv(Surface);
-             }
+             if (!feedback) {
+                 
+				 if (j%(int)((float)numt/(float)m_order) == 0) {
+					glColor4fv( Black );
+				 } else {
+				   glColor4fv(Surface);
+				 }
+			 }
 
               for (int k = 0; k <= 1; k++) {
                  s = (i + k) % numc + 0.5f;

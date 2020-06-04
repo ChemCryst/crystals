@@ -164,7 +164,7 @@ class CcModelDoc
         void DisableAllAtoms(bool select);                              // Called by CrModel
         void DisableAtomByLabel(const string & atomname, bool select);          // Called by CrModel
         CcModelObject* FindAtomByLabel(const string & atomname);         // Called by CrModel & CcModelBond
-        CcModelAtom* FindAtomByPosn(int posn);          // Called by CrModList & CcModelBond
+        CcModelObject* FindAtomByPosn(int posn);          // Called by CrModList & CcModelBond
 
         void FastBond(int x1,int y1,int z1, int x2, int y2, int z2,
                           int r, int g, int b,  int rad,int btype,
@@ -203,7 +203,7 @@ class CcModelDoc
                           int ixi, int ibd,
                           float frac_x, float frac_y, float frac_z,
                           const string & elem, int serial, int refflag,
-                          int assembly, int group, float ueq, float fspare, int iflag);
+                          int assembly, int group, float ueq, float fspare, int iflag, int iorder);
 
 
         CcModelObject * FindObjectByGLName(GLuint name);            // Called by CrModel

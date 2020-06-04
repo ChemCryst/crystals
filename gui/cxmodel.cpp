@@ -568,6 +568,8 @@ void CxModel::OnLButtonDown( wxMouseEvent & event )
          ((CcModelSphere*)object)->SendAtom( ((CrModel*)ptr_to_crObject)->GetSelectionAction() );
         else if ( type == CC_DONUT )
          ((CcModelDonut*)object)->SendAtom( ((CrModel*)ptr_to_crObject)->GetSelectionAction() );
+        else if ( type == CC_ROTOR )
+         ((CcModelRotor*)object)->SendAtom( ((CrModel*)ptr_to_crObject)->GetSelectionAction() );
         else if ( type == CC_BOND )
          ((CcModelBond*)object)->SendAtom( ((CrModel*)ptr_to_crObject)->GetSelectionAction() );
       }
@@ -791,7 +793,11 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
               }
               else if ( objectType == CC_DONUT )
               {
-                labelstrm << " annulus occ:" << (float)((CcModelDonut*)object)->occ/1000.0;
+                labelstrm << " ring occ:" << (float)((CcModelDonut*)object)->occ/1000.0;
+              }
+              else if ( objectType == CC_ROTOR )
+              {
+                labelstrm << " rotor occ:" << (float)((CcModelRotor*)object)->occ/1000.0;
               }
 
 
@@ -974,7 +980,7 @@ void CxModel::OnRButtonUp( wxMouseEvent & event )
     point = CcPoint(wpoint.x,wpoint.y);
 #endif
 
-  if ( obtype == CC_ATOM || obtype == CC_SPHERE || obtype == CC_DONUT )
+  if ( obtype == CC_ATOM || obtype == CC_SPHERE || obtype == CC_DONUT || obtype == CC_ROTOR)
   {
     atom = (CcModelAtom*)object;
     if (atom->IsSelected()) // If it's selected pass the atom-clicked, and all the selected atoms.
