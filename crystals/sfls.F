@@ -3439,8 +3439,8 @@ CODE FOR XSFLSX
       use xlst06_mod, only:m6 ! read only
       use xlst12_mod, only:l12, n12 ! read only
       implicit none
-      INCLUDE 'XIOBUF.INC'
-      INCLUDE 'XUNITS.INC'
+!      INCLUDE 'XIOBUF.INC'
+!      INCLUDE 'XUNITS.INC'
 
 C
 C--MAIN S.F.L.S. LOOP  -  CALCULATES A AND B AND THEIR DERIVATIVES
@@ -3878,8 +3878,8 @@ c Special shapes
               CALL XLINE (M2, M5A, M6, SLRFAC, DSIZE, DDECLINA,DAZIMUTH)
             ELSE IF (NINT(FLAG) .EQ. 4) THEN   ! CALC RING TF
               CALL XRING (M2, ST, M5A,M6,SLRFAC,DSIZE,DDECLINA,DAZIMUTH)
-            ELSE IF (NINT(FLAG)==5) THEN
-              CALL XROTOR (3, M5A, M2T, SST, AROTOR, BROTOR,
+            ELSE IF (NINT(FLAG).GE.5) THEN
+              CALL XROTOR (NINT(FLAG)-4, M5A, M2T, SST, AROTOR, BROTOR,
      1        DMADBD, DMBDBD, DMADR, DMBDR, DMADXI, DMBDXI,
      2        DMADDC, DMBDDC, DMADAZ, DMBDAZ ) ! declination and azimuth
             END IF
@@ -3893,7 +3893,7 @@ c iso-temperature factor
 !--CALCULATE THE A & B CONTRIBUTION
           BPI=Sina(ljy,ljx)*TFOCC
           API=Cosa(ljy,ljx)*TFOCC
-          IF (NINT(FLAG) == 5) THEN
+          IF (NINT(FLAG) .GE. 5) THEN
            AP=API*AROTOR-BPI*BROTOR
            BP=BPI*AROTOR+API*BROTOR
           ELSE

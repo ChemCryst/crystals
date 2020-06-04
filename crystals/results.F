@@ -2254,7 +2254,7 @@ C--LOOP OVER THE PARAMETERS
             ll = 4
       else if (iflag .eq. 4) then
             ll = 4
-      else if (iflag .eq. 5) then
+      else if (iflag .ge. 5) then
             ll = 6
       endif
 c      write(123,'(a,b34)')'Uij', istore(m5+15)
@@ -2429,16 +2429,17 @@ c--- write special shapes to cif file
      4 '_oxford_atom_site_special_azimuth'/
      4 '_oxford_atom_site_special_xi'/
      4 '_oxford_atom_site_special_bd'/
+     4 '_oxford_atom_site_special_rotor_order'/
      4 '_oxford_atom_site_special_shape')
 c
         do 3100 j = 1,jspbuf
         read(cspbuf(j), '(i1,a)') iflag,cmon(1)
         call xctrim(cmon(1), nchar)
-        if (iflag .eq. 2) write(cmon(1)(nchar+1:),'(a)') ' . . . .'
-        if (iflag .eq. 3) write(cmon(1)(nchar+1:),'(a)') ' . . '
-        if (iflag .eq. 4) write(cmon(1)(nchar+1:),'(a)') ' . . '
+        if (iflag .eq. 2) write(cmon(1)(nchar+1:),'(a)') ' . . . . .'
+        if (iflag .eq. 3) write(cmon(1)(nchar+1:),'(a)') ' . . .'
+        if (iflag .ge. 4) write(cmon(1)(nchar+1:),'(a)') ' . . .'
         call xcrems(cmon(1), cmon(1), nchar)
-        write(cmon(1)(nchar+1:),'(a8)') cshape(iflag-1)(:)
+        write(cmon(1)(nchar+1:),'(a8,1x,i4)')cshape(iflag-1)(:),iflag-4
         call xcrems(cmon(1), cmon(1), nchar)
         write(ncfpu1,'(a)') cmon(1)(1:nchar)
 3100    continue

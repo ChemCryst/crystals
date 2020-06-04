@@ -522,8 +522,9 @@ C-C-C-RING
           ENDIF
 C-C-C-DISTINCTION BETWEEN DIFFERENT ATOM-TYPES
 C-C-C-ANISOTROPIC ATOMS (AND UNREASONABLY SET FLAGS)
+C 0 = aniso, 1 = iso, 2=sphere, 3=line, 4=ring, 4+n = n-fold rotor (up to 8)
           IF ((NINT(STORE(M5+3)) .LE. 0) .OR.
-     2        (NINT(STORE(M5+3)) .GT. 5)) THEN
+     2        (NINT(STORE(M5+3)) .GT. 12)) THEN 
            IF (ISSPRT .EQ. 0) THEN
             WRITE(NCWU,532)
      2      (PLM(K1(IK)+2), PRE(K2(IK)+1), COORD(KEY(IK)+1) ,IK =1,9)
@@ -545,7 +546,7 @@ C-C-C-SURFACE OF A SPHERE
 534        FORMAT (1X,(3(A1,A3,A2,1X),6(A1,A3,A5,1X)))
 C-C-C-ROTOR (Natalie / Bruce)
           ELSE IF ((NINT(STORE(M5+3)) .GE. 5) .AND.
-     2        (NINT(STORE(M5+3)) .LE. 4.0)) THEN
+     2        (NINT(STORE(M5+3)) .LE. 12)) THEN
            IF (ISSPRT .EQ. 0) THEN
             WRITE(NCWU,535)
      2      (PLM(K1(IK)+2), PRE(K2(IK)+1), COORDRT(KEY(IK)+1) ,IK =1,9)
@@ -553,7 +554,7 @@ C-C-C-ROTOR (Natalie / Bruce)
 535        FORMAT (1X,(3(A1,A3,A2,1X),6(A1,A3,A5,1X)))
 C-C-C-LINE OR RING
           ELSE IF ((NINT(STORE(M5+3)) .GE. 3) .AND.
-     2        (NINT(STORE(M5+3)) .LE. 4.0)) THEN
+     2        (NINT(STORE(M5+3)) .LE. 4)) THEN
            IF (ISSPRT .EQ. 0) THEN
             WRITE(NCWU,535)
      2      (PLM(K1(IK)+2), PRE(K2(IK)+1), COORDLR(KEY(IK)+1) ,IK =1,9)
@@ -3908,7 +3909,8 @@ C-C-C-ATOM IS ANISOTROPIC
       ELSE IF(NINT(ABS(STORE(M5+3))) .EQ. 2) THEN
 C-C-C-"ATOM" IS A SPHERE
       GOTO 2310
-      ELSE IF(NINT(ABS(STORE(M5+3))) .EQ. 5) THEN
+      ELSE IF(NINT(ABS(STORE(M5+3))) .GE. 5) THEN
+C-C-C-"ATOM" IS A ROTOR
       GOTO 2315
       ELSE IF(NINT(ABS(STORE(M5+3))) .GE. 3) THEN
 C-C-C-"ATOM" IS A LINE OR RING
@@ -3951,7 +3953,7 @@ C      GOTO 2100
       GOTO 2400
       ELSE IF(NINT(ABS(STORE(M5+3))) .EQ. 2) THEN
       GOTO 2310
-      ELSE IF(NINT(ABS(STORE(M5+3))) .EQ. 5) THEN
+      ELSE IF(NINT(ABS(STORE(M5+3))) .GE. 5) THEN
       GOTO 2315
       ELSE IF(NINT(ABS(STORE(M5+3))) .GE. 3) THEN
       GOTO 2320
