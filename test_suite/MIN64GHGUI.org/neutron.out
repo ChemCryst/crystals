@@ -85,6 +85,9 @@ Bonds: Update required - There is no list 41
 
 
    2373 reflections accepted               0 reflections rejected
+
+ Rsigma =  0.048 for     2373 input reflections
+
 #MERGE
  After   1 pass    2373 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
@@ -4818,6 +4821,9 @@ Space group symbol is   P    1    21/N 1
 
 
    2373 reflections accepted               0 reflections rejected
+
+ Rsigma =  0.048 for     2373 input reflections
+
 #MERGE
  After   1 pass    2373 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
@@ -9545,6 +9551,9 @@ Space group symbol is   P    1    21/N 1
 
 
    2373 reflections accepted               0 reflections rejected
+
+ Rsigma =  0.048 for     2373 input reflections
+
 #MERGE
  After   1 pass    2373 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
@@ -14040,6 +14049,9 @@ Space group symbol is   P    1    21/N 1
 
 
    2373 reflections accepted               0 reflections rejected
+
+ Rsigma =  0.048 for     2373 input reflections
+
 #MERGE
  After   1 pass    2373 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
