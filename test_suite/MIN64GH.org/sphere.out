@@ -142,8 +142,11 @@ Number               12       6      11      10      11       5       3
 
     467 reflections accepted              58 reflections rejected
 
- Rsigma has changed from its old value of 0.028 to  0.027
+ Rsigma =  0.027 for      467 input reflections
 
+
+for      467 input reflections
+Fo range       -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 #MERGE
  After   1 pass     467 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
@@ -1881,8 +1884,11 @@ Number               12       6      11      10      11       5       3
 
     467 reflections accepted              58 reflections rejected
 
- Rsigma has changed from its old value of 0.028 to  0.027
+ Rsigma =  0.027 for      467 input reflections
 
+
+for      467 input reflections
+Fo range       -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 #MERGE
  After   1 pass     467 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
@@ -3619,8 +3625,11 @@ Number               12       6      11      10      11       5       3
 
     467 reflections accepted              58 reflections rejected
 
- Rsigma has changed from its old value of 0.028 to  0.027
+ Rsigma =  0.027 for      467 input reflections
 
+
+for      467 input reflections
+Fo range       -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 #MERGE
  After   1 pass     467 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
@@ -5346,8 +5355,11 @@ Number               12       6      11      10      11       5       3
 
     467 reflections accepted              58 reflections rejected
 
- Rsigma has changed from its old value of 0.028 to  0.027
+ Rsigma =  0.027 for      467 input reflections
 
+
+for      467 input reflections
+Fo range       -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 #MERGE
  After   1 pass     467 reflection(s) have been sorted
  The updated reflections are now on UNIT 53

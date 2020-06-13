@@ -105,6 +105,9 @@ rms (Fo/sigma)    2.451   0.857   1.690   3.405   5.459  11.667   0.000
 Number                4       1       2       5       4       1       0
 
    1849 reflections accepted              17 reflections rejected
+
+ Rsigma =  0.035 for     1849 input reflections
+
 #MERGE
  After   1 pass    1849 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
@@ -3984,6 +3987,9 @@ rms (Fo/sigma)    2.451   0.857   1.690   3.405   5.459  11.667   0.000
 Number                4       1       2       5       4       1       0
 
    1849 reflections accepted              17 reflections rejected
+
+ Rsigma =  0.035 for     1849 input reflections
+
 #MERGE
  After   1 pass    1849 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
@@ -7858,6 +7864,9 @@ rms (Fo/sigma)    2.451   0.857   1.690   3.405   5.459  11.667   0.000
 Number                4       1       2       5       4       1       0
 
    1849 reflections accepted              17 reflections rejected
+
+ Rsigma =  0.035 for     1849 input reflections
+
 #MERGE
  After   1 pass    1849 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
@@ -11743,6 +11752,9 @@ rms (Fo/sigma)    2.451   0.857   1.690   3.405   5.459  11.667   0.000
 Number                4       1       2       5       4       1       0
 
    1849 reflections accepted              17 reflections rejected
+
+ Rsigma =  0.035 for     1849 input reflections
+
 #MERGE
  After   1 pass    1849 reflection(s) have been sorted
  The updated reflections are now on UNIT 53

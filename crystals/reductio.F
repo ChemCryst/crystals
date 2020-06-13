@@ -768,23 +768,32 @@ c              STORE(L30DR+2) = min(FLOAT(N6W),STORE(L30DR+2))
 c              Dont fiddle with the merged totals, just account for 
 c              systematic absences
               STORE(L30DR) = FLOAT(N6W)
-c              write(123,*)'rsignum, rsigden',rsignum, rsigden
+c              write(123,*)'rsignum, rsigden',rsignum, rsigden,n6w
               RSIGMA=RSIGNUM/RSIGDEN
-C             write(123,*)'Rsigma=',rsigma, store(l30dr+1)
+c              write(123,*)'Rsigma=',rsigma, store(l30dr+1)
+          write(cmon,'(A,F6.3,A,I9,A )')' Rsigma = ',rsigma,' for',N6W,
+     1    ' input reflections'
+               call xprvdu (ncvdu,1,0)
+           if (issprt.eq.0) write (ncwu,'(/a/)') 
+     1     TRIM(cmon(1))
           IF(STORE(L30DR+1).GT. ZERO) then
            if(ABS(STORE(L30DR+1)-RSIGMA).GT.0.0005) THEN
             WRITE(CMON,'(A,A,F6.3,A,F6.3)')' Rsigma has changed from',
      2      ' its old value of',store(l30dr+1),' to ', rsigma
+            Write(cmon,'(A,I8,A)')'for ',n6w, ' input reflections'
                CALL OUTCOL(3)
-               call xprvdu (ncvdu,1,0)
+               call xprvdu (ncvdu,2,0)
                CALL OUTCOL(1)
-               if (issprt.eq.0) write (ncwu,'(/a/)') TRIM(cmon(1))
+               if (issprt.eq.0) write (ncwu,'(/a/a)') 
+     1         TRIM(cmon(1)),TRIM(cmon(2))
            ENDIF
           ENDIF
-          STORE(L30DR+1)=RSIGMA    !This was also computed when reflections
+          STORE(L30DR+1)=RSIGMA    !This was first computed when reflections
 c                                  !were read in from LIST 6 or HKLI
 c                                  !It has been recomputed after systematic
 c                                  !absences have been removed
+c                                   In SUM06 Rsigma is computed from the L28
+c                                   permitted reflections
         CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
       ENDIF       
 1810  CONTINUE

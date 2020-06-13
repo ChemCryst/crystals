@@ -200,6 +200,9 @@ rms (Fo/sigma)    1.991   0.581   1.370   2.828   5.875  12.295  44.714
 Number               29      14      14       9      11       7      35
 
    3794 reflections accepted             119 reflections rejected
+
+ Rsigma =  0.043 for     3794 input reflections
+
 #SORT
  After   1 pass    3794 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
