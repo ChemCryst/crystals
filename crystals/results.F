@@ -2287,7 +2287,7 @@ c
 c---- save special shape
             if (jspbuf .lt. nspbuf) then
                   jspbuf = jspbuf + 1
-                  write(cspbuf(jspbuf)(:),'(i1,118a1)')
+                  write(cspbuf(jspbuf)(:),'(i2,118a1)')
      1            iflag, (linea(jr), jr=1,118)
             else
                    write(cmon,'(a)') 'Too many special shapes'
@@ -2433,7 +2433,7 @@ c--- write special shapes to cif file
      4 '_oxford_atom_site_special_shape')
 c
         do 3100 j = 1,jspbuf
-        read(cspbuf(j), '(i1,a)') iflag,cmon(1)
+        read(cspbuf(j), '(i2,a)') iflag,cmon(1)
         call xctrim(cmon(1), nchar)
         if (iflag .eq. 2) write(cmon(1)(nchar+1:),'(a)') ' . . . . .'
         if (iflag .eq. 3) write(cmon(1)(nchar+1:),'(a)') ' . . .'
