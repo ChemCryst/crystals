@@ -2437,9 +2437,10 @@ c
         call xctrim(cmon(1), nchar)
         if (iflag .eq. 2) write(cmon(1)(nchar+1:),'(a)') ' . . . . .'
         if (iflag .eq. 3) write(cmon(1)(nchar+1:),'(a)') ' . . .'
-        if (iflag .ge. 4) write(cmon(1)(nchar+1:),'(a)') ' . . .'
+        if (iflag .eq. 4) write(cmon(1)(nchar+1:),'(a)') ' . . .'
         call xcrems(cmon(1), cmon(1), nchar)
-        write(cmon(1)(nchar+1:),'(a8,1x,i4)')cshape(iflag-1)(:),iflag-4
+        write(cmon(1)(nchar+1:),'(i4,1x,a8)') iflag-4,
+     5              cshape(min(iflag-1,4))(:)
         call xcrems(cmon(1), cmon(1), nchar)
         write(ncfpu1,'(a)') cmon(1)(1:nchar)
 3100    continue
