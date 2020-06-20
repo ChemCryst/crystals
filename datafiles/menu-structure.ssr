@@ -79,7 +79,7 @@
 ^^WI              DISABLEIF='IN'  ENABLEIF='QS'                                 
 ^^WI   SPLIT                                                                    
 ^^WI   ITEM SHEL 'Help/Information' '#SCRIPT STRUCTINF'                         
-^^WI              DISABLEIF='IN'                                                
+^^WI        ICON='tool_help_s.png' DISABLEIF='IN'                                                
 ^^WI  ENDMENU                                                                   
 %%SSR END                                                                       
                                                                                 

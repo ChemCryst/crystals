@@ -2934,7 +2934,7 @@ C Our torsion is C-A-B-D
       DIMENSION UTYPE(2), USERIAL(2)
 
       CHARACTER *36 COLD, CNEW
-      CHARACTER *32 CATOM1
+      CHARACTER *32 CATOM1, CBUFF
       CHARACTER *8 COLDU,CNEWU
 
       INCLUDE 'ISTORE.INC'
@@ -3349,10 +3349,14 @@ C
 C
         IF (NOLD .GE. 1) THEN
          IF (IMATRIX .LT. 0) THEN
-         IF (ISSPRT .EQ. 0) 
-     1  WRITE(NCWU,'(/,A,57x,a)')'Torsion angle deviations',
-     2  'Angles & Difference'
-        ENDIF
+          IF (ISSPRT .EQ. 0) THEN
+          WRITE(NCWU,'(/A,A,A)')'Torsion angles are omitted from the',
+     1    ' statistics if angles C-A-B or A-B-D are within 5 degrees',
+     2    ' of co-linearity'
+          WRITE(NCWU,'(A,57x,a)')'Torsion angle deviations',
+     2    ' Angles, Difference & Status'
+          ENDIF
+         ENDIF
         ENDIF
 C RMS deviation of torsions.
 C 1. Find next bond (a1-a2) in LOLD.
@@ -3482,7 +3486,21 @@ C Normalise
               IF(NORM3(ACVEC).LT.0) CYCLE
               IF(NORM3(ABVEC).LT.0) CYCLE
               IF(NORM3(BDVEC).LT.0) CYCLE
-              
+
+C COMPUTE ANGLES C-A-B AND A-B-D
+              ANGLE1=(ACVEC(1)*ABVEC(1)+
+     1        ACVEC(2)*ABVEC(2)+ACVEC(3)*ABVEC(3))
+     
+              ANGLE2=(BDVEC(1)*ABVEC(1)+
+     1        BDVEC(2)*ABVEC(2)+BDVEC(3)*ABVEC(3))
+     
+C FIND LARGEST BOND ANGLE
+      IF(ABS(ANGLE1).GT.ABS(ANGLE2)) THEN
+       ANGLE3=ANGLE1
+      ELSE
+       ANGLE3=ANGLE2
+      ENDIF
+            
 C Axis system for torsion C-A-B-D
 C Construct an orthogonal set of axes so that the 'z' direction points
 C along the AB bond, the 'y' direction is perpendicular to the CAB plane,
@@ -3580,11 +3598,16 @@ cdjwfeb11 Watch out for inversion
                   tp = tp + 360.
                endif
 
-               tdevp = tdevp + tp*tp
-               tormax = max(tormax, abs(tp))
-               tormin = min(tormin, abs(tp))
-CDJW OCT2010
-              NUMT = NUMT + 1
+         IF (abs(angle3) .ge. 0.996) THEN
+          WRITE(CBUFF,'(A,F6.1)')' SKIPPED',rtd*acos(angle3)
+         ELSE
+          CBUFF=' OK'
+c  only include OK geometries in statistics
+          numt = numt + 1
+          tdevp = tdevp + tp*tp
+          tormax = max(tormax, abs(tp))
+          tormin = min(tormin, abs(tp))
+         ENDIF
 
               IF (IMATRIX .LT. 0) THEN
               IF (ISSPRT .EQ. 0) THEN
@@ -3607,10 +3630,10 @@ CDJW OCT2010
         CALL XCRAS(COLD,LOS)
         CALL XCRAS(CNEW,LNS)
         IF (ISSPRT .EQ. 0) THEN
-          WRITE(NCWU,'(A,2X,A,4x,3F8.2)')
-     1     COLD(1:36), CNEW(1:36), T1,T2,TP
-        ENDIF
 
+         WRITE(NCWU,'(A,2X,A,4x,3F8.2,A)')
+     1   COLD(1:36), CNEW(1:36), T1,T2,TP,CBUFF
+        ENDIF
               ENDIF
               ENDIF
             END DO ATOMBLOOP

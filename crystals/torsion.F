@@ -41,7 +41,7 @@ C--
       DIMENSION LATOM(4)
       DIMENSION R(4,3), SD(4,3), XYZ(3)
       DIMENSION RI(3,4),  VCV(12,12)
-      CHARACTER *12 CBUFF
+      CHARACTER *64 CBUFF
       CHARACTER *32 CATOM(4), CBLANK
       INCLUDE 'ICOM12.INC'
       INCLUDE 'ICOM30.INC'
@@ -421,6 +421,9 @@ C--POINT TO THE SECOND VECTOR
 2200  CONTINUE
       JB=IBASE2
 2250  CONTINUE
+      angle1= store(ibase1)*store(ibase2)+
+     1 store(ibase1+1)*store(ibase2+1)+
+     1 store(ibase1+2)*store(ibase2+2)
 C
 C--SET A POINTER FOR THE ATOM NUMBER
       JQ=1
@@ -478,8 +481,24 @@ C--ORTHOGONALISE TO 'IBASE1'
       CALL XMLTTM(STORE(L1O1),STORE(IBASE4),STORE(IBASE1),3,3,1)
 C--NORMALISE
       IF(NORM3(STORE(IBASE1)))2850,2550,2550
-C--ROTATE TO IBASE4
 2550  CONTINUE
+      angle2= -store(ibase1)*store(ibase2)-
+     1 store(ibase1+1)*store(ibase2+1)-
+     1 store(ibase1+2)*store(ibase2+2)
+     
+      IF(ABS(ANGLE1).GT.ABS(ANGLE2)) THEN
+       ANGLE3=ANGLE1
+      ELSE
+       ANGLE3=ANGLE2
+      ENDIF
+
+      IF (abs(angle3) .ge. 0.996) THEN
+       WRITE(CBUFF,'(A,F6.1)')' Group is almost co-linear ',
+     1 RTD*ACOS(ANGLE3)
+      ELSE
+       CBUFF=' '
+      ENDIF
+C--ROTATE TO IBASE4
       CALL XMLTTM(STORE(MAT),STORE(IBASE1),STORE(IBASE4),3,3,1)
 C--CALCULATE TORSION ANGLE OF VECTOR
       ANGLE=ATAN2(STORE(IBASE4+1),STORE(IBASE4))*RTD
@@ -504,34 +523,37 @@ C       COLUMNS
       ENDIF
 c
 C--- NOTE THAT TWO ITEMS ARE OUTPUT EVEN WHEN ESDS ARE NOT COMPUTED
-      IF(IPBFLG .GT. 0) WRITE (MTE) 'T', ANGLE, ESD,
+c Dont write to MTE if the bonds are almost co-linear
+      IF((IPBFLG .GT. 0).AND.(angle3 .ge. 0.996)) 
+     1  WRITE (MTE) 'T', ANGLE, ESD,
      1 (STORE(JPUB),STORE(JPUB+1), (ISTORE(KPUB),KPUB=JPUB+2,JPUB+6),
      2  JPUB=IPUB, IPUB+14, 7),
-     3  STORE(JF), STORE(JF+1), (ISTORE(JE), JE=JB,JD)
+     3 STORE(JF), STORE(JF+1), (ISTORE(JE), JE=JB,JD)
 C
 C----- COMPRESS ATOMS INTO CHARACTER FORM
-      CALL CATSTR (STORE(JF)    ,STORE(JF+1)  ,ISTORE(JB)
+       CALL CATSTR (STORE(JF)    ,STORE(JF+1)  ,ISTORE(JB)
      1 ,ISTORE(JB+1) ,ISTORE(JB+2) ,ISTORE(JB+3) ,ISTORE(JB+4),
      2 CATOM(4), LATOM(4))
 c
-        WRITE ( CMON ,2806) (
+       WRITE ( CMON ,2805) (
      1 CBLANK(1: 10-LATOM(II)), CATOM(II)(1:LATOM(II)),II=1,4)
-     2 ,ANGLE, ESD
-      CALL XCREMS(CMON,CMON,LENTXT)
-      CALL XPRVDU(NCVDU, 1,0)
+     2 ,ANGLE, ESD, CBUFF
+       CALL XCREMS(CMON,CMON,LENTXT)
+       CALL XPRVDU(NCVDU, 1,0)
 c
       IF (ISSPRT .EQ. 0) THEN
         IF (IESD .EQ. 1) THEN
        WRITE(NCWU, 2806)(
      1 CBLANK(1: 10-LATOM(II)), CATOM(II)(1:LATOM(II)),II=1,4)
-     2 ,ANGLE, ESD1, ESD2 
+     2 ,ANGLE, ESD1, ESD2, CBUFF
         ELSE
-       WRITE(NCWU, 2806)(
+       WRITE(NCWU, 2805)(
      1 CBLANK(1: 10-LATOM(II)), CATOM(II)(1:LATOM(II)),II=1,4)
-     2 ,ANGLE, ESD1
+     2 ,ANGLE, ESD1, CBUFF
         ENDIF
       ENDIF
-2806  FORMAT (2A,' to ',2A,' to ',2A,' to ',2A,' = ', T60,4F7.1)
+2805  FORMAT (2A,' to ',2A,' to ',2A,' to ',2A,' = ', T60,2F7.1,A)
+2806  FORMAT (2A,' to ',2A,' to ',2A,' to ',2A,' = ', T60,3F7.1,A)
 c
 C--CHECK IF THERE ARE MORE ATOMS
       IF(NATOM)1200,1200,2500

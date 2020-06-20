@@ -2194,6 +2194,7 @@ C
       SCALESQ = SCALE*SCALE
       FSCALE = 1./(SCALE*SCALE)
       TOP = 0.0
+      SIGBOTTOM = 0.0
       BOTTOM = 0.0
       WTOP = 0.0
       WBOT = 0.0
@@ -2229,16 +2230,18 @@ cjun2010  FO = STORE(M6+itwin)
           CALL XPRVDU(NCVDU, 1,0)
         ENDIF
 
-
+        CALL XSQRF(FOS, FO, FABS, SIGMAS, STORE(M6+12))
         WT = STORE(M6+4) 
         TOP = TOP + ABS (ABS(FO) - FC)
         BOTTOM = BOTTOM + ABS(FO)
-        SIGTOP = SIGTOP + STORE(M6+12)
+        SIGTOP = SIGTOP + SIGMAS
+        SIGBOTTOM = SIGBOTTOM + FOS
         IF (IFSQ .GE. 0) THEN
 C - FSQ REFINENENT
             WDEL = WT* (FO * ABS(FO) - FC*FC)
             WFO = WT* (FO * ABS(FO))
         ELSE
+C - F REFINENENT
             WDEL = WT * (FO - FC)
             WFO = WT * FO
         ENDIF
@@ -2336,7 +2339,8 @@ C
 
 C----- COMPUTE AND STORE R-VALUES
       RFACT = 100. * TOP / BOTTOM
-      RSIGM = 100. * SIGTOP / BOTTOM
+      RSIGM = 100. * SIGTOP / SIGBOTTOM
+c      write(123,*) 'sum L 6', sigtop, sigbottom, rsigm
       IF (WBOT .LE. 0.0) THEN
         WRFAC = 0.0
       ELSE
@@ -2355,15 +2359,15 @@ C -- PRINT THE R VALUE ETC.
       J = NINT(STORE(L6P))
       M6P = L6P+2
       IF (ISSPRT .EQ. 0)
-     1 WRITE ( NCWU , 1235 ) J , ( STORE(I+1) , I=L6P,M6P ), RSIGM
-      WRITE ( CMON , 1235 ) J , ( STORE(I+1) , I=L6P,M6P ), RSIGM
+     1 WRITE ( NCWU , 1235 ) J,( STORE(I+1) ,I=L6P,M6P ),RSIGM,n6acc
+      WRITE ( CMON , 1235 )J,( STORE(I+1) , I=L6P,M6P ), RSIGM,n6acc
       CALL XPRVDU(NCVDU, 3,0)
 
 1235  FORMAT (1X , 'After ' , I5 ,
      2 ' structure factor/refinement calculations ' , / ,
      3 1X , ' R =  ' , F6.2 , 5X , 'Weighted R = ' , F6.2 ,
      4 5X , 'Minimisation function = ' , E15.6, / ,
-     5     'Rsigma=', F6.2 )
+     5     ' Rsigma=', F6.2,' for',i9,' accepted reflections' )
 
 
       IF ( LEVEL.EQ.5 ) THEN

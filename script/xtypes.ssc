@@ -1,0 +1,28 @@
+%SCRIPT XTYPES
+%%Get an element type. CMESSAGE is text to be displayed
+% VARIABLE CHARACTER CMESSAGE 
+% VARIABLE CHARACTER CRET CATOM
+% VARIABLE INTEGER IRET
+% EVALUATE CMESSAGE = 'Change type of selection to' 
+%%  
+% COPY '#SCRIPT XGETEL'
+%%                        
+%  if iret .lt. 0 then
+%    finish
+%  end if                                                                             
+%%                                                                              
+% QUEUE REWIND                                                                  
+%%                                                                              
+^^CO GETVALUE MODEL01                                                           
+%%                                                                              
+% COPY '#EDIT'
+% LOOP                                                                          
+%   ON END TERMINATE                                                            
+%   GET SILENT NOSTORE TEXT 'Atom?' ' ' 
+%   EVALUATE CATOM = CVALUE
+%   CLEAR
+%   TRANSFER 'DRENAME ' // CATOM // ' ' // CRET // '(' // -
+    CHARACTER ( FIRSTINT ( CATOM ) ) // ')' TO CRYSTALS
+% END LOOP                                                                      
+% COPY 'END'
+%END SCRIPT                                                                     

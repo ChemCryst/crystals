@@ -4913,7 +4913,7 @@ Mean C-C su =   0.0062
  List   6 contains    904 reflections of which    904 are accepted by LIST 28
  After     6 structure factor/refinement calculations 
   R =    3.64     Weighted R =   7.14     Minimisation function =    0.588529E+03
-Rsigma=  2.79
+ Rsigma=  1.65 for      904 accepted reflections
 
  Slope, intercept and Cc of Normal Probability Plot =  0.797      0.08   0.99097
 

@@ -94,7 +94,7 @@ Bonds: Update required - There is no list 41
  List   6 contains   2805 reflections of which   2805 are accepted by LIST 28
  After     0 structure factor/refinement calculations 
   R =    6.84     Weighted R =  18.74     Minimisation function =    0.000000E+00
-Rsigma=  0.91
+ Rsigma=  1.17 for     2805 accepted reflections
 #SFLS
 #CLEAR 16
 #LIST  16
@@ -3495,7 +3495,7 @@ END
  List   6 contains   2805 reflections of which   2805 are accepted by LIST 28
  After     3 structure factor/refinement calculations 
   R =    6.66     Weighted R =  16.92     Minimisation function =    0.524148E+06
-Rsigma=  0.91
+ Rsigma=  1.17 for     2805 accepted reflections
 # NOTE F' AND F" SET TO ZERO
 #LIST 3
 #USE TD-PART-23.DAT
@@ -3532,7 +3532,7 @@ Rsigma=  0.91
  List   6 contains   2805 reflections of which   2805 are accepted by LIST 28
  After     0 structure factor/refinement calculations 
   R =    6.84     Weighted R =  18.74     Minimisation function =    0.000000E+00
-Rsigma=  0.91
+ Rsigma=  1.17 for     2805 accepted reflections
 #SFLS
 #SPEC  NO  NO
 #CALCULAT   1
@@ -9645,7 +9645,7 @@ LS-scale=  6.285   Wilson Scale=  0.000
  List   6 contains   2805 reflections of which   2805 are accepted by LIST 28
  After     2 structure factor/refinement calculations 
   R =   22.28     Weighted R =  77.59     Minimisation function =    0.110160E+08
-Rsigma=  0.91
+ Rsigma=  1.17 for     2805 accepted reflections
 #SFLS
 #WEIGHT
                      LIST 4 weighting type is /FO/ **2
@@ -9723,7 +9723,7 @@ LS-scale=  6.285   Wilson Scale=  0.000
  List   6 contains   2805 reflections of which   2805 are accepted by LIST 28
  After     3 structure factor/refinement calculations 
   R =    6.66     Weighted R =  16.67     Minimisation function =    0.508588E+06
-Rsigma=  0.91
+ Rsigma=  1.17 for     2805 accepted reflections
 #TITLE A&B KEYS SET, PARTS USED, F' & F" SET TO ZERO
 #PUNCH 6 I
 # punching LIST  6 as LIST  6 with all keys set
@@ -15395,7 +15395,7 @@ END
  List   6 contains   2805 reflections of which   2805 are accepted by LIST 28
  After     0 structure factor/refinement calculations 
   R =    6.84     Weighted R =  18.74     Minimisation function =    0.000000E+00
-Rsigma=  0.91
+ Rsigma=  1.17 for     2805 accepted reflections
 #SFLS
 #SPEC  NO  NO
 #CALCULAT   1
@@ -24328,7 +24328,7 @@ LS-scale=  6.285   Wilson Scale=  0.000
  List   6 contains   2805 reflections of which   2805 are accepted by LIST 28
  After     2 structure factor/refinement calculations 
   R =   22.19     Weighted R =  78.38     Minimisation function =    0.112423E+08
-Rsigma=  0.91
+ Rsigma=  1.17 for     2805 accepted reflections
 #SFLS
 #WEIGHT
                      LIST 4 weighting type is /FO/ **2
@@ -24406,7 +24406,7 @@ LS-scale=  6.285   Wilson Scale=  0.000
  List   6 contains   2805 reflections of which   2805 are accepted by LIST 28
  After     3 structure factor/refinement calculations 
   R =    7.02     Weighted R =  17.80     Minimisation function =    0.579932E+06
-Rsigma=  0.91
+ Rsigma=  1.17 for     2805 accepted reflections
 #TITLE A&B KEYS SET, F' & F" SET, PARTS USED
 #PUNCH 6 I
 # punching LIST  6 as LIST  6 with all keys set
@@ -36235,7 +36235,7 @@ END
  List   6 contains   2805 reflections of which   2805 are accepted by LIST 28
  After     6 structure factor/refinement calculations 
   R =    6.66     Weighted R =  16.92     Minimisation function =    0.524148E+06
-Rsigma=  0.91
+ Rsigma=  1.17 for     2805 accepted reflections
 #END
 
 
