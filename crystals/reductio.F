@@ -767,25 +767,22 @@ c              STORE(L30DR) = max(FLOAT(N6W),STORE(L30DR))
 c              STORE(L30DR+2) = min(FLOAT(N6W),STORE(L30DR+2))
 c              Dont fiddle with the merged totals, just account for 
 c              systematic absences
-              STORE(L30DR) = FLOAT(N6W)
-c              write(123,*)'rsignum, rsigden',rsignum, rsigden,n6w
-              RSIGMA=RSIGNUM/RSIGDEN
-c              write(123,*)'Rsigma=',rsigma, store(l30dr+1)
+          STORE(L30DR) = FLOAT(N6W)
+          RSIGMA=RSIGNUM/RSIGDEN
           write(cmon,'(A,F6.3,A,I9,A )')' Rsigma = ',rsigma,' for',N6W,
      1    ' input reflections'
-               call xprvdu (ncvdu,1,0)
-           if (issprt.eq.0) write (ncwu,'(/a/)') 
-     1     TRIM(cmon(1))
+          call xprvdu (ncvdu,1,0)
+          if (issprt.eq.0) write (ncwu,'(/a/)') TRIM(cmon(1))
           IF(STORE(L30DR+1).GT. ZERO) then
            if(ABS(STORE(L30DR+1)-RSIGMA).GT.0.0005) THEN
-            WRITE(CMON,'(A,A,F6.3,A,F6.3)')' Rsigma has changed from',
-     2      ' its old value of',store(l30dr+1),' to ', rsigma
-            Write(cmon,'(A,I8,A)')'for ',n6w, ' input reflections'
-               CALL OUTCOL(3)
-               call xprvdu (ncvdu,2,0)
-               CALL OUTCOL(1)
-               if (issprt.eq.0) write (ncwu,'(/a/a)') 
-     1         TRIM(cmon(1)),TRIM(cmon(2))
+            WRITE(CMON,'(A,A,F6.3,A,F6.3,A,I6,A)')
+     1      ' Rsigma has changed from',
+     2      ' its old value of',store(l30dr+1),' to ', rsigma,
+     3      ' for ',n6w, ' input reflections'
+            CALL OUTCOL(3)
+            call xprvdu (ncvdu,1,0)
+            CALL OUTCOL(1)
+            if (issprt.eq.0) write (ncwu,'(/a/)')TRIM(cmon(1))
            ENDIF
           ENDIF
           STORE(L30DR+1)=RSIGMA    !This was first computed when reflections
@@ -800,7 +797,7 @@ c                                   permitted reflections
       CALL XOPMSG ( IOPSSM , IOPEND , 200 )
       CALL XTIME2(2)
       CALL XRSL
-      CALL XCSAE
+      CALL XCSAE  
       RETURN
 
 9900  CONTINUE
