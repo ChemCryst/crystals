@@ -58,7 +58,6 @@ Space group symbol is   P    -4   3    N
      525 reflections accepted           0 reflections rejected
 #CLOSE HKLI
 #SYSTEMATIC
-#SORT
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -145,12 +144,12 @@ Number               12       6      11      10      11       5       3
  Rsigma =  0.027 for      467 input reflections
 
 
-for      467 input reflections
-Fo range       -ve     1.0     2.0     4.0     8.0    16.0  Remainder
-#MERGE
+ Rsigma has changed from its old value of 0.028 to  0.027 for    467 input reflections
+
+#SORT
  After   1 pass     467 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
-#LIST 28
+#MERGE
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -277,6 +276,7 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
  Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.013
  Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma
 [41]                0.01            0.08           0.63
+#LIST 28
 #LIST 30
 #LIST      5
 #LIST     12
@@ -1802,7 +1802,6 @@ Space group symbol is   P    -4   3    N
      525 reflections accepted           0 reflections rejected
 #CLOSE HKLI
 #SYSTEMATIC
-#SORT
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -1889,12 +1888,12 @@ Number               12       6      11      10      11       5       3
  Rsigma =  0.027 for      467 input reflections
 
 
-for      467 input reflections
-Fo range       -ve     1.0     2.0     4.0     8.0    16.0  Remainder
-#MERGE
+ Rsigma has changed from its old value of 0.028 to  0.027 for    467 input reflections
+
+#SORT
  After   1 pass     467 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
-#LIST 28
+#MERGE
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -2021,6 +2020,7 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
  Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.013
  Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma
 [41]                0.01            0.08           0.63
+#LIST 28
 #LIST 30
 #LIST      5
 #LIST     12
@@ -3543,7 +3543,6 @@ Space group symbol is   P    -4   3    N
      525 reflections accepted           0 reflections rejected
 #CLOSE HKLI
 #SYSTEMATIC
-#SORT
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -3630,12 +3629,12 @@ Number               12       6      11      10      11       5       3
  Rsigma =  0.027 for      467 input reflections
 
 
-for      467 input reflections
-Fo range       -ve     1.0     2.0     4.0     8.0    16.0  Remainder
-#MERGE
+ Rsigma has changed from its old value of 0.028 to  0.027 for    467 input reflections
+
+#SORT
  After   1 pass     467 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
-#LIST 28
+#MERGE
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -3762,6 +3761,7 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
  Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.013
  Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma
 [41]                0.01            0.08           0.63
+#LIST 28
 #LIST 30
 #LIST      5
 #LIST     12
@@ -5273,7 +5273,6 @@ Space group symbol is   P    -4   3    N
      525 reflections accepted           0 reflections rejected
 #CLOSE HKLI
 #SYSTEMATIC
-#SORT
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -5360,12 +5359,12 @@ Number               12       6      11      10      11       5       3
  Rsigma =  0.027 for      467 input reflections
 
 
-for      467 input reflections
-Fo range       -ve     1.0     2.0     4.0     8.0    16.0  Remainder
-#MERGE
+ Rsigma has changed from its old value of 0.028 to  0.027 for    467 input reflections
+
+#SORT
  After   1 pass     467 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
-#LIST 28
+#MERGE
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -5492,6 +5491,7 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
  Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.013
  Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma
 [41]                0.01            0.08           0.63
+#LIST 28
 #LIST 30
 #LIST      5
 #LIST     12
