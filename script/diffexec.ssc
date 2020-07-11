@@ -146,7 +146,7 @@ Files INITIAL.* will be created in your logs/ folder. They may be important.
 %%  
 %    if ( cextn .eq. 'FCF' ) .OR. ( cextn .eq. 'HKL' ) then  
 %      if ( .not. FILEEXISTS ( 'cif-reflections.cry' ) ) THEN  
-{I CRYSTALS could find no reflections in the cif file.  
+{I CRYSTALS could find no  embedded HKLI data in the cif file.  
 {I If you have a SHELX hklf file, input that from the Data menu.  
 %        FINISH  
 %      else  
@@ -155,9 +155,9 @@ Files INITIAL.* will be created in your logs/ folder. They may be important.
 %        END IF
 %      end if  
 %    else  
-%      if ( .not. FILEEXISTS ( 'from-cif.hkl' ) ) THEN  
++%      if ( ( .not. FILEEXISTS ( 'from-cif.hkl' ) ) .and. ( .not. FILEEXISTS ( 'from-cifv2.hkl' ) ) ) THEN  
 %        IF FILEFOUND .NE. 'INS' THEN        %% Pascal's INS file loads LIST 6 so continue to merge etc  
-{I CRYSTALS could find no reflections in the cif file.  
+{I CRYSTALS could find no  embedded HKLI data in the cif file.  
 {I If you have a SHELX hklf file, input that from the Data menu.  
 %          FINISH  
 %        END IF  
