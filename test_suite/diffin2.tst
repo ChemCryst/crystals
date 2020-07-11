@@ -3,6 +3,6 @@
 # output file for each platform.
 \set time slow
 \store CSYS SVN '0000'
-$% CRYSDIR:diffin.exe -b -d A -o diffin2.out sg.cif_od 
+$ % CRYSDIR:diffin.exe -b -d A -o diffin2.out sg.cif_od 
 
 \FINISH
