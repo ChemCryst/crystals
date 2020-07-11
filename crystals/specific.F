@@ -1475,18 +1475,16 @@ C Now run command
 #elif defined(__DVF__) 
       IFAIL = SYSTEM(COMMND)
       IF (IFAIL .EQ. 0 ) RETURN
-#elif defined(__LIN__) 
+#elif defined(__LIN__)  || define (__MIN__)
 C for cl version, we must remove + or % symbol if present (has no meaning).
-      IF ( COMMND(1:1) .EQ. '%' ) THEN
-	    COMMND = COMMND(2:)
-      ELSE IF ( COMMND(1:1) .EQ. '+' ) THEN
-	    COMMND = COMMND(2:)
-	  ENDIF 
-      IF ( COMMND(2:2) .EQ. '%' ) THEN
-	    COMMND = COMMND(3:)
-      ELSE IF ( COMMND(2:2) .EQ. '+' ) THEN
-	    COMMND = COMMND(3:)
-	  ENDIF 
+      IPC =  INDEX ( COMMND, '% ' ) 
+      IF (IPC .GT. 0) THEN
+        COMMND(IPC:IPC+1) = '  '
+      END IF
+      IPC =  INDEX ( COMMND, '+ ' ) 
+      IF (IPC .GT. 0) THEN
+        COMMND(IPC:IPC+1) = '  '
+      END IF
       CALL SYSTEM(COMMND,IFAIL)
       IF (IFAIL .EQ. 0 ) RETURN
 #else
