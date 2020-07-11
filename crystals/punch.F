@@ -1999,11 +1999,11 @@ C
      
 
 C length of each item in FORMAT statement
-      DATA N6LEN/ 4,4,4,10,11, 10,6,10,10,8, 10,8,5,4,8, 
+      DATA N6LEN/ 4,4,4,8,11, 10,6,10,10,8, 10,8,5,4,8, 
      1            8,5,8,4,8,   8,5,5,5,5,    5,5,5,8,8, 
      2            8,12,8,10,10/
 C1                   H           K       L     /FO/(3)   SQRTW(4)
-      DATA C6FORM/ 'I4  ',     'I4  ', 'I4  ', 'F10.2', '1X,G10.3',
+      DATA C6FORM/ 'I4  ',     'I4  ', 'I4  ', 'F8.2', '1X,G10.3',
 C6                  /FC/(5)    PHASE    A-PART  B-PART   TBAR
      1             'F10.2',    'F6.2', 'F10.2','F10.2', 'F8.4',
 C11                  /FOT/    ELEMENTS SIGMA(/FO/) BATCH INDICES(14) 
@@ -2096,7 +2096,7 @@ ctemp      if(allocated(CBGFMTa)) deallocate(CBGFMTa)
         NBGNXT = NBGNXT+2
       END DO
       NBGNXT = NBGNXT-1
-      WRITE(NCPU,'(A,I5)') '# NBGNXT= ',NBGNXT
+c      WRITE(NCPU,'(A,I5)') '# NBGNXT= ',NBGNXT
       CBGFMT(NBGNXT:NBGNXT) = ')' ! Overwrite last comma.
 c      
 c
@@ -2173,15 +2173,21 @@ C--PUNCH THE REFLECTION
               WRITE(NCPU,'('//CBGFMTa(k)//', A)',advance='no') 
      1          nint(STORE(M6+i6pch(k)-1))
           else
+c todo Jul2020 if k=4 (Fo), check if it will fit F8
+            if((k.eq.4).and.(store(m6+i6pch(k)-1).ge. 100000.)) then
+              write(ncpu,'(f8.0,a)',advance='no')store(m6+i6pch(k)-1)
+            else
               WRITE(NCPU,'('//CBGFMTa(k)//', A)',advance='no') 
      1          STORE(M6+i6pch(k)-1)
+            endif
           end if
       end do
       write(NCPU, *) ''
 
       END DO
-      I = -512
-      WRITE(NCPU,'(I4)')I
+c      I = -512
+c      WRITE(NCPU,'(I4)')I
+      WRITE(NCPU,'(3I4/)')0,0,0        !July 2020, for PLATON
       WRITE(NCPU,'(A,I6,A)') '# ', NREF, ' reflections output'
       WRITE(CMON,'(a,I6,a)') '  ', nref, ' reflections output'
       CALL XPRVDU(NCVDU, 1,0)

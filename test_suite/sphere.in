@@ -35,8 +35,11 @@ input h k l /fo/ sigma(/fo/)
 end
 #close hkli
 #systematic
+end
 #sort
+end
 #merge
+end
 #list 28
 minima ratio = 3
 end
