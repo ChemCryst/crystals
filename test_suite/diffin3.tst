@@ -3,7 +3,7 @@
 \ output file for each platform.
 \set time slow
 \store CSYS SVN '0000'
-$ % CRYSDIR:diffin.exe -b -d A -o diffin3.out ks.cif_od 
+$ % CRYSDIR:diffin -b -d A -o diffin3.out ks.cif_od 
 \
 \ This script appends the hkl output "ksv2.hkl" to "diffin3.out" for test comparison purposes.
 \
