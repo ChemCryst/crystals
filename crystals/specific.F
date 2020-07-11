@@ -1475,7 +1475,7 @@ C Now run command
 #elif defined(__DVF__) 
       IFAIL = SYSTEM(COMMND)
       IF (IFAIL .EQ. 0 ) RETURN
-#elif defined(__LIN__)  || define (__MIN__)
+#elif defined(__LIN__)  || defined (__MIN__)
 C for cl version, we must remove + or % symbol if present (has no meaning).
       IPC =  INDEX ( COMMND, '% ' ) 
       IF (IPC .GT. 0) THEN
