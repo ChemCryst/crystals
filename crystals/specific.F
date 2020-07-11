@@ -1476,6 +1476,17 @@ C Now run command
       IFAIL = SYSTEM(COMMND)
       IF (IFAIL .EQ. 0 ) RETURN
 #elif defined(__LIN__) 
+C for cl version, we must remove + or % symbol if present (has no meaning).
+      IF ( COMMND(1:1) .EQ. '%' ) THEN
+	    COMMND = COMMND(2:)
+      ELSE IF ( COMMND(1:1) .EQ. '+' ) THEN
+	    COMMND = COMMND(2:)
+	  ENDIF 
+      IF ( COMMND(2:2) .EQ. '%' ) THEN
+	    COMMND = COMMND(3:)
+      ELSE IF ( COMMND(2:2) .EQ. '+' ) THEN
+	    COMMND = COMMND(3:)
+	  ENDIF 
       CALL SYSTEM(COMMND,IFAIL)
       IF (IFAIL .EQ. 0 ) RETURN
 #else
