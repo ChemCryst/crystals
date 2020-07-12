@@ -151,9 +151,7 @@ jobs:
         echo "%END SCRIPT" >> script\\tipauto.scp
         echo "%SCRIPT NONE" > script\\guideauto.scp
         echo "%END SCRIPT" >> script\\guideauto.scp
-        perl ../editor/filepp.pl -ds -w -o diffin.tst -DTESTWIN diffin.tss
-        perl ../editor/filepp.pl -ds -w -o diffin2.tst -DTESTWIN diffin2.tss
-        perl ../editor/filepp.pl -ds -w -o diffin3.tst -DTESTWIN diffin3.tss
+        for /d %%G in ("*.tss") do perl ../editor/filepp.pl -ds -w -o "%%~G" -DTESTWIN "%%~nG.tst"
         perl testsuite.pl  ${{ matrix.testoption }}
 #
     - name: Test CRYSTALS linux
@@ -182,6 +180,7 @@ jobs:
         perl ../editor/filepp.pl -ds -w -o diffin.tst -DTESTLINUX diffin.tss
         perl ../editor/filepp.pl -ds -w -o diffin2.tst -DTESTLINUX diffin2.tss
         perl ../editor/filepp.pl -ds -w -o diffin3.tst -DTESTLINUX diffin3.tss
+        perl ../editor/filepp.pl -ds -w -o shelx2cry.tst -DTESTLINUX shelx2cry.tss
 
         
         
