@@ -151,7 +151,7 @@ jobs:
         echo "%END SCRIPT" >> script\\tipauto.scp
         echo "%SCRIPT NONE" > script\\guideauto.scp
         echo "%END SCRIPT" >> script\\guideauto.scp
-        for /d %%G in ("*.tss") do perl ../editor/filepp.pl -ds -w -o %%~G -DTESTWIN %%~nG.tst
+        for %%G in ("*.tss") do perl ../editor/filepp.pl -ds -w -o %%~G -DTESTWIN %%~nG.tst
         perl testsuite.pl  ${{ matrix.testoption }}
 #
     - name: Test CRYSTALS linux
