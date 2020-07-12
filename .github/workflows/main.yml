@@ -151,6 +151,7 @@ jobs:
         echo "%END SCRIPT" >> script\\tipauto.scp
         echo "%SCRIPT NONE" > script\\guideauto.scp
         echo "%END SCRIPT" >> script\\guideauto.scp
+        perl ../editor/filepp.pl -ds -w -o diffin.tst -DTESTWIN diffin.tss
         perl testsuite.pl  ${{ matrix.testoption }}
 #
     - name: Test CRYSTALS linux
@@ -176,6 +177,11 @@ jobs:
         echo "%END SCRIPT" >> script/tipauto.scp
         echo "%SCRIPT NONE" > script/guideauto.scp
         echo "%END SCRIPT" >> script/guideauto.scp
+        perl ../editor/filepp.pl -ds -w -o diffin.tst -DTESTLINUX diffin.tss
+
+        
+        
+        
         ${{ matrix.fbrunner }} perl testsuite.pl ${{ matrix.testoption }}
         cd ../bits/shelx2cry
         ln -s ../../ci/shelx2cry shelx2cry

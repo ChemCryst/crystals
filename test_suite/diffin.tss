@@ -3,6 +3,11 @@
 # output file for each platform.
 \set time slow
 \store CSYS SVN '0000'
+
+#ifdef TESTLINUX
 $ % CRYSDIR:diffin -b -d A -o diffin.out cuoac.cif_od 
+#else
+$ % CRYSDIR:diffin.exe -b -d A -o diffin.out cuoac.cif_od 
+#endif
 
 \FINISH
