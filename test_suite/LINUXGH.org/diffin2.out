@@ -1,0 +1,46 @@
+
+
+#TITLE xcalibur in sg.cif_od
+#LIST 1
+REAL     6.4663    28.2537     7.8431    90.0000   108.2340    90.0000
+END
+#LIST 31
+AMULT 0.0000012100
+MATRIX   V(11)=     0.074380 V(22)=     1.000000 V(33)=     0.132231
+CONTINUE V(44)=     0.000000 V(55)=     0.006294 V(66)=     0.000000
+END
+#SPACEGROUP
+SYMBOL P 1 21/n 1      
+END
+#LIST 13
+# set theta 1 and 2 to zero for mirrors
+CONDITIONS WAVELENGTH =  1.54180 theta(1)= 0.00000 theta(2)= 0.00000
+END
+#COMPOSITION
+content C 64 H 68 N 4 O 8 
+SCATTERING CRYSDIR:script/scatt.dat
+PROPERTIES CRYSDIR:script/propwin.dat
+END
+# shape ?               
+#LIST 30
+DATRED REDUCTION= CrySalis                
+cont rsigma=   0.097
+ABSORPTION ABSTYPE=multi-scan
+cont empmin=   0.933
+cont empmax=   1.000
+CONDITION
+cont minsiz=   0.000
+cont medsiz=   0.000
+cont maxsiz=   0.000
+cont temperature=  289.60
+cont thorientmin=   4.69
+cont thorientmax=  70.25
+cont norient=   2419
+cont scanmode=omega
+cont instrument= SuperNova               
+GENERAL
+cont Z=    4.0
+COLOUR ?
+SHAPE ?               
+INDEXRAN
+END
