@@ -199,7 +199,7 @@ jobs:
         echo "::set-env name=testfail::true"
         del /q ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org
         copy *.out ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org
-        del /q *.*
+#        del /q *.*
 
     - name: Tidy failed test outputs ubuntu
       working-directory: test_suite
@@ -208,7 +208,7 @@ jobs:
         echo "::set-env name=testfail::true"
         rm -f ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org/*
         cp *.out ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org
-        rm -f * || echo
+#        rm -f * || echo
 
     - name: Upload outputs if failures
       uses: actions/upload-artifact@v1
