@@ -155,7 +155,6 @@ jobs:
         perl ../editor/filepp.pl -ds -w -o diffin2.tst -DTESTWIN diffin2.tss
         perl ../editor/filepp.pl -ds -w -o diffin3.tst -DTESTWIN diffin3.tss
         perl ../editor/filepp.pl -ds -w -o shelx2cry.tst -DTESTWIN shelx2cry.tss
-        dir ..\ci\
         perl testsuite.pl  ${{ matrix.testoption }}
 #
     - name: Test CRYSTALS linux
@@ -185,7 +184,6 @@ jobs:
         perl ../editor/filepp.pl -ds -w -o diffin2.tst -DTESTLINUX diffin2.tss
         perl ../editor/filepp.pl -ds -w -o diffin3.tst -DTESTLINUX diffin3.tss
         perl ../editor/filepp.pl -ds -w -o shelx2cry.tst -DTESTLINUX shelx2cry.tss
-        ls -l ../ci
         ${{ matrix.fbrunner }} perl testsuite.pl ${{ matrix.testoption }}
         cd ../bits/shelx2cry
         ln -s ../../ci/shelx2cry shelx2cry
@@ -201,7 +199,7 @@ jobs:
         echo "::set-env name=testfail::true"
         del /q ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org
         copy *.out ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org
-#        del /q *.*
+        del /q *.*
 
     - name: Tidy failed test outputs ubuntu
       working-directory: test_suite
@@ -210,7 +208,7 @@ jobs:
         echo "::set-env name=testfail::true"
         rm -f ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org/*
         cp *.out ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org
-#        rm -f * || echo
+        rm -f * || echo
 
     - name: Upload outputs if failures
       uses: actions/upload-artifact@v1

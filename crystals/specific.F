@@ -1469,14 +1469,10 @@ C Find next non-space.
 
 C Now run command
 
-      write(ncwu,*) 'XDETCH running command: ',commnd
-
 #if defined(CRY_GUI)
-      write(ncwu,*) 'Passing to GDETCH'
       CALL GDETCH(COMMND)
       RETURN
 #elif defined(__DVF__) 
-      write(ncwu,*) 'Passing to DVF system'
       IFAIL = SYSTEM(COMMND)
       IF (IFAIL .EQ. 0 ) RETURN
 #elif defined(__LIN__)  || defined (__MIN__)
@@ -1489,9 +1485,7 @@ C for cl version, we must remove + or % symbol if present (has no meaning).
       IF (IPC .GT. 0) THEN
         COMMND(IPC:IPC+1) = '  '
       END IF
-	  write(ncwu,*) 'CL version. Running command: ',commnd
       CALL SYSTEM(COMMND,IFAIL)
-	  write(ncwu,*) 'Return code: ',ifail
       IF (IFAIL .EQ. 0 ) RETURN
 #else
       IF (ISSPRT .EQ. 0) THEN
