@@ -9345,13 +9345,9 @@ Mean C-C su =   0.0021
 The slope and correlation coefficient should be small
 [11]  Slope =        0.0  Intercept =       00  C-Coef=       0.0
 
+ Agreement analysis on scale of Fo, Scale =   4.73
+ Delta = Fo^2-Fc^2
 
- Keen in P21/c                                                                        Date              Time          
-
-
-
- Agreement analysis on scale of /FO/
- Scale factor  =   4.73294
 
 
  Weighting scheme type   16
@@ -9486,7 +9482,7 @@ The slope and correlation coefficient should be small
                                                                                                               .
 [65]      TOTALS          2016     96782.      97080.        0.242E+06       0.977E+00     3.19    7.03     .  .  *  .  .
                                                                                                        -2 -1  0  1  2
- Agreement analysis on /FC/
+ Agreement analysis batched by Fc
 
 
      /FO/ RANGE  No. of data     </Fo/>      </Fc/>     <Delta**2>     <W*Delta**2>    R(%)   RW(%)  LOG(<W*DELTA**2>)
@@ -9540,7 +9536,7 @@ The slope and correlation coefficient should be small
 
 
 
- Agreement analysis on [sin(theta)/lambda]sq
+ Agreement analysis batched by [sin(theta)/lambda]sq
 
 
 (SinT/L)^2 RANGE No. of data     </Fo/>      </Fc/>     <Delta**2>     <W*Delta**2>    R(%)   RW(%)  LOG(<W*DELTA**2>)
@@ -18974,13 +18970,9 @@ Mean C-C su =   0.0022
 The slope and correlation coefficient should be small
 [11]  Slope =       -0.0  Intercept =       10  C-Coef=      -0.1
 
+ Agreement analysis on scale of Fo, Scale =   4.63
+ Delta = Fo-Fc
 
- Keen in P21/c                                                                        Date              Time          
-
-
-
- Agreement analysis on scale of /FO/
- Scale factor  =   4.62952
 
 
  Weighting scheme type   16
@@ -19115,7 +19107,7 @@ The slope and correlation coefficient should be small
                                                                                                               .
 [65]      TOTALS          2016     96782.      96998.        0.473E+01       0.115E+01     3.03    3.83     .  .  *  .  .
                                                                                                        -2 -1  0  1  2
- Agreement analysis on /FC/
+ Agreement analysis batched by Fc
 
 
      /FO/ RANGE  No. of data     </Fo/>      </Fc/>     <Delta**2>     <W*Delta**2>    R(%)   RW(%)  LOG(<W*DELTA**2>)
@@ -19169,7 +19161,7 @@ The slope and correlation coefficient should be small
 
 
 
- Agreement analysis on [sin(theta)/lambda]sq
+ Agreement analysis batched by [sin(theta)/lambda]sq
 
 
 (SinT/L)^2 RANGE No. of data     </Fo/>      </Fc/>     <Delta**2>     <W*Delta**2>    R(%)   RW(%)  LOG(<W*DELTA**2>)
@@ -28082,13 +28074,9 @@ Mean C-C su =   0.0019
 The slope and correlation coefficient should be small
 [11]  Slope =        0.0  Intercept =       00  C-Coef=       0.0
 
+ Agreement analysis on scale of Fo, Scale =   4.65
+ Delta = Fo^2-Fc^2
 
- Keen in P21/c                                                                        Date              Time          
-
-
-
- Agreement analysis on scale of /FO/
- Scale factor  =   4.65438
 
 
  Weighting scheme type   16
@@ -28223,7 +28211,7 @@ The slope and correlation coefficient should be small
                                                                                                               .
 [65]      TOTALS          2016     96782.      96988.        0.126E+06       0.977E+00     3.02    6.41     .  .  *  .  .
                                                                                                        -2 -1  0  1  2
- Agreement analysis on /FC/
+ Agreement analysis batched by Fc
 
 
      /FO/ RANGE  No. of data     </Fo/>      </Fc/>     <Delta**2>     <W*Delta**2>    R(%)   RW(%)  LOG(<W*DELTA**2>)
@@ -28277,7 +28265,7 @@ The slope and correlation coefficient should be small
 
 
 
- Agreement analysis on [sin(theta)/lambda]sq
+ Agreement analysis batched by [sin(theta)/lambda]sq
 
 
 (SinT/L)^2 RANGE No. of data     </Fo/>      </Fc/>     <Delta**2>     <W*Delta**2>    R(%)   RW(%)  LOG(<W*DELTA**2>)
@@ -37650,13 +37638,9 @@ Mean C-C su =   0.0022
 The slope and correlation coefficient should be small
 [11]  Slope =       -0.0  Intercept =       10  C-Coef=      -0.1
 
+ Agreement analysis on scale of Fo, Scale =   4.63
+ Delta = Fo-Fc
 
- Keen in P21/c                                                                        Date              Time          
-
-
-
- Agreement analysis on scale of /FO/
- Scale factor  =   4.62949
 
 
  Weighting scheme type   16
@@ -37791,7 +37775,7 @@ The slope and correlation coefficient should be small
                                                                                                               .
 [65]      TOTALS          2016     96782.      97003.        0.473E+01       0.115E+01     3.03    3.83     .  .  *  .  .
                                                                                                        -2 -1  0  1  2
- Agreement analysis on /FC/
+ Agreement analysis batched by Fc
 
 
      /FO/ RANGE  No. of data     </Fo/>      </Fc/>     <Delta**2>     <W*Delta**2>    R(%)   RW(%)  LOG(<W*DELTA**2>)
@@ -37845,7 +37829,7 @@ The slope and correlation coefficient should be small
 
 
 
- Agreement analysis on [sin(theta)/lambda]sq
+ Agreement analysis batched by [sin(theta)/lambda]sq
 
 
 (SinT/L)^2 RANGE No. of data     </Fo/>      </Fc/>     <Delta**2>     <W*Delta**2>    R(%)   RW(%)  LOG(<W*DELTA**2>)
