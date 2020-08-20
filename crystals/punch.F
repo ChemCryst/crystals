@@ -1816,8 +1816,8 @@ c ialw = 4 high resolution
 c ialw = 5 low resolution 
 c 3,4 & 5 take precedence over 2 (sigma cutoff). See SHEL command in SHELX
 c
-      IF (IDJW.EQ. -70) THEN
-        IALW = 3                    !Manually excluded.
+      IF (IDJW.LE. -70) THEN
+        IALW = 3                    !Manual, Slice or step exclusion.
         WT = 0.0
       ELSE IF (idjw.eq.-17) THEN
 c       Fails sin-theta/lambda test

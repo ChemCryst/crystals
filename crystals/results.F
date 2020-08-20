@@ -6180,11 +6180,11 @@ C    LIST 13
          END IF
 c get the radiation from the DETAILS Card
          IF (ISTORE(L13DT+1) .EQ. -1) THEN
-C-Set above based on lambda             CBUF = 'XRAYS'
+C-Set above based on lambda             CBUF = 'xrays'
          ELSE IF (ISTORE(L13DT+1) .EQ. 0) THEN
-             CBUF = 'NEUTRONS'
+             CBUF = 'neutrons'
          ELSE
-             CBUF = 'ELECTRONS'
+             CBUF = 'electrons'
          ENDIF
 C Update for special conditions
          IF ( IDIFNO .EQ. 12 ) THEN

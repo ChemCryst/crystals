@@ -3024,6 +3024,17 @@ C
 C
       data comit/'_oxford_refln_omitted_index_'/
 C
+       if (level .eq. 3) then
+C -       PREAPRE TO APPEND CIF OUTPUT ON FRN1
+          CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
+          CALL XRDOPN(8, KDEV , CSSCIF, LSSCIF)
+
+          write(ncfpu1,'(a)') ' '
+          write(ncfpu1,'(a)') '_refine_special_details'
+          write(ncfpu1,'(a)') ';'
+          write(ncfpu1,'(a)') '?'
+
+       endif
 C -- BEGIN OUTPUT
       IF (MD28SK .GT. 1 ) THEN
         I = MD28SK-1
@@ -3031,6 +3042,7 @@ C -- BEGIN OUTPUT
         WRITE ( CMON ,500) I, MD28SK
         CALL XPRVDU(NCVDU, 1,0)
 500     FORMAT (1X,I4, ' out of ', I4,' reflections will be skipped')
+        if(level.eq.3) write(ncfpu1,500) i,md28sk
       ENDIF
 C
       LHEADR = (( N28MN + N28MX + N28RC + N28OM +N28CD) .NE. 0 )
@@ -3039,8 +3051,9 @@ C
         IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1015 )
         WRITE ( CMON , 1015 )
         CALL XPRVDU(NCVDU, 1,0)
-1015    FORMAT ( 1X , 'Reflections are selected by the following ' ,
+1015    FORMAT ( 2X , 'Reflections are selected by the following ' ,
      2                  'conditions :-' )
+        if(level.eq.3) write(ncfpu1,'(a)') trim(cmon(1))
 C
         IF ( N28MN .GT. 0 ) THEN
           INDNAM = L28CN
@@ -3053,6 +3066,7 @@ C
      2      J = INDNAM , INDNAM + 2 ) , STORE(I+1)
             CALL XPRVDU(NCVDU, 1,0)
 1105        FORMAT ( 2X , 'Minimum value of ' , 3A4 , ' is ' , G10.3 )
+            if(level.eq.3) write(ncfpu1,'(a)') trim(cmon(1))
             INDNAM = INDNAM + MD28CN
 1200      CONTINUE
         ENDIF
@@ -3068,6 +3082,7 @@ C
      2       J = INDNAM , INDNAM + 2 ) , STORE(I+1)
             CALL XPRVDU(NCVDU, 1,0)
 1305        FORMAT ( 2X , 'Maximum value of ' , 3A4 , ' is ' , F10.5 )
+            if(level.eq.3) write(ncfpu1,'(a)') trim(cmon(1))
             INDNAM = INDNAM + MD28CX
 1400      CONTINUE
         ENDIF
@@ -3080,12 +3095,14 @@ C
              ENDIF
              WRITE ( CMON , 1504 ) ( STORE(J) , J = I , I + MD28RC - 2)
              CALL XPRVDU(NCVDU, 1,0)
+             if(level.eq.3) write(ncfpu1,'(a)') trim(cmon(1))
             ELSE
              IF (ISSPRT .EQ. 0) THEN
               WRITE ( NCWU , 1505 ) ( STORE(J) , J = I , I + MD28RC - 2)
              ENDIF
              WRITE ( CMON , 1505 ) ( STORE(J) , J = I , I + MD28RC - 2)
              CALL XPRVDU(NCVDU, 1,0)
+             if(level.eq.3) write(ncfpu1,'(a)') trim(cmon(1))
             END IF
 1504        FORMAT ( 2X , F6.2 , '*h + ' , F6.2 , '*k + ' ,
      2 F6.2 , '*l must not lie in range ' , F6.2 , ' to ' , F6.2 )
@@ -3105,15 +3122,14 @@ C
 1855        FORMAT ( 2X , F6.2 , ' h + ' , F6.2 , ' k + ' ,
      2 F6.2 , ' l + ' , F6.2 , ' divided by ' , F6.2 ,
      3 ' must be integer')
+           if(level.eq.3) write(ncfpu1,'(a)') trim(cmon(1))
 1850      CONTINUE
         ENDIF
+         if(level.eq.3) write(ncfpu1,'(a)') ';'
 C
       IF ( N28OM .GT. 0 ) THEN
 cdjwjan11  - output to PUNCH in CIF format
        if (level .eq. 3) then
-C -       PREAPRE TO APPEND CIF OUTPUT ON FRN1
-          CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
-          CALL XRDOPN(8, KDEV , CSSCIF, LSSCIF)
             write(ncfpu1,'(/a)')'# Manually omitted reflections'
             write(ncfpu1,'(/a)')'loop_'
             write(ncfpu1,'(a,a)')comit,'h'
@@ -3158,6 +3174,7 @@ C
         WRITE ( CMON , 2005 )
         CALL XPRVDU(NCVDU, 1,0)
 2005    FORMAT ( 1X , 'Reflections are not subject to restrictions' )
+        if(level.eq.3) write(ncfpu1,'(a)') ';'
       ENDIF
 C
       RETURN
