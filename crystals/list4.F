@@ -1746,6 +1746,7 @@ C----- FOR LIST 30 UPDATING
       DIMENSION TEMP30(6)
       CHARACTER *4 CFY(16),CFYY(16),CFN(16),CFH(6),CFC(6),CFO(6),CFS(6)
       CHARACTER *1 CH(3)
+      CHARACTER*12 CDELTA(2)
 C
       INCLUDE 'STORE.INC'
 C
@@ -1764,6 +1765,7 @@ C
       INCLUDE 'XLST04.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XLST06.INC'
+      INCLUDE 'XLST23.INC'
       INCLUDE 'XLST28.INC'
       INCLUDE 'XLST30.INC'
 C
@@ -1935,6 +1937,9 @@ C--INITIAL FORMAT FOR THE SIN(THETA)/LAMBDA RANGES
       DATA CFS(4)/'97X,'/,CFS(5)/'2A1/'/,CFS(6)/'16X,'/
 C--VARIABLE USED TO CONTROL THE KEY DRAWING
       DATA CSHK /'    ',' KEY'/
+C -- DEFINITIONS OF TERM MINIMISED
+      DATA CDELTA(1)/'Fo-Fc'/
+      DATA CDELTA(2)/'Fo^2-Fc^2'/
 C
 C--A FEW COMMONLY USED FORMAT STATEMENTS
 1000  FORMAT(//4A4,1X,'No. of data',3X,'  </Fo/>',4X,'  </Fc/>',5X,
@@ -1976,6 +1981,7 @@ C--SET THE ORIGINAL VARIABLES FROM THE NEW INPUT ROUTINE
       PWDSQ=ISTORE(NFL+21)
 C      CLEAR THE LIST 30 VARIABLES
       CALL XZEROF(TEMP30,6)
+
 C--SET UP THE PLOT CONSTANTS
       NCHAR = 13
       ICENT=(NCHAR+1)/2
@@ -2028,6 +2034,7 @@ C--SET UP THE DEFAULT SIN(THETA)/LAMBDA RANGE VARIABLE
 C--SCAN ALL THE REFLECTIONS
 1600  CONTINUE
       CALL XSUAA(MM5, IULN06)
+      MINTYPE=ITYPE+2                  ! F or F^2
       IF ( IERFLG .LT. 0 ) GO TO 9900
       IF (VV .EQ. 1.) THEN
 C----- RESET INTERVAL TO GIVE 20 VALUES
@@ -2237,28 +2244,29 @@ c            ISTAT = KSCTRN ( 1 , 'L4:NREF' ,FLOAT(noutl), 1 )
       CALL XTIME2(2)
       RETURN
 C
-C--PRINT THE RESULTS OF A FULL AGREEMENT ANALYSIS
+
 3250  CONTINUE
-      CALL XPRTCN
+C--PRINT THE RESULTS OF A FULL AGREEMENT ANALYSIS
+c      IF (KHUNTR (23,0,IADDL,IADDR,IADDD,-1) .lt. 0) CALL XFAL23
 C--CHECK IF THIS IS ON THE SCALE OF /FO/ OR /FC/
       IF(MM5)3350,3350,3450
 3350  CONTINUE
-      WRITE(CMON,3400)
-3400  FORMAT(/,' Agreement analysis on scale of /FO/')
       ACI=SCALC
+      WRITE(CMON,3400) ACI
+3400  FORMAT(/,' Agreement analysis on scale of Fo,',
+     1 ' Scale = ',F6.2)
       GOTO 3550
 3450  CONTINUE
-      WRITE(CMON,3500)
-3500  FORMAT(/,' Agreement analysis on scale of /FC/')
       ACI=1./SCALF
+      WRITE(CMON,3500) ACI
+3500  FORMAT(/,' Agreement analysis on scale of Fc,',F6.2)
 3550  CONTINUE
-      call xprvdu(ncvdu,2,0)
-      if (issprt .eq. 0) write(ncwu,'(a)') trim(CMON(1)),trim(CMON(2))
-      WRITE(CMON,3600)ACI
-C--PRINT THE CURRENT SCALE FACTOR
-3600  FORMAT(' Scale factor  =',F10.5)
-      call xprvdu(ncvdu,1,0)
-      if (issprt .eq. 0) write(ncwu,'(a)') trim(CMON(1))
+      CALL XPRVDU(NCVDU,2,0)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') TRIM(cmon(1)),TRIM(cmon(2))
+C
+      WRITE(CMON,'(A,A/)')' Delta = ',CDELTA(MINTYPE)
+      CALL XPRVDU(NCVDU,2,0)
+      IF (ISSPRT .EQ. 0) WRITE(NCWU,'(A)') TRIM(cmon(1)),TRIM(cmon(2))
 C--WRITE OUT LIST 4
       IF (ISSPRT .EQ. 0) THEN
       WRITE(NCWU,3650)ITYPE4
@@ -2289,9 +2297,9 @@ C--PRINT THE CURRENT INDEX TYPE
      1  CSHK(PKHKL),
      1  '^^PL XAXIS TITLE ''Layers by ',CH(I),' index ''',
      1  '^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
-     1  '^^PL NSERIES=3 LENGTH=30 YAXIS LOG TITLE "<(Fo-Fc)\**2>"',
-     1  '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
-     1  '^^PL SERIES 2 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
+     1  '^^PL NSERIES=3 LENGTH=30 YAXIS LOG TITLE "<(Yo-Yc)\**2>"',
+     1  '^^PL SERIES 1 SERIESNAME ''<(Yo-Yc)\**2>''',
+     1  '^^PL SERIES 2 SERIESNAME ''<w*(Yo-Yc )\**2>''',
      1  '^^PL SERIES 3 SERIESNAME ''Number Of Reflections''',
      1  '^^PL SERIES 3 TYPE LINE USERIGHTAXIS'
         CALL XPRVDU(NCVDU, 8,0)
@@ -2434,9 +2442,9 @@ c--PLCLS IS EITHER 0 (OFF), 1 (DELTA) OR 2 (RFAC). PLOT GRAPH IF 1 OR 2.
      1  '^^PL PLOTDATA _CLASS BARGRAPH ATTACH _VCLASS', CSHK(PKCLS),
      1  '^^PL XAXIS TITLE ''HKL Class''',
      1  '^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
-     1  '^^PL NSERIES=3 LENGTH=16 YAXIS LOG TITLE "<(Fo-Fc)\**2>"',
-     1  '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
-     1  '^^PL SERIES 2 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
+     1  '^^PL NSERIES=3 LENGTH=16 YAXIS LOG TITLE "<(Yo-Yc)\**2>"',
+     1  '^^PL SERIES 1 SERIESNAME ''<(Yo-Yc)**2>''',
+     1  '^^PL SERIES 2 SERIESNAME ''<w*(Yo-Yc)\**2>''',
      1  '^^PL SERIES 3 SERIESNAME ''Number Of Reflections''',
      1  '^^PL ZOOM 0.01 100 SERIES 3 TYPE LINE USERIGHTAXIS'
         CALL XPRVDU(NCVDU, 8,0)
@@ -2517,10 +2525,10 @@ C--AGREEEMNT ANALYSIS ON PARITY GROUPS
         WRITE(CMON,'(A,A,/,A,/,A,/,A,/,A,/,A,/,A)')
      1 '^^PL PLOTDATA _PAR BARGRAPH ATTACH _VPAR', CSHK(PKPAR),
      1 '^^PL NSERIES=3 LENGTH=8 XAXIS TITLE ''Parity Group''',
-     1 '^^PL YAXIS LOG TITLE "<(Fo-Fc)\**2>" ZOOM 0.01 100',
+     1 '^^PL YAXIS LOG TITLE "<(Yo-Yc)\**2>" ZOOM 0.01 100',
      1 '^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
-     1  '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
-     1  '^^PL SERIES 2 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
+     1  '^^PL SERIES 1 SERIESNAME ''<(Yo-Yc)\**2>''',
+     1  '^^PL SERIES 2 SERIESNAME ''<w*(Yo-Yc)\**2>''',
      1  '^^PL SERIES 3 SERIESNAME ''Number Of Reflections''',
      1 '^^PL SERIES 3 TYPE LINE USERIGHTAXIS'
         CALL XPRVDU(NCVDU, 8,0)
@@ -2597,7 +2605,7 @@ C--AGREEMENT ANALYSIS ON /Fc/
          WRITE(NCWU,4900)
         WRITE(NCWU,1000)(NOPE(J,1),J=1,4),KM
       ENDIF
-4900  FORMAT(' Agreement analysis on /FC/')
+4900  FORMAT(' Agreement analysis batched by Fc')
 C--- OUTPUT TO SCREEN
       IF (MONIT .NE. 2) THEN
         WRITE(CMON,4910)
@@ -2609,10 +2617,10 @@ cdjwjul09
      1 '^^PL PLOTDATA _FO BARGRAPH ATTACH _VFO', CSHK(PKFOR),
      1 '^^PL NSERIES=4 LENGTH=20 XAXIS TITLE',
      1 '^^PL  ''<- Weak           Fc Range            Strong ->''',
-     1 '^^PL YAXIS LOG TITLE "<(Fo-Fc)\**2>" ZOOM 0.01 100',
+     1 '^^PL YAXIS LOG TITLE "<(Yo-Yc)\**2>" ZOOM 0.01 100',
      1 '^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
-     1 '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
-     1 '^^PL SERIES 2 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
+     1 '^^PL SERIES 1 SERIESNAME ''<(Yo-Yc)\**2>''',
+     1 '^^PL SERIES 2 SERIESNAME ''<w*(Yo-Fc)\**2>''',
      1 '^^PL SERIES 3 SERIESNAME ''Number Of Reflections''',
      1 '^^PL SERIES 3 TYPE LINE USERIGHTAXIS',
      1 '^^PL SERIES 4 SERIESNAME ''1000*(<Fo>/<Fc>)''',
@@ -2640,7 +2648,7 @@ cdjwjul09
      1 '^^PL NSERIES=1 LENGTH=20 XAXIS TITLE',
      1 '^^PL ''<- Weak           Fo Range            Strong ->''',
      1 '^^PL YAXIS TITLE <Fo>-<Fc>',
-     1 '^^PL SERIES 1 SERIESNAME ''<Fo> - <Fc>'''
+     1 '^^PL SERIES 1 SERIESNAME ''<Yo>-<Yc>'''
         CALL XPRVDU(NCVDU, 5,0)
       ENDIF
 
@@ -2801,7 +2809,8 @@ C
 C--AGREEMENT ANALYSIS ON SIN(THETA)/LAMBDA RANGES
       IF (ISSPRT .EQ. 0) THEN
         WRITE(NCWU,5450)
-5450    FORMAT(///,' Agreement analysis on [sin(theta)/lambda]sq')
+5450    FORMAT(///,
+     1  ' Agreement analysis batched by [sin(theta)/lambda]sq')
         WRITE(NCWU,1000)(NOPE(J,2),J=1,4),KM
       ENDIF
 cdjwjul09
@@ -2809,11 +2818,11 @@ cdjwjul09
         WRITE(CMON,'(A,A,/,A,/,A,/,A,/,A,/,A,/,A,/,A,/,A,/,A,/,A)') 
      1'^^PL PLOTDATA _THETA BARGRAPH ATTACH _VSINT ', CSHK(PKTHE),
      1'^^PL YAXIS ZOOM 0.01 100 TITLE',
-     1'^^PL  "<(Fo-Fc)\**2>" LOG NSERIES=4 LENGTH=10 XAXIS TITLE',
+     1'^^PL  "<(Yo-Yc)\**2>" LOG NSERIES=4 LENGTH=10 XAXIS TITLE',
      1'^^PL ''<-Low angle  (sin_theta/lambda)\**2 High angle->''',
      1'^^PL YAXISRIGHT TITLE ''Number Of Reflections''',
-     1 '^^PL SERIES 1 SERIESNAME ''<( |Fo| - |Fc| )**2>''',
-     1 '^^PL SERIES 2 SERIESNAME ''<w * ( |Fo| - |Fc| )**2>''',
+     1 '^^PL SERIES 1 SERIESNAME ''<(Yo-Yc )\**2>''',
+     1 '^^PL SERIES 2 SERIESNAME ''<w*(Yo-Yc)\**2>''',
      1 '^^PL SERIES 3 SERIESNAME ''Number Of Reflections''',
      1 '^^PL SERIES 3 TYPE LINE USERIGHTAXIS',
      1 '^^PL SERIES 4 SERIESNAME ''1000*<Fo>/<Fc>''',

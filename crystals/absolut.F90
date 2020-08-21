@@ -3035,7 +3035,7 @@ contains
 
       integer, external :: kexist, khuntr, ktyp06, kcprop, nctrim
       integer, external :: linfit, kfnr, ktoncent
-
+      integer, external :: ksctrn
 !C      set packing constants for Ton's code
       integer, parameter :: npak = 256
       integer, parameter :: nn2 = npak/2
@@ -3319,6 +3319,9 @@ contains
         write (cmon, '(a)') 'No Friedel pairs found'
         call xprvdu(ncvdu, 1, 0)
         IERROR = -1
+!                                         set flag for warning popup Window
+        ISTAT = KSCTRN ( 1 , '_BADPASCAL' , 1, 1 )
+!
         CALL XERHND(IERWRN)
         return
       endif

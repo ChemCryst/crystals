@@ -6180,11 +6180,11 @@ C    LIST 13
          END IF
 c get the radiation from the DETAILS Card
          IF (ISTORE(L13DT+1) .EQ. -1) THEN
-C-Set above based on lambda             CBUF = 'XRAYS'
+C-Set above based on lambda             CBUF = 'xrays'
          ELSE IF (ISTORE(L13DT+1) .EQ. 0) THEN
-             CBUF = 'NEUTRONS'
+             CBUF = 'neutrons'
          ELSE
-             CBUF = 'ELECTRONS'
+             CBUF = 'electrons'
          ENDIF
 C Update for special conditions
          IF ( IDIFNO .EQ. 12 ) THEN
@@ -6698,21 +6698,21 @@ C
      1                    NINT(STORE(L30RF+8))
            CALL XPCIF (CLINE)
 c
-           WRITE (CLINE,'(A,A,''R_factor_ref '',F10.4)') '_oxford',
+           WRITE (CLINE,'(A,''R_factor_ref '',F10.4)') 
      1                   CBUF(1:11), STORE(L30RF+0)*0.01
            CALL XPCIF (CLINE)
-           WRITE (CLINE,'(A,''R_factor_all '',F10.4)') 
-     1                   CBUF(1:11), STORE(L30RF+0)*0.01
-           CALL XPCIF (CLINE)
+c           WRITE (CLINE,'(A,''R_factor_all '',F10.4)') 
+c     1                   CBUF(1:11), STORE(L30RF+0)*0.01
+c           CALL XPCIF (CLINE)
 c
 c           WRITE (CLINE,'(A,A, ''wR_factor_ref '', F10.4)') '_oxford',
 c _oxford prefix removed for checkcif compatability
            WRITE (CLINE,'(A, ''wR_factor_ref '', F10.4)') 
      1                   CBUF(1:11), STORE(L30RF+1)*0.01
            CALL XPCIF (CLINE)
-           WRITE (CLINE,'(A, ''wR_factor_all '', F10.4)') 
-     1                   CBUF(1:11),STORE(L30RF+1)*0.01
-           CALL XPCIF (CLINE)
+c           WRITE (CLINE,'(A, ''wR_factor_all '', F10.4)') 
+c     1                   CBUF(1:11),STORE(L30RF+1)*0.01
+c           CALL XPCIF (CLINE)
 c
            WRITE (CLINE,'(A, ''goodness_of_fit_ref '', F10.4)')
      1                   CBUF(1:11),STORE(L30RF+4)
@@ -6732,14 +6732,14 @@ C
            CALL XPCIF 
      1     ('# Computed with I/sigma = -10')
 
-           WRITE (CLINE,'(''_oxford_reflns_number_all '', I10)')
+           WRITE (CLINE,'(''_reflns_number_all '', I10)')
      1                  NINT(STORE(L30CF+5))
            CALL XPCIF (CLINE)
 c
-           WRITE (CLINE,'(''_oxford_refine_ls_R_factor_all '', F10.4)')
+           WRITE (CLINE,'(''_refine_ls_R_factor_all '', F10.4)')
      1                  STORE(L30CF+6)*0.01
            CALL XPCIF (CLINE)
-           WRITE (CLINE,'(''_oxford_refine_ls_wR_factor_all '', F10.4)')
+           WRITE (CLINE,'(''_refine_ls_wR_factor_all '', F10.4)')
      1                  STORE(L30CF+7)*0.01
            CALL XPCIF (CLINE)
 C
@@ -6747,7 +6747,7 @@ C
 c
 c
            CALL XPCIF 
-     1    ('# Computed with no filters except I/sigma = +2 a la SHELX')
+     1    ('# Computed with  I/sigma = +2 a la SHELX')
 
 #ifdef __MAC__
            WRITE(CBUF,'(''I>'',F6.1,''\\s(I)'')') STORE(L30CF+0)

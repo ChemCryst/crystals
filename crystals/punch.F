@@ -1452,7 +1452,7 @@ C -- ERRORS
       END
 CODE FOR XPCH6C                                                       !PUNCH 6 B, E, H
       SUBROUTINE XPCH6C(IULN,KFOUT, l28filter)
-C PUNCH B,E,H  CIF FORMAT PUNCH
+C PUNCH B,E,H  FCF FORMAT PUNCH
 C KFOUT   0 - F's
 C         1 - F^2's
 C         2 - F^2'S ON SCALE OF FC
@@ -1494,6 +1494,8 @@ c
       CHARACTER*12 CTEMP
       CHARACTER *9 CELEMENT
       CHARACTER*1 CALW(5)
+      CHARACTER*4 CUSED
+      DIMENSION MALW(5)
       CHARACTER CCELL(3)*1,CANG(3)*5
 
       interface
@@ -1512,6 +1514,7 @@ cdjwmay2011 Add high and low
       CALL XRSL
       CALL XCSAE
       KF = KFOUT
+      CALL XZEROF (MALW,5)
       CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
       INQUIRE(UNIT=NCFPU1,NAMED=LNAME,NAME=CBUF)
 C      WRITE(123,'(I6,L8,A, 4A4)')NCFPU1, LNAME, CBUF, KDEV
@@ -1709,7 +1712,8 @@ C
      4 '_refln_F_meas'/,
      5 '_refln_F_calc'/,
      6 '_refln_F_sigma'/,
-     7 '_refln_include_status')
+     7 '_refln_include_status'/,
+     8 '_refln_refinement_status')
 C
 1001  FORMAT ( /,'loop_',/,
      1 '_refln_index_h'/,
@@ -1718,7 +1722,8 @@ C
      4 '_refln_F_squared_meas'/,
      5 '_refln_F_squared_calc'/,
      6 '_refln_F_squared_sigma'/,
-     7 '_refln_include_status')
+     7 '_refln_include_status'/,
+     8 '_refln_refinement_status')
 C
 1012  FORMAT(/,'loop_',/
      1 '_twin_refln_datum_id'/
@@ -1729,7 +1734,8 @@ C
      7 '_twin_refln_F_meas'/
      6 '_twin_refln_F_calc'/
      8 '_twin_refln_F_sigma'/
-     9 '_twin_refln_include_status')
+     9 '_twin_refln_include_status'/,
+     8 '_refln_refinement_status')
 C
 1002  FORMAT(/,'loop_',/
      1 '_twin_refln_datum_id'/
@@ -1740,7 +1746,8 @@ C
      7 '_twin_refln_F_squared_meas'/
      6 '_twin_refln_F_squared_calc'/
      8 '_twin_refln_F_squared_sigma'/
-     9 '_twin_refln_include_status')
+     9 '_twin_refln_include_status'/,
+     8 '_refln_refinement_status')
 C
         IF (KFOUT .EQ. KFR) THEN
          WRITE(NCFPU1,1004)
@@ -1760,7 +1767,7 @@ C---- GET SIGMA THRESHOLD FROM L28
         END DO
       ENDIF
 C
-C
+      NINCL = 0    !Included in the refinement.
 C
       IDREF=0
 1840  CONTINUE
@@ -1779,7 +1786,6 @@ C--check if filtered reflections need printing
       K = NINT(STORE(M6+2))
 c     (sqrt(w) is stored in LIST 6)
       WT = STORE(M6+4)*STORE(M6+4)
-
 C
       fo = store(m6+3)
       S =  MAX(0.0,STORE(M6+12))
@@ -1810,8 +1816,8 @@ c ialw = 4 high resolution
 c ialw = 5 low resolution 
 c 3,4 & 5 take precedence over 2 (sigma cutoff). See SHEL command in SHELX
 c
-      IF (IDJW.EQ. -70) THEN
-        IALW = 3                    !Manually excluded.
+      IF (IDJW.LE. -70) THEN
+        IALW = 3                    !Manual, Slice or step exclusion.
         WT = 0.0
       ELSE IF (idjw.eq.-17) THEN
 c       Fails sin-theta/lambda test
@@ -1824,7 +1830,7 @@ c       Fails sin-theta/lambda test
         endif
       ELSE IF ( STORE(M6+20) .LT. S6SIG) THEN
         IALW = 2                    !Rejected by sigma cutoff.
-        WT = 0.0
+c        WT = 0.0    ! We need to keep the weight for PLATON's ALL calc
       ELSE IF (idjw.LT.0) THEN
         IALW = 3                    !Rejected by something else.
         WT = 0.0
@@ -1832,7 +1838,14 @@ c       Fails sin-theta/lambda test
         IALW = 1                    !Used.
       END IF
 c
-c
+      IF (IALW.EQ.1) THEN
+        CUSED='incl'
+        NINCL = NINCL + 1
+      ELSE
+        CUSED='excl'
+      ENDIF    
+      IF ((IALW .EQ. 2) .AND. (FOS .GE. -10.*SIGMA))IALW = 1   !Mark USED for PLATON
+      MALW(IALW)=MALW(IALW)+1
       IF (TWINNED) THEN
         IELEMENT = NINT(STORE(M6+11))
         WRITE(CELEMENT,'(I9)')IELEMENT
@@ -1846,46 +1859,50 @@ c
            IF (KFR.EQ. KFOUT) THEN
             WRITE(NCFPU1,1015)
      1      IDREF,JTMP,NINT(TWINDEX(1)),NINT(TWINDEX(2)),
-     2      NINT(TWINDEX(3)),FOS, FCS, SIGMA,CALW(IALW),WT
+     2      NINT(TWINDEX(3)),FOS, FCS, SIGMA,CALW(IALW),CUSED,WT
            ELSE
             WRITE(NCFPU1,1015)
      1      IDREF,JTMP,NINT(TWINDEX(1)),NINT(TWINDEX(2)),
-     2      NINT(TWINDEX(3)),FOS, FCS, SIGMA,CALW(IALW)
+     2      NINT(TWINDEX(3)),FOS, FCS, SIGMA,CALW(IALW),CUSED
            ENDIF
           ELSE                            ! Fo REFINEMENT
            IF (KFR.EQ.KFOUT) THEN
             WRITE(NCFPU1,1015)
      1      IDREF,JTMP,NINT(TWINDEX(1)),NINT(TWINDEX(2)),
-     2      NINT(TWINDEX(3)),FO, FC, S,CALW(IALW),WT
+     2      NINT(TWINDEX(3)),FO, FC, S,CALW(IALW),CUSED,WT
            ELSE
             WRITE(NCFPU1,1015)
      1      IDREF,JTMP,NINT(TWINDEX(1)),NINT(TWINDEX(2)),
-     2      NINT(TWINDEX(3)),FO, FC, S,CALW(IALW)
+     2      NINT(TWINDEX(3)),FO, FC, S,CALW(IALW),CUSED
            ENDIF
           ENDIF
          ENDIF
          IELEMENT=IELEMENT/10
         ENDDO
-1015    FORMAT (I10,I2,3I4,3F12.2,1X,A1,E13.4)
+1015    FORMAT (I10,I2,3I4,3F12.2,1X,A,1X,A,E13.4)
 C
       ELSE 
         IF ( KFOUT .NE. 0 ) THEN       ! SOME KIND OF F^2 REQUESTED
          IF (KFR.EQ. KFOUT) THEN
-          WRITE(NCFPU1,1005)I,J,K,FOS,FCS,SIGMA,CALW(IALW), WT
+          WRITE(NCFPU1,1005)I,J,K,FOS,FCS,SIGMA,CALW(IALW),CUSED,WT
          ELSE
-          WRITE(NCFPU1,1005)I,J,K,FOS,FCS,SIGMA,CALW(IALW)
+          WRITE(NCFPU1,1005)I,J,K,FOS,FCS,SIGMA,CALW(IALW),CUSED
          ENDIF
          ELSE                            ! Fo REFINEMENT
          IF (KFR.EQ.KFOUT) THEN
-           WRITE(NCFPU1,1005)I, J, K, FO, FC, S,CALW(IALW), WT
+           WRITE(NCFPU1,1005)I, J, K, FO, FC, S,CALW(IALW),CUSED,WT
           ELSE
-           WRITE(NCFPU1,1005)I, J, K, FO, FC, S,CALW(IALW)
+           WRITE(NCFPU1,1005)I, J, K, FO, FC, S,CALW(IALW),CUSED
           ENDIF
         ENDIF
-1005    FORMAT (3I4,3F12.2,1X,A1,E13.4)
+1005    FORMAT (3I4,3F12.2,1X,A,1X,A,E13.4)
       ENDIF
       GOTO 1840
 1850  CONTINUE
+      WRITE(NCFPU1,'(''# No of reflections output = '',I6)') IDREF
+      WRITE(NCFPU1,'(''# No of reflections in LSQ = '',I6)') NINCL
+      WRITE(NCFPU1,'(''#  '',5(1X,A,A,I6))')
+     1 (CALW(I),' = ',MALW(I),I=1,5)
       GOTO 9999
 9900  CONTINUE
       WRITE(NCFPU1,'(''#  '',10A4)') (KTITL(I),I=1,10)
