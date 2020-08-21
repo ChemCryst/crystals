@@ -209,10 +209,6 @@ Glazer, 1986) with a nominal stability of 0.1K.
 Cosier, J. & Glazer, A.M., 1986. J. Appl. Cryst. 105-107. 
 ; 
  
-_refine_special_details 
-; 
- ? 
-; 
  
 #--------------------------------------------------------------- 
 # _oxford_ data items, April 2010: 
@@ -631,6 +627,11 @@ END
 #LIST     16                                                                    
 NO 
 END                                                                             
+;
+ 
+_refine_special_details
+;
+?
 ;
 
 # Uequiv = arithmetic mean of Ui i.e. Ueqiv = (U1+U2+U3)/3
