@@ -881,19 +881,15 @@ ___________
 The slope and correlation coefficient should be small
 [11]  Slope =       -0.0  Intercept =       10  C-Coef=      -0.0
 
+ Agreement analysis on scale of Fo, Scale =   9.91
+ Delta = Fo-Fc
 
- SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
-
-
-
- Agreement analysis on scale of /FO/
- Scale factor  =   9.91330
 
 
  Weighting scheme type   11
 
 [67]  With parameter(s) :      0.68 E+02     0.64 E+02
- Agreement analysis on /FC/
+ Agreement analysis batched by Fc
 
 
      /FO/ RANGE  No. of data     </Fo/>      </Fc/>     <Delta**2>     <W*Delta**2>    R(%)   RW(%)  LOG(<W*DELTA**2>)
@@ -945,7 +941,7 @@ The slope and correlation coefficient should be small
 
 
 
- Agreement analysis on [sin(theta)/lambda]sq
+ Agreement analysis batched by [sin(theta)/lambda]sq
 
 
   SINTH/L RANGE  No. of data     </Fo/>      </Fc/>     <Delta**2>     <W*Delta**2>    R(%)   RW(%)  LOG(<W*DELTA**2>)
@@ -1068,19 +1064,15 @@ The slope and correlation coefficient should be small
 The slope and correlation coefficient should be small
 [11]  Slope =       -0.0  Intercept =       10  C-Coef=      -0.0
 
+ Agreement analysis on scale of Fo, Scale =   9.91
+ Delta = Fo-Fc
 
- SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
-
-
-
- Agreement analysis on scale of /FO/
- Scale factor  =   9.91330
 
 
  Weighting scheme type   11
 
 [67]  With parameter(s) :      0.71 E+02     0.68 E+02     0.4180E+01
- Agreement analysis on /FC/
+ Agreement analysis batched by Fc
 
 
      /FO/ RANGE  No. of data     </Fo/>      </Fc/>     <Delta**2>     <W*Delta**2>    R(%)   RW(%)  LOG(<W*DELTA**2>)
@@ -1132,7 +1124,7 @@ The slope and correlation coefficient should be small
 
 
 
- Agreement analysis on [sin(theta)/lambda]sq
+ Agreement analysis batched by [sin(theta)/lambda]sq
 
 
   SINTH/L RANGE  No. of data     </Fo/>      </Fc/>     <Delta**2>     <W*Delta**2>    R(%)   RW(%)  LOG(<W*DELTA**2>)
