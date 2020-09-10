@@ -118,6 +118,18 @@ REF
 REF
 END
 
+# SET LIST 28 TO TEST refine_special_details
+#LIST 28
+READ NSLICE=     0 NOMIS=     1 NCOND=     0
+MINIMA 
+CONT    RATIO       =  -10.00000
+OMIT    0 12 9
+END
+#sfls
+refine
+shift gen=0
+end
+
 
 \ For non-gui versions bonding is not always updated.
 #BONDCALC FORCE
@@ -257,5 +269,38 @@ PIVOT H
 BOND O N C
 END
 
+
+
+#list 12
+full x's
+ride n(6,x's) h(1,x's)
+end
+# H  constrained. N-H bond will, have no esd, other will
+#list 22
+end
+#SFLS
+REF
+SHIFT GEN=0
+END
+
+
+# PART 1
+#RELE PUNCH TORS-LIST.DAT
+#tors
+PUB PRINT=PUNCH
+incl all
+end
+#RELE PUNCH logs/bfile/pch
+
+# PART 2
+#tors
+pub print=cif e.s.d=exclrh
+#use TORS-LIST.DAT
+END
+# PART 2
+#tors
+pub print=cif e.s.d=yes
+#use TORS-LIST.DAT
+END
 
 \FINISH

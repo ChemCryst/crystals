@@ -1494,3 +1494,8 @@ pub print=yes e.s.d=yes
 #use TORS-LIST.DAT
 END
 
+#tors
+pub print=yes e.s.d=exclrh
+#use TORS-LIST.DAT
+END
+
