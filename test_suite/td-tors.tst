@@ -158,11 +158,12 @@ shift general=0
 end
 #use torsion.dat
 
-
+# TEST NEW FEATURES
 
 #use td-tors-cyclo.dat
 
-
+#
+#
 # The mis-match between lists 5 and 12 causes the file to 
 # be abandoned and control passed to the user. 
 # Not much use in batch mode
