@@ -11766,7 +11766,8 @@ the surface.
 #J
  \TORSION INPUTLIST=
  ATOMS  SPECIFICATIONS
- PUBLICATION  PRINT= LEVEL=
+ PUBLICATION  PRINT= LEVEL= E.S.D=
+ INLCUDE TYPE=
  END
 
  \TORSION
@@ -11783,7 +11784,7 @@ the surface.
  LIST 5.  These can be
  modified by the space group symmetry operators stored in LIST 2 (space
  group information, see section #RLIST02#)
-#P EDSs (SUs) are computed by the method of Nardelli (using code given 
+#P ESDs (SUs) are computed by the method of Nardelli (using code given 
  to us from his program PARST) if only average atomic esds are 
  avaialble.  If the full VcV matrix is avaiable, they are computed by 
 the method of Schaik et al (R. van Schaik, H Berendsen, A Torda & W 
@@ -11791,7 +11792,11 @@ Gunsteren, J. Mol. Biol. (1993) 234, 751-762. The paper by U. Shmueli,
 Acta Cryst (1974) A30, 848-849 explains the need for the full vcv matrix 
 and the effect of symmetry. The singularity in his equations (6) when tau is 
 0 or 180 is circumvented in Schaiks formulation (which is singular if 
-atoms j and k are coincident)
+atoms j and k are coincident).
+#
+If three (or more) atoms are approximately co-linear the torsion angle is ill
+defined. The current threshold for co-linearity is 5 degrees.
+
 #Q
 #I\TORSION INPUTLIST=#
 #KINPUTLIST#
@@ -11807,6 +11812,7 @@ atoms j and k are coincident)
  directive must define at least four atoms, the torsion angle being
  computed with respect to the first three atoms and each of the
  subsequent ones.
+#PAtoms cannot be give if INCLUDE is ALL or NO-HYDROGEN
 #Q
 #DPUBLICATION  PRINT=#
 #QThe parameter PRINT controls the publication listing, which is sent to 
@@ -11816,11 +11822,30 @@ the file open on the CRYSTALS PUNCH unit.
       NO   -  DEFAULT.  There is no publication listing
       YES    There is a publication listing sent to the PUNCH file
       CIF    The listing is in CIF format
+      PUNCH  Creates a file containing all the quartets of atoms forming
+             bonded torsion angles.
 #
 #D LEVEL=#
 #QIf LEVEL is HIGH, the VcV marix of the atoms in each torsion angle
  is printed.
 #
+#D E.S.D.=#
+#QNO suppresses the computation of standard uncertainties, EXCLRH excludes the
+ computation of the su of torsion angles involving a riding hydroen (to keep checkcif
+ happy).
+#J
+      NO
+      YES The default value
+      EXCLRH  Exclude ridning hydrogen atoms
+#
+#DINCLUDE TYPE=#
+#QThe default (NULL) causes this directive to be skipped so that ATOM directives
+  can be given, otherwise quartets of atom names are sent to the PUNCH file
+#
+#J
+     NULL  (The default). This directive is ignored
+     ALL   Torsion quartets for all atoms are sent to the punch file.
+     NO-HYDROGEN  Only quartets not involving hydrogen are punch out.
 #N   8#
 #J
  Example.
@@ -11832,7 +11857,26 @@ the file open on the CRYSTALS PUNCH unit.
  ATOMS C(3) C(4) C(5) C(6) O(1,2,2)
  END
 #
+#J
+ Example.
+ PART 1 sends a list of all quartets to a file called TORS-LIST.DAT
 
+      \ PART 1
+      \RELE PUNCH TORS-LIST.DAT
+      \tors
+      PUB PRINT=PUNCH
+      incl all
+      end
+      \RELE PUNCH logs/bfile/pch
+      
+ PART 2 uses this file to create a partial cif file containing the angles
+ and esds.
+      \ PART 2
+      \tors
+      pub print=cif e.s.d=yes
+      \use TORS-LIST.DAT
+      END
+#
 #Q
 #XTON#
 #XHooft-Straver-Spek#
