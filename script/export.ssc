@@ -1,38 +1,125 @@
 %SCRIPT EXPORT
 %% A SCRIPT TO MOVE THE RESULTS OF LSQ  BETWEEN MACHINES
 %  COPY '#RELEASE PUNCH exchange.dat'
+%  IF ( EXISTS 1 .GT. 0 ) THEN
 %  COPY '#PUNCH 1'
 %  COPY 'END'
+{1,11  LIST 1  output
+%  ELSE
+{1,11  LIST 1  MISSING
+%  END IF
+%  IF ( EXISTS 2 .GT. 0 ) THEN
 %  COPY '#PUNCH 2 B'
 %  COPY 'END'
+{1,11  LIST 2  output
+%  ELSE
+{1,11  LIST 2  MISSING
+%  END IF
+%  IF ( EXISTS 3 .GT. 0 ) THEN
 %  COPY '#PUNCH 3'
 %  COPY 'END'
+{1,11  LIST 3  output
+%  ELSE
+{1,11  LIST 3  MISSING
+%  END IF
+%  IF ( EXISTS 4 .GT. 0 ) THEN
 %  COPY '#PUNCH 4'
 %  COPY 'END'
+{1,11  LIST 4  output
+%  ELSE
+{1,11  LIST 4  MISSING
+%  END IF
+%  IF ( EXISTS 13 .GT. 0 ) THEN
 %  COPY '#PUNCH 13'
 %  COPY 'END'
+{1,11  LIST 13  output
+%  ELSE
+{1,11  LIST 13  MISSING
+%  END IF
+%  IF ( EXISTS 23 .GT. 0 ) THEN
 %  COPY '#PUNCH 23'
 %  COPY 'END'
+{1,11  LIST 23  output
+%  ELSE
+{1,11  LIST 23 MISSING
+%  END IF
+%  IF ( EXISTS 25 .GT. 0 ) THEN
+%  COPY '#PUNCH 25'
+%  COPY 'END'
+{1,11  LIST 25  output
+%  ELSE
+{1,11  LIST 25 MISSING
+%  END IF
+%  IF ( EXISTS 28 .GT. 0 ) THEN
 %  COPY '#PUNCH 28'
 %  COPY 'END'
+{1,11  LIST 28  output
+%  ELSE
+{1,11  LIST 28  MISSING
+%  END IF
+%  IF ( EXISTS 29 .GT. 0 ) THEN
 %  COPY '#PUNCH 29'
 %  COPY 'END'
+{1,11  LIST 29  output
+%  ELSE
+{1,11  LIST 29  MISSING
+%  END IF
+%  IF ( EXISTS 30 .GT. 0 ) THEN
 %  COPY '#PUNCH 30'
 %  COPY 'END'
+{1,11  LIST 30  output
+%  ELSE
+{1,11  LIST 30  MISSING
+%  END IF
+%  IF ( EXISTS 31 .GT. 0 ) THEN
 %  COPY '#PUNCH 31'
 %  COPY 'END'
+{1,11  LIST 31  output
+%  ELSE
+{1,11  LIST 31  MISSING
+%  END IF
+%  IF ( EXISTS 39 .GT. 0 ) THEN
 %  COPY '#PUNCH 39'
 %  COPY 'END'
+{1,11  LIST 39  output
+%  ELSE
+{1,11  LIST 39  MISSING
+%  END IF
+%  IF ( EXISTS 40 .GT. 0 ) THEN
 %  COPY '#PUNCH 40'
 %  COPY 'END'
+{1,11  LIST 40  output
+%  ELSE
+{1,11  LIST 40  MISSING
+%  END IF
+%  IF ( EXISTS 6 .GT. 0 ) THEN
 %  COPY '#PUNCH 6 I'
 %  COPY 'END'
+{1,11  LIST 6  output
+%  ELSE
+{1,11  LIST 6  MISSING
+%  END IF
+%  IF ( EXISTS 5 .GT. 0 ) THEN
 %  COPY '#PUNCH 5'
 %  COPY 'END'
+{1,11  LIST 5  output
+%  ELSE
+{1,11  LIST 5  MISSING
+%  END IF
+%  IF ( EXISTS 12 .GT. 0 ) THEN
 %  COPY '#PUNCH 12'
 %  COPY 'END'
+{1,11  LIST 12  output
+%  ELSE
+{1,11  LIST 12  MISSING
+%  END IF
+%  IF ( EXISTS 16 .GT. 0 ) THEN
 %  COPY '#PUNCH 16'
 %  COPY 'END'
+{1,11  LIST 16  output
+%  ELSE
+{1,11  LIST 16  MISSING
+%  END IF
 %  COPY '#RELEASE PUNCH logs/bfile.pch'
 {1,11
 {1,11
