@@ -978,6 +978,7 @@ We will also delete any recreatable lists.
 #HSpurge#
 #J
  \PURGE FILE= INITIALSIZE= LOG= LIST=
+ ACTION REOPEN=
  END
 #
 #I\PURGE#
@@ -1027,6 +1028,18 @@ We will also delete any recreatable lists.
 of all other lists are preserved. If 'n' is 0 (the default value)
 lists of all types are purged.
 #
+#KACTION REOPEN=#
+#J
+    YES
+    NO
+#
+#PYES attaches the newly constructed .dsc file on NCDFU after the purge and
+ closes the old one. It does it at the point in xpurge that refreshes all
+ the indexes after a normal purge
+#
+ This will allow us to use a 'Save As...' type of behaviour that users will
+ expect, but without having to restart the current CRYSTALS process.
+#PNO Leaves the user accessing the current dsc file.
 #Q
 
 #XLists overview#
