@@ -1,0 +1,31 @@
+%SCRIPT XTORSA
+%% Compute all torsion angles 
+%  VARIABLE INTEGER  N5 NCHOSEN
+%  VARIABLE CHARACTER CTEXT1 CTEXT2
+{1,11  
+{1,11  Compute torsion angles for all quartets
+{1,11  of bonded atom in LIST 41.
+{1,11  Part 1 creates a list of quartets (TORS-LIST.DAT)
+{1,11  Part 2 computes the torsion angles
+{1,11  
+{12,11    Output is appended to publish.cif 
+{12,11     You may need to edit this file.
+{1,11  
+{1,11  
+{1,0
+%%
+%COPY '# PART 1'
+%COPY '#RELE PUNCH TORS-LIST.DAT'
+%COPY '#tors'
+%COPY 'PUB PRINT=PUNCH'
+%COPY 'incl all'
+%COPY 'end'
+%COPY '#RELE PUNCH logs/bfile/pch'
+%%
+%COPY '# PART 2'
+%COPY '#tors'
+%COPY 'pub print=cif e.s.d=exclrh'
+%COPY '#use TORS-LIST.DAT'
+%COPY 'END'
+%%
+%END SCRIPT
