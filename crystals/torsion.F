@@ -65,6 +65,10 @@ C
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XWORKA.INC'
+      INCLUDE 'XFLAGS.INC'
+C
+      INCLUDE 'XRGLST.INC'
+C
 C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST12.INC'
@@ -76,6 +80,14 @@ C
       DATA IVERSN  /204/
       DATA CBLANK /' '/
       DATA AZERO /0.0/
+      CHARACTER *120 COLD
+#ifdef _HOL_
+      DATA KHYD /4HH   /, KCARB /4HC   /, KAZOT/4HN   /, KOXY/4HO   /
+      DATA KDET /4HD   /
+#else
+      DATA KHYD /'H   '/, KCARB /'C   '/, KAZOT/'N   '/, KOXY/'O   '/
+      DATA KDET /'D   '/
+#endif
 C
       REWIND (MTE)
 c----- Set print flag to no
@@ -83,6 +95,7 @@ CDJWJAN06
 c      MY = 0
 c      MW = 0
 c      MV = 0
+       MMA = 0 !TODO - FIND OUT WHY THIS NEEDS SETTING HERE
 C
 C--SET UP THE TIMING CONTROL
       CALL XTIME1(2)
@@ -90,9 +103,11 @@ C--READ THE INPUT CONTROL CARDS WITH THE LEXICAL SCANNER
       ISTAT = KLEXAN ( IULN , IFIRST , LENGTH )
       IF ( ISTAT .LT. 0 ) GO TO 9910
 C----- GET THE PUBLICATION ETC FLAG FROM THE LEXICAL COMMON BLOCK
-      IPBFLG = MY
-      LEVEL = MW
-      JESD = MV
+      IPBFLG = MY !37
+      LEVEL = MW  !35
+      JESD = MV   !34
+      JINCL = MMA !39 INCLUDE
+c
 C--CLEAR THE CORE
       CALL XRSL
       CALL XCSAE
@@ -138,6 +153,12 @@ C----- GET THE LIST TYPE FROM THE LEXICAL COMMON BLOCK
       CALL XLDR05(IULN5)
       IF ( IERFLG .LT. 0 ) GO TO 9900
       INCLUDE 'IDIM12.INC'
+C this might be a good place to call the quartet code
+c it skips the rest of this module.
+      IF (JINCL .GE.1)  THEN
+            CALL XQUARTET(JINCL,IPBFLG)
+            GOTO 2951           !Get out without calculating tau
+      ENDIF
 C-----------------------------------------------------------
       IESD = -1
       TAU1 = 0.
@@ -186,9 +207,14 @@ C           NOTE THAT PUNCH 11 C LISTS JUST THE UNSCALED INVERSE MATRIX
          ENDIF
        ENDIF
       ENDIF
+
+c
+C-----------------------------------------------------------
+c
+c
+c
 C--LIST READ IN OKAY  -  SET UP THE INITIAL CONTROL FLAGS
       CALL XILEXP(IULN,IFIRST)
-C-----------------------------------------------------------
 c
 C--PRINT THE INITIAL CAPTIONS
       CALL XPRTCN
@@ -253,6 +279,7 @@ C--RESET THE ERROR COUNTER
       LSTLEF=LEF
 C
 C--START OF 'ATOM' CARD
+      NORH = 0
       NATOM=0
 c---- re-set the start of the distance-type stack for the vcv
       ISTACK = JSTACK
@@ -313,7 +340,7 @@ C
 C      FIRST CREATE A DISTANCE-TYPE STACK FOR THE VCV CODE
       MSTART = MQ
       M5TMP = M5A
-      IF (IESD .EQ. 1)  L12TMP = L12A
+      IF (IESD .GE. 1)  L12TMP = L12A
 c
 c  NOW CREATE THE ORIGINAL hOURANI sTACK FOR THE OLD CODE
 C  NOTE THAT WE HAVE POSITIONS IN BOTH STACKS FOR THE MOMNET
@@ -338,7 +365,15 @@ C--STORE THE SYMMETRY OPERATORS USED TO GENERATE THE NEW COORDS.
       ISTORE(JD+7)=ISTORE(MQ+10)
       ISTORE(JD+8)=ISTORE(MQ+11)
 C
-      IF (IESD .EQ. 1) THEN
+C Check if riding H ESD to be omitted                      
+          if ( ( and(istore(m5a+15),kbrefb(3)).gt.0 ) .and.                 
+     1     ((istore(m5a).eq.khyd).or.(istore(m5a).eq.kdet)) )then              
+          if (jesd .EQ. 2) then
+            norh = 1                                               
+          endif
+          endif
+
+      IF (IESD .GE. 1) THEN
 C     CREATE THE DISTANCE-TYPE STACK
        ISTACK = ISTACK-LSTACK
        ISTORE(ISTACK) = M5TMP
@@ -424,6 +459,7 @@ C--POINT TO THE SECOND VECTOR
       angle1= store(ibase1)*store(ibase2)+
      1 store(ibase1+1)*store(ibase2+1)+
      1 store(ibase1+2)*store(ibase2+2)
+      angle1=min(1.0,abs(angle1))
 C
 C--SET A POINTER FOR THE ATOM NUMBER
       JQ=1
@@ -440,6 +476,7 @@ C----- COMPRESS ATOMS INTO CHARACTER FORM
      1 ,ISTORE(JB+1) ,ISTORE(JB+2) ,ISTORE(JB+3) ,ISTORE(JB+4),
      2 CATOM(JQ), LATOM(JQ))
 C----- STORE THE 3 ATOMS IF NECESSARY
+C IS THIS NECESSARY FOR IPBFLG = 4?
       IF (IPBFLG) 2370,2370,2360
 2360  CONTINUE
       STORE(JPUB) = STORE(JF)
@@ -485,7 +522,8 @@ C--NORMALISE
       angle2= -store(ibase1)*store(ibase2)-
      1 store(ibase1+1)*store(ibase2+1)-
      1 store(ibase1+2)*store(ibase2+2)
-     
+      angle2=min(1.0,abs(angle2))
+C     
       IF(ABS(ANGLE1).GT.ABS(ANGLE2)) THEN
        ANGLE3=ANGLE1
       ELSE
@@ -512,7 +550,7 @@ cdjwapr07    NARDELL CODE  - USES MEAN SU FROM LIST 30
       ESD = ESD1
 c
 CDJWJUL2011  USE FULL VCV IF AVAILABLE
-      IF (IESD .EQ. 1) THEN
+      IF (IESD .GE. 1) THEN
         I = IGETVCV(4, JSTACK, LSTACK, IOUT, LEVEL)
 c       TRANSPOSE THE MATRIX OF ORTHOGONAL COORDINATES TO GET ATOMS BY
 C       COLUMNS
@@ -520,15 +558,23 @@ C       COLUMNS
         CALL XMOVE(STORE(IOUT), VCV(1,1), 144)
         CALL XTORS(RI, VCV, TAU2, ESD2)
         ESD = ESD2
+        if(esd1.le.zero) esd=0.0  ! A fudge, 2020
+c For an exactly co-linear group esd2 takes on massive values.
+c Cannot discover if this is a serious programming error in the VCV
+c code, or rounding in poor maths.
       ENDIF
 c
 C--- NOTE THAT TWO ITEMS ARE OUTPUT EVEN WHEN ESDS ARE NOT COMPUTED
 c Dont write to MTE if the bonds are almost co-linear
-      IF((IPBFLG .GT. 0).AND.(angle3 .ge. 0.996)) 
-     1  WRITE (MTE) 'T', ANGLE, ESD,
+      IF((IPBFLG.EQ.1).OR.(IPBFLG.EQ.2)) THEN
+       IF(abs(angle3) .lt. 0.996) THEN
+        IF(NORH.EQ.1) ESD = 0 !Skip riding H esds
+        WRITE (MTE) 'T', ANGLE, ESD,
      1 (STORE(JPUB),STORE(JPUB+1), (ISTORE(KPUB),KPUB=JPUB+2,JPUB+6),
      2  JPUB=IPUB, IPUB+14, 7),
      3 STORE(JF), STORE(JF+1), (ISTORE(JE), JE=JB,JD)
+       ENDIF
+      ENDIF
 C
 C----- COMPRESS ATOMS INTO CHARACTER FORM
        CALL CATSTR (STORE(JF)    ,STORE(JF+1)  ,ISTORE(JB)
@@ -542,7 +588,7 @@ c
        CALL XPRVDU(NCVDU, 1,0)
 c
       IF (ISSPRT .EQ. 0) THEN
-        IF (IESD .EQ. 1) THEN
+        IF (IESD .GE. 1) THEN
        WRITE(NCWU, 2806)(
      1 CBLANK(1: 10-LATOM(II)), CATOM(II)(1:LATOM(II)),II=1,4)
      2 ,ANGLE, ESD1, ESD2, CBUFF
@@ -552,6 +598,7 @@ c
      2 ,ANGLE, ESD1, CBUFF
         ENDIF
       ENDIF
+C
 2805  FORMAT (2A,' to ',2A,' to ',2A,' to ',2A,' = ', T60,2F7.1,A)
 2806  FORMAT (2A,' to ',2A,' to ',2A,' to ',2A,' = ', T60,3F7.1,A)
 c
@@ -592,6 +639,7 @@ C--TERMINATION OF THE PROCESSING
       ELSE  IF (IPBFLG .EQ. 2) THEN
         CALL XPRTDA (14,IESD,NCPU)
       ENDIF
+2951  CONTINUE ! Come here if we were only setting up a full listing
       CALL XOPMSG (IOPTOR, IOPEND, IVERSN)
       CALL XTIME2(2)
       RETURN
@@ -752,3 +800,218 @@ C-----S.u. following Stanford & Waser (1972). Acta Cryst.A28,213.
    5  RETURN
       END
 c 
+CODE FOR XQUARTET
+      SUBROUTINE XQUARTET(JINCL,IPBFLG)
+C JINCL 1 = ALL, 2 = NO-HYDROGEN
+C IPBFLG 3 = PUNCH QUARTETS, OTHER VALUES JUST LIST ATOMS
+C
+C Run through LIST 5 finding all torsion angle quartets
+C Our torsion is C-A-B-D
+C
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XPDS.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XLST01.INC'
+      INCLUDE 'XLST02.INC'
+      INCLUDE 'XLST05.INC'
+      INCLUDE 'XLST12.INC'
+      INCLUDE 'XLST41.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XDSTNC.INC'
+      INCLUDE 'QSTORE.INC'
+c
+#ifdef _HOL_
+      DATA KHYD /4HH   /, KCARB /4HC   /, KAZOT/4HN   /, KOXY/4HO   /
+      DATA KDET /4HD   /
+#else
+      DATA KHYD /'H   '/, KCARB /'C   '/, KAZOT/'N   '/, KOXY/'O   '/
+      DATA KDET /'D   '/
+#endif
+C      
+      CHARACTER*36 COLD
+      CHARACTER*12 CTEMP
+C
+C   0  ADDRESS OF ATOM IN L5
+C   1  ACCEPTANCE FLAG
+C
+C      1  ACCEPTABLE TO NONE
+C      2  DISTANCES ONLY
+C      3  ANGLES ONLY
+C      4  ACCEPTABLE TO BOTH
+C
+C   2  S, THE SYMMETRY MATRIX TO BE USED (NEGATIVE FOR CENTRE OF SYM.)
+C   3  NON-PRIMITIVE LATTICE INDICATOR
+C   4  T(X)
+C   5  T(Y)
+C   6  T(Z)
+C   7  TRANSFORMED X
+C   8  TRANSFORMED Y
+C   9  TRANSFORMED Z
+C  10  DISTANCE
+C  11  DISTANCE SQUARED
+C  12  ADDRESS IN LIST 12  (IF USED).
+C  13  TARGET CONTACT DISTANCE FOR RESTRAINTS (OPTIONAL)
+C
+C
+C      Run through all the atoms creating a list of quartets
+c      need for torsion angles
+C
+C
+C--SET THE DIMENSION OF THE COMMON BLOCK FOR LIST 12
+      IDIM12=40
+C--INDICATE THAT LIST 12 IS NOT TO BE USED
+      L12=-1
+      M12=-1
+C
+C  LOAD LISTS 1 AND 2
+      CALL XDIST2
+C RECOMPUTE BONDLIST
+      CALL XBCALC(1)
+C
+C Angle - imagine looking down the z direction (the BA bond):
+C
+C       D
+C  y   /
+C     /
+C    /
+C   A
+C    \
+C     \ B-----C
+C               X
+C
+C Torsion will be MOC - MOA - MOB - MOD
+c
+C  JS    POINTER TO THE DISTANCES STACK  -  ORIGINALLY SET TO 'NFL'
+C        AND POINTING TO THE NEXT FREE LOCATION AFTER THE STACK ON EXIT.
+C  JT    HE NUMBER OF WORDS PER ENTRY IN THE DISTANCES STACK.
+C
+C  M5A    ADDRESS OF THE CURRENT PIVOT ATOM IN LIST 5
+C  M5     ADDRESS OF THE FIRST ATOM TO SEARCH FROM IN LIST 5
+C
+      JATVC = 0        !DO NOT USE A FUNCTION VECTORS
+      JT = 14          ! Number of words per returned distance
+      NTORS = 0
+      MOA=L5-MD5       !Do it like this because of the CYCLE instruction
+      ALOOP: DO I=1,N5
+      MOA = MOA + MD5
+      IF(JINCL.EQ.2)THEN
+            IF(ISTORE(MOA).EQ.KHYD)CYCLE
+            IF(ISTORE(MOA).EQ.KDET)CYCLE
+      ENDIF
+        M5 = L5        
+        M5A=MOA           ! Atom A
+        NFLORIG = NFL           ! SAVE THE NEXT FREE ADDRESS
+        MASTCK = NFL + 10*N5*JT ! Keep well clear 
+        NFL = MASTCK            ! Temp change NFL.
+        K = KDIST4( MAENDS, JT, 0, 0)   ! Find the distances
+        NFL = NFLORIG           ! RESET NFL 
+        IF ( K .LT. 0 ) THEN
+           if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
+           WRITE (CMON,'(A)')'"KDIST4" returned an error.'
+           CALL XPRVDU(NCVDU,1,0)
+           CYCLE
+        ENDIF
+        IF ( K .LE. 1 ) THEN
+            CYCLE ! No torsions here.
+        ENDIF
+
+C There is a stack at MASTCK of all the bonded contacts around the atom at M5A.
+C Find the pivot atom (M5A) in the first group.
+C
+        BLOOP: DO J = MASTCK, MAENDS-JT, JT
+         MOB = ISTORE(J)           ! Get the address in L5 of this atom.
+         IF(JINCL.EQ.2)THEN
+            IF(ISTORE(MOB).EQ.KHYD)CYCLE
+            IF(ISTORE(MOB).EQ.KDET)CYCLE
+         ENDIF
+         IF ( MOB .LE. MOA ) THEN
+            CYCLE ! Only consider inner atoms once.
+         ENDIF
+
+C Find list of bonds around atom B. Keep well clear of current list.
+          M5A = MOB       ! Atom B
+          M5  = L5        ! Find each bond many times.
+          NFLORIG = NFL                 ! SAVE THE NEXT FREE ADDRESS
+          MBSTCK  = MAENDS + JT                 ! Keep well clear 
+          NFL     = MBSTCK                      ! Temp change NFL.
+          K       = KDIST4( MBENDS, JT, 0, 0)   ! Find the distances
+          NFL     = NFLORIG                     ! RESET NFL 
+          IF ( K .LT. 0 ) THEN
+           if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
+           WRITE (CMON,'(A)')'"KDIST4" returned an error. In BLOOP.'
+           CALL XPRVDU(NCVDU,1,0)
+           CYCLE
+          ENDIF
+          IF ( K .LE. 1 ) THEN
+            CYCLE ! No torsions here.
+          ENDIF
+          CLOOP: DO K = MASTCK, MAENDS-JT, JT
+            MOC = ISTORE(K)  ! Get the address in L5 of this atom.
+            IF(JINCL.EQ.2)THEN
+             IF(ISTORE(MOC).EQ.KHYD)CYCLE
+             IF(ISTORE(MOC).EQ.KDET)CYCLE
+            ENDIF
+            IF ( MOB .EQ. MOC ) CYCLE  ! MOC must not be MOB.
+C
+            DLOOP: DO KB = MBSTCK, MBENDS-JT, JT
+              MOD = istore(KB)  ! Get the address in L5 of this atom.
+              IF(JINCL.EQ.2)THEN
+                        IF(ISTORE(MOD).EQ.KHYD)CYCLE
+                        IF(ISTORE(MOD).EQ.KDET)CYCLE
+              ENDIF
+              IF ( MOD .EQ. MOA ) THEN
+                  CYCLE  ! MOD must not be MOA.
+              ENDIF
+              IF ( MOD .EQ. MOC ) THEN
+                  CYCLE  ! MOD must not be MOC.
+              ENDIF
+c
+              NTORS=NTORS+1
+        WRITE(COLD(1:),'(A4,I4)') ISTORE(MOC),NINT(STORE(MOC+1))
+        WRITE(COLD(10:),'(A4,I4)') ISTORE(MOA),NINT(STORE(MOA+1))
+        WRITE(COLD(19:),'(A4,I4)') ISTORE(MOB),NINT(STORE(MOB+1))
+        WRITE(COLD(28:),'(A4,I4)') ISTORE(MOD),NINT(STORE(MOD+1))
+              COLD(9:9)='-'
+              COLD(18:18)='-'
+              COLD(27:27)='-'
+              CALL XCRAS(COLD,LOS)
+              WRITE (CMON,'(I6,2X,A)')NTORS,trim(cold)
+              CALL XPRVDU (NCVDU,1,0)
+              IF (IPBFLG.EQ.3) THEN 
+               NFREE=1
+               COLD(:)=' '
+               WRITE(CTEMP(1:),'(A4,A,I4,A)') 
+     1 ISTORE(MOC),'(',NINT(STORE(MOC+1)),')'
+               CALL XCRAS(CTEMP,NTEMP)
+               WRITE(COLD(NFREE:),'(A)')TRIM(CTEMP)
+               NFREE=NFREE+NTEMP+1
+               WRITE(CTEMP(1:),'(A4,A,I4,A)') 
+     1 ISTORE(MOA),'(',NINT(STORE(MOA+1)),')'
+               CALL XCRAS(CTEMP,NTEMP)
+               WRITE(COLD(NFREE:),'(A)')TRIM(CTEMP)
+               NFREE=NFREE+NTEMP+1
+               WRITE(CTEMP(1:),'(A4,A,I4,A)') 
+     1 ISTORE(MOB),'(',NINT(STORE(MOB+1)),')'
+               CALL XCRAS(CTEMP,NTEMP)
+               WRITE(COLD(NFREE:),'(A)')TRIM(CTEMP)
+               NFREE=NFREE+NTEMP+1
+               WRITE(CTEMP(1:),'(A4,A,I4,A)') 
+     1 ISTORE(MOD),'(',NINT(STORE(MOD+1)),')'
+               CALL XCRAS(CTEMP,NTEMP)
+               WRITE(COLD(NFREE:),'(A)')TRIM(CTEMP)
+               NFREE=NFREE+NTEMP
+               WRITE(NCPU,'(A,A)')'ATOM ',TRIM(COLD)
+C
+              ENDIF
+            END DO DLOOP
+          END DO CLOOP
+        END DO BLOOP
+        WRITE(CMON,'(/)')
+        CALL XPRVDU(NCVDU,1,0)
+       END DO ALOOP
+c
+      RETURN
+      END

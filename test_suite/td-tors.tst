@@ -158,7 +158,12 @@ shift general=0
 end
 #use torsion.dat
 
+# TEST NEW FEATURES
 
+#use td-tors-cyclo.dat
+
+#
+#
 # The mis-match between lists 5 and 12 causes the file to 
 # be abandoned and control passed to the user. 
 # Not much use in batch mode
@@ -167,12 +172,12 @@ keep all
 end
 #TITLE BAD LIST 5/12
 #tors                                                                           
-ATOM  CU(1)  O(2)  C(3)  C(5)
-ATOM  CU(1)  O(2)  C(3)  C(5)
-atom cu(1) o(6) until c(9)
-atom c(7) o(6) cu(1) o(10) c(3)
-atom o(10) cu(1) cu(1,1,1,0,1,0) o(10,1,1,0,1,0)
-ATOM  C(5)  C(3)  CU(1) C(3,-1,1,1,0,1)
+ATOM O(9) C(1) C(2) N(3)
+ATOM O(9) C(1) C(2) C(7)
+ATOM O(9) C(1) C(2) C(8)
+ATOM O(11) C(1) C(2) N(3)
+
+
 #end
 
 

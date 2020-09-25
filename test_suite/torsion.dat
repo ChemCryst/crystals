@@ -16,3 +16,7 @@ end
 atom o(10) cu(1) cu(1,2,1,0,1,0) o(10,2,1,0,1,0)
 publication print=cif
 end
+
+
+# END OF TORSION.DAT
+

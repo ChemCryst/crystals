@@ -3940,7 +3940,7 @@ C
 C  IBAR    THE LINE WIDTH.
 C
 C
-      CHARACTER *1 CODE, ANGLE, DIST
+      CHARACTER *1 CODE, ANGLE, DIST, TORS
       CHARACTER *160 CLINE
       CHARACTER *4 CTEM
 C
@@ -3971,11 +3971,11 @@ C
 #ifdef _HOL_
       DATA KHYD /4HH   /
       DATA KDET /4HD   /
-      DATA DIST/1HD/, ANGLE/1HA/
+      DATA DIST/1HD/, ANGLE/1HA/, TORS/1HT/
 #else
       DATA KHYD /'H   '/
       DATA KDET /'D   '/
-      DATA DIST/'D'/, ANGLE/'A'/
+      DATA DIST/'D'/, ANGLE/'A'/, TORS/'T'/
 #endif
       DATA ITEM(1)/2/, ITEM(2)/3/, ITEM(3)/4/
 C----- MAXIMUM NO OF ATOMS
@@ -4043,7 +4043,7 @@ C
             NUM = ITEM(1)
       ELSE  IF (CODE .EQ. ANGLE) THEN
             NUM = ITEM(2)
-      ELSE
+      ELSE  IF (CODE .EQ. TORS) THEN
             NUM = ITEM(3)
       ENDIF
 C
@@ -4068,8 +4068,6 @@ C----- OUTPUT  SERIAL NUMBER
       CALL SUBZED(J,IND1,LINEA,  1)
 C--UPDATE THE CURRENT POSITION FLAG
       K=K+NSTA
-c^^^
-c^^^      IF (I .LT. NUM) LINEA(K-2) = MINUS
       IF (I .LT. NUM) LINEA(K) = MINUS
       K=K+2
 2020  CONTINUE
@@ -4309,6 +4307,13 @@ c
 CODE FOR XCIFPR
       SUBROUTINE XCIFPR(KEY, IESD, NODEV)
 C
+C NOTE, 2020
+C For TORSION angles, suppress printing esd (set esd=0.0)
+C if any of the atoms is Hydrogen/Deuterium.
+C We should really look at the refinement status
+c
+c Now fixed properly in TORSION
+
 C----- PRINT GEOMETRY INFORMATION IN CIF FORMAT
 C
 C      KEY      11 = DIST     
@@ -4354,6 +4359,15 @@ C
       data cangl /'1234'/
       data cbond /'DHA '/
       data cbond2 /'HAA '/
+#ifdef _HOL_
+      DATA KHYD /4HH   /
+      DATA KDET /4HD   /
+      DATA DIST/1HD/, ANGLE/1HA/, TORS/1HT/
+#else
+      DATA KHYD /'H   '/
+      DATA KDET /'D   '/
+      DATA DIST/'D'/, ANGLE/'A'/, TORS/'T'/
+#endif
 C
 CDJWMAY99 - PREAPRE TO APPEND CIF OUTPUT ON FRN1
       CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
@@ -4394,13 +4408,13 @@ C----- WE NEED JKEY ETC BECAUSE MTE MAY CONTAIN BOTH DISTANCES AND ANGLE
 cdjw160804 - jkey & ncyc were not initialised
       jkey = 0
       ncyc = 1
-      IF (KEY .EQ. 13) THEN
+      IF (KEY .EQ. 13) THEN   !both
             JKEY = 0
             NCYC = 2
-      ELSE IF (KEY .EQ. 14) THEN
+      ELSE IF (KEY .EQ. 14) THEN   !torsion
             JKEY = 2
             NCYC = 1
-      ELSE IF (KEY .EQ. 15) THEN
+      ELSE IF (KEY .EQ. 15) THEN      !H-bond
             JKEY = 0
             NCYC = 1
       ELSE
@@ -4473,6 +4487,14 @@ c----- reset kkey to point to 'H'
        READ (MTE, END=2500, ERR = 9000) CODE, TERM, ESD,
      1 (STORE(JPUB),STORE(JPUB+1), (ISTORE(KPUB),KPUB=JPUB+2,JPUB+6),
      2  JPUB=IPUB, IPUB+21, 7)
+       if(key.eq.14) then   !Torsion
+C THIS IS NOW DONE PROPERLY IN TORSION BY LOOKING AT THE STATUS
+c        idjw=0
+c        do jpub=ipub,ipub+21,7
+c         if((istore(jpub).eq.khyd).or.(istore(jpub).eq.kdet))idjw=1
+c        enddo
+c        if(idjw.ge.1) esd=0.0
+       endif
       else
        READ (MTE, END=2500, ERR = 9000) CODE, TERM, ESD,
      1 (STORE(JPUB),STORE(JPUB+1), (ISTORE(KPUB),KPUB=JPUB+2,JPUB+6),
