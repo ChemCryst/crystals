@@ -1118,7 +1118,7 @@ C Work out UEQUIV:
                END IF
 
         
-               SPAREV = 0.0
+               SPAREV = 1.0
 
                IF ( LSPARE .AND. ( NINT(STORE(I5+3)) .LE. 1 )) THEN
                   ISPARE = NINT(1000 * STORE(I5+13) )

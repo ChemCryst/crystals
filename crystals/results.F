@@ -3675,7 +3675,16 @@ C
 C
       KCPROP = 1
       CALL XZEROF (A, 8)
-C----- LOAD DATA IF NOT ALREADY IN CORE
+C----- LOAD DATA IF NOT ALREADY IN CORE 
+      IF ( (KEXIST(1).LE.0) .OR. 
+     2     (KEXIST(2).LE.0) .OR. 
+     3     (KEXIST(3).LE.0) .OR. 
+     4     (KEXIST(5).LE.0) .OR. 
+     5     (KEXIST(23).LE.0) .OR. 
+     6     (KEXIST(29).LE.0) ) THEN
+           KCPROP = -1
+           RETURN
+      END IF
       IF (KHUNTR (1,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL01
       IF (KHUNTR (2,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL02
       IF (KHUNTR (3,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL03
