@@ -1,5 +1,10 @@
 %SCRIPT XREFINE
-%%  
+%%
+%  IF EXISTS 5 .LE. 0 THEN
+{I xrefine.scp: No parameters (List 5) available.
+%    FINISH
+%  END IF
+%%
 %  VARIABLE INTEGER LSQ:FLAG 
 %  EVALUATE LSQ:FLAG = 3
 %  VARIABLE REAL SHIFT  FREESHIFT
