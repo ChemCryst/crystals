@@ -467,7 +467,7 @@ C Update status information for GUI.
         CALL XRDPOS ( NCRU , IRDREC(IFLIND) , IRDFND(IFLIND) )
       ENDIF
 C
-      ISTAT = KRDLIN ( NCRU , CRDLWC , IFIN )
+      ISTAT = KRDLIN ( NCRU , .TRUE.,  CRDLWC , IFIN )
 
 c      WRITE(444,*)'IStat is ', ISTAT
 
@@ -530,7 +530,7 @@ C -- IF COPYING, WRITE LINE TO MONITOR CHANNEL
             INFIN = 0
             IF (ISSTML .NE. 4 ) THEN
                   CALL XPRMPT ( NCAWU , 'Press return to continue : ' )
-                  ISTAT = KRDLIN ( NCUFU(1) , CRDUPC , INFIN )
+                  ISTAT = KRDLIN ( NCUFU(1) , .FALSE., CRDUPC , INFIN )
                   IF ( ISTAT .LT. 0 ) GO TO 9910
                   IF ( ISTAT .EQ. 0 ) GO TO 3000
             ENDIF
@@ -676,13 +676,15 @@ C
 C
 C
 CODE FOR KRDLIN
-      FUNCTION KRDLIN ( IUNIT , CLINE , LENUSE )
+      FUNCTION KRDLIN ( IUNIT, LCMDIN, CLINE , LENUSE )
 C
 C -- READ A LINE OF INPUT
 C
 C  INPUT :-
 C
 C      IUNIT       UNIT NUMBER FOR READ
+C      LCMDIN      TRUE IF PROCESSING CRYSTALS COMMAND INPUT
+C                  FALSE EVERYTHING ELSE (e.g. script input, scattering factor files)
 C
 C  OUTPUT :-
 C
@@ -697,6 +699,7 @@ C       0      END OF FILE DETECTED
 C      +1      SUCCESS
 C      +2      SHELL COMMAND
 C
+      LOGICAL LCMDIN
       CHARACTER*(*) CLINE
       CHARACTER *1 CDOLAR
       CHARACTER *2 CTRAN1 , CTRAN2, CTRAN3
@@ -765,16 +768,18 @@ C If in script mode, set progress text.
         IF ( CLINE(I:I) .NE. ' ' ) LENUSE = I
 1100  CONTINUE
 C
-C----- SPOT LINES BEGINNING WITH $, AND CONVERT TO # FUNCTIONS
-      IF (CLINE(1:1) .EQ. CDOLAR) THEN
-        LENUSE = MIN0( LENUSE, 76)
-        DO 1200 I = LENUSE, 2, -1
-        J = I+4
-        CLINE(J:J) = CLINE(I:I)
-1200    CONTINUE
-        LENUSE = LENUSE + 4
-        CLINE(1:5) = CTRAN1(1:1)//CDOLAR//'   '
-        KRDLIN = 2
+      IF ( LCMDIN ) THEN
+C----- SPOT LINES BEGINNING WITH $, AND CONVERT TO # FUNCTIONS   
+         IF (CLINE(1:1) .EQ. CDOLAR) THEN
+            LENUSE = MIN0( LENUSE, 76)
+            DO 1200 I = LENUSE, 2, -1
+                J = I+4
+                CLINE(J:J) = CLINE(I:I)
+1200        CONTINUE
+            LENUSE = LENUSE + 4
+            CLINE(1:5) = CTRAN1(1:1)//CDOLAR//'   '
+            KRDLIN = 2
+         END IF
       END IF
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 cC This section is used to test the CSDCODE.
@@ -816,10 +821,13 @@ c        ICODE = 0
 c        CALL EMAP2D(ICODE)
 c      ENDIF
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+
+      IF ( LCMDIN ) THEN
 C -- CONVERT FIRST CHARACTER IF NECESSARY
-      IPOS = INDEX ( CTRAN1 , CLINE(1:1) )
-      IF (IPOS .LE. 0) IPOS = INDEX ( CTRAN3 , CLINE(1:1) )
-      IF ( IPOS .GT. 0 ) CLINE(1:1) = CTRAN2(IPOS:IPOS)
+		  IPOS = INDEX ( CTRAN1 , CLINE(1:1) )
+		  IF (IPOS .LE. 0) IPOS = INDEX ( CTRAN3 , CLINE(1:1) )
+		  IF ( IPOS .GT. 0 ) CLINE(1:1) = CTRAN2(IPOS:IPOS)
+	  END IF
 C
 C
       I =  KHKIBM (CLINE)
