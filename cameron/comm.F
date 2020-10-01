@@ -818,7 +818,7 @@ C      CALL ZATMUL(0,0,0)
       CALL ZGETKY(K)
       IF (K.EQ.0) GOTO 1150
 #else
-      K = KRDLIN ( IUNIT, CLINE, LENUSE )
+      K = KRDLIN ( IUNIT, .FALSE., CLINE, LENUSE )
 #endif
       CALL ZCLARE(0,IDEVCL(IBACK+1))
       ICURS = 1
