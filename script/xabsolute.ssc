@@ -1,12 +1,29 @@
 % SCRIPT XABSOLUTE
-%% SEE IF THE STRUCTURE NEEDS INVERTING
+%% Determine absolute structure.
+%% The first time this is called it checks to see if the structure needs
+%% inverting. If the users chooses to invert, Flack x is redetermined by
+%% the Parsons method. 
+%% Subsequent calld just determine the Flack parameter.
+%% October 2020.  Pascals method occasionally fails (somewhere in the f90)
+%% When this occurs, the script automatically tries the old DJW code
+%% If this fails, nothing is done.
+%% 
+%   COPY '#SCRIPT FLACK39'                                                         
+
 %%
 %   VARIABLE REAL FCENTRO
-%   VARIABLE INTEGER FRIEDELF
-%   VARIABLE LOGICAL DOFLACK          !Include Flack Parameter in LSQ
-%   VARIABLE LOGICAL FDONE            !Flack parameter determined from Parsons method
-%%
-%%  DOABS  Require Absolute config flag:  0=Its done, 1=it's to be done
+%   VARIABLE INTEGER FRIEDELF  _BADPASCAL
+%   _BADPASCAL global variable set by Pascal's code when it fails
+%   EVALUATE _BADPASCAL = 0
+%   VARIABLE LOGICAL DOFLACK          
+%% DOFLACK Include Flack Parameter in LSQ
+%   VARIABLE LOGICAL FDONE            
+%% FDONE Flack parameter determined from Parsons method
+%   VARIABLE LOGICAL PASCALOK         
+%% PASCALOK Set TRUE if Pascal's code works
+%   VARIABLE INTEGER DOABS      
+%% DOABS      1=Its done, 0=it's to be done
+%%  DOABS values were swapped 2020 so that default L39 indicates to be done
 %%
 %   EVALUATE FDONE = FALSE
 %   
@@ -19,13 +36,11 @@
 %       COPY '#LIST 13'                                                         
 %       COPY 'END'                                                              
 %   END IF                                                                    
-%   IF ( EXISTS ( 39 ) .NE. 1 ) THEN                                          
-%       COPY '#SCRIPT FLACK39'                                                         
-%   END IF                                                                    
-%% Look to see if this has been called before
-%  VARIABLE CHARACTER CABS
-%  VARIABLE INTEGER ISERIAL DOABS
+%%
+%% Look to see if this SCRIPT has been called before
 %  EVALUATE DOABS =  0
+%  VARIABLE CHARACTER CABS
+%  VARIABLE INTEGER ISERIAL 
 %  COPY '#GENERALEDIT 39'
 %  COPY 'LOCATE RECORDTYPE = 101'
 %  COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
@@ -37,13 +52,16 @@
 %    IF CABS .EQ. 'INFO' THEN
 %       IF ISERIAL .EQ. 1 THEN
 %        COPY 'TRANSFER FROM OFFSET=2 TO DOABS'
-%        IF  DOABS  .EQ. 0 THEN
-%          EVALUATE FDONE = TRUE         !Flack parameter determined from Parsons method      
+
+%        IF  DOABS  .EQ. 1 THEN
+
+Flack parameter has previously been determined by Parsons method 
+     
+%          EVALUATE FDONE = TRUE         
+%        ELSE
+%          EVALUATE FDONE = FALSE
 %        END IF
 %        EVALUATE LOOPCOUNTER = LOOPEND
-%% We are about to determine the Parsons parameter, so set DOABS (offset 2) to 0
-%        EVALUATE DOABS = 0
-%        COPY 'TRANSFER TO OFFSET=2 FROM DOABS'
 %       END IF
 %    END IF
 %    COPY 'NEXT'
@@ -53,7 +71,8 @@
 %%
 %%
 %%
-%   EVALUATE FRIEDELF = - 1                                                    
+%   EVALUATE FRIEDELF = - 1         
+%% FRIEDELF - LIST 13 Friedel Flag                                          
 %   COPY '#GENERALEDIT 2'                                                       
 %   COPY 'LOCATE RECORDTYPE=101'                                                
 %   COPY 'TRANSFER FROM OFFSET=0 TO FCENTRO'                                    
@@ -78,44 +97,79 @@
 {I Absolute structure not determined.
 
 %   FINISH
-%  ELSE
+% ELSE
 
 {I Friedel Pairs are available
 
-%% copy '#set monitor fast'
+%       copy '#set monitor fast'
+%       EVALUATE DOFLACK = TRUE
+%       EVALUATE PASCALOK = FALSE
 %       COPY '#SCRIPT TONSWORK'
-%       COPY '#SCRIPT FLACK39'
+%%       COPY '#SCRIPT FLACK39'
 %       COPY '#TON TYPE=PASCAL PLOT=NO PUNCH=NO'
 %       COPY 'END'
-%  END IF
+%       IF _BADPASCAL .LE. 0 THEN
+%          EVALUATE PASCALOK = TRUE
+%       ELSE
+
+
+{E Pascal's method failed
+{W Trying alternative FLACK determination
+
+%        COPY '#TON TYPE=DODC PLOT=NO PUNCH=NO'
+%        COPY 'END'
+%       END IF
+% END IF
 %%
-%%  Get the Flack parameter and esd to see if structure needs inverting.
-%%  If the value lies between 0.25 and 0.75 suggest refinement of ENANTIO
 %  VARIABLE CHARACTER CFLACK
 %  VARIABLE REAL SERIAL DO DSIG
+%%  Get the Flack parameter and esd to see if structure needs inverting.
+%%  If the value lies between 0.25 and 0.75 suggest refinement of ENANTIO%%
 %  COPY '#GENERALEDIT 39'
 %  COPY 'LOCATE RECORDTYPE = 102'
 %  COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
 %  COPY 'TOP'
 %  LOOP
-%    ON EDITERROR TERMINATE
-%    COPY 'TRANSFER FROM OFFSET=0 TO CFLACK'
-%    COPY 'TRANSFER FROM OFFSET=1 TO SERIAL'
-%    IF CFLACK .EQ. 'FLAC' THEN
-%       IF SERIAL .EQ. 0. THEN
-%        COPY 'TRANSFER FROM OFFSET=6 TO DO'
-%        COPY 'TRANSFER FROM OFFSET=7 TO DSIG'
-%        IF  DSIG  .GT. 0.00001 THEN
-%          EVALUATE FDONE = TRUE
+%        ON EDITERROR TERMINATE
+%        COPY 'TRANSFER FROM OFFSET=0 TO CFLACK'
+%        COPY 'TRANSFER FROM OFFSET=1 TO SERIAL'
+%        IF CFLACK .EQ. 'FLAC' THEN
+%         IF SERIAL .EQ. 0. THEN
+%          COPY 'TRANSFER FROM OFFSET=6 TO DO'
+%          COPY 'TRANSFER FROM OFFSET=7 TO DSIG'
+%          IF  DSIG  .GT. 0.00001 THEN
+%           EVALUATE FDONE = TRUE
+%          ELSE
+%           EVALUATE FDONE = FALSE
+%           EVALUATE DOABS = 0
+%          END IF
+%          EVALUATE LOOPCOUNTER = LOOPEND
+%         END IF
 %        END IF
-%        EVALUATE LOOPCOUNTER = LOOPEND
+%        COPY 'NEXT'
+%  END LOOP
+%  COPY 'LOCATE RECORDTYPE = 101'
+%  COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%  COPY 'TOP'
+%  LOOP
+%    ON EDITERROR TERMINATE
+%    COPY 'TRANSFER FROM OFFSET=0 TO CABS'
+%    COPY 'TRANSFER FROM OFFSET=1 TO ISERIAL'
+%    IF CABS .EQ. 'INFO' THEN
+%       IF ISERIAL .EQ. 1 THEN
+%        IF FDONE .EQ. TRUE THEN
+%         EVALUATE DOABS = 1
+%         COPY 'TRANSFER TO OFFSET=2 FROM DOABS'
+%         EVALUATE LOOPCOUNTER = LOOPEND
+%        END IF
 %       END IF
 %    END IF
 %    COPY 'NEXT'
 %  END LOOP
+%  COPY 'WRITE OVERWRITE = OVERWRITE'
 %  COPY 'END'
 %%
-%%  copy '#set monitor on'
+%  copy '#set monitor on'
 %  IF FDONE .EQ. TRUE THEN
 %   CLEAR
 %   INSERT  '{S The current value of the Flack parameter is '
@@ -135,11 +189,16 @@
 %     EVALUATE BUTTXX = 'No' 
 %     EVALUATE BUTINFO = 'Info'                   
 %     COPY '#SCRIPT XHELPQUEST'                                           
-%     IF ANSWER .EQ. TRUE THEN                                          
+%     IF ANSWER .EQ. TRUE THEN            
+{W inverting structure                              
 %       COPY '#SCRIPT XINVERT'
 %       COPY '#SCRIPT TONSWORK'
-%       COPY '#SCRIPT FLACK39'
-%       COPY '#TON TYPE=PASCAL PLOT=NO PUNCH=NO'
+%%       COPY '#SCRIPT FLACK39'
+%       IF PASCALOK THEN
+%        COPY '#TON TYPE=PASCAL PLOT=NO PUNCH=NO'
+%       ELSE
+%        COPY '#TON TYPE=DODC PLOT=NO PUNCH=NO'
+%       END IF
 %       COPY 'END'
 %       VARIABLE CHARACTER CFLACK
 %       VARIABLE REAL SERIAL DO DSIG
@@ -190,6 +249,10 @@
 
 %      EVALUATE DOFLACK =  TRUE
 %    END IF
+%  ELSE
+
+{I  The absolute structure could not be determined
+
 %  END IF
 %%  COPY '#PAUSE 4'
 % END SCRIPT
