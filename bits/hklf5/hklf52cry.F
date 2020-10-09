@@ -3,6 +3,8 @@ CODE FOR HKLF52CRY
 C----- BASED UPON SIMON PARSONS ctwin.f90
 C      IO BASED UPON RICHARD COOPERS cif2cry.fpp
 c      Extraction of twin matrix by Bruce FOxman, 2017
+c      Updated to include input of inversion twinning
+c      by Bruce Foxman, 2020
 c
 c      removal of clusters of reflections where more than one
 c      reflections have the same element ID, e.g. -2, -2, 1
@@ -336,7 +338,10 @@ C in the HKLF5 file to ensure that the generated indices coincide with
 C the input minor ones. 
 C The determinant of the twin law should be Unity. If it is negative or
 C substantially different from unity, a warning that the input data has
-C probably been merged is passed to the user.
+C probably been merged is passed to the user.  If the user has included
+C inversion twinning in the twin laws, then this will be flagged, the user
+C informed, but no action will be taken: the file will be processed 
+C with the 'regular' and te inversion twin laws.
 c
       REAL HKLP(100000,3),HKLT(100000,3,7),
      1HT(3,3,7),HP(3,3,7),HTINV(3,3,7),R(3,3,7),
@@ -449,7 +454,8 @@ C
   162 R(I,J,JJ)=B(I,J)
       CALL DTRM(B,3,D1,INDX)
       WRITE(13,502) JJ+1,((R(I,J,JJ),J=1,3),I=1,3)
-      IF(D1.LT.0.95.OR.D1.GT.1.05) WRITE(13,505)
+C     (2020 edit) Test determinant only for 5% dev from +/- 1.0
+      IF(abs(D1).LT.0.95.OR.abs(D1).GT.1.05) WRITE(13,505)
       if(d1.lt.0) then
         write(13,503) d1
         write(13,5051)
@@ -589,7 +595,8 @@ C
   262 R(I,J,JJ)=B(I,J)
       CALL DTRM(B,3,D1,INDX)
       WRITE(13,502) JJ+1,((R(I,J,JJ),J=1,3),I=1,3)
-      IF(D1.LT.0.95.OR.D1.GT.1.05) THEN
+C     (2020 edit) Test determinant only for 5% dev from +/- 1.0
+      IF(abs(D1).LT.0.95.OR.abs(D1).GT.1.05) THEN
             WRITE(13,505)
             IOUT= -1                !INDICATE FAILURE
       ENDIF
@@ -626,8 +633,9 @@ C     AND CLEAR THE ACCUMULATORS
      1 'Determinant is quite far from 1.0.',
      2 ' Inspect TLAT_OUT.LIS for errors')
 5051  format(/
-     1 'The determinant is negative. Reprocess data without averaging'
-     2)
+     1 'The determinant is negative. If inversion twin laws have been',
+     2/,'included, this is expected and no user action is required.',/
+     3 /'Otherwise, please reprocess data without averaging')
   506 FORMAT((/' NO. OF SETS FOR COMPONENT ',I4, ' = ',I7))
   507 FORMAT((/' No. unmatched for component ',I4, ' = ', I5))
 
