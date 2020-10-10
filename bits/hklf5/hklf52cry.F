@@ -37,9 +37,9 @@ C Open a scratch file to write a new HKLF5 without repeated elements
       WRITE(11,"('READ NCOEFF=6 TYPE=FIXED F''S=FSQ', 
      1 ' UNIT=DATAFILE CHECK=NO L30=YES ARCH=YES')")
       WRITE(11,"('FORMAT (3F4.0,2F16.4,F9.0)')")
-      WRITE(11,"('STORE NCOEFF=11')")
-      WRITE(11,"('OUTPUT INDICES /FO/ SQRT /FC/ PHASE BATCH RATIO ',
-     1 'SIGMA CORRECT /FOT/ ELEMENTS')")
+      WRITE(11,"('STORE NCOEFF=12')")
+      WRITE(11,"('OUTPUT INDICE /FO/ SQRT /FC/ PHAS BATCH RATIO ',
+     1 'SIGMA CORRECT JCODE /FOT/ ELEM')")
       WRITE(11,"('INPUT H K L /FOT/ SIGMA(/FO/) ELEMENTS')")
       WRITE(11,"('END')")
 C
