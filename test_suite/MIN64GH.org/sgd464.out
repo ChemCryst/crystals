@@ -7624,8 +7624,8 @@ LS-scale=  0.440   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 Inversion method: Automatic
-Block No  1.  Single precision relative error:  4.40E-05
- (sp inverse) 1-norm:  1.95E+01 cond. number:  3.69E+02 rel. error:  4.40E-05
+Block No  1.  Single precision relative error:  4.41E-05
+ (sp inverse) 1-norm:  1.96E+01 cond. number:  3.70E+02 rel. error:  4.41E-05
 [13]  LARGE     2           2             0.0       0.3E+00    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -14074,7 +14074,7 @@ Mean C-C su =   0.0365
     8.  -7.   0.     3.24     1.62
     2.  -5.   0.     3.35     5.81
     3.  -4.   0.    -0.76     0.66
-   10.  -3.   0.     3.79     5.12
+   10.  -3.   0.     3.79     5.13
    13.  -3.   0.    -3.24     0.38
     9.  -2.   0.     0.97     1.90
    12.  -2.   0.     2.38     3.18
@@ -14428,7 +14428,7 @@ Mean C-C su =   0.0094
  Structure factor least squares calculation    3  ends  2
 [29] SumFo/SumFc=  0.43    SumFoFc/SumFc^2=  0.44    SumwFoFc/SumwFc^2=  0.44
 LS-scale=  0.441   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.204    100*(<Fo>-<Fc>)/<Fo> =    -2.66
+<Fo>-<Fc> = -0.205    100*(<Fo>-<Fc>)/<Fo> =    -2.66
 #DORESTRAIN
 #INVERT  DEFA
 
