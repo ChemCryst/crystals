@@ -3326,7 +3326,7 @@ Mean C-C su =   0.0131
   -1   1   6      39.09     16077.7      3226.8       328.7
   -1   4   3      39.09     27203.2      6960.6       517.8
    5   1   0      39.07      4400.8       544.0        98.7
-  -2   1   2      38.92      5904.6      1166.6       121.7
+  -2   1   2      38.92      5904.6      1166.5       121.7
 
  Each set of indices above is transformed by the
  printed rotation matrix. How far the transformed indices are
@@ -19115,7 +19115,7 @@ The slope and correlation coefficient should be small
           0.00                                                                                                . 
                         5        -1.65         0.4       0.194E+02       0.325E+01    90.79  102.76           .*     
           0.79                                                                                                . 
-                       23         1.43         2.1       0.248E+02       0.325E+01    58.92   73.32           .*     
+                       23         1.43         2.1       0.248E+02       0.326E+01    58.92   73.32           .*     
           3.16                                                                                                . 
                        45         3.86         5.3       0.304E+02       0.287E+01    36.06   51.83           .*     
           7.11                                                                                                . 
