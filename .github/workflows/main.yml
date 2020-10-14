@@ -63,16 +63,16 @@ jobs:
       uses: actions/checkout@v1
 #
 # WIN only
-    - name: Setup MSYS2 environment
-      uses: numworks/setup-msys2@v1
-      if: matrix.os == 'windows-latest'
-      with:
-        msystem: MINGW64
+#    - name: Setup MSYS2 environment
+#      uses: numworks/setup-msys2@v1
+#      if: matrix.os == 'windows-latest'
+#      with:
+#        msystem: MINGW64
 
 # WIN ONLY
     - name: Install MinGW compiler and tools
       if: matrix.os == 'windows-latest'
-      run: msys2do pacman --noconfirm -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-openblas mingw-w64-x86_64-perl msys2-w32api-runtime mingw-w64-x86_64-curl
+      run: c:\msys64\usr\bin\pacman --noconfirm -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-openblas mingw-w64-x86_64-perl msys2-w32api-runtime mingw-w64-x86_64-curl
 
 # LINUX ONLY
     - name: Install Ubuntu compiler and tools
@@ -107,12 +107,13 @@ jobs:
 
 # Build WIN64
 #
+#        set PATH=D:\a\_temp\msys\msys64\mingw64\bin;%PATH%
     - name: Build CRYSTALS win64
       working-directory: ci
       if: matrix.os == 'windows-latest'
       shell: cmd
       run: |
-        set PATH=D:\a\_temp\msys\msys64\mingw64\bin;%PATH%
+        set PATH=C:\msys64\mingw64\bin;%PATH%
         cmake .. -G"MinGW Makefiles" -DuseGUI=${{ matrix.guiflag }} -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }} || echo Try again
         cmake .. -G"MinGW Makefiles" -DuseGUI=${{ matrix.guiflag }} -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }}
         mingw32-make -j2
@@ -136,10 +137,11 @@ jobs:
 # Setup environment
 # Compcode sets folder with reference test outputs
 # Go
+#        set PATH=D:\a\_temp\msys\msys64\mingw64\bin;..\wx\lib\gcc810_x64_dll;%path%
       run: |
         set CRYSDIR=${{ matrix.crysdir }}
         set COMPCODE=${{ matrix.testprefix }}${{ matrix.testsuffix }}
-        set PATH=D:\a\_temp\msys\msys64\mingw64\bin;..\wx\lib\gcc810_x64_dll;%path%
+        set PATH=C:\msys64\mingw64\bin;..\wx\lib\gcc810_x64_dll;%path%
         echo PATH is %PATH%
         echo CRYSDIR is %CRYSDIR%
         ren ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org safe.dir
@@ -196,7 +198,7 @@ jobs:
       if: failure() && matrix.os == 'windows-latest'
       shell: cmd
       run: |
-        echo "::set-env name=testfail::true"
+        echo "testfail=true" >> $GITHUB_ENV
         del /q ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org
         copy *.out ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org
         del /q *.*
@@ -205,7 +207,7 @@ jobs:
       working-directory: test_suite
       if: failure() && matrix.os == 'ubuntu-latest'
       run: |
-        echo "::set-env name=testfail::true"
+        echo "testfail=true" >> $GITHUB_ENV
         rm -f ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org/*
         cp *.out ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org
         rm -f * || echo
