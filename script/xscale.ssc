@@ -1,6 +1,9 @@
 %SCRIPT XSCALE
 %%  compute and set overall scale
 %  VARIABLE INTEGER N5
+%  VARIABLE INTEGER FOLD  FTYPE
+%% FOLD moved here to fix an unexplained occasional error where
+%% FOLD is reported as unknown.
 %%
 %  IF EXISTS 5 .LE. 0 THEN
 {R   WARNING - You have no atoms to refine
@@ -53,7 +56,6 @@
 %    COPY 'SCALE'
 %    COPY 'END'
 %% Set weighting type depending on LIST 23,
-%  VARIABLE INTEGER FOLD  FTYPE
 % SHOW FOLD
 %% check if FOLD has been set earlier
 %  IF FOLD .EQ. 0 THEN

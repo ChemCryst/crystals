@@ -8398,6 +8398,8 @@ C                                          ----- UNPAIRED REFLECTIONS
 C      CHECK FOR CENTRIC REFLECTIONS
         ITEMP=KTONCENT(I1,J1,K1,NCENTRIC)
         IF (IPUNCH.EQ.1) THEN
+C Centric reflections are coded "-1 -" in the TABLE file.
+C Unpaired reflections are coded "1 -" or "2 -" in the table file        
           WRITE (NCPU,'(3i4,I2," -", 3f10.2)') I1,J1,K1,ITEMP,FOK1,SIG1,
      1     FCK1
         END IF
