@@ -13,7 +13,7 @@
 %%
 %   VARIABLE REAL FCENTRO
 %   VARIABLE INTEGER FRIEDELF  _BADPASCAL
-%   _BADPASCAL global variable set by Pascal's code when it fails
+%%   _BADPASCAL global variable set by Pascal's code when it fails
 %   EVALUATE _BADPASCAL = 0
 %   VARIABLE LOGICAL DOFLACK          
 %% DOFLACK Include Flack Parameter in LSQ
