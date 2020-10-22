@@ -7624,8 +7624,8 @@ LS-scale=  0.440   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 Inversion method: Automatic
-Block No  1.  Single precision relative error:  4.40E-05
- (sp inverse) 1-norm:  1.95E+01 cond. number:  3.69E+02 rel. error:  4.40E-05
+Block No  1.  Single precision relative error:  4.41E-05
+ (sp inverse) 1-norm:  1.96E+01 cond. number:  3.70E+02 rel. error:  4.41E-05
 [13]  LARGE     2           2             0.0       0.3E+00    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -20331,7 +20331,7 @@ T tensor:
 [79]          1  1  0  0  0    4.7E-02     4.7E-02     5.9E-05    0.9    U33 - Utls33 == 0
 [79]          1  1  0  0  0    9.1E-04     1.0E-03    -1.3E-04    0.9    U12 - Utls12 == 0
 [79]          1  1  0  0  0   -4.5E-03    -4.1E-03    -3.2E-04    0.9    U23 - Utls23 == 0
-[79]          1  1  0  0  0   -1.1E-03    -1.1E-03     1.1E-06    0.9    U13 - Utls13 == 0
+[79]          1  1  0  0  0   -1.1E-03    -1.1E-03     1.2E-06    0.9    U13 - Utls13 == 0
     Atom C(26)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
 [79]          1  1  0  0  0    3.7E-02     3.7E-02     2.8E-05    0.9    U11 - Utls11 == 0

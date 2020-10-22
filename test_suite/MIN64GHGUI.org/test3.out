@@ -5396,33 +5396,33 @@ AZIMUTH  =    -3.24     AZIMUTH /100 =  -0.0324
   latent roots             L         M         N         w.r.t. A*, B' and C
 
     1.65037            0.80986   0.52987  -0.25173
-    0.00000            0.03240   0.38806   0.92106
-    0.00000            0.58573  -0.75409   0.29711
+    0.00000            0.03237   0.38810   0.92105
+    0.00000            0.58573  -0.75407   0.29716
 
 
   Transformation from crystal fractions w.r.t. centroid to best plane coordinates in angstrom and fractions
 
                   3.8426    5.0232   -4.9918              0.45367   0.52987  -0.25173
-                 -1.3456    3.6788   18.2647             -0.15887   0.38806   0.92106
-                  7.4273   -7.1488    5.8916              0.87689  -0.75409   0.29711
+                 -1.3460    3.6792   18.2644             -0.15892   0.38810   0.92105
+                  7.4272   -7.1486    5.8926              0.87688  -0.75407   0.29716
 
 
 
   Transformation to crystal fractions w.r.t. centroid from best plane co-ordinates in angstrom and fractions
 
-                  0.1092    0.0044    0.0790              0.92462   0.03699   0.66873
-                  0.1030    0.0428   -0.0455              0.97601   0.40591  -0.43141
-                 -0.0127    0.0464    0.0150             -0.25173   0.92106   0.29711
+                  0.1092    0.0044    0.0790              0.92462   0.03695   0.66873
+                  0.1030    0.0428   -0.0455              0.97601   0.40593  -0.43139
+                 -0.0127    0.0464    0.0150             -0.25173   0.92105   0.29716
 
 
 
   Equation of the plane :
 
-   7.42729 * X +  -7.14876 * Y +   5.89161 * Z  =    -0.536                    X, Y and Z are in crystal fractions
+   7.42721 * X +  -7.14856 * Y +   5.89259 * Z  =    -0.536                    X, Y and Z are in crystal fractions
 
 plane-vector (in polar coord.):Input ONLY in units of 100 DEGREES !!!
 
-DECLINAT =    72.72     DECLINAT/100 =   0.7272
+DECLINAT =    72.71     DECLINAT/100 =   0.7271
 AZIMUTH  =   -52.16     AZIMUTH /100 =  -0.5216
  Deviations from the plane, in angstrom, are given by  Zp  
   Co-ordinates of the defining atoms projected onto the best  plane
@@ -6368,7 +6368,7 @@ The slope and correlation coefficient should be small
 
 
 [08]    1            16222.5              1500      10.55
-[08]    2            20097.4              2200       8.90
+[08]    2            20097.3              2200       8.90
 [08]    3             4538.9              1400       3.21
 
 
