@@ -3026,6 +3026,7 @@ contains
       integer ierror, iftype
       integer istat, j, itemp, iuln6, j1, k, k1
       integer n
+	  integer jsig
       integer ncentric
       real yslope, zh, tony, tonsy, vard, xflack, qflack
       real scale, sig, sig1, sig2, sigest, sigfsq, sigmad, sigmaq
@@ -3587,7 +3588,13 @@ contains
       end if
       ! add sign, decimal point
       n = n+2
-      sig = minval(sv1(2:))
+!      sig = minval(sv1(2:))
+      sig = 0
+      do jsig = 1,7  ! Find smallest non-zero su.
+         if ( sv1(jsig) < sig .or. sig .eq. 0.0 ) then 
+            sig = sv1(jsig)
+         end if
+      end do
       if (sig < 1.0d0) then
         ! number of zeros before eny digit
         if (sig > tiny(1.0)) then
@@ -3682,7 +3689,13 @@ contains
       end if
       ! add sign, decimal point
       n = n+2
-      sig = minval(sv2(2:))
+!      sig = minval(sv2(2:))
+      sig = 0.0
+      do jsig = 1,7  ! Find smallest non-zero su.
+         if ( sv2(jsig) < sig .or. sig .eq. 0.0 ) then 
+            sig = sv2(jsig)
+         end if
+      end do
       if (sig < 1.0d0) then
         ! number of zeros before eny digit
         i = 0
