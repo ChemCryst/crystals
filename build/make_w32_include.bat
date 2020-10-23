@@ -86,7 +86,7 @@ goto ALLDVF
 
 @set F77=ifort
 @set FDEF=%FDEF%
-@set FOPTS=/fpp /I..\crystals /MD /O2 /QaxSSE2 /fp:source /Zi /Qdiag-disable:8290 /Qdiag-disable:8291  /nolink %COPENMP% 
+@set FOPTS=/fpp /I..\crystals /MD /O2 /QaxSSE2 /fp:source /Zi /heap-arrays:8 /Qdiag-disable:8290 /Qdiag-disable:8291  /nolink %COPENMP% 
 @set FNOOPT=/fpp /I..\crystals /MD -Od /fp:source /Qdiag-disable:8290 /Qdiag-disable:8291 /nolink
 @set FWIN=/winapp
 @set FOUT=/object:obj\
