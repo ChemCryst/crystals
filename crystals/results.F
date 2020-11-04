@@ -5465,14 +5465,17 @@ C
      4ann_a3'/'_atom_type_scat_Cromer_Mann_b3'/'_atom_type_scat_Cromer_M
      5ann_a4'/'_atom_type_scat_Cromer_Mann_b4'/'_atom_type_scat_Cromer_M
      6ann_c'/'_atom_type_scat_source  ')
-           DO M3=L3,L3+(N3-1)*MD3,MD3
+           SFLOOP: DO M3=L3,L3+(N3-1)*MD3,MD3
+             DO MR3=L3,M3-MD3,MD3   ! Ignore repeats
+               IF ( ISTORE(M3) .EQ. ISTORE(MR3) ) CYCLE SFLOOP
+             END DO
              WRITE (CTEMP,'(A4)') ISTORE(M3)
              CBUF=CTEMP(2:4)
              CALL XCCLWC (CBUF(1:3),CTEMP(2:4))
              WRITE (NCFPU1,1300) CTEMP(1:4),(STORE(M),M=M3+1,M3+11),
      1       TRIM(CREFER)
 1300         FORMAT (1X,A4,1X,8F9.4,/,3F9.4,1X,A)
-           END DO
+           END DO SFLOOP
         END IF
       END IF
 C 
