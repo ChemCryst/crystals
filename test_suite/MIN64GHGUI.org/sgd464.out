@@ -14428,7 +14428,7 @@ Mean C-C su =   0.0094
  Structure factor least squares calculation    3  ends  2
 [29] SumFo/SumFc=  0.43    SumFoFc/SumFc^2=  0.44    SumwFoFc/SumwFc^2=  0.44
 LS-scale=  0.441   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.205    100*(<Fo>-<Fc>)/<Fo> =    -2.66
+<Fo>-<Fc> = -0.204    100*(<Fo>-<Fc>)/<Fo> =    -2.66
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -20331,7 +20331,7 @@ T tensor:
 [79]          1  1  0  0  0    4.7E-02     4.7E-02     5.9E-05    0.9    U33 - Utls33 == 0
 [79]          1  1  0  0  0    9.1E-04     1.0E-03    -1.3E-04    0.9    U12 - Utls12 == 0
 [79]          1  1  0  0  0   -4.5E-03    -4.1E-03    -3.2E-04    0.9    U23 - Utls23 == 0
-[79]          1  1  0  0  0   -1.1E-03    -1.1E-03     1.1E-06    0.9    U13 - Utls13 == 0
+[79]          1  1  0  0  0   -1.1E-03    -1.1E-03     1.2E-06    0.9    U13 - Utls13 == 0
     Atom C(26)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
 [79]          1  1  0  0  0    3.7E-02     3.7E-02     2.8E-05    0.9    U11 - Utls11 == 0
