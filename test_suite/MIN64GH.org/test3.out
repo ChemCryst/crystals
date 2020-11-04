@@ -5403,7 +5403,7 @@ AZIMUTH  =    -3.24     AZIMUTH /100 =  -0.0324
   Transformation from crystal fractions w.r.t. centroid to best plane coordinates in angstrom and fractions
 
 [85]                   3.842      5.023     -4.991                0.453     0.529    -0.251
-[85]                  -1.380      3.712     18.236               -0.162     0.391     0.919
+[85]                  -1.380      3.712     18.236               -0.163     0.391     0.919
 [85]                   7.420     -7.131      5.977                0.876    -0.752     0.301
 
 
@@ -5418,7 +5418,7 @@ AZIMUTH  =    -3.24     AZIMUTH /100 =  -0.0324
 
   Equation of the plane :
 
-   7.42088 * X +  -7.13138 * Y +   5.97743 * Z  =    -0.527                    X, Y and Z are in crystal fractions
+   7.42085 * X +  -7.13132 * Y +   5.97774 * Z  =    -0.527                    X, Y and Z are in crystal fractions
 
 plane-vector (in polar coord.):Input ONLY in units of 100 DEGREES !!!
 

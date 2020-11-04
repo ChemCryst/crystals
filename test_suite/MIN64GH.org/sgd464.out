@@ -7625,7 +7625,7 @@ LS-scale=  0.440   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  4.40E-05
-[80]  (sp inverse) 1-norm:  1.96E+01 cond. number:  3.7E+02 rel. error:  4.40E-05
+[80]  (sp inverse) 1-norm:  1.95E+01 cond. number:  3.6E+02 rel. error:  4.40E-05
 [13]  LARGE     2           2             0.0       0.3E+00    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -20354,7 +20354,7 @@ T tensor:
 [79]          1  1  0  0  0    5.E-02     5.E-02    -5.E-05    1.    U22 - Utls22 == 0
 [79]          1  1  0  0  0    3.E-02     3.E-02    -9.E-05    0.    U33 - Utls33 == 0
 [79]          1  1  0  0  0   -9.E-03    -8.E-03    -2.E-04    0.    U12 - Utls12 == 0
-[79]          1  1  0  0  0    5.E-03     5.E-03     3.E-05    0.    U23 - Utls23 == 0
+[79]          1  1  0  0  0    5.E-03     5.E-03     2.E-05    0.    U23 - Utls23 == 0
 [79]          1  1  0  0  0   -8.E-03    -8.E-03    -1.E-05    1.    U13 - Utls13 == 0
     Atom C(29)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
