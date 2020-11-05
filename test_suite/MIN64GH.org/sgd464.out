@@ -7625,7 +7625,7 @@ LS-scale=  0.440   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  4.40E-05
-[80]  (sp inverse) 1-norm:  2.0E+01 cond. number:  3.7E+02 rel. error:  4.40E-05
+[80]  (sp inverse) 1-norm:  1.9E+01 cond. number:  3.7E+02 rel. error:  4.40E-05
 [13]  LARGE     2           2             0.0       0.3E+00    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
