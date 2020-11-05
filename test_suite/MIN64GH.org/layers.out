@@ -411,7 +411,7 @@ LS-scale=  1.456   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.61E-06
-[80]  (sp inverse) 1-norm:  3.86E+00 cond. number:  1.3E+01 rel. error:  1.61E-06
+[80]  (sp inverse) 1-norm:  3.9E+00 cond. number:  1.4E+01 rel. error:  1.61E-06
  S/ESD     1           1            -0.072      0.0E+00    0.196E-01         -3.69                          SCALE   
 [13]  LARGE    35          35             0.0       0.0E+00    0.8 E-02          8.3                           LAYER     1
 [13]  LARGE    35          35             0.0       0.0E+00    0.8 E-02          8.3                           LAYER     7
@@ -652,7 +652,7 @@ LS-scale=  1.384   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.50E-06
-[80]  (sp inverse) 1-norm:  3.81E+00 cond. number:  1.2E+01 rel. error:  1.50E-06
+[80]  (sp inverse) 1-norm:  3.8E+00 cond. number:  1.3E+01 rel. error:  1.50E-06
  S/ESD     1           1             0.023     -0.3E+00    0.173E-01          1.33                          SCALE   
 [13]  LARGE    35          35             0.0       0.1E+01    0.8 E-02          8.8                           LAYER     1
 [13]  LARGE    35          35             0.0       0.1E+01    0.8 E-02          8.8                           LAYER     7
@@ -901,7 +901,7 @@ LS-scale=  1.407   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.51E-06
-[80]  (sp inverse) 1-norm:  3.82E+00 cond. number:  1.2E+01 rel. error:  1.51E-06
+[80]  (sp inverse) 1-norm:  3.8E+00 cond. number:  1.3E+01 rel. error:  1.51E-06
 [13]  LARGE    35          35             0.0       0.1E+01    0.8 E-02          8.6                           LAYER     1
 [13]  LARGE    35          35             0.0       0.1E+01    0.8 E-02          8.6                           LAYER     7
  S/ESD    37          37            -0.056      0.1E+01    0.867E-02         -6.44                          LAYER     3
@@ -1160,7 +1160,7 @@ LS-scale=  1.422   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  7.36E-06
-[80]  (sp inverse) 1-norm:  5.33E+00 cond. number:  6.1E+01 rel. error:  7.36E-06
+[80]  (sp inverse) 1-norm:  5.3E+00 cond. number:  6.2E+01 rel. error:  7.36E-06
  S/ESD     1           1             0.087      0.0E+00    0.234E-01          3.70                          SCALE   
 [14]  S/ESD    21          21            0.017       0.0E+00    0.24 E-02          6.9         O      5 U[ISO]  
 [14]  S/ESD    25          25           -0.010       0.0E+00    0.37 E-02         -2.8         N      6 U[ISO]  
@@ -1405,7 +1405,7 @@ LS-scale=  1.508   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  7.75E-06
-[80]  (sp inverse) 1-norm:  5.37E+00 cond. number:  6.5E+01 rel. error:  7.75E-06
+[80]  (sp inverse) 1-norm:  5.4E+00 cond. number:  6.5E+01 rel. error:  7.75E-06
  S/ESD    46          46             0.054      0.9E+00    0.779E-02          6.92                          LAYER     1
  S/ESD    46          46             0.054      0.9E+00    0.779E-02          6.92                          LAYER     7
  S/ESD    48          48            -0.057      0.1E+01    0.838E-02         -6.75                          LAYER     3
@@ -1651,7 +1651,7 @@ LS-scale=  1.514   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  7.92E-06
-[80]  (sp inverse) 1-norm:  5.39E+00 cond. number:  6.6E+01 rel. error:  7.92E-06
+[80]  (sp inverse) 1-norm:  5.4E+00 cond. number:  6.6E+01 rel. error:  7.92E-06
  S/ESD    46          46             0.042      0.8E+00    0.765E-02          5.51                          LAYER     1
  S/ESD    46          46             0.042      0.8E+00    0.765E-02          5.51                          LAYER     7
  S/ESD    48          48            -0.052      0.9E+00    0.822E-02         -6.28                          LAYER     3
@@ -1897,7 +1897,7 @@ LS-scale=  1.508   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  8.10E-06
-[80]  (sp inverse) 1-norm:  5.42E+00 cond. number:  6.8E+01 rel. error:  8.10E-06
+[80]  (sp inverse) 1-norm:  5.4E+00 cond. number:  6.8E+01 rel. error:  8.10E-06
  S/ESD    46          46             0.031      0.7E+00    0.752E-02          4.06                          LAYER     1
  S/ESD    46          46             0.031      0.7E+00    0.752E-02          4.06                          LAYER     7
  S/ESD    48          48            -0.044      0.8E+00    0.806E-02         -5.41                          LAYER     3

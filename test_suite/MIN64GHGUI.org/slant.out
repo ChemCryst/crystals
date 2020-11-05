@@ -504,9 +504,9 @@ Bonds: Update required - List5 length change
 
   Transformation from crystal fractions w.r.t. centroid to best plane coordinates in angstrom and fractions
 
-[85]                  -8.660      5.000      0.000               -0.866     0.500     0.000
-[85]                   5.000      8.660      0.000                0.500     0.866     0.000
-[85]                   0.000      0.000    -11.000                0.000     0.000    -1.000
+[40]                    -8.66       5.00       0.00                  -0.86        0.50        0.00
+[40]                     5.00       8.66       0.00                   0.50        0.86        0.00
+[40]                     0.00       0.00     -11.00                   0.00        0.00       -1.00
 
 
 
@@ -518,9 +518,9 @@ Bonds: Update required - List5 length change
 
 
 
-  Equation of the plane :
+  Equation of the plane :  
 
-   0.00000 * X +   0.00000 * Y + -11.00000 * Z  =    -0.002                    X, Y and Z are in crystal fractions
+     0.000 * X +       0.000 * Y +     -11.000 * Z  =    -0.002                    X, Y and Z are in crystal fractions
 
 plane-vector (in polar coord.):Input ONLY in units of 100 DEGREES !!!
 

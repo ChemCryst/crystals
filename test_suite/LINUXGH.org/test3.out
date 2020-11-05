@@ -5173,9 +5173,9 @@ for Uprime see Acta Cryst (2000). B56, 747-749
 
   Transformation from crystal fractions w.r.t. centroid to best plane coordinates in angstrom and fractions
 
-[85]                  -6.815      8.529     -2.127               -0.804     0.899    -0.107
-[85]                   4.954      4.055      0.509                0.584     0.427     0.025
-[85]                   0.863     -0.815    -19.709                0.101    -0.086    -0.993
+[40]                    -6.81       8.53      -2.12                  -0.80        0.90       -0.10
+[40]                     4.95       4.05       0.51                   0.58        0.42        0.02
+[40]                     0.86      -0.81     -19.70                   0.10       -0.08       -0.99
 
 
 
@@ -5187,9 +5187,9 @@ for Uprime see Acta Cryst (2000). B56, 747-749
 
 
 
-  Equation of the plane :
+  Equation of the plane :  
 
-   0.86380 * X +  -0.81585 * Y + -19.70896 * Z  =    -1.948                    X, Y and Z are in crystal fractions
+     0.864 * X +      -0.816 * Y +     -19.709 * Z  =    -1.948                    X, Y and Z are in crystal fractions
 
 plane-vector (in polar coord.):Input ONLY in units of 100 DEGREES !!!
 
@@ -5250,9 +5250,9 @@ AZIMUTH  =   -51.27     AZIMUTH /100 =  -0.5127
 
   Transformation from crystal fractions w.r.t. centroid to best plane coordinates in angstrom and fractions
 
-[85]                   2.644     -6.375     14.674                0.312    -0.672     0.739
-[85]                   6.631      1.421      3.068                0.782     0.149     0.154
-[85]                  -4.557      6.870     12.980               -0.538     0.724     0.654
+[40]                     2.64      -6.37      14.67                   0.31       -0.67        0.74
+[40]                     6.63       1.42       3.06                   0.78        0.15        0.15
+[40]                    -4.55       6.87      12.98                  -0.53        0.72        0.65
 
 
 
@@ -5264,9 +5264,9 @@ AZIMUTH  =   -51.27     AZIMUTH /100 =  -0.5127
 
 
 
-  Equation of the plane :
+  Equation of the plane :  
 
-  -4.55700 * X +   6.87094 * Y +  12.98032 * Z  =     1.838                    X, Y and Z are in crystal fractions
+    -4.557 * X +       6.871 * Y +      12.980 * Z  =     1.838                    X, Y and Z are in crystal fractions
 
 plane-vector (in polar coord.):Input ONLY in units of 100 DEGREES !!!
 
@@ -5319,9 +5319,9 @@ AZIMUTH  =   -73.48     AZIMUTH /100 =  -0.7348
 
   Transformation from crystal fractions w.r.t. centroid to best plane coordinates in angstrom and fractions
 
-[85]                   3.202     -9.411      0.673                0.378    -0.992     0.033
-[85]                  -6.851      1.107      9.880               -0.808     0.116     0.498
-[85]                  -3.814      0.267    -17.180               -0.450     0.028    -0.866
+[40]                     3.20      -9.41       0.67                   0.37       -0.99        0.03
+[40]                    -6.85       1.10       9.88                  -0.80        0.11        0.49
+[40]                    -3.81       0.26     -17.18                  -0.45        0.02       -0.86
 
 
 
@@ -5333,9 +5333,9 @@ AZIMUTH  =   -73.48     AZIMUTH /100 =  -0.7348
 
 
 
-  Equation of the plane :
+  Equation of the plane :  
 
-  -3.81454 * X +   0.26776 * Y + -17.17998 * Z  =    -4.356                    X, Y and Z are in crystal fractions
+    -3.815 * X +       0.268 * Y +     -17.180 * Z  =    -4.356                    X, Y and Z are in crystal fractions
 
 plane-vector (in polar coord.):Input ONLY in units of 100 DEGREES !!!
 
@@ -5400,9 +5400,9 @@ AZIMUTH  =    -3.24     AZIMUTH /100 =  -0.0324
 
   Transformation from crystal fractions w.r.t. centroid to best plane coordinates in angstrom and fractions
 
-[85]                   3.842      5.023     -4.991                0.453     0.529    -0.251
-[85]                  -1.346      3.679     18.264               -0.158     0.388     0.921
-[85]                   7.427     -7.148      5.892                0.876    -0.754     0.297
+[40]                     3.84       5.02      -4.99                   0.45        0.53       -0.25
+[40]                    -1.34       3.67      18.26                  -0.15        0.38        0.92
+[40]                     7.42      -7.14       5.89                   0.87       -0.75        0.29
 
 
 
@@ -5414,9 +5414,9 @@ AZIMUTH  =    -3.24     AZIMUTH /100 =  -0.0324
 
 
 
-  Equation of the plane :
+  Equation of the plane :  
 
-   7.42721 * X +  -7.14856 * Y +   5.89259 * Z  =    -0.536                    X, Y and Z are in crystal fractions
+     7.427 * X +      -7.149 * Y +       5.893 * Z  =    -0.536                    X, Y and Z are in crystal fractions
 
 plane-vector (in polar coord.):Input ONLY in units of 100 DEGREES !!!
 
@@ -5461,9 +5461,9 @@ AZIMUTH  =   -52.16     AZIMUTH /100 =  -0.5216
 
   Transformation from crystal fractions w.r.t. centroid to best plane coordinates in angstrom and fractions
 
-[85]                  -6.734      8.630     -1.554               -0.795     0.910    -0.078
-[85]                   5.108      3.639     -4.085                0.603     0.383    -0.206
-[85]                  -0.537     -1.462    -19.342               -0.063    -0.154    -0.975
+[40]                    -6.73       8.63      -1.55                  -0.79        0.91       -0.07
+[40]                     5.10       3.64      -4.08                   0.60        0.38       -0.20
+[40]                    -0.53      -1.46     -19.34                  -0.06       -0.15       -0.97
 
 
 
@@ -5475,9 +5475,9 @@ AZIMUTH  =   -52.16     AZIMUTH /100 =  -0.5216
 
 
 
-  Equation of the plane :
+  Equation of the plane :  
 
-  -0.53751 * X +  -1.46255 * Y + -19.34223 * Z  =    -1.735                    X, Y and Z are in crystal fractions
+    -0.538 * X +      -1.463 * Y +     -19.342 * Z  =    -1.735                    X, Y and Z are in crystal fractions
 
 plane-vector (in polar coord.):Input ONLY in units of 100 DEGREES !!!
 
@@ -5534,9 +5534,9 @@ AZIMUTH  =    44.42     AZIMUTH /100 =   0.4442
 
   Transformation from crystal fractions w.r.t. centroid to best plane coordinates in angstrom and fractions
 
-[85]                  -6.734      8.622     -1.699               -0.795     0.909    -0.085
-[85]                   5.137      3.752     -2.379                0.606     0.395    -0.119
-[85]                  -0.039     -1.202    -19.613               -0.004    -0.126    -0.989
+[40]                    -6.73       8.62      -1.70                  -0.79        0.91       -0.08
+[40]                     5.13       3.75      -2.37                   0.60        0.39       -0.12
+[40]                    -0.04      -1.20     -19.61                  -0.00       -0.12       -0.98
 
 
 
@@ -5548,9 +5548,9 @@ AZIMUTH  =    44.42     AZIMUTH /100 =   0.4442
 
 
 
-  Equation of the plane :
+  Equation of the plane :  
 
-  -0.03950 * X +  -1.20240 * Y + -19.61324 * Z  =    -1.865                    X, Y and Z are in crystal fractions
+    -0.040 * X +      -1.202 * Y +     -19.613 * Z  =    -1.865                    X, Y and Z are in crystal fractions
 
 plane-vector (in polar coord.):Input ONLY in units of 100 DEGREES !!!
 
@@ -5850,7 +5850,7 @@ LS-scale= 12.394   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  4.44E-05
-[80]  (sp inverse) 1-norm:  7.96E+00 cond. number:  3.7E+02 rel. error:  4.44E-05
+[80]  (sp inverse) 1-norm:  8.0E+00 cond. number:  3.7E+02 rel. error:  4.44E-05
  S/ESD     1           1            -1.155      0.0E+00    0.628E+00         -1.84                          SCALE   
  LARGE     2           2           -0.1928      0.0E+00    0.702E-01         -2.75        SI     1 U[11]   
                                                                                                             Composite
@@ -7184,20 +7184,20 @@ LS-scale=  1.000   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.34E-06
-[80]  (sp inverse) 1-norm:  1.84E+00 cond. number:  1.1E+01 rel. error:  1.34E-06
+[80]  (sp inverse) 1-norm:  1.8E+00 cond. number:  1.1E+01 rel. error:  1.34E-06
  S/ESD     1           1             0.029      0.0E+00    0.189E-01          1.52                          SCALE   
 [13]  LARGE     2           2             0.0       0.0E+00    0.4 E-02          1.4                           DU[ISO] 
 Inversion method: Automatic
 Block No  2.  Single precision relative error:  1.72E-07
-[80]  (sp inverse) 1-norm:  1.19E+00 cond. number:  1.4E+00 rel. error:  1.72E-07
+[80]  (sp inverse) 1-norm:  1.2E+00 cond. number:  1.4E+00 rel. error:  1.72E-07
  Block   2
 Inversion method: Automatic
 Block No  3.  Single precision relative error:  1.68E-07
-[80]  (sp inverse) 1-norm:  1.17E+00 cond. number:  1.4E+00 rel. error:  1.68E-07
+[80]  (sp inverse) 1-norm:  1.2E+00 cond. number:  1.4E+00 rel. error:  1.68E-07
  Block   3
 Inversion method: Automatic
 Block No  4.  Single precision relative error:  1.47E-07
-[80]  (sp inverse) 1-norm:  1.11E+00 cond. number:  1.2E+00 rel. error:  1.47E-07
+[80]  (sp inverse) 1-norm:  1.1E+00 cond. number:  1.2E+00 rel. error:  1.47E-07
  Block   4
 [14]  S/ESD    11           1           -0.022       0.0E+00    0.36 E-02         -6.3         C      1 X       
 [14]  S/ESD    13           3            0.017       0.0E+00    0.40 E-02          4.2         C      1 Z       
@@ -7727,7 +7727,7 @@ LS-scale=  1.992   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  9.23E-05
-[80]  (sp inverse) 1-norm:  7.15E+00 cond. number:  7.7E+02 rel. error:  9.23E-05
+[80]  (sp inverse) 1-norm:  7.2E+00 cond. number:  7.7E+02 rel. error:  9.23E-05
 
                                                 for          37 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -7963,7 +7963,7 @@ LS-scale=  1.992   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  9.09E-05
-[80]  (sp inverse) 1-norm:  7.15E+00 cond. number:  7.6E+02 rel. error:  9.09E-05
+[80]  (sp inverse) 1-norm:  7.2E+00 cond. number:  7.6E+02 rel. error:  9.09E-05
 
                                                 for          37 parameters
 [64]                                  The rms (shift/su)  =           0.
