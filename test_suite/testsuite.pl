@@ -420,8 +420,16 @@ sub obscureMachinePrecision() {
               $speight = sprintf "%.2f", $8;
          print $fho "[79] $1$sptwo$3$spfour$5$spsix$7$speight$9\n";
 
-    } elsif($line =~ m/^(\s+1\s+1\s+0\s+0\s+0\s+-?\d+\.\d)\d(E.\d\d\s+-?\d+\.\d)\d(E.\d\d\s+-?\d+\.\d)\d(.*)$/ ) {
-              print $fho "[78] $1$2$3$4\n";
+# There is an alternative to [79] with no final leverage number ($8).
+    } elsif($line =~ m/^(\s+1\s+1\s+0\s+0\s+0\s+)(-?\d+\.\d+)(E.\d+\s+)(-?\d+\.\d+)(E.\d+\s+)(-?\d+\.\d+)(E.\d+\s+)(.*)$/ ) {
+        #               1                        2           3         4           5         6           7         8         
+              $sptwo = sprintf "%.0f", $2;
+              $spfour = sprintf "%.0f", $4;
+              $spsix = sprintf "%.0f", $6;
+         print $fho "[78] $1$sptwo$3$spfour$5$spsix$7$8\n";
+
+#    } elsif($line =~ m/^(\s+1\s+1\s+0\s+0\s+0\s+-?\d+\.\d)\d(E.\d\d\s+-?\d+\.\d)\d(E.\d\d\s+-?\d+\.\d)\d(.*)$/ ) {
+#              print $fho "[78] $1$2$3$4\n";
 
 
 # (sp inverse) 1-norm:  1.85E+00 cond. number:  1.28E+01 rel. error:  1.52E-06
