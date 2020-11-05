@@ -460,7 +460,15 @@ sub obscureMachinePrecision() {
   } elsif($line =~ m/^(\s*-?\d*\.\d\d\d)\d\d(\s*-?\d*\.\d\d\d)\d\d(\s*-?\d*\.\d\d\d)\d\d(\s*-?\d*\.\d\d\d)\d\d\s*$/ ) {
 			print $fho "[86] $1  $2  $3  $4\n";
 			
-      } else {
+#     7.421 * X +      -7.131 * Y +       5.978 * Z  =    -0.527
+   } elsif($line =~ m/^(\s+)(-?\d+\.\d+)(\s+\*\s+X\s\+\s+)(-?\d+\.\d+)(\s+\*\s+Y\s\+\s+)(-?\d+\.\d+)(\s+\*\s+Z\s\=\s+)(-?\d+\.\d+)(\s+)$/ ) {  
+#                      1    2           3                 4           5                  6           7                8           9     
+   	          $spx = sprintf "%.1f", $2;
+   	          $spy = sprintf "%.1f", $4;
+   	          $spz = sprintf "%.1f", $6;
+   	          $spd = sprintf "%.1f", $8;
+              print $fho "[87] $1$spx$3$spy$5$spz$7$spd$9\n";
+    } else {
               print $fho "$line\n";
 	  }
  	}
