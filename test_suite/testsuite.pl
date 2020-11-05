@@ -434,8 +434,8 @@ sub obscureMachinePrecision() {
 
 # (sp inverse) 1-norm:  1.85E+00 cond. number:  1.28E+01 rel. error:  1.52E-06
    } elsif($line =~ m/^(.*norm:\s+)(-?\d+\.\d+)(.*cond\. number:\s+)(-?\d+\.\d+)(.*)$/ ) {   #$2 and $4 hold float parts
-              $sptwo = sprintf "%.1f", $2;
-              $spfour = sprintf "%.1f", $4;
+              $sptwo = sprintf "%.0f", $2;
+              $spfour = sprintf "%.0f", $4;
               print $fho "[80] $1$sptwo$3$spfour$5\n";
 
 #C11 . C1 . C2 . O3 . -131.8(12)    yes
