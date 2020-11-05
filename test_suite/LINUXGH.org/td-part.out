@@ -195,7 +195,7 @@ LS-scale=  6.285   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.19E-07
-[80]  (sp inverse) 1-norm:  1.0E+00 cond. number:  1.0E+00 rel. error:  1.19E-07
+[80]  (sp inverse) 1-norm:  1E+00 cond. number:  1E+00 rel. error:  1.19E-07
 [44] Resetting shift for Enantio     Shift=       0.4   Esd=       0.0   New shift=       0.43
 [13]  LARGE     1           1             0.4       0.0E+00    0.2 E-01         16.4                           ENANTIO 
 
@@ -377,7 +377,7 @@ LS-scale=  6.285   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.19E-07
-[80]  (sp inverse) 1-norm:  1.0E+00 cond. number:  1.0E+00 rel. error:  1.19E-07
+[80]  (sp inverse) 1-norm:  1E+00 cond. number:  1E+00 rel. error:  1.19E-07
  S/ESD     1           1             0.041      0.1E+00    0.270E-01          1.50                          ENANTIO 
 
                                                 for           1 parameters
@@ -562,7 +562,7 @@ LS-scale=  6.285   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.19E-07
-[80]  (sp inverse) 1-norm:  1.0E+00 cond. number:  1.0E+00 rel. error:  1.19E-07
+[80]  (sp inverse) 1-norm:  1E+00 cond. number:  1E+00 rel. error:  1.19E-07
 
                                                 for           1 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -18908,7 +18908,7 @@ LS-scale=  6.285   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.19E-07
-[80]  (sp inverse) 1-norm:  1.0E+00 cond. number:  1.0E+00 rel. error:  1.19E-07
+[80]  (sp inverse) 1-norm:  1E+00 cond. number:  1E+00 rel. error:  1.19E-07
 [44] Resetting shift for Enantio     Shift=       0.4   Esd=       0.0   New shift=       0.43
 [13]  LARGE     1           1             0.4       0.0E+00    0.2 E-01         16.4                           ENANTIO 
 
@@ -19090,7 +19090,7 @@ LS-scale=  6.285   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.19E-07
-[80]  (sp inverse) 1-norm:  1.0E+00 cond. number:  1.0E+00 rel. error:  1.19E-07
+[80]  (sp inverse) 1-norm:  1E+00 cond. number:  1E+00 rel. error:  1.19E-07
  S/ESD     1           1             0.041      0.1E+00    0.270E-01          1.50                          ENANTIO 
 
                                                 for           1 parameters
@@ -19275,7 +19275,7 @@ LS-scale=  6.285   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.19E-07
-[80]  (sp inverse) 1-norm:  1.0E+00 cond. number:  1.0E+00 rel. error:  1.19E-07
+[80]  (sp inverse) 1-norm:  1E+00 cond. number:  1E+00 rel. error:  1.19E-07
 
                                                 for           1 parameters
 [64]                                  The rms (shift/su)  =           0.

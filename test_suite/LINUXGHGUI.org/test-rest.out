@@ -309,7 +309,7 @@ LS-scale=  1.598   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.11E-05
-[80]  (sp inverse) 1-norm:  9.7E+00 cond. number:  1.8E+02 rel. error:  2.11E-05
+[80]  (sp inverse) 1-norm:  10E+00 cond. number:  2E+02 rel. error:  2.11E-05
 
                                                 for         131 parameters
 [64]                                  The rms (shift/su)  =           1.
@@ -769,7 +769,7 @@ LS-scale=  1.598   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.45E-05
-[80]  (sp inverse) 1-norm:  8.8E+00 cond. number:  1.2E+02 rel. error:  1.45E-05
+[80]  (sp inverse) 1-norm:  9E+00 cond. number:  1E+02 rel. error:  1.45E-05
 
                                                 for         121 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -1135,7 +1135,7 @@ LS-scale=  1.598   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.01E-04
-[80]  (sp inverse) 1-norm:  8.4E+00 cond. number:  2.5E+03 rel. error:  3.01E-04
+[80]  (sp inverse) 1-norm:  8E+00 cond. number:  3E+03 rel. error:  3.01E-04
 [14]  S/ESD    98          98           -0.010       0.1E+01    0.10 E-01         -1.0         H    101 X       
 
                                                 for         121 parameters
