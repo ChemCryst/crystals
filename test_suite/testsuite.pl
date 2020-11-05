@@ -411,18 +411,23 @@ sub obscureMachinePrecision() {
     } elsif($line =~ m/^(.*The minimum and maximum map densities are\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(.*)$/ ) {
               print $fho "[68] $1 $2 $3\n";
 #         1  1  0  0  0    5.70E-02     5.70E-02    -3.22E-05    1.000    U33_local - <U33_local> == 0
-#         (           1       )(     2    )(      3    )(           4                                  )
-    } elsif($line =~ m/^(\s+1\s+1\s+0\s+0\s+0\s+-?\d+\.)\d\d(E.\d\d\s+-?\d+\.)\d\d(E.\d\d\s+-?\d+\.)\d\d(E.\d\d\s+-?\d+\.)\d\d\d(.*)$/ ) {
-        #                                          1                         2                        3          4                    5
-         print $fho "[79] $1$2$3$4$5\n";
+#         (           1   )( 2 )(    3 )(4 )(  5  )(  6  )(7                                           )
+    } elsif($line =~ m/^(\s+1\s+1\s+0\s+0\s+0\s+)(-?\d+\.\d+)(E.\d+\s+)(-?\d+\.\d+)(E.\d+\s+)(-?\d+\.\d+)(E.\d+\s+)(.*)$/ ) {
+        #               1                        2           3         4           5         6           7         8      
+              $sptwo = sprintf "%.0f", $2;
+              $spfour = sprintf "%.0f", $4;
+              $spsix = sprintf "%.0f", $6;
+         print $fho "[79] $1$sptwo$3$spfour$5$spsix$7$8\n";
 
     } elsif($line =~ m/^(\s+1\s+1\s+0\s+0\s+0\s+-?\d+\.\d)\d(E.\d\d\s+-?\d+\.\d)\d(E.\d\d\s+-?\d+\.\d)\d(.*)$/ ) {
               print $fho "[78] $1$2$3$4\n";
 
 
 # (sp inverse) 1-norm:  1.85E+00 cond. number:  1.28E+01 rel. error:  1.52E-06
-   } elsif($line =~ m/^(.*cond\. number:\s+-?\d+\.\d)\d(.*)$/ ) {
-              print $fho "[80] $1$2\n";
+   } elsif($line =~ m/^(.*norm:\s+)(-?\d+\.\d+)(.*cond\. number:\s+)(-?\d+\.\d+)(.*)$/ ) {   #$2 and $4 hold float parts
+              $sptwo = sprintf "%.1f", $2;
+              $spfour = sprintf "%.1f", $4;
+              print $fho "[80] $1$sptwo$3$spfour$5\n";
 
 #C11 . C1 . C2 . O3 . -131.8(12)    yes
   } elsif($line =~ m/^(.*\w* \. \w* \. \w* \. \w* \.\s+-?\d+\.).*(\(.*)$/ ) {
