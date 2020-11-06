@@ -246,7 +246,7 @@ sub obscureMachinePrecision() {
 	   } elsif($line =~ m/^(<Fo>-<Fc> =\s+\d+\.\d)\d\d(.*\d+\.)\d\d/ ) {
               print $fho "[27] $1 $2\n";
 # "  -8   4   8    9.4    0.3   2.8 37.39     2  18   2    0.0    9.0   2.8  0.00"
-	   } elsif($line =~ m/^((?:\s+-?\d{1,2}){3}\s+\d+\.\d\s+\d+\.\d\s+\d+\.\d\s+\d+\.\d)\d((?:\s+-?\d{1,2}){3}\s+\d+\.\d\s+\d+\.\d\s+\d+\.\d\s+\d+\.\d)\d\s*/ ) {
+	   } elsif($line =~ m/^((?:\s+-?\d{1,2}){3}\s+\d+\.\d\s+\d+\.\d\s+\d+\.\d\s+\d+\.)\d\d((?:\s+-?\d{1,2}){3}\s+\d+\.\d\s+\d+\.\d\s+\d+\.\d\s+\d+\.)\d\d\s*/ ) {
               print $fho "[28] $1 $2\n";
 # Mean shift line
 #	   } elsif($line =~ m/^ Mean\s+\d+\.\d\d\s+.*/ ) {
@@ -258,8 +258,8 @@ sub obscureMachinePrecision() {
 	   } elsif($line =~ m/^(SumFo\/SumFc=\s+\d+\.\d\d)\d(\s+\S+\s+\d+\.\d\d)\d(\s+\S+\s+\d+\.\d\d)\d\s*/ ) {
               print $fho "[29] $1 $2 $3\n";
 # Min func " Minimisation function              0.946E+03         0.000E+00         0.946E+03"
-	   } elsif($line =~ m/^( Minimisation function\s+\d+\.\d\d)\d(E\S\d\d\s+\d+\.\d\d)\d(E\S\d\d\s+\d+\.\d\d)\d(E\S\d\d.*)/ ) {
-              print $fho "[30] $1 $2 $3 $4\n";
+	   } elsif($line =~ m/^( Minimisation function\s+\d+\.\d\d)\d(E\S\d\d\s+\d+\.\d)\d\d(E\S\d\d\s+\d+\.\d\d)\d(E\S\d\d.*)/ ) {
+              print $fho "[30] $1$2$3$4\n";
 # Shift max  "                                         0.0762   0.0487   0.0794"
 	   } elsif($line =~ m/^(           \s*-*\d\.\d\d\d)\d(   -*\d\.\d\d\d)\d(   -*\d.\d\d\d)\d(\s*)/ ) {
               print $fho "[31] $1 $2 $3 $4\n";
@@ -411,16 +411,64 @@ sub obscureMachinePrecision() {
     } elsif($line =~ m/^(.*The minimum and maximum map densities are\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(.*)$/ ) {
               print $fho "[68] $1 $2 $3\n";
 #         1  1  0  0  0    5.70E-02     5.70E-02    -3.22E-05    1.000    U33_local - <U33_local> == 0
-#         (           1       )(     2    )(      3    )(           4                                  )
-    } elsif($line =~ m/^(\s+1\s+1\s+0\s+0\s+0\s+-?\d+\.\d)\d(E.\d\d\s+-?\d+\.\d)\d(E.\d\d\s+-?\d+\.\d)\d(E.\d\d\s+-?\d+\.\d)\d\d(.*)$/ ) {
-        #                                          1                         2                        3          4                    5
-         print $fho "[79] $1$2$3$4$5\n";
+#         (           1   )( 2 )(    3 )(4 )(  5  )(  6  )(7                                           )
+    } elsif($line =~ m/^(\s+1\s+1\s+0\s+0\s+0\s+)(-?\d+\.\d+)(E.\d+\s+)(-?\d+\.\d+)(E.\d+\s+)(-?\d+\.\d+)(E.\d+\s+)(\d+\.\d+)(.*)$/ ) {
+        #               1                        2           3         4           5         6           7         8         9
+              $sptwo = sprintf "%.0f", $2;
+              $spfour = sprintf "%.0f", $4;
+              $spsix = sprintf "%.0f", $6;
+              $speight = sprintf "%.2f", $8;
+         print $fho "[79] $1$sptwo$3$spfour$5$spsix$7$speight$9\n";
 
-    } elsif($line =~ m/^(\s+1\s+1\s+0\s+0\s+0\s+-?\d+\.\d)\d(E.\d\d\s+-?\d+\.\d)\d(E.\d\d\s+-?\d+\.\d)\d(.*)$/ ) {
-              print $fho "[78] $1$2$3$4\n";
+# There is an alternative to [79] with no final leverage number ($8).
+    } elsif($line =~ m/^(\s+1\s+1\s+0\s+0\s+0\s+)(-?\d+\.\d+)(E.\d+\s+)(-?\d+\.\d+)(E.\d+\s+)(-?\d+\.\d+)(E.\d+\s+)(.*)$/ ) {
+        #               1                        2           3         4           5         6           7         8         
+              $sptwo = sprintf "%.0f", $2;
+              $spfour = sprintf "%.0f", $4;
+              $spsix = sprintf "%.0f", $6;
+         print $fho "[78] $1$sptwo$3$spfour$5$spsix$7$8\n";
+
+#    } elsif($line =~ m/^(\s+1\s+1\s+0\s+0\s+0\s+-?\d+\.\d)\d(E.\d\d\s+-?\d+\.\d)\d(E.\d\d\s+-?\d+\.\d)\d(.*)$/ ) {
+#              print $fho "[78] $1$2$3$4\n";
 
 
-      } else {
+# (sp inverse) 1-norm:  1.85E+00 cond. number:  1.28E+01 rel. error:  1.52E-06
+   } elsif($line =~ m/^(.*norm:\s+)(-?\d+\.\d+)(.*cond\. number:\s+)(-?\d+\.\d+)(.*)$/ ) {   #$2 and $4 hold float parts
+              $sptwo = sprintf "%.0f", $2;
+              $spfour = sprintf "%.0f", $4;
+              print $fho "[80] $1$sptwo$3$spfour$5\n";
+
+#C11 . C1 . C2 . O3 . -131.8(12)    yes
+  } elsif($line =~ m/^(.*\w* \. \w* \. \w* \. \w* \.\s+-?\d+\.).*(\(.*)$/ ) {
+              print $fho "[81] $1$2\n";
+			  
+# H        102.0    1.00000        1.    0.6988   -0.1121    0.1377    0.0506
+  } elsif($line =~ m/^(\s*H\s.*\s-?\d\.\d\d)\d\d(\s*-?\d\.\d\d)\d\d(\s*-?\d\.\d\d)\d\d(\s*-?\d\.\d\d)\d\d(.*)$/ ) {
+              print $fho "[82] $1  $2  $3  $4  $5\n";
+
+#                    0.1000E+07                    0.4673E-03                    0.4697E-02
+  } elsif($line =~ m/^(\s*-?0\.\d\d)\d\d(E.\d\d\s*-?0\.\d\d)\d\d(E.\d\d\s*-?0\.\d\d)\d\d(E.\d\d\s*)$/ ) {
+              print $fho "[83] $1$2$3$4\n";
+# Mean C-C su =   0.0215
+  } elsif($line =~ m/^(.*Mean C-C su =\s*\d*\.\d\d).*$/ ) {
+              print $fho "[84] $1\n";
+#                 -1.3805    3.7124   18.2368             -0.16299   0.39160   0.91966
+  } elsif($line =~ m/^(\s*-?\d*\.\d\d\d)\d(\s*-?\d*\.\d\d\d)\d(\s*-?\d*\.\d\d\d)\d(\s*-?\d*\.\d\d\d)\d\d(\s*-?\d*\.\d\d\d)\d\d(\s*-?\d*\.\d\d\d)\d\d\s*/ ) {
+			  print $fho "[85] $1  $2  $3  $4  $5  $6\n";
+
+#    0.00000            0.02964   0.39160   0.91966
+  } elsif($line =~ m/^(\s*-?\d*\.\d\d\d)\d\d(\s*-?\d*\.\d\d\d)\d\d(\s*-?\d*\.\d\d\d)\d\d(\s*-?\d*\.\d\d\d)\d\d\s*$/ ) {
+			print $fho "[86] $1  $2  $3  $4\n";
+			
+#     7.421 * X +      -7.131 * Y +       5.978 * Z  =    -0.527
+   } elsif($line =~ m/^(\s+)(-?\d+\.\d+)(\s+\*\s+X\s\+\s+)(-?\d+\.\d+)(\s+\*\s+Y\s\+\s+)(-?\d+\.\d+)(\s+\*\s+Z\s+\=\s+)(-?\d+\.\d+)(\s+.*)$/ ) {  
+#                      1    2           3                 4           5                  6           7                8           9     
+   	          $spx = sprintf "%.1f", $2;
+   	          $spy = sprintf "%.1f", $4;
+   	          $spz = sprintf "%.1f", $6;
+   	          $spd = sprintf "%.1f", $8;
+              print $fho "[87] $1$spx$3$spy$5$spz$7$spd$9\n";
+    } else {
               print $fho "$line\n";
 	  }
  	}

@@ -72,7 +72,8 @@ jobs:
 # WIN ONLY
     - name: Install MinGW compiler and tools
       if: matrix.os == 'windows-latest'
-      run: c:\msys64\usr\bin\pacman --noconfirm -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-openblas mingw-w64-x86_64-perl msys2-w32api-runtime mingw-w64-x86_64-curl
+      run: |
+        c:\msys64\usr\bin\pacman --noconfirm -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-openblas mingw-w64-x86_64-perl msys2-w32api-runtime mingw-w64-x86_64-curl
 
 # LINUX ONLY
     - name: Install Ubuntu compiler and tools
@@ -141,6 +142,7 @@ jobs:
       run: |
         set CRYSDIR=${{ matrix.crysdir }}
         set COMPCODE=${{ matrix.testprefix }}${{ matrix.testsuffix }}
+        set OMP_NUM_THREADS=1
         set PATH=C:\msys64\mingw64\bin;..\wx\lib\gcc810_x64_dll;%path%
         echo PATH is %PATH%
         echo CRYSDIR is %CRYSDIR%
