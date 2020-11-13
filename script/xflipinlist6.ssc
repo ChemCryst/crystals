@@ -264,6 +264,8 @@
 ^^WI      DISPOSE XINLIST6                                                      
 ^^CR                                                                            
 %         COPY '#HKLI'                                                          
+%         copy 'STORE NCOEF=10'
+%         copy 'OUTP INDI /FO/ SIG RATIO CORR SERI JCODE /FC/ SQRTW BATCH/PHASE'
 %         QUEUE PROCESS                                                         
 %         COPY 'END'                                                            
 %         COPY '#CLOSE HKLI'                                                    

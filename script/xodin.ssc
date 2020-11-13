@@ -164,6 +164,8 @@ Files INITIAL.* will be created in your logs/ folder. They may be important.
 %   END BLOCK
 %%   COPY '#OPEN FRN2 ARCHIVE-HKL.CIF'
 %   COPY '#HKLI'                                                                 
+%         copy 'STORE NCOEF=10'
+%         copy 'OUTP INDI /FO/ SIG RATIO CORR SERI JCODE /FC/ SQRTW BATCH/PHASE'
 %   QUEUE PROCESS                                                                
 %   COPY 'END'                                                                   
 %%   COPY '#CLOSE FRN2'

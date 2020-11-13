@@ -95,8 +95,8 @@
 ^^WI POSITION CENTRED _MAINTEXTOUTPUT
 ^^WI GRID GRIDM NROWS=5 NCOLS=5
 ^^WI {
-^^WI   @ 2,2 STATIC T2 'Click an atom in the residue'
-^^WI   @ 3,2 STATIC T3 'to compare with the first.'
+^^WI   @ 2,2 STATIC T2 'See the HELP file to see one'
+^^WI   @ 3,2 STATIC T3 'possible way to break the symmetry'
 ^^WI   @ 4,2 GRID G NROWS=2 NCOLS=4
 ^^WI   {
 ^^WI     @ 2,1 STRETCH S HORIZONTAL
