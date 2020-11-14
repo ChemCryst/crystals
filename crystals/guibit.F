@@ -801,6 +801,7 @@ C Ensure list 41 dependencies are up to date:
 
                IF(KHUNTR(1,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL01
                IF(KHUNTR(2,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL02
+cdjw      write(123,*)'Loading L 5'
                IF(KHUNTR(5,0,IADDL,IADDR,IADDD,-1).NE.0)  CALL XFAL05
                IF(KHUNTR(29,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL29
                IF(KHUNTR(41,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL41
@@ -1772,10 +1773,16 @@ c             CALL XPRVDU(NCVDU, 1,0)
            IF ( IULN .LT. 0 ) THEN ! not allowed to load lists, ensure loaded
               IF(KHUNTR(25,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
            ELSE
+cdjw      write(123,*)'Thinking about loading L 5 and L 25'
               IF(KHUNTR(25,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL25
+              IF(KEXIST(5).EQ.1)THEN
+               IF(KHUNTR(5,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL05
+               l5djw = l5es
+              ELSE
+               l5djw = 0
+               md5es = 0
+              ENDIF
            END IF
-
-
            CALL XRLIND(25, L25SR, NFW, LL, IOW, NOS, ID)
            IF ( L25SR.NE.ISERnn(25) ) THEN
               ISERnn(25)  = L25SR
@@ -1786,11 +1793,17 @@ c             CALL XPRVDU(NCVDU, 1,0)
            WRITE (CMON,
      1       '(''^^WI SAFESET [ _MT_L25 EMPTY TEXT "Twin laws" ]'')')
            CALL XPRVDU(NCVDU,1,0)
-
-1106       FORMAT ('^^WI SAFESET [ _MT_L25 TEXT "',3(3F7.3,2X),'" ]')
+cdjw      write(123,*)'Element scales', n5es,md5es, n25
+1106  FORMAT ('^^WI SAFESET [ _MT_L25 TEXT "',3(3F7.3,2X),F5.3,'" ]')
            DO J = 0, N25-1
              M25 = L25+J*MD25
-             WRITE(CMON,1106) (STORE(I),I = M25 , M25 + MD25-1)
+             m5djw = l5djw +j      ! All scales are in the first record
+             IF(MD5ES.GT.0) THEN
+               WRITE(CMON,1106) (STORE(I),I = M25 , M25 + MD25-1)
+     1         ,STORE(M5DJW)
+             ELSE
+              WRITE(CMON,1106) (STORE(I),I = M25 , M25 + MD25-1)
+             ENDIF
              CALL XPRVDU(NCVDU, 1,0)
            END DO
 
