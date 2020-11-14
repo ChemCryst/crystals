@@ -1,8 +1,16 @@
+
 #define PY_SSIZE_T_CLEAN
-#include <Python.h>
+#include <windows.h>
+
+#include <Python.h>   //Needed for the definitions of PyObject, PyModuleDef, etc.
+
+//#include <object.h>
+//#include <methodobject.h>
+//#include <moduleobject.h>
+//#include <pyarena.h>
+//#include <compile.h>
 #include <stdlib.h>
 
-void zmore_(char* m, int i);
 
 // This python module, implemented in C will be used later to redirect text
 // output from the interpreter while it is running. Text should end up on the
@@ -11,16 +19,197 @@ void zmore_(char* m, int i);
 // and updates required for Python 3 here:
 // https://stackoverflow.com/questions/28305731/compiler-cant-find-py-initmodule-is-it-deprecated-and-if-so-what-should-i
 
+void lineout(const char* string, int);
+//unsigned long GetModuleFileNameA( void * hModule, char * lpFilename, unsigned long nSize);
+
+// For dynamic loading of python dll, we need to find the address of each function with a call
+// to getprocaddress (these are stored in the global FARPROC pointers defined here). And we also
+// need to know the function signature - this is a pain, because you have to explicitly (and correctly)
+// set out each function here, but it is useful becuase we are not relying on Python.h. 
+// If the function signatures change in future python releases, loading the new DLL here might not work.
+// Another advantage of a dynamic load is that we can fail gracefully if python.dll is not found and carry
+// on without it.
+
+// void Py_InitializeEx ( int )
+FARPROC pInitializeExFn;
+typedef void (*PINITIALIZEEXFN)( int ) ;
+
+//PyAPI_FUNC(void) Py_SetPythonHome(const wchar_t *);
+FARPROC pSetPythonHomeFn;
+typedef void (*PSETPYTHONHOME)( const wchar_t *);
+
+FARPROC pImport_AppendInittabFn;
+typedef int (*PIMPORT_APPENDINITTAB)( const char *, PyObject *(*func)(void));
+
+//PyAPI_FUNC(int) PyRun_SimpleStringFlags(const char *, PyCompilerFlags *);
+FARPROC pRun_SimpleStringFlags;
+typedef int (*PRUN_SIMPLESTRINGFLAGS)( const char *, PyCompilerFlags *);
+
+//PyAPI_FUNC(PyObject*) PyUnicode_DecodeFSDefault(const char *s);
+FARPROC pUnicode_DecodeFSDefaultFn;
+typedef PyObject* (*PUNICODE_DECODEFSDEFAULT)( const char *);
+
+//PyAPI_FUNC(PyObject *) PyImport_Import(PyObject *name);
+FARPROC pImport_ImportFn;
+typedef PyObject* (*PIMPORT_IMPORT)( PyObject *);
+
+//PyAPI_FUNC(void) PyMem_RawFree(void *ptr);
+FARPROC pMem_RawFreeFn;
+typedef void (*PMEM_RAWFREE)( void *);
+
+//int Py_FinalizeEx()
+FARPROC pFinalizeExFn;
+typedef int (*PFINALIZEEX)();
+
+// PyAPI_FUNC(wchar_t *) Py_DecodeLocale(const char *arg,size_t *size);
+FARPROC pDecodeLocaleFn;
+typedef wchar_t* (*PDECODELOCALE)(const char *, size_t *);
+
+// PyAPI_FUNC(PyObject *) PyModule_Create2(struct PyModuleDef*, int apiver);
+#define PYTHON_ABI_VERSION 3
+FARPROC pModule_Create2Fn;
+typedef PyObject* (*PMODULECREATE2)(PyModuleDef *, int);
+
+// int (*py3_PyArg_ParseTuple)(PyObject *, char *, ...);
+FARPROC pArg_ParseTupleFn;
+typedef int (*PARGPARSETUPLE)(PyObject *, char *, ...);
+
+// (PyObject *) Py_BuildValue(const char *, ...);
+FARPROC pBuildValueFn;
+typedef PyObject* (*PBUILDVALUE)(const char *, ...);
+
+//PyAPI_FUNC(void) _Py_Dealloc(PyObject *);
+//FARPROC pDeallocFn;
+//typedef void (*PDEALLOC)(PyObject*);
+
+
+//PyObject _Py_NoneStruct; /* Don't use this directly */
+//#define Py_None (&_Py_NoneStruct)
+
+//#define _Py_Dealloc(m) ((PDEALLOC)pDeallocFn)(m)
+
+
+int loadPyDLL() {
+
+	pInitializeExFn = NULL;
+
+	// load the Python DLL
+	LPCWSTR pDllName = L"pyembed/python38.dll" ;
+	HMODULE hModule = LoadLibrary( pDllName ) ;
+	if ( hModule == NULL ) {
+		lineout("Could not load python dll",26);
+		return 0;
+	}
+
+	// locate the Py_InitializeEx() function
+	pInitializeExFn = GetProcAddress( hModule , "Py_InitializeEx" ) ;
+	if( pInitializeExFn == NULL ) {		
+		lineout("Could not find Py_InitializeEx()",33);
+		return 0;
+	}
+
+	// locate the Py_SetPythonHome() function
+	pSetPythonHomeFn = GetProcAddress( hModule , "Py_SetPythonHome" ) ;
+	if( pSetPythonHomeFn == NULL ) {		
+		lineout("Could not find Py_SetPythonHome()",34);
+		return 0;
+	}
+
+
+	// locate the PyImport_AppendInittab() function
+	pImport_AppendInittabFn = GetProcAddress( hModule , "PyImport_AppendInittab" ) ;
+	if( pImport_AppendInittabFn == NULL ) {		
+		lineout("Could not find PyImport_AppendInittab()",41);
+		return 0;
+	}
+
+	// locate the PyRun_SimpleStringFlags() function
+	pRun_SimpleStringFlags = GetProcAddress( hModule , "PyRun_SimpleStringFlags" ) ;
+	if( pRun_SimpleStringFlags == NULL )  {		
+		lineout("Could not find PyRun_SimpleStringFlags()",41);
+		return 0;
+	}
+	
+	// locate the PyUnicode_DecodeFSDefault() function
+	pUnicode_DecodeFSDefaultFn = GetProcAddress( hModule , "PyUnicode_DecodeFSDefault" ) ;
+	if(  pUnicode_DecodeFSDefaultFn == NULL )  {		
+		lineout("Could not find PyUnicode_DecodeFSDefault()",43);
+		return 0;
+	}
+	// locate PyImport_Import() function
+	pImport_ImportFn = GetProcAddress( hModule , "PyImport_Import" ) ;
+	if(  pImport_ImportFn == NULL )  {		
+		lineout("Could not find PyImport_Import()",33);
+		return 0;
+	}
+	// locate PyMem_RawFree() function
+	pMem_RawFreeFn = GetProcAddress( hModule , "PyMem_RawFree" ) ;
+	if(  pMem_RawFreeFn == NULL )  {		
+		lineout("Could not find PyMem_RawFree()",31);
+		return 0;
+	}
+	// locate int Py_FinalizeEx() function
+	pFinalizeExFn = GetProcAddress( hModule , "Py_FinalizeEx" ) ;
+	if(  pFinalizeExFn == NULL )  {		
+		lineout("Could not find Py_FinalizeEx()",31);
+		return 0;
+	}
+
+	// locate int Py_DecodeLocale() function
+	pDecodeLocaleFn = GetProcAddress( hModule , "Py_DecodeLocale" ) ;
+	if(  pDecodeLocaleFn == NULL )  {		
+		lineout("Could not find Py_DecodeLocale()",33);
+		return 0;
+	} 
+
+	// locate int PyModule_Create2() function
+	pModule_Create2Fn = GetProcAddress( hModule , "PyModule_Create2" ) ;
+	if(  pModule_Create2Fn == NULL )  {		
+		lineout("Could not find PyModule_Create2()",34);
+		return 0;
+	} 
+
+	// locate PyArg_ParseTuple() function
+	pArg_ParseTupleFn = GetProcAddress( hModule , "PyArg_ParseTuple" ) ;
+	if(  pArg_ParseTupleFn == NULL )  {		
+		lineout("Could not find PyArg_ParseTuple()",34);
+		return 0;
+	} 
+
+	// locate Py_BuildValue() function
+	pBuildValueFn = GetProcAddress( hModule , "Py_BuildValue" ) ;
+	if(  pBuildValueFn == NULL )  {		
+		lineout("Could not find Py_BuildValue()",31);
+		return 0;
+	} 
+
+/*	// locate _Py_Dealloc() function
+	pDeallocFn = GetProcAddress( hModule , "_Py_Dealloc" ) ;
+	if(  pDeallocFn == NULL )  {		
+		lineout("Could not find _Py_Dealloc()",29);
+		return 0;
+	} 
+
+
+//	_Py_NoneStruct = Py_BuildValue("");
+	_Py_NoneStruct = *((PBUILDVALUE)pBuildValueFn)("");
+*/
+	return 1;
+}
+
+
 static PyObject*
 redirection_stdoutredirect(PyObject *self, PyObject *args)
 {
     const char *string;
-    if(!PyArg_ParseTuple(args, "s", &string))
+//    if(!PyArg_ParseTuple(args, "s", &string))
+    if(!((PARGPARSETUPLE)pArg_ParseTupleFn)(args, "s", &string))
         return NULL;
     //pass string onto somewhere
         lineout(string, strlen(string));
-    Py_INCREF(Py_None);
-    return Py_None;
+//    Py_INCREF(Py_None);
+//    return Py_None;
+    return ((PBUILDVALUE)pBuildValueFn)("O",  ((PBUILDVALUE)pBuildValueFn)("")); // Inc ref to PyNone (without using INCREF macro which won't work here becuase of dynamic LoadLibrary
 }
 
 static PyMethodDef RedirectionMethods[] = {
@@ -28,7 +217,6 @@ static PyMethodDef RedirectionMethods[] = {
         "stdout redirection helper"},
     {NULL, NULL, 0, NULL}
 };
-
 
 static struct PyModuleDef stdoutRedirect =
 {
@@ -39,14 +227,20 @@ static struct PyModuleDef stdoutRedirect =
     RedirectionMethods
 };
 
-PyMODINIT_FUNC PyInit_stdoutRedirect(void)
+PyObject * PyInit_stdoutRedirect(void)
 {
-    return PyModule_Create(&stdoutRedirect);
+    return ((PMODULECREATE2)pModule_Create2Fn)(&stdoutRedirect, PYTHON_ABI_VERSION);
 }
 
 
 int runpy(const char *filename)
 {
+
+	if (!loadPyDLL()) {
+		return 130;
+	}
+
+	
     PyObject *pName, *pModule;   //, *pFunc;
 //    PyObject *pArgs, *pValue;
 
@@ -61,6 +255,10 @@ int runpy(const char *filename)
     _makepath_s( homePath, _MAX_PATH+1, drive, dir, "pyembed", NULL );
     _makepath_s( scriptPath, _MAX_PATH+1, drive, dir, "script", NULL );
 
+
+    lineout(homePath, strlen(homePath));
+
+
 // Replace backslashes as they look like escape sequences when passed to Python.
     int index = 0;
     while(scriptPath[index]) {   // loop until null terminator
@@ -69,35 +267,45 @@ int runpy(const char *filename)
          index++;
     }
 
-    wchar_t *wHomePath = Py_DecodeLocale(homePath, NULL);
-    Py_SetPythonHome(wHomePath);
+    index = 0;
+    while(homePath[index]) {   // loop until null terminator
+         if(homePath[index] == '\\')
+            homePath[index] = '/';
+         index++;
+    }
 
+    lineout(homePath, strlen(homePath));
+//    wchar_t *wHomePath = Py_DecodeLocale(homePath, NULL);
+    wchar_t *wHomePath = ((PDECODELOCALE)pDecodeLocaleFn)(homePath, NULL);
 
+//    Py_SetPythonHome(wHomePath);
+	((PSETPYTHONHOME)pSetPythonHomeFn)( wHomePath ) ;
 
-
-/*
-// If initialization fails, uncomment
-// this section to find out what is going wrong.
-    AllocConsole();
-    freopen("CONIN$", "r", stdin);
-    freopen("CONOUT$", "a", stdout);
-    freopen("CONOUT$", "a", stderr);
-*/
 
 // Add the stdoutRedirect module (defined above)
-    PyImport_AppendInittab("stdoutRedirect", PyInit_stdoutRedirect);
+//    PyImport_AppendInittab("stdoutRedirect", PyInit_stdoutRedirect);
+	int initt = ((PIMPORT_APPENDINITTAB)pImport_AppendInittabFn)("stdoutRedirect", PyInit_stdoutRedirect);
 
-    Py_Initialize();
+
+// call Py_InitializeEx()
+
+//    Py_InitializeEx(0), but using the dynamically loaded function address.
+	 ((PINITIALIZEEXFN)pInitializeExFn)( 0 ) ;
+
+
+
 
 // This little bit tells python where to redirect stdout and stderr.
-    PyRun_SimpleString("\
+/*    PyRun_SimpleString("\  */
+
+	((PRUN_SIMPLESTRINGFLAGS)pRun_SimpleStringFlags)("\
 import stdoutRedirect\n\
 import sys\n\
 class StdoutCatcher:\n\
     def __init__(self):\n\
         self.errcatch = False \n\
     def write(self, textoutput):\n\
-        if len(textoutput.rstrip()) != 0:\n\
+        if len(textoutput.rstrip('\\n')) != 0:\n\
           for s in textoutput.splitlines():\n\
             if self.errcatch:\n\
                 s = '{E ' + s \n\
@@ -108,58 +316,32 @@ class StdoutCatcher:\n\
         \n\
 sys.stdout = StdoutCatcher()\n\
 sys.stderr = StdoutCatcher()\n\
-sys.stderr.errcatch = True\n");
+sys.stderr.errcatch = True\n", NULL);
+
+
 
 // This little bit tells python where our scripts are.
     char str[_MAX_PATH + 36];
     sprintf(str, "import sys\nsys.path.append(\"%s\")\n", scriptPath);
-    PyRun_SimpleString( &str );
+//    PyRun_SimpleString( str );
+	((PRUN_SIMPLESTRINGFLAGS)pRun_SimpleStringFlags)(str,NULL);
 
-    pName = PyUnicode_DecodeFSDefault(filename);
+//    pName = PyUnicode_DecodeFSDefault(filename);
+	pName = ((PUNICODE_DECODEFSDEFAULT)pUnicode_DecodeFSDefaultFn)(filename);
     /* Error checking of pName left out */
 
-    pModule = PyImport_Import(pName);
-    Py_DECREF(pName);
-    if (pModule != NULL) {
-      Py_DECREF(pModule);
-    }
+//    pModule = PyImport_Import(pName);
+	pModule = ((PIMPORT_IMPORT)pImport_ImportFn)(pName);
+//    Py_DECREF(pName);
+//    if (pModule != NULL) {
+ //     Py_DECREF(pModule);
+//    }
 
-    PyMem_RawFree(wHomePath);
+//    PyMem_RawFree(wHomePath);
+	((PMEM_RAWFREE)pMem_RawFreeFn)(wHomePath);
 
-/*
-    if (pModule != NULL) {
-        pFunc = PyObject_GetAttrString(pModule, "__main__");
-        // pFunc is a new reference
-*/
-/*
-        if (pFunc && PyCallable_Check(pFunc)) {
-            pValue = PyObject_CallObject(pFunc, NULL);
-            if (pValue != NULL) {
-                sprintf(message,"Result of call: %ld\n", PyLong_AsLong(pValue));
-                Py_DECREF(pValue);
-            }
-            else {
-                Py_DECREF(pFunc);
-                Py_DECREF(pModule);
-                PyErr_Print();
-                return 1;
-            }
-        }
-        else {
-            if (PyErr_Occurred())
-                PyErr_Print();
-            sprintf(message, "Cannot find function \"%s\"\n", "__main__");
-        }
-        Py_XDECREF(pFunc);
-        Py_DECREF(pModule);
-    }
-    else {
-        PyErr_Print();
-        sprintf(message, "Failed to load \"%s\"\n", "argv[1]");
-        return 1;
-    }
-*/
-    if (Py_FinalizeEx() < 0) {
+//    if (Py_FinalizeEx() < 0) {
+    if ( ((PFINALIZEEX)pFinalizeExFn)() < 0) {
         return 120;
     }
     return 0;
