@@ -218,7 +218,6 @@ if ( useGUI )
 #        set(wxWidgets_CONFIGURATION mswu)
         FIND_PACKAGE(wxWidgets REQUIRED html stc adv core gl base scintilla)
 		
-	    INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/python-headers-win/Include/)
 
 		
     else ()
@@ -253,6 +252,9 @@ if ( WIN32 )
     else ()
         add_definitions(-D__MIN__)
     endif()
+
+	INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/python-headers-win/Include/)
+
 endif()
 
 if ( APPLE )
