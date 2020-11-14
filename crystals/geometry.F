@@ -470,9 +470,9 @@ C-C-C-PRINT EQUATION OF PLANE/LINE AND ORIENT. VECTOR IN POLAR COORD.
             WRITE (NCWU,390) CTYPE(JTYPE),VECPD,VECPD/100,VECPA,VECPA/
      1       100
          END IF
-380      FORMAT (//1X,' Equation of the ',A,' :'//F10.5,' * X +',F10.5,'
-     1 * Y +',F10.5,' * Z  =',F10.3,20X,'X, Y and Z are in crystal fract
-     2ions')
+380      FORMAT (//1X,' Equation of the ',A,' :  '//F10.3,' * X +  ',
+     1           F10.3,'* Y +  ',F10.3,' * Z  =',
+     1           F10.3,20X,'X, Y and Z are in crystal fractions')
 390      FORMAT (/,A,'-vector (in polar coord.):',
      1   //,'DECLINAT =',F9.2,5X,'DECLINAT/100 =',F9.4,/
      2    ,'AZIMUTH  =',F9.2,5X,'AZIMUTH /100 =',F9.4)

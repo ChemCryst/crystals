@@ -124,9 +124,12 @@ Files INITIAL.* will be created in your logs/ folder. They may be important.
 %      END BLOCK                                                                
 %  END BLOCK                                                                    
 %%                                                                              
-%  EVALUATE HFILE = FILEEXISTS ( 'od-out.hkl' )                                   
+%  EVALUATE HFILE = FILEEXISTS ( 'od-out.hkl' ) 
+%  IF (.NOT. HFILE ) THEN
+%   EVALUATE HFILE = FILEEXISTS ( 'from-cifv2.hkl' )                                   
+%  END IF                                 
 %  IF ( .not. HFILE ) THEN 
-{I CRYSTALS could find no reflections in the cif file. If you have a 
+{I CRYSTALS could find no  embedded HKLI data in the cif file. If you have a 
 {I SHELX hklf file, input that from the X-ray data menu.
 %    FINISH
 %  ELSE

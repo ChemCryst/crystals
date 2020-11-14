@@ -342,7 +342,7 @@ LS-scale=  1.023   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.65E-06
- (sp inverse) 1-norm:  2.67E+00 cond. number:  1.39E+01 rel. error:  1.65E-06
+[80]  (sp inverse) 1-norm:  3E+00 cond. number:  1E+01 rel. error:  1.65E-06
 
                                                 for           6 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -364,7 +364,7 @@ All cycle   Min function          0.0           0.18E+04       0.10E+16
 
  Statistics for     6 least squares parameters, with  1553 degrees of freedom
  Number of observations              1559                 0              1559
-[30]  Minimisation function              0.18 E+04         0.00 E+00         0.18 E+04
+[30]  Minimisation function              0.18E+04         0.0E+00         0.18E+04
 [45]  Hamilton weighted R-value           6.              0.00              6. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -448,7 +448,7 @@ All cycle   Min function          0.0           0.18E+04       0.10E+16
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.003    0.005    0.002 
-Mean C-C su =   0.0032
+[84] Mean C-C su =   0.00
 #CYCLENDS
 #TORS
 
@@ -575,10 +575,10 @@ LS-scale=  1.023   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.58E-06
- (sp inverse) 1-norm:  3.41E+00 cond. number:  2.17E+01 rel. error:  2.58E-06
+[80]  (sp inverse) 1-norm:  3E+00 cond. number:  2E+01 rel. error:  2.58E-06
 Inversion method: Automatic
 Block No  2.  Single precision relative error:  3.90E-07
- (sp inverse) 1-norm:  1.63E+00 cond. number:  3.27E+00 rel. error:  3.90E-07
+[80]  (sp inverse) 1-norm:  2E+00 cond. number:  3E+00 rel. error:  3.90E-07
 
                                                 for          52 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -600,7 +600,7 @@ All cycle   Min function          0.0           0.18E+04       0.10E+16
 
  Statistics for    52 least squares parameters, with  1507 degrees of freedom
  Number of observations              1559                 0              1559
-[30]  Minimisation function              0.18 E+04         0.00 E+00         0.18 E+04
+[30]  Minimisation function              0.18E+04         0.0E+00         0.18E+04
 [45]  Hamilton weighted R-value           6.              0.00              6. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -714,7 +714,7 @@ All cycle   Min function          0.0           0.18E+04       0.10E+16
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.003    0.000    0.000 
-Mean C-C su =   0.0057
+[84] Mean C-C su =   0.00
 #CYCLENDS
 #USE TORSION.DAT
 #TORS
@@ -776,22 +776,162 @@ Variance-covariance matrix of selected atoms (x10^6)
  A positive rotation is clockwise from atom 1 to 4, when viewed from atom 2 to 3
                                                       Torsion angle & VcV-su
      O(10) to      CU(1) to CU(1,2,1,0,1) to O(10,2,1,0,1)  -131.3    0.3    1.1                                                                
+# END OF TORSION.DAT
+# TEST NEW FEATURES
+#USE TD-TORS-CYCLO.DAT
+#SET PRINT OFF
+#SET MONI ON
+# PART 1
+#RELE PUNCH TORS-LIST.DAT
+#TORS
+#RELE PUNCH LOGS/BFILE/PCH
+# PART 2
+#TORS
+#USE TORS-LIST.DAT
+
+
+ NORMAL TORSION                                                                       Date              Time          
+
+
+ The SU is computed from the full VcV matrix if available
+ A positive rotation is clockwise from atom 1 to 4, when viewed from atom 2 to 3
+                                                      Torsion angle & VcV-su
+      O(9) to       C(1) to       C(2) to       N(3) =       -13.3    0.2    0.4                                                                
+      O(9) to       C(1) to       C(2) to       C(7) =      -163.3    0.2    0.3                                                                
+      O(9) to       C(1) to       C(2) to       C(8) =       130.4    0.2    0.3                                                                
+     O(11) to       C(1) to       C(2) to       N(3) =       168.2    0.2    0.3                                                                
+     O(11) to       C(1) to       C(2) to       C(7) =        18.3    0.3    0.4                                                                
+     O(11) to       C(1) to       C(2) to       C(8) =       -48.0    0.3    0.4                                                                
+      C(2) to       C(1) to       O(9) to      C(10) =       179.9    0.2    0.3                                                                
+     O(11) to       C(1) to       O(9) to      C(10) =        -1.6    0.3    0.4                                                                
+      C(1) to       C(2) to       N(3) to       C(4) =       -69.1    0.2    0.4                                                                
+      C(1) to       C(2) to       N(3) to      H(31) =       109.2    0.3    0.2                                                                
+      C(7) to       C(2) to       N(3) to       C(4) =        80.4    0.2    0.4                                                                
+      C(7) to       C(2) to       N(3) to      H(31) =      -101.2    0.3    0.3                                                                
+      C(8) to       C(2) to       N(3) to       C(4) =       147.2    0.2    0.3                                                                
+      C(8) to       C(2) to       N(3) to      H(31) =       -34.5    0.3    0.3                                                                
+      C(1) to       C(2) to       C(7) to       C(8) =      -105.2    0.2    0.3                                                                
+      C(1) to       C(2) to       C(7) to      H(71) =         4.7    0.3    0.3                                                                
+      C(1) to       C(2) to       C(7) to      H(72) =       145.6    0.2    0.2                                                                
+      N(3) to       C(2) to       C(7) to       C(8) =       104.8    0.2    0.3                                                                
+      N(3) to       C(2) to       C(7) to      H(71) =      -145.3    0.2    0.2                                                                
+      N(3) to       C(2) to       C(7) to      H(72) =        -4.3    0.3    0.3                                                                
+      C(8) to       C(2) to       C(7) to      H(71) =       109.9    0.2    0.2                                                                
+      C(8) to       C(2) to       C(7) to      H(72) =      -109.2    0.2    0.2                                                                
+      C(1) to       C(2) to       C(8) to       C(7) =       107.0    0.2    0.3                                                                
+      C(1) to       C(2) to       C(8) to      H(81) =        -1.9    0.3    0.3                                                                
+      C(1) to       C(2) to       C(8) to      H(82) =      -141.1    0.2    0.2                                                                
+      N(3) to       C(2) to       C(8) to       C(7) =      -108.4    0.2    0.3                                                                
+      N(3) to       C(2) to       C(8) to      H(81) =       142.6    0.2    0.2                                                                
+      N(3) to       C(2) to       C(8) to      H(82) =         3.5    0.3    0.3                                                                
+      C(7) to       C(2) to       C(8) to      H(81) =      -108.9    0.2    0.2                                                                
+      C(7) to       C(2) to       C(8) to      H(82) =       111.9    0.2    0.2                                                                
+      C(2) to       N(3) to       C(4) to       O(5) =         2.9    0.3    0.4                                                                
+      C(2) to       N(3) to       C(4) to       C(6) =      -175.4    0.2    0.2                                                                
+     H(31) to       N(3) to       C(4) to       O(5) =      -175.4    0.2    0.2                                                                
+     H(31) to       N(3) to       C(4) to       C(6) =         6.3    0.3    0.3                                                                
+      N(3) to       C(4) to       O(5) to      H(51) =       122.7    0.0    0.2 Group is almost co-linear    0.0                               
+      C(6) to       C(4) to       O(5) to      H(51) =       -59.1    0.0    0.3 Group is almost co-linear    0.0                               
+      N(3) to       C(4) to       C(6) to      H(62) =      -134.0    0.2    0.2                                                                
+      N(3) to       C(4) to       C(6) to      H(63) =       107.9    0.2    0.2                                                                
+      N(3) to       C(4) to       C(6) to      H(61) =       -13.9    0.3    0.3                                                                
+      O(5) to       C(4) to       C(6) to      H(62) =        47.8    0.3    0.3                                                                
+      O(5) to       C(4) to       C(6) to      H(63) =       -70.3    0.3    0.3                                                                
+      O(5) to       C(4) to       C(6) to      H(61) =       167.9    0.2    0.2                                                                
+      C(2) to       C(7) to       C(8) to      H(81) =       106.7    0.2    0.2                                                                
+      C(2) to       C(7) to       C(8) to      H(82) =      -106.0    0.2    0.2                                                                
+     H(71) to       C(7) to       C(8) to       C(2) =      -107.0    0.2    0.2                                                                
+     H(71) to       C(7) to       C(8) to      H(81) =        -0.3    0.3    0.1                                                                
+     H(71) to       C(7) to       C(8) to      H(82) =       147.0    0.3    0.0                                                                
+     H(72) to       C(7) to       C(8) to       C(2) =       107.6    0.2    0.2                                                                
+     H(72) to       C(7) to       C(8) to      H(81) =      -145.7    0.3    0.0                                                                
+     H(72) to       C(7) to       C(8) to      H(82) =         1.6    0.3    0.1                                                                
+      C(1) to       O(9) to      C(10) to     H(102) =      -177.8    0.2    0.2                                                                
+      C(1) to       O(9) to      C(10) to     H(101) =        63.1    0.3    0.3                                                                
+      C(1) to       O(9) to      C(10) to     H(103) =       -58.9    0.3    0.3                                                                
+#TORS
+#USE TORS-LIST.DAT
+
+
+ NORMAL TORSION                                                                       Date              Time          
+
+
+ The SU is computed from the full VcV matrix if available
+ A positive rotation is clockwise from atom 1 to 4, when viewed from atom 2 to 3
+                                                      Torsion angle & VcV-su
+      O(9) to       C(1) to       C(2) to       N(3) =       -13.3    0.2    0.4                                                                
+      O(9) to       C(1) to       C(2) to       C(7) =      -163.3    0.2    0.3                                                                
+      O(9) to       C(1) to       C(2) to       C(8) =       130.4    0.2    0.3                                                                
+     O(11) to       C(1) to       C(2) to       N(3) =       168.2    0.2    0.3                                                                
+     O(11) to       C(1) to       C(2) to       C(7) =        18.3    0.3    0.4                                                                
+     O(11) to       C(1) to       C(2) to       C(8) =       -48.0    0.3    0.4                                                                
+      C(2) to       C(1) to       O(9) to      C(10) =       179.9    0.2    0.3                                                                
+     O(11) to       C(1) to       O(9) to      C(10) =        -1.6    0.3    0.4                                                                
+      C(1) to       C(2) to       N(3) to       C(4) =       -69.1    0.2    0.4                                                                
+      C(1) to       C(2) to       N(3) to      H(31) =       109.2    0.3    0.2                                                                
+      C(7) to       C(2) to       N(3) to       C(4) =        80.4    0.2    0.4                                                                
+      C(7) to       C(2) to       N(3) to      H(31) =      -101.2    0.3    0.3                                                                
+      C(8) to       C(2) to       N(3) to       C(4) =       147.2    0.2    0.3                                                                
+      C(8) to       C(2) to       N(3) to      H(31) =       -34.5    0.3    0.3                                                                
+      C(1) to       C(2) to       C(7) to       C(8) =      -105.2    0.2    0.3                                                                
+      C(1) to       C(2) to       C(7) to      H(71) =         4.7    0.3    0.3                                                                
+      C(1) to       C(2) to       C(7) to      H(72) =       145.6    0.2    0.2                                                                
+      N(3) to       C(2) to       C(7) to       C(8) =       104.8    0.2    0.3                                                                
+      N(3) to       C(2) to       C(7) to      H(71) =      -145.3    0.2    0.2                                                                
+      N(3) to       C(2) to       C(7) to      H(72) =        -4.3    0.3    0.3                                                                
+      C(8) to       C(2) to       C(7) to      H(71) =       109.9    0.2    0.2                                                                
+      C(8) to       C(2) to       C(7) to      H(72) =      -109.2    0.2    0.2                                                                
+      C(1) to       C(2) to       C(8) to       C(7) =       107.0    0.2    0.3                                                                
+      C(1) to       C(2) to       C(8) to      H(81) =        -1.9    0.3    0.3                                                                
+      C(1) to       C(2) to       C(8) to      H(82) =      -141.1    0.2    0.2                                                                
+      N(3) to       C(2) to       C(8) to       C(7) =      -108.4    0.2    0.3                                                                
+      N(3) to       C(2) to       C(8) to      H(81) =       142.6    0.2    0.2                                                                
+      N(3) to       C(2) to       C(8) to      H(82) =         3.5    0.3    0.3                                                                
+      C(7) to       C(2) to       C(8) to      H(81) =      -108.9    0.2    0.2                                                                
+      C(7) to       C(2) to       C(8) to      H(82) =       111.9    0.2    0.2                                                                
+      C(2) to       N(3) to       C(4) to       O(5) =         2.9    0.3    0.4                                                                
+      C(2) to       N(3) to       C(4) to       C(6) =      -175.4    0.2    0.2                                                                
+     H(31) to       N(3) to       C(4) to       O(5) =      -175.4    0.2    0.2                                                                
+     H(31) to       N(3) to       C(4) to       C(6) =         6.3    0.3    0.3                                                                
+      N(3) to       C(4) to       O(5) to      H(51) =       122.7    0.0    0.2 Group is almost co-linear    0.0                               
+      C(6) to       C(4) to       O(5) to      H(51) =       -59.1    0.0    0.3 Group is almost co-linear    0.0                               
+      N(3) to       C(4) to       C(6) to      H(62) =      -134.0    0.2    0.2                                                                
+      N(3) to       C(4) to       C(6) to      H(63) =       107.9    0.2    0.2                                                                
+      N(3) to       C(4) to       C(6) to      H(61) =       -13.9    0.3    0.3                                                                
+      O(5) to       C(4) to       C(6) to      H(62) =        47.8    0.3    0.3                                                                
+      O(5) to       C(4) to       C(6) to      H(63) =       -70.3    0.3    0.3                                                                
+      O(5) to       C(4) to       C(6) to      H(61) =       167.9    0.2    0.2                                                                
+      C(2) to       C(7) to       C(8) to      H(81) =       106.7    0.2    0.2                                                                
+      C(2) to       C(7) to       C(8) to      H(82) =      -106.0    0.2    0.2                                                                
+     H(71) to       C(7) to       C(8) to       C(2) =      -107.0    0.2    0.2                                                                
+     H(71) to       C(7) to       C(8) to      H(81) =        -0.3    0.3    0.1                                                                
+     H(71) to       C(7) to       C(8) to      H(82) =       147.0    0.3    0.0                                                                
+     H(72) to       C(7) to       C(8) to       C(2) =       107.6    0.2    0.2                                                                
+     H(72) to       C(7) to       C(8) to      H(81) =      -145.7    0.3    0.0                                                                
+     H(72) to       C(7) to       C(8) to      H(82) =         1.6    0.3    0.1                                                                
+      C(1) to       O(9) to      C(10) to     H(102) =      -177.8    0.2    0.2                                                                
+      C(1) to       O(9) to      C(10) to     H(101) =        63.1    0.3    0.3                                                                
+      C(1) to       O(9) to      C(10) to     H(103) =       -58.9    0.3    0.3                                                                
+#USE LAST
+#
+#
 # THE MIS-MATCH BETWEEN LISTS 5 AND 12 CAUSES THE FILE TO
 # BE ABANDONED AND CONTROL PASSED TO THE USER.
 # NOT MUCH USE IN BATCH MODE
 #EDIT
  The following atom(s) will be kept
-   CU   1      O   2      C   3      O   4      C   5      O   6      C   7
-    O   8      C   9      O  10      H  53      H  51      H  52      H  91
-    H  93      H  92      H 102      H 101
- List   5 now contains     18 atom(s)
+    C   1      C   2      N   3      C   4      O   5      C   6      H  62
+    H  63      H  61      H  31      C   7      C   8      H  81      H  82
+    H  71      H  72      O   9      C  10      H 102      H 101      H 103
+    O  11      H  51
+ List   5 now contains     23 atom(s)
 #TITLE BAD LIST 5/12
 #TORS
 #END
 
               List type    22 (Refinement directives in internal format        )
  depends upon list type     5 (Atomic parameters                               )
- with original serial no.       1, not the current version,       9
+ with original serial no.       9, not the current version,      14
 
  List type    22 cannot be loaded
 
@@ -805,14 +945,10 @@ Variance-covariance matrix of selected atoms (x10^6)
  Matrix for e.s.ds missing. Using mean errors instead
  A positive rotation is clockwise from atom 1 to 4, when viewed from atom 2 to 3
                                                       Torsion angle & su
-     CU(1) to       O(2) to       C(3) to       C(5) =      -176.8    0.4                                                                
-     CU(1) to       O(2) to       C(3) to       C(5) =      -176.8    0.4                                                                
-     CU(1) to       O(6) to       C(7) to       O(8) =        -3.1    0.9                                                                
-     CU(1) to       O(6) to       C(7) to       C(9) =       176.5    0.4                                                                
-      C(7) to       O(6) to      CU(1) to      O(10) =       176.4    0.5                                                                
-      C(7) to       O(6) to      CU(1) to       C(3) =        61.1    0.5                                                                
-     O(10) to      CU(1) to CU(1,1,1,0,1) to O(10,1,1,0,1)     0.0    0.4                                                                
-      C(5) to       C(3) to      CU(1) to C(3,-1,1,1,0,1) = -176.4    0.7                                                                
+      O(9) to       C(1) to       C(2) to       N(3) =       -13.3    0.2                                                                
+      O(9) to       C(1) to       C(2) to       C(7) =      -163.3    0.2                                                                
+      O(9) to       C(1) to       C(2) to       C(8) =       130.4    0.2                                                                
+     O(11) to       C(1) to       C(2) to       N(3) =       168.2    0.2                                                                
 
 
           : Job ends ok       with     0 warnings and     1 error 

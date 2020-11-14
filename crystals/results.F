@@ -3675,7 +3675,16 @@ C
 C
       KCPROP = 1
       CALL XZEROF (A, 8)
-C----- LOAD DATA IF NOT ALREADY IN CORE
+C----- LOAD DATA IF NOT ALREADY IN CORE 
+      IF ( (KEXIST(1).LE.0) .OR. 
+     2     (KEXIST(2).LE.0) .OR. 
+     3     (KEXIST(3).LE.0) .OR. 
+     4     (KEXIST(5).LE.0) .OR. 
+     5     (KEXIST(23).LE.0) .OR. 
+     6     (KEXIST(29).LE.0) ) THEN
+           KCPROP = -1
+           RETURN
+      END IF
       IF (KHUNTR (1,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL01
       IF (KHUNTR (2,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL02
       IF (KHUNTR (3,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL03
@@ -3940,7 +3949,7 @@ C
 C  IBAR    THE LINE WIDTH.
 C
 C
-      CHARACTER *1 CODE, ANGLE, DIST
+      CHARACTER *1 CODE, ANGLE, DIST, TORS
       CHARACTER *160 CLINE
       CHARACTER *4 CTEM
 C
@@ -3971,11 +3980,11 @@ C
 #ifdef _HOL_
       DATA KHYD /4HH   /
       DATA KDET /4HD   /
-      DATA DIST/1HD/, ANGLE/1HA/
+      DATA DIST/1HD/, ANGLE/1HA/, TORS/1HT/
 #else
       DATA KHYD /'H   '/
       DATA KDET /'D   '/
-      DATA DIST/'D'/, ANGLE/'A'/
+      DATA DIST/'D'/, ANGLE/'A'/, TORS/'T'/
 #endif
       DATA ITEM(1)/2/, ITEM(2)/3/, ITEM(3)/4/
 C----- MAXIMUM NO OF ATOMS
@@ -4043,7 +4052,7 @@ C
             NUM = ITEM(1)
       ELSE  IF (CODE .EQ. ANGLE) THEN
             NUM = ITEM(2)
-      ELSE
+      ELSE  IF (CODE .EQ. TORS) THEN
             NUM = ITEM(3)
       ENDIF
 C
@@ -4068,8 +4077,6 @@ C----- OUTPUT  SERIAL NUMBER
       CALL SUBZED(J,IND1,LINEA,  1)
 C--UPDATE THE CURRENT POSITION FLAG
       K=K+NSTA
-c^^^
-c^^^      IF (I .LT. NUM) LINEA(K-2) = MINUS
       IF (I .LT. NUM) LINEA(K) = MINUS
       K=K+2
 2020  CONTINUE
@@ -4309,6 +4316,13 @@ c
 CODE FOR XCIFPR
       SUBROUTINE XCIFPR(KEY, IESD, NODEV)
 C
+C NOTE, 2020
+C For TORSION angles, suppress printing esd (set esd=0.0)
+C if any of the atoms is Hydrogen/Deuterium.
+C We should really look at the refinement status
+c
+c Now fixed properly in TORSION
+
 C----- PRINT GEOMETRY INFORMATION IN CIF FORMAT
 C
 C      KEY      11 = DIST     
@@ -4354,6 +4368,15 @@ C
       data cangl /'1234'/
       data cbond /'DHA '/
       data cbond2 /'HAA '/
+#ifdef _HOL_
+      DATA KHYD /4HH   /
+      DATA KDET /4HD   /
+      DATA DIST/1HD/, ANGLE/1HA/, TORS/1HT/
+#else
+      DATA KHYD /'H   '/
+      DATA KDET /'D   '/
+      DATA DIST/'D'/, ANGLE/'A'/, TORS/'T'/
+#endif
 C
 CDJWMAY99 - PREAPRE TO APPEND CIF OUTPUT ON FRN1
       CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
@@ -4394,13 +4417,13 @@ C----- WE NEED JKEY ETC BECAUSE MTE MAY CONTAIN BOTH DISTANCES AND ANGLE
 cdjw160804 - jkey & ncyc were not initialised
       jkey = 0
       ncyc = 1
-      IF (KEY .EQ. 13) THEN
+      IF (KEY .EQ. 13) THEN   !both
             JKEY = 0
             NCYC = 2
-      ELSE IF (KEY .EQ. 14) THEN
+      ELSE IF (KEY .EQ. 14) THEN   !torsion
             JKEY = 2
             NCYC = 1
-      ELSE IF (KEY .EQ. 15) THEN
+      ELSE IF (KEY .EQ. 15) THEN      !H-bond
             JKEY = 0
             NCYC = 1
       ELSE
@@ -4473,6 +4496,14 @@ c----- reset kkey to point to 'H'
        READ (MTE, END=2500, ERR = 9000) CODE, TERM, ESD,
      1 (STORE(JPUB),STORE(JPUB+1), (ISTORE(KPUB),KPUB=JPUB+2,JPUB+6),
      2  JPUB=IPUB, IPUB+21, 7)
+       if(key.eq.14) then   !Torsion
+C THIS IS NOW DONE PROPERLY IN TORSION BY LOOKING AT THE STATUS
+c        idjw=0
+c        do jpub=ipub,ipub+21,7
+c         if((istore(jpub).eq.khyd).or.(istore(jpub).eq.kdet))idjw=1
+c        enddo
+c        if(idjw.ge.1) esd=0.0
+       endif
       else
        READ (MTE, END=2500, ERR = 9000) CODE, TERM, ESD,
      1 (STORE(JPUB),STORE(JPUB+1), (ISTORE(KPUB),KPUB=JPUB+2,JPUB+6),
@@ -5434,14 +5465,17 @@ C
      4ann_a3'/'_atom_type_scat_Cromer_Mann_b3'/'_atom_type_scat_Cromer_M
      5ann_a4'/'_atom_type_scat_Cromer_Mann_b4'/'_atom_type_scat_Cromer_M
      6ann_c'/'_atom_type_scat_source  ')
-           DO M3=L3,L3+(N3-1)*MD3,MD3
+           SFLOOP: DO M3=L3,L3+(N3-1)*MD3,MD3
+             DO MR3=L3,M3-MD3,MD3   ! Ignore repeats
+               IF ( ISTORE(M3) .EQ. ISTORE(MR3) ) CYCLE SFLOOP
+             END DO
              WRITE (CTEMP,'(A4)') ISTORE(M3)
              CBUF=CTEMP(2:4)
              CALL XCCLWC (CBUF(1:3),CTEMP(2:4))
              WRITE (NCFPU1,1300) CTEMP(1:4),(STORE(M),M=M3+1,M3+11),
      1       TRIM(CREFER)
 1300         FORMAT (1X,A4,1X,8F9.4,/,3F9.4,1X,A)
-           END DO
+           END DO SFLOOP
         END IF
       END IF
 C 
@@ -6180,11 +6214,11 @@ C    LIST 13
          END IF
 c get the radiation from the DETAILS Card
          IF (ISTORE(L13DT+1) .EQ. -1) THEN
-C-Set above based on lambda             CBUF = 'XRAYS'
+C-Set above based on lambda             CBUF = 'xrays'
          ELSE IF (ISTORE(L13DT+1) .EQ. 0) THEN
-             CBUF = 'NEUTRONS'
+             CBUF = 'neutrons'
          ELSE
-             CBUF = 'ELECTRONS'
+             CBUF = 'electrons'
          ENDIF
 C Update for special conditions
          IF ( IDIFNO .EQ. 12 ) THEN
@@ -6698,21 +6732,21 @@ C
      1                    NINT(STORE(L30RF+8))
            CALL XPCIF (CLINE)
 c
-           WRITE (CLINE,'(A,A,''R_factor_ref '',F10.4)') '_oxford',
+           WRITE (CLINE,'(A,''R_factor_ref '',F10.4)') 
      1                   CBUF(1:11), STORE(L30RF+0)*0.01
            CALL XPCIF (CLINE)
-           WRITE (CLINE,'(A,''R_factor_all '',F10.4)') 
-     1                   CBUF(1:11), STORE(L30RF+0)*0.01
-           CALL XPCIF (CLINE)
+c           WRITE (CLINE,'(A,''R_factor_all '',F10.4)') 
+c     1                   CBUF(1:11), STORE(L30RF+0)*0.01
+c           CALL XPCIF (CLINE)
 c
 c           WRITE (CLINE,'(A,A, ''wR_factor_ref '', F10.4)') '_oxford',
 c _oxford prefix removed for checkcif compatability
            WRITE (CLINE,'(A, ''wR_factor_ref '', F10.4)') 
      1                   CBUF(1:11), STORE(L30RF+1)*0.01
            CALL XPCIF (CLINE)
-           WRITE (CLINE,'(A, ''wR_factor_all '', F10.4)') 
-     1                   CBUF(1:11),STORE(L30RF+1)*0.01
-           CALL XPCIF (CLINE)
+c           WRITE (CLINE,'(A, ''wR_factor_all '', F10.4)') 
+c     1                   CBUF(1:11),STORE(L30RF+1)*0.01
+c           CALL XPCIF (CLINE)
 c
            WRITE (CLINE,'(A, ''goodness_of_fit_ref '', F10.4)')
      1                   CBUF(1:11),STORE(L30RF+4)
@@ -6732,14 +6766,14 @@ C
            CALL XPCIF 
      1     ('# Computed with I/sigma = -10')
 
-           WRITE (CLINE,'(''_oxford_reflns_number_all '', I10)')
+           WRITE (CLINE,'(''_reflns_number_all '', I10)')
      1                  NINT(STORE(L30CF+5))
            CALL XPCIF (CLINE)
 c
-           WRITE (CLINE,'(''_oxford_refine_ls_R_factor_all '', F10.4)')
+           WRITE (CLINE,'(''_refine_ls_R_factor_all '', F10.4)')
      1                  STORE(L30CF+6)*0.01
            CALL XPCIF (CLINE)
-           WRITE (CLINE,'(''_oxford_refine_ls_wR_factor_all '', F10.4)')
+           WRITE (CLINE,'(''_refine_ls_wR_factor_all '', F10.4)')
      1                  STORE(L30CF+7)*0.01
            CALL XPCIF (CLINE)
 C
@@ -6747,7 +6781,7 @@ C
 c
 c
            CALL XPCIF 
-     1    ('# Computed with no filters except I/sigma = +2 a la SHELX')
+     1    ('# Computed with  I/sigma = +2 a la SHELX')
 
 #ifdef __MAC__
            WRITE(CBUF,'(''I>'',F6.1,''\\s(I)'')') STORE(L30CF+0)

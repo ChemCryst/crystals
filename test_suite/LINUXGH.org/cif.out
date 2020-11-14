@@ -209,10 +209,6 @@ Glazer, 1986) with a nominal stability of 0.1K.
 Cosier, J. & Glazer, A.M., 1986. J. Appl. Cryst. 105-107. 
 ; 
  
-_refine_special_details 
-; 
- ? 
-; 
  
 #--------------------------------------------------------------- 
 # _oxford_ data items, April 2010: 
@@ -388,22 +384,20 @@ _refine_diff_density_max          0.42
 _oxford_refine_reflns_threshold_expression       I>-10.0\s(I)
 _refine_ls_number_restraints      0 
 _refine_ls_number_parameters      55 
-_refine_ls_number_reflns          1133 
-_oxford_refine_ls_R_factor_ref    0.0879 
-_refine_ls_R_factor_all           0.0879 
+_refine_ls_number_reflns          1132 
+_refine_ls_R_factor_ref           0.0878 
 _refine_ls_wR_factor_ref          0.2170 
-_refine_ls_wR_factor_all          0.2170 
-_refine_ls_goodness_of_fit_ref    1.6682 
-[01] _refine_ls_shift/su_max           0.0000
-[02] _refine_ls_shift/su_mean          0.0000
+_refine_ls_goodness_of_fit_ref    1.6687 
+[01] _refine_ls_shift/su_max           0.0186
+[02] _refine_ls_shift/su_mean          0.0040
  
  
 # Computed with I/sigma = -10 
-_oxford_reflns_number_all         1133 
-_oxford_refine_ls_R_factor_all    0.0880 
-_oxford_refine_ls_wR_factor_all   0.2290 
+_reflns_number_all                1133 
+_refine_ls_R_factor_all           0.0880 
+_refine_ls_wR_factor_all          0.2290 
  
-# Computed with no filters except I/sigma = +2 a la SHELX 
+# Computed with I/sigma = +2 a la SHELX 
 _reflns_threshold_expression                I>2.0\s(I)
 _reflns_number_gt                 1016 
 _refine_ls_R_factor_gt            0.0783 
@@ -634,6 +628,23 @@ END
 NO 
 END                                                                             
 ;
+ 
+_refine_special_details
+;
+?
+  Reflections are selected by the following conditions :-
+  Minimum value of RATIO        is  -10.0
+;
+
+# Manually omitted reflections
+
+loop_
+_oxford_refln_omitted_index_h
+_oxford_refln_omitted_index_k
+_oxford_refln_omitted_index_l
+_oxford_refln_omitted_flag
+_oxford_refln_omitted_details
+   0  12   9  x   .
 
 # Uequiv = arithmetic mean of Ui i.e. Ueqiv = (U1+U2+U3)/3
 
@@ -1114,3 +1125,127 @@ loop_
  _geom_hbond_publ_flag
 C4 . H41 . O8 3_655 156.0(5) 0.955(7) 2.529(5) 3.423(9)    yes
 N6 . H1 . O8 1_655 165(6) 0.94(4) 1.93(5) 2.842(9)    yes
+loop_
+ _geom_torsion_atom_site_label_1
+ _geom_torsion_site_symmetry_1
+ _geom_torsion_atom_site_label_2
+ _geom_torsion_site_symmetry_2
+ _geom_torsion_atom_site_label_3
+ _geom_torsion_site_symmetry_3
+ _geom_torsion_atom_site_label_4
+ _geom_torsion_site_symmetry_4
+ _geom_torsion
+ _geom_torsion_publ_flag
+[81] N6 . C1 . C2 . O3 . 11.(15)    yes
+[81] N6 . C1 . C2 . O5 . -168.(10)    yes
+[81] C10 . C1 . C2 . O3 . 162.(11)    yes
+[81] C10 . C1 . C2 . O5 . -17.(16)    yes
+[81] C11 . C1 . C2 . O3 . -131.(12)    yes
+[81] C11 . C1 . C2 . O5 . 48.(16)    yes
+[81] C2 . C1 . N6 . C7 . 70.(12)    yes
+C2 . C1 . N6 . H1 . -104.5    no
+[81] C10 . C1 . N6 . C7 . -80.(13)    yes
+C10 . C1 . N6 . H1 . 105.3    no
+[81] C11 . C1 . N6 . C7 . -146.(10)    yes
+C11 . C1 . N6 . H1 . 39.3    no
+[81] C2 . C1 . C10 . C11 . 105.(12)    yes
+[81] C2 . C1 . C10 . H101 . -144.(10)    no
+[81] C2 . C1 . C10 . H102 . -5.(15)    no
+[81] N6 . C1 . C10 . C11 . -104.(13)    yes
+[81] N6 . C1 . C10 . H101 . 5.(15)    no
+[81] N6 . C1 . C10 . H102 . 145.(10)    no
+[81] C11 . C1 . C10 . H101 . 109.(12)    no
+[81] C11 . C1 . C10 . H102 . -110.(12)    no
+[81] C2 . C1 . C11 . C10 . -106.(12)    yes
+[81] C2 . C1 . C11 . H111 . 144.(11)    no
+[81] C2 . C1 . C11 . H112 . 1.(15)    no
+[81] N6 . C1 . C11 . C10 . 108.(11)    yes
+[81] N6 . C1 . C11 . H111 . 0.(15)    no
+[81] N6 . C1 . C11 . H112 . -143.(10)    no
+[81] C10 . C1 . C11 . H111 . -108.(13)    no
+[81] C10 . C1 . C11 . H112 . 108.(12)    no
+[81] C1 . C2 . O3 . C4 . -179.(10)    yes
+[81] O5 . C2 . O3 . C4 . 1.(15)    yes
+[81] C2 . O3 . C4 . H41 . -179.(9)    no
+[81] C2 . O3 . C4 . H42 . -58.(13)    no
+[81] C2 . O3 . C4 . H43 . 61.(12)    no
+[81] C1 . N6 . C7 . O8 . -3.(13)    yes
+[81] C1 . N6 . C7 . C9 . 175.(8)    yes
+H1 . N6 . C7 . O8 . 171.8    no
+H1 . N6 . C7 . C9 . -9.6    no
+[81] N6 . C7 . C9 . H91 . 179.(8)    no
+[81] N6 . C7 . C9 . H92 . -59.(11)    no
+[81] N6 . C7 . C9 . H93 . 59.(12)    no
+[81] O8 . C7 . C9 . H91 . -1.(13)    no
+[81] O8 . C7 . C9 . H92 . 118.(10)    no
+[81] O8 . C7 . C9 . H93 . -122.(10)    no
+[81] C1 . C10 . C11 . H111 . 112.(11)    no
+[81] C1 . C10 . C11 . H112 . -112.(11)    no
+[81] H101 . C10 . C11 . C1 . -110.(10)    no
+[81] H101 . C10 . C11 . H111 . 2.(13)    no
+[81] H101 . C10 . C11 . H112 . 137.(9)    no
+[81] H102 . C10 . C11 . C1 . 110.(10)    no
+[81] H102 . C10 . C11 . H111 . -137.(9)    no
+[81] H102 . C10 . C11 . H112 . -1.(12)    no
+loop_
+ _geom_torsion_atom_site_label_1
+ _geom_torsion_site_symmetry_1
+ _geom_torsion_atom_site_label_2
+ _geom_torsion_site_symmetry_2
+ _geom_torsion_atom_site_label_3
+ _geom_torsion_site_symmetry_3
+ _geom_torsion_atom_site_label_4
+ _geom_torsion_site_symmetry_4
+ _geom_torsion
+ _geom_torsion_publ_flag
+[81] N6 . C1 . C2 . O3 . 11.(15)    yes
+[81] N6 . C1 . C2 . O5 . -168.(10)    yes
+[81] C10 . C1 . C2 . O3 . 162.(11)    yes
+[81] C10 . C1 . C2 . O5 . -17.(16)    yes
+[81] C11 . C1 . C2 . O3 . -131.(12)    yes
+[81] C11 . C1 . C2 . O5 . 48.(16)    yes
+[81] C2 . C1 . N6 . C7 . 70.(12)    yes
+[81] C2 . C1 . N6 . H1 . -104.(9)    no
+[81] C10 . C1 . N6 . C7 . -80.(13)    yes
+[81] C10 . C1 . N6 . H1 . 105.(10)    no
+[81] C11 . C1 . N6 . C7 . -146.(10)    yes
+[81] C11 . C1 . N6 . H1 . 39.(11)    no
+[81] C2 . C1 . C10 . C11 . 105.(12)    yes
+[81] C2 . C1 . C10 . H101 . -144.(10)    no
+[81] C2 . C1 . C10 . H102 . -5.(15)    no
+[81] N6 . C1 . C10 . C11 . -104.(13)    yes
+[81] N6 . C1 . C10 . H101 . 5.(15)    no
+[81] N6 . C1 . C10 . H102 . 145.(10)    no
+[81] C11 . C1 . C10 . H101 . 109.(12)    no
+[81] C11 . C1 . C10 . H102 . -110.(12)    no
+[81] C2 . C1 . C11 . C10 . -106.(12)    yes
+[81] C2 . C1 . C11 . H111 . 144.(11)    no
+[81] C2 . C1 . C11 . H112 . 1.(15)    no
+[81] N6 . C1 . C11 . C10 . 108.(11)    yes
+[81] N6 . C1 . C11 . H111 . 0.(15)    no
+[81] N6 . C1 . C11 . H112 . -143.(10)    no
+[81] C10 . C1 . C11 . H111 . -108.(13)    no
+[81] C10 . C1 . C11 . H112 . 108.(12)    no
+[81] C1 . C2 . O3 . C4 . -179.(10)    yes
+[81] O5 . C2 . O3 . C4 . 1.(15)    yes
+[81] C2 . O3 . C4 . H41 . -179.(9)    no
+[81] C2 . O3 . C4 . H42 . -58.(13)    no
+[81] C2 . O3 . C4 . H43 . 61.(12)    no
+[81] C1 . N6 . C7 . O8 . -3.(13)    yes
+[81] C1 . N6 . C7 . C9 . 175.(8)    yes
+[81] H1 . N6 . C7 . O8 . 171.(7)    no
+[81] H1 . N6 . C7 . C9 . -9.(9)    no
+[81] N6 . C7 . C9 . H91 . 179.(8)    no
+[81] N6 . C7 . C9 . H92 . -59.(11)    no
+[81] N6 . C7 . C9 . H93 . 59.(12)    no
+[81] O8 . C7 . C9 . H91 . -1.(13)    no
+[81] O8 . C7 . C9 . H92 . 118.(10)    no
+[81] O8 . C7 . C9 . H93 . -122.(10)    no
+[81] C1 . C10 . C11 . H111 . 112.(11)    no
+[81] C1 . C10 . C11 . H112 . -112.(11)    no
+[81] H101 . C10 . C11 . C1 . -110.(10)    no
+[81] H101 . C10 . C11 . H111 . 2.(13)    no
+[81] H101 . C10 . C11 . H112 . 137.(9)    no
+[81] H102 . C10 . C11 . C1 . 110.(10)    no
+[81] H102 . C10 . C11 . H111 . -137.(9)    no
+[81] H102 . C10 . C11 . H112 . -1.(12)    no

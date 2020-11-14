@@ -2085,7 +2085,7 @@ LS-scale=  0.909   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.17E-05
- (sp inverse) 1-norm:  8.21E+00 cond. number:  1.82E+02 rel. error:  2.17E-05
+[80]  (sp inverse) 1-norm:  8E+00 cond. number:  2E+02 rel. error:  2.17E-05
                                                                                                             Composite
 
                                                                       Composite
@@ -2447,7 +2447,7 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
 
  Statistics for   206 least squares parameters, with 12584 degrees of freedom
  Number of observations             12575               215             12790
-[30]  Minimisation function              0.13 E+06         0.13 E+06         0.26 E+06
+[30]  Minimisation function              0.13E+06         0.1E+06         0.26E+06
 [45]  Hamilton weighted R-value           4.             16.07              6. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -3251,7 +3251,7 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
 [73]                       0.00             0.00    0.00    0.00    0.00
 [73]                       0.00             0.00    0.00    0.00    0.00
 [31]                                         0.012    0.008    0.013 
-Mean C-C su =   0.0076
+[84] Mean C-C su =   0.00
  The following atoms should be carefully examined 
 [24]  F       6.    0.066     0.224     0.384     0.225     0.178     1.306     Might be split
 #CYCLENDS
@@ -3357,7 +3357,7 @@ LS-scale=  0.909   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.30E-06
- (sp inverse) 1-norm:  2.53E+00 cond. number:  1.09E+01 rel. error:  1.30E-06
+[80]  (sp inverse) 1-norm:  3E+00 cond. number:  1E+01 rel. error:  1.30E-06
 
                                                 for           6 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -3379,7 +3379,7 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
 
  Statistics for     6 least squares parameters, with 12785 degrees of freedom
  Number of observations             12575               216             12791
-[30]  Minimisation function              0.13 E+06         0.12 E+06         0.26 E+06
+[30]  Minimisation function              0.13E+06         0.1E+06         0.26E+06
 [45]  Hamilton weighted R-value           4.             15.99              6. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -3883,7 +3883,7 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
 [73]                       0.00             0.00    0.00    0.00    0.00
 [73]                       0.00             0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0009
+[84] Mean C-C su =   0.00
  The following atoms should be carefully examined 
 [24]  F       6.    0.063     0.203     0.446     0.237     0.179     1.427     Might be split
 #CYCLENDS
@@ -3993,7 +3993,7 @@ LS-scale=  0.909   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.76E-06
- (sp inverse) 1-norm:  3.21E+00 cond. number:  2.31E+01 rel. error:  2.76E-06
+[80]  (sp inverse) 1-norm:  3E+00 cond. number:  2E+01 rel. error:  2.76E-06
 [14]  S/ESD   217         217           -0.012       0.0E+00    0.79 E-03        -15.0         C    414 X       
 [14]  S/ESD   219         219           -0.010       0.0E+00    0.63 E-03        -16.9         C    414 Z       
 
@@ -4017,7 +4017,7 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
 
  Statistics for   261 least squares parameters, with 12530 degrees of freedom
  Number of observations             12575               216             12791
-[30]  Minimisation function              0.13 E+06         0.13 E+06         0.26 E+06
+[30]  Minimisation function              0.13E+06         0.1E+06         0.26E+06
 [45]  Hamilton weighted R-value           4.             15.99              6. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -4516,7 +4516,7 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
 [73]                       0.00            -0.00    0.00   -0.00    0.00
 [73]                       0.00             0.00    0.00    0.00    0.00
 [31]                                         0.014    0.014    0.013 
-Mean C-C su =   0.0129
+[84] Mean C-C su =   0.01
  The following atoms should be carefully examined 
 [24]  F       6.    0.063     0.203     0.446     0.237     0.179     1.427     Might be split
 #CYCLENDS
@@ -4620,7 +4620,7 @@ All cycle   Min function          0.0           0.16E+06       0.10E+16
 
  Statistics for   261 least squares parameters, with 12530 degrees of freedom
  Number of observations             12575               216             12791
-[30]  Minimisation function              0.15 E+06         0.78 E+05         0.23 E+06
+[30]  Minimisation function              0.15E+06         0.7E+05         0.23E+06
 [45]  Hamilton weighted R-value           5.             11.40              6. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -5119,7 +5119,7 @@ All cycle   Min function          0.0           0.16E+06       0.10E+16
 [73]                       0.00             0.00    0.00   -0.00    0.00
 [73]                       0.00             0.00    0.00    0.00    0.00
 [31]                                         0.013    0.013    0.013 
-Mean C-C su =   0.0121
+[84] Mean C-C su =   0.01
  The following atoms should be carefully examined 
 [24]  F       6.    0.063     0.203     0.446     0.237     0.179     1.427     Might be split
 #CYCLENDS
@@ -5181,21 +5181,21 @@ Mean C-C su =   0.0121
 
  Target Weighted Residual =  3.29
    h   k  l     Fo      Fc  wDel Fo/Fc     h   k  l     Fo      Fc  wDel Fo/Fc
-[28]    0   1   0  235.5  314.9  72.2  0.7      0   1   1  198.0  268.6  64.2  0.7
-[28]    0   0   1  157.0  219.8  57.1  0.7      0   2   0   83.9  143.1  53.8  0.5
-[28]    0   1   2  362.7  308.7  49.2  1.1      0   2   1  303.6  249.5  49.2  1.2
-[28]    1  -1   2   88.2   37.1  46.5  2.3      0  -1   1  235.9  189.7  42.0  1.2
-[28]    1  -1   3  156.2  114.3  38.2  1.3      1   0   2   95.5  137.5  38.1  0.6
-[28]   -1   0   2  189.1  149.1  36.4  1.2      1   2   1   17.0   55.7  35.2  0.3
-[28]    1   0   3  169.8  208.4  35.1  0.8      1   0   0   73.1   34.6  35.0  2.1
-[28]    1   0   4  270.3  233.1  33.9  1.1      0   2   2   45.6   82.6  33.6  0.5
-[28]    0   3   1   37.1   72.8  32.5  0.5      1   1   3  144.2  109.8  31.3  1.3
-[28]    1  -2   1   51.8   17.8  31.0  2.9      1   1   1  133.4   99.9  30.5  1.3
-[28]   -1   2   3  278.4  246.5  29.0  1.1      1   1   0  256.0  287.5  28.7  0.8
-[28]    1   3   1  106.7  137.6  28.1  0.7      0  -4   1  164.7  195.5  28.0  0.8
-[28]    1  -2   2   34.4   64.2  27.1  0.5     -1   1   3  127.2  155.2  25.5  0.8
-[28]    1  -3   1  272.6  245.5  24.6  1.1     -1   1   2   70.8   97.5  24.3  0.7
-[28]    0  -3   1   96.7  123.0  23.9  0.7      1  -3   2  262.6  237.9  22.5  1.1
+[28]    0   1   0  235.5  314.9  72.2  0.      0   1   1  198.0  268.6  64.2  0.
+[28]    0   0   1  157.0  219.8  57.1  0.      0   2   0   83.9  143.1  53.8  0.
+[28]    0   1   2  362.7  308.7  49.2  1.      0   2   1  303.6  249.5  49.2  1.
+[28]    1  -1   2   88.2   37.1  46.5  2.      0  -1   1  235.9  189.7  42.0  1.
+[28]    1  -1   3  156.2  114.3  38.2  1.      1   0   2   95.5  137.5  38.1  0.
+[28]   -1   0   2  189.1  149.1  36.4  1.      1   2   1   17.0   55.7  35.2  0.
+[28]    1   0   3  169.8  208.4  35.1  0.      1   0   0   73.1   34.6  35.0  2.
+[28]    1   0   4  270.3  233.1  33.9  1.      0   2   2   45.6   82.6  33.6  0.
+[28]    0   3   1   37.1   72.8  32.5  0.      1   1   3  144.2  109.8  31.3  1.
+[28]    1  -2   1   51.8   17.8  31.0  2.      1   1   1  133.4   99.9  30.5  1.
+[28]   -1   2   3  278.4  246.5  29.0  1.      1   1   0  256.0  287.5  28.7  0.
+[28]    1   3   1  106.7  137.6  28.1  0.      0  -4   1  164.7  195.5  28.0  0.
+[28]    1  -2   2   34.4   64.2  27.1  0.     -1   1   3  127.2  155.2  25.5  0.
+[28]    1  -3   1  272.6  245.5  24.6  1.     -1   1   2   70.8   97.5  24.3  0.
+[28]    0  -3   1   96.7  123.0  23.9  0.      1  -3   2  262.6  237.9  22.5  1.
 
                               ***
                              ***
@@ -5225,11 +5225,11 @@ LS-scale=  0.909   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =  0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
 #CYCLENDS
 #FINISH
- Physical reads      13236 Physical writes      10075 Cache hits     223507
- Cache hit distribution   203836   13100    2293     743     325     591
- Cache hit distribution      194     121     198     221     258     197
- Cache hit distribution      175     162     198     122     217     141
- Cache hit distribution      129      44      41      68      66      67
+ Physical reads      13237 Physical writes      10075 Cache hits     223502
+ Cache hit distribution   203833   13100    2293     743     325     598
+ Cache hit distribution      186     120     200     219     255     198
+ Cache hit distribution      185     154     197     123     214     139
+ Cache hit distribution      131      45      41      68      57      78
 
 
           : Job ends ok       with     0 warnings and     0 errors

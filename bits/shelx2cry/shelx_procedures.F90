@@ -386,7 +386,7 @@ contains
     list13index = list13index+1
     write (list13(list13index), '(a,F0.5)') 'COND WAVE= ', wavelength
 
-    radiation = 'neutrons'
+    radiation = 'xrays'  !default to X-rays unless NEUT or ELEC keyword found.
 !    write(123,*) 'Lambda = ', wavelength, target, radiation
       wave = nint(100.*wavelength)
 !      write(123,*)' Wave=', wave 

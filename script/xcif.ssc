@@ -1,5 +1,5 @@
 %SCRIPT XCIF
-%% The variables needed by XQUESTIO
+%% The variables needed by XQUESTIO 
 %    VARIABLE CHARACTER CFILE
 %    VARIABLE LOGICAL JUSTRUNIT TWINNED HINCELL VALID11
 %    VARIABLE INTEGER FTYPE ISQUEEZE
@@ -97,14 +97,15 @@
 ^^WI        STATE = OFF
 %        END IF
 ^^WI  }
-^^WI  @ 5,2 GRID GRIDA NROWS=1 NCOLS=2 OUTLINE='H-bonds'
+^^WI  @ 5,2 GRID GRIDA NROWS=1 NCOLS=4 OUTLINE='Other Tables'
 ^^WI  {
 ^^WI    @ 1,1 CHECKBOX XHBD 'List H-bonds'
-% IF ( HINCELL ) THEN
+%       IF ( HINCELL ) THEN
 ^^WI     STATE=ON
-% ELSE
+%       ELSE
 ^^WI     DISABLED=YES STATE=OFF
-% END IF
+%       END IF
+^^WI    @ 1,3 CHECKBOX XTORS 'List Torsion Angles' STATE=OFF
 ^^WI  }
 ^^WI  @ 6,2 GRID GRIDV NROWS=3 NCOLS=3 OUTLINE='Display'
 ^^WI  {
@@ -273,6 +274,13 @@
 %      COPY 'PIVOT H '
 %      COPY 'BOND O N C'
 %      COPY 'END '
+%    END IF
+%%
+^^?? XTORS STATE
+%    VERIFY ON OFF
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%    IF ( VALUE .EQ. 1 ) THEN
+%     COPY '#SCRIPT XTORSA'
 %    END IF
 %%
 %%  Write LIST 12 and 16 to end of cif

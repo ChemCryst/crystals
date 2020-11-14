@@ -3026,6 +3026,7 @@ contains
       integer ierror, iftype
       integer istat, j, itemp, iuln6, j1, k, k1
       integer n
+	  integer jsig
       integer ncentric
       real yslope, zh, tony, tonsy, vard, xflack, qflack
       real scale, sig, sig1, sig2, sigest, sigfsq, sigmad, sigmaq
@@ -3035,7 +3036,7 @@ contains
 
       integer, external :: kexist, khuntr, ktyp06, kcprop, nctrim
       integer, external :: linfit, kfnr, ktoncent
-
+      integer, external :: ksctrn
 !C      set packing constants for Ton's code
       integer, parameter :: npak = 256
       integer, parameter :: nn2 = npak/2
@@ -3319,6 +3320,9 @@ contains
         write (cmon, '(a)') 'No Friedel pairs found'
         call xprvdu(ncvdu, 1, 0)
         IERROR = -1
+!                                         set flag for warning popup Window
+        ISTAT = KSCTRN ( 1 , '_BADPASCAL' , 1, 1 )
+!
         CALL XERHND(IERWRN)
         return
       endif
@@ -3584,7 +3588,13 @@ contains
       end if
       ! add sign, decimal point
       n = n+2
-      sig = minval(sv1(2:))
+!      sig = minval(sv1(2:))
+      sig = 0
+      do jsig = 1,7  ! Find smallest non-zero su.
+         if ( sv1(jsig) < sig .or. sig .eq. 0.0 ) then 
+            sig = sv1(jsig)
+         end if
+      end do
       if (sig < 1.0d0) then
         ! number of zeros before eny digit
         if (sig > tiny(1.0)) then
@@ -3679,7 +3689,13 @@ contains
       end if
       ! add sign, decimal point
       n = n+2
-      sig = minval(sv2(2:))
+!      sig = minval(sv2(2:))
+      sig = 0.0
+      do jsig = 1,7  ! Find smallest non-zero su.
+         if ( sv2(jsig) < sig .or. sig .eq. 0.0 ) then 
+            sig = sv2(jsig)
+         end if
+      end do
       if (sig < 1.0d0) then
         ! number of zeros before eny digit
         i = 0

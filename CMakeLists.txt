@@ -60,12 +60,11 @@ if(CMAKE_COMPILER_IS_GNUCC)
       ${CMAKE_C_COMPILER}
       ARGS                    --version
       OUTPUT_VARIABLE _compiler_output)
-  string(REGEX REPLACE "^.*([0-9]\\.[0-9]\\.[0-9]).*$" "\\1" gcc_compiler_version ${_compiler_output})
-  message(STATUS "C compiler version: ${gcc_compiler_version} [${CMAKE_C_COMPILER}]")
+  message(STATUS "C compiler version: ${CMAKE_C_COMPILER_VERSION} [${CMAKE_C_COMPILER}]")
 
-  if(gcc_compiler_version VERSION_LESS "4.6")
+  if(CMAKE_C_COMPILER_VERSION VERSION_LESS 4.6)
       message(FATAL_ERROR "Your C compiler is too old")
-  elseif(gcc_compiler_version VERSION_LESS "4.6")
+  elseif(CMAKE_C_COMPILER_VERSION VERSION_LESS 4.6)
       message(WARNING "Your C compiler might be too old")
   endif ()
 
@@ -73,26 +72,24 @@ if(CMAKE_COMPILER_IS_GNUCC)
       ${CMAKE_CXX_COMPILER}
       ARGS                    --version
       OUTPUT_VARIABLE _compiler_output)
-  string(REGEX REPLACE "^.*([0-9]\\.[0-9]\\.[0-9]).*$" "\\1" gcc_compiler_version ${_compiler_output})
-  message(STATUS "C++ compiler version: ${gcc_compiler_version} [${CMAKE_CXX_COMPILER}]")
+  message(STATUS "C++ compiler version: ${CMAKE_CXX_COMPILER_VERSION} [${CMAKE_CXX_COMPILER}]")
 
-  if(gcc_compiler_version VERSION_LESS "4.6")
+  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.6)
       message(FATAL_ERROR "Your C compiler is too old")
-  elseif(gcc_compiler_version VERSION_LESS "4.6")
-      message(WARNING "Your C compiler might be too old")
+  elseif(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.6)
+      message(WARNING "Your C++ compiler might be too old")
   endif ()
 
   exec_program(
       ${CMAKE_Fortran_COMPILER}
       ARGS                    --version
       OUTPUT_VARIABLE _compiler_output)
-  string(REGEX REPLACE "^.*([0-9]\\.[0-9]\\.[0-9]).*$" "\\1" gcc_compiler_version ${_compiler_output})
-  message(STATUS "Fortran compiler version: ${gcc_compiler_version} [${CMAKE_Fortran_COMPILER}]")
+  message(STATUS "Fortran compiler version: ${CMAKE_Fortran_COMPILER_VERSION} [${CMAKE_Fortran_COMPILER}]")
 
-  if(gcc_compiler_version VERSION_LESS "4.6")
-      message(FATAL_ERROR "Your C compiler is too old")
-  elseif(gcc_compiler_version VERSION_LESS "4.6")
-      message(WARNING "Your C compiler might be too old")
+  if(CMAKE_Fortran_COMPILER_VERSION VERSION_LESS 4.6)
+      message(FATAL_ERROR "Your Fortran compiler is too old")
+  elseif(CMAKE_Fortran_COMPILER_VERSION VERSION_LESS 4.6)
+      message(WARNING "Your Fortran compiler might be too old")
   endif ()
 endif ()
 
@@ -327,14 +324,20 @@ IF (Fortran_COMPILER_NAME MATCHES "gfortran")  # gfortran
 
     add_definitions(-DCRY_GNU)
 
-    if(useFAST)
-        SET (CMAKE_Fortran_FLAGS_RELEASE "-fno-f2c -O3 -g -march=native -Wfatal-errors -ftree-vectorize -flto -fwhole-program")
+    if(CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER_EQUAL 10)
+        SET (MISMATCH_FLAG "-fallow-argument-mismatch")
     else ()
-        SET (CMAKE_Fortran_FLAGS_RELEASE "-fno-f2c -O3 -g -Wfatal-errors -ftree-vectorize -msse2 -w")
+        SET (MISMATCH_FLAG "")
     endif ()
-    SET (CMAKE_Fortran_FLAGS_DEBUG   "-fno-f2c -O0 -g -Wfatal-errors -Wall -Wextra")
-    if(CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER "4.5")
-        SET (CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -fcheck=all")
+
+    if(useFAST)
+        SET (CMAKE_Fortran_FLAGS_RELEASE "-fno-f2c -O3 -g -march=native -Wfatal-errors -ftree-vectorize -flto -fwhole-program ${MISMATCH_FLAG}")
+    else ()
+        SET (CMAKE_Fortran_FLAGS_RELEASE "-fno-f2c -O3 -g -Wfatal-errors -ftree-vectorize -msse2 -w ${MISMATCH_FLAG}")
+    endif ()
+    SET (CMAKE_Fortran_FLAGS_DEBUG   "-fno-f2c -O0 -g -Wfatal-errors -Wall -Wextra ${MISMATCH_FLAG}")
+    if(CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER 4.5)
+        SET (CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -fcheck=all ${MISMATCH_FLAG}")
     else ()
         SET (CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -fbounds-check")
     endif()
