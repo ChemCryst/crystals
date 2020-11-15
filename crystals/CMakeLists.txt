@@ -17,7 +17,7 @@ endif()
 
 add_library(CrystalsFortran STATIC
 helper.c
-python.c
+python.cpp
 mrgrnk.f90
 crystals_hdf5.F90
 numpy.F90
