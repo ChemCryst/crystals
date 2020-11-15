@@ -131,7 +131,7 @@ int loadPyDLL() {
 
 	// load the Python DLL
 	LPCWSTR pDllName = L"pyembed/python38.dll" ;
-	hModule = LoadLibrary( pDllName ) ;
+	hModule = LoadLibraryW( pDllName ) ;
 	if ( hModule == NULL ) {
 		lineout("Could not load python dll",26);
 		return 0;
