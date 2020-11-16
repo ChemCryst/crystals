@@ -81,6 +81,14 @@
 @goto fcomp
 @
 :tryCPP
+@rem CRYSTALS CPP FILES
+@if not exist ..\crystals\%FILENAME%.cpp goto tryGUICPP
+@set CCSRC=..\crystals\%FILESTEM%.cpp
+@set JUMPBACK=tryGUICPP
+@set FILEFOUND=OK
+@goto ccomp
+@
+:tryGUICPP
 @rem GUI CC FILES
 @if not exist ..\gui\%FILENAME%.cpp goto tryWEB
 @set CCSRC=..\gui\%FILESTEM%.cpp
