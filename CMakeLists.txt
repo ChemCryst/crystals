@@ -192,8 +192,10 @@ if(useOPENMP)
     endif()
 endif ()
 
-#find_package(PythonLibs 3 REQUIRED)
-#INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIRS})
+if ( NOT WIN32 )
+	find_package(PythonLibs 3 REQUIRED)
+	INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIRS})
+endif ()
 
 if ( use32 )
     message(STATUS "Building 32bit")
@@ -667,7 +669,7 @@ if ( useMULTIDEF_WORKAROUND )
     set (CMAKE_EXE_LINKER_FLAGS -Wl,--allow-multiple-definition )
 endif()
 
-    TARGET_LINK_LIBRARIES(crystals CrystalsFortran CameronFortran ${wxWidgets_LIBRARIES} ${MSYS2LIBS} ${wxSTATICEXTRA_LIBS} )
+    TARGET_LINK_LIBRARIES(crystals CrystalsFortran CameronFortran ${wxWidgets_LIBRARIES} ${PYTHON_LIBRARIES} ${MSYS2LIBS} ${wxSTATICEXTRA_LIBS} )
     SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_GUI)
     SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES Fortran_MODULE_DIRECTORY ${Fortran_MODULE_DIRECTORY} )
 
