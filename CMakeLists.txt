@@ -674,7 +674,7 @@ endif()
     SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES Fortran_MODULE_DIRECTORY ${Fortran_MODULE_DIRECTORY} )
 
 #    SET_TARGET_PROPERTIES(crystalscl PROPERTIES LINKER_LANGUAGE Fortran)
-    TARGET_LINK_LIBRARIES(crystalscl CrystalsFortran CameronFortran )
+    TARGET_LINK_LIBRARIES(crystalscl CrystalsFortran CameronFortran ${PYTHON_LIBRARIES} )
 #    SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_NOGUI)
 
 elseif( usePY )
@@ -684,7 +684,7 @@ elseif( usePY )
 else()
     ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} crystals/crystals.F)
     SET_TARGET_PROPERTIES(crystals PROPERTIES LINKER_LANGUAGE Fortran)
-    TARGET_LINK_LIBRARIES(crystals CrystalsFortran CameronFortran)
+    TARGET_LINK_LIBRARIES(crystals CrystalsFortran CameronFortran ${PYTHON_LIBRARIES} )
     SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_NOGUI)
 endif()
 
