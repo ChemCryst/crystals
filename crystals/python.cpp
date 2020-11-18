@@ -91,6 +91,7 @@ void lineouts(const char* string) {   // This wraps lineout so we don't need to 
 	#define PYTHON_ABI_VERSION 3
 	FARPROC pModule_Create2Fn;
 	typedef PyObject* (*PMODULECREATE2)(PyModuleDef *, int);
+	#define mModeuleCreate2(a,b) ((PMODULECREATE2)pModule_Create2Fn)(a, b);
 
 	// int (*py3_PyArg_ParseTuple)(PyObject *, char *, ...);
 	FARPROC pArg_ParseTupleFn;
@@ -119,8 +120,11 @@ void lineouts(const char* string) {   // This wraps lineout so we don't need to 
 	HMODULE hModule = NULL;
 #else
 
+	#define _MAX_PATH 1024
+
 	#define mRunSimpleStringFlags(str,flags) PyRun_SimpleStringFlags(str,flags)
 	#define mArg_ParseTuple( args, s, string ) PyArg_ParseTuple( args, s, string )
+	#define mModeuleCreate2(a,b) PyModule_Create2(a,b)
 
 #endif
 
@@ -333,7 +337,7 @@ static struct PyModuleDef crys_stdoutRedirect =
 
 PyObject * PyInit_crys_stdoutRedirect(void)
 {
-    return ((PMODULECREATE2)pModule_Create2Fn)(&crys_stdoutRedirect, PYTHON_ABI_VERSION);
+    return mModeuleCreate2(&crys_stdoutRedirect, PYTHON_ABI_VERSION);
 }
 
 
@@ -430,12 +434,12 @@ int initPy() {
 // Set the PYTHONHOME to the CRYSTALS install folder + /pyembed
 
     char homePath[_MAX_PATH+1], exePath[_MAX_PATH+1];
-    char drive[_MAX_DRIVE],  dir[_MAX_DIR];
+//    char drive[_MAX_DRIVE],  dir[_MAX_DIR];
 
 #ifdef CRY_OSWIN32
     GetModuleFileNameA(NULL,exePath,_MAX_PATH+1);
 #else
-	ssizet_t len;
+	ssize_t len;
 	if ((len = readlink("/proc/self/exe", exePath, sizeof(exePath)-1)) != -1)
 		exePath[len] = '\0';
 #endif
@@ -531,7 +535,7 @@ sys.stderr.errcatch = True\n", NULL);
 
 #else
 
-    PyRun_SimpleString("\
+    PyRun_SimpleStringFlags("\
 import crys_stdoutRedirect\n\
 import sys\n\
 class crys_StdoutCatcher:\n\
