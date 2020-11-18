@@ -506,7 +506,7 @@ int initPy() {
 #ifdef CRY_OSWIN32
 	 ((PINITIALIZEEXFN)pInitializeExFn)( 0 ) ;
 #else
-    Py_InitializeEx(0), but using the dynamically loaded function address.
+    Py_InitializeEx(0);
 #endif
 
 // This little bit tells python where to redirect stdout and stderr.
