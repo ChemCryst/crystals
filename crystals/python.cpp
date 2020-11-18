@@ -106,23 +106,9 @@ typedef void (*PERRFETCH)(PyObject**,PyObject**,PyObject**);
 HMODULE hModule = NULL;
 char scriptPath[_MAX_PATH+1];
 
-//PyAPI_FUNC(void) _Py_Dealloc(PyObject *);
-//FARPROC pDeallocFn;
-//typedef void (*PDEALLOC)(PyObject*);
-
-
-//PyObject _Py_NoneStruct; /* Don't use this directly */
-//#define Py_None (&_Py_NoneStruct)
-
-//#define _Py_Dealloc(m) ((PDEALLOC)pDeallocFn)(m)
-
 int initPy();
 
-
-
 int loadPyDLL() {
-
-//    lineout("loadpy",7);
 
 
     if ( hModule ) return 1;   //already loaded
@@ -264,20 +250,6 @@ int loadPyDLL() {
 		return 0;
 	} 
 
-
-/*	// locate _Py_Dealloc() function
-	pDeallocFn = GetProcAddress( hModule , "_Py_Dealloc" ) ;
-	if(  pDeallocFn == NULL )  {		
-		lineout("Could not find _Py_Dealloc()",29);
-		hModule = NULL;
-		return 0;
-	} 
-
-
-//	_Py_NoneStruct = Py_BuildValue("");
-	_Py_NoneStruct = *((PBUILDVALUE)pBuildValueFn)("");
-*/
-
     initPy();
  
 	return 1;
@@ -300,23 +272,23 @@ redirection_stdoutredirect(PyObject *self, PyObject *args)
 }
 
 static PyMethodDef RedirectionMethods[] = {
-    {"stdoutredirect", redirection_stdoutredirect, METH_VARARGS,
+    {"crys_stdoutredirect", redirection_stdoutredirect, METH_VARARGS,
         "stdout redirection helper"},
     {NULL, NULL, 0, NULL}
 };
 
-static struct PyModuleDef stdoutRedirect =
+static struct PyModuleDef crys_stdoutRedirect =
 {
     PyModuleDef_HEAD_INIT,
-    "stdoutRedirect", /* name of module */
+    "crys_stdoutRedirect", /* name of module */
     "",          /* module documentation, may be NULL */
     -1,          /* size of per-interpreter state of the module, or -1 if the module keeps state in global variables. */
     RedirectionMethods
 };
 
-PyObject * PyInit_stdoutRedirect(void)
+PyObject * PyInit_crys_stdoutRedirect(void)
 {
-    return ((PMODULECREATE2)pModule_Create2Fn)(&stdoutRedirect, PYTHON_ABI_VERSION);
+    return ((PMODULECREATE2)pModule_Create2Fn)(&crys_stdoutRedirect, PYTHON_ABI_VERSION);
 }
 
 
@@ -335,7 +307,7 @@ int runpy(const char *filename)
 	strcat(fullfile,a);
 	strcat(fullfile,filename);
 
-	lineout(fullfile,strlen(fullfile));
+	lineouts(fullfile);
 
 	PyObject *obj = NULL;
 	struct stat buffer;   
@@ -347,7 +319,7 @@ int runpy(const char *filename)
 			file = ((PFOPENOBJ)pfopenobjFn)(obj, "rb");
 
 			if(file != NULL) {
-				lineouts("Let's go");
+//				lineouts("Let's go");
 				((PRUNSIMPLEFILEEXFLAGS)pRun_SimpleFileExFlagsFn)(file, fullfile,1,NULL);
 			} else {
 				lineouts("Could not open file");
@@ -357,14 +329,21 @@ int runpy(const char *filename)
 			lineouts("Python filename string construction failed");
 		}	
 
-
 	} else {
 		lineouts("File existence check failed");
 	}
 	
-	
+// IMPORTANT: This little bit of code deletes all global variables from the global namespace, with
+// the exception of builtin functions (starting with __) and any functions or variables starting with
+// crys_ . These crys_ vars are used for our redirection functions, but can also be used to deliberately pass // info between scripts.
+// This approach avoids restarting the interpreter between scripts, and prevents unintended side effects
+// of leaving global variables defined.
 
-	lineouts("Done");
+	((PRUN_SIMPLESTRINGFLAGS)pRun_SimpleStringFlags)("\
+for variable in dir():\n\
+    if variable[0:2] != \"__\" and variable[0:5] != \"crys_\" :\n\
+        del globals()[variable]\n", NULL);
+
 
 //	((PRUNSIMPLEFILEEXFLAGS)pRun_SimpleFileExFlagsFn)(pyfile, fullfile, 1, NULL);
 
@@ -438,9 +417,9 @@ int initPy() {
 //    Py_SetPythonHome(wHomePath);
 	((PSETPYTHONHOME)pSetPythonHomeFn)( wHomePath ) ;
 
-// Add the stdoutRedirect module (defined above)
-//    PyImport_AppendInittab("stdoutRedirect", PyInit_stdoutRedirect);
-	int initt = ((PIMPORT_APPENDINITTAB)pImport_AppendInittabFn)("stdoutRedirect", PyInit_stdoutRedirect);
+// Add the crys_stdoutRedirect module (defined above)
+//    PyImport_AppendInittab("crys_stdoutRedirect", PyInit_crys_stdoutRedirect);
+	int initt = ((PIMPORT_APPENDINITTAB)pImport_AppendInittabFn)("crys_stdoutRedirect", PyInit_crys_stdoutRedirect);
 
 
 // call Py_InitializeEx()
@@ -453,9 +432,9 @@ int initPy() {
 /*    PyRun_SimpleString("\  */
 
 	((PRUN_SIMPLESTRINGFLAGS)pRun_SimpleStringFlags)("\
-import stdoutRedirect\n\
+import crys_stdoutRedirect\n\
 import sys\n\
-class StdoutCatcher:\n\
+class crys_StdoutCatcher:\n\
     def __init__(self):\n\
         self.errcatch = False \n\
     def write(self, textoutput):\n\
@@ -463,16 +442,15 @@ class StdoutCatcher:\n\
           for s in textoutput.splitlines():\n\
             if self.errcatch:\n\
                 s = '{E ' + s \n\
-            stdoutRedirect.stdoutredirect(s)\n\
+            crys_stdoutRedirect.crys_stdoutredirect(s)\n\
             \n\
     def flush(self):\n\
         pass\n\
         \n\
-sys.stdout = StdoutCatcher()\n\
-sys.stderr = StdoutCatcher()\n\
+sys.stdout = crys_StdoutCatcher()\n\
+sys.stderr = crys_StdoutCatcher()\n\
 sys.stderr.errcatch = True\n", NULL);
 
-//     lineout("done2",6);
 
 
 // This little bit tells python where our scripts are.
@@ -480,7 +458,6 @@ sys.stderr.errcatch = True\n", NULL);
     sprintf(str, "import sys\nsys.path.append(\"%s\")\n", scriptPath);
 //    PyRun_SimpleString( str );
 	((PRUN_SIMPLESTRINGFLAGS)pRun_SimpleStringFlags)(str,NULL);
-
 
     return 0;
 }
