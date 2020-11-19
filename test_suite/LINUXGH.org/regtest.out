@@ -14,7 +14,7 @@ Matching by Rotation/inversion (Method 1)
 
   Principal moments of inertia of old and new groups
 
-[40]               5.79    3.47    0.00              5.79    3.47    0.00
+              5.796   3.478   0.000             5.796   3.478   0.000
 
 
  Calculation of rotation-dilation matrix and decomposition into component parts
@@ -149,7 +149,7 @@ Matching by Rotation/inversion (Method 1)
 
   Principal moments of inertia of old and new groups
 
-[40]               5.79    3.47    0.00              5.79    3.47    0.00
+              5.796   3.478   0.000             5.796   3.478   0.000
 
 
  Calculation of rotation-dilation matrix and decomposition into component parts
@@ -212,7 +212,7 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
       3    C        3.  Isotropic
       4    O        4.     0.045   0.045   0.049   0.004  -0.004  -0.003    0.042 0.042 0.054    0.054    0.046
            O      104.     0.050   0.050   0.050   0.000   0.000   0.000    0.050 0.050 0.050    0.050    0.050
-[40]                           -0.00   -0.00   -0.00    0.00   -0.00   -0.00
+                          -0.005  -0.005  -0.001   0.004  -0.004  -0.003   -0.008-0.008 0.004    0.004   -0.004
 
       5    C        5.  Isotropic
       6    Q        6.  Isotropic
@@ -322,7 +322,7 @@ Matching by Rotation/inversion (Method 1)
 
   Principal moments of inertia of old and new groups
 
-[40]               5.79    3.47    0.00              5.79    3.47    0.00
+              5.796   3.478   0.000             5.796   3.478   0.000
 
 
  Calculation of rotation-dilation matrix and decomposition into component parts
@@ -457,7 +457,7 @@ Matching by Rotation/inversion (Method 1)
 
   Principal moments of inertia of old and new groups
 
-[40]               5.79    3.47    0.00              5.79    3.47    0.00
+              5.796   3.478   0.000             5.796   3.478   0.000
 
 
  Calculation of rotation-dilation matrix and decomposition into component parts
@@ -521,7 +521,7 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
       4    C        3.  Isotropic
       5    O        4.     0.045   0.045   0.049   0.004  -0.004  -0.003    0.042 0.042 0.054    0.054    0.046
            O      104.     0.050   0.050   0.050   0.000   0.000   0.000    0.050 0.050 0.050    0.050    0.050
-[40]                           -0.00   -0.00   -0.00    0.00   -0.00   -0.00
+                          -0.005  -0.005  -0.001   0.004  -0.004  -0.003   -0.008-0.008 0.004    0.004   -0.004
 
       6    C        5.  Isotropic
 
@@ -631,7 +631,7 @@ Matching by Rotation/inversion (Method 1)
 
   Principal moments of inertia of old and new groups
 
-[40]               5.79    3.47    0.00              5.79    3.47    0.00
+              5.796   3.478   0.000             5.796   3.478   0.000
 
 
  Calculation of rotation-dilation matrix and decomposition into component parts
@@ -761,7 +761,7 @@ Matching by Rotation/inversion (Method 1)
 
   Principal moments of inertia of old and new groups
 
-[40]               5.79    3.47    0.00              5.79    3.47    0.00
+              5.796   3.478   0.000             5.796   3.478   0.000
 
 
  Calculation of rotation-dilation matrix and decomposition into component parts
@@ -824,7 +824,7 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
       3    C        3.  Isotropic
       4    O        4.     0.045   0.045   0.049   0.004  -0.004  -0.003    0.042 0.042 0.054    0.054    0.046
            O      104.     0.050   0.050   0.050   0.000   0.000   0.000    0.050 0.050 0.050    0.050    0.050
-[40]                           -0.00   -0.00   -0.00    0.00   -0.00   -0.00
+                          -0.005  -0.005  -0.001   0.004  -0.004  -0.003   -0.008-0.008 0.004    0.004   -0.004
 
       5    C        5.  Isotropic
       6    Q        6.  Isotropic
@@ -924,7 +924,7 @@ Matching by Rotation/inversion (Method 1)
 
   Principal moments of inertia of old and new groups
 
-[40]               5.79    3.47    0.00              5.79    3.47    0.00
+              5.796   3.478   0.000             5.796   3.478   0.000
 
 
  Calculation of rotation-dilation matrix and decomposition into component parts
@@ -1054,7 +1054,7 @@ Matching by Rotation/inversion (Method 1)
 
   Principal moments of inertia of old and new groups
 
-[40]               5.79    3.47    0.00              5.79    3.47    0.00
+              5.796   3.478   0.000             5.796   3.478   0.000
 
 
  Calculation of rotation-dilation matrix and decomposition into component parts
@@ -1118,7 +1118,7 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
       4    C        3.  Isotropic
       5    O        4.     0.045   0.045   0.049   0.004  -0.004  -0.003    0.042 0.042 0.054    0.054    0.046
            O      104.     0.050   0.050   0.050   0.000   0.000   0.000    0.050 0.050 0.050    0.050    0.050
-[40]                           -0.00   -0.00   -0.00    0.00   -0.00   -0.00
+                          -0.005  -0.005  -0.001   0.004  -0.004  -0.003   -0.008-0.008 0.004    0.004   -0.004
 
       6    C        5.  Isotropic
 
@@ -1218,7 +1218,7 @@ Matching by Rotation/inversion (Method 1)
 
   Principal moments of inertia of old and new groups
 
-[40]               5.79    3.47    0.00              5.79    3.47    0.00
+              5.796   3.478   0.000             5.796   3.478   0.000
 
 
  Calculation of rotation-dilation matrix and decomposition into component parts
@@ -1348,7 +1348,7 @@ Matching by Rotation/inversion (Method 1)
 
   Principal moments of inertia of old and new groups
 
-[40]               5.79    3.47    0.00              5.79    3.47    0.00
+              5.796   3.478   0.000             5.796   3.478   0.000
 
 
  Calculation of rotation-dilation matrix and decomposition into component parts
@@ -1411,7 +1411,7 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
       3    C        3.  Isotropic
       4    O        4.     0.045   0.045   0.049   0.004  -0.004  -0.003    0.042 0.042 0.054    0.054    0.046
            O      104.     0.050   0.050   0.050   0.000   0.000   0.000    0.050 0.050 0.050    0.050    0.050
-[40]                           -0.00   -0.00   -0.00    0.00   -0.00   -0.00
+                          -0.005  -0.005  -0.001   0.004  -0.004  -0.003   -0.008-0.008 0.004    0.004   -0.004
 
       5    C        5.  Isotropic
       6    Q        6.  Isotropic
@@ -1509,7 +1509,7 @@ Matching by Rotation/inversion (Method 1)
 
   Principal moments of inertia of old and new groups
 
-[40]               5.79    3.47    0.00              5.79    3.47    0.00
+              5.796   3.478   0.000             5.796   3.478   0.000
 
 
  Calculation of rotation-dilation matrix and decomposition into component parts
@@ -1639,7 +1639,7 @@ Matching by Rotation/inversion (Method 1)
 
   Principal moments of inertia of old and new groups
 
-[40]               5.79    3.47    0.00              5.79    3.47    0.00
+              5.796   3.478   0.000             5.796   3.478   0.000
 
 
  Calculation of rotation-dilation matrix and decomposition into component parts
@@ -1703,7 +1703,7 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
       4    C        3.  Isotropic
       5    O        4.     0.045   0.045   0.049   0.004  -0.004  -0.003    0.042 0.042 0.054    0.054    0.046
            O      104.     0.050   0.050   0.050   0.000   0.000   0.000    0.050 0.050 0.050    0.050    0.050
-[40]                           -0.00   -0.00   -0.00    0.00   -0.00   -0.00
+                          -0.005  -0.005  -0.001   0.004  -0.004  -0.003   -0.008-0.008 0.004    0.004   -0.004
 
       6    C        5.  Isotropic
 
@@ -1801,7 +1801,7 @@ Matching by Rotation/inversion (Method 1)
 
   Principal moments of inertia of old and new groups
 
-[40]               5.79    3.47    0.00              5.79    3.47    0.00
+              5.796   3.478   0.000             5.796   3.478   0.000
 
 
  Calculation of rotation-dilation matrix and decomposition into component parts
@@ -1864,7 +1864,7 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
       3    C        3.  Isotropic
       4    O        4.     0.045   0.045   0.049   0.004  -0.004  -0.003    0.042 0.042 0.054    0.054    0.046
            O      104.     0.050   0.050   0.050   0.000   0.000   0.000    0.050 0.050 0.050    0.050    0.050
-[40]                           -0.00   -0.00   -0.00    0.00   -0.00   -0.00
+                          -0.005  -0.005  -0.001   0.004  -0.004  -0.003   -0.008-0.008 0.004    0.004   -0.004
 
       5    C        5.  Isotropic
       6    Q        6.  Isotropic
@@ -2028,7 +2028,7 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
   Principal moments of inertia of old and new groups
 
-[40]              13.43    5.79    3.00             13.43    5.79    3.00
+             13.431   5.796   3.000            13.431   5.796   3.000
 
 
  Calculation of rotation matrix by Kabsch method
@@ -2074,7 +2074,7 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
       4    N       52.  Isotropic
       5    O      104.     0.050   0.050   0.050   0.000   0.000   0.000    0.050 0.050 0.050    0.050    0.050
            O        4.     0.042   0.047   0.049   0.006  -0.001  -0.001    0.042 0.042 0.054    0.054    0.046
-[40]                            0.00    0.00    0.00   -0.00    0.00    0.00
+                           0.008   0.003   0.001  -0.006   0.001   0.001    0.008 0.008-0.004   -0.004    0.004
 
       6    C        3.  Isotropic
       7    Q        6.  Isotropic
@@ -2232,7 +2232,7 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
   Principal moments of inertia of old and new groups
 
-[40]              13.43    5.79    3.00             13.43    5.79    3.00
+             13.431   5.796   3.000            13.431   5.796   3.000
 
 
  Calculation of rotation matrix by Kabsch method
