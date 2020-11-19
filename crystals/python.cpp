@@ -486,14 +486,14 @@ int initPy() {
 #ifdef CRY_OSWIN32
     wchar_t *wHomePath = ((PDECODELOCALE)pDecodeLocaleFn)(homePath, NULL);
 #else
-    wchar_t *wHomePath = Py_DecodeLocale(homePath, NULL);
+//    wchar_t *wHomePath = Py_DecodeLocale(homePath, NULL);
 #endif
 
 
 #ifdef CRY_OSWIN32
 	((PSETPYTHONHOME)pSetPythonHomeFn)( wHomePath ) ;
 #else    
-	Py_SetPythonHome(wHomePath);
+//	Py_SetPythonHome(wHomePath);
 #endif
 
 // Add the crys_stdoutRedirect module (defined above)
