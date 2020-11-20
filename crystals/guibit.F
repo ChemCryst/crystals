@@ -818,7 +818,13 @@ cdjw      write(123,*)'Loading L 5'
                 L05SR = -1
               END IF
             END IF
-
+            if(n5.gt.0.0) then
+             gflack=store(l5o+4)
+             gexti=store(l5o+5)
+            else
+             gflack=0.0
+             gexti=0.0
+            endif
 C If the current list is is the same as one sent before then
 C don't update the GUI.
 
@@ -1454,7 +1460,6 @@ c               CALL XPRVDU(NCVDU, 1,0)
 c             WRITE ( CMON, '(A)')'GUI-UP: Done L5'
 c             CALL XPRVDU(NCVDU, 1,0)
 
-
             ELSE
 
              WRITE (CMON,'(A,2(/A))')'^^GR MODEL L5','^^GR SHOW','^^CW'
@@ -1659,18 +1664,23 @@ c             CALL XPRVDU(NCVDU, 1,0)
               IF (STORE(L30RF+3).GT.-9.9)
      1            WRITE(CCOL,'(F6.2)')STORE(L30RF+3)
 
+
+
+
 246           FORMAT('^^WI SAFESET [ _MT_REF_R TEXT ',F8.2,' ]',
      1                   ' SAFESET [ _MT_REF_RW TEXT ',F8.2,' ]',/,
      1               '^^WI SAFESET [ _MT_REF_NPAR TEXT ',F9.0,' ]',
      1                   ' SAFESET [ _MT_REF_SCUT TEXT ',A,' ]',/,
      1               '^^WI SAFESET [ _MT_REF_GOOF TEXT ',F9.3,' ]',
      1                   ' SAFESET [ _MT_REF_MAXRMS TEXT ',F9.4,' ]',/,
-     1               '^^WI SAFESET [ _MT_REF_NREF TEXT ',F7.0,' ]',/,
+     1               '^^WI SAFESET [ _MT_REF_NREF TEXT ',F7.0,' ]',
+     1                   ' SAFESET [ _MT_REF_GFLACK TEXT ',F6.3,' ]',/,
+     1               '^^WI SAFESET [ _MT_REF_GEXTI TEXT ',F6.0,' ]',/,
      1               '^^CR')
               WRITE ( CMON, 246 ) STORE(L30RF), STORE(L30RF+1),
      1            STORE(L30RF+2), CCOL,  STORE(L30RF+4),
-     1            STORE(L30RF+7),STORE(L30RF+8)
-              CALL XPRVDU(NCVDU, 5, 0)
+     1            STORE(L30RF+7),STORE(L30RF+8),GFLACK,GEXTI
+              CALL XPRVDU(NCVDU, 6, 0)
             ENDIF
 
 
@@ -1793,7 +1803,6 @@ cdjw      write(123,*)'Thinking about loading L 5 and L 25'
            WRITE (CMON,
      1       '(''^^WI SAFESET [ _MT_L25 EMPTY TEXT "Twin laws" ]'')')
            CALL XPRVDU(NCVDU,1,0)
-cdjw      write(123,*)'Element scales', n5es,md5es, n25
 1106  FORMAT ('^^WI SAFESET [ _MT_L25 TEXT "',3(3F7.3,2X),F5.3,'" ]')
            DO J = 0, N25-1
              M25 = L25+J*MD25

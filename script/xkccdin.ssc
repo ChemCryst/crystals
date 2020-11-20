@@ -151,17 +151,16 @@ Files INITIAL.* will be created in your logs/ folder. They may be important.
 %    QUEUE SEND                                                                 
 %%                                                                              
 %    CLEAR                                                                      
-%    INSERT 'STORE NCOEF=6'                                                     
+%    INSERT 'STORE NCOEF=10'                                                     
 %    QUEUE SEND                                                                 
 %    CLEAR                                                                      
+% INSERT 'OUTP INDI /FO/ SIG RATIO CORR SERI JCODE /FC/ SQRTW BATCH/PHASE'
 %    INSERT 'OUTPUT INDICES /FO/ SIGMA(/FO/) RATIO CORRECTIONS SERIAL '   
 %    QUEUE SEND                                                                 
 %    CLEAR                                                                      
 %  END BLOCK                                                                    
 %%  COPY '#OPEN FRN2 ARCHIVE-HKL.CIF'
 %  COPY '#HKLI'                                                                 
-%         copy 'STORE NCOEF=10'
-%         copy 'OUTP INDI /FO/ SIG RATIO CORR SERI JCODE /FC/ SQRTW BATCH/PHASE'
 %  QUEUE PROCESS                                                                
 %  COPY 'END'                                                                   
 %%  COPY '#CLOSE FRN2'
