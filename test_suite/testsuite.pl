@@ -102,18 +102,22 @@ sub contains     # Is this $element in the array of tokens?
 
 sub obscureMachinePrecision() {
 
+    print("Post-processing $CROUTPUT\n");
+
 	use File::Copy;
 	$new_file = "$CROUTPUT.temp";
-	copy($CROUTPUT, $new_file);
+	copy($CROUTPUT, $new_file) or die "Copy failed: $!";
 
 	open(my $fhi, '<', "$CROUTPUT.temp") or die $!;
-        open(my $fho, '>', "$CROUTPUT") or die $!;
-        while (<$fhi>) {
-	   my $line = $_;
-#Catch negative zero formats from MINGW compiler.
-	   $line =~ s/(\s)-(0+\.0*\s)/$1 $2/g;
+    open(my $fho, '>', "$CROUTPUT") or die $!;
 
-	   chomp($line);
+    while (<$fhi>) {
+
+	    my $line = $_;
+
+#Catch negative zero formats from MINGW compiler.
+	    $line =~ s/(\s)-(0+\.0*\s)/$1 $2/g;
+	    chomp($line);
 
 #  su_max shift often has too much precision to be stable across platforms
 	   if($line =~ m/^(_refine_ls_shift\/su_max\s+\d+.\d\d\d\d)\d+.*$/ ) {
@@ -472,8 +476,8 @@ sub obscureMachinePrecision() {
               print $fho "$line\n";
 	  }
  	}
-        close ($fhi);
-        close ($fho);
+    close ($fhi);
+    close ($fho);
 #RIC Feb16 - leave this here so we can inspect the original
 		#        unlink ($new_file);
 }
