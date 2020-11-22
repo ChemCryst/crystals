@@ -325,7 +325,7 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
  Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.033
  Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.034
  Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma
-               0.000           0.033          0.000
+[41]                0.00            0.03           0.00
 #PUNCH 7 I
 # punching LIST  7 as LIST  7 with all keys set
 #LIST   7
@@ -485,7 +485,7 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
  Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.008
  Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.012
  Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma
-               0.000           0.008          0.000
+[41]                0.00            0.00           0.00
 #PUNCH 7 I
 # punching LIST  7 as LIST  7 with all keys set
 #LIST   7
@@ -760,7 +760,7 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
  Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.000
  Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.000
  Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma
-               0.000           0.000          0.000
+[41]                0.00            0.00           0.00
 #PUNCH 7 I
 # punching LIST  7 as LIST  7 with all keys set
 #LIST   7
@@ -911,7 +911,7 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
  Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.091
  Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.097
  Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma
-               0.091           0.000          0.000
+[41]                0.09            0.00           0.00
 #PUNCH 7 I
 # punching LIST  7 as LIST  7 with all keys set
 #LIST   7
