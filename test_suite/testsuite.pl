@@ -107,7 +107,7 @@ sub obscureMachinePrecision() {
 	use File::Copy;
 	$new_file = "$CROUTPUT.temp";
 	copy($CROUTPUT, $new_file) or die "Copy failed: $!";
-
+    unlink( $CROUTPUT );
 	open(my $fhi, '<', "$CROUTPUT.temp") or die $!;
     open(my $fho, '>', "$CROUTPUT") or die $!;
 
@@ -267,7 +267,7 @@ sub obscureMachinePrecision() {
 # Shift max  "                                         0.0762   0.0487   0.0794"
 	   } elsif($line =~ m/^(           \s*-*\d\.\d\d\d)\d(   -*\d\.\d\d\d)\d(   -*\d.\d\d\d)\d(\s*)/ ) {
               print $fho "[31] $1 $2 $3 $4\n";
-			  print("Line edited (rule 31)\n");
+			  print("Line edited (rule 31): $line \n");
 # Min funcs "    211786.        195909.          21729.               0.3664E+06          On scale of /FO/"
 	   } elsif($line =~ m/^(\s+\d+)\d\.(\s+\d+)\d\.(\s+\d+)\d\.(\s+0\.\d\d)\d\d(E.\d\d\s+On scale of \/FO\/\s*)/ ) {
               print $fho "[32] $1"."0 $2"."0 $3"."0 $4 $5\n";
@@ -287,7 +287,7 @@ sub obscureMachinePrecision() {
 # TLS matrices
 	   } elsif($line =~ m/^(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d)\d\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d\s*/) {  #3rd element only captures 1dp in this version (cf. next version below).
               print $fho "[35] $1 $2 $3 $4 $5 $6 $7 $8 $9\n";
-  			  print("Line edited (rule 35)\n");
+  			  print("Line edited (rule 35) $line \n");
 	   } elsif($line =~ m/^(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d\s*/) {
               print $fho "[36] $1 $2 $3 $4 $5 $6 $7 $8 $9\n";
 # List of Fx.4 x10 -. Fx.2
@@ -476,6 +476,7 @@ sub obscureMachinePrecision() {
               print $fho "[87] $1$spx$3$spy$5$spz$7$spd$9\n";
 		} else {
               print $fho "$line\n";
+			  print ( "pass thru: $line \n" );
 			  
 		}
  	}
@@ -514,7 +515,7 @@ sub runTest      # Run each .tst file through both versions of CRYSTALS.
 				print("Removing bfiles (use '-l' to leave in place)\n");
 				cleanUp(@cleanup);
 			}
-			print ("Running $diff $CROUTPUT $COMPCODE.org/$CROUTPUT");
+			print ("Running $diff $CROUTPUT $COMPCODE.org/$CROUTPUT\n");
 
 			print `$diff $CROUTPUT $COMPCODE.org/$CROUTPUT`;
 
