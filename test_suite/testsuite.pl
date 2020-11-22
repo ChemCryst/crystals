@@ -482,7 +482,7 @@ sub obscureMachinePrecision() {
     close ($fhi);
     close ($fho);
 #RIC Feb16 - leave this here so we can inspect the original
-     unlink ($new_file);
+#     unlink ($new_file);
 }
 
 
@@ -514,6 +514,8 @@ sub runTest      # Run each .tst file through both versions of CRYSTALS.
 				print("Removing bfiles (use '-l' to leave in place)\n");
 				cleanUp(@cleanup);
 			}
+			print ("Running $diff $CROUTPUT $COMPCODE.org/$CROUTPUT");
+
 			print `$diff $CROUTPUT $COMPCODE.org/$CROUTPUT`;
 
 			print "diff exitcode: $?\n";
