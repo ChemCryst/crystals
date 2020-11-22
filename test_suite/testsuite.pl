@@ -267,6 +267,7 @@ sub obscureMachinePrecision() {
 # Shift max  "                                         0.0762   0.0487   0.0794"
 	   } elsif($line =~ m/^(           \s*-*\d\.\d\d\d)\d(   -*\d\.\d\d\d)\d(   -*\d.\d\d\d)\d(\s*)/ ) {
               print $fho "[31] $1 $2 $3 $4\n";
+			  print("Line edited (rule 31)\n");
 # Min funcs "    211786.        195909.          21729.               0.3664E+06          On scale of /FO/"
 	   } elsif($line =~ m/^(\s+\d+)\d\.(\s+\d+)\d\.(\s+\d+)\d\.(\s+0\.\d\d)\d\d(E.\d\d\s+On scale of \/FO\/\s*)/ ) {
               print $fho "[32] $1"."0 $2"."0 $3"."0 $4 $5\n";
@@ -286,6 +287,7 @@ sub obscureMachinePrecision() {
 # TLS matrices
 	   } elsif($line =~ m/^(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d)\d\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d\s*/) {  #3rd element only captures 1dp in this version (cf. next version below).
               print $fho "[35] $1 $2 $3 $4 $5 $6 $7 $8 $9\n";
+  			  print("Line edited (rule 35)\n");
 	   } elsif($line =~ m/^(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d\s*/) {
               print $fho "[36] $1 $2 $3 $4 $5 $6 $7 $8 $9\n";
 # List of Fx.4 x10 -. Fx.2
@@ -472,14 +474,15 @@ sub obscureMachinePrecision() {
    	          $spz = sprintf "%.1f", $6;
    	          $spd = sprintf "%.1f", $8;
               print $fho "[87] $1$spx$3$spy$5$spz$7$spd$9\n";
-    } else {
+		} else {
               print $fho "$line\n";
-	  }
+			  
+		}
  	}
     close ($fhi);
     close ($fho);
 #RIC Feb16 - leave this here so we can inspect the original
-		#        unlink ($new_file);
+     unlink ($new_file);
 }
 
 
