@@ -3599,7 +3599,10 @@ cdjwfeb11 Watch out for inversion
                endif
 
          IF (abs(angle3) .ge. 0.996) THEN
-          WRITE(CBUFF,'(A,F6.1)')' SKIPPED',rtd*acos(angle3)
+          djw3=min(1.,abs(angle3))
+          djw3=sign(djw3,angle3)
+          djw3=rtd*acos(djw3)
+          WRITE(CBUFF,'(A,F6.1)')' SKIPPED',djw3
          ELSE
           CBUFF=' OK'
 c  only include OK geometries in statistics
