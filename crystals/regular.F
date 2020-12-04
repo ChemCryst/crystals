@@ -964,7 +964,7 @@ C
 C 
       DIMENSION ITEMP(3), ATEMP(3), RTEMP1(3,3), RTEMP2(3,3)
       DIMENSION OPM(4,4), OPN(4,4), OTEMP(4), IBMA(16)
-      DIMENSION TEMP1(3,3), TEMP2(3,3), TEMP3(3,3), DMATRIX(3,3)
+c in regtmp      DIMENSION TEMP1(3,3), TEMP2(3,3), TEMP3(3,3), DMATRIX(3,3)
 C 
 Cdjwnov99      DIMENSION CENTO(3),CENTN(3)
       INCLUDE 'REGTMP.INC'
@@ -1067,7 +1067,7 @@ C -- PRINT HEADER TEXT
       IF (IFLCMP.EQ.2) NFUNC=2
       IF (IFLCMP.EQ.5) NFUNC=3
       IF (ISSPRT.EQ.0) THEN
-         WRITE (NCWU,100) CFUNC(NFUNC),IGRPNO,ICALLNO, imatrix
+         WRITE (NCWU,100) CFUNC(NFUNC),IGRPNO,ICALLNO, IMATRIX
       END IF
 100   FORMAT (//,1X,50X,A,' of group number ',I3,
      1 '. Cycle no',i3,'  Call type',i3//)
@@ -1089,7 +1089,7 @@ C -- PRINT CENTROIDS AVERAGE, AND THE DIFFERENCE BETWEEN THEM
          CALL XSUBTR (CENTN,CENTO,DELCNT,3)
          CALL XADDR (CENTN,CENTO,ROOTO,3)
          CALL XMULTR (ROOTO,0.5,AVCNT,3)
-         IF (IMATRIX .LT. 0) THEN
+         IF (IMATRIX.LT.0) THEN
          IF (ISSPRT.EQ.0) THEN
             WRITE (NCWU,150) (CENTO(I),I=1,3),(CENTN(I),I=1,3)
 150         FORMAT (1X,15X,'Centroids of old and new groups ',
@@ -1125,7 +1125,7 @@ C
      1    ,COSNN(1,1),WSPAC2(1,1))
 C-----
 
-         IF (IMATRIX .LT. 0) THEN
+         IF (IMATRIX.LT.0) THEN
           IF (ISSPRT.EQ.0) THEN
             WRITE (NCWU,250) ROOTO,ROOTN
           END IF
@@ -1203,6 +1203,22 @@ C
 C -- CHECK FOR ERRORS IN CALCULATION
          IF (IERFLG.LT.0) GO TO 1900
 C 
+c      write(123,'(/a)') 'before'
+c      write(123,*) nold, lold, lnew, louij, luij
+c      write(ncwu,'(/a)') 'before'
+c      write(ncwu,*) nold, lold, lnew, louij, luij
+c      write(123,123)'result',result
+c      write(123,123)'vectn ',vectn
+c      write(123,123)'cosno ',cosno
+c      write(123,123)'cfbpne',cfbpne
+c      write(123,123)'bpcfol',bpcfol
+
+c      write(ncwu,123)'result',result
+c      write(ncwu,123)'vectn ',vectn
+c      write(ncwu,123)'cosno ',cosno
+c      write(ncwu,123)'cfbpne',cfbpne
+c      write(ncwu,123)'bpcfol',bpcfol
+123   format(a,3(3(f8.4),2x))
 C -- CALCULATE TRANSFORMATION MATRIX IN OTHER COORDINATE SYSTEMS
 C    ORTHOGONAL SYSTEM IN (W2)
          CALL XMLTMM (RESULT,VECTN,WSPAC1,3,3,3)
@@ -1211,6 +1227,8 @@ C    CRYSTAL SYSTEM IN (W3)
          CALL XMLTMM (RESULT,CFBPNE,WSPAC1,3,3,3)
          CALL XMLTMM (BPCFOL,WSPAC1,WSPAC3,3,3,3)
 C
+      if(imatrix.lt.2) then   !only during setup
+c      write(123,*)'During set up'
 C -- PREMULT FOR ORTHOGONALISATION MATRIX FOR Uij
             CALL DMATRX(DMATRIX)
 C -- GET ROTATION MATRIX FOR OLD Uij IN BP SYSTEM
@@ -1218,7 +1236,7 @@ C -- GET ROTATION MATRIX FOR OLD Uij IN BP SYSTEM
 C -- GET ROTATION MATRIX FOR NEW UiJ IN OLD BP SYSTEM
             CALL XMLTMM(CFBPNE, DMATRIX, TEMP3, 3,3,3)            
             CALL XMLTMM(RESULT, TEMP3, TEMP2, 3,3,3)            
-
+      endif
 C   U(bp,old) = temp1. U, temp1(T)
 c   U(bp,new) = temp2, U, temp2(T)
 c
@@ -1257,10 +1275,15 @@ c      MOLD=LOLD
 c      MNEW=LNEW
 c      MUIJ=LUIJ+1
 c      MOUIJ=LOUIJ+1
-c      write(123,'(/a)') 'before'
-c      write(123,*) nold, lold, lnew, louij, luij
 c      DO I=1,NOLD
 c      write(123,1230)
+c     1 store(mold),store(mold+1),store(mold+2),
+c     2 store(mouij),store(mouij+1),store(mouij+2),
+c     3 store(mouij+3),store(mouij+4),store(mouij+5),
+c     1 store(mnew),store(mnew+1),store(mnew+2),
+c     2 store(muij),store(muij+1),store(muij+2),
+c     3 store(muij+3),store(muij+4),store(muij+5)
+c      write(ncwu,1230)
 c     1 store(mold),store(mold+1),store(mold+2),
 c     2 store(mouij),store(mouij+1),store(mouij+2),
 c     3 store(mouij+3),store(mouij+4),store(mouij+5),
@@ -1280,6 +1303,13 @@ C -- APPLIES XMATR TO ATOMS(MDATM,NATM)
 c    ATOMS(1,j) is X etc, are overwritten
       CALL XMXRTI (STORE(LNEW),RESULT,MDNEW,NNEW)
 c  now do Uij
+c      write(ncwu,*)'imatrix=',imatrix
+c      write(123,123) 'result',result
+c      write(123,123) 'temp1 ',temp1
+c      write(123,123) 'temp2 ',temp2
+c      write(ncwu,123) 'result',result
+c      write(ncwu,123) 'temp1 ',temp1
+c      write(ncwu,123) 'temp2 ',temp2
 C   U(bp,old) = temp2. U, temp2(T)
 c   U(bp,new) = temp1, U, temp1(T)
       call rmxuij (temp1, louij,  mdouij,  nold)
@@ -1292,8 +1322,17 @@ c      MUIJ=LUIJ+1
 c      MOUIJ=LOUIJ+1
 c      write(123,'(/a)') 'after'
 c      write(123,*) nold, lold, lnew, louij, luij
+c      write(ncwu,'(/a)') 'after'
+c      write(ncwu,*) nold, lold, lnew, louij, luij
 c      DO I=1,NOLD
 c      write(123,1230)
+c     1 store(mold),store(mold+1),store(mold+2),
+c     2 store(mouij),store(mouij+1),store(mouij+2),
+c     3 store(mouij+3),store(mouij+4),store(mouij+5),
+c     1 store(mnew),store(mnew+1),store(mnew+2),
+c     2 store(muij),store(muij+1),store(muij+2),
+c     3 store(muij+3),store(muij+4),store(muij+5)
+c      write(ncwu,1230)
 c     1 store(mold),store(mold+1),store(mold+2),
 c     2 store(mouij),store(mouij+1),store(mouij+2),
 c     3 store(mouij+3),store(mouij+4),store(mouij+5),
@@ -1838,9 +1877,9 @@ C -- PRINT THESE COORDINATES
 1450      CONTINUE
          ENDIF
 Cdjwapr2001
-      ELSE IF ( IMATRIX .EQ. 1 ) THEN
+      ELSE IF ( IMATRIX.EQ.1 ) THEN
             CALL XRGRNM
-      ELSE IF ( IMATRIX .EQ. 2 ) THEN
+      ELSE IF ( IMATRIX.EQ.2 ) THEN
             CALL XRGCAM
       ELSE
             CALL XRGMAT(LSPARE)
@@ -2521,6 +2560,8 @@ C -- COPY COORDINATES TO APPROPRIATE PLACE
 c Uij?
 c                   what about the matrix transformation to Uij (DJW-2017)
       call xmove (platom(8),store(induij+1),6) 
+c                   This might do it - untested
+c      call rotuij(store(induij),xmatr,store(induij))
       call xmove (platom(4),store(induij),1)
 C -- SET WEIGHT FOR THIS ATOM TO 1
       STORE(INDNEW+3)=1.
@@ -2809,8 +2850,8 @@ C --      COPY COORDINATES*WEIGHT
           STORE(INDOLD+3)=WEIGHT             !SET WEIGHT
 cdjwapr2012
           inouij = louij +(nold-1)*mdouij
-          call xmove(store(iadatm+3), store(inouij), 1)     ! Uiso in U11
-          call xmove(store(iadatm+7), store(inouij+1), 6)
+          call xmove(store(iadatm+3), store(inouij), 1)     ! Uiso in Uij
+          call xmove(store(iadatm+7), store(inouij+1), 6)   ! Uaniso in Uij+1 etc
 c
           GO TO 4800
 c
@@ -2974,7 +3015,7 @@ c
 c
 CDJWAPR2012
 C    ONLY PRINT GOODIES IF IMATRIX IS -1
-       IF (IMATRIX .LT. 0) THEN
+       IF (IMATRIX.LT.0) THEN
 C -- PRINT HEADER
         WRITE ( CMON , 1305 )
         CALL XPRVDU(NCVDU, 1,0)
@@ -3012,7 +3053,7 @@ c
 c
 C -- PRINT APPROPRIATE DATA
         IF ( ABS ( STORE(INDOLD+3) ) .LE. ZERO ) THEN
-          IF (IMATRIX .LT. 0) THEN
+          IF (IMATRIX.LT.0) THEN
             IF (ISSPRT .EQ. 0) THEN
                WRITE ( NCWU , 2015 ) I, (STORE(J), J=INDATM,INDATM+1),
      2         (STORE(J),J=INDOLD,INDOLD+2),(STORE(J),J=INDNEW,INDNEW+2)
@@ -3031,7 +3072,7 @@ C -- PRINT APPROPRIATE DATA
             DELTA(4) = SQRT ( DISTSQ )
             RADIUS=SQRT(RADIUS)
             DELTA(5)=RTD*ATAN2(DELTA(4),RADIUS)
-            IF (IMATRIX .LT. 0) THEN
+            IF (IMATRIX.LT.0) THEN
              IF (ISSPRT .EQ. 0) THEN
                WRITE ( NCWU , 2015 ) I ,(STORE(J),J=INDATM,INDATM+1),
      2         (STORE(J),J=INDOLD,INDOLD+2),
@@ -3128,7 +3169,7 @@ c       MOUIJ=MOUIJ+MDOUIJ
 c       ENDDO
 1230  format(2(3f6.3,3x,f5.2,3x,6f6.3,3x))
 c
-       IF (IMATRIX .LT. 0) THEN
+       IF (IMATRIX.LT.0) THEN
         IF (ISSPRT .EQ.0) THEN 
          WRITE(NCWU,'(/A/A,A/)') 'Uij in Best Match Coordinate System',
      1   'Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000)',
@@ -3156,7 +3197,7 @@ c
 c
          IF ((nint( STORE(muij-1) ) .ne. 0 ) .or. 
      1  (nint( STORE(mouij-1) ) .ne. 0 )) THEN
-          IF (IMATRIX .LT. 0) THEN
+          IF (IMATRIX.LT.0) THEN
              IF (ISSPRT .EQ. 0) THEN
                 WRITE ( NCWU , 20154 ) I, (STORE(J), 
      2          J=INDATM,INDATM+1),'Isotropic'
@@ -3210,7 +3251,7 @@ c
                 deluij(j+1)= store(mouij+j)-store(muij+j)
              END DO
 c
-             IF (IMATRIX .LT. 0) THEN
+             IF (IMATRIX.LT.0) THEN
               IF (ISSPRT .EQ. 0) THEN
                 WRITE ( NCWU , 20155 ) I ,(STORE(J),J=MOPIV,MOPIV+1),
      2         (STORE(J),J=MOUIJ,MOUIJ+5),UOAXIS,UOPRIME,UOGEOM, 
@@ -3243,7 +3284,7 @@ C
 cdjwjul06
        if (ishape .eq. 0) then
        IF (NOLD .GE. 1) THEN
-        IF (IMATRIX .LT. 0) THEN
+        IF (IMATRIX.LT.0) THEN
          IF (ISSPRT .EQ. 0) 
      C  WRITE(NCWU,'(/,A)')'Bond length deviations'
         ENDIF
@@ -3296,7 +3337,7 @@ c
           BNDMAX = MAX(BNDMAX, DEV)
           NUMBR = NUMBR + 1
 C
-        IF (IMATRIX .LT. 0) THEN
+        IF (IMATRIX.LT.0) THEN
         WRITE(COLD(1:),'(A4,I4)')  ISTORE(MOPIV),NINT(STORE(MOPIV+1))
         WRITE(COLD(10:),'(A4,I4)')  ISTORE(MOBNd),NINT(STORE(MOBND+1))
         WRITE(CNEW(1:),'(A4,I4)')  ISTORE(MNPIV),NINT(STORE(MNPIV+1))
@@ -3348,7 +3389,7 @@ CTORSION ANGLE DEVIATIONS
 C
 C
         IF (NOLD .GE. 1) THEN
-         IF (IMATRIX .LT. 0) THEN
+         IF (IMATRIX.LT.0) THEN
           IF (ISSPRT .EQ. 0) THEN
           WRITE(NCWU,'(/A,A,A)')'Torsion angles are omitted from the',
      1    ' statistics if angles C-A-B or A-B-D are within 5 degrees',
@@ -3612,7 +3653,7 @@ c  only include OK geometries in statistics
           tormin = min(tormin, abs(tp))
          ENDIF
 
-              IF (IMATRIX .LT. 0) THEN
+              IF (IMATRIX.LT.0) THEN
               IF (ISSPRT .EQ. 0) THEN
 
         WRITE(COLD(1:),'(A4,I4)') ISTORE(MOC),NINT(STORE(MOC+1))
@@ -4509,6 +4550,8 @@ C Write header for superimposed orthogonal atom lists:
      1STORE(L5O+3),STORE(L5O+4),STORE(L5O+5)
 1050  FORMAT(8HOVERALL ,F11.6,4(1X,F9.6),1X,F17.7)
 c
+c      write(123,*)'CAMERON.L5I',inouij,inuij
+c      write(ncwu,*)'CAMERON.L5I',inouij,inuij
       DO I=1,NOLD
        INDOLD=LOLD+MDOLD*(I-1)
        INDNEW=LNEW+MDNEW*(I-1)
@@ -4516,9 +4559,10 @@ c
        inuij=luij+mduij*(i-1)+1
        JOLD=ISTORE(LRENM+(MDRENM*(I-1))+4)
        JNEW=ISTORE(LRENM+(MDRENM*(I-1))+5)
-c
-c
+cdjw2012
 c      WRITE(123,'(A,(3f6.3,3x,3F6.3,2X,3F6.3))') 'old', 
+c     1(STORE(J),J=INDOLD,INDOLD+2),(store(idjw),idjw=inouij,inouij+5)
+c      WRITE(ncwu,'(A,(3f6.3,3x,3F6.3,2X,3F6.3))') 'old', 
 c     1(STORE(J),J=INDOLD,INDOLD+2),(store(idjw),idjw=inouij,inouij+5)
 c
        WRITE(NCFPU1,2016) (STORE(J),J=JOLD,JOLD+3), !Type,ser,occ,flag
@@ -4529,8 +4573,8 @@ c
 c
 c      WRITE(123,'(A,(3f6.3,3x,3F6.3,2X,3F6.3))') 'new', 
 c     1(STORE(J),J=INDNEW,INDNEW+2),(store(idjw),idjw=inuij,inuij+5)
-c
-c
+c      WRITE(ncwu,'(A,(3f6.3,3x,3F6.3,2X,3F6.3))') 'new', 
+c     1(STORE(J),J=INDNEW,INDNEW+2),(store(idjw),idjw=inuij,inuij+5)
 c
        WRITE(NCFPU1,2016) (STORE(J),J=JNEW,JNEW+3), 
      1   (STORE(J),J=INDNEW,INDNEW+2),
@@ -4542,7 +4586,7 @@ c
 2016     FORMAT
      1   ('ATOM ',A4,1X,6F11.6/
      2    'CON U[11]=',6F11.6/
-     3    'CON SPARE=',F11.2,3I11,7X,A4)
+     3    'CON SPARE=',F11.2,3I11,10X,I12)
 
 C Don't bother with element, layer scales etc. Punch End:
       WRITE(NCFPU1,'(''END''/''#USE LAST'')')
@@ -6119,7 +6163,7 @@ c  POST MULTIPLIER FOR ORTHOGONALISATION OF Uij
       DIMENSION DMATRIX(9)
 c
 c      dmatrix is a digonal matrix based on cell angles - see
-c      Lipson and Conhran, Second ediition, page 30
+c      Lipson and Cochran, Second edition, page 302
       dn = 1.+2.* 
      1 cos(store(l1p1+3))*cos(store(l1p1+4))*cos(store(l1p1+5))
      2 - cos(store(l1p1+3))*cos(store(l1p1+3))
