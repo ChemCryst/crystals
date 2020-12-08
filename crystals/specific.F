@@ -671,12 +671,18 @@ c
         
         ! dsc filename is not always specified
         ! hack to do part of the job of mtrnlg before mtrlng refactoring
-        iposition=index(CLCNAM, 'CRDSC:')
-        if(iposition>0) then
-          CLCNAM=CLCNAM(1:iposition-1)//'crfilev2.dsc'//
-     1      CLCNAM(iposition+6:len_trim(clcnam))
-        end if
+		
+		!! This gives unexpected behaviour if crfilev2.dsc exists
+		!! and the user has specified a new dsc.
+		
+!        iposition=index(CLCNAM, 'CRDSC:')
+!        if(iposition>0) then
+!          CLCNAM=CLCNAM(1:iposition-1)//'crfilev2.dsc'//
+!     1      CLCNAM(iposition+6:len_trim(clcnam))
+!!        end if
         
+		!! similar problems here - but hdf5 currently not used.
+		
         if(hdf5_in_use) then
           iposition=index(CLCNAM, '.dsc')
           if(iposition==0) iposition=index(CLCNAM, '.DSC')
