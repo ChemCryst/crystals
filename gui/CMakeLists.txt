@@ -39,6 +39,7 @@ ENDIF(CMAKE_BUILD_TYPE MATCHES Debug)
 # -lwx_osx_cocoau_core-2.9 -lwx_baseu_xml-2.9 -lwx_baseu_net-2.9 -lwx_baseu-2.9 
 
 add_library(CrystalsUserInterface OBJECT 
+startupdialog.cpp
 ccchartcolour.cpp 
 ccchartdoc.cpp 
 ccchartellipse.cpp 
