@@ -636,6 +636,7 @@ using namespace std;
 #include    "crbutton.h"
 #include    "creditbox.h"
 #include    "cccrystcommandlistener.h"
+#include    "startupdialog.h"
 
 // Get all the kT and kS defines for now: TODO - move all into crconstants.
 
@@ -823,6 +824,7 @@ CcController::CcController( const string & directory, const string & dscfile )
 #endif
 
 
+// If directory is set, check for and remove quotes, change directory.
     if ( directory.length() )
     {
       string dirtemp = directory;
@@ -899,23 +901,20 @@ CcController::CcController( const string & directory, const string & dscfile )
       if( (file = fopen( buffer.c_str(), "r" ) ) ) //Assignment witin conditional - OK
       {
         ReadStartUp(file,crysdir);
-        noLuck = false;
+        noLuck = false;   // stop looping
       }
-      else
+      else if ( i >= nEnv )
       {
-        if ( i >= nEnv )
-        {
-          //Last resort, there is no external file. Default window defined here:
-          Tokenize("^^WI WINDOW _MAIN 'Crystals' MODAL STAYOPEN SIZE CANCEL='_MAIN CLOSE' GRID ");
-          Tokenize("^^WI _MAINGRID NROWS=3 NCOLS=1 { @ 1,1 GRID _SUBGRID NROWS=1 NCOLS=3 ");
-          Tokenize("^^WI { @ 1,2 TEXTOUT _MAINTEXTOUTPUT '(C)1999 CCL, Oxford.' NCOLS=95 ");
-          Tokenize("^^WI NROWS=20 } @ 3,1 PROGRESS ");
-          Tokenize("^^WI _MAINPROGRESS 'guimenu.srt NOT FOUND' CHARS=20 @ 2,1 EDITBOX ");
-          Tokenize("^^WI _MAINTEXTINPUT ' ' NCOLS=45 LIMIT=80 SENDONRETURN=YES INPUT } SHOW ");
-          Tokenize("^^CR  ");
-          LOGSTAT ( "Back from tokenizing all \n") ;
-          noLuck = false;
-        }
+        //Last resort, there is no external file. Default window defined here:
+        Tokenize("^^WI WINDOW _MAIN 'Crystals' MODAL STAYOPEN SIZE CANCEL='_MAIN CLOSE' GRID ");
+        Tokenize("^^WI _MAINGRID NROWS=3 NCOLS=1 { @ 1,1 GRID _SUBGRID NROWS=1 NCOLS=3 ");
+        Tokenize("^^WI { @ 1,2 TEXTOUT _MAINTEXTOUTPUT '(C)1999 CCL, Oxford.' NCOLS=95 ");
+        Tokenize("^^WI NROWS=20 } @ 3,1 PROGRESS ");
+        Tokenize("^^WI _MAINPROGRESS 'guimenu.srt NOT FOUND' CHARS=20 @ 2,1 EDITBOX ");
+        Tokenize("^^WI _MAINTEXTINPUT ' ' NCOLS=45 LIMIT=80 SENDONRETURN=YES INPUT } SHOW ");
+        Tokenize("^^CR  ");
+        LOGSTAT ( "Back from tokenizing all \n") ;
+        noLuck = false;  // stop looping
       }
     }
 
@@ -955,6 +954,11 @@ CcController::CcController( const string & directory, const string & dscfile )
     SetProgressOutputPlace(progressWindow);
     LOGSTAT ( "Progress/status window found\n") ;
 
+
+
+    wxString cwd = wxGetCwd(); 
+    std::string pathsep = string(wxString(wxFileName::GetPathSeparator()).ToStdString());
+
 // If specified on the command line, set the CRDSC environment variable,
 // regardless of whether it is already set...
 //                 wxMessageBox("Debug","ing",wxOK|wxICON_HAND|wxCENTRE);
@@ -973,41 +977,10 @@ CcController::CcController( const string & directory, const string & dscfile )
       putenv( env );
 #endif
 //For info, put DSC name in the title bar.
-      Tokenize("^^CO SET _MAIN TEXT 'Crystals - " + dscfile + "'");
+      Tokenize("^^CO SET _MAIN TEXT 'Crystals - " + cwd.ToStdString() + pathsep + dscfile + "'");
     }
 
-
-/****
-
-    //RDKit test
-
- RDKit::RWMol *mol=new RDKit::RWMol();
-
- // add atoms and bonds:
-  mol->addAtom(new RDKit::Atom(6)); // atom 0
-  mol->addAtom(new RDKit::Atom(6)); // atom 1
-  mol->addAtom(new RDKit::Atom(6)); // atom 2
-  mol->addAtom(new RDKit::Atom(6)); // atom 3
-  mol->addBond(0,1,RDKit::Bond::SINGLE); // bond 0
-  mol->addBond(1,2,RDKit::Bond::DOUBLE); // bond 1
-  mol->addBond(2,3,RDKit::Bond::SINGLE); // bond 2
- // setup the stereochem:
-  mol->getBondWithIdx(0)->setBondDir(RDKit::Bond::ENDUPRIGHT);
-  mol->getBondWithIdx(2)->setBondDir(RDKit::Bond::ENDDOWNRIGHT);
-
- // do the chemistry perception:
-  RDKit::MolOps::sanitizeMol(*mol);
-
- // Get the canonical SMILES, include stereochemistry:
-  std::string smiles;
-  smiles = MolToSmiles(*(static_cast<RDKit::ROMol *>(mol)),true);
-
-//  wxMessageBox(smiles,"OK", wxOK|wxICON_HAND|wxCENTRE);
-
-****/
-
-
-// If the CRDSC variable is set, leave it's value the same.
+// If the CRDSC variable is set, leave its value the same.
 // Otherwise, set it to the default value of CRFILEV2.DSC
     char* envv;
 
@@ -1027,7 +1000,8 @@ CcController::CcController( const string & directory, const string & dscfile )
 
 //       envv = getenv( "CRDSC" );
 #endif
-       Tokenize("^^CO SET _MAIN TEXT 'Crystals - crfilev2.dsc'");
+//       Tokenize("^^CO SET _MAIN TEXT 'Crystals - crfilev2.dsc'");
+      Tokenize("^^CO SET _MAIN TEXT 'Crystals - " + cwd.ToStdString() + pathsep + "crfilev2.dsc'");
     }
 
     LOGSTAT( "Starting Crystals Thread" );
@@ -1543,6 +1517,7 @@ bool CcController::ParseInput( deque<string> & tokenList )
             }
             case kTSysRestart: //Crystals has closed down, restart in specified directory.
             {
+      	        string newfile = "crfilev2.dsc"; // default, maybe overwrite in a sec
                 tokenList.pop_front();    // remove that token
                 m_newdir = string (tokenList.front());
                 tokenList.pop_front();
@@ -1550,7 +1525,8 @@ bool CcController::ParseInput( deque<string> & tokenList )
                 if (!tokenList.empty() && CcController::GetDescriptor( tokenList.front(),  kAttributeClass  )==kTRestartFile)
                 {
                               tokenList.pop_front();    // remove that token
-                              string newdsc = "CRDSC=" + tokenList.front();
+							  newfile = tokenList.front();
+                              string newdsc = "CRDSC=" + newfile;
                               tokenList.pop_front();    // remove that token
 #if defined(CRY_OSWIN32)
                               _putenv( newdsc.c_str() );
@@ -1560,8 +1536,11 @@ bool CcController::ParseInput( deque<string> & tokenList )
                              stringlist.push_back(env);
                              putenv( env );
 #endif
-                        }
-                        break;
+                }
+				wxFileName re( m_newdir, newfile ) ;
+				CcMRUFiles cmruf;
+				cmruf.AddFile( re );
+                break;
             }
             case kTRedirectText:
             {
@@ -2267,45 +2246,45 @@ string CcController::GetRegKey( string key, string name )
 
  wxRegKey regcu(wxRegKey::HKCU, ""); //first try HKCU
  if (regcu.HasSubKey(key.c_str()) ) {
-	wxRegKey keycu(wxRegKey::HKCU, key.c_str());
-	if ( keycu.HasValue(name.c_str()) && keycu.QueryValue(name.c_str(), wsdata)) {
-		data = wsdata.mb_str();
-		notfound = false;
-	}
+    wxRegKey keycu(wxRegKey::HKCU, key.c_str());
+    if ( keycu.HasValue(name.c_str()) && keycu.QueryValue(name.c_str(), wsdata)) {
+        data = wsdata.mb_str();
+        notfound = false;
+    }
  }
 
  if ( notfound ) { // try 32-bit HKLM registry keys.
-	wxRegKey regcu32(wxRegKey::HKCU, "", wxRegKey::WOW64ViewMode_32);
-	if (regcu32.HasSubKey(key.c_str()) ) {
-		wxRegKey rkey(wxRegKey::HKLM, key.c_str(), wxRegKey::WOW64ViewMode_32);
-		if ( rkey.HasValue(name.c_str()) && rkey.QueryValue(name.c_str(), wsdata)) {
-			data = wsdata.mb_str();
-			notfound = false;
-		}
-	}
+    wxRegKey regcu32(wxRegKey::HKCU, "", wxRegKey::WOW64ViewMode_32);
+    if (regcu32.HasSubKey(key.c_str()) ) {
+        wxRegKey rkey(wxRegKey::HKLM, key.c_str(), wxRegKey::WOW64ViewMode_32);
+        if ( rkey.HasValue(name.c_str()) && rkey.QueryValue(name.c_str(), wsdata)) {
+            data = wsdata.mb_str();
+            notfound = false;
+        }
+    }
 
  }
 
  if ( notfound ) { // try HKLM registry keys.
-	wxRegKey reglm(wxRegKey::HKLM, "");
-	if (reglm.HasSubKey(key.c_str()) ) {
-		wxRegKey rkey(wxRegKey::HKLM, key.c_str());
-		if ( rkey.HasValue(name.c_str()) && rkey.QueryValue(name.c_str(), wsdata)) {
-			data = wsdata.mb_str();
-			notfound = false;
-		}
-	}
+    wxRegKey reglm(wxRegKey::HKLM, "");
+    if (reglm.HasSubKey(key.c_str()) ) {
+        wxRegKey rkey(wxRegKey::HKLM, key.c_str());
+        if ( rkey.HasValue(name.c_str()) && rkey.QueryValue(name.c_str(), wsdata)) {
+            data = wsdata.mb_str();
+            notfound = false;
+        }
+    }
  }
 
  if ( notfound ) { // try HKLM 32-bit registry keys.
-	wxRegKey reglm(wxRegKey::HKLM, "", wxRegKey::WOW64ViewMode_32);
-	if (reglm.HasSubKey(key.c_str()) ) {
-		wxRegKey rkey(wxRegKey::HKLM, key.c_str(), wxRegKey::WOW64ViewMode_32);
-		if ( rkey.HasValue(name.c_str()) && rkey.QueryValue(name.c_str(), wsdata)) {
-			data = wsdata.mb_str();
-			notfound = false;
-		}
-	}
+    wxRegKey reglm(wxRegKey::HKLM, "", wxRegKey::WOW64ViewMode_32);
+    if (reglm.HasSubKey(key.c_str()) ) {
+        wxRegKey rkey(wxRegKey::HKLM, key.c_str(), wxRegKey::WOW64ViewMode_32);
+        if ( rkey.HasValue(name.c_str()) && rkey.QueryValue(name.c_str(), wsdata)) {
+            data = wsdata.mb_str();
+            notfound = false;
+        }
+    }
  }
 
 #endif
@@ -3463,154 +3442,154 @@ extern "C" {
     }
     else if ( bRedir )
     {
-		STARTUPINFOA si;
-		SECURITY_ATTRIBUTES sa;
-		SECURITY_DESCRIPTOR sd;               //security information for pipes
-		if (IsWinNT())        //initialize security descriptor (Windows NT)
-		{
-			InitializeSecurityDescriptor(&sd,SECURITY_DESCRIPTOR_REVISION);
-			SetSecurityDescriptorDacl(&sd, true, NULL, false);
-			sa.lpSecurityDescriptor = &sd;
-		}
-		else sa.lpSecurityDescriptor = NULL;
-		sa.nLength = sizeof(SECURITY_ATTRIBUTES);
-		sa.bInheritHandle = true;         //allow inheritable handles
-		CcPipe inPipe(sa);
-		if ( ! inPipe.CreateOK ) {
-			CcController::theController->AddInterfaceCommand( "Error creating in pipe.");
-			return -1;
-		}
-		CcPipe outPipe(sa);
-		if ( ! outPipe.CreateOK ) {
-			CcController::theController->AddInterfaceCommand( "Error creating out pipe.");
-			return -1;
-		}
+        STARTUPINFOA si;
+        SECURITY_ATTRIBUTES sa;
+        SECURITY_DESCRIPTOR sd;               //security information for pipes
+        if (IsWinNT())        //initialize security descriptor (Windows NT)
+        {
+            InitializeSecurityDescriptor(&sd,SECURITY_DESCRIPTOR_REVISION);
+            SetSecurityDescriptorDacl(&sd, true, NULL, false);
+            sa.lpSecurityDescriptor = &sd;
+        }
+        else sa.lpSecurityDescriptor = NULL;
+        sa.nLength = sizeof(SECURITY_ATTRIBUTES);
+        sa.bInheritHandle = true;         //allow inheritable handles
+        CcPipe inPipe(sa);
+        if ( ! inPipe.CreateOK ) {
+            CcController::theController->AddInterfaceCommand( "Error creating in pipe.");
+            return -1;
+        }
+        CcPipe outPipe(sa);
+        if ( ! outPipe.CreateOK ) {
+            CcController::theController->AddInterfaceCommand( "Error creating out pipe.");
+            return -1;
+        }
 
-		GetStartupInfoA(&si);      //set startupinfo for the spawned process
-		si.dwFlags = STARTF_USESTDHANDLES|STARTF_USESHOWWINDOW;
-		si.wShowWindow = SW_HIDE;
-		si.hStdOutput = outPipe.input;
-		si.hStdError = outPipe.input;     //set the new handles for the child process
-		si.hStdInput = inPipe.output;
-//  	    #(totalcl);
-		CcProcessInfo pi(firstTok,si,totalcl);
-		if (!pi.CreateOK)
-		{
-			CcController::theController->AddInterfaceCommand( "Error creating process.");
-			return -1;
-		}
+        GetStartupInfoA(&si);      //set startupinfo for the spawned process
+        si.dwFlags = STARTF_USESTDHANDLES|STARTF_USESHOWWINDOW;
+        si.wShowWindow = SW_HIDE;
+        si.hStdOutput = outPipe.input;
+        si.hStdError = outPipe.input;     //set the new handles for the child process
+        si.hStdInput = inPipe.output;
+//          #(totalcl);
+        CcProcessInfo pi(firstTok,si,totalcl);
+        if (!pi.CreateOK)
+        {
+            CcController::theController->AddInterfaceCommand( "Error creating process.");
+            return -1;
+        }
 
-		unsigned long exit=0;  //process exit code
-		unsigned long bread;   //bytes read
-		unsigned long avail;   //bytes available
+        unsigned long exit=0;  //process exit code
+        unsigned long bread;   //bytes read
+        unsigned long avail;   //bytes available
 
 // Disable all menus etc.
-		CcController::theController->AddInterfaceCommand( "^^ST STATSET IN");
-		CcController::theController->AddInterfaceCommand( "^^CR");
-		CcController::theController->m_AllowThreadKill = false;
+        CcController::theController->AddInterfaceCommand( "^^ST STATSET IN");
+        CcController::theController->AddInterfaceCommand( "^^CR");
+        CcController::theController->m_AllowThreadKill = false;
 
-		char buf[1024];           //i/o buffer
-		BZERO(buf);
-		string keep;
-		for(;;)      //main program reading/writing loop
-		{
-			keep = ""; //output buffer - must contain a newline before we output it to screen.
-			PeekNamedPipe(outPipe.output,buf,1023,&bread,&avail,NULL);
+        char buf[1024];           //i/o buffer
+        BZERO(buf);
+        string keep;
+        for(;;)      //main program reading/writing loop
+        {
+            keep = ""; //output buffer - must contain a newline before we output it to screen.
+            PeekNamedPipe(outPipe.output,buf,1023,&bread,&avail,NULL);
 
-			while ( bread != 0 )
-			{
+            while ( bread != 0 )
+            {
 
 // READ THE BUFFER; REMOVE UNWANTED CHARS; APPEND TO EXISTING INPUT BUFFER:
 
-				string::size_type i,j;
-				BZERO(buf);
-				ReadFile(outPipe.output,buf,1023,&bread,NULL);  //read the stdout pipe
-				string s(buf);
+                string::size_type i,j;
+                BZERO(buf);
+                ReadFile(outPipe.output,buf,1023,&bread,NULL);  //read the stdout pipe
+                string s(buf);
 
  // Change all \r\n into just \n. Leave \r alone.
-				string::size_type irn = s.find("\r\n");
-				while ( irn != string::npos ) {
-					  s.replace(irn,2,"\n");
-					  irn = s.find("\r\n");
-				}
+                string::size_type irn = s.find("\r\n");
+                while ( irn != string::npos ) {
+                      s.replace(irn,2,"\n");
+                      irn = s.find("\r\n");
+                }
 
 
 // Replace { with \ otherwise will interfere with output colours
-				i = s.find_first_of("{");
-				while(i!=string::npos)
-				{
-					s.insert(i, 1, '\\');
-					i = s.find("{", i+2);
-				}
+                i = s.find_first_of("{");
+                while(i!=string::npos)
+                {
+                    s.insert(i, 1, '\\');
+                    i = s.find("{", i+2);
+                }
 
 // Append to output buffer
-				keep = keep + s;
+                keep = keep + s;
 
 
 
 
-				for(;;)
-				{
+                for(;;)
+                {
 
 // OUTPUT LOOP - consume output buffer. Output any strings upto each newline. For carriage returns, only output from last CR as far as next LF
 
 
-					string::size_type strim = keep.find_first_of("\n");
-					if ( strim == string::npos )
-					{
-   						break;   // No more newlines in buffer. Job done for now.
-					}
+                    string::size_type strim = keep.find_first_of("\n");
+                    if ( strim == string::npos )
+                    {
+                        break;   // No more newlines in buffer. Job done for now.
+                    }
 
-					string::size_type strimr = keep.substr(0,strim).find_last_of("\r");   // If carriage returns present, only output from the last one to the end of the line.
-					if ( strimr == string::npos ) {
-						CcController::theController->AddInterfaceCommand("{0,1 " + keep.substr(0,strim));
-						keep.erase(0,strim+1);
-					} else {
-						CcController::theController->AddInterfaceCommand("{0,1 " + keep.substr(strimr+1,strim - strimr - 1 ));
-						keep.erase(0,strim+1);
-					}
+                    string::size_type strimr = keep.substr(0,strim).find_last_of("\r");   // If carriage returns present, only output from the last one to the end of the line.
+                    if ( strimr == string::npos ) {
+                        CcController::theController->AddInterfaceCommand("{0,1 " + keep.substr(0,strim));
+                        keep.erase(0,strim+1);
+                    } else {
+                        CcController::theController->AddInterfaceCommand("{0,1 " + keep.substr(strimr+1,strim - strimr - 1 ));
+                        keep.erase(0,strim+1);
+                    }
 
-				}  //END oF OUTPUT LOOP.
-
-
+                }  //END oF OUTPUT LOOP.
 
 
-				// Keep checking for new output from process
-				BZERO(buf);
-				PeekNamedPipe(outPipe.output,buf,1023,&bread,&avail,NULL);
-			}
+
+
+                // Keep checking for new output from process
+                BZERO(buf);
+                PeekNamedPipe(outPipe.output,buf,1023,&bread,&avail,NULL);
+            }
 
 // No bytes to read (maybe waiting for input) check the process is still active
 
-			GetExitCodeProcess(pi.proc.hProcess,&exit);      //while the process is running
-			if (exit != STILL_ACTIVE) {
-				exitcode = exit;
-				break;
-			}
+            GetExitCodeProcess(pi.proc.hProcess,&exit);      //while the process is running
+            if (exit != STILL_ACTIVE) {
+                exitcode = exit;
+                break;
+            }
 
-			bool wait = false;
+            bool wait = false;
 
 // Check for input or interupt from main process
-			(CcController::theController)->GetCrystalsCommand(*&buf,wait);
-			if ( wait ) {
-			   string s(buf);
-			   s.erase(s.find_last_not_of(" ")+1,s.length());
-			   if ( s.substr(0,11) == "_MAIN CLOSE" )
-			   {
-				 UINT uexit=0;
-				 TerminateProcess(pi.proc.hProcess, uexit);
-				 CloseHandle(pi.proc.hThread);
-				 CloseHandle(pi.proc.hProcess);
-				 CcController::theController->AddInterfaceCommand("{0,2 Process terminated.");
-				 break;
-			   }
-			   CcController::theController->AddInterfaceCommand("{0,1 " + s);
-			   WriteFile(inPipe.input,s.c_str(),s.length(),&bread,NULL); //send it to stdin
-			   WriteFile(inPipe.input,"\n",1,&bread,NULL); //send an extra newline char
-			}
+            (CcController::theController)->GetCrystalsCommand(*&buf,wait);
+            if ( wait ) {
+               string s(buf);
+               s.erase(s.find_last_not_of(" ")+1,s.length());
+               if ( s.substr(0,11) == "_MAIN CLOSE" )
+               {
+                 UINT uexit=0;
+                 TerminateProcess(pi.proc.hProcess, uexit);
+                 CloseHandle(pi.proc.hThread);
+                 CloseHandle(pi.proc.hProcess);
+                 CcController::theController->AddInterfaceCommand("{0,2 Process terminated.");
+                 break;
+               }
+               CcController::theController->AddInterfaceCommand("{0,1 " + s);
+               WriteFile(inPipe.input,s.c_str(),s.length(),&bread,NULL); //send it to stdin
+               WriteFile(inPipe.input,"\n",1,&bread,NULL); //send an extra newline char
+            }
 
 
-		}  //end of processing loop (from a break)
+        }  //end of processing loop (from a break)
 
 // Dregs of output
       CcController::theController->AddInterfaceCommand("{0,2 " + keep);
@@ -3643,62 +3622,62 @@ extern "C" {
             if ( lFirstTok.find("http") != 0 ) {  // Not a web URL, add file:/// to start.
                if ( lFirstTok.find("file") != 0 ) {  // Not a file URL, add file:/// to start.
 
-					string launch = string( firstTok + " file:///" + restLine);
-					STARTUPINFOA si;
-					PROCESS_INFORMATION proc;
-					GetStartupInfoA(&si);      //set startupinfo for the spawned process
-					si.dwFlags = STARTF_USESHOWWINDOW;
-					si.wShowWindow = SW_HIDE;
-					::CreateProcessA ( NULL, &launch[0], NULL, NULL, FALSE, 0, NULL, NULL, &si, &proc);
-					return 0;
-				}
-			}
+                    string launch = string( firstTok + " file:///" + restLine);
+                    STARTUPINFOA si;
+                    PROCESS_INFORMATION proc;
+                    GetStartupInfoA(&si);      //set startupinfo for the spawned process
+                    si.dwFlags = STARTF_USESHOWWINDOW;
+                    si.wShowWindow = SW_HIDE;
+                    ::CreateProcessA ( NULL, &launch[0], NULL, NULL, FALSE, 0, NULL, NULL, &si, &proc);
+                    return 0;
+                }
+            }
 
          }
       }
       match = lFirstTok.find("http://");
       if ( match == 0 )
       {
-     	 return ( wxLaunchDefaultBrowser( firstTok, wxBROWSER_NEW_WINDOW ) ? 0: 1);
+         return ( wxLaunchDefaultBrowser( firstTok, wxBROWSER_NEW_WINDOW ) ? 0: 1);
       } else {
-		 match = lFirstTok.find("file:///");
+         match = lFirstTok.find("file:///");
          if ( match == 0 )
          {
-			wxMimeTypesManager manager;
-			wxFileType *filetype=manager.GetFileTypeFromExtension("html");
-			wxString command=filetype->GetOpenCommand(firstTok);
-			wxExecute(command);
-			return 0;
+            wxMimeTypesManager manager;
+            wxFileType *filetype=manager.GetFileTypeFromExtension("html");
+            wxString command=filetype->GetOpenCommand(firstTok);
+            wxExecute(command);
+            return 0;
          }
-	  }
+      }
 
 
 
       if ( restLine.find('#') != string::npos ) {
         string launch = string(firstTok + " " + restLine);
-		STARTUPINFOA si;
-		PROCESS_INFORMATION proc;
-		GetStartupInfoA(&si);      //set startupinfo for the spawned process
-		si.dwFlags = STARTF_USESHOWWINDOW;
-		si.wShowWindow = SW_HIDE;
-		::CreateProcessA ( NULL, &launch[0], NULL, NULL, FALSE, 0, NULL, NULL, &si, &proc);
-		return 0;
-	  }
-	  
+        STARTUPINFOA si;
+        PROCESS_INFORMATION proc;
+        GetStartupInfoA(&si);      //set startupinfo for the spawned process
+        si.dwFlags = STARTF_USESHOWWINDOW;
+        si.wShowWindow = SW_HIDE;
+        ::CreateProcessA ( NULL, &launch[0], NULL, NULL, FALSE, 0, NULL, NULL, &si, &proc);
+        return 0;
+      }
+      
 //      (CcController::theController)->AddInterfaceCommand( "Going for shellexec: " + firstTok );
   //    (CcController::theController)->AddInterfaceCommand( "Going for shellexec: " + restLine );
-	 
-	  wxFileName fileToCheck = wxFileName(wxFileName::GetCwd(), firstTok);
-	  
-	  
-	
-	if ( fileToCheck.Exists() ) {
+     
+      wxFileName fileToCheck = wxFileName(wxFileName::GetCwd(), firstTok);
+      
+      
+    
+    if ( fileToCheck.Exists() ) {
       
 
 //      (CcController::theController)->AddInterfaceCommand( "Going for explorer select: " + firstTok );
       HINSTANCE ex = ShellExecuteA( GetDesktopWindow(),
                                    "open",
-								   "explorer.exe",
+                                   "explorer.exe",
                                    tstring ( "/select,\"" + firstTok + "\"").c_str(),
                                    NULL,
                                    SW_SHOWNORMAL);
@@ -3734,15 +3713,15 @@ extern "C" {
                        newparam.c_str(),
                        NULL,
                        SW_SHOWNORMAL);
-	  } else {
+      } else {
 
-		ShellExecuteA( GetDesktopWindow(),
+        ShellExecuteA( GetDesktopWindow(),
                        "open",
                        "command.com",
                        newparam.c_str(),
                        NULL,
                        SW_SHOWNORMAL);
-		}
+        }
 
 
 /*
@@ -3787,9 +3766,9 @@ extern "C" {
         delete [] str;
 */
     }
-	  }
+      }
         }
-	return exitcode;
+    return exitcode;
 #endif
 
 #if defined(__WXGTK__) || defined(__WXMAC__)
