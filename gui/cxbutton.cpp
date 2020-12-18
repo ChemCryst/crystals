@@ -55,6 +55,7 @@ using namespace std;
 #include    "cxgrid.h"
 #include    "cxwindow.h"
 #include    "crbutton.h"
+#include    "mathsymbols.h"
 
 
 #ifdef CRY_USEMFC
@@ -121,11 +122,9 @@ void    CxButton::ButtonClicked(wxCommandEvent& e)
 
 void    CxButton::SetText( const string &text )
 {
-#ifdef CRY_USEMFC
-    SetWindowText(text.c_str());
-#else
-    SetLabel(text.c_str());
-#endif
+    wxString wtext = wxString(text.c_str());
+    MathSymbols::replaceMarkup(wtext);
+    SetLabel(wtext);
 }
 
 CXSETGEOMETRY(CxButton)
