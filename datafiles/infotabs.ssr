@@ -29,11 +29,11 @@
 ^^WI                     @ 2,10  STATIC _MT_REF_GEXTI '0000.0'
 ^^WI                     @ 3,1  STATIC _MTG15 'GooF'                            
 ^^WI                     @ 3,3  STATIC _MT_REF_GOOF '00.0000'                   
-^^WI                     @ 3,5  STATIC _MTG15 'max shift'                       
+^^WI                     @ 3,5  STATIC _MTG15 'max \Delta/\sigma'                       
 ^^WI                     @ 3,7  STATIC _MT_REF_MAXRMS '000.0000'                
 ^^WI                     @ 4,1  STATIC _MTG15 'Refining against'                
 ^^WI                     @ 4,3  STATIC _MT_REF_COEF 'F squared'                  
-^^WI                     @ 4,5  STATIC _MTG15 'Sigma cutoff'                    
+^^WI                     @ 4,5  STATIC _MTG15 'F/\sigma(F) >'                    
 ^^WI                     @ 4,7  STATIC _MT_REF_SCUT '00.000'                     
 ^^WI                   }                                                        
 ^^WI                 }                                                          
