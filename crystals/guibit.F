@@ -1542,10 +1542,11 @@ c             CALL XPRVDU(NCVDU, 1,0)
             IF ( L23SR.NE.ISERnn(23) )THEN
               ISERnn(23)  = L23SR
               IF ( ISTORE ( L23MN + 1 ) .EQ. -1 ) THEN
-               WRITE (CMON,2) '^^CO SAFESET [ _MT_REF_COEF TEXT ''F'' ]'
+               WRITE (CMON,2) 
+     1 '^^CO SAFESET [ _MT_REF_COEF TEXT ''\Sigma(Fo-Fc)\**2'' ]'
               ELSE IF ( ISTORE ( L23MN + 1 ) .EQ. 0 ) THEN
                WRITE (CMON,2)
-     1                '^^CO SAFESET [ _MT_REF_COEF TEXT ''F squared'' ]'
+     1'^^CO SAFESET [ _MT_REF_COEF TEXT ''\Sigma[Fo\**2-Fc\**2]\**2'' ]'
               ELSE
                WRITE(CMON,2)
      1                '^^CO SAFESET [ _MT_REF_COEF TEXT ''Unknown'' ]'
@@ -1845,7 +1846,7 @@ cdjw      write(123,*)'Thinking about loading L 5 and L 25'
            END IF
 
 1107       FORMAT ('^^CO SAFESET [ _MT_WAVE TEXT "',F8.5,1X,
-     2             'Angstroms (',A,')" ]')
+     2             '\AA (',A,')" ]')
            WRITE(CMON,1107) STORE(L13DC),
      2  CRADTN(ISTORE(L13DT+1)+2)(1:LEN_TRIM(CRADTN(ISTORE(L13DT+1)+2)))
            CALL XPRVDU(NCVDU, 1,0)
