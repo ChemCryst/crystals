@@ -212,6 +212,11 @@ jobs:
         echo "testfail=true" >> $GITHUB_ENV
         rm -f ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org/*
         cp *.out ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org
+        rm -Rf Artifacts || echo
+        rm -Rf tmp || echo
+        rm -Rf logs || echo
+        rm -Rf data || echo
+        rm -Rf script || echo
         rm -f * || echo
 
     - name: Upload outputs if failures

@@ -1335,6 +1335,9 @@ end
 #ton plot=no punch=no
 end
 
+#ton type=pascal plot=no punch=no
+end
+
 #end
 
 

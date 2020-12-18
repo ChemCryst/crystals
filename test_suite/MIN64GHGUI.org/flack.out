@@ -5251,6 +5251,962 @@ $  Hooft et al, 2008, J Appl Cryst, 41, 96-103
  /Do/ > 2.00  2Ds(max)                   0
  Weight < 0.00100                       74
  Ratio > 2.50000                         7
+#TON TYPE=PASCAL PLOT=NO PUNCH=NO
+       Absolute Structure Determination
+
+           Notification of SPECIAL conditions
+ Initialising Special positions
+      8 atoms exists in LIST 5 without details in LIST  29
+                 molecular weight,  calculated density, absorption coefficient
+                                        (gm/cm**3)                (cm-1)
+  From LIST    5          0.000              0.000                 0.000
+  From LIST   29          0.000              0.000                 0.000
+  Friedif =    564.4   Estimated Friedel difference =    43.2442
+ f computed from scattering factors, including f-prime
+
+
+  Lists 3,5 and 29 may be incompatible
+Friedif =   564.38 Acta A63, (2007), 257-265
+Flack & Shmueli (2007) recommend a value >200 for
+general structures and >80 for enantiopure crystals
+
+ Observed:calculated signal  =1.3
+
+   RA   RD    wRA2  wRD2   Friedif for all data and x=zero
+   3.8  48.6   5.0  48.3    564.38
+
+ Do-Dm R-factor(%) with Flack(x) of   0.00(0.03) =   48.57%
+ Distribution of NINT(D/sigma) for all data
+ Rabinovich & Hope, Acta A36, (1980), 670-674
+Do    43     7     7    11    15    15    14    13    14    20    27    17    14    13     7    13    12     8     6     9    29
+Dc    29     5     7     7    12    10    11    17    20    25    30    28    20    21    10    13     5     2     5     6    31
+ n -3.33 -3.00 -2.67 -2.33 -2.00 -1.67 -1.33 -1.00 -0.67 -0.33  0.00  0.33  0.67  1.00  1.33  1.67  2.00  2.33  2.67  3.00  3.33
+++++++++++++++++++++++++++++++++++++
+  First pass using all reflections
+++++++++++++++++++++++++++++++++++++
+
+ Hole in One subroutine
+ --------------------------------------------------
+ Outliers rejection based on studentized residuals enabled:
+    Detection of outliers in weighted least squares regression
+    Bang Yong Sohn, Guk Boh Kim
+    Korean Journal of Computational & Applied Mathematics
+    August 1997, Volume 4, Issue 2, pp 441-452
+    doi: 10.1007/BF03014491
+    Cut-of value for outliers: 3sigma
+
+
+------- Linear fit using all suplied data 314
+Slope:-0.01(3) intercept:0.7(4)
+ 
+------- Linear fit iteration number 2 with 10 rejected outliers
+Slope:0.00(2) intercept:0.9(3)
+ 
+------- Linear fit iteration number 3 with 17 rejected outliers
+Slope:0.01(2) intercept:0.8(3)
+ 
+------- Linear fit iteration number 4 with 20 rejected outliers
+Slope:0.01(2) intercept:0.6(3)
+ 
+------- Linear fit iteration number 5 with 22 rejected outliers
+Slope:0.01(2) intercept:0.7(3)
+ 
+------- Linear fit iteration number 6 with 23 rejected outliers
+Slope:0.01(2) intercept:0.7(3)
+ 
+
+ List of outliers (excluded all previously filtered reflections):
+  1   1   1       -1   2   1        0   2   1        2   2   1
+ -2   3   1       -1   3   1        0   3   1        2   3   1
+  2   4   1       -1   6   1        0   1   2        1   1   2
+ -1   2   2        0   2   2        1   2   2       -2   3   2
+  4   4   2        0   1   3       -1   3   3        1   5   3
+  2   5   3        4   4   4        0   6   5
+
+ Top 10% of most influential reflections:
+ Determined using leverages: abs(X (X^t Dw X)^-1 X^t)
+ ^t = transpose, Dw = weights, ^-1 = Matrix inverse
+ The result is scaled with the maximum leverage=100.0
+    h k l    (Lev)         h k l    (Lev)         h k l    (Lev)         h k l    (Lev)      
+  1   3   1 (100.00)     1   3   1 ( 45.18)     1   3   3 ( 32.38)     0   1   1 ( 26.77)    
+  0   3   2 ( 26.55)     5   5   1 ( 20.92)     0   4   2 ( 19.95)     0   5   2 ( 19.08)    
+  0   4   1 ( 14.93)     0   1   1 ( 14.24)    -1   7   1 ( 14.00)    -1   6   2 ( 11.96)    
+  0   4   2 ( 11.94)    -1   6   2 ( 10.69)    -2   5   4 (  9.56)     1   6   1 (  9.30)    
+  1   3   3 (  9.18)    -2   8   1 (  8.70)    -2   5   4 (  8.32)     4   5   1 (  8.14)    
+  1   4   1 (  7.75)     3   6   3 (  7.69)     1   2   3 (  7.45)     1   8   2 (  7.27)    
+  0   4   3 (  7.17)    -3   4   1 (  7.10)    -2   5   3 (  6.75)     0   4   1 (  6.71)    
+ -4   6   1 (  6.63)     0   5   2 (  6.57)    -3   4   2 (  6.49)     3   3   2 (  6.44)    
+  2   4   3 (  6.35)    -1   5   1 (  6.13)     0   1   6 (  6.00)     0   8   1 (  5.99)    
+  0   1   4 (  5.86)    -1   2   3 (  5.84)     5   5   3 (  5.82)     2   5   1 (  5.80)    
+ -2   3   3 (  5.74)     0   1   5 (  5.68)     0   3   2 (  5.46)     0   8   2 (  5.38)    
+ -2   7   1 (  5.36)     1   4   3 (  5.34)     5   5   1 (  5.26)    -4   6   3 (  5.14)    
+  4   7   1 (  5.07)    -4   6   3 (  4.98)    -2   5   1 (  4.92)     1   2   5 (  4.87)    
+  6   6   1 (  4.84)     3   9   1 (  4.79)     3   7   3 (  4.77)    -4   5   3 (  4.76)    
+  0   9   2 (  4.75)    -5   6   1 (  4.65)    
+
+ Top 10% of most influential reflections:
+ Determined using: (V z^t z V)/(1+lev)
+    h k l      (Dv)          h k l      (Dv)          h k l      (Dv)          h k l      (Dv)       
+  1   3   1 (2.36E-03)     1   3   3 (2.00E-03)     5   5   1 (1.45E-03)     0   4   1 (1.36E-03)    
+  0   1   1 (1.32E-03)     0   4   2 (1.21E-03)    -3   4   1 (9.24E-04)    -1   6   2 (9.10E-04)    
+  1   6   1 (8.92E-04)    -1   5   1 (8.64E-04)     3   3   2 (8.55E-04)    -2   8   1 (8.44E-04)    
+ -1   2   3 (8.29E-04)    -2   5   3 (8.00E-04)    -2   5   4 (7.98E-04)    -2   3   3 (7.98E-04)    
+  0   1   6 (7.15E-04)     0   4   3 (7.11E-04)    -1   4   1 (6.70E-04)     0   1   5 (6.68E-04)    
+  1   2   3 (6.61E-04)    -2   5   1 (6.58E-04)    -4   6   1 (6.27E-04)    -4   5   3 (6.06E-04)    
+  2   4   3 (6.03E-04)     2   6   1 (5.83E-04)    -4   6   3 (5.79E-04)     1   4   1 (5.68E-04)    
+  1   2   5 (5.40E-04)     5   5   3 (5.36E-04)     1   2   1 (5.20E-04)    -2   7   1 (5.18E-04)    
+  1   3   5 (5.14E-04)    -1   7   1 (5.02E-04)     0   3   3 (5.02E-04)     2   5   1 (5.00E-04)    
+ -3   6   3 (4.98E-04)    -1   4   3 (4.97E-04)    -1   5   2 (4.94E-04)     3   5   3 (4.92E-04)    
+  0   8   1 (4.90E-04)     3   6   1 (4.79E-04)    -2   8   3 (4.76E-04)     1   6   2 (4.60E-04)    
+  3   3   3 (4.60E-04)     1   5   2 (4.58E-04)    -3   6   1 (4.55E-04)     3   3   1 (4.48E-04)    
+  0   8   2 (4.45E-04)    -3   4   3 (4.42E-04)     3   8   1 (4.38E-04)     2   4   4 (4.32E-04)    
+ -1   3   2 (4.31E-04)     2   7   3 (4.17E-04)    -3   4   4 (4.11E-04)     0   2   4 (4.06E-04)    
+ -2   4   3 (3.99E-04)     2   3   4 (3.95E-04)    
+ 
+Frequency distribution of the residuals from the linear fit
+          Mean=  0.01 Variance=  1.01
+          ---=Residuals +++=Normal distribution
+         _______________________________________________________________
+   0.48 |                              ¯¯¯                              |
+   0.43 |                           ¯¯++++                              |
+   0.38 |                           ++    ++¯                           |
+   0.33 |                          +        +                           |
+   0.29 |                         +          +                          |
+   0.24 |                        +            +                         |
+   0.19 |                      ++¯¯¯         ¯¯++                       |
+   0.14 |                     +¯¯               ¯+¯                     |
+   0.10 |                  ¯++                    ++¯¯                  |
+   0.05 |+++++++++++++++++++                        ++++++++++++++++++++|
+   0.00  ¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯
+        -5.0  -4.0  -3.0  -2.0  -1.0   0.0   1.0   2.0   3.0   4.0
+ 
+
+ End Hole in One subroutine
+ --------------------------------------------------
+
+
+ Hooft Parameter
+ Hooft probability analysis
+ For an enantiopure material, there are 2 choices, P2
+ p2(correct)     1.0000   i.e. 0.100000E+01                                     
+ if 50:50 twinning is possible,
+ there are 3 choices, p3
+ p3(correct)     1.0000   i.e. 0.100000E+01                                     
+ p3(rac-twin)    0.0000   i.e. 0.000000E+00                                     
+ p3(inverse)     0.0000   i.e. 0.000000E+00                                     
+ g              1.0328                                                          
+ g s.u.         0.0185                                                          
+
+
+
+ No of pairs for which delta(Io) has same sign as delta(Is)
+ Same sign   Opposite sign
+     254            60
+
+
+   LePage Analysis (Assuming Enantio-purity)
+ Data are ranked by the Signal:Noise
+ Minimum signal : noise used =  1.1491
+ No. Available  314
+  Range    No.Same  No.Opposite  Signal:noise   Prob Wrong Hand
+  0   10       10      0          7.2240           0.000
+  0   20       20      0          5.7162           0.000
+  0   50       50      0          3.5514           0.000
+  0  100       95      5          2.0325           0.000
+  0  158      146     12          1.1491           0.000
+   Top 50% of data
+  0  157      145     12          1.1504           0.000
+  0   10       10      0          7.2240           0.000
+ 10   20       10      0          5.7162           0.000
+ 20   50       30      0          3.5514           0.000
+ 50  100       45      5          2.0325           0.000
+100  200       51      7          1.1491           0.000
+
+ Bijvoet differences subroutine
+ --------------------------------------------------
+ Outliers rejection based on studentized residuals enabled:
+    Detection of outliers in weighted least squares regression
+    Bang Yong Sohn, Guk Boh Kim
+    Korean Journal of Computational & Applied Mathematics
+    August 1997, Volume 4, Issue 2, pp 441-452
+    doi: 10.1007/BF03014491
+    Cut-of value for outliers: 3sigma
+
+
+------- Linear fit using all suplied data
+Slope:1.032(32) intercept:-0.44(47)
+ 
+------- Linear fit iteration number 2 with 1 rejected outliers
+Slope:1.006(26) intercept:-1.16(39)
+ 
+------- Linear fit iteration number 3 with 4 rejected outliers
+Slope:1.002(25) intercept:-1.25(37)
+ 
+
+ List of outliers (excluded all previously filtered reflections):
+  0   2   1       -2   3   1        1   3   4        0   6   5
+
+ Top 10% of most influential reflections:
+ Determined using leverages: abs(X (X^t Dw X)^-1 X^t)
+ ^t = transpose, X = Design matrix, Dw = weights, ^-1 = Matrix inverse
+ The result is scaled with the maximum leverage=100.0
+    h k l    (Lev)         h k l    (Lev)         h k l    (Lev)         h k l    (Lev)      
+  1   3   1 (100.00)     0   1   1 ( 30.08)     2   4   1 ( 25.97)     0   4   2 ( 24.21)    
+  1   3   3 ( 22.68)    -1   6   2 ( 18.26)     0   5   2 ( 17.52)     0   3   2 ( 16.08)    
+  0   4   1 ( 14.70)     0   2   2 ( 14.37)    -2   5   4 ( 14.35)     5   5   1 ( 13.20)    
+  0   1   3 ( 12.90)    -1   6   1 ( 12.24)     2   2   1 ( 10.55)    -4   6   3 (  8.85)    
+ -1   7   1 (  8.83)    -2   3   2 (  8.72)     0   4   3 (  8.64)    -4   6   1 (  8.13)    
+  1   2   3 (  8.12)     5   5   3 (  7.96)     0   1   4 (  7.95)    -1   5   1 (  7.77)    
+ -1   3   1 (  7.75)     0   1   5 (  7.53)     0   8   1 (  7.52)    -3   4   1 (  7.28)    
+ -2   3   3 (  7.26)    -1   2   3 (  7.25)    -2   8   1 (  7.16)    
+
+ Top 10% of most influential reflections:
+ Determined using: Dv = (V z^t z V)/(1+lev)
+ V = variance of the parameter, ^t = transpose, 
+ z = a row of the design matrix, lev = leverage
+    h k l      (Dv)          h k l      (Dv)          h k l      (Dv)          h k l      (Dv)       
+  1   3   1 (7.80E-03)     0   1   1 (4.25E-03)     0   4   2 (3.80E-03)     0   4   3 (2.26E-03)    
+ -1   6   1 (2.18E-03)    -1   3   1 (2.17E-03)     1   2   3 (2.16E-03)    -1   5   1 (2.15E-03)    
+ -3   4   1 (2.07E-03)     0   1   5 (2.07E-03)    -1   2   3 (2.04E-03)     2   4   3 (1.98E-03)    
+ -2   3   3 (1.98E-03)     1   4   1 (1.95E-03)     5   5   3 (1.72E-03)    -4   6   3 (1.71E-03)    
+  2   5   1 (1.69E-03)    -2   8   1 (1.69E-03)    -1   4   1 (1.69E-03)     1   3   5 (1.68E-03)    
+  0   8   1 (1.62E-03)    -2   5   3 (1.52E-03)     1   6   2 (1.48E-03)     3   3   1 (1.46E-03)    
+ -4   5   3 (1.34E-03)     6   6   1 (1.23E-03)     0   1   4 (1.19E-03)     0   3   4 (1.17E-03)    
+  1   5   4 (1.12E-03)    -3   6   1 (1.11E-03)    -5   6   1 (1.08E-03)    
+ 
+Frequency distribution of the residuals from the linear fit
+          Mean= -0.04 Variance=  1.01
+          ---=Residuals +++=Normal distribution
+         _______________________________________________________________
+   0.44 |                              ++¯                              |
+   0.39 |                            ++  ++¯¯                           |
+   0.35 |                           +¯¯    +                            |
+   0.31 |                          +        +                           |
+   0.26 |                        ++          ++                         |
+   0.22 |                       +¯¯¯         ¯¯+                        |
+   0.18 |                     ¯+¯               +                       |
+   0.13 |                     +                 ¯+¯                     |
+   0.09 |               ¯¯¯+++                    +++                   |
+   0.04 |++++++++++++++++++                        ¯¯+++++++++++++++++++|
+   0.00  ¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯
+        -5.0  -4.0  -3.0  -2.0  -1.0   0.0   1.0   2.0   3.0   4.0   5.0
+ 
+Bijvoet differences:-0.00124(1259) r^2:.837 Reduced Chi2:1.836
+Corrected Bijvoet differences:-0.0012(231)
+ 
+
+ End Bijvoet differences subroutine
+ --------------------------------------------------
+
+
+
+ Parsons quotients subroutine
+ --------------------------------------------------
+ Outliers rejection based on studentized residuals enabled:
+    Detection of outliers in weighted least squares regression
+    Bang Yong Sohn, Guk Boh Kim
+    Korean Journal of Computational & Applied Mathematics
+    August 1997, Volume 4, Issue 2, pp 441-452
+    doi: 10.1007/BF03014491
+    Cut-of value for outliers: 3sigma
+
+
+------- Linear fit using all suplied data
+Slope:1.031(27) intercept:-0.00231(121)
+ 
+------- Linear fit iteration number 2 with 3 rejected outliers
+Slope:0.978(26) intercept:-0.00357(112)
+ 
+------- Linear fit iteration number 3 with 5 rejected outliers
+Slope:0.961(26) intercept:-0.00464(112)
+ 
+------- Linear fit iteration number 4 with 6 rejected outliers
+Slope:0.954(25) intercept:-0.00523(112)
+ 
+------- Linear fit iteration number 5 with 7 rejected outliers
+Slope:0.939(25) intercept:-0.00564(111)
+ 
+
+ List of outliers (excluded all previously filtered reflections):
+  0   1   1        0   2   1       -2   3   1        3   3   1
+  0   4   2        1   4   2        1   3   4
+
+ Top 10% of most influential reflections:
+ Determined using leverages: abs(X (X^t Dw X)^-1 X^t)
+ ^t = transpose, X = Design matrix, Dw = weights, ^-1 = Matrix inverse
+ The result is scaled with the maximum leverage=100.0
+    h k l    (Lev)         h k l    (Lev)         h k l    (Lev)         h k l    (Lev)      
+  1   3   1 (100.00)     2   4   1 ( 32.33)     0   4   1 ( 30.97)     1   3   3 ( 27.63)    
+  0   2   3 ( 23.98)     2   2   1 ( 21.86)     0   1   3 ( 19.33)    -1   3   1 ( 17.86)    
+ -1   2   1 ( 16.27)    -1   5   1 ( 16.10)     0   2   4 ( 15.43)     0   4   3 ( 15.23)    
+  1   2   1 ( 15.12)     1   1   2 ( 13.67)    -2   4   2 ( 13.66)     5   5   1 ( 13.11)    
+ -3   4   1 ( 13.11)     1   1   3 ( 13.03)     1   3   2 ( 12.86)     2   4   3 ( 12.55)    
+ -1   2   2 ( 12.17)     1   5   1 ( 12.13)    -1   6   1 ( 12.07)     1   2   2 ( 11.87)    
+ -1   6   2 ( 10.75)     3   3   3 ( 10.61)    -1   3   3 ( 10.11)     1   2   3 (  9.92)    
+  2   2   2 (  9.87)     1   1   1 (  9.58)    
+
+ Top 10% of most influential reflections:
+ Determined using: Dv = (V z^t z V)/(1+lev)
+ V = variance of the parameter, ^t = transpose, 
+ z = a row of the design matrix, lev = leverage
+    h k l      (Dv)          h k l      (Dv)          h k l      (Dv)          h k l      (Dv)       
+  1   3   1 (8.15E-03)    -1   6   1 (2.90E-03)     0   4   3 (2.47E-03)    -1   5   1 (2.46E-03)    
+  1   2   3 (2.41E-03)    -1   3   1 (2.39E-03)    -3   4   1 (2.39E-03)     2   4   3 (2.20E-03)    
+ -1   2   3 (2.20E-03)     1   4   1 (2.19E-03)    -2   3   3 (2.04E-03)     0   1   5 (2.02E-03)    
+  2   5   1 (2.00E-03)    -2   8   1 (1.94E-03)     0   8   1 (1.87E-03)    -1   4   1 (1.84E-03)    
+ -2   5   3 (1.78E-03)     1   3   5 (1.68E-03)     5   5   3 (1.67E-03)    -4   6   3 (1.61E-03)    
+  1   6   2 (1.56E-03)    -4   5   3 (1.49E-03)     6   6   1 (1.41E-03)     1   5   4 (1.32E-03)    
+  1   5   1 (1.25E-03)    -3   6   1 (1.24E-03)    -1   3   2 (1.22E-03)     0   3   4 (1.21E-03)    
+ -3   4   4 (1.20E-03)     2   2   3 (1.12E-03)    
+ 
+Frequency distribution of the residuals from the linear fit
+          Mean= -0.04 Variance=  1.01
+          ---=Residuals +++=Normal distribution
+         _______________________________________________________________
+   0.44 |                              ++¯¯¯¯                           |
+   0.39 |                            ++  ++                             |
+   0.35 |                           +      +                            |
+   0.31 |                         ++¯¯¯     ++                          |
+   0.26 |                        +¯¯          +                         |
+   0.22 |                       +            ¯¯+                        |
+   0.17 |                      +                +                       |
+   0.13 |                     +¯¯               ¯+¯                     |
+   0.09 |                  +++                    +++¯                  |
+   0.04 |++++++++++++++++++                          +++++++++++++++++++|
+   0.00  ¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯
+        -5.0  -4.0  -3.0  -2.0  -1.0   0.0   1.0   2.0   3.0   4.0   5.0
+ 
+Bijvoet differences:0.03057(1274) r^2:.817 Reduced Chi2:1.768
+Corrected Bijvoet differences:0.0306(225)
+ 
+
+ End Parsons quotients subroutine
+ --------------------------------------------------
+
+
++++++++++++++++++++++++++++++++++++++++++
+    Second pass using all filters exept 4
++++++++++++++++++++++++++++++++++++++++++
+
+ Hole in One subroutine
+ --------------------------------------------------
+ Outliers rejection based on studentized residuals enabled:
+    Detection of outliers in weighted least squares regression
+    Bang Yong Sohn, Guk Boh Kim
+    Korean Journal of Computational & Applied Mathematics
+    August 1997, Volume 4, Issue 2, pp 441-452
+    doi: 10.1007/BF03014491
+    Cut-of value for outliers: 3sigma
+
+
+------- Linear fit using all suplied data 300
+Slope:-0.00(3) intercept:0.6(4)
+ 
+------- Linear fit iteration number 2 with 9 rejected outliers
+Slope:0.00(2) intercept:1.0(3)
+ 
+------- Linear fit iteration number 3 with 16 rejected outliers
+Slope:0.01(2) intercept:0.9(3)
+ 
+------- Linear fit iteration number 4 with 18 rejected outliers
+Slope:0.01(2) intercept:0.7(3)
+ 
+------- Linear fit iteration number 5 with 19 rejected outliers
+Slope:0.01(2) intercept:0.7(3)
+ 
+------- Linear fit iteration number 6 with 20 rejected outliers
+Slope:0.01(2) intercept:0.7(3)
+ 
+------- Linear fit iteration number 7 with 21 rejected outliers
+Slope:0.01(2) intercept:0.7(3)
+ 
+
+ List of outliers (excluded all previously filtered reflections):
+  1   1   1       -1   2   1        0   2   1        2   2   1
+ -1   3   1        0   3   1        2   3   1        2   4   1
+ -1   6   1        0   1   2       -1   2   2        0   2   2
+  1   2   2       -2   3   2        4   4   2        0   1   3
+ -1   3   3        1   5   3        2   5   3        4   4   4
+  0   6   5
+
+ Top 10% of most influential reflections:
+ Determined using leverages: abs(X (X^t Dw X)^-1 X^t)
+ ^t = transpose, Dw = weights, ^-1 = Matrix inverse
+ The result is scaled with the maximum leverage=100.0
+    h k l    (Lev)         h k l    (Lev)         h k l    (Lev)         h k l    (Lev)      
+  1   3   1 (100.00)     1   3   1 ( 45.17)     1   3   3 ( 32.39)     0   3   2 ( 30.01)    
+  0   1   1 ( 26.81)     5   5   1 ( 21.43)     0   4   2 ( 19.99)     0   4   1 ( 14.94)    
+ -1   7   1 ( 14.70)     0   1   1 ( 14.26)    -1   6   2 ( 12.64)     0   4   2 ( 11.96)    
+ -1   6   2 ( 11.29)    -2   5   4 ( 10.02)     1   6   1 (  9.67)     1   3   3 (  9.19)    
+ -2   8   1 (  9.08)    -2   5   4 (  8.73)     3   6   3 (  8.23)     1   4   1 (  7.85)    
+  1   2   3 (  7.49)    -3   4   2 (  7.24)     0   4   3 (  7.20)    -3   4   1 (  7.12)    
+ -2   5   3 (  6.95)    -4   6   1 (  6.82)     0   4   1 (  6.71)     3   3   2 (  6.50)    
+  0   1   4 (  6.40)     2   4   3 (  6.36)     0   8   1 (  6.31)     0   1   6 (  6.24)    
+  0   3   2 (  6.16)    -1   5   1 (  6.15)     5   5   3 (  6.10)     2   5   1 (  5.95)    
+ -1   2   3 (  5.87)     0   8   2 (  5.87)    -2   3   3 (  5.81)     0   1   5 (  5.73)    
+  4   7   1 (  5.69)    -2   7   1 (  5.62)    -4   6   3 (  5.44)     3   9   1 (  5.42)    
+  5   5   1 (  5.39)     0   9   2 (  5.36)     3   7   3 (  5.34)    -4   6   3 (  5.28)    
+  4   8   1 (  5.21)     1   2   5 (  5.20)     6   6   1 (  5.19)     0   9   1 (  5.08)    
+ -5   6   1 (  5.07)     2   7   2 (  5.06)    -4   5   3 (  5.00)    
+
+ Top 10% of most influential reflections:
+ Determined using: (V z^t z V)/(1+lev)
+    h k l      (Dv)          h k l      (Dv)          h k l      (Dv)          h k l      (Dv)       
+  1   3   1 (2.37E-03)     1   3   3 (2.00E-03)     5   5   1 (1.45E-03)     0   4   1 (1.36E-03)    
+  0   1   1 (1.32E-03)     0   4   2 (1.21E-03)    -3   4   1 (9.25E-04)    -1   6   2 (9.11E-04)    
+  1   6   1 (8.93E-04)    -1   5   1 (8.65E-04)     3   3   2 (8.56E-04)    -2   8   1 (8.45E-04)    
+ -1   2   3 (8.30E-04)    -2   5   3 (8.01E-04)    -2   5   4 (7.99E-04)    -2   3   3 (7.99E-04)    
+  0   1   6 (7.16E-04)     0   4   3 (7.12E-04)    -1   4   1 (6.71E-04)     0   1   5 (6.69E-04)    
+  1   2   3 (6.62E-04)    -2   5   1 (6.58E-04)    -4   6   1 (6.27E-04)    -4   5   3 (6.06E-04)    
+  2   4   3 (6.04E-04)     2   6   1 (5.83E-04)    -4   6   3 (5.79E-04)     1   4   1 (5.68E-04)    
+  1   2   5 (5.40E-04)     5   5   3 (5.37E-04)     1   2   1 (5.20E-04)    -2   7   1 (5.19E-04)    
+  1   3   5 (5.15E-04)    -1   7   1 (5.02E-04)     0   3   3 (5.02E-04)     2   5   1 (5.00E-04)    
+ -3   6   3 (4.99E-04)    -1   4   3 (4.98E-04)    -1   5   2 (4.95E-04)     3   5   3 (4.93E-04)    
+  0   8   1 (4.90E-04)     3   6   1 (4.80E-04)    -2   8   3 (4.76E-04)     1   6   2 (4.61E-04)    
+  3   3   3 (4.60E-04)     1   5   2 (4.59E-04)    -3   6   1 (4.56E-04)     3   3   1 (4.49E-04)    
+  0   8   2 (4.45E-04)    -3   4   3 (4.43E-04)     3   8   1 (4.38E-04)     2   4   4 (4.33E-04)    
+ -1   3   2 (4.31E-04)     2   7   3 (4.17E-04)    -3   4   4 (4.12E-04)    
+ 
+Frequency distribution of the residuals from the linear fit
+          Mean=  0.00 Variance=  1.01
+          ---=Residuals +++=Normal distribution
+         _______________________________________________________________
+   0.47 |                              ¯¯¯                              |
+   0.43 |                           ¯¯++++                              |
+   0.38 |                           ++    ++¯                           |
+   0.33 |                          +        +                           |
+   0.28 |                         +          +                          |
+   0.24 |                        +            +                         |
+   0.19 |                      ++¯¯¯         ¯¯++                       |
+   0.14 |                     +¯¯               ¯+¯                     |
+   0.09 |                  ¯++                    ++                    |
+   0.05 |+++++++++++++++++++                       ¯++++++++++++++++++++|
+   0.00  ¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯
+        -5.0  -4.0  -3.0  -2.0  -1.0   0.0   1.0   2.0   3.0   4.0
+ 
+
+ End Hole in One subroutine
+ --------------------------------------------------
+
+
+ Hooft Parameter
+ Hooft probability analysis
+ For an enantiopure material, there are 2 choices, P2
+ p2(correct)     1.0000   i.e. 0.100000E+01                                     
+ if 50:50 twinning is possible,
+ there are 3 choices, p3
+ p3(correct)     1.0000   i.e. 0.100000E+01                                     
+ p3(rac-twin)    0.0000   i.e. 0.000000E+00                                     
+ p3(inverse)     0.0000   i.e. 0.000000E+00                                     
+ g              1.0091                                                          
+ g s.u.         0.0185                                                          
+
+
+
+ No of pairs for which delta(Io) has same sign as delta(Is)
+ Same sign   Opposite sign
+     244            56
+
+
+   LePage Analysis (Assuming Enantio-purity)
+ Data are ranked by the Signal:Noise
+ Minimum signal : noise used =  1.1941
+ No. Available  300
+  Range    No.Same  No.Opposite  Signal:noise   Prob Wrong Hand
+  0   10       10      0          7.2240           0.000
+  0   20       20      0          5.7162           0.000
+  0   50       50      0          3.4944           0.000
+  0  100       95      5          2.0325           0.000
+  0  151      139     12          1.1941           0.000
+   Top 50% of data
+  0  150      139     11          1.2046           0.000
+  0   10       10      0          7.2240           0.000
+ 10   20       10      0          5.7162           0.000
+ 20   50       30      0          3.4944           0.000
+ 50  100       45      5          2.0325           0.000
+100  200       44      7          1.1941           0.000
+
+ Bijvoet differences subroutine
+ --------------------------------------------------
+ Outliers rejection based on studentized residuals enabled:
+    Detection of outliers in weighted least squares regression
+    Bang Yong Sohn, Guk Boh Kim
+    Korean Journal of Computational & Applied Mathematics
+    August 1997, Volume 4, Issue 2, pp 441-452
+    doi: 10.1007/BF03014491
+    Cut-of value for outliers: 3sigma
+
+
+------- Linear fit using all suplied data
+Slope:1.006(27) intercept:-1.12(41)
+ 
+------- Linear fit iteration number 2 with 1 rejected outliers
+Slope:1.005(26) intercept:-1.14(41)
+ 
+------- Linear fit iteration number 3 with 3 rejected outliers
+Slope:1.002(25) intercept:-1.22(40)
+ 
+
+ List of outliers (excluded all previously filtered reflections):
+  0   2   1        1   3   4        0   6   5
+
+ Top 10% of most influential reflections:
+ Determined using leverages: abs(X (X^t Dw X)^-1 X^t)
+ ^t = transpose, X = Design matrix, Dw = weights, ^-1 = Matrix inverse
+ The result is scaled with the maximum leverage=100.0
+    h k l    (Lev)         h k l    (Lev)         h k l    (Lev)         h k l    (Lev)      
+  1   3   1 (100.00)     0   1   1 ( 30.14)     2   4   1 ( 25.96)     0   4   2 ( 24.27)    
+  1   3   3 ( 22.67)    -1   6   2 ( 19.18)     0   3   2 ( 17.89)     0   2   2 ( 15.91)    
+ -2   5   4 ( 14.97)     0   4   1 ( 14.70)     5   5   1 ( 13.48)     0   1   3 ( 12.93)    
+ -1   6   1 ( 12.78)     2   2   1 ( 10.55)    -2   3   2 (  9.55)    -4   6   3 (  9.33)    
+ -1   7   1 (  9.22)     0   4   3 (  8.68)     0   1   4 (  8.61)    -4   6   1 (  8.34)    
+  5   5   3 (  8.33)     1   2   3 (  8.18)     0   8   1 (  7.91)    -1   5   1 (  7.79)    
+ -1   3   1 (  7.75)     0   1   5 (  7.60)    -2   8   3 (  7.47)    -2   8   1 (  7.46)    
+ -2   3   3 (  7.36)    
+
+ Top 10% of most influential reflections:
+ Determined using: Dv = (V z^t z V)/(1+lev)
+ V = variance of the parameter, ^t = transpose, 
+ z = a row of the design matrix, lev = leverage
+    h k l      (Dv)          h k l      (Dv)          h k l      (Dv)          h k l      (Dv)       
+  1   3   1 (7.81E-03)     0   1   1 (4.26E-03)     0   4   2 (3.81E-03)     0   4   3 (2.26E-03)    
+ -1   6   1 (2.18E-03)    -1   3   1 (2.17E-03)     1   2   3 (2.17E-03)    -1   5   1 (2.16E-03)    
+ -3   4   1 (2.07E-03)     0   1   5 (2.07E-03)    -1   2   3 (2.05E-03)     2   4   3 (1.99E-03)    
+ -2   3   3 (1.99E-03)     1   4   1 (1.96E-03)     5   5   3 (1.73E-03)    -4   6   3 (1.72E-03)    
+  2   5   1 (1.70E-03)    -2   8   1 (1.70E-03)    -1   4   1 (1.69E-03)     1   3   5 (1.68E-03)    
+  0   8   1 (1.63E-03)    -2   5   3 (1.53E-03)     1   6   2 (1.48E-03)     3   3   1 (1.47E-03)    
+ -4   5   3 (1.35E-03)     6   6   1 (1.23E-03)     0   1   4 (1.20E-03)     0   3   4 (1.17E-03)    
+  1   5   4 (1.12E-03)    
+ 
+Frequency distribution of the residuals from the linear fit
+          Mean= -0.05 Variance=  1.01
+          ---=Residuals +++=Normal distribution
+         _______________________________________________________________
+   0.40 |                            ++¯¯++¯¯                           |
+   0.36 |                           +¯¯    +                            |
+   0.32 |                          +        +                           |
+   0.28 |                         +          +                          |
+   0.24 |                        +¯¯         ¯+¯                        |
+   0.20 |                       +              +                        |
+   0.16 |                     ¯+¯               +                       |
+   0.12 |                    ++                 ¯++                     |
+   0.08 |               ¯¯¯++¯                     ++                   |
+   0.04 |++++++++++++++++++                        ¯¯+++++++++++++++++++|
+   0.00  ¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯
+        -5.0  -4.0  -3.0  -2.0  -1.0   0.0   1.0   2.0   3.0   4.0   5.0
+ 
+Bijvoet differences:-0.00119(1273) r^2:.840 Reduced Chi2:1.873
+Corrected Bijvoet differences:-0.0012(238)
+ 
+
+ End Bijvoet differences subroutine
+ --------------------------------------------------
+
+
+
+ Parsons quotients subroutine
+ --------------------------------------------------
+ Outliers rejection based on studentized residuals enabled:
+    Detection of outliers in weighted least squares regression
+    Bang Yong Sohn, Guk Boh Kim
+    Korean Journal of Computational & Applied Mathematics
+    August 1997, Volume 4, Issue 2, pp 441-452
+    doi: 10.1007/BF03014491
+    Cut-of value for outliers: 3sigma
+
+
+------- Linear fit using all suplied data
+Slope:0.988(27) intercept:-0.00241(115)
+ 
+------- Linear fit iteration number 2 with 2 rejected outliers
+Slope:0.982(26) intercept:-0.00356(113)
+ 
+------- Linear fit iteration number 3 with 4 rejected outliers
+Slope:0.965(26) intercept:-0.00462(113)
+ 
+------- Linear fit iteration number 4 with 5 rejected outliers
+Slope:0.958(26) intercept:-0.00521(112)
+ 
+
+ List of outliers (excluded all previously filtered reflections):
+  0   1   1        0   2   1        3   3   1        1   4   2
+  1   3   4
+
+ Top 10% of most influential reflections:
+ Determined using leverages: abs(X (X^t Dw X)^-1 X^t)
+ ^t = transpose, X = Design matrix, Dw = weights, ^-1 = Matrix inverse
+ The result is scaled with the maximum leverage=100.0
+    h k l    (Lev)         h k l    (Lev)         h k l    (Lev)         h k l    (Lev)      
+  1   3   1 (100.00)     2   4   1 ( 33.55)     0   4   1 ( 32.33)     1   3   3 ( 28.44)    
+  0   4   2 ( 26.87)     0   2   3 ( 24.47)     2   2   1 ( 22.83)     0   1   3 ( 20.05)    
+ -1   3   1 ( 17.81)    -1   2   1 ( 16.99)    -1   5   1 ( 16.04)     0   2   4 ( 16.01)    
+  1   2   1 ( 15.75)     0   4   3 ( 15.16)    -2   4   2 ( 14.03)     1   1   2 ( 14.00)    
+  5   5   1 ( 13.40)     1   1   3 ( 13.25)     1   3   2 ( 13.16)    -3   4   1 ( 13.04)    
+  2   4   3 ( 12.49)    -1   2   2 ( 12.44)     1   2   2 ( 12.24)     1   5   1 ( 12.21)    
+ -1   6   1 ( 12.10)     3   3   3 ( 11.05)    -1   6   2 ( 10.99)    -1   3   3 ( 10.52)    
+  2   2   2 ( 10.10)    
+
+ Top 10% of most influential reflections:
+ Determined using: Dv = (V z^t z V)/(1+lev)
+ V = variance of the parameter, ^t = transpose, 
+ z = a row of the design matrix, lev = leverage
+    h k l      (Dv)          h k l      (Dv)          h k l      (Dv)          h k l      (Dv)       
+  1   3   1 (7.88E-03)     0   4   2 (3.72E-03)    -1   6   1 (2.80E-03)     0   4   3 (2.36E-03)    
+ -1   5   1 (2.35E-03)     1   2   3 (2.32E-03)    -3   4   1 (2.28E-03)    -1   3   1 (2.27E-03)    
+ -1   2   3 (2.11E-03)     1   4   1 (2.11E-03)     2   4   3 (2.10E-03)    -2   3   3 (1.97E-03)    
+  0   1   5 (1.94E-03)     2   5   1 (1.93E-03)    -2   8   1 (1.87E-03)     0   8   1 (1.80E-03)    
+ -1   4   1 (1.75E-03)    -2   5   3 (1.72E-03)     1   3   5 (1.62E-03)     5   5   3 (1.61E-03)    
+ -4   6   3 (1.56E-03)     1   6   2 (1.51E-03)    -4   5   3 (1.44E-03)     6   6   1 (1.36E-03)    
+  1   5   4 (1.27E-03)    -3   6   1 (1.18E-03)    -3   4   4 (1.16E-03)     1   5   1 (1.15E-03)    
+  0   3   4 (1.15E-03)    
+ 
+Frequency distribution of the residuals from the linear fit
+          Mean= -0.04 Variance=  1.01
+          ---=Residuals +++=Normal distribution
+         _______________________________________________________________
+   0.46 |                              ¯¯¯¯¯¯                           |
+   0.41 |                             ++++                              |
+   0.37 |                           ++    ++                            |
+   0.32 |                          +¯¯¯     +                           |
+   0.28 |                        ¯+¯         +                          |
+   0.23 |                        +            +                         |
+   0.18 |                      ++            ¯¯++                       |
+   0.14 |                     +¯¯               ¯+¯                     |
+   0.09 |                  ¯++                    ++                    |
+   0.05 |+++++++++++++++++++                       ¯++++++++++++++++++++|
+   0.00  ¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯
+        -5.0  -4.0  -3.0  -2.0  -1.0   0.0   1.0   2.0   3.0   4.0   5.0
+ 
+Bijvoet differences:0.02108(1282) r^2:.826 Reduced Chi2:1.842
+Corrected Bijvoet differences:0.0211(236)
+ 
+
+ End Parsons quotients subroutine
+ --------------------------------------------------
+
+
+++++++++++++++++++++++++++++++++
+    Third pass using all filters
+++++++++++++++++++++++++++++++++
+
+ Hole in One subroutine
+ --------------------------------------------------
+ Outliers rejection based on studentized residuals enabled:
+    Detection of outliers in weighted least squares regression
+    Bang Yong Sohn, Guk Boh Kim
+    Korean Journal of Computational & Applied Mathematics
+    August 1997, Volume 4, Issue 2, pp 441-452
+    doi: 10.1007/BF03014491
+    Cut-of value for outliers: 3sigma
+
+
+------- Linear fit using all suplied data 253
+Slope:-0.00(3) intercept:0.7(4)
+ 
+------- Linear fit iteration number 2 with 8 rejected outliers
+Slope:0.00(2) intercept:1.2(4)
+ 
+------- Linear fit iteration number 3 with 14 rejected outliers
+Slope:0.01(2) intercept:1.1(3)
+ 
+------- Linear fit iteration number 4 with 15 rejected outliers
+Slope:0.01(2) intercept:1.1(3)
+ 
+------- Linear fit iteration number 5 with 17 rejected outliers
+Slope:0.01(2) intercept:0.9(3)
+ 
+------- Linear fit iteration number 6 with 18 rejected outliers
+Slope:0.01(2) intercept:0.9(3)
+ 
+------- Linear fit iteration number 7 with 19 rejected outliers
+Slope:0.01(2) intercept:0.9(3)
+ 
+
+ List of outliers (excluded all previously filtered reflections):
+  1   1   1       -1   2   1        0   2   1        2   2   1
+ -1   3   1        0   3   1        2   3   1        2   4   1
+ -1   6   1        0   1   2        0   2   2        1   2   2
+ -2   3   2        4   4   2        0   1   3       -1   3   3
+  1   5   3        2   5   3        0   6   5
+
+ Top 10% of most influential reflections:
+ Determined using leverages: abs(X (X^t Dw X)^-1 X^t)
+ ^t = transpose, Dw = weights, ^-1 = Matrix inverse
+ The result is scaled with the maximum leverage=100.0
+    h k l    (Lev)         h k l    (Lev)         h k l    (Lev)         h k l    (Lev)      
+  1   3   1 (100.00)     1   3   1 ( 45.15)     0   3   2 ( 34.73)     1   3   3 ( 32.40)    
+  0   1   1 ( 26.87)     5   5   1 ( 22.10)     0   4   2 ( 20.05)    -1   7   1 ( 15.66)    
+  0   4   1 ( 14.93)     0   1   1 ( 14.28)    -1   6   2 ( 13.56)    -1   6   2 ( 12.12)    
+  0   4   2 ( 11.99)    -2   5   4 ( 10.67)     1   6   1 ( 10.16)    -2   8   1 (  9.58)    
+ -2   5   4 (  9.28)     1   3   3 (  9.19)     3   6   3 (  8.98)    -3   4   2 (  8.27)    
+  1   4   1 (  7.99)     1   2   3 (  7.56)     0   4   3 (  7.24)    -2   5   3 (  7.22)    
+ -3   4   1 (  7.15)     0   1   4 (  7.13)     0   3   2 (  7.13)    -4   6   1 (  7.10)    
+  0   8   1 (  6.76)     0   4   1 (  6.72)     3   3   2 (  6.59)     0   1   6 (  6.56)    
+  4   7   1 (  6.54)     0   8   2 (  6.54)     5   5   3 (  6.50)     2   4   3 (  6.37)    
+  0   9   2 (  6.19)     2   5   1 (  6.18)    -1   5   1 (  6.16)     3   7   3 (  6.12)    
+  4   8   1 (  6.01)    -2   7   1 (  5.99)    -1   2   3 (  5.92)    -2   3   3 (  5.91)    
+ -4   6   3 (  5.85)     0   9   1 (  5.84)    
+
+ Top 10% of most influential reflections:
+ Determined using: (V z^t z V)/(1+lev)
+    h k l      (Dv)          h k l      (Dv)          h k l      (Dv)          h k l      (Dv)       
+  1   3   1 (2.37E-03)     1   3   3 (2.00E-03)     5   5   1 (1.45E-03)     0   4   1 (1.36E-03)    
+  0   1   1 (1.32E-03)     0   4   2 (1.21E-03)    -3   4   1 (9.27E-04)    -1   6   2 (9.11E-04)    
+  1   6   1 (8.93E-04)    -1   5   1 (8.66E-04)     3   3   2 (8.57E-04)    -2   8   1 (8.46E-04)    
+ -1   2   3 (8.32E-04)    -2   5   3 (8.01E-04)    -2   3   3 (8.00E-04)    -2   5   4 (7.99E-04)    
+  0   1   6 (7.16E-04)     0   4   3 (7.13E-04)    -1   4   1 (6.72E-04)     0   1   5 (6.70E-04)    
+  1   2   3 (6.63E-04)    -2   5   1 (6.59E-04)    -4   6   1 (6.28E-04)    -4   5   3 (6.07E-04)    
+  2   4   3 (6.05E-04)     2   6   1 (5.84E-04)    -4   6   3 (5.79E-04)     1   4   1 (5.69E-04)    
+  1   2   5 (5.40E-04)     5   5   3 (5.37E-04)     1   2   1 (5.21E-04)    -2   7   1 (5.19E-04)    
+  1   3   5 (5.15E-04)    -1   7   1 (5.02E-04)     0   3   3 (5.02E-04)     2   5   1 (5.01E-04)    
+ -3   6   3 (4.99E-04)    -1   4   3 (4.98E-04)    -1   5   2 (4.95E-04)     3   5   3 (4.93E-04)    
+  0   8   1 (4.90E-04)     3   6   1 (4.79E-04)    -2   8   3 (4.76E-04)     3   3   3 (4.61E-04)    
+  1   6   2 (4.61E-04)     1   5   2 (4.59E-04)    
+ 
+Frequency distribution of the residuals from the linear fit
+          Mean=  0.02 Variance=  1.01
+          ---=Residuals +++=Normal distribution
+         _______________________________________________________________
+   0.47 |                           ¯¯¯¯¯¯                              |
+   0.42 |                             ++++                              |
+   0.37 |                           ++    ++¯                           |
+   0.33 |                          +        +                           |
+   0.28 |                         +          +                          |
+   0.23 |                        +            +                         |
+   0.19 |                      ++¯¯¯         ¯¯++                       |
+   0.14 |                     +¯¯               ¯+¯                     |
+   0.09 |                  ¯++                    ++¯¯                  |
+   0.05 |+++++++++++++++++++                        ++++++++++++++++++++|
+   0.00  ¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯
+        -5.0  -4.0  -3.0  -2.0  -1.0   0.0   1.0   2.0   3.0   4.0
+ 
+
+ End Hole in One subroutine
+ --------------------------------------------------
+
+
+ Hooft Parameter
+ Hooft probability analysis
+ For an enantiopure material, there are 2 choices, P2
+ p2(correct)     1.0000   i.e. 0.100000E+01                                     
+ if 50:50 twinning is possible,
+ there are 3 choices, p3
+ p3(correct)     1.0000   i.e. 0.100000E+01                                     
+ p3(rac-twin)    0.0000   i.e. 0.000000E+00                                     
+ p3(inverse)     0.0000   i.e. 0.000000E+00                                     
+ g              1.0093                                                          
+ g s.u.         0.0186                                                          
+
+
+
+ No of pairs for which delta(Io) has same sign as delta(Is)
+ Same sign   Opposite sign
+     225            28
+
+
+   LePage Analysis (Assuming Enantio-purity)
+ Data are ranked by the Signal:Noise
+ Minimum signal : noise used =  1.5245
+ No. Available  253
+  Range    No.Same  No.Opposite  Signal:noise   Prob Wrong Hand
+  0   10       10      0          7.2240           0.000
+  0   20       20      0          5.7162           0.000
+  0   50       50      0          3.4944           0.000
+  0  100       95      5          2.0325           0.000
+  0  127      120      7          1.5245           0.000
+   Top 50% of data
+  0  126      120      6          1.5364           0.000
+  0   10       10      0          7.2240           0.000
+ 10   20       10      0          5.7162           0.000
+ 20   50       30      0          3.4944           0.000
+ 50  100       45      5          2.0325           0.000
+100  200       25      2          1.5245           0.000
+
+ Bijvoet differences subroutine
+ --------------------------------------------------
+ Outliers rejection based on studentized residuals enabled:
+    Detection of outliers in weighted least squares regression
+    Bang Yong Sohn, Guk Boh Kim
+    Korean Journal of Computational & Applied Mathematics
+    August 1997, Volume 4, Issue 2, pp 441-452
+    doi: 10.1007/BF03014491
+    Cut-of value for outliers: 3sigma
+
+
+------- Linear fit using all suplied data
+Slope:1.008(25) intercept:-0.70(41)
+ 
+------- Linear fit iteration number 2 with 2 rejected outliers
+Slope:1.005(24) intercept:-0.79(40)
+ 
+
+ List of outliers (excluded all previously filtered reflections):
+  0   2   1        0   6   5
+
+ Top 10% of most influential reflections:
+ Determined using leverages: abs(X (X^t Dw X)^-1 X^t)
+ ^t = transpose, X = Design matrix, Dw = weights, ^-1 = Matrix inverse
+ The result is scaled with the maximum leverage=100.0
+    h k l    (Lev)         h k l    (Lev)         h k l    (Lev)         h k l    (Lev)      
+  1   3   1 (100.00)     0   1   1 ( 30.22)     2   4   1 ( 25.94)     0   4   2 ( 24.36)    
+  1   3   3 ( 22.66)     0   3   2 ( 20.73)    -1   6   2 ( 20.64)     0   2   2 ( 18.32)    
+ -2   5   4 ( 15.95)     0   4   1 ( 14.68)     5   5   1 ( 13.91)    -1   6   1 ( 13.62)    
+  0   1   3 ( 12.98)    -2   3   2 ( 10.87)     2   2   1 ( 10.54)    -4   6   3 ( 10.09)    
+ -1   7   1 (  9.84)     0   1   4 (  9.63)     5   5   3 (  8.91)     0   4   3 (  8.74)    
+ -4   6   1 (  8.68)     0   8   1 (  8.51)     1   2   3 (  8.26)    -2   8   3 (  8.16)    
+  6   7   2 (  8.05)    
+
+ Top 10% of most influential reflections:
+ Determined using: Dv = (V z^t z V)/(1+lev)
+ V = variance of the parameter, ^t = transpose, 
+ z = a row of the design matrix, lev = leverage
+    h k l      (Dv)          h k l      (Dv)          h k l      (Dv)          h k l      (Dv)       
+  1   3   1 (7.83E-03)     0   1   1 (4.27E-03)     0   4   2 (3.82E-03)     0   4   3 (2.27E-03)    
+ -1   6   1 (2.20E-03)    -1   3   1 (2.18E-03)     1   2   3 (2.18E-03)    -1   5   1 (2.16E-03)    
+ -3   4   1 (2.08E-03)     0   1   5 (2.08E-03)    -1   2   3 (2.05E-03)    -2   3   3 (1.99E-03)    
+  2   4   3 (1.99E-03)     1   4   1 (1.96E-03)     5   5   3 (1.74E-03)    -4   6   3 (1.73E-03)    
+  2   5   1 (1.71E-03)    -2   8   1 (1.70E-03)    -1   4   1 (1.70E-03)     1   3   5 (1.69E-03)    
+  0   8   1 (1.64E-03)    -2   5   3 (1.53E-03)     1   6   2 (1.49E-03)     3   3   1 (1.47E-03)    
+ -4   5   3 (1.36E-03)    
+ 
+Frequency distribution of the residuals from the linear fit
+          Mean= -0.04 Variance=  1.01
+          ---=Residuals +++=Normal distribution
+         _______________________________________________________________
+   0.45 |                              ¯¯¯¯¯¯                           |
+   0.40 |                            ++++++                             |
+   0.36 |                           +¯¯    +                            |
+   0.31 |                          +        +                           |
+   0.27 |                         +          +                          |
+   0.22 |                       ++¯¯         ¯++                        |
+   0.18 |                      +                +                       |
+   0.13 |                     +¯¯               ¯+¯                     |
+   0.09 |                  +++                    +++¯                  |
+   0.04 |++++++++++++++++++                          +++++++++++++++++++|
+   0.00  ¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯
+        -5.0  -4.0  -3.0  -2.0  -1.0   0.0   1.0   2.0   3.0   4.0   5.0
+ 
+Bijvoet differences:-0.00257(1188) r^2:.878 Reduced Chi2:1.628
+Corrected Bijvoet differences:-0.00257(1933)
+ 
+
+ End Bijvoet differences subroutine
+ --------------------------------------------------
+
+
+
+ Parsons quotients subroutine
+ --------------------------------------------------
+ Outliers rejection based on studentized residuals enabled:
+    Detection of outliers in weighted least squares regression
+    Bang Yong Sohn, Guk Boh Kim
+    Korean Journal of Computational & Applied Mathematics
+    August 1997, Volume 4, Issue 2, pp 441-452
+    doi: 10.1007/BF03014491
+    Cut-of value for outliers: 3sigma
+
+
+------- Linear fit using all suplied data
+Slope:0.988(25) intercept:-0.00226(117)
+ 
+------- Linear fit iteration number 2 with 2 rejected outliers
+Slope:0.994(24) intercept:-0.00310(115)
+ 
+------- Linear fit iteration number 3 with 5 rejected outliers
+Slope:0.972(24) intercept:-0.00466(113)
+ 
+------- Linear fit iteration number 4 with 6 rejected outliers
+Slope:0.957(24) intercept:-0.00513(112)
+ 
+
+ List of outliers (excluded all previously filtered reflections):
+  0   1   1        0   2   1        3   3   1       -1   6   1
+  0   4   2        0   6   5
+
+ Top 10% of most influential reflections:
+ Determined using leverages: abs(X (X^t Dw X)^-1 X^t)
+ ^t = transpose, X = Design matrix, Dw = weights, ^-1 = Matrix inverse
+ The result is scaled with the maximum leverage=100.0
+    h k l    (Lev)         h k l    (Lev)         h k l    (Lev)         h k l    (Lev)      
+  1   3   1 (100.00)     0   4   1 ( 32.62)     2   4   1 ( 32.59)     1   3   3 ( 27.26)    
+  0   2   3 ( 27.22)     2   2   1 ( 23.23)     0   1   3 ( 19.48)    -1   3   1 ( 19.30)    
+ -1   2   1 ( 17.45)     0   2   4 ( 17.24)    -1   5   1 ( 17.20)     1   2   1 ( 16.64)    
+  0   4   3 ( 16.19)    -2   4   2 ( 15.48)     1   1   3 ( 14.77)    -3   4   1 ( 13.83)    
+  1   5   1 ( 13.57)     1   2   2 ( 13.41)     2   4   3 ( 13.38)     5   5   1 ( 12.82)    
+  3   3   3 ( 11.69)    -1   3   3 ( 11.17)     1   1   1 ( 10.86)     2   2   3 ( 10.62)    
+ 
+
+ Top 10% of most influential reflections:
+ Determined using: Dv = (V z^t z V)/(1+lev)
+ V = variance of the parameter, ^t = transpose, 
+ z = a row of the design matrix, lev = leverage
+    h k l      (Dv)          h k l      (Dv)          h k l      (Dv)          h k l      (Dv)       
+  1   3   1 (8.53E-03)     0   4   3 (2.61E-03)    -1   5   1 (2.61E-03)    -1   3   1 (2.53E-03)    
+  1   2   3 (2.53E-03)    -3   4   1 (2.52E-03)     2   4   3 (2.33E-03)    -1   2   3 (2.31E-03)    
+  1   4   1 (2.30E-03)    -2   3   3 (2.13E-03)     0   1   5 (2.12E-03)     2   5   1 (2.09E-03)    
+ -2   8   1 (2.03E-03)     0   8   1 (1.96E-03)    -1   4   1 (1.94E-03)    -2   5   3 (1.86E-03)    
+  1   3   5 (1.76E-03)     5   5   3 (1.75E-03)    -4   6   3 (1.68E-03)     1   6   2 (1.63E-03)    
+ -4   5   3 (1.56E-03)     6   6   1 (1.48E-03)     1   5   4 (1.38E-03)     1   5   1 (1.34E-03)    
+ 
+ 
+Frequency distribution of the residuals from the linear fit
+          Mean=  0.02 Variance=  1.01
+          ---=Residuals +++=Normal distribution
+         _______________________________________________________________
+   0.46 |                              ¯¯¯¯¯¯                           |
+   0.42 |                             ++++                              |
+   0.37 |                           ++    ++                            |
+   0.32 |                          +        +                           |
+   0.28 |                         + ¯¯¯      +                          |
+   0.23 |                        +           ¯+¯                        |
+   0.18 |                      ++¯¯¯           ++                       |
+   0.14 |                     +¯¯               ¯+¯                     |
+   0.09 |                  ¯++                    ++¯¯                  |
+   0.05 |+++++++++++++++++++                        ++++++++++++++++++++|
+   0.00  ¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯
+        -5.0  -4.0  -3.0  -2.0  -1.0   0.0   1.0   2.0   3.0   4.0   5.0
+ 
+Bijvoet differences:0.02134(1194) r^2:.868 Reduced Chi2:1.492
+Corrected Bijvoet differences:0.02134(1781)
+ 
+
+ End Parsons quotients subroutine
+ --------------------------------------------------
+
+
+
+All reflections used summary:
+____________________________________________________________________
+Flack parameter from refinement  0.00(3)      
+Hole-in-one                      0.01(2)       (23 outliers)
+Hooft method                    -0.016(9)     
+Truncated average of ratios (x) -0.004(9)      (62 refls truncated)
+Bijvoet differences             -0.001(13)     (4 outliers)
+Parsons quotients                0.031(13)     (7 outliers)
+____________________________________________________________________
+
+
+300 reflections after aplying filters 1,2,3 and 5 summary:
+____________________________________________________________________
+Flack parameter from refinement  0.00(3)      
+Hole-in-one                      0.01(2)       (21 outliers)
+Hooft method                    -0.005(9)     
+Truncated average of ratios (x) -0.004(9)      (60 refls truncated)
+Bijvoet differences             -0.001(13)     (3 outliers)
+Parsons quotients                0.021(13)     (5 outliers)
+____________________________________________________________________
+
+
+253 Reflections with all filters set:
+____________________________________________________________________
+Flack parameter from refinement  0.00(3)      
+Hole-in-one                      0.01(2)       (19 outliers)
+Hooft method                    -0.005(9)     
+Truncated average of ratios (x) -0.010(9)      (50 refls truncated)
+Bijvoet differences             -0.003(12)     (2 outliers)
+Parsons quotients                0.021(12)     (6 outliers)
+____________________________________________________________________
+
 #END
 
 
