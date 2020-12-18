@@ -6324,6 +6324,9 @@ ther SERIAL of kept atoms (default 0) otherwise there are no parameters.
  the same number of atoms, but they may be in any order. Atom Q(103) will 
  be renamed to C(101), atom Q(100) to C(107) etc. Once all the atoms 
  have been renamed, the list could be sorted based on the serial numbers.
+#P
+  The MAP group of atoms must correspond to (though not necessarily include)
+  the IDEAL, and similarly the ONTO and TARGET groups.
 #N  11#
 #J
       \REGULARISE
@@ -6341,7 +6344,10 @@ ther SERIAL of kept atoms (default 0) otherwise there are no parameters.
 #D5 - Viewing matched molecules in CAMERON#
  This does the mapping as RENAME, but doesn't
  rename the atoms, just outputs CAMERON input files showing the two molecules
- superimposed. Use as follows:
+ superimposed.
+#P
+  The MAP group of atoms must correspond to (though not necessarily include)
+  the IDEAL, and similarly the ONTO and TARGET groups.  Use as follows:
 #N   7#
 #J
    \REGULARISE
@@ -6349,8 +6355,8 @@ ther SERIAL of kept atoms (default 0) otherwise there are no parameters.
    target C(10) until C(26)
    ideal  C(60) until C(76)
    cameron
-   map    C(51) until C(99)
    onto   C(1) until C(49)
+   map    C(51) until C(99)
    end
 # This produces a cameron.ini, regular.l5i and regular.oby which may be viewed
  by choosing Graphics->Special->Cameron (use existing...) from the menu.
