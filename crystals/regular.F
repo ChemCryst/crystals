@@ -1152,8 +1152,8 @@ C    AND BACK
 C 
          CALL XMLTMM (STORE(L1O2),COSNO,BPCFOL,3,3,3)
          CALL XMLTMM (STORE(L1O2),COSNN,BPCFNE,3,3,3)
-Cdjwapr2001
       END IF
+Cdjwapr2001
 C 
 C 
 C----- RESTORE 'NEW' WEIGHTS TO UNITY
@@ -1168,7 +1168,7 @@ C    TRANSLATE CO-ORDINATES TO PLACE CENTROIDS AT ORIGIN.
       CALL XMXTRL (STORE(LOLD),CENTO,MDOLD,NOLD)
       CALL XMXTRL (STORE(LNEW),CENTN,MDNEW,NNEW)
 C 
-C -- ROTATE GROUPS TO THEIR BEST PLANE AXES.
+c      WRITE(123,*)'ROTATE GROUPS TO THEIR BEST PLANE AXES.'
       CALL XMXRTI (STORE(LOLD),CFBPOL,MDOLD,NOLD)
       CALL XMXRTI (STORE(LNEW),CFBPNE,MDNEW,NNEW)
 C 
@@ -1227,8 +1227,7 @@ C    CRYSTAL SYSTEM IN (W3)
          CALL XMLTMM (RESULT,CFBPNE,WSPAC1,3,3,3)
          CALL XMLTMM (BPCFOL,WSPAC1,WSPAC3,3,3,3)
 C
-      if(imatrix.lt.2) then   !only during setup
-c      write(123,*)'During set up'
+         if(imatrix.lt.2) then   !only during setup
 C -- PREMULT FOR ORTHOGONALISATION MATRIX FOR Uij
             CALL DMATRX(DMATRIX)
 C -- GET ROTATION MATRIX FOR OLD Uij IN BP SYSTEM
@@ -1236,9 +1235,9 @@ C -- GET ROTATION MATRIX FOR OLD Uij IN BP SYSTEM
 C -- GET ROTATION MATRIX FOR NEW UiJ IN OLD BP SYSTEM
             CALL XMLTMM(CFBPNE, DMATRIX, TEMP3, 3,3,3)            
             CALL XMLTMM(RESULT, TEMP3, TEMP2, 3,3,3)            
-      endif
-C   U(bp,old) = temp1. U, temp1(T)
-c   U(bp,new) = temp2, U, temp2(T)
+         endif
+C        U(bp,old) = temp1. U, temp1(T)
+c        U(bp,new) = temp2, U, temp2(T)
 c
 C 
 C -- COMPLETE CALCULATION
@@ -1268,7 +1267,7 @@ C -- ERROR
 650         CONTINUE
 700      CONTINUE
          IF (IDEFIN.LT.0) GO TO 2300
-      END IF
+      END IF  ! end only during set up
 C 
 CDJWAPR2012
 c      MOLD=LOLD
