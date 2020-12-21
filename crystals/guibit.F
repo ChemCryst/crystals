@@ -904,6 +904,7 @@ c      CALL XPRVDU(NCVDU, 1,0)
              WRITE ( CMON, '(A/A)')'^^GR MODEL L5','^^CW'
              CALL XPRVDU(NCVDU, 2,0)
 
+c          OPEN (99,file='logs/99.log',action='write',position='append')
 
              IPLACE = 1
              DO I5 = L5,L5+(N5-1)*MD5, MD5
@@ -1063,6 +1064,8 @@ C Colour info still not found, use and cache default values:
                UEQUIV = STORE(I5+7)
 
 
+
+
                IF ( NINT(STORE(I5+3)) .EQ. 0 ) THEN
 
                  TENSOR(1,1) = STORE(I5+7)
@@ -1106,8 +1109,8 @@ C Filter out tiny axes
                    END DO
                  END DO
 
-C                WRITE(99,'(9(1X,F7.4))') ((AXES(KI,KJ)/GSCALE,KI=1,3),KJ=1,3)
-C                WRITE(99,'(9(1X,F7.4))') (GUMTRX(KI),KI=19,27)
+c          WRITE(99,'(9(1X,F7.4))') ((AXES(KI,KJ)/GSCALE,KI=1,3),KJ=1,3)
+c          WRITE(99,'(9(1X,F7.4))') (GUMTRX(KI),KI=19,27)
 
 C Work out UEQUIV:
 
@@ -1129,10 +1132,10 @@ C Work out UEQUIV:
 
                IF ( LSPARE .AND. ( NINT(STORE(I5+3)) .LE. 1 )) THEN
                   ISPARE = NINT(1000 * STORE(I5+13) )
-                  SPARE = 0.297 * (STORE(I5+13)**(1.0/3.0))
-                  AXES (1,1) = ( GSCALE * SPARE )
-                  AXES (2,2) = ( GSCALE * SPARE )
-                  AXES (3,3) = ( GSCALE * SPARE )
+                  SPARE = 0.297 * ABS(STORE(I5+13))**(1.0/3.0)
+                  AXES (1,1) = ( GSCALE * ABS(SPARE) )
+                  AXES (2,2) = ( GSCALE * ABS(SPARE) )
+                  AXES (3,3) = ( GSCALE * ABS(SPARE) )
                   AXES (1,2) = 0.0
                   AXES (1,3) = 0.0
                   AXES (2,1) = 0.0
@@ -1140,9 +1143,11 @@ C Work out UEQUIV:
                   AXES (3,1) = 0.0
                   AXES (3,2) = 0.0
 C                  STORE(I5+3) = 0.0
+c                 write(99,*) 'top ', spare, axes(1,1), STORE(I5+13)
                ELSE
                    SPAREV = STORE(I5+3)
                    ISPARE = NINT(COV*GSCALE)
+c                 write(99,*) 'bottom ', sparev, ispare
                END IF
 
 C Pass sticky refinement flag options if present.
@@ -1160,6 +1165,14 @@ C This block detects sticky flag and sets ISFLAG to pass info to GUI.
                IF ( NINT(STORE(I5+3)) .LE. 1 ) THEN
 
                    CALL PRTGRP(ISTORE(I5+14),JPRT,JGRP,1)
+
+c                WRITE(99,*)NINT(STORE(I5+3)),CATTYP, 
+c     2			NINT(STORE(I5+1)),LLAB,CLAB,
+c     2          ISPARE,NINT(SPAREV),
+c     3          AXES(1,1),AXES(2,1),AXES(3,1),
+c     3          AXES(1,2),AXES(2,2),AXES(3,2),
+c     3          AXES(1,3),AXES(2,3),AXES(3,3)
+
 
 #ifdef CRY_GUI
                 CALL FSTATM(CATTYP,NINT(STORE(I5+1)),LLAB,CLAB,
@@ -1180,6 +1193,12 @@ C This block detects sticky flag and sets ISFLAG to pass info to GUI.
 
                    CALL PRTGRP(ISTORE(I5+14),JPRT,JGRP,1)
 
+c                WRITE(99,*)NINT(STORE(I5+3)), CATTYP, 
+c     2          NINT(STORE(I5+1)),LLAB,CLAB,     
+c     2          ISPARE,NINT(SPAREV),
+c     3          AXES(1,1),AXES(2,1),AXES(3,1),
+c     3          AXES(1,2),AXES(2,2),AXES(3,2),
+c     3          AXES(1,3),AXES(2,3),AXES(3,3)
 #ifdef CRY_GUI
                CALL FSTSPH(LLAB,CLAB,NINT(STR11(IPLACE)*GSCALE),   ! 1,2,3
      5         NINT(STR11(IPLACE+1)*GSCALE),                       ! 4
@@ -1218,6 +1237,8 @@ C This block detects sticky flag and sets ISFLAG to pass info to GUI.
                IPLACE = IPLACE + 3
              END DO
 
+
+c             CLOSE(99)
 
 C Output bonds:
 
