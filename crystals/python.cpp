@@ -91,7 +91,7 @@ void lineouts(const char* string) {   // This wraps lineout so we don't need to 
 	#define PYTHON_ABI_VERSION 3
 	FARPROC pModule_Create2Fn;
 	typedef PyObject* (*PMODULECREATE2)(PyModuleDef *, int);
-	#define mModeuleCreate2(a,b) ((PMODULECREATE2)pModule_Create2Fn)(a, b);
+	#define mModuleCreate2(a,b) ((PMODULECREATE2)pModule_Create2Fn)(a, b);
 
 	// int (*py3_PyArg_ParseTuple)(PyObject *, char *, ...);
 	FARPROC pArg_ParseTupleFn;
@@ -124,7 +124,7 @@ void lineouts(const char* string) {   // This wraps lineout so we don't need to 
 
 	#define mRunSimpleStringFlags(str,flags) PyRun_SimpleStringFlags(str,flags)
 	#define mArg_ParseTuple( args, s, string ) PyArg_ParseTuple( args, s, string )
-	#define mModeuleCreate2(a,b) PyModule_Create2(a,b)
+	#define mModuleCreate2(a,b) PyModule_Create2(a,b)
 
 #endif
 
@@ -337,8 +337,67 @@ static struct PyModuleDef crys_stdoutRedirect =
 
 PyObject * PyInit_crys_stdoutRedirect(void)
 {
-    return mModeuleCreate2(&crys_stdoutRedirect, PYTHON_ABI_VERSION);
+    return mModuleCreate2(&crys_stdoutRedirect, PYTHON_ABI_VERSION);
 }
+
+// Here's another Python module for sending commands to CRYSTALS.
+
+//int initt = ((PIMPORT_APPENDINITTAB)pImport_AppendInittabFn)("crys_stdoutRedirect", PyInit_crys_stdoutRedirect);
+// This defines a function (and it's form) to do the work:
+// Takes one arg and returns nothing.
+
+static PyObject*
+method_crys_run(PyObject *self, PyObject *args)
+{
+    const char *string;
+	char s[] = "s";
+
+    if(!mArg_ParseTuple(args, s, &string))
+        return NULL;
+
+//pass string onto somewhere
+    lineout(string, strlen(string));
+
+#ifdef CRY_OSWIN32
+    return ((PBUILDVALUE)pBuildValueFn)("O",  ((PBUILDVALUE)pBuildValueFn)("")); // Inc ref to PyNone (without using INCREF macro which won't work here becuase of dynamic LoadLibrary
+#else
+    Py_INCREF(Py_None);   // Can't call this macro when using the dynamic DLL version - use solution below instead.
+    return Py_None;
+#endif
+
+}
+
+// What's in here? Just RunMethods - another simple structure:
+
+static PyMethodDef RunMethods[] = {
+    {"crys_run", method_crys_run, METH_VARARGS,
+        "Run CRYSTALS commands helper"},
+    {NULL, NULL, 0, NULL}
+};
+
+// This just calls and returns an object from modulecreate with the name of a struct that defines the function:
+static struct PyModuleDef crys_run =
+{
+    PyModuleDef_HEAD_INIT,
+    "crys_run", /* name of module */
+    "",          /* module documentation, may be NULL */
+    -1,          /* size of per-interpreter state of the module, or -1 if the module keeps state in global variables. */
+    RunMethods
+};
+
+
+// Adds a module to the interpreter (same as import would), defines name and function. 
+// Here is the function:
+PyObject * PyInit_crys_run(void)
+{
+    return mModuleCreate2(&crys_run, PYTHON_ABI_VERSION);
+}
+
+
+
+
+
+
 
 
 // Here's the entry point.
@@ -499,8 +558,10 @@ int initPy() {
 // Add the crys_stdoutRedirect module (defined above)
 #ifdef CRY_OSWIN32
 	int initt = ((PIMPORT_APPENDINITTAB)pImport_AppendInittabFn)("crys_stdoutRedirect", PyInit_crys_stdoutRedirect);
+	int initt2 = ((PIMPORT_APPENDINITTAB)pImport_AppendInittabFn)("crys_run", PyInit_crys_run);
 #else
     int initt = PyImport_AppendInittab("crys_stdoutRedirect", PyInit_crys_stdoutRedirect);
+    int initt2 = PyImport_AppendInittab("crys_run", PyInit_crys_run);
 #endif
 
 #ifdef CRY_OSWIN32
