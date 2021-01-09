@@ -143,9 +143,14 @@ void lineouts(const char* string) {   // This wraps lineout so we don't need to 
 	FARPROC pErrFetchFn;
 	typedef void (*PERRFETCH)(PyObject**,PyObject**,PyObject**);
 
-//	FARPROC ptr__List_Type;
-	static PyTypeObject *ptr__List_Type = NULL; 
 
+	FARPROC pErrSetStringFn = NULL;
+	typedef void (*PERRSETSTRING)(PyObject*, const char*);
+	#define mErrSetString(o,s) ((PERRSETSTRING)pErrSetStringFn)(o,s)
+
+
+	static PyTypeObject *ptr__List_Type = NULL; 
+	static PyObject *ptr__TypeError = NULL;
 
 
 
@@ -356,8 +361,16 @@ int loadPyDLL() {
 		return 0;
 	} 
 
+	// locate PyErr_SetString() function
+	pErrSetStringFn = GetProcAddress( hModule , "PyErr_SetString" ) ;
+	if(  pErrSetStringFn == NULL )  {		
+		lineouts("{E Could not find PyErr_SetString()");
+		hModule = NULL;
+		return 0;
+	} 
 
 	ptr__List_Type = (PyTypeObject*) GetProcAddress( hModule, "PyList_Type" );
+	ptr__TypeError = (PyObject*) GetProcAddress( hModule, "PyExc_TypeError" );
 
 #endif
 
@@ -433,16 +446,30 @@ method_crys_run(PyObject *self, PyObject *args)
 	Py_ssize_t list_size;
 	int i;
 
+	lineouts("1");
+	
+//	char snum[128];
+	// print our string
+//	sprintf(snum, "1.0 %d %d   %d ",(int*) args, (int*) ptr__List_Type , (int*) ptr__TypeError );
+//	lineouts(snum);
+
 	if (!mArg_ParseTuple4(args, "O!", ptr__List_Type, &pyList)) {
-		PyErr_SetString(PyExc_TypeError, "first argument must be a list.");
+		lineouts("1.1");
+		mErrSetString(ptr__TypeError, "first argument must be a list.");
+		lineouts("1.2");
 		return NULL;
 	}
 
+	lineouts("2");
+
 	list_size = mList_Size(pyList);
+
+	lineouts("3");
+
 	for (i=0; i<list_size; i++) {
 		pyItem = mList_GetItem(pyList, i);
 		if(!PyUnicode_Check(pyItem)) {
-			PyErr_SetString(PyExc_TypeError, "list items must be strings.");
+			mErrSetString(ptr__TypeError, "list items must be strings.");
 			return NULL;
 		}
 		pyString = mUnicodeAsUTF8(pyItem);
@@ -738,3 +765,20 @@ sys.stderr.errcatch = True\n", NULL);
 
 
 }   //end extern "C"
+
+
+
+/*  ric.py 
+
+import crystals
+
+print("Hello Richard")
+
+print( dir(crystals) )
+
+
+# crystals.run("Hi........")  - passing wrong object crashes program : investigate
+
+crystals.run( ['Hi','These are strings','','Useful or not?'] )
+
+*/
