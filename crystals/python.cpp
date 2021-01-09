@@ -149,8 +149,8 @@ void lineouts(const char* string) {   // This wraps lineout so we don't need to 
 	#define mErrSetString(o,s) ((PERRSETSTRING)pErrSetStringFn)(o,s)
 
 
-	static PyTypeObject *ptr__List_Type = NULL; 
-	static PyObject *ptr__TypeError = NULL;
+	PyTypeObject *ptr__List_Type = NULL; 
+	PyObject **ptr__TypeError = NULL;
 
 
 
@@ -370,7 +370,18 @@ int loadPyDLL() {
 	} 
 
 	ptr__List_Type = (PyTypeObject*) GetProcAddress( hModule, "PyList_Type" );
-	ptr__TypeError = (PyObject*) GetProcAddress( hModule, "PyExc_TypeError" );
+	if(  ptr__List_Type == NULL )  {		
+		lineouts("{E Could not find PyList_Type");
+		hModule = NULL;
+		return 0;
+	} 
+
+	ptr__TypeError = (PyObject**) GetProcAddress( hModule, "PyExc_TypeError" );
+	if(  ptr__TypeError == NULL )  {		
+		lineouts("{E Could not find PyExc_TypeError");
+		hModule = NULL;
+		return 0;
+	} 
 
 #endif
 
@@ -455,7 +466,7 @@ method_crys_run(PyObject *self, PyObject *args)
 
 	if (!mArg_ParseTuple4(args, "O!", ptr__List_Type, &pyList)) {
 		lineouts("1.1");
-		mErrSetString(ptr__TypeError, "first argument must be a list.");
+		mErrSetString(*ptr__TypeError, "first argument must be a list.");
 		lineouts("1.2");
 		return NULL;
 	}
@@ -469,7 +480,7 @@ method_crys_run(PyObject *self, PyObject *args)
 	for (i=0; i<list_size; i++) {
 		pyItem = mList_GetItem(pyList, i);
 		if(!PyUnicode_Check(pyItem)) {
-			mErrSetString(ptr__TypeError, "list items must be strings.");
+			mErrSetString(*ptr__TypeError, "list items must be strings.");
 			return NULL;
 		}
 		pyString = mUnicodeAsUTF8(pyItem);
