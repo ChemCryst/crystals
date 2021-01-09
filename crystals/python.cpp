@@ -97,7 +97,18 @@ void lineouts(const char* string) {   // This wraps lineout so we don't need to 
 	FARPROC pArg_ParseTupleFn;
 	typedef int (*PARGPARSETUPLE)(PyObject *, char *, ...);
 	#define mArg_ParseTuple( args, s, string ) ((PARGPARSETUPLE)pArg_ParseTupleFn)(args, s, string)
+	#define mArg_ParseTuple4( args, s, ptype, pobj ) ((PARGPARSETUPLE)pArg_ParseTupleFn)(args, s, ptype, pobj)
 
+	// Py_ssize_t PyList_Size(PyObject *list);
+	FARPROC pListSizeFn;
+	typedef long long int (*PLISTSIZE)(PyObject *list);
+	#define mList_Size( pList ) ((PLISTSIZE) pListSizeFn)( pList ) 
+
+
+	//PyObject* PyList_GetItem(PyObject *list, Py_ssize_t index)
+	FARPROC pList_GetItemFn;
+	typedef PyObject* (*PLISTGETITEM)(PyObject *list, Py_ssize_t index);
+	#define mList_GetItem( pList, index ) ((PLISTGETITEM) pList_GetItemFn)( pList, index ) 
 
 	// (PyObject *) Py_BuildValue(const char *, ...);
 	FARPROC pBuildValueFn;
@@ -108,6 +119,22 @@ void lineouts(const char* string) {   // This wraps lineout so we don't need to 
 	typedef int (*PRUNSIMPLEFILEEXFLAGS)(FILE *fp, const char *filename, int closeit, PyCompilerFlags *flags);
 	#define mRunSimpleStringFlags(str,flags) ((PRUN_SIMPLESTRINGFLAGS)pRun_SimpleStringFlags)(str,flags)
 
+	// PyObject* PyUnicode_AsUTF8String(PyObject *unicode)
+	FARPROC pUnicodeAsUTF8String;
+	typedef PyObject* (*PUNICODEASUTF8)(PyObject*);
+	#define mUnicodeAsUTF8(uni) ((PUNICODEASUTF8)pUnicodeAsUTF8String)(uni)
+
+	//char* PyBytes_AsString(PyObject *o)
+	FARPROC pBytesAsStringFn;
+	typedef char* (*PBYTESASSTRING)(PyObject*);
+	#define mBytesAsString(obj) ((PBYTESASSTRING)pBytesAsStringFn)(obj)
+
+	//void Py_DecRef(PyObject *o)
+	FARPROC pDECREFfn;
+	typedef void (*PDECREF)(PyObject *o);
+	#define mDECREF(o) ((PDECREF)pDECREFfn)(o)
+
+
 	//FILE *file = _Py_fopen_obj(obj, "r+");
 	FARPROC pfopenobjFn;
 	typedef FILE* (*PFOPENOBJ)(PyObject*, char*);
@@ -115,6 +142,11 @@ void lineouts(const char* string) {   // This wraps lineout so we don't need to 
 	//PyErr_Fetch( &pExcType , &pExcValue , &pExcTraceback ) ;
 	FARPROC pErrFetchFn;
 	typedef void (*PERRFETCH)(PyObject**,PyObject**,PyObject**);
+
+//	FARPROC ptr__List_Type;
+	static PyTypeObject *ptr__List_Type = NULL; 
+
+
 
 
 	HMODULE hModule = NULL;
@@ -231,6 +263,49 @@ int loadPyDLL() {
 		return 0;
 	} 
 
+
+	// PyUnicode_AsUTF8String
+	pUnicodeAsUTF8String = GetProcAddress( hModule, "PyUnicode_AsUTF8String" );
+	if ( pUnicodeAsUTF8String == NULL ) {
+		lineouts("{E Could not find PyUnicode_AsUTF8String()");
+		hModule = NULL;
+		return 0;
+	} 
+
+	// PyBytes_AsString
+	pBytesAsStringFn = GetProcAddress( hModule, "PyBytes_AsString" );
+	if ( pBytesAsStringFn == NULL ) {
+		lineouts("{E Could not find PyBytes_AsString()");
+		hModule = NULL;
+		return 0;
+	} 
+
+	// locate int PyList_Size() function
+	pListSizeFn = GetProcAddress( hModule , "PyList_Size" ) ;
+	if(  pListSizeFn == NULL )  {		
+		lineouts("{E Could not find PyList_Size()");
+		hModule = NULL;
+		return 0;
+	} 
+
+	// locate int PyList_Size() function
+	pList_GetItemFn = GetProcAddress( hModule , "PyList_GetItem" ) ;
+	if(  pList_GetItemFn == NULL )  {		
+		lineouts("{E Could not find PyList_GetItem()");
+		hModule = NULL;
+		return 0;
+	} 
+
+	//void Py_DecRef(PyObject *o)
+	pDECREFfn = GetProcAddress( hModule, "Py_DecRef" );
+	typedef void (*PDECREF)(PyObject *o);
+	if(  pDECREFfn == NULL )  {		
+		lineouts("{E Could not find Py_DecRef()");
+		hModule = NULL;
+		return 0;
+	} 
+
+
 	// locate int PyModule_Create2() function
 	pModule_Create2Fn = GetProcAddress( hModule , "PyModule_Create2" ) ;
 	if(  pModule_Create2Fn == NULL )  {		
@@ -280,6 +355,9 @@ int loadPyDLL() {
 		hModule = NULL;
 		return 0;
 	} 
+
+
+	ptr__List_Type = (PyTypeObject*) GetProcAddress( hModule, "PyList_Type" );
 
 #endif
 
@@ -349,14 +427,37 @@ PyObject * PyInit_crys_stdoutRedirect(void)
 static PyObject*
 method_crys_run(PyObject *self, PyObject *args)
 {
-    const char *string;
-	char s[] = "s";
+	PyObject *pyList;
+	PyObject *pyItem;
+	PyObject *pyString;
+	Py_ssize_t list_size;
+	int i;
 
-    if(!mArg_ParseTuple(args, s, &string))
-        return NULL;
+	if (!mArg_ParseTuple4(args, "O!", ptr__List_Type, &pyList)) {
+		PyErr_SetString(PyExc_TypeError, "first argument must be a list.");
+		return NULL;
+	}
 
-//pass string onto somewhere
-    lineout(string, strlen(string));
+	list_size = mList_Size(pyList);
+	for (i=0; i<list_size; i++) {
+		pyItem = mList_GetItem(pyList, i);
+		if(!PyUnicode_Check(pyItem)) {
+			PyErr_SetString(PyExc_TypeError, "list items must be strings.");
+			return NULL;
+		}
+		pyString = mUnicodeAsUTF8(pyItem);
+		
+		
+		char* val;
+		if(pyString) {
+			val =  mBytesAsString(pyString) ;
+			mDECREF(pyString);
+			
+			//pass string onto somewhere
+			lineout(val, strlen(val));
+		}
+	}
+
 
 #ifdef CRY_OSWIN32
     return ((PBUILDVALUE)pBuildValueFn)("O",  ((PBUILDVALUE)pBuildValueFn)("")); // Inc ref to PyNone (without using INCREF macro which won't work here becuase of dynamic LoadLibrary
@@ -370,16 +471,16 @@ method_crys_run(PyObject *self, PyObject *args)
 // What's in here? Just RunMethods - another simple structure:
 
 static PyMethodDef RunMethods[] = {
-    {"crys_run", method_crys_run, METH_VARARGS,
+    {"run", method_crys_run, METH_VARARGS,
         "Run CRYSTALS commands helper"},
     {NULL, NULL, 0, NULL}
 };
 
 // This just calls and returns an object from modulecreate with the name of a struct that defines the function:
-static struct PyModuleDef crys_run =
+static struct PyModuleDef crystals_module =
 {
     PyModuleDef_HEAD_INIT,
-    "crys_run", /* name of module */
+    "crystals", /* name of module */
     "",          /* module documentation, may be NULL */
     -1,          /* size of per-interpreter state of the module, or -1 if the module keeps state in global variables. */
     RunMethods
@@ -388,9 +489,9 @@ static struct PyModuleDef crys_run =
 
 // Adds a module to the interpreter (same as import would), defines name and function. 
 // Here is the function:
-PyObject * PyInit_crys_run(void)
+PyObject * PyInit_crystals_module(void)
 {
-    return mModuleCreate2(&crys_run, PYTHON_ABI_VERSION);
+    return mModuleCreate2(&crystals_module, PYTHON_ABI_VERSION);
 }
 
 
@@ -558,10 +659,10 @@ int initPy() {
 // Add the crys_stdoutRedirect module (defined above)
 #ifdef CRY_OSWIN32
 	int initt = ((PIMPORT_APPENDINITTAB)pImport_AppendInittabFn)("crys_stdoutRedirect", PyInit_crys_stdoutRedirect);
-	int initt2 = ((PIMPORT_APPENDINITTAB)pImport_AppendInittabFn)("crys_run", PyInit_crys_run);
+	int initt2 = ((PIMPORT_APPENDINITTAB)pImport_AppendInittabFn)("crystals", PyInit_crystals_module);
 #else
     int initt = PyImport_AppendInittab("crys_stdoutRedirect", PyInit_crys_stdoutRedirect);
-    int initt2 = PyImport_AppendInittab("crys_run", PyInit_crys_run);
+    int initt2 = PyImport_AppendInittab("crystals", PyInit_crystals_module);
 #endif
 
 #ifdef CRY_OSWIN32
