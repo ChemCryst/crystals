@@ -107,6 +107,7 @@
 %                    EVALUATE HTYPE = 7
 %                   END BLOCK
 %                   BLOCK %OFF
+%%                   Hydrogen Bond, OH
 %                    EVALUATE HTYPE = 8
 %                   END BLOCK
 %                  END CASE
