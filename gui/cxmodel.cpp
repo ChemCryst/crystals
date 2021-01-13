@@ -95,8 +95,43 @@ CxModel * CxModel::CreateCxModel( CrModel * container, CxGrid * guiParent )
   theModel->Setup();
 
 #else
-  int args[] = {WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_DEPTH_SIZE, 4, 0};
-//  int args[] = {WX_GL_RGBA, WX_GL_DOUBLEBUFFER, 0};
+  int args[] = {WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_DEPTH_SIZE, 16, 0};
+
+  if (! CxModel::IsDisplaySupported(args)) {
+	LOGERR( "One or more display attributes not supported ( RGBA, DOUBLEBUFFER, DEPTH 4). Checking individually:");
+	int arga[] = {WX_GL_RGBA, 0};
+	if (CxModel::IsDisplaySupported(arga)) {
+		LOGERR( "RGBA ok");
+	} else {
+		LOGERR( "RGBA not supported");
+	}
+	int argb[] = {WX_GL_DOUBLEBUFFER, 0};
+	if (CxModel::IsDisplaySupported(argb)) {
+		LOGERR( "DOUBLEBUFFER ok");
+	} else {
+		LOGERR( "DOUBLEBUFFER not supported");
+	}
+	int argc[] = {WX_GL_DEPTH_SIZE, 32, 0};
+	if (CxModel::IsDisplaySupported(argc)) {
+		LOGERR( "DEPTHSIZE 32 ok");
+	} else {
+		LOGERR( "DEPTHSIZE 32 not supported");
+	}
+	int argd[] = {WX_GL_DEPTH_SIZE, 16, 0};
+	if (CxModel::IsDisplaySupported(argd)) {
+		LOGERR( "DEPTHSIZE 16 ok");
+	} else {
+		LOGERR( "DEPTHSIZE 16 not supported");
+	}
+	int arge[] = {WX_GL_DEPTH_SIZE, 4, 0};
+	if (CxModel::IsDisplaySupported(arge)) {
+		LOGERR( "DEPTHSIZE 4 ok");
+	} else {
+		LOGERR( "DEPTHSIZE 4 not supported");
+	}
+	 LOGERR( "Continuing, some functionality may not work. Send Script.log to Richard Cooper for help.");
+  }
+  //  int args[] = {WX_GL_RGBA, WX_GL_DOUBLEBUFFER, 0};
   CxModel *theModel = new CxModel((wxWindow*)guiParent, args);
   theModel->ptr_to_crObject = container;
   theModel->Show();
