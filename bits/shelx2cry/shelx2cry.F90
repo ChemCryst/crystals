@@ -8,11 +8,11 @@ program shelx2cry
   use shelx2cry_cifparse_m
   use, intrinsic :: iso_fortran_env, only: output_unit
   implicit none
-
+  integer, parameter :: filename_len = 260 !<filepath buffers
   integer arg_cpt, iostatus, arg_length
   integer shelxf_id !< unit id of the shelx file
   character(len=:), allocatable :: arg_val, crystals_filepath, log_filepath
-  character(len=char_len) :: res_file, hkl_file, buffer, shelx_filepath
+  character(len=filename_len) :: res_file, hkl_file, buffer, shelx_filepath
   character(len=256) :: iomessage
   type(line_t) :: line
   logical file_exists
