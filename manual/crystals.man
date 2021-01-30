@@ -8394,6 +8394,55 @@ are only going to be calculated.
  F(2), C(1), C(2).
 #
 
+#J
+ Info coppied from Github october, 2019:
+
+ It's in the checkin comments for the work on lexical_preprocessor and
+ associated file from October '18. I like the look of the first too,
+ but wonder if we can make them more specific, e.g. restraining all
+ C-H bonds to be equivalent is quite unusual, and similarly restraining
+ all element types to have same Ueq would be unusual.
+
+ The DEFINE option does work, and it means you can adjust the e.s.d's
+ on a load of restraints with one edit. However, I haven't checked if
+ it screws up the inbuilt DEFINE directive in L16 - might need to
+ change the name before publicising this one.
+
+ Rich
+
+ + replace bonds (C--H, C==C, ...) with C() TO H()... 
+   you can now write DIST 0.0, 0.01 = MEAN C--H to restrain
+   all C--H distances to their mean
+
+ + replace generic type C(*) with C(), C()... 
+   UEQIV 0.01 C(*) restrain all C atoms to the same Ueq
+
+ + replace variables definitions (define a = 0.1), then $a is
+   used instead of 0.1
+   DEFINE a = 0.01
+   DIST 0.0, $a = MEAN C--H
+
+ + implement the RIGU restraint as in shelx (using connectivity)
+
+ + implement chiv as in shelx (not working)
+
+ - update urigu restraint to accept new syntax URIGU esd12 esd13
+   num_12 bond_list_12 bond_list_13
+   (num_12 is the number of 1,2 bond definition)
+
+
+ On Mon, Oct 28, 2019 at 10:32 AM David Watkin
+ <david.watkin@chem.ox.ac.uk> wrote:
+
+    Hi Richard
+
+    Last week you discovered a new bond restraint syntax.  Does it work?
+    It cant find anything about it in CRYSTALS.MAN and I could not spot
+    anything in the code.
+
+    Cheers
+    D
+#
 
 #YGeneral restraints#
 #HSgeneral#

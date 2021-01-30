@@ -655,10 +655,12 @@ Initialisation:
 %           COPY 'REJECT SIGMA=2'
 %           COPY 'END'                                                          
 %         END IF                                                                
-%                                                                               
-%         COPY '#LIST 6'                                                        
-%         COPY 'READ TYPE = COPY'                                               
-%         COPY 'END'                                                            
+% 
+%       COPY '#LIST 6'                                                        
+%       COPY 'READ TYPE = COPY' 
+%       copy 'STORE NCOEF=10'
+%       COPY 'OUTP INDI /FO/ SIG RATIO CORR SERI JCODE /FC/ SQRTW BATCH/PHASE'
+%       COPY 'END'                                                            
 %%                                                                              
 %%
 
