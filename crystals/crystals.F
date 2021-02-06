@@ -101,7 +101,6 @@ C             THE NAME OF THE STARTUP FILE MAY EITHER BE SET AS
 C             DATA IN PRESETS, OR IN AN ASSIGNMENT BELOW.
 C
       INCLUDE 'ISTORE.INC'
-      DIMENSION PROGLS(4,18)
 C--
 C
       INCLUDE 'STORE.INC'
@@ -119,7 +118,6 @@ C
       INCLUDE 'XCHARS.INC'
       INCLUDE 'QSTORE.INC'
 
-      INTEGER PROGLS
 C
 C
 C -- DECLARE EXTERNAL REFERENCES TO BLOCK DATA SEGMENTS
@@ -132,11 +130,73 @@ C
 #ifdef _DOS_
       EXTERNAL MYDRIV
 C
-C -- SET UP AVAILABLE PROGRAM LIST.
-C    NAMES RESTRICTED TO FIRST 16 CHARACTERS OF THOSE IN COMMANDFILE
 C
 #endif
+
+      CALL CRESET   !These routines reinitialise SOME of the COMMON block variables, but
+      CALL CAMSET   !they also ensure those object files (presets and block) are linked.
+C
+C----- INITIALISE THE CARRIAGE CONTROL VARIABLES
+      CALL FBCINI
+#ifdef _DOS_
+      call suppress_argument_type_checks@
+#endif
+C
+C -- ASSIGN AND OPEN STARTUP CONTROL FILE - CSSCST AND LSSCST
+C    ARE SET IN BLOCK DATA IN PRESETS. THE LOGICAL NAME MAT BE
+C    EXPANDED
+      CALL MTRNLG ( CSSCST, 'OLD', LSSCST)
+C----- ALTERNATIVELY, THAY CAN BE SET HERE
+C      CSSCST = '\CRYSTALS\SRT\CRYSTALS.SRT'
+C      LSSCST =  26
+C
+#ifdef _DOS_
+C----- HOOK IN THE SALFORD DOS DRIVER TO COUNT LINES
+CWIN_32&DOS      OPEN ( NCVDU, STATUS = 'UNKNOWN', DRIVER = MYDRIV)
+C
+#endif
+      IF ( ISSSFI .GT. 0 ) THEN
+        ISTAT = KFLOPN ( NCRU ,CSSCST(1:LSSCST),ISSOLD,ISSREA,1,ISSSEQ)
+        IF ( ISTAT .LE. 0 ) THEN
+         if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
+            WRITE(6,*) 'UNIT =', NCRU, 'FILE =', CSSCST
+            CALL XERIOM ( NCRU, ISTAT)
+C            STOP 'ERROR OPENING STARTUP FILE'
+            CALL GUEXIT (2003)
+        ENDIF
+      ENDIF
+C
+1210  CONTINUE
+	  CALL CRYPROC()
+	  GOTO 1210
+	  END
+	  
+	  
+C This can be called by main entry point or by PYTHON process after it has setup a queue of commands to be processed.
+
+#ifdef CRY_FORTDIGITAL
+      SUBROUTINE CRYPROC()
+      !dec$ attributes c :: crystl
+#else
+      SUBROUTINE CRYPROC() bind (c)
+#endif
+	  IMPLICIT NONE
+C For IERFLG
+      INCLUDE 'XUNITS.INC'
+C For IB
+	  INCLUDE 'XCHARS.INC'
+C For KPRGNM
+	  INCLUDE 'XPRGNM.INC'
+	  
+	  INTEGER LSTOP, LSTNO, ICLASS, NPROG
+
+      INTEGER PROGLS
+      DIMENSION PROGLS(4,18)
+
       DATA NPROG / 18 /
+
+C -- SET UP AVAILABLE PROGRAM LIST.
+C    NAMES RESTRICTED TO FIRST 16 CHARACTERS OF THOSE IN COMMANDFILE
 #if !defined(_HOL_)
       DATA PROGLS(1,1)  / 'CRYS' / , PROGLS(2,1)  / 'TALS' /
       DATA PROGLS(3,1)  / 'INPU' / , PROGLS(4,1)  / 'T   ' /
@@ -176,8 +236,6 @@ C
       DATA PROGLS(3,18) / 'DIFA' / , PROGLS(4,18) / 'BS  ' /
 #else
       DATA PROGLS(1,1)  / 4HCRYS / , PROGLS(2,1)  / 4HTALS /
-#endif
-#ifdef _HOL_
       DATA PROGLS(3,1)  / 4HINPU / , PROGLS(4,1)  / 4HT    /
       DATA PROGLS(1,2)  / 4HCRYS / , PROGLS(2,2)  / 4HTALS /
       DATA PROGLS(3,2)  / 4HFIDD / , PROGLS(4,2)  / 4HLE   /
@@ -213,57 +271,22 @@ C
       DATA PROGLS(3,17) / 4HFORE / , PROGLS(4,17) / 4HIGN  /
       DATA PROGLS(1,18) / 4HCRYS / , PROGLS(2,18) / 4HTALS /
       DATA PROGLS(3,18) / 4HDIFA / , PROGLS(4,18) / 4HBS   /
-C
-C Re-initialise system variables in case starting again.
 #endif
-
-      CALL CRESET   !These routines reinitialise SOME of the COMMON block variables, but
-      CALL CAMSET   !they also ensure those object files (presets and block) are linked.
-C
-C----- INITIALISE THE CARRIAGE CONTROL VARIABLES
-      CALL FBCINI
-#ifdef _DOS_
-      call suppress_argument_type_checks@
-#endif
-C
-C -- ASSIGN AND OPEN STARTUP CONTROL FILE - CSSCST AND LSSCST
-C    ARE SET IN BLOCK DATA IN PRESETS. THE LOGICAL NAME MAT BE
-C    EXPANDED
-      CALL MTRNLG ( CSSCST, 'OLD', LSSCST)
-C----- ALTERNATIVELY, THAY CAN BE SET HERE
-C      CSSCST = '\CRYSTALS\SRT\CRYSTALS.SRT'
-C      LSSCST =  26
-C
-#ifdef _DOS_
-C----- HOOK IN THE SALFORD DOS DRIVER TO COUNT LINES
-CWIN_32&DOS      OPEN ( NCVDU, STATUS = 'UNKNOWN', DRIVER = MYDRIV)
-C
-#endif
-      IF ( ISSSFI .GT. 0 ) THEN
-        ISTAT = KFLOPN ( NCRU ,CSSCST(1:LSSCST),ISSOLD,ISSREA,1,ISSSEQ)
-        IF ( ISTAT .LE. 0 ) THEN
-         if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
-            WRITE(6,*) 'UNIT =', NCRU, 'FILE =', CSSCST
-            CALL XERIOM ( NCRU, ISTAT)
-C            STOP 'ERROR OPENING STARTUP FILE'
-            CALL GUEXIT (2003)
-        ENDIF
-      ENDIF
-C
-1210  CONTINUE
 
       KOLDER = IERFLG
-
       CALL XGUIUP(0)
-
       IERFLG = KOLDER
 
       CALL XFILL(IB,KPRGNM,17) !No longer in a program sub-unit.
       I = KNXTOP ( LSTOP,LSTNO,ICLASS )
+
 C----- CHECK IF THIS SEGMENT NAME IS AVAILABLE
       I=KCOMP(4,KPRGNM,PROGLS,NPROG,4)
+
       IF ( I .LE. 0 ) GO TO 9920
+
 C----- GOTO THE APPROPRIATE SECTION
+
        GOTO(3010,3020,3030,3040,3050,3060,3070,3080,3090,
      2 3100 , 3110 , 3120 , 3130 , 3140 ,
      3 3150 , 3160 , 3170 , 3180 , 9920 ) , I
@@ -297,7 +320,6 @@ C
 3090  CONTINUE
       CALL WEIGHT
       GOTO 1210
-C
 3100  CONTINUE
       CALL DISTAN
       GOTO 1210
@@ -325,6 +347,9 @@ C
 3180  CONTINUE
       CALL DIFABS
       GO TO 1210
+	  
+1210  CONTINUE
+	  RETURN
 C
 C
 C

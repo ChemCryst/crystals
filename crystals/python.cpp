@@ -1,6 +1,7 @@
 
 extern "C" {
 	
+void setcommand(char *commandline);
 
 #ifdef CRY_OSWIN32
 	#define PY_SSIZE_T_CLEAN
@@ -457,7 +458,7 @@ method_crys_run(PyObject *self, PyObject *args)
 	Py_ssize_t list_size;
 	int i;
 
-	lineouts("1");
+//	lineouts("1");
 	
 //	char snum[128];
 	// print our string
@@ -471,11 +472,11 @@ method_crys_run(PyObject *self, PyObject *args)
 		return NULL;
 	}
 
-	lineouts("2");
+//	lineouts("2");
 
 	list_size = mList_Size(pyList);
 
-	lineouts("3");
+//	lineouts("3");
 
 	for (i=0; i<list_size; i++) {
 		pyItem = mList_GetItem(pyList, i);
@@ -493,9 +494,18 @@ method_crys_run(PyObject *self, PyObject *args)
 			
 			//pass string onto somewhere
 			lineout(val, strlen(val));
+			setcommand(val);
 		}
 	}
 
+    int i = setjmp(thebeginning);
+    if ( i == 0 ) {                    // This is the first path.
+//		printf("Calling ccommand.\n");
+		ccommand();
+    }
+    else {                             // This is where we return to on longjmp.
+//		printf("Longjmp back to start.\n");
+    }
 
 #ifdef CRY_OSWIN32
     return ((PBUILDVALUE)pBuildValueFn)("O",  ((PBUILDVALUE)pBuildValueFn)("")); // Inc ref to PyNone (without using INCREF macro which won't work here becuase of dynamic LoadLibrary
@@ -774,8 +784,66 @@ sys.stderr.errcatch = True\n", NULL);
 }
 
 
+/*  Calling CRYSTALS ADMIN stuff */
+
+static jmp_buf thebeginning;
+
+// Call this to force a longjmp back to where the routine above.
+void endofcommands(){
+//		printf("pointer %d \n", (long*)thebeginning) ;
+		longjmp(thebeginning,1);
+}
+
 
 }   //end extern "C"
+
+
+// This is C++ stuff
+
+#include <deque>
+#include <string>
+
+deque <string> commands;
+
+void setcommand(char *commandline){
+	commands.push_back( std::string(commandline) );
+}
+
+// Copy next string into commandline buffer, return 0 for OK, < 0 for error.
+// Request past end of commands causes a longjmp back to start point (out of CRYSTALS)
+long getcommand(char *commandline)
+{
+    int inputlen = strlen(commandline);
+	char *command;
+	int retOK = 0;
+
+	if ( commands.length() > 0 )
+	{
+		std::string s = commands.pop_front();
+
+        int commandlen = s.length();
+		int outputlen = (inputlen < commandlen) ? inputlen : commandlen;  //Minimum of the two string lengths (truncate)
+
+		strncpy( s.c_str(), command, outputlen ); 
+		//PAD
+        for (int j = commandlen; j<inputlen; j++)   //Copy
+		{
+			*(commandline + j) = ' ';
+		}
+		
+	}
+	else
+	{
+		endofcommands();
+		retOK = -1;   // Failed to longjmp return error.
+		
+	}
+	return retOK;
+}
+
+
+
+
 
 
 
