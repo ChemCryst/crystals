@@ -1,7 +1,10 @@
 
 extern "C" {
 	
+#include <setjmp.h>
 void setcommand(char *commandline);
+static jmp_buf thebeginning;
+void cryproc();
 
 #ifdef CRY_OSWIN32
 	#define PY_SSIZE_T_CLEAN
@@ -498,10 +501,10 @@ method_crys_run(PyObject *self, PyObject *args)
 		}
 	}
 
-    int i = setjmp(thebeginning);
+    i = setjmp(thebeginning);
     if ( i == 0 ) {                    // This is the first path.
 //		printf("Calling ccommand.\n");
-		ccommand();
+		cryproc();
     }
     else {                             // This is where we return to on longjmp.
 //		printf("Longjmp back to start.\n");
@@ -786,7 +789,6 @@ sys.stderr.errcatch = True\n", NULL);
 
 /*  Calling CRYSTALS ADMIN stuff */
 
-static jmp_buf thebeginning;
 
 // Call this to force a longjmp back to where the routine above.
 void endofcommands(){
@@ -803,7 +805,7 @@ void endofcommands(){
 #include <deque>
 #include <string>
 
-deque <string> commands;
+std::deque <std::string> commands;
 
 void setcommand(char *commandline){
 	commands.push_back( std::string(commandline) );
@@ -817,14 +819,15 @@ long getcommand(char *commandline)
 	char *command;
 	int retOK = 0;
 
-	if ( commands.length() > 0 )
+	if ( commands.size() > 0 )
 	{
-		std::string s = commands.pop_front();
+		std::string s = commands.front();
+		commands.pop_front();
 
         int commandlen = s.length();
 		int outputlen = (inputlen < commandlen) ? inputlen : commandlen;  //Minimum of the two string lengths (truncate)
 
-		strncpy( s.c_str(), command, outputlen ); 
+		strncpy( (char*)s.c_str(), command, outputlen ); 
 		//PAD
         for (int j = commandlen; j<inputlen; j++)   //Copy
 		{
