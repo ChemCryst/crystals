@@ -133,6 +133,7 @@ C
 C
 #endif
 
+      INPYTH = 0    !Not currently in a python script, if entering via this subroutine.
       CALL CRESET   !These routines reinitialise SOME of the COMMON block variables, but
       CALL CAMSET   !they also ensure those object files (presets and block) are linked.
 C
@@ -190,7 +191,7 @@ C If you're here looking for the main program branching (calls to KNXTOP) they'v
 CODE FOR GETCOM
       SUBROUTINE GETCOM(CLINE)
 #ifdef CRY_GUI
-      use fwrappergui_mod, only: cinextcommand
+      use fwrappergui_mod, only: cinextcommand, getcommand
       INTEGER ISTAT
       CHARACTER*256 CALINE
       INCLUDE 'XSSVAL.INC'
@@ -201,10 +202,21 @@ CODE FOR GETCOM
       INCLUDE 'XUNITS.INC'
       CHARACTER *(*) CLINE
 
-      CALINE=' '
-      ISTAT = 0
-      CALL cinextcommand(ISTAT,CALINE)
-      READ(CALINE,'(A)') CLINE
+C Check if we have been called by python script.
+      IF ( INPYTH .GT. 0 ) THEN 
+	    INPYTH = 0
+        call  getcommand( len(caline), caline )
+        READ(CALINE,'(A)') CLINE
+	    INPYTH = 1   ! If we didn't longjmp out of getcommand, then we're here and still in a python script.
+      ELSE
+		
+        CALINE=' '
+        ISTAT = 0
+        CALL cinextcommand(ISTAT,CALINE)
+        READ(CALINE,'(A)') CLINE
+	
+      END IF
+
       IF ( LCLOSE ) THEN
           WRITE(CMON,'(A)') '^^WI SET PROGOUTPUT TEXT = '
           CALL XPRVDU (NCVDU,1,0)
@@ -213,7 +225,6 @@ CODE FOR GETCOM
           WRITE(CMON,'(A)')  '^^CR '
           CALL XPRVDU (NCVDU,1,0)
       ENDIF
-
 
 #else
       INCLUDE 'XSSVAL.INC'
@@ -224,7 +235,14 @@ CODE FOR GETCOM
       INCLUDE 'XUNITS.INC'
       CHARACTER *(*) CLINE
 
-      READ( NCUFU(1), '(A)') CLINE
+      IF ( INPYTH .GT. 0 ) THEN 
+	    INPYTH = 0
+        call getcommand( len(caline), caline )
+        READ(CALINE,'(A)') CLINE
+	    INPYTH = 1   ! If we didn't longjmp out of getcommand, then we're here and still in a python script.
+      ELSE
+        READ( NCUFU(1), '(A)') CLINE
+	  END IF
 
 #endif
       END SUBROUTINE

@@ -3,9 +3,10 @@ extern "C" {
 	
 #include <setjmp.h>
 void setcommand(char *commandline);
+void cxxgetcommand(int length, char *commandline);
 static jmp_buf thebeginning;
 void cryproc();
-
+	
 #ifdef CRY_OSWIN32
 	#define PY_SSIZE_T_CLEAN
 	#include <windows.h>
@@ -153,9 +154,6 @@ void lineouts(const char* string) {   // This wraps lineout so we don't need to 
 	#define mErrSetString(o,s) ((PERRSETSTRING)pErrSetStringFn)(o,s)
 
 
-	PyTypeObject *ptr__List_Type = NULL; 
-	PyObject **ptr__TypeError = NULL;
-
 
 
 	HMODULE hModule = NULL;
@@ -169,6 +167,9 @@ void lineouts(const char* string) {   // This wraps lineout so we don't need to 
 
 #endif
 
+
+	PyTypeObject *ptr__List_Type = NULL; 
+	PyObject **ptr__TypeError = NULL;
 
 
 
@@ -796,6 +797,12 @@ void endofcommands(){
 		longjmp(thebeginning,1);
 }
 
+void getcommand(int length, char *commandline)
+{
+    cxxgetcommand(length, commandline);  //Call the C++ version (below)
+}
+
+
 
 }   //end extern "C"
 
@@ -813,23 +820,21 @@ void setcommand(char *commandline){
 
 // Copy next string into commandline buffer, return 0 for OK, < 0 for error.
 // Request past end of commands causes a longjmp back to start point (out of CRYSTALS)
-long getcommand(char *commandline)
+void cxxgetcommand(int length, char *commandline)
 {
-    int inputlen = strlen(commandline);
-	char *command;
-	int retOK = 0;
-
 	if ( commands.size() > 0 )
 	{
 		std::string s = commands.front();
 		commands.pop_front();
 
         int commandlen = s.length();
-		int outputlen = (inputlen < commandlen) ? inputlen : commandlen;  //Minimum of the two string lengths (truncate)
+		int outputlen = (length < commandlen) ? length : commandlen;  //Minimum of the two string lengths (truncate)
 
-		strncpy( (char*)s.c_str(), command, outputlen ); 
+// Remember: char * strncpy ( char * destination, const char * source, size_t num );
+
+		strncpy(commandline, (char*)s.c_str(), outputlen ); 
 		//PAD
-        for (int j = commandlen; j<inputlen; j++)   //Copy
+        for (int j = commandlen; j<length; j++)   //Copy
 		{
 			*(commandline + j) = ' ';
 		}
@@ -838,11 +843,10 @@ long getcommand(char *commandline)
 	else
 	{
 		endofcommands();
-		retOK = -1;   // Failed to longjmp return error.
-		
 	}
-	return retOK;
+	return;
 }
+
 
 
 

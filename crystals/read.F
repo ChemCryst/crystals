@@ -1401,9 +1401,21 @@ c      CALL MTRNLG(CRYSPY,'UNKNOWN',ILENG)
 c      WRITE(CMON,'(2A)')'Python script folder: ',cryspy
 c      CALL XPRVDU(NCVDU, 1,0)
 
+C -- CLEAR ERROR FLAG
+C
+      IERFLG = 1
+C-- CLEAR instruction flag to prevent error if PYTHON script calls back into CRYSTALS from the top.
+      IHFLAG = -1
 
+C
+
+
+      INPYTH = 1
 
       LTEST = runpy (trim(ccmnd)//C_NULL_CHAR)
+
+      INPYTH = 0
+
 
       GOTO 9000
 C
