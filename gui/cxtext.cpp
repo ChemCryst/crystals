@@ -83,30 +83,18 @@ Destroy();
 
 void    CxText::SetText( const string & text )
 {
-#ifdef CRY_USEWX
     wxString wtext = wxString(text.c_str());
     MathSymbols::replaceMarkup(wtext);
     SetLabel(wtext);
     SetSize(GetIdealWidth(),GetHeight());
     Refresh();
-#endif
-#ifdef CRY_USEMFC
-    SetWindowText(text.c_str());
-//    MoveWindow(GetLeft(),GetTop(),GetIdealWidth(),GetHeight(),true); //Naughty but harmless.
-#endif
 
 }
 
-#ifdef CRY_USEMFC
-BEGIN_MESSAGE_MAP(CxText, CStatic)
-   ON_WM_CHAR()
-END_MESSAGE_MAP()
-#else
 //wx Message Map
 BEGIN_EVENT_TABLE(CxText, wxStaticText)
       EVT_CHAR(CxText::OnChar)
 END_EVENT_TABLE()
-#endif
 
 CXONCHAR(CxText)
 
