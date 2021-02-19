@@ -1825,7 +1825,8 @@ cdjw      write(123,*)'Thinking about loading L 5 and L 25'
            WRITE (CMON,
      1       '(''^^WI SAFESET [ _MT_L25 EMPTY TEXT "Twin laws" ]'')')
            CALL XPRVDU(NCVDU,1,0)
-1106  FORMAT ('^^WI SAFESET [ _MT_L25 TEXT "',3(3F7.3,2X),F5.3,'" ]')
+1106  FORMAT ('^^WI SAFESET [ _MT_L25 TEXT "',/
+     1 '^^WI ', 3(3F7.3,2X),F5.3,'" ]')
            DO J = 0, N25-1
              M25 = L25+J*MD25
              m5djw = l5djw +j      ! All scales are in the first record
