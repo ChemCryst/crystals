@@ -1453,8 +1453,8 @@ LS-scale=  0.439   Wilson Scale=  0.000
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.11E-03
 Insufficient precision - trying double
-Block No  1.  Double precision relative error:  3.94E-12
-[80]  (dp inverse) 1-norm:  1E+01 cond. number:  2E+04 rel. error:  3.94E-12
+Block No  1.  Double precision relative error:  3.93E-12
+[80]  (dp inverse) 1-norm:  1E+01 cond. number:  2E+04 rel. error:  3.93E-12
 [13]  LARGE     2           2            -0.0      -0.7E+00    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -6546,10 +6546,10 @@ LS-scale=  0.440   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 Inversion method: Automatic
-Block No  1.  Single precision relative error:  1.76E-03
+Block No  1.  Single precision relative error:  1.75E-03
 Insufficient precision - trying double
-Block No  1.  Double precision relative error:  3.27E-12
-[80]  (dp inverse) 1-norm:  1E+01 cond. number:  1E+04 rel. error:  3.27E-12
+Block No  1.  Double precision relative error:  3.26E-12
+[80]  (dp inverse) 1-norm:  1E+01 cond. number:  1E+04 rel. error:  3.26E-12
 [13]  LARGE     2           2            -0.0      -0.8E-01    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -6645,7 +6645,7 @@ All cycle   Min function          0.0           0.31E+04       0.10E+16
 [37]      C          2.    1.00    0.00    0.82    0.40    0.09    0.07
 [37]                       0.00            -0.00   -0.00    0.00   -0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.013    0.013    0.012 
+[31]                                         0.013    0.012    0.012 
 
 [37]      CL         3.    1.00    0.00    0.92    0.50    0.17    0.09
 [37]                       0.00             0.00    0.00   -0.00    0.00    0.00   -0.00    0.00   -0.00    0.00
@@ -6655,7 +6655,7 @@ All cycle   Min function          0.0           0.31E+04       0.10E+16
 [37]      CL         4.    1.00    0.00    0.89    0.27    0.00    0.19
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00   -0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.006    0.006    0.004 
+[31]                                         0.006    0.005    0.004 
 
 [37]      O          5.    1.00    0.00    0.46    0.78    0.24    0.03
 [37]                       0.00             0.00   -0.00    0.00   -0.00    0.00    0.00   -0.00   -0.00    0.00
@@ -6670,7 +6670,7 @@ All cycle   Min function          0.0           0.31E+04       0.10E+16
 [37]      C          7.    1.00    0.00    0.43    0.92    0.41    0.03
 [37]                       0.00            -0.00   -0.00   -0.00   -0.00    0.00   -0.00   -0.00   -0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.008    0.008    0.008 
+[31]                                         0.008    0.008    0.007 
 
 [37]      O          8.    1.00    0.00    0.56    0.96    0.42    0.03
 [37]                       0.00             0.00    0.00    0.00    0.00   -0.00    0.00   -0.00    0.00    0.00
@@ -6778,7 +6778,7 @@ All cycle   Min function          0.0           0.31E+04       0.10E+16
 [31]                                         0.011    0.012    0.010 
 
 [37]      C         29.    1.00    0.00    0.54    0.61    0.04    0.05
-[37]                       0.00             0.00    0.00   -0.00   -0.00    0.00   -0.00   -0.00    0.00   -0.00
+[37]                       0.00             0.00    0.00   -0.00    0.00    0.00   -0.00   -0.00    0.00   -0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.010    0.012    0.009 
 [84] Mean C-C su =   0.00
@@ -6803,17 +6803,17 @@ ___________
 [79]          1  1  0  0  0    6E-07     0E+00     6E-07    1.00    Ul_13 = 0.0
     Atom C(25)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-[79]          1  1  0  0  0    3E-07     0E+00     3E-07    1.00    Ul_12 = 0.0
+[79]          1  1  0  0  0    4E-07     0E+00     4E-07    1.00    Ul_12 = 0.0
 [79]          1  1  0  0  0   -2E-06     0E+00    -2E-06    1.00    Ul_23 = 0.0
 [79]          1  1  0  0  0    2E-06     0E+00     2E-06    1.00    Ul_13 = 0.0
     Atom C(26)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-[79]          1  1  0  0  0    7E-06     0E+00     7E-06    1.00    Ul_12 = 0.0
+[79]          1  1  0  0  0    8E-06     0E+00     8E-06    1.00    Ul_12 = 0.0
 [79]          1  1  0  0  0    1E-05     0E+00     1E-05    1.00    Ul_23 = 0.0
 [79]          1  1  0  0  0    6E-06     0E+00     6E-06    1.00    Ul_13 = 0.0
     Atom C(27)
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
-[79]          1  1  0  0  0    6E-06     0E+00     6E-06    1.00    Ul_12 = 0.0
+[79]          1  1  0  0  0    7E-06     0E+00     7E-06    1.00    Ul_12 = 0.0
 [79]          1  1  0  0  0   -2E-07     0E+00    -2E-07    1.00    Ul_23 = 0.0
 [79]          1  1  0  0  0   -9E-06     0E+00    -9E-06    1.00    Ul_13 = 0.0
     Atom C(28)
@@ -7624,8 +7624,8 @@ LS-scale=  0.440   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 Inversion method: Automatic
-Block No  1.  Single precision relative error:  4.40E-05
-[80]  (sp inverse) 1-norm:  2E+01 cond. number:  4E+02 rel. error:  4.40E-05
+Block No  1.  Single precision relative error:  4.39E-05
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  4E+02 rel. error:  4.39E-05
 [13]  LARGE     2           2             0.0       0.3E+00    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -12116,7 +12116,7 @@ Block No  1.  Single precision relative error:  2.13E-05
 [14]  S/ESD     6           6           -0.014       0.0E+00    0.22 E-02         -6.4         CL     1 U[11]   
 [14]  S/ESD     9           9           -0.026       0.0E+00    0.13 E-02        -19.7         CL     1 U[23]   
 [14]  S/ESD    10          10           -0.015       0.0E+00    0.15 E-02        -10.6         CL     1 U[13]   
-[14]  S/ESD    24          24            0.036       0.0E+00    0.25 E-02         14.3         CL     3 U[11]   
+[14]  S/ESD    24          24            0.036       0.0E+00    0.25 E-02         14.4         CL     3 U[11]   
 [14]  S/ESD    25          25            0.042       0.0E+00    0.23 E-02         17.6         CL     3 U[22]   
  LARGE    26          26           -0.0636      0.0E+00    0.240E-02        -26.50        CL     3 U[33]   
 [14]  S/ESD    27          27           -0.022       0.0E+00    0.16 E-02        -13.5         CL     3 U[23]   
@@ -14103,7 +14103,7 @@ All cycle   Min function          0.0           0.32E+04       0.10E+16
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      38000          39800            5200                                    On scale of /FC/
+[33]      38000          39790            5200                                    On scale of /FC/
 
 [32]      17090          17690            2330                0.33 E+04          On scale of /FO/
 
