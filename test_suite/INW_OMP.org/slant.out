@@ -105,7 +105,7 @@ Bonds: Update required - There is no list 41
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]       2000           1270            1100                                    On scale of /FC/
+[33]       2000           1000            1100                                    On scale of /FC/
 
 [32]       2390           1270            1140                0.20 E+05          On scale of /FO/
 
@@ -469,7 +469,7 @@ Bonds: Update required - List5 length change
       631 reflections   R  0.25% Rw  0.21% with I/u(I) >   2.0
 [29] SumFo/SumFc=  1.00    SumFoFc/SumFc^2=  1.00    SumwFoFc/SumwFc^2=  1.00
 LS-scale=  1.000   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.001    100*(<Fo>-<Fc>)/<Fo> =    -0.01
+[91] <Fo>-<Fc> = -0.00    100*(<Fo>-<Fc>)/<Fo> =    -0.01
 #CYCLENDS
 #EDIT
  The following atom(s) will be created
@@ -524,7 +524,7 @@ Bonds: Update required - List5 length change
 
 plane-vector (in polar coord.):Input ONLY in units of 100 DEGREES !!!
 
-DECLINAT =  -180.00     DECLINAT/100 =  -1.8000
+[90] DECLINAT =  -180 DECLINAT/100 =  -1.80
 AZIMUTH  =    45.02     AZIMUTH /100 =   0.4502
  Deviations from the plane, in angstrom, are given by  Zp  
   Co-ordinates of the defining atoms projected onto the best  plane
