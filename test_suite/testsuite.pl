@@ -479,6 +479,14 @@ sub obscureMachinePrecision() {
   } elsif($line =~ m/^(\s*-?\d*\.\d\d\d)\d\d(\s*-?\d*\.\d\d\d)\d\d(\s*-?\d*\.\d\d\d)\d\d(\s*-?\d*\.\d\d\d)\d\d\s*$/ ) {
 			print $fho "[86] $1  $2  $3  $4\n";
 			
+#<Fo>-<Fc> = -0.219    100*(<Fo>-<Fc>)/<Fo> =    -2.85
+   } elsif($line =~ m/^(\s+\<Fo\>-\<Fc\> = -?\d*\.\d\d)\d(.*)$/ ) {
+              print $fho "[91] $1$2\n";
+#Symmetry related peaks on the cusp of peak collection algorithm switch cause differences. Remove sym and coords.
+#C        11.         Q         2.      1   1    1   -1    0    0.389      Deleted    0.095   0.991   0.152      4.1
+   } elsif($line =~ m/^(.*Q\s+\d+\.\s*)-?\d+\s+-?\d+\s+-?\d+\s+-?\d+\s+-?\d+(.*Deleted).*(\d+\.\d+)$/ ) {
+              print $fho "[91] $1$2 $3\n";
+
 # Reduced Chisq=  1.4438
    } elsif($line =~ m/^(.*Reduced Chisq=\s*\d*\.\d\d).*$/ ) {
               print $fho "[88] $1\n";
