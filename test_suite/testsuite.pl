@@ -293,13 +293,13 @@ sub obscureMachinePrecision() {
 # List of Fx.4 x10 -. Fx.2
 	   } elsif($line =~ m/^(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d\s*/) {
               $temps = "[37] $1 $2 $3 $4 $5 $6 $7 $8 $9 $10\n";
-			  $temps =~ s/\s-?(0\.0*\s+)/$1/g;
+  	  	      $temps =~ s/(\s)-(0+\.0*\s)/$1 $2/g;
 			  print $fho $temps
 			  
 # List of C 1. Fx.4 x5 -. Fx.2    " C         13.    0.3844   1.0000  -0.1691  -0.2515   0.0560   0.0981"
 	   } elsif($line =~ m/^(\s+\S+\s+\d+\.\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d\s*/) {
               $temps = "[37] $1 $2 $3 $4 $5 $6\n";
-			  $temps =~ s/\s-?(0\.0*\s+)/$1/g;
+  	  	      $temps =~ s/(\s)-(0+\.0*\s)/$1 $2/g;
 			  print $fho $temps
 # List of Fx.4 x11 following Maximum x.xx -> Fx.2, except first -> Fx.0
 	   } elsif($line =~ m/^(.*Maximum\s+\d+\.)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d\s*/) {
@@ -308,9 +308,9 @@ sub obscureMachinePrecision() {
 	   } elsif($line =~ m/^(.*R\.M\.S\.\s+\d+\.)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d\s*/) {
               print $fho "[71] $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11 $12\n";
 # List of 3Fx.4 x11 following spaces -> Fx.2
-	   } elsif($line =~ m/^(\s+-?\d+\.\d\d)\d\d+(\s+-?\d+\.\d\d)\d\d+(\s+-?\d+\.\d\d)\d\d+\s*/) {
+	   } elsif($line =~ m/^(\s+-?\d+\.\d\d)\d\d+(\s+-?\d+\.\d\d)\d\d+(\s+-?\d+\.\d\d)\d\d+\s*$/) {
               $temps = "[89] $1 $2 $3\n";
-  			  $temps =~ s/\s-?(0\.0*\s+)/$1/g;
+  	  	      $temps =~ s/(\s)-(0+\.0*\s)/$1 $2/g;
 			  print $fho $temps
 #DECLINAT =    72.72     DECLINAT/100 =   0.7272
        } elsif($line =~ m/^(.*DECLINAT.*\s*\d*)\.\d+\s+(.*\d*\.\d\d).*/ ) {
