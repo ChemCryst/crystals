@@ -56,9 +56,6 @@ rem %F77% /fpp /define:_%COMPCODE%_ /I..\crystals ..\bits\contour\contour.F %BIT
 @set LIB=%OLIB%
 ENDLOCAL
 
-CL ..\bits\loader\crysload.cc %CDEF% /EHs /W3 /TP /O2 /D"NDEBUG" /MD /link shell32.lib advapi32.lib user32.lib || ( make_err.bat )
-del crysload.obj
-
 copy ..\bits\sir92\form.sda form.dat || ( make_err.bat )
 copy ..\bits\rc93\rc93.ssr rc93.srt || ( make_err.bat )
 goto exit
@@ -66,7 +63,7 @@ goto exit
 :clean
 del cif2cry.exe convplat.exe csd2cry.exe delred.exe dipin.exe ctwin.exe
 del kccdin.exe rc93.exe reindex.exe shelxs.exe sxtocry.exe sir92.exe
-del rc93.src form.dat crysload.exe
+del rc93.src form.dat 
 
 :tidy
 del sir92.o norm92.o

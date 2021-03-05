@@ -33,7 +33,7 @@
 ^^WI               @ 1,1 RESIZE _RSZ5 HORIZONTAL {
 ^^WI                 ITEM GRID _GR_MODANDLIST NROWS=1 NCOLS=1 {
 ^^WI                   @ 1,1 MODELWINDOW MODEL01 'N' NROWS=5 NCOLS=65
-^^WI                   ATTACH L5 RADSCALE=250 RADTYPE=COV
+^^WI                   ATTACH L5 RADSCALE=250 RADTYPE=THERMAL
 ^^WI                   MOUSEACTION SELECTATOM
 !                      popup-noatom.srt
 !                      popup-selection.srt

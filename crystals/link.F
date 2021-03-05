@@ -1,5 +1,5 @@
 Cavdlmay29-fixed problem in trigonal groups
-C $Log: link.fpp
+C $Log: link.fpp 
 C Revision 1.53  2005/02/25 17:25:20  stefan
 C 1. Added some preprocessor if defined lines for the mac version.
 C
@@ -671,7 +671,13 @@ C CHECK FOR A LIST 6 (NOT DONE ABOVE SO THAT WE CAN GET A .ins FILE)
       IF (KEXIST(6) .NE. 1)  THEN
         WRITE(CMON,'(A)') 'No reflections for SHELX.HKL file' 
         CALL XPRVDU(NCVDU,1,0)
+c      write(123,*)'Aborting'
         GOTO 1850
+      ELSE
+C-----  LOAD LIST 6
+c      write(123,*)'loading L6'
+        CALL XFAL06(6,0)
+c      write(123,*)'loaded L6'
       ENDIF
 C----- OUTPUT ON ACTUAL SCALE
 cdjwoct08

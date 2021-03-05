@@ -670,13 +670,18 @@ c
         !print *, 'idunit ', idunit, trim(clcnam)
 
         ! dsc filename is not always specified
-        ! hack to do part of the job of mtrnlg before mtrlng refactoring
-        iposition=index(CLCNAM, 'CRDSC:')
-        if(iposition>0) then
-          CLCNAM=CLCNAM(1:iposition-1)//'crfilev2.dsc'//
-     1      CLCNAM(iposition+6:len_trim(clcnam))
-        end if
-
+        ! hack to do part of the job of mtrnlg before mtrlng refactoring		
+		!! This gives unexpected behaviour if crfilev2.dsc exists
+		!! and the user has specified a new dsc.
+		
+		!! moved check into MTRNLG so that environment vars override default crfilev2.dsc name.
+		
+!        iposition=index(CLCNAM, 'CRDSC:')
+!        if(iposition>0) then
+!          CLCNAM=CLCNAM(1:iposition-1)//'crfilev2.dsc'//
+!     1      CLCNAM(iposition+6:len_trim(clcnam))
+!!        end if
+        
         if(hdf5_in_use) then
           iposition=index(CLCNAM, '.dsc')
           if(iposition==0) iposition=index(CLCNAM, '.DSC')
@@ -1908,6 +1913,8 @@ CNOV98 IF THERE IS NO ENVIRONMENT VARIABLE, CHECK THE PRESETS
 #else
              LIST(LEVEL) = './'
 #endif
+          ELSE IF (NAME(LEVEL)(1:COLPOS(LEVEL)-1) .EQ. 'CRDSC') THEN  ! if not set, use default
+            LIST(LEVEL) = 'crfilev2.dsc'
           ENDIF
         ENDIF
         LSTPOS(LEVEL)=0

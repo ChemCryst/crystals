@@ -72,7 +72,8 @@
 %%    Preferred H treatment       (HRTYP) 0=fix, 1=pos, 2=x&u, 3&10=ride
 %%    Last list 12 written        (L12SER)
 %%    Preferred H restraints      (HRESTF) 2=none, 1=all, 0=N&O
-%%    Absolute configutation tested (FDONE T/F DOABS 0/1
+%%    Absolute configuration tested (FDONE T/F DOABS 0/1
+%%    Absolute configuration tested (Swap doabs 2020 FDONE T/F DOABS 1/0
 %  VARIABLE INTEGER HRTYP L12SER HRESTF DOABS
 %  VARIABLE LOGICAL HRMASK L12SMASK HRESTM FDONE
 %%

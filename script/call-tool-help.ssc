@@ -2,7 +2,7 @@
 %%
 %% TOOL-HELP is set to TRUE by TEST-TOOL-HELP if the global key is set
 %% TOOL-TEXT is the name of the operation 
-%% TOOL-FILE is the help- file build by adding ".html" to the operation name
+%% TOOL-FILE is the help-file built by adding ".html" to the operation name
 %% _____________________________________________________________________
 %  VARIABLE LOGICAL TOOL-HELP
 %  COPY '#SCRIPT TEST-TOOL-HELP'
@@ -42,6 +42,7 @@
 ^^WI }  
 ^^WI SHOW  
 ^^CR  
+%  EVALUATE RUNNOW = TRUE  
 %   LOOP 
 %     VERIFY  CFBXX CFHELP CFBOK  
 %     GET SILENT NOSTORE FINAL ABBREVIATED 'BXX?' 'BXX'

@@ -102,18 +102,22 @@ sub contains     # Is this $element in the array of tokens?
 
 sub obscureMachinePrecision() {
 
+    print("Post-processing $CROUTPUT\n");
+
 	use File::Copy;
 	$new_file = "$CROUTPUT.temp";
-	copy($CROUTPUT, $new_file);
-
+	copy($CROUTPUT, $new_file) or die "Copy failed: $!";
+    unlink( $CROUTPUT );
 	open(my $fhi, '<', "$CROUTPUT.temp") or die $!;
-        open(my $fho, '>', "$CROUTPUT") or die $!;
-        while (<$fhi>) {
-	   my $line = $_;
-#Catch negative zero formats from MINGW compiler.
-	   $line =~ s/(\s)-(0+\.0*\s)/$1 $2/g;
+    open(my $fho, '>', "$CROUTPUT") or die $!;
 
-	   chomp($line);
+    while (<$fhi>) {
+
+	    my $line = $_;
+
+#Catch negative zero formats from MINGW compiler.
+	    $line =~ s/(\s)-(0+\.0*\s)/$1 $2/g;
+	    chomp($line);
 
 #  su_max shift often has too much precision to be stable across platforms
 	   if($line =~ m/^(_refine_ls_shift\/su_max\s+\d+.\d\d\d\d)\d+.*$/ ) {
@@ -173,7 +177,7 @@ sub obscureMachinePrecision() {
 	  } elsif($line =~ m/^(Inter cycle Min function          0.0).*$/ ) {
               print $fho "[07] $1\n";
 # Chebyshev terms "   2            15599.61             1798.93      8.67"
-	  } elsif($line =~ m/^(\s+\d\s+\d+\.\d)\d(\s+\d+)\d\d\.\d\d(\s+\d+\.\d\d)\s*$/ ) {
+	  } elsif($line =~ m/^(\s+\d\s+\d+\.)\d\d(\s+\d+)\d\d\.\d\d(\s+\d+\.\d\d)\s*$/ ) {
               print $fho "[08] $1 $2"."00 $3\n";
 # Fc too much precision "      Fc           0.180888E+00   0.925735E+02"
 	  } elsif($line =~ m/^(\s+Fc\s+0\.\d\d\d)\d\d\d(E.\d\d\s+0\.\d\d\d)\d\d\d(E.\d\d\s*)$/ ) {
@@ -263,12 +267,13 @@ sub obscureMachinePrecision() {
 # Shift max  "                                         0.0762   0.0487   0.0794"
 	   } elsif($line =~ m/^(           \s*-*\d\.\d\d\d)\d(   -*\d\.\d\d\d)\d(   -*\d.\d\d\d)\d(\s*)/ ) {
               print $fho "[31] $1 $2 $3 $4\n";
+#			  print("Line edited (rule 31): $line \n");
 # Min funcs "    211786.        195909.          21729.               0.3664E+06          On scale of /FO/"
 	   } elsif($line =~ m/^(\s+\d+)\d\.(\s+\d+)\d\.(\s+\d+)\d\.(\s+0\.\d\d)\d\d(E.\d\d\s+On scale of \/FO\/\s*)/ ) {
               print $fho "[32] $1"."0 $2"."0 $3"."0 $4 $5\n";
 # Min funcs "    211786.        195909.          21729.                                   On scale of /FC/"
-	   } elsif($line =~ m/^(\s+\d+)\d\d\d\.(\s+\d+)\d\.(\s+\d+)\d\d\.(\s+On scale of \/FC\/\s*)/ ) {
-              print $fho "[33] $1"."000 $2"."0 $3"."00 $4\n";
+	   } elsif($line =~ m/^(\s+\d+)\d\d\d\.(\s+\d+)\d\d\d\.(\s+\d+)\d\d\.(\s+On scale of \/FC\/\s*)/ ) {
+              print $fho "[33] $1"."000 $2"."000 $3"."00 $4\n";
 #  "                               The rms (shift/su)  =           0.808"
 #  "                            The mean abs(shift/su) =           0.808"
 	   } elsif($line =~ m/^(\s+The.*\(shift\/su\)\s+=\s+\d+\.)\d\d\d\s*/ ) {
@@ -282,20 +287,34 @@ sub obscureMachinePrecision() {
 # TLS matrices
 	   } elsif($line =~ m/^(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d)\d\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d\s*/) {  #3rd element only captures 1dp in this version (cf. next version below).
               print $fho "[35] $1 $2 $3 $4 $5 $6 $7 $8 $9\n";
+#  			  print("Line edited (rule 35) $line \n");
 	   } elsif($line =~ m/^(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d\s*/) {
               print $fho "[36] $1 $2 $3 $4 $5 $6 $7 $8 $9\n";
 # List of Fx.4 x10 -. Fx.2
 	   } elsif($line =~ m/^(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d\s*/) {
-              print $fho "[37] $1 $2 $3 $4 $5 $6 $7 $8 $9 $10\n";
+              $temps = "[37] $1 $2 $3 $4 $5 $6 $7 $8 $9 $10\n";
+  	  	      $temps =~ s/(\s)-(0+\.0*\s)/$1 $2/g;
+			  print $fho $temps
+			  
 # List of C 1. Fx.4 x5 -. Fx.2    " C         13.    0.3844   1.0000  -0.1691  -0.2515   0.0560   0.0981"
 	   } elsif($line =~ m/^(\s+\S+\s+\d+\.\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d\s*/) {
-              print $fho "[37] $1 $2 $3 $4 $5 $6\n";
+              $temps = "[37] $1 $2 $3 $4 $5 $6\n";
+  	  	      $temps =~ s/(\s)-(0+\.0*\s)/$1 $2/g;
+			  print $fho $temps
 # List of Fx.4 x11 following Maximum x.xx -> Fx.2, except first -> Fx.0
 	   } elsif($line =~ m/^(.*Maximum\s+\d+\.)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d\s*/) {
               print $fho "[70] $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11 $12\n";
 # List of Fx.4 x11 following R.M.S. x.xx -> Fx.2, except first -> Fx.0
 	   } elsif($line =~ m/^(.*R\.M\.S\.\s+\d+\.)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d\s*/) {
               print $fho "[71] $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11 $12\n";
+# List of 3Fx.4 x11 following spaces -> Fx.2
+	   } elsif($line =~ m/^(\s+-?\d+\.\d\d)\d\d+(\s+-?\d+\.\d\d)\d\d+(\s+-?\d+\.\d\d)\d\d+\s*$/) {
+              $temps = "[89] $1 $2 $3\n";
+  	  	      $temps =~ s/(\s)-(0+\.0*\s)/$1 $2/g;
+			  print $fho $temps
+#DECLINAT =    72.72     DECLINAT/100 =   0.7272
+       } elsif($line =~ m/^(.*DECLINAT.*\s*\d*)\.\d+\s+(.*\d*\.\d\d).*/ ) {
+              print $fho "[90] $1 $2\n";
 # List of Fx.4 x11 following anything -> Fx.2
 	   } elsif($line =~ m/^(.*\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\d\s*/) {
               print $fho "[38] $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11\n";
@@ -338,7 +357,7 @@ sub obscureMachinePrecision() {
 	   } elsif($line =~ m/^(\s+\d+\s+\w+\s+\d+\.\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\.\d)\d(\s+\d+\.\d)\d.*/) {
               print $fho "[49] $1 $2\n";
 # Too much detail 9 (Print 11)
-	   } elsif($line =~ m/^(\s+\d+\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d)/) {
+	   } elsif($line =~ m/^(\s+\d+\s+-?0\.\d)\d\d\d\d(E.\d\d\s+-?0\.\d)\d\d\d\d(E.\d\d\s+-?0\.\d)\d\d\d\d(E.\d\d\s+-?0\.\d)\d\d\d\d(E.\d\d\s+-?0\.\d)\d\d\d\d(E.\d\d\s+-?0\.\d)\d\d\d\d(E.\d\d\s+-?0\.\d)\d\d\d\d(E.\d\d\s+-?0\.\d)\d\d\d\d(E.\d\d)/) {
               print $fho "[50] $1$2$3$4$5$6$7$8$9\n";
 # Too much detail 8 (Print 11)
 	   } elsif($line =~ m/^(\s+\d+\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d)\s*/) {
@@ -460,6 +479,20 @@ sub obscureMachinePrecision() {
   } elsif($line =~ m/^(\s*-?\d*\.\d\d\d)\d\d(\s*-?\d*\.\d\d\d)\d\d(\s*-?\d*\.\d\d\d)\d\d(\s*-?\d*\.\d\d\d)\d\d\s*$/ ) {
 			print $fho "[86] $1  $2  $3  $4\n";
 			
+#<Fo>-<Fc> = -0.219    100*(<Fo>-<Fc>)/<Fo> =    -2.85
+   } elsif($line =~ m/^(\s*\<Fo\>-\<Fc\> = -?\d*\.\d\d)\d(.*)$/ ) {
+              print $fho "[91] $1$2\n";
+#Symmetry related peaks on the cusp of peak collection algorithm switch cause differences. Remove sym and coords.
+#C        11.         Q         2.      1   1    1   -1    0    0.389      Deleted    0.095   0.991   0.152      4.1
+   } elsif($line =~ m/^(.*Q\s+\d+\.\s*)-?\d+\s+-?\d+\s+-?\d+\s+-?\d+\s+-?\d+(.*Deleted).*(\d+\.\d+)$/ ) {
+              print $fho "[91] $1$2 $3\n";
+
+# Reduced Chisq=  1.4438
+   } elsif($line =~ m/^(.*Reduced Chisq=\s*\d*\.\d\d).*$/ ) {
+              print $fho "[88] $1\n";
+# Maximum /FO/    =     0.76E+03           Estimated variance =    1827.5     
+   } elsif($line =~ m/^(.*Maximum .FO.*\d+\.)\d+\s+$/ ) {
+              print $fho "[88] $1\n";
 #     7.421 * X +      -7.131 * Y +       5.978 * Z  =    -0.527
    } elsif($line =~ m/^(\s+)(-?\d+\.\d+)(\s+\*\s+X\s\+\s+)(-?\d+\.\d+)(\s+\*\s+Y\s\+\s+)(-?\d+\.\d+)(\s+\*\s+Z\s+\=\s+)(-?\d+\.\d+)(\s+.*)$/ ) {  
 #                      1    2           3                 4           5                  6           7                8           9     
@@ -468,14 +501,16 @@ sub obscureMachinePrecision() {
    	          $spz = sprintf "%.1f", $6;
    	          $spd = sprintf "%.1f", $8;
               print $fho "[87] $1$spx$3$spy$5$spz$7$spd$9\n";
-    } else {
+		} else {
               print $fho "$line\n";
-	  }
+#			  print ( "pass thru: $line \n" );
+			  
+		}
  	}
-        close ($fhi);
-        close ($fho);
+    close ($fhi);
+    close ($fho);
 #RIC Feb16 - leave this here so we can inspect the original
-		#        unlink ($new_file);
+#     unlink ($new_file);
 }
 
 
@@ -507,6 +542,8 @@ sub runTest      # Run each .tst file through both versions of CRYSTALS.
 				print("Removing bfiles (use '-l' to leave in place)\n");
 				cleanUp(@cleanup);
 			}
+			print ("Running $diff $CROUTPUT $COMPCODE.org/$CROUTPUT\n");
+
 			print `$diff $CROUTPUT $COMPCODE.org/$CROUTPUT`;
 
 			print "diff exitcode: $?\n";

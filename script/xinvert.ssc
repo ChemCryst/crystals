@@ -11,7 +11,6 @@
 % VARIABLE CHARACTER QTITLE QLINE1 QLINE2 BUTTOK BUTTXX
 % VARIABLE LOGICAL   ANSWER
 %%
-%% _______________________________________________________________
 %% See if GLOBAL help is needed
 %%
 %  VARIABLE CHARACTER TOOL-FOLDER
@@ -25,7 +24,6 @@
 %  IF .NOT. RUNNOW THEN 
 %    FINISH
 %  END IF
-%% _______________________________________________________________
 %%
 %%
 % IF ( EXISTS 2 .ne. 1 ) THEN
@@ -52,7 +50,6 @@
 %    COPY '#GENERALEDIT 2'
 %    COPY 'LOCATE RECORDTYPE=101'
 %    COPY 'TRANSFER FROM OFFSET=0 TO CENTRO'
-%%
 %    COPY 'LOCATE RECORDTYPE = 106'
 %    COPY 'TOP'
 %    COPY 'TRANSFER FROM OFFSET =  0 TO L2'
@@ -145,6 +142,7 @@
 %   COPY 'MONITOR OFF'
 %   COPY 'TRANSFORM -1 0 0  0 -1 0  0 0 -1 ALL'
 %   COPY 'SHIFT 1 1 1 ALL'
+%%   COPY 'CHANGE ENANTIO 0.0'
 %   COPY 'END'
 %%
 % ELSE IF ITEM .LE. 22 THEN

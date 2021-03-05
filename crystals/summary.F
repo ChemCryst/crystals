@@ -1328,7 +1328,7 @@ c      I a dummy
 C
 CODE FOR XTHLIM
       SUBROUTINE XTHLIM (THMIN,THMAX,THMCMP,THBEST,THBCMP,
-     c                                         IPLOT,IULN,IGLST)
+     c                   IPLOT,IULN,IGLST)
 C
 C -- ROUTINE WORK OUT COMPLETENESS OF DATA
 C

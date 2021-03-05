@@ -27,10 +27,10 @@
 ^^WI                 TOOL _MBALL ball.png 'Ball and stick view'                           
 ^^WI                 '#SCRIPT XMODVIEW_NCOV' TOGGLE
 ^^WI                   DISABLEIF='IN' ENABLEIF='L5'
-^^WI                 ITEM _MBALL STATE=ON                                       
 ^^WI                 TOOL _MADP elli.png 'Show displacement parameters'             
 ^^WI                 '#SCRIPT XMODVIEW_NTHERM' TOGGLE
 ^^WI                   DISABLEIF='IN' ENABLEIF='L5'
+^^WI                 ITEM _MADP STATE=ON                                       
 ^^WI                 SPLIT                                                      
 ^^WI                 TOOL _MSHOWH showh.png 'Show H'           
 ^^WI                 '#SCRIPT XMODVIEW_NTOGGLEH' TOGGLE

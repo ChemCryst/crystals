@@ -1,9 +1,0 @@
-crystals/IDIMLX.INC      
-crystals/XLEXIC.INC      Add variable MMA (39th item)
-crystals/results.F       Remove code that suppressed H esds - now in torsion
-crystals/summary.F       improve refine_special_details
-crystals/torsion.F       Check for riding hydrogen, generate torsion quartets
-datafiles/commands.src   #TORSION: Add PUBLISH PRINT=PUNCH E.S.D=EXCLRH
-test_suite/cif.tst       Add a LIST 28, and E.S.D=EXCLRH
-test_suite/td-tors.tst
-

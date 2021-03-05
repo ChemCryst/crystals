@@ -2266,11 +2266,11 @@ contains
 !#OPEN HKLI  "datafile.hkl"
 !#HKLI
 !READ F'S=FSQ NCOEF=6 TYPE=FIXED CHECK=NO
-!INPUT H K L /FO/ SIGMA(/FO/) /Fc/
+!INPUT H K L /FO/ SIGMA(/FO/) /Fc/                    WATCH OUT - THESE ARE COMMENTS!
 !FORMAT (3F4.0, 3F10.0)
 !MATRIX 1 0 0    0 1 0  0 0 1
-!STORE NCOEF=7
-!OUTP INDI /FO/ SIG RATIO CORR SERI /Fc/
+!STORE NCOEF=10
+!OUTP INDI /FO/ SIG RATIO CORR SERI JCODE /FC/ SQRTW BATCH/PHASE
 !END
 !#CLOSE HKLI
 !#SCRIPT XPROC6
@@ -2289,8 +2289,8 @@ contains
     write (crystals_fileunit, '(a)') 'INPUT H K L /FO/ SIGMA(/FO/) '
     write (crystals_fileunit, '(a)') 'FORMAT (3F4.0, 2F8.0)'
     write (crystals_fileunit, '(a, 9(F0.3," "))') 'MATRIX ', transpose(hklf%transform)
-    write (crystals_fileunit, '(a)') 'STORE NCOEF=7'
-    write (crystals_fileunit, '(a)') 'OUTP INDI /FO/ SIG RATIO CORR SERI /Fc/'
+    write (crystals_fileunit, '(a)') 'STORE NCOEF=10'
+    write (crystals_fileunit, '(a)') 'OUTP INDI /FO/ SIG RATIO CORR SERI JCODE /Fc/ SQRTW BATCH/PHASE'
     write (crystals_fileunit, '(a)') 'END'
     write (crystals_fileunit, '(a)') '#CLOSE HKLI'
     write (crystals_fileunit, '(a)') '#SCRIPT XPROC6'

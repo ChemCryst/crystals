@@ -19,6 +19,7 @@
 %%    Last list 12 written        (L12SER)
 %%    Preferred H restraints      (HRESTF)
 %%    Parsons FLACK status        (FDONE = T/F, DOABS = 0/1)
+%%    Parsons FLACK status   Swapped doabs 2020  (FDONE = T/F, DOABS = 1/0)
 %%
 %  VARIABLE INTEGER ITEMP
 %  VARIABLE LOGICAL DOTRANSFER
@@ -110,7 +111,7 @@
 %     ON EDITERROR TERMINATE
 %     COPY 'TRANSFER FROM OFFSET=0 TO CKEY'
 %     COPY 'TRANSFER FROM OFFSET=2 TO DOABS'
-%     IF DOABS .EQ. 0 THEN
+%     IF DOABS .EQ. 1 THEN
 %       EVALUATE FDONE = TRUE
 %     ELSE
 %       EVALUATE FDONE = FALSE

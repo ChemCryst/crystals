@@ -7,8 +7,8 @@
 %   COPY '#SCRIPT XGETWZ'
 % IF ( EXISTS 2 .NE. 1 ) THEN                                                   
 {I **** No symmetry (list 2) present.                                           
-{R             I could have done with that information to                       
-{R             recommend what to do with the Friedel pairs.                     
+{R  We need that information to decide how to merge the data.
+%  FINISH
 %%                                                                              
 % ELSE                                                                          
 %   COPY '#GENERALEDIT 2'                                                       
@@ -18,6 +18,10 @@
 % END IF                                                                        
 %%                                                                              
 %%                                                                              
+%% FRIEDLF: OFF = -1, ON = 0    (ON = do merge, no resonant diffs)
+%%
+%% default to no merge:
+%%
 % EVALUATE FRIEDELF = - 1                                                    
 %%                                                                              
 %%                                                                              
@@ -27,8 +31,8 @@
 %     END IF                                                                    
 %%
 % IF ( FCENTRO .GT. 0.9 ) THEN                                                  
-                                                                                
-{I Centro-symmetric space-group.                                                
+%%
+{I Centrosymmetric space-group.                        
 {R * Friedel Pairs will be merged.                                              
 
 %   EVALUATE FRIEDELF = 0                                                       

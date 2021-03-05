@@ -19,7 +19,6 @@ add_subdirectory(shelx2cry)
 if ( ( NOT Fortran_COMPILER_NAME MATCHES "gfortran") AND ( NOT APPLE ) AND ( useGUI ) )
   add_subdirectory(sir92)
 endif()
-#add_subdirectory(loader)
 add_subdirectory(fixh5)
 
 include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
