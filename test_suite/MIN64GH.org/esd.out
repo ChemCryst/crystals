@@ -823,7 +823,7 @@ Refining    13 parameters in    1 block :      133 elements in the LS matrix.
  Structure factor least squares calculation    1  ends  2
 [29] SumFo/SumFc= 21.43    SumFoFc/SumFc^2= 20.21    SumwFoFc/SumwFc^2= 20.21
 LS-scale= 21.615   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.028    100*(<Fo>-<Fc>)/<Fo> =    -0.84
+[91] <Fo>-<Fc> = -0.02    100*(<Fo>-<Fc>)/<Fo> =    -0.84
 #DORESTRAIN
 #INVERT  DEFA
 #NEWSHIFTS
@@ -1943,7 +1943,7 @@ Refining    13 parameters in    1 block :      133 elements in the LS matrix.
  Structure factor least squares calculation    2  ends  2
 [29] SumFo/SumFc= 21.43    SumFoFc/SumFc^2= 20.21    SumwFoFc/SumwFc^2= 20.21
 LS-scale= 21.615   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.028    100*(<Fo>-<Fc>)/<Fo> =    -0.84
+[91] <Fo>-<Fc> = -0.02    100*(<Fo>-<Fc>)/<Fo> =    -0.84
 #DORESTRAIN
 #INVERT  DEFA
 #NEWSHIFTS

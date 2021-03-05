@@ -469,7 +469,7 @@ Bonds: Update required - List5 length change
       631 reflections   R  0.25% Rw  0.21% with I/u(I) >   2.0
 [29] SumFo/SumFc=  1.00    SumFoFc/SumFc^2=  1.00    SumwFoFc/SumwFc^2=  1.00
 LS-scale=  1.000   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.001    100*(<Fo>-<Fc>)/<Fo> =    -0.01
+[91] <Fo>-<Fc> = -0.00    100*(<Fo>-<Fc>)/<Fo> =    -0.01
 #CYCLENDS
 #EDIT
  The following atom(s) will be created

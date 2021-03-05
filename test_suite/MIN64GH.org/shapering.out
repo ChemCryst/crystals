@@ -4895,7 +4895,7 @@ Refining    35 parameters in    1 block :      716 elements in the LS matrix.
  Structure factor least squares calculation    6  ends  2
 [29] SumFo/SumFc=  6.51    SumFoFc/SumFc^2=  6.33    SumwFoFc/SumwFc^2=  6.33
 LS-scale=  6.870   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.604    100*(<Fo>-<Fc>)/<Fo> =    -5.50
+[91] <Fo>-<Fc> = -0.60    100*(<Fo>-<Fc>)/<Fo> =    -5.50
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN

@@ -172,7 +172,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
  Structure factor least squares calculation    1  ends  2
 [29] SumFo/SumFc=  6.23    SumFoFc/SumFc^2=  6.13    SumwFoFc/SumwFc^2=  6.19
 LS-scale=  6.285   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.098    100*(<Fo>-<Fc>)/<Fo> =    -0.82
+[91] <Fo>-<Fc> = -0.09    100*(<Fo>-<Fc>)/<Fo> =    -0.82
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -358,7 +358,7 @@ All cycle   Min function          0.0           0.58E+06       0.10E+16
  Structure factor least squares calculation    2  ends  2
 [29] SumFo/SumFc=  6.23    SumFoFc/SumFc^2=  6.13    SumwFoFc/SumwFc^2=  6.20
 LS-scale=  6.285   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.100    100*(<Fo>-<Fc>)/<Fo> =    -0.83
+[91] <Fo>-<Fc> = -0.10    100*(<Fo>-<Fc>)/<Fo> =    -0.83
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -543,7 +543,7 @@ All cycle   Min function          0.0           0.52E+06       0.10E+16
  Structure factor least squares calculation    3  ends  2
 [29] SumFo/SumFc=  6.23    SumFoFc/SumFc^2=  6.13    SumwFoFc/SumwFc^2=  6.20
 LS-scale=  6.285   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.100    100*(<Fo>-<Fc>)/<Fo> =    -0.83
+[91] <Fo>-<Fc> = -0.10    100*(<Fo>-<Fc>)/<Fo> =    -0.83
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -9872,7 +9872,7 @@ END
      2805 reflections   R  7.02% Rw 17.80% with I/u(I) >   2.0
 [29] SumFo/SumFc=  6.23    SumFoFc/SumFc^2=  6.13    SumwFoFc/SumwFc^2=  6.19
 LS-scale=  6.285   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.098    100*(<Fo>-<Fc>)/<Fo> =    -0.82
+[91] <Fo>-<Fc> = -0.09    100*(<Fo>-<Fc>)/<Fo> =    -0.82
 #CYCLENDS
 #TITLE NORMAL LIST 6, F2 & F" SET
 #PUNCH 6 I
@@ -12801,7 +12801,7 @@ END
      2805 reflections   R  7.02% Rw 17.80% with I/u(I) >   2.0
 [29] SumFo/SumFc=  6.23    SumFoFc/SumFc^2=  6.13    SumwFoFc/SumwFc^2=  6.19
 LS-scale=  6.285   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.098    100*(<Fo>-<Fc>)/<Fo> =    -0.82
+[91] <Fo>-<Fc> = -0.09    100*(<Fo>-<Fc>)/<Fo> =    -0.82
 #CYCLENDS
 #TITLE A&B KEYS SET, F' & F" SET
 #PUNCH 6 I
@@ -15976,7 +15976,7 @@ LS-scale=  6.285   Wilson Scale=  0.000
      2805 reflections   R  7.02% Rw 17.80% with I/u(I) >   2.0
 [29] SumFo/SumFc=  6.23    SumFoFc/SumFc^2=  6.13    SumwFoFc/SumwFc^2=  6.19
 LS-scale=  6.285   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.098    100*(<Fo>-<Fc>)/<Fo> =    -0.82
+[91] <Fo>-<Fc> = -0.09    100*(<Fo>-<Fc>)/<Fo> =    -0.82
 #CYCLENDS
 #SUM L 6
  Summary of contents of list  6 - Reflection data
@@ -18885,7 +18885,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
  Structure factor least squares calculation    4  ends  2
 [29] SumFo/SumFc=  6.23    SumFoFc/SumFc^2=  6.13    SumwFoFc/SumwFc^2=  6.19
 LS-scale=  6.285   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.098    100*(<Fo>-<Fc>)/<Fo> =    -0.82
+[91] <Fo>-<Fc> = -0.09    100*(<Fo>-<Fc>)/<Fo> =    -0.82
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -19071,7 +19071,7 @@ All cycle   Min function          0.0           0.58E+06       0.10E+16
  Structure factor least squares calculation    5  ends  2
 [29] SumFo/SumFc=  6.23    SumFoFc/SumFc^2=  6.13    SumwFoFc/SumwFc^2=  6.20
 LS-scale=  6.285   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.100    100*(<Fo>-<Fc>)/<Fo> =    -0.83
+[91] <Fo>-<Fc> = -0.10    100*(<Fo>-<Fc>)/<Fo> =    -0.83
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -19256,7 +19256,7 @@ All cycle   Min function          0.0           0.52E+06       0.10E+16
  Structure factor least squares calculation    6  ends  2
 [29] SumFo/SumFc=  6.23    SumFoFc/SumFc^2=  6.13    SumwFoFc/SumwFc^2=  6.20
 LS-scale=  6.285   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.100    100*(<Fo>-<Fc>)/<Fo> =    -0.83
+[91] <Fo>-<Fc> = -0.10    100*(<Fo>-<Fc>)/<Fo> =    -0.83
 #DORESTRAIN
 #INVERT  DEFA
 

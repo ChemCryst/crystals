@@ -3454,9 +3454,9 @@ LS-scale=  0.312   Wilson Scale=  0.000
  Current pivot atom       Atom   Serial   S(I)  L  T(X) T(Y) T(Z)  Distance     Action      x/a     y/b     z/c     Rho
 
 
-     Q         1.         Q         3.      1   1    0    0    0    0.324      Deleted    0.488   0.117   0.176     14.9
+[91]      Q         1.         Q         3.          0.324      Deleted 4.9
 
-     Q         9.         Q        14.      1   1    0    0    0    0.465      Deleted    0.493   0.229   0.110      8.1
+[91]      Q         9.         Q        14.          0.465      Deleted 8.1
  List now contains    32 atoms
 Bonds: Update required - List5 length change
 #COLLECT
@@ -8186,9 +8186,9 @@ LS-scale=  0.312   Wilson Scale=  0.000
  Current pivot atom       Atom   Serial   S(I)  L  T(X) T(Y) T(Z)  Distance     Action      x/a     y/b     z/c     Rho
 
 
-     Q         1.         Q         3.      1   1    0    0    0    0.324      Deleted    0.488   0.117   0.176     14.9
+[91]      Q         1.         Q         3.          0.324      Deleted 4.9
 
-     Q         9.         Q        14.      1   1    0    0    0    0.465      Deleted    0.493   0.229   0.110      8.1
+[91]      Q         9.         Q        14.          0.465      Deleted 8.1
  List now contains    32 atoms
 Bonds: Update required - List5 length change
 #COLLECT
@@ -12661,7 +12661,7 @@ LS-scale=  0.310   Wilson Scale=  0.000
  Current pivot atom       Atom   Serial   S(I)  L  T(X) T(Y) T(Z)  Distance     Action      x/a     y/b     z/c     Rho
 
 
-     Q         2.         Q         3.      1   1    0    0    0    0.308      Deleted    0.488   0.115   0.175     14.5
+[91]      Q         2.         Q         3.          0.308      Deleted 4.5
  List now contains    33 atoms
 Bonds: Update required - List5 length change
 #COLLECT
@@ -17159,7 +17159,7 @@ LS-scale=  0.310   Wilson Scale=  0.000
  Current pivot atom       Atom   Serial   S(I)  L  T(X) T(Y) T(Z)  Distance     Action      x/a     y/b     z/c     Rho
 
 
-     Q         2.         Q         3.      1   1    0    0    0    0.308      Deleted    0.488   0.115   0.175     14.5
+[91]      Q         2.         Q         3.          0.308      Deleted 4.5
  List now contains    33 atoms
 Bonds: Update required - List5 length change
 #COLLECT

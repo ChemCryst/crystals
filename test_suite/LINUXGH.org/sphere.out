@@ -377,7 +377,7 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
  Structure factor least squares calculation    1  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
 LS-scale=  0.480   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.120    100*(<Fo>-<Fc>)/<Fo> =    -0.35
+[91] <Fo>-<Fc> = -0.12    100*(<Fo>-<Fc>)/<Fo> =    -0.35
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -780,7 +780,7 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
  Structure factor least squares calculation    3  ends  2
 [29] SumFo/SumFc=  0.48    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
 LS-scale=  0.493   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.881    100*(<Fo>-<Fc>)/<Fo> =    -2.67
+[91] <Fo>-<Fc> = -0.88    100*(<Fo>-<Fc>)/<Fo> =    -2.67
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -1149,7 +1149,7 @@ Inter cycle Rw                   -5.0            6.9           0.10E+03
  Structure factor least squares calculation    5  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
 LS-scale=  0.479   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.049    100*(<Fo>-<Fc>)/<Fo> =    -0.14
+[91] <Fo>-<Fc> = -0.04    100*(<Fo>-<Fc>)/<Fo> =    -0.14
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -2112,7 +2112,7 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
  Structure factor least squares calculation    1  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
 LS-scale=  0.480   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.346    100*(<Fo>-<Fc>)/<Fo> =    -1.02
+[91] <Fo>-<Fc> = -0.34    100*(<Fo>-<Fc>)/<Fo> =    -1.02
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -2515,7 +2515,7 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
  Structure factor least squares calculation    3  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.46    SumwFoFc/SumwFc^2=  0.46
 LS-scale=  0.493   Wilson Scale=  0.000
-<Fo>-<Fc> = -1.108    100*(<Fo>-<Fc>)/<Fo> =    -3.36
+[91] <Fo>-<Fc> = -1.10    100*(<Fo>-<Fc>)/<Fo> =    -3.36
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -2886,7 +2886,7 @@ Inter cycle Rw                   -5.0            6.9           0.10E+03
  Structure factor least squares calculation    5  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
 LS-scale=  0.476   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.053    100*(<Fo>-<Fc>)/<Fo> =    -0.16
+[91] <Fo>-<Fc> = -0.05    100*(<Fo>-<Fc>)/<Fo> =    -0.16
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -3853,7 +3853,7 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
  Structure factor least squares calculation    1  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
 LS-scale=  0.480   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.120    100*(<Fo>-<Fc>)/<Fo> =    -0.35
+[91] <Fo>-<Fc> = -0.12    100*(<Fo>-<Fc>)/<Fo> =    -0.35
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -4256,7 +4256,7 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
  Structure factor least squares calculation    3  ends  2
 [29] SumFo/SumFc=  0.48    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.46
 LS-scale=  0.493   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.881    100*(<Fo>-<Fc>)/<Fo> =    -2.67
+[91] <Fo>-<Fc> = -0.88    100*(<Fo>-<Fc>)/<Fo> =    -2.67
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -4428,7 +4428,7 @@ All cycle   Min function          0.0           0.20E+04       0.10E+16
  Structure factor least squares calculation    4  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
 LS-scale=  0.478   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.036    100*(<Fo>-<Fc>)/<Fo> =    -0.11
+[91] <Fo>-<Fc> = -0.03    100*(<Fo>-<Fc>)/<Fo> =    -0.11
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -5583,7 +5583,7 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
  Structure factor least squares calculation    1  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
 LS-scale=  0.480   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.346    100*(<Fo>-<Fc>)/<Fo> =    -1.02
+[91] <Fo>-<Fc> = -0.34    100*(<Fo>-<Fc>)/<Fo> =    -1.02
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -6182,7 +6182,7 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
  Structure factor least squares calculation    4  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.46    SumwFoFc/SumwFc^2=  0.46
 LS-scale=  0.493   Wilson Scale=  0.000
-<Fo>-<Fc> = -1.108    100*(<Fo>-<Fc>)/<Fo> =    -3.36
+[91] <Fo>-<Fc> = -1.10    100*(<Fo>-<Fc>)/<Fo> =    -3.36
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -6356,7 +6356,7 @@ All cycle   Min function          0.0           0.22E+04       0.10E+16
  Structure factor least squares calculation    5  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
 LS-scale=  0.475   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.003    100*(<Fo>-<Fc>)/<Fo> =    -0.01
+[91] <Fo>-<Fc> = -0.00    100*(<Fo>-<Fc>)/<Fo> =    -0.01
 #DORESTRAIN
 #INVERT  DEFA
 

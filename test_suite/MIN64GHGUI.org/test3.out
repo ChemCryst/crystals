@@ -7357,7 +7357,7 @@ All cycle   Min function          0.0           0.28E+04       0.10E+16
  Structure factor least squares calculation    2  ends  2
 [29] SumFo/SumFc=  1.01    SumFoFc/SumFc^2=  1.00    SumwFoFc/SumwFc^2=  1.00
 LS-scale=  1.014   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.001    100*(<Fo>-<Fc>)/<Fo> =     0.00
+[91] <Fo>-<Fc> = -0.00    100*(<Fo>-<Fc>)/<Fo> =     0.00
 #DORESTRAIN
 #INVERT  DEFA
 
