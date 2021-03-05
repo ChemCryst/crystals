@@ -142,7 +142,7 @@ Bonds: Update required - There is no list 41
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      65000          67110            3400                                    On scale of /FC/
+[33]      65000          67000            3400                                    On scale of /FC/
 
 [32]      67500          68650            3540                0.21 E+05          On scale of /FO/
 
@@ -172,7 +172,7 @@ LS-scale=  1.023   Wilson Scale=  0.000
 
  Chebyshev weighting scheme for   3  terms
 
- Maximum /FO/    =     0.36E+03           Estimated variance =    2.6158        
+[88]  Maximum /FO/    =     0.36E+03           Estimated variance =    2.
          /Fo/ weight =   2.00
 
 
@@ -310,7 +310,7 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      65000          67110            3400                                    On scale of /FC/
+[33]      65000          67000            3400                                    On scale of /FC/
 
 [32]      67500          68650            3540                0.18 E+04          On scale of /FO/
 
@@ -379,7 +379,7 @@ All cycle   Min function          0.0           0.18E+04       0.10E+16
 
 
 [38]  Mean           0.00   0.00    0.00    0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-                                         0.0018  -0.0013   0.0006
+[89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.006    0.001    0.000 
@@ -543,7 +543,7 @@ Refining    52 parameters in    2 block :     1022 elements in the LS matrix.
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      65000          67110            3400                                    On scale of /FC/
+[33]      65000          67000            3400                                    On scale of /FC/
 
 [32]      67500          68650            3540                0.18 E+04          On scale of /FO/
 
@@ -615,7 +615,7 @@ All cycle   Min function          0.0           0.18E+04       0.10E+16
 
 
 [38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   -0.00    0.00   -0.00
-                                         0.0004  -0.0002   0.0007
+[89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.001    0.001    0.001 

@@ -164,7 +164,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          33970            2300                                    On scale of /FC/
+[33]      33000          33000            2300                                    On scale of /FC/
 
 [32]     211820         213550           14870                0.57 E+06          On scale of /FO/
 
@@ -350,7 +350,7 @@ All cycle   Min function          0.0           0.58E+06       0.10E+16
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          33980            2200                                    On scale of /FC/
+[33]      33000          33000            2200                                    On scale of /FC/
 
 [32]     211820         213590           14110                0.52 E+06          On scale of /FO/
 
@@ -535,7 +535,7 @@ All cycle   Min function          0.0           0.52E+06       0.10E+16
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          33980            2200                                    On scale of /FC/
+[33]      33000          33000            2200                                    On scale of /FC/
 
 [32]     211820         213580           14100                0.52 E+06          On scale of /FO/
 
@@ -3605,7 +3605,7 @@ END
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          33590            2200                                    On scale of /FC/
+[33]      33000          33000            2200                                    On scale of /FC/
 
 [32]     211820         211150           14100                0.50 E+06          On scale of /FO/
 
@@ -3714,7 +3714,7 @@ LS-scale=  6.285   Wilson Scale=  0.000
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          33590            2200                                    On scale of /FC/
+[33]      33000          33000            2200                                    On scale of /FC/
 
 [32]     211820         211150           14100                0.50 E+06          On scale of /FO/
 
@@ -6719,7 +6719,7 @@ END
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32110            7500                                    On scale of /FC/
+[33]      33000          32000            7500                                    On scale of /FC/
 
 [32]     211820         201830           47190                0.11 E+08          On scale of /FO/
 
@@ -6889,7 +6889,7 @@ LS-scale=  6.285   Wilson Scale=  0.000
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          33590            2200                                    On scale of /FC/
+[33]      33000          33000            2200                                    On scale of /FC/
 
 [32]     211820         211150           14100                0.50 E+06          On scale of /FO/
 
@@ -9858,7 +9858,7 @@ END
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          33970            2300                                    On scale of /FC/
+[33]      33000          33000            2300                                    On scale of /FC/
 
 [32]     211820         213550           14870                0.57 E+06          On scale of /FO/
 
@@ -12787,7 +12787,7 @@ END
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          33970            2300                                    On scale of /FC/
+[33]      33000          33000            2300                                    On scale of /FC/
 
 [32]     211820         213550           14870                0.57 E+06          On scale of /FO/
 
@@ -15792,7 +15792,7 @@ END
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32440            7400                                    On scale of /FC/
+[33]      33000          32000            7400                                    On scale of /FC/
 
 [32]     211820         203920           47000                0.11 E+08          On scale of /FO/
 
@@ -15962,7 +15962,7 @@ LS-scale=  6.285   Wilson Scale=  0.000
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          33970            2300                                    On scale of /FC/
+[33]      33000          33000            2300                                    On scale of /FC/
 
 [32]     211820         213550           14870                0.57 E+06          On scale of /FO/
 
@@ -18877,7 +18877,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          33970            2300                                    On scale of /FC/
+[33]      33000          33000            2300                                    On scale of /FC/
 
 [32]     211820         213550           14870                0.57 E+06          On scale of /FO/
 
@@ -19063,7 +19063,7 @@ All cycle   Min function          0.0           0.58E+06       0.10E+16
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          33980            2200                                    On scale of /FC/
+[33]      33000          33000            2200                                    On scale of /FC/
 
 [32]     211820         213590           14110                0.52 E+06          On scale of /FO/
 
@@ -19248,7 +19248,7 @@ All cycle   Min function          0.0           0.52E+06       0.10E+16
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          33980            2200                                    On scale of /FC/
+[33]      33000          33000            2200                                    On scale of /FC/
 
 [32]     211820         213580           14100                0.52 E+06          On scale of /FO/
 
