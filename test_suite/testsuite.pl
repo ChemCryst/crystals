@@ -483,7 +483,7 @@ sub obscureMachinePrecision() {
    } elsif($line =~ m/^(.*Reduced Chisq=\s*\d*\.\d\d).*$/ ) {
               print $fho "[88] $1\n";
 # Maximum /FO/    =     0.76E+03           Estimated variance =    1827.5     
-   } elsif($line =~ m/^(.*Maximum /FO/.*\d+\.)\d+\s+$/ ) {
+   } elsif($line =~ m/^(.*Maximum .FO.*\d+\.)\d+\s+$/ ) {
               print $fho "[88] $1\n";
 #     7.421 * X +      -7.131 * Y +       5.978 * Z  =    -0.527
    } elsif($line =~ m/^(\s+)(-?\d+\.\d+)(\s+\*\s+X\s\+\s+)(-?\d+\.\d+)(\s+\*\s+Y\s\+\s+)(-?\d+\.\d+)(\s+\*\s+Z\s+\=\s+)(-?\d+\.\d+)(\s+.*)$/ ) {  
