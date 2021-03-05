@@ -9,11 +9,11 @@
 
  Orientation matrix
 
-                        0.0000    0.0000    0.0000
+[89]                         0.00     0.00     0.00
 
-                        0.0000    0.0000    0.0000
+[89]                         0.00     0.00     0.00
 
-                        0.0000    0.0000    0.0000
+[89]                         0.00     0.00     0.00
 #LIST 29
 # PUNCHED ON 12-OCT84 AT 12:45:49
 #LIST      6
@@ -266,7 +266,7 @@ All cycle   Min function          0.0           0.39E-03       0.10E+16
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.3888E-03          On scale of /FO/
+       237.           237.              0.               0.3887E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -590,7 +590,7 @@ All cycle   Min function          0.0            2.6           0.10E+16
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.3886E-03          On scale of /FO/
+       237.           237.              0.               0.3885E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -907,7 +907,7 @@ All cycle   Min function          0.0           0.39E-03       0.10E+16
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.3888E-03          On scale of /FO/
+       237.           237.              0.               0.3887E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -1231,7 +1231,7 @@ All cycle   Min function          0.0            2.6           0.10E+16
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.3886E-03          On scale of /FO/
+       237.           237.              0.               0.3885E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -1550,7 +1550,7 @@ All cycle   Min function          0.0           0.39E-03       0.10E+16
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.3888E-03          On scale of /FO/
+       237.           237.              0.               0.3887E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -1874,7 +1874,7 @@ All cycle   Min function          0.0            2.6           0.10E+16
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.3886E-03          On scale of /FO/
+       237.           237.              0.               0.3885E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -2716,7 +2716,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
  Structure factor least squares calculation   17  ends  2
 [29] SumFo/SumFc=  0.88    SumFoFc/SumFc^2=  0.90    SumwFoFc/SumwFc^2=  0.90
 LS-scale=  1.000   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.680    100*(<Fo>-<Fc>)/<Fo> =   -13.23
+[91] <Fo>-<Fc> = -0.68    100*(<Fo>-<Fc>)/<Fo> =   -13.23
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -2863,7 +2863,7 @@ All cycle   Min function          0.0            56.           0.10E+16
  Structure factor least squares calculation   18  ends  2
 [29] SumFo/SumFc=  0.96    SumFoFc/SumFc^2=  0.96    SumwFoFc/SumwFc^2=  0.96
 LS-scale=  1.000   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.199    100*(<Fo>-<Fc>)/<Fo> =    -3.87
+[91] <Fo>-<Fc> = -0.19    100*(<Fo>-<Fc>)/<Fo> =    -3.87
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -3010,7 +3010,7 @@ Inter cycle Rw                   -5.0            11.           0.10E+03
  Structure factor least squares calculation   19  ends  2
 [29] SumFo/SumFc=  0.99    SumFoFc/SumFc^2=  0.99    SumwFoFc/SumwFc^2=  0.99
 LS-scale=  1.000   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.023    100*(<Fo>-<Fc>)/<Fo> =    -0.45
+[91] <Fo>-<Fc> = -0.02    100*(<Fo>-<Fc>)/<Fo> =    -0.45
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -3145,7 +3145,7 @@ All cycle   Min function          0.0           0.33           0.10E+16
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.7119E-03          On scale of /FO/
+       237.           237.              0.               0.7118E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -3351,7 +3351,7 @@ Refining     2 parameters in    1 block :       23 elements in the LS matrix.
  Structure factor least squares calculation   21  ends  2
 [29] SumFo/SumFc=  0.88    SumFoFc/SumFc^2=  0.90    SumwFoFc/SumwFc^2=  0.90
 LS-scale=  1.000   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.680    100*(<Fo>-<Fc>)/<Fo> =   -13.21
+[91] <Fo>-<Fc> = -0.68    100*(<Fo>-<Fc>)/<Fo> =   -13.21
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -3499,7 +3499,7 @@ All cycle   Min function          0.0            56.           0.10E+16
  Structure factor least squares calculation   22  ends  2
 [29] SumFo/SumFc=  0.96    SumFoFc/SumFc^2=  0.96    SumwFoFc/SumwFc^2=  0.96
 LS-scale=  1.000   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.198    100*(<Fo>-<Fc>)/<Fo> =    -3.86
+[91] <Fo>-<Fc> = -0.19    100*(<Fo>-<Fc>)/<Fo> =    -3.86
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -3646,7 +3646,7 @@ Inter cycle Rw                   -5.0            11.           0.10E+03
  Structure factor least squares calculation   23  ends  2
 [29] SumFo/SumFc=  0.99    SumFoFc/SumFc^2=  0.99    SumwFoFc/SumwFc^2=  0.99
 LS-scale=  1.000   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.023    100*(<Fo>-<Fc>)/<Fo> =    -0.45
+[91] <Fo>-<Fc> = -0.02    100*(<Fo>-<Fc>)/<Fo> =    -0.45
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -3781,7 +3781,7 @@ All cycle   Min function          0.0           0.33           0.10E+16
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.7099E-03          On scale of /FO/
+       237.           237.              0.               0.7098E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -4034,7 +4034,7 @@ Space group symbol is   P    -4
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      11000          11390             400                                    On scale of /FC/
+[33]      11000          11000             400                                    On scale of /FC/
 
 [32]      30940          30850            1130                0.20 E+04          On scale of /FO/
 
@@ -4103,7 +4103,7 @@ LS-scale=  2.708   Wilson Scale=  0.000
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      11000          11390             400                                    On scale of /FC/
+[33]      11000          11000             400                                    On scale of /FC/
 
 [32]      30940          30850            1130                0.20 E+04          On scale of /FO/
 
@@ -4190,7 +4190,7 @@ LS-scale=  2.699   Wilson Scale=  0.000
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      11000          11390             400                                    On scale of /FC/
+[33]      11000          11000             400                                    On scale of /FC/
 
 [32]      30940          30740            1130                0.59 E+03          On scale of /FO/
 
@@ -4293,7 +4293,7 @@ Refining    56 parameters in    1 block :     1724 elements in the LS matrix.
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      11000          11390             400                                    On scale of /FC/
+[33]      11000          11000             400                                    On scale of /FC/
 
 [32]      30940          30740            1130                0.59 E+03          On scale of /FO/
 
@@ -4364,7 +4364,7 @@ All cycle   Min function          0.0           0.60E+03       0.10E+16
 
 
 [38]  Mean           0.03   0.00    0.00    0.00   -0.00   -0.00   -0.00    0.00   -0.00    0.00   -0.00   -0.00
-                                        -0.0003  -0.0005  -0.0009
+[89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.000    0.001    0.002 
@@ -4420,22 +4420,22 @@ All cycle   Min function          0.0           0.60E+03       0.10E+16
 [31]                                         0.000    0.000    0.000 
 
 [37]      N          2.    1.00    0.00    0.97    1.21   -0.21    0.07
-[37]                       0.00            -0.00   -0.00   -0.00   -0.00    0.00   -0.00   -0.00   -0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.005    0.005    0.006 
 
 [37]      C          3.    1.00    0.00    0.90    1.27   -0.33    0.06
-[37]                       0.00            -0.00   -0.00    0.00    0.00   -0.00   -0.00    0.00   -0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.006    0.005    0.006 
 
 [37]      S          4.    1.00    0.00    0.79    1.36   -0.51    0.04
-[37]                       0.00             0.00    0.00    0.00   -0.00    0.00    0.00   -0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.001    0.001    0.002 
 
 [37]      S          5.    1.00    0.00    0.96    1.38   -0.73    0.07
-[37]                       0.00             0.00   -0.00    0.00   -0.00    0.00    0.00    0.00   -0.00   -0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.001    0.001    0.001 
 
@@ -4445,12 +4445,12 @@ All cycle   Min function          0.0           0.60E+03       0.10E+16
 [31]                                         0.000    0.000    0.000 
 
 [37]      F          7.    1.00    0.00    0.67    0.59    0.00    0.07
-[37]                       0.00             0.00    0.00   -0.00   -0.00    0.00   -0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.004    0.003    0.012 
 
 [37]      F          8.    1.00    0.00    0.50    0.50    0.24    0.45
-[37]                       0.00             0.00    0.00    0.00   -0.00    0.00    0.00    0.00    0.00   -0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.02    0.00    0.00    0.00    0.00    0.01
 [31]                                         0.000    0.000    0.007 
 [84] Mean C-C su =   0.00
@@ -4510,7 +4510,7 @@ All cycle   Min function          0.0           0.60E+03       0.10E+16
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      11000          11380             400                                    On scale of /FC/
+[33]      11000          11000             400                                    On scale of /FC/
 
 [32]      30940          30840            1120                0.58 E+03          On scale of /FO/
 
@@ -4580,7 +4580,7 @@ All cycle   Min function          0.0           0.59E+03       0.10E+16
 
 
 [38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00   -0.00    0.00   -0.00    0.00    0.00   -0.00
-                                         0.0000  -0.0001  -0.0002
+[89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.000    0.000    0.000 
@@ -4636,12 +4636,12 @@ All cycle   Min function          0.0           0.59E+03       0.10E+16
 [31]                                         0.000    0.000    0.000 
 
 [37]      N          2.    1.00    0.00    0.97    1.21   -0.21    0.07
-[37]                       0.00             0.00   -0.00    0.00   -0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.005    0.005    0.006 
 
 [37]      C          3.    1.00    0.00    0.90    1.27   -0.33    0.06
-[37]                       0.00            -0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.006    0.005    0.006 
 
@@ -4661,12 +4661,12 @@ All cycle   Min function          0.0           0.59E+03       0.10E+16
 [31]                                         0.000    0.000    0.000 
 
 [37]      F          7.    1.00    0.00    0.67    0.59    0.00    0.07
-[37]                       0.00             0.00    0.00   -0.00   -0.00    0.00   -0.00    0.00    0.00   -0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.004    0.003    0.012 
 
 [37]      F          8.    1.00    0.00    0.50    0.50    0.24    0.45
-[37]                       0.00             0.00    0.00    0.00   -0.00    0.00   -0.00    0.00    0.00   -0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.02    0.01    0.00    0.00    0.00    0.01
 [31]                                         0.000    0.000    0.007 
 [84] Mean C-C su =   0.00
@@ -4726,7 +4726,7 @@ All cycle   Min function          0.0           0.59E+03       0.10E+16
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      11000          11380             400                                    On scale of /FC/
+[33]      11000          11000             400                                    On scale of /FC/
 
 [32]      30940          30840            1120                0.58 E+03          On scale of /FO/
 
@@ -4791,7 +4791,7 @@ All cycle   Rw                    0.0            7.1           0.10E+03
 
 
 [38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00   -0.00    0.00    0.00    0.00    0.00    0.00
-                                         0.0000   0.0000  -0.0002
+[89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.000    0.000    0.000 
@@ -4872,12 +4872,12 @@ All cycle   Rw                    0.0            7.1           0.10E+03
 [31]                                         0.000    0.000    0.000 
 
 [37]      F          7.    1.00    0.00    0.67    0.59    0.00    0.07
-[37]                       0.00             0.00    0.00   -0.00   -0.00    0.00   -0.00    0.00    0.00   -0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.004    0.003    0.012 
 
 [37]      F          8.    1.00    0.00    0.50    0.50    0.24    0.45
-[37]                       0.00             0.00    0.00    0.00   -0.00    0.00    0.00    0.00    0.00   -0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.02    0.01    0.00    0.00    0.00    0.01
 [31]                                         0.000    0.000    0.007 
 [84] Mean C-C su =   0.00
@@ -4908,7 +4908,7 @@ All cycle   Rw                    0.0            7.1           0.10E+03
       K            0.000000E+00   0.100000E+02
       L            0.000000E+00   0.800000E+01
       Fo           0.184000E+01   0.246560E+03
-      Weight       0.482784E-03   0.117714E+00
+      Weight       0.482785E-03   0.117714E+00
 [09]       Fc           0.175 E+00   0.925 E+02
  List   6 contains    904 reflections of which    904 are accepted by LIST 28
  After     6 structure factor/refinement calculations 
@@ -5020,7 +5020,7 @@ All cycle   Rw                    0.0            7.1           0.10E+03
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      11000          11380             400                                    On scale of /FC/
+[33]      11000          11000             400                                    On scale of /FC/
 
 [32]      30940          30840            1120                0.58 E+03          On scale of /FO/
 
@@ -5103,7 +5103,7 @@ Dc    29     5     7     7    12    10    11    17    20    25    30    28    20
  Reflection Filters:  filter_1= 0.0001  filter_2= 1.0000  filter_3= 2.0000  filter_4= 0.0010  filter_5= 2.5000
 
          Normal Probability Plot for    241 Bijvoet pairs between 1st and 9th decile
- Reduced Chisq=  1.4438
+[88]  Reduced Chisq=  1.44
  Gradient for zero intercept =               1.314
   Slope, intercept and Cc (R) of NPP Plot =  1.317  0.253  0.999
 
@@ -5193,24 +5193,24 @@ Quadrant averages: N, Mean(Do), Mean(Ds) [Summary of scatterplot]
 
    LePage Analysis (Assuming Enantio-purity)
  Data are ranked by the Signal:Noise
- Minimum signal : noise used =  1.1941
+ Minimum signal : noise used =  1.1942
  No. Available  300
   Range    No.Same  No.Opposite  Signal:noise   Prob Wrong Hand
-  0   10       10      0          7.2241           0.000
+  0   10       10      0          7.2240           0.000
   0   20       20      0          5.7162           0.000
   0   50       50      0          3.4944           0.000
   0  100       95      5          2.0325           0.000
-  0  151      139     12          1.1941           0.000
+  0  151      139     12          1.1942           0.000
 
  Top 50% of data
   0  150      139     11          1.2046           0.000
 
 
-  0   10       10      0          7.2241           0.000
+  0   10       10      0          7.2240           0.000
  10   20       10      0          5.7162           0.000
  20   50       30      0          3.4944           0.000
  50  100       45      5          2.0325           0.000
-100  200       44      7          1.1941           0.000
+100  200       44      7          1.1942           0.000
 
 
 
@@ -5410,14 +5410,14 @@ Frequency distribution of the residuals from the linear fit
  Minimum signal : noise used =  1.1491
  No. Available  314
   Range    No.Same  No.Opposite  Signal:noise   Prob Wrong Hand
-  0   10       10      0          7.2241           0.000
+  0   10       10      0          7.2240           0.000
   0   20       20      0          5.7162           0.000
   0   50       50      0          3.5514           0.000
   0  100       95      5          2.0325           0.000
   0  158      146     12          1.1491           0.000
    Top 50% of data
   0  157      145     12          1.1504           0.000
-  0   10       10      0          7.2241           0.000
+  0   10       10      0          7.2240           0.000
  10   20       10      0          5.7162           0.000
  20   50       30      0          3.5514           0.000
  50  100       45      5          2.0325           0.000
@@ -5711,21 +5711,21 @@ Frequency distribution of the residuals from the linear fit
 
    LePage Analysis (Assuming Enantio-purity)
  Data are ranked by the Signal:Noise
- Minimum signal : noise used =  1.1941
+ Minimum signal : noise used =  1.1942
  No. Available  300
   Range    No.Same  No.Opposite  Signal:noise   Prob Wrong Hand
-  0   10       10      0          7.2241           0.000
+  0   10       10      0          7.2240           0.000
   0   20       20      0          5.7162           0.000
   0   50       50      0          3.4944           0.000
   0  100       95      5          2.0325           0.000
-  0  151      139     12          1.1941           0.000
+  0  151      139     12          1.1942           0.000
    Top 50% of data
   0  150      139     11          1.2046           0.000
-  0   10       10      0          7.2241           0.000
+  0   10       10      0          7.2240           0.000
  10   20       10      0          5.7162           0.000
  20   50       30      0          3.4944           0.000
  50  100       45      5          2.0325           0.000
-100  200       44      7          1.1941           0.000
+100  200       44      7          1.1942           0.000
 
  Bijvoet differences subroutine
  --------------------------------------------------
@@ -5938,7 +5938,7 @@ Slope:0.01(2) intercept:0.9(3)
   1   3   1 (100.00)     1   3   1 ( 45.15)     0   3   2 ( 34.73)     1   3   3 ( 32.40)    
   0   1   1 ( 26.87)     5   5   1 ( 22.10)     0   4   2 ( 20.05)    -1   7   1 ( 15.66)    
   0   4   1 ( 14.93)     0   1   1 ( 14.28)    -1   6   2 ( 13.56)    -1   6   2 ( 12.12)    
-  0   4   2 ( 11.99)    -2   5   4 ( 10.66)     1   6   1 ( 10.16)    -2   8   1 (  9.58)    
+  0   4   2 ( 11.99)    -2   5   4 ( 10.67)     1   6   1 ( 10.16)    -2   8   1 (  9.58)    
  -2   5   4 (  9.28)     1   3   3 (  9.19)     3   6   3 (  8.98)    -3   4   2 (  8.27)    
   1   4   1 (  7.99)     1   2   3 (  7.56)     0   4   3 (  7.24)    -2   5   3 (  7.22)    
  -3   4   1 (  7.15)     0   1   4 (  7.13)     0   3   2 (  7.13)    -4   6   1 (  7.10)    
@@ -6010,14 +6010,14 @@ Frequency distribution of the residuals from the linear fit
  Minimum signal : noise used =  1.5245
  No. Available  253
   Range    No.Same  No.Opposite  Signal:noise   Prob Wrong Hand
-  0   10       10      0          7.2241           0.000
+  0   10       10      0          7.2240           0.000
   0   20       20      0          5.7162           0.000
   0   50       50      0          3.4944           0.000
   0  100       95      5          2.0325           0.000
   0  127      120      7          1.5245           0.000
    Top 50% of data
   0  126      120      6          1.5364           0.000
-  0   10       10      0          7.2241           0.000
+  0   10       10      0          7.2240           0.000
  10   20       10      0          5.7162           0.000
  20   50       30      0          3.4944           0.000
  50  100       45      5          2.0325           0.000

@@ -80,9 +80,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
  Rotation Matrix
-   -0.99999  -0.00332   0.00002
-   -0.00332   0.99999  -0.00025
-   -0.00002  -0.00025  -1.00000
+[89]    -0.99    0.00    0.00
+[89]     0.00    0.99    0.00
+[89]     0.00    0.00   -1.00
 
 
 
@@ -159,9 +159,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
  Rotation Matrix
-   -0.99978   0.02036   0.00467
-    0.02030   0.99972  -0.01217
-   -0.00492  -0.01207  -0.99992
+[89]    -0.99    0.02    0.00
+[89]     0.02    0.99   -0.01
+[89]     0.00   -0.01   -0.99
 
  Deviations  in best plane system after fitting ( Angstrom )
 "Angle" is the angular separation of the atoms as seen from
@@ -540,9 +540,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 {I Best match involves inversion, determinant  =   -1.000000
  Rotation Matrix
-    0.99997  -0.00798  -0.00021
-    0.00798   0.99997   0.00201
-   -0.00020   0.00201  -1.00000
+[89]     0.99    0.00    0.00
+[89]     0.00    0.99    0.00
+[89]     0.00    0.00   -1.00
 
 
 
@@ -621,9 +621,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 {I Best match involves inversion, determinant  =   -1.000000
  Rotation Matrix
-    0.99996   0.00155   0.00918
-   -0.00214   0.99789   0.06492
-    0.00906   0.06493  -0.99785
+[89]     0.99    0.00    0.00
+[89]     0.00    0.99    0.06
+[89]     0.00    0.06   -0.99
 
  Deviations  in best plane system after fitting ( Angstrom )
 "Angle" is the angular separation of the atoms as seen from
@@ -1053,9 +1053,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
  Rotation Matrix
-    0.99993   0.00958  -0.00753
-   -0.00934   0.99947   0.03105
-    0.00782  -0.03098   0.99949
+[89]     0.99    0.00    0.00
+[89]     0.00    0.99    0.03
+[89]     0.00   -0.03    0.99
 
 
 
@@ -1133,9 +1133,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
  Rotation Matrix
-    0.99990   0.01405   0.00175
-   -0.01411   0.99924   0.03638
-   -0.00124  -0.03641   0.99934
+[89]     0.99    0.01    0.00
+[89]    -0.01    0.99    0.03
+[89]     0.00   -0.03    0.99
 
  Deviations  in best plane system after fitting ( Angstrom )
 "Angle" is the angular separation of the atoms as seen from
@@ -1568,9 +1568,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
  Rotation Matrix
-   -0.99945  -0.03305  -0.00018
-   -0.03305   0.99945   0.00154
-    0.00013   0.00155  -1.00000
+[89]    -0.99   -0.03    0.00
+[89]    -0.03    0.99    0.00
+[89]     0.00    0.00   -1.00
 
 
 
@@ -1643,9 +1643,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
  Rotation Matrix
-   -0.99974  -0.02207   0.00515
-   -0.02207   0.99976   0.00068
-   -0.00516   0.00057  -0.99999
+[89]    -0.99   -0.02    0.00
+[89]    -0.02    0.99    0.00
+[89]     0.00    0.00   -0.99
 
  Deviations  in best plane system after fitting ( Angstrom )
 "Angle" is the angular separation of the atoms as seen from
@@ -1996,9 +1996,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
  Rotation Matrix
-   -0.99991  -0.01245   0.00546
-   -0.01251   0.99987  -0.01030
-   -0.00533  -0.01036  -0.99993
+[89]    -0.99   -0.01    0.00
+[89]    -0.01    0.99   -0.01
+[89]     0.00   -0.01   -0.99
 
 
 
@@ -2090,9 +2090,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
  Rotation Matrix
-   -0.99986  -0.01488   0.00781
-   -0.01495   0.99985  -0.00850
-   -0.00768  -0.00861  -0.99993
+[89]    -0.99   -0.01    0.00
+[89]    -0.01    0.99    0.00
+[89]     0.00    0.00   -0.99
 
  Deviations  in best plane system after fitting ( Angstrom )
 "Angle" is the angular separation of the atoms as seen from
@@ -2663,9 +2663,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
  Rotation Matrix
-    0.99999   0.00047  -0.00373
-   -0.00065   0.99884  -0.04811
-    0.00370   0.04811   0.99884
+[89]     0.99    0.00    0.00
+[89]     0.00    0.99   -0.04
+[89]     0.00    0.04    0.99
 
 
 
@@ -2751,9 +2751,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
  Rotation Matrix
-    0.99989  -0.01134  -0.00908
-    0.01152   0.99972   0.02059
-    0.00884  -0.02069   0.99975
+[89]     0.99   -0.01    0.00
+[89]     0.01    0.99    0.02
+[89]     0.00   -0.02    0.99
 
  Deviations  in best plane system after fitting ( Angstrom )
 "Angle" is the angular separation of the atoms as seen from
@@ -3262,9 +3262,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 {I Best match involves inversion, determinant  =   -1.000000
  Rotation Matrix
-   -0.99966   0.02551  -0.00536
-    0.02556   0.99963  -0.00962
-   -0.00511   0.00975   0.99994
+[89]    -0.99    0.02    0.00
+[89]     0.02    0.99    0.00
+[89]     0.00    0.00    0.99
 
 
 
@@ -3327,9 +3327,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 {I Best match involves inversion, determinant  =   -1.000000
  Rotation Matrix
-   -0.99867   0.05133  -0.00390
-   -0.05137  -0.99864   0.00906
-    0.00343  -0.00925  -0.99995
+[89]    -0.99    0.05    0.00
+[89]    -0.05   -0.99    0.00
+[89]     0.00    0.00   -0.99
 
  Deviations  in best plane system after fitting ( Angstrom )
 "Angle" is the angular separation of the atoms as seen from
@@ -3607,9 +3607,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 {I Best match involves inversion, determinant  =   -1.000000
  Rotation Matrix
-   -0.99970   0.00895   0.02297
-   -0.01020  -0.99843  -0.05506
-   -0.02244   0.05527  -0.99822
+[89]    -0.99    0.00    0.02
+[89]    -0.01   -0.99   -0.05
+[89]    -0.02    0.05   -0.99
 
 
 
@@ -3684,9 +3684,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 {I Best match involves inversion, determinant  =   -1.000000
  Rotation Matrix
-   -0.99953  -0.02360   0.01948
-    0.02293  -0.99916  -0.03384
-   -0.02027   0.03338  -0.99924
+[89]    -0.99   -0.02    0.01
+[89]     0.02   -0.99   -0.03
+[89]    -0.02    0.03   -0.99
 
  Deviations  in best plane system after fitting ( Angstrom )
 "Angle" is the angular separation of the atoms as seen from
@@ -4060,9 +4060,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
  Rotation Matrix
-    1.00000   0.00075   0.00024
-   -0.00074   0.99993  -0.01190
-   -0.00025   0.01190   0.99993
+[89]     1.00    0.00    0.00
+[89]     0.00    0.99   -0.01
+[89]     0.00    0.01    0.99
 
 
 
@@ -4166,9 +4166,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
  Rotation Matrix
-    1.00000  -0.00056  -0.00062
-    0.00057   0.99981   0.01969
-    0.00060  -0.01969   0.99981
+[89]     1.00    0.00    0.00
+[89]     0.00    0.99    0.01
+[89]     0.00   -0.01    0.99
 
  Deviations  in best plane system after fitting ( Angstrom )
 "Angle" is the angular separation of the atoms as seen from
@@ -4934,9 +4934,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
  Rotation Matrix
-   -0.99985   0.01733  -0.00187
-    0.01733   0.99984  -0.00439
-    0.00180  -0.00442  -0.99999
+[89]    -0.99    0.01    0.00
+[89]     0.01    0.99    0.00
+[89]     0.00    0.00   -0.99
 
 
 
@@ -5008,9 +5008,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
  Rotation Matrix
-   -0.99997   0.00824   0.00123
-    0.00805   0.99382  -0.11075
-   -0.00214  -0.11074  -0.99385
+[89]    -0.99    0.00    0.00
+[89]     0.00    0.99   -0.11
+[89]     0.00   -0.11   -0.99
 
  Deviations  in best plane system after fitting ( Angstrom )
 "Angle" is the angular separation of the atoms as seen from
@@ -5350,9 +5350,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
  Rotation Matrix
-   -0.99994   0.00854  -0.00620
-    0.00855   0.99996  -0.00123
-    0.00619  -0.00128  -0.99998
+[89]    -0.99    0.00    0.00
+[89]     0.00    0.99    0.00
+[89]     0.00    0.00   -0.99
 
 
 
@@ -5423,9 +5423,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
  Rotation Matrix
-    0.99882   0.04772   0.00906
-   -0.04779   0.99883   0.00759
-   -0.00868  -0.00802   0.99993
+[89]     0.99    0.04    0.00
+[89]    -0.04    0.99    0.00
+[89]     0.00    0.00    0.99
 
  Deviations  in best plane system after fitting ( Angstrom )
 "Angle" is the angular separation of the atoms as seen from
@@ -5854,9 +5854,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 {I Best match involves inversion, determinant  =   -1.000000
  Rotation Matrix
-    0.99999   0.00530  -0.00002
-   -0.00530   0.99998   0.00161
-   -0.00003   0.00161  -1.00000
+[89]     0.99    0.00    0.00
+[89]     0.00    0.99    0.00
+[89]     0.00    0.00   -1.00
 
 
 
@@ -5943,9 +5943,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 {I Best match involves inversion, determinant  =   -1.000000
  Rotation Matrix
-   -0.99985  -0.00259  -0.01714
-   -0.00373  -0.93335   0.35894
-    0.01693  -0.35895  -0.93320
+[89]    -0.99    0.00   -0.01
+[89]     0.00   -0.93    0.35
+[89]     0.01   -0.35   -0.93
 
  Deviations  in best plane system after fitting ( Angstrom )
 "Angle" is the angular separation of the atoms as seen from
@@ -6300,9 +6300,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
  Rotation Matrix
-   -1.00000   0.00015  -0.00002
-    0.00015   1.00000   0.00014
-    0.00002   0.00014  -1.00000
+[89]    -1.00    0.00    0.00
+[89]     0.00    1.00    0.00
+[89]     0.00    0.00   -1.00
 
 
 
@@ -6391,9 +6391,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
  Rotation Matrix
-    0.98859   0.14449  -0.04262
-   -0.14421   0.98950   0.00953
-    0.04355  -0.00328   0.99905
+[89]     0.98    0.14   -0.04
+[89]    -0.14    0.98    0.00
+[89]     0.04    0.00    0.99
 
  Deviations  in best plane system after fitting ( Angstrom )
 "Angle" is the angular separation of the atoms as seen from
@@ -6978,9 +6978,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 {I Best match involves inversion, determinant  =   -1.000000
  Rotation Matrix
-   -0.99953  -0.02841   0.01147
-    0.02847  -0.99958   0.00568
-   -0.01131  -0.00601  -0.99992
+[89]    -0.99   -0.02    0.01
+[89]     0.02   -0.99    0.00
+[89]    -0.01    0.00   -0.99
 
 
 
@@ -7068,9 +7068,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 {I Best match involves inversion, determinant  =   -1.000000
  Rotation Matrix
-   -0.99997  -0.00221  -0.00678
-    0.00221  -1.00000   0.00023
-    0.00678  -0.00022  -0.99998
+[89]    -0.99    0.00    0.00
+[89]     0.00   -1.00    0.00
+[89]     0.00    0.00   -0.99
 
  Deviations  in best plane system after fitting ( Angstrom )
 "Angle" is the angular separation of the atoms as seen from
@@ -7719,9 +7719,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
  Rotation Matrix
-   -0.99981  -0.01924   0.00225
-   -0.01925   0.99978  -0.00880
-   -0.00208  -0.00885  -0.99996
+[89]    -0.99   -0.01    0.00
+[89]    -0.01    0.99    0.00
+[89]     0.00    0.00   -0.99
 
 
 
@@ -7796,9 +7796,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
  Rotation Matrix
-   -0.99994   0.00912  -0.00630
-   -0.00950  -0.99797   0.06304
-   -0.00571   0.06310   0.99799
+[89]    -0.99    0.00    0.00
+[89]     0.00   -0.99    0.06
+[89]     0.00    0.06    0.99
 
  Deviations  in best plane system after fitting ( Angstrom )
 "Angle" is the angular separation of the atoms as seen from
@@ -8122,9 +8122,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 {I Best match involves inversion, determinant  =   -1.000000
  Rotation Matrix
-    0.99961   0.00574   0.02720
-    0.00204  -0.99091   0.13449
-   -0.02772   0.13439   0.99054
+[89]     0.99    0.00    0.02
+[89]     0.00   -0.99    0.13
+[89]    -0.02    0.13    0.99
 
 
 
@@ -8214,9 +8214,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 {I Best match involves inversion, determinant  =   -1.000000
  Rotation Matrix
-    0.87983   0.46573   0.09482
-    0.46701  -0.88420   0.00950
-   -0.08827  -0.03592   0.99545
+[89]     0.87    0.46    0.09
+[89]     0.46   -0.88    0.00
+[89]    -0.08   -0.03    0.99
 
  Deviations  in best plane system after fitting ( Angstrom )
 "Angle" is the angular separation of the atoms as seen from
@@ -8591,9 +8591,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 {I Best match involves inversion, determinant  =   -1.000000
  Rotation Matrix
-   -0.99946  -0.01865  -0.02707
-    0.01487  -0.99092   0.13366
-    0.02932  -0.13319  -0.99066
+[89]    -0.99   -0.01   -0.02
+[89]     0.01   -0.99    0.13
+[89]     0.02   -0.13   -0.99
 
 
 
@@ -8683,9 +8683,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 {I Best match involves inversion, determinant  =   -1.000000
  Rotation Matrix
-    0.82582   0.55730   0.08621
-   -0.55682   0.83002  -0.03184
-    0.08930   0.02171  -0.99577
+[89]     0.82    0.55    0.08
+[89]    -0.55    0.83   -0.03
+[89]     0.08    0.02   -0.99
 
  Deviations  in best plane system after fitting ( Angstrom )
 "Angle" is the angular separation of the atoms as seen from
@@ -9123,9 +9123,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
  Rotation Matrix
-   -0.99995   0.00901   0.00293
-   -0.00868  -0.99517   0.09778
-    0.00379   0.09775   0.99520
+[89]    -0.99    0.00    0.00
+[89]     0.00   -0.99    0.09
+[89]     0.00    0.09    0.99
 
 
 
@@ -9203,9 +9203,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
  Rotation Matrix
-   -0.99977   0.01862   0.01057
-    0.01929   0.99751   0.06791
-   -0.00928   0.06810  -0.99764
+[89]    -0.99    0.01    0.01
+[89]     0.01    0.99    0.06
+[89]     0.00    0.06   -0.99
 
  Deviations  in best plane system after fitting ( Angstrom )
 "Angle" is the angular separation of the atoms as seen from
