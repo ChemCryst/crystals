@@ -21,13 +21,13 @@ Matching by Rotation/inversion (Method 1)
 
  Excessive contraction. Determinant =    0.000000
  Original matrix
-               -1.000000    0.000004    0.000000
-               -0.000007   -0.999997    0.000000
-                0.000000    0.000003    0.000000
+[89]                -1.00     0.00     0.00
+[89]                 0.00    -0.99     0.00
+[89]                 0.00     0.00     0.00
  Modified matrix
-               -1.000000    0.000004    0.000000
-               -0.000007   -0.999997    0.000003
-                0.000000    0.000003    1.000000
+[89]                -1.00     0.00     0.00
+[89]                 0.00    -0.99     0.00
+[89]                 0.00     0.00     1.00
 
                   Rotation dilation matrix            Dilation component                  Rotation component                  
 
@@ -36,13 +36,13 @@ Matching by Rotation/inversion (Method 1)
                    0.00000   0.00000   1.00000        0.00000   0.00000   1.00000        0.00000   0.00000   1.00000
 
  Eigenvalues
-                                                      1.00000   1.00000   1.00000
+[89]                                                       1.00    1.00    1.00
  Eigenvectors
-                                                     -0.38268   0.00000   0.92388
-                                                      0.92388   0.00000   0.38268
-                                                      0.00000   1.00000   0.00000
+[89]                                                      -0.38    0.00    0.92
+[89]                                                       0.92    0.00    0.38
+[89]                                                       0.00    1.00    0.00
  Determinants
-                             1.00000                            1.00000                            1.00000
+[89]                              1.00                             1.00                             1.00
 
 
  Deviations  in best plane system after fitting ( Angstrom )
@@ -158,13 +158,13 @@ Matching by Rotation/inversion (Method 1)
 
  Excessive contraction. Determinant =    0.000000
  Original matrix
-               -1.000000    0.000000    0.000000
-                0.000000   -1.000000    0.000000
-                0.000029   -0.000003    0.000000
+[89]                -1.00     0.00     0.00
+[89]                 0.00    -1.00     0.00
+[89]                 0.00     0.00     0.00
  Modified matrix
-               -1.000000    0.000000    0.000029
-                0.000000   -1.000000   -0.000003
-                0.000029   -0.000003    1.000000
+[89]                -1.00     0.00     0.00
+[89]                 0.00    -1.00     0.00
+[89]                 0.00     0.00     1.00
 
                   Rotation dilation matrix            Dilation component                  Rotation component                  
 
@@ -173,13 +173,13 @@ Matching by Rotation/inversion (Method 1)
                    0.00003   0.00000   1.00000        0.00000   0.00000   1.00000        0.00003   0.00000   1.00000
 
  Eigenvalues
-                                                      1.00000   1.00000   1.00000
+[89]                                                       1.00    1.00    1.00
  Eigenvectors
-                                                      0.00003  -0.92373   0.38305
-                                                      0.00000  -0.38305  -0.92373
-                                                      1.00000   0.00003  -0.00001
+[89]                                                       0.00   -0.92    0.38
+[89]                                                       0.00   -0.38   -0.92
+[89]                                                       1.00    0.00    0.00
  Determinants
-                             1.00000                            1.00000                            1.00000
+[89]                              1.00                             1.00                             1.00
 
 
  Deviations  in best plane system after fitting ( Angstrom )
@@ -330,13 +330,13 @@ Matching by Rotation/inversion (Method 1)
 
  Excessive contraction. Determinant =    0.000000
  Original matrix
-                0.999996   -0.000011    0.000000
-                0.000018    1.000001    0.000000
-                0.000002   -0.000002    0.000000
+[89]                 0.99     0.00     0.00
+[89]                 0.00     1.00     0.00
+[89]                 0.00     0.00     0.00
  Modified matrix
-                0.999996   -0.000011   -0.000002
-                0.000018    1.000001    0.000002
-                0.000002   -0.000002    1.000000
+[89]                 0.99     0.00     0.00
+[89]                 0.00     1.00     0.00
+[89]                 0.00     0.00     1.00
 
                   Rotation dilation matrix            Dilation component                  Rotation component                  
 
@@ -345,13 +345,13 @@ Matching by Rotation/inversion (Method 1)
                    0.00000   0.00000   1.00000        0.00000   0.00000   1.00000        0.00000   0.00000   1.00000
 
  Eigenvalues
-                                                      0.99999   1.00000   1.00000
+[89]                                                       0.99    1.00    1.00
  Eigenvectors
-                                                      0.89793   0.00000   0.44013
-                                                     -0.44013   0.00000   0.89793
-                                                      0.00000  -1.00000   0.00000
+[89]                                                       0.89    0.00    0.44
+[89]                                                      -0.44    0.00    0.89
+[89]                                                       0.00   -1.00    0.00
  Determinants
-                             1.00000                            1.00000                            1.00000
+[89]                              1.00                             1.00                             1.00
 
 
  Deviations  in best plane system after fitting ( Angstrom )
@@ -467,13 +467,13 @@ Matching by Rotation/inversion (Method 1)
 
  Excessive contraction. Determinant =    0.000000
  Original matrix
-               -1.000000    0.000000    0.000000
-                0.000000   -1.000000    0.000000
-                0.000029   -0.000003    0.000000
+[89]                -1.00     0.00     0.00
+[89]                 0.00    -1.00     0.00
+[89]                 0.00     0.00     0.00
  Modified matrix
-               -1.000000    0.000000    0.000029
-                0.000000   -1.000000   -0.000003
-                0.000029   -0.000003    1.000000
+[89]                -1.00     0.00     0.00
+[89]                 0.00    -1.00     0.00
+[89]                 0.00     0.00     1.00
 
                   Rotation dilation matrix            Dilation component                  Rotation component                  
 
@@ -482,13 +482,13 @@ Matching by Rotation/inversion (Method 1)
                    0.00003   0.00000   1.00000        0.00000   0.00000   1.00000        0.00003   0.00000   1.00000
 
  Eigenvalues
-                                                      1.00000   1.00000   1.00000
+[89]                                                       1.00    1.00    1.00
  Eigenvectors
-                                                      0.00003  -0.92373   0.38305
-                                                      0.00000  -0.38305  -0.92373
-                                                      1.00000   0.00003  -0.00001
+[89]                                                       0.00   -0.92    0.38
+[89]                                                       0.00   -0.38   -0.92
+[89]                                                       1.00    0.00    0.00
  Determinants
-                             1.00000                            1.00000                            1.00000
+[89]                              1.00                             1.00                             1.00
 
 
  Deviations  in best plane system after fitting ( Angstrom )
@@ -640,13 +640,13 @@ Matching by Rotation/inversion (Method 1)
 
  Excessive contraction. Determinant =    0.000000
  Original matrix
-               -1.000000    0.000004    0.000000
-               -0.000007   -0.999997    0.000000
-                0.000000    0.000003    0.000000
+[89]                -1.00     0.00     0.00
+[89]                 0.00    -0.99     0.00
+[89]                 0.00     0.00     0.00
  Modified matrix
-               -1.000000    0.000004    0.000000
-               -0.000007   -0.999997    0.000003
-                0.000000    0.000003    1.000000
+[89]                -1.00     0.00     0.00
+[89]                 0.00    -0.99     0.00
+[89]                 0.00     0.00     1.00
 
                   Rotation dilation matrix            Dilation component                  Rotation component                  
 
@@ -655,13 +655,13 @@ Matching by Rotation/inversion (Method 1)
                    0.00000   0.00000   1.00000        0.00000   0.00000   1.00000        0.00000   0.00000   1.00000
 
  Eigenvalues
-                                                      1.00000   1.00000   1.00000
+[89]                                                       1.00    1.00    1.00
  Eigenvectors
-                                                     -0.38268   0.00000   0.92388
-                                                      0.92388   0.00000   0.38268
-                                                      0.00000   1.00000   0.00000
+[89]                                                      -0.38    0.00    0.92
+[89]                                                       0.92    0.00    0.38
+[89]                                                       0.00    1.00    0.00
  Determinants
-                             1.00000                            1.00000                            1.00000
+[89]                              1.00                             1.00                             1.00
 
 
  Deviations  in best plane system after fitting ( Angstrom )
@@ -772,13 +772,13 @@ Matching by Rotation/inversion (Method 1)
 
  Excessive contraction. Determinant =    0.000000
  Original matrix
-               -1.000000    0.000000    0.000000
-                0.000000   -1.000000    0.000000
-                0.000029   -0.000003    0.000000
+[89]                -1.00     0.00     0.00
+[89]                 0.00    -1.00     0.00
+[89]                 0.00     0.00     0.00
  Modified matrix
-               -1.000000    0.000000    0.000029
-                0.000000   -1.000000   -0.000003
-                0.000029   -0.000003    1.000000
+[89]                -1.00     0.00     0.00
+[89]                 0.00    -1.00     0.00
+[89]                 0.00     0.00     1.00
 
                   Rotation dilation matrix            Dilation component                  Rotation component                  
 
@@ -787,13 +787,13 @@ Matching by Rotation/inversion (Method 1)
                    0.00003   0.00000   1.00000        0.00000   0.00000   1.00000        0.00003   0.00000   1.00000
 
  Eigenvalues
-                                                      1.00000   1.00000   1.00000
+[89]                                                       1.00    1.00    1.00
  Eigenvectors
-                                                      0.00003  -0.92373   0.38305
-                                                      0.00000  -0.38305  -0.92373
-                                                      1.00000   0.00003  -0.00001
+[89]                                                       0.00   -0.92    0.38
+[89]                                                       0.00   -0.38   -0.92
+[89]                                                       1.00    0.00    0.00
  Determinants
-                             1.00000                            1.00000                            1.00000
+[89]                              1.00                             1.00                             1.00
 
 
  Deviations  in best plane system after fitting ( Angstrom )
@@ -934,13 +934,13 @@ Matching by Rotation/inversion (Method 1)
 
  Excessive contraction. Determinant =    0.000000
  Original matrix
-                0.999996   -0.000011    0.000000
-                0.000018    1.000001    0.000000
-                0.000002   -0.000002    0.000000
+[89]                 0.99     0.00     0.00
+[89]                 0.00     1.00     0.00
+[89]                 0.00     0.00     0.00
  Modified matrix
-                0.999996   -0.000011   -0.000002
-                0.000018    1.000001    0.000002
-                0.000002   -0.000002    1.000000
+[89]                 0.99     0.00     0.00
+[89]                 0.00     1.00     0.00
+[89]                 0.00     0.00     1.00
 
                   Rotation dilation matrix            Dilation component                  Rotation component                  
 
@@ -949,13 +949,13 @@ Matching by Rotation/inversion (Method 1)
                    0.00000   0.00000   1.00000        0.00000   0.00000   1.00000        0.00000   0.00000   1.00000
 
  Eigenvalues
-                                                      0.99999   1.00000   1.00000
+[89]                                                       0.99    1.00    1.00
  Eigenvectors
-                                                      0.89793   0.00000   0.44013
-                                                     -0.44013   0.00000   0.89793
-                                                      0.00000  -1.00000   0.00000
+[89]                                                       0.89    0.00    0.44
+[89]                                                      -0.44    0.00    0.89
+[89]                                                       0.00   -1.00    0.00
  Determinants
-                             1.00000                            1.00000                            1.00000
+[89]                              1.00                             1.00                             1.00
 
 
  Deviations  in best plane system after fitting ( Angstrom )
@@ -1066,13 +1066,13 @@ Matching by Rotation/inversion (Method 1)
 
  Excessive contraction. Determinant =    0.000000
  Original matrix
-               -1.000000    0.000000    0.000000
-                0.000000   -1.000000    0.000000
-                0.000029   -0.000003    0.000000
+[89]                -1.00     0.00     0.00
+[89]                 0.00    -1.00     0.00
+[89]                 0.00     0.00     0.00
  Modified matrix
-               -1.000000    0.000000    0.000029
-                0.000000   -1.000000   -0.000003
-                0.000029   -0.000003    1.000000
+[89]                -1.00     0.00     0.00
+[89]                 0.00    -1.00     0.00
+[89]                 0.00     0.00     1.00
 
                   Rotation dilation matrix            Dilation component                  Rotation component                  
 
@@ -1081,13 +1081,13 @@ Matching by Rotation/inversion (Method 1)
                    0.00003   0.00000   1.00000        0.00000   0.00000   1.00000        0.00003   0.00000   1.00000
 
  Eigenvalues
-                                                      1.00000   1.00000   1.00000
+[89]                                                       1.00    1.00    1.00
  Eigenvectors
-                                                      0.00003  -0.92373   0.38305
-                                                      0.00000  -0.38305  -0.92373
-                                                      1.00000   0.00003  -0.00001
+[89]                                                       0.00   -0.92    0.38
+[89]                                                       0.00   -0.38   -0.92
+[89]                                                       1.00    0.00    0.00
  Determinants
-                             1.00000                            1.00000                            1.00000
+[89]                              1.00                             1.00                             1.00
 
 
  Deviations  in best plane system after fitting ( Angstrom )
@@ -1229,13 +1229,13 @@ Matching by Rotation/inversion (Method 1)
 
  Excessive contraction. Determinant =    0.000000
  Original matrix
-               -1.000000    0.000004    0.000000
-               -0.000007   -0.999997    0.000000
-                0.000000    0.000003    0.000000
+[89]                -1.00     0.00     0.00
+[89]                 0.00    -0.99     0.00
+[89]                 0.00     0.00     0.00
  Modified matrix
-               -1.000000    0.000004    0.000000
-               -0.000007   -0.999997    0.000003
-                0.000000    0.000003    1.000000
+[89]                -1.00     0.00     0.00
+[89]                 0.00    -0.99     0.00
+[89]                 0.00     0.00     1.00
 
                   Rotation dilation matrix            Dilation component                  Rotation component                  
 
@@ -1244,13 +1244,13 @@ Matching by Rotation/inversion (Method 1)
                    0.00000   0.00000   1.00000        0.00000   0.00000   1.00000        0.00000   0.00000   1.00000
 
  Eigenvalues
-                                                      1.00000   1.00000   1.00000
+[89]                                                       1.00    1.00    1.00
  Eigenvectors
-                                                     -0.38268   0.00000   0.92388
-                                                      0.92388   0.00000   0.38268
-                                                      0.00000   1.00000   0.00000
+[89]                                                      -0.38    0.00    0.92
+[89]                                                       0.92    0.00    0.38
+[89]                                                       0.00    1.00    0.00
  Determinants
-                             1.00000                            1.00000                            1.00000
+[89]                              1.00                             1.00                             1.00
 
 
  Deviations  in best plane system after fitting ( Angstrom )
@@ -1361,13 +1361,13 @@ Matching by Rotation/inversion (Method 1)
 
  Excessive contraction. Determinant =    0.000000
  Original matrix
-               -1.000001   -0.000004    0.000000
-                0.000007   -1.000003    0.000000
-                0.000029   -0.000003    0.000000
+[89]                -1.00     0.00     0.00
+[89]                 0.00    -1.00     0.00
+[89]                 0.00     0.00     0.00
  Modified matrix
-               -1.000001   -0.000004    0.000029
-                0.000007   -1.000003   -0.000003
-                0.000029   -0.000003    1.000000
+[89]                -1.00     0.00     0.00
+[89]                 0.00    -1.00     0.00
+[89]                 0.00     0.00     1.00
 
                   Rotation dilation matrix            Dilation component                  Rotation component                  
 
@@ -1376,13 +1376,13 @@ Matching by Rotation/inversion (Method 1)
                    0.00003   0.00000   1.00000        0.00000   0.00000   1.00000        0.00003   0.00000   1.00000
 
  Eigenvalues
-                                                      1.00000   1.00000   1.00000
+[89]                                                       1.00    1.00    1.00
  Eigenvectors
-                                                      0.00001   0.92171  -0.38789
-                                                     -0.00001   0.38789   0.92171
-                                                      1.00000   0.00000   0.00001
+[89]                                                       0.00    0.92   -0.38
+[89]                                                       0.00    0.38    0.92
+[89]                                                       1.00    0.00    0.00
  Determinants
-                             1.00000                            1.00000                            1.00000
+[89]                              1.00                             1.00                             1.00
 
 
  Deviations  in best plane system after fitting ( Angstrom )
@@ -1523,13 +1523,13 @@ Matching by Rotation/inversion (Method 1)
 
  Excessive contraction. Determinant =    0.000000
  Original matrix
-                0.999996   -0.000011    0.000000
-                0.000018    1.000001    0.000000
-                0.000002   -0.000002    0.000000
+[89]                 0.99     0.00     0.00
+[89]                 0.00     1.00     0.00
+[89]                 0.00     0.00     0.00
  Modified matrix
-                0.999996   -0.000011   -0.000002
-                0.000018    1.000001    0.000002
-                0.000002   -0.000002    1.000000
+[89]                 0.99     0.00     0.00
+[89]                 0.00     1.00     0.00
+[89]                 0.00     0.00     1.00
 
                   Rotation dilation matrix            Dilation component                  Rotation component                  
 
@@ -1538,13 +1538,13 @@ Matching by Rotation/inversion (Method 1)
                    0.00000   0.00000   1.00000        0.00000   0.00000   1.00000        0.00000   0.00000   1.00000
 
  Eigenvalues
-                                                      0.99999   1.00000   1.00000
+[89]                                                       0.99    1.00    1.00
  Eigenvectors
-                                                      0.89793   0.00000   0.44013
-                                                     -0.44013   0.00000   0.89793
-                                                      0.00000  -1.00000   0.00000
+[89]                                                       0.89    0.00    0.44
+[89]                                                      -0.44    0.00    0.89
+[89]                                                       0.00   -1.00    0.00
  Determinants
-                             1.00000                            1.00000                            1.00000
+[89]                              1.00                             1.00                             1.00
 
 
  Deviations  in best plane system after fitting ( Angstrom )
@@ -1655,13 +1655,13 @@ Matching by Rotation/inversion (Method 1)
 
  Excessive contraction. Determinant =    0.000000
  Original matrix
-               -1.000005   -0.000011    0.000000
-                0.000019   -1.000000    0.000000
-                0.000029   -0.000003    0.000000
+[89]                -1.00     0.00     0.00
+[89]                 0.00    -1.00     0.00
+[89]                 0.00     0.00     0.00
  Modified matrix
-               -1.000005   -0.000011    0.000029
-                0.000019   -1.000000   -0.000003
-                0.000029   -0.000003    1.000000
+[89]                -1.00     0.00     0.00
+[89]                 0.00    -1.00     0.00
+[89]                 0.00     0.00     1.00
 
                   Rotation dilation matrix            Dilation component                  Rotation component                  
 
@@ -1670,13 +1670,13 @@ Matching by Rotation/inversion (Method 1)
                    0.00003   0.00000   1.00000        0.00000   0.00000   1.00000        0.00003   0.00000   1.00000
 
  Eigenvalues
-                                                      1.00000   1.00000   1.00001
+[89]                                                       1.00    1.00    1.00
  Eigenvectors
-                                                      0.47186   0.00003  -0.88167
-                                                      0.88167   0.00000   0.47186
-                                                     -0.00001   1.00000   0.00003
+[89]                                                       0.47    0.00   -0.88
+[89]                                                       0.88    0.00    0.47
+[89]                                                       0.00    1.00    0.00
  Determinants
-                             1.00000                            1.00000                            1.00000
+[89]                              1.00                             1.00                             1.00
 
 
  Deviations  in best plane system after fitting ( Angstrom )
@@ -1818,13 +1818,13 @@ Matching by Rotation/inversion (Method 1)
 
  Excessive contraction. Determinant =    0.000000
  Original matrix
-               -1.000000    0.000000    0.000000
-                0.000000   -1.000000    0.000000
-                0.000029   -0.000003    0.000000
+[89]                -1.00     0.00     0.00
+[89]                 0.00    -1.00     0.00
+[89]                 0.00     0.00     0.00
  Modified matrix
-               -1.000000    0.000000    0.000029
-                0.000000   -1.000000   -0.000003
-                0.000029   -0.000003    1.000000
+[89]                -1.00     0.00     0.00
+[89]                 0.00    -1.00     0.00
+[89]                 0.00     0.00     1.00
 
                   Rotation dilation matrix            Dilation component                  Rotation component                  
 
@@ -1833,13 +1833,13 @@ Matching by Rotation/inversion (Method 1)
                    0.00003   0.00000   1.00000        0.00000   0.00000   1.00000        0.00003   0.00000   1.00000
 
  Eigenvalues
-                                                      1.00000   1.00000   1.00000
+[89]                                                       1.00    1.00    1.00
  Eigenvectors
-                                                      0.00003  -0.92373   0.38305
-                                                      0.00000  -0.38305  -0.92373
-                                                      1.00000   0.00003  -0.00001
+[89]                                                       0.00   -0.92    0.38
+[89]                                                       0.00   -0.38   -0.92
+[89]                                                       1.00    0.00    0.00
  Determinants
-                             1.00000                            1.00000                            1.00000
+[89]                              1.00                             1.00                             1.00
 
 
  Deviations  in best plane system after fitting ( Angstrom )
@@ -1980,9 +1980,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
  Rotation Matrix
-   -1.00000   0.00000   0.00000
-    0.00000   1.00000   0.00000
-    0.00000   0.00000  -1.00000
+[89]    -1.00    0.00    0.00
+[89]     0.00    1.00    0.00
+[89]     0.00    0.00   -1.00
 
 
 
@@ -2044,9 +2044,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
  Rotation Matrix
-   -1.00000   0.00000   0.00000
-    0.00000  -1.00000  -0.00002
-    0.00000  -0.00002   1.00000
+[89]    -1.00    0.00    0.00
+[89]     0.00   -1.00    0.00
+[89]     0.00    0.00    1.00
 
  Deviations  in best plane system after fitting ( Angstrom )
 "Angle" is the angular separation of the atoms as seen from
@@ -2184,9 +2184,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
  Rotation Matrix
-   -1.00000   0.00001   0.00000
-   -0.00001  -1.00000   0.00000
-    0.00000   0.00000   1.00000
+[89]    -1.00    0.00    0.00
+[89]     0.00   -1.00    0.00
+[89]     0.00    0.00    1.00
 
 
 
@@ -2248,9 +2248,9 @@ Matching Permitting Improper Rotation (Method 4, Kabsch)
 
 
  Rotation Matrix
-   -1.00000   0.00001   0.00000
-    0.00001   1.00000   0.00002
-    0.00000   0.00002  -1.00000
+[89]    -1.00    0.00    0.00
+[89]     0.00    1.00    0.00
+[89]     0.00    0.00   -1.00
 
  Deviations  in best plane system after fitting ( Angstrom )
 "Angle" is the angular separation of the atoms as seen from

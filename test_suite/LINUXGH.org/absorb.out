@@ -18,9 +18,9 @@
 
 [31]                         0.005    -0.079    -0.093 
 
-                       -0.0987    0.0287   -0.1015
+[89]                        -0.09     0.02    -0.10
 
-                        0.0247    0.1329   -0.0339
+[89]                         0.02     0.13    -0.03
 #HKLI
 # READ SETTINGS FROM INPUT STRAEM - IMPORTANT FOR LAST REFLECTIONS
 
@@ -74,20 +74,20 @@
 #LIST 13
  Rotation matrix
 
-                       -0.9783    0.1757   -0.1097
+[89]                        -0.97     0.17    -0.10
 
-                       -0.2006   -0.6719    0.7130
+[89]                        -0.20    -0.67     0.71
 
-                        0.0516    0.7195    0.6925
+[89]                         0.05     0.71     0.69
 
 
  Orientation matrix
 
-                       -0.0997    0.0277   -0.0955
+[89]                        -0.09     0.02    -0.09
 
-                       -0.0204   -0.1058    0.0641
+[89]                        -0.02    -0.10     0.06
 
-                        0.0053    0.1133    0.0832
+[89]                         0.00     0.11     0.08
 #HKLI
 # CALCULATESETTINGS FROM MATRIX - INVALID FOR LAST REFLECTIONS
 
@@ -147,9 +147,9 @@
 
 [31]                         0.005    -0.079    -0.093 
 
-                       -0.0987    0.0287   -0.1015
+[89]                        -0.09     0.02    -0.10
 
-                        0.0247    0.1329   -0.0339
+[89]                         0.02     0.13    -0.03
 #HKLI
 # CALCULATESETTINGS FROM MATRIX - INVALID FOR LAST REFLECTIONS
 
@@ -210,9 +210,9 @@
 
 [31]                         0.005    -0.079    -0.093 
 
-                       -0.0987    0.0287   -0.1015
+[89]                        -0.09     0.02    -0.10
 
-                        0.0247    0.1329   -0.0339
+[89]                         0.02     0.13    -0.03
 #HKLI
 # READ SETTINGS FROM INPUT STRAEM - IMPORTANT FOR LAST REFLECTIONS
 
@@ -261,9 +261,9 @@
 
 [31]                         0.005    -0.079    -0.093 
 
-                       -0.0987    0.0287   -0.1015
+[89]                        -0.09     0.02    -0.10
 
-                        0.0247    0.1329   -0.0339
+[89]                         0.02     0.13    -0.03
 #HKLI
 # READ SETTINGS FROM INPUT STRAEM - IMPORTANT FOR LAST REFLECTIONS
 
@@ -311,9 +311,9 @@
 
 [31]                         0.005    -0.079    -0.093 
 
-                       -0.0987    0.0287   -0.1015
+[89]                        -0.09     0.02    -0.10
 
-                        0.0247    0.1329   -0.0339
+[89]                         0.02     0.13    -0.03
 #HKLI
 # READ SETTINGS FROM INPUT STRAEM - IMPORTANT FOR LAST REFLECTIONS
 

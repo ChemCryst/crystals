@@ -140,7 +140,7 @@ Bonds: Update required - There is no list 41
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      65000          67110            3400                                    On scale of /FC/
+[33]      65000          67000            3400                                    On scale of /FC/
 
 [32]      67500          68650            3540                0.21 E+05          On scale of /FO/
 
@@ -155,7 +155,7 @@ Bonds: Update required - There is no list 41
      1232 reflections   R  3.70% Rw  3.98% with I/u(I) >   2.0
 [29] SumFo/SumFc=  1.00    SumFoFc/SumFc^2=  1.01    SumwFoFc/SumwFc^2=  1.01
 LS-scale=  1.023   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.720    100*(<Fo>-<Fc>)/<Fo> =    -1.70
+[91] <Fo>-<Fc> = -0.72    100*(<Fo>-<Fc>)/<Fo> =    -1.70
 #CYCLENDS
 #LIST 4
 #TITLE GROUP TORSION
@@ -170,7 +170,7 @@ LS-scale=  1.023   Wilson Scale=  0.000
 
  Chebyshev weighting scheme for   3  terms
 
- Maximum /FO/    =     0.36E+03           Estimated variance =    2.6158        
+[88]  Maximum /FO/    =     0.36E+03           Estimated variance =    2.
          /Fo/ weight =   2.00
 
 
@@ -308,7 +308,7 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      65000          67110            3400                                    On scale of /FC/
+[33]      65000          67000            3400                                    On scale of /FC/
 
 [32]      67500          68650            3540                0.18 E+04          On scale of /FO/
 
@@ -317,7 +317,7 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
  Structure factor least squares calculation    2  ends  2
 [29] SumFo/SumFc=  1.00    SumFoFc/SumFc^2=  1.01    SumwFoFc/SumwFc^2=  1.01
 LS-scale=  1.023   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.720    100*(<Fo>-<Fc>)/<Fo> =    -1.70
+[91] <Fo>-<Fc> = -0.72    100*(<Fo>-<Fc>)/<Fo> =    -1.70
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -377,7 +377,7 @@ All cycle   Min function          0.0           0.18E+04       0.10E+16
 
 
 [38]  Mean           0.00   0.00    0.00    0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-                                         0.0018  -0.0013   0.0006
+[89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.006    0.001    0.000 
@@ -471,7 +471,7 @@ Variance-covariance matrix of selected atoms (x10^6)
 [35]   -1.65    9.25    0.5   -0.25    5.50    0.12   -0.18    3.79   -0.73
 [35]    1.35    0.64    5.1    1.89    0.12    4.85    2.32   -0.09    4.94
 [35]    0.84   -1.43    4.9    4.12   -0.18    2.32    9.92   -1.65    4.26
-[35]    1.50   -0.60   -0.3    0.21    3.79   -0.09   -1.65    9.75    2.16
+[35]    1.50   -0.60   -0.3    0.21    3.79   -0.09   -1.65    9.74    2.16
 [35]    0.48   -4.49    6.4    1.71   -0.73    4.94    4.26    2.16    7.66
 [35]    5.43    5.48    0.8    4.96    0.76    1.87    0.88    1.07    0.13
 [35]    2.28    0.22   -0.9    0.27    4.25   -0.06    2.28    1.27   -0.68
@@ -541,7 +541,7 @@ Refining    52 parameters in    2 block :     1022 elements in the LS matrix.
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      65000          67110            3400                                    On scale of /FC/
+[33]      65000          67000            3400                                    On scale of /FC/
 
 [32]      67500          68650            3540                0.18 E+04          On scale of /FO/
 
@@ -550,7 +550,7 @@ Refining    52 parameters in    2 block :     1022 elements in the LS matrix.
  Structure factor least squares calculation    3  ends  2
 [29] SumFo/SumFc=  1.00    SumFoFc/SumFc^2=  1.01    SumwFoFc/SumwFc^2=  1.01
 LS-scale=  1.023   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.720    100*(<Fo>-<Fc>)/<Fo> =    -1.70
+[91] <Fo>-<Fc> = -0.72    100*(<Fo>-<Fc>)/<Fo> =    -1.70
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -613,7 +613,7 @@ All cycle   Min function          0.0           0.18E+04       0.10E+16
 
 
 [38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   -0.00    0.00   -0.00
-                                         0.0004  -0.0002   0.0007
+[89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.001    0.001    0.001 
