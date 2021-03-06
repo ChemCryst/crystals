@@ -878,7 +878,13 @@ C--CHECK IF THIS IS THE FIRST REJECTED REFLECTION
             GO TO 2100
          END IF
 2250  CONTINUE
-      CALL XMOVE (TRANSH(10),STORE(M6),3)
+C Must set HKL to very close to integers or the reflection index packing (XSLR) will 
+C generate unusable values. Approximate transformation matrix elements (e.g. .333)
+C cause trouble here.
+      store(m6)   = float(nint(transh(10)))
+      store(m6+1) = float(nint(transh(11)))
+      store(m6+2) = float(nint(transh(12)))
+c      CALL XMOVE (TRANSH(10),STORE(M6),3)
 Cdjw dec97        twins - sort out  Fo to FOT
 C--- PUT SOMETHING INTO FO
       IF ((JNFO.GT.0).AND.(IRFO.LE.0).AND.(IRFT.GT.0)) STORE(M6+JFOO(1))
@@ -1241,7 +1247,13 @@ C--CHECK IF THIS IS THE FIRST REJECTED REFLECTION
                GO TO 4850
             END IF
 4250     CONTINUE
-         CALL XMOVE (TRANSH(10),STORE(M6),3)
+C Must set HKL to very close to integers or the reflection storage (XSLR) will 
+C generate unusable values. Approximate transformation matrix elements (e.g. .333)
+C cause trouble here.
+		 store(m6)   = float(nint(transh(10)))
+		 store(m6+1) = float(nint(transh(11)))
+		 store(m6+2) = float(nint(transh(12)))
+c         CALL XMOVE (TRANSH(10),STORE(M6),3)
 c--- set element flag
       if ((jnft.gt.0).and.(store(m6+11).le.zero)) then
        elem = 0.
