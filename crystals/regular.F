@@ -3101,6 +3101,9 @@ C -- CALCULATE TOTAL SQUARED DEVIATION AND RMS DEVIATIONS
             RMSDEV(I) = SQRT ( SUM(I)/FLOAT(NATMD) )
       END DO
       
+      ISTAT = KSCTRN ( 1 , 'REGU:RMSD' , SUM(4), 1 )
+	  
+	  
        IF (ISSPRT .EQ. 0) WRITE ( NCWU , 2505 ) SUM , RMSDEV
 2505  FORMAT ( // ,
      1 87X,' x', 7x,' y', 7x,'z',7x,'over-all'/
