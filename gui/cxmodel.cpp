@@ -21,16 +21,12 @@
 #else
 #include    <GL/glu.h>
 #endif
-//#ifdef CRY_USEWX
-//  #include "idb_splash.xpm"
-//#endif
 
 #ifndef PFD_SUPPORT_COMPOSITION
 #define PFD_SUPPORT_COMPOSITION 0x00008000
 #endif
 
 
-#ifdef CRY_USEWX
 BEGIN_EVENT_TABLE( mywxStaticText, wxStaticText)
      EVT_LEFT_UP( mywxStaticText::OnLButtonUp )
      EVT_LEFT_DOWN( mywxStaticText::OnLButtonDown )
@@ -45,7 +41,6 @@ mywxStaticText::mywxStaticText(wxWindow* w, int i, wxString s, wxPoint p, wxSize
 void mywxStaticText::OnLButtonUp( wxMouseEvent & event ) { event.m_x += GetRect().x; event.m_y += GetRect().y; m_parent->GetEventHandler()->ProcessEvent(event); }
 void mywxStaticText::OnLButtonDown( wxMouseEvent & event){ event.m_x += GetRect().x; event.m_y += GetRect().y; m_parent->GetEventHandler()->ProcessEvent(event); }
 void mywxStaticText::OnRButtonUp( wxMouseEvent & event ) { event.m_x += GetRect().x; event.m_y += GetRect().y; m_parent->GetEventHandler()->ProcessEvent(event); }
-#endif
 
 
 
@@ -53,48 +48,10 @@ void mywxStaticText::OnRButtonUp( wxMouseEvent & event ) { event.m_x += GetRect(
 
 int CxModel::mModelCount = kModelBase;
 
-#ifdef CRY_USEMFC
-HDC CxModel::last_hdc = NULL;
-#endif
 
 CxModel * CxModel::CreateCxModel( CrModel * container, CxGrid * guiParent )
 {
 
-#ifdef CRY_USEMFC
-
-  CxModel *theModel = new CxModel(container);
-  const char* wndClass = AfxRegisterWndClass( CS_HREDRAW|CS_VREDRAW,NULL,(HBRUSH)(COLOR_MENU+1),NULL);
-
-  if ( theModel -> Create(wndClass,"Model",WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_CLIPSIBLINGS,CRect(0,0,26,28),guiParent,mModelCount++) == 0 )
-  {
-    ::MessageBox (  NULL, "Create modelwindow failed", "Error", MB_OK) ;
-    delete theModel;
-    return nil;
-  }
-
-//  theModel -> ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);
-  theModel -> SetFont(CcController::mp_font);
-
-  CRect rect;
-//  CClientDC dc(theModel);
-
-  theModel->m_hdc = ::GetDC(theModel->GetSafeHwnd());
-
-  if( ( theModel->SetWindowPixelFormat() ) == false )
-  {
-    delete theModel;
-    return nil;
-  }
-  if ( ( theModel->CreateViewGLContext() ) == false )
-  {
-    delete theModel;
-    return nil;
-  }
-
-
-  theModel->Setup();
-
-#else
   int args[] = {WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_DEPTH_SIZE, 16, 0};
 
   if (! CxModel::IsDisplaySupported(args)) {
@@ -131,18 +88,16 @@ CxModel * CxModel::CreateCxModel( CrModel * container, CxGrid * guiParent )
 	}
 	 LOGERR( "Continuing, some functionality may not work. Send Script.log to Richard Cooper for help.");
   }
+  
   //  int args[] = {WX_GL_RGBA, WX_GL_DOUBLEBUFFER, 0};
   CxModel *theModel = new CxModel((wxWindow*)guiParent, args);
   theModel->ptr_to_crObject = container;
   theModel->Show();
 //  theModel->Setup();
 
-#endif
-
   return theModel;
 }
 
-#ifdef CRY_USEWX
 
 //CxModel::CxModel(wxWindow *parent, wxWindowID id, int* args, long style, const wxString& name): wxGLCanvas(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, style|wxFULL_REPAINT_ON_RESIZE)
 CxModel::CxModel(wxWindow *parent, int * args): wxGLCanvas(parent, wxID_ANY, args, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE)
@@ -183,18 +138,6 @@ CxModel::CxModel(wxWindow *parent, int * args): wxGLCanvas(parent, wxID_ANY, arg
 	}
 
 
-#endif
-#ifdef CRY_USEMFC
-
-CxModel::CxModel(CrModel* container)
-      :BASEMODEL()
-{
-  ptr_to_crObject = container;
-  m_hGLContext = NULL;
-  m_hPalette = 0;
-//  m_bitmapbits = NULL;
-//  m_bitmapinfo = NULL;
-#endif
   m_bMouseLeaveInitialised = false;
 //  m_bitmapok = false;
   m_bNeedReScale = true;
@@ -248,41 +191,14 @@ CxModel::~CxModel()
   delete m_pixels;
   DeletePopup();
   DeleteMessagePopup(0);
-#ifdef CRY_USEWX
   delete m_context;
-#endif
 
-#ifdef CRY_USEMFC
-  wglMakeCurrent(NULL,NULL);
-  CxModel::last_hdc = NULL;
-  wglDeleteContext(m_hGLContext);
-  ::ReleaseDC(GetSafeHwnd(), m_hdc);
-  if ( m_hPalette ) DeleteObject(m_hPalette);
-#endif
 }
 
 void CxModel::CxDestroyWindow()
 {
-#ifdef CRY_USEMFC
-  DestroyWindow();
-#else
   Destroy();
-#endif
 }
-
-#ifdef CRY_USEMFC
-BEGIN_MESSAGE_MAP(CxModel, CWnd)
-   ON_WM_CHAR()
-   ON_WM_PAINT()
-   ON_WM_LBUTTONUP()
-   ON_WM_LBUTTONDOWN()
-   ON_WM_RBUTTONUP()
-   ON_WM_MOUSEMOVE()
-   ON_WM_ERASEBKGND()
-   ON_COMMAND_RANGE(kMenuBase, kMenuBase+1000, OnMenuSelected)
-   ON_MESSAGE(WM_MOUSELEAVE,   OnMouseLeave)
-END_MESSAGE_MAP()
-#else
 
 BEGIN_EVENT_TABLE(CxModel, wxGLCanvas)
      EVT_CHAR( CxModel::OnChar )
@@ -296,8 +212,6 @@ BEGIN_EVENT_TABLE(CxModel, wxGLCanvas)
 	 EVT_LEAVE_WINDOW( CxModel::OnMouseLeave )
 END_EVENT_TABLE()
 
-#endif
-
 
 void CxModel::Focus()
 {
@@ -306,17 +220,19 @@ void CxModel::Focus()
 
 CXONCHAR(CxModel)
 
-#ifdef CRY_USEMFC
-
-void CxModel::OnPaint()
-{
-    CPaintDC dc(this); // device context for painting
-    setCurrentGL();
-
-#else
 
 void CxModel::OnPaint(wxPaintEvent &event)
 {
+
+	GLenum glerr ;
+	
+	glerr = glGetError();
+	if ( glerr != GL_NO_ERROR ) {
+		ostringstream o;
+		o << "GL error at start of OnPaint: " << glerr;
+		LOGERR(o.str());
+	}
+
 
     if ( ! IsShown() ) return;
     SetCurrent(*m_context);
@@ -331,7 +247,6 @@ void CxModel::OnPaint(wxPaintEvent &event)
       m_DoNotPaint = false;
       return;
     }
-#endif
 
 	bool ok_to_draw = true;
 	
@@ -349,6 +264,13 @@ void CxModel::OnPaint(wxPaintEvent &event)
 		glEndList();
 	}
 
+	glerr = glGetError();
+	if ( glerr != GL_NO_ERROR ) {
+		ostringstream o;
+		o << "GL error at MODELLIST creation OnPaint: " << glerr;
+		LOGERR(o.str());
+	}
+
     if ( ok_to_draw )
     {
         m_bFullListOK = true;
@@ -361,16 +283,8 @@ void CxModel::OnPaint(wxPaintEvent &event)
         glRenderMode ( GL_RENDER ); //Switching to render mode.
         glViewport(0,0,GetWidth(),GetHeight());
 
-#ifdef CRY_USEMFC
-      int col = GetSysColor(COLOR_3DFACE);
-      glClearColor( GetRValue(col)/255.0f,
-                    GetGValue(col)/255.0f,
-                    GetBValue(col)/255.0f,  0.0f);
-#else
       wxColour col = wxSystemSettings::GetColour( wxSYS_COLOUR_3DFACE );
       glClearColor( col.Red()/255.0f, col.Green()/255.0f, col.Blue()/255.0f,  0.0f);
-//      glClearColor( 0.0f,1.0f,0.0f,0.0f);
-#endif
 
       glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
@@ -392,12 +306,14 @@ void CxModel::OnPaint(wxPaintEvent &event)
 	  
 	  glFlush();
   
-#ifdef CRY_USEMFC
-      SwapBuffers(m_hdc);
-#else
       SwapBuffers();
-#endif
 
+      glerr = glGetError();
+      if ( glerr != GL_NO_ERROR ) {
+		ostringstream o;
+		o << "GL error at SwapBuffers in OnPaint: " << glerr;
+		LOGERR(o.str());
+	  }
 
       if ( ! m_selectionPoints.empty() )
       {
@@ -433,32 +349,26 @@ void CxModel::OnPaint(wxPaintEvent &event)
 //      PaintBannerInstead ( &dc );
       glRenderMode ( GL_RENDER ); //Switching to render mode.
       glViewport(0,0,GetWidth(),GetHeight());
-#ifdef CRY_USEMFC
-      int col = GetSysColor(COLOR_3DFACE);
-      glClearColor( GetRValue(col)/255.0f,
-                    GetGValue(col)/255.0f,
-                    GetBValue(col)/255.0f,  0.0f);
-#else
       wxColour col = wxSystemSettings::GetColour( wxSYS_COLOUR_3DFACE );
       glClearColor( col.Red()/255.0f,
                     col.Green()/255.0f,
                     col.Blue()/255.0f,  0.0f);
-#endif
       glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
       glMatrixMode ( GL_PROJECTION );
       glLoadIdentity();
 //      ModelBackground();
       glMatrixMode ( GL_PROJECTION );
-      glPopMatrix();
+//      glPopMatrix();
       glMatrixMode ( GL_MODELVIEW );
 
-#ifdef CRY_USEMFC
-      SwapBuffers(m_hdc);
-#else
       SwapBuffers();
-#endif
 
-
+      glerr = glGetError();
+      if ( glerr != GL_NO_ERROR ) {
+		ostringstream o;
+		o << "GL error at no model SwapBuffers in OnPaint: " << glerr;
+		LOGERR(o.str());
+	  }
     }
 
 }
@@ -486,28 +396,16 @@ void CxModel::GLDrawStyle()
 }
 
 
-#ifdef CRY_USEMFC
-
-void CxModel::OnLButtonUp( UINT nFlags, CPoint wpoint )
-{
-
-#endif
-#ifdef CRY_USEWX
 
 void CxModel::OnLButtonUp( wxMouseEvent & event )
 {
 
-#endif
 
   switch ( m_mouseMode )
   {
     case CXROTATE:
     {
-#ifdef CRY_USEMFC
-      ReleaseCapture();
-#else
       if ( m_MouseCaught ){ ReleaseMouse(); m_MouseCaught = false; }
-#endif
       if(m_fastrotate)
       {
         m_fastrotate = false;
@@ -520,11 +418,7 @@ void CxModel::OnLButtonUp( wxMouseEvent & event )
     }
     case CXRECTSEL:
     {
-#ifdef CRY_USEMFC
-      ReleaseCapture();
-#else
       if ( m_MouseCaught ) { ReleaseMouse(); m_MouseCaught = false; }
-#endif
       SelectBoxedAtoms(m_selectRect, true);
       ModelChanged(false);
       break;
@@ -537,11 +431,7 @@ void CxModel::OnLButtonUp( wxMouseEvent & event )
     case CXZOOM:
     {
       m_mouseMode = CXROTATE;
-#ifdef CRY_USEMFC
-      ReleaseCapture();
-#else
       if ( m_MouseCaught ) { ReleaseMouse(); m_MouseCaught = false; }
-#endif
       NeedRedraw();
       break;
     }
@@ -549,13 +439,6 @@ void CxModel::OnLButtonUp( wxMouseEvent & event )
 
 }
 
-#ifdef CRY_USEMFC
-
-void CxModel::OnLButtonDown( UINT nFlags, CPoint wpoint )
-{
-  CcPoint point(wpoint.x,wpoint.y);
-
-#else
 
   #ifndef CRY_OSWIN32
 
@@ -563,9 +446,7 @@ void CxModel::OnLButtonDown( UINT nFlags, CPoint wpoint )
     #define MK_SHIFT 2
 
   #endif
-#endif
 
-#ifdef CRY_USEWX
 
 void CxModel::OnLButtonDown( wxMouseEvent & event )
 {
@@ -573,7 +454,6 @@ void CxModel::OnLButtonDown( wxMouseEvent & event )
   int nFlags = event.m_controlDown ? MK_CONTROL : 0 ;
   nFlags |= event.m_shiftDown ? MK_SHIFT : 0 ;
 
-#endif
 
   if ( nFlags & MK_CONTROL )
   {
@@ -586,11 +466,7 @@ void CxModel::OnLButtonDown( wxMouseEvent & event )
   {
     case CXROTATE:
     {
-#ifdef CRY_USEMFC
-      SetCapture();
-#else
       if ( !m_MouseCaught ) { CaptureMouse(); m_MouseCaught = true; }
-#endif
       string atomname;
       CcModelObject* object;
       int type = 0;
@@ -611,11 +487,7 @@ void CxModel::OnLButtonDown( wxMouseEvent & event )
     }
     case CXRECTSEL:
     {
-#ifdef CRY_USEMFC
-      SetCapture();
-#else
       if ( !m_MouseCaught ) { CaptureMouse(); m_MouseCaught = true; }
-#endif
       m_selectRect.Set(point.y,point.x,point.y,point.x); //start dragging box from here.
       break;
     }
@@ -653,11 +525,7 @@ void CxModel::OnLButtonDown( wxMouseEvent & event )
     }
     case CXZOOM:
     {
-#ifdef CRY_USEMFC
-      SetCapture();
-#else
       if ( !m_MouseCaught ) { CaptureMouse(); m_MouseCaught = true; }
-#endif
       m_ptLDown = point;  //zoom from here.
       break;
     }
@@ -688,31 +556,6 @@ void CxModel::OnLButtonDown( wxMouseEvent & event )
 
 
 
-#ifdef CRY_USEMFC
-LRESULT CxModel::OnMouseLeave(WPARAM wParam, LPARAM lParam)
-{
-    DeletePopup();
-    m_bMouseLeaveInitialised = false;
-        return TRUE;
-}
-
-void CxModel::OnMouseMove( UINT nFlags, CPoint wpoint )
-{
-  bool leftDown = ( (nFlags & MK_LBUTTON) != 0 );
-  bool ctrlDown = ( (nFlags & MK_CONTROL) != 0 );
-  CcPoint point(wpoint.x,wpoint.y);
-    // now some stuff to find out when the mouse leaves the window (causes a WM_MOUSE_LEAVE message (?))
-  if(!m_bMouseLeaveInitialised)
-  {
-    TRACKMOUSEEVENT tme;
-    tme.cbSize = sizeof(tme);
-    tme.hwndTrack = m_hWnd;
-    tme.dwFlags = TME_LEAVE;
-    _TrackMouseEvent(&tme);
-    m_bMouseLeaveInitialised = true;
-  }
-
-#else
 void CxModel::OnMouseLeave(wxMouseEvent & event)
 {
 	if ( m_TextPopup ) {
@@ -732,7 +575,6 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
   nFlags = event.m_shiftDown ? MK_SHIFT : 0 ;
   bool leftDown = event.m_leftDown;
   bool ctrlDown = event.m_controlDown;
-#endif
 
 
   switch ( m_mouseMode )
@@ -966,20 +808,11 @@ void CxModel::OnMouseMove( wxMouseEvent & event )
   m_ptMMove = point;
 }
 
-#ifdef CRY_USEMFC
-
-void CxModel::OnRButtonUp( UINT nFlags, CPoint wpoint )
-{
-      CcPoint point(wpoint.x,wpoint.y);
-
-#endif
-#ifdef CRY_USEWX
 
 void CxModel::OnRButtonUp( wxMouseEvent & event )
 {
   CcPoint point ( event.m_x, event.m_y );
 
-#endif
 
 
   if ( m_mouseMode == CXPOLYSEL )
@@ -1004,10 +837,6 @@ void CxModel::OnRButtonUp( wxMouseEvent & event )
 
   obtype = IsAtomClicked(point.x, point.y, &atomname, &object);
 
-#ifdef CRY_USEMFC
-    ClientToScreen(&wpoint); // change the coordinates of the click from window to screen coords so that the menu appears in the right place
-    point = CcPoint(wpoint.x,wpoint.y);
-#endif
 
   if ( obtype == CC_ATOM || obtype == CC_SPHERE || obtype == CC_DONUT )
   {
@@ -1055,16 +884,10 @@ void CxModel::Setup()
 {
 
 
-#ifdef CRY_USEWX
 
 //   if( !GetContext() ) return;
    m_NotSetupYet = false;
 
-#else
-
-   setCurrentGL();
-   
-#endif
 
    glEnable(GL_NORMALIZE);
 
@@ -1094,63 +917,6 @@ void CxModel::Setup()
 
 
 
-#ifdef CRY_USEMFC
-
-/*        m_bitmapok = true;
-
-        LPCTSTR lpszResourceName = (LPCTSTR)IDB_SPLASH;
-        HBITMAP hBmp = (HBITMAP)::LoadImage( AfxGetInstanceHandle(),
-                 lpszResourceName, IMAGE_BITMAP, 0,0, LR_CREATEDIBSECTION );
-
-        if( hBmp == NULL )
-        {
-                m_bitmapok = false;
-                return;
-        }
-        m_bitmap.Attach( hBmp );
-
-        // Create a logical palette for the bitmap
-        DIBSECTION ds;
-        BITMAPINFOHEADER &bmInfo = ds.dsBmih;
-        m_bitmap.GetObject( sizeof(ds), &ds );
-
-        int nColors = bmInfo.biClrUsed ? bmInfo.biClrUsed : 1 << bmInfo.biBitCount;
-
-        // Create a halftone palette if colors > 256.
-        CClientDC dc(NULL);                     // Desktop DC
-        if( nColors > 256 ) m_pal.CreateHalftonePalette( &dc );
-        else
-        {
-                // Create the palette
-
-                RGBQUAD *pRGB = new RGBQUAD[nColors];
-                CDC memDC;
-                memDC.CreateCompatibleDC(&dc);
-
-                memDC.SelectObject( &m_bitmap );
-                ::GetDIBColorTable( memDC, 0, nColors, pRGB );
-
-                UINT nSize = sizeof(LOGPALETTE) + (sizeof(PALETTEENTRY) * nColors);
-                LOGPALETTE *pLP = (LOGPALETTE *) new BYTE[nSize];
-
-                pLP->palVersion = 0x300;
-                pLP->palNumEntries = nColors;
-
-                for( int i=0; i < nColors; i++)
-                {
-                        pLP->palPalEntry[i].peRed = pRGB[i].rgbRed;
-                        pLP->palPalEntry[i].peGreen = pRGB[i].rgbGreen;
-                        pLP->palPalEntry[i].peBlue = pRGB[i].rgbBlue;
-                        pLP->palPalEntry[i].peFlags = 0;
-                }
-
-                m_pal.CreatePalette( pLP );
-
-                delete[] pLP;
-                delete[] pRGB;
-        }
-  */
-#endif
 
 //        m_bitmapinfo = NULL;
 //        LoadDIBitmap("test.bmp");
@@ -1165,11 +931,7 @@ void CxModel::NewSize(int cx, int cy)
     m_stretchX = 1.0f;
     m_stretchY = 1.0f;
 
-#ifdef CRY_USEMFC
-    glViewport(0,0,cx,cy);
-#else
     if ( !m_NotSetupYet ) glViewport(0,0,cx,cy);
-#endif
 
     if ( cy > cx ) m_stretchY = (float)cy / (float)cx;
     else           m_stretchX = (float)cx / (float)cy;
@@ -1197,162 +959,47 @@ void CxModel::ModelSetup()
 
 
 bool CxModel::setCurrentGL() {
-#ifdef CRY_USEMFC
-      if ( m_hdc == NULL ) return false;
-      if ( CxModel::last_hdc == m_hdc ) return true;
-      CxModel::last_hdc = m_hdc;
-      return wglMakeCurrent(m_hdc, m_hGLContext);
-#else
 	  if (!IsShownOnScreen()) return false;
 	  SetCurrent(*m_context);
       return true;
-#endif
 }
 
-/*void CxModel::ModelBackground()
-{
-#ifdef CRY_USEMFC
-   int ic = 5000;
-   if (m_bitmapinfo)
-   {
-     float xscale  = (float)GetWidth() / m_bitmapinfo->bmiHeader.biWidth;
-     float yscale  = (float)GetHeight() / m_bitmapinfo->bmiHeader.biHeight;
-     glRasterPos3f(-ic * m_stretchX, -ic*m_stretchY, ( -ic + 10 ) * m_xScale);
-     glPixelZoom(xscale, yscale);
-     glDrawPixels(m_bitmapinfo->bmiHeader.biWidth,
-                  m_bitmapinfo->bmiHeader.biHeight,
-                  GL_BGR_EXT, GL_UNSIGNED_BYTE, m_bitmapbits);
-   }
-#endif
-}*/
-
-#ifdef CRY_USEMFC
-BOOL CxModel::SetWindowPixelFormat()
-{
-    PIXELFORMATDESCRIPTOR pixelDesc;
-    int n, GLPixelIndex;
-    LOGPALETTE* lpPal;
-
-
-    memset(&pixelDesc, 0, sizeof(pixelDesc));
-
-    pixelDesc.nSize = sizeof(PIXELFORMATDESCRIPTOR);
-    pixelDesc.nVersion = 1;
-
-    pixelDesc.dwFlags = PFD_DRAW_TO_WINDOW |
-                        PFD_SUPPORT_OPENGL |
-                        PFD_STEREO_DONTCARE|
-//						PFD_SUPPORT_COMPOSITION|
-                        PFD_DOUBLEBUFFER;
-
-    pixelDesc.iPixelType = PFD_TYPE_RGBA;
-    pixelDesc.cColorBits = 32;
-    pixelDesc.cDepthBits = 32;
-    pixelDesc.iLayerType = PFD_MAIN_PLANE;
-
-    GLPixelIndex = ChoosePixelFormat (m_hdc, &pixelDesc);
-
-    if (GLPixelIndex == 0 )
-    {
-      CHAR sz[80];
-      DWORD dw = GetLastError();
-      sprintf (sz, "ChoosePixelFormat failed: Get LastError returned %u\n", dw);
-      MessageBox ( sz, "ERROR", MB_OK);
-      return false;
-    }
-
-    if ( SetPixelFormat(m_hdc, GLPixelIndex, &pixelDesc) == FALSE)
-    {
-      CHAR sz[80];
-      DWORD dw = GetLastError();
-      sprintf (sz, "SetPixelFormat failed: Get LastError returned %u\n",
-        dw);
-      MessageBox ( sz, "ERROR", MB_OK);
-      return false;
-    }
-
-
-    DescribePixelFormat(m_hdc, GLPixelIndex, sizeof(PIXELFORMATDESCRIPTOR), &pixelDesc);
-
-    if (pixelDesc.dwFlags & PFD_NEED_PALETTE) {
-    n = 1 << pixelDesc.cColorBits;
-    if (n > 256) n = 256;
-
-    lpPal = (LOGPALETTE*)malloc(sizeof(LOGPALETTE) +
-                    sizeof(PALETTEENTRY) * n);
-    memset(lpPal, 0, sizeof(LOGPALETTE) + sizeof(PALETTEENTRY) * n);
-    lpPal->palVersion = 0x300;
-    lpPal->palNumEntries = n;
-
-    GetSystemPaletteEntries(m_hdc, 0, n, &lpPal->palPalEntry[0]);
-    
-    /* The pixel type is RGBA, so we want to make an RGB ramp */
-        int redMask = (1 << pixelDesc.cRedBits) - 1;
-    int greenMask = (1 << pixelDesc.cGreenBits) - 1;
-    int blueMask = (1 << pixelDesc.cBlueBits) - 1;
-    int i;
-
-        /* fill in the entries with an RGB color ramp. */
-    for (i = 0; i < n; ++i) {
-      lpPal->palPalEntry[i].peRed = 
-        (((i >> pixelDesc.cRedShift)   & redMask)   * 255) / redMask;
-      lpPal->palPalEntry[i].peGreen = 
-        (((i >> pixelDesc.cGreenShift) & greenMask) * 255) / greenMask;
-      lpPal->palPalEntry[i].peBlue = 
-        (((i >> pixelDesc.cBlueShift)  & blueMask)  * 255) / blueMask;
-      lpPal->palPalEntry[i].peFlags = 0;
-    }
-
-    m_hPalette = CreatePalette(lpPal);
-    if (m_hPalette) {
-        SelectPalette(m_hdc, m_hPalette, FALSE);
-        RealizePalette(m_hdc);
-    }
-
-    free(lpPal);
-    }
-
-    return true;
-}
-
-BOOL CxModel::CreateViewGLContext()
-{
-  m_hGLContext = wglCreateContext(m_hdc);
-  if(m_hGLContext ==NULL)
-  {
-    CHAR sz[80];
-    DWORD dw = GetLastError();
-    sprintf (sz, "wglCreateContext failed: Get LastError returned %u\n",
-      dw);
-    MessageBox ( sz, "ERROR", MB_OK);
-    return false;
-  }
-
-  if(setCurrentGL() == false)
-  {
-    CHAR sz[80];
-    DWORD dw = GetLastError();
-    sprintf (sz, "wglMakeCurrent failed: Get LastError returned %u\n",
-      dw);
-    MessageBox ( sz, "ERROR", MB_OK);
-    return false;
-  }
-
-  return true;
-}
-#endif
 
 int CxModel::IsAtomClicked(int xPos, int yPos, string *atomname, CcModelObject **outObject, bool atomsOnly)
 {
 
+	GLenum glerr;
 	bool ok_to_draw = true;
 	int rgbHit = 0;
 
 
 	if ( ! m_bPickListOK ) {
 		setCurrentGL();
+		glerr = glGetError();
+		if ( glerr != GL_NO_ERROR ) {
+			ostringstream o;
+			o << "GL error after setCurrentGL (pick list): " << glerr;
+			LOGERR(o.str());
+		}
+
 		glDeleteLists(PICKLIST,1);
+
+		glerr = glGetError();
+		if ( glerr != GL_NO_ERROR ) {
+			ostringstream o;
+			o << "GL error after glDeleteLists (pick list): " << glerr;
+			LOGERR(o.str());
+		}
+
 		glNewList( PICKLIST, GL_COMPILE);
+		
+		glerr = glGetError();
+		if ( glerr != GL_NO_ERROR ) {
+			ostringstream o;
+			o << "GL error after glNewList (pick list): " << glerr;
+			LOGERR(o.str());
+		}
+		
 		bool tex2DIsEnabled = glIsEnabled(GL_TEXTURE_2D);
 		glDisable(GL_TEXTURE_2D);
 		bool fogIsEnabled = glIsEnabled(GL_FOG);
@@ -1380,6 +1027,15 @@ int CxModel::IsAtomClicked(int xPos, int yPos, string *atomname, CcModelObject *
 		if ( lightIsEnabled ) glEnable(GL_LIGHTING);
 		
 		glEndList();
+		
+		glerr = glGetError();
+		if ( glerr != GL_NO_ERROR ) {
+			ostringstream o;
+			o << "GL error after glEndList (pick list): " << glerr;
+			LOGERR(o.str());
+		}
+
+		
 	} 
 
 	if ( m_pixels_w != GetWidth() ||	m_pixels_h != GetHeight() ) {  //sneaky resize
@@ -1413,7 +1069,13 @@ int CxModel::IsAtomClicked(int xPos, int yPos, string *atomname, CcModelObject *
 		glReadBuffer(GL_BACK);
 //		glReadPixels(xPos, viewport[3] - yPos, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, pixel);
 		glReadPixels(0, 0, m_pixels_w, m_pixels_h, GL_RGBA, GL_UNSIGNED_BYTE, m_pixels);
-
+		glerr = glGetError();
+		if ( glerr != GL_NO_ERROR ) {
+			ostringstream o;
+			o << "GL error after glReadPixels: " << glerr;
+			LOGERR(o.str());
+		}
+		
 		m_bPixelsOK = true;
 	}
 
@@ -1455,6 +1117,9 @@ int CxModel::IsAtomClicked(int xPos, int yPos, string *atomname, CcModelObject *
 		LOGERR(rrr.str());*/
 		 
 	if ( rgbHit != 0 ) {
+		ostringstream o;
+		o << "Mouse over object id: " << rgbHit;
+		LOGERR(o.str());
 
 		*outObject = ((CrModel*)ptr_to_crObject)->FindObjectByGLName ( rgbHit );
 		if ( *outObject )
@@ -1462,7 +1127,15 @@ int CxModel::IsAtomClicked(int xPos, int yPos, string *atomname, CcModelObject *
 			*atomname = (*outObject)->Label();
 			return (*outObject)->Type();
 		}
+		
+		ostringstream o2;
+		o2 << "Mouse over object id: " << rgbHit << " no object with that id found";
+		LOGERR(o2.str());
+		
    }
+   
+	LOGERR("rgbHit is zero at mouse position");
+   
    return 0;
 }
 
@@ -1483,15 +1156,9 @@ void CxModel::AutoScale()
 
 
 
-#ifdef CRY_USEMFC
-void CxModel::OnMenuSelected(UINT nID)
-{
-
-#else
 void CxModel::OnMenuSelected(wxCommandEvent & event)
 {
       int nID = event.GetId();
-#endif
 
     ((CrModel*)ptr_to_crObject)->MenuSelected( nID );
 }
@@ -1505,48 +1172,21 @@ void CxModel::CxUpdate(bool rescale)
 
 void CxModel::SetIdealHeight(int nCharsHigh)
 {
-#ifdef CRY_USEMFC
-
-    CClientDC cdc(this);
-//      cdc.SetBkColor ( RGB ( 255,255,255 ) );
-    CFont* oldFont = cdc.SelectObject(CcController::mp_font);
-    TEXTMETRIC textMetric;                                                                                       
-    cdc.GetTextMetrics(&textMetric);
-    cdc.SelectObject(oldFont);
-    mIdealHeight = nCharsHigh * textMetric.tmHeight;
-#else
 
       mIdealHeight = nCharsHigh * GetCharHeight();
 
-#endif
 }
 
 void CxModel::SetIdealWidth(int nCharsWide)
 {
-#ifdef CRY_USEMFC
-
-    CClientDC cdc(this);
-//    cdc.SetBkColor ( RGB ( 255,255,255 ) );
-    CFont* oldFont = cdc.SelectObject(CcController::mp_font);
-    TEXTMETRIC textMetric;
-    cdc.GetTextMetrics(&textMetric);
-    cdc.SelectObject(oldFont);
-    mIdealWidth = nCharsWide * textMetric.tmAveCharWidth;
-
-#else
 
       mIdealWidth = nCharsWide * 6; //Fix this ! GetCharWidth();
 
-#endif
 }
 
 void  CxModel::SetGeometry( int top, int left, int bottom, int right )
 {
-#ifdef CRY_USEMFC
-  MoveWindow(left,top,right-left,bottom-top,true);
-#else
   SetSize(left,top,right-left,bottom-top);
-#endif
   NewSize(right-left, bottom-top);
   NeedRedraw(true);
 }
@@ -1568,13 +1208,9 @@ void CxModel::NeedRedraw(bool needrescale)
   m_bNeedReScale = m_bNeedReScale || needrescale;
 //  if ( needrescale) TEXTOUT ( "Need Redraw with Rescale" );
 //  else TEXTOUT ( "Need Redraw without Rescale" );
-#ifdef CRY_USEMFC
-  InvalidateRect(NULL,false);
-#else
   m_DoNotPaint = false;
   Refresh();
 //   Update();
-#endif
 }
 
 void CxModel::ModelChanged(bool needrescale) 
@@ -1589,31 +1225,6 @@ void CxModel::ModelChanged(bool needrescale)
 
 void CxModel::ChooseCursor( int cursor )
 {
-#ifdef CRY_USEMFC
-
-        switch ( cursor )
-        {
-                case CURSORZOOMIN:
-                        SetCursor( AfxGetApp()->LoadCursor(IDC_CURSOR2) );
-                        break;
-                case CURSORZOOMOUT:
-                        SetCursor( AfxGetApp()->LoadCursor(IDC_CURSOR3) );
-                        break;
-                case CURSORNORMAL:
-                        SetCursor( AfxGetApp()->LoadCursor(IDC_CURSOR1) );
-                        break;
-                case CURSORCROSS:
-                        SetCursor( AfxGetApp()->LoadStandardCursor(IDC_CROSS) );
-                        break;
-                case CURSORCOPY:
-                        SetCursor( AfxGetApp()->LoadCursor(IDC_POINTER_COPY) );
-                        break;
-                default:
-                        SetCursor( AfxGetApp()->LoadCursor(IDC_CURSOR1) );
-                        break;
-        }
-#else
-
         switch ( cursor )
         {
                 case CURSORZOOMIN:
@@ -1635,7 +1246,6 @@ void CxModel::ChooseCursor( int cursor )
                         SetCursor( wxCURSOR_ARROW );
                         break;
         }
-#endif
 }
 
 void CxModel::SetDrawStyle( int drawStyle )
@@ -1660,53 +1270,6 @@ void CxModel::SetShading( bool shade )
 }
 
 
-#ifdef CRY_USEMFC
-/*
-void CxModel::PaintBannerInstead( CPaintDC * dc )
-{
-  if ( m_bitmapok )
-  {
-        // Create a memory DC compatible with the paint DC
-        CDC banDC;
-        banDC.CreateCompatibleDC( dc );
-
-        CBitmap *pBmpOld = banDC.SelectObject( &m_bitmap );
-
-        // Select and realize the palette
-        if( dc->GetDeviceCaps(RASTERCAPS) & RC_PALETTE && m_pal.m_hObject != NULL )
-        {
-                dc->SelectPalette( &m_pal, FALSE );
-                dc->RealizePalette();
-        }
-
-        CRect rcWnd;
-        GetWindowRect( &rcWnd );
-
-        BITMAP bm;
-        m_bitmap.GetBitmap(&bm);
-
-        int w = bm.bmWidth;
-        int h = bm.bmHeight;
-
-        dc->SetStretchBltMode(COLORONCOLOR);
-
-        dc->StretchBlt(0,0,rcWnd.Width(),rcWnd.Height(),
-                   &banDC,
-                   0, 0, bm.bmWidth, bm.bmHeight,
-                   SRCCOPY);
-
-        // Restore bitmap in banDC
-        banDC.SelectObject( pBmpOld );
-  }
-}
-*/
-
-BOOL CxModel::OnEraseBkgnd( CDC* pDC )
-{
-    return ( TRUE ) ; //prevent flicker
-}
-
-#else
 
 /*void CxModel::PaintBannerInstead( wxPaintDC * dc )
 {
@@ -1726,7 +1289,6 @@ void CxModel::OnEraseBackground( wxEraseEvent& evt )
 {
     return;  //Reduces flickering. (Window is not erased).
 }
-#endif
 
 void CxModel::SelectTool ( int toolType )
 {
@@ -1808,110 +1370,6 @@ void CxModel::CreateMessagePopup(string message, int id)
   OrganizeMessagePopups();
 }
 
-
-
-/*
-void CxModel::LoadDIBitmap(string filename)
-{
-#ifdef CRY_USEMFC
-    if ( m_bitmapbits ) delete [] m_bitmapbits;
-    if ( m_bitmapinfo ) delete [] m_bitmapinfo;
-    m_bitmapbits = NULL;
-    m_bitmapinfo = NULL;
-
-    NeedRedraw(false);
-
-    HANDLE hFileHandle;
-    unsigned long lInfoSize = 0;
-    unsigned long lBitSize = 0;
-    int nTextureWidth;
-    int nTextureHeight;
-
-// Open the Bitmap file
-    hFileHandle = CreateFile(filename.c_str(),GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,FILE_FLAG_SEQUENTIAL_SCAN,NULL);
-
-// Check for open failure (most likely file does not exist).
-    if(hFileHandle == INVALID_HANDLE_VALUE) return;
-
-// File is Open. Read in bitmap header information
-    BITMAPFILEHEADER        bitmapHeader;
-    DWORD dwBytes;
-    ReadFile(hFileHandle,&bitmapHeader,sizeof(BITMAPFILEHEADER), &dwBytes,NULL);
-
-    if(dwBytes != sizeof(BITMAPFILEHEADER)) 
-    {
-        CloseHandle(hFileHandle);
-        MessageBox ( "File is corrupt or not a device-independent bitmap", "ERROR", MB_OK);
-        return;
-    }
-
-// Check format of bitmap file
-    if(bitmapHeader.bfType != 'MB') 
-    {
-        CloseHandle(hFileHandle);
-        MessageBox ( "File is not a 24-bit device-independent bitmap", "ERROR", MB_OK);
-        return;
-    }
-
-// Read in bitmap information structure
-    lInfoSize = bitmapHeader.bfOffBits - sizeof(BITMAPFILEHEADER);
-    m_bitmapinfo = (BITMAPINFO *) new BYTE[lInfoSize];
-    ReadFile(hFileHandle,m_bitmapinfo,lInfoSize,&dwBytes,NULL);
-
-    if(dwBytes != lInfoSize) 
-    {
-        if(m_bitmapinfo) delete [] m_bitmapinfo;
-        m_bitmapinfo = NULL;
-        CloseHandle(hFileHandle);
-        MessageBox ( "While reading bitmap header - file is corrupt", "ERROR", MB_OK);
-        return;
-    }
-
-    if ( m_bitmapinfo->bmiHeader.biBitCount != 24 )
-    {
-        if(m_bitmapinfo) delete [] m_bitmapinfo;
-        m_bitmapinfo = NULL;
-        CloseHandle(hFileHandle);
-        MessageBox ( "Bitmap is not 24-bit DIB.", "ERROR", MB_OK);
-        return;
-    }
-
-
-
-    nTextureWidth = m_bitmapinfo->bmiHeader.biWidth;
-    nTextureHeight = m_bitmapinfo->bmiHeader.biHeight;
-    lBitSize = m_bitmapinfo->bmiHeader.biSizeImage;
-    if(lBitSize == 0) lBitSize = (nTextureWidth * m_bitmapinfo->bmiHeader.biBitCount + 7) / 8 * abs(nTextureHeight);
-    
-// Allocate space for the actual bitmap
-    m_bitmapbits = new BYTE[lBitSize];
-
-// Read in the bitmap bits
-    ReadFile(hFileHandle,m_bitmapbits,lBitSize,&dwBytes,NULL);
-
-    if(lBitSize != dwBytes)
-    {
-        if(m_bitmapbits) delete [] (BYTE *) m_bitmapbits;
-        m_bitmapbits = NULL;
-        if(m_bitmapinfo) delete [] m_bitmapinfo;
-        m_bitmapinfo = NULL;
-        CloseHandle(hFileHandle);
-        MessageBox ( "While reading bitmap data - file is corrupt", "ERROR", MB_OK);
-        return;
-    }
-
-    CloseHandle(hFileHandle);
-
-// This is specific to the binary format of the data read in.
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1); 
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-    glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
-    glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
-
-#endif
-    return;
-}
-*/
 
 void CxModel::PolyCheck()
 {
