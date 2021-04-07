@@ -16,8 +16,7 @@
 %%
 %%    DOSORT   TRUE if H are mixed with non-H
 %%
-%%    DOTWIN   TRUE if there are two ELEMENTS defined in list 5.
-%%             ( a simple two component twin ).
+%%    DOTWIN   TRUE if there are two or more ELEMENTS defined in list 5.
 %%
 %%    HFIRST   serial number of first H found, or -1 if no H
 %%
@@ -68,6 +67,8 @@
 %        COPY 'NEXT'
 %       END LOOP
 %       COPY 'END'
+%% If post-refinement Flack is in middle 2 quartiles you may 
+%% have inversion twinning and so need to refine it
 %  IF ( FLACKP .GE. 0.25 ) .AND. ( FLACKP .LE. 0.75 ) THEN
 %    EVALUATE DOFLACK = TRUE
 %  END IF

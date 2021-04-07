@@ -3387,17 +3387,19 @@ C
 CTORSION ANGLE DEVIATIONS
 C
 C
+        colin = 10.
         IF (NOLD .GE. 1) THEN
          IF (IMATRIX.LT.0) THEN
           IF (ISSPRT .EQ. 0) THEN
-          WRITE(NCWU,'(/A,A,A)')'Torsion angles are omitted from the',
-     1    ' statistics if angles C-A-B or A-B-D are within 5 degrees',
-     2    ' of co-linearity'
+          WRITE(NCWU,'(/A,A,F5.1,A)')'Torsion angles are omitted from',
+     1    ' the statistics if angles C-A-B or A-B-D are within', colin,
+     2    '  degrees of co-linearity'
           WRITE(NCWU,'(A,57x,a)')'Torsion angle deviations',
      2    ' Angles, Difference & Status'
           ENDIF
          ENDIF
         ENDIF
+        colin = cos(dtr * colin)
 C RMS deviation of torsions.
 C 1. Find next bond (a1-a2) in LOLD.
 C 2. Find equiv bond in LNEW (a1'-a2')
@@ -3637,14 +3639,13 @@ cdjwfeb11 Watch out for inversion
                else if (tp .lt. -180.) then
                   tp = tp + 360.
                endif
-
-         IF (abs(angle3) .ge. 0.996) THEN
-          djw3=min(1.,abs(angle3))
-          djw3=sign(djw3,angle3)
-          djw3=rtd*acos(djw3)
+          djw1=min(1.,abs(angle3))
+          djw2=sign(djw1,angle3)
+          djw3=rtd*acos(djw2)
+         IF (djw1 .ge. colin) THEN
           WRITE(CBUFF,'(A,F6.1)')' SKIPPED',djw3
          ELSE
-          CBUFF=' OK'
+          CBUFF = ' OK'
 c  only include OK geometries in statistics
           numt = numt + 1
           tdevp = tdevp + tp*tp

@@ -1,217 +1,232 @@
-% SCRIPT TWIN-CHECK
+%  SCRIPT TWIN-CHECK  
+%% set verify true  
+{I Starting TWIN-CHECK  
+%%  
+%% Ths script should be called before any refinement cycles  
+%% to zeros any negative elements.  
 %% 
-%% Ths script should be called before any refinement cycles
-%% to zeros any negative elements.
+%% Variables shared with XWRITE5
+%  VARIABLE LOGICAL DOWRITE
+%  VARIABLE LOGICAL OLD5 
+%%  
+%% The element scales from L5:  
+%  VARIABLE REAL EL1 EL2 EL3 EL4 EL5 EL6 EL7 EL8 EL9  
+%  VARIABLE REAL VOLF ELEMENT  
+%  VARIABLE INTEGER NEL NNOTZERO NZERO NNEG  
+%  VARIABLE CHARACTER CLINE  
+%  VARIABLE LOGICAL T MONITORING  
+%  COPY '#SET MONI ON'  
+%  EVALUATE CLINE = ' '  
+%  EVALUATE NNOTZERO = 0  
+%  EVALUATE NNEG = 0  
+%  EVALUATE NZERO = 0  
+%%  
+%  IF ( ( EXISTS 5 ) .NE. 1 ) THEN  
+%% NO LIST 5  
+{E You have no refinable parameters  
+%    FINISH  
+%    ELSE  
+%    COPY '#GENERALEDIT 5'  
+%    COPY 'TRANSHEAD FROM OFFSET=22 TO NEL'  
+%    COPY 'LOCATE RECORDTYPE=105'  
+%    COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'  
+%    IF NEL .LE. 1 THEN  
+%      FINISH  
+%    END IF  
+%% NOTE: There is only one record for twin element scales  
+{I Checking for twin elements  
+%    COPY 'TOP'  
+%    LOOP NEL TIMES  
+%      CASE LOOPCOUNTER  
+%        COPY 'TRANSFER FROM OFFSET = 0 TO EL1'  
+%        COPY 'TRANSFER FROM OFFSET = 1 TO EL2'  
+%        COPY 'TRANSFER FROM OFFSET = 2 TO EL3'  
+%        COPY 'TRANSFER FROM OFFSET = 3 TO EL4'  
+%        COPY 'TRANSFER FROM OFFSET = 4 TO EL5'  
+%        COPY 'TRANSFER FROM OFFSET = 5 TO EL6'  
+%        COPY 'TRANSFER FROM OFFSET = 6 TO EL7'  
+%        COPY 'TRANSFER FROM OFFSET = 7 TO EL8'  
+%        COPY 'TRANSFER FROM OFFSET = 8 TO EL9'  
+%      END CASE  
+%    END LOOP  
+%    COPY 'END'  
+%% show EL1 EL2 EL3 EL4 EL5 EL6 EL7 EL8 EL9  
+%%  
+%% Calculate total of vol fractions.  
+%    EVALUATE VOLF = 0.0  
+%    LOOP NEL TIMES  
+%      CASE LOOPCOUNTER  
+%        EVALUATE ELEMENT = EL1  
+%        EVALUATE ELEMENT = EL2  
+%        EVALUATE ELEMENT = EL3  
+%        EVALUATE ELEMENT = EL4  
+%        EVALUATE ELEMENT = EL5  
+%        EVALUATE ELEMENT = EL6  
+%        EVALUATE ELEMENT = EL7  
+%        EVALUATE ELEMENT = EL8  
+%        EVALUATE ELEMENT = EL9  
+%      END CASE  
+%      IF ELEMENT .GT. 0.0 THEN  
+%        EVALUATE NNOTZERO = NNOTZERO + 1  
+%        EVALUATE VOLF = VOLF + ELEMENT  
+%        EVALUATE CLINE = CLINE // ' ELEMENT(' // CHARACTER LOOPCOUNTER // ')'  
+%        ELSE  
+%        IF ELEMENT .LT. 0.0 THEN  
+%          TRANSFER '{I Zeroing element(' // CHARACTER LOOPCOUNTER // ')' to display  
+%          EVALUATE NNEG = NNEG + 1  
+%          ELSE  
+%          EVALUATE NZERO = NZERO + 1  
+%        END IF  
+%      END IF  
+%    END LOOP  
 %% 
-%% It is also called by ASSESS5 in order to select the
-%% elements to refine
-%% 
-{I Checking twin elements
-%% The element scales from L5:
-% VARIABLE REAL    EL1 EL2 EL3 EL4 EL5 EL6 EL7 EL8 EL9 
-% VARIABLE REAL VOLF ELEMENT
-% VARIABLE INTEGER NEL NNOTZERO
-% VARIABLE CHARACTER CLINE
-% VARIABLE LOGICAL T MONITORING 
-% COPY '#SET MONI ON'
-% EVALUATE CLINE = ' '
-% EVALUATE NNOTZERO = 0
-%%
-% IF ( ( EXISTS 5 ) .NE. 1 ) THEN
-%% NO LIST 5
-{E You have no refinable parameters
-%   FINISH
-% ELSE
-%   COPY '#GENERALEDIT 5'
-%   COPY 'TRANSHEAD FROM OFFSET=22 TO NEL'
-%   COPY 'LOCATE RECORDTYPE=105'
-%   COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
-%% There is only one record for twin element scales
-%   COPY 'TOP'
-%   LOOP NEL TIMES
-%     CASE LOOPCOUNTER
-%       COPY 'TRANSFER FROM OFFSET = 0 TO EL1'  
-%       COPY 'TRANSFER FROM OFFSET = 1 TO EL2'
-%       COPY 'TRANSFER FROM OFFSET = 2 TO EL3'
-%       COPY 'TRANSFER FROM OFFSET = 3 TO EL4'
-%       COPY 'TRANSFER FROM OFFSET = 4 TO EL5'
-%       COPY 'TRANSFER FROM OFFSET = 5 TO EL6'
-%       COPY 'TRANSFER FROM OFFSET = 6 TO EL7'
-%       COPY 'TRANSFER FROM OFFSET = 7 TO EL8'
-%       COPY 'TRANSFER FROM OFFSET = 8 TO EL9'
-%     END CASE
-%   END LOOP
-%   COPY 'END'
-%% show EL1 EL2 EL3 EL4 EL5 EL6 EL7 EL8 EL9 
-%%
-%% Calculate total of vol fractions.
-%         EVALUATE VOLF = 0.0
-%         LOOP NEL TIMES
-%           CASE LOOPCOUNTER
-%             EVALUATE ELEMENT =  EL1
-%             EVALUATE ELEMENT =  EL2
-%             EVALUATE ELEMENT =  EL3
-%             EVALUATE ELEMENT =  EL4
-%             EVALUATE ELEMENT =  EL5
-%             EVALUATE ELEMENT =  EL6
-%             EVALUATE ELEMENT =  EL7
-%             EVALUATE ELEMENT =  EL8
-%             EVALUATE ELEMENT =  EL9
-%           END CASE
-%           IF ELEMENT .GT. 0.0 THEN
-%             EVALUATE NNOTZERO = NNOTZERO + 1
-%             EVALUATE VOLF = VOLF + ELEMENT
-%             EVALUATE CLINE = CLINE // ' ELEMENT(' // CHARACTER LOOPCOUNTER // ')'
-%           ELSE
-%             TRANSFER '{I Zeroing element(' // CHARACTER LOOPCOUNTER // ')' to display
-%           END IF
-%         END LOOP
-%%
-%% SHOW VOLF NNOTZERO
-%% SHOW CLINE
-%% If volume fraction is insignificant, reset all values.
-%% This should never happen
-%% 
-%         IF ( VOLF .LE. 0.01 ) THEN
-%           EVALUATE EL1 = 1.
-%           EVALUATE EL2 = 1.
-%           EVALUATE EL3 = 1.
-%           EVALUATE EL4 = 1.
-%           EVALUATE EL5 = 1.
-%           EVALUATE EL6 = 1.
-%           EVALUATE EL7 = 1.
-%           EVALUATE EL8 = 1.
-%           EVALUATE EL9 = 1.
-%           EVALUATE VOLF = REAL NEL
-%         END IF
-%%
-%% Normalise the fractions so that they add up to 1.
-%%
-%         LOOP NEL TIMES
-%           CASE LOOPCOUNTER
-%            BLOCK
-%             IF EL1 .LE. 0. THEN 
-%              EVALUATE EL1 = 0.0 
-%             END IF
-%             EVALUATE EL1 = EL1 / VOLF
-%            END BLOCK
-%            BLOCK
-%             IF EL2 .LE. 0. THEN 
-%              EVALUATE EL2 = 0.0 
-%             END IF
-%             EVALUATE EL2 = EL2 / VOLF
-%            END BLOCK
-%            BLOCK
-%             IF EL3 .LE. 0. THEN 
-%              EVALUATE EL3 = 0.0 
-%             END IF
-%             EVALUATE EL3 = EL3 / VOLF
-%            END BLOCK
-%            BLOCK
-%             IF EL4 .LE. 0. THEN 
-%              EVALUATE EL4 = 0.0 
-%             END IF
-%             EVALUATE EL4 = EL4 / VOLF
-%            END BLOCK
-%            BLOCK
-%             IF EL5 .LE. 0. THEN 
-%              EVALUATE EL5 = 0.0 
-%             END IF
-%             EVALUATE EL5 = EL5 / VOLF
-%            END BLOCK
-%            BLOCK
-%             IF EL6 .LE. 0. THEN 
-%              EVALUATE EL6 = 0.0 
-%             END IF
-%             EVALUATE EL6 = EL6 / VOLF
-%            END BLOCK
-%            BLOCK
-%             IF EL7 .LE. 0. THEN 
-%              EVALUATE EL7 = 0.0 
-%             END IF
-%             EVALUATE EL7 = EL7 / VOLF
-%            END BLOCK
-%            BLOCK
-%             IF EL8 .LE. 0. THEN 
-%              EVALUATE EL8 = 0.0 
-%             END IF
-%             EVALUATE EL8 = EL8 / VOLF
-%            END BLOCK
-%            BLOCK
-%             IF EL9 .LE. 0. THEN 
-%              EVALUATE EL9 = 0.0 
-%             END IF
-%             EVALUATE EL9 = EL9 / VOLF
-%            END BLOCK
-%           END CASE
-%         END LOOP
-%%show EL1 EL2 EL3 EL4 
-%% check it's worked
-%%         EVALUATE NNOTZERO = 0
-%%         EVALUATE VOLF = 0.0
-%%         LOOP NEL TIMES
-%%           CASE LOOPCOUNTER
-%%             EVALUATE ELEMENT =  EL1
-%%             EVALUATE ELEMENT =  EL2
-%%             EVALUATE ELEMENT =  EL3
-%%             EVALUATE ELEMENT =  EL4
-%%             EVALUATE ELEMENT =  EL5
-%%             EVALUATE ELEMENT =  EL6
-%%             EVALUATE ELEMENT =  EL7
-%%             EVALUATE ELEMENT =  EL8
-%%             EVALUATE ELEMENT =  EL9
-%%           END CASE
-%%           IF ELEMENT .GT. 0.0 THEN
-%%             EVALUATE NNOTZERO = NNOTZERO + 1
-%%             EVALUATE VOLF = VOLF + ELEMENT
-%%           END IF
-%%         END LOOP
-%% SHOW NEL NNOTZERO
-%% SHOW VOLF
-%% Final volume elements:
-%% show EL1 EL2 EL3 EL4 EL5 EL6 EL7 EL8 EL9 
-%% create a SUMFIX line for LIST 12
-% IF ( FILEEXISTS ( 'TWIN-12.DAT' ) ) THEN
-%   EVALUATE T = FILEDELETE ( 'TWIN-12.DAT' )
-% END IF
-% COPY '#RELEASE PUNCH TWIN-12.DAT'
-%% TRANSFER 'SUMFIX ' // CLINE TO DISPLAY
-% TRANSFER 'SUMFIX ' // CLINE TO PUNCH
-% COPY '#RELEASE PUNCH BFILE.PCH'
-%%
-%%
-%     COPY '#GENERALEDIT 5'
-%     COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
-%     COPY 'LOCATE RECORDTYPE=105'
-%% Insert new record.
-%     COPY 'TRANSHEAD TO OFFSET=22 FROM NEL'
-%     COPY 'INSERT'
-%     IF NEL .GT. 0 THEN
-%% Remove old record
-%           COPY 'DELETE'
-%     END IF
-%     COPY 'TRANSHEAD TO OFFSET=22 FROM NEL'
-%     COPY 'TOP'
-%% show EL1 EL2 EL3 EL4 EL5 EL6 EL7 EL8 EL9 
-%     LOOP NEL TIMES
-%           CASE LOOPCOUNTER
-%             COPY 'TRANSFER TO OFFSET = 0 FROM EL1'  
-%             COPY 'TRANSFER TO OFFSET = 1 FROM EL2'
-%             COPY 'TRANSFER TO OFFSET = 2 FROM EL3'
-%             COPY 'TRANSFER TO OFFSET = 3 FROM EL4'
-%             COPY 'TRANSFER TO OFFSET = 4 FROM EL5'
-%             COPY 'TRANSFER TO OFFSET = 5 FROM EL6'
-%             COPY 'TRANSFER TO OFFSET = 6 FROM EL7'
-%             COPY 'TRANSFER TO OFFSET = 7 FROM EL8'
-%             COPY 'TRANSFER TO OFFSET = 8 FROM EL9'
-%           END CASE
-%     END LOOP
-%     COPY 'WRITE'
-%     COPY 'END'
+%% SHOW VOLF NNOTZERO NZERO NNEG  
+%% SHOW CLINE  
+%% If volume fraction is insignificant, reset all values.  
+%% This should never happen  
+%%  
+%    IF ( VOLF .LE. 0.01 ) THEN  
+%      EVALUATE EL1 = 1.  
+%      EVALUATE EL2 = 1.  
+%      EVALUATE EL3 = 1.  
+%      EVALUATE EL4 = 1.  
+%      EVALUATE EL5 = 1.  
+%      EVALUATE EL6 = 1.  
+%      EVALUATE EL7 = 1.  
+%      EVALUATE EL8 = 1.  
+%      EVALUATE EL9 = 1.  
+%      EVALUATE VOLF = REAL NEL  
+%    END IF  
+%%  
+%% Normalise the fractions so that they add up to 1.  
+%%  
+%    LOOP NEL TIMES  
+%      CASE LOOPCOUNTER  
+%        BLOCK  
+%          IF EL1 .LE. 0. THEN  
+%            EVALUATE EL1 = 0.0  
+%          END IF  
+%          EVALUATE EL1 = EL1 / VOLF  
+%        END BLOCK  
+%        BLOCK  
+%          IF EL2 .LE. 0. THEN  
+%            EVALUATE EL2 = 0.0  
+%          END IF  
+%          EVALUATE EL2 = EL2 / VOLF  
+%        END BLOCK  
+%        BLOCK  
+%          IF EL3 .LE. 0. THEN  
+%            EVALUATE EL3 = 0.0  
+%          END IF  
+%          EVALUATE EL3 = EL3 / VOLF  
+%        END BLOCK  
+%        BLOCK  
+%          IF EL4 .LE. 0. THEN  
+%            EVALUATE EL4 = 0.0  
+%          END IF  
+%          EVALUATE EL4 = EL4 / VOLF  
+%        END BLOCK  
+%        BLOCK  
+%          IF EL5 .LE. 0. THEN  
+%            EVALUATE EL5 = 0.0  
+%          END IF  
+%          EVALUATE EL5 = EL5 / VOLF  
+%        END BLOCK  
+%        BLOCK  
+%          IF EL6 .LE. 0. THEN  
+%            EVALUATE EL6 = 0.0  
+%          END IF  
+%          EVALUATE EL6 = EL6 / VOLF  
+%        END BLOCK  
+%        BLOCK  
+%          IF EL7 .LE. 0. THEN  
+%            EVALUATE EL7 = 0.0  
+%          END IF  
+%          EVALUATE EL7 = EL7 / VOLF  
+%        END BLOCK  
+%        BLOCK  
+%          IF EL8 .LE. 0. THEN  
+%            EVALUATE EL8 = 0.0  
+%          END IF  
+%          EVALUATE EL8 = EL8 / VOLF  
+%        END BLOCK  
+%        BLOCK  
+%          IF EL9 .LE. 0. THEN  
+%            EVALUATE EL9 = 0.0  
+%          END IF  
+%          EVALUATE EL9 = EL9 / VOLF  
+%        END BLOCK  
+%      END CASE  
+%    END LOOP  
+%%   show EL1 EL2 EL3 EL4  
+%% check it's worked  
+%% EVALUATE NNOTZERO = 0  
+%% EVALUATE VOLF = 0.0  
+%% LOOP NEL TIMES  
+%% CASE LOOPCOUNTER  
+%% EVALUATE ELEMENT = EL1  
+%% EVALUATE ELEMENT = EL2  
+%% EVALUATE ELEMENT = EL3  
+%% EVALUATE ELEMENT = EL4  
+%% EVALUATE ELEMENT = EL5  
+%% EVALUATE ELEMENT = EL6  
+%% EVALUATE ELEMENT = EL7  
+%% EVALUATE ELEMENT = EL8  
+%% EVALUATE ELEMENT = EL9  
+%% END CASE  
+%% IF ELEMENT .GT. 0.0 THEN  
+%% EVALUATE NNOTZERO = NNOTZERO + 1  
+%% EVALUATE VOLF = VOLF + ELEMENT  
+%% END IF  
+%% END LOOP  
+%% SHOW NEL NNOTZERO  
+%% SHOW VOLF  
+%% Final volume elements:  
+%% show EL1 EL2 EL3 EL4 EL5 EL6 EL7 EL8 EL9  
+%% create a SUMFIX line for LIST 12  
+%    IF ( FILEEXISTS ( 'TWIN-12.DAT' ) ) THEN  
+%      EVALUATE T = FILEDELETE ( 'TWIN-12.DAT' )  
+%    END IF  
+%    COPY '#RELEASE PUNCH TWIN-12.DAT'  
+%% TRANSFER 'SUMFIX ' // CLINE TO DISPLAY  
+%    TRANSFER 'SUMFIX ' // CLINE TO PUNCH  
+%    COPY '#RELEASE PUNCH BFILE.PCH'  
+%%  
+%%  
+%    COPY '#GENERALEDIT 5'  
+%    COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'  
+%    COPY 'LOCATE RECORDTYPE=105'  
+%% Insert new record.  
+%    COPY 'TRANSHEAD TO OFFSET=22 FROM NEL'  
+%    COPY 'INSERT'  
+%    IF NEL .GT. 0 THEN  
+%% Remove old record  
+%      COPY 'DELETE'  
+%    END IF  
+%    COPY 'TRANSHEAD TO OFFSET=22 FROM NEL'  
+%    COPY 'TOP'  
+%%    show EL1 EL2 EL3 EL4 EL5 EL6 EL7 EL8 EL9  
+%    LOOP NEL TIMES  
+%      CASE LOOPCOUNTER  
+%        COPY 'TRANSFER TO OFFSET = 0 FROM EL1'  
+%        COPY 'TRANSFER TO OFFSET = 1 FROM EL2'  
+%        COPY 'TRANSFER TO OFFSET = 2 FROM EL3'  
+%        COPY 'TRANSFER TO OFFSET = 3 FROM EL4'  
+%        COPY 'TRANSFER TO OFFSET = 4 FROM EL5'  
+%        COPY 'TRANSFER TO OFFSET = 5 FROM EL6'  
+%        COPY 'TRANSFER TO OFFSET = 6 FROM EL7'  
+%        COPY 'TRANSFER TO OFFSET = 7 FROM EL8'  
+%        COPY 'TRANSFER TO OFFSET = 8 FROM EL9'  
+%      END CASE  
+%    END LOOP  
+%    COPY 'WRITE'  
+%    COPY 'END'  
 %  END IF
-%%
-%  IF MONITORING .EQ. FALSE THEN
-%   COPY '#SET MONI OFF'
-%  END IF
-%% set verify false
-% END SCRIPT
+%  EVALUATE DOWRITE = TRUE
+%  EVALUATE OLD5 = TRUE  
+%%  
+%  IF MONITORING .EQ. FALSE THEN  
+%    COPY '#SET MONI OFF'  
+%  END IF  
+%% set verify false  
+%END SCRIPT  
