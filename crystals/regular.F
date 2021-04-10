@@ -2963,6 +2963,7 @@ C
 C -- PROCESS THE STORED COORDINATED DATA POINTED TO BY LOLD AND LNEW
 C
 C
+      DIMENSION BANGLE(4)          !TERMINAL BOND ANGLES IN TORSION CALCULATION
       DIMENSION DELTA(5)
       DIMENSION SUM(4)
       DIMENSION RMSDEV(4)
@@ -3386,20 +3387,22 @@ C
 C
 CTORSION ANGLE DEVIATIONS
 C
-C
-        colin = 10.
+C Torsions where any bond angle exceeds DCOLIN are skipped in the 
+c summary statistics. Acute ngles less than 180-dcolin are not checked
+c PLATON uses 170 as threshold.
+        dcolin = 170.
+        colin = cos(dtr*dcolin)
         IF (NOLD .GE. 1) THEN
          IF (IMATRIX.LT.0) THEN
           IF (ISSPRT .EQ. 0) THEN
           WRITE(NCWU,'(/A,A,F5.1,A)')'Torsion angles are omitted from',
-     1    ' the statistics if angles C-A-B or A-B-D are within', colin,
-     2    '  degrees of co-linearity'
-          WRITE(NCWU,'(A,57x,a)')'Torsion angle deviations',
-     2    ' Angles, Difference & Status'
+     1    ' the statistics if angles C-A-B or A-B-D are within',
+     2     180.-dcolin,' degrees of co-linearity'
+          WRITE(NCWU,'(74x,a,a)') 'Torsion Angles, Difference & Status,'
+     1    ,' Terminal angles'
           ENDIF
          ENDIF
         ENDIF
-        colin = cos(dtr * colin)
 C RMS deviation of torsions.
 C 1. Find next bond (a1-a2) in LOLD.
 C 2. Find equiv bond in LNEW (a1'-a2')
@@ -3530,19 +3533,13 @@ C Normalise
               IF(NORM3(BDVEC).LT.0) CYCLE
 
 C COMPUTE ANGLES C-A-B AND A-B-D
-              ANGLE1=(ACVEC(1)*ABVEC(1)+
+              BANGLE(1)=(ACVEC(1)*ABVEC(1)+
      1        ACVEC(2)*ABVEC(2)+ACVEC(3)*ABVEC(3))
      
-              ANGLE2=(BDVEC(1)*ABVEC(1)+
+              BANGLE(2)=(BDVEC(1)*ABVEC(1)+
      1        BDVEC(2)*ABVEC(2)+BDVEC(3)*ABVEC(3))
+              BANGLE(2) = -BANGLE(2)
      
-C FIND LARGEST BOND ANGLE
-      IF(ABS(ANGLE1).GT.ABS(ANGLE2)) THEN
-       ANGLE3=ANGLE1
-      ELSE
-       ANGLE3=ANGLE2
-      ENDIF
-            
 C Axis system for torsion C-A-B-D
 C Construct an orthogonal set of axes so that the 'z' direction points
 C along the AB bond, the 'y' direction is perpendicular to the CAB plane,
@@ -3590,6 +3587,15 @@ C Normalise
               IF(NORM3(ACVEC).LT.0) CYCLE
               IF(NORM3(ABVEC).LT.0) CYCLE
               IF(NORM3(BDVEC).LT.0) CYCLE
+
+C COMPUTE ANGLES C-A-B AND A-B-D
+              BANGLE(3)=(ACVEC(1)*ABVEC(1)+
+     1        ACVEC(2)*ABVEC(2)+ACVEC(3)*ABVEC(3))
+     
+              BANGLE(4)=(BDVEC(1)*ABVEC(1)+
+     1        BDVEC(2)*ABVEC(2)+BDVEC(3)*ABVEC(3))
+              BANGLE(4) = -BANGLE(4)
+     
 C Axis system for torsion C-A-B-D
               CALL XMOVE(ABVEC,ROMAT(7),3)             ! z-direction
               IF( NCROP3(ABVEC,ACVEC,ROMAT(4)).LT.0) CYCLE        ! y-direction
@@ -3639,13 +3645,16 @@ cdjwfeb11 Watch out for inversion
                else if (tp .lt. -180.) then
                   tp = tp + 360.
                endif
-          djw1=min(1.,abs(angle3))
-          djw2=sign(djw1,angle3)
-          djw3=rtd*acos(djw2)
-         IF (djw1 .ge. colin) THEN
-          WRITE(CBUFF,'(A,F6.1)')' SKIPPED',djw3
+
+         djw5=minval(bangle)
+         do iiidjw=1,4
+          bangle(iiidjw)=rtd*acos(bangle(iiidjw))
+         enddo
+         IF (djw5 .lt. colin) THEN
+          WRITE(CBUFF,'(A,4I5)')' SKIPPED' 
+     1    ,(nint(bangle(iiidjw)),iiidjw=1,4)
          ELSE
-          CBUFF = ' OK'
+          WRITE(CBUFF,'(A,6F6.1)')' OK     '
 c  only include OK geometries in statistics
           numt = numt + 1
           tdevp = tdevp + tp*tp
@@ -3675,7 +3684,7 @@ c  only include OK geometries in statistics
         CALL XCRAS(CNEW,LNS)
         IF (ISSPRT .EQ. 0) THEN
 
-         WRITE(NCWU,'(A,2X,A,4x,3F8.2,A)')
+         WRITE(NCWU,'(A,X,A,3F8.2,A)')
      1   COLD(1:36), CNEW(1:36), T1,T2,TP,CBUFF
         ENDIF
               ENDIF
