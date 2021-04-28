@@ -1,8 +1,7 @@
 CODE FOR TLAW2
+      PROGRAM TLAW2
 C      SUBROUTINE TLAW2(iout)
 C
-C  IOUT = -1 FOR FAILURE
-C         +1 FOR SUCCESS
 C
 C WRITTEN BY BRUCE FOXMAN, 2017, 2020 (-ve DETERMINANT HANDLING)
 C 2021 (AUTODETECTION OF TWINABS' SETTING "2" AS THE MAJOR
@@ -32,8 +31,6 @@ c
       DIMENSION INDX(3)
       CHARACTER*32 FILIN
 C
-C     INDICATE SUCCESS
-      IOUT = 1
 C
       DO 90 K=1,3
       DO 90 L=1,100000
@@ -347,7 +344,6 @@ C     (2020 edit) Test determinant only for 5% dev from +/- 1.0
       IF(abs(D1).LT.0.95.OR.abs(D1).GT.1.05) THEN
             WRITE(13,505)
             WRITE(*,505)
-            IOUT= -1                !INDICATE FAILURE
       ENDIF
       WRITE(13,503) D1
       WRITE(*,503) D1
@@ -365,7 +361,8 @@ C     AND CLEAR THE ACCUMULATORS
         ENDDO
        ENDDO
       ENDDO
-      RETURN 
+	  CALL EXIT()
+
   400 WRITE(13,504) D
       WRITE(*,504) D
       STOP
