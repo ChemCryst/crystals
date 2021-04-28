@@ -449,7 +449,7 @@ void CxModel::OnPaint(wxPaintEvent &event)
       glLoadIdentity();
 //      ModelBackground();
       glMatrixMode ( GL_PROJECTION );
-      glPopMatrix();
+//      glPopMatrix();
       glMatrixMode ( GL_MODELVIEW );
 
 #ifdef CRY_USEMFC
