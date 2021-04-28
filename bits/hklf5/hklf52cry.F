@@ -4,7 +4,7 @@ C----- BASED UPON SIMON PARSONS ctwin.f90
 C      IO BASED UPON RICHARD COOPERS cif2cry.fpp
 c      Extraction of twin matrix by Bruce FOxman, 2017
 c      Updated to include input of inversion twinning
-c      by Bruce Foxman, 2020
+c      by Bruce Foxman, 2020, this version 04 April 2021
 c
 c      removal of clusters of reflections where more than one
 c      reflections have the same element ID, e.g. -2, -2, 1
@@ -48,8 +48,13 @@ C IF THE -N...1 BLOCK OF REFLECTIONS CONTAINS DUPLICATE KEYS
 C DELETE THE BLOCK, OTHERWISE OUTPUT IT
       JELEM = 0
       LINE=1
+      kdjw = 0
 100   CONTINUE
+      if (mod(kdjw,1000) .eq. 0) then
+       write(6,*)'Working, Line number', kdjw
+      endif 
       READ(10,'(A)',ERR=9000,END=9000)CLINE(LINE)
+      kdjw = kdjw + 1
       READ(CLINE(LINE),'(3I4,2F8.2,I4)') 
      1  INDEX,VALUE,KEY
 C       BRUKER FILES END WITH H, K, L ALL = 0; SKIP THAT & LOOK FOR EOF
@@ -60,6 +65,7 @@ C
          DO 
            JELEM = KKEY(KEY,JELEM)
            READ(10,'(A)',ERR=9999,END=9000)CLINE(LINE)
+           kdjw = kdjw + 1
            READ(CLINE(LINE),'(3I4,2F8.2,I4)') 
      1     INDEX,VALUE,KEY
            LINE=LINE+1
@@ -106,6 +112,7 @@ C
 C
 9000  CONTINUE
       WRITE(11,"('-512')")
+      write(6,*)'Working out twin laws'
       CALL TLAW2(iout)
       IF (IOUT.GE.1) THEN
          OPEN(14,STATUS='UNKNOWN',FILE='l25.cry')
@@ -424,15 +431,10 @@ C     & DETERMINE THE NUMBER OF COMPONENTS (JJMAX)
       GO TO 12
 C
 C     READ IN AND CHECK FOR -1, 2 PAIR SEQUENCE IN HKLF5 FILE
-   20 READ (14,500,END=100) HP1,KP1,LP1,FO,SIGMA,JCODE
+   20 READ (14,500,END=100) HT1,KT1,LT1,FO,SIGMA,JCODE
       IF(JCODE.eq.-1) GO TO 22
       GO TO 20
-   21 JJ=IABS(JCODE)-1
-      JTEST(JJ)=JJ
-      HKLT(NREF,1,JJ)=HT1
-      HKLT(NREF,2,JJ)=KT1
-      HKLT(NREF,3,JJ)=LT1
-   22 READ (14,500) HT1,KT1,LT1,FO2,SIGMA,JCODE2
+   22 READ (14,500) HP1,KP1,LP1,FO2,SIGMA,JCODE2
       IF(JCODE2) 24,23,23
    23 jj=1
       HKLP(NREF,1)=HP1
@@ -492,14 +494,14 @@ C
       DO 170 JJ=1,JJMAX
       DO 161 I=1,3
       DO 161 J=1,3
-      A(I,J)=HP(I,J,JJ)
-      C(I,J)=HT(I,J,JJ)
+      C(I,J)=HP(I,J,JJ)
+      A(I,J)=HT(I,J,JJ)
       CALL MATINV(C,CI,D)
   161 HTINV(I,J,JJ)=CI(I,J)
 C
       IF(D.EQ.0.0) GO TO 400
 C
-C     GET R = (H(PRIN) X H(TWIN)^T) X (H(TWIN) X H(TWIN)^T)^-1
+C     GET R = (H(TWIN) X H(TWIN)^T) X (H(PRIN) X H(TWIN)^T)^-1  
 C
       CALL MATMULT(A,CI,3,B)
       DO 162 I=1,3
@@ -543,7 +545,6 @@ C     COMPONENT IS TOO FAR (IN RECIPROCAL SPACE) FROM THE PRINCIPAL.
       DO 199 J=1,NREF-1
       CDJW = ' '
 
-      IF (IDETECT.EQ.2) GO TO 175
 C     TRANSFORM THE PRINCIPAL
 C
       DJWT(1,JJ)=HKLP(J,1)*RSV(1,1,JJ)+HKLP(J,2)*RSV(1,2,JJ)+HKLP(J,3)*
@@ -568,33 +569,6 @@ C
       DJWI(1,JJ) = NINT(DJWT(1,JJ)-HKLT(J,1,JJ))
       DJWI(2,JJ) = NINT(DJWT(2,JJ)-HKLT(J,2,JJ))
       DJWI(3,JJ) = NINT(DJWT(3,JJ)-HKLT(J,3,JJ))
-
-      GO TO 180
-C
-C     TRANSFORM THE PRINCIPAL, IT is 2, THE TWIN THIS TIME
-C
-175   DJWT(1,JJ)=HKLT(J,1,JJ)*RSV(1,1,JJ)+HKLT(J,2,JJ)*RSV(1,2,JJ)+
-     1HKLT(J,3,JJ)*RSV(1,3,JJ)
-      DJWT(2,JJ)=HKLT(J,1,JJ)*RSV(2,1,JJ)+HKLT(J,2,JJ)*RSV(2,2,JJ)+
-     1HKLT(J,3,JJ)*RSV(2,3,JJ)
-      DJWT(3,JJ)=HKLT(J,1,JJ)*RSV(3,1,JJ)+HKLT(J,2,JJ)*RSV(3,2,JJ)+
-     1HKLT(J,3,JJ)*RSV(3,3,JJ)
-C
-C     SKIP ENTRY IF THIS IS A MULTICOMPONENT TWIN AND THERE IS 
-C     NO ENTRY FOR THIS COMPONENT
-C
-      IF(HKLT(J,1,JJ).EQ.0.0.AND.HKLT(J,2,JJ).EQ.0.0.AND.
-     1HKLT(J,3,JJ).EQ.0.0) GO TO 199
-C     FIND THE ACTUAL DISCREPANCY, THIS TIME WE NEED TO USE COMPONRNT 1
-      DJWD(1,JJ) = ABS(DJWT(1,JJ)-HKLP(J,1))
-      DJWD(2,JJ) = ABS(DJWT(2,JJ)-HKLP(J,2))
-      DJWD(3,JJ) = ABS(DJWT(3,JJ)-HKLP(J,3))
-
-C      FIND THE NEAREST INTEGER DISCREPANCY (AS IS DONE IN CRYSTALS)
-C      AGAIN, WE USE COMPONENT 1
-      DJWI(1,JJ) = NINT(DJWT(1,JJ)-HKLP(J,1))
-      DJWI(2,JJ) = NINT(DJWT(2,JJ)-HKLP(J,2))
-      DJWI(3,JJ) = NINT(DJWT(3,JJ)-HKLP(J,3))
 C
 C     FIND THE TOTAL INTEGER DISCREPANCY
 C
@@ -652,6 +626,8 @@ C 210   CONTINUE
       WRITE(13,506) (K+1,NREF3(K), K=1,JJMAX)
   215 WRITE(13,'(/, A,I7//)')' Number of non-matching reflections = ',
      1NREJ
+      IF (NREJ.EQ.0) WRITE(13,5061)
+      IF (NREJ.EQ.0) WRITE(*,5061)
       IF(JJMAX.EQ.1) GO TO 220
       WRITE(13,507) (K+1,NREJ2(K), K=1,JJMAX)
 C
@@ -661,14 +637,14 @@ C
   220 DO 270 JJ=1,JJMAX
       DO 261 I=1,3
       DO 261 J=1,3
-      A(I,J)=HP(I,J,JJ)
-      C(I,J)=HT(I,J,JJ)
+      C(I,J)=HP(I,J,JJ)
+      A(I,J)=HT(I,J,JJ)
       CALL MATINV(C,CI,D)
   261 HTINV(I,J,JJ)=CI(I,J)
 C
       IF(D.EQ.0.0) GO TO 400
 C
-C     GET R = (H(PRIN) X H(TWIN)^T) X (H(TWIN) X H(TWIN)^T)^-1
+C     GET R = (H(TWIN) X H(TWIN)^T) X (H(PRIN) X H(TWIN)^T)^-1  
 C
       CALL MATMULT(A,CI,3,B)
       DO 262 I=1,3
@@ -712,12 +688,14 @@ C     AND CLEAR THE ACCUMULATORS
      1,/,' AND/OR CHECK INPUT DATA')
   505 FORMAT(/
      1 'Determinant is quite far from 1.0.',
-     2 ' Inspect TLAT_OUT.LIS for errors')
+     2 ' Inspect TLAW_OUT.LIS for errors')
 5051  format(/
      1 'The determinant is negative. If inversion twin laws have been',
      2/,'included, this is expected and no user action is required.',/
      3 /'Otherwise, please reprocess data without averaging')
   506 FORMAT((/' NO. OF SETS FOR COMPONENT ',I4, ' = ',I7))
+ 5061 FORMAT(/' ALL REFLECTIONS WERE ACCEPTED; THE TWIN LAW(S) BELOW '
+     1'DO NOT DIFFER FROM RESULTS PRESENTED EARLIER ABOVE')
   507 FORMAT((/' No. unmatched for component ',I4, ' = ', I5))
 
   508 FORMAT(//
@@ -732,7 +710,7 @@ C     AND CLEAR THE ACCUMULATORS
      8 'The very unreliable reflections are marked with an "*" in'/
      9 'the list below'/
      1 'CRYSTALS will re-process the data omitting these reflections'/
-     2 'See the bottom of TLAT_OUT.LIS for the final results'
+     2 'See the bottom of TLAW_OUT.LIS for the final results'
      1 //)
 
   509 FORMAT(//,

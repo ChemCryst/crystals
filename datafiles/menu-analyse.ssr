@@ -25,12 +25,11 @@
 ^^WI   ITEM HBON  '&Likely H-bonds'                                             
 ^^WI   '#dist_Nou mo=al_Nsel ran=li_Nli 1.5 2.2 .7 2.2_Npi h_Nbo o n_Nen'
 ^^WI               ENABLEIF='L1 L2 L5' DISABLEIF='IN'                           
-
-
 ^^WI   ITEM HBON  '&Potential H-bond pairs'                                             
 ^^WI   '#use crysdir:script/hb.dat'
 ^^WI               ENABLEIF='L1 L2 L5' DISABLEIF='IN'                           
-
+^^WI   ITEM XPLATON 'Launch Platon' '#SCRIPT PLATON'
+^^WI               ENABLEIF='L1 L2 L5' DISABLEIF='IN'                          
 ^^WI   MENU XROTAX '&ROTAX: hklf4 twins'                                      
 ^^WI     ITEM XINTWIN 'ROTAX analysis	Alt+X' '#SCRIPT XROTAX'                                  
 ^^WI               ENABLEIF='L1 L5 L6' DISABLEIF='IN'                           
