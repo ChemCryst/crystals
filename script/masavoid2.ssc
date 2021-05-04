@@ -1,0 +1,364 @@
+%SCRIPT MASA
+%%
+%% Make up a random rotation
+%%
+%% Read pf6.frg line by line and compute centroid (in orth coords)
+%% Re-read pf6.frg. For each line, apply random rotation, apply random shift, put atom in structure.
+%%
+%  VARIABLE REAL TX TY TZ
+%  VARIABLE REAL XC YC ZC UISO
+%  VARIABLE REAL R11 R12 R13
+%  VARIABLE REAL R21 R22 R23
+%  VARIABLE REAL R31 R32 R33
+%  VARIABLE REAL U V W X Y Z
+%  VARIABLE REAL QW QX QY QZ
+%  VARIABLE REAL TWOPI SQU SQMU
+%  VARIABLE REAL OM1 OM2 OM3 OM4 OM5 OM6 OM7 OM8 OM9
+%  VARIABLE CHARACTER CFILE
+%  VARIABLE INTEGER NAT NTIMES
+%  VARIABLE REAL SMX SMY SMZ
+%  VARIABLE CHARACTER FELE LELE
+%  VARIABLE INTEGER FSER LSER
+%  VARIABLE REAL FSERR LSERR
+%  VARIABLE REAL R BESTR
+%  VARIABLE REAL SHIFTM
+%  VARIABLE INTEGER N10 T
+%  VARIABLE CHARACTER CATOM
+%%
+%  IF ( EXISTS 12 .NE. 1 ) THEN
+%      COPY '#LIST 12'
+%     COPY "FULL X'S"
+%     COPY 'END'
+%  END IF
+%  COPY '#release punch tmp/masa12.dat'
+%  COPY '#PUNCH 12'
+%  COPY 'END'
+%  COPY '#release punch logs/bfile.pch'
+
+
+%  COPY '#release punch tmp/masa5.dat'
+%  COPY '#PUNCH 5'
+%  COPY 'END'
+%  COPY '#release punch logs/bfile.pch'
+
+
+%  EVALUATE BESTR = 200.0
+%  IF ( FILEEXISTS ( 'bestfrag.dat' ) ) THEN
+%     COPY '#USE bestfrag.dat'
+%     COPY '#SFLS'
+%     COPY 'CALC'
+%     COPY 'END'
+%     COPY '#SCRIPT RFACTOR'
+%     EVALUATE BESTR = R
+%  END IF
+%  COPY '#USE tmp/masa5.dat'
+%  COPY '#VOID'
+
+%  COPY 'DISTANCE 2.2'
+
+%  COPY 'END'
+
+%  COPY '#EDIT 5 10'
+%  COPY 'TYPECHANGE TYPE EQ R M'
+%  COPY 'TYPECHANGE TYPE EQ L M'
+%  COPY 'SELECT TYPE EQ M'
+%  COPY 'END'
+%  COPY '#EDIT'
+%  COPY 'SELECT TYPE NE M'
+%  COPY 'SELECT TYPE NE R'
+%  COPY 'SELECT TYPE NE L'
+%  COPY 'END'
+
+%  COPY '#GENERALEDIT 10'
+%  COPY 'TRANSHEAD FROM OFFSET=3 TO N10'
+%  COPY 'END'
+%  SHOW N10
+%%
+%%
+%% Get ortho -> crystal fraction matrix:
+%%
+%  COPY '#GENERALEDIT 1'
+%  COPY 'LOCATE RECORDTYPE=106'
+%  COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%  COPY 'TRANSFER FROM OFFSET=0 TO OM1'
+%  COPY 'TRANSFER FROM OFFSET=1 TO OM2'
+%  COPY 'TRANSFER FROM OFFSET=2 TO OM3'
+%  COPY 'TRANSFER FROM OFFSET=3 TO OM4'
+%  COPY 'TRANSFER FROM OFFSET=4 TO OM5'
+%  COPY 'TRANSFER FROM OFFSET=5 TO OM6'
+%  COPY 'TRANSFER FROM OFFSET=6 TO OM7'
+%  COPY 'TRANSFER FROM OFFSET=7 TO OM8'
+%  COPY 'TRANSFER FROM OFFSET=8 TO OM9'
+%  COPY 'END'
+%%
+%% INPUTS:
+%% CFILE is the file to read 
+%% XC - ZC are the crystallographic coords of the fragment centre in the current structure.
+%% UISO is the starting value for all the atoms in the fragment
+%% SHIFTM scales the size of the random displacement from the centroid. The default is -0.5 -> +0.5 Angstroms.
+%% NTIMES - number of trials
+%%
+%%
+%  EVALUATE CFILE = 'bf4.frg'
+%  EVALUATE XC = 0.285910
+%  EVALUATE YC = 0.128640
+%  EVALUATE ZC = 0.817140
+%  EVALUATE UISO = 0.05
+%  EVALUATE SHIFTM = 1.5
+%  EVALUATE NTIMES = 100
+
+%  LOOP NTIMES TIMES
+%%
+%% Generate a random, uniformly sample quaternion.
+%% Quaternion notation provides a simple(ish) way to uniformly sample all orientations.
+%%
+%% u,v,w are random 0 to 1
+%% quaternion ( sqrt(1-u) sin(2πv), sqrt(1-u) cos(2πv), sqrt(u) sin(2πw), sqrt(u) cos(2πw))
+%%
+%% Fun fact - the 0.0 in the argument to the RANDOM function doesn't do anything.
+%% RANDOM returns a value sampled from a uniform distribution between 0 and 1.
+%     EVALUATE U = RANDOM ( 0.0 )
+%     EVALUATE V = RANDOM ( 0.0 )
+%     EVALUATE W = RANDOM ( 0.0 )
+%%
+%% TX,TY and TZ are small displacements from the centroid - here they 
+%% are -0.5 -> 0.5 angstroms. We should set the scaling as an option.
+%%
+%     EVALUATE TX = SHIFTM * RANDOM ( 0.0 ) - 0.5
+%     EVALUATE TY = SHIFTM * RANDOM ( 0.0 ) - 0.5
+%     EVALUATE TZ = SHIFTM * RANDOM ( 0.0 ) - 0.5
+%%
+%     EVALUATE TWOPI = 3.141592
+%     EVALUATE SQU = SQRT ( U )
+%     EVALUATE SQMU = SQRT ( 1.0 - U )
+%     EVALUATE QW =  SQMU * SIN ( TWOPI * V )
+%     EVALUATE QX =  SQMU * COS ( TWOPI * V )
+%     EVALUATE QY =  SQU  * SIN ( TWOPI * W )
+%     EVALUATE QZ =  SQU  * COS ( TWOPI * W )
+{I Random quaternion is:
+%     SHOW QW
+%     SHOW QX
+%     SHOW QY
+%     SHOW QZ
+%%
+%% Generate a 3x3 transformation from the quaternion
+%% [ 1 - 2*qy2 - 2*qz2 , 2*qx*qy - 2*qz*qw ,	2*qx*qz + 2*qy*qw ]
+%% [ 2*qx*qy + 2*qz*qw , 1 - 2*qx2 - 2*qz2 ,	2*qy*qz - 2*qx*qw ]
+%% [ 2*qx*qz - 2*qy*qw , 2*qy*qz + 2*qx*qw ,	1 - 2*qx2 - 2*qy2 ]
+%%
+%     EVALUATE R11 = 1.0 - ( 2.0 * QY * QY + 2.0 * QZ * QZ )
+%     EVALUATE R12 = 2.0 * QX * QY - 2.0 * QZ * QW
+%     EVALUATE R13 = 2.0 * QX * QZ + 2.0 * QY * QW
+%     EVALUATE R21 = 2.0 * QX * QY + 2.0 * QZ * QW
+%     EVALUATE R22 = 1.0 - ( 2.0 * QX * QX + 2.0 * QZ * QZ )
+%     EVALUATE R23 = 2.0 * QY * QZ - 2.0 * QX * QW
+%     EVALUATE R31 = 2.0 * QX * QZ - 2.0 * QY * QW
+%     EVALUATE R32 = 2.0 * QY * QZ + 2.0 * QX * QW
+%     EVALUATE R33 = 1.0 - ( 2.0 * QX * QX + 2.0 * QY * QY )
+{I Generates a rotation matrix of:
+%     SHOW R11
+%     SHOW R12
+%     SHOW R13
+%     SHOW R21
+%     SHOW R22
+%     SHOW R23
+%     SHOW R31
+%     SHOW R32
+%     SHOW R33
+%%
+%% Read frag file
+%%
+%%
+%     EVALUATE NAT = 0
+%     EVALUATE SMX = 0.0
+%     EVALUATE SMY = 0.0
+%     EVALUATE SMZ = 0.0
+%%
+%% Open the file
+%%
+%     TRANSFER '#OPEN SCPDATA ' // CFILE TO CRYSTALS
+%%
+%% Read the file. On this first pass through, work out the centroid.
+%% Sum the x, y and z coordinates, and count number of atoms:
+%%
+%     LOOP 
+%        ON ERROR TERMINATE
+%        ON END TERMINATE
+%        EXTRACT NEXT
+%        CLEAR
+%        EXTRACT TRANSFER COMMAND
+%        EXECUTE SEND
+%        EXTRACT TRANSFER INPUT
+%        CLEAR
+%        GET NOSTORE NOPROMPT KEYWORD NULLSTRING
+%        IF CVALUE .EQ. 'END' THEN
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%        ELSE
+%        EVALUATE NAT = NAT + 1
+%        GET NOSTORE NOPROMPT REAL 'x'
+%        EVALUATE SMX = SMX + VALUE
+%        GET NOSTORE NOPROMPT REAL 'y'
+%        EVALUATE SMY = SMY + VALUE
+%        GET NOSTORE NOPROMPT REAL 'z'
+%        EVALUATE SMZ = SMZ + VALUE
+%        END IF
+%     END LOOP
+%%
+%% Compute the centroid of the fragment (in its orthogonal coords)
+%%
+%     EVALUATE SMX = SMX / REAL ( NAT )
+%     EVALUATE SMY = SMY / REAL ( NAT )
+%     EVALUATE SMZ = SMZ / REAL ( NAT )
+{I Centroid of fragment:
+%     SHOW SMX
+%     SHOW SMY
+%     SHOW SMZ
+%%
+%        COPY '#GENERALEDIT 10'
+%        COPY 'LOCATE RECORDTYPE=101'
+%        COPY 'ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR'
+%        COPY 'TOP'
+%        SHOW N10
+%        EVALUATE T = INTEGER (  RANDOM ( 0.0 ) * REAL ( N10 ) )
+%        SHOW T
+%        LOOP T TIMES
+%          COPY 'NEXT'
+%        END LOOP
+%        COPY 'TRANSFER FROM OFFSET=4 TO XC'
+%        COPY 'TRANSFER FROM OFFSET=5 TO YC'
+%        COPY 'TRANSFER FROM OFFSET=6 TO ZC'
+%        COPY 'END'
+%        SHOW XC
+%        SHOW YC
+%        SHOW ZC
+%% Now, rewind and read fragment file again: 
+%% subtract centroid to move to origin, 
+%% apply random rotate and translate matrix and vector.
+%%
+
+%     EXTRACT REWIND
+%     COPY '#EDIT'
+%     LOOP NAT TIMES
+%        ON ERROR TERMINATE
+%        ON END TERMINATE
+%        EXTRACT NEXT
+%        CLEAR
+%        EXTRACT TRANSFER COMMAND
+%        EXECUTE SEND
+%        EXTRACT TRANSFER INPUT
+%        CLEAR
+%        GET NOSTORE NOPROMPT KEYWORD 'Nope'
+%        EVALUATE CATOM = CVALUE
+
+%        GET NOSTORE NOPROMPT REAL 'x' '0.0'
+%        EVALUATE U = VALUE - SMX
+%        GET NOSTORE NOPROMPT REAL 'y'
+%        EVALUATE V = VALUE - SMY
+%        GET NOSTORE NOPROMPT REAL 'z'
+%        EVALUATE W = VALUE - SMZ
+%%
+%%
+%%  U,V,W are the orthogonal coordinates, shifted so the molecule 
+%%  centroid is at the origin of the coordinate system.
+%%
+%        EVALUATE X = R11 * U + R12 * V + R13 * W + TX
+%        EVALUATE Y = R21 * U + R22 * V + R23 * W + TY  
+%        EVALUATE Z = R31 * U + R32 * V + R33 * W + TZ
+%%
+%%  Now X,Y,Z are the rotated orthogonal coordinates (using the random rotation that we 
+%%  generated earlier), plus a small random shift in the orthogonal system, plus an offset
+%%  XC,YC,ZC to place them in the cell.
+%%
+
+%        EVALUATE U = OM1 * X + OM4 * Y + OM7 * Z + XC
+%        EVALUATE V = OM2 * X + OM5 * Y + OM8 * Z + YC
+%        EVALUATE W = OM3 * X + OM6 * Y + OM9 * Z + ZC
+%%{I Final coords
+%%%     CLEAR
+%%%     STORE FORMAT /(F8.5)/ LENGTH 9 REAL U 
+%%%     STORE FORMAT /(F8.5)/ LENGTH 9 REAL V 
+%%%     STORE FORMAT /(F8.5)/ LENGTH 9 REAL W 
+%%%     OUTPUT
+
+%%
+%%  Now U,V,W are coordinates in crystal fractions.
+%%
+%%  Change coords of first NAT atoms. This is a bit ineffiecnt as it re-writes the atom list (list 5) 
+%%  for every atom that it changes.
+%%
+%        IF LOOPCOUNTER .EQ. 1 THEN
+%          EVALUATE FELE = FIRSTSTR ( CATOM )
+%          EVALUATE FSERR = REAL FIRSTINT ( CATOM )
+%        END IF
+%        EVALUATE LELE = FIRSTSTR ( CATOM )
+%        EVALUATE LSERR = REAL FIRSTINT ( CATOM )
+%        CLEAR
+%        INSERT 'ATOM '
+%        STORE CHARACTER FIRSTSTR ( CATOM )
+%        STORE FORMAT /(I6)/ LENGTH 6 INTEGER FIRSTINT ( CATOM )
+%        INSERT ' X = '
+%        STORE FORMAT /(F7.3)/ LENGTH 7 REAL U
+%        STORE FORMAT /(F7.3)/ LENGTH 7 REAL V
+%        STORE FORMAT /(F7.3)/ LENGTH 7 REAL W
+%        INSERT ' U[11] = 0.05'
+%        OUTPUT
+%        SEND
+%     END LOOP
+%     COPY 'END'
+%     COPY '#EDIT'
+%     COPY 'CLASH FIXFORMER'
+%     COPY 'END'
+%     EXTRACT TRANSFER COMMAND
+%     LOOP 
+%        ON ERROR TERMINATE
+%        ON END TERMINATE
+%        EXTRACT NEXT
+%        CLEAR
+%        EXTRACT TRANSFER COMMAND
+%        EXECUTE SEND
+%        EXTRACT TRANSFER INPUT
+%        CLEAR
+%        GET NOSTORE NOPROMPT TEXT NULLSTRING
+%        TRANSFER CVALUE TO CRYSTALS
+%     END LOOP
+%     COPY '#CLOSE SCPDATA'
+%%
+%% Now do some refinement. First backup the current List 12, then writes
+%% a new one, then refine, then restore the original.
+%%
+
+
+%% Run some cycles of refinement
+%     COPY '#SFLS'
+%     COPY 'REFINE'
+%     COPY 'REFINE'
+%     COPY 'REFINE'
+%     COPY 'REFINE'
+%     COPY 'REFINE'
+%     COPY 'END'
+
+
+%%
+%% Get the R-factor for this run (stored in variable R)
+%%
+%     COPY '#SFLS'
+%     COPY 'CALC'
+%     COPY 'END'
+%     COPY '#SCRIPT RFACTOR'
+%     IF R .LT. BESTR THEN
+%       EVALUATE BESTR = R
+%       COPY '#RELEASE PUNCH bestfrag.dat'
+%       COPY '#PUNCH 5'
+%       COPY 'END'
+%       COPY '#release punch logs/bfile.pch'
+%     END IF
+%     TRANSFER ' R is ' // CHARACTER ( R ) // ', best R is ' // -
+      CHARACTER ( BESTR ) TO DISPLAY
+%     COPY '#USE tmp/masa5.dat'
+
+%     SHOW LOOPCOUNTER
+%     COPY '#PURGE'
+%     COPY 'END'
+%  END LOOP
+%  COPY '#USE tmp/masa12.dat'
+%END SCRIPT
