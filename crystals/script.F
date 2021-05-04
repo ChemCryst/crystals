@@ -8342,9 +8342,13 @@ C
 C -- OUTPUT BASIC MESSAGE
 cdjwdec09
 C----- RECOVER SCRIPT NAME
-      ISTAT = KSCIDN (2, 3, 'SCRIPTNAME', 1, IS, IDSCP, ISCPNM, 1)
-      ISTAT = KSCSDC ( ISCPNM, CSCPNM, LENNM)
-      IF (CSCPNM .NE. CLSTNM) CPRVNM = CLSTNM
+      IF ( ( ITYPE .EQ. 32 ) .OR. ( ITYPE .EQ. 21 ) ) THEN     ! Stack or Ident error, do not try to recover script name
+	     CSCPNM = 'unknown'
+	  ELSE 
+         ISTAT = KSCIDN (2, 3, 'SCRIPTNAME', 1, IS, IDSCP, ISCPNM, 1)   ! This can goes into recursive loop if error is that there is no script name
+         ISTAT = KSCSDC ( ISCPNM, CSCPNM, LENNM)
+         IF (CSCPNM .NE. CLSTNM) CPRVNM = CLSTNM
+	  END IF
       CLSTNM = CSCPNM(1:LENNM)
 c
 cdjwjun07
