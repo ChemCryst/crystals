@@ -93,7 +93,7 @@ Waiting
 %       VERIFY ON OFF                                                           
 %       GET SILENT NOSTORE FINAL ABBREVIATED ' '
 %       IF VALUE .EQ. 1 THEN
-%         EVALUATE LT = FILEDELETE('bestfrag.dat')
+%         EVALUATE LT = FILEDELETE ( 'bestfrag.dat' )
 %       END IF
 ^^??    MCYC TEXT
 %       GET SILENT NOSTORE INTEGER ' '                                             
