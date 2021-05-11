@@ -97,7 +97,50 @@
 %  EVALUATE SHIFTM = MJITTER
 %  EVALUATE NTIMES = MCYCLES
 %%
+%%
+%%
+%% Show a dialog which will:
+%%  - report current and best R factor
+%%  - cycle number and total cycles
+%%  - have a cancel button
+%%
+^^WI WINDOW MV2 'Progress' CANCEL='^^CO DISPOSE MV2'
+^^WI GRID MAIN NROWS=5 NCOLS=3
+^^WI { 
+^^WI   @ 2,2 GRID STATS NROWS=3 NCOLS=3
+^^WI   {
+^^WI     @ 1,1 STATIC T1 'Current R-factor'
+^^WI     @ 1,3 STATIC CURRR '99.999'
+^^WI     @ 2,1 STATIC T2 'Best R-factor'
+^^WI     @ 2,3 STATIC BESTR '99.999'
+^^WI     @ 3,1 STATIC T3 'Progress'
+^^WI     @ 3,3 STATIC PROGR '9999/9999'
+^^WI   }
+^^WI   @ 4,2 GRID BTNS NROWS=1 NCOLS=1
+^^WI   {
+^^WI     @ 1,1 BUTTON STOP '&Stop' INFORM=NO DEFAULT DISABLED=NO 
+^^WI   }
+^^WI } SHOW
+^^CR
+%%
 %  LOOP NTIMES TIMES
+%     CLEAR
+%     INSERT "^^CO SET CURRR TEXT '"
+%     STORE FORMAT /(F6.2)/ LENGTH 6 REAL R
+%     INSERT "'"
+%     OUTPUT
+%     CLEAR
+%     INSERT "^^CO SET BESTR TEXT '"
+%     STORE FORMAT /(F6.2)/ LENGTH 6 REAL BESTR
+%     INSERT "'"
+%     OUTPUT
+%     CLEAR
+%     INSERT "^^CO SET PROGR TEXT '"
+%     STORE FORMAT /(I4)/ LENGTH 4 INTEGER LOOPCOUNTER
+%     INSERT "/"
+%     STORE FORMAT /(I4)/ LENGTH 4 INTEGER NTIMES
+%     INSERT "'"
+%     OUTPUT
 %%
 %% Generate a random, uniformly sample quaternion.
 %% Quaternion notation provides a simple(ish) way to uniformly sample all orientations.
@@ -348,10 +391,21 @@
 %     TRANSFER ' R is ' // CHARACTER ( R ) // ', best R is ' // -
       CHARACTER ( BESTR ) TO DISPLAY
 %     COPY '#USE tmp/masa5.dat'
-
 %     SHOW LOOPCOUNTER
 %     COPY '#PURGE'
 %     COPY 'END'
+%%
+%% Break out of loops if user had closed progress window
+%%
+^^??  STOP STATE
+%     VERIFY ON OFF
+%     GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
+%     IF VALUE .EQ. 1  THEN                                                        
+ Progress window stop pressed. Stopping.
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%     END IF                                                                       
+%%
 %  END LOOP
+^^CO DISPOSE MV2
 %  COPY '#USE tmp/masa12.dat'
 %END SCRIPT
