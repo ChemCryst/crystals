@@ -6,24 +6,23 @@
 %% Re-read pf6.frg. For each line, apply random rotation, apply random shift, put atom in structure.
 %%
 %  VARIABLE REAL TX TY TZ
-%  VARIABLE REAL XC YC ZC UISO
-%  VARIABLE REAL U V W X Y Z
-%  VARIABLE CHARACTER CFILE
-%  VARIABLE INTEGER NTIMES
+%  VARIABLE REAL XC YC ZC MUISO
+%  VARIABLE REAL U V W X Y Z MJITTER
+%  VARIABLE CHARACTER MCFILE
+%  VARIABLE INTEGER NTIMES MCYCLES
 %  VARIABLE CHARACTER FELE LELE
 %  VARIABLE INTEGER FSER LSER
 %  VARIABLE REAL FSERR LSERR
 %  VARIABLE REAL R BESTR
-%  VARIABLE REAL SHIFTM OCC
-%  VARIABLE INTEGER N10 T IRES MAXRES NPARTS CURRES
+%  VARIABLE REAL SHIFTM OCC MOCC
+%  VARIABLE INTEGER N10 T IRES MAXRES MNFRAG CURRES
 %  VARIABLE CHARACTER CATOM CELE
 %  VARIABLE REAL RSER
 %  VARIABLE CHARACTER COORD
 %  VARIABLE INTEGER RESI
 %%
 %%
-%  EVALUATE NPARTS = 2
-%  EVALUATE OCC = 1.0 / REAL ( NPARTS )
+%  EVALUATE OCC = MOCC / REAL ( MNFRAG )
 %%
 %  IF ( EXISTS 12 .NE. 1 ) THEN
 %     COPY '#LIST 12'
@@ -51,6 +50,7 @@
 %     COPY 'CALC'
 %     COPY 'END'
 %  END IF
+%%
 %% FIND ANY RESIDUES >= 501
 %%
 %  COPY '#GENERALEDIT 5'
@@ -72,8 +72,8 @@
 %% with the first atom of each fragment being the centroid (might not be ideal for fragments with a central atom)
 %%
 %  IF MAXRES .GE. 1 THEN
-%    IF MAXRES .NE. NPARTS THEN
- Number of overlapping mols in structure is not same as requested NPARTS
+%    IF MAXRES .NE. MNFRAG THEN
+ Number of overlapping mols in structure is not same as requested MNFRAG
  TODO: Just remove and overwrite, for now, stop script!
 %       FINISH
 %    END IF
@@ -114,27 +114,14 @@
 %%
 %  ELSE
 %% 
-%% If no fragments present, need to add them. Use COORD.
+%% If no fragments present, need to add them. Use L10
 %%
 %%
-%% COORD has atom to use as centroid, e.g. 'P(1)'
+%%   Add MNFRAG copies of the template
 %%
-%    EVALUATE COORD = 'C(1)'
-%    EVALUATE BESTR = 200.0
-%    COPY '#EDIT 5 10'
-%    TRANSFER 'KEEP ' // COORD TO CRYSTALS
-%    COPY 'END'
-%    COPY '#EDIT'
-%    TRANSFER 'DELETE ' // COORD TO CRYSTALS
-%    COPY 'END'
-%%
-%%   Add NPARTS copies of the template
-%%
-%    EVALUATE CFILE = 'methanol.frg'
-%    EVALUATE UISO = 0.05
-%    EVALUATE SHIFTM = 0.25
+%    EVALUATE SHIFTM = MJITTER
 %    EVALUATE RESI = 501
-%    LOOP NPARTS TIMES
+%    LOOP MNFRAG TIMES
 %       COPY '#SCRIPT MASAADD'
 %       EVALUATE RESI = RESI + 1
 %    END LOOP
@@ -153,23 +140,62 @@
 %%
 %%
 %% INPUTS:
-%% CFILE is the file to read 
-%% UISO is the starting value for all the atoms in the fragment
+%% MCFILE is the file to read 
+%% MUISO is the starting value for all the atoms in the fragment
 %% SHIFTM scales the size of the random displacement from the centroid. The default is -0.5 -> +0.5 Angstroms.
 %% NTIMES - number of trials
 %%
 %%
-%  EVALUATE CFILE = 'methanol.frg'
-%  EVALUATE UISO = 0.05
 %  EVALUATE RESI = 501
-%  EVALUATE SHIFTM = 0.25
-%  EVALUATE NTIMES = 100
+%  EVALUATE SHIFTM = MJITTER
+%  EVALUATE NTIMES = MCYCLES
 %%
+%% Show a dialog which will:
+%%  - report current and best R factor
+%%  - cycle number and total cycles
+%%  - have a cancel button
+%%
+^^WI WINDOW MV2 'Progress' CANCEL='^^CO DISPOSE MV2'
+^^WI GRID MAIN NROWS=5 NCOLS=3
+^^WI { 
+^^WI   @ 2,2 GRID STATS NROWS=3 NCOLS=3
+^^WI   {
+^^WI     @ 1,1 STATIC T1 'Current R-factor'
+^^WI     @ 1,3 STATIC CURRR '99.999'
+^^WI     @ 2,1 STATIC T2 'Best R-factor'
+^^WI     @ 2,3 STATIC BESTR '99.999'
+^^WI     @ 3,1 STATIC T3 'Progress'
+^^WI     @ 3,3 STATIC PROGR '9999/9999'
+^^WI   }
+^^WI   @ 4,2 GRID BTNS NROWS=1 NCOLS=1
+^^WI   {
+^^WI     @ 1,1 BUTTON STOP '&Stop' INFORM=NO DEFAULT DISABLED=NO 
+^^WI   }
+^^WI } SHOW
+^^CR
 %  LOOP NTIMES TIMES
+%%
+%     CLEAR
+%     INSERT "^^CO SET CURRR TEXT '"
+%     STORE FORMAT /(F6.2)/ LENGTH 6 REAL R
+%     INSERT "'"
+%     OUTPUT
+%     CLEAR
+%     INSERT "^^CO SET BESTR TEXT '"
+%     STORE FORMAT /(F6.2)/ LENGTH 6 REAL BESTR
+%     INSERT "'"
+%     OUTPUT
+%     CLEAR
+%     INSERT "^^CO SET PROGR TEXT '"
+%     STORE FORMAT /(I4)/ LENGTH 4 INTEGER LOOPCOUNTER
+%     INSERT "/"
+%     STORE FORMAT /(I4)/ LENGTH 4 INTEGER NTIMES
+%     INSERT "'"
+%     OUTPUT
 %%
 %%    Decide on one copy to remove.
 %%
-%     EVALUATE RESI = 501 + INTEGER ( RANDOM ( 0.0 ) * REAL NPARTS )
+%     EVALUATE RESI = 501 + INTEGER ( RANDOM ( 0.0 ) * REAL MNFRAG )
 %     COPY '#SCRIPT MASAADD'
 %% Now do some refinement. First backup the current List 12, then writes
 %% a new one, then refine, then restore the original.
@@ -211,7 +237,18 @@
 %     SHOW LOOPCOUNTER
 %     COPY '#PURGE'
 %     COPY 'END'
+%%
+%% Break out of loops if user had closed progress window
+%%
+^^??  STOP STATE
+%     VERIFY ON OFF
+%     GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
+%     IF VALUE .EQ. 1  THEN                                                        
+ Progress window stop pressed. Stopping.
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%     END IF                                                                       
 %  END LOOP
+^^CO DISPOSE MV2
 %  COPY '#USE bestfrag.dat'
 %  COPY '#USE tmp/masa12.dat'
 %END SCRIPT
