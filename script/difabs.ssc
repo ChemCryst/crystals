@@ -157,6 +157,8 @@
 %            END BLOCK                                                          
 %           ELSE                                                                 
 %            COPY '#HKLI'                                                       
+%         copy 'STORE NCOEF=10'
+%         copy 'OUTP INDI /FO/ SIG RATIO CORR SERI JCODE /FC/ SQRTW BATCH/PHASE'
 %            COPY 'END'                                                         
 %            COPY '#CLOSE HKLI'                                                 
 %           END IF                                                               

@@ -368,7 +368,7 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]       9000           9290             300                                    On scale of /FC/
+[33]       9000           9000             300                                    On scale of /FC/
 
 [32]       4440           4460             150                0.21 E+03          On scale of /FO/
 
@@ -377,7 +377,7 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
  Structure factor least squares calculation    1  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
 LS-scale=  0.480   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.120    100*(<Fo>-<Fc>)/<Fo> =    -0.35
+[91] <Fo>-<Fc> = -0.12    100*(<Fo>-<Fc>)/<Fo> =    -0.35
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -400,7 +400,7 @@ LS-scale=  0.480   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.05E-06
- (sp inverse) 1-norm:  3.63E+00 cond. number:  2.56E+01 rel. error:  3.05E-06
+[80]  (sp inverse) 1-norm:  4E+00 cond. number:  3E+01 rel. error:  3.05E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -422,7 +422,7 @@ All cycle   Min function          0.0           0.21E+03       0.10E+16
 
  Statistics for    16 least squares parameters, with   258 degrees of freedom
  Number of observations               274                 0               274
-[30]  Minimisation function              0.21 E+03         0.00 E+00         0.21 E+03
+[30]  Minimisation function              0.21E+03         0.0E+00         0.21E+03
 [45]  Hamilton weighted R-value           4.              0.00              4. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -498,7 +498,7 @@ All cycle   Min function          0.0           0.21E+03       0.10E+16
 [31]                                         0.000    0.000    0.000 
 
 [37]      O          1.    1.00    0.00    0.62    0.34   -0.06    0.01
-[37]                       0.00             0.00    0.00    0.00    0.00   -0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.004    0.004    0.004 
 
@@ -506,7 +506,7 @@ All cycle   Min function          0.0           0.21E+03       0.10E+16
 [72]                       0.00             0.00    0.00    0.00   -0.00    0.00
 [72]                       0.00             0.00    0.00    0.00    0.01    0.02
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000
+[84] Mean C-C su =   0.00
 #CYCLENDS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -560,7 +560,7 @@ Mean C-C su =   0.0000
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]       9000           9270             300                                    On scale of /FC/
+[33]       9000           9000             300                                    On scale of /FC/
 
 [32]       4440           4440             150                0.21 E+03          On scale of /FO/
 
@@ -588,7 +588,7 @@ LS-scale=  0.479   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.05E-06
- (sp inverse) 1-norm:  3.63E+00 cond. number:  2.56E+01 rel. error:  3.05E-06
+[80]  (sp inverse) 1-norm:  4E+00 cond. number:  3E+01 rel. error:  3.05E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -610,7 +610,7 @@ All cycle   Rw                    0.0            4.1           0.10E+03
 
  Statistics for    16 least squares parameters, with   258 degrees of freedom
  Number of observations               274                 0               274
-[30]  Minimisation function              0.21 E+03         0.00 E+00         0.21 E+03
+[30]  Minimisation function              0.21E+03         0.0E+00         0.21E+03
 [45]  Hamilton weighted R-value           4.              0.00              4. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -694,7 +694,7 @@ All cycle   Rw                    0.0            4.1           0.10E+03
 [72]                       0.00             0.00    0.00    0.00    0.00    0.00
 [72]                       0.00             0.00    0.00    0.00    0.01    0.02
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000
+[84] Mean C-C su =   0.00
 #CYCLENDS
 # PRE-PERTURBED STRUCTURE - KEEPS TESTS CONSISTENT BY REMOVING DEPENDENCY ON PLA
 #LIST      5
@@ -771,7 +771,7 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]       9000           9270            1000                                    On scale of /FC/
+[33]       9000           9000            1000                                    On scale of /FC/
 
 [32]       4440           4560             500                0.17 E+04          On scale of /FO/
 
@@ -780,7 +780,7 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
  Structure factor least squares calculation    3  ends  2
 [29] SumFo/SumFc=  0.48    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
 LS-scale=  0.493   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.881    100*(<Fo>-<Fc>)/<Fo> =    -2.67
+[91] <Fo>-<Fc> = -0.88    100*(<Fo>-<Fc>)/<Fo> =    -2.67
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -803,7 +803,7 @@ LS-scale=  0.493   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.23E-06
- (sp inverse) 1-norm:  3.77E+00 cond. number:  2.71E+01 rel. error:  3.23E-06
+[80]  (sp inverse) 1-norm:  4E+00 cond. number:  3E+01 rel. error:  3.23E-06
  S/ESD     1           1            -0.014      0.0E+00    0.593E-02         -2.30                          SCALE   
                                                                                                             Composite
 
@@ -833,7 +833,7 @@ All cycle   Min function          0.0           0.18E+04       0.10E+16
 
  Statistics for    16 least squares parameters, with   258 degrees of freedom
  Number of observations               274                 0               274
-[30]  Minimisation function              0.17 E+04         0.00 E+00         0.17 E+04
+[30]  Minimisation function              0.17E+04         0.0E+00         0.17E+04
 [45]  Hamilton weighted R-value          11.              0.00             11. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -848,7 +848,7 @@ All cycle   Min function          0.0           0.18E+04       0.10E+16
 
 
 [38]  Mean          -0.01   0.00    0.00   -0.00   -0.00    0.01    0.00    0.00    0.01   -0.00   -0.00    0.00
-                                        -0.0559  -0.0574   0.1042
+[89]                                         -0.05   -0.05    0.10
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.01    0.00    0.00    0.01    0.00    0.00    0.00
 [31]                                          0.055    0.057    0.104 
@@ -899,17 +899,17 @@ All cycle   Min function          0.0           0.18E+04       0.10E+16
                                                                    U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      GA         1.    1.00    0.00    0.75    0.50    0.00    0.00
-[37]                       0.00             0.00    0.00    0.00   -0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
 
 [37]      P          1.    1.00    0.00    0.50    0.25    0.00    0.01
-[37]                       0.00             0.00    0.00    0.00    0.00   -0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
 
 [37]      O          1.    1.00    0.00    0.62    0.34   -0.06    0.02
-[37]                       0.00            -0.00   -0.00    0.01    0.00    0.00    0.01   -0.00   -0.00    0.00
+[37]                       0.00             0.00    0.00    0.01    0.00    0.00    0.01    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.012    0.011    0.011 
 
@@ -917,7 +917,7 @@ All cycle   Min function          0.0           0.18E+04       0.10E+16
 [72]                       0.00             0.00    0.00    0.00    0.01   -0.13
 [72]                       0.00             0.00    0.00    0.00    0.04    0.07
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000
+[84] Mean C-C su =   0.00
 #CYCLENDS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -947,7 +947,7 @@ Mean C-C su =   0.0000
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]       9000           9260             400                                    On scale of /FC/
+[33]       9000           9000             400                                    On scale of /FC/
 
 [32]       4440           4430             200                0.31 E+03          On scale of /FO/
 
@@ -975,7 +975,7 @@ LS-scale=  0.479   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.01E-06
- (sp inverse) 1-norm:  3.62E+00 cond. number:  2.53E+01 rel. error:  3.01E-06
+[80]  (sp inverse) 1-norm:  4E+00 cond. number:  3E+01 rel. error:  3.01E-06
 [14]  S/ESD    11          11           -0.012      -0.1E+01    0.28 E-02         -4.3         O      1 U[33]   
 
                                                 for          16 parameters
@@ -1002,7 +1002,7 @@ Inter cycle Rw                   -5.0            6.9           0.10E+03
 
  Statistics for    16 least squares parameters, with   258 degrees of freedom
  Number of observations               274                 0               274
-[30]  Minimisation function              0.31 E+03         0.00 E+00         0.31 E+03
+[30]  Minimisation function              0.31E+03         0.0E+00         0.31E+03
 [45]  Hamilton weighted R-value           5.              0.00              5. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -1017,7 +1017,7 @@ Inter cycle Rw                   -5.0            6.9           0.10E+03
 
 
 [38]  Mean           0.00   0.00    0.00   -0.00   -0.00    0.00   -0.00   -0.00   -0.01    0.00    0.00   -0.00
-                                        -0.0149  -0.0091   0.0241
+[89]                                         -0.01    0.00    0.02
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.01    0.00    0.00    0.00
 [31]                                          0.014    0.009    0.024 
@@ -1073,12 +1073,12 @@ Inter cycle Rw                   -5.0            6.9           0.10E+03
 [31]                                         0.000    0.000    0.000 
 
 [37]      P          1.    1.00    0.00    0.50    0.25    0.00    0.01
-[37]                       0.00             0.00    0.00    0.00   -0.00    0.00   -0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
 
 [37]      O          1.    1.00    0.00    0.62    0.34   -0.06    0.01
-[37]                       0.00            -0.00   -0.00    0.00   -0.00   -0.00   -0.01    0.00    0.00   -0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00   -0.01    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.006    0.005    0.006 
 
@@ -1086,7 +1086,7 @@ Inter cycle Rw                   -5.0            6.9           0.10E+03
 [72]                       0.00             0.00    0.00    0.00   -0.01   -0.00
 [72]                       0.00             0.00    0.00    0.00    0.02    0.03
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000
+[84] Mean C-C su =   0.00
 #CYCLENDS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -1140,7 +1140,7 @@ Mean C-C su =   0.0000
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]       9000           9300             300                                    On scale of /FC/
+[33]       9000           9000             300                                    On scale of /FC/
 
 [32]       4440           4450             160                0.22 E+03          On scale of /FO/
 
@@ -1149,7 +1149,7 @@ Mean C-C su =   0.0000
  Structure factor least squares calculation    5  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
 LS-scale=  0.479   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.049    100*(<Fo>-<Fc>)/<Fo> =    -0.14
+[91] <Fo>-<Fc> = -0.04    100*(<Fo>-<Fc>)/<Fo> =    -0.14
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -1168,7 +1168,7 @@ LS-scale=  0.479   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.11E-06
- (sp inverse) 1-norm:  3.67E+00 cond. number:  2.61E+01 rel. error:  3.11E-06
+[80]  (sp inverse) 1-norm:  4E+00 cond. number:  3E+01 rel. error:  3.11E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -1194,7 +1194,7 @@ All cycle   Min function          0.0           0.22E+03       0.10E+16
 
  Statistics for    16 least squares parameters, with   258 degrees of freedom
  Number of observations               274                 0               274
-[30]  Minimisation function              0.22 E+03         0.00 E+00         0.22 E+03
+[30]  Minimisation function              0.22E+03         0.0E+00         0.22E+03
 [45]  Hamilton weighted R-value           4.              0.00              4. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -1209,7 +1209,7 @@ All cycle   Min function          0.0           0.22E+03       0.10E+16
 
 
 [38]  Mean           0.00   0.00    0.00    0.00    0.00   -0.00    0.00    0.00    0.00   -0.00   -0.00    0.00
-                                         0.0038   0.0021  -0.0052
+[89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.003    0.002    0.005 
@@ -1270,7 +1270,7 @@ All cycle   Min function          0.0           0.22E+03       0.10E+16
 [31]                                         0.000    0.000    0.000 
 
 [37]      O          1.    1.00    0.00    0.62    0.34   -0.06    0.01
-[37]                       0.00             0.00    0.00   -0.00    0.00    0.00    0.00   -0.00   -0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.004    0.004    0.004 
 
@@ -1278,7 +1278,7 @@ All cycle   Min function          0.0           0.22E+03       0.10E+16
 [72]                       0.00             0.00    0.00    0.00    0.00   -0.00
 [72]                       0.00             0.00    0.00    0.00    0.01    0.02
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000
+[84] Mean C-C su =   0.00
 #CYCLENDS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -1332,7 +1332,7 @@ Mean C-C su =   0.0000
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]       9000           9270             300                                    On scale of /FC/
+[33]       9000           9000             300                                    On scale of /FC/
 
 [32]       4440           4440             150                0.21 E+03          On scale of /FO/
 
@@ -1360,7 +1360,7 @@ LS-scale=  0.479   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.05E-06
- (sp inverse) 1-norm:  3.63E+00 cond. number:  2.56E+01 rel. error:  3.05E-06
+[80]  (sp inverse) 1-norm:  4E+00 cond. number:  3E+01 rel. error:  3.05E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -1382,7 +1382,7 @@ All cycle   Rw                    0.0            4.1           0.10E+03
 
  Statistics for    16 least squares parameters, with   258 degrees of freedom
  Number of observations               274                 0               274
-[30]  Minimisation function              0.21 E+03         0.00 E+00         0.21 E+03
+[30]  Minimisation function              0.21E+03         0.0E+00         0.21E+03
 [45]  Hamilton weighted R-value           4.              0.00              4. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -1458,7 +1458,7 @@ All cycle   Rw                    0.0            4.1           0.10E+03
 [31]                                         0.000    0.000    0.000 
 
 [37]      O          1.    1.00    0.00    0.62    0.34   -0.06    0.01
-[37]                       0.00             0.00    0.00    0.00    0.00    0.00   -0.00    0.00    0.00   -0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.004    0.004    0.004 
 
@@ -1466,7 +1466,7 @@ All cycle   Rw                    0.0            4.1           0.10E+03
 [72]                       0.00             0.00    0.00    0.00   -0.00   -0.00
 [72]                       0.00             0.00    0.00    0.00    0.01    0.02
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000
+[84] Mean C-C su =   0.00
 #CYCLENDS
 #SFLS
 #SPEC LIS  NO
@@ -1521,7 +1521,7 @@ Mean C-C su =   0.0000
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]       9000           9270             300                                    On scale of /FC/
+[33]       9000           9000             300                                    On scale of /FC/
 
 [32]       4440           4440             150                0.21 E+03          On scale of /FO/
 
@@ -1549,7 +1549,7 @@ LS-scale=  0.479   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.05E-06
- (sp inverse) 1-norm:  3.63E+00 cond. number:  2.56E+01 rel. error:  3.05E-06
+[80]  (sp inverse) 1-norm:  4E+00 cond. number:  3E+01 rel. error:  3.05E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -1571,7 +1571,7 @@ All cycle   Rw                    0.0            4.1           0.10E+03
 
  Statistics for    16 least squares parameters, with   258 degrees of freedom
  Number of observations               274                 0               274
-[30]  Minimisation function              0.21 E+03         0.00 E+00         0.21 E+03
+[30]  Minimisation function              0.21E+03         0.0E+00         0.21E+03
 [45]  Hamilton weighted R-value           4.              0.00              4. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -1655,7 +1655,7 @@ All cycle   Rw                    0.0            4.1           0.10E+03
 [72]                       0.00             0.00    0.00    0.00    0.00    0.00
 [72]                       0.00             0.00    0.00    0.00    0.01    0.02
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000
+[84] Mean C-C su =   0.00
 #CYCLENDS
 #PRINT 22
 
@@ -1695,10 +1695,10 @@ Mean C-C su =   0.0000
 
 
  GA        1.                 (0)                              2       3       3                                                     
-                                                             1.0000  1.0000  1.0000                                                  
+[89]                                                              1.00   1.00   1.00
 
  P         1.                 (0)                              4       5       4                                                     
-                                                             1.0000  1.0000  1.0000                                                  
+[89]                                                              1.00   1.00   1.00
 
  O         1.                 (0)      6       7       8       9      10      11      12      13      14                             
                                      1.0000  1.0000  1.0000  1.0000  1.0000  1.0000  1.0000  1.0000  1.0000                          
@@ -2103,7 +2103,7 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]       9000           9350             300                                    On scale of /FC/
+[33]       9000           9000             300                                    On scale of /FC/
 
 [32]       4440           4490             170                0.27 E+03          On scale of /FO/
 
@@ -2112,7 +2112,7 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
  Structure factor least squares calculation    1  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
 LS-scale=  0.480   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.346    100*(<Fo>-<Fc>)/<Fo> =    -1.02
+[91] <Fo>-<Fc> = -0.34    100*(<Fo>-<Fc>)/<Fo> =    -1.02
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -2135,7 +2135,7 @@ LS-scale=  0.480   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.04E-06
- (sp inverse) 1-norm:  3.63E+00 cond. number:  2.55E+01 rel. error:  3.04E-06
+[80]  (sp inverse) 1-norm:  4E+00 cond. number:  3E+01 rel. error:  3.04E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -2157,7 +2157,7 @@ All cycle   Min function          0.0           0.27E+03       0.10E+16
 
  Statistics for    16 least squares parameters, with   258 degrees of freedom
  Number of observations               274                 0               274
-[30]  Minimisation function              0.27 E+03         0.00 E+00         0.27 E+03
+[30]  Minimisation function              0.27E+03         0.0E+00         0.27E+03
 [45]  Hamilton weighted R-value           4.              0.00              4. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -2228,12 +2228,12 @@ All cycle   Min function          0.0           0.27E+03       0.10E+16
 [31]                                         0.000    0.000    0.000 
 
 [37]      P          1.    1.00    0.00    0.50    0.25    0.00    0.00
-[37]                       0.00             0.00    0.00    0.00   -0.00   -0.00   -0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
 
 [37]      O          1.    1.00    0.00    0.62    0.34   -0.06    0.01
-[37]                       0.00             0.00    0.00    0.00   -0.00   -0.00   -0.00    0.00   -0.00   -0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.005    0.004    0.004 
 
@@ -2241,7 +2241,7 @@ All cycle   Min function          0.0           0.27E+03       0.10E+16
 [72]                       0.00             0.00    0.00    0.00    0.00   -0.00
 [72]                       0.00             0.00    0.00    0.00    0.01    0.02
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000
+[84] Mean C-C su =   0.00
 #CYCLENDS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -2295,7 +2295,7 @@ Mean C-C su =   0.0000
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]       9000           9320             300                                    On scale of /FC/
+[33]       9000           9000             300                                    On scale of /FC/
 
 [32]       4440           4440             170                0.25 E+03          On scale of /FO/
 
@@ -2323,7 +2323,7 @@ LS-scale=  0.477   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.05E-06
- (sp inverse) 1-norm:  3.64E+00 cond. number:  2.55E+01 rel. error:  3.05E-06
+[80]  (sp inverse) 1-norm:  4E+00 cond. number:  3E+01 rel. error:  3.05E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -2345,7 +2345,7 @@ All cycle   Rw                    0.0            4.6           0.10E+03
 
  Statistics for    16 least squares parameters, with   258 degrees of freedom
  Number of observations               274                 0               274
-[30]  Minimisation function              0.25 E+03         0.00 E+00         0.25 E+03
+[30]  Minimisation function              0.25E+03         0.0E+00         0.25E+03
 [45]  Hamilton weighted R-value           4.              0.00              4. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -2421,7 +2421,7 @@ All cycle   Rw                    0.0            4.6           0.10E+03
 [31]                                         0.000    0.000    0.000 
 
 [37]      O          1.    1.00    0.00    0.62    0.34   -0.06    0.01
-[37]                       0.00             0.00    0.00    0.00    0.00   -0.00    0.00    0.00   -0.00   -0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.005    0.004    0.004 
 
@@ -2429,7 +2429,7 @@ All cycle   Rw                    0.0            4.6           0.10E+03
 [72]                       0.00             0.00    0.00    0.00   -0.00   -0.00
 [72]                       0.00             0.00    0.00    0.00    0.01    0.02
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000
+[84] Mean C-C su =   0.00
 #CYCLENDS
 # PRE-PERTURBED STRUCTURE - KEEPS TESTS CONSISTENT BY REMOVING DEPENDENCY ON PLA
 #LIST      5
@@ -2506,7 +2506,7 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]       9000           9330            1000                                    On scale of /FC/
+[33]       9000           9000            1000                                    On scale of /FC/
 
 [32]       4440           4590             520                0.18 E+04          On scale of /FO/
 
@@ -2515,7 +2515,7 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
  Structure factor least squares calculation    3  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.46    SumwFoFc/SumwFc^2=  0.46
 LS-scale=  0.493   Wilson Scale=  0.000
-<Fo>-<Fc> = -1.108    100*(<Fo>-<Fc>)/<Fo> =    -3.36
+[91] <Fo>-<Fc> = -1.10    100*(<Fo>-<Fc>)/<Fo> =    -3.36
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -2538,7 +2538,7 @@ LS-scale=  0.493   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.23E-06
- (sp inverse) 1-norm:  3.78E+00 cond. number:  2.71E+01 rel. error:  3.23E-06
+[80]  (sp inverse) 1-norm:  4E+00 cond. number:  3E+01 rel. error:  3.23E-06
  S/ESD     1           1            -0.016      0.0E+00    0.613E-02         -2.66                          SCALE   
                                                                                                             Composite
 
@@ -2568,7 +2568,7 @@ All cycle   Min function          0.0           0.19E+04       0.10E+16
 
  Statistics for    16 least squares parameters, with   258 degrees of freedom
  Number of observations               274                 0               274
-[30]  Minimisation function              0.19 E+04         0.00 E+00         0.19 E+04
+[30]  Minimisation function              0.19E+04         0.0E+00         0.19E+04
 [45]  Hamilton weighted R-value          12.              0.00             12. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -2583,7 +2583,7 @@ All cycle   Min function          0.0           0.19E+04       0.10E+16
 
 
 [38]  Mean          -0.02   0.00    0.00   -0.00   -0.00    0.01    0.00    0.00    0.01   -0.00   -0.00    0.00
-                                        -0.0542  -0.0555   0.1080
+[89]                                         -0.05   -0.05    0.10
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.01    0.00    0.00    0.01    0.00    0.00    0.00
 [31]                                          0.054    0.055    0.108 
@@ -2634,17 +2634,17 @@ All cycle   Min function          0.0           0.19E+04       0.10E+16
                                                                    U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      GA         1.    1.00    0.00    0.75    0.50    0.00    0.00
-[37]                       0.00             0.00    0.00    0.00   -0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
 
 [37]      P          1.    1.00    0.00    0.50    0.25    0.00    0.00
-[37]                       0.00             0.00    0.00    0.00    0.00   -0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
 
 [37]      O          1.    1.00    0.00    0.62    0.34   -0.06    0.02
-[37]                       0.00            -0.00   -0.00    0.01    0.00    0.00    0.01   -0.00   -0.00    0.00
+[37]                       0.00             0.00    0.00    0.01    0.00    0.00    0.01    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.012    0.012    0.011 
 
@@ -2652,7 +2652,7 @@ All cycle   Min function          0.0           0.19E+04       0.10E+16
 [72]                       0.00             0.00    0.00    0.00    0.01   -0.13
 [72]                       0.00             0.00    0.00    0.00    0.04    0.07
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000
+[84] Mean C-C su =   0.00
 #CYCLENDS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -2684,7 +2684,7 @@ Mean C-C su =   0.0000
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]       9000           9310             400                                    On scale of /FC/
+[33]       9000           9000             400                                    On scale of /FC/
 
 [32]       4440           4430             220                0.36 E+03          On scale of /FO/
 
@@ -2712,7 +2712,7 @@ LS-scale=  0.476   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.02E-06
- (sp inverse) 1-norm:  3.64E+00 cond. number:  2.53E+01 rel. error:  3.02E-06
+[80]  (sp inverse) 1-norm:  4E+00 cond. number:  3E+01 rel. error:  3.02E-06
 [14]  S/ESD    11          11           -0.013      -0.1E+01    0.31 E-02         -4.1         O      1 U[33]   
 
                                                 for          16 parameters
@@ -2739,7 +2739,7 @@ Inter cycle Rw                   -5.0            6.9           0.10E+03
 
  Statistics for    16 least squares parameters, with   258 degrees of freedom
  Number of observations               274                 0               274
-[30]  Minimisation function              0.36 E+03         0.00 E+00         0.36 E+03
+[30]  Minimisation function              0.36E+03         0.0E+00         0.36E+03
 [45]  Hamilton weighted R-value           5.              0.00              5. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -2754,7 +2754,7 @@ Inter cycle Rw                   -5.0            6.9           0.10E+03
 
 
 [38]  Mean           0.00   0.00    0.00   -0.00   -0.00    0.00   -0.00   -0.00   -0.01    0.00    0.00   -0.00
-                                        -0.0159  -0.0096   0.0254
+[89]                                         -0.01    0.00    0.02
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.01    0.00    0.00    0.00
 [31]                                          0.015    0.009    0.025 
@@ -2810,12 +2810,12 @@ Inter cycle Rw                   -5.0            6.9           0.10E+03
 [31]                                         0.000    0.000    0.000 
 
 [37]      P          1.    1.00    0.00    0.50    0.25    0.00    0.00
-[37]                       0.00             0.00    0.00    0.00   -0.00    0.00   -0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
 
 [37]      O          1.    1.00    0.00    0.62    0.34   -0.06    0.01
-[37]                       0.00            -0.00   -0.00    0.00   -0.00   -0.00   -0.01    0.00    0.00   -0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00   -0.01    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.006    0.006    0.006 
 
@@ -2823,7 +2823,7 @@ Inter cycle Rw                   -5.0            6.9           0.10E+03
 [72]                       0.00             0.00    0.00    0.00   -0.01   -0.00
 [72]                       0.00             0.00    0.00    0.00    0.02    0.03
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000
+[84] Mean C-C su =   0.00
 #CYCLENDS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -2877,7 +2877,7 @@ Mean C-C su =   0.0000
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]       9000           9350             300                                    On scale of /FC/
+[33]       9000           9000             300                                    On scale of /FC/
 
 [32]       4440           4450             180                0.26 E+03          On scale of /FO/
 
@@ -2886,7 +2886,7 @@ Mean C-C su =   0.0000
  Structure factor least squares calculation    5  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
 LS-scale=  0.476   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.053    100*(<Fo>-<Fc>)/<Fo> =    -0.16
+[91] <Fo>-<Fc> = -0.05    100*(<Fo>-<Fc>)/<Fo> =    -0.16
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -2905,7 +2905,7 @@ LS-scale=  0.476   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.11E-06
- (sp inverse) 1-norm:  3.69E+00 cond. number:  2.61E+01 rel. error:  3.11E-06
+[80]  (sp inverse) 1-norm:  4E+00 cond. number:  3E+01 rel. error:  3.11E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -2931,7 +2931,7 @@ All cycle   Min function          0.0           0.27E+03       0.10E+16
 
  Statistics for    16 least squares parameters, with   258 degrees of freedom
  Number of observations               274                 0               274
-[30]  Minimisation function              0.26 E+03         0.00 E+00         0.26 E+03
+[30]  Minimisation function              0.26E+03         0.0E+00         0.26E+03
 [45]  Hamilton weighted R-value           4.              0.00              4. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -2946,7 +2946,7 @@ All cycle   Min function          0.0           0.27E+03       0.10E+16
 
 
 [38]  Mean           0.00   0.00    0.00    0.00    0.00   -0.00    0.00    0.00    0.00   -0.00   -0.00    0.00
-                                         0.0031   0.0014  -0.0056
+[89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.003    0.001    0.005 
@@ -3007,7 +3007,7 @@ All cycle   Min function          0.0           0.27E+03       0.10E+16
 [31]                                         0.000    0.000    0.000 
 
 [37]      O          1.    1.00    0.00    0.62    0.34   -0.06    0.01
-[37]                       0.00             0.00    0.00   -0.00    0.00    0.00    0.00   -0.00   -0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.004    0.004    0.004 
 
@@ -3015,7 +3015,7 @@ All cycle   Min function          0.0           0.27E+03       0.10E+16
 [72]                       0.00             0.00    0.00    0.00    0.00   -0.00
 [72]                       0.00             0.00    0.00    0.00    0.01    0.02
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000
+[84] Mean C-C su =   0.00
 #CYCLENDS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -3069,7 +3069,7 @@ Mean C-C su =   0.0000
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]       9000           9320             300                                    On scale of /FC/
+[33]       9000           9000             300                                    On scale of /FC/
 
 [32]       4440           4440             170                0.25 E+03          On scale of /FO/
 
@@ -3097,7 +3097,7 @@ LS-scale=  0.477   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.05E-06
- (sp inverse) 1-norm:  3.64E+00 cond. number:  2.55E+01 rel. error:  3.05E-06
+[80]  (sp inverse) 1-norm:  4E+00 cond. number:  3E+01 rel. error:  3.05E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -3123,7 +3123,7 @@ All cycle   Min function          0.0           0.26E+03       0.10E+16
 
  Statistics for    16 least squares parameters, with   258 degrees of freedom
  Number of observations               274                 0               274
-[30]  Minimisation function              0.25 E+03         0.00 E+00         0.25 E+03
+[30]  Minimisation function              0.25E+03         0.0E+00         0.25E+03
 [45]  Hamilton weighted R-value           4.              0.00              4. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -3138,7 +3138,7 @@ All cycle   Min function          0.0           0.26E+03       0.10E+16
 
 
 [38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00    0.00    0.00   -0.00   -0.00    0.00    0.00
-                                         0.0001   0.0002  -0.0001
+[89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.000    0.000    0.000 
@@ -3199,7 +3199,7 @@ All cycle   Min function          0.0           0.26E+03       0.10E+16
 [31]                                         0.000    0.000    0.000 
 
 [37]      O          1.    1.00    0.00    0.62    0.34   -0.06    0.01
-[37]                       0.00             0.00    0.00    0.00   -0.00    0.00   -0.00   -0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.005    0.004    0.004 
 
@@ -3207,7 +3207,7 @@ All cycle   Min function          0.0           0.26E+03       0.10E+16
 [72]                       0.00             0.00    0.00    0.00   -0.00   -0.00
 [72]                       0.00             0.00    0.00    0.00    0.01    0.02
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000
+[84] Mean C-C su =   0.00
 #CYCLENDS
 #SFLS
 #SPEC LIS  NO
@@ -3262,7 +3262,7 @@ Mean C-C su =   0.0000
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]       9000           9320             300                                    On scale of /FC/
+[33]       9000           9000             300                                    On scale of /FC/
 
 [32]       4440           4440             170                0.25 E+03          On scale of /FO/
 
@@ -3290,7 +3290,7 @@ LS-scale=  0.477   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.04E-06
- (sp inverse) 1-norm:  3.64E+00 cond. number:  2.55E+01 rel. error:  3.04E-06
+[80]  (sp inverse) 1-norm:  4E+00 cond. number:  3E+01 rel. error:  3.04E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -3312,7 +3312,7 @@ All cycle   Rw                    0.0            4.6           0.10E+03
 
  Statistics for    16 least squares parameters, with   258 degrees of freedom
  Number of observations               274                 0               274
-[30]  Minimisation function              0.25 E+03         0.00 E+00         0.25 E+03
+[30]  Minimisation function              0.25E+03         0.0E+00         0.25E+03
 [45]  Hamilton weighted R-value           4.              0.00              4. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -3396,7 +3396,7 @@ All cycle   Rw                    0.0            4.6           0.10E+03
 [72]                       0.00             0.00    0.00    0.00    0.00    0.00
 [72]                       0.00             0.00    0.00    0.00    0.01    0.02
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000
+[84] Mean C-C su =   0.00
 #CYCLENDS
 #PRINT 22
 
@@ -3436,10 +3436,10 @@ Mean C-C su =   0.0000
 
 
  GA        1.                 (0)                              2       3       3                                                     
-                                                             1.0000  1.0000  1.0000                                                  
+[89]                                                              1.00   1.00   1.00
 
  P         1.                 (0)                              4       5       4                                                     
-                                                             1.0000  1.0000  1.0000                                                  
+[89]                                                              1.00   1.00   1.00
 
  O         1.                 (0)      6       7       8       9      10      11      12      13      14                             
                                      1.0000  1.0000  1.0000  1.0000  1.0000  1.0000  1.0000  1.0000  1.0000                          
@@ -3844,7 +3844,7 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]       9000           9290             300                                    On scale of /FC/
+[33]       9000           9000             300                                    On scale of /FC/
 
 [32]       4440           4460             150                0.22 E+03          On scale of /FO/
 
@@ -3853,7 +3853,7 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
  Structure factor least squares calculation    1  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
 LS-scale=  0.480   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.120    100*(<Fo>-<Fc>)/<Fo> =    -0.35
+[91] <Fo>-<Fc> = -0.12    100*(<Fo>-<Fc>)/<Fo> =    -0.35
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -3876,7 +3876,7 @@ LS-scale=  0.480   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.94E-06
- (sp inverse) 1-norm:  3.58E+00 cond. number:  2.46E+01 rel. error:  2.94E-06
+[80]  (sp inverse) 1-norm:  4E+00 cond. number:  2E+01 rel. error:  2.94E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -3898,7 +3898,7 @@ All cycle   Min function          0.0           0.22E+03       0.10E+16
 
  Statistics for    16 least squares parameters, with   258 degrees of freedom
  Number of observations               274                 0               274
-[30]  Minimisation function              0.22 E+03         0.00 E+00         0.22 E+03
+[30]  Minimisation function              0.22E+03         0.0E+00         0.22E+03
 [45]  Hamilton weighted R-value           8.              0.00              8. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -3974,7 +3974,7 @@ All cycle   Min function          0.0           0.22E+03       0.10E+16
 [31]                                         0.000    0.000    0.000 
 
 [37]      O          1.    1.00    0.00    0.62    0.34   -0.06    0.01
-[37]                       0.00             0.00    0.00    0.00   -0.00   -0.00   -0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.004    0.004    0.004 
 
@@ -3982,7 +3982,7 @@ All cycle   Min function          0.0           0.22E+03       0.10E+16
 [72]                       0.00             0.00    0.00    0.00    0.00   -0.00
 [72]                       0.00             0.00    0.00    0.00    0.01    0.02
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000
+[84] Mean C-C su =   0.00
 #CYCLENDS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -4036,7 +4036,7 @@ Mean C-C su =   0.0000
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]       9000           9260             300                                    On scale of /FC/
+[33]       9000           9000             300                                    On scale of /FC/
 
 [32]       4440           4430             160                0.21 E+03          On scale of /FO/
 
@@ -4064,7 +4064,7 @@ LS-scale=  0.478   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.94E-06
- (sp inverse) 1-norm:  3.61E+00 cond. number:  2.47E+01 rel. error:  2.94E-06
+[80]  (sp inverse) 1-norm:  4E+00 cond. number:  2E+01 rel. error:  2.94E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -4086,7 +4086,7 @@ All cycle   Rw                    0.0            8.4           0.10E+03
 
  Statistics for    16 least squares parameters, with   258 degrees of freedom
  Number of observations               274                 0               274
-[30]  Minimisation function              0.21 E+03         0.00 E+00         0.21 E+03
+[30]  Minimisation function              0.21E+03         0.0E+00         0.21E+03
 [45]  Hamilton weighted R-value           8.              0.00              8. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -4170,7 +4170,7 @@ All cycle   Rw                    0.0            8.4           0.10E+03
 [72]                       0.00             0.00    0.00    0.00    0.00    0.00
 [72]                       0.00             0.00    0.00    0.00    0.01    0.02
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000
+[84] Mean C-C su =   0.00
 #CYCLENDS
 # PRE-PERTURBED STRUCTURE - KEEPS TESTS CONSISTENT BY REMOVING DEPENDENCY ON PLA
 #LIST      5
@@ -4247,7 +4247,7 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]       9000           9270            1000                                    On scale of /FC/
+[33]       9000           9000            1000                                    On scale of /FC/
 
 [32]       4440           4560             500                0.20 E+04          On scale of /FO/
 
@@ -4256,7 +4256,7 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
  Structure factor least squares calculation    3  ends  2
 [29] SumFo/SumFc=  0.48    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.46
 LS-scale=  0.493   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.881    100*(<Fo>-<Fc>)/<Fo> =    -2.67
+[91] <Fo>-<Fc> = -0.88    100*(<Fo>-<Fc>)/<Fo> =    -2.67
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -4279,7 +4279,7 @@ LS-scale=  0.493   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.79E-06
- (sp inverse) 1-norm:  4.28E+00 cond. number:  3.18E+01 rel. error:  3.79E-06
+[80]  (sp inverse) 1-norm:  4E+00 cond. number:  3E+01 rel. error:  3.79E-06
  S/ESD     1           1            -0.014      0.0E+00    0.591E-02         -2.38                          SCALE   
 [14]  S/ESD     8           8            0.011       0.0E+00    0.12 E-02          9.2         O      1 Z       
 [14]  S/ESD    11          11            0.011       0.0E+00    0.44 E-02          2.5         O      1 U[33]   
@@ -4305,7 +4305,7 @@ All cycle   Min function          0.0           0.20E+04       0.10E+16
 
  Statistics for    16 least squares parameters, with   258 degrees of freedom
  Number of observations               274                 0               274
-[30]  Minimisation function              0.20 E+04         0.00 E+00         0.20 E+04
+[30]  Minimisation function              0.20E+04         0.0E+00         0.20E+04
 [45]  Hamilton weighted R-value          25.              0.00             25. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -4320,7 +4320,7 @@ All cycle   Min function          0.0           0.20E+04       0.10E+16
 
 
 [38]  Mean          -0.01   0.00    0.00   -0.00   -0.00    0.01    0.00    0.00    0.01   -0.00   -0.00    0.00
-                                        -0.0555  -0.0553   0.0983
+[89]                                         -0.05   -0.05    0.09
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.01    0.00    0.00    0.01    0.00    0.00    0.00
 [31]                                          0.055    0.055    0.098 
@@ -4371,17 +4371,17 @@ All cycle   Min function          0.0           0.20E+04       0.10E+16
                                                                    U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      GA         1.    1.00    0.00    0.75    0.50    0.00    0.00
-[37]                       0.00             0.00    0.00    0.00   -0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
 
 [37]      P          1.    1.00    0.00    0.50    0.25    0.00    0.01
-[37]                       0.00             0.00    0.00    0.00    0.00   -0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
 
 [37]      O          1.    1.00    0.00    0.62    0.34   -0.06    0.01
-[37]                       0.00            -0.00   -0.00    0.01    0.00    0.00    0.01   -0.00   -0.00    0.00
+[37]                       0.00             0.00    0.00    0.01    0.00    0.00    0.01    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.013    0.012    0.010 
 
@@ -4389,7 +4389,7 @@ All cycle   Min function          0.0           0.20E+04       0.10E+16
 [72]                       0.00             0.00    0.00    0.00    0.01   -0.13
 [72]                       0.00             0.00    0.00    0.00    0.04    0.07
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000
+[84] Mean C-C su =   0.00
 #CYCLENDS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -4419,7 +4419,7 @@ Mean C-C su =   0.0000
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]       9000           9310             400                                    On scale of /FC/
+[33]       9000           9000             400                                    On scale of /FC/
 
 [32]       4440           4450             210                0.34 E+03          On scale of /FO/
 
@@ -4428,7 +4428,7 @@ Mean C-C su =   0.0000
  Structure factor least squares calculation    4  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
 LS-scale=  0.478   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.036    100*(<Fo>-<Fc>)/<Fo> =    -0.11
+[91] <Fo>-<Fc> = -0.03    100*(<Fo>-<Fc>)/<Fo> =    -0.11
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -4447,7 +4447,7 @@ LS-scale=  0.478   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.99E-06
- (sp inverse) 1-norm:  3.62E+00 cond. number:  2.51E+01 rel. error:  2.99E-06
+[80]  (sp inverse) 1-norm:  4E+00 cond. number:  3E+01 rel. error:  2.99E-06
                                                                                                             Composite
 
                                                                       Composite
@@ -4478,7 +4478,7 @@ Inter cycle Rw                   -5.0            15.           0.10E+03
 
  Statistics for    16 least squares parameters, with   258 degrees of freedom
  Number of observations               274                 0               274
-[30]  Minimisation function              0.34 E+03         0.00 E+00         0.34 E+03
+[30]  Minimisation function              0.34E+03         0.0E+00         0.34E+03
 [45]  Hamilton weighted R-value          10.              0.00             10. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -4493,7 +4493,7 @@ Inter cycle Rw                   -5.0            15.           0.10E+03
 
 
 [38]  Mean           0.00   0.00    0.00   -0.00   -0.00    0.00   -0.00   -0.00   -0.01    0.00    0.00   -0.00
-                                        -0.0140  -0.0097   0.0303
+[89]                                         -0.01    0.00    0.03
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.01    0.00    0.00    0.00
 [31]                                          0.014    0.009    0.030 
@@ -4549,12 +4549,12 @@ Inter cycle Rw                   -5.0            15.           0.10E+03
 [31]                                         0.000    0.000    0.000 
 
 [37]      P          1.    1.00    0.00    0.50    0.25    0.00    0.01
-[37]                       0.00             0.00    0.00    0.00   -0.00    0.00   -0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
 
 [37]      O          1.    1.00    0.00    0.62    0.34   -0.06    0.01
-[37]                       0.00            -0.00   -0.00    0.00   -0.00   -0.00   -0.01    0.00    0.00   -0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00   -0.01    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.006    0.006    0.005 
 
@@ -4562,7 +4562,7 @@ Inter cycle Rw                   -5.0            15.           0.10E+03
 [72]                       0.00             0.00    0.00    0.00   -0.00   -0.00
 [72]                       0.00             0.00    0.00    0.00    0.02    0.03
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000
+[84] Mean C-C su =   0.00
 #CYCLENDS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -4607,7 +4607,7 @@ Mean C-C su =   0.0000
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]       9000           9290             300                                    On scale of /FC/
+[33]       9000           9000             300                                    On scale of /FC/
 
 [32]       4440           4440             160                0.22 E+03          On scale of /FO/
 
@@ -4635,7 +4635,7 @@ LS-scale=  0.478   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.01E-06
- (sp inverse) 1-norm:  3.66E+00 cond. number:  2.53E+01 rel. error:  3.01E-06
+[80]  (sp inverse) 1-norm:  4E+00 cond. number:  3E+01 rel. error:  3.01E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -4661,7 +4661,7 @@ Inter cycle Rw                   -5.0            2.0           0.10E+03
 
  Statistics for    16 least squares parameters, with   258 degrees of freedom
  Number of observations               274                 0               274
-[30]  Minimisation function              0.22 E+03         0.00 E+00         0.22 E+03
+[30]  Minimisation function              0.22E+03         0.0E+00         0.22E+03
 [45]  Hamilton weighted R-value           8.              0.00              8. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -4676,7 +4676,7 @@ Inter cycle Rw                   -5.0            2.0           0.10E+03
 
 
 [38]  Mean           0.00   0.00    0.00    0.00    0.00   -0.00    0.00    0.00    0.00   -0.00   -0.00    0.00
-                                         0.0041   0.0021  -0.0054
+[89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.004    0.002    0.005 
@@ -4737,7 +4737,7 @@ Inter cycle Rw                   -5.0            2.0           0.10E+03
 [31]                                         0.000    0.000    0.000 
 
 [37]      O          1.    1.00    0.00    0.62    0.34   -0.06    0.01
-[37]                       0.00             0.00    0.00   -0.00    0.00    0.00    0.00   -0.00   -0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.004    0.004    0.004 
 
@@ -4745,7 +4745,7 @@ Inter cycle Rw                   -5.0            2.0           0.10E+03
 [72]                       0.00             0.00    0.00    0.00    0.00   -0.00
 [72]                       0.00             0.00    0.00    0.00    0.01    0.02
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000
+[84] Mean C-C su =   0.00
 #CYCLENDS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -4799,7 +4799,7 @@ Mean C-C su =   0.0000
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]       9000           9260             300                                    On scale of /FC/
+[33]       9000           9000             300                                    On scale of /FC/
 
 [32]       4440           4430             160                0.21 E+03          On scale of /FO/
 
@@ -4827,7 +4827,7 @@ LS-scale=  0.478   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.94E-06
- (sp inverse) 1-norm:  3.60E+00 cond. number:  2.46E+01 rel. error:  2.94E-06
+[80]  (sp inverse) 1-norm:  4E+00 cond. number:  2E+01 rel. error:  2.94E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -4853,7 +4853,7 @@ All cycle   Min function          0.0           0.22E+03       0.10E+16
 
  Statistics for    16 least squares parameters, with   258 degrees of freedom
  Number of observations               274                 0               274
-[30]  Minimisation function              0.21 E+03         0.00 E+00         0.21 E+03
+[30]  Minimisation function              0.21E+03         0.0E+00         0.21E+03
 [45]  Hamilton weighted R-value           8.              0.00              8. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -4868,7 +4868,7 @@ All cycle   Min function          0.0           0.22E+03       0.10E+16
 
 
 [38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00    0.00    0.00   -0.00    0.00    0.00   -0.00
-                                         0.0001  -0.0001   0.0000
+[89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.000    0.000    0.000 
@@ -4929,7 +4929,7 @@ All cycle   Min function          0.0           0.22E+03       0.10E+16
 [31]                                         0.000    0.000    0.000 
 
 [37]      O          1.    1.00    0.00    0.62    0.34   -0.06    0.01
-[37]                       0.00             0.00    0.00    0.00   -0.00    0.00   -0.00    0.00    0.00   -0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.004    0.004    0.004 
 
@@ -4937,7 +4937,7 @@ All cycle   Min function          0.0           0.22E+03       0.10E+16
 [72]                       0.00             0.00    0.00    0.00   -0.00   -0.00
 [72]                       0.00             0.00    0.00    0.00    0.01    0.02
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000
+[84] Mean C-C su =   0.00
 #CYCLENDS
 #SFLS
 #SPEC LIS  NO
@@ -4992,7 +4992,7 @@ Mean C-C su =   0.0000
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]       9000           9260             300                                    On scale of /FC/
+[33]       9000           9000             300                                    On scale of /FC/
 
 [32]       4440           4430             160                0.21 E+03          On scale of /FO/
 
@@ -5020,7 +5020,7 @@ LS-scale=  0.478   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.94E-06
- (sp inverse) 1-norm:  3.61E+00 cond. number:  2.47E+01 rel. error:  2.94E-06
+[80]  (sp inverse) 1-norm:  4E+00 cond. number:  2E+01 rel. error:  2.94E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -5042,7 +5042,7 @@ All cycle   Rw                    0.0            8.4           0.10E+03
 
  Statistics for    16 least squares parameters, with   258 degrees of freedom
  Number of observations               274                 0               274
-[30]  Minimisation function              0.21 E+03         0.00 E+00         0.21 E+03
+[30]  Minimisation function              0.21E+03         0.0E+00         0.21E+03
 [45]  Hamilton weighted R-value           8.              0.00              8. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -5126,7 +5126,7 @@ All cycle   Rw                    0.0            8.4           0.10E+03
 [72]                       0.00             0.00    0.00    0.00    0.00    0.00
 [72]                       0.00             0.00    0.00    0.00    0.01    0.02
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000
+[84] Mean C-C su =   0.00
 #CYCLENDS
 #PRINT 22
 
@@ -5166,10 +5166,10 @@ Mean C-C su =   0.0000
 
 
  GA        1.                 (0)                              2       3       3                                                     
-                                                             1.0000  1.0000  1.0000                                                  
+[89]                                                              1.00   1.00   1.00
 
  P         1.                 (0)                              4       5       4                                                     
-                                                             1.0000  1.0000  1.0000                                                  
+[89]                                                              1.00   1.00   1.00
 
  O         1.                 (0)      6       7       8       9      10      11      12      13      14                             
                                      1.0000  1.0000  1.0000  1.0000  1.0000  1.0000  1.0000  1.0000  1.0000                          
@@ -5574,7 +5574,7 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]       9000           9350             300                                    On scale of /FC/
+[33]       9000           9000             300                                    On scale of /FC/
 
 [32]       4440           4490             170                0.29 E+03          On scale of /FO/
 
@@ -5583,7 +5583,7 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
  Structure factor least squares calculation    1  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
 LS-scale=  0.480   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.346    100*(<Fo>-<Fc>)/<Fo> =    -1.02
+[91] <Fo>-<Fc> = -0.34    100*(<Fo>-<Fc>)/<Fo> =    -1.02
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -5606,7 +5606,7 @@ LS-scale=  0.480   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.92E-06
- (sp inverse) 1-norm:  3.57E+00 cond. number:  2.45E+01 rel. error:  2.92E-06
+[80]  (sp inverse) 1-norm:  4E+00 cond. number:  2E+01 rel. error:  2.92E-06
                                                                                                             Composite
 
                                                                       Composite
@@ -5632,7 +5632,7 @@ All cycle   Min function          0.0           0.30E+03       0.10E+16
 
  Statistics for    16 least squares parameters, with   258 degrees of freedom
  Number of observations               274                 0               274
-[30]  Minimisation function              0.29 E+03         0.00 E+00         0.29 E+03
+[30]  Minimisation function              0.29E+03         0.0E+00         0.29E+03
 [45]  Hamilton weighted R-value           9.              0.00              9. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -5703,12 +5703,12 @@ All cycle   Min function          0.0           0.30E+03       0.10E+16
 [31]                                         0.000    0.000    0.000 
 
 [37]      P          1.    1.00    0.00    0.50    0.25    0.00    0.00
-[37]                       0.00             0.00    0.00    0.00   -0.00   -0.00   -0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
 
 [37]      O          1.    1.00    0.00    0.62    0.34   -0.06    0.01
-[37]                       0.00             0.00    0.00    0.00    0.00   -0.00   -0.00    0.00   -0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.005    0.004    0.004 
 
@@ -5716,7 +5716,7 @@ All cycle   Min function          0.0           0.30E+03       0.10E+16
 [72]                       0.00             0.00    0.00    0.00    0.00   -0.01
 [72]                       0.00             0.00    0.00    0.00    0.01    0.02
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000
+[84] Mean C-C su =   0.00
 #CYCLENDS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -5770,7 +5770,7 @@ Mean C-C su =   0.0000
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]       9000           9310             300                                    On scale of /FC/
+[33]       9000           9000             300                                    On scale of /FC/
 
 [32]       4440           4420             170                0.27 E+03          On scale of /FO/
 
@@ -5798,7 +5798,7 @@ LS-scale=  0.476   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.92E-06
- (sp inverse) 1-norm:  3.61E+00 cond. number:  2.45E+01 rel. error:  2.92E-06
+[80]  (sp inverse) 1-norm:  4E+00 cond. number:  2E+01 rel. error:  2.92E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -5824,7 +5824,7 @@ All cycle   Min function          0.0           0.27E+03       0.10E+16
 
  Statistics for    16 least squares parameters, with   258 degrees of freedom
  Number of observations               274                 0               274
-[30]  Minimisation function              0.27 E+03         0.00 E+00         0.27 E+03
+[30]  Minimisation function              0.27E+03         0.0E+00         0.27E+03
 [45]  Hamilton weighted R-value           9.              0.00              9. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -5839,7 +5839,7 @@ All cycle   Min function          0.0           0.27E+03       0.10E+16
 
 
 [38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   -0.00   -0.00   -0.00
-                                         0.0001   0.0001  -0.0001
+[89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.000    0.000    0.000 
@@ -5900,7 +5900,7 @@ All cycle   Min function          0.0           0.27E+03       0.10E+16
 [31]                                         0.000    0.000    0.000 
 
 [37]      O          1.    1.00    0.00    0.62    0.34   -0.06    0.01
-[37]                       0.00             0.00    0.00    0.00    0.00   -0.00    0.00   -0.00   -0.00   -0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.005    0.004    0.004 
 
@@ -5908,7 +5908,7 @@ All cycle   Min function          0.0           0.27E+03       0.10E+16
 [72]                       0.00             0.00    0.00    0.00    0.00   -0.00
 [72]                       0.00             0.00    0.00    0.00    0.01    0.02
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000
+[84] Mean C-C su =   0.00
 #CYCLENDS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -5962,7 +5962,7 @@ Mean C-C su =   0.0000
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]       9000           9310             300                                    On scale of /FC/
+[33]       9000           9000             300                                    On scale of /FC/
 
 [32]       4440           4420             170                0.27 E+03          On scale of /FO/
 
@@ -5990,7 +5990,7 @@ LS-scale=  0.475   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.92E-06
- (sp inverse) 1-norm:  3.61E+00 cond. number:  2.45E+01 rel. error:  2.92E-06
+[80]  (sp inverse) 1-norm:  4E+00 cond. number:  2E+01 rel. error:  2.92E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -6012,7 +6012,7 @@ All cycle   Rw                    0.0            9.3           0.10E+03
 
  Statistics for    16 least squares parameters, with   258 degrees of freedom
  Number of observations               274                 0               274
-[30]  Minimisation function              0.27 E+03         0.00 E+00         0.27 E+03
+[30]  Minimisation function              0.27E+03         0.0E+00         0.27E+03
 [45]  Hamilton weighted R-value           9.              0.00              9. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -6096,7 +6096,7 @@ All cycle   Rw                    0.0            9.3           0.10E+03
 [72]                       0.00             0.00    0.00    0.00    0.00    0.00
 [72]                       0.00             0.00    0.00    0.00    0.01    0.02
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000
+[84] Mean C-C su =   0.00
 #CYCLENDS
 # PRE-PERTURBED STRUCTURE - KEEPS TESTS CONSISTENT BY REMOVING DEPENDENCY ON PLA
 #LIST      5
@@ -6173,7 +6173,7 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]       9000           9330            1000                                    On scale of /FC/
+[33]       9000           9000            1000                                    On scale of /FC/
 
 [32]       4440           4590             520                0.22 E+04          On scale of /FO/
 
@@ -6182,7 +6182,7 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
  Structure factor least squares calculation    4  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.46    SumwFoFc/SumwFc^2=  0.46
 LS-scale=  0.493   Wilson Scale=  0.000
-<Fo>-<Fc> = -1.108    100*(<Fo>-<Fc>)/<Fo> =    -3.36
+[91] <Fo>-<Fc> = -1.10    100*(<Fo>-<Fc>)/<Fo> =    -3.36
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -6205,7 +6205,7 @@ LS-scale=  0.493   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.78E-06
- (sp inverse) 1-norm:  4.25E+00 cond. number:  3.17E+01 rel. error:  3.78E-06
+[80]  (sp inverse) 1-norm:  4E+00 cond. number:  3E+01 rel. error:  3.78E-06
  S/ESD     1           1            -0.017      0.0E+00    0.612E-02         -2.74                          SCALE   
 [14]  S/ESD     8           8            0.011       0.0E+00    0.12 E-02          9.0         O      1 Z       
 [14]  S/ESD    11          11            0.011       0.0E+00    0.46 E-02          2.5         O      1 U[33]   
@@ -6231,7 +6231,7 @@ All cycle   Min function          0.0           0.22E+04       0.10E+16
 
  Statistics for    16 least squares parameters, with   258 degrees of freedom
  Number of observations               274                 0               274
-[30]  Minimisation function              0.22 E+04         0.00 E+00         0.22 E+04
+[30]  Minimisation function              0.22E+04         0.0E+00         0.22E+04
 [45]  Hamilton weighted R-value          26.              0.00             26. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -6246,7 +6246,7 @@ All cycle   Min function          0.0           0.22E+04       0.10E+16
 
 
 [38]  Mean          -0.02   0.00    0.00   -0.00   -0.00    0.01    0.00    0.00    0.01   -0.00   -0.00    0.00
-                                        -0.0527  -0.0519   0.1006
+[89]                                         -0.05   -0.05    0.10
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.01    0.00    0.00    0.01    0.00    0.00    0.00
 [31]                                          0.052    0.051    0.100 
@@ -6297,17 +6297,17 @@ All cycle   Min function          0.0           0.22E+04       0.10E+16
                                                                    U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      GA         1.    1.00    0.00    0.75    0.50    0.00    0.00
-[37]                       0.00             0.00    0.00    0.00   -0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
 
 [37]      P          1.    1.00    0.00    0.50    0.25    0.00    0.00
-[37]                       0.00             0.00    0.00    0.00    0.00   -0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
 
 [37]      O          1.    1.00    0.00    0.62    0.34   -0.06    0.02
-[37]                       0.00            -0.00   -0.00    0.01    0.00    0.00    0.01   -0.00   -0.00    0.00
+[37]                       0.00             0.00    0.00    0.01    0.00    0.00    0.01    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.013    0.013    0.011 
 
@@ -6315,7 +6315,7 @@ All cycle   Min function          0.0           0.22E+04       0.10E+16
 [72]                       0.00             0.00    0.00    0.00    0.01   -0.13
 [72]                       0.00             0.00    0.00    0.00    0.04    0.08
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000
+[84] Mean C-C su =   0.00
 #CYCLENDS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -6347,7 +6347,7 @@ Mean C-C su =   0.0000
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]       9000           9360             400                                    On scale of /FC/
+[33]       9000           9000             400                                    On scale of /FC/
 
 [32]       4440           4440             230                0.41 E+03          On scale of /FO/
 
@@ -6356,7 +6356,7 @@ Mean C-C su =   0.0000
  Structure factor least squares calculation    5  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
 LS-scale=  0.475   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.003    100*(<Fo>-<Fc>)/<Fo> =    -0.01
+[91] <Fo>-<Fc> = -0.00    100*(<Fo>-<Fc>)/<Fo> =    -0.01
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -6375,7 +6375,7 @@ LS-scale=  0.475   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.99E-06
- (sp inverse) 1-norm:  3.65E+00 cond. number:  2.51E+01 rel. error:  2.99E-06
+[80]  (sp inverse) 1-norm:  4E+00 cond. number:  3E+01 rel. error:  2.99E-06
                                                                                                             Composite
 
                                                                       Composite
@@ -6406,7 +6406,7 @@ Inter cycle Rw                   -5.0            15.           0.10E+03
 
  Statistics for    16 least squares parameters, with   258 degrees of freedom
  Number of observations               274                 0               274
-[30]  Minimisation function              0.41 E+03         0.00 E+00         0.41 E+03
+[30]  Minimisation function              0.41E+03         0.0E+00         0.41E+03
 [45]  Hamilton weighted R-value          11.              0.00             11. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -6421,7 +6421,7 @@ Inter cycle Rw                   -5.0            15.           0.10E+03
 
 
 [38]  Mean           0.00   0.00    0.00   -0.00   -0.00    0.00   -0.00   -0.00   -0.01    0.00    0.00   -0.00
-                                        -0.0160  -0.0118   0.0337
+[89]                                         -0.01   -0.01    0.03
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.01    0.00    0.00    0.00
 [31]                                          0.016    0.011    0.033 
@@ -6477,12 +6477,12 @@ Inter cycle Rw                   -5.0            15.           0.10E+03
 [31]                                         0.000    0.000    0.000 
 
 [37]      P          1.    1.00    0.00    0.50    0.25    0.00    0.00
-[37]                       0.00             0.00    0.00    0.00   -0.00    0.00   -0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
 
 [37]      O          1.    1.00    0.00    0.62    0.34   -0.06    0.01
-[37]                       0.00            -0.00   -0.00    0.00   -0.00   -0.00   -0.01    0.00    0.00   -0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00   -0.01    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.007    0.006    0.006 
 
@@ -6490,7 +6490,7 @@ Inter cycle Rw                   -5.0            15.           0.10E+03
 [72]                       0.00             0.00    0.00    0.00   -0.00   -0.00
 [72]                       0.00             0.00    0.00    0.00    0.02    0.03
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000
+[84] Mean C-C su =   0.00
 #CYCLENDS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -6537,7 +6537,7 @@ Mean C-C su =   0.0000
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]       9000           9330             300                                    On scale of /FC/
+[33]       9000           9000             300                                    On scale of /FC/
 
 [32]       4440           4430             180                0.27 E+03          On scale of /FO/
 
@@ -6565,7 +6565,7 @@ LS-scale=  0.475   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.99E-06
- (sp inverse) 1-norm:  3.66E+00 cond. number:  2.51E+01 rel. error:  2.99E-06
+[80]  (sp inverse) 1-norm:  4E+00 cond. number:  3E+01 rel. error:  2.99E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -6591,7 +6591,7 @@ Inter cycle Rw                   -5.0            2.1           0.10E+03
 
  Statistics for    16 least squares parameters, with   258 degrees of freedom
  Number of observations               274                 0               274
-[30]  Minimisation function              0.27 E+03         0.00 E+00         0.27 E+03
+[30]  Minimisation function              0.27E+03         0.0E+00         0.27E+03
 [45]  Hamilton weighted R-value           9.              0.00              9. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -6606,7 +6606,7 @@ Inter cycle Rw                   -5.0            2.1           0.10E+03
 
 
 [38]  Mean           0.00   0.00    0.00    0.00    0.00   -0.00    0.00    0.00    0.00   -0.00   -0.00    0.00
-                                         0.0035   0.0015  -0.0058
+[89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.003    0.001    0.005 
@@ -6657,7 +6657,7 @@ Inter cycle Rw                   -5.0            2.1           0.10E+03
                                                                    U[ISO]   SIZE     DECL/100 AZIM/100
 
 [37]      GA         1.    1.00    0.00    0.75    0.50    0.00    0.00
-[37]                       0.00             0.00    0.00    0.00   -0.00    0.00    0.00    0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.000    0.000    0.000 
 
@@ -6667,7 +6667,7 @@ Inter cycle Rw                   -5.0            2.1           0.10E+03
 [31]                                         0.000    0.000    0.000 
 
 [37]      O          1.    1.00    0.00    0.62    0.34   -0.06    0.01
-[37]                       0.00             0.00    0.00   -0.00    0.00    0.00    0.00   -0.00   -0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.005    0.004    0.004 
 
@@ -6675,7 +6675,7 @@ Inter cycle Rw                   -5.0            2.1           0.10E+03
 [72]                       0.00             0.00    0.00    0.00    0.00   -0.00
 [72]                       0.00             0.00    0.00    0.00    0.01    0.02
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000
+[84] Mean C-C su =   0.00
 #CYCLENDS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -6725,7 +6725,7 @@ Mean C-C su =   0.0000
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]       9000           9310             300                                    On scale of /FC/
+[33]       9000           9000             300                                    On scale of /FC/
 
 [32]       4440           4420             170                0.27 E+03          On scale of /FO/
 
@@ -6753,7 +6753,7 @@ LS-scale=  0.476   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.92E-06
- (sp inverse) 1-norm:  3.61E+00 cond. number:  2.45E+01 rel. error:  2.92E-06
+[80]  (sp inverse) 1-norm:  4E+00 cond. number:  2E+01 rel. error:  2.92E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -6779,7 +6779,7 @@ All cycle   Min function          0.0           0.27E+03       0.10E+16
 
  Statistics for    16 least squares parameters, with   258 degrees of freedom
  Number of observations               274                 0               274
-[30]  Minimisation function              0.27 E+03         0.00 E+00         0.27 E+03
+[30]  Minimisation function              0.27E+03         0.0E+00         0.27E+03
 [45]  Hamilton weighted R-value           9.              0.00              9. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -6855,7 +6855,7 @@ All cycle   Min function          0.0           0.27E+03       0.10E+16
 [31]                                         0.000    0.000    0.000 
 
 [37]      O          1.    1.00    0.00    0.62    0.34   -0.06    0.01
-[37]                       0.00             0.00    0.00    0.00   -0.00    0.00   -0.00   -0.00    0.00    0.00
+[37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.005    0.004    0.004 
 
@@ -6863,7 +6863,7 @@ All cycle   Min function          0.0           0.27E+03       0.10E+16
 [72]                       0.00             0.00    0.00    0.00   -0.00   -0.00
 [72]                       0.00             0.00    0.00    0.00    0.01    0.02
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000
+[84] Mean C-C su =   0.00
 #CYCLENDS
 #SFLS
 #SPEC LIS  NO
@@ -6918,7 +6918,7 @@ Mean C-C su =   0.0000
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]       9000           9310             300                                    On scale of /FC/
+[33]       9000           9000             300                                    On scale of /FC/
 
 [32]       4440           4420             170                0.27 E+03          On scale of /FO/
 
@@ -6946,7 +6946,7 @@ LS-scale=  0.475   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.92E-06
- (sp inverse) 1-norm:  3.61E+00 cond. number:  2.45E+01 rel. error:  2.92E-06
+[80]  (sp inverse) 1-norm:  4E+00 cond. number:  2E+01 rel. error:  2.92E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -6968,7 +6968,7 @@ All cycle   Rw                    0.0            9.3           0.10E+03
 
  Statistics for    16 least squares parameters, with   258 degrees of freedom
  Number of observations               274                 0               274
-[30]  Minimisation function              0.27 E+03         0.00 E+00         0.27 E+03
+[30]  Minimisation function              0.27E+03         0.0E+00         0.27E+03
 [45]  Hamilton weighted R-value           9.              0.00              9. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -7052,7 +7052,7 @@ All cycle   Rw                    0.0            9.3           0.10E+03
 [72]                       0.00             0.00    0.00    0.00    0.00    0.00
 [72]                       0.00             0.00    0.00    0.00    0.01    0.02
 [31]                                         0.000    0.000    0.000 
-Mean C-C su =   0.0000
+[84] Mean C-C su =   0.00
 #CYCLENDS
 #PRINT 22
 
@@ -7092,10 +7092,10 @@ Mean C-C su =   0.0000
 
 
  GA        1.                 (0)                              2       3       3                                                     
-                                                             1.0000  1.0000  1.0000                                                  
+[89]                                                              1.00   1.00   1.00
 
  P         1.                 (0)                              4       5       4                                                     
-                                                             1.0000  1.0000  1.0000                                                  
+[89]                                                              1.00   1.00   1.00
 
  O         1.                 (0)      6       7       8       9      10      11      12      13      14                             
                                      1.0000  1.0000  1.0000  1.0000  1.0000  1.0000  1.0000  1.0000  1.0000                          

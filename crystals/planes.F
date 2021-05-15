@@ -379,7 +379,8 @@ C--PRINT THE ROTATION MATRICES FROM CRYSTAL FRACTIONS
       ENDIF
 2600  FORMAT(//1X,' Transformation from crystal fractions w.r.t.',
      2 ' centroid to best ',A,' coordinates',
-     3 ' in angstrom and fractions'//3(14X,3F10.4,11X,3F10.5/))
+     3 ' in angstrom and fractions',
+     4  // 3(14X,3(1X,F10.3),11X,3(2X,F10.3)/))
       ENDIF
 C
 C--CALCULATE THE INVERSE MATRICES
@@ -398,8 +399,8 @@ C-C-C-PRINT EQUATION OF PLANE/LINE AND ORIENT. VECTOR IN POLAR COORD.
       WRITE(NCWU,2700)CTYPE(JTYPE), (EQU(I),I=1,3),F
       WRITE(NCWU,2705)CTYPE(JTYPE), VECPD, VECPD/100, VECPA, VECPA/100
       ENDIF
-2700  FORMAT(//1X,' Equation of the ',A,' :'//F10.5,' * X +',F10.5,
-     2 ' * Y +',F10.5,' * Z  =',F10.3,20X,
+2700  FORMAT(//1X,' Equation of the ',A,' :  '//F10.3,' * X +  ',F10.3,
+     2 ' * Y +  ',F10.3,' * Z  =',F10.3,20X,
      3 'X, Y and Z are in crystal fractions')
 2705  FORMAT(/,A,'-vector (in polar coord.):',
      2       'Input ONLY in units of 100 DEGREES !!!',//,

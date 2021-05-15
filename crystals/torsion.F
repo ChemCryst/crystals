@@ -89,6 +89,8 @@ C
       DATA KDET /'D   '/
 #endif
 C
+      DCOLIN = 170.    ! Threshold for co-linearity (as in PLATON)
+      COLIN=COS(DTR*DCOLIN)
       REWIND (MTE)
 c----- Set print flag to no
 CDJWJAN06
@@ -103,10 +105,10 @@ C--READ THE INPUT CONTROL CARDS WITH THE LEXICAL SCANNER
       ISTAT = KLEXAN ( IULN , IFIRST , LENGTH )
       IF ( ISTAT .LT. 0 ) GO TO 9910
 C----- GET THE PUBLICATION ETC FLAG FROM THE LEXICAL COMMON BLOCK
-      IPBFLG = MY !37
-      LEVEL = MW  !35
-      JESD = MV   !34
-      JINCL = MMA !39 INCLUDE
+      IPBFLG = MY !37 PRINT NO  YES CIF PUNCH
+      LEVEL = MW  !35 LEVEL LOW HIGH
+      JESD = MV   !34 E.S.D NO YES EXCLRH
+      JINCL = MMA !39 INCLUDE  NULL ALL NO-HYDROGEN
 c
 C--CLEAR THE CORE
       CALL XRSL
@@ -342,7 +344,7 @@ C      FIRST CREATE A DISTANCE-TYPE STACK FOR THE VCV CODE
       M5TMP = M5A
       IF (IESD .GE. 1)  L12TMP = L12A
 c
-c  NOW CREATE THE ORIGINAL hOURANI sTACK FOR THE OLD CODE
+c  NOW CREATE THE ORIGINAL Hourani sTACK FOR THE OLD CODE
 C  NOTE THAT WE HAVE POSITIONS IN BOTH STACKS FOR THE MOMNET
 C  THE HOURANI STACK CAN GO ONCE WE ARE HAPPY WITH THE NEW CODE
       DO 1950 JE=1,N5A
@@ -459,7 +461,6 @@ C--POINT TO THE SECOND VECTOR
       angle1= store(ibase1)*store(ibase2)+
      1 store(ibase1+1)*store(ibase2+1)+
      1 store(ibase1+2)*store(ibase2+2)
-      angle1=min(1.0,abs(angle1))
 C
 C--SET A POINTER FOR THE ATOM NUMBER
       JQ=1
@@ -522,17 +523,15 @@ C--NORMALISE
       angle2= -store(ibase1)*store(ibase2)-
      1 store(ibase1+1)*store(ibase2+1)-
      1 store(ibase1+2)*store(ibase2+2)
-      angle2=min(1.0,abs(angle2))
-C     
-      IF(ABS(ANGLE1).GT.ABS(ANGLE2)) THEN
+C   
+      IF(ANGLE1.LT.ANGLE2) THEN
        ANGLE3=ANGLE1
       ELSE
        ANGLE3=ANGLE2
       ENDIF
-
-      IF (abs(angle3) .ge. 0.996) THEN
-       WRITE(CBUFF,'(A,F6.1)')' Group is almost co-linear ',
-     1 RTD*ACOS(ANGLE3)
+      IF (angle3 .lt. colin) THEN   
+       WRITE(CBUFF,'(A,F6.1,A)')' Group is almost co-linear (',
+     1 RTD*ACOS(MAX(-1.,ANGLE3)), ')'
       ELSE
        CBUFF=' '
       ENDIF
@@ -567,7 +566,7 @@ c
 C--- NOTE THAT TWO ITEMS ARE OUTPUT EVEN WHEN ESDS ARE NOT COMPUTED
 c Dont write to MTE if the bonds are almost co-linear
       IF((IPBFLG.EQ.1).OR.(IPBFLG.EQ.2)) THEN
-       IF(abs(angle3) .lt. 0.996) THEN
+       IF(angle3 .gt. colin) THEN             !Less than threshold for linearity
         IF(NORH.EQ.1) ESD = 0 !Skip riding H esds
         WRITE (MTE) 'T', ANGLE, ESD,
      1 (STORE(JPUB),STORE(JPUB+1), (ISTORE(KPUB),KPUB=JPUB+2,JPUB+6),

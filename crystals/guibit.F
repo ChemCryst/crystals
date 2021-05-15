@@ -498,7 +498,7 @@ C
 
 CODE FOR KDIST2
       FUNCTION KDIST2(NOC)
-C--MOVES AN ATOM POSITIVELY FORWARD ONE UNIT CELL, AND CHECKS IF
+C--MOVES AN ATOM POSITIVELY FOsARD ONE UNIT CELL, AND CHECKS IF
 C  THE ATOM IS STILL WITHIN THE SEARCH VOLUME FOR THE GIVEN AXIAL DIRECT
 C
 C  NOC  THE AXIAL DIRECTION ALONG WHICH TO MOVE.
@@ -801,6 +801,7 @@ C Ensure list 41 dependencies are up to date:
 
                IF(KHUNTR(1,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL01
                IF(KHUNTR(2,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL02
+cdjw      write(123,*)'Loading L 5'
                IF(KHUNTR(5,0,IADDL,IADDR,IADDD,-1).NE.0)  CALL XFAL05
                IF(KHUNTR(29,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL29
                IF(KHUNTR(41,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL41
@@ -817,7 +818,13 @@ C Ensure list 41 dependencies are up to date:
                 L05SR = -1
               END IF
             END IF
-
+            if(n5.gt.0.0) then
+             gflack=store(l5o+4)
+             gexti=store(l5o+5)
+            else
+             gflack=0.0
+             gexti=0.0
+            endif
 C If the current list is is the same as one sent before then
 C don't update the GUI.
 
@@ -828,6 +835,10 @@ c      CALL XPRVDU (NCVDU,1,0)
               CYCLE
             ENDIF
 
+
+C UPDATE FLACK  INFO
+            gflack=store(l5o+4) !NOTE that this sets the value from L5
+            gexti=store(l5o+5)  
 C Set old list number to current list number.
             ISERnn(5)  = L05SR
             ISERnn(41) = L41SR
@@ -897,6 +908,7 @@ c      CALL XPRVDU(NCVDU, 1,0)
              WRITE ( CMON, '(A/A)')'^^GR MODEL L5','^^CW'
              CALL XPRVDU(NCVDU, 2,0)
 
+c          OPEN (99,file='logs/99.log',action='write',position='append')
 
              IPLACE = 1
              DO I5 = L5,L5+(N5-1)*MD5, MD5
@@ -1056,6 +1068,8 @@ C Colour info still not found, use and cache default values:
                UEQUIV = STORE(I5+7)
 
 
+
+
                IF ( NINT(STORE(I5+3)) .EQ. 0 ) THEN
 
                  TENSOR(1,1) = STORE(I5+7)
@@ -1099,8 +1113,8 @@ C Filter out tiny axes
                    END DO
                  END DO
 
-C                WRITE(99,'(9(1X,F7.4))') ((AXES(KI,KJ)/GSCALE,KI=1,3),KJ=1,3)
-C                WRITE(99,'(9(1X,F7.4))') (GUMTRX(KI),KI=19,27)
+c          WRITE(99,'(9(1X,F7.4))') ((AXES(KI,KJ)/GSCALE,KI=1,3),KJ=1,3)
+c          WRITE(99,'(9(1X,F7.4))') (GUMTRX(KI),KI=19,27)
 
 C Work out UEQUIV:
 
@@ -1122,10 +1136,10 @@ C Work out UEQUIV:
 
                IF ( LSPARE .AND. ( NINT(STORE(I5+3)) .LE. 1 )) THEN
                   ISPARE = NINT(1000 * STORE(I5+13) )
-                  SPARE = 0.297 * (STORE(I5+13)**(1.0/3.0))
-                  AXES (1,1) = ( GSCALE * SPARE )
-                  AXES (2,2) = ( GSCALE * SPARE )
-                  AXES (3,3) = ( GSCALE * SPARE )
+                  SPARE = 0.297 * ABS(STORE(I5+13))**(1.0/3.0)
+                  AXES (1,1) = ( GSCALE * ABS(SPARE) )
+                  AXES (2,2) = ( GSCALE * ABS(SPARE) )
+                  AXES (3,3) = ( GSCALE * ABS(SPARE) )
                   AXES (1,2) = 0.0
                   AXES (1,3) = 0.0
                   AXES (2,1) = 0.0
@@ -1133,9 +1147,11 @@ C Work out UEQUIV:
                   AXES (3,1) = 0.0
                   AXES (3,2) = 0.0
 C                  STORE(I5+3) = 0.0
+c                 write(99,*) 'top ', spare, axes(1,1), STORE(I5+13)
                ELSE
                    SPAREV = STORE(I5+3)
                    ISPARE = NINT(COV*GSCALE)
+c                 write(99,*) 'bottom ', sparev, ispare
                END IF
 
 C Pass sticky refinement flag options if present.
@@ -1153,6 +1169,14 @@ C This block detects sticky flag and sets ISFLAG to pass info to GUI.
                IF ( NINT(STORE(I5+3)) .LE. 1 ) THEN
 
                    CALL PRTGRP(ISTORE(I5+14),JPRT,JGRP,1)
+
+c                WRITE(99,*)NINT(STORE(I5+3)),CATTYP, 
+c     2			NINT(STORE(I5+1)),LLAB,CLAB,
+c     2          ISPARE,NINT(SPAREV),
+c     3          AXES(1,1),AXES(2,1),AXES(3,1),
+c     3          AXES(1,2),AXES(2,2),AXES(3,2),
+c     3          AXES(1,3),AXES(2,3),AXES(3,3)
+
 
 #ifdef CRY_GUI
                 CALL FSTATM(CATTYP,NINT(STORE(I5+1)),LLAB,CLAB,
@@ -1173,6 +1197,12 @@ C This block detects sticky flag and sets ISFLAG to pass info to GUI.
 
                    CALL PRTGRP(ISTORE(I5+14),JPRT,JGRP,1)
 
+c                WRITE(99,*)NINT(STORE(I5+3)), CATTYP, 
+c     2          NINT(STORE(I5+1)),LLAB,CLAB,     
+c     2          ISPARE,NINT(SPAREV),
+c     3          AXES(1,1),AXES(2,1),AXES(3,1),
+c     3          AXES(1,2),AXES(2,2),AXES(3,2),
+c     3          AXES(1,3),AXES(2,3),AXES(3,3)
 #ifdef CRY_GUI
                CALL FSTSPH(LLAB,CLAB,NINT(STR11(IPLACE)*GSCALE),   ! 1,2,3
      5         NINT(STR11(IPLACE+1)*GSCALE),                       ! 4
@@ -1211,6 +1241,8 @@ C This block detects sticky flag and sets ISFLAG to pass info to GUI.
                IPLACE = IPLACE + 3
              END DO
 
+
+c             CLOSE(99)
 
 C Output bonds:
 
@@ -1453,7 +1485,6 @@ c               CALL XPRVDU(NCVDU, 1,0)
 c             WRITE ( CMON, '(A)')'GUI-UP: Done L5'
 c             CALL XPRVDU(NCVDU, 1,0)
 
-
             ELSE
 
              WRITE (CMON,'(A,2(/A))')'^^GR MODEL L5','^^GR SHOW','^^CW'
@@ -1536,10 +1567,11 @@ c             CALL XPRVDU(NCVDU, 1,0)
             IF ( L23SR.NE.ISERnn(23) )THEN
               ISERnn(23)  = L23SR
               IF ( ISTORE ( L23MN + 1 ) .EQ. -1 ) THEN
-               WRITE (CMON,2) '^^CO SAFESET [ _MT_REF_COEF TEXT ''F'' ]'
+               WRITE (CMON,2) 
+     1 '^^CO SAFESET [ _MT_REF_COEF TEXT ''\Sigma(Fo-Fc)\**2'' ]'
               ELSE IF ( ISTORE ( L23MN + 1 ) .EQ. 0 ) THEN
                WRITE (CMON,2)
-     1                '^^CO SAFESET [ _MT_REF_COEF TEXT ''F squared'' ]'
+     1'^^CO SAFESET [ _MT_REF_COEF TEXT ''\Sigma[Fo\**2-Fc\**2]\**2'' ]'
               ELSE
                WRITE(CMON,2)
      1                '^^CO SAFESET [ _MT_REF_COEF TEXT ''Unknown'' ]'
@@ -1658,18 +1690,23 @@ c             CALL XPRVDU(NCVDU, 1,0)
               IF (STORE(L30RF+3).GT.-9.9)
      1            WRITE(CCOL,'(F6.2)')STORE(L30RF+3)
 
-246           FORMAT('^^WI SAFESET [ _MT_REF_R TEXT ',F8.2,' ]',
-     1                   ' SAFESET [ _MT_REF_RW TEXT ',F8.2,' ]',/,
+
+
+
+246           FORMAT('^^WI SAFESET [ _MT_REF_R TEXT "',F8.2,' %" ]',
+     1                   ' SAFESET [ _MT_REF_RW TEXT "',F8.2,' %" ]',/,
      1               '^^WI SAFESET [ _MT_REF_NPAR TEXT ',F9.0,' ]',
      1                   ' SAFESET [ _MT_REF_SCUT TEXT ',A,' ]',/,
      1               '^^WI SAFESET [ _MT_REF_GOOF TEXT ',F9.3,' ]',
      1                   ' SAFESET [ _MT_REF_MAXRMS TEXT ',F9.4,' ]',/,
-     1               '^^WI SAFESET [ _MT_REF_NREF TEXT ',F7.0,' ]',/,
+     1               '^^WI SAFESET [ _MT_REF_NREF TEXT ',F7.0,' ]',
+     1                   ' SAFESET [ _MT_REF_GFLACK TEXT ',F6.3,' ]',/,
+     1               '^^WI SAFESET [ _MT_REF_GEXTI TEXT ',F6.0,' ]',/,
      1               '^^CR')
               WRITE ( CMON, 246 ) STORE(L30RF), STORE(L30RF+1),
      1            STORE(L30RF+2), CCOL,  STORE(L30RF+4),
-     1            STORE(L30RF+7),STORE(L30RF+8)
-              CALL XPRVDU(NCVDU, 5, 0)
+     1            STORE(L30RF+7),STORE(L30RF+8),GFLACK,GEXTI
+              CALL XPRVDU(NCVDU, 6, 0)
             ENDIF
 
 
@@ -1772,27 +1809,41 @@ c             CALL XPRVDU(NCVDU, 1,0)
            IF ( IULN .LT. 0 ) THEN ! not allowed to load lists, ensure loaded
               IF(KHUNTR(25,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
            ELSE
+cdjw      write(123,*)'Thinking about loading L 5 and L 25'
               IF(KHUNTR(25,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL25
+              IF(KEXIST(5).EQ.1)THEN
+               IF(KHUNTR(5,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL05
+               l5djw = l5es
+              ELSE
+               l5djw = 0
+               md5es = 0
+              ENDIF
            END IF
-
-
            CALL XRLIND(25, L25SR, NFW, LL, IOW, NOS, ID)
-           IF ( L25SR.NE.ISERnn(25) ) THEN
+c      write(123,'(4i12)')L25SR,ISERnn(25),L05SR,ISERnn(5)
+           IF ((L25SR.NE.ISERnn(25)).or.(L05SR.EQ.ISERnn(5)) ) THEN
               ISERnn(25)  = L25SR
            ELSE
              CYCLE
            END IF
-
            WRITE (CMON,
      1       '(''^^WI SAFESET [ _MT_L25 EMPTY TEXT "Twin laws" ]'')')
            CALL XPRVDU(NCVDU,1,0)
-
-1106       FORMAT ('^^WI SAFESET [ _MT_L25 TEXT "',3(3F7.3,2X),'" ]')
+          IF(MD5ES.EQ.N25) THEN
+1106  FORMAT ('^^WI SAFESET [ _MT_L25 TEXT',/
+     1 '^^WI "', 3(3F7.3,2X),F5.3,'" ]')
            DO J = 0, N25-1
              M25 = L25+J*MD25
-             WRITE(CMON,1106) (STORE(I),I = M25 , M25 + MD25-1)
-             CALL XPRVDU(NCVDU, 1,0)
+             m5djw = l5djw +j      ! All scales are in the first record
+             IF(MD5ES.GT.0) THEN
+               WRITE(CMON,1106) (STORE(I),I = M25 , M25 + MD25-1)
+     1         ,STORE(M5DJW)
+             ELSE
+              WRITE(CMON,1106) (STORE(I),I = M25 , M25 + MD25-1)
+             ENDIF
+             CALL XPRVDU(NCVDU, 2,0)
            END DO
+          ENDIF
 
            WRITE (CMON,'(''^^WI SET _MT_L25 VIEWTOP'',/,''^^CR'')')
            CALL XPRVDU(NCVDU,2,0)
@@ -1823,7 +1874,7 @@ c             CALL XPRVDU(NCVDU, 1,0)
            END IF
 
 1107       FORMAT ('^^CO SAFESET [ _MT_WAVE TEXT "',F8.5,1X,
-     2             'Angstroms (',A,')" ]')
+     2             '\AA (',A,')" ]')
            WRITE(CMON,1107) STORE(L13DC),
      2  CRADTN(ISTORE(L13DT+1)+2)(1:LEN_TRIM(CRADTN(ISTORE(L13DT+1)+2)))
            CALL XPRVDU(NCVDU, 1,0)

@@ -1,0 +1,134 @@
+cryshelp.ssc                 12  %      FINISH                                         %BACK%
+data.ssc                     12  %      FINISH                                        %BACK%
+diffexec.ssc                 32  %  IF  CARG .EQ. 'FS' THEN                     %% Special case of just 1 res embeded in a cif
+diffexec.ssc                159  %        IF FILEFOUND .NE. 'INS' THEN        %% Pascal's INS file loads LIST 6 so continue to merge etc
+ed30.ssc                    848      Average decay in intensity, %.
+edlist5.ssc                  64  %        FINISH                                        %BACK%
+edlist5.ssc                  68  %        COPY 'QUIT'                                  %QUIT%
+general.ssc                  11  %      FINISH                                        %BACK%
+inemap.ssc                   51  %  IF SOLVEMETHOD .EQ. 1 THEN                                  %MULTAN%
+inemap.ssc                  119  %  ELSE IF SOLVEMETHOD .EQ. 2 THEN                          %CRYSTALS%
+inemap.ssc                  121  %  ELSE IF SOLVEMETHOD .EQ. 3 THEN                          %SHELXS%
+inemap.ssc                  131  %  ELSE  IF  SOLVEMETHOD .EQ. 5 THEN                         %OTHER%
+inlist13.ssc                 60  %      INSERT 'CONDITION 1.5418 13.218 90 0.5871488 0.6425348 0.0001788'  %CU%
+inlist13.ssc                 61  %      INSERT 'CONDITION 0.71073 6.05 90 0.5871488 0.6425348 0.0001788'   %MO%
+inlist13.ssc                122  %        LOOP ORIENTTYPE TIMES                                %TWO AND THREE%
+inlist30.ssc                 29  %     GET NOSTORE REAL 'Merging R factor (Rint, %) ' '0'
+inlist30.ssc                102  %     GET NOSTORE REAL 'Decay, % ' '0'
+kccd.ssc                      4  %      COPY '#SPAWN % "CRYSDIR:kccdin.exe"'
+kccd.ssc                      6  %      COPY '#SPAWN % "CRYSDIR:kccdin"'
+list28-reset-wt.ssc          28  %     COPY 'TRANSFER FROM OFFSET = 0 TO CW'   %% 0,1,2 are bits of 3A4
+list28-reset-wt.ssc          31  %        IF RW .LE. 0.0000001 THEN   %ONLY ZERO IF NO REAL USER-VALUE SET
+list28-set-wt.ssc            28  %     COPY 'TRANSFER FROM OFFSET = 0 TO CW'   %% 0,1,2 are bits of 3A4
+list28-set-wt.ssc            31  %        IF RW .LT. 0.0000001 THEN   %ONLY UPDATE IF NO REAL VALUE SET
+list28-zero-wt.ssc           27  %     COPY 'TRANSFER FROM OFFSET = 0 TO CW'   %% 0,1,2 are bits of 3A4
+look.ssc                     24  %      FINISH                     %BACK%
+modify.ssc                    9  %      FINISH                                      %BACK%
+modify.ssc                   31  %      COPY '#SCRIPT EDLIST1'                         %CELL%
+modify.ssc                   32  %      COPY '#SCRIPT INLIST2'                     %SYMMETRY%
+modify.ssc                   33  %      COPY '#SCRIPT INSPACE'                   %SPACEGROUP%
+modify.ssc                   34  %      COPY '#SCRIPT EDLIST29'                    %ELEMENTS%
+modify.ssc                   35  %      COPY '#SCRIPT EDLIST5'                        %ATOMS%
+modify.ssc                   36  %      COPY '#SCRIPT RENAME'                        %RENAME%
+modify.ssc                   37  %      COPY '#SCRIPT INLIST28'                    %INLIST28%
+modify.ssc                   38  %      COPY '#SCRIPT EDLIST12'                    %EDLIST12%
+modify.ssc                   39  %      COPY '#SCRIPT EDLIST16'                    %EDLIST16%
+OxDiffin.ssc                 70  %      COPY '#SPAWN % "CRYSDIR:Oxdiffin.exe"'
+prefour.ssc                   9  %      COPY '#SCRIPT SFLS67'    %% This de-twinns and merges Friedel pairs. It also set F67 to 7
+prefour.ssc                  19  %        COPY '#FOURIER 6'             % we should never use LIST 6 except for Pattersons
+rc93.ssc                      4  %      COPY '#SPAWN % "CRYSDIR:rc93.exe" "CRYSDIR:"'
+sfls39.ssc                   78  %    VARIABLE INTEGER GSERI                          % NOTE GSERI WAS REAL ABOVE
+sfls67.ssc                   48  %        COPY 'TRANSFER FROM OFFSET=1 TO ITMP'        %TWINNED  %
+sfls67.ssc                   55  %        COPY 'TRANSFER FROM OFFSET=0 TO ITMP'        %FRIEDELPAIRS%
+sfls67.ssc                   72  %        COPY 'TRANSFER FROM OFFSET=4 TO ITMP'        %PARTIALS%
+sfls67.ssc                   82  %  IF PARTIALS .EQ. TRUE .AND. TWINNED .EQ. TRUE THEN     %WE SHOULD ABORT IF PARTIALS AND TWINNED%
+sfls67.ssc                   84  %   EVALUATE DOSCALE = 2                                 %INDICATE ERROR CONDITION
+sixcycle.ssc                  5  %    evaluate maxshift = 1.0      %same as in COMMAND file%
+xabsolute.ssc                17  %   VARIABLE LOGICAL DOFLACK          %Include Flack Parameter in LSQ
+xabsolute.ssc                18  %   VARIABLE LOGICAL FDONE            %Flack parameter determined from Parsons method
+xabsolute.ssc                19  %   VARIABLE LOGICAL PASCALOK         %Set TRUE if Pascal's code works
+xabsolute.ssc                20  %   VARIABLE INTEGER DOABS      % 1=Its done, 0=it's to be done
+xabsolute.ssc                67  %   EVALUATE FRIEDELF = - 1          % LIST 13 Friedel Flag
+xcif.ssc                     66  %          COPY 'TRANSFER FROM OFFSET =  1 TO FTYPE'  %% F or Fsq
+xcif.ssc                    245  %    copy '#sfls'  %Internal call to SFLS from XCIF removed Nov 2019 because
+xcif.ssc                    247  %    copy 'end'    %comotation errors if previous sfls had been on a de-twinned LIST 7
+xcif.ssc                    336  %      IF ( VALUE .EQ. 2 ) THEN                         %% chosen by user
+xcont.ssc                   507  %         IF DOCALC .EQ. 2 THEN     %
+xfilea.ssc                   36  %     TRANSFER '#SPAWN % "CRYSDIR:diffin.exe" -f -d A -o from-cif.cry " ' -
+xfilea.ssc                   57  % TRANSFER '#SPAWN % "CRYSDIR:diffin.exe" ' // CARG // '"' // COUT -
+xfilen.ssc                   36  %     TRANSFER '#SPAWN % "CRYSDIR:diffin.exe" -f -d N -o from-cif.cry "' -
+xfilen.ssc                   39  %  TRANSFER '#SPAWN % "CRYSDIR:diffin" -f -d N -o from-cif.cry ' -
+xfilen.ssc                   61  % TRANSFER '#SPAWN % "CRYSDIR:diffin.exe" ' // CARG // '"' // COUT -
+xfiler.ssc                   39  %     TRANSFER '#SPAWN % "CRYSDIR:diffin.exe" -a -d R -o from-cif.cry " ' -
+xfiler.ssc                   60  % TRANSFER '#SPAWN % "CRYSDIR:diffin.exe" ' // CARG // '"' // COUT -
+xfilew.ssc                   43  %     TRANSFER '#SPAWN % "CRYSDIR:diffin.exe" -f -d W -o from-cif.cry "' -
+xfilew.ssc                   65  % TRANSFER '#SPAWN % "CRYSDIR:diffin.exe" ' // CARG // '"' // COUT -
+xfile_any.ssc                90  %  ELSE IF  ( CEXTN .EQ. 'CMF' ) THEN                        % What is this?
+xfile_any.ssc               106  %  ELSE IF  ( CEXTN .EQ. 'PCF' ) THEN                        %Bruker format file
+xfile_any.ssc               108  %  ELSE IF  ( CEXTN .EQ. 'FCF' ) THEN                        %IUCr format reflections
+xfile_any.ssc               263  %           EVALUATE CARG = 'N'                                    %NONIUS
+xfile_any.ssc               271  %            EVALUATE CARG = 'A'                                   %RIGAKU OD
+xfile_any.ssc               279  %             EVALUATE CARG = 'R'                                  %RIGAKU
+xfile_any.ssc               288  %              EVALUATE CARG = 'W'                                  %WINGX
+xfile_any.ssc               296  %               EVALUATE CARG = 'PP'                               %DIFFIN output
+xfile_any.ssc               304  %                EVALUATE CARG = 'SI'                              %SHELX ins/res
+xfile_any.ssc               312  %                 EVALUATE CARG = 'S4'                             %SHELX hklf4
+xfile_any.ssc               320  %                  EVALUATE CARG = 'S5'                            %SHELX hklf5
+xfile_any.ssc               328  %                   EVALUATE CARG = 'CD'                           %CRYSTALS USE file
+xfile_any.ssc               336  %                    EVALUATE CARG = 'FA'                          %Atom cif
+xfile_any.ssc               344  %                     EVALUATE CARG = 'FR'                         %Reflection cif
+xfile_any.ssc               352  %                      EVALUATE CARG = 'FM'                        %Multi-cif without SHELX
+xfile_any.ssc               359  %                       EVALUATE CARG = 'FS'                       %Multi SHELX in cif
+xfile_any.ssc               417  % TRANSFER '#SPAWN % "CRYSDIR:shelx2cry.exe" ' // '"' // C_FILE // '"' TO CRYSTALS
+xfile_any.ssc               451  %         copy '#script xfilew'    %Generalised reflections
+xflackpascal.ssc            282  %      EVALUATE _BADPASCAL = 0         % for next time round
+xfliprun.ssc                 17  %      COPY '#SPAWN % "CRYSDIR:superflip.exe" sflip.inflip'
+xfliprun.ssc                212  %      COPY '#SPAWN % "CRYSDIR:edma.exe" sflip.inflip'
+xfour.ssc                   260  %         IF DOCALC .EQ. 2 THEN      % Fourier abandoned
+xfour.ssc                   367  %       IF ( F67 .EQ. 6 ) THEN          % should be patterson only
+xgetinfo.ssc                  7  %  VARIABLE LOGICAL FDONE  % Parsons FLACK status
+xinlist3.ssc                295  %       EVALUATE ADJW = 1.5418  %CU%
+xinlist3.ssc                296  %       EVALUATE ADJW = 0.71073 %MO%
+xinrc93.ssc                  60  %      COPY '#SPAWN % "CRYSDIR:rc93.exe" "CRYSDIR:"'
+xkccdin.ssc                  71  %      COPY '#SPAWN % "CRYSDIR:kccdin.exe"'
+xkccdin.ssc                  73  %      COPY '#SPAWN % "CRYSDIR:kccdin"'
+xodin.ssc                    69  %      COPY '#SPAWN % "CRYSDIR:oxdiffin.exe"'
+xpascal.ssc                  48  %      TRANSFER '#SPAWN % "CRYSDIR:shelx2cry.exe"  -o crystalsinput.cry "' -
+xphenyl.ssc                  86  %     ELSE IF ( RCHI .EQ. 2 ) THEN     %CANCEL
+xphenyl.ssc                  89  %     ELSE IF ( RCHI .EQ. 4 ) THEN     %UNDO - back one
+xphenyl.ssc                 104  %     IF ( RCHI .EQ. 3 ) THEN      %ATOM - fill in atom name
+xregu.ssc                    38  %         EVALUATE REGTYPE = 1      %R1 ON%
+xregu.ssc                    44  %              EVALUATE REGTYPE = 2   %R2 ON%
+xregu.ssc                    45  %              EVALUATE REGTYPE = 3   %R3 ON%
+xscale.ssc                   86  %      COPY 'PARAM 0.1 0 0 0 0 0.333 '                 %% IMPURE STATISTICS
+xshelxs.ssc                 135  %      COPY '#SPAWN % "CRYSDIR:shelxs.exe"'
+xshelxs.ssc                 137  %      COPY '#SPAWN % "CRYSDIR:shelxs"'
+xshelxt.ssc                 202  % TRANSFER '#SPAWN % "CRYSDIR:shelx2cry.exe" -o shelxt_input.cry shelxt_a.res' -
+xsir92.ssc                  241           computing the plot, try uncommenting (remove the '>') the %normal
+xsir92.ssc                  252            %normal
+xsir92.ssc                  253            %seminv
+xsir92.ssc                  254            %invariant
+xsir92.ssc                  255            %phase
+xsir92.ssc                  257            %fourier
+xsir92.ssc                  352           computing the plot, try uncommenting (remove the '>') the %normal
+xsir92.ssc                  363            %normal
+xsir92.ssc                  364            %seminv
+xsir92.ssc                  365            %invariant
+xsir92.ssc                  366            %phase
+xsir92.ssc                  368            %fourier
+xweights.ssc                114  %                COPY '#SCRIPT LIST28-SET-WT'  %% BEWARE IF/WHEN RETURNING TO NORMAL WTS
+xwrite5.ssc                 726  %    EVALUATE STUCK = TRUE                       %X's or X's,Uiso%
+xwtvsig.ssc                   6  % VARIABLE LOGICAL SIG SIG2               % Decalre both so that SIG2 is false
+ygetsig.ssc                  88  %      IF NITEMS .GE. 5 THEN     %set to same values as moo in reductio.F
+ygetsig.ssc                 108  %     IF NSIGMAS .GE. 50 THEN             %If only a few,take their centre
+ygetsig.ssc                 109  %           EVALUATE XBAR = 3.0 *  XBAR  % otherwise extend the range.
+zshelxin.ssc                 79  %          TRANSFER '%END LOOP' TO SCRIPT     % ENDS LOOP 20 TIMES
+zshelxin.ssc                 80  %          TRANSFER '%END IF' TO SCRIPT       % ENDS IF LNOTAT LOOP
+zshelxin.ssc                 81  %          TRANSFER '%END LOOP' TO SCRIPT     % JUMPS BACK TO START
+zshelxin.ssc                 99  %          TRANSFER '%END LOOP' TO SCRIPT     % ENDS LOOP 20 TIMES
+zshelxin.ssc                100  %          TRANSFER '%END IF' TO SCRIPT       % ENDS IF LNOTAT LOOP
+zshelxin.ssc                101  %          TRANSFER '%END LOOP' TO SCRIPT     % JUMPS BACK TO START
+zshelxin.ssc                119  %          TRANSFER '%END LOOP' TO SCRIPT     % ENDS LOOP 20 TIMES
+zshelxin.ssc                120  %          TRANSFER '%END IF' TO SCRIPT       % ENDS IF LNOTAT LOOP
+zshelxin.ssc                121  %          TRANSFER '%END LOOP' TO SCRIPT     % JUMPS BACK TO START
+

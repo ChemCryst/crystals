@@ -111,7 +111,7 @@ Bonds: Update required - There is no list 41
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32530            2600                                    On scale of /FC/
+[33]      33000          32000            2600                                    On scale of /FC/
 
 [32]     211780         204740           16380                0.31 E+06          On scale of /FO/
 
@@ -191,7 +191,7 @@ Refining    35 parameters in    1 block :      716 elements in the LS matrix.
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32430            2500                                    On scale of /FC/
+[33]      33000          32000            2500                                    On scale of /FC/
 
 [32]     211780         204060           16060                0.25 E+06          On scale of /FO/
 
@@ -223,7 +223,7 @@ LS-scale=  6.292   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  7.50E-05
- (sp inverse) 1-norm:  1.57E+01 cond. number:  6.29E+02 rel. error:  7.50E-05
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  6E+02 rel. error:  7.50E-05
  S/ESD     1           1             0.066      0.0E+00    0.124E-01          5.32                          SCALE   
 [14]  S/ESD    29          29            0.011       0.0E+00    0.78 E-02          1.4         C     13 Z       
 
@@ -247,7 +247,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.25 E+06         0.00 E+00         0.25 E+06
+[30]  Minimisation function              0.25E+06         0.0E+00         0.25E+06
 [45]  Hamilton weighted R-value          10.              0.00             10. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -262,7 +262,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 
 
 [38]  Mean           0.07  -0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-                                        -0.0005  -0.0002  -0.0003
+[89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.01    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.038    0.021    0.052 
@@ -342,7 +342,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.069    0.056    0.068 
 
-[37]      C         12.    0.42    1.00   -0.00   -0.32   -0.15    0.10
+[37]      C         12.    0.42    1.00    0.00   -0.32   -0.15    0.10
 [73]                      -0.01             0.00   -0.00    0.00    0.00
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.068    0.055    0.067 
@@ -352,7 +352,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.069    0.056    0.068 
 
-[37]      C         14.    0.42    1.00   -0.33   -0.00   -0.07    0.10
+[37]      C         14.    0.42    1.00   -0.33    0.00   -0.07    0.10
 [73]                      -0.01             0.00    0.00    0.00    0.00
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.070    0.055    0.069 
@@ -371,7 +371,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 [22]                       0.08             0.0001   0.0001   0.0001   0.0001   0.0001   0.0001   0.0001
 [22]                       0.12             0.0011   0.0011   0.0011   0.0011   0.0011   0.0011   0.0011
 [31]                                         0.011    0.010    0.009 
-Mean C-C su =   0.0463
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -432,7 +432,7 @@ Mean C-C su =   0.0463
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32420            2400                                    On scale of /FC/
+[33]      33000          32000            2400                                    On scale of /FC/
 
 [32]     211780         206190           15430                0.24 E+06          On scale of /FO/
 
@@ -460,7 +460,7 @@ LS-scale=  6.358   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  7.08E-05
- (sp inverse) 1-norm:  1.57E+01 cond. number:  5.94E+02 rel. error:  7.08E-05
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  6E+02 rel. error:  7.08E-05
 
                                                 for          35 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -486,7 +486,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.24 E+06         0.00 E+00         0.24 E+06
+[30]  Minimisation function              0.24E+06         0.0E+00         0.24E+06
 [45]  Hamilton weighted R-value          10.              0.00             10. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -581,7 +581,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.071    0.057    0.070 
 
-[37]      C         12.    0.42    1.00   -0.00   -0.32   -0.15    0.10
+[37]      C         12.    0.42    1.00    0.00   -0.32   -0.15    0.10
 [73]                       0.00            -0.00    0.00   -0.00   -0.00
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.070    0.056    0.068 
@@ -591,7 +591,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.071    0.057    0.070 
 
-[37]      C         14.    0.42    1.00   -0.33   -0.00   -0.07    0.10
+[37]      C         14.    0.42    1.00   -0.33    0.00   -0.07    0.10
 [73]                       0.00            -0.00   -0.00   -0.00   -0.00
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.071    0.056    0.070 
@@ -610,7 +610,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
                      -0.0016           -0.0003  -0.0003  -0.0003  -0.0003  -0.0003  -0.0003  -0.0003
 [22]                       0.12             0.0011   0.0011   0.0011   0.0011   0.0011   0.0011   0.0011
 [31]                                         0.011    0.010    0.009 
-Mean C-C su =   0.0464
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -671,7 +671,7 @@ Mean C-C su =   0.0464
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32420            2400                                    On scale of /FC/
+[33]      33000          32000            2400                                    On scale of /FC/
 
 [32]     211780         206220           15400                0.24 E+06          On scale of /FO/
 
@@ -699,7 +699,7 @@ LS-scale=  6.359   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  7.02E-05
- (sp inverse) 1-norm:  1.57E+01 cond. number:  5.89E+02 rel. error:  7.02E-05
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  6E+02 rel. error:  7.02E-05
 
                                                 for          35 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -725,7 +725,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.24 E+06         0.00 E+00         0.24 E+06
+[30]  Minimisation function              0.24E+06         0.0E+00         0.24E+06
 [45]  Hamilton weighted R-value          10.              0.00             10. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -740,7 +740,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 
 
 [38]  Mean           0.00  -0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-                                        -0.0003  -0.0001  -0.0001
+[89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.003    0.003    0.003 
@@ -820,7 +820,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.071    0.057    0.070 
 
-[37]      C         12.    0.42    1.00   -0.00   -0.32   -0.15    0.10
+[37]      C         12.    0.42    1.00    0.00   -0.32   -0.15    0.10
 [73]                      -0.00             0.00   -0.00    0.00    0.00
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.069    0.056    0.068 
@@ -830,7 +830,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.071    0.057    0.070 
 
-[37]      C         14.    0.42    1.00   -0.33   -0.00   -0.07    0.10
+[37]      C         14.    0.42    1.00   -0.33    0.00   -0.07    0.10
 [73]                      -0.00            -0.00    0.00    0.00    0.00
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.071    0.056    0.070 
@@ -849,7 +849,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 [22]                       0.00             0.0001   0.0001   0.0001   0.0001   0.0001   0.0001   0.0001
 [22]                       0.12             0.0011   0.0011   0.0011   0.0011   0.0011   0.0011   0.0011
 [31]                                         0.011    0.010    0.009 
-Mean C-C su =   0.0464
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -910,7 +910,7 @@ Mean C-C su =   0.0464
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32420            2400                                    On scale of /FC/
+[33]      33000          32000            2400                                    On scale of /FC/
 
 [32]     211780         206220           15410                0.24 E+06          On scale of /FO/
 
@@ -938,7 +938,7 @@ LS-scale=  6.359   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  7.00E-05
- (sp inverse) 1-norm:  1.57E+01 cond. number:  5.88E+02 rel. error:  7.00E-05
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  6E+02 rel. error:  7.00E-05
                                                                                                             Composite
 
                                                                       Composite
@@ -980,7 +980,7 @@ All cycle   Rw                    0.0            10.           0.10E+03
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.24 E+06         0.00 E+00         0.24 E+06
+[30]  Minimisation function              0.24E+06         0.0E+00         0.24E+06
 [45]  Hamilton weighted R-value          10.              0.00             10. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -1075,7 +1075,7 @@ All cycle   Rw                    0.0            10.           0.10E+03
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.071    0.057    0.070 
 
-[37]      C         12.    0.42    1.00   -0.00   -0.32   -0.15    0.10
+[37]      C         12.    0.42    1.00    0.00   -0.32   -0.15    0.10
 [73]                       0.00            -0.00    0.00   -0.00    0.00
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.069    0.056    0.068 
@@ -1085,7 +1085,7 @@ All cycle   Rw                    0.0            10.           0.10E+03
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.071    0.057    0.070 
 
-[37]      C         14.    0.42    1.00   -0.33   -0.00   -0.07    0.10
+[37]      C         14.    0.42    1.00   -0.33    0.00   -0.07    0.10
 [73]                       0.00            -0.00   -0.00   -0.00    0.00
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.071    0.056    0.070 
@@ -1104,7 +1104,7 @@ All cycle   Rw                    0.0            10.           0.10E+03
 [22]                       0.00             0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
 [22]                       0.12             0.0011   0.0011   0.0011   0.0011   0.0011   0.0011   0.0011
 [31]                                         0.011    0.010    0.009 
-Mean C-C su =   0.0464
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -1182,7 +1182,7 @@ Refining    35 parameters in    1 block :      716 elements in the LS matrix.
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      36000          32390            4900                                    On scale of /FC/
+[33]      36000          32000            4900                                    On scale of /FC/
 
 [32]     211780         186550           28630                0.57 E+06          On scale of /FO/
 
@@ -1216,7 +1216,7 @@ Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.34E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  2.49E-12
- (dp inverse) 1-norm:  1.76E+01 cond. number:  1.12E+04 rel. error:  2.49E-12
+[80]  (dp inverse) 1-norm:  2E+01 cond. number:  1E+04 rel. error:  2.49E-12
 [13]  LARGE     1           1             0.6       0.0E+00    0.1 E-01         32.5                           SCALE   
 [14]  S/ESD     2           2            0.409       0.0E+00    0.60 E-01          6.7         C      1 OCC     
                                                                                                             Composite
@@ -1387,7 +1387,7 @@ All cycle   Min function          0.0           0.57E+06       0.10E+16
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.57 E+06         0.00 E+00         0.57 E+06
+[30]  Minimisation function              0.57E+06         0.0E+00         0.57E+06
 [45]  Hamilton weighted R-value          15.              0.00             15. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -1482,7 +1482,7 @@ All cycle   Min function          0.0           0.57E+06       0.10E+16
 [73]                       0.04             0.01    0.01    0.02    0.00
 [31]                                         0.199    0.161    0.200 
 
-[37]      C         12.    0.54    1.00   -0.00   -0.30   -0.16    0.11
+[37]      C         12.    0.54    1.00    0.00   -0.30   -0.16    0.11
 [73]                       0.22             0.01    0.01    0.00   -0.01
 [73]                       0.04             0.01    0.01    0.02    0.00
 [31]                                         0.196    0.160    0.191 
@@ -1492,7 +1492,7 @@ All cycle   Min function          0.0           0.57E+06       0.10E+16
 [73]                       0.04             0.01    0.01    0.02    0.00
 [31]                                         0.202    0.162    0.196 
 
-[37]      C         14.    0.54    1.00   -0.34   -0.00   -0.09    0.11
+[37]      C         14.    0.54    1.00   -0.34    0.00   -0.09    0.11
 [73]                       0.22            -0.02   -0.01   -0.03   -0.01
 [73]                       0.04             0.01    0.01    0.02    0.00
 [31]                                         0.204    0.159    0.203 
@@ -1511,7 +1511,7 @@ All cycle   Min function          0.0           0.57E+06       0.10E+16
                      -1.1286           -0.0147  -0.0147  -0.0147  -0.0147  -0.0147  -0.0147  -0.0147
 [22]                       0.23             0.0021   0.0021   0.0021   0.0021   0.0021   0.0021   0.0021
 [31]                                         0.023    0.019    0.018 
-Mean C-C su =   0.1097
+[84] Mean C-C su =   0.10
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -1572,7 +1572,7 @@ Mean C-C su =   0.1097
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32430            2700                                    On scale of /FC/
+[33]      33000          32000            2700                                    On scale of /FC/
 
 [32]     211780         206550           17230                0.29 E+06          On scale of /FO/
 
@@ -1600,7 +1600,7 @@ LS-scale=  6.368   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.69E-04
- (sp inverse) 1-norm:  1.69E+01 cond. number:  1.42E+03 rel. error:  1.69E-04
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  1E+03 rel. error:  1.69E-04
 [14]  S/ESD     2           2           -0.155      -0.4E+00    0.46 E-01         -3.3         C      1 OCC     
                                                                                                             Composite
 
@@ -1768,7 +1768,7 @@ Inter cycle Rw                   -5.0            4.2           0.10E+03
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.29 E+06         0.00 E+00         0.29 E+06
+[30]  Minimisation function              0.29E+06         0.0E+00         0.29E+06
 [45]  Hamilton weighted R-value          11.              0.00             11. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -1853,7 +1853,7 @@ Inter cycle Rw                   -5.0            4.2           0.10E+03
 [73]                       0.04             0.00    0.00    0.00    0.00
 [31]                                         0.041    0.033    0.042 
 
-[37]      C          5.    0.78    1.00   -0.22   -0.00   -0.29    0.07
+[37]      C          5.    0.78    1.00   -0.22    0.00   -0.29    0.07
 [73]                      -0.15            -0.01    0.00   -0.01   -0.03
 [73]                       0.04             0.00    0.00    0.00    0.00
 [31]                                         0.041    0.034    0.041 
@@ -1892,7 +1892,7 @@ Inter cycle Rw                   -5.0            4.2           0.10E+03
 [22]                       0.65            -0.0111  -0.0111  -0.0111  -0.0111  -0.0111  -0.0111  -0.0111
 [22]                       0.15             0.0025   0.0025   0.0025   0.0025   0.0025   0.0025   0.0025
 [31]                                         0.028    0.024    0.022 
-Mean C-C su =   0.0483
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -1953,7 +1953,7 @@ Mean C-C su =   0.0483
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32440            2500                                    On scale of /FC/
+[33]      33000          32000            2500                                    On scale of /FC/
 
 [32]     211780         206560           16010                0.26 E+06          On scale of /FO/
 
@@ -1981,7 +1981,7 @@ LS-scale=  6.366   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.97E-04
- (sp inverse) 1-norm:  1.63E+01 cond. number:  1.65E+03 rel. error:  1.97E-04
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  2E+03 rel. error:  1.97E-04
 [14]  S/ESD     2           2           -0.226       0.1E+01    0.40 E-01         -5.5         C      1 OCC     
                                                                                                             Composite
 
@@ -2140,7 +2140,7 @@ All cycle   Min function          0.0           0.27E+06       0.10E+16
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.26 E+06         0.00 E+00         0.26 E+06
+[30]  Minimisation function              0.26E+06         0.0E+00         0.26E+06
 [45]  Hamilton weighted R-value          10.              0.00             10. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -2225,7 +2225,7 @@ All cycle   Min function          0.0           0.27E+06       0.10E+16
 [73]                       0.04             0.00    0.00    0.00    0.00
 [31]                                         0.032    0.026    0.032 
 
-[37]      C          5.    0.55    1.00   -0.22   -0.00   -0.29    0.06
+[37]      C          5.    0.55    1.00   -0.22    0.00   -0.29    0.06
 [73]                      -0.22             0.00   -0.00    0.00   -0.00
 [73]                       0.04             0.00    0.00    0.00    0.00
 [31]                                         0.032    0.026    0.032 
@@ -2264,7 +2264,7 @@ All cycle   Min function          0.0           0.27E+06       0.10E+16
 [22]                       0.15            -0.0097  -0.0097  -0.0097  -0.0097  -0.0097  -0.0097  -0.0097
 [22]                       0.13             0.0017   0.0017   0.0017   0.0017   0.0017   0.0017   0.0017
 [31]                                         0.019    0.016    0.015 
-Mean C-C su =   0.0464
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -2325,7 +2325,7 @@ Mean C-C su =   0.0464
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32420            2400                                    On scale of /FC/
+[33]      33000          32000            2400                                    On scale of /FC/
 
 [32]     211780         206290           15630                0.25 E+06          On scale of /FO/
 
@@ -2353,7 +2353,7 @@ LS-scale=  6.361   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.79E-04
- (sp inverse) 1-norm:  1.59E+01 cond. number:  1.50E+03 rel. error:  1.79E-04
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  2E+03 rel. error:  1.79E-04
 [14]  S/ESD     2           2           -0.039       0.2E+00    0.35 E-01         -1.0         C      1 OCC     
                                                                                                             Composite
 
@@ -2400,7 +2400,7 @@ All cycle   Min function          0.0           0.26E+06       0.10E+16
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.25 E+06         0.00 E+00         0.25 E+06
+[30]  Minimisation function              0.25E+06         0.0E+00         0.25E+06
 [45]  Hamilton weighted R-value          10.              0.00             10. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -2485,7 +2485,7 @@ All cycle   Min function          0.0           0.26E+06       0.10E+16
 [73]                       0.03             0.00    0.00    0.00    0.00
 [31]                                         0.042    0.034    0.042 
 
-[37]      C          5.    0.51    1.00   -0.21   -0.00   -0.28    0.06
+[37]      C          5.    0.51    1.00   -0.21    0.00   -0.28    0.06
 [73]                      -0.03             0.00    0.00    0.00   -0.00
 [73]                       0.03             0.00    0.00    0.00    0.00
 [31]                                         0.042    0.034    0.042 
@@ -2524,7 +2524,7 @@ All cycle   Min function          0.0           0.26E+06       0.10E+16
 [22]                       0.07            -0.0005  -0.0005  -0.0005  -0.0005  -0.0005  -0.0005  -0.0005
 [22]                       0.12             0.0012   0.0012   0.0012   0.0012   0.0012   0.0012   0.0012
 [31]                                         0.012    0.011    0.010 
-Mean C-C su =   0.0487
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -2586,7 +2586,7 @@ Mean C-C su =   0.0487
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32420            2400                                    On scale of /FC/
+[33]      33000          32000            2400                                    On scale of /FC/
 
 [32]     211780         206250           15560                0.25 E+06          On scale of /FO/
 
@@ -2614,7 +2614,7 @@ LS-scale=  6.360   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.02E-04
- (sp inverse) 1-norm:  1.58E+01 cond. number:  1.70E+03 rel. error:  2.02E-04
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  2E+03 rel. error:  2.02E-04
 
                                                 for          35 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -2636,7 +2636,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.25 E+06         0.00 E+00         0.25 E+06
+[30]  Minimisation function              0.25E+06         0.0E+00         0.25E+06
 [45]  Hamilton weighted R-value          10.              0.00             10. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -2651,7 +2651,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 
 
 [38]  Mean           0.00  -0.00   -0.00   -0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-                                        -0.0011  -0.0008   0.0001
+[89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.01    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.011    0.014    0.008 
@@ -2721,7 +2721,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 [73]                       0.03             0.00    0.00    0.00    0.00
 [31]                                         0.045    0.035    0.044 
 
-[37]      C          5.    0.49    1.00   -0.21   -0.00   -0.28    0.06
+[37]      C          5.    0.49    1.00   -0.21    0.00   -0.28    0.06
 [73]                      -0.01             0.00    0.00    0.00   -0.00
 [73]                       0.03             0.00    0.00    0.00    0.00
 [31]                                         0.044    0.036    0.044 
@@ -2760,7 +2760,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
                      -0.0466            0.0001   0.0001   0.0001   0.0001   0.0001   0.0001   0.0001
 [22]                       0.12             0.0011   0.0011   0.0011   0.0011   0.0011   0.0011   0.0011
 [31]                                         0.011    0.010    0.009 
-Mean C-C su =   0.0504
+[84] Mean C-C su =   0.05
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -2821,7 +2821,7 @@ Mean C-C su =   0.0504
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32430            2400                                    On scale of /FC/
+[33]      33000          32000            2400                                    On scale of /FC/
 
 [32]     211780         206240           15590                0.25 E+06          On scale of /FO/
 
@@ -2849,7 +2849,7 @@ LS-scale=  6.359   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.93E-04
- (sp inverse) 1-norm:  1.58E+01 cond. number:  1.62E+03 rel. error:  1.93E-04
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  2E+03 rel. error:  1.93E-04
 
                                                 for          35 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -2875,7 +2875,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.25 E+06         0.00 E+00         0.25 E+06
+[30]  Minimisation function              0.25E+06         0.0E+00         0.25E+06
 [45]  Hamilton weighted R-value          10.              0.00             10. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -2890,7 +2890,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 
 
 [38]  Mean           0.00   0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-                                        -0.0003  -0.0002   0.0007
+[89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.007    0.009    0.006 
@@ -2960,7 +2960,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 [73]                       0.03             0.00    0.00    0.00    0.00
 [31]                                         0.044    0.035    0.044 
 
-[37]      C          5.    0.49    1.00   -0.21   -0.00   -0.28    0.06
+[37]      C          5.    0.49    1.00   -0.21    0.00   -0.28    0.06
 [73]                      -0.00             0.00    0.00    0.00   -0.00
 [73]                       0.03             0.00    0.00    0.00    0.00
 [31]                                         0.044    0.035    0.044 
@@ -2999,7 +2999,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
                      -0.0110           -0.0002  -0.0002  -0.0002  -0.0002  -0.0002  -0.0002  -0.0002
 [22]                       0.12             0.0011   0.0011   0.0011   0.0011   0.0011   0.0011   0.0011
 [31]                                         0.011    0.010    0.009 
-Mean C-C su =   0.0496
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -3060,7 +3060,7 @@ Mean C-C su =   0.0496
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32430            2400                                    On scale of /FC/
+[33]      33000          32000            2400                                    On scale of /FC/
 
 [32]     211780         206240           15580                0.25 E+06          On scale of /FO/
 
@@ -3088,7 +3088,7 @@ LS-scale=  6.359   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  7.06E-05
- (sp inverse) 1-norm:  1.57E+01 cond. number:  5.93E+02 rel. error:  7.06E-05
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  6E+02 rel. error:  7.06E-05
                                                                                                             Composite
 
                                                                       Composite
@@ -3130,7 +3130,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.25 E+06         0.00 E+00         0.25 E+06
+[30]  Minimisation function              0.25E+06         0.0E+00         0.25E+06
 [45]  Hamilton weighted R-value          10.              0.00             10. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -3145,7 +3145,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 
 
 [38]  Mean           0.00  -0.00   -0.00   -0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-                                        -0.0008  -0.0006   0.0003
+[89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.003    0.005    0.002 
@@ -3215,7 +3215,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 [73]                       0.03             0.00    0.00    0.00    0.00
 [31]                                         0.045    0.035    0.044 
 
-[37]      C          5.    0.49    1.00   -0.21   -0.00   -0.28    0.06
+[37]      C          5.    0.49    1.00   -0.21    0.00   -0.28    0.06
 [73]                      -0.00             0.00    0.00    0.00   -0.00
 [73]                       0.03             0.00    0.00    0.00    0.00
 [31]                                         0.044    0.035    0.044 
@@ -3254,7 +3254,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
                      -0.0077            0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
 [22]                       0.12             0.0011   0.0011   0.0011   0.0011   0.0011   0.0011   0.0011
 [31]                                         0.011    0.010    0.009 
-Mean C-C su =   0.0494
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -3315,7 +3315,7 @@ Mean C-C su =   0.0494
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32430            2400                                    On scale of /FC/
+[33]      33000          32000            2400                                    On scale of /FC/
 
 [32]     211780         206240           15590                0.25 E+06          On scale of /FO/
 
@@ -3343,7 +3343,7 @@ LS-scale=  6.359   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  7.07E-05
- (sp inverse) 1-norm:  1.57E+01 cond. number:  5.93E+02 rel. error:  7.07E-05
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  6E+02 rel. error:  7.07E-05
 
                                                 for          35 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -3369,7 +3369,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.25 E+06         0.00 E+00         0.25 E+06
+[30]  Minimisation function              0.25E+06         0.0E+00         0.25E+06
 [45]  Hamilton weighted R-value          10.              0.00             10. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -3384,7 +3384,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 
 
 [38]  Mean           0.00   0.00    0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-                                        -0.0007  -0.0005   0.0004
+[89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.002    0.003    0.001 
@@ -3454,7 +3454,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 [73]                       0.03             0.00    0.00    0.00    0.00
 [31]                                         0.045    0.035    0.044 
 
-[37]      C          5.    0.49    1.00   -0.21   -0.00   -0.28    0.06
+[37]      C          5.    0.49    1.00   -0.21    0.00   -0.28    0.06
 [73]                       0.00             0.00    0.00    0.00    0.00
 [73]                       0.03             0.00    0.00    0.00    0.00
 [31]                                         0.044    0.035    0.044 
@@ -3493,7 +3493,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
                      -0.0032            0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
 [22]                       0.12             0.0011   0.0011   0.0011   0.0011   0.0011   0.0011   0.0011
 [31]                                         0.011    0.010    0.009 
-Mean C-C su =   0.0493
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -3838,7 +3838,7 @@ Space group symbol is   P    1
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32430            2500                                    On scale of /FC/
+[33]      33000          32000            2500                                    On scale of /FC/
 
 [32]     211780         204110           16040                0.25 E+06          On scale of /FO/
 
@@ -3917,7 +3917,7 @@ Refining    35 parameters in    1 block :      716 elements in the LS matrix.
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32450            2400                                    On scale of /FC/
+[33]      33000          32000            2400                                    On scale of /FC/
 
 [32]     211780         206310           15400                0.25 E+06          On scale of /FO/
 
@@ -3949,7 +3949,7 @@ LS-scale=  6.357   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  7.29E-05
- (sp inverse) 1-norm:  1.56E+01 cond. number:  6.11E+02 rel. error:  7.29E-05
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  6E+02 rel. error:  7.29E-05
 
                                                 for          35 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -3971,7 +3971,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.25 E+06         0.00 E+00         0.25 E+06
+[30]  Minimisation function              0.25E+06         0.0E+00         0.25E+06
 [45]  Hamilton weighted R-value          10.              0.00             10. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -3986,7 +3986,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 
 
 [38]  Mean           0.00  -0.00    0.00   -0.00   -0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00
-                                        -0.0010  -0.0005  -0.0005
+[89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.01    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.032    0.021    0.042 
@@ -4066,7 +4066,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.068    0.055    0.067 
 
-[37]      C         12.    0.42    1.00   -0.00   -0.32   -0.15    0.10
+[37]      C         12.    0.42    1.00    0.00   -0.32   -0.15    0.10
 [73]                      -0.01             0.00   -0.00    0.00    0.00
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.067    0.054    0.066 
@@ -4076,7 +4076,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.068    0.055    0.067 
 
-[37]      C         14.    0.42    1.00   -0.33   -0.00   -0.07    0.10
+[37]      C         14.    0.42    1.00   -0.33    0.00   -0.07    0.10
 [73]                      -0.01             0.00    0.00    0.00    0.00
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.069    0.054    0.068 
@@ -4095,7 +4095,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 [22]                       0.08             0.0003   0.0003   0.0003   0.0003   0.0003   0.0003   0.0003
 [22]                       0.12             0.0010   0.0010   0.0010   0.0010   0.0010   0.0010   0.0010
 [31]                                         0.011    0.009    0.009 
-Mean C-C su =   0.0456
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -4156,7 +4156,7 @@ Mean C-C su =   0.0456
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32450            2400                                    On scale of /FC/
+[33]      33000          32000            2400                                    On scale of /FC/
 
 [32]     211780         206230           15450                0.25 E+06          On scale of /FO/
 
@@ -4184,7 +4184,7 @@ LS-scale=  6.355   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  7.12E-05
- (sp inverse) 1-norm:  1.57E+01 cond. number:  5.97E+02 rel. error:  7.12E-05
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  6E+02 rel. error:  7.12E-05
 
                                                 for          35 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -4210,7 +4210,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.25 E+06         0.00 E+00         0.25 E+06
+[30]  Minimisation function              0.25E+06         0.0E+00         0.25E+06
 [45]  Hamilton weighted R-value          10.              0.00             10. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -4315,7 +4315,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.071    0.057    0.070 
 
-[37]      C         14.    0.42    1.00   -0.33   -0.00   -0.07    0.10
+[37]      C         14.    0.42    1.00   -0.33    0.00   -0.07    0.10
 [73]                      -0.00            -0.00   -0.00   -0.00   -0.00
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.072    0.056    0.071 
@@ -4334,7 +4334,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 [22]                       0.00            -0.0002  -0.0002  -0.0002  -0.0002  -0.0002  -0.0002  -0.0002
 [22]                       0.12             0.0011   0.0011   0.0011   0.0011   0.0011   0.0011   0.0011
 [31]                                         0.011    0.010    0.009 
-Mean C-C su =   0.0465
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -4395,7 +4395,7 @@ Mean C-C su =   0.0465
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32450            2400                                    On scale of /FC/
+[33]      33000          32000            2400                                    On scale of /FC/
 
 [32]     211780         206250           15430                0.25 E+06          On scale of /FO/
 
@@ -4423,7 +4423,7 @@ LS-scale=  6.356   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  7.06E-05
- (sp inverse) 1-norm:  1.57E+01 cond. number:  5.92E+02 rel. error:  7.06E-05
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  6E+02 rel. error:  7.06E-05
 
                                                 for          35 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -4449,7 +4449,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.25 E+06         0.00 E+00         0.25 E+06
+[30]  Minimisation function              0.25E+06         0.0E+00         0.25E+06
 [45]  Hamilton weighted R-value          10.              0.00             10. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -4554,7 +4554,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.071    0.057    0.070 
 
-[37]      C         14.    0.42    1.00   -0.33   -0.00   -0.07    0.10
+[37]      C         14.    0.42    1.00   -0.33    0.00   -0.07    0.10
 [73]                       0.00            -0.00    0.00    0.00    0.00
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.071    0.056    0.071 
@@ -4573,7 +4573,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
                      -0.0004            0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
 [22]                       0.12             0.0011   0.0011   0.0011   0.0011   0.0011   0.0011   0.0011
 [31]                                         0.011    0.010    0.009 
-Mean C-C su =   0.0465
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -4634,7 +4634,7 @@ Mean C-C su =   0.0465
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32450            2400                                    On scale of /FC/
+[33]      33000          32000            2400                                    On scale of /FC/
 
 [32]     211780         206250           15440                0.25 E+06          On scale of /FO/
 
@@ -4662,7 +4662,7 @@ LS-scale=  6.356   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  7.04E-05
- (sp inverse) 1-norm:  1.57E+01 cond. number:  5.91E+02 rel. error:  7.04E-05
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  6E+02 rel. error:  7.04E-05
 
                                                 for          35 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -4684,7 +4684,7 @@ All cycle   Rw                    0.0            10.           0.10E+03
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.25 E+06         0.00 E+00         0.25 E+06
+[30]  Minimisation function              0.25E+06         0.0E+00         0.25E+06
 [45]  Hamilton weighted R-value          10.              0.00             10. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -4789,7 +4789,7 @@ All cycle   Rw                    0.0            10.           0.10E+03
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.071    0.057    0.070 
 
-[37]      C         14.    0.42    1.00   -0.33   -0.00   -0.07    0.10
+[37]      C         14.    0.42    1.00   -0.33    0.00   -0.07    0.10
 [73]                      -0.00            -0.00   -0.00   -0.00    0.00
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.071    0.056    0.071 
@@ -4808,7 +4808,7 @@ All cycle   Rw                    0.0            10.           0.10E+03
 [22]                       0.00             0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
 [22]                       0.12             0.0011   0.0011   0.0011   0.0011   0.0011   0.0011   0.0011
 [31]                                         0.011    0.010    0.009 
-Mean C-C su =   0.0465
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -4886,7 +4886,7 @@ Refining    35 parameters in    1 block :      716 elements in the LS matrix.
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      30000          32520            2900                                    On scale of /FC/
+[33]      30000          32000            2900                                    On scale of /FC/
 
 [32]     211780         223420           20460                0.48 E+06          On scale of /FO/
 
@@ -4895,7 +4895,7 @@ Refining    35 parameters in    1 block :      716 elements in the LS matrix.
  Structure factor least squares calculation    6  ends  2
 [29] SumFo/SumFc=  6.51    SumFoFc/SumFc^2=  6.33    SumwFoFc/SumwFc^2=  6.33
 LS-scale=  6.870   Wilson Scale=  0.000
-<Fo>-<Fc> = -0.604    100*(<Fo>-<Fc>)/<Fo> =    -5.50
+[91] <Fo>-<Fc> = -0.60    100*(<Fo>-<Fc>)/<Fo> =    -5.50
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -4918,7 +4918,7 @@ LS-scale=  6.870   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.30E-04
- (sp inverse) 1-norm:  1.61E+01 cond. number:  1.93E+03 rel. error:  2.30E-04
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  2E+03 rel. error:  2.30E-04
  S/ESD     1           1            -0.514      0.0E+00    0.171E-01        -30.07                          SCALE   
 [14]  S/ESD     2           2            0.100       0.0E+00    0.36 E-01          2.7         C      1 OCC     
                                                                                                             Composite
@@ -5078,7 +5078,7 @@ All cycle   Min function          0.0           0.48E+06       0.10E+16
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.48 E+06         0.00 E+00         0.48 E+06
+[30]  Minimisation function              0.48E+06         0.0E+00         0.48E+06
 [45]  Hamilton weighted R-value          13.              0.00             13. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -5093,7 +5093,7 @@ All cycle   Min function          0.0           0.48E+06       0.10E+16
 
 
 [38]  Mean          -0.51   0.08    0.01   -0.00   -0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00
-                                        -0.0224  -0.0190  -0.0177
+[89]                                         -0.02   -0.01   -0.01
 
 [71]  R.M.S.         0.    0.08    0.02    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.062    0.071    0.073 
@@ -5202,7 +5202,7 @@ All cycle   Min function          0.0           0.48E+06       0.10E+16
                      -0.3480            0.0102   0.0102   0.0102   0.0102   0.0102   0.0102   0.0102
 [22]                       0.13             0.0011   0.0011   0.0011   0.0011   0.0011   0.0011   0.0011
 [31]                                         0.012    0.010    0.009 
-Mean C-C su =   0.0545
+[84] Mean C-C su =   0.05
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -5263,7 +5263,7 @@ Mean C-C su =   0.0545
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32440            2500                                    On scale of /FC/
+[33]      33000          32000            2500                                    On scale of /FC/
 
 [32]     211780         206200           15920                0.26 E+06          On scale of /FO/
 
@@ -5291,7 +5291,7 @@ LS-scale=  6.355   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.43E-04
- (sp inverse) 1-norm:  1.60E+01 cond. number:  1.20E+03 rel. error:  1.43E-04
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  1E+03 rel. error:  1.43E-04
 [14]  S/ESD     2           2           -0.112      -0.1E+01    0.34 E-01         -3.3         C      1 OCC     
                                                                                                             Composite
 
@@ -5428,7 +5428,7 @@ Inter cycle Rw                   -5.0            3.7           0.10E+03
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.26 E+06         0.00 E+00         0.26 E+06
+[30]  Minimisation function              0.26E+06         0.0E+00         0.26E+06
 [45]  Hamilton weighted R-value          10.              0.00             10. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -5443,7 +5443,7 @@ Inter cycle Rw                   -5.0            3.7           0.10E+03
 
 
 [38]  Mean           0.00  -0.06   -0.00   -0.00   -0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00
-                                        -0.0222  -0.0187  -0.0174
+[89]                                         -0.02   -0.01   -0.01
 
 [71]  R.M.S.         0.    0.08    0.01    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.053    0.027    0.039 
@@ -5552,7 +5552,7 @@ Inter cycle Rw                   -5.0            3.7           0.10E+03
 [22]                       0.06             0.0101   0.0101   0.0101   0.0101   0.0101   0.0101   0.0101
 [22]                       0.12             0.0012   0.0012   0.0012   0.0012   0.0012   0.0012   0.0012
 [31]                                         0.013    0.011    0.010 
-Mean C-C su =   0.0442
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -5613,7 +5613,7 @@ Mean C-C su =   0.0442
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32430            2400                                    On scale of /FC/
+[33]      33000          32000            2400                                    On scale of /FC/
 
 [32]     211780         206210           15470                0.25 E+06          On scale of /FO/
 
@@ -5641,7 +5641,7 @@ LS-scale=  6.357   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  7.90E-05
- (sp inverse) 1-norm:  1.61E+01 cond. number:  6.62E+02 rel. error:  7.90E-05
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  7E+02 rel. error:  7.90E-05
 [14]  S/ESD     2           2           -0.070       0.6E+00    0.37 E-01         -1.9         C      1 OCC     
                                                                                                             Composite
 
@@ -5704,7 +5704,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.25 E+06         0.00 E+00         0.25 E+06
+[30]  Minimisation function              0.25E+06         0.0E+00         0.25E+06
 [45]  Hamilton weighted R-value          10.              0.00             10. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -5828,7 +5828,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 [22]                       0.04            -0.0003  -0.0003  -0.0003  -0.0003  -0.0003  -0.0003  -0.0003
 [22]                       0.12             0.0011   0.0011   0.0011   0.0011   0.0011   0.0011   0.0011
 [31]                                         0.012    0.010    0.010 
-Mean C-C su =   0.0474
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -5889,7 +5889,7 @@ Mean C-C su =   0.0474
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32430            2400                                    On scale of /FC/
+[33]      33000          32000            2400                                    On scale of /FC/
 
 [32]     211780         206280           15480                0.25 E+06          On scale of /FO/
 
@@ -5917,7 +5917,7 @@ LS-scale=  6.359   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  8.32E-05
- (sp inverse) 1-norm:  1.58E+01 cond. number:  6.98E+02 rel. error:  8.32E-05
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  7E+02 rel. error:  8.32E-05
 
                                                 for          35 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -5943,7 +5943,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.25 E+06         0.00 E+00         0.25 E+06
+[30]  Minimisation function              0.25E+06         0.0E+00         0.25E+06
 [45]  Hamilton weighted R-value          10.              0.00             10. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -6067,7 +6067,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
                      -0.0109           -0.0001  -0.0001  -0.0001  -0.0001  -0.0001  -0.0001  -0.0001
 [22]                       0.12             0.0010   0.0010   0.0010   0.0010   0.0010   0.0010   0.0010
 [31]                                         0.011    0.009    0.008 
-Mean C-C su =   0.0484
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -6129,7 +6129,7 @@ Mean C-C su =   0.0484
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32430            2400                                    On scale of /FC/
+[33]      33000          32000            2400                                    On scale of /FC/
 
 [32]     211780         206280           15470                0.25 E+06          On scale of /FO/
 
@@ -6157,7 +6157,7 @@ LS-scale=  6.359   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  8.31E-05
- (sp inverse) 1-norm:  1.58E+01 cond. number:  6.97E+02 rel. error:  8.31E-05
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  7E+02 rel. error:  8.31E-05
 
                                                 for          35 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -6179,7 +6179,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.25 E+06         0.00 E+00         0.25 E+06
+[30]  Minimisation function              0.25E+06         0.0E+00         0.25E+06
 [45]  Hamilton weighted R-value          10.              0.00             10. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -6303,7 +6303,7 @@ All cycle   Min function          0.0           0.25E+06       0.10E+16
                      -0.0039            0.0001   0.0001   0.0001   0.0001   0.0001   0.0001   0.0001
 [22]                       0.12             0.0010   0.0010   0.0010   0.0010   0.0010   0.0010   0.0010
 [31]                                         0.011    0.009    0.008 
-Mean C-C su =   0.0482
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -6364,7 +6364,7 @@ Mean C-C su =   0.0482
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32440            2400                                    On scale of /FC/
+[33]      33000          32000            2400                                    On scale of /FC/
 
 [32]     211780         206280           15470                0.25 E+06          On scale of /FO/
 
@@ -6392,7 +6392,7 @@ LS-scale=  6.359   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  8.30E-05
- (sp inverse) 1-norm:  1.58E+01 cond. number:  6.96E+02 rel. error:  8.30E-05
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  7E+02 rel. error:  8.30E-05
 
                                                 for          35 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -6414,7 +6414,7 @@ All cycle   Rw                    0.0            10.           0.10E+03
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.25 E+06         0.00 E+00         0.25 E+06
+[30]  Minimisation function              0.25E+06         0.0E+00         0.25E+06
 [45]  Hamilton weighted R-value          10.              0.00             10. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -6538,7 +6538,7 @@ All cycle   Rw                    0.0            10.           0.10E+03
                      -0.0012            0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
 [22]                       0.12             0.0010   0.0010   0.0010   0.0010   0.0010   0.0010   0.0010
 [31]                                         0.011    0.009    0.008 
-Mean C-C su =   0.0481
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -6883,7 +6883,7 @@ Space group symbol is   P    1
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32450            2500                                    On scale of /FC/
+[33]      33000          32000            2500                                    On scale of /FC/
 
 [32]     211780         204250           16060                0.25 E+06          On scale of /FO/
 
@@ -6962,7 +6962,7 @@ Refining    35 parameters in    1 block :      716 elements in the LS matrix.
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32430            2400                                    On scale of /FC/
+[33]      33000          32000            2400                                    On scale of /FC/
 
 [32]     211780         206080           15400                0.21 E+06          On scale of /FO/
 
@@ -6994,7 +6994,7 @@ LS-scale=  6.354   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  7.01E-05
- (sp inverse) 1-norm:  1.55E+01 cond. number:  5.88E+02 rel. error:  7.01E-05
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  6E+02 rel. error:  7.01E-05
  S/ESD     1           1            -0.224      0.0E+00    0.151E+00         -1.49                          SCALE   
 [14]  S/ESD    29          29            0.010       0.0E+00    0.75 E-02          1.4         C     13 Z       
 
@@ -7018,7 +7018,7 @@ All cycle   Min function          0.0           0.21E+06       0.10E+16
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.21 E+06         0.00 E+00         0.21 E+06
+[30]  Minimisation function              0.21E+06         0.0E+00         0.21E+06
 [45]  Hamilton weighted R-value          19.              0.00             19. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -7033,7 +7033,7 @@ All cycle   Min function          0.0           0.21E+06       0.10E+16
 
 
 [38]  Mean          -0.22  -0.00    0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-                                        -0.0007  -0.0004  -0.0004
+[89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.01    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.038    0.025    0.048 
@@ -7113,7 +7113,7 @@ All cycle   Min function          0.0           0.21E+06       0.10E+16
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.067    0.053    0.065 
 
-[37]      C         12.    0.42    1.00   -0.00   -0.32   -0.15    0.10
+[37]      C         12.    0.42    1.00    0.00   -0.32   -0.15    0.10
 [73]                      -0.01             0.00   -0.00    0.00    0.00
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.066    0.053    0.064 
@@ -7123,7 +7123,7 @@ All cycle   Min function          0.0           0.21E+06       0.10E+16
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.067    0.053    0.065 
 
-[37]      C         14.    0.42    1.00   -0.33   -0.00   -0.07    0.10
+[37]      C         14.    0.42    1.00   -0.33    0.00   -0.07    0.10
 [73]                      -0.01            -0.00    0.00    0.00    0.00
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.067    0.053    0.066 
@@ -7142,7 +7142,7 @@ All cycle   Min function          0.0           0.21E+06       0.10E+16
 [22]                       0.09             0.0002   0.0002   0.0002   0.0002   0.0002   0.0002   0.0002
 [22]                       0.12             0.0010   0.0010   0.0010   0.0010   0.0010   0.0010   0.0010
 [31]                                         0.011    0.009    0.008 
-Mean C-C su =   0.0445
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -7203,7 +7203,7 @@ Mean C-C su =   0.0445
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32430            2400                                    On scale of /FC/
+[33]      33000          32000            2400                                    On scale of /FC/
 
 [32]     211780         205490           15640                0.21 E+06          On scale of /FO/
 
@@ -7231,7 +7231,7 @@ LS-scale=  6.337   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  6.84E-05
- (sp inverse) 1-norm:  1.56E+01 cond. number:  5.74E+02 rel. error:  6.84E-05
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  6E+02 rel. error:  6.84E-05
                                                                                                             Composite
 
                                                                       Composite
@@ -7293,7 +7293,7 @@ All cycle   Min function          0.0           0.21E+06       0.10E+16
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.21 E+06         0.00 E+00         0.21 E+06
+[30]  Minimisation function              0.21E+06         0.0E+00         0.21E+06
 [45]  Hamilton weighted R-value          19.              0.00             19. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -7388,7 +7388,7 @@ All cycle   Min function          0.0           0.21E+06       0.10E+16
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.070    0.056    0.068 
 
-[37]      C         12.    0.42    1.00   -0.00   -0.32   -0.15    0.10
+[37]      C         12.    0.42    1.00    0.00   -0.32   -0.15    0.10
 [73]                      -0.00            -0.00    0.00    0.00   -0.00
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.068    0.055    0.067 
@@ -7398,7 +7398,7 @@ All cycle   Min function          0.0           0.21E+06       0.10E+16
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.070    0.056    0.068 
 
-[37]      C         14.    0.42    1.00   -0.33   -0.00   -0.07    0.10
+[37]      C         14.    0.42    1.00   -0.33    0.00   -0.07    0.10
 [73]                      -0.00            -0.00   -0.00   -0.00   -0.00
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.070    0.055    0.069 
@@ -7417,7 +7417,7 @@ All cycle   Min function          0.0           0.21E+06       0.10E+16
 [22]                       0.00            -0.0003  -0.0003  -0.0003  -0.0003  -0.0003  -0.0003  -0.0003
 [22]                       0.12             0.0010   0.0010   0.0010   0.0010   0.0010   0.0010   0.0010
 [31]                                         0.011    0.009    0.009 
-Mean C-C su =   0.0455
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -7478,7 +7478,7 @@ Mean C-C su =   0.0455
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32420            2400                                    On scale of /FC/
+[33]      33000          32000            2400                                    On scale of /FC/
 
 [32]     211780         205510           15610                0.21 E+06          On scale of /FO/
 
@@ -7506,7 +7506,7 @@ LS-scale=  6.338   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  6.76E-05
- (sp inverse) 1-norm:  1.56E+01 cond. number:  5.67E+02 rel. error:  6.76E-05
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  6E+02 rel. error:  6.76E-05
 
                                                 for          35 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -7532,7 +7532,7 @@ All cycle   Min function          0.0           0.21E+06       0.10E+16
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.21 E+06         0.00 E+00         0.21 E+06
+[30]  Minimisation function              0.21E+06         0.0E+00         0.21E+06
 [45]  Hamilton weighted R-value          19.              0.00             19. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -7547,7 +7547,7 @@ All cycle   Min function          0.0           0.21E+06       0.10E+16
 
 
 [38]  Mean           0.00   0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-                                        -0.0003   0.0000  -0.0001
+[89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.002    0.002    0.003 
@@ -7627,7 +7627,7 @@ All cycle   Min function          0.0           0.21E+06       0.10E+16
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.070    0.056    0.068 
 
-[37]      C         12.    0.42    1.00   -0.00   -0.32   -0.15    0.10
+[37]      C         12.    0.42    1.00    0.00   -0.32   -0.15    0.10
 [73]                      -0.00             0.00   -0.00    0.00    0.00
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.068    0.055    0.066 
@@ -7637,7 +7637,7 @@ All cycle   Min function          0.0           0.21E+06       0.10E+16
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.070    0.056    0.068 
 
-[37]      C         14.    0.42    1.00   -0.33   -0.00   -0.07    0.10
+[37]      C         14.    0.42    1.00   -0.33    0.00   -0.07    0.10
 [73]                      -0.00            -0.00    0.00   -0.00    0.00
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.070    0.055    0.069 
@@ -7656,7 +7656,7 @@ All cycle   Min function          0.0           0.21E+06       0.10E+16
 [22]                       0.00             0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
 [22]                       0.12             0.0010   0.0010   0.0010   0.0010   0.0010   0.0010   0.0010
 [31]                                         0.011    0.009    0.009 
-Mean C-C su =   0.0455
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -7717,7 +7717,7 @@ Mean C-C su =   0.0455
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32420            2400                                    On scale of /FC/
+[33]      33000          32000            2400                                    On scale of /FC/
 
 [32]     211780         205520           15620                0.21 E+06          On scale of /FO/
 
@@ -7745,7 +7745,7 @@ LS-scale=  6.338   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  6.73E-05
- (sp inverse) 1-norm:  1.56E+01 cond. number:  5.65E+02 rel. error:  6.73E-05
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  6E+02 rel. error:  6.73E-05
                                                                                                             Composite
 
                                                                       Composite
@@ -7787,7 +7787,7 @@ All cycle   Rw                    0.0            19.           0.10E+03
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.21 E+06         0.00 E+00         0.21 E+06
+[30]  Minimisation function              0.21E+06         0.0E+00         0.21E+06
 [45]  Hamilton weighted R-value          19.              0.00             19. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -7882,7 +7882,7 @@ All cycle   Rw                    0.0            19.           0.10E+03
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.070    0.056    0.068 
 
-[37]      C         12.    0.42    1.00   -0.00   -0.32   -0.15    0.10
+[37]      C         12.    0.42    1.00    0.00   -0.32   -0.15    0.10
 [73]                       0.00            -0.00    0.00    0.00    0.00
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.068    0.055    0.066 
@@ -7892,7 +7892,7 @@ All cycle   Rw                    0.0            19.           0.10E+03
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.070    0.056    0.068 
 
-[37]      C         14.    0.42    1.00   -0.33   -0.00   -0.07    0.10
+[37]      C         14.    0.42    1.00   -0.33    0.00   -0.07    0.10
 [73]                       0.00            -0.00   -0.00   -0.00    0.00
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.070    0.055    0.069 
@@ -7911,7 +7911,7 @@ All cycle   Rw                    0.0            19.           0.10E+03
 [22]                       0.00             0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
 [22]                       0.12             0.0010   0.0010   0.0010   0.0010   0.0010   0.0010   0.0010
 [31]                                         0.011    0.009    0.009 
-Mean C-C su =   0.0455
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -7992,7 +7992,7 @@ Refining    35 parameters in    1 block :      716 elements in the LS matrix.
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      34000          32600            3400                                    On scale of /FC/
+[33]      34000          32000            3400                                    On scale of /FC/
 
 [32]     211780         202020           21560                0.33 E+06          On scale of /FO/
 
@@ -8024,7 +8024,7 @@ LS-scale=  6.196   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  6.35E-05
- (sp inverse) 1-norm:  1.54E+01 cond. number:  5.33E+02 rel. error:  6.35E-05
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  5E+02 rel. error:  6.35E-05
 [13]  LARGE     1           1             1.6       0.0E+00    0.1 E+00          8.6                           SCALE   
 [14]  S/ESD     2           2            0.303       0.0E+00    0.24 E-01         12.4         C      1 OCC     
                                                                                                             Composite
@@ -8167,7 +8167,7 @@ All cycle   Min function          0.0           0.33E+06       0.10E+16
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.33 E+06         0.00 E+00         0.33 E+06
+[30]  Minimisation function              0.33E+06         0.0E+00         0.33E+06
 [45]  Hamilton weighted R-value          23.              0.00             23. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -8182,7 +8182,7 @@ All cycle   Min function          0.0           0.33E+06       0.10E+16
 
 
 [38]  Mean           1.62   0.15    0.02   -0.00   -0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00
-                                        -0.0182  -0.0155  -0.0153
+[89]                                         -0.01   -0.01   -0.01
 
 [71]  R.M.S.         1.    0.21    0.02    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.087    0.072    0.079 
@@ -8291,7 +8291,7 @@ All cycle   Min function          0.0           0.33E+06       0.10E+16
                      -0.0767            0.0087   0.0087   0.0087   0.0087   0.0087   0.0087   0.0087
 [22]                       0.09             0.0010   0.0010   0.0010   0.0010   0.0010   0.0010   0.0010
 [31]                                         0.010    0.009    0.008 
-Mean C-C su =   0.0372
+[84] Mean C-C su =   0.03
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -8352,7 +8352,7 @@ Mean C-C su =   0.0372
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32470            2700                                    On scale of /FC/
+[33]      33000          32000            2700                                    On scale of /FC/
 
 [32]     211780         205420           17410                0.25 E+06          On scale of /FO/
 
@@ -8380,7 +8380,7 @@ LS-scale=  6.326   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  5.88E-05
- (sp inverse) 1-norm:  1.60E+01 cond. number:  4.93E+02 rel. error:  5.88E-05
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  5E+02 rel. error:  5.88E-05
 [14]  S/ESD     2           2            0.030       0.1E+00    0.24 E-01          1.2         C      1 OCC     
                                                                                                             Composite
 
@@ -8539,7 +8539,7 @@ Inter cycle Rw                   -5.0            3.1           0.10E+03
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.25 E+06         0.00 E+00         0.25 E+06
+[30]  Minimisation function              0.25E+06         0.0E+00         0.25E+06
 [45]  Hamilton weighted R-value          20.              0.00             20. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -8554,7 +8554,7 @@ Inter cycle Rw                   -5.0            3.1           0.10E+03
 
 
 [38]  Mean          -0.02  -0.00   -0.00   -0.00   -0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00
-                                        -0.0285  -0.0240  -0.0233
+[89]                                         -0.02   -0.02   -0.02
 
 [71]  R.M.S.         0.    0.03    0.01    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.053    0.038    0.049 
@@ -8663,7 +8663,7 @@ Inter cycle Rw                   -5.0            3.1           0.10E+03
 [22]                       0.21             0.0135   0.0135   0.0135   0.0135   0.0135   0.0135   0.0135
 [22]                       0.09             0.0015   0.0015   0.0015   0.0015   0.0015   0.0015   0.0015
 [31]                                         0.016    0.014    0.012 
-Mean C-C su =   0.0339
+[84] Mean C-C su =   0.03
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -8724,7 +8724,7 @@ Mean C-C su =   0.0339
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32460            2600                                    On scale of /FC/
+[33]      33000          32000            2600                                    On scale of /FC/
 
 [32]     211780         205320           16930                0.23 E+06          On scale of /FO/
 
@@ -8752,7 +8752,7 @@ LS-scale=  6.324   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  7.59E-05
- (sp inverse) 1-norm:  1.58E+01 cond. number:  6.37E+02 rel. error:  7.59E-05
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  6E+02 rel. error:  7.59E-05
 [14]  S/ESD     2           2           -0.276      -0.9E+01    0.31 E-01         -8.6         C      1 OCC     
                                                                                                             Composite
 
@@ -8897,7 +8897,7 @@ All cycle   Min function          0.0           0.24E+06       0.10E+16
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.23 E+06         0.00 E+00         0.23 E+06
+[30]  Minimisation function              0.23E+06         0.0E+00         0.23E+06
 [45]  Hamilton weighted R-value          20.              0.00             20. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -8912,7 +8912,7 @@ All cycle   Min function          0.0           0.24E+06       0.10E+16
 
 
 [38]  Mean           0.15  -0.17    0.00   -0.00   -0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00
-                                        -0.0224  -0.0187  -0.0185
+[89]                                         -0.02   -0.01   -0.01
 
 [71]  R.M.S.         0.    0.20    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.072    0.061    0.058 
@@ -9021,7 +9021,7 @@ All cycle   Min function          0.0           0.24E+06       0.10E+16
 [22]                       0.34             0.0106   0.0106   0.0106   0.0106   0.0106   0.0106   0.0106
 [22]                       0.11             0.0017   0.0017   0.0017   0.0017   0.0017   0.0017   0.0017
 [31]                                         0.019    0.016    0.015 
-Mean C-C su =   0.0348
+[84] Mean C-C su =   0.03
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -9082,7 +9082,7 @@ Mean C-C su =   0.0348
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32410            2500                                    On scale of /FC/
+[33]      33000          32000            2500                                    On scale of /FC/
 
 [32]     211780         205390           15850                0.21 E+06          On scale of /FO/
 
@@ -9110,7 +9110,7 @@ LS-scale=  6.336   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.40E-04
- (sp inverse) 1-norm:  1.61E+01 cond. number:  1.17E+03 rel. error:  1.40E-04
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  1E+03 rel. error:  1.40E-04
 [14]  S/ESD     2           2           -0.192       0.7E+00    0.35 E-01         -5.3         C      1 OCC     
                                                                                                             Composite
 
@@ -9267,7 +9267,7 @@ All cycle   Min function          0.0           0.22E+06       0.10E+16
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.21 E+06         0.00 E+00         0.21 E+06
+[30]  Minimisation function              0.21E+06         0.0E+00         0.21E+06
 [45]  Hamilton weighted R-value          19.              0.00             19. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -9282,7 +9282,7 @@ All cycle   Min function          0.0           0.22E+06       0.10E+16
 
 
 [38]  Mean           0.04  -0.11   -0.00   -0.00   -0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00
-                                        -0.0106  -0.0086  -0.0087
+[89]                                         -0.01    0.00    0.00
 
 [71]  R.M.S.         0.    0.13    0.01    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.057    0.032    0.046 
@@ -9391,7 +9391,7 @@ All cycle   Min function          0.0           0.22E+06       0.10E+16
 [22]                       0.21             0.0049   0.0049   0.0049   0.0049   0.0049   0.0049   0.0049
 [22]                       0.12             0.0013   0.0013   0.0013   0.0013   0.0013   0.0013   0.0013
 [31]                                         0.014    0.012    0.011 
-Mean C-C su =   0.0424
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -9453,7 +9453,7 @@ Mean C-C su =   0.0424
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32400            2400                                    On scale of /FC/
+[33]      33000          32000            2400                                    On scale of /FC/
 
 [32]     211780         205450           15700                0.21 E+06          On scale of /FO/
 
@@ -9481,7 +9481,7 @@ LS-scale=  6.339   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.75E-04
- (sp inverse) 1-norm:  1.59E+01 cond. number:  1.47E+03 rel. error:  1.75E-04
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  1E+03 rel. error:  1.75E-04
                                                                                                             Composite
 
                                                                       Composite
@@ -9575,7 +9575,7 @@ All cycle   Min function          0.0           0.21E+06       0.10E+16
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.21 E+06         0.00 E+00         0.21 E+06
+[30]  Minimisation function              0.21E+06         0.0E+00         0.21E+06
 [45]  Hamilton weighted R-value          19.              0.00             19. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -9699,7 +9699,7 @@ All cycle   Min function          0.0           0.21E+06       0.10E+16
 [22]                       0.00            -0.0011  -0.0011  -0.0011  -0.0011  -0.0011  -0.0011  -0.0011
 [22]                       0.12             0.0011   0.0011   0.0011   0.0011   0.0011   0.0011   0.0011
 [31]                                         0.011    0.010    0.009 
-Mean C-C su =   0.0483
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -9760,7 +9760,7 @@ Mean C-C su =   0.0483
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32410            2400                                    On scale of /FC/
+[33]      33000          32000            2400                                    On scale of /FC/
 
 [32]     211780         205490           15690                0.21 E+06          On scale of /FO/
 
@@ -9788,7 +9788,7 @@ LS-scale=  6.340   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.70E-04
- (sp inverse) 1-norm:  1.57E+01 cond. number:  1.42E+03 rel. error:  1.70E-04
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  1E+03 rel. error:  1.70E-04
 
                                                 for          35 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -9814,7 +9814,7 @@ All cycle   Min function          0.0           0.21E+06       0.10E+16
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.21 E+06         0.00 E+00         0.21 E+06
+[30]  Minimisation function              0.21E+06         0.0E+00         0.21E+06
 [45]  Hamilton weighted R-value          19.              0.00             19. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -9829,7 +9829,7 @@ All cycle   Min function          0.0           0.21E+06       0.10E+16
 
 
 [38]  Mean           0.00  -0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-                                         0.0004   0.0007  -0.0001
+[89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.003    0.004    0.005 
@@ -9938,7 +9938,7 @@ All cycle   Min function          0.0           0.21E+06       0.10E+16
                      -0.0154            0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
 [22]                       0.12             0.0010   0.0010   0.0010   0.0010   0.0010   0.0010   0.0010
 [31]                                         0.011    0.009    0.008 
-Mean C-C su =   0.0479
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -9999,7 +9999,7 @@ Mean C-C su =   0.0479
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32410            2400                                    On scale of /FC/
+[33]      33000          32000            2400                                    On scale of /FC/
 
 [32]     211780         205490           15690                0.21 E+06          On scale of /FO/
 
@@ -10027,7 +10027,7 @@ LS-scale=  6.340   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.67E-04
- (sp inverse) 1-norm:  1.57E+01 cond. number:  1.40E+03 rel. error:  1.67E-04
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  1E+03 rel. error:  1.67E-04
 
                                                 for          35 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -10053,7 +10053,7 @@ All cycle   Min function          0.0           0.21E+06       0.10E+16
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.21 E+06         0.00 E+00         0.21 E+06
+[30]  Minimisation function              0.21E+06         0.0E+00         0.21E+06
 [45]  Hamilton weighted R-value          19.              0.00             19. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -10068,7 +10068,7 @@ All cycle   Min function          0.0           0.21E+06       0.10E+16
 
 
 [38]  Mean           0.00  -0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-                                         0.0003   0.0006  -0.0002
+[89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.001    0.002    0.002 
@@ -10177,7 +10177,7 @@ All cycle   Min function          0.0           0.21E+06       0.10E+16
                      -0.0041            0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
 [22]                       0.12             0.0010   0.0010   0.0010   0.0010   0.0010   0.0010   0.0010
 [31]                                         0.010    0.009    0.008 
-Mean C-C su =   0.0477
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -10238,7 +10238,7 @@ Mean C-C su =   0.0477
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32410            2400                                    On scale of /FC/
+[33]      33000          32000            2400                                    On scale of /FC/
 
 [32]     211780         205490           15690                0.21 E+06          On scale of /FO/
 
@@ -10266,7 +10266,7 @@ LS-scale=  6.340   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.66E-04
- (sp inverse) 1-norm:  1.57E+01 cond. number:  1.39E+03 rel. error:  1.66E-04
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  1E+03 rel. error:  1.66E-04
 
                                                 for          35 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -10288,7 +10288,7 @@ All cycle   Rw                    0.0            19.           0.10E+03
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.21 E+06         0.00 E+00         0.21 E+06
+[30]  Minimisation function              0.21E+06         0.0E+00         0.21E+06
 [45]  Hamilton weighted R-value          19.              0.00             19. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -10303,7 +10303,7 @@ All cycle   Rw                    0.0            19.           0.10E+03
 
 
 [38]  Mean           0.00  -0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-                                         0.0003   0.0006  -0.0002
+[89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.000    0.001    0.001 
@@ -10412,7 +10412,7 @@ All cycle   Rw                    0.0            19.           0.10E+03
                      -0.0023            0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
 [22]                       0.12             0.0010   0.0010   0.0010   0.0010   0.0010   0.0010   0.0010
 [31]                                         0.010    0.009    0.008 
-Mean C-C su =   0.0477
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -10757,7 +10757,7 @@ Space group symbol is   P    1
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32430            2500                                    On scale of /FC/
+[33]      33000          32000            2500                                    On scale of /FC/
 
 [32]     211780         204110           16040                0.23 E+06          On scale of /FO/
 
@@ -10836,7 +10836,7 @@ Refining    35 parameters in    1 block :      716 elements in the LS matrix.
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32450            2500                                    On scale of /FC/
+[33]      33000          32000            2500                                    On scale of /FC/
 
 [32]     211780         204510           15960                0.21 E+06          On scale of /FO/
 
@@ -10868,7 +10868,7 @@ LS-scale=  6.302   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  7.27E-05
- (sp inverse) 1-norm:  1.56E+01 cond. number:  6.10E+02 rel. error:  7.27E-05
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  6E+02 rel. error:  7.27E-05
  S/ESD     1           1             0.341      0.0E+00    0.151E+00          2.26                          SCALE   
 
                                                 for          35 parameters
@@ -10891,7 +10891,7 @@ All cycle   Min function          0.0           0.22E+06       0.10E+16
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.21 E+06         0.00 E+00         0.21 E+06
+[30]  Minimisation function              0.21E+06         0.0E+00         0.21E+06
 [45]  Hamilton weighted R-value          19.              0.00             19. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -10906,7 +10906,7 @@ All cycle   Min function          0.0           0.22E+06       0.10E+16
 
 
 [38]  Mean           0.34  -0.00   -0.00   -0.00   -0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00
-                                        -0.0010  -0.0005  -0.0005
+[89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.01    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.034    0.026    0.041 
@@ -10996,7 +10996,7 @@ All cycle   Min function          0.0           0.22E+06       0.10E+16
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.068    0.054    0.066 
 
-[37]      C         14.    0.42    1.00   -0.33   -0.00   -0.07    0.10
+[37]      C         14.    0.42    1.00   -0.33    0.00   -0.07    0.10
 [73]                      -0.01            -0.00    0.00    0.00    0.00
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.068    0.054    0.067 
@@ -11015,7 +11015,7 @@ All cycle   Min function          0.0           0.22E+06       0.10E+16
 [22]                       0.09             0.0003   0.0003   0.0003   0.0003   0.0003   0.0003   0.0003
 [22]                       0.12             0.0010   0.0010   0.0010   0.0010   0.0010   0.0010   0.0010
 [31]                                         0.011    0.009    0.009 
-Mean C-C su =   0.0453
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -11076,7 +11076,7 @@ Mean C-C su =   0.0453
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32450            2400                                    On scale of /FC/
+[33]      33000          32000            2400                                    On scale of /FC/
 
 [32]     211780         205380           15720                0.21 E+06          On scale of /FO/
 
@@ -11104,7 +11104,7 @@ LS-scale=  6.329   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  6.89E-05
- (sp inverse) 1-norm:  1.56E+01 cond. number:  5.78E+02 rel. error:  6.89E-05
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  6E+02 rel. error:  6.89E-05
                                                                                                             Composite
 
                                                                       Composite
@@ -11166,7 +11166,7 @@ All cycle   Min function          0.0           0.21E+06       0.10E+16
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.21 E+06         0.00 E+00         0.21 E+06
+[30]  Minimisation function              0.21E+06         0.0E+00         0.21E+06
 [45]  Hamilton weighted R-value          19.              0.00             19. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -11271,7 +11271,7 @@ All cycle   Min function          0.0           0.21E+06       0.10E+16
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.070    0.056    0.069 
 
-[37]      C         14.    0.42    1.00   -0.33   -0.00   -0.07    0.10
+[37]      C         14.    0.42    1.00   -0.33    0.00   -0.07    0.10
 [73]                      -0.00            -0.00   -0.00   -0.00   -0.00
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.071    0.055    0.069 
@@ -11290,7 +11290,7 @@ All cycle   Min function          0.0           0.21E+06       0.10E+16
 [22]                       0.00            -0.0003  -0.0003  -0.0003  -0.0003  -0.0003  -0.0003  -0.0003
 [22]                       0.12             0.0010   0.0010   0.0010   0.0010   0.0010   0.0010   0.0010
 [31]                                         0.011    0.009    0.009 
-Mean C-C su =   0.0457
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -11351,7 +11351,7 @@ Mean C-C su =   0.0457
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32450            2400                                    On scale of /FC/
+[33]      33000          32000            2400                                    On scale of /FC/
 
 [32]     211780         205400           15690                0.21 E+06          On scale of /FO/
 
@@ -11379,7 +11379,7 @@ LS-scale=  6.330   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  6.80E-05
- (sp inverse) 1-norm:  1.56E+01 cond. number:  5.70E+02 rel. error:  6.80E-05
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  6E+02 rel. error:  6.80E-05
 
                                                 for          35 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -11405,7 +11405,7 @@ All cycle   Min function          0.0           0.21E+06       0.10E+16
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.21 E+06         0.00 E+00         0.21 E+06
+[30]  Minimisation function              0.21E+06         0.0E+00         0.21E+06
 [45]  Hamilton weighted R-value          19.              0.00             19. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -11510,7 +11510,7 @@ All cycle   Min function          0.0           0.21E+06       0.10E+16
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.070    0.056    0.068 
 
-[37]      C         14.    0.42    1.00   -0.33   -0.00   -0.07    0.10
+[37]      C         14.    0.42    1.00   -0.33    0.00   -0.07    0.10
 [73]                       0.00            -0.00    0.00   -0.00    0.00
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.071    0.055    0.069 
@@ -11529,7 +11529,7 @@ All cycle   Min function          0.0           0.21E+06       0.10E+16
                      -0.0003            0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
 [22]                       0.12             0.0010   0.0010   0.0010   0.0010   0.0010   0.0010   0.0010
 [31]                                         0.011    0.009    0.009 
-Mean C-C su =   0.0457
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -11590,7 +11590,7 @@ Mean C-C su =   0.0457
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32450            2400                                    On scale of /FC/
+[33]      33000          32000            2400                                    On scale of /FC/
 
 [32]     211780         205400           15690                0.21 E+06          On scale of /FO/
 
@@ -11618,7 +11618,7 @@ LS-scale=  6.330   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  6.77E-05
- (sp inverse) 1-norm:  1.56E+01 cond. number:  5.68E+02 rel. error:  6.77E-05
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  6E+02 rel. error:  6.77E-05
                                                                                                             Composite
 
                                                                       Composite
@@ -11660,7 +11660,7 @@ All cycle   Rw                    0.0            19.           0.10E+03
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.21 E+06         0.00 E+00         0.21 E+06
+[30]  Minimisation function              0.21E+06         0.0E+00         0.21E+06
 [45]  Hamilton weighted R-value          19.              0.00             19. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -11765,7 +11765,7 @@ All cycle   Rw                    0.0            19.           0.10E+03
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.070    0.056    0.068 
 
-[37]      C         14.    0.42    1.00   -0.33   -0.00   -0.07    0.10
+[37]      C         14.    0.42    1.00   -0.33    0.00   -0.07    0.10
 [73]                       0.00            -0.00   -0.00   -0.00    0.00
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.071    0.055    0.069 
@@ -11784,7 +11784,7 @@ All cycle   Rw                    0.0            19.           0.10E+03
 [22]                       0.00             0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
 [22]                       0.12             0.0010   0.0010   0.0010   0.0010   0.0010   0.0010   0.0010
 [31]                                         0.011    0.009    0.009 
-Mean C-C su =   0.0457
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -11862,7 +11862,7 @@ Refining    35 parameters in    1 block :      716 elements in the LS matrix.
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      36000          32420            4900                                    On scale of /FC/
+[33]      36000          32000            4900                                    On scale of /FC/
 
 [32]     211780         186480           28630                0.46 E+06          On scale of /FO/
 
@@ -11894,7 +11894,7 @@ LS-scale=  5.752   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  5.86E-04
- (sp inverse) 1-norm:  1.76E+01 cond. number:  4.92E+03 rel. error:  5.86E-04
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  5E+03 rel. error:  5.86E-04
 [13]  LARGE     1           1             7.0       0.0E+00    0.2 E+00         32.0                           SCALE   
 [14]  S/ESD     2           2            0.521       0.0E+00    0.51 E-01         10.2         C      1 OCC     
                                                                                                             Composite
@@ -12041,7 +12041,7 @@ All cycle   Min function          0.0           0.46E+06       0.10E+16
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.46 E+06         0.00 E+00         0.46 E+06
+[30]  Minimisation function              0.46E+06         0.0E+00         0.46E+06
 [45]  Hamilton weighted R-value          28.              0.00             28. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -12126,7 +12126,7 @@ All cycle   Min function          0.0           0.46E+06       0.10E+16
 [73]                       0.05             0.00    0.00    0.00    0.00
 [31]                                         0.076    0.061    0.076 
 
-[37]      C          5.    0.94    1.00   -0.22   -0.00   -0.28    0.11
+[37]      C          5.    0.94    1.00   -0.22    0.00   -0.28    0.11
 [73]                       0.52            -0.00   -0.00   -0.01    0.06
 [73]                       0.05             0.00    0.00    0.00    0.00
 [31]                                         0.076    0.061    0.074 
@@ -12165,7 +12165,7 @@ All cycle   Min function          0.0           0.46E+06       0.10E+16
                      -0.2304           -0.0166  -0.0166  -0.0166  -0.0166  -0.0166  -0.0166  -0.0166
 [22]                       0.23             0.0023   0.0023   0.0023   0.0023   0.0023   0.0023   0.0023
 [31]                                         0.025    0.021    0.019 
-Mean C-C su =   0.0854
+[84] Mean C-C su =   0.08
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -12226,7 +12226,7 @@ Mean C-C su =   0.0854
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32450            2700                                    On scale of /FC/
+[33]      33000          32000            2700                                    On scale of /FC/
 
 [32]     211780         205610           17310                0.25 E+06          On scale of /FO/
 
@@ -12254,7 +12254,7 @@ LS-scale=  6.336   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.72E-04
- (sp inverse) 1-norm:  1.68E+01 cond. number:  1.44E+03 rel. error:  1.72E-04
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  1E+03 rel. error:  1.72E-04
 [14]  S/ESD     2           2           -0.153      -0.3E+00    0.47 E-01         -3.2         C      1 OCC     
                                                                                                             Composite
 
@@ -12419,7 +12419,7 @@ Inter cycle Rw                   -5.0            7.1           0.10E+03
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.25 E+06         0.00 E+00         0.25 E+06
+[30]  Minimisation function              0.25E+06         0.0E+00         0.25E+06
 [45]  Hamilton weighted R-value          20.              0.00             20. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -12504,7 +12504,7 @@ Inter cycle Rw                   -5.0            7.1           0.10E+03
 [73]                       0.04             0.00    0.00    0.00    0.00
 [31]                                         0.041    0.033    0.041 
 
-[37]      C          5.    0.79    1.00   -0.22   -0.00   -0.28    0.06
+[37]      C          5.    0.79    1.00   -0.22    0.00   -0.28    0.06
 [73]                      -0.15            -0.00    0.00   -0.00   -0.04
 [73]                       0.04             0.00    0.00    0.00    0.00
 [31]                                         0.041    0.033    0.040 
@@ -12514,7 +12514,7 @@ Inter cycle Rw                   -5.0            7.1           0.10E+03
 [73]                       0.03             0.00    0.00    0.00    0.00
 [31]                                         0.069    0.054    0.066 
 
-[37]      C         12.    0.45    1.00   -0.00   -0.31   -0.14    0.11
+[37]      C         12.    0.45    1.00    0.00   -0.31   -0.14    0.11
 [73]                      -0.10             0.01   -0.01    0.01   -0.00
 [73]                       0.03             0.00    0.00    0.00    0.00
 [31]                                         0.068    0.056    0.067 
@@ -12543,7 +12543,7 @@ Inter cycle Rw                   -5.0            7.1           0.10E+03
 [22]                       0.54            -0.0092  -0.0092  -0.0092  -0.0092  -0.0092  -0.0092  -0.0092
 [22]                       0.15             0.0026   0.0026   0.0026   0.0026   0.0026   0.0026   0.0026
 [31]                                         0.028    0.024    0.022 
-Mean C-C su =   0.0472
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -12604,7 +12604,7 @@ Mean C-C su =   0.0472
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32470            2500                                    On scale of /FC/
+[33]      33000          32000            2500                                    On scale of /FC/
 
 [32]     211780         205620           16380                0.23 E+06          On scale of /FO/
 
@@ -12632,7 +12632,7 @@ LS-scale=  6.331   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.79E-04
- (sp inverse) 1-norm:  1.62E+01 cond. number:  1.50E+03 rel. error:  1.79E-04
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  2E+03 rel. error:  1.79E-04
 [14]  S/ESD     2           2           -0.173       0.1E+01    0.41 E-01         -4.1         C      1 OCC     
                                                                                                             Composite
 
@@ -12775,7 +12775,7 @@ Inter cycle Rw                   -5.0            1.1           0.10E+03
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.23 E+06         0.00 E+00         0.23 E+06
+[30]  Minimisation function              0.23E+06         0.0E+00         0.23E+06
 [45]  Hamilton weighted R-value          19.              0.00             19. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -12860,7 +12860,7 @@ Inter cycle Rw                   -5.0            1.1           0.10E+03
 [73]                       0.04             0.00    0.00    0.00    0.00
 [31]                                         0.030    0.024    0.030 
 
-[37]      C          5.    0.62    1.00   -0.22   -0.00   -0.28    0.06
+[37]      C          5.    0.62    1.00   -0.22    0.00   -0.28    0.06
 [73]                      -0.17             0.00   -0.00    0.00   -0.00
 [73]                       0.04             0.00    0.00    0.00    0.00
 [31]                                         0.030    0.024    0.030 
@@ -12899,7 +12899,7 @@ Inter cycle Rw                   -5.0            1.1           0.10E+03
 [22]                       0.31            -0.0140  -0.0140  -0.0140  -0.0140  -0.0140  -0.0140  -0.0140
 [22]                       0.13             0.0019   0.0019   0.0019   0.0019   0.0019   0.0019   0.0019
 [31]                                         0.020    0.017    0.016 
-Mean C-C su =   0.0438
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -12960,7 +12960,7 @@ Mean C-C su =   0.0438
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32450            2500                                    On scale of /FC/
+[33]      33000          32000            2500                                    On scale of /FC/
 
 [32]     211780         205420           15860                0.22 E+06          On scale of /FO/
 
@@ -12988,7 +12988,7 @@ LS-scale=  6.329   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.67E-04
- (sp inverse) 1-norm:  1.59E+01 cond. number:  1.40E+03 rel. error:  1.67E-04
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  1E+03 rel. error:  1.67E-04
 [14]  S/ESD     2           2           -0.104       0.6E+00    0.34 E-01         -2.9         C      1 OCC     
                                                                                                             Composite
 
@@ -13035,7 +13035,7 @@ All cycle   Min function          0.0           0.22E+06       0.10E+16
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.22 E+06         0.00 E+00         0.22 E+06
+[30]  Minimisation function              0.22E+06         0.0E+00         0.22E+06
 [45]  Hamilton weighted R-value          19.              0.00             19. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -13050,7 +13050,7 @@ All cycle   Min function          0.0           0.22E+06       0.10E+16
 
 
 [38]  Mean           0.01  -0.06   -0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-                                         0.0003  -0.0001   0.0008
+[89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.07    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.040    0.037    0.027 
@@ -13120,7 +13120,7 @@ All cycle   Min function          0.0           0.22E+06       0.10E+16
 [73]                       0.03             0.00    0.00    0.00    0.00
 [31]                                         0.037    0.030    0.037 
 
-[37]      C          5.    0.51    1.00   -0.22   -0.00   -0.28    0.06
+[37]      C          5.    0.51    1.00   -0.22    0.00   -0.28    0.06
 [73]                      -0.10             0.00    0.00    0.00   -0.00
 [73]                       0.03             0.00    0.00    0.00    0.00
 [31]                                         0.037    0.030    0.036 
@@ -13159,7 +13159,7 @@ All cycle   Min function          0.0           0.22E+06       0.10E+16
 [22]                       0.11            -0.0003  -0.0003  -0.0003  -0.0003  -0.0003  -0.0003  -0.0003
 [22]                       0.11             0.0012   0.0012   0.0012   0.0012   0.0012   0.0012   0.0012
 [31]                                         0.013    0.011    0.010 
-Mean C-C su =   0.0455
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -13221,7 +13221,7 @@ Mean C-C su =   0.0455
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32450            2400                                    On scale of /FC/
+[33]      33000          32000            2400                                    On scale of /FC/
 
 [32]     211780         205410           15790                0.21 E+06          On scale of /FO/
 
@@ -13249,7 +13249,7 @@ LS-scale=  6.330   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.95E-04
- (sp inverse) 1-norm:  1.57E+01 cond. number:  1.64E+03 rel. error:  1.95E-04
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  2E+03 rel. error:  1.95E-04
 
                                                 for          35 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -13271,7 +13271,7 @@ All cycle   Min function          0.0           0.22E+06       0.10E+16
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.21 E+06         0.00 E+00         0.21 E+06
+[30]  Minimisation function              0.21E+06         0.0E+00         0.21E+06
 [45]  Hamilton weighted R-value          19.              0.00             19. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -13286,7 +13286,7 @@ All cycle   Min function          0.0           0.22E+06       0.10E+16
 
 
 [38]  Mean          -0.02  -0.00   -0.00    0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-                                        -0.0004  -0.0006   0.0002
+[89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.01    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.013    0.016    0.010 
@@ -13356,7 +13356,7 @@ All cycle   Min function          0.0           0.22E+06       0.10E+16
 [73]                       0.03             0.00    0.00    0.00    0.00
 [31]                                         0.043    0.034    0.042 
 
-[37]      C          5.    0.49    1.00   -0.22   -0.00   -0.28    0.06
+[37]      C          5.    0.49    1.00   -0.22    0.00   -0.28    0.06
 [73]                      -0.02             0.00    0.00    0.00   -0.00
 [73]                       0.03             0.00    0.00    0.00    0.00
 [31]                                         0.043    0.034    0.042 
@@ -13395,7 +13395,7 @@ All cycle   Min function          0.0           0.22E+06       0.10E+16
                      -0.0468            0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
 [22]                       0.11             0.0011   0.0011   0.0011   0.0011   0.0011   0.0011   0.0011
 [31]                                         0.011    0.010    0.009 
-Mean C-C su =   0.0492
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -13456,7 +13456,7 @@ Mean C-C su =   0.0492
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32450            2500                                    On scale of /FC/
+[33]      33000          32000            2500                                    On scale of /FC/
 
 [32]     211780         205390           15820                0.21 E+06          On scale of /FO/
 
@@ -13484,7 +13484,7 @@ LS-scale=  6.329   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.86E-04
- (sp inverse) 1-norm:  1.57E+01 cond. number:  1.56E+03 rel. error:  1.86E-04
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  2E+03 rel. error:  1.86E-04
                                                                                                             Composite
 
                                                                       Composite
@@ -13582,7 +13582,7 @@ All cycle   Min function          0.0           0.22E+06       0.10E+16
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.21 E+06         0.00 E+00         0.21 E+06
+[30]  Minimisation function              0.21E+06         0.0E+00         0.21E+06
 [45]  Hamilton weighted R-value          19.              0.00             19. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -13597,7 +13597,7 @@ All cycle   Min function          0.0           0.22E+06       0.10E+16
 
 
 [38]  Mean           0.00  -0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-                                        -0.0002  -0.0005   0.0003
+[89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.006    0.008    0.006 
@@ -13667,7 +13667,7 @@ All cycle   Min function          0.0           0.22E+06       0.10E+16
 [73]                       0.03             0.00    0.00    0.00    0.00
 [31]                                         0.043    0.034    0.043 
 
-[37]      C          5.    0.48    1.00   -0.21   -0.00   -0.28    0.05
+[37]      C          5.    0.48    1.00   -0.21    0.00   -0.28    0.05
 [73]                      -0.00             0.00    0.00    0.00   -0.00
 [73]                       0.03             0.00    0.00    0.00    0.00
 [31]                                         0.043    0.034    0.042 
@@ -13706,7 +13706,7 @@ All cycle   Min function          0.0           0.22E+06       0.10E+16
                      -0.0202           -0.0001  -0.0001  -0.0001  -0.0001  -0.0001  -0.0001  -0.0001
 [22]                       0.11             0.0010   0.0010   0.0010   0.0010   0.0010   0.0010   0.0010
 [31]                                         0.011    0.009    0.009 
-Mean C-C su =   0.0485
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -13767,7 +13767,7 @@ Mean C-C su =   0.0485
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32450            2500                                    On scale of /FC/
+[33]      33000          32000            2500                                    On scale of /FC/
 
 [32]     211780         205390           15820                0.21 E+06          On scale of /FO/
 
@@ -13795,7 +13795,7 @@ LS-scale=  6.328   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.81E-04
- (sp inverse) 1-norm:  1.56E+01 cond. number:  1.52E+03 rel. error:  1.81E-04
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  2E+03 rel. error:  1.81E-04
 
                                                 for          35 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -13821,7 +13821,7 @@ All cycle   Min function          0.0           0.22E+06       0.10E+16
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.21 E+06         0.00 E+00         0.21 E+06
+[30]  Minimisation function              0.21E+06         0.0E+00         0.21E+06
 [45]  Hamilton weighted R-value          19.              0.00             19. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -13836,7 +13836,7 @@ All cycle   Min function          0.0           0.22E+06       0.10E+16
 
 
 [38]  Mean           0.00  -0.00   -0.00    0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-                                        -0.0004  -0.0006   0.0002
+[89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.002    0.004    0.001 
@@ -13906,7 +13906,7 @@ All cycle   Min function          0.0           0.22E+06       0.10E+16
 [73]                       0.03             0.00    0.00    0.00    0.00
 [31]                                         0.043    0.034    0.043 
 
-[37]      C          5.    0.48    1.00   -0.21   -0.00   -0.28    0.05
+[37]      C          5.    0.48    1.00   -0.21    0.00   -0.28    0.05
 [73]                      -0.00             0.00    0.00    0.00   -0.00
 [73]                       0.03             0.00    0.00    0.00    0.00
 [31]                                         0.043    0.034    0.042 
@@ -13916,7 +13916,7 @@ All cycle   Min function          0.0           0.22E+06       0.10E+16
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.076    0.061    0.074 
 
-[37]      C         12.    0.38    1.00   -0.00   -0.31   -0.14    0.09
+[37]      C         12.    0.38    1.00    0.00   -0.31   -0.14    0.09
 [73]                       0.00            -0.00    0.00   -0.00    0.00
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.075    0.060    0.073 
@@ -13945,7 +13945,7 @@ All cycle   Min function          0.0           0.22E+06       0.10E+16
                      -0.0093            0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
 [22]                       0.11             0.0010   0.0010   0.0010   0.0010   0.0010   0.0010   0.0010
 [31]                                         0.011    0.009    0.009 
-Mean C-C su =   0.0482
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split
@@ -14006,7 +14006,7 @@ Mean C-C su =   0.0482
 
  Sum of /FO/    Sum of /FC/    Sum of /Delta/    Minimization function
 
-[33]      33000          32450            2500                                    On scale of /FC/
+[33]      33000          32000            2500                                    On scale of /FC/
 
 [32]     211780         205380           15830                0.21 E+06          On scale of /FO/
 
@@ -14034,7 +14034,7 @@ LS-scale=  6.328   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  6.59E-05
- (sp inverse) 1-norm:  1.56E+01 cond. number:  5.53E+02 rel. error:  6.59E-05
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  6E+02 rel. error:  6.59E-05
 
                                                 for          35 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -14060,7 +14060,7 @@ All cycle   Min function          0.0           0.22E+06       0.10E+16
 
  Statistics for    35 least squares parameters, with  2771 degrees of freedom
  Number of observations              2803                 3              2806
-[30]  Minimisation function              0.21 E+06         0.00 E+00         0.21 E+06
+[30]  Minimisation function              0.21E+06         0.0E+00         0.21E+06
 [45]  Hamilton weighted R-value          19.              0.00             19. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -14075,7 +14075,7 @@ All cycle   Min function          0.0           0.22E+06       0.10E+16
 
 
 [38]  Mean           0.00  -0.00   -0.00    0.00   -0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-                                        -0.0004  -0.0006   0.0002
+[89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.001    0.002    0.001 
@@ -14145,7 +14145,7 @@ All cycle   Min function          0.0           0.22E+06       0.10E+16
 [73]                       0.03             0.00    0.00    0.00    0.00
 [31]                                         0.043    0.034    0.043 
 
-[37]      C          5.    0.48    1.00   -0.21   -0.00   -0.28    0.05
+[37]      C          5.    0.48    1.00   -0.21    0.00   -0.28    0.05
 [73]                      -0.00             0.00    0.00    0.00   -0.00
 [73]                       0.03             0.00    0.00    0.00    0.00
 [31]                                         0.043    0.034    0.043 
@@ -14155,7 +14155,7 @@ All cycle   Min function          0.0           0.22E+06       0.10E+16
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.076    0.061    0.074 
 
-[37]      C         12.    0.38    1.00   -0.00   -0.31   -0.14    0.09
+[37]      C         12.    0.38    1.00    0.00   -0.31   -0.14    0.09
 [73]                       0.00             0.00   -0.00    0.00    0.00
 [73]                       0.02             0.00    0.00    0.00    0.00
 [31]                                         0.074    0.060    0.072 
@@ -14184,7 +14184,7 @@ All cycle   Min function          0.0           0.22E+06       0.10E+16
                      -0.0045            0.0000   0.0000   0.0000   0.0000   0.0000   0.0000   0.0000
 [22]                       0.11             0.0010   0.0010   0.0010   0.0010   0.0010   0.0010   0.0010
 [31]                                         0.011    0.009    0.009 
-Mean C-C su =   0.0481
+[84] Mean C-C su =   0.04
  The following atoms should be carefully examined 
 [24]  F       1.    0.072     0.112     0.448     0.211     0.153     0.693     Might be split
 [24]  F       2.    0.061     0.173     0.493     0.242     0.174     1.393     Might be split

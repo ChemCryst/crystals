@@ -22,6 +22,28 @@
 %    FINISH
 %   END IF                            
 %  END BLOCK
+%% Twinned and Friedels Law
+%  BLOCK
+%   VARIABLE INTEGER ABORT1 ABORT2
+%   EVALUATE ABORT1 = 1
+%   EVALUATE ABORT2 = 1
+%   COPY '#GENERALEDIT 13'
+%   COPY 'LOCATE RECORDTYPE=101'
+%   COPY 'TRANSFER FROM OFFSET=0 TO ABORT1'
+%   COPY 'TRANSFER FROM OFFSET=1 TO ABORT2'
+%   COPY 'END'
+%   IF ABORT1 .EQ. 0 THEN
+{E **** FATAL: Friedle's Law has been appled
+%   END IF
+%   IF ABORT2 .EQ. 0 THEN
+{E **** FATAL: The data is twinned
+%   END IF
+%   IF ABORT1 * ABORT2 .EQ. 0 THEN
+{E Absolute analysis cannot be performed
+%    FINISH
+%   END IF
+%  END BLOCK
+%%
 %% Anomalous scattering
 %%
 {I Checking anomalous scattering is used.

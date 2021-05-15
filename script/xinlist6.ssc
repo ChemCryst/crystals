@@ -529,10 +529,10 @@ Initialisation:
 %           END IF                                                              
 %%                                                                              
 %           CLEAR                                                               
-%           INSERT 'STORE NCOEF=6'                                              
+%           INSERT 'STORE NCOEF=10'                                              
 %           QUEUE SEND                                                          
-%           CLEAR                                                               
-%  INSERT 'OUTPUT INDICES /FO/ SIGMA(/FO/) RATIO CORRECTIONS SERIAL '     
+%           CLEAR                 
+% INSERT 'OUTP INDI /FO/ SIG RATIO CORR SERI JCODE /FC/ SQRTW BATCH/PHASE'
 %           QUEUE SEND                                                          
 %           CLEAR 
 %           IF HTRANS THEN
@@ -583,7 +583,7 @@ Initialisation:
 ^^WI      DISPOSE XINLIST6                                                      
 ^^CR  
 %%         COPY '#OPEN FRN2 ARCHIVE-HKL.CIF'
-%         COPY '#HKLI'                                                          
+%         COPY '#HKLI'
 %         QUEUE PROCESS                                                         
 %         COPY 'END'                                                            
 %%         COPY '#CLOSE FRN2'
@@ -655,10 +655,12 @@ Initialisation:
 %           COPY 'REJECT SIGMA=2'
 %           COPY 'END'                                                          
 %         END IF                                                                
-%                                                                               
-%         COPY '#LIST 6'                                                        
-%         COPY 'READ TYPE = COPY'                                               
-%         COPY 'END'                                                            
+% 
+%       COPY '#LIST 6'                                                        
+%       COPY 'READ TYPE = COPY' 
+%       copy 'STORE NCOEF=10'
+%       COPY 'OUTP INDI /FO/ SIG RATIO CORR SERI JCODE /FC/ SQRTW BATCH/PHASE'
+%       COPY 'END'                                                            
 %%                                                                              
 %%
 

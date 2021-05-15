@@ -1,0 +1,8 @@
+# find O-O,O-N,N-N pairs suitable for H-bonds
+#dist
+output monitor=distance
+select type=inter range=limit
+limit 2.5 3.2 0 0
+bond o n
+excl h
+end

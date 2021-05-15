@@ -3,6 +3,8 @@ CODE FOR HKLF52CRY
 C----- BASED UPON SIMON PARSONS ctwin.f90
 C      IO BASED UPON RICHARD COOPERS cif2cry.fpp
 c      Extraction of twin matrix by Bruce FOxman, 2017
+c      Updated to include input of inversion twinning
+c      by Bruce Foxman, 2020, this version 04 April 2021
 c
 c      removal of clusters of reflections where more than one
 c      reflections have the same element ID, e.g. -2, -2, 1
@@ -35,9 +37,9 @@ C Open a scratch file to write a new HKLF5 without repeated elements
       WRITE(11,"('READ NCOEFF=6 TYPE=FIXED F''S=FSQ', 
      1 ' UNIT=DATAFILE CHECK=NO L30=YES ARCH=YES')")
       WRITE(11,"('FORMAT (3F4.0,2F16.4,F9.0)')")
-      WRITE(11,"('STORE NCOEFF=11')")
-      WRITE(11,"('OUTPUT INDICES /FO/ SQRT /FC/ PHASE BATCH RATIO ',
-     1 'SIGMA CORRECT /FOT/ ELEMENTS')")
+      WRITE(11,"('STORE NCOEFF=12')")
+      WRITE(11,"('OUTPUT INDICE /FO/ SQRT /FC/ PHAS BATCH RATIO ',
+     1 'SIGMA CORRECT JCODE /FOT/ ELEM')")
       WRITE(11,"('INPUT H K L /FOT/ SIGMA(/FO/) ELEMENTS')")
       WRITE(11,"('END')")
 C
@@ -46,8 +48,13 @@ C IF THE -N...1 BLOCK OF REFLECTIONS CONTAINS DUPLICATE KEYS
 C DELETE THE BLOCK, OTHERWISE OUTPUT IT
       JELEM = 0
       LINE=1
+      kdjw = 0
 100   CONTINUE
+      if (mod(kdjw,1000) .eq. 0) then
+       write(6,*)'Working, Line number', kdjw
+      endif 
       READ(10,'(A)',ERR=9000,END=9000)CLINE(LINE)
+      kdjw = kdjw + 1
       READ(CLINE(LINE),'(3I4,2F8.2,I4)') 
      1  INDEX,VALUE,KEY
 C       BRUKER FILES END WITH H, K, L ALL = 0; SKIP THAT & LOOK FOR EOF
@@ -58,6 +65,7 @@ C
          DO 
            JELEM = KKEY(KEY,JELEM)
            READ(10,'(A)',ERR=9999,END=9000)CLINE(LINE)
+           kdjw = kdjw + 1
            READ(CLINE(LINE),'(3I4,2F8.2,I4)') 
      1     INDEX,VALUE,KEY
            LINE=LINE+1
@@ -104,6 +112,7 @@ C
 C
 9000  CONTINUE
       WRITE(11,"('-512')")
+      write(6,*)'Working out twin laws'
       CALL TLAW2(iout)
       IF (IOUT.GE.1) THEN
          OPEN(14,STATUS='UNKNOWN',FILE='l25.cry')
@@ -325,7 +334,10 @@ C
 C  IOUT = -1 FOR FAILURE
 C         +1 FOR SUCCESS
 C
-C WRITTEN BY BRUCE FOXMAN, 2017
+C WRITTEN BY BRUCE FOXMAN, 2017, 2020 (-ve DETERMINANT HANDLING)
+C 2021 (AUTODETECTION OF TWINABS' SETTING "2" AS THE MAJOR
+C COMPONENT
+C
 C SOLVE THE EQUATION H(TWIN)= [TWIN_LAW]*H(PARENT)
 C SHELX HKLF 5 uses a decision about reflection overlap made during
 C data reduction.  
@@ -336,7 +348,10 @@ C in the HKLF5 file to ensure that the generated indices coincide with
 C the input minor ones. 
 C The determinant of the twin law should be Unity. If it is negative or
 C substantially different from unity, a warning that the input data has
-C probably been merged is passed to the user.
+C probably been merged is passed to the user.  If the user has included
+C inversion twinning in the twin laws, then this will be flagged, the user
+C informed, but no action will be taken: the file will be processed 
+C with the 'regular' and te inversion twin laws.
 c
       REAL HKLP(100000,3),HKLT(100000,3,7),
      1HT(3,3,7),HP(3,3,7),HTINV(3,3,7),R(3,3,7),
@@ -365,11 +380,31 @@ C
       HP(I,J,JJ) = 0.0
    92 HT(I,J,JJ) = 0.0 
       OPEN(13,STATUS='UNKNOWN',FILE='TLAW_OUT.LIS')
-C
+*     FOLLOWING FOR STANDALONE VERSION ONLY
+*93    WRITE(*,490) 
+*      READ(*,'(A32)') FILIN
+*      OPEN(14,STATUS='OLD',FILE=FILIN,ACCESS='SEQUENTIAL',
+*     1FORM='FORMATTED')
+*
+C     DO AUTO-DETECT TO SEE WHETHER THIS IS WHAT WE MIGHT CALL
+C     A 'NORMAL' TWIN ASSIGNMENT, I.E. MAJOR COMPONENT IS "1"
+C     OR, E.G., A 'TWINABS-CHOSEN' OR ANY OTHER SITUATION WHERE
+C     THE MAJOR COMPONENT IS "2" INSTEAD OF "1".  TO AVOID MESSY
+C     CODE, WE DO THS IN A SEPARATE SUBROUTINE, 'DETECT'.  IF
+C     IDETECT=1 IT'S NORMAL (1) AND IF IDETECT=2, IT'S 'OTHER' (2).
+C     TLAW3 ONLY CONSIDERS (A) TWINS WITH UP TO 8 COMPONENTS WHEN
+C     "1" IS THE MAJOR, AND (B) TWINS WITH **ONLY** TWO COMPONENTS
+C     WHEN "2" IS THE MAJOR.
+      IDETECT=1
+      CALL DETECT(IDETECT)
+      IF(IDETECT.EQ.2) WRITE (*,*) ' MAJOR COMPONENT 2 DETECTED'
       NREF=1
 C     READ IN AND CHECK FOR -VE/+VE SET SEQUENCE IN HKLF5 FILE
 C     & DETERMINE THE NUMBER OF COMPONENTS (JJMAX)
       REWIND 14
+      IF(IDETECT.EQ.2) GO TO 20
+      IF(IDETECT.EQ.3) STOP 
+     1'IF MAJOR COMP IS 2, MINOR MUST BE 1'
    10 READ (14,500,END=100) HT1,KT1,LT1,FO,SIGMA,JCODE
       IF(HT1.EQ.0.AND.KT1.EQ.0.AND.LT1.EQ.0) GO TO 10
       IF(JCODE.LT.0) GO TO 11
@@ -382,7 +417,8 @@ C     & DETERMINE THE NUMBER OF COMPONENTS (JJMAX)
    12 READ (14,500) HP1,KP1,LP1,FO2,SIGMA,JCODE2
       IF(HP1.EQ.0.AND.KP1.EQ.0.AND.LP1.EQ.0) GO TO 10
       IF(JCODE2) 14,13,13
-   13 HKLP(NREF,1)=HP1
+   13 IF(JCODE2.NE.1) STOP ' MAJOR COMPONENT MUST BE 1'
+      HKLP(NREF,1)=HP1
       HKLP(NREF,2)=KP1
       HKLP(NREF,3)=LP1
       NREF=NREF+1
@@ -394,11 +430,35 @@ C     & DETERMINE THE NUMBER OF COMPONENTS (JJMAX)
       HKLT(NREF,3,JJ)=LP1
       GO TO 12
 C
+C     READ IN AND CHECK FOR -1, 2 PAIR SEQUENCE IN HKLF5 FILE
+   20 READ (14,500,END=100) HT1,KT1,LT1,FO,SIGMA,JCODE
+      IF(JCODE.eq.-1) GO TO 22
+      GO TO 20
+   22 READ (14,500) HP1,KP1,LP1,FO2,SIGMA,JCODE2
+      IF(JCODE2) 24,23,23
+   23 jj=1
+      HKLP(NREF,1)=HP1
+      HKLP(NREF,2)=KP1
+      HKLP(NREF,3)=LP1
+      HKLT(NREF,1,JJ)=HT1
+      HKLT(NREF,2,JJ)=KT1
+      HKLT(NREF,3,JJ)=LT1
+      NREF=NREF+1
+      GO TO 20
+   24 JJ=IABS(JCODE2)-1
+      JTEST(JJ)=JJ
+      HKLT(NREF,1,JJ)=HP1
+      HKLT(NREF,2,JJ)=KP1
+      HKLT(NREF,3,JJ)=LP1
+      GO TO 22
+
+C
 C     ACCUMULATE H(TWIN) X H(TWIN)^T  (I.E., HT) 
 C
 C     ... AND  H(PRIN) X H(TWIN)^T (I.E., HP)
 C
   100 JJMAX=MAXVAL(JTEST)
+      IF(iDETECT.EQ.2) JJMAX=1
       DO 150 JJ=1,JJMAX
       DO 150 J=1,NREF-1
       HT(1,1,JJ)=HT(1,1,JJ)+HKLT(J,1,JJ)**2
@@ -434,14 +494,14 @@ C
       DO 170 JJ=1,JJMAX
       DO 161 I=1,3
       DO 161 J=1,3
-      A(I,J)=HP(I,J,JJ)
-      C(I,J)=HT(I,J,JJ)
+      C(I,J)=HP(I,J,JJ)
+      A(I,J)=HT(I,J,JJ)
       CALL MATINV(C,CI,D)
   161 HTINV(I,J,JJ)=CI(I,J)
 C
       IF(D.EQ.0.0) GO TO 400
 C
-C     GET R = (H(PRIN) X H(TWIN)^T) X (H(TWIN) X H(TWIN)^T)^-1
+C     GET R = (H(TWIN) X H(TWIN)^T) X (H(PRIN) X H(TWIN)^T)^-1  
 C
       CALL MATMULT(A,CI,3,B)
       DO 162 I=1,3
@@ -449,7 +509,8 @@ C
   162 R(I,J,JJ)=B(I,J)
       CALL DTRM(B,3,D1,INDX)
       WRITE(13,502) JJ+1,((R(I,J,JJ),J=1,3),I=1,3)
-      IF(D1.LT.0.95.OR.D1.GT.1.05) WRITE(13,505)
+C     (2020 edit) Test determinant only for 5% dev from +/- 1.0
+      IF(abs(D1).LT.0.95.OR.abs(D1).GT.1.05) WRITE(13,505)
       if(d1.lt.0) then
         write(13,503) d1
         write(13,5051)
@@ -511,7 +572,7 @@ C
 C
 C     FIND THE TOTAL INTEGER DISCREPANCY
 C
-      DJWSUM(JJ) = ABS(DJWI(1,JJ))+ABS(DJWI(2,JJ))+ABS(DJWI(3,JJ))
+180   DJWSUM(JJ) = ABS(DJWI(1,JJ))+ABS(DJWI(2,JJ))+ABS(DJWI(3,JJ))
       IF (DJWSUM(JJ) .GT. 0) CDJW='*'
       IF(DJWD(1,JJ).GE.0.4.OR.DJWD(2,JJ).GE.0.4.OR.DJWD(3,JJ).GE.0.4)
      1WRITE(13,'(A,2X,3F6.2,3X, 3F6.2, 3X, 3F6.3,3X,3I6, 3X, I6)') 
@@ -565,6 +626,8 @@ C 210   CONTINUE
       WRITE(13,506) (K+1,NREF3(K), K=1,JJMAX)
   215 WRITE(13,'(/, A,I7//)')' Number of non-matching reflections = ',
      1NREJ
+      IF (NREJ.EQ.0) WRITE(13,5061)
+      IF (NREJ.EQ.0) WRITE(*,5061)
       IF(JJMAX.EQ.1) GO TO 220
       WRITE(13,507) (K+1,NREJ2(K), K=1,JJMAX)
 C
@@ -574,14 +637,14 @@ C
   220 DO 270 JJ=1,JJMAX
       DO 261 I=1,3
       DO 261 J=1,3
-      A(I,J)=HP(I,J,JJ)
-      C(I,J)=HT(I,J,JJ)
+      C(I,J)=HP(I,J,JJ)
+      A(I,J)=HT(I,J,JJ)
       CALL MATINV(C,CI,D)
   261 HTINV(I,J,JJ)=CI(I,J)
 C
       IF(D.EQ.0.0) GO TO 400
 C
-C     GET R = (H(PRIN) X H(TWIN)^T) X (H(TWIN) X H(TWIN)^T)^-1
+C     GET R = (H(TWIN) X H(TWIN)^T) X (H(PRIN) X H(TWIN)^T)^-1  
 C
       CALL MATMULT(A,CI,3,B)
       DO 262 I=1,3
@@ -589,7 +652,8 @@ C
   262 R(I,J,JJ)=B(I,J)
       CALL DTRM(B,3,D1,INDX)
       WRITE(13,502) JJ+1,((R(I,J,JJ),J=1,3),I=1,3)
-      IF(D1.LT.0.95.OR.D1.GT.1.05) THEN
+C     (2020 edit) Test determinant only for 5% dev from +/- 1.0
+      IF(abs(D1).LT.0.95.OR.abs(D1).GT.1.05) THEN
             WRITE(13,505)
             IOUT= -1                !INDICATE FAILURE
       ENDIF
@@ -624,11 +688,14 @@ C     AND CLEAR THE ACCUMULATORS
      1,/,' AND/OR CHECK INPUT DATA')
   505 FORMAT(/
      1 'Determinant is quite far from 1.0.',
-     2 ' Inspect TLAT_OUT.LIS for errors')
+     2 ' Inspect TLAW_OUT.LIS for errors')
 5051  format(/
-     1 'The determinant is negative. Reprocess data without averaging'
-     2)
+     1 'The determinant is negative. If inversion twin laws have been',
+     2/,'included, this is expected and no user action is required.',/
+     3 /'Otherwise, please reprocess data without averaging')
   506 FORMAT((/' NO. OF SETS FOR COMPONENT ',I4, ' = ',I7))
+ 5061 FORMAT(/' ALL REFLECTIONS WERE ACCEPTED; THE TWIN LAW(S) BELOW '
+     1'DO NOT DIFFER FROM RESULTS PRESENTED EARLIER ABOVE')
   507 FORMAT((/' No. unmatched for component ',I4, ' = ', I5))
 
   508 FORMAT(//
@@ -643,7 +710,7 @@ C     AND CLEAR THE ACCUMULATORS
      8 'The very unreliable reflections are marked with an "*" in'/
      9 'the list below'/
      1 'CRYSTALS will re-process the data omitting these reflections'/
-     2 'See the bottom of TLAT_OUT.LIS for the final results'
+     2 'See the bottom of TLAW_OUT.LIS for the final results'
      1 //)
 
   509 FORMAT(//,
@@ -671,6 +738,28 @@ C     AND CLEAR THE ACCUMULATORS
      G'12, 422-425,',/' and in Giacovazzo, C., ed.; Fundamentals of ',
      H'Crystallography, 2nd Ed.; Oxford'/' Science Publications, 2002,',
      J' pp. 229-236 & 278-285.'//)
+      END
+
+      SUBROUTINE DETECT(IDETECT)
+      REAL HKLP(100000,3),HKLT(100000,3,7),
+     1HT(3,3,7),HP(3,3,7),HTINV(3,3,7),R(3,3,7),
+     2HT1,KT1,LT1,HP1,KP1,LP1
+C
+      IDETECT2=0
+      IDETECT3=0
+      REWIND 14
+   10 READ (14,500,END=100) HT1,KT1,LT1,FO,SIGMA,JCODE
+      IF(JCODE.GT.0) GO TO 10
+      IF(JCODE.EQ.-1) GO TO 20
+      GO TO 10
+   20 READ (14,500,END=100) HT1,KT1,LT1,FO,SIGMA,JCODE2
+      IF (JCODE2.EQ.2) IDETECT2=2
+      IF (JCODE2.GE.3) IDETECT3=3
+      GO TO 10
+  100 IDETECT=MAX(IDETECT2,IDETECT3)
+      RETURN
+C     WRITE (*,*) ' EOF REACHED; CHECK FILE FOR ERRORS'
+  500 FORMAT(3F4.0,2F8.2,I4)
       END
 
       SUBROUTINE MATINV(A,B,D)

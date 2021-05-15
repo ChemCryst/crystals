@@ -47,13 +47,13 @@
 
 
 
-  Equation of the plane :
+  Equation of the plane :  
 
-  -4.37278 * X +  -3.62568 * Y +   4.93391 * Z  =    -0.547                    X, Y and Z are in crystal fractions
+    -4.373 * X +      -3.626* Y +       4.934 * Z  =    -0.547                    X, Y and Z are in crystal fractions
 
 plane-vector (in polar coord.):
 
-DECLINAT =   -71.22     DECLINAT/100 =  -0.7122
+[90] DECLINAT =   -71 DECLINAT/100 =  -0.71
 AZIMUTH  =    20.31     AZIMUTH /100 =   0.2031
   Co-ordinates of the defining atoms projectedonto the best  plane
 
@@ -109,13 +109,13 @@ AZIMUTH  =    20.31     AZIMUTH /100 =   0.2031
 
 
 
-  Equation of the line  :
+  Equation of the line  :  
 
-  -1.55070 * X +   9.78753 * Y +  -5.17663 * Z  =     0.832                    X, Y and Z are in crystal fractions
+    -1.551 * X +       9.788* Y +      -5.177 * Z  =     0.832                    X, Y and Z are in crystal fractions
 
 line -vector (in polar coord.):
 
-DECLINAT =  -109.75     DECLINAT/100 =  -1.0975
+[90] DECLINAT =  -109 DECLINAT/100 =  -1.09
 AZIMUTH  =   -70.46     AZIMUTH /100 =  -0.7046
   Co-ordinates of the defining atoms projectedonto the best  line 
 

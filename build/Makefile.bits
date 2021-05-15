@@ -4,7 +4,7 @@ include makefile.in
 VPATH = ../bits/cif2cry ../bits/convplat ../bits/csd2cry ../bits/delred \
         ../bits/dipin   ../bits/hklf5    ../bits/kccdin  ../bits/rc93 \
         ../bits/reindex ../bits/shelxs   ../bits/sxtocry ../bits/sir92 \
-        ../bits/loader ../bits/Diffractometers ../bits/Common
+        ../bits/Diffractometers ../bits/Common
 
 EXECS := cif2cry    convplat    csd2cry    delred \
          dipin      ctwin       kccdin     rc93   \
@@ -21,8 +21,8 @@ EXECS := $(EXECS) sir92
 endif
 
 ifeq ($(COMPCODE),WXS)
-OBJS := $(OBJS) obj/crysload.o
-EXECS := $(patsubst %, %.exe, $(EXECS) crysload)
+OBJS := $(OBJS) 
+EXECS := $(patsubst %, %.exe, $(EXECS) )
 endif
 
 LD77 = gfortran51
@@ -75,10 +75,6 @@ sxtocry$(SUFFIX) : obj/sxtocry.o obj/nobuf.o
 
 diffin$(SUFFIX) : obj/diffin.o obj/nobuf.o
 	$(LD77) $(CLFLAGS) $(CLLIBRARIES) $(OPT) -o $@ $^
-	strip $@
-
-crysload$(SUFFIX) : obj/crysload.o
-	$(LD) $(CLFLAGS) $(CLLIBRARIES) -mwindows $(OPT) -o $@ $^
 	strip $@
 
 ifneq ($(COMPCODE),WXS)

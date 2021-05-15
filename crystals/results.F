@@ -5465,14 +5465,17 @@ C
      4ann_a3'/'_atom_type_scat_Cromer_Mann_b3'/'_atom_type_scat_Cromer_M
      5ann_a4'/'_atom_type_scat_Cromer_Mann_b4'/'_atom_type_scat_Cromer_M
      6ann_c'/'_atom_type_scat_source  ')
-           DO M3=L3,L3+(N3-1)*MD3,MD3
+           SFLOOP: DO M3=L3,L3+(N3-1)*MD3,MD3
+             DO MR3=L3,M3-MD3,MD3   ! Ignore repeats
+               IF ( ISTORE(M3) .EQ. ISTORE(MR3) ) CYCLE SFLOOP
+             END DO
              WRITE (CTEMP,'(A4)') ISTORE(M3)
              CBUF=CTEMP(2:4)
              CALL XCCLWC (CBUF(1:3),CTEMP(2:4))
              WRITE (NCFPU1,1300) CTEMP(1:4),(STORE(M),M=M3+1,M3+11),
      1       TRIM(CREFER)
 1300         FORMAT (1X,A4,1X,8F9.4,/,3F9.4,1X,A)
-           END DO
+           END DO SFLOOP
         END IF
       END IF
 C 
@@ -6547,13 +6550,27 @@ C----- TRY FOR A FRIEDEL MERGE ESTIMATE
         IGLS  = 0
 
 c
+C  COMPUTE THE FILTERED THETA MAX (IF SET) IN LIST 28
+        CALL TLIM28(TVALUE)
+        TVALUE=RTD*asin(SQRT(TVALUE*STORE(L13DC)*STORE(L13DC)))
+C
         if (kexist(6) .gt. 0) then
          IF ( IPUNCH .EQ. 0 ) THEN
            CBUF(1:21)='_diffrn_reflns_theta_'
            WRITE (CLINE,'(A,''min '', F10.3)') CBUF(1:21), THMIN
            CALL XPCIF (CLINE)
-           WRITE (CLINE,'(A,''max '', F10.3)') CBUF(1:21), THMAX
+C
+           IF(TVALUE.LE. 0.) THEN
+             WRITE (CLINE,'(A,''max '', F10.3)') CBUF(1:21), THMAX
+             CALL XPCIF (CLINE)
+           ELSE
+             write(cline,
+     1 '(''# The actual theta max before filtering is'',F10.3)')THMAX
            CALL XPCIF (CLINE)
+             WRITE (CLINE,'(A,''max '', F10.3)') CBUF(1:21), TVALUE
+             CALL XPCIF (CLINE)
+           ENDIF
+C
            CBUF(9:32)='measured_fraction_theta_'
            WRITE (CLINE,'(A,''max '',F10.3)') CBUF(1:32), THMCMP
            CALL XPCIF (CLINE)
@@ -7471,7 +7488,53 @@ C      CLOSE THE REFERENCES FILE
       END IF
       RETURN
       END
+C
+CODE FOR TLIM28
+      SUBROUTINE TLIM28(TVALUE)
+C
+C -- ROUTINE TO RETURN THE THETA CUTOFF IN LIST 28
+      INCLUDE 'TSSCHR.INC'
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XCOMPD.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'UFILE.INC'
+      INCLUDE 'XTAPES.INC'
+      INCLUDE 'XCHARS.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XSSCHR.INC'
+      INCLUDE 'XLISTI.INC'
+      INCLUDE 'XLST28.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XFLAGS.INC'
+C
+      INCLUDE 'QSTORE.INC'
+#ifdef _HOL_
+      DATA ISINT /4HSINT/
+#else
+      DATA ISINT /'SINT'/
+#endif
 
+C
+       IF (KHUNTR(28,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL28
+C
+       IF ( N28MX .GT. 0 ) THEN
+          INDNAM = L28CX
+          DO 1400 I = L28MX , M28MX , MD28MX
+            IF(ISTORE(INDNAM).EQ.ISINT) THEN
+            TVALUE=STORE(I+1)
+            EXIT
+          ENDIF  
+          INDNAM = INDNAM + MD28CX
+1400      CONTINUE
+       ELSE
+C NOTHING FOUND
+          TVALUE = 0.0
+       ENDIF
+      RETURN
+      END
+C
 CODE FOR CIFARCHIVE
       SUBROUTINE CIFARCHIVE
 C
@@ -8407,6 +8470,8 @@ C                                          ----- UNPAIRED REFLECTIONS
 C      CHECK FOR CENTRIC REFLECTIONS
         ITEMP=KTONCENT(I1,J1,K1,NCENTRIC)
         IF (IPUNCH.EQ.1) THEN
+C Centric reflections are coded "-1 -" in the TABLE file.
+C Unpaired reflections are coded "1 -" or "2 -" in the table file        
           WRITE (NCPU,'(3i4,I2," -", 3f10.2)') I1,J1,K1,ITEMP,FOK1,SIG1,
      1     FCK1
         END IF

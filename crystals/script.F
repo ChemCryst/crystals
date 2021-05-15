@@ -15,7 +15,7 @@ C     1                'FIRSTINT','SQRT','GETPATH','GETFILE',       !41-44   !un
 C     2                'GETTITLE','FILEEXISTS','FILEDELETE',        !45-47   !un 17-19
 C     3                'FILEISOPEN','GETEXTN','GETCWD','RANDOM' ,   !48-51   !un 20-23
 C     4                'GETENV','COMPRESS','SPGTOCRY','ABS','PACK', !52-56   !un 24-28
-C     5                'LEN', 'NINT' /                              !57-58   !un 29-30
+C     5                'LEN', 'NINT', 'SIN', 'COS' /                !57-60   !un 29-32
 C
 C $Log: not supported by cvs2svn $
 C Revision 1.75  2013/09/19 21:35:39  rich
@@ -2847,7 +2847,7 @@ cdjwMar-2017
 C       CHAR=PACK(CHAR) - REMOVES ALL SPACES AND LEFT-PACKS
 C
 cdjwdec08
-      PARAMETER ( NOPER = 59 , NUBASE = 29 )
+      PARAMETER ( NOPER = 61 , NUBASE = 29 )
       PARAMETER ( NARGMX = 3 , NOTYPE = 14 )
 C
       PARAMETER ( JNONE = 0 )
@@ -2885,15 +2885,48 @@ C
       INCLUDE 'XSCCNT.INC'
       INCLUDE 'XIOBUF.INC'
 C
+
+
+C      DATA COPER /                '('   ,   ')'   ,                ! 0-2
+C     2                  '+'   ,   '-'   ,   '*'   ,   '/'   ,      ! 3-6    !Bop 1 - 
+C     3                '.EQ.'  ,   '='   ,  '.NE.' ,  '<>'   ,      ! 7-10
+C     4                '.LE.'  ,  '=<'   ,  '.GE.' ,  '>='   ,      !11-14
+C     5                '.LT.'  ,   '<'   ,  '.GT.' ,   '>'   ,      !15-18
+C     6                '.OR.'  , '.AND.' , '.THEN.' , '.ELSE.' ,    !19-22
+C     7                '//'    , 'STARTSWITH' , '**', 'IOR',        !23-26
+C     7                'IAND'  , 'IDECMASK', 'MOD' ,                !27-29   !Bop - 27
 C
-      DATA IDEFOP / 1 , 1 , 2 , 2 , 2 , 2 , 3 , 3 , 3 , 3 ,
-     2              2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 5 , 5 ,
-     3              6 , 7 , 11, 11, 2,  2 , 2 , 2 , 2 ,
+C     8                '.NOT.' ,   '+'   ,   '-'   , 'EXISTS' ,     !29-32   !Uop 1 - 4
+C     9                '.IF.'  , 'REAL'  ,'INTEGER', '.VALUE.',     !33-36   !Uop 5 - 8
+C     *                'CHARACTER','KEYWORD','UPPERCASE','FIRSTSTR',!37-40   !un 9-12
+C     1                'FIRSTINT','SQRT','GETPATH','GETFILE',       !41-44   !un 13-16
+C     2                'GETTITLE','FILEEXISTS','FILEDELETE',        !45-47   !un 17-19
+C     3                'FILEISOPEN','GETEXTN','GETCWD','RANDOM' ,   !48-51   !un 20-23
+C     4                'GETENV','COMPRESS','SPGTOCRY','ABS','PACK', !52-56   !un 24-28
+C     5                'LEN', 'NINT', 'SIN', 'COS' /                !57-60   !un 29-32
+
+C
+      DATA IDEFOP / 1 , 1 , 2 , 2 , 2 , 2 , 3 , 3 , 3 , 3 ,    ! 1 - 10
+C                   (   )   +   -   *   /   EQ  =   NE  <>
+
+     2              2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 5 , 5 ,    !11 - 20
+C                   LE  =<  GE  >=  LT  <   GT  >   OR AND
+
+     3              6 , 7 , 11, 11, 2,  2 , 2 , 2 , 2 ,        !21 - 29
+C                 THEN ELSE //  S-W ** IOR IAND IDM MOD
 CJAN99  abs dec08
-     4           8 , 9 ,  9 , 10 ,  8 , 10 ,  4 , 12 , 13 , 10 ,
-     5          12 ,12 , 12,   4 , 12 , 12 , 12 , 12 , 12 , 12 ,
-     6          12 ,12 , 13,  12 , 12 , 12 ,  4 , 12 , 12 ,  4 /
-C
+     4           8 , 9 ,  9 , 10 ,  8 , 10 ,  4 , 12 , 13 , 10 ,  ! 30 - 39
+C              NOT  +     -  EXST   IF  REAL  INT VAL CHAR KEY
+
+     5          12 ,12 , 12,   4 , 12 , 12 , 12 , 12 , 12 , 12 ,  ! 40 - 49
+C              UPC  FSTR FINT SQRT GPAT GFIL GTI  FEXS FDEL FOPE
+
+     6          12 ,12 , 13,  12 , 12 , 12 ,  4 , 12 , 12 ,  4 ,  ! 50 - 59
+C              GEXT GCWD RAND GENV COMP SPG2 ABS PACK LEN   NINT
+
+     7           4,  4/                                           ! 60 - 61
+C               SIN COS
+
       DATA NARGS  /0 , 2 , 2 , 1 , 2 , 2 , 3 , 1 , 1 , 1 , 2 , 1 , 1, 0/
       DATA NRESLT /0 , 1 , 1 , 1 , 1 , 2 , 1 , 1 , 1 , 1 , 1 , 1 , 1, 1/
 C
@@ -3290,7 +3323,8 @@ CJAN99  abs dec08
      3        5140 , 5150,  5160 , 5170 , 5180 , 
      4        5190 , 5200,  5210 , 5220 , 5230 ,
      5        5240 , 5250,  5260 , 5270 , 5255 ,
-     6        9940 ) , IUOPER
+     6        5256 , 5257,
+     7        9940 ) , IUOPER
       GO TO 9940
 C
 C
@@ -3918,6 +3952,24 @@ C
         ICODE(JVTYPE,IARG(1)) = 1
 C
       GO TO 8000
+5256  CONTINUE
+C
+C -- 'SIN'  nov20
+C
+C Return the sine of the argument. 
+C
+        XCODE(JVALUE,IARG(1)) = SIN ( XCODE(JVALUE,IARG(1)) ) 
+        ICODE(JVTYPE,IARG(1)) = 2
+      GO TO 8000
+5257  CONTINUE
+C
+C -- 'COS'  nov20
+C
+C Return the cosine of the argument. 
+C
+        XCODE(JVALUE,IARG(1)) = COS ( XCODE(JVALUE,IARG(1)) ) 
+        ICODE(JVTYPE,IARG(1)) = 2
+      GO TO 8000
 C
 C
 5260  CONTINUE
@@ -4187,7 +4239,7 @@ C
       PARAMETER ( IBASBR = 1               , NBROPR =  2 )
       PARAMETER ( IBASBI = IBASBR + NBROPR , NBOPER = 27 )
 CJAN99  'ABS' dec08
-      PARAMETER ( IBASUN = IBASBI + NBOPER , NUOPER = 30 )
+      PARAMETER ( IBASUN = IBASBI + NBOPER , NUOPER = 32 )
       PARAMETER ( NOPER = IBASUN + NUOPER - 1 )
       PARAMETER ( LOPER = 10 )
 C
@@ -4216,7 +4268,7 @@ C
 C
       DATA IVARIB(JCTYPE) / 1 /
 C
-      DATA COPER /                '('   ,   ')'   ,                ! 0-2
+      DATA COPER /                '('   ,   ')'   ,                ! 1-2
      2                  '+'   ,   '-'   ,   '*'   ,   '/'   ,      ! 3-6    !Bop 1 - 
      3                '.EQ.'  ,   '='   ,  '.NE.' ,  '<>'   ,      ! 7-10
      4                '.LE.'  ,  '=<'   ,  '.GE.' ,  '>='   ,      !11-14
@@ -4231,28 +4283,30 @@ CJAN99 'ABS' dec08
      *                'CHARACTER','KEYWORD','UPPERCASE','FIRSTSTR',!37-40   !un 9-12
      1                'FIRSTINT','SQRT','GETPATH','GETFILE',       !41-44   !un 13-16
      2                'GETTITLE','FILEEXISTS','FILEDELETE',        !45-47   !un 17-19
+C
      3                'FILEISOPEN','GETEXTN','GETCWD','RANDOM' ,   !48-51   !un 20-23
      4                'GETENV','COMPRESS','SPGTOCRY','ABS','PACK', !52-56   !un 24-28
-     5                'LEN', 'NINT' /                              !57-58   !un 29-30
+     5                'LEN', 'NINT', 'SIN', 'COS' /                !57-60   !un 29-32
 C
-      DATA IPRECD /      0    ,   200   ,    0    ,
-     2                  100   ,   100   ,   120   ,   120   ,
-     4                   80   ,    80   ,    80   ,    80   ,
-     4                   80   ,    80   ,    80   ,    80   ,
-     5                   80   ,    80   ,    80   ,    80   ,
-     6                   50   ,    60   ,    30   ,    20   ,
-     7                  100   ,    80   ,   190   ,    90   ,
-     8                   90   ,    90   ,   190   ,
+      DATA IPRECD /      0    ,   200   ,    0    ,                ! 0-2
+     2                  100   ,   100   ,   120   ,   120   ,      ! 3-6
+     4                   80   ,    80   ,    80   ,    80   ,      ! 7-10
+     4                   80   ,    80   ,    80   ,    80   ,      !11-14
+     5                   80   ,    80   ,    80   ,    80   ,      !15-18
+     6                   50   ,    60   ,    30   ,    20   ,      !19-22
+     7                  100   ,    80   ,   190   ,    90   ,      !23-26
+     8                   90   ,    90   ,   190   ,                !27-29
 C
-     8                   90   ,   180   ,   180   ,   180   ,
-     9                   40   ,   180   ,   180   ,   180   ,
+     8                   90   ,   180   ,   180   ,   180   ,      !29-32
+     9                   40   ,   180   ,   180   ,   180   ,      !33-36
 CJAN99 'ABS' dec08
-     *                  180   ,   180   ,   180   ,   180   ,
-     1                  180   ,   180   ,   180   ,   180   ,
-     2                  180   ,   180   ,   180   ,
-     3                  180   ,   180   ,   180   ,   200   ,
-     4                  180   ,   180   ,   180   ,   180   ,
-     5                  180   ,   180   ,   180   /
+     *                  180   ,   180   ,   180   ,   180   ,      !37-40
+     1                  180   ,   180   ,   180   ,   180   ,      !41-44
+     2                  180   ,   180   ,   180   ,                !45-47
+C
+     3                  180   ,   180   ,   180   ,   200   ,      !48-51
+     4                  180   ,   180   ,   180   ,   180   , 180, !52-56
+     5                  180   ,   180   ,   100   ,   100 /        !57-60
 C
       DATA CDATAT / '<invalid>', 'integer', 'real', 'logical',
      2             'character' /
@@ -6853,6 +6907,7 @@ C
       INCLUDE 'XIOBUF.INC'
 
       DIMENSION IVALUE(ILGTH)
+	  LOGICAL NOSCRP
 
       CHARACTER*(*) CVARIB
       CHARACTER *64 CBUFF, CUPPER
@@ -6861,8 +6916,13 @@ C
 
       KSCTRN = 1
       IF ( CVARIB .EQ. ' ' ) RETURN    ! CHECK VARIABLE NAME HAS BEEN GIVEN
-      IF ( IRDSCR(IFLIND) .LE. 0 ) RETURN  ! CHECK SCRIPTS ARE RUNNING
 
+c      IF ( IRDSCR(IFLIND) .LE. 0 ) RETURN  ! CHECK SCRIPTS ARE RUNNING
+      NOSCRP = .TRUE.
+      DO J = 1, IFLIND
+	     IF ( IRDSCR(J) .GE. 1 ) NOSCRP = .FALSE.
+	  END DO
+      IF  (NOSCRP) RETURN 
 
 C -- FIND IDENTIFIER
 

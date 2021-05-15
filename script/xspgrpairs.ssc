@@ -142,6 +142,7 @@
 %     COPY 'MON OFF'
 %     COPY 'TRANSFORM -1 0 0  0 -1 0  0 0 -1 ALL'
 %     COPY 'SHIFT 1  1  1    ALL'
+%%     COPY 'CHANGE ENANTIO 0.0'
 %     COPY 'END'
 %    TRANSFER "{I Space group changed from " // OLDSYMBOL // " to " // NEWSYMBOL // "." TO DISPLAY
 %  ELSE

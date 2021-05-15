@@ -68,6 +68,17 @@ class MathSymbols {
       io.Replace("\\_i", L"\u1D62");
       io.Replace("\\_j", L"\u2C7C");
       io.Replace("\\**t", L"\u1D57");
+// subscripts
+      io.Replace("\\_0", L"\u2080");
+      io.Replace("\\_1", L"\u2081");
+      io.Replace("\\_2", L"\u2082");
+      io.Replace("\\_3", L"\u2083");
+      io.Replace("\\_4", L"\u2084");
+      io.Replace("\\_5", L"\u2085");
+      io.Replace("\\_6", L"\u2086");
+      io.Replace("\\_7", L"\u2087");
+      io.Replace("\\_8", L"\u2088");
+      io.Replace("\\_9", L"\u2089");
       return ;
   };
   

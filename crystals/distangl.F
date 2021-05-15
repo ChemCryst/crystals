@@ -7107,9 +7107,12 @@ C Read the properties file and extract cov, vdw and colour.
             END IF
             NOTFND = NOTFND + 1
             WRITE(CATTYP,'(A4)')ISTORE(M5)
-            IF ( CATTYP(1:1).NE.'Q' ) THEN
-              WRITE(CMON,'(3A)')'FYI: Element not in L40 or L29: ',
-     1                        ISTORE(M5),ICOL
+            IF (( CATTYP(1:1).NE.'Q' ) .AND.
+     1          ( CATTYP(1:1).NE.'L' ) .AND.
+     1          ( CATTYP(1:1).NE.'M' ) .AND.
+     1          ( CATTYP(1:1).NE.'R' )) THEN
+              WRITE(CMON,'(3A)')
+     1 'FYI: Element not in L40 or L29: ',ISTORE(M5),ICOL
               CALL XPRVDU(NCVDU,1,0)
             END IF
          END IF
@@ -7160,6 +7163,10 @@ C -- elements which will override the TOLERANCE calculation.
 
       DO I5 = 0,N5-1
          M5 = L5 + I5*MD5
+         WRITE(CATTYP,'(A4)')ISTORE(M5)
+         IF (( CATTYP(1:1).EQ.'L' ) .OR.
+     1       ( CATTYP(1:1).EQ.'M' ) .OR.
+     2       ( CATTYP(1:1).EQ.'R' )) CYCLE
 
          NEXTLC = NFL
          NFOUND = MAKE41( M5, NEXTLC )
