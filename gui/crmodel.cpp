@@ -995,3 +995,11 @@ CcModelObject * CrModel::FindObjectByGLName(GLuint name)
   if(m_ModelDoc) return m_ModelDoc->FindObjectByGLName(name);
   return NULL;
 }
+
+bool CrModel::AtomIsVisible( CcModelAtom* atomp ) {
+
+    if(m_ModelDoc) return m_ModelDoc->VisibleAtomStyle(&m_style, *atomp);
+
+    return false;  //No modeldoc, return false.
+	
+}

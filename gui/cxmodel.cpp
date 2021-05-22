@@ -1993,6 +1993,7 @@ CcPoint CxModel::AtomCoordsToScreenCoords(CcPoint atomCoords) {
 	return ret;
 }
 
+//May21: update to avoid selecting hidden atoms.
 void CxModel::SelectBoxedAtoms(CcRect rectangle, bool select)
 {
     std::list<Cc2DAtom> atoms = ((CrModel*)ptr_to_crObject)->AtomCoords2D(mat);
@@ -2003,8 +2004,11 @@ void CxModel::SelectBoxedAtoms(CcRect rectangle, bool select)
 
 		if ( rectangle.Contains( c.x, c.y ) ) {
      		CcModelAtom* atomp = (CcModelAtom*)((CrModel*)ptr_to_crObject)->FindObjectByGLName((*atom).id);
-//			if ( atomp ) atomp->Select();
-			if ( atomp ) atomp->SendAtom( ((CrModel*)ptr_to_crObject)->GetSelectionAction() );
+			if ( atomp ) {
+				if ( ((CrModel*)ptr_to_crObject)->AtomIsVisible( atomp ) ) {
+					atomp->SendAtom( ((CrModel*)ptr_to_crObject)->GetSelectionAction() );
+				}
+			}
 		}
 		
 	}
