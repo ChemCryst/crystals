@@ -137,6 +137,7 @@ class   CrModel : public CrGUIElement
     bool RenderBonds(bool feedback=false);
 	CcRect FindModel2DExtent(float * mat);
 	std::list<Cc2DAtom> AtomCoords2D(float * mat);
+	bool AtomIsVisible( CcModelAtom* atomp );
 	
     void    MenuSelected(int id);
     void    ContextMenu(int x, int y, string atomname = "", int selection = 1, string atom2="");

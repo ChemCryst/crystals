@@ -1,0 +1,269 @@
+%SCRIPT RESROT
+%
+%% 1. Get atom from user input.
+%% 2. Find its residue number.
+%% 3. Find centroid - store coordinates / delete it.
+%% 4. Three rotate buttons use centroid - centroid.x + 1 vector to rotate around x.
+%% 5. Three translate buttons. Move residue, update centroid coords too.
+%
+%  VARIABLE CHARACTER CATM CELE CCHK
+%  VARIABLE INTEGER ISER NINDEX IRES
+%  VARIABLE REAL RCHK CX CY CZ A B C TX TY TZ
+%%
+%  GET NOSTORE TEXT 'Atom to add to?' ' '
+%  EVALUATE CATM = CVALUE
+%%
+%%
+%  EVALUATE CELE = FIRSTSTR ( CATM )
+%  EVALUATE ISER = FIRSTINT ( CATM ) 
+%  EVALUATE NINDEX = 0
+%  EVALUATE IRES = 0
+%  ON EDITERROR TERMINATE
+%  COPY '#GENERALEDIT 5'
+%  COPY 'LOCATE RECORDTYPE=101'
+%  COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%  LOOP 
+%     ON EDITERROR TERMINATE
+%     COPY 'TRANSFER FROM OFFSET=0 TO CCHK'
+%     COPY 'TRANSFER FROM OFFSET=1 TO RCHK'
+%     IF ( ( CELE .EQ. CCHK ) .AND. ( ISER .EQ. INTEGER ( RCHK ) ) ) THEN
+%        COPY 'TRANSFER FROM OFFSET=16 TO IRES'
+%        COPY 'END'
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%        EVALUATE NINDEX = LOOPCOUNTER
+%     ELSE
+%       COPY 'NEXT'
+%     END IF
+%  END LOOP
+%  IF ( NINDEX .EQ. 0 ) THEN
+%     TRANSFER '{E Atom not found. ' // CATM TO DISPLAY
+%     FINISH
+%  END IF
+%%
+%  COPY '#GENERALEDIT 1'
+%  COPY 'LOCATE RECORDTYPE = 101'
+%  COPY 'TRANSFER FROM OFFSET = 0 TO A'
+%  COPY 'TRANSFER FROM OFFSET = 1 TO B '
+%  COPY 'TRANSFER FROM OFFSET = 2 TO C'
+%  COPY 'END'
+%% Convert shift of 0.1 A to fractional coords
+%  EVALUATE TX = 0.1 / A 
+%  EVALUATE TY = 0.1 / B
+%  EVALUATE TZ = 0.1 / C
+%  IF TX .LT. 0.01 THEN 
+%     EVALUATE TX = 0.01
+%  END IF
+%  IF TY .LT. 0.01 THEN 
+%     EVALUATE TY = 0.01
+%  END IF
+%  IF TZ .LT. 0.01 THEN 
+%     EVALUATE TZ = 0.01
+%  END IF
+%%
+%  COPY '#EDIT'
+%  TRANSFER 'centroid 100 residue(' // CHARACTER IRES // ')' TO CRYSTALS
+%  COPY 'END' 
+%  COPY '#GENERALEDIT 5'
+%  COPY 'LOCATE RECORDTYPE=101'
+%  COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%  COPY 'BOTTOM'
+%  COPY 'TRANSFER FROM OFFSET=4 TO CX'
+%  COPY 'TRANSFER FROM OFFSET=5 TO CY'
+%  COPY 'TRANSFER FROM OFFSET=6 TO CZ'
+%  COPY 'DELETE'
+%  COPY 'WRITE'
+%  COPY 'END'
+%%
+%%
+^^WI WINDOW ROTATE 'Rotate residue' 
+^^WI POSITION=CENTRED '_MAINTEXTOUTPUT'
+^^WI GRID M NROWS=7 NCOLS=3 {
+^^WI  @ 2,2 GRID N NROWS=1 NCOLS=1 {
+%  CLEAR
+%  INSERT !^^WI @ 1,1 STATIC RR 'Rotate/translate residue !
+%  STORE INTEGER IRES
+%  INSERT !'!
+%  OUTPUT
+^^WI  }
+^^WI  @ 4,2 GRID BTNS NROWS=5 NCOLS=5 {
+^^WI      @ 1,1 BUTTON RXM 'rot X-' 
+^^WI      @ 3,1 BUTTON RYM 'rot Y-' 
+^^WI      @ 5,1 BUTTON RZM 'rot Z-' 
+^^WI      @ 1,2 BUTTON RXP 'rot X+' 
+^^WI      @ 3,2 BUTTON RYP 'rot Y+' 
+^^WI      @ 5,2 BUTTON RZP 'rot Z+' 
+^^WI      @ 1,4 BUTTON TXM 'X-' 
+^^WI      @ 3,4 BUTTON TYM 'Y-' 
+^^WI      @ 5,4 BUTTON TZM 'Z-' 
+^^WI      @ 1,5 BUTTON TXP 'X+' 
+^^WI      @ 3,5 BUTTON TYP 'Y+' 
+^^WI      @ 5,5 BUTTON TZP 'Z+' 
+^^WI  }
+^^WI  @ 6,2 GRID CLOSE NROWS=1 NCOLS=1 {
+^^WI     @ 1,1 BUTTON BXX 'Close' DEFAULT CANCEL
+^^WI  }
+^^WI }
+^^WI SHOW
+^^CR
+%  LOOP
+%   VERIFY RXM RYM RZM RXP RYP RZP TXM TYM TZM TXP TYP TZP BXX
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%%  TRANSFER "Value chosen is " // CHARACTER ( VALUE ) TO DISPLAY
+%   CASE VALUE
+%   BLOCK                                                  % RXM %
+%     COPY '#EDIT'
+%     CLEAR
+%     INSERT !ROTATE -5 !
+%     STORE FORMAT /(F7.2)/ LENGTH 7 REAL CX
+%     STORE FORMAT /(F7.2)/ LENGTH 7 REAL CY
+%     STORE FORMAT /(F7.2)/ LENGTH 7 REAL CZ
+%     INSERT '1 0 0 RESIDUE('
+%     STORE INTEGER IRES
+%     INSERT !)!
+%     SEND
+%     COPY 'END'
+%   END BLOCK
+%   BLOCK                                                  % RYM %
+%     COPY '#EDIT'
+%     CLEAR
+%     INSERT !ROTATE -5 !
+%     STORE FORMAT /(F7.2)/ LENGTH 7 REAL CX
+%     STORE FORMAT /(F7.2)/ LENGTH 7 REAL CY
+%     STORE FORMAT /(F7.2)/ LENGTH 7 REAL CZ
+%     INSERT '0 1 0 RESIDUE('
+%     STORE INTEGER IRES
+%     INSERT !)!
+%     SEND
+%     COPY 'END'
+%   END BLOCK
+%   BLOCK                                                  % RZM %
+%     COPY '#EDIT'
+%     CLEAR
+%     INSERT !ROTATE -5 !
+%     STORE FORMAT /(F7.2)/ LENGTH 7 REAL CX
+%     STORE FORMAT /(F7.2)/ LENGTH 7 REAL CY
+%     STORE FORMAT /(F7.2)/ LENGTH 7 REAL CZ
+%     INSERT '0 0 1 RESIDUE('
+%     STORE INTEGER IRES
+%     INSERT !)!
+%     SEND
+%     COPY 'END'
+%   END BLOCK
+%   BLOCK                                                  % RXP %
+%     COPY '#EDIT'
+%     CLEAR
+%     INSERT !ROTATE 5 !
+%     STORE FORMAT /(F7.2)/ LENGTH 7 REAL CX
+%     STORE FORMAT /(F7.2)/ LENGTH 7 REAL CY
+%     STORE FORMAT /(F7.2)/ LENGTH 7 REAL CZ
+%     INSERT '1 0 0 RESIDUE('
+%     STORE INTEGER IRES
+%     INSERT !)!
+%     SEND
+%     COPY 'END'
+%   END BLOCK
+%   BLOCK                                                  % RYP %
+%     COPY '#EDIT'
+%     CLEAR
+%     INSERT !ROTATE 5 !
+%     STORE FORMAT /(F7.2)/ LENGTH 7 REAL CX
+%     STORE FORMAT /(F7.2)/ LENGTH 7 REAL CY
+%     STORE FORMAT /(F7.2)/ LENGTH 7 REAL CZ
+%     INSERT '0 1 0 RESIDUE('
+%     STORE INTEGER IRES
+%     INSERT !)!
+%     SEND
+%     COPY 'END'
+%   END BLOCK
+%   BLOCK                                                  % RZP %
+%     COPY '#EDIT'
+%     CLEAR
+%     INSERT !ROTATE 5 !
+%     STORE FORMAT /(F7.2)/ LENGTH 7 REAL CX
+%     STORE FORMAT /(F7.2)/ LENGTH 7 REAL CY
+%     STORE FORMAT /(F7.2)/ LENGTH 7 REAL CZ
+%     INSERT '0 0 1 RESIDUE('
+%     STORE INTEGER IRES
+%     INSERT !)!
+%     SEND
+%     COPY 'END'
+%   END BLOCK
+%   BLOCK                                                  % TXM %
+%     COPY '#EDIT'
+%     CLEAR
+%     INSERT !SHIFT !
+%     STORE FORMAT /(F7.2)/ LENGTH 7 REAL ( - TX )
+%     INSERT ' 0 0 RESIDUE('
+%     STORE INTEGER IRES
+%     INSERT !)!
+%     SEND
+%     COPY 'END'
+%     EVALUATE CX = CX - TX
+%   END BLOCK
+%   BLOCK                                                  % TYM %
+%     COPY '#EDIT'
+%     CLEAR
+%     INSERT !SHIFT 0 !
+%     STORE FORMAT /(F7.2)/ LENGTH 7 REAL ( - TY )
+%     INSERT ' 0 RESIDUE('
+%     STORE INTEGER IRES
+%     INSERT !)!
+%     SEND
+%     COPY 'END'
+%     EVALUATE CY = CY - TY
+%   END BLOCK
+%   BLOCK                                                  % TZM %
+%     COPY '#EDIT'
+%     CLEAR
+%     INSERT !SHIFT 0 0 !
+%     STORE FORMAT /(F7.2)/ LENGTH 7 REAL ( - TZ )
+%     INSERT ' RESIDUE('
+%     STORE INTEGER IRES
+%     INSERT !)!
+%     SEND
+%     COPY 'END'
+%     EVALUATE CZ = CZ - TZ
+%   END BLOCK
+%   BLOCK                                                  % TXP %
+%     COPY '#EDIT'
+%     CLEAR
+%     INSERT !SHIFT !
+%     STORE FORMAT /(F7.2)/ LENGTH 7 REAL TX 
+%     INSERT ' 0 0 RESIDUE('
+%     STORE INTEGER IRES
+%     INSERT !)!
+%     SEND
+%     COPY 'END'
+%     EVALUATE CX = CX + TX
+%   END BLOCK
+%   BLOCK                                                  % TYP %
+%     COPY '#EDIT'
+%     CLEAR
+%     INSERT !SHIFT 0 !
+%     STORE FORMAT /(F7.2)/ LENGTH 7 REAL TY
+%     INSERT ' 0 RESIDUE('
+%     STORE INTEGER IRES
+%     INSERT !)!
+%     SEND
+%     COPY 'END'
+%     EVALUATE CY = CY + TY
+%   END BLOCK
+%   BLOCK                                                  % TZP %
+%     COPY '#EDIT'
+%     CLEAR
+%     INSERT !SHIFT 0 0 !
+%     STORE FORMAT /(F7.2)/ LENGTH 7 REAL TZ 
+%     INSERT ' RESIDUE('
+%     STORE INTEGER IRES
+%     INSERT !)!
+%     SEND
+%     COPY 'END'
+%     EVALUATE CZ = CZ + TZ
+%   END BLOCK
+%   BLOCK                                                  % BXX %
+^^CO DISPOSE ROTATE
+%     FINISH
+%   END BLOCK
+%   END CASE
+%  END LOOP
+%END SCRIPT

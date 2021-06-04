@@ -1,5 +1,6 @@
 %SCRIPT XWRITE5
 %%
+%% set verify true
 %%
 %% _______________________________________________________________
 %% See if GLOBAL help is needed
@@ -34,6 +35,9 @@
 %   IF ( FILEEXISTS ( 'l12.scp' ) ) THEN
 %     EVALUATE FD = FILEDELETE ( 'l12.scp' )
 %   END IF
+%   IF ( FILEEXISTS ( 'twin-12.dat' ) ) THEN
+%     EVALUATE FD = FILEDELETE ( 'twin-12.dat' )
+%   END IF
 %% make sure OVER record exists in LIST 39
 %    COPY '#SCRIPT SFLS39'
 %  END BLOCK
@@ -51,13 +55,15 @@
 %  VARIABLE INTEGER REFLAG INBLOCK IEXTIN N5 ICHK I5 PART RESI
 %  VARIABLE INTEGER HMODE ISER CURMODE RMFLAG OLDSER HUGE
 %  VARIABLE LOGICAL DOWRITE OVERRIDE STUCK TWINNED STICKY FLACK OLD5
+%  VARIABLE LOGICAL OMIT-TWIN
 %  VARIABLE LOGICAL DOREFINE HRIDE HREST DOFOUR DREST DOHUGE
 %  VARIABLE CHARACTER CTYPE CTYPE2 KEYBREAK
 %  VARIABLE REAL SERIAL HFIRST CENTRO WORK1 SERIAL2 RN5
 %  VARIABLE INTEGER IWORK1 ISELECT
 %  EVALUATE TWINNED = FALSE
-%  EVALUATE FLACK = FALSE
+%  EVALUATE OMIT-TWIN = FALSE
 %  EVALUATE DOREFINE = TRUE
+%  EVALUATE FLACK = FALSE
 %  EVALUATE DOFOUR = FALSE
 %  EVALUATE OLD5 = FALSE
 %  EVALUATE DOHUGE = FALSE
@@ -294,7 +300,7 @@
 % END IF
 ^^WI   }
 % END IF
-^^WI   @ 5,1 GRID XP NROWS=3 NCOLS=1 OUTLINE='Other parameters'
+^^WI   @ 5,1 GRID XP NROWS=3 NCOLS=2 OUTLINE='Other parameters'
 ^^WI   {
 ^^WI    @ 1,1 CHECKBOX FLACK 'Flack parameter'
 % IF IFLACK .LE. 0 THEN
@@ -316,6 +322,12 @@
 %       EVALUATE DOEXTNC = TRUE
 % END IF
 ^^WI    @ 3,1 CHECKBOX TWINS 'Twin element scales'
+% IF ( DOTWIN ) THEN
+^^WI     STATE = ON
+% ELSE
+^^WI     STATE = OFF
+% END IF
+^^WI    @ 3,2 CHECKBOX TWIN2 'Exclude zero/negative scales'
 % IF ( DOTWIN ) THEN
 ^^WI     STATE = ON
 % ELSE
@@ -377,8 +389,8 @@
 ^^CO SET INVERTLIST DISABLED=NO
 %%
 %  IF ( SETADP .LE. 0 ) THEN
- * Direct call of XWRITE5 - setting default refinement
-   mode to current assessment by ASSESS5.
+%% * Direct call of XWRITE5 - setting default refinement
+%%   mode to current assessment by ASSESS5.
 %    EVALUATE SETADP = ADP
 %  END IF
 %  CASE ( SETADP + 1 )
@@ -403,6 +415,7 @@
 ^^CO SET EXTNC STATE=ON
 %  END IF
 %  IF ( TWINNED .EQ. FALSE ) THEN
+^^CO SET TWIN2 DISABLED=YES
 ^^CO SET TWINS DISABLED=YES
 %  END IF
 %%
@@ -598,7 +611,6 @@
 %%
 %    EVALUATE DOEXTNC = FALSE
 %    EVALUATE WORK1 = 0.0
-
 %     EVALUATE QTITLE = 'Extinction Parameter'
 %     EVALUATE QLINE1 = 'Do you wish to reset the '
 %     EVALUATE QLINE2 = 'Extinction parameter to zero '
@@ -639,6 +651,14 @@
 %      COPY '#SCRIPT ADDTWIN'
 %      EVALUATE DOTWIN = TRUE
 %    END IF
+%  END IF
+^^?? TWIN2 STATE
+%  VERIFY ON OFF
+%  GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '
+%  IF ( VALUE .EQ. 1 ) THEN
+%%    TRANSFER 'Twin2 set' TO DISPLAY
+%    EVALUATE OMIT-TWIN = TRUE
+%% show dotwin omit-twin
 %  END IF
 %%
 %% Edit Markus 4
@@ -845,9 +865,9 @@
 %    END LOOP
 %    IF ( DOWRITE .EQ. TRUE ) THEN
 %      COPY 'WRITE OVERWRITE=NO'
- 747 Writing new L5.
+%% 747 Writing new L5.
 %    ELSE
- 749 No changes to L5.
+%% 749 No changes to L5.
 %    END IF
 %    COPY 'END'
 %  END IF
@@ -1181,8 +1201,15 @@
 %    IF ( DOFLACK ) THEN
 %      QUEUE COPY CONT ENANTIO
 %    END IF
+%% show dotwin omit-twin
 %    IF ( DOTWIN ) THEN
+%    IF ( OMIT-TWIN ) THEN
+{I calling twin-check
+%       COPY '#SCRIPT TWIN-CHECK'
+%       QUEUE COPY #USE TWIN-12.DAT
+%    ELSE
 %      QUEUE COPY SUMFIX ELEMENT SCALES
+%    END IF
 %    END IF
 %%
 %% Edit Markus 7
@@ -1202,34 +1229,42 @@
 %% Very simple L12's:
 %%
 %  ELSE
-%    COPY '#LIST 12'
+%    CLEAR
+%    COPY '#RELEASE SCPQUEUE l12.spq'
+%    QUEUE REWIND
+%    QUEUE COPY #LIST 12
 %    CASE SETADP + 1
-%      COPY "BLOCK SCALE "
-%      COPY "BLOCK SCALE X'S"
-%      COPY "BLOCK SCALE X'S  U[ISO]"
-%      COPY "BLOCK SCALE X'S  U'S"
+%      QUEUE COPY BLOCK SCALE 
+%      QUEUE COPY BLOCK SCALE X'S
+%      QUEUE COPY BLOCK SCALE X'S  U[ISO]
+%      QUEUE COPY BLOCK SCALE X'S  U'S
 %    END CASE
 %    IF ( DOEXTNC ) THEN
-%      COPY 'CONT EXTPARAM'
+%      QUEUE COPY CONT EXTPARAM
 %    END IF
 %    IF ( DOFLACK ) THEN
-%      COPY 'CONT ENANTIO'
+%      QUEUE COPY CONT ENANTIO
 %    END IF
-%    IF ( DOTWIN ) THEN
-%      COPY 'SUMFIX ELEMENT SCALES'
+%    IF ( DOTWIN ) THEN 
+%    IF ( OMIT-TWIN ) THEN
+%       COPY '#SCRIPT TWIN-CHECK'
+%       QUEUE COPY #USE TWIN-12.DAT
+%    ELSE
+%       QUEUE COPY SUMFIX ELEMENT SCALES
+%    END IF
 %    END IF
 %%
 %% Edit Markus 8
 %    IF ( REFSOFASS ) THEN
 %%     TRANSFER "Insert the bits and pieces 2..." TO DISPLAY
-%      COPY '#USE refsofass.12'
+%      QUEUE COPY #USE refsofass.12
 %    END IF
 %% End edit
 %%
 %    IF ( HMODE .EQ. 10 ) THEN
-%      COPY '#USE ridedat.12'
+%      QUEUE COPY #USE ridedat.12
 %    ELSE IF ( HMODE .GE. 1 ) THEN
-%      CLEAR
+%%      CLEAR
 %      INSERT "CONT H("
 %      STORE FORMAT /(F6.0)/ LENGTH 6 REAL HFIRST
 %      IF ( HMODE .EQ. 1 ) THEN
@@ -1239,7 +1274,9 @@
 %      END IF
 %      SEND
 %    END IF
-%    COPY 'END'
+%    QUEUE COPY END
+%    COPY '#RELEASE SCPQUEUE logs/bfile.spq'
+%    COPY '#USE l12.spq'
 %  END IF
 %  COPY '#SCRIPT VALID12'
 %%
@@ -1279,4 +1316,5 @@
 %    COPY 'END'
 %    COPY '#SCRIPT XPRUNE'
 %  END IF
+%% set verify false
 %END SCRIPT

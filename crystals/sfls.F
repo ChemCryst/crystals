@@ -778,13 +778,14 @@ C -- INVALID TEMPERATURE FACTOR
       WRITE ( CMON, 9935) N, UMIN, A
       CALL XPRVDU(NCVDU, 2,0)
       ENDIF
+C     CHECK ENANTIOPOLE (FLACK) BUT DON'T RESET IT.
       IF ((STORE(L5O+4) .GT. 1.) .OR. (STORE(L5O+4) .LT. 0.)) THEN
         WRITE ( CMON, 3320) STORE(L5O+4)
         CALL XPRVDU(NCVDU, 1,0)
         IF (ISSPRT .EQ. 0)  WRITE(NCWU, '(A)') trim(CMON(1))
 3320    FORMAT(1X,'Enantiopole parameter out of range. (',F6.3,' ) ')
       END IF
-
+C     CHECK EXTINCTION AND RESET IF NECESSARY
       IF (STORE(L5O+5) .LT. -ZERO) THEN
         CALL OUTCOL(9)
         WRITE ( CMON, 3345) STORE(L5O+5)
@@ -792,7 +793,7 @@ C -- INVALID TEMPERATURE FACTOR
         CALL XPRVDU(NCVDU, 1,0)
         WRITE(NCWU, '(A)') trim(CMON(1))
 3345    FORMAT(1X,'Extinction parameter negative. (',F12.6,' ) ')
-        STORE(L5O+5) = 0.0
+        STORE(L5O+5) = MAX(STORE(L5O+5), -ZERO) ! for compatability with SOLVE
       ENDIF
 
       IF (IUPDAT .GE. 0)  I = KSPINI( -1, STOLER) ! SET THE OCCUPANCIES
@@ -897,22 +898,26 @@ cric11           CALL XIRTAC(4)     ! INITIALISE THE DETAILS FOR /FO/
            IF ( IERFLG .LT. 0 ) GO TO 9900
            IF (KHUNTR (25,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL25 
                                                           ! LOAD THE TWIN OPERATORS
-
+c
            IF ( MD5ES .NE. N25 ) GO TO 9910 ! CHECK THAT THE NUMBER OF OPERATORS EQUALS THE NUMBER OF ELEMENTS
-
+cut here if trying to use ktwin_check ------------------------------------------------------ 
+c Don't forget to edit SOLVE too
+c
+C Why are the modified element scales written to a scratch area at NFL?
            LN=LN5
            IREC=1001
            M5ES=NFL
            I=KCHNFL(MD5ES)
-           J=M5ES
-           K=L5ES
+           J=M5ES             !scratch area to write to?
+           K=L5ES             !element scales (one record)
 cdjwMar09 - fix sum if scales go -ve
            elesum = 0.
            nneg = 0
 c turn on red
            CALL OUTCOL(9)
-           DO I=1,MD5ES   ! FORM THE SQUARE ROOT OF THE ELEMENT SCALES
-             IF (STORE(K) .LT. 0) THEN
+c CHECK THAT THE ELEMENT SCALES ARE VALID
+           DO I=1,MD5ES   
+             IF (STORE(K) .LT. 0) THEN               !watch out for -ve scales
                if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
                IF (ISSPRT .EQ. 0) WRITE(NCWU,2301) I, STORE(K)
                WRITE ( CMON, 2301)  I, STORE(K)
@@ -949,6 +954,15 @@ c             end if
              J=J+1
              K=K+1
            END DO
+cut until here -------------------------------------------------------------- 
+c replace from here if experimenting with ktwin_check
+c           itwin = ktwin_check (store(l5es),md5es)
+c           kdjw=l5es
+c           do idjw = 1, md5es
+c            store(kdjw) = sqrt(max(0.0, store(kdjw)))
+c            kdjw=kdjw+1
+c           enddo
+c replace until here --------------------------------------------------------          
          END IF
       END IF
 
@@ -4269,3 +4283,70 @@ C--SET UP THE LIST 12 FLAGS
       RETURN
       END
 
+c-use=      ITWIN =  KTWIN_CHECK(STORE(L5ES) MD5ES)
+CODE FOR KTWIN_CHECK
+      FUNCTION KTWIN_CHECK (ELEMENT,NELE)
+      DIMENSION ELEMENT(NELE)
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XOPVAL.INC'
+      INCLUDE 'XIOBUF.INC'
+
+C RIC18: Do not reset twin element scales - need to go slightly negative sometimes
+C and reseting breaks any constraints between scales. Note that same change also required in SOLVE.F.
+C reinstated djw mar2021
+c
+           ktwin_check = 0
+           MD5ES = NELE
+           J=1
+           K=1
+           elesum = 0.
+           nneg = 0
+      write(123,'(/)')
+      write(123,*)'Start rescale',element
+           DO I=1,NELE   ! FORM THE SQUARE ROOT OF THE ELEMENT SCALES
+             IF (element(K) .LT. 0.) THEN
+c turn on red
+               CALL OUTCOL(9)
+               if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
+      WRITE(123,2301) I,element(K)
+               IF (ISSPRT .EQ. 0) WRITE(NCWU,2301) I,element(K)
+               WRITE ( CMON, 2301)  I,element(K)
+               CALL XPRVDU(NCVDU, 1,0)
+2301           FORMAT(' Twin element error, Scale',I3,' = ',F8.4)
+               element(K) = 0.0
+               nneg = nneg + 1
+             ENDIF
+             elesum = elesum +element(k)
+             K=K+1
+           END DO
+      write(123,*)'Initial Elesum=',elesum
+           if (nneg .gt. 0) then
+             elescl = 1./ elesum
+      WRITE(123,2302) elescl
+             IF (ISSPRT .EQ. 0) WRITE(NCWU,2302) elescl
+             WRITE ( CMON, 2302)  elescl
+             CALL XPRVDU(NCVDU, 1,0)
+2302         FORMAT(' Rescaling element scales by  ',f10.4)
+           end if
+c turn off red
+           CALL OUTCOL(9)
+           elesum = 0.0
+           J = 1
+           K = 1
+           DO I=1,NELE   ! FORM THE SQUARE ROOT OF THE ELEMENT SCALES
+             if ( nneg .gt. 0) then
+             element(K)=element(K)*elescl
+             end if
+             elesum = elesum +element(k)
+c             element(J)=SQRT(max(element(K),0.0))
+             J=J+1
+             K=K+1
+           END DO
+      write(123,*)'Final Elesum=',elesum
+           ktwin_check = nneg
+      write(123,*)'Exiting rescale ', element
+      write(123,'(/)')
+      RETURN
+      END
