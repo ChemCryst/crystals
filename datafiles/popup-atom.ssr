@@ -44,6 +44,8 @@
 ^^WI                    DISABLEIF='IN'
 ^^WI             ITEM _ENVN 'S&plit atom _A'
 ^^WI                   '#SCRIPT XSPLIT_N_A' DISABLEIF='IN'
+^^WI             ITEM _ENVN 'Rotate residue containing _A'
+^^WI                   '#SCRIPT RESROT_N_A' DISABLEIF='IN'
 ^^WI             ITEM _ENVN '&Environment of _A'
 ^^WI                   '#DIST_NOUT MON=ALL_NPIVOT _A_NEND' DISABLEIF='IN'
 ^^WI             MENU _SREFT 'Refine &mode'
