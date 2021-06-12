@@ -1821,7 +1821,7 @@ cdjw      write(123,*)'Thinking about loading L 5 and L 25'
            END IF
            CALL XRLIND(25, L25SR, NFW, LL, IOW, NOS, ID)
 c      write(123,'(4i12)')L25SR,ISERnn(25),L05SR,ISERnn(5)
-           IF ((L25SR.NE.ISERnn(25)).or.(L05SR.EQ.ISERnn(5)) ) THEN
+           IF ((L25SR.NE.ISERnn(25)).or.(L05SR.NE.ISERnn(5)) ) THEN
               ISERnn(25)  = L25SR
            ELSE
              CYCLE
