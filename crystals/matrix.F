@@ -226,9 +226,7 @@ C      CONVERT TO COLUMN-WISE
        CALL XTRANS(ROW,B,3,3)
       ENDIF
       WRITE(CMON,'(9F8.3)') ROW
-#ifdef CRY_GUI
-      CALL ZMORE(CMON,0)
-#endif
+      CALL XPRVDU (NCVDU,1,0)
       GOTO 1100
 C
 C
@@ -262,9 +260,7 @@ C      CONVERT TO COLUMN-WISE
        CALL XTRANS(ROW,B,3,3)
       ENDIF
       WRITE(CMON,'(9F8.3)') ROW
-#ifdef CRY_GUI
-      CALL ZMORE(CMON,0)
-#endif
+      CALL XPRVDU (NCVDU,1,0)
       GOTO 1100
 C
 C--ERROR IN THE INPUT NUMBER
@@ -314,9 +310,7 @@ C-----INV
       CALL MTRANS(ACC)
       ISTAT = KSCTRN ( 1 , 'MATRIX:DET' ,D, 1 )
       WRITE(CMON,'(A, F12.5)') 'Determinant = ', D
-#ifdef CRY_GUI
-      CALL ZMORE(CMON,0)
-#endif
+      CALL XPRVDU (NCVDU,1,0)
       GOTO 101
 C-----EIG
 9     CONTINUE
@@ -359,10 +353,8 @@ C-----SCR2B
 C
 101    CONTINUE
       WRITE(CMON,'(9F8.3)') ACC
-#ifdef CRY_GUI
-      CALL ZMORE(CMON,0)
+      CALL XPRVDU (NCVDU,1,0)
 C Keep script up-to-date with what's going on, if it cares.
-#endif
       ISTAT = KSCTRN ( 1 , 'MATRIX:M11' ,ACC(1,1), 1 )
       ISTAT = KSCTRN ( 1 , 'MATRIX:M12' ,ACC(1,2), 1 )
       ISTAT = KSCTRN ( 1 , 'MATRIX:M13' ,ACC(1,3), 1 )
