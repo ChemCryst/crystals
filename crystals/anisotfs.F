@@ -1521,9 +1521,7 @@ C----- COPY MATRICES FOR SAVING IN LIST 20
 C---OUTPUT NEW TENSORS
       IF (ISSPRT.EQ.0) WRITE (NCWU,1750)
       WRITE(CMON,1750)
-#ifdef CRY_GUI
-      CALL ZMORE(CMON,0)
-#endif
+      CALL XPRVDU (NCVDU,1,0)
 1750  FORMAT (' Tensors with respect to principal axes of L')
       CALL RSUB11 (2)
 C
