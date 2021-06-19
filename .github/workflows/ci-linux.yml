@@ -9,7 +9,6 @@ jobs:
   build:
     env:
       testfail: false
-      crysdir: ./,../ci/
       
     runs-on: ubuntu-latest
 
@@ -78,7 +77,7 @@ jobs:
         mkdir -p script
         ${{ matrix.removeguitst }}
         export COMPCODE=LINUXGH${{ matrix.testsuffix }}
-        export CRYSDIR=${{ crysdir }}
+        export CRYSDIR=./,../ci/
         echo CRYSDIR is $CRYSDIR
         echo PATH is $PATH
         mv LINUXGH${{ matrix.testsuffix }}.org safe.dir
