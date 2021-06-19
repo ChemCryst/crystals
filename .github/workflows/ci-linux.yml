@@ -10,7 +10,6 @@ jobs:
     env:
       testfail: false
       crysdir: ./,../ci/
-      testprefix: LINUXGH
       
     runs-on: ubuntu-latest
 
@@ -78,13 +77,13 @@ jobs:
       run: |
         mkdir -p script
         ${{ matrix.removeguitst }}
-        export COMPCODE=${{ testprefix }}${{ matrix.testsuffix }}
+        export COMPCODE=LINUXGH${{ matrix.testsuffix }}
         export CRYSDIR=${{ crysdir }}
         echo CRYSDIR is $CRYSDIR
         echo PATH is $PATH
-        mv ${{ testprefix }}${{ matrix.testsuffix }}.org safe.dir
+        mv LINUXGH${{ matrix.testsuffix }}.org safe.dir
         rm -Rf *.org
-        mv safe.dir ${{ testprefix }}${{ matrix.testsuffix }}.org
+        mv safe.dir LINUXGH${{ matrix.testsuffix }}.org
         echo "%SCRIPT NONE" > script/tipauto.scp
         echo "%END SCRIPT" >> script/tipauto.scp
         echo "%SCRIPT NONE" > script/guideauto.scp
@@ -106,8 +105,8 @@ jobs:
       if: failure() 
       run: |
         echo "testfail=true" >> $GITHUB_ENV
-        rm -f ${{ testprefix }}${{ matrix.testsuffix }}.org/*
-        cp *.out ${{ testprefix }}${{ matrix.testsuffix }}.org
+        rm -f LINUXGH${{ matrix.testsuffix }}.org/*
+        cp *.out LINUXGH${{ matrix.testsuffix }}.org
         rm -Rf Artifacts || echo
         rm -Rf tmp || echo
         rm -Rf logs || echo
