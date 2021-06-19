@@ -2,15 +2,16 @@ name: CI
 
 on: [push]
 
-env:
-  testfail: false
-  crysdir: ./,../ci/
-  testprefix: LINUXGH
-
 
 jobs:
 
+
   build:
+    env:
+      testfail: false
+      crysdir: ./,../ci/
+      testprefix: LINUXGH
+      
     runs-on: ubuntu-latest
 
     strategy:
@@ -23,18 +24,13 @@ jobs:
         - cl: gui
           guiflag: yes
           testsuffix: GUI
+          removeguitst:
+          fbrunner: xvfb-run -a
         - cl: nogui
           guiflag: no
           testsuffix:
-# Setup some OS + GUI specific variables
-        - os: ubuntu-latest
-          cl: nogui
           removeguitst: rm gui.tst
           fbrunner:
-        - os: ubuntu-latest
-          cl: gui
-          removeguitst:
-          fbrunner: xvfb-run -a
         - release: debug
           testoption: -s
         - release: release
