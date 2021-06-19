@@ -2,17 +2,16 @@ name: CI
 
 on: [push]
 
+env:
+  testfail: false
+  crysdir: ./,../ci/
+  testprefix: LINUXGH
+
+
 jobs:
 
   build:
-
     runs-on: ubuntu-latest
-
-    env:
-      testfail: false
-      crysdir: ./,../ci/
-      testprefix: LINUXGH
-
 
     strategy:
       fail-fast: false
