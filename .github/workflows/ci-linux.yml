@@ -11,12 +11,12 @@ jobs:
     env:
       testfail: false
       crysdir: ./,../ci/
+      testprefix: LINUXGH
 
 
     strategy:
       fail-fast: false
       matrix:
-        testprefix: LINUXGH
         cl: [gui, nogui]
         release: [debug, release]
         include:
@@ -83,13 +83,13 @@ jobs:
       run: |
         mkdir -p script
         ${{ matrix.removeguitst }}
-        export COMPCODE=${{ matrix.testprefix }}${{ matrix.testsuffix }}
+        export COMPCODE=${{ testprefix }}${{ matrix.testsuffix }}
         export CRYSDIR=${{ crysdir }}
         echo CRYSDIR is $CRYSDIR
         echo PATH is $PATH
-        mv ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org safe.dir
+        mv ${{ testprefix }}${{ matrix.testsuffix }}.org safe.dir
         rm -Rf *.org
-        mv safe.dir ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org
+        mv safe.dir ${{ testprefix }}${{ matrix.testsuffix }}.org
         echo "%SCRIPT NONE" > script/tipauto.scp
         echo "%END SCRIPT" >> script/tipauto.scp
         echo "%SCRIPT NONE" > script/guideauto.scp
@@ -111,8 +111,8 @@ jobs:
       if: failure() 
       run: |
         echo "testfail=true" >> $GITHUB_ENV
-        rm -f ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org/*
-        cp *.out ${{ matrix.testprefix }}${{ matrix.testsuffix }}.org
+        rm -f ${{ testprefix }}${{ matrix.testsuffix }}.org/*
+        cp *.out ${{ testprefix }}${{ matrix.testsuffix }}.org
         rm -Rf Artifacts || echo
         rm -Rf tmp || echo
         rm -Rf logs || echo
