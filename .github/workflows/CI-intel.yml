@@ -94,9 +94,8 @@ jobs:
       uses: microsoft/setup-msbuild@v1.0.2
 
     - name: cache install intelcpp
-      uses: actions/cache@v2
       id: cache-install
-      shell: bash
+      uses: actions/cache@v2
       with:
         path: C:\Program Files (x86)\Intel\oneAPI\compiler
         key: install-${{ env.WINDOWS_HPCKIT_URL }}-${{ env.WINDOWS_CPP_COMPONENTS }}-compiler-${{ hashFiles('**/bin/cache_exclude_windows.sh') }}
