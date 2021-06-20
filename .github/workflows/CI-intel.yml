@@ -135,6 +135,7 @@ jobs:
       working-directory: ci
       shell: cmd
       run: |
+        call "C:\Program Files (x86)\Intel\oneAPI\compiler\latest\env\vars.bat"
         set FC=ifort
         cmake .. -G"NMake Makefiles" -DuseGUI=${{ matrix.guiflag }} -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }} || echo Try again
         cmake .. -G"NMake Makefiles" -DuseGUI=${{ matrix.guiflag }} -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }}
