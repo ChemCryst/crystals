@@ -130,7 +130,7 @@ jobs:
 # Build WIN64
 #
     - name: Build CRYSTALS intel64
-    - uses: ilammy/msvc-dev-cmd@v1
+      uses: ilammy/msvc-dev-cmd@v1
       working-directory: ci
       shell: cmd
       run: |
