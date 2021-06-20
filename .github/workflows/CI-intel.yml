@@ -10,26 +10,6 @@ env:
 
 
 jobs:
-  install_windows_cpp:
-    runs-on: windows-latest
-    defaults:
-      run:
-        shell: bash
-    steps:
-    - uses: actions/checkout@v2
-    - name: cache install
-      id: cache-install
-      uses: actions/cache@v2
-      with:
-        path: C:\Program Files (x86)\Intel\oneAPI\compiler
-        key: install-${{ env.WINDOWS_HPCKIT_URL }}-${{ env.WINDOWS_CPP_COMPONENTS }}-compiler-${{ hashFiles('**/bin/cache_exclude_windows.sh') }}
-    - name: install
-      if: steps.cache-install.outputs.cache-hit != 'true'
-      run: bin/install_windows.bat $WINDOWS_HPCKIT_URL $WINDOWS_CPP_COMPONENTS
-    - name: exclude unused files from cache
-      if: steps.cache-install.outputs.cache-hit != 'true'
-      shell: bash
-      run: bin/cache_exclude_windows.sh
 
 #    # Delete the following if you don't want to save install logs
 #    - name: Saving install logs
@@ -106,8 +86,31 @@ jobs:
           testoption:
 
     steps:
+
     - name: Checkout crystals
       uses: actions/checkout@v2
+
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
+
+    - name: cache install intelcpp
+      shell: bash
+      id: cache-install
+      uses: actions/cache@v2
+      with:
+        path: C:\Program Files (x86)\Intel\oneAPI\compiler
+        key: install-${{ env.WINDOWS_HPCKIT_URL }}-${{ env.WINDOWS_CPP_COMPONENTS }}-compiler-${{ hashFiles('**/bin/cache_exclude_windows.sh') }}
+
+    - name: install intelcpp
+      shell: bash
+      if: steps.cache-install.outputs.cache-hit != 'true'
+      run: bin/install_windows.bat $WINDOWS_HPCKIT_URL $WINDOWS_CPP_COMPONENTS
+
+    - name: exclude unused files from cache intelcpp
+      if: steps.cache-install.outputs.cache-hit != 'true'
+      shell: bash
+      run: bin/cache_exclude_windows.sh
+
 
 # Install wxWidgets - win GUI only
 #
