@@ -1,0 +1,186 @@
+name: CI-Win-Intel
+
+on: [push]
+
+env:
+  WINDOWS_BASEKIT_URL: https://registrationcenter-download.intel.com/akdlm/irc_nas/17768/w_BaseKit_p_2021.2.0.2871_offline.exe
+  WINDOWS_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/irc_nas/17762/w_HPCKit_p_2021.2.0.2901_offline.exe
+  WINDOWS_CPP_COMPONENTS: intel.oneapi.win.cpp-compiler
+  WINDOWS_FORTRAN_COMPONENTS: intel.oneapi.win.ifort-compiler
+
+
+jobs:
+  install_windows_cpp:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - uses: actions/checkout@v2
+    - name: cache install
+      id: cache-install
+      uses: actions/cache@v2
+      with:
+        path: C:\Program Files (x86)\Intel\oneAPI\compiler
+        key: install-${{ env.WINDOWS_HPCKIT_URL }}-${{ env.WINDOWS_CPP_COMPONENTS }}-compiler-${{ hashFiles('**/bin/cache_exclude_windows.sh') }}
+    - name: install
+      if: steps.cache-install.outputs.cache-hit != 'true'
+      run: bin/install_windows.bat $WINDOWS_HPCKIT_URL $WINDOWS_CPP_COMPONENTS
+    - name: exclude unused files from cache
+      if: steps.cache-install.outputs.cache-hit != 'true'
+      shell: bash
+      run: bin/cache_exclude_windows.sh
+
+#    # Delete the following if you don't want to save install logs
+#    - name: Saving install logs
+#      if: steps.cache-install.outputs.cache-hit != 'true'
+#      uses: actions/upload-artifact@v2
+#      with:
+#        name: InstallLogs_${{ github.job }}
+#        path: |
+#          extract.log
+#          bootstrapper*
+#          installer*
+#        retention-days: 7
+
+  install_windows_fortran:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - uses: actions/checkout@v2
+    - name: cache install
+      id: cache-install
+      uses: actions/cache@v2
+      with:
+        path: C:\Program Files (x86)\Intel\oneAPI\compiler
+        key: install-${{ env.WINDOWS_HPCKIT_URL }}-${{ env.WINDOWS_FORTRAN_COMPONENTS }}-compiler-${{ hashFiles('**/bin/cache_exclude_windows.sh') }}
+    - name: install
+      if: steps.cache-install.outputs.cache-hit != 'true'
+      run: bin/install_windows.bat $WINDOWS_HPCKIT_URL $WINDOWS_FORTRAN_COMPONENTS
+    - name: exclude unused files from cache
+      if: steps.cache-install.outputs.cache-hit != 'true'
+      shell: bash
+      run: bin/cache_exclude_windows.sh
+
+#    # Delete the following if you don't want to save install logs
+#    - name: Saving install logs
+#      if: steps.cache-install.outputs.cache-hit != 'true'
+#      uses: actions/upload-artifact@v2
+#      with:
+#        name: InstallLogs_${{ github.job }}
+#        path: |
+#          extract.log
+#          bootstrapper*
+#          installer*
+#        retention-days: 7
+
+  build:
+    runs-on: windows-latest
+
+    env:
+      testfail: false
+
+
+    strategy:
+      fail-fast: false
+      matrix:
+        cl: [gui, nogui]
+        release: [debug, release]
+        include:
+# Setup some GUI/NOGUI specific variables
+        - cl: gui
+          guiflag: yes
+          testsuffix: GUI
+          removeguitst:
+          wxoptions: -DwxWidgets_ROOT_DIR=..\wx -DwxWidgets_LIB_DIR=..\wx\lib\gcc810_x64_dll -DwxWidgets_CONFIGURATION=mswu
+        - cl: nogui
+          guiflag: no
+          testsuffix:
+          removeguitst: del gui.tst
+          wxoptions:
+        - release: debug
+          testoption: -s
+        - release: release
+          testoption:
+
+    steps:
+    - name: Checkout crystals
+      uses: actions/checkout@v2
+
+# Install wxWidgets - win GUI only
+#
+    - name: Setup wxWidgets for Win64 gui
+      if: matrix.cl == 'gui'
+      shell: cmd
+      run: |
+        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.3/wxMSW-3.1.3_gcc810_x64_Dev.7z > dev.7z
+        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.3/wxWidgets-3.1.3-headers.7z > head.7z
+        7z x dev.7z -owx -y
+        7z x head.7z -owx -y
+        dir
+#
+    - name: Create build folder
+      run: mkdir ci
+
+# Build WIN64
+#
+    - name: Build CRYSTALS intel64
+      working-directory: ci
+      shell: cmd
+      run: |
+        cmake .. -G"NMake Makefiles" -DuseGUI=${{ matrix.guiflag }} -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }} || echo Try again
+        cmake .. -G"NMake Makefiles" -DuseGUI=${{ matrix.guiflag }} -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }}
+        nmake
+
+# Tests
+    - name: Test CRYSTALS windows
+      working-directory: test_suite
+      shell: cmd
+# Prevent interactive scripts from running
+# Prevent gui test from running for this cl version
+# Setup environment
+# Compcode sets folder with reference test outputs
+# Go
+      run: |
+        set CRYSDIR=.\,..\ci\
+        set COMPCODE=INW64GH${{ matrix.testsuffix }}
+        set OMP_NUM_THREADS=1
+        set PATH=..\wx\lib\gcc810_x64_dll;%path%
+        echo PATH is %PATH%
+        echo CRYSDIR is %CRYSDIR%
+        ren INW64GH${{ matrix.testsuffix }}.org safe.dir
+        for /d %%G in ("*.org") do rd /s /q "%%~G"
+        ren safe.dir INW64GH${{ matrix.testsuffix }}.org
+        ${{ matrix.removeguitst }}
+        mkdir script
+        echo "%SCRIPT NONE" > script\\tipauto.scp
+        echo "%END SCRIPT" >> script\\tipauto.scp
+        echo "%SCRIPT NONE" > script\\guideauto.scp
+        echo "%END SCRIPT" >> script\\guideauto.scp
+        perl ../editor/filepp.pl -ds -w -o diffin.tst -DTESTWIN diffin.tss
+        perl ../editor/filepp.pl -ds -w -o diffin2.tst -DTESTWIN diffin2.tss
+        perl ../editor/filepp.pl -ds -w -o diffin3.tst -DTESTWIN diffin3.tss
+        perl ../editor/filepp.pl -ds -w -o shelx2cry.tst -DTESTWIN shelx2cry.tss
+        perl testsuite.pl  ${{ matrix.testoption }}
+#
+#
+# If failures, set variable to trigger next two stages (one to tidy, one to upload)
+    - name: Tidy failed test outputs win64
+      working-directory: test_suite
+      if: failure() 
+      shell: cmd
+      run: |
+        echo "testfail=true" >> $GITHUB_ENV
+        del /q INW64GH${{ matrix.testsuffix }}.org
+        copy *.out INW64GH${{ matrix.testsuffix }}.org
+        del /q *.*
+
+
+    - name: Upload outputs if failures
+      uses: actions/upload-artifact@v1
+      if:  failure()
+      with:
+        name: test-outputs-win64-${{ matrix.cl }}
+        path: test_suite
