@@ -77,8 +77,8 @@ jobs:
       id: cache-install-mkl
       uses: actions/cache@v2
       with:
-        path: C:\Program Files (x86)\Intel\oneAPI\compiler
-        key: install-${{ env.WINDOWS_BASEKIT_URL }}-${{ env.WINDOWS_MKL_COMPONENTS }}-compiler-${{ hashFiles('**/bin/cache_exclude_windows.sh') }}
+        path: C:\Program Files (x86)\Intel\oneAPI\mkl
+        key: install-${{ env.WINDOWS_BASEKIT_URL }}-${{ env.WINDOWS_MKL_COMPONENTS }}-mkl-${{ hashFiles('**/bin/cache_exclude_windows.sh') }}
 
     - name: install mkl
       shell: bash
