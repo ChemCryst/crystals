@@ -176,7 +176,7 @@ jobs:
         perl ../editor/filepp.pl -ds -w -o shelx2cry.tst -DTESTWIN shelx2cry.tss
         set CRYUSEFILE=absorb.tst
         set CROUTPUT=abso.out
-        ..\ci\crystals.exe 
+        ..\ci\crystals.exe  || echo "crystal failed"
         perl testsuite.pl  ${{ matrix.testoption }}
 #
 #
