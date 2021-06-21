@@ -5,7 +5,7 @@ on: [push]
 env:
   WINDOWS_BASEKIT_URL: https://registrationcenter-download.intel.com/akdlm/irc_nas/17768/w_BaseKit_p_2021.2.0.2871_offline.exe
   WINDOWS_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/irc_nas/17762/w_HPCKit_p_2021.2.0.2901_offline.exe
-  WINDOWS_CPP_COMPONENTS: intel.oneapi.win.cpp-compiler
+  WINDOWS_MKL_COMPONENTS: intel.oneapi.win.mkl.devel
   WINDOWS_FORTRAN_COMPONENTS: intel.oneapi.win.ifort-compiler
 
 
@@ -73,20 +73,20 @@ jobs:
 #    - name: Add msbuild to PATH
 #      uses: microsoft/setup-msbuild@v1.0.2
 
-    - name: cache install intelcpp and mkl
-      id: cache-install-cpp
+    - name: cache install mkl
+      id: cache-install-mkl
       uses: actions/cache@v2
       with:
         path: C:\Program Files (x86)\Intel\oneAPI\compiler
-        key: install-${{ env.WINDOWS_BASEKIT_URL }}-${{ env.WINDOWS_CPP_COMPONENTS }}-compiler-${{ hashFiles('**/bin/cache_exclude_windows.sh') }}
+        key: install-${{ env.WINDOWS_BASEKIT_URL }}-${{ env.WINDOWS_MKL_COMPONENTS }}-compiler-${{ hashFiles('**/bin/cache_exclude_windows.sh') }}
 
-    - name: install intelcpp and mkl
+    - name: install mkl
       shell: bash
-#      if: steps.cache-install-cpp.outputs.cache-hit != 'true'
-      run: bin/install_windows.bat $WINDOWS_BASEKIT_URL $WINDOWS_CPP_COMPONENTS
+#      if: steps.cache-install-mkl.outputs.cache-hit != 'true'
+      run: bin/install_windows.bat $WINDOWS_BASEKIT_URL $WINDOWS_MKL_COMPONENTS
 
-    - name: exclude unused files from cache intelcpp
-#      if: steps.cache-install-cpp.outputs.cache-hit != 'true'
+    - name: exclude unused files from cache intelmkl
+#      if: steps.cache-install-mkl.outputs.cache-hit != 'true'
       shell: bash
       run: bin/cache_exclude_windows.sh
 
