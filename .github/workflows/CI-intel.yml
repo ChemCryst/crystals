@@ -3,7 +3,7 @@ name: CI-Win-Intel
 on: [push]
 
 env:
-#  WINDOWS_BASEKIT_URL: https://registrationcenter-download.intel.com/akdlm/irc_nas/17768/w_BaseKit_p_2021.2.0.2871_offline.exe
+  WINDOWS_BASEKIT_URL: https://registrationcenter-download.intel.com/akdlm/irc_nas/17768/w_BaseKit_p_2021.2.0.2871_offline.exe
   WINDOWS_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/irc_nas/17762/w_HPCKit_p_2021.2.0.2901_offline.exe
   WINDOWS_CPP_COMPONENTS: intel.oneapi.win.cpp-compiler
   WINDOWS_FORTRAN_COMPONENTS: intel.oneapi.win.ifort-compiler
@@ -54,7 +54,7 @@ jobs:
           guiflag: yes
           testsuffix: GUI
           removeguitst:
-          wxoptions: -DwxWidgets_ROOT_DIR=..\wx -DwxWidgets_LIB_DIR=..\wx\lib\gcc810_x64_dll -DwxWidgets_CONFIGURATION=mswu
+          wxoptions: -DwxWidgets_ROOT_DIR=..\wx -DwxWidgets_LIB_DIR=..\wx\lib\vc14x_x64_dll -DwxWidgets_CONFIGURATION=mswu
         - cl: nogui
           guiflag: no
           testsuffix:
@@ -73,22 +73,22 @@ jobs:
 #    - name: Add msbuild to PATH
 #      uses: microsoft/setup-msbuild@v1.0.2
 
-#    - name: cache install intelcpp
-#      id: cache-install
-#      uses: actions/cache@v2
-#      with:
-#        path: C:\Program Files (x86)\Intel\oneAPI\compiler
-#        key: install-${{ env.WINDOWS_HPCKIT_URL }}-${{ env.WINDOWS_CPP_COMPONENTS }}-compiler-${{ hashFiles('**/bin/cache_exclude_windows.sh') }}
-#
-#    - name: install intelcpp
-#      shell: bash
-#      if: steps.cache-install.outputs.cache-hit != 'true'
-#      run: bin/install_windows.bat $WINDOWS_HPCKIT_URL $WINDOWS_CPP_COMPONENTS
-#
-#    - name: exclude unused files from cache intelcpp
-#      if: steps.cache-install.outputs.cache-hit != 'true'
-#      shell: bash
-#      run: bin/cache_exclude_windows.sh
+    - name: cache install intelcpp
+      id: cache-install
+      uses: actions/cache@v2
+      with:
+        path: C:\Program Files (x86)\Intel\oneAPI\compiler
+        key: install-${{ env.WINDOWS_HPCKIT_URL }}-${{ env.WINDOWS_CPP_COMPONENTS }}-compiler-${{ hashFiles('**/bin/cache_exclude_windows.sh') }}
+
+    - name: install intelcpp
+      shell: bash
+      if: steps.cache-install.outputs.cache-hit != 'true'
+      run: bin/install_windows.bat $WINDOWS_HPCKIT_URL $WINDOWS_CPP_COMPONENTS
+
+    - name: exclude unused files from cache intelcpp
+      if: steps.cache-install.outputs.cache-hit != 'true'
+      shell: bash
+      run: bin/cache_exclude_windows.sh
 
 
  
@@ -118,8 +118,8 @@ jobs:
       if: matrix.cl == 'gui'
       shell: cmd
       run: |
-        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.3/wxMSW-3.1.3_gcc810_x64_Dev.7z > dev.7z
-        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.3/wxWidgets-3.1.3-headers.7z > head.7z
+        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.4/wxMSW-3.1.4_vc14x_Dev.7z > dev.7z
+        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.4/wxWidgets-3.1.4-headers.7z > head.7z
         7z x dev.7z -owx -y
         7z x head.7z -owx -y
         dir
@@ -156,7 +156,7 @@ jobs:
         set CRYSDIR=.\,..\ci\
         set COMPCODE=INW64GH${{ matrix.testsuffix }}
         set OMP_NUM_THREADS=1
-        set PATH=..\wx\lib\gcc810_x64_dll;%path%
+        set PATH=..\wx\lib\vc14x_x64_dll;%path%
         echo PATH is %PATH%
         echo CRYSDIR is %CRYSDIR%
         ren INW64GH${{ matrix.testsuffix }}.org safe.dir
