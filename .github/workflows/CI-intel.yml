@@ -78,15 +78,15 @@ jobs:
       uses: actions/cache@v2
       with:
         path: C:\Program Files (x86)\Intel\oneAPI\compiler
-        key: install-${{ env.WINDOWS_HPCKIT_URL }}-${{ env.WINDOWS_CPP_COMPONENTS }}-compiler-${{ hashFiles('**/bin/cache_exclude_windows.sh') }}
+        key: install-${{ env.WINDOWS_BASEKIT_URL }}-${{ env.WINDOWS_CPP_COMPONENTS }}-compiler-${{ hashFiles('**/bin/cache_exclude_windows.sh') }}
 
     - name: install intelcpp and mkl
       shell: bash
-      if: steps.cache-install-cpp.outputs.cache-hit != 'true'
-      run: bin/install_windows.bat $WINDOWS_HPCKIT_URL $WINDOWS_CPP_COMPONENTS
+#      if: steps.cache-install-cpp.outputs.cache-hit != 'true'
+      run: bin/install_windows.bat $WINDOWS_BASEKIT_URL $WINDOWS_CPP_COMPONENTS
 
     - name: exclude unused files from cache intelcpp
-      if: steps.cache-install-cpp.outputs.cache-hit != 'true'
+#      if: steps.cache-install-cpp.outputs.cache-hit != 'true'
       shell: bash
       run: bin/cache_exclude_windows.sh
 
