@@ -53,7 +53,12 @@ $CRYSEXE = $CRYSHOME . "crystals";    # Append exe name
 #$CRYSEXE = $CRYSHOME . "crystalsd";  # Append debug exe name
 $exitcode=0;
 
-print (" using $CRYSEXE \n");
+print (" using $CRYSEXE");
+if (-e $CRYSEXE) {
+    print "which exists\n";
+} else {
+    print "which does not exist!\n";
+}
 
 # Either clean up, or run the tests.
 
