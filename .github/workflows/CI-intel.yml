@@ -183,6 +183,7 @@ jobs:
       if: failure() 
       shell: cmd
       run: |
+        dir
         echo "testfail=true" >> $GITHUB_ENV
         del /q INW64GH${{ matrix.testsuffix }}.org
         copy *.out INW64GH${{ matrix.testsuffix }}.org
