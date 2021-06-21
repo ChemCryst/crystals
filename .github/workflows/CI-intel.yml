@@ -155,7 +155,7 @@ jobs:
 # Compcode sets folder with reference test outputs
 # Go
       run: |
-        set CRYSDIR=.\\,..\\ci\\
+        set CRYSDIR=.\,..\ci\
         set COMPCODE=INW64GH${{ matrix.testsuffix }}
         set OMP_NUM_THREADS=1
         set PATH=..\wx\lib\vc14x_x64_dll;%path%
