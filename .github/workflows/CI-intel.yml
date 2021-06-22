@@ -137,11 +137,7 @@ jobs:
       run: |
         for /f "tokens=* usebackq" %%f in (`dir /b "C:\Program Files (x86)\Intel\oneAPI\compiler\" ^| findstr /V latest ^| sort`) do @set "LATEST_VERSION=%%f"
         call "C:\Program Files (x86)\Intel\oneAPI\compiler\%LATEST_VERSION%\env\vars.bat"
-        echo %LATEST_VERSION%
-        dir "C:\Program Files (x86)\Intel\oneAPI\mkl\%LATEST_VERSION%"
-        dir "C:\Program Files (x86)\Intel\oneAPI\mkl\%LATEST_VERSION%\env"
         call "C:\Program Files (x86)\Intel\oneAPI\mkl\%LATEST_VERSION%\env\vars.bat"
-        echo %PATH%
         set FC=ifort
         cmake .. -G"NMake Makefiles" -DuseGUI=${{ matrix.guiflag }} -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }}
         nmake
@@ -160,6 +156,9 @@ jobs:
         set COMPCODE=INW64GH${{ matrix.testsuffix }}
         set OMP_NUM_THREADS=1
         set PATH=..\wx\lib\vc14x_x64_dll;%path%
+        for /f "tokens=* usebackq" %%f in (`dir /b "C:\Program Files (x86)\Intel\oneAPI\compiler\" ^| findstr /V latest ^| sort`) do @set "LATEST_VERSION=%%f"
+        call "C:\Program Files (x86)\Intel\oneAPI\compiler\%LATEST_VERSION%\env\vars.bat"
+        call "C:\Program Files (x86)\Intel\oneAPI\mkl\%LATEST_VERSION%\env\vars.bat"
         echo PATH is %PATH%
         echo CRYSDIR is %CRYSDIR%
         ren INW64GH${{ matrix.testsuffix }}.org safe.dir
@@ -175,11 +174,6 @@ jobs:
         perl ../editor/filepp.pl -ds -w -o diffin2.tst -DTESTWIN diffin2.tss
         perl ../editor/filepp.pl -ds -w -o diffin3.tst -DTESTWIN diffin3.tss
         perl ../editor/filepp.pl -ds -w -o shelx2cry.tst -DTESTWIN shelx2cry.tss
-        set CRYUSEFILE=absorb.tst
-        set CROUTPUT=abso.out
-        dir ..\ci\crystals.exe
-        ..\ci\crystals.exe  || echo "crystals failed"
-        dir
         perl testsuite.pl  ${{ matrix.testoption }}
 #
 #
