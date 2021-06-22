@@ -141,6 +141,7 @@ jobs:
         dir "C:\Program Files (x86)\Intel\oneAPI\mkl\%LATEST_VERSION%"
         dir "C:\Program Files (x86)\Intel\oneAPI\mkl\%LATEST_VERSION%\env"
         call "C:\Program Files (x86)\Intel\oneAPI\mkl\%LATEST_VERSION%\env\vars.bat"
+        echo %PATH%
         set FC=ifort
         cmake .. -G"NMake Makefiles" -DuseGUI=${{ matrix.guiflag }} -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }}
         nmake
