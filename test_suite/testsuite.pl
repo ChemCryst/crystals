@@ -10,7 +10,7 @@ my %testsuite_options=();
 getopts("csl", \%testsuite_options);
 $clean = 0;
 $smoketest = 0;
-$leave = 0
+$leave = 0;
 
 if ( defined $testsuite_options{c} )
 {
