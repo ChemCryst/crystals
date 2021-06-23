@@ -499,7 +499,7 @@ ___________
    General Restraint: No derivatives found
 
 
-   2.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
+   2.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.9999999747E-05
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
 ___________
  (3) RESTRAIN  0.0000, .00001 = SI  (   1,U[11]) -2.0 * SI  (   1,U[12])
@@ -507,7 +507,7 @@ ___________
    General Restraint: No derivatives found
 
 
-   3.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
+   3.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.9999999747E-05
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
 ___________
  (4) RESTRAIN  0.0000, .00001 = SI  (   2,U[11]) -1.0 * SI  (   2,U[22])
@@ -515,7 +515,7 @@ ___________
    General Restraint: No derivatives found
 
 
-   4.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
+   4.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.9999999747E-05
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
 ___________
  (5) RESTRAIN  0.0000, .00001 = SI  (   2,U[11]) -2.0 * SI  (   2,U[12])
@@ -523,7 +523,7 @@ ___________
    General Restraint: No derivatives found
 
 
-   5.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
+   5.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.9999999747E-05
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
 ___________
  (6) RESTRAIN  0.0000, .00001 = NA  (   1,X    ) -1.0 * NA  (   1,Y    )
@@ -531,7 +531,7 @@ ___________
    General Restraint: No derivatives found
 
 
-   6.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
+   6.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.9999999747E-05
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
 ___________
  (7) RESTRAIN  0.0000, .00001 = NA  (   1,U[11]) -1.0 * NA  (   1,U[22])
@@ -539,7 +539,7 @@ ___________
    General Restraint: No derivatives found
 
 
-   7.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
+   7.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.9999999747E-05
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
 ___________
  (8) RESTRAIN  0.0000, .00001 = NA  (   1,U[23]) +1.0 * NA  (   1,U[13])
@@ -547,7 +547,7 @@ ___________
    General Restraint: No derivatives found
 
 
-   8.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
+   8.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.9999999747E-05
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
 ___________
  (9) RESTRAIN  0.0000, .00001 = NA  (   2,X    ) -1.0 * NA  (   2,Y    )
@@ -555,7 +555,7 @@ ___________
    General Restraint: No derivatives found
 
 
-   9.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
+   9.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.9999999747E-05
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
 ___________
  (10) RESTRAIN  0.0000, .00001 = NA  (   2,U[11]) -1.0 * NA  (   2,U[22])
@@ -563,7 +563,7 @@ ___________
    General Restraint: No derivatives found
 
 
-  10.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
+  10.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.9999999747E-05
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
 ___________
  (11) RESTRAIN  0.0000, .00001 = NA  (   2,U[23]) +1.0 * NA  (   2,U[13])
@@ -571,7 +571,7 @@ ___________
    General Restraint: No derivatives found
 
 
-  11.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000066E-04
+  11.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.9999999747E-05
    ?   Calculated value            0.0000000000E+00  giving a delta of    0.0000000000E+00
 #DISTANCES
 #LIST 31
@@ -944,7 +944,7 @@ The slope and correlation coefficient should be small
  Agreement analysis batched by [sin(theta)/lambda]sq
 
 
-  SINTH/L RANGE  No. of data     </Fo/>      </Fc/>     <Delta**2>     <W*Delta**2>    R(%)   RW(%)  LOG(<W*DELTA**2>)
+(SinT/L)^2 RANGE No. of data     </Fo/>      </Fc/>     <Delta**2>     <W*Delta**2>    R(%)   RW(%)  LOG(<W*DELTA**2>)
 
       0.00000                                                                                                 . 
                        18       212.55       213.8       0.126E+03       0.335E+01     4.26    5.42           .*     
@@ -1127,7 +1127,7 @@ The slope and correlation coefficient should be small
  Agreement analysis batched by [sin(theta)/lambda]sq
 
 
-  SINTH/L RANGE  No. of data     </Fo/>      </Fc/>     <Delta**2>     <W*Delta**2>    R(%)   RW(%)  LOG(<W*DELTA**2>)
+(SinT/L)^2 RANGE No. of data     </Fo/>      </Fc/>     <Delta**2>     <W*Delta**2>    R(%)   RW(%)  LOG(<W*DELTA**2>)
 
       0.00000                                                                                                 . 
                        18       212.55       213.8       0.126E+03       0.324E+01     4.26    5.29           .*     

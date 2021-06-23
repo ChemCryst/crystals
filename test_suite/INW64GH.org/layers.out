@@ -2787,7 +2787,7 @@ ___________
  (0) LIMIT  0.01 LAYER SCALES
 
 
-   0. Limit the shifts of the given parameters to 0.0, with an E.S.D. of     0.1000000071E-01
+   0. Limit the shifts of the given parameters to 0.0, with an E.S.D. of     0.9999999776E-02
           Leverage: 0.541
           Leverage: 0.537
           Leverage: 0.565
@@ -6666,7 +6666,7 @@ ___________
  (0) LIMIT  0.01 LAYER SCALES
 
 
-   0. Limit the shifts of the given parameters to 0.0, with an E.S.D. of     0.1000000071E-01
+   0. Limit the shifts of the given parameters to 0.0, with an E.S.D. of     0.9999999776E-02
           Leverage: 0.541
           Leverage: 0.537
           Leverage: 0.565
@@ -10457,7 +10457,7 @@ Inter cycle Rw                   -5.0            7.0           0.10E+03
     CALCULATED     APPLIED     
 
       0.198          0.198
-     74.005         74.005
+     74.004         74.004
       0.001          0.001
       0.000          0.000
       0.003          0.003
@@ -10548,7 +10548,7 @@ ___________
  (0) LIMIT  0.01 LAYER SCALES
 
 
-   0. Limit the shifts of the given parameters to 0.0, with an E.S.D. of     0.1000000071E-01
+   0. Limit the shifts of the given parameters to 0.0, with an E.S.D. of     0.9999999776E-02
           Leverage: 0.571
           Leverage: 0.569
           Leverage: 0.590
@@ -14436,7 +14436,7 @@ ___________
  (0) LIMIT  0.01 LAYER SCALES
 
 
-   0. Limit the shifts of the given parameters to 0.0, with an E.S.D. of     0.1000000071E-01
+   0. Limit the shifts of the given parameters to 0.0, with an E.S.D. of     0.9999999776E-02
           Leverage: 0.571
           Leverage: 0.569
           Leverage: 0.590
