@@ -7,14 +7,20 @@ use Env qw(CRYUSEFILE CRYSDIR COMPCODE CROUTPUT);
 
 use Getopt::Std;
 my %testsuite_options=();
-getopts("cs", \%testsuite_options);
+getopts("csl", \%testsuite_options);
 $clean = 0;
 $smoketest = 0;
+$leave = 0
 
 if ( defined $testsuite_options{c} )
 {
     print "\nRunning Cleanup\n";
     $clean = 1;
+}
+if ( defined $testsuite_options{l} )
+{
+    print "\nLeaving log files\n";
+    $leave = 1;
 }
 if ( defined $testsuite_options{s} )
 {
@@ -555,7 +561,7 @@ sub runTest      # Run each .tst file through both versions of CRYSTALS.
 			obscureMachinePrecision();
 
 
-			if (TRUE ne contains("-l", @ARGV)) {
+			if ($leave == 0) {
 				print("Removing bfiles (use '-l' to leave in place)\n");
 				cleanUp(@cleanup);
 			}
