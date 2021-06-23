@@ -1480,6 +1480,15 @@ C Now run command
       CALL GDETCH(COMMND)
       RETURN
 #elif defined(__DVF__) 
+C for cl version, we must remove + or % symbol if present (has no meaning).
+      IPC =  INDEX ( COMMND, '% ' ) 
+      IF (IPC .GT. 0) THEN
+        COMMND(IPC:IPC+1) = '  '
+      END IF
+      IPC =  INDEX ( COMMND, '+ ' ) 
+      IF (IPC .GT. 0) THEN
+        COMMND(IPC:IPC+1) = '  '
+      END IF
       IFAIL = SYSTEM(COMMND)
       IF (IFAIL .EQ. 0 ) RETURN
 #elif defined(__LIN__)  || defined (__MIN__)
