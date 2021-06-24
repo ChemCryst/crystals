@@ -553,10 +553,20 @@ sub runTest      # Run each .tst file through both versions of CRYSTALS.
         print("Running crystals (release version) on $name.tst\n");
         `$CRYSEXE`;                   # Run it
 
-        print "CRYSTALS exit code: $?\n";
-        if ( "$?" != "0" ) {
-           $exitcode = 1;
-        }
+        print "Perl process exit code: $?\n";
+		if ($? == -1) {
+			print "failed to execute: $!\n";
+            $exitcode = 1;
+		}
+		elsif ($? & 127) {
+			printf "crystals died with signal %d \n", ($? & 127);
+            $exitcode = 1;
+		}
+		else {
+			printf "crystals exited with value %d\n", $? >> 8;
+            $exitcode = 1;
+		}
+
 
         if ( not $smoketest ) {
 			obscureMachinePrecision();
