@@ -143,6 +143,8 @@ jobs:
         nmake
 
 # Tests
+    - uses: ilammy/msvc-dev-cmd@v1
+
     - name: Test CRYSTALS windows
       working-directory: test_suite
       shell: cmd
