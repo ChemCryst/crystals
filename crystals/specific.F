@@ -1479,7 +1479,7 @@ C Now run command
 #if defined(CRY_GUI)
       CALL GDETCH(COMMND)
       RETURN
-#elif defined(__DVF__) 
+#elif defined(__INW__) 
 C for cl version, we must remove + or % symbol if present (has no meaning).
       IPC =  INDEX ( COMMND, '% ' ) 
       IF (IPC .GT. 0) THEN
