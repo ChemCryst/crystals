@@ -176,9 +176,11 @@ jobs:
         perl ../editor/filepp.pl -ds -w -o diffin2.tst -DTESTWIN diffin2.tss
         perl ../editor/filepp.pl -ds -w -o diffin3.tst -DTESTWIN diffin3.tss
         perl ../editor/filepp.pl -ds -w -o shelx2cry.tst -DTESTWIN shelx2cry.tss
-        set CROUTPUT=something.lis
-        set CRYUSEFILE=absorb.tst
-        ..\ci\crystals
+        echo Test1
+        ..\ci\crystals & echo %errorlevel%
+        echo Test2
+        ..\ci\crystals.exe & echo %errorlevel%
+        echo Tests done
         perl testsuite.pl  ${{ matrix.testoption }} -l
 #
 #
