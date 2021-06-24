@@ -554,7 +554,9 @@ sub runTest      # Run each .tst file through both versions of CRYSTALS.
         `$CRYSEXE`;                   # Run it
 
         print "Perl process exit code: $?\n";
-		if ($? == -1) {
+		if ($? == 0) {
+			print "crystals exited OK: $!\n";
+		} elsif ($? == -1) {
 			print "failed to execute: $!\n";
             $exitcode = 1;
 		}
