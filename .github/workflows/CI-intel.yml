@@ -201,3 +201,10 @@ jobs:
       with:
         name: test-outputs-win64-${{ matrix.cl }}
         path: test_suite
+
+    - name: Upload exe folder if failures
+      uses: actions/upload-artifact@v1
+      if:  failure()
+      with:
+        name: executable-outputs-win64-${{ matrix.cl }}
+        path: ci
