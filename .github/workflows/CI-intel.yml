@@ -176,9 +176,24 @@ jobs:
         perl ../editor/filepp.pl -ds -w -o diffin2.tst -DTESTWIN diffin2.tss
         perl ../editor/filepp.pl -ds -w -o diffin3.tst -DTESTWIN diffin3.tss
         perl ../editor/filepp.pl -ds -w -o shelx2cry.tst -DTESTWIN shelx2cry.tss
+        echo dumpbin
+        dumpbin /dependents ..\ci\crystals.exe
+        echo WHERE:
+        echo wxbase314u_vc14x_x64.dll
+        where wxbase314u_vc14x_x64.dll
+        echo libiomp5md.dll
+        where libiomp5md.dll
+        echo mkl_intel_thread.1.dll
+        where mkl_intel_thread.1.dll
+        echo libifportMD.dll
+        where libifportMD.dll
         echo Test1
         ..\ci\crystals & echo %errorlevel%
         echo Test2
+        ..\ci\crystals.exe & echo %errorlevel%
+        echo Test3
+        ..\ci\crystals & echo %errorlevel%
+        echo Test4
         ..\ci\crystals.exe & echo %errorlevel%
         echo Tests done
         perl testsuite.pl  ${{ matrix.testoption }} -l
