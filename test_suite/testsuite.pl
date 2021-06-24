@@ -55,7 +55,7 @@ if ( $windows ) {
 
 $CRYSHOME = $CRYSDIR;
 $CRYSHOME =~ s/.*,//g;                 # Remove owt before comma, repeatedly.
-$CRYSEXE = $CRYSHOME . "crystals";    # Append exe name
+$CRYSEXE = quotemeta($CRYSHOME) . "crystals";    # Append exe name
 #$CRYSEXE = $CRYSHOME . "crystalsd";  # Append debug exe name
 $exitcode=0;
 
@@ -549,7 +549,7 @@ sub runTest      # Run each .tst file through both versions of CRYSTALS.
         unlink "$CROUTPUT";
         unlink "crfilev2.dsc";
         unlink "crfilev2.h5";
-        print("Running Crystals (release version) on $name.tst\n");
+        print("Running crystals (release version) on $name.tst\n");
         `$CRYSEXE`;                   # Run it
 
         print "CRYSTALS exit code: $?\n";
