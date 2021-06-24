@@ -55,7 +55,8 @@ if ( $windows ) {
 
 $CRYSHOME = $CRYSDIR;
 $CRYSHOME =~ s/.*,//g;                 # Remove owt before comma, repeatedly.
-$CRYSEXE = quotemeta($CRYSHOME) . "crystals";    # Append exe name
+$CRYSHOME =~ s/\\/\//g;                 # Swap backslash for forward
+$CRYSEXE = $CRYSHOME . "crystals";    # Append exe name
 #$CRYSEXE = $CRYSHOME . "crystalsd";  # Append debug exe name
 $exitcode=0;
 
