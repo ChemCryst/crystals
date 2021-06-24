@@ -98,7 +98,6 @@ GET_FILENAME_COMPONENT (Fortran_COMPILER_NAME "${CMAKE_Fortran_COMPILER}" NAME)
 if ((Fortran_COMPILER_NAME MATCHES "ifort") OR (Fortran_COMPILER_NAME MATCHES "ifort.exe")) # ifort (untested)
     message(WARNING "Using Intel Fortran compiler.")
     SET (IFORT_COMPILER 1)
-	add_definitions(-D__DVF__)
 endif()
 
 
