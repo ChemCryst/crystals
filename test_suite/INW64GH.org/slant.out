@@ -497,9 +497,9 @@ Bonds: Update required - List5 length change
 
   latent roots             L         M         N         w.r.t. A*, B' and C
 
-[86]     9.679             -0.866     0.500     0.000
-[86]     7.999              0.500     0.866     0.000
-[86]     0.000              0.000     0.000    -1.000
+[86]     9.679  -0.87  0.50  0.00
+[86]     7.999  0.50  0.87  0.00
+[86]     0.000  0.00  0.00  -1.00
 
 
   Transformation from crystal fractions w.r.t. centroid to best plane coordinates in angstrom and fractions
@@ -512,9 +512,9 @@ Bonds: Update required - List5 length change
 
   Transformation to crystal fractions w.r.t. centroid from best plane co-ordinates in angstrom and fractions
 
-[85]                  -0.086      0.050      0.000               -0.866     0.500     0.000
-[85]                   0.050      0.086      0.000                0.500     0.866     0.000
-[85]                   0.000      0.000     -0.090                0.000     0.000    -1.000
+[85] 0.05  0.00  -0.87  0.05  0.00  -0.87
+[85] 0.09  0.00  0.50  0.09  0.00  0.50
+[85] 0.00  -0.09  0.00  0.00  -0.09  0.00
 
 
 

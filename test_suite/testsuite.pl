@@ -495,12 +495,12 @@ sub obscureMachinePrecision() {
 				  print $fho "[84] $1\n";
 	#                 -1.3805    3.7124   18.2368             -0.16299   0.39160   0.91966
 	  } elsif($line =~ m/^(\s*-?\d*\.\d\d\d)\d(\s*-?\d*\.\d\d\d)\d(\s*-?\d*\.\d\d\d)\d(\s*-?\d*\.\d\d\d)\d\d(\s*-?\d*\.\d\d\d)\d\d(\s*-?\d*\.\d\d\d)\d\d\s*/ ) {
-   			      $spx = sprintf "%.2f", $2;
-			      $spy = sprintf "%.2f", $3;
-			      $spz = sprintf "%.2f", $4;
-   			      $spa = sprintf "%.2f", $2;
-			      $spb = sprintf "%.2f", $3;
-			      $spc = sprintf "%.2f", $4;
+   			      $spx = sprintf "%.2f", $1;
+			      $spy = sprintf "%.2f", $2;
+			      $spz = sprintf "%.2f", $3;
+   			      $spa = sprintf "%.2f", $4;
+			      $spb = sprintf "%.2f", $5;
+			      $spc = sprintf "%.2f", $6;
 				  print $fho "[85] $spx  $spy  $spz  $spa  $spb  $spc\n";
 
 	#    0.00000            0.02964   0.39160   0.91966
@@ -524,6 +524,10 @@ sub obscureMachinePrecision() {
 	# Maximum /FO/    =     0.76E+03           Estimated variance =    1827.5     
 	   } elsif($line =~ m/^(.*Maximum .FO.*\d+\.)\d+\s+$/ ) {
 				  print $fho "[88] $1\n";
+	#  0  158      146     12          1.1491           0.000
+	  } elsif($line =~ m/^(\s*\d+\s+\d+\s+\d+\s+\d+\s+\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\ *$/ ) {
+				  print $fho "[92] $1  $2\n";
+
 	#     7.421 * X +      -7.131 * Y +       5.978 * Z  =    -0.527
 	   } elsif($line =~ m/^(\s+)(-?\d+\.\d+)(\s+\*\s+X\s\+\s+)(-?\d+\.\d+)(\s+\*\s+Y\s\+\s+)(-?\d+\.\d+)(\s+\*\s+Z\s+\=\s+)(-?\d+\.\d+)(\s+.*)$/ ) {  
 	#                      1    2           3                 4           5                  6           7                8           9     
