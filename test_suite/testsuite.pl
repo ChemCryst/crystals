@@ -524,7 +524,10 @@ sub obscureMachinePrecision() {
 	# Maximum /FO/    =     0.76E+03           Estimated variance =    1827.5     
 	   } elsif($line =~ m/^(.*Maximum .FO.*\d+\.)\d+\s+$/ ) {
 				  print $fho "[88] $1\n";
-	#  0  158      146     12          1.1491           0.000
+#	 Minimum signal : noise used =  1.1491
+	   } elsif($line =~ m/^(.*Minimum signal.*\d+\.\d\d)\d+\s*$/ ) {
+				  print $fho "[93] $1\n";
+#  0  158      146     12          1.1491           0.000
 	  } elsif($line =~ m/^(\s*\d+\s+\d+\s+\d+\s+\d+\s+\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\ *$/ ) {
 				  print $fho "[92] $1  $2\n";
 
