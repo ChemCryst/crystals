@@ -5194,7 +5194,7 @@ Quadrant averages: N, Mean(Do), Mean(Ds) [Summary of scatterplot]
 
    LePage Analysis (Assuming Enantio-purity)
  Data are ranked by the Signal:Noise
- Minimum signal : noise used =  1.1942
+[93]  Minimum signal : noise used =  1.19
  No. Available  300
   Range    No.Same  No.Opposite  Signal:noise   Prob Wrong Hand
 [92]   0   10       10      0          7.22             0.00
@@ -5408,7 +5408,7 @@ Frequency distribution of the residuals from the linear fit
 
    LePage Analysis (Assuming Enantio-purity)
  Data are ranked by the Signal:Noise
- Minimum signal : noise used =  1.1491
+[93]  Minimum signal : noise used =  1.14
  No. Available  314
   Range    No.Same  No.Opposite  Signal:noise   Prob Wrong Hand
 [92]   0   10       10      0          7.22             0.00
@@ -5712,7 +5712,7 @@ Frequency distribution of the residuals from the linear fit
 
    LePage Analysis (Assuming Enantio-purity)
  Data are ranked by the Signal:Noise
- Minimum signal : noise used =  1.1942
+[93]  Minimum signal : noise used =  1.19
  No. Available  300
   Range    No.Same  No.Opposite  Signal:noise   Prob Wrong Hand
 [92]   0   10       10      0          7.22             0.00
@@ -6008,7 +6008,7 @@ Frequency distribution of the residuals from the linear fit
 
    LePage Analysis (Assuming Enantio-purity)
  Data are ranked by the Signal:Noise
- Minimum signal : noise used =  1.5245
+[93]  Minimum signal : noise used =  1.52
  No. Available  253
   Range    No.Same  No.Opposite  Signal:noise   Prob Wrong Hand
 [92]   0   10       10      0          7.22             0.00
