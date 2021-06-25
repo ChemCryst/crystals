@@ -512,9 +512,9 @@ Bonds: Update required - List5 length change
 
   Transformation to crystal fractions w.r.t. centroid from best plane co-ordinates in angstrom and fractions
 
-[85] 0.05  0.00  -0.87  0.05  0.00  -0.87
-[85] 0.09  0.00  0.50  0.09  0.00  0.50
-[85] 0.00  -0.09  0.00  0.00  -0.09  0.00
+[85] -0.09  0.05  0.00  -0.87  0.50  0.00
+[85] 0.05  0.09  0.00  0.50  0.87  0.00
+[85] 0.00  0.00  -0.09  0.00  0.00  -1.00
 
 
 

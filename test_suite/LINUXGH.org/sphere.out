@@ -811,7 +811,7 @@ Block No  1.  Single precision relative error:  3.23E-06
 
 [14]  S/ESD     8           8            0.011       0.0E+00    0.12 E-02          9.4         O      1 Z       
 [14]  S/ESD    11          11            0.012       0.0E+00    0.44 E-02          2.7         O      1 U[33]   
- LARGE    16          16           -0.1309      0.0E+00    0.753E-01         -1.74        C      1 SIZE    
+[14a]  LARGE    16          16           -0.130       0.0E+00    0.75 E-01         -1.7         C      1 SIZE    
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           3.
@@ -2546,7 +2546,7 @@ Block No  1.  Single precision relative error:  3.23E-06
 
 [14]  S/ESD     8           8            0.012       0.0E+00    0.13 E-02          9.3         O      1 Z       
 [14]  S/ESD    11          11            0.012       0.0E+00    0.46 E-02          2.6         O      1 U[33]   
- LARGE    16          16           -0.1357      0.0E+00    0.787E-01         -1.72        C      1 SIZE    
+[14a]  LARGE    16          16           -0.135       0.0E+00    0.78 E-01         -1.7         C      1 SIZE    
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           3.
@@ -4283,7 +4283,7 @@ Block No  1.  Single precision relative error:  3.79E-06
  S/ESD     1           1            -0.014      0.0E+00    0.591E-02         -2.38                          SCALE   
 [14]  S/ESD     8           8            0.011       0.0E+00    0.12 E-02          9.2         O      1 Z       
 [14]  S/ESD    11          11            0.011       0.0E+00    0.44 E-02          2.5         O      1 U[33]   
- LARGE    16          16           -0.1330      0.0E+00    0.796E-01         -1.67        C      1 SIZE    
+[14a]  LARGE    16          16           -0.133       0.0E+00    0.79 E-01         -1.6         C      1 SIZE    
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           3.
@@ -6209,7 +6209,7 @@ Block No  1.  Single precision relative error:  3.78E-06
  S/ESD     1           1            -0.017      0.0E+00    0.612E-02         -2.74                          SCALE   
 [14]  S/ESD     8           8            0.011       0.0E+00    0.12 E-02          9.0         O      1 Z       
 [14]  S/ESD    11          11            0.011       0.0E+00    0.46 E-02          2.5         O      1 U[33]   
- LARGE    16          16           -0.1390      0.0E+00    0.836E-01         -1.66        C      1 SIZE    
+[14a]  LARGE    16          16           -0.139       0.0E+00    0.83 E-01         -1.6         C      1 SIZE    
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           2.

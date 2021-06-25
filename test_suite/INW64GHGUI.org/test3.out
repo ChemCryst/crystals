@@ -5183,9 +5183,9 @@ for Uprime see Acta Cryst (2000). B56, 747-749
 
   Transformation to crystal fractions w.r.t. centroid from best plane co-ordinates in angstrom and fractions
 
-[85] 0.12  0.01  -0.48  0.12  0.01  -0.48
-[85] 0.10  -0.01  0.67  0.10  -0.01  0.67
-[85] 0.00  -0.05  -0.11  0.00  -0.05  -0.11
+[85] -0.06  0.12  0.01  -0.48  1.03  0.08
+[85] 0.07  0.10  -0.01  0.67  0.93  -0.05
+[85] -0.01  0.00  -0.05  -0.11  0.03  -0.99
 
 
 
@@ -5260,9 +5260,9 @@ AZIMUTH  =   -51.27     AZIMUTH /100 =  -0.5127
 
   Transformation to crystal fractions w.r.t. centroid from best plane co-ordinates in angstrom and fractions
 
-[85] 0.13  -0.03  -0.02  0.13  -0.03  -0.02
-[85] 0.07  0.06  -0.68  0.07  0.06  -0.68
-[85] 0.01  0.03  0.74  0.01  0.03  0.74
+[85] -0.00  0.13  -0.03  -0.02  1.11  -0.24
+[85] -0.07  0.07  0.06  -0.68  0.69  0.61
+[85] 0.04  0.01  0.03  0.74  0.15  0.65
 
 
 
@@ -5331,7 +5331,7 @@ AZIMUTH  =   -73.48     AZIMUTH /100 =  -0.7348
 
 [31]                  -0.015    -0.115    -0.067              
 [31]                  -0.111    -0.037    -0.026              
-[85] 0.03  -0.04  0.03  0.03  -0.04  0.03
+[85] 0.00  0.03  -0.04  0.03  0.50  -0.87
 
 
 
@@ -5411,8 +5411,8 @@ AZIMUTH  =    -3.24     AZIMUTH /100 =  -0.0324
   Transformation to crystal fractions w.r.t. centroid from best plane co-ordinates in angstrom and fractions
 
 [31]                   0.109    -0.073    -0.028               
-[85] 0.02  0.06  0.98  0.02  0.06  0.98
-[85] -0.03  0.04  -0.25  -0.03  0.04  -0.25
+[85] 0.10  0.02  0.06  0.98  0.23  0.55
+[85] -0.01  -0.03  0.04  -0.25  -0.65  0.72
 
 
 
@@ -5471,8 +5471,8 @@ AZIMUTH  =   -72.46     AZIMUTH /100 =  -0.7246
 
   Transformation to crystal fractions w.r.t. centroid from best plane co-ordinates in angstrom and fractions
 
-[85] 0.12  -0.02  -0.46  0.12  -0.02  -0.46
-[85] 0.09  -0.03  0.69  0.09  -0.03  0.69
+[85] -0.05  0.12  -0.02  -0.46  1.03  -0.18
+[85] 0.07  0.09  -0.03  0.69  0.88  -0.24
 [31]                  -0.004    -0.010    -0.049              
 
 
@@ -5544,8 +5544,8 @@ AZIMUTH  =    44.42     AZIMUTH /100 =   0.4442
 
   Transformation to crystal fractions w.r.t. centroid from best plane co-ordinates in angstrom and fractions
 
-[85] 0.12  -0.01  -0.46  0.12  -0.01  -0.46
-[85] 0.09  -0.02  0.69  0.09  -0.02  0.69
+[85] -0.05  0.12  -0.01  -0.46  1.04  -0.09
+[85] 0.07  0.09  -0.02  0.69  0.90  -0.17
 [31]                  -0.004    -0.006    -0.049              
 
 
