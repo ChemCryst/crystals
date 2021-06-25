@@ -231,8 +231,8 @@ jobs:
         "C:\Program Files (x86)\Inno Setup 6\iscc.exe" "../bin/crystals-gh.iss"
 
     - name: Upload installer
-      if: matrix.cl == 'gui' && matrix.release == 'release'
       working-directory: installer
+      if: matrix.cl == 'gui' && matrix.release == 'release'
       uses: actions/upload-artifact@v1
       with:
         name: crystals-setup
