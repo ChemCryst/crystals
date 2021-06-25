@@ -2933,8 +2933,8 @@ LS-scale=  1.612   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 Inversion method: Automatic
-Block No  1.  Single precision relative error:  6.77E-04
-[80]  (sp inverse) 1-norm:  3E+00 cond. number:  6E+03 rel. error:  6.77E-04
+Block No  1.  Single precision relative error:  6.78E-04
+[80]  (sp inverse) 1-norm:  3E+00 cond. number:  6E+03 rel. error:  6.78E-04
 
                                                 for           6 parameters
 [64]                                  The rms (shift/su)  =           0.

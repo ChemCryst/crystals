@@ -1601,7 +1601,7 @@ CONT C(214) TO C(215) TO C(216) , C(215) TO C(216) TO C(211)
            C     214     1  1  0  0  0      C     215     1  1  0  0  0      C     216     1  1  0  0  0    120.23  -0.23
            C     215     1  1  0  0  0      C     216     1  1  0  0  0      C     211     1  1  0  0  0    119.67   0.33
           - Derivatives not found, do a refinement cycle to get leverages -
-[41]       Mean value = 119.9731  Mean delta =   0.0269  r.m.s. delta =   0.47
+[41]       Mean value = 119.9731  Mean delta =   0.0268  r.m.s. delta =   0.47
 ___________
  (12) PLANAR C(221) UNTIL C(226)
  -- Restrain the distance to a mean plane to zero
@@ -5225,8 +5225,8 @@ LS-scale=  0.909   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =  0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
 #CYCLENDS
 #FINISH
- Physical reads      13237 Physical writes      10075 Cache hits     223506
- Cache hit distribution   203834   13100    2291     748     325     598
+ Physical reads      13237 Physical writes      10075 Cache hits     223502
+ Cache hit distribution   203834   13102    2289     745     323     599
  Cache hit distribution      186     120     200     219     255     198
  Cache hit distribution      185     154     197     123     214     139
  Cache hit distribution      131      45      41      68      57      78

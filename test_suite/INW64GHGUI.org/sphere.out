@@ -368,14 +368,14 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
 
 [33]       9000           9000             300                                    On scale of /FC/
 
-[32]       4440           4460             150                0.21 E+03          On scale of /FO/
+[32]       4450           4460             150                0.21 E+03          On scale of /FO/
 
- New scale factor (G) is      0.480,     274 reflections used in refinement
+ New scale factor (G) is      0.480,     275 reflections used in refinement
 
  Structure factor least squares calculation    1  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
 LS-scale=  0.480   Wilson Scale=  0.000
-[91] <Fo>-<Fc> = -0.12    100*(<Fo>-<Fc>)/<Fo> =    -0.35
+[91] <Fo>-<Fc> = -0.12    100*(<Fo>-<Fc>)/<Fo> =    -0.37
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -406,7 +406,7 @@ Block No  1.  Single precision relative error:  3.05E-06
 [05]  The largest (shift/esd) =      0.4 , for Parameter    1, SCALE
 
                                 Min          Actual           Max
-All cycle   R-factor              0.0            3.5           0.10E+03
+All cycle   R-factor              0.0            3.6           0.10E+03
 All cycle   Rw                    0.0            4.2           0.10E+03
 [06] All cycle   shift/esd
 All cycle   Min function          0.0           0.21E+03       0.10E+16
@@ -418,8 +418,8 @@ All cycle   Min function          0.0           0.21E+03       0.10E+16
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for    16 least squares parameters, with   258 degrees of freedom
- Number of observations               274                 0               274
+ Statistics for    16 least squares parameters, with   259 degrees of freedom
+ Number of observations               275                 0               275
 [30]  Minimisation function              0.21E+03         0.0E+00         0.21E+03
 [45]  Hamilton weighted R-value           4.              0.00              4. 
 
@@ -435,7 +435,7 @@ All cycle   Min function          0.0           0.21E+03       0.10E+16
 
 
 [38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         -0.000    0.000    0.000 
+[89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.000    0.000    0.000 
@@ -532,6 +532,7 @@ All cycle   Min function          0.0           0.21E+03       0.10E+16
 [61]     0.   0.  10.    14.     10.
 [61]     1.   6.  10.     4.      4.
 [61]     3.   6.  10.     4.      3.
+[61]     5.   6.  10.     4.      5.
 [61]     7.   7.  10.     9.     13.
 [61]     0.   8.  10.    18.     21.
 [61]     5.   8.  10.    13.     16.
@@ -543,7 +544,6 @@ All cycle   Min function          0.0           0.21E+03       0.10E+16
 [61]     3.   8.  11.    19.     22.
 [61]     0.   9.  11.    18.     20.
 [61]     0.   1.  12.     9.     10.
-[61]     0.   6.  12.    19.     22.
 
  And so on ------------
 
@@ -560,9 +560,9 @@ All cycle   Min function          0.0           0.21E+03       0.10E+16
 
 [33]       9000           9000             300                                    On scale of /FC/
 
-[32]       4440           4440             150                0.21 E+03          On scale of /FO/
+[32]       4450           4440             150                0.21 E+03          On scale of /FO/
 
- New scale factor (G) is      0.479,     274 reflections used in refinement
+ New scale factor (G) is      0.479,     275 reflections used in refinement
 
  Structure factor least squares calculation    2  ends  2
 [29] SumFo/SumFc=  0.48    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
@@ -606,8 +606,8 @@ All cycle   Rw                    0.0            4.1           0.10E+03
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for    16 least squares parameters, with   258 degrees of freedom
- Number of observations               274                 0               274
+ Statistics for    16 least squares parameters, with   259 degrees of freedom
+ Number of observations               275                 0               275
 [30]  Minimisation function              0.21E+03         0.0E+00         0.21E+03
 [45]  Hamilton weighted R-value           4.              0.00              4. 
 
@@ -771,14 +771,14 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
 
 [33]       9000           9000            1000                                    On scale of /FC/
 
-[32]       4440           4560             500                0.17 E+04          On scale of /FO/
+[32]       4450           4560             500                0.17 E+04          On scale of /FO/
 
- New scale factor (G) is      0.493,     274 reflections used in refinement
+ New scale factor (G) is      0.493,     275 reflections used in refinement
 
  Structure factor least squares calculation    3  ends  2
 [29] SumFo/SumFc=  0.48    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
 LS-scale=  0.493   Wilson Scale=  0.000
-[91] <Fo>-<Fc> = -0.88    100*(<Fo>-<Fc>)/<Fo> =    -2.67
+[91] <Fo>-<Fc> = -0.87    100*(<Fo>-<Fc>)/<Fo> =    -2.66
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -802,14 +802,14 @@ LS-scale=  0.493   Wilson Scale=  0.000
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.23E-06
 [80]  (sp inverse) 1-norm:  4E+00 cond. number:  3E+01 rel. error:  3.23E-06
- S/ESD     1           1            -0.014      0.0E+00    0.593E-02         -2.30                          SCALE   
+ S/ESD     1           1            -0.014      0.0E+00    0.592E-02         -2.30                          SCALE   
                                                                                                             Composite
 
                                                                       Composite
 
 [14]  S/ESD     8           8            0.011       0.0E+00    0.12 E-02          9.4         O      1 Z       
 [14]  S/ESD    11          11            0.012       0.0E+00    0.44 E-02          2.7         O      1 U[33]   
- LARGE    16          16           -0.1309      0.0E+00    0.753E-01         -1.74        C      1 SIZE    
+ LARGE    16          16           -0.1309      0.0E+00    0.751E-01         -1.74        C      1 SIZE    
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           3.
@@ -829,8 +829,8 @@ All cycle   Min function          0.0           0.18E+04       0.10E+16
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for    16 least squares parameters, with   258 degrees of freedom
- Number of observations               274                 0               274
+ Statistics for    16 least squares parameters, with   259 degrees of freedom
+ Number of observations               275                 0               275
 [30]  Minimisation function              0.17E+04         0.0E+00         0.17E+04
 [45]  Hamilton weighted R-value          11.              0.00             11. 
 
@@ -947,9 +947,9 @@ All cycle   Min function          0.0           0.18E+04       0.10E+16
 
 [33]       9000           9000             400                                    On scale of /FC/
 
-[32]       4440           4430             200                0.31 E+03          On scale of /FO/
+[32]       4450           4440             210                0.31 E+03          On scale of /FO/
 
- New scale factor (G) is      0.479,     274 reflections used in refinement
+ New scale factor (G) is      0.479,     275 reflections used in refinement
 
  Structure factor least squares calculation    4  ends  2
 [29] SumFo/SumFc=  0.48    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
@@ -998,8 +998,8 @@ Inter cycle Rw                   -5.0            6.9           0.10E+03
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for    16 least squares parameters, with   258 degrees of freedom
- Number of observations               274                 0               274
+ Statistics for    16 least squares parameters, with   259 degrees of freedom
+ Number of observations               275                 0               275
 [30]  Minimisation function              0.31E+03         0.0E+00         0.31E+03
 [45]  Hamilton weighted R-value           5.              0.00              5. 
 
@@ -1078,7 +1078,7 @@ Inter cycle Rw                   -5.0            6.9           0.10E+03
 [37]      O          1.    1.00    0.00    0.62    0.34   -0.06    0.01
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00   -0.01    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.006    0.005    0.006 
+[31]                                         0.006    0.005    0.005 
 
 [37]      C          1.    5.00    2.00    0.50    0.50    0.50    0.04
 [72]                       0.00             0.00    0.00    0.00   -0.01   -0.00
@@ -1112,10 +1112,11 @@ Inter cycle Rw                   -5.0            6.9           0.10E+03
 [61]     4.   8.   9.     5.      7.
 [61]     0.   0.  10.    14.     10.
 [61]     3.   6.  10.     4.      3.
+[61]     5.   6.  10.     4.      5.
 [61]     2.   7.  10.     6.      7.
 [61]     7.   7.  10.     9.     13.
 [61]     5.   8.  10.    13.     16.
-[61]     6.   8.  10.    13.     18.
+[61]     6.   8.  10.    13.     17.
 [61]     3.   9.  10.    20.     23.
 [61]     4.   9.  10.    10.     13.
 [61]     1.   3.  11.     5.      6.
@@ -1123,7 +1124,6 @@ Inter cycle Rw                   -5.0            6.9           0.10E+03
 [61]     4.   7.  11.    15.     18.
 [61]     3.   8.  11.    19.     22.
 [61]     0.   9.  11.    18.     21.
-[61]     2.   7.  12.     7.      9.
 
  And so on ------------
 
@@ -1140,14 +1140,14 @@ Inter cycle Rw                   -5.0            6.9           0.10E+03
 
 [33]       9000           9000             300                                    On scale of /FC/
 
-[32]       4440           4450             160                0.22 E+03          On scale of /FO/
+[32]       4450           4450             160                0.22 E+03          On scale of /FO/
 
- New scale factor (G) is      0.479,     274 reflections used in refinement
+ New scale factor (G) is      0.479,     275 reflections used in refinement
 
  Structure factor least squares calculation    5  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
 LS-scale=  0.479   Wilson Scale=  0.000
-[91] <Fo>-<Fc> = -0.04    100*(<Fo>-<Fc>)/<Fo> =    -0.14
+[91] <Fo>-<Fc> = -0.05    100*(<Fo>-<Fc>)/<Fo> =    -0.15
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -1190,8 +1190,8 @@ All cycle   Min function          0.0           0.22E+03       0.10E+16
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for    16 least squares parameters, with   258 degrees of freedom
- Number of observations               274                 0               274
+ Statistics for    16 least squares parameters, with   259 degrees of freedom
+ Number of observations               275                 0               275
 [30]  Minimisation function              0.22E+03         0.0E+00         0.22E+03
 [45]  Hamilton weighted R-value           4.              0.00              4. 
 
@@ -1293,6 +1293,7 @@ All cycle   Min function          0.0           0.22E+03       0.10E+16
     h    k    l      Fo        Fc 
 
 [61]     0.   3.   4.     5.      4.
+[61]     0.   4.   5.     6.      5.
 [61]     2.   3.   6.     3.      2.
 [61]     4.   7.   8.     4.      3.
 [61]     7.   7.   8.    19.     21.
@@ -1303,6 +1304,7 @@ All cycle   Min function          0.0           0.22E+03       0.10E+16
 [61]     0.   0.  10.    14.     10.
 [61]     1.   6.  10.     4.      4.
 [61]     3.   6.  10.     4.      3.
+[61]     5.   6.  10.     4.      5.
 [61]     7.   7.  10.     9.     13.
 [61]     0.   8.  10.    18.     21.
 [61]     5.   8.  10.    13.     16.
@@ -1313,9 +1315,7 @@ All cycle   Min function          0.0           0.22E+03       0.10E+16
 [61]     3.   5.  11.     8.     10.
 [61]     3.   8.  11.    19.     22.
 [61]     0.   9.  11.    18.     20.
-[61]     0.   1.  12.     9.     10.
 [61]     0.   6.  12.    19.     22.
-[61]     2.   7.  12.     7.     10.
 
  And so on ------------
 
@@ -1332,9 +1332,9 @@ All cycle   Min function          0.0           0.22E+03       0.10E+16
 
 [33]       9000           9000             300                                    On scale of /FC/
 
-[32]       4440           4440             150                0.21 E+03          On scale of /FO/
+[32]       4450           4440             150                0.21 E+03          On scale of /FO/
 
- New scale factor (G) is      0.479,     274 reflections used in refinement
+ New scale factor (G) is      0.479,     275 reflections used in refinement
 
  Structure factor least squares calculation    6  ends  2
 [29] SumFo/SumFc=  0.48    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
@@ -1378,8 +1378,8 @@ All cycle   Rw                    0.0            4.1           0.10E+03
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for    16 least squares parameters, with   258 degrees of freedom
- Number of observations               274                 0               274
+ Statistics for    16 least squares parameters, with   259 degrees of freedom
+ Number of observations               275                 0               275
 [30]  Minimisation function              0.21E+03         0.0E+00         0.21E+03
 [45]  Hamilton weighted R-value           4.              0.00              4. 
 
@@ -1493,6 +1493,7 @@ All cycle   Rw                    0.0            4.1           0.10E+03
 [61]     0.   0.  10.    14.     10.
 [61]     1.   6.  10.     4.      4.
 [61]     3.   6.  10.     4.      3.
+[61]     5.   6.  10.     4.      5.
 [61]     7.   7.  10.     9.     13.
 [61]     0.   8.  10.    18.     21.
 [61]     5.   8.  10.    13.     16.
@@ -1504,7 +1505,6 @@ All cycle   Rw                    0.0            4.1           0.10E+03
 [61]     3.   8.  11.    19.     22.
 [61]     0.   9.  11.    18.     20.
 [61]     0.   1.  12.     9.     10.
-[61]     0.   6.  12.    19.     22.
 
  And so on ------------
 
@@ -1521,9 +1521,9 @@ All cycle   Rw                    0.0            4.1           0.10E+03
 
 [33]       9000           9000             300                                    On scale of /FC/
 
-[32]       4440           4440             150                0.21 E+03          On scale of /FO/
+[32]       4450           4440             150                0.21 E+03          On scale of /FO/
 
- New scale factor (G) is      0.479,     274 reflections used in refinement
+ New scale factor (G) is      0.479,     275 reflections used in refinement
 
  Structure factor least squares calculation    7  ends  2
 [29] SumFo/SumFc=  0.48    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
@@ -1567,8 +1567,8 @@ All cycle   Rw                    0.0            4.1           0.10E+03
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for    16 least squares parameters, with   258 degrees of freedom
- Number of observations               274                 0               274
+ Statistics for    16 least squares parameters, with   259 degrees of freedom
+ Number of observations               275                 0               275
 [30]  Minimisation function              0.21E+03         0.0E+00         0.21E+03
 [45]  Hamilton weighted R-value           4.              0.00              4. 
 
@@ -2103,14 +2103,14 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
 
 [33]       9000           9000             300                                    On scale of /FC/
 
-[32]       4440           4490             170                0.27 E+03          On scale of /FO/
+[32]       4450           4490             170                0.27 E+03          On scale of /FO/
 
- New scale factor (G) is      0.480,     274 reflections used in refinement
+ New scale factor (G) is      0.480,     275 reflections used in refinement
 
  Structure factor least squares calculation    1  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
 LS-scale=  0.480   Wilson Scale=  0.000
-[91] <Fo>-<Fc> = -0.34    100*(<Fo>-<Fc>)/<Fo> =    -1.02
+[91] <Fo>-<Fc> = -0.34    100*(<Fo>-<Fc>)/<Fo> =    -1.03
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -2153,8 +2153,8 @@ All cycle   Min function          0.0           0.27E+03       0.10E+16
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for    16 least squares parameters, with   258 degrees of freedom
- Number of observations               274                 0               274
+ Statistics for    16 least squares parameters, with   259 degrees of freedom
+ Number of observations               275                 0               275
 [30]  Minimisation function              0.27E+03         0.0E+00         0.27E+03
 [45]  Hamilton weighted R-value           4.              0.00              4. 
 
@@ -2169,7 +2169,7 @@ All cycle   Min function          0.0           0.27E+03       0.10E+16
              Overall    Occ     U[iso]    X        Y        Z       U[11]    U[22]    U[33]    U[23]    U[13]    U[12]
 
 
-[38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00   -0.00   -0.00   -0.00    0.00   -0.00   -0.00
+[38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00   -0.00    0.00   -0.00    0.00   -0.00    0.00
 [31]                                          0.000    0.000    0.004 
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
@@ -2266,6 +2266,7 @@ All cycle   Min function          0.0           0.27E+03       0.10E+16
 [61]     6.   8.   9.    14.     16.
 [61]     0.   0.  10.    14.     10.
 [61]     3.   6.  10.     4.      3.
+[61]     5.   6.  10.     4.      5.
 [61]     7.   7.  10.    10.     13.
 [61]     0.   8.  10.    18.     21.
 [61]     5.   8.  10.    13.     17.
@@ -2278,7 +2279,6 @@ All cycle   Min function          0.0           0.27E+03       0.10E+16
 [61]     3.   8.  11.    19.     22.
 [61]     0.   9.  11.    18.     21.
 [61]     0.   6.  12.    19.     22.
-[61]     3.   6.  12.     9.     11.
 
  And so on ------------
 
@@ -2295,9 +2295,9 @@ All cycle   Min function          0.0           0.27E+03       0.10E+16
 
 [33]       9000           9000             300                                    On scale of /FC/
 
-[32]       4440           4440             170                0.25 E+03          On scale of /FO/
+[32]       4450           4440             170                0.25 E+03          On scale of /FO/
 
- New scale factor (G) is      0.477,     274 reflections used in refinement
+ New scale factor (G) is      0.477,     275 reflections used in refinement
 
  Structure factor least squares calculation    2  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
@@ -2320,8 +2320,8 @@ LS-scale=  0.477   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 Inversion method: Automatic
-Block No  1.  Single precision relative error:  3.05E-06
-[80]  (sp inverse) 1-norm:  4E+00 cond. number:  3E+01 rel. error:  3.05E-06
+Block No  1.  Single precision relative error:  3.04E-06
+[80]  (sp inverse) 1-norm:  4E+00 cond. number:  3E+01 rel. error:  3.04E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -2341,8 +2341,8 @@ All cycle   Rw                    0.0            4.6           0.10E+03
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for    16 least squares parameters, with   258 degrees of freedom
- Number of observations               274                 0               274
+ Statistics for    16 least squares parameters, with   259 degrees of freedom
+ Number of observations               275                 0               275
 [30]  Minimisation function              0.25E+03         0.0E+00         0.25E+03
 [45]  Hamilton weighted R-value           4.              0.00              4. 
 
@@ -2423,7 +2423,7 @@ All cycle   Rw                    0.0            4.6           0.10E+03
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                         0.005    0.004    0.004 
 
-[37]      C          1.    5.00    2.00    0.50    0.50    0.50    0.04
+[37]      C          1.    5.00    2.00    0.50    0.50    0.50    0.05
 [72]                       0.00             0.00    0.00    0.00   -0.00   -0.00
 [72]                       0.00             0.00    0.00    0.00    0.01    0.02
 [31]                                         0.000    0.000    0.000 
@@ -2506,14 +2506,14 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
 
 [33]       9000           9000            1000                                    On scale of /FC/
 
-[32]       4440           4590             520                0.18 E+04          On scale of /FO/
+[32]       4450           4600             520                0.18 E+04          On scale of /FO/
 
- New scale factor (G) is      0.493,     274 reflections used in refinement
+ New scale factor (G) is      0.493,     275 reflections used in refinement
 
  Structure factor least squares calculation    3  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.46    SumwFoFc/SumwFc^2=  0.46
 LS-scale=  0.493   Wilson Scale=  0.000
-[91] <Fo>-<Fc> = -1.10    100*(<Fo>-<Fc>)/<Fo> =    -3.36
+[91] <Fo>-<Fc> = -1.09    100*(<Fo>-<Fc>)/<Fo> =    -3.34
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -2537,14 +2537,14 @@ LS-scale=  0.493   Wilson Scale=  0.000
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.23E-06
 [80]  (sp inverse) 1-norm:  4E+00 cond. number:  3E+01 rel. error:  3.23E-06
- S/ESD     1           1            -0.016      0.0E+00    0.613E-02         -2.66                          SCALE   
+ S/ESD     1           1            -0.016      0.0E+00    0.612E-02         -2.66                          SCALE   
                                                                                                             Composite
 
                                                                       Composite
 
 [14]  S/ESD     8           8            0.012       0.0E+00    0.13 E-02          9.3         O      1 Z       
 [14]  S/ESD    11          11            0.012       0.0E+00    0.46 E-02          2.6         O      1 U[33]   
- LARGE    16          16           -0.1357      0.0E+00    0.787E-01         -1.72        C      1 SIZE    
+ LARGE    16          16           -0.1357      0.0E+00    0.786E-01         -1.73        C      1 SIZE    
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           3.
@@ -2564,8 +2564,8 @@ All cycle   Min function          0.0           0.19E+04       0.10E+16
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for    16 least squares parameters, with   258 degrees of freedom
- Number of observations               274                 0               274
+ Statistics for    16 least squares parameters, with   259 degrees of freedom
+ Number of observations               275                 0               275
 [30]  Minimisation function              0.19E+04         0.0E+00         0.19E+04
 [45]  Hamilton weighted R-value          12.              0.00             12. 
 
@@ -2684,9 +2684,9 @@ All cycle   Min function          0.0           0.19E+04       0.10E+16
 
 [33]       9000           9000             400                                    On scale of /FC/
 
-[32]       4440           4430             220                0.36 E+03          On scale of /FO/
+[32]       4450           4440             220                0.36 E+03          On scale of /FO/
 
- New scale factor (G) is      0.476,     274 reflections used in refinement
+ New scale factor (G) is      0.476,     275 reflections used in refinement
 
  Structure factor least squares calculation    4  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
@@ -2735,8 +2735,8 @@ Inter cycle Rw                   -5.0            6.9           0.10E+03
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for    16 least squares parameters, with   258 degrees of freedom
- Number of observations               274                 0               274
+ Statistics for    16 least squares parameters, with   259 degrees of freedom
+ Number of observations               275                 0               275
 [30]  Minimisation function              0.36E+03         0.0E+00         0.36E+03
 [45]  Hamilton weighted R-value           5.              0.00              5. 
 
@@ -2755,12 +2755,12 @@ Inter cycle Rw                   -5.0            6.9           0.10E+03
 [89]                                         -0.01    0.00    0.02
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.01    0.00    0.00    0.00
-[31]                                          0.015    0.009    0.025 
+[31]                                          0.016    0.009    0.025 
 
 
 
 [70]  Maximum        0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.01    0.00    0.00    0.00
-[31]                                          0.015    0.009    0.025 
+[31]                                          0.016    0.009    0.025 
 
 [03]  Reversals
 
@@ -2848,9 +2848,10 @@ Inter cycle Rw                   -5.0            6.9           0.10E+03
 [61]     4.   8.   9.     5.      8.
 [61]     0.   0.  10.    14.     10.
 [61]     3.   6.  10.     4.      3.
+[61]     5.   6.  10.     4.      6.
 [61]     2.   7.  10.     6.      7.
 [61]     7.   7.  10.    10.     13.
-[61]     5.   8.  10.    13.     17.
+[61]     5.   8.  10.    13.     18.
 [61]     6.   8.  10.    13.     18.
 [61]     3.   9.  10.    20.     23.
 [61]     4.   9.  10.    10.     15.
@@ -2859,8 +2860,7 @@ Inter cycle Rw                   -5.0            6.9           0.10E+03
 [61]     4.   7.  11.    15.     18.
 [61]     3.   8.  11.    19.     23.
 [61]     0.   9.  11.    18.     21.
-[61]     2.   7.  12.     7.      9.
-[61]     3.   7.  12.    17.     19.
+[61]     2.   7.  12.     7.     10.
 
  And so on ------------
 
@@ -2877,14 +2877,14 @@ Inter cycle Rw                   -5.0            6.9           0.10E+03
 
 [33]       9000           9000             300                                    On scale of /FC/
 
-[32]       4440           4450             180                0.26 E+03          On scale of /FO/
+[32]       4450           4450             180                0.26 E+03          On scale of /FO/
 
- New scale factor (G) is      0.476,     274 reflections used in refinement
+ New scale factor (G) is      0.476,     275 reflections used in refinement
 
  Structure factor least squares calculation    5  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
 LS-scale=  0.476   Wilson Scale=  0.000
-[91] <Fo>-<Fc> = -0.05    100*(<Fo>-<Fc>)/<Fo> =    -0.16
+[91] <Fo>-<Fc> = -0.05    100*(<Fo>-<Fc>)/<Fo> =    -0.17
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -2912,7 +2912,7 @@ Block No  1.  Single precision relative error:  3.11E-06
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0            4.1           0.10E+03
-All cycle   Rw                    0.0            4.6           0.10E+03
+All cycle   Rw                    0.0            4.7           0.10E+03
 [06] All cycle   shift/esd
 All cycle   Min function          0.0           0.27E+03       0.10E+16
 [26] Inter cycle R-factor             -5.0           0.9            0.1 E+03
@@ -2927,8 +2927,8 @@ All cycle   Min function          0.0           0.27E+03       0.10E+16
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for    16 least squares parameters, with   258 degrees of freedom
- Number of observations               274                 0               274
+ Statistics for    16 least squares parameters, with   259 degrees of freedom
+ Number of observations               275                 0               275
 [30]  Minimisation function              0.26E+03         0.0E+00         0.26E+03
 [45]  Hamilton weighted R-value           4.              0.00              4. 
 
@@ -3040,6 +3040,7 @@ All cycle   Min function          0.0           0.27E+03       0.10E+16
 [61]     6.   8.   9.    14.     16.
 [61]     0.   0.  10.    14.     10.
 [61]     3.   6.  10.     4.      3.
+[61]     5.   6.  10.     4.      5.
 [61]     7.   7.  10.    10.     13.
 [61]     0.   8.  10.    18.     21.
 [61]     5.   8.  10.    13.     17.
@@ -3052,7 +3053,6 @@ All cycle   Min function          0.0           0.27E+03       0.10E+16
 [61]     3.   8.  11.    19.     22.
 [61]     0.   9.  11.    18.     21.
 [61]     3.   6.  12.     9.     11.
-[61]     2.   7.  12.     7.     10.
 
  And so on ------------
 
@@ -3069,9 +3069,9 @@ All cycle   Min function          0.0           0.27E+03       0.10E+16
 
 [33]       9000           9000             300                                    On scale of /FC/
 
-[32]       4440           4440             170                0.25 E+03          On scale of /FO/
+[32]       4450           4440             170                0.25 E+03          On scale of /FO/
 
- New scale factor (G) is      0.477,     274 reflections used in refinement
+ New scale factor (G) is      0.477,     275 reflections used in refinement
 
  Structure factor least squares calculation    6  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
@@ -3094,8 +3094,8 @@ LS-scale=  0.477   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 Inversion method: Automatic
-Block No  1.  Single precision relative error:  3.05E-06
-[80]  (sp inverse) 1-norm:  4E+00 cond. number:  3E+01 rel. error:  3.05E-06
+Block No  1.  Single precision relative error:  3.04E-06
+[80]  (sp inverse) 1-norm:  4E+00 cond. number:  3E+01 rel. error:  3.04E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -3106,11 +3106,7 @@ Block No  1.  Single precision relative error:  3.05E-06
 All cycle   R-factor              0.0            3.9           0.10E+03
 All cycle   Rw                    0.0            4.6           0.10E+03
 [06] All cycle   shift/esd
-All cycle   Min function          0.0           0.26E+03       0.10E+16
-[26] Inter cycle R-factor             -5.0           0.1            0.1 E+03
-[25] Inter cycle Rw                   -5.0           0. E-01       0.1 E+03
-[69] Inter cycle shift/esd
-[07] Inter cycle Min function          0.0
+ Forced termination after this cycle:  Actual value condition on: shift/esd
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -3119,8 +3115,8 @@ All cycle   Min function          0.0           0.26E+03       0.10E+16
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for    16 least squares parameters, with   258 degrees of freedom
- Number of observations               274                 0               274
+ Statistics for    16 least squares parameters, with   259 degrees of freedom
+ Number of observations               275                 0               275
 [30]  Minimisation function              0.25E+03         0.0E+00         0.25E+03
 [45]  Hamilton weighted R-value           4.              0.00              4. 
 
@@ -3233,6 +3229,7 @@ All cycle   Min function          0.0           0.26E+03       0.10E+16
 [61]     6.   8.   9.    14.     16.
 [61]     0.   0.  10.    14.     10.
 [61]     3.   6.  10.     4.      3.
+[61]     5.   6.  10.     4.      5.
 [61]     7.   7.  10.    10.     13.
 [61]     0.   8.  10.    18.     21.
 [61]     5.   8.  10.    13.     17.
@@ -3245,7 +3242,6 @@ All cycle   Min function          0.0           0.26E+03       0.10E+16
 [61]     3.   8.  11.    19.     22.
 [61]     0.   9.  11.    18.     21.
 [61]     0.   6.  12.    19.     22.
-[61]     3.   6.  12.     9.     11.
 
  And so on ------------
 
@@ -3262,9 +3258,9 @@ All cycle   Min function          0.0           0.26E+03       0.10E+16
 
 [33]       9000           9000             300                                    On scale of /FC/
 
-[32]       4440           4440             170                0.25 E+03          On scale of /FO/
+[32]       4450           4440             170                0.25 E+03          On scale of /FO/
 
- New scale factor (G) is      0.477,     274 reflections used in refinement
+ New scale factor (G) is      0.477,     275 reflections used in refinement
 
  Structure factor least squares calculation    7  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
@@ -3308,8 +3304,8 @@ All cycle   Rw                    0.0            4.6           0.10E+03
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for    16 least squares parameters, with   258 degrees of freedom
- Number of observations               274                 0               274
+ Statistics for    16 least squares parameters, with   259 degrees of freedom
+ Number of observations               275                 0               275
 [30]  Minimisation function              0.25E+03         0.0E+00         0.25E+03
 [45]  Hamilton weighted R-value           4.              0.00              4. 
 
@@ -3844,14 +3840,14 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
 
 [33]       9000           9000             300                                    On scale of /FC/
 
-[32]       4440           4460             150                0.22 E+03          On scale of /FO/
+[32]       4450           4460             150                0.22 E+03          On scale of /FO/
 
- New scale factor (G) is      0.480,     274 reflections used in refinement
+ New scale factor (G) is      0.480,     275 reflections used in refinement
 
  Structure factor least squares calculation    1  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
 LS-scale=  0.480   Wilson Scale=  0.000
-[91] <Fo>-<Fc> = -0.12    100*(<Fo>-<Fc>)/<Fo> =    -0.35
+[91] <Fo>-<Fc> = -0.12    100*(<Fo>-<Fc>)/<Fo> =    -0.37
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -3882,7 +3878,7 @@ Block No  1.  Single precision relative error:  2.94E-06
 [05]  The largest (shift/esd) =      0.9 , for Parameter    1, SCALE
 
                                 Min          Actual           Max
-All cycle   R-factor              0.0            3.5           0.10E+03
+All cycle   R-factor              0.0            3.6           0.10E+03
 All cycle   Rw                    0.0            8.5           0.10E+03
 [06] All cycle   shift/esd
 All cycle   Min function          0.0           0.22E+03       0.10E+16
@@ -3894,8 +3890,8 @@ All cycle   Min function          0.0           0.22E+03       0.10E+16
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for    16 least squares parameters, with   258 degrees of freedom
- Number of observations               274                 0               274
+ Statistics for    16 least squares parameters, with   259 degrees of freedom
+ Number of observations               275                 0               275
 [30]  Minimisation function              0.22E+03         0.0E+00         0.22E+03
 [45]  Hamilton weighted R-value           8.              0.00              8. 
 
@@ -4011,6 +4007,7 @@ All cycle   Min function          0.0           0.22E+03       0.10E+16
 [61]     0.   0.  10.    14.     10.
 [61]     1.   6.  10.     4.      4.
 [61]     3.   6.  10.     4.      3.
+[61]     5.   6.  10.     4.      5.
 [61]     7.   7.  10.    10.     13.
 [61]     0.   8.  10.    18.     21.
 [61]     5.   8.  10.    13.     16.
@@ -4019,7 +4016,6 @@ All cycle   Min function          0.0           0.22E+03       0.10E+16
 [61]     4.   9.  10.    10.     13.
 [61]     0.  10.  10.    14.     16.
 [61]     3.   5.  11.     8.     10.
-[61]     3.   8.  11.    19.     22.
 
  And so on ------------
 
@@ -4036,9 +4032,9 @@ All cycle   Min function          0.0           0.22E+03       0.10E+16
 
 [33]       9000           9000             300                                    On scale of /FC/
 
-[32]       4440           4430             160                0.21 E+03          On scale of /FO/
+[32]       4450           4430             160                0.21 E+03          On scale of /FO/
 
- New scale factor (G) is      0.478,     274 reflections used in refinement
+ New scale factor (G) is      0.478,     275 reflections used in refinement
 
  Structure factor least squares calculation    2  ends  2
 [29] SumFo/SumFc=  0.48    SumFoFc/SumFc^2=  0.48    SumwFoFc/SumwFc^2=  0.47
@@ -4082,8 +4078,8 @@ All cycle   Rw                    0.0            8.4           0.10E+03
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for    16 least squares parameters, with   258 degrees of freedom
- Number of observations               274                 0               274
+ Statistics for    16 least squares parameters, with   259 degrees of freedom
+ Number of observations               275                 0               275
 [30]  Minimisation function              0.21E+03         0.0E+00         0.21E+03
 [45]  Hamilton weighted R-value           8.              0.00              8. 
 
@@ -4099,7 +4095,7 @@ All cycle   Rw                    0.0            8.4           0.10E+03
 
 
 [38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                          0.000    0.000    0.000 
+[89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [31]                                          0.000    0.000    0.000 
@@ -4247,14 +4243,14 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
 
 [33]       9000           9000            1000                                    On scale of /FC/
 
-[32]       4440           4560             500                0.20 E+04          On scale of /FO/
+[32]       4450           4560             500                0.20 E+04          On scale of /FO/
 
- New scale factor (G) is      0.493,     274 reflections used in refinement
+ New scale factor (G) is      0.493,     275 reflections used in refinement
 
  Structure factor least squares calculation    3  ends  2
 [29] SumFo/SumFc=  0.48    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.46
 LS-scale=  0.493   Wilson Scale=  0.000
-[91] <Fo>-<Fc> = -0.88    100*(<Fo>-<Fc>)/<Fo> =    -2.67
+[91] <Fo>-<Fc> = -0.87    100*(<Fo>-<Fc>)/<Fo> =    -2.66
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -4278,10 +4274,10 @@ LS-scale=  0.493   Wilson Scale=  0.000
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.79E-06
 [80]  (sp inverse) 1-norm:  4E+00 cond. number:  3E+01 rel. error:  3.79E-06
- S/ESD     1           1            -0.014      0.0E+00    0.591E-02         -2.38                          SCALE   
-[14]  S/ESD     8           8            0.011       0.0E+00    0.12 E-02          9.2         O      1 Z       
+ S/ESD     1           1            -0.014      0.0E+00    0.590E-02         -2.38                          SCALE   
+[14]  S/ESD     8           8            0.011       0.0E+00    0.11 E-02          9.2         O      1 Z       
 [14]  S/ESD    11          11            0.011       0.0E+00    0.44 E-02          2.5         O      1 U[33]   
- LARGE    16          16           -0.1330      0.0E+00    0.796E-01         -1.67        C      1 SIZE    
+ LARGE    16          16           -0.1330      0.0E+00    0.794E-01         -1.67        C      1 SIZE    
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           3.
@@ -4301,8 +4297,8 @@ All cycle   Min function          0.0           0.20E+04       0.10E+16
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for    16 least squares parameters, with   258 degrees of freedom
- Number of observations               274                 0               274
+ Statistics for    16 least squares parameters, with   259 degrees of freedom
+ Number of observations               275                 0               275
 [30]  Minimisation function              0.20E+04         0.0E+00         0.20E+04
 [45]  Hamilton weighted R-value          25.              0.00             25. 
 
@@ -4419,9 +4415,9 @@ All cycle   Min function          0.0           0.20E+04       0.10E+16
 
 [33]       9000           9000             400                                    On scale of /FC/
 
-[32]       4440           4450             210                0.34 E+03          On scale of /FO/
+[32]       4450           4450             210                0.34 E+03          On scale of /FO/
 
- New scale factor (G) is      0.478,     274 reflections used in refinement
+ New scale factor (G) is      0.478,     275 reflections used in refinement
 
  Structure factor least squares calculation    4  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
@@ -4474,8 +4470,8 @@ Inter cycle Rw                   -5.0            15.           0.10E+03
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for    16 least squares parameters, with   258 degrees of freedom
- Number of observations               274                 0               274
+ Statistics for    16 least squares parameters, with   259 degrees of freedom
+ Number of observations               275                 0               275
 [30]  Minimisation function              0.34E+03         0.0E+00         0.34E+03
 [45]  Hamilton weighted R-value          10.              0.00             10. 
 
@@ -4494,12 +4490,12 @@ Inter cycle Rw                   -5.0            15.           0.10E+03
 [89]                                         -0.01    0.00    0.03
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.01    0.00    0.00    0.00
-[31]                                          0.014    0.009    0.030 
+[31]                                          0.013    0.009    0.030 
 
 
 
 [70]  Maximum        0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.01    0.00    0.00    0.00
-[31]                                          0.014    0.009    0.030 
+[31]                                          0.013    0.009    0.030 
 
 [03]  Reversals
 
@@ -4584,6 +4580,7 @@ Inter cycle Rw                   -5.0            15.           0.10E+03
 [61]     4.   8.   9.     5.      7.
 [61]     0.   0.  10.    14.     10.
 [61]     3.   6.  10.     4.      3.
+[61]     5.   6.  10.     4.      5.
 [61]     7.   7.  10.    10.     13.
 [61]     5.   8.  10.    13.     16.
 [61]     6.   8.  10.    13.     17.
@@ -4607,9 +4604,9 @@ Inter cycle Rw                   -5.0            15.           0.10E+03
 
 [33]       9000           9000             300                                    On scale of /FC/
 
-[32]       4440           4440             160                0.22 E+03          On scale of /FO/
+[32]       4450           4440             160                0.22 E+03          On scale of /FO/
 
- New scale factor (G) is      0.478,     274 reflections used in refinement
+ New scale factor (G) is      0.478,     275 reflections used in refinement
 
  Structure factor least squares calculation    5  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
@@ -4641,7 +4638,7 @@ Block No  1.  Single precision relative error:  3.01E-06
 [05]  The largest (shift/esd) =      1.2 , for Parameter    8, O1Z
 
                                 Min          Actual           Max
-All cycle   R-factor              0.0            3.7           0.10E+03
+All cycle   R-factor              0.0            3.8           0.10E+03
 All cycle   Rw                    0.0            8.5           0.10E+03
 [06] All cycle   shift/esd
 All cycle   Min function          0.0           0.23E+03       0.10E+16
@@ -4657,8 +4654,8 @@ Inter cycle Rw                   -5.0            2.0           0.10E+03
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for    16 least squares parameters, with   258 degrees of freedom
- Number of observations               274                 0               274
+ Statistics for    16 least squares parameters, with   259 degrees of freedom
+ Number of observations               275                 0               275
 [30]  Minimisation function              0.22E+03         0.0E+00         0.22E+03
 [45]  Hamilton weighted R-value           8.              0.00              8. 
 
@@ -4772,6 +4769,7 @@ Inter cycle Rw                   -5.0            2.0           0.10E+03
 [61]     0.   0.  10.    14.     10.
 [61]     1.   6.  10.     4.      4.
 [61]     3.   6.  10.     4.      3.
+[61]     5.   6.  10.     4.      5.
 [61]     7.   7.  10.    10.     13.
 [61]     0.   8.  10.    18.     21.
 [61]     5.   8.  10.    13.     16.
@@ -4782,7 +4780,6 @@ Inter cycle Rw                   -5.0            2.0           0.10E+03
 [61]     3.   5.  11.     8.     10.
 [61]     3.   8.  11.    19.     22.
 [61]     0.   9.  11.    18.     20.
-[61]     0.   6.  12.    19.     22.
 
  And so on ------------
 
@@ -4799,9 +4796,9 @@ Inter cycle Rw                   -5.0            2.0           0.10E+03
 
 [33]       9000           9000             300                                    On scale of /FC/
 
-[32]       4440           4430             160                0.21 E+03          On scale of /FO/
+[32]       4450           4430             160                0.21 E+03          On scale of /FO/
 
- New scale factor (G) is      0.478,     274 reflections used in refinement
+ New scale factor (G) is      0.478,     275 reflections used in refinement
 
  Structure factor least squares calculation    6  ends  2
 [29] SumFo/SumFc=  0.48    SumFoFc/SumFc^2=  0.48    SumwFoFc/SumwFc^2=  0.47
@@ -4824,8 +4821,8 @@ LS-scale=  0.478   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 Inversion method: Automatic
-Block No  1.  Single precision relative error:  2.94E-06
-[80]  (sp inverse) 1-norm:  4E+00 cond. number:  2E+01 rel. error:  2.94E-06
+Block No  1.  Single precision relative error:  2.93E-06
+[80]  (sp inverse) 1-norm:  4E+00 cond. number:  2E+01 rel. error:  2.93E-06
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
@@ -4849,8 +4846,8 @@ All cycle   Min function          0.0           0.22E+03       0.10E+16
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for    16 least squares parameters, with   258 degrees of freedom
- Number of observations               274                 0               274
+ Statistics for    16 least squares parameters, with   259 degrees of freedom
+ Number of observations               275                 0               275
 [30]  Minimisation function              0.21E+03         0.0E+00         0.21E+03
 [45]  Hamilton weighted R-value           8.              0.00              8. 
 
@@ -4955,6 +4952,7 @@ All cycle   Min function          0.0           0.22E+03       0.10E+16
 [61]     0.   3.   4.     5.      4.
 [61]     0.   4.   5.     6.      5.
 [61]     2.   3.   6.     3.      2.
+[61]     1.   3.   7.     7.      6.
 [61]     0.   7.   7.     6.      5.
 [61]     4.   7.   8.     4.      3.
 [61]     7.   7.   8.    19.     21.
@@ -4965,6 +4963,7 @@ All cycle   Min function          0.0           0.22E+03       0.10E+16
 [61]     0.   0.  10.    14.     10.
 [61]     1.   6.  10.     4.      4.
 [61]     3.   6.  10.     4.      3.
+[61]     5.   6.  10.     4.      5.
 [61]     7.   7.  10.    10.     13.
 [61]     0.   8.  10.    18.     21.
 [61]     5.   8.  10.    13.     16.
@@ -4974,8 +4973,6 @@ All cycle   Min function          0.0           0.22E+03       0.10E+16
 [61]     0.  10.  10.    14.     16.
 [61]     3.   5.  11.     8.     10.
 [61]     3.   8.  11.    19.     22.
-[61]     0.   9.  11.    18.     20.
-[61]     0.   1.  12.     9.     10.
 
  And so on ------------
 
@@ -4992,9 +4989,9 @@ All cycle   Min function          0.0           0.22E+03       0.10E+16
 
 [33]       9000           9000             300                                    On scale of /FC/
 
-[32]       4440           4430             160                0.21 E+03          On scale of /FO/
+[32]       4450           4430             160                0.21 E+03          On scale of /FO/
 
- New scale factor (G) is      0.478,     274 reflections used in refinement
+ New scale factor (G) is      0.478,     275 reflections used in refinement
 
  Structure factor least squares calculation    7  ends  2
 [29] SumFo/SumFc=  0.48    SumFoFc/SumFc^2=  0.48    SumwFoFc/SumwFc^2=  0.47
@@ -5038,8 +5035,8 @@ All cycle   Rw                    0.0            8.4           0.10E+03
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for    16 least squares parameters, with   258 degrees of freedom
- Number of observations               274                 0               274
+ Statistics for    16 least squares parameters, with   259 degrees of freedom
+ Number of observations               275                 0               275
 [30]  Minimisation function              0.21E+03         0.0E+00         0.21E+03
 [45]  Hamilton weighted R-value           8.              0.00              8. 
 
@@ -5574,14 +5571,14 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
 
 [33]       9000           9000             300                                    On scale of /FC/
 
-[32]       4440           4490             170                0.29 E+03          On scale of /FO/
+[32]       4450           4490             170                0.29 E+03          On scale of /FO/
 
- New scale factor (G) is      0.480,     274 reflections used in refinement
+ New scale factor (G) is      0.480,     275 reflections used in refinement
 
  Structure factor least squares calculation    1  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
 LS-scale=  0.480   Wilson Scale=  0.000
-[91] <Fo>-<Fc> = -0.34    100*(<Fo>-<Fc>)/<Fo> =    -1.02
+[91] <Fo>-<Fc> = -0.34    100*(<Fo>-<Fc>)/<Fo> =    -1.03
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -5628,8 +5625,8 @@ All cycle   Min function          0.0           0.30E+03       0.10E+16
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for    16 least squares parameters, with   258 degrees of freedom
- Number of observations               274                 0               274
+ Statistics for    16 least squares parameters, with   259 degrees of freedom
+ Number of observations               275                 0               275
 [30]  Minimisation function              0.29E+03         0.0E+00         0.29E+03
 [45]  Hamilton weighted R-value           9.              0.00              9. 
 
@@ -5644,7 +5641,7 @@ All cycle   Min function          0.0           0.30E+03       0.10E+16
              Overall    Occ     U[iso]    X        Y        Z       U[11]    U[22]    U[33]    U[23]    U[13]    U[12]
 
 
-[38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00    0.00   -0.00   -0.00    0.00   -0.00    0.00
+[38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00   -0.00   -0.00   -0.00    0.00   -0.00    0.00
 [31]                                          0.001    0.002    0.005 
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
@@ -5742,6 +5739,7 @@ All cycle   Min function          0.0           0.30E+03       0.10E+16
 [61]     0.   0.  10.    14.     10.
 [61]     1.   6.  10.     4.      4.
 [61]     3.   6.  10.     4.      3.
+[61]     5.   6.  10.     4.      5.
 [61]     7.   7.  10.    10.     13.
 [61]     0.   8.  10.    18.     21.
 [61]     5.   8.  10.    13.     17.
@@ -5753,7 +5751,6 @@ All cycle   Min function          0.0           0.30E+03       0.10E+16
 [61]     4.   7.  11.    15.     17.
 [61]     3.   8.  11.    19.     22.
 [61]     0.   9.  11.    18.     21.
-[61]     0.   6.  12.    19.     22.
 
  And so on ------------
 
@@ -5770,9 +5767,9 @@ All cycle   Min function          0.0           0.30E+03       0.10E+16
 
 [33]       9000           9000             300                                    On scale of /FC/
 
-[32]       4440           4420             170                0.27 E+03          On scale of /FO/
+[32]       4450           4430             170                0.27 E+03          On scale of /FO/
 
- New scale factor (G) is      0.476,     274 reflections used in refinement
+ New scale factor (G) is      0.476,     275 reflections used in refinement
 
  Structure factor least squares calculation    2  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
@@ -5805,7 +5802,7 @@ Block No  1.  Single precision relative error:  2.92E-06
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0            4.0           0.10E+03
-All cycle   Rw                    0.0            9.3           0.10E+03
+All cycle   Rw                    0.0            9.4           0.10E+03
 [06] All cycle   shift/esd
 All cycle   Min function          0.0           0.27E+03       0.10E+16
 [26] Inter cycle R-factor             -5.0          -0.1            0.1 E+03
@@ -5820,8 +5817,8 @@ All cycle   Min function          0.0           0.27E+03       0.10E+16
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for    16 least squares parameters, with   258 degrees of freedom
- Number of observations               274                 0               274
+ Statistics for    16 least squares parameters, with   259 degrees of freedom
+ Number of observations               275                 0               275
 [30]  Minimisation function              0.27E+03         0.0E+00         0.27E+03
 [45]  Hamilton weighted R-value           9.              0.00              9. 
 
@@ -5932,10 +5929,9 @@ All cycle   Min function          0.0           0.27E+03       0.10E+16
 [61]     5.   7.   9.     6.      7.
 [61]     4.   8.   9.     5.      7.
 [61]     0.   0.  10.    14.     10.
-[61]     1.   6.  10.     4.      4.
 [61]     3.   6.  10.     4.      3.
+[61]     5.   6.  10.     4.      5.
 [61]     7.   7.  10.    10.     13.
-[61]     0.   8.  10.    18.     21.
 [61]     5.   8.  10.    13.     17.
 [61]     6.   8.  10.    14.     18.
 [61]     3.   9.  10.    20.     23.
@@ -5946,6 +5942,7 @@ All cycle   Min function          0.0           0.27E+03       0.10E+16
 [61]     0.   9.  11.    18.     21.
 [61]     3.   6.  12.     9.     11.
 [61]     2.   7.  12.     7.     10.
+[61]     3.   7.  12.    17.     20.
 
  And so on ------------
 
@@ -5962,9 +5959,9 @@ All cycle   Min function          0.0           0.27E+03       0.10E+16
 
 [33]       9000           9000             300                                    On scale of /FC/
 
-[32]       4440           4420             170                0.27 E+03          On scale of /FO/
+[32]       4450           4430             170                0.27 E+03          On scale of /FO/
 
- New scale factor (G) is      0.475,     274 reflections used in refinement
+ New scale factor (G) is      0.475,     275 reflections used in refinement
 
  Structure factor least squares calculation    3  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
@@ -5997,7 +5994,7 @@ Block No  1.  Single precision relative error:  2.92E-06
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0            4.0           0.10E+03
-All cycle   Rw                    0.0            9.3           0.10E+03
+All cycle   Rw                    0.0            9.4           0.10E+03
 [06] All cycle   shift/esd
  Forced termination after this cycle:  Actual value condition on: shift/esd
 
@@ -6008,8 +6005,8 @@ All cycle   Rw                    0.0            9.3           0.10E+03
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for    16 least squares parameters, with   258 degrees of freedom
- Number of observations               274                 0               274
+ Statistics for    16 least squares parameters, with   259 degrees of freedom
+ Number of observations               275                 0               275
 [30]  Minimisation function              0.27E+03         0.0E+00         0.27E+03
 [45]  Hamilton weighted R-value           9.              0.00              9. 
 
@@ -6173,14 +6170,14 @@ Refining    16 parameters in    1 block :      184 elements in the LS matrix.
 
 [33]       9000           9000            1000                                    On scale of /FC/
 
-[32]       4440           4590             520                0.22 E+04          On scale of /FO/
+[32]       4450           4600             520                0.22 E+04          On scale of /FO/
 
- New scale factor (G) is      0.493,     274 reflections used in refinement
+ New scale factor (G) is      0.493,     275 reflections used in refinement
 
  Structure factor least squares calculation    4  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.46    SumwFoFc/SumwFc^2=  0.46
 LS-scale=  0.493   Wilson Scale=  0.000
-[91] <Fo>-<Fc> = -1.10    100*(<Fo>-<Fc>)/<Fo> =    -3.36
+[91] <Fo>-<Fc> = -1.09    100*(<Fo>-<Fc>)/<Fo> =    -3.34
 #DORESTRAIN
 #LIST 26
 #DORESTRAIN
@@ -6204,10 +6201,10 @@ LS-scale=  0.493   Wilson Scale=  0.000
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.78E-06
 [80]  (sp inverse) 1-norm:  4E+00 cond. number:  3E+01 rel. error:  3.78E-06
- S/ESD     1           1            -0.017      0.0E+00    0.612E-02         -2.74                          SCALE   
+ S/ESD     1           1            -0.017      0.0E+00    0.610E-02         -2.74                          SCALE   
 [14]  S/ESD     8           8            0.011       0.0E+00    0.12 E-02          9.0         O      1 Z       
 [14]  S/ESD    11          11            0.011       0.0E+00    0.46 E-02          2.5         O      1 U[33]   
- LARGE    16          16           -0.1390      0.0E+00    0.836E-01         -1.66        C      1 SIZE    
+ LARGE    16          16           -0.1390      0.0E+00    0.835E-01         -1.67        C      1 SIZE    
 
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           2.
@@ -6227,8 +6224,8 @@ All cycle   Min function          0.0           0.22E+04       0.10E+16
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for    16 least squares parameters, with   258 degrees of freedom
- Number of observations               274                 0               274
+ Statistics for    16 least squares parameters, with   259 degrees of freedom
+ Number of observations               275                 0               275
 [30]  Minimisation function              0.22E+04         0.0E+00         0.22E+04
 [45]  Hamilton weighted R-value          26.              0.00             26. 
 
@@ -6347,14 +6344,14 @@ All cycle   Min function          0.0           0.22E+04       0.10E+16
 
 [33]       9000           9000             400                                    On scale of /FC/
 
-[32]       4440           4440             230                0.41 E+03          On scale of /FO/
+[32]       4450           4450             230                0.41 E+03          On scale of /FO/
 
- New scale factor (G) is      0.475,     274 reflections used in refinement
+ New scale factor (G) is      0.475,     275 reflections used in refinement
 
  Structure factor least squares calculation    5  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
 LS-scale=  0.475   Wilson Scale=  0.000
-[91] <Fo>-<Fc> = -0.00    100*(<Fo>-<Fc>)/<Fo> =    -0.01
+[91] <Fo>-<Fc> = -0.00    100*(<Fo>-<Fc>)/<Fo> =    -0.02
 #DORESTRAIN
 #INVERT  DEFA
 
@@ -6372,8 +6369,8 @@ LS-scale=  0.475   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 Inversion method: Automatic
-Block No  1.  Single precision relative error:  2.99E-06
-[80]  (sp inverse) 1-norm:  4E+00 cond. number:  3E+01 rel. error:  2.99E-06
+Block No  1.  Single precision relative error:  3.00E-06
+[80]  (sp inverse) 1-norm:  4E+00 cond. number:  3E+01 rel. error:  3.00E-06
                                                                                                             Composite
 
                                                                       Composite
@@ -6402,8 +6399,8 @@ Inter cycle Rw                   -5.0            15.           0.10E+03
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for    16 least squares parameters, with   258 degrees of freedom
- Number of observations               274                 0               274
+ Statistics for    16 least squares parameters, with   259 degrees of freedom
+ Number of observations               275                 0               275
 [30]  Minimisation function              0.41E+03         0.0E+00         0.41E+03
 [45]  Hamilton weighted R-value          11.              0.00             11. 
 
@@ -6422,12 +6419,12 @@ Inter cycle Rw                   -5.0            15.           0.10E+03
 [89]                                         -0.01   -0.01    0.03
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.01    0.00    0.00    0.00
-[31]                                          0.016    0.011    0.033 
+[31]                                          0.015    0.011    0.033 
 
 
 
 [70]  Maximum        0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.01    0.00    0.00    0.00
-[31]                                          0.016    0.011    0.033 
+[31]                                          0.015    0.011    0.033 
 
 [03]  Reversals
 
@@ -6506,13 +6503,14 @@ Inter cycle Rw                   -5.0            15.           0.10E+03
 
 [61]     2.   3.   6.     3.      2.
 [61]     4.   7.   8.     4.      3.
-[61]     6.   7.   8.     9.      7.
+[61]     6.   7.   8.     9.      8.
 [61]     1.   5.   9.     3.      2.
 [61]     3.   7.   9.     5.      6.
 [61]     5.   7.   9.     6.      7.
 [61]     4.   8.   9.     5.      7.
 [61]     0.   0.  10.    14.     10.
 [61]     3.   6.  10.     4.      3.
+[61]     5.   6.  10.     4.      5.
 [61]     7.   7.  10.    10.     13.
 [61]     5.   8.  10.    13.     17.
 [61]     6.   8.  10.    14.     18.
@@ -6521,7 +6519,7 @@ Inter cycle Rw                   -5.0            15.           0.10E+03
 [61]     3.   5.  11.     8.     10.
 [61]     4.   7.  11.    15.     18.
 [61]     3.   8.  11.    19.     23.
-[61]     2.   7.  12.     7.      9.
+[61]     2.   7.  12.     7.     10.
 [61]     3.   7.  12.    17.     19.
 [61]     0.   5.  13.    15.     18.
 
@@ -6537,13 +6535,13 @@ Inter cycle Rw                   -5.0            15.           0.10E+03
 
 [33]       9000           9000             300                                    On scale of /FC/
 
-[32]       4440           4430             180                0.27 E+03          On scale of /FO/
+[32]       4450           4440             180                0.27 E+03          On scale of /FO/
 
- New scale factor (G) is      0.475,     274 reflections used in refinement
+ New scale factor (G) is      0.476,     275 reflections used in refinement
 
  Structure factor least squares calculation    6  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
-LS-scale=  0.475   Wilson Scale=  0.000
+LS-scale=  0.476   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =  0.0     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
 #INVERT  DEFA
@@ -6587,8 +6585,8 @@ Inter cycle Rw                   -5.0            2.1           0.10E+03
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for    16 least squares parameters, with   258 degrees of freedom
- Number of observations               274                 0               274
+ Statistics for    16 least squares parameters, with   259 degrees of freedom
+ Number of observations               275                 0               275
 [30]  Minimisation function              0.27E+03         0.0E+00         0.27E+03
 [45]  Hamilton weighted R-value           9.              0.00              9. 
 
@@ -6700,6 +6698,7 @@ Inter cycle Rw                   -5.0            2.1           0.10E+03
 [61]     4.   8.   9.     5.      7.
 [61]     0.   0.  10.    14.     10.
 [61]     3.   6.  10.     4.      3.
+[61]     5.   6.  10.     4.      5.
 [61]     7.   7.  10.    10.     13.
 [61]     5.   8.  10.    13.     17.
 [61]     6.   8.  10.    14.     18.
@@ -6725,9 +6724,9 @@ Inter cycle Rw                   -5.0            2.1           0.10E+03
 
 [33]       9000           9000             300                                    On scale of /FC/
 
-[32]       4440           4420             170                0.27 E+03          On scale of /FO/
+[32]       4450           4430             170                0.27 E+03          On scale of /FO/
 
- New scale factor (G) is      0.476,     274 reflections used in refinement
+ New scale factor (G) is      0.476,     275 reflections used in refinement
 
  Structure factor least squares calculation    7  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
@@ -6760,7 +6759,7 @@ Block No  1.  Single precision relative error:  2.92E-06
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0            4.0           0.10E+03
-All cycle   Rw                    0.0            9.3           0.10E+03
+All cycle   Rw                    0.0            9.4           0.10E+03
 [06] All cycle   shift/esd
 All cycle   Min function          0.0           0.27E+03       0.10E+16
 [26] Inter cycle R-factor             -5.0           0.1            0.1 E+03
@@ -6775,8 +6774,8 @@ All cycle   Min function          0.0           0.27E+03       0.10E+16
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for    16 least squares parameters, with   258 degrees of freedom
- Number of observations               274                 0               274
+ Statistics for    16 least squares parameters, with   259 degrees of freedom
+ Number of observations               275                 0               275
 [30]  Minimisation function              0.27E+03         0.0E+00         0.27E+03
 [45]  Hamilton weighted R-value           9.              0.00              9. 
 
@@ -6888,10 +6887,9 @@ All cycle   Min function          0.0           0.27E+03       0.10E+16
 [61]     5.   7.   9.     6.      7.
 [61]     4.   8.   9.     5.      7.
 [61]     0.   0.  10.    14.     10.
-[61]     1.   6.  10.     4.      4.
 [61]     3.   6.  10.     4.      3.
+[61]     5.   6.  10.     4.      5.
 [61]     7.   7.  10.    10.     13.
-[61]     0.   8.  10.    18.     21.
 [61]     5.   8.  10.    13.     17.
 [61]     6.   8.  10.    14.     18.
 [61]     3.   9.  10.    20.     23.
@@ -6902,6 +6900,7 @@ All cycle   Min function          0.0           0.27E+03       0.10E+16
 [61]     0.   9.  11.    18.     21.
 [61]     3.   6.  12.     9.     11.
 [61]     2.   7.  12.     7.     10.
+[61]     3.   7.  12.    17.     20.
 
  And so on ------------
 
@@ -6918,13 +6917,13 @@ All cycle   Min function          0.0           0.27E+03       0.10E+16
 
 [33]       9000           9000             300                                    On scale of /FC/
 
-[32]       4440           4420             170                0.27 E+03          On scale of /FO/
+[32]       4450           4430             170                0.27 E+03          On scale of /FO/
 
- New scale factor (G) is      0.475,     274 reflections used in refinement
+ New scale factor (G) is      0.476,     275 reflections used in refinement
 
  Structure factor least squares calculation    8  ends  2
 [29] SumFo/SumFc=  0.47    SumFoFc/SumFc^2=  0.47    SumwFoFc/SumwFc^2=  0.47
-LS-scale=  0.475   Wilson Scale=  0.000
+LS-scale=  0.476   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =  0.1     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
 #INVERT  DEFA
@@ -6949,11 +6948,11 @@ Block No  1.  Single precision relative error:  2.92E-06
                                                 for          16 parameters
 [64]                                  The rms (shift/su)  =           0.
 [64]                               The mean abs(shift/su) =           0.
-[05]  The largest (shift/esd) =      0.0 , for Parameter   15, C1U[11]
+[05]  The largest (shift/esd) =      0.0 , for Parameter    9, O1U[11]
 
                                 Min          Actual           Max
 All cycle   R-factor              0.0            4.0           0.10E+03
-All cycle   Rw                    0.0            9.3           0.10E+03
+All cycle   Rw                    0.0            9.4           0.10E+03
 [06] All cycle   shift/esd
  Forced termination after this cycle:  Actual value condition on: shift/esd
 
@@ -6964,8 +6963,8 @@ All cycle   Rw                    0.0            9.3           0.10E+03
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for    16 least squares parameters, with   258 degrees of freedom
- Number of observations               274                 0               274
+ Statistics for    16 least squares parameters, with   259 degrees of freedom
+ Number of observations               275                 0               275
 [30]  Minimisation function              0.27E+03         0.0E+00         0.27E+03
 [45]  Hamilton weighted R-value           9.              0.00              9. 
 
