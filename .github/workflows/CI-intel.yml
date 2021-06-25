@@ -224,16 +224,14 @@ jobs:
 
 
     - name: Build installer
-      if: matrix.cl == 'gui'
-      if: matrix.release == 'release'
+      if: matrix.cl == 'gui' && matrix.release == 'release'
       working-directory: installer
       shell: cmd
       run: |
         "C:\Program Files (x86)\Inno Setup 6\iscc.exe" "../bin/crystals-gh.iss"
 
     - name: Upload installer
-      if: matrix.cl == 'gui'
-      if: matrix.release == 'release'
+      if: matrix.cl == 'gui' && matrix.release == 'release'
       working-directory: installer
       uses: actions/upload-artifact@v1
       with:
@@ -242,8 +240,7 @@ jobs:
 
     #upload assets to release
     - name: Download URL
-      if: matrix.cl == 'gui'
-      if: matrix.release == 'release'
+      if: matrix.cl == 'gui' && matrix.release == 'release'
       uses: actions/download-artifact@v1
       with:
         name: upload_url
@@ -253,8 +250,7 @@ jobs:
 
     - name: Upload to Release
       uses: actions/upload-release-asset@v1.0.1
-      if: matrix.cl == 'gui'
-      if: matrix.release == 'release'
+      if: matrix.cl == 'gui' && matrix.release == 'release'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
