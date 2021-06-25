@@ -234,9 +234,8 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: crystals-setup
-        path: ./crystals-setup.exe
+        path: ./installer/crystals-setup.exe
       if: matrix.cl == 'gui' && matrix.release == 'release'
-      working-directory: installer
 
     #upload assets to release
     - name: Download URL
