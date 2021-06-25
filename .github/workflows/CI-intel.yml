@@ -237,6 +237,25 @@ jobs:
         path: ./installer/crystals-setup.exe
       if: matrix.cl == 'gui' && matrix.release == 'release'
 
+
+    - name: Create Release
+      if: matrix.cl == 'gui' && matrix.release == 'release'
+      id: create_release
+      uses: actions/create-release@v1.0.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+
+    - name: Store Release url
+      if: matrix.cl == 'gui' && matrix.release == 'release'
+      run: |
+        echo "${{ steps.create_release.outputs.upload_url }}" > ./upload_url
+
+
     #upload assets to release
     - name: Download URL
       if: matrix.cl == 'gui' && matrix.release == 'release'
@@ -244,7 +263,9 @@ jobs:
       with:
         name: upload_url
         path: ./
+        
     - id: set_upload_url
+      if: matrix.cl == 'gui' && matrix.release == 'release'
       run: echo "::set-output name=upload_url::$(cat ./upload_url)"
 
     - name: Upload to Release
