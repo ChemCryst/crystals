@@ -189,15 +189,6 @@ jobs:
         where mkl_intel_thread.1.dll
         echo libifportMD.dll
         where libifportMD.dll
-        echo Test1
-        ..\ci\crystals & echo %errorlevel%
-        echo Test2
-        ..\ci\crystals.exe & echo %errorlevel%
-        echo Test3
-        ..\ci\crystals & echo %errorlevel%
-        echo Test4
-        ..\ci\crystals.exe & echo %errorlevel%
-        echo Tests done
         perl testsuite.pl  ${{ matrix.testoption }} -l
 #
 #
