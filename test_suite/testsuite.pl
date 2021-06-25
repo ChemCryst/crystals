@@ -225,6 +225,8 @@ sub obscureMachinePrecision() {
 	# Large s/esd                " S /ESD    45    45     0.  0 1 9       - 0 . 2E+ 0 1     0 . 1 8  7 E-01          1.03        O      8 U[11]"
 		   } elsif($line =~ m/^(\s*S\/ESD\s+\d+\s+\d+\s+-?0\.\d\d\d)\d(\s+-?0\.\dE.\d\d\s+-?0\.\d\d)\d(E\S\d\d\s+-?\d+\.\d)\d(.*)/ ) {
 				  print $fho "[14] $1 $2 $3 $4\n";
+		   } elsif($line =~ m/^(\s*LARGE\s+\d+\s+\d+\s+-?0\.\d\d\d)\d(\s+-?0\.\dE.\d\d\s+-?0\.\d\d)\d(E\S\d\d\s+-?\d+\.\d)\d(.*)/ ) {
+				  print $fho "[14a] $1 $2 $3 $4\n";
 		   } elsif($line =~ m/^(\s*S\/ESD\s+\d+\s+\d+\s+-?0\.\d\d\d)\d(\s+-?0\.\dE.\d\d\s+-?0\.\d\d)\d(\s+-?\d+\.\d)\d(.*)/ ) {
 				  print $fho "[15] $1 $2 $3 $4\n";
 	#Layer based agreement analysis output "        -9             39        25.37        26.3       0.177E+05       0.922E+00     7.34   14.68           *      "
@@ -420,7 +422,7 @@ sub obscureMachinePrecision() {
 				  print $fho "[60] $1 $2 $3 $4 $5 $6 $7 $8 $9\n";
 	#    5.   5.   1.     1.85     2.86
 	#    6.   2.   0.   -20.53     0.88
-		   } elsif($line =~ m/^(\s+\d+\.\s+\d+\.\s+\d+\. #hkl
+		   } elsif($line =~ m/^(\s+-?\d+\.\s+-?\d+\.\s+-?\d+\. #hkl
 							   \s+-?\d+\.)\d\d  # fo
 							   (\s+\d+\.)\d\d.*/x) # fc
 							   {
@@ -493,11 +495,20 @@ sub obscureMachinePrecision() {
 				  print $fho "[84] $1\n";
 	#                 -1.3805    3.7124   18.2368             -0.16299   0.39160   0.91966
 	  } elsif($line =~ m/^(\s*-?\d*\.\d\d\d)\d(\s*-?\d*\.\d\d\d)\d(\s*-?\d*\.\d\d\d)\d(\s*-?\d*\.\d\d\d)\d\d(\s*-?\d*\.\d\d\d)\d\d(\s*-?\d*\.\d\d\d)\d\d\s*/ ) {
-				  print $fho "[85] $1  $2  $3  $4  $5  $6\n";
+   			      $spx = sprintf "%.2f", $2;
+			      $spy = sprintf "%.2f", $3;
+			      $spz = sprintf "%.2f", $4;
+   			      $spa = sprintf "%.2f", $2;
+			      $spb = sprintf "%.2f", $3;
+			      $spc = sprintf "%.2f", $4;
+				  print $fho "[85] $spx  $spy  $spz  $spa  $spb  $spc\n";
 
 	#    0.00000            0.02964   0.39160   0.91966
 	  } elsif($line =~ m/^(\s*-?\d*\.\d\d\d)\d\d(\s*-?\d*\.\d\d\d)\d\d(\s*-?\d*\.\d\d\d)\d\d(\s*-?\d*\.\d\d\d)\d\d\s*$/ ) {
-				print $fho "[86] $1  $2  $3  $4\n";
+ 			    $spx = sprintf "%.2f", $2;
+			    $spy = sprintf "%.2f", $3;
+			    $spz = sprintf "%.2f", $4;
+				print $fho "[86] $1  $spx  $spy  $spz\n";
 				
 	#<Fo>-<Fc> = -0.219    100*(<Fo>-<Fc>)/<Fo> =    -2.85
 	   } elsif($line =~ m/^(\s*\<Fo\>-\<Fc\> = -?\d*\.\d\d)\d(.*)$/ ) {
