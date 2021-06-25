@@ -226,7 +226,8 @@ jobs:
     - name: Build installer
       working-directory: installer
       shell: cmd
-      run: "C:\Program Files (x86)\Inno Setup 6\iscc.exe" ../bin/crystals-gh.iss
+      run: |
+        "C:\Program Files (x86)\Inno Setup 6\iscc.exe" "../bin/crystals-gh.iss"
 
     - name: Upload installer
       uses: actions/upload-artifact@v1
