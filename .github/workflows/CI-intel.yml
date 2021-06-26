@@ -259,6 +259,7 @@ jobs:
       with:
         path: ./upload_url
         name: upload_url
+      if:  ${{ matrix.cl == 'gui' && matrix.release == 'release' }}
 
     #upload assets to release
     - name: Download URL
@@ -278,7 +279,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.set_upload_url.outputs.upload_url }}
-        asset_path: ./crystals-setup.exe
+        asset_path: ./installer/crystals-setup.exe
         asset_name: crystals-v${{ env.VERSION }}-win64.exe
         asset_content_type: application/x-executable
       if:  ${{ matrix.cl == 'gui' && matrix.release == 'release' }}
