@@ -224,7 +224,7 @@ jobs:
 
 
     - name: Build installer
-      if: matrix.cl == 'gui' && matrix.release == 'release'
+      if:  ${{ matrix.cl == 'gui' && matrix.release == 'release' }}
       working-directory: installer
       shell: cmd
       run: |
@@ -235,11 +235,11 @@ jobs:
       with:
         name: crystals-setup
         path: ./installer/crystals-setup.exe
-      if: matrix.cl == 'gui' && matrix.release == 'release'
+      if:  ${{ matrix.cl == 'gui' && matrix.release == 'release' }}
 
 
     - name: Create Release
-      if: matrix.cl == 'gui' && matrix.release == 'release'
+      if:  ${{ matrix.cl == 'gui' && matrix.release == 'release' }}
       id: create_release
       uses: actions/create-release@v1.0.0
       env:
@@ -251,21 +251,21 @@ jobs:
         prerelease: false
 
     - name: Store Release url
-      if: matrix.cl == 'gui' && matrix.release == 'release'
+      if:  ${{ matrix.cl == 'gui' && matrix.release == 'release' }}
       run: |
         echo "${{ steps.create_release.outputs.upload_url }}" > ./upload_url
 
 
     #upload assets to release
     - name: Download URL
-      if: matrix.cl == 'gui' && matrix.release == 'release'
+      if:  ${{ matrix.cl == 'gui' && matrix.release == 'release' }}
       uses: actions/download-artifact@v1
       with:
         name: upload_url
         path: ./
         
     - id: set_upload_url
-      if: matrix.cl == 'gui' && matrix.release == 'release'
+      if:  ${{ matrix.cl == 'gui' && matrix.release == 'release' }}
       run: echo "::set-output name=upload_url::$(cat ./upload_url)"
 
     - name: Upload to Release
@@ -277,6 +277,6 @@ jobs:
         asset_path: ./crystals-setup.exe
         asset_name: crystals-v${{ env.VERSION }}-win64.exe
         asset_content_type: application/x-executable
-      if: matrix.cl == 'gui' && matrix.release == 'release'
+      if:  ${{ matrix.cl == 'gui' && matrix.release == 'release' }}
         
         
