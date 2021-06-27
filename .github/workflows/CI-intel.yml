@@ -146,6 +146,45 @@ jobs:
         set FC=ifort
         cmake .. -G"NMake Makefiles" -DuseGUI=${{ matrix.guiflag }} -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }}
         nmake
+        copy ..\wx\lib\vc14x_x64_dll\wxmsw314u_stc_vc14x_x64.dll . 
+        copy ..\wx\lib\vc14x_x64_dll\wxmsw314u_core_vc14x_x64.dll .
+        copy ..\wx\lib\vc14x_x64_dll\wxmsw314u_gl_vc14x_x64.dll . 
+        copy ..\wx\lib\vc14x_x64_dll\wxbase314u_vc14x_x64.dll .
+        SET COMMAND=where libifcoremd.dll
+        FOR /F "delims=" %%A IN ('%COMMAND%') DO (
+            SET TEMPVAR=%%A
+            GOTO :copy1
+        )
+        :copy1
+        ECHO %TEMPVAR%
+        copy "%tempvar%"
+        SET COMMAND=where libifportMD.dll
+        FOR /F "delims=" %%A IN ('%COMMAND%') DO (
+            SET TEMPVAR=%%A
+            GOTO :copy2
+        )
+        :copy2
+        ECHO %TEMPVAR%
+        copy "%tempvar%"
+        SET COMMAND=where libiomp5md.dll
+        FOR /F "delims=" %%A IN ('%COMMAND%') DO (
+            SET TEMPVAR=%%A
+            GOTO :copy3
+        )
+        :copy3
+        ECHO %TEMPVAR%
+        copy "%tempvar%"
+        SET COMMAND=where mkl_intel_thread.1.dll
+        FOR /F "delims=" %%A IN ('%COMMAND%') DO (
+            SET TEMPVAR=%%A
+            GOTO :copy4
+        )
+        :copy4
+        ECHO %TEMPVAR%
+        copy "%tempvar%"
+
+  
+    
 
 # Tests
     - uses: ilammy/msvc-dev-cmd@v1
