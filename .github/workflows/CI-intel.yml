@@ -182,7 +182,22 @@ jobs:
         :copy4
         ECHO %TEMPVAR%
         copy "%tempvar%"
-  
+        SET COMMAND=where libmmd.dll
+        FOR /F "delims=" %%A IN ('%COMMAND%') DO (
+            SET TEMPVAR=%%A
+            GOTO :copy5
+        )
+        :copy5
+        ECHO %TEMPVAR%
+        copy "%tempvar%"
+        SET COMMAND=where svml_dispmd.dll
+        FOR /F "delims=" %%A IN ('%COMMAND%') DO (
+            SET TEMPVAR=%%A
+            GOTO :copy6
+        )
+        :copy6
+        ECHO %TEMPVAR%
+        copy "%tempvar%"
     
 
 # Tests
@@ -219,17 +234,6 @@ jobs:
         perl ../editor/filepp.pl -ds -w -o diffin2.tst -DTESTWIN diffin2.tss
         perl ../editor/filepp.pl -ds -w -o diffin3.tst -DTESTWIN diffin3.tss
         perl ../editor/filepp.pl -ds -w -o shelx2cry.tst -DTESTWIN shelx2cry.tss
-        echo dumpbin
-        dumpbin /dependents ..\ci\crystals.exe
-        echo WHERE:
-        echo wxbase314u_vc14x_x64.dll
-        where wxbase314u_vc14x_x64.dll
-        echo libiomp5md.dll
-        where libiomp5md.dll
-        echo mkl_intel_thread.1.dll
-        where mkl_intel_thread.1.dll
-        echo libifportMD.dll
-        where libifportMD.dll
         perl testsuite.pl  ${{ matrix.testoption }} -l
 #
 #
