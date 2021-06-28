@@ -266,7 +266,7 @@ jobs:
 
 
     - name: Build installer
-      if:  ${{ matrix.cl == 'gui' && matrix.release == 'release' }}
+      if:  ${{ matrix.cl == 'gui' }}
       working-directory: installer
       shell: cmd
       run: |
@@ -277,7 +277,7 @@ jobs:
       with:
         name: crystals-setup
         path: ./installer/crystals-setup.exe
-      if:  ${{ matrix.cl == 'gui' && matrix.release == 'release' }}
+      if:  ${{ matrix.cl == 'gui' }}
 
 
     - name: Create Release
