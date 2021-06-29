@@ -148,6 +148,7 @@ jobs:
         for /f "tokens=* usebackq" %%f in (`dir /b "C:\Program Files (x86)\Intel\oneAPI\compiler\" ^| findstr /V latest ^| sort`) do @set "LATEST_VERSION=%%f"
         xcopy /I/E/Y "C:\Program Files (x86)\Intel\oneAPI\mkl\%LATEST_VERSION%\tools\builder" builder
         call "C:\Program Files (x86)\Intel\oneAPI\compiler\%LATEST_VERSION%\env\vars.bat"
+        call "C:\Program Files (x86)\Intel\oneAPI\mkl\%LATEST_VERSION%\env\vars.bat"
         set FC=ifort
         pushd builder
         nmake libintel64 export="..\..\build\mkllibs.txt"
