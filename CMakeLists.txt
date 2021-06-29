@@ -12,7 +12,7 @@ SET(CMAKE_COLOR_MAKEFILE ON)
 option (verbose "verbose" OFF)
 option (useMULTIDEF_WORKAROUND "useMULTIDEF_WORKAROUND" OFF)  #temporary while multiply defined symbols exist in MinGW64 libs.
 option (useGUI "useGUI" ON)
-option (useCustomMKL "useCustomMKL" ON)
+option (useCustomMKL "useCustomMKL" OFF)
 option (usePY "usePY" OFF)
 option (use32 "use32" OFF)
 option (useSTATIC "useSTATIC" OFF)
