@@ -142,6 +142,7 @@ jobs:
         mkdir installer
       
     - name: Build custom mkl library
+      working-directory: ci
       shell: cmd
       run: |    
         for /f "tokens=* usebackq" %%f in (`dir /b "C:\Program Files (x86)\Intel\oneAPI\compiler\" ^| findstr /V latest ^| sort`) do @set "LATEST_VERSION=%%f"
