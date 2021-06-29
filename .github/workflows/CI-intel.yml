@@ -114,8 +114,17 @@ jobs:
 
 # Install wxWidgets - win GUI only
 #
-    - name: Setup wxWidgets for Win64 gui
+   - uses: actions/cache@v2
+      id: cache-wxlibs  # give it a name for checking the cache hit-or-not
+      with:
+        path: ./wx/  # what we cache: the folder
+        key: ${{ runner.os }}-wxlibs314 }}
+        restore-keys: |
+          ${{ runner.os }}-wxlibs314
       if: matrix.cl == 'gui'
+          
+    - name: Download wxWidgets for Win64 gui
+      if: ${{ steps.cache-packages.outputs.cache-hit != 'true' && matrix.cl == 'gui' }}
       shell: cmd
       run: |
         curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.4/wxMSW-3.1.4_vc14x_x64_Dev.7z > dev.7z
@@ -131,6 +140,16 @@ jobs:
         mkdir ci
         mkdir installer
       
+    - name: Build custom mkl library
+      shell: cmd
+      run: |    
+        for /f "tokens=* usebackq" %%f in (`dir /b "C:\Program Files (x86)\Intel\oneAPI\compiler\" ^| findstr /V latest ^| sort`) do @set "LATEST_VERSION=%%f"
+        xcopy /I/E/Y "C:\Program Files (x86)\Intel\oneAPI\mkl\%LATEST_VERSION%\tools\builder" builder
+        pushd builder
+        nmake libintel64 export="..\..\build\mkllibs.txt"
+        popd
+        copy ".\builder\mkl_custom.dll" .
+        copy ".\builder\mkl_custom.lib" .
 
 # Build WIN64
 #
@@ -142,7 +161,6 @@ jobs:
       run: |
         for /f "tokens=* usebackq" %%f in (`dir /b "C:\Program Files (x86)\Intel\oneAPI\compiler\" ^| findstr /V latest ^| sort`) do @set "LATEST_VERSION=%%f"
         call "C:\Program Files (x86)\Intel\oneAPI\compiler\%LATEST_VERSION%\env\vars.bat"
-        call "C:\Program Files (x86)\Intel\oneAPI\mkl\%LATEST_VERSION%\env\vars.bat"
         set FC=ifort
         cmake .. -G"NMake Makefiles" -DuseGUI=${{ matrix.guiflag }} -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }}
         nmake
@@ -172,14 +190,6 @@ jobs:
             GOTO :copy3
         )
         :copy3
-        ECHO %TEMPVAR%
-        copy "%tempvar%"
-        SET COMMAND=where mkl_intel_thread.1.dll
-        FOR /F "delims=" %%A IN ('%COMMAND%') DO (
-            SET TEMPVAR=%%A
-            GOTO :copy4
-        )
-        :copy4
         ECHO %TEMPVAR%
         copy "%tempvar%"
         SET COMMAND=where libmmd.dll
