@@ -12,6 +12,7 @@ SET(CMAKE_COLOR_MAKEFILE ON)
 option (verbose "verbose" OFF)
 option (useMULTIDEF_WORKAROUND "useMULTIDEF_WORKAROUND" OFF)  #temporary while multiply defined symbols exist in MinGW64 libs.
 option (useGUI "useGUI" ON)
+option (useCustomMKL "useCustomMKL" ON)
 option (usePY "usePY" OFF)
 option (use32 "use32" OFF)
 option (useSTATIC "useSTATIC" OFF)
@@ -107,6 +108,14 @@ IF ( PERL_FOUND )
 ENDIF ( PERL_FOUND )
 
 IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.5)
+
+  if ( useCustomMKL ) 
+
+        message(STATUS "Using Custom MKL library: ./mkl_custom.lib")
+        link_libraries ( "mkl_custom.lib" )  
+        link_directories( ${CMAKE_BINARY_DIR} )
+  
+  else()
     find_package(BLAS)
     find_package(LAPACK)
 
@@ -135,7 +144,15 @@ IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.5)
         message(STATUS "Using builtin BLAS and LAPACK library")
         add_definitions(-DCRY_OWNLAPACK)
     endif ()
+  endif ()
 else ()
+  if ( useCustomMKL ) 
+
+        message(STATUS "Using Custom MKL library: ./mkl_custom.lib")
+        link_libraries ( "mkl_custom.lib" )  
+        link_directories( ${CMAKE_BINARY_DIR} )
+  
+  else()
     find_library(OpenBLAS_LIBRARY openblaso)
     if(OpenBLAS_LIBRARY)
         message(STATUS "Using OpenBLAS [${OpenBLAS_LIBRARY}]")
@@ -169,6 +186,7 @@ else ()
             add_definitions(-DCRY_OWNLAPACK)
         endif ()
     endif()
+  endif()
 endif ()
 
 if(BLA_VENDOR)
@@ -368,8 +386,8 @@ ELSEIF ( IFORT_COMPILER ) # ifort (untested)
 
   ELSE()
 
-	    SET (CMAKE_Fortran_FLAGS_RELEASE "-O3 -fpp -MD -Qmkl -Qdiag-disable:8291 -traceback -QaxSSE2")
-	    SET (CMAKE_Fortran_FLAGS_DEBUG   "-check:all -MDd -debug:all -Qtrapuv -fpe0 -fpp -Qmkl -warn:nofileopt -Qdiag-disable:8291 -Qdiag-disable:8290 -check:format -check:overflow -check:pointers -check:noarg_temp_created -check:uninit -traceback -check:nooutput_conversion")
+	    SET (CMAKE_Fortran_FLAGS_RELEASE "-O3 -fpp -MD -Qdiag-disable:8291 -traceback -QaxSSE2")
+	    SET (CMAKE_Fortran_FLAGS_DEBUG   "-check:all -MDd -debug:all -Qtrapuv -fpe0 -fpp -warn:nofileopt -Qdiag-disable:8291 -Qdiag-disable:8290 -check:format -check:overflow -check:pointers -check:noarg_temp_created -check:uninit -traceback -check:nooutput_conversion")
 
     	SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}  /O2  /EHs /W3 /Oy- ")
     	SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /EHs /W3 /Oy- ")
