@@ -114,11 +114,12 @@ jobs:
 
 # Install wxWidgets - win GUI only
 
-    - uses: actions/cache@v2
+    - name: cache install mkl
       id: cache-wxlibs  # give it a name for checking the cache hit-or-not
+      uses: actions/cache@v2
       with:
-        path: ./wx/  # what we cache: the folder
-        key: ${{ runner.os }}-wxlibs314 }}
+        path: ./wx  # what we cache: the folder
+        key: ${{ runner.os }}-wxlibs314
         restore-keys: |
           ${{ runner.os }}-wxlibs314
       if: matrix.cl == 'gui'
@@ -145,6 +146,8 @@ jobs:
       run: |    
         for /f "tokens=* usebackq" %%f in (`dir /b "C:\Program Files (x86)\Intel\oneAPI\compiler\" ^| findstr /V latest ^| sort`) do @set "LATEST_VERSION=%%f"
         xcopy /I/E/Y "C:\Program Files (x86)\Intel\oneAPI\mkl\%LATEST_VERSION%\tools\builder" builder
+        call "C:\Program Files (x86)\Intel\oneAPI\compiler\%LATEST_VERSION%\env\vars.bat"
+        set FC=ifort
         pushd builder
         nmake libintel64 export="..\..\build\mkllibs.txt"
         popd
