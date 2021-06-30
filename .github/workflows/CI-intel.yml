@@ -120,7 +120,7 @@ jobs:
       if: matrix.cl == 'gui'
           
     - name: Download wxWidgets for Win64 gui
-      if: ${{ steps.cache-packages.outputs.cache-hit != 'true' && matrix.cl == 'gui' }}
+      if: ${{ steps.cache-wxlibs.outputs.cache-hit != 'true' && matrix.cl == 'gui' }}
       shell: cmd
       run: |
         curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.4/wxMSW-3.1.4_vc14x_x64_Dev.7z > dev.7z
