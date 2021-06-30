@@ -321,7 +321,7 @@ jobs:
       with:
         path: ./upload_url
         name: upload_url
-      if:  ${{ matrix.cl == 'gui' && matrix.release == 'release' }}
+      if:  ${{ matrix.cl == 'gui' && matrix.release == 'release' && startsWith(github.ref, 'refs/tags/') }}
 
     #upload assets to release
     - name: Download URL
