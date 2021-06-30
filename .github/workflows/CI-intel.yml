@@ -89,8 +89,6 @@ jobs:
       if: steps.cache-install-mkl.outputs.cache-hit != 'true'
       shell: bash
       run: bin/cache_exclude_windows.sh
-
-
  
     - name: cache install ifort
       id: cache-install
@@ -109,12 +107,9 @@ jobs:
       shell: bash
       run: bin/cache_exclude_windows.sh
 
-
-
-
 # Install wxWidgets - win GUI only
 
-    - name: cache install mkl
+    - name: cache install wx
       id: cache-wxlibs  # give it a name for checking the cache hit-or-not
       uses: actions/cache@v2
       with:
@@ -140,6 +135,12 @@ jobs:
       run: |
         mkdir ci
         mkdir installer
+
+    - name: Generate build number
+      id: buildnumber
+      uses: einaregilsson/build-number@v3 
+      with:
+        token: ${{secrets.github_token}}        
       
     - name: Build custom mkl library
       working-directory: ci
@@ -167,6 +168,7 @@ jobs:
         for /f "tokens=* usebackq" %%f in (`dir /b "C:\Program Files (x86)\Intel\oneAPI\compiler\" ^| findstr /V latest ^| sort`) do @set "LATEST_VERSION=%%f"
         call "C:\Program Files (x86)\Intel\oneAPI\compiler\%LATEST_VERSION%\env\vars.bat"
         set FC=ifort
+        set CRYSVNVER=${env:BUILD_NUMBER}
         cmake .. -G"NMake Makefiles" -DuseGUI=${{ matrix.guiflag }} -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }} -DuseCustomMKL=yes
         nmake
         copy ..\wx\lib\vc14x_x64_dll\wxmsw314u_stc_vc14x_x64.dll . 
@@ -250,9 +252,9 @@ jobs:
         perl ../editor/filepp.pl -ds -w -o diffin3.tst -DTESTWIN diffin3.tss
         perl ../editor/filepp.pl -ds -w -o shelx2cry.tst -DTESTWIN shelx2cry.tss
         perl testsuite.pl  ${{ matrix.testoption }} -l
-#
-#
-# If failures, set variable to trigger next two stages (one to tidy, one to upload)
+
+
+# If failures, trigger next two stages (one to tidy, one to upload)
     - name: Tidy failed test outputs win64
       working-directory: test_suite
       if: failure() 
@@ -264,7 +266,6 @@ jobs:
         copy *.out INW64GH${{ matrix.testsuffix }}.org
         del /q *.*
 
-
     - name: Upload outputs if failures
       uses: actions/upload-artifact@v1
       if:  failure()
@@ -272,7 +273,8 @@ jobs:
         name: test-outputs-win64-${{ matrix.cl }}
         path: test_suite
 
-#    - name: Upload exe folder if failures
+# Could be useful for debugging
+#    - name: Upload exe folder if failures 
 #      uses: actions/upload-artifact@v1
 #      if:  failure()
 #      with:
@@ -285,6 +287,7 @@ jobs:
       working-directory: installer
       shell: cmd
       run: |
+        set CRYSVNVER=${env:BUILD_NUMBER}
         "C:\Program Files (x86)\Inno Setup 6\iscc.exe" "../bin/crystals-gh.iss"
 
     - name: Upload installer
@@ -293,7 +296,6 @@ jobs:
         name: crystals-setup
         path: ./installer/crystals-setup.exe
       if:  ${{ matrix.cl == 'gui' }}
-
 
     - name: Create Release
       if:  ${{ matrix.cl == 'gui' && matrix.release == 'release' }}
