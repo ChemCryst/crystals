@@ -291,6 +291,7 @@ jobs:
         set CRYSVNVER=%BUILD_NUMBER%
         echo Build number: %CRYSVNVER%
         "C:\Program Files (x86)\Inno Setup 6\iscc.exe" "../bin/crystals-gh.iss"
+        ren crystals-setup.exe crystals-v15.1.${{ steps.buildnumber.outputs.build_number }}-${{matrix.release}}-setup.exe
 
     - name: Upload installer
       uses: actions/upload-artifact@v1
@@ -306,8 +307,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: Tag${{ github.ref }}
-        release_name: Release ${{ github.ref }}
+        tag_name: Tag${{ github.ref }}-v15.1.${{ steps.buildnumber.outputs.build_number }}
+        release_name: Release ${{ github.ref }} v15.1.${{ steps.buildnumber.outputs.build_number }}
         draft: false
         prerelease: false
 
