@@ -288,14 +288,15 @@ jobs:
       working-directory: installer
       shell: cmd
       run: |
-        set CRYSVNVER=${env:BUILD_NUMBER}
+        set CRYSVNVER=%BUILD_NUMBER%
+        echo Build number: %CRYSVNVER%
         "C:\Program Files (x86)\Inno Setup 6\iscc.exe" "../bin/crystals-gh.iss"
 
     - name: Upload installer
       uses: actions/upload-artifact@v1
       with:
         name: crystals-setup
-        path: ./installer/crystals-setup.exe
+        path: ./installer/crystals-v15.1.${{ steps.buildnumber.outputs.build_number }}-${{matrix.release}}-setup.exe
       if:  ${{ matrix.cl == 'gui' }}
 
     - name: Create Release
@@ -333,15 +334,23 @@ jobs:
       if:  ${{ matrix.cl == 'gui' && matrix.release == 'release' }}
       run: echo "::set-output name=upload_url::$(cat ./upload_url)"
 
+#    - name: Upload to Release
+      #uses: actions/upload-release-asset@v1.0.1
+      #env:
+        #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #with:
+        #upload_url: ${{ steps.set_upload_url.outputs.upload_url }}
+        #asset_path: ./installer/crystals-setup.exe
+        #asset_name: crystals-v${{ env.VERSION }}-win64.exe
+        #asset_content_type: application/x-executable
+      #if:  ${{ matrix.cl == 'gui' && matrix.release == 'release' }}
+        
+ #        if: startsWith(github.ref, 'refs/tags/')
     - name: Upload to Release
-      uses: actions/upload-release-asset@v1.0.1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.set_upload_url.outputs.upload_url }}
-        asset_path: ./installer/crystals-setup.exe
-        asset_name: crystals-v${{ env.VERSION }}-win64.exe
-        asset_content_type: application/x-executable
+      uses: softprops/action-gh-release@v1
       if:  ${{ matrix.cl == 'gui' && matrix.release == 'release' }}
-        
-        
+      with:
+          files: |
+            crys*.exe
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
