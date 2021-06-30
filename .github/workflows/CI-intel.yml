@@ -352,6 +352,6 @@ jobs:
       if:  ${{ matrix.cl == 'gui' && matrix.release == 'release' && startsWith(github.ref, 'refs/tags/') }}
       with:
           files: |
-            crystals-*-${{matrix.release}}-setup.exe
+            ./installer/crystals-*-${{matrix.release}}-setup.exe
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
