@@ -14,8 +14,8 @@
 %%                                                                              
 %%{R  CRYSTALS refinement directives (LIST 12):                                 
 %%                                                                              
-%    COPY '#PRINT 12'                                                           
-%    COPY 'END'                                                                 
+%%    COPY '#PRINT 12'                                                           
+%%    COPY 'END'                                                                 
 {R  Directives are valid, but that does not necessarily mean 'suitable'!        
 %    FINISH                                                                     
 %  END BLOCK                                                                    

@@ -237,6 +237,7 @@
 ^^WI   @ 2,4 BUTTON RF_BAB '&Abort' INFORM=NO DEFAULT DISABLED=NO } SHOW
 ^^CR
 %          LOOP NCYCLE TIMES
+%%            COPY '#SCRIPT TWIN-CHECK'
 %            COPY '#SFLS'
 %            COPY 'REFINE'
 %              IF SHIFT .LT. 1.0 THEN
@@ -288,6 +289,7 @@
 ^^WI   @ 2,4 BUTTON RF_BAB '&Abort' INFORM=NO DEFAULT DISABLED=NO } SHOW
 ^^CR
 %        LOOP NCYCLE TIMES
+%%          COPY '#SCRIPT TWIN-CHECK'
 %          COPY '#SFLS'
 %          COPY 'REFINE'
 %              IF SHIFT .LT. 1.0 THEN

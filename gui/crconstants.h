@@ -111,6 +111,7 @@
 #define kSVisibleLines  "VISLINES"
 #define kSAlign     "ALIGN"
 #define kSTextSelector  "TEXT"
+#define kSToolTip  "TOOLTIP"
 #define kSNull      "NULL"
 #define kSYes       "YES"
 #define kSNo        "NO"
@@ -211,7 +212,8 @@ enum
  kTSave,
  kTQNLines,
  kTMenuIcon,
- kTValue
+ kTValue,
+ kTToolTip
 };
 
 

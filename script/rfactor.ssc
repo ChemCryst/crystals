@@ -1,6 +1,6 @@
 %SCRIPT RFACTOR
 %% The variables R, OSCALE and RATIO may be needed in other scripts
-%  VARIABLE REAL R OSCALE RATIO ARATIO
+%  VARIABLE REAL R OSCALE RATIO ARATIO MFUNC
 %%       A dummy in case we have no Fc
 %      EVALUATE R = 100.
 %      EVALUATE RATIO = 100.
@@ -26,6 +26,7 @@ Script rfactor: no atoms in model (L5).
 %        COPY "#GENERALEDIT 6"
 %        COPY "LOCATE RECORDTYPE=106"
 %        COPY "TRANSFER FROM OFFSET=1 TO R"
+%        COPY "TRANSFER FROM OFFSET=3 TO MFUNC"
 %% get the rms Fo and Fc
 %        COPY "LOCATE RECORDTYPE=107"
 %        COPY "NEXT"

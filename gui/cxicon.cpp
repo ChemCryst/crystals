@@ -28,22 +28,17 @@
 #include    "crystalsinterface.h"
 #include    "crconstants.h" //unusual, but used for kTIcon<Type>.
 #include    "cxicon.h"
+#include    <wx/artprov.h>
 #include    "cxgrid.h"
 #include    "cricon.h"
 #include    "cccontroller.h"
 
 #define kIconBase 56000
 
-int   CxIcon::mTextCount = kIconBase;
 CxIcon *    CxIcon::CreateCxIcon( CrIcon * container, CxGrid * guiParent )
 {
       CxIcon      *theText = new CxIcon( container );
-#ifdef CRY_USEMFC
-    theText->Create(NULL, SS_ICON|WS_CHILD|WS_VISIBLE,CRect(0,0,20,20),guiParent);
-    theText->SetFont(CcController::mp_font);
-#else
-      theText->Create(guiParent, -1, "");
-#endif
+      theText->Create(guiParent, -1);
       return theText;
 }
 
@@ -51,104 +46,87 @@ CxIcon::CxIcon( CrIcon * container )
       :BASETEXT()
 {
     ptr_to_crObject = container;
-    mCharsWidth = 0;
+    mWidth = 10;
+	mHeight = 10;
+    mbOkToDraw = false;
 }
 
 CxIcon::~CxIcon()
 {
-    RemoveText();
 }
 
 void CxIcon::CxDestroyWindow()
 {
-#ifdef CRY_USEMFC
-DestroyWindow();
-#else
 Destroy();
-#endif
 }
 
-CXSETGEOMETRY(CxIcon)
 
+//wx Message Table
+BEGIN_EVENT_TABLE(CxIcon, wxWindow)
+      EVT_PAINT( CxIcon::OnPaint )
+END_EVENT_TABLE()
+
+void CxIcon::OnPaint(wxPaintEvent & evt)
+{
+  wxPaintDC dc(this);
+  if (!mbOkToDraw) return;
+  dc.DrawBitmap(mbitmap,0,0,false);
+}
+
+
+CXSETGEOMETRY(CxIcon)
 CXGETGEOMETRIES(CxIcon)
 
 
 int   CxIcon::GetIdealWidth()
 {
-#ifdef CRY_USEMFC
-      return GetSystemMetrics(SM_CXICON);
-#else
-      int cx,cy;
-      GetTextExtent( GetLabel(), &cx, &cy );
-      return cx;
-#endif
-
+    return mWidth;
 }
 
 int   CxIcon::GetIdealHeight()
 {
-#ifdef CRY_USEMFC
-      return GetSystemMetrics(SM_CYICON);
-#else
-      return GetCharHeight();
-#endif
+    return mHeight;
 }
 
-int   CxIcon::AddText()
+void CxIcon::SetHelpText( const string &text )
 {
-    mTextCount++;
-    return mTextCount;
+    SetToolTip(text);
 }
-
-void  CxIcon::RemoveText()
-{
-    mTextCount--;
-}
-
-void  CxIcon::SetVisibleChars( int count )
-{
-    mCharsWidth = count;
-}
-
 
 void CxIcon::SetIconType( int iIconId )
 {
-#ifdef CRY_USEMFC
-      HICON icon;
       switch ( iIconId )
       {
+            case kTIconInfoSmall:
+			     mbitmap = wxArtProvider::GetIcon( wxART_INFORMATION, wxART_OTHER, wxSize(16,16) );
+                 break;
             case kTIconInfo:
-                 icon = ::LoadIcon(NULL, MAKEINTRESOURCE ( IDI_ASTERISK )) ;
+			     mbitmap = wxArtProvider::GetIcon( wxART_INFORMATION );
+                 break;
+            case kTIconWarnSmall:
+			     mbitmap = wxArtProvider::GetIcon( wxART_WARNING, wxART_OTHER, wxSize(16,16) );
                  break;
             case kTIconWarn:
-                 icon = ::LoadIcon(NULL, MAKEINTRESOURCE ( IDI_EXCLAMATION )) ;
+			     mbitmap = wxArtProvider::GetIcon( wxART_WARNING );
+                 break;
+            case kTIconErrorSmall:
+			     mbitmap = wxArtProvider::GetIcon( wxART_ERROR, wxART_OTHER, wxSize(16,16) );
                  break;
             case kTIconError:
-                 icon = ::LoadIcon(NULL, MAKEINTRESOURCE ( IDI_HAND )) ;
+			     mbitmap = wxArtProvider::GetIcon( wxART_ERROR );
                  break;
+            case kTIconQuerySmall:
+			     mbitmap = wxArtProvider::GetIcon( wxART_QUESTION, wxART_OTHER, wxSize(16,16) );
+				 break;
             case kTIconQuery:
             default:
-                 icon = ::LoadIcon(NULL, MAKEINTRESOURCE ( IDI_QUESTION )) ;
+			     mbitmap = wxArtProvider::GetIcon( wxART_QUESTION );
                  break;
       }
-
-      SetIcon ( icon );
-#else
-      switch ( iIconId )
-      {
-            case kTIconInfo:
-//                 SetLabel("INFORMATION:");
-                 break;
-            case kTIconWarn:
-//                 SetLabel("WARNING:");
-                 break;
-            case kTIconError:
-//                 SetLabel("STOP:");
-                 break;
-            case kTIconQuery:
-            default:
-//                 SetLabel("QUESTION:");
-                 break;
-      }
-#endif
+	  
+      mWidth = mbitmap.GetWidth();
+      mHeight = mbitmap.GetHeight();
+      mbOkToDraw = true;
+  
+	  return;
 }
