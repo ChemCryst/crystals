@@ -249,7 +249,11 @@
 ^^WI   @ 2,1 RADIOBUTTON REFPXO 'Refine scale and positions' STATE=OFF
 ^^WI   @ 3,1 RADIOBUTTON REFPUI 'Refine scale, positions and U&iso' STATE=OFF
 ^^WI   @ 4,1 RADIOBUTTON REFPUA 'Refine scale, positions and &Uijs' STATE=OFF
-^^WI   @ 5,1 CHECKBOX OVRD '&Override sticky settings for atoms' STATE=OFF
+^^WI  @ 5,1 GRID ORBOX NROWS=1 NCOLS=2 {
+^^WI     @ 1,1 CHECKBOX OVRD '&Override sticky settings for atoms' STATE=OFF
+^^WI     @ 1,2 ICON OIC SMALLQUERY TOOLTIP 
+^^WI 'Sticky settings (right-click atoms to set) override these options unless this box is checked'
+^^WI     }
 ^^WI   }
 % IF ( HFIRST .GE. 0.0 ) THEN
 ^^WI   @ 3,1 GRID HR NROWS=3 NCOLS=1 OUTLINE='Hydrogen restraints'

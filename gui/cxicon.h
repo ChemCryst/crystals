@@ -33,9 +33,9 @@
  #include <afxwin.h>
  #define BASETEXT CStatic
 #else
- #include <wx/stattext.h>
+// #include <wx/stattext.h>
  #include <wx/icon.h>
- #define BASETEXT wxStaticText
+ #define BASETEXT wxWindow
 #endif
 
 
@@ -46,7 +46,7 @@ class CxIcon : public BASETEXT
 {
     public:
         // methods
-            static CxIcon *   CreateCxIcon( CrIcon * container, CxGrid * guiParent );
+           static CxIcon *   CreateCxIcon( CrIcon * container, CxGrid * guiParent );
                   CxIcon( CrIcon * container );
                   ~CxIcon();
         void    SetGeometry( const int top, const int left, const int bottom, const int right );
@@ -56,20 +56,24 @@ class CxIcon : public BASETEXT
         int GetHeight();
         int GetIdealWidth();
         int GetIdealHeight();
-        static int  AddText();
-        static void RemoveText();
         void CxDestroyWindow();
-        void    SetVisibleChars( int count );
-            void SetIconType( int iIconId );
+        void SetIconType( int iIconId );
+		void SetHelpText( const string &text );
 
         // attributes
         CrGUIElement *  ptr_to_crObject;
 
     protected:
-        // methods
-
         // attributes
-        static int  mTextCount;
-        int mCharsWidth;
+		wxBitmap mbitmap;
+        int mWidth;
+        int mHeight;
+        bool mbOkToDraw;
+
+        // methods
+		void OnPaint(wxPaintEvent & event);
+		DECLARE_EVENT_TABLE()
+
+
 };
 #endif
