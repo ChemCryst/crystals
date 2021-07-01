@@ -63,24 +63,44 @@ CRCALCLAYOUT(CrIcon,CxIcon)
 
 CcParse     CrIcon::ParseInput( deque<string> & tokenList )
 {
-  CcParse retVal(true, mXCanResize, mYCanResize);
-  bool hasTokenForMe = true;
+	CcParse retVal(true, mXCanResize, mYCanResize);
+	bool hasTokenForMe = true;
 
 // This is the only class I can think of that doesn't have
 // a general parser. All info must be set up as the icon
 // is created. w.f. ^^WI ICON MYICON QUERY
 
 // Initialization for the first time
-  if( ! mSelfInitialised )
-  {
-    retVal = CrGUIElement::ParseInputNoText( tokenList );
-    mSelfInitialised = true;
+	if( ! mSelfInitialised )
+	{
+	retVal = CrGUIElement::ParseInputNoText( tokenList );
+	mSelfInitialised = true;
 
-    LOGSTAT( "*** Created Icon        " + mName );
-    ((CxIcon *)ptr_to_cxObject)->SetIconType( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) );
-    tokenList.pop_front();
-    LOGSTAT( "Setting Icon");
-  }
+	LOGSTAT( "*** Created Icon        " + mName );
+	((CxIcon *)ptr_to_cxObject)->SetIconType( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) );
+	tokenList.pop_front();
+	LOGSTAT( "Setting Icon");
+	}
+	while ( hasTokenForMe && ! tokenList.empty() )
+	{
+		switch ( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) )
+		{
+			case kTToolTip:
+			{
+				tokenList.pop_front(); // Remove that token!
+				((CxIcon *)ptr_to_cxObject)->SetHelpText(tokenList.front());
+				tokenList.pop_front();
+				LOGSTAT( "CrIcon:ParseInput Setting Tooltip Text ");
+				break;
+			}
+			default:
+			{
+				hasTokenForMe = false;
+				break; // We leave the token in the list and exit the loop
+			}
+		}
+	}
+
   return retVal;
 }
 
