@@ -93,6 +93,14 @@ CcParse     CrIcon::ParseInput( deque<string> & tokenList )
 				LOGSTAT( "CrIcon:ParseInput Setting Tooltip Text ");
 				break;
 			}
+			case kTSetIcon:
+			{
+				tokenList.pop_front(); // Remove that token!
+				((CxIcon *)ptr_to_cxObject)->SetIconType( CcController::GetDescriptor( tokenList.front(), kAttributeClass ) );
+				tokenList.pop_front();
+				LOGSTAT( "CrIcon:ParseInput Changing icon ");
+				break;
+			}
 			default:
 			{
 				hasTokenForMe = false;
