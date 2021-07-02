@@ -28,6 +28,7 @@
 #include    "crystalsinterface.h"
 #include    "crconstants.h" //unusual, but used for kTIcon<Type>.
 #include    "cxicon.h"
+#include    "cxtab.h"
 #include    <wx/artprov.h>
 #include    "cxgrid.h"
 #include    "cricon.h"
@@ -37,18 +38,31 @@
 
 CxIcon *    CxIcon::CreateCxIcon( CrIcon * container, CxGrid * guiParent )
 {
-      CxIcon      *theText = new CxIcon( container );
-      theText->Create(guiParent, -1);
-      return theText;
+	CxIcon *theText = new CxIcon( container );
+	theText->Create(guiParent, -1);
+	  
+	//Check for wxNotebook parent, store pointer in notebookParent variable.
+	wxWindow* pWin = guiParent;
+	theText->notebookParent = NULL;
+	while( NULL == theText->notebookParent )  {
+		theText->notebookParent = dynamic_cast<CxTab*>( pWin );
+		pWin = pWin->GetParent();
+		if( NULL == pWin ) {
+			break;
+		}
+	}
+ 
+    return theText;
 }
 
 CxIcon::CxIcon( CrIcon * container )
       :BASETEXT()
 {
     ptr_to_crObject = container;
-    mWidth = 10;
-	mHeight = 10;
+    mWidth = 16;
+	mHeight = 16;
     mbOkToDraw = false;
+	notebookParent = NULL;
 }
 
 CxIcon::~CxIcon()
@@ -68,9 +82,21 @@ END_EVENT_TABLE()
 
 void CxIcon::OnPaint(wxPaintEvent & evt)
 {
-  wxPaintDC dc(this);
-  if (!mbOkToDraw) return;
-  dc.DrawBitmap(mbitmap,0,0,false);
+	if (!mbOkToDraw) return;
+
+	wxColour bkgrClr;
+
+// Notebooks have different colour backgrounds and it messes up the bitmap transparency effect.
+	if ( notebookParent ) bkgrClr = notebookParent->GetThemeBackgroundColour();
+//        bkgrClr = GetParent()->GetBackgroundColour();
+
+	
+	wxPaintDC dc(this);
+    if( bkgrClr.IsOk()) {
+		dc.SetBackground(*wxTheBrushList->FindOrCreateBrush(bkgrClr));
+		dc.Clear();
+	}
+	dc.DrawBitmap(mbitmap,0,0,true);
 }
 
 
@@ -95,38 +121,69 @@ void CxIcon::SetHelpText( const string &text )
 
 void CxIcon::SetIconType( int iIconId )
 {
-      switch ( iIconId )
-      {
-            case kTIconInfoSmall:
-			     mbitmap = wxArtProvider::GetIcon( wxART_INFORMATION, wxART_OTHER, wxSize(16,16) );
-                 break;
-            case kTIconInfo:
-			     mbitmap = wxArtProvider::GetIcon( wxART_INFORMATION );
-                 break;
-            case kTIconWarnSmall:
-			     mbitmap = wxArtProvider::GetIcon( wxART_WARNING, wxART_OTHER, wxSize(16,16) );
-                 break;
-            case kTIconWarn:
-			     mbitmap = wxArtProvider::GetIcon( wxART_WARNING );
-                 break;
-            case kTIconErrorSmall:
-			     mbitmap = wxArtProvider::GetIcon( wxART_ERROR, wxART_OTHER, wxSize(16,16) );
-                 break;
-            case kTIconError:
-			     mbitmap = wxArtProvider::GetIcon( wxART_ERROR );
-                 break;
-            case kTIconQuerySmall:
-			     mbitmap = wxArtProvider::GetIcon( wxART_QUESTION, wxART_OTHER, wxSize(16,16) );
-				 break;
-            case kTIconQuery:
-            default:
-			     mbitmap = wxArtProvider::GetIcon( wxART_QUESTION );
-                 break;
-      }
-	  
-      mWidth = mbitmap.GetWidth();
-      mHeight = mbitmap.GetHeight();
-      mbOkToDraw = true;
-  
-	  return;
+	wxSize s(16,16);  // default for small icons - should be reset by switch below
+
+	switch ( iIconId )
+	{
+
+		case kTIconBlank:
+			 mbitmap = wxArtProvider::GetIcon( wxART_QUESTION );
+			 s = mbitmap.GetSize();
+			 mbitmap = ::wxNullBitmap;
+			 break;	
+
+		case kTIconBlankSmall:
+			 mbitmap = wxArtProvider::GetIcon( wxART_QUESTION, wxART_OTHER, wxSize(16,16) );
+			 s = mbitmap.GetSize();
+			 mbitmap = ::wxNullBitmap;
+			 break;	
+
+		case kTIconInfoSmall:
+			 mbitmap = wxArtProvider::GetIcon( wxART_INFORMATION, wxART_OTHER, wxSize(16,16) );
+			 s = mbitmap.GetSize();
+			 break;
+
+		case kTIconInfo:
+			 mbitmap = wxArtProvider::GetIcon( wxART_INFORMATION );
+			 s = mbitmap.GetSize();
+			 break;
+
+		case kTIconWarnSmall:
+			 mbitmap = wxArtProvider::GetIcon( wxART_WARNING, wxART_OTHER, wxSize(16,16) );
+			 s = mbitmap.GetSize();
+			 break;
+
+		case kTIconWarn:
+			 mbitmap = wxArtProvider::GetIcon( wxART_WARNING );
+			 s = mbitmap.GetSize();
+			 break;
+
+		case kTIconErrorSmall:
+			 mbitmap = wxArtProvider::GetIcon( wxART_ERROR, wxART_OTHER, wxSize(16,16) );
+			 s = mbitmap.GetSize();
+			 break;
+
+		case kTIconError:
+			 mbitmap = wxArtProvider::GetIcon( wxART_ERROR );
+			 s = mbitmap.GetSize();
+			 break;
+
+		case kTIconQuerySmall:
+			 mbitmap = wxArtProvider::GetIcon( wxART_QUESTION, wxART_OTHER, wxSize(16,16) );
+			 s = mbitmap.GetSize();
+			 break;	
+
+		case kTIconQuery:
+		default:
+			 mbitmap = wxArtProvider::GetIcon( wxART_QUESTION );
+			 s = mbitmap.GetSize();
+			 break;
+	}
+
+	mWidth = s.GetWidth();
+	mHeight = s.GetHeight();
+	mbOkToDraw = mbitmap.IsOk();
+	Refresh();
+	
+	return;
 }
