@@ -143,12 +143,6 @@ jobs:
         mkdir ci
         mkdir installer
 
-    - name: Generate build number
-      id: buildnumber
-      uses: einaregilsson/build-number@v3 
-      with:
-        token: ${{secrets.github_token}}        
-    
     - id: get_version 
       uses: battila7/get-version-action@v2
 
@@ -318,13 +312,13 @@ jobs:
         set CRYSVNVER=%BUILD_NUMBER%
         echo Build number: %CRYSVNVER%
         "C:\Program Files (x86)\Inno Setup 6\iscc.exe" "../bin/crystals-gh.iss"
-        ren crystals-setup.exe crystals-v15.1.${{ steps.buildnumber.outputs.build_number }}-${{matrix.release}}-setup.exe
+        ren crystals-setup.exe crystals-${{steps.get_version.outputs.version}}-${{steps.vars.outputs.sha_short}}-${{matrix.release}}-setup.exe
 
     - name: Upload installer
       uses: actions/upload-artifact@v1
       with:
         name: crystals-setup
-        path: ./installer/crystals-v15.1.${{ steps.buildnumber.outputs.build_number }}-${{matrix.release}}-setup.exe
+        path: ./installer/crystals-${{steps.get_version.outputs.version}}-${{steps.vars.outputs.sha_short}}-${{matrix.release}}-setup.exe
       if:  ${{ matrix.cl == 'gui' }}
 
     - name: Create Release
@@ -334,8 +328,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: Tag${{ github.ref }}-v15.1.${{ steps.buildnumber.outputs.build_number }}
-        release_name: Release ${{ github.ref }} v15.1.${{ steps.buildnumber.outputs.build_number }}
+        tag_name: Tag-${{ github.ref }}
+        release_name: Release ${{ github.ref }} 
         draft: false
         prerelease: false
 
