@@ -297,8 +297,30 @@ add_definitions(-D _HOL_)
 string (TIMESTAMP CRYYEAR "%Y")
 string (TIMESTAMP CRYMONTH "%m")
 string (TIMESTAMP CRYDAY "%d")
+
+set (CRYVMAJOR "$ENV{CRYVMAJOR}")
+if  ("${CRYVMAJOR}" STREQUAL "" ) 
+    MESSAGE("CRYVMAJOR Version major not set - using ... 10")
+	set (CRYVMAJOR "10")
+endif()	
+
+set (CRYVMINOR "$ENV{CRYVMINOR}")
+if  ("${CRYVMINOR}" STREQUAL "" ) 
+    MESSAGE("CRYVMINOR Version minor not set - using ... 1")
+	set (CRYVMINOR "1")
+endif()	
+
+set (CRYVPATCH "$ENV{CRYVPATCH}")
+if  ("${CRYVPATCH}" STREQUAL "" ) 
+    MESSAGE("CRYVPATCH Version patch not set - using ... 100")
+	set (CRYVPATCH "100")
+endif()	
+
+math(EXPR CRYVERSUM "(${CRYVMAJOR} * 100000 ) + ( ${CRYVMINOR} * 1000 ) + ${CRYVPATCH}") 
+
 set (CRYSVNVER "$ENV{CRYSVNVER}")
 set (CRYHOST "${CMAKE_SYSTEM_NAME}")
+
 
 if("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
     MESSAGE("++ 64 bit architecture")
@@ -615,7 +637,7 @@ SET  (scpfiles)
 FOREACH (_file ${sscfiles})
     STRING(REPLACE ".ssc" ".scp" file_scp ${_file})
     ADD_CUSTOM_COMMAND( OUTPUT ${file_scp}
-                        COMMAND ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_CURRENT_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_scp} ${flags} -DCRYSVNVER=${CRYSVNVER} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} ${CMAKE_CURRENT_SOURCE_DIR}/${_file}
+                        COMMAND ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_CURRENT_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_scp} ${flags} -DCRYSVNVER=${CRYSVNVER} -DCRYVERSUM=${CRYVERSUM} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} ${CMAKE_CURRENT_SOURCE_DIR}/${_file}
                         DEPENDS ${_file} )
     LIST(APPEND scpfiles ${file_scp})
 ENDFOREACH()
@@ -633,7 +655,7 @@ SET  (datfiles)
 FOREACH (_file ${sdafiles})
     STRING(REPLACE ".sda" ".dat" file_dat ${_file})
     ADD_CUSTOM_COMMAND( OUTPUT ${file_dat}
-                        COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_CURRENT_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_dat} ${flags} -DCRYSVNVER=${CRYSVNVER} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} ${CMAKE_CURRENT_SOURCE_DIR}/${_file}
+                        COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_CURRENT_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_dat} ${flags} -DCRYSVNVER=${CRYSVNVER} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} -DCRYVERSUM=${CRYVERSUM} ${CMAKE_CURRENT_SOURCE_DIR}/${_file}
     DEPENDS ${_file} )
     LIST(APPEND datfiles ${file_dat})
 ENDFOREACH()
@@ -643,7 +665,7 @@ SET  (srtfiles)
 FOREACH (_file ${ssrfiles})
     STRING(REPLACE ".ssr" ".srt" file_srt ${_file})
     ADD_CUSTOM_COMMAND( OUTPUT ${file_srt}
-                        COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_CURRENT_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_srt} ${flags} -DCRYARCH=${CRYARCH} -DCRYHOST=${CRYHOST} -DCRYSVNVER=${CRYSVNVER} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} ${CMAKE_CURRENT_SOURCE_DIR}/datafiles/${_file}
+                        COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_CURRENT_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_srt} ${flags} -DCRYARCH=${CRYARCH} -DCRYHOST=${CRYHOST} -DCRYSVNVER=${CRYSVNVER} -DCRYVERSUM=${CRYVERSUM} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} ${CMAKE_CURRENT_SOURCE_DIR}/datafiles/${_file}
                         DEPENDS datafiles/${_file} )
     LIST(APPEND srtfiles ${file_srt})
 ENDFOREACH()

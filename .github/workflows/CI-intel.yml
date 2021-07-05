@@ -2,6 +2,13 @@ name: CI-Win-Intel
 
 on: [push]
 
+# if there is a version tag, build release and push. 
+# From now (Jul 21) use semantic version number e.g. v15.2.103 (major.minor.patch) 
+# The old system has a hardcoded version (e.g. 15.1) and a build number instead of a patch.
+# The build number was the number of commits on current branch. Instead, let's store
+# the end of the git commit hash as a unique id to identify this build.
+
+
 env:
   WINDOWS_BASEKIT_URL: https://registrationcenter-download.intel.com/akdlm/irc_nas/17768/w_BaseKit_p_2021.2.0.2871_offline.exe
   WINDOWS_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/irc_nas/17762/w_HPCKit_p_2021.2.0.2901_offline.exe
@@ -141,7 +148,23 @@ jobs:
       uses: einaregilsson/build-number@v3 
       with:
         token: ${{secrets.github_token}}        
-      
+    
+    - id: get_version 
+      uses: battila7/get-version-action@v2
+
+#    - run: echo ${{ steps.get_version.outputs.version }}
+#    - run: echo ${{ steps.get_version.outputs.version-without-v }}
+#    - run: echo ${{ steps.get_version.outputs.major }}
+#    - run: echo ${{ steps.get_version.outputs.minor }}
+#    - run: echo ${{ steps.get_version.outputs.patch }}
+
+    - name: Get short SHA of commit
+      id: vars
+      run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+
+    - name: Check outputs
+      run: echo ${{ steps.vars.outputs.sha_short }}
+    
     - name: Build custom mkl library
       working-directory: ci
       shell: cmd
@@ -168,8 +191,12 @@ jobs:
         for /f "tokens=* usebackq" %%f in (`dir /b "C:\Program Files (x86)\Intel\oneAPI\compiler\" ^| findstr /V latest ^| sort`) do @set "LATEST_VERSION=%%f"
         call "C:\Program Files (x86)\Intel\oneAPI\compiler\%LATEST_VERSION%\env\vars.bat"
         set FC=ifort
-        set CRYSVNVER=%BUILD_NUMBER%
-        echo Build number: %CRYSVNVER%
+        python -c "import sys;[sys.stdout.write(' '.join(line.split(' ')[2:])) for line in sys.stdin]"
+        set CRYSVNVER=${{ steps.vars.outputs.sha_short }}
+        set CRYVMAJOR=${{ steps.get_version.outputs.major }}
+        set CRYVMINOR=${{ steps.get_version.outputs.minor }}
+        set CRYVPATCH=${{ steps.get_version.outputs.patch }}
+        echo Commit SHA: %CRYSVNVER% Version: %CRYVMAJOR%.%CRYVMINOR%.%CRYVPATCH%
         cmake .. -G"NMake Makefiles" -DuseGUI=${{ matrix.guiflag }} -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }} -DuseCustomMKL=yes
         nmake
         copy ..\wx\lib\vc14x_x64_dll\wxmsw314u_stc_vc14x_x64.dll . 
