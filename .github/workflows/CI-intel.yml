@@ -185,7 +185,6 @@ jobs:
         for /f "tokens=* usebackq" %%f in (`dir /b "C:\Program Files (x86)\Intel\oneAPI\compiler\" ^| findstr /V latest ^| sort`) do @set "LATEST_VERSION=%%f"
         call "C:\Program Files (x86)\Intel\oneAPI\compiler\%LATEST_VERSION%\env\vars.bat"
         set FC=ifort
-        python -c "import sys;[sys.stdout.write(' '.join(line.split(' ')[2:])) for line in sys.stdin]"
         set CRYSVNVER=${{ steps.vars.outputs.sha_short }}
         set CRYVMAJOR=${{ steps.get_version.outputs.major }}
         set CRYVMINOR=${{ steps.get_version.outputs.minor }}
@@ -237,7 +236,32 @@ jobs:
         :copy6
         ECHO %TEMPVAR%
         copy "%tempvar%"
-    
+        SET COMMAND=where msvcp140.dll
+        FOR /F "delims=" %%A IN ('%COMMAND%') DO (
+            SET TEMPVAR=%%A
+            GOTO :copy7
+        )
+        :copy7
+        ECHO %TEMPVAR%
+        copy "%tempvar%"
+        SET COMMAND=where vcruntime140.dll
+        FOR /F "delims=" %%A IN ('%COMMAND%') DO (
+            SET TEMPVAR=%%A
+            GOTO :copy8
+        )
+        :copy8
+        ECHO %TEMPVAR%
+        copy "%tempvar%"
+        SET COMMAND=where vcruntime140_1.dll
+        FOR /F "delims=" %%A IN ('%COMMAND%') DO (
+            SET TEMPVAR=%%A
+            GOTO :copy9
+        )
+        :copy9
+        ECHO %TEMPVAR%
+        copy "%tempvar%"
+
+
 
 # Tests
     - uses: ilammy/msvc-dev-cmd@v1
