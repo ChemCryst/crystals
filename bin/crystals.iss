@@ -71,6 +71,7 @@ Name: {app}\MCE\mce_manual_soubory
 [Files]
 Source: ..\build\*.*; DestDir: {app}\; Excludes: "make*,buildfile.bat,code.bat"; Flags: ignoreversion;
 Source: ..\build\script\*.*; DestDir: {app}\script\; Excludes: "*~";
+Source: ..\build\pyembed\*.*; DestDir: {app}\pyembed\; Excludes: "*~";
 Source: ..\build\mce\*.*; DestDir: {app}\mce\;  Flags: ignoreversion recursesubdirs;
 Source: ..\build\manual\*.*; DestDir: {app}\manual\; Flags: ignoreversion recursesubdirs;
 Source: ..\build\demo\*; DestDir: {autoappdata}\crystals\demo\; Flags: recursesubdirs; Excludes: "*.doc"; Permissions: users-modify;

@@ -130,6 +130,17 @@ interface
   end subroutine cinextcommand
 end interface
 
+!> interface to C function getcommand (digital compiler)
+interface
+  subroutine getcommand (length, caline)
+    !dec$ attributes c :: getcommand
+    integer length
+    character*256 caline
+    !dec$ attributes reference :: caline
+  end subroutine getcommand
+end interface
+
+
 !> interface to C function ciendthread (digital compiler)
 !! Unkwown function
 interface
@@ -414,6 +425,18 @@ interface
     character caline
   end subroutine cinextcommand
 end interface
+
+
+!> interface to C function getcommand (iso_c_bindings)
+interface
+  subroutine getcommand (length,caline) bind(c)
+    use, intrinsic :: ISO_C_BINDING
+    implicit none
+    integer, value :: length
+    character caline
+  end subroutine getcommand
+end interface
+
 
 
 interface

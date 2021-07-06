@@ -2,7 +2,7 @@
 #gfortran (e.g. v4.2.3). If you have other gcc installed, make sure you
 #set CC=/usr/bin/gcc and CXX=/usr/bin/g++ before running cmake.
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 
 PROJECT(Crystals)
 
@@ -192,6 +192,11 @@ if(useOPENMP)
     endif()
 endif ()
 
+if ( NOT WIN32 )
+	find_package(PythonLibs 3 REQUIRED)
+	INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIRS})
+endif ()
+
 if ( use32 )
     message(STATUS "Building 32bit")
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32")
@@ -214,6 +219,9 @@ if ( useGUI )
 #        SET(wxWidgets_LIB_DIR "c:/wx3/lib/gcc_dll")
 #        set(wxWidgets_CONFIGURATION mswu)
         FIND_PACKAGE(wxWidgets REQUIRED html stc adv core gl base scintilla)
+		
+
+		
     else ()
         FIND_PACKAGE(wxWidgets REQUIRED html stc adv core gl base)
     endif ()
@@ -246,6 +254,9 @@ if ( WIN32 )
     else ()
         add_definitions(-D__MIN__)
     endif()
+
+	INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/python-headers-win/Include/)
+
 endif()
 
 if ( APPLE )
@@ -420,7 +431,7 @@ ENDIF ()
 
 
 IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.0)
-    check_fortran_compiler_flag("-std=legacy" _std_legacy_flag)
+#    check_fortran_compiler_flag("-std=legacy" _std_legacy_flag)
     check_fortran_compiler_flag("-fexceptions" _f_exceptions)
     check_fortran_compiler_flag("-fno-sign-zero" _f_no_signzero)
 
@@ -603,13 +614,7 @@ FOREACH (_file ${sscfiles})
 ENDFOREACH()
 
 
-
-
-
-
-
 # Data file sources and targets
-
 FILE (GLOB sdafiles RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/script/*.sda")
 SET  (datfiles)
 FOREACH (_file ${sdafiles})
@@ -619,6 +624,19 @@ FOREACH (_file ${sdafiles})
     DEPENDS ${_file} )
     LIST(APPEND datfiles ${file_dat})
 ENDFOREACH()
+
+# Data file sources and targets
+FILE (GLOB pyfiles RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/script/*.py")
+SET  (pyoutfiles)
+FOREACH (_file ${pyfiles})
+    STRING(REPLACE ".py" ".py" pyfile ${_file})
+    ADD_CUSTOM_COMMAND( OUTPUT ${pyfile}
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/${pyfile}" "${pyfile}"
+                COMMENT "Copying py script file: ${CMAKE_CURRENT_SOURCE_DIR}/${pyfile} to ${pyfile}"
+				DEPENDS ${_file} )
+    LIST(APPEND pyoutfiles ${pyfile})
+ENDFOREACH()
+
 
 FILE (GLOB ssrfiles RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/datafiles" "${CMAKE_CURRENT_SOURCE_DIR}/datafiles/*.ssr")
 SET  (srtfiles)
@@ -651,12 +669,12 @@ if ( useMULTIDEF_WORKAROUND )
     set (CMAKE_EXE_LINKER_FLAGS -Wl,--allow-multiple-definition )
 endif()
 
-    TARGET_LINK_LIBRARIES(crystals CrystalsFortran CameronFortran ${wxWidgets_LIBRARIES} ${MSYS2LIBS} ${wxSTATICEXTRA_LIBS})
+    TARGET_LINK_LIBRARIES(crystals CrystalsFortran CameronFortran ${wxWidgets_LIBRARIES} ${PYTHON_LIBRARIES} ${MSYS2LIBS} ${wxSTATICEXTRA_LIBS} )
     SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_GUI)
     SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES Fortran_MODULE_DIRECTORY ${Fortran_MODULE_DIRECTORY} )
 
 #    SET_TARGET_PROPERTIES(crystalscl PROPERTIES LINKER_LANGUAGE Fortran)
-    TARGET_LINK_LIBRARIES(crystalscl CrystalsFortran CameronFortran)
+    TARGET_LINK_LIBRARIES(crystalscl CrystalsFortran CameronFortran ${PYTHON_LIBRARIES} )
 #    SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_NOGUI)
 
 elseif( usePY )
@@ -666,7 +684,7 @@ elseif( usePY )
 else()
     ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} crystals/crystals.F)
     SET_TARGET_PROPERTIES(crystals PROPERTIES LINKER_LANGUAGE Fortran)
-    TARGET_LINK_LIBRARIES(crystals CrystalsFortran CameronFortran)
+    TARGET_LINK_LIBRARIES(crystals CrystalsFortran CameronFortran ${PYTHON_LIBRARIES} )
     SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_NOGUI)
 endif()
 

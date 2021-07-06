@@ -10,7 +10,7 @@ if(APPLE)
   SET(CMAKE_OSX_ARCHITECTURES "x86_64" )
 ENDIF(APPLE)
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 
 SET( Fortran_MODULE_DIRECTORY "${CMAKE_BINARY_DIR}/FortranModules" )
 message(STATUS "Modules saved at [${CMAKE_BINARY_DIR}/FortranModules]")
