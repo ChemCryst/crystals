@@ -22,6 +22,12 @@
   #define crysSVN 'xxxx'
 #endif
 
+#if Len(GetEnv('CRYSEMVER')) > 0
+  #define crysSEM GetEnv('CRYSEMVER')
+#else
+  #define crysSEM '10.1.100'
+#endif
+
 #define crysDATE GetDateTimeString('mmmyy','','')
 #define crysVDATE GetDateTimeString('mmm yyyy','','')
 
@@ -29,10 +35,9 @@
 ;
 ;Adjust the program names and version here as appropriate:
 ;
-AppVerName=CRYSTALS 15.{#crysSVN} ({#crysVDATE})
-AppVersion=15.0.{#crysSVN}
+AppVerName=CRYSTALS {#crysSEM} {#crysSVN} ({#crysVDATE})
+AppVersion={#crysSEM}
 OutputBaseFilename=crystals-setup
-
 
 PrivilegesRequired=none
 
@@ -69,8 +74,8 @@ Name: {app}\mce
 Name: {app}\MCE\mce_manual_soubory
 
 [Files]
-Source: ..\ci\*.*; DestDir: {app}\; Excludes: "make*,buildfile.bat,code.bat"; Flags: ignoreversion;
-Source: ..\ci\script\*.*; DestDir: {app}\script\; Excludes: "*~";
+Source: ..\ci\*.*; DestDir: {app}\; Excludes: "make*,buildfile.bat,code.bat,*.cmake,CMake*,CPack*,*.mod,crystalscl.exe,"; Flags: ignoreversion;
+Source: ..\ci\script\*.*; DestDir: {app}\script\; Excludes: "*~,*.cmake,Makefile";
 Source: ..\ci\mce\*.*; DestDir: {app}\mce\;  Flags: ignoreversion recursesubdirs;
 Source: ..\ci\manual\*.*; DestDir: {app}\manual\; Flags: ignoreversion recursesubdirs;
 Source: ..\ci\demo\*; DestDir: {autoappdata}\crystals\demo\; Flags: recursesubdirs; Excludes: "*.doc"; Permissions: users-modify;

@@ -309,8 +309,11 @@ jobs:
       working-directory: installer
       shell: cmd
       run: |
-        set CRYSVNVER=%BUILD_NUMBER%
-        echo Build number: %CRYSVNVER%
+        set CRYSVNVER=${{ steps.vars.outputs.sha_short }}
+        set CRYSEMVER=${{ steps.get_version.outputs.major }}.${{ steps.get_version.outputs.minor }}.${{ steps.get_version.outputs.patch }}
+        echo Commit SHA: %CRYSVNVER% Version: %CRYSEMVER%
+        IF "%CRYSVNVER%"=="" (SET CRYSVNVER=0000)
+        IF "%CRYSEMVER%"=="" (SET CRYSEMVER=10.1.100)
         "C:\Program Files (x86)\Inno Setup 6\iscc.exe" "../bin/crystals-gh.iss"
         ren crystals-setup.exe crystals-${{steps.get_version.outputs.version}}-${{steps.vars.outputs.sha_short}}-${{matrix.release}}-setup.exe
 
