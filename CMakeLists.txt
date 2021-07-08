@@ -295,7 +295,7 @@ endif ()
 add_definitions(-D _HOL_)
 
 string (TIMESTAMP CRYYEAR "%Y")
-string (TIMESTAMP CRYMONTH "%m")
+string (TIMESTAMP CRYMONTH "%b")
 string (TIMESTAMP CRYDAY "%d")
 
 set (CRYVMAJOR "$ENV{CRYVMAJOR}")
