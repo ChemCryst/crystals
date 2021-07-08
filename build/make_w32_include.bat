@@ -18,7 +18,7 @@
 @
 @if "%CRYSVNVER%" == "Unversioned directory" ( @for /f "delims=" %%a in ('git rev-list HEAD --count') do @set CRYSVNVER=%%a)
 @if "%CRYSVNVER%" == "00000" ( @for /f "delims=" %%a in ('git rev-list HEAD --count') do @set CRYSVNVER=%%a)
-@set CRYVERSUM=10.1.100
+@set CRYVERSUM=1001100
 @
 @echo CrySVNver = %CRYSVNVER%
 :SVER
