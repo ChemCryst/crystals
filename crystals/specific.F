@@ -1292,6 +1292,8 @@ C
 C
 CODE FOR XMOVE 
       SUBROUTINE XMOVE ( SRCE , RESLT , N )
+!DIR$ OPTIMIZE:2
+C This intel compiler hint prevents temp being optimized out.
       implicit none
 C
 C -- MOVES REALS FROM 'SRCE'
@@ -1312,6 +1314,8 @@ C
 C
 CODE FOR XMOVEI (modern replacement)
       SUBROUTINE XMOVEI ( ISRCE , IRESLT , N )
+!DIR$ OPTIMIZE:2
+C This intel compiler hint prevents temp being optimized out.
       implicit none
 C
 C -- MOVES INTEGERS FROM 'ISRCE'
