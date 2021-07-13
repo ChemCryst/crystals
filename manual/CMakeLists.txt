@@ -25,6 +25,9 @@ ADD_CUSTOM_COMMAND(
 	COMMAND ${CMAKE_COMMAND} -E copy ${ANALYSE} ./analyse
 	COMMAND ${CMAKE_COMMAND} -E copy ${XRAYDAT} ./Xray-data
 	COMMAND ${CMAKE_COMMAND} -E touch manual.stamp
+	COMMAND ${CMAKE_COMMAND} -E remove_directory html
+	COMMAND ${CMAKE_COMMAND} -E remove_directory latex
+	COMMAND ${CMAKE_COMMAND} -E remove_directory website
     COMMENT "Processing manual"
 	DEPENDS ../../manual/faq.man ../../manual/primer.man ../../manual/guide.man ../../manual/crystals.man ../../manual/cameron.man ../../manual/menu.man ../../manual/readme.man ../../manual/workshop.man
 )
