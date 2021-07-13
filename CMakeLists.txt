@@ -515,6 +515,7 @@ endif ()
 #INCLUDE(CTest)
 
 # Libraries
+ADD_SUBDIRECTORY(manual)
 ADD_SUBDIRECTORY(script)
 ADD_SUBDIRECTORY(sginfo)
 ADD_SUBDIRECTORY(crystals crys_fortran)
