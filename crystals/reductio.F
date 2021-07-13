@@ -1948,6 +1948,7 @@ C--IREF acts like M6 IN LOCAL STACK
       AVFO = FO                                         !SUM(FO)
       AVFC = FC                                         !SUM(FC)
       AVFOT = FOT                                       !SUM(FOT)
+      SUMFO = 0.
 C----- SET THE PRINT LEVEL FOR SINGLE REFLECTIONS
       JPRINT = IPRINT
       GOTO 2500

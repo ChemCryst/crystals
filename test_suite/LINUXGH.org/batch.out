@@ -6454,7 +6454,7 @@ Block No  1.  Single precision relative error:  1.17E-05
 [80]  (sp inverse) 1-norm:  6E+00 cond. number:  10E+01 rel. error:  1.17E-05
  S/ESD     1           1            -0.059      0.0E+00    0.214E-01         -2.74                          SCALE   
 [14]  S/ESD    13          13           -0.027       0.0E+00    0.26 E-02        -10.4         O      3 U[ISO]  
- LARGE    17          17           -0.0581      0.0E+00    0.562E-02        -10.34        C      4 U[ISO]  
+[14a]  LARGE    17          17           -0.058       0.0E+00    0.56 E-02        -10.3         C      4 U[ISO]  
 [14]  S/ESD    21          21           -0.024       0.0E+00    0.28 E-02         -8.4         O      5 U[ISO]  
 [14]  S/ESD    37          37           -0.014       0.0E+00    0.27 E-02         -5.3         C      9 U[ISO]  
 
@@ -14902,7 +14902,7 @@ Block No  1.  Single precision relative error:  1.17E-05
 [80]  (sp inverse) 1-norm:  6E+00 cond. number:  10E+01 rel. error:  1.17E-05
  S/ESD     1           1            -0.059      0.0E+00    0.214E-01         -2.74                          SCALE   
 [14]  S/ESD    13          13           -0.027       0.0E+00    0.26 E-02        -10.4         O      3 U[ISO]  
- LARGE    17          17           -0.0581      0.0E+00    0.562E-02        -10.34        C      4 U[ISO]  
+[14a]  LARGE    17          17           -0.058       0.0E+00    0.56 E-02        -10.3         C      4 U[ISO]  
 [14]  S/ESD    21          21           -0.024       0.0E+00    0.28 E-02         -8.4         O      5 U[ISO]  
 [14]  S/ESD    37          37           -0.015       0.0E+00    0.27 E-02         -5.3         C      9 U[ISO]  
 
@@ -23098,7 +23098,7 @@ Block No  1.  Single precision relative error:  1.64E-05
 [80]  (sp inverse) 1-norm:  7E+00 cond. number:  1E+02 rel. error:  1.64E-05
 [13]  LARGE     1           1            -0.2       0.0E+00    0.9 E-01         -2.6                           SCALE   
 [14]  S/ESD    13          13           -0.025       0.0E+00    0.31 E-02         -7.9         O      3 U[ISO]  
- LARGE    17          17           -0.0678      0.0E+00    0.690E-02         -9.83        C      4 U[ISO]  
+[14a]  LARGE    17          17           -0.067       0.0E+00    0.69 E-02         -9.8         C      4 U[ISO]  
 [14]  S/ESD    21          21           -0.022       0.0E+00    0.33 E-02         -6.7         O      5 U[ISO]  
 [14]  S/ESD    37          37           -0.013       0.0E+00    0.30 E-02         -4.6         C      9 U[ISO]  
 
@@ -31300,7 +31300,7 @@ Block No  1.  Single precision relative error:  1.64E-05
 [80]  (sp inverse) 1-norm:  7E+00 cond. number:  1E+02 rel. error:  1.64E-05
 [13]  LARGE     1           1            -0.2       0.0E+00    0.9 E-01         -2.6                           SCALE   
 [14]  S/ESD    13          13           -0.025       0.0E+00    0.31 E-02         -7.8         O      3 U[ISO]  
- LARGE    17          17           -0.0679      0.0E+00    0.690E-02         -9.83        C      4 U[ISO]  
+[14a]  LARGE    17          17           -0.067       0.0E+00    0.69 E-02         -9.8         C      4 U[ISO]  
 [14]  S/ESD    21          21           -0.022       0.0E+00    0.33 E-02         -6.7         O      5 U[ISO]  
 [14]  S/ESD    37          37           -0.013       0.0E+00    0.30 E-02         -4.6         C      9 U[ISO]  
 

@@ -34,7 +34,7 @@
 
 # Read all the files into the variable @data. One line per array item.:
 
-   @inputfiles;
+   @inputfiles = ();
 
    $manloc = ".";
    if ( length($ENV{'CRYSSRC'}) ) {
@@ -419,47 +419,51 @@
    print   HTMLVOL  "<!-- XTLVAR cvssource=\"manual/crystals.man\" -->\n";
    print   HTMLVOL  "<H1>Index</H1>\n";
 
-   open ( HTMLOUT, ">html/manindex.html" ) || die ("Can not open html/manindex.html: $!");
+   open ( HTMLOUT, ">manindex.html" ) || die ("Can not open manindex.html: $!");
 
    print   HTMLAY   "manindex\n";
 
 
    $htmltitle = "Manuals - Index";
-   &htmlheader;
 
-   
+# Read in the template. 
+	open( HTMLTEMPLATE,"$manloc/template.html") || die ("Couldn't open $manloc/template.html"); 
+	@temp = <HTMLTEMPLATE>; 
+
+# Setup title.
+	$htmltitle = "Index";
+
+# Setup content.
+	$content = "<H1>Index</H1>\n";
+
+# Setup menu.
+	$themenu = "\n";
+	$footindex = "\n";
+
+# Store volume titles up to this one.
+	for ($nv = 0; $nv < $nvolumes; $nv++ ) {
+		$temptitle = substr("$data[$volumestartline[$nv]]",2);
+		$temptitle =~ s/\#//;
+		$themenu .= "<A class=\"menuitem\" HREF=\"$volumefilename[$nv].html\">+ $temptitle</A>\n";
+	}
+
 # Output index.
    for ($i = 0; $i < $indexsize; $i++)  {
       $firstchar = lc substr ($sortedindex[$i],0,1);
       if (($oldfirstchar cmp $firstchar) <=> 0 ) {
-         print HTMLOUT "<P>\n";
-         print HTMLVOL "<P>\n";
+         $content .= "<P>\n";
       }
       $oldfirstchar = $firstchar;
       $_ = $sortedindex[$i];
       /(.*)\#(.*)/;
-      print HTMLOUT "<A HREF=\"$2#$1\">$1</A><BR>\n";
-      print HTMLVOL "<A HREF=\"$2#$1\">$1</A><BR>\n";
+      $content .= "<A HREF=\"$2#$1\">$1</A><BR>\n";
    }
 
-   &htmlmidpoint;                    #Close left col and start right column.
+# Do substitutions in the template and output.
+	&tempsub; 
 
-   print HTMLOUT "<H2 class=\"menutitle\">Menu</H2>\n";  #Put in the date
-   print HTMLOUT "<p class=\"menu\">\n";
-
-# Output volume titles.
-   for ($nv = 0; $nv < $nvolumes; $nv++ )  {
-      $temptitle = substr("$data[$volumestartline[$nv]]",2);
-      $temptitle =~ s/\#//;
-      print HTMLOUT "<A class=\"menu\" HREF=\"$volumefilename[$nv].html\" class=\"menu\">+ $temptitle</A>\n";
-   }
-
-   print HTMLOUT "<P class=\"menu\">- Index</p>\n";
-   print HTMLOUT "<H2 class=\"menutitle\">$date</H2>\n";  #Put in the date
-
-
-
-   &htmlfooter; #Remember: HTML has one file per chapter.
+	close (HTMLOUT);
+	close (HTMLTEMPLATE);
 
 
 # Loop through all the chapters putting in label jumps.
@@ -467,7 +471,7 @@
 
    for ( $i = 0; $i < $htmlfileno; $i++ )   {
       open ( HTMLIN, "$htmlfiles[$i].tmp" ) || die ( "Can not open $htmlfiles[$i].tmp for reading: $!\n");
-      open ( HTMLOUT,">html/$htmlfiles[$i].html") || die ( "Can not open html/$htmlfiles[$i].html for writing: $!\n");
+      open ( HTMLOUT,">$htmlfiles[$i].html") || die ( "Can not open $htmlfiles[$i].html for writing: $!\n");
 
       while ( $line = <HTMLIN> )  {
          $line =~ s/\cM//g;
@@ -606,17 +610,17 @@ sub substitute{
    }
 
 # Format bolds - don't include #'s
-   $htmlline =~ s/_b{(\S+)\#/\<strong\>$1\<\/strong\>/gi;
-   $texline  =~ s/\\_b\\{(\S+)\#/{\\bf $1}/gi;
+   $htmlline =~ s/_b\{(\S+)\#/\<strong\>$1\<\/strong\>/gi;
+   $texline  =~ s/\\_b\\\{(\S+)\#/{\\bf $1}/gi;
 
-   $htmlline =~ s/_b{(\S+)/\<strong\>$1\<\/strong\>/gi;
-   $texline  =~ s/\\_b\\{(\S+)/{\\bf $1}/gi;
+   $htmlline =~ s/_b\{(\S+)/\<strong\>$1\<\/strong\>/gi;
+   $texline  =~ s/\\_b\\\{(\S+)/{\\bf $1}/gi;
 
 # Format italics
-   $htmlline =~ s/_i{(\S+)\#/\<i\>$1\<\/i\>/gi;
-   $texline  =~ s/\\_i\\{(\S+)\#/\\emph{$1}/gi;
-   $htmlline =~ s/_i{(\S+)/\<i\>$1\<\/i\>/gi;
-   $texline  =~ s/\\_i\\{(\S+)/\\emph{$1}/gi;
+   $htmlline =~ s/_i\{(\S+)\#/\<i\>$1\<\/i\>/gi;
+   $texline  =~ s/\\_i\\\{(\S+)\#/\\emph{$1}/gi;
+   $htmlline =~ s/_i\{(\S+)/\<i\>$1\<\/i\>/gi;
+   $texline  =~ s/\\_i\\\{(\S+)/\\emph{$1}/gi;
 
 # Swap #P for <P>
    $htmlline =~ s/\#P/\<P\>/;
@@ -783,122 +787,6 @@ sub substitute{
 ###################################################################
 
 
-
-sub htmlheader {
-   print HTMLOUT qq|<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
-                        <HTML><HEAD><TITLE>$htmltitle</TITLE>
-<META NAME="Keywords" CONTENT="Crystals, Manual, FAQ, Cameron, crystallography
-software, small molecule, refinement, chemical, X-ray, Xray, least
-squares, analysis, thermal ellipsoid plot, adp, graphical, absorption
-correction, data reduction, parameters, atom placement, constraints,
-restraints, disorder, twinning, weighting scheme, Fourier map, cif, RC93,
-DIPIN, CSD2CRY, SXtoCRY, CIF2CRY, Oxford">
-<META NAME="Description" CONTENT="The manuals describe how to use CRYSTALS and
-associated programs for single crystal X-ray structure analysis.">
-<style type="text/css">
-<!--
-
-p {font:10pt/12pt Tahoma, Verdana, Arial, Geneva, sans-serif; margin:1em
-.5em; text-align: justify;}
-td {font:10pt/12pt Tahoma, Verdana, Arial, Geneva, sans-serif; margin:1em
-.5em; text-align: justify;}
-li {font:10pt/12pt Tahoma, Verdana, Arial, Geneva, sans-serif;}
-h1 { color:#FFFFFF; background-color:#000088;
- padding: 3px; }
-img { margin: 3px; }
-.tight { margin: 0; padding: 0 }
-a:hover {   color: #FF2020; }
-.blue  { background-color: #000088; }
-.typing { font-family: lucida console, courier new, courier; font-weight: bold;
-          background-color:#000; color: #FF0; }
-h2.menutitle {
- font-family: tahoma,helvetica,sans-serif; font-size:12px; font-weight: bold;
- background-color: #000088; color:#FFFFFF;
- margin: 0px 0px 0px 0px;   text-align:center; padding: 2px; }
-a.menu { display: block; color:#000088; }
-a.menulist { display: block; color:#008800; text-align:right; }
-p.menu { font-family: tahoma, helvetica,sans-serif; font-size:12px; color:#000000;
-text-decoration: none; font-weight: normal;
-text-align:left; margin: 0px 0px 0px 0px; }
-a.footer  { font-family: tahoma, helvetica,sans-serif; font-size:12px; color:#FFFFFF;
-text-decoration: none; font-weight: normal; }
-BODY { background: white url(parksback.jpg); background-attachment: fixed; margin:0; }
-
-#headfoot  {  font-family: tahoma,helvetica,sans-serif;  font-size:12px;color:#FFFFFF;
-  text-align:right;  background-color: #000088;  padding: 5px;
-  border-top: thin solid black; border-bottom: thin solid black;
-}
-
-#main { padding: 10px; margin-right: 176px; }
-
-#menu { position:absolute; top: 140px; right: 10px; margin: 10px; width:176px;
-  padding:1px; background-color:#fff; border:thin solid #000;
-  line-height:17px; color: #000;
-/* The ugly IE5 hack. */
-  voice-family: "\\"}\\"";
-  voice-family:inherit;
-  width:156px;
-}
-/* The additional, "be nice to Opera 5" hack. */
-  body>#Menu {width:156px;}
--->
-</style> </HEAD>
-<BODY BACKGROUND="parksback.jpg">\n|;
-
-
-   print HTMLOUT qq|
-
-<DIV id="headfoot">
- <TABLE WIDTH="100%" class="blue">
-  <TR>
-   <TD><A HREF="http://www.xtl.ox.ac.uk/">
-    <IMG SRC="s_9parks.gif" BORDER="0" ALT="Chemical Crystallography"></A>
-   </TD>
-   <TD class="blue">&nbsp;</TD>
-   <TD WIDTH="100%"><H1>CRYSTALS off-line manuals</H1>
-   </TD>
-   <TD class="blue">&nbsp;</TD>
-   <TD><p>
-    <A HREF="http://www.xtl.ox.ac.uk/crystals.html">
-    <IMG SRC="crystals_now.gif" BORDER="0" ALT="Crystals website"></A><BR><BR>
-    <A HREF="http://www.xtl.ox.ac.uk/crystalsmanual.html">
-    <IMG SRC="manuals_now.gif" BORDER="0" ALT="On-line manuals"></A></p>
-   </TD>
-  </TR>
- </TABLE>
-</DIV>
-
-<DIV id="main">|;
-
-
-}
-
-sub htmlmidpoint {
-
-  print HTMLOUT qq!<DIV id="menu">
-<font point-size="8">!;
-
-}
-
-sub htmlfooter {
-  print HTMLOUT qq!
-</font>
-</DIV>
-
-</DIV>
-
-<DIV id="headfoot"><P>
-&copy; Copyright Chemical Crystallography Laboratory, Oxford, 2002<BR>
-Comments or queries to David Watkin -
-<A class="footer" HREF="mailto:david.watkin\@chem.ox.ac.uk">
-david.watkin\@chem.ox.ac.uk</A> Telephone +44 1865 285019<br>
-
-<small>The manuals were re-generated on $date.</small>
-</p>
-</div>
-</BODY></HTML>!;
-
-}
 
 sub texheader {
 

@@ -2,10 +2,10 @@
 \ Remember that lines with a space in column 2 are comment lines
 \
 \SET AUTOUPDT OFF
-\STORE SYST VERS 1461
+\STORE SYST VERS CRYVERSUM
+\STORE CSYS SVN 'CRYSVNVER'
 \STORE CSYS OPER 'CRYHOST' MACH 'CRYARCH'
 \STORE CSYS DATE 'CRYMONTH, CRYYEAR'
-\STORE CSYS SVN 'CRYSVNVER'
 \
 \ ensure that file names are fully lower case
 \SET FILE MIXED
@@ -253,8 +253,6 @@ END
 \SCRIPT TIPAUTO
 \SCRIPT GUIDEAUTO
 #endif
-#ifndef __DVF__ 
 \USE CRYUSEFILE:
-#endif
 \
 \USE CONTROL

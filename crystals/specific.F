@@ -1292,6 +1292,8 @@ C
 C
 CODE FOR XMOVE 
       SUBROUTINE XMOVE ( SRCE , RESLT , N )
+!DIR$ OPTIMIZE:2
+C This intel compiler hint prevents temp being optimized out.
       implicit none
 C
 C -- MOVES REALS FROM 'SRCE'
@@ -1312,6 +1314,8 @@ C
 C
 CODE FOR XMOVEI (modern replacement)
       SUBROUTINE XMOVEI ( ISRCE , IRESLT , N )
+!DIR$ OPTIMIZE:2
+C This intel compiler hint prevents temp being optimized out.
       implicit none
 C
 C -- MOVES INTEGERS FROM 'ISRCE'
@@ -1479,7 +1483,16 @@ C Now run command
 #if defined(CRY_GUI)
       CALL GDETCH(COMMND)
       RETURN
-#elif defined(__DVF__) 
+#elif defined(__INW__) 
+C for cl version, we must remove + or % symbol if present (has no meaning).
+      IPC =  INDEX ( COMMND, '% ' ) 
+      IF (IPC .GT. 0) THEN
+        COMMND(IPC:IPC+1) = '  '
+      END IF
+      IPC =  INDEX ( COMMND, '+ ' ) 
+      IF (IPC .GT. 0) THEN
+        COMMND(IPC:IPC+1) = '  '
+      END IF
       IFAIL = SYSTEM(COMMND)
       IF (IFAIL .EQ. 0 ) RETURN
 #elif defined(__LIN__)  || defined (__MIN__)

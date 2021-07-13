@@ -20,7 +20,7 @@
 %COPY 'PUB PRINT=PUNCH'
 %COPY 'incl all'
 %COPY 'end'
-%COPY '#RELE PUNCH logs/bfile/pch'
+%COPY '#RELE PUNCH logs/bfile.pch'
 %%
 %COPY '# PART 2'
 %COPY '#tors'
