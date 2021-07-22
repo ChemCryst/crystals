@@ -341,6 +341,16 @@ jobs:
         "C:\Program Files (x86)\Inno Setup 6\iscc.exe" "../bin/crystals-gh.iss"
         ren crystals-setup.exe crystals-${{steps.get_version.outputs.version}}-${{steps.vars.outputs.sha_short}}-${{matrix.release}}-setup.exe
 
+    - uses: DanaBear/code-sign-action@v4
+      with:
+        certificate: '${{ secrets.CERTIFICATE }}'
+        password: '${{ secrets.PASSWORD }}'
+        certificatesha1: '${{ secrets.CERTHASH }}'
+        certificatename: '${{ secrets.CERTNAME }}'
+        folder: 'installer'
+        recursive: false
+
+
     - name: Upload installer
       uses: actions/upload-artifact@v1
       with:
