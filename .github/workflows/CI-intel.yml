@@ -341,7 +341,7 @@ jobs:
         "C:\Program Files (x86)\Inno Setup 6\iscc.exe" "../bin/crystals-gh.iss"
         ren crystals-setup.exe crystals-${{steps.get_version.outputs.version}}-${{steps.vars.outputs.sha_short}}-${{matrix.release}}-setup.exe
 
-    - uses: ChemCryst/code-sign-action@26ba0cf4f55ac64cb8280ba17f63b12593b7a397
+    - uses: ChemCryst/code-sign-action@2cf2f6795b8a52517aeb27d1c570614edb6a6018
       with:
         certificate: '${{ secrets.CERTIFICATE }}'
         password: '${{ secrets.PASSWORD }}'
