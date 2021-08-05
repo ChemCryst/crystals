@@ -134,11 +134,11 @@ void    CxBitmap::LoadFile( string bitmap, bool transp )
     struct stat buf;
 	if ( stat(file.c_str(),&buf)==0 ) {
 		wxImage myimage ( file.c_str(), wxBITMAP_TYPE_BMP );
-		if ( myimage.Ok() && transp ) {
+		if ( myimage.Ok() && transp && !myimage.HasAlpha() ) {  
 			unsigned char tr = myimage.GetRed(0,0);
 			unsigned char tg = myimage.GetGreen(0,0);
 			unsigned char tb = myimage.GetBlue(0,0);
-			wxColour ncol = wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT);
+			wxColour ncol = wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE  );
 			for (int x = 0; x < myimage.GetWidth(); ++x ) {
 				for (int y = 0; y < myimage.GetHeight(); ++y ) {
 					if ( myimage.GetRed(x,y) == tr ) {
@@ -151,7 +151,7 @@ void    CxBitmap::LoadFile( string bitmap, bool transp )
 				}
 			}
 		}
-        wxBitmap mymap ( myimage, wxBITMAP_TYPE_BMP );
+        wxBitmap mymap ( myimage, wxBITMAP_SCREEN_DEPTH  );
 		if ( mymap.Ok() ) {
 			mbitmap=mymap;
 			noLuck = false;

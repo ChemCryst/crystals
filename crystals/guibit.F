@@ -1820,12 +1820,25 @@ cdjw      write(123,*)'Thinking about loading L 5 and L 25'
               ENDIF
            END IF
            CALL XRLIND(25, L25SR, NFW, LL, IOW, NOS, ID)
+           CALL XRLIND( 5, L05SR, NFW, LL, IOW, NOS, ID)
 c      write(123,'(4i12)')L25SR,ISERnn(25),L05SR,ISERnn(5)
-           IF ((L25SR.NE.ISERnn(25)).or.(L05SR.ne.ISERnn(5)) ) THEN
+
+ 
+           IF ( IULN .LT. 0 ) THEN
+              IF ( ISERnn(5) .EQ. -1) THEN
+                L05SR = -2
+              ELSE
+                L05SR = -1
+              END IF
+           END IF
+ 
+           IF ((L25SR.NE.ISERnn(25)).or.(L05SR.NE.ISERnn(5)) ) THEN
               ISERnn(25)  = L25SR
+              ISERnn(5)  = L05SR
            ELSE
              CYCLE
            END IF
+		   
            WRITE (CMON,
      1       '(''^^WI SAFESET [ _MT_L25 EMPTY TEXT "Twin laws" ]'')')
            CALL XPRVDU(NCVDU,1,0)
