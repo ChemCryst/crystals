@@ -744,10 +744,10 @@ C
       CALL XPRVDU(NCVDU, 9,0)
       IF (ISSPRT .EQ. 0)  WRITE(NCWU,'(A)') (trim(CMON(I)),I=1,9)
 1760  FORMAT(/
-     1'Fo range       ', '-ve', 5F8.1,  '  Remainder',/
+     1'Fo range       ',8x, '-ve', 5F8.1,  '  Remainder',/
      2'Mean Fo        ', 7F8.3,/
      3'Number         ', 7I8,//
-     *'Fo/sigma range ', '-ve', 5F8.1,  '  Remainder',/
+     *'Fo/sigma range ',8x, '-ve', 5F8.1,  '  Remainder',/
      4'rms (Fo/sigma) ', 7F8.3,/
      5'Number         ', 7I8,//
      6 )
@@ -772,7 +772,10 @@ c              systematic absences
           write(cmon,'(A,F6.3,A,I9,A )')' Rsigma = ',rsigma,' for',N6W,
      1    ' input reflections'
           call xprvdu (ncvdu,1,0)
-          if (issprt.eq.0) write (ncwu,'(/a/)') TRIM(cmon(1))
+          if (issprt.eq.0) then
+            write (ncwu,'(/a/)') TRIM(cmon(1))
+            write(ncwu,'(A)')'Rsigma = sum (sigma(I) / sum (I)'
+          endif
           IF(STORE(L30DR+1).GT. ZERO) then
            if(ABS(STORE(L30DR+1)-RSIGMA).GT.0.0005) THEN
             WRITE(CMON,'(A,A,F6.3,A,F6.3,A,I6,A)')
