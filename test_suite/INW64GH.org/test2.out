@@ -191,11 +191,11 @@ Space group symbol is   P    1    21/C 1
 
     119 absences,   mean Fo =  23.090,   rms Fo/sigma(Fo)=  24.535
 
-Fo range       -ve     1.0     2.0     4.0     8.0    16.0  Remainder
+Fo range               -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 Mean Fo          -3.675   0.000   1.620   3.166   5.384  12.344  59.662
 Number               29       0       6      17      17       6      44
 
-Fo/sigma range -ve     1.0     2.0     4.0     8.0    16.0  Remainder
+Fo/sigma range         -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 rms (Fo/sigma)    1.991   0.581   1.370   2.828   5.875  12.295  44.714
 Number               29      14      14       9      11       7      35
 
@@ -203,6 +203,7 @@ Number               29      14      14       9      11       7      35
 
  Rsigma =  0.043 for     3794 input reflections
 
+Rsigma = sum (sigma(I) / sum (I)
 #SORT
  After   1 pass    3794 reflection(s) have been sorted
  The updated reflections are now on UNIT 53

@@ -96,11 +96,11 @@ Bonds: Update required - There is no list 41
 
      17 absences,   mean Fo =   0.800,   rms Fo/sigma(Fo)=   4.497
 
-Fo range       -ve     1.0     2.0     4.0     8.0    16.0  Remainder
+Fo range               -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 Mean Fo          -1.321   0.721   1.474   2.085   0.000   0.000   0.000
 Number                4       2       9       2       0       0       0
 
-Fo/sigma range -ve     1.0     2.0     4.0     8.0    16.0  Remainder
+Fo/sigma range         -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 rms (Fo/sigma)    2.451   0.857   1.690   3.405   5.459  11.667   0.000
 Number                4       1       2       5       4       1       0
 
@@ -108,6 +108,7 @@ Number                4       1       2       5       4       1       0
 
  Rsigma =  0.035 for     1849 input reflections
 
+Rsigma = sum (sigma(I) / sum (I)
 #MERGE
  After   1 pass    1849 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
@@ -3175,11 +3176,11 @@ Bonds: Update required - List5 length change
 
      17 absences,   mean Fo =   0.800,   rms Fo/sigma(Fo)=   4.497
 
-Fo range       -ve     1.0     2.0     4.0     8.0    16.0  Remainder
+Fo range               -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 Mean Fo          -1.321   0.721   1.474   2.085   0.000   0.000   0.000
 Number                4       2       9       2       0       0       0
 
-Fo/sigma range -ve     1.0     2.0     4.0     8.0    16.0  Remainder
+Fo/sigma range         -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 rms (Fo/sigma)    2.451   0.857   1.690   3.405   5.459  11.667   0.000
 Number                4       1       2       5       4       1       0
 
@@ -3187,6 +3188,7 @@ Number                4       1       2       5       4       1       0
 
  Rsigma =  0.035 for     1849 input reflections
 
+Rsigma = sum (sigma(I) / sum (I)
 #MERGE
  After   1 pass    1849 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
@@ -6199,11 +6201,11 @@ Bonds: Update required - List5 length change
 
      17 absences,   mean Fo =   0.800,   rms Fo/sigma(Fo)=   4.497
 
-Fo range       -ve     1.0     2.0     4.0     8.0    16.0  Remainder
+Fo range               -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 Mean Fo          -1.321   0.721   1.474   2.085   0.000   0.000   0.000
 Number                4       2       9       2       0       0       0
 
-Fo/sigma range -ve     1.0     2.0     4.0     8.0    16.0  Remainder
+Fo/sigma range         -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 rms (Fo/sigma)    2.451   0.857   1.690   3.405   5.459  11.667   0.000
 Number                4       1       2       5       4       1       0
 
@@ -6211,6 +6213,7 @@ Number                4       1       2       5       4       1       0
 
  Rsigma =  0.035 for     1849 input reflections
 
+Rsigma = sum (sigma(I) / sum (I)
 #MERGE
  After   1 pass    1849 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
@@ -9232,11 +9235,11 @@ Bonds: Update required - List5 length change
 
      17 absences,   mean Fo =   0.800,   rms Fo/sigma(Fo)=   4.497
 
-Fo range       -ve     1.0     2.0     4.0     8.0    16.0  Remainder
+Fo range               -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 Mean Fo          -1.321   0.721   1.474   2.085   0.000   0.000   0.000
 Number                4       2       9       2       0       0       0
 
-Fo/sigma range -ve     1.0     2.0     4.0     8.0    16.0  Remainder
+Fo/sigma range         -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 rms (Fo/sigma)    2.451   0.857   1.690   3.405   5.459  11.667   0.000
 Number                4       1       2       5       4       1       0
 
@@ -9244,6 +9247,7 @@ Number                4       1       2       5       4       1       0
 
  Rsigma =  0.035 for     1849 input reflections
 
+Rsigma = sum (sigma(I) / sum (I)
 #MERGE
  After   1 pass    1849 reflection(s) have been sorted
  The updated reflections are now on UNIT 53

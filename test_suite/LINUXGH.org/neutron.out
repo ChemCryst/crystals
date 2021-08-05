@@ -87,6 +87,7 @@ Space group symbol is   P    1    21/N 1
 
  Rsigma =  0.048 for     2373 input reflections
 
+Rsigma = sum (sigma(I) / sum (I)
 #MERGE
  After   1 pass    2373 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
@@ -4824,6 +4825,7 @@ Space group symbol is   P    1    21/N 1
 
  Rsigma =  0.048 for     2373 input reflections
 
+Rsigma = sum (sigma(I) / sum (I)
 #MERGE
  After   1 pass    2373 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
@@ -9552,6 +9554,7 @@ Space group symbol is   P    1    21/N 1
 
  Rsigma =  0.048 for     2373 input reflections
 
+Rsigma = sum (sigma(I) / sum (I)
 #MERGE
  After   1 pass    2373 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
@@ -14048,6 +14051,7 @@ Space group symbol is   P    1    21/N 1
 
  Rsigma =  0.048 for     2373 input reflections
 
+Rsigma = sum (sigma(I) / sum (I)
 #MERGE
  After   1 pass    2373 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
