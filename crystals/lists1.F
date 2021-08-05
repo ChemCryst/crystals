@@ -1271,8 +1271,8 @@ cfeb08     2   CDT , CERROR(IERROR)(1:5), CDELET(IDELET)
       ENDIF
 1452    FORMAT ( 1X,I3, 1X, I6, 1X, I3, 2X, I5, 7X, 2A4,13X, A5, A20)
 1453    FORMAT ( 1X,I3, 1X, I6, 1X, I3, 2X, I5, 3X, A24, 1X, A5, A20)
-1454    FORMAT ( 1X,I3, 1X, I6, 1X, I3, 2X, I5,7X, I1, 1X, I1, 1X, 2A4)
-1455    FORMAT ( 1X,I3, 1X, I6, 1X, I3, 2X, I5,7X, I1, 1X, I1, 1X, A24)
+1454    FORMAT ( 1X,I3, 1X, I6, 1X, I3,2X, I6, 6X, I1,1X, I1,1X, 2A4)
+1455    FORMAT ( 1X,I3, 1X, I6, 1X, I3,2X, I6, 6X, I1,1X, I1,1X, A24)
 
 C NB Punch format has date at the end, and a 1 or 0 representation of
 C error and delete flags. This makes it easy to read with a script.
