@@ -1,0 +1,103 @@
+%SCRIPT xfovsfc
+%    VARIABLE LOGICAL DO_SFLS
+%    EVALUATE DO_SFLS = TRUE
+^^WI WINDOW xfovsfc 'Fo-Fc/sigmaw' KEEP SIZE MODAL
+^^WI COMMIT='EXT_BOK' CANCEL='EXT_BOK'
+^^WI GRID MAIN NROWS=2 NCOLS=1
+^^WI {
+^^WI  @ 1,1 GRID PRIME NROWS=7 NCOLS=3
+^^WI  {
+^^WI   @ 2,2 GRID EXP2 NROWS=1 NCOLS=1 OUTLINE=''
+^^WI   {
+^^WI    @ 1,1 GRID EXP2 NROWS=1 NCOLS=3
+^^WI    {
+^^WI     @ 1,1 STATIC XFW1
+^^WI 'This is a scatterplot of sin\theta/\lambda vs. |Fo\**2-Fc**2| x \sqrtw.'
+^^WI     @ 1,2 ICON OIC SMALLQUERY TOOLTIP 
+^^WI 'Values > 10 on the y-axis are outliers, should be investigated and probably removed (right-click point for options).'
+^^WI    }
+^^WI   }
+^^WI   @ 4,2 PLOTWINDOW _VDELTA NROWS=20 NCOLS=64
+^^WI     DEFINEPOPUPMENU POPUP 'Selection'
+^^WI       ITEM _SDELA '&Omit _L' 'OMIT_N_L'
+^^WI     ENDDEFINEMENU
+^^WI   @ 6,2 GRID EXBT NROWS=1 NCOLS=10
+^^WI   {
+^^WI    @ 1,1 STRETCH VB HORIZONTAL
+^^WI    @ 1,2 RADIOBUTTON EXT_ALL 'All Data' STATE=ON INFORM
+^^WI    @ 1,4 RADIOBUTTON EXT_OBS 'Observed' STATE=OFF INFORM
+^^WI    @ 1,6 BUTTON EXT_SAV 'Save Image' 
+^^WI    @ 1,8 BUTTON EXT_EXP 'Export Data' 
+^^WI    @ 1,10 BUTTON EXT_BOK 'Close' DEFAULT
+^^WI   }
+^^WI  }
+^^WI  @ 2,1 PROGRESS _FOFCPR 'Please wait'
+^^WI }
+^^WI SHOW
+^^CR
+^^CO SENDPROGRESSTO _FOFCPR
+%  LOOP
+%    IF DO_SFLS .EQ. TRUE THEN
+%      COPY '#SFLS' 
+%      COPY 'CALC' 
+%      COPY 'END'
+%      EVALUATE DO_SFLS = FALSE
+%    END IF
+%    ON ERROR CONTINUE
+%    COPY '#sum list 6 level=DELTAS'
+%    COPY 'END'
+%    VERIFY EXT_ALL  EXT_OBS EXT_BOK EXT_SAV EXT_EXP OMIT
+%    GET SILENT NOSTORE FINAL ABBREVIATED '?' 'EXT_BOK'
+%    CASE VALUE
+%    BLOCK
+ALL
+%    END BLOCK
+%    BLOCK
+OBS
+%    END BLOCK
+%    BLOCK
+^^CO    DISPOSE xfovsfc
+%       FINISH
+%    END BLOCK
+%%
+%    BLOCK
+Saving Image
+^^CO SET _VDELTA SAVE 800 600 Outliers
+%    END BLOCK
+%%
+%    BLOCK
+^^CO SET _VDELTA EXPORT Outliers.csv
+%    END BLOCK
+%%
+%    BLOCK
+%      EVALUATE DO_SFLS = TRUE   
+%      ON EDITERROR TERMINATE
+%      COPY '#GENERALEDIT 28'
+%      COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%      COPY 'LOCATE RECORDTYPE = 104'
+%      COPY 'INSERT'
+%      CLEAR
+%      INSERT 'CHANGE 0 REAL REAL ='
+%      GET INTEGER ' ' ' '
+%      SEND
+%      OUTPUT
+%      CLEAR
+%      INSERT 'CHANGE 1 REAL REAL ='
+%      GET INTEGER ' ' ' '
+%      SEND
+%      OUTPUT
+%      CLEAR
+%      INSERT 'CHANGE 2 REAL REAL ='
+%      GET INTEGER ' ' ' '
+%      SEND
+%      OUTPUT
+%      CLEAR
+%      COPY 'WRITE'
+%      COPY 'END'
+%    END BLOCK
+%    END CASE
+%  END LOOP
+%% Should not get here unless #SUM L 6 failed 
+^^CO    DISPOSE xfovsfc
+%END SCRIPT
+
