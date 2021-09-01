@@ -22,7 +22,8 @@ ADD_CUSTOM_COMMAND(
 	COMMAND ${CMAKE_COMMAND} -E copy ${GIFS} .
 	COMMAND ${CMAKE_COMMAND} -E copy ${CSSS} .
 	COMMAND ${CMAKE_COMMAND} -E copy ${PDFS} .
-	COMMAND ${CMAKE_COMMAND} -E copy ${ANALYSE} ./analyse
+	#COMMAND ${CMAKE_COMMAND} -E copy ${ANALYSE} ./analyse
+	COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/analyse ./analyse
 	COMMAND ${CMAKE_COMMAND} -E copy ${XRAYDAT} ./Xray-data
 	COMMAND ${CMAKE_COMMAND} -E touch manual.stamp
 	COMMAND ${CMAKE_COMMAND} -E remove_directory html
