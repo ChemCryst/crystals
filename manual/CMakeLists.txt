@@ -30,7 +30,7 @@ ADD_CUSTOM_COMMAND(
 	COMMAND ${CMAKE_COMMAND} -E remove_directory latex
 	COMMAND ${CMAKE_COMMAND} -E remove_directory website
     COMMENT "Processing manual"
-	DEPENDS ../../manual/faq.man ../../manual/primer.man ../../manual/guide.man ../../manual/crystals.man ../../manual/cameron.man ../../manual/menu.man ../../manual/readme.man ../../manual/workshop.man
+	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/faq.man ${CMAKE_CURRENT_SOURCE_DIR}/primer.man ${CMAKE_CURRENT_SOURCE_DIR}/guide.man ${CMAKE_CURRENT_SOURCE_DIR}/crystals.man ${CMAKE_CURRENT_SOURCE_DIR}/cameron.man ${CMAKE_CURRENT_SOURCE_DIR}/menu.man ${CMAKE_CURRENT_SOURCE_DIR}/readme.man ${CMAKE_CURRENT_SOURCE_DIR}/workshop.man
 )
 
 add_custom_target(
