@@ -192,10 +192,6 @@ if(useOPENMP)
     endif()
 endif ()
 
-if ( NOT WIN32 )
-	find_package(PythonLibs 3 REQUIRED)
-	INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIRS})
-endif ()
 
 if ( use32 )
     message(STATUS "Building 32bit")
@@ -219,9 +215,9 @@ if ( useGUI )
 #        SET(wxWidgets_LIB_DIR "c:/wx3/lib/gcc_dll")
 #        set(wxWidgets_CONFIGURATION mswu)
         FIND_PACKAGE(wxWidgets REQUIRED html stc adv core gl base scintilla)
-		
 
-		
+
+
     else ()
         FIND_PACKAGE(wxWidgets REQUIRED html stc adv core gl base)
     endif ()
@@ -485,6 +481,19 @@ endif ()
 #ENABLE_TESTING()
 #INCLUDE(CTest)
 
+
+if ( usePY )
+#  find_package(Python3 COMPONENTS Development)
+  set(PYTHON3_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/python-headers-win/Include)
+  INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/python-headers-win/PC)
+  INCLUDE_DIRECTORIES(${PYTHON3_INCLUDE_DIRS})
+  message(STATUS "Setting include folder: ${PYTHON3_INCLUDE_DIRS}")
+  set(Python3_LIBRARIES ${CMAKE_SOURCE_DIR}/precomp/WIN32/pyembed/libpython38.a)
+endif()
+
+
+
+
 # Libraries
 ADD_SUBDIRECTORY(script)
 ADD_SUBDIRECTORY(sginfo)
@@ -502,6 +511,8 @@ endif()
 #if (IFORT_COMPILER)
 #	add_subdirectory(mklbuilder)
 #endif
+
+
 
 
 # Because external project call cmake externally too we need to pass the compiler and module path via cmake_args
@@ -648,6 +659,8 @@ FOREACH (_file ${ssrfiles})
     LIST(APPEND srtfiles ${file_srt})
 ENDFOREACH()
 
+
+
 if ( useGUI )
     INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/crys_fortran)
     ADD_EXECUTABLE (crystals WIN32 ${scpfiles} ${datfiles} ${srtfiles} $<TARGET_OBJECTS:CrystalsUserInterface> ${CMAKE_SOURCE_DIR}/gui/fwrapper_gui.F90 ${CMAKE_SOURCE_DIR}/gui/fwrapperimp_gui.F90 gui/gcrystals.cpp crystals/crystals.F gui/wx.rc)
@@ -663,24 +676,26 @@ if ( useGUI )
     find_package(OpenGL REQUIRED)
     message(STATUS "Using OpenGL libraries: ${OPENGL_LIBRARIES}")
     include_directories( ${OPENGL_INCLUDE_DIRS}  )
+
     target_link_libraries(crystals ${OPENGL_LIBRARIES} )
 
 if ( useMULTIDEF_WORKAROUND )
     set (CMAKE_EXE_LINKER_FLAGS -Wl,--allow-multiple-definition )
 endif()
 
-    TARGET_LINK_LIBRARIES(crystals CrystalsFortran CameronFortran ${wxWidgets_LIBRARIES} ${PYTHON_LIBRARIES} ${MSYS2LIBS} ${wxSTATICEXTRA_LIBS} )
+    message(STATUS "Py libs ${Python3_LIBRARIES}")
+    TARGET_LINK_LIBRARIES(crystals CrystalsFortran CameronFortran ${wxWidgets_LIBRARIES} ${MSYS2LIBS} ${wxSTATICEXTRA_LIBS} ${Python3_LIBRARIES})
     SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_GUI)
     SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES Fortran_MODULE_DIRECTORY ${Fortran_MODULE_DIRECTORY} )
 
 #    SET_TARGET_PROPERTIES(crystalscl PROPERTIES LINKER_LANGUAGE Fortran)
-    TARGET_LINK_LIBRARIES(crystalscl CrystalsFortran CameronFortran ${PYTHON_LIBRARIES} )
+    TARGET_LINK_LIBRARIES(crystalscl CrystalsFortran CameronFortran ${Python3_LIBRARIES})
 #    SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_NOGUI)
 
 elseif( usePY )
     ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} crystals/crystals.F)
     SET_TARGET_PROPERTIES(crystals PROPERTIES LINKER_LANGUAGE Fortran)
-    TARGET_LINK_LIBRARIES(crystals CrystalsFortran CameronFortran )
+    TARGET_LINK_LIBRARIES(crystals CrystalsFortran CameronFortran ${Python3_LIBRARIES})
 else()
     ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} crystals/crystals.F)
     SET_TARGET_PROPERTIES(crystals PROPERTIES LINKER_LANGUAGE Fortran)
