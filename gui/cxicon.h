@@ -41,6 +41,7 @@
 
 class CrIcon;
 class CxGrid;
+class CxTab;
 
 class CxIcon : public BASETEXT
 {
@@ -62,7 +63,8 @@ class CxIcon : public BASETEXT
 
         // attributes
         CrGUIElement *  ptr_to_crObject;
-
+		CxTab* notebookParent;
+		
     protected:
         // attributes
 		wxBitmap mbitmap;

@@ -2950,6 +2950,8 @@ int CcController::GetDescriptor( string &token, int descriptorClass )
                DESCRIPTOR(IconErrorSmall)
                DESCRIPTOR(IconWarnSmall)
                DESCRIPTOR(IconQuerySmall)
+               DESCRIPTOR(IconBlank)
+               DESCRIPTOR(IconBlankSmall)
                DESCRIPTOR(NRes)
                DESCRIPTOR(Style)
                DESCRIPTOR(StyleSmooth)
@@ -2990,6 +2992,7 @@ int CcController::GetDescriptor( string &token, int descriptorClass )
                DESCRIPTOR(ShowGroups)
                DESCRIPTOR(Value)
                DESCRIPTOR(ToolTip)
+               DESCRIPTOR(SetIcon)
              break;
 
       case kChartClass:

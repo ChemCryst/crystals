@@ -12,6 +12,7 @@ SET(CMAKE_COLOR_MAKEFILE ON)
 option (verbose "verbose" OFF)
 option (useMULTIDEF_WORKAROUND "useMULTIDEF_WORKAROUND" OFF)  #temporary while multiply defined symbols exist in MinGW64 libs.
 option (useGUI "useGUI" ON)
+option (useCustomMKL "useCustomMKL" OFF)
 option (usePY "usePY" OFF)
 option (use32 "use32" OFF)
 option (useSTATIC "useSTATIC" OFF)
@@ -107,6 +108,14 @@ IF ( PERL_FOUND )
 ENDIF ( PERL_FOUND )
 
 IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.5)
+
+  if ( useCustomMKL ) 
+
+        message(STATUS "Using Custom MKL library: ./mkl_custom.lib")
+        link_libraries ( "mkl_custom.lib" )  
+        link_directories( ${CMAKE_BINARY_DIR} )
+  
+  else()
     find_package(BLAS)
     find_package(LAPACK)
 
@@ -135,7 +144,15 @@ IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.5)
         message(STATUS "Using builtin BLAS and LAPACK library")
         add_definitions(-DCRY_OWNLAPACK)
     endif ()
+  endif ()
 else ()
+  if ( useCustomMKL ) 
+
+        message(STATUS "Using Custom MKL library: ./mkl_custom.lib")
+        link_libraries ( "mkl_custom.lib" )  
+        link_directories( ${CMAKE_BINARY_DIR} )
+  
+  else()
     find_library(OpenBLAS_LIBRARY openblaso)
     if(OpenBLAS_LIBRARY)
         message(STATUS "Using OpenBLAS [${OpenBLAS_LIBRARY}]")
@@ -169,6 +186,7 @@ else ()
             add_definitions(-DCRY_OWNLAPACK)
         endif ()
     endif()
+  endif()
 endif ()
 
 if(BLA_VENDOR)
@@ -284,10 +302,32 @@ endif ()
 add_definitions(-D _HOL_)
 
 string (TIMESTAMP CRYYEAR "%Y")
-string (TIMESTAMP CRYMONTH "%m")
+string (TIMESTAMP CRYMONTH "%b")
 string (TIMESTAMP CRYDAY "%d")
+
+set (CRYVMAJOR "$ENV{CRYVMAJOR}")
+if  ("${CRYVMAJOR}" STREQUAL "" ) 
+    MESSAGE("CRYVMAJOR Version major not set - using ... 10")
+	set (CRYVMAJOR "10")
+endif()	
+
+set (CRYVMINOR "$ENV{CRYVMINOR}")
+if  ("${CRYVMINOR}" STREQUAL "" ) 
+    MESSAGE("CRYVMINOR Version minor not set - using ... 1")
+	set (CRYVMINOR "1")
+endif()	
+
+set (CRYVPATCH "$ENV{CRYVPATCH}")
+if  ("${CRYVPATCH}" STREQUAL "" ) 
+    MESSAGE("CRYVPATCH Version patch not set - using ... 100")
+	set (CRYVPATCH "100")
+endif()	
+
+math(EXPR CRYVERSUM "(${CRYVMAJOR} * 100000 ) + ( ${CRYVMINOR} * 1000 ) + ${CRYVPATCH}") 
+
 set (CRYSVNVER "$ENV{CRYSVNVER}")
 set (CRYHOST "${CMAKE_SYSTEM_NAME}")
+
 
 if("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
     MESSAGE("++ 64 bit architecture")
@@ -375,8 +415,8 @@ ELSEIF ( IFORT_COMPILER ) # ifort (untested)
 
   ELSE()
 
-	    SET (CMAKE_Fortran_FLAGS_RELEASE "-O3 -fpp -MD -Qmkl -Qdiag-disable:8291 -traceback -QaxSSE2")
-	    SET (CMAKE_Fortran_FLAGS_DEBUG   "-check:all -MDd -debug:all -Qtrapuv -fpe0 -fpp -Qmkl -warn:nofileopt -Qdiag-disable:8291 -Qdiag-disable:8290 -check:format -check:overflow -check:pointers -check:noarg_temp_created -check:uninit -traceback -check:nooutput_conversion")
+	    SET (CMAKE_Fortran_FLAGS_RELEASE "-O3 -fpp -MD /heap-arrays:8 -Qdiag-disable:8291 -traceback -QaxSSE2")
+	    SET (CMAKE_Fortran_FLAGS_DEBUG   "-check:all -MDd /heap-arrays:8 -debug:all -Qtrapuv -fpe0 -fpp -warn:nofileopt -Qdiag-disable:8291 -Qdiag-disable:8290 -check:format -check:overflow -check:pointers -check:noarg_temp_created -check:uninit -traceback -check:nooutput_conversion")
 
     	SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}  /O2  /EHs /W3 /Oy- ")
     	SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /EHs /W3 /Oy- ")
@@ -495,6 +535,7 @@ endif()
 
 
 # Libraries
+ADD_SUBDIRECTORY(manual)
 ADD_SUBDIRECTORY(script)
 ADD_SUBDIRECTORY(sginfo)
 ADD_SUBDIRECTORY(crystals crys_fortran)
@@ -619,7 +660,7 @@ SET  (scpfiles)
 FOREACH (_file ${sscfiles})
     STRING(REPLACE ".ssc" ".scp" file_scp ${_file})
     ADD_CUSTOM_COMMAND( OUTPUT ${file_scp}
-                        COMMAND ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_CURRENT_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_scp} ${flags} -DCRYSVNVER=${CRYSVNVER} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} ${CMAKE_CURRENT_SOURCE_DIR}/${_file}
+                        COMMAND ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_CURRENT_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_scp} ${flags} -DCRYSVNVER=${CRYSVNVER} -DCRYVERSUM=${CRYVERSUM} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} ${CMAKE_CURRENT_SOURCE_DIR}/${_file}
                         DEPENDS ${_file} )
     LIST(APPEND scpfiles ${file_scp})
 ENDFOREACH()
@@ -631,7 +672,7 @@ SET  (datfiles)
 FOREACH (_file ${sdafiles})
     STRING(REPLACE ".sda" ".dat" file_dat ${_file})
     ADD_CUSTOM_COMMAND( OUTPUT ${file_dat}
-                        COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_CURRENT_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_dat} ${flags} -DCRYSVNVER=${CRYSVNVER} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} ${CMAKE_CURRENT_SOURCE_DIR}/${_file}
+                        COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_CURRENT_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_dat} ${flags} -DCRYSVNVER=${CRYSVNVER} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} -DCRYVERSUM=${CRYVERSUM} ${CMAKE_CURRENT_SOURCE_DIR}/${_file}
     DEPENDS ${_file} )
     LIST(APPEND datfiles ${file_dat})
 ENDFOREACH()
@@ -654,7 +695,7 @@ SET  (srtfiles)
 FOREACH (_file ${ssrfiles})
     STRING(REPLACE ".ssr" ".srt" file_srt ${_file})
     ADD_CUSTOM_COMMAND( OUTPUT ${file_srt}
-                        COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_CURRENT_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_srt} ${flags} -DCRYARCH=${CRYARCH} -DCRYHOST=${CRYHOST} -DCRYSVNVER=${CRYSVNVER} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} ${CMAKE_CURRENT_SOURCE_DIR}/datafiles/${_file}
+                        COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_CURRENT_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_srt} ${flags} -DCRYARCH=${CRYARCH} -DCRYHOST=${CRYHOST} -DCRYSVNVER=${CRYSVNVER} -DCRYVERSUM=${CRYVERSUM} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} ${CMAKE_CURRENT_SOURCE_DIR}/datafiles/${_file}
                         DEPENDS datafiles/${_file} )
     LIST(APPEND srtfiles ${file_srt})
 ENDFOREACH()

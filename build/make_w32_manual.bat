@@ -11,7 +11,8 @@ cd manual
 set CRYSSRC=..\..
 perl -w ..\..\manual\mangen.pl faq.man primer.man guide.man crystals.man cameron.man menu.man readme.man workshop.man
 cd ..
-copy    manual\html\* manual
+rem html output is now in the main folder - copy no longer needed
+rem copy    manual\html\* manual
 copy ..\manual\*.jpg manual
 copy ..\manual\*.gif manual
 copy ..\manual\*.css manual

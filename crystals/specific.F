@@ -670,18 +670,18 @@ c
         !print *, 'idunit ', idunit, trim(clcnam)
 
         ! dsc filename is not always specified
-        ! hack to do part of the job of mtrnlg before mtrlng refactoring		
+        ! hack to do part of the job of mtrnlg before mtrlng refactoring
 		!! This gives unexpected behaviour if crfilev2.dsc exists
 		!! and the user has specified a new dsc.
-		
+
 		!! moved check into MTRNLG so that environment vars override default crfilev2.dsc name.
-		
+
 !        iposition=index(CLCNAM, 'CRDSC:')
 !        if(iposition>0) then
 !          CLCNAM=CLCNAM(1:iposition-1)//'crfilev2.dsc'//
 !     1      CLCNAM(iposition+6:len_trim(clcnam))
 !!        end if
-        
+
         if(hdf5_in_use) then
           iposition=index(CLCNAM, '.dsc')
           if(iposition==0) iposition=index(CLCNAM, '.DSC')
@@ -1290,6 +1290,8 @@ C
 C
 CODE FOR XMOVE
       SUBROUTINE XMOVE ( SRCE , RESLT , N )
+!DIR$ OPTIMIZE:2
+C This intel compiler hint prevents temp being optimized out.
       implicit none
 C
 C -- MOVES REALS FROM 'SRCE'
@@ -1310,6 +1312,8 @@ C
 C
 CODE FOR XMOVEI (modern replacement)
       SUBROUTINE XMOVEI ( ISRCE , IRESLT , N )
+!DIR$ OPTIMIZE:2
+C This intel compiler hint prevents temp being optimized out.
       implicit none
 C
 C -- MOVES INTEGERS FROM 'ISRCE'
@@ -1477,16 +1481,25 @@ C Now run command
 #if defined(CRY_GUI)
       CALL GDETCH(COMMND)
       RETURN
-#elif defined(__DVF__)
+#elif defined(__INW__)
+C for cl version, we must remove + or % symbol if present (has no meaning).
+      IPC =  INDEX ( COMMND, '% ' )
+      IF (IPC .GT. 0) THEN
+        COMMND(IPC:IPC+1) = '  '
+      END IF
+      IPC =  INDEX ( COMMND, '+ ' )
+      IF (IPC .GT. 0) THEN
+        COMMND(IPC:IPC+1) = '  '
+      END IF
       IFAIL = SYSTEM(COMMND)
       IF (IFAIL .EQ. 0 ) RETURN
 #elif defined(__LIN__)  || defined (__MIN__)
 C for cl version, we must remove + or % symbol if present (has no meaning).
-      IPC =  INDEX ( COMMND, '% ' ) 
+      IPC =  INDEX ( COMMND, '% ' )
       IF (IPC .GT. 0) THEN
         COMMND(IPC:IPC+1) = '  '
       END IF
-      IPC =  INDEX ( COMMND, '+ ' ) 
+      IPC =  INDEX ( COMMND, '+ ' )
       IF (IPC .GT. 0) THEN
         COMMND(IPC:IPC+1) = '  '
       END IF
@@ -1847,7 +1860,7 @@ C on all platforms.
 C MAY20: Don't change leading slashes - could be command switch
 #ifdef CRY_OSWIN32
       LSPACE = .TRUE.
-      DO I = 1, LEN(NAME(LEVEL)) 
+      DO I = 1, LEN(NAME(LEVEL))
         IF ( ( .NOT. LSPACE ) .AND. ( NAME(LEVEL)(I:I) .EQ. '/' )) THEN
           NAME(LEVEL)(I:I) = '\'
         END IF
@@ -2363,9 +2376,9 @@ C NOTE THAT XPRTDV CLEARS THE CCVDU BUFFER
       DO I=1,NLIN
 c      write(ncawu,*)'ISSMON in prtmon=',issmon, CCVDU(I)(1:3)
 c Found some lines begining with space, so ^^ are in 2:3, not 1:2)
-       IF((CCVDU(I)(2:2).EQ.'^').AND.(ISSMON.NE.1))  THEN 
+       IF((CCVDU(I)(2:2).EQ.'^').AND.(ISSMON.NE.1))  THEN
             CONTINUE
-       ELSE 
+       ELSE
           IF(CCVDU(I)(1:1).EQ.'{' )THEN
             WRITE(NCAWU,'(A)') TRIM(CCVDU(I)(3:))
           ELSE

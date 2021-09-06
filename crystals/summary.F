@@ -2923,6 +2923,8 @@ C
 C
 CODE FOR XSUM25
       SUBROUTINE XSUM25
+      dimension twin(3,3)
+      character*4 coper
       INCLUDE 'ISTORE.INC'
       INCLUDE 'STORE.INC'
       INCLUDE 'XLST25.INC'
@@ -2941,8 +2943,41 @@ C
       IF (N25 .GT. 0) THEN
       M25 = L25
       DO 3000 J = 1, N25
+       call xmove(store(m25),twin(1,1),9)
+       determinant = xdetr3(twin)
+       tr_det = twin(1,1)+twin(2,2)+twin(3,3) + determinant
+c      (GIACOVAZZO, Section 1.d)
+c         Tr+det:   4  0  1  2  3 -4  0 -1 -2 -3
+c         Element:  1  2  3  4  6 -1 -2 -3 -4 -6
+       select case(nint(tr_det)+5)
+            case(1)     
+                  coper = ' -1'
+            case(2)     
+                  coper = ' -6'
+            case(3)     
+                  coper = ' -4'
+            case(4)     
+                  coper = ' -3'
+            case(5)
+             if (determinant .gt.0) then     
+                  coper = ' 2'
+             else
+                  coper = ' m'
+             endif
+            case(6)     
+                  coper = ' 3'
+            case(7)     
+                  coper = ' 4'
+            case(8)     
+                  coper = ' 6'
+            case(9)     
+                  coper = ' 1'
+            case default
+                  coper = 'none'
+       end select
        WRITE(CMON,1106) (STORE(I),I = M25 , M25 + MD25 -1)
-1106   FORMAT ( 3(3F7.3,2X) )
+     1 ,coper
+1106   FORMAT ( 3(3F7.3,2X),' (',a4,')' )
        CALL XPRVDU(NCVDU, 1,0)
       M25 = M25 + MD25
 3000  CONTINUE

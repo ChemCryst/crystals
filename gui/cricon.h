@@ -42,6 +42,7 @@ class CrIcon : public CrGUIElement
 
 };
 
+#define     kSSetIcon          "SETICON"
 #define     kSIconInfo          "INFO"
 #define     kSIconError         "ERROR"
 #define     kSIconWarn          "WARN"
@@ -50,6 +51,9 @@ class CrIcon : public CrGUIElement
 #define     kSIconErrorSmall         "SMALLERROR"
 #define     kSIconWarnSmall          "SMALLWARN"
 #define     kSIconQuerySmall         "SMALLQUERY"
+#define     kSIconBlank         "BLANK"
+#define     kSIconBlankSmall          "SMALLBLANK"
+
 
 enum
 {
@@ -60,7 +64,10 @@ enum
  kTIconInfoSmall,
  kTIconErrorSmall,
  kTIconWarnSmall,
- kTIconQuerySmall
+ kTIconQuerySmall, 
+ kTSetIcon,
+ kTIconBlank, 
+ kTIconBlankSmall
 };
 
 #endif
