@@ -70,6 +70,7 @@ t/
 pi/
 pp/
 cl/
+nm/
 
 #IDE config
 .idea/
