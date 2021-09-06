@@ -14,7 +14,7 @@
 MRUitem::MRUitem( wxFileName f, wxDateTime t ){
 	this->file = f;
 	this->time = t;
-	this->exists = this->file.Exists();
+	this->exists = this->file.FileExists();
 // if file exists, update the modification date
 	if ( this->exists ) this->time = this->file.GetModificationTime();
 }

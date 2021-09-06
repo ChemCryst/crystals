@@ -23,17 +23,35 @@ foreach( precomp_file ${precomp_files} )
   endif()
 endforeach( precomp_file )
 
-file( GLOB_RECURSE precomp_files RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/MIN/" "MIN/*" )
-foreach( precomp_file ${precomp_files} )
-  add_custom_command(
-    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}"
-    COMMAND ${CMAKE_COMMAND} -E copy
-"${CMAKE_CURRENT_SOURCE_DIR}/MIN/${precomp_file}"
-"${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}"
-    DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/MIN/${precomp_file}"
-	)
-  list( APPEND precomp_files_dest "${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}" )
-endforeach( precomp_file )
+IF (IFORT_COMPILER)
+
+	file( GLOB_RECURSE precomp_files RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/INW/" "INW/*" )
+	foreach( precomp_file ${precomp_files} )
+	  add_custom_command(
+		OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}"
+		COMMAND ${CMAKE_COMMAND} -E copy
+	"${CMAKE_CURRENT_SOURCE_DIR}/INW/${precomp_file}"
+	"${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}"
+		DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/INW/${precomp_file}"
+		)
+	  list( APPEND precomp_files_dest "${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}" )
+	endforeach( precomp_file )
+
+ELSE()
+
+	file( GLOB_RECURSE precomp_files RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/MIN/" "MIN/*" )
+	foreach( precomp_file ${precomp_files} )
+	  add_custom_command(
+		OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}"
+		COMMAND ${CMAKE_COMMAND} -E copy
+	"${CMAKE_CURRENT_SOURCE_DIR}/MIN/${precomp_file}"
+	"${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}"
+		DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/MIN/${precomp_file}"
+		)
+	  list( APPEND precomp_files_dest "${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}" )
+	endforeach( precomp_file )
+
+ENDIF()
 
 if ( WIN32 )
 	file( GLOB_RECURSE precomp_files RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/WIN32/" "WIN32/*" )
@@ -48,6 +66,8 @@ if ( WIN32 )
 	  list( APPEND precomp_files_dest "${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}" )
 	endforeach( precomp_file )
 endif()
+
+
 
 if ( UNIX )
 	file( GLOB_RECURSE precomp_files RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/GIL/" "GIL/*" )

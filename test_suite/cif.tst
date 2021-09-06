@@ -290,7 +290,7 @@ END
 PUB PRINT=PUNCH
 incl all
 end
-#RELE PUNCH logs/bfile/pch
+#RELE PUNCH logs/bfile.pch
 
 # PART 2
 #tors

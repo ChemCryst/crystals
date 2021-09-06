@@ -30,6 +30,39 @@
   <br /> CRYSTALS 
   converts the untwinned reflection file to the twinned equivalent<br />
   Use the menu <i>Analyse/ROTAX</i><br />
+  Remember that if you have general twinning in a noncentrosymmetric space group, you
+  may want to add (using the ROTAX interface) the corresponding inverse twin laws because
+  post-refinement determination of the Flack parameter is unsafe.
+
+  <div class="c1"><h2>Interpreting the Twin Law</h2></div>
+
+  The operator generating the twin laws can be found by computing the determinant and 
+  trace of the matrices.
+  <br />
+
+  <pre>
+
+            Compute the determinant and the trace (sum  of the diagonal
+            elements. Add the determinant and the trace and use Carmelo's
+            little table  (GIACOVAZZO, Section 1.d)
+
+         Tr+det:   4  0  1  2  3 -4  0 -1 -2 -3
+         Element:  1  2  3  4  6 -1 -2 -3 -4 -6
+
+e.g. for matrices:
+A 1 0 0 0 1 0 0 0 1        volume fraction : 0.588
+B 1 0 0 -1 -1 0 0 0 -1     volume fraction : 0.361
+a -1 0 0 0 -1 0 0 0 -1     volume fraction : 0.050
+b -1 0 0 1 1 0 0 0 1       volume fraction : 0
+
+A) det 1  tr  3 total  4 element  1
+B) det 1  tr -1 total  0 element  2 or -2 choose 2 because det is +ve
+a) det -1 tr -3 total -4 element -1
+b) det -1 tr  1 total  0 element  2 or -2  choose -2 (i.e. m) because det is -ve
+
+  </pre>
+  <br />
+
 
   <h2>hklf5 reflection file input</h2>
   <div class="c1"><h2>ROTAX is not the appropriate utility for inputting hklf5 
@@ -46,6 +79,11 @@
   See 
   <a href="hklf52cry.html"> here </a> for a description of how twins are handled in 
   CRYSTALS and <a href="table.html"> here </a> for a description of data input.
+
+
+
+
+
 
 </body>
 </html>
