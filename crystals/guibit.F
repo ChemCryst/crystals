@@ -1822,6 +1822,7 @@ cdjw      write(123,*)'Thinking about loading L 5 and L 25'
            CALL XRLIND(25, L25SR, NFW, LL, IOW, NOS, ID)
            CALL XRLIND( 5, L05SR, NFW, LL, IOW, NOS, ID)
 c      write(123,'(4i12)')L25SR,ISERnn(25),L05SR,ISERnn(5)
+
  
            IF ( IULN .LT. 0 ) THEN
               IF ( ISERnn(5) .EQ. -1) THEN

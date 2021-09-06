@@ -558,8 +558,8 @@ C----- SET THE ENANTIOPOLE REFINEMENT FLAG
 c
       if((twinned .and. partials).or.(twinned .and. update_part))then
       write(cmon,'(A/A)') 
-     1 'You cannot refine Twin components with Partial contributions',
-     2 'This could include SQUEEZED data'
+     1 'You can not refine Twin components with Partial',
+     2 'contributions. This could include SQUEEZED data'
          CALL OUTCOL(9)
          CALL XPRVDU(NCVDU, 2,0)
          CALL OUTCOL(1)
@@ -1374,6 +1374,12 @@ c abandon processing the SRQ
       IF (MODE .LE. 0)  RETURN
       RETURN            !WHAT'S THE POINT OF THE TWO RETURNS?
 c                       ! See the 1995 version. they were different then
+c 1995 version:   1000 cont was Load the next #INSTRUCTION at the top of SFLSB
+c      9900  CONTINUE
+C       -- ERRORS
+c            IF (MODE .EQ. 0)  GOTO 1050
+c            GO TO 1000
+c
 9910  CONTINUE
 C -- NUMBERS DON'T MATCH
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9915 )
