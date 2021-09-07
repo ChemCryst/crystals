@@ -734,7 +734,7 @@ endif()
 #    SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_NOGUI)
 
 elseif( usePY )
-    ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} crystals/crystals.F)
+    ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} ${CMAKE_SOURCE_DIR}/gui/fwrapper_gui.F90 ${CMAKE_SOURCE_DIR}/gui/fwrapperimp_cl.F90 crystals/crystals.F)
     SET_TARGET_PROPERTIES(crystals PROPERTIES LINKER_LANGUAGE Fortran)
     TARGET_LINK_LIBRARIES(crystals CrystalsFortran CameronFortran ${Python3_LIBRARIES})
 else()
