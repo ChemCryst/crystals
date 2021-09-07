@@ -227,6 +227,7 @@ C Check if we have been called by python script.
       ENDIF
 
 #else
+      CHARACTER*256 CALINE
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'UFILE.INC'
       INCLUDE 'CAMPAR.INC'
