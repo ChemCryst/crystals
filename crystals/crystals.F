@@ -227,6 +227,7 @@ C Check if we have been called by python script.
       ENDIF
 
 #else
+      use fwrappergui_mod, only: cinextcommand, getcommand
       CHARACTER*256 CALINE
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'UFILE.INC'
