@@ -15,7 +15,19 @@ void cryproc();
 	#include <unistd.h>
 #endif
 
-#include <Python.h>   //Needed for the definitions of PyObject, PyModuleDef, etc.
+#define Py_NO_ENABLE_SHARED 1  // Stop pyconfig trying to define which libraries to link to.
+
+#ifdef _DEBUG   // Not sure this is needed.
+
+	#undef _DEBUG //Prevent linking debug build of python
+	#include <Python.h>   //Needed for the definitions of PyObject, PyModuleDef, etc.
+	#define _DEBUG 1
+
+#else
+
+	#include <Python.h>   //Needed for the definitions of PyObject, PyModuleDef, etc.
+
+#endif
 
 #include <stdlib.h>
 
