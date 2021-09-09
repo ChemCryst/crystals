@@ -128,7 +128,7 @@
 %    COPY 'PLOTTHETA  DELTA OFF'                                                
 %    COPY 'PLOTINDEX  DELTA ON'                                                 
 %    COPY 'END'                                                                 
-%    COPY '#ANALYSE'                                                            
+%    COPY '#ANALYSE MONITOR = BOTH'                                                            
 %    COPY 'LIST LEVEL=HIGH'                                                     
 %    COPY 'PLOTCLASS  RFACTOR ON'                                               
 %    COPY 'PLOTPARITY RFACTOR OFF'                                              
