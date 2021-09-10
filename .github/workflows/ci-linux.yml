@@ -61,7 +61,7 @@ jobs:
     - name: Build CRYSTALS linux
       working-directory: ci
       run: |
-        cmake -DuseGUI=${{ matrix.guiflag }} -DuseOPENMP=no  -DCMAKE_BUILD_TYPE=${{ matrix.release }} ..
+        cmake -DuseGUI=${{ matrix.guiflag }} -DuseOPENMP=no -DusePY=yes -DCMAKE_BUILD_TYPE=${{ matrix.release }} ..
         make -j2
 
 #
