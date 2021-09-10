@@ -46,9 +46,7 @@ endif ()
 
 ENABLE_LANGUAGE(Fortran)
 INCLUDE (CPack)
-IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.0)
     include(CheckFortranCompilerFlag)
-Endif()
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "MINGW64_NT" OR ${CMAKE_SYSTEM_NAME} MATCHES "MINGW32_NT")
     message(STATUS "Building using MSYS2, Mingw64 toolchain")
@@ -107,7 +105,9 @@ IF ( PERL_FOUND )
     MESSAGE ( STATUS "Perl executable: [${PERL_EXECUTABLE}]")
 ENDIF ( PERL_FOUND )
 
-IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.5)
+
+IF (${CMAKE_VERSION} VERSION_GREATER "3.5.0") 
+
 
   if ( useCustomMKL ) 
 
@@ -146,6 +146,8 @@ IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.5)
     endif ()
   endif ()
 else ()
+  # Cmake versions < 3.5
+
   if ( useCustomMKL ) 
 
         message(STATUS "Using Custom MKL library: ./mkl_custom.lib")
@@ -466,7 +468,6 @@ ENDIF ()
 
 
 
-IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.0)
 #    check_fortran_compiler_flag("-std=legacy" _std_legacy_flag)
     check_fortran_compiler_flag("-fexceptions" _f_exceptions)
     check_fortran_compiler_flag("-fno-sign-zero" _f_no_signzero)
@@ -483,14 +484,6 @@ IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.0)
       set(CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -fno-sign-zero")
       set(CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -fno-sign-zero")
     endif()
-ELSE ()
-#    set(CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -std=legacy")
-    set(CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -std=gnu")
-    set(CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -fexceptions")
-    set(CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -fexceptions")
-    set(CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -fno-sign-zero")
-    set(CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -fno-sign-zero")
-ENDIF ()
 
 if( useGGDB3 )
     message(STATUS "Using dwarf3 debug format")
@@ -523,12 +516,22 @@ endif ()
 
 
 if ( usePY )
-#  find_package(Python3 COMPONENTS Development)
-  set(PYTHON3_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/python-headers-win/Include)
-  INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/python-headers-win/PC)
-  INCLUDE_DIRECTORIES(${PYTHON3_INCLUDE_DIRS})
-  message(STATUS "Setting include folder: ${PYTHON3_INCLUDE_DIRS}")
-#  set(Python3_LIBRARIES ${CMAKE_SOURCE_DIR}/precomp/WIN32/pyembed/libpython38.a)
+
+  if ( WIN32 )
+
+    set(PYTHON3_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/python-headers-win/Include)
+    INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/python-headers-win/PC)
+    INCLUDE_DIRECTORIES(${PYTHON3_INCLUDE_DIRS})
+    message(STATUS "Setting include folder: ${PYTHON3_INCLUDE_DIRS}")
+  
+  else ()
+
+    find_package(Python3 COMPONENTS Development)
+    INCLUDE_DIRECTORIES(${Python3_INCLUDE_DIRS})
+    message(STATUS "Include folder: ${Python3_INCLUDE_DIRS}")
+
+  endif()
+
 endif()
 
 

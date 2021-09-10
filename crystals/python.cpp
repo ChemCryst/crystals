@@ -1,4 +1,4 @@
-
+#
 extern "C" {
 	
 #include <setjmp.h>
@@ -175,7 +175,14 @@ void lineouts(const char* string) {   // This wraps lineout so we don't need to 
 
 	#define mRunSimpleStringFlags(str,flags) PyRun_SimpleStringFlags(str,flags)
 	#define mArg_ParseTuple( args, s, string ) PyArg_ParseTuple( args, s, string )
+	#define mArg_ParseTuple4( args, s, ptype, pobj ) PyArg_ParseTuple(args, s, ptype, pobj)
 	#define mModuleCreate2(a,b) PyModule_Create2(a,b)
+	#define mErrSetString(o,s) PyErr_SetString(o,s)
+	#define mList_Size( pList ) PyList_Size( pList ) 
+	#define mList_GetItem( pList, index ) PyList_GetItem( pList, index ) 
+	#define mUnicodeAsUTF8(uni) PyUnicode_AsUTF8String(uni)
+	#define mBytesAsString(obj) PyBytes_AsString(obj)
+	#define mDECREF(o) Py_DecRef(o)
 
 #endif
 
