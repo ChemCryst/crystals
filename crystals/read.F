@@ -1423,7 +1423,7 @@ C-- CLEAR instruction flag to prevent error if PYTHON script calls back into CRY
       CALL XPRVDU(NCEROR, 1,0)
       WRITE ( NCWU , 2612 ) 
 2612  FORMAT ( '{E This version of CRYSTALS is not compiled with',
- 2            ' embedded Python.' )
+     2         ' embedded Python.' )
       IERROR = IERWRN
       IF ( ISYSIN .EQ. IUSE ) IERROR = IERERR
       IF ( ISYSIN .EQ. ISCRIP ) IERROR = IERERR
