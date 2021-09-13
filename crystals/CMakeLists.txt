@@ -15,9 +15,8 @@ endif()
 #pyspecific.F
 #)
 
-add_library(CrystalsFortran STATIC
+set(CRY_SOURCES 
 helper.c
-python.cpp
 mrgrnk.f90
 crystals_hdf5.F90
 numpy.F90
@@ -152,6 +151,13 @@ vcv.F
 weight.F
 lapack.F
 )
+
+if ( usePY )
+    set(CRY_SOURCES ${CRY_SOURCES} python.cpp)
+endif()
+
+
+add_library(CrystalsFortran STATIC ${CRY_SOURCES})
 
 if (Fortran_COMPILER_NAME MATCHES "gfortran")  # gfortran
    # gfortran: Trap NaN as those seem to appear sometimes in the fourier test

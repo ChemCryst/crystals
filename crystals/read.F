@@ -1378,45 +1378,57 @@ c        LENGTH = 80 - NC
       GOTO 9000
 
 2610  CONTINUE
+#ifdef CRY_PY
+      IF ( INPYTH .EQ. 1 ) THEN
+           WRITE ( CMON,2611) 
+           CALL XPRVDU(NCEROR, 1,0)
+           WRITE ( NCWU , 2611 ) 
+2611       FORMAT ( '{E Recursion error: Do not use CRYSTALS',
+     2            ' #python instruction from Python scripts.' )
+           IERROR = IERWRN
+           IF ( ISYSIN .EQ. IUSE ) IERROR = IERERR
+           IF ( ISYSIN .EQ. ISCRIP ) IERROR = IERERR
+           CALL XERHND ( IERROR )
+      ELSE
 C -- Run Python script
-      LSTART = KCCEQL ( CRDLWC, 1,' ' )
-      IF (LSTART .GE. 0 ) THEN
-         LSTART = KCCNEQ (CRDLWC, LSTART, ' ')    !skip spaces
-      END IF
-      LLAST  = KCLNEQ ( CRDLWC,-1,' ' )
-      LENGTH = 1 + LLAST - LSTART
-      CCMND  = ' '
-      IF ( LENGTH .GT. 0 ) THEN
-        LENGTH = 256 - LSTART
-        LCMND = LENGTH + 1
-        CCMND(1:LCMND) = CRDLWC(LSTART:256)
-      ENDIF
+          LSTART = KCCEQL ( CRDLWC, 1,' ' )
+          IF (LSTART .GE. 0 ) THEN
+            LSTART = KCCNEQ (CRDLWC, LSTART, ' ')    !skip spaces
+          END IF
+          LLAST  = KCLNEQ ( CRDLWC,-1,' ' )
+          LENGTH = 1 + LLAST - LSTART
+          CCMND  = ' '
+          IF ( LENGTH .GT. 0 ) THEN
+            LENGTH = 256 - LSTART
+            LCMND = LENGTH + 1
+            CCMND(1:LCMND) = CRDLWC(LSTART:256)
+          ENDIF
 
-      WRITE(CMON,'(2A)')'Run python script: ',CCMND
-      CALL XPRVDU(NCVDU, 1,0)
+          WRITE(CMON,'(2A)')'Run python script: ',CCMND
+          CALL XPRVDU(NCVDU, 1,0)
 C -- find python module (script) path (CRYSDIR:/py)
 
-c      CRYSPY = 'CRYSDIR:py'
-c      CALL MTRNLG(CRYSPY,'UNKNOWN',ILENG)
-c      WRITE(CMON,'(2A)')'Python script folder: ',cryspy
-c      CALL XPRVDU(NCVDU, 1,0)
 
 C -- CLEAR ERROR FLAG
-C
-      IERFLG = 1
+          IERFLG = 1
 C-- CLEAR instruction flag to prevent error if PYTHON script calls back into CRYSTALS from the top.
-      IHFLAG = -1
+          IHFLAG = -1
 
-C
-
-
-      INPYTH = 1
-
-      LTEST = runpy (trim(ccmnd)//C_NULL_CHAR)
-
-      INPYTH = 0
-
-
+          INPYTH = 1
+          LTEST = runpy (trim(ccmnd)//C_NULL_CHAR)
+          INPYTH = 0
+      END IF
+#else
+      WRITE ( CMON,2612) 
+      CALL XPRVDU(NCEROR, 1,0)
+      WRITE ( NCWU , 2612 ) 
+2612  FORMAT ( '{E This version of CRYSTALS is not compiled with',
+ 2            ' embedded Python.' )
+      IERROR = IERWRN
+      IF ( ISYSIN .EQ. IUSE ) IERROR = IERERR
+      IF ( ISYSIN .EQ. ISCRIP ) IERROR = IERERR
+      CALL XERHND ( IERROR )
+#endif
       GOTO 9000
 C
 3000  CONTINUE
