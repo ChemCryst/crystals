@@ -10,10 +10,9 @@ SET(CMAKE_VERBOSE_MAKEFILE OFF)
 SET(CMAKE_COLOR_MAKEFILE ON)
 
 option (verbose "verbose" OFF)
-option (useMULTIDEF_WORKAROUND "useMULTIDEF_WORKAROUND" OFF)  #temporary while multiply defined symbols exist in MinGW64 libs.
 option (useGUI "useGUI" ON)
 option (useCustomMKL "useCustomMKL" OFF)
-option (usePY "usePY" OFF)
+option (usePY "usePY" ON
 option (use32 "use32" OFF)
 option (useSTATIC "useSTATIC" OFF)
 option (useOPENMP "useOPENMP" ON)
@@ -271,8 +270,9 @@ if ( WIN32 )
         add_definitions(-D__MIN__)
     endif()
 
-	INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/python-headers-win/Include/)
-
+  if ( usePY )
+    INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/python-headers-win/Include/)
+  endif()
 endif()
 
 if ( APPLE )
@@ -714,17 +714,12 @@ if ( useGUI )
     else ()
         SET(MSYS2LIBS  "" )
     endif()
+
     find_package(OpenGL REQUIRED)
     message(STATUS "Using OpenGL libraries: ${OPENGL_LIBRARIES}")
     include_directories( ${OPENGL_INCLUDE_DIRS}  )
 
     target_link_libraries(crystals ${OPENGL_LIBRARIES} )
-
-if ( useMULTIDEF_WORKAROUND )
-    set (CMAKE_EXE_LINKER_FLAGS -Wl,--allow-multiple-definition )
-endif()
-
-    message(STATUS "Py libs ${Python3_LIBRARIES}")
     TARGET_LINK_LIBRARIES(crystals CrystalsFortran CameronFortran ${wxWidgets_LIBRARIES} ${MSYS2LIBS} ${wxSTATICEXTRA_LIBS} ${Python3_LIBRARIES})
     SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_GUI)
     SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES Fortran_MODULE_DIRECTORY ${Fortran_MODULE_DIRECTORY} )
@@ -733,18 +728,14 @@ endif()
     TARGET_LINK_LIBRARIES(crystalscl CrystalsFortran CameronFortran ${Python3_LIBRARIES})
 #    SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_NOGUI)
 
-elseif( usePY )
+else()   # command line version
+
     ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} crystals/crystals.F ${CMAKE_SOURCE_DIR}/gui/fwrapper_gui.F90 )
     SET_TARGET_PROPERTIES(crystals PROPERTIES LINKER_LANGUAGE Fortran)
     TARGET_LINK_LIBRARIES(crystals CrystalsFortran CameronFortran ${Python3_LIBRARIES})
     SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES Fortran_MODULE_DIRECTORY ${Fortran_MODULE_DIRECTORY} )
     SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_NOGUI)
-else()
-    ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} crystals/crystals.F ${CMAKE_SOURCE_DIR}/gui/fwrapper_gui.F90 )
-    SET_TARGET_PROPERTIES(crystals PROPERTIES LINKER_LANGUAGE Fortran)
-    TARGET_LINK_LIBRARIES(crystals CrystalsFortran CameronFortran )
-    SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES Fortran_MODULE_DIRECTORY ${Fortran_MODULE_DIRECTORY} )
-    SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_NOGUI)
+
 endif()
 
 
