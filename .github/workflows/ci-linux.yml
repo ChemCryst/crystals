@@ -17,6 +17,7 @@ jobs:
       matrix:
         cl: [gui, nogui]
         release: [debug, release]
+        withpython: [yes, no]
         include:
 # Setup some GUI/NOGUI specific variables
         - cl: gui
@@ -61,7 +62,7 @@ jobs:
     - name: Build CRYSTALS linux
       working-directory: ci
       run: |
-        cmake -DuseGUI=${{ matrix.guiflag }} -DuseOPENMP=no -DusePY=yes -DCMAKE_BUILD_TYPE=${{ matrix.release }} ..
+        cmake -DuseGUI=${{ matrix.guiflag }} -DuseOPENMP=no -DusePY=${{ matrix.withpython }} -DCMAKE_BUILD_TYPE=${{ matrix.release }} ..
         make -j2
 
 #
