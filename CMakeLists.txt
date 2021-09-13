@@ -12,7 +12,7 @@ SET(CMAKE_COLOR_MAKEFILE ON)
 option (verbose "verbose" OFF)
 option (useGUI "useGUI" ON)
 option (useCustomMKL "useCustomMKL" OFF)
-option (usePY "usePY" ON
+option (usePY "usePY" ON)
 option (use32 "use32" OFF)
 option (useSTATIC "useSTATIC" OFF)
 option (useOPENMP "useOPENMP" ON)
