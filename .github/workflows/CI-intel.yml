@@ -191,7 +191,7 @@ jobs:
         set CRYVPATCH=${{ steps.get_version.outputs.patch }}
         echo Commit SHA: %CRYSVNVER% Version: %CRYVMAJOR%.%CRYVMINOR%.%CRYVPATCH%
         cmake .. -G"NMake Makefiles" -DuseGUI=${{ matrix.guiflag }} -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }} -DuseCustomMKL=yes
-        nmake
+        nmake || exit /b %ERRORLEVEL%
         copy ..\wx\lib\vc14x_x64_dll\wxmsw314u_stc_vc14x_x64.dll . 
         copy ..\wx\lib\vc14x_x64_dll\wxmsw314u_core_vc14x_x64.dll .
         copy ..\wx\lib\vc14x_x64_dll\wxmsw314u_gl_vc14x_x64.dll . 
