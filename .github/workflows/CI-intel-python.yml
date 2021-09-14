@@ -1,4 +1,4 @@
-name: CI-Win-Intel
+name: CI-Win-Intel-Python
 
 on: [push]
 
@@ -190,7 +190,7 @@ jobs:
         set CRYVMINOR=${{ steps.get_version.outputs.minor }}
         set CRYVPATCH=${{ steps.get_version.outputs.patch }}
         echo Commit SHA: %CRYSVNVER% Version: %CRYVMAJOR%.%CRYVMINOR%.%CRYVPATCH%
-        cmake .. -G"NMake Makefiles" -DuseGUI=${{ matrix.guiflag }} -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }} -DuseCustomMKL=yes -DusePY=no
+        cmake .. -G"NMake Makefiles" -DuseGUI=${{ matrix.guiflag }} -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }} -DuseCustomMKL=yes -DusePY=yes
         nmake || exit /b %ERRORLEVEL%
         copy ..\wx\lib\vc14x_x64_dll\wxmsw314u_stc_vc14x_x64.dll . 
         copy ..\wx\lib\vc14x_x64_dll\wxmsw314u_core_vc14x_x64.dll .
@@ -335,6 +335,7 @@ jobs:
       run: |
         set CRYSVNVER=${{ steps.vars.outputs.sha_short }}
         set CRYSEMVER=${{ steps.get_version.outputs.major }}.${{ steps.get_version.outputs.minor }}.${{ steps.get_version.outputs.patch }}
+        set CRYPY=TRUE
         echo Commit SHA: %CRYSVNVER% Version: %CRYSEMVER%
         IF "%CRYSVNVER%"=="" (SET CRYSVNVER=0000)
         IF "%CRYSEMVER%"=="" (SET CRYSEMVER=10.1.100)
