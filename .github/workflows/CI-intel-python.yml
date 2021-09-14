@@ -356,7 +356,7 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: crystals-setup
-        path: ./installer/crystals-${{steps.get_version.outputs.version}}-${{steps.vars.outputs.sha_short}}-${{matrix.release}}-setup.exe
+        path: ./installer/crystals-${{steps.get_version.outputs.version}}-${{steps.vars.outputs.sha_short}}-${{matrix.release}}-python-setup.exe
       if:  ${{ matrix.cl == 'gui' }}
 
     - name: Create Release
@@ -411,6 +411,6 @@ jobs:
       if:  ${{ matrix.cl == 'gui' && matrix.release == 'release' && startsWith(github.ref, 'refs/tags/') }}
       with:
           files: |
-            ./installer/crystals-*-${{matrix.release}}-setup.exe
+            ./installer/crystals-*-${{matrix.release}}-python-setup.exe
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
