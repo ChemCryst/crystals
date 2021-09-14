@@ -71,6 +71,7 @@ Name: {app}\Manual
 Name: {app}\Script
 Name: {autoappdata}\crystals\demo; Permissions: users-modify
 Name: {app}\mce
+Name: {app}\pyembed; Check: IsPythonVersion;
 Name: {app}\MCE\mce_manual_soubory
 
 [Files]
