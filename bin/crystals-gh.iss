@@ -77,6 +77,7 @@ Name: {app}\MCE\mce_manual_soubory
 Source: ..\ci\*.*; DestDir: {app}\; Excludes: "make*,buildfile.bat,code.bat,*.cmake,CMake*,CPack*,*.mod,crystalscl.exe,"; Flags: ignoreversion;
 Source: ..\ci\script\*.*; DestDir: {app}\script\; Excludes: "*~,*.cmake,Makefile";
 Source: ..\ci\mce\*.*; DestDir: {app}\mce\;  Flags: ignoreversion recursesubdirs;
+Source: ..\ci\pyembed\*.*; DestDir: {app}\pyembed\;  Flags: ignoreversion recursesubdirs; Check: IsPythonVersion;
 Source: ..\ci\manual\*.*; DestDir: {app}\manual\; Flags: ignoreversion recursesubdirs; Excludes: "make*,*.cmake,CMake*,CPack*,"
 Source: ..\ci\demo\*; DestDir: {autoappdata}\crystals\demo\; Flags: recursesubdirs; Excludes: "*.doc"; Permissions: users-modify;
 
@@ -187,7 +188,10 @@ begin
     end;
 end;
 
-
+function IsPythonVersion(): Boolean;
+begin
+  Result := CompareStr('TRUE', GetEnv('CRYPY') ) = 0 ;
+end;
 
 
 [Registry]
