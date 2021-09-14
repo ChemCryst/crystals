@@ -71,14 +71,14 @@ Name: {app}\Manual
 Name: {app}\Script
 Name: {autoappdata}\crystals\demo; Permissions: users-modify
 Name: {app}\mce
-Name: {app}\pyembed; Check: IsPythonVersion;
+Name: {app}\pyembed; 
 Name: {app}\MCE\mce_manual_soubory
 
 [Files]
 Source: ..\ci\*.*; DestDir: {app}\; Excludes: "make*,buildfile.bat,code.bat,*.cmake,CMake*,CPack*,*.mod,crystalscl.exe,"; Flags: ignoreversion;
 Source: ..\ci\script\*.*; DestDir: {app}\script\; Excludes: "*~,*.cmake,Makefile";
 Source: ..\ci\mce\*.*; DestDir: {app}\mce\;  Flags: ignoreversion recursesubdirs;
-Source: ..\ci\pyembed\*.*; DestDir: {app}\pyembed\;  Flags: ignoreversion recursesubdirs; Check: IsPythonVersion;
+Source: ..\ci\pyembed\*.*; DestDir: {app}\pyembed\;  Flags: ignoreversion recursesubdirs; 
 Source: ..\ci\manual\*.*; DestDir: {app}\manual\; Flags: ignoreversion recursesubdirs; Excludes: "make*,*.cmake,CMake*,CPack*,"
 Source: ..\ci\demo\*; DestDir: {autoappdata}\crystals\demo\; Flags: recursesubdirs; Excludes: "*.doc"; Permissions: users-modify;
 
@@ -191,9 +191,6 @@ end;
 
 function IsPythonVersion(): Boolean;
 begin
-  #pragma warning "IsPythonVersion: " + Str(GetEnv('CRYPY'))
-  #pragma warning "IsPythonVersion: " + Str(CompareStr('TRUE', GetEnv('CRYPY') ))
-  #pragma warning "IsPythonVersion: " + Str(CompareStr('TRUE', GetEnv('CRYPY') ) = 0)
   Result := CompareStr('TRUE', GetEnv('CRYPY') ) = 0 ;
 end;
 
