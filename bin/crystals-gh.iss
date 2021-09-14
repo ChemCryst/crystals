@@ -71,16 +71,20 @@ Name: {app}\Manual
 Name: {app}\Script
 Name: {autoappdata}\crystals\demo; Permissions: users-modify
 Name: {app}\mce
-Name: {app}\pyembed; 
 Name: {app}\MCE\mce_manual_soubory
+#if 'TRUE' == GetEnv('CRYPY')
+Name: {app}\pyembed; 
+#endif
 
 [Files]
 Source: ..\ci\*.*; DestDir: {app}\; Excludes: "make*,buildfile.bat,code.bat,*.cmake,CMake*,CPack*,*.mod,crystalscl.exe,"; Flags: ignoreversion;
 Source: ..\ci\script\*.*; DestDir: {app}\script\; Excludes: "*~,*.cmake,Makefile";
 Source: ..\ci\mce\*.*; DestDir: {app}\mce\;  Flags: ignoreversion recursesubdirs;
-Source: ..\ci\pyembed\*.*; DestDir: {app}\pyembed\;  Flags: ignoreversion recursesubdirs; 
 Source: ..\ci\manual\*.*; DestDir: {app}\manual\; Flags: ignoreversion recursesubdirs; Excludes: "make*,*.cmake,CMake*,CPack*,"
 Source: ..\ci\demo\*; DestDir: {autoappdata}\crystals\demo\; Flags: recursesubdirs; Excludes: "*.doc"; Permissions: users-modify;
+#if 'TRUE' == GetEnv('CRYPY')
+Source: ..\ci\pyembed\*.*; DestDir: {app}\pyembed\;  Flags: ignoreversion recursesubdirs; 
+#endif
 
 [Icons]
 Name: "{userdesktop}\Crystals";                 Filename: "{app}\crystals.exe";        Parameters: "/browse";    WorkingDir: "{app}"; IconFilename: "{app}\crystals.exe"; IconIndex: 0; Check: Not IsAdminInstallMode;
@@ -187,11 +191,6 @@ begin
             end;
         end;
     end;
-end;
-
-function IsPythonVersion(): Boolean;
-begin
-  Result := CompareStr('TRUE', GetEnv('CRYPY') ) = 0 ;
 end;
 
 
