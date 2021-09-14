@@ -192,8 +192,8 @@ end;
 function IsPythonVersion(): Boolean;
 begin
   #pragma warning "IsPythonVersion: " + Str(GetEnv('CRYPY'))
-  #pragma warning "IsPythonVersion: " + CompareStr('TRUE', GetEnv('CRYPY') )
-  #pragma warning "IsPythonVersion: " + CompareStr('TRUE', GetEnv('CRYPY') ) = 0
+  #pragma warning "IsPythonVersion: " + Str(CompareStr('TRUE', GetEnv('CRYPY') ))
+  #pragma warning "IsPythonVersion: " + Str(CompareStr('TRUE', GetEnv('CRYPY') ) = 0)
   Result := CompareStr('TRUE', GetEnv('CRYPY') ) = 0 ;
 end;
 
