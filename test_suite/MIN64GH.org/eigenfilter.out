@@ -2538,7 +2538,7 @@ Bonds: Update required - List5 length change
 
  Target Weighted Residual =  1.92
    h   k  l     Fo      Fc  wDel Fo/Fc     h   k  l     Fo      Fc  wDel Fo/Fc
-   5   0   5    1.5    0.0   2.5  37.9     0   6  16   -1.0    0.1   1.9 -14.5
+   5   0   5    1.5    0.0   2.5  37.8     0   6  16   -1.0    0.1   1.9 -14.5
    2   6   0    2.4    0.2   3.8  12.9     5   6   0   -0.7    0.1   1.4 -12.5
    5   0   3    1.1    0.1   1.8  12.2     0   4  19    1.1    0.1   1.8  10.1
    2  10  10   -1.4    0.1   2.6  -9.3     1   0   4    1.6    0.2   2.5   9.0
