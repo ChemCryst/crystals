@@ -678,15 +678,17 @@ FOREACH (_file ${sdafiles})
 ENDFOREACH()
 
 # Data file sources and targets
-FILE (GLOB pyfiles RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/script/*.py")
+FILE (GLOB pyfiles "${CMAKE_CURRENT_SOURCE_DIR}/script/*.py")
 SET  (pyoutfiles)
 FOREACH (_file ${pyfiles})
-    STRING(REPLACE ".py" ".py" pyfile ${_file})
-    ADD_CUSTOM_COMMAND( OUTPUT ${pyfile}
-                COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/${pyfile}" "${pyfile}"
-                COMMENT "Copying py script file: ${CMAKE_CURRENT_SOURCE_DIR}/${pyfile} to ${pyfile}"
+#    STRING(REPLACE ".py" ".pyx" pyfile ${_file})
+    get_filename_component(pyfile "${_file}" NAME)
+    message(STATUS "Generating ${pyfile}")
+    ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/script/${pyfile}
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different "${_file}" "${CMAKE_CURRENT_BINARY_DIR}/script/${pyfile}"
+                COMMENT "Copying py script file: ${_file} to ${pyfile}"
 				DEPENDS ${_file} )
-    LIST(APPEND pyoutfiles ${pyfile})
+    LIST(APPEND pyoutfiles ${CMAKE_CURRENT_BINARY_DIR}/script/${pyfile})
 ENDFOREACH()
 
 
@@ -704,8 +706,8 @@ ENDFOREACH()
 
 if ( useGUI )
     INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/crys_fortran)
-    ADD_EXECUTABLE (crystals WIN32 ${scpfiles} ${datfiles} ${srtfiles} $<TARGET_OBJECTS:CrystalsUserInterface> ${CMAKE_SOURCE_DIR}/gui/fwrapper_gui.F90 ${CMAKE_SOURCE_DIR}/gui/fwrapperimp_gui.F90 gui/gcrystals.cpp crystals/crystals.F gui/wx.rc)
-    ADD_EXECUTABLE (crystalscl ${scpfiles} ${datfiles} ${srtfiles} crystals/crystals-cl.F ${CMAKE_SOURCE_DIR}/gui/fwrapperimp_cl.F90 )
+    ADD_EXECUTABLE (crystals WIN32 ${scpfiles} ${datfiles} ${srtfiles} ${pyoutfiles} $<TARGET_OBJECTS:CrystalsUserInterface> ${CMAKE_SOURCE_DIR}/gui/fwrapper_gui.F90 ${CMAKE_SOURCE_DIR}/gui/fwrapperimp_gui.F90 gui/gcrystals.cpp crystals/crystals.F gui/wx.rc)
+    ADD_EXECUTABLE (crystalscl ${scpfiles} ${datfiles} ${srtfiles} ${pyoutfiles} crystals/crystals-cl.F ${CMAKE_SOURCE_DIR}/gui/fwrapperimp_cl.F90 )
 
     if(MSYS)
         SET(OPENGL_INCLUDE_DIR "/mingw64/x86_64-w64-mingw32/include/")
@@ -730,7 +732,7 @@ if ( useGUI )
 
 else()   # command line version
 
-    ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} crystals/crystals.F ${CMAKE_SOURCE_DIR}/gui/fwrapper_gui.F90 )
+    ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} ${pyoutfiles} crystals/crystals.F ${CMAKE_SOURCE_DIR}/gui/fwrapper_gui.F90 )
     SET_TARGET_PROPERTIES(crystals PROPERTIES LINKER_LANGUAGE Fortran)
     TARGET_LINK_LIBRARIES(crystals CrystalsFortran CameronFortran ${Python3_LIBRARIES})
     SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES Fortran_MODULE_DIRECTORY ${Fortran_MODULE_DIRECTORY} )
