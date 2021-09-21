@@ -76,6 +76,7 @@ void lineouts(const char* string) {   // This wraps lineout so we don't need to 
 
 	FARPROC pImport_AppendInittabFn;
 	typedef int (*PIMPORT_APPENDINITTAB)( const char *, PyObject *(*func)(void));
+	#define mAppendInittab(c,p) ((PIMPORT_APPENDINITTAB)pImport_AppendInittabFn)(c,p)
 
 	//PyAPI_FUNC(int) PyRun_SimpleStringFlags(const char *, PyCompilerFlags *);
 	FARPROC pRun_SimpleStringFlags;
@@ -96,6 +97,17 @@ void lineouts(const char* string) {   // This wraps lineout so we don't need to 
 	FARPROC pMem_RawFreeFn;
 	typedef void (*PMEM_RAWFREE)( void *);
 
+	// PyMem_Malloc(sizeof(wchar_t*)*argc);
+	FARPROC pMem_MallocFn;
+	typedef void* (*PMEM_MALLOC)( size_t n);
+	#define mMem_Malloc(n) ((PMEM_MALLOC)pMem_MallocFn)(n)
+
+	// PySys_SetArgv(int argc, wchar_t **argv);
+	FARPROC pSys_SetArgvFn;
+	typedef void (*PSYS_SETARGV)(int argc, wchar_t **argv);
+	#define mSys_SetArgv(c,v) ((PSYS_SETARGV)pSys_SetArgvFn)(c,v)
+
+
 	//int Py_FinalizeEx()
 	FARPROC pFinalizeExFn;
 	typedef int (*PFINALIZEEX)();
@@ -103,12 +115,13 @@ void lineouts(const char* string) {   // This wraps lineout so we don't need to 
 	// PyAPI_FUNC(wchar_t *) Py_DecodeLocale(const char *arg,size_t *size);
 	FARPROC pDecodeLocaleFn;
 	typedef wchar_t* (*PDECODELOCALE)(const char *, size_t *);
+	#define mDecodeLocale(a,b) ((PDECODELOCALE)pDecodeLocaleFn)(a, b)
 
 	// PyAPI_FUNC(PyObject *) PyModule_Create2(struct PyModuleDef*, int apiver);
 	#define PYTHON_ABI_VERSION 3
 	FARPROC pModule_Create2Fn;
 	typedef PyObject* (*PMODULECREATE2)(PyModuleDef *, int);
-	#define mModuleCreate2(a,b) ((PMODULECREATE2)pModule_Create2Fn)(a, b);
+	#define mModuleCreate2(a,b) ((PMODULECREATE2)pModule_Create2Fn)(a, b)
 
 	// int (*py3_PyArg_ParseTuple)(PyObject *, char *, ...);
 	FARPROC pArg_ParseTupleFn;
@@ -130,6 +143,8 @@ void lineouts(const char* string) {   // This wraps lineout so we don't need to 
 	// (PyObject *) Py_BuildValue(const char *, ...);
 	FARPROC pBuildValueFn;
 	typedef PyObject* (*PBUILDVALUE)(const char *, ...);
+	#define mBuildValue(c, ...) ((PBUILDVALUE)pBuildValueFn)(c, __VA_ARGS__)
+	
 
 	//int PyRun_SimpleFileExFlags(FILE *fp, const char *filename, int closeit, PyCompilerFlags *flags)
 	FARPROC pRun_SimpleFileExFlagsFn;
@@ -183,6 +198,11 @@ void lineouts(const char* string) {   // This wraps lineout so we don't need to 
 	#define mUnicodeAsUTF8(uni) PyUnicode_AsUTF8String(uni)
 	#define mBytesAsString(obj) PyBytes_AsString(obj)
 	#define mDECREF(o) Py_DecRef(o)
+
+	#define mAppendInittab(c,p) PyImport_AppendInittab(c,p)
+	#define mMem_Malloc(n) PyMem_Malloc(n)
+	#define mSys_SetArgv(c,v) PySys_SetArgv(c,v)
+	#define mDecodeLocale(a,b) Py_DecodeLocale(a, b)
 
 #endif
 
@@ -393,6 +413,23 @@ int loadPyDLL() {
 		return 0;
 	} 
 
+	//pSys_SetArgv
+	pSys_SetArgvFn = GetProcAddress( hModule , "PySys_SetArgv" ) ;
+	if(  pSys_SetArgvFn == NULL )  {		
+		lineouts("{E Could not find PySys_SetArgv()");
+		hModule = NULL;
+		return 0;
+	} 
+
+	//PyMem_Malloc
+	pMem_MallocFn= GetProcAddress( hModule , "PyMem_Malloc" ) ;
+	if(  pMem_MallocFn == NULL )  {		
+		lineouts("{E Could not find PyMem_Malloc()");
+		hModule = NULL;
+		return 0;
+	} 
+
+
 	ptr__List_Type = (PyTypeObject*) GetProcAddress( hModule, "PyList_Type" );
 	if(  ptr__List_Type == NULL )  {		
 		lineouts("{E Could not find PyList_Type");
@@ -418,12 +455,18 @@ int loadPyDLL() {
 
 
 
-// This python module, crys_stdoutRedirect, implemented in C will be used later to redirect text
+// This python module, "crys_stdoutRedirect", implemented in C will be used later to redirect text
 // output from the interpreter while it is running. Text should end up on the
 // screen in CRYSTALS.
 // Solution discussed here: https://stackoverflow.com/questions/7935975/asynchronously-redirect-stdout-stdin-from-embedded-python-to-c
 // and updates required for Python 3 here:
 // https://stackoverflow.com/questions/28305731/compiler-cant-find-py-initmodule-is-it-deprecated-and-if-so-what-should-i
+
+
+//int initt = ((PIMPORT_APPENDINITTAB)pImport_AppendInittabFn)("crys_stdoutRedirect", PyInit_crys_stdoutRedirect);
+// This defines a function (and it's form) to do the work:
+// Takes one arg and returns nothing.
+
 
 static PyObject*
 redirection_stdoutredirect(PyObject *self, PyObject *args)
@@ -438,7 +481,7 @@ redirection_stdoutredirect(PyObject *self, PyObject *args)
     lineout(string, strlen(string));
 
 #ifdef CRY_OSWIN32
-    return ((PBUILDVALUE)pBuildValueFn)("O",  ((PBUILDVALUE)pBuildValueFn)("")); // Inc ref to PyNone (without using INCREF macro which won't work here becuase of dynamic LoadLibrary
+    return mBuildValue("O",  mBuildValue("")); // Inc ref to PyNone (without using INCREF macro which won't work here becuase of dynamic LoadLibrary
 #else
     Py_INCREF(Py_None);   // Can't call this macro when using the dynamic DLL version - use solution below instead.
     return Py_None;
@@ -468,9 +511,6 @@ PyObject * PyInit_crys_stdoutRedirect(void)
 
 // Here's another Python module for sending commands to CRYSTALS.
 
-//int initt = ((PIMPORT_APPENDINITTAB)pImport_AppendInittabFn)("crys_stdoutRedirect", PyInit_crys_stdoutRedirect);
-// This defines a function (and it's form) to do the work:
-// Takes one arg and returns nothing.
 
 static PyObject*
 method_crys_run(PyObject *self, PyObject *args)
@@ -480,26 +520,15 @@ method_crys_run(PyObject *self, PyObject *args)
 	PyObject *pyString;
 	Py_ssize_t list_size;
 	int i;
-
-//	lineouts("1");
 	
-//	char snum[128];
-	// print our string
-//	sprintf(snum, "1.0 %d %d   %d ",(int*) args, (int*) ptr__List_Type , (int*) ptr__TypeError );
-//	lineouts(snum);
-
 	if (!mArg_ParseTuple4(args, "O!", ptr__List_Type, &pyList)) {
-		lineouts("1.1");
+//		lineouts("1.1");
 		mErrSetString(*ptr__TypeError, "first argument must be a list.");
-		lineouts("1.2");
+//		lineouts("1.2");
 		return NULL;
 	}
 
-//	lineouts("2");
-
 	list_size = mList_Size(pyList);
-
-//	lineouts("3");
 
 	for (i=0; i<list_size; i++) {
 		pyItem = mList_GetItem(pyList, i);
@@ -531,7 +560,7 @@ method_crys_run(PyObject *self, PyObject *args)
     }
 
 #ifdef CRY_OSWIN32
-    return ((PBUILDVALUE)pBuildValueFn)("O",  ((PBUILDVALUE)pBuildValueFn)("")); // Inc ref to PyNone (without using INCREF macro which won't work here becuase of dynamic LoadLibrary
+    return mBuildValue("O",  mBuildValue("")); // Inc ref to PyNone (without using INCREF macro which won't work here becuase of dynamic LoadLibrary
 #else
     Py_INCREF(Py_None);   // Can't call this macro when using the dynamic DLL version - use solution below instead.
     return Py_None;
@@ -539,11 +568,66 @@ method_crys_run(PyObject *self, PyObject *args)
 
 }
 
-// What's in here? Just RunMethods - another simple structure:
+static PyObject*
+method_crys_get(PyObject *self, PyObject *args)
+{
+	PyObject *pyList;
+	PyObject *pyItem;
+	PyObject *pyString;
+	Py_ssize_t list_size;
+	int i;
+	
+/*
+	if (!mArg_ParseTuple4(args, "O!", ptr__List_Type, &pyList)) {
+		mErrSetString(*ptr__TypeError, "first argument must be a list.");
+		return NULL;
+	}
 
-static PyMethodDef RunMethods[] = {
+	list_size = mList_Size(pyList);
+
+	for (i=0; i<list_size; i++) {
+		pyItem = mList_GetItem(pyList, i);
+		if(!PyUnicode_Check(pyItem)) {
+			mErrSetString(*ptr__TypeError, "list items must be strings.");
+			return NULL;
+		}
+		pyString = mUnicodeAsUTF8(pyItem);
+		
+		
+		char* val;
+		if(pyString) {
+			val =  mBytesAsString(pyString) ;
+			mDECREF(pyString);
+			
+			//pass string onto somewhere
+			lineout(val, strlen(val));
+			setcommand(val);
+		}
+	}
+
+    i = setjmp(thebeginning);
+    if ( i == 0 ) {                    // This is the first path.
+//		printf("Calling ccommand.\n");
+		cryproc();
+    }
+    else {                             // This is where we return to on longjmp.
+//		printf("Longjmp back to start.\n");
+    }
+*/
+
+	PyObject * python_val = mBuildValue("[ii]", 19, 84);
+    return python_val;
+
+}
+
+
+// What's in here? Just CrystalsModuleMethods - another simple structure:
+
+static PyMethodDef CrystalsModuleMethods[] = {
     {"run", method_crys_run, METH_VARARGS,
         "Run CRYSTALS commands helper"},
+    {"get", method_crys_get, METH_VARARGS,
+        "Get information from CRYSTALS"},
     {NULL, NULL, 0, NULL}
 };
 
@@ -554,7 +638,7 @@ static struct PyModuleDef crystals_module =
     "crystals", /* name of module */
     "",          /* module documentation, may be NULL */
     -1,          /* size of per-interpreter state of the module, or -1 if the module keeps state in global variables. */
-    RunMethods
+    CrystalsModuleMethods
 };
 
 
@@ -567,15 +651,10 @@ PyObject * PyInit_crystals_module(void)
 
 
 
-
-
-
-
-
 // Here's the entry point.
 
 
-int runpy(const char *filename)
+int runpy(const char *filename)    // filename can be a while command line. Tokenize it here.
 {
 
 // Load DLL and initialize , if not already loaded
@@ -583,27 +662,57 @@ int runpy(const char *filename)
 		return 130;
 	}
 
-//	lineouts(filename);
+// Make a copy. The upcoming strtok needs to overwrite the string buffer.
+	char *commandline = (char*) malloc(strlen(filename));
+	strcpy(commandline,filename);
+
+
+	enum { kMaxArgs = 64 };
+	int argc = 0;
+	char *argv[kMaxArgs];
+	
+	char *p2 = strtok(commandline, " ");
+	while (p2 && argc < kMaxArgs-1)
+	{
+		argv[argc++] = p2;
+		p2 = strtok(0, " ");
+	}
+	argv[argc] = 0;
+
+	if ( argc == 0 ) {
+		lineouts("{E Python filename required");
+		return 140;
+	}	
+
+
+	wchar_t** wargv = (wchar_t**) mMem_Malloc(sizeof(wchar_t*)*argc);
+	for (int i=0; i<argc; i++) {
+		wchar_t* arg = mDecodeLocale(argv[i], NULL);
+		wargv[i] = arg;
+	}
 
 	struct stat buffer;   
 	char a[] = "/";
-	char *fullfile = (char*) malloc(strlen(filename)+strlen(scriptPath)+5);
+	char *fullfile = (char*) malloc(strlen(argv[0])+strlen(scriptPath)+5);
 	strcpy(fullfile,scriptPath);
 	strcat(fullfile,a);
-	strcat(fullfile,filename);
+	strcat(fullfile,argv[0]);
+
+//	lineouts("filename");
+//	lineouts(fullfile);
 
 	if (stat (fullfile, &buffer) != 0) {  // try adding .py extension
 		char p[] = ".py";
 		strcat(fullfile,p);
 	}
 
+
+	mSys_SetArgv(argc, wargv);
+	
+
 	PyObject *obj = NULL;
 	if (stat (fullfile, &buffer) == 0) {
-#ifdef CRY_OSWIN32
-		obj = ((PBUILDVALUE)pBuildValueFn)("s", fullfile);
-#else
-		obj = Py_BuildValue("s", fullfile);
-#endif
+		obj = mBuildValue("s", fullfile);
 		FILE *file = NULL;
 		if ( obj != NULL ) {
 
@@ -653,6 +762,11 @@ for variable in dir():\n\
 
     return 0;
 }
+
+
+
+
+
 
 
 // This is called from the end of loadPyDLL() - it sets up the stdout redirection
@@ -715,7 +829,7 @@ int initPy() {
 
 //    lineout(homePath, strlen(homePath));
 #ifdef CRY_OSWIN32
-    wchar_t *wHomePath = ((PDECODELOCALE)pDecodeLocaleFn)(homePath, NULL);
+    wchar_t *wHomePath = mDecodeLocale(homePath, NULL);
 #else
 //    wchar_t *wHomePath = Py_DecodeLocale(homePath, NULL);
 #endif
@@ -728,13 +842,8 @@ int initPy() {
 #endif
 
 // Add the crys_stdoutRedirect module (defined above)
-#ifdef CRY_OSWIN32
-	int initt = ((PIMPORT_APPENDINITTAB)pImport_AppendInittabFn)("crys_stdoutRedirect", PyInit_crys_stdoutRedirect);
-	int initt2 = ((PIMPORT_APPENDINITTAB)pImport_AppendInittabFn)("crystals", PyInit_crystals_module);
-#else
-    int initt = PyImport_AppendInittab("crys_stdoutRedirect", PyInit_crys_stdoutRedirect);
-    int initt2 = PyImport_AppendInittab("crystals", PyInit_crystals_module);
-#endif
+	int initt = mAppendInittab("crys_stdoutRedirect", PyInit_crys_stdoutRedirect);
+	int initt2 = mAppendInittab("crystals", PyInit_crystals_module);
 
 #ifdef CRY_OSWIN32
 	 ((PINITIALIZEEXFN)pInitializeExFn)( 0 ) ;
@@ -832,6 +941,13 @@ void getcommand(int length, char *commandline)
 #include <string>
 
 std::deque <std::string> commands;
+
+
+
+
+
+
+
 
 void setcommand(char *commandline){
 	commands.push_back( std::string(commandline) );
