@@ -143,7 +143,7 @@ void lineouts(const char* string) {   // This wraps lineout so we don't need to 
 	// (PyObject *) Py_BuildValue(const char *, ...);
 	FARPROC pBuildValueFn;
 	typedef PyObject* (*PBUILDVALUE)(const char *, ...);
-	#define mBuildValue(c, ...) ((PBUILDVALUE)pBuildValueFn)(c, __VA_ARGS__)
+	#define mBuildValue(...) ((PBUILDVALUE)pBuildValueFn)(__VA_ARGS__)
 	
 
 	//int PyRun_SimpleFileExFlags(FILE *fp, const char *filename, int closeit, PyCompilerFlags *flags)
