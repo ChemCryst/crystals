@@ -203,6 +203,7 @@ void lineouts(const char* string) {   // This wraps lineout so we don't need to 
 	#define mMem_Malloc(n) PyMem_Malloc(n)
 	#define mSys_SetArgv(c,v) PySys_SetArgv(c,v)
 	#define mDecodeLocale(a,b) Py_DecodeLocale(a, b)
+	#define mBuildValue(...) Py_BuildValue(__VA_ARGS__)
 
 #endif
 
