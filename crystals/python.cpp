@@ -6,6 +6,8 @@ void setcommand(char *commandline);
 void cxxgetcommand(int length, char *commandline);
 static jmp_buf thebeginning;
 void cryproc();
+int kgedpy(int &ln,int &rn,float* output,int &on,int & nrecs,int & recln);
+
 	
 #ifdef CRY_OSWIN32
 	#define PY_SSIZE_T_CLEAN
@@ -577,7 +579,7 @@ method_crys_get(PyObject *self, PyObject *args)
 	PyObject *pyString;
 	Py_ssize_t list_size;
 	int i;
-	
+	lineouts("get");
 /*
 	if (!mArg_ParseTuple4(args, "O!", ptr__List_Type, &pyList)) {
 		mErrSetString(*ptr__TypeError, "first argument must be a list.");
@@ -615,6 +617,21 @@ method_crys_get(PyObject *self, PyObject *args)
 //		printf("Longjmp back to start.\n");
     }
 */
+
+    float output[2048];
+    int nrecs = -1;
+    int recln = -1;
+	int ln = 5;
+	int rn = 101;
+	int osize = 1;
+    int res = kgedpy(ln,rn, &output[0], osize, nrecs, recln);
+	lineouts("got");
+
+    char str[512]; // debugging output
+
+    sprintf(str, "Res, nrec, recl: %d, %d, %d", res, nrecs, recln);
+    lineouts(str);
+
 
 	PyObject * python_val = mBuildValue("[ii]", 19, 84);
     return python_val;
