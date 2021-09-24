@@ -182,7 +182,15 @@ void lineouts(const char* string) {   // This wraps lineout so we don't need to 
 	typedef void (*PERRSETSTRING)(PyObject*, const char*);
 	#define mErrSetString(o,s) ((PERRSETSTRING)pErrSetStringFn)(o,s)
 
+	//PyObject* PyList_New(Py_ssize_t len)
+	FARPROC pListNewFn;
+	typedef PyObject* (*PLISTNEW)(Py_ssize_t);
+	#define mListNew(leng) ((PLISTNEW)pListNewFn)(leng)
 
+	// PyObject* PyFloat_FromDouble(double v)
+	FARPROC pFloatFromDoubleFn;
+	typedef PyObject* (*PFLOATFROMDOUBLE)(double d);
+	#define mFloatFromDouble(d) ((PFLOATFROMDOUBLE)pFloatFromDoubleFn)(d)
 
 
 	HMODULE hModule = NULL;
@@ -206,6 +214,9 @@ void lineouts(const char* string) {   // This wraps lineout so we don't need to 
 	#define mSys_SetArgv(c,v) PySys_SetArgv(c,v)
 	#define mDecodeLocale(a,b) Py_DecodeLocale(a, b)
 	#define mBuildValue(...) Py_BuildValue(__VA_ARGS__)
+	#define mListNew(leng) PyList_New(leng)
+	#define mFloatFromDouble(d) PyFloat_FromDouble(d)
+
 
 #endif
 
@@ -424,6 +435,23 @@ int loadPyDLL() {
 		return 0;
 	} 
 
+	//	PyList_New
+	pListNewFn = GetProcAddress( hModule , "PyList_New" ) ;
+	if(  pListNewFn == NULL )  {		
+		lineouts("{E Could not find PyList_New()");
+		hModule = NULL;
+		return 0;
+	} 
+	
+	// PyFloat_FromDouble
+	pFloatFromDoubleFn = GetProcAddress( hModule , "PyFloat_FromDouble" ) ;
+	if(  pFloatFromDoubleFn == NULL )  {		
+		lineouts("{E Could not find PyFloat_FromDouble()");
+		hModule = NULL;
+		return 0;
+	} 
+
+
 	//PyMem_Malloc
 	pMem_MallocFn= GetProcAddress( hModule , "PyMem_Malloc" ) ;
 	if(  pMem_MallocFn == NULL )  {		
@@ -618,14 +646,19 @@ method_crys_get(PyObject *self, PyObject *args)
     }
 */
 
-    float output[2048];
     int nrecs = -1;
     int recln = -1;
-	int ln = 5;
+    int ln = 5;
 	int rn = 101;
-	int osize = 1;
-    int res = kgedpy(ln,rn, &output[0], osize, nrecs, recln);
+	int osize = 0;
+    int res = kgedpy(ln,rn, NULL, osize, nrecs, recln);
+	
+	osize = res;
 	lineouts("got");
+	
+	float *output = (float*) malloc(osize); 
+
+	res = kgedpy(ln,rn, output, osize, nrecs, recln);
 
     char str[512]; // debugging output
 
@@ -633,8 +666,19 @@ method_crys_get(PyObject *self, PyObject *args)
     lineouts(str);
 
 
-	PyObject * python_val = mBuildValue("[ii]", 19, 84);
-    return python_val;
+	PyObject *result = mListNew((Py_ssize_t)nrecs);
+	for (Py_ssize_t i = 0; i < nrecs; i++) {
+		PyObject *record = mListNew((Py_ssize_t)recln);
+		for (Py_ssize_t j = 0; j < recln; j++)
+			PyList_SET_ITEM(record, j, mFloatFromDouble(output[i*recln+j]));
+		PyList_SET_ITEM(result, i, record);
+	}
+
+
+
+
+//	PyObject * python_val = mBuildValue("[ii]", 19, 84);
+    return result;
 
 }
 
