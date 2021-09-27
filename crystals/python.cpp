@@ -53,7 +53,7 @@ int kgedpy(int &ln,int &rn,float* output,int &on,int & nrecs,int & recln);
 void lineout(const char* string, int);  // This is a FORTRAN function with C interface.
 
 void lineouts(const char* string) {   // This wraps lineout so we don't need to pass the string length explicitly.
-	lineout(string,strlen(string)); 
+	lineout(string,(int)strlen(string)); 
 }
 
 //unsigned long GetModuleFileNameA( void * hModule, char * lpFilename, unsigned long nSize);
@@ -71,6 +71,7 @@ void lineouts(const char* string) {   // This wraps lineout so we don't need to 
 	// void Py_InitializeEx ( int )
 	FARPROC pInitializeExFn;
 	typedef void (*PINITIALIZEEXFN)( int ) ;
+	#define mInitializeEx(i) ((PINITIALIZEEXFN)pInitializeExFn)(i)
 
 	//PyAPI_FUNC(void) Py_SetPythonHome(const wchar_t *);
 	FARPROC pSetPythonHomeFn;
@@ -83,6 +84,7 @@ void lineouts(const char* string) {   // This wraps lineout so we don't need to 
 	//PyAPI_FUNC(int) PyRun_SimpleStringFlags(const char *, PyCompilerFlags *);
 	FARPROC pRun_SimpleStringFlags;
 	typedef int (*PRUN_SIMPLESTRINGFLAGS)( const char *, PyCompilerFlags *);
+	#define mRunSimpleStringFlags(str,flags) ((PRUN_SIMPLESTRINGFLAGS)pRun_SimpleStringFlags)(str,flags)
 
 	//PyAPI_FUNC(PyObject*) PyUnicode_DecodeFSDefault(const char *s);
 	FARPROC pUnicode_DecodeFSDefaultFn;
@@ -97,7 +99,11 @@ void lineouts(const char* string) {   // This wraps lineout so we don't need to 
 
 	//PyAPI_FUNC(void) PyMem_RawFree(void *ptr);
 	FARPROC pMem_RawFreeFn;
-	typedef void (*PMEM_RAWFREE)( void *);
+	typedef void (*PMEM_RAWFREE)(void*);
+	//PyAPI_FUNC(void) PyMem_Free(void *ptr);
+	FARPROC pMem_FreeFn;
+	typedef void (*PMEM_FREE)(void*);
+    #define mMemFree(p) ((PMEM_FREE)pMem_FreeFn)(p)
 
 	// PyMem_Malloc(sizeof(wchar_t*)*argc);
 	FARPROC pMem_MallocFn;
@@ -151,7 +157,7 @@ void lineouts(const char* string) {   // This wraps lineout so we don't need to 
 	//int PyRun_SimpleFileExFlags(FILE *fp, const char *filename, int closeit, PyCompilerFlags *flags)
 	FARPROC pRun_SimpleFileExFlagsFn;
 	typedef int (*PRUNSIMPLEFILEEXFLAGS)(FILE *fp, const char *filename, int closeit, PyCompilerFlags *flags);
-	#define mRunSimpleStringFlags(str,flags) ((PRUN_SIMPLESTRINGFLAGS)pRun_SimpleStringFlags)(str,flags)
+	#define mRunSimpleFileExFlags(fp, fn, closeit, flags) ((PRUNSIMPLEFILEEXFLAGS)pRun_SimpleFileExFlagsFn)(fp, fn, closeit, flags)
 
 	// PyObject* PyUnicode_AsUTF8String(PyObject *unicode)
 	FARPROC pUnicodeAsUTF8String;
@@ -172,6 +178,7 @@ void lineouts(const char* string) {   // This wraps lineout so we don't need to 
 	//FILE *file = _Py_fopen_obj(obj, "r+");
 	FARPROC pfopenobjFn;
 	typedef FILE* (*PFOPENOBJ)(PyObject*, char*);
+	#define mfopenobj(obj,flags) ((PFOPENOBJ)pfopenobjFn)(obj,flags)
 
 	//PyErr_Fetch( &pExcType , &pExcValue , &pExcTraceback ) ;
 	FARPROC pErrFetchFn;
@@ -198,8 +205,11 @@ void lineouts(const char* string) {   // This wraps lineout so we don't need to 
 
 	#define _MAX_PATH 1024
 
+	#define mInitializeEx(i) Py_InitializeExFn(i)
 	#define mRunSimpleStringFlags(str,flags) PyRun_SimpleStringFlags(str,flags)
-	#define mArg_ParseTuple( args, s, string ) PyArg_ParseTuple( args, s, string )
+	#define mRunSimpleFileExFlags(fp, fn, closeit, flags) PyRun_SimpleFileExFlags(fp, fn, closeit, flags)
+	#define mfopenobj(obj,flags) _Py_fopen_obj)(obj,flags)
+    #define mArg_ParseTuple( args, s, string ) PyArg_ParseTuple( args, s, string )
 	#define mArg_ParseTuple4( args, s, ptype, pobj ) PyArg_ParseTuple(args, s, ptype, pobj)
 	#define mModuleCreate2(a,b) PyModule_Create2(a,b)
 	#define mErrSetString(o,s) PyErr_SetString(o,s)
@@ -304,9 +314,16 @@ int loadPyDLL() {
 		return 0;
 	}
 	// locate PyMem_RawFree() function
-	pMem_RawFreeFn = GetProcAddress( hModule , "PyMem_RawFree" ) ;
-	if(  pMem_RawFreeFn == NULL )  {		
+	pMem_RawFreeFn = GetProcAddress(hModule, "PyMem_RawFree");
+	if (pMem_RawFreeFn == NULL) {
 		lineouts("{E Could not find PyMem_RawFree()");
+		hModule = NULL;
+		return 0;
+	}
+	// locate PyMem_Free() function
+	pMem_FreeFn = GetProcAddress(hModule, "PyMem_Free");
+	if (pMem_FreeFn == NULL) {
+		lineouts("{E Could not find PyMem_Free()");
 		hModule = NULL;
 		return 0;
 	}
@@ -509,7 +526,7 @@ redirection_stdoutredirect(PyObject *self, PyObject *args)
         return NULL;
 
 //pass string onto somewhere
-    lineout(string, strlen(string));
+    lineouts(string);
 
 #ifdef CRY_OSWIN32
     return mBuildValue("O",  mBuildValue("")); // Inc ref to PyNone (without using INCREF macro which won't work here becuase of dynamic LoadLibrary
@@ -576,7 +593,7 @@ method_crys_run(PyObject *self, PyObject *args)
 			mDECREF(pyString);
 			
 			//pass string onto somewhere
-			lineout(val, strlen(val));
+			lineouts(val);
 			setcommand(val);
 		}
 	}
@@ -602,12 +619,6 @@ method_crys_run(PyObject *self, PyObject *args)
 static PyObject*
 method_crys_get(PyObject *self, PyObject *args)
 {
-	PyObject *pyList;
-	PyObject *pyItem;
-	PyObject *pyString;
-	Py_ssize_t list_size;
-	int i;
-	lineouts("get");
 /*
 	if (!mArg_ParseTuple4(args, "O!", ptr__List_Type, &pyList)) {
 		mErrSetString(*ptr__TypeError, "first argument must be a list.");
@@ -656,7 +667,7 @@ method_crys_get(PyObject *self, PyObject *args)
 	osize = res;
 	lineouts("got");
 	
-	float *output = (float*) malloc(osize); 
+	float *output = (float*) malloc(osize * sizeof(float)); 
 
 	res = kgedpy(ln,rn, output, osize, nrecs, recln);
 
@@ -674,7 +685,7 @@ method_crys_get(PyObject *self, PyObject *args)
 		PyList_SET_ITEM(result, i, record);
 	}
 
-
+    free (output);
 
 
 //	PyObject * python_val = mBuildValue("[ii]", 19, 84);
@@ -725,7 +736,7 @@ int runpy(const char *filename)    // filename can be a while command line. Toke
 	}
 
 // Make a copy. The upcoming strtok needs to overwrite the string buffer.
-	char *commandline = (char*) malloc(strlen(filename));
+	char *commandline = (char*) malloc(strlen(filename) + 1);
 	strcpy(commandline,filename);
 
 
@@ -778,18 +789,10 @@ int runpy(const char *filename)    // filename can be a while command line. Toke
 		FILE *file = NULL;
 		if ( obj != NULL ) {
 
-#ifdef CRY_OSWIN32
-			file = ((PFOPENOBJ)pfopenobjFn)(obj, "rb");
-#else
-			file = _Py_fopen_obj(obj, "rb");
-#endif
+			file = mfopenobj(obj, "rb");
 			if(file != NULL) {
 //				lineouts("Let's go");
-#ifdef CRY_OSWIN32
-				((PRUNSIMPLEFILEEXFLAGS)pRun_SimpleFileExFlagsFn)(file, fullfile,1,NULL);
-#else
-				PyRun_SimpleFileExFlags(file, fullfile, 1, NULL);
-#endif
+				mRunSimpleFileExFlags(file, fullfile,1,NULL);
 			} else {
 				lineouts("{E Could not open file");
 			}
@@ -802,25 +805,22 @@ int runpy(const char *filename)    // filename can be a while command line. Toke
 		lineouts("{E File existence check failed");
 		lineouts(fullfile);
 	}
+	mMemFree(wargv);
+
 	free(fullfile);
-	
+
+	free(commandline);
+
 // IMPORTANT: This little bit of code deletes all global variables from the global namespace, with
 // the exception of builtin functions (starting with __) and any functions or variables starting with
 // crys_ . These crys_ vars are used for our redirection functions, but can also be used to deliberately pass // info between scripts.
 // This approach avoids restarting the interpreter between scripts, and prevents unintended side effects
 // of leaving global variables defined.
 
-#ifdef CRY_OSWIN32
-	((PRUN_SIMPLESTRINGFLAGS)pRun_SimpleStringFlags)("\
+	mRunSimpleStringFlags("\
 for variable in dir():\n\
     if variable[0:2] != \"__\" and variable[0:5] != \"crys_\" :\n\
         del globals()[variable]\n", NULL);
-#else
-	PyRun_SimpleStringFlags("\
-for variable in dir():\n\
-    if variable[0:2] != \"__\" and variable[0:5] != \"crys_\" :\n\
-        del globals()[variable]\n", NULL);
-#endif
 
     return 0;
 }
@@ -907,17 +907,12 @@ int initPy() {
 	int initt = mAppendInittab("crys_stdoutRedirect", PyInit_crys_stdoutRedirect);
 	int initt2 = mAppendInittab("crystals", PyInit_crystals_module);
 
-#ifdef CRY_OSWIN32
-	 ((PINITIALIZEEXFN)pInitializeExFn)( 0 ) ;
-#else
-    Py_InitializeEx(0);
-#endif
+    mInitializeEx(0);
 
 // This little bit tells python where to redirect stdout and stderr.
 
-#ifdef CRY_OSWIN32
 
-	((PRUN_SIMPLESTRINGFLAGS)pRun_SimpleStringFlags)("\
+	mRunSimpleStringFlags("\
 import crys_stdoutRedirect\n\
 import sys\n\
 class crys_StdoutCatcher:\n\
@@ -936,30 +931,6 @@ class crys_StdoutCatcher:\n\
 sys.stdout = crys_StdoutCatcher()\n\
 sys.stderr = crys_StdoutCatcher()\n\
 sys.stderr.errcatch = True\n", NULL);
-
-#else
-
-    PyRun_SimpleStringFlags("\
-import crys_stdoutRedirect\n\
-import sys\n\
-class crys_StdoutCatcher:\n\
-    def __init__(self):\n\
-        self.errcatch = False \n\
-    def write(self, textoutput):\n\
-        if len(textoutput.rstrip('\\n')) != 0:\n\
-          for s in textoutput.splitlines():\n\
-            if self.errcatch:\n\
-                s = '{E ' + s \n\
-            crys_stdoutRedirect.crys_stdoutredirect(s)\n\
-            \n\
-    def flush(self):\n\
-        pass\n\
-        \n\
-sys.stdout = crys_StdoutCatcher()\n\
-sys.stderr = crys_StdoutCatcher()\n\
-sys.stderr.errcatch = True\n", NULL);
-
-#endif
 
 // This little bit tells python where our scripts are.
     char str[_MAX_PATH + 36];
@@ -1024,7 +995,7 @@ void cxxgetcommand(int length, char *commandline)
 		std::string s = commands.front();
 		commands.pop_front();
 
-        int commandlen = s.length();
+        int commandlen = (int)s.length();
 		int outputlen = (length < commandlen) ? length : commandlen;  //Minimum of the two string lengths (truncate)
 
 // Remember: char * strncpy ( char * destination, const char * source, size_t num );
