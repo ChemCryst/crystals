@@ -205,10 +205,10 @@ void lineouts(const char* string) {   // This wraps lineout so we don't need to 
 
 	#define _MAX_PATH 1024
 
-	#define mInitializeEx(i) Py_InitializeExFn(i)
+	#define mInitializeEx(i) Py_InitializeEx(i)
 	#define mRunSimpleStringFlags(str,flags) PyRun_SimpleStringFlags(str,flags)
 	#define mRunSimpleFileExFlags(fp, fn, closeit, flags) PyRun_SimpleFileExFlags(fp, fn, closeit, flags)
-	#define mfopenobj(obj,flags) _Py_fopen_obj)(obj,flags)
+	#define mfopenobj(obj,flags) _Py_fopen_obj(obj,flags)
     #define mArg_ParseTuple( args, s, string ) PyArg_ParseTuple( args, s, string )
 	#define mArg_ParseTuple4( args, s, ptype, pobj ) PyArg_ParseTuple(args, s, ptype, pobj)
 	#define mModuleCreate2(a,b) PyModule_Create2(a,b)
@@ -218,6 +218,7 @@ void lineouts(const char* string) {   // This wraps lineout so we don't need to 
 	#define mUnicodeAsUTF8(uni) PyUnicode_AsUTF8String(uni)
 	#define mBytesAsString(obj) PyBytes_AsString(obj)
 	#define mDECREF(o) Py_DecRef(o)
+	#define mMemFree(p) PyMem_Free(p)
 
 	#define mAppendInittab(c,p) PyImport_AppendInittab(c,p)
 	#define mMem_Malloc(n) PyMem_Malloc(n)
