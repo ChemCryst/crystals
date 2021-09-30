@@ -14,7 +14,7 @@ c      integer intype !< 1 for *.fab, 0 for other
       iout1 = 12
 c      intype = 0
       
-      open(in1,file='PLATON6',status='old')
+      open(in1,file='PLATON6',status='old',err=80)
 c      open(in2,file='platon_sq.fab',status='old',err=40)
 c      intype=1
 c      GOTO 70
@@ -103,7 +103,12 @@ c            end if
      2  'platon.hkp.'
       write(6,'(A)')
      1 'Cannot open platon_sqd.hkl,platon-sr.hkl, or platon.hkp.'
-
+      stop
+80    continue
+      rewind(iout1)
+      write(iout1,'(A)') 'The file PLATON6 is faulty/does not exist'
+      write(6,'(A)') 'The file PLATON6 is faulty/does not exist'
+      stop
       end
 
 

@@ -151,6 +151,7 @@ Files INITIAL.* will be created in your logs/ folder. They may be important.
 %        FINISH  
 %      else  
 %        IF FILEFOUND .NE. 'HKL' THEN  
+Files INITIAL.* will be created in your logs/ folder. They may be important.  
 %          TRANSFER '#USE cif-reflections.cry' TO CRYSTALS  
 %        END IF
 %      end if  

@@ -223,7 +223,7 @@ class CxModel : public BASEMODEL
 
 // The usual functions:
     static CxModel *    CreateCxModel( CrModel * container, CxGrid * guiParent );
-    CxModel(wxWindow* parent, int* args);
+    CxModel(wxWindow* parent, wxGLAttributes &args);
     ~CxModel();
     void SetGeometry( int top, int left, int bottom, int right );
     void CxDestroyWindow();

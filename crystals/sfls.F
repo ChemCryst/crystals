@@ -558,8 +558,8 @@ C----- SET THE ENANTIOPOLE REFINEMENT FLAG
 c
       if((twinned .and. partials).or.(twinned .and. update_part))then
       write(cmon,'(A/A)') 
-     1 'You cannot refine Twin components with Partial contributions',
-     2 'This could include SQUEEZED data'
+     1 'You can not refine Twin components with Partial',
+     2 'contributions. This could include SQUEEZED data'
          CALL OUTCOL(9)
          CALL XPRVDU(NCVDU, 2,0)
          CALL OUTCOL(1)
@@ -1374,6 +1374,12 @@ c abandon processing the SRQ
       IF (MODE .LE. 0)  RETURN
       RETURN            !WHAT'S THE POINT OF THE TWO RETURNS?
 c                       ! See the 1995 version. they were different then
+c 1995 version:   1000 cont was Load the next #INSTRUCTION at the top of SFLSB
+c      9900  CONTINUE
+C       -- ERRORS
+c            IF (MODE .EQ. 0)  GOTO 1050
+c            GO TO 1000
+c
 9910  CONTINUE
 C -- NUMBERS DON'T MATCH
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 9915 )
@@ -1787,8 +1793,8 @@ C----- INITIALISE THE SORT BUFFER
       MDSORT = NTEMPR
       NSORT = 30
       CALL SRTDWN(LSORT,MDSORT,NSORT, JSORT, LTEMPR, XVALUR,0)
-      JSORT = 5
-      
+cdjw -sep 21      JSORT = 5
+      JSORT = 6  !SORT ON Fo/Fc
       ! Check for the huge flag
       call xfal23
       if(ISTORE(M33CD)==-1) then
@@ -2340,8 +2346,9 @@ C----  H,K,L,FO,FC,/WDELTA/,FO/FC
             STORE(LTEMPR+4) = FCEXT
             STORE(LTEMPR+5) = RDJW
             STORE(LTEMPR+6) = MIN(99., UJ / MAX(FCEXT , ZERO))
-            CALL SRTDWN(LSORT,MDSORT,NSORT, JSORT, LTEMPR, 
-     1              XVALUR, 0)
+            IF (STORE(LTEMPR+6).LE. -99.0) STORE(LTEMPR+6)=-99.
+            CALL SRTDWN(LSORT,MDSORT,NSORT,  
+     1             JSORT, LTEMPR, XVALUR, 0)
             !$OMP END CRITICAL
           ENDIF
 C
@@ -2822,7 +2829,7 @@ C Only print disagreeable reflections during calc.
         DO MSORT = LSORT, LSORT+(NSORT-1)*MDSORT, 2*MDSORT
           WRITE ( CMON ,
 cRIC13:     *     '(3I4, 2F7.1, F7.2, F5.2,2X,3I4, 2F7.1, F7.2, F5.2)')
-     *     '(3I4, 2F7.1, F6.1, F6.2,2X,3I4, 2F7.1, F6.1, F6.2)')
+     *     '(3I4, 2F7.1, F6.1, F6.1,2X,3I4, 2F7.1, F6.1, F6.1)')
      1     ( (NINT(STORE(IXAP)), IXAP=JXAP, JXAP+2),
      2     (STORE(IXAP), IXAP= JXAP+3,JXAP+6),
      3     JXAP= MSORT, MSORT+MDSORT, MDSORT)

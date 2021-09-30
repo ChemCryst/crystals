@@ -60,41 +60,6 @@ HDC CxModel::last_hdc = NULL;
 CxModel * CxModel::CreateCxModel( CrModel * container, CxGrid * guiParent )
 {
 
-#ifdef CRY_USEMFC
-
-  CxModel *theModel = new CxModel(container);
-  const char* wndClass = AfxRegisterWndClass( CS_HREDRAW|CS_VREDRAW,NULL,(HBRUSH)(COLOR_MENU+1),NULL);
-
-  if ( theModel -> Create(wndClass,"Model",WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_CLIPSIBLINGS,CRect(0,0,26,28),guiParent,mModelCount++) == 0 )
-  {
-    ::MessageBox (  NULL, "Create modelwindow failed", "Error", MB_OK) ;
-    delete theModel;
-    return nil;
-  }
-
-//  theModel -> ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);
-  theModel -> SetFont(CcController::mp_font);
-
-  CRect rect;
-//  CClientDC dc(theModel);
-
-  theModel->m_hdc = ::GetDC(theModel->GetSafeHwnd());
-
-  if( ( theModel->SetWindowPixelFormat() ) == false )
-  {
-    delete theModel;
-    return nil;
-  }
-  if ( ( theModel->CreateViewGLContext() ) == false )
-  {
-    delete theModel;
-    return nil;
-  }
-
-
-  theModel->Setup();
-
-#else
   int args[] = {WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_DEPTH_SIZE, 16, 0};
 
   if (! CxModel::IsDisplaySupported(args)) {
@@ -132,12 +97,15 @@ CxModel * CxModel::CreateCxModel( CrModel * container, CxGrid * guiParent )
 	 LOGERR( "Continuing, some functionality may not work. Send Script.log to Richard Cooper for help.");
   }
   //  int args[] = {WX_GL_RGBA, WX_GL_DOUBLEBUFFER, 0};
-  CxModel *theModel = new CxModel((wxWindow*)guiParent, args);
+
+  wxGLAttributes dispAttrs;
+  dispAttrs.PlatformDefaults().MinRGBA(8, 8, 8, 8).DoubleBuffer().Depth(16).EndList();
+  
+  CxModel *theModel = new CxModel((wxWindow*)guiParent, dispAttrs);
   theModel->ptr_to_crObject = container;
   theModel->Show();
 //  theModel->Setup();
 
-#endif
 
   return theModel;
 }
@@ -145,7 +113,7 @@ CxModel * CxModel::CreateCxModel( CrModel * container, CxGrid * guiParent )
 #ifdef CRY_USEWX
 
 //CxModel::CxModel(wxWindow *parent, wxWindowID id, int* args, long style, const wxString& name): wxGLCanvas(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, style|wxFULL_REPAINT_ON_RESIZE)
-CxModel::CxModel(wxWindow *parent, int * args): wxGLCanvas(parent, wxID_ANY, args, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE)
+CxModel::CxModel(wxWindow *parent, wxGLAttributes &args): wxGLCanvas(parent, args, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE)
 {
 	m_context = new wxGLContext(this);
     m_DoNotPaint = false;

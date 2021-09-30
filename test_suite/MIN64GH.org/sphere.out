@@ -131,11 +131,11 @@ Space group symbol is   P    -4   3    N
 
      58 absences,   mean Fo =   0.781,   rms Fo/sigma(Fo)=   7.488
 
-Fo range       -ve     1.0     2.0     4.0     8.0    16.0  Remainder
+Fo range               -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 Mean Fo          -0.786   0.720   1.354   2.642   0.000   0.000   0.000
 Number               12      18      25       3       0       0       0
 
-Fo/sigma range -ve     1.0     2.0     4.0     8.0    16.0  Remainder
+Fo/sigma range         -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 rms (Fo/sigma)    1.150   0.466   1.613   2.949   5.603  12.402  25.855
 Number               12       6      11      10      11       5       3
 
@@ -143,6 +143,7 @@ Number               12       6      11      10      11       5       3
 
  Rsigma =  0.027 for      467 input reflections
 
+Rsigma = sum (sigma(I) / sum (I)
 
  Rsigma has changed from its old value of 0.028 to  0.027 for    467 input reflections
 
@@ -1873,11 +1874,11 @@ Space group symbol is   P    -4   3    N
 
      58 absences,   mean Fo =   0.781,   rms Fo/sigma(Fo)=   7.488
 
-Fo range       -ve     1.0     2.0     4.0     8.0    16.0  Remainder
+Fo range               -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 Mean Fo          -0.786   0.720   1.354   2.642   0.000   0.000   0.000
 Number               12      18      25       3       0       0       0
 
-Fo/sigma range -ve     1.0     2.0     4.0     8.0    16.0  Remainder
+Fo/sigma range         -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 rms (Fo/sigma)    1.150   0.466   1.613   2.949   5.603  12.402  25.855
 Number               12       6      11      10      11       5       3
 
@@ -1885,6 +1886,7 @@ Number               12       6      11      10      11       5       3
 
  Rsigma =  0.027 for      467 input reflections
 
+Rsigma = sum (sigma(I) / sum (I)
 
  Rsigma has changed from its old value of 0.028 to  0.027 for    467 input reflections
 
@@ -3614,11 +3616,11 @@ Space group symbol is   P    -4   3    N
 
      58 absences,   mean Fo =   0.781,   rms Fo/sigma(Fo)=   7.488
 
-Fo range       -ve     1.0     2.0     4.0     8.0    16.0  Remainder
+Fo range               -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 Mean Fo          -0.786   0.720   1.354   2.642   0.000   0.000   0.000
 Number               12      18      25       3       0       0       0
 
-Fo/sigma range -ve     1.0     2.0     4.0     8.0    16.0  Remainder
+Fo/sigma range         -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 rms (Fo/sigma)    1.150   0.466   1.613   2.949   5.603  12.402  25.855
 Number               12       6      11      10      11       5       3
 
@@ -3626,6 +3628,7 @@ Number               12       6      11      10      11       5       3
 
  Rsigma =  0.027 for      467 input reflections
 
+Rsigma = sum (sigma(I) / sum (I)
 
  Rsigma has changed from its old value of 0.028 to  0.027 for    467 input reflections
 
@@ -5344,11 +5347,11 @@ Space group symbol is   P    -4   3    N
 
      58 absences,   mean Fo =   0.781,   rms Fo/sigma(Fo)=   7.488
 
-Fo range       -ve     1.0     2.0     4.0     8.0    16.0  Remainder
+Fo range               -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 Mean Fo          -0.786   0.720   1.354   2.642   0.000   0.000   0.000
 Number               12      18      25       3       0       0       0
 
-Fo/sigma range -ve     1.0     2.0     4.0     8.0    16.0  Remainder
+Fo/sigma range         -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 rms (Fo/sigma)    1.150   0.466   1.613   2.949   5.603  12.402  25.855
 Number               12       6      11      10      11       5       3
 
@@ -5356,6 +5359,7 @@ Number               12       6      11      10      11       5       3
 
  Rsigma =  0.027 for      467 input reflections
 
+Rsigma = sum (sigma(I) / sum (I)
 
  Rsigma has changed from its old value of 0.028 to  0.027 for    467 input reflections
 
