@@ -2135,19 +2135,19 @@ C--SETUP A GRAPH HERE
      3  '^^PL YAXIS TITLE Fo SERIES 1 TYPE SCATTER'
         CALL XPRVDU(NCVDU, 3,0)
       END IF
-      IF (LEVEL.EQ.8) THEN            ! Scatter |Fo-Fc| / sigma vs sintheta/lambda
+      IF ((LEVEL.EQ.8) .OR. (LEVEL.EQ.9)) THEN            ! Scatter |Fo-Fc| / sigma vs sintheta/lambda
           if (iftype .eq.1) then   ! Fo-Fc/sigmaW
         WRITE(CMON,'(A,/,A,/,A,/,A)')
      1  '^^PL PLOTDATA _DELTA SCATTER ATTACH _VDELTA KEY',
      2  '^^PL XAXIS TITLE ''sin\theta/\lambda'' NSERIES=1 LENGTH=2000',
      3  '^^PL YAXIS TITLE ''|Fo-Fc|.\sqrtw''',
-     4  '^^PL SERIES 1 TYPE SCATTER'
+     4  '^^PL SERIES 1 SERIESNAME ''Observerd'' TYPE SCATTER'
 	      else
         WRITE(CMON,'(A,/,A,/,A,/,A)')
      1  '^^PL PLOTDATA _DELTA SCATTER ATTACH _VDELTA KEY',
      2  '^^PL XAXIS TITLE ''sin\theta/\lambda'' NSERIES=1 LENGTH=2000',
      3  '^^PL YAXIS TITLE ''\sqrtw . |Fo\**2-Fc\**2|''',
-     4  '^^PL SERIES 1 TYPE SCATTER'
+     4  '^^PL SERIES 1 SERIESNAME ''Observerd'' TYPE SCATTER'
 		  end if
         CALL XPRVDU(NCVDU, 4,0)
       END IF
@@ -2266,7 +2266,7 @@ C - F REFINENENT
         WTOP = WTOP + WDEL*WDEL
         WBOT = WBOT + WFO*WFO
 
-        IF (LEVEL.EQ.8) THEN
+        IF ((LEVEL.EQ.8) .OR. (LEVEL.EQ.9)) THEN
           IF (IFSQ .GE. 0) THEN  !FSQ REFINENENT
             DELSIGW = WT * ABS(FO * ABS(FO) - FC*FC)
           ELSE                   !F REFINENENT
@@ -2281,8 +2281,6 @@ C - F REFINENENT
      1   '^^PL LABEL ''', HKLLAB(1:IHKLLEN), ''' DATA ', ST ,DELSIGW
           CALL XPRVDU(NCVDU, 1,0)
           
-		  write(125,*)hkllab(1:ihkllen), st, delsigw, fo, fc, wt
-
         ENDIF
 
 
@@ -2336,7 +2334,7 @@ c         refinement on F
 
       else if (KALLOW(IALLOW)<0) THEN ! ommited reflection
         if(.not. allocated(omitted)) then
-          allocate(omitted(16384, 5))
+          allocate(omitted(16384, 7))
           omitindex=0
         else if(omitindex>=ubound(omitted, 1)) then
           ! array too small, need to extend
@@ -2349,6 +2347,11 @@ c         refinement on F
         omitted(omitindex,1:3)=STORE(M6:M6+2)
         omitted(omitindex, 4)=STORE(M6+3)        ! Fo
         omitted(omitindex, 5)=scale * STORE(M6+5) ! Fc
+  	    ST = SNTHL2(I)
+        WT = STORE(M6+4)
+        omitted(omitindex, 6)=ST  ! st/l
+        omitted(omitindex, 7)=WT  ! sqrt w
+		
       end if
 
       GO TO 1100
@@ -2370,11 +2373,38 @@ c         refinement on F
           CALL XPRVDU(NCVDU, 1,0)
         END DO
       END IF
+
+      IF ( LEVEL.EQ.9 ) THEN      !Also output the omitted refls.
+        if(omitindex>0) then
+          WRITE(CMON,'(A)')
+     1      '^^PL ADDSERIES Omitted TYPE SCATTERX'
+          CALL XPRVDU(NCVDU,1,0)
+        end if
+        do i=1, omitindex
+		  wt = omitted(i,7)
+		  st = omitted(i,6)
+		  fo = omitted(i,4)
+		  fc = omitted(i,5)
+          IF (IFSQ .GE. 0) THEN  !FSQ REFINENENT
+            DELSIGW = WT * ABS(FO * ABS(FO) - FC*FC)
+          ELSE                   !F REFINENENT
+            DELSIGW = WT * ABS(FO - FC)
+          ENDIF
+          PLOTMAX = MAX( DELSIGW, PLOTMAX )
+		  
+          WRITE(HKLLAB, '(2(I0,A),I0)') NINT(omitted(i,1)),',',
+     1      NINT(omitted(i,2)), ',', NINT(omitted(i,3))
+            hkllab=adjustl(hkllab)
+          WRITE(CMON,'(3A,2(1X,F12.4))')
+     1   '^^PL LABEL ''', trim(HKLLAB), ''' DATA ', st ,DELSIGW
+          CALL XPRVDU(NCVDU, 1,0)
+          
+        END DO
+      END IF
 C
 C
 C -- BEGIN OUTPUT
 C
-
 
 C----- COMPUTE AND STORE R-VALUES
       RFACT = 100. * TOP / BOTTOM
@@ -2638,8 +2668,8 @@ C
 c
 C -- FINISH THE GRAPH DEFINITION
       IF ( ( LEVEL.EQ.4 ).OR.( LEVEL.EQ.5 )
-     1 .OR.( LEVEL.EQ.6 ).OR.(LEVEL.EQ.7) 
-     1 .OR.( LEVEL .EQ. 8) ) THEN
+     1 .OR.( LEVEL.EQ.6 ).OR.( LEVEL.EQ.7 ) 
+     1 .OR.( LEVEL.EQ.8 ).OR.( LEVEL.EQ.9 ) ) THEN
         WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR'
         CALL XPRVDU(NCVDU, 2,0)
       ENDIF

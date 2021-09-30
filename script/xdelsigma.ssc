@@ -1,7 +1,7 @@
-%SCRIPT xfovsfc
+%SCRIPT xdelsigmaw
 %    VARIABLE LOGICAL DO_SFLS
 %    EVALUATE DO_SFLS = TRUE
-^^WI WINDOW xfovsfc 'Fo-Fc/sigmaw' KEEP SIZE MODAL
+^^WI WINDOW xdelsigma 'Fo-Fc/sigmaw' KEEP SIZE MODAL
 ^^WI COMMIT='EXT_BOK' CANCEL='EXT_BOK'
 ^^WI GRID MAIN NROWS=2 NCOLS=1
 ^^WI {
@@ -12,9 +12,9 @@
 ^^WI    @ 1,1 GRID EXP2 NROWS=1 NCOLS=3
 ^^WI    {
 ^^WI     @ 1,1 STATIC XFW1
-^^WI 'This is a scatterplot of sin\theta/\lambda vs. |Fo\**2-Fc**2| x \sqrtw.'
+^^WI 'Scatterplot of sin\theta/\lambda vs. \sqrtw . |Fo\**2-Fc\**2|'
 ^^WI     @ 1,2 ICON OIC SMALLQUERY TOOLTIP 
-^^WI 'Values > 10 on the y-axis are outliers, should be investigated and probably removed (right-click point for options).'
+^^WI 'For a fully refined structure, values > 10 on the y-axis are outliers, should be investigated and probably removed with appropriate justification (right-click point for options).'
 ^^WI    }
 ^^WI   }
 ^^WI   @ 4,2 PLOTWINDOW _VDELTA NROWS=20 NCOLS=64
@@ -44,7 +44,17 @@
 %      EVALUATE DO_SFLS = FALSE
 %    END IF
 %    ON ERROR CONTINUE
-%    COPY '#sum list 6 level=DELTAS'
+^^?? EXT_ALL STATE
+%    VERIFY ON OFF
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%    CASE VALUE
+%     BLOCK
+%      COPY '#sum list 6 level=ALLDELTAS'
+%     END BLOCK
+%     BLOCK
+%      COPY '#sum list 6 level=DELTAS'
+%     END BLOCK
+%    END CASE
 %    COPY 'END'
 %    VERIFY EXT_ALL  EXT_OBS EXT_BOK EXT_SAV EXT_EXP OMIT
 %    GET SILENT NOSTORE FINAL ABBREVIATED '?' 'EXT_BOK'
@@ -56,7 +66,7 @@ ALL
 OBS
 %    END BLOCK
 %    BLOCK
-^^CO    DISPOSE xfovsfc
+^^CO    DISPOSE xdelsigma
 %       FINISH
 %    END BLOCK
 %%
@@ -98,6 +108,6 @@ Saving Image
 %    END CASE
 %  END LOOP
 %% Should not get here unless #SUM L 6 failed 
-^^CO    DISPOSE xfovsfc
+^^CO    DISPOSE xdelsigma
 %END SCRIPT
 
