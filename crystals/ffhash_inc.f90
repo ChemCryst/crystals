@@ -7,6 +7,8 @@
   ! #include "ffhash_inc.f90"
   ! end module m_ffhash
 
+! Source: https://github.com/jannisteunissen/ffhash
+
   ! EXAMPLE CODE:
   
   
