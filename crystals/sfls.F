@@ -370,6 +370,7 @@ C
 CODE FOR XSFLSB
       SUBROUTINE XSFLSB (MODE, ITYP06)
       use sfls_punch_mod
+      use aspher_scatterers, only: atom_labels
 C--MAIN CONTROL ROUTINE FOR THE S.F.L.S. ROUTINES
 C
 C--
@@ -419,6 +420,9 @@ C
 C
       DIMENSION JFRN(4,2)
 C
+      character(len=11) :: atom_temp
+      integer :: lenat
+
 C
       INCLUDE 'XSFWK.INC'
       INCLUDE 'XWORKB.INC'
@@ -647,7 +651,12 @@ C--CHECK THAT THERE IS AT LEAST ONE ATOM IN LIST 5
 C--LOOP OVER EACH ATOM
       A=1000.
       N=0
-      DO I=1,N5   ! Safety checks
+      if ( allocated ( atom_labels ) ) deallocate (atom_labels)
+      allocate ( atom_labels(n5) )
+      DO I=1,N5   ! Safety checks, and store atom_labels for later
+        WRITE(atom_temp,'(A4,I7)') STORE(M5),NINT(STORE(M5+1))  ! write type and serial to short string "C   999"
+        CALL XCRAS(atom_temp,LENAT)                             ! remove all spaces "C999"
+        atom_labels(I) = atom_temp                              ! store for later use (aspherical s.f. lookup table)
 C-C-C-CHECK WHETHER ATOM IS ANISOTROPIC
         IF (ABS(STORE(M5+3)) .LE. UISO) THEN
 C-C-C-CHECK ANISOTROPIC ATOMS
@@ -1134,6 +1143,8 @@ c        call cpu_time(time_end)
 c        print *, (time_end - time_begin)
       ENDIF
 
+      deallocate ( atom_labels )
+
       IF ( IERFLG .LT. 0 ) GO TO 9900
 C--CHECK FOR L.S. REFINEMENT
       IF( SFLS_TYPE .EQ. SFLS_REFINE ) THEN  !STORE THE MATRIX
@@ -1411,6 +1422,7 @@ CODE FOR XSFLSC
       SUBROUTINE XSFLSC(DERIVS,NDERIV,IRESULTS,NRESULTS,IULN)
 !$    use OMP_LIB
       use sfls_punch_mod
+      use aspher_scatterers, only: tscstorage
       DIMENSION DERIVS(NDERIV)
       DIMENSION IRESULTS(NRESULTS)  !Parameter list if there is one
 C--MAIN STRUCTURE FACTOR CALCULATION ROUTINE
@@ -1751,6 +1763,10 @@ C
       type(minfc_t), dimension(10) :: minfc_list !< List of the 10 most negative fcalc 
       integer :: numnegative !< number of negative Fc set to zero
 
+      TYPE(tscstorage) :: ascatt   !storage for aspherical scattering factor data, if present
+      logical :: tsc_exists,  tsc_loaded 
+      
+      
 c     Working out the number of threadings available
 c     Using at most 6 of them
 c     each thread has a chunk of reflections and a normal matrix
@@ -1806,7 +1822,27 @@ C----- INITIALISE THE SORT BUFFER
       if(sfls_calcul_flag>0 .and. sfls_punch_flag<=0) then
         sfls_punch_flag=3 ! numpy is default in this case
       end if
-      
+
+
+      tsc_loaded = .false.
+      INQUIRE(FILE='default.tsc', EXIST=tsc_exists)      
+      if ( tsc_exists ) then
+            tsc_loaded = ( ascatt%load('default.tsc') == 0 )  ! load() returns 0 for success.
+            if ( tsc_loaded ) then
+                WRITE(CMON, '(A)')
+     1 '{I default.tsc aspherical scattering factors loaded'
+            else
+                WRITE(CMON, '(A)')
+     1 '{E Error in default.tsc. Normal scattering factors will be used'
+            end if
+               
+      else
+          WRITE(CMON, '(A)')
+     1 '{I default.tsc does not exist, using normal scattering factors'
+      end if
+      CALL XPRVDU(NCVDU, 1,0)
+
+
 C----- SET PRINT COUNTER
       IENPRT = -1
       ILEVPR = 0
@@ -2023,7 +2059,7 @@ C       imaginary parts, m6+33/34, should be zero
 C       CHECK IF THIS IS TWINNED CALCULATION
         IF(.NOT.TWINNED)THEN   ! NOT TWINNED
           NL=0
-          CALL XSFLSX
+          CALL XSFLSX ( tsc_loaded, ascatt )
           JREF_STACK_PTR=ISTORE(JREF_STACK_START)
           CALL XAB2FC    ! DERIVE THE TOTALS AGAINST /FC/ FROM THOSE W.R.T. A AND B
           CALL XACRT(4)  ! ACCUMULATE THE /FO/ TOTALS
@@ -2108,7 +2144,7 @@ c      write(ncpu,9753)'Given', ph,pk,pl, 'Transformed', store(m6),
 c     1 store(m6+1),store(m6+2), g2, store(m6+3),a,k
 9753  format(a,3f8.2,2x,a,3f8.2, '  G2,Fo,A,K ', 3f12.2,i5)
 c
-            CALL XSFLSX  ! ENTER THE S.F.L.S MAIN LOOP. G2 may be zero
+            CALL XSFLSX  ( tsc_loaded, ascatt ) ! ENTER THE S.F.L.S MAIN LOOP. G2 may be zero
             g2 = g2sav
           END DO  ! END OF THIS TWINNED REFLECTION  
 c
@@ -3435,7 +3471,7 @@ C-C-C-CALCULATE THE DERIVATIVE W.R.T. SPHERE-FACTOR FOR RADIUS
       END
 
 CODE FOR XSFLSX
-      SUBROUTINE XSFLSX
+      SUBROUTINE XSFLSX  ( tsc_loaded, ascatt )
       use store_mod, only: store, istore=>i_store, i_store_set
       use xsfwk_mod, only:acd, aci, acr, anom, bcd, bci, bcr, sst, st
       use xsfwk_mod, only:tc
@@ -3448,10 +3484,11 @@ CODE FOR XSFLSX
       use xlst01_mod, only:l1a, l1s ! read only
       use xlst02_mod, only:g2, l2, l2i, l2t, m2i, md2, md2i ! read only
       use xlst02_mod, only:n2, n2t, md2t ! read only
-      use xlst03_mod, only:l3ti, l3tr, md3ti, md3tr, n3 ! read only
+      use xlst03_mod, only:l3ti, l3tr, md3ti, md3tr, n3, l3, md3 ! read only
       use xlst05_mod, only:l5, md5a, n5 ! read only
       use xlst06_mod, only:m6 ! read only
       use xlst12_mod, only:l12, n12 ! read only
+      use aspher_scatterers, only: tscstorage, atom_labels
       implicit none
 C
 C--MAIN S.F.L.S. LOOP  -  CALCULATES A AND B AND THEIR DERIVATIVES
@@ -3496,10 +3533,18 @@ C-C-C-...FOR DERIVATIVES
       REAL ALPD(11),BLPD(11)   ! Use local arrays for better optimisation?
 
       INTEGER ISTACK
+      logical, intent(in) :: tsc_loaded
+      type(tscstorage), intent(inout) :: ascatt  ! should be in, but need to flag gethkl as a non-modifying procedure
+c      character(len=10) ctemp 
+      integer :: lenct, hp, kp, lp, i
+      real :: asphoc, aspha, asphb, tasphoc, atp, btp
 
+     
       ALPD=0.0
       BLPD=0.0
 
+   
+      
       ISTACK=-1   ! CLEAR OUT A FEW CONSTANTS
       ACR=0.
       BCR=0.
@@ -3698,7 +3743,6 @@ c     1            C2,C2,C3,C3
 c      WRITE(NCWU,'(A,4(Z0,1X,F20.16,1X))')'SIN consts:',S0,S0,S1,S1,
 c     1            S2,S2,S3,S3
 
-  
 c
 c compute the ratio of imaginary to real form (scattering) factors
 c This will be a computational convenience later
@@ -3826,11 +3870,13 @@ c
 c focc   formfactor * site occ * chemical occ * difabs corection
 c modify focc for other fc corrections 
 c
+        ASPHOC = STORE(M5A+2) * STORE(M5A+13)   ! without scattering factor
         FOCC = STORE(M3TR) * STORE(M5A+2) * STORE(M5A+13) 
 
         FLAG=STORE(M5A+3)   ! PICK UP THE TYPE OF THIS ATOM
 
         IF(NINT(FLAG) .EQ. 1) THEN  ! CHECK THE TEMPERAURE TYPE FOR THIS ATOM
+          TASPHOC = Tiso(ljy)*ASPHOC 
           TFOCC=Tiso(ljy)*FOCC
         END IF
 c
@@ -3852,8 +3898,9 @@ c  slrfac starting-values for special shape factors and derivatives
 
           IF (NINT(FLAG) .EQ. 0) THEN   
 c aniso-temperature factor
-            T=Taniso(LJY,LJX)
+            T=Taniso(LJY,LJX)   ! get symmetry transformed aniso for this atom (pre-computed above)
             TFOCC=T*FOCC
+            TASPHOC = T * ASPHOC
 c
           ELSE IF ( NINT(FLAG) .GE. 2) THEN
 c Special shapes
@@ -3872,14 +3919,42 @@ c Special shapes
 c iso-temperature factor
             T=Tiso(LJY)
           ENDIF
-     
+
+          if ( tsc_loaded ) then
+            hp = nint(store(m2t)/TWOPI)
+            kp = nint(store(m2t+1)/TWOPI)
+            lp = nint(store(m2t+2)/TWOPI)
+            i = ascatt%gethkl(hp,kp,lp,atom_labels(ljy),aspha,asphb)
+!            write (123,*) i, hp, kp, lp,  atom_labels(ljy),aspha,asphb
+
 C--CALCULATE THE B CONTRIBUTION
-          BP=Sina(ljy,ljx)*TFOCC
-          BT=BT+BP
-c
+            BTP=Sina(ljy,ljx)*TASPHOC
+
 C--CALCULATE THE A CONTRIBUTION
-          AP=Cosa(ljy,ljx)*TFOCC
-          AT=AT+AP
+            ATP=Cosa(ljy,ljx)*TASPHOC
+
+            AP = (ATP * ASPHA) - (BTP * ASPHB) 
+            BP = (ATP * ASPHB) + (BTP * ASPHA)
+            
+c            write (123,*) 'New f ', aspha, asphb, ' old f ', STORE(M3TR)
+c            write (123,*) 'New AP,BP ', AP, BP,
+c     1                    'Old AP,BP ', Cosa(ljy,ljx)*TFOCC,
+c     3                                  Sina(ljy,ljx)*TFOCC
+     
+            AT = AT + AP
+            BT = BT + BP
+
+          else
+C--CALCULATE THE B CONTRIBUTION
+            BP=Sina(ljy,ljx)*TFOCC
+            BT=BT+BP
+
+C--CALCULATE THE A CONTRIBUTION
+            AP=Cosa(ljy,ljx)*TFOCC
+            AT=AT+AP
+
+          end if
+   
 c          WRITE(NCWU,'(A,Z0,1X,F15.6)')'AT:',AT,AT
 c          WRITE(NCWU,'(A,Z0,1X,F15.6)')'BT:',BT,BT
 c         WRITE(NCWU,'(A,2(1X,Z0,1X,F20.16))')'SIN:',S,S, aaas, aaas

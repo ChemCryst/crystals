@@ -20,6 +20,7 @@ helper.c
 mrgrnk.f90
 crystals_hdf5.F90
 numpy.F90
+tscloader.F90
 lists1.F
 KCHAR.INC.F90
 STORE.INC.F90
