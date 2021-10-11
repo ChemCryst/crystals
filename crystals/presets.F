@@ -2256,6 +2256,8 @@ CODE FOR MACBLK
       
       EQUIVALENCE ( IRIC,ZRIC )
 
+      CALL RANDOM_SEED ( )   ! Set random seed to date and time.
+
 C --- XSSVAL ---
       ISSLSM = 3
       ISSSPD = 2
