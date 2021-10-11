@@ -281,7 +281,7 @@ sub obscureMachinePrecision() {
 		   } elsif($line =~ m/^((?:\s+-?\d{1,2}){3}\s+-?\d+\.\d\s+-?\d+\.\d\s+-?\d+\.)\d(\s+-?\d+\.)\d+((?:\s+-?\d{1,2}){3}\s+-?\d+\.\d\s+-?\d+\.\d\s+-?\d+\.)\d(\s+-?\d+\.)\d+\s*/ ) {
 				  print $fho "[28] - not suitable for comparison, sort order based on small differences\n";
     # "  -2   1   2      38.92      5904.6      1166.6       121.7"
-		   } elsif($line =~ m/^((?:\s+-?\d{1,2}){3}\s+\d+\.\d\s+\d+\.\d\s+\d+\.)\d(\s+\d+\.\d)\s*/ ) {
+		   } elsif($line =~ m/^((?:\s+-?\d{1,2}){3}\s+\d+\.\d\d\s+\d+\.\d\s+\d+\.)\d(\s+\d+\.\d)\s*/ ) {
 				  print $fho "[94] $1 $2\n";
 
 	# Mean shift line
