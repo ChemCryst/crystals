@@ -1767,6 +1767,8 @@ C---- GET SIGMA THRESHOLD FROM L28
         END DO
       ENDIF
 C
+      THUSED = 0.
+      THMAXL6 = 0.
       NINCL = 0    !Included in the refinement.
 C
       IDREF=0
@@ -1838,13 +1840,17 @@ c        WT = 0.0    ! We need to keep the weight for PLATON's ALL calc
         IALW = 1                    !Used.
       END IF
 c
+      THETAL6=RTD*ASIN(SQRT(STORE(M6+16)*STORE(L13DC)*STORE(L13DC)))
+      THMAXL6=MAX(THMAXL6,THETAL6)    ! Maximum thata in fcf file
       IF (IALW.EQ.1) THEN
         CUSED='incl'
         NINCL = NINCL + 1
+        THUSED = MAX(THUSED,THETAL6)  ! maximum theta used
       ELSE
         CUSED='excl'
-      ENDIF    
-      IF ((IALW .EQ. 2) .AND. (FOS .GE. -10.*SIGMA))IALW = 1   !Mark USED for PLATON
+      ENDIF
+C REMOVED SO THAT FCF STATUS ACCURATELY REFLECT THE L28 FILTERS  
+CPLATON      IF ((IALW .EQ. 2) .AND. (FOS .GE. -10.*SIGMA))IALW = 1   !Mark USED for PLATON
       MALW(IALW)=MALW(IALW)+1
       IF (TWINNED) THEN
         IELEMENT = NINT(STORE(M6+11))
@@ -1886,15 +1892,15 @@ C
          IF (KFR.EQ. KFOUT) THEN
           WRITE(NCFPU1,1005)I,J,K,FOS,FCS,SIGMA,CALW(IALW),CUSED,WT
      1    ,'  # Theta=', 
-     2    RTD*ASIN(SQRT(STORE(M6+16)*STORE(L13DC)*STORE(L13DC)))
+     2    THETAL6
          ELSE
           WRITE(NCFPU1,1005)I,J,K,FOS,FCS,SIGMA,CALW(IALW),CUSED
          ENDIF
          ELSE                            ! Fo REFINEMENT
          IF (KFR.EQ.KFOUT) THEN
            WRITE(NCFPU1,1005)I, J, K, FO, FC, S,CALW(IALW),CUSED,WT
-     1     ,'  # Rho=',
-     2    RTD*ASIN(SQRT(STORE(M6+16)*STORE(L13DC)*STORE(L13DC)))
+     1     ,'  # Theta=',
+     2    THETAL6
           ELSE
            WRITE(NCFPU1,1005)I, J, K, FO, FC, S,CALW(IALW),CUSED
           ENDIF
@@ -1905,8 +1911,80 @@ C
 1850  CONTINUE
       WRITE(NCFPU1,'(''# No of reflections output = '',I6)') IDREF
       WRITE(NCFPU1,'(''# No of reflections in LSQ = '',I6)') NINCL
+      WRITE(NCFPU1,'(''# No of reflections excluded = '',I6)') IDREF-NINCL
+      WRITE(NCFPU1,'(
+     1 ''# Reflections can be excluded for several reasons'')')
+C      WRITE(NCFPU1,'(''# Ratio Unique/Expected Reflections ='',F6.3)')
+C     1 FLOAT(IDREF)/NINCL
+      WRITE(NCFPU1,'(''# Maximum theta in file='',F6.2,
+     1 '' Maximum theta used='',f6.2)') THMAXL6
       WRITE(NCFPU1,'(''#  '',5(1X,A,A,I6))')
      1 (CALW(I),' = ',MALW(I),I=1,5)
+      djw2=(FLOAT(IDREF)/NINCL)-1.
+      djw3=abs(djw2-nint(djw2))
+      CALL OUTCOL(9)
+      IVRF1=0
+      IF(DJW3.GE.0.1) THEN
+      IVRF1=1
+       WRITE(CMON,'(/
+     1 '' You may get a PLATON warning::''/
+     2 '' PLAT021_ALERT_4_B Ratio Unique / Expected reflections''/)')
+c     3 '' Ratio = '', f6.3/)') (FLOAT(IDREF)/NINCL)
+       CALL XPRVDU(NCVDU, 5,0)
+      ENDIF
+      IVRF2=0
+      IF(THMAXL6.GT. THUSED) THEN
+       IVRF2=1
+       WRITE(CMON,'(/
+     1 '' You may get a PLATON warning::''/
+     1 '' PLAT920_ALERT_1_B Theta(Max)  in CIF and FCF Differ by''
+     1  f6.2,/)') THMAXL6-THUSED
+     1  
+       CALL XPRVDU(NCVDU,3,0)
+      ENDIF
+      IF(MAX(IVRF1,IVRF2).GE.1) THEN
+       WRITE(CMON,'(/
+     1 ''See the end of the fcf file for model vrf replies''/)')
+       CALL XPRVDU(NCVDU,3,0)
+C
+      IF(IVRF1.GE.1) THEN
+      WRITE(NCFPU1,'(/
+     1 ''# start Validation Reply Form''/
+     1 ''_vrf_PLAT021_I''/
+     1 '';''/
+     1 ''PROBLEM: Ratio Unique / Expected Reflections too High''/
+     1 ''RESPONSE: ...''/
+     1 ''The fcf file contains all the merged data ('',I7 ,'') ''/
+     1 ''but only'',I7,'' of them are marked as "included". ''/
+     1   I7,'' are flagged "h" i.e. rejected high angle ''/
+     1 ''reflections, also marked "excluded".''
+     1 ''This information is embedded as a #comment ''/
+     1 '' at the end of the fcf file.  ''/
+     1 ''See _refine_special_details for the filters used''/
+     1 '';''/
+     1 ''# end Validation Reply Form''/
+     1 /)')IDREF, NINCL, MALW(4)
+      ENDIF     
+C
+      IF(IVRF2.GE.1) THEN
+      WRITE(NCFPU1,'(/
+     1 ''_vrf_PLAT920_I''/
+     1 '';''/
+     1 ''PROBLEM: Theta(Max)  in CIF and FCF Differ''/
+     1 ''RESPONSE: ...''/
+     1 ''The fcf file contains all the merged data''
+     1 '' (Thetamax='',F6.2,'') ''/
+     1 ''but only some of them marked as "included" '',
+     1 ''in the refinement (Thetaused='',F6.2,''). ''/
+     1 ''This information is also embedded as a #comment''/
+     1 ''at the end of the fcf file.  ''/
+     1 ''See _refine_special_details for the filters used''/
+     1 '';''/
+     1 ''# end Validation Reply Form''/
+     1 /)')THMAXL6, THUSED
+      ENDIF
+      ENDIF
+      CALL OUTCOL(1)
       GOTO 9999
 9900  CONTINUE
       WRITE(NCFPU1,'(''#  '',10A4)') (KTITL(I),I=1,10)
