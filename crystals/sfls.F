@@ -629,6 +629,7 @@ C punch matrices cannot be written
 !----      
 !      M33CD+5 is the address of the flag for threshold when
 !      doing a CALC
+      tsc_store_fc = 0
       IF ( SFLS_TYPE .EQ. SFLS_CALC ) THEN
         RALL(1)=STORE(M33CD+5)
         tsc_store_fc = ISTORE(M33CD+6)  ! 0 for FC, 1 for FC(ASPH) - FC(IAM)
