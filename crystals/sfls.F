@@ -585,7 +585,10 @@ C--CLEAR THE CORE OUT AGAIN
 C----- SAVE SOME SPACE FOR THE U AXES
       IADDU = KCHLFL (4)
 C--LOAD LIST 33  -  THE CONDITIONS FOR THIS S.F.L.S. CALCULATION
-      IF (KHUNTR (33,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL33 
+      IF (KHUNTR (33,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL33
+
+!      write(124,*) ( ISTORE(M33CD+I),I=0,17 )
+      
 c Check if the flag normalise is used (m33cd+15). 
 c Normalisation of the normal matrix for inversion is done automatically
 c see solve_helper.F90
@@ -624,13 +627,11 @@ C punch matrices cannot be written
       
       IF ( IERFLG .LT. 0 ) GO TO 9900
 !----      
-!      M33CD+5 is the address of the flag for punch
-!      It does not make sense when use for rall
-!      Plus rall(1) is initialised again later
-!      The following block is therefore useless
-!      IF ( SFLS_TYPE .EQ. SFLS_CALC ) THEN
-!      RALL(1)=STORE(M33CD+5)
-!      END IF
+!      M33CD+5 is the address of the flag for threshold when
+!      doing a CALC
+      IF ( SFLS_TYPE .EQ. SFLS_CALC ) THEN
+      RALL(1)=STORE(M33CD+5)
+      END IF
 !----
 c
       NF=-1
@@ -832,8 +833,10 @@ c
         CALL XSTR05(5,-1,-1)
       ENDIF
 
+! NB if SFLS_TYPE is not REFINE, this is meaningless.
       NEWLHS = .FALSE.  ! CHECK ON THE TYPE OF MATRIX TO USE
       IF ( ISTORE( M33CD+6) .EQ. -1 ) NEWLHS = .TRUE.
+
       ISTAT2 = ISTORE (M33CD+3)  ! SET THE STORE MAP LEVEL
 
       IF ( IREFLS .GE. 0 ) THEN            ! Not Restraints only
@@ -1765,6 +1768,7 @@ C
 
       TYPE(tscstorage) :: ascatt   !storage for aspherical scattering factor data, if present
       logical :: tsc_exists,  tsc_loaded 
+      integer :: itsc
       
       
 c     Working out the number of threadings available
@@ -1827,13 +1831,15 @@ C----- INITIALISE THE SORT BUFFER
       tsc_loaded = .false.
       INQUIRE(FILE='default.tsc', EXIST=tsc_exists)      
       if ( tsc_exists ) then
-            tsc_loaded = ( ascatt%load('default.tsc') == 0 )  ! load() returns 0 for success.
+            itsc = ascatt%load('default.tsc')
+            tsc_loaded = ( itsc == 0 )  ! load() returns 0 for success.
             if ( tsc_loaded ) then
                 WRITE(CMON, '(A)')
      1 '{I default.tsc aspherical scattering factors loaded'
             else
-                WRITE(CMON, '(A)')
-     1 '{E Error in default.tsc. Normal scattering factors will be used'
+                WRITE(CMON, '(A,I4,A)')
+     1 '{E Error ', itsc,
+     2 ' in default.tsc. Normal scattering factors will be used'
             end if
                
       else
@@ -3488,6 +3494,8 @@ CODE FOR XSFLSX
       use xlst05_mod, only:l5, md5a, n5 ! read only
       use xlst06_mod, only:m6 ! read only
       use xlst12_mod, only:l12, n12 ! read only
+      use xunits_mod, only: ncvdu, ncwu !< read only
+      use xiobuf_mod, only: cmon !< read only
       use aspher_scatterers, only: tscstorage, atom_labels
       implicit none
 C
@@ -3926,6 +3934,12 @@ c iso-temperature factor
             lp = nint(store(m2t+2)/TWOPI)
             i = ascatt%gethkl(hp,kp,lp,atom_labels(ljy),aspha,asphb)
 !            write (123,*) i, hp, kp, lp,  atom_labels(ljy),aspha,asphb
+            if ( i < 0 ) then 
+                WRITE ( CMON, '(A,3I4,2A)') '{E TSC hkl not found: ',
+     1          hp,kp,lp,' for ',atom_labels(ljy)
+                CALL XPRVDU(NCVDU, 1,0)
+                ! NB A and B contributions will have been set to zero, should we default to IAM instead?
+            endif
 
 C--CALCULATE THE B CONTRIBUTION
             BTP=Sina(ljy,ljx)*TASPHOC
