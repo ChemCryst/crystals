@@ -370,7 +370,7 @@ C
 CODE FOR XSFLSB
       SUBROUTINE XSFLSB (MODE, ITYP06)
       use sfls_punch_mod
-      use aspher_scatterers, only: atom_labels
+      use aspher_scatterers, only: atom_labels, tsc_store_fc
 C--MAIN CONTROL ROUTINE FOR THE S.F.L.S. ROUTINES
 C
 C--
@@ -421,7 +421,7 @@ C
       DIMENSION JFRN(4,2)
 C
       character(len=11) :: atom_temp
-      integer :: lenat
+      integer :: lenat, sfls_calc_store
 
 C
       INCLUDE 'XSFWK.INC'
@@ -630,7 +630,8 @@ C punch matrices cannot be written
 !      M33CD+5 is the address of the flag for threshold when
 !      doing a CALC
       IF ( SFLS_TYPE .EQ. SFLS_CALC ) THEN
-      RALL(1)=STORE(M33CD+5)
+        RALL(1)=STORE(M33CD+5)
+        tsc_store_fc = ISTORE(M33CD+6)  ! 0 for FC, 1 for FC(ASPH) - FC(IAM)
       END IF
 !----
 c
@@ -1146,6 +1147,8 @@ c        call cpu_time(time_end)
 c        print *, (time_end - time_begin)
       ENDIF
 
+
+
       deallocate ( atom_labels )
 
       IF ( IERFLG .LT. 0 ) GO TO 9900
@@ -1425,7 +1428,7 @@ CODE FOR XSFLSC
       SUBROUTINE XSFLSC(DERIVS,NDERIV,IRESULTS,NRESULTS,IULN)
 !$    use OMP_LIB
       use sfls_punch_mod
-      use aspher_scatterers, only: tscstorage
+      use aspher_scatterers, only: tscstorage, tsc_error_count
       DIMENSION DERIVS(NDERIV)
       DIMENSION IRESULTS(NRESULTS)  !Parameter list if there is one
 C--MAIN STRUCTURE FACTOR CALCULATION ROUTINE
@@ -1767,7 +1770,7 @@ C
       integer :: numnegative !< number of negative Fc set to zero
 
       TYPE(tscstorage) :: ascatt   !storage for aspherical scattering factor data, if present
-      logical :: tsc_exists,  tsc_loaded 
+      logical :: tsc_exists,  tsc_loaded
       integer :: itsc
       
       
@@ -2888,6 +2891,14 @@ c
         WRITE(NCWU,6250)JI,LJX
       ENDIF
 C
+
+      if ( tsc_error_count .ge. 21 ) then
+          WRITE ( CMON, '(A,I4,A)') '{E TSC scattering ',
+     1     tsc_error_count, ' errors / missing data.'
+          CALL XPRVDU(NCVDU, 1,0)
+      end if
+
+
 CRIC13:6150  FORMAT(/,' New scale factor (G) is ',F10.5,
 6150  FORMAT(/,' New scale factor (G) is ',F10.3,
      1 ',  ',I6,' reflections used in refinement')
@@ -3496,7 +3507,8 @@ CODE FOR XSFLSX
       use xlst12_mod, only:l12, n12 ! read only
       use xunits_mod, only: ncvdu, ncwu !< read only
       use xiobuf_mod, only: cmon !< read only
-      use aspher_scatterers, only: tscstorage, atom_labels
+      use aspher_scatterers, only: tscstorage, atom_labels, 
+     1                             tsc_error_count, tsc_store_fc
       implicit none
 C
 C--MAIN S.F.L.S. LOOP  -  CALCULATES A AND B AND THEIR DERIVATIVES
@@ -3934,40 +3946,44 @@ c iso-temperature factor
             lp = nint(store(m2t+2)/TWOPI)
             i = ascatt%gethkl(hp,kp,lp,atom_labels(ljy),aspha,asphb)
 !            write (123,*) i, hp, kp, lp,  atom_labels(ljy),aspha,asphb
-            if ( i < 0 ) then 
+            if ( i < 0 ) then
+              BP=Sina(ljy,ljx)*TFOCC  ! Use IAM instead
+              AP=Cosa(ljy,ljx)*TFOCC
+
+              if (tsc_error_count .le. 20 ) then   ! Tell the user there's a problem
                 WRITE ( CMON, '(A,3I4,2A)') '{E TSC hkl not found: ',
      1          hp,kp,lp,' for ',atom_labels(ljy)
                 CALL XPRVDU(NCVDU, 1,0)
-                ! NB A and B contributions will have been set to zero, should we default to IAM instead?
+              else if (tsc_error_count .eq. 21 ) then 
+                WRITE ( CMON, '(A)') '{E and so on... '
+                CALL XPRVDU(NCVDU, 1,0)
+              end if
+            else  ! No error, let's go.
+
+C--CALCULATE THE A and B CONTRIBUTIONS
+                BTP=Sina(ljy,ljx)*TASPHOC
+                ATP=Cosa(ljy,ljx)*TASPHOC
+                AP = (ATP * ASPHA) - (BTP * ASPHB) 
+                BP = (ATP * ASPHB) + (BTP * ASPHA)
             endif
 
-C--CALCULATE THE B CONTRIBUTION
-            BTP=Sina(ljy,ljx)*TASPHOC
-
-C--CALCULATE THE A CONTRIBUTION
-            ATP=Cosa(ljy,ljx)*TASPHOC
-
-            AP = (ATP * ASPHA) - (BTP * ASPHB) 
-            BP = (ATP * ASPHB) + (BTP * ASPHA)
-            
-c            write (123,*) 'New f ', aspha, asphb, ' old f ', STORE(M3TR)
-c            write (123,*) 'New AP,BP ', AP, BP,
-c     1                    'Old AP,BP ', Cosa(ljy,ljx)*TFOCC,
-c     3                                  Sina(ljy,ljx)*TFOCC
+            if ( tsc_store_fc .eq. 1 ) then   ! instead of storing FC, we store FC(ASPH)-FC(IAM). Used for deformation maps.
+                                              ! #sfls/calc store=deform/end
+                BP = BP - Sina(ljy,ljx)*TFOCC
+                AP = AP - Cosa(ljy,ljx)*TFOCC
+            end if
      
-            AT = AT + AP
-            BT = BT + BP
 
           else
-C--CALCULATE THE B CONTRIBUTION
-            BP=Sina(ljy,ljx)*TFOCC
-            BT=BT+BP
+C--CALCULATE THE A and B CONTRIBUTIONs for traditional IAM model
 
-C--CALCULATE THE A CONTRIBUTION
+            BP=Sina(ljy,ljx)*TFOCC
             AP=Cosa(ljy,ljx)*TFOCC
-            AT=AT+AP
 
           end if
+
+          AT = AT + AP
+          BT = BT + BP
    
 c          WRITE(NCWU,'(A,Z0,1X,F15.6)')'AT:',AT,AT
 c          WRITE(NCWU,'(A,Z0,1X,F15.6)')'BT:',BT,BT

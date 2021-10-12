@@ -1820,10 +1820,10 @@ INFORMATION THAT CONTROLS THE TYPE OF SFLS CALCULATION TO BE PERFORMED
     .NORMALISE          0    0    1    2    0 NO
      NO             YES
     .THRESHHOLD         0    0    1    0    0 0.0
-   2.SCALE              6    0    3    0   16   11  101    1   33
+   2.SCALE              7    0    3    0   16   11  101    1   33
          0    0    0    0    0    0    0    0    0    0
          6    7    8
-         3    3    3    3    3    2
+         3    3    3    3    3    2    3
     .XXXXXXX            0    0    1   -1    1 NO
     .YYYYYY             0    0    1   -1    1 NO
     .LIST               0    0    1    4   -2 OFF
@@ -1833,7 +1833,9 @@ INFORMATION THAT CONTROLS THE TYPE OF SFLS CALCULATION TO BE PERFORMED
     ./FO/               0    0    1    2   -1 /FOT/
      /FOT/          SCALED-/FOT/
     .THRESHOLD          0    0    1    0    0  2.0
-  -2.CALCULATE          6    0    3    0   18   11  101    1   33
+    .STORE              0    0    1    2    0 FC
+     FC             DEFORM
+  -2.CALCULATE          7    0    3    0   18   11  101    1   33
   -1.SOLVE             17    0    0    0   18   11  101    1   33
   -1.VECTOR            17    0    0    0   18   11  101    1   33
    6.SHIFT             25    0    0    0   25   11  102    5   33

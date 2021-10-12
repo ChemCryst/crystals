@@ -67,6 +67,8 @@ module aspher_scatterers
   implicit none
 
   character(len=8), allocatable :: atom_labels (:)
+  integer :: tsc_error_count
+  integer :: tsc_store_fc     ! 0 for FC, 1 for FC(ASPH) - FC(IAM)
 
 
   type, public :: tscstorage
@@ -89,7 +91,7 @@ module aspher_scatterers
 		class(tscstorage), intent(inout) :: self
 		character(len=*), intent(in) :: filename
 		integer :: io
-		
+		tsc_error_count = 0
 		open(131, file=filename, iostat=io)
 
 		if ( io /= 0 ) then
@@ -199,6 +201,7 @@ module aspher_scatterers
 		class(tscstorage), intent(inout) :: self
 		! dummy test - load in some fake data
 		call self%hkldict%reset()
+		tsc_error_count = 0
 		data_clear = 0
 	  end function
 		
@@ -217,6 +220,7 @@ module aspher_scatterers
 		ab = ab_type(0.0,0.0)
 		hkl = hkla_type(h,k,l,atom)
 		call self%hkldict%get_value(hkl, ab, data_gethkl)
+        if ( data_gethkl < 0 ) tsc_error_count = tsc_error_count + 1
 		a = ab%a
 		b = ab%b
       end function
