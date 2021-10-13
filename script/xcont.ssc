@@ -48,6 +48,7 @@
 % IF FILEEXISTS ( 'newatoms.dat' ) then
 %  EVALUATE T = FILEDELETE ( 'newatoms.dat' )                                                                              
 % END IF
+%%
 %%                                                                              
 ^^WI WINDOW XCONT 'Slant Fourier' MODAL                                         
 ^^WI COMMIT='BOK' CANCEL='BXX'                                                  
@@ -78,6 +79,9 @@
 ^^WI            ADDTOLIST 'F-Obs'        'Difference'                                   
 ^^WI                      '2Fo-Fc'       'F-Calc'                               
 ^^WI                      'Fo-Patterson' 'Fc-Patterson'                         
+% IF FILEEXISTS ( 'default.tsc' ) then
+^^WI                      'Deformation'
+% END IF
 ^^WI                      'NULL'                                                
 ^^WI      @ 1,5 STATIC TEXT1 'map'                                              
 ^^WI    }                                                                       
@@ -393,7 +397,7 @@ view the generated sections.
 %       IF IMAP .NE. 0 THEN                                                      
 %         BLOCK                                                                   
 %           ON ERROR TERMINATE                                                    
-%           IF DOSCALE .EQ. 1 .OR. DOCALC .EQ. 1 THEN                             
+%           IF DOSCALE .EQ. 1 .OR. DOCALC .EQ. 1 .OR. IMAP .EQ. 7 THEN 
 %% Remove any Q atoms, but restore again later.                                 
 %             COPY '#GENERALEDIT 5'                                               
 %             COPY 'GETSERIAL OLDSER'                
@@ -418,6 +422,12 @@ view the generated sections.
 %%             COPY '#SUM L 5'                                                     
 %%             COPY 'END'                                                          
 %           END IF                                                                
+%           IF IMAP .EQ. 7 THEN
+%             EVALUATE DOCALC = 1
+%             COPY '#SFLS 7'
+%             COPY 'CALC STORE=DEFORM'
+%             COPY 'END'
+%           END IF
 %           EVALUATE BORDER = 0.75                                               
 %%
 %           EVALUATE XMIN = XSTART                                           
@@ -468,6 +478,7 @@ view the generated sections.
 %            INSERT 'F-C'                                                        
 %            INSERT 'FO-PAT'                                                     
 %            INSERT 'FC-PAT'                                                     
+%            INSERT 'F-C'                                                        
 %           END CASE                                                              
 %           IF ( IMAP .EQ. 2 ) THEN                                               
 %             INSERT ' MIN-RHO = -1000 '                                           
