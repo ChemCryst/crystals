@@ -2901,9 +2901,10 @@ c
 C
 
       if ( tsc_error_count .ge. 21 ) then
-          WRITE ( CMON, '(A,I4,A)') '{E TSC scattering ',
+          WRITE ( CMON, '(A,I8,A)') '{E TSC scattering: ',
      1     tsc_error_count, ' errors / missing data.'
           CALL XPRVDU(NCVDU, 1,0)
+          tsc_error_count = 0
       end if
 
 
