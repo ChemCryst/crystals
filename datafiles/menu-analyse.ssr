@@ -13,6 +13,8 @@
 ^^WI   SPLIT
 ^^WI   ITEM AGREE '&Variance of Reflections' '#SCRIPT CHOOSEVAR'                       
 ^^WI    ICON='var.png'  ENABLEIF='L6 L5 L1 L2' DISABLEIF='IN' 
+^^WI   ITEM AGREE '&Outliers' '#SCRIPT XDELSIGMA'                           
+^^WI    ICON='var.png'  ENABLEIF='L6 L5 L1 L2' DISABLEIF='IN'                        
 ^^WI   ITEM AGREE '&Wt vs Sigma graph' '#SCRIPT XWTVSIG'                           
 ^^WI    ICON='var.png'  ENABLEIF='L6 L5 L1 L2' DISABLEIF='IN'                        
 ^^WI   ITEM AGREE '&Multiplicity of Observation' '#SCRIPT XMOO2'                           

@@ -56,7 +56,7 @@ C Revision 1.185  2011/11/03 09:20:59  rich
 C Extend output format statements.
 C
 C Revision 1.184  2011/10/20 10:22:54  djw
-C Bug reported by Ibby.  Values for Tmax Tmin should not be given if absorption method was "none"
+C Bug reported by Ibby.  Values for Tmax Tmin should not be given if tion method was "none"
 C
 C Revision 1.183  2011/09/21 14:34:14  rich
 C Fix CIF output to use data reduction option from L30 (not instrument type).
@@ -4690,7 +4690,7 @@ C
       PARAMETER (IDATA=15,IREF=23)
       CHARACTER*35 CPAGE(NROW,NCOL)
       CHARACTER*76 CREFMK
-      PARAMETER (IDIFMX=14)
+      PARAMETER (IDIFMX=15)
       DIMENSION IREFCD(3,IDIFMX)
       PARAMETER (IREDMX=7)
       DIMENSION IREDCD(IREDMX)
@@ -4782,15 +4782,17 @@ C
 c
 C UNKNOWN CAD4 MACH3 KAPPACCD DIP SMART IPDS XCALIBUR APEX2 GEMINI
 C    1     2       3     4    5     6    7   8        9      10
-c SUPERNOVA SYNCHROTRON SPALLATION REACTOR
-C   11       12           13        14
+c SUPERNOVA SYNCHROTRON SPALLATION REACTOR SYNERGY
+C   11       12           13        14     15
 C------ REFERENCE CODES FOR THE DIFFRACTOMETERS
+C  (1,*) Instrument, (2,*) Data Reduction (3,*) Cell Determination
+C Note - in 2011 Data reduction method (2,*) taken from L30
       DATA IREFCD /4,5,6, 13,24,13, 13,24,13, 25,17,17, 15,17,17,
      1 26,27,27, 20,19,20,  37,36,36, 45,45,45, 47,36,36,
-     2 48,36,36,  4,5,6,  4,5,6,  4,5,6    /
+     2 48,36,36,  4,5,6,    4,5,6,    4,5,6,    53,36,36 /
+C------ REFERENCE CODES FOR DATA REDUCTION
 C UNKNOWN RC93 DENZO SHELX XRED CRYSALIS SAINT
 C   1       2    3     4     5      6      7
-C------ REFERENCE CODES FOR DATA REDUCTION
       DATA IREDCD /5,24,17,27,19,36,45/
 C------ REFERENCE CODES FOR DIRECT METHODS
 CAVDLdec06 updating references in reftab.sda with numbers 42, 43, and 44
@@ -5721,8 +5723,8 @@ c--   Machine type
 c
 C     UNKNOWN CAD4 MACH3 KAPPACCD DIP SMART IPDS XCALIBUR APEX2 GEMINI
 C        1     2       3     4    5     6    7      8      9      10
-c     SUPERNOVA SYNCHROTRON SPALLATION REACTOR
-C       11       12           13        14
+c     SUPERNOVA SYNCHROTRON SPALLATION REACTOR  SYNERGY
+C       11       12           13        14      15
 C----- PARAMETER 13 ON DIRECTIVE 2 IS A CHARACTER STRING: DIFFRACTOMETER MAKE
         IPARAM=13
         IDIR=2
@@ -5730,7 +5732,7 @@ C----- PARAMETER 13 ON DIRECTIVE 2 IS A CHARACTER STRING: DIFFRACTOMETER MAKE
         IZZZ=KGVAL(CINSTR,CDIR,CPARAM,CVALUE,CDEF,30+3,IDIR,IPARAM,
      1    IVAL,JVAL,VAL,JTYPE)
         IDIFNO = IVAL+1
-c      write(123,*) 'IDIFNO=',IDIFNO
+C      write(123,*) 'IDIFNO=',IDIFNO
 C----- PARAMETER 13 ON DIRECTIVE 1 IS A CHATACTER STRING: REDUCTION NAME
         IPARAM=13
         IDIR=1
@@ -6150,6 +6152,9 @@ C- SPALLATION
            ELSE IF (IDIFNO .EQ. 14) THEN
 C- REACTOR
              CTEMP='Neutron reactor source'
+           ELSE IF (IDIFNO .EQ. 15) THEN
+C- SYNERGY
+             CTEMP='XtaLAB Synergy, Dualflex, HyPix'
 C- Unknown
            ELSE IF (IDIFNO .GT. IDIFMX) THEN
              WRITE(CMON,'(A)') 'Unknown Diffractometer type'
@@ -6223,7 +6228,7 @@ C-Set above based on lambda             CBUF = 'xrays'
 C Update for special conditions
          IF ( IDIFNO .EQ. 12 ) THEN
             CBUF = 'synchrotron'
-         ELSE IF ( IDIFNO .GE. 13 ) THEN
+         ELSE IF ((IDIFNO.EQ.13).or.(IDIFNO.EQ.14)) THEN
             CBUF = 'neutrons'
          ENDIF         
          IF ( IPUNCH .EQ. 0 ) THEN

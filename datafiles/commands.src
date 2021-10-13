@@ -1606,10 +1606,10 @@ Data collection details
      2THETA/OMEGA   OMEGA          PHI            PHIOMEGA       UNKNOWN
     .INTERVAL           0    0    1    0    1 0.
     .COUNT              0    0    1    0    1 0.
-    .INSTRUMENT         0    0    1   14    0 UNKNOWN
+    .INSTRUMENT         0    0    1   15    0 UNKNOWN
      UNKNOWN        CAD4           MACH3          KAPPACCD       DIP
      SMART          IPDS           XCALIBUR       APEX2          GEMINI
-     SUPERNOVA      SYNCHROTRON    SPALLATION     REACTOR 
+     SUPERNOVA      SYNCHROTRON    SPALLATION     REACTOR        SYNERGY
    3.REFINEMENT        13    1    0    0   13    1  103    9   30
          1    1    1    1    1    1    0    0    0    0
 Refimenent details
@@ -3794,9 +3794,9 @@ SUMMARY            1    0
     .OF                 3    0    1    2    0 LIST
      LIST           EVERYTHING
     .TYPE               1    0    1    0    0         6
-    .LEVEL              2    0    1    8    0 MEDIUM
+    .LEVEL              2    0    1   10    0 MEDIUM
      OFF            LOW            MEDIUM         HIGH           PLOT
-     NORMPP         SIGMA          OBSERVED
+     NORMPP         SIGMA          OBSERVED       DELTAS         ALLDELTAS
 DISPLAY            1    1
    3    4096 CRYSTALSPUBLISH
     5
