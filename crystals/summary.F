@@ -2140,14 +2140,14 @@ C--SETUP A GRAPH HERE
         WRITE(CMON,'(A,/,A,/,A,/,A)')
      1  '^^PL PLOTDATA _DELTA SCATTER ATTACH _VDELTA KEY',
      2  '^^PL XAXIS TITLE ''sin\theta/\lambda'' NSERIES=1 LENGTH=2000',
-     3  '^^PL YAXIS TITLE ''|Fo-Fc|.\sqrtw''',
-     4  '^^PL SERIES 1 SERIESNAME ''Observerd'' TYPE SCATTER'
+     3  '^^PL YAXIS TITLE ''\sqrtw.(|Fo|-|Fc|)''',
+     4  '^^PL SERIES 1 SERIESNAME ''Observed'' TYPE SCATTER'
 	      else
         WRITE(CMON,'(A,/,A,/,A,/,A)')
      1  '^^PL PLOTDATA _DELTA SCATTER ATTACH _VDELTA KEY',
      2  '^^PL XAXIS TITLE ''sin\theta/\lambda'' NSERIES=1 LENGTH=2000',
-     3  '^^PL YAXIS TITLE ''\sqrtw . |Fo\**2-Fc\**2|''',
-     4  '^^PL SERIES 1 SERIESNAME ''Observerd'' TYPE SCATTER'
+     3  '^^PL YAXIS TITLE ''\sqrtw . (Fo\**2-Fc\**2)''',
+     4  '^^PL SERIES 1 SERIESNAME ''Observed'' TYPE SCATTER'
 		  end if
         CALL XPRVDU(NCVDU, 4,0)
       END IF
@@ -2268,9 +2268,9 @@ C - F REFINENENT
 
         IF ((LEVEL.EQ.8) .OR. (LEVEL.EQ.9)) THEN
           IF (IFSQ .GE. 0) THEN  !FSQ REFINENENT
-            DELSIGW = WT * ABS(FO * ABS(FO) - FC*FC)
+            DELSIGW = WT * (FO * ABS(FO) - FC*FC)
           ELSE                   !F REFINENENT
-            DELSIGW = WT * ABS(FO - FC)
+            DELSIGW = WT * (FO - FC)
           ENDIF
 		  ST = SNTHL2(I)
           PLOTMAX = MAX( DELSIGW, PLOTMAX )
@@ -2386,9 +2386,9 @@ c         refinement on F
 		  fo = omitted(i,4)
 		  fc = omitted(i,5)
           IF (IFSQ .GE. 0) THEN  !FSQ REFINENENT
-            DELSIGW = WT * ABS(FO * ABS(FO) - FC*FC)
+            DELSIGW = WT * (FO * ABS(FO) - FC*FC)
           ELSE                   !F REFINENENT
-            DELSIGW = WT * ABS(FO - FC)
+            DELSIGW = WT * (FO - FC)
           ENDIF
           PLOTMAX = MAX( DELSIGW, PLOTMAX )
 		  
