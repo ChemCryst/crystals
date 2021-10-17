@@ -107,7 +107,7 @@ module aspher_scatterers
 
 	  integer function data_read(self)
 		class(tscstorage), intent(inout) :: self
-		character(len=8),allocatable :: scattererlabels(:)
+		character(len=8),allocatable :: sclabels(:)
 		character(len=8) ctemp
 		real, allocatable :: sfs(:,:)
 		integer :: i, j, io, nscatt, h, k, l
@@ -125,8 +125,8 @@ module aspher_scatterers
 				if ( nscatt == 0 ) then
 					data_read = -2   ! file format invalid (SCATTERERS not found)
                 else 
-                    deallocate(sfs)
-                    deallocate(scattererlabels)
+                    if ( allocated (sfs) ) deallocate(sfs)
+                    if ( allocated (sclabels) ) deallocate(sclabels)
 					data_read = -3   ! other format problem
 				end if
 			end if
@@ -134,10 +134,10 @@ module aspher_scatterers
 			if ( header ) then     ! read line
 				read(line,*) h,k,l, sfs
 				do j = 1, nscatt
-					i = self%sethkl(h,k,l,scattererlabels(j),sfs(1,j),sfs(2,j))   ! should return 0 (OK)
+					i = self%sethkl(h,k,l,sclabels(j),sfs(1,j),sfs(2,j))   ! should return 0 (OK)
 					if ( i /= 0) then 
-                        deallocate(sfs)
-                        deallocate(scattererlabels)
+                    if ( allocated (sfs) ) deallocate(sfs)
+                    if ( allocated (sclabels) ) deallocate(sclabels)
 						data_read = -4
 						return
 					end if
@@ -148,8 +148,8 @@ module aspher_scatterers
 				if ( line(1:11) == 'SCATTERERS:' ) then
 					if ( nscatt /= 0 ) then  ! Found two SCATTERERS lines
 						data_read = -3
-                        deallocate(sfs)
-                        deallocate(scattererlabels)
+                        if ( allocated (sfs) ) deallocate(sfs)
+                        if ( allocated (sclabels) ) deallocate(sclabels)
 						return
 					else                     ! Store scatterers and count
 						! Count number of scatterers and convert first space to comma for easy read in a moment
@@ -166,16 +166,16 @@ module aspher_scatterers
 						   end if
 						end do
 						! Allocate buffer for scatterers
-						allocate(scattererlabels(nscatt))
+						allocate(sclabels(nscatt))
 						allocate(sfs(2,nscatt))
 						! Read them in
-						read (line(12:),*) scattererlabels(1:nscatt)
+						read (line(12:),*) sclabels(1:nscatt)
 						do j = 1, nscatt
-							call xccupc(scattererlabels(j),ctemp)
-							scattererlabels(j) = ctemp
+							call xccupc(sclabels(j),ctemp)
+							sclabels(j) = ctemp
 						end do
 						
-!						write(123,*) nscatt, scattererlabels
+!						write(123,*) nscatt, sclabels
 						
 					end if
 				! end of 'SCATTERERS' find
@@ -190,8 +190,8 @@ module aspher_scatterers
 		end do
 90      continue
 
-        deallocate(sfs)
-        deallocate(scattererlabels)
+        if ( allocated (sfs) ) deallocate(sfs)
+        if ( allocated (sclabels) ) deallocate(sclabels)
 		data_read = 0
 
 	  end function
@@ -220,9 +220,18 @@ module aspher_scatterers
 		ab = ab_type(0.0,0.0)
 		hkl = hkla_type(h,k,l,atom)
 		call self%hkldict%get_value(hkl, ab, data_gethkl)
-        if ( data_gethkl < 0 ) tsc_error_count = tsc_error_count + 1
-		a = ab%a
-		b = ab%b
+
+        if ( data_gethkl < 0 ) then   
+            hkl = hkla_type(-h,-k,-l,atom)  ! check Friedel opposite
+            call self%hkldict%get_value(hkl, ab, data_gethkl)
+            if  (data_gethkl < 0 ) tsc_error_count = tsc_error_count + 1
+            a = ab%a
+            b = -ab%b                       ! Friedel has opposite sign for imaginary part.
+        else
+            a = ab%a
+            b = ab%b
+        end if
+        
       end function
 
 	  integer function data_sethkl(self, h,k,l,atom,a,b)
