@@ -831,8 +831,8 @@ c--         move the type and serial
             call xmove(store(m5),store(m9a),2)
 c--         move the esds
             call xmove(bpd(1),store(m9a+2),11)
-            write(ncpu,20)store(m9a),nint(store(m9a+1)),
-     1      (store(idjw),idjw=m9a+2, m9a+12)
+c-2021            write(ncpu,20)store(m9a),nint(store(m9a+1)),
+c-2021     1      (store(idjw),idjw=m9a+2, m9a+12)
         ENDIF
 C
 1585    CONTINUE
