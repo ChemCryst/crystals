@@ -87,7 +87,7 @@ C block (l5,l9,l10) addresses itself.
 C XFAL09 loads a LIST 9, and saves the LIST 5 addresses if L5 is already in core.
 C
 C Revision 1.56  2011/02/04 17:40:01  djw
-C XPCH5E either prints table of esds or creates a LIST 9. Operations need to be separated in the near future
+C XPCH9E either prints table of esds or creates a LIST 9. Operations need to be separated in the near future
 C
 C Revision 1.55  2010/07/21 15:57:54  djw
 C Change order of list 6 header lines
@@ -706,13 +706,13 @@ C Close the .PDB FILE
       RETURN
       END
 C
-CODE FOR XPCH5E
-      SUBROUTINE XPCH5E(ITYPE)
+CODE FOR XPCH9E
+      SUBROUTINE XPCH9E(ITYPE)
 C--PRINT LIST 5 WITH ESDS/CREATE LIST 9
 c
 c      ITYPE 1 FOR PRINTED LIST
 C      ITYPE 2 FOR CREATION OF LIST 9
-C
+C      ITYPE 3 TO OUTPUT A LIST 9
 c      This is really horrid code (DJW, Feb2011)
 c      A LIST 5 and LIST 12 is loaded
 c      The short records are over written with esds from LIST 12
@@ -831,8 +831,10 @@ c--         move the type and serial
             call xmove(store(m5),store(m9a),2)
 c--         move the esds
             call xmove(bpd(1),store(m9a+2),11)
-c-2021            write(ncpu,20)store(m9a),nint(store(m9a+1)),
-c-2021     1      (store(idjw),idjw=m9a+2, m9a+12)
+            if (itype.eq.3) then !Punch list
+             write(ncpu,20)store(m9a),nint(store(m9a+1)),
+     1       (store(idjw),idjw=m9a+2, m9a+12)
+            endif
         ENDIF
 C
 1585    CONTINUE

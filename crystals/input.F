@@ -47,7 +47,7 @@ C block (l5,l9,l10) addresses itself.
 C XFAL09 loads a LIST 9, and saves the LIST 5 addresses if L5 is already in core.
 C
 C Revision 1.19  2011/02/04 17:40:01  djw
-C XPCH5E either prints table of esds or creates a LIST 9. Operations need to be separated in the near future
+C XPCH9E either prints table of esds or creates a LIST 9. Operations need to be separated in the near future
 C
 C Revision 1.18  2010/07/21 15:55:16  djw
 C Comment out diagnostics
@@ -310,7 +310,7 @@ C----- CREATE ESD LIST
       NR61=ITEMP2
       CALL XRSL
       CALL XCSAE
-      CALL XPCH5E(2)
+      CALL XPCH9E(2)
       RETURN
 
 C--LIST PRINT ROUTINE
@@ -390,7 +390,7 @@ c             just the symbol
             call XPCH4
             return
       else if(lstno.eq.9) then   !check for LIST 9 !DISGUISED AS A LIST 5
-            call XPCH5E(2)
+            call XPCH9E(3)
             return
       else if(lstno.eq.13) then   !check for LIST 13
             call XPCH13
@@ -456,7 +456,7 @@ C-- 5D 'CHIME' XYZ FORMAT
       RETURN
 C-- 5E ESDS IN SIMPLE FORMAT
 7350  CONTINUE
-      CALL XPCH5E(1)
+      CALL XPCH9E(1)
       RETURN
 c-- CRYSTALS format without header or overall
 7360  CONTINUE
