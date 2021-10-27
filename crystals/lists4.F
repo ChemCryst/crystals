@@ -21,7 +21,7 @@ C Revision 1.27  2011/02/07 17:01:15  djw
 C Use #PUNCH 5 E as a stop-gap mechanism for creating a LIST 9 with paramter esds. The matrix of constraint is applied
 C
 C Revision 1.26  2011/02/04 17:40:01  djw
-C XPCH5E either prints table of esds or creates a LIST 9. Operations need to be separated in the near future
+C XPCH9E either prints table of esds or creates a LIST 9. Operations need to be separated in the near future
 C
 C Revision 1.25  2010/09/20 14:59:51  djw
 C Enable storage of an auxilliary radiation at the end of each scattering factor record in LIST 3

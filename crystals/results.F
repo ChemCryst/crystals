@@ -1378,7 +1378,7 @@ C--INPUT WENT OKAY  -  CLEAR THE CORE AGAIN
       CALL XRSL
       CALL XCSAE
       IF ( IPESD .NE. 0 ) THEN     !FORM THE ABSOLUTE LIST 12
-       CALL XPCH5E(2)   ! ENSURE A LIST 9 (ESDS) EXISTS IF THE MATRIX IS OK
+       CALL XPCH9E(2)   ! ENSURE A LIST 9 (ESDS) EXISTS IF THE MATRIX IS OK
        CALL XRSL
        CALL XCSAE
        IF (KHUNTR(09,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL09
@@ -2667,7 +2667,7 @@ C
       IFUNC = IFUNC
       CALL XRSL
       CALL XCSAE
-c  LIST 5 should already be loaded by XPCH5E
+c  LIST 5 should already be loaded by XPCH9E
       IF (KHUNTR(05,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL05 
       IF ( MD5ES .EQ. 0 ) RETURN
 
@@ -2675,7 +2675,7 @@ CDJWMAY99 - PREAPRE TO APPEND CIF OUTPUT ON FRN1
       CALL XMOVEI(KEYFIL(1,23), KDEV, 4)
       CALL XRDOPN(8, KDEV , CSSCIF, LSSCIF)
 C
-c  LIST 1, 5 and 9 should have been loaded in XPCH5E
+c  LIST 1, 5 and 9 should have been loaded in XPCH9E
       IF (KHUNTR(01,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL01
       IF (KHUNTR(13,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL13
       if (ipesd.ne.0) then
@@ -4878,7 +4878,7 @@ CRICJUN02 - Last minute SFLS calc to get threshold cutoffs into 30.
 C----- SET REFLECTION LISTING TYPE (LIST 6)
 c-Nov-19         ITYP06 = 1              !Remove call to sfls because of problems
 c         CALL XSFLSB(-1,ITYP06)         !re-using LIST 33 if previous task involved LIST 7
-C-JAN-19         CALL XPCH5E(2)          !CREATE A LIST 9 (ESDS)
+C-JAN-19         CALL XPCH9E(2)          !CREATE A LIST 9 (ESDS)
       ENDIF
 CRICJUN02 - Last minute SFLS calc to get threshold cutoffs into 30.
 
