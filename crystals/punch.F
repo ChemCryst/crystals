@@ -812,6 +812,11 @@ C--SET THE NEW ATOMS UP AT THE TOP OF CORE IN A LIST 9
          MD9A=13
          L9A=KCHLFL(MD9A*N9A)
          M9A=L9A
+c
+      if(itype.eq.3) then
+       write(ncpu,'(a)')'#LIST 9'
+       write(ncpu,'(a,i4)')'READ NATOM = ', N5
+      endif
 
 C--LOOP OVER THE ATOMS
       DO K=1,N5
@@ -832,10 +837,14 @@ c--         move the type and serial
 c--         move the esds
             call xmove(bpd(1),store(m9a+2),11)
             if (itype.eq.3) then !Punch list
-             write(ncpu,20)store(m9a),nint(store(m9a+1)),
+             write(ncpu,21)store(m9a),nint(store(m9a+1)),
      1       (store(idjw),idjw=m9a+2, m9a+12)
+21           format('ATOM ', a4,i4,3X,5f11.6,/,'CONT ',6F11.6)
             endif
         ENDIF
+      if(itype.eq.3) then
+            write(ncpu,'(a)')'END'
+      endif
 C
 1585    CONTINUE
 C -- UPDATE THE ATOM INFORMATION FOR THE NEXT ATOM
