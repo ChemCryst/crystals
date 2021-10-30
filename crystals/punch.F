@@ -749,8 +749,8 @@ C
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'QSTORE.INC'
 C
-      WRITE(CMON,'('' Punching LIST 5E in e.s.d format'')')
-      CALL XPRVDU(NCVDU, 1,0)
+c      WRITE(CMON,'('' Punching LIST 5E in e.s.d format'')')
+c      CALL XPRVDU(NCVDU, 1,0)
 C
 C--INITIALISE THE TIMING
       CALL XTIME1(2)
@@ -771,7 +771,7 @@ c     if a LIST 5 is already loaded, save the pointers
       if ( itype .eq. 1) then
         write(cmon,'(a)') 'Writing simple esd file'
       else
-        write(cmon,'(a)') 'Creating LIST 9'
+        write(cmon,'(a)') ' Creating LIST 9'
       endif
       call xprvdu(ncvdu, 1,0)
       iupdat = istore(l23sp+1)
