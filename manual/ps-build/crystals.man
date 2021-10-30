@@ -67,7 +67,8 @@ control and design of the user interface to be handled from ASCII files.
 #IFormat of Commands#
 #PAll command packages follow the same general format. The command is
  introduced
- with a backslash (or alternatively, a hash symbol) and ends with the
+ with a backslash (or alternatively, a hash symbol or ampersand &) and
+ ends with the
  word 'END'.
 #N   5#
 #J
@@ -978,6 +979,7 @@ We will also delete any recreatable lists.
 #HSpurge#
 #J
  \PURGE FILE= INITIALSIZE= LOG= LIST=
+ ACTION REOPEN=
  END
 #
 #I\PURGE#
@@ -1027,6 +1029,18 @@ We will also delete any recreatable lists.
 of all other lists are preserved. If 'n' is 0 (the default value)
 lists of all types are purged.
 #
+#KACTION REOPEN=#
+#J
+    YES
+    NO
+#
+#PYES attaches the newly constructed .dsc file on NCDFU after the purge and
+ closes the old one. It does it at the point in xpurge that refreshes all
+ the indexes after a normal purge
+#
+ This will allow us to use a 'Save As...' type of behaviour that users will
+ expect, but without having to restart the current CRYSTALS process.
+#PNO Leaves the user accessing the current dsc file.
 #Q
 
 #XLists overview#
@@ -6311,6 +6325,9 @@ ther SERIAL of kept atoms (default 0) otherwise there are no parameters.
  the same number of atoms, but they may be in any order. Atom Q(103) will 
  be renamed to C(101), atom Q(100) to C(107) etc. Once all the atoms 
  have been renamed, the list could be sorted based on the serial numbers.
+#P
+  The MAP group of atoms must correspond to (though not necessarily include)
+  the IDEAL, and similarly the ONTO and TARGET groups.
 #N  11#
 #J
       \REGULARISE
@@ -6328,7 +6345,10 @@ ther SERIAL of kept atoms (default 0) otherwise there are no parameters.
 #D5 - Viewing matched molecules in CAMERON#
  This does the mapping as RENAME, but doesn't
  rename the atoms, just outputs CAMERON input files showing the two molecules
- superimposed. Use as follows:
+ superimposed.
+#P
+  The MAP group of atoms must correspond to (though not necessarily include)
+  the IDEAL, and similarly the ONTO and TARGET groups.  Use as follows:
 #N   7#
 #J
    \REGULARISE
@@ -6336,8 +6356,8 @@ ther SERIAL of kept atoms (default 0) otherwise there are no parameters.
    target C(10) until C(26)
    ideal  C(60) until C(76)
    cameron
-   map    C(51) until C(99)
    onto   C(1) until C(49)
+   map    C(51) until C(99)
    end
 # This produces a cameron.ini, regular.l5i and regular.oby which may be viewed
  by choosing Graphics->Special->Cameron (use existing...) from the menu.
@@ -8375,6 +8395,55 @@ are only going to be calculated.
  F(2), C(1), C(2).
 #
 
+#J
+ Info coppied from Github october, 2019:
+
+ It's in the checkin comments for the work on lexical_preprocessor and
+ associated file from October '18. I like the look of the first too,
+ but wonder if we can make them more specific, e.g. restraining all
+ C-H bonds to be equivalent is quite unusual, and similarly restraining
+ all element types to have same Ueq would be unusual.
+
+ The DEFINE option does work, and it means you can adjust the e.s.d's
+ on a load of restraints with one edit. However, I haven't checked if
+ it screws up the inbuilt DEFINE directive in L16 - might need to
+ change the name before publicising this one.
+
+ Rich
+
+ + replace bonds (C--H, C==C, ...) with C() TO H()... 
+   you can now write DIST 0.0, 0.01 = MEAN C--H to restrain
+   all C--H distances to their mean
+
+ + replace generic type C(*) with C(), C()... 
+   UEQIV 0.01 C(*) restrain all C atoms to the same Ueq
+
+ + replace variables definitions (define a = 0.1), then $a is
+   used instead of 0.1
+   DEFINE a = 0.01
+   DIST 0.0, $a = MEAN C--H
+
+ + implement the RIGU restraint as in shelx (using connectivity)
+
+ + implement chiv as in shelx (not working)
+
+ - update urigu restraint to accept new syntax URIGU esd12 esd13
+   num_12 bond_list_12 bond_list_13
+   (num_12 is the number of 1,2 bond definition)
+
+
+ On Mon, Oct 28, 2019 at 10:32 AM David Watkin
+ <david.watkin@chem.ox.ac.uk> wrote:
+
+    Hi Richard
+
+    Last week you discovered a new bond restraint syntax.  Does it work?
+    It cant find anything about it in CRYSTALS.MAN and I could not spot
+    anything in the code.
+
+    Cheers
+    D
+#
 
 #YGeneral restraints#
 #HSgeneral#
@@ -11766,7 +11835,8 @@ the surface.
 #J
  \TORSION INPUTLIST=
  ATOMS  SPECIFICATIONS
- PUBLICATION  PRINT= LEVEL=
+ PUBLICATION  PRINT= LEVEL= E.S.D=
+ INLCUDE TYPE=
  END
 
  \TORSION
@@ -11783,7 +11853,7 @@ the surface.
  LIST 5.  These can be
  modified by the space group symmetry operators stored in LIST 2 (space
  group information, see section #RLIST02#)
-#P EDSs (SUs) are computed by the method of Nardelli (using code given 
+#P ESDs (SUs) are computed by the method of Nardelli (using code given 
  to us from his program PARST) if only average atomic esds are 
  avaialble.  If the full VcV matrix is avaiable, they are computed by 
 the method of Schaik et al (R. van Schaik, H Berendsen, A Torda & W 
@@ -11791,7 +11861,11 @@ Gunsteren, J. Mol. Biol. (1993) 234, 751-762. The paper by U. Shmueli,
 Acta Cryst (1974) A30, 848-849 explains the need for the full vcv matrix 
 and the effect of symmetry. The singularity in his equations (6) when tau is 
 0 or 180 is circumvented in Schaiks formulation (which is singular if 
-atoms j and k are coincident)
+atoms j and k are coincident).
+#
+If three (or more) atoms are approximately co-linear the torsion angle is ill
+defined. The current threshold for co-linearity is 5 degrees.
+
 #Q
 #I\TORSION INPUTLIST=#
 #KINPUTLIST#
@@ -11807,6 +11881,7 @@ atoms j and k are coincident)
  directive must define at least four atoms, the torsion angle being
  computed with respect to the first three atoms and each of the
  subsequent ones.
+#PAtoms cannot be give if INCLUDE is ALL or NO-HYDROGEN
 #Q
 #DPUBLICATION  PRINT=#
 #QThe parameter PRINT controls the publication listing, which is sent to 
@@ -11816,11 +11891,30 @@ the file open on the CRYSTALS PUNCH unit.
       NO   -  DEFAULT.  There is no publication listing
       YES    There is a publication listing sent to the PUNCH file
       CIF    The listing is in CIF format
+      PUNCH  Creates a file containing all the quartets of atoms forming
+             bonded torsion angles.
 #
 #D LEVEL=#
 #QIf LEVEL is HIGH, the VcV marix of the atoms in each torsion angle
  is printed.
 #
+#D E.S.D.=#
+#QNO suppresses the computation of standard uncertainties, EXCLRH excludes the
+ computation of the su of torsion angles involving a riding hydroen (to keep checkcif
+ happy).
+#J
+      NO
+      YES The default value
+      EXCLRH  Exclude ridning hydrogen atoms
+#
+#DINCLUDE TYPE=#
+#QThe default (NULL) causes this directive to be skipped so that ATOM directives
+  can be given, otherwise quartets of atom names are sent to the PUNCH file
+#
+#J
+     NULL  (The default). This directive is ignored
+     ALL   Torsion quartets for all atoms are sent to the punch file.
+     NO-HYDROGEN  Only quartets not involving hydrogen are punch out.
 #N   8#
 #J
  Example.
@@ -11832,7 +11926,26 @@ the file open on the CRYSTALS PUNCH unit.
  ATOMS C(3) C(4) C(5) C(6) O(1,2,2)
  END
 #
+#J
+ Example.
+ PART 1 sends a list of all quartets to a file called TORS-LIST.DAT
 
+      \ PART 1
+      \RELE PUNCH TORS-LIST.DAT
+      \tors
+      PUB PRINT=PUNCH
+      incl all
+      end
+      \RELE PUNCH logs/bfile/pch
+      
+ PART 2 uses this file to create a partial cif file containing the angles
+ and esds.
+      \ PART 2
+      \tors
+      pub print=cif e.s.d=yes
+      \use TORS-LIST.DAT
+      END
+#
 #Q
 #XTON#
 #XHooft-Straver-Spek#

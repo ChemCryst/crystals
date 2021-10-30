@@ -300,7 +300,7 @@ C----- MATRIX ARITHMETIC
       RETURN
 
 4800  CONTINUE
-C----- CREATE ESD LIST
+C----- CREATE ESD LIST  #ESD
       ITEMP1=NR60
       ITEMP2=NR61
       NR60=0
@@ -389,7 +389,7 @@ c             just the symbol
       else if(lstno.eq.4) then   !check for LIST 4
             call XPCH4
             return
-      else if(lstno.eq.9) then   !check for LIST 9 !DISGUISED AS A LIST 5
+      else if(lstno.eq.9) then   !check for LIST 9 
             call XPCH9E(3)
             return
       else if(lstno.eq.13) then   !check for LIST 13
