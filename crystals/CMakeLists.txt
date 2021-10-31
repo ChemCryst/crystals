@@ -162,6 +162,8 @@ endif()
 
 add_library(CrystalsFortran STATIC ${CRY_SOURCES})
 
+target_link_libraries( CrystalsFortran INTERFACE CrystalsDefines )
+
 
 if ( usePY )
     if ( WIN32 )

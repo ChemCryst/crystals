@@ -28,6 +28,11 @@ if(verbose)
     SET(CMAKE_VERBOSE_MAKEFILE ON)
 endif ()
 
+# fake library to propogate common compiler defines to both Fortran and C++ compiler
+add_library(CrystalsDefines INTERFACE)
+#target_compile_definitions(CrystalsDefines INTERFACE MY_NEEDED_DEFINITION)
+
+
 SET( Fortran_MODULE_DIRECTORY "${CMAKE_BINARY_DIR}/FortranModules" )
 message(STATUS "Modules saved at [${CMAKE_BINARY_DIR}/FortranModules]")
 file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/FortranModules")
@@ -773,14 +778,9 @@ else()
 endif()
 
 
-# fake library to propogate common compiler defines to both Fortran and C++ compiler
-add_library(CrystalsDefines INTERFACE)
-#target_compile_definitions(CrystalsDefines INTERFACE MY_NEEDED_DEFINITION)
 
-target_link_libraries( CrystalsFortran INTERFACE CrystalsDefines )
 
 if ( useGUI )
-    target_link_libraries( CrystalsUserInterface INTERFACE CrystalsDefines )
     target_compile_definitions(CrystalsDefines INTERFACE CRY_USEWX)
 endif()
 
