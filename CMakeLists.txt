@@ -695,18 +695,6 @@ else()   # command line version
 
 endif()
 
-if ( usePY )
-  if ( WIN32 )
-    target_include_directories(crystals PUBLIC ${CMAKE_SOURCE_DIR}/python-headers-win/Include/)
-    set(PYTHON3_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/python-headers-win/Include)
-    target_include_directories(crystals PUBLIC ${CMAKE_SOURCE_DIR}/python-headers-win/PC)
-    target_include_directories(crystals PUBLIC ${PYTHON3_INCLUDE_DIRS})
-    message(STATUS "Setting include folder: ${PYTHON3_INCLUDE_DIRS}")
-  else()
-    target_include_directories(crystals PUBLIC ${Python3_INCLUDE_DIRS})
-    message(STATUS "Include folder: ${Python3_INCLUDE_DIRS}")
-  endif()
-endif()
 
 target_include_directories(crystals PUBLIC ${Fortran_MODULE_DIRECTORY})
 target_include_directories(crystals PUBLIC gui)
@@ -785,37 +773,35 @@ else()
 endif()
 
 
+# fake library to propogate common compiler defines to both Fortran and C++ compiler
+add_library(CrystalsDefines INTERFACE)
+#target_compile_definitions(CrystalsDefines INTERFACE MY_NEEDED_DEFINITION)
+
+
+set_property(
+    TARGET CrystalsFortran 
+    APPEND PROPERTY LINK_LIBRARIES CrystalsDefines
+)
+
+if ( useGUI )
+    set_property(
+        TARGET CrystalsUserInterface 
+        APPEND PROPERTY LINK_LIBRARIES CrystalsDefines
+    )
+endif()
 
 if ( WIN32 )
-    target_compile_definitions(crystals PUBLIC CRY_OSWIN32)
-    if ( useGUI )
-        target_compile_definitions(crystalscl PUBLIC CRY_OSWIN32)
-    endif()
+    target_compile_definitions(CrystalsDefines INTERFACE CRY_OSWIN32)
+    message( STATUS "------------------------- Defined OSWIN32 ------------------------")
     if ( IFORT_COMPILER )
-        target_compile_definitions(crystals PUBLIC __INW__)
-        if ( useGUI )
-            target_compile_definitions(crystalscl PUBLIC __INW__)
-        endif()
+        target_compile_definitions(CrystalsDefines INTERFACE __INW__)
     else ()
-        target_compile_definitions(crystals PUBLIC __MIN__)
-        if ( useGUI )
-            target_compile_definitions(crystalscl PUBLIC __MIN__)
-        endif()
+        target_compile_definitions(CrystalsDefines INTERFACE __MIN__)
     endif()
 endif()
 
 if ( APPLE )
-    target_compile_definitions(crystals PUBLIC CRY_OSMAC)
-    if ( useGUI )
-        target_compile_definitions(crystalscl PUBLIC CRY_OSMAC)
-    endif()
-endif()
-
-if ( MSYS )
-    target_compile_definitions(crystals PUBLIC CRY_OSWIN32)
-    if ( useGUI )
-        target_compile_definitions(crystalscl PUBLIC CRY_OSWIN32)
-    endif()
+    target_compile_definitions(CrystalsDefines INTERFACE CRY_OSMAC)
 endif()
 
 
@@ -824,28 +810,16 @@ IF (IFORT_COMPILER)
 ENDIF()
 
 if(OpenBLAS_LIBRARY)
-    TARGET_LINK_LIBRARIES(crystals PUBLIC ${OpenBLAS_LIBRARY})
-  if ( useGUI )
-    TARGET_LINK_LIBRARIES(crystalscl PUBLIC ${OpenBLAS_LIBRARY})
-  endif ()
+    TARGET_LINK_LIBRARIES(CrystalsDefines INTERFACE ${OpenBLAS_LIBRARY})
 endif ()
 
 if( useHDF5 )
   if( WIN32 )
-    if ( useGUI )
-        TARGET_LINK_LIBRARIES(crystalscl PUBLIC "${HDF5_LIBRARIES}")
-    endif()
-    TARGET_LINK_LIBRARIES(crystals PUBLIC "${HDF5_LIBRARIES}")
+    TARGET_LINK_LIBRARIES(CrystalsDefines INTERFACE "${HDF5_LIBRARIES}")
   else ()
-    if ( useGUI )
-        TARGET_LINK_LIBRARIES(crystalscl PUBLIC "${HDF5_LIBRARIES};dl")
-    endif()
-    TARGET_LINK_LIBRARIES(crystals PUBLIC "${HDF5_LIBRARIES};dl")
+    TARGET_LINK_LIBRARIES(CrystalsDefines INTERFACE "${HDF5_LIBRARIES};dl")
   endif ()
-  if ( useGUI )
-    TARGET_LINK_LIBRARIES(crystalscl PUBLIC ${ZLIB_LIBRARIES})
-  endif()
-  TARGET_LINK_LIBRARIES(crystals PUBLIC ${ZLIB_LIBRARIES})
+  TARGET_LINK_LIBRARIES(CrystalsDefines INTERFACE ${ZLIB_LIBRARIES})
   ADD_CUSTOM_TARGET ( h5build ALL DEPENDS commands.h5 crystals )
   ADD_CUSTOM_TARGET ( h5startups ALL DEPENDS h5build ${srtfiles} )
 endif ()
