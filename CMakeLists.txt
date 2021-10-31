@@ -777,17 +777,11 @@ endif()
 add_library(CrystalsDefines INTERFACE)
 #target_compile_definitions(CrystalsDefines INTERFACE MY_NEEDED_DEFINITION)
 
-
-set_property(
-    TARGET CrystalsFortran 
-    APPEND PROPERTY LINK_LIBRARIES CrystalsDefines
-)
+target_link_libraries( CrystalsFortran INTERFACE CrystalsDefines )
 
 if ( useGUI )
-    set_property(
-        TARGET CrystalsUserInterface 
-        APPEND PROPERTY LINK_LIBRARIES CrystalsDefines
-    )
+    target_link_libraries( CrystalsUserInterface INTERFACE CrystalsDefines )
+    target_compile_definitions(CrystalsDefines INTERFACE CRY_USEWX)
 endif()
 
 if ( WIN32 )
