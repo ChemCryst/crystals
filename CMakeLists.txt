@@ -224,60 +224,25 @@ endif ()
 
 if ( useGUI )
     message(STATUS "Building gui")
-    add_definitions(-DCRY_GUI)
-    add_definitions(-DCRY_USEWX)
     if ( WIN32 )
-#        SET(MINGW 1)
-#        SET(WX_ROOT_DIR "${wxWidgets_ROOT_DIR}")
-#        SET(wxWidgets_LIB_DIR "c:/wx3/lib/gcc_dll")
-#        set(wxWidgets_CONFIGURATION mswu)
         FIND_PACKAGE(wxWidgets REQUIRED html stc adv core gl base scintilla)
-
-
-
     else ()
         FIND_PACKAGE(wxWidgets REQUIRED html stc adv core gl base)
     endif ()
     INCLUDE(${wxWidgets_USE_FILE})
-
-
-
-    if(APPLE)
-        add_definitions(-D__MAC__)
-    elseif(UNIX)
-        add_definitions(-D__GIL__)
-    endif()
-
-else()
-    add_definitions(-DCRY_NOGUI)
-    if(UNIX)
-        add_definitions(-D__LIN__)
-    endif()
 endif()
 
 if ( usePY )
+  if ( WIN32 )
+    message(STATUS "Building the python crystals interface Win32 embedded version")
+  else()  
+    find_package(Python3 COMPONENTS Development)
     message(STATUS "Building the python crystals interface")
-    add_definitions(-DCRY_PY)
-    ADD_SUBDIRECTORY(py)   
+  endif()
+  add_definitions(-DCRY_PY)
+  ADD_SUBDIRECTORY(py)   
 endif()
 
-if ( WIN32 )
-    add_definitions(-DCRY_OSWIN32)
-    if ( IFORT_COMPILER )
-        add_definitions(-D__INW__)
-    else ()
-        add_definitions(-D__MIN__)
-    endif()
-
-endif()
-
-if ( APPLE )
-    add_definitions(-DCRY_OSMAC)
-endif()
-
-if ( MSYS )
-    add_definitions(-DCRY_OSWIN32)
-endif()
 
 if( compileHDF5 )
     SET(useHDF5 ON)
@@ -449,7 +414,7 @@ ELSEIF ( IFORT_COMPILER ) # ifort (untested)
 		add_definitions(-DNDEBUG)
 	endif()
 
-	include_directories(gui)
+#	include_directories(gui)
 
 
 
@@ -519,25 +484,6 @@ endif ()
 #INCLUDE(CTest)
 
 
-if ( usePY )
-
-  if ( WIN32 )
-
-    set(PYTHON3_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/python-headers-win/Include)
-    INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/python-headers-win/PC)
-    INCLUDE_DIRECTORIES(${PYTHON3_INCLUDE_DIRS})
-    message(STATUS "Setting include folder: ${PYTHON3_INCLUDE_DIRS}")
-  
-  
-  else ()
-
-    find_package(Python3 COMPONENTS Development)
-    INCLUDE_DIRECTORIES(${Python3_INCLUDE_DIRS})
-    message(STATUS "Include folder: ${Python3_INCLUDE_DIRS}")
-
-  endif()
-
-endif()
 
 
 
@@ -743,21 +689,135 @@ else()   # command line version
 
     ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} ${pyoutfiles} crystals/crystals.F ${CMAKE_SOURCE_DIR}/gui/fwrapper_gui.F90 )
     SET_TARGET_PROPERTIES(crystals PROPERTIES LINKER_LANGUAGE Fortran)
-    TARGET_LINK_LIBRARIES(crystals CrystalsFortran CameronFortran ${Python3_LIBRARIES})
+    TARGET_LINK_LIBRARIES(crystals PUBLIC CrystalsFortran CameronFortran ${Python3_LIBRARIES})
     SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES Fortran_MODULE_DIRECTORY ${Fortran_MODULE_DIRECTORY} )
     SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_NOGUI)
 
 endif()
 
-if ( WIN32 )
-  if ( usePY )
+if ( usePY )
+  if ( WIN32 )
     target_include_directories(crystals PUBLIC ${CMAKE_SOURCE_DIR}/python-headers-win/Include/)
+    set(PYTHON3_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/python-headers-win/Include)
+    target_include_directories(crystals PUBLIC ${CMAKE_SOURCE_DIR}/python-headers-win/PC)
+    target_include_directories(crystals PUBLIC ${PYTHON3_INCLUDE_DIRS})
+    message(STATUS "Setting include folder: ${PYTHON3_INCLUDE_DIRS}")
+  else()
+    target_include_directories(crystals PUBLIC ${Python3_INCLUDE_DIRS})
+    message(STATUS "Include folder: ${Python3_INCLUDE_DIRS}")
   endif()
 endif()
 
 target_include_directories(crystals PUBLIC ${Fortran_MODULE_DIRECTORY})
-target_include_directories(crystalscl PUBLIC ${Fortran_MODULE_DIRECTORY})
 target_include_directories(crystals PUBLIC gui)
+if ( useGUI )
+    target_include_directories(crystalscl PUBLIC ${Fortran_MODULE_DIRECTORY})
+endif()
+
+
+
+
+if ( useCustomMKL ) 
+    message(STATUS "Using Custom MKL library: ./mkl_custom.lib")
+    target_link_libraries (crystals PUBLIC "mkl_custom.lib" )  
+    target_link_directories(crystals PUBLIC ${CMAKE_BINARY_DIR} )
+    if ( useGUI )
+        target_link_libraries (crystalscl PUBLIC "mkl_custom.lib" )  
+        target_link_directories(crystalscl PUBLIC ${CMAKE_BINARY_DIR} )
+    endif()
+else()
+    if(BLAS_FOUND AND LAPACK_FOUND)
+        if(BLAS_LIBRARIES_DIR)
+            target_link_directories(crystals PUBLIC ${BLAS_LIBRARIES_DIR} )
+            if ( useGUI )
+                target_link_directories(crystalscl PUBLIC ${BLAS_LIBRARIES_DIR} )
+            endif()
+        endif()
+        if ( BLAS_LIBRARIES )
+            target_link_libraries (crystals PUBLIC ${BLAS_LIBRARIES} )
+            if ( useGUI )
+                target_link_libraries (crystalscl PUBLIC ${BLAS_LIBRARIES} )
+            endif()
+        endif()
+        if ( BLAS_LINKER_FLAGS )
+           uniquely_add_flags ( CMAKE_MODULE_LINKER_FLAGS ${BLAS_LINKER_FLAGS} )
+        endif()
+
+        if(LAPACK_LIBRARIES_DIR)
+           link_directories( ${LAPACK_LIBRARIES_DIR} )
+        endif()
+        if ( LAPACK_LIBRARIES )
+           link_libraries ( ${LAPACK_LIBRARIES} )
+        endif()
+        if ( LAPACK_LINKER_FLAGS )
+           uniquely_add_flags ( CMAKE_MODULE_LINKER_FLAGS ${LAPACK_LINKER_FLAGS} )
+        endif()
+        message(STATUS "Using BLAS library: ${BLAS_LIBRARIES}")
+    else ()
+        message(STATUS "Using builtin BLAS and LAPACK library")
+        add_definitions(-DCRY_OWNLAPACK)
+    endif ()
+endif ()
+
+if(BLA_VENDOR)
+	STRING(TOUPPER ${BLA_VENDOR} TEMP)
+	if(TEMP MATCHES "INTEL")
+		add_definitions(-DCRY_MKL)
+	endif()
+endif ()
+
+
+
+
+if ( useGUI )
+    target_compile_definitions(crystals PUBLIC CRY_GUI)
+    target_compile_definitions(crystals PUBLIC CRY_USEWX)
+    if(APPLE)
+        target_compile_definitions(crystals PUBLIC __MAC__)
+    elseif(UNIX)
+        target_compile_definitions(crystals PUBLIC __GIL__)
+    endif()
+else()
+    target_compile_definitions(crystals PUBLIC CRY_NOGUI)
+    if(UNIX)
+        target_compile_definitions(crystals PUBLIC __LIN__)
+    endif()
+endif()
+
+
+
+if ( WIN32 )
+    target_compile_definitions(crystals PUBLIC CRY_OSWIN32)
+    if ( useGUI )
+        target_compile_definitions(crystalscl PUBLIC CRY_OSWIN32)
+    endif()
+    if ( IFORT_COMPILER )
+        target_compile_definitions(crystals PUBLIC __INW__)
+        if ( useGUI )
+            target_compile_definitions(crystalscl PUBLIC __INW__)
+        endif()
+    else ()
+        target_compile_definitions(crystals PUBLIC __MIN__)
+        if ( useGUI )
+            target_compile_definitions(crystalscl PUBLIC __MIN__)
+        endif()
+    endif()
+endif()
+
+if ( APPLE )
+    target_compile_definitions(crystals PUBLIC CRY_OSMAC)
+    if ( useGUI )
+        target_compile_definitions(crystalscl PUBLIC CRY_OSMAC)
+    endif()
+endif()
+
+if ( MSYS )
+    target_compile_definitions(crystals PUBLIC CRY_OSWIN32)
+    if ( useGUI )
+        target_compile_definitions(crystalscl PUBLIC CRY_OSWIN32)
+    endif()
+endif()
+
 
 IF (IFORT_COMPILER)
     SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_FORTINTEL)
@@ -772,13 +832,19 @@ endif ()
 
 if( useHDF5 )
   if( WIN32 )
-    TARGET_LINK_LIBRARIES(crystalscl "${HDF5_LIBRARIES}")
+    if ( useGUI )
+        TARGET_LINK_LIBRARIES(crystalscl "${HDF5_LIBRARIES}")
+    endif()
     TARGET_LINK_LIBRARIES(crystals "${HDF5_LIBRARIES}")
   else ()
-    TARGET_LINK_LIBRARIES(crystalscl "${HDF5_LIBRARIES};dl")
+    if ( useGUI )
+        TARGET_LINK_LIBRARIES(crystalscl "${HDF5_LIBRARIES};dl")
+    endif()
     TARGET_LINK_LIBRARIES(crystals "${HDF5_LIBRARIES};dl")
   endif ()
-  TARGET_LINK_LIBRARIES(crystalscl ${ZLIB_LIBRARIES})
+  if ( useGUI )
+    TARGET_LINK_LIBRARIES(crystalscl ${ZLIB_LIBRARIES})
+  endif()
   TARGET_LINK_LIBRARIES(crystals  ${ZLIB_LIBRARIES})
   ADD_CUSTOM_TARGET ( h5build ALL DEPENDS commands.h5 crystals )
   ADD_CUSTOM_TARGET ( h5startups ALL DEPENDS h5build ${srtfiles} )
