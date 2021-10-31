@@ -4,7 +4,7 @@
 
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 
-PROJECT(Crystals)
+PROJECT(Crystals LANGUAGES CXX C Fortran)
 
 SET(CMAKE_VERBOSE_MAKEFILE OFF)
 SET(CMAKE_COLOR_MAKEFILE ON)
@@ -21,7 +21,6 @@ option (compileHDF5 "compileHDF5" OFF) # hdf5 storage, download and compile hdf5
 option (useGGDB3 "useGGDB3" OFF) # used for orion (old dgb)
 option (usepFUnit "usepFUnit" OFF)
 option (useFAST "useFAST" OFF)
-
 option (withSUPERFLIP "withSUPERFLIP" OFF)
 option (withEDMA "withEDMA" OFF)
 
@@ -31,7 +30,6 @@ endif ()
 
 SET( Fortran_MODULE_DIRECTORY "${CMAKE_BINARY_DIR}/FortranModules" )
 message(STATUS "Modules saved at [${CMAKE_BINARY_DIR}/FortranModules]")
-INCLUDE_DIRECTORIES(${Fortran_MODULE_DIRECTORY})
 file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/FortranModules")
 
 if(useSTATIC)
@@ -260,6 +258,7 @@ endif()
 if ( usePY )
     message(STATUS "Building the python crystals interface")
     add_definitions(-DCRY_PY)
+    ADD_SUBDIRECTORY(py)   
 endif()
 
 if ( WIN32 )
@@ -270,9 +269,6 @@ if ( WIN32 )
         add_definitions(-D__MIN__)
     endif()
 
-  if ( usePY )
-    INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/python-headers-win/Include/)
-  endif()
 endif()
 
 if ( APPLE )
@@ -406,6 +402,14 @@ IF (Fortran_COMPILER_NAME MATCHES "gfortran")  # gfortran
 
 		message(STATUS ${CMAKE_RC_COMPILE_OBJECT})
 
+#        message(STATUS "Win32 gcc/gfortran enableing wx dll flag")
+
+#        message(STATUS "${wxWidgets_DEFINITIONS}")
+
+#	    add_definitions(-DWXUSINGDLL)
+#	    add_definitions(-D_UNICODE)
+#	    add_definitions(-D__WXMSW__)
+
     endif()
 
 ELSEIF ( IFORT_COMPILER ) # ifort (untested)
@@ -523,6 +527,7 @@ if ( usePY )
     INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/python-headers-win/PC)
     INCLUDE_DIRECTORIES(${PYTHON3_INCLUDE_DIRS})
     message(STATUS "Setting include folder: ${PYTHON3_INCLUDE_DIRS}")
+  
   
   else ()
 
@@ -706,8 +711,12 @@ ENDFOREACH()
 
 if ( useGUI )
     INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/crys_fortran)
-    ADD_EXECUTABLE (crystals WIN32 ${scpfiles} ${datfiles} ${srtfiles} ${pyoutfiles} $<TARGET_OBJECTS:CrystalsUserInterface> ${CMAKE_SOURCE_DIR}/gui/fwrapper_gui.F90 ${CMAKE_SOURCE_DIR}/gui/fwrapperimp_gui.F90 gui/gcrystals.cpp crystals/crystals.F gui/wx.rc)
+#    ADD_EXECUTABLE (crystals WIN32 ${scpfiles} ${datfiles} ${srtfiles} ${pyoutfiles} $<TARGET_OBJECTS:CrystalsUserInterface> ${CMAKE_SOURCE_DIR}    
+    ADD_EXECUTABLE (crystals WIN32 ${scpfiles} ${datfiles} ${srtfiles} ${pyoutfiles}  ${CMAKE_SOURCE_DIR}/gui/fwrapper_gui.F90 ${CMAKE_SOURCE_DIR}/gui/fwrapperimp_gui.F90 gui/gcrystals.cpp crystals/crystals.F gui/wx.rc)
     ADD_EXECUTABLE (crystalscl ${scpfiles} ${datfiles} ${srtfiles} ${pyoutfiles} crystals/crystals-cl.F ${CMAKE_SOURCE_DIR}/gui/fwrapperimp_cl.F90 )
+#    if ( usePY )
+#        target_link_libraries ( crystals winembeddedpy )
+#    endif()
 
     if(MSYS)
         SET(OPENGL_INCLUDE_DIR "/mingw64/x86_64-w64-mingw32/include/")
@@ -722,7 +731,7 @@ if ( useGUI )
     include_directories( ${OPENGL_INCLUDE_DIRS}  )
 
     target_link_libraries(crystals ${OPENGL_LIBRARIES} )
-    TARGET_LINK_LIBRARIES(crystals CrystalsFortran CameronFortran ${wxWidgets_LIBRARIES} ${MSYS2LIBS} ${wxSTATICEXTRA_LIBS} ${Python3_LIBRARIES})
+    TARGET_LINK_LIBRARIES(crystals CrystalsFortran CameronFortran CrystalsUserInterface ${wxWidgets_LIBRARIES} ${MSYS2LIBS} ${wxSTATICEXTRA_LIBS} ${Python3_LIBRARIES})
     SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_GUI)
     SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES Fortran_MODULE_DIRECTORY ${Fortran_MODULE_DIRECTORY} )
 
@@ -740,6 +749,15 @@ else()   # command line version
 
 endif()
 
+if ( WIN32 )
+  if ( usePY )
+    target_include_directories(crystals PUBLIC ${CMAKE_SOURCE_DIR}/python-headers-win/Include/)
+  endif()
+endif()
+
+target_include_directories(crystals PUBLIC ${Fortran_MODULE_DIRECTORY})
+target_include_directories(crystalscl PUBLIC ${Fortran_MODULE_DIRECTORY})
+target_include_directories(crystals PUBLIC gui)
 
 IF (IFORT_COMPILER)
     SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_FORTINTEL)
@@ -768,6 +786,8 @@ endif ()
 
 ADD_CUSTOM_TARGET ( startups ALL DEPENDS dscbuild ${srtfiles} )
 ADD_CUSTOM_TARGET ( dscbuild ALL DEPENDS commands.dsc crystals )
+
+
 
 # Unit testing
 ADD_SUBDIRECTORY(pFunit)

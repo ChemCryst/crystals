@@ -1,6 +1,7 @@
 
 
 enable_language(Fortran)
+#enable_language(C)
 
 
 if ( useGUI )
