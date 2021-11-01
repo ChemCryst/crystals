@@ -5,19 +5,9 @@ message(STATUS "Building cameron")
 enable_language(Fortran)
 
 # Reset flags
-set(CMAKE_Fortran_FLAGS "")
+#set(CMAKE_Fortran_FLAGS "")
 
-if ( useGUI )
-#add_definitions(-D_GIL_)
-#add_definitions(-D__WXMAC__)
-#add_definitions(-D__WXOSX__)
-#add_definitions(-D__WXOSX_COCOA__)
-add_definitions(-D__WXUSINGDLL)
-endif()
 
-#add_definitions(-I/Users/richard.cooper/crystals/crystals)
-add_definitions(-I\"${CMAKE_CURRENT_SOURCE_DIR}/../crystals\")
-add_definitions(-I\"${CMAKE_CURRENT_BINARY_DIR}/../crys_fortran\")
 
 GET_FILENAME_COMPONENT (Fortran_COMPILER_NAME "${CMAKE_Fortran_COMPILER}" NAME)
 if ((Fortran_COMPILER_NAME MATCHES "ifort") OR (Fortran_COMPILER_NAME MATCHES "ifort.exe")) # ifort (untested)
@@ -33,9 +23,6 @@ add_definitions(-fno-automatic)
 add_definitions(-fno-inline)
 add_definitions(-fexceptions)
 ENDIF()
-
-add_definitions(-D _HOL_)
-#add_definitions(-arch x86_64)
 
 
 message(STATUS "cameron fortran flags: ${CMAKE_Fortran_FLAGS_RELEASE}")
@@ -56,6 +43,11 @@ outer.F
 vander.F
 wincode.F
 )
+
+target_link_libraries( CameronFortran PUBLIC CrystalsDefines )
+target_include_directories(CameronFortran PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../crystals" )
+target_include_directories(CameronFortran PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/../crys_fortran" )
+
 
 message(STATUS "End building cameron")
 message("")

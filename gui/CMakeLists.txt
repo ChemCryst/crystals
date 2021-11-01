@@ -98,14 +98,14 @@ stdafx.cpp
 crslider.cpp
 cxslider.cpp )
 
-target_link_libraries(CrystalsUserInterface INTERFACE CrystalsDefines )
+target_link_libraries(CrystalsUserInterface PUBLIC CrystalsDefines )
 target_link_libraries(CrystalsUserInterface INTERFACE ${wxWidgets_LIBRARIES})
 
 target_compile_definitions(CrystalsUserInterface PRIVATE "$<$<CONFIG:Debug>:__CRDEBUG__>")
 target_compile_definitions(CrystalsUserInterface PRIVATE "$<$<CONFIG:Debug>:CRY_DEBUG>")
 
 target_compile_definitions(CrystalsUserInterface PRIVATE WXUSINGDLL)
-target_compile_definitions(CrystalsUserInterface PRIVATE CRY_USEWX)
+target_compile_definitions(CrystalsUserInterface PUBLIC CRY_USEWX)
 
 target_compile_definitions(CrystalsUserInterface PRIVATE FILE_OFFSET_BITS=64)
 

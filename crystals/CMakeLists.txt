@@ -7,12 +7,12 @@ enable_language(C)
 # how crystals.F and crystals-cl.F works)
 
 
-if ( useGUI )
-add_definitions(-D__WXUSINGDLL)
-add_definitions(-DCRY_GUI)
-else()
-add_definitions(-DCRY_NOGUI)
-endif()
+#if ( useGUI )
+#add_definitions(-D__WXUSINGDLL)
+#add_definitions(-DCRY_GUI)
+#else()
+#add_definitions(-DCRY_NOGUI)
+#endif()
 
 #add_library(PySpecific STATIC
 #pyspecific.F
@@ -162,7 +162,9 @@ endif()
 
 add_library(CrystalsFortran STATIC ${CRY_SOURCES})
 
-target_link_libraries( CrystalsFortran INTERFACE CrystalsDefines )
+target_link_libraries( CrystalsFortran PUBLIC CrystalsDefines )
+
+target_include_directories(CrystalsFortran PUBLIC ${Fortran_MODULE_DIRECTORY})
 
 
 if ( usePY )

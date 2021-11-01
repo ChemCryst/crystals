@@ -29,7 +29,12 @@ if(verbose)
 endif ()
 
 # fake library to propogate common compiler defines to both Fortran and C++ compiler
+# CrystalsDefines is stuff for crystals and crystalscl executables
+# GeneralDefines is stuff for everything
 add_library(CrystalsDefines INTERFACE)
+add_library(GeneralDefines INTERFACE)
+target_link_libraries(CrystalsDefines INTERFACE GeneralDefines)
+
 #target_compile_definitions(CrystalsDefines INTERFACE MY_NEEDED_DEFINITION)
 
 
@@ -267,7 +272,8 @@ else ()
 endif ()
 
 # Required to assign hollerith data in a legacy manner to integers
-add_definitions(-D _HOL_)
+target_compile_definitions(GeneralDefines INTERFACE _HOL_)
+
 
 string (TIMESTAMP CRYYEAR "%Y")
 string (TIMESTAMP CRYMONTH "%b")
@@ -511,6 +517,24 @@ ADD_SUBDIRECTORY(bits)
 
 
 
+if ( useGUI )
+    target_compile_definitions(CrystalsDefines INTERFACE CRY_GUI)
+#    target_compile_definitions(crystals PUBLIC CRY_USEWX)
+    if(APPLE)
+        target_compile_definitions(GeneralDefines INTERFACE __MAC__)
+    elseif(UNIX)
+        target_compile_definitions(GeneralDefines INTERFACE __GIL__)
+    endif()
+else()
+    target_compile_definitions(CrystalsDefines INTERFACE CRY_NOGUI)
+    if(UNIX)
+        target_compile_definitions(GeneralDefines INTERFACE __LIN__)
+    endif()
+endif()
+
+
+
+
 
 # Because external project call cmake externally too we need to pass the compiler and module path via cmake_args
 if(compileHDF5)
@@ -683,7 +707,7 @@ if ( useGUI )
 
     target_link_libraries(crystals PUBLIC ${OPENGL_LIBRARIES} )
     TARGET_LINK_LIBRARIES(crystals PUBLIC CrystalsFortran CameronFortran CrystalsUserInterface ${wxWidgets_LIBRARIES} ${MSYS2LIBS} ${wxSTATICEXTRA_LIBS} ${Python3_LIBRARIES})
-    SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_GUI)
+#    SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_GUI)
     SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES Fortran_MODULE_DIRECTORY ${Fortran_MODULE_DIRECTORY} )
 
 #    SET_TARGET_PROPERTIES(crystalscl PROPERTIES LINKER_LANGUAGE Fortran)
@@ -762,35 +786,20 @@ endif ()
 
 
 
-if ( useGUI )
-    target_compile_definitions(crystals PUBLIC CRY_GUI)
-    target_compile_definitions(crystals PUBLIC CRY_USEWX)
-    if(APPLE)
-        target_compile_definitions(crystals PUBLIC __MAC__)
-    elseif(UNIX)
-        target_compile_definitions(crystals PUBLIC __GIL__)
-    endif()
-else()
-    target_compile_definitions(crystals PUBLIC CRY_NOGUI)
-    if(UNIX)
-        target_compile_definitions(crystals PUBLIC __LIN__)
-    endif()
-endif()
 
 
 
-
-if ( useGUI )
-    target_compile_definitions(CrystalsDefines INTERFACE CRY_USEWX)
-endif()
+#if ( useGUI )
+#    target_compile_definitions(CrystalsDefines INTERFACE CRY_USEWX)
+#endif()
 
 if ( WIN32 )
-    target_compile_definitions(CrystalsDefines INTERFACE CRY_OSWIN32)
+    target_compile_definitions(GeneralDefines INTERFACE CRY_OSWIN32)
     message( STATUS "------------------------- Defined OSWIN32 ------------------------")
     if ( IFORT_COMPILER )
-        target_compile_definitions(CrystalsDefines INTERFACE __INW__)
+        target_compile_definitions(GeneralDefines INTERFACE __INW__)
     else ()
-        target_compile_definitions(CrystalsDefines INTERFACE __MIN__)
+        target_compile_definitions(GeneralDefines INTERFACE __MIN__)
     endif()
 endif()
 
