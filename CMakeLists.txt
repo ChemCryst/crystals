@@ -705,8 +705,8 @@ if ( useGUI )
     message(STATUS "Using OpenGL libraries: ${OPENGL_LIBRARIES}")
     include_directories( ${OPENGL_INCLUDE_DIRS}  )
 
-    target_link_libraries(crystals PUBLIC ${OPENGL_LIBRARIES} )
     TARGET_LINK_LIBRARIES(crystals PUBLIC CrystalsFortran CameronFortran CrystalsUserInterface ${wxWidgets_LIBRARIES} ${MSYS2LIBS} ${wxSTATICEXTRA_LIBS} ${Python3_LIBRARIES})
+    target_link_libraries(crystals PUBLIC ${OPENGL_LIBRARIES} )
 #    SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_GUI)
     SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES Fortran_MODULE_DIRECTORY ${Fortran_MODULE_DIRECTORY} )
 
