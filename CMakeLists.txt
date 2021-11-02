@@ -9,6 +9,12 @@ PROJECT(Crystals LANGUAGES CXX C Fortran)
 SET(CMAKE_VERBOSE_MAKEFILE OFF)
 SET(CMAKE_COLOR_MAKEFILE ON)
 
+#                              #
+#                              #
+#           SETTINGS           #
+#                              #
+#                              #
+
 option (verbose "verbose" OFF)
 option (useGUI "useGUI" ON)
 option (useCustomMKL "useCustomMKL" OFF)
@@ -28,6 +34,21 @@ if(verbose)
     SET(CMAKE_VERBOSE_MAKEFILE ON)
 endif ()
 
+#                              #
+#                              #
+#  FIND OUT ABOUT ENVIRONMENT  #
+#                              #
+#                              #
+
+# FFLAGS depend on the compiler
+GET_FILENAME_COMPONENT (Fortran_COMPILER_NAME "${CMAKE_Fortran_COMPILER}" NAME)
+if ((Fortran_COMPILER_NAME MATCHES "ifort") OR (Fortran_COMPILER_NAME MATCHES "ifort.exe")) # ifort (untested)
+    message(WARNING "Using Intel Fortran compiler.")
+    SET (IFORT_COMPILER 1)
+endif()
+
+
+
 # fake library to propogate common compiler defines to both Fortran and C++ compiler
 # CrystalsDefines is stuff for crystals and crystalscl executables
 # GeneralDefines is stuff for everything
@@ -36,6 +57,19 @@ add_library(GeneralDefines INTERFACE)
 target_link_libraries(CrystalsDefines INTERFACE GeneralDefines)
 
 #target_compile_definitions(CrystalsDefines INTERFACE MY_NEEDED_DEFINITION)
+if ( WIN32 )
+    target_compile_definitions(GeneralDefines INTERFACE CRY_OSWIN32)
+    message( STATUS "------------------------- Defined OSWIN32 ------------------------")
+    if ( IFORT_COMPILER )
+        target_compile_definitions(GeneralDefines INTERFACE __INW__)
+    else ()
+        target_compile_definitions(GeneralDefines INTERFACE __MIN__)
+    endif()
+endif()
+
+if ( APPLE )
+    target_compile_definitions(CrystalsDefines INTERFACE CRY_OSMAC)
+endif()
 
 
 SET( Fortran_MODULE_DIRECTORY "${CMAKE_BINARY_DIR}/FortranModules" )
@@ -99,12 +133,6 @@ if(CMAKE_COMPILER_IS_GNUCC)
   endif ()
 endif ()
 
-# FFLAGS depend on the compiler
-GET_FILENAME_COMPONENT (Fortran_COMPILER_NAME "${CMAKE_Fortran_COMPILER}" NAME)
-if ((Fortran_COMPILER_NAME MATCHES "ifort") OR (Fortran_COMPILER_NAME MATCHES "ifort.exe")) # ifort (untested)
-    message(WARNING "Using Intel Fortran compiler.")
-    SET (IFORT_COMPILER 1)
-endif()
 
 
 FIND_PACKAGE ( Perl REQUIRED)
@@ -634,61 +662,15 @@ if( useHDF5 )
 endif ()
 #ADD_CUSTOM_COMMAND ( OUTPUT commands.dsc COMMAND ${CMAKE_COMMAND} -E copy datafiles/commands.dsc . DEPENDS subdscbuild ${CMAKE_BINARY_DIR}/datafiles/commands.dsc )
 
-# Script file sources and targets
-FILE (GLOB sscfiles RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/script/*.ssc")
-SET  (scpfiles)
-FOREACH (_file ${sscfiles})
-    STRING(REPLACE ".ssc" ".scp" file_scp ${_file})
-    ADD_CUSTOM_COMMAND( OUTPUT ${file_scp}
-                        COMMAND ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_CURRENT_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_scp} ${flags} -DCRYSVNVER=${CRYSVNVER} -DCRYVERSUM=${CRYVERSUM} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} ${CMAKE_CURRENT_SOURCE_DIR}/${_file}
-                        DEPENDS ${_file} )
-    LIST(APPEND scpfiles ${file_scp})
-ENDFOREACH()
 
 
-# Data file sources and targets
-FILE (GLOB sdafiles RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/script/*.sda")
-SET  (datfiles)
-FOREACH (_file ${sdafiles})
-    STRING(REPLACE ".sda" ".dat" file_dat ${_file})
-    ADD_CUSTOM_COMMAND( OUTPUT ${file_dat}
-                        COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_CURRENT_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_dat} ${flags} -DCRYSVNVER=${CRYSVNVER} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} -DCRYVERSUM=${CRYVERSUM} ${CMAKE_CURRENT_SOURCE_DIR}/${_file}
-    DEPENDS ${_file} )
-    LIST(APPEND datfiles ${file_dat})
-ENDFOREACH()
-
-# Data file sources and targets
-FILE (GLOB pyfiles "${CMAKE_CURRENT_SOURCE_DIR}/script/*.py")
-SET  (pyoutfiles)
-FOREACH (_file ${pyfiles})
-#    STRING(REPLACE ".py" ".pyx" pyfile ${_file})
-    get_filename_component(pyfile "${_file}" NAME)
-    message(STATUS "Generating ${pyfile}")
-    ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/script/${pyfile}
-                COMMAND ${CMAKE_COMMAND} -E copy_if_different "${_file}" "${CMAKE_CURRENT_BINARY_DIR}/script/${pyfile}"
-                COMMENT "Copying py script file: ${_file} to ${pyfile}"
-				DEPENDS ${_file} )
-    LIST(APPEND pyoutfiles ${CMAKE_CURRENT_BINARY_DIR}/script/${pyfile})
-ENDFOREACH()
-
-
-FILE (GLOB ssrfiles RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/datafiles" "${CMAKE_CURRENT_SOURCE_DIR}/datafiles/*.ssr")
-SET  (srtfiles)
-FOREACH (_file ${ssrfiles})
-    STRING(REPLACE ".ssr" ".srt" file_srt ${_file})
-    ADD_CUSTOM_COMMAND( OUTPUT ${file_srt}
-                        COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_CURRENT_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_srt} ${flags} -DCRYARCH=${CRYARCH} -DCRYHOST=${CRYHOST} -DCRYSVNVER=${CRYSVNVER} -DCRYVERSUM=${CRYVERSUM} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} ${CMAKE_CURRENT_SOURCE_DIR}/datafiles/${_file}
-                        DEPENDS datafiles/${_file} )
-    LIST(APPEND srtfiles ${file_srt})
-ENDFOREACH()
 
 
 
 if ( useGUI )
     INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/crys_fortran)
-#    ADD_EXECUTABLE (crystals WIN32 ${scpfiles} ${datfiles} ${srtfiles} ${pyoutfiles} $<TARGET_OBJECTS:CrystalsUserInterface> ${CMAKE_SOURCE_DIR}    
-    ADD_EXECUTABLE (crystals WIN32 ${scpfiles} ${datfiles} ${srtfiles} ${pyoutfiles}  ${CMAKE_SOURCE_DIR}/gui/fwrapper_gui.F90 ${CMAKE_SOURCE_DIR}/gui/fwrapperimp_gui.F90 gui/gcrystals.cpp crystals/crystals.F gui/wx.rc)
-    ADD_EXECUTABLE (crystalscl ${scpfiles} ${datfiles} ${srtfiles} ${pyoutfiles} crystals/crystals-cl.F ${CMAKE_SOURCE_DIR}/gui/fwrapperimp_cl.F90 )
+    ADD_EXECUTABLE (crystals WIN32 ${CMAKE_SOURCE_DIR}/gui/fwrapper_gui.F90 ${CMAKE_SOURCE_DIR}/gui/fwrapperimp_gui.F90 gui/gcrystals.cpp crystals/crystals.F gui/wx.rc)
+    ADD_EXECUTABLE (crystalscl crystals/crystals-cl.F ${CMAKE_SOURCE_DIR}/gui/fwrapperimp_cl.F90 )
 #    if ( usePY )
 #        target_link_libraries ( crystals winembeddedpy )
 #    endif()
@@ -706,17 +688,20 @@ if ( useGUI )
     include_directories( ${OPENGL_INCLUDE_DIRS}  )
 
     TARGET_LINK_LIBRARIES(crystals PUBLIC CrystalsFortran CameronFortran CrystalsUserInterface ${wxWidgets_LIBRARIES} ${MSYS2LIBS} ${wxSTATICEXTRA_LIBS} ${Python3_LIBRARIES})
+    target_link_libraries(crystals PUBLIC CrystalsScripts )
+    target_link_libraries(crystals PUBLIC CrystalsData )
     target_link_libraries(crystals PUBLIC ${OPENGL_LIBRARIES} )
 #    SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_GUI)
     SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES Fortran_MODULE_DIRECTORY ${Fortran_MODULE_DIRECTORY} )
 
 #    SET_TARGET_PROPERTIES(crystalscl PROPERTIES LINKER_LANGUAGE Fortran)
     TARGET_LINK_LIBRARIES(crystalscl PUBLIC CrystalsFortran CameronFortran ${Python3_LIBRARIES})
+    target_link_libraries(crystalscl PUBLIC CrystalsScripts )
 #    SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_NOGUI)
 
 else()   # command line version
 
-    ADD_EXECUTABLE (crystals ${scpfiles} ${datfiles} ${srtfiles} ${pyoutfiles} crystals/crystals.F ${CMAKE_SOURCE_DIR}/gui/fwrapper_gui.F90 )
+    ADD_EXECUTABLE (crystals crystals/crystals.F ${CMAKE_SOURCE_DIR}/gui/fwrapper_gui.F90 )
     SET_TARGET_PROPERTIES(crystals PROPERTIES LINKER_LANGUAGE Fortran)
     TARGET_LINK_LIBRARIES(crystals PUBLIC CrystalsFortran CameronFortran ${Python3_LIBRARIES})
     SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES Fortran_MODULE_DIRECTORY ${Fortran_MODULE_DIRECTORY} )
@@ -793,19 +778,6 @@ endif ()
 #    target_compile_definitions(CrystalsDefines INTERFACE CRY_USEWX)
 #endif()
 
-if ( WIN32 )
-    target_compile_definitions(GeneralDefines INTERFACE CRY_OSWIN32)
-    message( STATUS "------------------------- Defined OSWIN32 ------------------------")
-    if ( IFORT_COMPILER )
-        target_compile_definitions(GeneralDefines INTERFACE __INW__)
-    else ()
-        target_compile_definitions(GeneralDefines INTERFACE __MIN__)
-    endif()
-endif()
-
-if ( APPLE )
-    target_compile_definitions(CrystalsDefines INTERFACE CRY_OSMAC)
-endif()
 
 
 IF (IFORT_COMPILER)

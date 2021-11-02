@@ -1,6 +1,5 @@
 
 
-SET(CMAKE_BUILD_TYPE Release)
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 
 PROJECT(Data)
@@ -62,3 +61,25 @@ if(useHDF5)
 
 endif ()
 
+get_target_property(_if_compile_defs GeneralDefines INTERFACE_COMPILE_DEFINITIONS)
+set(defstring)
+foreach(_def ${_if_compile_defs})
+   set( defstring ${defstring} -D${_def})
+endforeach()
+
+
+# Data file sources and targets
+# Note that srt files end up in the main directory (above this one).
+
+FILE (GLOB ssrfiles RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/*.ssr")
+SET  (srtfiles)
+FOREACH (_file ${ssrfiles})
+    STRING(REPLACE ".ssr" ".srt" file_srt ${_file})
+    ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_BINARY_DIR}/${file_srt}
+                        COMMAND perl ${CMAKE_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_SOURCE_DIR}/gui/crystalsinterface.h -o ${CMAKE_BINARY_DIR}/${file_srt} ${defstring} -DCRYARCH=${CRYARCH} -DCRYHOST=${CRYHOST} -DCRYSVNVER=${CRYSVNVER} -DCRYVERSUM=${CRYVERSUM} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} ${CMAKE_CURRENT_SOURCE_DIR}/${_file}
+                        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${_file} )
+    LIST(APPEND srtfiles ${CMAKE_BINARY_DIR}/${file_srt})
+ENDFOREACH()
+
+add_library(CrystalsData INTERFACE ${srtfiles})
+target_link_libraries(CrystalsData INTERFACE GeneralDefines)
