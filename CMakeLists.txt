@@ -243,7 +243,7 @@ if(useOPENMP)
     if (OPENMP_FOUND)
         set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
         set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-        set (CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${OpenMP_Fortran_FLAGS}")
+#        set (CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${OpenMP_Fortran_FLAGS}")
     endif()
 endif ()
 
@@ -299,8 +299,6 @@ else ()
     endif ()
 endif ()
 
-# Required to assign hollerith data in a legacy manner to integers
-target_compile_definitions(GeneralDefines INTERFACE _HOL_)
 
 
 string (TIMESTAMP CRYYEAR "%Y")
@@ -480,6 +478,7 @@ ENDIF ()
     check_fortran_compiler_flag("-fexceptions" _f_exceptions)
     check_fortran_compiler_flag("-fno-sign-zero" _f_no_signzero)
 
+
     if(_std_legacy_flag)
 #      set(CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -std=legacy")
       set(CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -std=gnu")
@@ -492,6 +491,11 @@ ENDIF ()
       set(CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -fno-sign-zero")
       set(CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -fno-sign-zero")
     endif()
+
+# Required to assign hollerith data in a legacy manner to integers
+target_compile_definitions(GeneralDefines INTERFACE _HOL_)
+
+
 
 if( useGGDB3 )
     message(STATUS "Using dwarf3 debug format")
@@ -542,7 +546,6 @@ ADD_SUBDIRECTORY(bits)
 #if (IFORT_COMPILER)
 #	add_subdirectory(mklbuilder)
 #endif
-
 
 
 if ( useGUI )
@@ -710,11 +713,11 @@ else()   # command line version
 endif()
 
 
-target_include_directories(crystals PUBLIC ${Fortran_MODULE_DIRECTORY})
-target_include_directories(crystals PUBLIC gui)
-if ( useGUI )
-    target_include_directories(crystalscl PUBLIC ${Fortran_MODULE_DIRECTORY})
-endif()
+target_include_directories(CrystalsDefines INTERFACE ${Fortran_MODULE_DIRECTORY})
+target_include_directories(CrystalsDefines INTERFACE gui)
+#if ( useGUI )
+#    target_include_directories(crystalscl PUBLIC ${Fortran_MODULE_DIRECTORY})
+#endif()
 
 
 

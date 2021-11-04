@@ -180,7 +180,12 @@ if ( usePY )
     endif()
 endif()
 
-
+if(useOPENMP)
+    find_package(OpenMP)
+    if (OPENMP_FOUND)
+        target_compile_definitions(CrystalsFortran PRIVATE ${OpenMP_Fortran_FLAGS})
+    endif()
+endif ()
 
 if (Fortran_COMPILER_NAME MATCHES "gfortran")  # gfortran
    # gfortran: Trap NaN as those seem to appear sometimes in the fourier test
