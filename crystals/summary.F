@@ -2043,8 +2043,10 @@ CODE FOR XSUM06
       SUBROUTINE XSUM06 (iuln,  LEVEL )
       use m_mrgrnk
 C
+C LEVEL 0-8
 C     OFF            LOW            MEDIUM         HIGH        
 C     PLOT           NORMPP         SIGMA          OBSERVED
+C     DELTA
 C -- ROUTINE TO DISPLAY SUMMARY OF LIST 6
 C
       CHARACTER *8 CNAME(35)
@@ -2114,8 +2116,9 @@ C
       ENDIF
       IF ( IERFLG .LT. 0 ) GO TO 9900
 
-
-      IFSQ = ISTORE(L23MN+1)
+! This could be consolidated !
+      IFSQ = ISTORE(L23MN+1)           ! -1 = FO, 0 = FSQ
+      IFTYPE = ISTORE(L23MN+1)+2       !  1 = FO, 2 = FSQ
 c set flag for twinned/normal data
 C
       IF (ISTORE(L13CD+1) .LE. -1) THEN    ! F = FO
@@ -2131,6 +2134,22 @@ C--SETUP A GRAPH HERE
      2  '^^PL XAXIS TITLE Fc NSERIES=1 LENGTH=2000',
      3  '^^PL YAXIS TITLE Fo SERIES 1 TYPE SCATTER'
         CALL XPRVDU(NCVDU, 3,0)
+      END IF
+      IF ((LEVEL.EQ.8) .OR. (LEVEL.EQ.9)) THEN            ! Scatter |Fo-Fc| / sigma vs sintheta/lambda
+          if (iftype .eq.1) then   ! Fo-Fc/sigmaW
+        WRITE(CMON,'(A,/,A,/,A,/,A)')
+     1  '^^PL PLOTDATA _DELTA SCATTER ATTACH _VDELTA KEY',
+     2  '^^PL XAXIS TITLE ''sin\theta/\lambda'' NSERIES=1 LENGTH=2000',
+     3  '^^PL YAXIS TITLE ''\sqrtw.(|Fo|-|Fc|)''',
+     4  '^^PL SERIES 1 SERIESNAME ''Observed'' TYPE SCATTER'
+	      else
+        WRITE(CMON,'(A,/,A,/,A,/,A)')
+     1  '^^PL PLOTDATA _DELTA SCATTER ATTACH _VDELTA KEY',
+     2  '^^PL XAXIS TITLE ''sin\theta/\lambda'' NSERIES=1 LENGTH=2000',
+     3  '^^PL YAXIS TITLE ''\sqrtw . (Fo\**2-Fc\**2)''',
+     4  '^^PL SERIES 1 SERIESNAME ''Observed'' TYPE SCATTER'
+		  end if
+        CALL XPRVDU(NCVDU, 4,0)
       END IF
       IF ( LEVEL.EQ.5 ) THEN                 ! Normal probability plot
         WRITE(CMON,'(A,/,A)')
@@ -2189,7 +2208,6 @@ C--UPDATE FOR THE NEXT PARAMETER
 C
 C -- SCAN LIST 6 FOR ACCEPTED REFLECTIONS
 C
-      IFTYPE = ISTORE(L23MN+1)+2
       SCALE = STORE(L5O)
       SCALESQ = SCALE*SCALE
       FSCALE = 1./(SCALE*SCALE)
@@ -2231,7 +2249,7 @@ cjun2010  FO = STORE(M6+itwin)
         ENDIF
 
         CALL XSQRF(FOS, FO, FABS, SIGMAS, STORE(M6+12))
-        WT = STORE(M6+4) 
+        WT = STORE(M6+4)    !WT is sqrt of weight
         TOP = TOP + ABS (ABS(FO) - FC)
         BOTTOM = BOTTOM + ABS(FO)
         SIGTOP = SIGTOP + SIGMAS
@@ -2247,6 +2265,25 @@ C - F REFINENENT
         ENDIF
         WTOP = WTOP + WDEL*WDEL
         WBOT = WBOT + WFO*WFO
+
+        IF ((LEVEL.EQ.8) .OR. (LEVEL.EQ.9)) THEN
+          IF (IFSQ .GE. 0) THEN  !FSQ REFINENENT
+            DELSIGW = WT * (FO * ABS(FO) - FC*FC)
+          ELSE                   !F REFINENENT
+            DELSIGW = WT * (FO - FC)
+          ENDIF
+		  ST = SNTHL2(I)
+          PLOTMAX = MAX( DELSIGW, PLOTMAX )
+          WRITE(HKLLAB, '(2(I4,A),I4)') NINT(STORE(M6)),',',
+     1    NINT(STORE(M6+1)), ',', NINT(STORE(M6+2))
+          CALL XCRAS(HKLLAB, IHKLLEN)
+          WRITE(CMON,'(3A,2(1X,F12.4))')
+     1   '^^PL LABEL ''', HKLLAB(1:IHKLLEN), ''' DATA ', ST ,DELSIGW
+          CALL XPRVDU(NCVDU, 1,0)
+          
+        ENDIF
+
+
 
         IF ( LEVEL.EQ.5 ) THEN
           if(.not. allocated(reflections)) then
@@ -2297,7 +2334,7 @@ c         refinement on F
 
       else if (KALLOW(IALLOW)<0) THEN ! ommited reflection
         if(.not. allocated(omitted)) then
-          allocate(omitted(16384, 5))
+          allocate(omitted(16384, 7))
           omitindex=0
         else if(omitindex>=ubound(omitted, 1)) then
           ! array too small, need to extend
@@ -2310,6 +2347,11 @@ c         refinement on F
         omitted(omitindex,1:3)=STORE(M6:M6+2)
         omitted(omitindex, 4)=STORE(M6+3)        ! Fo
         omitted(omitindex, 5)=scale * STORE(M6+5) ! Fc
+  	    ST = SNTHL2(I)
+        WT = STORE(M6+4)
+        omitted(omitindex, 6)=ST  ! st/l
+        omitted(omitindex, 7)=WT  ! sqrt w
+		
       end if
 
       GO TO 1100
@@ -2331,11 +2373,38 @@ c         refinement on F
           CALL XPRVDU(NCVDU, 1,0)
         END DO
       END IF
+
+      IF ( LEVEL.EQ.9 ) THEN      !Also output the omitted refls.
+        if(omitindex>0) then
+          WRITE(CMON,'(A)')
+     1      '^^PL ADDSERIES Omitted TYPE SCATTERX'
+          CALL XPRVDU(NCVDU,1,0)
+        end if
+        do i=1, omitindex
+		  wt = omitted(i,7)
+		  st = omitted(i,6)
+		  fo = omitted(i,4)
+		  fc = omitted(i,5)
+          IF (IFSQ .GE. 0) THEN  !FSQ REFINENENT
+            DELSIGW = WT * (FO * ABS(FO) - FC*FC)
+          ELSE                   !F REFINENENT
+            DELSIGW = WT * (FO - FC)
+          ENDIF
+          PLOTMAX = MAX( DELSIGW, PLOTMAX )
+		  
+          WRITE(HKLLAB, '(2(I0,A),I0)') NINT(omitted(i,1)),',',
+     1      NINT(omitted(i,2)), ',', NINT(omitted(i,3))
+            hkllab=adjustl(hkllab)
+          WRITE(CMON,'(3A,2(1X,F12.4))')
+     1   '^^PL LABEL ''', trim(HKLLAB), ''' DATA ', st ,DELSIGW
+          CALL XPRVDU(NCVDU, 1,0)
+          
+        END DO
+      END IF
 C
 C
 C -- BEGIN OUTPUT
 C
-
 
 C----- COMPUTE AND STORE R-VALUES
       RFACT = 100. * TOP / BOTTOM
@@ -2599,7 +2668,8 @@ C
 c
 C -- FINISH THE GRAPH DEFINITION
       IF ( ( LEVEL.EQ.4 ).OR.( LEVEL.EQ.5 )
-     1 .OR.( LEVEL.EQ.6 ).OR.(LEVEL.EQ.7)) THEN
+     1 .OR.( LEVEL.EQ.6 ).OR.( LEVEL.EQ.7 ) 
+     1 .OR.( LEVEL.EQ.8 ).OR.( LEVEL.EQ.9 ) ) THEN
         WRITE(CMON,'(A,/,A)') '^^PL SHOW','^^CR'
         CALL XPRVDU(NCVDU, 2,0)
       ENDIF

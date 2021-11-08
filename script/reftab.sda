@@ -1,4 +1,4 @@
-  52 items  - #nnn "CIF-text"    References, aphabetical order
+  53 items  - #nnn "CIF-text"    References, aphabetical order
 
 #001 USER DEFINED STRUCTURE SOLUTION                                            
 User-defined structure solution reference                                       
@@ -140,8 +140,11 @@ Mathematical Techniques in Crystallography
 and Materials Science                                                           
 Springer-Verlag, New York, 1982.                                                
 
-#036 CrysAlisPro (Rigaku Oxford Diffraction, 2017)                                   
-Rigaku Oxford Diffraction (2017). CrysAlisPro.                                       
+#053 'XtaLAB Synergy, Dualflex,HyPix, (Rigaku, 2021)                                   
+Rigaku, (2021). XtaLAB Synergy-S                                       
+                                                                                
+#036 CrysAlisPro (Rigaku Oxford Diffraction, 2021)                                   
+Rigaku Oxford Diffraction (2021). CrysAlisPro.                                       
                                                                                 
 #018 SHELXS 86 (Sheldrick, 1986)                                                
 Sheldrick, G. M. (2008). Acta Cryst A64, 112-122.                               
