@@ -281,8 +281,9 @@ sub obscureMachinePrecision() {
 		   } elsif($line =~ m/^((?:\s+-?\d{1,2}){3}\s+-?\d+\.\d\s+-?\d+\.\d\s+-?\d+\.)\d(\s+-?\d+\.)\d+((?:\s+-?\d{1,2}){3}\s+-?\d+\.\d\s+-?\d+\.\d\s+-?\d+\.)\d(\s+-?\d+\.)\d+\s*/ ) {
 				  print $fho "[28] - not suitable for comparison, sort order based on small differences\n";
     # "  -2   1   2      38.92      5904.6      1166.6       121.7"
-		   } elsif($line =~ m/^((?:\s+-?\d{1,2}){3}\s+\d+\.\d\d\s+\d+\.\d\s+\d+\.)\d(\s+\d+\.\d)\s*/ ) {
-				  print $fho "[94] $1 $2\n";
+		   } elsif($line =~ m/^((?:\s+-?\d{1,2}){3}\s+\d+\.\d\d\s+\d+\.\d\s+)(\d+\.\d)(\s+\d+\.\d)\s*/ ) {
+   				  $spone = sprintf "%.0f", $2;
+				  print $fho "[94] $1 $spone $3\n";
 
 	# Mean shift line
 	#	   } elsif($line =~ m/^ Mean\s+\d+\.\d\d\s+.*/ ) {
@@ -493,15 +494,16 @@ sub obscureMachinePrecision() {
 
 	#    } elsif($line =~ m/^(\s+1\s+1\s+0\s+0\s+0\s+-?\d+\.\d)\d(E.\d\d\s+-?\d+\.\d)\d(E.\d\d\s+-?\d+\.\d)\d(.*)$/ ) {
 	#              print $fho "[78] $1$2$3$4\n";
-
-
 	# (sp inverse) 1-norm:  1.85E+00 cond. number:  1.28E+01 rel. error:  1.52E-06
 	   } elsif($line =~ m/^(.*norm:\s+)(-?\d+\.\d+)(.*cond\. number:\s+)(-?\d+\.\d+)(.*error:\s+)(-?\d+\.\d+)(.*)$/ ) {   #$2 and $4 hold float parts
 				  $sptwo = sprintf "%.0f", $2;
 				  $spfour = sprintf "%.0f", $4;
-				  $spsix = sprintf "%.0f", $4;
+				  $spsix = sprintf "%.0f", $6;
 				  print $fho "[80] $1$sptwo$3$spfour$5$spsix$7\n";
-
+	#Block No  1.  Single precision relative error:  4.41E-05
+	   } elsif($line =~ m/^(.*Block No.*)(-?\d+\.\d+)(E.*)$/ ) {   
+				  $sptwo = sprintf "%.0f", $2;
+				  print $fho "[80a] $1$sptwo$3\n";
 	#C11 . C1 . C2 . O3 . -131.8(12)    yes
 	  } elsif($line =~ m/^(.*\w* \. \w* \. \w* \. \w* \.\s+-?\d+\.).*(\(.*)$/ ) {
 				  print $fho "[81] $1$2\n";
