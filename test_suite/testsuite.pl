@@ -287,8 +287,11 @@ sub obscureMachinePrecision() {
 		   } elsif($line =~ m/^( Minimisation function\s+\d+\.\d\d)\d(E\S\d\d\s+\d+\.\d)\d\d(E\S\d\d\s+\d+\.\d\d)\d(E\S\d\d.*)/ ) {
 				  print $fho "[30] $1$2$3$4\n";
 	# Shift max  "                                         0.0762   0.0487   0.0794"
-		   } elsif($line =~ m/^(           \s*-*\d\.\d\d\d)\d(   -*\d\.\d\d\d)\d(   -*\d.\d\d\d)\d(\s*)/ ) {
-				  print $fho "[31] $1 $2 $3 $4\n";
+		   } elsif($line =~ m/^(           \s*-*\d\.\d\d\d\d)(   -*\d\.\d\d\d\d)(   -*\d.\d\d\d\d)(\s*)/ ) {
+   				  $spone = sprintf "%.3f", $1;
+   				  $sptwo = sprintf "%.3f", $2;
+   				  $spthree = sprintf "%.3f", $3;
+				  print $fho "[31] $spone $sptwo $spthree $4\n";
 	#			  print("Line edited (rule 31): $line \n");
 	# Min funcs "    211786.        195909.          21729.               0.3664E+06          On scale of /FO/"
 		   } elsif($line =~ m/^(\s+\d+)\d\.(\s+\d+)\d\.(\s+\d+)\d\.(\s+0\.\d\d)\d\d(E.\d\d\s+On scale of \/FO\/\s*)/ ) {
@@ -307,8 +310,17 @@ sub obscureMachinePrecision() {
 		   } elsif($line =~ m/^(\s+\d+\.\d)\d\d(\s+-?\d+\.\d\d\d)\d(\s+-?\d+\.\d\d\d)\d(\s+-?\d+\.\d\d\d)\d\s*/ ) {
 				  print $fho "[34] $1 $2 $3 $4\n";
 	# TLS matrices
-		   } elsif($line =~ m/^(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d)\d\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d\s*/) {  #3rd element only captures 1dp in this version (cf. next version below).
-				  print $fho "[35] $1 $2 $3 $4 $5 $6 $7 $8 $9\n";
+		   } elsif($line =~ m/^(\s+-?\d+\.\d\d\d)(\s+-?\d+\.\d\d\d)(\s+-?\d+\.\d\d\d)(\s+-?\d+\.\d\d\d)(\s+-?\d+\.\d\d\d)(\s+-?\d+\.\d\d\d)(\s+-?\d+\.\d\d\d)(\s+-?\d+\.\d\d\d)(\s+-?\d+\.\d\d\d)\s*/) {  #3rd element only captures 1dp in this version (cf. next version below).
+				  $sp1 = sprintf "%.2f", $1;
+				  $sp2 = sprintf "%.2f", $2;
+				  $sp3 = sprintf "%.2f", $3;
+				  $sp4 = sprintf "%.2f", $4;
+				  $sp5 = sprintf "%.2f", $5;
+				  $sp6 = sprintf "%.2f", $6;
+				  $sp7 = sprintf "%.2f", $7;
+				  $sp8 = sprintf "%.2f", $8;
+				  $sp9 = sprintf "%.2f", $9;
+				  print $fho "[35] $sp1 $sp2 $sp3 $sp4 $sp5 $sp6 $sp7 $sp8 $sp9\n";
 	#  			  print("Line edited (rule 35) $line \n");
 		   } elsif($line =~ m/^(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d\s*/) {
 				  print $fho "[36] $1 $2 $3 $4 $5 $6 $7 $8 $9\n";
@@ -474,10 +486,11 @@ sub obscureMachinePrecision() {
 
 
 	# (sp inverse) 1-norm:  1.85E+00 cond. number:  1.28E+01 rel. error:  1.52E-06
-	   } elsif($line =~ m/^(.*norm:\s+)(-?\d+\.\d+)(.*cond\. number:\s+)(-?\d+\.\d+)(.*)$/ ) {   #$2 and $4 hold float parts
+	   } elsif($line =~ m/^(.*norm:\s+)(-?\d+\.\d+)(.*cond\. number:\s+)(-?\d+\.\d+)(.*error:\s+)(-?\d+\.\d+)(.*)$/ ) {   #$2 and $4 hold float parts
 				  $sptwo = sprintf "%.0f", $2;
 				  $spfour = sprintf "%.0f", $4;
-				  print $fho "[80] $1$sptwo$3$spfour$5\n";
+				  $spsix = sprintf "%.0f", $4;
+				  print $fho "[80] $1$sptwo$3$spfour$5$spsix$7\n";
 
 	#C11 . C1 . C2 . O3 . -131.8(12)    yes
 	  } elsif($line =~ m/^(.*\w* \. \w* \. \w* \. \w* \.\s+-?\d+\.).*(\(.*)$/ ) {
@@ -515,7 +528,7 @@ sub obscureMachinePrecision() {
 				  print $fho "[91] $1$2\n";
 	#Symmetry related peaks on the cusp of peak collection algorithm switch cause differences. Remove sym and coords.
 	#C        11.         Q         2.      1   1    1   -1    0    0.389      Deleted    0.095   0.991   0.152      4.1
-	   } elsif($line =~ m/^(.*Q\s+\d+\.\s*)-?\d+\s+-?\d+\s+-?\d+\s+-?\d+\s+-?\d+(.*Deleted).*(\d+\.\d+)$/ ) {
+	   } elsif($line =~ m/^(.......*Q\s+\d+\.\s*)-?\d+\s+-?\d+\s+-?\d+\s+-?\d+\s+-?\d+(.*Deleted).*(\d+\.\d+)\s*$/ ) {
 				  print $fho "[91] $1$2 $3\n";
 
 	# Reduced Chisq=  1.4438
@@ -528,7 +541,7 @@ sub obscureMachinePrecision() {
 	   } elsif($line =~ m/^(.*Minimum signal.*\d+\.\d\d)\d+\s*$/ ) {
 				  print $fho "[93] $1\n";
 #  0  158      146     12          1.1491           0.000
-	  } elsif($line =~ m/^(\s*\d+\s+\d+\s+\d+\s+\d+\s+\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\ *$/ ) {
+	  } elsif($line =~ m/^(\s*\d+\s+\d+\s+\d+\s+\d+\s+\d+\.\d\d)\d\d(\s+-?\d+\.\d\d)\d\s*$/) {
 				  print $fho "[92] $1  $2\n";
 
 	#     7.421 * X +      -7.131 * Y +       5.978 * Z  =    -0.527
