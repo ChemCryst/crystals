@@ -78,6 +78,8 @@ FOREACH (_file ${ssrfiles})
     ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_BINARY_DIR}/${file_srt}
                         COMMAND perl ${CMAKE_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_SOURCE_DIR}/gui/crystalsinterface.h -o ${CMAKE_BINARY_DIR}/${file_srt} ${defstring} -DCRYARCH=${CRYARCH} -DCRYHOST=${CRYHOST} -DCRYSVNVER=${CRYSVNVER} -DCRYVERSUM=${CRYVERSUM} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} ${CMAKE_CURRENT_SOURCE_DIR}/${_file}
                         DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${_file} )
+                        COMMENT "perl ${CMAKE_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_SOURCE_DIR}/gui/crystalsinterface.h -o ${CMAKE_BINARY_DIR}/${file_srt} ${defstring} -DCRYARCH=${CRYARCH} -DCRYHOST=${CRYHOST} -DCRYSVNVER=${CRYSVNVER} -DCRYVERSUM=${CRYVERSUM} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} ${CMAKE_CURRENT_SOURCE_DIR}/${_file}"
+
     LIST(APPEND srtfiles ${CMAKE_BINARY_DIR}/${file_srt})
 ENDFOREACH()
 
