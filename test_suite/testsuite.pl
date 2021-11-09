@@ -233,7 +233,7 @@ sub obscureMachinePrecision() {
 		   } elsif($line =~ m/^(\s+-?\d+\s+\d+\s+\d+\.\d\d\s+\d+\.\d\s+0\.\d)\d\d(E.\d\d\s+0\.\d)\d\d(E.\d\d\s+\d+\.\d)\d(\s+\d+\.\d)\d(\s+\*\s*)/ ) {
 				  print $fho "[16] $1 $2 $3 $4 $5\n";
 	#FO Range based agreement analysis output "                        4       293.09       298.7       0.377E+02       0.942E+00     1.90    1.96           * "
-		   } elsif($line =~ m/^(\s+\d+\s+\d+\.\d\d\s+\d+\.\d\s+0\.\d\d)\d(E.\d\d\s+0\.\d)\d\d(E.\d\d\s+\d+\.)\d\d(\s+\d+\.)\d\d(\s+\*\s*)/ ) {
+		   } elsif($line =~ m/^(\s+\d+\s+\d+\.\d\d\s+\d+\.\d\s+0\.\d\d)\d(E.\d\d\s+0\.\d)\d\d(E.\d\d\s+\d+\.)\d\d(\s+\d+\.)\d\d(\s+\.?\*\.?\s*)/ ) {
 				  print $fho "[17] $1 $2 $3 $4 $5\n";
 	# Fourier 'collect' edge cases  "QN        1.     0.6250    0.9375    0.2500       -1.7  Hole"
 		   } elsif($line =~ m/^( QN ).*(-\d+\.\d\s+Hole\s*)/ ) { #Get rid of coords, keep height
