@@ -67,6 +67,10 @@ if ( WIN32 )
     endif()
 endif()
 
+if ( ${CMAKE_SYSTEM_NAME} STREQUAL "Linux" )
+    target_compile_definitions(GeneralDefines INTERFACE CRY_OSLINUX)
+endif()
+
 if ( APPLE )
     target_compile_definitions(CrystalsDefines INTERFACE CRY_OSMAC)
 endif()
@@ -529,6 +533,20 @@ endif ()
 
 
 
+if ( useGUI )
+    target_compile_definitions(CrystalsDefines INTERFACE CRY_GUI)
+#    target_compile_definitions(crystals PUBLIC CRY_USEWX)
+    if(APPLE)
+        target_compile_definitions(GeneralDefines INTERFACE __MAC__)
+    elseif(UNIX)
+        target_compile_definitions(GeneralDefines INTERFACE __GIL__)
+    endif()
+else()
+    target_compile_definitions(CrystalsDefines INTERFACE CRY_NOGUI)
+    if(UNIX)
+        target_compile_definitions(GeneralDefines INTERFACE __LIN__)
+    endif()
+endif()
 
 
 # Libraries
@@ -548,20 +566,6 @@ ADD_SUBDIRECTORY(bits)
 #endif
 
 
-if ( useGUI )
-    target_compile_definitions(CrystalsDefines INTERFACE CRY_GUI)
-#    target_compile_definitions(crystals PUBLIC CRY_USEWX)
-    if(APPLE)
-        target_compile_definitions(GeneralDefines INTERFACE __MAC__)
-    elseif(UNIX)
-        target_compile_definitions(GeneralDefines INTERFACE __GIL__)
-    endif()
-else()
-    target_compile_definitions(CrystalsDefines INTERFACE CRY_NOGUI)
-    if(UNIX)
-        target_compile_definitions(GeneralDefines INTERFACE __LIN__)
-    endif()
-endif()
 
 
 
