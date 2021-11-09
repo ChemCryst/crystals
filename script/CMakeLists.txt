@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.0)
 
 project(Scripts)
 
-get_target_property(_if_compile_defs GeneralDefines INTERFACE_COMPILE_DEFINITIONS)
+get_target_property(_if_compile_defs CrystalsDefines INTERFACE_COMPILE_DEFINITIONS)
 
 
 set(defstring)
@@ -53,4 +53,4 @@ ENDFOREACH()
 
 
 add_library(CrystalsScripts INTERFACE ${scpfiles} ${pyoutfiles} ${datfiles})
-target_link_libraries(CrystalsScripts INTERFACE GeneralDefines)
+target_link_libraries(CrystalsScripts INTERFACE CrystalsDefines)

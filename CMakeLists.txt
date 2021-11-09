@@ -50,7 +50,7 @@ endif()
 
 
 # fake library to propogate common compiler defines to both Fortran and C++ compiler
-# CrystalsDefines is stuff for crystals and crystalscl executables
+# CrystalsDefines is stuff for crystals and crystalscl executables and scripts
 # GeneralDefines is stuff for everything
 add_library(CrystalsDefines INTERFACE)
 add_library(GeneralDefines INTERFACE)

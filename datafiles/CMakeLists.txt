@@ -61,7 +61,7 @@ if(useHDF5)
 
 endif ()
 
-get_target_property(_if_compile_defs GeneralDefines INTERFACE_COMPILE_DEFINITIONS)
+get_target_property(_if_compile_defs CrystalsDefines INTERFACE_COMPILE_DEFINITIONS)
 set(defstring)
 foreach(_def ${_if_compile_defs})
    set( defstring ${defstring} -D${_def})
@@ -84,4 +84,4 @@ FOREACH (_file ${ssrfiles})
 ENDFOREACH()
 
 add_library(CrystalsData INTERFACE ${srtfiles})
-target_link_libraries(CrystalsData INTERFACE GeneralDefines)
+target_link_libraries(CrystalsData INTERFACE CrystalsDefines)
