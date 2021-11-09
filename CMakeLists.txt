@@ -69,6 +69,7 @@ endif()
 
 if ( ${CMAKE_SYSTEM_NAME} STREQUAL "Linux" )
     target_compile_definitions(GeneralDefines INTERFACE CRY_OSLINUX)
+    target_compile_definitions(CrystalsDefines INTERFACE CRY_OSLINUX)
 endif()
 
 if ( APPLE )
