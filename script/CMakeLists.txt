@@ -5,23 +5,25 @@ cmake_minimum_required(VERSION 3.0)
 
 project(Scripts)
 
+
+
 get_target_property(_if_compile_defs CrystalsDefines INTERFACE_COMPILE_DEFINITIONS)
-
-
 set(defstring)
 foreach(_def ${_if_compile_defs})
-   set( defstring ${defstring} -D${_def})
+   list( APPEND defstring -D${_def})
 endforeach()
-
 
 # Script file sources and targets
 FILE (GLOB sscfiles RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/*.ssc")
 SET  (scpfiles)
 FOREACH (_file ${sscfiles})
     STRING(REPLACE ".ssc" ".scp" file_scp ${_file})
+    SET( arguments -ds -w -imacros ${CMAKE_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_scp} -DCRYARCH=${CRYARCH} -DCRYHOST=${CRYHOST} -DCRYSVNVER=${CRYSVNVER} -DCRYVERSUM=${CRYVERSUM} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} )
+    list(APPEND arguments ${defstring})
     ADD_CUSTOM_COMMAND( OUTPUT ${file_scp}
-                        COMMAND ${PERL_EXECUTABLE} ${CMAKE_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_scp} ${defstring} -DCRYSVNVER=${CRYSVNVER} -DCRYVERSUM=${CRYVERSUM} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} ${CMAKE_CURRENT_SOURCE_DIR}/${_file}
-                        DEPENDS ${_file} )
+                        COMMAND ${PERL_EXECUTABLE} ${CMAKE_SOURCE_DIR}/editor/filepp.pl ${arguments} ${CMAKE_CURRENT_SOURCE_DIR}/${_file}
+                        DEPENDS ${_file} 
+                        COMMENT "${PERL_EXECUTABLE} ${CMAKE_SOURCE_DIR}/editor/filepp.pl ${arguments} ${CMAKE_CURRENT_SOURCE_DIR}/${_file}")
     LIST(APPEND scpfiles ${file_scp})
 ENDFOREACH()
 
@@ -29,9 +31,12 @@ FILE (GLOB sdafiles RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOUR
 SET  (datfiles)
 FOREACH (_file ${sdafiles})
     STRING(REPLACE ".sda" ".dat" file_dat ${_file})
+    SET( arguments -ds -w -imacros ${CMAKE_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_dat} -DCRYARCH=${CRYARCH} -DCRYHOST=${CRYHOST} -DCRYSVNVER=${CRYSVNVER} -DCRYVERSUM=${CRYVERSUM} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} )
+    list(APPEND arguments ${defstring})
     ADD_CUSTOM_COMMAND( OUTPUT ${file_dat}
-                        COMMAND perl ${CMAKE_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_dat} ${defstring} -DCRYSVNVER=${CRYSVNVER} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} -DCRYVERSUM=${CRYVERSUM} ${CMAKE_CURRENT_SOURCE_DIR}/${_file}
-    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${_file} )
+                        COMMAND ${PERL_EXECUTABLE} ${CMAKE_SOURCE_DIR}/editor/filepp.pl ${arguments} ${CMAKE_CURRENT_SOURCE_DIR}/${_file}
+                        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${_file} 
+                        COMMENT "${PERL_EXECUTABLE} ${CMAKE_SOURCE_DIR}/editor/filepp.pl ${arguments} ${CMAKE_CURRENT_SOURCE_DIR}/${_file}")
     LIST(APPEND datfiles ${file_dat})
 ENDFOREACH()
 
