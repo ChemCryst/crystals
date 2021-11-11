@@ -3465,6 +3465,7 @@ LS-scale=  0.312   Wilson Scale=  0.000
 #DISTANCE
 #LIST 31
 #DISTANCE
+Bonds: Update required - List5 length change
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
@@ -12666,6 +12667,7 @@ LS-scale=  0.310   Wilson Scale=  0.000
  List now contains    33 atoms
 #COLLECT
 #DISTANCE
+Bonds: Update required - List5 length change
 
 
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          

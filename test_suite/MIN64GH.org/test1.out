@@ -2688,6 +2688,7 @@ LS-scale=  1.733   Wilson Scale=  0.000
 #DISTANCE
 #LIST 31
 #DISTANCE
+Bonds: Update required - List5 length change
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -5968,6 +5969,7 @@ Inter cycle Rw                   -5.0            1.9           0.10E+03
 [84] Mean C-C su =   0.00
 #CYCLENDS
 #PERH
+Bonds: Update required - List5 length change
            Per-hydrogenation of Carbon atoms
 H33 C(4) O(3) C(2) 
 H33 C(9) C(7) N(6) 
@@ -6200,6 +6202,7 @@ LS-scale=  1.531   Wilson Scale=  0.000
  List   5 now contains     22 atom(s)
 #LIST 12
 #DISTANCE
+Bonds: Update required - List5 length change
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -9478,6 +9481,7 @@ Inter cycle Rw                   -5.0            8.0           0.10E+03
 [84] Mean C-C su =   0.00
 #CYCLENDS
 #PERH
+Bonds: Update required - List5 length change
            Per-hydrogenation of Carbon atoms
 H33 C(4) O(3) C(2) 
 H33 C(9) C(7) N(6) 
@@ -9705,6 +9709,7 @@ LS-scale=  1.687   Wilson Scale=  0.000
  List   5 now contains     22 atom(s)
 #LIST 12
 #DISTANCE
+Bonds: Update required - List5 length change
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -12982,6 +12987,7 @@ Inter cycle Rw                   -5.0            8.0           0.10E+03
 [84] Mean C-C su =   0.00
 #CYCLENDS
 #PERH
+Bonds: Update required - List5 length change
            Per-hydrogenation of Carbon atoms
 H33 C(4) O(3) C(2) 
 H33 C(9) C(7) N(6) 
@@ -13209,6 +13215,7 @@ LS-scale=  1.687   Wilson Scale=  0.000
  List   5 now contains     22 atom(s)
 #LIST 12
 #DISTANCE
+Bonds: Update required - List5 length change
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          

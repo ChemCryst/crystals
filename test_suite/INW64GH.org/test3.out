@@ -6107,6 +6107,7 @@ LS-scale= 11.239   Wilson Scale=  0.000
 #DISTANCES
 #LIST 31
 #DISTANCES
+Bonds: Update required - List5 length change
 
 
  SODIUM COMPOUND TAKEN FROM THE LITERATURE  -  SPACE GROUP IS P321 !                  Date              Time          
@@ -6549,7 +6550,7 @@ The slope and correlation coefficient should be small
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     6     serial number       86     Address    82650     Length    7571     Created on                          
+ Print list type     6     serial number       86     Address    83491     Length    7571     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -6684,7 +6685,7 @@ The slope and correlation coefficient should be small
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     6     serial number       90     Address    90843     Length    7571     Created on                          
+ Print list type     6     serial number       90     Address    91684     Length    7571     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -6819,7 +6820,7 @@ The slope and correlation coefficient should be small
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     5     serial number       14     Address    98414     Length     137     Created on                          
+ Print list type     5     serial number       14     Address    99255     Length     137     Created on                          
 
 
 
@@ -7489,7 +7490,7 @@ Inter cycle Rw                   -5.0            5.2           0.10E+03
  P2S1C TEST DECK  -  TAKEN FROM XRAY                                                  Date              Time          
 
 
- Print list type     6     serial number       96     Address    90843     Length    7571     Created on                          
+ Print list type     6     serial number       96     Address    91684     Length    7571     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -8106,7 +8107,7 @@ ___________
  HEXACHLOROBORAZINE  -  LIST INPUT                                                    Date              Time          
 
 
- Print list type    11     serial number       20     Address   125702     Length     809     Created on                          
+ Print list type    11     serial number       20     Address   126543     Length     809     Created on                          
 
  Inverse matrix
 
@@ -8157,7 +8158,7 @@ ___________
  HEXACHLOROBORAZINE  -  LIST INPUT                                                    Date              Time          
 
 
- Print list type    11     serial number       20     Address   125702     Length     809     Created on                          
+ Print list type    11     serial number       20     Address   126543     Length     809     Created on                          
 
 
  Print List 11 as correlation matrix
@@ -8248,7 +8249,7 @@ ___________
  HEXACHLOROBORAZINE  -  LIST INPUT                                                    Date              Time          
 
 
- Print list type    11     serial number       20     Address   125702     Length     809     Created on                          
+ Print list type    11     serial number       20     Address   126543     Length     809     Created on                          
 
  Inverse matrix
 
@@ -8437,7 +8438,7 @@ ___________
  P6122 TEST DECK FROM LARSON  -  MUCH MODIFIED FOR CRYSTALS                           Date              Time          
 
 
- Print list type     5     serial number       30     Address   130914     Length     150     Created on                          
+ Print list type     5     serial number       30     Address   131725     Length     150     Created on                          
 
 
 
@@ -8616,7 +8617,7 @@ LS-scale=  1.000   Wilson Scale=  0.000
  P6122 TEST DECK FROM LARSON  -  MUCH MODIFIED FOR CRYSTALS                           Date              Time          
 
 
- Print list type     6     serial number      118     Address   130203     Length     711     Created on                          
+ Print list type     6     serial number      118     Address   131014     Length     711     Created on                          
 
  Quantity            Minimum        Maximum       Mean value    R.M.S. value
 
@@ -8912,7 +8913,7 @@ LS-scale=  1.000   Wilson Scale=  0.000
 
    10 *  171 171 171 170 170 170 170 170 170 170 170 170 170 170 170 170 170 170 170 170 170 170 170 170 169 169
 
-   11 *  171 171 170 170 170 170 170 170 170 170 170 170 170 170 170 170 170 170 170 170 170 170 170 169 169 169
+   11 *  171 171 170 170 170 170 170 170 170 170 170 170 170 170 170 170 170 170 170 170 170 170 169 169 169 169
 
    12 *  170 170 170 170 170 170 170 170 170 170 170 170 170 170 170 170 170 170 170 170 170 169 169 169 169 169
 

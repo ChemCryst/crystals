@@ -2961,6 +2961,7 @@ LS-scale=  1.673   Wilson Scale=  0.000
 #DISTANCE
 #LIST 31
 #DISTANCE
+Bonds: Update required - List5 length change
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -6475,7 +6476,7 @@ Inter cycle Rw                   -5.0            3.8           0.10E+03
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number        7     Address   125632     Length     318     Created on                          
+ Print list type    22     serial number        7     Address   126025     Length     318     Created on                          
 
 
              74 parameter(s) in    1 block(s) - as follows:
@@ -6567,7 +6568,7 @@ Inter cycle Rw                   -5.0            3.8           0.10E+03
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    24     serial number       28     Address   129234     Length     168     Created on                          
+ Print list type    24     serial number       28     Address   129627     Length     168     Created on                          
 
 
 
@@ -6706,6 +6707,7 @@ ___________
 ___________
  (3) NO
 #PERH
+Bonds: Update required - List5 length change
            Per-hydrogenation of Carbon atoms
 H33 C(4) O(3) C(2) 
 H33 C(9) C(7) N(6) 
@@ -6837,6 +6839,7 @@ LS-scale=  1.673   Wilson Scale=  0.000
 [91] <Fo>-<Fc> = -0.03    100*(<Fo>-<Fc>)/<Fo> =    -0.47
 #CYCLENDS
 #DISTANCE
+Bonds: Update required - List5 length change
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -10356,7 +10359,7 @@ Inter cycle Rw                   -5.0            7.0           0.10E+03
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       11     Address   187964     Length     318     Created on                          
+ Print list type    22     serial number       11     Address   188796     Length     318     Created on                          
 
 
              74 parameter(s) in    1 block(s) - as follows:
@@ -10448,7 +10451,7 @@ Inter cycle Rw                   -5.0            7.0           0.10E+03
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    24     serial number       44     Address   191566     Length     168     Created on                          
+ Print list type    24     serial number       44     Address   192398     Length     168     Created on                          
 
 
 
@@ -10587,6 +10590,7 @@ ___________
 ___________
  (3) NO
 #PERH
+Bonds: Update required - List5 length change
            Per-hydrogenation of Carbon atoms
 H33 C(4) O(3) C(2) 
 H33 C(9) C(7) N(6) 
@@ -10718,6 +10722,7 @@ LS-scale=  1.605   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =  0.2     100*(<Fo>-<Fc>)/<Fo> =     4.
 #CYCLENDS
 #DISTANCE
+Bonds: Update required - List5 length change
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -14243,7 +14248,7 @@ Inter cycle Rw                   -5.0            7.0           0.10E+03
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       15     Address   250140     Length     318     Created on                          
+ Print list type    22     serial number       15     Address   251551     Length     318     Created on                          
 
 
              74 parameter(s) in    1 block(s) - as follows:
@@ -14335,7 +14340,7 @@ Inter cycle Rw                   -5.0            7.0           0.10E+03
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    24     serial number       60     Address   253742     Length     168     Created on                          
+ Print list type    24     serial number       60     Address   255153     Length     168     Created on                          
 
 
 
@@ -14474,6 +14479,7 @@ ___________
 ___________
  (3) NO
 #PERH
+Bonds: Update required - List5 length change
            Per-hydrogenation of Carbon atoms
 H33 C(4) O(3) C(2) 
 H33 C(9) C(7) N(6) 
@@ -14605,6 +14611,7 @@ LS-scale=  1.605   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =  0.2     100*(<Fo>-<Fc>)/<Fo> =     4.
 #CYCLENDS
 #DISTANCE
+Bonds: Update required - List5 length change
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          

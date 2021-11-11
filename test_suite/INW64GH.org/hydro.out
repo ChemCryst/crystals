@@ -172,6 +172,7 @@ Bonds: Update required - There is no list 41
  List   5 now contains     18 atom(s)
 # NOTE THAT THE PHENYL GROUP IS REALLY BONDED TO C1
 #PERHYDRO
+Bonds: Update required - List5 length change
            Per-hydrogenation of Carbon atoms
 H23 C(1) N(1) C(6,1,1,0,1) 
 H12 C(2) C(7) C(3) 

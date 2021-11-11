@@ -2701,6 +2701,7 @@ LS-scale=  1.687   Wilson Scale=  0.000
 #DISTANCE
 #LIST 31
 #DISTANCE
+Bonds: Update required - List5 length change
 
 
  Cyclo in P 21 21 21                                                                  Date              Time          
@@ -4598,7 +4599,7 @@ All cycle   Rw                    0.0            20.           0.10E+03
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    20     serial number        3     Address    82165     Length     234     Created on                          
+ Print list type    20     serial number        3     Address    82589     Length     234     Created on                          
 
 
 
@@ -4830,7 +4831,7 @@ All cycle   Rw                    0.0            20.           0.10E+03
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    20     serial number        4     Address    82399     Length     234     Created on                          
+ Print list type    20     serial number        4     Address    82823     Length     234     Created on                          
 
 
 
@@ -5065,7 +5066,7 @@ All cycle   Rw                    0.0            20.           0.10E+03
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    20     serial number        5     Address    82633     Length     234     Created on                          
+ Print list type    20     serial number        5     Address    83057     Length     234     Created on                          
 
 
 
@@ -5312,7 +5313,7 @@ All cycle   Rw                    0.0            20.           0.10E+03
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    20     serial number        6     Address    82867     Length     234     Created on                          
+ Print list type    20     serial number        6     Address    83291     Length     234     Created on                          
 
 
 
