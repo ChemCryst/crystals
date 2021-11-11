@@ -2686,12 +2686,12 @@ CENTROID 0 0 0
 DOWN 0 6 0.04                                                                   
 ACROSS 0 6 0.04                                                                 
 END                                                                             
-\ TRIAL  almost certainly does not work
-\TRIAL                                                                          
-MAP /FO/-MIN= 45                                                                
-DISPLACEMENT .1 -.2 .3                                                          
-DOWN 13 0 .02 0                                                                 
-ACROSS 26 .02 0 0                                                               
-THROUGH 3 0 0 -.1                                                               
-END                                                                            
+\ \ TRIAL  almost certainly does not work
+\ \TRIAL                                                                          
+\ MAP /FO/-MIN= 45                                                                
+\ DISPLACEMENT .1 -.2 .3                                                          
+\ DOWN 13 0 .02 0                                                                 
+\ ACROSS 26 .02 0 0                                                               
+\ THROUGH 3 0 0 -.1                                                               
+\ END                                                                            
 \END                                                                              

@@ -475,13 +475,13 @@ sub obscureMachinePrecision() {
 		} elsif($line =~ m/^(.*The minimum and maximum map densities are\s+-?\d+\.\d\d)\d(\s+-?\d+\.\d\d)\d(.*)$/ ) {
 				  print $fho "[68] $1 $2 $3\n";
 	#         1  1  0  0  0    5.70E-02     5.70E-02    -3.22E-05    1.000    U33_local - <U33_local> == 0
-	#         (           1   )( 2 )(    3 )(4 )(  5  )(  6  )(7                                           )
+	#         (           1   )( 2 )(    3 )(4 )(  5  )(  6  )(7  ) (8    )  (9                  )
 		} elsif($line =~ m/^(\s+1\s+1\s+0\s+0\s+0\s+)(-?\d+\.\d+)(E.\d+\s+)(-?\d+\.\d+)(E.\d+\s+)(-?\d+\.\d+)(E.\d+\s+)(\d+\.\d+)(.*)$/ ) {
 			#               1                        2           3         4           5         6           7         8         9
 				  $sptwo = sprintf "%.0f", $2;
 				  $spfour = sprintf "%.0f", $4;
 				  $spsix = sprintf "%.0f", $6;
-				  $speight = sprintf "%.2f", $8;
+				  $speight = sprintf "%.1f", $8;
 			 print $fho "[79] $1$sptwo$3$spfour$5$spsix$7$speight$9\n";
 
 	# There is an alternative to [79] with no final leverage number ($8).
