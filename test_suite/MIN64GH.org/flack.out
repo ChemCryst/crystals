@@ -38,7 +38,6 @@
 # PUNCHED ON  5-OCT84 AT 16:49:57
 #
 #LIST 5
-Bonds: Update required - There is no list 41
 #LIST 3
 #LIST 23
 #LIST 12
@@ -47,6 +46,9 @@ Bonds: Update required - There is no list 41
 #LIST  16
 #CLEAR 17
 #LIST  17
+#LIST 26
+#BONDCALC
+Bonds: Update required - There is no list 41
 #LIST 26
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -3931,7 +3933,6 @@ Space group symbol is   P    -4
 #LIST 4
 #LIST 3
 #LIST      5
-Bonds: Update required - List5 length change
 #
 # PUNCHED ON 03/04/14 AT 08:39:39
 #
@@ -5043,7 +5044,7 @@ LS-scale=  2.709   Wilson Scale=  0.000
  After   1 pass     904 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
 #PURGE  LIST=7
- List type    5  serial number   65 from    51464 to    51690 will not be copied ( deleted )         
+ List type    5  serial number   65 from    51194 to    51420 will not be copied ( deleted )         
 
 
  ************************************************************************

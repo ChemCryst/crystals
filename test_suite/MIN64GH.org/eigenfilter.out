@@ -44,7 +44,6 @@ Space group symbol is   P    21   21   21
 #
 #           COORDINATES TAKEN FROM PARTIAL REFINEMENT DONE ELSEWHERE.
 #
-Bonds: Update required - There is no list 41
 #LIST 4
 #                                         WEISSENBERG DIFFRACTOMETER.
 #LIST 13
@@ -309,6 +308,9 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 #SFLS
 #CLEAR 17
 #LIST  17
+#LIST 26
+#BONDCALC
+Bonds: Update required - There is no list 41
 #LIST 26
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -2491,7 +2493,6 @@ H23 C(11) C(10) C(1)
 [82]            H        111.0    1.00000        1.    1.26     -0.06      0.18      0.06  
 [82]            H        112.0    1.00000        1.    1.14     -0.04      0.09      0.06  
  List now contains    21 atoms
-Bonds: Update required - List5 length change
 #SFLS
 #SPEC  NO  NO
 #CALCULAT   1
@@ -2649,7 +2650,6 @@ LS-scale=  1.733   Wilson Scale=  0.000
                       with an R.M.S. deviation of      0.10
 #PEAKS
  List now contains    25 atoms
-Bonds: Update required - List5 length change
 #EDIT
  The following atom(s) will be changed
          Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part
@@ -2666,7 +2666,6 @@ Bonds: Update required - List5 length change
     H  91      H  92      H  93      H 101      H 102      H 111      H 112
     H   1
  List   5 now contains     22 atom(s)
-Bonds: Update required - List5 length change
 #LIST 12
 #DISTANCE
 #LIST 31
@@ -3124,7 +3123,6 @@ Space group symbol is   P    21   21   21
 #
 #           COORDINATES TAKEN FROM PARTIAL REFINEMENT DONE ELSEWHERE.
 #
-Bonds: Update required - List5 length change
 #LIST 4
 #                                         WEISSENBERG DIFFRACTOMETER.
 #LIST 13
@@ -5518,7 +5516,6 @@ H23 C(11) C(10) C(1)
 [82]            H        111.0    1.00000        1.    1.26     -0.06      0.18      0.06  
 [82]            H        112.0    1.00000        1.    1.14     -0.04      0.09      0.06  
  List now contains    21 atoms
-Bonds: Update required - List5 length change
 #SFLS
 #SPEC  NO  NO
 #CALCULAT   1
@@ -5676,7 +5673,6 @@ LS-scale=  1.733   Wilson Scale=  0.000
                       with an R.M.S. deviation of      0.10
 #PEAKS
  List now contains    25 atoms
-Bonds: Update required - List5 length change
 #EDIT
  The following atom(s) will be changed
          Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part
@@ -5693,7 +5689,6 @@ Bonds: Update required - List5 length change
     H  91      H  92      H  93      H 101      H 102      H 111      H 112
     H   1
  List   5 now contains     22 atom(s)
-Bonds: Update required - List5 length change
 #LIST 12
 #DISTANCE
 
@@ -6149,7 +6144,6 @@ Space group symbol is   P    21   21   21
 #
 #           COORDINATES TAKEN FROM PARTIAL REFINEMENT DONE ELSEWHERE.
 #
-Bonds: Update required - List5 length change
 #LIST 4
 #                                         WEISSENBERG DIFFRACTOMETER.
 #LIST 13
@@ -8541,7 +8535,6 @@ H23 C(11) C(10) C(1)
 [82]            H        111.0    1.00000        1.    1.26     -0.06      0.18      0.06  
 [82]            H        112.0    1.00000        1.    1.14     -0.04      0.09      0.06  
  List now contains    21 atoms
-Bonds: Update required - List5 length change
 #SFLS
 #SPEC  NO  NO
 #CALCULAT   1
@@ -8710,7 +8703,6 @@ LS-scale=  1.687   Wilson Scale=  0.000
 
 [91]      C        11.         Q         2.          0.352      Deleted 3.8
  List now contains    25 atoms
-Bonds: Update required - List5 length change
 #EDIT
  The following atom(s) will be changed
          Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part
@@ -8727,7 +8719,6 @@ Bonds: Update required - List5 length change
     H  91      H  92      H  93      H 101      H 102      H 111      H 112
     H   1
  List   5 now contains     22 atom(s)
-Bonds: Update required - List5 length change
 #LIST 12
 #DISTANCE
 
@@ -9183,7 +9174,6 @@ Space group symbol is   P    21   21   21
 #
 #           COORDINATES TAKEN FROM PARTIAL REFINEMENT DONE ELSEWHERE.
 #
-Bonds: Update required - List5 length change
 #LIST 4
 #                                         WEISSENBERG DIFFRACTOMETER.
 #LIST 13
@@ -11575,7 +11565,6 @@ H23 C(11) C(10) C(1)
 [82]            H        111.0    1.00000        1.    1.26     -0.06      0.18      0.06  
 [82]            H        112.0    1.00000        1.    1.14     -0.04      0.09      0.06  
  List now contains    21 atoms
-Bonds: Update required - List5 length change
 #SFLS
 #SPEC  NO  NO
 #CALCULAT   1
@@ -11744,7 +11733,6 @@ LS-scale=  1.687   Wilson Scale=  0.000
 
 [91]      C        11.         Q         2.          0.352      Deleted 3.8
  List now contains    25 atoms
-Bonds: Update required - List5 length change
 #EDIT
  The following atom(s) will be changed
          Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part
@@ -11761,7 +11749,6 @@ Bonds: Update required - List5 length change
     H  91      H  92      H  93      H 101      H 102      H 111      H 112
     H   1
  List   5 now contains     22 atom(s)
-Bonds: Update required - List5 length change
 #LIST 12
 #DISTANCE
 

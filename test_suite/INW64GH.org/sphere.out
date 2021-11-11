@@ -280,7 +280,6 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 #LIST 28
 #LIST 30
 #LIST      5
-Bonds: Update required - There is no list 41
 #LIST     12
 #                                         NOFSQ, NOANOM
 #LIST 23
@@ -291,6 +290,9 @@ Bonds: Update required - There is no list 41
 #LIST  16
 #CLEAR 17
 #LIST  17
+#LIST 26
+#BONDCALC
+Bonds: Update required - There is no list 41
 #LIST 26
 #WEIGHT
                      LIST 4 weighting type is NORMAL

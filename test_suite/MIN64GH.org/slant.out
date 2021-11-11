@@ -9,7 +9,6 @@
 #LIST 13
 #LIST 29
 #LIST 5
-Bonds: Update required - There is no list 41
 #LIST 12
 #LIST 23
 #SET MIRROR ON
@@ -30,6 +29,9 @@ Bonds: Update required - There is no list 41
 #LIST  16
 #CLEAR 17
 #LIST  17
+#LIST 26
+#BONDCALC
+Bonds: Update required - There is no list 41
 #LIST 26
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -363,7 +365,6 @@ Space group symbol is   P    4
 # PUNCHED ON 26-JAN93 AT 11:35:34
 #
 #LIST      5
-Bonds: Update required - List5 length change
 #
 # PUNCHED ON 26-JAN93 AT 11:35:36
 #
@@ -478,7 +479,6 @@ LS-scale=  1.000   Wilson Scale=  0.000
    C 250 0.50 0.420-0.273 0.000 1 0.040 0.000 0.000 0.00 0.00 0.00     0.000      0
    C 251 0.50 0.446-0.227 0.000 1 0.040 0.000 0.000 0.00 0.00 0.00     0.000      0
  List   5 now contains      9 atom(s)
-Bonds: Update required - List5 length change
 #MOLAX
 
 
@@ -697,7 +697,7 @@ AZIMUTH  =    45.02     AZIMUTH /100 =   0.4502
  SLANT FOURIER TESTS IN P6122                                                         Date              Time          
 
 
- Print list type    20     serial number        6     Address    35657     Length     234     Created on                          
+ Print list type    20     serial number        6     Address    35537     Length     234     Created on                          
 
 
 

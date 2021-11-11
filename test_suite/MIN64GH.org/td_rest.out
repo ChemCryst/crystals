@@ -242,11 +242,12 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 # PUNCHED ON 30/09/11 AT 12:38:09
 #
 #LIST      5
-Bonds: Update required - There is no list 41
 #LIST 16
 #LIST 26
 #CLEAR 17
 #LIST  17
+#BONDCALC
+Bonds: Update required - There is no list 41
 #LIST 26
 
 

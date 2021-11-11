@@ -33,10 +33,10 @@
 # USE LAST
 #BONDCALC
 #LIST 29
-Bonds: Update required - There is no list 41
 #BONDCALC
 # SPACES
 #LIST 16
+Bonds: Update required - There is no list 41
 -- Original input to lexical analyzer:
 DIST 0.0,  1.0=MEAN CL(1) TO C(2),C(2)TO CL(3  ) , CL(  3  ) TO CL(1)
 DIST 0.0 ,1.0 = MEAN C -- C C==C C-5- C

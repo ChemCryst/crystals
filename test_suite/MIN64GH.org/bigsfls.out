@@ -42,7 +42,6 @@ Space group symbol is   P    -1
 # PUNCHED ON 28/01/11 AT 14:14:55
 #
 #LIST      5
-Bonds: Update required - There is no list 41
 #DISK
 #
 # PUNCHED ON 16-JAN87 AT 15:59:13
@@ -70,7 +69,7 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
  LARGE TEST JOB FOR CYBER                                                             Date              Time          
 
 
- Print list type    22     serial number        1     Address   439995     Length    7131     Created on                          
+ Print list type    22     serial number        1     Address   437174     Length    7131     Created on                          
 
 
             206 parameter(s) in    1 block(s) - as follows:
@@ -1396,6 +1395,9 @@ Refining   206 parameters in    1 block :    21749 elements in the LS matrix.
  Disc index completely restored
 # ADD CHECK TO LOCATE FAILING RESTRAINT (RESTRAINT NO 28)
 #CHECK
+#LIST 26
+#BONDCALC
+Bonds: Update required - There is no list 41
 #LIST 26
 #CHECK
 
@@ -5225,11 +5227,11 @@ LS-scale=  0.909   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =  0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
 #CYCLENDS
 #FINISH
- Physical reads      13250 Physical writes      10075 Cache hits     223487
- Cache hit distribution   203822   13108    2277     748     325     600
- Cache hit distribution      184     122     211     202     234     211
- Cache hit distribution      190     163     152     169     211     105
- Cache hit distribution      161      50      41      61      66      74
+ Physical reads      12295 Physical writes      10033 Cache hits     212131
+ Cache hit distribution   193707   12521    2297     751     317     420
+ Cache hit distribution      163     112     181     236     279     171
+ Cache hit distribution      150     202     138      93      45      52
+ Cache hit distribution       89      52      32      48      45      30
 
 
           : Job ends ok       with     0 warnings and     0 errors

@@ -44,7 +44,6 @@ Space group symbol is   P    21   21   21
 #
 #           COORDINATES TAKEN FROM PARTIAL REFINEMENT DONE ELSEWHERE.
 #
-Bonds: Update required - There is no list 41
 #LIST 4
 #                                         WEISSENBERG DIFFRACTOMETER.
 #LIST 13
@@ -303,6 +302,9 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 #SFLS
 #CLEAR 17
 #LIST  17
+#LIST 26
+#BONDCALC
+Bonds: Update required - There is no list 41
 #LIST 26
 #WEIGHT
                      LIST 4 weighting type is NORMAL

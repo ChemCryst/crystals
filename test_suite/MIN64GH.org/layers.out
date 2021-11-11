@@ -44,7 +44,6 @@ Space group symbol is   P    21   21   21
 #
 #           COORDINATES TAKEN FROM PARTIAL REFINEMENT DONE ELSEWHERE.
 #
-Bonds: Update required - There is no list 41
 #LIST 4
 #                                         WEISSENBERG DIFFRACTOMETER.
 #LIST 13
@@ -246,6 +245,9 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 #SFLS
 #CLEAR 17
 #LIST  17
+#LIST 26
+#BONDCALC
+Bonds: Update required - There is no list 41
 #LIST 26
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -2867,7 +2869,6 @@ H23 C(11) C(10) C(1)
 [82]            H        111.0    1.00000        1.    1.25     -0.06      0.18      0.05  
 [82]            H        112.0    1.00000        1.    1.14     -0.04      0.09      0.05  
  List now contains    21 atoms
-Bonds: Update required - List5 length change
 #SFLS
 #SPEC  NO  NO
 #CALCULAT   1
@@ -3927,7 +3928,6 @@ Space group symbol is   P    21   21   21
 #
 #           COORDINATES TAKEN FROM PARTIAL REFINEMENT DONE ELSEWHERE.
 #
-Bonds: Update required - List5 length change
 #LIST 4
 #                                         WEISSENBERG DIFFRACTOMETER.
 #LIST 13
@@ -6475,7 +6475,7 @@ Inter cycle Rw                   -5.0            3.8           0.10E+03
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number        7     Address   126248     Length     318     Created on                          
+ Print list type    22     serial number        7     Address   125632     Length     318     Created on                          
 
 
              74 parameter(s) in    1 block(s) - as follows:
@@ -6567,7 +6567,7 @@ Inter cycle Rw                   -5.0            3.8           0.10E+03
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    24     serial number       28     Address   129850     Length     168     Created on                          
+ Print list type    24     serial number       28     Address   129234     Length     168     Created on                          
 
 
 
@@ -6747,7 +6747,6 @@ H23 C(11) C(10) C(1)
 [82]            H        111.0    1.00000        1.    1.25     -0.06      0.18      0.05  
 [82]            H        112.0    1.00000        1.    1.14     -0.04      0.09      0.05  
  List now contains    21 atoms
-Bonds: Update required - List5 length change
 #SFLS
 #SPEC  NO  NO
 #CALCULAT   1
@@ -7805,7 +7804,6 @@ Space group symbol is   P    21   21   21
 #
 #           COORDINATES TAKEN FROM PARTIAL REFINEMENT DONE ELSEWHERE.
 #
-Bonds: Update required - List5 length change
 #LIST 4
 #                                         WEISSENBERG DIFFRACTOMETER.
 #LIST 13
@@ -10358,7 +10356,7 @@ Inter cycle Rw                   -5.0            7.0           0.10E+03
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       11     Address   189087     Length     318     Created on                          
+ Print list type    22     serial number       11     Address   187964     Length     318     Created on                          
 
 
              74 parameter(s) in    1 block(s) - as follows:
@@ -10450,7 +10448,7 @@ Inter cycle Rw                   -5.0            7.0           0.10E+03
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    24     serial number       44     Address   192689     Length     168     Created on                          
+ Print list type    24     serial number       44     Address   191566     Length     168     Created on                          
 
 
 
@@ -10630,7 +10628,6 @@ H23 C(11) C(10) C(1)
 [82]            H        111.0    1.00000        1.    1.25     -0.06      0.18      0.06  
 [82]            H        112.0    1.00000        1.    1.14     -0.03      0.09      0.06  
  List now contains    21 atoms
-Bonds: Update required - List5 length change
 #SFLS
 #SPEC  NO  NO
 #CALCULAT   1
@@ -11694,7 +11691,6 @@ Space group symbol is   P    21   21   21
 #
 #           COORDINATES TAKEN FROM PARTIAL REFINEMENT DONE ELSEWHERE.
 #
-Bonds: Update required - List5 length change
 #LIST 4
 #                                         WEISSENBERG DIFFRACTOMETER.
 #LIST 13
@@ -14247,7 +14243,7 @@ Inter cycle Rw                   -5.0            7.0           0.10E+03
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    22     serial number       15     Address   252133     Length     318     Created on                          
+ Print list type    22     serial number       15     Address   250140     Length     318     Created on                          
 
 
              74 parameter(s) in    1 block(s) - as follows:
@@ -14339,7 +14335,7 @@ Inter cycle Rw                   -5.0            7.0           0.10E+03
  Cyclo in P 21 21 21                                                                  Date              Time          
 
 
- Print list type    24     serial number       60     Address   255735     Length     168     Created on                          
+ Print list type    24     serial number       60     Address   253742     Length     168     Created on                          
 
 
 
@@ -14519,7 +14515,6 @@ H23 C(11) C(10) C(1)
 [82]            H        111.0    1.00000        1.    1.25     -0.06      0.18      0.06  
 [82]            H        112.0    1.00000        1.    1.14     -0.03      0.09      0.06  
  List now contains    21 atoms
-Bonds: Update required - List5 length change
 #SFLS
 #SPEC  NO  NO
 #CALCULAT   1

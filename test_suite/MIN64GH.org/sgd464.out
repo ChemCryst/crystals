@@ -52,8 +52,8 @@ Refining   263 parameters in    1 block :    35258 elements in the LS matrix.
 #LIST 26
 #BONDCALC
 #LIST 29
-Bonds: Update required - There is no list 41
 #BONDCALC
+Bonds: Update required - There is no list 41
 #LIST 26
 #CHECK HI
 

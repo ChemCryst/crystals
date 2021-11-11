@@ -31,9 +31,11 @@ Space group symbol is   P    -1
 #LIST 3
 #LIST 29
 #LIST 5
-Bonds: Update required - There is no list 41
 #LIST 30
 #USE REGU.DAT
+#EDIT
+#BONDCALC
+Bonds: Update required - There is no list 41
 #EDIT
  The list currently contains    68 atoms
     S   1      N   1      N   2      C   1      C   2      C   3      C   4
@@ -487,7 +489,6 @@ Space group symbol is   P    1    21/N 1
 #LIST 3
 #LIST 29
 #LIST 5
-Bonds: Update required - List5 length change
 #LIST 30
 #USE REGU.DAT
 #EDIT
@@ -1002,7 +1003,6 @@ Space group symbol is   P    1    21   1
 #LIST 3
 #LIST 29
 #LIST 5
-Bonds: Update required - List5 length change
 #LIST 30
 #USE REGU.DAT
 #EDIT
@@ -1524,7 +1524,6 @@ Space group symbol is   P    1    21/C 1
 #LIST 3
 #LIST 29
 #LIST 5
-Bonds: Update required - List5 length change
 #LIST 30
 #USE REGU.DAT
 #EDIT
@@ -1937,7 +1936,6 @@ Space group symbol is   P    21   21   21
 #LIST 3
 #LIST 29
 #LIST 5
-Bonds: Update required - List5 length change
 #LIST 30
 #USE REGU.DAT
 #EDIT
@@ -2609,7 +2607,6 @@ Space group symbol is   P    -1
 #LIST 3
 #LIST 29
 #LIST 5
-Bonds: Update required - List5 length change
 #LIST 30
 #USE REGU.DAT
 #EDIT
@@ -3226,7 +3223,6 @@ Space group symbol is   P    1    21/C 1
 #LIST 3
 #LIST 29
 #LIST 5
-Bonds: Update required - List5 length change
 #LIST 30
 #USE REGU.DAT
 #EDIT
@@ -3568,7 +3564,6 @@ Space group symbol is   P    1    21/N 1
 #LIST 3
 #LIST 29
 #LIST 5
-Bonds: Update required - List5 length change
 #LIST 30
 #USE REGU.DAT
 #EDIT
@@ -3993,7 +3988,6 @@ Space group symbol is   P    1    21   1
 #LIST 3
 #LIST 29
 #LIST 5
-Bonds: Update required - List5 length change
 #LIST 30
 #USE REGU.DAT
 #EDIT
@@ -4896,7 +4890,6 @@ Space group symbol is   P    -1
 #LIST 3
 #LIST 29
 #LIST 5
-Bonds: Update required - List5 length change
 #LIST 30
 #USE REGU.DAT
 #EDIT
@@ -5309,7 +5302,6 @@ Space group symbol is   P    21   21   21
 #LIST 3
 #LIST 29
 #LIST 5
-Bonds: Update required - List5 length change
 #LIST 30
 #USE REGU.DAT
 #EDIT
@@ -5817,7 +5809,6 @@ Space group symbol is   P    B    C    A
 #LIST 3
 #LIST 29
 #LIST 5
-Bonds: Update required - List5 length change
 #LIST 30
 #USE REGU.DAT
 #EDIT
@@ -6261,7 +6252,6 @@ Space group symbol is   P    -1
 #LIST 3
 #LIST 29
 #LIST 5
-Bonds: Update required - List5 length change
 #LIST 30
 #USE REGU.DAT
 #EDIT
@@ -6765,7 +6755,6 @@ Space group symbol is   P    1    21/C 1
 #LIST 3
 #LIST 29
 #LIST 5
-Bonds: Update required - List5 length change
 #LIST 30
 #USE REGU.DAT
 #EDIT
@@ -6826,7 +6815,6 @@ Space group symbol is   P    -1
 #LIST 3
 #LIST 29
 #LIST 5
-Bonds: Update required - List5 length change
 #LIST 30
 #USE REGU.DAT
 #EDIT
@@ -6927,7 +6915,6 @@ Space group symbol is   P    -1
 #LIST 3
 #LIST 29
 #LIST 5
-Bonds: Update required - List5 length change
 #LIST 30
 #USE REGU.DAT
 #EDIT
@@ -7634,7 +7621,6 @@ Space group symbol is   P    1    21/C 1
 #LIST 3
 #LIST 29
 #LIST 5
-Bonds: Update required - List5 length change
 #LIST 30
 #USE REGU.DAT
 #EDIT
@@ -7691,7 +7677,6 @@ Space group symbol is   P    -1
 #LIST 3
 #LIST 29
 #LIST 5
-Bonds: Update required - List5 length change
 #LIST 30
 #USE REGU.DAT
 #EDIT
@@ -8086,7 +8071,6 @@ Space group symbol is   P    1    21/C 1
 #LIST 3
 #LIST 29
 #LIST 5
-Bonds: Update required - List5 length change
 #LIST 30
 #USE REGU.DAT
 #EDIT
@@ -9089,7 +9073,6 @@ Space group symbol is   P    N    A    21
 #LIST 3
 #LIST 29
 #LIST 5
-Bonds: Update required - List5 length change
 #LIST 30
 #USE REGU.DAT
 #EDIT

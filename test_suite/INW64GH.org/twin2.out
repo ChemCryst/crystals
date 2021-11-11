@@ -10,7 +10,9 @@
 #LIST 4
 #LIST 5
 #EDIT
+#BONDCALC
 Bonds: Update required - There is no list 41
+#EDIT
 #LIST 13
  The following atom(s) will be changed
          Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part

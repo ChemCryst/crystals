@@ -37,7 +37,6 @@ Space group symbol is   P    1
 #LIST 3
 #LIST 29
 #LIST      5
-Bonds: Update required - There is no list 41
 #
 #LIST      6
 #LIST 28
@@ -56,6 +55,9 @@ Bonds: Update required - There is no list 41
 #CLEAR 17
 #LIST  17
 #LIST 23
+#LIST 26
+#BONDCALC
+Bonds: Update required - There is no list 41
 #LIST 26
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -6739,7 +6741,7 @@ All cycle   Rw                    0.0            10.           0.10E+03
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number       26     Address   227498     Length      90     Created on                          
+ Print list type    24     serial number       26     Address   224654     Length      90     Created on                          
 
 
 
@@ -10613,7 +10615,7 @@ All cycle   Rw                    0.0            19.           0.10E+03
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number       40     Address   336755     Length      90     Created on                          
+ Print list type    24     serial number       40     Address   333911     Length      90     Created on                          
 
 
 
@@ -14385,7 +14387,7 @@ All cycle   Min function          0.0           0.22E+06       0.10E+16
  THIS IS THE DEFAULT SETTING FOR THE TITLE, PROVIDED WHEN NO USER TITLE IS GIVEN.     Date              Time          
 
 
- Print list type    24     serial number       54     Address   448446     Length      90     Created on                          
+ Print list type    24     serial number       54     Address   445602     Length      90     Created on                          
 
 
 

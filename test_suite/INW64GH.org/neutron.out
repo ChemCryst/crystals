@@ -37,7 +37,6 @@ Space group symbol is   P    1    21/N 1
 #LIST 3
 # HERE IS THE MODEL, NOTE THE SPECIAL SHAPE FOR H(70).
 #LIST      5
-Bonds: Update required - There is no list 41
 #LIST 30
 #LIST 13
 # READ IN REFLECTIONS
@@ -237,6 +236,9 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 #LIST  16
 #CLEAR 17
 #LIST  17
+#LIST 26
+#BONDCALC
+Bonds: Update required - There is no list 41
 #LIST 26
 #SFLS
 #SPEC  NO  NO
@@ -3459,7 +3461,6 @@ LS-scale=  0.312   Wilson Scale=  0.000
 
 [91]      Q         9.         Q        14.          0.465      Deleted 8.1
  List now contains    32 atoms
-Bonds: Update required - List5 length change
 #COLLECT
 #DISTANCE
 #LIST 31
@@ -3928,7 +3929,6 @@ Bonds: Update required - List5 length change
     C   6      C   7      C   8      C   9      H  51      H  81      H  82
     H  83      H  91      H  92      H  93      H  70
  List   5 now contains     19 atom(s)
-Bonds: Update required - List5 length change
 #SFLS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -8192,7 +8192,6 @@ LS-scale=  0.312   Wilson Scale=  0.000
 
 [91]      Q         9.         Q        14.          0.465      Deleted 8.1
  List now contains    32 atoms
-Bonds: Update required - List5 length change
 #COLLECT
 #DISTANCE
 
@@ -8659,7 +8658,6 @@ Bonds: Update required - List5 length change
     C   6      C   7      C   8      C   9      H  51      H  81      H  82
     H  83      H  91      H  92      H  93      H  70
  List   5 now contains     19 atom(s)
-Bonds: Update required - List5 length change
 #SFLS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -12666,7 +12664,6 @@ LS-scale=  0.310   Wilson Scale=  0.000
 
 [91]      Q         2.         Q         3.          0.308      Deleted 4.5
  List now contains    33 atoms
-Bonds: Update required - List5 length change
 #COLLECT
 #DISTANCE
 
@@ -13158,7 +13155,6 @@ Bonds: Update required - List5 length change
     C   6      C   7      C   8      C   9      H  51      H  81      H  82
     H  83      H  91      H  92      H  93      H  70
  List   5 now contains     19 atom(s)
-Bonds: Update required - List5 length change
 #SFLS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -17165,7 +17161,6 @@ LS-scale=  0.310   Wilson Scale=  0.000
 
 [91]      Q         2.         Q         3.          0.308      Deleted 4.5
  List now contains    33 atoms
-Bonds: Update required - List5 length change
 #COLLECT
 #DISTANCE
 
@@ -17657,7 +17652,6 @@ Bonds: Update required - List5 length change
     C   6      C   7      C   8      C   9      H  51      H  81      H  82
     H  83      H  91      H  92      H  93      H  70
  List   5 now contains     19 atom(s)
-Bonds: Update required - List5 length change
 #SFLS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
