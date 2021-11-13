@@ -762,6 +762,15 @@ C----- MAXIMUM PARTS PER PARAMETER
       LDISTB = .FALSE.
 C--SET THE TIMING FUNCTION
       CALL XTIME1(2)
+
+C Ensure list 41 dependencies are up to date:
+      IF ( K41DEP() .LT. 0 ) THEN
+        write(cmon,'(a)') '{I Updating L41'
+        CALL XPRVDU(NCVDU, 1,0)
+        CALL XCSAE
+        CALL XBCALC(1)
+      ENDIF            
+
       CALL XCSAE
 C----- INITIALISE FUNCTION VECTOR USE
       JFNVC = 1
@@ -7107,10 +7116,10 @@ C Read the properties file and extract cov, vdw and colour.
             END IF
             NOTFND = NOTFND + 1
             WRITE(CATTYP,'(A4)')ISTORE(M5)
-            IF (( CATTYP(1:1).NE.'Q' ) .AND.
-     1          ( CATTYP(1:1).NE.'L' ) .AND.
-     1          ( CATTYP(1:1).NE.'M' ) .AND.
-     1          ( CATTYP(1:1).NE.'R' )) THEN
+            IF (( CATTYP(1:2).NE.'Q ' ) .AND.
+     1          ( CATTYP(1:2).NE.'L ' ) .AND.
+     1          ( CATTYP(1:2).NE.'M ' ) .AND.
+     1          ( CATTYP(1:2).NE.'R ' )) THEN
               WRITE(CMON,'(3A)')
      1 'FYI: Element not in L40 or L29: ',ISTORE(M5),ICOL
               CALL XPRVDU(NCVDU,1,0)
@@ -7164,9 +7173,9 @@ C -- elements which will override the TOLERANCE calculation.
       DO I5 = 0,N5-1
          M5 = L5 + I5*MD5
          WRITE(CATTYP,'(A4)')ISTORE(M5)
-         IF (( CATTYP(1:1).EQ.'L' ) .OR.
-     1       ( CATTYP(1:1).EQ.'M' ) .OR.
-     2       ( CATTYP(1:1).EQ.'R' )) CYCLE
+         IF (( CATTYP(1:2).EQ.'L ' ) .OR.
+     1       ( CATTYP(1:2).EQ.'M ' ) .OR.
+     2       ( CATTYP(1:2).EQ.'R ' )) CYCLE
 
          NEXTLC = NFL
          NFOUND = MAKE41( M5, NEXTLC )

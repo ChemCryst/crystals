@@ -10,11 +10,12 @@
 # PUNCHED ON 11/07/12 AT 13:24:49
 #
 #LIST      5
-Bonds: Update required - There is no list 41
 #DIST
 #CLEAR 12
 #LIST  12
 #LIST 31
+#BONDCALC
+Bonds: Update required - There is no list 41
 #DIST
 
 

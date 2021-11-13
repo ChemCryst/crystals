@@ -1,44 +1,15 @@
 
 
-add_definitions(-D_FILE_OFFSET_BITS=64)
-
-if(APPLE)
-SET(CMAKE_OSX_ARCHITECTURES "x86_64" )
-IF(CMAKE_BUILD_TYPE MATCHES Debug)
-    SET(CMAKE_OSX_ARCHITECTURES "x86_64" )
-    message("debug mode - only building x86_64")
-ENDIF(CMAKE_BUILD_TYPE MATCHES Debug) 
-
-#SET(CMAKE_OSX_DEPLOYMENT_TARGET "10.7") 
-#SET(CMAKE_OSX_SYSROOT "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk")
-
-#add_definitions("-DMACOSX_DEPLOYMENT_TARGET=10.7")
-#add_definitions("-std=gnu++11")
-#add_definitions("-mmacosx-version-min=10.7")
-#add_definitions("-isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk")
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
-ENDIF(APPLE)
-
 if (WIN32)
    FIND_PACKAGE(wxWidgets REQUIRED html scintilla stc adv core gl base)
 else ()
    FIND_PACKAGE(wxWidgets REQUIRED html stc adv core gl base)
 endif ()
+
 INCLUDE(${wxWidgets_USE_FILE})
 
-IF(CMAKE_BUILD_TYPE MATCHES Debug)
-   add_definitions("-D__CRDEBUG__")
-   add_definitions("-DCRY_DEBUG")
-ENDIF(CMAKE_BUILD_TYPE MATCHES Debug) 
 
-
-#-s -fexceptions -I/usr/local/include `wx-config --cppflags` -D_GNUF77_ 
-# -framework IOKit -framework Carbon -framework Cocoa -framework AudioToolbox -framework
-# System -framework OpenGL -lwx_osx_cocoau_xrc-2.9 -lwx_osx_cocoau_webview-2.9 -
-# lwx_osx_cocoau_html-2.9 -lwx_osx_cocoau_qa-2.9 -lwx_osx_cocoau_adv-2.9 
-# -lwx_osx_cocoau_core-2.9 -lwx_baseu_xml-2.9 -lwx_baseu_net-2.9 -lwx_baseu-2.9 
-
-add_library(CrystalsUserInterface OBJECT 
+add_library(CrystalsUserInterface STATIC 
 startupdialog.cpp
 ccchartcolour.cpp 
 ccchartdoc.cpp 
@@ -127,4 +98,14 @@ stdafx.cpp
 crslider.cpp
 cxslider.cpp )
 
+target_link_libraries(CrystalsUserInterface PUBLIC CrystalsDefines )
+target_link_libraries(CrystalsUserInterface INTERFACE ${wxWidgets_LIBRARIES})
+
+target_compile_definitions(CrystalsUserInterface PRIVATE "$<$<CONFIG:Debug>:__CRDEBUG__>")
+target_compile_definitions(CrystalsUserInterface PRIVATE "$<$<CONFIG:Debug>:CRY_DEBUG>")
+
+target_compile_definitions(CrystalsUserInterface PRIVATE WXUSINGDLL)
+target_compile_definitions(CrystalsUserInterface PUBLIC CRY_USEWX)
+
+target_compile_definitions(CrystalsUserInterface PRIVATE FILE_OFFSET_BITS=64)
 

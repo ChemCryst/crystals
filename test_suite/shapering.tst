@@ -50,7 +50,7 @@ R
 R
 R
 END
-\USE shapering3.in
+\USE shapering1.in
 \USE shapering.ref
 #                                         FSQ, ANOM
 \use shapering.in

@@ -2,6 +2,7 @@
 #SET PRINT OFF
 #TITLE TEST 1
 #REGULAR KEEP
+Bonds: Update required - List5 length change
 Input: mapping    6 atoms onto    6
 Matching by Rotation/inversion (Method 1)
 
@@ -100,7 +101,6 @@ Summary of Deviations
 
  List 5 now contains   21 atoms
  list modification complete
-Bonds: Update required - List5 length change
 #DISP HI
  Summary of contents of list  5 - Parameters
  The list currently contains    21 atoms
@@ -136,9 +136,9 @@ Bonds: Update required - List5 length change
  The following atom(s) will be deleted
     Q   6
  List   5 now contains     20 atom(s)
-Bonds: Update required - List5 length change
 #TITLE TEST 2
 #REGULAR KEEP
+Bonds: Update required - List5 length change
 Input: mapping    6 atoms onto    6
 Matching by Rotation/inversion (Method 1)
 
@@ -270,7 +270,6 @@ Individual Delta          0.004         0.008   O4       - O104
 
  List 5 now contains   26 atoms
  list modification complete
-Bonds: Update required - List5 length change
 #DISP HI
  Summary of contents of list  5 - Parameters
  The list currently contains    26 atoms
@@ -311,6 +310,7 @@ Bonds: Update required - List5 length change
 #SET PRINT OFF
 #TITLE TEST 3
 #REGULAR KEEP
+Bonds: Update required - List5 length change
 Input: mapping    6 atoms onto    6
 Matching by Rotation/inversion (Method 1)
 
@@ -409,7 +409,6 @@ Summary of Deviations
 
  List 5 now contains   21 atoms
  list modification complete
-Bonds: Update required - List5 length change
 #DISP HI
  Summary of contents of list  5 - Parameters
  The list currently contains    21 atoms
@@ -445,9 +444,9 @@ Bonds: Update required - List5 length change
  The following atom(s) will be deleted
     Q   6
  List   5 now contains     20 atom(s)
-Bonds: Update required - List5 length change
 #TITLE TEST 4
 #REGULAR KEEP
+Bonds: Update required - List5 length change
 Input: mapping    6 atoms onto    6
 Matching by Rotation/inversion (Method 1)
 
@@ -579,7 +578,6 @@ Individual Delta          0.004         0.008   O4       - O104
 
  List 5 now contains   26 atoms
  list modification complete
-Bonds: Update required - List5 length change
 #DISP HI
  Summary of contents of list  5 - Parameters
  The list currently contains    26 atoms
@@ -621,6 +619,7 @@ Bonds: Update required - List5 length change
 #SET PRINT OFF
 #TITLE TEST 5
 #REGULAR AUGMENT
+Bonds: Update required - List5 length change
 Input: mapping    6 atoms onto    6
 Matching by Rotation/inversion (Method 1)
 
@@ -719,7 +718,6 @@ Summary of Deviations
 
  List 5 now contains   16 atoms
  list modification complete
-Bonds: Update required - List5 length change
 #DISP HI
  Summary of contents of list  5 - Parameters
  The list currently contains    16 atoms
@@ -750,7 +748,6 @@ Bonds: Update required - List5 length change
  The following atom(s) will be deleted
     Q   6
  List   5 now contains     15 atom(s)
-Bonds: Update required - List5 length change
 #TITLE TEST 6
 #REGULAR AUGMENT
 Input: mapping    6 atoms onto    6
@@ -884,7 +881,6 @@ Individual Delta          0.004         0.008   O4       - O104
 
  List 5 now contains   16 atoms
  list modification complete
-Bonds: Update required - List5 length change
 #DISP HI
  Summary of contents of list  5 - Parameters
  The list currently contains    16 atoms
@@ -1013,7 +1009,6 @@ Summary of Deviations
 
  List 5 now contains   16 atoms
  list modification complete
-Bonds: Update required - List5 length change
 #DISP HI
  Summary of contents of list  5 - Parameters
  The list currently contains    16 atoms
@@ -1044,7 +1039,6 @@ Bonds: Update required - List5 length change
  The following atom(s) will be deleted
     Q   6
  List   5 now contains     15 atom(s)
-Bonds: Update required - List5 length change
 #TITLE TEST 8
 #REGULAR REPLACE
 Input: mapping    6 atoms onto    6
@@ -1178,7 +1172,6 @@ Individual Delta          0.004         0.008   O4       - O104
 
  List 5 now contains   16 atoms
  list modification complete
-Bonds: Update required - List5 length change
 #DISP HI
  Summary of contents of list  5 - Parameters
  The list currently contains    16 atoms
@@ -1308,7 +1301,6 @@ Summary of Deviations
 
  List 5 now contains   16 atoms
  list modification complete
-Bonds: Update required - List5 length change
 #DISP HI
  Summary of contents of list  5 - Parameters
  The list currently contains    16 atoms
@@ -1339,7 +1331,6 @@ Bonds: Update required - List5 length change
  The following atom(s) will be deleted
     Q   6
  List   5 now contains     15 atom(s)
-Bonds: Update required - List5 length change
 #TITLE TEST 10
 #REGULAR REPLACE
 Input: mapping    6 atoms onto    6
@@ -1473,7 +1464,6 @@ Individual Delta          0.004         0.008   O4       - O104
 
  List 5 now contains   16 atoms
  list modification complete
-Bonds: Update required - List5 length change
 #DISP HI
  Summary of contents of list  5 - Parameters
  The list currently contains    16 atoms
@@ -1602,7 +1592,6 @@ Summary of Deviations
 
  List 5 now contains   16 atoms
  list modification complete
-Bonds: Update required - List5 length change
 #DISP HI
  Summary of contents of list  5 - Parameters
  The list currently contains    16 atoms
@@ -1633,7 +1622,6 @@ Bonds: Update required - List5 length change
  The following atom(s) will be deleted
     Q   6
  List   5 now contains     15 atom(s)
-Bonds: Update required - List5 length change
 #TITLE TEST 12
 #REGULAR REPLACE
 Input: mapping    6 atoms onto    6
@@ -1767,7 +1755,6 @@ Individual Delta          0.004         0.008   O4       - O104
 
  List 5 now contains   16 atoms
  list modification complete
-Bonds: Update required - List5 length change
 #DISP HI
  Summary of contents of list  5 - Parameters
  The list currently contains    16 atoms
@@ -1930,7 +1917,6 @@ Individual Delta          0.004         0.008   O4       - O104
 
  List 5 now contains   16 atoms
  list modification complete
-Bonds: Update required - List5 length change
  The following atom(s) will be changed
          Occ    x     y     z      U11   U22   U33  U23  U13  U12    Spare     Part
                                    Uiso  Size D/100 A/100

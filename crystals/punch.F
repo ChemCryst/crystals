@@ -87,7 +87,7 @@ C block (l5,l9,l10) addresses itself.
 C XFAL09 loads a LIST 9, and saves the LIST 5 addresses if L5 is already in core.
 C
 C Revision 1.56  2011/02/04 17:40:01  djw
-C XPCH5E either prints table of esds or creates a LIST 9. Operations need to be separated in the near future
+C XPCH9E either prints table of esds or creates a LIST 9. Operations need to be separated in the near future
 C
 C Revision 1.55  2010/07/21 15:57:54  djw
 C Change order of list 6 header lines
@@ -706,13 +706,13 @@ C Close the .PDB FILE
       RETURN
       END
 C
-CODE FOR XPCH5E
-      SUBROUTINE XPCH5E(ITYPE)
+CODE FOR XPCH9E
+      SUBROUTINE XPCH9E(ITYPE)
 C--PRINT LIST 5 WITH ESDS/CREATE LIST 9
 c
 c      ITYPE 1 FOR PRINTED LIST
 C      ITYPE 2 FOR CREATION OF LIST 9
-C
+C      ITYPE 3 TO OUTPUT A LIST 9
 c      This is really horrid code (DJW, Feb2011)
 c      A LIST 5 and LIST 12 is loaded
 c      The short records are over written with esds from LIST 12
@@ -749,8 +749,8 @@ C
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'QSTORE.INC'
 C
-      WRITE(CMON,'('' Punching LIST 5E in e.s.d format'')')
-      CALL XPRVDU(NCVDU, 1,0)
+c      WRITE(CMON,'('' Punching LIST 5E in e.s.d format'')')
+c      CALL XPRVDU(NCVDU, 1,0)
 C
 C--INITIALISE THE TIMING
       CALL XTIME1(2)
@@ -771,7 +771,7 @@ c     if a LIST 5 is already loaded, save the pointers
       if ( itype .eq. 1) then
         write(cmon,'(a)') 'Writing simple esd file'
       else
-        write(cmon,'(a)') 'Creating LIST 9'
+        write(cmon,'(a)') ' Creating LIST 9'
       endif
       call xprvdu(ncvdu, 1,0)
       iupdat = istore(l23sp+1)
@@ -812,6 +812,11 @@ C--SET THE NEW ATOMS UP AT THE TOP OF CORE IN A LIST 9
          MD9A=13
          L9A=KCHLFL(MD9A*N9A)
          M9A=L9A
+c
+      if(itype.eq.3) then
+       write(ncpu,'(a)')'#LIST 9'
+       write(ncpu,'(a,i4)')'READ NATOM = ', N5
+      endif
 
 C--LOOP OVER THE ATOMS
       DO K=1,N5
@@ -831,9 +836,15 @@ c--         move the type and serial
             call xmove(store(m5),store(m9a),2)
 c--         move the esds
             call xmove(bpd(1),store(m9a+2),11)
-            write(ncpu,20)store(m9a),nint(store(m9a+1)),
-     1      (store(idjw),idjw=m9a+2, m9a+12)
+            if (itype.eq.3) then !Punch list
+             write(ncpu,21)store(m9a),nint(store(m9a+1)),
+     1       (store(idjw),idjw=m9a+2, m9a+12)
+21           format('ATOM ', a4,i4,3X,5f11.6,/,'CONT ',6F11.6)
+            endif
         ENDIF
+      if(itype.eq.3) then
+            write(ncpu,'(a)')'END'
+      endif
 C
 1585    CONTINUE
 C -- UPDATE THE ATOM INFORMATION FOR THE NEXT ATOM
@@ -1767,6 +1778,8 @@ C---- GET SIGMA THRESHOLD FROM L28
         END DO
       ENDIF
 C
+      THUSED = 0.
+      THMAXL6 = 0.
       NINCL = 0    !Included in the refinement.
 C
       IDREF=0
@@ -1838,13 +1851,17 @@ c        WT = 0.0    ! We need to keep the weight for PLATON's ALL calc
         IALW = 1                    !Used.
       END IF
 c
+      THETAL6=RTD*ASIN(SQRT(STORE(M6+16)*STORE(L13DC)*STORE(L13DC)))
+      THMAXL6=MAX(THMAXL6,THETAL6)    ! Maximum thata in fcf file
       IF (IALW.EQ.1) THEN
         CUSED='incl'
         NINCL = NINCL + 1
+        THUSED = MAX(THUSED,THETAL6)  ! maximum theta used
       ELSE
         CUSED='excl'
-      ENDIF    
-      IF ((IALW .EQ. 2) .AND. (FOS .GE. -10.*SIGMA))IALW = 1   !Mark USED for PLATON
+      ENDIF
+C REMOVED SO THAT FCF STATUS ACCURATELY REFLECT THE L28 FILTERS  
+CPLATON      IF ((IALW .EQ. 2) .AND. (FOS .GE. -10.*SIGMA))IALW = 1   !Mark USED for PLATON
       MALW(IALW)=MALW(IALW)+1
       IF (TWINNED) THEN
         IELEMENT = NINT(STORE(M6+11))
@@ -1886,15 +1903,15 @@ C
          IF (KFR.EQ. KFOUT) THEN
           WRITE(NCFPU1,1005)I,J,K,FOS,FCS,SIGMA,CALW(IALW),CUSED,WT
      1    ,'  # Theta=', 
-     2    RTD*ASIN(SQRT(STORE(M6+16)*STORE(L13DC)*STORE(L13DC)))
+     2    THETAL6
          ELSE
           WRITE(NCFPU1,1005)I,J,K,FOS,FCS,SIGMA,CALW(IALW),CUSED
          ENDIF
          ELSE                            ! Fo REFINEMENT
          IF (KFR.EQ.KFOUT) THEN
            WRITE(NCFPU1,1005)I, J, K, FO, FC, S,CALW(IALW),CUSED,WT
-     1     ,'  # Rho=',
-     2    RTD*ASIN(SQRT(STORE(M6+16)*STORE(L13DC)*STORE(L13DC)))
+     1     ,'  # Theta=',
+     2    THETAL6
           ELSE
            WRITE(NCFPU1,1005)I, J, K, FO, FC, S,CALW(IALW),CUSED
           ENDIF
@@ -1905,8 +1922,80 @@ C
 1850  CONTINUE
       WRITE(NCFPU1,'(''# No of reflections output = '',I6)') IDREF
       WRITE(NCFPU1,'(''# No of reflections in LSQ = '',I6)') NINCL
+      WRITE(NCFPU1,'(''# No of reflections excluded = '',I6)') IDREF-NINCL
+      WRITE(NCFPU1,'(
+     1 ''# Reflections can be excluded for several reasons'')')
+C      WRITE(NCFPU1,'(''# Ratio Unique/Expected Reflections ='',F6.3)')
+C     1 FLOAT(IDREF)/NINCL
+      WRITE(NCFPU1,'(''# Maximum theta in file='',F6.2,
+     1 '' Maximum theta used='',f6.2)') THMAXL6
       WRITE(NCFPU1,'(''#  '',5(1X,A,A,I6))')
      1 (CALW(I),' = ',MALW(I),I=1,5)
+      djw2=(FLOAT(IDREF)/NINCL)-1.
+      djw3=abs(djw2-nint(djw2))
+      CALL OUTCOL(9)
+      IVRF1=0
+      IF(DJW3.GE.0.1) THEN
+      IVRF1=1
+       WRITE(CMON,'(/
+     1 '' You may get a PLATON warning::''/
+     2 '' PLAT021_ALERT_4_B Ratio Unique / Expected reflections''/)')
+c     3 '' Ratio = '', f6.3/)') (FLOAT(IDREF)/NINCL)
+       CALL XPRVDU(NCVDU, 5,0)
+      ENDIF
+      IVRF2=0
+      IF(THMAXL6.GT. THUSED) THEN
+       IVRF2=1
+       WRITE(CMON,'(/
+     1 '' You may get a PLATON warning::''/
+     1 '' PLAT920_ALERT_1_B Theta(Max)  in CIF and FCF Differ by''
+     1  f6.2,/)') THMAXL6-THUSED
+     1  
+       CALL XPRVDU(NCVDU,3,0)
+      ENDIF
+      IF(MAX(IVRF1,IVRF2).GE.1) THEN
+       WRITE(CMON,'(/
+     1 ''See the end of the fcf file for model vrf replies''/)')
+       CALL XPRVDU(NCVDU,3,0)
+C
+      IF(IVRF1.GE.1) THEN
+      WRITE(NCFPU1,'(/
+     1 ''# start Validation Reply Form''/
+     1 ''_vrf_PLAT021_I''/
+     1 '';''/
+     1 ''PROBLEM: Ratio Unique / Expected Reflections too High''/
+     1 ''RESPONSE: ...''/
+     1 ''The fcf file contains all the merged data ('',I7 ,'') ''/
+     1 ''but only'',I7,'' of them are marked as "included". ''/
+     1   I7,'' are flagged "h" i.e. rejected high angle ''/
+     1 ''reflections, also marked "excluded".''
+     1 ''This information is embedded as a #comment ''/
+     1 '' at the end of the fcf file.  ''/
+     1 ''See _refine_special_details for the filters used''/
+     1 '';''/
+     1 ''# end Validation Reply Form''/
+     1 /)')IDREF, NINCL, MALW(4)
+      ENDIF     
+C
+      IF(IVRF2.GE.1) THEN
+      WRITE(NCFPU1,'(/
+     1 ''_vrf_PLAT920_I''/
+     1 '';''/
+     1 ''PROBLEM: Theta(Max)  in CIF and FCF Differ''/
+     1 ''RESPONSE: ...''/
+     1 ''The fcf file contains all the merged data''
+     1 '' (Thetamax='',F6.2,'') ''/
+     1 ''but only some of them marked as "included" '',
+     1 ''in the refinement (Thetaused='',F6.2,''). ''/
+     1 ''This information is also embedded as a #comment''/
+     1 ''at the end of the fcf file.  ''/
+     1 ''See _refine_special_details for the filters used''/
+     1 '';''/
+     1 ''# end Validation Reply Form''/
+     1 /)')THMAXL6, THUSED
+      ENDIF
+      ENDIF
+      CALL OUTCOL(1)
       GOTO 9999
 9900  CONTINUE
       WRITE(NCFPU1,'(''#  '',10A4)') (KTITL(I),I=1,10)

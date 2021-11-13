@@ -242,7 +242,7 @@ WorkshopDialog::WorkshopDialog ( wxWindow * parent, wxWindowID id, const wxStrin
 	demoinfo.Add( "Keen twin",   "keen",    "Twinned organic salt example" );
 	demoinfo.Add( "HKLF5 twin",   "Bruce",    "Non-merohedral twin example" );
 	demoinfo.Add( "Disordered enantiomers",   "disorder",   "Molecular solid solution of enantiomers" );
-	demoinfo.Add( "SO3 disorder",   "SO3-disorer",   "Conformational disorder in tosylate ion" );
+	demoinfo.Add( "SO3 disorder",   "SO3-disorder",   "Conformational disorder in tosylate ion" );
 	demoinfo.Add( "Sugar disorder",   "Sugar-disorder",   "Hydroxymethyl disorder " );
 	demoinfo.Add( "B10F12 twin",   "twin3",    "Twinned inorganic example" );
 	demoinfo.Add( "BaSiN2",   "zoltan",    "Inorganic example" );
