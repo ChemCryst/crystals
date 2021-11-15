@@ -40,22 +40,45 @@ FOREACH (_file ${sdafiles})
     LIST(APPEND datfiles ${file_dat})
 ENDFOREACH()
 
+#FILE (GLOB pyfiles "${CMAKE_CURRENT_SOURCE_DIR}/*.py")
+#foreach(_file IN LISTS pyfiles)
+#    add_custom_command(
+#                TARGET PyFileTarget PRE_BUILD
+#                COMMAND ${CMAKE_COMMAND} -E copy_if_different ${_file} .
+#                COMMENT "Copying header: ${_file}")
+#endforeach()
+
+
+
+file(GLOB templateFiles RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/*.py)
+foreach(templateFile ${templateFiles})
+	set(srcTemplatePath ${CMAKE_CURRENT_SOURCE_DIR}/${templateFile})
+	if(NOT IS_DIRECTORY ${srcTemplatePath})
+		message(STATUS "Configuring file ${templateFile}")
+		configure_file(
+				${srcTemplatePath}
+				${templateFile}
+				COPYONLY)
+	endif(NOT IS_DIRECTORY ${srcTemplatePath})
+endforeach(templateFile)
 
 
 # Data file sources and targets
-FILE (GLOB pyfiles "${CMAKE_CURRENT_SOURCE_DIR}/*.py")
-SET  (pyoutfiles)
-FOREACH (_file ${pyfiles})
-    get_filename_component(pyfile "${_file}" NAME)
-    message(STATUS "Generating ${pyfile}")
-    ADD_CUSTOM_COMMAND( OUTPUT ${pyfile}
-                COMMAND ${CMAKE_COMMAND} -E copy_if_different "${_file}" "${pyfile}"
-                COMMENT "Copying py script file: ${_file} to ${pyfile}"
-				DEPENDS ${_file} )
-    LIST(APPEND pyoutfiles ${pyfile})
-ENDFOREACH()
+#FILE (GLOB pyfiles RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/*.py")
+#message( STATUS "Pyfiles ${pyfiles}" )
+#SET  (pyoutfiles)
+#FOREACH (_file ${pyfiles})
+##    get_filename_component(pyfile "${_file}" NAME)
+#    set( pyfile ${_file} )
+##    message(STATUS "Generating ${pyfile}")
+#    ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURENT_BINARY_DIR}${pyfile}
+#                COMMAND ${CMAKE_COMMAND} -E copy_if_different "${_file}" "${pyfile}"
+#                COMMENT "Copying py script file: ${_file} to ${pyfile}"
+#				DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${_file} )
+#    LIST(APPEND pyoutfiles ${CMAKE_CURENT_BINARY_DIR}${pyfile} )
+#ENDFOREACH()
 
 
 
-add_library(CrystalsScripts INTERFACE ${scpfiles} ${pyoutfiles} ${datfiles})
+add_library(CrystalsScripts INTERFACE ${scpfiles} ${datfiles})
 target_link_libraries(CrystalsScripts INTERFACE CrystalsDefines)
