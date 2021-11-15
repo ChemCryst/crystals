@@ -1815,6 +1815,7 @@ c        ENDIF
 c1     CONTINUE
 
       J = MIN(LEN(NAME(1)),MAX(1,KCLNEQ(FILNAM,-1,' ')))
+      NAME(1) = ' '
       NAME(1)(1:J)=FILNAM(1:J)
 
       NAMLEN(1)=J
