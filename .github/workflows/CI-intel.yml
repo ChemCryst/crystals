@@ -190,7 +190,7 @@ jobs:
         set CRYVMINOR=${{ steps.get_version.outputs.minor }}
         set CRYVPATCH=${{ steps.get_version.outputs.patch }}
         echo Commit SHA: %CRYSVNVER% Version: %CRYVMAJOR%.%CRYVMINOR%.%CRYVPATCH%
-        cmake .. -G"NMake Makefiles" -DuseGUI=${{ matrix.guiflag }} -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }} -DuseCustomMKL=yes
+        cmake .. -G"NMake Makefiles" -DuseGUI=${{ matrix.guiflag }} -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }} -DuseCustomMKL=yes -DCMAKE_EXPORT_COMPILE_COMMANDS=on
         nmake
         copy ..\wx\lib\vc14x_x64_dll\wxmsw314u_stc_vc14x_x64.dll . 
         copy ..\wx\lib\vc14x_x64_dll\wxmsw314u_core_vc14x_x64.dll .
@@ -320,12 +320,11 @@ jobs:
         path: test_suite
 
 # Could be useful for debugging
-#    - name: Upload exe folder if failures 
-#      uses: actions/upload-artifact@v1
-#      if:  failure()
-#      with:
-#        name: executable-outputs-win64-${{ matrix.cl }}
-#        path: ci
+    - name: Upload compile_commands 
+      uses: actions/upload-artifact@v1
+      with:
+        name: executable-outputs-win64-${{ matrix.cl }}
+        path: ci/compile_commands.json
 
 
     - name: Build installer
