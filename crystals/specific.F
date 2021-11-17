@@ -2683,18 +2683,27 @@ C            call SYSTEM( CMDLINE )
       use, intrinsic :: ISO_C_BINDING
       integer(C_INT), intent(IN), VALUE :: mlen
       character(kind = c_char) :: message(*)
-      character(len=mlen) normal_string
+      character(len=200) normal_string
       INCLUDE 'XIOBUF.INC'
 
 c      if ( mlen == 0 ) return
 
-      normal_string = ' '
-      do i = 1, mlen
-        normal_string(i:i) = message(i)
+
+c E.g. mlen = 50; ioff=0; iend=50; irend = 50
+c E.g. mlen = 225; (a) ioff=0; iend=200; irend=200
+c                  (b) ioff=200; iend=225; irend=25
+
+      do j = 1, mlen, 200
+          normal_string = ' '
+		  ioff = j-1
+		  iend = min(ioff+200, mlen)
+		  irend = iend - ioff
+          do i = 1, irend
+			normal_string(i:i) = message(i+ioff)
+		  end do
+
+		  WRITE (CMON,'(A)') normal_string(1:nctrim(normal_string))
+		  CALL XPRVDU (6,1,0)
       end do
-
-      WRITE (CMON,'(A)') normal_string(1:nctrim(normal_string))
-      CALL XPRVDU (6,1,0)
-
       RETURN
       END
