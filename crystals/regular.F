@@ -470,6 +470,14 @@ C -- SET THE INPUT LIST TYPE TO LIST 5
 C -- SET THE OUTPUT LIST TYPE TO LIST 5
       LB=KTYP05(1)
 C -- CLEAR THE STORE
+C Ensure list 41 dependencies are up to date:
+      IF ( K41DEP() .LT. 0 ) THEN
+        write(cmon,'(a)') '{I Updating L41'
+        CALL XPRVDU(NCVDU, 1,0)
+        CALL XRSL
+        CALL XCSAE
+        CALL XBCALC(1)
+      ENDIF            
       CALL XRSL
       CALL XCSAE
       WRITE (CPCH,'(15A4,a)') (KTITL(I),I=1,15),CHAR(9)
@@ -482,6 +490,8 @@ C -- LOAD LIST 5
       CALL XLDRO5(LA)
       IF ( IERFLG .LT. 0 ) GO TO 9250
       IF (KHUNTR (41,0,IADDL,IADDR,IADDD,-1).LT. 0) CALL XFAL41
+
+
 C -- INITIALISE VALUES FOR REGULARISE
 C -- INDICATE THAT LIST 12 IS NOT TO BE USED
       INCLUDE 'IDIM12.INC'

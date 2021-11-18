@@ -320,7 +320,7 @@ C
       INCLUDE 'XSCCHR.INC'
       INCLUDE 'XSCGBL.INC'
       INCLUDE 'XSCMSG.INC'
-      INCLUDE 'XERRRS.INC'
+C      INCLUDE 'XERRRS.INC'
 C
       INCLUDE 'XMENUI.INC'
 C
@@ -1161,7 +1161,8 @@ C
      8           1HC, 1HL, 1HO, 1HS, 1HS, 1HP, 1HA, 1HW,
      9           1H$, 1H , 1H , 1H , 1HA, 1HP, 1HP, 1HE,
      1           1HB, 1HE, 1HN, 1HC, 1HD, 1HE, 1HF, 1HI,
-     2           1HF, 1HL, 1HU, 1HS, 1HI, 1HM, 1HP, 1HO /
+     2           1HF, 1HL, 1HU, 1HS, 1HI, 1HM, 1HP, 1HO,
+     2           1HP, 1HY, 1HT, 1HH /
 
 #else
       DATA KTITL( 1)/'THIS'/,KTITL( 2)/' IS '/,KTITL( 3)/'THE '/
@@ -1199,7 +1200,8 @@ C
      8           'C', 'L', 'O', 'S', 'S', 'P', 'A', 'W',
      9           '$', ' ', ' ', ' ', 'A', 'P', 'P', 'E',
      1           'B', 'E', 'N', 'C', 'D', 'E', 'F', 'I',  
-     2           'F', 'L', 'U', 'S', 'I', 'M', 'P', 'O'  /
+     2           'F', 'L', 'U', 'S', 'I', 'M', 'P', 'O',
+     2           'P', 'Y', 'T', 'H' /
 #endif
 C
       DATA MD0/8/,N0/0/,LN/0/,LSN/0/,IREC/0/,LEF/0/,LSTLEF/0/,MAPS/0/
@@ -1213,7 +1215,7 @@ C
 C
 C -- DEFINE SYSTEM INSTRUCTIONS
 cdjwmar99
-      DATA NWHF / 4 / , NHF / 22 / , LHF / 4 /
+      DATA NWHF / 4 / , NHF / 23 / , LHF / 4 /
 C
 C
 C
@@ -1903,8 +1905,8 @@ C -- SYMBOLIC CODES FOR MESSAGE TYPES
       DATA IOPABN / 1 / , IOPCMI / 2 / , IOPEND / 3 /
       DATA IOPPRC / 4 / , IOPSPC / 5 / , IOPLSP / 6 /
       DATA IOPINT / 7 / , IOPLSE / 8 / , IOPVER / 9 /
-C -- VALUES FOR ERRORS STORED IN LIST 39
-      DATA NXWAVE / 1 /
+CC -- VALUES FOR ERRORS STORED IN LIST 39
+C      DATA NXWAVE / 1 /
 
 C -- INITIAL VALUES FOR DIRECT ACCESS FILE CONTROL
       DATA IDAINI / 0 / , IDATOT / -1 / , IDAMAX / 0 /

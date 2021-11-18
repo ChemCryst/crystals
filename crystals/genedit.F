@@ -835,6 +835,142 @@ C
       END
 
 
+
+CODE FOR KGEDPY
+C 
+C Fill a flattened 2D array in OUTPUT(ON) with NRECS*RECLN elements of all records of type RN from list GLN.
+C Input
+C  GLN - list number to access ( RETURN -1 if not available )
+C  RN - record number in list to access  ( RETURN -2 if invalid )
+C  OUTPUT - a float array of length ON
+C  ON - length of OUTPUT array, set to zero on first call to discover required size via NRECS and RECLN values.
+C  
+C Output
+C  RETURN VALUE - negative error code from above, or 0 if successful ( RETURN -4 for unknown error )
+C  OUTPUT - filled with data. If ON != RECLN * NRECS then RETURN RECLN*NRECS - OUTPUT is still filled, but only up to available length
+C  RECLN - length of records retrieved for this GLN and RN
+C  NRECS - number of records retrieved for this GLN and RN
+C
+C E.g. call once with ON set to zero, then create an OUTPUT array of correct size and call again.
+
+C IRET = KGEDPY(5, 101, OUTPUT, 0, NRECS, RECLN)
+C ALLOCATE OUTPUT(IRET)
+C JRET = KGEDPY(5, 101, OUTPUT, IRET, NRECS, RECLN)
+CC Output now contains all list 5 record 101 entries.
+C
+C For a first try, all data is extracted as float.
+C
+      INTEGER FUNCTION KGEDPY(GLN,RN,OUTPUT,ON,NRECS,RECLN) bind(c)
+C
+C REMEMBER
+C            DATA IS STORED IN RECORD NUMBER n, DEFINED IN 'COMMANDS'
+C            A RECORD CONSISTS OF NGRP GROUPS
+C            A GROUP CONTAINS LENGRP ITEMS
+C
+C      IF A RECORD CAN BE LOCATED, NGRP IS GT 0 AND
+C      THE RECORD BEGINS AT IRCADR
+C
+      use lists1_mod, only: xrlind
+      use lists2_mod, only: xldlst
+      
+      CHARACTER*80 CFORM(3) , CIFORM
+      CHARACTER*132 CGENSB
+      CHARACTER*33 CEVARI , CTVARI, CUVARI
+      INTEGER GLN, RN, ON, NRECS, RECLN
+      REAL OUTPUT(ON)
+C
+      INCLUDE 'ISTORE.INC'
+C
+      INCLUDE 'STORE.INC'
+      INCLUDE 'XLST50.INC'
+      INCLUDE 'XLISTI.INC'
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'XUNITS.INC'
+      INCLUDE 'XSSVAL.INC'
+      INCLUDE 'XERVAL.INC'
+      INCLUDE 'XOPVAL.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XSIZES.INC'
+      INCLUDE 'TRDDAT.INC'
+      INCLUDE 'XRDDAT.INC'
+      INCLUDE 'UFILE.INC'
+C
+      INCLUDE 'QSTORE.INC'
+      DATA LLSTCM / 512 /
+C
+C -- ALLOCATE SPACE FOR 'COMMON BLOCK' AREA
+      ILSTCM = KSTALL ( LLSTCM )
+
+      NRECS = 0
+      RECLN = 0
+      KGEDPY = -4 ! Set to unexpected error until we're ready to return success.
+C
+      CFORM(1) = '(1X,F15.5)'
+      CFORM(2) = '(1X,F15.5)'
+      CFORM(3) = '(1X,F15.5)'
+C
+      CEVARI = ' '
+      CTVARI = ' '
+      ILEVEL = 1
+      IERROR = IERWRN
+      ILVACT = 0
+C
+      IRTYPE = 0
+      LDATA = 0
+      MDATA = 0
+      NMAX = 0
+
+C
+C      LOCATE      KEY         DISPLAY     FORMAT      SEARCH
+C      GROUP       ERROR       INSERT      DELETE      WRITE
+C      TRANSFER    CHANGE      RECORD      CHECK       OPERATE
+C      TOP         NEXT        PREVIOUS    BOTTOM
+C      TRANSHEAD   GETSERIAL   SORT        GENERALEDIT
+C
+c      GO TO ( 2100 , 2200 , 2300 , 2400 , 2500 ,
+c     2 2600 , 2700 , 2800 , 2900 , 3000 ,
+c     3 3100 , 3200 , 3300 , 3400 , 3500 ,
+c     4 2420,  2440 , 2460 , 2480 , 
+c     5 3150 , 3160,  3170,  1500 , 9920 ) , IDIR
+c      GO TO 9920
+
+
+C -- LOAD LIST
+      CALL XLDLST ( GLN , ISTORE(ILSTCM) , LLSTCM , -1 )
+      IF ( IERFLG .LE. 0 ) THEN
+         KGEDPY = -1
+         RETURN
+      END IF
+
+C -- FIND RECORD
+      ISTAT = KHUNTR ( GLN , RN , IADDL , IADDR , IADDD , -1 )
+      IF ( ISTAT .NE. 0 ) THEN
+        KGEDPY = -2
+        RETURN
+      ENDIF
+C
+      RECLN = ISTORE(IADDR+4)
+      NRECS = ISTORE(IADDR+5)
+      LDATA = ISTORE(IADDR+3)
+      ICMADR = ILSTCM + ISTORE(IADDR+7) + 2
+C
+      KGEDPY = NRECS * RECLN
+      
+      ICOPYS = MIN(KGEDPY,ON)
+
+      DO I = 1, ICOPYS
+        OUTPUT(I) = STORE(LDATA+I-1)
+      END DO
+
+!     We should reset STORE pointers before returning, or they will creep slowly upwards until next # instruction.
+
+      RETURN
+
+      END
+
+
+
+
 CODE FOR GENLOG
       SUBROUTINE GENLOG
 C Log the current generaledit directive.

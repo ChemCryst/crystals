@@ -10,7 +10,6 @@
 # OF C AND O INTERCHANGED AND EXPANDED
 #
 #LIST 29
-Bonds: Update required - There is no list 41
 #LIST 12
 #LIST 23
 #LIST 16
@@ -21,6 +20,9 @@ Bonds: Update required - There is no list 41
  Initialising Special positions
 Refining    21 parameters in    4 block :      148 elements in the LS matrix.
  Space required on DISK is    1 records,     2  Blocks,     1 Kbytes. 
+#LIST 26
+#BONDCALC
+Bonds: Update required - There is no list 41
 #LIST 26
 #CHECK
 #LIST 16
@@ -1602,7 +1604,6 @@ Space group symbol is   P    1    21/C 1
                               Y axis from  0.000 to  0.500
                               Z axis from  0.000 to  0.500
 #LIST 5
-Bonds: Update required - List5 length change
 #LIST 12
 #LIST 16
 #CHECK
@@ -1621,104 +1622,104 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
      0 COMPILER 
      1 EXECUT 
 
- Listing of the code chain.     Chain base =     779     Data base =16777216     Control block :     7791677697216777216
-          0       779       779        12  -1000779  -1000000  -1000000         0         6       789      -243         0
- Work stack header at     785  :  -1000000         6      -244         0  -1000000         0
- Function at     779  :   10   executioN  
+ Listing of the code chain.     Chain base =     880     Data base =16777216     Control block :     8801677697216777216
+          0       880       880        12  -1000880  -1000000  -1000000         0         6       890      -243         0
+ Work stack header at     886  :  -1000000         6      -244         0  -1000000         0
+ Function at     880  :   10   executioN  
      2 SUM LAYER SCALES 
 
- Listing of the code chain.     Chain base =     787     Data base =16777216     Control block :     7871677697216777216
-          0       787       787        46        12   -999213  -1000000         1         6       797     -1823         0
- Work stack header at     793  :  -1000000         6      -244      1580  -1000000         0
- Overall parameter header at     799  :        29      1026         1                   1        19
-                                         -1000000  -1000000  -1000000     -1033     -1823
-       806  :  -1000000  -1000000     LAYER   
- Overall parameter header at     816  :  -1000000         2         2            -1000000  -1000000
+ Listing of the code chain.     Chain base =     888     Data base =16777216     Control block :     8881677697216777216
+          0       888       888        46        12   -999112  -1000000         1         6       898     -2025         0
+ Work stack header at     894  :  -1000000         6      -244      1782  -1000000         0
+ Overall parameter header at     900  :        29      1026         1                   1        19
+                                         -1000000  -1000000  -1000000     -1134     -2025
+       907  :  -1000000  -1000000     LAYER   
+ Overall parameter header at     917  :  -1000000         2         2            -1000000  -1000000
                                          -1000000  -1000000  -1000000  -1000000  -1000000
- Function at     787  :   15   sum        
+ Function at     888  :   15   sum        
      3 SUM ELEMENT SCALES 
 
- Listing of the code chain.     Chain base =     787     Data base =16777216     Control block :     7871677697216777216
-          0       787       787        46        12   -999213  -1000000         1         6       797     -1823         0
- Work stack header at     793  :  -1000000         6      -244      1580  -1000000         0
- Overall parameter header at     799  :        29      1027         1                   1        19
-                                         -1000000  -1000000  -1000000     -1033     -1823
-       806  :  -1000000  -1000000     ELEMENT 
- Overall parameter header at     816  :  -1000000         3         1            -1000000  -1000000
+ Listing of the code chain.     Chain base =     888     Data base =16777216     Control block :     8881677697216777216
+          0       888       888        46        12   -999112  -1000000         1         6       898     -2025         0
+ Work stack header at     894  :  -1000000         6      -244      1782  -1000000         0
+ Overall parameter header at     900  :        29      1027         1                   1        19
+                                         -1000000  -1000000  -1000000     -1134     -2025
+       907  :  -1000000  -1000000     ELEMENT 
+ Overall parameter header at     917  :  -1000000         3         1            -1000000  -1000000
                                          -1000000  -1000000  -1000000  -1000000  -1000000
- Function at     787  :   15   sum        
+ Function at     888  :   15   sum        
      4 SUM BATCH SCALES 
 
- Listing of the code chain.     Chain base =     787     Data base =16777216     Control block :     7871677697216777216
-          0       787       787        46        12   -999213  -1000000         1         6       797     -1823         0
- Work stack header at     793  :  -1000000         6      -244      1580  -1000000         0
- Overall parameter header at     799  :        29      1028         1                   1        19
-                                         -1000000  -1000000  -1000000     -1033     -1823
-       806  :  -1000000  -1000000     BATCH   
- Overall parameter header at     816  :  -1000000         4         2            -1000000  -1000000
+ Listing of the code chain.     Chain base =     888     Data base =16777216     Control block :     8881677697216777216
+          0       888       888        46        12   -999112  -1000000         1         6       898     -2025         0
+ Work stack header at     894  :  -1000000         6      -244      1782  -1000000         0
+ Overall parameter header at     900  :        29      1028         1                   1        19
+                                         -1000000  -1000000  -1000000     -1134     -2025
+       907  :  -1000000  -1000000     BATCH   
+ Overall parameter header at     917  :  -1000000         4         2            -1000000  -1000000
                                          -1000000  -1000000  -1000000  -1000000  -1000000
- Function at     787  :   15   sum        
+ Function at     888  :   15   sum        
      5 SUM X 
 
- Listing of the code chain.     Chain base =     783     Data base =16777216     Control block :     7831677697216777216
-          0       783       783        55        12   -999217  -1000000         1         6       793      -287         0
- Work stack header at     789  :  -1000000         6      -244        44  -1000000         0
- Atom header at     795  :        29      1024     FIRS    0.              3        46         1    1    0    0    0
+ Listing of the code chain.     Chain base =     884     Data base =16777216     Control block :     8841677697216777216
+          0       884       884        55        12   -999116  -1000000         1         6       894      -287         0
+ Work stack header at     890  :  -1000000         6      -244        44  -1000000         0
+ Atom header at     896  :        29      1024     FIRS    0.              3        46         1    1    0    0    0
                             -1000000  -1000000  -1000000      -265      -287
-       829  :        49         5     X       
-       832  :        52         6     Y       
-       835  :  -1000000         7     Z       
- Atom header at     812  :  -1000000         0     LAST    0.       -1000000  -1000000         1    1    0    0    0
+       930  :        49         5     X       
+       933  :        52         6     Y       
+       936  :  -1000000         7     Z       
+ Atom header at     913  :  -1000000         0     LAST    0.       -1000000  -1000000         1    1    0    0    0
                             -1000000  -1000000  -1000000  -1000000  -1000000
- Function at     783  :   15   sum        
+ Function at     884  :   15   sum        
      6 SUM CELL PARAMETERS 
 
- Listing of the code chain.     Chain base =     787     Data base =16777216     Control block :     7871677697216777216
-          0       787       787        46        12   -999213  -1000000         1         6       797     -1823         0
- Work stack header at     793  :  -1000000         6      -244      1580  -1000000         0
- Overall parameter header at     799  :        29      1029         1                   1        19
-                                         -1000000  -1000000  -1000000     -1033     -1823
-       806  :  -1000000  -1000000     CELL    
- Overall parameter header at     816  :  -1000000         5         2            -1000000  -1000000
+ Listing of the code chain.     Chain base =     888     Data base =16777216     Control block :     8881677697216777216
+          0       888       888        46        12   -999112  -1000000         1         6       898     -2025         0
+ Work stack header at     894  :  -1000000         6      -244      1782  -1000000         0
+ Overall parameter header at     900  :        29      1029         1                   1        19
+                                         -1000000  -1000000  -1000000     -1134     -2025
+       907  :  -1000000  -1000000     CELL    
+ Overall parameter header at     917  :  -1000000         5         2            -1000000  -1000000
                                          -1000000  -1000000  -1000000  -1000000  -1000000
- Function at     787  :   15   sum        
+ Function at     888  :   15   sum        
      7 SUM PROFILE(1) PROFILE(2) PROFILE(3) 
 
- Listing of the code chain.     Chain base =     827     Data base =16777216     Control block :     8271677697216777216
-          0       827       827        63        12   -999173  -1000000         3         6       837     -5321         0
- Work stack header at     833  :  -1000000         6      -244      5078  -1000000         0
- Overall parameter header at     839  :        29         6         1                   1        19
-                                         -1000000  -1000000  -1000000     -1073     -1903
-       846  :  -1000000         1     PROFILE 
- Overall parameter header at     856  :        46         6         2                   1        36
-                                         -1000000  -1000000  -1000000     -2749     -3595
-       863  :  -1000000         2     PROFILE 
- Overall parameter header at     873  :  -1000000         6         3                   1        53
-                                         -1000000  -1000000  -1000000     -4458     -5321
-       880  :  -1000000         3     PROFILE 
- Function at     827  :   15   sum        
+ Listing of the code chain.     Chain base =     928     Data base =16777216     Control block :     9281677697216777216
+          0       928       928        63        12   -999072  -1000000         3         6       938     -5927         0
+ Work stack header at     934  :  -1000000         6      -244      5684  -1000000         0
+ Overall parameter header at     940  :        29         6         1                   1        19
+                                         -1000000  -1000000  -1000000     -1174     -2105
+       947  :  -1000000         1     PROFILE 
+ Overall parameter header at     957  :        46         6         2                   1        36
+                                         -1000000  -1000000  -1000000     -3052     -3999
+       964  :  -1000000         2     PROFILE 
+ Overall parameter header at     974  :  -1000000         6         3                   1        53
+                                         -1000000  -1000000  -1000000     -4963     -5927
+       981  :  -1000000         3     PROFILE 
+ Function at     928  :   15   sum        
      8 SUM PROFILE PARAMETERS 
 
- Listing of the code chain.     Chain base =     787     Data base =16777216     Control block :     7871677697216777216
-          0       787       787        46        12   -999213  -1000000         1         6       797     -1823         0
- Work stack header at     793  :  -1000000         6      -244      1580  -1000000         0
- Overall parameter header at     799  :        29      1030         1                   1        19
-                                         -1000000  -1000000  -1000000     -1033     -1823
-       806  :  -1000000  -1000000     PROFILE 
- Overall parameter header at     816  :  -1000000         6         3            -1000000  -1000000
+ Listing of the code chain.     Chain base =     888     Data base =16777216     Control block :     8881677697216777216
+          0       888       888        46        12   -999112  -1000000         1         6       898     -2025         0
+ Work stack header at     894  :  -1000000         6      -244      1782  -1000000         0
+ Overall parameter header at     900  :        29      1030         1                   1        19
+                                         -1000000  -1000000  -1000000     -1134     -2025
+       907  :  -1000000  -1000000     PROFILE 
+ Overall parameter header at     917  :  -1000000         6         3            -1000000  -1000000
                                          -1000000  -1000000  -1000000  -1000000  -1000000
- Function at     787  :   15   sum        
+ Function at     888  :   15   sum        
      9 SUM EXTINCTION PARAMETERS 
 
- Listing of the code chain.     Chain base =     787     Data base =16777216     Control block :     7871677697216777216
-          0       787       787        46        12   -999213  -1000000         1         6       797     -1823         0
- Work stack header at     793  :  -1000000         6      -244      1580  -1000000         0
- Overall parameter header at     799  :        29      1031         1                   1        19
-                                         -1000000  -1000000  -1000000     -1033     -1823
-       806  :  -1000000  -1000000     EXTINCTI
- Overall parameter header at     816  :  -1000000         7         2            -1000000  -1000000
+ Listing of the code chain.     Chain base =     888     Data base =16777216     Control block :     8881677697216777216
+          0       888       888        46        12   -999112  -1000000         1         6       898     -2025         0
+ Work stack header at     894  :  -1000000         6      -244      1782  -1000000         0
+ Overall parameter header at     900  :        29      1031         1                   1        19
+                                         -1000000  -1000000  -1000000     -1134     -2025
+       907  :  -1000000  -1000000     EXTINCTI
+ Overall parameter header at     917  :  -1000000         7         2            -1000000  -1000000
                                          -1000000  -1000000  -1000000  -1000000  -1000000
- Function at     787  :   15   sum        
+ Function at     888  :   15   sum        
 #CHECK
 
 
@@ -1741,10 +1742,10 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
 
 
  Listing of the code chain.     Chain base =       0     Data base =       0     Control block :     6151677697216777216
-        564   -999436       787        46       576   -999213  -1000000         2       570       797  16775392         0
- Work stack header at     570  :  -1000000         6      -244      1580   -999436         0
+        564   -999436       888        46       576   -999112  -1000000         2       570       898  16775190         0
+ Work stack header at     570  :  -1000000         6      -244      1782   -999436         0
  Overall parameter header at     576  :       593         2         1                   1       583
-                                               31       500  -1000000  16776183  16775393
+                                               31       500  -1000000  16776082  16775191
        583  :   -999436         1     LAYER   
  Overall parameter header at     593  :   -999436         2         2                   1       612
                                                32       500  -1000000       611       610
@@ -1763,10 +1764,10 @@ ___________
 
 
  Listing of the code chain.     Chain base =       0     Data base =       0     Control block :     6101677697216777216
-        564   -999436       787        46       576   -999213  -1000000         1       570       797  16775392         0
- Work stack header at     570  :  -1000000         6      -244      1580   -999436         0
+        564   -999436       888        46       576   -999112  -1000000         1       570       898  16775190         0
+ Work stack header at     570  :  -1000000         6      -244      1782   -999436         0
  Overall parameter header at     576  :   -999436      1027         1                   1       583
-                                               41       503  -1000000  16776183  16775393
+                                               41       503  -1000000  16776082  16775191
        583  :   -999436  -1000000     ELEMENT 
  Function at     564  :   15   sum        
     1.3000
@@ -1781,10 +1782,10 @@ ___________
 
 
  Listing of the code chain.     Chain base =       0     Data base =       0     Control block :     6151677697216777216
-        564   -999436       787        46       576   -999213  -1000000         2       570       797  16775392         0
- Work stack header at     570  :  -1000000         6      -244      1580   -999436         0
+        564   -999436       888        46       576   -999112  -1000000         2       570       898  16775190         0
+ Work stack header at     570  :  -1000000         6      -244      1782   -999436         0
  Overall parameter header at     576  :       593         4         1                   1       583
-                                               50       506  -1000000  16776183  16775393
+                                               50       506  -1000000  16776082  16775191
        583  :   -999436         1     BATCH   
  Overall parameter header at     593  :   -999436         4         2                   1       612
                                                51       506  -1000000       611       610
@@ -1806,7 +1807,7 @@ ___________
      C          2.   1.00000  1.00000  0.20000  0.30000  0.40000  0.05000  0.00000  0.00000  0.00000  0.00000  0.00000
 
  Listing of the code chain.     Chain base =       0     Data base =       0     Control block :     6721677697216777216
-        564   -999436       783        55       576   -999217  -1000000         2       570       793  16776928         0
+        564   -999436       884        55       576   -999116  -1000000         2       570       894  16776928         0
  Work stack header at     570  :  -1000000         6      -244        44   -999436         0
  Atom header at     576  :       593         0     C       1.              3       610         1    1    0    0    0
                                   91       4941065353216  16776951  16776929
@@ -1832,10 +1833,10 @@ ___________
 
 
  Listing of the code chain.     Chain base =       0     Data base =       0     Control block :     6151677697216777216
-        564   -999436       787        46       576   -999213  -1000000         2       570       797  16775392         0
- Work stack header at     570  :  -1000000         6      -244      1580   -999436         0
+        564   -999436       888        46       576   -999112  -1000000         2       570       898  16775190         0
+ Work stack header at     570  :  -1000000         6      -244      1782   -999436         0
  Overall parameter header at     576  :       593         5         1                   1       583
-                                               60       509  -1000000  16776183  16775393
+                                               60       509  -1000000  16776082  16775191
        583  :   -999436         1     CELL    
  Overall parameter header at     593  :   -999436         5         2                   1       612
                                                61       509  -1000000       611       610
@@ -1854,16 +1855,16 @@ ___________
 
 
  Listing of the code chain.     Chain base =       0     Data base =       0     Control block :     6271677697216777216
-        564   -999436       827        63       576   -999173  -1000000         3       570       837  16771894         0
- Work stack header at     570  :  -1000000         6      -244      5078   -999436         0
+        564   -999436       928        63       576   -999072  -1000000         3       570       938  16771288         0
+ Work stack header at     570  :  -1000000         6      -244      5684   -999436         0
  Overall parameter header at     576  :       593         6         1                   1       583
-                                               70       512  -1000000  16776143  16775313
+                                               70       512  -1000000  16776042  16775111
        583  :   -999436         1     PROFILE 
  Overall parameter header at     593  :       610         6         2                   1       600
-                                               71       512  -1000000  16774467  16773621
+                                               71       512  -1000000  16774164  16773217
        600  :   -999436         2     PROFILE 
  Overall parameter header at     610  :   -999436         6         3                   1       617
-                                               72       512  -1000000  16772758  16771895
+                                               72       512  -1000000  16772253  16771289
        617  :   -999436         3     PROFILE 
  Function at     564  :   15   sum        
     1.6000
@@ -1880,10 +1881,10 @@ ___________
 
 
  Listing of the code chain.     Chain base =       0     Data base =       0     Control block :     6371677697216777216
-        564   -999436       787        46       576   -999213  -1000000         3       570       797  16775392         0
- Work stack header at     570  :  -1000000         6      -244      1580   -999436         0
+        564   -999436       888        46       576   -999112  -1000000         3       570       898  16775190         0
+ Work stack header at     570  :  -1000000         6      -244      1782   -999436         0
  Overall parameter header at     576  :       610         6         1                   1       583
-                                               70       512  -1000000  16776183  16775393
+                                               70       512  -1000000  16776082  16775191
        583  :   -999436         1     PROFILE 
  Overall parameter header at     610  :       593         6         2                   1       629
                                                71       512  -1000000       628       627
@@ -1906,10 +1907,10 @@ ___________
 
 
  Listing of the code chain.     Chain base =       0     Data base =       0     Control block :     6151677697216777216
-        564   -999436       787        46       576   -999213  -1000000         2       570       797  16775392         0
- Work stack header at     570  :  -1000000         6      -244      1580   -999436         0
+        564   -999436       888        46       576   -999112  -1000000         2       570       898  16775190         0
+ Work stack header at     570  :  -1000000         6      -244      1782   -999436         0
  Overall parameter header at     576  :       593         7         1                   1       583
-                                               81       515  -1000000  16776183  16775393
+                                               81       515  -1000000  16776082  16775191
        583  :   -999436         1     EXTINCTI
  Overall parameter header at     593  :   -999436         7         2                   1       612
                                                82       515  -1000000       611       610
@@ -1928,7 +1929,7 @@ ___________
 
 
  Listing of the code chain.     Chain base =       0     Data base =       0     Control block :     5761677697216777216
-        564   -999436       987        12  -1000423  -1000000  -1000000         0       570       997  16776972         0
+        564   -999436      1088        12  -1000524  -1000000  -1000000         0       570      1098  16776972         0
  Work stack header at     570  :  -1000000         6      -244         0   -999436         0
  Function at     564  :   11   Nolist     
 ___________

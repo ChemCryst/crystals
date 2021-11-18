@@ -170,6 +170,9 @@ END
 #EDIT
 TRANSFORM 1 0 0 0 1 0 0 0 1 H(1,3,1,2,-1)
 END
+\ For non-gui versions bonding is not always updated.
+#BONDCALC FORCE
+END
 
 \LIST 12
 BLOCK SCALE

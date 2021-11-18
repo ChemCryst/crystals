@@ -10,7 +10,7 @@ if(APPLE)
   SET(CMAKE_OSX_ARCHITECTURES "x86_64" )
 ENDIF(APPLE)
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 
 
 set (EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
@@ -29,6 +29,9 @@ SET (CMAKE_Fortran_FLAGS_RELEASE "-O1 -std=legacy -fno-automatic -fno-inline")
 message(STATUS "cif2cry fortran flags: ${CMAKE_Fortran_FLAGS_RELEASE}")
 
 add_executable (cif2cry cif2cry.F ../Common/nobuf.c)
+
+target_link_libraries( cif2cry PUBLIC GeneralDefines ) 
+
 message(STATUS "End building cif2cry")
 message("")
 
