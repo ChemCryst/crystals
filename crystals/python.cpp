@@ -184,6 +184,11 @@ void lineouts(const char* string) {   // This wraps lineout so we don't need to 
 	FARPROC pErrFetchFn;
 	typedef void (*PERRFETCH)(PyObject**,PyObject**,PyObject**);
 
+	//void PyErr_Clear()
+	FARPROC pErrClearFn;
+	typedef void (*PERRCLEAR)();
+	#define mErrClear() ((PERRCLEAR)pErrClearFn)()
+
 
 	FARPROC pErrSetStringFn = NULL;
 	typedef void (*PERRSETSTRING)(PyObject*, const char*);
@@ -219,6 +224,8 @@ void lineouts(const char* string) {   // This wraps lineout so we don't need to 
 	#define mBytesAsString(obj) PyBytes_AsString(obj)
 	#define mDECREF(o) Py_DecRef(o)
 	#define mMemFree(p) PyMem_Free(p)
+	#define mErrClear() PyErr_Clear()
+
 
 	#define mAppendInittab(c,p) PyImport_AppendInittab(c,p)
 	#define mMem_Malloc(n) PyMem_Malloc(n)
@@ -441,6 +448,14 @@ int loadPyDLL() {
 	pErrSetStringFn = GetProcAddress( hModule , "PyErr_SetString" ) ;
 	if(  pErrSetStringFn == NULL )  {		
 		lineouts("{E Could not find PyErr_SetString()");
+		hModule = NULL;
+		return 0;
+	} 
+
+	// locate PyErr_Clear() function
+	pErrClearFn = GetProcAddress( hModule , "PyErr_Clear" ) ;
+	if(  pErrClearFn == NULL )  {		
+		lineouts("{E Could not find PyErr_Clear()");
 		hModule = NULL;
 		return 0;
 	} 
@@ -735,6 +750,9 @@ int runpy(const char *filename)    // filename can be a while command line. Toke
 	if (!loadPyDLL()) {
 		return 130;
 	}
+
+
+	mErrClear();  // Clear any leftover error flags for a fresh start.
 
 // Make a copy. The upcoming strtok needs to overwrite the string buffer.
 	char *commandline = (char*) malloc(strlen(filename) + 1);
