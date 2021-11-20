@@ -1749,6 +1749,13 @@ C----- FOR LIST 30 UPDATING
       CHARACTER*12 CDELTA(2)
 C
       INCLUDE 'STORE.INC'
+c
+C     3D analysis. depth x Fo x Resolution
+C     IMAP 0=TO DO
+C     IMAP 1=DONE
+      COMMON /XHMAP/ HMAP(4,22,25), fint(22), resint(25),IMAP, 
+     1 IFMAX, IRESMAX
+      DIMENSION HMAP2(22,25), IHMAP2(22,25)
 C
       COMMON /XWTWK/SCALF,R,RW,FOT,FCT,DFT,WDFT,E,F,AP,BP,AT,BT,AC,BC,
      2 ACI,BCI,ACT,BCT,FO,FC,VV,WW,DF,WDF,TC,T,NOCC,TFOCC,SS,S,H(3),
@@ -1951,6 +1958,16 @@ C
 C--CLEAR THE CLOCK CONTROL AND FETCH THE INPUT PARAMETERS
       CALL XTIME1(2)
       IF (  KRDDPV ( ISTORE(NFL) , 23 )  .LT.  0  ) GO TO 9930
+c
+C      ZERO THE HEATMAP
+      IMAP=0
+      DO I=1,20
+       DO J=1,25
+        DO L=1,4
+         HMAP(L,J,I)=0.0
+        ENDDO
+       ENDDO
+      ENDDO
 C
 C      SET THE REFLECTION LIST TYPE 
       ITYP06 = ISTORE(NFL+22)
@@ -2218,6 +2235,87 @@ CNOV98----- SIGMA THRESHOLD
             INDNAM = INDNAM + MD28CN
 1702      CONTINUE
          ENDIF
+C
+C WRITE OUT THE HEAT MAP
+      MAPOUT: IF (IMAP.eq.1) THEN
+       write(ncawu,'(//)')
+       write(ncawu,'(A)')'Columns are batched by intensity'
+       write(ncawu,'(A)')'Rows are batched by resolution'
+       write(ncawu,'(/)')
+
+       write(ncawu,'(A/)')'Bin contents'
+       write(ncawu,'(/6x,25f6.1/)') (fint(j),j=1,IFMAX)
+       DO K=1,IRESMAX
+        WRITE(NCAWU,7000) RESINT(K),
+     1  (int(HMAP(1,J,K)),J=1,IFMAX)
+7000    FORMAT(F6.2,25I6)
+       ENDDO
+       write(ncawu,'(/)')
+
+
+C COMPUTE SHELDRICK K
+       write(ncawu,'(A/)')
+     1 '100*<Fo>/<Fc> for bins with more than 3 items'
+       write(ncawu,'(A/)')'Values should be close to 100'
+       write(ncawu,'(/6x,25f6.1/)') (fint(j),j=1,IFMAX)
+       write(ncawu,'(/)')
+       DO K=1,IRESMAX
+         DO J=1,IFMAX
+           IF(HMAP(1,J,K).GT.3.) THEN
+            IHMAP2(J,K) = INT(100.*(HMAP(2,J,K)/HMAP(3,J,K)))
+           ELSE
+            IHMAP2(J,K)=0
+           ENDIF
+         ENDDO
+       ENDDO         
+       DO K=1,IRESMAX
+        WRITE(NCAWU,"(F6.2)",ADVANCE="NO") RESINT(K)
+        DO J=1,IFMAX
+         IF(HMAP(1,J,K).GT.3) THEN
+           WRITE(NCAWU,"(I6)",ADVANCE="NO") IHMAP2(J,K)
+         ELSE
+            WRITE(NCAWU,"(6X)",ADVANCE="NO")
+         ENDIF
+        ENDDO
+        WRITE(NCAWU,"('')")
+       ENDDO
+       write(ncawu,'(/)')
+
+
+C COMPUTE <Fo-Fc>
+       write(ncawu,'(A/)')
+     1 '100*<Fo-Fc> for bins with more than 3 items'
+       write(ncawu,'(A/)')'Values should be close to zero'
+       write(ncawu,'(/6x,25f6.1/)') (fint(j),j=1,IFMAX)
+       write(ncawu,'(/)')
+       DO K=1,IRESMAX
+         DO J=1,IFMAX
+           IF(HMAP(1,J,K).GT.3.) THEN
+            IHMAP2(J,K) = INT(100.*(HMAP(4,J,K)/HMAP(1,J,K)))
+           ELSE
+            IHMAP2(J,K)=0
+           ENDIF
+         ENDDO
+       ENDDO         
+C
+       DO K=1,IRESMAX
+        WRITE(NCAWU,"(F6.2)",ADVANCE="NO") RESINT(K)
+        DO J=1,IFMAX
+         IF(HMAP(1,J,K).GT.3) THEN
+           WRITE(NCAWU,"(I6)",ADVANCE="NO") IHMAP2(J,K)
+         ELSE
+            WRITE(NCAWU,"(6X)",ADVANCE="NO")
+         ENDIF
+        ENDDO
+        WRITE(NCAWU,"('')")
+       ENDDO
+       write(ncawu,'(/)')
+
+      ENDIF MAPOUT
+
+
+
+
 C
 CNOV98----- LOAD LIST 30 FOR UPDATING
       IF (TEMP30(1) .GE. ZERO) THEN
@@ -2673,9 +2771,13 @@ C--COMPUTE THE CURRENT VALUE OF /F/ TO BE PRINTED
       ACI=AC*AC
 C--CHECK IF WE ARE AT THE END OF THE /F/ VALUES
 5000  CONTINUE
+C STORE F INTERVAL FOR HMAP
+      FINT(I)= ACI
+C
       IF(AC-F)5050,5050,5350
 C--CHECK THE NUMBER OF REFLS. IN THIS GROUP AND CALC. THE TOTALS IF NECE
 5050  CONTINUE
+      IFMAX=I      !HIGHEST f VALUE
       IF(ISTORE(L+1))5100,5100,5080
 CNEW                           6150
 5080  CONTINUE
@@ -2858,10 +2960,14 @@ C**   ASSIGN 5650 TO K3 ! MARKUS NEUBURGER
 C--PASS OVER EACH GROUP
       DO 5750 I=1,10000
       ACI=SQRT(AC)
+C STORE RESOLUTION INTERVAL FOR HMAP
+      RESINT(I)= AC
+C
 C--CHECK IF WE HAVE REACHED THE END OF THE RANGES
       IF(AC-E)5500,5500,5800
 C--CHECK THE NUMBER OF REFLS. IN THIS GROUP AND CALC. THE TOTALS IF NECE
 5500  CONTINUE
+      IRESMAX=I
       IF(ISTORE(L+1))5550,5550,5530
 CNEW                           6150
 5530  CONTINUE
@@ -3224,6 +3330,10 @@ C
 C----- CORRELATION COEFFICIENT ACCUMULATOR
       DIMENSION ACOEF(6)
 C
+C     3D analysis. depth x Fo x Resolution
+      COMMON /XHMAP/ HMAP(4,22,25), fint(22), resint(25),IMAP,
+     1 IFMAX, IRESMAX
+C
       COMMON /XWTWK/SCALF,R,RW,FOT,FCT,DFT,WDFT,E,F,AP,BP,AT,BT,AC,BC,
      2 ACI,BCI,ACT,BCT,FO,FC,VV,WW,DF,WDF,TC,T,NOCC,TFOCC,SS,S,H(3),
      3 INDEXA(3),MAXADD
@@ -3387,6 +3497,7 @@ C--COMPUTE THE RANGE ADDRESS
 C--COMPUTE THE MAX. /FO/ VALUE
       F=AMAX1(F,BP)
       CALL XSUM(L)
+      lfr=IFIX(BP/VV)+1
 C--SIN(THETA)/LAMBDA RANGES  -  COMPUTE SIN(THETA)/LAMBDA
 c--- Probably squared - djw 2020
       SS=H(1)*H(1)*STORE(L1S)+H(2)*H(2)*STORE(L1S+1)+H(3)*H(3)
@@ -3396,6 +3507,13 @@ c--- Probably squared - djw 2020
 C--COMPUTE THE MAX. VALUE OF SIN(THETA)/LAMBDA
       E=AMAX1(E,SS)
       CALL XSUM(L)
+      lrr=IFIX(SS/WW)+1
+      IF (IMAP.eq.0) THEN
+       hmap(1,lfr,lrr)=hmap(1,lfr,lrr)+1
+       hmap(2,lfr,lrr)=hmap(2,lfr,lrr)+FO
+       hmap(3,lfr,lrr)=hmap(3,lfr,lrr)+FC
+       hmap(4,lfr,lrr)=hmap(4,lfr,lrr)+FO-FC
+      ENDIF
 C--TOTALS FOR THE DIFFERENT PARITY GROUPS
       L=ICLS
 C--BASED ON THE PARITY OF THE INDIVIDUAL INDICES
@@ -3463,6 +3581,7 @@ C--EXIT
             write(cmon,'(A)')
      1 '{E There are no reflections for the Agreement Analysis'
             call xprvdu(ncvdu, 1,0)
+            return
       endif
 C COMPUTE CORRELLATION COEFFICIENT
       imode = 2
@@ -3473,6 +3592,9 @@ C COMPUTE CORRELLATION COEFFICIENT
       if(issprt.eq.0) write(ncwu,2151)
       CALL CCOEF(imode, X, Y, NCOEF, ACOEF, SLOPE, RINTER, CORREL)
 C
+c finished accumulating so set IMAP to DONE
+       IMAP=1
+
       RETURN
       END
 C
