@@ -12,9 +12,9 @@
 ^^WI    @ 1,1 GRID EXP2 NROWS=1 NCOLS=3
 ^^WI    {
 ^^WI     @ 1,1 STATIC XFW1
-^^WI 'Scatterplot of sin\theta/\lambda vs. \sqrtw . |Fo\**2-Fc\**2|'
+^^WI 'Scatterplot of \sqrtw . (Fo\**2-Fc\**2) vs. sin\theta/\lambda'
 ^^WI     @ 1,2 ICON OIC SMALLQUERY TOOLTIP 
-^^WI 'For a fully refined structure, values > 10 on the y-axis are outliers, should be investigated and probably removed with appropriate justification (right-click point for options).'
+^^WI 'For a fully refined structure, values > 10 or < -10 on the y-axis are outliers, should be investigated and probably removed with appropriate justification (right-click point for options).'
 ^^WI    }
 ^^WI   }
 ^^WI   @ 4,2 PLOTWINDOW _VDELTA NROWS=20 NCOLS=64

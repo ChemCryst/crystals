@@ -222,7 +222,7 @@ Using user-specified editor.
 %       GET SILENT NOSTORE INTEGER ' ' ' '
 %       EVALUATE ISELV = VALUE
 %       IF ISELV .EQ. 1 THEN                                                
-^^CO            SET TEXT5 INSERT 'planar 0.0, 0.01 = X(1) X(2) X(3) X(4)' 
+^^CO            SET TEXT5 INSERT 'planar 0.01  X(1) X(2) X(3) X(4)' 
 %       ELSE IF ISELV .EQ. 2 THEN
 ^^CO            SET TEXT5 INSERT 'dist 0.0, 0.01 = mean X(1) to X(2) , X(3) to X(4)' 
 %       ELSE IF ISELV .EQ. 3 THEN

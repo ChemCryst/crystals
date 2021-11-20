@@ -233,7 +233,7 @@ sub obscureMachinePrecision() {
 		   } elsif($line =~ m/^(\s+-?\d+\s+\d+\s+\d+\.\d\d\s+\d+\.\d\s+0\.\d)\d\d(E.\d\d\s+0\.\d)\d\d(E.\d\d\s+\d+\.\d)\d(\s+\d+\.\d)\d(\s+\*\s*)/ ) {
 				  print $fho "[16] $1 $2 $3 $4 $5\n";
 	#FO Range based agreement analysis output "                        4       293.09       298.7       0.377E+02       0.942E+00     1.90    1.96           * "
-		   } elsif($line =~ m/^(\s+\d+\s+\d+\.\d\d\s+\d+\.\d\s+0\.\d\d)\d(E.\d\d\s+0\.\d)\d\d(E.\d\d\s+\d+\.)\d\d(\s+\d+\.)\d\d(\s+\*\s*)/ ) {
+		   } elsif($line =~ m/^(\s+\d+\s+\d+\.\d\d\s+\d+\.\d\s+0\.\d\d)\d(E.\d\d\s+0\.\d)\d\d(E.\d\d\s+\d+\.)\d\d(\s+\d+\.)\d\d(\s+\.?\*\.?\s*)/ ) {
 				  print $fho "[17] $1 $2 $3 $4 $5\n";
 	# Fourier 'collect' edge cases  "QN        1.     0.6250    0.9375    0.2500       -1.7  Hole"
 		   } elsif($line =~ m/^( QN ).*(-\d+\.\d\s+Hole\s*)/ ) { #Get rid of coords, keep height
@@ -279,7 +279,11 @@ sub obscureMachinePrecision() {
 	# "    5   0   3    0.9    0.0   1.9  78.3     0   4  19    1.2    0.0   1.9  65.5"
 	#                                5   0   3             0.9         0.0         1.9        78.3     0   4  19    1.2    0.0   1.9  65.5
 		   } elsif($line =~ m/^((?:\s+-?\d{1,2}){3}\s+-?\d+\.\d\s+-?\d+\.\d\s+-?\d+\.)\d(\s+-?\d+\.)\d+((?:\s+-?\d{1,2}){3}\s+-?\d+\.\d\s+-?\d+\.\d\s+-?\d+\.)\d(\s+-?\d+\.)\d+\s*/ ) {
-				  print $fho "[28] $1 $2 $3 $4\n";
+				  print $fho "[28] - not suitable for comparison, sort order based on small differences\n";
+    # "  -2   1   2      38.92      5904.6      1166.6       121.7"
+		   } elsif($line =~ m/^((?:\s+-?\d{1,2}){3}\s+\d+\.\d\d\s+\d+\.\d\s+\d+\.)\d(\s+\d+\.\d)\s*/ ) {
+				  print $fho "[94] $1 $2\n";
+
 	# Mean shift line
 	#	   } elsif($line =~ m/^ Mean\s+\d+\.\d\d\s+.*/ ) {
 	#              print $fho "$1 $2\n";
