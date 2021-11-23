@@ -594,6 +594,7 @@ C      IEFORT = 1, NORMAL
 C               2, DIFFICULT
 C               3, SPECIAL - WRITE ATOMS
 C               4, PATTERSON
+C               5, HARD - WRITE ATOMS + MODERN SFAC CARDS
 C
 C----- OUTPUT A TITLE, FIRST 40 CHARACTERS ONLY
       WRITE(NCFPU1,'(''TITL '',10A4)') (KTITL(I),I=1,10)
@@ -624,30 +625,36 @@ C---- GET MULTIPLICITY
         GOTO 9900
       ELSE
 C----- WRITE SFAC CARDS
-        M29 = L29 + (N29-1)*MD29
-        M3 = L3 + (N3-1)*MD3
-        DO 1839 J = L29, M29, MD29
-          DO 1832 K = L3, M3, MD3
-           IF (ISTORE(J) .EQ. ISTORE(K)) GOTO 1838
-1832      CONTINUE
-        IF (ISSPRT .EQ. 0) WRITE(NCAWU,1833) ISTORE(J)
-        WRITE(NCAWU,1833) ISTORE(J)
-        WRITE ( CMON, 1833) ISTORE(J)
-        CALL XPRVDU(NCVDU, 1,0)
-1833    FORMAT (' No formfactors stored for ', A4)
-        GOTO 9900
-1838    CONTINUE
-        WRITE ( NCFPU1 , 1837 ) ISTORE(J), (STORE(M), M=K+3, K+11),
-     1  STORE(K+1), STORE(K+2), STORE(J+5), STORE(J+1), STORE(J+6)
-1837    FORMAT ('SFAC ' , A4, 7F9.4,' = '/, 9X,4F9.4,F9.2,2F9.4 )
-1839    CONTINUE
+        IF (IEFORT .EQ. 5) THEN   ! Write modern SFAC card
+          WRITE (NCFPU1, ' (''SFAC '', 12A6)')
+     1    (ISTORE(J), J = L29, M29, MD29)
+        ELSE
+          M29 = L29 + (N29-1)*MD29
+          M3 = L3 + (N3-1)*MD3
+          DO 1839 J = L29, M29, MD29
+            DO 1832 K = L3, M3, MD3
+              IF (ISTORE(J) .EQ. ISTORE(K)) GOTO 1838
+1832        CONTINUE
+            IF (ISSPRT .EQ. 0) WRITE(NCWU,1833) ISTORE(J)
+            WRITE(NCAWU,1833) ISTORE(J)
+            WRITE ( CMON, 1833) ISTORE(J)
+            CALL XPRVDU(NCVDU, 1,0)
+1833        FORMAT (' No formfactors stored for ', A4)
+            GOTO 9900
+1838        CONTINUE
+            WRITE (NCFPU1, 1837) ISTORE(J), (STORE(M), M=K+3, K+11),
+     1      STORE(K+1), STORE(K+2), STORE(J+5), STORE(J+1), STORE(J+6)
+1837        FORMAT ('SFAC ' , A4, 7F9.4,' = '/, 9X,4F9.4,F9.2,2F9.4 )
+1839      CONTINUE
+        END IF
+
 C----- UNIT CARDS
         WRITE (NCFPU1, ' (''UNIT '', 12F6.0)')
      1  (F*STORE(J+4), J = L29, M29, MD29)
       ENDIF
         WRITE (NCFPU1, ' (''WGHT '')')
 C
-      IF (IEFORT .EQ. 3) THEN
+      IF ((IEFORT .EQ. 3).OR.(IEFORT.EQ.5)) THEN
 C----- WRITING ATOMS - SAVE AND RESTORE IO UNITS
         J = NCPU
         NCPU = NCFPU1
