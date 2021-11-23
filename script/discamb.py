@@ -1,5 +1,6 @@
 import os
 import sys
+import json
 
 # Check arguments:
 # - basis
@@ -44,21 +45,8 @@ disc2tsc_info = {    'basis set':   'cc-pVDZ',
 
 
 def write_aspher ( folder, info ):
-
-    with open(f'{folder}' + os.sep + 'aspher.json', 'w') as file:  
-
-        file.write(  "{ \n"
-                    f"    \"basis set\": \"{info['basis set']}\", \n"
-                    f"    \"memory\": \"{info['memory']}\", \n"
-                    f"    \"model\": \"{info['model']}\", \n"
-                     "    \"multipoles\": { \n"
-                    f"        \"l max\": {info['multipoles']['l max']}, \n"
-                    f"        \"threshold\": {info['multipoles']['threshold']} \n"
-                     "     }, \n"
-                    f"    \"n cores\": {info['n cores']}, \n"
-                    f"    \"qm method\": \"{info['qm method']}\", \n"
-                    f"    \"qm program\": \"{info['qm program']}\" \n"
-                     "} \n" )
+    with open(folder + os.sep + 'aspher.json', 'w') as file:  
+        file.write(json.dumps(disc2tsc_info, sort_keys=True, indent=4))
 
 
 def _find_discamb():
@@ -103,19 +91,26 @@ except:
 
 discambexe = _find_discamb()
 if discambexe is None:
-    print('The path to discamb2tsc must be set in CRYSTALS Tools / Preferences')
-    sys.exit()
+    raise Exception('The path to discamb2tsc must be set in CRYSTALS Tools / Preferences')
 
 # Check existence
 if not os.path.exists(discambexe):
-    print('An incorrect path to discamb2tsc is set in CRYSTALS Tools / Preferences')
-    sys.exit()
+    raise Exception('An incorrect path to discamb2tsc is set in CRYSTALS Tools / Preferences')
 
 #Extract path from exe location
-discamb_path = os.path.dirname(discambexe)
+discamb_path = os.path.dirname(os.path.dirname(discambexe))
 
 # TODO: Check settings.json for correct ORCA path
+orca_path = None
+try:
+    with open(discamb_path + os.sep + 'settings' + os.sep + 'settings.json') as file:  
+        settings = json.load(file)
+except:
+    raise Exception("Error opening discamb2tsc/settings/settings.json")
 
+orca_path = settings['orca folder']
+if not os.path.exists(orca_path):
+    raise Exception("Orca path set incorrectly in discamb2tsc/settings/settings.json")
 
 # Make a work folder
 work_folder = 'discamb2tsc'
@@ -136,16 +131,11 @@ try:
                   "#RELEASE PUNCH logs/bfile.pch"] )
 except Exception as e:
     print(sys.exc_info())
-    print("discamb.py must be run in CRYSTALS")
-    sys.exit()
+    raise Exception("discamb.py must be run in CRYSTALS")
 
-try:
-    from shutil import copy
-    copy('crystals.hkl', work_folder )
-    copy('shelxs.ins', work_folder + os.sep + 'crystals.ins' )
-except Exception as e:
-    print(sys.exc_info())
-    sys.exit()
+from shutil import copy
+copy('crystals.hkl', work_folder )
+copy('shelxs.ins', work_folder + os.sep + 'crystals.ins' )
 
 
 
