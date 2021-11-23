@@ -394,6 +394,7 @@ contains
         associate (r=>restraints_derivatives(k))
 
           invmsh = shape(invertm)
+		  if ( .not. allocated(r%derivatives) ) cycle
           if (size(r%derivatives) /= invmsh(1)) cycle
 
           ! Calculation of leverage see https://doi.org/10.1107/S0021889812015191

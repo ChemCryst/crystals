@@ -762,6 +762,15 @@ C----- MAXIMUM PARTS PER PARAMETER
       LDISTB = .FALSE.
 C--SET THE TIMING FUNCTION
       CALL XTIME1(2)
+
+C Ensure list 41 dependencies are up to date:
+      IF ( K41DEP() .LT. 0 ) THEN
+        write(cmon,'(a)') '{I Updating L41'
+        CALL XPRVDU(NCVDU, 1,0)
+        CALL XCSAE
+        CALL XBCALC(1)
+      ENDIF            
+
       CALL XCSAE
 C----- INITIALISE FUNCTION VECTOR USE
       JFNVC = 1

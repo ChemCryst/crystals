@@ -67,7 +67,8 @@ control and design of the user interface to be handled from ASCII files.
 #IFormat of Commands#
 #PAll command packages follow the same general format. The command is
  introduced
- with a backslash (or alternatively, a hash symbol) and ends with the
+ with a backslash (or alternatively, a hash symbol or ampersand &) and
+ ends with the
  word 'END'.
 #N   5#
 #J

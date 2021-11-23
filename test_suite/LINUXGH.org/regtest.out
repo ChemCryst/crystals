@@ -2,6 +2,7 @@
 #SET PRINT OFF
 #TITLE TEST 1
 #REGULAR KEEP
+Bonds: Update required - List5 length change
 Input: mapping    6 atoms onto    6
 Matching by Rotation/inversion (Method 1)
 
@@ -137,6 +138,7 @@ Summary of Deviations
  List   5 now contains     20 atom(s)
 #TITLE TEST 2
 #REGULAR KEEP
+Bonds: Update required - List5 length change
 Input: mapping    6 atoms onto    6
 Matching by Rotation/inversion (Method 1)
 
@@ -219,8 +221,6 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
 Bond length deviations
 C1-C2               C101-C102            0.000
-test 2                                                      	Bond mismatch C      1 C      2 C    101 C    102
-{E Warning: bond mismatch
 C2-C3               C102-C103            0.000
 C3-O4               C103-O104            0.000
 O4-C5               O104-C105            0.000
@@ -310,6 +310,7 @@ Individual Delta          0.004         0.008   O4       - O104
 #SET PRINT OFF
 #TITLE TEST 3
 #REGULAR KEEP
+Bonds: Update required - List5 length change
 Input: mapping    6 atoms onto    6
 Matching by Rotation/inversion (Method 1)
 
@@ -445,6 +446,7 @@ Summary of Deviations
  List   5 now contains     20 atom(s)
 #TITLE TEST 4
 #REGULAR KEEP
+Bonds: Update required - List5 length change
 Input: mapping    6 atoms onto    6
 Matching by Rotation/inversion (Method 1)
 
@@ -527,8 +529,6 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
 Bond length deviations
 C1-C2               C101-C102            0.000
-test 4                                                      	Bond mismatch C      1 C      2 C    101 C    102
-{E Warning: bond mismatch
 C2-C3               C102-C103            0.000
 C3-O4               C103-O104            0.000
 O4-C5               O104-C105            0.000
@@ -619,6 +619,7 @@ Individual Delta          0.004         0.008   O4       - O104
 #SET PRINT OFF
 #TITLE TEST 5
 #REGULAR AUGMENT
+Bonds: Update required - List5 length change
 Input: mapping    6 atoms onto    6
 Matching by Rotation/inversion (Method 1)
 
@@ -831,8 +832,6 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
 Bond length deviations
 C1-C2               C101-C102            0.000
-test 6                                                      	Bond mismatch C      1 C      2 C    101 C    102
-{E Warning: bond mismatch
 C2-C3               C102-C103            0.000
 C3-O4               C103-O104            0.000
 O4-C5               O104-C105            0.000
@@ -1124,8 +1123,6 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
 Bond length deviations
 C1-C2               C101-C102            0.000
-test 8                                                      	Bond mismatch C      1 C      2 C    101 C    102
-{E Warning: bond mismatch
 C2-C3               C102-C103            0.000
 C3-O4               C103-O104            0.000
 O4-C5               O104-C105            0.000
@@ -1420,12 +1417,12 @@ Bond length deviations
 C1-C2               C101-C102            0.000
 C2-C3               C102-C103            0.000
 C3-O4               C103-O104            0.000
-C3-C5               C103-C105            0.000
+O4-C5               O104-C105            0.000
 
 Torsion angles are omitted from the statistics if angles C-A-B or A-B-D are within 10.0 degrees of co-linearity
                                                                           Torsion Angles, Difference & Status, Terminal angles
 C1-C2-C3-O4                          C101-C102-C103-O104                     0.00    0.00    0.00 OK                             
-C1-C2-C3-C5                          C101-C102-C103-C105                     0.00    0.00    0.00 OK                             
+C2-C3-O4-C5                          C102-C103-O104-C105                     0.00    0.00    0.00 OK                             
 
 
 Summary of Deviations
@@ -1711,12 +1708,12 @@ Bond length deviations
 C1-C2               C101-C102            0.000
 C2-C3               C102-C103            0.000
 C3-O4               C103-O104            0.000
-C3-C5               C103-C105            0.000
+O4-C5               O104-C105            0.000
 
 Torsion angles are omitted from the statistics if angles C-A-B or A-B-D are within 10.0 degrees of co-linearity
                                                                           Torsion Angles, Difference & Status, Terminal angles
 C1-C2-C3-O4                          C101-C102-C103-O104                     0.00    0.00    0.00 OK                             
-C1-C2-C3-C5                          C101-C102-C103-C105                     0.00    0.00    0.00 OK                             
+C2-C3-O4-C5                          C102-C103-O104-C105                     0.00    0.00    0.00 OK                             
 
 
 Summary of Deviations
@@ -1871,8 +1868,6 @@ Uprime = U(med).U(max)/U(min), Watkin, Acta Cryst (2000) B56 747-749
 
 Bond length deviations
 C1-C2               C101-C102            0.000
-test 13                                                     	Bond mismatch C      1 C      2 C    101 C    102
-{E Warning: bond mismatch
 C2-C3               C102-C103            0.000
 C3-O4               C103-O104            0.000
 O4-C5               O104-C105            0.000

@@ -203,94 +203,22 @@ C            STOP 'ERROR OPENING STARTUP FILE'
       ENDIF
 C
 1210  CONTINUE
-
-      KOLDER = IERFLG
-
-      CALL XGUIUP(0)
-
-      IERFLG = KOLDER
-
-      CALL XFILL(IB,KPRGNM,17) !No longer in a program sub-unit.
-      I = KNXTOP ( LSTOP,LSTNO,ICLASS )
-C----- CHECK IF THIS SEGMENT NAME IS AVAILABLE
-      I=KCOMP(4,KPRGNM,PROGLS,NPROG,4)
-      IF ( I .LE. 0 ) GO TO 9920
-C----- GOTO THE APPROPRIATE SECTION
-       GOTO(3010,3020,3030,3040,3050,3060,3070,3080,3090,
-     2 3100 , 3110 , 3120 , 3130 , 3140 ,
-     3 3150 , 3160 , 3170 , 3180 , 9920 ) , I
-      GO TO 9920
-C
-C
-3010  CONTINUE
-      CALL INPUT
-      GOTO 1210
-3020  CONTINUE
-      CALL FIDDLE
-      GOTO 1210
-3030  CONTINUE
-      CALL CALCUL
-      GOTO 1210
-3040  CONTINUE
-      CALL INVERT
-      GOTO 1210
-3050  CONTINUE
-      CALL RESTR
-      GOTO 1210
-3060  CONTINUE
-      CALL GEOMET
-      GOTO 1210
-3070  CONTINUE
-      CALL ANISO
-      GOTO 1210
-3080  CONTINUE
-      CALL ALTER5
-      GOTO 1210
-3090  CONTINUE
-      CALL WEIGHT
-      GOTO 1210
-C
-3100  CONTINUE
-      CALL DISTAN
-      GOTO 1210
-3110  CONTINUE
-      CALL FOURIE
-      GOTO 1210
-3120  CONTINUE
-      CALL INPUT6
-      GOTO 1210
-3130  CONTINUE
-      CALL PRCSS6
-      GOTO 1210
-3140  CONTINUE
-      CALL TRIAL
-      GOTO 1210
-3150  CONTINUE
-      CALL PRCSS
-      GOTO 1210
-3160  CONTINUE
-      CALL PUBLSH
-      GOTO 1210
-3170  CONTINUE
-      CALL FOREIG
-      GO TO 1210
-3180  CONTINUE
-      CALL DIFABS
-      GO TO 1210
-C
-C
-C
-9920  CONTINUE
-      WRITE ( CMON, 9925)
-      CALL XPRVDU(NCEROR, 1,0)
-9925  FORMAT ( 1X , 'Illegal program name selected' )
-      GO TO 9990
-C
-9990  CONTINUE
-C      STOP 'CRYSTALS START ERROR'
-      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
-      CALL GUEXIT (2004)
+	  CALL COMPROC()
+	  GOTO 1210
       END
+
+	  
+C This can be called by PYTHON process after it has setup a queue of commands to be processed.
+
+#ifdef CRY_FORTDIGITAL
+      SUBROUTINE cryproc()
+      !dec$ attributes c :: cryproc
+#else
+      SUBROUTINE cryproc() bind (c)
+#endif
+	  CALL COMPROC()
+	  END
+
 
 CODE FOR GETCOM
       SUBROUTINE GETCOM(CLINE)

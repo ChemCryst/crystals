@@ -87,7 +87,7 @@ C block (l5,l9,l10) addresses itself.
 C XFAL09 loads a LIST 9, and saves the LIST 5 addresses if L5 is already in core.
 C
 C Revision 1.56  2011/02/04 17:40:01  djw
-C XPCH5E either prints table of esds or creates a LIST 9. Operations need to be separated in the near future
+C XPCH9E either prints table of esds or creates a LIST 9. Operations need to be separated in the near future
 C
 C Revision 1.55  2010/07/21 15:57:54  djw
 C Change order of list 6 header lines
@@ -706,13 +706,13 @@ C Close the .PDB FILE
       RETURN
       END
 C
-CODE FOR XPCH5E
-      SUBROUTINE XPCH5E(ITYPE)
+CODE FOR XPCH9E
+      SUBROUTINE XPCH9E(ITYPE)
 C--PRINT LIST 5 WITH ESDS/CREATE LIST 9
 c
 c      ITYPE 1 FOR PRINTED LIST
 C      ITYPE 2 FOR CREATION OF LIST 9
-C
+C      ITYPE 3 TO OUTPUT A LIST 9
 c      This is really horrid code (DJW, Feb2011)
 c      A LIST 5 and LIST 12 is loaded
 c      The short records are over written with esds from LIST 12
@@ -749,8 +749,8 @@ C
       INCLUDE 'XOPVAL.INC'
       INCLUDE 'QSTORE.INC'
 C
-      WRITE(CMON,'('' Punching LIST 5E in e.s.d format'')')
-      CALL XPRVDU(NCVDU, 1,0)
+c      WRITE(CMON,'('' Punching LIST 5E in e.s.d format'')')
+c      CALL XPRVDU(NCVDU, 1,0)
 C
 C--INITIALISE THE TIMING
       CALL XTIME1(2)
@@ -771,7 +771,7 @@ c     if a LIST 5 is already loaded, save the pointers
       if ( itype .eq. 1) then
         write(cmon,'(a)') 'Writing simple esd file'
       else
-        write(cmon,'(a)') 'Creating LIST 9'
+        write(cmon,'(a)') ' Creating LIST 9'
       endif
       call xprvdu(ncvdu, 1,0)
       iupdat = istore(l23sp+1)
@@ -812,6 +812,11 @@ C--SET THE NEW ATOMS UP AT THE TOP OF CORE IN A LIST 9
          MD9A=13
          L9A=KCHLFL(MD9A*N9A)
          M9A=L9A
+c
+      if(itype.eq.3) then
+       write(ncpu,'(a)')'#LIST 9'
+       write(ncpu,'(a,i4)')'READ NATOM = ', N5
+      endif
 
 C--LOOP OVER THE ATOMS
       DO K=1,N5
@@ -831,9 +836,15 @@ c--         move the type and serial
             call xmove(store(m5),store(m9a),2)
 c--         move the esds
             call xmove(bpd(1),store(m9a+2),11)
-            write(ncpu,20)store(m9a),nint(store(m9a+1)),
-     1      (store(idjw),idjw=m9a+2, m9a+12)
+            if (itype.eq.3) then !Punch list
+             write(ncpu,21)store(m9a),nint(store(m9a+1)),
+     1       (store(idjw),idjw=m9a+2, m9a+12)
+21           format('ATOM ', a4,i4,3X,5f11.6,/,'CONT ',6F11.6)
+            endif
         ENDIF
+      if(itype.eq.3) then
+            write(ncpu,'(a)')'END'
+      endif
 C
 1585    CONTINUE
 C -- UPDATE THE ATOM INFORMATION FOR THE NEXT ATOM

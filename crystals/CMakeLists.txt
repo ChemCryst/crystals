@@ -1,21 +1,24 @@
-
-
 enable_language(Fortran)
+enable_language(C)
+
+# This CrystalsFortran library is used by crystals and crystalscl from the folder above.
+# The GUI switches however are set on a project level, so crystalscl ends up with GUI flags.
+# This seems to work ok for now. Long-term tidy - move affected functions to separate files (e.g. copy 
+# how crystals.F and crystals-cl.F works)
 
 
-if ( useGUI )
-add_definitions(-D__WXUSINGDLL)
-add_definitions(-DCRY_GUI)
-else()
-add_definitions(-DCRY_NOGUI)
-endif()
-
+#if ( useGUI )
+#add_definitions(-D__WXUSINGDLL)
+#add_definitions(-DCRY_GUI)
+#else()
+#add_definitions(-DCRY_NOGUI)
+#endif()
 
 #add_library(PySpecific STATIC
 #pyspecific.F
 #)
 
-add_library(CrystalsFortran STATIC
+set(CRY_SOURCES 
 helper.c
 mrgrnk.f90
 crystals_hdf5.F90
@@ -153,6 +156,38 @@ weight.F
 lapack.F
 )
 
+
+if ( usePY )
+    set(CRY_SOURCES ${CRY_SOURCES} python.cpp)
+endif()
+
+add_library(CrystalsFortran STATIC ${CRY_SOURCES})
+
+target_link_libraries( CrystalsFortran PUBLIC CrystalsDefines )
+
+target_include_directories(CrystalsFortran PUBLIC ${Fortran_MODULE_DIRECTORY})
+
+
+if ( usePY )
+    if ( WIN32 )
+        target_include_directories(CrystalsFortran PUBLIC ${CMAKE_SOURCE_DIR}/python-headers-win/Include/)
+        set(PYTHON3_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/python-headers-win/Include)
+        target_include_directories(CrystalsFortran PUBLIC ${CMAKE_SOURCE_DIR}/python-headers-win/PC)
+        target_include_directories(CrystalsFortran PUBLIC ${PYTHON3_INCLUDE_DIRS})
+        message(STATUS "Setting include folder: ${PYTHON3_INCLUDE_DIRS}")
+    else()
+        target_include_directories(CrystalsFortran PUBLIC ${Python3_INCLUDE_DIRS})
+        message(STATUS "Include folder: ${Python3_INCLUDE_DIRS}")
+    endif()
+endif()
+
+if(useOPENMP)
+    find_package(OpenMP)
+    if (OPENMP_FOUND)
+        target_compile_definitions(CrystalsFortran PRIVATE ${OpenMP_Fortran_FLAGS})
+    endif()
+endif ()
+
 if (Fortran_COMPILER_NAME MATCHES "gfortran")  # gfortran
    # gfortran: Trap NaN as those seem to appear sometimes in the fourier test
    # Not applied globally because it breaks things
@@ -167,9 +202,7 @@ SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES LINKER_LANGUAGE Fortran)
 # These lines add definitions at the preprocessor stage - when CMake is checking for module dependencies in the Fortran.
 # Without these lines modules may be built in the wrong order causing a compilation failure in parallel builds.
 if ( useGUI )
-SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_GUI)
+    SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_GUI)
 else()
-SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_NOGUI)
+    SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_NOGUI)
 endif()
-
-

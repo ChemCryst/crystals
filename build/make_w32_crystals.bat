@@ -50,6 +50,8 @@ copy ".\builder\mkl_custom.lib" .
 REM @FOR %%I IN ( ..\crystals\*.f90 ) DO ( @call buildfile.bat %%I || (echo buildfile.bat returned an error & goto error ))
 @FOR %%I IN ( ..\gui\fwrapper_gui.F90 ..\gui\fwrapperimp_gui.F90 ) DO ( @call buildfile.bat %%I || (echo buildfile.bat returned an error & goto error ))
 
+call buildfile.bat python
+
 set FLIST=
 for %%x in (..\crystals\*.F) do if not "%%x" == "..\crystals\crystals-cl.F" set FLIST=!FLIST! %%x
 set LIST=%LIST:~1%

@@ -1,12 +1,15 @@
 
 
-
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 
 project(Precompiled)
 #SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/..)
 
 # Libraries
+if ( usePY )
+    message(STATUS "Precomp - the python option is set")
+endif()
+
 
 file( GLOB_RECURSE precomp_files RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/all/" "all/*" )
 foreach( precomp_file ${precomp_files} )
@@ -62,6 +65,20 @@ if ( WIN32 )
     	    "${CMAKE_CURRENT_SOURCE_DIR}/WIN32/${precomp_file}"
 	        "${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}"
 		DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/WIN32/${precomp_file}"
+		)
+	  list( APPEND precomp_files_dest "${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}" )
+	endforeach( precomp_file )
+endif()
+
+if ( WIN32 AND usePY )
+	file( GLOB_RECURSE precomp_files RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/WIN32PY/" "WIN32PY/*" )
+	foreach( precomp_file ${precomp_files} )
+	  add_custom_command(
+		OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}"
+		COMMAND ${CMAKE_COMMAND} -E copy
+    	    "${CMAKE_CURRENT_SOURCE_DIR}/WIN32PY/${precomp_file}"
+	        "${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}"
+		DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/WIN32PY/${precomp_file}"
 		)
 	  list( APPEND precomp_files_dest "${CMAKE_CURRENT_BINARY_DIR}/../${precomp_file}" )
 	endforeach( precomp_file )
