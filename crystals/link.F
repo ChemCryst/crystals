@@ -294,6 +294,7 @@ cavdl dec06
       INTEGER IMAXIND(3),IVOXEL(3)
       CHARACTER *1 CBLANK
       CHARACTER *4 CATOM(15)
+      CHARACTER *4 CELE, CLOW
       CHARACTER *22 CDUMF
       CHARACTER *10 CSPG
       character *32 CLINE
@@ -626,6 +627,13 @@ C---- GET MULTIPLICITY
       ELSE
 C----- WRITE SFAC CARDS
         IF (IEFORT .EQ. 5) THEN   ! Write modern SFAC card
+C DISCAMB support - write elements with lower case second letter (if there is one)
+          DO J = L29, M29, MD29
+              WRITE(CELE,'(A4)') ISTORE(J)
+              CALL XCCLWC(CELE,CLOW)
+              WRITE(CELE(2:4),'(A3)')CLOW(2:4)
+              READ(CELE,'(A4)') ISTORE(J)
+          END DO
           WRITE (NCFPU1, ' (''SFAC '', 12A6)')
      1    (ISTORE(J), J = L29, M29, MD29)
         ELSE
