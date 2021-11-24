@@ -1,6 +1,27 @@
 import os
 import sys
 import json
+import subprocess
+from shutil import copy, move
+import argparse
+
+
+parser = argparse.ArgumentParser(description='Run discamb')
+parser.add_argument('--basis', choices=['cc-pVDZ','cc-pVQZ','Def2SVP','jorge-DZP'], default='cc-pVDZ')
+parser.add_argument('--method', choices=['B3LYP','BLYP','CCSD','HF','M06','MP2'], default='B3LYP')
+parser.add_argument('--model', choices=['HAR','TAAM'], default='HAR')
+parser.add_argument('--ncores', type=int)
+parser.add_argument('--memory', type=ascii)
+
+
+try:
+    args = parser.parse_args()
+except SystemExit:               # Can't be passing this exception in an embedded python
+    raise Exception("Parse argument error")   # Send a general exception instead
+    
+print(args)
+
+argdict = vars(args)
 
 # Check arguments:
 # - basis
@@ -14,14 +35,27 @@ import json
 # - ncores
 # - memory
 
-disc2tsc_info = {    'basis set':   'cc-pVDZ', 
-                     'model':       'HAR', 
-                     'qm method':   'B3LYP', 
-                     'n cores':     12,
-                     'memory':      '1GB',
+disc2tsc_info = {    'basis set':   argdict['basis'], 
+                     'model':       argdict['model'], 
+                    'qm method':   argdict['method'], 
+                     'n cores':     argdict['ncores'],
+                     'memory':      argdict['memory'],
                      'qm program':  'Orca',
                      'multipoles': { 'l max': 2, 'threshold': 15.0 }
                 }
+
+if argdict['ncores'] is None:
+    # Get number of available cores, n_cores.
+    try:
+        import multiprocessing
+        disc2tsc_info['n cores'] = multiprocessing.cpu_count()
+        print( f"There are {disc2tsc_info['n cores']} core(s) available" )
+    except:
+        disc2tsc_info['n cores'] = 4
+        print( f"Cannot determine number of cores, defaulting to 4 (see discamb.py line {sys._getframe().f_back.f_lineno})" )
+
+if argdict['memory'] is None:
+    disc2tsc_info['memory'] = '1GB'
 
 
 #
@@ -74,13 +108,6 @@ def _find_discamb():
     return _path 
 
 
-# Get number of available cores, n_cores.
-try:
-    import multiprocessing
-    disc2tsc_info['n cores'] = multiprocessing.cpu_count()
-    print( f"There are {disc2tsc_info['n cores']} core(s) available" )
-except:
-    print( f"Cannot determine number of cores, defaulting to 4 (see discamb.py line {sys._getframe().f_back.f_lineno})" )
 
 
 # Get available memory
@@ -133,24 +160,45 @@ except Exception as e:
     print(sys.exc_info())
     raise Exception("discamb.py must be run in CRYSTALS")
 
-from shutil import copy
 copy('crystals.hkl', work_folder )
 copy('shelxs.ins', work_folder + os.sep + 'crystals.ins' )
 
+def deletefiles ( filelist ):
 
+    for f in filelist:
+        try:
+            copy(f, f+'.prev')
+            os.remove(f)
+        except FileNotFoundError:
+            pass
+
+deletefiles( [ 'default.tsc',
+               work_folder + os.sep + 'discamb_error.log',
+               work_folder + os.sep + 'discamb2tsc.log',
+               work_folder + os.sep + 'task_1.log'] )
 
 #Run discamb
 
-import subprocess
 
-print ("Launching discamb2tsc...")
+print ("Launching discamb2tsc. This may take several minutes to hours.")
+
+#subprocess.run( "echo %DISCAMB_PATH% > afile", 
+#                shell=True, stdout = subprocess.PIPE, stderr = subprocess.STDOUT,
+#                cwd = work_folder,
+#                env = dict(os.environ, DISCAMB_PATH=discamb_path)
+#              )
+
 
 subprocess.run( [ discambexe, "crystals.ins", "crystals.hkl" ], 
-                capture_output=True, 
-                cwd = work_folder,
+                stdout = subprocess.PIPE, stderr = subprocess.STDOUT,
+                cwd = work_folder, shell=True,
                 env = dict(os.environ, DISCAMB_PATH=discamb_path)
               )
 
+print ("Done. Copying results tsc...")
 
+copy( work_folder + os.sep + 'crystals.tsc', 'default.tsc' )
+
+print ("\nAll done. \n\n\n")
 
 
