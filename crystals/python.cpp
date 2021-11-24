@@ -739,6 +739,50 @@ PyObject * PyInit_crystals_module(void)
 }
 
 
+char *strmbtok ( char *input, char *delimit, char *openblock, char *closeblock) {
+    static char *token = NULL;
+    char *lead = NULL;
+    char *block = NULL;
+    int iBlock = 0;
+    size_t iBlockIndex = 0;
+
+    if ( input != NULL) {
+        token = input;
+        lead = input;
+    }
+    else {
+        lead = token;
+        if ( *token == '\0') {
+            lead = NULL;
+        }
+    }
+
+
+    while ( *token != '\0') {
+        if ( iBlock) {
+            if ( closeblock[iBlockIndex] == *token) {
+                iBlock = 0;
+            }
+            token++;
+            continue;
+        }
+        if ( ( block = strchr ( openblock, *token)) != NULL) {
+            iBlock = 1;
+            iBlockIndex = block - openblock;
+            token++;
+            continue;
+        }
+        if ( strchr ( delimit, *token) != NULL) {
+            *token = '\0';
+            token++;
+            break;
+        }
+        token++;
+    }
+    return lead;
+}
+
+
 
 // Here's the entry point.
 
@@ -759,23 +803,34 @@ int runpy(const char *filename)    // filename can be a while command line. Toke
 	strcpy(commandline,filename);
 
 
+
 	enum { kMaxArgs = 64 };
 	int argc = 0;
 	char *argv[kMaxArgs];
-	
-	char *p2 = strtok(commandline, " ");
-	while (p2 && argc < kMaxArgs-1)
-	{
-		argv[argc++] = p2;
-		p2 = strtok(0, " ");
-	}
+
+
+    char *tok;
+    char acOpen[]  = {"\"'"};
+    char acClose[] = {"\"'"};
+    
+    tok = strmbtok ( commandline, " ", acOpen, acClose);
+    argv[argc++] = tok;
+    while ( ( tok = strmbtok ( NULL, " ", acOpen, acClose)) != NULL) {
+        argv[argc++] = tok;
+    }
+
+//	char *p2 = strtok(commandline, " ");
+//	while (p2 && argc < kMaxArgs-1)
+//	{
+		//argv[argc++] = p2;
+		//p2 = strtok(0, " ");
+	//}
 	argv[argc] = 0;
 
 	if ( argc == 0 ) {
 		lineouts("{E Python filename required");
 		return 140;
 	}	
-
 
 	wchar_t** wargv = (wchar_t**) mMem_Malloc(sizeof(wchar_t*)*argc);
 	for (int i=0; i<argc; i++) {
@@ -995,12 +1050,6 @@ void getcommand(int length, char *commandline)
 std::deque <std::string> commands;
 
 
-
-
-
-
-
-
 void setcommand(char *commandline){
 	commands.push_back( std::string(commandline) );
 }
@@ -1033,12 +1082,6 @@ void cxxgetcommand(int length, char *commandline)
 	}
 	return;
 }
-
-
-
-
-
-
 
 
 /*  ric.py 
