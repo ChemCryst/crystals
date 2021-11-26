@@ -1961,13 +1961,9 @@ C--CLEAR THE CLOCK CONTROL AND FETCH THE INPUT PARAMETERS
 c
 C      ZERO THE HEATMAP
       IMAP=0
-      DO I=1,20
-       DO J=1,25
-        DO L=1,4
-         HMAP(L,J,I)=0.0
-        ENDDO
-       ENDDO
-      ENDDO
+      HMAP=0.0
+      RESINT=0.0
+      FINT=0.0
 C
 C      SET THE REFLECTION LIST TYPE 
       ITYP06 = ISTORE(NFL+22)
@@ -2236,29 +2232,42 @@ CNOV98----- SIGMA THRESHOLD
 1702      CONTINUE
          ENDIF
 C
-C WRITE OUT THE HEAT MAP
+C WRITE OUT THE HEATMAP
       MAPOUT: IF (IMAP.eq.1) THEN
-       write(ncawu,'(//)')
-       write(ncawu,'(A)')'Columns are batched by intensity'
-       write(ncawu,'(A)')'Rows are batched by resolution'
-       write(ncawu,'(/)')
-
-       write(ncawu,'(A/)')'Bin contents'
-       write(ncawu,'(/6x,25f6.1/)') (fint(j),j=1,IFMAX)
+       IF ((ISSPRT.EQ.0) .AND. (LEVEL.EQ.0)) THEN
+       write(ncwu,'(//)')
+       write(ncwu,'(A)')'Columns are batched by intensity'
+       write(ncwu,'(A)')'Rows are batched by resolution'
+       write(ncwu,'(/)')
+       write(ncwu,'(A/)')'Bin contents'
+       write(ncwu,'(/6x,25f6.1/)') (FINT(J),J=1,IFMAX)
+       ENDIF
+       write(NCPU,'(A/)')'Bin contents'
+       write(NCPU,'(/6x,25f6.1/)') (FINT(J),J=1,IFMAX)
        DO K=1,IRESMAX
-        WRITE(NCAWU,7000) RESINT(K),
+       IF ((ISSPRT.EQ.0) .AND. (LEVEL.EQ.0)) THEN
+        WRITE(NCWU,7000) RESINT(K),
+     1  (int(HMAP(1,J,K)),J=1,IFMAX)
+       ENDIF 
+        WRITE(NCPU,7000) RESINT(K),
      1  (int(HMAP(1,J,K)),J=1,IFMAX)
 7000    FORMAT(F6.2,25I6)
        ENDDO
-       write(ncawu,'(/)')
-
-
+       IF ((ISSPRT.EQ.0) .AND. (LEVEL.EQ.0)) write(ncwu,'(/)')
+       write(NCPU,'(/)')
+C
 C COMPUTE SHELDRICK K
-       write(ncawu,'(A/)')
+       IF ((ISSPRT.EQ.0) .AND. (LEVEL.EQ.0)) THEN
+       write(ncwu,'(A/)')
      1 '100*<Fo>/<Fc> for bins with more than 3 items'
-       write(ncawu,'(A/)')'Values should be close to 100'
-       write(ncawu,'(/6x,25f6.1/)') (fint(j),j=1,IFMAX)
-       write(ncawu,'(/)')
+       write(ncwu,'(A/)')'Values should be close to 100'
+       write(ncwu,'(/6x,25f6.1)') (fint(j),j=1,IFMAX)
+       ENDIF
+       write(NCPU,'(A/)')
+     1 '100*<Fo>/<Fc> for bins with more than 3 items'
+       write(NCPU,'(/6x,25f6.1)') (fint(j),j=1,IFMAX)
+       IF ((ISSPRT.EQ.0) .AND. (LEVEL.EQ.0)) write(ncwu,'(/)')
+       write(NCPU,'(/)')
        DO K=1,IRESMAX
          DO J=1,IFMAX
            IF(HMAP(1,J,K).GT.3.) THEN
@@ -2269,25 +2278,38 @@ C COMPUTE SHELDRICK K
          ENDDO
        ENDDO         
        DO K=1,IRESMAX
-        WRITE(NCAWU,"(F6.2)",ADVANCE="NO") RESINT(K)
+        IF ((ISSPRT.EQ.0) .AND. (LEVEL.EQ.0)) THEN
+        WRITE(NCWU,"(F6.2)",ADVANCE="NO") RESINT(K)
         DO J=1,IFMAX
-         IF(HMAP(1,J,K).GT.3) THEN
-           WRITE(NCAWU,"(I6)",ADVANCE="NO") IHMAP2(J,K)
+           IF(HMAP(1,J,K).GT.3) THEN
+           WRITE(NCWU,"(I6)",ADVANCE="NO") IHMAP2(J,K)
          ELSE
-            WRITE(NCAWU,"(6X)",ADVANCE="NO")
-         ENDIF
+            WRITE(NCWU,"(6X)",ADVANCE="NO")
+           ENDIF
         ENDDO
-        WRITE(NCAWU,"('')")
+        WRITE(NCWU,"('')")
+        ENDIF
+        WRITE(NCPU,7010) RESINT(K),
+     1  (IHMAP2(J,K),J=1,IFMAX)
+7010    FORMAT(F6.2,25I6)
        ENDDO
-       write(ncawu,'(/)')
-
-
+       IF ((ISSPRT.EQ.0) .AND. (LEVEL.EQ.0)) write(ncwu,'(/)')
+       write(NCPU,'(/)')
+C
 C COMPUTE <Fo-Fc>
-       write(ncawu,'(A/)')
+       IF ((ISSPRT.EQ.0) .AND. (LEVEL.EQ.0)) THEN
+       write(ncwu,'(A/)')
      1 '100*<Fo-Fc> for bins with more than 3 items'
-       write(ncawu,'(A/)')'Values should be close to zero'
-       write(ncawu,'(/6x,25f6.1/)') (fint(j),j=1,IFMAX)
-       write(ncawu,'(/)')
+       ENDIF
+       write(NCPU,'(A/)')
+     1 '100*<Fo-Fc> for bins with more than 3 items'
+       IF ((ISSPRT.EQ.0) .AND. (LEVEL.EQ.0)) THEN
+       write(ncwu,'(A/)')'Values should be close to zero'
+       write(ncwu,'(/6x,25f6.1/)') (fint(j),j=1,IFMAX)
+       write(ncwu,'(/)')
+       ENDIF
+       write(NCPU,'(/6x,25f6.1/)') (fint(j),j=1,IFMAX)
+       write(NCPU,'(/)')
        DO K=1,IRESMAX
          DO J=1,IFMAX
            IF(HMAP(1,J,K).GT.3.) THEN
@@ -2299,23 +2321,24 @@ C COMPUTE <Fo-Fc>
        ENDDO         
 C
        DO K=1,IRESMAX
-        WRITE(NCAWU,"(F6.2)",ADVANCE="NO") RESINT(K)
+        IF ((ISSPRT.EQ.0) .AND. (LEVEL.EQ.0)) THEN
+        WRITE(NCWU,"(F6.2)",ADVANCE="NO") RESINT(K)
         DO J=1,IFMAX
          IF(HMAP(1,J,K).GT.3) THEN
-           WRITE(NCAWU,"(I6)",ADVANCE="NO") IHMAP2(J,K)
+           WRITE(NCWU,"(I6)",ADVANCE="NO") IHMAP2(J,K)
          ELSE
-            WRITE(NCAWU,"(6X)",ADVANCE="NO")
+            WRITE(NCWU,"(6X)",ADVANCE="NO")
          ENDIF
         ENDDO
-        WRITE(NCAWU,"('')")
+        WRITE(NCWU,"('')")
+        ENDIF
+        WRITE(NCPU,7020) RESINT(K),
+     1  (IHMAP2(J,K),J=1,IFMAX)
+7020    FORMAT(F6.2,25I6)
        ENDDO
-       write(ncawu,'(/)')
-
+       write(NCPU,'(/)')
       ENDIF MAPOUT
-
-
-
-
+C
 C
 CNOV98----- LOAD LIST 30 FOR UPDATING
       IF (TEMP30(1) .GE. ZERO) THEN

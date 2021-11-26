@@ -743,15 +743,16 @@ C TOP FRAME
       IR=2
 
       IF ( IPLOTW .EQ. 1 ) THEN
-        WRITE(CMON,'(A,6(/A))')
+        WRITE(CMON,'(A,8(/A))')
      1  '^^PL PLOTDATA _WILSON SCATTER ATTACH _VWILSON KEY',
-     1 '^^PL XAXIS TITLE "ln(<Fo\**2>(\rho)/<\SUMf\**2>(\rho))"',
-     1  '^^PL NSERIES=3 LENGTH=50 YAXIS TITLE ', 
+     1  '^^PL XAXIS TITLE "ln(<Fo\**2>(\rho)/<\SUMf\**2>(\rho))"',
+     1  '^^PL NSERIES=4 LENGTH=50 YAXIS TITLE ', 
      1  '^^PL "\rho (= sin\**2\theta/\lambda\**2)"',
      1  '^^PL SERIES 1 SERIESNAME ''Straight Line'' TYPE LINE',
      1  '^^PL SERIES 2 SERIESNAME ''Wilson (Fobs)''',
-     1  '^^PL SERIES 3 SERIESNAME ''Wilson (Fcalc)'''
-        CALL XPRVDU(NCVDU, 7,0)
+     1  '^^PL SERIES 3 SERIESNAME ''Wilson (Fcalc)''',
+     1  '^^PL SERIES 4 SERIESNAME ''W Calc-Obs'''
+        CALL XPRVDU(NCVDU, 9,0)
       END IF
 
       XMIN = +1000.
@@ -775,6 +776,7 @@ C SIDE FRAME
         IF(MOD(I,10).EQ.0) THEN
           WRITE(NCWU,70) RH(IR)
    70     FORMAT(1H ,F11.3,3X,3H-I-,$) 
+
           IR=IR+1
         ELSE
           WRITE(NCWU,50)
@@ -822,9 +824,11 @@ C WILSON PLOT INTERPOLATION
 C STORE K-CURVE                                                     
           DCV(I)=EXP(AW(4)+Q*(AW(3)+Q*(AW(2)+Q*AW(1))))
           IF ( IPLOTW .EQ. 1 ) THEN
-            WRITE(CMON,'(A,6F10.5)')
-     1      '^^PL DATA ', SVAL , 0.02*FLOAT(I-1)*RX, WVAL,
-     2      0.02*FLOAT(I-1)*RX, WCVAL , 0.02*FLOAT(I-1)*RX
+            WRITE(CMON,'(A,8F8.3)')
+     1      '^^PL DATA ', SVAL , 0.02*FLOAT(I-1)*RX,
+     2      WVAL  , 0.02*FLOAT(I-1)*RX, 
+     3      WCVAL , 0.02*FLOAT(I-1)*RX,
+     4      WCVAL-WVAL, 0.02*FLOAT(I-1)*RX
             CALL XPRVDU(NCVDU, 1,0)
           END IF
 cdjwfeb08
