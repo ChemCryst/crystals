@@ -9752,7 +9752,9 @@ Indicates which reflection list to use.
       HIGH
       LOW   -  Default value
 #
- If LEVEL is LOW the  analysis is against Fo and sin theta only.
+ If LEVEL is LOW the  analysis is against Fo and sin theta only. The high level listing
+ sends 2D analyses (Fc vs resolution) to the listing file and as a punch file, which could 
+ be imported int EXCEL and ised to create a 'heat map'.
 #
 #XDIFABS#
 #XLeast squares absorption corrrection#
