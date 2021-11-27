@@ -1619,7 +1619,7 @@ c         WRITE(NCAWU, '(A)') (trim(CMON(II)),II=1,2)
 201   FORMAT(47X,    'PHI(S)=',F6.1,' MU(S)=',F6.1,/
      2 ' Average absorption correction =',F6.3)
 C----- WRITE MINIMUM INFO TO VDU
-         WRITE ( CMON,202) NTOT, AVER, AMIN, AMAX
+         WRITE ( CMON,202) NTOT, AMIN, AVER, AMAX
          CALL XPRVDU(NCVDU, 4,0)
       ELSE
          WRITE ( CMON,202) NTOT, AMIN, AVER, AMAX

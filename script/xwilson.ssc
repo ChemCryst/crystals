@@ -33,8 +33,14 @@
 ^^WI    {                                                                       
 ^^WI     @ 2,2 GRID EXP2 NROWS=1 NCOLS=3 OUTLINE=''                             
 ^^WI     {                                                                      
-^^WI      @ 1,3 GRID EXP2 NROWS=6 NCOLS=1                                       
-^^WI      {                                                                     
+^^WI      @ 1,3 GRID EXP2 NROWS=6 NCOLS=2                                       
+^^WI      {                              
+^^WI       @ 1,2 STATIC XXX
+^^WI ' The pale blue data points are the differences'                                      
+^^WI       @ 2,2 STATIC XXX
+^^WI ' between the Wislon plot calculated for the observed'
+^^WI       @ 3,2 STATIC XXX
+^^WI ' and calculted structure factors'                                      
 ^^WI       @ 1,1 STATIC XFW1                                                    
 ^^WI 'The data should lie on a straight line rising from left to right'   
 ^^WI       @ 2,1 STATIC XFW2                                                    
