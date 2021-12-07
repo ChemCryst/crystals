@@ -6,6 +6,7 @@ void setcommand(char *commandline);
 void cxxgetcommand(int length, char *commandline);
 static jmp_buf thebeginning;
 void cryproc();
+void resetflags();
 int  cxx_command_queue_length();
 void  cxx_clear_queue();
 int kgedpy(int &ln,int &rn,float* output,int &on,int & nrecs,int & recln);
@@ -631,6 +632,9 @@ method_crys_run(PyObject *self, PyObject *args)
     else {                             // This is where we return to on longjmp.
 //		printf("Longjmp back to start.\n");
     }
+
+    resetflags();
+
 
 // For now - return Py_None reference from all commands
 #ifdef CRY_OSWIN32

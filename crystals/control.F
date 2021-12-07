@@ -2616,8 +2616,6 @@ C    NAMES RESTRICTED TO FIRST 16 CHARACTERS OF THOSE IN COMMANDFILE
       CALL XGUIUP(0)
       IERFLG = KOLDER
       
-      
-      IHFLAG = -1
 
       CALL XFILL(IB,KPRGNM,17) !No longer in a program sub-unit.
       I = KNXTOP ( LSTOP,LSTNO,ICLASS )
@@ -2689,9 +2687,10 @@ C
 3180  CONTINUE
       CALL DIFABS
       GO TO 1210
-	  
+  
+
 1210  CONTINUE
-	  RETURN
+      RETURN
 C
 C
 C

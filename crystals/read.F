@@ -882,6 +882,20 @@ C
 C
 C
 C
+CODE FOR RESETFLAGS
+#ifdef CRY_FORTDIGITAL
+      SUBROUTINE resetflags()
+      !dec$ attributes c :: resetflags
+#else
+      SUBROUTINE resetflags() bind(C, name="resetflags") 
+#endif
+      INCLUDE 'XCARDS.INC'
+      INCLUDE 'XUNITS.INC'
+C-- CLEAR ERROR FLAG
+      IERFLG = 1
+C-- CLEAR instruction flag to prevent error if PYTHON script calls back into CRYSTALS from the top.
+      IHFLAG = -1
+      END
 C
 C
 C
@@ -894,6 +908,12 @@ CODE FOR KRDSYS
           character(kind=c_char) :: string(*)
         end function runpy
       end interface
+      interface
+        subroutine resetflags() bind(c, name="resetflags")
+        end subroutine
+      end interface
+
+
 C -- CHECK IF THE CURRENT CARD CONTAINS A SYSTEM INSTRUCTION. IF IT
 C    DOES, EXECUTE THE INSTRUCTION.
 C
@@ -1409,14 +1429,11 @@ C -- Run Python script
 C -- find python module (script) path (CRYSDIR:/py)
 
 
-C -- CLEAR ERROR FLAG
-          IERFLG = 1
-C-- CLEAR instruction flag to prevent error if PYTHON script calls back into CRYSTALS from the top.
-          IHFLAG = -1
-
+          CALL resetflags()
           INPYTH = 1
           LTEST = runpy (trim(ccmnd)//C_NULL_CHAR)
-          INPYTH = 0
+          INPYTH = 0 
+          CALL resetflags()
       END IF
 #else
       WRITE ( CMON,2612) 
@@ -1544,6 +1561,7 @@ C
 C
       END
 C
+
 C
 C
 C
