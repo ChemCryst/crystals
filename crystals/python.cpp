@@ -6,6 +6,8 @@ void setcommand(char *commandline);
 void cxxgetcommand(int length, char *commandline);
 static jmp_buf thebeginning;
 void cryproc();
+int  cxx_command_queue_length();
+void  cxx_clear_queue();
 int kgedpy(int &ln,int &rn,float* output,int &on,int & nrecs,int & recln);
 
 	
@@ -618,11 +620,19 @@ method_crys_run(PyObject *self, PyObject *args)
     if ( i == 0 ) {                    // This is the first path.
 //		printf("Calling ccommand.\n");
 		cryproc();
+		if ( cxx_command_queue_length() ) {
+			mErrSetString(*ptr__TypeError, "crystals.run() function should only contain single instructions");
+			cxx_clear_queue();
+			lineouts("{E Error crystals.run() function should only contain single instructions");
+			return NULL;
+			//Error .run should only contain single instructions (because - eventually - values may be returned to Python from some commands)
+		}
     }
     else {                             // This is where we return to on longjmp.
 //		printf("Longjmp back to start.\n");
     }
 
+// For now - return Py_None reference from all commands
 #ifdef CRY_OSWIN32
     return mBuildValue("O",  mBuildValue("")); // Inc ref to PyNone (without using INCREF macro which won't work here becuase of dynamic LoadLibrary
 #else
@@ -1046,12 +1056,28 @@ void getcommand(int length, char *commandline)
 
 #include <deque>
 #include <string>
+//#include    <iostream>
+//#include    <iomanip>
+//#include    <sstream>
 
 std::deque <std::string> commands;
 
 
 void setcommand(char *commandline){
 	commands.push_back( std::string(commandline) );
+//    std::ostringstream os;
+//	os <<  "Adding " << std::string(commandline) << " # Size now: " << commands.size();
+//	lineouts(os.str().c_str());
+}
+
+int cxx_command_queue_length()
+{
+    return (int)commands.size();
+}
+
+void cxx_clear_queue()
+{
+    commands.clear();
 }
 
 // Copy next string into commandline buffer, return 0 for OK, < 0 for error.
@@ -1074,10 +1100,13 @@ void cxxgetcommand(int length, char *commandline)
 		{
 			*(commandline + j) = ' ';
 		}
-		
+//		std::ostringstream os;
+//		os <<  "Getting " << std::string(commandline) << " # Size now: " << commands.size();
+//		lineouts(os.str().c_str());
 	}
 	else
 	{
+//		lineouts("Get. No more commands");
 		endofcommands();
 	}
 	return;
