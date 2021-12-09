@@ -53,7 +53,7 @@ CxTextOut * CxTextOut::CreateCxTextOut( CrTextOut * container, CxGrid * guiParen
     theMEdit->Init();
 #endif
 #ifdef CRY_USEWX
-    theMEdit->Create(guiParent, -1, wxPoint(0,0), wxSize(10,10), wxVSCROLL|wxHSCROLL|wxSUNKEN_BORDER);
+    theMEdit->Create(guiParent, -1, wxPoint(0,0), wxSize(10,10), wxVSCROLL|wxHSCROLL|wxSUNKEN_BORDER| wxWANTS_CHARS);
     theMEdit->Show(true);
     theMEdit->Init();
 #endif
