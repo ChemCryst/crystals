@@ -225,7 +225,7 @@ sub obscureMachinePrecision() {
 	# Large s/esd                " S /ESD    45    45     0.  0 1 9       - 0 . 2E+ 0 1     0 . 1 8  7 E-01          1.03        O      8 U[11]"
 		   } elsif($line =~ m/^(\s*S\/ESD\s+\d+\s+\d+\s+-?0\.\d\d\d)\d(\s+-?0\.\dE.\d\d\s+-?0\.\d\d)\d(E\S\d\d\s+)(-?\d+\.\d\d)(.*)/ ) {
    				  $spfour = sprintf "%.1f", $4;
-				  print $fho "[14] $1 $2 $3 $4 $5\n";
+				  print $fho "[14] $1 $2 $3 $spfour $5\n";
 		   } elsif($line =~ m/^(\s*LARGE\s+\d+\s+\d+\s+-?0\.\d\d\d)\d(\s+-?0\.\dE.\d\d\s+-?0\.\d\d)\d(E\S\d\d\s+-?\d+\.\d)\d(.*)/ ) {
 				  print $fho "[14a] $1 $2 $3 $4\n";
 		   } elsif($line =~ m/^(\s*S\/ESD\s+\d+\s+\d+\s+-?0\.\d\d\d)\d(\s+-?0\.\dE.\d\d\s+-?0\.\d\d)\d(\s+-?\d+\.\d)\d(.*)/ ) {
