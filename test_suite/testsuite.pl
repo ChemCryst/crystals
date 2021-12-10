@@ -223,8 +223,9 @@ sub obscureMachinePrecision() {
 		   } elsif($line =~ m/^\s*S\/ESD\s+\d+\s+\d+\s+-?0.00.*/ ) {
 		   # do nothing
 	# Large s/esd                " S /ESD    45    45     0.  0 1 9       - 0 . 2E+ 0 1     0 . 1 8  7 E-01          1.03        O      8 U[11]"
-		   } elsif($line =~ m/^(\s*S\/ESD\s+\d+\s+\d+\s+-?0\.\d\d\d)\d(\s+-?0\.\dE.\d\d\s+-?0\.\d\d)\d(E\S\d\d\s+-?\d+\.\d)\d(.*)/ ) {
-				  print $fho "[14] $1 $2 $3 $4\n";
+		   } elsif($line =~ m/^(\s*S\/ESD\s+\d+\s+\d+\s+-?0\.\d\d\d)\d(\s+-?0\.\dE.\d\d\s+-?0\.\d\d)\d(E\S\d\d\s+)(-?\d+\.\d\d)(.*)/ ) {
+   				  $spfour = sprintf "%.1f", $4;
+				  print $fho "[14] $1 $2 $3 $4 $5\n";
 		   } elsif($line =~ m/^(\s*LARGE\s+\d+\s+\d+\s+-?0\.\d\d\d)\d(\s+-?0\.\dE.\d\d\s+-?0\.\d\d)\d(E\S\d\d\s+-?\d+\.\d)\d(.*)/ ) {
 				  print $fho "[14a] $1 $2 $3 $4\n";
 		   } elsif($line =~ m/^(\s*S\/ESD\s+\d+\s+\d+\s+-?0\.\d\d\d)\d(\s+-?0\.\dE.\d\d\s+-?0\.\d\d)\d(\s+-?\d+\.\d)\d(.*)/ ) {
@@ -298,8 +299,11 @@ sub obscureMachinePrecision() {
 		   } elsif($line =~ m/^( Minimisation function\s+\d+\.\d\d)\d(E\S\d\d\s+\d+\.\d)\d\d(E\S\d\d\s+\d+\.\d\d)\d(E\S\d\d.*)/ ) {
 				  print $fho "[30] $1$2$3$4\n";
 	# Shift max  "                                         0.0762   0.0487   0.0794"
-		   } elsif($line =~ m/^(           \s*-*\d\.\d\d\d)\d(   -*\d\.\d\d\d)\d(   -*\d.\d\d\d)\d(\s*)/ ) {
-				  print $fho "[31] $1 $2 $3 $4\n";
+		   } elsif($line =~ m/^           \s*(-?\d\.\d\d\d\d)   (-?\d\.\d\d\d\d)   (-?\d.\d\d\d\d)(\s*)/ ) {
+			      $spone = sprintf "%.3f", $1;
+			      $sptwo = sprintf "%.3f", $2;
+			      $spthree = sprintf "%.3f", $3;
+				  print $fho "[31]           $spone   $sptwo   $spthree $4\n";
 	#			  print("Line edited (rule 31): $line \n");
 	# Min funcs "    211786.        195909.          21729.               0.3664E+06          On scale of /FO/"
 		   } elsif($line =~ m/^(\s+\d+)\d\.(\s+\d+)\d\.(\s+\d+)\d\.(\s+0\.\d\d)\d\d(E.\d\d\s+On scale of \/FO\/\s*)/ ) {
@@ -390,8 +394,16 @@ sub obscureMachinePrecision() {
 		   } elsif($line =~ m/^(\s+\d+\s+\w+\s+\d+\.\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\.\d)\d(\s+\d+\.\d)\d.*/) {
 				  print $fho "[49] $1 $2\n";
 	# Too much detail 9 (Print 11)
-		   } elsif($line =~ m/^(\s+\d+\s+-?0\.\d)\d\d\d\d(E.\d\d\s+-?0\.\d)\d\d\d\d(E.\d\d\s+-?0\.\d)\d\d\d\d(E.\d\d\s+-?0\.\d)\d\d\d\d(E.\d\d\s+-?0\.\d)\d\d\d\d(E.\d\d\s+-?0\.\d)\d\d\d\d(E.\d\d\s+-?0\.\d)\d\d\d\d(E.\d\d\s+-?0\.\d)\d\d\d\d(E.\d\d)/) {
-				  print $fho "[50] $1$2$3$4$5$6$7$8$9\n";
+		   } elsif($line =~ m/^(\s+\d+\s+)(-?0\.\d\d\d\d\d)(E.\d\d\s+)(-?0\.\d\d\d\d\d)(E.\d\d\s+)(-?0\.\d\d\d\d\d)(E.\d\d\s+)(-?0\.\d\d\d\d\d)(E.\d\d\s+)(-?0\.\d\d\d\d\d)(E.\d\d\s+)(-?0\.\d\d\d\d\d)(E.\d\d\s+)(-?0\.\d\d\d\d\d)(E.\d\d\s+)(-?0\.\d\d\d\d\d)(E.\d\d)/) {
+   				  $sptwo = sprintf "%.1f", $2;
+   				  $spfour = sprintf "%.1f", $4;
+   				  $spsix = sprintf "%.1f", $6;
+   				  $speight = sprintf "%.1f", $8;
+   				  $spten = sprintf "%.1f", $10;
+   				  $sptwelve = sprintf "%.1f", $12;
+   				  $spfourteen = sprintf "%.1f", $14;
+   				  $spsixteen = sprintf "%.1f", $16;
+				  print $fho "[50] $1$sptwo$3$spfour$5$spsix$7$speight$9$spten$11$sptwelve$13$spfourteen$15$spsixteen$17\n";
 	# Too much detail 8 (Print 11)
 		   } elsif($line =~ m/^(\s+\d+\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d\s+-?0\.\d\d)\d\d\d(E.\d\d)\s*/) {
 				  print $fho "[51] $1$2$3$4$5$6$7$8\n";
@@ -490,6 +502,10 @@ sub obscureMachinePrecision() {
 				  $spfour = sprintf "%.0f", $4;
 				  $spsix = sprintf "%.0f", $6;
 				  print $fho "[80] $1$sptwo$3$spfour$5$spsix$7\n";
+	# Block No  1.  Single precision relative error:  4.41E-05
+	   } elsif($line =~ m/^(.*precision relative error:\s+)(-?\d+\.\d+)(.*)$/ ) {   #$2 hold float parts
+				  $sptwo = sprintf "%.1f", $2;
+				  print $fho "[80a] $1$sptwo$3\n";
 
 	#C11 . C1 . C2 . O3 . -131.8(12)    yes
 	  } elsif($line =~ m/^(.*\w* \. \w* \. \w* \. \w* \.\s+-?\d+\.).*(\(.*)$/ ) {
