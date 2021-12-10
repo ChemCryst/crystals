@@ -500,9 +500,9 @@ LS-scale=  1.612   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 Inversion method: Automatic
-Block No  1.  Single precision relative error:  7.71E-06
+[80a] Block No  1.  Single precision relative error:  7.7E-06
 [80]  (sp inverse) 1-norm:  2E+00 cond. number:  6E+01 rel. error:  8E-06
-[14]  S/ESD     7           7           -0.019       0.0E+00    0.46 E-02         -4.2         C      7 U[11]   
+[14]  S/ESD     7           7           -0.019       0.0E+00    0.46 E-02          -4.2         C      7 U[11]   
 
                                                 for          12 parameters
 [64]                                  The rms (shift/su)  =           1.
@@ -539,15 +539,15 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
 
 
 [38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00   -0.00   -0.00   -0.00    0.00   -0.00   -0.00
-[31]                                          0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.01    0.00    0.00    0.00    0.00    0.00
-[31]                                          0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 
 
 
 [70]  Maximum        0.    0.00    0.00    0.00    0.00    0.00    0.01    0.00    0.00    0.00    0.00    0.00
-[31]                                          0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 
 [03]  Reversals
 
@@ -592,12 +592,12 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
 [37]      O          6.    1.00    0.00    0.22    0.25    0.34    0.06
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 
 [37]      C          7.    1.00    0.00    0.35    0.16    0.40    0.06
 [37]                       0.00             0.00    0.00    0.00   -0.01    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 [84] Mean C-C su =   0.00
 #CYCLENDS
 #CHECK HI
@@ -814,9 +814,9 @@ LS-scale=  1.612   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 Inversion method: Automatic
-Block No  1.  Single precision relative error:  7.71E-06
+[80a] Block No  1.  Single precision relative error:  7.7E-06
 [80]  (sp inverse) 1-norm:  2E+00 cond. number:  6E+01 rel. error:  8E-06
-[14]  S/ESD     7           7           -0.019       0.0E+00    0.46 E-02         -4.2         C      7 U[11]   
+[14]  S/ESD     7           7           -0.019       0.0E+00    0.46 E-02          -4.2         C      7 U[11]   
 
                                                 for          12 parameters
 [64]                                  The rms (shift/su)  =           1.
@@ -853,15 +853,15 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
 
 
 [38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00   -0.00   -0.00   -0.00    0.00   -0.00   -0.00
-[31]                                          0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.01    0.00    0.00    0.00    0.00    0.00
-[31]                                          0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 
 
 
 [70]  Maximum        0.    0.00    0.00    0.00    0.00    0.00    0.01    0.00    0.00    0.00    0.00    0.00
-[31]                                          0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 
 [03]  Reversals
 
@@ -906,12 +906,12 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
 [37]      O          6.    1.00    0.00    0.22    0.25    0.34    0.06
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 
 [37]      C          7.    1.00    0.00    0.35    0.16    0.40    0.06
 [37]                       0.00             0.00    0.00    0.00   -0.01    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 [84] Mean C-C su =   0.00
 #CYCLENDS
 #CHECK HI
@@ -1062,7 +1062,7 @@ LS-scale=  1.612   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 Inversion method: Automatic
-Block No  1.  Single precision relative error:  2.05E-05
+[80a] Block No  1.  Single precision relative error:  2.0E-05
 [80]  (sp inverse) 1-norm:  9E+00 cond. number:  2E+02 rel. error:  2E-05
 
                                                 for          12 parameters
@@ -1100,15 +1100,15 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
 
 
 [38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00    0.00   -0.00    0.00    0.00   -0.00    0.00
-[31]                                          0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                          0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 
 
 
 [70]  Maximum        0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                          0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 
 [03]  Reversals
 
@@ -1153,12 +1153,12 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
 [37]      O          6.    1.00    0.00    0.22    0.25    0.34    0.06
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 
 [37]      C          7.    1.00    0.00    0.35    0.16    0.40    0.09
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 [84] Mean C-C su =   0.00
 #CYCLENDS
 #CHECK HI
@@ -1298,7 +1298,7 @@ LS-scale=  1.612   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 Inversion method: Automatic
-Block No  1.  Single precision relative error:  2.05E-05
+[80a] Block No  1.  Single precision relative error:  2.0E-05
 [80]  (sp inverse) 1-norm:  9E+00 cond. number:  2E+02 rel. error:  2E-05
 
                                                 for          12 parameters
@@ -1336,15 +1336,15 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
 
 
 [38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00    0.00   -0.00    0.00    0.00   -0.00    0.00
-[31]                                          0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                          0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 
 
 
 [70]  Maximum        0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                          0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 
 [03]  Reversals
 
@@ -1389,12 +1389,12 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
 [37]      O          6.    1.00    0.00    0.22    0.25    0.34    0.06
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 
 [37]      C          7.    1.00    0.00    0.35    0.16    0.40    0.09
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 [84] Mean C-C su =   0.00
 #CYCLENDS
 #CHECK HI
@@ -1545,10 +1545,10 @@ LS-scale=  1.612   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 Inversion method: Automatic
-Block No  1.  Single precision relative error:  3.52E-07
+[80a] Block No  1.  Single precision relative error:  3.5E-07
 [80]  (sp inverse) 1-norm:  2E+00 cond. number:  3E+00 rel. error:  4E-07
-[14]  S/ESD     7           7           -0.025       0.0E+00    0.13 E-02        -18.8         C      7 U[11]   
-[14]  S/ESD    12          12           -0.011       0.0E+00    0.13 E-02         -8.3         C      7 U[12]   
+[14]  S/ESD     7           7           -0.025       0.0E+00    0.13 E-02         -18.9         C      7 U[11]   
+[14]  S/ESD    12          12           -0.011       0.0E+00    0.13 E-02          -8.4         C      7 U[12]   
 
                                                 for          12 parameters
 [64]                                  The rms (shift/su)  =           6.
@@ -1585,15 +1585,15 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
 
 
 [38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00   -0.01   -0.00   -0.00   -0.00   -0.00   -0.00
-[31]                                          0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.01    0.00    0.00    0.00    0.00    0.00
-[31]                                          0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 
 
 
 [70]  Maximum        0.    0.00    0.00    0.00    0.00    0.00    0.02    0.00    0.00    0.00    0.00    0.01
-[31]                                          0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 
 [03]  Reversals
 
@@ -1638,12 +1638,12 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
 [37]      O          6.    1.00    0.00    0.22    0.25    0.34    0.06
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 
 [37]      C          7.    1.00    0.00    0.35    0.16    0.40    0.06
 [37]                       0.00             0.00    0.00    0.00   -0.02    0.00    0.00    0.00    0.00   -0.01
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 [84] Mean C-C su =   0.00
 #CYCLENDS
 #CHECK HI
@@ -1798,10 +1798,10 @@ LS-scale=  1.612   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 Inversion method: Automatic
-Block No  1.  Single precision relative error:  3.85E-07
+[80a] Block No  1.  Single precision relative error:  3.9E-07
 [80]  (sp inverse) 1-norm:  2E+00 cond. number:  3E+00 rel. error:  4E-07
-[14]  S/ESD     1           1            0.023       0.0E+00    0.12 E-02         18.1         O      6 U[11]   
-[14]  S/ESD     6           6            0.010       0.0E+00    0.12 E-02          8.0         O      6 U[12]   
+[14]  S/ESD     1           1            0.023       0.0E+00    0.12 E-02          18.2         O      6 U[11]   
+[14]  S/ESD     6           6            0.010       0.0E+00    0.12 E-02           8.1         O      6 U[12]   
 
                                                 for          12 parameters
 [64]                                  The rms (shift/su)  =           6.
@@ -1838,15 +1838,15 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
 
 
 [38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00    0.01    0.00    0.00    0.00    0.00    0.00
-[31]                                          0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.01    0.00    0.00    0.00    0.00    0.00
-[31]                                          0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 
 
 
 [70]  Maximum        0.    0.00    0.00    0.00    0.00    0.00    0.02    0.00    0.00    0.00    0.00    0.01
-[31]                                          0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 
 [03]  Reversals
 
@@ -1891,12 +1891,12 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
 [37]      O          6.    1.00    0.00    0.22    0.25    0.34    0.08
 [37]                       0.00             0.00    0.00    0.00    0.02    0.00    0.00    0.00    0.00    0.01
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 
 [37]      C          7.    1.00    0.00    0.35    0.16    0.40    0.09
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.01    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 [84] Mean C-C su =   0.00
 #CYCLENDS
 #CHECK HI
@@ -2047,7 +2047,7 @@ LS-scale=  1.612   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 Inversion method: Automatic
-Block No  1.  Single precision relative error:  9.36E-06
+[80a] Block No  1.  Single precision relative error:  9.4E-06
 [80]  (sp inverse) 1-norm:  5E+00 cond. number:  8E+01 rel. error:  9E-06
 
                                                 for          12 parameters
@@ -2085,15 +2085,15 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
 
 
 [38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00    0.00   -0.00    0.00    0.00   -0.00    0.00
-[31]                                          0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                          0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 
 
 
 [70]  Maximum        0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                          0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 
 [03]  Reversals
 
@@ -2138,12 +2138,12 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
 [37]      O          6.    1.00    0.00    0.22    0.25    0.34    0.06
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 
 [37]      C          7.    1.00    0.00    0.35    0.16    0.40    0.09
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 [84] Mean C-C su =   0.00
 #CYCLENDS
 #CHECK HI
@@ -2283,7 +2283,7 @@ LS-scale=  1.612   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 Inversion method: Automatic
-Block No  1.  Single precision relative error:  2.93E-06
+[80a] Block No  1.  Single precision relative error:  2.9E-06
 [80]  (sp inverse) 1-norm:  4E+00 cond. number:  2E+01 rel. error:  3E-06
 
                                                 for          12 parameters
@@ -2321,15 +2321,15 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
 
 
 [38]  Mean           0.00   0.00    0.00    0.00    0.00    0.00    0.00   -0.00    0.00    0.00    0.00   -0.00
-[31]                                          0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                          0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 
 
 
 [70]  Maximum        0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                          0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 
 [03]  Reversals
 
@@ -2374,12 +2374,12 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
 [37]      O          6.    1.00    0.00    0.22    0.25    0.34    0.06
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 
 [37]      C          7.    1.00    0.00    0.35    0.16    0.40    0.09
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.000    0.000    0.000 
+[31]           0.000   0.000   0.000 
 [84] Mean C-C su =   0.00
 #CYCLENDS
 #CHECK HI
@@ -2532,9 +2532,9 @@ LS-scale=  1.612   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 Inversion method: Automatic
-Block No  1.  Single precision relative error:  3.56E-03
+[80a] Block No  1.  Single precision relative error:  3.6E-03
 Insufficient precision - trying double
-Block No  1.  Double precision relative error:  6.64E-12
+[80a] Block No  1.  Double precision relative error:  6.6E-12
 [80]  (dp inverse) 1-norm:  6E+00 cond. number:  3E+04 rel. error:  7E-12
 
                                                 for           6 parameters
@@ -2575,12 +2575,12 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
 [89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                          0.011    0.013    0.021 
+[31]           0.011   0.013   0.021 
 
 
 
 [70]  Maximum        0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                          0.014    0.018    0.027 
+[31]           0.014   0.018   0.027 
 
 [03]  Reversals
 
@@ -2625,12 +2625,12 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
 [37]      C          2.    1.00    0.00    0.23    0.38    0.16    0.02
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.02    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.105    0.091    0.079 
+[31]           0.105   0.091   0.080 
 
 [37]      C         11.    1.00    0.00    0.13    0.34    0.07    0.04
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.02    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.124    0.108    0.081 
+[31]           0.124   0.109   0.081 
 [84] Mean C-C su =   0.09
 #CYCLENDS
 #CHECK HI
@@ -2755,7 +2755,7 @@ LS-scale=  1.612   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 Inversion method: Automatic
-Block No  1.  Single precision relative error:  6.44E-04
+[80a] Block No  1.  Single precision relative error:  6.4E-04
 [80]  (sp inverse) 1-norm:  3E+00 cond. number:  5E+03 rel. error:  6E-04
 
                                                 for           6 parameters
@@ -2796,12 +2796,12 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
 [89]                                          0.00   -0.01   -0.02
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                          0.011    0.016    0.030 
+[31]           0.011   0.017   0.030 
 
 
 
 [70]  Maximum        0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                          0.015    0.023    0.041 
+[31]           0.015   0.023   0.042 
 
 [03]  Reversals
 
@@ -2846,12 +2846,12 @@ All cycle   Min function          0.0           0.54E+04       0.10E+16
 [37]      C          2.    1.00    0.00    0.23    0.38    0.16    0.02
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.02    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.108    0.092    0.097 
+[31]           0.108   0.093   0.097 
 
 [37]      C         11.    1.00    0.00    0.13    0.34    0.07    0.04
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.02    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.119    0.106    0.047 
+[31]           0.119   0.107   0.048 
 [84] Mean C-C su =   0.09
 #CYCLENDS
 #SFLS
@@ -2934,7 +2934,7 @@ LS-scale=  1.612   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 Inversion method: Automatic
-Block No  1.  Single precision relative error:  6.78E-04
+[80a] Block No  1.  Single precision relative error:  6.8E-04
 [80]  (sp inverse) 1-norm:  3E+00 cond. number:  6E+03 rel. error:  7E-04
 
                                                 for           6 parameters
@@ -2975,12 +2975,12 @@ All cycle   Min function          0.0           0.55E+04       0.10E+16
 [89]                                          0.00    0.00    0.00
 
 [71]  R.M.S.         0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                          0.004    0.001    0.006 
+[31]           0.004   0.002   0.006 
 
 
 
 [70]  Maximum        0.    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                          0.006    0.002    0.008 
+[31]           0.006   0.002   0.009 
 
 [03]  Reversals
 
@@ -3025,12 +3025,12 @@ All cycle   Min function          0.0           0.55E+04       0.10E+16
 [37]      C          2.    1.00    0.00    0.23    0.38    0.16    0.02
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.024    0.020    0.021 
+[31]           0.024   0.021   0.022 
 
 [37]      C         11.    1.00    0.00    0.13    0.34    0.07    0.04
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
-[31]                                         0.026    0.024    0.010 
+[31]           0.027   0.024   0.011 
 [84] Mean C-C su =   0.02
 #CYCLENDS
 #CHECK HI
