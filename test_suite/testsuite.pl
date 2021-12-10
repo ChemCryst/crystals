@@ -300,9 +300,9 @@ sub obscureMachinePrecision() {
 				  print $fho "[30] $1$2$3$4\n";
 	# Shift max  "                                         0.0762   0.0487   0.0794"
 		   } elsif($line =~ m/^           \s*(-?\d\.\d\d\d\d)   (-?\d\.\d\d\d\d)   (-?\d.\d\d\d\d)(\s*)/ ) {
-			      $spone = sprintf "%.3f", $1;
-			      $sptwo = sprintf "%.3f", $2;
-			      $spthree = sprintf "%.3f", $3;
+			      $spone = sprintf "%.2f", $1;
+			      $sptwo = sprintf "%.2f", $2;
+			      $spthree = sprintf "%.2f", $3;
 				  print $fho "[31]           $spone   $sptwo   $spthree $4\n";
 	#			  print("Line edited (rule 31): $line \n");
 	# Min funcs "    211786.        195909.          21729.               0.3664E+06          On scale of /FO/"
