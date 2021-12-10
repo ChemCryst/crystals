@@ -844,7 +844,7 @@ LS-scale= 21.615   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.11E-06
-[80]  (sp inverse) 1-norm:  2E+00 cond. number:  9E+00 rel. error:  1.11E-06
+[80]  (sp inverse) 1-norm:  2E+00 cond. number:  9E+00 rel. error:  1E-06
 [13]  LARGE     1           1            -2.3       0.0E+00    0.1 E+00        -13.4                           SCALE   
                                                                                                             Composite
 
@@ -1964,7 +1964,7 @@ LS-scale= 21.615   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.12E-06
-[80]  (sp inverse) 1-norm:  2E+00 cond. number:  9E+00 rel. error:  1.12E-06
+[80]  (sp inverse) 1-norm:  2E+00 cond. number:  9E+00 rel. error:  1E-06
 [13]  LARGE     1           1            -2.3       0.0E+00    0.1 E+00        -13.4                           SCALE   
                                                                                                             Composite
 

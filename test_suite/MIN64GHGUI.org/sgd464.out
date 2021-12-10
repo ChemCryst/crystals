@@ -175,7 +175,7 @@ Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.00E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  3.72E-12
-[80]  (dp inverse) 1-norm:  1E+01 cond. number:  2E+04 rel. error:  3.72E-12
+[80]  (dp inverse) 1-norm:  1E+01 cond. number:  2E+04 rel. error:  4E-12
 [13]  LARGE     2           2            -0.7       0.0E+00    0.2 E+01         -0.3                           ENANTIO 
 [14]  S/ESD     6           6           -0.018       0.0E+00    0.11 E-01         -1.7         CL     1 U[11]   
 [14]  S/ESD    24          24            0.021       0.0E+00    0.19 E-01          1.1         CL     3 U[11]   
@@ -498,7 +498,7 @@ Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.00E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  3.72E-12
-[80]  (dp inverse) 1-norm:  1E+01 cond. number:  2E+04 rel. error:  3.72E-12
+[80]  (dp inverse) 1-norm:  1E+01 cond. number:  2E+04 rel. error:  4E-12
 [13]  LARGE     2           2             0.0      -0.1E+00    0.2 E+00          0.3                           ENANTIO 
 [14]  S/ESD    24          24            0.010       0.5E+00    0.23 E-02          4.2         CL     3 U[11]   
 [14]  S/ESD    26          26            0.011      -0.2E+00    0.32 E-02          3.4         CL     3 U[33]   
@@ -818,7 +818,7 @@ Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.11E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  3.93E-12
-[80]  (dp inverse) 1-norm:  1E+01 cond. number:  2E+04 rel. error:  3.93E-12
+[80]  (dp inverse) 1-norm:  1E+01 cond. number:  2E+04 rel. error:  4E-12
 [13]  LARGE     2           2            -0.0      -0.6E+00    0.2 E+00         -0.2                           ENANTIO 
 
                                                 for         263 parameters
@@ -1136,7 +1136,7 @@ Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.11E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  3.93E-12
-[80]  (dp inverse) 1-norm:  1E+01 cond. number:  2E+04 rel. error:  3.93E-12
+[80]  (dp inverse) 1-norm:  1E+01 cond. number:  2E+04 rel. error:  4E-12
 [13]  LARGE     2           2             0.0      -0.5E+00    0.2 E+00          0.1                           ENANTIO 
 
                                                 for         263 parameters
@@ -1454,7 +1454,7 @@ Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.11E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  3.94E-12
-[80]  (dp inverse) 1-norm:  1E+01 cond. number:  2E+04 rel. error:  3.94E-12
+[80]  (dp inverse) 1-norm:  1E+01 cond. number:  2E+04 rel. error:  4E-12
 [13]  LARGE     2           2            -0.0      -0.7E+00    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -1873,7 +1873,7 @@ LS-scale=  0.436   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  9.81E-04
-[80]  (sp inverse) 1-norm:  1E+01 cond. number:  8E+03 rel. error:  9.81E-04
+[80]  (sp inverse) 1-norm:  1E+01 cond. number:  8E+03 rel. error:  10E-04
 [13]  LARGE     2           2            -0.1       0.0E+00    0.4 E+00         -0.2                           ENANTIO 
 [14]  S/ESD   168         168           -0.011       0.0E+00    0.89 E-02         -1.2         C     19 U[11]   
 [14]  S/ESD   170         170            0.013       0.0E+00    0.75 E-02          1.8         C     19 U[33]   
@@ -2195,7 +2195,7 @@ Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.16E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  2.15E-12
-[80]  (dp inverse) 1-norm:  1E+01 cond. number:  10E+03 rel. error:  2.15E-12
+[80]  (dp inverse) 1-norm:  1E+01 cond. number:  10E+03 rel. error:  2E-12
 [13]  LARGE     2           2             0.0      -0.3E+00    0.2 E+00          0.1                           ENANTIO 
 
                                                 for         263 parameters
@@ -2511,7 +2511,7 @@ LS-scale=  0.441   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  9.05E-04
-[80]  (sp inverse) 1-norm:  1E+01 cond. number:  8E+03 rel. error:  9.05E-04
+[80]  (sp inverse) 1-norm:  1E+01 cond. number:  8E+03 rel. error:  9E-04
 [13]  LARGE     2           2             0.0       0.4E-01    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -2827,7 +2827,7 @@ LS-scale=  0.441   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  9.07E-04
-[80]  (sp inverse) 1-norm:  1E+01 cond. number:  8E+03 rel. error:  9.07E-04
+[80]  (sp inverse) 1-norm:  1E+01 cond. number:  8E+03 rel. error:  9E-04
 [13]  LARGE     2           2            -0.0      -0.5E+01    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -3143,7 +3143,7 @@ LS-scale=  0.441   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  9.15E-04
-[80]  (sp inverse) 1-norm:  1E+01 cond. number:  8E+03 rel. error:  9.15E-04
+[80]  (sp inverse) 1-norm:  1E+01 cond. number:  8E+03 rel. error:  9E-04
 [13]  LARGE     2           2             0.0      -0.2E+01    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -3560,7 +3560,7 @@ Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.73E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  3.23E-12
-[80]  (dp inverse) 1-norm:  1E+01 cond. number:  1E+04 rel. error:  3.23E-12
+[80]  (dp inverse) 1-norm:  1E+01 cond. number:  1E+04 rel. error:  3E-12
 [13]  LARGE     2           2            -0.1       0.0E+00    0.6 E+00         -0.1                           ENANTIO 
 [14]  S/ESD   170         170            0.013       0.0E+00    0.11 E-01          1.1         C     19 U[33]   
 [14]  S/ESD   213         213            0.015       0.0E+00    0.80 E-02          1.8         C     24 U[11]   
@@ -3881,7 +3881,7 @@ Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.83E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  3.41E-12
-[80]  (dp inverse) 1-norm:  1E+01 cond. number:  2E+04 rel. error:  3.41E-12
+[80]  (dp inverse) 1-norm:  1E+01 cond. number:  2E+04 rel. error:  3E-12
 [13]  LARGE     2           2             0.0      -0.3E+00    0.2 E+00          0.1                           ENANTIO 
 
                                                 for         263 parameters
@@ -4199,7 +4199,7 @@ Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.81E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  3.38E-12
-[80]  (dp inverse) 1-norm:  1E+01 cond. number:  2E+04 rel. error:  3.38E-12
+[80]  (dp inverse) 1-norm:  1E+01 cond. number:  2E+04 rel. error:  3E-12
 [13]  LARGE     2           2            -0.0      -0.5E+00    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -4517,7 +4517,7 @@ Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.91E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  3.55E-12
-[80]  (dp inverse) 1-norm:  1E+01 cond. number:  2E+04 rel. error:  3.55E-12
+[80]  (dp inverse) 1-norm:  1E+01 cond. number:  2E+04 rel. error:  4E-12
 [13]  LARGE     2           2             0.0      -0.1E+01    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -4835,7 +4835,7 @@ Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.82E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  3.39E-12
-[80]  (dp inverse) 1-norm:  1E+01 cond. number:  2E+04 rel. error:  3.39E-12
+[80]  (dp inverse) 1-norm:  1E+01 cond. number:  2E+04 rel. error:  3E-12
 [13]  LARGE     2           2            -0.0      -0.7E+00    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -5274,7 +5274,7 @@ Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.59E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  2.96E-12
-[80]  (dp inverse) 1-norm:  1E+01 cond. number:  1E+04 rel. error:  2.96E-12
+[80]  (dp inverse) 1-norm:  1E+01 cond. number:  1E+04 rel. error:  3E-12
 [13]  LARGE     2           2            -0.1       0.0E+00    0.1 E+01         -0.0                           ENANTIO 
 [14]  S/ESD   234         234           -0.022       0.0E+00    0.42 E-02         -5.2         C     26 U[23]   
 [14]  S/ESD   252         252            0.013       0.0E+00    0.38 E-02          3.4         C     28 U[23]   
@@ -5595,7 +5595,7 @@ Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.48E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  2.75E-12
-[80]  (dp inverse) 1-norm:  1E+01 cond. number:  1E+04 rel. error:  2.75E-12
+[80]  (dp inverse) 1-norm:  1E+01 cond. number:  1E+04 rel. error:  3E-12
 [13]  LARGE     2           2             0.0      -0.5E+00    0.2 E+00          0.2                           ENANTIO 
 
                                                 for         263 parameters
@@ -5913,7 +5913,7 @@ Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.57E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  2.92E-12
-[80]  (dp inverse) 1-norm:  1E+01 cond. number:  1E+04 rel. error:  2.92E-12
+[80]  (dp inverse) 1-norm:  1E+01 cond. number:  1E+04 rel. error:  3E-12
 [13]  LARGE     2           2            -0.0      -0.3E+00    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -6231,7 +6231,7 @@ Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.54E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  2.86E-12
-[80]  (dp inverse) 1-norm:  1E+01 cond. number:  1E+04 rel. error:  2.86E-12
+[80]  (dp inverse) 1-norm:  1E+01 cond. number:  1E+04 rel. error:  3E-12
 [13]  LARGE     2           2             0.0      -0.5E+00    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -6549,7 +6549,7 @@ Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.76E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  3.27E-12
-[80]  (dp inverse) 1-norm:  1E+01 cond. number:  1E+04 rel. error:  3.27E-12
+[80]  (dp inverse) 1-norm:  1E+01 cond. number:  1E+04 rel. error:  3E-12
 [13]  LARGE     2           2            -0.0      -0.8E-01    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -6988,7 +6988,7 @@ LS-scale=  0.436   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.35E-05
-[80]  (sp inverse) 1-norm:  2E+01 cond. number:  3E+02 rel. error:  3.35E-05
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  3E+02 rel. error:  3E-05
 [13]  LARGE     2           2            -0.1       0.0E+00    0.2 E+00         -0.4                           ENANTIO 
 [14]  S/ESD   168         168           -0.010       0.0E+00    0.53 E-02         -2.0         C     19 U[11]   
 [14]  S/ESD   170         170            0.013       0.0E+00    0.45 E-02          2.9         C     19 U[33]   
@@ -7309,7 +7309,7 @@ LS-scale=  0.441   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.33E-05
-[80]  (sp inverse) 1-norm:  1E+01 cond. number:  3E+02 rel. error:  3.33E-05
+[80]  (sp inverse) 1-norm:  1E+01 cond. number:  3E+02 rel. error:  3E-05
 [13]  LARGE     2           2             0.0      -0.3E+00    0.2 E+00          0.1                           ENANTIO 
 
                                                 for         263 parameters
@@ -7624,8 +7624,8 @@ LS-scale=  0.440   Wilson Scale=  0.000
  Parameters marked COMPOSITE contain derivatives from other physical parameters
 
 Inversion method: Automatic
-Block No  1.  Single precision relative error:  4.41E-05
-[80]  (sp inverse) 1-norm:  2E+01 cond. number:  4E+02 rel. error:  4.41E-05
+Block No  1.  Single precision relative error:  4.40E-05
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  4E+02 rel. error:  4E-05
 [13]  LARGE     2           2             0.0       0.3E+00    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -7941,7 +7941,7 @@ LS-scale=  0.440   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.33E-05
-[80]  (sp inverse) 1-norm:  1E+01 cond. number:  3E+02 rel. error:  3.33E-05
+[80]  (sp inverse) 1-norm:  1E+01 cond. number:  3E+02 rel. error:  3E-05
 [13]  LARGE     2           2            -0.0      -0.3E+01    0.2 E+00         -0.1                           ENANTIO 
 
                                                 for         263 parameters
@@ -8257,7 +8257,7 @@ LS-scale=  0.440   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.33E-05
-[80]  (sp inverse) 1-norm:  1E+01 cond. number:  3E+02 rel. error:  3.33E-05
+[80]  (sp inverse) 1-norm:  1E+01 cond. number:  3E+02 rel. error:  3E-05
 [13]  LARGE     2           2             0.0      -0.7E+00    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -8691,7 +8691,7 @@ LS-scale=  0.436   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.85E-05
-[80]  (sp inverse) 1-norm:  1E+01 cond. number:  2E+02 rel. error:  2.85E-05
+[80]  (sp inverse) 1-norm:  1E+01 cond. number:  2E+02 rel. error:  3E-05
 [13]  LARGE     2           2            -0.1       0.0E+00    0.1 E+01         -0.0                           ENANTIO 
 [14]  S/ESD   213         213            0.021       0.0E+00    0.64 E-03         32.9         C     24 U[11]   
 [14]  S/ESD   232         232           -0.022       0.0E+00    0.65 E-03        -34.8         C     26 U[22]   
@@ -9010,7 +9010,7 @@ LS-scale=  0.440   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.82E-05
-[80]  (sp inverse) 1-norm:  1E+01 cond. number:  2E+02 rel. error:  2.82E-05
+[80]  (sp inverse) 1-norm:  1E+01 cond. number:  2E+02 rel. error:  3E-05
 [13]  LARGE     2           2             0.0      -0.2E+00    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -9326,7 +9326,7 @@ LS-scale=  0.440   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.80E-05
-[80]  (sp inverse) 1-norm:  1E+01 cond. number:  2E+02 rel. error:  2.80E-05
+[80]  (sp inverse) 1-norm:  1E+01 cond. number:  2E+02 rel. error:  3E-05
 [13]  LARGE     2           2             0.0       0.6E-01    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -9642,7 +9642,7 @@ LS-scale=  0.440   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.82E-05
-[80]  (sp inverse) 1-norm:  1E+01 cond. number:  2E+02 rel. error:  2.82E-05
+[80]  (sp inverse) 1-norm:  1E+01 cond. number:  2E+02 rel. error:  3E-05
 [13]  LARGE     2           2            -0.0      -0.2E+02    0.2 E+00         -0.1                           ENANTIO 
 
                                                 for         263 parameters
@@ -9958,7 +9958,7 @@ LS-scale=  0.440   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.81E-05
-[80]  (sp inverse) 1-norm:  1E+01 cond. number:  2E+02 rel. error:  2.81E-05
+[80]  (sp inverse) 1-norm:  1E+01 cond. number:  2E+02 rel. error:  3E-05
 [13]  LARGE     2           2             0.0      -0.1E+01    0.2 E+00          0.1                           ENANTIO 
 
                                                 for         263 parameters
@@ -10400,7 +10400,7 @@ Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.98E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  3.69E-12
-[80]  (dp inverse) 1-norm:  1E+01 cond. number:  2E+04 rel. error:  3.69E-12
+[80]  (dp inverse) 1-norm:  1E+01 cond. number:  2E+04 rel. error:  4E-12
 [13]  LARGE     2           2            -0.1       0.0E+00    0.1 E+01         -0.1                           ENANTIO 
 [14]  S/ESD     9           9           -0.012       0.0E+00    0.49 E-02         -2.5         CL     1 U[23]   
 
@@ -10719,7 +10719,7 @@ Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.75E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  3.25E-12
-[80]  (dp inverse) 1-norm:  1E+01 cond. number:  1E+04 rel. error:  3.25E-12
+[80]  (dp inverse) 1-norm:  1E+01 cond. number:  1E+04 rel. error:  3E-12
 [13]  LARGE     2           2             0.0      -0.4E+00    0.3 E+00          0.1                           ENANTIO 
 
                                                 for         263 parameters
@@ -11037,7 +11037,7 @@ Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.72E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  3.20E-12
-[80]  (dp inverse) 1-norm:  1E+01 cond. number:  1E+04 rel. error:  3.20E-12
+[80]  (dp inverse) 1-norm:  1E+01 cond. number:  1E+04 rel. error:  3E-12
 [13]  LARGE     2           2             0.0       0.1E-01    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -11355,7 +11355,7 @@ Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.44E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  2.68E-12
-[80]  (dp inverse) 1-norm:  1E+01 cond. number:  1E+04 rel. error:  2.68E-12
+[80]  (dp inverse) 1-norm:  1E+01 cond. number:  1E+04 rel. error:  3E-12
 [13]  LARGE     2           2             0.0       0.9E+01    0.6 E+00          0.0                           ENANTIO 
 [14]  S/ESD    11          11           -0.012      -0.9E+01    0.41 E-02         -2.8         CL     1 U[12]   
 
@@ -11674,7 +11674,7 @@ Inversion method: Automatic
 Block No  1.  Single precision relative error:  1.74E-03
 Insufficient precision - trying double
 Block No  1.  Double precision relative error:  3.25E-12
-[80]  (dp inverse) 1-norm:  1E+01 cond. number:  1E+04 rel. error:  3.25E-12
+[80]  (dp inverse) 1-norm:  1E+01 cond. number:  1E+04 rel. error:  3E-12
 [13]  LARGE     2           2            -0.0      -0.4E+01    0.7 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -12111,7 +12111,7 @@ LS-scale=  0.436   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.13E-05
-[80]  (sp inverse) 1-norm:  1E+01 cond. number:  2E+02 rel. error:  2.13E-05
+[80]  (sp inverse) 1-norm:  1E+01 cond. number:  2E+02 rel. error:  2E-05
 [13]  LARGE     2           2            -0.1       0.0E+00    0.4 E+01         -0.0                           ENANTIO 
 [14]  S/ESD     6           6           -0.014       0.0E+00    0.22 E-02         -6.4         CL     1 U[11]   
 [14]  S/ESD     9           9           -0.026       0.0E+00    0.13 E-02        -19.7         CL     1 U[23]   
@@ -12435,7 +12435,7 @@ LS-scale=  0.447   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.40E-05
-[80]  (sp inverse) 1-norm:  2E+01 cond. number:  2E+02 rel. error:  2.40E-05
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  2E+02 rel. error:  2E-05
 [13]  LARGE     2           2             0.0      -0.6E+00    0.2 E+00          0.3                           ENANTIO 
 
                                                 for         263 parameters
@@ -12751,7 +12751,7 @@ LS-scale=  0.439   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.39E-05
-[80]  (sp inverse) 1-norm:  2E+01 cond. number:  2E+02 rel. error:  2.39E-05
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  2E+02 rel. error:  2E-05
 [13]  LARGE     2           2             0.0       0.3E+00    0.2 E+00          0.1                           ENANTIO 
 
                                                 for         263 parameters
@@ -13067,7 +13067,7 @@ LS-scale=  0.439   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.40E-05
-[80]  (sp inverse) 1-norm:  2E+01 cond. number:  2E+02 rel. error:  2.40E-05
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  2E+02 rel. error:  2E-05
 [13]  LARGE     2           2            -0.0      -0.8E+00    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -13383,7 +13383,7 @@ LS-scale=  0.439   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.39E-05
-[80]  (sp inverse) 1-norm:  2E+01 cond. number:  2E+02 rel. error:  2.39E-05
+[80]  (sp inverse) 1-norm:  2E+01 cond. number:  2E+02 rel. error:  2E-05
 [13]  LARGE     2           2             0.0      -0.2E+00    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -13810,7 +13810,7 @@ LS-scale=  0.436   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  5.06E-04
-[80]  (sp inverse) 1-norm:  1E+01 cond. number:  4E+03 rel. error:  5.06E-04
+[80]  (sp inverse) 1-norm:  1E+01 cond. number:  4E+03 rel. error:  5E-04
 [13]  LARGE     2           2            -0.1       0.0E+00    0.1 E+01         -0.1                           ENANTIO 
 [14]  S/ESD     6           6            0.014       0.0E+00    0.84 E-02          1.7         CL     1 U[11]   
 [14]  S/ESD     7           7            0.019       0.0E+00    0.69 E-02          2.8         CL     1 U[22]   
@@ -14131,7 +14131,7 @@ LS-scale=  0.444   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.72E-04
-[80]  (sp inverse) 1-norm:  1E+01 cond. number:  3E+03 rel. error:  3.72E-04
+[80]  (sp inverse) 1-norm:  1E+01 cond. number:  3E+03 rel. error:  4E-04
 [13]  LARGE     2           2             0.1      -0.1E+01    0.2 E+00          0.6                           ENANTIO 
 
                                                 for         263 parameters
@@ -14447,7 +14447,7 @@ LS-scale=  0.441   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.80E-04
-[80]  (sp inverse) 1-norm:  1E+01 cond. number:  3E+03 rel. error:  3.80E-04
+[80]  (sp inverse) 1-norm:  1E+01 cond. number:  3E+03 rel. error:  4E-04
 [13]  LARGE     2           2            -0.0      -0.1E+00    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -14763,7 +14763,7 @@ LS-scale=  0.441   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.73E-04
-[80]  (sp inverse) 1-norm:  1E+01 cond. number:  3E+03 rel. error:  3.73E-04
+[80]  (sp inverse) 1-norm:  1E+01 cond. number:  3E+03 rel. error:  4E-04
 [13]  LARGE     2           2             0.0      -0.7E+00    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -15079,7 +15079,7 @@ LS-scale=  0.441   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.72E-04
-[80]  (sp inverse) 1-norm:  1E+01 cond. number:  3E+03 rel. error:  3.72E-04
+[80]  (sp inverse) 1-norm:  1E+01 cond. number:  3E+03 rel. error:  4E-04
 [13]  LARGE     2           2            -0.0      -0.7E+00    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -15490,7 +15490,7 @@ LS-scale=  0.436   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  5.07E-04
-[80]  (sp inverse) 1-norm:  1E+01 cond. number:  4E+03 rel. error:  5.07E-04
+[80]  (sp inverse) 1-norm:  1E+01 cond. number:  4E+03 rel. error:  5E-04
  S/ESD     1           1             0.012      0.0E+00    0.691E-02          1.73                          SCALE   
 [13]  LARGE     2           2            -0.1       0.0E+00    0.1 E+01         -0.1                           ENANTIO 
 [14]  S/ESD     6           6            0.024       0.0E+00    0.95 E-02          2.5         CL     1 U[11]   
@@ -15813,7 +15813,7 @@ LS-scale=  0.448   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.77E-04
-[80]  (sp inverse) 1-norm:  1E+01 cond. number:  3E+03 rel. error:  3.77E-04
+[80]  (sp inverse) 1-norm:  1E+01 cond. number:  3E+03 rel. error:  4E-04
 [13]  LARGE     2           2             0.1      -0.7E+00    0.2 E+00          0.3                           ENANTIO 
 
                                                 for         263 parameters
@@ -16129,7 +16129,7 @@ LS-scale=  0.442   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.71E-04
-[80]  (sp inverse) 1-norm:  1E+01 cond. number:  3E+03 rel. error:  3.71E-04
+[80]  (sp inverse) 1-norm:  1E+01 cond. number:  3E+03 rel. error:  4E-04
 [13]  LARGE     2           2            -0.0      -0.3E+00    0.2 E+00         -0.1                           ENANTIO 
 
                                                 for         263 parameters
@@ -16445,7 +16445,7 @@ LS-scale=  0.442   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.71E-04
-[80]  (sp inverse) 1-norm:  1E+01 cond. number:  3E+03 rel. error:  3.71E-04
+[80]  (sp inverse) 1-norm:  1E+01 cond. number:  3E+03 rel. error:  4E-04
 [13]  LARGE     2           2             0.0      -0.3E+00    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -16761,7 +16761,7 @@ LS-scale=  0.442   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  3.71E-04
-[80]  (sp inverse) 1-norm:  1E+01 cond. number:  3E+03 rel. error:  3.71E-04
+[80]  (sp inverse) 1-norm:  1E+01 cond. number:  3E+03 rel. error:  4E-04
 [13]  LARGE     2           2            -0.0      -0.7E-01    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -17219,7 +17219,7 @@ LS-scale=  0.436   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.44E-05
-[80]  (sp inverse) 1-norm:  1E+01 cond. number:  2E+02 rel. error:  2.44E-05
+[80]  (sp inverse) 1-norm:  1E+01 cond. number:  2E+02 rel. error:  2E-05
 [13]  LARGE     2           2            -0.1       0.0E+00    0.6 E+00         -0.1                           ENANTIO 
 [14]  S/ESD   170         170            0.013       0.0E+00    0.12 E-01          1.0         C     19 U[33]   
 
@@ -17536,7 +17536,7 @@ LS-scale=  0.439   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.44E-05
-[80]  (sp inverse) 1-norm:  1E+01 cond. number:  2E+02 rel. error:  2.44E-05
+[80]  (sp inverse) 1-norm:  1E+01 cond. number:  2E+02 rel. error:  2E-05
 [13]  LARGE     2           2             0.0      -0.2E+00    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -17852,7 +17852,7 @@ LS-scale=  0.438   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.44E-05
-[80]  (sp inverse) 1-norm:  1E+01 cond. number:  2E+02 rel. error:  2.44E-05
+[80]  (sp inverse) 1-norm:  1E+01 cond. number:  2E+02 rel. error:  2E-05
 [13]  LARGE     2           2            -0.0      -0.4E+00    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -18168,7 +18168,7 @@ LS-scale=  0.438   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.45E-05
-[80]  (sp inverse) 1-norm:  1E+01 cond. number:  2E+02 rel. error:  2.45E-05
+[80]  (sp inverse) 1-norm:  1E+01 cond. number:  2E+02 rel. error:  2E-05
 [13]  LARGE     2           2            -0.0       0.1E+01    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -18484,7 +18484,7 @@ LS-scale=  0.438   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.44E-05
-[80]  (sp inverse) 1-norm:  1E+01 cond. number:  2E+02 rel. error:  2.44E-05
+[80]  (sp inverse) 1-norm:  1E+01 cond. number:  2E+02 rel. error:  2E-05
 [13]  LARGE     2           2             0.0      -0.1E+01    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -18800,7 +18800,7 @@ LS-scale=  0.438   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.45E-05
-[80]  (sp inverse) 1-norm:  1E+01 cond. number:  2E+02 rel. error:  2.45E-05
+[80]  (sp inverse) 1-norm:  1E+01 cond. number:  2E+02 rel. error:  2E-05
 [13]  LARGE     2           2            -0.0      -0.1E+01    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -19116,7 +19116,7 @@ LS-scale=  0.438   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.44E-05
-[80]  (sp inverse) 1-norm:  1E+01 cond. number:  2E+02 rel. error:  2.44E-05
+[80]  (sp inverse) 1-norm:  1E+01 cond. number:  2E+02 rel. error:  2E-05
 [13]  LARGE     2           2             0.0      -0.1E+01    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -19432,7 +19432,7 @@ LS-scale=  0.438   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.45E-05
-[80]  (sp inverse) 1-norm:  1E+01 cond. number:  2E+02 rel. error:  2.45E-05
+[80]  (sp inverse) 1-norm:  1E+01 cond. number:  2E+02 rel. error:  2E-05
 [13]  LARGE     2           2            -0.0      -0.1E+01    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -19748,7 +19748,7 @@ LS-scale=  0.438   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.44E-05
-[80]  (sp inverse) 1-norm:  1E+01 cond. number:  2E+02 rel. error:  2.44E-05
+[80]  (sp inverse) 1-norm:  1E+01 cond. number:  2E+02 rel. error:  2E-05
 [13]  LARGE     2           2             0.0      -0.6E+00    0.2 E+00          0.0                           ENANTIO 
 
                                                 for         263 parameters
@@ -20064,7 +20064,7 @@ LS-scale=  0.438   Wilson Scale=  0.000
 
 Inversion method: Automatic
 Block No  1.  Single precision relative error:  2.45E-05
-[80]  (sp inverse) 1-norm:  1E+01 cond. number:  2E+02 rel. error:  2.45E-05
+[80]  (sp inverse) 1-norm:  1E+01 cond. number:  2E+02 rel. error:  2E-05
 [13]  LARGE     2           2            -0.0      -0.2E+01    0.2 E+00         -0.0                           ENANTIO 
 
                                                 for         263 parameters
