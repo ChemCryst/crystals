@@ -485,11 +485,11 @@ sub obscureMachinePrecision() {
 
 
 	# (sp inverse) 1-norm:  1.85E+00 cond. number:  1.28E+01 rel. error:  1.52E-06
-	   } elsif($line =~ m/^(.*norm:\s+)(-?\d+\.\d+)(.*cond\. number:\s+)(-?\d+\.\d+)(.*rel\. error:\s+)(-?\d+\.\d+\s*)$/ ) {   #$2 and $4 hold float parts
+	   } elsif($line =~ m/^(.*norm:\s+)(-?\d+\.\d+)(.*cond\. number:\s+)(-?\d+\.\d+)(.*rel\. error:\s+)(-?\d+\.\d+)(.*)$/ ) {   #$2 and $4 hold float parts
 				  $sptwo = sprintf "%.0f", $2;
 				  $spfour = sprintf "%.0f", $4;
 				  $spsix = sprintf "%.0f", $6;
-				  print $fho "[80] $1$sptwo$3$spfour$5$spsix\n";
+				  print $fho "[80] $1$sptwo$3$spfour$5$spsix$7\n";
 
 	#C11 . C1 . C2 . O3 . -131.8(12)    yes
 	  } elsif($line =~ m/^(.*\w* \. \w* \. \w* \. \w* \.\s+-?\d+\.).*(\(.*)$/ ) {
