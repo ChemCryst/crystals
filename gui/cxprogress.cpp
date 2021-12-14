@@ -219,20 +219,19 @@ void CxProgress::SetProgress(int complete)
 {
     if(m_TextOverlay != nil)
     {
-#ifdef CRY_USEMFC
-        m_TextOverlay->DestroyWindow();
-        delete m_TextOverlay;
-#else
         m_TextOverlay->Destroy();
-#endif
         m_TextOverlay = nil;
     }
-
-#ifdef CRY_USEMFC
-    SetPos ( complete );
-#else
-      SetValue( complete );
-#endif
+    SetValue( complete );
+}
+void CxProgress::Pulse()
+{
+    if(m_TextOverlay != nil)
+    {
+        m_TextOverlay->Destroy();
+        m_TextOverlay = nil;
+    }
+    BASEPROGRESS::Pulse();
 }
 
 void CxProgress::SwitchText ( const string & text )

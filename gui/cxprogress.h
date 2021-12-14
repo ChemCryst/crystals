@@ -48,6 +48,7 @@ class CxProgress : public BASEPROGRESS
 {
     public:
         void SetProgress (int complete);
+        void Pulse ();
         // methods
         static CxProgress * CreateCxProgress( CrProgress * container, CxGrid * guiParent );
             CxProgress( CrProgress * container );

@@ -46,10 +46,12 @@ class   CrProgress : public CrGUIElement
 };
 
 #define kSComplete  "COMPLETE"
+#define kSPulse  "PULSE"
 
 enum
 {
- kTComplete = 1500
+ kTComplete = 1500,
+ kTPulse
 };
 
 

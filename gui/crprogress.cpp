@@ -112,6 +112,13 @@ CcParse CrProgress::ParseInput( deque<string> & tokenList )
                 tokenList.pop_front(); // Remove that token!
                 break;
             }
+            case kTPulse:
+            {
+                tokenList.pop_front(); // Remove that token!
+                ((CxProgress*)ptr_to_cxObject)->Pulse();
+                LOGSTAT( "Pulsing Progress: ");
+                break;
+            }
 
             default:
             {
