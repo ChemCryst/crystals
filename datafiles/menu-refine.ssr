@@ -7,6 +7,8 @@
 ^^WI          ENABLEIF='L1 L2 L3 L5 L6' DISABLEIF='QS IN'                       
 ^^WI   ITEM _REF '&Refinement Cycles	Alt+R' '#SCRIPT XREFINE' ICON='runref.png'
 ^^WI          ENABLEIF='L1 L2 L3 L5 L6' DISABLEIF='QS IN'                       
+^^WI   ITEM _DIS 'Compute &aspherical SF from discamb2tsc	Alt+D' '#PYTH discamb'
+^^WI          ENABLEIF='L1 L2 L3 L5 L6' DISABLEIF='QS IN'
 ^^WI   ITEM _REF '&Refine H' '#SCRIPT GXREFH'                                   
 ^^WI          ENABLEIF='L1 L2 L3 L5 L6' DISABLEIF='QS IN'                       
 ^^WI  SPLIT                                                                     

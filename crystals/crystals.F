@@ -168,8 +168,9 @@ C            STOP 'ERROR OPENING STARTUP FILE'
       ENDIF
 C
 1210  CONTINUE
-	  CALL COMPROC()
+        CALL COMPROC()    ! Main loop, never exits until thread shutdown.
 	  GOTO 1210
+	  
 	  END
 	  
 	  
@@ -204,10 +205,12 @@ CODE FOR GETCOM
 #ifdef CRY_PY
 C Check if we have been called by python script.
       IF ( INPYTH .GT. 0 ) THEN 
-        INPYTH = 0
+c        INPYTH = 0
         call  getcommand( len(caline), caline )
         READ(CALINE,'(A)') CLINE
-        INPYTH = 1   ! If we didn't longjmp out of getcommand, then we're here and still in a python script.
+cc        WRITE(CMON,'(2A)') 'Got line: ',CaLINE
+cc        CALL XPRVDU (NCVDU,1,0)
+c        INPYTH = 1   ! If we didn't longjmp out of getcommand, then we're here and still in a python script.
       ELSE
 #endif
 
