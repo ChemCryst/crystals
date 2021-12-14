@@ -56,11 +56,13 @@
 ^^WI     @ 9,9   STATIC XPTP 'Group'
 ^^WI     @ 9,11  EDITBOX XPEP ' '   INTEGER    INFORM=YES
 ^^WI     @ 10,7  STATIC XEPEG '(0-999)'
-^^WI     @ 10,11  STATIC XEPEG '(0-999)'
-^^WI     @ 12,1   STATIC XPTRES 'Residue'
-^^WI     @ 12,3   EDITBOX XPERES ' '   REAL    INFORM=YES
-^^WI     @ 12,5   STATIC XPTCH 'Charge'
-^^WI     @ 12,7   EDITBOX XPECH ' '   INTEGER    INFORM=YES
+^^WI     @ 10,11 STATIC XEPEG '(0-999)'
+^^WI     @ 12,1  STATIC XPTRES 'Residue'
+^^WI     @ 12,3  EDITBOX XPERES ' '   REAL    INFORM=YES
+^^WI     @ 12,5  STATIC XPTCH 'Charge'
+^^WI     @ 12,7  EDITBOX XPECH ' '   INTEGER    INFORM=YES
+^^WI     @ 12,9  ICON ICHG SMALLQUERY TOOLTIP 
+^^WI 'Charge is only used for DFT calculations for aspherical scattering factor generation. Charge is applied to whole residue.'
 ^^WI   }
 ^^WI   @ 2,1 GRID B NROWS=1 NCOLS=3 {
 ^^WI     @ 1,1  STATIC XEPEG 'Refinement mode'
