@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import subprocess
+import threading 
 from shutil import copy, move
 import argparse
 
@@ -428,12 +429,42 @@ print ("Launching discamb2tsc. This may take several minutes to hours.")
 #              )
 
 
-#Comment out for testing
-subprocess.run( [ discambexe, "crystals.ins", "crystals.hkl" ], 
-                stdout = subprocess.PIPE, stderr = subprocess.STDOUT,
-                cwd = work_folder, shell=True,
-                env = dict(os.environ, DISCAMB_PATH=discamb_path)
-              )
+#subprocess.run( [ discambexe, "crystals.ins", "crystals.hkl" ], 
+#                stdout = subprocess.PIPE, stderr = subprocess.STDOUT,
+#                cwd = work_folder, shell=True,
+#                env = dict(os.environ, DISCAMB_PATH=discamb_path)
+#              )
+
+#subprocess.run( [ discambexe, "crystals.ins", "crystals.hkl" ], 
+#                stdout = sys.stdout, stderr = sys.stderr,
+#                cwd = work_folder, 
+                #shell=True,
+#                env = dict(os.environ, DISCAMB_PATH=discamb_path)
+#              )
+
+
+
+def output_reader(proc):
+    for line in iter(proc.stdout.readline, b''):
+        print('{{0,1 {0}'.format(line.decode('utf-8')), end='')
+
+si = None
+if os.name == 'nt':
+    si = subprocess.STARTUPINFO()
+    si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+proc = subprocess.Popen([ discambexe, "crystals.ins", "crystals.hkl" ], 
+                cwd = work_folder, 
+                env = dict(os.environ, DISCAMB_PATH=discamb_path, PYTHONBUFFERED="1"),
+                startupinfo = si,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT)
+
+t = threading.Thread(target=output_reader, args=(proc,))
+t.start()
+print("^^CO SET _MAINPROGRESS PULSE\n")
+t.join()
+print("^^CO SET _MAINPROGRESS TEXT 'Ready'\n")
 
 print ("Done. Copying results tsc...")
 
