@@ -39,42 +39,50 @@
 ^^WI CANCEL='FHBXX'
 ^^WI GRID MAIN NROWS=9 NCOLS=3
 ^^WI {
-^^WI   @ 2,2 RESIZE _RSZ3 HORIZONTAL {
-^^WI       ITEM GRID GRIDQ NROWS=1 NCOLS=3 OUTLINE=''
-^^WI       {
-^^WI         @ 1,1 ICON IM INFO
-^^WI         @ 1,3 GRID EXP2 NROWS=7 NCOLS=1
-^^WI         {
-^^WI           @ 1,1 STATIC T1
-^^WI 'Key: H (white) - Geometric H positions, QH (pink) - Diff Fourier peaks.'
-^^WI           @ 2,1 STATIC T2
-^^WI 'On exit, all white H atoms will be retained, and all pink atoms deleted.'
-%% T3 is reserved for neutron info - filled in later. Leave it blank here.
-^^WI           @ 3,1 STATIC T3  ' '
-^^WI           @ 4,1 STATIC T4
-^^WI 'If necessary, change (pink) QH peaks to H by clicking them. Delete any computed (white) H atoms you do not want to keep.'
-^^WI           @ 5,1 STATIC T5
-^^WI 'If the structure is complete, check "All H atoms have been found" below.'
-^^WI           @ 6,1 STATIC T6
-^^WI 'Renumbering will create systematic numbers for changed atoms'
-^^WI           @ 7,1 STATIC T7
-^^WI 'Regularisation will optimise the H positions using the X-ray data'
-^^WI         }
-^^WI       }
-^^WI       ITEM GRID TEXT NROWS=1 NCOLS=3
-^^WI       {
-^^WI          @ 1,1 GRID OPTIONS NROWS=3 NCOLS=1
+^^WI   @ 2,2 STATIC T3  ' '
+^^WI   @ 4,2 GRID TEXT NROWS=1 NCOLS=3
+^^WI   {
+^^WI          @ 1,1 GRID OPTIONS NROWS=7 NCOLS=1
 ^^WI          {
-^^WI            @ 1,1 GRID CLICK NROWS=2 NCOLS=3 OUTLINE='Show peaks'
+^^WI            @ 1,1 GRID CLICK NROWS=3 NCOLS=3 OUTLINE='Key'
+^^WI            {
+^^WI              @ 2,1 STATIC TK1 'H (white) - expected H positions'
+^^WI              @ 3,1 STATIC TK2 'QH (pink) - diff Fourier peaks'
+^^WI            }
+^^WI            @ 3,1 GRID CLICK NROWS=2 NCOLS=3 OUTLINE='Show peaks'
 ^^WI            {
 ^^WI               @ 2,1 LISTBOX PEAKSHOW VISLINES=3 INFORM=YES ADDTOLIST
 ^^WI                 'All' 'Connected' 'Bonded to atom' 'NULL'
 ^^WI            }
-^^WI            @ 3,1 GRID CLICK NROWS=2 NCOLS=3 OUTLINE='Click action'
+^^WI            @ 5,1 GRID CLICK NROWS=2 NCOLS=3 OUTLINE='Click on atom'
 ^^WI            {
-^^WI               @ 1,1 STATIC _ELT 'change to:'
-^^WI               @ 2,1 LISTBOX _ELS VISLINES=6 ADDTOLIST
+^^WI              @ 1,1 GRID CLICK NROWS=1 NCOLS=3
+^^WI              {
+^^WI               @ 1,1 STATIC _ELT 'to change to:'
+^^WI               @ 1,3 ICON OIC SMALLQUERY TOOLTIP 
+^^WI 'By default QH atoms (pink) will be deleted on exit, H atoms (white) will be retained. If necessary, change (pink) QH peaks to H by clicking them. Delete any white H atoms you do not want to keep.'
+^^WI              }
+^^WI              @ 2,1 LISTBOX _ELS VISLINES=6 ADDTOLIST
 ^^WI                 'H' 'QH' 'Delete' 'NULL'
+^^WI            }
+^^WI            @ 7,1 GRID CLICK NROWS=7 NCOLS=3 OUTLINE='Options'
+^^WI            {
+^^WI                @ 1,1 CHECKBOX AHFOUND
+^^WI                  'All H atoms have been found' STATE=OFF
+^^WI                @ 1,3 ICON ALH SMALLQUERY TOOLTIP 
+^^WI 'Check this box to confirm that there are no more H atoms to locate' 
+^^WI                @ 3,1 CHECKBOX RENUMB
+^^WI                  'Create systematic numbers' STATE=ON
+^^WI                @ 3,3 ICON CSN SMALLQUERY TOOLTIP 
+^^WI 'Create systematic numbers for changed new H atoms'
+^^WI                @ 5,1 CHECKBOX REGUL
+^^WI                  'Regularise the H using restraints' STATE=ON
+^^WI                @ 5,3 ICON RHR SMALLQUERY TOOLTIP 
+^^WI 'Regularisation will optimise the H positions using the X-ray data, using restraints to conserve the approximate geometry'
+^^WI                @ 7,1 CHECKBOX FOUREF
+^^WI                  'Advanced: Fourier refinement using QH peaks' STATE=OFF
+^^WI                @ 7,3 ICON CSN SMALLQUERY TOOLTIP 
+^^WI 'Existing H atoms near QH (pink) peaks will be adjusted towards the Fourier peak positions'
 ^^WI            }
 ^^WI          }
 ^^WI          @ 1,3 GRID SLIDEMOD NROWS=2 NCOLS=1
@@ -89,17 +97,6 @@
 ^^WI                ATTACH L5 RADSCALE=250 RADTYPE=COV
 ^^WI                MOUSEACTION=HEADERATOM
 ^^WI          }
-^^WI       }
-^^WI     }
-^^WI   @ 6,2 GRID CHECKB NROWS=1 NCOLS=7
-^^WI     @ 1,1 CHECKBOX AHFOUND
-^^WI       'All H atoms have been found' STATE=OFF
-^^WI     @ 1,3 CHECKBOX RENUMB
-^^WI       'Create systematic numbers' STATE=ON
-^^WI     @ 1,5 CHECKBOX REGUL
-^^WI       'Regularise the H using restraints' STATE=ON
-^^WI     @ 1,7 CHECKBOX FOUREF
-^^WI       'Advanced: Fourier refinement using QH peaks' STATE=OFF
 ^^WI   }
 ^^WI   @ 8,2 GRID BTNS NROWS=1 NCOLS=7
 ^^WI   {
@@ -331,6 +328,10 @@
 {I * Renumbering found atoms.
 %            COPY '#HNAME'
 %            COPY 'END'
+%% Run this in case hname creates dups (e.g. on C1 and O1)
+%            COPY '#EDIT'
+%            COPY 'CLASH FIXLATTER'
+%            COPY 'END'
 %      END IF
 %      IF ( REGUL .EQ. TRUE ) THEN
 %% remove old file if it exists
@@ -445,8 +446,14 @@
 %        TRANSFER 'DELETE ' // CATOM TO CRYSTALS
 %        COPY 'EXEC'
 %      ELSE
+%        IF ( ( UPPERCASE cel ) .EQ. 'H' ) THEN
+%% copy occ, part, res properties from a connected atom.
+%          TRANSFER 'JOINMOL ' // CATOM TO CRYSTALS
+%        END IF
 %        TRANSFER 'DRENAME ' // CATOM // ' ' // CEL // '(' // -
          CHARACTER ( FIRSTINT ( CATOM ) ) // ')' TO CRYSTALS
+%        COPY 'EXEC'
+%        COPY 'CLASH FIXLATTER'
 %        COPY 'EXEC'
 %      END IF
 %     END IF
