@@ -45,7 +45,7 @@ CxStretch *    CxStretch::CreateCxStretch( CrStretch * container, CxGrid * guiPa
     theStretch->Create(NULL,"Stretch", WS_CHILD| WS_VISIBLE, CRect(0,0,20,20), guiParent, mStretchCount++, NULL);
 #endif
 #ifdef CRY_USEWX
-    theStretch->Create(guiParent,-1,wxPoint(0,0),wxSize(20,20));
+    theStretch->Create(guiParent,-1,wxPoint(0,0),wxSize(20,20), wxWANTS_CHARS);
 #endif
     return theStretch;
 }

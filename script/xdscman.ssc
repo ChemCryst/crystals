@@ -16,6 +16,14 @@
 %%
 %  VARIABLE INTEGER ICURSER ICURSEL IMAXSEL INDCURSEL
 %%
+%  IF EXISTS 5 .LE. 0 THEN
+
+
+{E   There are no atoms stored
+
+
+%    FINISH
+%  END IF
 %  BLOCK
 %  ON ERROR CONTINUE
 %    COPY '#GENERALEDIT 5'

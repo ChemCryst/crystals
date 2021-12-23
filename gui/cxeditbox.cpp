@@ -163,8 +163,8 @@ void  CxEditBox::SetText( const string & text )
       temp = text;
     }
 
-    string::size_type j = temp.find_last_not_of(' ');
-    if ( j != string::npos ) temp.erase(j+1);
+//    string::size_type j = temp.find_last_not_of(' ');
+//    if ( j != string::npos ) temp.erase(j+1);
 
     if ( temp.length() > m_Limit )
     {
