@@ -7,78 +7,6 @@ from shutil import copy, move
 import argparse
 
 
-parser = argparse.ArgumentParser(description='Run discamb')
-parser.add_argument('--basis', choices=['cc-pVDZ','cc-pVQZ','Def2SVP','jorge-DZP'], default='cc-pVDZ')
-parser.add_argument('--method', choices=['B3LYP','BLYP','CCSD','HF','M06','MP2'], default='B3LYP')
-parser.add_argument('--model', choices=['HAR','TAAM'], default='HAR')
-parser.add_argument('--ncores', type=int)
-parser.add_argument('--memory', type=ascii)
-
-
-try:
-    args = parser.parse_args()
-except SystemExit:               # Can't be passing this exception in an embedded python
-    raise Exception("Parse argument error")   # Send a general exception instead
-    
-print(args)
-
-argdict = vars(args)
-
-# Check arguments:
-# - basis
-# - qm method
-# - qm program (ORCA)
-# - model
-# - ncores
-# - memory
-# - multipole thresholds
-# Get resources (if not set above)
-# - ncores
-# - memory
-
-disc2tsc_info = {    'basis set':   argdict['basis'], 
-                     'model':       argdict['model'], 
-                    'qm method':   argdict['method'], 
-                     'n cores':     argdict['ncores'],
-                     'memory':      argdict['memory'],
-                     'qm program':  'Orca',
-                     'qm structure': 'qm_sys',
-                     'multipoles': { 'l max': 2, 'threshold': 15.0 }
-                }
-
-if argdict['ncores'] is None:
-    # Get number of available cores, n_cores.
-    try:
-        import multiprocessing
-        disc2tsc_info['n cores'] = multiprocessing.cpu_count()
-        print( f"There are {disc2tsc_info['n cores']} core(s) available" )
-    except:
-        disc2tsc_info['n cores'] = 4
-        print( f"Cannot determine number of cores, defaulting to 4 (see discamb.py line {sys._getframe().f_back.f_lineno})" )
-
-if argdict['memory'] is None:
-    disc2tsc_info['memory'] = '1GB'
-
-
-#
-# Check path to discamb.
-# Double check settings.json paths set (warnings)
-# Write quick res
-#
-# {
-#    "basis set": "cc-pVDZ",
-#    "memory": "1GB",
-#    "model": "HAR",
-#    "multipoles": {
-#        "l max": 2,
-#        "threshold": 15.0
-#    },
-#    "n cores": 4,
-#    "qm method": "B3LYP",
-#    "qm program": "Orca",
-#    "qm structure": "qm_sys"
-#}
-
 
 def write_aspher ( folder, info ):
     with open(folder + os.sep + 'aspher.json', 'w') as file:  
@@ -302,6 +230,88 @@ def get_crystals_atoms():
                     raise Exception("Error 003 reading crystals.l5")
             
     return atomlist
+
+
+
+########################
+## Code starts here
+
+
+# Get command line options
+
+parser = argparse.ArgumentParser(description='Run discamb')
+parser.add_argument('--basis', choices=['cc-pVDZ','cc-pVQZ','cc-pVTZ','Def2SVP','Def2TZVP', 'Def2TZVPP','jorge-DZP', 'jorge-TZP'], default='cc-pVDZ')
+parser.add_argument('--method', choices=['B3LYP','BLYP','CCSD','HF','M06','MP2'], default='B3LYP')
+parser.add_argument('--model', choices=['HAR','TAAM'], default='HAR')
+parser.add_argument('--ncores', type=int)
+parser.add_argument('--memory', type=ascii)
+
+
+try:
+    args = parser.parse_args()
+except SystemExit:               # Can't be passing this exception in an embedded python
+    raise Exception("Parse argument error")   # Send a general exception instead
+    
+print(args)
+
+argdict = vars(args)
+
+# Check arguments:
+# - basis
+# - qm method
+# - qm program (ORCA)
+# - model
+# - ncores
+# - memory
+# - multipole thresholds
+# Get resources (if not set above)
+# - ncores
+# - memory
+
+disc2tsc_info = {    'basis set':   argdict['basis'], 
+                     'model':       argdict['model'], 
+                    'qm method':   argdict['method'], 
+                     'n cores':     argdict['ncores'],
+                     'memory':      argdict['memory'],
+                     'qm program':  'Orca',
+                     'qm structure': 'qm_sys',
+                     'multipoles': { 'l max': 2, 'threshold': 15.0 }
+                }
+
+
+
+if argdict['ncores'] is None:
+    # Get number of available cores, n_cores.
+    try:
+        import multiprocessing
+        disc2tsc_info['n cores'] = multiprocessing.cpu_count()
+        print( f"There are {disc2tsc_info['n cores']} core(s) available" )
+    except:
+        disc2tsc_info['n cores'] = 4
+        print( f"Cannot determine number of cores, defaulting to 4 (see discamb.py line {sys._getframe().f_back.f_lineno})" )
+
+if argdict['memory'] is None:
+    disc2tsc_info['memory'] = '1GB'
+
+
+#
+# Check path to discamb.
+# Double check settings.json paths set (warnings)
+# Write quick res
+#
+# {
+#    "basis set": "cc-pVDZ",
+#    "memory": "1GB",
+#    "model": "HAR",
+#    "multipoles": {
+#        "l max": 2,
+#        "threshold": 15.0
+#    },
+#    "n cores": 4,
+#    "qm method": "B3LYP",
+#    "qm program": "Orca",
+#    "qm structure": "qm_sys"
+#}
 
 
 

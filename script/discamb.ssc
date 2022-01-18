@@ -1,0 +1,135 @@
+%SCRIPT DISCAMB
+%% 
+%%disc2tsc_info = {    'basis set':   argdict['basis'], 
+%%       'model':       argdict['model'], 
+%%      'qm method':   argdict['method'], 
+%%       'n cores':     argdict['ncores'], 
+%%       'memory':      argdict['memory'], 
+%%       'qm program':  'Orca', 
+%%       'qm structure': 'qm_sys', 
+%%       'multipoles': { 'l max': 2, 'threshold': 15.0 } 
+%%  } 
+%% 
+%% Stick with Orca for now. Stick with multipole defaults for now. Stick with HAR model. 
+%% 
+%% Things to rememeber (defaults): basis (cc-pVDZ),method (e.g. B3LYP), ncores (4), memory (1GB) 
+%% 
+%%    Discamb2tsc 
+%%	 
+%%	Each residue will be calculated separately (i)  [Reset residues] 
+%%	 
+%%	Basis set [VVV] 
+%%	Method    [VVV] 
+%% 
+%%    Cores [ 4 ]  Memory [ 1GB ] (i) 
+%% 
+%%    [ ] remember these settings 
+%%    [restore defaults]  [Ok] [Cancel] 
+%% 
+%% 
+^^WI WINDOW DISCAMB 'Discamb2tsc' MODAL COMMIT='BUTTONOK' CANCEL='BUTTONXX' 
+^^WI GRID GRIDM NROWS=11 NCOLS=3 
+^^WI { 
+^^WI    @ 2,2 GRID GRIDAA NROWS=1 NCOLS=3
+^^WI    {
+^^WI      @ 1,1 STATIC T1 'Each residue will be analyzed separately'
+^^WI      @ 1,3 ICON OR1 SMALLQUERY TOOLTIP 
+^^WI   'Residue numbers can be assigned by right-clicking on atoms in the structure viewer'
+^^WI    }
+^^WI    @ 4,2 GRID GRIDAB NROWS=3 NCOLS=3
+^^WI    { 
+^^WI      @ 1,1 STATIC TEXT1 'Basis set'
+^^WI      @ 1,3 DROPDOWN LBASIS INFORM=YES
+^^WI      ADDTOLIST 'cc-pVDZ' 'cc-pVQZ' 'cc-pVTZ' 'Def2SVP' 
+^^WI      'Def2TZVP' 'Def2TZVPP' 'jorge-DZP' 'jorge-TZP' 'NULL' 
+^^WI      @ 3,1 STATIC TEXT2 'Method'
+^^WI      @ 3,3 DROPDOWN LMETHOD INFORM=YES
+^^WI      ADDTOLIST 'B3LYP' 'BLYP' 'HF' 'M06' 'MP2' 'NULL' 
+^^WI    }
+^^WI    @ 6,2 GRID GRIDAC NROWS=1 NCOLS=3
+^^WI    {
+^^WI      @ 1,1 CHECKBOX CALCDEFS 'Use automatic CPU/Memory values' 
+^^WI      STATE=ON INFORM=YES
+^^WI      @ 1,3 ICON AU1 SMALLQUERY TOOLTIP 
+^^WI   'CPU and memory will be determined based on your system resources'
+^^WI    }
+^^WI    @ 8,2 GRID GRIDAD NROWS=1 NCOLS=7
+^^WI    {
+^^WI      @ 1,1 STATIC C1 'Processes'
+^^WI      @ 1,3 EDITBOX NCORES '4' CHARS=9 INTEGER INFORM=YES DISABLED=YES
+^^WI      @ 1,5 STATIC C1 'Memory/process (Gb)'
+^^WI      @ 1,7 EDITBOX MEMORY '1' CHARS=9 INTEGER INFORM=YES DISABLED=YES
+^^WI    }
+^^WI    @ 10,2 GRID GRIDAE NROWS=1 NCOLS=5
+^^WI    { 
+^^WI      @ 1,1 BUTTON BUTTONOK '&Ok' DEFAULT 
+^^WI      @ 1,3 BUTTON BUTTONXX '&Cancel' 
+^^WI      @ 1,5 BUTTON BUTTONDEF '&Restore defaults' 
+^^WI    } 
+^^WI }
+^^WI SHOW 
+^^CR 
+% LOOP 
+%    VERIFY BUTTONOK BUTTONXX BUTTONDEF CALCDEFS LBASIS LMETHOD
+%    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                  
+%    CASE VALUE                                                                    
+%       BLOCK           %BUTTONOK%
+%          CLEAR
+%          INSERT '#PYTH discamb --basis'
+^^??       LBASIS SELECTEDLISTTEXT
+%          GET SILENT TEXT ' '
+%          INSERT '--method'
+^^??       LMETHOD SELECTEDLISTTEXT
+%          GET SILENT TEXT ' '
+^^??       CALCDEFS STATE                                                            
+%          VERIFY ON OFF                                                           
+%          GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%          IF ( VALUE .EQ. 2 ) THEN
+%            INSERT '--ncores '
+^^??         NCORES TEXT
+%            GET SILENT INTEGER ' '
+%            INSERT '--memory '
+^^??         MEMORY TEXT
+%            GET SILENT INTEGER ' '
+%          END IF
+%          OUTPUT
+%          SEND
+^^CO       DISPOSE DISCAMB
+%          FINISH
+%       END BLOCK
+%       BLOCK           %BUTTONXX%
+^^CO       DISPOSE DISCAMB
+%          FINISH
+%       END BLOCK
+%       BLOCK           %BUTTONDEF%
+^^CO SET LBASIS SELECTION=1       
+^^CO SET LMETHOD SELECTION=1       
+^^CO SET NCORES DISABLED=YES
+^^CO SET MEMORY DISABLED=YES
+^^CO SET CALCDEFS STATE=ON
+%       END BLOCK
+%       BLOCK           %CALCDEFS%
+%           VERIFY ON OFF                                                              
+%           GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'ON'                              
+%           CASE VALUE  
+%               BLOCK
+^^CO SET NCORES DISABLED=YES SET MEMORY DISABLED=YES
+%               END BLOCK
+%               BLOCK
+^^CO SET NCORES DISABLED=NO SET MEMORY DISABLED=NO
+%               END BLOCK
+%           END CASE                                         
+%       END BLOCK
+%       BLOCK           %LBASIS%
+%       VERIFY 1 2 3 4 5 6 7 8                                                    
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                            
+Basis changed       
+%       END BLOCK
+%       BLOCK           %LMETHOD%
+%       VERIFY 1 2 3 4 5 
+%       GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                            
+method changed
+%       END BLOCK
+%    END CASE 
+% END LOOP
+%END SCRIPT
