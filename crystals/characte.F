@@ -410,6 +410,32 @@ C
       RETURN
       END
 C
+
+      Pure Function to_upper (str) Result (string)
+!   ==============================
+!   Changes a string to upper case
+!   ==============================
+
+      Implicit None
+      Character(*), Intent(In) :: str
+      Character(LEN(str))      :: string
+
+      Integer :: ic, i
+
+      Character(26), Parameter :: cap = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+      Character(26), Parameter :: low = 'abcdefghijklmnopqrstuvwxyz'
+
+!   Capitalize each letter if it is lowecase
+      string = str
+      do i = 1, LEN_TRIM(str)
+          ic = INDEX(low, str(i:i))
+          if (ic > 0) string(i:i) = cap(ic:ic)
+      end do
+
+      End Function to_upper
+
+
+
 CODE FOR KHKIBM
       FUNCTION KHKIBM (CSOURC)
 C----- REMOVE ANY NULL CHARACTERS AND LEFT ADJUST THE REMAINDER

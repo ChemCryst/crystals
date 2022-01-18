@@ -6845,6 +6845,7 @@ C
 C--
       use lists1_mod, only: xrlind
       use lists2_mod, only: xldlst
+      use xlst29_mod
       
       PARAMETER (NPROCS = 1)
       DIMENSION PROCS(NPROCS)
@@ -6872,7 +6873,6 @@ C--
       INCLUDE 'XLST12.INC'
       INCLUDE 'ICOM12.INC'
       INCLUDE 'XLST20.INC'
-      INCLUDE 'XLST29.INC'
       INCLUDE 'XLST40.INC'
       INCLUDE 'ICOM40.INC'
       INCLUDE 'QLST40.INC'
@@ -6920,7 +6920,7 @@ C--READ THE DATA
       IF ( INTERN .EQ. 2 ) THEN  ! Call from #EDIT, potentially messy.
 C #EDIT reserves the right to add atoms on to the end of its L5, which
 C is loaded so that the next potential atom belongs at NFL.
-C This is my work aroudn:
+C This is my work around:
          KBNFL = NFL
          NFL = NFL + 10*N5*MD5
       END IF
@@ -7001,16 +7001,16 @@ c
 
 
 C -- The ELEMENT records (L40E) will override the covalent
-C -- radii given in L29. The vdw parameter in L29 will be over-
+C -- radii given in L29. The ionic parameter in L29 will be over-
 C -- written with the MAXBONDS value - this L29 must not be
 C -- written back to the DISK as it is now garbage.
 
       I29  = L29  + (N29-1) *MD29
       I40E = L40E + (N40E-1)*MD40E
 
-C -- Overwrite vdw with maxbonds info
+C -- Overwrite ionic radii with maxbonds info
       DO M29= L29,I29,MD29
-        STORE(M29+2) = STORE(L40T+2)
+        STORE(M29+3) = STORE(L40T+2)
       END DO
 
       NOTFND=0
@@ -7021,7 +7021,7 @@ C -- Overwrite vdw with maxbonds info
            IF ( STORE(M40E) .EQ. STORE(M29) ) THEN
               KFOUND = 1
               STORE(M29+1) = STORE(M40E+1)
-              STORE(M29+2) = STORE(M40E+2)
+              STORE(M29+3) = STORE(M40E+2)
               EXIT
            END IF
          END DO
@@ -7073,7 +7073,7 @@ C -- Add this extra element in L29 style at NEWL29.
             CALL XZEROF(STORE(NEWM29),MD29)
             CALL XMOVE (STORE(M5),STORE(NEWM29),1)
             STORE(NEWM29+1) = 0.8
-            STORE(NEWM29+2) = STORE(L40T+2)
+            STORE(NEWM29+3) = STORE(L40T+2)
 
 C -- Have to get proper covalent radii from file if possible.
 #ifdef CRY_OSWIN32
@@ -7089,6 +7089,10 @@ C -- Have to get proper covalent radii from file if possible.
               CALL XRDOPN (6, JDEV, CFILEN(1:ILENG), ILENG)
               IF ( IERFLG .LT. 0) GOTO 9900
 C Read the properties file and extract cov, vdw and colour.
+C  0         1         2         3         4         5         6         7
+C   1234567890123456789012345678901234567890123456789012345678901234567890
+C  "BA   COV =  1.43 ION = 1.40 VAN = 2.44 WEI = 137.34    COL = GREY"
+
               ICOL=IUNKN
               DO WHILE ( .TRUE. )
                  READ(NCARU,'(A80)',END=89) WCLINE
@@ -7096,8 +7100,10 @@ C Read the properties file and extract cov, vdw and colour.
      1              (WCLINE(1:3).NE.'   ').AND.
      1              (WCLINE(1:4).EQ.CATTYP)) THEN
                     READ(WCLINE(13:16),'(F4.2)') COV
+                    READ(WCLINE(35:38),'(F4.2)') VADW
                     READ(WCLINE(62:65),'(A4)') ICOL
                     STORE(NEWM29+1) = COV
+                    STORE(NEWM29+2) = VADW
                     ISTORE(NEWM29+7) = ICOL
                     EXIT
                  END IF
@@ -7146,7 +7152,7 @@ C -- Allocate a N5 length vector to hold: { maxbonds, bondssofar }
          DO M29 = L29,I29,MD29
             IF ( ISTORE(M29) .EQ. ISTORE(M5) ) EXIT
          END DO
-         ISTORE(LATVEC+(I5*2))   = NINT(STORE(M29+2))
+         ISTORE(LATVEC+(I5*2))   = NINT(STORE(M29+3))
          ISTORE(LATVEC+(I5*2)+1) = 0
       ENDDO
 
@@ -7212,7 +7218,6 @@ C Limit rest to best MAXBND bonds.
               K = ISTORE(NFL+J)
             END DO
 
-
 C -- Add these bonds into L41 bond record. Currently descending from the top
 C -- of store.
 C -- Also add these bonds into the LATVEC vector.
@@ -7234,6 +7239,55 @@ C -- Also add these bonds into the LATVEC vector.
                STORE(NWL41B+13) = STORE(NFL+J+9)        !Bond length
                ISTORE(LATVEC+(IL5*2)+1) = ISTORE(LATVEC+(IL5*2)+1) + 1
             END DO
+         END IF
+
+C Same logic again, but find potential H-bonds.
+
+
+         NEXTLC = NFL
+         NFOUND = MAKE41H( M5, NEXTLC )
+
+         IF ( NFOUND .GT. 0 ) THEN
+
+C -- Add these bonds into L41 bond record. Currently descending from the top
+C -- of store.
+C -- Also add these bonds into the LATVEC vector.
+
+C --
+C -- BUT, DA bonds must be > 100 degrees from any other D-X or A-X bonds.
+C -- AND, AH or DH bonds must be > 120 degrees
+
+            DO J = 0,(NFOUND-1)*JT,JT
+            
+C Are we going to add it?            
+
+c               DO M41B = NWL41B, NWL41B+(NWN41B-1)*MD41B, MD41B
+C Look for existing bonds with the same pivot atom.
+c                  IF ( ISTORE(M41B) .EQ. MPIV
+c               
+c
+c               
+c               END DO
+
+            
+               K = ISTORE(NFL+J)
+               IL5 = ( K - L5 ) / MD5
+               NWL41B = KCHLFL(MD41B) !Increase storage for L41B records
+               NWN41B = NWN41B + 1    !Increase number of records
+               ISTORE(NWL41B   ) = (M5-L5)/MD5            !Ptr to first atom
+               ISTORE(NWL41B+1 ) = 1
+               ISTORE(NWL41B+2 ) = 1
+               ISTORE(NWL41B+3 ) = 0
+               ISTORE(NWL41B+4 ) = 0
+               ISTORE(NWL41B+5 ) = 0
+               ISTORE(NWL41B+6 ) = IL5                    !Ptr to 2nd
+               CALL XMOVE( STORE(NFL+J+1), STORE(NWL41B+7), 5 )!Ptr to sym
+               ISTORE(NWL41B+12) = ISTORE(NFL+J+11)       !Bond type
+               STORE(NWL41B+13) = STORE(NFL+J+9)        !Bond length
+               ISTORE(LATVEC+(IL5*2)+1) = ISTORE(LATVEC+(IL5*2)+1) + 1
+            END DO
+C Update this after rejecting any other bonds.
+            ISTORE(LATVEC+(I5*2)+1) = ISTORE(LATVEC+(I5*2)+1) + NFOUND
          END IF
       END DO
 
@@ -7600,6 +7654,10 @@ C  APD(4-6)  INITIAL SYMMETRY RELATED X, Y AND Z.
 C  APD(7-9)  FINAL SYMMETRY RELATED X, Y AND Z AFTER A SUCCESSFUL FIND.
 C
 C--
+
+      use xlst29_mod
+      type(atomprops_t) :: atom_prop
+      integer :: isok
       INCLUDE 'ISTORE.INC'
       INCLUDE 'STORE.INC'
       INCLUDE 'QSTORE.INC'
@@ -7607,7 +7665,7 @@ C--
       INCLUDE 'XPDS.INC'
       INCLUDE 'XLST40.INC'
       INCLUDE 'XLST05.INC'
-      INCLUDE 'XLST29.INC'
+!      INCLUDE 'XLST29.INC'
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XUNITS.INC'
 
@@ -7644,15 +7702,19 @@ C Some common sense: only consider cells within +- 50 of 0,0,0.
         BPD(J+6)=MAX(BPD(J+6), -50.0)
       END DO
 
+      call l29_init()
+      call l29_display()      
+
+      isok = l29_find( istore(mpiv), atom_prop )
+c      WRITE(CMON,*) isok, istore(mpiv), atom_prop%covalent, 
+c     1 atom_prop%colour
+c      CALL XPRVDU(NCVDU,1,0)
+      
  
       DAT1 = 0.0
-      DO M29 = L29, L29+(N29-1)*MD29, MD29
-        IF ( ISTORE(MPIV) .EQ. ISTORE(M29) ) THEN
-          DAT1 = STORE(M29+1)
-          EXIT
-        END IF
-      END DO
-
+      isok = l29_find( istore(mpiv), atom_prop )
+      if ( isok .gt. 0 ) dat1 = atom_prop%covalent
+      
       CALL PRTGRP(ISTORE(MPIV+14), MPIVPR, MPIVGR, 1)
 
 C--LOOP OVER ALL THE ATOMS.
@@ -7670,13 +7732,9 @@ C--Check for this atom pair on a L40 PAIR record.
             EXIT
           END IF
         END DO
-        DO M29 = L29, L29+(N29-1)*MD29, MD29
-          IF ( ISTORE(I5) .EQ. ISTORE(M29) ) THEN
-            DAT2 = STORE(M29+1)
-            EXIT
-          END IF
-        END DO
 
+        isok = l29_find( istore(i5), atom_prop )
+        if ( isok .gt. 0 ) dat2 = atom_prop%covalent
 
 C-- CHECK PART NUMBERS
         NPTSYM = 0
@@ -7848,6 +7906,319 @@ C -- pair AND range.
       END DO
       RETURN
       END
+
+CODE FOR IHBELE
+      INTEGER FUNCTION IHBELE( IELE )
+C returns 0 if element is not H-bond interest
+C returns 1 if element is hydrogen or deuterium
+C returns 2 if element is donor type (NOS)
+C returns 3 if element is acceptor type (NOS,halogen), and not donor (i.e. is halogen)...
+C input is integer representation of element name (may be mixed case)
+
+      CHARACTER*4 CPIV,CPIVU
+      CHARACTER*4 HBDON(1:3)
+      CHARACTER*4 HBACC(1:7)
+      CHARACTER*4 HBH(1:2)
+      LOGICAL LPNF
+
+      DATA HBDON / 'N   ','O   ','S   ' /
+      DATA HBACC / 'N   ','O   ','S   ', 'F   ', 'CL  ','BR  ','I   ' /
+      DATA HBH   / 'H   ','D   ' /
+
+      IHBELE = 0
+
+      WRITE(CPIV,'(A)')IELE
+      CALL XCCUPC(CPIV,CPIVU)
+ 
+       DO I = 1, SIZE(HBACC) 
+         IF ( CPIVU .EQ. HBACC(I) ) THEN
+            IHBELE = 3
+            EXIT
+        END IF
+      END DO
+      DO I = 1, SIZE(HBDON) 
+         IF ( CPIVU .EQ. HBDON(I) ) THEN
+            IHBELE = 2
+            EXIT
+        END IF
+      END DO
+      DO I = 1, SIZE(HBH) 
+         IF ( CPIVU .EQ. HBH(I) ) THEN
+            IHBELE = 1
+            EXIT
+        END IF
+      END DO
+      
+      WRITE(135,*) IELE, CPIVU, IHBELE
+      
+      RETURN
+      END
+
+CODE FOR MAKE41H
+      FUNCTION MAKE41H( MPIV, MSADR )
+      use xlst29_mod
+C
+C Same as above, but find H-bonds or possible D---A contacts
+C
+C   MSADR  ADDRESS IN STORE TO PUT RESULTS
+C   MPIV    ADDRESS OF THE CURRENT PIVOT ATOM IN LIST 5
+C
+C--THE RETURN VALUES OF 'MAKE41' ARE :
+C   0  NO SUITABLE CONTACTS HAVE BEEN FOUND.
+C  >0  THE NUMBER OF ENTRIES IN THE DISTANCES STACK.
+C
+C--THE FOLLOWING VARIABLES MAY BE ADJUSTED
+C  AP     MAXIMUM ALLOWED DISTANCES SQUARED OVERALL
+C  BP     MINIMUM ALLOWED DISTANCE SQUARED OVERALL
+C
+C--ATOMS WHICH FORM ACCEPTABLE CONTACTS ARE STORED IN A STACK
+C  WHICH HAS THE FOLLOWING FORMAT :
+C   0  ADDRESS OF THE ATOM IN LIST 5
+C   1  S, THE SYMMETRY MATRIX TO BE USED (NEGATIVE FOR CENTRE OF SYM.)
+C   2  NON-PRIMITIVE LATTICE INDICATOR
+C   3  T(X)
+C   4  T(Y)
+C   5  T(Z)
+C   6  TRANSFORMED X
+C   7  TRANSFORMED Y
+C   8  TRANSFORMED Z
+C   9  DISTANCE
+C  10  TOLERANCE ( absolute distance from ideal cov+cov bond length )
+C  11  BONDTYPE ( if a PAIR record is given, otherwise 0 )
+C
+C--THE COMMON BLOCK /XAPD/ IS USED AS :
+C  APD(1-3)  SYMMETRY RELATED X, Y AND Z, WITH TRANSLATION PART OMITTED.
+C  APD(4-6)  INITIAL SYMMETRY RELATED X, Y AND Z.
+C  APD(7-9)  FINAL SYMMETRY RELATED X, Y AND Z AFTER A SUCCESSFUL FIND.
+C
+C--
+      INCLUDE 'ISTORE.INC'
+      INCLUDE 'STORE.INC'
+      INCLUDE 'QSTORE.INC'
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XPDS.INC'
+      INCLUDE 'XLST40.INC'
+      INCLUDE 'XLST05.INC'
+      INCLUDE 'XIOBUF.INC'
+      INCLUDE 'XUNITS.INC'
+
+      integer :: isok
+
+      COMMON /PERM02/ RLIST2(1000),ICFLAG,LSYM,NSYM,MDSYM,LNONP,NNONP
+
+
+      MAKE41H=0         !Return value. Number of atoms found
+      IPIVHE = IHBELE( ISTORE(MPIV) )
+      IF ( IPIVHE .EQ. 0 ) RETURN   ! Not an atom of interest
+  
+  
+
+      CALL CRDIST2     !Set up BPD.
+      JT= 12           !Size of atom info on stack
+      AO = 5.0
+      DO M40P = L40P, L40P + (N40P-1)*MD40P, MD40P
+          AO = MAX(AO, STORE(M40P+3))
+      END DO
+      AP = AO * AO     !Max dist squared
+      BP = 0.5 * 0.5   !Min dist squared
+
+
+C--SET UP A FEW INITIAL POINTERS
+      MAKE41H=0         !Return value. Number of atoms found
+      I5A=MPIV
+C--SET UP THE MAXIMUM AND MINIMUM VALUES FOR EACH DIRECTION FOR A DISTAN
+      DO J=1,3
+        BPD(J+3)=STORE(I5A+4)-AO/BPD(J)
+        BPD(J+6)=STORE(I5A+4)+AO/BPD(J)
+        I5A=I5A+1
+      END DO
+
+C Some common sense: only consider cells within +- 50 of 0,0,0.
+      DO J=1,3
+        BPD(J+3)=MIN(BPD(J+3), 50.0)
+        BPD(J+3)=MAX(BPD(J+3), -50.0)
+        BPD(J+6)=MIN(BPD(J+6), 50.0)
+        BPD(J+6)=MAX(BPD(J+6), -50.0)
+      END DO
+
+ 
+      COV1 = 0.0
+      VDW1 = 0.0
+      
+      isok = l29_find( istore(mpiv), atom_prop )
+      if ( isok .gt. 0 ) then 
+          COV1 = atom_prop%covalent
+          VDW1 = atom_prop%vanderwaals
+      end if
+
+      CALL PRTGRP(ISTORE(MPIV+14), MPIVPR, MPIVGR, 1)
+
+C--LOOP OVER ALL THE ATOMS.
+      DO I5= L5,L5+(MD5*(N5-1)),MD5
+
+        IBONHE = IHBELE(ISTORE(I5))
+        IF ( IBONHE .EQ. 0 ) CYCLE     ! Not an interesting bonded atom
+        IF (( IPIVHE .EQ. 3 ) .AND. ( IBONHE .EQ. 3 )) CYCLE  ! Two acceptors
+
+        KPAIR = 0
+        VDW2 = 0.0
+        COV2 = 0.0
+        
+        isok = l29_find( istore(i5), atom_prop )
+        if ( isok .gt. 0 ) then 
+            COV2 = atom_prop%covalent
+            VDW2 = atom_prop%vanderwaals
+        end if
+
+C-- CHECK PART NUMBERS
+        NPTSYM = 0
+        CALL PRTGRP(ISTORE(I5+14), MBONPR, MBONGR, 1)
+C 1) Allow bond if one atom is group 0, part 0.
+        IF (( MPIVPR .EQ. 0 .AND. MPIVGR .EQ. 0 ) .OR.
+     1         ( MBONPR .EQ. 0 .AND. MBONGR .EQ. 0 ) ) GOTO 1110
+
+C 2) Don't bond things in same 'group' if 'part' numbers differ.
+C 2) Don't bond things in same 'group' if 'part' numbers are non-zero
+C    and different.
+           IF (( MPIVGR.EQ.MBONGR ).AND.( MPIVPR.NE.MBONPR ) .AND.
+     1         ( MPIVPR.NE.0)      .AND.( MBONPR.NE.0      ) ) CYCLE
+
+C 3) Don't bond things if 'group' numbers non-zero and different
+C    and one of the 'parts' is 0.
+        IF (( MPIVGR.NE.MBONGR ) .AND. ( MIN(MPIVGR,MBONGR).NE.0 )
+     1     .AND. ((MPIVPR.EQ.0).OR.(MBONPR.EQ.0)) ) CYCLE
+
+C 4) Later, don't bond to same prt&grp across symops if part number is -ve.
+        IF (( MPIVGR.EQ.MBONGR ) .AND. ( MPIVPR.EQ.MBONPR ) .AND.
+     1         ( MPIVPR .LT. 0 )) THEN
+                 NPTSYM = -1   ! Don't apply sym ops
+        END IF
+
+1110    CONTINUE
+
+C--If the NOSYMM flag is set, hide all the symmetry operators:
+        IF (( ISTORE(L40T+3).EQ.1 ).OR.( NPTSYM .LT. 0 )) THEN
+            NKSYM = 1
+            NKICF = 0
+            NKNON = 1
+        ELSE
+            NKSYM = NSYM
+            NKICF = ICFLAG
+            NKNON = NNONP
+        END IF
+
+
+C--LOOP OVER EACH SYMMETRY OPERATOR COMBINATION FOR THIS ATOM
+        M2=LSYM
+        DO NE=1,NKSYM
+C--APPLY THIS SYMMETRY OPERATOR
+          CALL XMLTTM(RLIST2(M2),STORE(I5+4),APD(1),3,3,1)
+C--LOOP OVER EACH REQUIRED SIGN FOR THE CENTRE OF SYMMETRY FLAG
+          DO NF=1,2*NKICF+1,2
+C--LOOP OVER EACH OF THE NON-PRIMITIVE LATTICE TRANSLATIONS
+            M2P=LNONP
+            DO NG=1,NKNON
+C--ADD IN THE VARIOUS TRANSLATION PARTS
+              NH=M2
+              DO NI=1,3
+                APD(NI+3)=APD(NI)+RLIST2(M2P)+RLIST2(NH+9)
+                APD(NI+6)=APD(NI+3)
+                M2P=M2P+1
+                NH=NH+1
+              END DO
+
+              CALL XSHIFT2(1) ! Move X-coord out of required volume.
+              DO WHILE ( KDIST2(1).GE.0 ) !Advance X-coord.
+
+                CALL XSHIFT2(2) ! Move Y-coord out of required volume.
+                DO WHILE ( KDIST2(2).GE.0 )  ! Advance Y-coord.
+
+                  CALL XSHIFT2(3) ! Move Z-coord out of required volume.
+                  DO WHILE ( KDIST2(3).GE.0 )  !Advance Z-coord.
+C--A SUCCESSFUL FIND.
+
+                    IF((I5-MPIV.NE.0)
+     1                  .OR. (ABS(STORE(MPIV+4)-APD(7)).GT.ZERO)
+     2                   .OR. (ABS(STORE(MPIV+5)-APD(8)).GT.ZERO)
+     3                    .OR. (ABS(STORE(MPIV+6)-APD(9)).GT.ZERO) )THEN
+
+
+C--THIS IS NOT A SELF-SELF CONTACT WITH NO OPERATORS. 
+C--We want A->B and not B->A, however we want both A->B' and B->A'.
+                      IF ((MPIV.GT.I5).OR.(NE.NE.1).OR.(NF.NE.1)
+     1                 .OR.(NG.NE.1)
+     2                 .OR.(NINT(APD(7)-APD(4)).NE.0)
+     3                 .OR.(NINT(APD(8)-APD(5)).NE.0)
+     4                 .OR.(NINT(APD(9)-APD(6)).NE.0) ) THEN
+
+C Check that this atom has not just been duplicated by symmetry
+C because it is on a special position.
+
+c      WRITE(CMON,'(3I4,2I4/6F10.4)')
+c     1 NINT(APD(7)-APD(4)),NINT(APD(8)-APD(5)),NINT(APD(9)-APD(6)),
+c     2 NF, NG,
+c     3 APD(7),STORE(I5+4),APD(8),STORE(I5+5),APD(9),STORE(I5+6)
+c      CALL XPRVDU(NCVDU,3,0)
+
+
+                       IF ( ( ( NINT(APD(7)-APD(4)) .EQ. 0 ) .AND.
+     1                        ( NINT(APD(8)-APD(5)) .EQ. 0 ) .AND.
+     2                        ( NINT(APD(9)-APD(6)) .EQ. 0 ) .AND.
+     2                        ( NE .EQ. 1 ) .AND. 
+     3                        ( NF .EQ. 1 )  .AND. ( NG. EQ. 1 ) ) .OR.
+     4                      ( (ABS(APD(7)-STORE(I5+4)).GT.ZERO) .OR.
+     5                        (ABS(APD(8)-STORE(I5+5)).GT.ZERO) .OR.
+     6                        (ABS(APD(9)-STORE(I5+6)).GT.ZERO) ) ) THEN
+
+                        F=XDSTNCR(STORE(MPIV+4),APD(7)) !Calculate distance
+                        LPAIR = 0
+                        IF ( IHBELE( ISTORE(MPIV)) .EQ. 1 ) THEN
+                           LPAIR = 11   ! hbondout D-H...A - needs extra check
+                        ELSE IF ( IHBELE( ISTORE(I5)) .EQ. 1 ) THEN
+                           LPAIR = 10   ! hbondin  A...H-D   - needs extra check
+                        ELSE
+                           LPAIR = 12   !hbondda  A.....D - missing H (need to supress if H is present)
+                        END IF
+                        
+                        DMAX = (VDW1 + VDW2)**2                  ! H-bond dist
+                        DMIN = ((COV1 + COV2)*STORE(L40T+1))**2  ! Longest covalent bond
+
+                        IF((F .GE. DMIN).AND.(F .LE. DMAX)) THEN
+                          E=SQRT(F) ! Compute distance.
+                          ISTORE(MSADR)=I5           !0 = Pointer to atom
+                          ISTORE(MSADR+1) = (2-NF)*NE
+                          ISTORE(MSADR+2) = NG
+                          DO I = 1,3
+                            ISTORE(MSADR+I+2) = NINT(APD(I+6)-APD(I+3))
+                            STORE (MSADR+I+5) = APD(I+6)
+                          END DO
+                          STORE(MSADR+9) = E
+                          ETOL = ABS( E - (VDW1 + VDW2) )
+                          STORE(MSADR+10) = ETOL
+                          ISTORE(MSADR+11) = LPAIR
+                          MAKE41H=MAKE41H+1                   !Atom Counter.
+                          MSADR=MSADR+JT
+                          IF (MSADR.GT.LFL) THEN
+                              MSADR=MSADR-JT
+                              MAKE41H=MAKE41H-1
+                          END IF
+                        END IF
+                       END IF
+                      END IF
+                    END IF
+                  END DO
+                END DO
+              END DO
+            END DO
+            CALL XNEGTR(APD(1),APD(1),3)        !Centre of symmetry.
+          END DO
+          M2=M2+MDSYM
+        END DO
+      END DO
+      RETURN
+      END
+
+
 
 
 CODE FOR K41DEP

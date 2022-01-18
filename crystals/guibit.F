@@ -494,7 +494,24 @@ C
       RETURN
       END
  
-
+CODE FOR XANGCR
+      FUNCTION XANGCR(A,B)
+C--COMPUTE THE COS OF ANGLE BETWEEN TWO POINTS
+C  A:  VECTOR in CRYST FRAC
+C  B:  VECTOR in CRYST FRAC
+C
+C--THE RETURN VALUE OF 'XANGCR' IS THE cosine of the angle.
+C
+      DIMENSION A(3),B(3),C(3),D(3)
+      INCLUDE 'XCONST.INC'
+      INCLUDE 'XGUIOV.INC'
+C--ORTHOGONALISE THE VECTORS
+      CALL XMLTTM(GUMTRX(1),A(1),C(1),3,3,1)
+      CALL XMLTTM(GUMTRX(1),B(1),D(1),3,3,1)
+C--COMPUTE THE DOT PRODUCT
+      XANGCR= C(1)*D(1) + C(2)*D(2) + C(3)*D(3)
+      RETURN
+      END
 
 CODE FOR KDIST2
       FUNCTION KDIST2(NOC)
@@ -643,7 +660,7 @@ c         loaded by the calling routine.
       CHARACTER*8 CINST(6)
       INTEGER IUNKN
       CHARACTER*8 CRADTN(3)
-      CHARACTER*11 CBONDS(0:9)
+      CHARACTER*11 CBONDS(0:12)
       DIMENSION ID(2)
 
 
@@ -665,7 +682,7 @@ c         loaded by the calling routine.
       DATA CRADTN / 'X-rays' , 'neutrons' , 'electrons' /
       DATA CBONDS / 'unassigned', 'single',    'double',      'triple',
      c'quadruple',  'aromatic',   'polymeric', 'delocalised', 'strange',
-     c'pi-bond'/
+     c'pi-bond','hbondin','hbondout','hbondda'/
       INCLUDE 'IDIM40.INC'
 
 
