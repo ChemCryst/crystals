@@ -1369,7 +1369,8 @@ c               CALL XPRVDU(NCVDU, 2,0)
                ISTR11(KNF11+1) = IA2
 
                WRITE(CMON(1),'(4A,F5.2,1X,A)')CLAB(1:LLAB),'-',
-     1       CLAB2(1:LLAB2),' ~',STORE(M41B+13), CBONDS(ISTORE(M41B+12))
+     1       CLAB2(1:LLAB2),' ~',STORE(M41B+13), 
+     1       CBONDS( MIN( ISTORE(M41B+12),SIZE(CBONDS)-1 ) )
                CALL XCTRIM( CMON(1), LTMN )
 
                IF (( NINT(STORE(IAT1P+3)) .LT. 2 ).AND.
