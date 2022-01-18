@@ -3152,6 +3152,7 @@ int CcController::GetDescriptor( string &token, int descriptorClass )
       case kQueryClass:
                DESCRIPTOR(QExists)
                DESCRIPTOR(QListtext)
+               DESCRIPTOR(QSelectedListtext)
                DESCRIPTOR(QText)
                DESCRIPTOR(QModified)
                DESCRIPTOR(QListrow)

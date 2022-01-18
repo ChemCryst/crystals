@@ -134,6 +134,7 @@
 // Query types:
 #define kSQExists   "EXISTS"
 #define kSQListtext "LISTTEXT"
+#define kSQSelectedListtext "SELECTEDLISTTEXT"
 #define kSQText     "TEXT"
 #define kSQModified     "MODIFIED"
 #define kSQListrow  "LISTROW"
@@ -186,6 +187,7 @@ enum
  kTColumn,
  kTQExists,
  kTQListtext,
+ kTQSelectedListtext,
  kTQText,
  kTQModified,
  kTQListrow,

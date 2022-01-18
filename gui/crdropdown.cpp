@@ -157,6 +157,12 @@ void    CrDropDown::GetValue(deque<string> &  tokenList)
         strm << ( (CxDropDown *)ptr_to_cxObject)->GetDropDownValue();
         SendCommand( strm.str() , true );
     }
+    else if (desc == kTQSelectedListtext )
+    {
+        tokenList.pop_front();
+        int selindex = ( (CxDropDown *)ptr_to_cxObject)->GetDropDownValue();
+        SendCommand( ((CxDropDown*)ptr_to_cxObject)->GetDropDownText(selindex),true );
+    }
     else
     {
         SendCommand( "ERROR",true );
