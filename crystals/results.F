@@ -3904,6 +3904,8 @@ chi * 10^4
       deallocate (table)
       deallocate (type)
       ISTAT = KSCTRN(1, 'L5:OK', FLOAT(KCPROP), 1)
+      ISTAT = KSCTRN(1, 'L3:F000', FLOAT(NINT(A(7))), 1)
+      ISTAT = KSCTRN(1, 'L2:Z', FLOAT(NINT(ASYM)), 1)
       IF (KCPROP .GE .0) THEN
          WRITE(CMON,'(3x,A)')' All required atom properties are known'
          CALL XPRVDU(NCVDU,1,0)

@@ -1,0 +1,36 @@
+%SCRIPT XDISCAMB
+%%
+%  IF EXISTS 5 .LE. 0 THEN
+{I xdiscamb.scp: No parameters (List 5) available.
+%    FINISH
+%  END IF
+%  IF EXISTS 3 .LE. 0 THEN
+{I xdiscamb.scp: No IAM scattering data (List 3) available.
+%    FINISH
+%  END IF
+%  IF EXISTS 2 .LE. 0 THEN
+{I xdiscamb.scp: No space group info (List 2) available.
+%    FINISH
+%  END IF
+%%
+%%
+%  VARIABLE REAL L5:OK L3:F000 L2:Z NELE
+%%
+%%
+%  COPY '#PROPERTIES'
+%  COPY 'END'
+%%
+%%
+%  IF L5:OK .LT. 0.0 THEN
+{I xdiscamb.scp: There is a problem obtaining F000 and Z data from the stored data
+%     FINISH
+%  END IF
+%%
+%%
+% SHOW L3:F000
+% SHOW L2:Z
+% EVALUATE NELE = REAL ( NINT ( L3:F000 / L2:Z ) )
+% SHOW NELE
+% 
+%END SCRIPT
+
