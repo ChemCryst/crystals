@@ -355,7 +355,7 @@ write_aspher(work_folder, disc2tsc_info)
 
 # Output res and hkl
 try:
-    import crystals
+    import crystals            #Defined in the embedded environment in CRYSTALS
     crystals.run(["#FORE SHELX HARD", "END"])
     crystals.run(["#RELE PUNCH crystals.hkl", 
                   "#PUNCH 6 F", "END"] )
@@ -408,8 +408,12 @@ print (f"Net charge on all molecules is {net_charge}")
 with open(work_folder + os.sep + 'qm_sys', 'w') as file:  
     for resid,res in all_residues.items():
         file.write(f"System r{resid} {res['charge']} {res['mult']}\n")
-        atom = [ r for r in atoms if r['residue'] == resid ][0]
-        file.write(f"$connect {atom['type']}{atom['serial']}\n")
+        for atom in atoms:
+            if atom['residue'] != resid: continue
+            file.write(f"{atom['type']}{atom['serial']}\n")
+        
+#        atom = [ r for r in atoms if r['residue'] == resid ][0]
+#        file.write(f"$connect {atom['type']}{atom['serial']}\n")
 
 
 
