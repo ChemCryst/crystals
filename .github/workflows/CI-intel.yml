@@ -90,7 +90,7 @@ jobs:
     - name: install mkl
       shell: bash
       if: steps.cache-install-mkl.outputs.cache-hit != 'true'
-      run: bin/install_windows.bat $WINDOWS_BASEKIT_URL $WINDOWS_MKL_COMPONENTS
+      run: bin/install_windows.bat $WINDOWS_BASEKIT_URL $WINDOWS_MKL_COMPONENTS mklinst
 
     - name: exclude unused files from cache intelmkl
       if: steps.cache-install-mkl.outputs.cache-hit != 'true'
@@ -107,7 +107,7 @@ jobs:
     - name: install ifort
       shell: bash
       if: steps.cache-install.outputs.cache-hit != 'true'
-      run: bin/install_windows.bat $WINDOWS_HPCKIT_URL $WINDOWS_FORTRAN_COMPONENTS
+      run: bin/install_windows.bat $WINDOWS_HPCKIT_URL $WINDOWS_FORTRAN_COMPONENTS ifortinst
 
     - name: exclude unused files from cache ifort
       if: steps.cache-install.outputs.cache-hit != 'true'
