@@ -129,8 +129,9 @@ Files INITIAL.* will be created in your logs/ folder. They may be important.
 %   EVALUATE HFILE = FILEEXISTS ( 'from-cifv2.hkl' )                                   
 %  END IF                                 
 %  IF ( .not. HFILE ) THEN 
-{I CRYSTALS could find no  embedded HKLI data in the cif file. If you have a 
-{I SHELX hklf file, input that from the X-ray data menu.
+{I CRYSTALS could find no embedded HKLI data in the cif file.  
+{I If you have a SHELX hklf file, input that from the Data menu.  
+{I If you have an fcf file, input that from the Data menu
 %    FINISH
 %  ELSE
 %   BLOCK      

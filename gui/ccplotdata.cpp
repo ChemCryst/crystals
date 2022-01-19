@@ -1036,6 +1036,7 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
 		// take the axis height, work out where zero is...
         int xorigin = (int)(xgapleft - ((axiswidth * m_AxisData[Axis_X].m_AxisMin) / (m_AxisData[Axis_X].m_AxisMax - m_AxisData[Axis_X].m_AxisMin)));
 		xorigin = CRMAX( xorigin, xgapleft );
+		xorigin = CRMIN( xorigin, 2400-xgapright );
 
 		int yorigin = (int)(2400 - ygapbottom + (axisheight * (m_AxisData[Axis_YL].m_AxisMin/ (m_AxisData[Axis_YL].m_AxisMax - m_AxisData[Axis_YL].m_AxisMin))));
         int yorigright = (int)(2400 - ygapbottom + (axisheight * (m_AxisData[Axis_YR].m_AxisMin / (m_AxisData[Axis_YR].m_AxisMax - m_AxisData[Axis_YR].m_AxisMin))));

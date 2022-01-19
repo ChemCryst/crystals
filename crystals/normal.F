@@ -751,7 +751,7 @@ C TOP FRAME
      1  '^^PL SERIES 1 SERIESNAME ''Straight Line'' TYPE LINE',
      1  '^^PL SERIES 2 SERIESNAME ''Wilson (Fobs)''',
      1  '^^PL SERIES 3 SERIESNAME ''Wilson (Fcalc)''',
-     1  '^^PL SERIES 4 SERIESNAME ''W Calc-Obs'''
+     1  '^^PL SERIES 4 SERIESNAME ''W Obs-Calc'''
         CALL XPRVDU(NCVDU, 9,0)
       END IF
 
@@ -828,7 +828,7 @@ C STORE K-CURVE
      1      '^^PL DATA ', SVAL , 0.02*FLOAT(I-1)*RX,
      2      WVAL  , 0.02*FLOAT(I-1)*RX, 
      3      WCVAL , 0.02*FLOAT(I-1)*RX,
-     4      WCVAL-WVAL, 0.02*FLOAT(I-1)*RX
+     4      WVAL-WCVAL, 0.02*FLOAT(I-1)*RX
             CALL XPRVDU(NCVDU, 1,0)
           END IF
 cdjwfeb08
@@ -840,8 +840,8 @@ C SAVE THE VALUES TO FIND THE TURNING POINT
             FCW(I)=WCVAL
 C
 C
-          XMIN = MIN(XMIN, SVAL,WVAL)
-          XMAX = MAX(XMAX, SVAL,WVAL)
+          XMIN = MIN(XMIN, SVAL,WVAL,WCVAL,0.0)
+          XMAX = MAX(XMAX, SVAL,WVAL,WCVAL,0.0)
 C
         END IF
 C
