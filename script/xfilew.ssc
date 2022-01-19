@@ -40,6 +40,9 @@
 %     IF FILEEXISTS ( 'cif-reflections.hkl' ) THEN
 %       EVALUATE T =  FILEDELETE ( 'cif-reflections.hkl' )
 %     END IF
+%     IF FILEEXISTS ( 'cif-reflectionsv2.hkl' ) THEN
+%       EVALUATE T =  FILEDELETE ( 'cif-reflectionsv2.hkl' )
+%     END IF
 %     TRANSFER '#SPAWN % "CRYSDIR:diffin.exe" -f -d W -o from-cif.cry "' - 
       // C_FILE //   '" ' TO CRYSTALS
 %     TRANSFER 'EXIT CODE: ' // CHARACTER ( EXITSTATUS ) TO DISPLAY      
@@ -53,6 +56,9 @@
 %   ELSE IF ( CEXTN .EQ. 'FCF' )  .OR. ( CEXTN .EQ. 'HKL' ) THEN
 %     IF FILEEXISTS ( 'cif-reflections.hkl' ) THEN
 %       EVALUATE T =  FILEDELETE ( 'cif-reflections.hkl' )
+%     END IF
+%     IF FILEEXISTS ( 'cif-reflectionsv2.hkl' ) THEN
+%       EVALUATE T =  FILEDELETE ( 'cif-reflectionsv2.hkl' )
 %     END IF
 %     IF FILEEXISTS ( 'cif-reflections.cry' ) THEN
 %       EVALUATE T =  FILEDELETE ( 'cif-reflections.cry' )
