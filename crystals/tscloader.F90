@@ -132,7 +132,9 @@ module aspher_scatterers
 			end if
 			
 			if ( header ) then     ! read line
-				read(line,*) h,k,l, sfs
+				read(line,*,iostat = io, err=901) h,k,l, sfs
+				if ( io /= 0 ) goto 901
+
 				do j = 1, nscatt
 					i = self%sethkl(h,k,l,sclabels(j),sfs(1,j),sfs(2,j))   ! should return 0 (OK)
 					if ( i /= 0) then 
@@ -188,11 +190,18 @@ module aspher_scatterers
 				end if
 			end if
 		end do
+		
 90      continue
-
         if ( allocated (sfs) ) deallocate(sfs)
         if ( allocated (sclabels) ) deallocate(sclabels)
 		data_read = 0
+		return
+		
+901     continue		
+        if ( allocated (sfs) ) deallocate(sfs)
+        if ( allocated (sclabels) ) deallocate(sclabels)
+		data_read = -4
+		return
 
 	  end function
 	  
