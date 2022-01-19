@@ -67,7 +67,8 @@
 %     TRANSFER 'EXIT CODE: ' // CHARACTER ( EXITSTATUS ) TO DISPLAY      
 
 %     IF FILEEXISTS ( 'cif-reflections.cry' ) .AND. -
-         FILEEXISTS ( 'cif-reflections.hkl' ) THEN
+        ( FILEEXISTS ( 'cif-reflections.hkl' ) .OR. -
+          FILEEXISTS ( 'cif-reflectionsV2.hkl' ))THEN
 %       COPY '#SCRIPT DIFFEXEC'
 %     ELSE
  {E The diffractometer files have not been processed properly         
