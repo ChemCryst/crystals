@@ -13,7 +13,8 @@ def write_aspher ( folder, info ):
         file.write(json.dumps(disc2tsc_info, sort_keys=True, indent=4))
 
 
-def _find_discamb():
+#def _find_discamb():
+def _get_crystals_pref( cr_key ):
     import winreg as reg
     reg_path = r"Software\Chem Cryst\Crystals"
 
@@ -21,12 +22,12 @@ def _find_discamb():
     for install_type in reg.HKEY_CURRENT_USER, reg.HKEY_LOCAL_MACHINE:
         try:
             reg_key = reg.OpenKey(install_type, reg_path, 0, reg.KEY_READ)
-            print ("Querying ")
-            _path, _type = reg.QueryValueEx(reg_key, 'DISCAMB2TSCEXE')
+            print ("Querying " + cr_key)
+            _path, _type = reg.QueryValueEx(reg_key, cr_key)
             reg_key.Close()
             _path = _path.strip()              # CRYSTALS may add spaces before / after strings
             print ("Found " + _path)
-            if not os.path.isfile(_path):   
+            if not os.path.exists(_path):   
                 print ("Path not found")
                 continue
         except WindowsError:
@@ -240,7 +241,7 @@ def get_crystals_atoms():
 # Get command line options
 
 parser = argparse.ArgumentParser(description='Run discamb')
-parser.add_argument('--basis', choices=['cc-pVDZ','cc-pVQZ','cc-pVTZ','Def2SVP','Def2TZVP', 'Def2TZVPP','jorge-DZP', 'jorge-TZP'], default='cc-pVDZ')
+parser.add_argument('--basis', choices=['cc-pVDZ','cc-pVQZ','cc-pVTZ','Def2-SVP','Def2-TZVP', 'Def2-TZVPP','jorge-DZP', 'jorge-TZP', 'DKH-def2-SVP'], default='cc-pVDZ')
 parser.add_argument('--method', choices=['B3LYP','BLYP','CCSD','HF','M06','MP2'], default='B3LYP')
 parser.add_argument('--model', choices=['HAR','TAAM'], default='HAR')
 parser.add_argument('--ncores', type=int)
@@ -253,6 +254,11 @@ except SystemExit:               # Can't be passing this exception in an embedde
     raise Exception("Parse argument error")   # Send a general exception instead
     
 print(args)
+
+
+# "molden2aim folder": "c:\\programy\\Molden2AIM"
+moldenfolder = _get_crystals_pref('MOLDENFOLDER')   #NB could be None (if not installed).
+
 
 argdict = vars(args)
 
@@ -278,6 +284,8 @@ disc2tsc_info = {    'basis set':   argdict['basis'],
                      'multipoles': { 'l max': 2, 'threshold': 15.0 }
                 }
 
+if moldenfolder is not None:
+    disc2tsc_info['molden2aim folder'] = moldenfolder
 
 
 if argdict['ncores'] is None:
@@ -321,9 +329,12 @@ if argdict['memory'] is None:
 
 # Get discamb path
 
-discambexe = _find_discamb()
+#discambexe = _find_discamb()
+discambexe = _get_crystals_pref('DISCAMB2TSCEXE')
 if discambexe is None:
     raise Exception('The path to discamb2tsc must be set in CRYSTALS Tools / Preferences')
+
+
 
 # Check existence
 if not os.path.exists(discambexe):
@@ -351,7 +362,6 @@ try:
 except FileExistsError:
     pass                #overwrite previous jobs
 
-write_aspher(work_folder, disc2tsc_info)
 
 # Output res and hkl
 try:
@@ -369,9 +379,31 @@ copy('shelxs.ins', work_folder + os.sep + 'crystals.ins' )
 
 atoms = get_crystals_atoms()
 
-#for atom in atoms:
-#    print(f"{atom['type']} {atom['serial']} {atom['x']} {atom['y']} {atom['z']} {atom['residue']}")
-   
+
+# If basis set has relativistic alternative for Z>36
+#"basis set per element": "H,cc-pVTZ C,N,cc-pVDZ O,6-31G",
+
+#       print(f"{atom['type']} {atom['serial']} {atom['x']} {atom['y']} {atom['z']} {atom['residue']}")
+
+if disc2tsc_info['basis set'] in ['DKH-def2-SVP']:
+    too_heavy = set()
+    for atom in atoms:
+        z = atomic_numbers[atom['type'].upper()]
+        if z > 36 and z not in too_heavy:
+            if ( len(too_heavy) == 0 ):
+                disc2tsc_info['basis set per element'] = "" # initialize this key
+            too_heavy.add(z)
+            elname = atom['type']
+            if len(elname) > 1:
+                elname = elname[0] + elname[1].lower()
+            disc2tsc_info['basis set per element'] = disc2tsc_info['basis set per element'] + elname + ","
+    if len(too_heavy) > 0:
+        disc2tsc_info['basis set per element'] = disc2tsc_info['basis set per element'] + "SARC-DKH-TZVP"
+
+
+write_aspher(work_folder, disc2tsc_info)
+
+ 
 residue_vals = set( [ r['residue'] for r in atoms ] )   
 
 print (f" -- There are {len(residue_vals)} residue(s): ")
@@ -462,6 +494,12 @@ def output_reader(proc):
     for line in iter(proc.stdout.readline, b''):
         print('{{0,1 {0}'.format(line.decode('utf-8')), end='')
 
+
+
+# Check for wrong mpiexec
+#shutil.which(cmd, mode=os.F_OK | os.X_OK, path=None)
+
+
 si = None
 if os.name == 'nt':
     si = subprocess.STARTUPINFO()
@@ -478,7 +516,8 @@ t = threading.Thread(target=output_reader, args=(proc,))
 t.start()
 print("^^CO SET _MAINPROGRESS PULSE\n")
 t.join()
-print("^^CO SET _MAINPROGRESS TEXT 'Ready'\n")
+
+print("\n^^CO SET _MAINPROGRESS TEXT 'Ready'\n")
 
 print ("Done. Copying results tsc...")
 

@@ -17,7 +17,7 @@
 %    END IF
 %%
 ^^WI WINDOW XPREFS 'Preferences' MODAL COMMIT='PREFS_OK' CANCEL='PREFS_XX'  
-^^WI GRID MAIN NROWS=13 NCOLS=3 
+^^WI GRID MAIN NROWS=15 NCOLS=3 
 ^^WI {
 ^^WI   @ 2,2 GRID Opts NROWS=3 NCOLS=3
 ^^WI   {
@@ -56,13 +56,19 @@
 ^^WI     @ 1,3 EDITBOX XDISCA ' ' CHARS=32
 ^^WI     @ 1,5 BUTTON BDISCA 'Browse...'
 ^^WI   }   
-^^WI   @ 10,2 GRID EDITO NROWS=1 NCOLS=5
+^^WI   @ 10,2 GRID MOLDN NROWS=1 NCOLS=5
+^^WI   {
+^^WI     @ 1,1 STATIC TE1 'Molden folder'
+^^WI     @ 1,3 EDITBOX XMOLD ' ' CHARS=32
+^^WI     @ 1,5 BUTTON BMOLD 'Browse...'
+^^WI   }   
+^^WI   @ 12,2 GRID EDITO NROWS=1 NCOLS=5
 ^^WI   {
 ^^WI     @ 1,1 STATIC TE1 'External editor'
 ^^WI     @ 1,3 EDITBOX XEDITO ' ' CHARS=32
 ^^WI     @ 1,5 BUTTON BEDITO 'Browse...'
 ^^WI   }   
-^^WI   @ 12,2 GRID BTNS NROWS=1 NCOLS=5
+^^WI   @ 14,2 GRID BTNS NROWS=1 NCOLS=5
 ^^WI   {                                                                        
 ^^WI     @ 1,1 STRETCH MF_ST HORIZONTAL                                         
 ^^WI     @ 1,2 BUTTON PREFS_OK '&OK' LENGTH='Cancel' DEFAULT COMMIT                         
@@ -98,6 +104,18 @@
 %    TRANSFER "^^CO SET XDISCA TEXT '" // CFILE // "'" TO DISPLAY
 %  END IF
 %%
+^^CO GETKEY MOLDENFOLDER
+%  GET SILENT NOSTORE FINAL TEXT '1' '1'                                        
+%  EVALUATE CFILE = CVALUE                                         
+%  IF CFILE .EQ. '1' THEN
+^^CO  SET XMOLD TEXT ' '
+%  ELSE IF FILEEXISTS ( CFILE ) .EQ. FALSE THEN 
+^^CO  SET XMOLD TEXT ' '
+{E Stored Molden folder location does not exist.
+%  ELSE
+%    TRANSFER "^^CO SET XMOLD TEXT '" // CFILE // "'" TO DISPLAY
+%  END IF
+%%
 ^^CO GETKEY SHELXTEXE 
 %  GET SILENT NOSTORE FINAL TEXT '1' '1'                                        
 %  EVALUATE CFILE = CVALUE                                         
@@ -123,7 +141,7 @@
 %  END IF
 %%
 % LOOP
-%   VERIFY PREFS_OK PREFS_XX BPLAT BSXT BEDITO BDISCA
+%   VERIFY PREFS_OK PREFS_XX BPLAT BSXT BEDITO BDISCA BMOLD
 %   GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'PREFS_OK'
 %   CASE VALUE
 %     BLOCK
@@ -151,6 +169,12 @@
 %       CLEAR                                                                      
 %       INSERT '^^CO SETKEY DISCAMB2TSCEXE "'                                           
 %       GET SILENT TEXT 'Discamb2tsc location:' ' '                                         
+%       INSERT '"'                                                               
+%       OUTPUT                                                                   
+^^??    XMOLD TEXT
+%       CLEAR                                                                      
+%       INSERT '^^CO SETKEY MOLDENFOLDER "'                                           
+%       GET SILENT TEXT 'Molden location:' ' '                                         
 %       INSERT '"'                                                               
 %       OUTPUT                                                                   
 ^^??    XSXT TEXT
@@ -202,6 +226,14 @@
 %      IF CVALUE .NE. 'CANCEL' THEN               
 %       EVALUATE CFILE = CVALUE                   
 %       TRANSFER "^^CO SET XDISCA TEXT '" // CFILE // "'" TO DISPLAY
+%      END IF
+%     END BLOCK
+%     BLOCK   % BMOLD
+^^CO SYSGETDIR
+%     GET NOSTORE SILENT TEXT 'Molden location:'  
+%      IF CVALUE .NE. 'CANCEL' THEN               
+%       EVALUATE CFILE = CVALUE                   
+%       TRANSFER "^^CO SET XMOLD TEXT '" // CFILE // "'" TO DISPLAY
 %      END IF
 %     END BLOCK
 %   END CASE
