@@ -165,8 +165,7 @@ jobs:
       run: |    
         for /f "tokens=* usebackq" %%f in (`dir /b "C:\Program Files (x86)\Intel\oneAPI\compiler\" ^| findstr /V latest ^| sort`) do @set "LATEST_VERSION=%%f"
         xcopy /I/E/Y "C:\Program Files (x86)\Intel\oneAPI\mkl\%LATEST_VERSION%\tools\builder" builder
-        call "C:\Program Files (x86)\Intel\oneAPI\compiler\%LATEST_VERSION%\env\vars.bat"
-        call "C:\Program Files (x86)\Intel\oneAPI\mkl\%LATEST_VERSION%\env\vars.bat"
+        call "C:\Program Files (x86)\Intel\oneAPI\setvars.bat"
         set FC=ifort
         pushd builder
         nmake libintel64 export="..\..\build\mkllibs.txt"
@@ -183,7 +182,7 @@ jobs:
       shell: cmd
       run: |
         for /f "tokens=* usebackq" %%f in (`dir /b "C:\Program Files (x86)\Intel\oneAPI\compiler\" ^| findstr /V latest ^| sort`) do @set "LATEST_VERSION=%%f"
-        call "C:\Program Files (x86)\Intel\oneAPI\compiler\%LATEST_VERSION%\env\vars.bat"
+        call "C:\Program Files (x86)\Intel\oneAPI\setvars.bat"
         set FC=ifort
         set CRYSVNVER=${{ steps.vars.outputs.sha_short }}
         set CRYVMAJOR=${{ steps.get_version.outputs.major }}
@@ -280,8 +279,7 @@ jobs:
         set OMP_NUM_THREADS=1
         set PATH=..\wx\lib\vc14x_x64_dll;%path%
         for /f "tokens=* usebackq" %%f in (`dir /b "C:\Program Files (x86)\Intel\oneAPI\compiler\" ^| findstr /V latest ^| sort`) do @set "LATEST_VERSION=%%f"
-        call "C:\Program Files (x86)\Intel\oneAPI\compiler\%LATEST_VERSION%\env\vars.bat"
-        call "C:\Program Files (x86)\Intel\oneAPI\mkl\%LATEST_VERSION%\env\vars.bat"
+        call "C:\Program Files (x86)\Intel\oneAPI\setvars.bat"
         echo PATH is %PATH%
         echo CRYSDIR is %CRYSDIR%
         ren INW64GH${{ matrix.testsuffix }}.org safe.dir
