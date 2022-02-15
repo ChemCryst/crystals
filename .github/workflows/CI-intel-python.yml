@@ -101,7 +101,9 @@ jobs:
       id: cache-install
       uses: actions/cache@v2
       with:
-        path: C:\Program Files (x86)\Intel\oneAPI\compiler
+        path: |
+            C:\Program Files (x86)\Intel\oneAPI\compiler
+            C:\Program Files (x86)\Intel\oneAPI\*.bat
         key: install-${{ env.WINDOWS_HPCKIT_URL }}-${{ env.WINDOWS_FORTRAN_COMPONENTS }}-compiler-${{ hashFiles('**/bin/cache_exclude_windows.sh') }}
  
     - name: install ifort
