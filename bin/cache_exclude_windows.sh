@@ -13,3 +13,4 @@ rm -rf "C:\Program Files (x86)\Intel\oneAPI\compiler\'$LATEST_VERSION'\windows\l
 rm -rf "C:\Program Files (x86)\Intel\oneAPI\compiler\'$LATEST_VERSION'\windows\lib\oclfpga"
 rm -rf "C:\Program Files (x86)\Intel\oneAPI\compiler\'$LATEST_VERSION'\windows\lib\ocloc"
 rm -rf "C:\Program Files (x86)\Intel\oneAPI\compiler\'$LATEST_VERSION'\windows\lib\x86"
+
