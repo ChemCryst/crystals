@@ -80,42 +80,25 @@ jobs:
 #    - name: Add msbuild to PATH
 #      uses: microsoft/setup-msbuild@v1.0.2
 
-    - name: cache install mkl
-      id: cache-install-mkl
+    - name: cache install oneapi
+      id: cache-install-oneapi
       uses: actions/cache@v2
       with:
-        path: C:\Program Files (x86)\Intel\oneAPI\mkl
-        key: install-${{ env.WINDOWS_BASEKIT_URL }}-${{ env.WINDOWS_MKL_COMPONENTS }}-mkl-${{ hashFiles('**/bin/cache_exclude_windows.sh') }}
+        path: C:\Program Files (x86)\Intel\oneAPI
+        key: install-${{ env.WINDOWS_BASEKIT_URL }}-${{ env.WINDOWS_MKL_COMPONENTS }}-mkl-${{ env.WINDOWS_HPCKIT_URL }}-${{ env.WINDOWS_FORTRAN_COMPONENTS }}-${{ hashFiles('**/bin/cache_exclude_windows.sh') }}
 
-    - name: install mkl
+    - name: install oneapi
       shell: bash
-      if: steps.cache-install-mkl.outputs.cache-hit != 'true'
-      run: bin/install_windows.bat $WINDOWS_BASEKIT_URL $WINDOWS_MKL_COMPONENTS mklinst
+      if: steps.cache-install-oneapi.outputs.cache-hit != 'true'
+      run: |
+        bin/install_windows.bat $WINDOWS_BASEKIT_URL $WINDOWS_MKL_COMPONENTS mklinst
+        bin/install_windows.bat $WINDOWS_HPCKIT_URL $WINDOWS_FORTRAN_COMPONENTS ifortinst
 
-    - name: exclude unused files from cache intelmkl
-      if: steps.cache-install-mkl.outputs.cache-hit != 'true'
+    - name: exclude unused files from cache oneapi
+      if: steps.cache-install-oneapi.outputs.cache-hit != 'true'
       shell: bash
       run: bin/cache_exclude_windows.sh
  
-    - name: cache install ifort
-      id: cache-install
-      uses: actions/cache@v2
-      with:
-        path: |
-            C:\Program Files (x86)\Intel\oneAPI\compiler
-            C:\Program Files (x86)\Intel\oneAPI\*.bat
-        key: install-${{ env.WINDOWS_HPCKIT_URL }}-${{ env.WINDOWS_FORTRAN_COMPONENTS }}-compiler-${{ hashFiles('**/bin/cache_exclude_windows.sh') }}
- 
-    - name: install ifort
-      shell: bash
-      if: steps.cache-install.outputs.cache-hit != 'true'
-      run: bin/install_windows.bat $WINDOWS_HPCKIT_URL $WINDOWS_FORTRAN_COMPONENTS ifortinst
-
-    - name: exclude unused files from cache ifort
-      if: steps.cache-install.outputs.cache-hit != 'true'
-      shell: bash
-      run: bin/cache_exclude_windows.sh
-
 # Install wxWidgets - win GUI only
 
     - name: cache install wx
