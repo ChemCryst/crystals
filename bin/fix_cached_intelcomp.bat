@@ -10,11 +10,11 @@ goto EndDoIt
   
   rem delete existing symbolic link
   
-  rmdir "%componentpath%\latest"
-  
-  for /f "tokens=* usebackq" %%f in (`dir /b "C:\Program Files (x86)\Intel\oneAPI\compiler\" ^| findstr /V latest ^| sort`) do @set "LATEST_VERSION=%%f"
-
-  mklink /d "%componentpath%\latest" "%componentpath%\%LATEST_VERSION%"
+  if EXIST "%componentpath%\latest" (
+      rmdir "%componentpath%\latest"
+      for /f "tokens=* usebackq" %%f in (`dir /b "C:\Program Files (x86)\Intel\oneAPI\compiler\" ^| findstr /V latest ^| sort`) do @set "LATEST_VERSION=%%f"
+      mklink /d "%componentpath%\latest" "%componentpath%\%LATEST_VERSION%"
+  )
 
 exit /b
 :EndDoIt
