@@ -4,6 +4,7 @@ for /f "delims=" %%d in ( 'dir /a:d /b "C:\Program Files (x86)\Intel\oneAPI"' ) 
 goto EndDoIt
 
 :DoIt
+  SetLocal EnableDelayedExpansion
   set "componentpath=C:\Program Files (x86)\Intel\oneAPI\%~1"
 
   echo: Componentpath: '%componentpath%'
