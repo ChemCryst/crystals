@@ -150,6 +150,9 @@ jobs:
       run: |    
         copy ..\bin\debugsetvars.bat "C:\Program Files (x86)\Intel\oneAPI\"
         dir "C:\Program Files (x86)\Intel\oneAPI\"
+        dir "C:\Program Files (x86)\Intel\oneAPI\compiler"
+        dir "C:\Program Files (x86)\Intel\oneAPI\compiler\latest"
+        dir "C:\Program Files (x86)\Intel\oneAPI\"
         for /f "tokens=* usebackq" %%f in (`dir /b "C:\Program Files (x86)\Intel\oneAPI\compiler\" ^| findstr /V latest ^| sort`) do @set "LATEST_VERSION=%%f"
         xcopy /I/E/Y "C:\Program Files (x86)\Intel\oneAPI\mkl\%LATEST_VERSION%\tools\builder" builder
         call "C:\Program Files (x86)\Intel\oneAPI\debugsetvars.bat"
