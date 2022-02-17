@@ -149,6 +149,7 @@ jobs:
       shell: cmd
       run: |    
         copy ..\bin\debugsetvars.bat "C:\Program Files (x86)\Intel\oneAPI\"
+        call ..\bin\fix_cached_intelcomp.bat
         dir "C:\Program Files (x86)\Intel\oneAPI\"
         dir "C:\Program Files (x86)\Intel\oneAPI\compiler"
         dir "C:\Program Files (x86)\Intel\oneAPI\compiler\latest"
