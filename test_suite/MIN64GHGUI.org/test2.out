@@ -9346,7 +9346,7 @@ All cycle   Min function          0.0           0.77E+04       0.10E+16
 The slope and correlation coefficient should be small
 [11]  Slope =        0.0  Intercept =       00  C-Coef=       0.0
 
- Agreement analysis on scale of Fo, Scale =   4.73
+ Agreement analysis on scale of Fo, Scale =   4.73 Fo=sign(Fo^2) x sqrt(abs(Fo^2))
  Delta = Fo^2-Fc^2
 
 
@@ -19035,7 +19035,7 @@ All cycle   Rw                    0.0            3.5           0.10E+03
 The slope and correlation coefficient should be small
 [11]  Slope =       -0.0  Intercept =       10  C-Coef=      -0.1
 
- Agreement analysis on scale of Fo, Scale =   4.63
+ Agreement analysis on scale of Fo, Scale =   4.63 Fo=sign(Fo^2) x sqrt(abs(Fo^2))
  Delta = Fo-Fc
 
 
@@ -28203,7 +28203,7 @@ All cycle   Min function          0.0           0.66E+04       0.10E+16
 The slope and correlation coefficient should be small
 [11]  Slope =        0.0  Intercept =       00  C-Coef=       0.0
 
- Agreement analysis on scale of Fo, Scale =   4.65
+ Agreement analysis on scale of Fo, Scale =   4.65 Fo=sign(Fo^2) x sqrt(abs(Fo^2))
  Delta = Fo^2-Fc^2
 
 
@@ -37831,7 +37831,7 @@ All cycle   Rw                    0.0            3.5           0.10E+03
 The slope and correlation coefficient should be small
 [11]  Slope =       -0.0  Intercept =       10  C-Coef=      -0.1
 
- Agreement analysis on scale of Fo, Scale =   4.63
+ Agreement analysis on scale of Fo, Scale =   4.63 Fo=sign(Fo^2) x sqrt(abs(Fo^2))
  Delta = Fo-Fc
 
 
