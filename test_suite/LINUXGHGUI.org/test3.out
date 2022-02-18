@@ -6265,7 +6265,7 @@ LS-scale= 11.239   Wilson Scale=  0.000
 The slope and correlation coefficient should be small
 [11]  Slope =    -3376.3  Intercept = 2538920  C-Coef=      -0.0
 
- Agreement analysis on scale of Fo, Scale =  11.24
+ Agreement analysis on scale of Fo, Scale =  11.24 Fo=sign(Fo^2) x sqrt(abs(Fo^2))
  Delta = Fo-Fc
 
 
@@ -6446,7 +6446,7 @@ The slope and correlation coefficient should be small
 The slope and correlation coefficient should be small
 [11]  Slope =        0.0  Intercept =      -00  C-Coef=       0.1
 
- Agreement analysis on scale of Fo, Scale =  11.24
+ Agreement analysis on scale of Fo, Scale =  11.24 Fo=sign(Fo^2) x sqrt(abs(Fo^2))
  Delta = Fo-Fc
 
 
