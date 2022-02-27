@@ -98,6 +98,15 @@ jobs:
       if: steps.cache-install-oneapi.outputs.cache-hit != 'true'
       shell: bash
       run: bin/cache_exclude_windows.sh
+
+    - name: Upload outputs if install fail
+      uses: actions/upload-artifact@v1
+      if:  failure()
+      with:
+        name: install-fail-logs-win64-${{ matrix.cl }}
+        path: .
+
+
  
 # Install wxWidgets - win GUI only
 
