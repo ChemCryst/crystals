@@ -10,8 +10,8 @@ on: [push]
 
 
 env:
-  WINDOWS_BASEKIT_URL: https://registrationcenter-download.intel.com/akdlm/irc_nas/17768/w_BaseKit_p_2021.2.0.2871_offline.exe
-  WINDOWS_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/irc_nas/17762/w_HPCKit_p_2021.2.0.2901_offline.exe
+  WINDOWS_BASEKIT_URL: https://registrationcenter-download.intel.com/akdlm/irc_nas/18497/w_BaseKit_p_2022.1.2.154_offline.exe
+  WINDOWS_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/irc_nas/18529/w_HPCKit_p_2022.1.2.116_offline.exe
   WINDOWS_MKL_COMPONENTS: intel.oneapi.win.mkl.devel
   WINDOWS_FORTRAN_COMPONENTS: intel.oneapi.win.ifort-compiler
 
@@ -80,40 +80,25 @@ jobs:
 #    - name: Add msbuild to PATH
 #      uses: microsoft/setup-msbuild@v1.0.2
 
-    - name: cache install mkl
-      id: cache-install-mkl
+    - name: cache install oneapi
+      id: cache-install-oneapi
       uses: actions/cache@v2
       with:
-        path: C:\Program Files (x86)\Intel\oneAPI\mkl
-        key: install-${{ env.WINDOWS_BASEKIT_URL }}-${{ env.WINDOWS_MKL_COMPONENTS }}-mkl-${{ hashFiles('**/bin/cache_exclude_windows.sh') }}
+        path: C:\Program Files (x86)\Intel\oneAPI
+        key: install-${{ env.WINDOWS_BASEKIT_URL }}-${{ env.WINDOWS_MKL_COMPONENTS }}-mkl-${{ env.WINDOWS_HPCKIT_URL }}-${{ env.WINDOWS_FORTRAN_COMPONENTS }}-${{ hashFiles('**/bin/cache_exclude_windows.sh') }}
 
-    - name: install mkl
+    - name: install oneapi
       shell: bash
-      if: steps.cache-install-mkl.outputs.cache-hit != 'true'
-      run: bin/install_windows.bat $WINDOWS_BASEKIT_URL $WINDOWS_MKL_COMPONENTS mklinst
+      if: steps.cache-install-oneapi.outputs.cache-hit != 'true'
+      run: |
+        bin/install_windows.bat $WINDOWS_BASEKIT_URL $WINDOWS_MKL_COMPONENTS mklinst
+        bin/install_windows.bat $WINDOWS_HPCKIT_URL $WINDOWS_FORTRAN_COMPONENTS ifortinst
 
-    - name: exclude unused files from cache intelmkl
-      if: steps.cache-install-mkl.outputs.cache-hit != 'true'
+    - name: exclude unused files from cache oneapi
+      if: steps.cache-install-oneapi.outputs.cache-hit != 'true'
       shell: bash
       run: bin/cache_exclude_windows.sh
  
-    - name: cache install ifort
-      id: cache-install
-      uses: actions/cache@v2
-      with:
-        path: C:\Program Files (x86)\Intel\oneAPI\compiler
-        key: install-${{ env.WINDOWS_HPCKIT_URL }}-${{ env.WINDOWS_FORTRAN_COMPONENTS }}-compiler-${{ hashFiles('**/bin/cache_exclude_windows.sh') }}
- 
-    - name: install ifort
-      shell: bash
-      if: steps.cache-install.outputs.cache-hit != 'true'
-      run: bin/install_windows.bat $WINDOWS_HPCKIT_URL $WINDOWS_FORTRAN_COMPONENTS ifortinst
-
-    - name: exclude unused files from cache ifort
-      if: steps.cache-install.outputs.cache-hit != 'true'
-      shell: bash
-      run: bin/cache_exclude_windows.sh
-
 # Install wxWidgets - win GUI only
 
     - name: cache install wx
@@ -163,10 +148,10 @@ jobs:
       working-directory: ci
       shell: cmd
       run: |    
+        call ..\bin\fix_cached_intelcomp.bat
         for /f "tokens=* usebackq" %%f in (`dir /b "C:\Program Files (x86)\Intel\oneAPI\compiler\" ^| findstr /V latest ^| sort`) do @set "LATEST_VERSION=%%f"
         xcopy /I/E/Y "C:\Program Files (x86)\Intel\oneAPI\mkl\%LATEST_VERSION%\tools\builder" builder
-        call "C:\Program Files (x86)\Intel\oneAPI\compiler\%LATEST_VERSION%\env\vars.bat"
-        call "C:\Program Files (x86)\Intel\oneAPI\mkl\%LATEST_VERSION%\env\vars.bat"
+        call "C:\Program Files (x86)\Intel\oneAPI\setvars.bat"
         set FC=ifort
         pushd builder
         nmake libintel64 export="..\..\build\mkllibs.txt"
@@ -183,15 +168,15 @@ jobs:
       shell: cmd
       run: |
         for /f "tokens=* usebackq" %%f in (`dir /b "C:\Program Files (x86)\Intel\oneAPI\compiler\" ^| findstr /V latest ^| sort`) do @set "LATEST_VERSION=%%f"
-        call "C:\Program Files (x86)\Intel\oneAPI\compiler\%LATEST_VERSION%\env\vars.bat"
+        call "C:\Program Files (x86)\Intel\oneAPI\setvars.bat"
         set FC=ifort
         set CRYSVNVER=${{ steps.vars.outputs.sha_short }}
         set CRYVMAJOR=${{ steps.get_version.outputs.major }}
         set CRYVMINOR=${{ steps.get_version.outputs.minor }}
         set CRYVPATCH=${{ steps.get_version.outputs.patch }}
         echo Commit SHA: %CRYSVNVER% Version: %CRYVMAJOR%.%CRYVMINOR%.%CRYVPATCH%
-        cmake .. -G"NMake Makefiles" -DuseGUI=${{ matrix.guiflag }} -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }} -DuseCustomMKL=yes
-        nmake
+        cmake .. -G"NMake Makefiles" -DuseGUI=${{ matrix.guiflag }} -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }} -DuseCustomMKL=yes -DusePY=no -DCMAKE_EXPORT_COMPILE_COMMANDS=on
+        nmake || exit /b %ERRORLEVEL%
         copy ..\wx\lib\vc14x_x64_dll\wxmsw314u_stc_vc14x_x64.dll . 
         copy ..\wx\lib\vc14x_x64_dll\wxmsw314u_core_vc14x_x64.dll .
         copy ..\wx\lib\vc14x_x64_dll\wxmsw314u_gl_vc14x_x64.dll . 
@@ -280,8 +265,7 @@ jobs:
         set OMP_NUM_THREADS=1
         set PATH=..\wx\lib\vc14x_x64_dll;%path%
         for /f "tokens=* usebackq" %%f in (`dir /b "C:\Program Files (x86)\Intel\oneAPI\compiler\" ^| findstr /V latest ^| sort`) do @set "LATEST_VERSION=%%f"
-        call "C:\Program Files (x86)\Intel\oneAPI\compiler\%LATEST_VERSION%\env\vars.bat"
-        call "C:\Program Files (x86)\Intel\oneAPI\mkl\%LATEST_VERSION%\env\vars.bat"
+        call "C:\Program Files (x86)\Intel\oneAPI\setvars.bat"
         echo PATH is %PATH%
         echo CRYSDIR is %CRYSDIR%
         ren INW64GH${{ matrix.testsuffix }}.org safe.dir
@@ -326,6 +310,14 @@ jobs:
 #      with:
 #        name: executable-outputs-win64-${{ matrix.cl }}
 #        path: ci
+
+# Could be useful for debugging
+    - name: Upload compile_commands 
+      uses: actions/upload-artifact@v1
+      with:
+        name: commands-win64-${{ matrix.cl }}-${{ matrix.release }}
+        path: ci/compile_commands.json
+
 
 
     - name: Build installer
