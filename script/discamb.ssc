@@ -28,7 +28,7 @@
 %% 
 %% 
 ^^WI WINDOW DISCAMB 'Discamb2tsc' MODAL COMMIT='BUTTONOK' CANCEL='BUTTONXX' 
-^^WI GRID GRIDM NROWS=11 NCOLS=3 
+^^WI GRID GRIDM NROWS=13 NCOLS=3 
 ^^WI { 
 ^^WI    @ 2,2 GRID GRIDAA NROWS=1 NCOLS=3
 ^^WI    {
@@ -36,31 +36,38 @@
 ^^WI      @ 1,3 ICON OR1 SMALLQUERY TOOLTIP 
 ^^WI   'Residue numbers can be assigned by right-clicking on atoms in the structure viewer'
 ^^WI    }
-^^WI    @ 4,2 GRID GRIDAB NROWS=3 NCOLS=3
+^^WI    @ 4,2 GRID GRIDAB NROWS=2 NCOLS=1
+^^WI    { 
+^^WI      @ 1,1 RADIOBUTTON RTAAM 'Transferable aspherical atom model (TAAM)' 
+^^WI      STATE=OFF INFORM
+^^WI      @ 2,1 RADIOBUTTON RDFT 'DFT aspherical atoms'
+^^WI      STATE=ON INFORM
+^^WI    }
+^^WI    @ 6,2 GRID GRIDAB NROWS=1 NCOLS=7
 ^^WI    { 
 ^^WI      @ 1,1 STATIC TEXT1 'Basis set'
 ^^WI      @ 1,3 DROPDOWN LBASIS INFORM=YES
 ^^WI      ADDTOLIST 'cc-pVDZ' 'cc-pVQZ' 'cc-pVTZ' 'Def2-SVP' 'DKH-def2-SVP'
 ^^WI      'Def2-TZVP' 'Def2-TZVPP'  'jorge-DZP' 'jorge-TZP' 'NULL' 
-^^WI      @ 3,1 STATIC TEXT2 'Method'
-^^WI      @ 3,3 DROPDOWN LMETHOD INFORM=YES
+^^WI      @ 1,5 STATIC TEXT2 'Method'
+^^WI      @ 1,7 DROPDOWN LMETHOD INFORM=YES
 ^^WI      ADDTOLIST 'B3LYP' 'BLYP' 'HF' 'M06' 'MP2' 'NULL' 
 ^^WI    }
-^^WI    @ 6,2 GRID GRIDAC NROWS=1 NCOLS=3
+^^WI    @ 8,2 GRID GRIDAC NROWS=1 NCOLS=3
 ^^WI    {
 ^^WI      @ 1,1 CHECKBOX CALCDEFS 'Use automatic CPU/Memory values' 
 ^^WI      STATE=ON INFORM=YES
 ^^WI      @ 1,3 ICON AU1 SMALLQUERY TOOLTIP 
 ^^WI   'CPU and memory will be determined based on your system resources'
 ^^WI    }
-^^WI    @ 8,2 GRID GRIDAD NROWS=1 NCOLS=7
+^^WI    @ 10,2 GRID GRIDAD NROWS=1 NCOLS=7
 ^^WI    {
 ^^WI      @ 1,1 STATIC C1 'Processes'
 ^^WI      @ 1,3 EDITBOX NCORES '4' CHARS=9 INTEGER INFORM=YES DISABLED=YES
 ^^WI      @ 1,5 STATIC C1 'Memory/process (Gb)'
 ^^WI      @ 1,7 EDITBOX MEMORY '1' CHARS=9 INTEGER INFORM=YES DISABLED=YES
 ^^WI    }
-^^WI    @ 10,2 GRID GRIDAE NROWS=1 NCOLS=5
+^^WI    @ 12,2 GRID GRIDAE NROWS=1 NCOLS=5
 ^^WI    { 
 ^^WI      @ 1,1 BUTTON BUTTONOK '&Ok' DEFAULT 
 ^^WI      @ 1,3 BUTTON BUTTONXX '&Cancel' 
@@ -70,17 +77,25 @@
 ^^WI SHOW 
 ^^CR 
 % LOOP 
-%    VERIFY BUTTONOK BUTTONXX BUTTONDEF CALCDEFS LBASIS LMETHOD
+%    VERIFY BUTTONOK BUTTONXX BUTTONDEF CALCDEFS LBASIS LMETHOD RTAAM RDFT
 %    GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                  
 %    CASE VALUE                                                                    
 %       BLOCK           %BUTTONOK%
 %          CLEAR
-%          INSERT '#PYTH discamb --basis'
-^^??       LBASIS SELECTEDLISTTEXT
-%          GET SILENT TEXT ' '
-%          INSERT '--method'
-^^??       LMETHOD SELECTEDLISTTEXT
-%          GET SILENT TEXT ' '
+
+^^??       RTAAM STATE                                                  
+%          VERIFY OFF ON                                               
+%          GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                
+%          IF VALUE .EQ. 1 THEN                                      
+%            INSERT '#PYTH discamb --basis'
+^^??         LBASIS SELECTEDLISTTEXT
+%            GET SILENT TEXT ' '
+%            INSERT '--method'
+^^??         LMETHOD SELECTEDLISTTEXT
+%            GET SILENT TEXT ' '
+%          ELSE
+%            INSERT '#PYTH discamb --taam'
+%          END IF
 ^^??       CALCDEFS STATE                                                            
 %          VERIFY ON OFF                                                           
 %          GET SILENT NOSTORE FINAL ABBREVIATED ' '
@@ -129,6 +144,14 @@ Basis changed
 %       VERIFY 1 2 3 4 5 
 %       GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                            
 method changed
+%       END BLOCK
+%       BLOCK           %RTAAM%
+^^CO SET LMETHOD DISABLED=YES
+^^CO SET LBASIS DISABLED=YES
+%       END BLOCK
+%       BLOCK           %RDFT%
+^^CO SET LMETHOD DISABLED=NO
+^^CO SET LBASIS DISABLED=NO
 %       END BLOCK
 %    END CASE 
 % END LOOP

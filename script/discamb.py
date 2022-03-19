@@ -7,6 +7,15 @@ from shutil import copy, move
 import argparse
 
 
+def deletefiles ( filelist ):
+
+    for f in filelist:
+        try:
+            copy(f, f+'.prev')
+            os.remove(f)
+        except FileNotFoundError:
+            pass
+
 
 def write_aspher ( folder, info ):
     with open(folder + os.sep + 'aspher.json', 'w') as file:  
@@ -241,6 +250,7 @@ def get_crystals_atoms():
 # Get command line options
 
 parser = argparse.ArgumentParser(description='Run discamb')
+parser.add_argument('--taam', action='store_true', default=False )
 parser.add_argument('--basis', choices=['cc-pVDZ','cc-pVQZ','cc-pVTZ','Def2-SVP','Def2-TZVP', 'Def2-TZVPP','jorge-DZP', 'jorge-TZP', 'DKH-def2-SVP'], default='cc-pVDZ')
 parser.add_argument('--method', choices=['B3LYP','BLYP','CCSD','HF','M06','MP2'], default='B3LYP')
 parser.add_argument('--model', choices=['HAR','TAAM'], default='HAR')
@@ -274,52 +284,58 @@ argdict = vars(args)
 # - ncores
 # - memory
 
-disc2tsc_info = {    'basis set':   argdict['basis'], 
-                     'model':       argdict['model'], 
-                    'qm method':   argdict['method'], 
-                     'n cores':     argdict['ncores'],
-                     'memory':      argdict['memory'],
-                     'qm program':  'Orca',
-                     'qm structure': 'qm_sys',
-                     'multipoles': { 'l max': 2, 'threshold': 15.0 }
-                }
-
-if moldenfolder is not None:
-    disc2tsc_info['molden2aim folder'] = moldenfolder
 
 
-if argdict['ncores'] is None:
-    # Get number of available cores, n_cores.
-    try:
-        import multiprocessing
-        disc2tsc_info['n cores'] = multiprocessing.cpu_count()
-        print( f"There are {disc2tsc_info['n cores']} core(s) available" )
-    except:
-        disc2tsc_info['n cores'] = 4
-        print( f"Cannot determine number of cores, defaulting to 4 (see discamb.py line {sys._getframe().f_back.f_lineno})" )
+if ( args.taam ):
+    print("Using TAAM model")
+else:
 
-if argdict['memory'] is None:
-    disc2tsc_info['memory'] = '1GB'
+    disc2tsc_info = {    'basis set':   argdict['basis'], 
+                         'model':       argdict['model'], 
+                        'qm method':   argdict['method'], 
+                         'n cores':     argdict['ncores'],
+                         'memory':      argdict['memory'],
+                         'qm program':  'Orca',
+                         'qm structure': 'qm_sys',
+                         'multipoles': { 'l max': 2, 'threshold': 15.0 }
+                    }
+
+    if moldenfolder is not None:
+        disc2tsc_info['molden2aim folder'] = moldenfolder
 
 
-#
-# Check path to discamb.
-# Double check settings.json paths set (warnings)
-# Write quick res
-#
-# {
-#    "basis set": "cc-pVDZ",
-#    "memory": "1GB",
-#    "model": "HAR",
-#    "multipoles": {
-#        "l max": 2,
-#        "threshold": 15.0
-#    },
-#    "n cores": 4,
-#    "qm method": "B3LYP",
-#    "qm program": "Orca",
-#    "qm structure": "qm_sys"
-#}
+    if argdict['ncores'] is None:
+        # Get number of available cores, n_cores.
+        try:
+            import multiprocessing
+            disc2tsc_info['n cores'] = multiprocessing.cpu_count()
+            print( f"There are {disc2tsc_info['n cores']} core(s) available" )
+        except:
+            disc2tsc_info['n cores'] = 4
+            print( f"Cannot determine number of cores, defaulting to 4 (see discamb.py line {sys._getframe().f_back.f_lineno})" )
+
+    if argdict['memory'] is None:
+        disc2tsc_info['memory'] = '1GB'
+
+
+    #
+    # Check path to discamb.
+    # Double check settings.json paths set (warnings)
+    # Write quick res
+    #
+    # {
+    #    "basis set": "cc-pVDZ",
+    #    "memory": "1GB",
+    #    "model": "HAR",
+    #    "multipoles": {
+    #        "l max": 2,
+    #        "threshold": 15.0
+    #    },
+    #    "n cores": 4,
+    #    "qm method": "B3LYP",
+    #    "qm program": "Orca",
+    #    "qm structure": "qm_sys"
+    #}
 
 
 
@@ -363,6 +379,9 @@ except FileExistsError:
     pass                #overwrite previous jobs
 
 
+deletefiles( [ work_folder + os.sep + 'aspher.json'])   #remove previous job control
+
+
 # Output res and hkl
 try:
     import crystals            #Defined in the embedded environment in CRYSTALS
@@ -385,23 +404,24 @@ atoms = get_crystals_atoms()
 
 #       print(f"{atom['type']} {atom['serial']} {atom['x']} {atom['y']} {atom['z']} {atom['residue']}")
 
-if disc2tsc_info['basis set'] in ['DKH-def2-SVP']:
-    too_heavy = set()
-    for atom in atoms:
-        z = atomic_numbers[atom['type'].upper()]
-        if z > 36 and z not in too_heavy:
-            if ( len(too_heavy) == 0 ):
-                disc2tsc_info['basis set per element'] = "" # initialize this key
-            too_heavy.add(z)
-            elname = atom['type']
-            if len(elname) > 1:
-                elname = elname[0] + elname[1].lower()
-            disc2tsc_info['basis set per element'] = disc2tsc_info['basis set per element'] + elname + ","
-    if len(too_heavy) > 0:
-        disc2tsc_info['basis set per element'] = disc2tsc_info['basis set per element'] + "SARC-DKH-TZVP"
+if not args.taam:
+    if disc2tsc_info['basis set'] in ['DKH-def2-SVP']:
+        too_heavy = set()
+        for atom in atoms:
+            z = atomic_numbers[atom['type'].upper()]
+            if z > 36 and z not in too_heavy:
+                if ( len(too_heavy) == 0 ):
+                    disc2tsc_info['basis set per element'] = "" # initialize this key
+                too_heavy.add(z)
+                elname = atom['type']
+                if len(elname) > 1:
+                    elname = elname[0] + elname[1].lower()
+                disc2tsc_info['basis set per element'] = disc2tsc_info['basis set per element'] + elname + ","
+        if len(too_heavy) > 0:
+            disc2tsc_info['basis set per element'] = disc2tsc_info['basis set per element'] + "SARC-DKH-TZVP"
 
 
-write_aspher(work_folder, disc2tsc_info)
+    write_aspher(work_folder, disc2tsc_info)
 
  
 residue_vals = set( [ r['residue'] for r in atoms ] )   
@@ -449,14 +469,6 @@ with open(work_folder + os.sep + 'qm_sys', 'w') as file:
 
 
 
-def deletefiles ( filelist ):
-
-    for f in filelist:
-        try:
-            copy(f, f+'.prev')
-            os.remove(f)
-        except FileNotFoundError:
-            pass
 
 deletefiles( [ 'default.tsc',
                work_folder + os.sep + 'discamb_error.log',
