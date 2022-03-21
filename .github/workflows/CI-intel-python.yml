@@ -44,7 +44,7 @@ jobs:
 #        retention-days: 7
 
   build:
-    runs-on: windows-latest
+    runs-on: windows-2019
 
     env:
       testfail: false
@@ -98,6 +98,15 @@ jobs:
       if: steps.cache-install-oneapi.outputs.cache-hit != 'true'
       shell: bash
       run: bin/cache_exclude_windows.sh
+
+    - name: Upload outputs if install fail
+      uses: actions/upload-artifact@v1
+      if:  failure()
+      with:
+        name: install-fail-logs-win64-${{ matrix.cl }}
+        path: .
+
+
  
 # Install wxWidgets - win GUI only
 
@@ -175,7 +184,7 @@ jobs:
         set CRYVMINOR=${{ steps.get_version.outputs.minor }}
         set CRYVPATCH=${{ steps.get_version.outputs.patch }}
         echo Commit SHA: %CRYSVNVER% Version: %CRYVMAJOR%.%CRYVMINOR%.%CRYVPATCH%
-        cmake .. -G"NMake Makefiles" -DuseGUI=${{ matrix.guiflag }} -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }} -DuseCustomMKL=yes -DusePY=yes
+        cmake .. -G"NMake Makefiles" -DuseGUI=${{ matrix.guiflag }} -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }} -DuseCustomMKL=yes -DusePY=yes -DCMAKE_EXPORT_COMPILE_COMMANDS=on
         nmake || exit /b %ERRORLEVEL%
         copy ..\wx\lib\vc14x_x64_dll\wxmsw314u_stc_vc14x_x64.dll . 
         copy ..\wx\lib\vc14x_x64_dll\wxmsw314u_core_vc14x_x64.dll .
@@ -310,6 +319,14 @@ jobs:
 #      with:
 #        name: executable-outputs-win64-${{ matrix.cl }}
 #        path: ci
+
+# Could be useful for debugging
+    - name: Upload compile_commands 
+      uses: actions/upload-artifact@v1
+      with:
+        name: commands-win64-${{ matrix.cl }}-${{ matrix.release }}
+        path: ci/compile_commands.json
+
 
 
     - name: Build installer
