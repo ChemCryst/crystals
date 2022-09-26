@@ -1,0 +1,254 @@
+%SCRIPT MASA
+%%
+%% Make up a random rotation
+%%
+%% Read pf6.frg line by line and compute centroid (in orth coords)
+%% Re-read pf6.frg. For each line, apply random rotation, apply random shift, put atom in structure.
+%%
+%  VARIABLE REAL TX TY TZ
+%  VARIABLE REAL XC YC ZC MUISO
+%  VARIABLE REAL U V W X Y Z MJITTER
+%  VARIABLE CHARACTER MCFILE
+%  VARIABLE INTEGER NTIMES MCYCLES
+%  VARIABLE CHARACTER FELE LELE
+%  VARIABLE INTEGER FSER LSER
+%  VARIABLE REAL FSERR LSERR
+%  VARIABLE REAL R BESTR
+%  VARIABLE REAL SHIFTM OCC MOCC
+%  VARIABLE INTEGER N10 T IRES MAXRES MNFRAG CURRES
+%  VARIABLE CHARACTER CATOM CELE
+%  VARIABLE REAL RSER
+%  VARIABLE CHARACTER COORD
+%  VARIABLE INTEGER RESI
+%%
+%%
+%  EVALUATE OCC = MOCC / REAL ( MNFRAG )
+%%
+%  IF ( EXISTS 12 .NE. 1 ) THEN
+%     COPY '#LIST 12'
+%     COPY "FULL X'S"
+%     COPY 'END'
+%  END IF
+%  COPY '#release punch tmp/masa12.dat'
+%  COPY '#PUNCH 12'
+%  COPY 'END'
+%  COPY '#release punch logs/bfile.pch'
+%%
+%% If we insert molecules, they will have fragment numbers of 500+n (where n is 1,2, etc.)
+%% If there are no existing fragments here, then we need to add NFRAG new ones.
+%%
+%% SAVE ORIGINAL INPUT DATA masa5-orig.dat (may or may not have solvent molecules added)
+%%
+%  COPY '#release punch tmp/masa5-orig.dat'
+%  COPY '#PUNCH 5'
+%  COPY 'END'
+%  COPY '#release punch logs/bfile.pch'
+%%
+%  IF ( FILEEXISTS ( 'bestfrag.dat' ) ) THEN
+%     COPY '#USE bestfrag.dat'
+%     COPY '#SFLS'
+%     COPY 'CALC'
+%     COPY 'END'
+%  END IF
+%%
+%% FIND ANY RESIDUES >= 501
+%%
+%  COPY '#GENERALEDIT 5'
+%  COPY 'LOCATE RECORDTYPE=101'
+%  COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%  EVALUATE MAXRES = 500
+%  LOOP
+%     ON EDITERROR TERMINATE
+%     COPY 'TRANSFER FROM OFFSET=16 TO IRES'
+%     IF IRES .GT. MAXRES THEN
+%         EVALUATE MAXRES = IRES
+%     END IF
+%     COPY 'NEXT'
+%  END LOOP
+%  COPY 'END'
+%  EVALUATE MAXRES = MAXRES - 500
+%%
+%% If there are existing fragments in here, then don't use COORD, just keep going
+%% with the first atom of each fragment being the centroid (might not be ideal for fragments with a central atom)
+%%
+%  IF MAXRES .GE. 1 THEN
+%    IF MAXRES .NE. MNFRAG THEN
+ Number of overlapping mols in structure is not same as requested MNFRAG
+ TODO: Just remove and overwrite, for now, stop script!
+%       FINISH
+%    END IF
+%    COPY '#SCRIPT RFACTOR'
+%    EVALUATE BESTR = R
+%    COPY '#release punch tmp/masa5.dat'
+%    COPY '#PUNCH 5'
+%    COPY 'END'
+%    COPY '#release punch logs/bfile.pch'
+%% Copy first atom of each residue to L10
+%    COPY '#EDIT'
+%    COPY 'SORT RESIDUE'
+%    COPY 'END'
+%%
+%    QUEUE REWIND
+%    QUEUE COPY #EDIT 5 10
+%    COPY '#GENERALEDIT 5'
+%    COPY 'LOCATE RECORDTYPE=101'
+%    COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%    EVALUATE CURRES = 500
+%    LOOP
+%      ON EDITERROR TERMINATE
+%      COPY 'TRANSFER FROM OFFSET=16 TO IRES'
+%      IF IRES .GT. CURRES THEN
+%         EVALUATE CURRES = IRES
+%         COPY 'TRANSFER FROM OFFSET=0 TO CELE'
+%         COPY 'TRANSFER FROM OFFSET=1 TO RSER'
+%         TRANSFER "%QUEUE COPY KEEP " // CELE // -
+'(' // CHARACTER INTEGER RSER // ')' TO SCRIPT
+%      END IF
+%      COPY 'NEXT'
+%    END LOOP
+%    COPY 'END'
+%    QUEUE COPY END
+%    QUEUE PROCESS
+%%
+%%
+%%
+%  ELSE
+%% 
+%% If no fragments present, need to add them. Use L10
+%%
+%%
+%%   Add MNFRAG copies of the template
+%%
+%    EVALUATE SHIFTM = MJITTER
+%    EVALUATE RESI = 501
+%    LOOP MNFRAG TIMES
+%       COPY '#SCRIPT MASAADD'
+%       EVALUATE RESI = RESI + 1
+%    END LOOP
+%    COPY '#release punch tmp/masa5.dat'
+%    COPY '#PUNCH 5'
+%    COPY 'END'
+%    COPY '#release punch logs/bfile.pch'
+%  END IF
+%%
+%%
+%%
+%  COPY '#GENERALEDIT 10'
+%  COPY 'TRANSHEAD FROM OFFSET=3 TO N10'
+%  COPY 'END'
+%  SHOW N10
+%%
+%%
+%% INPUTS:
+%% MCFILE is the file to read 
+%% MUISO is the starting value for all the atoms in the fragment
+%% SHIFTM scales the size of the random displacement from the centroid. The default is -0.5 -> +0.5 Angstroms.
+%% NTIMES - number of trials
+%%
+%%
+%  EVALUATE RESI = 501
+%  EVALUATE SHIFTM = MJITTER
+%  EVALUATE NTIMES = MCYCLES
+%%
+%% Show a dialog which will:
+%%  - report current and best R factor
+%%  - cycle number and total cycles
+%%  - have a cancel button
+%%
+^^WI WINDOW MV2 'Progress' CANCEL='^^CO DISPOSE MV2'
+^^WI GRID MAIN NROWS=5 NCOLS=3
+^^WI { 
+^^WI   @ 2,2 GRID STATS NROWS=3 NCOLS=3
+^^WI   {
+^^WI     @ 1,1 STATIC T1 'Current R-factor'
+^^WI     @ 1,3 STATIC CURRR '99.999'
+^^WI     @ 2,1 STATIC T2 'Best R-factor'
+^^WI     @ 2,3 STATIC BESTR '99.999'
+^^WI     @ 3,1 STATIC T3 'Progress'
+^^WI     @ 3,3 STATIC PROGR '9999/9999'
+^^WI   }
+^^WI   @ 4,2 GRID BTNS NROWS=1 NCOLS=1
+^^WI   {
+^^WI     @ 1,1 BUTTON STOP '&Stop' INFORM=NO DEFAULT DISABLED=NO 
+^^WI   }
+^^WI } SHOW
+^^CR
+%  LOOP NTIMES TIMES
+%%
+%     CLEAR
+%     INSERT "^^CO SET CURRR TEXT '"
+%     STORE FORMAT /(F6.2)/ LENGTH 6 REAL R
+%     INSERT "'"
+%     OUTPUT
+%     CLEAR
+%     INSERT "^^CO SET BESTR TEXT '"
+%     STORE FORMAT /(F6.2)/ LENGTH 6 REAL BESTR
+%     INSERT "'"
+%     OUTPUT
+%     CLEAR
+%     INSERT "^^CO SET PROGR TEXT '"
+%     STORE FORMAT /(I4)/ LENGTH 4 INTEGER LOOPCOUNTER
+%     INSERT "/"
+%     STORE FORMAT /(I4)/ LENGTH 4 INTEGER NTIMES
+%     INSERT "'"
+%     OUTPUT
+%%
+%%    Decide on one copy to remove.
+%%
+%     EVALUATE RESI = 501 + INTEGER ( RANDOM ( 0.0 ) * REAL MNFRAG )
+%     COPY '#SCRIPT MASAADD'
+%% Now do some refinement. First backup the current List 12, then writes
+%% a new one, then refine, then restore the original.
+%%
+
+
+%% Run some cycles of refinement
+%     COPY '#SFLS'
+%     COPY 'REFINE'
+%     COPY 'REFINE'
+%     COPY 'REFINE'
+%     COPY 'REFINE'
+%     COPY 'REFINE'
+%     COPY 'END'
+
+
+%%
+%% Get the R-factor for this run (stored in variable R)
+%%
+%     COPY '#SFLS'
+%     COPY 'CALC'
+%     COPY 'END'
+%     COPY '#SCRIPT RFACTOR'
+%     IF R .LT. BESTR THEN
+%       EVALUATE BESTR = R
+%       COPY '#RELEASE PUNCH bestfrag.dat'
+%       COPY '#PUNCH 5'
+%       COPY 'END'
+%       COPY '#release punch tmp/masa5.dat'
+%       COPY '#PUNCH 5'
+%       COPY 'END'
+%       COPY '#release punch logs/bfile.pch'
+%     ELSE
+%% Restore last best copy
+%       COPY '#USE tmp/masa5.dat'
+%     END IF
+%     TRANSFER ' R is ' // CHARACTER ( R ) // ', best R is ' // -
+      CHARACTER ( BESTR ) TO DISPLAY
+%     SHOW LOOPCOUNTER
+%     COPY '#PURGE'
+%     COPY 'END'
+%%
+%% Break out of loops if user had closed progress window
+%%
+^^??  STOP STATE
+%     VERIFY ON OFF
+%     GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                                 
+%     IF VALUE .EQ. 1  THEN                                                        
+ Progress window stop pressed. Stopping.
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%     END IF                                                                       
+%  END LOOP
+^^CO DISPOSE MV2
+%  COPY '#USE bestfrag.dat'
+%  COPY '#USE tmp/masa12.dat'
+%END SCRIPT
