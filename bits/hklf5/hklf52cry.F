@@ -52,10 +52,11 @@ C DELETE THE BLOCK, OTHERWISE OUTPUT IT
 100   CONTINUE
       if (mod(kdjw,1000) .eq. 0) then
        write(6,*)'Working, Line number', kdjw
+       write(17,*)'Working, Line number', kdjw
       endif 
       READ(10,'(A)',ERR=9000,END=9000)CLINE(LINE)
       kdjw = kdjw + 1
-      READ(CLINE(LINE),'(3I4,2F8.2,I4)') 
+      READ(CLINE(LINE),'(3I4,2F8.2,I4)', err=9000,end=9000)
      1  INDEX,VALUE,KEY
 C       BRUKER FILES END WITH H, K, L ALL = 0; SKIP THAT & LOOK FOR EOF
       IF(INDEX(1).EQ.0.AND.INDEX(2).EQ.0.AND.INDEX(3).EQ.0) GO TO 100
@@ -113,6 +114,7 @@ C
 9000  CONTINUE
       WRITE(11,"('-512')")
       write(6,*)'Working out twin laws'
+      write(17,*)'Working out twin laws'
       CALL TLAW2(iout)
       IF (IOUT.GE.1) THEN
          OPEN(14,STATUS='UNKNOWN',FILE='l25.cry')

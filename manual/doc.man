@@ -45,10 +45,13 @@ Z and Y are in the table of contents.
 #J
       T      document title  *   
       Z      chapter heading *  Content
+ 
       Y      section heading *  Content
-      I      instruction     *  Index indent level 1
-      D      directive       *  Index indent level 2
-      K      keyword         *  Index indent level 3
+
+        I      instruction          *  Index indent level 1
+          D      directive          *  Index indent level 2
+             K      keyword         *  Index indent level 3
+
       P      paragraph
       Q      new line
       ' '    new line

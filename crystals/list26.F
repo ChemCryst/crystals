@@ -2860,8 +2860,9 @@ c      write(123,'(2(i12,f8.5))') jc,store(jc),jd,store(jd)
       A=1.
 C--STORE THE DERIVATIVES
 1150  CONTINUE
+C      write(123,*)'i,iasym',i,iasym
       if ((i .eq. 1).AND.(iasym .eq.1)) then
-c           dont restrain first atom
+C            write(123,*) 'dont restrain first atom'
             a1(jy) = 0.
       else
             a1(jy)=a
@@ -3023,15 +3024,16 @@ C--'ISO' ATOM                                                           CVC01010
      2 *STORE(L1C+1)+A1(6)*STORE(L1C+2)
       IF(I)1600,1600,1500                                               CVC01050
 C--'ANISO' ATOM                                                         CVC01060
-1450  CONTINUE                                                          CVC01070
+1450  CONTINUE             
+C      write(123,*)'i,iasym',i,iasym
       if ((i .eq. 1).AND. (iasym .eq. 1)) then
-c           dont restrain first atom
+C            write(123,*) 'dont restrain first atom'
             do jy = 1,6
               a1(jy) = 0
             enddo
       endif
       CALL XADUIJ                                                       CVC01080
-C--CHECK IF THIS THE FIRST OR SECOND ATOM                               CVC01090
+C--CHECK IF THIS THE FIRST (1) OR SECOND (0)ATOM                               CVC01090
       IF(I)1600,1600,1500                                               CVC01100
 1500  CONTINUE                                                          CVC01110
       JO=JB                                                             CVC01120
