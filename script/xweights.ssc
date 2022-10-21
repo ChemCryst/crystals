@@ -111,10 +111,26 @@ A SCRIPT to assist with the weighting of least squares refinement
 %                COPY 'CONT WEIGHT=   2.0000000 MAX=  10000.0000 ROBUST=Y '
 %                COPY 'CONT TOLER=      6.0000 '
 %                COPY 'END'
-%                COPY '#SCRIPT LIST28-SET-WT'  %% BEWARE IF/WHEN RETURNING TO NORMAL WTS
+%% LIST28-SET-WT sets a small value for the minimum permitted weight, so that
+%% Zero weighted reflections dont appear in the analysis 
+%% BEWARE IF/WHEN RETURNING TO NORMAL WTS
+%                COPY '#SCRIPT LIST28-SET-WT'  
 %                COPY '#WEIGHT'                                                 
 %                COPY 'END'                                                     
 %                COPY '#SCRIPT XANAL'                                           
+
+{S Enable filtering out of zero-weight reflections so that they
+{S are not used in calculations.
+{S NOTE that the number of reflections used in the analysis may
+{S be reduced.
+
+{S Setting sqrt(W) in the Filter Reflections menu to zero forces
+{S the inclusion of zero-weight reflections in the number of 
+{S reflections used, though will not affect the least squares.
+
+{S Other weighting schemes will cause zero-weight reflections to
+{S be included.
+
 %            END BLOCK
 %            BLOCK                                   %4 SHELX%                
  *   SHELX-type Weighting

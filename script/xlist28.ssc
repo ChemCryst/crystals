@@ -1,4 +1,4 @@
-%SCRIPT XLIST28                                                                 
+%SCRIPT XLIST28                                                              
 % VARIABLE LOGICAL LNEWRAT LNEWRHO                                              
 % VARIABLE REAL    NEWRAT  NEWRHO SIGMACUT                                      
 % VARIABLE INTEGER NOMITS  NCONDS  FTYPE NINDCD OMU                             
@@ -887,6 +887,8 @@ as to include more reflections, otherwise the Fc are undefined.
 {S * Done. New List 28 (reflection filter conditions) created:                  
 %    COPY '#SUM L 28'                                                           
 %    COPY 'END'                                                                 
+%    COPY '#SUM L 6'
+%    COPY 'END'                                                                    
 %%                                                                              
 %    COPY '#GENERALEDIT 30'                                                     
 %    COPY 'LOCATE RECORDTYPE=103'                                               
@@ -933,7 +935,7 @@ as to include more reflections, otherwise the Fc are undefined.
 %    OUTPUT                                                                     
 %   END BLOCK                                                                   
 %  END CASE                                                                     
-% END LOOP                                                                      
+% END LOOP  
 %END SCRIPT                                                                     
 {I For F refinement, a default I/u(I) minimum of 3.0 is recommended.            
 %      INSERT 'RATIO=3.0 '                                                      
