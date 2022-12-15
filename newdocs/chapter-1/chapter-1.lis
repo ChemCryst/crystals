@@ -1,0 +1,72 @@
+
+
+
+__________________________________________________________________________________________
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Anchor  defandconv:
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   About CRYSTALS
+### About CRYSTALS
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Anchor  Video Demo:
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   Demonstration Video
+   *** Video Demonstration
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Anchor  Features:
+   *** Features
+
+
+
+__________________________________________________________________________________________
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   Installing CRYSTALS
+### Installation
+
+
+
+__________________________________________________________________________________________
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Anchor  defandconv:
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   Getting Started
+### Getting Started
+   *** Organisation of data
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   Starting CRYSTALS
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Anchor  startup:
+   *** Starting the program
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   Customisisg CRYSTALS
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Anchor  customise:
+   *** Customising CRYSTALS to suit your screen size
+
+
+
+__________________________________________________________________________________________
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Anchor  examples:
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   Worked Examples
+### Worked examples
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Anchor  Cyclo:
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   Cyclo
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   Example - Routine Structure
+   *** Cyclo - a routine structure analysis
+      ^^^ Video demonstration
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Anchor  discussion:	
+      ^^^ Discussion
+      ^^^ Step one: SHELX-style data
+      ^^^ Step two: Initial assessment of the data
+      ^^^ Step three: Structure solution
+      ^^^ Step four: Commence refinement
+      ^^^ Step five: Adding Hydrogen Atoms
+      ^^^ Step six: More refinement & Extinction
+      ^^^ Step seven: Choose a suitable weighting scheme
+      ^^^ Step eight: Validation and CIF archival
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Anchor  tetraphenylene:
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   Tetraphenylene
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   Example - Poor Quality Data
+   *** Poor Quality Data - Tetraphenylene
+      ^^^ Background
+      ^^^ Analysis and solution
+      ^^^ Refinement
+      ^^^ But what of the e.s.d's?
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   COMMAND mode example
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   Example - Introduction to COMMAND mode 
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   NKET Example
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Anchor  nket:
+   *** NKET - Introduction to Command mode
+      ^^^ Background
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Anchor  command: ../_../images/layout.png 
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Anchor  Spacegroup quiz
+   *** Spacegroup Quiz
+

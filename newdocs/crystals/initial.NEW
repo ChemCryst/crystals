@@ -1,0 +1,14 @@
+.. toctree::
+   :maxdepth: 1
+   :caption: Contents:
+
+
+#######
+INITIAL
+#######
+
+Much of this has been simplified and moved to Chapter-3
+
+The file initial.old should be compared with chapter-3/initial.rst
+and the changes copied here for completeness.
+

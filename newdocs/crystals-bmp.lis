@@ -1,0 +1,182 @@
+ Volume in drive C has no label.
+ Volume Serial Number is 6629-1381
+
+ Directory of C:\crystals\b\script
+
+09/08/2019  03:48 pm               238              adpcol16.bmp
+09/08/2019  03:48 pm             1,318 ADPCOL~1.BMP adpcol256.bmp
+09/08/2019  03:48 pm            22,630              ccdclogo.bmp
+09/08/2019  03:48 pm               822              cycle.bmp
+09/08/2019  03:48 pm               822              ed12.bmp
+09/08/2019  03:48 pm               822              ed16.bmp
+09/08/2019  03:48 pm               822              ed5.bmp
+09/08/2019  03:48 pm             1,014              explorer.bmp
+09/08/2019  03:48 pm            18,314              guide1.bmp
+09/08/2019  03:48 pm            18,314              guide2.bmp
+09/08/2019  03:48 pm            18,314              guide3.bmp
+09/08/2019  03:48 pm            49,054              guide4.bmp
+09/08/2019  03:48 pm             3,878              h11.bmp
+09/08/2019  03:48 pm             9,020              h12.bmp
+09/08/2019  03:48 pm             7,478              h13.bmp
+09/08/2019  03:48 pm             9,020              h22.bmp
+09/08/2019  03:48 pm             7,478              h23.bmp
+09/08/2019  03:48 pm             9,020              h33.bmp
+09/08/2019  03:48 pm             2,936              hbond.bmp
+09/08/2019  03:48 pm            11,078              hphen.bmp
+09/08/2019  03:48 pm               774              mercury.bmp
+09/08/2019  03:48 pm           196,078 MONOCL~1.BMP monoclinic.bmp
+09/08/2019  03:48 pm               822              nocycle.bmp
+09/08/2019  03:48 pm             1,078              notepad.bmp
+09/08/2019  03:48 pm            71,266              polaroid.bmp
+09/08/2019  03:48 pm            26,766              prout.bmp
+09/08/2019  03:48 pm               822              refine.bmp
+09/08/2019  03:48 pm            88,318              sysabs1.bmp
+09/08/2019  03:48 pm            89,218              sysabs2.bmp
+09/08/2019  03:48 pm           181,080              sysabs3.bmp
+09/08/2019  03:48 pm           181,080              sysabs-3.bmp
+09/08/2019  03:48 pm           127,618 TETRAG~1.BMP tetragonal.bmp
+09/08/2019  03:48 pm               774              tl_delh.bmp
+09/08/2019  03:48 pm               774              tl_delq.bmp
+09/08/2019  03:48 pm               774              tl_perh.bmp
+09/08/2019  03:48 pm               774              tool_adp.bmp
+09/08/2019  03:48 pm               774 TOOL_B~1.BMP tool_ball.bmp
+09/08/2019  03:48 pm               774 TOOL_G~1.BMP tool_guid.bmp
+09/08/2019  03:48 pm             1,078 TOOL_H~1.BMP tool_help.bmp
+09/08/2019  03:48 pm             1,080 TOOL_N~1.BMP tool_norm.bmp
+09/08/2019  03:48 pm             1,078              tool_opt.bmp
+09/08/2019  03:48 pm               774 TOOL_P~1.BMP tool_poly.bmp
+09/08/2019  03:48 pm               774 TOOL_R~1.BMP tool_rect.bmp
+09/08/2019  03:48 pm             1,078              tool_rot.bmp
+09/08/2019  03:48 pm               774 TOOL_S~1.BMP tool_showh.bmp
+09/08/2019  03:48 pm               774 TOOL_U~1.BMP tool_unsl.bmp
+09/08/2019  03:48 pm             1,080 TOOL_Z~1.BMP tool_zoom.bmp
+09/08/2019  03:48 pm               774              toolcam.bmp
+09/08/2019  03:48 pm               774              toolfour.bmp
+09/08/2019  03:48 pm               822              undo.bmp
+09/08/2019  03:48 pm            27,094              watkin.bmp
+09/08/2019  03:48 pm            55,914              wwtbct1.bmp
+09/08/2019  03:48 pm            69,514 WWTBLO~1.BMP wwtblogot.bmp
+              53 File(s)      1,325,338 bytes
+
+ Directory of C:\crystals\bin
+
+06/06/2019  10:40 am            52,574 INSTIM~1.BMP instimage.bmp
+               1 File(s)         52,574 bytes
+
+ Directory of C:\crystals\gui
+
+06/06/2019  10:40 am           254,278              image3.bmp
+               1 File(s)        254,278 bytes
+
+ Directory of C:\crystals\newdocs\b\html\_images
+
+20/06/2019  11:23 am               822              ed12.bmp
+20/06/2019  11:23 am               822              ed16.bmp
+20/06/2019  11:23 am               822              ed5.bmp
+20/06/2019  11:23 am               774              mercury.bmp
+20/06/2019  11:23 am             1,078              notepad.bmp
+20/06/2019  11:23 am               822              refine.bmp
+20/06/2019  11:23 am               774              tl_delh.bmp
+20/06/2019  11:23 am               774              tl_delq.bmp
+20/06/2019  11:23 am               774              tl_perh.bmp
+20/06/2019  11:23 am               774 TOOL_G~1.BMP tool_guid.bmp
+20/06/2019  11:23 am             1,080 TOOL_N~1.BMP tool_norm.bmp
+20/06/2019  11:23 am               774              toolcam.bmp
+20/06/2019  11:23 am               774              toolfour.bmp
+20/06/2019  11:23 am               822              undo.bmp
+              14 File(s)         11,686 bytes
+
+ Directory of C:\crystals\newdocs\b\Latex
+
+20/06/2019  11:23 am               822              ed12.bmp
+20/06/2019  11:23 am               822              ed16.bmp
+20/06/2019  11:23 am               822              ed5.bmp
+20/06/2019  11:23 am               774              mercury.bmp
+20/06/2019  11:23 am             1,078              notepad.bmp
+20/06/2019  11:23 am               822              refine.bmp
+20/06/2019  11:23 am               774              tl_delh.bmp
+20/06/2019  11:23 am               774              tl_delq.bmp
+20/06/2019  11:23 am               774              tl_perh.bmp
+20/06/2019  11:23 am               774 TOOL_G~1.BMP tool_guid.bmp
+20/06/2019  11:23 am             1,080 TOOL_N~1.BMP tool_norm.bmp
+20/06/2019  11:23 am               774              toolcam.bmp
+20/06/2019  11:23 am               774              toolfour.bmp
+20/06/2019  11:23 am               822              undo.bmp
+              14 File(s)         11,686 bytes
+
+ Directory of C:\crystals\precomp\all\script
+
+06/06/2019  10:40 am               238              adpcol16.bmp
+06/06/2019  10:40 am             1,318 ADPCOL~1.BMP adpcol256.bmp
+06/06/2019  10:40 am            22,630              ccdclogo.bmp
+06/06/2019  10:40 am               822              cycle.bmp
+06/06/2019  10:40 am               822              ed12.bmp
+06/06/2019  10:40 am               822              ed16.bmp
+06/06/2019  10:40 am               822              ed5.bmp
+06/06/2019  10:40 am             1,014              explorer.bmp
+06/06/2019  10:40 am            18,314              guide1.bmp
+06/06/2019  10:40 am            18,314              guide2.bmp
+06/06/2019  10:40 am            18,314              guide3.bmp
+06/06/2019  10:40 am            49,054              guide4.bmp
+06/06/2019  10:40 am             3,878              h11.bmp
+06/06/2019  10:40 am             9,020              h12.bmp
+06/06/2019  10:40 am             7,478              h13.bmp
+06/06/2019  10:40 am             9,020              h22.bmp
+06/06/2019  10:40 am             7,478              h23.bmp
+06/06/2019  10:40 am             9,020              h33.bmp
+06/06/2019  10:40 am             2,936              hbond.bmp
+06/06/2019  10:40 am            11,078              hphen.bmp
+06/06/2019  10:40 am               774              mercury.bmp
+06/06/2019  10:40 am           196,078 MONOCL~1.BMP monoclinic.bmp
+06/06/2019  10:40 am               822              nocycle.bmp
+06/06/2019  10:40 am             1,078              notepad.bmp
+06/06/2019  10:40 am            71,266              polaroid.bmp
+06/06/2019  10:40 am            26,766              prout.bmp
+06/06/2019  10:40 am               822              refine.bmp
+06/06/2019  10:40 am            88,318              sysabs1.bmp
+06/06/2019  10:40 am            89,218              sysabs2.bmp
+06/06/2019  10:40 am           181,080              sysabs3.bmp
+06/06/2019  10:40 am           181,080              sysabs-3.bmp
+06/06/2019  10:40 am           127,618 TETRAG~1.BMP tetragonal.bmp
+06/06/2019  10:40 am               774              tl_delh.bmp
+06/06/2019  10:40 am               774              tl_delq.bmp
+06/06/2019  10:40 am               774              tl_perh.bmp
+06/06/2019  10:40 am               774              tool_adp.bmp
+06/06/2019  10:40 am               774 TOOL_B~1.BMP tool_ball.bmp
+06/06/2019  10:40 am               774 TOOL_G~1.BMP tool_guid.bmp
+06/06/2019  10:40 am             1,078 TOOL_H~1.BMP tool_help.bmp
+06/06/2019  10:40 am             1,080 TOOL_N~1.BMP tool_norm.bmp
+06/06/2019  10:40 am             1,078              tool_opt.bmp
+06/06/2019  10:40 am               774 TOOL_P~1.BMP tool_poly.bmp
+06/06/2019  10:40 am               774 TOOL_R~1.BMP tool_rect.bmp
+06/06/2019  10:40 am             1,078              tool_rot.bmp
+06/06/2019  10:40 am               774 TOOL_S~1.BMP tool_showh.bmp
+06/06/2019  10:40 am               774 TOOL_U~1.BMP tool_unsl.bmp
+06/06/2019  10:40 am             1,080 TOOL_Z~1.BMP tool_zoom.bmp
+06/06/2019  10:40 am               774              toolcam.bmp
+06/06/2019  10:40 am               774              toolfour.bmp
+06/06/2019  10:40 am               822              undo.bmp
+06/06/2019  10:40 am            27,094              watkin.bmp
+06/06/2019  10:40 am            55,914              wwtbct1.bmp
+06/06/2019  10:40 am            69,514 WWTBLO~1.BMP wwtblogot.bmp
+              53 File(s)      1,325,338 bytes
+
+ Directory of C:\crystals\precomp\GID\script
+
+06/06/2019  10:40 am               774              ed12.bmp
+06/06/2019  10:40 am               774              ed16.bmp
+06/06/2019  10:40 am               774              ed5.bmp
+06/06/2019  10:40 am               774              explorer.bmp
+06/06/2019  10:40 am               774              notepad.bmp
+06/06/2019  10:40 am               774              refine.bmp
+06/06/2019  10:40 am               774 TOOL_H~1.BMP tool_help.bmp
+06/06/2019  10:40 am               774 TOOL_N~1.BMP tool_norm.bmp
+06/06/2019  10:40 am             1,334              tool_opt.bmp
+06/06/2019  10:40 am               774              tool_rot.bmp
+06/06/2019  10:40 am               774 TOOL_Z~1.BMP tool_zoom.bmp
+06/06/2019  10:40 am               774              undo.bmp
+              12 File(s)          9,848 bytes
+
+     Total Files Listed:
+             148 File(s)      2,990,748 bytes
+               0 Dir(s)  104,030,973,952 bytes free

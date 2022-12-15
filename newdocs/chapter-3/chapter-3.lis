@@ -1,0 +1,183 @@
+
+
+
+__________________________________________________________________________________________
+### Crystals Workflow
+   *** Background to structure analysis
+      ^^^ Principal Stages of analysis
+      ^^^ Preparations for the analysis
+            --- 
+   *** Routine Analysis using the Guide
+            --- 
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Anchor  reflection data format:
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Anchor  refdatform:
+   *** Reflection Data
+            --- 
+   *** 
+
+
+
+__________________________________________________________________________________________
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   Command Line Overview
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Anchor  command overview:
+### Overview of the COMMAND LINE
+            --- 
+   *** 
+            --- 
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   Basic Data Input
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Anchor  initialdinput:
+   *** Scope of the Initial Data Input section.
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   QUICKSTART
+      ^^^ Abbreviated startup command  -  QUICKSTART
+         === \\QUICKSTART
+            ---    
+      ^^^ This section describes the LISTS which may be used to overwrite information input via 
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   LIST 1
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   Cell parameters
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Anchor  LST01:
+      ^^^ The cell parameters  -  LIST 1
+         === \\LIST 1
+         === \\PRINT 1
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   Cell errors
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   List 31
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Anchor  LST31:
+      ^^^ The unit cell parameter errors  -  LIST 31
+         === \\LIST 31
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   Space group input
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   SPACEGROUP
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Anchor  spacegroup:
+      ^^^ Space Group input - \\SPACEGROUP
+         === \\SPACEGROUP
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   LIST 2
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   Symmetry data
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Anchor  LST02:
+      ^^^ Symmetry Operators -  LIST 2
+         === \\LIST 2
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   Molecular composition
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   COMPOSITION
+      ^^^ Molecular composition \\COMPOSITION
+         === \\COMPOSITION
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   LIST 3
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   Scattering factors
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Anchor  LST03:
+      ^^^ Atomic scattering factors  -  \\LIST 3
+         === \\LIST 3
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   LIST 13
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   Experimental details
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Anchor  LST13:
+      ^^^ The crystal and data collection details  -  LIST 13
+         === \\LIST 13
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   LIST 29
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   Element properties
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Anchor  LST29:
+      ^^^ Elemental Properties  -  LIST 29
+         === \\LIST 29
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   LIST 30
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   General crystallographic data
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Anchor  LST30:
+      ^^^ General Crystallographic Data - LIST 30
+         === \\LIST 30
+            --- 
+   *** This may be the input by hand, i.e. atomic coordinates typed directly into CRYSTALS, or 
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Anchor  \Peaks:
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   \Peaks 
+      ^^^ 1. \\Peaks
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   \Collect
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   \Regroup
+      ^^^ 2. \\Collect & \\Regroup
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   \Edit
+      ^^^ 3. \\Edit
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   Geometry - Model Building
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Anchor  geometry-1:
+      ^^^ 4. \\Geometry
+   *** Refinement
+      ^^^ 1. Structure factor control list
+      ^^^ 2. Refinement definition
+      ^^^ 3. Special positions
+      ^^^ 4. Treatment of reflections
+      ^^^ 5. Weighting the reflections 
+      ^^^ 6. Restraints
+      ^^^ 7. Least Squares
+   *** Seeing the structure
+      ^^^ Listing the coordinates
+      ^^^ Graphics
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   Geometry Calculations
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Anchor  geometry-2: 
+   *** Molecular geometry
+      ^^^ Distances and angles
+      ^^^ Best planes, lines and dihedral angles
+      ^^^ Torsion angles
+      ^^^ Thermal analysis
+   *** Publication listings
+
+
+
+__________________________________________________________________________________________
+### Atomic and Structural Parameters
+   *** The Model
+      ^^^ \\LIST 5 - Atoms and other Parameters
+      ^^^ \\EDIT - Editing structural parameters
+      ^^^ \\REGROUP - Reorganisation of lists 5 and 10
+      ^^^ \\COLLECT - Repositioning of atoms
+      ^^^ \\PEAKS - Processing of a peaks list
+      ^^^ \\ORIGIN - Shifting the molecule to a permitted alternative origin
+      ^^^ \\HYDROGENS - Hydrogen placing
+      ^^^ \\PERHYDRO - Perhydrogenation
+      ^^^ Hydrogen re-numbering - \\HNAME
+      ^^^ \\REGULARISE - Regularisation of atomic groups
+
+
+
+__________________________________________________________________________________________
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   Fourier routines
+### Electron Density Maps
+   *** Seeing Electrons
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Anchor  contour:
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Index   3d-contour
+      ^^^ \\LIST 14 - Input of the Fourier section limits
+      ^^^ \\FLIMIT - Compute Fourier limits from the symmetry
+      ^^^ \\FOURIER - Fourier calculations
+         === Difference Map sample output
+      ^^^ \\LIST 10 - The Peaks list
+      ^^^ \\PEAKS - Elimination of duplicated entries in LISTS 5 and 10
+      ^^^ Slant fourier calculations  -  \\SLANT
+
+
+
+__________________________________________________________________________________________
+### Structure Factors and Least Squares
+   *** Refinement
+      ^^^ Time and space for refinement
+      ^^^ Refinement using the GUIDE
+      ^^^ Large Structures - Blocked Matrix Refinement
+      ^^^ F or |f2| refinement?
+      ^^^ R-Factor and minimisation function definitions
+      ^^^ Hydrogen Atom Refinement
+      ^^^ Special positions
+      ^^^ Occupation Factor, Occupancy
+      ^^^ Tied parameters
+      ^^^ Rigid groups refinement
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Anchor  setting up a refinement:
+      ^^^ \\LIST 12 - Setting up a Refinement
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Anchor  implicit and explicit:
+         === IMPLICIT AND EXPLICIT PARAMETERS
+         === UNTIL Sequence
+         === Overall parameter refinement
+### The LISTs used in Refinement
+   *** \\LIST 23 - Structure factor calculation control list
+   *** \\LIST 12 - Refinement directives
+   *** \\LIST 22 - Processing of LIST 12
+   *** \\LIST 16 - Restraints
+   *** \\LIST 26 - Processing of LIST 16
+   *** \\LIST 17 - The special position restraints
+   *** \\CHECK - Checking restraints
+      ^^^ \\CHECK HIGH
+   *** \\LIST 4 - Weighting schemes for refinement
+ .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . Anchor  anaplot:
+      ^^^ Weighting for refinement against Fo
+      ^^^ Weighting for refinement against Fsq
+      ^^^ \\LIST 28 - Reflection Filters
+      ^^^ \\SFLS - Structure Factor Least Squares Calculations
+      ^^^ Unstable refinements
+      ^^^ \\ANALYSE - Analysis of residuals
+
