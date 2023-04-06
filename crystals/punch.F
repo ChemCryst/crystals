@@ -1920,9 +1920,9 @@ C
       ENDIF
       GOTO 1840
 1850  CONTINUE
-      WRITE(NCFPU1,'(''# No of reflections output = '',I6)') IDREF
-      WRITE(NCFPU1,'(''# No of reflections in LSQ = '',I6)') NINCL
-      WRITE(NCFPU1,'(''# No of reflections excluded = '',I6)') IDREF-NINCL
+      WRITE(NCFPU1,'(''# No of reflections output = '',I8)') IDREF
+      WRITE(NCFPU1,'(''# No of reflections in LSQ = '',I8)') NINCL
+      WRITE(NCFPU1,'(''# No of reflections excluded = '',I8)') IDREF-NINCL
       WRITE(NCFPU1,'(
      1 ''# Reflections can be excluded for several reasons'')')
 C      WRITE(NCFPU1,'(''# Ratio Unique/Expected Reflections ='',F6.3)')
@@ -2298,8 +2298,8 @@ c todo Jul2020 if k=4 (Fo), check if it will fit F8
 c      I = -512
 c      WRITE(NCPU,'(I4)')I
       WRITE(NCPU,'(3I4/)')0,0,0        !July 2020, for PLATON
-      WRITE(NCPU,'(A,I6,A)') '# ', NREF, ' reflections output'
-      WRITE(CMON,'(a,I6,a)') '  ', nref, ' reflections output'
+      WRITE(NCPU,'(A,I8,A)') '# ', NREF, ' reflections output'
+      WRITE(CMON,'(a,I8,a)') '  ', nref, ' reflections output'
       CALL XPRVDU(NCVDU, 1,0)
       RETURN
 C

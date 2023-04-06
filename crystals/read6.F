@@ -1320,7 +1320,9 @@ c if there is no serial number, insert a suitable value. This enables us to corr
 c reflection listed in the MERGE output with the original in the input HKLI file.
          if(store(m6+19) .le. zero) then
             serial=serial+1.
-            store(m6+19) = serial
+            if (serial.gt. 100000.0) serial = 1.0
+            store(m6+19) = serial            
+      write(123,'(f8.0)') store(m6+19)
          endif
 C--CHECK IF WE SHOULD COMPUTE THE A-PART AND B-PART FROM /FC/ AND PHASE
          IF (KD) 4450,4400,4400
@@ -1455,7 +1457,7 @@ C--TERMINATE THE OUTPUT OF THE LIST
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
 c      WRITE (NCAWU,'(A)') trim(CMON(1))
-5100  FORMAT (1X,I7,' reflections accepted',5X,I7,' reflections rejected
+5100  FORMAT (1X,I8,' reflections accepted',5X,I7,' reflections rejected
      1')
 C----- ONLY UPDATE LIST 30 FOR LIST 6 TYPE INPUT
       IF (IULN .EQ. 6) THEN

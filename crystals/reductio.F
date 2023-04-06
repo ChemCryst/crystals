@@ -388,7 +388,7 @@ C -- TERMINATION MESSAGES
       WRITE ( CMON , 2600) N6W, N
       CALL XPRVDU(NCVDU, 1,0)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) trim(CMON(1))
-2600  FORMAT ( 1X , I6 , ' reflections accepted' , 10X , I6 ,
+2600  FORMAT ( 1X , I8 , ' reflections accepted' , 10X , I6 ,
      2 ' reflections rejected' )
 C
 2610  CONTINUE
@@ -755,7 +755,7 @@ C
       WRITE ( CMON , 1800 ) N6W , N
       CALL XPRVDU(NCVDU, 1,0)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU ,'(A)') trim(CMON(1))
-1800  FORMAT ( 1X , I6 , ' reflections accepted' , 10X , I6 ,
+1800  FORMAT ( 1X , I8 , ' reflections accepted' , 10X , I6 ,
      2 ' reflections rejected' )
 C
 CDJWAPR99 UPDATE LIST 30
@@ -1662,16 +1662,16 @@ C--PRINT THE REFLECTION TOTALS
       IF (ISSPRT .EQ. 0)
      1 WRITE(NCWU,3900)N6RTMP,N6CTMP,N6W,N6DEAD,NPRINT,APRINT
 3900   FORMAT(
-     * I6,' Contributors input       ',
-     2 I6,' Contributors rejected'/
-     3 I6,' Merged reflections output',
-     4 I6,' Merged reflections rejected'/
-     5 I6,' Contributors deviating from',
+     * I8,' Contributors input       ',
+     2 I8,' Contributors rejected'/
+     3 I8,' Merged reflections output',
+     4 I8,' Merged reflections rejected'/
+     5 I8,' Contributors deviating from',
      6 ' the average by more than ',
      7 F5.1, 'e.s.ds' )
       WRITE ( CMON , 3905 ) N6W , N6DEAD
       CALL XPRVDU(NCVDU, 1,0)
-3905  FORMAT ( 1X , I6 , ' merged reflections output' , 5X , I6 ,
+3905  FORMAT ( 1X , I8 , ' merged reflections output' , 5X , I6 ,
      2 ' merged reflections rejected' )
       WRITE ( CMON , 4048) N3SIG, PC3SIG
       CALL XPRVDU(NCVDU, 1,0)

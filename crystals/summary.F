@@ -2426,8 +2426,8 @@ c      write(123,*) 'sum L 6', sigtop, sigbottom, rsigm
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1215 ) IULN, N6D , N6ACC
       WRITE ( CMON , 1215 ) IULN, N6D, N6ACC
       CALL XPRVDU(NCVDU, 1,0)
-1215  FORMAT ( 1X , 'List 'I3,' contains ' , I6 , ' reflections' ,
-     1 ' of which ' , I6 , ' are accepted by LIST 28')
+1215  FORMAT ( 1X , 'List 'I3,' contains ' , I8 , ' reflections' ,
+     1 ' of which ' , I8 , ' are accepted by LIST 28')
 C
 C
 C -- PRINT THE R VALUE ETC.
