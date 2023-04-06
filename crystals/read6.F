@@ -1321,8 +1321,9 @@ c reflection listed in the MERGE output with the original in the input HKLI file
          if(store(m6+19) .le. zero) then
             serial=serial+1.
             if (serial.gt. 100000.0) serial = 1.0
-            store(m6+19) = serial            
-      write(123,'(f8.0)') store(m6+19)
+            store(m6+19) = serial 
+         else
+            if store(m6+19).gt.100000.0) store(m6+19)=100000.0              
          endif
 C--CHECK IF WE SHOULD COMPUTE THE A-PART AND B-PART FROM /FC/ AND PHASE
          IF (KD) 4450,4400,4400
