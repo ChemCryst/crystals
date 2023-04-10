@@ -1,0 +1,82 @@
+#TITLE  TORTURE TEST FOR THE LEXICAL ANALYZER
+#USE SGD464.IN
+# STRUCTURE FROM JAMES.THOMSON@CHEM.OX.AC.UK
+#LIST 1
+#LIST 20
+#LIST 30
+#LIST 1
+#LIST 2
+#LIST 3
+#
+# PUNCHED ON 26/05/17 AT 11:46:38
+#
+#LIST      5
+#
+# PUNCHED ON 26/05/17 AT 11:46:41
+#
+#LIST      6
+#LIST 13
+#LIST 28
+#LIST      6
+ The updated reflections are now on UNIT 53
+
+
+
+     5050 reflections accepted           0 reflections rejected
+# REMOVE SPACE AFTER HASH TO ACTIVATE NEXT LINE
+# USE LAST
+#
+# PUNCHED ON 26/05/17 AT 11:46:46
+#
+#LIST     12
+# REMOVE SPACE AFTER HASH TO ACTIVATE NEXT LINE
+# USE LAST
+#BONDCALC
+#LIST 29
+#BONDCALC
+# SPACES
+#LIST 16
+Bonds: Update required - There is no list 41
+-- Original input to lexical analyzer:
+DIST 0.0,  1.0=MEAN CL(1) TO C(2),C(2)TO CL(3  ) , CL(  3  ) TO CL(1)
+DIST 0.0 ,1.0 = MEAN C -- C C==C C-5- C
+-- Modified input to lexical analyzer:
+DIST 0.0,  1.0=MEAN CL(1) TO C(2),C(2)TO CL(3  ) , CL(  3  ) TO CL(1)
+DIST 0.0 ,1.0 = MEAN C(24) TO C(23), C(17) TO C(16), C(14) TO C(13), C(13) TO C(6), C(11) TO C(9), C(9) TO C(7), C(7) TO C(6) C-5-C
+# ATOM SPECIFICATION
+#LIST 16
+-- Original input to lexical analyzer:
+UQISO 1.0 CL(RESI=1)
+UEQIV 1.0 C(*)
+-- Modified input to lexical analyzer:
+UQISO 1.0 CL(1) CL(3) CL(4)
+UEQIV 1.0 C(2) C(6) C(7) C(9) C(11) C(13) C(14) C(16) C(17) C(18) C(19) C(20) C(21) C(22) C(23) C(24) C(25) C(26) C(27) C(28) C(29)
+# RIGU RESTRAINT
+#LIST 16
+-- Original input to lexical analyzer:
+XRIGU C(*)
+XRIGU 0.04 0.0 C(*)
+-- Modified input to lexical analyzer:
+URIGU 0.004 0.004 19 C(29) TO C(24), C(29) TO C(28), C(28) TO C(27), C(27) TO C(26), C(26) TO C(25), C(25) TO C(24), C(24) TO C(23), C(22) TO C(21), C(22) TO C(17), C(21) TO C(20), C(20) TO C(19), C(19) TO C(18), C(18) TO C(17), C(17) TO C(16), C(14) TO C(13), C(13) TO C(6), C(11) TO C(9), C(9) TO C(7), C(7) TO C(6), C(29) TO C(25), C(29) TO C(23), C(29) TO C(27), C(28) TO C(26), C(27) TO C(25), C(26) TO C(24), C(25) TO C(23), C(23) TO C(6), C(21) TO C(17), C(22) TO C(20), C(22) TO C(18), C(22) TO C(16), C(21) TO C(19), C(20) TO C(18), C(19) TO C(17), C(18) TO C(16), C(16) TO C(13), C(16) TO C(11), C(14) TO C(6), C(13) TO C(11), C(13) TO C(7), C(11) TO C(7), C(9) TO C(6)
+URIGU 0.04 0.0 19 C(29) TO C(24), C(29) TO C(28), C(28) TO C(27), C(27) TO C(26), C(26) TO C(25), C(25) TO C(24), C(24) TO C(23), C(22) TO C(21), C(22) TO C(17), C(21) TO C(20), C(20) TO C(19), C(19) TO C(18), C(18) TO C(17), C(17) TO C(16), C(14) TO C(13), C(13) TO C(6), C(11) TO C(9), C(9) TO C(7), C(7) TO C(6)
+# VARIABLES
+#LIST 16
+-- Original input to lexical analyzer:
+DEFINE A=1.0
+DEFINE B = 0.01
+DIST $A,$B=CL(1)TO CL(3)
+DIST $A , $B = CL(1) TO CL(3)
+-- Modified input to lexical analyzer:
+DEFINE A=1.0
+DEFINE B = 0.01
+DIST 1.000000 , .010000 = CL(1) TO CL(3)
+DIST 1.000000 , .010000 = CL(1) TO CL(3)
+# INVALID ATOM
+#LIST 16
+Warning: UQISO 0.01 C(128) C(2, 128)
+------------------^^^^^^^
+Warning: atom C(128) is not present in the model
+#END
+
+
+          : Job ends ok       with     0 warnings and     0 errors

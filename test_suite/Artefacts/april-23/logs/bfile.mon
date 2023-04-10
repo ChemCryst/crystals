@@ -1,0 +1,350 @@
+ {I To input initial data (cell, space group, etc.) use the X-ray Data menu.
+
+  For getting started, reporting bugs etc. see the CRYSTALS Wiki
+  {&http://www.xtl.ox.ac.uk/wiki.html{& or check the manuals
+  {&"crysdir:manual/primer-1.html"{& and FAQs {&"crysdir:manual/faq-1.html"{&
+  Send problems or feedback to {&mailto:david.watkin@chem.ox.ac.uk{&.
+  ===================================================================
+ {I Easily imported data formats: INS/RES & HKL, CAD4, DIP, Kappa CCD cif.
+ {R Run CRYSTALS in a separate folder for the each structure studied.
+ {I To import SHELX INS/HKL files, choose X-ray Data->Import SHELX file.
+ {I For Kappa CCD data choose X-ray Data->Pre-process->Run KCCDin.
+ {I All data is collected and stored in crfilev2.dsc in the current folder.
+
+ {R     Click "Guide" on the toolbar (or "Refinement->The Guide"
+ {R          in the menu), for advice on what to do next.
+
+       29 reflections accepted           0 reflections rejected
+
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+        29 reflections output
+
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+       29 reflections accepted               0 reflections rejected
+ Rsigma =  0.000 for       29 input reflections
+
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+ After   1 pass        29 reflection(s) have been sorted
+
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
+   0.0 -  0.5     0  0     0    29 -
+   0.5 -  1.0     0  0     0    29 -
+   1.0 -  1.5     0  0     0    29 -
+   1.5 -  2.0     0  0     0    29 -
+   2.0 -  2.5     0  0     0    29 -
+   2.5 -  3.0     0  0     0    29 -
+   3.0 -  3.5     0  0     0    29 -
+   3.5 -  4.0     0  0     0    29 -
+   4.0 -  4.5     0  0     0    29 -
+   4.5 -  5.0     0  0     0    29 -
+   5.0 -  5.5     0  0     0    29 -
+   5.5 -  6.0     0  0     0    29 -
+   6.0 -  6.5     0  0     0    29 -
+   6.5 -  7.0     0  0     0    29 -
+   7.0 -  7.5     0  0     0    29 -
+   7.5 -  8.0     0  0     0    29 -
+   8.0 -  8.5     0  0     0    29 -
+   8.5 -  9.0     0  0     0    29 -
+   9.0 -  9.5     0  0     0    29 -
+   9.5 - 10.0     0  0     0    29 -
+  10.5 - 50.0    29100    29     0 -----------------------------------------
+       29 merged reflections output          0 merged reflections rejected
+    29 Reflections greater than 3 sigma(i), 100.000 percent of data
+ Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.000
+ Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.000
+ Rint for I>10sigma,  10sigma>I>2sigma,    I<2sigma
+               0.000           0.000          0.000
+ Insufficient number of duplicated measurements
+
+
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+       29 reflections accepted           0 reflections rejected
+
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+
+       46 reflections accepted           1 reflections rejected
+Upating List 13 for twinned data
+
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+        46 reflections output
+
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+ After   1 pass        46 reflection(s) have been sorted
+
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+        46 reflections output
+
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+                           Processing reflections
+        46 reflections output
+
+
+          : Job ends ok       with     0 warnings and     0 errors
