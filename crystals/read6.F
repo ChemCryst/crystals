@@ -1,6 +1,6 @@
 C $Log: read6.F,v $
 C Revision 1.40  2013/12/06 12:51:31  djw
-C Oops.
+C Oops. 
 C
 C Revision 1.39  2013/12/06 12:44:52  djw
 C Problem spooed by Arie.  RATIO was rouinded to 1 sig fig during packing with JCODE, so that filtering
