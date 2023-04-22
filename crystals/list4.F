@@ -2336,7 +2336,7 @@ C
      1   (IHMAP2(J,K),J=1,IFMAX)
 7020    FORMAT(F6.2,25I6)
         ENDDO
-        write(NCPU,'(/)')
+        write(NCWU,'(//)')
       ENDIF MAPOUT
 C
 C
@@ -3354,6 +3354,10 @@ C----- CORRELATION COEFFICIENT ACCUMULATOR
       DIMENSION ACOEF(6)
 C
 C     3D analysis. depth x Fo x Resolution
+C      1=No
+c      2 = sum(fo)
+C      3 = sum(fc)
+c      4 = sum 2*(fo-fc)/(fo+fc)
       COMMON /XHMAP/ HMAP(4,22,25), fint(22), resint(25),IMAP,
      1 IFMAX, IRESMAX
 C
@@ -3535,7 +3539,7 @@ C--COMPUTE THE MAX. VALUE OF SIN(THETA)/LAMBDA
        hmap(1,lfr,lrr)=hmap(1,lfr,lrr)+1
        hmap(2,lfr,lrr)=hmap(2,lfr,lrr)+FO
        hmap(3,lfr,lrr)=hmap(3,lfr,lrr)+FC
-       hmap(4,lfr,lrr)=hmap(4,lfr,lrr)+FO-FC
+       hmap(4,lfr,lrr)=hmap(4,lfr,lrr)+2.*(FO-FC)/(FO+FC)
       ENDIF
 C--TOTALS FOR THE DIFFERENT PARITY GROUPS
       L=ICLS

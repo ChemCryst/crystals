@@ -30,12 +30,12 @@ Bonds: Update required - There is no list 41
 
 
 
-     270 reflections accepted           0 reflections rejected
+      270 reflections accepted           0 reflections rejected
 Upating List 13 for twinned data
 #LIST 25
 #SORT
 #REORDER
- After   1 pass     270 reflection(s) have been sorted
+ After   1 pass       270 reflection(s) have been sorted
  The updated reflections are now on UNIT 52
 #LIST 12
  The updated reflections are now on UNIT 53
@@ -881,7 +881,7 @@ ___________
 The slope and correlation coefficient should be small
 [11]  Slope =       -0.0  Intercept =       10  C-Coef=      -0.0
 
- Agreement analysis on scale of Fo, Scale =   9.91
+ Agreement analysis on scale of Fo, Scale =   9.91 Fo=sign(Fo^2) x sqrt(abs(Fo^2))
  Delta = Fo-Fc
 
 
@@ -1064,7 +1064,7 @@ The slope and correlation coefficient should be small
 The slope and correlation coefficient should be small
 [11]  Slope =       -0.0  Intercept =       10  C-Coef=      -0.0
 
- Agreement analysis on scale of Fo, Scale =   9.91
+ Agreement analysis on scale of Fo, Scale =   9.91 Fo=sign(Fo^2) x sqrt(abs(Fo^2))
  Delta = Fo-Fc
 
 

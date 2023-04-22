@@ -52,7 +52,7 @@ Space group symbol is   P    1    21/C 1
 
 
 
-    3913 reflections accepted           0 reflections rejected
+     3913 reflections accepted           0 reflections rejected
 #CLOSE HKLI
 #SYSTEMATIC
 #LIST 28
@@ -199,13 +199,13 @@ Fo/sigma range         -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 rms (Fo/sigma)    1.991   0.581   1.370   2.828   5.875  12.295  44.714
 Number               29      14      14       9      11       7      35
 
-   3794 reflections accepted             119 reflections rejected
+     3794 reflections accepted             119 reflections rejected
 
  Rsigma =  0.043 for     3794 input reflections
 
 Rsigma = sum (sigma(I) / sum (I)
 #SORT
- After   1 pass    3794 reflection(s) have been sorted
+ After   1 pass      3794 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
 #MERGE
 
@@ -326,9 +326,9 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
 
-  3794 Contributors input            0 Contributors rejected
-  2016 Merged reflections output     0 Merged reflections rejected
-     0 Contributors deviating from the average by more than   3.0e.s.ds
+    3794 Contributors input              0 Contributors rejected
+    2016 Merged reflections output       0 Merged reflections rejected
+       0 Contributors deviating from the average by more than   3.0e.s.ds
   1857 Reflections greater than 3 sigma(i),  92.113 percent of data
  Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.018
  Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.013
@@ -338,7 +338,7 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
 
-    2016 reflections accepted           0 reflections rejected
+     2016 reflections accepted           0 reflections rejected
 #LIST 23
 #LIST 4
 #WEIGHT
@@ -3529,7 +3529,7 @@ value in the case of a highly skew unit cell
 
 
 
-    2016 reflections accepted           0 reflections rejected
+     2016 reflections accepted           0 reflections rejected
 Upating List 13 for twinned data
 #
 #                      FIRST EXPERIMENT. FSQ, NOANOM
@@ -9346,7 +9346,7 @@ All cycle   Min function          0.0           0.77E+04       0.10E+16
 The slope and correlation coefficient should be small
 [11]  Slope =        0.0  Intercept =       00  C-Coef=       0.0
 
- Agreement analysis on scale of Fo, Scale =   4.73
+ Agreement analysis on scale of Fo, Scale =   4.73 Fo=sign(Fo^2) x sqrt(abs(Fo^2))
  Delta = Fo^2-Fc^2
 
 
@@ -19035,7 +19035,7 @@ All cycle   Rw                    0.0            3.5           0.10E+03
 The slope and correlation coefficient should be small
 [11]  Slope =       -0.0  Intercept =       10  C-Coef=      -0.1
 
- Agreement analysis on scale of Fo, Scale =   4.63
+ Agreement analysis on scale of Fo, Scale =   4.63 Fo=sign(Fo^2) x sqrt(abs(Fo^2))
  Delta = Fo-Fc
 
 
@@ -28203,7 +28203,7 @@ All cycle   Min function          0.0           0.66E+04       0.10E+16
 The slope and correlation coefficient should be small
 [11]  Slope =        0.0  Intercept =       00  C-Coef=       0.0
 
- Agreement analysis on scale of Fo, Scale =   4.65
+ Agreement analysis on scale of Fo, Scale =   4.65 Fo=sign(Fo^2) x sqrt(abs(Fo^2))
  Delta = Fo^2-Fc^2
 
 
@@ -37831,7 +37831,7 @@ All cycle   Rw                    0.0            3.5           0.10E+03
 The slope and correlation coefficient should be small
 [11]  Slope =       -0.0  Intercept =       10  C-Coef=      -0.1
 
- Agreement analysis on scale of Fo, Scale =   4.63
+ Agreement analysis on scale of Fo, Scale =   4.63 Fo=sign(Fo^2) x sqrt(abs(Fo^2))
  Delta = Fo-Fc
 
 
