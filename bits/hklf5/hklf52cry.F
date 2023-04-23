@@ -10,6 +10,11 @@ c      removal of clusters of reflections where more than one
 c      reflections have the same element ID, e.g. -2, -2, 1
 c      Reflections are also omited from a scratch copy of the
 c      hklf5 file before passing to TLAW2
+C      latest patch to hklf52cry by djw, Sept 2022 (fix abnormal
+C      termination on readin of hklf5 files)
+C      latest patches to TLAW2 by bmf, Oct 2022 and March 2023,
+C      to add symmetry determination of twin law matrices (Giacovazzo)
+C      and additional explanatory text.
 c 
       DIMENSION INDEX(3), VALUE(2), PARENT(3,3)
       CHARACTER *80 CLINE(9)
@@ -332,41 +337,41 @@ C
 C
 CODE FOR TLAW2
       SUBROUTINE TLAW2(iout)
+C      CODE FOR TLAW2
+C      THIS ROUTINE IS DERIVED FROM THE
+C      USEFUL SUBROUTINE TLAW2(iout) IN HKLF52CRY.F
 C
 C  IOUT = -1 FOR FAILURE
 C         +1 FOR SUCCESS
 C
-C WRITTEN BY BRUCE FOXMAN, 2017, 2020 (-ve DETERMINANT HANDLING)
-C 2021 (AUTODETECTION OF TWINABS' SETTING "2" AS THE MAJOR
-C COMPONENT
-C
-C SOLVE THE EQUATION H(TWIN)= [TWIN_LAW]*H(PARENT)
-C SHELX HKLF 5 uses a decision about reflection overlap made during
-C data reduction.  
-C If the MERGE routine has transformed the indices of the minor reflections
-C using Space Group Symmety, the equation above cannot be used.
-C After extraction of a twin law, it is applied to every main reflection
-C in the HKLF5 file to ensure that the generated indices coincide with 
-C the input minor ones. 
-C The determinant of the twin law should be Unity. If it is negative or
-C substantially different from unity, a warning that the input data has
-C probably been merged is passed to the user.  If the user has included
-C inversion twinning in the twin laws, then this will be flagged, the user
-C informed, but no action will be taken: the file will be processed 
-C with the 'regular' and te inversion twin laws.
+C WRITTEN BY BRUCE FOXMAN, 2017, 2020 (-ve DETERMINANT
+C HANDLING) APRIL 2021 (AUTODETECTION OF TWINABS' SETTING
+C "2" AS THE MAJOR COMPONENT).  2023 (INCLUSION OF 
+C GIACOVAZZO ANALYSIS OF TWIN LAW SYMMETRY), AND
+C (B) DAVID WATKIN 2020 (MULTI-PASS REFLECTION EVALUATION
+C AND REJECTION). 
 c
       REAL HKLP(100000,3),HKLT(100000,3,7),
      1HT(3,3,7),HP(3,3,7),HTINV(3,3,7),R(3,3,7),
      2HT1,KT1,LT1,HP1,KP1,LP1
-      REAL DJWT(3,7),RSV(3,3,7),DJWD(3,7),A(3,3),B(3,3),C(3,3),CI(3,3)
+      REAL DJWT(3,7),RSV(3,3,7),DJWD(3,7),A(3,3),B(3,3),C(3,3),CI(3,3),
+     1CMINIMUM(10),TRTEST(10),ACMINIMUM(10)
       INTEGER DJWI(3,7),DJWSUM(7),JTEST(7),NREF3(7),NREJ2(7)
       COMMON/MAT/R,RSV,JJMAX
       CHARACTER*1 CDJW
       DIMENSION INDX(3)
       CHARACTER*32 FILIN
+      CHARACTER*2 SYMELEMENT(10)/' 1',' 2',' 3',' 4',' 6','-1',' m',
+     1'-3','-4','-6'/
+      CHARACTER*2 SYMSAVE
+      DATA TRTEST    /4.,  0.,  1.,  2.,  3., -4.,  0., -1., -2., -3./
+      DATA CMIN /0.0/
 C
 C     INDICATE SUCCESS
       IOUT = 1
+      OPEN(13,STATUS='UNKNOWN',FILE='TLAW_OUT.LIS')
+      WRITE(13,508)
+      WRITE(*,508)
 C
       DO 90 K=1,3
       DO 90 L=1,100000
@@ -381,12 +386,14 @@ C
       DO 92 I=1,3
       HP(I,J,JJ) = 0.0
    92 HT(I,J,JJ) = 0.0 
-      OPEN(13,STATUS='UNKNOWN',FILE='TLAW_OUT.LIS')
 *     FOLLOWING FOR STANDALONE VERSION ONLY
 *93    WRITE(*,490) 
 *      READ(*,'(A32)') FILIN
 *      OPEN(14,STATUS='OLD',FILE=FILIN,ACCESS='SEQUENTIAL',
 *     1FORM='FORMATTED')
+      WRITE (*,97)
+      WRITE (13,97)
+   97 FORMAT(/,' First pass - determining initial twin law'/)
 *
 C     DO AUTO-DETECT TO SEE WHETHER THIS IS WHAT WE MIGHT CALL
 C     A 'NORMAL' TWIN ASSIGNMENT, I.E. MAJOR COMPONENT IS "1"
@@ -445,6 +452,7 @@ C     READ IN AND CHECK FOR -1, 2 PAIR SEQUENCE IN HKLF5 FILE
       HKLT(NREF,1,JJ)=HT1
       HKLT(NREF,2,JJ)=KT1
       HKLT(NREF,3,JJ)=LT1
+      if(nref.le.4) write(*,*) hp1,kp1,lp1,ht1,kt1,lt1
       NREF=NREF+1
       GO TO 20
    24 JJ=IABS(JCODE2)-1
@@ -459,7 +467,8 @@ C     ACCUMULATE H(TWIN) X H(TWIN)^T  (I.E., HT)
 C
 C     ... AND  H(PRIN) X H(TWIN)^T (I.E., HP)
 C
-  100 JJMAX=MAXVAL(JTEST)
+  100 continue
+      JJMAX=MAXVAL(JTEST)
       IF(iDETECT.EQ.2) JJMAX=1
       DO 150 JJ=1,JJMAX
       DO 150 J=1,NREF-1
@@ -490,6 +499,7 @@ C
 C
       NTOT=NREF-1
       WRITE(13,501)NTOT
+      WRITE(*,501)NTOT
 C
 C     INVERT H(TWIN) X H(TWIN)^T (I.E., HT)
 C
@@ -504,6 +514,7 @@ C
       IF(D.EQ.0.0) GO TO 400
 C
 C     GET R = (H(TWIN) X H(TWIN)^T) X (H(PRIN) X H(TWIN)^T)^-1  
+C     
 C
       CALL MATMULT(A,CI,3,B)
       DO 162 I=1,3
@@ -511,11 +522,15 @@ C
   162 R(I,J,JJ)=B(I,J)
       CALL DTRM(B,3,D1,INDX)
       WRITE(13,502) JJ+1,((R(I,J,JJ),J=1,3),I=1,3)
+      WRITE(*,502) JJ+1,((R(I,J,JJ),J=1,3),I=1,3)
 C     (2020 edit) Test determinant only for 5% dev from +/- 1.0
       IF(abs(D1).LT.0.95.OR.abs(D1).GT.1.05) WRITE(13,505)
+      IF(abs(D1).LT.0.95.OR.abs(D1).GT.1.05) WRITE(*,505)
       if(d1.lt.0) then
         write(13,503) d1
         write(13,5051)
+        write(*,503) d1
+        write(*,5051)
       endif
   170 CONTINUE
 
@@ -532,11 +547,9 @@ C     AND CLEAR THE ACCUMULATORS
        ENDDO
       ENDDO
 c
-      write(13,508)
-      write(13,511)
-      write(13,'(7x,a,11x,a,17x,a,16x,a,6x,a)')
-     1 'Transformed','Minor','Error','NINT error','Total error'
-      
+      WRITE(*,197)
+      WRITE(13,197)
+  197 FORMAT(/,' Second pass - flagging unwanted (error) reflections',/)      
 C     DJW  GO THROUGH THE DATA AGAIN REJECTING REFLECTIONS WHICH 
 C     DO NOT PREDICT C CORRECTLY.  THUS CAN OCCUR WHEN THE MINOR 
 C     COMPONENT IS TOO FAR (IN RECIPROCAL SPACE) FROM THE PRINCIPAL.
@@ -577,9 +590,20 @@ C
 180   DJWSUM(JJ) = ABS(DJWI(1,JJ))+ABS(DJWI(2,JJ))+ABS(DJWI(3,JJ))
       IF (DJWSUM(JJ) .GT. 0) CDJW='*'
       IF(DJWD(1,JJ).GE.0.4.OR.DJWD(2,JJ).GE.0.4.OR.DJWD(3,JJ).GE.0.4)
-     1WRITE(13,'(A,2X,3F6.2,3X, 3F6.2, 3X, 3F6.3,3X,3I6, 3X, I6)') 
+     1 then
+       write(13,'(7x,a,11x,a,17x,a,16x,a,6x,a)')
+     1 'Transformed','Minor','Error','NINT error','Total error'
+       write(*,'(7x,a,11x,a,17x,a,16x,a,6x,a)')
+     1 'Transformed','Minor','Error','NINT error','Total error'
+
+      WRITE(13,'(A,2X,3F6.2,3X, 3F6.2, 3X, 3F7.3,3I6, 3X, I6)') 
      2 CDJW, (DJWT(K,JJ),K=1,3), HKLT(J,1,JJ),HKLT(J,2,JJ),HKLT(J,3,JJ),
      3 (DJWD(K,JJ),K=1,3), (DJWI(K,JJ),K=1,3), DJWSUM(JJ)
+c
+      WRITE(*,'(A,2X,3F6.2,3X, 3F6.2, 3X, 3F7.3,3I6, 3X, I6)') 
+     2 CDJW, (DJWT(K,JJ),K=1,3), HKLT(J,1,JJ),HKLT(J,2,JJ),HKLT(J,3,JJ),
+     3 (DJWD(K,JJ),K=1,3), (DJWI(K,JJ),K=1,3), DJWSUM(JJ)
+      endif
 C
 C     DON'T USE THE REFLECTION IF IT DOESNT MATCH.
 C     THIS SHOULD ALSO BE DONE WHEN GENERATING A CRYSTALS FILE FROM
@@ -610,8 +634,9 @@ C
       HP(3,1,JJ)=HP(3,1,JJ)+HKLP(J,3)*HKLT(J,1,JJ)
       HP(3,2,JJ)=HP(3,2,JJ)+HKLP(J,3)*HKLT(J,2,JJ)
 199    CONTINUE
-      
-
+      write(*,203)
+      write(13,203)
+  203 FORMAT (/,' Third pass - determining improved twin law')
 C     REPEAT THE WORK
 C
 C     GENERATE REMAINDER OF HT SYMMETRIC MATRIX
@@ -624,19 +649,25 @@ C
 C 210   CONTINUE
       WRITE(13,510)
       WRITE(13,509)NREF2
+      WRITE(*,510)
+      WRITE(*,509)NREF2
       IF(JJMAX.EQ.1) GO TO 215
       WRITE(13,506) (K+1,NREF3(K), K=1,JJMAX)
+      WRITE(*,506) (K+1,NREF3(K), K=1,JJMAX)
   215 WRITE(13,'(/, A,I7//)')' Number of non-matching reflections = ',
+     1NREJ      
+      WRITE(*,'(/, A,I7/)')' Number of non-matching reflections = ',
      1NREJ
       IF (NREJ.EQ.0) WRITE(13,5061)
       IF (NREJ.EQ.0) WRITE(*,5061)
       IF(JJMAX.EQ.1) GO TO 220
       WRITE(13,507) (K+1,NREJ2(K), K=1,JJMAX)
+      WRITE(*,507) (K+1,NREJ2(K), K=1,JJMAX)
 C
 C     INVERT H(TWIN) X H(TWIN)^T (I.E., HT)
 C
 C
-  220 DO 270 JJ=1,JJMAX
+  220 DO 280 JJ=1,JJMAX
       DO 261 I=1,3
       DO 261 J=1,3
       C(I,J)=HP(I,J,JJ)
@@ -654,14 +685,32 @@ C
   262 R(I,J,JJ)=B(I,J)
       CALL DTRM(B,3,D1,INDX)
       WRITE(13,502) JJ+1,((R(I,J,JJ),J=1,3),I=1,3)
+      WRITE(*,502) JJ+1,((R(I,J,JJ),J=1,3),I=1,3)
 C     (2020 edit) Test determinant only for 5% dev from +/- 1.0
       IF(abs(D1).LT.0.95.OR.abs(D1).GT.1.05) THEN
             WRITE(13,505)
+            WRITE(*,505)
             IOUT= -1                !INDICATE FAILURE
       ENDIF
       WRITE(13,503) D1
+      WRITE(*,503) D1
 270   CONTINUE
-
+      TRACE=R(1,1,JJ)+R(2,2,JJ)+R(3,3,JJ)
+      CARMELO=D1+TRACE
+      IF(CARMELO.GT.-0.05.AND.CARMELO.LT.0.05) GO TO 277
+      DO 274 I=1,10
+      CMINIMUM(I)=CARMELO-TRTEST(I)
+274   ACMINIMUM(I)=ABS(CMINIMUM(I))
+275   CMIN=MINVAL(ACMINIMUM)
+      DO 276 I=1,10
+276   IF(ACMINIMUM(I).EQ.CMIN) ISAVE=I
+      SYMSAVE=SYMELEMENT(ISAVE)
+      GO TO 278
+277   SYMSAVE=SYMELEMENT(2)
+      IF (D1.LT.-0.95.AND.D1.GT.-1.05) SYMSAVE=SYMELEMENT(7)
+278   WRITE(*,512) TRACE,CARMELO,SYMSAVE
+      WRITE(13,512) TRACE,CARMELO,SYMSAVE
+280   CONTINUE
 C     DJW: SAVE THE MATRIX BEFORE IT IS OVERWRITTEN 
 C     (SIGNS WERE LOST FROM LAST ROW)
 C     AND CLEAR THE ACCUMULATORS
@@ -674,15 +723,19 @@ C     AND CLEAR THE ACCUMULATORS
         ENDDO
        ENDDO
       ENDDO
-      RETURN 
+      WRITE(*,397)
+      WRITE(13,397)
+  397 FORMAT (/,' Fourth pass - creating CRYSTALS LIST 6')
+      RETURN
   400 WRITE(13,504) D
+      WRITE(*,504) D
       STOP
   490 FORMAT(//' ENTER FILE NAME, WITH EXTENSION, FOR SHELX-STYLE'
      1,' HKLF5 FILE: ',$)
   500 FORMAT(3F4.0,2F8.2,I4)
-  501 FORMAT(//,' ANALYSIS OF TWIN LAWS FROM HKLF5 FILE (NO ',
-     1'REFLECTIONS REJECTED)',//,
-     2' NUMBER OF REFLECTION TWIN SETS = ', I7)
+  501 FORMAT(//,' Extraction Of Twin Laws From HKLF5 File ',
+     1' (Using all Reflections)',//,
+     2' Number Of Twinned Reflection = ', I7)
   502 FORMAT(//' DERIVED TWIN LAW FOR COMPONENT 1 -->',I2,' :', /,
      1 3(/,3F10.6))
   503 FORMAT(/' DETERMINANT = ',F8.3)
@@ -696,50 +749,128 @@ C     AND CLEAR THE ACCUMULATORS
      2/,'included, this is expected and no user action is required.',/
      3 /'Otherwise, please reprocess data without averaging')
   506 FORMAT((/' NO. OF SETS FOR COMPONENT ',I4, ' = ',I7))
- 5061 FORMAT(/' ALL REFLECTIONS WERE ACCEPTED; THE TWIN LAW(S) BELOW '
-     1'DO NOT DIFFER FROM RESULTS PRESENTED EARLIER ABOVE')
+ 5061 FORMAT(/' All Reflections Were Accepted; The Twin Law(s) Below',
+     1' Do Not Differ From Results Presented Above')
   507 FORMAT((/' No. unmatched for component ',I4, ' = ', I5))
 
   508 FORMAT(//
-     1 'The twin law tansforms the primary component into a minor'/
-     2 'component.  The transformed primary index is compared with'/
-     3 'the minor index from the HKLF5 file.'/
-     3 'If the absolute value of the deviation exceeds 0.5 for'/
-     4 'any index, the minor component is regarded as unreliable'/
-     5 'and not accepted.'/
-     6 'The twin law is redetermined without these unreliable'/
-     7 'reflections.' //
-     8 'The very unreliable reflections are marked with an "*" in'/
-     9 'the list below'/
-     1 'CRYSTALS will re-process the data omitting these reflections'/
-     2 'See the bottom of TLAW_OUT.LIS for the final results'
+     *  ' WRITTEN BY BRUCE FOXMAN, 2017, 2020 (-ve DETERMINANT'/,
+     *  ' HANDLING) APRIL 2021 (AUTODETECTION OF TWINABS SETTING'/,
+     *  ' 2 AS THE MAJOR COMPONENT).  2023 (INCLUSION OF '/,
+     *  ' GIACOVAZZO ANALYSIS OF TWIN LAW SYMMETRY), AND '/,
+     *  ' (B) DAVID WATKIN 2017, (ORIGINAL CASTING OF THE ',/
+     *  ' DERIVATION, 2020 (MULTI-PASS REFLECTION EVALUATION ',/
+     *  ' AND REJECTION). '/,
+     *  ' '/,
+     *  ' '/,
+     *  ' This program processes a SHELX hklf5 format file of'/,
+     *  ' twinned data in order to determine the twin laws and hence'/,
+     *  ' the indices of the contributors to the observed intensity.'/,
+     *  ' '/,
+     *  ' In a twinned crystal the reflections from the components'/,
+     *  ' may overlap completely (TLS or meroheral) or more-or-less'/,
+     *  ' coincide (TLQS or non-merohedral). If we have a TLQS twin'/,
+     *  ' with an obliquity significantly different from zero, the'/,
+     *  ' positions of the minor components in reciprocal space'/,
+     *  ' will deviate from those of the major component.  When the'/,
+     *  ' frames are processed, a threshold is set for the maximum'/,
+     *  ' separation acceptable for the components of a twinned'/,
+     *  ' reflection.'/,
+     *  ' '/,
+     *  ' '/,
+     *  ' The twin law is determined by solving these simultaneous'/,
+     *  ' equations for all twinned reflections.'/,
+     *  ' '/,
+     *  ' H(TWIN)= (TWIN_LAW)*H(PARENT)'/,
+     *  ' '/,
+     *  ' '/,
+     *  ' If the data processing routine has transformed the indices'/,
+     *  ' of the minor reflections using Space Group Symmety (as may'/,
+     *  ' happen if the data is merged), the equation above cannot'/,
+     *  ' be used. If the determinant of the twin law is'/,
+     *  ' substantially different from unity, a warning that the'/,
+     *  ' input data has probably been merged previously is passed '/,
+     *  ' to the user.'/,
+     *  ' '/,
+     *  ' After extraction of a twin law, ithat law is applied to '/,
+     *  ' every main reflection in the HKLF5 file to generate the '/,
+     *  ' indices of the minor components. Because the twin law is '/,
+     *  ' derivedfrom experimental data, the generated indices may '/,
+     *  ' be non-integral.'/,
+     *  ' '/,
+     *  ' If the absolute value of the deviation between the input'/,
+     *  ' and generated indices exceeds 0.5 for any index pair, the'/,
+     *  ' minor component is regarded as unreliable and flagged as'/,
+     *  ' unacceptable.'/,
+     *  ' '/,
+     *  ' The computed indices must be rounded to integers for the'/,
+     *  ' structure factor calculation. If the rounded index exceeds'/,
+     * ' a user-defined deviation from the  observed index, then the'/,
+     *  ' indexing is unsound and the whole reflection (principal'/,
+     *  ' and minor components) will be eliminated from the final'/,
+     *  ' CRYSTALS data set.'/,
+     *  ' '/,
+     *  ' These very unreliable reflections are marked with an "*"'/,
+     *  ' in the list below.'/,
+     *  ' '/,
+     *  ' The twin law is then redetermined without these unreliable'/,
+     *  ' reflections.'/,
+     *  ' '/,
+     *  ' If the user has included inversion twinning in the twin'/,
+     *  ' laws, then this will be flagged, the user informed, but no'/,
+     *  ' action will be taken: the file will be processed with the'/,
+     *  ' regular and the inversion twin laws.'/,
+     *  ' '/,
+     *  ' The input file is finally re-processed to a CRYSTALS LIST'/,
+     *  ' 6 with this final matrix, omitting deviant reflections.'/,
+     *  ' See the bottom of TLAW_OUT.LIS for the final results'/,
+     *  ' '/,
+     *  ' '/,
+     *  ' '/,
+     *  '   The acceptable amount of deviation is set by the'/,
+     *  ' criteria for overlapping reciprocal lattice points when '/,
+     *  ' the data is collected.  In CRYSTALS, the indices of the'/,
+     *  ' minor components  are generated from the indices of the'/,
+     *  ' principal component and the twin law. If we have  a TLS'/,
+     *  ' (meroheral) twin the generated reflections will be (within'/,
+     *  ' computational errors)  integral.'/,
+     *  ' '/,
+     *  ' Note that a normal structure factor calculation requires'/,
+     *  ' integer  indices. If TLAW finds non-integral indices it'/,
+     *  ' means that the data integration volume has included two'/,
+     *  ' reflections accidentally close to each other in reciprocal'/,
+     *  ' space, rather than being related by the twin law.  Without'/,
+     *  ' access to the original observed frames, the software and'/,
+     *  ' the user-defined criteria used in analysing the frames,'/,
+     *  ' CRYSTALS takes the soft option of rejecting the fractional'/,
+     *  ' integer data.'/,
+     *  ' '/,
+     *  '  See Donnay, G.; Donnay, J. D. H. Canadian Mineralogist,'/,
+     *  ' 1974, 12, 422-425,  and in Giacovazzo, C., ed.;'/,
+     *  ' Fundamentals of Crystallography, 2nd Ed.; Oxford  Science'/,
+     *  ' Publications, 2002, pp. 229-236 & 278-285.'/,
+     *  ' '/,
+     *  ' '/,
      1 //)
 
   509 FORMAT(//,
      1 'Analysis of twin laws from hklf5 file (selected ',
      1 'reflections rejected)',//,
-     2 'Number of reflection twin sets = ', I7)
+     2 'Number of reflection twin sets = ', I7,//
+     3 'In the following analysis, the symmetry of each twin law is ',
+     4 'listed.',
+     5 //'The relationship used to obtain the symmetry operation from',
+     6 ' a given twin law is: '//,
+     7 '                     Trace+det:  4  0  1  2  3 -4  0 -1 -2 -3',/
+     8 '                       Element:  1  2  3  4  6 -1 -2 -3 -4 -6'
+     9 ,//' See Giacovazzo, C., ed.; Fundamentals of ',
+     A'Crystallography, 2nd Ed.; Oxford'/' Science Publications, 2002,',
+     B' Appendix 1.D, pp. 44-47.')
   510 FORMAT(//' ***** Recalculation with non-matching reflections ',
-     1'deleted *****')
-  511 FORMAT(//' If we have a TLQS twin with an obliquity significantl' 
-     1,'y different from zero, the positions',/' of the minor component'
-     2,'s in reciprocal space will deviate from those of the major ',
-     3'component.'/' The acceptable amount of deviation is set by the',
-     4' criteria for overlapping reciprocal lattice',/' points when ',
-     5' the data is collected.  In CRYSTALS, the indices of the minor ',
-     6'components',/' are generated from the twin law and the indices ',
-     7'of the principal component. If we have'/' a TLS (meroheral) twin' 
-     8,' the generated reflections will be (within computational ',
-     9'errors)'/' integral.  When we have a TLQS twin as above (best ',
-     A'referred to as non-merohedral),'/' the generated indices *may* '
-     B,'be non-integral.  These must be rounded to integers for the ',
-     C/' structure factor calculation. If this rounding exceeds a ',
-     D'pre-set deviation from the'/' observed index, the reflection',
-     E' will be eliminated from the CRYSTALS data set.'//' See ',
-     F'Donnay, G.; Donnay, J. D. H. Canadian Mineralogist, 1974, ',
-     G'12, 422-425,',/' and in Giacovazzo, C., ed.; Fundamentals of ',
-     H'Crystallography, 2nd Ed.; Oxford'/' Science Publications, 2002,',
-     J' pp. 229-236 & 278-285.'//)
+     1'(if any) deleted *****')
+
+  512 FORMAT(//' TRACE = ', F5.2// ' TRACE+DETERMINANT = ', F5.2,//
+     1' SYMMETRY ELEMENT = ', 3X,A2)
       END
 
       SUBROUTINE DETECT(IDETECT)
