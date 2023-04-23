@@ -32,12 +32,12 @@ Bonds: Update required - There is no list 41
 
 
 
-     270 reflections accepted           0 reflections rejected
+      270 reflections accepted           0 reflections rejected
 Upating List 13 for twinned data
 #LIST 25
 #SORT
 #REORDER
- After   1 pass     270 reflection(s) have been sorted
+ After   1 pass       270 reflection(s) have been sorted
  The updated reflections are now on UNIT 52
 #LIST 12
  The updated reflections are now on UNIT 53
@@ -970,6 +970,9 @@ The slope and correlation coefficient should be small
                                                                                                               .
 [65]      TOTALS           270     39403.      39509.        0.291E+02       0.114E+01     2.74    3.92     .  .  *  .  .
                                                                                                        -2 -1  0  1  2
+
+
+
 #ANALYSE
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -1153,6 +1156,9 @@ The slope and correlation coefficient should be small
                                                                                                               .
 [65]      TOTALS           270     39403.      39509.        0.291E+02       0.107E+01     2.74    3.79     .  .  *  .  .
                                                                                                        -2 -1  0  1  2
+
+
+
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
 #REFINE     1

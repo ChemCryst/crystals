@@ -52,7 +52,7 @@ Space group symbol is   P    1    21/C 1
 
 
 
-    3913 reflections accepted           0 reflections rejected
+     3913 reflections accepted           0 reflections rejected
 #CLOSE HKLI
 #SYSTEMATIC
 #LIST 28
@@ -199,13 +199,13 @@ Fo/sigma range         -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 rms (Fo/sigma)    1.991   0.581   1.370   2.828   5.875  12.295  44.714
 Number               29      14      14       9      11       7      35
 
-   3794 reflections accepted             119 reflections rejected
+     3794 reflections accepted             119 reflections rejected
 
  Rsigma =  0.043 for     3794 input reflections
 
 Rsigma = sum (sigma(I) / sum (I)
 #SORT
- After   1 pass    3794 reflection(s) have been sorted
+ After   1 pass      3794 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
 #MERGE
 
@@ -326,9 +326,9 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
 
-  3794 Contributors input            0 Contributors rejected
-  2016 Merged reflections output     0 Merged reflections rejected
-     0 Contributors deviating from the average by more than   3.0e.s.ds
+    3794 Contributors input              0 Contributors rejected
+    2016 Merged reflections output       0 Merged reflections rejected
+       0 Contributors deviating from the average by more than   3.0e.s.ds
   1857 Reflections greater than 3 sigma(i),  92.113 percent of data
  Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.018
  Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.013
@@ -338,7 +338,7 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
 
-    2016 reflections accepted           0 reflections rejected
+     2016 reflections accepted           0 reflections rejected
 #LIST 23
 #LIST 4
 #WEIGHT
@@ -3529,7 +3529,7 @@ value in the case of a highly skew unit cell
 
 
 
-    2016 reflections accepted           0 reflections rejected
+     2016 reflections accepted           0 reflections rejected
 Upating List 13 for twinned data
 #
 #                      FIRST EXPERIMENT. FSQ, NOANOM
@@ -9346,7 +9346,7 @@ All cycle   Min function          0.0           0.77E+04       0.10E+16
 The slope and correlation coefficient should be small
 [11]  Slope =        0.0  Intercept =       00  C-Coef=       0.0
 
- Agreement analysis on scale of Fo, Scale =   4.73
+ Agreement analysis on scale of Fo, Scale =   4.73 Fo=sign(Fo^2) x sqrt(abs(Fo^2))
  Delta = Fo^2-Fc^2
 
 
@@ -9613,7 +9613,7 @@ Values should be close to 100
   0.40        -224    17    87    97   101   101   100   102                                                                        
 
 
-100*<Fo-Fc> for bins with more than 3 items
+100*<Fo-Fc>/<Fc> for bins with more than 3 items
 
 Values should be close to zero
 
@@ -9621,17 +9621,20 @@ Values should be close to zero
          0.0   0.8   3.2   7.1  12.6  19.8  28.5  38.7  50.6  64.0  79.0  95.6 113.8 133.6 154.9 177.8 202.3 228.4 256.1 285.3 316.1
 
 
-  0.00                                        34                                            -382                                    
-  0.04                                            -126  -115  -156  -156   -95   -17   -26  -225   -38                              
-  0.08                           -20   146  -125  -122   -67   -91  -116   -26    -1  -168        -155                              
-  0.12                            41   -14   -57    30     8   -39   -61  -124   -24    25                                          
-  0.16               286   -17    45    23    85    -5   -57   -27   -72   -21  -115                                                
-  0.20                      51   -31     8    14    -9   -28    -9    32    74                                                      
-  0.24        -195          51   -34   -11    77    32    96    44   101    86                                                      
-  0.28              -146   -49   -39    -7    53    68    71    63   284                                                            
-  0.32              -223    61    17     4    77    99   116   120                                                                  
-  0.36               -88  -116   -42   -17    -9   -23   162                                                                        
-  0.40        -743  -455  -136   -32    39    40    12   112                                                                        
+  0.00                                         0                                              -2                                    
+  0.04                                              -3    -2    -2    -1     0     0     0    -1     0                              
+  0.08                            -1     6    -3    -2    -1    -1    -1     0     0    -1           0                              
+  0.12                             2     0    -1     0     0     0     0    -1     0     0                                          
+  0.16                59     0     2     0     2     0     0     0     0     0     0                                                
+  0.20                       5    -2     0     0     0     0     0     0     0                                                      
+  0.24        -136           4    -1     0     2     0     1     0     1     0                                                      
+  0.28                -8    -5    -2     0     1     1     1     0     3                                                            
+  0.32               -51     6     1     0     2     2     2     1                                                                  
+  0.36               -10   -13    -2     0     0     0     2                                                                        
+  0.40        -373   -85   -12    -2     1     1     0     2                                                                        
+
+
+
 #DISK
  List type  11 with serial number   136 is the current version.
  You may still save this list with DELETE n ACTION=NO
@@ -19035,7 +19038,7 @@ All cycle   Rw                    0.0            3.5           0.10E+03
 The slope and correlation coefficient should be small
 [11]  Slope =       -0.0  Intercept =       10  C-Coef=      -0.1
 
- Agreement analysis on scale of Fo, Scale =   4.63
+ Agreement analysis on scale of Fo, Scale =   4.63 Fo=sign(Fo^2) x sqrt(abs(Fo^2))
  Delta = Fo-Fc
 
 
@@ -19302,7 +19305,7 @@ Values should be close to 100
   0.40                14    84    96    99    98    98   100                                                                        
 
 
-100*<Fo-Fc> for bins with more than 3 items
+100*<Fo-Fc>/<Fc> for bins with more than 3 items
 
 Values should be close to zero
 
@@ -19310,17 +19313,20 @@ Values should be close to zero
          0.0   0.8   3.2   7.1  12.6  19.8  28.5  38.7  50.6  64.0  79.0  95.6 113.8 133.6 154.9 177.8 202.3 228.4 256.1 285.3 316.1
 
 
-  0.00                                        83                                        28                                -556      
-  0.04                                             -58   -47   -28     8    65   176   180    65   213                              
-  0.08                           -12   168  -115   -78     0   -13   -20    82   130     8          31                              
-  0.12                     108    39   -13   -33    65    48    19   -34   -40    63   112                                          
-  0.16               256   -28    44    68    85    -1   -39   -22   -41     4   -80                                                
-  0.20                      28   -36     6    -7     0   -30   -11    22    55                                                      
-  0.24        -171           6   -52   -15    59    11    71    21    37   143                                                      
-  0.28              -106   -54   -57   -33    30    25    16   -10   184                                                            
-  0.32              -209    68     0   -19    23    38    38    37                                                                  
-  0.36         442   -99  -129   -69   -55   -78   -76    34                                                                        
-  0.40              -442  -163   -56    -3   -40   -84    10                                                                        
+  0.00                                         2                                         0                                  -1      
+  0.04                                              -1     0     0     0     0     1     1     0     1                              
+  0.08                             0     7    -3    -1     0     0     0     0     1     0           0                              
+  0.12                      10     2     0    -1     1     0     0     0     0     0     0                                          
+  0.16                51    -1     2     2     2     0     0     0     0     0     0                                                
+  0.20                       3    -2     0     0     0     0     0     0     0                                                      
+  0.24        -184           0    -2     0     1     0     1     0     0     1                                                      
+  0.28                -3    -6    -3    -1     0     0     0     0     2                                                            
+  0.32               -45     7     0     0     0     0     0     0                                                                  
+  0.36         257   -13   -15    -4    -2    -2    -1     0                                                                        
+  0.40               -95   -15    -3     0    -1    -1     0                                                                        
+
+
+
 #DISK
  List type  11 with serial number   144 is the current version.
  You may still save this list with DELETE n ACTION=NO
@@ -28203,7 +28209,7 @@ All cycle   Min function          0.0           0.66E+04       0.10E+16
 The slope and correlation coefficient should be small
 [11]  Slope =        0.0  Intercept =       00  C-Coef=       0.0
 
- Agreement analysis on scale of Fo, Scale =   4.65
+ Agreement analysis on scale of Fo, Scale =   4.65 Fo=sign(Fo^2) x sqrt(abs(Fo^2))
  Delta = Fo^2-Fc^2
 
 
@@ -28470,7 +28476,7 @@ Values should be close to 100
   0.40        -217    13    84    96   100    99    98   100                                                                        
 
 
-100*<Fo-Fc> for bins with more than 3 items
+100*<Fo-Fc>/<Fc> for bins with more than 3 items
 
 Values should be close to zero
 
@@ -28478,17 +28484,20 @@ Values should be close to zero
          0.0   0.8   3.2   7.1  12.6  19.8  28.5  38.7  50.6  64.0  79.0  95.6 113.8 133.6 154.9 177.8 202.3 228.4 256.1 285.3 316.1
 
 
-  0.00                                        79                                       -18  -172        -287              -695      
-  0.04                                             -73   -46   -94   -30    21   124   129    19   132                              
-  0.08                           -12   160  -120   -85   -12   -31   -40    56   102   -37         -23                              
-  0.12                      88    40   -13   -26    78    37    -9   -15   -43    42   103                                          
-  0.16               282   -22    45    49    73     4   -44   -20   -42     1   -88                                                
-  0.20                      50   -46    20     0    -3   -25   -11    32    77                                                      
-  0.24        -192          49   -45   -19    69    21    77    32    78    71                                                      
-  0.28              -153   -53   -48   -29    35    40    38    22   215                                                            
-  0.32              -244    66     1   -19    49    53    60    66                                                                  
-  0.36               -97  -137   -57   -45   -60   -61    64                                                                        
-  0.40        -750  -467  -165   -49     6    -8   -46    33                                                                        
+  0.00                                         2                                         0    -1          -1                -2      
+  0.04                                              -1     0    -1     0     0     1     0     0     0                              
+  0.08                             0     6    -3    -2     0     0     0     0     0     0           0                              
+  0.12                       8     2     0     0     1     0     0     0     0     0     0                                          
+  0.16                58    -1     2     1     2     0     0     0     0     0     0                                                
+  0.20                       5    -3     0     0     0     0     0     0     0                                                      
+  0.24        -132           4    -2     0     2     0     1     0     0     0                                                      
+  0.28               -10    -5    -3    -1     1     0     0     0     2                                                            
+  0.32               -56     7     0     0     1     1     1     0                                                                  
+  0.36               -11   -15    -3    -1    -1    -1     1                                                                        
+  0.40        -360   -88   -16    -3     0     0     0     0                                                                        
+
+
+
 #DISK
  List type  11 with serial number   136 is the current version.
  You may still save this list with DELETE n ACTION=NO
@@ -37831,7 +37840,7 @@ All cycle   Rw                    0.0            3.5           0.10E+03
 The slope and correlation coefficient should be small
 [11]  Slope =       -0.0  Intercept =       10  C-Coef=      -0.1
 
- Agreement analysis on scale of Fo, Scale =   4.63
+ Agreement analysis on scale of Fo, Scale =   4.63 Fo=sign(Fo^2) x sqrt(abs(Fo^2))
  Delta = Fo-Fc
 
 
@@ -38098,7 +38107,7 @@ Values should be close to 100
   0.40                14    84    96    99    98    98   100                                                                        
 
 
-100*<Fo-Fc> for bins with more than 3 items
+100*<Fo-Fc>/<Fc> for bins with more than 3 items
 
 Values should be close to zero
 
@@ -38106,17 +38115,20 @@ Values should be close to zero
          0.0   0.8   3.2   7.1  12.6  19.8  28.5  38.7  50.6  64.0  79.0  95.6 113.8 133.6 154.9 177.8 202.3 228.4 256.1 285.3 316.1
 
 
-  0.00                                        81                                        30                                -556      
-  0.04                                             -60   -47   -29     8    66   176   182    67   214                              
-  0.08                           -14   165  -116   -78     0   -14   -20    82   130     6          32                              
-  0.12                     106    39   -13   -33    64    47    20   -34   -39    63   113                                          
-  0.16               252   -32    44    67    73     0   -39   -21   -42     3   -82                                                
-  0.20                      26   -36     6    -7    -3   -29   -11    21    55                                                      
-  0.24        -175           4   -52   -15    58    12    71    21    36   141                                                      
-  0.28              -106   -55   -57   -33    29    25    16   -10   185                                                            
-  0.32              -209    68     0   -19    23    39    39    38                                                                  
-  0.36         442  -100  -129   -69   -54   -78   -76    34                                                                        
-  0.40              -443  -161   -54    -2   -40   -83    11                                                                        
+  0.00                                         2                                         0                                  -1      
+  0.04                                              -1     0     0     0     0     1     1     0     1                              
+  0.08                             0     7    -3    -1     0     0     0     0     1     0           0                              
+  0.12                      10     2     0    -1     1     0     0     0     0     0     0                                          
+  0.16                50    -2     2     2     2     0     0     0     0     0     0                                                
+  0.20                       3    -2     0     0     0     0     0     0     0                                                      
+  0.24        -176          -1    -2     0     1     0     1     0     0     1                                                      
+  0.28                -3    -6    -3    -1     0     0     0     0     2                                                            
+  0.32               -46     7     0     0     0     0     0     0                                                                  
+  0.36         258   -13   -15    -4    -2    -2    -1     0                                                                        
+  0.40               -95   -15    -3     0    -1    -1     0                                                                        
+
+
+
 #DISK
  List type  11 with serial number   144 is the current version.
  You may still save this list with DELETE n ACTION=NO

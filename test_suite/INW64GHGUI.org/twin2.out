@@ -968,6 +968,9 @@ The slope and correlation coefficient should be small
                                                                                                               .
 [65]      TOTALS           270     39403.      39509.        0.291E+02       0.114E+01     2.74    3.92     .  .  *  .  .
                                                                                                        -2 -1  0  1  2
+
+
+
 #ANALYSE
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -1151,6 +1154,9 @@ The slope and correlation coefficient should be small
                                                                                                               .
 [65]      TOTALS           270     39403.      39509.        0.291E+02       0.107E+01     2.74    3.79     .  .  *  .  .
                                                                                                        -2 -1  0  1  2
+
+
+
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
 #REFINE     1
