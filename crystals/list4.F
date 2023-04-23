@@ -2299,7 +2299,7 @@ C
 C COMPUTE <Fo-Fc>
         IF ((ISSPRT.EQ.0) .AND. (LEVEL.EQ.0)) THEN
          write(ncwu,'(A/)')
-     1   '100*<Fo-Fc> for bins with more than 3 items'
+     1   '100*<Fo-Fc>/<Fc> for bins with more than 3 items'
         ENDIF
         write(NCPU,'(A/)')
      1  '100*<Fo-Fc> for bins with more than 3 items'
@@ -3539,7 +3539,9 @@ C--COMPUTE THE MAX. VALUE OF SIN(THETA)/LAMBDA
        hmap(1,lfr,lrr)=hmap(1,lfr,lrr)+1
        hmap(2,lfr,lrr)=hmap(2,lfr,lrr)+FO
        hmap(3,lfr,lrr)=hmap(3,lfr,lrr)+FC
-       hmap(4,lfr,lrr)=hmap(4,lfr,lrr)+2.*(FO-FC)/(FO+FC)
+       if(fc.ge.zero) then
+        hmap(4,lfr,lrr)=hmap(4,lfr,lrr)+(FO-FC)/(FC)
+       endif
       ENDIF
 C--TOTALS FOR THE DIFFERENT PARITY GROUPS
       L=ICLS
