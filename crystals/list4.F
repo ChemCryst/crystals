@@ -2313,7 +2313,7 @@ C COMPUTE <Fo-Fc>
         DO K=1,IRESMAX
          DO J=1,IFMAX
            IF(HMAP(1,J,K).GT.3.) THEN
-            IHMAP2(J,K) = INT(100.*(HMAP(4,J,K)/HMAP(1,J,K)))
+            IHMAP2(J,K) = INT(100.*(HMAP(4,J,K)/HMAP(3,J,K)))
            ELSE
             IHMAP2(J,K)=0
            ENDIF
@@ -3539,9 +3539,7 @@ C--COMPUTE THE MAX. VALUE OF SIN(THETA)/LAMBDA
        hmap(1,lfr,lrr)=hmap(1,lfr,lrr)+1
        hmap(2,lfr,lrr)=hmap(2,lfr,lrr)+FO
        hmap(3,lfr,lrr)=hmap(3,lfr,lrr)+FC
-       if(fc.ge.zero) then
-        hmap(4,lfr,lrr)=hmap(4,lfr,lrr)+(FO-FC)/(FC)
-       endif
+       hmap(4,lfr,lrr)=hmap(4,lfr,lrr)+(FO-FC)
       ENDIF
 C--TOTALS FOR THE DIFFERENT PARITY GROUPS
       L=ICLS
