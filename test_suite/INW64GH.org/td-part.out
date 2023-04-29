@@ -78,7 +78,7 @@ Bonds: Update required - There is no list 41
 
 
 
-    2805 reflections accepted           0 reflections rejected
+     2805 reflections accepted           0 reflections rejected
 #   2803 REFLECTIONS OUTPUT
 #WEIGHT
                      LIST 4 weighting type is /FO/ **2
@@ -91,7 +91,7 @@ Bonds: Update required - There is no list 41
       Fo           0.941329E+01   0.515308E+03
       Weight       0.612074E-03   0.133156E+00
 [09]       Fc           0.161 E+01   0.100 E+03
- List   6 contains   2805 reflections of which   2805 are accepted by LIST 28
+ List   6 contains     2805 reflections of which     2805 are accepted by LIST 28
  After     0 structure factor/refinement calculations 
   R =    6.84     Weighted R =  18.74     Minimisation function =    0.000000E+00
  Rsigma=  1.17 for     2805 accepted reflections
@@ -3482,7 +3482,7 @@ END
   -7   4  10   40.01  0.209E-01      6.55  1. -0.22  1.    0.60 1.0000 
    0   0   0
 
-#   2805 reflections output
+#     2805 reflections output
 #SUM L 6
  Summary of contents of list  6 - Reflection data
  Quantity            Minimum        Maximum
@@ -3492,7 +3492,7 @@ END
       Fo           0.941329E+01   0.515308E+03
       Weight       0.612074E-03   0.133156E+00
 [09]       Fc           0.181 E+01   0.920 E+02
- List   6 contains   2805 reflections of which   2805 are accepted by LIST 28
+ List   6 contains     2805 reflections of which     2805 are accepted by LIST 28
  After     3 structure factor/refinement calculations 
   R =    6.66     Weighted R =  16.92     Minimisation function =    0.524148E+06
  Rsigma=  1.17 for     2805 accepted reflections
@@ -3516,7 +3516,7 @@ END
 
 
 
-    2805 reflections accepted           0 reflections rejected
+     2805 reflections accepted           0 reflections rejected
 #   2803 REFLECTIONS OUTPUT
 #WEIGHT
                      LIST 4 weighting type is /FO/ **2
@@ -3529,7 +3529,7 @@ END
       Fo           0.941329E+01   0.515308E+03
       Weight       0.612074E-03   0.133156E+00
 [09]       Fc           0.161 E+01   0.100 E+03
- List   6 contains   2805 reflections of which   2805 are accepted by LIST 28
+ List   6 contains     2805 reflections of which     2805 are accepted by LIST 28
  After     0 structure factor/refinement calculations 
   R =    6.84     Weighted R =  18.74     Minimisation function =    0.000000E+00
  Rsigma=  1.17 for     2805 accepted reflections
@@ -3638,7 +3638,7 @@ LS-scale=  6.285   Wilson Scale=  0.000
 
 
 
-    2805 reflections accepted           0 reflections rejected
+     2805 reflections accepted           0 reflections rejected
 #   2803 REFLECTIONS OUTPUT
 #WEIGHT
                      LIST 4 weighting type is /FO/ **2
@@ -9357,7 +9357,7 @@ END
  
    0   0   0
 
-#   2805 reflections output
+#     2805 reflections output
 # SET ALL OCCUPANCIES EXCEPT RU TO ZERO AND UPDATE PARTS
 #EDIT
  The following atom(s) will be arithmetically modified
@@ -9642,7 +9642,7 @@ LS-scale=  6.285   Wilson Scale=  0.000
       Fo           0.941329E+01   0.515308E+03
       Weight       0.612074E-03   0.133156E+00
 [09]       Fc           0.330 E+01   0.412 E+02
- List   6 contains   2805 reflections of which   2805 are accepted by LIST 28
+ List   6 contains     2805 reflections of which     2805 are accepted by LIST 28
  After     2 structure factor/refinement calculations 
   R =   22.28     Weighted R =  77.59     Minimisation function =    0.110160E+08
  Rsigma=  1.17 for     2805 accepted reflections
@@ -9720,7 +9720,7 @@ LS-scale=  6.285   Wilson Scale=  0.000
       Fo           0.941329E+01   0.515308E+03
       Weight       0.612074E-03   0.133156E+00
 [09]       Fc           0.172 E+01   0.914 E+02
- List   6 contains   2805 reflections of which   2805 are accepted by LIST 28
+ List   6 contains     2805 reflections of which     2805 are accepted by LIST 28
  After     3 structure factor/refinement calculations 
   R =    6.66     Weighted R =  16.67     Minimisation function =    0.508588E+06
  Rsigma=  1.17 for     2805 accepted reflections
@@ -15350,7 +15350,7 @@ END
  
    0   0   0
 
-#   2805 reflections output
+#     2805 reflections output
 #DISK
  List type   6 with serial number    36 is the current version.
  You may still save this list with DELETE n ACTION=NO
@@ -15379,7 +15379,7 @@ END
 
 
 
-    2805 reflections accepted           0 reflections rejected
+     2805 reflections accepted           0 reflections rejected
 #   2803 REFLECTIONS OUTPUT
 #WEIGHT
                      LIST 4 weighting type is /FO/ **2
@@ -15392,7 +15392,7 @@ END
       Fo           0.941329E+01   0.515308E+03
       Weight       0.612074E-03   0.133156E+00
 [09]       Fc           0.161 E+01   0.100 E+03
- List   6 contains   2805 reflections of which   2805 are accepted by LIST 28
+ List   6 contains     2805 reflections of which     2805 are accepted by LIST 28
  After     0 structure factor/refinement calculations 
   R =    6.84     Weighted R =  18.74     Minimisation function =    0.000000E+00
  Rsigma=  1.17 for     2805 accepted reflections
@@ -18304,7 +18304,7 @@ END
   -7   4  10   40.01  0.209E-01      6.48  1. -0.22  1.    0.60 1.0000 
    0   0   0
 
-#   2805 reflections output
+#     2805 reflections output
 # RE-INPUT LIST 5
 #USE TD-PART-5.DAT
 #
@@ -18321,7 +18321,7 @@ END
 
 
 
-    2805 reflections accepted           0 reflections rejected
+     2805 reflections accepted           0 reflections rejected
 #   2803 REFLECTIONS OUTPUT
 #WEIGHT
                      LIST 4 weighting type is /FO/ **2
@@ -24040,7 +24040,7 @@ END
  
    0   0   0
 
-#   2805 reflections output
+#     2805 reflections output
 # SET ALL OCCUPANCIES EXCEPT RU TO ZERO AND UPDATE PARTS
 #EDIT
  The following atom(s) will be arithmetically modified
@@ -24325,7 +24325,7 @@ LS-scale=  6.285   Wilson Scale=  0.000
       Fo           0.941329E+01   0.515308E+03
       Weight       0.612074E-03   0.133156E+00
 [09]       Fc           0.335 E+01   0.413 E+02
- List   6 contains   2805 reflections of which   2805 are accepted by LIST 28
+ List   6 contains     2805 reflections of which     2805 are accepted by LIST 28
  After     2 structure factor/refinement calculations 
   R =   22.19     Weighted R =  78.38     Minimisation function =    0.112423E+08
  Rsigma=  1.17 for     2805 accepted reflections
@@ -24403,7 +24403,7 @@ LS-scale=  6.285   Wilson Scale=  0.000
       Fo           0.941329E+01   0.515308E+03
       Weight       0.612074E-03   0.133156E+00
 [09]       Fc           0.180 E+01   0.923 E+02
- List   6 contains   2805 reflections of which   2805 are accepted by LIST 28
+ List   6 contains     2805 reflections of which     2805 are accepted by LIST 28
  After     3 structure factor/refinement calculations 
   R =    7.02     Weighted R =  17.80     Minimisation function =    0.579932E+06
  Rsigma=  1.17 for     2805 accepted reflections
@@ -30033,7 +30033,7 @@ END
  
    0   0   0
 
-#   2805 reflections output
+#     2805 reflections output
 #SFLS
 #SPEC LIS  NO
       Checking SPECIAL positions subject to tolerance of .60000     Angstrom
@@ -36222,7 +36222,7 @@ END
  
    0   0   0
 
-#   2805 reflections output
+#     2805 reflections output
 #SUM L 6
  Summary of contents of list  6 - Reflection data
  Quantity            Minimum        Maximum
@@ -36232,7 +36232,7 @@ END
       Fo           0.941329E+01   0.515308E+03
       Weight       0.612074E-03   0.133156E+00
 [09]       Fc           0.181 E+01   0.920 E+02
- List   6 contains   2805 reflections of which   2805 are accepted by LIST 28
+ List   6 contains     2805 reflections of which     2805 are accepted by LIST 28
  After     6 structure factor/refinement calculations 
   R =    6.66     Weighted R =  16.92     Minimisation function =    0.524148E+06
  Rsigma=  1.17 for     2805 accepted reflections

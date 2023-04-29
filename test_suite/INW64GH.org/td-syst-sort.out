@@ -77,7 +77,7 @@ Bonds: Update required - There is no list 41
 
 
 
-      11 reflections accepted           0 reflections rejected
+       11 reflections accepted           0 reflections rejected
 Upating List 13 for twinned data
 #PURG
  The    Data    file is being rebuilt -
@@ -120,13 +120,13 @@ END
  
    0   0   0
 
-#     11 reflections output
+#       11 reflections output
 #SYST 7 FRIED=NO
  The updated reflections are now on UNIT 52
 
 
 
-     11 reflections accepted               0 reflections rejected
+       11 reflections accepted               0 reflections rejected
 #PUNCH 7 I
 # punching LIST  7 as LIST  7 with all keys set
 #LIST   7
@@ -163,9 +163,9 @@ END
  
    0   0   0
 
-#     11 reflections output
+#       11 reflections output
 #SORT 7
- After   1 pass      11 reflection(s) have been sorted
+ After   1 pass        11 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
 #PUNCH 7 I
 # punching LIST  7 as LIST  7 with all keys set
@@ -203,7 +203,7 @@ END
  
    0   0   0
 
-#     11 reflections output
+#       11 reflections output
 #MERGE 7 TWIN=YES
 
 
@@ -351,9 +351,9 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
 
-    11 Contributors input            0 Contributors rejected
-     6 Merged reflections output     0 Merged reflections rejected
-     0 Contributors deviating from the average by more than   3.0e.s.ds
+      11 Contributors input              0 Contributors rejected
+       6 Merged reflections output       0 Merged reflections rejected
+       0 Contributors deviating from the average by more than   3.0e.s.ds
      6 Reflections greater than 3 sigma(i), 100.000 percent of data
  Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.033
  Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.034
@@ -385,7 +385,7 @@ END
  
    0   0   0
 
-#      6 reflections output
+#        6 reflections output
 #MERGE 7 TWIN=NO
 
 
@@ -517,9 +517,9 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
 
-     6 Contributors input            0 Contributors rejected
-     2 Merged reflections output     0 Merged reflections rejected
-     0 Contributors deviating from the average by more than   3.0e.s.ds
+       6 Contributors input              0 Contributors rejected
+       2 Merged reflections output       0 Merged reflections rejected
+       0 Contributors deviating from the average by more than   3.0e.s.ds
      2 Reflections greater than 3 sigma(i), 100.000 percent of data
  Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.008
  Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.012
@@ -543,14 +543,14 @@ END
  
    0   0   0
 
-#      2 reflections output
+#        2 reflections output
 #TITLE PART 2
 #LIST   7
  The updated reflections are now on UNIT 52
 
 
 
-      11 reflections accepted           0 reflections rejected
+       11 reflections accepted           0 reflections rejected
 Upating List 13 for twinned data
 #PURG
  The    Data    file is being rebuilt -
@@ -565,7 +565,7 @@ Upating List 13 for twinned data
 
 
 
-      11 reflections accepted           0 reflections rejected
+       11 reflections accepted           0 reflections rejected
 Upating List 13 for twinned data
 #   3796 REFLECTIONS OUTPUT
 #PUNCH 7 I
@@ -604,13 +604,13 @@ END
  
    0   0   0
 
-#     11 reflections output
+#       11 reflections output
 #SYST 7 FRIED=YES
  The updated reflections are now on UNIT 52
 
 
 
-     11 reflections accepted               0 reflections rejected
+       11 reflections accepted               0 reflections rejected
 #PUNCH 7 I
 # punching LIST  7 as LIST  7 with all keys set
 #LIST   7
@@ -647,9 +647,9 @@ END
  
    0   0   0
 
-#     11 reflections output
+#       11 reflections output
 #SORT 7
- After   1 pass      11 reflection(s) have been sorted
+ After   1 pass        11 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
 #PUNCH 7 I
 # punching LIST  7 as LIST  7 with all keys set
@@ -687,7 +687,7 @@ END
  
    0   0   0
 
-#     11 reflections output
+#       11 reflections output
 #MERGE 7 TWIN=YES
 
 
@@ -827,9 +827,9 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
 
-    11 Contributors input            0 Contributors rejected
-     3 Merged reflections output     0 Merged reflections rejected
-     0 Contributors deviating from the average by more than   3.0e.s.ds
+      11 Contributors input              0 Contributors rejected
+       3 Merged reflections output       0 Merged reflections rejected
+       0 Contributors deviating from the average by more than   3.0e.s.ds
      3 Reflections greater than 3 sigma(i), 100.000 percent of data
  Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.000
  Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.000
@@ -855,7 +855,7 @@ END
  
    0   0   0
 
-#      3 reflections output
+#        3 reflections output
 #MERGE 7 TWIN=NO
 
 
@@ -981,9 +981,9 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
 
-     3 Contributors input            0 Contributors rejected
-     1 Merged reflections output     0 Merged reflections rejected
-     0 Contributors deviating from the average by more than   3.0e.s.ds
+       3 Contributors input              0 Contributors rejected
+       1 Merged reflections output       0 Merged reflections rejected
+       0 Contributors deviating from the average by more than   3.0e.s.ds
      1 Reflections greater than 3 sigma(i), 100.000 percent of data
  Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.091
  Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.097
@@ -1005,7 +1005,7 @@ END
  
    0   0   0
 
-#      1 reflections output
+#        1 reflections output
 #END
 
 

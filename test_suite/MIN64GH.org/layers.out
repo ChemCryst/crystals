@@ -61,7 +61,7 @@ Bonds: Update required - There is no list 41
 
 
 
-    1866 reflections accepted           0 reflections rejected
+     1866 reflections accepted           0 reflections rejected
 #SYST
 #SORT
 
@@ -104,13 +104,13 @@ Fo/sigma range         -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 rms (Fo/sigma)    2.451   0.857   1.690   3.405   5.459  11.667   0.000
 Number                4       1       2       5       4       1       0
 
-   1849 reflections accepted              17 reflections rejected
+     1849 reflections accepted              17 reflections rejected
 
  Rsigma =  0.035 for     1849 input reflections
 
 Rsigma = sum (sigma(I) / sum (I)
 #MERGE
- After   1 pass    1849 reflection(s) have been sorted
+ After   1 pass      1849 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
 #LIST 6
  The updated reflections are now on UNIT 52
@@ -223,9 +223,9 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
 
-  1849 Contributors input            0 Contributors rejected
-  1133 Merged reflections output     0 Merged reflections rejected
-     0 Contributors deviating from the average by more than   3.0e.s.ds
+    1849 Contributors input              0 Contributors rejected
+    1133 Merged reflections output       0 Merged reflections rejected
+       0 Contributors deviating from the average by more than   3.0e.s.ds
    965 Reflections greater than 3 sigma(i),  85.172 percent of data
  Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.018
  Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.015
@@ -235,7 +235,7 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
 
-    1133 reflections accepted           0 reflections rejected
+     1133 reflections accepted           0 reflections rejected
 #                                         NOFSQ, NOANOM
 #LIST 23
 #USE LAYER.REF
@@ -3944,7 +3944,7 @@ Bonds: Update required - List5 length change
 
 
 
-    1866 reflections accepted           0 reflections rejected
+     1866 reflections accepted           0 reflections rejected
 #SYST
 #SORT
 
@@ -3987,13 +3987,13 @@ Fo/sigma range         -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 rms (Fo/sigma)    2.451   0.857   1.690   3.405   5.459  11.667   0.000
 Number                4       1       2       5       4       1       0
 
-   1849 reflections accepted              17 reflections rejected
+     1849 reflections accepted              17 reflections rejected
 
  Rsigma =  0.035 for     1849 input reflections
 
 Rsigma = sum (sigma(I) / sum (I)
 #MERGE
- After   1 pass    1849 reflection(s) have been sorted
+ After   1 pass      1849 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
 #LIST 6
  The updated reflections are now on UNIT 52
@@ -4106,9 +4106,9 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
 
-  1849 Contributors input            0 Contributors rejected
-  1133 Merged reflections output     0 Merged reflections rejected
-     0 Contributors deviating from the average by more than   3.0e.s.ds
+    1849 Contributors input              0 Contributors rejected
+    1133 Merged reflections output       0 Merged reflections rejected
+       0 Contributors deviating from the average by more than   3.0e.s.ds
    965 Reflections greater than 3 sigma(i),  85.172 percent of data
  Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.018
  Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.015
@@ -4118,7 +4118,7 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
 
-    1133 reflections accepted           0 reflections rejected
+     1133 reflections accepted           0 reflections rejected
 #LIST 23
 #USE LAYER.REF
 # TEST LAYERS.
@@ -7822,7 +7822,7 @@ Bonds: Update required - List5 length change
 
 
 
-    1866 reflections accepted           0 reflections rejected
+     1866 reflections accepted           0 reflections rejected
 #SYST
 #SORT
 
@@ -7865,13 +7865,13 @@ Fo/sigma range         -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 rms (Fo/sigma)    2.451   0.857   1.690   3.405   5.459  11.667   0.000
 Number                4       1       2       5       4       1       0
 
-   1849 reflections accepted              17 reflections rejected
+     1849 reflections accepted              17 reflections rejected
 
  Rsigma =  0.035 for     1849 input reflections
 
 Rsigma = sum (sigma(I) / sum (I)
 #MERGE
- After   1 pass    1849 reflection(s) have been sorted
+ After   1 pass      1849 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
 #LIST 6
  The updated reflections are now on UNIT 52
@@ -7984,9 +7984,9 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
 
-  1849 Contributors input            0 Contributors rejected
-  1133 Merged reflections output     0 Merged reflections rejected
-     0 Contributors deviating from the average by more than   3.0e.s.ds
+    1849 Contributors input              0 Contributors rejected
+    1133 Merged reflections output       0 Merged reflections rejected
+       0 Contributors deviating from the average by more than   3.0e.s.ds
    965 Reflections greater than 3 sigma(i),  85.172 percent of data
  Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.018
  Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.015
@@ -7996,7 +7996,7 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
 
-    1133 reflections accepted           0 reflections rejected
+     1133 reflections accepted           0 reflections rejected
 #LIST 23
 #USE LAYER.REF
 # TEST LAYERS.
@@ -11711,7 +11711,7 @@ Bonds: Update required - List5 length change
 
 
 
-    1866 reflections accepted           0 reflections rejected
+     1866 reflections accepted           0 reflections rejected
 #SYST
 #SORT
 
@@ -11754,13 +11754,13 @@ Fo/sigma range         -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 rms (Fo/sigma)    2.451   0.857   1.690   3.405   5.459  11.667   0.000
 Number                4       1       2       5       4       1       0
 
-   1849 reflections accepted              17 reflections rejected
+     1849 reflections accepted              17 reflections rejected
 
  Rsigma =  0.035 for     1849 input reflections
 
 Rsigma = sum (sigma(I) / sum (I)
 #MERGE
- After   1 pass    1849 reflection(s) have been sorted
+ After   1 pass      1849 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
 #LIST 6
  The updated reflections are now on UNIT 52
@@ -11873,9 +11873,9 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
 
-  1849 Contributors input            0 Contributors rejected
-  1133 Merged reflections output     0 Merged reflections rejected
-     0 Contributors deviating from the average by more than   3.0e.s.ds
+    1849 Contributors input              0 Contributors rejected
+    1133 Merged reflections output       0 Merged reflections rejected
+       0 Contributors deviating from the average by more than   3.0e.s.ds
    965 Reflections greater than 3 sigma(i),  85.172 percent of data
  Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.018
  Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.015
@@ -11885,7 +11885,7 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
 
-    1133 reflections accepted           0 reflections rejected
+     1133 reflections accepted           0 reflections rejected
 #LIST 23
 #USE LAYER.REF
 # TEST LAYERS.

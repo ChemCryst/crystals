@@ -23,7 +23,7 @@ Bonds: Update required - There is no list 41
 
 
 
-      92 reflections accepted           0 reflections rejected
+       92 reflections accepted           0 reflections rejected
 #SFLS
 #LIST 4
 #CLEAR 16
@@ -372,7 +372,7 @@ Bonds: Update required - List5 length change
 
 
 
-     631 reflections accepted           0 reflections rejected
+      631 reflections accepted           0 reflections rejected
 #EDIT
  The following atom(s) will be kept
     C   0      C   1      C   2      C   3      C   4      C   5      C  25
