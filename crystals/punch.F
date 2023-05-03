@@ -1490,6 +1490,7 @@ c
       INCLUDE 'XPDS.INC'
       INCLUDE 'XWORKA.INC'
       INCLUDE 'XLST01.INC'
+      INCLUDE 'XLST02.INC'
       INCLUDE 'XLST05.INC'
       INCLUDE 'XLST09.INC'
       INCLUDE 'XLST06.INC'
@@ -1542,6 +1543,7 @@ C   OPEN A DEFAULT FILE IF ONE ISN'T ALREADY ATTACHED
                  !ALL ELEMENT SCALES ARE IN THE FIRST RECORD
       MD9ES = 0
       IF (KHUNTR(01,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL01
+      IF (KHUNTR(02,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL02
       IF (KHUNTR(13,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL13
       IF (KHUNTR(28,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL28
       IF (KHUNTR(05,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL05
@@ -1920,9 +1922,9 @@ C
       ENDIF
       GOTO 1840
 1850  CONTINUE
-      WRITE(NCFPU1,'(''# No of reflections output = '',I6)') IDREF
-      WRITE(NCFPU1,'(''# No of reflections in LSQ = '',I6)') NINCL
-      WRITE(NCFPU1,'(''# No of reflections excluded = '',I6)') IDREF-NINCL
+      WRITE(NCFPU1,'(''# No of reflections output = '',I8)') IDREF
+      WRITE(NCFPU1,'(''# No of reflections in LSQ = '',I8)') NINCL
+      WRITE(NCFPU1,'(''# No of reflections excluded = '',I8)') IDREF-NINCL
       WRITE(NCFPU1,'(
      1 ''# Reflections can be excluded for several reasons'')')
 C      WRITE(NCFPU1,'(''# Ratio Unique/Expected Reflections ='',F6.3)')
@@ -1931,11 +1933,15 @@ C     1 FLOAT(IDREF)/NINCL
      1 '' Maximum theta used='',f6.2)') THMAXL6
       WRITE(NCFPU1,'(''#  '',5(1X,A,A,I6))')
      1 (CALW(I),' = ',MALW(I),I=1,5)
-      djw2=(FLOAT(IDREF)/NINCL)-1.
+c
+c
+      djw1=(FLOAT(IDREF)/NINCL)
+      djw2=djw1-1.
       djw3=abs(djw2-nint(djw2))
+      djw4=2.-store(l2c)        !1 for centro, 2 for non-centro
       CALL OUTCOL(9)
       IVRF1=0
-      IF(DJW3.GE.0.1) THEN
+      IF((DJW3.GE.0.1) .or. (djw1.gt.djw2)) THEN
       IVRF1=1
        WRITE(CMON,'(/
      1 '' You may get a PLATON warning::''/
@@ -1966,11 +1972,12 @@ C
      1 ''PROBLEM: Ratio Unique / Expected Reflections too High''/
      1 ''RESPONSE: ...''/
      1 ''The fcf file contains all the merged data ('',I7 ,'') ''/
-     1 ''but only'',I7,'' of them are marked as "included". ''/
-     1   I7,'' are flagged "h" i.e. rejected high angle ''/
-     1 ''reflections, also marked "excluded".''
+     1 ''but only'',I7,'' of them are marked as "incl". ''/
+     1   I7,'' are flagged "h" i.e. rejected high angle reflections''/
+     1 ''also marked "excl".''/
      1 ''This information is embedded as a #comment ''/
-     1 '' at the end of the fcf file.  ''/
+     1 ''at the end of the fcf file.  ''/
+     1 ''Checkcif/PLATON do not yet make use of the "incl" flag ''/
      1 ''See _refine_special_details for the filters used''/
      1 '';''/
      1 ''# end Validation Reply Form''/
@@ -1985,10 +1992,11 @@ C
      1 ''RESPONSE: ...''/
      1 ''The fcf file contains all the merged data''
      1 '' (Thetamax='',F6.2,'') ''/
-     1 ''but only some of them marked as "included" '',
+     1 ''but only some of them marked as "incl" '',
      1 ''in the refinement (Thetaused='',F6.2,''). ''/
      1 ''This information is also embedded as a #comment''/
      1 ''at the end of the fcf file.  ''/
+     1 ''Checkcif/PLATON do not yet make use of the "incl" flag ''/
      1 ''See _refine_special_details for the filters used''/
      1 '';''/
      1 ''# end Validation Reply Form''/
@@ -2298,8 +2306,8 @@ c todo Jul2020 if k=4 (Fo), check if it will fit F8
 c      I = -512
 c      WRITE(NCPU,'(I4)')I
       WRITE(NCPU,'(3I4/)')0,0,0        !July 2020, for PLATON
-      WRITE(NCPU,'(A,I6,A)') '# ', NREF, ' reflections output'
-      WRITE(CMON,'(a,I6,a)') '  ', nref, ' reflections output'
+      WRITE(NCPU,'(A,I8,A)') '# ', NREF, ' reflections output'
+      WRITE(CMON,'(a,I8,a)') '  ', nref, ' reflections output'
       CALL XPRVDU(NCVDU, 1,0)
       RETURN
 C

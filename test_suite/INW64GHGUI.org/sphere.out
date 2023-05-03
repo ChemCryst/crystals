@@ -55,7 +55,7 @@ Space group symbol is   P    -4   3    N
 
 
 
-     525 reflections accepted           0 reflections rejected
+      525 reflections accepted           0 reflections rejected
 #CLOSE HKLI
 #SYSTEMATIC
 
@@ -139,7 +139,7 @@ Fo/sigma range         -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 rms (Fo/sigma)    1.150   0.466   1.613   2.949   5.603  12.402  25.855
 Number               12       6      11      10      11       5       3
 
-    467 reflections accepted              58 reflections rejected
+      467 reflections accepted              58 reflections rejected
 
  Rsigma =  0.027 for      467 input reflections
 
@@ -148,7 +148,7 @@ Rsigma = sum (sigma(I) / sum (I)
  Rsigma has changed from its old value of 0.028 to  0.027 for    467 input reflections
 
 #SORT
- After   1 pass     467 reflection(s) have been sorted
+ After   1 pass       467 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
 #MERGE
 
@@ -269,9 +269,9 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
 
-   467 Contributors input            0 Contributors rejected
-   300 Merged reflections output     0 Merged reflections rejected
-     0 Contributors deviating from the average by more than   3.0e.s.ds
+     467 Contributors input              0 Contributors rejected
+     300 Merged reflections output       0 Merged reflections rejected
+       0 Contributors deviating from the average by more than   3.0e.s.ds
    275 Reflections greater than 3 sigma(i),  91.667 percent of data
  Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.015
  Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.013
@@ -1798,7 +1798,7 @@ Space group symbol is   P    -4   3    N
 
 
 
-     525 reflections accepted           0 reflections rejected
+      525 reflections accepted           0 reflections rejected
 #CLOSE HKLI
 #SYSTEMATIC
 
@@ -1882,7 +1882,7 @@ Fo/sigma range         -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 rms (Fo/sigma)    1.150   0.466   1.613   2.949   5.603  12.402  25.855
 Number               12       6      11      10      11       5       3
 
-    467 reflections accepted              58 reflections rejected
+      467 reflections accepted              58 reflections rejected
 
  Rsigma =  0.027 for      467 input reflections
 
@@ -1891,7 +1891,7 @@ Rsigma = sum (sigma(I) / sum (I)
  Rsigma has changed from its old value of 0.028 to  0.027 for    467 input reflections
 
 #SORT
- After   1 pass     467 reflection(s) have been sorted
+ After   1 pass       467 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
 #MERGE
 
@@ -2012,9 +2012,9 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
 
-   467 Contributors input            0 Contributors rejected
-   300 Merged reflections output     0 Merged reflections rejected
-     0 Contributors deviating from the average by more than   3.0e.s.ds
+     467 Contributors input              0 Contributors rejected
+     300 Merged reflections output       0 Merged reflections rejected
+       0 Contributors deviating from the average by more than   3.0e.s.ds
    275 Reflections greater than 3 sigma(i),  91.667 percent of data
  Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.015
  Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.013
@@ -3536,7 +3536,7 @@ Space group symbol is   P    -4   3    N
 
 
 
-     525 reflections accepted           0 reflections rejected
+      525 reflections accepted           0 reflections rejected
 #CLOSE HKLI
 #SYSTEMATIC
 
@@ -3620,7 +3620,7 @@ Fo/sigma range         -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 rms (Fo/sigma)    1.150   0.466   1.613   2.949   5.603  12.402  25.855
 Number               12       6      11      10      11       5       3
 
-    467 reflections accepted              58 reflections rejected
+      467 reflections accepted              58 reflections rejected
 
  Rsigma =  0.027 for      467 input reflections
 
@@ -3629,7 +3629,7 @@ Rsigma = sum (sigma(I) / sum (I)
  Rsigma has changed from its old value of 0.028 to  0.027 for    467 input reflections
 
 #SORT
- After   1 pass     467 reflection(s) have been sorted
+ After   1 pass       467 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
 #MERGE
 
@@ -3750,9 +3750,9 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
 
-   467 Contributors input            0 Contributors rejected
-   300 Merged reflections output     0 Merged reflections rejected
-     0 Contributors deviating from the average by more than   3.0e.s.ds
+     467 Contributors input              0 Contributors rejected
+     300 Merged reflections output       0 Merged reflections rejected
+       0 Contributors deviating from the average by more than   3.0e.s.ds
    275 Reflections greater than 3 sigma(i),  91.667 percent of data
  Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.015
  Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.013
@@ -5268,7 +5268,7 @@ Space group symbol is   P    -4   3    N
 
 
 
-     525 reflections accepted           0 reflections rejected
+      525 reflections accepted           0 reflections rejected
 #CLOSE HKLI
 #SYSTEMATIC
 
@@ -5352,7 +5352,7 @@ Fo/sigma range         -ve     1.0     2.0     4.0     8.0    16.0  Remainder
 rms (Fo/sigma)    1.150   0.466   1.613   2.949   5.603  12.402  25.855
 Number               12       6      11      10      11       5       3
 
-    467 reflections accepted              58 reflections rejected
+      467 reflections accepted              58 reflections rejected
 
  Rsigma =  0.027 for      467 input reflections
 
@@ -5361,7 +5361,7 @@ Rsigma = sum (sigma(I) / sum (I)
  Rsigma has changed from its old value of 0.028 to  0.027 for    467 input reflections
 
 #SORT
- After   1 pass     467 reflection(s) have been sorted
+ After   1 pass       467 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
 #MERGE
 
@@ -5482,9 +5482,9 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
 
-   467 Contributors input            0 Contributors rejected
-   300 Merged reflections output     0 Merged reflections rejected
-     0 Contributors deviating from the average by more than   3.0e.s.ds
+     467 Contributors input              0 Contributors rejected
+     300 Merged reflections output       0 Merged reflections rejected
+       0 Contributors deviating from the average by more than   3.0e.s.ds
    275 Reflections greater than 3 sigma(i),  91.667 percent of data
  Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.015
  Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.013

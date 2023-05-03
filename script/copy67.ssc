@@ -1,4 +1,5 @@
 %SCRIPT COPY67
+
 % VARIABLE LOGICAL T
 % IF FILEEXISTS ( 'tmp/list7.tmp' ) THEN 
 %    EVALUATE T = FILEDELETE ( 'tmp/list7.tmp' )                                             

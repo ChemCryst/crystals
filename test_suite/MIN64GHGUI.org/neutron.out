@@ -74,7 +74,7 @@ Bonds: Update required - There is no list 41
 
 
 
-    2373 reflections accepted         174 reflections rejected
+     2373 reflections accepted         174 reflections rejected
 #CLOSE HKLI
 #SYSTEMATIC
 #LIST 28
@@ -84,13 +84,13 @@ Bonds: Update required - There is no list 41
 
 
 
-   2373 reflections accepted               0 reflections rejected
+     2373 reflections accepted               0 reflections rejected
 
  Rsigma =  0.048 for     2373 input reflections
 
 Rsigma = sum (sigma(I) / sum (I)
 #MERGE
- After   1 pass    2373 reflection(s) have been sorted
+ After   1 pass      2373 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
 #LIST 6
 
@@ -211,9 +211,9 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
 
-  2373 Contributors input            0 Contributors rejected
-  2373 Merged reflections output     0 Merged reflections rejected
-     0 Contributors deviating from the average by more than   3.0e.s.ds
+    2373 Contributors input              0 Contributors rejected
+    2373 Merged reflections output       0 Merged reflections rejected
+       0 Contributors deviating from the average by more than   3.0e.s.ds
   1732 Reflections greater than 3 sigma(i),  72.988 percent of data
  Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.000
  Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.000
@@ -223,7 +223,7 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
 
-    2373 reflections accepted           0 reflections rejected
+     2373 reflections accepted           0 reflections rejected
 #WEIGHT
                      LIST 4 weighting type is NORMAL
 #USE NEUTRON.REF
@@ -4813,7 +4813,7 @@ Space group symbol is   P    1    21/N 1
 
 
 
-    2373 reflections accepted         174 reflections rejected
+     2373 reflections accepted         174 reflections rejected
 #CLOSE HKLI
 #SYSTEMATIC
 #SORT
@@ -4821,13 +4821,13 @@ Space group symbol is   P    1    21/N 1
 
 
 
-   2373 reflections accepted               0 reflections rejected
+     2373 reflections accepted               0 reflections rejected
 
  Rsigma =  0.048 for     2373 input reflections
 
 Rsigma = sum (sigma(I) / sum (I)
 #MERGE
- After   1 pass    2373 reflection(s) have been sorted
+ After   1 pass      2373 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
 #LIST 6
 
@@ -4948,9 +4948,9 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
 
-  2373 Contributors input            0 Contributors rejected
-  2373 Merged reflections output     0 Merged reflections rejected
-     0 Contributors deviating from the average by more than   3.0e.s.ds
+    2373 Contributors input              0 Contributors rejected
+    2373 Merged reflections output       0 Merged reflections rejected
+       0 Contributors deviating from the average by more than   3.0e.s.ds
   1732 Reflections greater than 3 sigma(i),  72.988 percent of data
  Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.000
  Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.000
@@ -4960,7 +4960,7 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
 
-    2373 reflections accepted           0 reflections rejected
+     2373 reflections accepted           0 reflections rejected
 #WEIGHT
                      LIST 4 weighting type is NORMAL
 #USE NEUTRON.REF
@@ -9544,7 +9544,7 @@ Space group symbol is   P    1    21/N 1
 
 
 
-    2373 reflections accepted         174 reflections rejected
+     2373 reflections accepted         174 reflections rejected
 #CLOSE HKLI
 #SYSTEMATIC
 #SORT
@@ -9552,13 +9552,13 @@ Space group symbol is   P    1    21/N 1
 
 
 
-   2373 reflections accepted               0 reflections rejected
+     2373 reflections accepted               0 reflections rejected
 
  Rsigma =  0.048 for     2373 input reflections
 
 Rsigma = sum (sigma(I) / sum (I)
 #MERGE
- After   1 pass    2373 reflection(s) have been sorted
+ After   1 pass      2373 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
 #LIST 6
 
@@ -9679,9 +9679,9 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
 
-  2373 Contributors input            0 Contributors rejected
-  2373 Merged reflections output     0 Merged reflections rejected
-     0 Contributors deviating from the average by more than   3.0e.s.ds
+    2373 Contributors input              0 Contributors rejected
+    2373 Merged reflections output       0 Merged reflections rejected
+       0 Contributors deviating from the average by more than   3.0e.s.ds
   1732 Reflections greater than 3 sigma(i),  72.988 percent of data
  Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.000
  Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.000
@@ -9691,7 +9691,7 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
 
-    2373 reflections accepted           0 reflections rejected
+     2373 reflections accepted           0 reflections rejected
 #WEIGHT
                      LIST 4 weighting type is 1/FO
 #USE NEUTRON.REF
@@ -14043,7 +14043,7 @@ Space group symbol is   P    1    21/N 1
 
 
 
-    2373 reflections accepted         174 reflections rejected
+     2373 reflections accepted         174 reflections rejected
 #CLOSE HKLI
 #SYSTEMATIC
 #SORT
@@ -14051,13 +14051,13 @@ Space group symbol is   P    1    21/N 1
 
 
 
-   2373 reflections accepted               0 reflections rejected
+     2373 reflections accepted               0 reflections rejected
 
  Rsigma =  0.048 for     2373 input reflections
 
 Rsigma = sum (sigma(I) / sum (I)
 #MERGE
- After   1 pass    2373 reflection(s) have been sorted
+ After   1 pass      2373 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
 #LIST 6
 
@@ -14178,9 +14178,9 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
 
-  2373 Contributors input            0 Contributors rejected
-  2373 Merged reflections output     0 Merged reflections rejected
-     0 Contributors deviating from the average by more than   3.0e.s.ds
+    2373 Contributors input              0 Contributors rejected
+    2373 Merged reflections output       0 Merged reflections rejected
+       0 Contributors deviating from the average by more than   3.0e.s.ds
   1732 Reflections greater than 3 sigma(i),  72.988 percent of data
  Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.000
  Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.000
@@ -14190,7 +14190,7 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
 
-    2373 reflections accepted           0 reflections rejected
+     2373 reflections accepted           0 reflections rejected
 #WEIGHT
                      LIST 4 weighting type is 1/FO
 #USE NEUTRON.REF

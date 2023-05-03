@@ -937,7 +937,7 @@ C
       CALL XPRVDU(NCVDU, 1,0)
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , '(A)' ) trim(CMON(1))
 c      WRITE ( NCAWU , '(A)' ) trim(CMON(1))
-2650  FORMAT ( 1X , I6 , ' reflections accepted' , 10X , I6 ,
+2650  FORMAT ( 1X , I8 , ' reflections accepted' , 10X , I6 ,
      2 ' reflections rejected' )
 C
 2610  CONTINUE

@@ -2052,6 +2052,7 @@ C
       CHARACTER *8 CNAME(35)
       character(len=15) :: hkllab
 
+      INCLUDE 'ICOM30.INC'
       INCLUDE 'ICOM39.INC'
       DIMENSION KEY(35)
       INCLUDE 'ISTORE.INC'
@@ -2060,6 +2061,7 @@ C
       INCLUDE 'XLST05.INC'
       INCLUDE 'XLST13.INC'
       INCLUDE 'XLST23.INC'
+      INCLUDE 'XLST30.INC'
       INCLUDE 'XLST39.INC'
 C
       INCLUDE 'XLST01.INC'
@@ -2072,6 +2074,7 @@ C
 C
       INCLUDE 'QSTORE.INC'
       INCLUDE 'QLST39.INC'
+      INCLUDE 'QLST30.INC'
 C
       integer, dimension(:), allocatable :: sort_keys
       real, dimension(:,:), allocatable :: reflections, omitted, temp2d     
@@ -2110,6 +2113,9 @@ C
       ENDIF
       IF (KHUNTR (23,0, IADDL,IADDR,IADDD, -1) .LT. 0) THEN
             IF (KEXIST(23) .GT. 0) CALL XFAL23
+      ENDIF
+      IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .LT. 0) THEN
+            IF (KEXIST(30) .GT. 0) CALL XFAL30
       ENDIF
       IF (KHUNTR (39,0, IADDL,IADDR,IADDD, -1) .LT. 0) THEN
             IF (KEXIST(39) .GT. 0) CALL XFAL39
@@ -2212,11 +2218,11 @@ C
       SCALESQ = SCALE*SCALE
       FSCALE = 1./(SCALE*SCALE)
       TOP = 0.0
-      SIGBOTTOM = 0.0
       BOTTOM = 0.0
       WTOP = 0.0
       WBOT = 0.0
       SIGTOP = 0.0
+      SIGBOTTOM = 0.0
       N6ACC = 0
       PLOTMAX = 0
       omitindex = 0
@@ -2420,8 +2426,8 @@ c      write(123,*) 'sum L 6', sigtop, sigbottom, rsigm
       IF (ISSPRT .EQ. 0) WRITE ( NCWU , 1215 ) IULN, N6D , N6ACC
       WRITE ( CMON , 1215 ) IULN, N6D, N6ACC
       CALL XPRVDU(NCVDU, 1,0)
-1215  FORMAT ( 1X , 'List 'I3,' contains ' , I6 , ' reflections' ,
-     1 ' of which ' , I6 , ' are accepted by LIST 28')
+1215  FORMAT ( 1X , 'List 'I3,' contains ' , I8 , ' reflections' ,
+     1 ' of which ' , I8 , ' are accepted by LIST 28')
 C
 C
 C -- PRINT THE R VALUE ETC.
@@ -2437,7 +2443,24 @@ C -- PRINT THE R VALUE ETC.
      3 1X , ' R =  ' , F6.2 , 5X , 'Weighted R = ' , F6.2 ,
      4 5X , 'Minimisation function = ' , E15.6, / ,
      5     ' Rsigma=', F6.2,' for',i9,' accepted reflections' )
-
+c djw 2022 -------------------------
+c      goto 9191
+          IF(STORE(L30DR+1).GT. ZERO) then
+           IF(ABS(STORE(L30DR+1)-RSIGM).GT.0.0005) THEN
+            WRITE(CMON,'(A,A,F6.3,A,F6.3,A,I6,A)')
+     1      ' Rsigma has changed from',
+     2      ' its old value of',store(l30dr+1),' to ', rsigm,
+     3      ' for ',n6acc, ' used reflections'
+            CALL OUTCOL(3)
+            call xprvdu (ncvdu,1,0)
+            CALL OUTCOL(1)
+            if (issprt.eq.0) write (ncwu,'(/a/)')TRIM(cmon(1))
+           ENDIF
+           STORE(L30DR+1)=RSIGM    
+           CALL XWLSTD ( 30, ICOM30, IDIM30, -1, -1)
+          ENDIF
+c9191  continue
+c-------------------------
 
       IF ( LEVEL.EQ.5 ) THEN
 

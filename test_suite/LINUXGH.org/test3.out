@@ -91,7 +91,7 @@ Space group symbol is   P    1
 
 
 
-       3 reflections accepted           0 reflections rejected
+        3 reflections accepted           0 reflections rejected
          3 reflections have sintheta/lambda > 1.0
 # COMMENT
 #PRINT 6 C
@@ -200,7 +200,7 @@ Space group symbol is   P    1
 
 
 
-       6 reflections accepted           0 reflections rejected
+        6 reflections accepted           0 reflections rejected
 
  Rsigma has changed from its old value of 2.184 to  0.000
 
@@ -356,7 +356,7 @@ Space group symbol is   P    1
 
 
 
-       9 reflections accepted           0 reflections rejected
+        9 reflections accepted           0 reflections rejected
          3 reflections have sintheta/lambda > 1.0
 #PRINT 6
 
@@ -556,7 +556,7 @@ Space group symbol is   P    1
 
 
 
-       3 reflections accepted           0 reflections rejected
+        3 reflections accepted           0 reflections rejected
 
  Rsigma has changed from its old value of 2.092 to  2.184
 
@@ -587,7 +587,7 @@ Space group symbol is   P    1
 
 
 
-      82 reflections accepted          14 reflections rejected
+       82 reflections accepted          14 reflections rejected
 
  Rsigma has changed from its old value of 2.184 to  0.152
 
@@ -736,7 +736,7 @@ Bad index near reflection        278       512         0         0
 
 
 
-     278 reflections accepted           1 reflections rejected
+      278 reflections accepted           1 reflections rejected
 
  Rsigma has changed from its old value of 0.152 to  0.000
 
@@ -1121,7 +1121,7 @@ Bad index near reflection        278       512         0         0
 
 
 
-     270 reflections accepted           0 reflections rejected
+      270 reflections accepted           0 reflections rejected
        251 reflections have sintheta/lambda > 1.0
 #PRINT 6
 
@@ -1297,7 +1297,7 @@ Bad index near reflection        278       512         0         0
 
 
 
-     270 reflections accepted           0 reflections rejected
+      270 reflections accepted           0 reflections rejected
        251 reflections have sintheta/lambda > 1.0
 #PRINT 6
 
@@ -1474,7 +1474,7 @@ Bad index near reflection        278       512         0         0
 
 
 
-     270 reflections accepted           0 reflections rejected
+      270 reflections accepted           0 reflections rejected
 Upating List 13 for twinned data
        251 reflections have sintheta/lambda > 1.0
 #PRINT 6 C
@@ -3151,7 +3151,7 @@ Upating List 13 for twinned data
 
 
 
-       8 reflections accepted           0 reflections rejected
+        8 reflections accepted           0 reflections rejected
 Upating List 13 for twinned data
          6 reflections have sintheta/lambda > 1.0
 #LIST 1
@@ -3286,7 +3286,7 @@ Upating List 13 for twinned data
 
 
 
-       9 reflections accepted           0 reflections rejected
+        9 reflections accepted           0 reflections rejected
          3 reflections have sintheta/lambda > 1.0
 #LIST 1
 #LIST 13
@@ -3334,7 +3334,7 @@ Upating List 13 for twinned data
 
 #LP
  The updated reflections are now on UNIT 52
-      9 reflections accepted               0 reflections rejected
+        9 reflections accepted               0 reflections rejected
 #PRINT 6
 
 
@@ -3403,7 +3403,7 @@ Upating List 13 for twinned data
 
 
 
-      92 reflections accepted           0 reflections rejected
+       92 reflections accepted           0 reflections rejected
 #LIST 1
 #LIST 13
 
@@ -3417,7 +3417,7 @@ Upating List 13 for twinned data
 [89]                         0.00     0.00     1.00
 #LP
  The updated reflections are now on UNIT 52
-     92 reflections accepted               0 reflections rejected
+       92 reflections accepted               0 reflections rejected
 #PRINT 6
 
 
@@ -4601,8 +4601,8 @@ SCAL   099.21****** 0.767 0.501 0 0.078 0.061 0.065 0.03 0.01-0.02     0.000    
                 0.04694   -0.89902   0.35800  -0.25219   -0.96018   0.35800  -0.25219
                 0.05401   -0.41605  -0.51859   0.74697   -0.11418  -0.51859   0.74697   0.04563   0.04500   0.07055                        
 
- C        2.    0.04516   -0.46139  -0.40017  -0.79182   -0.21103  -0.40017  -0.79182
-                0.05734    0.55328  -0.82747   0.09580    0.88388  -0.82747   0.09580
+ C        2.    0.04516    0.46139   0.40017   0.79182    0.21103   0.40017   0.79182
+                0.05734   -0.55328   0.82747  -0.09580   -0.88388   0.82747  -0.09580
                 0.07489   -0.69354  -0.39390   0.60319   -0.41740  -0.39390   0.60319   0.05913   0.05789   0.09510                        
 
  C        3.    0.04221    0.82152   0.39211   0.41395    0.53036   0.39211   0.41395
@@ -4641,8 +4641,8 @@ SCAL   099.21****** 0.767 0.501 0 0.078 0.061 0.065 0.03 0.01-0.02     0.000    
                 0.06210    0.20122   0.59602   0.77735   -0.11134   0.59602   0.77735
                 0.10080   -0.02943  -0.78954   0.61299    0.35519  -0.78954   0.61299   0.06818   0.06387   0.15040                        
 
- C       12.    0.04208   -0.74952   0.04612   0.66037   -0.67875   0.04612   0.66037
-                0.05946    0.54175   0.61602   0.57186    0.17727   0.61602   0.57186
+ C       12.    0.04208    0.74952  -0.04612  -0.66037    0.67875  -0.04612  -0.66037
+                0.05946   -0.54175  -0.61602  -0.57186   -0.17727  -0.61602  -0.57186
                 0.08063   -0.38043   0.78638  -0.48671   -0.71266   0.78638  -0.48671   0.06072   0.05865   0.11395                        
 
  C       13.    0.03804    0.19063   0.82474   0.53240   -0.23098   0.82474   0.53240
@@ -5604,27 +5604,27 @@ AZIMUTH  =    59.34     AZIMUTH /100 =   0.5934
 
 
 
-         C.5.........                                                                                                  
-          .          ..C.6                                                                                             
-         .               .                                                                                             
+        C.3...........C.2                                                                                              
+         .              .                                                                                              
+        .                .                                                                                             
         .                 .                                                                                            
        .                   .                                                                                           
       .                    .                                                                                           
       .                     .                                                                                          
      .                       .                                                                                         
-    .                        .                                                                                         
-  C.4                         .                                                                                        
-   .                          C.1                                                                                      
     .                         .                                                                                        
-     .                        .                                                                                        
-     .                       .                                                                                         
+    .                         C.1                                                                                      
+  C.4                         .                                                                                        
+    .                         .                                                                                        
+    .                        .                                                                                         
+     .                      .                                                                                          
       .                     .                                                                                          
        .                   .                                                                                           
-       .                  .                                                                                            
-        .                .                                                                                             
+        .                 .                                                                                            
+        .                 .                                                                                            
          .               .                                                                                             
-        C.3...........  .                                                                                              
-                      C.2                                                                                              
+          . ...........C.6                                                                                             
+         C.5                                                                                                           
 #TORSION
 
 
@@ -5670,12 +5670,12 @@ AZIMUTH  =    59.34     AZIMUTH /100 =   0.5934
 
 
 
-     270 reflections accepted           0 reflections rejected
+      270 reflections accepted           0 reflections rejected
 Upating List 13 for twinned data
 #LIST 25
 #SORT
 #REORDER
- After   1 pass     270 reflection(s) have been sorted
+ After   1 pass       270 reflection(s) have been sorted
  The updated reflections are now on UNIT 52
 #LIST 12
  The updated reflections are now on UNIT 53
@@ -6262,7 +6262,7 @@ LS-scale= 11.239   Wilson Scale=  0.000
 The slope and correlation coefficient should be small
 [11]  Slope =    -3376.3  Intercept = 2538920  C-Coef=      -0.0
 
- Agreement analysis on scale of Fo, Scale =  11.24
+ Agreement analysis on scale of Fo, Scale =  11.24 Fo=sign(Fo^2) x sqrt(abs(Fo^2))
  Delta = Fo-Fc
 
 
@@ -6347,6 +6347,9 @@ The slope and correlation coefficient should be small
                                                                                                               .
 [65]      TOTALS           270     39403.      34947.        0.358E+04       0.210E+07    27.04   72.81     .  .  *  .  .
                                                                                                        -2 -1  0  1  2
+
+
+
 #ANALYSE
 #WEIGHT
                      LIST 4 weighting type is NORMAL
@@ -6443,7 +6446,7 @@ The slope and correlation coefficient should be small
 The slope and correlation coefficient should be small
 [11]  Slope =        0.0  Intercept =      -00  C-Coef=       0.1
 
- Agreement analysis on scale of Fo, Scale =  11.24
+ Agreement analysis on scale of Fo, Scale =  11.24 Fo=sign(Fo^2) x sqrt(abs(Fo^2))
  Delta = Fo-Fc
 
 
@@ -6528,6 +6531,9 @@ The slope and correlation coefficient should be small
                                                                                                               .
 [65]      TOTALS           270     39403.      34947.        0.358E+04       0.101E+01    27.04   39.36     .  .  *  .  .
                                                                                                        -2 -1  0  1  2
+
+
+
 #LIST 1
 #LIST 2
 #LIST 3
@@ -6539,9 +6545,9 @@ The slope and correlation coefficient should be small
 
 
 
-     220 reflections accepted           0 reflections rejected
+      220 reflections accepted           0 reflections rejected
 #SORT
- After   1 pass     220 reflection(s) have been sorted
+ After   1 pass       220 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
 #PRINT 6
 
@@ -7626,7 +7632,7 @@ Inter cycle Rw                   -5.0            5.2           0.10E+03
 
 
 
-     735 reflections accepted           0 reflections rejected
+      735 reflections accepted           0 reflections rejected
 #LIST 5
 #LIST 12
 #LIST 23
@@ -8423,7 +8429,7 @@ ___________
 
 
 
-      92 reflections accepted           0 reflections rejected
+       92 reflections accepted           0 reflections rejected
 #LIST 5
 #LIST 12
 #CLEAR 16

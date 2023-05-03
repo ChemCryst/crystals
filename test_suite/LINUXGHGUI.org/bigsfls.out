@@ -55,7 +55,7 @@ Bonds: Update required - There is no list 41
 
 
 
-   12575 reflections accepted           0 reflections rejected
+    12575 reflections accepted           0 reflections rejected
 #DISK
 #LIST 12
 #LIST 22
@@ -1610,12 +1610,12 @@ ___________
   12.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
 
             Atom       S(I) L TX TY TZ     Delta
-           C     221     1  1  0  0  0    -0.011
-           C     222     1  1  0  0  0     0.006
-           C     223     1  1  0  0  0    -0.001
-           C     224     1  1  0  0  0     0.002
-           C     225     1  1  0  0  0    -0.007
-           C     226     1  1  0  0  0     0.012
+           C     221     1  1  0  0  0     0.011
+           C     222     1  1  0  0  0    -0.006
+           C     223     1  1  0  0  0     0.001
+           C     224     1  1  0  0  0    -0.002
+           C     225     1  1  0  0  0     0.007
+           C     226     1  1  0  0  0    -0.012
           - Derivatives not found, do a refinement cycle to get leverages -
 [41]       Mean value =   0.0000  Mean delta =   0.0000  r.m.s. delta =   0.00
 ___________
@@ -1757,12 +1757,12 @@ ___________
   21.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
 
             Atom       S(I) L TX TY TZ     Delta
-           C     321     1  1  0  0  0     0.005
+           C     321     1  1  0  0  0    -0.005
            C     322     1  1  0  0  0     0.000
-           C     323     1  1  0  0  0    -0.006
-           C     324     1  1  0  0  0     0.008
-           C     325     1  1  0  0  0    -0.004
-           C     326     1  1  0  0  0    -0.003
+           C     323     1  1  0  0  0     0.006
+           C     324     1  1  0  0  0    -0.008
+           C     325     1  1  0  0  0     0.004
+           C     326     1  1  0  0  0     0.003
           - Derivatives not found, do a refinement cycle to get leverages -
 [41]       Mean value =   0.0000  Mean delta =   0.0000  r.m.s. delta =   0.00
 ___________
@@ -1906,12 +1906,12 @@ ___________
   30.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
 
             Atom       S(I) L TX TY TZ     Delta
-           C     421     1  1  0  0  0    -0.007
-           C     422     1  1  0  0  0     0.002
-           C     423     1  1  0  0  0     0.003
-           C     424     1  1  0  0  0    -0.004
+           C     421     1  1  0  0  0     0.007
+           C     422     1  1  0  0  0    -0.002
+           C     423     1  1  0  0  0    -0.003
+           C     424     1  1  0  0  0     0.004
            C     425     1  1  0  0  0     0.000
-           C     426     1  1  0  0  0     0.005
+           C     426     1  1  0  0  0    -0.005
           - Derivatives not found, do a refinement cycle to get leverages -
 [41]       Mean value =   0.0000  Mean delta =   0.0000  r.m.s. delta =   0.00
 ___________
@@ -1955,12 +1955,12 @@ ___________
   33.   Restrain the following atoms to be   0.000  Angstrom from their mean plane, with an E.S.D. of   0.010
 
             Atom       S(I) L TX TY TZ     Delta
-           C     431     1  1  0  0  0    -0.023
-           C     432     1  1  0  0  0     0.002
-           C     433     1  1  0  0  0     0.016
-           C     434     1  1  0  0  0    -0.012
-           C     435     1  1  0  0  0    -0.009
-           C     436     1  1  0  0  0     0.027
+           C     431     1  1  0  0  0     0.023
+           C     432     1  1  0  0  0    -0.002
+           C     433     1  1  0  0  0    -0.016
+           C     434     1  1  0  0  0     0.012
+           C     435     1  1  0  0  0     0.009
+           C     436     1  1  0  0  0    -0.027
           - Derivatives not found, do a refinement cycle to get leverages -
 [41]       Mean value =   0.0000  Mean delta =   0.0000  r.m.s. delta =   0.01
 ___________

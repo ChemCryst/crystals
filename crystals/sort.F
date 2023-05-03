@@ -276,7 +276,7 @@ C--FIND THE NEXT H BRANCH
       IF (ISSPRT .EQ. 0)WRITE ( NCWU, 3200 ) IPASS, CPASS(I), NR
       WRITE ( CMON, 3200 ) IPASS , CPASS(I) , NR
       CALL XPRVDU(NCVDU, 1,0)
-3200  FORMAT ( 1X , 'After ' , I3 , ' pass' , A , I6 ,
+3200  FORMAT ( 1X , 'After ' , I3 , ' pass' , A , I8 ,
      2 ' reflection(s) have been sorted' )
       IF(NR-NN)1200,3250,3250
 C--END OF THE REFLECTION PROCESSING

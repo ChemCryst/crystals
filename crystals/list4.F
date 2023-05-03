@@ -2232,7 +2232,7 @@ CNOV98----- SIGMA THRESHOLD
 1702      CONTINUE
          ENDIF
 C
-C WRITE OUT THE HEATMAP
+C WRITE OUT THE HEATMAP 
       MAPOUT: IF (IMAP.eq.1) THEN
        IF ((ISSPRT.EQ.0) .AND. (LEVEL.EQ.0)) THEN
        write(ncwu,'(//)')
@@ -2258,17 +2258,17 @@ C WRITE OUT THE HEATMAP
 C
 C COMPUTE SHELDRICK K
        IF ((ISSPRT.EQ.0) .AND. (LEVEL.EQ.0)) THEN
-       write(ncwu,'(A/)')
-     1 '100*<Fo>/<Fc> for bins with more than 3 items'
-       write(ncwu,'(A/)')'Values should be close to 100'
-       write(ncwu,'(/6x,25f6.1)') (fint(j),j=1,IFMAX)
+        write(ncwu,'(A/)')
+     1  '100*<Fo>/<Fc> for bins with more than 3 items'
+        write(ncwu,'(A/)')'Values should be close to 100'
+        write(ncwu,'(/6x,25f6.1)') (fint(j),j=1,IFMAX)
        ENDIF
        write(NCPU,'(A/)')
      1 '100*<Fo>/<Fc> for bins with more than 3 items'
        write(NCPU,'(/6x,25f6.1)') (fint(j),j=1,IFMAX)
        IF ((ISSPRT.EQ.0) .AND. (LEVEL.EQ.0)) write(ncwu,'(/)')
-       write(NCPU,'(/)')
-       DO K=1,IRESMAX
+        write(NCPU,'(/)')
+        DO K=1,IRESMAX
          DO J=1,IFMAX
            IF(HMAP(1,J,K).GT.3.) THEN
             IHMAP2(J,K) = INT(100.*(HMAP(2,J,K)/HMAP(3,J,K)))
@@ -2276,67 +2276,67 @@ C COMPUTE SHELDRICK K
             IHMAP2(J,K)=0
            ENDIF
          ENDDO
-       ENDDO         
-       DO K=1,IRESMAX
+        ENDDO         
+        DO K=1,IRESMAX
         IF ((ISSPRT.EQ.0) .AND. (LEVEL.EQ.0)) THEN
-        WRITE(NCWU,"(F6.2)",ADVANCE="NO") RESINT(K)
-        DO J=1,IFMAX
+         WRITE(NCWU,"(F6.2)",ADVANCE="NO") RESINT(K)
+         DO J=1,IFMAX
            IF(HMAP(1,J,K).GT.3) THEN
-           WRITE(NCWU,"(I6)",ADVANCE="NO") IHMAP2(J,K)
-         ELSE
+            WRITE(NCWU,"(I6)",ADVANCE="NO") IHMAP2(J,K)
+           ELSE
             WRITE(NCWU,"(6X)",ADVANCE="NO")
            ENDIF
-        ENDDO
-        WRITE(NCWU,"('')")
+         ENDDO
+         WRITE(NCWU,"('')")
         ENDIF
         WRITE(NCPU,7010) RESINT(K),
      1  (IHMAP2(J,K),J=1,IFMAX)
 7010    FORMAT(F6.2,25I6)
        ENDDO
        IF ((ISSPRT.EQ.0) .AND. (LEVEL.EQ.0)) write(ncwu,'(/)')
-       write(NCPU,'(/)')
+        write(NCPU,'(/)')
 C
 C COMPUTE <Fo-Fc>
-       IF ((ISSPRT.EQ.0) .AND. (LEVEL.EQ.0)) THEN
-       write(ncwu,'(A/)')
-     1 '100*<Fo-Fc> for bins with more than 3 items'
-       ENDIF
-       write(NCPU,'(A/)')
-     1 '100*<Fo-Fc> for bins with more than 3 items'
-       IF ((ISSPRT.EQ.0) .AND. (LEVEL.EQ.0)) THEN
-       write(ncwu,'(A/)')'Values should be close to zero'
-       write(ncwu,'(/6x,25f6.1/)') (fint(j),j=1,IFMAX)
-       write(ncwu,'(/)')
-       ENDIF
-       write(NCPU,'(/6x,25f6.1/)') (fint(j),j=1,IFMAX)
-       write(NCPU,'(/)')
-       DO K=1,IRESMAX
+        IF ((ISSPRT.EQ.0) .AND. (LEVEL.EQ.0)) THEN
+         write(ncwu,'(A/)')
+     1   '100*<Fo-Fc>/<Fc> for bins with more than 3 items'
+        ENDIF
+        write(NCPU,'(A/)')
+     1  '100*<Fo-Fc> for bins with more than 3 items'
+        IF ((ISSPRT.EQ.0) .AND. (LEVEL.EQ.0)) THEN
+         write(ncwu,'(A/)')'Values should be close to zero'
+         write(ncwu,'(/6x,25f6.1/)') (fint(j),j=1,IFMAX)
+         write(ncwu,'(/)')
+        ENDIF
+        write(NCPU,'(/6x,25f6.1/)') (fint(j),j=1,IFMAX)
+        write(NCPU,'(/)')
+        DO K=1,IRESMAX
          DO J=1,IFMAX
            IF(HMAP(1,J,K).GT.3.) THEN
-            IHMAP2(J,K) = INT(100.*(HMAP(4,J,K)/HMAP(1,J,K)))
+            IHMAP2(J,K) = INT(100.*(HMAP(4,J,K)/HMAP(3,J,K)))
            ELSE
             IHMAP2(J,K)=0
            ENDIF
          ENDDO
-       ENDDO         
+        ENDDO         
 C
-       DO K=1,IRESMAX
-        IF ((ISSPRT.EQ.0) .AND. (LEVEL.EQ.0)) THEN
-        WRITE(NCWU,"(F6.2)",ADVANCE="NO") RESINT(K)
-        DO J=1,IFMAX
-         IF(HMAP(1,J,K).GT.3) THEN
+        DO K=1,IRESMAX
+         IF ((ISSPRT.EQ.0) .AND. (LEVEL.EQ.0)) THEN
+          WRITE(NCWU,"(F6.2)",ADVANCE="NO") RESINT(K)
+          DO J=1,IFMAX
+          IF(HMAP(1,J,K).GT.3) THEN
            WRITE(NCWU,"(I6)",ADVANCE="NO") IHMAP2(J,K)
-         ELSE
+          ELSE
             WRITE(NCWU,"(6X)",ADVANCE="NO")
+          ENDIF
+          ENDDO
+          WRITE(NCWU,"('')")
          ENDIF
-        ENDDO
-        WRITE(NCWU,"('')")
-        ENDIF
-        WRITE(NCPU,7020) RESINT(K),
-     1  (IHMAP2(J,K),J=1,IFMAX)
+         WRITE(NCPU,7020) RESINT(K),
+     1   (IHMAP2(J,K),J=1,IFMAX)
 7020    FORMAT(F6.2,25I6)
-       ENDDO
-       write(NCPU,'(/)')
+        ENDDO
+        write(NCWU,'(//)')
       ENDIF MAPOUT
 C
 C
@@ -2375,7 +2375,7 @@ C--CHECK IF THIS IS ON THE SCALE OF /FO/ OR /FC/
       ACI=SCALC
       WRITE(CMON,3400) ACI
 3400  FORMAT(/,' Agreement analysis on scale of Fo,',
-     1 ' Scale = ',F6.2)
+     1 ' Scale = ',F6.2,' Fo=sign(Fo^2) x sqrt(abs(Fo^2))')
       GOTO 3550
 3450  CONTINUE
       ACI=1./SCALF
@@ -3354,6 +3354,10 @@ C----- CORRELATION COEFFICIENT ACCUMULATOR
       DIMENSION ACOEF(6)
 C
 C     3D analysis. depth x Fo x Resolution
+C      1=No
+c      2 = sum(fo)
+C      3 = sum(fc)
+c      4 = sum 2*(fo-fc)/(fo+fc)
       COMMON /XHMAP/ HMAP(4,22,25), fint(22), resint(25),IMAP,
      1 IFMAX, IRESMAX
 C
@@ -3535,7 +3539,7 @@ C--COMPUTE THE MAX. VALUE OF SIN(THETA)/LAMBDA
        hmap(1,lfr,lrr)=hmap(1,lfr,lrr)+1
        hmap(2,lfr,lrr)=hmap(2,lfr,lrr)+FO
        hmap(3,lfr,lrr)=hmap(3,lfr,lrr)+FC
-       hmap(4,lfr,lrr)=hmap(4,lfr,lrr)+FO-FC
+       hmap(4,lfr,lrr)=hmap(4,lfr,lrr)+(FO-FC)
       ENDIF
 C--TOTALS FOR THE DIFFERENT PARITY GROUPS
       L=ICLS

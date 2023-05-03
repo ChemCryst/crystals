@@ -2764,7 +2764,7 @@ for publication.
       I - Outputs all set items as a LIST 6.
       J - Used to convert pre-2016 esds to more precise ones. 
 
-     *F - * as above, F indicates that LIST 28 filters will be applied
+     AF - JF as above with F indicating that LIST 28 filters will be applied
 #
 #PLIST 6 is also output by the links to the direct methods programs. In
  these files, the magnitudes of Fo or Fsq are scaled so that the largest
@@ -9752,9 +9752,16 @@ Indicates which reflection list to use.
       HIGH
       LOW   -  Default value
 #
- If LEVEL is LOW the  analysis is against Fo and sin theta only. The high level listing
- sends 2D analyses (Fc vs resolution) to the listing file and as a punch file, which could 
- be imported int EXCEL and ised to create a 'heat map'.
+ If LEVEL is LOW the  analysis is against Fo and sin theta only. 
+ #
+ The high level listing  sends 2 dimensional (Fc vs resolution)
+ analyses (<Fo>/<Fc> and <Fo-Fc>) 
+ to the listing file and as a punch file, which could 
+ be imported into EXCEL and used to create a 'heat map'.
+ (In EXCEL see Conditional Formatting).
+#
+ The averages are over unweighed values of Fo and Fc because of issues
+ with converting the weights if refinement was against F^2.
 #
 #XDIFABS#
 #XLeast squares absorption corrrection#
@@ -12292,8 +12299,11 @@ OUTPUT PRINT= PUNCH= LIST28=
 END
 #
 #PThis routine prints the reflection data in LIST 6 (section #RLIST06#) 
- in a suitable format
- for publication or binding into a thesis. The information printed falls
+ in a format suitable 
+ for publication or binding into a thesis. 
+#
+ (For an unformatted output you might prefer \PUNCH 6 I or \PUNCH 6 IF)
+#PThe information printed falls
  into one or more columns, each of which contains h, k, l, /Fo/, /Fc/, and the
  phase angle in degrees.
  Each column is 18 characters wide. Although the user has no control

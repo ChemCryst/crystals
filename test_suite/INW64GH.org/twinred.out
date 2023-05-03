@@ -41,7 +41,7 @@
 
 
 
-      29 reflections accepted           0 reflections rejected
+       29 reflections accepted           0 reflections rejected
 #SYST
 #LIST 28
 #SYST
@@ -50,13 +50,13 @@
 
 
 
-     29 reflections accepted               0 reflections rejected
+       29 reflections accepted               0 reflections rejected
 
  Rsigma =  0.000 for       29 input reflections
 
 Rsigma = sum (sigma(I) / sum (I)
 #MERGE
- After   1 pass      29 reflection(s) have been sorted
+ After   1 pass        29 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
 #LIST 2
 
@@ -177,9 +177,9 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
 
-    29 Contributors input            0 Contributors rejected
-    29 Merged reflections output     0 Merged reflections rejected
-     0 Contributors deviating from the average by more than   3.0e.s.ds
+      29 Contributors input              0 Contributors rejected
+      29 Merged reflections output       0 Merged reflections rejected
+       0 Contributors deviating from the average by more than   3.0e.s.ds
     29 Reflections greater than 3 sigma(i), 100.000 percent of data
  Rint = [Sum(/Fsq-<Fsq>/)/sum(Fsq)]                  =  0.000
  Rmerge   = SQRT[ sum[w(Fsq-<Fsq>)**2] / sum[w<Fsq>**2]] =  0.000
@@ -191,7 +191,7 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
 
-      29 reflections accepted           0 reflections rejected
+       29 reflections accepted           0 reflections rejected
 #PUNCH 6 C
 #
 # THIS PROGRAM, INCLUDED AS CRYSTALS COMMENTS, MAY BE USED AS AN EXAMPLE
@@ -302,13 +302,13 @@ Fsq/sigma(Fsq)  No.  %  Total Remainder         Distribution of sigma levels.
 
 
 
-      46 reflections accepted           1 reflections rejected
+       46 reflections accepted           1 reflections rejected
 Upating List 13 for twinned data
 #SORT
 # SEND THE PUNCH OUTPUT TO THE PRINTER
 #STORE UNIT NCPU 9
 #PUNCH 6 I
- After   1 pass      46 reflection(s) have been sorted
+ After   1 pass        46 reflection(s) have been sorted
  The updated reflections are now on UNIT 52
 # punching LIST  6 as LIST  6 with all keys set
 #LIST   6
@@ -368,7 +368,7 @@ END
    2   5  15    0.00   0.00          0.00  0.00      9.72     12. 
    0   0   0
 
-#     46 reflections output
+#       46 reflections output
 #REORDER
 # COMPARE THE NEW LIST 6 WITH THE EARLIER ONE. NOTE THAT THE DATA HAS BEEN
 # MOVED ABOUT.
@@ -433,7 +433,7 @@ END
    2   5  15    0.00   0.00          0.00  0.00      9.72     12. 
    0   0   0
 
-#     46 reflections output
+#       46 reflections output
 
 
           : Job ends ok       with     0 warnings and     0 errors

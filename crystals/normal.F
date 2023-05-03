@@ -751,7 +751,7 @@ C TOP FRAME
      1  '^^PL SERIES 1 SERIESNAME ''Straight Line'' TYPE LINE',
      1  '^^PL SERIES 2 SERIESNAME ''Wilson (Fobs)''',
      1  '^^PL SERIES 3 SERIESNAME ''Wilson (Fcalc)''',
-     1  '^^PL SERIES 4 SERIESNAME ''W Obs-Calc'''
+     1  '^^PL SERIES 4 SERIESNAME ''Wilson (O-C)'''
         CALL XPRVDU(NCVDU, 9,0)
       END IF
 

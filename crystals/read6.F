@@ -1,6 +1,6 @@
 C $Log: read6.F,v $
 C Revision 1.40  2013/12/06 12:51:31  djw
-C Oops.
+C Oops. 
 C
 C Revision 1.39  2013/12/06 12:44:52  djw
 C Problem spooed by Arie.  RATIO was rouinded to 1 sig fig during packing with JCODE, so that filtering
@@ -1320,7 +1320,10 @@ c if there is no serial number, insert a suitable value. This enables us to corr
 c reflection listed in the MERGE output with the original in the input HKLI file.
          if(store(m6+19) .le. zero) then
             serial=serial+1.
-            store(m6+19) = serial
+            if (serial.gt. 100000.0) serial = 1.0
+            store(m6+19) = serial 
+         else
+            if (store(m6+19).gt.100000.0) store(m6+19)=100000.0              
          endif
 C--CHECK IF WE SHOULD COMPUTE THE A-PART AND B-PART FROM /FC/ AND PHASE
          IF (KD) 4450,4400,4400
@@ -1455,7 +1458,7 @@ C--TERMINATE THE OUTPUT OF THE LIST
       CALL XPRVDU (NCVDU,1,0)
       IF (ISSPRT.EQ.0) WRITE (NCWU,'(A)') trim(CMON(1))
 c      WRITE (NCAWU,'(A)') trim(CMON(1))
-5100  FORMAT (1X,I7,' reflections accepted',5X,I7,' reflections rejected
+5100  FORMAT (1X,I8,' reflections accepted',5X,I7,' reflections rejected
      1')
 C----- ONLY UPDATE LIST 30 FOR LIST 6 TYPE INPUT
       IF (IULN .EQ. 6) THEN

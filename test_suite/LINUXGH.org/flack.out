@@ -28,7 +28,7 @@
 
 
 
-      46 reflections accepted           0 reflections rejected
+       46 reflections accepted           0 reflections rejected
 #WEIGHT
 #LIST 4
 #LIST 23
@@ -3955,7 +3955,7 @@ Space group symbol is   P    -4
 
 
 
-     904 reflections accepted           0 reflections rejected
+      904 reflections accepted           0 reflections rejected
 # REMOVE SPACE AFTER HASH TO ACTIVATE NEXT LINE
 # USE LAST
 #SFLS
@@ -4911,10 +4911,13 @@ All cycle   Rw                    0.0            7.1           0.10E+03
       Fo           0.184000E+01   0.246560E+03
       Weight       0.482785E-03   0.117714E+00
 [09]       Fc           0.175 E+00   0.925 E+02
- List   6 contains    904 reflections of which    904 are accepted by LIST 28
+ List   6 contains      904 reflections of which      904 are accepted by LIST 28
  After     6 structure factor/refinement calculations 
   R =    3.64     Weighted R =   7.14     Minimisation function =    0.588529E+03
  Rsigma=  1.65 for      904 accepted reflections
+
+ Rsigma has changed from its old value of 0.017 to  1.651 for    904 used reflections
+
 
  Slope, intercept and Cc of Normal Probability Plot =  0.797      0.08   0.99097
 
@@ -4943,8 +4946,8 @@ All cycle   Rw                    0.0            7.1           0.10E+03
 
 
 
-     904 reflections accepted           0 reflections rejected
-#    904 REFLECTIONS OUTPUT
+      904 reflections accepted           0 reflections rejected
+#      904 REFLECTIONS OUTPUT
 #DISK
 #GENERALEDIT 5
 #EDIT
@@ -5039,9 +5042,9 @@ LS-scale=  2.709   Wilson Scale=  0.000
 
 
 
-    904 reflections accepted               0 reflections rejected
+      904 reflections accepted               0 reflections rejected
 #SORT IN=7
- After   1 pass     904 reflection(s) have been sorted
+ After   1 pass       904 reflection(s) have been sorted
  The updated reflections are now on UNIT 53
 #PURGE  LIST=7
  List type    5  serial number   65 from    51194 to    51420 will not be copied ( deleted )         
