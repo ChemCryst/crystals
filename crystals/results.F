@@ -4898,7 +4898,7 @@ C----- CLEAR OUT THE PAGE BUFFER
         WRITE (NCFPU1,'(''_audit_creation_date  '',6X, 
      1  ''"20'',3(A2,A))')
      2  CBUF(7:8),'-',CBUF(4:5),'-',CBUF(1:2),'"'
-        WRITE (CLINE,'(F5.2,A,A)')0.01*FLOAT(ISSVER),'_build_',
+        WRITE (CLINE,'(F5.2,A,A)')0.001*FLOAT(ISSVER),'_build_',
      1                              CSSSVN(1:LSSSVN)
         CALL XCREMS (CLINE,CLINE,NCHAR)
         CALL XCTRIM (CLINE,NCHAR)
