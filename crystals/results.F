@@ -5822,7 +5822,7 @@ c
      1     CTEMP(4:MAX(4,J-1)),''''
           CALL XPCIF (CLINE)
         ELSE IF ( IPUNCH .EQ. 1 ) THEN
-          WRITE (CPAGE(12,1)(:),'(A,1X,A)') 'Colour',CTEMP(1:J)
+          WRITE (CPAGE(12,1)(:),'(A,1X,A)') 'Colour',CTEMP(1:MIN(J,27))
         ELSE IF ( IPUNCH .EQ. 2 ) THEN
           WRITE (NCPU,'(''<TR><TD>Colour</TD><TD>'',A,''</TD>'')')
      1     CTEMP(1:J)
