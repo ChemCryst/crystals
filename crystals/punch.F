@@ -1939,14 +1939,16 @@ c
       djw2=djw1-1.
       djw3=abs(djw2-nint(djw2))
       djw4=2.-store(l2c)        !1 for centro, 2 for non-centro
+      djw4 = 1.1*djw4  ! allow 10% extra
+c      write(123,*)djw1, djw2, djw3, djw4
       CALL OUTCOL(9)
       IVRF1=0
-      IF((DJW3.GE.0.1) .or. (djw1.gt.djw2)) THEN
+      IF((DJW3.GE.0.1) .or. (djw1.gt.djw4)) THEN
       IVRF1=1
        WRITE(CMON,'(/
      1 '' You may get a PLATON warning::''/
-     2 '' PLAT021_ALERT_4_B Ratio Unique / Expected reflections''/)')
-c     3 '' Ratio = '', f6.3/)') (FLOAT(IDREF)/NINCL)
+     2 '' PLAT021_ALERT_4_B Ratio Unique / Expected reflections''/
+     3 '' Ratio = '', f7.5/)') (FLOAT(IDREF)/NINCL)
        CALL XPRVDU(NCVDU, 5,0)
       ENDIF
       IVRF2=0

@@ -227,6 +227,15 @@ contains
       summary%error_no = summary%error_no+1
       return
     end if
+ 
+    if (shelxline%line(5:5) == "_") then
+       write (log_unit, *) 'Error: Underscore on DFIX or DANG not processed'
+       write (log_unit, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+       write (*, *) 'Error: Underscore on DFIX or DANG not processed'
+       write (*, '("Line ", I0, ": ", a)') shelxline%line_number, trim(shelxline%line)
+       summary%error_no = summary%error_no+1
+       return
+    end if
 
     call deduplicates(shelxline%line, stripline)
     call to_upper(stripline)
