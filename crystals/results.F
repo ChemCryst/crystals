@@ -6933,7 +6933,7 @@ c        (this is updated by the lsq and so is the last available value)
 c   output proper Flack as _oxford_
          write(cline,'(a,a,a,i8,a)')
      1   '_oxford_refined_Flack_x ', ctemp(1:n), 
-     2    ' # for ', mf, ' Friedel pairs'
+     2    ' # for ', mf, ' Friedel pairs (Flack, 1983)'
          if(ipunch.eq.0) call xpcif (cline)
          if (ifval.eq.0) then
 c                   Set reference to Flack if not already set tO PFW
@@ -6966,9 +6966,12 @@ c
 c
         if ( ipunch .eq. 0 ) then
          cbuf(1:11)='_refine_ls_'
-         write (cline,'(a,a,4x, a )')
-     1        cbuf(1:11),'abs_structure_Flack  ',CFLACK(1:nlflack)
+         write (cline,'(a,a,4x, a,a )')
+     1        cbuf(1:11),'abs_structure_Flack  ',CFLACK(1:nlflack),
+     2        '  # Parsons Quotient' 
          call xpcif (cline)
+         write (ncfpu1,'(a,44x,a)')
+     1   '#', 'Parsons et al (2013)'
          write (ctemp,'(i12)') mflack
          call xcras (ctemp,n)
          write (cline,'(a,a)')cbuf(1:11),'abs_structure_details'
@@ -9448,6 +9451,7 @@ c       initialise
         CALL histogram (1, nbin, range, 0.0, ibin, bbin, 1.)
 C
 C
+c      write(123,*)'Plotting'
 C
         nle3s=0
         m6acc=l6acc
@@ -9455,6 +9459,7 @@ C
 c  plot the distribution of Flack parameters
           data = str11(m6acc+5)
           wt = sqrt(str11(m6acc+9))
+c          write(123,'(2f16.6)') data, wt
 c         add data point
           CALL histogram (2, nbin, range, data, ibin, bbin, wt)
 C

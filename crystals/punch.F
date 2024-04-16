@@ -1930,7 +1930,7 @@ C
 C      WRITE(NCFPU1,'(''# Ratio Unique/Expected Reflections ='',F6.3)')
 C     1 FLOAT(IDREF)/NINCL
       WRITE(NCFPU1,'(''# Maximum theta in file='',F6.2,
-     1 '' Maximum theta used='',f6.2)') THMAXL6
+     1 '' Maximum theta used='',f6.2)') THMAXL6, THUSED
       WRITE(NCFPU1,'(''#  '',5(1X,A,A,I6))')
      1 (CALW(I),' = ',MALW(I),I=1,5)
 c
