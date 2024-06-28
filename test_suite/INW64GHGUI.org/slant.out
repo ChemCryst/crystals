@@ -524,7 +524,7 @@ Bonds: Update required - List5 length change
 
 plane-vector (in polar coord.):Input ONLY in units of 100 DEGREES !!!
 
-[90] DECLINAT =  -179 DECLINAT/100 =  -1.79
+[90] DECLINAT =  -180 DECLINAT/100 =  -1.80
 AZIMUTH  =    45.02     AZIMUTH /100 =   0.4502
  Deviations from the plane, in angstrom, are given by  Zp  
   Co-ordinates of the defining atoms projected onto the best  plane
