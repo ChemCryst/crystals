@@ -1808,6 +1808,8 @@ c             CALL XPRVDU(NCVDU, 1,0)
            END IF
            IF ( IULN .LT. 0 ) THEN ! not allowed to load lists, ensure loaded
               IF(KHUNTR(25,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
+              IF(KEXIST(5).NE.1) GOTO 9910
+              IF(KHUNTR(5,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
            ELSE
 cdjw      write(123,*)'Thinking about loading L 5 and L 25'
               IF(KHUNTR(25,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL25
