@@ -732,8 +732,8 @@ C 'ISSUPD' CAN  BE RESET BY '#SET AUTO = OFF/ON (VALUE 0/1)
             IF ( ISSUPD .EQ. 0 ) THEN
 c      WRITE(CMON,'(a)')' XGUIUP: Model update suppressed by user.'
 c      CALL XPRVDU (NCVDU,1,0)
-             ISERnn(5)  = 0         ! Ensure update if/when ISSUPD is 
-             ISERnn(41) = 0         ! switched back on.
+             ISERnn(5)  = -ABS(ISERnn(5)) ! Ensure update if/when ISSUPD is 
+             ISERnn(41) = 0               ! switched back on.
              CYCLE ! The model may be switched off for speed reasons.
             ENDIF
 
@@ -1838,11 +1838,15 @@ c             CALL XPRVDU(NCVDU, 1,0)
                 L05SR = -1
               END IF
            END IF
- 
-           IF ((L25SR.NE.ISERnn(25)).or.(L05SR.NE.ISERnn(5)) ) THEN
+
+C if either L25 or L5 location doesn't match last update, store new location
+C otherwise skip update. NB. ISERnn(5) is -1 * location if iSSUPD is set to 0.
+           IF ((L25SR.NE.ISERnn(25)).or.(L05SR.NE.abs(ISERnn(5))) ) THEN
+        write(1234,*)'Update req ', isernn(25), isernn(5), l25sr, l05sr
               ISERnn(25)  = L25SR
               ISERnn(5)  = L05SR
            ELSE
+        write(1234,*)'No Update req ', isernn(25), isernn(5), l25sr, l05sr
              CYCLE
            END IF
 		   
