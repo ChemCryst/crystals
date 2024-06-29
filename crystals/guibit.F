@@ -1808,8 +1808,10 @@ c             CALL XPRVDU(NCVDU, 1,0)
            END IF
            IF ( IULN .LT. 0 ) THEN ! not allowed to load lists, ensure loaded
               IF(KHUNTR(25,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
+              IF(KEXIST(5).NE.1) GOTO 9910
+              IF(KHUNTR(5,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
            ELSE
-cdjw      write(123,*)'Thinking about loading L 5 and L 25'
+      write(123,*)'Thinking about loading L 5 and L 25'
               IF(KHUNTR(25,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL25
               IF(KEXIST(5).EQ.1)THEN
                IF(KHUNTR(5,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL05
@@ -1821,7 +1823,8 @@ cdjw      write(123,*)'Thinking about loading L 5 and L 25'
            END IF
            CALL XRLIND(25, L25SR, NFW, LL, IOW, NOS, ID)
            CALL XRLIND( 5, L05SR, NFW, LL, IOW, NOS, ID)
-c      write(123,'(4i12)')L25SR,ISERnn(25),L05SR,ISERnn(5)
+      write(123,'(4i12)')L25SR,ISERnn(25),L05SR,ISERnn(5)
+      write(123,'(3i12)')L5DJW,MD5ES,IULN
 
  
            IF ( IULN .LT. 0 ) THEN
@@ -1842,6 +1845,7 @@ c      write(123,'(4i12)')L25SR,ISERnn(25),L05SR,ISERnn(5)
            WRITE (CMON,
      1       '(''^^WI SAFESET [ _MT_L25 EMPTY TEXT "Twin laws" ]'')')
            CALL XPRVDU(NCVDU,1,0)
+           write(123,'(a)')CMON(1)
           IF(MD5ES.EQ.N25) THEN
 1106  FORMAT ('^^WI SAFESET [ _MT_L25 TEXT',/
      1 '^^WI "', 3(3F7.3,2X),F5.3,'" ]')
