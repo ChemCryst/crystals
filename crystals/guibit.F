@@ -1847,7 +1847,7 @@ c             CALL XPRVDU(NCVDU, 1,0)
            CALL XPRVDU(NCVDU,1,0)
            write(123,'(a)')CMON(1)
           IF(MD5ES.EQ.N25) THEN
-1106  FORMAT ('^^CO SAFESET [ _MT_L25 TEXT',3(3F7.3,2X),F5.3,'" ]')
+1106  FORMAT ('^^CO SAFESET [ _MT_L25 TEXT "',3(3F7.3,2X),F5.3,'" ]')
            DO J = 0, N25-1
              M25 = L25+J*MD25
              m5djw = l5djw +j      ! All scales are in the first record
