@@ -1843,12 +1843,11 @@ c             CALL XPRVDU(NCVDU, 1,0)
            END IF
 		   
            WRITE (CMON,
-     1       '(''^^WI SAFESET [ _MT_L25 EMPTY TEXT "Twin laws" ]'')')
+     1       '(''^^CO SAFESET [ _MT_L25 EMPTY TEXT "Twin laws" ]'')')
            CALL XPRVDU(NCVDU,1,0)
            write(123,'(a)')CMON(1)
           IF(MD5ES.EQ.N25) THEN
-1106  FORMAT ('^^WI SAFESET [ _MT_L25 TEXT',/
-     1 '^^WI "', 3(3F7.3,2X),F5.3,'" ]')
+1106  FORMAT ('^^CO SAFESET [ _MT_L25 TEXT',3(3F7.3,2X),F5.3,'" ]')
            DO J = 0, N25-1
              M25 = L25+J*MD25
              m5djw = l5djw +j      ! All scales are in the first record
@@ -1858,12 +1857,12 @@ c             CALL XPRVDU(NCVDU, 1,0)
              ELSE
               WRITE(CMON,1106) (STORE(I),I = M25 , M25 + MD25-1)
              ENDIF
-             CALL XPRVDU(NCVDU, 2,0)
+             CALL XPRVDU(NCVDU, 1,0)
            END DO
           ENDIF
 
-           WRITE (CMON,'(''^^WI SET _MT_L25 VIEWTOP'',/,''^^CR'')')
-           CALL XPRVDU(NCVDU,2,0)
+           WRITE (CMON,'(''^^CO SAFESET [ _MT_L25 VIEWTOP ]'')')
+           CALL XPRVDU(NCVDU,1,0)
 
 
          ELSE IF (ILST .EQ. 13) THEN   ! Radiation
