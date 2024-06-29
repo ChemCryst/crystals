@@ -1851,7 +1851,7 @@ C otherwise skip update. NB. ISERnn(5) is -1 * location if iSSUPD is set to 0.
               ISERnn(25)  = L25SR
               ISERnn(5)  = L05SR
            ELSE
-        write(1234,*)'No Update req ', isernn(25), isernn(5), l25sr, l05sr
+     write(1234,*)'No Update req ', isernn(25), isernn(5), l25sr, l05sr
              CYCLE
            END IF
 		   
