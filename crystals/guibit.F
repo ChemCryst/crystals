@@ -838,6 +838,11 @@ c      CALL XPRVDU (NCVDU,1,0)
               CYCLE
             ENDIF
 
+C If we get to here, L5 needs updating. If L25 (twin laws) is present, the L25 output will also need updating.
+C So clear its serial to force an output.
+            IF(KEXIST(25).GT.0) THEN
+               ISERnn(25) = 0
+            END IF
 
 C UPDATE FLACK  INFO
             gflack=store(l5o+4) !NOTE that this sets the value from L5
