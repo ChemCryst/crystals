@@ -683,9 +683,6 @@ C Wait for disk buffers to be allocated, before loading lists.
 
       IF ( .NOT. LUPDAT ) RETURN
 
-      write(1234,*)'GUIup start ', IULN
-
-
       IF ( IULN .GE. 0 ) THEN
         CALL XRSL
         CALL XCSAE
@@ -1805,8 +1802,6 @@ c             CALL XPRVDU(NCVDU, 1,0)
 
          ELSE IF (ILST .EQ. 25) THEN   ! Twinning
 
-      write(1234,*)'L 25 section'
-
            IF(KEXIST(25).LE.0) THEN
               IF ( ISERnn(25) .EQ. -1 ) CYCLE
               ISERnn(25) = -1
@@ -1820,7 +1815,7 @@ c             CALL XPRVDU(NCVDU, 1,0)
               IF(KEXIST(5).NE.1) GOTO 9910
               IF(KHUNTR(5,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
            ELSE
-      write(1234,*)'Thinking about loading L 5 and L 25'
+c      write(123,*)'Thinking about loading L 5 and L 25'
               IF(KHUNTR(25,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL25
               IF(KEXIST(5).EQ.1)THEN
                IF(KHUNTR(5,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL05
@@ -1832,8 +1827,7 @@ c             CALL XPRVDU(NCVDU, 1,0)
            END IF
            CALL XRLIND(25, L25SR, NFW, LL, IOW, NOS, ID)
            CALL XRLIND( 5, L05SR, NFW, LL, IOW, NOS, ID)
-      write(1234,'(4i12)')L25SR,ISERnn(25),L05SR,ISERnn(5)
-      write(1234,'(3i12)')L5DJW,MD5ES,IULN
+c      write(123,'(4i12)')L25SR,ISERnn(25),L05SR,ISERnn(5)
 
  
            IF ( IULN .LT. 0 ) THEN
@@ -1847,18 +1841,15 @@ c             CALL XPRVDU(NCVDU, 1,0)
 C if either L25 or L5 location doesn't match last update, store new location
 C otherwise skip update. NB. ISERnn(5) is -1 * location if iSSUPD is set to 0.
            IF ((L25SR.NE.ISERnn(25)).or.(L05SR.NE.abs(ISERnn(5))) ) THEN
-        write(1234,*)'Update req ', isernn(25), isernn(5), l25sr, l05sr
               ISERnn(25)  = L25SR
               ISERnn(5)  = L05SR
            ELSE
-        write(1234,*)'No Update req ',isernn(25),isernn(5),l25sr,l05sr
              CYCLE
            END IF
 		   
            WRITE (CMON,
      1       '(''^^CO SAFESET [ _MT_L25 EMPTY TEXT "Twin laws" ]'')')
            CALL XPRVDU(NCVDU,1,0)
-           write(1234,'(a)')CMON(1)
           IF(MD5ES.EQ.N25) THEN
 1106  FORMAT ('^^CO SAFESET [ _MT_L25 TEXT "',3(3F7.3,2X),F5.3,'" ]')
            DO J = 0, N25-1
