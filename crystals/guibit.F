@@ -729,8 +729,8 @@ C 'ISSUPD' CAN  BE RESET BY '#SET AUTO = OFF/ON (VALUE 0/1)
             IF ( ISSUPD .EQ. 0 ) THEN
 c      WRITE(CMON,'(a)')' XGUIUP: Model update suppressed by user.'
 c      CALL XPRVDU (NCVDU,1,0)
-             ISERnn(5)  = 0         ! Ensure update if/when ISSUPD is 
-             ISERnn(41) = 0         ! switched back on.
+             ISERnn(5)  = -ABS(ISERnn(5)) ! Ensure update if/when ISSUPD is 
+             ISERnn(41) = 0               ! switched back on.
              CYCLE ! The model may be switched off for speed reasons.
             ENDIF
 
@@ -835,6 +835,11 @@ c      CALL XPRVDU (NCVDU,1,0)
               CYCLE
             ENDIF
 
+C If we get to here, L5 needs updating. If L25 (twin laws) is present, the L25 output will also need updating.
+C So clear its serial to force an output.
+            IF(KEXIST(25).GT.0) THEN
+               ISERnn(25) = 0
+            END IF
 
 C UPDATE FLACK  INFO
             gflack=store(l5o+4) !NOTE that this sets the value from L5
@@ -1797,7 +1802,6 @@ c             CALL XPRVDU(NCVDU, 1,0)
 
          ELSE IF (ILST .EQ. 25) THEN   ! Twinning
 
-
            IF(KEXIST(25).LE.0) THEN
               IF ( ISERnn(25) .EQ. -1 ) CYCLE
               ISERnn(25) = -1
@@ -1808,8 +1812,10 @@ c             CALL XPRVDU(NCVDU, 1,0)
            END IF
            IF ( IULN .LT. 0 ) THEN ! not allowed to load lists, ensure loaded
               IF(KHUNTR(25,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
+              IF(KEXIST(5).NE.1) GOTO 9910
+              IF(KHUNTR(5,0,IADDL,IADDR,IADDD,-1).NE.0) GOTO 9910
            ELSE
-cdjw      write(123,*)'Thinking about loading L 5 and L 25'
+c      write(123,*)'Thinking about loading L 5 and L 25'
               IF(KHUNTR(25,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL25
               IF(KEXIST(5).EQ.1)THEN
                IF(KHUNTR(5,0,IADDL,IADDR,IADDD,-1).NE.0) CALL XFAL05
@@ -1831,8 +1837,10 @@ c      write(123,'(4i12)')L25SR,ISERnn(25),L05SR,ISERnn(5)
                 L05SR = -1
               END IF
            END IF
- 
-           IF ((L25SR.NE.ISERnn(25)).or.(L05SR.NE.ISERnn(5)) ) THEN
+
+C if either L25 or L5 location doesn't match last update, store new location
+C otherwise skip update. NB. ISERnn(5) is -1 * location if iSSUPD is set to 0.
+           IF ((L25SR.NE.ISERnn(25)).or.(L05SR.NE.abs(ISERnn(5))) ) THEN
               ISERnn(25)  = L25SR
               ISERnn(5)  = L05SR
            ELSE
@@ -1840,11 +1848,10 @@ c      write(123,'(4i12)')L25SR,ISERnn(25),L05SR,ISERnn(5)
            END IF
 		   
            WRITE (CMON,
-     1       '(''^^WI SAFESET [ _MT_L25 EMPTY TEXT "Twin laws" ]'')')
+     1       '(''^^CO SAFESET [ _MT_L25 EMPTY TEXT "Twin laws" ]'')')
            CALL XPRVDU(NCVDU,1,0)
           IF(MD5ES.EQ.N25) THEN
-1106  FORMAT ('^^WI SAFESET [ _MT_L25 TEXT',/
-     1 '^^WI "', 3(3F7.3,2X),F5.3,'" ]')
+1106  FORMAT ('^^CO SAFESET [ _MT_L25 TEXT "',3(3F7.3,2X),F5.3,'" ]')
            DO J = 0, N25-1
              M25 = L25+J*MD25
              m5djw = l5djw +j      ! All scales are in the first record
@@ -1854,12 +1861,12 @@ c      write(123,'(4i12)')L25SR,ISERnn(25),L05SR,ISERnn(5)
              ELSE
               WRITE(CMON,1106) (STORE(I),I = M25 , M25 + MD25-1)
              ENDIF
-             CALL XPRVDU(NCVDU, 2,0)
+             CALL XPRVDU(NCVDU, 1,0)
            END DO
           ENDIF
 
-           WRITE (CMON,'(''^^WI SET _MT_L25 VIEWTOP'',/,''^^CR'')')
-           CALL XPRVDU(NCVDU,2,0)
+           WRITE (CMON,'(''^^CO SAFESET [ _MT_L25 VIEWTOP ]'')')
+           CALL XPRVDU(NCVDU,1,0)
 
 
          ELSE IF (ILST .EQ. 13) THEN   ! Radiation

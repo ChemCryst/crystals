@@ -912,7 +912,7 @@ ___________
          6         -0.1000E+01        13          0.1000E+01
 
 
-   9.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.9999999776E-02
+   9.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000071E-01
        Calculated value           -0.4669999704E-02  giving a delta of    0.4669999704E-02
           - Derivatives not found, do a refinement cycle to get leverages -
 
@@ -967,7 +967,7 @@ ___________
          7         -0.1000E+01        13          0.1000E+01
 
 
-  10.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.9999999776E-02
+  10.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000071E-01
        Calculated value           -0.1467000134E-01  giving a delta of    0.1467000134E-01
           - Derivatives not found, do a refinement cycle to get leverages -
 
@@ -1023,7 +1023,7 @@ ___________
         16         -0.2000E+01
 
 
-  11.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.9999999776E-02
+  11.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000071E-01
        Calculated value           -0.2467000112E-01  giving a delta of    0.2467000112E-01
           - Derivatives not found, do a refinement cycle to get leverages -
 
@@ -1078,7 +1078,7 @@ ___________
          6         -0.1000E+01        11          0.1000E+01        13          0.1000E+01        16         -0.1000E+01
 
 
-  12.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.9999999776E-02
+  12.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000071E-01
        Calculated value           -0.7334999740E-02  giving a delta of    0.7334999740E-02
           - Derivatives not found, do a refinement cycle to get leverages -
 
@@ -1414,7 +1414,7 @@ ___________
    General Restraint: No derivatives found
 
 
-   1.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.9999999404E+00
+   1.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000000E+01
    ?   Calculated value            0.6000000000E+02  giving a delta of   -0.6000000000E+02
           - Derivatives not found, do a refinement cycle to get leverages -
 
@@ -1465,7 +1465,7 @@ ___________
          1          0.1000E+01         2          0.1000E+01
 
 
-   2.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.9999999404E+00
+   2.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000000E+01
        Calculated value            0.9050000191E+01  giving a delta of   -0.9050000191E+01
           - Derivatives not found, do a refinement cycle to get leverages -
 
@@ -1560,7 +1560,7 @@ CONT +LAYER(3)*S(1,U[11])+ELEMENT(2)+ELEMENT(3)
         17          0.2000E+02
 
 
-   3.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.9999999404E+00
+   3.  General restraint to be     0.0000000000E+00  with an E.S.D. of    0.1000000000E+01
        Calculated value            0.6137799072E+02  giving a delta of   -0.6137799072E+02
           - Derivatives not found, do a refinement cycle to get leverages -
 
