@@ -39,6 +39,7 @@ jobs:
 # WIN ONLY
     - name: Install MinGW compiler and tools
       run: |
+        choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' --apply-install-arguments-to-dependencies
         c:\msys64\usr\bin\pacman --noconfirm -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-openblas mingw-w64-x86_64-perl msys2-w32api-runtime mingw-w64-x86_64-curl
 
 # Install wxWidgets - win GUI only
