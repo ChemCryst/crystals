@@ -21,7 +21,7 @@ jobs:
           guiflag: yes
           testsuffix: GUI
           removeguitst:
-          wxoptions: -DwxWidgets_ROOT_DIR=..\wx -DwxWidgets_LIB_DIR=..\wx\lib\gcc810_x64_dll -DwxWidgets_CONFIGURATION=mswu
+          wxoptions: -DwxWidgets_ROOT_DIR=..\wx -DwxWidgets_LIB_DIR=..\wx\lib\gcc1210_x64_dll -DwxWidgets_CONFIGURATION=mswu
         - cl: nogui
           guiflag: no
           testsuffix:
@@ -83,7 +83,7 @@ jobs:
         set CRYSDIR=.\,..\ci\
         set COMPCODE=MIN64GH${{ matrix.testsuffix }}
         set OMP_NUM_THREADS=1
-        set PATH=C:\msys64\mingw64\bin;..\wx\lib\gcc810_x64_dll;%path%
+        set PATH=C:\msys64\mingw64\bin;..\wx\lib\gcc1210_x64_dll;%path%
         echo PATH is %PATH%
         echo CRYSDIR is %CRYSDIR%
         ren MIN64GH${{ matrix.testsuffix }}.org safe.dir
