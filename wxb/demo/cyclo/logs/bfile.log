@@ -1,0 +1,21 @@
+# File            :-  
+# File closed     :- C:\Users\richard.cooper\Documents\crystals\wxb\script\l6check.scp 
+# File closed     :- C:\Users\richard.cooper\Documents\crystals\wxb\script\dsccheck.scp 
+# File closed     :- C:\Users\richard.cooper\Documents\crystals\wxb\script\xnewgui.scp 
+# File            :- cyclo.txt 
+# File            :- crystart.dat 
+# File closed     :- C:\Users\richard.cooper\Documents\crystals\wxb\script\tipauto.scp 
+# File closed     :- C:\Users\richard.cooper\Documents\crystals\wxb\script\xguidei.scp 
+# File closed     :- C:\Users\richard.cooper\Documents\crystals\wxb\script\xguide.scp 
+# File closed     :- C:\Users\richard.cooper\Documents\crystals\wxb\script\guideauto.scp 
+# File            :-  
+# File closed     :- C:\Users\richard.cooper\Documents\crystals\wxb\crystals.srt 
+# #SCRIPT XGUIDEIC
+# #SCRIPT XFILE_ANY
+# #SPAWN % "CRYSDIR:shelx2cry.exe" "C:\Users\richard.cooper\Documents\crystals\wxb\demo\cyclo\bca.ins"
+# #SCRIPT DIFFEXEC
+#DISK
+EXTEND SIZE = 10 TRIES = 1000
+END
+#RELEASE PRINT logs/initial.lis
+#RELEASE LOG logs/initial.dat
