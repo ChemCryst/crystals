@@ -67,7 +67,7 @@ jobs:
         set PATH=C:\msys64\mingw64\bin;%PATH%
         cmake .. -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -G"MinGW Makefiles" -DuseGUI=${{ matrix.guiflag }} -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }} || echo Try again
         cmake .. -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -G"MinGW Makefiles" -DuseGUI=${{ matrix.guiflag }} -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }}
-        mingw32-make -j2
+        mingw32-make VERBOSE=1
 
 # Tests
     - name: Test CRYSTALS windows
