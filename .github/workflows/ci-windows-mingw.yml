@@ -21,7 +21,7 @@ jobs:
           guiflag: yes
           testsuffix: GUI
           removeguitst:
-          wxoptions: -DwxWidgets_ROOT_DIR=..\wx -DwxWidgets_LIB_DIR=..\wx\lib\gcc1320_x64_dll -DwxWidgets_CONFIGURATION=mswu
+#          wxoptions: -DwxWidgets_ROOT_DIR=..\wx -DwxWidgets_LIB_DIR=..\wx\lib\gcc1320_x64_dll -DwxWidgets_CONFIGURATION=mswu
         - cl: nogui
           guiflag: no
           testsuffix:
@@ -40,19 +40,19 @@ jobs:
     - name: Install MinGW compiler and tools
       run: |
         choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' --apply-install-arguments-to-dependencies
-        c:\msys64\usr\bin\pacman --noconfirm -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-openblas mingw-w64-x86_64-perl msys2-w32api-runtime mingw-w64-x86_64-curl
+        c:\msys64\usr\bin\pacman --noconfirm -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-openblas mingw-w64-x86_64-perl msys2-w32api-runtime mingw-w64-x86_64-curl mingw-w64-x86_64-wxwidgets3.2-msw mingw-w64-x86_64-wxwidgets3.2-msw-cb_headers mingw-w64-x86_64-wxwidgets3.2-msw-libs
 
 # Install wxWidgets - win GUI only
 #
-    - name: Setup wxWidgets for Win64 gui
-      if: matrix.cl == 'gui'
-      shell: cmd
-      run: | 
-        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.5/wxMSW-3.2.5_gcc1320_x64_Dev.7z > dev.7z
-        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.5/wxWidgets-3.2.5-headers.7z > head.7z
-        7z x dev.7z -owx -y
-        7z x head.7z -owx -y
-        dir
+#    - name: Setup wxWidgets for Win64 gui
+#      if: matrix.cl == 'gui'
+#      shell: cmd
+#      run: | 
+#        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.5/wxMSW-3.2.5_gcc1320_x64_Dev.7z > dev.7z
+#        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.5/wxWidgets-3.2.5-headers.7z > head.7z
+#        7z x dev.7z -owx -y
+#        7z x head.7z -owx -y
+#       dir
 #
     - name: Create build folder
       run: mkdir ci
