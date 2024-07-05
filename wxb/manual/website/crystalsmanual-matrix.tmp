@@ -1,0 +1,100 @@
+<!-- XTLVAR title="Matrix Calculations" -->
+<!-- XTLVAR comment="Matrix Calculations" -->
+<!-- XTLVAR cvssource="manual/crystals.man" -->
+<H1>Crystals Manual</H1>
+<H2>Chapter 11: Matrix Calculations</H2>
+<DL><DT>
+<DD><A HREF="crystalsmanual-matrix.html#matrix.matrix">11.1: The Basic Matrix Calculator \MATRIX</A><br>
+</DL>
+
+<A NAME="matrixcalc"> </A>
+<A NAME="Matrix Calculator"> </A>
+<HR><small><A HREF="crystalsmanual-matrix.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="matrix.matrix">11.1: The Basic Matrix Calculator \MATRIX</A></H3></CENTER>
+
+
+<pre>
+ \MATRIX 
+ A      
+ B      
+ MM     
+ TM     
+ MT     
+ TT     
+ TRANS  
+ INV    
+ EIG    
+ ACC2A  
+ ACC2B  
+ EXECUTE
+ END
+
+ \MATRIX
+ A 1 2 3 4 5 6 7 8 9
+ B 4 5 6 7 8 9 10 11 12
+ MM
+ END
+
+</pre><p><BR>
+<P>CRYSTALS contains a simple calculator for processing 3x3 matrices. Two 
+matrices, A and B, can be input and operated on. The result is output to
+the screen and left in an accumulator.  It can be transfered to A or B 
+for further operations.  There is currently no interface to any stored 
+crystallographic information.
+
+<BR>&nbsp;<BR>
+<div class="instruction"><strong><u>\MATRIX</u></strong><br>
+<BR>
+<BR>&nbsp;<BR>
+<div class="directive"><strong><i>A</i></strong>
+<P>Followed by the nine values for the matrix A by rows
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>B</i></strong>
+<P>Followed by the nine values for the matrix B by rows
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>MM</i></strong>
+<P>Accumulator = AxB
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>TM</i></strong>
+<P>Accumulator = A'xB
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>MT</i></strong>
+<P>Accumulator = AxB'
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>TT</i></strong>
+<P>Accumulator = A'xB'
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>TRANS</i></strong>
+<P>Accumulator = A'
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>INV</i></strong>
+<P>Accumulator = A-1
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>EIG</i></strong>
+<P>Accumulator = Eigenvectors of A
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>ACC2A</i></strong>
+<P>Matrix A = Accumulator
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>ACC2B</i></strong>
+<P>Matrix B = Accumulator
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>EXECUTE</i></strong>
+<P>Forces execution of the last directive
+<BR>
+
+
+<BR>&nbsp;<BR>
+</div>
+</div>

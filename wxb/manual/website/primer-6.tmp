@@ -1,0 +1,53 @@
+<!-- XTLVAR title="Fourier Maps" -->
+<!-- XTLVAR comment="Fourier Maps" -->
+<!-- XTLVAR cvssource="manual/primer.man" -->
+<H1>Crystals Primer</H1>
+<H2>Chapter 6: Fourier Maps</H2>
+<DL><DT>
+<DD><A HREF="primer-6.html#6.1">6.1: Fobs maps</A><br>
+<DD><A HREF="primer-6.html#6.2">6.2: Special maps</A><br>
+</DL>
+
+<pre>
+ e.g.
+      !\SFLS
+      !SCALE
+      !END
+
+      !FOURIER
+      !END
+</pre><p><BR>
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-6.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="6.1">6.1: Fobs maps</A></H3></CENTER>
+<P>By default CRYSTALS computes an Fobs Fourier synthesis, with a peak
+ search and without printing the figure field. There are very many options.
+ Phases must be computed before the map, and normally Fobs is put
+ on an absolute scale. The asymmetric part of the unit cell
+ is determined automatically by the SPACEGROUP commands, but may be changed
+ manually in LIST 14.
+<P>The peak search leaves the peaks found in the map together with the
+original atoms in a LIST 10. To convert this to a parameter list, use
+\PEAKS. If you want to
+ try to assemble the peaks into a molecule, use
+ \COLLECT or \REGROUP after \PEAKS.
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-6.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="6.2">6.2: Special maps</A></H3></CENTER>
+<P>The MAP directive controls the sort of map to be computed and how it is
+ to be treated. The REFLECTION directive controls the treatment of reflections,
+ and the PEAKS directive controls the peak search.
+
+<pre>
+ e.g.
+      !\FOURIER
+      !MAP             TYPE=DIFF
+      !REFLECTION      WEIGHT=SIM
+      !PEAKS           HEIGHT=20
+      !END
+</pre><p><BR>
+<P>This requests a Simm weighted difference map, and searches for peaks
+ greater than 2 electrons per cubic angstrom (the scale factor of
+ 10xelectrons is set
+ in LIST 14).
+<BR>

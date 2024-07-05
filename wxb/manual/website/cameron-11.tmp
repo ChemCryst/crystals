@@ -1,0 +1,143 @@
+<!-- XTLVAR title="Drawing Style Control" -->
+<!-- XTLVAR comment="Drawing Style Control" -->
+<!-- XTLVAR cvssource="manual/cameron.man" -->
+<H1>Cameron Manual</H1>
+<H2>Chapter 11: Drawing Style Control</H2>
+<DL><DT>
+<DD><A HREF="cameron-11.html#11.1">11.1: LINE commands.</A><br>
+<DD><A HREF="cameron-11.html#11.2">11.2: BALL commands.</A><br>
+<DD><A HREF="cameron-11.html#11.3">11.3: ELLIPSE commands</A><br>
+</DL>
+<A NAME="Cameron - Style control"> </A>
+<P>The user is able to choose from three different drawing styles.
+These
+are:
+<div class="instruction"><strong><u>LINE</u></strong><br>
+</div>
+<div class="instruction"><strong><u>BALL</u></strong><br>
+</div>
+<div class="instruction"><strong><u>ELLIPSE</u></strong><br>
+<BR>
+<P>The basic syntax for style control is:
+<pre>
+XXXX at1 at2 el1 el2
+</pre><p><BR>
+where XXXX is LINE, BALL or ELLIPSE as required. The user may
+specify
+atoms eg C1, C2 and/or elements eg C O to be drawn in the XXXX
+style.
+The user may therefore have all three styles present at any one
+time
+within the picture. Alternatively the ALL may be used
+to
+convert the drawing style of all the atoms present to XXXX.
+The initial drawing style used is LINE.
+<BR>
+<P>The ELLIPSE drawing style is only available if the user has
+input data
+that contains information on the temperature factors (isotropic
+or
+anisotropic) of the atoms concerned. The ellipse drawing style
+represents atoms by their thermal ellipsoid. Note that negative eigen 
+values are reset at input to .001* the next largest.
+If the information
+available is U[iso] only, a circle is plotted whose radius
+is scaled according to its value. 
+</div>
+<div class="instruction"><strong><u>ALL</u></strong><br>
+</div>
+<div class="instruction"><strong><u>FRAGMENT</u></strong><br>
+</div>
+<div class="instruction"><strong><u>GROUP</u></strong><br>
+<P>These subcommands can be used to specify which atoms are to be 
+affected by the drawing style command.
+<P>Several other commands are available in addition to the basic
+style
+commands.
+<HR><small><A HREF="cameron-11.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="11.1">11.1: LINE commands.</A></H3></CENTER>
+<P>There are no extra commands following LINE.
+<HR><small><A HREF="cameron-11.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="11.2">11.2: BALL commands.</A></H3></CENTER>
+<div class="directive"><strong><i>RADII</i></strong>
+The user can specify the drawing radius (in angstroms) of a
+specified
+atom or element. The syntax is:
+<pre>
+BALL RADII C 0.8 N1 1.1
+</pre><p><BR>
+which will draw all C atoms with a radius of 0.8 angstroms, and
+the N1
+atom with radius of 1.1 angstroms. 
+<div class="parameter"><i>DEFAULT</i>
+This sets all the radii to their initial covalent values.
+The syntax is:
+<pre>
+BALL RADII DEFAULT.
+</pre><p><BR>
+</div>
+<div class="parameter"><i>COVALENT</i>
+</div>
+<div class="parameter"><i>IONIC</i>
+</div>
+<div class="parameter"><i>VANDERWAALS</i>
+This sets the radii of the specified atoms/elements to the appropriate 
+values. The syntax is:
+<pre> BALL RADII COVALENT N
+</pre><p><BR>
+<P>The further subcommand ALL
+can be used - BALL RADII IONIC ALL - to set all atoms if required.
+</div>
+</div>
+<div class="directive"><strong><i>FILL</i></strong>
+</div>
+<div class="directive"><strong><i>UNFILL</i></strong>
+These are header commands and are used to specify whether the
+circles
+drawn in the BALL style are to be filled with colour or not. No
+arguments are required by these commands.
+</div>
+<HR><small><A HREF="cameron-11.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="11.3">11.3: ELLIPSE commands</A></H3></CENTER>
+<div class="directive"><strong><i>TYPE</i></strong>
+<P>ELLIPSE may be followed by the sub command TYPE which enables
+the user
+to control the type of ellipse used to represent the atom.
+The syntax is:
+<pre>
+ ELLIPSE TYPE at/els/all n.
+</pre><p><BR>
+Type 'n' can take any of four values:
+<pre>
+ 1  - bounding ellipse only.
+ 2  - bounding ellipse and principal ellipses.
+      This is the default representation.
+ 3  - as 2 but excluding the principle axes.
+ 4  - as 2 but with shading.
+</pre><p><BR>
+<div class="parameter"><i>ALL</i>
+ALL can be used followed by a number to set the ellipse type of all 
+atoms in the drawing. 
+<P><strong>Note</strong> that any use of ELLIPSE TYPE will set all the
+atoms referred to ellipse type even if they were previously in LINE 
+or BALL.
+Hence,
+<pre>
+ELLIPSE TYPE C 2  will have all carbon atoms drawn in type 2 form.
+ELLIPSE TYPE ALL 4 will have all atoms drawn in type 4 form
+</pre><p><BR>
+</div>
+</div>
+<div class="directive"><strong><i>NEGATIVE</i></strong>
+<P>The NEGATIVE sub command requires one argument. If atoms are
+input
+with negative temperature factors the atoms temperature factor
+is reset
+using the value specified by ELLIPSE NEGATIVE u. The default
+value of u
+is 0.01.
+</div>
+<div class="directive"><strong><i>PROBABILITY</i></strong>
+<P>This is used to specify the size of the ellipsoid probability envelope
+displayed. It is followed by a percentage value.
+</div>

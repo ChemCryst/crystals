@@ -1,0 +1,174 @@
+<!-- XTLVAR title="Overview" -->
+<!-- XTLVAR comment="Overview" -->
+<!-- XTLVAR cvssource="manual/primer.man" -->
+<H1>Crystals Primer</H1>
+<H2>Chapter 3: Overview</H2>
+<DL><DT>
+<DD><A HREF="primer-3.html#3.1">3.1: Modes of Use</A><br>
+<DD><A HREF="primer-3.html#3.2">3.2: Data Formats</A><br>
+<DD><A HREF="primer-3.html#3.3">3.3: Output</A><br>
+<DD><A HREF="primer-3.html#3.4">3.4: Starting the program</A><br>
+<DD><A HREF="primer-3.html#3.5">3.5: Getting out of the program</A><br>
+<DD><A HREF="primer-3.html#3.6">3.6: Getting out of SCRIPTS</A><br>
+<DD><A HREF="primer-3.html#3.7">3.7: Stopping the program</A><br>
+</DL>
+<P>CRYSTALS is a single program for performing most calculations required in
+ single crystal structure analysis, including graphics, but  with the
+ exception of direct methods.
+ Simple links connect CRYSTALS to SIR and  SHELXS for direct
+ methods.
+
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-3.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="3.1">3.1: Modes of Use</A></H3></CENTER>
+<P>The program has the same command set for both interactive and batch use.
+ In batch mode the program executes commands taken from  data files,
+ and the  results are returned as files.
+<P>In interactive mode, the user types commands directly into the running
+ program, and results are both displayed on the screen and saved as files.
+<P>The program can also be run on-line with commands taken from data
+ files and results displayed on the screen.
+ There is a mixed mode, in which the program is used interactively,
+ with the user entering some commands directly, and briefly passing control
+ to pre-prepared files containing frequently used combinations of commands,
+ after which control is returned to the user.
+<P>There is also an <strong>interrogative</strong> mode, in which the program leads
+ the users through the analysis. See the section  SCRIPTS for details,
+and the chapter Example of a Simple Structure.
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-3.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="3.2">3.2: Data Formats</A></H3></CENTER>
+<P>All the user input to CRYSTALS is in normal ASCII characters. Reflection
+ data can be input in fixed format to speed processing, but in general all
+ data is free format with <i>&lt;space&gt;</i> or <i>&lt;cr&gt;</i> as delimiters. For most commands
+ the interpretation of a value may be taken either from its position on the
+ line, or from a preceeding keyword. The two methods may be intermixed.
+ Default values are provided for many parameters.
+
+<pre>
+e.g.
+           REAL  10.4 12.3 19.5 90.0 113.7 90
+     or
+           REAL a=10.4 b=12.3 19.5  beta=113.7
+</pre><p><BR>
+<P>All commands, keywords and alphbetic data is case insensitive.
+ Decimal points are optional for exact real values.
+<P>The program can be run so that all data is loaded each time from ASCII files
+ for every new job, but if permanent filestore (disc space)
+ is available the user can
+ accumulate a binary data base for each structure which is automatically
+ loaded for each run of the program. In this case the program can be started
+ and stopped at will, and will usually survive a machine crash without loss
+ of data.
+<P>The crystallographic data is grouped into LISTs for both ASCII and
+ binary representations. When data in a LIST is modified or reinput to the
+ data base, it usually over writes a previous LIST of the same type. The
+ main exception is LIST 5, the refinable coordinate list, which always
+ generates a new version. See the chapter DATA BASE for details.
+ A list of the contents of the LISTS is given at the end of this
+ document.
+<P>All COMMANDs begin with the character \ (or the hash symbol) followed without a space by
+ the command name. Additional data may be given on the same or subsequent
+ lines, and the whole command is terminated with END on a line by itself.
+ \ followed by a space then text is taken as a
+ comment in the data.
+
+<pre>
+     \  This is a comment
+     \COMMAND     (parameters)
+     (DIRECTIVES)    (parameters)
+     END
+</pre><p><BR>
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-3.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="3.3">3.3: Output</A></H3></CENTER>
+<P>There are two main plain text output channels. One, *.LI*, is
+ intended as a detailed record of a task, and may be printed on a
+ lineprinter. The other, *.MON, is displayed on the terminal during
+ interactive or on-line sessions, and directed to a file during batch
+ working. The file may be listed on a printer.
+ Other files are used for special purposes. See the section FILES
+ for details.
+
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-3.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="3.4">3.4: Starting the program</A></H3></CENTER>
+<P>It is intended that a subdirectory will be used to hold the files associated
+ with a structure. Most of the permanent files created by
+ CRYSTALS have the same  filename, and extensions indicating their
+ function.
+<P>For example, if you are working on a copper compound, create a suitable
+ subdirectory.
+
+<pre>
+            VAX                              DOS
+
+     $CREATE/DIRECTORY      [.CU]            MKDIR CU
+     $SET DEFAULT           [.CU]            CD CU
+</pre><p><BR>
+<P>CRYSTALS automatically creates
+ the data base file, *.DSC if it has not been created by a previous run.
+ If commands have already been put into a file using a text editor, the
+ file (e.g. JOB.DAT) may be executed online by issuing:
+
+<pre>
+ (VMS only)     $CRYSTALS      []      CUCPD      JOB
+</pre><p><BR>
+ or submitted to a batch stream with:
+
+<pre>
+ (VMS only)     $SUBMIT/PARAM=(CU, CUCPD, JOB)      CRPROC:CRYSTALS
+</pre><p><BR>
+<P>Finally, the program can be started interactively and control be
+ passed to the data file.
+<P>Answering 'NO' to the question about SCRIPTS (see the section on SCRIPTS)
+ will bring you to the
+ CRYSTALS prompt, '!'. Commands may now be entered directly to the program. The
+ \USE command passes control to the specified file. The \SET commands tailor
+ the volume of program output. See the section on Tailoring the Program.
+
+<pre>
+(VMS start)     $CRYSTALS [] CUCPD
+(DOS start)     &gt;CRYSTALS
+
+(all systems)   !\SET WATCH 5
+                !\SET LISTS BOTH
+                !\USE JOB.DAT
+</pre><p><BR>
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-3.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="3.5">3.5: Getting out of the program</A></H3></CENTER>
+<P>If you are running CRYSTALS and suddenly wish to do something with SCL, e.g.
+ list a directory to find a file name, it is not necessary to close down the
+ program (SCL means the System Control Language, such as DOS or DCL).
+<P>Issuing <strong>$SCLcommand</strong> activates the SCL command, and returns you to CRYSTALS
+ on its completion, e.g.
+<P>!$EDIT datafil.dat
+<P>Typing $ without an SCL command on VAX systems passes you to the DCL
+ prompt, at which you
+ may issue any DCL commands. When you wish to return to CRYSTALS, logout of
+ the subprocess (type LO).
+<P>Under VMS a subprocess can also be initiated by typing CTRL/C and then S (for
+ subprocess). You are passed to the DCL prompt, $, while CRYSTALS waits for
+ you. When you wish to return to CRYSTALS, logout of the subprocess (type LO),
+ and answer C (for continue) to the CRYSTALS question.
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-3.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="3.6">3.6: Getting out of SCRIPTS</A></H3></CENTER>
+ The response 'DIRECT' can be made to any SCRIPT question, and has the effect
+ of returning the user IMMEDIATELY to direct CRYSTALS input mode. Any half
+ completed tasks being performed by the SCRIPT may need terminating (or
+      aborting) with an 'END'.
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-3.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="3.7">3.7: Stopping the program</A></H3></CENTER>
+
+<P>CRYSTALS is stopped by issuing:
+
+<pre>
+        !\FINISH
+</pre><p><BR>
+<P>If the program is stopped using &lt;ctrl&gt;/C, &lt;ctrl&gt;/Y or &lt;ctrl&gt;/BREAK
+there ia a small chance that the binary data base will not be correctly
+closed, and become corrupted.
+<BR>&nbsp;<BR>

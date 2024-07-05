@@ -1,0 +1,84 @@
+<!-- XTLVAR title="Atom Labelling" -->
+<!-- XTLVAR comment="Atom Labelling" -->
+<!-- XTLVAR cvssource="manual/cameron.man" -->
+<H1>Cameron Manual</H1>
+<H2>Chapter 14: Atom Labelling</H2>
+<DL><DT>
+</DL>
+<A NAME="Cameron - Labelling atoms"> </A>
+</div>
+<div class="instruction"><strong><u>LABEL</u></strong><br>
+</div>
+<div class="instruction"><strong><u>NOLABEL</u></strong><br>
+<P>The LABEL and NOLABEL commands control the atom labelling. They
+are
+set up in an identical way to INCLUDE and EXCLUDE and the syntax
+is
+identical:
+<pre>
+LABEL C1 C2 O
+NOLABEL C H1
+LABEL ALL
+NOLABEL ALL
+LABEL GROUP g1 ....
+</pre><p><BR>
+are all valid. Note that atoms will not be labelled if they are
+not included in the picture.
+<div class="directive"><strong><i>MOUSE</i></strong>
+<P>All atoms will be labelled if the LABEL command has been used for
+them. The label positions can be altered using the mouse if required.
+Note that label positions are recalculated if atoms are included or
+excluded or a change in the view direction has occurred. Therefore, it is
+advisable that the 'final' view is obtained before labels are positioned
+with the mouse.
+<P>Mouse labelling is controlled as follows. The user clicks on a
+position on the screen (once the message Mouse Labelling activated has
+been seen). If this position is over a label then the label is replaced
+by a box of the same size as the label. A red cross is drawn over the
+atom that the label refers to to aid identification. The mouse is then
+used to position the TOP LEFT HAND CORNER of the label by a second
+click. Alternatively, hitting the N key (for Nolabel) will remove the
+label altogether.
+<P>If the mouse is clicked on an atom which is NOT labelled then a label
+will appear at the atom centre, this label can then be moved as
+described above.
+<P>If at any time the user wishes to view the current picture without 
+releasing the mouse, this can be done by hitting the 'V' key.
+</div>
+<div class="directive"><strong><i>GENERATED</i></strong>
+</div>
+<div class="directive"><strong><i>INITIAL</i></strong>
+<P>These commands relate to the pack number display while labelling.
+Atoms are assigned a pack number after PACK or ENCLOSURE. This number is
+then displayed as eg N1_5. These numbers are used to refer to atoms and
+elements as required. INITIAL (the default) will just display N1 while
+GENERATED shows N1_5.
+</div>
+<div class="directive"><strong><i>CELL</i></strong>
+Controls the cell labelling.
+</div>
+<div class="directive"><strong><i>FRAGMENT</i></strong>
+Allows the user to set labels for a given fragment.
+</div>
+</div>
+<div class="instruction"><strong><u>FONT</u></strong><br>
+This sets the point size of the font to be used in hardcopy output. It 
+requires one argument.
+<div class="directive"><strong><i>DEFAULT</i></strong>
+This resets the point size to its default value.
+</div>
+</div>
+<div class="instruction"><strong><u>TEXT</u></strong><br>
+<div class="directive"><strong><i>POSITION</i></strong>
+This allows the user to annotate a picture. The syntax is:
+<pre>
+TEXT "text string" POSITION x y
+</pre><p><BR>
+The text must be in quotes. x and y are the 
+position of the text in percentages from the top left hand corner of the
+diagram. 
+After the text is processed it is assigned a number.
+</div>
+<div class="directive"><strong><i>NUMBER</i></strong>
+The NUMBER command can be used to move a text item after it has been 
+created by using TEXT NUMBER n POSITION x y.  

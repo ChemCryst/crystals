@@ -1,0 +1,312 @@
+<!-- XTLVAR title="Crystal Packing Commands" -->
+<!-- XTLVAR comment="Crystal Packing Commands" -->
+<!-- XTLVAR cvssource="manual/cameron.man" -->
+<H1>Cameron Manual</H1>
+<H2>Chapter 17: Crystal Packing Commands</H2>
+<DL><DT>
+<DD><A HREF="cameron-17.html#17.1">17.1: PACK</A><br>
+<DD><A HREF="cameron-17.html#17.2">17.2: Dealing with connectivity</A><br>
+<DD><A HREF="cameron-17.html#17.3">17.3: EXAMPLES</A><br>
+<DD><A HREF="cameron-17.html#17.4">17.4: ENCLOSURE</A><br>
+<DD><A HREF="cameron-17.html#17.5">17.5: Choice of enclosure "origin"</A><br>
+<DD><A HREF="cameron-17.html#17.6">17.6: Type of volume to be used</A><br>
+<DD><A HREF="cameron-17.html#17.7">17.7: EXAMPLE</A><br>
+<DD><A HREF="cameron-17.html#17.8">17.8: PACKING MORE COMPLICATED STRUCTURES</A><br>
+<DD><A HREF="cameron-17.html#17.9">17.9: UNPACK</A><br>
+</DL>
+<A NAME="Cameron - Packing commands"> </A>
+<P>There are two methods of crystal packing available, PACK and
+ENCLOSURE. Both use ALL of the symmetry operators in the
+Spacegroup to
+generate all of the atoms that lie within a user-defined volume.
+The
+commands ADD and MOVE are available if single symmetry operators
+are
+required. The difference between the two commands lies in the
+method of
+volume definition.
+<HR><small><A HREF="cameron-17.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="17.1">17.1: PACK</A></H3></CENTER>
+<P>The PACK command allows the user to define a volume to be
+filled
+relative to the unit cell. One of two-sub commands is required
+to define
+this volume.
+<div class="instruction"><strong><u>CELL</u></strong><br>
+PACK CELL will cause the program to generate all the atoms that
+lie
+within the unit cell. This is the default option if no range for
+packing
+is input.
+</div>
+<div class="instruction"><strong><u>WINDOW</u></strong><br>
+PACK WINDOW allows the user to define the volume in terms of the
+unit
+cell axes. It is followed by three pairs of numbers.
+<pre>
+PACK WINDOW xmin xmax ymin ymax zmin zmax
+</pre><p><BR>
+The values of xmin etc are relative to the unit cell origin.
+Therefore
+to define a volume of which contained all of the x axis, all of
+the y axis and
+the first half of the z axis we would use:
+<pre>
+PACK WINDOW 0.0 1.0 0.0 1.0 0.0 0.5
+</pre><p><BR>
+If more than one unit cell is required negative numbers and
+numbers
+exceeding one may be used.
+<P>One more sub-command may be entered after the WINDOW or CELL
+commands.
+If this command is omitted then the option chosen in the last
+PACK
+command will be used. If this is the first time PACK is used then
+CUT is
+the default option.
+Three sub-commands are available:
+<div class="directive"><strong><i>CUT</i></strong>
+CUT will generate all the atoms that lie within the defined
+volume. ie.
+the generation is "cut" at the boundary.
+</div>
+<div class="directive"><strong><i>COMPLETE</i></strong>
+COMPLETE is most useful for molecular crystallographers. It will
+generate all the asymmetric units that have ANY ATOMS lying with
+the
+defined volume.
+</div>
+<div class="directive"><strong><i>CENTROID</i></strong>
+CENTROID is similar to COMPLETE except that it calculates the
+centroid
+of the asymmetric unit (as though all of the atoms have equal
+weight) and
+includes only those which have their centroid within the defined
+volume.
+This is particulary useful for molecular crystallographers as it
+creates
+a picture without the "odd atoms" at the edge of the unit cell.
+</div>
+</div>
+<HR><small><A HREF="cameron-17.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="17.2">17.2: Dealing with connectivity</A></H3></CENTER>
+<P>There are three other qualifying commands that apply to PACK:
+<div class="instruction"><strong><u>INTRA</u></strong><br>
+</div>
+<div class="instruction"><strong><u>INTER</u></strong><br>
+</div>
+<div class="instruction"><strong><u>KEEP</u></strong><br>
+These deal with the treatment of connectivity calculations once
+the PACK
+has been carried out.
+</div>
+<div class="instruction"><strong><u>INTRA</u></strong><br>
+<P>This qualifiers means that the connectivity will be calculated
+within
+each newly generated asymmetric unit only. Any changes to the
+bonding -
+eg with JOIN, REMOVE, CONNECT, COLOUR BONDS - will be undone.
+This is
+the fastest option.
+</div>
+<div class="instruction"><strong><u>INTER</u></strong><br>
+<P>In this case connectivity is calculated once all of the atoms
+have
+been generated - therefore if any intra-unit bonds exist they
+will be
+found.
+</div>
+<div class="instruction"><strong><u>KEEP</u></strong><br>
+<P>This is the default option. Connectivity is copied from the
+unit used
+to do the packing - this includes colour and style changes if any
+- into
+the bond info of the new atoms. This is done for each asymmetric
+unit as
+it is generated and is slower than INTRA as it requires more
+comparisons
+to be carried out.
+</div>
+<HR><small><A HREF="cameron-17.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="17.3">17.3: EXAMPLES</A></H3></CENTER>
+<P>Therefore, to create a picture containing all of the complete
+molecules within a cube of side equal to 2 unit cells we need :-
+
+<pre>
+PACK
+WINDOW 0.0 2.0 0.0 2.0 0.0 2.0
+COMPLETE
+</pre><p><BR>
+Or alternatively,
+<pre>
+PACK
+WINDOW -1.0 1.0 -1.0 1.0 -1.0 1.0
+COMPLETE
+</pre><p><BR>
+<HR><small><A HREF="cameron-17.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="17.4">17.4: ENCLOSURE</A></H3></CENTER>
+<P>The enclosure command is more flexible than PACK as it enables
+the
+user to choose the "origin" for the atom generation. The first
+task is
+to specify this origin which is either a point in the unit cell
+or an
+atom.
+<HR><small><A HREF="cameron-17.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="17.5">17.5: Choice of enclosure "origin"</A></H3></CENTER>
+<div class="instruction"><strong><u>ATOM</u></strong><br>
+<P>If we wish to generate the atoms around Cu1 in order to examine
+the
+coordination environment for example we can use:
+<pre>
+ENCLOSURE ATOM CU1
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>POINT</u></strong><br>
+<P>Alternatively we can choose the centre of the unit cell:
+<pre>
+ENCLOSURE POINT 0.5 0.5 0.5
+</pre><p><BR>
+The POINT sub-command can be used if an atom does not lie at the
+point in
+question eg if we are examining a "hole" within a structure.
+</div>
+<HR><small><A HREF="cameron-17.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="17.6">17.6: Type of volume to be used</A></H3></CENTER>
+<P>There are three different ways of defining the volume of
+enclosure:
+<div class="instruction"><strong><u>SPHERE</u></strong><br>
+This will generate a sphere of enclosure about the origin. The
+syntax is:
+<pre>
+SPHERE r
+</pre><p><BR>
+where r is the radius in angstroms of the sphere.
+<pre>
+e.g. ENCLOSURE ATOM C1 SPHERE 4.0 CUT VIEW
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>ANORTHIC</u></strong><br>
+This is used to generate an ANORTHIC box ie a box whose sides are parallel to the unit cell axes. As this box is directly related
+to the
+unit cell its dimensions are given in fractional coordinates. The
+syntax
+is:
+<pre>
+ANORTHIC -x +x -y +y -z +z
+</pre><p><BR>
+Therefore, to generate an anorthic box with sides extending one
+quarter of a unit
+cell in all six directions from the defined origin we use:
+<pre>
+ANORTHIC 0.25 0.25 0.25 0.25 0.25 0.25
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>ORTHOGONAL</u></strong><br>
+This is used to generate a box whose sides are perpendicular to
+each
+other. The z axis lies along the current view direction and the
+x and y
+axes lie across and vertically up the screen respectively. The
+dimensions of this box is defined in a similar way to the
+ANORTHIC box
+except that they are given in angstroms. For example, to
+generate a box that is 4.0 angstroms wide in x, 1 in y and 0.5
+in z we
+would use:
+<pre>
+ORTHOGONAL 2.0 2.0 1.0 1.0 0.25 0.25
+</pre><p><BR>
+It is important to note that this volume is related to the
+CURRENT view
+direction. The VIEW ALONG AXIS command can be used to orient the
+picture
+prior to carrying out this command if required.
+<div class="directive"><strong><i>CUT</i></strong>
+</div>
+<div class="directive"><strong><i>COMPLETE</i></strong>
+</div>
+<div class="directive"><strong><i>CENTROID</i></strong>
+As with PACK a further sub-command can be used if desired to
+define the
+type of boundary handling used. CUT, COMPLETE and CENTROID have
+the same
+meanings as described above for PACK.
+<div class="parameter"><i>INTRA</i>
+</div>
+<div class="parameter"><i>INTER</i>
+</div>
+<div class="parameter"><i>KEEP</i>
+These sub commands have an identical meaning to those described
+for PACK
+above.
+</div>
+</div>
+</div>
+<HR><small><A HREF="cameron-17.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="17.7">17.7: EXAMPLE</A></H3></CENTER>
+<P>To generate all the atoms that lie within a sphere of radius
+5.0
+angstroms about a CU1 atom we use:
+<pre>
+ENCLOSURE
+ATOM CU1
+SPHERE 5.0
+CUT
+</pre><p><BR>
+<P>To generate all the asymmetric units that have any atoms within
+a box
+of side 0.5 units around the unit cell centre we use:-
+<pre>
+ENCLOSURE
+POINT 0.5 0.5 0.5
+ANORTHIC 0.25 0.25 0.25 0.25 0.25 0.25
+COMPLETE
+</pre><p><BR>
+<P>And to generate all the atoms that lie inside a box centred on
+the
+point 0.25 0.25 0.25 and of sides x=1.0 y=2.0 and z=3.0 angstroms
+:-
+<pre>
+ENCLOSURE
+POINT 0.25 0.25 0.25
+ORTHOGONAL 0.5 0.5 1.0 1.0 1.5 1.5
+CUT
+</pre><p><BR>
+<HR><small><A HREF="cameron-17.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="17.8">17.8: PACKING MORE COMPLICATED STRUCTURES</A></H3></CENTER>
+<P>The PACK and ENCLOSURE commands always work on the initial data-
+unless a SETUNIT command has been issued. In some cases however, it is
+more useful for the user to be able to deal with certain sections of the
+structure separately. This is most likely to occur where there is more
+than one distinct unit in the asymmetric unit. This is dealt with by the
+command GROUP.
+<div class="instruction"><strong><u>GROUP</u></strong><br>
+<P>GROUP can be used directly after both PACK and ENCLOSURE. The syntax
+is:-
+
+<pre>
+PACK GROUP groupname CELL ...
+or
+PACK GROUP groupname WINDOW ...
+etc
+</pre><p><BR>
+This causes the groups to be packed individually, the CENTROID,
+COMPLETE and CUT commands are applied to the group and not to the
+asymmetric unit as a whole. Packs are cumulative, unless a
+PACK/ENCLOSURE is done without the GROUP sub command in which case the
+previously generated atoms are overwritten. Groups are defined with the
+command DEFGROUP.
+<P>If required, more than one groupname can be packed at once - they are
+all treated separately. All groups can be packed in turn if PACK GROUP *
+is used.
+<BR>
+</div>
+<HR><small><A HREF="cameron-17.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="17.9">17.9: UNPACK</A></H3></CENTER>
+<P>This command causes all atoms generated via PACK or ENCLOSURE
+to be
+removed from the calculations, drawings etc. It has no
+sub-commands.
+It also works with ADD and MOVE generated data.
+<BR>

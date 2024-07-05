@@ -1,0 +1,31 @@
+<!-- XTLVAR title="Hydrogen Placing" -->
+<!-- XTLVAR comment="Hydrogen Placing" -->
+<!-- XTLVAR cvssource="manual/guide.man" -->
+<H1>Crystals User Guide</H1>
+<H2>Chapter 7: Hydrogen Placing</H2>
+<DL><DT>
+<DD><A HREF="guide-7.html#7.1">7.1: EXAMPLE 1</A><br>
+</DL>
+<P>A special case of regularisation is the computation of the position of
+ hydrogen atoms in an organic structure. Unless there is likely to be 
+ some ambiguity over the nature of the bonding, there is generally little
+ to be gained in searching for hydrogen atoms in difference Fourier maps.
+ Instead, their coordinates can (and should) be computed geometrically.
+ CRYSTALS has routines for placing sp1, sp2, sp3 and phenyl
+ hydrogens, taking proper account of symmetry, bond lengths and angles.
+<HR><small><A HREF="guide-7.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="7.1">7.1: EXAMPLE 1</A></H3></CENTER>
+<P>Place the hydrogen atoms on carbons C(2) to C(6) of a phenyl group and
+ the two hydrogens on C(31) of an aliphatic chain.
+
+<pre>
+ \HYDROGEN
+ \ note that the pivot atom C(1) must be given
+ PHENYL C(1) UNTIL C(6)
+ \ two H atoms on an sp3 C(31) atom
+ H23 C(30) C(31) C(32)
+</pre><p><BR>
+<P>Although the default bond length is suitable for placing hydrogen atoms
+ as seen with X-rays, it can be changed to that suitable for neutrons,
+ and \HYDROGENS can even be used to place non-hydrogen atoms, such as
+ the oxygens in borate groups.

@@ -1,0 +1,41 @@
+<!-- XTLVAR title="How To Get Started" -->
+<!-- XTLVAR comment="How To Get Started" -->
+<!-- XTLVAR cvssource="manual/cameron.man" -->
+<H1>Cameron Manual</H1>
+<H2>Chapter 2: How To Get Started</H2>
+<DL><DT>
+</DL>
+<A NAME="Cameron - How to get started"> </A>
+<P>There is a basic 'startup' procedure that can be followed in order to
+get a picture on to the screen.
+The following steps are required :-
+<pre>
+1)      Load in a spacegroup if required
+2)      Load in the unit cell dimensions
+3)      Load in the atomic coordinates
+4)      Select an output device
+5)      Set the atom drawing style to BALL
+6)      Draw a picture
+</pre><p><BR>
+This can be accomplished with the following commands, which are
+illustrated for a compound which has a spacegroup P 21, unit cell
+parameters a=6.0, b=7.0, c=8.0, alpha=90, beta=115, gamma=90. The atomic
+coordinates are held in a "list5" type file NIGEL.L5.
+<pre>
+SPACEGROUP P 21
+INPUT
+CELL 6 7 8 90 115 90
+LIST5 NIGEL.L5
+DEVICE VGA
+BALL ALL
+FILL
+VIEW
+</pre><p><BR>
+<P>From here the view direction can be controlled via XROT, YROT, ZROT or
+CURSOR. If you require a picture of all the atoms in the unit cell, and the unit cell also displayed,
+the commands are :-
+<pre>
+PACK CELL
+INCLUDE CELL
+VIEW
+</pre><p><BR>

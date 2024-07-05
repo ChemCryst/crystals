@@ -1,0 +1,822 @@
+<!-- XTLVAR title="Data Lists And Instructions" -->
+<!-- XTLVAR comment="Data Lists And Instructions" -->
+<!-- XTLVAR cvssource="manual/primer.man" -->
+<H1>Crystals Primer</H1>
+<H2>Chapter 18: Data Lists And Instructions</H2>
+<DL><DT>
+<DD><A HREF="primer-18.html#18.1">18.1: Available LISTS</A><br>
+<DD><A HREF="primer-18.html#18.2">18.2: Available Instructions</A><br>
+<DD><A HREF="primer-18.html#18.3">18.3: General Commands</A><br>
+<DD><A HREF="primer-18.html#18.4">18.4: Initial Data Input</A><br>
+<DD><A HREF="primer-18.html#18.5">18.5: Reflection Data Input</A><br>
+<DD><A HREF="primer-18.html#18.6">18.6: Atomic and Structural Parameters</A><br>
+<DD><A HREF="primer-18.html#18.7">18.7: Structure Factors and Least Squares</A><br>
+<DD><A HREF="primer-18.html#18.8">18.8: Fourier Routines</A><br>
+<DD><A HREF="primer-18.html#18.9">18.9: Analysis of Results</A><br>
+</DL>
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-18.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="18.1">18.1: Available LISTS</A></H3></CENTER>
+
+<pre>
+    Lists marked * cannot be input by the User
+    Lists marked \ are not currently available
+
+   List   Type of data
+  number
+
+     1    Cell parameters
+     2    Unit cell symmetry
+     3    Atomic scattering factors
+     4    Weighting parameters
+     5    Atomic parameters
+     6    Reflection data
+     7\   Reflection data not used for refinement
+    10*   Peak coordinates from Fourier
+    11    Least squares matrix
+    12    Refinement directives
+    13    Crystal and collection data
+    14    Fourier directives
+    16    General Restraint instructions
+    17    Special Restraint instructions
+    22    Refinement directives in internal format
+    23    Structure factor control list
+    24*   Least squares shift list
+    25    Twin component operators
+    26*   Constraints in internal format
+    27    Diffractometer scales
+    28    Reflection condition list
+    29    Contents of asymmetric unit and
+                       elemental properties
+    31    Cell parameter E.S.D.'s
+    33*   Internal - Refinement control
+</pre><p><BR>
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-18.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="18.2">18.2: Available Instructions</A></H3></CENTER>
+
+<pre>
+General system instructions.
+        \FINISH       \ text     \TITLE        \COMMANDS
+        \HIDE         \SHOW      \LOG          \USE
+        \PAUSE        \TYPE      \MANUAL       \DISK
+        \PURGE        \RELEASE   \SUMMARY      \FOREIGN
+        \PRINT        \PUNCH
+
+Initial data input
+        \SPACEGROUP  \COMPOSITION \QUICKSTART
+
+Reflection handling
+        \HKLI         \LP        \SYSTEMATIC   \SORT
+        \MERGE        \REORDER   \REFLECTIONS
+
+Atomic and structural parameters
+        \EDIT         \CONVERT   \HYDROGENS    \REGULARISE
+        \COLLECT      \REGROUP   \PERHYDRO     \DISPLAY
+
+Structure factors and refinement
+        \SFLS         \LIST 22   \LIST 26      \SPECIAL
+        \CHECK        \CLEAR     \ANALYSE      \WEIGHT
+        \DIFABS
+
+Fourier maps
+        \FOURIER      \SLANT     \PEAKS
+
+Analysis of results
+        \AXES         \DISTANCES \MOLAX        \TORSION
+        \PARAMETERS   \ANISO     \CIFOUT       \CAMERON
+</pre><p><BR>
+<HR><small><A HREF="primer-18.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="18.3">18.3: General Commands</A></H3></CENTER>
+<div class="instruction"><strong><u>Immediate (System) Commands</u></strong><br>
+<pre>
+ \FINISH
+ \ ..... COMMENTS ....
+ \TITLE ..... A title to be printed .....
+ \SPAWN      DCL command
+ \$      DCL command
+ \COMMANDS   instruction
+ \SET
+      EXPORT          on/off
+      FILECASE        lower/mixed/upper
+      GENERATE        on/off
+      LISTS           none/read/write/both
+      LOG             on/off
+      MAPS            on/off
+      MESSAGE         on/off
+      MONITOR         on/off
+      OPENMESSAGE     on/off
+      PAGE            'length'
+      PAUSE           'time'
+      PRINTER         on/off
+      COMMUNUCATION   slow/fast
+      SRQ             on/off
+      TERMINAL        unknown/vt52/vt100/vga
+      TIMING          on/off
+      UEQUIV          arihtmetic/geometric
+      WATCH           'number'
+
+ \USE      source
+ \PAUSE    interval
+ \TYPE     'filename'
+ \RELEASE  devicename filename
+ \MANUAL   'name'
+ \HELP     'topic'
+ \OPEN     devicename filename
+ \SCRIPT   filename
+ $ DCLcommand
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>Summary of Contents of a List</u></strong><br>
+<pre>
+ \SUMMARY OF= TYPE= LEVEL=
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\DISK - Disk management</u></strong><br>
+
+<pre>
+ \DISK
+ PRINT INDEX=
+ MARKERROR LIST= SERIAL= RELATIVE= ACTION=
+ RETAIN LIST= SERIAL= RELATIVE= ACTION=
+ DELETE LIST= SERIAL= RELATIVE= ACTION=
+ RESET LIST= SERIAL= RELATIVE=
+ USAGE LIST= SERIAL= RELATIVE= FLAG=
+ EXTEND RECORDS= FREE= TRIES= SIZE=
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\PURGE - Deletion of Old Versions of Lists</u></strong><br>
+
+<pre>
+ \PURGE FILE= INITIALSIZE= LOG=
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\CLEAR - Creation of Default Lists</u></strong><br>
+
+<pre>
+ \CLEAR  LIST=
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\FOREIGN - Foreign Program Links</u></strong><br>
+
+<pre>
+ \FOREIGN PROGRAM= MODE=
+ END
+</pre><p><BR>
+</div>
+<HR><small><A HREF="primer-18.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="18.4">18.4: Initial Data Input</A></H3></CENTER>
+<div class="instruction"><strong><u>\QUICKSTART - Abbreviated startup command</u></strong><br>
+
+<pre>
+ \QUICKSTART
+ SPACEGROUP symbol=
+ CONTENTS formula=
+ FILE name=
+ FORMAT expression=
+ DATA wavelength= reflections= ratio=
+ CELL  a= b= c= alpha= beta= gamma=
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\LIST 1 - Cell Parameters</u></strong><br>
+
+<pre>
+ \LIST 1
+ REAL a= b= c= alpha= beta= gamma=
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\LIST 31 - Unit Cell Parameter Errors</u></strong><br>
+
+<pre>
+ \LIST 31
+ AMULT value=
+ MATRIX v(11)= v(12)= . . v(16)= v(22)= . . v(66)=
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\SPACE GROUP - Space Group input</u></strong><br>
+
+<pre>
+ \SPACEGROUP
+  SYMBOL expression=
+  AXIS unique=
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\LIST 2 - Symmetry Data</u></strong><br>
+
+<pre>
+ \LIST 2
+ CELL nsymmetries=  lattice=  centric=
+ SYMMETRY  x=  y=  z=
+ SPACEGROUP lattice= a-axis= b-axis= c-axis=
+ CLASS name=
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\COMPOSITION - Input of molecular composition</u></strong><br>
+
+<pre>
+ \COMPOSITION
+ CONTENTS formula=
+ SCATTERING file=
+ PROPERTIES file=
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\LIST 3 - Atomic Scattering Factors</u></strong><br>
+
+<pre>
+ \LIST 3
+ READ  nscatterers=
+ SCATTERING type= f'= f''= a(1)= b(1)= a(2)= . . . b(4)= c=
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\LIST 13 - Crystal and Data Collection Details</u></strong><br>
+
+<pre>
+ \LIST 13
+ CRYSTAL friedelpairs= twinned= spread=
+ DIFFRACTION geometry= radiation=
+ CONDITIONS wavelength= theta(1)= theta(2)= constants . .
+ MATRIX r(1)= r(2)= r(3)= . . . r(9)=
+ TWO h= k= l= theta= omega= chi= phi= kappa= psi=
+ THREE h= k= l= theta= omega= chi= phi= kappa= psi=
+ REAL components= h= k= l= angles=
+ RECIPROCAL components= h= k= l= angles=
+ AXIS h= k= l=
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\LIST 29 - Contents of the Asymmetric Unit</u></strong><br>
+
+<pre>
+ \LIST 29
+ READ  nelement=
+ ELEMENT  type=  covalent=  vanderwaals= ionic= number= mua= weight=</pre><p><BR>
+ END
+<BR>
+</div>
+<div class="instruction"><strong><u>\LIST 30 - General Crystallographic Data</u></strong><br>
+
+<pre>
+ \LIST 30
+ DATRED     nrefmes= nrefmerg= rmerge= nreffried= rmergfried=
+ CONDITIONS minsize= medsize= maxsize= norient=
+ CONTINUE   thorientmin= thorientmax= temperature= standards= decay= scanmode=
+ REFINEMENT r= rw= nparam= maxparam= s= delrhomin= delrhomax=
+ CONTINUE   rmsshift= nrefused= fminfunc= restminfunc= totalminfunc= coefficient=
+ INDEXRANGE hmin= hmax= kmin= kmax= lmin= lmax= thetamin= thetamax=
+ ABSORPTION psimin= psimax= thetamin= thetamax= empmin= empmax=
+ CONTINUE   difabsmin= difabsmax= abstype=
+ GENERAL    dobs= dcalc= f000= mu= molwt= flack= esd=
+ COLOUR
+ SHAPE
+ END
+</pre><p><BR>
+</div>
+<HR><small><A HREF="primer-18.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="18.5">18.5: Reflection Data Input</A></H3></CENTER>
+<div class="instruction"><strong><u>\LIST 6 - Simple input of F or Fsq</u></strong><br>
+
+<pre>
+ \LIST 6
+ READ f's=
+ FORMAT expression=
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\LIST 6 - Advanced input of F or Fsq</u></strong><br>
+
+<pre>
+ \LIST 6
+ READ ncoefficient= type= f's= ngroup= unit= check=
+ INPUT coefficient(1)= coefficient(2)= .  .
+ STORE ncoefficient= medium= append=
+ OUTPUT coefficient(1)= coefficient(2)=  .  .
+ FORMAT expression=
+ MULTIPLIERS value=
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\HKLI - Intensity Data</u></strong><br>
+
+<pre>
+ \HKLI
+ READ ncoefficient= type= f's= ngroup= unit= check=
+ INPUT coefficient(1)= coefficient(2)= .  .
+ STORE ncoefficient= medium= append=
+ OUTPUT coefficient(1)= coefficient(2)=  .  .
+ FORMAT expression=
+ CORRECTIONS nscale= nfactor=
+ FACTORS coefficient(1)= coefficient(2)=  .  .
+ ABSORPTION print= phi= theta= tube= plate=
+ PHI nphivalues= nphicurves=
+ PHIVALUES phi= .........
+ PHIHKLI h= k= l= i[max]=
+ PHICURVE i= .........
+ THETA nthetavalues=
+ THETAVALUES theta=
+ THETACURVE correcton= ........
+ TUBE nothing omega= chi= phi= kappa= mu=a[max]=
+ PLATE nothing omega= chi= phi= kappa= mu=a[max]=
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\LIST 27 - Intensity Decay Curves</u></strong><br>
+
+<pre>
+ \LIST 27
+ READ nscale=
+ SCALE scalenumber= rawscale= smoothscale= serial=
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\LP - Data Reduction</u></strong><br>
+
+<pre>
+ \LP
+ STORE medium= f's=
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\SYSTEMATIC - Systematic absence removal</u></strong><br>
+
+<pre>
+ \SYSTEMATIC
+ STORE medium= f's= newindices=
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\SORT - Sorting the reflection data</u></strong><br>
+
+<pre>
+ \SORT
+ STORE medium=
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\MERGE - Merging equivalent reflections</u></strong><br>
+
+<pre>
+ \MERGE
+ STORE medium=
+ REFLECTIONS njcode= list= level= f's=
+ JCODE number= value=
+ REJECT ratio= sigma=
+ WEIGHT scheme= nparameters= ncycle=
+ PARAMETERS p .....
+ END
+</pre><p><BR>
+</div>
+<HR><small><A HREF="primer-18.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="18.6">18.6: Atomic and Structural Parameters</A></H3></CENTER>
+<div class="instruction"><strong><u>\LIST 5 - Atoms and other Parameters</u></strong><br>
+
+<pre>
+ \LIST 5
+ OVERALL scale= du[iso]= ou[iso]= polarity= enantio= extparam=
+ READ natom= nlayer= nelement= nbatch=
+ ATOM type= serial= occ= u[iso]= x= y= z= u[11]= ....u[12]=
+ INDEX p= q= r= s= absolute=
+ LAYERS scale=
+ ELEMENTS scale=
+ BATCH scale=
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\EDIT - Editing structural parameters</u></strong><br>
+
+<pre>
+ \EDIT inputlist= outputlist=
+ EXECUTE
+ SAVE
+ QUIT
+ MONITOR level
+ LIST level
+ DELETE  atom specifications  .  .
+ ATOM type= serial= occ= u[iso]= x= y= z= u11= ..
+ CREATE z atom-specification  ...
+ SPLIT z atom-specification ...
+ CENTROID z atom-specification ...
+ KEEP  z atom-specifications ...
+ AFTER  atom-specification
+ MOVE z atom-specification  ...
+ SELECT atom-parameter  operator  value, . .
+ SORT type1 type2 ...
+ SORT keyword
+ DSORT type1 type2 ...
+ RENAME atom1  atom2  (, atom1  atom2) ...
+ TYPECHANGE keyword operator value new-atom-type
+ CHANGE  parameter-specification value ...
+ ADD  value parameters  ...
+ SUBTRACT  value  parameters  ...
+ MULTIPLY  value  parameters  ...
+ DIVIDE  value  parameters  ...
+ PERTURB value parameters ...
+ SHIFT  v1, v2, v3   atom-specification . .
+ TRANSFORM  r11, r21, r31, . . . r33  atom-specification . .
+ DEORTHOGINAL  atom-specification . .
+ UEQUIV  atom-specifications  .  .
+ ANISO  atom-specifications  .  .
+ INSERT identifier=name
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\REGROUP - Reorganisation of lists 5 and 10</u></strong><br>
+
+<pre>
+ \REGROUP inputlist= outputlist=
+ SELECT move= keep= monitor= sequence= symmetry= translation=
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\COLLECT - Repositioning of atoms</u></strong><br>
+
+<pre>
+ \COLLECT inputlist= outputlist=
+ SELECT monitor= tolerance= type= symmetry= translation=
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\CONVERT - Conversion of temperature factors</u></strong><br>
+
+<pre>
+ \CONVERT inputlist= outputlist= crossterms=
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\HYDROGENS - Hydrogen placing</u></strong><br>
+
+<pre>
+ \HYDROGENS inputlist= outputlist=
+ DISTANCE  d
+ SERIAL    n
+ U[ISO]    u
+ U[ISO]    next   mult
+ AFTER     type(serial)
+ PHENYL    x r(1) r(2) r(3) r(4) r(5)
+ H33       x r(1) r(2)
+ H23       x r(1) r(2)
+ H13       x r(1) r(2) r(3)
+ H22       x r(1) r(2)
+ H12       x r(1) r(2)
+ H11       x r(1)
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\PERHYDRO - Perhydrogenation</u></strong><br>
+
+<pre>
+ \PERHYDRO
+ U[ISO] next 1.2
+ END
+</div>
+<div class="instruction"></pre><p><strong><u>\REGULARISE - Regularisation of atomic groups</u></strong><br>
+
+<pre>
+ \REGULARISE    mode
+ COMPARE
+ KEEP
+ REPLACE
+ AUGMENT
+ METHOD number
+ GROUP number
+ TARGET aTOM sPECIFICATIONS
+ IDEAL  aTOM sPECIFICATIONS
+ SYSTEM a b c alpha beta gamma
+ ATOM    x    y    z
+ HEXAGON x
+ PHENYL
+ SQUARE x y
+ OCTAHEDRON x y z
+ SQP x y z
+ TBP x z
+ TETRAHEDRON x
+ END
+</pre><p><BR>
+</div>
+<HR><small><A HREF="primer-18.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="18.7">18.7: Structure Factors and Least Squares</A></H3></CENTER>
+<div class="instruction"><strong><u>\LIST 23 Structure Factor Control List</u></strong><br>
+
+<pre>
+ \LIST 23
+ MODIFY anom= extinct= layerscale= batchscale= partial= update= enantio=
+ MINIMISE nsingularity= f-squared= reflections= restrain=
+ REFINE  special= update= tolerance=
+ ALLCYCLES min-r= max-r= *-wr= *-sumsq= *-minfunc= u[min]=
+ INTERCYCLE min-dr= max-dr= *-dwr= *-dsumsq= *-dminfunc=
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\SPECIAL - Special position constraints</u></strong><br>
+
+<pre>
+ \SPECIAL  action= update= tolerance=</pre><p><BR>
+ END
+<BR>
+</div>
+<div class="instruction"><strong><u>\LIST 12 - Refinement directives</u></strong><br>
+
+<pre>
+ \LIST 12
+ BLOCK  parameters ...
+ FIX  parameters ...
+ EQUIVALENCE  parameters ...
+ RIDE  atom_parameter specifications ...
+ LINK parameter_list and parameter_list and parameter_list.
+ COMBINE parameters_list and parameters_list
+ GROUP  atom specifications
+ WEIGHT f1 parameters f2 parameters ...
+ FULL  parameters
+ DIAGONAL  parameters
+ PLUS  parameters
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\CLEAR 12 - Creating a null LIST 12 </u></strong><br>
+
+<pre>
+ \CLEAR 12
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\LIST 22 - Processing of LIST 12</u></strong><br>
+
+<pre>
+ \LIST 22
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\LIST 16 - Restraint Instructions</u></strong><br>
+
+<pre>
+ \LIST 16
+ DISTANCES  value, e.s.d= bond1, bond2
+ DISTANCES  value, e.s.d= mean bond1, bond2
+ DISTANCES  value, e.s.d= difference bond1, bond2
+ NONBONDED  value, powerfactor=  bond1, bond2
+ ANGLES     value, e.s.d= angle1, angle2
+ ANGLES     value, e.s.d= mean angle1, angle2
+ ANGLES     value, e.s.d= difference angle1, angle2
+ VIBRATIONS value, e.s.d= bond1, bond2
+ U(IJ)'S    value, e.s.d= bond1, bond2
+ PLANAR            e.s.d  for 'atom specifications'
+ LIMIT             e.s.d  for 'parameter specifications'
+ ORIGIN            e.s.d  for 'parameter specifications'
+ SUM               e.s.d  for 'parameter specifications'
+ AVERAGE           e.s.d  for 'parameter specifications'
+ RESTRAIN   value, e.s.d= text
+ DEFINE name = text
+ COMPILER
+ EXECUTION
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\CLEAR 16 - Creating a null LIST 16 </u></strong><br>
+
+<pre>
+ \CLEAR 16
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\CLEAR 17 - Creating a null LIST 17 </u></strong><br>
+
+<pre>
+ \CLEAR 17
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\CHECK - Checking restraints</u></strong><br>
+
+ \CHECK level=
+ END
+<BR>
+</div>
+<div class="instruction"><strong><u>\LIST 4 - Weighting Schemes</u></strong><br>
+
+<pre>
+ \LIST 4
+ SCHEME number= nparameters= type= weight= maximum=
+ PARAMETERS p=
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\WEIGHT - Weighting the reflections</u></strong><br>
+
+<pre>
+ \WEIGHT
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\LIST 28 - Reflection Restrictions</u></strong><br>
+
+<pre>
+ \LIST 28
+ MINIMA coefficient(1)= coefficient(2)= ...
+ MAXIMA coefficient(1)= coefficient(2)= ...
+ READ nslices= nomissions= nconditions=
+ SLICE p= q= r= s= t= type=
+ OMIT h= k= l=
+ CONDITION p= q= r= s= t= type
+ SKIP step=
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>Creating a null LIST 28</u></strong><br>
+<pre>
+ \LIST 28
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\SFLS - Structure Factor Least Squares Calculations</u></strong><br>
+
+<pre>
+ \SFLS
+ CALCULATE list= map= fo=
+ SCALE list= map= fo=
+ REFINE list= map= fo= punch= matrix= monitor= invertor=
+ SHIFT  key= key=
+ MAXIMUM  key= key=
+ FORCE  key= key=
+ SOLVE monitor= ma=p fo= punch= matrix=
+ VECTOR monitor= map= fo= punch= matrix=
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\ANALYSE - Analysis of residuals</u></strong><br>
+
+<pre>
+ \ANALYSE
+ FO interval= type= scale=
+ THETA interval=
+ LIST level=
+ LAYERSCALE axis= apply= analyse=
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\DIFABS - Least squares absorption correction</u></strong><br>
+
+<pre>
+ \DIFABS  action= mode=
+ CORRECTION theta=
+ DIFFRACTION geometry= mode=
+ END
+</pre><p><BR>
+</div>
+<HR><small><A HREF="primer-18.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="18.8">18.8: Fourier Routines</A></H3></CENTER>
+<div class="instruction"><strong><u>\LIST 14 - Fourier Section Limits</u></strong><br>
+
+<pre>
+ \LIST 14
+ X-AXIS minimum= step= maximum= division=
+ Y-AXIS minimum= step= maximum= division=
+ Z-AXIS minimum= step= maximum= division=
+ X-PAT minimum= step= maximum= division=
+ Y-PAT minimum= step= maximum= division=
+ Z-PAT minimum= step= maximum= division=
+ ORIENTATION down= across= through=
+ SCALEFACTOR value=
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\FOURIER - Fourier calculations</u></strong><br>
+
+<pre>
+ \FOURIER
+ MAP type= ne= print= scan= scale= origin= nmap= monitor=
+ REFLECTIONS weight= reject= f000= calc=
+ LAYOUT nline= ncharacter= margin= nspace= min-rho= max-rho=
+ PEAKS height= npeak= reject=
+ TAPES input= output=
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\PEAKS - Elimination of duplicated entries in LISTS 5 and 10</u></strong><br>
+
+<pre>
+ \PEAKS inputlist= outputlist=
+ SELECT reject= keep= moni= seq= type= regroup= move= symm= trans=
+ REFINE distance= multiplier=
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\SLANT - Slant fourier calculations</u></strong><br>
+
+<pre>
+ \SLANT
+ MAP type= min-rho= scale= weight=
+ SAVED matrix=
+ CENTROID xo= yo= zo=
+ MATRIX r(11)= r(12)= r(13)= r(21)=  .  .  . r(33)=
+ DOWN minimum= number= step=
+ ACROSS minimum= number= step=
+ SECTION minimum= number= step=
+ END
+</pre><p><BR>
+</div>
+<HR><small><A HREF="primer-18.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="18.9">18.9: Analysis of Results</A></H3></CENTER>
+<div class="instruction"><strong><u>\DISTANCE - Distance angles calculations</u></strong><br>
+
+<pre>
+ \DISTANCES inputlist=
+ OUTPUT monitor=  list= punch=
+ SELECT alldistances= coordinates= sorted= type= range=
+ LIMITS dminimum= dmaximum= aminimum= amaximum=
+ E.S.D.S compute= cell=
+ INCLUDE atoms
+ EXCLUDE atoms
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\MOLAX - Least squares best planes and lines</u></strong><br>
+
+<pre>
+ \MOLAX inputlist=
+ EXECUTE
+ ATOMS  w(1)  specification(1)  w(2)  specification(2) .
+ PLOT
+ PLANE
+ LINE
+ ANGLE  np(1)  and  np(2)
+ EVALUATE  atom specifications . . . .
+ REPLACE atom specifications . . .
+ SAVE
+ QUIT
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\TORSION - Torsion angles</u></strong><br>
+
+<pre>
+ \TORSION inputlist=
+ ATOMS  specifications
+ PUBLICATION  punch=
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\ANISO - Thermal displacement parameter analysis</u></strong><br>
+
+<pre>
+ \ANISO inputlist
+ EXECUTE
+ ATOMS   atom specifications
+ CENTRE   x=, y=, z=
+ REJECT   nv=
+ LIMITS   value=   ratio=
+ TLS
+ EVALUATE atom specifications
+ REPLACE atom specifications . . .
+ SAVE
+ QUIT
+ AXES
+ DISTANCES  dl=   al=
+ ANGLES  al=
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\AXES - Principal atomic displacement directions</u></strong><br>
+
+<pre>
+ \AXES inputlist=
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\PARAMETERS - Publication listing of the atomic parameters</u></strong><br>
+
+<pre>
+ \PARAMETERS
+ LAYOUT= inset= atom= double= choose= float= nchar= nline= listaxes=
+ COORDINATES nchar= ndecimal= select= type= display= print= punch=
+ U'S nchar= ndec= select= type= display= print= punch=
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\SUMMARY - Summary of data lists</u></strong><br>
+
+<pre>
+ \SUMMARY of= type= level=
+
+ \SUMMARY list 5 high
+ END
+ \SUMMARY everything
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\CIF - Cif lists</u></strong><br>
+
+<pre>
+ \CIF
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\CAMERON - Graphics</u></strong><br>
+
+<pre>
+ \CAMERON
+ END
+</pre><p><BR>
+</div>

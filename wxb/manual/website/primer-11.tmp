@@ -1,0 +1,37 @@
+<!-- XTLVAR title="Publication Listings" -->
+<!-- XTLVAR comment="Publication Listings" -->
+<!-- XTLVAR cvssource="manual/primer.man" -->
+<H1>Crystals Primer</H1>
+<H2>Chapter 11: Publication Listings</H2>
+<DL><DT>
+</DL>
+<P>Atomic coordinate and structure factor listings are organised to fit onto
+ A4 paper or a continuous listing.
+ Bond length, angle and torsion angle listings are a continuous
+ column, since they will generally need editing. The listings include standard
+ deviations, computed from the normal matrix. This is linked internally to
+ LIST 5, therefore, LIST 5 MUST NOT BE MODIFIED in any way between the final
+ least squares and the generation of publication listings.
+
+
+<pre>
+      !\REFLECTION
+      !END
+      !\PARAMETERS
+      !END
+      !\DISTANCE
+      !E.S.D YES
+      !OUTPUT PUNCH=PUBLISH
+      !END
+      !\TORSION
+      !PUBLICATION YES
+      !ATOM C(1) C(2) C(3) C(4)
+      !ATOM C(6) C(7) C(8) C(9) UNTIL C(11)
+      !END
+</pre><p><BR>
+<P>The output is in an ASCII file with, by default, the type .PCH.
+  REFLECTIONS, PARAMETERS
+ and DISTANCE have a wide range of parameters which can be set to control the
+ type and format of the output. The SCRIPT \SCRIPT PUBLISH helps prepare
+ tables for publication.
+<BR>

@@ -1,0 +1,73 @@
+<!-- XTLVAR title="Documentation" -->
+<!-- XTLVAR comment="Documentation" -->
+<!-- XTLVAR cvssource="manual/primer.man" -->
+<H1>Crystals Primer</H1>
+<H2>Chapter 13: Documentation</H2>
+<DL><DT>
+<DD><A HREF="primer-13.html#13.1">13.1: The Manual</A><br>
+<DD><A HREF="primer-13.html#13.2">13.2: On-line HELP</A><br>
+<DD><A HREF="primer-13.html#13.3">13.3: Command summary</A><br>
+</DL>
+<P>The main documentation is the Reference Manual.
+<P>While CRYSTALS is running, the user can also get various types of
+ information on-line.
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-13.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="13.1">13.1: The Manual</A></H3></CENTER>
+<P>The Manual is voluminous but moderately complete and accurate. The
+ chapters are organised to roughly follow the path of an analysis, but
+ tables are appended to this guide as aide-memoires for commands and
+ data lists.
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-13.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="13.2">13.2: On-line HELP</A></H3></CENTER>
+<P>The on-line documentation consists of text files giving tips and
+advice.
+
+<pre>
+     !\HELP             HELP
+ or
+     !\HELP             topic
+ or
+     !\INDEX             INDEX
+ or
+     !\INDEX             topic
+</pre><p><BR>
+<HR><small><A HREF="primer-13.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="13.3">13.3: Command summary</A></H3></CENTER>
+
+<P>CRYSTALS uses a master system-data-base containig the definitions of all
+ COMMANDS  and LISTS. This can be interogated to get terse aide-memoires
+ of COMMANDS and LISTS.
+
+<div class="directive"><strong><i>\COMMANDS</i></strong>
+<P>This COMMAND should only be issued after any preceeding COMMANDS have
+ executed to completion. Its format is:
+
+<pre>
+     !\COMMANDS      commandname
+ or
+     !\COMMANDS      LIST      listnumber
+</pre><p><BR>
+
+</div>
+<div class="directive"><strong><i>Query facility</i></strong>
+
+<P>Once a COMMAND is  initiated, information about its directives and
+ parameters can be obtained by starting a line with '?'. This facility will
+ not work if an error has occured during the input of the current COMMAND.
+
+<pre>
+      !\FOURIER
+      !?
+      !?MAP
+      !?MAP            TYPE
+      !MAP             TYPE=DIFF
+      !END
+</pre><p><BR>
+<P>In this example, the first ? produces a list of available directives, the
+ second a list of parameters for MAP, and the third a list of permitted map
+ types, and the default choice.
+
+<BR>&nbsp;<BR>
+</div>

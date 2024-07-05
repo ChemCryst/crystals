@@ -1,0 +1,258 @@
+<!-- XTLVAR title="View Direction Control" -->
+<!-- XTLVAR comment="View Direction Control" -->
+<!-- XTLVAR cvssource="manual/cameron.man" -->
+<H1>Cameron Manual</H1>
+<H2>Chapter 9: View Direction Control</H2>
+<DL><DT>
+<DD><A HREF="cameron-9.html#9.1">9.1: BASIC CONTROL</A><br>
+<DD><A HREF="cameron-9.html#9.2">9.2: ORIENTATION COMMANDS</A><br>
+<DD><A HREF="cameron-9.html#9.3">9.3: Other related commands</A><br>
+<DD><A HREF="cameron-9.html#9.4">9.4: PHOTOGRAPHS</A><br>
+</DL>
+<A NAME="Cameron - View direction control"> </A>
+<P>One of the most important features of a graphics package is the
+ease
+with which a required molecular view can be obtained. CAMERON
+contains a
+large number of options which allow the user to control the view
+direction.
+<HR><small><A HREF="cameron-9.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="9.1">9.1: BASIC CONTROL</A></H3></CENTER>
+<P>Five commands are available to control the view direction by
+applying
+rotations to the molecule. These rotations are applied
+cumulatively -
+rotating about the x axis by 20 degrees then by -10 degrees will
+result
+in an overall rotation of 10 degrees <i>relative</i> <i>to</i> <i>the</i> <i>starting</i> <i>point.</i>
+<div class="instruction"><strong><u>XROT</u></strong><br>
+<P>This command is used to apply a rotation of n degrees about the
+
+x-axis which lies horizontally across the screen. The syntax is:
+<pre>
+XROT n
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>YROT</u></strong><br>
+</div>
+<div class="instruction"><strong><u>ZROT</u></strong><br>
+<P>These two commands are identical to XROT except for the axis
+about
+which the rotation is carried out. The y-axis lies vertically up
+the
+screen and the z-axis is perpendicular to the screen.
+</div>
+<div class="instruction"><strong><u>ROT</u></strong><br>
+<P>This command is a 'shorthand' for the previous three commands
+as it
+allows you to apply three successive rotations by entering only
+one
+command. The syntax is :-
+<pre>
+ROT x y z
+</pre><p><BR>
+Note that the order of rotation is: rotate about x then y then
+z. The
+order of rotation is important - YROT 10 XROT 5 ZROT 15 will NOT
+produce
+the same result as ROT 5 10 15 as the rotation matrices are
+non-commutative.
+</div>
+<div class="instruction"><strong><u>CURSOR</u></strong><br>
+<P>This command allows the user to control rotation with the
+cursor keys.
+Each time a key is struck a rotation of 5 degrees is applied
+about the
+relevant axes. After each key stroke the molecule is rotated and
+then
+re-drawn. To speed up this process the molecule is drawn in line style
+during the
+CURSOR rotation and is not scaled. The set-up prior to CURSOR is
+restored
+once rotation is terminated. The keys used are:
+
+<pre>
+Rotation about the x-axis
+
+Positive      up arrow
+Negative      down arrow
+
+Rotation about the y-axis
+
+Positive      left arrow
+Negative      right arrow
+
+Rotation about the z-axis
+
+Positive      Delete key (PC)
+Negative      End key (PC)
+</pre><p><BR>
+Any other key stroke will terminate the CURSOR control and draw
+the
+resultant picture.
+</div>
+<HR><small><A HREF="cameron-9.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="9.2">9.2: ORIENTATION COMMANDS</A></H3></CENTER>
+<P>More specific orientation of the molecule can be achieved by
+relating
+the view direction to the position of certain atoms within the
+picture.
+<div class="instruction"><strong><u>PLANE</u></strong><br>
+<P>In some cases it is useful to be able to define a PLANE and
+then set
+the view direction to be perpendicular to it. The syntax of this
+command is :-
+<pre>
+PLANE at1 at2 at3 ...
+</pre><p><BR>
+At least 3 atoms must be used to define the plane (element names
+will
+not be accepted). If more than 3 are used then the program
+calculates
+the best plane through the atoms and projects onto this.
+<div class="directive"><strong><i>ALL</i></strong>
+PLANE ALL will generated a 'best view' of the current structure.
+</div>
+</div>
+<div class="instruction"><strong><u>FACE</u></strong><br>
+<P>Alternatively you may want to view onto a particular
+crystallographic
+face of the unit cell. The syntax for this command is:
+<pre>
+FACE h k l
+</pre><p><BR>
+where h k and l are the Miller indices of the FACE in question.
+</div>
+<div class="instruction"><strong><u>ALONG</u></strong><br>
+<P>It is possible to define the view direction as that looking
+down an
+interatomic direction. The direction is specified by inputting
+:-
+<pre>
+ALONG at1 at2
+</pre><p><BR>
+As with PLANE atoms not elements must be used as the arguments.
+Note
+that the view direction is calculated as that looking down the
+at1 - at2
+direction ie at1 is the closest of the two. The reverse view will
+be
+obtained by requesting ALONG at2 at1. ALONG also has a
+sub-command
+associated with it:
+<div class="directive"><strong><i>AXIS</i></strong>
+<P>It is possible to define the view direction as looking along
+a
+particular unit cell axis. The syntax of the command is:
+<pre>
+ALONG AXIS x
+</pre><p><BR>
+where x is A, B or C.
+</div>
+</div>
+<div class="instruction"><strong><u>VERTICAL</u></strong><br>
+</div>
+<div class="instruction"><strong><u>HORIZONTAL</u></strong><br>
+<P>These two commands are similar to ALONG except that the at1 -
+at2
+direction is oriented up (VERTICAL) or across (HORIZONTAL) the
+screen
+as required.
+<div class="directive"><strong><i>AXIS</i></strong>
+<P>The AXIS sub command may be applied to the HORIZONTAL and VERTICAL 
+commands. This rotates the diagram around the z axis so that the 
+required axis is HORIZONTAL or VERTICAL as specified. This is 
+particularly useful when generating hard copy output.
+</div>
+</div>
+<div class="instruction"><strong><u>BISECT</u></strong><br>
+<P>This command requires three arguments, at1 at2 and at3. It will
+generate a view direction looking along the bisector of the
+at1-at2-at3
+angle. The syntax is:
+<pre>
+BISECT at1 at2 at3
+</pre><p><BR>
+where at2 is the apex atom.
+</div>
+<HR><small><A HREF="cameron-9.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="9.3">9.3: Other related commands</A></H3></CENTER>
+<div class="instruction"><BR>IVIEW
+<P>The 'title' command of this group of commands is VIEW. IT IS A VERY IMPORTANT COMMAND.  This
+requires
+no arguments as causes a picture to be output to the current
+output
+device (see SCREEN). The picture is generated according to all
+of the
+parameters that are set up prior to its use. For example:
+<pre>
+XROT 10 VIEW
+</pre><p><BR>
+will rotate the molecule by 10 degrees about x and then draw a
+picture.
+<pre>
+VIEW XROT 10
+</pre><p><BR>
+would draw the picture first and then carry out the rotation.
+This
+rotation would not be observed until the next VIEW is entered.
+<BR>
+</div>
+<div class="instruction"><strong><u>COPY</u></strong><br>
+<P>COPY is the equivalent command for hardcopy output. COPY must be
+followed by a filename to which the output will be send. HARDCOPY must
+have been used prior to this to specify the output type. The filename
+may be one that has already been used in the current run of CAMERON in
+which case the user is given an option to append the information.
+<BR>
+</div>
+<div class="instruction"><strong><u>MATRIX</u></strong><br>
+This command allows the user to save the current view matrix.
+<div class="directive"><strong><i>FILE</i></strong>
+This is followed by a filename. If the file exists (and it is of the
+correct format) then any matrices contained within it are available and
+any matrices stored are appended to the file.
+</div>
+<div class="directive"><strong><i>STORE</i></strong>
+This stores the current matrix. It is followed by a piece of text (in
+quotes "text") to act as a description for the matrix. On storage a number
+is assigned to the matrix which can be used to retrieve it later.
+</div>
+<div class="directive"><strong><i>RETRIEVE</i></strong>
+This command obtains a view matrix from the file set up with MATRIX
+FILE. This command must be followed by the number of the matrix
+required. Note that these matrices depend on the unit cell parameters and
+are specific to a particular structure. They may be used for other
+structures but this will have very strange results. IF this happens an
+operation such as ALONG AXIS C will recalculate a correct matrix.
+</div>
+<div class="directive"><strong><i>LIST</i></strong>
+This outputs a list of the descriptions and numbers of the matrices
+currently stored.
+<BR>
+</div>
+</div>
+<div class="instruction"><strong><u>STEREO</u></strong><br>
+This generates output in the form of stereo pairs.
+<div class="directive"><strong><i>DEGREE</i></strong>
+The angle of rotation between the stereo pairs is given by using the 
+DEGREE command.
+</div>
+</div>
+<div class="instruction"><strong><u>NOSTEREO</u></strong><br>
+Reverts output back to normal.
+</div>
+<HR><small><A HREF="cameron-9.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="9.4">9.4: PHOTOGRAPHS</A></H3></CENTER>
+<div class="instruction"><strong><u>PHOTO</u></strong><br>
+<div class="directive"><strong><i>ON</i></strong>
+</div>
+<div class="directive"><strong><i>OFF</i></strong>
+These commands are used to control the PHOTO facility. VIEW displays the
+user with information about the current scale and displays the mouse
+cursor once it has finished. PHOTO ON turns off this and waits for a key
+press before proceeding. This allows the user to obtain a 'clean' screen
+for photographs to be taken.
+<P>Related commands : SCREEN, HARDCOPY
+</div>
+</div>

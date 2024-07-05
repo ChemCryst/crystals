@@ -1,0 +1,180 @@
+
+% fancyhdr.sty version 1.99d
+% Fancy headers and footers for LaTeX.
+% Piet van Oostrum, Dept of Computer Science, University of Utrecht
+% Padualaan 14, P.O. Box 80.089, 3508 TB Utrecht, The Netherlands
+% Telephone: +31 30 2532180. Email: piet@cs.ruu.nl
+% ========================================================================
+% LICENCE: This is free software. You are allowed to use and distribute
+% this software in any way you like. You are also allowed to make modified
+% versions of it, but you can distribute a modified version only if you
+% clearly indicate that it is a modified version and the person(s) who
+% modified it. This indication should be in a prominent place, e.g. in the
+% top of the file. If possible a contact address, preferably by email,
+% should be given for these persons. If that is feasible the modifications
+% should be indicated in the source code.
+% ========================================================================
+% MODIFICATION HISTORY:
+% Sep 16, 1994
+% version 1.4: Correction for use with \reversemargin
+% Sep 29, 1994:
+% version 1.5: Added the \iftopfloat, \ifbotfloat and \iffloatpage commands
+% Oct 4, 1994:
+% version 1.6: Reset single spacing in headers/footers for use with
+% setspace.sty or doublespace.sty
+% Oct 4, 1994:
+% version 1.7: changed \let\@mkboth\markboth to
+% \def\@mkboth{\protect\markboth} to make it more robust
+% Dec 5, 1994:
+% version 1.8: corrections for amsbook/amsart: define \@chapapp and (more
+% importantly) use the \chapter/sectionmark definitions from ps@headings if
+% they exist (which should be true for all standard classes).
+% May 31, 1995:
+% version 1.9: The proposed \renewcommand{\headrulewidth}{\iffloatpage...
+% construction in the doc did not work properly with the fancyplain style.
+% June 1, 1995:
+% version 1.91: The definition of \@mkboth wasn't restored on subsequent
+% \pagestyle{fancy}'s.
+% June 1, 1995:
+% version 1.92: The sequence \pagestyle{fancyplain} \pagestyle{plain}
+% \pagestyle{fancy} would erroneously select the plain version.
+% June 1, 1995:
+% version 1.93: \fancypagestyle command added.
+% Dec 11, 1995:
+% version 1.94: suggested by Conrad Hughes <chughes@maths.tcd.ie>
+% CJCH, Dec 11, 1995: added \footruleskip to allow control over footrule
+% position (old hardcoded value of .3\normalbaselineskip is far too high
+% when used with very small footer fonts).
+% Jan 31, 1996:
+% version 1.95: call \@normalsize in the reset code if that is defined,
+% otherwise \normalsize.
+% this is to solve a problem with ucthesis.cls, as this doesn't
+% define \@currsize. Unfortunately for latex209 calling \normalsize doesn't
+% work as this is optimized to do very little, so there \@normalsize should
+% be called. Hopefully this code works for all versions of LaTeX known to
+% mankind.
+% April 25, 1996:
+% version 1.96: initialize \headwidth to a magic (negative) value to catch
+% most common cases that people change it before calling \pagestyle{fancy}.
+% Note it can't be initialized when reading in this file, because
+% \textwidth could be changed afterwards. This is quite probable.
+% We also switch to \MakeUppercase rather than \uppercase and introduce a
+% \nouppercase command for use in headers. and footers.
+% May 3, 1996:
+% version 1.97: Two changes:
+% 1. Undo the change in version 1.8 (using the pagestyle{headings} defaults
+% for the chapter and section marks. The current version of amsbook and
+% amsart classes don't seem to need them anymore. Moreover the standard
+% latex classes don't use \markboth if twoside isn't selected, and this is
+% confusing as \leftmark doesn't work as expected.
+% 2. include a call to \ps@empty in ps@@fancy. This is to solve a problem
+% in the amsbook and amsart classes, that make global changes to \topskip,
+% which are reset in \ps@empty. Hopefully this doesn't break other things.
+% May 7, 1996:
+% version 1.98:
+% Added % after the line  \def\nouppercase
+% May 7, 1996:
+% version 1.99: This is the alpha version of fancyhdr 2.0
+% Introduced the new commands \fancyhead, \fancyfoot, and \fancyhf.
+% Changed \headrulewidth, \footrulewidth, \footruleskip to
+% macros rather than length parameters, In this way they can be
+% conditionalized and they don't consume length registers. There is no need
+% to have them as length registers unless you want to do calculations with
+% them, which is unlikely. Note that this may make some uses of them
+% incompatible (i.e. if you have a file that uses \setlength or \xxxx=)
+% May 10, 1996:
+% version 1.99a:
+% Added a few more % signs
+% May 10, 1996:
+% version 1.99b:
+% Changed the syntax of \f@nfor to be resistent to catcode changes of :=
+% Removed the [1] from the defs of \lhead etc. because the parameter is
+% consumed by the \@[xy]lhead etc. macros.
+% June 24, 1997:
+% version 1.99c:
+% corrected \nouppercase to also include the protected form of \MakeUppercase
+% \global added to manipulation of \headwidth.
+% \iffootnote command added.
+% Some comments added about \@fancyhead and \@fancyfoot.
+% Aug 24, 1998
+% version 1.99d
+% Changed the default \ps@empty to \ps@@empty in order to allow
+% \fancypagestyle{empty} redefinition.
+
+\let\fancy@def\gdef
+
+\def\if@mpty#1#2#3{\def\temp@ty{#1}\ifx\@empty\temp@ty #2\else#3\fi}
+
+% Usage: \@forc \var{charstring}{command to be executed for each char}
+% This is similar to LaTeX's \@tfor, but expands the charstring.
+
+\def\@forc#1#2#3{\expandafter\f@rc\expandafter#1\expandafter{#2}{#3}}
+\def\f@rc#1#2#3{\def\temp@ty{#2}\ifx\@empty\temp@ty\else
+                                    \f@@rc#1#2\f@@rc{#3}\fi}
+\def\f@@rc#1#2#3\f@@rc#4{\def#1{#2}#4\f@rc#1{#3}{#4}}
+
+% Usage: \f@nfor\name:=list\do{body}
+% Like LaTeX's \@for but an empty list is treated as a list with an empty
+% element
+
+\newcommand{\f@nfor}[3]{\edef\@fortmp{#2}%
+    \expandafter\@forloop#2,\@nil,\@nil\@@#1{#3}}
+
+% Usage: \def@ult \cs{defaults}{argument}
+% sets \cs to the characters from defaults appearing in argument
+% or defaults if it would be empty. All characters are lowercased.
+
+\newcommand\def@ult[3]{%
+    \edef\temp@a{\lowercase{\edef\noexpand\temp@a{#3}}}\temp@a
+    \def#1{}%
+    \@forc\tmpf@ra{#2}%
+        {\expandafter\if@in\tmpf@ra\temp@a{\edef#1{#1\tmpf@ra}}{}}%
+    \ifx\@empty#1\def#1{#2}\fi}
+%
+% \if@in <char><set><truecase><falsecase>
+%
+\newcommand{\if@in}[4]{%
+    \edef\temp@a{#2}\def\temp@b##1#1##2\temp@b{\def\temp@b{##1}}%
+    \expandafter\temp@b#2#1\temp@b\ifx\temp@a\temp@b #4\else #3\fi}
+
+\newcommand{\fancyhead}{\@ifnextchar[{\f@ncyhf h}{\f@ncyhf h[]}}
+\newcommand{\fancyfoot}{\@ifnextchar[{\f@ncyhf f}{\f@ncyhf f[]}}
+\newcommand{\fancyhf}{\@ifnextchar[{\f@ncyhf {}}{\f@ncyhf {}[]}}
+
+% The header and footer fields are stored in command sequences with
+% names of the form: \f@ncy<x><y><z> with <x> for [eo], <y> form [lcr]
+% and <z> from [hf].
+
+\def\f@ncyhf#1[#2]#3{%
+    \def\temp@c{}%
+    \@forc\tmpf@ra{#2}%
+        {\expandafter\if@in\tmpf@ra{eolcrhf,EOLCRHF}%
+            {}{\edef\temp@c{\temp@c\tmpf@ra}}}%
+    \ifx\@empty\temp@c\else
+        \ifx\PackageError\undefined
+        \errmessage{Illegal char `\temp@c' in fancyhdr argument:
+          [#2]}\else
+        \PackageError{Fancyhdr}{Illegal char `\temp@c' in fancyhdr argument:
+          [#2]}{}\fi
+    \fi
+    \f@nfor\temp@c{#2}%
+        {\def@ult\f@@@eo{eo}\temp@c
+         \def@ult\f@@@lcr{lcr}\temp@c
+         \def@ult\f@@@hf{hf}{#1\temp@c}%
+         \@forc\f@@eo\f@@@eo
+             {\@forc\f@@lcr\f@@@lcr
+                 {\@forc\f@@hf\f@@@hf
+                     {\expandafter\fancy@def\csname
+                      f@ncy\f@@eo\f@@lcr\f@@hf\endcsname
+                      {#3}}}}}}
+
+% Fancyheadings version 1 commands. These are more or less deprecated,
+% but they continue to work.
+
+\newcommand{\lhead}{\@ifnextchar[{\@xlhead}{\@ylhead}}
+\def\@xlhead[#1]#2{\fancy@def\f@ncyelh{#1}\fancy@def\f@ncyolh{#2}}
+\def\@ylhead#1{\fancy@def\f@ncyelh{#1}\fancy@def\f@ncyolh{#1}}
+
+\newcommand{\chead}{\@ifnextchar[{\@xchead}{\@ychead}}
+\def\@xchead[#1]#2{\fancy@def\f@ncyech{#1}\fancy@def\f@ncyoch{#2}}
+\def\@ychead#1{\fancy@def\f@

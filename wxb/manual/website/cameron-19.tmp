@@ -1,0 +1,71 @@
+<!-- XTLVAR title="Distance And Angle Calculations" -->
+<!-- XTLVAR comment="Distance And Angle Calculations" -->
+<!-- XTLVAR cvssource="manual/cameron.man" -->
+<H1>Cameron Manual</H1>
+<H2>Chapter 19: Distance And Angle Calculations</H2>
+<DL><DT>
+<DD><A HREF="cameron-19.html#19.1">19.1: Method of Calculation</A><br>
+</DL>
+<A NAME="Cameron - Distance and Angle Calculations"> </A>
+<P>CAMERON allows the user to calculate distances , angles and
+torsion angles.
+</div>
+</div>
+<div class="instruction"><strong><u>DISTANCE</u></strong><br>
+<P>In order to perform a distance calculation two atoms lists must be
+generated. The first list is used as a 'starting atom' and the second
+list is for 'target atoms'. Distances will be calculated between atoms
+in separate lists BUT NOT within the lists themselves. The list may be
+generated in two ways:-
+<pre>
+DISTANCE N O
+</pre><p><BR>
+generates two lists - both of which can all the N and all the O atoms.
+In this case N-O, N-N and O-O distances will be found.
+<div class="directive"><strong><i>FROM</i></strong>
+</div>
+<div class="directive"><strong><i>TO</i></strong>
+These subcommands allow to specify different starting and target atoms.
+<pre>
+DISTANCE FROM N TO O
+</pre><p><BR>
+will only calculated N-O distances. Note that the distance arguments may
+be either atoms or elements as required.
+</div>
+<div class="directive"><strong><i>RANGE</i></strong>
+This sets the minimum and maximum ranges for displayed distances. The
+syntax is :-
+<pre>
+DISTANCE RANGE dmin dmax
+</pre><p><BR>
+distances are given in angstroms. If only TWO atoms are present in the
+atom list then the distance will be outputted irrespective of the range.
+However, as the full calculation will be carried out first there may be
+a time delay while the calculation proceeds.
+<HR><small><A HREF="cameron-19.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="19.1">19.1: Method of Calculation</A></H3></CENTER>
+<P>The distances output make use of the symmetry operators in order to
+find distances within the given range. The starting atom coordinates are
+NOT ALTERED but those of the target atoms are. The symmetry operators
+(and any suitable translations) are used to move the target atoms
+around. The output produced is:-
+
+<pre>
+N1_0      O2      2.323
+Operator x y z Translations 0 0 1
+N1_0      O2_4    1.114
+Operator -x y+1/2 -z Translations 0 0 -1
+</pre><p><BR>
+These show the N1 to O2 distances. The first distance relates to an O2
+atom which does not currently exist. The operator and translations shown
+can be used with ADD to generate the atom if required. The second
+distance is to an atom (O2_4) which does exist. ie. if no pack number is
+given for the second atom it is not present in the current list.
+<div class="instruction"><strong><u>ANGLE</u></strong><br>
+</div>
+<div class="instruction"><strong><u>TORSION</u></strong><br>
+<P>These commands are used to find angles and torsion angles between
+atoms that are in the current list. They are entered in sets of three
+(or four) as required.
+<BR>
+</div>

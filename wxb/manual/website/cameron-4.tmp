@@ -1,0 +1,29 @@
+<!-- XTLVAR title="Outputting Data" -->
+<!-- XTLVAR comment="Outputting Data" -->
+<!-- XTLVAR cvssource="manual/cameron.man" -->
+<H1>Cameron Manual</H1>
+<H2>Chapter 4: Outputting Data</H2>
+<DL><DT>
+</DL>
+<A NAME="Cameron - Data output"> </A>
+</div>
+</div>
+<div class="instruction"><strong><u>OUTPUT</u></strong><br>
+<P>CAMERON outputs data in CRYSTALS LIST5 and CSSR format.
+<div class="directive"><strong><i>LIST5</i></strong>
+This outputs a crystals list5. It must be followed by a filename. The
+list5 will contain LIST1 unit cell information at the end - such a file
+can be re-read by CAMERON with no problem.
+</div>
+<div class="directive"><strong><i>CSSR</i></strong>
+<div class="parameter"><i>FRACT</i>
+</div>
+<div class="parameter"><i>ORTH</i>
+These subcommands are needed to specify the coodinate type for the CSSR
+file ie orthogonal or fractional. The command is followed by the
+filename of the output file.
+<pre>
+Example:
+OUPUT CSR FRACT mydata.css
+</pre><p><BR>
+<P>Related commands : INPUT

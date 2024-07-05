@@ -1,0 +1,11 @@
+<!-- XTLVAR title="How To Stop The Program" -->
+<!-- XTLVAR comment="How To Stop The Program" -->
+<!-- XTLVAR cvssource="manual/cameron.man" -->
+<H1>Cameron Manual</H1>
+<H2>Chapter 23: How To Stop The Program</H2>
+<DL><DT>
+</DL>
+<A NAME="Cameron - How to stop the program"> </A>
+</div>
+<div class="instruction"><strong><u>END</u></strong><br>
+<P>The command END will cause the program to finish.

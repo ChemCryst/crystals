@@ -1,0 +1,870 @@
+\documentclass[10pt,a4paper]{report}
+\usepackage[centertags]{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{makeidx}
+\usepackage{newlfont}
+\usepackage{fancyhdr}
+\usepackage[bookmarks,colorlinks,plainpages,backref]{hyperref}
+\pagestyle{fancy}
+\hfuzz2pt % Don't bother to report over-full boxes if over-edge is < 2pt
+\makeindex
+\addtolength{\headwidth}{80pt}
+\addtolength{\textwidth}{80pt}
+\addtolength{\oddsidemargin}{-30pt}
+\begin{document}
+\lhead{\slshape \rightmark}
+\chead{}
+\rhead{\thepage}
+\lfoot{Fri Jul  5  2024}
+\cfoot{}
+\rfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\fancypagestyle{plain}{%
+\fancyhf{}
+\fancyfoot[L]{Fri Jul  5  2024}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}}
+\newcommand{\Instruction}[1]{{\bf #1}}
+\newcommand{\Directive}[1]{{\bf \emph{#1}}}
+\newcommand{\Keyword}[1]{\emph{#1}}
+\sloppy
+\title{Menu and toolbar}
+\author{Chemical Crystallography Laboratory, Oxford}
+\date{Fri Jul  5  2024}
+\maketitle
+\tableofcontents
+\chapter{Overview}
+\index{GUI overview}\section{Overview of the graphical user interface}
+\hbox{\centering\pdfximage{../overview.jpg}\pdfrefximage\pdflastximage}
+
+
+
+\chapter{The Menus}
+\index{GUI menus}\section{File}
+
+
+
+\bigskip\Instruction{New Working Dir}
+
+
+
+
+Choosing this item will display a dialog box allowing you to choose
+a new folder to work in. The current dsc file will be closed, and the
+working folder will change to the new one. If the new folder contains
+an existing crfilev2.dsc, this will be opened.
+
+
+
+
+
+\bigskip\Instruction{Open Datafile}
+
+
+
+
+Choose this item to open a new CRYSTALS dsc file. The current dsc
+file will be closed, and the new one opened. The working directory
+will change to the folder containing the new dsc file.
+
+
+
+
+
+\bigskip\Instruction{Save Datafile}
+
+
+
+
+No action will be taken. The DSC file is constantly updated as operations
+are carried out in CRYSTALS, so there is no need to 'save' the current state.
+
+
+
+
+
+\bigskip\Instruction{Save Datafile As}
+
+
+
+
+A dialog box will allow you to choose a filename to save a copy of the
+current dsc file. After the copy has been saved, the current dsc file is
+closed, and the new copy is opened.
+
+
+
+
+
+\bigskip\Instruction{Open Instruction File (USE file)}
+
+
+
+
+Cause CRYSTALS to execute (USE) a pre-prepared text file containing 
+CRYSTALS commands and/or data lists
+
+
+
+
+
+\bigskip\Instruction{Exit Crystals}
+
+
+
+
+Closes the program.
+
+
+\section{X-ray data}
+
+
+
+The X-ray data menu is concerned with the input, export or editing of 
+experimental X-ray observations and data.
+
+
+
+
+
+\bigskip\Instruction{Guided Import}
+
+
+
+
+Starts up "The Guide".
+
+ 
+The Guide tries to suggest a strategy for working with 'routine' 
+structures.
+
+
+
+
+
+\bigskip\Instruction{Diffractometer cifs}
+
+
+
+
+Submenu. See section \ref{Preprocess}.
+
+
+\bigskip\Instruction{Use Pre-processed}
+
+
+
+
+Submenu. See Section \ref{Use}
+
+
+
+\bigskip\Instruction{Import Shelx file (INS or RES)}
+
+
+
+
+Opens a dialog to help import SHELX .ins or .res files. Choose the
+file name. You will need to know the space group symbol.
+
+
+\bigskip\Instruction{Import HKLF4 data}
+
+
+
+
+Opens a dialog which allows the import of reflection data in a variety
+of formats, most commonly, SHELX HKLF4 format.
+
+
+
+
+
+\bigskip\Instruction{Import HKLF5 data}
+
+
+
+
+Converts a Shelx HKLF5 file into CRYSTALS format. Gives the 
+opportunity to enter the twin law matrices
+
+
+
+
+
+
+
+\bigskip\Instruction{Import "cif" files}
+
+
+
+
+Opens a dialog which allows the import of data from "cif"  and "fcf" 
+files.
+
+
+If the "cif" file contains more than one structure, the data from 
+each may either be put into separate CRYSTALS format files, or into one
+single file. If there is a single file, it can be imported directly into
+CRYSTALS.  If the "cif" file contians a Z'=2 structure, the two 
+molecules can be 'matched', ie tested for similarity.
+
+
+
+\bigskip\Instruction{Input/Edit Cell}
+
+
+
+
+Displays a dialog box for inputing or editing the cell parameters and
+their associated standard uncertainties.
+
+
+\bigskip\Instruction{Input/Edit SpaceGroup}
+
+
+
+
+Displays a dialog box for entering the space group symbol. It may
+either be hand-typed, in which case there must be a space between each
+operator, or it may be selected from a list of the most common settings
+of every space group.
+
+
+
+
+
+\bigskip\Instruction{Input/Edit Cell Contents}
+
+
+
+
+Displays a dialog box for entering the type and number of every element
+present in the unit cell.
+
+
+
+
+
+
+\bigskip\Instruction{File Export}
+
+
+
+
+Enables the creation of text files in various formats
+
+
+
+
+\bigskip\Instruction{Filter reflections}
+
+
+
+
+Allows filters to be specified for rejecting certain categories of
+reflections. If no filters are present, the dialog will offer a default
+of rejecting reflections where I/sigma(I)$<$3.0 and also some very low angle
+reflections.
+
+
+
+
+\bigskip\Instruction{Edit goodies}
+
+
+
+
+Allows editing of the 'goodies' - lots of information that is required
+for a useful CIF is stored here. This dialog provides a convenient way
+to view and edit it.
+
+
+
+
+\bigskip\Instruction{View Reflections}
+
+
+
+
+This item will write the current list of reflections to a file and open
+that file for you to inspect them.
+
+
+
+\section{Diffractometer cifs}
+\label{Preprocess} 
+
+
+The Generalised input tries to get the information for a final 
+structural cif from the instrument output. It prompts the user for 
+things it needs but cannot find (e.g. colour, size).  Take care when 
+processing H-M space group symbols. Some instruments only out put
+the Laue group as a space group, other use a syntax which cannot be 
+parsed. Also, check the structural formula has been unpicked correctly.
+The selection by instrument type is to enable CRYSTALS to enter
+the correct details into the final ciff.
+Try the WinGX option if your instrument is not listed, but remember to 
+use "Edit Cif Goodies" to manually set the instrument type.
+
+
+
+
+\bigskip\Instruction{Run Generalised cif input}
+
+ 
+
+
+May eventually replace other options listed below.
+
+
+
+
+\bigskip\Instruction{Run Agilentin (Oxford Diffraction data)}
+
+
+
+
+Agelentin in processes Oxford Diffraction data.
+
+
+
+
+\bigskip\Instruction{Run KccdIn (Kccd data)}
+
+
+
+
+KccdIn takes an import.cif file, generated by Nonius Kappa CCD
+diffractomer software and produces input files suitable for reading
+into Crystals.
+
+
+\bigskip\Instruction{Run RC93 (Cad4 data)}
+
+
+
+
+RC93 takes cpd.dat and cpd.psi files, generated by Nonius CAD 4
+diffractomer software and produces input files suitable for reading
+into Crystals.
+
+
+\bigskip\Instruction{Run DipIn (DIP2000 data)}
+
+
+
+
+RC93 takes reflection and listing files, generated by DIP2000
+diffractomer software and produces input files suitable for reading
+into Crystals.
+
+\section{Input Pre-processed data}
+\label{Use} 
+
+
+
+\bigskip\Instruction{Use KCCDIN output}
+
+
+
+
+Reads in CRYSTALS format data files produced by the KCCDIN program
+
+
+
+
+\bigskip\Instruction{Use RC93 output}
+
+
+
+
+Reads in CRYSTALS format data files produced by the RC93 program
+
+
+
+
+\bigskip\Instruction{Use DIPIN output}
+
+
+
+
+Reads in CRYSTALS format data files produced by the DIPIN program
+
+
+
+
+
+
+\section{Solve}
+
+
+\section{Structure}
+
+
+
+
+\bigskip\Instruction{Undo}
+
+
+\label{undo} 
+
+
+Allows you to step back to any previous model (List 5) stored in the DSC
+file. All models are stored unless you PURGE the DSC datafile, or
+explicitly delete them using this dialog.
+
+
+Note: If you use the GUIDE, and automatic purge occurs after you have
+checked for extinction - any models marked explicilty as 'to be retained'
+will not be PURGED.
+
+
+
+\section{Fourier}
+
+
+\section{Refinement}
+
+
+\section{Results}
+
+
+
+
+\bigskip\Instruction{Likely H-bonds}
+
+
+
+
+Finds all X--H distances (X=O or N) where the bond distance falls between
+1.5 and 2.2 Angstroms. Also lists the X-H--X angles so that you can decide
+if the X--H is an acceptable hydrogen bond.
+
+
+
+\bigskip\Instruction{Agreement analysis}
+
+
+
+
+Displays graphs of four different analyses of variance.
+
+
+
+
+
+\bigskip\Instruction{Difabs analysis}
+
+
+
+
+Creates a contour map of the difabs absorption correction that WOULD BE
+applied if you were to run DIFABS. The flatter the map the better.
+
+
+
+
+
+\bigskip\Instruction{Rotax analysis/twins}
+
+
+
+
+Submenu, see section \ref{rotax}
+
+
+
+\bigskip\Instruction{Edit CIF goodies}
+
+
+
+
+Allows you to edit some of the values that will be put in the final CIF
+
+
+
+
+
+
+\bigskip\Instruction{Publication tables}
+
+
+
+
+IAllows you to output data in a variety of ways. CIF is probably the most
+commonly used format. Please note that the standard uncertainties output
+in CIF files follow the 'Rule of 19', as requesed by Acta Cryst:
+
+
+ What it means is as follows....
+\small\begin{verbatim}
+SU values are quoted to two digits precision if they are <= 19.
+E.g.
+rule of 9:    5.548(1)   1.453(2)    3.921(3)    1.2287(8)
+rule of 19:   5.5483(9)  1.4532(16)  3.921(3)    1.2287(8)
+rule of 29:   5.5483(9)  1.4532(16)  3.9214(29)  1.2287(9)
+\end{verbatim}\normalsize
+
+
+
+
+The object of this approach is to provide a more consistent distribution
+of precision across all values. 
+
+
+
+\bigskip\Instruction{Summary file}
+
+
+
+
+Produces a human-readable summary file of the crystal structure
+
+
+
+
+
+\bigskip\Instruction{Acta checks}
+
+
+
+
+Performs some basic validation checks on a complete or almost complete
+structure, to try to catch any problems remaining.
+
+
+
+
+
+\bigskip\Instruction{Checkcif on the web}
+
+
+
+
+Just a link to the IUCr cif checking website.
+
+
+
+
+
+\bigskip\Instruction{Platon}
+
+
+
+
+Writes files for and runs Platon, if you haven't run it before, you
+will be asked to browse for the PLATON.EXE file on your hard disk.
+
+
+
+\section{Results -$>$ Rotax}
+\label{rotax} 
+
+
+\bigskip\Instruction{ROTAX}
+
+
+
+
+Runs the Rotax procedure for looking for twin-laws. Output consists
+of a selection of possible twin laws with associated figures-of-merit.
+Figures closer to zero are best, but beware figures of exactly zero
+(corresponding to exact lattice overlap), since they are probably just
+part of the point group symmetry of your structure.
+
+
+You may choose a twin law to be applied
+
+
+
+
+
+\bigskip\Instruction{Input twinned structure}
+
+
+
+
+Allows you to give a known twin-law. The ROTAX option above is probably
+easier to use, even if you already know the twin law.
+
+
+
+
+
+\bigskip\Instruction{Remove twin laws}
+
+
+
+
+Removes the twin laws (List 25), removes the twin scales from the model
+(List 5) and reverts to the original reflection listing. (Saved during
+the application of the twin-law).
+
+
+\section{Graphics}
+
+
+
+
+\bigskip\Instruction{Cameron Graphics}
+
+
+
+
+Starts Cameron, a program for visualising crystals structure packing and
+producing publication diagrams
+
+
+
+
+
+\bigskip\Instruction{Special}
+
+
+
+
+Submenu. See section \ref{special}.
+
+
+
+\bigskip\Instruction{Import last Cameron output}
+
+
+
+
+Reads in the model which Cameron wrote at the end of its last run.
+Could be useful if you've trashed the model since then (although, see also:
+Structure -$>$ Undo, section \ref{undo}).
+
+
+
+\bigskip\Instruction{Import last Cameron input}
+
+
+
+
+Reads in the model which CRYSTALS last wrote to send to Cameron.
+Could be useful if you trashed the model in Cameron and then accidentally
+brought it back into CRYSTALS. (Although, see also:
+Structure -$>$ Undo, section \ref{undo}).
+
+
+
+\bigskip\Instruction{Mapviewer}
+
+
+
+
+Enables you to re-display maps created by a previous Slant or Voids 
+calculation.
+
+
+
+\section{Graphics -$>$ Special}
+\label{special} 
+
+
+\bigskip\Instruction{Cameron (use existing input files)}
+
+
+
+
+Starts Cameron without writing new input files for it. Useful if you
+have an external program that produces cameron.ini and cameron.l5i files.
+
+\section{Appearance}
+
+
+
+
+\bigskip\Instruction{Atoms}
+
+
+
+
+Submenu. See section \ref{atoms}.
+
+
+
+\bigskip\Instruction{Model}
+
+
+
+
+Submenu. See section \ref{model}.
+
+
+
+\bigskip\Instruction{Auto scale (zoom off)}
+
+
+
+
+Restores the model to its original view, if it has been zoomed.
+
+
+
+
+
+\bigskip\Instruction{Set Text Font}
+
+
+
+
+Allows you to choose a font for the text output window. I recommend
+Lucida Console, or Courier - in any case use a fixed/monospaced font,
+otherwise the output of tables will not make much sense.
+
+
+
+\bigskip\Instruction{Set Input Font}
+
+
+
+
+Lets you choose a font for the input editbox. Might be useful if
+you are demonstrating command line features on a high-res screen.
+
+
+
+
+\section{Appearance -$>$ Atoms}
+\label{atoms} 
+
+
+\bigskip\Instruction{Covalent}
+
+
+
+
+Sets radius of atoms displayed in the main model window to be 1/4 of
+their covalent radius.
+
+
+
+
+\bigskip\Instruction{Van der Walls}
+
+
+
+
+Sets the radius of atoms displayed in the main model window to be
+the VDW radius.
+
+
+
+
+\bigskip\Instruction{Thermal}
+
+
+
+
+Displays atoms as either ellipse representation of ADPs, or sphere
+representing U[iso].
+
+
+
+
+\bigskip\Instruction{Quarter size}
+
+
+
+
+Set radius to 1/4 of given value (either covalent, vdw or thermal).
+
+
+
+
+\bigskip\Instruction{Half size}
+
+
+
+
+Set radius to 1/2 of given value (either covalent, vdw or thermal).
+
+
+
+
+\bigskip\Instruction{Full size}
+
+
+
+
+Set radius to given value (either covalent, vdw or thermal).
+
+
+
+\section{Appearance -$>$ Model}
+\label{model} 
+
+
+\bigskip\Instruction{Update model}
+
+
+
+
+If automatic update is disabled, this command updates the model
+
+
+
+
+\bigskip\Instruction{Auto update OFF}
+
+
+
+
+Disables auto update. Useful for big structures where the drawing is
+significantly slowing the program
+
+
+
+
+\bigskip\Instruction{Auto update ON}
+
+
+
+
+Enables auto update of the model window.
+
+
+
+
+\bigskip\Instruction{Set wallpaper}
+
+
+
+
+Experimental feature. Allows you to set the background of the model
+window with a bitmap. The bitmap is stretched or shrunk to fit the window.
+Significantly slows the drawing on slower machines. Also, the width of
+the bitmap in pixels must be a multiple of 4.
+
+
+
+
+\bigskip\Instruction{No wallpaper}
+
+
+
+
+Removes the model background if present
+
+
+
+
+\section{Development}
+
+
+
+This menu contains items that are currently under development. They
+are not documented yet, and you should not need to use them. If you
+wish to experiment, please make a copy of your structure and experiment
+on the copy. Feedback is welcome.
+
+\printindex
+\end{document}

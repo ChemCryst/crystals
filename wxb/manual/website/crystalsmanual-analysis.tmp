@@ -1,0 +1,1787 @@
+<!-- XTLVAR title="Analysis Of Results" -->
+<!-- XTLVAR comment="Analysis Of Results" -->
+<!-- XTLVAR cvssource="manual/crystals.man" -->
+<H1>Crystals Manual</H1>
+<H2>Chapter 9: Analysis Of Results</H2>
+<DL><DT>
+<DD><A HREF="crystalsmanual-analysis.html#analysis.scope">9.1: Scope of this section of the user guide</A><br>
+<DD><A HREF="crystalsmanual-analysis.html#analysis.analyse">9.2: Analysis of residuals - \ANALYSE</A><br>
+<DD><A HREF="crystalsmanual-analysis.html#analysis.esd">9.3: Create esd list - \ESD</A><br>
+<DD><A HREF="crystalsmanual-analysis.html#analysis.4">9.4: Output VcV matrix of selected atoms</A><br>
+<DD><A HREF="crystalsmanual-analysis.html#analysis.distances">9.5: Distance angles calculations  -  \DISTANCES</A><br>
+<DD><A HREF="crystalsmanual-analysis.html#analysis.symops">9.6: Distance-angles symmetry operations</A><br>
+<DD><A HREF="crystalsmanual-analysis.html#analysis.voids">9.7: Void Location  -  \VOIDS</A><br>
+<DD><A HREF="crystalsmanual-analysis.html#analysis.geometry">9.8: TLS analysis, best planes and lines  -  \GEOMETRY</A><br>
+<DD><A HREF="crystalsmanual-analysis.html#analysis.torsion">9.9: Torsion angles  -  \TORSION</A><br>
+<DD><A HREF="crystalsmanual-analysis.html#analysis.configuration">9.10: Absolute Configuration  -  \TON</A><br>
+<DD><A HREF="crystalsmanual-analysis.html#analysis.paramet">9.11: Publication listing of the atomic parameters  -  \PARAMETERS</A><br>
+<DD><A HREF="crystalsmanual-analysis.html#analysis.reflections">9.12: Publication listing of reflection data  - \REFLECTIONS</A><br>
+<DD><A HREF="crystalsmanual-analysis.html#analysis.summary">9.13: Summary of data lists - \SUMMARY</A><br>
+<DD><A HREF="crystalsmanual-analysis.html#analysis.tonspek">9.14: Estimation of Absolute configuration - \TONSPEK </A><br>
+<DD><A HREF="crystalsmanual-analysis.html#analysis.cif">9.15: CIF lists - \CIF</A><br>
+<DD><A HREF="crystalsmanual-analysis.html#analysis.addarc">9.16: Adding Archive files - ADDARC</A><br>
+<DD><A HREF="crystalsmanual-analysis.html#analysis.cameron">9.17: Graphics - CAMERON</A><br>
+</DL>
+
+<BR>&nbsp;<BR>
+<A NAME="geomandres"> </A>
+<HR><small><A HREF="crystalsmanual-analysis.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="analysis.scope">9.1: Scope of this section of the user guide</A></H3></CENTER>
+
+
+<pre>
+ Analysis of residuals                          ANALYSE
+ Output of atom esds                            ESD
+ Distance and angles calculations               DISTANCES
+ Void search                                    VOIDS
+ Global Geometry (planes,lines & libration)     GEOMETRY
+ Torsion angles                                 TORSION
+ Absolute Configuration                         TON
+ Publication listing of the atomic parameters   PARAMETERS
+ Publication listing of the reflections         REFLECTIONS
+ Summary of data lists                          SUMMARY
+ CIF files                                      CIF
+ Graphics                                       CAMERON
+</pre><p><BR>
+<BR>&nbsp;<BR>
+<A NAME="ANALYSE"> </A>
+<A NAME="Residual analysis"> </A>
+<HR><small><A HREF="crystalsmanual-analysis.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="analysis.analyse">9.2: Analysis of residuals - \ANALYSE</A></H3></CENTER>
+
+<P>This analyses the residual, Fo-Fc, for systematic trends, which might
+ either indiacate an incomplete model, or an unsatisfactory weighting
+ scheme. It is described in the chapter Structure Factors and Least
+ Squares.
+<BR>
+<BR>&nbsp;<BR>
+<div class="parameter"><i>e.s.d.s</i>
+ Most publication listings require e.s.ds. These are computed
+ from the normal matrix. If LIST 5 (the model parameters) has been 
+ modified in <strong>ANY</strong> <strong>WAY</strong>
+ (including simply renaming or ordering atoms) since the last
+ refinement cycle, the matrix will be invalid.
+<P>CRYSTALS will warn you that LIST 11, the normal matrix, cannot be
+ loaded.  To create a valid matrix
+ without changing the parameter values, compute a refinement cycle but set
+ all the shifts to zero.
+
+<pre>
+      \SFLS
+      REFINE
+      SHIFT GENERAL = 0.0
+      END
+</pre><p><BR>
+<A NAME="ESD"> </A>
+<A NAME="Create esd list, LIST 9"> </A>
+</div>
+<HR><small><A HREF="crystalsmanual-analysis.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="analysis.esd">9.3: Create esd list - \ESD</A></H3></CENTER>
+
+<pre>
+
+ \ESD
+ END
+ 
+</pre><p><BR>
+<P>The current LIST 5 must belong to the current VcV matrix (See
+ the warning above).
+<BR>&nbsp;<BR>
+<A NAME="VCV"> </A>
+<A NAME="Output VcV matrix of selected atoms"> </A>
+<HR><small><A HREF="crystalsmanual-analysis.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="analysis.4">9.4: Output VcV matrix of selected atoms</A></H3></CENTER>
+<BR>HVcV#
+<pre>
+ \VCV
+ ATOM C(1) C(2) C(3)
+ ACTION
+ END
+
+</pre><p><BR>
+<BR>q
+
+<BR>&nbsp;<BR>
+<A NAME="DISTANCES"> </A>
+<A NAME="Distance calculations"> </A>
+<A NAME="Angle calculations"> </A>
+<A NAME="Geometry calculations"> </A>
+<HR><small><A HREF="crystalsmanual-analysis.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="analysis.distances">9.5: Distance angles calculations  -  \DISTANCES</A></H3></CENTER>
+
+
+<pre>
+ \DISTANCES INPUTLIST=
+ OUTPUT MONITOR=  LIST= PUNCH= HESD=
+ SELECT ALLDIST= COORD= SORTED= TYPE= RANGE= SYMM= TRANS=
+ LIMITS DMINIMUM= DMAXIMUM= AMINIMUM= AMAXIMUM=
+ E.S.D.S COMPUTE= CELL=
+ INCLUDE atoms
+ EXCLUDE atoms
+ ONLY atoms
+ PIVOT atoms
+ BONDED atoms
+ END
+
+ \DIST
+ E.S.D YES
+ END
+</pre><p><BR>
+<P>The distance angles routine is completely
+ general with respect to crystal and lattice symmetry.
+ For distances, the user may either use elemental radii specified in
+ LIST 29 (see section !elabel!LIST29! for input details), or specify  minimum and 
+ maximum limits,
+ and the program then calculates all possible contacts within these
+ limits.
+ All symmetry operations and unit cell translations are automatically
+ generated.
+ For the angles, LIST 29 or a separate set of distance limits may be used.
+ At a given atom, angles are then calculated between all the atoms
+ which bond to the central atom within the given limits.
+<P>The distance-angles routines can calculate the estimated
+ standard deviations of the distances and angles that they produce.
+ These e.s.d.'s are based upon the matrix stored in LIST 11 (see section
+ !elabel!LIST11!), and
+ as many variance and covariance terms as are present are used.
+ (For a full matrix, therefore, the full variance-covariance matrix
+ is used).
+ For this reason, the calculation of e.s.d.'s
+ takes at least ten times as long
+ as a simple distance angles calculation.
+<P>When  a set of e.s.d.'s are calculated, the variance-covariance matrix
+ for the cell parameters (LIST 31, section !elabel!LIST31!) may also be used.
+<BR>&nbsp;<BR>
+<div class="instruction"><strong><u>\DISTANCES INPUTLIST=</u></strong><br>
+<div class="parameter"><i>INPUTLIST=</i>
+
+<pre>
+      5   -  Default value
+      10
+</pre><p><BR>
+ The default is to use the normal atom coordinate list.
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>OUTPUT MONITOR= LIST= PUNCH= HESD=</i></strong>
+<div class="parameter"><i>MONITOR=</i>
+  This controls the monitoring information.
+
+<pre>
+      OFF         -  no output
+      DISTANCES   -  only monitors distances. (Default)
+      ANGLES      -  only monitors angles.
+      ALL         -  monitors distances and angles.
+</pre><p><BR>
+</div>
+<div class="parameter"><i>LIST=</i>
+ This controls the format of the listing.
+
+<pre>
+      OFF
+      LOW  
+      MEDIUM
+      HIGH   -  Default
+      DISTANCE
+      (DEBUG)
+</pre><p><BR>
+ If  LIST  is  LOW the the listing is in a compressed
+ format, without symmetry information. If LIST is OFF, no output is sent
+ to the listing file unless PUNCH is PUBLISH, when a copy of the publication
+ listing appears in the listing file. If LIST is DISTANCE, a simplified table of
+ distances is output.
+<BR>
+</div>
+<div class="parameter"><i>PUNCH=</i>
+ This controls the output sent to the 'punch' file.
+
+<BR> PUBLISH     - Produce a listing suitable for publication.
+<BR> HTML        - Produce an HTML format listing
+<BR> CIF         - Produce a listing in CIF format.
+<BR> H-CIF       - Produce a listing of the H-bonds in CIF format.
+<BR> SCRIPT      - Lists bonds in a easily machine readable format.
+<BR> RESTRAIN    - Produce a proforma LIST 16 (restraints - !elabel!LIST16!).  Use the RANGE, 
+  LIMIT, TYPE INCLUDE and EXCLUDE parameters to restrict the restraints produced.
+<BR> DELU        - Proforma LIST 16 for delta U restraints
+<BR> SIMU        - Proforma LIST 16 for U-similarity restraints
+<BR> NONBONDED   - Proforma LIST 16 with anti-bumping restraints
+<BR> H-RESTRAIN  - Produces a list of H-C,N and O distance and angle 
+ restraints in the PUNCH file, and a list of the referenced H atoms in 
+ the SCRIPTQUEUE file.
+<BR> H-RIDE      - Produces a list of H-C,N and O RIDE instructions.
+<BR> H-CIF       - Puts hydrogen bond donor and acceptors into the cif 
+file.
+<BR>&nbsp;<BR>
+<BR>&nbsp;<BR>
+ If hydrogen atom restraints are being generated, the following target 
+values are used:
+<pre>
+No.H  No.H   U mult     dist
+C-H
+&gt;4            1.5      .96 disorder
+1      1      1.2      .93 C C-H (acetylene)
+1      2      1.2      .93 C-C(H)-C
+1      3      1.2      .98 (C)3-C-H
+2      1      1.2      .93 C=C-H(2)
+2      2      1.2      .97 (C)2-C-(H)2
+3      1      1.5      .96 C-C-(H)3
+N-H
+&gt;4            1.5      .89 NH4 or disorder
+1      1      1.2      .86 N-N/H
+1      2      1.2      .86 (C)2-N-H
+1      3      1.2      .89 (C)3-N-H
+2      1      1.2      .86 C-N-(H)2
+2      2      1.2      .89 (C)2-N-(H)2
+3      1      1.2      .89 C-H-(H)3
+O-H
+1      1      1.5      .82 O-H
+
+Dist      esd = 0.02
+Vib       esd = 0.002
+Angle     esd = 2.0
+
+</pre><p><BR>
+
+<BR>
+</div>
+<div class="parameter"><i>HESD=</i>
+ This controls the output of ESDs to the CIF file.
+
+<pre>
+      ALL      - (Default) Output all bond length and angle standard
+                 uncertainties (if requested) to the CIF (if requested),
+                 including those of bonds to fixed atoms (i.e. to atoms on
+                 special positions, or to atoms that are not refined).
+      NONFIXED - Exclude standard uncertainties of bond distances and angles
+                 to Hydrogen atoms that have not been refined. (as
+                 required by Acta's notes for authors).
+</pre><p><BR>&nbsp;<BR>
+</div>
+</div>
+<div class="directive"><strong><i>SELECT ALLDIST= COORD= SORTED= TYPE= RANGE= SYMMETRY= TRANS=</i></strong>
+
+<div class="parameter"><i>ALLDISTANCES=</i>
+
+<pre>
+      NO   -  Default value
+      YES
+</pre><p><BR>
+<BR>
+ If  ALLDISTANCES  is  NO,
+ the distances calculated about each atom will only
+ be those to atoms that occur after the central
+ atom in LIST 5. (i.e. each distance
+ is only printed once).
+<BR>
+ If  ALLDISTANCES  is
+  YES , then the distances from each atom to all
+ the other atoms are calculated for all the atoms.
+ (In this case, each distance will appear twice in the list).
+</div>
+<div class="parameter"><i>COORDINATES=</i>
+
+<pre>
+      NO   -  Default value
+      YES
+</pre><p><BR>
+ If  COORDINATES  is  YES, the transformed
+ coordinates of each atom in a distance calculation
+ are printed.
+ If  COORDINATES  is  NO,
+ the transformed coordinates are not printed.
+</div>
+<div class="parameter"><i>SORTED=</i>
+
+<pre>
+      NO   -  Default value
+      YES
+</pre><p><BR>
+ If  SORTED  is  NO,
+ the distances from the central atom are in the order
+ in which the other atoms occur in LIST 5.
+  If  SORTED  is  YES , the distances are printed in
+ order of increasing magnitude.
+</div>
+<div class="parameter"><i>TYPE=</i>
+ This parameter indicates the type of distances which will be
+ calculated.
+
+<pre>
+      ALL   -  Default value
+      INTRA
+      INTER
+</pre><p><BR>
+ If  TYPE  is  ALL,
+ then all distances are printed; if  TYPE  is  INTRA  then only
+ intramolecular distances are printed, and if  TYPE  is  INTER
+ then the intermolecular distances are printed (Note that the whole
+ asymmetric unit is regarded as a 'molecule'.
+</div>
+<div class="parameter"><i>RANGE=</i>
+ This parameter defines how the range is to be selected.
+ Except when RANGE = LIMITS (when the lowest acceptable distance is
+ user-specified) contacts of zero angstrom are suppressed.
+
+<pre>
+      COVALENT      Use 'covalent' radii from LIST 29.
+      VANDERWAALS.  Use 'VanderWaals' radii from LIST 29, but angles are
+                    suppressed.
+      IONIC.        Use 'ionic' radii from LIST 29.
+      LIMITS.       Use specified or default ranges set by the LIMIT directive.
+</pre><p><BR>
+</div>
+<div class="parameter"><i>SYMMETRY=</i>
+ This parameter controls the use of symmetry information in the calculation of
+ contacts, and can take three values.
+
+<pre>
+      SPACEGROUP  -  Default value. The full spacegroup symmetry is used in
+                                    all computations
+      PATTERSON.     A centre of symmetry in introduced, and the translational
+                     parts of the symmetry operators are dropped.
+      NONE.          Only the identity operator is used.
+</pre><p><BR>
+</div>
+<div class="parameter"><i>TRANSLATION=</i>
+ This parameter controls the application of cell translations in the
+ calculation of contacts, and can take the values YES or NO
+<BR>
+<BR>&nbsp;<BR>
+</div>
+</div>
+<div class="directive"><strong><i>LIMITS DMINIMUM= DMAXIMUM= AMINIMUM= AMAXIMUM=</i></strong>
+<P>This directive specifies the limits for the distance angles
+ calculations, and may only be given if RANGE = LIMITS has been specified
+ on a
+ preceding SELECT directive.
+<div class="parameter"><i>DMINIMUM</i>
+ This defines the distance below which distances are not
+ calculated or printed. The default is zero.
+</div>
+<div class="parameter"><i>DMAXIMUM</i>
+ This parameter defines the maximum distance above which distances are not
+ calculated or printed.
+ Use \COMMANDS DISTANCES to find the default value for  DMAXIMUM.
+ All the distances that are to be calculated and printed
+ must lie between  DMINIMUM  and  DMAXIMUM.
+</div>
+<div class="parameter"><i>AMINIMUM</i>
+ For a given central atom, other atoms which
+ make contacts that are less than  AMINIMUM  will
+ not be considered when the angles at the
+ central atom are computed.
+ The default is zero.
+</div>
+<div class="parameter"><i>AMAXIMUM</i>
+ For a given central atom, other atoms which
+ make contacts that are greater than  AMAXIMUM
+ will not be considered when angles at the
+ central atom are computed.
+ The default value for  AMAXIMUM  is set in the COMMAND file.
+ AMAXIMUM  And  AMINIMUM  define a shell about each
+ pivot atom outside of which angles are not computed.
+<BR>
+<BR>&nbsp;<BR>
+</div>
+</div>
+<div class="directive"><strong><i>E.S.D.S COMPUTE= CELL=</i></strong>
+<P>This directive determines whether estimated standard deviations
+ of the distances and angles are calculated.
+<div class="parameter"><i>COMPUTE</i>
+
+<pre>
+      NO   -  Default value
+      YES
+</pre><p><BR>
+ If this parameter is NO,
+ standard deviations are not
+ computed.
+ Note that if e.s.d.'s are to be calculated, i.e.  COMPUTE  is
+ set equal to  YES , then a suitable least squares matrix (LIST 11, see
+ section !elabel!LIST11!) must be
+ available.
+</div>
+<div class="parameter"><i>CELL=</i>
+
+<pre>
+      NO   -  Default value
+      YES
+</pre><p><BR>
+ If this parameter is NO,
+ the variance-covariance matrix for the
+ cell parameters is not included when the e.s.d.'s are calculated.
+<BR>&nbsp;<BR>
+</div>
+</div>
+<div class="directive"><strong><i>INCLUDE atoms</i></strong>
+<P>This directive determines which atoms are included as pivot atoms
+ in the calculation.
+ The arguments may be either a type of atom , or an atom specification of
+ the 'type(serial)' or 'type(serial) UNTIL type(serial)' kind described
+ elsewhere in the manual. Only INCLUDEd atoms are used as pivots, but distances
+ and angles are computed to all other atoms in the current LIST 5 within
+ the ranges specified on the SELECT directive.
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>ONLY atoms</i></strong>
+<P>Similar to INCLUDE, except that specified atoms may be pivot or
+ bonded.
+ The arguments may be either a type of atom , or an atom specification of
+ the 'type(serial)' or 'type(serial) UNTIL type(serial)' kind described
+ elsewhere in the manual. Distances
+ and angles are computed only to specified atoms in the current LIST 5 within
+ the ranges specified on the SELECT directive.
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>PIVOT atoms</i></strong>
+<P>Similar to INCLUDE, except that atoms excluded with an EXCLUDE
+directive can still be used to bond to.
+ The arguments may be either a type of atom , or an atom specification of
+ the 'type(serial)' or 'type(serial) UNTIL type(serial)' kind described
+ elsewhere in the manual. Distances
+ and angles are computed only to specified atoms in the current LIST 5 within
+ the ranges specified on the SELECT directive.
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>BONDED atoms</i></strong>
+<P>Similar to INCLUDE, except that non-included atoms can still be used as
+pivots.
+ The arguments may be either a type of atom , or an atom specification of
+ the 'type(serial)' or 'type(serial) UNTIL type(serial)' kind described
+ elsewhere in the manual. Distances
+ and angles are computed only to specified atoms in the current LIST 5 within
+ the ranges specified on the SELECT directive.
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>EXCLUDE atoms</i></strong>
+<P>This directive determines which atoms are excluded as pivots in the
+ calculation.
+ The arguments may be either a type of atom , or an atom specification of
+ the 'type(serial)' or 'type(serial) UNTIL type(serial)' kind described
+ elsewhere in the manual. If EXCLUDE directives alone are used, all
+ atoms except those EXCLUDEd either explicitly or by
+ type, are used as pivot atoms in the calculation.
+ However, if both INCLUDE and EXCLUDE are used, the only atoms used in
+ the calculation will be those INCLUDEd and not EXCLUDEd.
+<BR>
+<BR>&nbsp;<BR>
+</div>
+</div>
+<HR><small><A HREF="crystalsmanual-analysis.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="analysis.symops">9.6: Distance-angles symmetry operations</A></H3></CENTER>
+
+<P>Accompanying each atom in a distance or angle calculation
+ with  LIST  equal to  HIGH
+ are the symmetry operators that are necessary to bring the atom
+ into the correct position in the cell to make a contact with
+ the central atom.
+ These symmetry operations are divided into six parts, which are
+ indicated by five flags. These are explained in the section on Atomic
+ and Structural Parameters.
+
+<pre>
+ \
+ \ distances from 0 to 2.5
+ \ angles from 0 to 2.0
+ \ the e.s.d.'s of the distances and angles are calculated
+ \ distances from each atom to all other atoms are printed
+ \ transformed coordinates are printed
+ \ the distances are sorted in order of increasing magnitude
+ \
+ \DISTANCES
+ SELECT ALL=YES,COORD=YES,SORT=YES,RANGE=LIMITS
+ LIMITS DMAX=2.5, AMAX=2.0
+ E.S.D. YES
+ END
+</pre><p><BR>
+<BR>
+
+<pre>
+ \DIST
+ EXCLUDE ALL
+ ONLY C(1) C(3) C(4)
+ END
+</pre><p><BR>
+<BR>&nbsp;<BR>
+<BR>&nbsp;<BR>
+<A NAME="VOIDS"> </A>
+<A NAME="Locating voids in the model"> </A>
+<HR><small><A HREF="crystalsmanual-analysis.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="analysis.voids">9.7: Void Location  -  \VOIDS</A></H3></CENTER>
+
+
+<pre>
+ \VOIDS INPUTLIST=
+ DISTANCE
+ TOLERANCE
+ CONTACTS
+ RESOLUTION
+ END
+
+ \VOIDS
+ DISTANCE 2.2
+ END
+</pre><p><BR>
+<P>This utility searches for the asymmetric unit for points which lie
+outside the known atoms. The 'radii' of the known atoms is independent
+of type, and in an input value. A pseudo atom in inserted at every point
+on a search grid outside the known atoms. The pseudo atoms are given a
+'TYPE' dependant upon the number of neighbouring pseudo atoms. Atoms of
+type R are at the core of large voids, type L are intermediate, and M at
+the surface.
+<BR>&nbsp;<BR>
+<div class="instruction"><strong><u>\VOIDS INPUTLIST=</u></strong><br>
+<div class="parameter"><i>INPUTLIST=</i>
+
+<pre>
+      5   -  Default value
+      10
+</pre><p><BR>
+ The default is to use the normal atom coordinate list.
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>DISTANCE value</i></strong>
+<P>This sets the radii of the known atoms, default 2.5A.
+<BR>
+</div>
+<div class="directive"><strong><i>RESOLUTION value</i></strong>
+<P>This sets the sampling interval for the search grid, default 0.8 A.
+<BR>
+</div>
+<div class="directive"><strong><i>CONTACT value1 value2</i></strong>
+<P>This sets the number of pseudo-atom contacts required for the core
+ and intermediate pseudo atoms. The defaults are 27 (R type atoms), 15
+ (L type atoms). All other atoms are of type M.
+<P>\COLLECT and  \REGROUP can be used to re-group the pseudo-atoms, and
+ the augmented structure can be viewed in CAMERON.
+<BR>
+
+<BR>&nbsp;<BR>
+<A NAME="GEOMETRY"> </A>
+<A NAME="Best lines and planes"> </A>
+<A NAME="Planes"> </A>
+<A NAME="Lines"> </A>
+<A NAME="Inertial Tensor"> </A>
+<A NAME="Centre of Gravity"> </A>
+<A NAME="Librational tensor"> </A>
+<A NAME="Analysis of thermal displacement parameters"> </A>
+<A NAME="Principal atomic displacement directions"> </A>
+</div>
+</div>
+<HR><small><A HREF="crystalsmanual-analysis.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="analysis.geometry">9.8: TLS analysis, best planes and lines  -  \GEOMETRY</A></H3></CENTER>
+
+
+<pre>
+ \GEOMETRY INPUTLIST=
+  ATOMS  W(1)  SPECIFICATION(1)  W(2)  SPECIFICATION(2) .
+  PLANE
+  LINE
+  AXES
+  TLS 
+  EXECUTE
+  EVALUATE  ATOM SPECIFICATIONS . . . .
+  REPLACE ATOM SPECIFICATIONS . . .
+  PUNCH
+  SAVE
+  DIHEDRAL  NP(1)  AND  NP(2)
+  QUIT
+  CENTRE   X=, Y=, Z=
+  REJECT   NV=
+  LIMITS   VALUE=   RATIO= 
+  MODL L(11), L(22) L(33) L(23) L(13) L(12)
+  MODT T(11), T(22) T(33) T(23) T(13) T(12)
+  ZEROS
+  DISTANCES  DL=   AL=
+  ANGLES  AL=
+  PLOT
+  END
+</pre><p><BR>
+
+<pre>
+ \GEOMETRY
+ ATOMS FIRST UNTIL LAST
+ PLANE
+ EXECUTE
+ SAVE
+ ATOMS FIRST UNTIL LAST
+ TLS
+ EXECUTE
+ ANGLE 1 AND 2
+ EXECUTE
+ DISTANCES
+ END
+</pre><p><BR>
+<BR>
+<P>GEOMETRY is used for computing the following global derived 
+ parameters:
+
+<pre>
+      Centroid (centre of gravity)
+      Inertial Tensor
+      Best Plane
+      Best Line
+      Shape Indices
+      Principal Axes of adps
+      Librational and Translational Thermal Tensors
+      Dihedral Angles
+</pre><p><BR>
+<P>It replaces the old \MOLAX, \AXES and \ANISO commands
+ 
+<P>PLANE & LINE are used for computing the principal axes of inertia
+ through groups of atoms using  the routines described in
+ Computing Methods in Crystallography, edited by J. S. Rollett,
+ Pergamon Press, 1965, p67-68.
+<P>The  best  plane for a series of  N
+ atoms whose positions have varying reliability, such that they can
+ be assigned weights, w(1), w(2), . . . w(n), is defined as
+ that for which
+ the sum of the squares of the distances (in angstroms) of the
+ atoms from the plane, multiplied by the weights, w(i), of
+ the atomic positions, is a minimum.
+ Note that the normal to the 'worst plane' is the 'best line',
+ and if masses are used for weights, then the calculation gives the
+ principal inertial axes.
+<P>The atomic positions are taken from LIST 5, possibly modified by
+ symmetry information, to compute
+ inertial axes & deviations of atoms from  the planes or lines.
+<P>Each time a line or plane
+ is computed, the direction cosines of the relevent axis are stored as AXIS
+ number 'n'. The dihedral angles between these axes can be computed.
+ Three geometry indices are also
+ computed. The geometry is best described by the index closest to unity.
+ (Mingos,D.P.M & Rohl,A.L., J.Chem.Soc. Dalton Trans (1991) pp 3419 - 3425)
+<P>If the three principal axes are "big, medium, small", then
+
+<BR>
+      Spherical   = small/big
+      Cylindrical = 1-((medium+small)/(2.big))
+      discoidal   = 1-2.small/(big+medium)
+<BR>
+<P>TLS. This routine calculates the overall rigid-body
+ motion tensors T, L, S (Shoemaker and Trueblood, Acta Cryst. B24,
+ 63, 1968) by a least-squares fit to the individual anisotropic
+ temperature factor components, together with librational corrections
+ to bond lengths and angles.
+<P>Shoemaker and Trueblood's conventions and reductions
+ are followed throughout; in particular, the trace of S, which is
+ indeterminant, is set to zero. The program therefore determines
+ 20 overall tensor components - the upper triangles of T and L
+ together with the whole of S apart from S(33). (See also:
+ Johnson in Crystallographic Computing, 
+ ed R.Ahmed, Munksgaard, 1970, pp 207-219)
+<P>Even when the trace-of-S singularity has been removed, however,
+ the nature of the rigid body problem is such that ill-conditioned
+ and singular normal matrices are much more common than in
+ structure refinement and the program therefore proceeds via
+ the eigenvalues and eigenvectors of the normal matrix.  In most
+ cases the largest and smallest eigenvalues are output for
+ inspection, but if the ratio of these quantities is less than
+ the LIMITing RATIO, a full eigenvalue/vector listing is produced. Further,
+ if any eigenvalue is itself less than the LIMITing VALUE, the corresponding
+ parameter combination is set to zero, thus removing the near-
+ singularity. These actions can be modified by the use of the
+ LIMIT  and  REJECT  directives described below. If the TLS calcuation 
+ cannot be stabilised by means of these filters, the user can modify 
+ either T, L or S directly before applying the REPLACE or PUNCH 
+ commands. Though here is some danger in this, especially if the supposed rigid 
+ group is infact flexible, it may be preferable to using a model 
+ yielding negative vibrational or librational amplitudes.
+
+
+
+
+<P>The direction cosines of the 
+ principal axis of L are stored for use in inter-axis angle comutations.
+
+<P>Immediate execution of a directive can be forced by issuing an EXECUTE
+ directive.
+<BR>&nbsp;<BR>
+<div class="instruction"><strong><u>\GEOMETRY INPUTLIST=</u></strong><br>
+<div class="parameter"><i>INPUTLIST=</i>
+
+<pre>
+      5   -  Default value
+      10
+</pre><p><BR>
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>ATOMS  W(1)  SPECIFICATION(1)  W(2)  SPECIFICATION(2) .</i></strong>
+<P>This specifies atoms to be used in the calculation of the
+ best plane.
+  W(1)  Is the weight assigned to the atoms
+ contained in the first atom specification,  W(2)  is the weight
+ assigned to the second group of atoms, and so on.
+ If  W(1)  is omitted, a default value of 1 is used,
+ but any other  W(I)  term applies to all the atoms following it,
+ until another  W  is found or the end of the directive is
+ encountered.
+ At least one  ATOM  directive must precede each  PLANE, LINE, TLS, AXES or
+ PLOT directive.
+ An ATOM directive will over-rule an immediately preceding ATOM directive. If an
+ input line is not long enough for the full atom list, use CONTINUE.
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>PLANE</i></strong>
+<P>This directive, (or  LINE, TLS, AXES, PLOT)
+ must follow immediately after an  ATOM  directive and
+ causes the calculation of a least squares best plane.
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>LINE</i></strong>
+<P>This directive, (or  PLANE, TLS, AXES, PLOT)
+ must follow immediately after an  ATOM  directive and
+ causes the calculation of a least squares best line.
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>AXES</i></strong>
+<P>This directive (like \AXES) computes the principal axis lengths
+ and directions for the atoms specified on a preceding ATOM directive.
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>TLS </i></strong>
+<P>This causes the TLS calculation to be initiated. It MUST have been preceded
+ by an ATOM directive.
+<BR>
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>EXECUTE</i></strong>
+<P>This forces the execution of preceding directives.
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>EVALUATE  ATOM SPECIFICATIONS . . . .</i></strong>
+<P>If present, this directive
+ must appear after a  PLANE, LINE, TLS or PLOT directive,
+ and causes the co-ordinates or adps of the atoms specified
+ to be calculated and printed with respect to the current axial system.
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>REPLACE ATOM SPECIFICATIONS . . .</i></strong>
+<P>if present, this directive
+ must appear after a  PLANE, LINE, TLS or PLOT directive,
+ and causes the co-ordinates or adps of the atoms specified to be modified so
+ that they conform to the most recent geometry calculation.
+ The LIST 5 in core is immediately
+ updated, so that the new coordinates will be used for any subsequent
+ computation. A LIST 5 is only written to the disc on a satisfactory exit from
+ GEOMETRY.
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>PUNCH</i></strong>
+<P>This directive causes the orthogonal coordinates of the atoms of any plane or
+ line computed or EVALUATED in subsequent tasks to be output to the 'punch'
+ file. For a TLS calculation, it causes  a restraint list to be output 
+ to TLSREST.DAT
+<BR>&nbsp;<BR>
+<A NAME="LIST20"> </A>
+</div>
+<div class="directive"><strong><i>SAVE</i></strong>
+<P>This directive is optional. 
+<P>If it follows a PLANE, LINE or TLS directive, it
+ causes the latest rotation matrix and CENTRE  to be stored in the 
+ appropriate position in LIST 20. 
+<P>If it
+ follows an AXES directive, the direction cosines and centre if the ellipse FOR
+ THE LAST ATOM are stored in LIST 20.
+<P>A LIST 20 is only written to the disc on
+ a satisfactory exit from ANISO.
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>DIHEDRAL  NP(1)  AND  NP(2)</i></strong>
+<P>If present, thus directive must follow at least
+ two  PLANE, LINE or TLS computations.
+ It causes the program
+ to calculate the angle between the axes with  serial numbers
+   NP(1)  and  NP(2) .
+ The   AND  must be present.
+<BR>&nbsp;<BR>
+<BR>
+</div>
+<div class="directive"><strong><i>QUIT</i></strong>
+<P>This directive abandons the calculation without modifying the disc LISTs.
+<BR>&nbsp;<BR>
+
+
+
+
+
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>CENTRE   X=, Y=, Z=</i></strong>
+<P>This directive specifies the centre of libration,
+ in crystal fractions, to be used in the original derivation of
+ the overall motion tensors. The program derives and uses a unique
+ origin at a later stage in the calculations. This directive
+ is optional, the default centre being (0,0,0).
+ If a centre of (0,0,0) is given or set by default, the program computes
+ and uses the mean position of the given atoms, INCLUDING any which are
+ isotropic, even though these are not used to compute TLS. The stored CENTRE
+ is updated during TLS, and a second TLS computation may be performed using
+ this new value as CENTRE. This may help stabilise certain forms of
+ ill-conditioning.
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>REJECT   NV=</i></strong>
+<P>Overrides normal action and sets the parameter combination
+ corresponding to eigenvector number nv to zero.
+ Eigenvectors are numbered in ascending order of their eigenvalues,
+ so that nv
+ is in the range 1 to 20 inclusive and will usually have been obtained
+ from a full eigenvalue/vector listing produced in
+ a previous run.
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>LIMITS   VALUE=   RATIO= </i></strong>
+<P>If an eigenvalue is less than  VALUE  or its size is less than
+  RATIO * (the next bigger), it is eliminated from the analysis.
+ VALUE is currently .000001 and RATIO .01 .
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>MODL L(11), L(22) L(33) L(23) L(13) L(12)</i></strong>
+<P>This directive enables the user to change the values of the L tensor before
+ EVALUATING or REPLACING the Uij. The L tensor changed is that with 
+ respect to the inertial axes and the input centre of libration. It does 
+ not depend upon S. All six values must be given.
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>MODT T(11), T(22) T(33) T(23) T(13) T(12)</i></strong>
+<P>This directive enables the user to change the values of the T tensor before
+ EVALUATING or REPLACING the Uij. The T tensor changed is that with 
+ respect to the inertial axes and the input centre of libration, NOT the 
+ final tensor, since this involves an interaction with S and L.
+  All six values must be given.
+<BR>&nbsp;<BR>
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><BR>DZEROS
+<P>
+<P>This directive enables the user to set the S tensor to zero before
+ EVALUATING or REPLACING the Uij. It decouples T from L.
+</div>
+<div class="directive"><strong><i>DISTANCES  DL=   AL=</i></strong>
+<P>This directive calculates all interatomic distances less than
+ DL angstroms with librational corrections. If this directive is omitted,
+ no distances are calculated; if DL is absent, a default value of 1.8 is
+ inserted. If AL is present, angles between atoms separated by less than AL
+ angstroms are computed.
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>ANGLES  AL=</i></strong>
+<P>This directive calculates angles between all bonds less than
+ AL angstroms. If this directive is omitted, no angles are calculated;
+ if AL is absent, a default value of 1.8 is inserted.
+<P>
+<P>
+ <i>***********************</i> WARNING *************************
+<BR>
+<P>The directive DISTANCE may only be
+ followed by ATOM, EXECUTE, or END.
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>PLOT</i></strong>
+<P>This obsolete directive produces a join-the-dots diagram
+ on the monitor or printer. It (or  PLANE, LINE, TLS, AXES)
+ must follow immediately after an  ATOM  directive and
+ causes the calculation of inertial axes.
+ Details of the computation are suppressed on the Monitor,
+ but a line drawing projected onto the best plane is produced.
+  MOLAX  Can thus be used as a means of displaying some or all
+ of the atoms in a structure.
+<BR>&nbsp;<BR>
+
+<pre>
+   Examples:
+ 
+  These instructions compute a plane
+  involving n(1),n(2),n(3) and c(1), and
+  prints the co-ordinates of all the atoms with
+  respect to this plane.  The positions of the
+  nitrogen atoms have double weight
+ 
+ \GEOMETRY
+ ATOMS 2 N(1) UNTIL N(3)  1 C(1) C(2)
+ PLANE
+ EVALUATE ALL
+ 
+  These instructions calculate another plane,
+  printing only the co-ordinates of c(5) with respect to
+  the second plane.  The angle between the two planes
+  is then calculated
+ 
+ ATOMS C(1) S(1) N(1)
+ PLANE
+ EVALUATE C(5)
+ DIHEDRAL 1 AND 2
+ END
+ 
+ 
+  These instructions compute a TLS tensor for the specified atoms
+  and then set up restraints to encourage the Uij to conform to a
+  rigid body.  You might want to tighten the esd in TLSREST.dat to 0.005.
+ 
+ \GEOM                                                                           
+ ATOM ALL
+ TLS
+ PUNCH
+ EVAL ALL
+ EX
+ END
+ \LIST 16                                                                        
+ \USE TLSREST.DAT                                                                
+ END
+</pre><p><BR>
+<BR>
+
+<BR>&nbsp;<BR>
+<A NAME="TORSION"> </A>
+<A NAME="Torsion angles"> </A>
+</div>
+</div>
+<HR><small><A HREF="crystalsmanual-analysis.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="analysis.torsion">9.9: Torsion angles  -  \TORSION</A></H3></CENTER>
+
+
+<pre>
+ \TORSION INPUTLIST=
+ ATOMS  SPECIFICATIONS
+ PUBLICATION  PRINT= LEVEL= E.S.D=
+ INLCUDE TYPE=
+ END
+
+ \TORSION
+ ATOM C(1) C(2) C(3) C(4)
+ END
+</pre><p><BR>
+<P>Calculation of the torsion angles for atoms i,j,k,l. 
+ The torsion angle about the bond j-k
+ is the angle the bond i-j is rotated about j-k to bring it into 
+ coincidence with k-l.
+ It is positive when  the rotation is
+ clockwise on looking from j to k.
+<P>The program uses atomic positions taken from
+ LIST 5.  These can be
+ modified by the space group symmetry operators stored in LIST 2 (space
+ group information, see section !elabel!LIST02!)
+<P> ESDs (SUs) are computed by the method of Nardelli (using code given 
+ to us from his program PARST) if only average atomic esds are 
+ avaialble.  If the full VcV matrix is avaiable, they are computed by 
+the method of Schaik et al (R. van Schaik, H Berendsen, A Torda & W 
+Gunsteren, J. Mol. Biol. (1993) 234, 751-762. The paper by U. Shmueli, 
+Acta Cryst (1974) A30, 848-849 explains the need for the full vcv matrix 
+and the effect of symmetry. The singularity in his equations (6) when tau is 
+0 or 180 is circumvented in Schaiks formulation (which is singular if 
+atoms j and k are coincident).
+<BR>
+If three (or more) atoms are approximately co-linear the torsion angle is ill
+defined. The current threshold for co-linearity is 5 degrees.
+
+<BR>&nbsp;<BR>
+<div class="instruction"><strong><u>\TORSION INPUTLIST=</u></strong><br>
+<div class="parameter"><i>INPUTLIST</i>
+
+<pre>
+      5   -  Default value
+      10
+</pre><p><BR>
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>ATOMS  SPECIFICATIONS</i></strong>
+<P>This directive specifies atoms that are to be used in the calculation
+ of the torsion angle. More than one  ATOMS  directive can be given. Each
+ directive must define at least four atoms, the torsion angle being
+ computed with respect to the first three atoms and each of the
+ subsequent ones.
+<P>Atoms cannot be give if INCLUDE is ALL or NO-HYDROGEN
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>PUBLICATION  PRINT=</i></strong>
+<BR>&nbsp;<BR>The parameter PRINT controls the publication listing, which is sent to 
+the file open on the CRYSTALS PUNCH unit.
+
+<pre>
+      NO   -  DEFAULT.  There is no publication listing
+      YES    There is a publication listing sent to the PUNCH file
+      CIF    The listing is in CIF format
+      PUNCH  Creates a file containing all the quartets of atoms forming
+             bonded torsion angles.
+</pre><p><BR>
+</div>
+<div class="directive"><strong><i> LEVEL=</i></strong>
+<BR>&nbsp;<BR>If LEVEL is HIGH, the VcV marix of the atoms in each torsion angle
+ is printed.
+<BR>
+</div>
+<div class="directive"><strong><i> E.S.D.=</i></strong>
+<BR>&nbsp;<BR>NO suppresses the computation of standard uncertainties, EXCLRH excludes the
+ computation of the su of torsion angles involving a riding hydroen (to keep checkcif
+ happy).
+<pre>
+      NO
+      YES The default value
+      EXCLRH  Exclude ridning hydrogen atoms
+</pre><p><BR>
+</div>
+<div class="directive"><strong><i>INCLUDE TYPE=</i></strong>
+<BR>&nbsp;<BR>The default (NULL) causes this directive to be skipped so that ATOM directives
+  can be given, otherwise quartets of atom names are sent to the PUNCH file
+<BR>
+<pre>
+     NULL  (The default). This directive is ignored
+     ALL   Torsion quartets for all atoms are sent to the punch file.
+     NO-HYDROGEN  Only quartets not involving hydrogen are punch out.
+</pre><p>
+<pre>
+ Example.
+ \ the torsion angle about C(3)-C(4) is calculated
+ \ two torsion angles about C(4)-C(5) are calculated
+ \
+ \TORSION
+ ATOMS N(2) C(3) C(4) C(5)
+ ATOMS C(3) C(4) C(5) C(6) O(1,2,2)
+ END
+</pre><p><BR>
+<pre>
+ Example.
+ PART 1 sends a list of all quartets to a file called TORS-LIST.DAT
+
+      \ PART 1
+      \RELE PUNCH TORS-LIST.DAT
+      \tors
+      PUB PRINT=PUNCH
+      incl all
+      end
+      \RELE PUNCH logs/bfile/pch
+      
+ PART 2 uses this file to create a partial cif file containing the angles
+ and esds.
+      \ PART 2
+      \tors
+      pub print=cif e.s.d=yes
+      \use TORS-LIST.DAT
+      END
+</pre><p><BR>
+<BR>&nbsp;<BR>
+<A NAME="TON"> </A>
+<A NAME="Hooft-Straver-Spek"> </A>
+</div>
+</div>
+<HR><small><A HREF="crystalsmanual-analysis.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="analysis.configuration">9.10: Absolute Configuration  -  \TON</A></H3></CENTER>
+
+
+<pre>
+ \TON 
+ END
+
+</pre><p><BR>
+<P>Compute the Hooft-Straver-Spek parameter for comparisonm with the 
+Flack parameter
+<BR>&nbsp;<BR>
+<div class="instruction"><strong><u>\TON</u></strong><br>
+<BR>&nbsp;<BR>
+<P>This instruction evaluates a function of (Fo+h - Fo-h) and  (Fo+h - Fo-h)
+ for all Friedel pairs. It uses LIST 7, which must be sorted to that 
+ Friedel pairs are adjacent and with the same index signs, and with a 
+ flag to indicate if the sign has been changed in 'phase'.
+<P> The data is most conveniently prepared useing the SCRIPT TON towards 
+the end of a refinement.
+<BR>
+<BR>
+
+
+
+
+
+
+<BR>&nbsp;<BR>
+<A NAME="PARAMETERS"> </A>
+<A NAME="Publication tables of atomic parameters"> </A>
+</div>
+<HR><small><A HREF="crystalsmanual-analysis.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="analysis.paramet">9.11: Publication listing of the atomic parameters  -  \PARAMETERS</A></H3></CENTER>
+
+
+<pre>
+ \PARAMETERS
+ LAYOUT INSET= ATOM= DOUBLE= CHOOSE= FLOAT= NCHAR= NLINE= LISTAXES= ESD=
+ COORDINATES NCHAR= NDECIMAL= SELECT= TYPE= DISPLAY= PRINT= PUNCH=
+ U'S NCHAR= NDEC= SELECT= TYPE= DISPLAY= PRINT= PUNCH=
+ END
+</pre><p>
+<pre>
+ \PARAMETERS
+ LAYOUT ATOM-NAME=6,DOUBLE=YES
+ END
+</pre><p><BR>
+<P>This routine sends the atomic parameters to the PUNCH file  in a suitable
+ format  for publication or binding into a thesis.  As well as the current
+ atomic parameters in LIST 5, the estimated  standard deviations derived from
+ the least squares normal matrix are also  printed.
+ <strong>THIS</strong> <strong>ROUTINE</strong> <strong>WILL</strong> <strong>NOT</strong> <strong>WORK</strong> if LIST
+ 5  is modified <i>in</i> <i>any</i> <i>way</i> since the last round of
+ refinement. If any changes, including  renaming, are made, a further round of
+ refinement must be done. If you wish  to preserve parameter values,
+ and create a valid matrix
+ without changing the parameter values, compute a refinement cycle but set
+ all the shifts to zero.
+
+<pre>
+      \SFLS
+      REFINE
+      SHIFT GENERAL = 0.0
+      END
+</pre><p><BR>
+ The output is in two halves, the first
+ containing  the positional coordinates and any isotropic temperature factors,
+ and the  second containing all the anisotropic temperature parameters.
+<P>For the first part, a page is split into 6 separate  fields.
+  The first field
+ is blank, and is an offset so that the information  is  centred on
+ the page.  The remaining fields contain the atom type and serial
+ number, the  three positional parameters, and a temperature factor.
+ This will be the value of U(iso) with its e.s.d for isotropic atoms,
+ otherwise U(equiv), without an e.s.d, for anisotropic atoms.
+ U(equiv) <strong>is</strong> <strong>not</strong> simply related to the
+ diagonal elements of U(aniso), and may be computed as either the
+ arithmetic or geometric mean of the principal axes of the ellipsoid.
+ See \SET UEQUIV in the chapter on IMMEDIATE commands.
+ The width of each type of field may be altered by the user, using
+ respectively the  INSET ,  ATOM-NAME , and  NCHARACTER  parameters.  The
+ default length
+ of a page of this type of output is that required for A4 paper.
+<P>The second part contains the anisotropic temperature factors, and each page
+ is split into eight fields.
+ As for the atomic coordinates, the first field is blank and represents
+ an offset.
+ The second field contains the atom type and serial number, and
+ the remaining six fields contain the components of the anisotropic
+ temperature factors.
+ The width of each type of field may be adjusted by the user, using
+ respectively the  INSET ,  ATOM-NAME  and  NCHARACTER  parameters.
+ If a different value for  INSET  or  ATOM-NAME  is required in the
+ first and second parts of the output, the job must be run twice.
+ Depending upon the width across the page, the second part of the output
+ occupies one sheet of A4 paper either across the page or down the page.
+<P>For both types of output, the user can select double spacing
+ down the page with the  DOUBLE  parameter.
+ Similarly for each of the numeric fields, the user can choose the number
+ of decimal places to be printed
+ (the  NDECIMAL  parameter),
+ and whether the numbers are printed as integers or in floating point
+ with a decimal point.
+ (The  FLOATING  parameter).
+ The e.s.d.'s are printed to the same accuracy as the atomic parameters,
+ so that if the chosen field is too small and an e.s.d. appears to be
+ zero, it will be omitted in exactly the same way as for a parameter
+ that has not been refined.
+ A parameter printed with 4 decimal places might thus appear as :
+
+<pre>
+ 0.0123(4)
+ OR
+    123(4)
+</pre><p><BR>
+ Depending upon the format.
+ In either case, the numbers are right justified in their field.
+<P>As an alternative to the user selecting the number of decimal
+ places that should be printed, it is possible to get the program
+ to choose the number of decimal places required for each parameter
+ automatically.
+ (The  CHOOSE  parameter).
+ If the parameters are to be printed in floating point, the number
+ of decimal places is chosen so that the e.s.d. Can be represented
+ as a one digit number in the last decimal place.
+ For numbers that are to be printed as integers, the field used
+ is never less than that given by the  NDECIMAL  parameter.
+ If the required field is larger than that defined by these 
+s,
+ a decimal point is inserted and the required number of extra digits
+ is output.
+ For example, if the number of decimal places required is four, but the e.s.d.
+ is too small, it would appear as :
+
+<pre>
+ 0.12345(6)
+ OR
+  1234.5(6)
+</pre><p><BR>
+ Depending upon whether floating point or integer output was required.
+ For either type, if the parameter has not been refined, the number of
+ decimal places is that given by the  NDECIMAL  instruction.
+<P>Since this routine prints the e.s.d.'s, it is vital that the least squares
+ matrix (LIST 11, see section !elabel!LIST11!) belongs to the current 
+ LIST 5 (the model parameters). If LIST 5 has been modified
+ in any way since the last Least Squares, this routine will abort.
+<P>When anisotropic atoms are present in LIST 5, U[EQUIV] is calculated
+according to the current setting of \SET UEQUIV.
+<BR>
+<BR>&nbsp;<BR>
+<div class="instruction"><strong><u>\PARAMETERS</u></strong><br>
+<P>This command initiates the routines for printing of the atomic
+ parameters in a suitable format for publication.
+<BR>&nbsp;<BR>
+<div class="directive"><strong><i>LAYOUT= INSET= ATOM= DOUBLE= CHOOSE= FLOAT= NCHAR= NLINE= LISTAXES= ESD=</i></strong>
+<P>This directive defines how the atomic parameters, both positional
+ and thermal, are to be laid out on the page.
+<div class="parameter"><i>INSET</i>
+ This parameter sets the number of blank spaces on each line before the
+ atom type and serial number. If this parameter is omitted
+ a default value of 1 is assumed.
+</div>
+<div class="parameter"><i>ATOM-NAME</i>
+ This parameter sets the width of the field that contains the atom
+ type and serial number.
+ The characters are left justified in the field, and the format is
+ as follows :
+<BR>
+<BR>&nbsp;<BR>TYPE(SERIAL)
+<BR>
+ The serial number is printed as an integer, and the unoccupied
+ spaces are filled with blanks.
+ If this parameter is omitted, a default value of 6 is assumed.
+</div>
+<div class="parameter"><i>DOUBLE</i>
+ This parameter has two possible values :
+<BR>
+<BR>&nbsp;<BR>NO   -  DEFAULT VALUE
+<BR>&nbsp;<BR>YES
+<BR>
+ If  DOUBLE  is  YES  each line of parameters is double spaced.
+ The default option if this parameter is omitted is single
+ spacing, with no interleaving blank lines.
+</div>
+<div class="parameter"><i>CHOOSE</i>
+ This parameter has two possible values :
+<BR>
+<BR>&nbsp;<BR>NO
+<BR>&nbsp;<BR>YES  -  DEFAULT VALUE
+
+<BR>
+ If  CHOOSE  is  YES  the program chooses the number of decimal places that
+ need to be printed for each parameter, depending upon its e.s.d..
+ The format of the output depends upon whether a decimal point
+ is being used, as explained above.
+</div>
+<div class="parameter"><i>FLOATING</i>
+ This parameter has two possible values :
+<BR>
+<BR>&nbsp;<BR>YES  -  DEFAULT VALUE
+<BR>&nbsp;<BR>NO
+<BR>
+ If  FLOATING  is  NO , the parameters are printed as integers,
+ with an accuracy given either by the  NDECIMAL  parameters
+ to the directives  COORDINATES  and "U'S, or by the 'CHOOSE' parameter.
+ parameter.
+</div>
+<div class="parameter"><i>NCHARACTER</i>
+ This parameter indicates the total number of printing positions
+ on the output device.
+ If this parameter is omitted, a default value of 118 is assumed.
+
+</div>
+<div class="parameter"><i>NLINE</i>
+ This parameter indicates the total number of lines on the
+ on the output media. Set a very lartge value (1000) to get continuous
+ output.
+
+</div>
+<div class="parameter"><i>LISTAXES</i>
+ This parameter can have two values
+<BR>
+<BR>&nbsp;<BR>YES
+<BR>&nbsp;<BR>NO   -  DEFAULT VALUE
+<BR>
+ If the value is YES the principal axes of the temperature factors
+ are printed.
+<BR>&nbsp;<BR>
+</div>
+<div class="parameter"><i>ESDS</i>
+ This parameter can take 3 values
+<BR>
+<BR>&nbsp;<BR>NO
+<BR>&nbsp;<BR>YES  -  DEFAULT VALUE
+<BR>&nbsp;<BR>EXCLRH
+<BR>
+ EXCLRH inhibits printing the e.s.ds for riding hydrogen atoms
+<BR>
+</div>
+</div>
+<div class="directive"><strong><i>COORDINATES NCHAR= NDECIMAL= SELECT= TYPE= DISPLAY= PRINT= PUNCH=</i></strong>
+<P>This directive defines how the positional coordinates are to be
+ set out on the page.
+<div class="parameter"><i>NCHARACTER</i>
+ This parameter sets the width of the field that contains the
+ positional coordinates. The characters are right
+ justified in the field, and if this parameter is omitted,
+ a default value of 14 is assumed.
+</div>
+<div class="parameter"><i>NDECIMAL</i>
+ This parameter sets the number of decimal places to be printed for
+ the positional parameters.
+ It may be partially or completely overriden by the  CHOOSE
+ parameter, depending upon the format of the output.
+ If this parameter is omitted, a default value of 4 is assumed.
+</div>
+<div class="parameter"><i>SELECT</i>
+ This parameter selects the kinds of data to be printed, and
+ can have five values.
+<BR>
+<BR>&nbsp;<BR>ALL     - Default. All atoms are printed.
+<BR>&nbsp;<BR>NONE    - No atoms are printed.
+<BR>&nbsp;<BR>ONLY    - Only atoms with TYPEs given on a TYPE directive are printed.
+<BR>&nbsp;<BR>EXCLUDE - Atoms with TYPEs given on a TYPE directive are not printed.
+<BR>&nbsp;<BR>SEPARATE- Atoms with TYPEs given on a TYPE directive are printed separately
+<BR>
+</div>
+<div class="parameter"><i>TYPE</i>
+<BR>
+ Used in conjunction with SELECT to determine which atom types to
+ INCLUDE,EXCLUDE or SEPARATE. TYPE is ignored if SELECT is ALL or NONE.
+ Its default value is 'H'.
+</div>
+<div class="parameter"><i>DISPLAY</i>
+ This parameter has two possible values
+
+<pre>
+ NO   No output is displayed on the terminal.
+ YES  Output is displayed on the terminal.
+</pre><p><BR>
+</div>
+<div class="parameter"><i>PRINT</i>
+ This parameter has two possible values
+
+<pre>
+ NO       No output is sent to the listing file
+ YES      Output is sent to the listing file
+</pre><p><BR>
+</div>
+<div class="parameter"><i>PUNCH</i>
+ This parameter has three possible values
+
+<pre>
+ NO       No output is sent to the punch file
+ YES      Output is sent to the punch file
+ CIF      Output is in CIF format
+</pre><p><BR>
+<BR>&nbsp;<BR>
+</div>
+</div>
+<div class="directive"><strong><i>U'S NCHAR= NDEC= SELECT= TYPE= DISPLAY= PRINT= PUNCH=</i></strong>
+<P>This directive defines how the thermal parameter are to be
+ set out on the page.
+<div class="parameter"><i>NCHARACTER</i>
+ This parameter sets the width of the field that contains the thermal
+ parameters. The characters are right justified in the field, and
+ if this parameter is omitted, a default value of 11 is assumed.
+</div>
+<div class="parameter"><i>NDECIMAL</i>
+ This parameter sets the number of decimal places to be printed for
+ the thermal parameters.
+ If this parameter is omitted, a default value of 4 is assumed.
+</div>
+<div class="parameter"><i>SELECT</i>
+ This parameter selects the kinds of data to be printed, and
+ can have five values.
+<BR>
+<BR>&nbsp;<BR>ALL     - Default. All atoms are printed.
+<BR>&nbsp;<BR>NONE    - No atoms are printed.
+<BR>&nbsp;<BR>ONLY    - Only atoms with TYPEs given on a TYPE directive are printed.
+<BR>&nbsp;<BR>EXCLUDE - Atoms with TYPEs given on a TYPE directive are not printed.
+<BR>&nbsp;<BR>SEPARATE- Atoms with TYPEs given on a TYPE directive are printed separately
+<BR>
+</div>
+<div class="parameter"><i>TYPE</i>
+<BR>
+ Used in conjunction with SELECT to determine which atom types to
+ INCLUDE,EXCLUDE or SEPARATE. TYPE is ignored if SELECT is ALL or NONE.
+ Its default value is 'H'.
+</div>
+<div class="parameter"><i>MONITOR</i>
+ This parameter has two possible values
+
+<pre>
+ OFF   No output is displayed on the terminal.
+ HIGH  Output is displayed on the terminal.
+</pre><p><BR>
+</div>
+<div class="parameter"><i>PRINT</i>
+ This parameter has two possible values
+
+<pre>
+ NO       No output is sent to the listing file
+ YES      Output is sent to the listing file
+</pre><p><BR>
+</div>
+<div class="parameter"><i>PUNCH</i>
+ This parameter has three possible values
+
+<pre>
+ NO       No output is sent to the punch file
+ YES      Output is sent to the punch file
+ CIF      Output is in CIF format
+</pre><p><BR>
+<A NAME="REFLECTIONS"> </A>
+<A NAME="Publication tables of reflection data"> </A>
+</div>
+</div>
+</div>
+<HR><small><A HREF="crystalsmanual-analysis.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="analysis.reflections">9.12: Publication listing of reflection data  - \REFLECTIONS</A></H3></CENTER>
+<A NAME="REFLECTIONS"> </A>
+
+
+<pre>
+\REFLECTIONS INPUT=
+LAYOUT NCOLUMNS= NLINES= INSET= NSPACE= SCALE= NCHARACTER=
+OUTPUT PRINT= PUNCH= LIST28=
+END
+</pre><p><BR>
+<P>This routine prints the reflection data in LIST 6 (section !elabel!LIST06!) 
+ in a format suitable 
+ for publication or binding into a thesis. 
+<BR>
+ (For an unformatted output you might prefer \PUNCH 6 I or \PUNCH 6 IF)
+<P>The information printed falls
+ into one or more columns, each of which contains h, k, l, /Fo/, /Fc/, and the
+ phase angle in degrees.
+ Each column is 18 characters wide. Although the user has no control
+ over the contents of each column, it is possible to vary the number of
+ blank spaces at the start of each line, the number of columns across the
+ page,  the number of spaces between successive columns, and the number of
+ lines per page. (The  INSET ,  NCOLUMNS ,  NSPACE  and  NLINES  parameters,
+ respectively).
+ /Fo/ and /Fc/ are both put on the same scale of /Fc/, using the scale factor
+ in LIST 5, and both these two numbers may be modified by a scaling constant
+ before they are printed. (The  SCALE  parameter). However, all the values of
+ both /Fo/ and /Fc/ must be less than 10000 when they are printed.
+<P>LIST 28 is used for checking whether or not to print a reflection. Remember
+ that if LIST 28 was used to reject some reflections when structure factors
+ were last calculated, removing these restrictions before printing LIST 6
+ will mean that some reflections will have incorrect values of Fc and phase.
+<div class="instruction"><strong><u>\REFLECTIONS INPUT=</u></strong><br>
+<div class="parameter"><i>INPUT</i>
+Indicates which reflection list to use.
+<pre>
+      6      Default
+      7      Alternative reflection list
+</pre><p><BR>
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>LAYOUT NCOLUMNS= NLINES= INSET= NSPACE= SCALE= NCHARACTER=</i></strong>
+<P>This directive defines how the reflection data is to be printed.
+<div class="parameter"><i>NCOLUMNS=</i>
+ This parameter indicates the number of columns of reflection data to be
+ printed across the page. If this parameter is omitted, a default value of
+ 3 is assumed.
+</div>
+<div class="parameter"><i>NLINES=</i>
+ This parameter indicates how many lines should be on each page of output.
+ If this parameter is omitted a default value of 52 is assumed.
+</div>
+<div class="parameter"><i>INSET=</i>
+ This parameter indicates how many blank spaces should be inset at
+ the beginning of each line. If this parameter is omitted a default value
+ of 30 is assumed.
+</div>
+<div class="parameter"><i>NSPACE=</i>
+ This parameter indicates the number of spaces separating successive
+ columns across the page. If this parameter is omitted a default value
+ of 3 is assumed, which means that each column occupies 21
+ characters across the page.
+</div>
+<div class="parameter"><i>SCALE=</i>
+ This parameter indicates the scaling constant by which /Fo/ and /Fc/
+ should be multiplied before they are printed,
+ after they have been put on the same scale (the scale of /Fc/).
+ If this parameter is omitted, a default value of 10 is assumed.
+</div>
+<div class="parameter"><i>NCHARACTER=</i>
+ This parameter indicates the total number of printing positions
+ on the output device.
+ If this parameter is omitted, a default value of 120 is assumed.
+</div>
+</div>
+<div class="directive"><strong><i>OUTPUT PRINT PUNCH LIST28</i></strong>
+<P>This directive defines where the reflection data is to be printed.
+<div class="parameter"><i>PRINT=</i>
+ This has two allowed values :-
+
+<pre>
+ NO       No output is sent to the listing file
+ YES      Output is sent to the listing file
+</pre><p><BR>
+</div>
+<div class="parameter"><i>PUNCH=</i>
+ This has two allowed values :-
+
+<pre>
+      NO       No output is sent to the punch file
+      YES      Output is sent to the punch file
+</pre><p><BR>
+<BR>&nbsp;<BR>
+<A NAME="SUMMARY"> </A>
+<A NAME="Summary of data"> </A>
+</div>
+</div>
+</div>
+<HR><small><A HREF="crystalsmanual-analysis.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="analysis.summary">9.13: Summary of data lists - \SUMMARY</A></H3></CENTER>
+
+
+<pre>
+ \SUMMARY OF= TYPE= LEVEL=
+
+ \SUMMARY LIST 5 HIGH
+ END
+ \SUMMARY EVERYTHING
+ END
+</pre><p><BR>
+<P>This command produces a summary on the terminal of the contents of a
+ list. Use \PRINT if you need full details.
+<BR>&nbsp;<BR>
+<div class="instruction"><strong><u>\SUMMARY OF= TYPE= LEVEL=</u></strong><br>
+<div class="parameter"><i>OF</i>
+
+ LIST         Default, also requires TYPE to be set
+ EVERYTHING
+<BR>
+ The value EVERYTHING generates a summary of all LISTS.
+</div>
+<div class="parameter"><i>TYPE</i>
+ This parameter requires a list type number if the previous parameter
+      was 'LIST"
+</div>
+<div class="parameter"><i>LEVEL</i>
+ Some lists may be listed in more or less detail.
+
+ OFF
+ LOW
+ MEDIUM    Default
+ HIGH
+<BR>
+</div>
+<div class="directive"><strong><i>\SUMMARY 6</i></strong>
+Unlike all the other SUMMARIES, which only generate readable output,
+SUMMARY 6 computes the conventional R on the basis of the current Fo, Fc
+and LIST 28 (section !elabel!!LIST28), and updates the value stored in 
+LIST 6 (section !elabel!LIST06!) 
+and LIST30 (section !elabel!LIST30!). The
+weighted R is not affected.
+<BR>
+<BR>&nbsp;<BR>
+
+<A NAME="TONSPEK"> </A>
+<A NAME="Estimation of Absolute configuration"> </A> 
+</div>
+</div>
+<HR><small><A HREF="crystalsmanual-analysis.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="analysis.tonspek">9.14: Estimation of Absolute configuration - \TONSPEK </A></H3></CENTER>
+<A NAME="TONSPEK"> </A>
+
+
+
+<pre>
+\TONSPEK INPUT= TYPE= PLOT= PUNCH= FILTER1= ... FILTER5= WEIGHT=
+END
+</pre><p><BR>
+<P>This routine contains code kindly donated by Ton Spek for the 
+ computation of the Hooft 'y' parameter and probabiliies. 
+ Rob W. W. Hooft, Leo H. Straver and Anthony L. Spek, 
+ J. Appl. Cryst. (2008). 41, 96–103.  It requires the current LIST 6 to 
+ be converted to a LIST 7 in which Friedel pairs are adjacent and in 
+ which Fc has been computed with the Flack 'x' parameter set to zero.
+<P>The pre-preparation for using this routine has been packaged into a 
+ script available from the Analyse menu.  The current value of the 
+ Flack parameter should already be stored in LIST 30.
+<BR>
+<div class="instruction"><strong><u>\TONSPEK INPUT= TYPE= PLOT= PUNCH= FILTER1= ... FILTER5= WEIGHT=</u></strong><br>
+<div class="parameter"><i>INPUT=</i>
+Indicates which reflection list to use.
+<pre>
+      6      Default
+      7      Alternative reflection list
+</pre><p><BR>
+<BR>&nbsp;<BR>
+</div>
+<div class="parameter"><i>TYPE=</i>
+The computations can be carried out using the observed and computed
+Bijvoet differences, or the observed and computed Parsons Quotients.
+<BR>&nbsp;<BR>
+<pre>
+      DODC      Bijvoet Differences
+      QOQC      Parsons Quotients
+</div>
+<div class="parameter"></pre><p><i>PLOT=</i>
+ When used from the GUI causes the various graphs to be displayed 
+<pre>
+      YES     Default value
+      NO      
+</pre><p><BR>&nbsp;<BR>
+</div>
+<div class="parameter"><i>PUNCH=</i>
+ Controls output to the punch file, BFILE.CPH
+<BR>&nbsp;<BR>
+<pre>
+      NONE           Default
+      TABLE          Table of all the Bijvoet pairs.
+      RESTRAINT      List of restriants suitable for adding to a LIST 16.
+      GRAPH          Values suitable for input to an external program
+      SUMMARY        One-line summary of the various parameters and sus.
+</pre><p><BR>&nbsp;<BR>
+</div>
+<div class="parameter"><i>FILTER1=</i>
+ The minimum acceptable value of Dcalc/sigma(Dobs).  This is the minimum 
+'ideal' theoretical signal:noise ratio.  The default value of 0.5 can be 
+increased for materials with a large Friedif, or may need to be reduced 
+for small Freidif.
+</div>
+<div class="parameter"><i>FILTER2=</i>
+ The minimum acceptable value for the ration of the average of the observed Bijvoet 
+pairs to the su of the average, default is 1.0
+</div>
+<div class="parameter"><i>FILTER3=</i>
+ The observed Bijvoet differences muse bt less than FILTER3 times the 
+maximum calculated difference, default value is 2.0
+</div>
+<div class="parameter"><i>FILTER4=</i>
+ Minimum accaptable weight modifier from the Blessing algorithm.
+</div>
+<div class="parameter"><i>FILTER5=</i>
+ Maximum values of Max(Ao,Ac) / Min (Ao,Ac).  Used to filter out 
+reflections where are serious discrepancies between the observed and calculated 
+structure factors. Default value is 2.5.
+<BR>&nbsp;<BR>
+
+
+
+<BR>&nbsp;<BR>
+
+<A NAME="CIF"> </A>
+</div>
+</div>
+<HR><small><A HREF="crystalsmanual-analysis.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="analysis.cif">9.15: CIF lists - \CIF</A></H3></CENTER>
+
+ Data can be produced in CIF format for direct deposition at CCDC or
+ submission to journals. The required information is taken from several
+ lists, including LIST 30 (see section !elabel!LIST30!). F000, Mu etc are also 
+ computed and inserted in LIST 30.
+<BR>&nbsp;<BR>
+<div class="instruction"><strong><u>\CIF</u></strong><br>
+<P>There are no qualifiers.
+<P>See \PARAMETERS and \REFLECTIONS for the CIF printing of parameters
+ and reflections .
+<BR>
+<div class="directive"><strong><i>CheckCIF</i></strong>
+  CheckCIF and other validators are continuously updated to meet the 
+ changing needs of the community. It is unlikely that a CRYSTALS .cif 
+ will pass all checks first time, and edits may be necessary to 
+ accommodate special situations. Some of these have been foreseen, and the 
+ .cif contains possible alternative texts as 'comments'. These can be 
+ found by searching for the text 'choose'.
+</div>
+<div class="directive"><strong><i>References</i></strong>
+ The SCRIPT directory contains two text files that contain information 
+ copied into the cif file. The user may edit them.
+<div class="parameter"><i>Refcif.dat</i>
+   This file is copied in its entirety to the head of the cif file. If 
+ it is edited, care must be taken to follow the rules about text 
+ delimiters.
+</div>
+<div class="parameter"><i>Reftab</i>
+    This is a loosely formatted file containing the references to be 
+transcribed into the cif. 
+<P>Every reference is composed of 2 parts - a short text used as a data 
+ item in the cif, and the full reference. The two parts must be kept 
+ together, be separated from each other by a blank line, and be separated 
+ from any other item by a blank line. 
+<pre>
+      n  a four-digit number giving the number of references to follow. 
+         Other text on the line is ignored.
+Next items repeated 'n' times:
+      m  a three digit number preceded by a 'hash' symbol used as an 
+         identifier for the reference. The numbers must be unique, not 
+         necessarily in any order, with the largest one equal to 'n'
+      
+      The full reference. References are put in the file in alphabetic 
+      order.
+</pre><p><BR>
+ Items 001 to 004 are associated with the keywords 'unknown' for the 
+ corresponding items in LIST 30 (see section !elabel!LIST30!), and thus 
+ enable the user to insert 
+ their own references. Don't forget to move them to their correct 
+ alphabetical place.
+      
+</div>
+</div>
+<div class="directive"><strong><i>e.s.d.s</i></strong>
+ The esds output in CIF files try to follow the 'Rule of 19', as
+requested by Acta Cryst.
+Syd Hall, former Editor for Acta C, summarised the rule as follows:
+<P>
+'This method of handling the su (esd) values has been in force
+with Acta since about 1984 apparently. In my time it came up for
+discussion about two years ago (1996) and after much to-ing and fro-ing
+it was readopted as the preferred level of precision for su's.
+<P>
+What it means is as follows....
+<pre>
+(1) if one adopts esd values to one digit precision (rule of 9) the values
+
+      5.548(1)      1.453(2)  3.921(3)  1.2287(8)  are acceptable.
+
+(2) if one permits two digits precision with a limit of 19 (rule of 19)...
+
+      5.5483(9)     1.4532(16)  3.921(3)  1.2287(8)  are acceptable.
+
+(3) if one permits two digits precision with a limit of 29 (rule of 29)...
+
+      5.5483(9)     1.4532(16)  3.9214(28)  1.2287(8)  are acceptable.
+
+</pre><p><BR>
+The object of this approach is to provide a more consistent distribution
+of precision across all values. These particular matters are not really
+my responsibility but we try to conform to recommendation of the
+nomenclature people. This is one such occasion.'
+<BR>&nbsp;<BR>
+<A NAME="ADDARC"> </A>
+</div>
+</div>
+<HR><small><A HREF="crystalsmanual-analysis.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="analysis.addarc">9.16: Adding Archive files - ADDARC</A></H3></CENTER>
+<A NAME="addarc"> </A>
+
+<BR>&nbsp;<BR>
+<div class="instruction"><strong><u>ADDARC filename</u></strong><br>
+ This command is usually called from SCRIPTS and inserts the contents
+ of the file 'filename' into the current cif file, usually 'publish.cif'
+<BR>
+<BR>
+<BR>
+
+
+
+
+<BR>&nbsp;<BR>
+<A NAME="CAMERON"> </A>
+</div>
+<HR><small><A HREF="crystalsmanual-analysis.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="analysis.cameron">9.17: Graphics - CAMERON</A></H3></CENTER>
+<A NAME="grcameron"> </A>
+
+<BR>&nbsp;<BR>
+<div class="instruction"><strong><u>CAMERON</u></strong><br>
+ The graphics module CAMERON is part of the graphical user interface, and can
+ only be started from the GUI. Like CRYSTALS, a sub-set of the possible
+ commands are packaged up into menus, but the advanced full potential
+ is still available from the command line. There is a separate guide for
+ CAMERON
+
+<P>On exit from CAMERON the current image of the structure is padded back to
+ CRYSTALS in the file  CAMERON.L5.
+ This contains <strong>all</strong> and <strong>only</strong> the atoms last displayed by CAMERON.
+ Be careful -
+ it could be a packing diagram!
+<BR>
+<BR>
+<BR>&nbsp;<BR>
+</div>

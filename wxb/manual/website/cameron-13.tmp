@@ -1,0 +1,161 @@
+<!-- XTLVAR title="Control Of Colour" -->
+<!-- XTLVAR comment="Control Of Colour" -->
+<!-- XTLVAR cvssource="manual/cameron.man" -->
+<H1>Cameron Manual</H1>
+<H2>Chapter 13: Control Of Colour</H2>
+<DL><DT>
+<DD><A HREF="cameron-13.html#13.1">13.1: Example</A><br>
+</DL>
+<A NAME="Cameron - Colour control"> </A>
+<P>Within CAMERON it is possible to control the colour of each
+individual
+atom and bond and also the colour of the labels.
+</div>
+<div class="instruction"><strong><u>COLOUR</u></strong><br>
+This is the header command for colour control - it may be
+followed by
+atom/element names if required. The syntax is:
+<pre>
+COLOUR C BLUE N YELLOW ...
+</pre><p><BR>
+The atom/elements are entered in pairs together with the colour name.
+A list of the current colours can be obtained by using 'INFO COLOUR'. There are two sets
+of colournames - those for normal colour and those for greyscale either
+may be used interchangeably as once the colour type is altered the
+colours are translated accordingly.
+<pre>
+COLOUR ALL colour
+</pre><p><BR>
+Colours all the atoms the given colour
+<div class="directive"><strong><i>GROUP</i></strong>
+<P>This sets the colour of all of the atoms in a given group. The syntax
+is:
+<pre>
+COLOUR GROUP groupname colourname
+</pre><p><BR>
+</div>
+<div class="directive"><strong><i>FRAGMENT</i></strong>
+COLOUR FRAGMENT n col will set the colour of all atoms in the fragment 
+attached to atom n.
+</div>
+<div class="directive"><strong><i>BACKGROUND</i></strong>
+Sets the background colour.
+</div>
+<div class="directive"><strong><i>TEXT</i></strong>
+Sets the colour of the title and other annotation text.
+</div>
+<div class="directive"><strong><i>MENUTEXT</i></strong>
+</div>
+<div class="directive"><strong><i>BUTTON</i></strong>
+Selects the colours of the text and buttons in menu mode.
+</div>
+<div class="directive"><strong><i>LABCOLOUR</i></strong>
+<P>This sets the colour of the labels and requires a single
+argument - the
+name of the new colour.
+</div>
+<div class="directive"><strong><i>BONDS</i></strong>
+<P>Altering the colour of bonds is a more complicated procedure.
+It is
+followed by atoms/elements that define the bond and a colourname.
+These arguments are therefore entered in threes. For example, to
+make
+all carbon carbon bonds colour blue and all CU1 to oxygen bonds
+colour yellow
+you would use:
+<pre>
+COLOUR BONDS C C BLUE CU1 O YELLOW
+</pre><p><BR>
+<div class="parameter"><i>ALL</i>
+There is a further sub-command ALL which changes the colour of
+ALL of
+the bonds eg:
+<pre>
+COLOUR BONDS ALL PINK
+</pre><p><BR>
+makes all bonds colour PINK.
+</div>
+</div>
+<div class="directive"><strong><i>GROUP</i></strong>
+<P>This sub-command requires arguments in pairs - the group name
+and the
+new bond colour:
+<pre>
+COLOUR BONDS GROUP g1 LGREY
+</pre><p><BR>
+colours all bonds BETWEEN atoms in group g1 (both atoms in a bond
+must be in
+the group for its colour to be altered) to colour LGREY.
+<BR>
+<HR><small><A HREF="cameron-13.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="13.1">13.1: Example</A></H3></CENTER>
+<P>To have a picture with the following requirements:
+
+<pre>
+All C atoms colour BLUE
+All N atoms colour PINK
+Cu1 colour YELLOW
+All Cu1 - O bonds colour LGREY
+All bonds between atoms in group g1 colour RED
+All other bonds colour GREEN
+All labels colour PURPLE
+</pre><p><BR>
+<P>the commands would be:
+
+<pre>
+COLOUR C BLUE N PINK CU1 YELLOW
+BONDS ALL RED
+(do this first)
+BONDS CU1 O LGREY
+GROUP g1 GREEN
+LABCOLOUR PURPLE
+</pre><p><BR>
+<div class="directive"><strong><i>BACKGROUND</i></strong>
+<P>The default background colour is WHITE but this can be changed as 
+required by the COLOUR BACKGROUND colour command.
+</div>
+<div class="directive"><strong><i>DEFAULT</i></strong>
+<P>The default colours for the elements are as defined in the PROP.CMN 
+file -
+<pre>
+B - ORANGE
+Br,Cl,F,I - LGREEN
+C - GREEN
+D,H - LGREY
+N - BLUE
+O - RED
+P - PURPLE
+S - YELLOW
+SI - DGREY
+</pre><p><BR>
+These colours can be recovered if altered by using COLOUR DEFAULT which 
+returns ALL atoms to their original colours.
+</div>
+<div class="directive"><strong><i>NORMAL</i></strong>
+</div>
+<div class="directive"><strong><i>GSCALE</i></strong>
+<P>These sub-commands allow the user to see how the hardcopy greyscale
+picture will look. COLOUR GSCALE changes the screen colours to the
+equivalent greyscale colours. The colour names GREYn (n=1,14) can be
+used to specify colour changes if required as COLOUR N PURPLE makes
+little sense on a greyscale picture.
+
+<pre>
+      BLACK      BLACK
+      BLUE       GREY1
+      GREEN      GREY2
+      ORANGE     GREY3
+      RED        GREY4
+      CYAN       GREY5
+      MAGENTA    GREY6
+      LGREY      GREY7
+      GREY       GREY8
+      LGREEN     GREY9
+      LBLUE      GREY10
+      LRED       GREY11
+      PINK       GREY12
+      PURPLE     GREY13
+      YELLOW     GREY14
+      WHITE      WHITE
+</pre><p><BR>
+</div>

@@ -1,0 +1,50 @@
+<!-- XTLVAR title="Graphical Output Devices" -->
+<!-- XTLVAR comment="Graphical Output Devices" -->
+<!-- XTLVAR cvssource="manual/cameron.man" -->
+<H1>Cameron Manual</H1>
+<H2>Chapter 8: Graphical Output Devices</H2>
+<DL><DT>
+</DL>
+<A NAME="Cameron - Output devies"> </A>
+<P>The user has to specify a graphical output device before the command
+VIEW can be used. This is done with the command SCREEN. Note that if the
+title screen file CAMERON.SRT is present the screen is automatically set
+to VGA.
+</div>
+<div class="instruction"><strong><u>SCREEN</u></strong><br>
+The following devices are currently supported:-
+<div class="directive"><strong><i>VGA</i></strong>
+This sends the output to a VGA monitor eg to a PC graphics screen.
+</div>
+<div class="directive"><strong><i>EGA</i></strong>
+This sends the output to an EGA monitor.
+</div>
+<div class="directive"><strong><i>SIGMA</i></strong>
+This sends the output to a SIGMA terminal.
+</div>
+<div class="directive"><strong><i>TEK</i></strong>
+This is used for VAX terminals with Tektronics 4010 emulation.
+<BR>
+</div>
+</div>
+<div class="instruction"><strong><u>HARDCOPY</u></strong><br>
+<P>If hardcopy output is required the user must specify a separate
+device which is then drawn to using COPY. Those available are :-
+<div class="directive"><strong><i>POSTSCRIPT</i></strong>
+The graphical output is sent to a file in POSTSCRIPT format so that it
+can be printed on a postscript printer.
+</div>
+<div class="directive"><strong><i>ENCAPPOST</i></strong>
+The graphical output will be sent to a file in the same way as with
+POSTSCRIPT, the only
+difference is that the resulting file will be in Encapsulated form so
+that it can be incorporated into other packages eg Word Perfect (using 
+the Graphics range of commands).
+</div>
+<div class="directive"><strong><i>CPOST</i></strong>
+This generates a file in Colour Postscript (Level 1) format.
+<BR>
+</div>
+<div class="directive"><strong><i>CENCAP</i></strong>
+This generates an colour encapsulated postscript file.
+<P>Related commands : VIEW, COPY

@@ -1,0 +1,67 @@
+<!-- XTLVAR title="Group Definitions" -->
+<!-- XTLVAR comment="Group Definitions" -->
+<!-- XTLVAR cvssource="manual/cameron.man" -->
+<H1>Cameron Manual</H1>
+<H2>Chapter 21: Group Definitions</H2>
+<DL><DT>
+<DD><A HREF="cameron-21.html#21.1">21.1: Example</A><br>
+</DL>
+<A NAME="Cameron - Group definitions"> </A>
+<P>For complicated structures it is sometimes useful to define
+GROUPS of
+atoms which can be referred to as a whole later. EXCLUDE,
+INCLUDE,
+COLOUR BONDS etc can all be used with the GROUP sub-command.
+</div>
+</div>
+<div class="instruction"><strong><u>DEFGROUP</u></strong><br>
+<P>This is the main header command and is followed by the name of
+the
+group. Note that it is not possible to have group names that
+begin with
+GROUP itself - g1, g2 are valid names but group1, group2 are not.
+Up to
+twelve characters are allowed to define the group name.
+<div class="directive"><strong><i>ATOMS</i></strong>
+<P>This is followed by a list of atoms/elements to be included in
+the
+group.
+</div>
+<div class="directive"><strong><i>GROUP</i></strong>
+<P>It is possible to have an atom as a member of up to three
+groups at
+once. You can therefore add groups into other groups (see Example).
+</div>
+<div class="directive"><strong><i>FRAGMENT</i></strong>
+<P>The user can include atoms in a group by defining a fragment. The
+fragment definition requires a single atom. Any atoms joined to it, and
+any atoms to those etc are made part of the group.
+</div>
+<div class="directive"><strong><i>DELETE</i></strong>
+<P>You can also remove atoms from groups if required.
+<HR><small><A HREF="cameron-21.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="21.1">21.1: Example</A></H3></CENTER>
+<P>Consider an molecule that contains a tri-phenyl phosphine. A
+use of
+the DEFGROUP command would be :-
+
+<pre>
+DEFGROUP PHENYL1
+ATOMS C1 C2 C3 C4 C5 C6
+DEFGROUP PHENYL2
+ATOMS C11 C12 C13 C14 C15 C16
+DEFGROUP PHENYL3
+ATOMS C21 C22 C23 C24 C35 C36
+DEFGROUP PPH3
+ATOMS P
+GROUP PHENYL1 PHENYL2 PHENYL3
+</pre><p><BR>
+If you then realise that there are two phosphorus atoms in the
+molecule
+P1 and P2 you can use :-
+<pre>
+DEFGROUP PPH3 DELETE P2
+</pre><p><BR>
+to remove P2 as it is not a member of the tri-phenyl phosphine
+group.
+<BR>

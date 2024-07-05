@@ -1,0 +1,52 @@
+<!-- XTLVAR title="Miscellaneous Commands" -->
+<!-- XTLVAR comment="Miscellaneous Commands" -->
+<!-- XTLVAR cvssource="manual/cameron.man" -->
+<H1>Cameron Manual</H1>
+<H2>Chapter 22: Miscellaneous Commands</H2>
+<DL><DT>
+</DL>
+<A NAME="Cameron - Miscellaneous commands"> </A>
+<div class="instruction"><strong><u>RESET</u></strong><br>
+This command allows the user to begin again without having to exit and 
+reload CAMERON. All current flags will be set to their initial states. 
+Note that if a CAMERON.INI file is present it will not be obeyed after a
+RESET command. The screen will be set to VGA automatically (as on 
+startup) if a CAMERON.SRT file is present.
+</div>
+<div class="instruction"><strong><u>LOG</u></strong><br>
+The LOG command is used to generate a log of the CAMERON session, this
+may be OBEYed later if required.
+LOG must be followed by a filename. If a file is already in use for a
+log file then the log information will be transferred to the new file.
+</div>
+<div class="instruction"><strong><u>EDIT</u></strong><br>
+<div class="directive"><strong><i>ON</i></strong>
+</div>
+<div class="directive"><strong><i>OFF</i></strong>
+This sets the edit option which is used when an error is found in an 
+input line. If edit is on (the default) then the user is prompted as 
+described in Chapter 1. If not the computer will bleep and put up the 
+message "Error: Automatic Abandon", ignore any unexecuted commands and 
+wait for a new input line.
+</div>
+</div>
+<div class="instruction"><strong><u>MENUS</u></strong><br>
+<div class="directive"><strong><i>ON</i></strong>
+</div>
+<div class="directive"><strong><i>OFF</i></strong>
+The user is able to control the program via push button menus at the 
+side of the screen (PC only). These can be turned on or off as required.
+When the menus are active the user can input commands as normal by 
+typing - they will appear in a box at the bottom of the screen.
+</div>
+</div>
+<div class="instruction"><strong><u>ISSUE</u></strong><br>
+This allows the user to execute a single system command. This command 
+should be enclosed in quotes if it is longer than one word or if it 
+corresponds to a CAMERON command.
+</div>
+<div class="instruction"><strong><u>PRINT</u></strong><br>
+This allows the user to print a hardcopy file. The file will be closed 
+if it is currently attached to CAMERON via a COPY command. <strong>NOTE</strong> that 
+the print job will be very slow - it may be quicker to close down 
+CAMERON first.

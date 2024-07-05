@@ -1,0 +1,27 @@
+<!-- XTLVAR title="Importing Shelx Data" -->
+<!-- XTLVAR comment="Importing Shelx Data" -->
+<!-- XTLVAR cvssource="manual/readme.man" -->
+<H1>Getting Started</H1>
+<H2>Chapter 3: Importing Shelx Data</H2>
+<DL><DT>
+</DL>
+<P> It is best to import the .INS or .RES file first. You can import
+a file with or without atoms depending on where the data is from - CRYSTALS
+will just grab all the information that it can.
+<BR> From the X-ray data menu, choose "Import SHELX file". You will need
+to know the space group symbol since this information is not
+present in the SHELX file format.
+<BR> Type in the file name, or find it using "Browse", click OK and the file
+will be imported. (You will be asked for the spacegroup).
+<BR> Next import the reflection file. Choose "X-ray data"-&gt;"Import reflections".
+The default settings are for a SHELX hkl file, so just type or browse
+for the required file, and click OK.
+
+<BR>
+<BR>
+
+A description of the relationship between CRYSTALS and SHELX commands, 
+including examples of their use, can be found on the menu bar under:
+<BR>
+<strong>Help</strong> / <strong>Migrating</strong> <strong>from</strong> <strong>SHELX</strong> 
+<BR>

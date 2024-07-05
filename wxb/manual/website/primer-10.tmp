@@ -1,0 +1,92 @@
+<!-- XTLVAR title="Molecular Geometry" -->
+<!-- XTLVAR comment="Molecular Geometry" -->
+<!-- XTLVAR cvssource="manual/primer.man" -->
+<H1>Crystals Primer</H1>
+<H2>Chapter 10: Molecular Geometry</H2>
+<DL><DT>
+<DD><A HREF="primer-10.html#10.1">10.1: Distances and angles</A><br>
+<DD><A HREF="primer-10.html#10.2">10.2: Best planes, lines and dihedral angles</A><br>
+<DD><A HREF="primer-10.html#10.3">10.3: Torsion angles</A><br>
+<DD><A HREF="primer-10.html#10.4">10.4: Thermal analysis</A><br>
+</DL>
+<P>Details of the molecular geometry can be computed in CRYSTALS. Most
+ calculations send a summary to the screen, and a detailed listing to the
+ printer file. Some will also produce a .PCH file (fixed format ASCII) suitable
+ for incorporation into publications in either tabular of 'cif' format.
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-10.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="10.1">10.1: Distances and angles</A></H3></CENTER>
+<P>The user has a lot of fine control over the distance-angle routine, which
+ should help minimise unwanted output. For many cases the default settings are
+ suitable. A text file suitable for editing into documents may also be
+ produced
+
+<pre>
+      !\DISTANCE
+      !END
+</pre><p><BR>
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-10.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="10.2">10.2: Best planes, lines and dihedral angles</A></H3></CENTER>
+<P>Planes, lines and the angles between them are computed with MOLAX (molecular
+ axes). This routine also produces simple plots.
+
+<pre>
+      !\MOLAX
+      !ATOM FIRST UNTIL LAST
+      !PLANE
+      !EXEC
+      !ATOM C(1) UNTIL C(6) P(1)
+      !PLANE
+      !EXEC
+      !ATOM P(1) FE(1) P(2)
+      !LINE
+      !ATOM P(3) FE(1) C(17)
+      !LINE
+      !ANGLE 3 AND 4
+      !END
+</pre><p><BR>
+<P>This task computes the best plane through the whole structure, through a
+ P-phenyl group, and lines through two groups of atoms. The corresponding
+ vector (plane normal or line axis)
+ is stored for each PLANE or LINE calculation. The ANGLE directive
+ requests the angle between the 3rd and 4th vectors, i.e. the two lines.
+ EXEC, as in EDIT, forces immediate execution of the preceeding directive.
+
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-10.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="10.3">10.3: Torsion angles</A></H3></CENTER>
+<P>Torsion angles are computed with
+
+<pre>
+      !\TORSION
+      !ATOM C(1) C(2) C(3) C(4)
+      !ATOM C(6) C(7) C(8) C(9) UNTIL C(11)
+      !END
+</pre><p><BR>
+<P>This computes one torsion atom in the first command, and 3 in the second.
+ The output can be sent to a text file.
+
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-10.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="10.4">10.4: Thermal analysis</A></H3></CENTER>
+<P>During the course of refinement, CRYSTALS keep a watch on the thermal
+ parameters and issues warnings if they go too small or too aspherical.
+ However, it is often instructive for the user to examine both the principal
+ axes and the TLS molecular motion tensors, in
+ association with a Cameron thermal ellipsoid plot.
+
+<pre>
+      !\ANISO
+      !ATOM FIRST UNTIL LAST
+      !AXES
+      !EXEC
+      !ATOM C(1) UNTIL C(6) P(1)
+      !TLS
+      !END
+</pre><p><BR>
+<P>These commands compute the principal axes of all the atoms, and then do a
+ TLS analysis on the P-phenyl group. EXEC forces immediate execution of the
+ preceeding commands.
+
+<BR>&nbsp;<BR>

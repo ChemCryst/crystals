@@ -1,0 +1,458 @@
+<!-- XTLVAR title="Example Of A Simple Structure" -->
+<!-- XTLVAR comment="Example Of A Simple Structure" -->
+<!-- XTLVAR cvssource="manual/primer.man" -->
+<H1>Crystals Primer</H1>
+<H2>Chapter 2: Example Of A Simple Structure</H2>
+<DL><DT>
+<DD><A HREF="primer-2.html#2.1">2.1: Script mode</A><br>
+<DD><A HREF="primer-2.html#2.2">2.2: Starting CRYSTALS</A><br>
+<DD><A HREF="primer-2.html#2.3">2.3: Command mode</A><br>
+</DL>
+</pre><p><BR>
+<P>CRYSTALS can be run in two modes:
+<P>
+COMMAND-LINE in which the user enters commands in the order he chooses.
+<BR>SCRIPT, in which CRYSTALS tries to help by asking questions.
+<BR>
+<P>This example will illustrate how to take reflections and a trial
+ structure from another system and get them into CRYSTALS, and then
+ start  refining the structure. The data is on the distribution media in
+ a subdirectory <strong>NKET.</strong>
+ You should  create a subdirectory and then copy the data into it.
+ The directory NKET contains files for a simple structure determination.
+ Some of them are for Command mode, others for Script mode.
+<HR><small><A HREF="primer-2.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="2.1">2.1: Script mode</A></H3></CENTER>
+<P>The file to be used is:
+<pre>
+      NKET.DOC      A brief description of the structure
+      NKET.REF      Pre-processed reflection in SHELX format
+</pre><p><P>The general information about the anaylsis is:
+<pre>
+      Colourless crystal, .2x.2x.2 mm
+      Molecular formula C8 H8 N1 O4
+      Space Group P 41, 4 formula units in cell
+
+          OH\        /OH
+              Ch    Ch
+            /  \  /    \
+          /      CH     CHH
+      OH-CH      |      |
+          \      N      CHH
+            \ /     \ /
+             CHH     C=O
+
+</pre><p><P>In the following example, the left column summarises the question
+CRYSTALS asks, the middle column is the users response, and the right
+column are comments. User responses shown in square brackets [YES]
+indicate a response chosen from a menu list. DO NOT include the '[]'. &lt;cr&gt;
+represents 'ENTER' or 'RETURN'.
+<BR>
+<HR><small><A HREF="primer-2.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="2.2">2.2: Starting CRYSTALS</A></H3></CENTER>
+<P> On a PC, type CRYSTALS or double click the CRYSTALS icon.
+<BR>
+<pre>
+Summary of Screen             User's response         Comments
+
+The CRYSTALS banner, an
+invitation to use SCRIPTS     [YES]
+Type of analysis              [NON-ROUTINE]
+The main menu                 [NEWSTART]     Starting a new structure.
+Structure title               'Nket at 0 C'  Some text as a title.
+The newstructure menu         [QUICKSTART]   Startup for SHELX reflections.
+Input LIST 30                 [YES]          These are general items.
+A series of general questions                If there is a value in [] at
+                              &lt;cr&gt;           the end of a question, this is
+                                .            the default value. Use 'ENTER'
+                                .            to accept default, or enter a
+                                .            real value.
+                              &lt;cr&gt;           If the line ends [-], there is
+                                             no default. You MUST give an
+                                             answer to continue.
+Number of formula units [-]   4              This question must be answered.
+Colour                        Clear
+Shape                         Cube
+Cell Parameters [-]           7.533          No defaults available.
+                              7.533 15.78    You can often insert all the
+                                             answers at once.
+Cell angles [90]              &lt;cr&gt;           Accept default.
+
+Space group                   P 41           Separate each component by &lt;space&gt;.
+
+Experimental conditions file  [NO]
+Radiation                     [CU]
+Friedels Law                  [YES]
+Crystal Orientation           [NO]
+Cell Contents                 C 32           4 formula units in this case.
+                              H 32           Don't forget the spaces.
+                              N 4 O 16       Type ahead.
+                              END            Use 'END' to end input.
+Refinement against Fsquared?  [NO]           You could choose YES.
+Input Cell esds, List 31      [YES]
+Cell esds [.001]              &lt;cr&gt;           Accept the defaults, or insert
+                               .             real values.
+Reflection file name  [-]     nket.ref
+Data type                     [FSQ]          F-squared data.
+Change any LISTS              [NO]
+Free Format data?             [NO]
+Standard format?              [YES]
+Sigma values                  [YES]
+Format [(3F4.0,2F8.0)]        &lt;cr&gt;           If you change it, don't forget
+                                             the ( ).
+Merge?                        [YES]
+Sigma threshold               3.0            All reflections are stored, and
+                                             the level can be reset later
+                                             if required.
+Sort/Merge [YES]              &lt;cr&gt;           Remove systematic absences and
+                                             merge equivalents.
+SHELX atoms [NO]              &lt;cr&gt;
+Solve [YES]                   &lt;cr&gt;
+Method [SIR92]                &lt;cr&gt;
+First try [YES]               &lt;cr&gt;           If the structure doesn't solve,
+                                             choose [STRUCTURE] from main menu,
+                                             and when you get here, try [NO].
+                                             CRYSTALS will prepare a more
+                                             intensive job
+</pre><p><BR>
+Crystals now closes down. To run SIR92, type SIR92. When SIR shows a menu,
+click QUIT until it closes down. Restart CRYSTALS.
+<pre>
+Use SCRIPTS                   [YES]          Return to SCRIPT mode
+Structure type                [NON-ROUTINE]
+Main Menu                     [STRUCTURE]
+Structure Sub-menu            [INEMAP]       Input results of direct methods
+How solved [SIR]              [SIR]
+Version                       [SIR92]        The SIR92 atoms are read in
+See the structure?            [YES]          In graphics, edit the structure
+                                             using 'rena(me)' to change atoms.
+                                             Remember each instruction needs
+                                             two &lt;cr&gt;. Use 'END' to end.
+Save changes [YES]            [YES]
+Structure fragmented?         [NO]
+Resequence [YES]              [YES]          Renumber atoms so that adjacent
+                                             atoms have sequential numbers.
+Compute over all scale        [YES]
+
+                              [BACK]
+</pre><p><BR>
+This is the end of this branch of the process. A message suggests the next step.
+If all atoms were revealed in the e-map the next step is least squares, other
+wise try Fourier Maps. In this case the structure is OK, so you can jump
+directly to the refinement section below.
+<pre>
+                              [MAPS]
+                              [AUTO]         CRYSTALS chooses the 'best' map
+                                             The atoms may be resequenced to
+                                             include newly-found ones, and
+                                             assembled into a molecule.
+Reject by rho                 [YES]
+Resequence atom numbers       [NO]
+Collect into molecule         [NEW]          Only apply symmetry to newly found
+                                             peaks.
+
+Graphical mode                [YES]
+                                             Relabel Q to real atoms, etc. END
+                                             to end.
+Save the changes              [YES]
+Repeat Fourier cycle          [NO]
+                              [BACK]         Back to main control menu.
+</pre><p><BR>
+Refinement. If the structure is routine, least squares will finish the job.
+<pre>
+                              [LEASTSQ]
+                              [AUTO]         CRYSTALS chooses the next task on
+                                             the basis of R factor and
+                                             previous history.
+R factor intermediate
+Refine x's & Uiso online?     [YES]
+How many cycles               [5]            If 5 is too many, CRYSTALS will
+                                             stop anyway.
+Refine x's Uaniso online
+How many cycles               [5]
+
+Locate H atoms                [YES]
+Info or continue              [NO]
+Delete existing H atoms       [YES]          It won't matter if there are none.
+                                             CRYSTALS computes structure factors,
+                                             computes potential H sites and does
+                                             a difference map. The computed H
+                                             should be near found ones.
+Graphics                      [YES]
+                                             Tidy up the map. Delete computed if
+                                             you prefer the found, otherwise
+                                             ignore the found. They will be
+                                             eliminated later. Change any found
+                                             peaks to H if there is no
+                                             equivalent computed (eg H bonds).
+                                             Some OH H should appear.
+                                             'END' to end.
+Save changes                  [YES]
+Keep Geometric                [YES]
+How many cycles                [5]
+Continue                      [YES]
+Locate Hydrogens              [YES]          If there still are some missing.
+Delete existing H atoms       [NO]           We are looking for additional ones.
+Graphics                      [YES]          Try to find H amongst soup of peaks.
+                                             Try:
+                                    DIST (click O and q) and rename
+                                 or PACK CELL COMPLETE INCL CELL VIEW
+                                    ALONG AXIS A VIEW
+                                    CONNECT HBOND O 0.0 3.0 VIEW
+                                    EXCLUDE AREA &lt;cr&gt;&lt;cr&gt;
+                                             (use mouse to exclude some
+                                             of the diagram - left button to
+                                             mark corner of polygon)
+                                    VIEW
+                                    EXCLUDE ....
+                                    UNPACK   (otherwise CRYSTALS will get all)
+                                    END
+Save                          [YES]
+Geometric                     [YES]
+Refine                        [5]
+Locate H atoms                [NO]           We have them all.
+Check for exinction           [YES]          The program explains how.
+Check refinement weighting    [NO]           No, since we just included
+                                             extinction.
+Number of cycles              [5]
+
+Locate hydrogen atoms         [NO]           If they are not all found by now,
+                                             ask an expert.
+Check refinement weighting    [YES]          The program explains how.
+Type                          [OPTIMAL]
+Change the final parameter    [NO]           The 3 parameter scheme is fine.
+How many cycles               [5]
+Locate Hydrogen               [NO]
+Cycles                        [5]
+Continue refinement           [NO]           Now choose CYCLE off LSQ menu.
+See the structure             [YES]
+                                             Use ELLIPS TYPE ALL 4 VIEW to
+                                             check the adps.
+
+Continue refinement           [NO]           Now choose CYCLE off LSQ menu.
+                              [CYCLE]        Cycle until full convergence.
+                              [BACK]         To main menu.
+
+                              [PUBLISH]      Select what you want, eg CIF.
+                              [FINISH]
+</pre><p><BR>
+
+<P>Very few real analyses will run exacly like this.
+<BR>
+<div class="instruction"><strong><u>Potential Problems</u></strong><br>
+<P>Fourier recycling does not complete the structure. Try some least squares
+before more Fourier recycling.<BR>
+<BR>
+Some atoms are 'physically unreasonable'. Check the atomic type assignments.
+Many atoms are physically unreasonable. Incorrect data reduction, serious
+absorption.
+<BR>
+</div>
+<HR><small><A HREF="primer-2.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="2.3">2.3: Command mode</A></H3></CENTER>
+<P> The files to be used in Command mode are:
+<pre>
+NKET.REF    Reflections in SHELX format
+NKET.QCK    Initial data, including a set of trial coordinates
+NKET.LSQ    Isotropic refinement and molecule assembly
+NKET.ANI    Anisotropic refienement
+NKET.FOU    Difference Fourier
+</pre><p><BR>
+<P>In Command mode, the user can enter commands and data directly from
+the keyboard, or read them in from pre-prepared files.
+<BR>
+ Start CRYSTALS as above, but answer NO in reply
+ to the question about SCRIPT mode. You
+ will get the CRYSTALS prompt '!'or '&gt;'.
+ Enter the following commands in the
+ order given  each time you are prompted. Note that interactive commands
+ can be mixed with the use of pre-prepared files, and that individual
+ SCRIPTS can be activated.
+ You can print a listing file (132 characters
+ wide)
+ when you exit from CRYSTALS. The file will have the extension .LIS or .LIn.
+
+<pre>
+      !\USE NKET.QCK
+      !\CAMERON
+      !END            (In CAMERON, type MENU ON &lt;cr&gt;&lt;cr&gt;
+                        Type END &lt;cr&gt; to end the graphics)
+      !\USE NKET.LSQ
+      !\USE NKET.ANI
+      !\USE NKET.FOU
+      !\SCRIPT PLOT  (Rename some of the Q to H atoms)
+      !\PERHYDRO
+      &gt;END
+      !\LIST 12
+      &gt;BLOCK SCALE O(1,X'S,U'S) UNTIL C(9)
+      &gt;END
+      !\SFLS
+      &gt;REFINE
+      &gt;REFINE
+      &gt;END
+      !\FINISH
+                                          Note that CRYSTALS commands are
+                                          the same for all computers
+</pre><p><BR>
+<P>The display on the terminal will look something like:
+
+<pre>
+
+      Issue  10 for PC486 under DOS 6.0   September 1996
+       Copyright Chemical Crystallogaphy Laboratory, Oxford
+
+        To get help, type \HELP HELP
+        To end, type      \FINISH
+
+ ************************************************************
+  A new direct access file has been created on unit 1 -- Data
+ ************************************************************
+
+     CCCC  RRRR   Y   Y   SSSS  TTTTT   AAA   L       SSSS
+    C      R   R  Y   Y  S        T    A   A  L      S
+    C      R   R  Y   Y  S        T    A   A  L      S
+    C      RRRR    YYY    SSS     T    AAAAA  L       SSS
+    C      R R      Y        S    T    A   A  L          S
+    C      R  R     Y        S    T    A   A  L          S
+     CCCC  R    R   Y    SSSS     T    A   A  LLLLLL SSSS
+
+( YES NO )
+ Do you want to use SCRIPTS? (YES or NO) [ NO ] : no           &lt;==
+ !\USE NKET.QCK                                                &lt;==
+
+    0001*  \USE NKET.QCK
+    0002*  \QUICKSTART
+    0003*  CELL 7.5330  7.5336 15.7802
+    0004*  SPACEGROUP P 41
+    0005*  CONTENT C 32 H 32 N 4 O 16
+    0006*  DATA 1.5418 FSQ
+    0007*  FILE CRDIR:NKET.REF
+    0008*  FORMAT (3F4.0, 2F8.2 )
+    0009*  END
+
+Quick startup ends            Version  1.03
+Disc file extended by   0 record(s) (      0 integer words )
+**** Disc file on unit   1 extended by     1 records
+
+</pre><p><BR>
+<P>The two line with the arrow, &lt;== , contain the user input. Other input
+ is drawn from the specified files. The data in those files could have
+ been typed into CRYSTALS directly at the '!' prompt, so that depending
+ on the amount of input and the users confidence, either or
+ both input methods may be used. The following pages explain the contents of the files.
+<BR>
+<div class="instruction"><strong><u>NKET.QCK</u></strong><br>
+ This contains the basic data, the name of the file containing the reflections
+ and a trial model obtained from somewhere else.
+
+<pre>
+ \ This is the startup file for NKET
+ \QUICKSTART
+ CELL 7.5330  7.5336 15.7802
+ SPACEGROUP P 41
+ CONTENT C 32 H 32 N 4 O 16
+ DATA 1.5418 FSQ
+ FILE CRDIR:NKET.REF
+ FORMAT (3F4.0, 2F8.2 )
+ END
+ \LIST      5
+ READ NATOM =     13
+ ATOM C       1 X=0.819200   0.697300   0.118000
+ ATOM C       2 X=0.502300   0.661800   0.030100
+ ATOM C       3 X=0.809300   0.322200   0.053100
+ ATOM C       4 X=0.739400   0.046200   0.091800
+ ATOM C       5 X=0.936400   0.463600   0.025800
+ ATOM C       6 X=1.059800   0.461400   0.171800
+ ATOM C       7 X=0.836400   0.629600   0.033900
+ ATOM C       8 X=0.634800   0.560100   0.004300
+ ATOM C       9 X=1.106300   0.435500   0.091400
+ ATOM C      10 X=1.180100   0.263500   0.070100
+ ATOM C      11 X=1.048600   0.109000   0.096000
+ ATOM C      12 X=0.857800   0.160100   0.077100
+ ATOM C      13 X=0.630000   0.381500   0.040500
+ END
+ \SFLS
+ SCALE
+ END
+ \ANALYSE
+ END
+</pre><p><BR>
+<P>The ANALYSE instruction gives an analysis of residuals, and shows the
+ R factor (20%) for the model after Fo has been scaled to Fc.
+<BR>&nbsp;<BR>
+</div>
+<div class="instruction"><strong><u>NKET.LSQ</u></strong><br>
+ This file sets up isotropic refinement, and requests several cycles of
+ least squares. The COLLECT assembles the atoms into a molecule.
+
+<pre>
+
+ \LIST 12
+ FULL X'S U[ISO]
+ END
+ \SFLS
+ REFINE
+ REFINE
+ CALC
+ END
+ \COLLECT
+ END
+ \EDIT
+ SORT U[ISO]
+ END
+ \DISPLAY HIGH
+ END
+ \MOLAX
+ ATOM FIRST UNTIL LAST
+ PLOT
+ END
+</pre><p><BR>
+ The sort on U[iso] will help you decide which atoms to change from carbon,
+ and the MOLAX (molecular axes) produces a simple plot on the terminal.
+<BR>&nbsp;<BR>
+</div>
+<div class="instruction"><strong><u>NKET.ANISO</u></strong><br>
+ This file starts by changing the selected atoms, and then doing anisotropic
+ refinement.
+
+<pre>
+
+ \EDIT
+ RENAME C(1) O(1), C(2) O(2), C(4) O(4), C(6) O(6)
+ REN C(3) N(3)
+ EXECUTE
+ END
+ \LIST 12
+ FULL X'S U'S
+ END
+ \SFLS
+ SCALE
+ REFINE
+ REFINE
+ END
+</pre><p><BR>
+<BR>&nbsp;<BR>
+</div>
+<div class="instruction"><strong><u>NKET.FOUR</u></strong><br>
+ This file computes a difference Fourier, and then collects the new
+ peaks to chemically suitable positions.
+
+<pre>
+
+ \FOURIER
+ REFLECT  CALC=YES
+ MAP TYP=DIFF
+ PEAK HEIGHT=2
+ END
+ \PEAK
+ END
+ \COLLECT
+ SEL TYPE=PEAK
+ END
+ \MOLAX
+ ATOM FIRST UNTIL LAST
+ PLOT
+ END
+</pre><p><BR>
+<BR>&nbsp;<BR>
+</div>

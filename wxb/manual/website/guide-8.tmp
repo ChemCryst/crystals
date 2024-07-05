@@ -1,0 +1,621 @@
+<!-- XTLVAR title="Refinement" -->
+<!-- XTLVAR comment="Refinement" -->
+<!-- XTLVAR cvssource="manual/guide.man" -->
+<H1>Crystals User Guide</H1>
+<H2>Chapter 8: Refinement</H2>
+<DL><DT>
+<DD><A HREF="guide-8.html#8.1">8.1: Aims of Refinement</A><br>
+<DD><A HREF="guide-8.html#8.2">8.2: Factors Influencing Refinement</A><br>
+<DD><A HREF="guide-8.html#8.3">8.3: Restraints and Constraints</A><br>
+<DD><A HREF="guide-8.html#8.4">8.4: Notes on Weights</A><br>
+<DD><A HREF="guide-8.html#8.5">8.5: A Strategy</A><br>
+<DD><A HREF="guide-8.html#8.6">8.6: A Practical Scheme</A><br>
+<DD><A HREF="guide-8.html#8.7">8.7: Structure Factor Control List - LIST 23 </A><br>
+<DD><A HREF="guide-8.html#8.8">8.8: Defining the Matrix - LIST 12</A><br>
+<DD><A HREF="guide-8.html#8.9">8.9: Simple examples</A><br>
+<DD><A HREF="guide-8.html#8.10">8.10: EXAMPLES</A><br>
+<DD><A HREF="guide-8.html#8.11">8.11: Advanced examples</A><br>
+<DD><A HREF="guide-8.html#8.12">8.12: EXAMPLES</A><br>
+<DD><A HREF="guide-8.html#8.13">8.13: Matrix blocking schemes</A><br>
+<DD><A HREF="guide-8.html#8.14">8.14: Special positions and floating origins</A><br>
+<DD><A HREF="guide-8.html#8.15">8.15: Tips for least squares</A><br>
+</DL>
+<P>The refinement of  crystal structures is  complex and rarely a well
+ behaved process, and only occasionally
+ can it  be performed reliably without some human supervision.
+ In CRYSTALS we have tried to provide a structure that will reduce the
+ amount of supervision necessary under normal circumstances, and still be
+ very flexible for use in difficult or unusual cases.
+<P>Before discussing the facilities available in CRYSTALS, some of the
+ aims and factors relevent to refinement need considering.
+<HR><small><A HREF="guide-8.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="8.1">8.1: Aims of Refinement</A></H3></CENTER>
+<P>The overall aim is to find an explanation of some observable phenomena
+ in terms of a model which is intellectually acceptable. Inevitably, the
+ thresholds for acceptability will change from observer to observer,
+ and from time to time. However, certain norms exist for the models,
+ and it is deviations from these norms that increase our understanding
+ of the physical process. The steps in arriving at a suitable model are:
+<BR>
+<P>1. Deciding what the observations are, and what errors are associated
+  with them.<BR>
+<P>Postulating a model that will enable the observations to be simulated.<BR>
+<P>Deciding if the differences between the actual and the simulated 
+ observations are acceptably small. If they are, then we understand
+ the phenomena, otherwise we must try to modify the model.
+<BR>
+<P>Step 1 poses the problem of resolving the 'observation' from the 'model'.
+ In X-ray crystallography, are the observations 'I' or 'F'? If an absorption
+ correction is applied, is the correction part of the observation, or of the
+ model? The answer to these questions really depends on what additional
+ questions the model must answer.
+<BR>
+<HR><small><A HREF="guide-8.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="8.2">8.2: Factors Influencing Refinement</A></H3></CENTER>
+<P>The refinement process cannot be made to yield more information than
+ that present in the data (though the data may include items other than
+ the diffraction observations). Deficiencies in the data may include:
+<div class="instruction"><strong><u>Systematic Errors</u></strong><br>
+<P>These really are short-commings in the model. If the model being refined
+ contains parameters highly correlated with the systematic errors, then the
+ model will be prejudiced in a way depending upon the form of the systematic
+ error. For example, failure to correct the diffraction data for the theta
+ dependent component of the absorption effect will systematically reduce
+ the atomic temperature factors.
+</div>
+<div class="instruction"><strong><u>Random Errors</u></strong><br>
+<P>These are inevitable in any experimental observation. They should be
+ minimised by careful design of the experiment (e.g. choosing appropriate
+ crystal size,  counting times and radiation). Often reducing random errors
+ is something that must be purchased (by increasing the time spent in
+ performing the experiment), or is in conflict with reducing systematic errors
+ (large crystals giving good counting statistics may introduce non-random
+ errors).
+</div>
+<div class="instruction"><strong><u>Shortage of Data</u></strong><br>
+<P>If some of the data is unobservable in a way that is not
+ highly correlated with 
+ the model, then the result is that the random errors in the data lead to
+ random errors in the model. Increasing the amount of data, or its quality,
+ will improve the model. Note that reducing the number of parameters in 
+ the model implies increasing the amount of data, since those parameters
+ not refined will be given (either explicitly or implicitly) values that
+ are themselves observations of high precision. Their accuracy will depend
+ upon the approximation made in simplifying the model. The user should
+ always apply Occams Razor (The Principal of Minimum Assumption) to any
+ new model.
+</div>
+<div class="instruction"><strong><u>Lack of Resolution</u></strong><br>
+<P>If some of the data is not observable in a systematic way, this may
+ mean that it will not adequately define some parameters in the model. The
+ most common example is the   link between the angular range of the diffraction
+ data and the detail that can be resolved in the structure. Lack of resoluton
+ in the data usually shows itself as large e.s.d.s in the refined parameters,
+ though these can also arise from a very inadequate model. For example,
+ an anisotropic temperature factor may fail to give a satisfactory
+ representation for an atom that is disordered over two widely separated sites.
+<BR>
+</div>
+<HR><small><A HREF="guide-8.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="8.3">8.3: Restraints and Constraints</A></H3></CENTER>
+ The term 'Restraint' has come to mean the introduction of non-diffraction
+ data into the refinement process in such a way that it guides the refinement
+ towards some goal, rather than forcing it to that goal. Then, if there is
+ an intrinsic conflict between the diffraction data and the restraining data,
+ the user can be given useful warnings. A 'Constraint' imposes a restriction
+ that cannot be violated on the process. If, for example, we have a structure
+ in which both Na and K atoms can lie on the same site, then we can apply
+ the constraint (via LIST 12) that the sum of their occupancies will be 1.0
+ exactly, or we can apply the restraint, (via LIST 16) that the sum will be
+ approximately 1.0, and thus admit the possibility that not all equivalent sites
+ are 
+ occupied by metal atoms. Note that if the total occupancy was less than unity
+ and yet LIST 12 had been used to impose a constraint, this erroneous
+ assumption could not have revealed itself explicitly via the refined
+ occupancies, but would probably have lead to incorrect values for temperature
+ factors, scale factors, or extinction parameters. The LIST 16 approach would
+ have revealed, through the sum of occupancies being far from unity, the real
+ nature of the problem if the diffraction data contained the information
+ needed to resolve these parameters. 
+<P>Generally restraints, also called 'soft constraints', are used to test the
+ hypothesis that the diffraction data will yield parameters not
+ incompatible with those taken from some other source. For example, the
+ restraint may request the refinement to verify that the diffraction data
+ is not incompatible with a certain bond having a length of 1.39(1)A.
+ The user should realise that just because a restraint is satisfied, he has
+ no guarantee that no  other hypothesis would fit the data just as  well. 
+<P>Restraints may be used to help speed up the convergence of a refinement.
+ If the restraints are imposed with large weights (i.e. small e.s.d.s)
+ in the initial stages, they will force the refinement rapidly towards the 
+ preconceived structure, possibly helping to keep it from false minima.
+ As convergence approaches, the weights can be reduced, or the restraints 
+ removed altogether. 
+<BR>
+<HR><small><A HREF="guide-8.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="8.4">8.4: Notes on Weights</A></H3></CENTER>
+<P>The reflection weights for least squares must reflect errors
+ in BOTH Fo and the model since we are using (Fo-Fc) as the argument
+ in the LS procedure. The most serious approximations in the model 
+ are usually made in:
+<pre>
+ 1. Absorption corrections.
+ 2. The form of the temperature factors.
+ 3. Atomic scattering factors.
+ 4. Extinction corrections.
+</pre><p><BR>
+<P>Errors in the diffraction data should ideally follow Poisson statistics.
+ However, it has been our experience that except in the case of painstaking
+ work on very high quality crystals, other errors are present. These generally
+ seem to be approximately correlated with the reflection intensity, and can
+ be represented by an expression like:
+<pre>
+ sigma(F) = a*sigma(I) + b*I + c*I**2
+</pre><p><BR>
+<P>Since values for the constants a, b and c are arrived at by inspired guesses,
+ we now prefer to represent sigma(F) by a smooth function in Fo. The function
+ chosen is a Chebychev polynomial with the minimum number of coefficients
+ needed to make w(Fo-Fc)**2 constant as a function of Fo. This procedure
+ only yields weights appropriate for the current model, and so is inappropriate
+ for intermediate stages of the analysis. 
+ Futher, introduction of a model dependent weighting scheme too early in a
+ structure analysis may lead to important features being concealed.
+ Until all the parameters that need to
+ be refined have been identified, unit weights or the scheme due to Hughes are
+ used. A valid weighting of the reflections makes w(Fo-Fc)**2 constant for all
+ rational samplings of the data. Changes of weighting scheme usually have
+ the most dramatic effects on thermal and extinction parameters, which should
+ be re-refined whenever the scheme is modified.
+<P>The user should not be unduly surprised to find his normal R factor
+ increasing after the application of weights (he is not trying to minimise
+ 'R'), and will generally find Rw higher than R (Rw uses delta squared).
+ If Rw is much higher than R, then the model may be very inadequate in 
+ some aspects, or there may be a few 'rogue' reflectins in the data. These
+ should be found, considered, and possibly rejected.
+<BR>
+<HR><small><A HREF="guide-8.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="8.5">8.5: A Strategy</A></H3></CENTER>
+<P>Currently, the only effective way for completing the refinement of a
+ crystal structure at atomic resolution is by the method of least-squares
+ in which we minimise w(Fo-Fc)**2 summed over the diffraction data. In
+ restrained refinement we also simultaneously minimise w(Pt-Pc) ( where
+ Pt and Pc are the theoretical and calculated values for some structural
+ parameter) summed over the required parameters. 
+ In both cases 'w' is the weight appropriate for the term in the summation.
+ Fc and Pc are usually
+ non-linear functions of the atomic parameters. The functions are thus expanded
+ as a Taylor series, and the second and higher order terms neglected. The
+ zero'th order terms (Fc and Pc) depend upon the current model, and the
+ neglected terms only really become insignificant as the process approaches
+ convergence. e.g.
+
+<pre>
+ Fc(i) + [x(k).d(Fc(i))/d(p(k))] = Fo(i) 
+ Pc(i) + [x(k).d(Pc(i))/d(p(k))] = Po(i) 
+</pre><p><BR>
+<P>where the terms k in [] are summed over the parameters being varied and we
+ solve for the shifts x(k) in parameter p(k). The terms Fc(i) and Pc(i) are 
+ effectively observations for the current model, and can be moved to the 
+ right hand side.
+<P>Because of the approximations made, the process need not be
+ convergent, but this becomes more likely the better the starting model.
+ Fc is more sensitive to reasonable errors in some types of parameter
+ (e.g. x,y,z) than in others (e.g. U's). At the outset of refinement therefore
+ the least sensitive parameters can be given reasonable values (e.g. 0.05
+ for U[iso] of a carbon atom) which is not refined until the more volatile
+ parameters have stabilised. In this example, the
+ refinement is heavily constrained with
+ the constraint that U[iso] = 0.05. Once the model for the geometry has begun
+ to stabilise, the thermal model can be refined, though here again it is
+ generally wise to constrain the temperature factors to be isotropic initially.
+ Because all the parameters are correlated, it makes no sense to refine these
+ intermediate models to convergence. An r.m.s.(shift/e.s.d.) of about 1 to 3
+ is adequate before the model can be relaxed (though any individual
+ anomalies should be investigated).
+<P>As convergence approaches, the gradient terms (d(F)/d(p)) change only slowly
+ compared with Fc, and it is thus appropriate in large structures only to 
+ recompute Fo-Fc (the Right Hand Side) every cycle, and re-use
+ the matrix of derivatives for alternate cycles, thus saving considerable
+ machine time.
+<P>Throughout this section, the importance of the starting model has been 
+ emphasised. The user should now see why Fourier refinement and Regularisation
+ were discussed in detail earlier. Non-linear least-squares is a powerful
+ method for acheiving a satisfactory result only when it is given a good
+ starting model. While it can give some indications as to redundant parameters
+ (by refining them to absurd values or attributing them large e.s.d.s),
+ it cannot introduce new parameters. The final test of a 'good' structure
+ is not a low 'R' factor or minimisation function - it is more likely to be
+ an intuitive assesment based on the relationship between the current model and
+ similar structures, and a critical examination of difference Fourier
+ syntheses.
+<HR><small><A HREF="guide-8.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="8.6">8.6: A Practical Scheme</A></H3></CENTER>
+<P>The following list is a flow diagram for a typical
+ crystal structure refinement assuming that there are no problems with
+ disorder, pseudo-symmetry, twinning etc.
+
+<pre>
+ 1.  Get a trial structure (Patterson or direct methods)
+ 2.  Calculate structure factors and a Scale Factor.
+ 3.  Do an Fo map and Fourier refinement.
+ 4.  Regularise if you can. Use REGULARIZE or MOLAX
+ 5.  If you have found new atoms, go to 2.
+ 6.  Refine the positional parameters.
+ 7.  Refine isotropic temperature factors.
+ 8.  Locate or compute hydrogen atoms.
+ 9.  Refine positions again.
+ 10. Refine aniso temperature factors.
+ 11. Locate or compute any missing hydrogen atoms.
+ 12. Enter the final stages of refinement
+  a. If a small structure, FULL matrix.
+  b. If a medium structure, LARGE BLOCK approximation.
+     If refinement is stable and correlation coefficients  
+     are small, then use DIAGONAL approximation
+  c. If a large structure, DIAGONAL approximation or 
+     CASCADE refinement.
+ 13. Look at the agreement (variance) analysis (\ANALYSE).
+     If &lt;w(Fo-Fc)**2&gt; not constant, change weights to SCHEME 1 
+     with a parameter P(1) = F(min&lt;w delsq&gt;).
+ 14. Do 1 cycle of refinement of temperature factors plus 
+     a CALCULATION.
+ 15. Look at the agreement analysis again, and decide if you 
+    need a Chebychev weighting scheme.
+ 16. Refine to convergence, re-using matrix on alternate cycles.
+ 17. If there are unusual features (distances, angles, planarity, 
+     Uaniso) use REGULARIZE, MOLAX, ANISO to correct the feature, 
+     and use restrained refinement to test the hypothesis that 
+     the 'corrected' model is compatible with the X-ray data.
+</pre><p><BR> 
+<HR><small><A HREF="guide-8.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="8.7">8.7: Structure Factor Control List - LIST 23 </A></H3></CENTER>
+<P>The overall conditions governing the calculation of structure factors
+ and monitoring the refinement process are generally kept constant throughout
+ a refinement, and so have been collected together into the Structure
+ Factor Control List, LIST 23, which should be input with the other initial
+ data. The directive MODIFY consists of a series of switches for causing the
+ application (or not) of data contained in other lists, thus removing the
+ need to re-input those lists as circumstances change. Note that, for example,
+ though LAYER scale factors or an EXTINCTION parameter may be present
+ in LIST 5, they will only be included in the calculation of Fc if the switches
+ are set in LIST 23.
+<P>The MINIMISE directive controls whether or not the restraints are to be
+ added into the minimisation function (i.e. a LIST 16 may be present on
+ the DISK but will not be actioned unless LIST 23 requests it), and whether
+ F or F**2 is to be used for the diffraction data. Note that if you request
+ F**2, you will probably need to concider changing the weighting scheme.
+<P>The directives ALLCYCLES and INTERCYCLE control the convergence-divergence
+ parameters.
+<HR><small><A HREF="guide-8.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="8.8">8.8: Defining the Matrix - LIST 12</A></H3></CENTER>
+<P>In PART 5 we introduced the definitions for parameter names and showed
+ how these were associated with parameter values via LIST 5.  For least -
+ squares we need to set out a table showing the relationship between
+ least-squares parameter names, least-squares parameter shifts, and 
+ the physical parameters. This table is held as LIST 22, which the 
+ interested user may care to print (for a small matrix!). For those
+ cases where there is one least-squares parameter per physical parameter
+ and the refinement is full matrix, this table is relatively trivial. For
+ refinements in which physical parameters are EQUIVALENCed or RIDING,
+ or where the parameters are divided into several matrix blocks, it
+ would be unreasonably complex for the user to have to construct this table for
+ himself. The information which CRYSTALS needs to construct this table is
+ presented in a symbolic form as a LIST 12.
+<P>LIST 12 consists of directives that define matrix blocks (FULL, BLOCK,
+ DIAGONAL) and directives that modify the contents of the current block
+ (RIDE, EQUIVALENCE, FIX, WEIGHT, PLUS). The directive CONTINUE merely extends
+ the directive begun on the previous line.
+<BR>
+<HR><small><A HREF="guide-8.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="8.9">8.9: Simple examples</A></H3></CENTER>
+<P>For many simple structures a simple full, large-block or atom-block
+ diagonal matrix refinement may be sufficient. Parameters implicitly
+ included by a preceding FULL, BLOCK or DIAGONAL card may be removed from the
+ refinement by the FIX directive.
+<div class="instruction"><strong><u>Rules for parameters</u></strong><br>
+<P>In the examples, 'parameters' may be either EXPLICIT (e.g. C(1,X)
+ C(3,X,Y,Z) C(2,X'S) ) or IMPLICIT (e.g. X  Y U'S ). Parameters defined
+ by an 'UNTIL' sequence (e.g. C(1,U[11],U[22]) UNTIL C(6) )
+ are regarded as implicit for LIST 12 processing.
+<P>No parameter may be given implicitly twice, nor given explicitly twice,
+ in the same LIST 12.
+</div>
+<div class="instruction"><strong><u>Rules for FULL, BLOCK, DIAGONAL, FIX and PLUS</u></strong><br>
+<P>LIST 12 must begin with FULL, BLOCK or DIAGONAL.
+<P>LIST 12 must not contain any two of FULL, BLOCK or DIAGONAL.
+<P>LIST 12 must not contain more than 1 FULL directive. 
+<BR>
+<P>Parameters on a BLOCK card must not appear on another BLOCK or DIAGONAL card.
+<P>Parameters on a DIAGONAL card must not appear on another DIAGONAL or
+ BLOCK card.
+<P>Parameters on a PLUS card must not appear on another PLUS, FULL, BLOCK or
+ DIAGONAL card.
+<pre>
+ \LIST 12            This defines a single matrix block          
+ FULL parameters     containing all the specified parameters 
+ END                 PLUS the overall scale factor.
+ 
+ \LIST 12            This defines two independant matrix blcks,
+ BLOCK parameters(1) one containing parameters(1), the other
+ BLOCK parameters(2) containing parameters(2) and (3), i.e. the
+ PLUS  parameters(3) PLUS directive is acting rather like CONTINUE.
+ END                 The overall scale factor is not implied, and
+                    must be specified explicitly in the appropriate
+                    block if required. Note that the same parameter
+                    must not occur more than once.
+</pre><p><BR>
+
+</div>
+<HR><small><A HREF="guide-8.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="8.10">8.10: EXAMPLES</A></H3></CENTER>
+<pre>
+ \LIST 12            Refine the positions and anisotropic 
+ FULL X'S U'S        temperature factors of all atoms in a single
+ END                 matrix block with the overall scale factor.
+ 
+ \LIST 12            As above, only now don't refine the y 
+ FULL X'S U'S        coordinate of the lead atom (polar axis? 
+ FIX PB(1,Y)         see also restraints).
+ END
+ 
+ \LIST 12              Refine the positions for all the carbon 
+ BLOCK C(1,X,Y,Z) UNTIL LAST                         one block
+ BLOCK C(1,U'S) UNTIL C(10) SCALE          and the anisotropic 
+ PLUS  H(11,U[ISO]) UNTIL LAST           t.f.s for the carbons 
+ CONT UNTIL LAST      together with an isotropic t.f.s for the
+ END            hydrogen atom and the scale factor in another. 
+ 
+ Note that PLUS could be replaced by CONTINUE.
+</pre><p><BR>
+<HR><small><A HREF="guide-8.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="8.11">8.11: Advanced examples</A></H3></CENTER>
+<P>In some situations a simple one-to-one relationship between structural and
+ least squares parameters is not suitable. For example, the x and y coordinates
+ of an atom on the special position X,X,1/6 must move synchronously, that is,
+ be represented by a single least squares parameter. Similarly, an atom on
+ X,-X,11/12 has the x and y coordinates linked, but here the shift to y is in
+ the opposite sense of that for x.
+<P>Sometimes the relationship between parameters is not due to space group
+ symmetry, but to some other physical requirement. In the example given above
+ (Restraints),
+ where either Na or K can occupy the same site, we may have site occupancy
+ disorder such that the total occupancy for the ions is fixed, but the ratio
+ is to be determined. In this case, the shifts in the occupation
+ factors for the two ions are equivalenced to a single least squares parameter,
+ but made to move in opposite senses.
+<P>Linking of physical parameters like this provides a powerfull way for
+ dealing with certain types of instability in the refinement, and for reducing
+ the cost by reducing the number of parameters refined. For example, the
+ hydrogen atoms on a carbon can be shifted synchronously with it, thus 
+ preserving the local geometry (but watch second neighbour relationships).
+ This procedure is sometimes known as a 'riding' refinement. Another use
+ for riding parameters is to give a poorly defined residue a single overall
+ anisotropic temperature factor (not as good as proper TLS of course, but
+ perhaps more realistic than individual atomic temperature factors).
+<P>For EQUIVALENCED LINKED or RIDING parameters, the partial derivative for each
+ parameter is computed, multiplied by the WEIGHT if requested, and added into
+ the normal equations. After solution of the equations, the resultant shifts
+ are multiplied by the same weights and then applied to the corresponding 
+ structural parameters.
+<div class="instruction"><strong><u>Rules for FIX, EQUIVALENCE, LINK, COMBINE, GROUP, RIDE, WEIGHT</u></strong><br>
+<P>Parameters on a FIX, EQUIVALENCE,  LINK, COMBINE, GROUP,
+ RIDE or WEIGHT card are added to or modify
+ the action of parameters on the last previous FULL, BLOCK or DIAGONAL card.
+<P>Parameters given explicitly over ride those given implicitly.
+<P>Parameters on an EQUIVALNCE, LINK, COMBINE, GROUP
+  or RIDE card must not occur on another
+ EQUIVALENCE, LINK, COMBINE, GROUP,  RIDE or a PLUS card.
+<P>Parameters on a FIX card may not appear on another FIX or a WEIGHT card.
+<P>Parameters on a WEIGHT card may not appear on another WEIGHT or a FIX card.
+<P>Parameters on an EQUIVALENCE, LINK, COMBINE, GROUP,
+  or RIDE card need not have been  given on a
+ preceeding FULL, BLOCK or DIAGONAL card.
+<P>Parameters on an EQUIVALENCE, LINK, COMBINE, GROUP,
+  or RIDE card will modify the action of
+ parameters given on a preceeding FULL, BLOCK or DIAGONAL card.
+<P>Parameters on a WEIGHT card should also occur on an EQUIVALENCE, LINK,
+ COMBINE, GROUP,  or
+ RIDE card.
+<P>Parameters on a RIDE card must be either explicit definitions or UNTIL
+ sequences. There must be the same number of parameters in each argument
+ list.
+<P>Parameters on a LINK card must be either explicit definitions or UNTIL
+ sequences. There must be the same number of parameters in each argument
+ list.
+<P>Parameters on a COMBINE card must be either explicit definitions or UNTIL
+ sequences. There must be the same number of parameters in each argument
+ list.
+<P>Only atom names can be given on a GROUP card
+<BR>
+</div>
+<HR><small><A HREF="guide-8.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="8.12">8.12: EXAMPLES</A></H3></CENTER>
+<P>This example is also given in the MANUAL. The structure contains C,N and O
+ in the space group P6122, with N at x,-x,11/12, O at x,x,1/6 and C isotropic.
+ The refinement will be by full matrix. The following 3 LIST 12s all lead to
+ the same matrix. The example in the manual has only 9 directives.
+<pre>10
+ \LIST 12                \LIST 12                  \LIST 12
+ FULL C(1,X'S)           FULL X'S                  FULL X'S U'S
+                                                  FIX C(1,U'S)
+ PLUS C(1,U[ISO])        PLUS C(1,U[ISO])          PLUS C(1,U[ISO])
+ PLUS N(1,U[33],U[12])   PLUS N(1,U[33],U[12])
+ EQUIV N(1,X) N(1,Y)     EQUIV N(1,X) N(1,Y)       EQUIV N(1,X) N(1,Y)
+ WEIGHT -1. N(1,Y)       WEIGHT -1. N(1,Y)         WEIGHT -1. N(1,Y)
+                        FIX N(1,Z)                FIX N(1,Z)
+ EQUIV N(1,U[11],U[22])  EQUIV N(1,U[11],U[22])    EQUIV N(1,U[11],U[22])
+ EQUIV N(1,U[23],U[13])  EQUIV N(1,U[23],U[13])    EQUIV N(1,U[23],U[13])
+ PLUS O(1,U[33],U[12])   PLUS O(1,U[33],U[12])
+ EQUIV O(1,X) O(1,Y)     EQUIV O(1,X) O(1,Y)       EQUIV O(1,X) O(1,Y)
+                        FIX O(1,Z)                FIX O(1,Z)
+ EQUIV O(1,U[11],U[22])  EQUIV O(1,U[11],U[22])    EQUIV O(1,U[11],U[22])
+ EQUIV O(1,U[23],U[13])  EQUIV O(1,U[23],U[13])    EQUIV O(1,U[23],U[13])
+ WEIGHT -1. O(1,U[13])   WEIGHT -1. O(1,U[13])     WEIGHT -1. O(1,U[13])
+ END                     END                       END 
+</pre><p><BR>
+<P>The next example is for H(11) H(12) and H(13) riding upon C(1). Note
+ that the hydrogen atoms are all given the same temperature factor shifts.
+ They would also probably start with the same temperature factor values,
+ though for the isotropic refinement of a phenyl group (for example)
+ the investigator may have some a priori reason for starting the atoms off
+ with slightly differing values. We are not concerned here with the rest of
+ the structure.
+
+<pre>
+ \LIST 12
+ FULL (parameters)                    The x, y and z coordinates for 
+ RIDE C(1,X'S) H(11,X'S) UNTIL H(13)  the four atoms are handled by
+ EQUIV H(11,U[ISO]) UNTIL H(13)       3 ls parameters. The 3 U(iso)s
+ END                                  are handled by 1 parameter.
+</pre><p><BR>
+<HR><small><A HREF="guide-8.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="8.13">8.13: Matrix blocking schemes</A></H3></CENTER>
+<P>There are no fixed rules for deciding how or even whether a given structure
+ should be refined by full or block approximations to the matrix. The choice
+ will change from institution to institution and from time to time.
+<P>Broadly, full matrix methods are the most certain to converge. They are
+ also likely to require less cycles of refinement than a block matrix method.
+ However, the time per cycle will always be more than for a block matrix
+ method, and there will be increased storage requirements. Thus, small
+ structures should be refined using the full matrix, and large ones using a
+ block approximation. On computing machinery where time is paid for whether 
+ the machine is idle or not (perhaps the users own machine) it makes sense
+ to use the largest approximations to the full matrix compatible with other
+ users of the machine and its efficiency of operation. At some stage, for
+ large structures, a substantial number of the off-diagonal elements of the
+ matrix will be negligable, and the cost of accumulating and paging these
+ may not be justified. Such large structures need a special strategy.
+<P>For medium large structures, it is probably convenient to break the matrix
+ into a small number of largish blocks. Experience has shown what parameters
+ can be expected to be correlated: these MUST be included in the same matrix
+ block.
+<div class="instruction"><strong><u>Correlated Parameters</u></strong><br>
+<P>There is no definative way for predicting which parameters will be highly
+ correlated, but experience has shown that the groups of parameters in the
+ following table should normally be refined together.
+
+<pre>
+ - bonded atoms
+ - non-orthogonal coordinates
+ - scale factors, extinction parameters and 
+   temperature factors.
+ - molecules or fragments related by a pseudo
+   symmetry operator.
+</pre><p><BR>
+ The program always lists those parameters from the current blocking
+ structure which are highly correlated. These parameters must be refined
+ together from time to time to preserve their proper interdependance.
+ If this results in matrix blocks that
+ are too large,then the blocking scheme should be changed between cycles
+ to ensure that all significant cross terms appear at some stage 
+ ('cascade refinement').
+ For example
+ if there are N atoms to be refined in 2 blocks, the following LIST 12s might
+ be suitable. 
+<BR>
+
+<pre>
+ \LIST 12
+ BLOCK ATOM(1,X'S) UNTIL ATOM(1n/2)
+ BLOCK ATOM(1n/2+1,X'S) UNTIL ATOM(n)
+ END
+ 
+ \LIST 12
+ BLOCK ATOM(1,X'S) UNTIL ATOM(1n/4)
+ PLUS  ATOM(3n/4+1,X'S) UNTIL LAST
+ BLOCK ATOM(1n/4+1,X'S) UNTIL ATOM(3n/4)
+ END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>Singularities</u></strong><br>
+<P> High correlation in itself does not necessarily lead to invalid
+ parameter estimates. For example, the effect of bond length restraints is
+ to deliberately increase the off-diagonal terms between the coordinates
+ of the atoms involved. If some parameters are so highly correlated that
+ the ill-conditioning of the matrix makes it (almost) singular, the user is
+ left with few solutions. Essentially his problem is that he has an 
+ inapropriate model, or that his data are not resolving or defining his model.
+ The first approach is to ascertain whether more or different
+ data would cure the problem, for example collecting data to a higher theta
+ value, at a lower temperature, or by adding restraints. If no solution
+ of this type is possible, then the approximate relationship implied
+ between the highly correlated parameters should be formalised, that is
+ a new model is required. For example, if the temperature factor and 
+ occupation factor for an atom fail to refine properly, the user may choose
+ to define one and refine the other, and perhaps later reverse the roles.
+ He should be aware however that he is not performing a free refinement of
+ both parameters, and that in the final cycle he is making the statement
+ that he 'knows' the correct value for the unrefined parameter. Separating
+ correlated parameters into different refinement cycles (or into different
+ matrix blocks in the same cycle - the effect is almost mathemtically
+ equivalent) is an extremely hazardous way of avoiding singularities, and
+ implies effectively uncontrolled assumptions on the part of the user. 
+ Reparameterisation may help with pseudosymmetry problems, using the COMBINE
+ instruction to combine the approximately equivalent parameters.
+<BR>
+</div>
+<HR><small><A HREF="guide-8.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="8.14">8.14: Special positions and floating origins</A></H3></CENTER>
+<BR>
+<P>Atoms on special positions can be handled either through constraint 
+ or through restraints. The latter method can be applied automatically, and
+ is to be prefered if LIST 12 is already complex because of GROUPed, LINKed
+ RIDING or COMBINed parameters.
+<div class="instruction"><strong><u>Constraints</u></strong><br>
+<P>Constraining atomic parameters to remain in fixed positions or have 
+ certain relationships between them is done in LIST 12 with the directives
+ FIX, EQUIVALENCE and WEIGHT. See VOL5 for examples. The special
+ atomic coordinates
+ must have correct values or relationships before starting the refinement
+</div>
+<div class="instruction"><strong><u>Restraints</u></strong><br>
+<P>Restraining atomic parameters to remain in fixed positions or have 
+ certain relationships between them is done in LIST 17 using the RESTRAIN
+ directive. LIST 12 must be set up to let the special parameters refine, 
+ but their refinement is controlled by the restraints. The instruction
+ \SPECIAL APPLY automatically generates the correct restraints and warns of
+ non-unity site occupancies. The special atomic parameters need not be
+ exactly correct before refinement starts - the restraint will correct them.
+<BR> 
+</div>
+<div class="instruction"><strong><u>Floating Origins</u></strong><br>
+<P>These can be fixed by not refining the appropriate coordinates of a heavy
+ atom, using FIX in LIST 12. However, a much better solution is to restrain
+ the centroid of the structure, using SUM in either LIST 16 or LIST 17
+<BR>
+</div>
+<HR><small><A HREF="guide-8.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="8.15">8.15: Tips for least squares</A></H3></CENTER>
+<BR>
+ 1) Look at the output.
+<BR>
+ 2) If refinement is going well, consider using the DIAGONAL approximation.
+<BR>
+ 3) If refinement is slow to converge, or gives poor molecular parameters,
+   or temperature factors are anomalous, use a large block approximation to 
+   identify correlated parameters.
+<BR>
+ 4) Watch out for high correlations or physically implausible parameters.
+<BR>
+ 5) Do NOT 'FIX' an unexpected singularity by putting the related parameters 
+   into different matrix blocks. Make a better guess at the parameter values, 
+   or use restraints.
+<BR>
+ 6) If your data dont define a parameter, dont try to refine it.
+<BR>
+ 7) Consider using EQUIVALENCE to reduce the number of refined parameters.
+<BR>
+ 8) Look at mean shifts and 'reversals'. At convergence, shifts should be 
+   small, and reversals ca. 50%. If reversals are &lt;50% and shifts are large, 
+   structure is still converging. If reversals are large and shifts are 
+   large, structure is not converging. If the model is the best you can think 
+   of, use geometric restraints and the LIMIT restraint to stabilise 
+   divergence or oscillations.
+<BR>
+ 9)  Think. Use LIST 22 and CHECK online before issuing batch jobs. Use AXES
+    and DISTANCES to verify molecular reasonableness.
+<BR>
+ 10) Remember that the mathematical 'best solution' depends on the maths you 
+    use, and may not be the intellectually best solution.
+<BR>
+ 11) Get good data. If you know the data are bad, consider a partial refinement
+    only.
+<BR>

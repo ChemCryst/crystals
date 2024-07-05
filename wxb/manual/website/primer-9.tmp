@@ -1,0 +1,58 @@
+<!-- XTLVAR title="Seeing The Structure" -->
+<!-- XTLVAR comment="Seeing The Structure" -->
+<!-- XTLVAR cvssource="manual/primer.man" -->
+<H1>Crystals Primer</H1>
+<H2>Chapter 9: Seeing The Structure</H2>
+<DL><DT>
+<DD><A HREF="primer-9.html#9.1">9.1: Listing the coordinates</A><br>
+<DD><A HREF="primer-9.html#9.2">9.2: Simple plots</A><br>
+<DD><A HREF="primer-9.html#9.3">9.3: Graphics</A><br>
+</DL>
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-9.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="9.1">9.1: Listing the coordinates</A></H3></CENTER>
+<P>The atomic parameters are kept in LIST 5. They can be displayed on the
+ screen or printer file with:
+
+<pre>
+      !\DISPLAY      low/medium/high
+      !END
+</pre><p><BR>
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-9.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="9.2">9.2: Simple plots</A></H3></CENTER>
+<P>A join-the-dots diagram of all or part of the current structure can be
+ displayed on  the line printer and text terminal with MOLAX.
+
+<pre>
+     !\MOLAX
+     !ATOM             FIRST UNTIL LAST
+     !PLOT
+     !EXECUTE
+     !
+     !ATOM             C(10) UNTIL C(15)  P(1)
+     !PLOT
+     !EXEC
+     !END
+</pre><p><BR>
+<P>These instructions produce a plot of the whole structure, and then of a
+ phenyl group and its associated phosphorus. The directive EXECUTE forces
+ the execution of the preceeding commands  without waiting for the END.
+
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-9.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="9.3">9.3: Graphics</A></H3></CENTER>
+<P>The graphics program 'CAMERON' is integrated into CRYSTALS, and can be
+ accessed on suitable terminals (VGA on PCs, TEKTRONIX 4010 on VAXs) directly.
+ If the structure is modified in Cameron, it may be re-input to the CRYSTALS
+ data-base. Cameron has its own user manual.
+
+<pre>
+      !\CAMERON
+      !END
+                              (Commands, mouse or cursor actions to
+                               control CAMERON)
+                              END
+      !\USE CAMERON.L5
+</pre><p><BR>
+<BR>&nbsp;<BR>

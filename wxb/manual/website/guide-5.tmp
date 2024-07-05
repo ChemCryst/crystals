@@ -1,0 +1,27 @@
+<!-- XTLVAR title="Generalised Fourier Sections" -->
+<!-- XTLVAR comment="Generalised Fourier Sections" -->
+<!-- XTLVAR cvssource="manual/guide.man" -->
+<H1>Crystals User Guide</H1>
+<H2>Chapter 5: Generalised Fourier Sections</H2>
+<DL><DT>
+</DL>
+<P>Generalised Fourier sections, that is sections not parallel to a cell face,
+ are computed by a special program (\SLANT), rather than by interpolation into 
+ the normal map. Such maps are useful for detailed examination of special
+ problems, such as disorder, poor resolution  or large thermal motion. 
+ Features identified in the map can be converted back to crystal coordinates
+ for inclusion in the model.
+ In spite of special computing techniques, the generalised Fourier
+ is about 10 times as slow as the normal Fourier, for which the Beevers-Lipson
+ method is used.
+<P>The position, orientation and extent of the map must be specified in a 
+ consistent coodinate system. This is most conveniently found from a MOLAX
+ calculation on atoms or points in the required plane. The required position
+ is then the centroid in orthogonal angstrom, and the matrix is the
+ transformation from crystals fractions w.r.t. this
+ centroid to best plane co-ordinates in Angstrom,
+ and the extent is defined by the number of steps and the step lengths
+ parallel to XP and YP. There are no formatting parameters available 
+ for the instruction \SLANT.
+<P>The editor \EDIT can be used to apply the rotation and translation needed
+ to transform points back from map to cell coordinates.

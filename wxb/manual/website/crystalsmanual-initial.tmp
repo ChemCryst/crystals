@@ -1,0 +1,1514 @@
+<!-- XTLVAR title="Initial Data Input" -->
+<!-- XTLVAR comment="Initial Data Input" -->
+<!-- XTLVAR cvssource="manual/crystals.man" -->
+<H1>Crystals Manual</H1>
+<H2>Chapter 4: Initial Data Input</H2>
+<DL><DT>
+<DD><A HREF="crystalsmanual-initial.html#initial.scope">4.1: Scope of the Initial Data Input section.</A><br>
+<DD><A HREF="crystalsmanual-initial.html#initial.quickstart">4.2: Abbreviated startup command  -  QUICKSTART</A><br>
+<DD><A HREF="crystalsmanual-initial.html#initial.realcell">4.3: Input of the cell parameters  -  LIST 1</A><br>
+<DD><A HREF="crystalsmanual-initial.html#initial.printcell">4.4: Printing the cell parameters</A><br>
+<DD><A HREF="crystalsmanual-initial.html#initial.cellerr">4.5: Input of the unit cell parameter errors  -  LIST 31</A><br>
+<DD><A HREF="crystalsmanual-initial.html#initial.printcell">4.6: Printing the cell variance-covariance matrix</A><br>
+<DD><A HREF="crystalsmanual-initial.html#initial.spacegroup">4.7: Space Group input - \SPACEGROUP</A><br>
+<DD><A HREF="crystalsmanual-initial.html#initial.symdata">4.8: Input of the symmetry data  -  LIST 2</A><br>
+<DD><A HREF="crystalsmanual-initial.html#initial.syminfo">4.9: Printing the symmetry information</A><br>
+<DD><A HREF="crystalsmanual-initial.html#initial.composition">4.10: Input of molecular composition \COMPOSITION</A><br>
+<DD><A HREF="crystalsmanual-initial.html#initial.atomsf">4.11: Input of the atomic scattering factors  -  \LIST 3</A><br>
+<DD><A HREF="crystalsmanual-initial.html#initial.printsf">4.12: Printing the scattering factors</A><br>
+<DD><A HREF="crystalsmanual-initial.html#initial.experimental">4.13: Input of the crystal and data collection details  -  LIST 13</A><br>
+<DD><A HREF="crystalsmanual-initial.html#initial.printexp">4.14: Printing the experimental conditions, LIST 13</A><br>
+<DD><A HREF="crystalsmanual-initial.html#initial.SMILESs">4.15: Input of Structural Formula as a SMILES string - LIST 18</A><br>
+<DD><A HREF="crystalsmanual-initial.html#initial.printsmiles">4.16: Printing the SMILES string, LIST 18</A><br>
+<DD><A HREF="crystalsmanual-initial.html#initial.punchsmiles">4.17: Punching the SMILES string, LIST 18</A><br>
+<DD><A HREF="crystalsmanual-initial.html#initial.asymmunit">4.18: Input of the contents of the asymmetric unit  -  LIST 29</A><br>
+<DD><A HREF="crystalsmanual-initial.html#initial.printasymm">4.19: Printing the contents of the asymmetric unit, LIST 29</A><br>
+<DD><A HREF="crystalsmanual-initial.html#initial.goodies">4.20: Input of General Crystallographic Data - LIST 30</A><br>
+<DD><A HREF="crystalsmanual-initial.html#initial.printgoodies">4.21: Printing the general information, LIST 30</A><br>
+</DL>
+
+<A NAME="initialdinput"> </A>
+<BR>&nbsp;<BR>
+<HR><small><A HREF="crystalsmanual-initial.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="initial.scope">4.1: Scope of the Initial Data Input section.</A></H3></CENTER>
+
+<BR>
+<P>The areas covered are:
+<pre>
+ Abbreviated startup command                      QUICKSTART
+ Input of the cell parameters                     LIST 1
+ Input of the unit cell parameter errors          LIST 31
+ Input of the space group symmetry information    SPACEGROUP
+ Alternative input of the symmetry information    LIST 2
+ Input of molecular contents                      COMPOSITION
+ Input of the atomic scattering factors           LIST 3
+ Input the structural formula as a SMILES string  LIST 18
+ Input of the contents of the unit cell           LIST 29
+ Input of the crystal and data collection details LIST 13
+ Input of general crystallographic data           LIST 30
+</pre><p><BR>
+<BR>&nbsp;<BR>
+<A NAME="QUICKSTART"> </A>
+<A NAME="Getting started"> </A>
+<HR><small><A HREF="crystalsmanual-initial.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="initial.quickstart">4.2: Abbreviated startup command  -  QUICKSTART</A></H3></CENTER>
+
+<P>The command QUICKSTART is provided to assist in migration from other
+ systems to CRYSTALS. It requires that data reduction (section !elabel!DATAREDUC!) 
+ has already been
+ done or that a simple 4-circle Lp correction be suitable,
+  and that the reflection data are available in a fixed format file with
+ one reflection per line. This command expands the given data into
+ standard CRYSTALS lists, as described elsewhere in the manuals. The user
+ is free to overwrite LISTS created by QUICKSTART by entering new LISTS
+ manually.
+
+<pre>
+ \QUICKSTART
+ SPACEGROUP SYMBOL=
+ CONTENTS FORMULA=
+ FILE NAME=
+ FORMAT EXPRESSION=
+ DATA WAVELENGTH= REFLECTIONS= RATIO=
+ CELL  A= B= C= ALPHA= BETA= GAMMA=
+ END
+</pre><p><BR>
+
+For example:
+<pre>
+ \QUICKSTART
+ SPACEGROUP P 21/n
+ CONTENT C 6 H 4 N O 2 CL
+ FILE CRDIR:REFLECT.DAT
+ FORMAT (3F3.0, 2X, 2F8.2)
+ DATA 1.5418
+ CELL 10.2 12.56 4.1 BETA=113.7
+ END
+</pre><p><BR>
+<BR>&nbsp;<BR>
+<div class="instruction"><strong><u>\QUICKSTART</u></strong><br>
+ None of the directives may be omitted, though some parameters do have
+ default values. <strong>CONTINUE</strong> <strong>directives</strong> <strong>may</strong> <strong>not</strong> <strong>be</strong> <strong>used.</strong>
+<BR>&nbsp;<BR>
+<div class="directive"><strong><i>SPACEGROUP SYMBOL=</i></strong>
+<P>This directive generates symmetry information from the spacegroup symbol.
+ The syntax is exactly as describe for the command SPACEGROUP, given
+ in section !elabel!SPACEGROUP!.
+<div class="parameter"><i>SYMBOL=</i>
+<P>There is no default for the symbol, it should be a valid H-M space group
+symbol, e.g. 'P 21 21 21' or 'P 21/c' or 'I -4 3 m'. Use spaces to 
+separate each of the operators.
+<BR>&nbsp;<BR>
+</div>
+</div>
+<div class="directive"><strong><i>CONTENTS FORMULA=</i></strong>
+<P>This directive takes the contents of the UNIT CELL 
+ (cf LIST 29 - section !elabel!LIST29!) and generates scattering factors 
+ (LIST 3 - section !elabel!LIST03!) and elemental properties (LIST 29 - section
+ !elabel!LIST29!).
+<div class="parameter"><i>FORMULA=</i>
+ The formula for the UNIT CELL contents
+ <strong>(NOT</strong> <strong>ASYMMETRIC</strong> <strong>UNIT</strong> - for compatibility with SIR92)
+ is given as a list with entries of the type
+<pre>
+       'element name' 'number of atoms'
+
+ e.g. CONTENT FORMULA = C  24  H  36  O  8  N  4
+</pre><p><BR>
+<P>The items in the list <strong>must</strong> be separated by at least one space. The
+ number of atoms may be fractional or, if omitted, they 
+ default to 1.0.
+<BR>&nbsp;<BR>
+</div>
+</div>
+<div class="directive"><strong><i>FILE NAME=</i></strong>
+<P>This directive associates the file containing the reflections with
+ the program. The special name <i>'COMMANDS'</i> causes reflection data to be read
+ from the command stream. The reflections MUST then be terminated with an
+ 'h' value of -512, otherwise the end-of-file is sufficient.
+<div class="parameter"><i>NAME=</i>
+ The name of the file containing the reflections. The
+ syntax of the name must conform to the computers operating system. See
+ the <strong>IMMEDIATE</strong> command \SET FILE for case sensitive systems.
+<BR>&nbsp;<BR>
+</div>
+</div>
+<div class="directive"><strong><i>FORMAT EXPRESSION=</i></strong>
+<P>This directive controls the reading of the reflection list. The reflection
+ file must contain the following items in the order given. Only one
+ reflection is permitted per line.
+ See \LIST 6 for more flexible input (section !elabel!LIST06!)
+<pre>
+          h k l F and optionally sigma(F)
+</pre><p><BR>
+<P>
+ F and sigma(F) may be replaced by I or F-squared.
+<div class="parameter"><i>EXPRESSION=</i>
+ The expression is a normal FORTRAN format expression, <strong>including</strong> <strong>the</strong>
+ <strong>open</strong> <strong>and</strong> <strong>close</strong> <strong>parentheses.</strong>
+ The descriptor 'nX' may be used to skip unwanted
+ columns. The indices may be I or F format.
+ There is no default expression.
+<BR>&nbsp;<BR>
+<BR>&nbsp;<BR>
+</div>
+</div>
+<div class="directive"><strong><i>DATA WAVELENGTH= REFLECTIONS= RATIO=</i></strong>
+<BR>&nbsp;<BR>
+<div class="parameter"><i>WAVELENGTH=</i>
+ The wavelength, in Angstroms, used in selecting elemental properties. The
+ default is 0.7107 (Molybdenum K-alpha radiation).
+</div>
+<div class="parameter"><i>REFLECTIONS=</i>
+ A keyword to indicate whether the input data is F, F-squared or I.
+<pre>
+      FOBS     -  Default, indicating F values being input.
+      FSQUARED -  Indicating F squared values being input.
+      I        -  Indicating intensity values being input.
+</pre><p><BR>
+<P>If REFLECTIONS equals I, then an Lp correction is done assuming four circle
+ geometry. Note that the reflections from modern diffractometers are 
+ unlikely to be stored as FOBS. Some old X-ray data and neutron data may 
+ still be given as FOBS.
+</div>
+<div class="parameter"><i>RATIO=</i>
+ The minimum ratio of I/sigma(I) to be used in selecting reflections.
+ Default is 3.0
+<BR>&nbsp;<BR>
+</div>
+</div>
+<div class="directive"><strong><i>CELL  A= B= C= ALPHA= BETA= GAMMA=</i></strong>
+ The real cell parameters. The angles default to 90.0 degrees.
+<BR>
+<BR>&nbsp;<BR>
+<A NAME="LIST 1"> </A>
+<A NAME="LIST01"> </A>
+<A NAME="Cell parameters"> </A>
+</div>
+</div>
+<HR><small><A HREF="crystalsmanual-initial.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="initial.realcell">4.3: Input of the cell parameters  -  LIST 1</A></H3></CENTER>
+
+<P>Either the real cell parameters or the reciprocal cell
+ parameters may be input and the three angles be given in degrees or
+ as their cosines.
+ A mixed form, containing both angles and cosines is not allowed.
+
+<pre>
+ \LIST 1
+ REAL A= B= C= ALPHA= BETA= GAMMA=
+ END
+</pre><p><BR>
+
+For example
+<pre>
+ \LIST 1
+ REAL 14.6 14.6 23.7 GAMMA=120
+ END
+</pre><p><BR>
+<BR>&nbsp;<BR>
+<div class="instruction"><strong><u>\LIST 1</u></strong><br>
+<BR>&nbsp;<BR>
+<div class="directive"><strong><i>REAL A= B= C= ALPHA= BETA= GAMMA=</i></strong>
+<P>This directive introduces the real cell parameters.
+ If this directive is present, the directive  RECIPROCAL
+ will lead to an input error, and no new LIST 1 will be generated.
+<div class="parameter"><i>A=, B=, C=</i>
+ These parameter are the real cell lengths along the  A, B and C axes.
+ There are no default values.
+</div>
+<div class="parameter"><i>ALPHA=, BETA=, GAMMA=</i>
+ These parameters give the real cell angles
+ or their cosines. The default value is 90 degrees.
+<BR>&nbsp;<BR>
+</div>
+</div>
+<div class="directive"><strong><i>RECIPROCAL A*= B*= C*= ALPHA*= BETA*= GAMMA*=</i></strong>
+ This directive introduces the reciprocal cell parameters.
+ If this directive is present, the directive  REAL
+ will lead to an input error, and no new LIST 1 will be generated.
+<div class="parameter"><i>A*=, B*=, C*=</i>
+ These parameters are the reciprocal cell lengths.
+</div>
+<div class="parameter"><i>ALPHA*=, BETA*=, GAMMA*=</i>
+ These parameters give the reciprocal cell angles or their cosines.
+ The default value is 90 degrees.
+<BR>&nbsp;<BR>
+</div>
+</div>
+</div>
+<HR><small><A HREF="crystalsmanual-initial.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="initial.printcell">4.4: Printing the cell parameters</A></H3></CENTER>
+
+<BR>&nbsp;<BR>
+<div class="instruction"><strong><u>\PRINT 1</u></strong><br>
+<P>This command lists the cell parameters, and all the other information
+ derived from them which is stored in LIST 1.
+ The inter-axial angles are stored in radians in LIST 1, and printed as
+ such.
+<BR>&nbsp;<BR>
+</div>
+<div class="instruction"><strong><u>\PUNCH 1</u></strong><br>
+<P>Punches the real cell parameters from  LIST 1.
+<BR>&nbsp;<BR>
+<BR>
+<BR>&nbsp;<BR>
+<A NAME="Cell errors"> </A>
+<A NAME="List 31"> </A>
+</div>
+<HR><small><A HREF="crystalsmanual-initial.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="initial.cellerr">4.5: Input of the unit cell parameter errors  -  LIST 31</A></H3></CENTER>
+<A NAME="LIST31"> </A>
+
+<P>This list contains the variance-covariance matrix of the unit
+ cell parameters. The input consists of a multiplier which is
+ applied to all input parameters,
+ followed by the upper
+ triangle of the variance-covariance matrix (21 Numbers).
+ The units for the angles <strong>MUST</strong> be
+ radians and those for the cell lengths are Angstroms.
+
+<pre>
+ \LIST 31
+ AMULT VALUE=
+ MATRIX V(11)= V(12)= .. V(16)= .. V(22)= .. V(26)= .. V(66)=
+ END
+</pre><p><BR>
+
+For example
+<pre>
+ \LIST 31
+ \ the values of the input matrix are to be multiplied
+ \ by 0.000001
+ AMULT 0.000001
+ \ the cell is trigonal,
+ \ with errors of 0.002 along 'a' and 'b', and 0.004 along 'c'
+ MATRIX 4 4 1 0 0 0
+ CONT     4 1 0 0 0
+ CONT      16 0 0 0
+ CONT         0 0 0
+ CONT           0 0
+ CONT             0
+ END
+</pre><p><BR>
+<BR>&nbsp;<BR>
+<div class="instruction"><strong><u>\LIST 31</u></strong><br>
+<BR>&nbsp;<BR>
+<div class="directive"><strong><i>AMULT VALUE=</i></strong>
+<P>This directive gives the value by which all the subsequent terms
+ are to be multiplied, and has a default of 1.0.
+<div class="parameter"><i>VALUE=</i>
+<BR>&nbsp;<BR>
+</div>
+</div>
+<div class="directive"><strong><i>MATRIX V(11)= V(12)= . . V(16)= V(22)= . . V(66)=</i></strong>
+<P>This directive is used to read in the variance-covariance matrix.
+<P>If you only have the parameter e.s.d's, input the square of these for
+ V(11), V(22) etc.
+<div class="parameter"><i>V(11)= V(12)= . . V(16)= V(22)= . .V(66)=</i>
+  V(11) is the variance of  A ,  V(12)  is the covariance of  A
+ and  B ,  V(16)  is the covariance of  A  and  GAMMA ,
+  V(22)  is the variance of  B , and  V(66)  is the variance of
+  GAMMA . The default values for V(11), V(22) and V(33) correspond to axis
+ e.s.d's of .001 A, V(44), V(55) and V(66) to angle e.s.d's of .01 degree.
+<BR>&nbsp;<BR>
+</div>
+</div>
+</div>
+<HR><small><A HREF="crystalsmanual-initial.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="initial.printcell">4.6: Printing the cell variance-covariance matrix</A></H3></CENTER>
+
+<BR>&nbsp;<BR>
+<div class="instruction"><strong><u>\PRINT 31</u></strong><br>
+<P>This prints list 31. There is no command for punching LIST 31.
+<BR>
+<BR>&nbsp;<BR>
+<A NAME="Space group input"> </A>
+<A NAME="SPACEGROUP"> </A>
+</div>
+<HR><small><A HREF="crystalsmanual-initial.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="initial.spacegroup">4.7: Space Group input - \SPACEGROUP</A></H3></CENTER>
+<A NAME="SPACEGROUP"> </A>
+
+ The spacegroup symbol interpretation routines in CRYSTALS are derived
+ from subroutines developed by Allen C. Larson and Eric Gabe.
+ It is distributed with their permission. Standard CRYSTALS
+ command input, error handling, data storage, and output has been
+ added to the basic routines. In addition a more flexible method
+ of  specifying the unique axis in a monoclinic spacegroup is
+ used. The routine generates a LIST 2 (symmetry information - section
+ !elabel!LIST02!), and a
+ LIST 14 (Fourier and Patterson asymmetric unit limits - 
+ section !elabel!LIST14!).
+
+<pre>
+ \SPACEGROUP
+ SYMBOL EXPRESSION=
+ AXIS UNIQUE=
+ END
+</pre><p><BR>
+
+For example
+<pre>
+ \ Input the symbol for a cubic spacegroup
+ \SPACEGROUP
+ SYMBOL F d 3 m
+ END
+
+ \ Input the symbol for a common monoclinic spacegroup
+ \SPACEGROUP
+ SYMBOL P 21/c
+ END
+
+ \ Input the symbol for a triclinic spacegroup
+ \SPACEGROUP
+ SYMBOL P -1
+ END
+</pre><p><BR>
+<BR>&nbsp;<BR>
+<div class="instruction"><strong><u>\SPACEGROUP</u></strong><br>
+<BR>&nbsp;<BR>
+<div class="directive"><strong><i>SYMBOL EXPRESSION=</i></strong>
+<P>This directive is used to specify the space group symbol.
+<div class="parameter"><i>EXPRESSION=</i>
+ The value of this parameter is the text making up the spacegroup
+ symbol.  At least one
+ space character should appear between each of the axis symbols
+ in the spacegroup symbol. e.g.
+<pre>
+ Use  P 21 3 rather than P 213, P2 1 3, or P2 13
+</pre><p><BR>
+<P>Failure to put spaces in the correct place in the symbol will
+ lead to misinterpretation.
+<P>Rhombohedral cells are always assumed to be on hexagonal indexing.
+<BR>&nbsp;<BR>
+</div>
+</div>
+<div class="directive"><strong><i>AXIS UNIQUE=</i></strong>
+<P>This directive specifies the unique
+ axis orientation for
+ monoclinic spacegroups where the symbol specified
+ contains only one axis symbol (short symbol). In other cases any information
+ specified with this directive is ignored.
+<div class="parameter"><i>UNIQUE=</i>
+<pre>
+      A
+      B
+      C
+      GENERATE - the default value.
+</pre><p><BR>
+<P>When UNIQUE has the value A, B, or C the program uses the 'a',
+ 'b', or 'c' axis respectively as the unique axis.
+ When UNIQUE
+ has the value GENERATE, the program will attempt to select the
+ unique axis on the basis of the cell parameters currently stored in
+ LIST 1. If this is not possible, because the angles in LIST 1
+ are all close too 90 degrees or there is no valid cell parameter
+ information, the program will assume that the unique axis is
+ 'b'.
+<BR>
+<P>Further examples.
+
+<pre>
+ \LIST 1
+ REAL 10.2 11.3 14.1 88.3 90 90
+ END
+ \ Input symmetry - the program will  automatically select 'a' as the
+ \ unique axis based on the cell parameters.
+ \SPACEGROUP
+ SYMBOL P 21/M
+ END
+</pre><p><BR>
+
+<pre>
+ \ Explicitly specify 'c' unique by giving the full symbol.
+ \SPACEGROUP
+ SYMBOL P 1 1 21/M
+ END
+ \
+ \ Explicitly specify 'c' unique by using the UNIQUE parameter.
+ \SPACEGROUP
+ SYMBOL P 21/M
+ AXIS UNIQUE=C
+ END
+</pre><p><BR>
+<BR>&nbsp;<BR>
+<A NAME="LIST 2"> </A>
+<A NAME="Symmetry data"> </A>
+</div>
+</div>
+</div>
+<HR><small><A HREF="crystalsmanual-initial.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="initial.symdata">4.8: Input of the symmetry data  -  LIST 2</A></H3></CENTER>
+<A NAME="LIST02"> </A>
+
+<P>The result of inputting a \SPACEGROUP command (section !elabel!SPACEGROUP!) 
+is the automatic generation of a 'LIST 2' containing the explicit 
+symmetry operators and other information that defines the spacegroup.
+<P>Direct input of this list enables the user to specify explicitly 
+ the symmetry operators to be used. The advantage of this is that 
+ they need not comply to any standard convention - the only
+ check made by the program is to ensure that the determinant is 
+ not zero. For example, this technique may be used to enter a 
+ set of symmetry operators that contains a translation of a half along
+ an axis - normally that cell length would be halved instead, but it may
+ be useful in order to work consistently with a structure that undergoes
+ a cell-doubling phase transition.
+
+<pre>
+ \LIST 2
+ CELL NSYMMETRIES=  LATTICE=  CENTRIC=
+ SYMMETRY  X=  Y=  Z=
+ SPACEGROUP LATTICE= A-AXIS= B-AXIS= C-AXIS=
+ CLASS NAME=
+ END
+</pre><p><BR>
+For example:
+
+<pre>
+ \ the space group is B2/b
+ \LIST 2
+ CELL NSYM= 2, LATTICE = B
+ SYM X, Y, Z
+ SYM X, Y + 1/2,  - Z
+ SPACEGROUP B 1 1 2/B
+ CLASS MONOCLINIC
+ END
+</pre><p><BR>
+<P>The CELL directive defines the Bravais lattice type,
+ the number of equivalent positions to be input, and whether the
+ cell is centric or acentric.
+ The equivalent positions are defined by  SYMMETRY  directives, which contain
+ one equivalent position each, and must follow the  CELL  directive.
+ The equivalent positions input should not include those related
+ by a centre of symmetry if the lattice is defined as centric, and should
+ not include those related by non-primitive lattice translations if
+ the correct Bravais lattice type is given.
+ Positions generated by the last two operations are computed by the
+ system.
+ The unit matrix, defining x, y, z, <strong>MUST</strong> <strong>ALWAYS</strong> be input.
+ If a centric cell is used in a setting which does not place the centre
+ at the origin, then ALL the operators must be given and the cell be
+ treated as non-centric. This will of course increase the time for
+ structure factor calculations.
+<P>Rhombohedral cells can be treated in two ways. If used with
+ rhombohedral indexing (a=b=c, alpha=beta=gamma), the lattice type is P,
+ primitive.
+ If used with hexagonal indexing, the lattice type is R.
+<BR>&nbsp;<BR>
+<div class="instruction"><strong><u>\LIST 2</u></strong><br>
+<BR>&nbsp;<BR>
+<div class="directive"><strong><i>CELL NSYMMETRIES=  LATTICE=  CENTRIC=</i></strong>
+<div class="parameter"><i>NSYMMETRIES=</i>
+ This defines the number of SYMMETRY directives that are to follow.
+ There is no default.
+</div>
+<div class="parameter"><i>LATTICE=</i>
+ This defines the Bravais lattice type, and must take
+ one of the following values :
+<BR>
+<pre>
+      P  -  Default value.
+      I
+      R
+      F
+      A
+      B
+      C
+</pre><p><BR>
+</div>
+<div class="parameter"><i>CENTRIC=</i>
+ This parameter defines whether the cell is centric or acentric, and must
+ take one of the values :
+<pre>
+      NO
+      YES  -  The default value.
+</pre><p><BR>
+</div>
+</div>
+<div class="directive"><strong><i>SYMMETRY  X=  Y=  Z=</i></strong>
+ This directive is repeated  NSYMMETRIES  times, and each separate occurrence
+ defines one equivalent position in the unit cell.
+ The parameter keywords  X ,  Y  and  Z  are normally omitted on this
+ directive, and the equivalent position typed up exactly
+ as given in international tables.
+ The expressions may contain any of the following :
+<pre>
+      +X or -X
+      +Y or -Y
+      +Z or -Z
+      + or - a fractional shift.
+</pre><p><BR>
+ The fractional shift may be represented by one number divided by another
+ (e.g. 1/2 or 1/3) or by a true fraction (0.5 or 0.33333...).
+ Apart from terminating text, spaces are optional and ignored.
+ The terms for the new x, y and z must be separated by a  comma (,) , and the
+ whole expression may be terminated by  ;  if required.
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>SPACEGROUP LATTICE= A-AXIS= B-AXIS= C-AXIS=</i></strong>
+ This directive inputs the space group symbol, and is optional for the
+ correct working of CRYSTALS. However, some foreign programs need
+ the symbol as input data, and they will extract it from this record.
+ The keywords LATTICE, A-AXIS etc are normally omitted, and the full
+ space group symbol given with spaces between the operators, e.g.
+<pre>
+        SPACEGROUP P 1 21/C 1
+</pre><p><BR>
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>CLASS NAME=</i></strong>
+ This directive inputs the crystal class. It is not used by CRYSTALS, but is
+ required for cif files.
+<BR>
+<BR>&nbsp;<BR>
+</div>
+</div>
+<HR><small><A HREF="crystalsmanual-initial.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="initial.syminfo">4.9: Printing the symmetry information</A></H3></CENTER>
+
+<BR>&nbsp;<BR>
+<div class="instruction"><strong><u>\PRINT 2</u></strong><br>
+<P>This prints LIST 2. There is no command for punching LIST 2.
+<BR>
+<P>Further examples.
+
+<pre>
+ \ THE SPACE GROUP IS P1-BAR.
+ \LIST 2
+ CELL NSYM= 1
+ SYM X, Y, Z
+ SPACEGROUP P -1
+ END
+</pre><p><BR>
+
+<pre>
+ \ THE SPACE GROUP IS P 321
+ \LIST 2
+ CELL CENTRIC= NO, NSYM= 6
+ SYM X, Y, Z
+ SYM -Y, X-Y, Z
+ SYM Y-X, -X, Z
+ SYM Y, X, -Z
+ SYM -X, Y-X, -Z
+ SYM X-Y, -Y, -Z
+ END
+</pre><p><BR>
+
+<pre>
+ \ THE SPACE GROUP IS P 6122 (note alternative notation for fractions)
+ \LIST 2
+ CELL NSYM= 12, CENTRIC= NO
+ SYM X,Y,Z
+ SYM -X    ,   -Y  ,Z+.5
+ SYM +Y, +X,1/3-Z
+ SYM -Y,-X,5/6-Z
+ SYM -Y, X-Y, .333333333+Z
+ SYM Y, Y-X, Z+10/12
+ SYM -X, Y-X, 4/6-Z
+ SYM X, X-Y, 1/6-Z
+ SYM Y-X, -X, Z+4/6
+ SYM  X-Y, X, Z+1/6
+ SYM X-Y, -Y, -Z
+ SYM Y-X, Y ,  -Z+.5
+ SPACEGROUP P 61 2 2
+ END
+</pre><p><BR>
+<BR>
+<BR>&nbsp;<BR>
+<A NAME="Molecular composition"> </A>
+<A NAME="COMPOSITION"> </A>
+</div>
+<HR><small><A HREF="crystalsmanual-initial.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="initial.composition">4.10: Input of molecular composition \COMPOSITION</A></H3></CENTER>
+
+<P>This command takes the contents of the asymmetric unit, searches the
+ specified data files for required values, and then internally creates normal
+ scattering factors (LIST 3 - section !elabel!LIST03!) and elemental 
+ properties (LIST 29 - section !elabel!LIST29!). <strong>NOTE</strong>
+ <strong>LISTS</strong> <strong>1</strong> (see !flabel!LIST01!) <strong>and</strong> <strong>13</strong> (see !RLIST13<BR>) 
+ <strong>must</strong> <strong>have</strong> <strong>been</strong> <strong>input</strong> <strong>beforehand.</strong>
+
+<pre>
+ \COMPOSITION
+ CONTENTS FORMULA=
+ SCATTERING FILE=
+ PROPERTIES FILE=
+ END
+</pre><p><BR>
+For example:
+
+<pre>
+ \COMPOSITION
+ CONTENT C 6 H 5 N O 2.5 CL
+ SCATTERING CRSCP:SCATT.DAT
+ PROPERTIES CRSCP:PROPERTIES.DAT
+ END
+</pre><p><BR>
+<BR>&nbsp;<BR>
+<div class="instruction"><strong><u>\COMPOSITION</u></strong><br>
+<P>There are three directives, none of which have default values.
+<BR>&nbsp;<BR>
+<div class="directive"><strong><i>CONTENTS FORMULA=</i></strong>
+<div class="parameter"><i>FORMULA=</i>
+ The formula for the UNIT CELL
+ (NOT ASYMMETRIC UNIT) is given as a list with entries
+<pre>
+ 'element TYPE' 'number of atoms'.
+</pre><p><BR>
+ The items in the list MUST be separated by at least one space. The number
+ of atoms may be omitted, when they default to 1.0, and may be fractional.
+<BR>&nbsp;<BR>
+ The element TYPE must conform to the TYPE conventions described in the
+ atom syntax, section !elabel!ATOMSYNTAX!.
+<BR>&nbsp;<BR>
+</div>
+</div>
+<div class="directive"><strong><i>SCATTERING FILE=</i></strong>
+ This directive gives the name of the
+ file to be searched for scattering factors, and must conform to the syntax
+ of the computing system. A file CRSCP:SCATT.DAT is provided for some
+ implementations, and contains all the scattering factors listed in
+ Volume IV, International Tables.
+<BR>&nbsp;<BR>
+</div>
+<div class="directive"><strong><i>PROPERTIES FILE=</i></strong>
+ This directive gives the name of the
+ file to be searched for elemental properties, and must conform to the syntax
+ of the computing system. A file CRSCP:PROPERTIES.DAT is provided for
+ some
+ implementations, and contains values gleaned from various sources. The
+ file contains references.
+<BR>
+<BR>&nbsp;<BR>
+<A NAME="LIST 3"> </A>
+<A NAME="Scattering factors"> </A>
+</div>
+</div>
+<HR><small><A HREF="crystalsmanual-initial.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="initial.atomsf">4.11: Input of the atomic scattering factors  -  \LIST 3</A></H3></CENTER>
+<A NAME="LIST03"> </A>
+
+<P>This list contains the scattering factors that
+ are to be used for each atomic species that may appear in the
+ atomic parameter list (LIST 5)
+  - see the section of the user guide on Atom and Element names).
+
+<pre>
+ \LIST 3
+ READ  NSCATTERERS=
+ SCATTERING TYPE= F'= F''= A(1)= B(1)= A(2)= . . . B(4)= C=
+ END
+</pre><p><BR>
+<BR>
+For example
+
+<pre>
+ \LIST 3
+ READ 2
+ SCATT C    0    0
+ CONT  1.93019  12.7188  1.87812  28.6498  1.57415  0.59645
+ CONT  0.37108  65.0337  0.24637
+ SCATT S 0.35 0.86  7.18742  1.43280  5.88671  0.02865
+ CONT               5.15858  22.1101  1.64403  55.4561
+ CONT              -3.87732
+ END
+</pre><p><BR>
+ The scattering factor of an atom in LIST 5 (the model parameters) 
+ is determined by its  TYPE, an entry for which must exist in LIST 3.
+<BR>
+ The form factor is calculated analytically at each value
+ of sin(theta)/lambda,  s , from the relationship :
+<pre>
+ f = sum[a(i)*exp(-b(i)*s*s)] + c       i=1 to 4.
+</pre><p><BR>
+ The coefficients a(1) to a(4), b(1) to b(4) and c and the real and
+ imaginary parts of the anomalous dispersion correction
+ are input for each element TYPE.
+<BR>&nbsp;<BR>
+<div class="instruction"><strong><u>\LIST 3</u></strong><br>
+<P>This is the normal calling command for the input of LIST 3.
+<BR>&nbsp;<BR>
+<div class="directive"><strong><i>READ  NSCATTERERS=</i></strong>
+<div class="parameter"><i>NSCATTERERS=</i>
+ This must be set to the number of atomic species to be stored
+ in LIST 3, and thus the number of  SCATTERING  directives to follow.
+ There is no default value.
+<BR>&nbsp;<BR>
+</div>
+</div>
+<div class="directive"><strong><i>SCATTERING TYPE= F'= F''= A(1)= B(1)= A(2)= . . . B(4)= C=</i></strong>
+ This directive provides the form factor details for one atomic species.
+ This directive must be repeated  NSCATTERERS  times.
+<div class="parameter"><i>TYPE=</i>
+ The element TYPE must conform to the TYPE conventions described in the
+ General Introduction.
+ The values used for  TYPE  in LIST 3 will have their counterparts
+ in the  TYPEs stored for atoms in LIST 5 (the model parameters), 
+ and in the  TYPEs
+ stored for atomic species in LIST 29 (see section !elabel!LIST29!).
+ There is no default for this parameter.
+</div>
+<div class="parameter"><i>F'= F''=</i>
+ These define the real and imaginary parts of the anomalous dispersion
+ correction for this atomic species at the appropriate wavelength.
+ A default value of zero is assumed if these parameters are omitted.
+</div>
+<div class="parameter"><i>A(1)= B(1=) A(2=) B(2)= A(3)= B(3)= A(4)= B(4)= C=</i>
+ These define the coefficients used to compute the
+ scattering factor for this atomic species. There are
+ no default values.
+
+<pre>
+  For neutrons, all the A(i) and B(i) are set to zero, and C is set to
+ the scattering length.
+</pre><p><BR>
+<BR>&nbsp;<BR>
+</div>
+</div>
+</div>
+<HR><small><A HREF="crystalsmanual-initial.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="initial.printsf">4.12: Printing the scattering factors</A></H3></CENTER>
+
+<BR>&nbsp;<BR>
+<div class="instruction"><strong><u>\PRINT 3</u></strong><br>
+<P>This prints LIST 3. There is no command for punching LIST 3.
+<BR>&nbsp;<BR>
+<A NAME="LIST 13"> </A>
+<A NAME="Experimental details"> </A>
+</div>
+<HR><small><A HREF="crystalsmanual-initial.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="initial.experimental">4.13: Input of the crystal and data collection details  -  LIST 13</A></H3></CENTER>
+<A NAME="LIST13"> </A>
+
+<P>LIST 13 contains information about those experimental details
+ which may be needed during structure analysis.
+ Information only required for
+ the generation of a cif are held in LIST 30 (section !elabel!LIST30!).
+<P>If no LIST 13 has been input and one is 
+ required, a default list is generated.
+
+<pre>
+ \LIST 13
+ CRYSTAL FRIEDELPAIRS= TWINNED= SPREAD=
+ DIFFRACTION GEOMETRY= RADIATION=
+ CONDITIONS WAVELENGTH= THETA(1)= THETA(2)= CONSTANTS . .
+ MATRIX R(1)= R(2)= R(3)= . . . R(9)=
+ TWO H= K= L= THETA= OMEGA= CHI= PHI= KAPPA= PSI=
+ THREE H= K= L= THETA= OMEGA= CHI= PHI= KAPPA= PSI=
+ REAL COMPONENTS= H= K= L= ANGLES=
+ RECIPROCAL COMPONENTS= H= K= L= ANGLES=
+ AXIS H= K= L=
+</pre><p><BR>
+For example:
+
+<pre>
+ \LIST 13
+ DIFF GEOM= CAD4
+ COND WAVE= .7107
+ MATRIX
+ END
+</pre><p><BR>
+<BR>&nbsp;<BR>
+<div class="instruction"><strong><u>\LIST 13</u></strong><br>
+<P>This directive describes properties that relate to the whole
+ crystal.
+<BR>&nbsp;<BR>
+<BR>
+<div class="directive"><strong><i>CRYSTAL FRIEDELPAIRS= TWINNED= SPREAD=</i></strong>
+<BR>
+<div class="parameter"><i>FRIEDELPAIRS=</i>
+  This parameter defines whether Friedel's law should be used during
+ \SYSTEMATIC in
+ data reduction. It should be set to NO for high accuracy or absolute
+ structure determinations. If omitted, Friedel's law will be used.
+<pre>
+      YES  -  default value.
+      NO
+</pre><p><BR>
+</div>
+<div class="parameter"><i>TWINNED=</i>
+ This parameter is used during refinement to indicate
+  whether the twin laws should be used. It is automatically updated
+if twinned reflection data is input.
+<pre>
+      NO  -  Default value.
+      YES
+</pre><p><BR>
+</div>
+<div class="parameter"><i>SPREAD=</i>
+ This parameter defines the type of mosaic spread in the crystal.
+ This information is used during the calculation of an extinction
+ correction.
+<pre>
+      GAUSSIAN  -  Default value. Suitable for X-rays
+      LORENTZIAN - Suitable for Neutrons
+</pre><p><BR>
+<BR>&nbsp;<BR>
+</div>
+</div>
+<div class="directive"><strong><i>DIFFRACTION GEOMETRY= RADIATION=</i></strong>
+<P>This directive defines the experimental conditions used to
+ collect the data.
+<div class="parameter"><i>GEOMETRY=</i>
+ This defines the type of data collection method used
+ to measure the raw intensities, and determines the type of Lp
+ correction.
+
+<pre>
+      NORMAL  -  Normal beam Weissenberg geometry.
+      EQUI    -  Equi-inclination Weissenberg geometry.
+      ANTI    -  Anti-equi-inclination Weissenberg geometry.
+      PRECESSION
+      CAD4    -  Nonius CAD4 diffractometer, Eulerian angles.
+      KAPPA   -  Nonius CAD4 in kappa geometry.
+      ROLLETT -  Abstract machine, see page 28 , Computing Methods
+                 in Crystallography.
+      Y290    -  Hilger-Watts Y290 4-Circle diffractometer.
+      NONE    -  Default.
+</pre><p><BR>
+</div>
+<div class="parameter"><i>RADIATION=</i>
+ This parameter defines the type of radiation used to collect the
+ data.
+<pre>
+      XRAYS  -  Default value
+      NEUTRONS
+</pre><p><BR>
+</div>
+</div>
+<div class="directive"><strong><i>CONDITIONS WAVELENGTH= THETA(1)= THETA(2)= CONSTANTS . .</i></strong>
+<P>This directive describes the conditions that were used when the
+ data were collected.
+  CONSTANTS  is short for four constants.
+<pre>
+      CONSTANT(1)= CONSTANT(2)= CONSTANT(3)= CONSTANT(4)=
+</pre><p><BR>
+<div class="parameter"><i>WAVELENGTH=</i>
+ This defines the wavelength of the radiation used to collect
+ the data.
+ If omitted, a default value of 0.71073 is assumed,(Mo k-alpha).
+</div>
+<div class="parameter"><i>THETA(1)=</i>
+ This defines the Bragg angle of the monochromator.
+ If omitted, a default of 6.05 is assumed, indicating
+ that a monochromator was used with Mo radiation
+</div>
+<div class="parameter"><i>THETA(2)=</i>
+ This defines the angle between the plane of the
+ monochromator and the diffracting planes of the crystal.
+ If this parameter is omitted, a default value of 90 is assumed.
+ This value is not used if  THETA(1)  is zero.
+ Since the angle  THETA(2)  is fixed, the Lp correction computed
+ using these constants is correct only for experiments where  THETA(2)
+ is a constant.
+ This is true for equatorial geometry experiments, but is not true
+ for equipment that uses Weissenberg or precession geometry.  It is not 
+ true for area detector instruments.
+</div>
+<div class="parameter"><i>CONSTANT(1)= CONSTANT(2)= CONSTANT(3)= CONSTANT(4)=</i>
+ These four parameters are used to input fundamental constants
+ for the diffractometer used to collect the data.
+ How many of the constants, and what values they should have are
+ determined by the equipment and its setting.
+ To determine the values required, consult your local diffractometer
+ expert.
+ The default values for c(1), c(2) and c(3) are the Nonius CAD4 GONCON
+ constants, and c(4) is the theta value for the change from
+ bisecting to fixed chi mode (and has a value of 90 degrees).
+ These constants are important when machine geometry dependent
+ calculations are made - for example, absorption corrections.
+ The defaults in the program were correct for the Nonius CAD4 
+ in the Oxford Chemical Crystallography lab on 13 October 1980.
+<BR>&nbsp;<BR>
+</div>
+</div>
+<div class="directive"><strong><i>MATRIX R(1)= R(2)= R(3)= . . . R(9)=</i></strong>
+<P>This directive is used to input the orientation matrix directly.
+ If this directive is input, the directives  TWO ,  THREE ,  REAL ,
+ and  RECIPROCAL (detailed below) may not be used.
+ This directive is normally used for diffractometer collected data.
+<div class="parameter"><i>R(1)= R(2)= R(3)= . . . R(9)=</i>
+ The elements of the matrix must be input in the order
+ (1,1), (1,2), (1,3), (2,1), etc.
+ The default is a unit diagonal matrix.
+<BR>&nbsp;<BR>
+</div>
+</div>
+<div class="directive"><strong><i>TWO H= K= L= THETA= OMEGA= CHI= PHI= KAPPA= PSI=</i></strong>
+<P>This directive is used to input the setting details
+ required to define a diffractometer orientation matrix from
+ two reflections.
+ The details for the two reflections must be input on separate
+ directives, so that this directive must be repeated twice.
+ This directive may only be input when the  GEOMETRY parameter 
+ on the DIFFRACTION directive is  Y290  or  CAD4 .
+ If this directive is input, the directives  THREE ,  REAL ,
+  RECIPROCAL , and  MATRIX  may not be used.
+ The reflections should be given in the same order as
+ in the original experiment.
+<div class="parameter"><i>H= K= L=</i>
+ These three parameters define the indices of the reflection
+ that is to be used to calculate the orientation matrix.
+</div>
+<div class="parameter"><i>THETA= OMEGA= CHI= PHI= KAPPA= PSI=</i>
+ These parameters define the setting angles for the reflection
+ whose indices are given by  H ,  K  and  L .
+ There are no default values for  THETA ,  OMEGA  and  PHI , and
+ one of  CHI or KAPPA must be input.
+ The default values for CHI , KAPPA and PSI are zero.
+<BR>&nbsp;<BR>
+</div>
+</div>
+<div class="directive"><strong><i>THREE H= K= L= THETA= OMEGA= CHI= PHI= KAPPA= PSI=</i></strong>
+<P>This directive is used to input the setting details
+ required to define a diffractometer orientation matrix from
+ three reflections.
+ The details for the three reflections must be input on separate
+ directives, so that this directive must be repeated three times.
+ This directive may only be input when the  GEOMETRY  parameter 
+ on the DIFFRACTION  directive is  Y290  or  CAD4 .
+ If this directive is input, the directives  TWO ,  REAL ,
+  RECIPROCAL , and  MATRIX  may not be used.
+<div class="parameter"><i>H= K= L= THETA= OMEGA= CHI= PHI= KAPPA= PSI=</i>
+ These parameters are defined as for TWO above.
+<BR>&nbsp;<BR>
+</div>
+</div>
+<div class="directive"><strong><i>REAL COMPONENTS= H= K= L= ANGLES=</i></strong>
+ This directive is used to define the orientation matrix for
+ the Nonius CAD4 diffractometer from the components of the real
+ vector along the phi axis and the setting angles of one reflection.
+ The  items COMPONENTS  and  ANGLES  are short for:
+<BR>
+<BR>&nbsp;<BR>COMPONENT(1)= COMPONENT(2)= COMPONENT(3)=
+<BR>&nbsp;<BR>and
+<BR>&nbsp;<BR>THETA= OMEGA= CHI= PHI= KAPPA= PSI=
+<BR>
+ If this directive is input, the directives  TWO ,  THREE ,
+  RECIPROCAL , and  MATRIX  may not be used.
+ This directive may only be input when the  GEOMETRY  parameter
+ on the DIFFRACTION  directive is  CAD4 .
+<div class="parameter"><i>COMPONENT(1)= COMPONENT(2)= COMPONENT(3)=</i>
+ These three parameters provide the components of the real cell
+ vector that is parallel to the phi axis.
+</div>
+<div class="parameter"><i>H= K= L= THETA= OMEGA= CHI= PHI= KAPPA= PSI=</i>
+ These parameters are defined as in TWO above
+<BR>&nbsp;<BR>
+</div>
+</div>
+<div class="directive"><strong><i>RECIPROCAL COMPONENTS= H= K= L= ANGLES=</i></strong>
+ This directive is used to define the orientation matrix for
+ the Nonius CAD4 diffractometer from the components of the reciprocal
+ vector along the phi axis and the setting angles of one reflection.
+ The  items COMPONENTS  and  ANGLES  are short for:
+<BR>
+<BR>&nbsp;<BR>COMPONENT(1)= COMPONENT(2)= COMPONENT(3)=
+<BR>&nbsp;<BR>and
+<BR>&nbsp;<BR>THETA= OMEGA= CHI= PHI= KAPPA= PSI=
+<BR>
+ If this directive is input, the directives  TWO ,  THREE ,
+  REAL , and  MATRIX  may not be used.
+ This directive may only be input when the  GEOMETRY  parameter
+ on the DIFFRACTION  directive is  CAD4 .
+<div class="parameter"><i>COMPONENT(1)= COMPONENT(2)= COMPONENT(3)=</i>
+ These three parameters provide the components of the reciprocal cell
+ vector that is parallel to the phi axis.
+</div>
+<div class="parameter"><i>H K L THETA OMEGA CHI PHI KAPPA PSI</i>
+ These parameters are defined as in TWO above
+<BR>&nbsp;<BR>
+</div>
+</div>
+<div class="directive"><strong><i>AXIS H= K= L=</i></strong>
+<P>This directive is used to define the axis about which data were
+ collected in Weissenberg geometry.
+ This directive may only be given when the  GEOMETRY  parameter 
+ on the  DIFFRACTION  directive is one of  NORMAL ,  EQUI  or  ANTI .
+<div class="parameter"><i>H= K= L=</i>
+ These three parameters define the zone axis [hkl] about which the
+ crystal was rotated during data collection.
+ If any of these parameters is omitted, a default value of zero
+ is assumed.
+<BR>&nbsp;<BR>
+</div>
+</div>
+</div>
+<HR><small><A HREF="crystalsmanual-initial.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="initial.printexp">4.14: Printing the experimental conditions, LIST 13</A></H3></CENTER>
+
+<BR>&nbsp;<BR>
+<div class="instruction"><strong><u>\PRINT 13</u></strong><br>
+<P>This prints list 13. There is no command for punching LIST 13.
+<BR>
+<BR>
+<BR>&nbsp;<BR>
+<A NAME="LIST 18"> </A>
+<A NAME="Structural Formula as a SMILES string"> </A>
+</div>
+<HR><small><A HREF="crystalsmanual-initial.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="initial.SMILESs">4.15: Input of Structural Formula as a SMILES string - LIST 18</A></H3></CENTER>
+<A NAME="LIST18"> </A>
+
+<P>This list holds the structural formula as a SMILES string
+
+<pre>
+ \LIST 18
+ SMILES    string.
+ END
+</pre><p><BR>
+For example
+
+<pre>
+</pre><p><BR>list 18
+smile CC(C1=CC=CC=[N]1[Ga]2345[N](N=C(S5)Nc6ccccc6)=C(C)
+cont C7=CC=CC=[N]73)=[N]2N=C(S4)Nc8ccccc8
+smile n(o)(o)(o)
+end
+<BR>
+<BR>&nbsp;<BR>
+<div class="instruction"><strong><u>\LIST 18</u></strong><br>
+<BR>&nbsp;<BR>
+<div class="directive"><BR>DSMILE smiles text. Remeber there is an 80 character line length. Break
+ the SMILES at a suitable point and use a CONTINUATION card.
+<P> If there is more than one discrete moiety in the cell, enter each on 
+its own SMILES card
+<BR>
+<BR>&nbsp;<BR>
+</div>
+</div>
+<HR><small><A HREF="crystalsmanual-initial.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="initial.printsmiles">4.16: Printing the SMILES string, LIST 18</A></H3></CENTER>
+
+<BR>&nbsp;<BR>
+<div class="instruction"><strong><u>\PRINT 18</u></strong><br>
+<P>This prints list 18. 
+<BR>&nbsp;<BR>
+</div>
+<HR><small><A HREF="crystalsmanual-initial.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="initial.punchsmiles">4.17: Punching the SMILES string, LIST 18</A></H3></CENTER>
+
+<BR>&nbsp;<BR>
+<div class="instruction"><strong><u>\PUNCH 18</u></strong><br>
+<P>This punches list 18. 
+<BR>&nbsp;<BR>
+
+<BR>
+<A NAME="LIST 29"> </A>
+<A NAME="Element properties"> </A>
+</div>
+<HR><small><A HREF="crystalsmanual-initial.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="initial.asymmunit">4.18: Input of the contents of the asymmetric unit  -  LIST 29</A></H3></CENTER>
+<A NAME="LIST29"> </A>
+
+<P>To perform calculations based on elemental properties, such as Sim
+ weighting for Fourier maps (section !elabel!FOURIER!), connectivity 
+ calculations, absorption
+ and density calculations, it is necessary to input the numbers and
+ properties of the elements in the cell.
+ This information is stored in LIST 29.
+
+<pre>
+ \LIST 29
+ READ  NELEMENT=
+ ELEMENT TYPE= COVALENT= VANDERWAALS= IONIC= NUMBER= MUA= WEIGHT= COLOUR=
+ END
+</pre><p><BR>
+For example:
+
+<pre>
+ \LIST 29
+ READ NELEMENT=4
+ ELEMENT MO NUM=0 .5
+ ELEMENT S NUM=2
+ ELEMENT O NUM=3
+ ELEMENT C NUM=10
+ END
+</pre><p><BR>
+<BR>&nbsp;<BR>
+<div class="instruction"><strong><u>\LIST 29</u></strong><br>
+<BR>&nbsp;<BR>
+<div class="directive"><strong><i>READ  NELEMENT=</i></strong>
+<div class="parameter"><i>NELEMENT</i>
+ This must be set to the number of atomic species in the asymmetric
+ unit, and
+ consequently the number of  ELEMENT directives that are about to 
+ follow this directive.
+ If this directive is omitted, a default value of one is assumed for
+ NELEMENT.
+<BR>&nbsp;<BR>
+</div>
+</div>
+<div class="directive"><strong><i>ELEMENT TYPE= COVALENT=  VANDERWAALS= IONIC= NUMBER= MUA= WEIGHT=</i></strong>
+ Each  ELEMENT directive provides the information about that atomic
+ species in the asymmetric unit.
+<div class="parameter"><i>TYPE=</i>
+ The element TYPE must conform to the TYPE conventions described in the
+ section on atom syntax, !elabel!ATOMSYNTAX!.
+ The default value for this parameter is taken from the COMMAND file.
+ When LIST 29 is used for Simm weighting,
+ the  TYPE  is compared with the  TYPEs stored
+ in LIST 3 (section !elabel!LIST03!) to determine the scattering 
+ factor of the given species.
+</div>
+<div class="parameter"><i>COVALENT=</i>
+</div>
+<div class="parameter"><i>VANDERWAALS=</i>
+</div>
+<div class="parameter"><i>IONIC=</i>
+ The radii used during geometry calculations,
+ with a default values set in the COMMAND file. The covalent radius is
+ incremented by 0.1 A for distance contacts, and
+ used for defining restraint targets (see \DISTANCES).
+ The van der Waals radius is incremented by .25A for finding non-bonded
+ contacts, and used for defining energy restraints
+ The ionic radius may be used during geometry calculations.
+</div>
+<div class="parameter"><i>NUMBER=</i>
+ This parameter gives the number of atoms of the given type in the
+ asymmetric unit.
+ This number can be fractional, depending
+ on the number of atoms in the cell and whether they occupy special
+ positions, and whether they are disordered.
+</div>
+<div class="parameter"><i>MUA=</i>
+ This is the atomic absorption coefficient x10**(-23)  /cm as in INT TAB
+ VOL III.  Note that in Vol IV the units are x10**(-24).
+ Take care to ensure that the coefficients are appropriate
+ for the wavelength used.
+</div>
+<div class="parameter"><i>WEIGHT</i>
+ This is the Atomic weight
+<BR>&nbsp;<BR>
+</div>
+<div class="parameter"><i>COLOUR</i>
+ This is the colour to be used for each atom in CAMERON. The available 
+colours are:
+<pre>
+ BLACK BLUE    CYAN   GREEN GREY   LBLUE LGREEN LGREY  
+ LRED  MAGENTA ORANGE PINK  PURPLE RED   WHITE  YELLOW 
+</pre><p><BR>	
+<BR>&nbsp;<BR>
+</div>
+</div>
+</div>
+<HR><small><A HREF="crystalsmanual-initial.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="initial.printasymm">4.19: Printing the contents of the asymmetric unit, LIST 29</A></H3></CENTER>
+
+<BR>&nbsp;<BR>
+<div class="instruction"><strong><u>\PRINT 29</u></strong><br>
+<P>This prints list 29. There is no command for punching LIST 29.
+<BR>&nbsp;<BR>
+<A NAME="LIST 30"> </A>
+<A NAME="General crystallographic data"> </A>
+</div>
+<HR><small><A HREF="crystalsmanual-initial.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="initial.goodies">4.20: Input of General Crystallographic Data - LIST 30</A></H3></CENTER>
+<A NAME="LIST30"> </A>
+
+<P>This list holds general crystallographic information for later
+ inclusion in the cif file. CRYSTALS contains no COMMAND for editing
+ this list - inputting a new LIST 30 over writes any existing version.
+ However, some CRYSTALS commands update LIST 30 as an analysis proceeds, 
+and there is a SCRIPT which enables some details to be changed.
+
+<pre>
+ \LIST 30
+ DATRED     NREFMES= NREFMERG= RMERGE= NREFFRIED= RMERGFRIED= REDUCTION=
+ CONDITIONS MINSIZE= MEDSIZE= MAXSIZE= NORIENT=
+ CONTINUE   THORIENTMIN= THORIENTMAX= TEMPERATURE= STANDARDS= DECAY= SCANMODE=
+ CONTINUE   INTERVAL= COUNT= INSTRUMENT=
+ REFINEMENT R= RW= NPARAM= SIGMACUT= GOF= DELRHOMIN= DELRHOMAX=
+ CONTINUE   RMSSHIFT= NREFUSED= FMINFUNC= RESTMINFUN= TOTALMINFUN= COEFFICIENT=
+ INDEXRANGE HMIN= HMAX= KMIN= KMAX= LMIN= LMAX= THETAMIN= THETAMAX=
+ ABSORPTION ANALMIN= ANALMAX= THETAMIN= THETAMAX= EMPMIN= EMPMAX=
+ CONTINUE   DIFABSMIN= DIFABSMAX= ABSTYPE=
+ GENERAL    DOBS= DCALC= F000= MU= MOLWT= FLACK= ESD= ANALYSE-CUT= 
+ CONTINUE   ANALYSE-NREF= ANALYSE-R= ANALYSE-RW= SOLUTION=
+ COLOUR
+ SHAPE
+ CIFEXTRA   CALC-SIGMA= CALC-NREF= CALC-R= CALC-RW= 
+ CONTINUE   ALL-SIGMA= ALL-NREF= ALL-R= ALL-RW=
+ END
+</pre><p><BR>
+For example
+
+<pre>
+ \LIST 30
+ CONDITIONS MINSIZE=.1 MEDSIZE=.3 MAXSIZE=.8 NORIENT=25
+ CONTINUE   THORIENTMIN=15.0 THORIENTMAX=25.0
+ CONTINUE   TEMPERATURE=293 STANDARDS=3 DECAY=.05 SCANMODE=2THETA/OMEGA
+ CONTINUE   INSTRUMENT=MACH3
+ INDEXRANGE HMIN=-12 HMAX=12 KMIN=-13 KMAX=13 LMIN=-1 LMAX=19
+ COLOUR RED
+ SHAPE PRISM
+ END
+</pre><p><BR>
+<BR>&nbsp;<BR>
+<div class="instruction"><strong><u>\LIST 30</u></strong><br>
+<BR>&nbsp;<BR>
+<div class="directive"><strong><i>DATRED NREFMES= NREFMERG= RMERGE= NREFFRIED= RMERGFRIED= REDUCTION=</i></strong>
+ Information about the data reduction process.
+<div class="parameter"><i>NREFMES=</i>
+ The number of reflections actually measured in the diffraction
+ experiment
+</div>
+<div class="parameter"><i>NREFMERG=</i>
+ Number of unique reflections remaining after merging equivalents
+ applying Friedel's Law
+</div>
+<div class="parameter"><i>RMERGE=</i>
+ Merging R factor (R int) applying Friedel's Law (as decimal not %)
+</div>
+<div class="parameter"><i>NREFFRIED=</i>
+ Number of unique reflections remaining after merging equivalents
+ without applying Friedel's Law
+</div>
+<div class="parameter"><i>RMERGFRIED=</i>
+ Merging R factor (R int) without applying Friedel's Law (as decimal not %)
+<BR>
+<BR>&nbsp;<BR>
+</div>
+</div>
+<div class="directive"><strong><i>CONDITIONS MINSIZE= MEDSIZE= MAXSIZE= NORIENT= THORIENTMIN= THORIENTMAX= </i></strong>
+</div>
+<div class="directive"><strong><i>CONDITIONS (continued) TEMPERATURE= STANDARDS= DECAY= SCANMODE=</i></strong>
+</div>
+<div class="directive"><strong><i>CONDITIONS (continued) INTERVAL= COUNT= INSTRUMENT=</i></strong>
+ Information about data collection.
+<div class="parameter"><i>MINSIZE=</i>
+</div>
+<div class="parameter"><i>MEDSIZE=</i>
+</div>
+<div class="parameter"><i>MAXSIZE=</i>
+ The crystal dimensions, in mm.
+</div>
+<div class="parameter"><i>NORIENT=</i>
+ Number of orientation checking reflections.
+</div>
+<div class="parameter"><i>THORIENTMIN=</i>
+ Minimum theta value for orientating reflections.
+</div>
+<div class="parameter"><i>THORIENTMAX=</i>
+ Maximum theta value for orientating reflections.
+</div>
+<div class="parameter"><i>TEMPERATURE=</i>
+ Data collection temperature, Kelvin.
+</div>
+<div class="parameter"><i>STANDARDS=</i>
+ Number of intensity control reflections.
+</div>
+<div class="parameter"><i>DECAY=</i>
+ Average decay in intensity, %.
+</div>
+<div class="parameter"><i>SCANMODE=</i>
+ Data collection scan method. Options are
+
+<pre>
+      2THETA/OMEGA (Default)
+      OMEGA
+      UNKNOWN
+</pre><p><BR>
+</div>
+</div>
+</div>
+<div class="instruction"><strong><u>INTERVAL=</u></strong><br>
+ Intensity control reflection interval time, minutes. Used if standards
+ are measured at a fixed time interval
+<div class="parameter"><i>COUNT=</i>
+ Intensity control reflection interval count. Used if standards are
+ measured after a fixed number (count) of general reflections.
+</div>
+<div class="parameter"><i>INSTRUMENT</i>
+ Instrument used for data collection. Known instruments are:
+
+<pre>
+      UNKNOWN (default)
+      CAD4
+      MACH3
+      KAPPACCD
+      DIP
+      SMART
+      IPDS
+</pre><p><BR>
+</div>
+<div class="directive"><strong><i>REFINEMENT R= RW= NPARAM= SIGMACUT= GOF= DELRHOMIN= DELRHOMAX= RMSSHIFT=</i></strong>
+</div>
+<div class="directive"><strong><i>REFINE (cont) NREFUSED= FMINFUNC= RESTMINFUNC= TOTALMINFUNC= COEFFICIENT=</i></strong>
+ Information about the refinement procedure.
+<div class="parameter"><i>R=</i>
+ Conventional R-factor.
+</div>
+<div class="parameter"><i>RW=</i>
+ Hamilton weighted R-factor.
+<BR>
+<P>The weighted R-factor stored in  LIST 6 (section !elabel!LIST06!) and LIST 30 
+is that computed
+during a structure factor calculation. The conventional R-factor is
+updated by either an SFLS calculation (section !elabel!SFLS!)
+or a SUMMARY of LIST 6.
+</div>
+<div class="parameter"><i>NPARAM=</i>
+ Number of parameters refined in last cycle.
+</div>
+<div class="parameter"><i>SIGMACUT=</i>
+ The I/sigma(I) threshold used during refinement.
+</div>
+<div class="parameter"><i>GOF=</i>
+ GOF, Goodness-of-Fit, S.
+</div>
+<div class="parameter"><i>DELRHOMIN=</i>
+</div>
+<div class="parameter"><i>DELRHOMAX=</i>
+ Minimum and maximum electron density in last difference synthesis.
+</div>
+<div class="parameter"><i>RMSSHIFT=</i>
+ R.m.s (shift/e.s.d) in last cycle of refinement.
+</div>
+<div class="parameter"><i>NREFUSED=</i>
+ Number of reflections used in last cycle of refinement.
+</div>
+<div class="parameter"><i>FMINFUNC=</i>
+ Minimisation function for diffraction observations.
+</div>
+<div class="parameter"><i>RESTMINFUNC=</i>
+ Minimisation function for restraints.
+</div>
+<div class="parameter"><i>TOTALMINFUNC=</i>
+ Total minimisation function.
+</div>
+<div class="parameter"><i>COEFFICIENT=</i>
+ Coefficient for refinement. Alternatives are:
+
+<pre>
+      F (Default)
+      F**2
+      UNKNOWN
+</pre><p><BR>
+</div>
+</div>
+<div class="directive"><strong><i>INDEXRANGE HMIN= HMAX= KMIN= KMAX= LMIN= LMAX= THETAMIN= THETAMAX=</i></strong>
+ Range of reflection limits during data collection.
+<div class="parameter"><i>HMIN= HMAX= KMIN= KMAX= LMIN= LMAX=</i>
+ Minimum and maximum values of h,k and l.
+</div>
+<div class="parameter"><i>THETAMIN= THETAMAX=</i>
+ Minimum and maximum values of theta.
+<BR>
+</div>
+</div>
+<div class="directive"><strong><i>ABSORPTION ANALMIN= ANALMAX= THETAMIN= THETAMAX= EMPMIN= EMPMAX=</i></strong>
+</div>
+<div class="directive"><strong><i>ABSORPTION (continued) DIFABSMIN= DIFABSMAX= ABSTYPE=</i></strong>
+ Information about absorption corrections.
+<BR>
+ <strong>NOTE</strong> the keywords PSIMIN and PSIMAX have been removed.  Store values 
+ as EMPMIN  and EMPMAX
+<div class="parameter"><i>ANALMIN= ANALMAX=</i>
+ Minimum and maximum analytical corrections
+</div>
+<div class="parameter"><i>THETAMIN= THETAMAX=</i>
+ Minimum and maximum theta dependant corrections
+</div>
+<div class="parameter"><i>EMPMIN= EMPMAX=</i>
+ Minimum and maximum empirical corrections (usually combination of theta
+ and psi or multi-scan for area detectors).
+</div>
+<div class="parameter"><i>DIFABSMIN= DIFABSMAX=</i>
+ Minimum and maximum DIFABS type correction, i.e. based on residue 
+ between Fo anf Fc (see section !elabel!DIFABS!). In the cif it is called
+ a refdelf correction.
+</div>
+<div class="parameter"><i>ABSTYPE=</i>
+ Type of absorption correction. Alternatives are:
+
+<pre>
+      NONE (default) EMPIRICAL    GAUSSIAN     SPHERICAL
+      DIFABS         MULTI-SCAN   ANALYTICAL   CYLINDRICAL
+      SHELXA         SADABS       NUMERICAL
+                     SORTAV       INTEGRATION
+                     PSI-SCAN             
+
+</pre><p><BR>
+</div>
+</div>
+<div class="directive"><strong><i>GENERAL DOBS= DCALC= F000= MU= MOLWT= FLACK= ESD=</i></strong>
+</div>
+<div class="directive"><strong><i>GENERAL (continued) ANALYSE-CUT= ANALYSE-NREF=</i></strong>
+</div>
+<div class="directive"><strong><i>GENERAL (continue)  ANALYSE-R= ANALYSE-RW= SOLUTION=</i></strong>
+ General information, usually provided by CRYSTALS.
+<div class="parameter"><i>DOBS= DCALC=</i>
+ Observed density and that calculated by CRYSTALS.
+</div>
+<div class="parameter"><i>F000=</i>
+ Sum of scattering factors at theta = zero.
+</div>
+<div class="parameter"><i>MU=</i>
+ Absorption coefficient, calculated by CRYSTALS.
+</div>
+<div class="parameter"><i>MOLWT=</i>
+ Molecular weight, calculated bt CRYSTALS.
+</div>
+<div class="parameter"><i>FLACK=</i>
+</div>
+<div class="parameter"><i>ESD=</i>
+ The Flack parameter and its esd, if refined.
+</div>
+<div class="parameter"><i>ANALYSE-CUT=</i>
+</div>
+<div class="parameter"><i>ANALYSE-NREF=</i>
+</div>
+<div class="parameter"><i>ANALYSE-R=</i>
+</div>
+<div class="parameter"><i>ANALYSE-RW=</i>
+      These values are updated when ever \ANALYSE is run, and can be used 
+ to record the effect of different LIST 28 schemes. <strong>Remenber</strong> that if 
+ the LIST 28 conditions are modified to include more reflections than 
+ were used in the last \SFLS calculation (section !elabel!SFLS!), the values 
+ of Fc for the 
+ additional reflections will be incorrect. A \SFLS calculation sets 
+these to the same values as in REFINEMENT above.
+
+</div>
+<div class="parameter"><i>SOLUTION=</i>
+      The program/procedure used for structure solution
+
+<pre>
+      UNKNOWN (Default)
+      SHELXS
+      SIR88
+      SIR92
+      PATTERSON
+      SIR97
+      DIRDIF
+</pre><p><BR>
+</div>
+</div>
+<div class="directive"><strong><i>COLOUR</i></strong>
+ The crystal colour.
+</div>
+<div class="directive"><strong><i>SHAPE</i></strong>
+ The crystal shape.
+
+</div>
+<div class="directive"><strong><i>CIFEXTRA</i></strong>
+ These are filled in by the \SFLS CALC operation (section !elabel!SFLS!).  
+ Structure factors are  computed for ALL reflections along with R and Rw - 
+ LIST 28 is ignored (LIST 28, reflection filtering, see section !elabel!!LIST28). 
+ R and Rw are also computed for reflections above a given 
+ threshold.
+<BR>&nbsp;<BR>
+</div>
+</div>
+<HR><small><A HREF="crystalsmanual-initial.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="initial.printgoodies">4.21: Printing the general information, LIST 30</A></H3></CENTER>
+
+<BR>&nbsp;<BR>
+<div class="instruction"><strong><u>\PRINT 30</u></strong><br>
+<P>This prints list 30. There is no command for punching LIST 30.
+<BR>&nbsp;<BR>
+
+<BR>
+</div>

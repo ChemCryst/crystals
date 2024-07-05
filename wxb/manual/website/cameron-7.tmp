@@ -1,0 +1,34 @@
+<!-- XTLVAR title="Archiving And Retrieving Views" -->
+<!-- XTLVAR comment="Archiving And Retrieving Views" -->
+<!-- XTLVAR cvssource="manual/cameron.man" -->
+<H1>Cameron Manual</H1>
+<H2>Chapter 7: Archiving And Retrieving Views</H2>
+<DL><DT>
+</DL>
+<A NAME="Cameron - Archiving and retrieving views"> </A>
+<P>The user can archive the present structure view on disk or retrieve a
+previously archived view from disk. At present only structure views residing
+in the same directory as the crfilev2.dsc (the working directory) can be
+retrieved. Equally well, views can only be archived in the working directory.
+As an alternative to the line commands, the user may choose the commands
+that are available in the pull-down menu 'File'.
+The following commands are available -
+</div>
+<div class="instruction"><strong><u>ARCHIVE</u></strong><br>
+<P>The syntax is:
+<pre>
+ ARCHIVE "foo.foo"
+</pre><p><BR>
+<BR>
+Note that the quotes (") are necessary to avoid confusion with non-existing
+sub-commands to this command. The filename must not exceed 12 characters.
+<BR>
+</div>
+<div class="instruction"><strong><u>RETRIEVE</u></strong><br>
+<P>The syntax is:
+<pre> 
+RETRIEVE "foo.foo"
+</pre><p><BR>
+<BR>
+Note that the quotes (") are necessary to avoid confusion with non-existing
+sub-commands to this command. The filename must not exceed 12 characters.

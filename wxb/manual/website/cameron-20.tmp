@@ -1,0 +1,36 @@
+<!-- XTLVAR title="Information On Data Held Within The Program" -->
+<!-- XTLVAR comment="Information On Data Held Within The Program" -->
+<!-- XTLVAR cvssource="manual/cameron.man" -->
+<H1>Cameron Manual</H1>
+<H2>Chapter 20: Information On Data Held Within The Program</H2>
+<DL><DT>
+</DL>
+<A NAME="Cameron - Information on data (meta data)"> </A>
+<P>CAMERON holds a number of pieces of information while it is running
+and in some cases it is useful for the user to be able to access this
+information.
+</div>
+<div class="instruction"><strong><u>INFORMATION</u></strong><br>
+<P>This command is followed by a sub-command which specifies the type of
+information wanted.
+<div class="directive"><strong><i>CELL</i></strong>
+Outputs the unit cell parameters.
+</div>
+<div class="directive"><strong><i>ATOMS</i></strong>
+Outputs the names of atoms stored within the program. It produces two
+lists - one of atoms currently included and one of atoms currently
+excluded from the picture.
+</div>
+<div class="directive"><strong><i>COLOUR</i></strong>
+This outputs the colour names that are available.
+</div>
+<div class="directive"><strong><i>SYMMETRY</i></strong>
+This command outputs the symmetry operators currently stored.
+</div>
+<div class="directive"><strong><i>GROUP</i></strong>
+Outputs a list of the currently defined groups and their members.
+</div>
+<div class="directive"><strong><i>PACKNUMBERS</i></strong>
+Outputs the symmetry operator and translation associated with a given 
+packnumber. The syntax is INFO PACKNUMBER n1 n2 n3.
+<BR>

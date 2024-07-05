@@ -1,0 +1,21 @@
+<!-- XTLVAR title="Using The Guide" -->
+<!-- XTLVAR comment="Using The Guide" -->
+<!-- XTLVAR cvssource="manual/readme.man" -->
+<H1>Getting Started</H1>
+<H2>Chapter 2: Using The Guide</H2>
+<DL><DT>
+</DL>
+<P> Once you have started CRYSTALS in a given folder, nothing much happens.
+To make things happen, try clicking the "GUIDE" button in the
+toolbar. The GUIDE assesses where a structure analysis has got to, and
+will provide a list of possible options in a pull-down menu. Choose the
+required option and click OK.
+<BR>
+<BR>
+An explanation of the screen layout can be found on the menu bar 
+under:
+<BR>
+<strong>Appearance</strong> / <strong>Screen</strong> <strong>Layout</strong> 
+<BR>
+
+

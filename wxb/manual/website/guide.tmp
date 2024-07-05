@@ -1,0 +1,15 @@
+<!-- XTLVAR title="Crystals User Guide" -->
+<!-- XTLVAR comment="Crystals User Guide" -->
+<!-- XTLVAR cvssource="manual/guide.man" -->
+<H1>Crystals User Guide</H1>
+<H2>Contents</H2>
+<A HREF="guide-1.html">1. The Crystals User Guide</A><br>
+<A HREF="guide-2.html">2. Getting Started</A><br>
+<A HREF="guide-3.html">3. Atoms And Peaks, Parameters, And Parameter Values.</A><br>
+<A HREF="guide-4.html">4. Fourier And Patterson Functions</A><br>
+<A HREF="guide-5.html">5. Generalised Fourier Sections</A><br>
+<A HREF="guide-6.html">6. Regularisation</A><br>
+<A HREF="guide-7.html">7. Hydrogen Placing</A><br>
+<A HREF="guide-8.html">8. Refinement</A><br>
+<A HREF="guide-9.html">9. Results</A><br>
+<A HREF="guide-10.html">10. Conclusion</A><br>

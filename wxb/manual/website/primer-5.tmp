@@ -1,0 +1,146 @@
+<!-- XTLVAR title="The Model" -->
+<!-- XTLVAR comment="The Model" -->
+<!-- XTLVAR cvssource="manual/primer.man" -->
+<H1>Crystals Primer</H1>
+<H2>Chapter 5: The Model</H2>
+<DL><DT>
+<DD><A HREF="primer-5.html#5.1">5.1: Direct Methods</A><br>
+<DD><A HREF="primer-5.html#5.2">5.2: Inputting a trial model</A><br>
+<DD><A HREF="primer-5.html#5.3">5.3: Modifying the Model</A><br>
+<DD><A HREF="primer-5.html#5.4">5.4: Atom identifiers</A><br>
+<DD><A HREF="primer-5.html#5.5">5.5: Atom parameter identifiers</A><br>
+</DL>
+<P>The refinable parameters that define the model are kept in LIST 5.
+ These consist of atomic parameters, and overall parameters such as
+ scale factors and extinction.
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-5.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="5.1">5.1: Direct Methods</A></H3></CENTER>
+<P>CRYSTALS contains no code for direct methods, but can prepare data
+ for other programs. It can also submit batch jobs for the other programs.
+ SIR and the recompiled version of SHELXS (distributed in CRYSTALS with
+ their authors permission) produce atom lists compatible with CRYSTALS.
+<P>To create the files in Command mode, issue:
+
+<pre>
+      !\FOREIGN  progname
+      !END
+</pre><p><BR>
+<P>To prepare for Direct Methods in SCRIPT mode,  issue:
+
+<pre>
+      !\SCRIPT  STRUCTUR
+</pre><p><BR>
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-5.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="5.2">5.2: Inputting a trial model</A></H3></CENTER>
+<P> In interactive mode the files produced
+ by the Direct Methods programs may be read into CRYSTALS with
+
+<pre>
+      !\SCRIPT  INEMAP
+</pre><p><BR>
+ The SCRIPT INEMAP can also be used for manual input of coordinates.
+<P>If a SCRIPT is not used to input the trial structure,
+ the SIR output file can be used as it is, but
+ the SHELXS.CRY  file must be edited to standard  CRYSTALS LIST 5 format.
+
+<pre> e.g.
+      !\LIST 5
+      !READ      NATOM = 3
+      !ATOM      C 1 X=.23  .37   .45
+      !ATOM      C 2 X=.31  Y=.06 .78
+      !ATOM      O 6 OCC=.5 X=0.5  0   .25
+      !END
+</pre><p><BR>
+
+<P>Note that the parameters x, y, z are in sequence, so only the first keyword is
+ requires, and that the parameters for atoms on special positions are not coded
+ (as required by SHELX),
+ and that there are defaults of 1.0 for occupancies, and 0.05 for Uiso.
+
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-5.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="5.3">5.3: Modifying the Model</A></H3></CENTER>
+<P>The model from SIR may already have some real atom type assigned to each
+ peak. SHELXS names all atoms as type 'Q'. The SHELXS.CRY file may be edited
+ with a system editor, or the atoms can be edited inside CRYSTALS. In
+      Command mode use \EDIT
+
+<pre>
+ e.g.
+      !\EDIT
+      !CHANGE FIRST(TYPE) UNTIL LAST C
+      !RENAME C(4) O(1), C(5) N(1)
+      !DELETE C(42) UNTIL C(54)   C(17)
+      !END
+</pre><p><BR>
+<P>This sequence changes the type of all atoms (FIRST UNTIL LAST) from
+ 'Q' to 'C', and then changes C(4) to O(1), etc. deletes atom C(17) and a group
+ of atoms.
+<P>There is also a SCRIPT to help with editing parameters. \SCRIPT EDLIST5
+ guide you through an edit, and \SCRIPT PLOT uses the graphical editor.
+<pre>
+      !\SCRIPT PLOT
+</pre><p><BR>
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-5.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="5.4">5.4: Atom identifiers</A></H3></CENTER>
+<P>Atom identifiers consist of two parts, a letter string (TYPE)
+ which is used
+ to associate the atom with atomic properties (form factor, radius etc), and
+ a SERIAL
+ number in parentheses. The total identifier should be unique for each atom.
+ Two special identifiers, FIRST and LAST refer to the first and last atoms in
+ the atom list, and must not have serial numbers.
+<P>Groups of atoms may be referenced with:
+
+<pre>
+      atomid1      UNTIL       atomid2
+</pre><p><BR>
+ This 'UNTIL' sequence causes the requested operation (detetion in the example
+ above) to be performed on all
+ the atoms in the atom list (LIST 5) between and including atomid1 and atomid2.
+ A thoughtfull naming of the atoms and ordering of the atom list can save
+ a lot of typing later. Symmetry operators can also be included in an atom
+ specification.
+
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-5.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="5.5">5.5: Atom parameter identifiers</A></H3></CENTER>
+<P>Atomic parameters are specified in an analogous way. The name of the
+ parameter being operated on is included with the atom serial number inside
+ the parentheses. The parameter being changed above is TYPE.
+
+<pre>
+e.g.
+      !BLOCK      C(2,X,Y,Z) UNTIL C(23)
+      !BLOCK      C(2,X'S,U'S) UNTIL C(23)
+      !BLOCK      U[ISO]
+</pre><p><BR>
+ The first example specifies
+ a least squares matrix block for the x, y and z parameters for
+ atoms C(2) until and including C(23). In example 2, the parameters X'S
+ and U'S are permitted
+ abbreviations for X,Y,Z and similarly for the anisotropic temperature
+ factor components. A parameter appearing without an atom identifier
+ (U[ISO] in example 3) implies the named parameter for all atoms.
+<P>Permitted model parameters are:
+
+<pre>
+ Overall parameters
+    SCALE OU[ISO] DU[ISO] POLARITY ENANTIO EXTPARAM
+ Atomic parameters
+    OCC U[ISO] X Y Z U[11] U[22] U[33] U[23] U[13] U[12]
+ Abbreviated parameters
+    X'S      Indicating  X,Y,Z
+    U'S      Indicating  U[11],U[22],U[33],U[23],U[13],U[12]
+    UII'S    Indicating  U[11],U[22],U[33]
+    UIJ'S    Indicating  U[23],U[13],U[12]
+ Special abbreviations
+        FIRST
+        LAST
+        ALL
+</pre><p><BR>
+<P>Batch, layer and twin scale factors are also permitted.
+<BR>

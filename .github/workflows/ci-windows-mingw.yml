@@ -21,7 +21,7 @@ jobs:
           guiflag: yes
           testsuffix: GUI
           removeguitst:
-          wxoptions: -DwxWidgets_ROOT_DIR=..\wx -DwxWidgets_LIB_DIR=..\wx\lib\gcc1210_x64_dll -DwxWidgets_CONFIGURATION=mswu
+          wxoptions: -DwxWidgets_ROOT_DIR=..\wx -DwxWidgets_LIB_DIR=..\wx\lib\gcc1320_x64_dll -DwxWidgets_CONFIGURATION=mswu
         - cl: nogui
           guiflag: no
           testsuffix:
@@ -48,8 +48,8 @@ jobs:
       if: matrix.cl == 'gui'
       shell: cmd
       run: | 
-        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.7/wxMSW-3.1.7_gcc1210_x64_Dev.7z > dev.7z
-        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.7/wxWidgets-3.1.7-headers.7z > head.7z
+        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.5/wxMSW-3.2.5_gcc1320_x64_Dev.7z > dev.7z
+        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.5/wxWidgets-3.2.5-headers.7z > head.7z
         7z x dev.7z -owx -y
         7z x head.7z -owx -y
         dir
@@ -83,7 +83,7 @@ jobs:
         set CRYSDIR=.\,..\ci\
         set COMPCODE=MIN64GH${{ matrix.testsuffix }}
         set OMP_NUM_THREADS=1
-        set PATH=C:\msys64\mingw64\bin;..\wx\lib\gcc1210_x64_dll;%path%
+        set PATH=C:\msys64\mingw64\bin;..\wx\lib\gcc1320_x64_dll;%path%
         echo PATH is %PATH%
         echo CRYSDIR is %CRYSDIR%
         ren MIN64GH${{ matrix.testsuffix }}.org safe.dir

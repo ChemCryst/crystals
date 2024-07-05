@@ -1,0 +1,39 @@
+<!-- XTLVAR title="Cif Files" -->
+<!-- XTLVAR comment="Cif Files" -->
+<!-- XTLVAR cvssource="manual/primer.man" -->
+<H1>Crystals Primer</H1>
+<H2>Chapter 12: Cif Files</H2>
+<DL><DT>
+</DL>
+<P>The Crystallographic Information File data format (cif) is gaining popularity
+ as a means of submitting numerical data for publication. With <i>Acta</i> Cryst.}
+ submission of a cif file with an article can speed up processing of the
+ document by several weeks.
+ Atomic parameters, bond lengths, angles and torsion angles can be
+ out-put in 'cif' format, together with a list of the other data required by
+ <i>Acta</i> Cryst}. You are recommended to input a LIST 30 at the very start of an
+ analysis, since this will be updated with various 'goodies' as the analysis
+ proceeds.
+ As above, LIST 5 MUST NOT BE MODIFIED in any way between the final
+ least squares and the generation of publication listings.
+
+
+<pre>
+      !\CIF
+      !END
+      !\PARAMETERS
+      !COORDINATE PUNCH=CIF
+      !END
+      !\DISTANCE
+      !E.S.D YES
+      !OUTPUT PUNCH=CIF
+      !END
+      !\TORSION
+      !PUBLICATION PUNCH=CIF
+      !ATOM C(1) C(2) C(3) C(4)
+      !ATOM C(6) C(7) C(8) C(9) UNTIL C(11)
+      !END
+</pre><p><BR>
+<P>The script \SCRIPT CIF or \SCRIPT PUBLISH helps with the preparation
+of cif files.
+<BR>&nbsp;<BR>

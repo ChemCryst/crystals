@@ -1,0 +1,122 @@
+<!-- XTLVAR title="Results" -->
+<!-- XTLVAR comment="Results" -->
+<!-- XTLVAR cvssource="manual/guide.man" -->
+<H1>Crystals User Guide</H1>
+<H2>Chapter 9: Results</H2>
+<DL><DT>
+<DD><A HREF="guide-9.html#9.1">9.1: Difference electron density</A><br>
+<DD><A HREF="guide-9.html#9.2">9.2: Analysis of differences</A><br>
+<DD><A HREF="guide-9.html#9.3">9.3: Physical reasonableness</A><br>
+<DD><A HREF="guide-9.html#9.4">9.4: Thermal parameters</A><br>
+<DD><A HREF="guide-9.html#9.5">9.5: Computer Graphics</A><br>
+</DL>
+<P>Increasingly, the aim of a crystal structure analysis is not to produce
+ a detailed description of a single structure, but either to determine
+ the gross structure of a compound, or obtain geometric details of a series
+ of compounds.  Few crystallographers now have the time to make friends with
+ all their structures. None the less, since most published structures now find
+ their way into computer readable data banks, from which they may be retrieved
+ by programs with less insight than human researchers, it has become more vital
+ than ever that structures are processed in a well defined and documented way,
+ and that the results are published without additional errors. CRYSTALS does
+ watch what the user is doing, and may alert him to real or potential problems,
+ but eventually the user is responsible for his own work. The following list
+ gives some of the points to be checked, and the facilities available for
+ doing this.
+<BR>
+<HR><small><A HREF="guide-9.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="9.1">9.1: Difference electron density</A></H3></CENTER>
+<P>This provides a broad and largely unbiassed view in an intuitatively 
+ interpretable form  of the differences between the observed and calculated
+ structure factors. An entirely featureless map indicates that the model
+ can simulate the observations well, though other models may do almost as
+ well, and there may be errors in the data that it would be preferable that
+ the model didn't emulate (e.g. temperature factors concealing the need for
+ an absorption correction). In any case, since most refinements will be 
+ conducted with some sort of weighting of the observations, it is unlikely
+ that the map will be without features of any kind. What is important is that
+ any features observed can be explained.
+<BR>
+<HR><small><A HREF="guide-9.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="9.2">9.2: Analysis of differences</A></H3></CENTER>
+<P>For a formally valid least squares refinement, the average value of
+ w(Fo-Fc)**2 must be constant for any systematic sectioning of the data. In 
+ CRYSTALS the instruction \ANALYSE provides an analysis  by sectioning as
+ a function of h, k, l, parity, class, /Fo/ and sign(theta). The entries in
+ the column &lt;w(Fo-Fc)**2&gt;  should be approximately constant 
+ throughout the table. If this condition is  not satisfied,
+ then systematic variations in &lt;(Fo-Fc)&gt;
+ as a function of one or more of the sectionings may throw light on serious
+ failures in the model. For example, if Fo is less than Fc for strong
+ reflections and also for low angle reflections, then an extinction correction
+ may be necessary. Systematic variations as a function of index may indicate
+ the need for an absorption correction or an anisotropic extinction correction.
+<HR><small><A HREF="guide-9.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="9.3">9.3: Physical reasonableness</A></H3></CENTER>
+<P>A refinement which converges to physically unreasonable parameter values
+ cannot be regarded as satisfactory. Positional parameters usually need
+ translating into molecular parameters before their significance becomes
+ apparent. Several translations available in CRYSTALS.
+<div class="instruction"><strong><u>\DISTANCES</u></strong><br>
+<P>This instruction computes inter and intra atomic distances and angles. All
+ necessary symmetry operators are automatically applied to ensure that values
+ within the specified limits are generated. The user should check that there
+ are no inexplicably short inter molecular contacts, as well as checking the
+ ususal bond lengths and angles. The program will also compute e.s.d.s
+ from the full covarience matrix (including symmetry effects). The information
+ for this is taken from the least squares matrix, and the program will not
+ permit this information to be applied to any other LIST 5 than that produced
+ be the corresponding round refinement. It is thus fairly important to give
+ your atoms systematic names and serial numbers, and to get the list into
+ a convenient order AS SOON AS POSSIBLE. Even just changing the serial of
+ an atom will inhibit the linking of the LIST 5 and the matrix.
+</div>
+<div class="instruction"><strong><u>\MOLAX</u></strong><br>
+<P>This procedure computes the principal axes of inertia of a group of atoms.
+ If they have unit weights or weights derived from their standard deviations,
+ then the shortest axis is parallel to the normal to the best plane, and
+ the longest is parallel to the best line. 
+</div>
+<div class="instruction"><strong><u>\TORSION</u></strong><br>
+<P>This procedure computes the torsion angles for the specified atoms. e.s.d.s
+ are not currently computed.
+</div>
+<div class="instruction"><strong><u>\CHECK</u></strong><br>
+<P>This procedure compares the current values of parameters with those 
+ requested in the restraint definitions. Current values differing
+ significantly  from those required should be carefully reappraised, since
+ they indicate a conflict between the diffraction data and the hypotheses.
+</div>
+<HR><small><A HREF="guide-9.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="9.4">9.4: Thermal parameters</A></H3></CENTER>
+<div class="instruction"><strong><u>\AXES</u></strong><br>
+<P>The six components of the anisotropic temperature factor can be transformed
+ to define a three dimensional ellipsoid representing the harmonic motion of
+ the atom. If free refinement of the U's leads to an ellipsoid with a negative
+ volume, then the transformation becomes meaningless, usually indicating that
+ there are grave deficiencies in the model or the data. For data collected
+ at very low temperatures, the volume may go marginally negative, and
+ restraints on the U's should stabilise the situation. The procedure AXES
+ is called automatically after every round of refinement, to give warning
+ of non-positive definite U's. Refinement will however continue even if
+ some atoms are unsatisfactory. The result is generally a rapidly diverging
+ process with rapidly increasing R factors.
+</div>
+<div class="instruction"><strong><u>\ANISO</u></strong><br>
+<P>This procedure tries to fit the atomic temperature factors to a rigid body
+ composite temperature factor. This is partitioned into three parts, T
+ representing the rectilinear vibration of the body, L representing its
+ torsional libration, and S representing the coordination between these two
+ parts. There are 20 independant terms to be evaluated in TLS for an
+ unsymmetrical fragment not lying on a symmetry operator, so that a rigid
+ body of this sort cannot be defined for less than 4 atoms. For a body
+ of six atoms, the calculation might just be meaningfull, though there are
+ problems with the conditioning of the matrix if the atoms lie close to a conic
+ section. Under these conditions the maths cannot distinguish two correlated
+ motions in T space from a corresponding libration in L space. The user
+ should be aware that good agreement between U(obs) and U(calc) does not mean
+ that the values of T, L and S have any physical significance.
+</div>
+<HR><small><A HREF="guide-9.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="9.5">9.5: Computer Graphics</A></H3></CENTER>
+<P>CRYSTALS comes with the graphics program Cameron for visualising structures.

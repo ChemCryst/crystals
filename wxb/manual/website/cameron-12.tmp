@@ -1,0 +1,254 @@
+<!-- XTLVAR title="Connectivity Control" -->
+<!-- XTLVAR comment="Connectivity Control" -->
+<!-- XTLVAR cvssource="manual/cameron.man" -->
+<H1>Cameron Manual</H1>
+<H2>Chapter 12: Connectivity Control</H2>
+<DL><DT>
+<DD><A HREF="cameron-12.html#12.1">12.1: CONNECT</A><br>
+<DD><A HREF="cameron-12.html#12.2">12.2: Miscellaneous CONNECT commands</A><br>
+</DL>
+<A NAME="Cameron - Connectivity control"> </A>
+<P>It is important that the user has complete control over the
+bonds displayed in a drawing. The CONNECT group of options is a
+complicated one but has been designed so as to provide to user
+with a
+fully flexible set of commands.
+<HR><small><A HREF="cameron-12.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="12.1">12.1: CONNECT</A></H3></CENTER>
+<P>CONNECT is used in one of two ways, either on its own or with
+a
+modifying sub-command.
+<div class="instruction"><strong><u>CONNECT</u></strong><br>
+The syntax for this command is:
+<pre>
+CONNECT X Y dmin dmax
+</pre><p><BR>
+<P>This will create two lists of atoms (one from X and one from Y
+which may
+be atoms, elements or * as required) and uses these lists
+when calculating connectivity. dmin and dmax are in angstroms. The
+distances between all combinations of the atoms in the two lists
+are
+determined. If distances any lie within
+the specified dmin -&gt; dmax range (and the bonds do not already
+exist)
+they will be added into the connectivity lists.  To connect up
+CU1 O bonds for example you could
+use:
+<pre>
+CONNECT CU1 O 0.0 2.0
+</pre><p><BR>
+which would create one list - containing Cu1 only - and another
+list -
+containing all of the oxygen atoms - and then search for
+inter-list
+bonds. In this way, if any O - O bonds exist within the given
+range they
+will NOT be found. Note that if you require
+connections to be calculated between atoms of the same type you
+use:
+<pre>CONNECT X X dmin dmax.
+<div class="directive"></pre><p><strong><i>ALL</i></strong>
+CONNECT ALL requires two arguments dmin and dmax. The result is
+identical to CONNECT above except that ALL of the atoms are
+included in
+the calculation.
+<pre>
+CONNECT ALL 0.0 2.0
+</pre><p><BR>
+will draw all bonds that fall within the 0.0 - 2.0 angstrom range.
+</div>
+<div class="directive"><strong><i>DEFAULT</i></strong>
+CONNECT DEFAULT requires no arguments. This command does two
+things:
+<pre>
+1)      Reset all of the connectivity radii
+        to their initial values
+2)      Calculate the connectivity according
+        to these radii.
+</pre><p><BR>
+It is effectively a 'start again' option as it removes any
+changes in
+bonding that have been introduced with the JOIN, REMOVE etc
+options.
+</div>
+<div class="directive"><strong><i>RADII</i></strong>
+This is a sub-command of CONNECT and comes immediately after it.
+It requires the following arguments:
+<pre>
+CONNECT RADII X r
+</pre><p><BR>
+where X is the name of an atom or element and r is its new
+connectivity
+radius. The connectivity of this atom/element is then
+redetermined.
+<div class="parameter"><i>COVALENT</i>
+</div>
+<div class="parameter"><i>IONIC</i>
+</div>
+<div class="parameter"><i>VANDERWAALS</i>
+These subcommands set the specified atoms to appropriate connectivity 
+radii eg CONNECT RADII IONIC N. The further subcommand ALL can be used 
+to set all atoms.
+</div>
+</div>
+<div class="directive"><strong><i>HBONDS</i></strong>
+This command enables the user to search for hydrogen bonds within
+the
+structure. The syntax is :-
+<pre>
+CONNECT HBONDS dmin dmax X Y
+</pre><p><BR>
+dmin/dmax is the range for searching (in angstroms), X/Y are atoms/elements to
+be
+included in the search. For a H-bond to be valid it must be
+bonded to
+one of the atoms in the list X,Y etc AND be within the range of
+another
+of the atoms. For example, if we are searching for H-bonds
+involving oxygen atoms:
+<pre>
+CONNECT HBONDS 0.0 2.5 O
+</pre><p><BR>
+will achieve this. There may well be eg C - H - O linkages within
+the range
+but only O - H - O ones will be registered. In this way we can
+filter
+the search and set a large value for dmax so that all the H-bonds
+are
+discovered without obtaining spurious information. The bond style
+used
+for H-bonds is dotted.
+</div>
+<div class="directive"><strong><i>INTER</i></strong>
+<P>This option is intended to be used after a PACK or ENCLOSURE 
+operation. This will find connections between atoms which have DIFFERENT
+packnumbers - ie. between assymetric units or between different GROUPS 
+if PACK or ENCLOSURE GROUP has been used. The bonds are in the DOTTED 
+style when generated. The syntax is:
+<pre>
+CONNECT INTER O C 0.0 3.0
+</pre><p><BR>
+as for CONNECT itself.
+</div>
+<div class="directive"><strong><i>FULL</i></strong>
+</div>
+<div class="directive"><strong><i>DOTTED</i></strong>
+<P>The CONNECT command can also be used if bonds already exist to
+alter the
+style. There are three options:
+<pre>
+CONNECT DOTTED at1 at2
+CONNECT DOTTED at1 el1
+CONNECT DOTTED el1 el2
+</pre><p><BR>
+These change the style of the single bond at1-at2, the
+style
+of any el1-at1 bonds and the style of any el1-el2 bonds respectively. Note
+that in
+the latter case, el1 and el2 may be the same element ie you can
+make all
+C-C bonds dotted.
+<BR>
+</div>
+</div>
+<div class="instruction"><strong><u>JOIN</u></strong><br>
+<div class="directive"><strong><i>DOTTED</i></strong>
+</div>
+<div class="directive"><strong><i>FULL</i></strong>
+<P>Another connectivity header command is JOIN. This is a more
+specific
+command which is used to make a new bond. The syntax is:
+<pre>
+JOIN DOTTED at1 at2
+JOIN FULL al1 at2
+</pre><p><BR>
+This will create a new bond between at1 and at2 of the specified type.
+</div>
+</div>
+<div class="instruction"><strong><u>REMOVE</u></strong><br>
+This is the reverse command to JOIN. It will break the bond between 
+the specified atoms. The syntax is:
+<pre>
+REMOVE at1 at2
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>DISCONNECT</u></strong><br>
+<P>This command is the reverse of CONNECT.
+<pre>
+DISCONNECT C O 0.5 1.5
+</pre><p><BR>
+will get rid of any C-O bonds that are OUTSIDE the range 0.5 - 1.5
+angstroms.
+<div class="directive"><strong><i>ALL</i></strong>
+DISCONNECT ALL removes all of the connectivity information.
+</div>
+<div class="directive"><strong><i>GROUP</i></strong>
+DISCONNECT GROUP is intended primarily for use with disordered
+structures although other uses can be envisaged. For example a
+substituent
+may be 'flipping' between two sites generating very short
+distances between
+atoms in different groups. It is not possible to DISCONNECT these
+bonds
+since some of the distances may appear to be 'normal'. To get
+over this,
+each disordered part is defined as a group (See DEFGROUP) and
+DISCONNECT
+GROUP is used to remove any bonds that exist between them. The
+syntax is:
+<pre>
+DISCONNECT GROUP group1 group2
+</pre><p><BR>
+</div>
+<div class="directive"><strong><i>ATOM</i></strong>
+<P>This command deletes ALL bonds involving the specified atom. The 
+syntax is:
+<pre>
+DISCONNECT ATOM at1 
+</pre><p><BR>
+</div>
+</div>
+<HR><small><A HREF="cameron-12.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="12.2">12.2: Miscellaneous CONNECT commands</A></H3></CENTER>
+<P>There are three other commands which either relate to
+connectivity or
+to how the bond is represented on the output device.
+<div class="instruction"><strong><u>TAPER</u></strong><br>
+This controls the bond tapering. It has an initial value of 2.0. Increasing this increases the tapering of the bonds. This
+tapering is
+useful as it introduces a 3-D effect into the drawing. If
+tapering is
+not required then entering:
+<pre>
+CONNECT TAPER 0.0
+</pre><p><BR>
+will achieve this.
+</div>
+<div class="instruction"><strong><u>THICKNESS</u></strong><br>
+<P>This command controls the thickness (radius) of the bonds in
+angstroms. It
+requires one argument, whose default value is 0.02.
+<pre>
+CONNECT THICKNESS 0.04
+</pre><p><BR>
+will double the radius of the bonds as drawn.
+</div>
+<div class="instruction"><strong><u>TOLERANCE</u></strong><br>
+<P>This sets the tolerance used when determining whether or not
+a bond
+exists. The formula used is:
+<pre>
+If  dist &lt; ( C1 + C2 ) * tol  then a bond exists
+</pre><p><BR>
+where C1 and C2 are the connectivity radii of the atoms in
+question.
+The initial value of 'tol' is 1.1 ie the interatomic distance has
+to be no
+more than 10% greater than the sum of the two connectivity radii
+for a
+bond to be found. The syntax for the command is:
+<pre>
+CONNECT TOLERANCE n
+</pre><p><BR>
+</div>

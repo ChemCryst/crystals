@@ -1,0 +1,27 @@
+<!-- XTLVAR title="Obeying Files" -->
+<!-- XTLVAR comment="Obeying Files" -->
+<!-- XTLVAR cvssource="manual/cameron.man" -->
+<H1>Cameron Manual</H1>
+<H2>Chapter 6: Obeying Files</H2>
+<DL><DT>
+</DL>
+<A NAME="Cameron - OBEY files"> </A>
+</div>
+</div>
+<div class="instruction"><strong><u>OBEY</u></strong><br>
+<P>If required the user is able to hand over control of CAMERON to an
+external file. This is particulary useful if a set of operations is to
+be carried out on a number of pictures because the file need only be
+generated once and then it can be used over and over again. At the
+present time CAMERON is able to read files is its own format - ie in
+with the same syntax as the commands input at the keyboard - or it can
+read a SNOOPI.INI file as output by CRYSTALS. The syntax is :-
+<pre>
+OBEY nnn.nn
+</pre><p><BR>
+Note that any commands entered after OBEY (on the same line) are
+ignored. This is to allow for possible errors in the OBEY file - errors
+will cause the OBEYed file to be closed. OBEY files may themselves
+contain the names of other files to be OBEYed.
+<BR>
+<P>Related commands : LOG

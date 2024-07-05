@@ -1,0 +1,40 @@
+<!-- XTLVAR title="Other Picture Controlling Commands" -->
+<!-- XTLVAR comment="Other Picture Controlling Commands" -->
+<!-- XTLVAR cvssource="manual/cameron.man" -->
+<H1>Cameron Manual</H1>
+<H2>Chapter 15: Other Picture Controlling Commands</H2>
+<DL><DT>
+</DL>
+<A NAME="Cameron - Misc picture control"> </A>
+<P>There are a few other commands in CAMERON which deal with control of
+the type of picture being used.
+</div>
+</div>
+<div class="instruction"><strong><u>MAXIMISE</u></strong><br>
+<P>This command is related to the VIEW commands PLANE, ALONG, VERTICAL
+etc. In these commands the view direction does not define all of the
+degrees of freedom of the molecule. It is possible to rotate the
+molecule further so that as much of is as possible is shown on the
+screen.
+<div class="directive"><strong><i>ON</i></strong>
+</div>
+<div class="directive"><strong><i>OFF</i></strong>
+<P>These two commands switch maximisation calculations ON and OFF. These
+calculations are slow - especially for large molecules so they are
+included as an option.
+</div>
+</div>
+<div class="instruction"><strong><u>SCALE</u></strong><br>
+<div class="directive"><BR>DFIX
+</div>
+<div class="directive"><BR>DUNFIX
+<P>These two commands allow the user to control the calculation of
+picture scale. SCALE FIX sets the scale to its current value and does
+not recalculate it, irrespective of changes in the number and position
+of atoms in the picture. SCALE UNFIX reverts to scale calculations.
+</div>
+<div class="directive"><strong><i>SET</i></strong>
+<P>SCALE SET is followed by a number, the value of the scale to be used
+for all subsequent pictures. This can be altered with another SCALE SET
+command or by issuing SCALE UNFIX.
+<BR>

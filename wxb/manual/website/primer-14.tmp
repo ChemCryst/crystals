@@ -1,0 +1,83 @@
+<!-- XTLVAR title="The Data Base" -->
+<!-- XTLVAR comment="The Data Base" -->
+<!-- XTLVAR cvssource="manual/primer.man" -->
+<H1>Crystals Primer</H1>
+<H2>Chapter 14: The Data Base</H2>
+<DL><DT>
+<DD><A HREF="primer-14.html#14.1">14.1: Index to the disk</A><br>
+<DD><A HREF="primer-14.html#14.2">14.2: Listing LISTs</A><br>
+<DD><A HREF="primer-14.html#14.3">14.3: Recovering previous lists</A><br>
+<DD><A HREF="primer-14.html#14.4">14.4: Purging the disk file</A><br>
+</DL>
+<P>The data base is held in the binary file *.DSC, called 'the disk'. This
+ file MUST NOT BE PRINTED. It will grow with use, and cannot be shortened.
+ Instructions exist for recovering space within the disk. See the section
+ DISK for details.
+
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-14.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="14.1">14.1: Index to the disk</A></H3></CENTER>
+<P>The disk index can be examined with
+
+<pre>
+      !\DISK
+      !PRINT
+          or
+      !PRINT      DISK
+      !END
+</pre><p><BR>
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-14.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="14.2">14.2: Listing LISTs</A></H3></CENTER>
+<P>The data in a CRYSTALS LIST can be examined with:
+
+<pre>
+      !\SUMMARY LIST n
+      !END
+     Which sends a brief summary of LIST n to the terminal
+ or
+      !\PRINT n
+      !END
+     Which sends a detailed listing to the .LIS file.
+</pre><p><BR>
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-14.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="14.3">14.3: Recovering previous lists</A></H3></CENTER>
+<P>Whenever a LIST is stored in the disk, its serial number is incremented.
+ In general, previous lists are over written, but new parameters lists,
+ LIST 5, are always created. Previous versions can be made current or
+ active by 'resetting' to them. This is done either by giving their
+ absolute serial number, or a relative number.
+
+
+<pre>
+      !\DISK
+      !RESET       5       0      -1
+      !RESET       5      42
+      !END
+</pre><p><BR>
+<P>The first reset steps back one to the previous parameter list. The second
+ reset (which of course supersedes the first), makes LIST 5 serial number 42
+ the current active version.
+
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-14.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="14.4">14.4: Purging the disk file</A></H3></CENTER>
+
+<P>The disc file slowly grows as lists are accumulated in it.
+ Non-currently
+ active lists can be eliminated with the PURGE instruction. Valuable
+ intermediate versions of lists, such as a good trial structure before an
+ experimental refinement, can retained by setting a flag.
+
+
+<pre>
+      !\DISK
+      !RETAIN 5      17
+      !END
+      !
+      !\PURGE
+      !END
+</pre><p><BR>
+
+<BR>&nbsp;<BR>

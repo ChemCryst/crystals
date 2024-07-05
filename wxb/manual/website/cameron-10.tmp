@@ -1,0 +1,181 @@
+<!-- XTLVAR title="Include And Exclude" -->
+<!-- XTLVAR comment="Include And Exclude" -->
+<!-- XTLVAR cvssource="manual/cameron.man" -->
+<H1>Cameron Manual</H1>
+<H2>Chapter 10: Include And Exclude</H2>
+<DL><DT>
+<DD><A HREF="cameron-10.html#10.1">10.1: Further related commands</A><br>
+<DD><A HREF="cameron-10.html#10.2">10.2: Generation of Dummy atoms</A><br>
+<DD><A HREF="cameron-10.html#10.3">10.3: Example</A><br>
+</DL>
+<A NAME="Cameron - Include and Exclude"> </A>
+<P>The commands INCLUDE and EXCLUDE are very useful as they
+control which
+atoms are drawn at any one time. The syntax for both of the
+commands is
+very similar as they are effectively the reverse of each other.
+</div>
+</div>
+<div class="instruction"><strong><u>INCLUDE</u></strong><br>
+</div>
+<div class="instruction"><strong><u>EXCLUDE</u></strong><br>
+<P>These commands may be entered on their own and be follow by
+atom or
+element names. The syntax is :-
+<pre>
+nnCLUDE at1 at2 el1 el2
+</pre><p><BR>
+Once an atom has been EXCLUDED from the picture it is not drawn
+and it
+is not included in any calculations eg PACK or ENCLOSURE.
+<A NAME="Cameron - Include and Exclude All"> </A>
+<div class="directive"><strong><i>ALL</i></strong>
+The ALL sub-command is a 'blanket' command that applies the
+IN/EXCLUDE
+operation to ALL of the atoms in the current view. Therefore if
+we want
+to exclude more atoms than we want to include we can use EXCLUDE
+ALL to
+get rid of all of the atoms and then add in those we want by
+using
+INCLUDE.
+<A NAME="Cameron - Include and Exclude Group"> </A>
+</div>
+<div class="directive"><strong><i>GROUP</i></strong>
+The command DEFGROUP is available to define groups of atoms that
+are to
+be referred to as a whole. The IN/EXCLUDE command can be used
+with GROUP
+to remove or atoms all of the atoms in the group in the picture
+as
+required.
+<A NAME="Cameron - Include and Exclude Fragment"> </A>
+</div>
+<div class="directive"><strong><i>FRAGMENT</i></strong>
+The user can specify atoms to be IN/EXCLUDEd by defining groups of atoms
+as fragments. A fragment is defined by a single atom, and consists of
+all the atoms linked to it by the current CONNECTIVITY TABLE. That is,
+if atoms are excluded from the picture the bonds ARE NOT broken and
+FRAGMENT will use bonds involving excluded atoms in its calculations.
+ The user
+can select this atom by typing or by clicking on it with the mouse.
+ie. EXCLUDE FRAGMENT C1 will exclude C1, any atoms joined to C1, any
+atoms joined to those atoms etc.
+<A NAME="Cameron - Include and Exclude Cell"> </A>
+</div>
+<div class="directive"><strong><i>CELL</i></strong>
+It is often useful to see how the atoms being drawn relate to the
+unit
+cell. IN/EXCLUDE CELL is used to control the inclusion of the
+unit cell
+(in the LINE style) on the picture.
+<A NAME="Cameron - Include and Exclude Area"> </A>
+</div>
+<div class="directive"><strong><i>AREA</i></strong>
+Choosing INCLUDE or EXCLUDE AREA in the PC version allows the user to 
+draw a polygonal area with the mouse. The polygon is created by clicking
+with the left button on the position required for the vertices. The 
+polygon is closed by clicking close to the initial position. The mouse 
+cursor is changed to a cross during polygon creation and to an arrow when 
+you are close enough to the initial point for closure to occur. Hitting 
+the &lt;return&gt; key or clicking with the right mouse button will abort the 
+operation.
+<A NAME="Cameron - Include and Exclude Select"> </A>
+</div>
+<div class="directive"><strong><i>SELECT</i></strong>
+The select option is equivalent to EXCLUDE ALL followed by INCLUDE AREA.
+The polygonal area is chosen in the same way as described above and all 
+atoms not within that area are excluded.
+<HR><small><A HREF="cameron-10.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="10.1">10.1: Further related commands</A></H3></CENTER>
+<P>For pictures with more than one 'type' of constituent atom three more
+commands will prove to be useful.
+<A NAME="Cameron - Mask and Unmask"> </A>
+<div class="instruction"><strong><u>MASK</u></strong><br>
+</div>
+<div class="instruction"><strong><u>UNMASK</u></strong><br>
+<P>The MASK command has the same syntax as EXCLUDE ie.
+<pre>
+(UN)MASK at1 at2 el1 el2 ...
+</pre><p><BR>
+It is used to remove atoms from current INCLUDE operations - ie atoms
+that have been MASKed will not be included when using INCLUDE ALL. For
+example the user could MASK out solvent molecules from a diagram leaving
+the 'basic' asymmetric unit to be worked on. UNMASK can be used to
+re-include the required atoms. The sub commands ALL and GROUP are
+available for use with both MASK and UNMASK.
+<A NAME="Cameron - Include and Exclude Switch"> </A>
+</div>
+<div class="instruction"><strong><u>SWITCH</u></strong><br>
+<P>The SWITCH command causes any atoms that are EXCLUDEd from the picture
+to be INCLUDEd and vice versa. This command can be used in conjunction
+with MASK as any MASKed atoms WILL NOT be included in the picture after
+a SWITCH operation.
+<P>Consider an asymmetric unit containing an anion, a cation and some
+solvent. The user could MASK out the solvent atoms. EXCLUDE the anion
+and obtain pictures of the cation atoms. The SWITCH command then
+allows the user to examine the anion without having to INCLUDE and
+EXCLUDE atoms, and the solvent atoms remain excluded throughout.
+</div>
+<HR><small><A HREF="cameron-10.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="10.2">10.2: Generation of Dummy atoms</A></H3></CENTER>
+<A NAME="Cameron - Include and Exclude Dummy"> </A>
+<div class="instruction"><strong><u>DUMMY</u></strong><br>
+<P>In certain circumstances it may be useful for the user to be
+able to
+generate new 'dummy' atoms from the initial atomic coordinates.
+One
+example of this is a compound that contains a cyclopentadienyl ring. The
+bonding in
+such a system can either be represented as five M - C bonds or
+as a
+single bond to the ring's centre. The syntax for the command is:
+<pre>
+INCLUDE DUMMY d
+</pre><p><BR>
+where d is the name of the created atom. This must then be
+followed by a
+sub-command which defines the atoms position.
+<div class="directive"><strong><i>COORDS</i></strong>
+This specifies the atoms coordinates in unit cell fractions. The
+syntax
+is:
+<pre>
+COORDS x y z
+</pre><p><BR>
+<A NAME="Cameron - Include and Exclude Centroid"> </A>
+</div>
+<div class="directive"><strong><i>CENTROID</i></strong>
+Alternatively, the atoms position can be defined relative to
+others
+already in the molecule. At least TWO atoms must be entered to
+define
+new atoms position and it is placed at the CENTROID of their
+coordinates. The syntax is:
+<pre>
+CENTROID at1 at2 at3 ...
+</pre><p><BR>
+<div class="parameter"><i>ALL</i>
+A further sub-command is available so that the new atom is placed
+at the
+centroid of all of the atoms in the molecule. This will prove
+particulary useful when trying to alter the spacegroup of a
+structure eg
+to convert from P 1 to P -1 as the centre of inversion will lie
+at the
+newly generated dummy atom whose coordinates are output once they
+have
+been calculated.
+<BR>
+</div>
+</div>
+</div>
+<HR><small><A HREF="cameron-10.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="10.3">10.3: Example</A></H3></CENTER>
+<P>To create a dummy atom in the centre of a cyclopentadienyl ring you
+would use:
+<pre>
+INCLUDE
+DUMMY d1
+CENTROID C1 C2 C3 C4 C5
+</pre><p><BR>

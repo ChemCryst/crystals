@@ -1,0 +1,30 @@
+<!-- XTLVAR title="Editing The Atom List" -->
+<!-- XTLVAR comment="Editing The Atom List" -->
+<!-- XTLVAR cvssource="manual/cameron.man" -->
+<H1>Cameron Manual</H1>
+<H2>Chapter 5: Editing The Atom List</H2>
+<DL><DT>
+</DL>
+<A NAME="Cameron - Editing the atom list"> </A>
+<P>The user is able to edit the names and elemental types of the atoms in
+the current list. The following commands are available -
+</div>
+</div>
+</div>
+<div class="instruction"><strong><u>RENAME</u></strong><br>
+The syntax is:
+<pre> RENAME at1 at2
+    or:
+ RENAME el1 el2.
+</pre><p><BR>
+<P>Arguments are entered in
+pairs - the first is renamed to the second - and must be like with like.
+i.e. you cannot rename an atom to an element or vice versa.
+</div>
+<div class="instruction"><strong><u>RETYPE</u></strong><br>
+This allows the user to change the element of a list of atoms.
+<div class="directive"><strong><i>ATOMS</i></strong>
+The syntax is -
+<pre>
+RETYPE element ATOM at1 at2 at3
+</pre><p><BR>

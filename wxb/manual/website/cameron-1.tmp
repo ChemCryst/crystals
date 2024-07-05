@@ -1,0 +1,190 @@
+<!-- XTLVAR title="Introduction" -->
+<!-- XTLVAR comment="Introduction" -->
+<!-- XTLVAR cvssource="manual/cameron.man" -->
+<H1>Cameron Manual</H1>
+<H2>Chapter 1: Introduction</H2>
+<DL><DT>
+<DD><A HREF="cameron-1.html#1.1">1.1: HOW TO CONTROL THE PROGRAM</A><br>
+<DD><A HREF="cameron-1.html#1.2">1.2: Command Groups</A><br>
+<DD><A HREF="cameron-1.html#1.3">1.3: ERROR HANDLING</A><br>
+<DD><A HREF="cameron-1.html#1.4">1.4: The HELP facility</A><br>
+<DD><A HREF="cameron-1.html#1.5">1.5: Mouse Activation</A><br>
+<DD><A HREF="cameron-1.html#1.6">1.6: General Input Syntax</A><br>
+</DL>
+<P>CAMERON was designed and built in the Chemical Crystallography
+ Laboratory, Oxford, by Lisa Pearce, Keith Prout and David Watkin. Many
+people have contributed ides for improvements, and Louis Ferrugia
+pioneerd a completely WINDOWS based version.
+<HR><small><A HREF="cameron-1.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="1.1">1.1: HOW TO CONTROL THE PROGRAM</A></H3></CENTER>
+<P>The program is controlled by typing commands at the keyboard,
+by use of a mouse to pick items from a menu, or by using the mouse
+to manipulate the diagram.
+<HR><small><A HREF="cameron-1.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="1.2">1.2: Command Groups</A></H3></CENTER>
+<P>The commands have been collected into groups (twenty-three at present).
+Each group contains commands and sub-commands which perform related
+functions or which will act as qualifiers to each other. The command
+processor will spot invalid combinations of commands and sub-commands
+and enter error mode. Once in this mode the error can be corrected.
+<P>Command groups are used to decide when the user has finished entering
+all the qualifiers for a particular operation. The qualifiers are
+assumed to be finished when a command of another group is entered.
+For example :-
+<pre>
+XROT 20 YROT 30 VIEW LINE ALL
+</pre><p><BR>
+<P><strong>XROT,</strong> <strong>YROT</strong>  and <strong>VIEW</strong>  are all in the same group but <strong>LINE</strong>
+ (a command that
+sets the drawing style) is not. When the command processor reaches the
+<strong>LINE</strong> command it will then execute the previous commands ie <strong>XROT</strong>
+to <strong>VIEW.</strong>
+This is useful because it means that the user does not need to input all
+the qualifiers on one line, and also because the user does not need to
+tell the computer when it has finished with an operation - the computer
+is able to work this out for itself. The input lines :-
+
+<pre>
+XROT 20 YROT 30 VIEW LINE
+</pre><p><BR>
+and
+<pre>
+XROT 20
+YROT
+20 VIEW
+LINE
+</pre><p><BR>
+will produce exactly the same results.
+<P>If the user wishes to execute a group of commands without entering a
+command of another group this can be done by sending a blank line to the
+command processor (ie press the RETURN key twice).
+<pre>
+XROT 20 YROT 30 VIEW &lt;RETURN&gt; &lt;RETURN&gt;
+</pre><p><BR>
+will execute the three commands without the need for <strong>LINE.</strong>
+<HR><small><A HREF="cameron-1.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="1.3">1.3: ERROR HANDLING</A></H3></CENTER>
+<P>The command processor is able to check for some errors in the commands
+input by the user. The computer checks for two types of error:
+<BR>
+<pre>
+1. Whether a command / sub-command combination is valid.
+2. Whether the arguments supplied after a command are valid and also if there is
+the correct number of arguments.
+</pre><p><BR>
+<P>The action taken after an error depends upon the setting of the
+<strong>EDIT</strong> flag. If EDIT is OFF, only an error message is displayed.
+If EDIT is ON, the faulty input can be edited.
+Once an error has been detected the
+user can take action and modify the input line so that as many commands
+as possible can be processed. (If error checking is not carried out at
+this level, the detection of an error while executing a command will
+cause that command - and possibly its sub commands - to be lost.)
+<P>The user is given three options once an error has been detected.
+<div class="instruction"><strong><u>Abandon</u></strong><br>
+Do not execute any more commands not yet executed.
+</div>
+<div class="instruction"><strong><u>Edit</u></strong><br>
+The action taken by choosing the second option will depend on the nature of
+the error. If a word
+has been input that the computer has not recognised the user will be
+asked to enter an alternative word. If &lt;return&gt; is used then the
+word is replaced by a blank space - it is effectively deleted from the
+input line. If too many arguments are supplied the user is given the
+opportunity to delete the
+excess arguments. Alternatively if arguments are missing the user will
+be asked to input them.
+</div>
+<div class="instruction"><strong><u>Help</u></strong><br>
+<P>Help information is supplied if the user requests it. This will say
+what arguments, if any,
+are required by the current command. Also, if any sub commands are valid
+in the context of the error these are listed.
+<P>For example, the input line
+<pre>
+XROT 10 YROT ZROT 15 VIEW
+</pre><p><BR>
+contains an error - an argument is missing after <strong>YROT.</strong> The program will
+give the user three options :-
+<pre>
+Abandon      Don't execute any of the commands
+Edit         The user can supply the needed argument
+             and the new line is then processed.
+Help         This will display the help information
+
+     This command requires one numeric argument - the angle of rotation in degrees.
+</pre><p><BR>
+</div>
+<HR><small><A HREF="cameron-1.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="1.4">1.4: The HELP facility</A></H3></CENTER>
+<P>The CAMERON <strong>HELP</strong> facility can be entered in one of two ways, either
+once an error has occurred (as described above) or by requesting it
+directly. This second way of accessing HELP is achieved by entering <strong>'HELP'</strong>
+or '?' at any point in the input line. If a command follows <strong>'HELP'</strong> / '?' then
+information is given on this command - otherwise information is given on
+the previous command (if any). If no HELP is available (because the
+command is not recognised) then the user is supplied with general HELP
+information. The only difference between 'HELP' and '?' is in the detail of
+the information supplied. Each command comes with a help information
+line. Entering '?' will provide the user with the information line for the
+command on which you have requested HELP and a list of the sub-commands
+that are valid at this point. Entering 'HELP' gives the same information
+except that the help line for each of the sub-commands shown is also
+listed. 'HELP' will therefore provide the user with more detailed
+information than '?' will.
+<P>Once the HELP information has been read the user may 'Continue' or
+'Abort'.
+The later two options are the same as for Error Handling and
+are described above. 'Continue' simply removes the word 'HELP' or '?' (and any
+following words) from the input line and the user can carry on as
+before.
+<HR><small><A HREF="cameron-1.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="1.5">1.5: Mouse Activation</A></H3></CENTER>
+<P>The Mouse can be used to pick out atoms (and elements if a KEY is
+present). In some cases this is much quicker than typing on the keyboard
+- especially if the user does not know the names of the atoms concerned.
+The mouse cursor (an arrow) is present once an appropriate output device has
+been chosen.
+<P>For some commands the mouse is used for functions other than
+atom/element picking. In such cases - eg text positioning and labelling -
+the mouse is activated by typing MOUSE as a separate command.
+<BR>
+<HR><small><A HREF="cameron-1.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="1.6">1.6: General Input Syntax</A></H3></CENTER>
+<P>When the atoms are in their initial state (ie no symmetry operators
+have been applied) they are referred to by their normal atom or element
+names. With commands that allow elements to be affected eg
+COLOUR, BALL you may use a '*' to refer to ALL atoms. For example CONNECT 
+O * 0.0 3.0 will find all bonds between oxygen and any other atom within
+3 angstroms. A '*' can also be used to refer to GROUP names (see DEFGROUP 
+later).
+<P>Once pack operations have been carried out the atoms are
+identified differently. During PACK and ENCLOSURE the user is provided
+with information similar to :-
+<pre>
+2 additional symmetry generated units.
+</pre><p><BR>
+The atoms generated will be referred to by suffixing their packnumber 
+eg O1_2. These numbers 
+can be shown by using LABEL GENERATED. Therefore, consider an asymmetric
+unit which contains N1 and O2. The following will be available after
+packing:-
+
+<pre>
+N1_1      the single atom
+N1        all N1 atoms in the packed structure
+N         all the nitrogen atoms
+N_2       all the nitrogen atoms with pack number 2
+*_1       all the atoms with pack number 2
+</pre><p><BR>
+These pack numbered atom identifiers are produced by mouse clicking on
+the atoms concerned. The symmetry operation used to generate the atoms 
+can be found from INFO PACKNUMBER.  The operators are also written to
+the CRYSTALS listing file
+<BR>
+<P>When CAMERON is parsing the commands input it checks to see whether
+the next work on the line is a command or not. Only the first 4
+characters of each word are significant. Therefore, the processor will
+not know the difference between the command COLOUR and the file
+COLOUR.PST. If you require the later then it must be enclosed in quotes
+- eg COPY "COLOUR.PST".

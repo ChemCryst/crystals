@@ -1,0 +1,49 @@
+<!-- XTLVAR title="Regularisation" -->
+<!-- XTLVAR comment="Regularisation" -->
+<!-- XTLVAR cvssource="manual/guide.man" -->
+<H1>Crystals User Guide</H1>
+<H2>Chapter 6: Regularisation</H2>
+<DL><DT>
+<DD><A HREF="guide-6.html#6.1">6.1: EXAMPLE 1</A><br>
+</DL>
+<P>As explained above (Part 4), Fourier techniques provide a powerful way 
+ for initiating the refinement of a structure. When the geometry of fragments
+ are well known from previous analyses, for example phenyl groups, the initial
+ refinement can be speeded even futher by forcing the observed fragment to
+ adopt an idealised geometry. This process, common in protein crystallography,
+ is known as regularisation, and can be used not only to tidy up a poor
+ geometry, but also to postulate sites for missing atoms.
+<BR>
+<HR><small><A HREF="guide-6.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="6.1">6.1: EXAMPLE 1</A></H3></CENTER>
+<BR>
+<P>Regularising a cyclopentadienyl ring. The idealised coordinates are from
+ the literature.
+
+<pre>
+ \REGULARISE REPLACE
+ GROUP 5
+ OLD C(1) C(2) C(3) C(4) C(5)
+ ATOM 0 0 0
+ ATOM .846  1.165 0
+ ATOM .846 -1.165 0
+ ATOM 2.216  0.72 0
+ ATOM 2.216 -0.72 0
+</pre><p><BR>
+<P>Completing and regularising a phenyl ring. C(3) is very poorly placed,
+ and so will first be deleted, and C(6) has not been found at all. 
+ New atoms will be generated for them.
+
+<pre>
+ \EDIT
+ DELETE C(3)
+ \REGULARISE REPLACE
+ OLD C(1) C(2) C(3) C(4) C(5) C(6)
+ PHENYL
+ END
+</pre><p><BR>
+
+<BR>p
+ BE SURE THAT THE GIVEN ATOMS ARE ALL IN THE SAME MOLECULAR 
+ FRAGMENT, OTHERWISE YOU WILL NEED TO GIVE SYMMETRY OPERATORS.
+<BR>

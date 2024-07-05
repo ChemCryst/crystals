@@ -1,0 +1,106 @@
+\documentclass[10pt,a4paper]{report}
+\usepackage[centertags]{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{makeidx}
+\usepackage{newlfont}
+\usepackage{fancyhdr}
+\usepackage[bookmarks,colorlinks,plainpages,backref]{hyperref}
+\pagestyle{fancy}
+\hfuzz2pt % Don't bother to report over-full boxes if over-edge is < 2pt
+\makeindex
+\addtolength{\headwidth}{80pt}
+\addtolength{\textwidth}{80pt}
+\addtolength{\oddsidemargin}{-30pt}
+\begin{document}
+\lhead{\slshape \rightmark}
+\chead{}
+\rhead{\thepage}
+\lfoot{Fri Jul  5  2024}
+\cfoot{}
+\rfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\fancypagestyle{plain}{%
+\fancyhf{}
+\fancyfoot[L]{Fri Jul  5  2024}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}}
+\newcommand{\Instruction}[1]{{\bf #1}}
+\newcommand{\Directive}[1]{{\bf \emph{#1}}}
+\newcommand{\Keyword}[1]{\emph{#1}}
+\sloppy
+\title{Getting Started}
+\author{Chemical Crystallography Laboratory, Oxford}
+\date{Fri Jul  5  2024}
+\maketitle
+\tableofcontents
+\chapter{Data Organisation}
+It's always a good idea to keep your data organised, and it will alsohelp for the purposes of running CRYSTALS.
+
+1. Organise your computer. Create a master folder tohold all your structures and keep each structure in a sub-folder of this:e.g. \emph{c:$\backslash$strs$\backslash$compound1$\backslash$}
+
+2. Copy the crystallographic data in to the sub-folder. CRYSTALS acceptsdata files (usuall cif files) from most modern machines, and SHELX format .INS/RES and .HKL files.
+
+{\bf Take} {\bf care:} {\bf If} {\bf you} {\bf open} {\bf a} {\bf data} {\bf file} {\bf with} {\bf WORD,}{\bf you} {\bf may} {\bf accidentally} {\bf save} {\bf it} {\bf as} {\bf a} {\bf WORD} {\bf document.}Use notepad, EDIT, or some other \emph{ASCII} text editor.
+
+3. Click the CRYSTALS icon, and use the folder browser to find thefolder containing your data. Click OK.
+
+4. The CRYSTALS window is divided into several areas:
+
+ On the right: {\bf The} {\bf model} {\bf window.} This will display the model once the structure is solved.
+
+ Above the model: {\bf The} {\bf model} {\bf toolbar,} lets you change the appearanceand functioning of the model window.
+
+ At the very top: {\bf The} {\bf menu} {\bf bar.} The pull down menus representthe principal stages of structure analysis, working from left to right.
+
+ Below that: {\bf The} {\bf main} {\bf toolbar,} provides quick access to somecommon options that should also be in the menus.
+
+ On the upper left:{\bf The} {\bf text} {\bf output} {\bf window.} Thisdisplays the results of calculations, or asks the user questions.It has a large scroll-back capability.
+
+ Below that: {\bf The} {\bf information} {\bf tabs.} This panel can be hidden away,as can the toolbars, by clicking the little triangles in the bar thatdivides them from their neighbouring elements.
+
+ And below that: {\bf The} {\bf text} {\bf input} {\bf line.} This is below theoutput window. The cursor automatically moves to this area when you type.The 'arrow' keys enable you to recover previous input (like the DOSKEYutility). If you are a new user, you shouldn't worry too much aboutthe text input line.
+
+ At the very bottom: {\bf A} {\bf status} {\bf bar.} Shows progress during longcalculations, and status as CRYSTALS is doing different things.
+
+5. CRYSTALS creates many files:
+
+ {\bf A} {\bf binary} {\bf database} for each structure,always named CRFILEV2.DSC. {\bf NEVER} {\bf try} {\bf to} {\bf edit} {\bf this} {\bf file.} Thisfile enables CRYSTALS jobs to be restarted from where they were leftoff. All other files may be opened with a text editor e.g.notepad, wordpad, or edit.
+
+ Double clicking on the .DSC file will start CRYSTALS in that folder, usingthat .DSC file.
+
+ {\bf Text} {\bf files} bfile.l\emph{nn} and bfile.m\emph{nn.} The number \emph{nn}is automatically incremented with each run of the program. These files cangenerally be deleted without looking at them unless the analysis begins to gowrong. They provide post-mortem information.The currently in use files may be opened quickly using the "Files" tab on theinformation panel.
+
+ {\bf PUBLISH.*} files. These are final listings for preparing papers.\chapter{Using The Guide}
+
+
+ Once you have started CRYSTALS in a given folder, nothing much happens.To make things happen, try clicking the "GUIDE" button in thetoolbar. The GUIDE assesses where a structure analysis has got to, andwill provide a list of possible options in a pull-down menu. Choose therequired option and click OK.
+
+
+
+An explanation of the screen layout can be found on the menu bar under:
+
+{\bf Appearance} / {\bf Screen} {\bf Layout} 
+
+\chapter{Importing Shelx Data}
+
+
+ It is best to import the .INS or .RES file first. You can importa file with or without atoms depending on where the data is from - CRYSTALSwill just grab all the information that it can.
+
+ From the X-ray data menu, choose "Import SHELX file". You will needto know the space group symbol since this information is notpresent in the SHELX file format.
+
+ Type in the file name, or find it using "Browse", click OK and the filewill be imported. (You will be asked for the spacegroup).
+
+ Next import the reflection file. Choose "X-ray data"-$>$"Import reflections".The default settings are for a SHELX hkl file, so just type or browsefor the required file, and click OK.
+
+
+
+A description of the relationship between CRYSTALS and SHELX commands, including examples of their use, can be found on the menu bar under:
+
+{\bf Help} / {\bf Migrating} {\bf from} {\bf SHELX} 
+
+\printindex
+\end{document}

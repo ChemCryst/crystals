@@ -1,0 +1,46 @@
+<!-- XTLVAR title="Getting Started" -->
+<!-- XTLVAR comment="Getting Started" -->
+<!-- XTLVAR cvssource="manual/workshop.man" -->
+<H1>Crystals Worked Examples</H1>
+<H2>Chapter 1: Getting Started</H2>
+<DL><DT>
+<DD><A HREF="crysworkshop-gettingstarted.html#gettingstarted.1">1.1: Starting the program</A><br>
+<DD><A HREF="crysworkshop-gettingstarted.html#gettingstarted.2">1.2: Customising CRYSTALS to suit your screen size</A><br>
+</DL>
+
+<HR><small><A HREF="crysworkshop-gettingstarted.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="gettingstarted.1">1.1: Starting the program</A></H3></CENTER>
+<BR>&nbsp;<BR>
+<P>Double click on the CRYSTALS icon on the desktop, the "Browse for Folder" dialog 
+will be displayed. The selected directory should already be demo, if it isn't then 
+browse to find it: c:\wincrys\demo\demo, highlight it and then click OK.
+<P><IMG ALIGN="center" SRC="browseforfolder.jpg"></P>
+
+<P>CRYSTALS will start, and the demo / workshop dialog will open automatically.
+<P><IMG ALIGN="center" SRC="demodialog.jpg"></P>
+
+<P>Choose Cyclo from the list of workshop structures and click "Open workshop structure".
+
+<P>We will use this starting point throughout the workshop to choose different starting structures. 
+To bring this dialog either close and restart CRYSTALS, or choose "Demo" from the "Help" menu.
+
+ 
+<HR><small><A HREF="crysworkshop-gettingstarted.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="gettingstarted.2">1.2: Customising CRYSTALS to suit your screen size</A></H3></CENTER>
+<P><IMG ALIGN="center" SRC="startup.jpg"></P>
+
+<P>It is important to be able to read the text output in the left hand pane of the CRYSTALS window.
+<P>From the menus choose "Appearance"-&gt;"Set Text Font"
+Choose the smallest font size that you can read.
+
+<P>I would recommend Lucida Console in size 7.
+<P><IMG ALIGN="center" SRC="drag.jpg"></P>
+
+Now make sure that you can see the full width of a line of text in the output pane.
+You can drag the bar situated between the text area on the left and the CRYSTALS logo 
+screen on the right, to adjust the relative sizes of these two areas.<BR>
+<BR>
+The area on the right will eventually display a representation of the atomic co-ordinates, 
+so leave it at least a little bit of space.
+<BR> 
+

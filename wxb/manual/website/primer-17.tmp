@@ -1,0 +1,255 @@
+<!-- XTLVAR title="Scripts" -->
+<!-- XTLVAR comment="Scripts" -->
+<!-- XTLVAR cvssource="manual/primer.man" -->
+<H1>Crystals Primer</H1>
+<H2>Chapter 17: Scripts</H2>
+<DL><DT>
+<DD><A HREF="primer-17.html#17.1">17.1: Escaping from SCRIPT mode</A><br>
+<DD><A HREF="primer-17.html#17.2">17.2: Entering SCRIPT  mode</A><br>
+<DD><A HREF="primer-17.html#17.3">17.3: Principal Menued Scripts - Feb 1997</A><br>
+<DD><A HREF="primer-17.html#17.4">17.4: Available Scripts - Feb 1997</A><br>
+</DL>
+<P>The CRYSTALS SCRIPT environment is similar to the menus found in many
+ modern PC programs. Superficially it is rather like a command tree, with
+ a root, branches, twigs and finally leaves which perform discrete
+ crystallographic or data management operations. This sort of structure is
+ adopted so that related operations may be grouped together, making them
+ easy to locate. However, a basic operation may be strongly related to
+ several groups of operations, and must therefore appear on the menu for
+ each of these groups. The same leaf can be found on several different
+ branches! In addition, it is sometimes useful to execute a 'leaf' quite
+ out of its normal context.
+<P>This structured flexibility is provided by the SCRIPT processor,
+ and the CRYSTALS program is issued with a sample set of scripts. These
+ have developed to meet some of the needs of Oxford students, and so they
+ may well not be suitable in other environments. However, the scripts
+ themselves are only plain text data files, and users are free to modify
+ them in any way they wish, and add new ones. It is not possible for a
+ script to corrupt the CRYSTALS program.
+
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-17.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="17.1">17.1: Escaping from SCRIPT mode</A></H3></CENTER>
+<P>Control can be passed to the command mode at any time by replying DIRECT
+ (in full) to any SCRIPT question. The users is passed to the CRYSTALS prompt
+ '!'.
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-17.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="17.2">17.2: Entering SCRIPT  mode</A></H3></CENTER>
+<P>Control can be passed to  script mode by issuing the CRYSTALS command.
+
+<pre>
+          \SCRIPT    scriptname
+</pre><p><BR>
+<P>where scriptname is the name of the script required. The master script is
+ called CONTROL, but entry can be to any branch of the tree directly.
+ Script mode is entered  automatically by a call '\SCRIPT CONTROL' in the
+ CRYSTALS startup file 'CRYSTALS.SRT', but can be deactivated by a call
+ '\USE CONTROL' in the users CRYSINIT.DAT file.
+
+<pre> e.g.
+        \SCRIPT  DATA
+</pre><p><BR>
+<P>passes control to the branch concerned with list input, examination
+ and editing. The help facility \HELP SCRIPTS Lists the available scripts
+ on-line.
+
+<P>Numerical data for a structure is stored in a CRYSTALS data-base,
+ filename.DSC. This accumulates information as an analysis progresses.
+ In this file, data is grouped by function into 'LISTS'. Most of the
+ scripts refer to data by its type (e.g. CELL parameters), but
+ occasionally they refer by LIST number (in this case, LIST 1),
+ and many CRYSTALS output messages
+ refer to lists. A table of the lists and the data they contain is
+ appended to this document.
+<BR>
+<HR><small><A HREF="primer-17.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="17.3">17.3: Principal Menued Scripts - Feb 1997</A></H3></CENTER>
+The SCRIPT CONTROL is the master controlling script. Most of the
+sub-scripts called from it are also menued.
+<div class="instruction"><strong><u>CONTROL.SCP</u></strong><br>
+<pre>
+  This is the master control SCRIPT
+     HELP          Display this help text
+     DATA          Input, examination and modification of data LISTS
+     SCRIPT        Execute the named SCRIPT immediately
+     NEWSTART      Starting a new structure analysis
+     STRUCTURE     Solving a structure or inputting a solution
+     MAPS          Computing and using Fourier maps
+     LEASTSQ       Setting up and performing least squares refinement
+     GEOMETRY      Computing molecular parameters
+     PUBLISH       Preparation of tables
+     ROUTINE       A script for routine structures
+     GENERAL       Information about CRYSTALS
+     FINISH        Exit from CRYSTALS
+     DIRECT        Go to CRYSTALS direct command input
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>DATA.SCP</u></strong><br>
+<pre>
+   This script assists in the examination, modification
+   and input of CRYSTALS LISTS
+     BACK        End this script
+     HELP        Display this help text
+     INDEX       List the possible CRYSTALS LISTS
+     INPUT       Input new lists
+     LOOK        Print the contents of the current LISTS
+     MODIFY      Modify the contents of some lists
+     PERHYDRO    Perhydrogenate the carbon atoms
+     DISK        Access the CRYSTALS DSC file
+     USE         Single step though a data file
+     DIRECT      Go to CRYSTALS direct command input
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>NEWSTART.SCP</u></strong><br>
+<pre>
+  This script helps you get in the basic data for a new structure
+     BACK        End this script
+     HELP        Display this help text
+     INCAD4      Input CAD4 data from the RC85 or RC93 program
+     DIPIN       Input data from DIP2000
+     QUICKSTART  Simplified startup using reflections in SHELX format
+     Y290        Input format for Hilger & Watts Y290 'Nottingham' format
+     INITIAL     Generalised startup for non-RC85 data formats
+     DATA        General data input script
+     MODIFY      Modify existing lists
+     LOOK        Examine existing lists
+     DIRECT      Return to command mode
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>STRUCTUR.SCP</u></strong><br>
+<pre>
+      BACK        Finish with this facility
+      HELP        Display this help text
+      INEMAP      Input model found by Direct Methods run
+      PATTERSON   Prepare data for, or compute a Patterson map
+      SHELXS      Prepare data for SHELXS86
+      SIR88       Prepare data for SIR88
+      SIR92       Prepare data for SIR92
+      PLOT        A join-the-dots plot on screen and printer
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>MAPS.SCP</u></strong><br>
+<pre>
+      BACK        Finish with this facility
+      HELP        Display this help text
+      INEMAP      Input the results of a Direct methods run
+      AUTO        A cyclic procedure for Fourier refinement
+      GUIDE       A SCRIPT to guide you through Fourier calculations
+      SF          Compute structure factors and phases
+      FOURIER     Compute Fourier map
+      CONVERT     Convert peaks list to atoms list
+      COLLECT     Collect atoms and peaks together
+      REGROUP     Reorder atoms to form molecules
+      PLOT        A join the dots plot on screen and printer
+      EDIT        Delete or rename groups of atoms and peaks
+      DISTANCE    Compute interatomic distances.
+      SLANT       Compute a general Fourier section
+      SECTION     Define the asymmetric part of the cell
+      RFACTOR     Show the current R factor
+      CONTOUR     Produce contouring files
+      DIRECT      Go direct to command mode
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>LEASTSQ.SCP</u></strong><br>
+<pre>
+   The SCRIPT to help set up refinement jobs.
+      BACK        End this script
+      HELP        Display this help text
+      AUTO        Automatic choice of variables
+      VARIABLES   Define the variables to be refined
+      SFCONTROL   Modifications applied to structure factor calculation
+      SCALE       Compute structure factors/ scale factor
+      CYCLE       Perform refinement cycles
+      SIXCYCLE    Perform six unconditional refinement cycles
+      RESTRAINTS  Define restraints
+      ANALYSE     Produce analysis of residuals
+      CHECK       Check that the matrix is properly defined
+      WEIGHTS     Optimise the reflection weighting.
+      DIFABS      Run the empirical absorption correction
+      DISK        Examine the disk file
+      RFACTOR     Show the current R factor
+      PLOT        Show the current structure on the screen
+      EXCHANGE    Exchange results with anothe computer
+      DIRECT      Go to CRYSTALS direct command input.
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>GEOMETRY.SCP</u></strong><br>
+<pre>
+   The SCRIPT to help produce tables for publication
+      BACK        End this script
+      HELP        Display this help text
+      LOOK        List the contents of the active lists
+      DISK        Examine the disk file
+      DISTANCE    Compute distances and angles
+      PLOT        Join-the-dots plots on the vdu
+      PLANE       Best plane and best line computations
+      TORSION     Compute torsion angles
+      TLS         Analyse rigid body thermal motion
+      AXES        Compute principal axes of temperature factors
+      DIRECT      Go to CRYSTALS direct command input.
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>PUBLISH.SCP</u></strong><br>
+<pre>
+   The SCRIPT to help produce tables for publication
+   NOTE that under some operating systems, the output from successive
+   entries to this SCRIPT will overwrite previous output.
+      BACK        End this script
+      HELP        Display this help text
+      XYZ         Coordinate listing
+      ANISO       Temperature factor listing
+      REFLECTIONS Reflection listing
+      DISTANCES   Distance-angle listing
+      SUMMARY     A summary of all data stored
+      ANALYSE     A full analysis of residuals
+      GEOMETRY    The SCRIPT for evaluating molecular parameters.
+      CIF         Prepare a 'cif' format paper submission file
+      ARCHIVE     A SCRIPT to save the best of the goodies.
+      DIRECT      Go to CRYSTALS direct command input.
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>GENERAL.SCP</u></strong><br>
+<pre>
+   This script gives general information about SCRIPTS and CRYSTALS.
+      BACK        End this script
+      HELP        Display this help text
+      VERBOSE     Switch the verbose text display on/off
+      PURGE       Purge the .dsc file of old data.
+      CRYSINIT    A brief description of CRYSINIT.DAT
+      SCRIPTS     A brief description of SCRIPTS
+      CRYSTALS    The CRYSTALS HELP system
+      TERMINAL    Lets you tell CRYSTALS your terminal type
+      TYPE        Displaying a file on the terminal
+      VERIFY      Enable/disable display of SCRIPT execution
+      QUESTIONS   Format of SCRIPT questions
+      DIRECT      Go to CRYSTALS direct command input.
+</pre><p><BR>
+</div>
+<HR><small><A HREF="primer-17.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="17.4">17.4: Available Scripts - Feb 1997</A></H3></CENTER>
+<pre>
+AFOUR      ANALYSE    ARCHIVE    AUTO12     AXES       BATCHLSQ
+CADQUICK   CADSLOW    CHECK      CIF        COLLECT    COMMANDS
+CONTOUR    CONTROL    CRYSHELP   CRYSINIT   DATA       DATRED
+DIFABS     DIPIN      DIRECT     DISK       DISTANCE   EDLIST1
+EDLIST12   EDLIST16   EDLIST29   EDLIST5    ELEMENTS   EXCHANGE
+EXPORT     FGUIDE     FINDH      FINISH     FOPTWT     FOURIER
+FSQWT      GENERAL    GEOMETRY   GETEXP     IMPORT     INATOMS
+INBASICS   INCAD4     INCOMP     INEMAP     INEMAP01   INITIAL
+INLIST1    INLIST12   INLIST13   INLIST14   INLIST16   INLIST2
+INLIST23   INLIST28   INLIST29   INLIST3    INLIST30   INLIST31
+INLIST5    INLIST6    INPUT      INRC93     INSHELXS   INSPACE
+INXYZ      INY290     LEASTSQ    LIST1      LIST12     LIST13
+LIST16     LIST2      LIST23     LIST30     LIST31     LOOK
+MAPS       MODEL      MODIFY     MULTAN     NEWSTART   NFOUR
+NULL       PARTIAL    PATTERSN   PEAKS      PERHYDRO   PHEN16
+PLANE      PLOT       PRINIT     PRRESET    PUBANISO   PUBDIST
+PUBLISH    PUBREFL    PUBXYZ     QUESTION   QUICKST    REFINE
+REGROUP    RELEASE    RENAME     RFACTOR    ROUTINE    SCALE
+SCRIPT     SECTION    SFLS       SHELXS     SIR        SIR88
+SIR92      SIXCYCLE   SLANT      SNOOPI     SORT       STRUCTUR
+TERMINAL   TEXT       TIDYUP     TLS        TODOS      TORSION
+TPP16      TYPE       USE        VALIDATE   VERIFY     WEIGHTS
+</pre><p><BR>
+<BR>

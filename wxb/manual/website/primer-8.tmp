@@ -1,0 +1,210 @@
+<!-- XTLVAR title="Refinement" -->
+<!-- XTLVAR comment="Refinement" -->
+<!-- XTLVAR cvssource="manual/primer.man" -->
+<H1>Crystals Primer</H1>
+<H2>Chapter 8: Refinement</H2>
+<DL><DT>
+<DD><A HREF="primer-8.html#8.1">8.1: Structure factor control list</A><br>
+<DD><A HREF="primer-8.html#8.2">8.2: Refinement definition</A><br>
+<DD><A HREF="primer-8.html#8.3">8.3: Special positions</A><br>
+<DD><A HREF="primer-8.html#8.4">8.4: Treatment of reflections</A><br>
+<DD><A HREF="primer-8.html#8.5">8.5: Weighting the reflections </A><br>
+<DD><A HREF="primer-8.html#8.6">8.6: Restraints</A><br>
+<DD><A HREF="primer-8.html#8.7">8.7: Least Squares</A><br>
+</DL>
+<P>CRYSTALS was originally developed to perform difficult or complex
+ refinements, and was subsequently modified to simplify the treatment of
+ routine cases. There are seven components of a refinement strategy.
+
+
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-8.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="8.1">8.1: Structure factor control list</A></H3></CENTER>
+ On slow computers or for large structures,
+ the structure factor computation can be speeded up by disabling the
+ contributions from parameters or data that have null or default values. These
+ 'switches' are in LIST 23, the structure factor control list.
+<P>The default values in this list are usually suitable.
+ Some switches may be reset
+ automatically by CRYSTALS. You will be told when this happens.
+<P>For disordered structures, you may need to inhibit special position
+checking, or reduce the tolerance for atom matching.
+
+<pre>
+  e.g.
+      !\LIST 23
+      !REFINE         SPECIAL=TEST      UPDATE=NO
+      !END
+or
+      !\LIST 23
+      !REFINE        TOLERANCE = .1
+      !END
+</pre><p><BR>
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-8.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="8.2">8.2: Refinement definition</A></H3></CENTER>
+<P>Defining the parameters to be refined. This information is held separately
+ from the atom coordinates, in LIST 12. This list also contains information
+ about the matrix blocking, constrained parameters, riding parameters, rigid
+ groups and other special processes.
+
+
+<P>The release version of CRYSTALS will refine about 5,000 atoms by large -block
+ diagonal methods, or 1400 selected parameters full matrix. The parameters to
+ be refined are specified in LIST 12. See the note above on atomic
+ parameters and parameter names.
+
+<pre>
+  e.g.
+      !\LIST 12
+      !FULL     X'S U[ISO]
+      !END
+
+
+      !\LIST 12
+      !BLOCK SCALE  X'S U'S
+      !END
+
+
+      !\LIST 12
+      !FULL     X'S
+      !CONTINUE     FIRST(U'S) UNTIL C(30)
+      !CONTINUE     H(1,U[ISO]) UNTIL LAST
+      !END
+</pre><p><BR>
+<P>The first example gives full matrix isotropic refinement, the second
+ full matrix anisotropic refinement. The third is a mixed aniso-iso
+ refinement.
+ FULL always implies refinement of the over all scale factor.
+ The matrix will be large, so you may need to
+ extend the .DSC file if automatic extension is not enabled. See the
+ sections on ADVANCED REFINEMENT and on CRYSINIT files.
+
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-8.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="8.3">8.3: Special positions</A></H3></CENTER>
+<P>Treatment of atoms on special positions. This can be done automatically, by
+ a switch in LIST 23, on demand by issuing \SPECIAL, or manually in LIST 12.
+
+<P>CRYSTALS automatically applies the constraints or restraints necessary for
+ the treatment of atoms on special positions, and adjusts the site
+ occupancy. Default actions are set in LIST 23, and if these are disabled
+ they can be set on demand with \SPECIAL. The user needs only be concerned
+ with partial occupancy due to disorder, etc.
+
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-8.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="8.4">8.4: Treatment of reflections</A></H3></CENTER>
+ Reflections may be included or excluded from computations
+ depending on values of screens set in LIST 28. Relections are not actually
+ deleted from the reflection list, but merely flagged.
+
+<pre>
+ e.g.
+      !\LIST 28
+      !MINIMA RATIO=3.0
+      !READ NOMISSION=2
+      !OMIT 2 0 0
+      !OMIT 0 2 2
+      !END
+</pre><p><BR>
+
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-8.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="8.5">8.5: Weighting the reflections </A></H3></CENTER>
+ A large number of schemes are possible,  defined in LIST 4. Schemes are
+available for F or Fsq refinement.
+
+<P>The default, unit, weights are suitable for initial refinement.
+
+<pre>
+      !\LIST 4
+      !END
+</pre><p><BR>
+
+ Once the
+ model is fully parameterised (all atoms found) and more or less converged,
+ alternative weights should be chosen to obtain the most realistic estimated
+ standard deviations. The SCRIPT \SCRIPT WEIGHTS gives some help in the
+ choice. Otherwise, for F refinement try
+
+<pre>
+      !\LIST 4
+      !SCHEME NUMBER = 14, NPARAM=3
+      !END
+      !\WEIGHT
+      !END
+      !\ANALYSE
+      !END
+
+</pre><p><BR>
+For Fsq refinement, try
+
+<pre>
+      !\LIST 4
+      !SCHEME 16 NPARAM=3
+      !PARAM .001 3.0 1.0
+      !END
+</pre><p><BR>
+<P>The ANALYSE command produces an analysis of residuals. The column headed
+ &lt;w*deltasq&gt; should be more or less constant for suitable weights.
+
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-8.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="8.6">8.6: Restraints</A></H3></CENTER>
+<P>Treatment of restraints. These are stored in LIST 16, and applied or
+ not depending on a switch in LIST 23.
+<P>CRYSTALS offers many restraints. They are stored in symbolic form in
+ LIST 16, and are converted to computable format by \LIST 26.
+
+<pre>
+ e.g.
+   !\LIST 16
+   !DIST       1.39, .01 = C(10) TO C(11), C(10) TO C(15)
+   !DIST       0.0 , .01 = MEAN  C(1) TO C(2), C(1) TO C(6)
+   !PLANAR     C(101) UNTIL C(106)
+   !VIBRATION  0.0 , .01 = MEAN  C(1) TO C(2), C(1) TO C(6)
+   !SUM        Ca(1,OCC) FE(1,OCC) Al(1,OCC)
+   !END
+   !\CHECK
+   !END
+</pre><p><BR>
+ The CHECK command produces a listing of the observed and calculated values
+ for the restraints. The atom specifications can include symmetry
+ indicators.
+<P>The distance and angle restraints using the mean value of the observed
+ molecular parameters is especially valuable for imposing molecular symmetry
+ without the user being required to know the target values.
+
+<pre> e.g. for a phenyl group bonded though C(1)
+       !\LIST 16
+       !DIST 0.0, .001 = MEAN C(1) to C(2), C(1) TO C(6)
+       !DIST 0.0, .001 = MEAN C(2) to C(3), C(6) TO C(5)
+       !DIST 0.0, .001 = MEAN C(3) to C(4), C(5) TO C(4)
+       !ANGLE 0.0, .02 = MEAN C(1) to C(2) to C(3),
+       !CONTINUE           C(1) to C(6) to C(5)
+       !ANGLE 0.0, .02 = MEAN C(2) to C(3) to C(4),
+       !CONTINUE           C(6) to C(5) to C(4)
+       !END
+</pre><p><BR>
+ If there are several phenyl groups, all equivalent bonds can be added into
+ the same mean.
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-8.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="8.7">8.7: Least Squares</A></H3></CENTER>
+
+<P>Least squares are initiated once the preparations are completed. For large
+ structures it is sensible to do the preparations interactively, and run the
+ LS in batch. If refinement converges or diverges before the specified
+ number of cycles, refinement is terminated. The user can always demand one
+ cycle.
+
+<pre>
+      !\SFLS
+      !SCALE
+      !REFINE
+      !REFINE
+      !CALCULATE
+      !END
+</pre><p><BR>
+<BR>&nbsp;<BR>

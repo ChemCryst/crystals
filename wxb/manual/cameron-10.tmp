@@ -1,0 +1,905 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en-US">
+
+<head profile="http://gmpg.org/xfn/11">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link rel="pingback" href="xmlrpc.php" />
+
+	<title>Chemical Crystallography</title>
+<link rel="alternate" type="application/rss+xml" title="Chemical Crystallography &raquo; Feed" href="feed@rss.xml" />
+<link rel='stylesheet' id='wp-cpl-css-theme-css'  href='wp-content/plugins/wp-category-posts-list/css/wp-cat-list-light.css' type='text/css' media='all' />
+<link rel='stylesheet' id='suffusion-theme-css'  href='wp-content/themes/suffusion/style.css' type='text/css' media='all' />
+<link rel='stylesheet' id='suffusion-theme-skin-1-css'  href='wp-content/themes/suffusion/skins/light-theme-royal-blue/skin.css' type='text/css' media='all' />
+
+<!--[if !IE]>--><link rel='stylesheet' id='suffusion-rounded-css'  href='wp-content/themes/suffusion/rounded-corners.css' type='text/css' media='all' />
+<!--<![endif]-->
+<!--[if lt IE 8]><link rel='stylesheet' id='suffusion-ie-css'  href='wp-content/themes/suffusion/ie-fix.css' type='text/css' media='all' />
+<![endif]-->
+<script type='text/javascript' src='wp-includes/js/l10n.js'></script>
+<script type='text/javascript' src='wp-includes/js/jquery/jquery.js'></script>
+<script type='text/javascript' src='wp-content/themes/suffusion/scripts/suffusion.js'></script>
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="wp-includes/wlwmanifest.xml" /> 
+<link rel='index' title='Chemical Crystallography' href='./' />
+
+ <!-- AStickyPostOrderER (Version: 0.3.1) -->
+    <link rel="stylesheet" href="wp-content/plugins/sub-page-summary/sub-page-summary.css" type="text/css" />
+
+    <!-- Start Additional Feeds -->
+<!-- End Additional Feeds -->
+	<!-- CSS styles constructed using option definitions -->
+	<style type="text/css">
+	<!--/*--><![CDATA[/*><!--*/
+	/* April 26, 2011 2:39 pm */
+.page-template-1l-sidebar-php #wrapper { width: 1000px; max-width: 1000px; min-width: 1000px; }
+
+.page-template-1l-sidebar-php #container { padding-left: 275px; padding-right: 0px; }
+.page-template-1l-sidebar-php #main-col {	width: 725px; }
+* html .page-template-1l-sidebar-php #main-col { w\idth: 695px }
+.page-template-1l-sidebar-php #nav-top, .page-template-1l-sidebar-php #top-bar-right-spanel { width: 1000px; max-width: 1000px; min-width: 1000px; }
+.page-template-1l-sidebar-php #nav-top .col-control, .page-template-1l-sidebar-php #top-bar-right-spanel .col-control { width: 1000px }
+.page-template-1l-sidebar-php #widgets-above-header .col-control { width: 1000px; max-width: 1000px; min-width: 1000px; }
+.page-template-1l-sidebar-php #nav .col-control { width: 1000px }
+
+.page-template-1l-sidebar-php .post-footer .category, .page-template-1l-sidebar-php .postdata .category {
+	max-width: 450px;
+}
+.page-template-1l-sidebar-php .tags {
+	max-width: 450px;
+}
+* html .page-template-1l-sidebar-php .post-footer .category, * html .page-template-1l-sidebar-php .postdata .category, * html .page-template-1l-sidebar-php .tags {
+	w\idth: expression(this.width > Math.floor((document.getElementById('main-col').offsetWidth)/2) ? '60%' : true);
+}
+.page-template-1l-sidebar-php #sidebar, .page-template-1l-sidebar-php #sidebar-b, .page-template-1l-sidebar-php #sidebar-shell-1 {
+	width: 260px;
+}
+.page-template-1l-sidebar-php #sidebar.flattened, .page-template-1l-sidebar-php #sidebar-b.flattened {
+	width: 258px;
+}
+.page-template-1l-sidebar-php #sidebar-shell-1 {
+	margin-left: -100%;
+	margin-right: 15px;
+	left: auto;
+	right: 275px;
+}
+.page-template-1l-sidebar-php #sidebar-2, .page-template-1l-sidebar-php #sidebar-2-b, .page-template-1l-sidebar-php #sidebar-shell-2, .page-template-1l-sidebar-php #sidebar-2.flattened, .page-template-1l-sidebar-php #sidebar-2-b.flattened {
+	width: 0;
+}
+.page-template-1l-sidebar-php #sidebar-shell-2 {
+	margin-left: 0px;
+	margin-right: 0px;
+	left: auto;
+	right: auto;
+}
+.page-template-1l-sidebar-php #sidebar-container { width: 275px; }
+.page-template-1l-sidebar-php .sidebar-container-left { right: 275px; }
+.page-template-1l-sidebar-php .sidebar-container-right { margin-right: -275px; }
+.page-template-1l-sidebar-php .sidebar-container-left #sidebar-wrap { right: auto; }
+.page-template-1l-sidebar-php #wsidebar-top, .page-template-1l-sidebar-php #wsidebar-bottom { width: 273px; }
+.page-template-1l-sidebar-php #sidebar-wrap {
+	width: 290px;
+	left: auto;
+	right: auto;
+}
+* html .page-template-1l-sidebar-php #sidebar-wrap {
+	lef\t: auto;
+	righ\t: auto;
+}
+.page-template-1l-sidebar-php .sidebar-wrap-left {
+	margin-left: -100%;
+}
+* html .page-template-1l-sidebar-php .sidebar-wrap-left, * html .page-template-1l-sidebar-php #sidebar-container.sidebar-container-left {
+	margin-left: expression((document.getElementById('main-col') == null ? (document.getElementById('single-col').offsetWidth - 15 + 130) : (document.getElementById('main-col').offsetWidth - 15 + 130))*(-1)+'px');
+}
+.page-template-1l-sidebar-php .sidebar-wrap-right {
+	margin-right: -290px;
+}
+* html .page-template-1l-sidebar-php #sidebar, * html .page-template-1l-sidebar-php #sidebar-b, * html .page-template-1l-sidebar-php #sidebar-shell-1 {
+	w\idth: 252px;
+}
+* html .page-template-1l-sidebar-php #sidebar-shell-1 {
+}
+* html .page-template-1l-sidebar-php #sidebar-shell-2 {
+}
+* html .page-template-1l-sidebar-php #sidebar-container {
+	w\idth: 265px;
+}
+.page-template-1l-sidebar-php .tab-box {
+	width: 260px;
+}
+.page-template-1r-sidebar-php #wrapper { width: 1000px; max-width: 1000px; min-width: 1000px; }
+
+.page-template-1r-sidebar-php #container { padding-left: 0px; padding-right: 275px; }
+.page-template-1r-sidebar-php #main-col {	width: 725px; }
+* html .page-template-1r-sidebar-php #main-col { w\idth: 695px }
+.page-template-1r-sidebar-php #nav-top, .page-template-1r-sidebar-php #top-bar-right-spanel { width: 1000px; max-width: 1000px; min-width: 1000px; }
+.page-template-1r-sidebar-php #nav-top .col-control, .page-template-1r-sidebar-php #top-bar-right-spanel .col-control { width: 1000px }
+.page-template-1r-sidebar-php #widgets-above-header .col-control { width: 1000px; max-width: 1000px; min-width: 1000px; }
+.page-template-1r-sidebar-php #nav .col-control { width: 1000px }
+
+.page-template-1r-sidebar-php .post-footer .category, .page-template-1r-sidebar-php .postdata .category {
+	max-width: 450px;
+}
+.page-template-1r-sidebar-php .tags {
+	max-width: 450px;
+}
+* html .page-template-1r-sidebar-php .post-footer .category, * html .page-template-1r-sidebar-php .postdata .category, * html .page-template-1r-sidebar-php .tags {
+	w\idth: expression(this.width > Math.floor((document.getElementById('main-col').offsetWidth)/2) ? '60%' : true);
+}
+.page-template-1r-sidebar-php #sidebar, .page-template-1r-sidebar-php #sidebar-b, .page-template-1r-sidebar-php #sidebar-shell-1 {
+	width: 260px;
+}
+.page-template-1r-sidebar-php #sidebar.flattened, .page-template-1r-sidebar-php #sidebar-b.flattened {
+	width: 258px;
+}
+.page-template-1r-sidebar-php #sidebar-shell-1 {
+	margin-left: 15px;
+	margin-right: -275px;
+	left: auto;
+	right: auto;
+}
+.page-template-1r-sidebar-php #sidebar-2, .page-template-1r-sidebar-php #sidebar-2-b, .page-template-1r-sidebar-php #sidebar-shell-2, .page-template-1r-sidebar-php #sidebar-2.flattened, .page-template-1r-sidebar-php #sidebar-2-b.flattened {
+	width: 0;
+}
+.page-template-1r-sidebar-php #sidebar-shell-2 {
+	margin-left: 0px;
+	margin-right: 0px;
+	left: auto;
+	right: auto;
+}
+.page-template-1r-sidebar-php #sidebar-container { width: 275px; }
+.page-template-1r-sidebar-php .sidebar-container-left { right: 275px; }
+.page-template-1r-sidebar-php .sidebar-container-right { margin-right: -275px; }
+.page-template-1r-sidebar-php .sidebar-container-left #sidebar-wrap { right: auto; }
+.page-template-1r-sidebar-php #wsidebar-top, .page-template-1r-sidebar-php #wsidebar-bottom { width: 273px; }
+.page-template-1r-sidebar-php #sidebar-wrap {
+	width: 290px;
+	left: auto;
+	right: auto;
+}
+* html .page-template-1r-sidebar-php #sidebar-wrap {
+	lef\t: auto;
+	righ\t: auto;
+}
+.page-template-1r-sidebar-php .sidebar-wrap-left {
+	margin-left: -100%;
+}
+* html .page-template-1r-sidebar-php .sidebar-wrap-left, * html .page-template-1r-sidebar-php #sidebar-container.sidebar-container-left {
+	margin-left: expression((document.getElementById('main-col') == null ? (document.getElementById('single-col').offsetWidth - 15 + 130) : (document.getElementById('main-col').offsetWidth - 15 + 130))*(-1)+'px');
+}
+.page-template-1r-sidebar-php .sidebar-wrap-right {
+	margin-right: -290px;
+}
+* html .page-template-1r-sidebar-php #sidebar, * html .page-template-1r-sidebar-php #sidebar-b, * html .page-template-1r-sidebar-php #sidebar-shell-1 {
+	w\idth: 252px;
+}
+* html .page-template-1r-sidebar-php #sidebar-shell-1 {
+}
+* html .page-template-1r-sidebar-php #sidebar-shell-2 {
+}
+* html .page-template-1r-sidebar-php #sidebar-container {
+	w\idth: 265px;
+}
+.page-template-1r-sidebar-php .tab-box {
+	width: 260px;
+}
+.page-template-1l1r-sidebar-php #wrapper { width: 1000px; max-width: 1000px; min-width: 1000px; }
+
+.page-template-1l1r-sidebar-php #container { padding-left: 185px; padding-right: 185px; }
+.page-template-1l1r-sidebar-php #main-col {	width: 630px; }
+* html .page-template-1l1r-sidebar-php #main-col { w\idth: 600px }
+.page-template-1l1r-sidebar-php #nav-top, .page-template-1l1r-sidebar-php #top-bar-right-spanel { width: 1000px; max-width: 1000px; min-width: 1000px; }
+.page-template-1l1r-sidebar-php #nav-top .col-control, .page-template-1l1r-sidebar-php #top-bar-right-spanel .col-control { width: 1000px }
+.page-template-1l1r-sidebar-php #widgets-above-header .col-control { width: 1000px; max-width: 1000px; min-width: 1000px; }
+.page-template-1l1r-sidebar-php #nav .col-control { width: 1000px }
+
+.page-template-1l1r-sidebar-php .post-footer .category, .page-template-1l1r-sidebar-php .postdata .category {
+	max-width: 355px;
+}
+.page-template-1l1r-sidebar-php .tags {
+	max-width: 355px;
+}
+* html .page-template-1l1r-sidebar-php .post-footer .category, * html .page-template-1l1r-sidebar-php .postdata .category, * html .page-template-1l1r-sidebar-php .tags {
+	w\idth: expression(this.width > Math.floor((document.getElementById('main-col').offsetWidth)/2) ? '60%' : true);
+}
+.page-template-1l1r-sidebar-php #sidebar, .page-template-1l1r-sidebar-php #sidebar-b, .page-template-1l1r-sidebar-php #sidebar-shell-1 {
+	width: 170px;
+}
+.page-template-1l1r-sidebar-php #sidebar.flattened, .page-template-1l1r-sidebar-php #sidebar-b.flattened {
+	width: 168px;
+}
+.page-template-1l1r-sidebar-php #sidebar-shell-1 {
+	margin-left: 15px;
+	margin-right: -185px;
+	left: auto;
+	right: auto;
+}
+.page-template-1l1r-sidebar-php #sidebar-2, .page-template-1l1r-sidebar-php #sidebar-2-b, .page-template-1l1r-sidebar-php #sidebar-shell-2 {
+	width: 170px;
+}
+.page-template-1l1r-sidebar-php #sidebar-2.flattened, .page-template-1l1r-sidebar-php #sidebar-2-b.flattened {
+	width: 168px;
+}
+.page-template-1l1r-sidebar-php #sidebar-shell-2 {
+	margin-left: -100%;
+	margin-right: 0px;
+	left: auto;
+	right: 185px;
+}
+.page-template-1l1r-sidebar-php #sidebar-container { width: 185px; }
+.page-template-1l1r-sidebar-php .sidebar-container-left { right: 185px; }
+.page-template-1l1r-sidebar-php .sidebar-container-right { margin-right: -185px; }
+.page-template-1l1r-sidebar-php .sidebar-container-left #sidebar-wrap { right: auto; }
+.page-template-1l1r-sidebar-php #wsidebar-top, .page-template-1l1r-sidebar-php #wsidebar-bottom { width: 353px; }
+.page-template-1l1r-sidebar-php #sidebar-wrap {
+	width: 370px;
+	left: auto;
+	right: auto;
+}
+* html .page-template-1l1r-sidebar-php #sidebar-wrap {
+	lef\t: auto;
+	righ\t: auto;
+}
+.page-template-1l1r-sidebar-php .sidebar-wrap-left {
+	margin-left: -100%;
+}
+* html .page-template-1l1r-sidebar-php .sidebar-wrap-left, * html .page-template-1l1r-sidebar-php #sidebar-container.sidebar-container-left {
+	margin-left: expression((document.getElementById('main-col') == null ? (document.getElementById('single-col').offsetWidth - 15 + 170) : (document.getElementById('main-col').offsetWidth - 15 + 170))*(-1)+'px');
+}
+.page-template-1l1r-sidebar-php .sidebar-wrap-right {
+	margin-right: -370px;
+}
+* html .page-template-1l1r-sidebar-php #sidebar, * html .page-template-1l1r-sidebar-php #sidebar-b, * html .page-template-1l1r-sidebar-php #sidebar-shell-1 {
+	w\idth: 162px;
+}
+* html .page-template-1l1r-sidebar-php #sidebar-shell-1 {
+}
+* html .page-template-1l1r-sidebar-php #sidebar-2, * html .page-template-1l1r-sidebar-php #sidebar-2-b, * html .page-template-1l1r-sidebar-php #sidebar-shell-2 {
+	w\idth: 162px;
+}
+* html .page-template-1l1r-sidebar-php #sidebar-shell-2 {
+	lef\t: 200px;
+	r\ight: 185px;
+}
+* html .page-template-1l1r-sidebar-php #sidebar-container {
+	w\idth: 175px;
+}
+.page-template-1l1r-sidebar-php .tab-box {
+	width: 170px;
+}
+.page-template-2l-sidebars-php #wrapper { width: 1000px; max-width: 1000px; min-width: 1000px; }
+
+.page-template-2l-sidebars-php #container { padding-left: 370px; padding-right: 0px; }
+.page-template-2l-sidebars-php #main-col {	width: 630px; }
+* html .page-template-2l-sidebars-php #main-col { w\idth: 600px }
+.page-template-2l-sidebars-php #nav-top, .page-template-2l-sidebars-php #top-bar-right-spanel { width: 1000px; max-width: 1000px; min-width: 1000px; }
+.page-template-2l-sidebars-php #nav-top .col-control, .page-template-2l-sidebars-php #top-bar-right-spanel .col-control { width: 1000px }
+.page-template-2l-sidebars-php #widgets-above-header .col-control { width: 1000px; max-width: 1000px; min-width: 1000px; }
+.page-template-2l-sidebars-php #nav .col-control { width: 1000px }
+
+.page-template-2l-sidebars-php .post-footer .category, .page-template-2l-sidebars-php .postdata .category {
+	max-width: 355px;
+}
+.page-template-2l-sidebars-php .tags {
+	max-width: 355px;
+}
+* html .page-template-2l-sidebars-php .post-footer .category, * html .page-template-2l-sidebars-php .postdata .category, * html .page-template-2l-sidebars-php .tags {
+	w\idth: expression(this.width > Math.floor((document.getElementById('main-col').offsetWidth)/2) ? '60%' : true);
+}
+.page-template-2l-sidebars-php #sidebar, .page-template-2l-sidebars-php #sidebar-b, .page-template-2l-sidebars-php #sidebar-shell-1 {
+	width: 170px;
+}
+.page-template-2l-sidebars-php #sidebar.flattened, .page-template-2l-sidebars-php #sidebar-b.flattened {
+	width: 168px;
+}
+.page-template-2l-sidebars-php #sidebar-shell-1 {
+	margin-left: 0px;
+	margin-right: 0px;
+	left: auto;
+	right: auto;
+}
+.page-template-2l-sidebars-php #sidebar-2, .page-template-2l-sidebars-php #sidebar-2-b, .page-template-2l-sidebars-php #sidebar-shell-2 {
+	width: 170px;
+}
+.page-template-2l-sidebars-php #sidebar-2.flattened, .page-template-2l-sidebars-php #sidebar-2-b.flattened {
+	width: 168px;
+}
+.page-template-2l-sidebars-php #sidebar-shell-2 {
+	margin-left: 15px;
+	margin-right: -185px;
+	left: auto;
+	right: auto;
+}
+.page-template-2l-sidebars-php #sidebar-container { width: 370px; }
+.page-template-2l-sidebars-php .sidebar-container-left { right: 370px; }
+.page-template-2l-sidebars-php .sidebar-container-right { margin-right: -370px; }
+.page-template-2l-sidebars-php .sidebar-container-left #sidebar-wrap { right: auto; }
+.page-template-2l-sidebars-php #wsidebar-top, .page-template-2l-sidebars-php #wsidebar-bottom { width: 353px; }
+.page-template-2l-sidebars-php #sidebar-wrap {
+	width: 370px;
+	left: auto;
+	right: 370px;
+}
+* html .page-template-2l-sidebars-php #sidebar-wrap {
+	lef\t: auto;
+	righ\t: 200px;
+}
+.page-template-2l-sidebars-php .sidebar-wrap-left {
+	margin-left: -100%;
+}
+* html .page-template-2l-sidebars-php .sidebar-wrap-left, * html .page-template-2l-sidebars-php #sidebar-container.sidebar-container-left {
+	margin-left: expression((document.getElementById('main-col') == null ? (document.getElementById('single-col').offsetWidth - 15 + 170) : (document.getElementById('main-col').offsetWidth - 15 + 170))*(-1)+'px');
+}
+.page-template-2l-sidebars-php .sidebar-wrap-right {
+	margin-right: -370px;
+}
+* html .page-template-2l-sidebars-php #sidebar, * html .page-template-2l-sidebars-php #sidebar-b, * html .page-template-2l-sidebars-php #sidebar-shell-1 {
+	w\idth: 162px;
+}
+* html .page-template-2l-sidebars-php #sidebar-shell-1 {
+}
+* html .page-template-2l-sidebars-php #sidebar-2, * html .page-template-2l-sidebars-php #sidebar-2-b, * html .page-template-2l-sidebars-php #sidebar-shell-2 {
+	w\idth: 162px;
+}
+* html .page-template-2l-sidebars-php #sidebar-shell-2 {
+}
+* html .page-template-2l-sidebars-php #sidebar-container {
+	w\idth: 360px;
+}
+.page-template-2l-sidebars-php .tab-box {
+	width: 353px;
+}
+.page-template-2r-sidebars-php #wrapper { width: 1000px; max-width: 1000px; min-width: 1000px; }
+
+.page-template-2r-sidebars-php #container { padding-left: 0px; padding-right: 370px; }
+.page-template-2r-sidebars-php #main-col {	width: 630px; }
+* html .page-template-2r-sidebars-php #main-col { w\idth: 600px }
+.page-template-2r-sidebars-php #nav-top, .page-template-2r-sidebars-php #top-bar-right-spanel { width: 1000px; max-width: 1000px; min-width: 1000px; }
+.page-template-2r-sidebars-php #nav-top .col-control, .page-template-2r-sidebars-php #top-bar-right-spanel .col-control { width: 1000px }
+.page-template-2r-sidebars-php #widgets-above-header .col-control { width: 1000px; max-width: 1000px; min-width: 1000px; }
+.page-template-2r-sidebars-php #nav .col-control { width: 1000px }
+
+.page-template-2r-sidebars-php .post-footer .category, .page-template-2r-sidebars-php .postdata .category {
+	max-width: 355px;
+}
+.page-template-2r-sidebars-php .tags {
+	max-width: 355px;
+}
+* html .page-template-2r-sidebars-php .post-footer .category, * html .page-template-2r-sidebars-php .postdata .category, * html .page-template-2r-sidebars-php .tags {
+	w\idth: expression(this.width > Math.floor((document.getElementById('main-col').offsetWidth)/2) ? '60%' : true);
+}
+.page-template-2r-sidebars-php #sidebar, .page-template-2r-sidebars-php #sidebar-b, .page-template-2r-sidebars-php #sidebar-shell-1 {
+	width: 170px;
+}
+.page-template-2r-sidebars-php #sidebar.flattened, .page-template-2r-sidebars-php #sidebar-b.flattened {
+	width: 168px;
+}
+.page-template-2r-sidebars-php #sidebar-shell-1 {
+	margin-left: 0px;
+	margin-right: 0px;
+	left: auto;
+	right: auto;
+}
+.page-template-2r-sidebars-php #sidebar-2, .page-template-2r-sidebars-php #sidebar-2-b, .page-template-2r-sidebars-php #sidebar-shell-2 {
+	width: 170px;
+}
+.page-template-2r-sidebars-php #sidebar-2.flattened, .page-template-2r-sidebars-php #sidebar-2-b.flattened {
+	width: 168px;
+}
+.page-template-2r-sidebars-php #sidebar-shell-2 {
+	margin-left: -185px;
+	margin-right: 15px;
+	left: auto;
+	right: auto;
+}
+.page-template-2r-sidebars-php #sidebar-container { width: 370px; }
+.page-template-2r-sidebars-php .sidebar-container-left { right: 370px; }
+.page-template-2r-sidebars-php .sidebar-container-right { margin-right: -370px; }
+.page-template-2r-sidebars-php .sidebar-container-left #sidebar-wrap { right: auto; }
+.page-template-2r-sidebars-php #wsidebar-top, .page-template-2r-sidebars-php #wsidebar-bottom { width: 353px; }
+.page-template-2r-sidebars-php #sidebar-wrap {
+	width: 370px;
+	left: auto;
+	right: auto;
+}
+* html .page-template-2r-sidebars-php #sidebar-wrap {
+	lef\t: auto;
+	righ\t: auto;
+}
+.page-template-2r-sidebars-php .sidebar-wrap-left {
+	margin-left: -100%;
+}
+* html .page-template-2r-sidebars-php .sidebar-wrap-left, * html .page-template-2r-sidebars-php #sidebar-container.sidebar-container-left {
+	margin-left: expression((document.getElementById('main-col') == null ? (document.getElementById('single-col').offsetWidth - 15 + 170) : (document.getElementById('main-col').offsetWidth - 15 + 170))*(-1)+'px');
+}
+.page-template-2r-sidebars-php .sidebar-wrap-right {
+	margin-right: -370px;
+}
+* html .page-template-2r-sidebars-php #sidebar, * html .page-template-2r-sidebars-php #sidebar-b, * html .page-template-2r-sidebars-php #sidebar-shell-1 {
+	w\idth: 162px;
+}
+* html .page-template-2r-sidebars-php #sidebar-shell-1 {
+}
+* html .page-template-2r-sidebars-php #sidebar-2, * html .page-template-2r-sidebars-php #sidebar-2-b, * html .page-template-2r-sidebars-php #sidebar-shell-2 {
+	w\idth: 162px;
+}
+* html .page-template-2r-sidebars-php #sidebar-shell-2 {
+}
+* html .page-template-2r-sidebars-php #sidebar-container {
+	w\idth: 360px;
+}
+.page-template-2r-sidebars-php .tab-box {
+	width: 353px;
+}
+ #wrapper { width: 1000px; max-width: 1000px; min-width: 1000px; }
+
+ #container { padding-left: 0px; padding-right: 275px; }
+ #main-col {	width: 725px; }
+* html  #main-col { w\idth: 695px }
+ #nav-top,  #top-bar-right-spanel { width: 1000px; max-width: 1000px; min-width: 1000px; }
+ #nav-top .col-control,  #top-bar-right-spanel .col-control { width: 1000px }
+ #widgets-above-header .col-control { width: 1000px; max-width: 1000px; min-width: 1000px; }
+ #nav .col-control { width: 1000px }
+
+ .post-footer .category,  .postdata .category {
+	max-width: 450px;
+}
+ .tags {
+	max-width: 450px;
+}
+* html  .post-footer .category, * html  .postdata .category, * html  .tags {
+	w\idth: expression(this.width > Math.floor((document.getElementById('main-col').offsetWidth)/2) ? '60%' : true);
+}
+ #sidebar,  #sidebar-b,  #sidebar-shell-1 {
+	width: 260px;
+}
+ #sidebar.flattened,  #sidebar-b.flattened {
+	width: 258px;
+}
+ #sidebar-shell-1 {
+	margin-left: 15px;
+	margin-right: -275px;
+	left: auto;
+	right: auto;
+}
+ #sidebar-2,  #sidebar-2-b,  #sidebar-shell-2,  #sidebar-2.flattened,  #sidebar-2-b.flattened {
+	width: 0;
+}
+ #sidebar-shell-2 {
+	margin-left: 0px;
+	margin-right: 0px;
+	left: auto;
+	right: auto;
+}
+ #sidebar-container { width: 275px; }
+ .sidebar-container-left { right: 275px; }
+ .sidebar-container-right { margin-right: -275px; }
+ .sidebar-container-left #sidebar-wrap { right: auto; }
+ #wsidebar-top,  #wsidebar-bottom { width: 273px; }
+ #sidebar-wrap {
+	width: 290px;
+	left: auto;
+	right: auto;
+}
+* html  #sidebar-wrap {
+	lef\t: auto;
+	righ\t: auto;
+}
+ .sidebar-wrap-left {
+	margin-left: -100%;
+}
+* html  .sidebar-wrap-left, * html  #sidebar-container.sidebar-container-left {
+	margin-left: expression((document.getElementById('main-col') == null ? (document.getElementById('single-col').offsetWidth - 15 + 130) : (document.getElementById('main-col').offsetWidth - 15 + 130))*(-1)+'px');
+}
+ .sidebar-wrap-right {
+	margin-right: -290px;
+}
+* html  #sidebar, * html  #sidebar-b, * html  #sidebar-shell-1 {
+	w\idth: 252px;
+}
+* html  #sidebar-shell-1 {
+}
+* html  #sidebar-shell-2 {
+}
+* html  #sidebar-container {
+	w\idth: 265px;
+}
+ .tab-box {
+	width: 260px;
+}
+.page-template-no-sidebars-php #container { padding-left: 0; padding-right: 0; }
+.page-template-no-sidebars-php .entry img { max-width: 99%; }
+.page-template-no-sidebars-php .wp-caption { max-width: 99%; }
+.page-template-no-sidebars-php .entry .wp-caption img { max-width: 100%; }
+* html .page-template-no-sidebars-php .entry img { w\idth: expression(this.width > (parseInt(document.getElementById('wrapper').offsetWidth) - 60) ? '96%' : true); }
+* html .page-template-no-sidebars-php .wp-caption { w\idth: expression(this.offsetWidth > (parseInt(document.getElementById('wrapper').offsetWidth) - 60) ? '96%' : true); }
+* html .page-template-no-sidebars-php .entry .wp-caption img { w\idth: expression(this.width > (parseInt(document.getElementById('wrapper').offsetWidth) - 60) ? '100%' : true); }
+.page-template-no-sidebars-php #main-col {	width: 100%; }
+.suf-mag-headlines {
+	padding-left: 225px;
+}
+.suf-mag-headline-photo-box { width: 225px; right: 225px; }
+.suf-mag-headline-block { width: 100%; }
+* html .suf-mag-headline-block { w\idth: 100%; }
+.suf-mag-headlines { height: 250px }
+col.suf-mag-excerpt { width: 33%; }
+.suf-mag-excerpt-image {
+	width: 221px;
+	height: 100px;
+}
+* html .suf-mag-excerpt-image { w\idth: 218px; }
+col.suf-mag-category { width: 33%; }
+.suf-mag-category-image {
+	width: 221px;
+	height: 100px;
+}
+* html .suf-mag-category-image { w\idth: 218px; }
+h2.suf-mag-category-title {	text-align: left; }
+.suf-mag-categories th { text-align: left; }
+.suf-mag-excerpts th { text-align: left; }
+h2.suf-mag-excerpt-title { text-align: left; }
+h2.suf-mag-headlines-title { text-align: left; }
+ .post .date { display: none; }
+ .title-container { padding-left: 0; padding-right: 0; }
+ .post .title { padding-left: 0; }
+
+.post-footer .category, .postdata .category{ float: right; }
+.post .post-footer .comments, .post .postdata .comments { float: right; }
+div.page .post-footer .comments, div.page .postdata .comments { float: right; }
+.tags { float: right; text-align: right; }
+.post span.author { float: left; padding-right: 10px;  }
+div.page span.author { float: left; padding-right: 10px;  }
+
+#slider, #sliderContent { height: 250px; }
+#featured-posts .left, #featured-posts .right { height: 250px; }
+.sliderImage { height: 250px; }
+#featured-posts .left { width: 250px !important; }
+#featured-posts .right { width: 250px !important; }
+.sliderImage div { background-color: #222222; color: #FFFFFF; }
+.sliderImage div a { color: #FFFFFF; }
+#featured-posts { border-width: 1px; border-style: solid; }
+#ad-hoc-1 .suf-widget { width: 100%; display: inline-block; margin: 5px 0 5px 0; }
+* html #ad-hoc-1 .suf-widget { ma\rgin: 5px 0px 5px 0px; }
+#ad-hoc-2 .suf-widget { width: 100%; display: inline-block; margin: 5px 0 5px 0; }
+* html #ad-hoc-2 .suf-widget { ma\rgin: 5px 0px 5px 0px; }
+#ad-hoc-3 .suf-widget { width: 100%; display: inline-block; margin: 5px 0 5px 0; }
+* html #ad-hoc-3 .suf-widget { ma\rgin: 5px 0px 5px 0px; }
+#ad-hoc-4 .suf-widget { width: 100%; display: inline-block; margin: 5px 0 5px 0; }
+* html #ad-hoc-4 .suf-widget { ma\rgin: 5px 0px 5px 0px; }
+#ad-hoc-5 .suf-widget { width: 100%; display: inline-block; margin: 5px 0 5px 0; }
+* html #ad-hoc-5 .suf-widget { ma\rgin: 5px 0px 5px 0px; }
+* html table.suf-tiles { w\idth: 700px }
+col.suf-tile { width: 33%; }
+.suf-tile-image {
+	width: 221px;
+	height: 100px;
+}
+* html .suf-tile-image { w\idth: 218px; }
+h2.suf-tile-title { text-align: left; }
+#nav-top, #top-bar-right-spanel { margin: 0 auto; }
+#nav ul { text-transform: capitalize; }
+#nav-top ul { text-transform: capitalize; float: left; }
+#widgets-above-header { width: auto; }
+#widgets-above-header .suf-widget { width: 100%; display: inline-block; margin: 5px 0 5px 0; }
+* html #widgets-above-header .suf-widget { ma\rgin: 5px 0px 5px 0px; }
+#nav { margin: 0 auto; width: 100%; }
+div.booklisting img, div.bookentry img { width: 108px; height: 160px; }
+div.bookentry .stats { width: 142px; }
+div.bookentry .review { width: 537px; }
+* html div.bookentry .review { w\idth: 517px; }
+col.nr-shelf-slot { width: 25%; }
+.attachment object.audio { width: 300px; height: 30px; }
+.attachment object.application { width: 300px; }
+.attachment object.text { width: 300px; }
+.attachment object.video { width: 300px; height: 225px; }
+.author-info img.avatar { float: left; padding: 5px; }
+.sidebar-container-left #sidebar-shell-1 { float: left; margin-left: 0; margin-right: 15px; right: auto; }
+.sidebar-container-left #sidebar-shell-2 { float: left; margin-left: 0; margin-right: 15px; right: auto;}
+.sidebar-container-right #sidebar-shell-1 { float: right; margin-right: 0; margin-left: 15px; right: auto; left: auto; }
+.sidebar-container-right #sidebar-shell-2 { float: right; margin-right: 0; margin-left: 15px; right: auto; left: auto;}
+.sidebar-wrap-right #sidebar-shell-1 { float: right; margin-left: 0; margin-right: 0;}
+.sidebar-wrap-right #sidebar-shell-2 { float: right; margin-right: 15px; margin-left: 0;}
+.sidebar-wrap-left #sidebar-shell-1 { float: left; margin-left: 0; margin-right: 0;}
+.sidebar-wrap-left #sidebar-shell-2 { float: left; margin-left: 15px; margin-right: 0;}
+.sidebar-container-left #sidebar-wrap { margin-left: 0; margin-right: 0; left: auto; right: auto; }
+.sidebar-container-right #sidebar-wrap { margin-left: 0; margin-right: 0; left: auto; right: auto; }
+#sidebar-container .tab-box { margin-left: 0; margin-right: 0; }
+#sidebar-container.sidebar-container-left { margin-left: -100%; }
+.sidebar-container-left .tab-box { float: left; }
+.sidebar-container-right .tab-box { float: right; }
+* html #sidebar-container #sidebar-shell-1, * html #sidebar-container #sidebar-shell-2 { lef\t: auto; r\ight: auto; }
+* html .sidebar-container-left #sidebar-wrap, * html .sidebar-container-right #sidebar-wrap { lef\t: auto; r\ight: auto; }	/*]]>*/-->
+	</style>
+<!--[if lt IE 7]>
+<script>
+	//Drew Diller's Belated PNG: http://dillerdesign.wordpress.com/2009/07/02/belatedpng-img-nodes-javascript-event-handling/
+  	DD_belatedPNG.fix('img, .suf-widget ul li, #sidebar ul li, #sidebar-2 ul li, .sidebar-tab-content ul li, li.suf-mag-catblock-post, input, .searchform .searchsubmit, #right-header-widgets .searchsubmit, #left-header-widgets .searchsubmit, #top-bar-left-widgets .searchsubmit,  #top-bar-right-widgets .searchsubmit, submit, .searchsubmit, .postdata .category, .postdata .comments, .postdata .edit, .previous-entries a, .next-entries a, .post-nav .next a, .post-nav .previous a, .post .date, h3#comments, h3.comments, #h3#respond, h3.respond, blockquote, blockquote div');
+ </script>
+<![endif]-->
+
+<style type="text/css" media="all">@import "base.css";</style>
+<style type="text/css" media="print">@import "print.css";</style>
+
+
+</head>
+<body class="home blog">
+        <script type='text/javascript'>
+        //Menu effects
+        var suf_nav_delay = 500;
+        var suf_nav_effect = "fade";
+        var suf_navt_delay = 500;
+        var suf_navt_effect = "fade";
+        var suf_jq_masonry_enabled = "enabled";
+    </script>
+				<div id="wrapper" class="fix">
+					<div id="header-container" class="fix">
+
+					<div id="header" class="fix">
+			<h1 class="blogtitle"><a href="./"><img src='wp-content/uploads/2011/04/logo31.png' alt='Chemical Crystallography'/></a></h1>
+		<div class="description"></div>
+    </div><!-- /header -->
+</div><!-- /container -->
+
+  <table cellspacing="0" cellpadding="1" border="0" style="margin: 2px;">
+    <tr>
+      <td class="sidebar">
+
+        <p style="background:#006600; color:#ffcc00; text-align:center; margin:0px; font: 18px Tahoma, Verdana; border-top: 1px solid #fff; border-left: 1px solid #fff; border-bottom: 1px solid #aaa; border-right: 1px solid #aaa; padding: 4px;">
+        <em>CRYSTALS</em><br><span style="font: 14px Tahoma, Verdana;">manuals</span></p>
+    
+        <div class="box">
+          <font point-size="8">
+            <h2 class="menutitle" style="background:#006600;" >Contents</h2>
+    
+<A class="menuitem" HREF="faq.html">+ Frequently Asked Questions</A>
+<A class="menuitem" HREF="primer.html">+ Crystals Primer</A>
+<A class="menuitem" HREF="guide.html">+ Crystals User Guide</A>
+<A class="menuitem" HREF="crystalsmanual.html">+ Crystals Manual</A>
+<div class="menuitem">Cameron Manual</div>
+<div class="menublock">
+<A class="menuitem" HREF="cameron-1.html">1. Introduction</A>
+<A class="menuitem" HREF="cameron-2.html">2. How To Get Started</A>
+<A class="menuitem" HREF="cameron-3.html">3. Data Input</A>
+<A class="menuitem" HREF="cameron-4.html">4. Outputting Data</A>
+<A class="menuitem" HREF="cameron-5.html">5. Editing The Atom List</A>
+<A class="menuitem" HREF="cameron-6.html">6. Obeying Files</A>
+<A class="menuitem" HREF="cameron-7.html">7. Archiving And Retrieving Views</A>
+<A class="menuitem" HREF="cameron-8.html">8. Graphical Output Devices</A>
+<A class="menuitem" HREF="cameron-9.html">9. View Direction Control</A>
+<div class="menuitem">10. Include And Exclude</div>
+<A class="menuitem" HREF="cameron-11.html">11. Drawing Style Control</A>
+<A class="menuitem" HREF="cameron-12.html">12. Connectivity Control</A>
+<A class="menuitem" HREF="cameron-13.html">13. Control Of Colour</A>
+<A class="menuitem" HREF="cameron-14.html">14. Atom Labelling</A>
+<A class="menuitem" HREF="cameron-15.html">15. Other Picture Controlling Commands</A>
+<A class="menuitem" HREF="cameron-16.html">16. Symmetry Input</A>
+<A class="menuitem" HREF="cameron-17.html">17. Crystal Packing Commands</A>
+<A class="menuitem" HREF="cameron-18.html">18. Add And Move - Further Symmetry Related Commands</A>
+<A class="menuitem" HREF="cameron-19.html">19. Distance And Angle Calculations</A>
+<A class="menuitem" HREF="cameron-20.html">20. Information On Data Held Within The Program</A>
+<A class="menuitem" HREF="cameron-21.html">21. Group Definitions</A>
+<A class="menuitem" HREF="cameron-22.html">22. Miscellaneous Commands</A>
+<A class="menuitem" HREF="cameron-23.html">23. How To Stop The Program</A>
+<A class="menuitem" HREF="cameron-24.html">24. Menu Definition File</A>
+<A class="menuitem" HREF="cameron-25.html">25. Some Useful Ideas</A>
+<A class="menuitem" HREF="cameron-26.html">26. Cameron Manual</A>
+</div>
+<A class="menuitem" HREF="tools.html">+ Menu and toolbar</A>
+<A class="menuitem" HREF="readme.html">+ Getting Started</A>
+<A class="menuitem" HREF="crysworkshop.html">+ Crystals Worked Examples</A>
+<A class="menuitem" HREF="manindex.html">+ Index</A>
+
+
+            <H2 class="menutitle" style="background:#006600;">Manuals built:<br>Friday 5 July 2024</H2>
+            <p>To save rainforests this column should not appear in printed versions</p>
+          </font>
+        </div>
+        <br />
+      </td>
+
+      <td style="background: #fff; padding: 20px; 
+                 vertical-align:top; margin: 15px;">
+ <H1>Cameron Manual</H1>
+<H2>Chapter 10: Include And Exclude</H2>
+<DL><DT>
+<DD><A HREF="cameron-10.html#10.1">10.1: Further related commands</A><br>
+<DD><A HREF="cameron-10.html#10.2">10.2: Generation of Dummy atoms</A><br>
+<DD><A HREF="cameron-10.html#10.3">10.3: Example</A><br>
+</DL>
+<A NAME="Cameron - Include and Exclude"> </A>
+<P>The commands INCLUDE and EXCLUDE are very useful as they
+control which
+atoms are drawn at any one time. The syntax for both of the
+commands is
+very similar as they are effectively the reverse of each other.
+</div>
+</div>
+<div class="instruction"><strong><u>INCLUDE</u></strong><br>
+</div>
+<div class="instruction"><strong><u>EXCLUDE</u></strong><br>
+<P>These commands may be entered on their own and be follow by
+atom or
+element names. The syntax is :-
+<pre>
+nnCLUDE at1 at2 el1 el2
+</pre><p><BR>
+Once an atom has been EXCLUDED from the picture it is not drawn
+and it
+is not included in any calculations eg PACK or ENCLOSURE.
+<A NAME="Cameron - Include and Exclude All"> </A>
+<div class="directive"><strong><i>ALL</i></strong>
+The ALL sub-command is a 'blanket' command that applies the
+IN/EXCLUDE
+operation to ALL of the atoms in the current view. Therefore if
+we want
+to exclude more atoms than we want to include we can use EXCLUDE
+ALL to
+get rid of all of the atoms and then add in those we want by
+using
+INCLUDE.
+<A NAME="Cameron - Include and Exclude Group"> </A>
+</div>
+<div class="directive"><strong><i>GROUP</i></strong>
+The command DEFGROUP is available to define groups of atoms that
+are to
+be referred to as a whole. The IN/EXCLUDE command can be used
+with GROUP
+to remove or atoms all of the atoms in the group in the picture
+as
+required.
+<A NAME="Cameron - Include and Exclude Fragment"> </A>
+</div>
+<div class="directive"><strong><i>FRAGMENT</i></strong>
+The user can specify atoms to be IN/EXCLUDEd by defining groups of atoms
+as fragments. A fragment is defined by a single atom, and consists of
+all the atoms linked to it by the current CONNECTIVITY TABLE. That is,
+if atoms are excluded from the picture the bonds ARE NOT broken and
+FRAGMENT will use bonds involving excluded atoms in its calculations.
+ The user
+can select this atom by typing or by clicking on it with the mouse.
+ie. EXCLUDE FRAGMENT C1 will exclude C1, any atoms joined to C1, any
+atoms joined to those atoms etc.
+<A NAME="Cameron - Include and Exclude Cell"> </A>
+</div>
+<div class="directive"><strong><i>CELL</i></strong>
+It is often useful to see how the atoms being drawn relate to the
+unit
+cell. IN/EXCLUDE CELL is used to control the inclusion of the
+unit cell
+(in the LINE style) on the picture.
+<A NAME="Cameron - Include and Exclude Area"> </A>
+</div>
+<div class="directive"><strong><i>AREA</i></strong>
+Choosing INCLUDE or EXCLUDE AREA in the PC version allows the user to 
+draw a polygonal area with the mouse. The polygon is created by clicking
+with the left button on the position required for the vertices. The 
+polygon is closed by clicking close to the initial position. The mouse 
+cursor is changed to a cross during polygon creation and to an arrow when 
+you are close enough to the initial point for closure to occur. Hitting 
+the &lt;return&gt; key or clicking with the right mouse button will abort the 
+operation.
+<A NAME="Cameron - Include and Exclude Select"> </A>
+</div>
+<div class="directive"><strong><i>SELECT</i></strong>
+The select option is equivalent to EXCLUDE ALL followed by INCLUDE AREA.
+The polygonal area is chosen in the same way as described above and all 
+atoms not within that area are excluded.
+<HR><small><A HREF="cameron-10.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="10.1">10.1: Further related commands</A></H3></CENTER>
+<P>For pictures with more than one 'type' of constituent atom three more
+commands will prove to be useful.
+<A NAME="Cameron - Mask and Unmask"> </A>
+<div class="instruction"><strong><u>MASK</u></strong><br>
+</div>
+<div class="instruction"><strong><u>UNMASK</u></strong><br>
+<P>The MASK command has the same syntax as EXCLUDE ie.
+<pre>
+(UN)MASK at1 at2 el1 el2 ...
+</pre><p><BR>
+It is used to remove atoms from current INCLUDE operations - ie atoms
+that have been MASKed will not be included when using INCLUDE ALL. For
+example the user could MASK out solvent molecules from a diagram leaving
+the 'basic' asymmetric unit to be worked on. UNMASK can be used to
+re-include the required atoms. The sub commands ALL and GROUP are
+available for use with both MASK and UNMASK.
+<A NAME="Cameron - Include and Exclude Switch"> </A>
+</div>
+<div class="instruction"><strong><u>SWITCH</u></strong><br>
+<P>The SWITCH command causes any atoms that are EXCLUDEd from the picture
+to be INCLUDEd and vice versa. This command can be used in conjunction
+with MASK as any MASKed atoms WILL NOT be included in the picture after
+a SWITCH operation.
+<P>Consider an asymmetric unit containing an anion, a cation and some
+solvent. The user could MASK out the solvent atoms. EXCLUDE the anion
+and obtain pictures of the cation atoms. The SWITCH command then
+allows the user to examine the anion without having to INCLUDE and
+EXCLUDE atoms, and the solvent atoms remain excluded throughout.
+</div>
+<HR><small><A HREF="cameron-10.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="10.2">10.2: Generation of Dummy atoms</A></H3></CENTER>
+<A NAME="Cameron - Include and Exclude Dummy"> </A>
+<div class="instruction"><strong><u>DUMMY</u></strong><br>
+<P>In certain circumstances it may be useful for the user to be
+able to
+generate new 'dummy' atoms from the initial atomic coordinates.
+One
+example of this is a compound that contains a cyclopentadienyl ring. The
+bonding in
+such a system can either be represented as five M - C bonds or
+as a
+single bond to the ring's centre. The syntax for the command is:
+<pre>
+INCLUDE DUMMY d
+</pre><p><BR>
+where d is the name of the created atom. This must then be
+followed by a
+sub-command which defines the atoms position.
+<div class="directive"><strong><i>COORDS</i></strong>
+This specifies the atoms coordinates in unit cell fractions. The
+syntax
+is:
+<pre>
+COORDS x y z
+</pre><p><BR>
+<A NAME="Cameron - Include and Exclude Centroid"> </A>
+</div>
+<div class="directive"><strong><i>CENTROID</i></strong>
+Alternatively, the atoms position can be defined relative to
+others
+already in the molecule. At least TWO atoms must be entered to
+define
+new atoms position and it is placed at the CENTROID of their
+coordinates. The syntax is:
+<pre>
+CENTROID at1 at2 at3 ...
+</pre><p><BR>
+<div class="parameter"><i>ALL</i>
+A further sub-command is available so that the new atom is placed
+at the
+centroid of all of the atoms in the molecule. This will prove
+particulary useful when trying to alter the spacegroup of a
+structure eg
+to convert from P 1 to P -1 as the centre of inversion will lie
+at the
+newly generated dummy atom whose coordinates are output once they
+have
+been calculated.
+<BR>
+</div>
+</div>
+</div>
+<HR><small><A HREF="cameron-10.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="10.3">10.3: Example</A></H3></CENTER>
+<P>To create a dummy atom in the centre of a cyclopentadienyl ring you
+would use:
+<pre>
+INCLUDE
+DUMMY d1
+CENTROID C1 C2 C3 C4 C5
+</pre><p><BR>
+
+        <br />
+        <br /> 
+
+      </td>
+    </tr>
+  </table>
+  <p  class="bluebox" style="background:#006600; >
+      <font point-size="8">
+        &copy; Copyright Chemical Crystallography Laboratory, Oxford, 2024.
+        Comments or queries to Richard Cooper - 
+        <A style="color:#ffcc00" HREF="mailto:richard.cooper@chem.ox.ac.uk">
+        richard.cooper@chem.ox.ac.uk</A> Telephone +44 1865 285019.
+        This page last changed on Friday 5 July 2024.
+   </font>
+  </p>
+</div>
+
+</body>
+
+</html>
+
+
+
+
+
+

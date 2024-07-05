@@ -1,0 +1,72 @@
+<!-- XTLVAR title="Data Organisation" -->
+<!-- XTLVAR comment="Data Organisation" -->
+<!-- XTLVAR cvssource="manual/readme.man" -->
+<H1>Getting Started</H1>
+<H2>Chapter 1: Data Organisation</H2>
+<DL><DT>
+</DL>
+
+It's always a good idea to keep your data organised, and it will also
+help for the purposes of running CRYSTALS.
+
+<P>1. Organise your computer. Create a master folder to
+hold all your structures and keep each structure in a sub-folder of this:
+e.g. <i>c:\strs\compound1\</i>
+
+<P>2. Copy the crystallographic data in to the sub-folder. CRYSTALS accepts
+data files (usuall cif files) from most modern machines, 
+and SHELX format .INS/RES and .HKL files.
+
+<BR><strong>Take</strong> <strong>care:</strong> <strong>If</strong> <strong>you</strong> <strong>open</strong> <strong>a</strong> <strong>data</strong> <strong>file</strong> <strong>with</strong> <strong>WORD,</strong>
+<strong>you</strong> <strong>may</strong> <strong>accidentally</strong> <strong>save</strong> <strong>it</strong> <strong>as</strong> <strong>a</strong> <strong>WORD</strong> <strong>document.</strong>
+Use notepad, EDIT, or some other <i>ASCII</i> text editor.
+
+<P>3. Click the CRYSTALS icon, and use the folder browser to find the
+folder containing your data. Click OK.
+
+<P>4. The CRYSTALS window is divided into several areas:
+<BR> On the right: <strong>The</strong> <strong>model</strong> <strong>window.</strong> 
+This will display the model once the structure is solved.
+
+<BR> Above the model: <strong>The</strong> <strong>model</strong> <strong>toolbar,</strong> lets you change the appearance
+and functioning of the model window.
+
+<BR> At the very top: <strong>The</strong> <strong>menu</strong> <strong>bar.</strong> The pull down menus represent
+the principal stages of structure analysis, working from left to right.
+
+<BR> Below that: <strong>The</strong> <strong>main</strong> <strong>toolbar,</strong> provides quick access to some
+common options that should also be in the menus.
+
+<BR> On the upper left:<strong>The</strong> <strong>text</strong> <strong>output</strong> <strong>window.</strong> This
+displays the results of calculations, or asks the user questions.
+It has a large scroll-back capability.
+
+<BR> Below that: <strong>The</strong> <strong>information</strong> <strong>tabs.</strong> This panel can be hidden away,
+as can the toolbars, by clicking the little triangles in the bar that
+divides them from their neighbouring elements.
+
+<BR> And below that: <strong>The</strong> <strong>text</strong> <strong>input</strong> <strong>line.</strong> This is below the
+output window. The cursor automatically moves to this area when you type.
+The 'arrow' keys enable you to recover previous input (like the DOSKEY
+utility). If you are a new user, you shouldn't worry too much about
+the text input line.
+
+<BR> At the very bottom: <strong>A</strong> <strong>status</strong> <strong>bar.</strong> Shows progress during long
+calculations, and status as CRYSTALS is doing different things.
+
+<P>5. CRYSTALS creates many files:
+<BR> <strong>A</strong> <strong>binary</strong> <strong>database</strong> for each structure,
+always named CRFILEV2.DSC. <strong>NEVER</strong> <strong>try</strong> <strong>to</strong> <strong>edit</strong> <strong>this</strong> <strong>file.</strong> This
+file enables CRYSTALS jobs to be restarted from where they were left
+off. All other files may be opened with a text editor e.g.
+notepad, wordpad, or edit.
+<BR> Double clicking on the .DSC file will start CRYSTALS in that folder, using
+that .DSC file.
+<BR> <strong>Text</strong> <strong>files</strong> bfile.l<i>nn</i> and bfile.m<i>nn.</i> The number <i>nn</i>
+is automatically incremented with each run of the program. These files can
+generally be deleted without looking at them unless the analysis begins to go
+wrong. They provide post-mortem information.
+The currently in use files may be opened quickly using the "Files" tab on the
+information panel.
+<BR> <strong>PUBLISH.*</strong> files. These are final listings for preparing papers.
+

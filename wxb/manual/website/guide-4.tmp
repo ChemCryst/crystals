@@ -1,0 +1,247 @@
+<!-- XTLVAR title="Fourier And Patterson Functions" -->
+<!-- XTLVAR comment="Fourier And Patterson Functions" -->
+<!-- XTLVAR cvssource="manual/guide.man" -->
+<H1>Crystals User Guide</H1>
+<H2>Chapter 4: Fourier And Patterson Functions</H2>
+<DL><DT>
+<DD><A HREF="guide-4.html#4.1">4.1: EXAMPLE 1</A><br>
+<DD><A HREF="guide-4.html#4.2">4.2: Patterson maps</A><br>
+<DD><A HREF="guide-4.html#4.3">4.3: Sharpened Patterson maps</A><br>
+<DD><A HREF="guide-4.html#4.4">4.4: Fourier refinement</A><br>
+<DD><A HREF="guide-4.html#4.5">4.5: Assembling a single molecule</A><br>
+</DL>
+<P>Fourier summations are computed by the instruction \FOURIER with
+ an appropriate keyword. Patterson functions can be computed directly
+ from the observed structure amplitudes, Fourier summations require that
+ phase angles have been computed previously. This may be done by issuing
+ the instruction \SFLS with the directive SCALE or CALCULATE. Remember, if you
+ have been doing Least-Squares refinement, that after a new parameter list
+ has been generated the structure factors will need recomputing if they are to
+ reflect these new parameters.
+<P>If the user has not used the SPACEGROUP command, he
+ is required to choose for himself that fraction of the unit cell
+ which must be computed, and enter this information as a LIST 14. Where there
+ are alternative choices possible, computational efficiency is the 
+ main factor to be concidered if the map is not going to be printed. 
+ If the X-ray intensity data are to the same resolution along all axes, the 
+ user should, if the space-group permits, choose an asymmetric volume in 
+ the form of a thin 'slab', and use an ORIENT directive to compute sections
+ parallel to the slab face to minimise computation time. For example, in
+ an orthorhombic  cell 16x11x24, a volume 1/2 x 1/4 x 1 computed in
+ 3min 27secs, and a volume 1 x 1/2 x 1/4 computed in 1min 40secs.
+<P>When the map is to be printed, then convenience in handling the final 
+ map is the main consideration. For example, if the structure has an
+ essentially
+ planar fragment which needs looking at, the sections should be chosen 
+ approximately parallel to the plane. Also, though CRYSTALS will compute maps
+ with any number of points in each direction, and will split the sections up
+ onto several sheets of paper if they are too wide to fit directly, the output
+ is clearly more manageable if the user can arrange the width to fit onto
+ a single page.
+ The fraction of the cell chosen should be such that it contains at 
+ least an asymmetric unit, with a small additional border if the user 
+ is explicitly defining the volume and grid intervals. Failure to include
+ this border may lead to the peak-search routine finding (during the 
+ least-squares peak fitting) very large or small peaks several
+ Angstroms beyond the edge of the volume computed.
+ Such spurious peaks are easily found by inspection, but could be troublesome
+ if
+ some sort of automatic interpretation of the map was being attempted. When
+ the system is allowed to chose its own sampling interval, a border is 
+ automatically included, and these spurious peaks seldom occur.
+<P>Parameters on the \FOURIER instruction enable the figure
+ fields to be scaled and formatted, and the user should well consider
+ what precision he requires in the output map. If he is looking for features
+ that can be represented to two integer places, and there are other
+ previosly characterised features requiring three places, a format permitting
+ printing printing of signed two digit integers will be adequate if rho-max
+ is set to 99.
+<P>The default
+ map type is an F-OBS map.
+ The peak search routines automatically reject all but one peak 
+ from sets of peaks related by a symmetry element. Additionally, if an atoms
+ list, LIST 5, is present, the program evaluates the electron density at atomic
+ sites. The message 'NOT FOUND IN THE MAP' inevitably means that the user has
+ used an inappropriate LIST 14, and has not computed a complete asymmetric
+ volume (though he may have computed some part twice!).
+<BR>
+
+<HR><small><A HREF="guide-4.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="4.1">4.1: EXAMPLE 1</A></H3></CENTER>
+<pre>
+ \FOURIER
+ MAP PRINT=YES
+ LAYOUT NLINE=1 NCHAR=3 MARGIN=2 NSPACE=2 MIN-RHO=0 MAX-RHO=99
+ END
+</pre><p><BR>
+<HR><small><A HREF="guide-4.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="4.2">4.2: Patterson maps</A></H3></CENTER>
+<P>Patterson functions are computed by the instruction FOURIER
+ with the directive MAP TYPE = FO-PATTERSON.  CRYSTALS 
+ automatically modifies the symmetry information taken from  LIST 2 
+ into that appropriate for a Patterson map, i.e. includes a centre of symmetry
+ and drops the translational components. In some space groups this may lead
+ to an origin shift, so that the user will have to 
+ input appropriate values in  LIST 14. 
+<P>The modified LIST 2 is used for the implied distance-angle calculation called
+ by FOURIER to detect degenerate peaks, but it is not written back to the DISK,
+ which retains the original LIST 2. If the user wishes to explicitly
+ compute distances and angles on the Patterson peaks list, he must include
+ the parameter SYMMETRY=PATTERSON in the distance calculation.
+<HR><small><A HREF="guide-4.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="4.3">4.3: Sharpened Patterson maps</A></H3></CENTER>
+<BR>
+<P>Any of the weighting schemes described for LIST 4 can be applied to
+ the Patterson coefficients. Unit weights can be  modified using  Scheme 13
+ to sharpen the map. The formula of Dunitz (Acta Cryst(1973), B29, 589) 
+ should be used with P(1)=1 and P(2)=10 to avoid over-sharpening. The weight
+ for a reflection at theta=30 will be 50 for Mo radiation. Do not forget
+ you will probably wish to restore the original weighting scheme.
+
+<pre>
+ \LIST 4
+ \ Use the default scheme, which produces unit weights.
+ END
+ \WEIGHT
+ \ To apply unit weights
+ \LIST 4
+ SCHEME NUMBER=13 NPARAM=2
+ PARAM 1 10
+ END
+ \WEIGHT
+ \ To apply weights for sharpening
+ END
+</pre><p><BR>
+<HR><small><A HREF="guide-4.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="4.4">4.4: Fourier refinement</A></H3></CENTER>
+<P>CRYSTALS provides a mechanism for performing elementary Fourier refinement.
+ Such a procedure is very cost-effective during the initial development of
+ poorly phased structures, such as those based on E-maps or heavy-atom phased 
+ maps. At that stage, non-linearities degrade the convergence of simple
+ least-squares, though the use of constraints may substantially improve the
+ situation (see the section on Least-squares). Fourier refinement has a
+ good range of convergence and is relatively insensitive to errors in the
+ model, though it does require the atomic sites to be resolved.
+
+<pre>
+ \SFLS
+ \ we will compute phases and put Fo on an 
+ \ approximately absolute scale
+ SCALE
+ END
+ \FOURIER
+ \ set the reject limit very small so that peaks 
+ \ which lie close to input atomic sites are not 
+ \ rejected
+ PEAKS HEIGHT=10 NPEAK=16 REJECT=.0005
+ END
+ \PEAKS
+ \ hang on to all the peaks again
+ SELECT REJECT=.0005
+ \ this does the refinement.
+ \ peaks within .15 of an input atomic site are 
+ \ identified with that atom.
+ \ The positional coordinates of the atom are computed 
+ \ from the corresponding peak coordinates
+ REFINE DISTANCE=.15
+ END
+</pre><p><BR>
+<P>In addition to maps computed with /Fo/, /Fc/ or /Fo-Fc/ as coefficients,
+ maps can be based on /2*Fo-Fc/. Such maps are commonly used in protein
+ crystals structure analysis, and are useful in small structure analyses
+ when there is disorder. The reduced contribution from /Fc/ means that
+ a diminished image of the 'known' structure is retained in the map, and
+ serves as a guide through those features due to /Fo/.
+<HR><small><A HREF="guide-4.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="4.5">4.5: Assembling a single molecule</A></H3></CENTER>
+<P>It is rare that the user can use LIST 14 to choose a fraction of his cell 
+ so that the resulting map will contain a discrete and connected molecule.
+ In general, the peaks taken from the map must have symmetry operators applied 
+ to them to generate a unified molecule. This can often be done automatically
+ for organic molecules using the instruction \REGROUP. By using \REGROUP with
+ different collection ranges, it may be possible to construct a very acceptable
+ molecule.
+
+<pre>
+ \REGROUP
+ \ build up the main frame of non-hydrogens first
+ SELECT MOVE=1.6
+ END
+ \REGROUP
+ \ now re-move the hydrogens, important if the 
+ \ molecule is crowded or distorted
+ SELECT MOVE=1.1
+ END
+</pre><p><BR>
+<P>The REGROUP instruction reorders (and optionally renumbers) LIST 5.
+ \COLLECT, which computes connectivity based on radii taken from LIST 29,
+ leaves the order of LIST 5 unchanged, but applies any necessary symmetry
+ to the coordinates. COLLECT with the parameter TYPE=PEAK is useful for
+ moving new found peaks as close as possible to existing atoms.
+<P>While the user can often get some idea of the shape of his structure by
+ looking at peaks lists and inter-atomic distances and angles, simple line
+ diagrams may also be useful. In CRYSTALS, these are obtained via the
+ molecular axes (q.v.) calculation \MOLAX. This instruction enables a
+ plot
+ to be made onto the best plane through a specified list of atoms or peaks.
+ The list may include all the items in LIST 5, only selected items, and
+ symmetry operators may be introduced if the user thinks that this may
+ produce a more interpretable figure. The example below is based on trans-1,4 
+ dimethyl cyclohexane, which lies on a centre of symmetry and
+ has 4 unique carbon atoms and 8 hydrogen atoms. 
+
+<pre>
+ \MOLAX
+ \ use the whole of LIST 5, together with its 
+ \ image in the centre at 0,0,0
+ ATOM FIRST UNTIL LAST FIRST(-1) UNTIL LAST
+ PLOT
+ EXEC
+ \ now just look at the methyl group
+ ATOM C(4) H(41) H(42) H(43)
+ PLOT
+ EXEC
+ END
+</pre><p><BR>
+
+<P>
+ The output from these calculation is:
+ 
+<pre> ATOM FIRST UNTIL LAST FIRST(-1) UNTIL LAST
+ 
+ 
+                   H32                     H22
+                      .                    .
+                       .                 ..
+                       H+13..........CH*1
+                        ..            ..
+ H43                  ..                .                  H42
+   ..                .                   ..                .
+     .             ..                      .             ..
+     H+14........+1*                       H+11.......C.4
+      .           ..                       ...         H41
+    ..              .                     .               .
+   .                 ..                  .                 ..
+ H42                   .               ..                   H43
+                       H+12..........C.3
+                       ...            H31
+                      ..                .
+                     .                   .
+                   H22                   H32
+ </pre><p><BR> 
+
+<pre>
+ ATOM C(4) H(41) H(42) H(43)                
+                                                
+                           H43                  
+                             ..                 
+                               ..               
+                                C.4.......H42   
+                                .
+                               .
+                            H41
+</pre><p><P> Note that atom types are abbreviated to their
+ initial letter only, and serials are represented
+ by only the last two digits. The symbols + and * 
+ mark character overlap.  
+<BR>

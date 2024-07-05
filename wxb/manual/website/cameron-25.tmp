@@ -1,0 +1,39 @@
+<!-- XTLVAR title="Some Useful Ideas" -->
+<!-- XTLVAR comment="Some Useful Ideas" -->
+<!-- XTLVAR cvssource="manual/cameron.man" -->
+<H1>Cameron Manual</H1>
+<H2>Chapter 25: Some Useful Ideas</H2>
+<DL><DT>
+</DL>
+<A NAME="Cameron - Some useful ideas"> </A>
+<P>To produce black and white illustrations for papers,try
+<pre>
+colour c black
+colour h black
+colour n black
+colour o black
+colour bond all white
+ball all unfil
+ball h fill
+colour back grey
+ELLIP
+C
+N
+O
+ELLIP
+TYPE
+ALL
+4
+CONN
+TAPER
+3
+VIEW
+</pre><p><BR>
+<P>To hack up a packing diagram, cutting out most and just keeping a bit,
+try (all on one line)
+<pre>
+EXCLUDE ALL INCLUDE AREA
+</pre><p><BR>
+Then use the mouse to draw round the bit you want to keep.
+<BR>
+<BR>

@@ -1,0 +1,163 @@
+<!-- XTLVAR title="Symmetry Input" -->
+<!-- XTLVAR comment="Symmetry Input" -->
+<!-- XTLVAR cvssource="manual/cameron.man" -->
+<H1>Cameron Manual</H1>
+<H2>Chapter 16: Symmetry Input</H2>
+<DL><DT>
+<DD><A HREF="cameron-16.html#16.1">16.1: Input of symmetry operators</A><br>
+<DD><A HREF="cameron-16.html#16.2">16.2: Example of Space Group Input</A><br>
+<DD><A HREF="cameron-16.html#16.3">16.3: Other symmetry related operations</A><br>
+</DL>
+<A NAME="Cameron - Symmetry Input"> </A>
+<HR><small><A HREF="cameron-16.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="16.1">16.1: Input of symmetry operators</A></H3></CENTER>
+<P>CAMERON is a crystallographically oriented program and hence
+many of
+its functions require the use of symmetry operators. There are
+two
+methods of inputting the symmetry operators, inputting the
+Spacegroup
+symbol and inputting the individual operators themselves.
+<div class="instruction"><strong><u>SPACEGROUP</u></strong><br>
+<P>The SPACEGROUP command is followed by the symbol, which must
+contain
+all UPPER CASE letters. If the symbol is in a non-standard
+setting then
+the full symbol must be entered. For example  P 21 will be
+interpreted
+as P 1 21 1 which is the standard setting. If P 21 1 1 is
+required then
+the "1's" must be entered to force the choice of unique axis.
+<P>The syntax of the command is:
+<pre>
+SPACEGROUP X X X X
+</pre><p><BR>
+where X are "fields" of the symbol, with spaces between fields
+ie
+entered as P 21 and NOT P21. The program will then output the
+operators
+that have been calculated for the symbol . Note that if a centre
+of
+inversion is present the inverted operators will NOT be shown.
+Also the
+operators generated from the centring vectors - eg 1/2 1/2 1/2
+for body
+centring - will NOT be shown. The complete list of operators used
+for
+packing etc can be found by entering INFO SYMMETRY.
+</div>
+<div class="instruction"><strong><u>SYMMETRY</u></strong><br>
+<P>The input of symmetry operators can be done "by hand" if
+required.
+There are several steps and sub-commands available to do this.
+<div class="directive"><strong><i>OPERATORS</i></strong>
+<P>This sub-command MUST be entered even if only the x y z
+operator is to
+be included. The syntax is :-
+<pre>
+SYMMETRY OPERATORS x y z -x y+1/2 -z ...
+</pre><p><BR>
+with the operators being entered with the translational part in
+fractional form ( 1/2 , 1/3 , 1/4 , 2/3 , 1/6 , 5/6 are
+recognised )
+which must come after the x/y/z as required. The
+fractional
+part must be linked to the x/y/z part with a + or - sign. Note
+that NO
+spaces are allowed within each part of the operator. This is so
+that
+ambiguities cannot arise.
+</div>
+<div class="directive"><strong><i>CENTRE</i></strong>
+<P>This command is used to introduce a centre of inversion into
+the
+symmetry information it must be followed by a centring letter 
+(P,A,B,C,I,F,R) or the command VECTORS.
+</div>
+<div class="directive"><strong><i>NOCENTRE</i></strong>
+<P>This command is used to specify that there is no centre of
+inversion - the centring vectors are the specified by letter or by using
+VECTORS.
+<div class="parameter"><i>VECTORS</i>
+<P>This command enables the user to introduce centring vectors
+into the
+symmetry operators eg for body centring use :-
+<pre>
+VECTORS 0 0 0 1/2 1/2 1/2
+</pre><p><BR>
+</div>
+</div>
+<div class="directive"><strong><i>USE</i></strong>
+</div>
+<div class="directive"><strong><i>NOUSE</i></strong>
+These commands allow the user to omit certain symmetry operators from
+the packing calculations. The command is followed by the operator
+numbers
+(found using INFO SYMMETRY) of the operators needed.
+<div class="parameter"><i>ALL</i>
+This may be used to USE/NOUSE all of the operators. Note that using
+NOUSE ALL without following it with USE n will result in no atoms being
+generated after a pack operation!
+</div>
+</div>
+</div>
+<HR><small><A HREF="cameron-16.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="16.2">16.2: Example of Space Group Input</A></H3></CENTER>
+<P>In order to end up with the Spacegroup F m m m we require :-
+
+<pre>
+SPACEGROUP F M M M
+
+or
+
+SYMMETRY OPERATORS
+X Y Z  -X -Y Z  -X Y -Z  X -Y -Z
+CENTRE
+VECTORS
+0 0 0
+0 1/2 1/2
+1/2 1/2 0
+1/2 0 1/2
+</pre><p><BR>
+<HR><small><A HREF="cameron-16.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="16.3">16.3: Other symmetry related operations</A></H3></CENTER>
+<div class="instruction"><strong><u>SETUNIT</u></strong><br>
+<P>This command causes the atoms that are to be included in the
+current
+picture to be set as the asymmetric unit. Their data then
+replaces that
+of the initially input atoms and they are used as the asymmetric
+unit
+from now on. This is useful if, for example only half of a
+molecule is
+present in the asymmetric unit. The other half can be generated
+with ADD
+and then SETUNIT is used to treat all of the atoms as the basic
+"building block". SETUNIT is a DANGEROUS command in that it
+cannot be
+undone - UNPACK will NOT reverse the operation. Therefore the
+user is
+prompted for confirmation before the command is executed. The
+syntax is
+simply SETUNIT.
+</div>
+<div class="instruction"><strong><u>ENANTIO</u></strong><br>
+This command inverts the hand of the atoms in the asymmetric unit. Note
+that the operator applied is :-
+
+<pre>
+-1  0  0
+ 0 -1  0
+ 0  0 -1
+</pre><p><BR>
+and no spacegroup changes that may be required are made.
+</div>
+<div class="instruction"><strong><u>SPECIAL</u></strong><br>
+<div class="directive"><strong><i>ON</i></strong>
+</div>
+<div class="directive"><strong><i>OFF</i></strong>
+Controls the special position calculations that occur during packing to 
+eliminate duplicate atoms. By default this is ON.
+<BR>
+</div>
+</div>

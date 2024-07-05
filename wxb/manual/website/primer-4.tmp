@@ -1,0 +1,52 @@
+<!-- XTLVAR title="Basic Data Input" -->
+<!-- XTLVAR comment="Basic Data Input" -->
+<!-- XTLVAR cvssource="manual/primer.man" -->
+<H1>Crystals Primer</H1>
+<H2>Chapter 4: Basic Data Input</H2>
+<DL><DT>
+<DD><A HREF="primer-4.html#4.1">4.1: Start up</A><br>
+</DL>
+<P>CRYSTALS has powerful reflection processing features,
+ described in the Reference Manual. A simplified input is available if
+ the
+ user knows the unit cell, space group, molecular formula and has a file
+ (e.g. REFLECTIONS.DAT) containing reflections in the form h, k, l, Fsq,
+ Sigma(Fsq),
+ one per line.
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-4.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="4.1">4.1: Start up</A></H3></CENTER>
+
+<pre>
+      !\QUICKSTART
+      !CELL         4.05 11.74 24.80
+      !SPACEGROUP   P b c n
+      !CONTENT      C 13 H 8 O I 2
+      !DATA         1.5418       I
+      !FILE         CRDIR:REFLECTIONS.DAT
+      !FORMAT       (3F4, 2X, 2F8.2)
+      !END
+      !\LIST 28
+      !MINIMA       RATIO=2.5
+      !END
+</pre><p><BR>
+<div class="directive"><strong><i>\QUICKSTART</i></strong>
+</div>
+<div class="directive"><strong><i>\SCRIPT QUICKST</i></strong>
+<P>Use QUICKSTART for normal situations.
+ This command requires minimal user input, and sets up the basic data
+ lists in the data base. See the manual
+ for a description of the lists created, and how
+ to deal with complicated cases. Permitted reflection data types are Fo,
+ Fsquare, and I. The Lp correction for 4 circle geometry is applied if the
+ type is I. LIST 28 sets the minimum value of
+ I/sigma(I) to be used in calculations.
+
+</div>
+<div class="directive"><strong><i>\SCRIPT CADQUICK</i></strong>
+</div>
+<div class="directive"><strong><i>\SCRIPT CADSLOW</i></strong>
+<P>These SCRIPTS takes as input the files produced
+ by the CAD4 data processing program RC93 (or RC85).
+<BR>&nbsp;<BR>
+</div>

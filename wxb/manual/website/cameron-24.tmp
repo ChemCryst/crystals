@@ -1,0 +1,15 @@
+<!-- XTLVAR title="Menu Definition File" -->
+<!-- XTLVAR comment="Menu Definition File" -->
+<!-- XTLVAR cvssource="manual/cameron.man" -->
+<H1>Cameron Manual</H1>
+<H2>Chapter 24: Menu Definition File</H2>
+<DL><DT>
+</DL>
+The labels on the menu buttons and the actions they invoke are in the 
+file cameron\button.cam.
+<P>The first line gives the number of columns and the number of lines in 
+the menu.
+After this, adjacent pairs of lines give the text to appear on the 
+button, and the CAMERON commands to be obeyed by the button. The pairs 
+of lines are given first for column 1, then column 2 etc.
+<BR>

@@ -1,0 +1,150 @@
+<!-- XTLVAR title="Tailoring The Program" -->
+<!-- XTLVAR comment="Tailoring The Program" -->
+<!-- XTLVAR cvssource="manual/primer.man" -->
+<H1>Crystals Primer</H1>
+<H2>Chapter 15: Tailoring The Program</H2>
+<DL><DT>
+<DD><A HREF="primer-15.html#15.1">15.1: General Instructions</A><br>
+<DD><A HREF="primer-15.html#15.2">15.2: File processing</A><br>
+<DD><A HREF="primer-15.html#15.3">15.3: DOS file name limitaions.</A><br>
+<DD><A HREF="primer-15.html#15.4">15.4: Automatic Disc extension.</A><br>
+<DD><A HREF="primer-15.html#15.5">15.5: CRYSINIT files.</A><br>
+<DD><A HREF="primer-15.html#15.6">15.6: Environment Variables</A><br>
+</DL>
+<P>The user has some control over the run-time aspects of the program.
+  Commands put into a CRYSINIT file are
+ automatically obeyed each time CRYSTALS is started. Under VMS this file
+is in the users root directory, under DOS it is in the current working 
+directory.
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-15.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="15.1">15.1: General Instructions</A></H3></CENTER>
+
+<pre>
+\TITLE                       Any text for a title
+\SET UEQUIV type             Geometric or arithmetric mean
+\SET PAUSE value             Pause interval after each 24 lines of OP
+\USE CONTROL                 Skip the SCRIPT startup mode
+\SET GENERATE state          Generate filename 'extensions'
+\SET LOG state               Control the logging of input
+\SET MONITOR state           Control monitoring of input
+\SET PAGE length
+\SET TERMINAL device         Set VT52 or VT100 for SCRIPTS
+\SET COMMUNICATION speed     Set relative line speed
+\SET TIMING state            Enable timing messages
+\SET LIST   state            Messages about disc transfers
+\SET WATCH number            Select lists to watch
+\SET PRINTER state           On or Off
+</pre><p><BR>
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-15.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="15.2">15.2: File processing</A></H3></CENTER>
+<P>When CRYSTALS is running, instructions stored in a data file can be executed
+ with:
+
+<pre>
+             !\USE  filename
+</pre><p><BR>
+<P>To find out what is in a file without obeying it, issue:
+
+<pre>
+            !\TYPE  filename
+</pre><p><BR>
+<P>CRYSTALS automatically hooks in suitable files or devices to input and output
+ channels. These can be changed while the program is running. For example, the
+ listings can be directed to a new file, so that the previous file can be
+ printed without stopping CRYSTALS. Output can also be directed to specially
+ named files, or devices. The command used is:
+<P>
+\RELEASE devicename filename
+<P>Permitted devices include:
+
+<pre>
+      MONITOR   The screen for online work, otherwise the .MON file (not PCs)
+      PRINTER   The main listing file
+      LOG   The copy (log) of all input
+      PUNCH A card image file
+</pre><p><BR>
+<P>The filenames can be any system permitted file name.
+ If omitted, a new file with the  default name is opened, possibly
+ over-writing the previous file.
+ Special devices are often available
+
+<pre>
+      :TT   The terminal screen (not PCs)
+      :LP   The line printer itself
+      :NL   The null device (dustbin)
+
+ e.g.
+    !\RELEASE PRINTER LP:
+        sends output directly to the printer
+    !\RELEASE LOG
+        releases the log file, which could then
+        be edited and used as input
+    !\RELEASE PRINTER NL:
+        sends the full listing to the dustbin.
+</pre><p><BR>
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-15.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="15.3">15.3: DOS file name limitaions.</A></H3></CENTER>
+<P>Under VMS file generation numbers prevent accidental over-writing of
+ previous output. Under DOS and UNIX this facility is not available, nor
+ is it always permitted to switch output to and from the screen or printer
+ directly. The command
+
+<pre>
+      !\SET GENERATE ON
+</pre><p><BR>
+ causes the second part of the file names to be modified to help reduce this
+ problem. This command could be put in the CRYSINIT file.
+ Under DOS, all files for a given structure gave the specific part
+ set to CRFILE, and the extension identifies the type of file.
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-15.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="15.4">15.4: Automatic Disc extension.</A></H3></CENTER>
+<P>If the .DSC file becomes full, CRYSTALS makes an attempt to extend it. The
+ number of attempts and the increment are set by the program installer. The
+ user can over -ride the defaults. See the section \DISK. The
+ following commands permits very substantial disk  extensions.
+
+<pre>
+      !\DISK
+      !EXTEND SIZE=10 TRIES=100
+      !END
+</pre><p><BR>
+ These commands could be put in the CRYSINIT file.
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-15.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="15.5">15.5: CRYSINIT files.</A></H3></CENTER>
+<P>Their function is similar to a LOGIN.COM or AUTOEXEC.BAT file, and they
+ contain commands the user
+ always wants executing when CRYSTALS starts. The special instruction
+ \USE CONTROL by-passes SCRIPT mode startup.
+
+
+<pre>
+      !\ A CRYSINIT file to minimise output and pass directly
+      !\ into command mode. Disc extensions are set large.
+      !\DISK
+      !EXTEND FREE=100 SIZE=10 TRIES=100
+      !END
+      !\SET TIMING OFF
+      !\SET WATCH 5
+      !\SET LISTS WRITE
+      !\SET SRQ OFF
+      !\SET SPEED FAST
+      !\USE CONTROL
+</pre><p><BR>
+<P>The file CRYSTALS.SRT, usually in the directory CRIMAGES, is a master
+CRYSINIT file obeyed every time CRYSTALS starts. You may edit this, but
+take care.
+<HR><small><A HREF="primer-15.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="15.6">15.6: Environment Variables</A></H3></CENTER>
+ Enviroment variables (VMS Logicals) point to important directories or
+folders.
+<pre>
+      CRDIR  The directory where CRYSTALS expects to find or put files.
+      CRIMAGES The directory containing CRYSTALS
+      CRSCP The directory containing the SCRIPTS
+</pre><p><BR>
+<BR>&nbsp;<BR>

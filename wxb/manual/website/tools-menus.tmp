@@ -1,0 +1,430 @@
+<!-- XTLVAR title="The Menus" -->
+<!-- XTLVAR comment="The Menus" -->
+<!-- XTLVAR cvssource="manual/menu.man" -->
+<H1>Menu and toolbar</H1>
+<H2>Chapter 2: The Menus</H2>
+<DL><DT>
+<DD><A HREF="tools-menus.html#menus.file">2.1: File</A><br>
+<DD><A HREF="tools-menus.html#menus.xraydata">2.2: X-ray data</A><br>
+<DD><A HREF="tools-menus.html#menus.3">2.3: Diffractometer cifs</A><br>
+<DD><A HREF="tools-menus.html#menus.4">2.4: Input Pre-processed data</A><br>
+<DD><A HREF="tools-menus.html#menus.solve">2.5: Solve</A><br>
+<DD><A HREF="tools-menus.html#menus.structure">2.6: Structure</A><br>
+<DD><A HREF="tools-menus.html#menus.fourier">2.7: Fourier</A><br>
+<DD><A HREF="tools-menus.html#menus.refinement">2.8: Refinement</A><br>
+<DD><A HREF="tools-menus.html#menus.results">2.9: Results</A><br>
+<DD><A HREF="tools-menus.html#menus.10">2.10: Results -> Rotax</A><br>
+<DD><A HREF="tools-menus.html#menus.graphics">2.11: Graphics</A><br>
+<DD><A HREF="tools-menus.html#menus.12">2.12: Graphics -> Special</A><br>
+<DD><A HREF="tools-menus.html#menus.appearance">2.13: Appearance</A><br>
+<DD><A HREF="tools-menus.html#menus.14">2.14: Appearance -> Atoms</A><br>
+<DD><A HREF="tools-menus.html#menus.15">2.15: Appearance -> Model</A><br>
+<DD><A HREF="tools-menus.html#menus.development">2.16: Development</A><br>
+</DL>
+
+<A NAME="GUI menus"> </A>
+<HR><small><A HREF="tools-menus.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="menus.file">2.1: File</A></H3></CENTER>
+
+<div class="instruction"><strong><u>New Working Dir</u></strong><br>
+<P>Choosing this item will display a dialog box allowing you to choose
+a new folder to work in. The current dsc file will be closed, and the
+working folder will change to the new one. If the new folder contains
+an existing crfilev2.dsc, this will be opened.
+<BR>
+</div>
+<div class="instruction"><strong><u>Open Datafile</u></strong><br>
+<P>Choose this item to open a new CRYSTALS dsc file. The current dsc
+file will be closed, and the new one opened. The working directory
+will change to the folder containing the new dsc file.
+<BR>
+</div>
+<div class="instruction"><strong><u>Save Datafile</u></strong><br>
+<P>No action will be taken. The DSC file is constantly updated as operations
+are carried out in CRYSTALS, so there is no need to 'save' the current state.
+<BR>
+</div>
+<div class="instruction"><strong><u>Save Datafile As</u></strong><br>
+<P>A dialog box will allow you to choose a filename to save a copy of the
+current dsc file. After the copy has been saved, the current dsc file is
+closed, and the new copy is opened.
+<BR>
+</div>
+<div class="instruction"><strong><u>Open Instruction File (USE file)</u></strong><br>
+<P>Cause CRYSTALS to execute (USE) a pre-prepared text file containing 
+CRYSTALS commands and/or data lists
+<BR>
+</div>
+<div class="instruction"><strong><u>Exit Crystals</u></strong><br>
+<P>Closes the program.<BR>
+</div>
+<HR><small><A HREF="tools-menus.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="menus.xraydata">2.2: X-ray data</A></H3></CENTER>
+
+<P>The X-ray data menu is concerned with the input, export or editing of 
+experimental X-ray observations and data.<BR>
+
+<div class="instruction"><strong><u>Guided Import</u></strong><br>
+<P>Starts up "The Guide".<BR> 
+The Guide tries to suggest a strategy for working with 'routine' 
+structures.
+<BR>
+</div>
+<div class="instruction"><strong><u>Diffractometer cifs</u></strong><br>
+<P>Submenu. See section !elabel!Preprocess!.
+</div>
+<div class="instruction"><strong><u>Use Pre-processed</u></strong><br>
+<P>Submenu. See Section !elabel!Use!
+
+</div>
+<div class="instruction"><strong><u>Import Shelx file (INS or RES)</u></strong><br>
+<P>Opens a dialog to help import SHELX .ins or .res files. Choose the
+file name. You will need to know the space group symbol.
+</div>
+<div class="instruction"><strong><u>Import HKLF4 data</u></strong><br>
+<P>Opens a dialog which allows the import of reflection data in a variety
+of formats, most commonly, SHELX HKLF4 format.<BR>
+
+</div>
+<div class="instruction"><strong><u>Import HKLF5 data</u></strong><br>
+<P>Converts a Shelx HKLF5 file into CRYSTALS format. Gives the 
+opportunity to enter the twin law matrices<BR>
+
+
+
+</div>
+<div class="instruction"><strong><u>Import "cif" files</u></strong><br>
+<P>Opens a dialog which allows the import of data from "cif"  and "fcf" 
+files.
+<P>If the "cif" file contains more than one structure, the data from 
+each may either be put into separate CRYSTALS format files, or into one
+single file. If there is a single file, it can be imported directly into
+CRYSTALS.  If the "cif" file contians a Z'=2 structure, the two 
+molecules can be 'matched', ie tested for similarity.
+
+</div>
+<div class="instruction"><strong><u>Input/Edit Cell</u></strong><br>
+<P>Displays a dialog box for inputing or editing the cell parameters and
+their associated standard uncertainties.
+</div>
+<div class="instruction"><strong><u>Input/Edit SpaceGroup</u></strong><br>
+<P>Displays a dialog box for entering the space group symbol. It may
+either be hand-typed, in which case there must be a space between each
+operator, or it may be selected from a list of the most common settings
+of every space group.
+<BR>
+</div>
+<div class="instruction"><strong><u>Input/Edit Cell Contents</u></strong><br>
+<P>Displays a dialog box for entering the type and number of every element
+present in the unit cell.<BR>
+
+
+</div>
+<div class="instruction"><strong><u>File Export</u></strong><br>
+<P>Enables the creation of text files in various formats<BR>
+</div>
+<div class="instruction"><strong><u>Filter reflections</u></strong><br>
+<P>Allows filters to be specified for rejecting certain categories of
+reflections. If no filters are present, the dialog will offer a default
+of rejecting reflections where I/sigma(I)&lt;3.0 and also some very low angle
+reflections.<BR>
+</div>
+<div class="instruction"><strong><u>Edit goodies</u></strong><br>
+<P>Allows editing of the 'goodies' - lots of information that is required
+for a useful CIF is stored here. This dialog provides a convenient way
+to view and edit it.<BR>
+</div>
+<div class="instruction"><strong><u>View Reflections</u></strong><br>
+<P>This item will write the current list of reflections to a file and open
+that file for you to inspect them.<BR>
+
+</div>
+<HR><small><A HREF="tools-menus.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="menus.3">2.3: Diffractometer cifs</A></H3></CENTER>
+<A NAME="Preprocess"> </A>
+<P>The Generalised input tries to get the information for a final 
+structural cif from the instrument output. It prompts the user for 
+things it needs but cannot find (e.g. colour, size).  Take care when 
+processing H-M space group symbols. Some instruments only out put
+the Laue group as a space group, other use a syntax which cannot be 
+parsed. Also, check the structural formula has been unpicked correctly.
+The selection by instrument type is to enable CRYSTALS to enter
+the correct details into the final ciff.
+Try the WinGX option if your instrument is not listed, but remember to 
+use "Edit Cif Goodies" to manually set the instrument type.<BR>
+<div class="instruction"><strong><u>Run Generalised cif input</u></strong><br> 
+<P>May eventually replace other options listed below.<BR>
+</div>
+<div class="instruction"><strong><u>Run Agilentin (Oxford Diffraction data)</u></strong><br>
+<P>Agelentin in processes Oxford Diffraction data.<BR>
+</div>
+<div class="instruction"><strong><u>Run KccdIn (Kccd data)</u></strong><br>
+<P>KccdIn takes an import.cif file, generated by Nonius Kappa CCD
+diffractomer software and produces input files suitable for reading
+into Crystals.
+</div>
+<div class="instruction"><strong><u>Run RC93 (Cad4 data)</u></strong><br>
+<P>RC93 takes cpd.dat and cpd.psi files, generated by Nonius CAD 4
+diffractomer software and produces input files suitable for reading
+into Crystals.
+</div>
+<div class="instruction"><strong><u>Run DipIn (DIP2000 data)</u></strong><br>
+<P>RC93 takes reflection and listing files, generated by DIP2000
+diffractomer software and produces input files suitable for reading
+into Crystals.
+
+</div>
+<HR><small><A HREF="tools-menus.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="menus.4">2.4: Input Pre-processed data</A></H3></CENTER>
+<A NAME="Use"> </A>
+
+<div class="instruction"><strong><u>Use KCCDIN output</u></strong><br>
+<P>Reads in CRYSTALS format data files produced by the KCCDIN program<BR>
+</div>
+<div class="instruction"><strong><u>Use RC93 output</u></strong><br>
+<P>Reads in CRYSTALS format data files produced by the RC93 program<BR>
+</div>
+<div class="instruction"><strong><u>Use DIPIN output</u></strong><br>
+<P>Reads in CRYSTALS format data files produced by the DIPIN program<BR>
+
+
+
+
+</div>
+<HR><small><A HREF="tools-menus.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="menus.solve">2.5: Solve</A></H3></CENTER>
+
+
+<HR><small><A HREF="tools-menus.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="menus.structure">2.6: Structure</A></H3></CENTER>
+
+
+<div class="instruction"><strong><u>Undo</u></strong><br>
+<A NAME="undo"> </A>
+<P>Allows you to step back to any previous model (List 5) stored in the DSC
+file. All models are stored unless you PURGE the DSC datafile, or
+explicitly delete them using this dialog.
+<P>Note: If you use the GUIDE, and automatic purge occurs after you have
+checked for extinction - any models marked explicilty as 'to be retained'
+will not be PURGED.<BR>
+
+</div>
+<HR><small><A HREF="tools-menus.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="menus.fourier">2.7: Fourier</A></H3></CENTER>
+
+
+<HR><small><A HREF="tools-menus.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="menus.refinement">2.8: Refinement</A></H3></CENTER>
+
+
+<HR><small><A HREF="tools-menus.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="menus.results">2.9: Results</A></H3></CENTER>
+
+
+<div class="instruction"><strong><u>Likely H-bonds</u></strong><br>
+<P>Finds all X--H distances (X=O or N) where the bond distance falls between
+1.5 and 2.2 Angstroms. Also lists the X-H--X angles so that you can decide
+if the X--H is an acceptable hydrogen bond.
+
+</div>
+<div class="instruction"><strong><u>Agreement analysis</u></strong><br>
+<P>Displays graphs of four different analyses of variance.<BR>
+
+</div>
+<div class="instruction"><strong><u>Difabs analysis</u></strong><br>
+<P>Creates a contour map of the difabs absorption correction that WOULD BE
+applied if you were to run DIFABS. The flatter the map the better.<BR>
+
+</div>
+<div class="instruction"><strong><u>Rotax analysis/twins</u></strong><br>
+<P>Submenu, see section !elabel!rotax!
+
+</div>
+<div class="instruction"><strong><u>Edit CIF goodies</u></strong><br>
+<P>Allows you to edit some of the values that will be put in the final CIF<BR>
+
+
+</div>
+<div class="instruction"><strong><u>Publication tables</u></strong><br>
+</div>
+<div class="instruction"><BR>IAllows you to output data in a variety of ways. CIF is probably the most
+commonly used format. Please note that the standard uncertainties output
+in CIF files follow the 'Rule of 19', as requesed by Acta Cryst:
+<P> What it means is as follows....
+<pre>
+SU values are quoted to two digits precision if they are &lt;= 19.
+E.g.
+rule of 9:    5.548(1)   1.453(2)    3.921(3)    1.2287(8)
+rule of 19:   5.5483(9)  1.4532(16)  3.921(3)    1.2287(8)
+rule of 29:   5.5483(9)  1.4532(16)  3.9214(29)  1.2287(9)
+</pre><p><BR>
+<P>The object of this approach is to provide a more consistent distribution
+of precision across all values. 
+
+</div>
+<div class="instruction"><strong><u>Summary file</u></strong><br>
+<P>Produces a human-readable summary file of the crystal structure<BR>
+
+</div>
+<div class="instruction"><strong><u>Acta checks</u></strong><br>
+<P>Performs some basic validation checks on a complete or almost complete
+structure, to try to catch any problems remaining.<BR>
+
+</div>
+<div class="instruction"><strong><u>Checkcif on the web</u></strong><br>
+<P>Just a link to the IUCr cif checking website.<BR>
+
+</div>
+<div class="instruction"><strong><u>Platon</u></strong><br>
+<P>Writes files for and runs Platon, if you haven't run it before, you
+will be asked to browse for the PLATON.EXE file on your hard disk.<BR>
+
+</div>
+<HR><small><A HREF="tools-menus.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="menus.10">2.10: Results -> Rotax</A></H3></CENTER>
+<A NAME="rotax"> </A>
+<div class="instruction"><strong><u>ROTAX</u></strong><br>
+<P>Runs the Rotax procedure for looking for twin-laws. Output consists
+of a selection of possible twin laws with associated figures-of-merit.
+Figures closer to zero are best, but beware figures of exactly zero
+(corresponding to exact lattice overlap), since they are probably just
+part of the point group symmetry of your structure.
+<P>You may choose a twin law to be applied<BR>
+
+</div>
+<div class="instruction"><strong><u>Input twinned structure</u></strong><br>
+<P>Allows you to give a known twin-law. The ROTAX option above is probably
+easier to use, even if you already know the twin law.<BR>
+
+</div>
+<div class="instruction"><strong><u>Remove twin laws</u></strong><br>
+<P>Removes the twin laws (List 25), removes the twin scales from the model
+(List 5) and reverts to the original reflection listing. (Saved during
+the application of the twin-law).
+
+
+</div>
+<HR><small><A HREF="tools-menus.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="menus.graphics">2.11: Graphics</A></H3></CENTER>
+
+
+<div class="instruction"><strong><u>Cameron Graphics</u></strong><br>
+<P>Starts Cameron, a program for visualising crystals structure packing and
+producing publication diagrams<BR>
+
+</div>
+<div class="instruction"><strong><u>Special</u></strong><br>
+<P>Submenu. See section !elabel!special!.
+
+</div>
+<div class="instruction"><strong><u>Import last Cameron output</u></strong><br>
+<P>Reads in the model which Cameron wrote at the end of its last run.
+Could be useful if you've trashed the model since then (although, see also:
+Structure -&gt; Undo, section !elabel!undo!).
+
+</div>
+<div class="instruction"><strong><u>Import last Cameron input</u></strong><br>
+<P>Reads in the model which CRYSTALS last wrote to send to Cameron.
+Could be useful if you trashed the model in Cameron and then accidentally
+brought it back into CRYSTALS. (Although, see also:
+Structure -&gt; Undo, section !elabel!undo!).
+
+</div>
+<div class="instruction"><strong><u>Mapviewer</u></strong><br>
+<P>Enables you to re-display maps created by a previous Slant or Voids 
+calculation.<BR>
+
+</div>
+<HR><small><A HREF="tools-menus.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="menus.12">2.12: Graphics -> Special</A></H3></CENTER>
+<A NAME="special"> </A>
+<div class="instruction"><strong><u>Cameron (use existing input files)</u></strong><br>
+<P>Starts Cameron without writing new input files for it. Useful if you
+have an external program that produces cameron.ini and cameron.l5i files.
+
+</div>
+<HR><small><A HREF="tools-menus.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="menus.appearance">2.13: Appearance</A></H3></CENTER>
+
+
+<div class="instruction"><strong><u>Atoms</u></strong><br>
+<P>Submenu. See section !elabel!atoms!.
+
+</div>
+<div class="instruction"><strong><u>Model</u></strong><br>
+<P>Submenu. See section !elabel!model!.
+
+</div>
+<div class="instruction"><strong><u>Auto scale (zoom off)</u></strong><br>
+<P>Restores the model to its original view, if it has been zoomed.<BR>
+
+</div>
+<div class="instruction"><strong><u>Set Text Font</u></strong><br>
+<P>Allows you to choose a font for the text output window. I recommend
+Lucida Console, or Courier - in any case use a fixed/monospaced font,
+otherwise the output of tables will not make much sense.
+
+</div>
+<div class="instruction"><strong><u>Set Input Font</u></strong><br>
+<P>Lets you choose a font for the input editbox. Might be useful if
+you are demonstrating command line features on a high-res screen.<BR>
+
+
+</div>
+<HR><small><A HREF="tools-menus.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="menus.14">2.14: Appearance -> Atoms</A></H3></CENTER>
+<A NAME="atoms"> </A>
+<div class="instruction"><strong><u>Covalent</u></strong><br>
+<P>Sets radius of atoms displayed in the main model window to be 1/4 of
+their covalent radius.<BR>
+</div>
+<div class="instruction"><strong><u>Van der Walls</u></strong><br>
+<P>Sets the radius of atoms displayed in the main model window to be
+the VDW radius.<BR>
+</div>
+<div class="instruction"><strong><u>Thermal</u></strong><br>
+<P>Displays atoms as either ellipse representation of ADPs, or sphere
+representing U[iso].<BR>
+</div>
+<div class="instruction"><strong><u>Quarter size</u></strong><br>
+<P>Set radius to 1/4 of given value (either covalent, vdw or thermal).<BR>
+</div>
+<div class="instruction"><strong><u>Half size</u></strong><br>
+<P>Set radius to 1/2 of given value (either covalent, vdw or thermal).<BR>
+</div>
+<div class="instruction"><strong><u>Full size</u></strong><br>
+<P>Set radius to given value (either covalent, vdw or thermal).<BR>
+
+</div>
+<HR><small><A HREF="tools-menus.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="menus.15">2.15: Appearance -> Model</A></H3></CENTER>
+<A NAME="model"> </A>
+<div class="instruction"><strong><u>Update model</u></strong><br>
+<P>If automatic update is disabled, this command updates the model<BR>
+</div>
+<div class="instruction"><strong><u>Auto update OFF</u></strong><br>
+<P>Disables auto update. Useful for big structures where the drawing is
+significantly slowing the program<BR>
+</div>
+<div class="instruction"><strong><u>Auto update ON</u></strong><br>
+<P>Enables auto update of the model window.<BR>
+</div>
+<div class="instruction"><strong><u>Set wallpaper</u></strong><br>
+<P>Experimental feature. Allows you to set the background of the model
+window with a bitmap. The bitmap is stretched or shrunk to fit the window.
+Significantly slows the drawing on slower machines. Also, the width of
+the bitmap in pixels must be a multiple of 4.<BR>
+</div>
+<div class="instruction"><strong><u>No wallpaper</u></strong><br>
+<P>Removes the model background if present<BR>
+
+
+</div>
+<HR><small><A HREF="tools-menus.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="menus.development">2.16: Development</A></H3></CENTER>
+
+<P>This menu contains items that are currently under development. They
+are not documented yet, and you should not need to use them. If you
+wish to experiment, please make a copy of your structure and experiment
+on the copy. Feedback is welcome.
+

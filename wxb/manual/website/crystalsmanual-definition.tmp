@@ -1,0 +1,634 @@
+<!-- XTLVAR title="Definitions And Conventions" -->
+<!-- XTLVAR comment="Definitions And Conventions" -->
+<!-- XTLVAR cvssource="manual/crystals.man" -->
+<H1>Crystals Manual</H1>
+<H2>Chapter 2: Definitions And Conventions</H2>
+<DL><DT>
+<DD><A HREF="crystalsmanual-definition.html#definition.syntax">2.1: Syntax of Commands</A><br>
+<DD><A HREF="crystalsmanual-definition.html#definition.2">2.2: Syntax of the manual</A><br>
+<DD><A HREF="crystalsmanual-definition.html#definition.commands">2.3: Types of Commands:</A><br>
+<DD><A HREF="crystalsmanual-definition.html#definition.immediate">2.4: Immediate commands</A><br>
+<DD><A HREF="crystalsmanual-definition.html#definition.5">2.5: Files</A><br>
+<DD><A HREF="crystalsmanual-definition.html#definition.errwarn">2.6: Errors and Warnings</A><br>
+</DL>
+
+<A NAME="Command syntax"> </A>
+<A NAME="Syntax"> </A>
+<A NAME="defandconv"> </A>
+<HR><small><A HREF="crystalsmanual-definition.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="definition.syntax">2.1: Syntax of Commands</A></H3></CENTER>
+
+ Commands are given to CRYSTALS as small packages, rather like
+ sentences. This enables the program to recognise when the user thinks
+ that a piece of input
+ is complete and then, after inserting any default values and checking
+ for errors, perform the task.
+<BR>&nbsp;<BR>
+<div class="instruction"><strong><u>Format of Commands</u></strong><br>
+<P>All command packages follow the same general format. The command is
+ introduced
+ with a backslash (or alternatively, a hash symbol or ampersand &) and
+ ends with the
+ word 'END'.
+
+<pre>
+      \COMMAND ([keyword=]value ) ...
+      (DIRECTIVE ([keyword=]value ) ...)
+      END
+</pre><p><BR>
+ Items in
+ round brackets '()' may be absent, items in square brackets '[]' are
+ optional. Ellipsis '...' means the preceding item may be repeated.
+<P>Actual data on a COMMAND or DIRECTIVE line is input in free format,
+ with at least one space (or sometimes an optional comma) terminating an
+ item. Data items may either be preceded with the keyword and its '=' sign,
+ or if the order given in the definition is strictly followed, just by
+ the data values. COMMANDS, DIRECTIVES and KEYWORDS can be abbreviated to
+ the minimum string which resolves ambiguity.
+ Both types of identification can be intermingled.
+<P>The following examples are all identical to the program. They use
+the command \DISTANCES to compute all interatomic distances in the range
+0.0-1.9 Angstrom, and all interatomic angles involving bonds in the range
+1.6-2.1 Angstrom.
+
+<pre>
+      \DISTANCE
+      SELECT RANGE=LIMITS
+      LIMITS DMIN=0.0 DMAX=1.9 AMIN=1.6 AMAX=2.1
+      END
+</pre><p><BR>
+
+<pre>
+      \DIS
+      SE RA=LI
+      LI 0.0 1.9 1.6 2.1
+      EN
+</pre><p><BR>
+
+<pre>
+      \DIST
+      SEL RANGE=LIM
+      LIMI DMAX=1.9 1.6 2.1
+      END
+</pre><p><BR>
+<BR> Note that in the last example, the value for DMIN is omitted (its
+default value turns out to be 0.0) and the list of parameters starts
+with a DMAX: CRYSTALS knows that the next parameter is AMIN so it 
+need not be specified.
+<BR>
+</div>
+<HR><small><A HREF="crystalsmanual-definition.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="definition.2">2.2: Syntax of the manual</A></H3></CENTER>
+<P>Those parts of the manual describing data and command input will
+ generally be in the following format:
+<pre>
+      1. A summary of the complete command, with all directives and
+         keywords. Ellipsis (...) may be printed to represent omitted
+         but similar parameters.
+      2. An typical example. This may not demonstrate all the available
+         options
+      3. A description of all the directives and keywords.
+</pre><p><BR>
+For a simple example, see LIST 1, section !elabel!LIST01!.
+<A NAME="Command types"> </A>
+<HR><small><A HREF="crystalsmanual-definition.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="definition.commands">2.3: Types of Commands:</A></H3></CENTER>
+
+<div class="instruction"><strong><u>Lists</u></strong><br>
+<P>These contain related data items, grouped together so that CRYSTALS can
+ check
+ that the data is complete. These lists are stored in the CRYSTALS
+ database. Usually, input of a new list of a given type over-writes an
+ existing list of the same type. In general, LISTS do not 'do' anything.
+<P>There are two types of syntax for LISTS:
+<div class="directive"><strong><i>Keyed LISTS</i></strong>
+<P>In these, CRYSTALS can know in advance how much and what kind of
+ input to expect. Each element of data is identified by an optional
+ keyword. See, for example, LIST 1 (section !elabel!LIST01!).
+</div>
+<div class="directive"><strong><i>Lexical LISTS</i></strong>
+<P>In these, CRYSTALS cannot know in advance what kind of data the user
+ may wish to input. Each line of input is processed by a lexical scanner,
+ and parsed to determine the action needed. See, for example, LIST 12 
+ (section !elabel!LIST12!).
+<P>For a list of all the lists, see the Lists overview (section !elabel!LISTS!).
+<BR>&nbsp;<BR>
+</div>
+</div>
+<div class="instruction"><strong><u>Commands</u></strong><br>
+<P>These cause CRYSTALS to 'do' something, for example, compute a Fourier
+ map. There are two type of syntax for commands, similar to those used
+ for LISTS:
+<div class="directive"><strong><i>Keyed Commands</i></strong>
+</div>
+<div class="directive"><strong><i>Lexical Commands</i></strong>
+<A NAME="immediate"> </A>
+</div>
+</div>
+<div class="instruction"><strong><u>Immediate Commands</u></strong><br>
+<P>These are special commands which are acted upon immediately they are
+ issued. They are never more than one line long, and do not require an
+ 'END'. They can be issued whenever the cursor is at the beginning of a
+ line, even inside a COMMAND or LIST. They are not usually involved with
+ the crystallographic calculation, but control some aspect of the way
+ CRYSTALS works, such as hooking in an external data file, or changing
+ the amount of output produced.
+<BR>&nbsp;<BR>
+</div>
+<div class="instruction"><strong><u>Comments</u></strong><br>
+ Any data line starting with a backslash or hash followed immediately with
+ a space is ignored, and may thus be used as a comment, or to deactivate
+ the line without deleting it from the file.
+<BR>&nbsp;<BR>
+<BR>&nbsp;<BR>
+</div>
+<div class="instruction"><strong><u>Continuation Lines</u></strong><br>
+ The directive CONTINUE indicates that the data on the current line is a
+ continuation of the previous line.
+<BR>
+<A NAME="Immediate commands"> </A>
+</div>
+<HR><small><A HREF="crystalsmanual-definition.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="definition.immediate">2.4: Immediate commands</A></H3></CENTER>
+
+<div class="instruction"><strong><u>\FINISH</u></strong><br>
+<P>This command closes down CRYSTALS neatly.
+
+</div>
+<div class="instruction"><strong><u>\ ..... COMMENTS ....</u></strong><br>
+<P>This is a comment line. Column 1 contains the  \  character and
+ column 2 <strong>must</strong> be left blank.
+ The remaining columns (3-80) may be used for a descriptive comment.
+ Such a comment line may appear at any point in the input.
+
+</div>
+<div class="instruction"><strong><u>\TITLE ..... A title to be printed .....</u></strong><br>
+<P>This command changes the title that appears at the start of every
+ operation. The characters  \TITLE  are terminated by a space in
+ column 7 and the remainder of the line contains the title.
+
+</div>
+<div class="instruction"><strong><u>\TYPE  'filename'</u></strong><br>
+<P>The file 'filename' is typed on the users terminal without its contents
+ being interpreted by CRYSTALS. Thus \ commands in this file are NOT
+ acted on, giving the user a method of previewing a USE file.
+
+</div>
+<div class="instruction"><strong><u>\USE source</u></strong><br>
+<P>This command controls the source of commands for CRYSTALS.
+ If 'source' is a filename then commands are read from that file.
+ If 'source' is LAST ,the current USE file is closed and
+ commands are read from the previous level USE file.
+ If  'source' is CONTROL  , all USE files open are closed and
+ commands are read from the main control
+ stream for the job , for example the terminal in an interactive job.
+<P>One USE
+ file may contain other USE commands. The maximum depth of USE
+ files  allowed will be installation dependent.
+ Note that the USEd file need not be a complete list - it can be as little
+ as only one line.
+ An indirect file should end with '\USE LAST' , '\USE CONTROL' , or '\FINISH'
+ .
+ This command is only available in some implementations.
+</div>
+<div class="instruction"><strong><u>\SCRIPT filename</u></strong><br>
+<P>This command is only available in interactive mode, and passes control
+ to the 'script' file, which tries to assist the user by prompting him
+ for data and information. A separate manual describes the writing of
+ user define scripts.
+</div>
+<div class="instruction"><strong><u>\SPAWN      'shell command'</u></strong><br>
+<P>A 'shell command' can be issued from inside CRYSTALS with this command.
+ \SPAWN without a command spawns a sub-process and passes control of the
+ sub-process to the terminal. Return to CRYSTALS by closing the
+ sub-process.
+</div>
+<div class="instruction"><strong><u>$      'shell command'</u></strong><br>
+<P>A 'shell command' can be issued from inside CRYSTALS with this command.
+ Typical examples are: $dir, $notepad, $edit afile, $netscape something.html
+<BR>&nbsp;<BR>
+</div>
+<div class="instruction"><strong><u>\COMMANDS   command</u></strong><br>
+<P>This command, which takes other command-names as a parameter 
+ (without the \ ), produces a listing of the available parameters,
+ keywords and defaults for those commands. The listing is
+ derived directly from the 'command file', and is thus
+ completely up to date for the program being run. This command will
+ not operate correctly if the preceding command ended in error. Clear
+ the error flag by performing some successful operation.
+ The facility
+ is an aide-memoire, and not intended to replace the manual.
+ The full significance of the output is detailed in section
+ !elabel!crysdatabase! on the CRYSTALS database.
+</div>
+<div class="instruction"><strong><u>? text</u></strong><br>
+<P>This facility allows the user to make brief inquiries from the command
+ file on the commands, directives, and parameters available at the
+ current point in the job. If a command is not being processed, and
+ '?' is entered alone, a list of the commands is displayed. If
+ '? command'
+ is entered, a list of the directives available with that command is
+ displayed. If '? command directive' is entered, a list of parameters
+ for
+ the given command and directive is displayed, and so on.
+<P>If a command is currently being processed, the behaviour is similar,
+ but no command name is allowed. Then '?' alone gives a list of 
+ directives, while '? directive' gives a list of parameters, and so 
+ on. In this case care should be taken: After a '?', CRYSTALS loses track
+ of the last parameter that was input so using CONTINUE
+ will have unpredictable results. To work around this, specify the parameter
+ explicitly on the command line, for example:
+<pre>
+  \EDIT
+  \  Start entering a new atom to be added to the model:
+  ATOM U 1.0
+  \  Refresh your memory as to the rest of the syntax:
+  ?atom
+  \  Carry on entering the atom, but give the 
+  \ parameter name, X, explicitly.
+  CONTINUE X=0.2 0.4 0.5
+  END
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\MANUAL  'name'</u></strong><br>
+<P>The 'name' parameter is the name of the volume whose index is required.
+ The
+ special name 'INDEX' gives a list of subjects for each volume. The special
+ name 'LISTS' gives a list of the function of each LIST.
+
+</div>
+<div class="instruction"><strong><u>\HELP   'topic'</u></strong><br>
+<P>The topic 'HELP' contains a list of topics for which help is given. This
+ is likely to be very site-specific.
+<BR>&nbsp;<BR>
+
+</div>
+<div class="instruction"><strong><u>\RELEASE  devicename filename</u></strong><br>
+<P>The file currently open on 'devicename' is closed, and a new file opened
+ on that device if necessary. The file just closed can be examined using
+ the \TYPE command. The filename parameter is optional. If it is
+ specified, the new file will be opened with that name.
+<P>Useful devices currently available include PRINTER, PUNCH, LOG and MONITOR.
+
+<BR>&nbsp;<BR>
+
+</div>
+<div class="instruction"><strong><u>\OPEN devicename filename</u></strong><br>
+<P>This command is similar to RELEASE, except that a wider range of
+ device
+ names may be specified, and different messages are produced. An important
+ facility available with this command is to open a named HKLI file, for
+ the reflection input
+ commands HKLI and LIST 6, using the device name HKLI. Similarly permanent
+ files may be used in data reduction work by using the device names M32
+ and M33
+ overriding the default scratch files.
+<pre>
+      e.g.
+      \OPEN HKLI reflection.hkl
+
+</pre><p><BR>
+<BR>&nbsp;<BR>
+
+</div>
+<div class="instruction"><strong><u>\CLOSE devicename </u></strong><br>
+<P>Any file on specified device is closed.
+
+<BR>&nbsp;<BR>
+</div>
+<div class="instruction"><strong><u>\APPEND devicename filename</u></strong><br>
+<P>Output to the specified device is appended to any output already in
+the specified file.
+<BR>&nbsp;<BR>
+
+
+<BR>&nbsp;<BR>
+</div>
+<div class="instruction"><strong><u>\FLUSH devicename </u></strong><br>
+<P>Buffered output on the specified device is flushed to the connected file
+ so that it can be seen with an editor.
+<pre>
+      e.g.
+      \FLUSH LOG
+      \FLUSH PRINT
+
+</pre><p><BR>&nbsp;<BR>
+
+</div>
+<div class="instruction"><strong><u>Device names</u></strong><br>
+<P>Devices are names used inside CRYSTALS to refer
+to files that it has opened. Deviecs recognised by CRYSTALS are:
+<BR>
+<BR> DISCFILE - the database containing everything.
+<BR> HKLI     - an hkl file during input using \LIST 6 or \HKLI.
+<BR> CONTROL  - commands being input (can be a file if you type
+\USE filename, but is usually the command input line)
+<BR> PRINTER  - the listing file (bfilenn.lis by default)
+<BR> PUNCH    - the punch file (bfilenn.pch by default)
+<BR> LOG      - record of all commands issued (bfile.log by default)
+<BR> MONITOR  - Copy of text that appears on the screen
+<BR> SPY      - obsolete, used to collect usage data (locally!).
+<BR> NEWDISC  - a second database, open during \PURGE commands.
+<BR> COMMANDS - the file commands.dsc defines the syntax and data 
+structures of all the commands and lists.
+<BR> M32 M33 MT1 MT2 MT3 MTE - scratch files
+<BR> SRQ      - system request queue. Some high-level commands 
+may issue other CRYSTALS commands using this file.
+<BR> FORN1, FORN2 - output of data for 'foreign' (ie. external) 
+programs.
+<BR> SCPDATA - scripts can read directly from any file opened on
+this device (using EXTRACT script command)
+<BR> SCP2 - scripts can read directly from any file opened on
+this device (using EXTRACT2 script command)s
+<BR> SCPQUEUE - stores commands that scripts are building up.
+<BR>
+Not all may be opened/closed by the user from a command prompt. Some are
+only available inside the initialisation file CRYSTSLS.SRC (See STORE
+below).
+
+</div>
+<div class="instruction"><strong><u>\PAUSE interval</u></strong><br>
+<P>This command causes the program to wait for 'interval' seconds before
+ proceding. The maximum value of 'interval' is 200 seconds. It might be
+ useful in a 'USE' file.
+
+</div>
+<div class="instruction"><strong><u>\BENCH nparam nref</u></strong><br>
+<P>This simulates sfls (structure factor least squares, 
+i.e. a cycle of refinement, see !elabel!SFLS!).
+to enable processor speeds to be compared. No real
+refinement is done, and the structure is not modified.
+<pre>
+      nparam defaults to 500
+      nref   defaults to 5000
+</pre><p><pre>
+Times for a Microvax 3800 (circa 1995) are printed for comparison.
+</pre><p><BR>&nbsp;<BR>
+
+</div>
+<div class="instruction"><strong><u>\SET LIST   state</u></strong><br>
+<P>This command allows the user to control the monitoring level
+ of transfer of lists to and from the database
+ in conjunction with the SET WATCH command. There are four states
+ available.
+<P>If state is OFF, no list logging information is produced.
+<P>If state is READ or WRITE, list logging information is only produced
+ when lists  are
+ read or written respectively.
+<P>If state is BOTH, both reading and writing
+ operations may be monitored. Note that the logging operation may be qualified
+ by a list type specified by SET WATCH. The initial state is WRITE, with
+ the
+ specific watch set on list 5 (the model parameters), so that only operations 
+ creating or modifying list 5 will be monitored.
+</div>
+<div class="instruction"><strong><u>\SET WATCH number</u></strong><br>
+<P>This command is used in conjunction with SET LIST to control monitoring
+ of list operations. If number is 0, operations on all list types may be
+ monitored, according to the state set with SET LIST. If number is a positive
+ integer, representing a list type, only operations on that list type may
+ be
+ monitored. The initial value for the list watch is 5, which in conjunction
+ with the initial monitoring state means that operations creating or modifying
+ list 5 will be monitored.
+</div>
+<div class="instruction"><strong><u>\SET FILE type</u></strong><br>
+<P>This command is used to control the case of file names generated
+ by CRYSTALS. Possible values are:
+
+<pre>
+ LOWER        Filenames are converted to all lower case.
+ UPPER        Filenames are converted to all upper case.
+ MIXED        Filenames are left as input or defined.
+</pre><p><BR>
+
+</div>
+<div class="instruction"><strong><u>\SET GENERATE state</u></strong><br>
+<P>This command is used to control the generation of output file names
+ and pseudo-generation numbers on
+ non-VMS systems.  By default, CRYSTALS modifies the root of filenames
+ for files which should not be overwritten (normally .LIS, .MON, .LOG).
+<P> OFF suppresses automatic name generation.
+
+</div>
+<div class="instruction"><strong><u>\SET EXPORT state</u></strong><br>
+<P>If 'state' is 'on' then LISTS 5 (atoms), 12 (constraints) and 16 
+ (restraints) are copied to the PUNCH file
+ when CRYSTALS closes down. These can be archived for safety, or exported
+ to another computer.
+
+</div>
+<div class="instruction"><strong><u>\SET UEQUIV state</u></strong><br>
+ This controls the calculation of Uequiv. Both definitions are acceptable
+ to Acta. The arithmetic mean of the principle axes is often similar
+ to the refined value of Uiso. The geometric mean is more sensitive to
+ long or short axes, and so is more useful in publications.
+<pre>
+      ARITH = (U1+U2+U3)/3
+      GEOM  = (U1*U2*U3)**1/3
+</pre><p><BR>
+
+</div>
+<div class="instruction"><strong><u>\SET PAUSE value</u></strong><br>
+<P>This command sets a time, in seconds, for which the program will pause
+ at
+ the end of each screen full of output. It is only effective on DOS machines,
+ and enables the user to use the 'pause' key to hold a selected screen.
+ The maximum value of 'interval' is 200 seconds.
+</div>
+<div class="instruction"><strong><u>\SET LOG state</u></strong><br>
+<P>If state = ON  then all user input commands are written
+ to a log file.
+<BR>
+If  state = OFF  then subsequent commands are not written
+ to the log. Any change made to
+ the log state applies only to the current level of USE file and any
+ USE file called by it.
+ Because the log file is a direct copy of the users commands, it may
+ subsequently be used (probably after modification) as a control file.
+</div>
+<div class="instruction"><strong><u>\SET MIRROR state</u></strong><br>
+<P>If 'state' = ON, then all input is reflected in the monitor or list file.
+ If 'state' = OFF, monitoring.
+ is suppressed. Any change made to
+ the monitoring state applies only to the current level of USE file and
+ any
+ USE file called by it.
+</div>
+<div class="instruction"><strong><u>\SET PAGE length</u></strong><br>
+<P>This command is used to change the length of the assumed 'page' when
+ displaying files on the monitor channel, using the commands 'HELP', 'MANUAL',
+ and 'TYPE'. The initial length is 20 lines. After the number of lines
+ specified have been typed, the listing stops and a message indicates the
+ program is waiting. A blank line or carriage return
+ at this point will cause the listing to
+ continue. Any other input is executed normally. If the length is set to
+ zero,
+ or a negative number, the feature is disabled.
+</div>
+<div class="instruction"><strong><u>\SET TERMINAL device</u></strong><br>
+<P>This command controls the display of SCRIPT menus on some
+ terminals. Possible device types are
+
+<pre>
+ UNKNOWN This is the default, and requires no special terminal.
+ VT52    For use on terminals with limited screen management facilities.
+ VT100   For use on advanced terminals.
+ VGA     For use on PC VGA terminals
+ WIN     For use under Win32 and X-windows.
+</pre><p><BR>
+</div>
+<div class="instruction"><strong><u>\SET COMMUNICATION speed</u></strong><br>
+<P>This command is used to indicate to the program the speed of the
+ communication line or terminal
+ on which it is being run. This indication is used by some facilities to
+ determine how much output to produce on the monitor channel. The possible
+ values for the speed are "SLOW" and "FAST". These keywords are not associated
+ with any particular terminal speed, and the appropriate value will depend
+ on
+ the user's patience. The initial value is "FAST"
+</div>
+<div class="instruction"><strong><u>\SET TIME state</u></strong><br>
+<P>This command is used to indicate to the program whether the timing
+ messages usually produced at the end of each facility are produced. If
+ 'state'
+ is "OFF" the messages are not displayed. If 'state' is "ON" the messages
+ are
+ displayed.
+</div>
+<div class="instruction"><strong><u>\SET PRINTER state</u></strong><br>
+<P>This command is used to control output to the 'printer' file. The
+ state
+ OFF suppresses printer output.
+</div>
+<div class="instruction"><strong><u>\SET MONITOR state</u></strong><br>
+<P>This command is used to control output to the 'monitor' file. 
+<pre> 
+ OFF  suppresses all output 
+ ON   copy screen output to monitor
+ SLOW copy all screen output PLUS output for graphics to monitor.
+ (Mainly used for debuging graphics)
+</pre><p><pre>
+</div>
+<div class="instruction"></pre><p><strong><u>\SET OPENMESSAGE state</u></strong><br>
+<P>This command is used to enable or disable file handling messages.
+ OFF suppresses messages.
+</div>
+<div class="instruction"><strong><u>\SET MESSAGE state</u></strong><br>
+<P>This command is used to indicate to the program whether the command
+ messages usually produced at the end of each facility are produced. If
+ 'state'
+ is "OFF" the messages are not displayed. If 'state' is "ON" the messages
+ are
+ displayed. Error messages are always displayed.
+</div>
+<div class="instruction"><strong><u>\SET SRQ state</u></strong><br>
+<P>This command is used to control mirroring of CRYSTALS internal commands.
+ The normal state OFF suppresses the mirroring.
+<BR>
+</div>
+<div class="instruction"><strong><u>\SET RATIO state</u></strong><br>
+<P>This command controls whether Io or Ic is compared with Sigma(Io) 
+during filtering. Arguments are Io or Ic, default is Io.
+See "The use of partial observations, partial models and partial residuals
+to improve the least-squares refinement of crystal structures."
+A. David Rae, Crystallography Reviews, 2013. Vol. 19, No. 4, 165.
+<P>Io is appropriate during initial stages of an analysis, but once the R factor
+drops below 10-15%, Ic gives an unbiassed filtering of the weak reflections. A
+threshold ratio of 1 or 2 is useful if there are a very large number of very
+weak reflections.
+<BR>&nbsp;<BR>
+</div>
+<HR><small><A HREF="crystalsmanual-definition.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="definition.5">2.5: Files</A></H3></CENTER>
+<P>When CRYSTALS runs it stores all crystallographic data in a single file,
+by default named crfilev2.dsc. This is a binary file and should not be
+opened with any other program.
+<P>CRYSTALS outputs results and analysis to several places:
+<div class="parameter"><i>The listing file: </i>
+this will be called bfilenn.lis where nn is a number
+from 00-99, incremented each time the program is run. When nn reaches 99
+this file will be continuously overwritten every time CRYSTALS is run.
+<BR>
+The listing file contains verbose output about all the calculations that
+take place.
+</div>
+<div class="parameter"><i>The punch file: </i>
+called bfile.pch by default. The idea of 'punching' data
+is a throwback to the days of punched cards. This file is used to write out
+specific bits of data <i>as</i> <i>commands</i> that can then be read back into the 
+program. For example, the parameters defining the crystallographic model 
+are stored in CRYSTALS as a 'List 5'. Then 'Punching List 5':
+<pre>
+  \PUNCH 5
+  END
+</pre><p><BR>
+will result in a full \LIST 5 command being written to the file bfile.pch.
+You can then recover that version of the model parameters by typing
+<pre>
+  \USE bfile.pch
+</pre><p><BR>
+which causes the commands written in that file to be executed by CRYSTALS.
+</div>
+<div class="parameter"><i>The monitor file: </i>
+called bfilenn.mon this is obsolete. If there is any
+output in it, it is from a bit of the program that hasn't been looked at
+recently.
+</div>
+<div class="parameter"><i>The log file: </i>
+called bfilenn.log, this contains everything that you typed into CRYSTALS, 
+and commands that were issued on your behalf by the menu system or script
+processor.
+<BR>
+<A NAME="Errors"> </A>
+<A NAME="Warnings"> </A>
+</div>
+<HR><small><A HREF="crystalsmanual-definition.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="definition.errwarn">2.6: Errors and Warnings</A></H3></CENTER>
+
+<P>CRYSTALS recognises the following run time error categories,
+ in addition
+ to any detected by the operating system.
+<div class="instruction"><strong><u>Warnings</u></strong><br>
+<P>These will occur only for tasks which produce user-readable
+ output, and do not write to the database.
+ The current task is abandoned if necessary,
+ and the next task fetched from the input stream.
+</div>
+<div class="instruction"><strong><u>Errors</u></strong><br>
+<P>The error is such that the current task must be abandoned. In batch or
+ online modes, the job will be terminated as well. In interactive mode
+ the current task is abandoned , and control is returned to the user at
+ terminal. The processing of any 'USE' file will be abandoned.
+</div>
+<div class="instruction"><strong><u>Severe Errors</u></strong><br>
+<P>The error detected is such that it is not possible for the job to
+ continue. These errors are usually caused by database management failures.
+</div>
+<div class="instruction"><strong><u>Catastrophic Errors.</u></strong><br>
+<P>The job is completely terminated.
+ This is usualy the consequence of
+ errors in reading or writing to the database.
+</div>
+<div class="instruction"><strong><u>Programming Errors</u></strong><br>
+<P>The program has detected an inconsistency either in the code, or in
+ the command file. A dump and error report will be generated if
+ possible. The error and the conditions that cause it should be reported
+ to Oxford.
+<BR>
+</div>
+<div class="instruction"><strong><u>Errors Detected During the Creation of a LIST</u></strong><br>
+<P>During all operations that create new versions of a list, either by
+ input or internally, errors may be found that cause the new list not to
+ be written to the database. To prevent the system using an old version of
+ a list
+ when the creation of the latest version has failed, the relevant list
+ type
+ is marked as an 'error list' in the 'list control table' (see below).
+ This error flag is cleared when a new version of the list is created or
+ by user action.
+<P>If a list which is marked as an error list is accessed, a message will
+ be output, and the job terminated. However, for the printing of most lists,
+ the error flags are not checked.
+<BR>&nbsp;<BR>
+</div>

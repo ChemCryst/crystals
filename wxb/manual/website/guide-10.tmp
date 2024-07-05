@@ -1,0 +1,16 @@
+<!-- XTLVAR title="Conclusion" -->
+<!-- XTLVAR comment="Conclusion" -->
+<!-- XTLVAR cvssource="manual/guide.man" -->
+<H1>Crystals User Guide</H1>
+<H2>Chapter 10: Conclusion</H2>
+<DL><DT>
+</DL>
+<P>CRYSTALS contains many more options than have been mentioned in this Guide.
+ We know of no easy way to pass on knowledge about the system. It is big, and
+ it is powerful, and for the users who have come to terms with the disk and
+ parameter handling facilities, it is an enjoyable system to work with. When
+ you begin to use it, use keywords frequently and in full. This will help
+ you to remember the syntax of the instructions. Use your imagination in
+ trying to break the system, and so learn its useful limits.
+<BR>
+<BR>

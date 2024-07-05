@@ -1,0 +1,19 @@
+<!-- XTLVAR title="Crystals Manual" -->
+<!-- XTLVAR comment="Crystals Manual" -->
+<!-- XTLVAR cvssource="manual/crystals.man" -->
+<H1>Crystals Manual</H1>
+<H2>Contents</H2>
+<A HREF="crystalsmanual-intro.html">1. Introduction To The System</A><br>
+<A HREF="crystalsmanual-definition.html">2. Definitions And Conventions</A><br>
+<A HREF="crystalsmanual-database.html">3. The Crystals Database</A><br>
+<A HREF="crystalsmanual-initial.html">4. Initial Data Input</A><br>
+<A HREF="crystalsmanual-reflectionin.html">5. Reflection Data Input</A><br>
+<A HREF="crystalsmanual-atomic.html">6. Atomic And Structural Parameters</A><br>
+<A HREF="crystalsmanual-sfls.html">7. Structure Factors And Least Squares</A><br>
+<A HREF="crystalsmanual-fourier.html">8. Fourier Routines</A><br>
+<A HREF="crystalsmanual-analysis.html">9. Analysis Of Results</A><br>
+<A HREF="crystalsmanual-twinning.html">10. Twinned Crystals</A><br>
+<A HREF="crystalsmanual-matrix.html">11. Matrix Calculations</A><br>
+<A HREF="crystalsmanual-obsolete.html">12. Obsolete Commands</A><br>
+<A HREF="crystalsmanual-secret.html">13. Secret Lists</A><br>
+<A HREF="crystalsmanual-14.html">14. Crystals Manual</A><br>

@@ -1,0 +1,168 @@
+<!-- XTLVAR title="Getting Started" -->
+<!-- XTLVAR comment="Getting Started" -->
+<!-- XTLVAR cvssource="manual/primer.man" -->
+<H1>Crystals Primer</H1>
+<H2>Chapter 1: Getting Started</H2>
+<DL><DT>
+<DD><A HREF="primer-1.html#1.1">1.1: Background to structure analysis</A><br>
+<DD><A HREF="primer-1.html#1.2">1.2: Files</A><br>
+<DD><A HREF="primer-1.html#1.3">1.3: Reflection Data</A><br>
+</DL>
+
+<P>The main CRYSTALS documentation is the CRYSTALS REFERENCE MANUAL
+(<A HREF="http://www.xtl.ox.ac.uk/crystalsmanual.html">http://www.xtl.ox.ac.uk/crystalsmanual.html</A>), which
+ is more or less complete and definitive.
+ This Primer gives an introduction to the  main features.
+ A more detailed introduction to the program
+ is available in the GUIDE (<A HREF="http://www.xtl.ox.ac.uk/guide.html">http://www.xtl.ox.ac.uk/guide.html</A>).
+<BR>
+<HR><small><A HREF="primer-1.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="1.1">1.1: Background to structure analysis</A></H3></CENTER>
+<P>No two crystal structure analyses follow exactly the same path, so
+that it is impossible to give a definitive step-by-step procedure for
+the general case. The principal causes for deviation from a linear
+process are:<BR>
+<BR>
+- Direct Methods fails to yield a recognisable structure.<BR>
+- Direct Methods yields a partial structure<BR>
+- Fourier refinement fails to complete the structure<BR>
+- There is disorder in the structure<BR>
+- There is unexpected solvent (possibly disordered)<BR>
+- Difference maps fail to locate all the H atoms, and their positions
+   cannot be simply predicted.<BR>
+<BR>
+<P>Most of these situations can readily be recognised by a chemist with
+some crystallographic experience, and so for the moment it is necessary
+for some one to remain in control of each structure analysis
+<BR>
+<div class="instruction"><strong><u>Principal Stages of analysis</u></strong><br>
+
+<P>The principal steps in structure analysis are:<BR>
+<pre>
+Data collection.
+Transfer of data from diffractometer to user's computer.
+Data pre-processing. This is diffractometer-specific and performed
+   with a dedicated program.
+Data reduction. This is the Lp and possibly absorption corrections.
+   May be included in the pre-processing, or done by CRYSTALS.
+Structure Solution. Usually done by direct methods (SIR or SHELXS),
+   even for heavy atom structures.
+E-map evaluation, usually done by inspection with CRYSTALS/CAMERON.
+Structure development. Atoms not revealed by direct methods may be
+   revealed by Fourier refinement in CRYSTALS
+Structure refinement, by least squares. First isotropic and then
+   anisotropic temperature factors for the non-hydrogen atoms.
+Hydrogen atom location, from a difference Fourier, by geometric
+   prediction, or a combination.
+Final refinement, possibly including extinction, final difference
+   synthesis, production of tables and diagrams.
+</pre><p><BR>
+<BR>
+- Data collection.<BR>
+- Transfer of data from diffractometer to users computer.<BR>
+- Data pre-processing. This is diffractometer specific, and performed
+   with a dedicated program.<BR>
+- Data reduction. This is the Lp and possibly absorption corrections.
+may be included in the pre-processing, or done by CRYSTALS.<BR>
+- Structure Solution. Usually done by direct methods (SIR or SHELXS),
+   even for heavy atom structures.<BR>
+- E-map evaluation, usually done by inspection with CRYSTALS/CAMERON.<BR>
+- Structure development. Atoms not revealed by direct methods may be
+   revealed by Fourier refinement in CRYSTALS<BR>
+- Structure refinement, by least squares. First isotropic and then
+   anisotropic temperature factors for the non-hydrogen atoms.<BR>
+- Hydrogen atom location, from a difference Fourier, by geometric
+   prediction, or a combination.<BR>
+- Final refinement, possibly including extinction, final difference
+   synthesis, production of tables and diagrams.<BR>
+
+</div>
+<div class="instruction"><strong><u>Using CRYSTALS</u></strong><br>
+<P>On any computer, it is recommended to create a dedicated directory
+ sub-directory or
+ folder for each separate structure. Keep the primary data
+from the diffractometer in this folder, together with the files created
+during the analysis.
+</div>
+<HR><small><A HREF="primer-1.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="1.2">1.2: Files</A></H3></CENTER>
+<P>CRYSTALS uses a many files during a structure analysis. Under most
+operating systems the user can choose the filenames. Under DOS they are
+pre-defined.
+<BR>
+<div class="parameter"><i>*.DSC</i>
+ : The binary database for the structure being refined. DO NOT try
+           to edit or print it
+</div>
+<div class="parameter"><i>*.LOG</i>
+: A log of all the data operations done with CRYSTALS. This
+file could be renamed and edited for use as an instruction file for a
+future job.
+</div>
+<div class="parameter"><i>*.LIn</i>
+: A 132 column listing file recording all the output from CRYSTALS. Under
+VMS the name is *.LIS(n).
+</div>
+<div class="parameter"><i>*.PCH</i>
+: 80 column card image file of data for archiving or transfer to other
+programs.
+</div>
+<div class="parameter"><i>INITIAL.*</i>
+: Files produced during initial data processing, and perhaps important
+when the structure is being written up.
+</div>
+<div class="parameter"><i>EXPORT.DAT</i>
+: A file (optionally) written at the end of every job, containing atom
+parameters and refinement directives.
+<BR>
+</div>
+<div class="instruction"><strong><u>Preparations for the analysis</u></strong><br>
+<BR>
+Before you start using CRYSTALS, you will need to know (or have in a
+suitable file) the following:<BR>
+
+<pre>
+Unit cell parameters and standard deviations.
+Chemical formula.
+Space group symbol.
+Number of formula units in the unit cell
+Crystal colour and approximate size and shape.
+Minimum/maximum index ranges during data collection and cell determination.
+Minimum/maximum theta ranges during data collection and cell determination.
+The name of the file containig the reflection data.
+</pre><p><BR>
+- Unit cell parameters and standard deviations<BR>
+- Chemical formula<BR>
+- Space group symbol<BR>
+- Number of formula units in the unit cell<BR>
+- Crystal colour and approximate size and shape<BR>
+- Minimum/maximum index ranges during data collection and cell determination<BR>
+- Minimum/maximum theta ranges during data collection and cell determination<BR>
+- The name of the file containig the reflection data<BR>
+<BR>
+If the data has been preprocessed by some other system, you will also
+need to know:
+<BR> 
+The merging 'R' factor (Rint)
+<BR>
+</div>
+<HR><small><A HREF="primer-1.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="1.3">1.3: Reflection Data</A></H3></CENTER>
+<P>As an introduction to the system, it is assumed that the reflections
+have been pre-processed and are in  SHELX  'HKLF 4' format, ie each line
+of the file contains h,k,l, Fsq and sigma(Fsq) in fixed columns. You will need
+to know the FORMAT of the data (a FORTRAN convention). If the pre-processor
+documentation specifies the output format use it, otherwise study the
+following example.
+If there are decimal points in the numbers, they count as a column but
+are not important for the FORMAT statement.<BR>
+<pre>
+e.g.
+      1234567890123456789012345678 (column number)
+         1  -2  13  186135   465.4 (reflection 1 -2 13, Fsq=186135, sigma=465.4)
+        10   3   0     145      17 (reflection 10 3 0, Fsq=145, sigma=17)
+
+</pre><p><P>The FORTRAN format for this data is:
+
+<pre>        (3F4.0,2F8.0)
+

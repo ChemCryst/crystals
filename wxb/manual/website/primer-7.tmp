@@ -1,0 +1,93 @@
+<!-- XTLVAR title="Preparation Of The Model" -->
+<!-- XTLVAR comment="Preparation Of The Model" -->
+<!-- XTLVAR cvssource="manual/primer.man" -->
+<H1>Crystals Primer</H1>
+<H2>Chapter 7: Preparation Of The Model</H2>
+<DL><DT>
+<DD><A HREF="primer-7.html#7.1">7.1: \Peaks</A><br>
+<DD><A HREF="primer-7.html#7.2">7.2: \Collect & \Regroup</A><br>
+<DD><A HREF="primer-7.html#7.3">7.3: \Edit</A><br>
+<DD><A HREF="primer-7.html#7.4">7.4: \Molax, \Regularise, \Aniso</A><br>
+</DL>
+ This may be the input from SIR etc, from finding additional
+ atoms in Fourier maps, or modifying the existing model (with \PEAKS, \EDIT,
+ \COLLECT, \REGROUP,
+ \REGULARISE, \MOLAX, \HYDROGENS, or \ANISO). These involve operations
+ on LIST 5.
+<pre>
+It is a good idea to assign a final atom numbering scheme as soon as
+possible in the analysis. This will save a lot of hastle later.
+</pre><p><BR>
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-7.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="7.1">7.1: \Peaks</A></H3></CENTER>
+<P>This command converts the output from a Fourier peak search (held as a
+ LIST 10) into a parameter list, LIST 5. It associates any new PEAKS with
+ existing atoms. It can also be used for Fourier refinement, and for
+ rejecting duplicate atoms, e.g. after changing space group.
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-7.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="7.2">7.2: \Collect & \Regroup</A></H3></CENTER>
+<P>These commands assist in assembling molecules from peaks lists. REGROUP
+ applies symmetry and
+ reorders the atoms in LIST 5, COLLECT only applies symmetry. Both can be
+ made to work with all atoms in LIST 5, or only operate on peaks of type
+ Q. These are powerful utilities and can save a lot of manual editing.
+
+<pre>
+  e.g.
+      !\PEAK
+      !END
+      !\COLLECT
+      !SELECT TYPE = PEAK
+      !END
+      !\SCRIPT PLOT
+      !\REGROUP
+      !SELECT SEQUENCE=YES
+      !END
+</pre><p><BR>
+ These commands take peaks from the latest Fourier map and
+ try to collect atoms of TYPE 'Q' (i.e. new peaks) so
+ that they are within bonding distance of existing atoms. The PLOT
+ script displays the structure and permits the renaming of peaks and
+ atoms, and the exclusion of spurious peaks. REGROUP tries to number the
+ atoms so that adjacent ones have sequential serial numbers.
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-7.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="7.3">7.3: \Edit</A></H3></CENTER>
+<P>The CRYSTALS editor, \EDIT, is designed to perform crystallograhic
+ edits on the atom parameters, in LIST 5. If anything needs to be done
+ on groups of atoms, \EDIT is likely to be more convenient than using a text
+ editor on the parameter list.
+
+<pre>
+  e.g.
+     !\EDIT
+     !CHANGE    FIRST(U[ISO])  UNTIL  C(10)  .03
+     !EXECUTE
+     !CHANGE    Si(3,OCC) .667   Si(103,OCC)   .333
+     !SUBTRACT  .25 FIRST(Y) UNTIL LAST
+     !ADD       C(30,SERIAL) UNTIL LAST 100
+     !TRANSFORM -1 0 0, 0 -1 0, 0 0 -1 FIRST UNTIL LAST
+     !SELECT    TYPE NE PEAK
+     !DELETE    S(14)
+     !UEQUIV    C(16) C(23) UNTIL LAST
+     !ANISO     Pb(1)
+     !KEEP      C(1) C(3) C(5) C(7) UNTIL LAST
+     !END
+</pre><p><BR>
+<P>The directive EXECUTE forces immediate execution of preceeding commands. The
+ directive CONTINUE is available for building long lines, and QUIT abandons
+ the edit without saving the results. The original values are unchanged.
+
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-7.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="7.4">7.4: \Molax, \Regularise, \Aniso</A></H3></CENTER>
+<P>These commands are used to examine the geometry of the model. They can
+ also be used to force certain geometries onto the model. MOLAX computes
+ best planes and lines (molecular axes), REGULARISE compares and
+ regularises structures or structural fragments,
+ and ANISO  helps with the analysis of the thermal
+ parameters.
+
+<BR>&nbsp;<BR>

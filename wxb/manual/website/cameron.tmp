@@ -1,0 +1,31 @@
+<!-- XTLVAR title="Cameron Manual" -->
+<!-- XTLVAR comment="Cameron Manual" -->
+<!-- XTLVAR cvssource="manual/cameron.man" -->
+<H1>Cameron Manual</H1>
+<H2>Contents</H2>
+<A HREF="cameron-1.html">1. Introduction</A><br>
+<A HREF="cameron-2.html">2. How To Get Started</A><br>
+<A HREF="cameron-3.html">3. Data Input</A><br>
+<A HREF="cameron-4.html">4. Outputting Data</A><br>
+<A HREF="cameron-5.html">5. Editing The Atom List</A><br>
+<A HREF="cameron-6.html">6. Obeying Files</A><br>
+<A HREF="cameron-7.html">7. Archiving And Retrieving Views</A><br>
+<A HREF="cameron-8.html">8. Graphical Output Devices</A><br>
+<A HREF="cameron-9.html">9. View Direction Control</A><br>
+<A HREF="cameron-10.html">10. Include And Exclude</A><br>
+<A HREF="cameron-11.html">11. Drawing Style Control</A><br>
+<A HREF="cameron-12.html">12. Connectivity Control</A><br>
+<A HREF="cameron-13.html">13. Control Of Colour</A><br>
+<A HREF="cameron-14.html">14. Atom Labelling</A><br>
+<A HREF="cameron-15.html">15. Other Picture Controlling Commands</A><br>
+<A HREF="cameron-16.html">16. Symmetry Input</A><br>
+<A HREF="cameron-17.html">17. Crystal Packing Commands</A><br>
+<A HREF="cameron-18.html">18. Add And Move - Further Symmetry Related Commands</A><br>
+<A HREF="cameron-19.html">19. Distance And Angle Calculations</A><br>
+<A HREF="cameron-20.html">20. Information On Data Held Within The Program</A><br>
+<A HREF="cameron-21.html">21. Group Definitions</A><br>
+<A HREF="cameron-22.html">22. Miscellaneous Commands</A><br>
+<A HREF="cameron-23.html">23. How To Stop The Program</A><br>
+<A HREF="cameron-24.html">24. Menu Definition File</A><br>
+<A HREF="cameron-25.html">25. Some Useful Ideas</A><br>
+<A HREF="cameron-26.html">26. Cameron Manual</A><br>

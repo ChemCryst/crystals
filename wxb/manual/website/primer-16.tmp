@@ -1,0 +1,217 @@
+<!-- XTLVAR title="Advanced Refinements" -->
+<!-- XTLVAR comment="Advanced Refinements" -->
+<!-- XTLVAR cvssource="manual/primer.man" -->
+<H1>Crystals Primer</H1>
+<H2>Chapter 16: Advanced Refinements</H2>
+<DL><DT>
+<DD><A HREF="primer-16.html#16.1">16.1: Mixed isotropic and anisotropic refinement</A><br>
+<DD><A HREF="primer-16.html#16.2">16.2: Large structures</A><br>
+<DD><A HREF="primer-16.html#16.3">16.3: Tied parameters</A><br>
+<DD><A HREF="primer-16.html#16.4">16.4: Rigid groups refinement</A><br>
+<DD><A HREF="primer-16.html#16.5">16.5: Pseudo-symmetry </A><br>
+<DD><A HREF="primer-16.html#16.6">16.6: Absolute Configuration</A><br>
+<DD><A HREF="primer-16.html#16.7">16.7: Enantiomorphic Space Groups</A><br>
+</DL>
+<P>CRYSTALS was originally conceived as a refinement program, and continuing
+ developments have maintained it as one of the best. The following examples
+ illustrate some common situations. Remember that  constraints are set in LIST
+ 12, and restraints in LIST 16. They can be combined in almost any resonable
+ fashion. An important principle to remember in building constraints is
+ that it is <strong>not</strong> parameters which are refined, but <i>sfifts</i> in
+ parameters. Parameters cn be linked to have the same shift, even if the
+ staring values are (and will remain) different.
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-16.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="16.1">16.1: Mixed isotropic and anisotropic refinement</A></H3></CENTER>
+
+<pre>
+      !\LIST 12
+      !BLOCK      SCALE X'S
+      !CONTINUE   C(1,U'S) UNTIL O(42)
+      !CONTINUE   P(1,U[ISO]) UNTIL F(6)
+      !END
+      !\LIST 22
+      !END
+</pre><p><BR>
+<P>These commands define a single matrix block containing the overall
+ scale factor, the positions for
+ all atoms, the anisotropic temperature factors for the first group of
+ atoms, and isotropic for the second. The command LIST 22 converts the
+ symbolic LIST 12 into an internal format, and  checks for
+ syntactic consistency. It should always be issued if LIST 12 is complex, so
+ that potential errors can be detected before least squares are started. It
+ also informs the user of the space
+ which will be needed for the matrix in the .DSC file. It is generated
+ internally if the user forgets.
+
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-16.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="16.2">16.2: Large structures</A></H3></CENTER>
+<P>The user can refine different groups of parameters is  sucessive refinement
+ cycles, by issuing a new LIST 12 command between each cycle. It is also
+ possible to define a multi block refinement, a very effective method if the
+ blocks are carefully chosen. Each block should contain correlated parameters.
+ As a rough guide, the following groups of parameters are in general
+ highly correlated and should be refined in the same block if possible :
+
+<pre>
+ 1.  Temperature factors, scale factors, the extinction  parameter,
+     the polarity parameter and the enantiopole parameter.
+ 2.  Coordinates of bonded atoms.
+ 3.  Non-orthogonal coordinates of the same atom.
+ 4.  U(11), U(22) and U(33) of the same atom.
+</pre><p><BR>
+<P>If it is necessary to split the temperature factors and scale
+ factor into different blocks, their interactions must not be neglected
+ but be allowed for by using a 'dummy overall isotropic temperature
+ factor'.
+ In this case, the scale factor and the dummy temperature factor
+ must be put into a block of order 2 by themselves, and the program
+ will make the appropriate corrections to all the temperature factors.
+
+
+<pre>
+      !\LIST 12
+      !BLOCK X'S
+      !BLOCK U'S SCALE
+      !END
+</pre><p><BR>
+<P>This defines a two block matrix. The scale factor should be with the
+ temperature factors.
+
+
+<pre>
+      !\LIST 12
+      !BLOCK C(1,X'S,U'S) UNTIL O(36)
+      !BLOCK C(37,X'S,U'S) UNTIL N(61)
+      !BLOCK SCALE DU[ISO]
+      !END
+</pre><p><BR>
+<P>This defines a three block matrix for a structure containing two
+ uncorrelated (i.e. not related by pseudo -symmetry) fragments or molecules.
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-16.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="16.3">16.3: Tied parameters</A></H3></CENTER>
+<P>Parameters can be tied individually, on a per atom basis, or for whole
+ groups of atoms.
+
+
+<pre>
+      !\LIST 12
+      !FULL X'S
+      !EQUIVALENCE C(10,OCC) CL(11,OCC) CL(12,OCC)
+      !RIDE        C(17,X'S) H(171,X'S) H(172,X'S) H(173,X'S)
+      !LINK        C(1,X'S,U[ISO])   UNTIL C(13)   AND
+      !CONTINUE    C(101,X'S,U[ISO]) UNTIL C(113)
+      !EQUIV       K(1,OCC) NA(1,OCC)
+      !WEIGHT   -1 NA(1,OCC)
+</pre><p><BR>
+<P>The first command IMPLIES the positions of all atoms. Subsequent commands
+ EXPLICITLY refer to parameters, and over ride the implicit definitions. The
+ second command
+ ties the occupancies of the atoms in dichloromethane. The
+ third defines a methyl group with riding hydrogen positions. The fourth,
+ which continues onto the next line, ties all the parameters in one group with the
+ corresponding parameters in the second. The final equivalence ties the two
+ occupancies, but the weight card negates the shift applied to sodium. The
+ total of their occupancies is therefore constant.
+
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-16.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="16.4">16.4: Rigid groups refinement</A></H3></CENTER>
+<P>Initial refinements of large or disordered structures are best done by
+ defining groups of atoms with well known geometries as rigid groups. The
+ geometry of the groups should first be idealised with \REGULAR. Each atom
+ may not occur in more than one group, though restraints can be applied to
+ any atoms, in or out of groups.
+
+<pre>
+      \LIST 12
+      FULL FE(1,X'S) P(1,X'S) CL(1,X'S) CL(2,X'S)
+      CONTINUE U'S
+      GROUP C(1) UNTIL C(5)
+      RIDE  C(1,U'S) UNTIL C(5)
+      GROUP C(6) UNTIL C(11)
+      RIDE  C(6,U'S) UNTIL C(11)
+      GROUP C(12) UNTIL C(17)
+      RIDE  C(12,U'S) UNTIL C(17)
+      GROUP C(18) UNTIL C(23)
+      RIDE  C(18,U'S) UNTIL C(23)
+      END
+</pre><p><BR>
+<P>Four groups are refined together with 4 other atom positions and all
+ the anisotropic temperature factors. Each GROUP is given linked
+ anisotropic temperature shifts. They do not have to have the same
+ starting temperature factor values.
+
+<BR>&nbsp;<BR>
+<HR><small><A HREF="primer-16.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="16.5">16.5: Pseudo-symmetry </A></H3></CENTER>
+<P>When a structure contains whole groups of highly correlated coordinates,
+ for example when a symmetry operator is lowered by generating atoms and
+ removing a symmetry operator, the refinement will be unstable. This can often
+ be controlled with:
+
+<pre>
+      \LIST 16
+      LIMIT .1 X
+      LIMIT .1 Y
+      LIMIT .1 Z
+      END
+      \LIST 12
+      FULL
+      COMBINE C(1,X'S) UNTIL C(23)  AND C(101,X'S) UNTIL C(123)
+      END
+</pre><p><BR>
+<P>The LIMIT restraints prevent wild divergence on the first round of least
+ squares, and the COMBINE  card combines the parameters from the original
+ fragment with those from the generated fragment - see the reference
+ Manual.
+<BR>
+<HR><small><A HREF="primer-16.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="16.6">16.6: Absolute Configuration</A></H3></CENTER>
+<P>CRYSTALS permits the refinement of either the Rogers <i>eta</i> or the
+Flack <i>x</i> parameter. The Flack parameter is more stable, and has a
+physical interpretation throughout its permitted range (0 to 1). Its
+refinement seems to be robust against DIFABS treatment, but does require
+an extinction correction to be applied if necessary, and may also
+require the inclusion of very weak refections. Note that these are often
+systematically over-estimated. The listing file for a cycle of
+refinement including the Flack parameter contains a list of 'enantiomer
+sensitive' reflections. F+ is Fcalc for the current model, F- for the
+inverse, and Fo is the observed value. Fo should tend to F+ or F-. If it
+is consistently stronger or weaker, suspect the data collection.
+<P>If the material is expected to be chirally pure, once the hand has
+been determined <i>x</i> should be set to 0.0, and enantio removed from LIST
+12 and turned off in LIST 23. If the material is twinned, enantio must
+remain in the refinement.
+<BR>
+<div class="instruction"><strong><u>Interpretation of the Flack Parameter</u></strong><br>
+<pre>
+      Flack      e.s.d      interpretation
+     ~0.0         &lt;.05      Hand is correct
+     ~1.0         &lt;.05      Hand need inverting
+     ~0.5         &lt;.05      Well characterised twin.
+     ~0.0         &gt;0.5      Hand undertermined
+     ~1.0         &gt;0.5      Hand undertermined
+     ~0.5         &gt;0.5      Twinning undertermined
+</pre><p><BR>
+</div>
+<HR><small><A HREF="primer-16.html">[Top]</A> <A HREF="manindex.html">[Index]</A> Manuals generated on Friday 5 July 2024</small>
+<CENTER><H3><A NAME="16.7">16.7: Enantiomorphic Space Groups</A></H3></CENTER>
+For most space groups the hand of the structure can be inverted simply
+by inverting the sign of all the atomic coordinates. For some, the space
+group must also be changed, possible with a change in origin.
+<pre>
+
+      P 61      -  P 65                   P 41       -  P 43
+      P 62      -  P 64                   P 41 2 2   -  P 43 2 2
+      P 61 2 2  -  P 65 2 2               P 41 21 1  -  P 43 21 1
+      P 62 2 2  -  P 64 2 2               P 41 3 2   -  P 43 3 2
+
+                        P 31      -  P 32
+                        P 31 1 2  -  P 32 1 2
+                        P 31 2 1  -  P 32 2 1
+</pre><p><BR>
+
+<BR>&nbsp;<BR>
