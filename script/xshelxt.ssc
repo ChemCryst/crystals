@@ -199,7 +199,7 @@
 %     IF FILEEXISTS ( 'shelxt_input.cry' ) THEN
 %       EVALUATE T =  FILEDELETE ( 'shelxt_input.cry' )
 %     END IF
-% TRANSFER '#SPAWN % "CRYSDIR:shelx2cry.exe" -o shelxt_input.cry shelxt_a.res' -
+% TRANSFER '#SPAWN % "CRYSDIR:shelx2cry.exe" -n -o shelxt_input.cry shelxt_a.res' -
  TO CRYSTALS
 %%
 %     IF FILEEXISTS ( 'shelxt_input.cry' ) THEN
