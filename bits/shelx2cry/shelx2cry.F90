@@ -16,6 +16,7 @@ program shelx2cry
   character(len=256) :: iomessage
   type(line_t) :: line
   logical file_exists
+  logical nohkl
   integer i
   integer error
   type(cif_t), dimension(:), allocatable :: cif_content
@@ -25,6 +26,8 @@ program shelx2cry
   hkl_file = ''
   shelx_filepath = ''
 
+! Enable hklf processing
+  nohkl = .false.
 ! Default length
   allocate (character(len=1) :: arg_val)
 
@@ -65,9 +68,11 @@ program shelx2cry
       print *, '-o output                    File for crystals [default: crystalsinput.dat]'
       print *, '-l log file                  Log output to a file [default: shelx2cry.log]'
       print *, '-i, --interactive            Interactive mode'
+      print *, '-n, --nohkl                  Do not process hkl file'
       print *, ''
       stop
-
+    else if (arg_val(1:7) == '--nohkl' .or. arg_val(1:2) == '-n') then
+      nohkl = .true. 
     else if (arg_val(1:13) == '--interactive' .or. arg_val(1:2) == '-i') then
       Interactive_mode = .true.
     else if (arg_val(1:5) == '--hkl') then
@@ -292,48 +297,52 @@ program shelx2cry
   open (crystals_fileunit, file=crystals_filepath)
   call write_crystalfile()
 
-  if (hklf%code == 5) then ! Cannot directly import hkl, it needs to go through hklf5tocry first
-    info_table_index = info_table_index+1
+! start of hklfile processing
+  if (nohkl .eqv. .false. ) then
+   if (hklf%code == 5) then ! Cannot directly import hkl, it needs to go through hklf5tocry first
+     info_table_index = info_table_index+1
     info_table(info_table_index)%text = 'Warning: Cannot process an hklf5 file here, use hklf5cry from within crystals'
-  else
-    ! filename for hkl file given?
-    if (trim(hkl_file) == '') then
-      ! append hkl file processing if present with the same name as res file
-      inquire (file=shelx_filepath(1:len_trim(shelx_filepath)-3)//'hkl', exist=file_exists)
-      if (file_exists) then
-        write (*, *) 'Processing hkl file header'
-        call write_hkl(shelx_filepath(1:len_trim(shelx_filepath)-3)//'hkl')
-      else
-        info_table_index = info_table_index+1
-        info_table(info_table_index)%text = 'Warning: Could not find the corresponding hkl file '// &
-        &   shelx_filepath(1:len_trim(shelx_filepath)-3)//'hkl'
-        info_table_index = info_table_index+1
-        info_table(info_table_index)%text = '         You will have to import it manually'
+   else
+     ! filename for hkl file given?
+     if (trim(hkl_file) == '') then
+       ! append hkl file processing if present with the same name as res file
+       inquire (file=shelx_filepath(1:len_trim(shelx_filepath)-3)//'hkl', exist=file_exists)
+       if (file_exists) then
+         write (*, *) 'Processing hkl file header'
+         call write_hkl(shelx_filepath(1:len_trim(shelx_filepath)-3)//'hkl')
+       else
+         info_table_index = info_table_index+1
+         info_table(info_table_index)%text = 'Warning: Could not find the corresponding hkl file '// &
+         &   shelx_filepath(1:len_trim(shelx_filepath)-3)//'hkl'
+         info_table_index = info_table_index+1
+         info_table(info_table_index)%text = '         You will have to import it manually'
 
-        if (any(abs(hklf%transform-matrix_eye(3)) > 1e-3)) then
-          info_table_index = info_table_index+1
-          info_table(info_table_index)%text = '         A transformation matrix is present, '
-          info_table_index = info_table_index+1
-          info_table(info_table_index)%text = '         do not forget to convert the hkl indices using:'
-          do i = 1, 3
-            info_table_index = info_table_index+1
-            write (info_table(info_table_index)%text, '(9X, "|",3(F8.3,1X),"|")') hklf%transform(i, :)
-          end do
-        end if
-
-      end if
-    else
-      ! append hkl file processing if present with the same name as res file
-      inquire (file=trim(hkl_file), exist=file_exists)
-      if (file_exists) then
-        write (*, *) 'Processing hkl file header'
-        call write_hkl(trim(hkl_file))
-      else
-        info_table_index = info_table_index+1
-        info_table(info_table_index)%text = 'Warning: Could not find the hkl file given: '//trim(hkl_file)
-      end if
-    end if
+         if (any(abs(hklf%transform-matrix_eye(3)) > 1e-3)) then
+           info_table_index = info_table_index+1
+           info_table(info_table_index)%text = '         A transformation matrix is present, '
+           info_table_index = info_table_index+1
+           info_table(info_table_index)%text = '         do not forget to convert the hkl indices using:'
+           do i = 1, 3
+             info_table_index = info_table_index+1
+             write (info_table(info_table_index)%text, '(9X, "|",3(F8.3,1X),"|")') hklf%transform(i, :)
+           end do
+         end if
+ 
+       end if
+     else
+       ! append hkl file processing if present with the same name as res file
+       inquire (file=trim(hkl_file), exist=file_exists)
+       if (file_exists) then
+         write (*, *) 'Processing hkl file header'
+         call write_hkl(trim(hkl_file))
+       else
+         info_table_index = info_table_index+1
+         info_table(info_table_index)%text = 'Warning: Could not find the hkl file given: '//trim(hkl_file)
+       end if
+     end if
+   end if
   end if
+! end of hkl file processing
 
   close (crystals_fileunit)
 
