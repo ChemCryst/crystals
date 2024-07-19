@@ -108,6 +108,8 @@ debuginfo
 #generated files
 test_suite/data
 test_suite/logs
+test_suite/temp
+test_suite/Min64.org
 test_suite/*.temp
 test_suite/*.CIF
 test_suite/*.out
@@ -132,3 +134,23 @@ test_suite/*.job
 *~
 gitstat.int
 gitstat.bat
+
+#Mine
+baregrep.exe
+Notes-etc/
+manual/ps-build
+test_suite/Artefacts
+test_suite/Artifacts
+test_suite/tmp/*.tmp
+test_suite/Mingh.org
+test_suite/Min64.org
+test_suite/extract.*
+test_suite/extract.out
+pyinterface/baregrep.exe
+gitignore.save.txt
+.gitignore.txt
+script/*.bit
+backup-to-q.bat
+CRYSTALS-backup.bat
+crystals/old-back-files
+bits/convplat/new-convplat
