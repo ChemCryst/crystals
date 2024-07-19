@@ -40,7 +40,7 @@ jobs:
     - name: Install MinGW compiler and tools
       run: |
         choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' --apply-install-arguments-to-dependencies
-        c:\msys64\usr\bin\pacman --noconfirm -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-openblas mingw-w64-x86_64-perl msys2-w32api-runtime mingw-w64-x86_64-curl
+        c:\msys64\usr\bin\pacman --noconfirm -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-openblas mingw-w64-x86_64-perl msys2-w32api-runtime mingw-w64-x86_64-curl 
 
 # Install wxWidgets - win GUI only
     - name: Setup wxWidgets for Win64 gui
@@ -51,7 +51,7 @@ jobs:
         curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.5/wxWidgets-3.2.5-headers.7z > head.7z
         7z x dev.7z -owx -y
         7z x head.7z -owx -y
-       dir
+        dir
 
     - name: Create build folder
       run: mkdir ci
