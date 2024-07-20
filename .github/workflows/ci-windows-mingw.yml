@@ -51,8 +51,8 @@ jobs:
         dir
         cd wx\build\msw
         set PATH=C:\msys64\mingw64\bin;%PATH%
-        mingw32-make -f makefile.gcc BUILD=release SHARED=1 setup_h
-        mingw32-make -j4 -f makefile.gcc BUILD=release SHARED=1 
+        echo %PATH%
+        mingw32-make -f makefile.gcc BUILD=release SHARED=1 
         dir 
         dir lib
 
