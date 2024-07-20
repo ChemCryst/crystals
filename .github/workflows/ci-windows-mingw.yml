@@ -21,7 +21,7 @@ jobs:
           guiflag: yes
           testsuffix: GUI
           removeguitst:
-          wxoptions: -DwxWidgets_ROOT_DIR=..\wx\build\msw -DwxWidgets_LIB_DIR=..\wx\build\msw\lib\gcc1440_x64_dll -DwxWidgets_CONFIGURATION=mswu
+          wxoptions: -DwxWidgets_ROOT_DIR=..\wx -DwxWidgets_LIB_DIR=..\wx\lib\gcc_dll -DwxWidgets_CONFIGURATION=mswu
         - cl: nogui
           guiflag: no
           testsuffix:
@@ -52,7 +52,8 @@ jobs:
         cd wx\build\msw
         set PATH=C:\msys64\mingw64\bin;%PATH%
         echo %PATH%
-        mingw32-make SHELL=CMD.exe -f makefile.gcc BUILD=release SHARED=1 UNICODE=1 
+        mingw32-make SHELL=CMD.exe -f makefile.gcc BUILD=release SHARED=1 UNICODE=1 setup_h
+        mingw32-make SHELL=CMD.exe -j8 -f makefile.gcc BUILD=release SHARED=1 UNICODE=1 
         dir 
         dir lib
 
@@ -86,7 +87,7 @@ jobs:
         set CRYSDIR=.\,..\ci\
         set COMPCODE=MIN64GH${{ matrix.testsuffix }}
         set OMP_NUM_THREADS=1
-        set PATH=C:\msys64\mingw64\bin;..\wx\build\msw\lib\gcc1400_x64_dll;%path%
+        set PATH=C:\msys64\mingw64\bin;..\wx\lib\gcc_dll;%path%
         echo PATH is %PATH%
         echo CRYSDIR is %CRYSDIR%
         ren MIN64GH${{ matrix.testsuffix }}.org safe.dir
