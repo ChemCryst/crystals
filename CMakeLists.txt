@@ -117,8 +117,8 @@ IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} VERSION_GREATER 3.5)
         link_directories( ${CMAKE_BINARY_DIR} )
   
   else()
-	set(BLA_VENDOR OpenBLAS)
-	set(CMAKE_C_FLAGS -fopenmp)
+#	set(BLA_VENDOR OpenBLAS)
+#	set(CMAKE_C_FLAGS -fopenmp)
     find_package(BLAS REQUIRED)
     find_package(LAPACK)
 
