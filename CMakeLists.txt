@@ -47,7 +47,7 @@ endif ()
 
 ENABLE_LANGUAGE(Fortran)
 INCLUDE (CPack)
-IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.0)
+IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} VERSION_GREATER 3.0)
     include(CheckFortranCompilerFlag)
 Endif()
 
@@ -108,7 +108,7 @@ IF ( PERL_FOUND )
     MESSAGE ( STATUS "Perl executable: [${PERL_EXECUTABLE}]")
 ENDIF ( PERL_FOUND )
 
-IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.5)
+IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} VERSION_GREATER 3.5)
 
   if ( useCustomMKL ) 
 
@@ -462,7 +462,7 @@ ENDIF ()
 
 
 
-IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.0)
+IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} VERSION_GREATER 3.0)
     check_fortran_compiler_flag("-std=legacy" _std_legacy_flag)
     check_fortran_compiler_flag("-fexceptions" _f_exceptions)
     check_fortran_compiler_flag("-fno-sign-zero" _f_no_signzero)
