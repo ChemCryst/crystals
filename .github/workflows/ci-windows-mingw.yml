@@ -54,8 +54,6 @@ jobs:
         echo %PATH%
         mingw32-make SHELL=CMD.exe -f makefile.gcc BUILD=release SHARED=1 UNICODE=1 setup_h
         mingw32-make SHELL=CMD.exe -j8 -f makefile.gcc BUILD=release SHARED=1 UNICODE=1 
-        dir 
-        dir lib
 
     - name: Create build folders
       run: | 
