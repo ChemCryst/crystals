@@ -21,7 +21,7 @@ jobs:
           guiflag: yes
           testsuffix: GUI
           removeguitst:
-          wxoptions: -DwxWidgets_ROOT_DIR=..\wx -DwxWidgets_LIB_DIR=..\wx\lib\gcc_dll -DwxWidgets_CONFIGURATION=mswu
+          wxoptions: -DwxWidgets_ROOT_DIR=c:\msys64\mingw64\include\wx-3.2\wx -DwxWidgets_LIB_DIR=C:\msys64\mingw64\lib\ -DwxWidgets_CONFIGURATION=mswu
         - cl: nogui
           guiflag: no
           testsuffix:
@@ -47,9 +47,7 @@ jobs:
       if: matrix.cl == 'gui'
       shell: cmd
       run: |
-        c:\msys64\usr\bin\pacman --noconfirm -S mingw-w64-x86_64-wxwidgets 
-        wx-config --libs
-        wx-config --cxxflags
+        c:\msys64\usr\bin\pacman --noconfirm -S  mingw-w64-x86_64-wxwidgets3.2-msw 
 
 # Install wxWidgets - win GUI only
 #    - name: Setup wxWidgets for Win64 gui#
@@ -77,8 +75,8 @@ jobs:
       shell: cmd
       run: |
         set PATH=C:\msys64\mingw64\bin;%PATH%
-        cmake .. --debug-find -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -G"MinGW Makefiles" -DuseGUI=${{ matrix.guiflag }} -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }} || echo Try again
-        cmake .. -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -G"MinGW Makefiles" -DuseGUI=${{ matrix.guiflag }} -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }}
+        cmake .. --debug-find -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -G"MinGW Makefiles" -DuseGUI=${{ matrix.guiflag }} -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND" -DCMAKE_BUILD_TYPE=${{ matrix.release }} || echo Try again
+#        cmake .. -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -G"MinGW Makefiles" -DuseGUI=${{ matrix.guiflag }} -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }}
         mingw32-make VERBOSE=1
 
 # Tests
