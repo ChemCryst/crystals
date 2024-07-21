@@ -41,19 +41,27 @@ jobs:
       run: |
         c:\msys64\usr\bin\pacman --noconfirm -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-openblas mingw-w64-x86_64-perl msys2-w32api-runtime mingw-w64-x86_64-curl
 
-# Install wxWidgets - win GUI only
-    - name: Setup wxWidgets for Win64 gui
+# WIN GUI ONLY
+    - name: Install MinGW compiler and tools
       if: matrix.cl == 'gui'
-      shell: cmd
-      run: | 
-        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.5/wxWidgets-3.2.5.7z > src.7z
-        7z x src.7z -owx -y
-        dir
-        cd wx\build\msw
-        set PATH=C:\msys64\mingw64\bin;%PATH%
-        echo %PATH%
-        mingw32-make SHELL=CMD.exe -f makefile.gcc BUILD=release SHARED=1 UNICODE=1 setup_h
-        mingw32-make SHELL=CMD.exe -j8 -f makefile.gcc BUILD=release SHARED=1 UNICODE=1 
+      run: |
+        c:\msys64\usr\bin\pacman --noconfirm -S mingw-w64-x86_64-wxwidgets 
+        wx-config --libs
+        wx-config --cxxflags
+
+# Install wxWidgets - win GUI only
+#    - name: Setup wxWidgets for Win64 gui#
+#      if: matrix.cl == 'gui'
+#      shell: cmd
+#      run: | 
+#        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.5/wxWidgets-3.2.5.7z > src.7z
+#        7z x src.7z -owx -y
+#        dir
+#        cd wx\build\msw
+#        set PATH=C:\msys64\mingw64\bin;%PATH%
+#        echo %PATH%
+#        mingw32-make SHELL=CMD.exe -f makefile.gcc BUILD=release SHARED=1 UNICODE=1 setup_h
+#        mingw32-make SHELL=CMD.exe -j8 -f makefile.gcc BUILD=release SHARED=1 UNICODE=1 
 
     - name: Create build folders
       run: | 
