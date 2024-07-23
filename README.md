@@ -8,3 +8,5 @@ The [CRYSTALS user guide](https://chemcryst.github.io/crystals/userguide.html) i
 The [CRYSTALS reference manual](https://chemcryst.github.io/crystals/crystalsmanual.html)) provides detailled syntax of CRYSTALS commands and data formats.
 
 The [CAMERON manual](https://chemcryst.github.io/crystals/cameron.html) provides a reference for using the built-in crystal structure graphics tool CAMERON. 
+
+[https://www.youtube.com/watch?v=KDUIFE_epXE](https://www.youtube.com/watch?v=KDUIFE_epXE)
