@@ -1,0 +1,2522 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Initial Data Input &mdash; CRYSTALS 15.4.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=a6d7e377"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Reflection Data Input" href="reflectiondata.html" />
+    <link rel="prev" title="Definitions And Conventions" href="intro.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CRYSTALS
+          </a>
+              <div class="version">
+                15.4
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">CRYSTALS documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../userguide.html">Crystals User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../userguide/install.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../userguide/gettingstarted.html">Getting Started</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/gettingstarted.html#organisation-of-data">Organisation of data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/gettingstarted.html#starting-the-program">Starting the program</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/gettingstarted.html#customising-crystals-to-suit-your-screen-size">Customising CRYSTALS to suit your screen size</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../userguide/examples.html">Worked examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/examples.html#cyclo-a-routine-structure-analysis">Cyclo - a routine structure analysis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/examples.html#video-demonstration">Video demonstration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/examples.html#step-one-import-cell-and-crystal-data">Step one: Import cell and crystal data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/examples.html#step-two-import-reflection-data">Step two: Import reflection data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/examples.html#step-three-initial-assessment-of-the-data">Step three: Initial assessment of the data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/examples.html#step-four-structure-solution">Step four: Structure solution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/examples.html#step-five-check-atom-types">Step five: Check atom types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/examples.html#step-six-commence-refinement">Step six: Commence refinement…</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/examples.html#step-seven-adding-hydrogen-atoms">Step seven: Adding Hydrogen Atoms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/examples.html#step-eight-more-refinement-extinction">Step eight: More refinement &amp; Extinction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/examples.html#step-nine-choose-a-nice-weighting-scheme">Step nine: Choose a nice weighting scheme</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/examples.html#step-ten-validation-and-cif-archival">Step ten: Validation and CIF archival.</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/examples.html#poor-quality-data-tetraphenylene">Poor Quality Data - Tetraphenylene</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/examples.html#background">Background</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/examples.html#analysis-and-solution">Analysis and solution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/examples.html#refinement">Refinement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/examples.html#but-what-of-the-e-s-d-s">But what of the e.s.d’s?</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/examples.html#spacegroup-quiz">Spacegroup Quiz</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../userguide/userinterface.html">User Interface</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/userinterface.html#overview-of-the-graphical-user-interface">Overview of the graphical user interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/userinterface.html#the-menus">The Menus</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/userinterface.html#file">File</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/userinterface.html#x-ray-data">X-ray data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/userinterface.html#preprocess">Diffractometer cifs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/userinterface.html#input-pre-processed-data">Input Pre-processed data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/userinterface.html#solve">Solve</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/userinterface.html#structure">Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/userinterface.html#fourier">Fourier</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/userinterface.html#refinement">Refinement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/userinterface.html#results">Results</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/userinterface.html#results-rotax">Results -&gt; Rotax</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/userinterface.html#graphics">Graphics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/userinterface.html#graphics-special">Graphics -&gt; Special</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/userinterface.html#appearance">Appearance</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/userinterface.html#appearance-atoms">Appearance -&gt; Atoms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/userinterface.html#appearance-model">Appearance -&gt; Model</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/userinterface.html#development">Development</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../userguide/commandline.html">Command line</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/commandline.html#command-syntax">Command syntax</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../userguide/faqs.html">Frequently asked questions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#getting-started-organisation-of-files">Getting Started: Organisation of files.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#general-who-is-responsible-for-it">General: Who is responsible for it?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#general-where-is-the-manual">General: Where is the manual?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#general-is-there-an-example-to-work-through">General: Is there an example to work through?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#general-can-i-prepare-commands-to-run-crystals-in-batch-mode-like-shelx">General: Can I prepare commands to run CRYSTALS in batch mode (like SHELX)?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#general-is-there-any-command-line-help">General: Is there any command line help?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#general-how-can-i-switch-the-left-and-right-crystals-windows">General: How can I switch the left and right CRYSTALS windows?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#solving-structures-how-do-i-prepare-a-job-for-sir92-or-shelxs">Solving structures: How do I prepare a job for SIR92 or SHELXS?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#solving-structures-it-failed-how-do-i-prepare-a-different-job">Solving structures: It failed. How do I prepare a different job?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#solving-structures-how-do-i-import-the-solution-back-into-crystals">Solving structures: How do I import the solution back into CRYSTALS?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#cameron-how-do-i-see-a-plot-of-the-structure">CAMERON: How do I see a plot of the structure?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#cameron-can-i-rotate-it-and-label-the-atoms">CAMERON: Can I rotate it and label the atoms?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#cameron-how-do-i-delete-atoms">CAMERON: How do I delete atoms?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#fourier-how-do-i-calculate-a-fourier-map-to-find-missing-atoms">Fourier: How do I calculate a Fourier map to find missing atoms?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#refinement-what-infomation-does-crystals-need">Refinement: What infomation does CRYSTALS need?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#refinement-refinement-instructions">Refinement: Refinement instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#refinement-occupancies-of-an-atom-or-fragment-split-over-two-sites">Refinement: Occupancies of an atom or fragment split over two sites?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#refinement-how-do-i-add-restraints">Refinement: How do I add restraints?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#refinement-how-do-you-use-platon-s-squeeze-from-crystals">Refinement: How do you use Platon’s Squeeze from CRYSTALS?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#refinement-what-are-parts-assemblies-and-groups">Refinement: What are parts assemblies and groups?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#structure-how-can-i-adjust-a-molecule-or-fragment-to-have-ideal-coordinates">Structure: How can I adjust a molecule or fragment to have ideal coordinates?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#analysis-find-the-angle-between-a-plane-of-atoms-and-a-bond">Analysis: Find the angle between a plane of atoms and a bond</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#analysis-calculate-intermolecular-distances">Analysis: Calculate intermolecular distances</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#analysis-find-likely-h-bonds-with-donors-or-acceptors-other-the-o-and-n">Analysis: Find LIKELY H-BONDS with donors or acceptors other the O and N</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#analysis-how-do-i-use-rotax-to-test-for-twin-laws">Analysis: How do I use ROTAX to test for twin laws?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#analysis-how-do-i-add-hydrogen-atoms-to-water-molecules">Analysis: How do I add hydrogen atoms to water molecules?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#publication-editor-wants-completeness-of-the-data-at-25-degrees">Publication: Editor wants completeness of the data at 25 degrees</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#publication-what-s-the-difference-between-theta-max-and-theta-full">Publication: What’s the difference between _theta_max and _theta_full?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#publication-diagram-shows-wrong-enantiomer-what-to-do">Publication: Diagram shows wrong enantiomer. What to do?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#references-what-references-should-i-know-about">References: What References should I know about?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#miscellaneous-environment-variables">Miscellaneous: Environment variables</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../crystalsmanual.html">Crystals Reference Manual</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="intro.html">Definitions And Conventions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#syntax-of-commands">Syntax of Commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#format-of-commands">Format of Commands</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#syntax-of-the-manual">Syntax of the manual</a></li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#types-of-commands">Types of Commands:</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#lists">Lists</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#commands">Commands</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#immediate-commands">Immediate Commands</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#comments">Comments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#continuation-lines">Continuation Lines</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#index-3">Immediate commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#finish">\FINISH</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#id2">\ ….. COMMENTS ….</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#title-a-title-to-be-printed">\TITLE ….. A title to be printed …..</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#type-filename">\TYPE  ‘filename’</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#use-source">\USE source</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#script-filename">\SCRIPT filename</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#spawn-shell-command">\SPAWN      ‘shell command’</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#shell-command">$      ‘shell command’</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#commands-command">\COMMANDS   command</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#text">? text</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#manual-name">\MANUAL  ‘name’</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#help-topic">\HELP   ‘topic’</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#release-devicename-filename">\RELEASE  devicename filename</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#open-devicename-filename">\OPEN devicename filename</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#close-devicename">\CLOSE devicename</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#append-devicename-filename">\APPEND devicename filename</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#flush-devicename">\FLUSH devicename</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#device-names">Device names</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#pause-interval">\PAUSE interval</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#bench-nparam-nref">\BENCH nparam nref</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-list-state">\SET LIST   state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-watch-number">\SET WATCH number</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-file-type">\SET FILE type</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-generate-state">\SET GENERATE state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-export-state">\SET EXPORT state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-uequiv-state">\SET UEQUIV state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-pause-value">\SET PAUSE value</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-log-state">\SET LOG state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-mirror-state">\SET MIRROR state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-page-length">\SET PAGE length</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-terminal-device">\SET TERMINAL device</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-communication-speed">\SET COMMUNICATION speed</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-time-state">\SET TIME state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-printer-state">\SET PRINTER state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-monitor-state">\SET MONITOR state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-openmessage-state">\SET OPENMESSAGE state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-message-state">\SET MESSAGE state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-srq-state">\SET SRQ state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-ratio-state">\SET RATIO state</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#files">Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#errors-and-warnings">Errors and Warnings</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#warnings">Warnings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#errors">Errors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#severe-errors">Severe Errors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#catastrophic-errors">Catastrophic Errors.</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#programming-errors">Programming Errors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#errors-detected-during-the-creation-of-a-list">Errors Detected During the Creation of a LIST</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#the-crystals-database">The Crystals Database</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#general-list-control-directives-disk">General List-control Directives  -  \DISK</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#disk">\DISK</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#elimination-of-old-versions-of-lists-purge">Elimination of Old Versions of LISTS  -  \PURGE</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#id3">\PURGE</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#lists-in-current-use">LISTS in Current use</a></li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#printed-summary-of-data-lists">Printed Summary of Data lists</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#summary">\SUMMARY</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#element-and-atom-names">Element and Atom names</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#element-names">Element Names</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#atom-names">Atom names</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#symmetry-equivalent-atoms">Symmetry equivalent atoms</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#foreign-program-links">Foreign Program Links</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#foreign">\FOREIGN</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Initial Data Input</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#scope-of-the-initial-data-input-section">Scope of the Initial Data Input section.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#abbreviated-startup-command-quickstart">Abbreviated startup command  -  QUICKSTART</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#quickstart">\QUICKSTART</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#input-of-the-cell-parameters-list-1">Input of the cell parameters  -  LIST 1</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#list-1">\LIST 1</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#printing-the-cell-parameters">Printing the cell parameters</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#print-1">\PRINT 1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#punch-1">\PUNCH 1</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#input-of-the-unit-cell-parameter-errors-list-31">Input of the unit cell parameter errors  -  LIST 31</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#list-31">\LIST 31</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#printing-the-cell-variance-covariance-matrix">Printing the cell variance-covariance matrix</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#print-31">\PRINT 31</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#space-group-input-spacegroup">Space Group input - \SPACEGROUP</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">\SPACEGROUP</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#input-of-the-symmetry-data-list-2">Input of the symmetry data  -  LIST 2</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#list-2">\LIST 2</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#printing-the-symmetry-information">Printing the symmetry information</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#print-2">\PRINT 2</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#input-of-molecular-composition-composition">Input of molecular composition \COMPOSITION</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#composition">\COMPOSITION</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#input-of-the-atomic-scattering-factors-list-3">Input of the atomic scattering factors  -  \LIST 3</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#list-3">\LIST 3</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#printing-the-scattering-factors">Printing the scattering factors</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#print-3">\PRINT 3</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#input-of-the-crystal-and-data-collection-details-list-13">Input of the crystal and data collection details  -  LIST 13</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#list-13">\LIST 13</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#printing-the-experimental-conditions-list-13">Printing the experimental conditions, LIST 13</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#print-13">\PRINT 13</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#input-of-structural-formula-as-a-smiles-string-list-18">Input of Structural Formula as a SMILES string - LIST 18</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#list-18">\LIST 18</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#printing-the-smiles-string-list-18">Printing the SMILES string, LIST 18</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#print-18">\PRINT 18</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#punching-the-smiles-string-list-18">Punching the SMILES string, LIST 18</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#punch-18">\PUNCH 18</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#input-of-the-contents-of-the-asymmetric-unit-list-29">Input of the contents of the asymmetric unit  -  LIST 29</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#list-29">\LIST 29</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#printing-the-contents-of-the-asymmetric-unit-list-29">Printing the contents of the asymmetric unit, LIST 29</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#print-29">\PRINT 29</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#input-of-general-crystallographic-data-list-30">Input of General Crystallographic Data - LIST 30</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#list-30">\LIST 30</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#interval">INTERVAL=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#printing-the-general-information-list-30">Printing the general information, LIST 30</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#print-30">\PRINT 30</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="reflectiondata.html">Reflection Data Input</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#scope-of-the-reflection-data-input-section-of-the-reference-manual">Scope of the Reflection Data Input section of the Reference Manual</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#reflection-data">Reflection Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#simple-input-of-f-or-fsq-data-list-6">Simple input of F or Fsq data - LIST 6</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#creation-of-list-7-from-list-6-copy-6-7">Creation of LIST 7 from LIST 6 - COPY 6 7</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#printing-list-6">Printing LIST 6</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reflectiondata.html#print-6-mode">\PRINT 6 mode</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#punching-list-6">Punching LIST 6</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reflectiondata.html#punch-6-mode">\PUNCH 6 mode</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#advanced-input-of-f-or-fsq-data-list-6">Advanced input of F or Fsq data - LIST 6</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#reflection-parameter-coefficients">Reflection Parameter Coefficients</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reflectiondata.html#special-reflection-storage">Special Reflection storage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reflectiondata.html#recognised-reflection-coefficients">Recognised reflection coefficients</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#storage-of-reflection-data">Storage of reflection data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#compressed-reflection-data">Compressed reflection data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#intensity-data-hkli">Intensity Data - HKLI</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reflectiondata.html#hkli">\HKLI</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#intensity-decay-curves-list-27">Intensity Decay Curves  \LIST 27</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reflectiondata.html#list-27">\LIST 27</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#printing-the-decay-curve">Printing the decay curve</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reflectiondata.html#print-27">\PRINT 27</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#data-reduction-lp">Data Reduction - Lp</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reflectiondata.html#lp">\LP</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#systematic-absence-removal-systematic">Systematic absence removal - \SYSTEMATIC</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reflectiondata.html#id1">\SYSTEMATIC</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#sorting-of-the-reflection-data-sort">Sorting of the reflection data  -  \SORT</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reflectiondata.html#id2">\SORT</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#merging-equivalent-reflections-merge">Merging equivalent reflections  -  \MERGE</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reflectiondata.html#weighting-schemes-for-the-data-merge">WEIGHTING SCHEMES FOR THE DATA MERGE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reflectiondata.html#standard-deviations-produced-by-the-merge">Standard deviations produced by the merge</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reflectiondata.html#merge">\MERGE</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#theta-dependent-absorption-correction-thetabs">Theta-dependent Absorption Correction  -  \THETABS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#wilson-plot-wilson">WILSON PLOT  -  \WILSON</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#thlim-thlim">THLIM  -  \THLIM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#sigmadist-sigmadist">SIGMADIST  -  \SIGMADIST</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="parameters.html">Atomic And Structural Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#scope-of-the-atomic-and-structural-parameters-section">Scope of the atomic and structural parameters Section</a></li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#specifications-of-atoms-and-other-parameters">Specifications of atoms and other parameters</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#atom-specification">ATOM SPECIFICATION</a></li>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#atomic-parameter-specification">ATOMIC PARAMETER SPECIFICATION</a></li>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#overall-parameter-specification">OVERALL PARAMETER SPECIFICATION</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#input-of-atoms-and-other-parameters-list-5">Input of atoms and other parameters  -  LIST 5</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#list-5">\LIST 5</a></li>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#further-examples-of-parameter-input">Further examples of parameter input</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#printing-and-punching-list-5">Printing and punching list 5</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#print-5">\PRINT 5</a></li>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#punch-5-mode">\PUNCH 5 mode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#summary-display-of-list-5-display">Summary display of LIST 5 - \DISPLAY</a></li>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#display-level">\DISPLAY    LEVEL=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#editing-structural-parameters-edit">Editing structural parameters -  \EDIT</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#edit-inputlist-outputlist">\EDIT INPUTLIST OUTPUTLIST</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#reorganisation-of-lists-5-and-10-regroup">Reorganisation of lists 5 and 10  -  \REGROUP</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#regroup-inputlist-outputlist">\REGROUP INPUTLIST= OUTPUTLIST=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#repositioning-of-atoms-collect">Repositioning of atoms  -  \COLLECT</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#collect-inputlist-outputlist">\COLLECT INPUTLIST= OUTPUTLIST=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#shifting-the-molecule-to-a-permitted-alternative-origin-origin">Shifting the molecule to a permitted alternative origin - \ORIGIN</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#origin-inputlist-outputlist-mode">\ORIGIN INPUTLIST= OUTPUTLIST= MODE=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#conversion-of-temperature-factors-convert">Conversion of temperature factors - \CONVERT</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#convert-inputlist-outputlist-crossterms">\CONVERT INPUTLIST= OUTPUTLIST= CROSSTERMS=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#hydrogen-placing-hydrogens">Hydrogen placing - \HYDROGENS</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#hydrogens-inputlist-outputlist">\HYDROGENS INPUTLIST= OUTPUTLIST=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#perhydrogenation-perhydro">Perhydrogenation - \PERHYDRO</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#perhydro-inputlist-outputlist">\PERHYDRO INPUTLIST= OUTPUTLIST=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#hydrogen-re-numbering-hname">Hydrogen re-numbering - \HNAME</a></li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#regularisation-of-atomic-groups-regularise">Regularisation of atomic groups - \REGULARISE</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#input-for-regularise">Input for REGULARISE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#output-from-regularise">Output from REGULARISE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#method-of-calculation">Method of calculation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#regularise-mode">\REGULARISE    MODE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#uses-of-regularise">Uses of \REGULARISE</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#map-two-atomic-groups-together-match">Map two atomic groups together - \MATCH</a></li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#calculation-of-interatomic-bonds-bondcalc">Calculation of interatomic bonds - \BONDCALC</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#id1">Method of calculation</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#bonding-information-list-40">Bonding information - \LIST 40</a></li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#bonding-information-bonding">Bonding information - \BONDING</a></li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#printing-of-list-40">Printing of LIST 40</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#print-40">\PRINT 40</a></li>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#summary-40">\SUMMARY 40</a></li>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#punch-40">\PUNCH 40</a></li>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#punch-40-b">\PUNCH 40 B</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#creating-a-null-list-40">Creating a null LIST 40</a></li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#printing-of-list-41">Printing of LIST 41</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#print-41">\PRINT 41</a></li>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#summary-41">\SUMMARY 41</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="sfls.html">Structure Factors And Least Squares</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#scope-of-the-structure-factors-and-least-squares-section">Scope of the structure factors and least squares section</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#refinement">Refinement</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#correlations-in-refinement">Correlations in Refinement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#f-or-fsq-refinement">F or Fsq refinement?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#hydrogen-atom-refinement">Hydrogen Atom Refinement</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#special-positions">Special positions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#atomic-parameter-refinement">Atomic parameter refinement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#overall-parameter-refinement">Overall parameter refinement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#scale-factor-definitions">Scale factor definitions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#structure-factor-calculation-control-list-list-23">Structure factor calculation control list  -  LIST 23</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#list-23">\LIST 23</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#printing-the-slfs-control-list">Printing the SLFS control list</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#print-23">\PRINT 23</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#special-position-constraints-special">Special position constraints - \SPECIAL</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#special-action-update-tolerance">\SPECIAL  ACTION= UPDATE= TOLERANCE=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#printing-the-special-position-information">Printing the special position information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#refinement-directives-list-12">Refinement directives  -  LIST 12</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#list-12">\LIST 12</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#obsolete-refinement-directives">Obsolete Refinement directives</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#defining-the-least-squares-matrix">Defining the least squares matrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#printing-of-list-12">Printing of LIST 12</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#print-12">\PRINT 12</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#summary-12">\SUMMARY 12</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#punch-12">\PUNCH 12</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#creating-a-null-list-12">Creating a null LIST 12</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#clear-12">\CLEAR 12</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#processing-of-list-12">Processing of LIST 12</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#list-22">\LIST 22</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#restraints-list-16">Restraints  -  LIST 16</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#parameter-atom-bond-and-angle-specifications">Parameter, atom, bond and angle specifications</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#list-16">\LIST 16</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#general-restraints">General restraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#id1">General restraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#debugging-restraints">Debugging restraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#printing-the-contents-of-list-16">Printing the contents of LIST 16</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#print-16">\PRINT 16</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#summary-list-16">\SUMMARY LIST 16</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#punch-16">\PUNCH 16</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#creating-a-null-list-16">Creating a null LIST 16</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#clear-16">\CLEAR 16</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#the-special-restraints-list-17">The special restraints  -  LIST 17</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#list-17">\LIST 17</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#printing-and-punching-list-17">Printing and punching LIST 17</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#print-17">\PRINT 17</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#summary-list-17">\SUMMARY LIST 17</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#punch-17">\PUNCH 17</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#creating-a-null-list-17">Creating a null LIST 17</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#clear-17">\CLEAR 17</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#checking-restraints-check">Checking restraints - CHECK</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#check-level">\CHECK LEVEL=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#weighting-schemes-for-refinement-list-4">Weighting schemes for refinement-  LIST 4</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#weighting-for-refinement-against-fo">Weighting for refinement against Fo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#weighting-for-refinement-against-fsq">Weighting for refinement against Fsq</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#list-4">\LIST 4</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#weights-stored-in-list-6">Weights stored in LIST 6</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#weighting-schemes">Weighting schemes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#dunitz-seiler-weighting-scheme-13">Dunitz Seiler weighting - scheme 13</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#chebychev-weighting-schemes-10-11">Chebychev weighting schemes 10, 11</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#robust-resistant-weighting-schemes-14-15">Robust-resistant weighting schemes 14, 15</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#statistical-weights-16">Statistical Weights, 16</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#auto-statistical-weights-17">Auto-Statistical Weights, 17</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#printing-list-4">Printing LIST 4</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#print-4">\PRINT 4</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#weighting-the-reflections-weight">Weighting the reflections - WEIGHT</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#weight-input-factor">\WEIGHT INPUT= FACTOR=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#reflection-restriction-list-list-28">Reflection restriction list  -  LIST 28</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#list-28">\LIST 28</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#creating-a-null-list-28">Creating a null LIST 28</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#printing-the-contents-of-list-28">Printing the contents of LIST 28</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#print-28">\PRINT 28</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#structure-factor-least-squares-calculations-sfls">Structure Factor Least Squares Calculations  -  \SFLS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#definitions">Definitions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#unstable-refinements">Unstable refinements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#sorting-of-list-6-for-structure-factor-calculations">Sorting of LIST 6 for structure factor calculations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#id2">\SFLS</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#processing-of-the-refinement-directives">Processing of the refinement directives</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#analysis-of-residuals-analyse">Analysis of residuals -  \ANALYSE</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#analyse-input">\ANALYSE INPUT=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#least-squares-absorption-correction-difabs">Least squares absorption correction  - \DIFABS</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#difabs-action-mode-input">\DIFABS  ACTION= MODE= INPUT=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#internal-workings">Internal workings</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#parameter-esds-list-9">Parameter esds - LIST 9</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#refinement-parameter-map-list-22">Refinement parameter map  -  LIST 22</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#the-least-squares-matrix-list-11">The least squares matrix  -  LIST 11</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#printing-the-contents-of-list-11">Printing the contents of LIST 11</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#least-squares-shift-list-list-24">Least squares shift list  -  LIST 24</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#restraints-in-internal-format-list-26">Restraints in internal format  -  LIST 26</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="fourier.html">Fourier Routines</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="fourier.html#scope-of-the-fourier-section-of-the-user-guide">Scope of the Fourier section of the user guide</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fourier.html#input-of-the-fourier-section-limits-list-14">Input of the Fourier section limits - LIST 14</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="fourier.html#list-14">\LIST 14</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="fourier.html#printing-the-contents-of-list-14">Printing the contents of LIST 14</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="fourier.html#print-14">\PRINT 14</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="fourier.html#compute-fourier-limits-from-the-symmetry">Compute Fourier limits from the symmetry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fourier.html#fourier-calculations-fourier">Fourier calculations  -  \FOURIER</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="fourier.html#fourier-input">\FOURIER INPUT=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="fourier.html#calculation-of-superposition-minimum-functions">Calculation of superposition minimum functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fourier.html#processing-of-the-peaks-list-list-10">Processing of the peaks list  -  LIST 10</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fourier.html#printing-the-contents-of-list-10">Printing the contents of LIST 10</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="fourier.html#print-10">\PRINT 10</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="fourier.html#elimination-of-duplicated-entries-in-lists-5-and-10-peaks">Elimination of duplicated entries in LISTS 5 and 10  -  \PEAKS</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="fourier.html#peaks-inputlist-outputlist">\PEAKS INPUTLIST= OUTPUTLIST=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="fourier.html#slant-fourier-calculations-slant">Slant fourier calculations  -  \SLANT</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="fourier.html#slant-input">\SLANT INPUT=</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="analysis.html">Analysis Of Results</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="analysis.html#scope-of-this-section-of-the-user-guide">Scope of this section of the user guide</a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis.html#analysis-of-residuals-analyse">Analysis of residuals - \ANALYSE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis.html#create-esd-list-esd">Create esd list - \ESD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis.html#output-vcv-matrix-of-selected-atoms">Output VcV matrix of selected atoms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis.html#distance-angles-calculations-distances">Distance angles calculations  -  \DISTANCES</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="analysis.html#distances-inputlist">\DISTANCES INPUTLIST=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="analysis.html#distance-angles-symmetry-operations">Distance-angles symmetry operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis.html#void-location-voids">Void Location  -  \VOIDS</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="analysis.html#voids-inputlist">\VOIDS INPUTLIST=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="analysis.html#tls-analysis-best-planes-and-lines-geometry">TLS analysis, best planes and lines  -  \GEOMETRY</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="analysis.html#geometry-inputlist">\GEOMETRY INPUTLIST=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="analysis.html#torsion-angles-torsion">Torsion angles  -  \TORSION</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="analysis.html#torsion-inputlist">\TORSION INPUTLIST=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="analysis.html#absolute-configuration-ton">Absolute Configuration  -  \TON</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="analysis.html#ton">\TON</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="analysis.html#publication-listing-of-the-atomic-parameters-parameters">Publication listing of the atomic parameters  -  \PARAMETERS</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="analysis.html#parameters">\PARAMETERS</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="analysis.html#publication-listing-of-reflection-data-reflections">Publication listing of reflection data  - \REFLECTIONS</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="analysis.html#reflections-input">\REFLECTIONS INPUT=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="analysis.html#summary-of-data-lists-summary">Summary of data lists - \SUMMARY</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="analysis.html#summary-of-type-level">\SUMMARY OF= TYPE= LEVEL=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="analysis.html#estimation-of-absolute-configuration-tonspek">Estimation of Absolute configuration - \TONSPEK</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="analysis.html#tonspek-input-type-plot-punch-filter1-filter5-weight">\TONSPEK INPUT= TYPE= PLOT= PUNCH= FILTER1= … FILTER5= WEIGHT=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="analysis.html#cif-lists-cif">CIF lists - \CIF</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="analysis.html#cif">\CIF</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="analysis.html#adding-archive-files-addarc">Adding Archive files - ADDARC</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="analysis.html#addarc-filename">ADDARC filename</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="analysis.html#graphics-cameron">Graphics - CAMERON</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="analysis.html#cameron">CAMERON</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="twin.html">Twinned Crystals</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="twin.html#twinning-introduction">Twinning - introduction</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="twin.html#tlqs-twins">TLQS twins</a></li>
+<li class="toctree-l4"><a class="reference internal" href="twin.html#tls-twins">TLS twins</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="twin.html#twinning-problems">Twinning Problems</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="twin.html#twinning-initial-clues">Twinning - Initial clues</a></li>
+<li class="toctree-l4"><a class="reference internal" href="twin.html#twinning-data-collection-and-processing">Twinning - Data collection and processing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="twin.html#twinning-structure-solution">Twinning - Structure solution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="twin.html#twinning-structure-refinement">Twinning - Structure Refinement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="twin.html#twin-data-stored-by-crystals">Twin Data stored by CRYSTALS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="twin.html#twinning-lists-affected">Twinning - LISTS affected</a></li>
+<li class="toctree-l4"><a class="reference internal" href="twin.html#twin-list-5">Twin List 5</a></li>
+<li class="toctree-l4"><a class="reference internal" href="twin.html#twin-list-6">Twin List 6</a></li>
+<li class="toctree-l4"><a class="reference internal" href="twin.html#twin-list-13">TWIN LIST 13</a></li>
+<li class="toctree-l4"><a class="reference internal" href="twin.html#twin-list-12">Twin List 12</a></li>
+<li class="toctree-l4"><a class="reference internal" href="twin.html#twin-list-16">Twin List 16</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="twin.html#sorting-twinned-structure-data-reorder">SORTING TWINNED STRUCTURE DATA  -  \REORDER</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="twin.html#reorder">\REORDER</a></li>
+<li class="toctree-l4"><a class="reference internal" href="twin.html#twins-backward-compatability">Twins - backward compatability</a></li>
+<li class="toctree-l4"><a class="reference internal" href="twin.html#twins-worked-example">Twins - Worked Example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="twin.html#twinning-mathematical-aspects">Twinning - Mathematical aspects</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="matrix.html">Matrix Calculations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="matrix.html#the-basic-matrix-calculator-matrix">The Basic Matrix Calculator \MATRIX</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="matrix.html#matrix">\MATRIX</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="obsolete.html">Obsolete Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="obsolete.html#index-0">Obsolete Commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="obsolete.html#least-squares-best-planes-and-lines-molax">Least squares best planes and lines  -  \MOLAX</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="obsolete.html#molax-inputlist">\MOLAX INPUTLIST=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="obsolete.html#thermal-displacement-parameter-analysis-aniso">Thermal displacement parameter analysis  -  \ANISO</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="obsolete.html#aniso-inputlist">\ANISO INPUTLIST</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="obsolete.html#principal-atomic-displacement-directions-axes">Principal atomic displacement directions  -  \AXES</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="obsolete.html#axes-inputlist">\AXES INPUTLIST=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="obsolete.html#structure-factors-for-a-group-of-trial-models-trial">Structure factors for a group of trial models  -  \TRIAL</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="obsolete.html#trial">\TRIAL</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="secret.html">Secret Lists</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="secret.html#index-0">Secret LISTS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="secret.html#storage-of-intermediate-results-and-the-status-of-a-refinement-list-39">Storage of intermediate results and the status of a refinement -  LIST 39</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cameron.html">Cameron Manual</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#introduction">Introduction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#how-to-control-the-program">HOW TO CONTROL THE PROGRAM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#command-groups">Command Groups</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#error-handling">ERROR HANDLING</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#abandon">Abandon</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#edit">Edit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#help">Help</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#the-help-facility">The HELP facility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#mouse-activation">Mouse Activation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#general-input-syntax">General Input Syntax</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#how-to-get-started">How To Get Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#data-input">Data Input</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#input-of-crystals-list-5-files">Input of CRYSTALS List 5 files</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#input">INPUT</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#outputting-data">Outputting Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#output">OUTPUT</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#editing-the-atom-list">Editing The Atom List</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#rename">RENAME</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#retype">RETYPE</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#obeying-files">Obeying Files</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#obey">OBEY</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#archiving-and-retrieving-views">Archiving And Retrieving Views</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#archive">ARCHIVE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#retrieve">RETRIEVE</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#graphical-output-devices">Graphical Output Devices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#screen">SCREEN</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#hardcopy">HARDCOPY</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#view-direction-control">View Direction Control</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#basic-control">BASIC CONTROL</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#xrot">XROT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#yrot">YROT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#zrot">ZROT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#rot">ROT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#cursor">CURSOR</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#orientation-commands">ORIENTATION COMMANDS</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#plane">PLANE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#face">FACE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#along">ALONG</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#vertical">VERTICAL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#horizontal">HORIZONTAL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#bisect">BISECT</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#other-related-commands">Other related commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#view">VIEW</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#copy">COPY</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#matrix">MATRIX</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#stereo">STEREO</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#nostereo">NOSTEREO</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#photographs">PHOTOGRAPHS</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#photo">PHOTO</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#include-and-exclude">Include And Exclude</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#include">INCLUDE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#exclude">EXCLUDE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#further-related-commands">Further related commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#mask">MASK</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#unmask">UNMASK</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#switch">SWITCH</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#generation-of-dummy-atoms">Generation of Dummy atoms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#dummy">DUMMY</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#drawing-style-control">Drawing Style Control</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#line">LINE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#ball">BALL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#ellipse">ELLIPSE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#all">ALL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#fragment">FRAGMENT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#group">GROUP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#line-commands">LINE commands.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#ball-commands">BALL commands.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#ellipse-commands">ELLIPSE commands</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#connectivity-control">Connectivity Control</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#connect">CONNECT</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#id1">CONNECT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#join">JOIN</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#remove">REMOVE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#disconnect">DISCONNECT</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#miscellaneous-connect-commands">Miscellaneous CONNECT commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#taper">TAPER</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#thickness">THICKNESS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#tolerance">TOLERANCE</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#control-of-colour">Control Of Colour</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#colour">COLOUR</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#id2">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#atom-labelling">Atom Labelling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#label">LABEL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#nolabel">NOLABEL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#font">FONT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#text">TEXT</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#other-picture-controlling-commands">Other Picture Controlling Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#maximise">MAXIMISE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#scale">SCALE</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#symmetry-input">Symmetry Input</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#input-of-symmetry-operators">Input of symmetry operators</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#spacegroup">SPACEGROUP</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#symmetry">SYMMETRY</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#example-of-space-group-input">Example of Space Group Input</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#other-symmetry-related-operations">Other symmetry related operations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#setunit">SETUNIT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#enantio">ENANTIO</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#special">SPECIAL</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#crystal-packing-commands">Crystal Packing Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#pack">PACK</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#cell">CELL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#window">WINDOW</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#dealing-with-connectivity">Dealing with connectivity</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#intra">INTRA</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#inter">INTER</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#keep">KEEP</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#id3">INTRA</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#id4">INTER</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#id5">KEEP</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#examples">EXAMPLES</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#enclosure">ENCLOSURE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#choice-of-enclosure-origin">Choice of enclosure “origin”</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#atom">ATOM</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#point">POINT</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#type-of-volume-to-be-used">Type of volume to be used</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#sphere">SPHERE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#anorthic">ANORTHIC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#orthogonal">ORTHOGONAL</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#id6">EXAMPLE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#packing-more-complicated-structures">PACKING MORE COMPLICATED STRUCTURES</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#id7">GROUP</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#unpack">UNPACK</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#add-and-move-further-symmetry-related-commands">Add And Move - Further Symmetry Related Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#add">ADD</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#atoms">ATOMS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#id8">ALL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#initial">INITIAL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#id9">GROUP</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#id10">EXAMPLES</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#move">MOVE</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#id11">ATOMS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#id12">ALL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#id13">GROUP</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#id14">INITIAL</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#distance-and-angle-calculations">Distance And Angle Calculations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#distance">DISTANCE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#method-of-calculation">Method of Calculation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#angle">ANGLE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#torsion">TORSION</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#information-on-data-held-within-the-program">Information On Data Held Within The Program</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#information">INFORMATION</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#group-definitions">Group Definitions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#defgroup">DEFGROUP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#id15">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#miscellaneous-commands">Miscellaneous Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#reset">RESET</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#log">LOG</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#id16">EDIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#menus">MENUS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#issue">ISSUE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#print">PRINT</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#how-to-stop-the-program">How To Stop The Program</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#end">END</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#menu-definition-file">Menu Definition File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#some-useful-ideas">Some Useful Ideas</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CRYSTALS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../crystalsmanual.html">Crystals Reference Manual</a></li>
+      <li class="breadcrumb-item active">Initial Data Input</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/crystals/initial.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="toctree-wrapper compound">
+</div>
+<section id="initial-data-input">
+<h1>Initial Data Input<a class="headerlink" href="#initial-data-input" title="Link to this heading"></a></h1>
+<section id="scope-of-the-initial-data-input-section">
+<span id="initialdinput"></span><h2>Scope of the Initial Data Input section.<a class="headerlink" href="#scope-of-the-initial-data-input-section" title="Link to this heading"></a></h2>
+<p>The areas covered are:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Abbreviated</span> <span class="n">startup</span> <span class="n">command</span>                      <span class="n">QUICKSTART</span>
+<span class="n">Input</span> <span class="n">of</span> <span class="n">the</span> <span class="n">cell</span> <span class="n">parameters</span>                     <span class="n">LIST</span> <span class="mi">1</span>
+<span class="n">Input</span> <span class="n">of</span> <span class="n">the</span> <span class="n">unit</span> <span class="n">cell</span> <span class="n">parameter</span> <span class="n">errors</span>          <span class="n">LIST</span> <span class="mi">31</span>
+<span class="n">Input</span> <span class="n">of</span> <span class="n">the</span> <span class="n">space</span> <span class="n">group</span> <span class="n">symmetry</span> <span class="n">information</span>    <span class="n">SPACEGROUP</span>
+<span class="n">Alternative</span> <span class="nb">input</span> <span class="n">of</span> <span class="n">the</span> <span class="n">symmetry</span> <span class="n">information</span>    <span class="n">LIST</span> <span class="mi">2</span>
+<span class="n">Input</span> <span class="n">of</span> <span class="n">molecular</span> <span class="n">contents</span>                      <span class="n">COMPOSITION</span>
+<span class="n">Input</span> <span class="n">of</span> <span class="n">the</span> <span class="n">atomic</span> <span class="n">scattering</span> <span class="n">factors</span>           <span class="n">LIST</span> <span class="mi">3</span>
+<span class="n">Input</span> <span class="n">the</span> <span class="n">structural</span> <span class="n">formula</span> <span class="k">as</span> <span class="n">a</span> <span class="n">SMILES</span> <span class="n">string</span>  <span class="n">LIST</span> <span class="mi">18</span>
+<span class="n">Input</span> <span class="n">of</span> <span class="n">the</span> <span class="n">contents</span> <span class="n">of</span> <span class="n">the</span> <span class="n">unit</span> <span class="n">cell</span>           <span class="n">LIST</span> <span class="mi">29</span>
+<span class="n">Input</span> <span class="n">of</span> <span class="n">the</span> <span class="n">crystal</span> <span class="ow">and</span> <span class="n">data</span> <span class="n">collection</span> <span class="n">details</span> <span class="n">LIST</span> <span class="mi">13</span>
+<span class="n">Input</span> <span class="n">of</span> <span class="n">general</span> <span class="n">crystallographic</span> <span class="n">data</span>           <span class="n">LIST</span> <span class="mi">30</span>
+</pre></div>
+</div>
+</section>
+<section id="abbreviated-startup-command-quickstart">
+<span id="index-1"></span><span id="index-0"></span><h2>Abbreviated startup command  -  QUICKSTART<a class="headerlink" href="#abbreviated-startup-command-quickstart" title="Link to this heading"></a></h2>
+<p>The command QUICKSTART is provided to assist in migration from other
+systems to CRYSTALS. It requires that data reduction (section <a class="reference internal" href="reflectiondata.html#datareduc"><span class="std std-ref">Data Reduction - Lp</span></a>)
+has already been
+done or that a simple 4-circle Lp correction be suitable,
+and that the reflection data are available in a fixed format file with
+one reflection per line. This command expands the given data into
+standard CRYSTALS lists, as described elsewhere in the manuals. The user
+is free to overwrite LISTS created by QUICKSTART by entering new LISTS
+manually.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">QUICKSTART</span>
+<span class="n">SPACEGROUP</span> <span class="n">SYMBOL</span><span class="o">=</span>
+<span class="n">CONTENTS</span> <span class="n">FORMULA</span><span class="o">=</span>
+<span class="n">FILE</span> <span class="n">NAME</span><span class="o">=</span>
+<span class="n">FORMAT</span> <span class="n">EXPRESSION</span><span class="o">=</span>
+<span class="n">DATA</span> <span class="n">WAVELENGTH</span><span class="o">=</span> <span class="n">REFLECTIONS</span><span class="o">=</span> <span class="n">RATIO</span><span class="o">=</span>
+<span class="n">CELL</span>  <span class="n">A</span><span class="o">=</span> <span class="n">B</span><span class="o">=</span> <span class="n">C</span><span class="o">=</span> <span class="n">ALPHA</span><span class="o">=</span> <span class="n">BETA</span><span class="o">=</span> <span class="n">GAMMA</span><span class="o">=</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<p>For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">QUICKSTART</span>
+<span class="n">SPACEGROUP</span> <span class="n">P</span> <span class="mi">21</span><span class="o">/</span><span class="n">n</span>
+<span class="n">CONTENT</span> <span class="n">C</span> <span class="mi">6</span> <span class="n">H</span> <span class="mi">4</span> <span class="n">N</span> <span class="n">O</span> <span class="mi">2</span> <span class="n">CL</span>
+<span class="n">FILE</span> <span class="n">CRDIR</span><span class="p">:</span><span class="n">REFLECT</span><span class="o">.</span><span class="n">DAT</span>
+<span class="n">FORMAT</span> <span class="p">(</span><span class="mi">3</span><span class="n">F3</span><span class="mf">.0</span><span class="p">,</span> <span class="mi">2</span><span class="n">X</span><span class="p">,</span> <span class="mi">2</span><span class="n">F8</span><span class="mf">.2</span><span class="p">)</span>
+<span class="n">DATA</span> <span class="mf">1.5418</span>
+<span class="n">CELL</span> <span class="mf">10.2</span> <span class="mf">12.56</span> <span class="mf">4.1</span> <span class="n">BETA</span><span class="o">=</span><span class="mf">113.7</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<section id="quickstart">
+<h3>\QUICKSTART<a class="headerlink" href="#quickstart" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p>None of the directives may be omitted, though some parameters do have
+default values. <strong>CONTINUE</strong> <strong>directives</strong> <strong>may</strong> <strong>not</strong> <strong>be</strong> <strong>used.</strong></p>
+</div></blockquote>
+<p><strong>SPACEGROUP SYMBOL=</strong></p>
+<blockquote>
+<div><p>This directive generates symmetry information from the spacegroup symbol.
+The syntax is exactly as describe for the command SPACEGROUP, given
+in section <a class="reference internal" href="#spacegroup"><span class="std std-ref">Space Group input - \SPACEGROUP</span></a>.</p>
+</div></blockquote>
+<p><em>SYMBOL=</em></p>
+<blockquote>
+<div><p>There is no default for the symbol, it should be a valid H-M space group
+symbol, e.g. ‘P 21 21 21’ or ‘P 21/c’ or ‘I -4 3 m’. Use spaces to
+separate each of the operators.</p>
+</div></blockquote>
+<p><strong>CONTENTS FORMULA=</strong></p>
+<blockquote>
+<div><p>This directive takes the contents of the UNIT CELL
+(cf LIST 29 - section <a class="reference internal" href="#list29"><span class="std std-ref">Input of the contents of the asymmetric unit  -  LIST 29</span></a>) and generates scattering factors
+(LIST 3 - section <a class="reference internal" href="#list03"><span class="std std-ref">Input of the atomic scattering factors  -  \LIST 3</span></a>) and elemental properties (LIST 29 - section
+<a class="reference internal" href="#list29"><span class="std std-ref">Input of the contents of the asymmetric unit  -  LIST 29</span></a>).</p>
+</div></blockquote>
+<p><em>FORMULA=</em></p>
+<blockquote>
+<div><p>The formula for the UNIT CELL contents
+<strong>(NOT</strong> <strong>ASYMMETRIC</strong> <strong>UNIT</strong> - for compatibility with SIR92)
+is given as a list with entries of the type</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>      <span class="s1">&#39;element name&#39;</span> <span class="s1">&#39;number of atoms&#39;</span>
+
+<span class="n">e</span><span class="o">.</span><span class="n">g</span><span class="o">.</span> <span class="n">CONTENT</span> <span class="n">FORMULA</span> <span class="o">=</span> <span class="n">C</span>  <span class="mi">24</span>  <span class="n">H</span>  <span class="mi">36</span>  <span class="n">O</span>  <span class="mi">8</span>  <span class="n">N</span>  <span class="mi">4</span>
+</pre></div>
+</div>
+<p>The items in the list <strong>must</strong> be separated by at least one space. The
+number of atoms may be fractional or, if omitted, they
+default to 1.0.</p>
+</div></blockquote>
+<p><strong>FILE NAME=</strong></p>
+<blockquote>
+<div><p>This directive associates the file containing the reflections with
+the program. The special name <em>‘COMMANDS’</em> causes reflection data to be read
+from the command stream. The reflections MUST then be terminated with an
+‘h’ value of -512, otherwise the end-of-file is sufficient.</p>
+</div></blockquote>
+<p><em>NAME=</em></p>
+<blockquote>
+<div><p>The name of the file containing the reflections. The
+syntax of the name must conform to the computers operating system. See
+the <strong>IMMEDIATE</strong> command \SET FILE for case sensitive systems.</p>
+</div></blockquote>
+<p><strong>FORMAT EXPRESSION=</strong></p>
+<blockquote>
+<div><p>This directive controls the reading of the reflection list. The reflection
+file must contain the following items in the order given. Only one
+reflection is permitted per line.
+See \LIST 6 for more flexible input (section <a class="reference internal" href="reflectiondata.html#list06"><span class="std std-ref">Simple input of F or Fsq data - LIST 6</span></a>)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">h</span> <span class="n">k</span> <span class="n">l</span> <span class="n">F</span> <span class="ow">and</span> <span class="n">optionally</span> <span class="n">sigma</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>F and sigma(F) may be replaced by I or F-squared.</p>
+</div></blockquote>
+<p><em>EXPRESSION=</em></p>
+<blockquote>
+<div><p>The expression is a normal FORTRAN format expression, <strong>including</strong> <strong>the</strong>
+<strong>open</strong> <strong>and</strong> <strong>close</strong> <strong>parentheses.</strong>
+The descriptor ‘nX’ may be used to skip unwanted
+columns. The indices may be I or F format.
+There is no default expression.</p>
+</div></blockquote>
+<p><strong>DATA WAVELENGTH= REFLECTIONS= RATIO=</strong></p>
+<p><em>WAVELENGTH=</em></p>
+<blockquote>
+<div><p>The wavelength, in Angstroms, used in selecting elemental properties. The
+default is 0.7107 (Molybdenum K-alpha radiation).</p>
+</div></blockquote>
+<p><em>REFLECTIONS=</em></p>
+<blockquote>
+<div><p>A keyword to indicate whether the input data is F, F-squared or I.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">FOBS</span>     <span class="o">-</span>  <span class="n">Default</span><span class="p">,</span> <span class="n">indicating</span> <span class="n">F</span> <span class="n">values</span> <span class="n">being</span> <span class="nb">input</span><span class="o">.</span>
+<span class="n">FSQUARED</span> <span class="o">-</span>  <span class="n">Indicating</span> <span class="n">F</span> <span class="n">squared</span> <span class="n">values</span> <span class="n">being</span> <span class="nb">input</span><span class="o">.</span>
+<span class="n">I</span>        <span class="o">-</span>  <span class="n">Indicating</span> <span class="n">intensity</span> <span class="n">values</span> <span class="n">being</span> <span class="nb">input</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>If REFLECTIONS equals I, then an Lp correction is done assuming four circle
+geometry. Note that the reflections from modern diffractometers are
+unlikely to be stored as FOBS. Some old X-ray data and neutron data may
+still be given as FOBS.</p>
+</div></blockquote>
+<p><em>RATIO=</em></p>
+<blockquote>
+<div><p>The minimum ratio of I/sigma(I) to be used in selecting reflections.
+Default is 3.0</p>
+</div></blockquote>
+<p><strong>CELL  A= B= C= ALPHA= BETA= GAMMA=</strong></p>
+<blockquote>
+<div><p>The real cell parameters. The angles default to 90.0 degrees.</p>
+</div></blockquote>
+</section>
+</section>
+<section id="input-of-the-cell-parameters-list-1">
+<span id="list01"></span><span id="index-3"></span><span id="index-2"></span><h2>Input of the cell parameters  -  LIST 1<a class="headerlink" href="#input-of-the-cell-parameters-list-1" title="Link to this heading"></a></h2>
+<p>Either the real cell parameters or the reciprocal cell
+parameters may be input and the three angles be given in degrees or
+as their cosines.
+A mixed form, containing both angles and cosines is not allowed.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">LIST</span> <span class="mi">1</span>
+<span class="n">REAL</span> <span class="n">A</span><span class="o">=</span> <span class="n">B</span><span class="o">=</span> <span class="n">C</span><span class="o">=</span> <span class="n">ALPHA</span><span class="o">=</span> <span class="n">BETA</span><span class="o">=</span> <span class="n">GAMMA</span><span class="o">=</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<p>For example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">LIST</span> <span class="mi">1</span>
+<span class="n">REAL</span> <span class="mf">14.6</span> <span class="mf">14.6</span> <span class="mf">23.7</span> <span class="n">GAMMA</span><span class="o">=</span><span class="mi">120</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<section id="list-1">
+<h3>\LIST 1<a class="headerlink" href="#list-1" title="Link to this heading"></a></h3>
+<p><strong>REAL A= B= C= ALPHA= BETA= GAMMA=</strong></p>
+<blockquote>
+<div><p>This directive introduces the real cell parameters.
+If this directive is present, the directive  RECIPROCAL
+will lead to an input error, and no new LIST 1 will be generated.</p>
+</div></blockquote>
+<p><em>A=, B=, C=</em></p>
+<blockquote>
+<div><p>These parameter are the real cell lengths along the  A, B and C axes.
+There are no default values.</p>
+</div></blockquote>
+<p><em>ALPHA=, BETA=, GAMMA=</em></p>
+<blockquote>
+<div><p>These parameters give the real cell angles
+or their cosines. The default value is 90 degrees.</p>
+</div></blockquote>
+<p><strong>RECIPROCAL A*= B*= C*= ALPHA*= BETA*= GAMMA*=</strong></p>
+<blockquote>
+<div><p>This directive introduces the reciprocal cell parameters.
+If this directive is present, the directive  REAL
+will lead to an input error, and no new LIST 1 will be generated.</p>
+</div></blockquote>
+<p><em>A*=, B*=, C*=</em></p>
+<blockquote>
+<div><p>These parameters are the reciprocal cell lengths.</p>
+</div></blockquote>
+<p><em>ALPHA*=, BETA*=, GAMMA*=</em></p>
+<blockquote>
+<div><p>These parameters give the reciprocal cell angles or their cosines.
+The default value is 90 degrees.</p>
+</div></blockquote>
+</section>
+</section>
+<section id="printing-the-cell-parameters">
+<h2>Printing the cell parameters<a class="headerlink" href="#printing-the-cell-parameters" title="Link to this heading"></a></h2>
+<section id="print-1">
+<h3>\PRINT 1<a class="headerlink" href="#print-1" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p>This command lists the cell parameters, and all the other information
+derived from them which is stored in LIST 1.
+The inter-axial angles are stored in radians in LIST 1, and printed as
+such.</p>
+</div></blockquote>
+</section>
+<section id="punch-1">
+<h3>\PUNCH 1<a class="headerlink" href="#punch-1" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p>Punches the real cell parameters from  LIST 1.</p>
+</div></blockquote>
+</section>
+</section>
+<section id="input-of-the-unit-cell-parameter-errors-list-31">
+<span id="list31"></span><span id="index-5"></span><span id="index-4"></span><h2>Input of the unit cell parameter errors  -  LIST 31<a class="headerlink" href="#input-of-the-unit-cell-parameter-errors-list-31" title="Link to this heading"></a></h2>
+<p>This list contains the variance-covariance matrix of the unit
+cell parameters. The input consists of a multiplier which is
+applied to all input parameters,
+followed by the upper
+triangle of the variance-covariance matrix (21 Numbers).
+The units for the angles <strong>MUST</strong> be
+radians and those for the cell lengths are Angstroms.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">LIST</span> <span class="mi">31</span>
+<span class="n">AMULT</span> <span class="n">VALUE</span><span class="o">=</span>
+<span class="n">MATRIX</span> <span class="n">V</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span><span class="o">=</span> <span class="n">V</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span><span class="o">=</span> <span class="o">..</span> <span class="n">V</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span><span class="o">=</span> <span class="o">..</span> <span class="n">V</span><span class="p">(</span><span class="mi">22</span><span class="p">)</span><span class="o">=</span> <span class="o">..</span> <span class="n">V</span><span class="p">(</span><span class="mi">26</span><span class="p">)</span><span class="o">=</span> <span class="o">..</span> <span class="n">V</span><span class="p">(</span><span class="mi">66</span><span class="p">)</span><span class="o">=</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<p>For example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">LIST</span> <span class="mi">31</span>
+\ <span class="n">the</span> <span class="n">values</span> <span class="n">of</span> <span class="n">the</span> <span class="nb">input</span> <span class="n">matrix</span> <span class="n">are</span> <span class="n">to</span> <span class="n">be</span> <span class="n">multiplied</span>
+\ <span class="n">by</span> <span class="mf">0.000001</span>
+<span class="n">AMULT</span> <span class="mf">0.000001</span>
+\ <span class="n">the</span> <span class="n">cell</span> <span class="ow">is</span> <span class="n">trigonal</span><span class="p">,</span>
+\ <span class="k">with</span> <span class="n">errors</span> <span class="n">of</span> <span class="mf">0.002</span> <span class="n">along</span> <span class="s1">&#39;a&#39;</span> <span class="ow">and</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="ow">and</span> <span class="mf">0.004</span> <span class="n">along</span> <span class="s1">&#39;c&#39;</span>
+<span class="n">MATRIX</span> <span class="mi">4</span> <span class="mi">4</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span>
+<span class="n">CONT</span>     <span class="mi">4</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span>
+<span class="n">CONT</span>      <span class="mi">16</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span>
+<span class="n">CONT</span>         <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span>
+<span class="n">CONT</span>           <span class="mi">0</span> <span class="mi">0</span>
+<span class="n">CONT</span>             <span class="mi">0</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<section id="list-31">
+<h3>\LIST 31<a class="headerlink" href="#list-31" title="Link to this heading"></a></h3>
+<p><strong>AMULT VALUE=</strong></p>
+<blockquote>
+<div><p>This directive gives the value by which all the subsequent terms
+are to be multiplied, and has a default of 1.0.</p>
+</div></blockquote>
+<p><em>VALUE=</em></p>
+<p><strong>MATRIX V(11)= V(12)= . . V(16)= V(22)= . . V(66)=</strong></p>
+<blockquote>
+<div><p>This directive is used to read in the variance-covariance matrix.</p>
+<p>If you only have the parameter e.s.d’s, input the square of these for
+V(11), V(22) etc.</p>
+</div></blockquote>
+<p><em>V(11)= V(12)= . . V(16)= V(22)= . .V(66)=</em></p>
+<blockquote>
+<div><p>V(11) is the variance of  A ,  V(12)  is the covariance of  A
+and  B ,  V(16)  is the covariance of  A  and  GAMMA ,
+V(22)  is the variance of  B , and  V(66)  is the variance of
+GAMMA . The default values for V(11), V(22) and V(33) correspond to axis
+e.s.d’s of .001 A, V(44), V(55) and V(66) to angle e.s.d’s of .01 degree.</p>
+</div></blockquote>
+</section>
+</section>
+<section id="printing-the-cell-variance-covariance-matrix">
+<h2>Printing the cell variance-covariance matrix<a class="headerlink" href="#printing-the-cell-variance-covariance-matrix" title="Link to this heading"></a></h2>
+<section id="print-31">
+<h3>\PRINT 31<a class="headerlink" href="#print-31" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p>This prints list 31. There is no command for punching LIST 31.</p>
+</div></blockquote>
+</section>
+</section>
+<section id="space-group-input-spacegroup">
+<span id="spacegroup"></span><span id="index-7"></span><span id="index-6"></span><h2>Space Group input - \SPACEGROUP<a class="headerlink" href="#space-group-input-spacegroup" title="Link to this heading"></a></h2>
+<p>The spacegroup symbol interpretation routines in CRYSTALS are derived
+from subroutines developed by Allen C. Larson and Eric Gabe.
+It is distributed with their permission. Standard CRYSTALS
+command input, error handling, data storage, and output has been
+added to the basic routines. In addition a more flexible method
+of  specifying the unique axis in a monoclinic spacegroup is
+used. The routine generates a LIST 2 (symmetry information - section
+<a class="reference internal" href="#list02"><span class="std std-ref">Input of the symmetry data  -  LIST 2</span></a>), and a
+LIST 14 (Fourier and Patterson asymmetric unit limits -
+section <a class="reference internal" href="fourier.html#list14"><span class="std std-ref">Input of the Fourier section limits - LIST 14</span></a>).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">SPACEGROUP</span>
+<span class="n">SYMBOL</span> <span class="n">EXPRESSION</span><span class="o">=</span>
+<span class="n">AXIS</span> <span class="n">UNIQUE</span><span class="o">=</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<p>For example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\ <span class="n">Input</span> <span class="n">the</span> <span class="n">symbol</span> <span class="k">for</span> <span class="n">a</span> <span class="n">cubic</span> <span class="n">spacegroup</span>
+\<span class="n">SPACEGROUP</span>
+<span class="n">SYMBOL</span> <span class="n">F</span> <span class="n">d</span> <span class="mi">3</span> <span class="n">m</span>
+<span class="n">END</span>
+
+\ <span class="n">Input</span> <span class="n">the</span> <span class="n">symbol</span> <span class="k">for</span> <span class="n">a</span> <span class="n">common</span> <span class="n">monoclinic</span> <span class="n">spacegroup</span>
+\<span class="n">SPACEGROUP</span>
+<span class="n">SYMBOL</span> <span class="n">P</span> <span class="mi">21</span><span class="o">/</span><span class="n">c</span>
+<span class="n">END</span>
+
+\ <span class="n">Input</span> <span class="n">the</span> <span class="n">symbol</span> <span class="k">for</span> <span class="n">a</span> <span class="n">triclinic</span> <span class="n">spacegroup</span>
+\<span class="n">SPACEGROUP</span>
+<span class="n">SYMBOL</span> <span class="n">P</span> <span class="o">-</span><span class="mi">1</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<section id="id1">
+<h3>\SPACEGROUP<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<p><strong>SYMBOL EXPRESSION=</strong></p>
+<blockquote>
+<div><p>This directive is used to specify the space group symbol.</p>
+</div></blockquote>
+<p><em>EXPRESSION=</em></p>
+<blockquote>
+<div><p>The value of this parameter is the text making up the spacegroup
+symbol.  At least one
+space character should appear between each of the axis symbols
+in the spacegroup symbol. e.g.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Use</span>  <span class="n">P</span> <span class="mi">21</span> <span class="mi">3</span> <span class="n">rather</span> <span class="n">than</span> <span class="n">P</span> <span class="mi">213</span><span class="p">,</span> <span class="n">P2</span> <span class="mi">1</span> <span class="mi">3</span><span class="p">,</span> <span class="ow">or</span> <span class="n">P2</span> <span class="mi">13</span>
+</pre></div>
+</div>
+<p>Failure to put spaces in the correct place in the symbol will
+lead to misinterpretation.</p>
+<p>Rhombohedral cells are always assumed to be on hexagonal indexing.</p>
+</div></blockquote>
+<p><strong>AXIS UNIQUE=</strong></p>
+<blockquote>
+<div><p>This directive specifies the unique
+axis orientation for
+monoclinic spacegroups where the symbol specified
+contains only one axis symbol (short symbol). In other cases any information
+specified with this directive is ignored.</p>
+</div></blockquote>
+<p><em>UNIQUE=</em></p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">A</span>
+<span class="n">B</span>
+<span class="n">C</span>
+<span class="n">GENERATE</span> <span class="o">-</span> <span class="n">the</span> <span class="n">default</span> <span class="n">value</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>When UNIQUE has the value A, B, or C the program uses the ‘a’,
+‘b’, or ‘c’ axis respectively as the unique axis.
+When UNIQUE
+has the value GENERATE, the program will attempt to select the
+unique axis on the basis of the cell parameters currently stored in
+LIST 1. If this is not possible, because the angles in LIST 1
+are all close too 90 degrees or there is no valid cell parameter
+information, the program will assume that the unique axis is
+‘b’.</p>
+<p>Further examples.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">LIST</span> <span class="mi">1</span>
+<span class="n">REAL</span> <span class="mf">10.2</span> <span class="mf">11.3</span> <span class="mf">14.1</span> <span class="mf">88.3</span> <span class="mi">90</span> <span class="mi">90</span>
+<span class="n">END</span>
+\ <span class="n">Input</span> <span class="n">symmetry</span> <span class="o">-</span> <span class="n">the</span> <span class="n">program</span> <span class="n">will</span>  <span class="n">automatically</span> <span class="n">select</span> <span class="s1">&#39;a&#39;</span> <span class="k">as</span> <span class="n">the</span>
+\ <span class="n">unique</span> <span class="n">axis</span> <span class="n">based</span> <span class="n">on</span> <span class="n">the</span> <span class="n">cell</span> <span class="n">parameters</span><span class="o">.</span>
+\<span class="n">SPACEGROUP</span>
+<span class="n">SYMBOL</span> <span class="n">P</span> <span class="mi">21</span><span class="o">/</span><span class="n">M</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\ <span class="n">Explicitly</span> <span class="n">specify</span> <span class="s1">&#39;c&#39;</span> <span class="n">unique</span> <span class="n">by</span> <span class="n">giving</span> <span class="n">the</span> <span class="n">full</span> <span class="n">symbol</span><span class="o">.</span>
+\<span class="n">SPACEGROUP</span>
+<span class="n">SYMBOL</span> <span class="n">P</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">21</span><span class="o">/</span><span class="n">M</span>
+<span class="n">END</span>
+\
+\ <span class="n">Explicitly</span> <span class="n">specify</span> <span class="s1">&#39;c&#39;</span> <span class="n">unique</span> <span class="n">by</span> <span class="n">using</span> <span class="n">the</span> <span class="n">UNIQUE</span> <span class="n">parameter</span><span class="o">.</span>
+\<span class="n">SPACEGROUP</span>
+<span class="n">SYMBOL</span> <span class="n">P</span> <span class="mi">21</span><span class="o">/</span><span class="n">M</span>
+<span class="n">AXIS</span> <span class="n">UNIQUE</span><span class="o">=</span><span class="n">C</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+</section>
+<section id="input-of-the-symmetry-data-list-2">
+<span id="list02"></span><span id="index-9"></span><span id="index-8"></span><h2>Input of the symmetry data  -  LIST 2<a class="headerlink" href="#input-of-the-symmetry-data-list-2" title="Link to this heading"></a></h2>
+<p>The result of inputting a \SPACEGROUP command (section <a class="reference internal" href="#spacegroup"><span class="std std-ref">Space Group input - \SPACEGROUP</span></a>)
+is the automatic generation of a ‘LIST 2’ containing the explicit
+symmetry operators and other information that defines the spacegroup.</p>
+<p>Direct input of this list enables the user to specify explicitly
+the symmetry operators to be used. The advantage of this is that
+they need not comply to any standard convention - the only
+check made by the program is to ensure that the determinant is
+not zero. For example, this technique may be used to enter a
+set of symmetry operators that contains a translation of a half along
+an axis - normally that cell length would be halved instead, but it may
+be useful in order to work consistently with a structure that undergoes
+a cell-doubling phase transition.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">LIST</span> <span class="mi">2</span>
+<span class="n">CELL</span> <span class="n">NSYMMETRIES</span><span class="o">=</span>  <span class="n">LATTICE</span><span class="o">=</span>  <span class="n">CENTRIC</span><span class="o">=</span>
+<span class="n">SYMMETRY</span>  <span class="n">X</span><span class="o">=</span>  <span class="n">Y</span><span class="o">=</span>  <span class="n">Z</span><span class="o">=</span>
+<span class="n">SPACEGROUP</span> <span class="n">LATTICE</span><span class="o">=</span> <span class="n">A</span><span class="o">-</span><span class="n">AXIS</span><span class="o">=</span> <span class="n">B</span><span class="o">-</span><span class="n">AXIS</span><span class="o">=</span> <span class="n">C</span><span class="o">-</span><span class="n">AXIS</span><span class="o">=</span>
+<span class="n">CLASS</span> <span class="n">NAME</span><span class="o">=</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<p>For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\ <span class="n">the</span> <span class="n">space</span> <span class="n">group</span> <span class="ow">is</span> <span class="n">B2</span><span class="o">/</span><span class="n">b</span>
+\<span class="n">LIST</span> <span class="mi">2</span>
+<span class="n">CELL</span> <span class="n">NSYM</span><span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">LATTICE</span> <span class="o">=</span> <span class="n">B</span>
+<span class="n">SYM</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span>
+<span class="n">SYM</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">+</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>  <span class="o">-</span> <span class="n">Z</span>
+<span class="n">SPACEGROUP</span> <span class="n">B</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">2</span><span class="o">/</span><span class="n">B</span>
+<span class="n">CLASS</span> <span class="n">MONOCLINIC</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<p>The CELL directive defines the Bravais lattice type,
+the number of equivalent positions to be input, and whether the
+cell is centric or acentric.
+The equivalent positions are defined by  SYMMETRY  directives, which contain
+one equivalent position each, and must follow the  CELL  directive.
+The equivalent positions input should not include those related
+by a centre of symmetry if the lattice is defined as centric, and should
+not include those related by non-primitive lattice translations if
+the correct Bravais lattice type is given.
+Positions generated by the last two operations are computed by the
+system.
+The unit matrix, defining x, y, z, <strong>MUST</strong> <strong>ALWAYS</strong> be input.
+If a centric cell is used in a setting which does not place the centre
+at the origin, then ALL the operators must be given and the cell be
+treated as non-centric. This will of course increase the time for
+structure factor calculations.</p>
+<p>Rhombohedral cells can be treated in two ways. If used with
+rhombohedral indexing (a=b=c, alpha=beta=gamma), the lattice type is P,
+primitive.
+If used with hexagonal indexing, the lattice type is R.</p>
+<section id="list-2">
+<h3>\LIST 2<a class="headerlink" href="#list-2" title="Link to this heading"></a></h3>
+<p><strong>CELL NSYMMETRIES=  LATTICE=  CENTRIC=</strong></p>
+<p><em>NSYMMETRIES=</em></p>
+<blockquote>
+<div><p>This defines the number of SYMMETRY directives that are to follow.
+There is no default.</p>
+</div></blockquote>
+<p><em>LATTICE=</em></p>
+<blockquote>
+<div><p>This defines the Bravais lattice type, and must take
+one of the following values :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">P</span>  <span class="o">-</span>  <span class="n">Default</span> <span class="n">value</span><span class="o">.</span>
+<span class="n">I</span>
+<span class="n">R</span>
+<span class="n">F</span>
+<span class="n">A</span>
+<span class="n">B</span>
+<span class="n">C</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><em>CENTRIC=</em></p>
+<blockquote>
+<div><p>This parameter defines whether the cell is centric or acentric, and must
+take one of the values :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NO</span>
+<span class="n">YES</span>  <span class="o">-</span>  <span class="n">The</span> <span class="n">default</span> <span class="n">value</span><span class="o">.</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><strong>SYMMETRY  X=  Y=  Z=</strong></p>
+<blockquote>
+<div><p>This directive is repeated  NSYMMETRIES  times, and each separate occurrence
+defines one equivalent position in the unit cell.
+The parameter keywords  X ,  Y  and  Z  are normally omitted on this
+directive, and the equivalent position typed up exactly
+as given in international tables.
+The expressions may contain any of the following :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">+</span><span class="n">X</span> <span class="ow">or</span> <span class="o">-</span><span class="n">X</span>
+<span class="o">+</span><span class="n">Y</span> <span class="ow">or</span> <span class="o">-</span><span class="n">Y</span>
+<span class="o">+</span><span class="n">Z</span> <span class="ow">or</span> <span class="o">-</span><span class="n">Z</span>
+<span class="o">+</span> <span class="ow">or</span> <span class="o">-</span> <span class="n">a</span> <span class="n">fractional</span> <span class="n">shift</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>The fractional shift may be represented by one number divided by another
+(e.g. 1/2 or 1/3) or by a true fraction (0.5 or 0.33333…).
+Apart from terminating text, spaces are optional and ignored.
+The terms for the new x, y and z must be separated by a  comma (,) , and the
+whole expression may be terminated by  ;  if required.</p>
+</div></blockquote>
+<p><strong>SPACEGROUP LATTICE= A-AXIS= B-AXIS= C-AXIS=</strong></p>
+<blockquote>
+<div><p>This directive inputs the space group symbol, and is optional for the
+correct working of CRYSTALS. However, some foreign programs need
+the symbol as input data, and they will extract it from this record.
+The keywords LATTICE, A-AXIS etc are normally omitted, and the full
+space group symbol given with spaces between the operators, e.g.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SPACEGROUP</span> <span class="n">P</span> <span class="mi">1</span> <span class="mi">21</span><span class="o">/</span><span class="n">C</span> <span class="mi">1</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><strong>CLASS NAME=</strong></p>
+<blockquote>
+<div><p>This directive inputs the crystal class. It is not used by CRYSTALS, but is
+required for cif files.</p>
+</div></blockquote>
+</section>
+</section>
+<section id="printing-the-symmetry-information">
+<h2>Printing the symmetry information<a class="headerlink" href="#printing-the-symmetry-information" title="Link to this heading"></a></h2>
+<section id="print-2">
+<h3>\PRINT 2<a class="headerlink" href="#print-2" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p>This prints LIST 2. There is no command for punching LIST 2.</p>
+<p>Further examples.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\ <span class="n">THE</span> <span class="n">SPACE</span> <span class="n">GROUP</span> <span class="n">IS</span> <span class="n">P1</span><span class="o">-</span><span class="n">BAR</span><span class="o">.</span>
+\<span class="n">LIST</span> <span class="mi">2</span>
+<span class="n">CELL</span> <span class="n">NSYM</span><span class="o">=</span> <span class="mi">1</span>
+<span class="n">SYM</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span>
+<span class="n">SPACEGROUP</span> <span class="n">P</span> <span class="o">-</span><span class="mi">1</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\ <span class="n">THE</span> <span class="n">SPACE</span> <span class="n">GROUP</span> <span class="n">IS</span> <span class="n">P</span> <span class="mi">321</span>
+\<span class="n">LIST</span> <span class="mi">2</span>
+<span class="n">CELL</span> <span class="n">CENTRIC</span><span class="o">=</span> <span class="n">NO</span><span class="p">,</span> <span class="n">NSYM</span><span class="o">=</span> <span class="mi">6</span>
+<span class="n">SYM</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span>
+<span class="n">SYM</span> <span class="o">-</span><span class="n">Y</span><span class="p">,</span> <span class="n">X</span><span class="o">-</span><span class="n">Y</span><span class="p">,</span> <span class="n">Z</span>
+<span class="n">SYM</span> <span class="n">Y</span><span class="o">-</span><span class="n">X</span><span class="p">,</span> <span class="o">-</span><span class="n">X</span><span class="p">,</span> <span class="n">Z</span>
+<span class="n">SYM</span> <span class="n">Y</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">-</span><span class="n">Z</span>
+<span class="n">SYM</span> <span class="o">-</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="o">-</span><span class="n">X</span><span class="p">,</span> <span class="o">-</span><span class="n">Z</span>
+<span class="n">SYM</span> <span class="n">X</span><span class="o">-</span><span class="n">Y</span><span class="p">,</span> <span class="o">-</span><span class="n">Y</span><span class="p">,</span> <span class="o">-</span><span class="n">Z</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\ <span class="n">THE</span> <span class="n">SPACE</span> <span class="n">GROUP</span> <span class="n">IS</span> <span class="n">P</span> <span class="mi">6122</span> <span class="p">(</span><span class="n">note</span> <span class="n">alternative</span> <span class="n">notation</span> <span class="k">for</span> <span class="n">fractions</span><span class="p">)</span>
+\<span class="n">LIST</span> <span class="mi">2</span>
+<span class="n">CELL</span> <span class="n">NSYM</span><span class="o">=</span> <span class="mi">12</span><span class="p">,</span> <span class="n">CENTRIC</span><span class="o">=</span> <span class="n">NO</span>
+<span class="n">SYM</span> <span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">Z</span>
+<span class="n">SYM</span> <span class="o">-</span><span class="n">X</span>    <span class="p">,</span>   <span class="o">-</span><span class="n">Y</span>  <span class="p">,</span><span class="n">Z</span><span class="o">+</span><span class="mf">.5</span>
+<span class="n">SYM</span> <span class="o">+</span><span class="n">Y</span><span class="p">,</span> <span class="o">+</span><span class="n">X</span><span class="p">,</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="o">-</span><span class="n">Z</span>
+<span class="n">SYM</span> <span class="o">-</span><span class="n">Y</span><span class="p">,</span><span class="o">-</span><span class="n">X</span><span class="p">,</span><span class="mi">5</span><span class="o">/</span><span class="mi">6</span><span class="o">-</span><span class="n">Z</span>
+<span class="n">SYM</span> <span class="o">-</span><span class="n">Y</span><span class="p">,</span> <span class="n">X</span><span class="o">-</span><span class="n">Y</span><span class="p">,</span> <span class="mf">.333333333</span><span class="o">+</span><span class="n">Z</span>
+<span class="n">SYM</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Y</span><span class="o">-</span><span class="n">X</span><span class="p">,</span> <span class="n">Z</span><span class="o">+</span><span class="mi">10</span><span class="o">/</span><span class="mi">12</span>
+<span class="n">SYM</span> <span class="o">-</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="o">-</span><span class="n">X</span><span class="p">,</span> <span class="mi">4</span><span class="o">/</span><span class="mi">6</span><span class="o">-</span><span class="n">Z</span>
+<span class="n">SYM</span> <span class="n">X</span><span class="p">,</span> <span class="n">X</span><span class="o">-</span><span class="n">Y</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">6</span><span class="o">-</span><span class="n">Z</span>
+<span class="n">SYM</span> <span class="n">Y</span><span class="o">-</span><span class="n">X</span><span class="p">,</span> <span class="o">-</span><span class="n">X</span><span class="p">,</span> <span class="n">Z</span><span class="o">+</span><span class="mi">4</span><span class="o">/</span><span class="mi">6</span>
+<span class="n">SYM</span>  <span class="n">X</span><span class="o">-</span><span class="n">Y</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Z</span><span class="o">+</span><span class="mi">1</span><span class="o">/</span><span class="mi">6</span>
+<span class="n">SYM</span> <span class="n">X</span><span class="o">-</span><span class="n">Y</span><span class="p">,</span> <span class="o">-</span><span class="n">Y</span><span class="p">,</span> <span class="o">-</span><span class="n">Z</span>
+<span class="n">SYM</span> <span class="n">Y</span><span class="o">-</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="p">,</span>  <span class="o">-</span><span class="n">Z</span><span class="o">+</span><span class="mf">.5</span>
+<span class="n">SPACEGROUP</span> <span class="n">P</span> <span class="mi">61</span> <span class="mi">2</span> <span class="mi">2</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+</section>
+<section id="input-of-molecular-composition-composition">
+<span id="index-11"></span><span id="index-10"></span><h2>Input of molecular composition \COMPOSITION<a class="headerlink" href="#input-of-molecular-composition-composition" title="Link to this heading"></a></h2>
+<p>This command takes the contents of the asymmetric unit, searches the
+specified data files for required values, and then internally creates normal
+scattering factors (LIST 3 - section <a class="reference internal" href="#list03"><span class="std std-ref">Input of the atomic scattering factors  -  \LIST 3</span></a>) and elemental
+properties (LIST 29 - section <a class="reference internal" href="#list29"><span class="std std-ref">Input of the contents of the asymmetric unit  -  LIST 29</span></a>). <strong>NOTE</strong>
+<strong>LISTS</strong> <strong>1</strong> (see <a class="reference internal" href="#list01"><span class="std std-ref">Input of the cell parameters  -  LIST 1</span></a>) <strong>and</strong> <strong>13</strong> (see  <a class="reference internal" href="#list13"><span class="std std-ref">Input of the crystal and data collection details  -  LIST 13</span></a>)
+<strong>must</strong> <strong>have</strong> <strong>been</strong> <strong>input</strong> <strong>beforehand.</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">COMPOSITION</span>
+<span class="n">CONTENTS</span> <span class="n">FORMULA</span><span class="o">=</span>
+<span class="n">SCATTERING</span> <span class="n">FILE</span><span class="o">=</span>
+<span class="n">PROPERTIES</span> <span class="n">FILE</span><span class="o">=</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<p>For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">COMPOSITION</span>
+<span class="n">CONTENT</span> <span class="n">C</span> <span class="mi">6</span> <span class="n">H</span> <span class="mi">5</span> <span class="n">N</span> <span class="n">O</span> <span class="mf">2.5</span> <span class="n">CL</span>
+<span class="n">SCATTERING</span> <span class="n">CRSCP</span><span class="p">:</span><span class="n">SCATT</span><span class="o">.</span><span class="n">DAT</span>
+<span class="n">PROPERTIES</span> <span class="n">CRSCP</span><span class="p">:</span><span class="n">PROPERTIES</span><span class="o">.</span><span class="n">DAT</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<section id="composition">
+<h3>\COMPOSITION<a class="headerlink" href="#composition" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p>There are three directives, none of which have default values.</p>
+</div></blockquote>
+<p><strong>CONTENTS FORMULA=</strong></p>
+<p><em>FORMULA=</em></p>
+<blockquote>
+<div><p>The formula for the UNIT CELL
+(NOT ASYMMETRIC UNIT) is given as a list with entries</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;element TYPE&#39;</span> <span class="s1">&#39;number of atoms&#39;</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>The items in the list MUST be separated by at least one space. The number
+of atoms may be omitted, when they default to 1.0, and may be fractional.</p>
+<p>The element TYPE must conform to the TYPE conventions described in the
+atom syntax, section <a class="reference internal" href="intro.html#atomsyntax"><span class="std std-ref">Element and Atom names</span></a>.</p>
+</div></blockquote>
+<p><strong>SCATTERING FILE=</strong></p>
+<blockquote>
+<div><p>This directive gives the name of the
+file to be searched for scattering factors, and must conform to the syntax
+of the computing system. A file CRSCP:SCATT.DAT is provided for some
+implementations, and contains all the scattering factors listed in
+Volume IV, International Tables.</p>
+</div></blockquote>
+<p><strong>PROPERTIES FILE=</strong></p>
+<blockquote>
+<div><p>This directive gives the name of the
+file to be searched for elemental properties, and must conform to the syntax
+of the computing system. A file CRSCP:PROPERTIES.DAT is provided for
+some
+implementations, and contains values gleaned from various sources. The
+file contains references.</p>
+</div></blockquote>
+</section>
+</section>
+<section id="input-of-the-atomic-scattering-factors-list-3">
+<span id="list03"></span><span id="index-13"></span><span id="index-12"></span><h2>Input of the atomic scattering factors  -  \LIST 3<a class="headerlink" href="#input-of-the-atomic-scattering-factors-list-3" title="Link to this heading"></a></h2>
+<p>This list contains the scattering factors that
+are to be used for each atomic species that may appear in the
+atomic parameter list (LIST 5)
+- see the section of the user guide on Atom and Element names).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">LIST</span> <span class="mi">3</span>
+<span class="n">READ</span>  <span class="n">NSCATTERERS</span><span class="o">=</span>
+<span class="n">SCATTERING</span> <span class="n">TYPE</span><span class="o">=</span> <span class="sa">F</span><span class="s1">&#39;= F&#39;&#39;= A(1)= B(1)= A(2)= . . . B(4)= C=</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<p>For example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">LIST</span> <span class="mi">3</span>
+<span class="n">READ</span> <span class="mi">2</span>
+<span class="n">SCATT</span> <span class="n">C</span>    <span class="mi">0</span>    <span class="mi">0</span>
+<span class="n">CONT</span>  <span class="mf">1.93019</span>  <span class="mf">12.7188</span>  <span class="mf">1.87812</span>  <span class="mf">28.6498</span>  <span class="mf">1.57415</span>  <span class="mf">0.59645</span>
+<span class="n">CONT</span>  <span class="mf">0.37108</span>  <span class="mf">65.0337</span>  <span class="mf">0.24637</span>
+<span class="n">SCATT</span> <span class="n">S</span> <span class="mf">0.35</span> <span class="mf">0.86</span>  <span class="mf">7.18742</span>  <span class="mf">1.43280</span>  <span class="mf">5.88671</span>  <span class="mf">0.02865</span>
+<span class="n">CONT</span>               <span class="mf">5.15858</span>  <span class="mf">22.1101</span>  <span class="mf">1.64403</span>  <span class="mf">55.4561</span>
+<span class="n">CONT</span>              <span class="o">-</span><span class="mf">3.87732</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<p>The scattering factor of an atom in LIST 5 (the model parameters)
+is determined by its  TYPE, an entry for which must exist in LIST 3.</p>
+<p>The form factor is calculated analytically at each value
+of sin(theta)/lambda,  s , from the relationship :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">[</span><span class="n">a</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">*</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">b</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">*</span><span class="n">s</span><span class="o">*</span><span class="n">s</span><span class="p">)]</span> <span class="o">+</span> <span class="n">c</span>       <span class="n">i</span><span class="o">=</span><span class="mi">1</span> <span class="n">to</span> <span class="mf">4.</span>
+</pre></div>
+</div>
+<p>The coefficients a(1) to a(4), b(1) to b(4) and c and the real and
+imaginary parts of the anomalous dispersion correction
+are input for each element TYPE.</p>
+<section id="list-3">
+<h3>\LIST 3<a class="headerlink" href="#list-3" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p>This is the normal calling command for the input of LIST 3.</p>
+</div></blockquote>
+<p><strong>READ  NSCATTERERS=</strong></p>
+<p><em>NSCATTERERS=</em></p>
+<blockquote>
+<div><p>This must be set to the number of atomic species to be stored
+in LIST 3, and thus the number of  SCATTERING  directives to follow.
+There is no default value.</p>
+</div></blockquote>
+<p><strong>SCATTERING TYPE= F’= F’’= A(1)= B(1)= A(2)= … B(4)= C=</strong></p>
+<blockquote>
+<div><p>This directive provides the form factor details for one atomic species.
+This directive must be repeated  NSCATTERERS  times.</p>
+</div></blockquote>
+<p><em>TYPE=</em></p>
+<blockquote>
+<div><p>The element TYPE must conform to the TYPE conventions described in the
+General Introduction.
+The values used for  TYPE  in LIST 3 will have their counterparts
+in the  TYPEs stored for atoms in LIST 5 (the model parameters),
+and in the  TYPEs
+stored for atomic species in LIST 29 (see section <a class="reference internal" href="#list29"><span class="std std-ref">Input of the contents of the asymmetric unit  -  LIST 29</span></a>).
+There is no default for this parameter.</p>
+</div></blockquote>
+<p><em>F’= F’’=</em></p>
+<blockquote>
+<div><p>These define the real and imaginary parts of the anomalous dispersion
+correction for this atomic species at the appropriate wavelength.
+A default value of zero is assumed if these parameters are omitted.</p>
+</div></blockquote>
+<p><em>A(1)= B(1=) A(2=) B(2)= A(3)= B(3)= A(4)= B(4)= C=</em></p>
+<blockquote>
+<div><p>These define the coefficients used to compute the
+scattering factor for this atomic species. There are
+no default values.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">For</span> <span class="n">neutrons</span><span class="p">,</span> <span class="nb">all</span> <span class="n">the</span> <span class="n">A</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="ow">and</span> <span class="n">B</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="n">are</span> <span class="nb">set</span> <span class="n">to</span> <span class="n">zero</span><span class="p">,</span> <span class="ow">and</span> <span class="n">C</span> <span class="ow">is</span> <span class="nb">set</span> <span class="n">to</span>
+<span class="n">the</span> <span class="n">scattering</span> <span class="n">length</span><span class="o">.</span>
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+</section>
+<section id="printing-the-scattering-factors">
+<h2>Printing the scattering factors<a class="headerlink" href="#printing-the-scattering-factors" title="Link to this heading"></a></h2>
+<section id="print-3">
+<h3>\PRINT 3<a class="headerlink" href="#print-3" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p>This prints LIST 3. There is no command for punching LIST 3.</p>
+</div></blockquote>
+</section>
+</section>
+<section id="input-of-the-crystal-and-data-collection-details-list-13">
+<span id="list13"></span><span id="index-15"></span><span id="index-14"></span><h2>Input of the crystal and data collection details  -  LIST 13<a class="headerlink" href="#input-of-the-crystal-and-data-collection-details-list-13" title="Link to this heading"></a></h2>
+<p>LIST 13 contains information about those experimental details
+which may be needed during structure analysis.
+Information only required for
+the generation of a cif are held in LIST 30 (section <a class="reference internal" href="#list30"><span class="std std-ref">Input of General Crystallographic Data - LIST 30</span></a>).</p>
+<p>If no LIST 13 has been input and one is
+required, a default list is generated.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">LIST</span> <span class="mi">13</span>
+<span class="n">CRYSTAL</span> <span class="n">FRIEDELPAIRS</span><span class="o">=</span> <span class="n">TWINNED</span><span class="o">=</span> <span class="n">SPREAD</span><span class="o">=</span>
+<span class="n">DIFFRACTION</span> <span class="n">GEOMETRY</span><span class="o">=</span> <span class="n">RADIATION</span><span class="o">=</span>
+<span class="n">CONDITIONS</span> <span class="n">WAVELENGTH</span><span class="o">=</span> <span class="n">THETA</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">=</span> <span class="n">THETA</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">=</span> <span class="n">CONSTANTS</span> <span class="o">.</span> <span class="o">.</span>
+<span class="n">MATRIX</span> <span class="n">R</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">=</span> <span class="n">R</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">=</span> <span class="n">R</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">=</span> <span class="o">.</span> <span class="o">.</span> <span class="o">.</span> <span class="n">R</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span><span class="o">=</span>
+<span class="n">TWO</span> <span class="n">H</span><span class="o">=</span> <span class="n">K</span><span class="o">=</span> <span class="n">L</span><span class="o">=</span> <span class="n">THETA</span><span class="o">=</span> <span class="n">OMEGA</span><span class="o">=</span> <span class="n">CHI</span><span class="o">=</span> <span class="n">PHI</span><span class="o">=</span> <span class="n">KAPPA</span><span class="o">=</span> <span class="n">PSI</span><span class="o">=</span>
+<span class="n">THREE</span> <span class="n">H</span><span class="o">=</span> <span class="n">K</span><span class="o">=</span> <span class="n">L</span><span class="o">=</span> <span class="n">THETA</span><span class="o">=</span> <span class="n">OMEGA</span><span class="o">=</span> <span class="n">CHI</span><span class="o">=</span> <span class="n">PHI</span><span class="o">=</span> <span class="n">KAPPA</span><span class="o">=</span> <span class="n">PSI</span><span class="o">=</span>
+<span class="n">REAL</span> <span class="n">COMPONENTS</span><span class="o">=</span> <span class="n">H</span><span class="o">=</span> <span class="n">K</span><span class="o">=</span> <span class="n">L</span><span class="o">=</span> <span class="n">ANGLES</span><span class="o">=</span>
+<span class="n">RECIPROCAL</span> <span class="n">COMPONENTS</span><span class="o">=</span> <span class="n">H</span><span class="o">=</span> <span class="n">K</span><span class="o">=</span> <span class="n">L</span><span class="o">=</span> <span class="n">ANGLES</span><span class="o">=</span>
+<span class="n">AXIS</span> <span class="n">H</span><span class="o">=</span> <span class="n">K</span><span class="o">=</span> <span class="n">L</span><span class="o">=</span>
+</pre></div>
+</div>
+<p>For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">LIST</span> <span class="mi">13</span>
+<span class="n">DIFF</span> <span class="n">GEOM</span><span class="o">=</span> <span class="n">CAD4</span>
+<span class="n">COND</span> <span class="n">WAVE</span><span class="o">=</span> <span class="mf">.7107</span>
+<span class="n">MATRIX</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<section id="list-13">
+<h3>\LIST 13<a class="headerlink" href="#list-13" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p>This directive describes properties that relate to the whole
+crystal.</p>
+</div></blockquote>
+<p><strong>CRYSTAL FRIEDELPAIRS= TWINNED= SPREAD=</strong></p>
+<p><em>FRIEDELPAIRS=</em></p>
+<blockquote>
+<div><p>This parameter defines whether Friedel’s law should be used during
+\SYSTEMATIC in
+data reduction. It should be set to NO for high accuracy or absolute
+structure determinations. If omitted, Friedel’s law will be used.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">YES</span>  <span class="o">-</span>  <span class="n">default</span> <span class="n">value</span><span class="o">.</span>
+<span class="n">NO</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><em>TWINNED=</em></p>
+<blockquote>
+<div><p>This parameter is used during refinement to indicate
+whether the twin laws should be used. It is automatically updated
+if twinned reflection data is input.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NO</span>  <span class="o">-</span>  <span class="n">Default</span> <span class="n">value</span><span class="o">.</span>
+<span class="n">YES</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><em>SPREAD=</em></p>
+<blockquote>
+<div><p>This parameter defines the type of mosaic spread in the crystal.
+This information is used during the calculation of an extinction
+correction.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">GAUSSIAN</span>  <span class="o">-</span>  <span class="n">Default</span> <span class="n">value</span><span class="o">.</span> <span class="n">Suitable</span> <span class="k">for</span> <span class="n">X</span><span class="o">-</span><span class="n">rays</span>
+<span class="n">LORENTZIAN</span> <span class="o">-</span> <span class="n">Suitable</span> <span class="k">for</span> <span class="n">Neutrons</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><strong>DIFFRACTION GEOMETRY= RADIATION=</strong></p>
+<blockquote>
+<div><p>This directive defines the experimental conditions used to
+collect the data.</p>
+</div></blockquote>
+<p><em>GEOMETRY=</em></p>
+<blockquote>
+<div><p>This defines the type of data collection method used
+to measure the raw intensities, and determines the type of Lp
+correction.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NORMAL</span>  <span class="o">-</span>  <span class="n">Normal</span> <span class="n">beam</span> <span class="n">Weissenberg</span> <span class="n">geometry</span><span class="o">.</span>
+<span class="n">EQUI</span>    <span class="o">-</span>  <span class="n">Equi</span><span class="o">-</span><span class="n">inclination</span> <span class="n">Weissenberg</span> <span class="n">geometry</span><span class="o">.</span>
+<span class="n">ANTI</span>    <span class="o">-</span>  <span class="n">Anti</span><span class="o">-</span><span class="n">equi</span><span class="o">-</span><span class="n">inclination</span> <span class="n">Weissenberg</span> <span class="n">geometry</span><span class="o">.</span>
+<span class="n">PRECESSION</span>
+<span class="n">CAD4</span>    <span class="o">-</span>  <span class="n">Nonius</span> <span class="n">CAD4</span> <span class="n">diffractometer</span><span class="p">,</span> <span class="n">Eulerian</span> <span class="n">angles</span><span class="o">.</span>
+<span class="n">KAPPA</span>   <span class="o">-</span>  <span class="n">Nonius</span> <span class="n">CAD4</span> <span class="ow">in</span> <span class="n">kappa</span> <span class="n">geometry</span><span class="o">.</span>
+<span class="n">ROLLETT</span> <span class="o">-</span>  <span class="n">Abstract</span> <span class="n">machine</span><span class="p">,</span> <span class="n">see</span> <span class="n">page</span> <span class="mi">28</span> <span class="p">,</span> <span class="n">Computing</span> <span class="n">Methods</span>
+           <span class="ow">in</span> <span class="n">Crystallography</span><span class="o">.</span>
+<span class="n">Y290</span>    <span class="o">-</span>  <span class="n">Hilger</span><span class="o">-</span><span class="n">Watts</span> <span class="n">Y290</span> <span class="mi">4</span><span class="o">-</span><span class="n">Circle</span> <span class="n">diffractometer</span><span class="o">.</span>
+<span class="n">NONE</span>    <span class="o">-</span>  <span class="n">Default</span><span class="o">.</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><em>RADIATION=</em></p>
+<blockquote>
+<div><p>This parameter defines the type of radiation used to collect the
+data.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">XRAYS</span>  <span class="o">-</span>  <span class="n">Default</span> <span class="n">value</span>
+<span class="n">NEUTRONS</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><strong>CONDITIONS WAVELENGTH= THETA(1)= THETA(2)= CONSTANTS . .</strong></p>
+<blockquote>
+<div><p>This directive describes the conditions that were used when the
+data were collected.
+CONSTANTS  is short for four constants.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CONSTANT</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">=</span> <span class="n">CONSTANT</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">=</span> <span class="n">CONSTANT</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">=</span> <span class="n">CONSTANT</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">=</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><em>WAVELENGTH=</em></p>
+<blockquote>
+<div><p>This defines the wavelength of the radiation used to collect
+the data.
+If omitted, a default value of 0.71073 is assumed,(Mo k-alpha).</p>
+</div></blockquote>
+<p><em>THETA(1)=</em></p>
+<blockquote>
+<div><p>This defines the Bragg angle of the monochromator.
+If omitted, a default of 6.05 is assumed, indicating
+that a monochromator was used with Mo radiation</p>
+</div></blockquote>
+<p><em>THETA(2)=</em></p>
+<blockquote>
+<div><p>This defines the angle between the plane of the
+monochromator and the diffracting planes of the crystal.
+If this parameter is omitted, a default value of 90 is assumed.
+This value is not used if  THETA(1)  is zero.
+Since the angle  THETA(2)  is fixed, the Lp correction computed
+using these constants is correct only for experiments where  THETA(2)
+is a constant.
+This is true for equatorial geometry experiments, but is not true
+for equipment that uses Weissenberg or precession geometry.  It is not
+true for area detector instruments.</p>
+</div></blockquote>
+<p><em>CONSTANT(1)= CONSTANT(2)= CONSTANT(3)= CONSTANT(4)=</em></p>
+<blockquote>
+<div><p>These four parameters are used to input fundamental constants
+for the diffractometer used to collect the data.
+How many of the constants, and what values they should have are
+determined by the equipment and its setting.
+To determine the values required, consult your local diffractometer
+expert.
+The default values for c(1), c(2) and c(3) are the Nonius CAD4 GONCON
+constants, and c(4) is the theta value for the change from
+bisecting to fixed chi mode (and has a value of 90 degrees).
+These constants are important when machine geometry dependent
+calculations are made - for example, absorption corrections.
+The defaults in the program were correct for the Nonius CAD4
+in the Oxford Chemical Crystallography lab on 13 October 1980.</p>
+</div></blockquote>
+<p><strong>MATRIX R(1)= R(2)= R(3)= … R(9)=</strong></p>
+<blockquote>
+<div><p>This directive is used to input the orientation matrix directly.
+If this directive is input, the directives  TWO ,  THREE ,  REAL ,
+and  RECIPROCAL (detailed below) may not be used.
+This directive is normally used for diffractometer collected data.</p>
+</div></blockquote>
+<p><em>R(1)= R(2)= R(3)= … R(9)=</em></p>
+<blockquote>
+<div><p>The elements of the matrix must be input in the order
+(1,1), (1,2), (1,3), (2,1), etc.
+The default is a unit diagonal matrix.</p>
+</div></blockquote>
+<p><strong>TWO H= K= L= THETA= OMEGA= CHI= PHI= KAPPA= PSI=</strong></p>
+<blockquote>
+<div><p>This directive is used to input the setting details
+required to define a diffractometer orientation matrix from
+two reflections.
+The details for the two reflections must be input on separate
+directives, so that this directive must be repeated twice.
+This directive may only be input when the  GEOMETRY parameter
+on the DIFFRACTION directive is  Y290  or  CAD4 .
+If this directive is input, the directives  THREE ,  REAL ,
+RECIPROCAL , and  MATRIX  may not be used.
+The reflections should be given in the same order as
+in the original experiment.</p>
+</div></blockquote>
+<p><em>H= K= L=</em></p>
+<blockquote>
+<div><p>These three parameters define the indices of the reflection
+that is to be used to calculate the orientation matrix.</p>
+</div></blockquote>
+<p><em>THETA= OMEGA= CHI= PHI= KAPPA= PSI=</em></p>
+<blockquote>
+<div><p>These parameters define the setting angles for the reflection
+whose indices are given by  H ,  K  and  L .
+There are no default values for  THETA ,  OMEGA  and  PHI , and
+one of  CHI or KAPPA must be input.
+The default values for CHI , KAPPA and PSI are zero.</p>
+</div></blockquote>
+<p><strong>THREE H= K= L= THETA= OMEGA= CHI= PHI= KAPPA= PSI=</strong></p>
+<blockquote>
+<div><p>This directive is used to input the setting details
+required to define a diffractometer orientation matrix from
+three reflections.
+The details for the three reflections must be input on separate
+directives, so that this directive must be repeated three times.
+This directive may only be input when the  GEOMETRY  parameter
+on the DIFFRACTION  directive is  Y290  or  CAD4 .
+If this directive is input, the directives  TWO ,  REAL ,
+RECIPROCAL , and  MATRIX  may not be used.</p>
+</div></blockquote>
+<p><em>H= K= L= THETA= OMEGA= CHI= PHI= KAPPA= PSI=</em></p>
+<blockquote>
+<div><p>These parameters are defined as for TWO above.</p>
+</div></blockquote>
+<p><strong>REAL COMPONENTS= H= K= L= ANGLES=</strong></p>
+<blockquote>
+<div><p>This directive is used to define the orientation matrix for
+the Nonius CAD4 diffractometer from the components of the real
+vector along the phi axis and the setting angles of one reflection.
+The  items COMPONENTS  and  ANGLES  are short for:</p>
+<p>COMPONENT(1)= COMPONENT(2)= COMPONENT(3)=</p>
+<p>and</p>
+<p>THETA= OMEGA= CHI= PHI= KAPPA= PSI=</p>
+<p>If this directive is input, the directives  TWO ,  THREE ,
+RECIPROCAL , and  MATRIX  may not be used.
+This directive may only be input when the  GEOMETRY  parameter
+on the DIFFRACTION  directive is  CAD4 .</p>
+</div></blockquote>
+<p><em>COMPONENT(1)= COMPONENT(2)= COMPONENT(3)=</em></p>
+<blockquote>
+<div><p>These three parameters provide the components of the real cell
+vector that is parallel to the phi axis.</p>
+</div></blockquote>
+<p><em>H= K= L= THETA= OMEGA= CHI= PHI= KAPPA= PSI=</em></p>
+<blockquote>
+<div><p>These parameters are defined as in TWO above</p>
+</div></blockquote>
+<p><strong>RECIPROCAL COMPONENTS= H= K= L= ANGLES=</strong></p>
+<blockquote>
+<div><p>This directive is used to define the orientation matrix for
+the Nonius CAD4 diffractometer from the components of the reciprocal
+vector along the phi axis and the setting angles of one reflection.
+The  items COMPONENTS  and  ANGLES  are short for:</p>
+<p>COMPONENT(1)= COMPONENT(2)= COMPONENT(3)=</p>
+<p>and</p>
+<p>THETA= OMEGA= CHI= PHI= KAPPA= PSI=</p>
+<p>If this directive is input, the directives  TWO ,  THREE ,
+REAL , and  MATRIX  may not be used.
+This directive may only be input when the  GEOMETRY  parameter
+on the DIFFRACTION  directive is  CAD4 .</p>
+</div></blockquote>
+<p><em>COMPONENT(1)= COMPONENT(2)= COMPONENT(3)=</em></p>
+<blockquote>
+<div><p>These three parameters provide the components of the reciprocal cell
+vector that is parallel to the phi axis.</p>
+</div></blockquote>
+<p><em>H K L THETA OMEGA CHI PHI KAPPA PSI</em></p>
+<blockquote>
+<div><p>These parameters are defined as in TWO above</p>
+</div></blockquote>
+<p><strong>AXIS H= K= L=</strong></p>
+<blockquote>
+<div><p>This directive is used to define the axis about which data were
+collected in Weissenberg geometry.
+This directive may only be given when the  GEOMETRY  parameter
+on the  DIFFRACTION  directive is one of  NORMAL ,  EQUI  or  ANTI .</p>
+</div></blockquote>
+<p><em>H= K= L=</em></p>
+<blockquote>
+<div><p>These three parameters define the zone axis [hkl] about which the
+crystal was rotated during data collection.
+If any of these parameters is omitted, a default value of zero
+is assumed.</p>
+</div></blockquote>
+</section>
+</section>
+<section id="printing-the-experimental-conditions-list-13">
+<h2>Printing the experimental conditions, LIST 13<a class="headerlink" href="#printing-the-experimental-conditions-list-13" title="Link to this heading"></a></h2>
+<section id="print-13">
+<h3>\PRINT 13<a class="headerlink" href="#print-13" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p>This prints list 13. There is no command for punching LIST 13.</p>
+</div></blockquote>
+</section>
+</section>
+<section id="input-of-structural-formula-as-a-smiles-string-list-18">
+<span id="list18"></span><span id="index-17"></span><span id="index-16"></span><h2>Input of Structural Formula as a SMILES string - LIST 18<a class="headerlink" href="#input-of-structural-formula-as-a-smiles-string-list-18" title="Link to this heading"></a></h2>
+<p>This list holds the structural formula as a SMILES string</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">LIST</span> <span class="mi">18</span>
+<span class="n">SMILES</span>    <span class="n">string</span><span class="o">.</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<p>For example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="nb">list</span> <span class="mi">18</span>
+<span class="n">smile</span> <span class="n">CC</span><span class="p">(</span><span class="n">C1</span><span class="o">=</span><span class="n">CC</span><span class="o">=</span><span class="n">CC</span><span class="o">=</span><span class="p">[</span><span class="n">N</span><span class="p">]</span><span class="mi">1</span><span class="p">[</span><span class="n">Ga</span><span class="p">]</span><span class="mi">2345</span><span class="p">[</span><span class="n">N</span><span class="p">](</span><span class="n">N</span><span class="o">=</span><span class="n">C</span><span class="p">(</span><span class="n">S5</span><span class="p">)</span><span class="n">Nc6ccccc6</span><span class="p">)</span><span class="o">=</span><span class="n">C</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
+<span class="n">cont</span> <span class="n">C7</span><span class="o">=</span><span class="n">CC</span><span class="o">=</span><span class="n">CC</span><span class="o">=</span><span class="p">[</span><span class="n">N</span><span class="p">]</span><span class="mi">73</span><span class="p">)</span><span class="o">=</span><span class="p">[</span><span class="n">N</span><span class="p">]</span><span class="mi">2</span><span class="n">N</span><span class="o">=</span><span class="n">C</span><span class="p">(</span><span class="n">S4</span><span class="p">)</span><span class="n">Nc8ccccc8</span>
+<span class="n">smile</span> <span class="n">n</span><span class="p">(</span><span class="n">o</span><span class="p">)(</span><span class="n">o</span><span class="p">)(</span><span class="n">o</span><span class="p">)</span>
+<span class="n">end</span>
+</pre></div>
+</div>
+<section id="list-18">
+<h3>\LIST 18<a class="headerlink" href="#list-18" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p>DSMILE smiles text. Remeber there is an 80 character line length. Break
+the SMILES at a suitable point and use a CONTINUATION card.</p>
+<p>If there is more than one discrete moiety in the cell, enter each on
+its own SMILES card</p>
+</div></blockquote>
+</section>
+</section>
+<section id="printing-the-smiles-string-list-18">
+<h2>Printing the SMILES string, LIST 18<a class="headerlink" href="#printing-the-smiles-string-list-18" title="Link to this heading"></a></h2>
+<section id="print-18">
+<h3>\PRINT 18<a class="headerlink" href="#print-18" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p>This prints list 18.</p>
+</div></blockquote>
+</section>
+</section>
+<section id="punching-the-smiles-string-list-18">
+<h2>Punching the SMILES string, LIST 18<a class="headerlink" href="#punching-the-smiles-string-list-18" title="Link to this heading"></a></h2>
+<section id="punch-18">
+<h3>\PUNCH 18<a class="headerlink" href="#punch-18" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p>This punches list 18.</p>
+</div></blockquote>
+</section>
+</section>
+<section id="input-of-the-contents-of-the-asymmetric-unit-list-29">
+<span id="list29"></span><span id="index-19"></span><span id="index-18"></span><h2>Input of the contents of the asymmetric unit  -  LIST 29<a class="headerlink" href="#input-of-the-contents-of-the-asymmetric-unit-list-29" title="Link to this heading"></a></h2>
+<p>To perform calculations based on elemental properties, such as Sim
+weighting for Fourier maps (section <a class="reference internal" href="fourier.html#fourier"><span class="std std-ref">Fourier calculations  -  \FOURIER</span></a>), connectivity
+calculations, absorption
+and density calculations, it is necessary to input the numbers and
+properties of the elements in the cell.
+This information is stored in LIST 29.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">LIST</span> <span class="mi">29</span>
+<span class="n">READ</span>  <span class="n">NELEMENT</span><span class="o">=</span>
+<span class="n">ELEMENT</span> <span class="n">TYPE</span><span class="o">=</span> <span class="n">COVALENT</span><span class="o">=</span> <span class="n">VANDERWAALS</span><span class="o">=</span> <span class="n">IONIC</span><span class="o">=</span> <span class="n">NUMBER</span><span class="o">=</span> <span class="n">MUA</span><span class="o">=</span> <span class="n">WEIGHT</span><span class="o">=</span> <span class="n">COLOUR</span><span class="o">=</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<p>For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">LIST</span> <span class="mi">29</span>
+<span class="n">READ</span> <span class="n">NELEMENT</span><span class="o">=</span><span class="mi">4</span>
+<span class="n">ELEMENT</span> <span class="n">MO</span> <span class="n">NUM</span><span class="o">=</span><span class="mi">0</span> <span class="mf">.5</span>
+<span class="n">ELEMENT</span> <span class="n">S</span> <span class="n">NUM</span><span class="o">=</span><span class="mi">2</span>
+<span class="n">ELEMENT</span> <span class="n">O</span> <span class="n">NUM</span><span class="o">=</span><span class="mi">3</span>
+<span class="n">ELEMENT</span> <span class="n">C</span> <span class="n">NUM</span><span class="o">=</span><span class="mi">10</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<section id="list-29">
+<h3>\LIST 29<a class="headerlink" href="#list-29" title="Link to this heading"></a></h3>
+<p><strong>READ  NELEMENT=</strong></p>
+<p><em>NELEMENT</em></p>
+<blockquote>
+<div><p>This must be set to the number of atomic species in the asymmetric
+unit, and
+consequently the number of  ELEMENT directives that are about to
+follow this directive.
+If this directive is omitted, a default value of one is assumed for
+NELEMENT.</p>
+</div></blockquote>
+<p><strong>ELEMENT TYPE= COVALENT=  VANDERWAALS= IONIC= NUMBER= MUA= WEIGHT=</strong></p>
+<blockquote>
+<div><p>Each  ELEMENT directive provides the information about that atomic
+species in the asymmetric unit.</p>
+</div></blockquote>
+<p><em>TYPE=</em></p>
+<blockquote>
+<div><p>The element TYPE must conform to the TYPE conventions described in the
+section on atom syntax, <a class="reference internal" href="intro.html#atomsyntax"><span class="std std-ref">Element and Atom names</span></a>.
+The default value for this parameter is taken from the COMMAND file.
+When LIST 29 is used for Simm weighting,
+the  TYPE  is compared with the  TYPEs stored
+in LIST 3 (section <a class="reference internal" href="#list03"><span class="std std-ref">Input of the atomic scattering factors  -  \LIST 3</span></a>) to determine the scattering
+factor of the given species.</p>
+</div></blockquote>
+<p><em>COVALENT=</em></p>
+<p><em>VANDERWAALS=</em></p>
+<p><em>IONIC=</em></p>
+<blockquote>
+<div><p>The radii used during geometry calculations,
+with a default values set in the COMMAND file. The covalent radius is
+incremented by 0.1 A for distance contacts, and
+used for defining restraint targets (see \DISTANCES).
+The van der Waals radius is incremented by .25A for finding non-bonded
+contacts, and used for defining energy restraints
+The ionic radius may be used during geometry calculations.</p>
+</div></blockquote>
+<p><em>NUMBER=</em></p>
+<blockquote>
+<div><p>This parameter gives the number of atoms of the given type in the
+asymmetric unit.
+This number can be fractional, depending
+on the number of atoms in the cell and whether they occupy special
+positions, and whether they are disordered.</p>
+</div></blockquote>
+<p><em>MUA=</em></p>
+<blockquote>
+<div><p>This is the atomic absorption coefficient x10**(-23)  /cm as in INT TAB
+VOL III.  Note that in Vol IV the units are x10**(-24).
+Take care to ensure that the coefficients are appropriate
+for the wavelength used.</p>
+</div></blockquote>
+<p><em>WEIGHT</em></p>
+<blockquote>
+<div><p>This is the Atomic weight</p>
+</div></blockquote>
+<p><em>COLOUR</em></p>
+<blockquote>
+<div><p>This is the colour to be used for each atom in CAMERON. The available
+colours are:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">BLACK</span> <span class="n">BLUE</span>    <span class="n">CYAN</span>   <span class="n">GREEN</span> <span class="n">GREY</span>   <span class="n">LBLUE</span> <span class="n">LGREEN</span> <span class="n">LGREY</span>
+<span class="n">LRED</span>  <span class="n">MAGENTA</span> <span class="n">ORANGE</span> <span class="n">PINK</span>  <span class="n">PURPLE</span> <span class="n">RED</span>   <span class="n">WHITE</span>  <span class="n">YELLOW</span>
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+</section>
+<section id="printing-the-contents-of-the-asymmetric-unit-list-29">
+<h2>Printing the contents of the asymmetric unit, LIST 29<a class="headerlink" href="#printing-the-contents-of-the-asymmetric-unit-list-29" title="Link to this heading"></a></h2>
+<section id="print-29">
+<h3>\PRINT 29<a class="headerlink" href="#print-29" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p>This prints list 29. There is no command for punching LIST 29.</p>
+</div></blockquote>
+</section>
+</section>
+<section id="input-of-general-crystallographic-data-list-30">
+<span id="list30"></span><span id="index-21"></span><span id="index-20"></span><h2>Input of General Crystallographic Data - LIST 30<a class="headerlink" href="#input-of-general-crystallographic-data-list-30" title="Link to this heading"></a></h2>
+<p>This list holds general crystallographic information for later
+inclusion in the cif file. CRYSTALS contains no COMMAND for editing
+this list - inputting a new LIST 30 over writes any existing version.
+However, some CRYSTALS commands update LIST 30 as an analysis proceeds,
+and there is a SCRIPT which enables some details to be changed.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">LIST</span> <span class="mi">30</span>
+<span class="n">DATRED</span>     <span class="n">NREFMES</span><span class="o">=</span> <span class="n">NREFMERG</span><span class="o">=</span> <span class="n">RMERGE</span><span class="o">=</span> <span class="n">NREFFRIED</span><span class="o">=</span> <span class="n">RMERGFRIED</span><span class="o">=</span> <span class="n">REDUCTION</span><span class="o">=</span>
+<span class="n">CONDITIONS</span> <span class="n">MINSIZE</span><span class="o">=</span> <span class="n">MEDSIZE</span><span class="o">=</span> <span class="n">MAXSIZE</span><span class="o">=</span> <span class="n">NORIENT</span><span class="o">=</span>
+<span class="n">CONTINUE</span>   <span class="n">THORIENTMIN</span><span class="o">=</span> <span class="n">THORIENTMAX</span><span class="o">=</span> <span class="n">TEMPERATURE</span><span class="o">=</span> <span class="n">STANDARDS</span><span class="o">=</span> <span class="n">DECAY</span><span class="o">=</span> <span class="n">SCANMODE</span><span class="o">=</span>
+<span class="n">CONTINUE</span>   <span class="n">INTERVAL</span><span class="o">=</span> <span class="n">COUNT</span><span class="o">=</span> <span class="n">INSTRUMENT</span><span class="o">=</span>
+<span class="n">REFINEMENT</span> <span class="n">R</span><span class="o">=</span> <span class="n">RW</span><span class="o">=</span> <span class="n">NPARAM</span><span class="o">=</span> <span class="n">SIGMACUT</span><span class="o">=</span> <span class="n">GOF</span><span class="o">=</span> <span class="n">DELRHOMIN</span><span class="o">=</span> <span class="n">DELRHOMAX</span><span class="o">=</span>
+<span class="n">CONTINUE</span>   <span class="n">RMSSHIFT</span><span class="o">=</span> <span class="n">NREFUSED</span><span class="o">=</span> <span class="n">FMINFUNC</span><span class="o">=</span> <span class="n">RESTMINFUN</span><span class="o">=</span> <span class="n">TOTALMINFUN</span><span class="o">=</span> <span class="n">COEFFICIENT</span><span class="o">=</span>
+<span class="n">INDEXRANGE</span> <span class="n">HMIN</span><span class="o">=</span> <span class="n">HMAX</span><span class="o">=</span> <span class="n">KMIN</span><span class="o">=</span> <span class="n">KMAX</span><span class="o">=</span> <span class="n">LMIN</span><span class="o">=</span> <span class="n">LMAX</span><span class="o">=</span> <span class="n">THETAMIN</span><span class="o">=</span> <span class="n">THETAMAX</span><span class="o">=</span>
+<span class="n">ABSORPTION</span> <span class="n">ANALMIN</span><span class="o">=</span> <span class="n">ANALMAX</span><span class="o">=</span> <span class="n">THETAMIN</span><span class="o">=</span> <span class="n">THETAMAX</span><span class="o">=</span> <span class="n">EMPMIN</span><span class="o">=</span> <span class="n">EMPMAX</span><span class="o">=</span>
+<span class="n">CONTINUE</span>   <span class="n">DIFABSMIN</span><span class="o">=</span> <span class="n">DIFABSMAX</span><span class="o">=</span> <span class="n">ABSTYPE</span><span class="o">=</span>
+<span class="n">GENERAL</span>    <span class="n">DOBS</span><span class="o">=</span> <span class="n">DCALC</span><span class="o">=</span> <span class="n">F000</span><span class="o">=</span> <span class="n">MU</span><span class="o">=</span> <span class="n">MOLWT</span><span class="o">=</span> <span class="n">FLACK</span><span class="o">=</span> <span class="n">ESD</span><span class="o">=</span> <span class="n">ANALYSE</span><span class="o">-</span><span class="n">CUT</span><span class="o">=</span>
+<span class="n">CONTINUE</span>   <span class="n">ANALYSE</span><span class="o">-</span><span class="n">NREF</span><span class="o">=</span> <span class="n">ANALYSE</span><span class="o">-</span><span class="n">R</span><span class="o">=</span> <span class="n">ANALYSE</span><span class="o">-</span><span class="n">RW</span><span class="o">=</span> <span class="n">SOLUTION</span><span class="o">=</span>
+<span class="n">COLOUR</span>
+<span class="n">SHAPE</span>
+<span class="n">CIFEXTRA</span>   <span class="n">CALC</span><span class="o">-</span><span class="n">SIGMA</span><span class="o">=</span> <span class="n">CALC</span><span class="o">-</span><span class="n">NREF</span><span class="o">=</span> <span class="n">CALC</span><span class="o">-</span><span class="n">R</span><span class="o">=</span> <span class="n">CALC</span><span class="o">-</span><span class="n">RW</span><span class="o">=</span>
+<span class="n">CONTINUE</span>   <span class="n">ALL</span><span class="o">-</span><span class="n">SIGMA</span><span class="o">=</span> <span class="n">ALL</span><span class="o">-</span><span class="n">NREF</span><span class="o">=</span> <span class="n">ALL</span><span class="o">-</span><span class="n">R</span><span class="o">=</span> <span class="n">ALL</span><span class="o">-</span><span class="n">RW</span><span class="o">=</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<p>For example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">LIST</span> <span class="mi">30</span>
+<span class="n">CONDITIONS</span> <span class="n">MINSIZE</span><span class="o">=</span><span class="mf">.1</span> <span class="n">MEDSIZE</span><span class="o">=</span><span class="mf">.3</span> <span class="n">MAXSIZE</span><span class="o">=</span><span class="mf">.8</span> <span class="n">NORIENT</span><span class="o">=</span><span class="mi">25</span>
+<span class="n">CONTINUE</span>   <span class="n">THORIENTMIN</span><span class="o">=</span><span class="mf">15.0</span> <span class="n">THORIENTMAX</span><span class="o">=</span><span class="mf">25.0</span>
+<span class="n">CONTINUE</span>   <span class="n">TEMPERATURE</span><span class="o">=</span><span class="mi">293</span> <span class="n">STANDARDS</span><span class="o">=</span><span class="mi">3</span> <span class="n">DECAY</span><span class="o">=</span><span class="mf">.05</span> <span class="n">SCANMODE</span><span class="o">=</span><span class="mi">2</span><span class="n">THETA</span><span class="o">/</span><span class="n">OMEGA</span>
+<span class="n">CONTINUE</span>   <span class="n">INSTRUMENT</span><span class="o">=</span><span class="n">MACH3</span>
+<span class="n">INDEXRANGE</span> <span class="n">HMIN</span><span class="o">=-</span><span class="mi">12</span> <span class="n">HMAX</span><span class="o">=</span><span class="mi">12</span> <span class="n">KMIN</span><span class="o">=-</span><span class="mi">13</span> <span class="n">KMAX</span><span class="o">=</span><span class="mi">13</span> <span class="n">LMIN</span><span class="o">=-</span><span class="mi">1</span> <span class="n">LMAX</span><span class="o">=</span><span class="mi">19</span>
+<span class="n">COLOUR</span> <span class="n">RED</span>
+<span class="n">SHAPE</span> <span class="n">PRISM</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<section id="list-30">
+<h3>\LIST 30<a class="headerlink" href="#list-30" title="Link to this heading"></a></h3>
+<p><strong>DATRED NREFMES= NREFMERG= RMERGE= NREFFRIED= RMERGFRIED= REDUCTION=</strong></p>
+<blockquote>
+<div><p>Information about the data reduction process.</p>
+</div></blockquote>
+<p><em>NREFMES=</em></p>
+<blockquote>
+<div><p>The number of reflections actually measured in the diffraction
+experiment</p>
+</div></blockquote>
+<p><em>NREFMERG=</em></p>
+<blockquote>
+<div><p>Number of unique reflections remaining after merging equivalents
+applying Friedel’s Law</p>
+</div></blockquote>
+<p><em>RMERGE=</em></p>
+<blockquote>
+<div><p>Merging R factor (R int) applying Friedel’s Law (as decimal not %)</p>
+</div></blockquote>
+<p><em>NREFFRIED=</em></p>
+<blockquote>
+<div><p>Number of unique reflections remaining after merging equivalents
+without applying Friedel’s Law</p>
+</div></blockquote>
+<p><em>RMERGFRIED=</em></p>
+<blockquote>
+<div><p>Merging R factor (R int) without applying Friedel’s Law (as decimal not %)</p>
+</div></blockquote>
+<p><strong>CONDITIONS MINSIZE= MEDSIZE= MAXSIZE= NORIENT= THORIENTMIN= THORIENTMAX=</strong></p>
+<p><strong>CONDITIONS (continued) TEMPERATURE= STANDARDS= DECAY= SCANMODE=</strong></p>
+<p><strong>CONDITIONS (continued) INTERVAL= COUNT= INSTRUMENT=</strong></p>
+<blockquote>
+<div><p>Information about data collection.</p>
+</div></blockquote>
+<p><em>MINSIZE=</em></p>
+<p><em>MEDSIZE=</em></p>
+<p><em>MAXSIZE=</em></p>
+<blockquote>
+<div><p>The crystal dimensions, in mm.</p>
+</div></blockquote>
+<p><em>NORIENT=</em></p>
+<blockquote>
+<div><p>Number of orientation checking reflections.</p>
+</div></blockquote>
+<p><em>THORIENTMIN=</em></p>
+<blockquote>
+<div><p>Minimum theta value for orientating reflections.</p>
+</div></blockquote>
+<p><em>THORIENTMAX=</em></p>
+<blockquote>
+<div><p>Maximum theta value for orientating reflections.</p>
+</div></blockquote>
+<p><em>TEMPERATURE=</em></p>
+<blockquote>
+<div><p>Data collection temperature, Kelvin.</p>
+</div></blockquote>
+<p><em>STANDARDS=</em></p>
+<blockquote>
+<div><p>Number of intensity control reflections.</p>
+</div></blockquote>
+<p><em>DECAY=</em></p>
+<blockquote>
+<div><p>Average decay in intensity, %.</p>
+</div></blockquote>
+<p><em>SCANMODE=</em></p>
+<blockquote>
+<div><p>Data collection scan method. Options are</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">2</span><span class="n">THETA</span><span class="o">/</span><span class="n">OMEGA</span> <span class="p">(</span><span class="n">Default</span><span class="p">)</span>
+<span class="n">OMEGA</span>
+<span class="n">UNKNOWN</span>
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+<section id="interval">
+<h3>INTERVAL=<a class="headerlink" href="#interval" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p>Intensity control reflection interval time, minutes. Used if standards
+are measured at a fixed time interval</p>
+</div></blockquote>
+<p><em>COUNT=</em></p>
+<blockquote>
+<div><p>Intensity control reflection interval count. Used if standards are
+measured after a fixed number (count) of general reflections.</p>
+</div></blockquote>
+<p><em>INSTRUMENT</em></p>
+<blockquote>
+<div><p>Instrument used for data collection. Known instruments are:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">UNKNOWN</span> <span class="p">(</span><span class="n">default</span><span class="p">)</span>
+<span class="n">CAD4</span>
+<span class="n">MACH3</span>
+<span class="n">KAPPACCD</span>
+<span class="n">DIP</span>
+<span class="n">SMART</span>
+<span class="n">IPDS</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><strong>REFINEMENT R= RW= NPARAM= SIGMACUT= GOF= DELRHOMIN= DELRHOMAX= RMSSHIFT=</strong></p>
+<p><strong>REFINE (cont) NREFUSED= FMINFUNC= RESTMINFUNC= TOTALMINFUNC= COEFFICIENT=</strong></p>
+<blockquote>
+<div><p>Information about the refinement procedure.</p>
+</div></blockquote>
+<p><em>R=</em></p>
+<blockquote>
+<div><p>Conventional R-factor.</p>
+</div></blockquote>
+<p><em>RW=</em></p>
+<blockquote>
+<div><p>Hamilton weighted R-factor.</p>
+<p>The weighted R-factor stored in  LIST 6 (section <a class="reference internal" href="reflectiondata.html#list06"><span class="std std-ref">Simple input of F or Fsq data - LIST 6</span></a>) and LIST 30
+is that computed
+during a structure factor calculation. The conventional R-factor is
+updated by either an SFLS calculation (section <a class="reference internal" href="sfls.html#sfls"><span class="std std-ref">Structure Factor Least Squares Calculations  -  \SFLS</span></a>)
+or a SUMMARY of LIST 6.</p>
+</div></blockquote>
+<p><em>NPARAM=</em></p>
+<blockquote>
+<div><p>Number of parameters refined in last cycle.</p>
+</div></blockquote>
+<p><em>SIGMACUT=</em></p>
+<blockquote>
+<div><p>The I/sigma(I) threshold used during refinement.</p>
+</div></blockquote>
+<p><em>GOF=</em></p>
+<blockquote>
+<div><p>GOF, Goodness-of-Fit, S.</p>
+</div></blockquote>
+<p><em>DELRHOMIN=</em></p>
+<p><em>DELRHOMAX=</em></p>
+<blockquote>
+<div><p>Minimum and maximum electron density in last difference synthesis.</p>
+</div></blockquote>
+<p><em>RMSSHIFT=</em></p>
+<blockquote>
+<div><p>R.m.s (shift/e.s.d) in last cycle of refinement.</p>
+</div></blockquote>
+<p><em>NREFUSED=</em></p>
+<blockquote>
+<div><p>Number of reflections used in last cycle of refinement.</p>
+</div></blockquote>
+<p><em>FMINFUNC=</em></p>
+<blockquote>
+<div><p>Minimisation function for diffraction observations.</p>
+</div></blockquote>
+<p><em>RESTMINFUNC=</em></p>
+<blockquote>
+<div><p>Minimisation function for restraints.</p>
+</div></blockquote>
+<p><em>TOTALMINFUNC=</em></p>
+<blockquote>
+<div><p>Total minimisation function.</p>
+</div></blockquote>
+<p><em>COEFFICIENT=</em></p>
+<blockquote>
+<div><p>Coefficient for refinement. Alternatives are:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">F</span> <span class="p">(</span><span class="n">Default</span><span class="p">)</span>
+<span class="n">F</span><span class="o">**</span><span class="mi">2</span>
+<span class="n">UNKNOWN</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><strong>INDEXRANGE HMIN= HMAX= KMIN= KMAX= LMIN= LMAX= THETAMIN= THETAMAX=</strong></p>
+<blockquote>
+<div><p>Range of reflection limits during data collection.</p>
+</div></blockquote>
+<p><em>HMIN= HMAX= KMIN= KMAX= LMIN= LMAX=</em></p>
+<blockquote>
+<div><p>Minimum and maximum values of h,k and l.</p>
+</div></blockquote>
+<p><em>THETAMIN= THETAMAX=</em></p>
+<blockquote>
+<div><p>Minimum and maximum values of theta.</p>
+</div></blockquote>
+<p><strong>ABSORPTION ANALMIN= ANALMAX= THETAMIN= THETAMAX= EMPMIN= EMPMAX=</strong></p>
+<p><strong>ABSORPTION (continued) DIFABSMIN= DIFABSMAX= ABSTYPE=</strong></p>
+<blockquote>
+<div><p>Information about absorption corrections.</p>
+<p><strong>NOTE</strong> the keywords PSIMIN and PSIMAX have been removed.  Store values
+as EMPMIN  and EMPMAX</p>
+</div></blockquote>
+<p><em>ANALMIN= ANALMAX=</em></p>
+<blockquote>
+<div><p>Minimum and maximum analytical corrections</p>
+</div></blockquote>
+<p><em>THETAMIN= THETAMAX=</em></p>
+<blockquote>
+<div><p>Minimum and maximum theta dependant corrections</p>
+</div></blockquote>
+<p><em>EMPMIN= EMPMAX=</em></p>
+<blockquote>
+<div><p>Minimum and maximum empirical corrections (usually combination of theta
+and psi or multi-scan for area detectors).</p>
+</div></blockquote>
+<p><em>DIFABSMIN= DIFABSMAX=</em></p>
+<blockquote>
+<div><p>Minimum and maximum DIFABS type correction, i.e. based on residue
+between Fo anf Fc (see section <a class="reference internal" href="sfls.html#difabs"><span class="std std-ref">Least squares absorption correction  - \DIFABS</span></a>). In the cif it is called
+a refdelf correction.</p>
+</div></blockquote>
+<p><em>ABSTYPE=</em></p>
+<blockquote>
+<div><p>Type of absorption correction. Alternatives are:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NONE</span> <span class="p">(</span><span class="n">default</span><span class="p">)</span> <span class="n">EMPIRICAL</span>    <span class="n">GAUSSIAN</span>     <span class="n">SPHERICAL</span>
+<span class="n">DIFABS</span>         <span class="n">MULTI</span><span class="o">-</span><span class="n">SCAN</span>   <span class="n">ANALYTICAL</span>   <span class="n">CYLINDRICAL</span>
+<span class="n">SHELXA</span>         <span class="n">SADABS</span>       <span class="n">NUMERICAL</span>
+               <span class="n">SORTAV</span>       <span class="n">INTEGRATION</span>
+               <span class="n">PSI</span><span class="o">-</span><span class="n">SCAN</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><strong>GENERAL DOBS= DCALC= F000= MU= MOLWT= FLACK= ESD=</strong></p>
+<p><strong>GENERAL (continued) ANALYSE-CUT= ANALYSE-NREF=</strong></p>
+<p><strong>GENERAL (continue)  ANALYSE-R= ANALYSE-RW= SOLUTION=</strong></p>
+<blockquote>
+<div><p>General information, usually provided by CRYSTALS.</p>
+</div></blockquote>
+<p><em>DOBS= DCALC=</em></p>
+<blockquote>
+<div><p>Observed density and that calculated by CRYSTALS.</p>
+</div></blockquote>
+<p><em>F000=</em></p>
+<blockquote>
+<div><p>Sum of scattering factors at theta = zero.</p>
+</div></blockquote>
+<p><em>MU=</em></p>
+<blockquote>
+<div><p>Absorption coefficient, calculated by CRYSTALS.</p>
+</div></blockquote>
+<p><em>MOLWT=</em></p>
+<blockquote>
+<div><p>Molecular weight, calculated bt CRYSTALS.</p>
+</div></blockquote>
+<p><em>FLACK=</em></p>
+<p><em>ESD=</em></p>
+<blockquote>
+<div><p>The Flack parameter and its esd, if refined.</p>
+</div></blockquote>
+<p><em>ANALYSE-CUT=</em></p>
+<p><em>ANALYSE-NREF=</em></p>
+<p><em>ANALYSE-R=</em></p>
+<p><em>ANALYSE-RW=</em></p>
+<blockquote>
+<div><p>These values are updated when ever \ANALYSE is run, and can be used
+to record the effect of different LIST 28 schemes. <strong>Remenber</strong> that if
+the LIST 28 conditions are modified to include more reflections than
+were used in the last \SFLS calculation (section <a class="reference internal" href="sfls.html#sfls"><span class="std std-ref">Structure Factor Least Squares Calculations  -  \SFLS</span></a>), the values
+of Fc for the
+additional reflections will be incorrect. A \SFLS calculation sets
+these to the same values as in REFINEMENT above.</p>
+</div></blockquote>
+<p><em>SOLUTION=</em></p>
+<blockquote>
+<div><p>The program/procedure used for structure solution</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">UNKNOWN</span> <span class="p">(</span><span class="n">Default</span><span class="p">)</span>
+<span class="n">SHELXS</span>
+<span class="n">SIR88</span>
+<span class="n">SIR92</span>
+<span class="n">PATTERSON</span>
+<span class="n">SIR97</span>
+<span class="n">DIRDIF</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><strong>COLOUR</strong></p>
+<blockquote>
+<div><p>The crystal colour.</p>
+</div></blockquote>
+<p><strong>SHAPE</strong></p>
+<blockquote>
+<div><p>The crystal shape.</p>
+</div></blockquote>
+<p><strong>CIFEXTRA</strong></p>
+<blockquote>
+<div><p>These are filled in by the \SFLS CALC operation (section <a class="reference internal" href="sfls.html#sfls"><span class="std std-ref">Structure Factor Least Squares Calculations  -  \SFLS</span></a>).
+Structure factors are  computed for ALL reflections along with R and Rw -
+LIST 28 is ignored (LIST 28, reflection filtering, see section <a class="reference internal" href="sfls.html#list28"><span class="std std-ref">Reflection restriction list  -  LIST 28</span></a>).
+R and Rw are also computed for reflections above a given
+threshold.</p>
+</div></blockquote>
+</section>
+</section>
+<section id="printing-the-general-information-list-30">
+<h2>Printing the general information, LIST 30<a class="headerlink" href="#printing-the-general-information-list-30" title="Link to this heading"></a></h2>
+<section id="print-30">
+<h3>\PRINT 30<a class="headerlink" href="#print-30" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p>This prints list 30. There is no command for punching LIST 30.</p>
+</div></blockquote>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="intro.html" class="btn btn-neutral float-left" title="Definitions And Conventions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="reflectiondata.html" class="btn btn-neutral float-right" title="Reflection Data Input" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Richard Cooper, David Watkin.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

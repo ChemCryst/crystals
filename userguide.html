@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crystals User Guide &mdash; CRYSTALS 15.4.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=a6d7e377"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="userguide/install.html" />
+    <link rel="prev" title="CRYSTALS documentation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            CRYSTALS
+          </a>
+              <div class="version">
+                15.4
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">CRYSTALS documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Crystals User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="userguide/install.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userguide/gettingstarted.html">Getting Started</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="userguide/gettingstarted.html#organisation-of-data">Organisation of data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/gettingstarted.html#starting-the-program">Starting the program</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/gettingstarted.html#customising-crystals-to-suit-your-screen-size">Customising CRYSTALS to suit your screen size</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="userguide/examples.html">Worked examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="userguide/examples.html#cyclo-a-routine-structure-analysis">Cyclo - a routine structure analysis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="userguide/examples.html#video-demonstration">Video demonstration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="userguide/examples.html#step-one-import-cell-and-crystal-data">Step one: Import cell and crystal data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="userguide/examples.html#step-two-import-reflection-data">Step two: Import reflection data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="userguide/examples.html#step-three-initial-assessment-of-the-data">Step three: Initial assessment of the data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="userguide/examples.html#step-four-structure-solution">Step four: Structure solution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="userguide/examples.html#step-five-check-atom-types">Step five: Check atom types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="userguide/examples.html#step-six-commence-refinement">Step six: Commence refinement…</a></li>
+<li class="toctree-l4"><a class="reference internal" href="userguide/examples.html#step-seven-adding-hydrogen-atoms">Step seven: Adding Hydrogen Atoms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="userguide/examples.html#step-eight-more-refinement-extinction">Step eight: More refinement &amp; Extinction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="userguide/examples.html#step-nine-choose-a-nice-weighting-scheme">Step nine: Choose a nice weighting scheme</a></li>
+<li class="toctree-l4"><a class="reference internal" href="userguide/examples.html#step-ten-validation-and-cif-archival">Step ten: Validation and CIF archival.</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/examples.html#poor-quality-data-tetraphenylene">Poor Quality Data - Tetraphenylene</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="userguide/examples.html#background">Background</a></li>
+<li class="toctree-l4"><a class="reference internal" href="userguide/examples.html#analysis-and-solution">Analysis and solution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="userguide/examples.html#refinement">Refinement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="userguide/examples.html#but-what-of-the-e-s-d-s">But what of the e.s.d’s?</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/examples.html#spacegroup-quiz">Spacegroup Quiz</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="userguide/userinterface.html">User Interface</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="userguide/userinterface.html#overview-of-the-graphical-user-interface">Overview of the graphical user interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/userinterface.html#the-menus">The Menus</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="userguide/userinterface.html#file">File</a></li>
+<li class="toctree-l4"><a class="reference internal" href="userguide/userinterface.html#x-ray-data">X-ray data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="userguide/userinterface.html#preprocess">Diffractometer cifs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="userguide/userinterface.html#input-pre-processed-data">Input Pre-processed data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="userguide/userinterface.html#solve">Solve</a></li>
+<li class="toctree-l4"><a class="reference internal" href="userguide/userinterface.html#structure">Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="userguide/userinterface.html#fourier">Fourier</a></li>
+<li class="toctree-l4"><a class="reference internal" href="userguide/userinterface.html#refinement">Refinement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="userguide/userinterface.html#results">Results</a></li>
+<li class="toctree-l4"><a class="reference internal" href="userguide/userinterface.html#results-rotax">Results -&gt; Rotax</a></li>
+<li class="toctree-l4"><a class="reference internal" href="userguide/userinterface.html#graphics">Graphics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="userguide/userinterface.html#graphics-special">Graphics -&gt; Special</a></li>
+<li class="toctree-l4"><a class="reference internal" href="userguide/userinterface.html#appearance">Appearance</a></li>
+<li class="toctree-l4"><a class="reference internal" href="userguide/userinterface.html#appearance-atoms">Appearance -&gt; Atoms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="userguide/userinterface.html#appearance-model">Appearance -&gt; Model</a></li>
+<li class="toctree-l4"><a class="reference internal" href="userguide/userinterface.html#development">Development</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="userguide/commandline.html">Command line</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="userguide/commandline.html#command-syntax">Command syntax</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="userguide/faqs.html">Frequently asked questions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="userguide/faqs.html#getting-started-organisation-of-files">Getting Started: Organisation of files.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/faqs.html#general-who-is-responsible-for-it">General: Who is responsible for it?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/faqs.html#general-where-is-the-manual">General: Where is the manual?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/faqs.html#general-is-there-an-example-to-work-through">General: Is there an example to work through?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/faqs.html#general-can-i-prepare-commands-to-run-crystals-in-batch-mode-like-shelx">General: Can I prepare commands to run CRYSTALS in batch mode (like SHELX)?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/faqs.html#general-is-there-any-command-line-help">General: Is there any command line help?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/faqs.html#general-how-can-i-switch-the-left-and-right-crystals-windows">General: How can I switch the left and right CRYSTALS windows?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/faqs.html#solving-structures-how-do-i-prepare-a-job-for-sir92-or-shelxs">Solving structures: How do I prepare a job for SIR92 or SHELXS?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/faqs.html#solving-structures-it-failed-how-do-i-prepare-a-different-job">Solving structures: It failed. How do I prepare a different job?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/faqs.html#solving-structures-how-do-i-import-the-solution-back-into-crystals">Solving structures: How do I import the solution back into CRYSTALS?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/faqs.html#cameron-how-do-i-see-a-plot-of-the-structure">CAMERON: How do I see a plot of the structure?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/faqs.html#cameron-can-i-rotate-it-and-label-the-atoms">CAMERON: Can I rotate it and label the atoms?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/faqs.html#cameron-how-do-i-delete-atoms">CAMERON: How do I delete atoms?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/faqs.html#fourier-how-do-i-calculate-a-fourier-map-to-find-missing-atoms">Fourier: How do I calculate a Fourier map to find missing atoms?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/faqs.html#refinement-what-infomation-does-crystals-need">Refinement: What infomation does CRYSTALS need?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/faqs.html#refinement-refinement-instructions">Refinement: Refinement instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/faqs.html#refinement-occupancies-of-an-atom-or-fragment-split-over-two-sites">Refinement: Occupancies of an atom or fragment split over two sites?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/faqs.html#refinement-how-do-i-add-restraints">Refinement: How do I add restraints?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/faqs.html#refinement-how-do-you-use-platon-s-squeeze-from-crystals">Refinement: How do you use Platon’s Squeeze from CRYSTALS?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/faqs.html#refinement-what-are-parts-assemblies-and-groups">Refinement: What are parts assemblies and groups?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/faqs.html#structure-how-can-i-adjust-a-molecule-or-fragment-to-have-ideal-coordinates">Structure: How can I adjust a molecule or fragment to have ideal coordinates?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/faqs.html#analysis-find-the-angle-between-a-plane-of-atoms-and-a-bond">Analysis: Find the angle between a plane of atoms and a bond</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/faqs.html#analysis-calculate-intermolecular-distances">Analysis: Calculate intermolecular distances</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/faqs.html#analysis-find-likely-h-bonds-with-donors-or-acceptors-other-the-o-and-n">Analysis: Find LIKELY H-BONDS with donors or acceptors other the O and N</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/faqs.html#analysis-how-do-i-use-rotax-to-test-for-twin-laws">Analysis: How do I use ROTAX to test for twin laws?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/faqs.html#analysis-how-do-i-add-hydrogen-atoms-to-water-molecules">Analysis: How do I add hydrogen atoms to water molecules?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/faqs.html#publication-editor-wants-completeness-of-the-data-at-25-degrees">Publication: Editor wants completeness of the data at 25 degrees</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/faqs.html#publication-what-s-the-difference-between-theta-max-and-theta-full">Publication: What’s the difference between _theta_max and _theta_full?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/faqs.html#publication-diagram-shows-wrong-enantiomer-what-to-do">Publication: Diagram shows wrong enantiomer. What to do?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/faqs.html#references-what-references-should-i-know-about">References: What References should I know about?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="userguide/faqs.html#miscellaneous-environment-variables">Miscellaneous: Environment variables</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="crystalsmanual.html">Crystals Reference Manual</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="crystals/intro.html">Definitions And Conventions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="crystals/intro.html#syntax-of-commands">Syntax of Commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#format-of-commands">Format of Commands</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/intro.html#syntax-of-the-manual">Syntax of the manual</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/intro.html#types-of-commands">Types of Commands:</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#lists">Lists</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#commands">Commands</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#immediate-commands">Immediate Commands</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#comments">Comments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#continuation-lines">Continuation Lines</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/intro.html#index-3">Immediate commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#finish">\FINISH</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#id2">\ ….. COMMENTS ….</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#title-a-title-to-be-printed">\TITLE ….. A title to be printed …..</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#type-filename">\TYPE  ‘filename’</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#use-source">\USE source</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#script-filename">\SCRIPT filename</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#spawn-shell-command">\SPAWN      ‘shell command’</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#shell-command">$      ‘shell command’</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#commands-command">\COMMANDS   command</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#text">? text</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#manual-name">\MANUAL  ‘name’</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#help-topic">\HELP   ‘topic’</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#release-devicename-filename">\RELEASE  devicename filename</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#open-devicename-filename">\OPEN devicename filename</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#close-devicename">\CLOSE devicename</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#append-devicename-filename">\APPEND devicename filename</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#flush-devicename">\FLUSH devicename</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#device-names">Device names</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#pause-interval">\PAUSE interval</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#bench-nparam-nref">\BENCH nparam nref</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#set-list-state">\SET LIST   state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#set-watch-number">\SET WATCH number</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#set-file-type">\SET FILE type</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#set-generate-state">\SET GENERATE state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#set-export-state">\SET EXPORT state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#set-uequiv-state">\SET UEQUIV state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#set-pause-value">\SET PAUSE value</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#set-log-state">\SET LOG state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#set-mirror-state">\SET MIRROR state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#set-page-length">\SET PAGE length</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#set-terminal-device">\SET TERMINAL device</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#set-communication-speed">\SET COMMUNICATION speed</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#set-time-state">\SET TIME state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#set-printer-state">\SET PRINTER state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#set-monitor-state">\SET MONITOR state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#set-openmessage-state">\SET OPENMESSAGE state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#set-message-state">\SET MESSAGE state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#set-srq-state">\SET SRQ state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#set-ratio-state">\SET RATIO state</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/intro.html#files">Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/intro.html#errors-and-warnings">Errors and Warnings</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#warnings">Warnings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#errors">Errors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#severe-errors">Severe Errors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#catastrophic-errors">Catastrophic Errors.</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#programming-errors">Programming Errors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#errors-detected-during-the-creation-of-a-list">Errors Detected During the Creation of a LIST</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="crystals/intro.html#the-crystals-database">The Crystals Database</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="crystals/intro.html#general-list-control-directives-disk">General List-control Directives  -  \DISK</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#disk">\DISK</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/intro.html#elimination-of-old-versions-of-lists-purge">Elimination of Old Versions of LISTS  -  \PURGE</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#id3">\PURGE</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/intro.html#lists-in-current-use">LISTS in Current use</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/intro.html#printed-summary-of-data-lists">Printed Summary of Data lists</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#summary">\SUMMARY</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/intro.html#element-and-atom-names">Element and Atom names</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#element-names">Element Names</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#atom-names">Atom names</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#symmetry-equivalent-atoms">Symmetry equivalent atoms</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/intro.html#foreign-program-links">Foreign Program Links</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/intro.html#foreign">\FOREIGN</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="crystals/initial.html">Initial Data Input</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="crystals/initial.html#scope-of-the-initial-data-input-section">Scope of the Initial Data Input section.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/initial.html#abbreviated-startup-command-quickstart">Abbreviated startup command  -  QUICKSTART</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/initial.html#quickstart">\QUICKSTART</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/initial.html#input-of-the-cell-parameters-list-1">Input of the cell parameters  -  LIST 1</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/initial.html#list-1">\LIST 1</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/initial.html#printing-the-cell-parameters">Printing the cell parameters</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/initial.html#print-1">\PRINT 1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/initial.html#punch-1">\PUNCH 1</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/initial.html#input-of-the-unit-cell-parameter-errors-list-31">Input of the unit cell parameter errors  -  LIST 31</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/initial.html#list-31">\LIST 31</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/initial.html#printing-the-cell-variance-covariance-matrix">Printing the cell variance-covariance matrix</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/initial.html#print-31">\PRINT 31</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/initial.html#space-group-input-spacegroup">Space Group input - \SPACEGROUP</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/initial.html#id1">\SPACEGROUP</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/initial.html#input-of-the-symmetry-data-list-2">Input of the symmetry data  -  LIST 2</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/initial.html#list-2">\LIST 2</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/initial.html#printing-the-symmetry-information">Printing the symmetry information</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/initial.html#print-2">\PRINT 2</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/initial.html#input-of-molecular-composition-composition">Input of molecular composition \COMPOSITION</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/initial.html#composition">\COMPOSITION</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/initial.html#input-of-the-atomic-scattering-factors-list-3">Input of the atomic scattering factors  -  \LIST 3</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/initial.html#list-3">\LIST 3</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/initial.html#printing-the-scattering-factors">Printing the scattering factors</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/initial.html#print-3">\PRINT 3</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/initial.html#input-of-the-crystal-and-data-collection-details-list-13">Input of the crystal and data collection details  -  LIST 13</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/initial.html#list-13">\LIST 13</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/initial.html#printing-the-experimental-conditions-list-13">Printing the experimental conditions, LIST 13</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/initial.html#print-13">\PRINT 13</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/initial.html#input-of-structural-formula-as-a-smiles-string-list-18">Input of Structural Formula as a SMILES string - LIST 18</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/initial.html#list-18">\LIST 18</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/initial.html#printing-the-smiles-string-list-18">Printing the SMILES string, LIST 18</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/initial.html#print-18">\PRINT 18</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/initial.html#punching-the-smiles-string-list-18">Punching the SMILES string, LIST 18</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/initial.html#punch-18">\PUNCH 18</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/initial.html#input-of-the-contents-of-the-asymmetric-unit-list-29">Input of the contents of the asymmetric unit  -  LIST 29</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/initial.html#list-29">\LIST 29</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/initial.html#printing-the-contents-of-the-asymmetric-unit-list-29">Printing the contents of the asymmetric unit, LIST 29</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/initial.html#print-29">\PRINT 29</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/initial.html#input-of-general-crystallographic-data-list-30">Input of General Crystallographic Data - LIST 30</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/initial.html#list-30">\LIST 30</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/initial.html#interval">INTERVAL=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/initial.html#printing-the-general-information-list-30">Printing the general information, LIST 30</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/initial.html#print-30">\PRINT 30</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="crystals/reflectiondata.html">Reflection Data Input</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="crystals/reflectiondata.html#scope-of-the-reflection-data-input-section-of-the-reference-manual">Scope of the Reflection Data Input section of the Reference Manual</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/reflectiondata.html#reflection-data">Reflection Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/reflectiondata.html#simple-input-of-f-or-fsq-data-list-6">Simple input of F or Fsq data - LIST 6</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/reflectiondata.html#creation-of-list-7-from-list-6-copy-6-7">Creation of LIST 7 from LIST 6 - COPY 6 7</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/reflectiondata.html#printing-list-6">Printing LIST 6</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/reflectiondata.html#print-6-mode">\PRINT 6 mode</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/reflectiondata.html#punching-list-6">Punching LIST 6</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/reflectiondata.html#punch-6-mode">\PUNCH 6 mode</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/reflectiondata.html#advanced-input-of-f-or-fsq-data-list-6">Advanced input of F or Fsq data - LIST 6</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/reflectiondata.html#reflection-parameter-coefficients">Reflection Parameter Coefficients</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/reflectiondata.html#special-reflection-storage">Special Reflection storage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/reflectiondata.html#recognised-reflection-coefficients">Recognised reflection coefficients</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/reflectiondata.html#storage-of-reflection-data">Storage of reflection data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/reflectiondata.html#compressed-reflection-data">Compressed reflection data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/reflectiondata.html#intensity-data-hkli">Intensity Data - HKLI</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/reflectiondata.html#hkli">\HKLI</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/reflectiondata.html#intensity-decay-curves-list-27">Intensity Decay Curves  \LIST 27</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/reflectiondata.html#list-27">\LIST 27</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/reflectiondata.html#printing-the-decay-curve">Printing the decay curve</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/reflectiondata.html#print-27">\PRINT 27</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/reflectiondata.html#data-reduction-lp">Data Reduction - Lp</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/reflectiondata.html#lp">\LP</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/reflectiondata.html#systematic-absence-removal-systematic">Systematic absence removal - \SYSTEMATIC</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/reflectiondata.html#id1">\SYSTEMATIC</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/reflectiondata.html#sorting-of-the-reflection-data-sort">Sorting of the reflection data  -  \SORT</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/reflectiondata.html#id2">\SORT</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/reflectiondata.html#merging-equivalent-reflections-merge">Merging equivalent reflections  -  \MERGE</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/reflectiondata.html#weighting-schemes-for-the-data-merge">WEIGHTING SCHEMES FOR THE DATA MERGE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/reflectiondata.html#standard-deviations-produced-by-the-merge">Standard deviations produced by the merge</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/reflectiondata.html#merge">\MERGE</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/reflectiondata.html#theta-dependent-absorption-correction-thetabs">Theta-dependent Absorption Correction  -  \THETABS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/reflectiondata.html#wilson-plot-wilson">WILSON PLOT  -  \WILSON</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/reflectiondata.html#thlim-thlim">THLIM  -  \THLIM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/reflectiondata.html#sigmadist-sigmadist">SIGMADIST  -  \SIGMADIST</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="crystals/parameters.html">Atomic And Structural Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="crystals/parameters.html#scope-of-the-atomic-and-structural-parameters-section">Scope of the atomic and structural parameters Section</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/parameters.html#specifications-of-atoms-and-other-parameters">Specifications of atoms and other parameters</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/parameters.html#atom-specification">ATOM SPECIFICATION</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/parameters.html#atomic-parameter-specification">ATOMIC PARAMETER SPECIFICATION</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/parameters.html#overall-parameter-specification">OVERALL PARAMETER SPECIFICATION</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/parameters.html#input-of-atoms-and-other-parameters-list-5">Input of atoms and other parameters  -  LIST 5</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/parameters.html#list-5">\LIST 5</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/parameters.html#further-examples-of-parameter-input">Further examples of parameter input</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/parameters.html#printing-and-punching-list-5">Printing and punching list 5</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/parameters.html#print-5">\PRINT 5</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/parameters.html#punch-5-mode">\PUNCH 5 mode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/parameters.html#summary-display-of-list-5-display">Summary display of LIST 5 - \DISPLAY</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/parameters.html#display-level">\DISPLAY    LEVEL=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/parameters.html#editing-structural-parameters-edit">Editing structural parameters -  \EDIT</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/parameters.html#edit-inputlist-outputlist">\EDIT INPUTLIST OUTPUTLIST</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/parameters.html#reorganisation-of-lists-5-and-10-regroup">Reorganisation of lists 5 and 10  -  \REGROUP</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/parameters.html#regroup-inputlist-outputlist">\REGROUP INPUTLIST= OUTPUTLIST=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/parameters.html#repositioning-of-atoms-collect">Repositioning of atoms  -  \COLLECT</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/parameters.html#collect-inputlist-outputlist">\COLLECT INPUTLIST= OUTPUTLIST=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/parameters.html#shifting-the-molecule-to-a-permitted-alternative-origin-origin">Shifting the molecule to a permitted alternative origin - \ORIGIN</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/parameters.html#origin-inputlist-outputlist-mode">\ORIGIN INPUTLIST= OUTPUTLIST= MODE=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/parameters.html#conversion-of-temperature-factors-convert">Conversion of temperature factors - \CONVERT</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/parameters.html#convert-inputlist-outputlist-crossterms">\CONVERT INPUTLIST= OUTPUTLIST= CROSSTERMS=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/parameters.html#hydrogen-placing-hydrogens">Hydrogen placing - \HYDROGENS</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/parameters.html#hydrogens-inputlist-outputlist">\HYDROGENS INPUTLIST= OUTPUTLIST=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/parameters.html#perhydrogenation-perhydro">Perhydrogenation - \PERHYDRO</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/parameters.html#perhydro-inputlist-outputlist">\PERHYDRO INPUTLIST= OUTPUTLIST=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/parameters.html#hydrogen-re-numbering-hname">Hydrogen re-numbering - \HNAME</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/parameters.html#regularisation-of-atomic-groups-regularise">Regularisation of atomic groups - \REGULARISE</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/parameters.html#input-for-regularise">Input for REGULARISE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/parameters.html#output-from-regularise">Output from REGULARISE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/parameters.html#method-of-calculation">Method of calculation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/parameters.html#regularise-mode">\REGULARISE    MODE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/parameters.html#uses-of-regularise">Uses of \REGULARISE</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/parameters.html#map-two-atomic-groups-together-match">Map two atomic groups together - \MATCH</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/parameters.html#calculation-of-interatomic-bonds-bondcalc">Calculation of interatomic bonds - \BONDCALC</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/parameters.html#id1">Method of calculation</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/parameters.html#bonding-information-list-40">Bonding information - \LIST 40</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/parameters.html#bonding-information-bonding">Bonding information - \BONDING</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/parameters.html#printing-of-list-40">Printing of LIST 40</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/parameters.html#print-40">\PRINT 40</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/parameters.html#summary-40">\SUMMARY 40</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/parameters.html#punch-40">\PUNCH 40</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/parameters.html#punch-40-b">\PUNCH 40 B</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/parameters.html#creating-a-null-list-40">Creating a null LIST 40</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/parameters.html#printing-of-list-41">Printing of LIST 41</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/parameters.html#print-41">\PRINT 41</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/parameters.html#summary-41">\SUMMARY 41</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="crystals/sfls.html">Structure Factors And Least Squares</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#scope-of-the-structure-factors-and-least-squares-section">Scope of the structure factors and least squares section</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#refinement">Refinement</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#correlations-in-refinement">Correlations in Refinement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#f-or-fsq-refinement">F or Fsq refinement?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#hydrogen-atom-refinement">Hydrogen Atom Refinement</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#special-positions">Special positions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#atomic-parameter-refinement">Atomic parameter refinement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#overall-parameter-refinement">Overall parameter refinement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#scale-factor-definitions">Scale factor definitions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#structure-factor-calculation-control-list-list-23">Structure factor calculation control list  -  LIST 23</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#list-23">\LIST 23</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#printing-the-slfs-control-list">Printing the SLFS control list</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#print-23">\PRINT 23</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#special-position-constraints-special">Special position constraints - \SPECIAL</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#special-action-update-tolerance">\SPECIAL  ACTION= UPDATE= TOLERANCE=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#printing-the-special-position-information">Printing the special position information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#refinement-directives-list-12">Refinement directives  -  LIST 12</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#list-12">\LIST 12</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#obsolete-refinement-directives">Obsolete Refinement directives</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#defining-the-least-squares-matrix">Defining the least squares matrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#printing-of-list-12">Printing of LIST 12</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#print-12">\PRINT 12</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#summary-12">\SUMMARY 12</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#punch-12">\PUNCH 12</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#creating-a-null-list-12">Creating a null LIST 12</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#clear-12">\CLEAR 12</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#processing-of-list-12">Processing of LIST 12</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#list-22">\LIST 22</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#restraints-list-16">Restraints  -  LIST 16</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#parameter-atom-bond-and-angle-specifications">Parameter, atom, bond and angle specifications</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#list-16">\LIST 16</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#general-restraints">General restraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#id1">General restraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#debugging-restraints">Debugging restraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#printing-the-contents-of-list-16">Printing the contents of LIST 16</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#print-16">\PRINT 16</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#summary-list-16">\SUMMARY LIST 16</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#punch-16">\PUNCH 16</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#creating-a-null-list-16">Creating a null LIST 16</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#clear-16">\CLEAR 16</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#the-special-restraints-list-17">The special restraints  -  LIST 17</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#list-17">\LIST 17</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#printing-and-punching-list-17">Printing and punching LIST 17</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#print-17">\PRINT 17</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#summary-list-17">\SUMMARY LIST 17</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#punch-17">\PUNCH 17</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#creating-a-null-list-17">Creating a null LIST 17</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#clear-17">\CLEAR 17</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#checking-restraints-check">Checking restraints - CHECK</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#check-level">\CHECK LEVEL=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#weighting-schemes-for-refinement-list-4">Weighting schemes for refinement-  LIST 4</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#weighting-for-refinement-against-fo">Weighting for refinement against Fo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#weighting-for-refinement-against-fsq">Weighting for refinement against Fsq</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#list-4">\LIST 4</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#weights-stored-in-list-6">Weights stored in LIST 6</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#weighting-schemes">Weighting schemes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#dunitz-seiler-weighting-scheme-13">Dunitz Seiler weighting - scheme 13</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#chebychev-weighting-schemes-10-11">Chebychev weighting schemes 10, 11</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#robust-resistant-weighting-schemes-14-15">Robust-resistant weighting schemes 14, 15</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#statistical-weights-16">Statistical Weights, 16</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#auto-statistical-weights-17">Auto-Statistical Weights, 17</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#printing-list-4">Printing LIST 4</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#print-4">\PRINT 4</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#weighting-the-reflections-weight">Weighting the reflections - WEIGHT</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#weight-input-factor">\WEIGHT INPUT= FACTOR=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#reflection-restriction-list-list-28">Reflection restriction list  -  LIST 28</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#list-28">\LIST 28</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#creating-a-null-list-28">Creating a null LIST 28</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#printing-the-contents-of-list-28">Printing the contents of LIST 28</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#print-28">\PRINT 28</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#structure-factor-least-squares-calculations-sfls">Structure Factor Least Squares Calculations  -  \SFLS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#definitions">Definitions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#unstable-refinements">Unstable refinements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#sorting-of-list-6-for-structure-factor-calculations">Sorting of LIST 6 for structure factor calculations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#id2">\SFLS</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#processing-of-the-refinement-directives">Processing of the refinement directives</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#analysis-of-residuals-analyse">Analysis of residuals -  \ANALYSE</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#analyse-input">\ANALYSE INPUT=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#least-squares-absorption-correction-difabs">Least squares absorption correction  - \DIFABS</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#difabs-action-mode-input">\DIFABS  ACTION= MODE= INPUT=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/sfls.html#internal-workings">Internal workings</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#parameter-esds-list-9">Parameter esds - LIST 9</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#refinement-parameter-map-list-22">Refinement parameter map  -  LIST 22</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#the-least-squares-matrix-list-11">The least squares matrix  -  LIST 11</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#printing-the-contents-of-list-11">Printing the contents of LIST 11</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#least-squares-shift-list-list-24">Least squares shift list  -  LIST 24</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/sfls.html#restraints-in-internal-format-list-26">Restraints in internal format  -  LIST 26</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="crystals/fourier.html">Fourier Routines</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="crystals/fourier.html#scope-of-the-fourier-section-of-the-user-guide">Scope of the Fourier section of the user guide</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/fourier.html#input-of-the-fourier-section-limits-list-14">Input of the Fourier section limits - LIST 14</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/fourier.html#list-14">\LIST 14</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/fourier.html#printing-the-contents-of-list-14">Printing the contents of LIST 14</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/fourier.html#print-14">\PRINT 14</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/fourier.html#compute-fourier-limits-from-the-symmetry">Compute Fourier limits from the symmetry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/fourier.html#fourier-calculations-fourier">Fourier calculations  -  \FOURIER</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/fourier.html#fourier-input">\FOURIER INPUT=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/fourier.html#calculation-of-superposition-minimum-functions">Calculation of superposition minimum functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/fourier.html#processing-of-the-peaks-list-list-10">Processing of the peaks list  -  LIST 10</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/fourier.html#printing-the-contents-of-list-10">Printing the contents of LIST 10</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/fourier.html#print-10">\PRINT 10</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/fourier.html#elimination-of-duplicated-entries-in-lists-5-and-10-peaks">Elimination of duplicated entries in LISTS 5 and 10  -  \PEAKS</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/fourier.html#peaks-inputlist-outputlist">\PEAKS INPUTLIST= OUTPUTLIST=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/fourier.html#slant-fourier-calculations-slant">Slant fourier calculations  -  \SLANT</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/fourier.html#slant-input">\SLANT INPUT=</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="crystals/analysis.html">Analysis Of Results</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="crystals/analysis.html#scope-of-this-section-of-the-user-guide">Scope of this section of the user guide</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/analysis.html#analysis-of-residuals-analyse">Analysis of residuals - \ANALYSE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/analysis.html#create-esd-list-esd">Create esd list - \ESD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/analysis.html#output-vcv-matrix-of-selected-atoms">Output VcV matrix of selected atoms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/analysis.html#distance-angles-calculations-distances">Distance angles calculations  -  \DISTANCES</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/analysis.html#distances-inputlist">\DISTANCES INPUTLIST=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/analysis.html#distance-angles-symmetry-operations">Distance-angles symmetry operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/analysis.html#void-location-voids">Void Location  -  \VOIDS</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/analysis.html#voids-inputlist">\VOIDS INPUTLIST=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/analysis.html#tls-analysis-best-planes-and-lines-geometry">TLS analysis, best planes and lines  -  \GEOMETRY</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/analysis.html#geometry-inputlist">\GEOMETRY INPUTLIST=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/analysis.html#torsion-angles-torsion">Torsion angles  -  \TORSION</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/analysis.html#torsion-inputlist">\TORSION INPUTLIST=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/analysis.html#absolute-configuration-ton">Absolute Configuration  -  \TON</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/analysis.html#ton">\TON</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/analysis.html#publication-listing-of-the-atomic-parameters-parameters">Publication listing of the atomic parameters  -  \PARAMETERS</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/analysis.html#parameters">\PARAMETERS</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/analysis.html#publication-listing-of-reflection-data-reflections">Publication listing of reflection data  - \REFLECTIONS</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/analysis.html#reflections-input">\REFLECTIONS INPUT=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/analysis.html#summary-of-data-lists-summary">Summary of data lists - \SUMMARY</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/analysis.html#summary-of-type-level">\SUMMARY OF= TYPE= LEVEL=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/analysis.html#estimation-of-absolute-configuration-tonspek">Estimation of Absolute configuration - \TONSPEK</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/analysis.html#tonspek-input-type-plot-punch-filter1-filter5-weight">\TONSPEK INPUT= TYPE= PLOT= PUNCH= FILTER1= … FILTER5= WEIGHT=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/analysis.html#cif-lists-cif">CIF lists - \CIF</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/analysis.html#cif">\CIF</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/analysis.html#adding-archive-files-addarc">Adding Archive files - ADDARC</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/analysis.html#addarc-filename">ADDARC filename</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/analysis.html#graphics-cameron">Graphics - CAMERON</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/analysis.html#cameron">CAMERON</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="crystals/twin.html">Twinned Crystals</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="crystals/twin.html#twinning-introduction">Twinning - introduction</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/twin.html#tlqs-twins">TLQS twins</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/twin.html#tls-twins">TLS twins</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/twin.html#twinning-problems">Twinning Problems</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/twin.html#twinning-initial-clues">Twinning - Initial clues</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/twin.html#twinning-data-collection-and-processing">Twinning - Data collection and processing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/twin.html#twinning-structure-solution">Twinning - Structure solution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/twin.html#twinning-structure-refinement">Twinning - Structure Refinement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/twin.html#twin-data-stored-by-crystals">Twin Data stored by CRYSTALS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/twin.html#twinning-lists-affected">Twinning - LISTS affected</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/twin.html#twin-list-5">Twin List 5</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/twin.html#twin-list-6">Twin List 6</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/twin.html#twin-list-13">TWIN LIST 13</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/twin.html#twin-list-12">Twin List 12</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/twin.html#twin-list-16">Twin List 16</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/twin.html#sorting-twinned-structure-data-reorder">SORTING TWINNED STRUCTURE DATA  -  \REORDER</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/twin.html#reorder">\REORDER</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/twin.html#twins-backward-compatability">Twins - backward compatability</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/twin.html#twins-worked-example">Twins - Worked Example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crystals/twin.html#twinning-mathematical-aspects">Twinning - Mathematical aspects</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="crystals/matrix.html">Matrix Calculations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="crystals/matrix.html#the-basic-matrix-calculator-matrix">The Basic Matrix Calculator \MATRIX</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/matrix.html#matrix">\MATRIX</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="crystals/obsolete.html">Obsolete Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="crystals/obsolete.html#index-0">Obsolete Commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/obsolete.html#least-squares-best-planes-and-lines-molax">Least squares best planes and lines  -  \MOLAX</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/obsolete.html#molax-inputlist">\MOLAX INPUTLIST=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/obsolete.html#thermal-displacement-parameter-analysis-aniso">Thermal displacement parameter analysis  -  \ANISO</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/obsolete.html#aniso-inputlist">\ANISO INPUTLIST</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/obsolete.html#principal-atomic-displacement-directions-axes">Principal atomic displacement directions  -  \AXES</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/obsolete.html#axes-inputlist">\AXES INPUTLIST=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/obsolete.html#structure-factors-for-a-group-of-trial-models-trial">Structure factors for a group of trial models  -  \TRIAL</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystals/obsolete.html#trial">\TRIAL</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="crystals/secret.html">Secret Lists</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="crystals/secret.html#index-0">Secret LISTS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystals/secret.html#storage-of-intermediate-results-and-the-status-of-a-refinement-list-39">Storage of intermediate results and the status of a refinement -  LIST 39</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cameron.html">Cameron Manual</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cameron.html#introduction">Introduction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#how-to-control-the-program">HOW TO CONTROL THE PROGRAM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#command-groups">Command Groups</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#error-handling">ERROR HANDLING</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#abandon">Abandon</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#edit">Edit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#help">Help</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#the-help-facility">The HELP facility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#mouse-activation">Mouse Activation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#general-input-syntax">General Input Syntax</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cameron.html#how-to-get-started">How To Get Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cameron.html#data-input">Data Input</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#input-of-crystals-list-5-files">Input of CRYSTALS List 5 files</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#input">INPUT</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cameron.html#outputting-data">Outputting Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#output">OUTPUT</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cameron.html#editing-the-atom-list">Editing The Atom List</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#rename">RENAME</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#retype">RETYPE</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cameron.html#obeying-files">Obeying Files</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#obey">OBEY</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cameron.html#archiving-and-retrieving-views">Archiving And Retrieving Views</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#archive">ARCHIVE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#retrieve">RETRIEVE</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cameron.html#graphical-output-devices">Graphical Output Devices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#screen">SCREEN</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#hardcopy">HARDCOPY</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cameron.html#view-direction-control">View Direction Control</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#basic-control">BASIC CONTROL</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#xrot">XROT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#yrot">YROT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#zrot">ZROT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#rot">ROT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#cursor">CURSOR</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#orientation-commands">ORIENTATION COMMANDS</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#plane">PLANE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#face">FACE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#along">ALONG</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#vertical">VERTICAL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#horizontal">HORIZONTAL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#bisect">BISECT</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#other-related-commands">Other related commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#view">VIEW</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#copy">COPY</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#matrix">MATRIX</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#stereo">STEREO</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#nostereo">NOSTEREO</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#photographs">PHOTOGRAPHS</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#photo">PHOTO</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cameron.html#include-and-exclude">Include And Exclude</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#include">INCLUDE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#exclude">EXCLUDE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#further-related-commands">Further related commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#mask">MASK</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#unmask">UNMASK</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#switch">SWITCH</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#generation-of-dummy-atoms">Generation of Dummy atoms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#dummy">DUMMY</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cameron.html#drawing-style-control">Drawing Style Control</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#line">LINE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#ball">BALL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#ellipse">ELLIPSE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#all">ALL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#fragment">FRAGMENT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#group">GROUP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#line-commands">LINE commands.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#ball-commands">BALL commands.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#ellipse-commands">ELLIPSE commands</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cameron.html#connectivity-control">Connectivity Control</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#connect">CONNECT</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#id1">CONNECT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#join">JOIN</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#remove">REMOVE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#disconnect">DISCONNECT</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#miscellaneous-connect-commands">Miscellaneous CONNECT commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#taper">TAPER</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#thickness">THICKNESS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#tolerance">TOLERANCE</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cameron.html#control-of-colour">Control Of Colour</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#colour">COLOUR</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#id2">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cameron.html#atom-labelling">Atom Labelling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#label">LABEL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#nolabel">NOLABEL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#font">FONT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#text">TEXT</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cameron.html#other-picture-controlling-commands">Other Picture Controlling Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#maximise">MAXIMISE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#scale">SCALE</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cameron.html#symmetry-input">Symmetry Input</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#input-of-symmetry-operators">Input of symmetry operators</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#spacegroup">SPACEGROUP</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#symmetry">SYMMETRY</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#example-of-space-group-input">Example of Space Group Input</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#other-symmetry-related-operations">Other symmetry related operations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#setunit">SETUNIT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#enantio">ENANTIO</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#special">SPECIAL</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cameron.html#crystal-packing-commands">Crystal Packing Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#pack">PACK</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#cell">CELL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#window">WINDOW</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#dealing-with-connectivity">Dealing with connectivity</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#intra">INTRA</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#inter">INTER</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#keep">KEEP</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#id3">INTRA</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#id4">INTER</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#id5">KEEP</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#examples">EXAMPLES</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#enclosure">ENCLOSURE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#choice-of-enclosure-origin">Choice of enclosure “origin”</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#atom">ATOM</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#point">POINT</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#type-of-volume-to-be-used">Type of volume to be used</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#sphere">SPHERE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#anorthic">ANORTHIC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#orthogonal">ORTHOGONAL</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#id6">EXAMPLE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#packing-more-complicated-structures">PACKING MORE COMPLICATED STRUCTURES</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#id7">GROUP</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#unpack">UNPACK</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cameron.html#add-and-move-further-symmetry-related-commands">Add And Move - Further Symmetry Related Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#add">ADD</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#atoms">ATOMS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#id8">ALL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#initial">INITIAL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#id9">GROUP</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#id10">EXAMPLES</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#move">MOVE</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#id11">ATOMS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#id12">ALL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#id13">GROUP</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#id14">INITIAL</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cameron.html#distance-and-angle-calculations">Distance And Angle Calculations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#distance">DISTANCE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#method-of-calculation">Method of Calculation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#angle">ANGLE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameron.html#torsion">TORSION</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cameron.html#information-on-data-held-within-the-program">Information On Data Held Within The Program</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#information">INFORMATION</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cameron.html#group-definitions">Group Definitions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#defgroup">DEFGROUP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#id15">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cameron.html#miscellaneous-commands">Miscellaneous Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#reset">RESET</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#log">LOG</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#id16">EDIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#menus">MENUS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#issue">ISSUE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#print">PRINT</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cameron.html#how-to-stop-the-program">How To Stop The Program</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cameron.html#end">END</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cameron.html#menu-definition-file">Menu Definition File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cameron.html#some-useful-ideas">Some Useful Ideas</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CRYSTALS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Crystals User Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/userguide.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="crystals-user-guide">
+<h1>Crystals User Guide<a class="headerlink" href="#crystals-user-guide" title="Link to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="userguide/install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="userguide/gettingstarted.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="userguide/examples.html">Worked examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="userguide/userinterface.html">User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="userguide/commandline.html">Command line</a></li>
+<li class="toctree-l1"><a class="reference internal" href="userguide/faqs.html">Frequently asked questions</a></li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="CRYSTALS documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="userguide/install.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Richard Cooper, David Watkin.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

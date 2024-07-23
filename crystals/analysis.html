@@ -1,0 +1,2641 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Analysis Of Results &mdash; CRYSTALS 15.4.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=a6d7e377"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Twinned Crystals" href="twin.html" />
+    <link rel="prev" title="Fourier Routines" href="fourier.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CRYSTALS
+          </a>
+              <div class="version">
+                15.4
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">CRYSTALS documentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../userguide.html">Crystals User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../userguide/install.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../userguide/gettingstarted.html">Getting Started</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/gettingstarted.html#organisation-of-data">Organisation of data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/gettingstarted.html#starting-the-program">Starting the program</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/gettingstarted.html#customising-crystals-to-suit-your-screen-size">Customising CRYSTALS to suit your screen size</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../userguide/examples.html">Worked examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/examples.html#cyclo-a-routine-structure-analysis">Cyclo - a routine structure analysis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/examples.html#video-demonstration">Video demonstration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/examples.html#step-one-import-cell-and-crystal-data">Step one: Import cell and crystal data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/examples.html#step-two-import-reflection-data">Step two: Import reflection data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/examples.html#step-three-initial-assessment-of-the-data">Step three: Initial assessment of the data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/examples.html#step-four-structure-solution">Step four: Structure solution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/examples.html#step-five-check-atom-types">Step five: Check atom types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/examples.html#step-six-commence-refinement">Step six: Commence refinement…</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/examples.html#step-seven-adding-hydrogen-atoms">Step seven: Adding Hydrogen Atoms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/examples.html#step-eight-more-refinement-extinction">Step eight: More refinement &amp; Extinction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/examples.html#step-nine-choose-a-nice-weighting-scheme">Step nine: Choose a nice weighting scheme</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/examples.html#step-ten-validation-and-cif-archival">Step ten: Validation and CIF archival.</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/examples.html#poor-quality-data-tetraphenylene">Poor Quality Data - Tetraphenylene</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/examples.html#background">Background</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/examples.html#analysis-and-solution">Analysis and solution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/examples.html#refinement">Refinement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/examples.html#but-what-of-the-e-s-d-s">But what of the e.s.d’s?</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/examples.html#spacegroup-quiz">Spacegroup Quiz</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../userguide/userinterface.html">User Interface</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/userinterface.html#overview-of-the-graphical-user-interface">Overview of the graphical user interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/userinterface.html#the-menus">The Menus</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/userinterface.html#file">File</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/userinterface.html#x-ray-data">X-ray data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/userinterface.html#preprocess">Diffractometer cifs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/userinterface.html#input-pre-processed-data">Input Pre-processed data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/userinterface.html#solve">Solve</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/userinterface.html#structure">Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/userinterface.html#fourier">Fourier</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/userinterface.html#refinement">Refinement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/userinterface.html#results">Results</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/userinterface.html#results-rotax">Results -&gt; Rotax</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/userinterface.html#graphics">Graphics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/userinterface.html#graphics-special">Graphics -&gt; Special</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/userinterface.html#appearance">Appearance</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/userinterface.html#appearance-atoms">Appearance -&gt; Atoms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/userinterface.html#appearance-model">Appearance -&gt; Model</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../userguide/userinterface.html#development">Development</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../userguide/commandline.html">Command line</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/commandline.html#command-syntax">Command syntax</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../userguide/faqs.html">Frequently asked questions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#getting-started-organisation-of-files">Getting Started: Organisation of files.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#general-who-is-responsible-for-it">General: Who is responsible for it?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#general-where-is-the-manual">General: Where is the manual?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#general-is-there-an-example-to-work-through">General: Is there an example to work through?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#general-can-i-prepare-commands-to-run-crystals-in-batch-mode-like-shelx">General: Can I prepare commands to run CRYSTALS in batch mode (like SHELX)?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#general-is-there-any-command-line-help">General: Is there any command line help?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#general-how-can-i-switch-the-left-and-right-crystals-windows">General: How can I switch the left and right CRYSTALS windows?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#solving-structures-how-do-i-prepare-a-job-for-sir92-or-shelxs">Solving structures: How do I prepare a job for SIR92 or SHELXS?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#solving-structures-it-failed-how-do-i-prepare-a-different-job">Solving structures: It failed. How do I prepare a different job?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#solving-structures-how-do-i-import-the-solution-back-into-crystals">Solving structures: How do I import the solution back into CRYSTALS?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#cameron-how-do-i-see-a-plot-of-the-structure">CAMERON: How do I see a plot of the structure?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#cameron-can-i-rotate-it-and-label-the-atoms">CAMERON: Can I rotate it and label the atoms?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#cameron-how-do-i-delete-atoms">CAMERON: How do I delete atoms?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#fourier-how-do-i-calculate-a-fourier-map-to-find-missing-atoms">Fourier: How do I calculate a Fourier map to find missing atoms?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#refinement-what-infomation-does-crystals-need">Refinement: What infomation does CRYSTALS need?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#refinement-refinement-instructions">Refinement: Refinement instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#refinement-occupancies-of-an-atom-or-fragment-split-over-two-sites">Refinement: Occupancies of an atom or fragment split over two sites?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#refinement-how-do-i-add-restraints">Refinement: How do I add restraints?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#refinement-how-do-you-use-platon-s-squeeze-from-crystals">Refinement: How do you use Platon’s Squeeze from CRYSTALS?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#refinement-what-are-parts-assemblies-and-groups">Refinement: What are parts assemblies and groups?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#structure-how-can-i-adjust-a-molecule-or-fragment-to-have-ideal-coordinates">Structure: How can I adjust a molecule or fragment to have ideal coordinates?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#analysis-find-the-angle-between-a-plane-of-atoms-and-a-bond">Analysis: Find the angle between a plane of atoms and a bond</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#analysis-calculate-intermolecular-distances">Analysis: Calculate intermolecular distances</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#analysis-find-likely-h-bonds-with-donors-or-acceptors-other-the-o-and-n">Analysis: Find LIKELY H-BONDS with donors or acceptors other the O and N</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#analysis-how-do-i-use-rotax-to-test-for-twin-laws">Analysis: How do I use ROTAX to test for twin laws?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#analysis-how-do-i-add-hydrogen-atoms-to-water-molecules">Analysis: How do I add hydrogen atoms to water molecules?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#publication-editor-wants-completeness-of-the-data-at-25-degrees">Publication: Editor wants completeness of the data at 25 degrees</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#publication-what-s-the-difference-between-theta-max-and-theta-full">Publication: What’s the difference between _theta_max and _theta_full?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#publication-diagram-shows-wrong-enantiomer-what-to-do">Publication: Diagram shows wrong enantiomer. What to do?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#references-what-references-should-i-know-about">References: What References should I know about?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../userguide/faqs.html#miscellaneous-environment-variables">Miscellaneous: Environment variables</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../crystalsmanual.html">Crystals Reference Manual</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="intro.html">Definitions And Conventions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#syntax-of-commands">Syntax of Commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#format-of-commands">Format of Commands</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#syntax-of-the-manual">Syntax of the manual</a></li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#types-of-commands">Types of Commands:</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#lists">Lists</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#commands">Commands</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#immediate-commands">Immediate Commands</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#comments">Comments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#continuation-lines">Continuation Lines</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#index-3">Immediate commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#finish">\FINISH</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#id2">\ ….. COMMENTS ….</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#title-a-title-to-be-printed">\TITLE ….. A title to be printed …..</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#type-filename">\TYPE  ‘filename’</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#use-source">\USE source</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#script-filename">\SCRIPT filename</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#spawn-shell-command">\SPAWN      ‘shell command’</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#shell-command">$      ‘shell command’</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#commands-command">\COMMANDS   command</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#text">? text</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#manual-name">\MANUAL  ‘name’</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#help-topic">\HELP   ‘topic’</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#release-devicename-filename">\RELEASE  devicename filename</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#open-devicename-filename">\OPEN devicename filename</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#close-devicename">\CLOSE devicename</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#append-devicename-filename">\APPEND devicename filename</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#flush-devicename">\FLUSH devicename</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#device-names">Device names</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#pause-interval">\PAUSE interval</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#bench-nparam-nref">\BENCH nparam nref</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-list-state">\SET LIST   state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-watch-number">\SET WATCH number</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-file-type">\SET FILE type</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-generate-state">\SET GENERATE state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-export-state">\SET EXPORT state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-uequiv-state">\SET UEQUIV state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-pause-value">\SET PAUSE value</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-log-state">\SET LOG state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-mirror-state">\SET MIRROR state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-page-length">\SET PAGE length</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-terminal-device">\SET TERMINAL device</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-communication-speed">\SET COMMUNICATION speed</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-time-state">\SET TIME state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-printer-state">\SET PRINTER state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-monitor-state">\SET MONITOR state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-openmessage-state">\SET OPENMESSAGE state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-message-state">\SET MESSAGE state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-srq-state">\SET SRQ state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#set-ratio-state">\SET RATIO state</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#files">Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#errors-and-warnings">Errors and Warnings</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#warnings">Warnings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#errors">Errors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#severe-errors">Severe Errors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#catastrophic-errors">Catastrophic Errors.</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#programming-errors">Programming Errors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#errors-detected-during-the-creation-of-a-list">Errors Detected During the Creation of a LIST</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#the-crystals-database">The Crystals Database</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#general-list-control-directives-disk">General List-control Directives  -  \DISK</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#disk">\DISK</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#elimination-of-old-versions-of-lists-purge">Elimination of Old Versions of LISTS  -  \PURGE</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#id3">\PURGE</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#lists-in-current-use">LISTS in Current use</a></li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#printed-summary-of-data-lists">Printed Summary of Data lists</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#summary">\SUMMARY</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#element-and-atom-names">Element and Atom names</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#element-names">Element Names</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#atom-names">Atom names</a></li>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#symmetry-equivalent-atoms">Symmetry equivalent atoms</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#foreign-program-links">Foreign Program Links</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="intro.html#foreign">\FOREIGN</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="initial.html">Initial Data Input</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="initial.html#scope-of-the-initial-data-input-section">Scope of the Initial Data Input section.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="initial.html#abbreviated-startup-command-quickstart">Abbreviated startup command  -  QUICKSTART</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="initial.html#quickstart">\QUICKSTART</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="initial.html#input-of-the-cell-parameters-list-1">Input of the cell parameters  -  LIST 1</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="initial.html#list-1">\LIST 1</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="initial.html#printing-the-cell-parameters">Printing the cell parameters</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="initial.html#print-1">\PRINT 1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="initial.html#punch-1">\PUNCH 1</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="initial.html#input-of-the-unit-cell-parameter-errors-list-31">Input of the unit cell parameter errors  -  LIST 31</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="initial.html#list-31">\LIST 31</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="initial.html#printing-the-cell-variance-covariance-matrix">Printing the cell variance-covariance matrix</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="initial.html#print-31">\PRINT 31</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="initial.html#space-group-input-spacegroup">Space Group input - \SPACEGROUP</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="initial.html#id1">\SPACEGROUP</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="initial.html#input-of-the-symmetry-data-list-2">Input of the symmetry data  -  LIST 2</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="initial.html#list-2">\LIST 2</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="initial.html#printing-the-symmetry-information">Printing the symmetry information</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="initial.html#print-2">\PRINT 2</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="initial.html#input-of-molecular-composition-composition">Input of molecular composition \COMPOSITION</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="initial.html#composition">\COMPOSITION</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="initial.html#input-of-the-atomic-scattering-factors-list-3">Input of the atomic scattering factors  -  \LIST 3</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="initial.html#list-3">\LIST 3</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="initial.html#printing-the-scattering-factors">Printing the scattering factors</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="initial.html#print-3">\PRINT 3</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="initial.html#input-of-the-crystal-and-data-collection-details-list-13">Input of the crystal and data collection details  -  LIST 13</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="initial.html#list-13">\LIST 13</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="initial.html#printing-the-experimental-conditions-list-13">Printing the experimental conditions, LIST 13</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="initial.html#print-13">\PRINT 13</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="initial.html#input-of-structural-formula-as-a-smiles-string-list-18">Input of Structural Formula as a SMILES string - LIST 18</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="initial.html#list-18">\LIST 18</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="initial.html#printing-the-smiles-string-list-18">Printing the SMILES string, LIST 18</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="initial.html#print-18">\PRINT 18</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="initial.html#punching-the-smiles-string-list-18">Punching the SMILES string, LIST 18</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="initial.html#punch-18">\PUNCH 18</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="initial.html#input-of-the-contents-of-the-asymmetric-unit-list-29">Input of the contents of the asymmetric unit  -  LIST 29</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="initial.html#list-29">\LIST 29</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="initial.html#printing-the-contents-of-the-asymmetric-unit-list-29">Printing the contents of the asymmetric unit, LIST 29</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="initial.html#print-29">\PRINT 29</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="initial.html#input-of-general-crystallographic-data-list-30">Input of General Crystallographic Data - LIST 30</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="initial.html#list-30">\LIST 30</a></li>
+<li class="toctree-l4"><a class="reference internal" href="initial.html#interval">INTERVAL=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="initial.html#printing-the-general-information-list-30">Printing the general information, LIST 30</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="initial.html#print-30">\PRINT 30</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="reflectiondata.html">Reflection Data Input</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#scope-of-the-reflection-data-input-section-of-the-reference-manual">Scope of the Reflection Data Input section of the Reference Manual</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#reflection-data">Reflection Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#simple-input-of-f-or-fsq-data-list-6">Simple input of F or Fsq data - LIST 6</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#creation-of-list-7-from-list-6-copy-6-7">Creation of LIST 7 from LIST 6 - COPY 6 7</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#printing-list-6">Printing LIST 6</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reflectiondata.html#print-6-mode">\PRINT 6 mode</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#punching-list-6">Punching LIST 6</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reflectiondata.html#punch-6-mode">\PUNCH 6 mode</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#advanced-input-of-f-or-fsq-data-list-6">Advanced input of F or Fsq data - LIST 6</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#reflection-parameter-coefficients">Reflection Parameter Coefficients</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reflectiondata.html#special-reflection-storage">Special Reflection storage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reflectiondata.html#recognised-reflection-coefficients">Recognised reflection coefficients</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#storage-of-reflection-data">Storage of reflection data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#compressed-reflection-data">Compressed reflection data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#intensity-data-hkli">Intensity Data - HKLI</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reflectiondata.html#hkli">\HKLI</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#intensity-decay-curves-list-27">Intensity Decay Curves  \LIST 27</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reflectiondata.html#list-27">\LIST 27</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#printing-the-decay-curve">Printing the decay curve</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reflectiondata.html#print-27">\PRINT 27</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#data-reduction-lp">Data Reduction - Lp</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reflectiondata.html#lp">\LP</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#systematic-absence-removal-systematic">Systematic absence removal - \SYSTEMATIC</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reflectiondata.html#id1">\SYSTEMATIC</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#sorting-of-the-reflection-data-sort">Sorting of the reflection data  -  \SORT</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reflectiondata.html#id2">\SORT</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#merging-equivalent-reflections-merge">Merging equivalent reflections  -  \MERGE</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reflectiondata.html#weighting-schemes-for-the-data-merge">WEIGHTING SCHEMES FOR THE DATA MERGE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reflectiondata.html#standard-deviations-produced-by-the-merge">Standard deviations produced by the merge</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reflectiondata.html#merge">\MERGE</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#theta-dependent-absorption-correction-thetabs">Theta-dependent Absorption Correction  -  \THETABS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#wilson-plot-wilson">WILSON PLOT  -  \WILSON</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#thlim-thlim">THLIM  -  \THLIM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reflectiondata.html#sigmadist-sigmadist">SIGMADIST  -  \SIGMADIST</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="parameters.html">Atomic And Structural Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#scope-of-the-atomic-and-structural-parameters-section">Scope of the atomic and structural parameters Section</a></li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#specifications-of-atoms-and-other-parameters">Specifications of atoms and other parameters</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#atom-specification">ATOM SPECIFICATION</a></li>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#atomic-parameter-specification">ATOMIC PARAMETER SPECIFICATION</a></li>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#overall-parameter-specification">OVERALL PARAMETER SPECIFICATION</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#input-of-atoms-and-other-parameters-list-5">Input of atoms and other parameters  -  LIST 5</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#list-5">\LIST 5</a></li>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#further-examples-of-parameter-input">Further examples of parameter input</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#printing-and-punching-list-5">Printing and punching list 5</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#print-5">\PRINT 5</a></li>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#punch-5-mode">\PUNCH 5 mode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#summary-display-of-list-5-display">Summary display of LIST 5 - \DISPLAY</a></li>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#display-level">\DISPLAY    LEVEL=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#editing-structural-parameters-edit">Editing structural parameters -  \EDIT</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#edit-inputlist-outputlist">\EDIT INPUTLIST OUTPUTLIST</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#reorganisation-of-lists-5-and-10-regroup">Reorganisation of lists 5 and 10  -  \REGROUP</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#regroup-inputlist-outputlist">\REGROUP INPUTLIST= OUTPUTLIST=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#repositioning-of-atoms-collect">Repositioning of atoms  -  \COLLECT</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#collect-inputlist-outputlist">\COLLECT INPUTLIST= OUTPUTLIST=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#shifting-the-molecule-to-a-permitted-alternative-origin-origin">Shifting the molecule to a permitted alternative origin - \ORIGIN</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#origin-inputlist-outputlist-mode">\ORIGIN INPUTLIST= OUTPUTLIST= MODE=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#conversion-of-temperature-factors-convert">Conversion of temperature factors - \CONVERT</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#convert-inputlist-outputlist-crossterms">\CONVERT INPUTLIST= OUTPUTLIST= CROSSTERMS=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#hydrogen-placing-hydrogens">Hydrogen placing - \HYDROGENS</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#hydrogens-inputlist-outputlist">\HYDROGENS INPUTLIST= OUTPUTLIST=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#perhydrogenation-perhydro">Perhydrogenation - \PERHYDRO</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#perhydro-inputlist-outputlist">\PERHYDRO INPUTLIST= OUTPUTLIST=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#hydrogen-re-numbering-hname">Hydrogen re-numbering - \HNAME</a></li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#regularisation-of-atomic-groups-regularise">Regularisation of atomic groups - \REGULARISE</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#input-for-regularise">Input for REGULARISE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#output-from-regularise">Output from REGULARISE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#method-of-calculation">Method of calculation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#regularise-mode">\REGULARISE    MODE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#uses-of-regularise">Uses of \REGULARISE</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#map-two-atomic-groups-together-match">Map two atomic groups together - \MATCH</a></li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#calculation-of-interatomic-bonds-bondcalc">Calculation of interatomic bonds - \BONDCALC</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#id1">Method of calculation</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#bonding-information-list-40">Bonding information - \LIST 40</a></li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#bonding-information-bonding">Bonding information - \BONDING</a></li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#printing-of-list-40">Printing of LIST 40</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#print-40">\PRINT 40</a></li>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#summary-40">\SUMMARY 40</a></li>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#punch-40">\PUNCH 40</a></li>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#punch-40-b">\PUNCH 40 B</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#creating-a-null-list-40">Creating a null LIST 40</a></li>
+<li class="toctree-l3"><a class="reference internal" href="parameters.html#printing-of-list-41">Printing of LIST 41</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#print-41">\PRINT 41</a></li>
+<li class="toctree-l4"><a class="reference internal" href="parameters.html#summary-41">\SUMMARY 41</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="sfls.html">Structure Factors And Least Squares</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#scope-of-the-structure-factors-and-least-squares-section">Scope of the structure factors and least squares section</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#refinement">Refinement</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#correlations-in-refinement">Correlations in Refinement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#f-or-fsq-refinement">F or Fsq refinement?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#hydrogen-atom-refinement">Hydrogen Atom Refinement</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#special-positions">Special positions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#atomic-parameter-refinement">Atomic parameter refinement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#overall-parameter-refinement">Overall parameter refinement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#scale-factor-definitions">Scale factor definitions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#structure-factor-calculation-control-list-list-23">Structure factor calculation control list  -  LIST 23</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#list-23">\LIST 23</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#printing-the-slfs-control-list">Printing the SLFS control list</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#print-23">\PRINT 23</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#special-position-constraints-special">Special position constraints - \SPECIAL</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#special-action-update-tolerance">\SPECIAL  ACTION= UPDATE= TOLERANCE=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#printing-the-special-position-information">Printing the special position information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#refinement-directives-list-12">Refinement directives  -  LIST 12</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#list-12">\LIST 12</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#obsolete-refinement-directives">Obsolete Refinement directives</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#defining-the-least-squares-matrix">Defining the least squares matrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#printing-of-list-12">Printing of LIST 12</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#print-12">\PRINT 12</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#summary-12">\SUMMARY 12</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#punch-12">\PUNCH 12</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#creating-a-null-list-12">Creating a null LIST 12</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#clear-12">\CLEAR 12</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#processing-of-list-12">Processing of LIST 12</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#list-22">\LIST 22</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#restraints-list-16">Restraints  -  LIST 16</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#parameter-atom-bond-and-angle-specifications">Parameter, atom, bond and angle specifications</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#list-16">\LIST 16</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#general-restraints">General restraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#id1">General restraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#debugging-restraints">Debugging restraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#printing-the-contents-of-list-16">Printing the contents of LIST 16</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#print-16">\PRINT 16</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#summary-list-16">\SUMMARY LIST 16</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#punch-16">\PUNCH 16</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#creating-a-null-list-16">Creating a null LIST 16</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#clear-16">\CLEAR 16</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#the-special-restraints-list-17">The special restraints  -  LIST 17</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#list-17">\LIST 17</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#printing-and-punching-list-17">Printing and punching LIST 17</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#print-17">\PRINT 17</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#summary-list-17">\SUMMARY LIST 17</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#punch-17">\PUNCH 17</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#creating-a-null-list-17">Creating a null LIST 17</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#clear-17">\CLEAR 17</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#checking-restraints-check">Checking restraints - CHECK</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#check-level">\CHECK LEVEL=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#weighting-schemes-for-refinement-list-4">Weighting schemes for refinement-  LIST 4</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#weighting-for-refinement-against-fo">Weighting for refinement against Fo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#weighting-for-refinement-against-fsq">Weighting for refinement against Fsq</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#list-4">\LIST 4</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#weights-stored-in-list-6">Weights stored in LIST 6</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#weighting-schemes">Weighting schemes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#dunitz-seiler-weighting-scheme-13">Dunitz Seiler weighting - scheme 13</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#chebychev-weighting-schemes-10-11">Chebychev weighting schemes 10, 11</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#robust-resistant-weighting-schemes-14-15">Robust-resistant weighting schemes 14, 15</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#statistical-weights-16">Statistical Weights, 16</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#auto-statistical-weights-17">Auto-Statistical Weights, 17</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#printing-list-4">Printing LIST 4</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#print-4">\PRINT 4</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#weighting-the-reflections-weight">Weighting the reflections - WEIGHT</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#weight-input-factor">\WEIGHT INPUT= FACTOR=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#reflection-restriction-list-list-28">Reflection restriction list  -  LIST 28</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#list-28">\LIST 28</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#creating-a-null-list-28">Creating a null LIST 28</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#printing-the-contents-of-list-28">Printing the contents of LIST 28</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#print-28">\PRINT 28</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#structure-factor-least-squares-calculations-sfls">Structure Factor Least Squares Calculations  -  \SFLS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#definitions">Definitions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#unstable-refinements">Unstable refinements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#sorting-of-list-6-for-structure-factor-calculations">Sorting of LIST 6 for structure factor calculations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#id2">\SFLS</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#processing-of-the-refinement-directives">Processing of the refinement directives</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#analysis-of-residuals-analyse">Analysis of residuals -  \ANALYSE</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#analyse-input">\ANALYSE INPUT=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#least-squares-absorption-correction-difabs">Least squares absorption correction  - \DIFABS</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#difabs-action-mode-input">\DIFABS  ACTION= MODE= INPUT=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sfls.html#internal-workings">Internal workings</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#parameter-esds-list-9">Parameter esds - LIST 9</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#refinement-parameter-map-list-22">Refinement parameter map  -  LIST 22</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#the-least-squares-matrix-list-11">The least squares matrix  -  LIST 11</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#printing-the-contents-of-list-11">Printing the contents of LIST 11</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#least-squares-shift-list-list-24">Least squares shift list  -  LIST 24</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sfls.html#restraints-in-internal-format-list-26">Restraints in internal format  -  LIST 26</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="fourier.html">Fourier Routines</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="fourier.html#scope-of-the-fourier-section-of-the-user-guide">Scope of the Fourier section of the user guide</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fourier.html#input-of-the-fourier-section-limits-list-14">Input of the Fourier section limits - LIST 14</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="fourier.html#list-14">\LIST 14</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="fourier.html#printing-the-contents-of-list-14">Printing the contents of LIST 14</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="fourier.html#print-14">\PRINT 14</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="fourier.html#compute-fourier-limits-from-the-symmetry">Compute Fourier limits from the symmetry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fourier.html#fourier-calculations-fourier">Fourier calculations  -  \FOURIER</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="fourier.html#fourier-input">\FOURIER INPUT=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="fourier.html#calculation-of-superposition-minimum-functions">Calculation of superposition minimum functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fourier.html#processing-of-the-peaks-list-list-10">Processing of the peaks list  -  LIST 10</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fourier.html#printing-the-contents-of-list-10">Printing the contents of LIST 10</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="fourier.html#print-10">\PRINT 10</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="fourier.html#elimination-of-duplicated-entries-in-lists-5-and-10-peaks">Elimination of duplicated entries in LISTS 5 and 10  -  \PEAKS</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="fourier.html#peaks-inputlist-outputlist">\PEAKS INPUTLIST= OUTPUTLIST=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="fourier.html#slant-fourier-calculations-slant">Slant fourier calculations  -  \SLANT</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="fourier.html#slant-input">\SLANT INPUT=</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Analysis Of Results</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#scope-of-this-section-of-the-user-guide">Scope of this section of the user guide</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#analysis-of-residuals-analyse">Analysis of residuals - \ANALYSE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#create-esd-list-esd">Create esd list - \ESD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#output-vcv-matrix-of-selected-atoms">Output VcV matrix of selected atoms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#distance-angles-calculations-distances">Distance angles calculations  -  \DISTANCES</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#distances-inputlist">\DISTANCES INPUTLIST=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#distance-angles-symmetry-operations">Distance-angles symmetry operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#void-location-voids">Void Location  -  \VOIDS</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#voids-inputlist">\VOIDS INPUTLIST=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#tls-analysis-best-planes-and-lines-geometry">TLS analysis, best planes and lines  -  \GEOMETRY</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#geometry-inputlist">\GEOMETRY INPUTLIST=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#torsion-angles-torsion">Torsion angles  -  \TORSION</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#torsion-inputlist">\TORSION INPUTLIST=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#absolute-configuration-ton">Absolute Configuration  -  \TON</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ton">\TON</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#publication-listing-of-the-atomic-parameters-parameters">Publication listing of the atomic parameters  -  \PARAMETERS</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#parameters">\PARAMETERS</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#publication-listing-of-reflection-data-reflections">Publication listing of reflection data  - \REFLECTIONS</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#reflections-input">\REFLECTIONS INPUT=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#summary-of-data-lists-summary">Summary of data lists - \SUMMARY</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#summary-of-type-level">\SUMMARY OF= TYPE= LEVEL=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#estimation-of-absolute-configuration-tonspek">Estimation of Absolute configuration - \TONSPEK</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tonspek-input-type-plot-punch-filter1-filter5-weight">\TONSPEK INPUT= TYPE= PLOT= PUNCH= FILTER1= … FILTER5= WEIGHT=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#cif-lists-cif">CIF lists - \CIF</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#cif">\CIF</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#adding-archive-files-addarc">Adding Archive files - ADDARC</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#addarc-filename">ADDARC filename</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#graphics-cameron">Graphics - CAMERON</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#cameron">CAMERON</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="twin.html">Twinned Crystals</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="twin.html#twinning-introduction">Twinning - introduction</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="twin.html#tlqs-twins">TLQS twins</a></li>
+<li class="toctree-l4"><a class="reference internal" href="twin.html#tls-twins">TLS twins</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="twin.html#twinning-problems">Twinning Problems</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="twin.html#twinning-initial-clues">Twinning - Initial clues</a></li>
+<li class="toctree-l4"><a class="reference internal" href="twin.html#twinning-data-collection-and-processing">Twinning - Data collection and processing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="twin.html#twinning-structure-solution">Twinning - Structure solution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="twin.html#twinning-structure-refinement">Twinning - Structure Refinement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="twin.html#twin-data-stored-by-crystals">Twin Data stored by CRYSTALS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="twin.html#twinning-lists-affected">Twinning - LISTS affected</a></li>
+<li class="toctree-l4"><a class="reference internal" href="twin.html#twin-list-5">Twin List 5</a></li>
+<li class="toctree-l4"><a class="reference internal" href="twin.html#twin-list-6">Twin List 6</a></li>
+<li class="toctree-l4"><a class="reference internal" href="twin.html#twin-list-13">TWIN LIST 13</a></li>
+<li class="toctree-l4"><a class="reference internal" href="twin.html#twin-list-12">Twin List 12</a></li>
+<li class="toctree-l4"><a class="reference internal" href="twin.html#twin-list-16">Twin List 16</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="twin.html#sorting-twinned-structure-data-reorder">SORTING TWINNED STRUCTURE DATA  -  \REORDER</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="twin.html#reorder">\REORDER</a></li>
+<li class="toctree-l4"><a class="reference internal" href="twin.html#twins-backward-compatability">Twins - backward compatability</a></li>
+<li class="toctree-l4"><a class="reference internal" href="twin.html#twins-worked-example">Twins - Worked Example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="twin.html#twinning-mathematical-aspects">Twinning - Mathematical aspects</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="matrix.html">Matrix Calculations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="matrix.html#the-basic-matrix-calculator-matrix">The Basic Matrix Calculator \MATRIX</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="matrix.html#matrix">\MATRIX</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="obsolete.html">Obsolete Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="obsolete.html#index-0">Obsolete Commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="obsolete.html#least-squares-best-planes-and-lines-molax">Least squares best planes and lines  -  \MOLAX</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="obsolete.html#molax-inputlist">\MOLAX INPUTLIST=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="obsolete.html#thermal-displacement-parameter-analysis-aniso">Thermal displacement parameter analysis  -  \ANISO</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="obsolete.html#aniso-inputlist">\ANISO INPUTLIST</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="obsolete.html#principal-atomic-displacement-directions-axes">Principal atomic displacement directions  -  \AXES</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="obsolete.html#axes-inputlist">\AXES INPUTLIST=</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="obsolete.html#structure-factors-for-a-group-of-trial-models-trial">Structure factors for a group of trial models  -  \TRIAL</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="obsolete.html#trial">\TRIAL</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="secret.html">Secret Lists</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="secret.html#index-0">Secret LISTS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="secret.html#storage-of-intermediate-results-and-the-status-of-a-refinement-list-39">Storage of intermediate results and the status of a refinement -  LIST 39</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cameron.html">Cameron Manual</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#introduction">Introduction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#how-to-control-the-program">HOW TO CONTROL THE PROGRAM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#command-groups">Command Groups</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#error-handling">ERROR HANDLING</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#abandon">Abandon</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#edit">Edit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#help">Help</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#the-help-facility">The HELP facility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#mouse-activation">Mouse Activation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#general-input-syntax">General Input Syntax</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#how-to-get-started">How To Get Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#data-input">Data Input</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#input-of-crystals-list-5-files">Input of CRYSTALS List 5 files</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#input">INPUT</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#outputting-data">Outputting Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#output">OUTPUT</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#editing-the-atom-list">Editing The Atom List</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#rename">RENAME</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#retype">RETYPE</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#obeying-files">Obeying Files</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#obey">OBEY</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#archiving-and-retrieving-views">Archiving And Retrieving Views</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#archive">ARCHIVE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#retrieve">RETRIEVE</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#graphical-output-devices">Graphical Output Devices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#screen">SCREEN</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#hardcopy">HARDCOPY</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#view-direction-control">View Direction Control</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#basic-control">BASIC CONTROL</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#xrot">XROT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#yrot">YROT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#zrot">ZROT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#rot">ROT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#cursor">CURSOR</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#orientation-commands">ORIENTATION COMMANDS</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#plane">PLANE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#face">FACE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#along">ALONG</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#vertical">VERTICAL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#horizontal">HORIZONTAL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#bisect">BISECT</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#other-related-commands">Other related commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#view">VIEW</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#copy">COPY</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#matrix">MATRIX</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#stereo">STEREO</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#nostereo">NOSTEREO</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#photographs">PHOTOGRAPHS</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#photo">PHOTO</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#include-and-exclude">Include And Exclude</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#include">INCLUDE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#exclude">EXCLUDE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#further-related-commands">Further related commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#mask">MASK</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#unmask">UNMASK</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#switch">SWITCH</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#generation-of-dummy-atoms">Generation of Dummy atoms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#dummy">DUMMY</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#drawing-style-control">Drawing Style Control</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#line">LINE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#ball">BALL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#ellipse">ELLIPSE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#all">ALL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#fragment">FRAGMENT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#group">GROUP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#line-commands">LINE commands.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#ball-commands">BALL commands.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#ellipse-commands">ELLIPSE commands</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#connectivity-control">Connectivity Control</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#connect">CONNECT</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#id1">CONNECT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#join">JOIN</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#remove">REMOVE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#disconnect">DISCONNECT</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#miscellaneous-connect-commands">Miscellaneous CONNECT commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#taper">TAPER</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#thickness">THICKNESS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#tolerance">TOLERANCE</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#control-of-colour">Control Of Colour</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#colour">COLOUR</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#id2">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#atom-labelling">Atom Labelling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#label">LABEL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#nolabel">NOLABEL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#font">FONT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#text">TEXT</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#other-picture-controlling-commands">Other Picture Controlling Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#maximise">MAXIMISE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#scale">SCALE</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#symmetry-input">Symmetry Input</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#input-of-symmetry-operators">Input of symmetry operators</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#spacegroup">SPACEGROUP</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#symmetry">SYMMETRY</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#example-of-space-group-input">Example of Space Group Input</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#other-symmetry-related-operations">Other symmetry related operations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#setunit">SETUNIT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#enantio">ENANTIO</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#special">SPECIAL</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#crystal-packing-commands">Crystal Packing Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#pack">PACK</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#cell">CELL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#window">WINDOW</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#dealing-with-connectivity">Dealing with connectivity</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#intra">INTRA</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#inter">INTER</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#keep">KEEP</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#id3">INTRA</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#id4">INTER</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#id5">KEEP</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#examples">EXAMPLES</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#enclosure">ENCLOSURE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#choice-of-enclosure-origin">Choice of enclosure “origin”</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#atom">ATOM</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#point">POINT</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#type-of-volume-to-be-used">Type of volume to be used</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#sphere">SPHERE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#anorthic">ANORTHIC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#orthogonal">ORTHOGONAL</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#id6">EXAMPLE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#packing-more-complicated-structures">PACKING MORE COMPLICATED STRUCTURES</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#id7">GROUP</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#unpack">UNPACK</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#add-and-move-further-symmetry-related-commands">Add And Move - Further Symmetry Related Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#add">ADD</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#atoms">ATOMS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#id8">ALL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#initial">INITIAL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#id9">GROUP</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#id10">EXAMPLES</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#move">MOVE</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#id11">ATOMS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#id12">ALL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#id13">GROUP</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#id14">INITIAL</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#distance-and-angle-calculations">Distance And Angle Calculations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#distance">DISTANCE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#method-of-calculation">Method of Calculation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#angle">ANGLE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cameron.html#torsion">TORSION</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#information-on-data-held-within-the-program">Information On Data Held Within The Program</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#information">INFORMATION</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#group-definitions">Group Definitions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#defgroup">DEFGROUP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#id15">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#miscellaneous-commands">Miscellaneous Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#reset">RESET</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#log">LOG</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#id16">EDIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#menus">MENUS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#issue">ISSUE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#print">PRINT</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#how-to-stop-the-program">How To Stop The Program</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cameron.html#end">END</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#menu-definition-file">Menu Definition File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cameron.html#some-useful-ideas">Some Useful Ideas</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CRYSTALS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../crystalsmanual.html">Crystals Reference Manual</a></li>
+      <li class="breadcrumb-item active">Analysis Of Results</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/crystals/analysis.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="toctree-wrapper compound">
+</div>
+<section id="analysis-of-results">
+<h1>Analysis Of Results<a class="headerlink" href="#analysis-of-results" title="Link to this heading"></a></h1>
+<section id="scope-of-this-section-of-the-user-guide">
+<span id="geomandres"></span><h2>Scope of this section of the user guide<a class="headerlink" href="#scope-of-this-section-of-the-user-guide" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Analysis</span> <span class="n">of</span> <span class="n">residuals</span>                          <span class="n">ANALYSE</span>
+<span class="n">Output</span> <span class="n">of</span> <span class="n">atom</span> <span class="n">esds</span>                            <span class="n">ESD</span>
+<span class="n">Distance</span> <span class="ow">and</span> <span class="n">angles</span> <span class="n">calculations</span>               <span class="n">DISTANCES</span>
+<span class="n">Void</span> <span class="n">search</span>                                    <span class="n">VOIDS</span>
+<span class="n">Global</span> <span class="n">Geometry</span> <span class="p">(</span><span class="n">planes</span><span class="p">,</span><span class="n">lines</span> <span class="o">&amp;</span> <span class="n">libration</span><span class="p">)</span>     <span class="n">GEOMETRY</span>
+<span class="n">Torsion</span> <span class="n">angles</span>                                 <span class="n">TORSION</span>
+<span class="n">Absolute</span> <span class="n">Configuration</span>                         <span class="n">TON</span>
+<span class="n">Publication</span> <span class="n">listing</span> <span class="n">of</span> <span class="n">the</span> <span class="n">atomic</span> <span class="n">parameters</span>   <span class="n">PARAMETERS</span>
+<span class="n">Publication</span> <span class="n">listing</span> <span class="n">of</span> <span class="n">the</span> <span class="n">reflections</span>         <span class="n">REFLECTIONS</span>
+<span class="n">Summary</span> <span class="n">of</span> <span class="n">data</span> <span class="n">lists</span>                          <span class="n">SUMMARY</span>
+<span class="n">CIF</span> <span class="n">files</span>                                      <span class="n">CIF</span>
+<span class="n">Graphics</span>                                       <span class="n">CAMERON</span>
+</pre></div>
+</div>
+</section>
+<section id="analysis-of-residuals-analyse">
+<span id="index-1"></span><span id="index-0"></span><h2>Analysis of residuals - \ANALYSE<a class="headerlink" href="#analysis-of-residuals-analyse" title="Link to this heading"></a></h2>
+<p>This analyses the residual, Fo-Fc, for systematic trends, which might
+either indiacate an incomplete model, or an unsatisfactory weighting
+scheme. It is described in the chapter Structure Factors and Least
+Squares.</p>
+<p><em>e.s.d.s</em></p>
+<p>Most publication listings require e.s.ds. These are computed
+from the normal matrix. If LIST 5 (the model parameters) has been
+modified in <strong>ANY</strong> <strong>WAY</strong>
+(including simply renaming or ordering atoms) since the last
+refinement cycle, the matrix will be invalid.</p>
+<p>CRYSTALS will warn you that LIST 11, the normal matrix, cannot be
+loaded.  To create a valid matrix
+without changing the parameter values, compute a refinement cycle but set
+all the shifts to zero.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">SFLS</span>
+<span class="n">REFINE</span>
+<span class="n">SHIFT</span> <span class="n">GENERAL</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+</section>
+<section id="create-esd-list-esd">
+<span id="index-3"></span><span id="index-2"></span><h2>Create esd list - \ESD<a class="headerlink" href="#create-esd-list-esd" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">ESD</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<p>The current LIST 5 must belong to the current VcV matrix (See
+the warning above).</p>
+</section>
+<section id="output-vcv-matrix-of-selected-atoms">
+<span id="index-5"></span><span id="index-4"></span><h2>Output VcV matrix of selected atoms<a class="headerlink" href="#output-vcv-matrix-of-selected-atoms" title="Link to this heading"></a></h2>
+<p>HVcV#</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">VCV</span>
+<span class="n">ATOM</span> <span class="n">C</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="n">C</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="n">C</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">ACTION</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<p>q</p>
+</section>
+<section id="distance-angles-calculations-distances">
+<span id="index-9"></span><span id="index-8"></span><span id="index-7"></span><span id="index-6"></span><h2>Distance angles calculations  -  \DISTANCES<a class="headerlink" href="#distance-angles-calculations-distances" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">DISTANCES</span> <span class="n">INPUTLIST</span><span class="o">=</span>
+<span class="n">OUTPUT</span> <span class="n">MONITOR</span><span class="o">=</span>  <span class="n">LIST</span><span class="o">=</span> <span class="n">PUNCH</span><span class="o">=</span> <span class="n">HESD</span><span class="o">=</span>
+<span class="n">SELECT</span> <span class="n">ALLDIST</span><span class="o">=</span> <span class="n">COORD</span><span class="o">=</span> <span class="n">SORTED</span><span class="o">=</span> <span class="n">TYPE</span><span class="o">=</span> <span class="n">RANGE</span><span class="o">=</span> <span class="n">SYMM</span><span class="o">=</span> <span class="n">TRANS</span><span class="o">=</span>
+<span class="n">LIMITS</span> <span class="n">DMINIMUM</span><span class="o">=</span> <span class="n">DMAXIMUM</span><span class="o">=</span> <span class="n">AMINIMUM</span><span class="o">=</span> <span class="n">AMAXIMUM</span><span class="o">=</span>
+<span class="n">E</span><span class="o">.</span><span class="n">S</span><span class="o">.</span><span class="n">D</span><span class="o">.</span><span class="n">S</span> <span class="n">COMPUTE</span><span class="o">=</span> <span class="n">CELL</span><span class="o">=</span>
+<span class="n">INCLUDE</span> <span class="n">atoms</span>
+<span class="n">EXCLUDE</span> <span class="n">atoms</span>
+<span class="n">ONLY</span> <span class="n">atoms</span>
+<span class="n">PIVOT</span> <span class="n">atoms</span>
+<span class="n">BONDED</span> <span class="n">atoms</span>
+<span class="n">END</span>
+
+\<span class="n">DIST</span>
+<span class="n">E</span><span class="o">.</span><span class="n">S</span><span class="o">.</span><span class="n">D</span> <span class="n">YES</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<p>The distance angles routine is completely
+general with respect to crystal and lattice symmetry.
+For distances, the user may either use elemental radii specified in
+LIST 29 (see section <a class="reference internal" href="initial.html#list29"><span class="std std-ref">Input of the contents of the asymmetric unit  -  LIST 29</span></a> for input details), or specify  minimum and
+maximum limits,
+and the program then calculates all possible contacts within these
+limits.
+All symmetry operations and unit cell translations are automatically
+generated.
+For the angles, LIST 29 or a separate set of distance limits may be used.
+At a given atom, angles are then calculated between all the atoms
+which bond to the central atom within the given limits.</p>
+<p>The distance-angles routines can calculate the estimated
+standard deviations of the distances and angles that they produce.
+These e.s.d.’s are based upon the matrix stored in LIST 11 (see section
+<a class="reference internal" href="sfls.html#list11"><span class="std std-ref">The least squares matrix  -  LIST 11</span></a>), and
+as many variance and covariance terms as are present are used.
+(For a full matrix, therefore, the full variance-covariance matrix
+is used).
+For this reason, the calculation of e.s.d.’s
+takes at least ten times as long
+as a simple distance angles calculation.</p>
+<p>When  a set of e.s.d.’s are calculated, the variance-covariance matrix
+for the cell parameters (LIST 31, section <a class="reference internal" href="initial.html#list31"><span class="std std-ref">Input of the unit cell parameter errors  -  LIST 31</span></a>) may also be used.</p>
+<section id="distances-inputlist">
+<h3>\DISTANCES INPUTLIST=<a class="headerlink" href="#distances-inputlist" title="Link to this heading"></a></h3>
+<p><em>INPUTLIST=</em></p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">5</span>   <span class="o">-</span>  <span class="n">Default</span> <span class="n">value</span>
+<span class="mi">10</span>
+</pre></div>
+</div>
+<p>The default is to use the normal atom coordinate list.</p>
+</div></blockquote>
+<p><strong>OUTPUT MONITOR= LIST= PUNCH= HESD=</strong></p>
+<p><em>MONITOR=</em></p>
+<blockquote>
+<div><p>This controls the monitoring information.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">OFF</span>         <span class="o">-</span>  <span class="n">no</span> <span class="n">output</span>
+<span class="n">DISTANCES</span>   <span class="o">-</span>  <span class="n">only</span> <span class="n">monitors</span> <span class="n">distances</span><span class="o">.</span> <span class="p">(</span><span class="n">Default</span><span class="p">)</span>
+<span class="n">ANGLES</span>      <span class="o">-</span>  <span class="n">only</span> <span class="n">monitors</span> <span class="n">angles</span><span class="o">.</span>
+<span class="n">ALL</span>         <span class="o">-</span>  <span class="n">monitors</span> <span class="n">distances</span> <span class="ow">and</span> <span class="n">angles</span><span class="o">.</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><em>LIST=</em></p>
+<blockquote>
+<div><p>This controls the format of the listing.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">OFF</span>
+<span class="n">LOW</span>
+<span class="n">MEDIUM</span>
+<span class="n">HIGH</span>   <span class="o">-</span>  <span class="n">Default</span>
+<span class="n">DISTANCE</span>
+<span class="p">(</span><span class="n">DEBUG</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If  LIST  is  LOW the the listing is in a compressed
+format, without symmetry information. If LIST is OFF, no output is sent
+to the listing file unless PUNCH is PUBLISH, when a copy of the publication
+listing appears in the listing file. If LIST is DISTANCE, a simplified table of
+distances is output.</p>
+</div></blockquote>
+<p><em>PUNCH=</em></p>
+<blockquote>
+<div><p>This controls the output sent to the ‘punch’ file.</p>
+<p>PUBLISH     - Produce a listing suitable for publication.</p>
+<p>HTML        - Produce an HTML format listing</p>
+<p>CIF         - Produce a listing in CIF format.</p>
+<p>H-CIF       - Produce a listing of the H-bonds in CIF format.</p>
+<p>SCRIPT      - Lists bonds in a easily machine readable format.</p>
+<p>RESTRAIN    - Produce a proforma LIST 16 (restraints - <a class="reference internal" href="sfls.html#list16"><span class="std std-ref">Restraints  -  LIST 16</span></a>).  Use the RANGE,
+LIMIT, TYPE INCLUDE and EXCLUDE parameters to restrict the restraints produced.</p>
+<p>DELU        - Proforma LIST 16 for delta U restraints</p>
+<p>SIMU        - Proforma LIST 16 for U-similarity restraints</p>
+<p>NONBONDED   - Proforma LIST 16 with anti-bumping restraints</p>
+<p>H-RESTRAIN  - Produces a list of H-C,N and O distance and angle
+restraints in the PUNCH file, and a list of the referenced H atoms in
+the SCRIPTQUEUE file.</p>
+<p>H-RIDE      - Produces a list of H-C,N and O RIDE instructions.</p>
+<p>H-CIF       - Puts hydrogen bond donor and acceptors into the cif
+file.</p>
+<p>If hydrogen atom restraints are being generated, the following target
+values are used:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">No</span><span class="o">.</span><span class="n">H</span>  <span class="n">No</span><span class="o">.</span><span class="n">H</span>   <span class="n">U</span> <span class="n">mult</span>     <span class="n">dist</span>
+<span class="n">C</span><span class="o">-</span><span class="n">H</span>
+<span class="o">&gt;</span><span class="mi">4</span>            <span class="mf">1.5</span>      <span class="mf">.96</span> <span class="n">disorder</span>
+<span class="mi">1</span>      <span class="mi">1</span>      <span class="mf">1.2</span>      <span class="mf">.93</span> <span class="n">C</span> <span class="n">C</span><span class="o">-</span><span class="n">H</span> <span class="p">(</span><span class="n">acetylene</span><span class="p">)</span>
+<span class="mi">1</span>      <span class="mi">2</span>      <span class="mf">1.2</span>      <span class="mf">.93</span> <span class="n">C</span><span class="o">-</span><span class="n">C</span><span class="p">(</span><span class="n">H</span><span class="p">)</span><span class="o">-</span><span class="n">C</span>
+<span class="mi">1</span>      <span class="mi">3</span>      <span class="mf">1.2</span>      <span class="mf">.98</span> <span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="mi">3</span><span class="o">-</span><span class="n">C</span><span class="o">-</span><span class="n">H</span>
+<span class="mi">2</span>      <span class="mi">1</span>      <span class="mf">1.2</span>      <span class="mf">.93</span> <span class="n">C</span><span class="o">=</span><span class="n">C</span><span class="o">-</span><span class="n">H</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="mi">2</span>      <span class="mi">2</span>      <span class="mf">1.2</span>      <span class="mf">.97</span> <span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="mi">2</span><span class="o">-</span><span class="n">C</span><span class="o">-</span><span class="p">(</span><span class="n">H</span><span class="p">)</span><span class="mi">2</span>
+<span class="mi">3</span>      <span class="mi">1</span>      <span class="mf">1.5</span>      <span class="mf">.96</span> <span class="n">C</span><span class="o">-</span><span class="n">C</span><span class="o">-</span><span class="p">(</span><span class="n">H</span><span class="p">)</span><span class="mi">3</span>
+<span class="n">N</span><span class="o">-</span><span class="n">H</span>
+<span class="o">&gt;</span><span class="mi">4</span>            <span class="mf">1.5</span>      <span class="mf">.89</span> <span class="n">NH4</span> <span class="ow">or</span> <span class="n">disorder</span>
+<span class="mi">1</span>      <span class="mi">1</span>      <span class="mf">1.2</span>      <span class="mf">.86</span> <span class="n">N</span><span class="o">-</span><span class="n">N</span><span class="o">/</span><span class="n">H</span>
+<span class="mi">1</span>      <span class="mi">2</span>      <span class="mf">1.2</span>      <span class="mf">.86</span> <span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="mi">2</span><span class="o">-</span><span class="n">N</span><span class="o">-</span><span class="n">H</span>
+<span class="mi">1</span>      <span class="mi">3</span>      <span class="mf">1.2</span>      <span class="mf">.89</span> <span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="mi">3</span><span class="o">-</span><span class="n">N</span><span class="o">-</span><span class="n">H</span>
+<span class="mi">2</span>      <span class="mi">1</span>      <span class="mf">1.2</span>      <span class="mf">.86</span> <span class="n">C</span><span class="o">-</span><span class="n">N</span><span class="o">-</span><span class="p">(</span><span class="n">H</span><span class="p">)</span><span class="mi">2</span>
+<span class="mi">2</span>      <span class="mi">2</span>      <span class="mf">1.2</span>      <span class="mf">.89</span> <span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="mi">2</span><span class="o">-</span><span class="n">N</span><span class="o">-</span><span class="p">(</span><span class="n">H</span><span class="p">)</span><span class="mi">2</span>
+<span class="mi">3</span>      <span class="mi">1</span>      <span class="mf">1.2</span>      <span class="mf">.89</span> <span class="n">C</span><span class="o">-</span><span class="n">H</span><span class="o">-</span><span class="p">(</span><span class="n">H</span><span class="p">)</span><span class="mi">3</span>
+<span class="n">O</span><span class="o">-</span><span class="n">H</span>
+<span class="mi">1</span>      <span class="mi">1</span>      <span class="mf">1.5</span>      <span class="mf">.82</span> <span class="n">O</span><span class="o">-</span><span class="n">H</span>
+
+<span class="n">Dist</span>      <span class="n">esd</span> <span class="o">=</span> <span class="mf">0.02</span>
+<span class="n">Vib</span>       <span class="n">esd</span> <span class="o">=</span> <span class="mf">0.002</span>
+<span class="n">Angle</span>     <span class="n">esd</span> <span class="o">=</span> <span class="mf">2.0</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><em>HESD=</em></p>
+<blockquote>
+<div><p>This controls the output of ESDs to the CIF file.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ALL</span>      <span class="o">-</span> <span class="p">(</span><span class="n">Default</span><span class="p">)</span> <span class="n">Output</span> <span class="nb">all</span> <span class="n">bond</span> <span class="n">length</span> <span class="ow">and</span> <span class="n">angle</span> <span class="n">standard</span>
+           <span class="n">uncertainties</span> <span class="p">(</span><span class="k">if</span> <span class="n">requested</span><span class="p">)</span> <span class="n">to</span> <span class="n">the</span> <span class="n">CIF</span> <span class="p">(</span><span class="k">if</span> <span class="n">requested</span><span class="p">),</span>
+           <span class="n">including</span> <span class="n">those</span> <span class="n">of</span> <span class="n">bonds</span> <span class="n">to</span> <span class="n">fixed</span> <span class="n">atoms</span> <span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">e</span><span class="o">.</span> <span class="n">to</span> <span class="n">atoms</span> <span class="n">on</span>
+           <span class="n">special</span> <span class="n">positions</span><span class="p">,</span> <span class="ow">or</span> <span class="n">to</span> <span class="n">atoms</span> <span class="n">that</span> <span class="n">are</span> <span class="ow">not</span> <span class="n">refined</span><span class="p">)</span><span class="o">.</span>
+<span class="n">NONFIXED</span> <span class="o">-</span> <span class="n">Exclude</span> <span class="n">standard</span> <span class="n">uncertainties</span> <span class="n">of</span> <span class="n">bond</span> <span class="n">distances</span> <span class="ow">and</span> <span class="n">angles</span>
+           <span class="n">to</span> <span class="n">Hydrogen</span> <span class="n">atoms</span> <span class="n">that</span> <span class="n">have</span> <span class="ow">not</span> <span class="n">been</span> <span class="n">refined</span><span class="o">.</span> <span class="p">(</span><span class="k">as</span>
+           <span class="n">required</span> <span class="n">by</span> <span class="n">Acta</span><span class="s1">&#39;s notes for authors).</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><strong>SELECT ALLDIST= COORD= SORTED= TYPE= RANGE= SYMMETRY= TRANS=</strong></p>
+<p><em>ALLDISTANCES=</em></p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NO</span>   <span class="o">-</span>  <span class="n">Default</span> <span class="n">value</span>
+<span class="n">YES</span>
+</pre></div>
+</div>
+<p>If  ALLDISTANCES  is  NO,
+the distances calculated about each atom will only
+be those to atoms that occur after the central
+atom in LIST 5. (i.e. each distance
+is only printed once).</p>
+<p>If  ALLDISTANCES  is
+YES , then the distances from each atom to all
+the other atoms are calculated for all the atoms.
+(In this case, each distance will appear twice in the list).</p>
+</div></blockquote>
+<p><em>COORDINATES=</em></p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NO</span>   <span class="o">-</span>  <span class="n">Default</span> <span class="n">value</span>
+<span class="n">YES</span>
+</pre></div>
+</div>
+<p>If  COORDINATES  is  YES, the transformed
+coordinates of each atom in a distance calculation
+are printed.
+If  COORDINATES  is  NO,
+the transformed coordinates are not printed.</p>
+</div></blockquote>
+<p><em>SORTED=</em></p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NO</span>   <span class="o">-</span>  <span class="n">Default</span> <span class="n">value</span>
+<span class="n">YES</span>
+</pre></div>
+</div>
+<p>If  SORTED  is  NO,
+the distances from the central atom are in the order
+in which the other atoms occur in LIST 5.
+If  SORTED  is  YES , the distances are printed in
+order of increasing magnitude.</p>
+</div></blockquote>
+<p><em>TYPE=</em></p>
+<blockquote>
+<div><p>This parameter indicates the type of distances which will be
+calculated.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ALL</span>   <span class="o">-</span>  <span class="n">Default</span> <span class="n">value</span>
+<span class="n">INTRA</span>
+<span class="n">INTER</span>
+</pre></div>
+</div>
+<p>If  TYPE  is  ALL,
+then all distances are printed; if  TYPE  is  INTRA  then only
+intramolecular distances are printed, and if  TYPE  is  INTER
+then the intermolecular distances are printed (Note that the whole
+asymmetric unit is regarded as a ‘molecule’.</p>
+</div></blockquote>
+<p><em>RANGE=</em></p>
+<blockquote>
+<div><p>This parameter defines how the range is to be selected.
+Except when RANGE = LIMITS (when the lowest acceptable distance is
+user-specified) contacts of zero angstrom are suppressed.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">COVALENT</span>      <span class="n">Use</span> <span class="s1">&#39;covalent&#39;</span> <span class="n">radii</span> <span class="kn">from</span> <span class="nn">LIST</span> <span class="mf">29.</span>
+<span class="n">VANDERWAALS</span><span class="o">.</span>  <span class="n">Use</span> <span class="s1">&#39;VanderWaals&#39;</span> <span class="n">radii</span> <span class="kn">from</span> <span class="nn">LIST</span> <span class="mi">29</span><span class="p">,</span> <span class="n">but</span> <span class="n">angles</span> <span class="n">are</span>
+              <span class="n">suppressed</span><span class="o">.</span>
+<span class="n">IONIC</span><span class="o">.</span>        <span class="n">Use</span> <span class="s1">&#39;ionic&#39;</span> <span class="n">radii</span> <span class="kn">from</span> <span class="nn">LIST</span> <span class="mf">29.</span>
+<span class="n">LIMITS</span><span class="o">.</span>       <span class="n">Use</span> <span class="n">specified</span> <span class="ow">or</span> <span class="n">default</span> <span class="n">ranges</span> <span class="nb">set</span> <span class="n">by</span> <span class="n">the</span> <span class="n">LIMIT</span> <span class="n">directive</span><span class="o">.</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><em>SYMMETRY=</em></p>
+<blockquote>
+<div><p>This parameter controls the use of symmetry information in the calculation of
+contacts, and can take three values.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SPACEGROUP</span>  <span class="o">-</span>  <span class="n">Default</span> <span class="n">value</span><span class="o">.</span> <span class="n">The</span> <span class="n">full</span> <span class="n">spacegroup</span> <span class="n">symmetry</span> <span class="ow">is</span> <span class="n">used</span> <span class="ow">in</span>
+                              <span class="nb">all</span> <span class="n">computations</span>
+<span class="n">PATTERSON</span><span class="o">.</span>     <span class="n">A</span> <span class="n">centre</span> <span class="n">of</span> <span class="n">symmetry</span> <span class="ow">in</span> <span class="n">introduced</span><span class="p">,</span> <span class="ow">and</span> <span class="n">the</span> <span class="n">translational</span>
+               <span class="n">parts</span> <span class="n">of</span> <span class="n">the</span> <span class="n">symmetry</span> <span class="n">operators</span> <span class="n">are</span> <span class="n">dropped</span><span class="o">.</span>
+<span class="n">NONE</span><span class="o">.</span>          <span class="n">Only</span> <span class="n">the</span> <span class="n">identity</span> <span class="n">operator</span> <span class="ow">is</span> <span class="n">used</span><span class="o">.</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><em>TRANSLATION=</em></p>
+<blockquote>
+<div><p>This parameter controls the application of cell translations in the
+calculation of contacts, and can take the values YES or NO</p>
+</div></blockquote>
+<p><strong>LIMITS DMINIMUM= DMAXIMUM= AMINIMUM= AMAXIMUM=</strong></p>
+<blockquote>
+<div><p>This directive specifies the limits for the distance angles
+calculations, and may only be given if RANGE = LIMITS has been specified
+on a
+preceding SELECT directive.</p>
+</div></blockquote>
+<p><em>DMINIMUM</em></p>
+<blockquote>
+<div><p>This defines the distance below which distances are not
+calculated or printed. The default is zero.</p>
+</div></blockquote>
+<p><em>DMAXIMUM</em></p>
+<blockquote>
+<div><p>This parameter defines the maximum distance above which distances are not
+calculated or printed.
+Use \COMMANDS DISTANCES to find the default value for  DMAXIMUM.
+All the distances that are to be calculated and printed
+must lie between  DMINIMUM  and  DMAXIMUM.</p>
+</div></blockquote>
+<p><em>AMINIMUM</em></p>
+<blockquote>
+<div><p>For a given central atom, other atoms which
+make contacts that are less than  AMINIMUM  will
+not be considered when the angles at the
+central atom are computed.
+The default is zero.</p>
+</div></blockquote>
+<p><em>AMAXIMUM</em></p>
+<blockquote>
+<div><p>For a given central atom, other atoms which
+make contacts that are greater than  AMAXIMUM
+will not be considered when angles at the
+central atom are computed.
+The default value for  AMAXIMUM  is set in the COMMAND file.
+AMAXIMUM  And  AMINIMUM  define a shell about each
+pivot atom outside of which angles are not computed.</p>
+</div></blockquote>
+<p><strong>E.S.D.S COMPUTE= CELL=</strong></p>
+<blockquote>
+<div><p>This directive determines whether estimated standard deviations
+of the distances and angles are calculated.</p>
+</div></blockquote>
+<p><em>COMPUTE</em></p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NO</span>   <span class="o">-</span>  <span class="n">Default</span> <span class="n">value</span>
+<span class="n">YES</span>
+</pre></div>
+</div>
+<p>If this parameter is NO,
+standard deviations are not
+computed.
+Note that if e.s.d.’s are to be calculated, i.e.  COMPUTE  is
+set equal to  YES , then a suitable least squares matrix (LIST 11, see
+section <a class="reference internal" href="sfls.html#list11"><span class="std std-ref">The least squares matrix  -  LIST 11</span></a>) must be
+available.</p>
+</div></blockquote>
+<p><em>CELL=</em></p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NO</span>   <span class="o">-</span>  <span class="n">Default</span> <span class="n">value</span>
+<span class="n">YES</span>
+</pre></div>
+</div>
+<p>If this parameter is NO,
+the variance-covariance matrix for the
+cell parameters is not included when the e.s.d.’s are calculated.</p>
+</div></blockquote>
+<p><strong>INCLUDE atoms</strong></p>
+<blockquote>
+<div><p>This directive determines which atoms are included as pivot atoms
+in the calculation.
+The arguments may be either a type of atom , or an atom specification of
+the ‘type(serial)’ or ‘type(serial) UNTIL type(serial)’ kind described
+elsewhere in the manual. Only INCLUDEd atoms are used as pivots, but distances
+and angles are computed to all other atoms in the current LIST 5 within
+the ranges specified on the SELECT directive.</p>
+</div></blockquote>
+<p><strong>ONLY atoms</strong></p>
+<blockquote>
+<div><p>Similar to INCLUDE, except that specified atoms may be pivot or
+bonded.
+The arguments may be either a type of atom , or an atom specification of
+the ‘type(serial)’ or ‘type(serial) UNTIL type(serial)’ kind described
+elsewhere in the manual. Distances
+and angles are computed only to specified atoms in the current LIST 5 within
+the ranges specified on the SELECT directive.</p>
+</div></blockquote>
+<p><strong>PIVOT atoms</strong></p>
+<blockquote>
+<div><p>Similar to INCLUDE, except that atoms excluded with an EXCLUDE
+directive can still be used to bond to.
+The arguments may be either a type of atom , or an atom specification of
+the ‘type(serial)’ or ‘type(serial) UNTIL type(serial)’ kind described
+elsewhere in the manual. Distances
+and angles are computed only to specified atoms in the current LIST 5 within
+the ranges specified on the SELECT directive.</p>
+</div></blockquote>
+<p><strong>BONDED atoms</strong></p>
+<blockquote>
+<div><p>Similar to INCLUDE, except that non-included atoms can still be used as
+pivots.
+The arguments may be either a type of atom , or an atom specification of
+the ‘type(serial)’ or ‘type(serial) UNTIL type(serial)’ kind described
+elsewhere in the manual. Distances
+and angles are computed only to specified atoms in the current LIST 5 within
+the ranges specified on the SELECT directive.</p>
+</div></blockquote>
+<p><strong>EXCLUDE atoms</strong></p>
+<blockquote>
+<div><p>This directive determines which atoms are excluded as pivots in the
+calculation.
+The arguments may be either a type of atom , or an atom specification of
+the ‘type(serial)’ or ‘type(serial) UNTIL type(serial)’ kind described
+elsewhere in the manual. If EXCLUDE directives alone are used, all
+atoms except those EXCLUDEd either explicitly or by
+type, are used as pivot atoms in the calculation.
+However, if both INCLUDE and EXCLUDE are used, the only atoms used in
+the calculation will be those INCLUDEd and not EXCLUDEd.</p>
+</div></blockquote>
+</section>
+</section>
+<section id="distance-angles-symmetry-operations">
+<h2>Distance-angles symmetry operations<a class="headerlink" href="#distance-angles-symmetry-operations" title="Link to this heading"></a></h2>
+<p>Accompanying each atom in a distance or angle calculation
+with  LIST  equal to  HIGH
+are the symmetry operators that are necessary to bring the atom
+into the correct position in the cell to make a contact with
+the central atom.
+These symmetry operations are divided into six parts, which are
+indicated by five flags. These are explained in the section on Atomic
+and Structural Parameters.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\
+\ <span class="n">distances</span> <span class="kn">from</span> <span class="mi">0</span> <span class="n">to</span> <span class="mf">2.5</span>
+\ <span class="n">angles</span> <span class="kn">from</span> <span class="mi">0</span> <span class="n">to</span> <span class="mf">2.0</span>
+\ <span class="n">the</span> <span class="n">e</span><span class="o">.</span><span class="n">s</span><span class="o">.</span><span class="n">d</span><span class="o">.</span><span class="s1">&#39;s of the distances and angles are calculated</span>
+\ <span class="n">distances</span> <span class="kn">from</span> <span class="nn">each</span> <span class="n">atom</span> <span class="n">to</span> <span class="nb">all</span> <span class="n">other</span> <span class="n">atoms</span> <span class="n">are</span> <span class="n">printed</span>
+\ <span class="n">transformed</span> <span class="n">coordinates</span> <span class="n">are</span> <span class="n">printed</span>
+\ <span class="n">the</span> <span class="n">distances</span> <span class="n">are</span> <span class="nb">sorted</span> <span class="ow">in</span> <span class="n">order</span> <span class="n">of</span> <span class="n">increasing</span> <span class="n">magnitude</span>
+\
+\<span class="n">DISTANCES</span>
+<span class="n">SELECT</span> <span class="n">ALL</span><span class="o">=</span><span class="n">YES</span><span class="p">,</span><span class="n">COORD</span><span class="o">=</span><span class="n">YES</span><span class="p">,</span><span class="n">SORT</span><span class="o">=</span><span class="n">YES</span><span class="p">,</span><span class="n">RANGE</span><span class="o">=</span><span class="n">LIMITS</span>
+<span class="n">LIMITS</span> <span class="n">DMAX</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">AMAX</span><span class="o">=</span><span class="mf">2.0</span>
+<span class="n">E</span><span class="o">.</span><span class="n">S</span><span class="o">.</span><span class="n">D</span><span class="o">.</span> <span class="n">YES</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">DIST</span>
+<span class="n">EXCLUDE</span> <span class="n">ALL</span>
+<span class="n">ONLY</span> <span class="n">C</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="n">C</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="n">C</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+</section>
+<section id="void-location-voids">
+<span id="index-11"></span><span id="index-10"></span><h2>Void Location  -  \VOIDS<a class="headerlink" href="#void-location-voids" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">VOIDS</span> <span class="n">INPUTLIST</span><span class="o">=</span>
+<span class="n">DISTANCE</span>
+<span class="n">TOLERANCE</span>
+<span class="n">CONTACTS</span>
+<span class="n">RESOLUTION</span>
+<span class="n">END</span>
+
+\<span class="n">VOIDS</span>
+<span class="n">DISTANCE</span> <span class="mf">2.2</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<p>This utility searches for the asymmetric unit for points which lie
+outside the known atoms. The ‘radii’ of the known atoms is independent
+of type, and in an input value. A pseudo atom in inserted at every point
+on a search grid outside the known atoms. The pseudo atoms are given a
+‘TYPE’ dependant upon the number of neighbouring pseudo atoms. Atoms of
+type R are at the core of large voids, type L are intermediate, and M at
+the surface.</p>
+<section id="voids-inputlist">
+<h3>\VOIDS INPUTLIST=<a class="headerlink" href="#voids-inputlist" title="Link to this heading"></a></h3>
+<p><em>INPUTLIST=</em></p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">5</span>   <span class="o">-</span>  <span class="n">Default</span> <span class="n">value</span>
+<span class="mi">10</span>
+</pre></div>
+</div>
+<p>The default is to use the normal atom coordinate list.</p>
+</div></blockquote>
+<p><strong>DISTANCE value</strong></p>
+<blockquote>
+<div><p>This sets the radii of the known atoms, default 2.5A.</p>
+</div></blockquote>
+<p><strong>RESOLUTION value</strong></p>
+<blockquote>
+<div><p>This sets the sampling interval for the search grid, default 0.8 A.</p>
+</div></blockquote>
+<p><strong>CONTACT value1 value2</strong></p>
+<blockquote>
+<div><p>This sets the number of pseudo-atom contacts required for the core
+and intermediate pseudo atoms. The defaults are 27 (R type atoms), 15
+(L type atoms). All other atoms are of type M.</p>
+<p>\COLLECT and  \REGROUP can be used to re-group the pseudo-atoms, and
+the augmented structure can be viewed in CAMERON.</p>
+</div></blockquote>
+</section>
+</section>
+<section id="tls-analysis-best-planes-and-lines-geometry">
+<span id="index-20"></span><span id="index-19"></span><span id="index-18"></span><span id="index-17"></span><span id="index-16"></span><span id="index-15"></span><span id="index-14"></span><span id="index-13"></span><span id="index-12"></span><h2>TLS analysis, best planes and lines  -  \GEOMETRY<a class="headerlink" href="#tls-analysis-best-planes-and-lines-geometry" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">GEOMETRY</span> <span class="n">INPUTLIST</span><span class="o">=</span>
+ <span class="n">ATOMS</span>  <span class="n">W</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="n">SPECIFICATION</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="n">W</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>  <span class="n">SPECIFICATION</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">.</span>
+ <span class="n">PLANE</span>
+ <span class="n">LINE</span>
+ <span class="n">AXES</span>
+ <span class="n">TLS</span>
+ <span class="n">EXECUTE</span>
+ <span class="n">EVALUATE</span>  <span class="n">ATOM</span> <span class="n">SPECIFICATIONS</span> <span class="o">.</span> <span class="o">.</span> <span class="o">.</span> <span class="o">.</span>
+ <span class="n">REPLACE</span> <span class="n">ATOM</span> <span class="n">SPECIFICATIONS</span> <span class="o">.</span> <span class="o">.</span> <span class="o">.</span>
+ <span class="n">PUNCH</span>
+ <span class="n">SAVE</span>
+ <span class="n">DIHEDRAL</span>  <span class="n">NP</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="n">AND</span>  <span class="n">NP</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+ <span class="n">QUIT</span>
+ <span class="n">CENTRE</span>   <span class="n">X</span><span class="o">=</span><span class="p">,</span> <span class="n">Y</span><span class="o">=</span><span class="p">,</span> <span class="n">Z</span><span class="o">=</span>
+ <span class="n">REJECT</span>   <span class="n">NV</span><span class="o">=</span>
+ <span class="n">LIMITS</span>   <span class="n">VALUE</span><span class="o">=</span>   <span class="n">RATIO</span><span class="o">=</span>
+ <span class="n">MODL</span> <span class="n">L</span><span class="p">(</span><span class="mi">11</span><span class="p">),</span> <span class="n">L</span><span class="p">(</span><span class="mi">22</span><span class="p">)</span> <span class="n">L</span><span class="p">(</span><span class="mi">33</span><span class="p">)</span> <span class="n">L</span><span class="p">(</span><span class="mi">23</span><span class="p">)</span> <span class="n">L</span><span class="p">(</span><span class="mi">13</span><span class="p">)</span> <span class="n">L</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+ <span class="n">MODT</span> <span class="n">T</span><span class="p">(</span><span class="mi">11</span><span class="p">),</span> <span class="n">T</span><span class="p">(</span><span class="mi">22</span><span class="p">)</span> <span class="n">T</span><span class="p">(</span><span class="mi">33</span><span class="p">)</span> <span class="n">T</span><span class="p">(</span><span class="mi">23</span><span class="p">)</span> <span class="n">T</span><span class="p">(</span><span class="mi">13</span><span class="p">)</span> <span class="n">T</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+ <span class="n">ZEROS</span>
+ <span class="n">DISTANCES</span>  <span class="n">DL</span><span class="o">=</span>   <span class="n">AL</span><span class="o">=</span>
+ <span class="n">ANGLES</span>  <span class="n">AL</span><span class="o">=</span>
+ <span class="n">PLOT</span>
+ <span class="n">END</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">GEOMETRY</span>
+<span class="n">ATOMS</span> <span class="n">FIRST</span> <span class="n">UNTIL</span> <span class="n">LAST</span>
+<span class="n">PLANE</span>
+<span class="n">EXECUTE</span>
+<span class="n">SAVE</span>
+<span class="n">ATOMS</span> <span class="n">FIRST</span> <span class="n">UNTIL</span> <span class="n">LAST</span>
+<span class="n">TLS</span>
+<span class="n">EXECUTE</span>
+<span class="n">ANGLE</span> <span class="mi">1</span> <span class="n">AND</span> <span class="mi">2</span>
+<span class="n">EXECUTE</span>
+<span class="n">DISTANCES</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<p>GEOMETRY is used for computing the following global derived
+parameters:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Centroid</span> <span class="p">(</span><span class="n">centre</span> <span class="n">of</span> <span class="n">gravity</span><span class="p">)</span>
+<span class="n">Inertial</span> <span class="n">Tensor</span>
+<span class="n">Best</span> <span class="n">Plane</span>
+<span class="n">Best</span> <span class="n">Line</span>
+<span class="n">Shape</span> <span class="n">Indices</span>
+<span class="n">Principal</span> <span class="n">Axes</span> <span class="n">of</span> <span class="n">adps</span>
+<span class="n">Librational</span> <span class="ow">and</span> <span class="n">Translational</span> <span class="n">Thermal</span> <span class="n">Tensors</span>
+<span class="n">Dihedral</span> <span class="n">Angles</span>
+</pre></div>
+</div>
+<p>It replaces the old \MOLAX, \AXES and \ANISO commands</p>
+<p>PLANE &amp; LINE are used for computing the principal axes of inertia
+through groups of atoms using  the routines described in
+Computing Methods in Crystallography, edited by J. S. Rollett,
+Pergamon Press, 1965, p67-68.</p>
+<p>The  best  plane for a series of  N
+atoms whose positions have varying reliability, such that they can
+be assigned weights, w(1), w(2), … w(n), is defined as
+that for which
+the sum of the squares of the distances (in angstroms) of the
+atoms from the plane, multiplied by the weights, w(i), of
+the atomic positions, is a minimum.
+Note that the normal to the ‘worst plane’ is the ‘best line’,
+and if masses are used for weights, then the calculation gives the
+principal inertial axes.</p>
+<p>The atomic positions are taken from LIST 5, possibly modified by
+symmetry information, to compute
+inertial axes &amp; deviations of atoms from  the planes or lines.</p>
+<p>Each time a line or plane
+is computed, the direction cosines of the relevent axis are stored as AXIS
+number ‘n’. The dihedral angles between these axes can be computed.
+Three geometry indices are also
+computed. The geometry is best described by the index closest to unity.
+(Mingos,D.P.M &amp; Rohl,A.L., J.Chem.Soc. Dalton Trans (1991) pp 3419 - 3425)</p>
+<p>If the three principal axes are “big, medium, small”, then</p>
+<p>Spherical   = small/big
+Cylindrical = 1-((medium+small)/(2.big))
+discoidal   = 1-2.small/(big+medium)</p>
+<p>TLS. This routine calculates the overall rigid-body
+motion tensors T, L, S (Shoemaker and Trueblood, Acta Cryst. B24,
+63, 1968) by a least-squares fit to the individual anisotropic
+temperature factor components, together with librational corrections
+to bond lengths and angles.</p>
+<p>Shoemaker and Trueblood’s conventions and reductions
+are followed throughout; in particular, the trace of S, which is
+indeterminant, is set to zero. The program therefore determines
+20 overall tensor components - the upper triangles of T and L
+together with the whole of S apart from S(33). (See also:
+Johnson in Crystallographic Computing,
+ed R.Ahmed, Munksgaard, 1970, pp 207-219)</p>
+<p>Even when the trace-of-S singularity has been removed, however,
+the nature of the rigid body problem is such that ill-conditioned
+and singular normal matrices are much more common than in
+structure refinement and the program therefore proceeds via
+the eigenvalues and eigenvectors of the normal matrix.  In most
+cases the largest and smallest eigenvalues are output for
+inspection, but if the ratio of these quantities is less than
+the LIMITing RATIO, a full eigenvalue/vector listing is produced. Further,
+if any eigenvalue is itself less than the LIMITing VALUE, the corresponding
+parameter combination is set to zero, thus removing the near-
+singularity. These actions can be modified by the use of the
+LIMIT  and  REJECT  directives described below. If the TLS calcuation
+cannot be stabilised by means of these filters, the user can modify
+either T, L or S directly before applying the REPLACE or PUNCH
+commands. Though here is some danger in this, especially if the supposed rigid
+group is infact flexible, it may be preferable to using a model
+yielding negative vibrational or librational amplitudes.</p>
+<p>The direction cosines of the
+principal axis of L are stored for use in inter-axis angle comutations.</p>
+<p>Immediate execution of a directive can be forced by issuing an EXECUTE
+directive.</p>
+<section id="geometry-inputlist">
+<span id="list20"></span><h3>\GEOMETRY INPUTLIST=<a class="headerlink" href="#geometry-inputlist" title="Link to this heading"></a></h3>
+<p><em>INPUTLIST=</em></p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">5</span>   <span class="o">-</span>  <span class="n">Default</span> <span class="n">value</span>
+<span class="mi">10</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><strong>ATOMS  W(1)  SPECIFICATION(1)  W(2)  SPECIFICATION(2) .</strong></p>
+<blockquote>
+<div><p>This specifies atoms to be used in the calculation of the
+best plane.
+W(1)  Is the weight assigned to the atoms
+contained in the first atom specification,  W(2)  is the weight
+assigned to the second group of atoms, and so on.
+If  W(1)  is omitted, a default value of 1 is used,
+but any other  W(I)  term applies to all the atoms following it,
+until another  W  is found or the end of the directive is
+encountered.
+At least one  ATOM  directive must precede each  PLANE, LINE, TLS, AXES or
+PLOT directive.
+An ATOM directive will over-rule an immediately preceding ATOM directive. If an
+input line is not long enough for the full atom list, use CONTINUE.</p>
+</div></blockquote>
+<p><strong>PLANE</strong></p>
+<blockquote>
+<div><p>This directive, (or  LINE, TLS, AXES, PLOT)
+must follow immediately after an  ATOM  directive and
+causes the calculation of a least squares best plane.</p>
+</div></blockquote>
+<p><strong>LINE</strong></p>
+<blockquote>
+<div><p>This directive, (or  PLANE, TLS, AXES, PLOT)
+must follow immediately after an  ATOM  directive and
+causes the calculation of a least squares best line.</p>
+</div></blockquote>
+<p><strong>AXES</strong></p>
+<blockquote>
+<div><p>This directive (like \AXES) computes the principal axis lengths
+and directions for the atoms specified on a preceding ATOM directive.</p>
+</div></blockquote>
+<p><strong>TLS</strong></p>
+<blockquote>
+<div><p>This causes the TLS calculation to be initiated. It MUST have been preceded
+by an ATOM directive.</p>
+</div></blockquote>
+<p><strong>EXECUTE</strong></p>
+<blockquote>
+<div><p>This forces the execution of preceding directives.</p>
+</div></blockquote>
+<p><strong>EVALUATE  ATOM SPECIFICATIONS … .</strong></p>
+<blockquote>
+<div><p>If present, this directive
+must appear after a  PLANE, LINE, TLS or PLOT directive,
+and causes the co-ordinates or adps of the atoms specified
+to be calculated and printed with respect to the current axial system.</p>
+</div></blockquote>
+<p><strong>REPLACE ATOM SPECIFICATIONS …</strong></p>
+<blockquote>
+<div><p>if present, this directive
+must appear after a  PLANE, LINE, TLS or PLOT directive,
+and causes the co-ordinates or adps of the atoms specified to be modified so
+that they conform to the most recent geometry calculation.
+The LIST 5 in core is immediately
+updated, so that the new coordinates will be used for any subsequent
+computation. A LIST 5 is only written to the disc on a satisfactory exit from
+GEOMETRY.</p>
+</div></blockquote>
+<p><strong>PUNCH</strong></p>
+<blockquote>
+<div><p>This directive causes the orthogonal coordinates of the atoms of any plane or
+line computed or EVALUATED in subsequent tasks to be output to the ‘punch’
+file. For a TLS calculation, it causes  a restraint list to be output
+to TLSREST.DAT</p>
+</div></blockquote>
+<p><strong>SAVE</strong></p>
+<blockquote>
+<div><p>This directive is optional.</p>
+<p>If it follows a PLANE, LINE or TLS directive, it
+causes the latest rotation matrix and CENTRE  to be stored in the
+appropriate position in LIST 20.</p>
+<p>If it
+follows an AXES directive, the direction cosines and centre if the ellipse FOR
+THE LAST ATOM are stored in LIST 20.</p>
+<p>A LIST 20 is only written to the disc on
+a satisfactory exit from ANISO.</p>
+</div></blockquote>
+<p><strong>DIHEDRAL  NP(1)  AND  NP(2)</strong></p>
+<blockquote>
+<div><p>If present, thus directive must follow at least
+two  PLANE, LINE or TLS computations.
+It causes the program
+to calculate the angle between the axes with  serial numbers
+NP(1)  and  NP(2) .
+The   AND  must be present.</p>
+</div></blockquote>
+<p><strong>QUIT</strong></p>
+<blockquote>
+<div><p>This directive abandons the calculation without modifying the disc LISTs.</p>
+</div></blockquote>
+<p><strong>CENTRE   X=, Y=, Z=</strong></p>
+<blockquote>
+<div><p>This directive specifies the centre of libration,
+in crystal fractions, to be used in the original derivation of
+the overall motion tensors. The program derives and uses a unique
+origin at a later stage in the calculations. This directive
+is optional, the default centre being (0,0,0).
+If a centre of (0,0,0) is given or set by default, the program computes
+and uses the mean position of the given atoms, INCLUDING any which are
+isotropic, even though these are not used to compute TLS. The stored CENTRE
+is updated during TLS, and a second TLS computation may be performed using
+this new value as CENTRE. This may help stabilise certain forms of
+ill-conditioning.</p>
+</div></blockquote>
+<p><strong>REJECT   NV=</strong></p>
+<blockquote>
+<div><p>Overrides normal action and sets the parameter combination
+corresponding to eigenvector number nv to zero.
+Eigenvectors are numbered in ascending order of their eigenvalues,
+so that nv
+is in the range 1 to 20 inclusive and will usually have been obtained
+from a full eigenvalue/vector listing produced in
+a previous run.</p>
+</div></blockquote>
+<p><strong>LIMITS   VALUE=   RATIO=</strong></p>
+<blockquote>
+<div><p>If an eigenvalue is less than  VALUE  or its size is less than
+RATIO * (the next bigger), it is eliminated from the analysis.
+VALUE is currently .000001 and RATIO .01 .</p>
+</div></blockquote>
+<p><strong>MODL L(11), L(22) L(33) L(23) L(13) L(12)</strong></p>
+<blockquote>
+<div><p>This directive enables the user to change the values of the L tensor before
+EVALUATING or REPLACING the Uij. The L tensor changed is that with
+respect to the inertial axes and the input centre of libration. It does
+not depend upon S. All six values must be given.</p>
+</div></blockquote>
+<p><strong>MODT T(11), T(22) T(33) T(23) T(13) T(12)</strong></p>
+<blockquote>
+<div><p>This directive enables the user to change the values of the T tensor before
+EVALUATING or REPLACING the Uij. The T tensor changed is that with
+respect to the inertial axes and the input centre of libration, NOT the
+final tensor, since this involves an interaction with S and L.
+All six values must be given.</p>
+<p>DZEROS</p>
+<p>This directive enables the user to set the S tensor to zero before
+EVALUATING or REPLACING the Uij. It decouples T from L.</p>
+</div></blockquote>
+<p><strong>DISTANCES  DL=   AL=</strong></p>
+<blockquote>
+<div><p>This directive calculates all interatomic distances less than
+DL angstroms with librational corrections. If this directive is omitted,
+no distances are calculated; if DL is absent, a default value of 1.8 is
+inserted. If AL is present, angles between atoms separated by less than AL
+angstroms are computed.</p>
+</div></blockquote>
+<p><strong>ANGLES  AL=</strong></p>
+<blockquote>
+<div><p>This directive calculates angles between all bonds less than
+AL angstroms. If this directive is omitted, no angles are calculated;
+if AL is absent, a default value of 1.8 is inserted.</p>
+<p><strong>*********************</strong> WARNING <strong>*********************</strong></p>
+<p>The directive DISTANCE may only be
+followed by ATOM, EXECUTE, or END.</p>
+</div></blockquote>
+<p><strong>PLOT</strong></p>
+<blockquote>
+<div><p>This obsolete directive produces a join-the-dots diagram
+on the monitor or printer. It (or  PLANE, LINE, TLS, AXES)
+must follow immediately after an  ATOM  directive and
+causes the calculation of inertial axes.
+Details of the computation are suppressed on the Monitor,
+but a line drawing projected onto the best plane is produced.
+MOLAX  Can thus be used as a means of displaying some or all
+of the atoms in a structure.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">Examples</span><span class="p">:</span>
+
+ <span class="n">These</span> <span class="n">instructions</span> <span class="n">compute</span> <span class="n">a</span> <span class="n">plane</span>
+ <span class="n">involving</span> <span class="n">n</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="n">n</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="n">n</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="ow">and</span> <span class="n">c</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="ow">and</span>
+ <span class="n">prints</span> <span class="n">the</span> <span class="n">co</span><span class="o">-</span><span class="n">ordinates</span> <span class="n">of</span> <span class="nb">all</span> <span class="n">the</span> <span class="n">atoms</span> <span class="k">with</span>
+ <span class="n">respect</span> <span class="n">to</span> <span class="n">this</span> <span class="n">plane</span><span class="o">.</span>  <span class="n">The</span> <span class="n">positions</span> <span class="n">of</span> <span class="n">the</span>
+ <span class="n">nitrogen</span> <span class="n">atoms</span> <span class="n">have</span> <span class="n">double</span> <span class="n">weight</span>
+
+\<span class="n">GEOMETRY</span>
+<span class="n">ATOMS</span> <span class="mi">2</span> <span class="n">N</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="n">UNTIL</span> <span class="n">N</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>  <span class="mi">1</span> <span class="n">C</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="n">C</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">PLANE</span>
+<span class="n">EVALUATE</span> <span class="n">ALL</span>
+
+ <span class="n">These</span> <span class="n">instructions</span> <span class="n">calculate</span> <span class="n">another</span> <span class="n">plane</span><span class="p">,</span>
+ <span class="n">printing</span> <span class="n">only</span> <span class="n">the</span> <span class="n">co</span><span class="o">-</span><span class="n">ordinates</span> <span class="n">of</span> <span class="n">c</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="k">with</span> <span class="n">respect</span> <span class="n">to</span>
+ <span class="n">the</span> <span class="n">second</span> <span class="n">plane</span><span class="o">.</span>  <span class="n">The</span> <span class="n">angle</span> <span class="n">between</span> <span class="n">the</span> <span class="n">two</span> <span class="n">planes</span>
+ <span class="ow">is</span> <span class="n">then</span> <span class="n">calculated</span>
+
+<span class="n">ATOMS</span> <span class="n">C</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="n">S</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="n">N</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">PLANE</span>
+<span class="n">EVALUATE</span> <span class="n">C</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">DIHEDRAL</span> <span class="mi">1</span> <span class="n">AND</span> <span class="mi">2</span>
+<span class="n">END</span>
+
+
+ <span class="n">These</span> <span class="n">instructions</span> <span class="n">compute</span> <span class="n">a</span> <span class="n">TLS</span> <span class="n">tensor</span> <span class="k">for</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">atoms</span>
+ <span class="ow">and</span> <span class="n">then</span> <span class="nb">set</span> <span class="n">up</span> <span class="n">restraints</span> <span class="n">to</span> <span class="n">encourage</span> <span class="n">the</span> <span class="n">Uij</span> <span class="n">to</span> <span class="n">conform</span> <span class="n">to</span> <span class="n">a</span>
+ <span class="n">rigid</span> <span class="n">body</span><span class="o">.</span>  <span class="n">You</span> <span class="n">might</span> <span class="n">want</span> <span class="n">to</span> <span class="n">tighten</span> <span class="n">the</span> <span class="n">esd</span> <span class="ow">in</span> <span class="n">TLSREST</span><span class="o">.</span><span class="n">dat</span> <span class="n">to</span> <span class="mf">0.005</span><span class="o">.</span>
+
+\<span class="n">GEOM</span>
+<span class="n">ATOM</span> <span class="n">ALL</span>
+<span class="n">TLS</span>
+<span class="n">PUNCH</span>
+<span class="n">EVAL</span> <span class="n">ALL</span>
+<span class="n">EX</span>
+<span class="n">END</span>
+\<span class="n">LIST</span> <span class="mi">16</span>
+\<span class="n">USE</span> <span class="n">TLSREST</span><span class="o">.</span><span class="n">DAT</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+</section>
+<section id="torsion-angles-torsion">
+<span id="index-22"></span><span id="index-21"></span><h2>Torsion angles  -  \TORSION<a class="headerlink" href="#torsion-angles-torsion" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">TORSION</span> <span class="n">INPUTLIST</span><span class="o">=</span>
+<span class="n">ATOMS</span>  <span class="n">SPECIFICATIONS</span>
+<span class="n">PUBLICATION</span>  <span class="n">PRINT</span><span class="o">=</span> <span class="n">LEVEL</span><span class="o">=</span>
+<span class="n">END</span>
+
+\<span class="n">TORSION</span>
+<span class="n">ATOM</span> <span class="n">C</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="n">C</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="n">C</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="n">C</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<p>Calculation of the torsion angles for atoms i,j,k,l.
+The torsion angle about the bond j-k
+is the angle the bond i-j is rotated about j-k to bring it into
+coincidence with k-l.
+It is positive when  the rotation is
+clockwise on looking from j to k.</p>
+<p>The program uses atomic positions taken from
+LIST 5.  These can be
+modified by the space group symmetry operators stored in LIST 2 (space
+group information, see section <a class="reference internal" href="initial.html#list02"><span class="std std-ref">Input of the symmetry data  -  LIST 2</span></a>)</p>
+<p>EDSs (SUs) are computed by the method of Nardelli (using code given
+to us from his program PARST) if only average atomic esds are
+avaialble.  If the full VcV matrix is avaiable, they are computed by
+the method of Schaik et al (R. van Schaik, H Berendsen, A Torda &amp; W
+Gunsteren, J. Mol. Biol. (1993) 234, 751-762. The paper by U. Shmueli,
+Acta Cryst (1974) A30, 848-849 explains the need for the full vcv matrix
+and the effect of symmetry. The singularity in his equations (6) when tau is
+0 or 180 is circumvented in Schaiks formulation (which is singular if
+atoms j and k are coincident)</p>
+<section id="torsion-inputlist">
+<h3>\TORSION INPUTLIST=<a class="headerlink" href="#torsion-inputlist" title="Link to this heading"></a></h3>
+<p><em>INPUTLIST</em></p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">5</span>   <span class="o">-</span>  <span class="n">Default</span> <span class="n">value</span>
+<span class="mi">10</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><strong>ATOMS  SPECIFICATIONS</strong></p>
+<blockquote>
+<div><p>This directive specifies atoms that are to be used in the calculation
+of the torsion angle. More than one  ATOMS  directive can be given. Each
+directive must define at least four atoms, the torsion angle being
+computed with respect to the first three atoms and each of the
+subsequent ones.</p>
+</div></blockquote>
+<p><strong>PUBLICATION  PRINT=</strong></p>
+<blockquote>
+<div><p>The parameter PRINT controls the publication listing, which is sent to
+the file open on the CRYSTALS PUNCH unit.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NO</span>   <span class="o">-</span>  <span class="n">DEFAULT</span><span class="o">.</span>  <span class="n">There</span> <span class="ow">is</span> <span class="n">no</span> <span class="n">publication</span> <span class="n">listing</span>
+<span class="n">YES</span>    <span class="n">There</span> <span class="ow">is</span> <span class="n">a</span> <span class="n">publication</span> <span class="n">listing</span> <span class="n">sent</span> <span class="n">to</span> <span class="n">the</span> <span class="n">PUNCH</span> <span class="n">file</span>
+<span class="n">CIF</span>    <span class="n">The</span> <span class="n">listing</span> <span class="ow">is</span> <span class="ow">in</span> <span class="n">CIF</span> <span class="nb">format</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><strong>LEVEL=</strong></p>
+<blockquote>
+<div><p>If LEVEL is HIGH, the VcV marix of the atoms in each torsion angle
+is printed.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Example</span><span class="o">.</span>
+\ <span class="n">the</span> <span class="n">torsion</span> <span class="n">angle</span> <span class="n">about</span> <span class="n">C</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">-</span><span class="n">C</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="ow">is</span> <span class="n">calculated</span>
+\ <span class="n">two</span> <span class="n">torsion</span> <span class="n">angles</span> <span class="n">about</span> <span class="n">C</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">-</span><span class="n">C</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="n">are</span> <span class="n">calculated</span>
+\
+\<span class="n">TORSION</span>
+<span class="n">ATOMS</span> <span class="n">N</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="n">C</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="n">C</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="n">C</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">ATOMS</span> <span class="n">C</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="n">C</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="n">C</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="n">C</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span> <span class="n">O</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+</section>
+<section id="absolute-configuration-ton">
+<span id="index-24"></span><span id="index-23"></span><h2>Absolute Configuration  -  \TON<a class="headerlink" href="#absolute-configuration-ton" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">TON</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<p>Compute the Hooft-Straver-Spek parameter for comparisonm with the
+Flack parameter</p>
+<section id="ton">
+<h3>\TON<a class="headerlink" href="#ton" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p>This instruction evaluates a function of (Fo+h - Fo-h) and  (Fo+h - Fo-h)
+for all Friedel pairs. It uses LIST 7, which must be sorted to that
+Friedel pairs are adjacent and with the same index signs, and with a
+flag to indicate if the sign has been changed in ‘phase’.</p>
+<p>The data is most conveniently prepared useing the SCRIPT TON towards
+the end of a refinement.</p>
+</div></blockquote>
+</section>
+</section>
+<section id="publication-listing-of-the-atomic-parameters-parameters">
+<span id="index-26"></span><span id="index-25"></span><h2>Publication listing of the atomic parameters  -  \PARAMETERS<a class="headerlink" href="#publication-listing-of-the-atomic-parameters-parameters" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">PARAMETERS</span>
+<span class="n">LAYOUT</span> <span class="n">INSET</span><span class="o">=</span> <span class="n">ATOM</span><span class="o">=</span> <span class="n">DOUBLE</span><span class="o">=</span> <span class="n">CHOOSE</span><span class="o">=</span> <span class="n">FLOAT</span><span class="o">=</span> <span class="n">NCHAR</span><span class="o">=</span> <span class="n">NLINE</span><span class="o">=</span> <span class="n">LISTAXES</span><span class="o">=</span> <span class="n">ESD</span><span class="o">=</span>
+<span class="n">COORDINATES</span> <span class="n">NCHAR</span><span class="o">=</span> <span class="n">NDECIMAL</span><span class="o">=</span> <span class="n">SELECT</span><span class="o">=</span> <span class="n">TYPE</span><span class="o">=</span> <span class="n">DISPLAY</span><span class="o">=</span> <span class="n">PRINT</span><span class="o">=</span> <span class="n">PUNCH</span><span class="o">=</span>
+<span class="sa">U</span><span class="s1">&#39;S NCHAR= NDEC= SELECT= TYPE= DISPLAY= PRINT= PUNCH=</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">PARAMETERS</span>
+<span class="n">LAYOUT</span> <span class="n">ATOM</span><span class="o">-</span><span class="n">NAME</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span><span class="n">DOUBLE</span><span class="o">=</span><span class="n">YES</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<p>This routine sends the atomic parameters to the PUNCH file  in a suitable
+format  for publication or binding into a thesis.  As well as the current
+atomic parameters in LIST 5, the estimated  standard deviations derived from
+the least squares normal matrix are also  printed.
+<strong>THIS</strong> <strong>ROUTINE</strong> <strong>WILL</strong> <strong>NOT</strong> <strong>WORK</strong> if LIST
+5  is modified <em>in</em> <em>any</em> <em>way</em> since the last round of
+refinement. If any changes, including  renaming, are made, a further round of
+refinement must be done. If you wish  to preserve parameter values,
+and create a valid matrix
+without changing the parameter values, compute a refinement cycle but set
+all the shifts to zero.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">SFLS</span>
+<span class="n">REFINE</span>
+<span class="n">SHIFT</span> <span class="n">GENERAL</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<p>The output is in two halves, the first
+containing  the positional coordinates and any isotropic temperature factors,
+and the  second containing all the anisotropic temperature parameters.</p>
+<p>For the first part, a page is split into 6 separate  fields.
+The first field
+is blank, and is an offset so that the information  is  centred on
+the page.  The remaining fields contain the atom type and serial
+number, the  three positional parameters, and a temperature factor.
+This will be the value of U(iso) with its e.s.d for isotropic atoms,
+otherwise U(equiv), without an e.s.d, for anisotropic atoms.
+U(equiv) <strong>is</strong> <strong>not</strong> simply related to the
+diagonal elements of U(aniso), and may be computed as either the
+arithmetic or geometric mean of the principal axes of the ellipsoid.
+See \SET UEQUIV in the chapter on IMMEDIATE commands.
+The width of each type of field may be altered by the user, using
+respectively the  INSET ,  ATOM-NAME , and  NCHARACTER  parameters.  The
+default length
+of a page of this type of output is that required for A4 paper.</p>
+<p>The second part contains the anisotropic temperature factors, and each page
+is split into eight fields.
+As for the atomic coordinates, the first field is blank and represents
+an offset.
+The second field contains the atom type and serial number, and
+the remaining six fields contain the components of the anisotropic
+temperature factors.
+The width of each type of field may be adjusted by the user, using
+respectively the  INSET ,  ATOM-NAME  and  NCHARACTER  parameters.
+If a different value for  INSET  or  ATOM-NAME  is required in the
+first and second parts of the output, the job must be run twice.
+Depending upon the width across the page, the second part of the output
+occupies one sheet of A4 paper either across the page or down the page.</p>
+<p>For both types of output, the user can select double spacing
+down the page with the  DOUBLE  parameter.
+Similarly for each of the numeric fields, the user can choose the number
+of decimal places to be printed
+(the  NDECIMAL  parameter),
+and whether the numbers are printed as integers or in floating point
+with a decimal point.
+(The  FLOATING  parameter).
+The e.s.d.’s are printed to the same accuracy as the atomic parameters,
+so that if the chosen field is too small and an e.s.d. appears to be
+zero, it will be omitted in exactly the same way as for a parameter
+that has not been refined.
+A parameter printed with 4 decimal places might thus appear as :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.0123</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">OR</span>
+   <span class="mi">123</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Depending upon the format.
+In either case, the numbers are right justified in their field.</p>
+<p>As an alternative to the user selecting the number of decimal
+places that should be printed, it is possible to get the program
+to choose the number of decimal places required for each parameter
+automatically.
+(The  CHOOSE  parameter).
+If the parameters are to be printed in floating point, the number
+of decimal places is chosen so that the e.s.d. Can be represented
+as a one digit number in the last decimal place.
+For numbers that are to be printed as integers, the field used
+is never less than that given by the  NDECIMAL  parameter.
+If the required field is larger than that defined by these
+s,
+a decimal point is inserted and the required number of extra digits
+is output.
+For example, if the number of decimal places required is four, but the e.s.d.
+is too small, it would appear as :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.12345</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+<span class="n">OR</span>
+ <span class="mf">1234.5</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Depending upon whether floating point or integer output was required.
+For either type, if the parameter has not been refined, the number of
+decimal places is that given by the  NDECIMAL  instruction.</p>
+<p>Since this routine prints the e.s.d.’s, it is vital that the least squares
+matrix (LIST 11, see section <a class="reference internal" href="sfls.html#list11"><span class="std std-ref">The least squares matrix  -  LIST 11</span></a>) belongs to the current
+LIST 5 (the model parameters). If LIST 5 has been modified
+in any way since the last Least Squares, this routine will abort.</p>
+<p>When anisotropic atoms are present in LIST 5, U[EQUIV] is calculated
+according to the current setting of \SET UEQUIV.</p>
+<section id="parameters">
+<h3>\PARAMETERS<a class="headerlink" href="#parameters" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p>This command initiates the routines for printing of the atomic
+parameters in a suitable format for publication.</p>
+</div></blockquote>
+<p><strong>LAYOUT= INSET= ATOM= DOUBLE= CHOOSE= FLOAT= NCHAR= NLINE= LISTAXES= ESD=</strong></p>
+<blockquote>
+<div><p>This directive defines how the atomic parameters, both positional
+and thermal, are to be laid out on the page.</p>
+</div></blockquote>
+<p><em>INSET</em></p>
+<blockquote>
+<div><p>This parameter sets the number of blank spaces on each line before the
+atom type and serial number. If this parameter is omitted
+a default value of 1 is assumed.</p>
+</div></blockquote>
+<p><em>ATOM-NAME</em></p>
+<blockquote>
+<div><p>This parameter sets the width of the field that contains the atom
+type and serial number.
+The characters are left justified in the field, and the format is
+as follows :</p>
+<p>TYPE(SERIAL)</p>
+<p>The serial number is printed as an integer, and the unoccupied
+spaces are filled with blanks.
+If this parameter is omitted, a default value of 6 is assumed.</p>
+</div></blockquote>
+<p><em>DOUBLE</em></p>
+<blockquote>
+<div><p>This parameter has two possible values :</p>
+<p>NO   -  DEFAULT VALUE</p>
+<p>YES</p>
+<p>If  DOUBLE  is  YES  each line of parameters is double spaced.
+The default option if this parameter is omitted is single
+spacing, with no interleaving blank lines.</p>
+</div></blockquote>
+<p><em>CHOOSE</em></p>
+<blockquote>
+<div><p>This parameter has two possible values :</p>
+<p>NO</p>
+<p>YES  -  DEFAULT VALUE</p>
+<p>If  CHOOSE  is  YES  the program chooses the number of decimal places that
+need to be printed for each parameter, depending upon its e.s.d..
+The format of the output depends upon whether a decimal point
+is being used, as explained above.</p>
+</div></blockquote>
+<p><em>FLOATING</em></p>
+<blockquote>
+<div><p>This parameter has two possible values :</p>
+<p>YES  -  DEFAULT VALUE</p>
+<p>NO</p>
+<p>If  FLOATING  is  NO , the parameters are printed as integers,
+with an accuracy given either by the  NDECIMAL  parameters
+to the directives  COORDINATES  and “U’S, or by the ‘CHOOSE’ parameter.
+parameter.</p>
+</div></blockquote>
+<p><em>NCHARACTER</em></p>
+<blockquote>
+<div><p>This parameter indicates the total number of printing positions
+on the output device.
+If this parameter is omitted, a default value of 118 is assumed.</p>
+</div></blockquote>
+<p><em>NLINE</em></p>
+<blockquote>
+<div><p>This parameter indicates the total number of lines on the
+on the output media. Set a very lartge value (1000) to get continuous
+output.</p>
+</div></blockquote>
+<p><em>LISTAXES</em></p>
+<blockquote>
+<div><p>This parameter can have two values</p>
+<p>YES</p>
+<p>NO   -  DEFAULT VALUE</p>
+<p>If the value is YES the principal axes of the temperature factors
+are printed.</p>
+</div></blockquote>
+<p><em>ESDS</em></p>
+<blockquote>
+<div><p>This parameter can take 3 values</p>
+<p>NO</p>
+<p>YES  -  DEFAULT VALUE</p>
+<p>EXCLRH</p>
+<p>EXCLRH inhibits printing the e.s.ds for riding hydrogen atoms</p>
+</div></blockquote>
+<p><strong>COORDINATES NCHAR= NDECIMAL= SELECT= TYPE= DISPLAY= PRINT= PUNCH=</strong></p>
+<blockquote>
+<div><p>This directive defines how the positional coordinates are to be
+set out on the page.</p>
+</div></blockquote>
+<p><em>NCHARACTER</em></p>
+<blockquote>
+<div><p>This parameter sets the width of the field that contains the
+positional coordinates. The characters are right
+justified in the field, and if this parameter is omitted,
+a default value of 14 is assumed.</p>
+</div></blockquote>
+<p><em>NDECIMAL</em></p>
+<blockquote>
+<div><p>This parameter sets the number of decimal places to be printed for
+the positional parameters.
+It may be partially or completely overriden by the  CHOOSE
+parameter, depending upon the format of the output.
+If this parameter is omitted, a default value of 4 is assumed.</p>
+</div></blockquote>
+<p><em>SELECT</em></p>
+<blockquote>
+<div><p>This parameter selects the kinds of data to be printed, and
+can have five values.</p>
+<p>ALL     - Default. All atoms are printed.</p>
+<p>NONE    - No atoms are printed.</p>
+<p>ONLY    - Only atoms with TYPEs given on a TYPE directive are printed.</p>
+<p>EXCLUDE - Atoms with TYPEs given on a TYPE directive are not printed.</p>
+<p>SEPARATE- Atoms with TYPEs given on a TYPE directive are printed separately</p>
+</div></blockquote>
+<p><em>TYPE</em></p>
+<blockquote>
+<div><p>Used in conjunction with SELECT to determine which atom types to
+INCLUDE,EXCLUDE or SEPARATE. TYPE is ignored if SELECT is ALL or NONE.
+Its default value is ‘H’.</p>
+</div></blockquote>
+<p><em>DISPLAY</em></p>
+<blockquote>
+<div><p>This parameter has two possible values</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NO</span>   <span class="n">No</span> <span class="n">output</span> <span class="ow">is</span> <span class="n">displayed</span> <span class="n">on</span> <span class="n">the</span> <span class="n">terminal</span><span class="o">.</span>
+<span class="n">YES</span>  <span class="n">Output</span> <span class="ow">is</span> <span class="n">displayed</span> <span class="n">on</span> <span class="n">the</span> <span class="n">terminal</span><span class="o">.</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><em>PRINT</em></p>
+<blockquote>
+<div><p>This parameter has two possible values</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NO</span>       <span class="n">No</span> <span class="n">output</span> <span class="ow">is</span> <span class="n">sent</span> <span class="n">to</span> <span class="n">the</span> <span class="n">listing</span> <span class="n">file</span>
+<span class="n">YES</span>      <span class="n">Output</span> <span class="ow">is</span> <span class="n">sent</span> <span class="n">to</span> <span class="n">the</span> <span class="n">listing</span> <span class="n">file</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><em>PUNCH</em></p>
+<blockquote>
+<div><p>This parameter has three possible values</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NO</span>       <span class="n">No</span> <span class="n">output</span> <span class="ow">is</span> <span class="n">sent</span> <span class="n">to</span> <span class="n">the</span> <span class="n">punch</span> <span class="n">file</span>
+<span class="n">YES</span>      <span class="n">Output</span> <span class="ow">is</span> <span class="n">sent</span> <span class="n">to</span> <span class="n">the</span> <span class="n">punch</span> <span class="n">file</span>
+<span class="n">CIF</span>      <span class="n">Output</span> <span class="ow">is</span> <span class="ow">in</span> <span class="n">CIF</span> <span class="nb">format</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><strong>U’S NCHAR= NDEC= SELECT= TYPE= DISPLAY= PRINT= PUNCH=</strong></p>
+<blockquote>
+<div><p>This directive defines how the thermal parameter are to be
+set out on the page.</p>
+</div></blockquote>
+<p><em>NCHARACTER</em></p>
+<blockquote>
+<div><p>This parameter sets the width of the field that contains the thermal
+parameters. The characters are right justified in the field, and
+if this parameter is omitted, a default value of 11 is assumed.</p>
+</div></blockquote>
+<p><em>NDECIMAL</em></p>
+<blockquote>
+<div><p>This parameter sets the number of decimal places to be printed for
+the thermal parameters.
+If this parameter is omitted, a default value of 4 is assumed.</p>
+</div></blockquote>
+<p><em>SELECT</em></p>
+<blockquote>
+<div><p>This parameter selects the kinds of data to be printed, and
+can have five values.</p>
+<p>ALL     - Default. All atoms are printed.</p>
+<p>NONE    - No atoms are printed.</p>
+<p>ONLY    - Only atoms with TYPEs given on a TYPE directive are printed.</p>
+<p>EXCLUDE - Atoms with TYPEs given on a TYPE directive are not printed.</p>
+<p>SEPARATE- Atoms with TYPEs given on a TYPE directive are printed separately</p>
+</div></blockquote>
+<p><em>TYPE</em></p>
+<blockquote>
+<div><p>Used in conjunction with SELECT to determine which atom types to
+INCLUDE,EXCLUDE or SEPARATE. TYPE is ignored if SELECT is ALL or NONE.
+Its default value is ‘H’.</p>
+</div></blockquote>
+<p><em>MONITOR</em></p>
+<blockquote>
+<div><p>This parameter has two possible values</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">OFF</span>   <span class="n">No</span> <span class="n">output</span> <span class="ow">is</span> <span class="n">displayed</span> <span class="n">on</span> <span class="n">the</span> <span class="n">terminal</span><span class="o">.</span>
+<span class="n">HIGH</span>  <span class="n">Output</span> <span class="ow">is</span> <span class="n">displayed</span> <span class="n">on</span> <span class="n">the</span> <span class="n">terminal</span><span class="o">.</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><em>PRINT</em></p>
+<blockquote>
+<div><p>This parameter has two possible values</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NO</span>       <span class="n">No</span> <span class="n">output</span> <span class="ow">is</span> <span class="n">sent</span> <span class="n">to</span> <span class="n">the</span> <span class="n">listing</span> <span class="n">file</span>
+<span class="n">YES</span>      <span class="n">Output</span> <span class="ow">is</span> <span class="n">sent</span> <span class="n">to</span> <span class="n">the</span> <span class="n">listing</span> <span class="n">file</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><em>PUNCH</em></p>
+<blockquote>
+<div><p>This parameter has three possible values</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NO</span>       <span class="n">No</span> <span class="n">output</span> <span class="ow">is</span> <span class="n">sent</span> <span class="n">to</span> <span class="n">the</span> <span class="n">punch</span> <span class="n">file</span>
+<span class="n">YES</span>      <span class="n">Output</span> <span class="ow">is</span> <span class="n">sent</span> <span class="n">to</span> <span class="n">the</span> <span class="n">punch</span> <span class="n">file</span>
+<span class="n">CIF</span>      <span class="n">Output</span> <span class="ow">is</span> <span class="ow">in</span> <span class="n">CIF</span> <span class="nb">format</span>
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+</section>
+<section id="publication-listing-of-reflection-data-reflections">
+<span id="reflections"></span><span id="index-28"></span><span id="index-27"></span><h2>Publication listing of reflection data  - \REFLECTIONS<a class="headerlink" href="#publication-listing-of-reflection-data-reflections" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">REFLECTIONS</span> <span class="n">INPUT</span><span class="o">=</span>
+<span class="n">LAYOUT</span> <span class="n">NCOLUMNS</span><span class="o">=</span> <span class="n">NLINES</span><span class="o">=</span> <span class="n">INSET</span><span class="o">=</span> <span class="n">NSPACE</span><span class="o">=</span> <span class="n">SCALE</span><span class="o">=</span> <span class="n">NCHARACTER</span><span class="o">=</span>
+<span class="n">OUTPUT</span> <span class="n">PRINT</span><span class="o">=</span> <span class="n">PUNCH</span><span class="o">=</span> <span class="n">LIST28</span><span class="o">=</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<p>This routine prints the reflection data in LIST 6 (section <a class="reference internal" href="reflectiondata.html#list06"><span class="std std-ref">Simple input of F or Fsq data - LIST 6</span></a>)
+in a suitable format
+for publication or binding into a thesis. The information printed falls
+into one or more columns, each of which contains h, k, l, /Fo/, /Fc/, and the
+phase angle in degrees.
+Each column is 18 characters wide. Although the user has no control
+over the contents of each column, it is possible to vary the number of
+blank spaces at the start of each line, the number of columns across the
+page,  the number of spaces between successive columns, and the number of
+lines per page. (The  INSET ,  NCOLUMNS ,  NSPACE  and  NLINES  parameters,
+respectively).
+/Fo/ and /Fc/ are both put on the same scale of /Fc/, using the scale factor
+in LIST 5, and both these two numbers may be modified by a scaling constant
+before they are printed. (The  SCALE  parameter). However, all the values of
+both /Fo/ and /Fc/ must be less than 10000 when they are printed.</p>
+<p>LIST 28 is used for checking whether or not to print a reflection. Remember
+that if LIST 28 was used to reject some reflections when structure factors
+were last calculated, removing these restrictions before printing LIST 6
+will mean that some reflections will have incorrect values of Fc and phase.</p>
+<section id="reflections-input">
+<h3>\REFLECTIONS INPUT=<a class="headerlink" href="#reflections-input" title="Link to this heading"></a></h3>
+<p><em>INPUT</em></p>
+<blockquote>
+<div><p>Indicates which reflection list to use.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">6</span>      <span class="n">Default</span>
+<span class="mi">7</span>      <span class="n">Alternative</span> <span class="n">reflection</span> <span class="nb">list</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><strong>LAYOUT NCOLUMNS= NLINES= INSET= NSPACE= SCALE= NCHARACTER=</strong></p>
+<blockquote>
+<div><p>This directive defines how the reflection data is to be printed.</p>
+</div></blockquote>
+<p><em>NCOLUMNS=</em></p>
+<blockquote>
+<div><p>This parameter indicates the number of columns of reflection data to be
+printed across the page. If this parameter is omitted, a default value of
+3 is assumed.</p>
+</div></blockquote>
+<p><em>NLINES=</em></p>
+<blockquote>
+<div><p>This parameter indicates how many lines should be on each page of output.
+If this parameter is omitted a default value of 52 is assumed.</p>
+</div></blockquote>
+<p><em>INSET=</em></p>
+<blockquote>
+<div><p>This parameter indicates how many blank spaces should be inset at
+the beginning of each line. If this parameter is omitted a default value
+of 30 is assumed.</p>
+</div></blockquote>
+<p><em>NSPACE=</em></p>
+<blockquote>
+<div><p>This parameter indicates the number of spaces separating successive
+columns across the page. If this parameter is omitted a default value
+of 3 is assumed, which means that each column occupies 21
+characters across the page.</p>
+</div></blockquote>
+<p><em>SCALE=</em></p>
+<blockquote>
+<div><p>This parameter indicates the scaling constant by which /Fo/ and /Fc/
+should be multiplied before they are printed,
+after they have been put on the same scale (the scale of /Fc/).
+If this parameter is omitted, a default value of 10 is assumed.</p>
+</div></blockquote>
+<p><em>NCHARACTER=</em></p>
+<blockquote>
+<div><p>This parameter indicates the total number of printing positions
+on the output device.
+If this parameter is omitted, a default value of 120 is assumed.</p>
+</div></blockquote>
+<p><strong>OUTPUT PRINT PUNCH LIST28</strong></p>
+<blockquote>
+<div><p>This directive defines where the reflection data is to be printed.</p>
+</div></blockquote>
+<p><em>PRINT=</em></p>
+<blockquote>
+<div><p>This has two allowed values :-</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NO</span>       <span class="n">No</span> <span class="n">output</span> <span class="ow">is</span> <span class="n">sent</span> <span class="n">to</span> <span class="n">the</span> <span class="n">listing</span> <span class="n">file</span>
+<span class="n">YES</span>      <span class="n">Output</span> <span class="ow">is</span> <span class="n">sent</span> <span class="n">to</span> <span class="n">the</span> <span class="n">listing</span> <span class="n">file</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><em>PUNCH=</em></p>
+<blockquote>
+<div><p>This has two allowed values :-</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NO</span>       <span class="n">No</span> <span class="n">output</span> <span class="ow">is</span> <span class="n">sent</span> <span class="n">to</span> <span class="n">the</span> <span class="n">punch</span> <span class="n">file</span>
+<span class="n">YES</span>      <span class="n">Output</span> <span class="ow">is</span> <span class="n">sent</span> <span class="n">to</span> <span class="n">the</span> <span class="n">punch</span> <span class="n">file</span>
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+</section>
+<section id="summary-of-data-lists-summary">
+<span id="index-30"></span><span id="index-29"></span><h2>Summary of data lists - \SUMMARY<a class="headerlink" href="#summary-of-data-lists-summary" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">SUMMARY</span> <span class="n">OF</span><span class="o">=</span> <span class="n">TYPE</span><span class="o">=</span> <span class="n">LEVEL</span><span class="o">=</span>
+
+\<span class="n">SUMMARY</span> <span class="n">LIST</span> <span class="mi">5</span> <span class="n">HIGH</span>
+<span class="n">END</span>
+\<span class="n">SUMMARY</span> <span class="n">EVERYTHING</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<p>This command produces a summary on the terminal of the contents of a
+list. Use \PRINT if you need full details.</p>
+<section id="summary-of-type-level">
+<h3>\SUMMARY OF= TYPE= LEVEL=<a class="headerlink" href="#summary-of-type-level" title="Link to this heading"></a></h3>
+<p><em>OF</em></p>
+<blockquote>
+<div><p>LIST         Default, also requires TYPE to be set
+EVERYTHING</p>
+<p>The value EVERYTHING generates a summary of all LISTS.</p>
+</div></blockquote>
+<p><em>TYPE</em></p>
+<blockquote>
+<div><p>This parameter requires a list type number if the previous parameter
+was ‘LIST”</p>
+</div></blockquote>
+<p><em>LEVEL</em></p>
+<blockquote>
+<div><p>Some lists may be listed in more or less detail.</p>
+<p>OFF
+LOW
+MEDIUM    Default
+HIGH</p>
+</div></blockquote>
+<p><strong>\SUMMARY 6</strong></p>
+<blockquote>
+<div><p>Unlike all the other SUMMARIES, which only generate readable output,
+SUMMARY 6 computes the conventional R on the basis of the current Fo, Fc
+and LIST 28 (section <a class="reference internal" href="sfls.html#list28"><span class="std std-ref">Reflection restriction list  -  LIST 28</span></a>), and updates the value stored in
+LIST 6 (section <a class="reference internal" href="reflectiondata.html#list06"><span class="std std-ref">Simple input of F or Fsq data - LIST 6</span></a>)
+and LIST30 (section <a class="reference internal" href="initial.html#list30"><span class="std std-ref">Input of General Crystallographic Data - LIST 30</span></a>). The
+weighted R is not affected.</p>
+</div></blockquote>
+</section>
+</section>
+<section id="estimation-of-absolute-configuration-tonspek">
+<span id="tonspek"></span><span id="index-32"></span><span id="index-31"></span><h2>Estimation of Absolute configuration - \TONSPEK<a class="headerlink" href="#estimation-of-absolute-configuration-tonspek" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">TONSPEK</span> <span class="n">INPUT</span><span class="o">=</span> <span class="n">TYPE</span><span class="o">=</span> <span class="n">PLOT</span><span class="o">=</span> <span class="n">PUNCH</span><span class="o">=</span> <span class="n">FILTER1</span><span class="o">=</span> <span class="o">...</span> <span class="n">FILTER5</span><span class="o">=</span> <span class="n">WEIGHT</span><span class="o">=</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<p>This routine contains code kindly donated by Ton Spek for the
+computation of the Hooft ‘y’ parameter and probabiliies.
+Rob W. W. Hooft, Leo H. Straver and Anthony L. Spek,
+J. Appl. Cryst. (2008). 41, 96-103.  It requires the current LIST 6 to
+be converted to a LIST 7 in which Friedel pairs are adjacent and in
+which Fc has been computed with the Flack ‘x’ parameter set to zero.</p>
+<p>The pre-preparation for using this routine has been packaged into a
+script available from the Analyse menu.  The current value of the
+Flack parameter should already be stored in LIST 30.</p>
+<section id="tonspek-input-type-plot-punch-filter1-filter5-weight">
+<h3>\TONSPEK INPUT= TYPE= PLOT= PUNCH= FILTER1= … FILTER5= WEIGHT=<a class="headerlink" href="#tonspek-input-type-plot-punch-filter1-filter5-weight" title="Link to this heading"></a></h3>
+<p><em>INPUT=</em></p>
+<blockquote>
+<div><p>Indicates which reflection list to use.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">6</span>      <span class="n">Default</span>
+<span class="mi">7</span>      <span class="n">Alternative</span> <span class="n">reflection</span> <span class="nb">list</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><em>TYPE=</em></p>
+<blockquote>
+<div><p>The computations can be carried out using the observed and computed
+Bijvoet differences, or the observed and computed Parsons Quotients.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DODC</span>      <span class="n">Bijvoet</span> <span class="n">Differences</span>
+<span class="n">QOQC</span>      <span class="n">Parsons</span> <span class="n">Quotients</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><em>PLOT=</em></p>
+<blockquote>
+<div><p>When used from the GUI causes the various graphs to be displayed</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">YES</span>     <span class="n">Default</span> <span class="n">value</span>
+<span class="n">NO</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><em>PUNCH=</em></p>
+<blockquote>
+<div><p>Controls output to the punch file, BFILE.CPH</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NONE</span>           <span class="n">Default</span>
+<span class="n">TABLE</span>          <span class="n">Table</span> <span class="n">of</span> <span class="nb">all</span> <span class="n">the</span> <span class="n">Bijvoet</span> <span class="n">pairs</span><span class="o">.</span>
+<span class="n">RESTRAINT</span>      <span class="n">List</span> <span class="n">of</span> <span class="n">restriants</span> <span class="n">suitable</span> <span class="k">for</span> <span class="n">adding</span> <span class="n">to</span> <span class="n">a</span> <span class="n">LIST</span> <span class="mf">16.</span>
+<span class="n">GRAPH</span>          <span class="n">Values</span> <span class="n">suitable</span> <span class="k">for</span> <span class="nb">input</span> <span class="n">to</span> <span class="n">an</span> <span class="n">external</span> <span class="n">program</span>
+<span class="n">SUMMARY</span>        <span class="n">One</span><span class="o">-</span><span class="n">line</span> <span class="n">summary</span> <span class="n">of</span> <span class="n">the</span> <span class="n">various</span> <span class="n">parameters</span> <span class="ow">and</span> <span class="n">sus</span><span class="o">.</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><em>FILTER1=</em></p>
+<blockquote>
+<div><p>The minimum acceptable value of Dcalc/sigma(Dobs).  This is the minimum
+‘ideal’ theoretical signal:noise ratio.  The default value of 0.5 can be
+increased for materials with a large Friedif, or may need to be reduced
+for small Freidif.</p>
+</div></blockquote>
+<p><em>FILTER2=</em></p>
+<blockquote>
+<div><p>The minimum acceptable value for the ration of the average of the observed Bijvoet
+pairs to the su of the average, default is 1.0</p>
+</div></blockquote>
+<p><em>FILTER3=</em></p>
+<blockquote>
+<div><p>The observed Bijvoet differences muse bt less than FILTER3 times the
+maximum calculated difference, default value is 2.0</p>
+</div></blockquote>
+<p><em>FILTER4=</em></p>
+<blockquote>
+<div><p>Minimum accaptable weight modifier from the Blessing algorithm.</p>
+</div></blockquote>
+<p><em>FILTER5=</em></p>
+<blockquote>
+<div><p>Maximum values of Max(Ao,Ac) / Min (Ao,Ac).  Used to filter out
+reflections where are serious discrepancies between the observed and calculated
+structure factors. Default value is 2.5.</p>
+</div></blockquote>
+</section>
+</section>
+<section id="cif-lists-cif">
+<span id="index-33"></span><h2>CIF lists - \CIF<a class="headerlink" href="#cif-lists-cif" title="Link to this heading"></a></h2>
+<p>Data can be produced in CIF format for direct deposition at CCDC or
+submission to journals. The required information is taken from several
+lists, including LIST 30 (see section <a class="reference internal" href="initial.html#list30"><span class="std std-ref">Input of General Crystallographic Data - LIST 30</span></a>). F000, Mu etc are also
+computed and inserted in LIST 30.</p>
+<section id="cif">
+<h3>\CIF<a class="headerlink" href="#cif" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p>There are no qualifiers.</p>
+<p>See \PARAMETERS and \REFLECTIONS for the CIF printing of parameters
+and reflections .</p>
+</div></blockquote>
+<p><strong>CheckCIF</strong></p>
+<blockquote>
+<div><p>CheckCIF and other validators are continuously updated to meet the
+changing needs of the community. It is unlikely that a CRYSTALS .cif
+will pass all checks first time, and edits may be necessary to
+accommodate special situations. Some of these have been foreseen, and the
+.cif contains possible alternative texts as ‘comments’. These can be
+found by searching for the text ‘choose’.</p>
+</div></blockquote>
+<p><strong>References</strong></p>
+<blockquote>
+<div><p>The SCRIPT directory contains two text files that contain information
+copied into the cif file. The user may edit them.</p>
+</div></blockquote>
+<p><em>Refcif.dat</em></p>
+<blockquote>
+<div><p>This file is copied in its entirety to the head of the cif file. If
+it is edited, care must be taken to follow the rules about text
+delimiters.</p>
+</div></blockquote>
+<p><em>Reftab</em></p>
+<blockquote>
+<div><p>This is a loosely formatted file containing the references to be
+transcribed into the cif.</p>
+<p>Every reference is composed of 2 parts - a short text used as a data
+item in the cif, and the full reference. The two parts must be kept
+together, be separated from each other by a blank line, and be separated
+from any other item by a blank line.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>      <span class="n">n</span>  <span class="n">a</span> <span class="n">four</span><span class="o">-</span><span class="n">digit</span> <span class="n">number</span> <span class="n">giving</span> <span class="n">the</span> <span class="n">number</span> <span class="n">of</span> <span class="n">references</span> <span class="n">to</span> <span class="n">follow</span><span class="o">.</span>
+         <span class="n">Other</span> <span class="n">text</span> <span class="n">on</span> <span class="n">the</span> <span class="n">line</span> <span class="ow">is</span> <span class="n">ignored</span><span class="o">.</span>
+<span class="n">Next</span> <span class="n">items</span> <span class="n">repeated</span> <span class="s1">&#39;n&#39;</span> <span class="n">times</span><span class="p">:</span>
+      <span class="n">m</span>  <span class="n">a</span> <span class="n">three</span> <span class="n">digit</span> <span class="n">number</span> <span class="n">preceded</span> <span class="n">by</span> <span class="n">a</span> <span class="s1">&#39;hash&#39;</span> <span class="n">symbol</span> <span class="n">used</span> <span class="k">as</span> <span class="n">an</span>
+         <span class="n">identifier</span> <span class="k">for</span> <span class="n">the</span> <span class="n">reference</span><span class="o">.</span> <span class="n">The</span> <span class="n">numbers</span> <span class="n">must</span> <span class="n">be</span> <span class="n">unique</span><span class="p">,</span> <span class="ow">not</span>
+         <span class="n">necessarily</span> <span class="ow">in</span> <span class="nb">any</span> <span class="n">order</span><span class="p">,</span> <span class="k">with</span> <span class="n">the</span> <span class="n">largest</span> <span class="n">one</span> <span class="n">equal</span> <span class="n">to</span> <span class="s1">&#39;n&#39;</span>
+
+      <span class="n">The</span> <span class="n">full</span> <span class="n">reference</span><span class="o">.</span> <span class="n">References</span> <span class="n">are</span> <span class="n">put</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">alphabetic</span>
+      <span class="n">order</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>Items 001 to 004 are associated with the keywords ‘unknown’ for the
+corresponding items in LIST 30 (see section <a class="reference internal" href="initial.html#list30"><span class="std std-ref">Input of General Crystallographic Data - LIST 30</span></a>), and thus
+enable the user to insert
+their own references. Don’t forget to move them to their correct
+alphabetical place.</p>
+</div></blockquote>
+<p><strong>e.s.d.s</strong></p>
+<blockquote>
+<div><p>The esds output in CIF files try to follow the ‘Rule of 19’, as
+requested by Acta Cryst.
+Syd Hall, former Editor for Acta C, summarised the rule as follows:</p>
+<p>‘This method of handling the su (esd) values has been in force
+with Acta since about 1984 apparently. In my time it came up for
+discussion about two years ago (1996) and after much to-ing and fro-ing
+it was readopted as the preferred level of precision for su’s.</p>
+<p>What it means is as follows….</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">one</span> <span class="n">adopts</span> <span class="n">esd</span> <span class="n">values</span> <span class="n">to</span> <span class="n">one</span> <span class="n">digit</span> <span class="n">precision</span> <span class="p">(</span><span class="n">rule</span> <span class="n">of</span> <span class="mi">9</span><span class="p">)</span> <span class="n">the</span> <span class="n">values</span>
+
+      <span class="mf">5.548</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>      <span class="mf">1.453</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>  <span class="mf">3.921</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>  <span class="mf">1.2287</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>  <span class="n">are</span> <span class="n">acceptable</span><span class="o">.</span>
+
+<span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="k">if</span> <span class="n">one</span> <span class="n">permits</span> <span class="n">two</span> <span class="n">digits</span> <span class="n">precision</span> <span class="k">with</span> <span class="n">a</span> <span class="n">limit</span> <span class="n">of</span> <span class="mi">19</span> <span class="p">(</span><span class="n">rule</span> <span class="n">of</span> <span class="mi">19</span><span class="p">)</span><span class="o">...</span>
+
+      <span class="mf">5.5483</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span>     <span class="mf">1.4532</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>  <span class="mf">3.921</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>  <span class="mf">1.2287</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>  <span class="n">are</span> <span class="n">acceptable</span><span class="o">.</span>
+
+<span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="k">if</span> <span class="n">one</span> <span class="n">permits</span> <span class="n">two</span> <span class="n">digits</span> <span class="n">precision</span> <span class="k">with</span> <span class="n">a</span> <span class="n">limit</span> <span class="n">of</span> <span class="mi">29</span> <span class="p">(</span><span class="n">rule</span> <span class="n">of</span> <span class="mi">29</span><span class="p">)</span><span class="o">...</span>
+
+      <span class="mf">5.5483</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span>     <span class="mf">1.4532</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>  <span class="mf">3.9214</span><span class="p">(</span><span class="mi">28</span><span class="p">)</span>  <span class="mf">1.2287</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>  <span class="n">are</span> <span class="n">acceptable</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>The object of this approach is to provide a more consistent distribution
+of precision across all values. These particular matters are not really
+my responsibility but we try to conform to recommendation of the
+nomenclature people. This is one such occasion.’</p>
+</div></blockquote>
+</section>
+</section>
+<section id="adding-archive-files-addarc">
+<span id="addarc"></span><span id="index-34"></span><h2>Adding Archive files - ADDARC<a class="headerlink" href="#adding-archive-files-addarc" title="Link to this heading"></a></h2>
+<section id="addarc-filename">
+<h3>ADDARC filename<a class="headerlink" href="#addarc-filename" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p>This command is usually called from SCRIPTS and inserts the contents
+of the file ‘filename’ into the current cif file, usually ‘publish.cif’</p>
+</div></blockquote>
+</section>
+</section>
+<section id="graphics-cameron">
+<span id="grcameron"></span><span id="index-35"></span><h2>Graphics - CAMERON<a class="headerlink" href="#graphics-cameron" title="Link to this heading"></a></h2>
+<section id="cameron">
+<h3>CAMERON<a class="headerlink" href="#cameron" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p>The graphics module CAMERON is part of the graphical user interface, and can
+only be started from the GUI. Like CRYSTALS, a sub-set of the possible
+commands are packaged up into menus, but the advanced full potential
+is still available from the command line. There is a separate guide for
+CAMERON</p>
+<p>On exit from CAMERON the current image of the structure is padded back to
+CRYSTALS in the file  CAMERON.L5.
+This contains <strong>all</strong> and <strong>only</strong> the atoms last displayed by CAMERON.
+Be careful -
+it could be a packing diagram!</p>
+</div></blockquote>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="fourier.html" class="btn btn-neutral float-left" title="Fourier Routines" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="twin.html" class="btn btn-neutral float-right" title="Twinned Crystals" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Richard Cooper, David Watkin.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
