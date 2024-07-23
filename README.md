@@ -9,4 +9,4 @@ The [CRYSTALS reference manual](https://chemcryst.github.io/crystals/crystalsman
 
 The [CAMERON manual](https://chemcryst.github.io/crystals/cameron.html) provides a reference for using the built-in crystal structure graphics tool CAMERON. 
 
-[https://www.youtube.com/watch?v=KDUIFE_epXE](https://www.youtube.com/watch?v=KDUIFE_epXE)
+[![A short video showing CRYSTALS importing data, solving a structure, and refining the model](https://img.youtube.com/vi/KDUIFE_epXE/0.jpg)](https://www.youtube.com/watch?v=KDUIFE_epXE)
