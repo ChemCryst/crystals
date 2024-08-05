@@ -21,7 +21,7 @@ jobs:
           guiflag: yes
           testsuffix: GUI
           removeguitst:
-          wxoptions: -DwxWidgets_ROOT_DIR=c:\msys64\mingw64\include\wx-3.2\wx -DwxWidgets_LIB_DIR=C:\msys64\mingw64\lib\ -DwxWidgets_CONFIGURATION=mswu
+          wxoptions: -DwxWidgets_ROOT_DIR=c:\wx -DwxWidgets_LIB_DIR=C:\wx\lib -DwxWidgets_CONFIGURATION=mswu
         - cl: nogui
           guiflag: no
           testsuffix:
@@ -43,25 +43,23 @@ jobs:
         c:\msys64\usr\bin\pacman --noconfirm -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-openblas mingw-w64-x86_64-perl msys2-w32api-runtime mingw-w64-x86_64-curl
 
 # WIN GUI ONLY
-    - name: Install MinGW compiler and tools
-      if: matrix.cl == 'gui'
-      shell: cmd
-      run: |
-        c:\msys64\usr\bin\pacman --noconfirm -S  mingw-w64-x86_64-wxwidgets3.2-msw 
-
-# Install wxWidgets - win GUI only
-#    - name: Setup wxWidgets for Win64 gui#
+#    - name: Install MinGW compiler and tools
 #      if: matrix.cl == 'gui'
 #      shell: cmd
-#      run: | 
-#        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.5/wxWidgets-3.2.5.7z > src.7z
-#        7z x src.7z -owx -y
-#        dir
-#        cd wx\build\msw
-#        set PATH=C:\msys64\mingw64\bin;%PATH%
-#        echo %PATH%
-#        mingw32-make SHELL=CMD.exe -f makefile.gcc BUILD=release SHARED=1 UNICODE=1 setup_h
-#        mingw32-make SHELL=CMD.exe -j8 -f makefile.gcc BUILD=release SHARED=1 UNICODE=1 
+#      run: |
+#        c:\msys64\usr\bin\pacman --noconfirm -S  mingw-w64-x86_64-wxwidgets3.2-msw 
+
+# Install wxWidgets - win GUI only
+    - name: Setup wxWidgets for Win64 gui#
+      if: matrix.cl == 'gui'
+      shell: cmd
+      run: | 
+        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.5/wxMSW-3.2.5_gcc810_x64_Dev.7z > src.7z
+        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.5/wxWidgets-3.2.5-headers.7z > head.7z
+        7z x src.7z -owx -y
+        7z x head.7z -owx -y
+        dir 
+        dir wx
 
     - name: Create build folders
       run: | 
