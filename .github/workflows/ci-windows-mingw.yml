@@ -118,16 +118,15 @@ jobs:
 #
 # If failures, set variable to trigger next two stages (one to tidy, one to upload)
     - name: Tidy failed test outputs win64
-      working-directory: test_suite
       if: failure() 
       shell: cmd
       run: |
         echo "testfail=true" >> $GITHUB_ENV
-        del /q MIN64GH${{ matrix.testsuffix }}.org
-        copy *.out MIN64GH${{ matrix.testsuffix }}.org
-        copy datafiles\* MIN64GH${{ matrix.testsuffix }}.org
-        copy crystals.exe MIN64GH${{ matrix.testsuffix }}.org
-        copy crystals-cl.exe MIN64GH${{ matrix.testsuffix }}.org
+        del /q test_suite\MIN64GH${{ matrix.testsuffix }}.org
+        copy test_suite*.out test_suite\MIN64GH${{ matrix.testsuffix }}.org
+        copy datafiles\* test_suite\MIN64GH${{ matrix.testsuffix }}.org
+        copy crystals.exe test_suite\MIN64GH${{ matrix.testsuffix }}.org
+        copy crystals-cl.exe test_suite\MIN64GH${{ matrix.testsuffix }}.org
         del /q *.*
 
     - name: Upload outputs if failures
