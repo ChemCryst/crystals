@@ -1,0 +1,25 @@
+ {I To input initial data (cell, space group, etc.) use the X-ray Data menu.
+
+  For getting started, reporting bugs etc. see the CRYSTALS Wiki
+  {&http://www.xtl.ox.ac.uk/wiki.html{& or check the manuals
+  {&"crysdir:manual/primer-1.html"{& and FAQs {&"crysdir:manual/faq-1.html"{&
+  Send problems or feedback to {&mailto:david.watkin@chem.ox.ac.uk{&.
+  ===================================================================
+ {I Easily imported data formats: INS/RES & HKL, CAD4, DIP, Kappa CCD cif.
+ {R Run CRYSTALS in a separate folder for the each structure studied.
+ {I To import SHELX INS/HKL files, choose X-ray Data->Import SHELX file.
+ {I For Kappa CCD data choose X-ray Data->Pre-process->Run KCCDin.
+ {I All data is collected and stored in crfilev2.dsc in the current folder.
+
+ {R     Click "Guide" on the toolbar (or "Refinement->The Guide"
+ {R          in the menu), for advice on what to do next.
+ This natty material was supplied as very poor colourless crystals
+ found congealed in the bottom of a half-abandoned flask.
+
+ A fragment of crystal (0.3 x 0.4 x 0.4 mm) was mounted in oil
+ on a KCCD diffractometer at 190K and  a data set collected in two hours.
+
+ Structure contains one cycloproyl ring, from which its nickname is derived.
+
+ Data has been put into SHELX format (cyclo.ins and cyclo.hkl).
+ {I   Cell dimension data is still required.

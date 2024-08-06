@@ -1,0 +1,61 @@
+2 15                                                                            
+Spheres                                                                         
+BALL ALL FILL COLOUR DEFAULT COLOUR BACK WHITE COLOUR BOND ALL BLACK VIEW       
+Publish                                                                         
+UNFILL COLOUR BOND ALL WHITE COLOUR BACK GREY COLOUR ALL BLACK VIEW             
+Rotate_x -                                                                      
+XROT -10 VIEW                                                                   
+Rotate_y -                                                                      
+YROT -10 VIEW                                                                   
+Rotate_z -                                                                      
+ZROT -10 VIEW                                                                   
+Along_axis a                                                                    
+ALONG AXIS A VIEW                                                               
+Along_axis c                                                                    
+ALONG AXIS C VIEW                                                               
+Re-draw                                                                         
+VIEW                                                                            
+Show_labels                                                                     
+LABEL ALL VIEW                                                                  
+Pack_Complete                                                                   
+PACK CELL COMPLETE INTRA NOLABEL ALL CONNECT DEFAULT VIEW                       
+Pack_Cut                                                                        
+PACK CELL CUT INTRA NOLABEL ALL  CONNECT DEFAULT VIEW                           
+Show_cell                                                                       
+INCLUDE CELL VIEW                                                               
+Include_hydrogen                                                                
+INCLUDE H VIEW                                                                  
+Exclude_polygon                                                                 
+EXCLUDE AREA VIEW                                                               
+Advanced_menus                                                                  
+#SCRIPT CAMMAIN                                                                 
+Ellipses                                                                        
+ELLIPSE ALL ELLIPSE TYPE ALL 4 VIEW                                             
+Cursor_rotate                                                                   
+CURSOR                                                                          
+Rotate_x +                                                                      
+XROT 10 VIEW                                                                    
+Rotate_y +                                                                      
+YROT 10 VIEW                                                                    
+Rotate_z +                                                                      
+ZROT 10 VIEW                                                                    
+Along_Axis b                                                                    
+ALONG AXIS B VIEW                                                               
+Best_Plane                                                                      
+PLANE ALL VIEW                                                                  
+Hide_labels                                                                     
+NOLABEL ALL VIEW                                                                
+Move/add_Labels                                                                 
+LABEL MOUSE VIEW                                                                
+Pack_Centroid                                                                   
+PACK CELL CENTROID INTRA NOLABEL ALL CONNECT DEFAULT VIEW                       
+Unpack                                                                          
+UNPACK VIEW                                                                     
+Exclude_Cell                                                                    
+EXCLUDE CELL VIEW                                                               
+Exclude_Hydrogen                                                                
+EXCLUDE H VIEW                                                                  
+Include_all                                                                     
+INCLUDE ALL VIEW                                                                
+Exit                                                                            
+END                                                                             

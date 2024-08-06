@@ -1,0 +1,24 @@
+%SCRIPT YRETYPES
+%% Set these so that YRETYPE doesn't ask questions, we must also
+%% provide the #EDIT and END commands. This saves disk space - only
+%% one new L5 per run of this script.
+% VARIABLE LOGICAL CALLED 
+% VARIABLE CHARACTER CATOM CTYPE
+%% Declare this so that YRETYPE can work more efficiently.
+%% (remembers where to start trying from...)
+% VARIABLE INTEGER STARTFROM
+%%
+% EVALUATE CALLED = TRUE
+% GET SILENT NOSTORE FINAL KEYWORD 'Change to?' 'C'
+% EVALUATE CTYPE = CVALUE
+% QUEUE REWIND
+% LOOP
+%   ON END TERMINATE
+%   GET SILENT NOSTORE FINAL KEYWORD 'Atom?' ' '
+%   EVALUATE CATOM = CVALUE
+%   COPY '#SCRIPT YRETYPE'
+% END LOOP
+% COPY '#EDIT'
+% QUEUE PROCESS
+% COPY 'END'
+%END SCRIPT

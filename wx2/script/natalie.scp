@@ -1,0 +1,193 @@
+%SCRIPT NATALIE
+%%
+%% This script optimises one structure parameter against the data, by altering it and 
+%% checking the minimisation function value after every step. For each parameter we
+%% need to define hard limits on its value (to prevent divergence) and a reasonable
+%% starting step size.
+%%
+%% The algorithm will proceed as follows:
+%%   Parameter to optimize = C(1,X)
+%%   Initial step size = 0.04     %NB in fractional coordinates
+%%   Stop criteria = step size < 0.0005 (or 200 loops max)
+%%
+%%   Evaluate current value of M -> M0
+%%   Shift parameter by + step
+%%   Evaluate current value of M -> MP
+%%   Shift parameter by - 2 x step
+%%   Evaluate current value of M -> MN
+%%   If MP and MN are both > M0 reduce step size by 'stepfactor' and cycle
+%%   If MP < MN - move to MP, if direction changed, reduce step size
+%%   If MP >= MN - move to MN, if direction changed, reduce step size.
+%%
+%% Variables to set:
+% VARIABLE INTEGER ATOMINDEX PARAMINDEX 
+% VARIABLE REAL STEPSIZE STEPLIMIT 
+% VARIABLE REAL STEPFACTOR
+%%
+% EVALUATE ATOMINDEX = 0
+% EVALUATE PARAMINDEX = 4
+% EVALUATE STEPSIZE = 0.04
+% EVALUATE STEPLIMIT = 0.0005
+% EVALUATE STEPFACTOR = 0.6
+%%
+%% Working variables
+% VARIABLE REAL M MP MN XO X
+% VARIABLE INTEGER DIRECTION
+% EVALUATE DIRECTION = 0
+%%
+% LOOP 200 TIMES
+%%
+%% Compute the minimisation function value
+%%
+%% Apply a positive shift
+%   COPY '#GENERALEDIT 5'
+%   COPY 'LOCATE RECORDTYPE = 101'
+%% Advance to the required atom
+%   LOOP ATOMINDEX TIMES
+%      COPY 'NEXT'
+%   END LOOP
+%% Get the current value of parameter   
+%   TRANSFER 'TRANSFER FROM OFFSET = ' // CHARACTER PARAMINDEX // -
+' TO XO' TO CRYSTALS
+%% Compute new value
+%   EVALUATE X = XO + STEPSIZE
+%% Set value
+%   TRANSFER 'TRANSFER TO OFFSET = ' // CHARACTER PARAMINDEX // ' -
+FROM X' TO CRYSTALS   
+%   COPY 'WRITE'
+%   COPY 'END'	
+%%
+%% Compute the minimisation function value again
+%%
+%   COPY '#SFLS'
+%   COPY 'REF'
+%   COPY 'SHIFT GEN=0.0'
+%   COPY 'END'
+%%
+%% Retreive the minimisation function value from List 30
+%%
+%   COPY '#GENERALEDIT 30'        
+%   COPY 'LOCATE RECORDTYPE = 103'
+%   COPY 'TRANSFER FROM OFFSET = 9 TO MP'
+%   COPY 'END'
+%%
+% TRANSFER 'MP is ' // CHARACTER MP // -
+ ' at X = ' // CHARACTER X // ' STEP is ' // CHARACTER STEPSIZE TO DISPLAY
+%% Apply a negative shift 
+%   COPY '#GENERALEDIT 5'
+%   COPY 'LOCATE RECORDTYPE = 101'
+%% Advance to the required atom
+%   LOOP ATOMINDEX TIMES
+%      COPY 'NEXT'
+%   END LOOP
+%% Compute new value
+%   EVALUATE X = XO - STEPSIZE
+%% Set value
+%   TRANSFER 'TRANSFER TO OFFSET = ' // CHARACTER PARAMINDEX // -
+ ' FROM X' TO CRYSTALS   
+%   COPY 'WRITE'
+%   COPY 'END'	
+%%
+%% Compute the minimisation function value again
+%%
+%   COPY '#SFLS'
+%   COPY 'REF'
+%   COPY 'SHIFT GEN=0.0'
+%   COPY 'END'
+%%
+%% Retreive the minimisation function value from List 30
+%%
+%   COPY '#GENERALEDIT 30'        
+%   COPY 'LOCATE RECORDTYPE = 103'
+%   COPY 'TRANSFER FROM OFFSET = 9 TO MN'
+%   COPY 'END'
+% TRANSFER 'MN is ' // CHARACTER MN // -
+ ' at X = ' // CHARACTER X TO DISPLAY
+%% Set parameter back to original value
+%   COPY '#GENERALEDIT 5'
+%   COPY 'LOCATE RECORDTYPE = 101'
+%% Advance to the required atom
+%   LOOP ATOMINDEX TIMES
+%      COPY 'NEXT'
+%   END LOOP
+%% Set value
+%   TRANSFER 'TRANSFER TO OFFSET = ' // CHARACTER PARAMINDEX // -
+ ' FROM XO' TO CRYSTALS   
+%   COPY 'WRITE'
+%   COPY 'END'	
+%%
+%   COPY '#SFLS'
+%   COPY 'REF'
+%   COPY 'SHIFT GEN=0.0'
+%   COPY 'END'
+%%
+%% Retreive the minimisation function value from List 30
+%%
+%   COPY '#GENERALEDIT 30'        
+%   COPY 'LOCATE RECORDTYPE = 103'
+%   COPY 'TRANSFER FROM OFFSET = 9 TO M'
+%   COPY 'END'
+%%
+% TRANSFER 'M is ' // CHARACTER M // -
+ ' at XO = ' // CHARACTER XO TO DISPLAY
+%%
+%% Decide what to do.
+%%
+%    IF ( M .LT. MN ) .AND. ( M .LT. MP ) THEN
+ Neither shift is good, reduce stepsize
+%       EVALUATE DIRECTION = 0
+%       EVALUATE STEPSIZE = STEPSIZE * STEPFACTOR
+%    ELSE IF ( MN .GT. MP ) THEN
+ MP is better
+%% Set parameter value
+%       COPY '#GENERALEDIT 5'
+%      COPY 'LOCATE RECORDTYPE = 101'
+%% Advance to the required atom
+%       LOOP ATOMINDEX TIMES
+%          COPY 'NEXT'
+%       END LOOP
+%% Compute new value
+%       EVALUATE X = XO + STEPSIZE
+%% Set value
+%       TRANSFER 'TRANSFER TO OFFSET = ' // CHARACTER PARAMINDEX // -
+ ' FROM X' TO CRYSTALS   
+%       COPY 'WRITE'
+%       COPY 'END'	
+%       IF ( DIRECTION .EQ. - 1 ) THEN
+ We just reversed. Reduce step size
+%          EVALUATE STEPSIZE = STEPSIZE * STEPFACTOR
+%       END IF
+%       EVALUATE DIRECTION = 1
+%    ELSE IF ( MP .GE. MN )  THEN
+ MN is better
+%% Set parameter value
+%       COPY '#GENERALEDIT 5'
+%      COPY 'LOCATE RECORDTYPE = 101'
+%% Advance to the required atom
+%       LOOP ATOMINDEX TIMES
+%          COPY 'NEXT'
+%       END LOOP
+%% Compute new value
+%       EVALUATE X = XO - STEPSIZE
+%% Set value
+%       TRANSFER 'TRANSFER TO OFFSET = ' // CHARACTER PARAMINDEX // -
+ ' FROM X' TO CRYSTALS   
+%       COPY 'WRITE'
+%       COPY 'END'	
+%       IF ( DIRECTION .EQ. 1 ) THEN
+ We just reversed. Reduce step size
+%          EVALUATE STEPSIZE = STEPSIZE * STEPFACTOR
+%       END IF
+%       EVALUATE DIRECTION = - 1
+%    END IF
+%%
+%% Test stop condition and print some stuff
+%%
+%    IF STEPSIZE .LT. STEPLIMIT THEN
+ Step convergence limit reached.
+%       EVALUATE LOOPEND = LOOPCOUNTER
+%    END IF
+% END LOOP 
+% TRANSFER 'Ending M was ' // CHARACTER M // -
+ ' ending X was ' // CHARACTER XO TO DISPLAY
+%END SCRIPT

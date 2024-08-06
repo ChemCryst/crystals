@@ -1,0 +1,111 @@
+%SCRIPT EXCHANGEPOS
+%%
+%% INPUT:
+%%     The file AtomsToWorkOn.dat
+%%
+%  VARIABLE CHARACTER CATOM CATN CLTYPE CTYPE1 CTYPE2 CLINE
+%  VARIABLE INTEGER ICNT IATS ISER1 ISER2
+%  VARIABLE REAL SERIAL ATX1 ATY1 ATZ1 ATX2 ATY2 ATZ2
+%%
+%  EVALUATE ICNT = 0
+%%
+%% Get the atoms to be searched for a match from the file AtomsToWorkOn.dat
+%%
+%  COPY '#OPEN SCPDATA AtomsToWorkOn.dat'
+%  LOOP
+%    ON ERROR TERMINATE
+%    ON END TERMINATE
+%    EXTRACT NEXT
+%    EXTRACT TRANSFER INPUT
+%    CLEAR
+%    GET TEXT 'Atom'
+%    EVALUATE CATOM = CVALUE
+%    IF CVALUE .EQ. 'END' THEN
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%    ELSE
+%% Find the atoms
+%      EVALUATE CATN = FIRSTSTR ( CATOM )
+%      EVALUATE IATS = FIRSTINT ( CATOM )
+%      COPY '#GENERALEDIT 5'
+%      COPY 'LOCATE RECORDTYPE=101'
+%      COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%      LOOP
+%        ON EDITERROR TERMINATE
+%        COPY 'TRANSFER FROM OFFSET=0 TO CLTYPE'
+%        IF CATN .EQ. CLTYPE THEN
+%          COPY 'TRANSFER FROM OFFSET=1 TO SERIAL'
+%          IF IATS .EQ. INTEGER ( SERIAL ) THEN
+%            EVALUATE ICNT = ICNT + 1
+%            CASE ICNT
+%              BLOCK
+%                EVALUATE CTYPE1 = CATN
+%                EVALUATE ISER1 = IATS
+%                COPY 'TRANSFER FROM OFFSET=4 TO ATX1'
+%                COPY 'TRANSFER FROM OFFSET=5 TO ATY1'
+%                COPY 'TRANSFER FROM OFFSET=6 TO ATZ1'
+%              END BLOCK
+%              BLOCK
+%                EVALUATE CTYPE2 = CATN
+%                EVALUATE ISER2 = IATS
+%                COPY 'TRANSFER FROM OFFSET=4 TO ATX2'
+%                COPY 'TRANSFER FROM OFFSET=5 TO ATY2'
+%                COPY 'TRANSFER FROM OFFSET=6 TO ATZ2'
+%              END BLOCK
+%            END CASE
+%            EVALUATE LOOPEND = LOOPCOUNTER
+%          END IF
+%        END IF
+%        COPY 'NEXT'
+%      END LOOP
+%      COPY 'END'
+%    END IF
+%  END LOOP
+%%
+%  COPY '#CLOSE SCPDATA'
+%%
+%  IF ICNT .EQ. 2 THEN
+%%
+%    QUEUE REWIND
+%    QUEUE COPY #EDIT
+%    QUEUE COPY MONITOR OFF
+%%
+%    EVALUATE CLINE = "CHANGE " // CTYPE1 // "(" // CHARACTER ( ISER1 ) // ", X) " // CHARACTER ( ATX2 )
+%    CLEAR
+%    STORE CHARACTER CLINE
+%    QUEUE SEND
+%%
+%    EVALUATE CLINE = "CHANGE " // CTYPE1 // "(" // CHARACTER ( ISER1 ) // ", Y) " // CHARACTER ( ATY2 )
+%    CLEAR
+%    STORE CHARACTER CLINE
+%    QUEUE SEND
+%%
+%    EVALUATE CLINE = "CHANGE " // CTYPE1 // "(" // CHARACTER ( ISER1 ) // ", Z) " // CHARACTER ( ATZ2 )
+%    CLEAR
+%    STORE CHARACTER CLINE
+%    QUEUE SEND
+%%
+%    EVALUATE CLINE = "CHANGE " // CTYPE2 // "(" // CHARACTER ( ISER2 ) // ", X) " // CHARACTER ( ATX1 )
+%    CLEAR
+%    STORE CHARACTER CLINE
+%    QUEUE SEND
+%%
+%    EVALUATE CLINE = "CHANGE " // CTYPE2 // "(" // CHARACTER ( ISER2 ) // ", Y) " // CHARACTER ( ATY1 )
+%    CLEAR
+%    STORE CHARACTER CLINE
+%    QUEUE SEND
+%%
+%    EVALUATE CLINE = "CHANGE " // CTYPE2 // "(" // CHARACTER ( ISER2 ) // ", Z) " // CHARACTER ( ATZ1 )
+%    CLEAR
+%    STORE CHARACTER CLINE
+%    QUEUE SEND
+%%
+%    QUEUE COPY END
+%    QUEUE PROCESS
+%%
+%  ELSE
+%%
+%    TRANSFER "{E Number of atoms not suited for this operation." TO DISPLAY
+%%
+%  END IF
+%%
+%END SCRIPT

@@ -1,0 +1,159 @@
+%SCRIPT XREGU2
+%%
+%% Subscript for handling regularise with ideal fragment type
+%%
+% VARIABLE INTEGER REGTYPE LOOPAGAIN IDEALTYPE IDEALSHAPE
+% VARIABLE REAL IDEALX IDEALY IDEALZ
+% LOOP
+% EVALUATE LOOPAGAIN = 0
+%%
+^^WI WINDOW XREGU 'Regularise' MODAL COMMIT='NEXT' CANCEL='CANCEL'
+^^WI GRID GRIDM NROWS=5 NCOLS=3
+^^WI {
+^^WI  @ 4,2 GRID GRIDB NROWS=1 NCOLS=6
+^^WI  {
+^^WI   @ 1,2 BUTTON BACK '<Back'
+^^WI   @ 1,3 BUTTON NEXT 'Next>'
+^^WI   @ 1,5 BUTTON FINISH 'Finish' DISABLED=YES
+^^WI  }
+^^WI  @ 2,2 GRID GRIDC NROWS=3 NCOLS=1
+^^WI  {
+^^WI   @ 1,1 GRID GRIDA NROWS=2 NCOLS=1
+^^WI   {
+^^WI    @ 1,1 STATIC S1 'Choose a geometrical shape and then adjust'
+^^WI    @ 2,1 STATIC S2 'the default parameters to suit your needs.'
+^^WI   }
+^^WI   @ 3,1 GRID GRIDD NROWS=1 NCOLS=3
+^^WI   {
+^^WI    @ 1,1 LISTBOX L1 VISLINES=7 INFORM=YES ADDTOLIST
+^^WI    'Square' 'Pentagon' 'Hexagon' 'Phenyl' 
+^^WI    'Tetrahedron' 'Octahedron' 'Square pyramid' 
+^^WI    'Trigonal bipyramid' NULL
+^^WI    @ 1,3 GRID GRIDE NROWS=5 NCOLS=3
+^^WI    {
+^^WI     @ 1,1 EDITBOX E1 '1.0' CHARS=6 REAL
+^^WI     @ 3,1 EDITBOX E2 '1.0' CHARS=6 REAL
+^^WI     @ 5,1 EDITBOX E3 '0.0' CHARS=6 REAL DISABLED=YES
+^^WI     @ 1,3 STATIC  T1 'x for (x00) and (-x00)'
+^^WI     @ 3,3 STATIC  T2 'y for (0y0) and (0-y0)'
+^^WI     @ 5,3 STATIC  T3 ' '
+^^WI    }
+^^WI   }
+^^WI  }
+^^WI }
+^^WI SHOW
+^^CR
+%  LOOP
+%   VERIFY NEXT BACK CANCEL L1
+%   GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
+%   CASE VALUE
+%     BLOCK       %NEXT%
+%       EVALUATE LOOPEND = LOOPCOUNTER
+%%
+%% Determine the ideal shape and store result in IDEALSHAPE.
+%%
+^^??    L1 SELECTED
+%       GET SILENT NOSTORE INTEGER 'Choice number'
+%       EVALUATE IDEALSHAPE = VALUE
+^^??    E1 TEXT
+%       GET SILENT NOSTORE REAL 'X'
+%       EVALUATE IDEALX = VALUE
+^^??    E2 TEXT
+%       GET SILENT NOSTORE REAL 'Y'
+%       EVALUATE IDEALY = VALUE
+^^??    E3 TEXT
+%       GET SILENT NOSTORE REAL 'Z'
+%       EVALUATE IDEALZ = VALUE
+^^CO    DISPOSE XREGU
+%     END BLOCK
+%     BLOCK       %BACK%
+%       EVALUATE LOOPAGAIN = 1
+^^CO    DISPOSE XREGU
+%       FINISH
+%     END BLOCK
+%     BLOCK       %CANCEL%
+^^CO    DISPOSE XREGU
+%       FINISH
+%     END BLOCK
+%     BLOCK       %L1 - list changing%
+%       VERIFY 1 2 3 4 5 6 7 8
+%       GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
+%       CASE VALUE
+%         BLOCK                   %1 - square%
+^^CO SET T1 TEXT 'x for (x00) and (-x00)'
+^^CO SET T2 TEXT 'y for (0y0) and (0-y0)'
+^^CO SET T3 TEXT ' '
+^^CO SET E1 TEXT '1.0' DISABLED=NO
+^^CO SET E2 TEXT '1.0' DISABLED=NO
+^^CO SET E3 TEXT '0.0' DISABLED=YES
+%         END BLOCK
+%         BLOCK                   %2 - pentagon%
+^^CO SET T1 TEXT 'length of side'
+^^CO SET T2 TEXT ' '
+^^CO SET T3 TEXT ' '
+^^CO SET E1 TEXT '1.4' DISABLED=NO
+^^CO SET E2 TEXT '0.0' DISABLED=YES
+^^CO SET E3 TEXT '0.0' DISABLED=YES
+%         END BLOCK
+%         BLOCK                   %3 - hexagon%
+^^CO SET T1 TEXT 'length of side'
+^^CO SET T2 TEXT ' '
+^^CO SET T3 TEXT ' '
+^^CO SET E1 TEXT '1.39' DISABLED=NO
+^^CO SET E2 TEXT '0.0' DISABLED=YES
+^^CO SET E3 TEXT '0.0' DISABLED=YES
+%         END BLOCK
+%         BLOCK                   %4 - phenyl%
+^^CO SET T1 TEXT 'length of side'
+^^CO SET T2 TEXT ' '
+^^CO SET T3 TEXT ' '
+^^CO SET E1 TEXT '1.39' DISABLED=YES
+^^CO SET E2 TEXT '0.0' DISABLED=YES
+^^CO SET E3 TEXT '0.0' DISABLED=YES
+%         END BLOCK
+%         BLOCK                   %5 - tetrahedron%
+^^CO SET T1 TEXT 'apex to centre'
+^^CO SET T2 TEXT ' '
+^^CO SET T3 TEXT ' '
+^^CO SET E1 TEXT '1.0' DISABLED=NO
+^^CO SET E2 TEXT '0.0' DISABLED=YES
+^^CO SET E3 TEXT '0.0' DISABLED=YES
+%         END BLOCK
+%         BLOCK                   %6 - octahedron%
+^^CO SET T1 TEXT 'x for (x00) and (-x00)'
+^^CO SET T2 TEXT 'y for (0y0) and (0-y0)'
+^^CO SET T3 TEXT 'z for (00z) and (00-z)'
+^^CO SET E1 TEXT '1.0' DISABLED=NO
+^^CO SET E2 TEXT '1.0' DISABLED=NO
+^^CO SET E3 TEXT '1.0' DISABLED=NO
+%         END BLOCK
+%         BLOCK                   %7 - square pyramid%
+^^CO SET T1 TEXT 'x for (x00) and (-x00)'
+^^CO SET T2 TEXT 'y for (0y0) and (0-y0)'
+^^CO SET T3 TEXT 'z for (00z)'
+^^CO SET E1 TEXT '1.0' DISABLED=NO
+^^CO SET E2 TEXT '1.0' DISABLED=NO
+^^CO SET E3 TEXT '1.0' DISABLED=NO
+%         END BLOCK
+%         BLOCK                   %8 - trigonal bipyramid%
+^^CO SET T1 TEXT 'equatorial bond lengths'
+^^CO SET T2 TEXT 'axial bond lengths'
+^^CO SET T3 TEXT ' '
+^^CO SET E1 TEXT '1.0' DISABLED=NO
+^^CO SET E2 TEXT '1.0' DISABLED=NO
+^^CO SET E3 TEXT '0.0' DISABLED=YES
+%         END BLOCK
+%       END CASE
+%     END BLOCK
+%   END CASE
+%  END LOOP
+%  CASE REGTYPE
+%     COPY '#SCRIPT XREGU2c'
+%     COPY '#SCRIPT XREGU2b'
+%     COPY '#SCRIPT XREGU2a'
+%  END CASE
+%  IF LOOPAGAIN .EQ. 0 THEN
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%  END IF
+% END LOOP
+%END SCRIPT

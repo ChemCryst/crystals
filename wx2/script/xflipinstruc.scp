@@ -1,0 +1,104 @@
+%SCRIPT XFLIPINSTRUC                                                            
+%%                                                                              
+ Read in a structure from a superflip shelx-type file.                        
+%%                                                                              
+{R Script version by R. Cooper. Based on the fortran program SXTOCA by          
+{R R.O. Gould, The University of Edinburgh, March 1994.                         
+{R Slightly modified by A van der Lee for use with Superflip                                     
+%%                                                                              
+%%                                                                              
+% VARIABLE CHARACTER CFILE CENTRO CLATYP CUNIT CSFAC CTEM CLAT                  
+% VARIABLE CHARACTER SPACEHOOK INSTITLE HKLTITLE SPACEREAD                      
+% VARIABLE INTEGER ILATT NSYMS SCOUNT SXF LEND                                  
+% VARIABLE LOGICAL SFILERR LCANCEL LCRY SXGETALL LQS SPACETEXT                  
+% VARIABLE REAL SUA SUB SUC SUAL SUBE SUGA                                      
+% VARIABLE REAL SXX SXY SXZ SXO SXU11 SXU22 WAVE CELLZ                          
+% VARIABLE REAL SXU33 SXU23 SXU13 SXU12                                         
+% VARIABLE REAL SXOCC CRYOCC SPECOCC                                            
+% VARIABLE INTEGER ATOMCOUNT                                                    
+%%                                                                              
+% EVALUATE SXGETALL = TRUE                                                      
+%%                                                                              
+%% variables used by the question box below                                     
+% VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2 QLINE3                  
+% VARIABLE LOGICAL ANSWER                                                       
+%%                                                                              
+% EVALUATE LCRY = FALSE                                                         
+%%                                                                              
+%%                                                                              
+%%                                                                              
+%%                                                                              
+% EVALUATE CFILE = 'sflip.ins'                                                  
+% TRANSFER '#OPEN SCPD "' // CFILE // '"' TO CRYSTALS                           
+%%                                                                              
+%%                                                                              
+%%                                                                              
+%%                                                                              
+%% Find the atoms and peaks.                                                    
+%% Assume all lines not beginning with a recognised SHELX keyword               
+%% are atom records. This causes failure for files with reflections             
+%% in, though I'm sure someone could fix this by making it stop                 
+%% at an HKLF instruction.                                                      
+%%                                                                              
+%        COPY '#SCRIPT ZSHELXIN'                                                
+{R Superflip file processed.                                                        
+%        COPY '#CLOSE SCPDATA'                                                  
+%        IF ( ATOMCOUNT .EQ. 0 ) THEN                                           
+{I No atoms found                                                               
+%          FINISH                                                               
+%        ELSE                                                                   
+%          BLOCK                                                                
+%            IF LQS .EQ. TRUE THEN                                              
+%              EVALUATE QTITLE = 'Change Q atoms?'                              
+%              EVALUATE QLINE1 = 'Do you want to change all Q'                  
+%              EVALUATE QLINE2 = 'atoms to Carbon?'                             
+%              EVALUATE BUTTOK = '&Yes'                                         
+%              EVALUATE BUTTXX = '&No'                                          
+%              COPY '#SCRIPT XQUESTIO'                                          
+%              IF ANSWER .EQ. TRUE THEN                                         
+%               COPY '#EDIT'                                                    
+%               COPY 'TYPECHANGE TYPE EQ Q C'                                   
+%               COPY 'END'                                                      
+%              END IF                                                           
+%            END IF                                                             
+%          END BLOCK                                                            
+%%                                                                              
+%% a bodge 2011 to remove duplicate atoms.
+%% Dont know where they come from - not present in May release
+%          COPY '#PEAK 5 5'
+%          COPY 'SELECT TYPE=AVERAGE'
+%          COPY 'END'
+%%                                                                              
+%          BLOCK                                                                
+%% Set scale factor                                                             
+%              VARIABLE REAL SCALEO SCALEW                                 
+%              evaluate scalew = 1.0                                     
+%              IF ( EXISTS ( 30 ) .EQ. 1 ) THEN                                 
+%                   COPY '#GENERALEDIT 30'                                      
+%                   COPY 'LOCATE RECORDTYPE = 101'                              
+%                   COPY 'TRANSFER FROM OFFSET =  7 TO SCALEO'                  
+%                   COPY 'END'                                                  
+%                   EVALUATE SCALEW = SQRT ( 1. / SCALEO )                      
+%                   if scalew .le. 0.05 then                                    
+%                     evaluate scalew = 1.0                                     
+%                   end if                                                      
+%% SET Solution type                                                            
+%                   COPY 'LOCATE RECORDTYPE=106'                                
+%                   COPY 'CHANGE OFFSET=12 MODE=INTEGER INTEGER=1'              
+%                   COPY 'WRITE'                                                
+%                   COPY 'END'                                                  
+%              END IF                                                           
+Writing Wilson Scale to LIST 5                                                  
+%              IF ( EXISTS ( 5 ) .EQ. 1 ) THEN                                  
+%                    COPY '#GENERALEDIT 5'                                      
+%                    COPY 'LOCATE RECORDTYPE=102'                               
+%                    COPY 'TRANSFER TO OFFSET=1 FROM SCALEW'                    
+%                    COPY 'WRITE OVERWRITE=OVERWRITE'                           
+%                    COPY 'END'                                                 
+%              END IF                                                           
+%%                                                                              
+%          END BLOCK                                                            
+%%                                                                              
+%        END IF                                                                 
+%        FINISH                                                                 
+%END SCRIPT                                                                     

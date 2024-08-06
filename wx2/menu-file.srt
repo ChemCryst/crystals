@@ -1,0 +1,20 @@
+%%SSR MENU-FILE
+^^WI  MENU _FILE    '&File'
+^^WI   ITEM NEW     '&New working folder' '#SCRIPT XNEWDIR' ICON='folder_s.png' 
+^^WI    DISABLEIF='IN'
+^^WI   ITEM OPEND   '&Open .dsc file' '#SCRIPT XOPENDSC'
+^^WI    ICON='dsc_s.png'  DISABLEIF='IN'
+^^WI   ITEM SAVE    '&Save .dsc' '#SCRIPT XSAVEEXP'  DISABLEIF='IN'
+^^WI   ITEM SAVEAS  'Save .dsc &as' '#SCRIPT XSAVEAS' ICON='save_s.png' DISABLEIF='IN'
+^^WI   SPLIT
+^^WI   ITEM INSTRUCTION    'Run CRYSTALS instruction file' 
+^^WI                '#SCRIPT XUSE' DISABLEIF='IN'
+^^WI   SPLIT
+^^WI   ITEM FH      'File menu &help'
+^^WI        '$"crysdir:manual/tools-menus.html#menus.file"'
+^^WI   ICON='tool_help_s.png'
+^^WI   SPLIT
+^^WI   ITEM EXIT    'E&xit Crystals' 'DIRECT_N#FINISH' DISABLEIF='IN'
+^^WI  ENDMENU
+%%SSR END
+

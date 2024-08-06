@@ -1,0 +1,368 @@
+%SCRIPT CHANGERAG
+%%
+%  VARIABLE CHARACTER ATOM
+%  VARIABLE INTEGER IOPTION
+%%
+%  VARIABLE CHARACTER MODE CELE CCHK CLINE
+%  VARIABLE CHARACTER CTITLE CPOSITION CTEXT1 CTEXT2 CTEXT3
+%%
+%  VARIABLE INTEGER IPAR1 IPAR2 IPAR ISER ITEST1 ITEST2 ITESTJ
+%  VARIABLE REAL RPKH RCHK
+%%
+%  VARIABLE INTEGER IRESIDUE IASSEMBLY IPART INEWVAL
+%  VARIABLE LOGICAL ISFREER ISFREEA ISFREEP LDOCHANGE LAPPLY LJOIN
+%%
+%% We need to change the names as otherwise they are not local anymore and other scripts
+%% may experience problems. I have addes S for subroutine. MN
+%%
+%  VARIABLE INTEGER IPRTS IHYBS IPEGS IPEPS
+%%
+%% The parameters IOPTION and ATOM are provided by the calling script.
+%% Meanings of IOPTION: 1 = RESIDUE, 2 = ASSEMBLY, 3 = GROUP
+%%
+%  EVALUATE LAPPLY = FALSE
+%  EVALUATE LJOIN = FALSE
+%%
+%  EVALUATE MODE = "none"
+%  CASE IOPTION
+%    EVALUATE MODE = "residue"
+%    EVALUATE MODE = "assembly"
+%    EVALUATE MODE = "group"
+%  END CASE
+%%
+%  EVALUATE CELE = FIRSTSTR ( ATOM )
+%  EVALUATE ISER = FIRSTINT ( ATOM )
+%%
+%% TRANSFER '{I Atom type: ' // CELE // ', serial: ' // CHARACTER ( ISER ) TO DISPLAY
+%%
+%  BLOCK
+%    ON EDITERROR TERMINATE
+%    COPY '#GENERALEDIT 5'
+%    COPY 'LOCATE RECORDTYPE=101'
+%    COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%    LOOP
+%     ON EDITERROR TERMINATE
+%     COPY 'TRANSFER FROM OFFSET=0 TO CCHK'
+%     COPY 'TRANSFER FROM OFFSET=1 TO RCHK'
+%     IF ( ( CELE .EQ. CCHK ) .AND. ( ISER .EQ. INTEGER ( RCHK ) ) ) THEN
+%      COPY 'TRANSFER FROM OFFSET=14 TO IPRTS'
+%      COPY 'TRANSFER FROM OFFSET=16 TO IHYBS'
+%      COPY 'END'
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%      EVALUATE IPEGS = IPRTS / 1000
+%      EVALUATE IPEPS = IPRTS - ( IPEGS * 1000 )
+%%
+%      EVALUATE IRESIDUE = IHYBS
+%      EVALUATE IASSEMBLY = IPEGS
+%      EVALUATE IPART = IPEPS
+%%
+%      EVALUATE IPAR1 = 0
+%      CASE IOPTION
+%       EVALUATE IPAR1 = IHYBS
+%       EVALUATE IPAR1 = IPEGS
+%       EVALUATE IPAR1 = IPEPS
+%      END CASE
+%%
+%      EVALUATE ITEST1 = 0
+%      CASE IOPTION
+%       EVALUATE ITEST1 = IRESIDUE
+%       EVALUATE ITEST1 = IASSEMBLY
+%       EVALUATE ITEST1 = IASSEMBLY * 1000 + IPART
+%      END CASE
+%%
+%     END IF
+%     COPY 'NEXT'
+%    END LOOP
+%  END BLOCK
+%%
+%  TRANSFER '{I The ' // MODE // ' we want to select has the number ' // CHARACTER ( IPAR1 ) // '.' TO DISPLAY
+%%
+%  EVALUATE IPAR = IPAR1
+%%
+%  EVALUATE CTITLE = "Change " // MODE // " number"
+%  EVALUATE CPOSITION = "=CENTERED '_MAINTEXTOUTPUT'"
+%  EVALUATE CTEXT1 = "Assign new number to " // MODE // " numbered " // CHARACTER ( IPAR )
+%  EVALUATE CTEXT2 = "Residue " // CHARACTER ( IRESIDUE ) // ", assembly " // CHARACTER ( IASSEMBLY ) // ", group: " // CHARACTER ( IPART )
+%  EVALUATE CTEXT3 = "Set " // MODE // " number to"
+%%
+^^WI WINDOW XMRAG
+% TRANSFER "^^WI '" // CTITLE // "'" TO DISPLAY
+%%^^WI MODAL
+% TRANSFER "^^WI POSITION" // CPOSITION TO DISPLAY
+^^WI GRID M NROWS=5 NCOLS=3 {
+^^WI   @ 2,2 GRID B NROWS=2 NCOLS=1 {
+% TRANSFER "^^WI     @ 1,1 STATIC T1 '" // CTEXT1 // "'" TO DISPLAY
+% TRANSFER "^^WI     @ 2,1 STATIC T2 '" // CTEXT2 // "'" TO DISPLAY
+^^WI   }
+^^WI   @ 4,2 GRID C NROWS=9 NCOLS=5 {
+% TRANSFER "^^WI     @ 1,1 STATIC T3 'Selected " // MODE // ":'" TO DISPLAY
+^^WI     @ 1,3 BUTTON BSS '&Show' DISABLED=NO
+^^WI     @ 1,5 BUTTON BHA '&Hide' DISABLED=NO
+% TRANSFER "^^WI     @ 3,1 STATIC T4 '" // CTEXT3 // "'" TO DISPLAY
+^^WI     @ 3,3 EDITBOX SRAG '0' CHARS=8 INTEGER
+^^WI     @ 3,5 STATIC T5 'not tested'
+^^WI     @ 5,1 STATIC T6 'First test, then apply,'
+^^WI     @ 5,3 BUTTON BTT '&Test' DISABLED=NO
+^^WI     @ 5,5 BUTTON BAP '&Apply' DISABLED=YES
+% TRANSFER "^^WI     @ 7,1 STATIC T7 'join existing " // MODE // "'" TO DISPLAY
+^^WI     @ 7,3 BUTTON BSJ '&Show' DISABLED=YES
+^^WI     @ 7,5 BUTTON BDJ '&Join' DISABLED=YES
+^^WI     @ 9,1 STATIC T8 'or quit'
+^^WI     @ 9,5 BUTTON BOK '&Quit' DEFAULT COMMIT CANCEL
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+%%
+%  TRANSFER "^^CO SET SRAG TEXT '" // CHARACTER ( IPAR ) // "'" TO DISPLAY
+%%
+%  LOOP
+%%
+%  VERIFY BOK BSS BHA BTT BAP BSJ BDJ
+%  GET SILENT FINAL NOSTORE ABBREVIATED ' ' ' '
+%  CASE VALUE
+%%
+%    BLOCK        % BOK - CLOSE window
+^^CO   DISPOSE XMRAG
+%      FINISH
+%    END BLOCK
+%%
+%    BLOCK        % BSS - SHOW selection
+%%
+%      ON EDITERROR TERMINATE
+%      COPY '#GENERALEDIT 5'
+%      COPY 'LOCATE RECORDTYPE=101'
+%      COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%      LOOP
+%        ON EDITERROR TERMINATE
+%        COPY 'TRANSFER FROM OFFSET=0 TO CCHK'
+%        COPY 'TRANSFER FROM OFFSET=1 TO RCHK'
+%        COPY 'TRANSFER FROM OFFSET=14 TO IPRTS'
+%        COPY 'TRANSFER FROM OFFSET=16 TO IHYBS'
+%        EVALUATE IPEGS = IPRTS / 1000
+%        EVALUATE IPEPS = IPRTS - ( IPEGS * 1000 )
+%%
+%        EVALUATE ITEST2 = 0
+%        CASE IOPTION
+%          EVALUATE ITEST2 = IHYBS
+%          EVALUATE ITEST2 = IPEGS
+%          EVALUATE ITEST2 = IPEGS * 1000 + IPEPS
+%        END CASE
+%%
+%        IF ITEST1 .EQ. ITEST2 THEN
+%          EVALUATE CELE = FIRSTSTR ( CCHK )
+%          EVALUATE ISER = INTEGER ( RCHK )
+%          EVALUATE CLINE = "^^CO SET MODEL01 SELECT " // CELE // "(" // CHARACTER ( ISER ) // ") YES"
+%          TRANSFER CLINE TO DISPLAY
+%        END IF
+%        COPY 'NEXT'
+%      END LOOP
+%      COPY 'END'
+%%
+%    END BLOCK
+%%
+%    BLOCK        % BHA - HIDE all
+^^CO SET MODEL01 SELECT ALL=NO
+%    END BLOCK
+%%
+%    BLOCK        % BTT - Test new number
+%%
+^^??   SRAG TEXT
+%      GET NOSTORE SILENT INTEGER ' ' ' '
+%      EVALUATE IPAR = VALUE
+%%
+%      EVALUATE LDOCHANGE = FALSE
+%      CASE IOPTION
+%        BLOCK
+%          EVALUATE IRESIDUE = IPAR
+%          COPY '#SCRIPT A_ISFREER'
+%          IF ISFREER THEN
+^^CO SET T5 TEXT 'free'
+%          ELSE
+%            IF IPAR .EQ. IPAR1 THEN
+^^CO SET T5 TEXT 'no change'
+%            ELSE
+^^CO SET T5 TEXT 'taken'
+%            END IF
+%          END IF
+%          EVALUATE LDOCHANGE = ISFREER
+%        END BLOCK
+%        BLOCK
+%          EVALUATE IASSEMBLY = IPAR
+%          COPY '#SCRIPT A_ISFREEA'
+%          IF ISFREEA THEN
+^^CO SET T5 TEXT 'free'
+%          ELSE
+%            IF IPAR .EQ. IPAR1 THEN
+^^CO SET T5 TEXT 'no change'
+%            ELSE
+^^CO SET T5 TEXT 'taken'
+%            END IF
+%          END IF
+%          EVALUATE LDOCHANGE = ISFREEA
+%        END BLOCK
+%        BLOCK
+%          EVALUATE IPART = IPAR
+%          COPY '#SCRIPT A_ISFREEP'
+%          IF ISFREEP THEN
+^^CO SET T5 TEXT 'free'
+%          ELSE
+%            IF IPAR .EQ. IPAR1 THEN
+^^CO SET T5 TEXT 'no change'
+%            ELSE
+^^CO SET T5 TEXT 'taken'
+%            END IF
+%          END IF
+%          EVALUATE LDOCHANGE = ISFREEP
+%        END BLOCK
+%      END CASE
+%%
+%      IF LDOCHANGE THEN
+%        TRANSFER "^^CO SET BAP DISABLED=NO" TO DISPLAY
+%        TRANSFER "^^CO SET BSJ DISABLED=YES" TO DISPLAY
+%        TRANSFER "^^CO SET BDJ DISABLED=YES" TO DISPLAY
+%      ELSE
+%        TRANSFER "^^CO SET BAP DISABLED=YES" TO DISPLAY
+%        IF IPAR .EQ. IPAR1 THEN
+%          TRANSFER "^^CO SET BSJ DISABLED=YES" TO DISPLAY
+%          TRANSFER "^^CO SET BDJ DISABLED=YES" TO DISPLAY
+%        ELSE
+%          TRANSFER "^^CO SET BSJ DISABLED=NO" TO DISPLAY
+%          TRANSFER "^^CO SET BDJ DISABLED=NO" TO DISPLAY
+%        END IF
+%      END IF
+%%
+%    END BLOCK
+%%
+%    BLOCK        % BAP - Apply new number
+%%
+%      EVALUATE LAPPLY = TRUE
+%%
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%%
+^^CO   DISPOSE XMRAG
+%%
+%    END BLOCK
+%%
+%    BLOCK        % BSJ - SHOW join
+%%
+%      EVALUATE ITESTJ = 0
+%      CASE IOPTION
+%       EVALUATE ITESTJ = IPAR
+%       EVALUATE ITESTJ = IPAR
+%       EVALUATE ITESTJ = IASSEMBLY * 1000 + IPAR
+%      END CASE
+%%
+%      ON EDITERROR TERMINATE
+%      COPY '#GENERALEDIT 5'
+%      COPY 'LOCATE RECORDTYPE=101'
+%      COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%      LOOP
+%        ON EDITERROR TERMINATE
+%        COPY 'TRANSFER FROM OFFSET=0 TO CCHK'
+%        COPY 'TRANSFER FROM OFFSET=1 TO RCHK'
+%        COPY 'TRANSFER FROM OFFSET=14 TO IPRTS'
+%        COPY 'TRANSFER FROM OFFSET=16 TO IHYBS'
+%        EVALUATE IPEGS = IPRTS / 1000
+%        EVALUATE IPEPS = IPRTS - ( IPEGS * 1000 )
+%%
+%        EVALUATE ITEST2 = 0
+%        CASE IOPTION
+%          EVALUATE ITEST2 = IHYBS
+%          EVALUATE ITEST2 = IPEGS
+%          EVALUATE ITEST2 = IPEGS * 1000 + IPEPS
+%        END CASE
+%%
+%        IF ITESTJ .EQ. ITEST2 THEN
+%          EVALUATE CELE = FIRSTSTR ( CCHK )
+%          EVALUATE ISER = INTEGER ( RCHK )
+%          EVALUATE CLINE = "^^CO SET MODEL01 SELECT " // CELE // "(" // CHARACTER ( ISER ) // ") YES"
+%          TRANSFER CLINE TO DISPLAY
+%        END IF
+%        COPY 'NEXT'
+%      END LOOP
+%      COPY 'END'
+%%
+%    END BLOCK
+%%
+%    BLOCK        % BDJ - DO join
+%%
+%      EVALUATE LJOIN = TRUE
+%%
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%%
+^^CO   DISPOSE XMRAG
+%%
+%    END BLOCK
+%%
+%  END CASE
+%  END LOOP
+%%
+%  IF LAPPLY .OR. LJOIN THEN
+%%
+%    IF LAPPLY THEN
+%      TRANSFER "{I Changing " // MODE // " number from " // CHARACTER ( IPAR1 ) // " to " // CHARACTER ( IPAR ) // "..." TO DISPLAY
+%    END IF
+%    IF LJOIN THEN
+%      TRANSFER "{I Joining " // MODE // " " // CHARACTER ( IPAR1 ) // " to " // MODE // " " // CHARACTER ( IPAR ) // "..." TO DISPLAY
+%    END IF
+%%
+%    QUEUE REWIND
+%    QUEUE COPY #EDIT
+%    QUEUE COPY MONITOR OFF
+%%
+%    BLOCK
+%      ON EDITERROR TERMINATE
+%      COPY '#GENERALEDIT 5'
+%      COPY 'LOCATE RECORDTYPE=101'
+%      COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%      LOOP
+%        ON EDITERROR TERMINATE
+%        COPY 'TRANSFER FROM OFFSET=0 TO CCHK'
+%        COPY 'TRANSFER FROM OFFSET=1 TO RCHK'
+%        COPY 'TRANSFER FROM OFFSET=14 TO IPRTS'
+%        COPY 'TRANSFER FROM OFFSET=16 TO IHYBS'
+%        EVALUATE IPEGS = IPRTS / 1000
+%        EVALUATE IPEPS = IPRTS - ( IPEGS * 1000 )
+%%
+%        EVALUATE IPAR2 = 0
+%        CASE IOPTION
+%          EVALUATE IPAR2 = IHYBS
+%          EVALUATE IPAR2 = IPEGS
+%          EVALUATE IPAR2 = IPEPS
+%        END CASE
+%%
+%        IF IPAR1 .EQ. IPAR2 THEN
+%          EVALUATE CELE = FIRSTSTR ( CCHK )
+%          EVALUATE ISER = INTEGER ( RCHK )
+%          CASE IOPTION
+%            EVALUATE INEWVAL = IPAR
+%            EVALUATE INEWVAL = IPAR * 1000 + IPEPS
+%            EVALUATE INEWVAL = IPEGS * 1000 + IPAR
+%          END CASE
+%          CASE IOPTION
+%            EVALUATE CLINE = "CHANGE " // CELE // "(" // CHARACTER ( ISER ) // ", RESIDUE)" // CHARACTER ( INEWVAL )
+%            EVALUATE CLINE = "CHANGE " // CELE // "(" // CHARACTER ( ISER ) // ", PART)" // CHARACTER ( INEWVAL )
+%            EVALUATE CLINE = "CHANGE " // CELE // "(" // CHARACTER ( ISER ) // ", PART)" // CHARACTER ( INEWVAL )
+%          END CASE
+%%         EVALUATE CLINE = "CHANGE " // CELE // "(" // CHARACTER ( ISER ) // ", PART)" // CHARACTER ( IPAR )
+%          CLEAR
+%          STORE CHARACTER CLINE
+%          QUEUE SEND
+%        END IF
+%        COPY 'NEXT'
+%      END LOOP
+%      COPY 'END'
+%    END BLOCK
+%%
+%    QUEUE COPY END
+%%
+%    QUEUE PROCESS
+%%
+%  ELSE
+%    TRANSFER "{I No changes made." TO DISPLAY
+%  END IF
+%%
+%FINISH
+%%
+%END SCRIPT

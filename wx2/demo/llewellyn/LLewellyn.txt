@@ -1,0 +1,21 @@
+LLewellyn
+
+This material was prepared by Simon Llewellyn in Oxford.  
+It was in the form of small dark-red crystalline fragments.  
+The data were collected on a Nonius Kccd diffractometer at 150K.  
+The expected molecular formula was C22 H22 Co2 O6 P2.  
+The unit cell was triclinic with a volume of  615A^3.  
+Since the material is expected to be centrosymmetric and the 
+cell could contain one molecule, a good starting hypothesis is 
+that the space group is P-1 with half a molecule in the asymmetric unit.  
+
+The data is presented as a CRYSTALS ‘Use’ file, plus a standard 
+reflection file. 
+
+GO to the ‘Use’ option on the ‘Files’ tab and get arc811.ccf
+
+22/02/05     DJW 
+
+
+
+

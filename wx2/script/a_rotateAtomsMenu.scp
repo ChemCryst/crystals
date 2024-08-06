@@ -1,0 +1,202 @@
+%SCRIPT ROTATEATOMSMENU
+%%
+%% Get the parameters from the GUI, bond must not be symmetry generated, at least for now.
+%%
+%  VARIABLE INTEGER IOPTION
+%  VARIABLE CHARACTER CDEG CATOM1 CATOM2 CVEC
+%  VARIABLE LOGICAL LSELECTATOMS LCHANGED
+%%
+%  VARIABLE CHARACTER CVEC1 CVEC2
+%  VARIABLE CHARACTER CTITLE CPOSITION CTEXT1 CTEXT2
+%  VARIABLE INTEGER LDEG KSEL
+%  VARIABLE CHARACTER SDEG
+%  VARIABLE REAL RDEG
+%%
+%% Variables to call script addCentroid
+%%
+%  VARIABLE CHARACTER CENTROID
+%  VARIABLE LOGICAL LCENTROID
+%%
+%  EVALUATE CTITLE = "Rotation"
+%  EVALUATE CPOSITION = "=CENTERED '_MAINTEXTOUTPUT'"
+%  EVALUATE CTEXT1 = "Rotate selected atoms by"
+%  EVALUATE CTEXT2 = "or set rotation angle to"
+%%
+%% Check the input and add centroid if needed
+%%
+%  EVALUATE LCENTROID = FALSE
+%%
+%  COPY '#SCRIPT A_ADDCENTROID'
+%%
+%% Get the rotation vector from MolaxDefinitions.dat
+%%
+%  COPY '#OPEN SCPDATA MolaxDefinition.dat'
+%  LOOP
+%    ON ERROR TERMINATE
+%    ON END TERMINATE
+%    EXTRACT NEXT
+%    EXTRACT TRANSFER INPUT
+%    CLEAR
+%    GET KEYWORD 'Entry'
+%% force an exit from loop on reading an END card or after second atom
+%    IF ( CVALUE .EQ. 'END') .OR. ( LOOPCOUNTER .GT. 2 ) THEN
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%    ELSE
+%      CASE LOOPCOUNTER
+%        EVALUATE CATOM1 = CVALUE
+%        EVALUATE CATOM2 = CVALUE
+%      END CASE
+%    END IF
+%  END LOOP
+%  COPY '#CLOSE SCPDATA'
+%%
+%% Maybe we need the direction of the vector later
+%%
+%  EVALUATE CVEC1 = CATOM1 // " " // CATOM2
+%  EVALUATE CVEC2 = CATOM2 // " " // CATOM1
+%  EVALUATE CVEC = CVEC1
+%%
+%% We get CDEG from the calling script, coded in the value of IOPTION, if it is 0 we call the menu
+%%
+%  IF IOPTION .NE. 0 THEN
+%%
+%    EVALUATE CDEG = CHARACTER ( IOPTION )
+%    TRANSFER '{I Vector is ' // CVEC // ', passed angle is ' // CDEG // ' degrees.' TO DISPLAY
+%    COPY '#SCRIPT A_ROTATEATOMS'
+%%
+%  ELSE
+%%
+%    EVALUATE CDEG = "5"
+%    TRANSFER '{I Vector is ' // CVEC // ', passed option is `menu`.' TO DISPLAY
+%%
+^^WI WINDOW XRM
+% TRANSFER "^^WI '" // CTITLE // "'" TO DISPLAY
+%%^^WI MODAL
+% TRANSFER "^^WI POSITION" // CPOSITION TO DISPLAY
+^^WI GRID M NROWS=3 NCOLS=3 {
+^^WI   @ 2,2 GRID B NROWS=7 NCOLS=5 {
+% TRANSFER "^^WI     @ 1,1 STATIC T1 '" // CTEXT1 // "'" TO DISPLAY
+^^WI     @ 1,3 DROPDOWN DDEG INFORM=YES ADDTOLIST
+^^WI     '0' '1' '5' '15' '90' '180' 'NULL' SELECTION = 3
+^^WI     @ 1,5 STATIC T2 'degrees'
+%%
+% TRANSFER "^^WI     @ 3,1 STATIC T3 '" // CTEXT2 // "'" TO DISPLAY
+^^WI     @ 3,3 EDITBOX SDEG '0' CHARS=8 REAL
+^^WI     @ 3,5 STATIC T4 'degrees'
+%%
+^^WI     @ 5,1 CHECKBOX KSEL 'Keep atoms selected' STATE=ON
+^^WI     @ 5,3 BUTTON BPL '+' DISABLED=NO
+^^WI     @ 5,5 BUTTON BMI '-' DISABLED=NO
+%%
+^^WI     @ 7,5 BUTTON BOK '&OK' DEFAULT COMMIT CANCEL
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+%%
+%  TRANSFER "^^CO SET SDEG TEXT '" // CDEG // "'" TO DISPLAY
+%%
+%  EVALUATE LCHANGED = FALSE
+%%
+%  LOOP
+%%
+%  IF LCHANGED THEN
+%    CASE VALUE
+%      EVALUATE CDEG = '0'
+%      EVALUATE CDEG = '1'
+%      EVALUATE CDEG = '5'
+%      EVALUATE CDEG = '15'
+%      EVALUATE CDEG = '90'
+%      EVALUATE CDEG = '180'
+%    END CASE
+%    TRANSFER "^^CO SET SDEG TEXT '" // CDEG // "'" TO DISPLAY
+%%   TRANSFER "{I DD Rotate selected atoms by " // CDEG // " degrees..." TO DISPLAY
+%    EVALUATE LCHANGED = FALSE
+%  END IF
+%%
+%  VERIFY BOK DDEG BPL BMI
+%  GET SILENT FINAL NOSTORE ABBREVIATED ' ' ' '
+%  CASE VALUE
+%%
+%    BLOCK        % BOK - CLOSE window
+^^CO   DISPOSE XRM
+%      IF LCENTROID THEN
+%        TRANSFER "{I Deleting centroid..." TO DISPLAY
+%        COPY '#EDIT'
+%        COPY 'MONITOR OFF'
+%        CLEAR
+%        INSERT 'DELETE '
+%        STORE CHARACTER CENTROID
+%        SEND
+%        COPY 'END'
+%      END IF
+%      FINISH
+%    END BLOCK
+%%
+%    BLOCK        % DDEG - dropdown
+%%     TRANSFER "{I DD activated..." TO DISPLAY
+%      GET SILENT NOSTORE INTEGER 'New value' '0'
+%      EVALUATE LCHANGED = TRUE
+%    END BLOCK
+%%
+%    BLOCK        % BPL - rotate in positive direction
+%%
+^^??   SDEG TEXT
+%      GET NOSTORE SILENT REAL ' ' ' '
+%      EVALUATE RDEG = VALUE
+%      EVALUATE CDEG = CHARACTER ( RDEG )
+%%
+%%     TRANSFER "{I EB Rotate selected atoms by " // CDEG // " degrees..." TO DISPLAY
+%%
+^^??   KSEL STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      CASE VALUE
+%        EVALUATE LSELECTATOMS = TRUE
+%        EVALUATE LSELECTATOMS = FALSE
+%      END CASE
+%%
+%      COPY '#SCRIPT A_ROTATEATOMS'
+%%
+%    END BLOCK
+%%
+%    BLOCK        % BMI - rotate in negative direction
+%%
+^^??   SDEG TEXT
+%      GET NOSTORE SILENT REAL ' ' ' '
+%      EVALUATE RDEG = - 1.0 * VALUE
+%      EVALUATE CDEG = CHARACTER ( RDEG )
+%%
+%%     TRANSFER "{I EBRotate selected atoms by " // CDEG // " degrees..." TO DISPLAY
+%%
+^^??   KSEL STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      CASE VALUE
+%        EVALUATE LSELECTATOMS = TRUE
+%        EVALUATE LSELECTATOMS = FALSE
+%      END CASE
+%%
+%      COPY '#SCRIPT A_ROTATEATOMS'
+%%
+%    END BLOCK
+%%
+%  END CASE
+%  END LOOP
+%%
+%  END IF
+%%
+%  IF LCENTROID THEN
+%    TRANSFER "{I Deleting centroid..." TO DISPLAY
+%    COPY '#EDIT'
+%    COPY 'MONITOR OFF'
+%    CLEAR
+%    INSERT 'DELETE '
+%    STORE CHARACTER CENTROID
+%    SEND
+%    COPY 'END'
+%  END IF
+%%
+%% COPY '#SCRIPT A_REMOVEDUMMYATOMS'
+%%
+%END SCRIPT

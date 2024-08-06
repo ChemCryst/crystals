@@ -1,0 +1,189 @@
+% SCRIPT DIFFEXEC  
+%% execute files created by xdiffin etc.  
+%%  
+%  VARIABLE INTEGER INBASICS FTYPE  
+%  VARIABLE LOGICAL LFILE IFILE HFILE INITSETUP
+%  VARIABLE LOGICAL ANSWER LCANCEL XQMERGE  
+%  VARIABLE CHARACTER CEXTN  C_FILE CARG CLOC
+%  VARIABLE CHARACTER FILEFOUND  
+%  EVALUATE FILEFOUND = 'NONE'  
+%% check if files have been created  
+%%
+DIFEXEC:
+% show ftype cextn c_file carg
+%  BLOCK  
+%    COPY '#DISK'  
+%    COPY 'EXTEND SIZE = 10 TRIES = 1000'  
+%    COPY 'END'  
+Files INITIAL.* will be created in your logs/ folder. They may be important.  
+%    COPY '#RELEASE PRINT logs/initial.lis'  
+%    COPY '#RELEASE LOG logs/initial.dat'  
+%  END BLOCK  
+%%  
+%% Read bits and pieces from Bruker pcf file  
+%  IF ( CEXTN .EQ. 'pcf' ) THEN  
+%    IF FILEEXISTS ( 'from-cif.cry' ) THEN  
+%      ON END TERMINATE  
+%      ON ERROR TERMINATE  
+%      COPY '#USE from-cif.cry'  
+%    END IF  
+%  END IF  
+%%  
+%  IF  CARG .EQ. 'FS' THEN                     %% Special case of just 1 res embeded in a cif
+%    IF FILEEXISTS ( 'crystalsinput.cry' ) THEN  
+%      EVALUATE FILEFOUND = 'INS'  
+%      TRANSFER '#USE crystalsinput.cry' TO CRYSTALS 
+%    END IF
+%  ELSE IF ( CEXTN .EQ. 'CIF' ) .OR. ( CEXTN .EQ. 'CIF_OD' ) THEN  
+%    IF FILEEXISTS ( 'from-cif.cry' ) THEN  
+%      EVALUATE FILEFOUND = 'CIF'  
+%      TRANSFER '#USE from-cif.cry' TO CRYSTALS  
+%    END IF  
+%  ELSE IF ( CEXTN .EQ. 'INS' ) .OR. ( CEXTN .EQ. 'RES' )  THEN  
+%    IF FILEEXISTS ( 'crystalsinput.cry' ) THEN  
+%      EVALUATE FILEFOUND = 'INS'  
+%      TRANSFER '#USE crystalsinput.cry' TO CRYSTALS 
+%    END IF
+%  ELSE IF ( CEXTN .EQ. 'FCF' ) .or. ( CEXTN .EQ. 'HKL' ) THEN  
+%    IF FILEEXISTS ( 'cif-reflections.cry' ) THEN  
+%      EVALUATE FILEFOUND = 'HKL'  
+%      TRANSFER '#USE cif-reflections.cry' TO CRYSTALS 
+%    END IF
+%  ELSE  
+{  
+{W Converted file not found  
+{  
+%      FINISH  
+%  END IF            
+% show filefound                    
+%  IF FILEFOUND .NE. 'NONE' THEN  
+%      ON END TERMINATE  
+%      ON ERROR TERMINATE  
+%      IF ( EXISTS 30 .NE. 1 ) THEN
+%        COPY '#SCRIPT X30BITS'  
+%      END IF
+%      EVALUATE INITSETUP = TRUE
+%      BLOCK  
+%        ON ERROR REPEAT  
+%% WE NEED BASIC LISTS FOR DATA REDUCTION  
+%        CLEAR  
+%        COPY '#SCRIPT XINBASIC'  
+%        IF INBASICS .NE. 1 THEN  
+{E Basic Cell, Space Group or composition information is missing.  
+{E This SCRIPT will be abandoned without reading the reflections.  
+%          FINISH  
+%        END IF  
+%        IF LCANCEL .EQ. TRUE THEN  
+{E Basic Cell, Space Group or composition information is missing.  
+{E This SCRIPT will be abandoned without reading the reflections.  
+%          FINISH  
+%        END IF  
+%      END BLOCK  
+%%  
+%      BLOCK  
+%        ON ERROR REPEAT  
+%        IF ( EXISTS 14 .NE. 1 ) THEN  
+%          VERIFY YES NO  
+%          GET FINAL ABBREVIATED -  
+ 'Do you know the asymmetric part of the unit cell?' 'YES'  
+%          IF ( VALUE .EQ. 1 ) THEN  
+%            COPY '#SCRIPT XLIST14'  
+%            ELSE  
+{R You will need this information later when you do Fourier maps. Look in  
+{R International Tables before then.  
+%          END IF  
+%        END IF  
+%%  
+%      END BLOCK  
+%  END IF  
+%%  
+%%  
+%%  
+%    if ( exists 1 .ne. 1 ) then  
+{I CRYSTALS has not found any cell parameters.  
+{I If you have a SHELX ins/res file, input it from the Data menu.  
+%      FINISH  
+%    end if  
+%%  
+%    if ( exists 2 .eq. 1 ) .and. ( exists 5 .eq. 1 ) then  
+{S Sort atoms and renumber H atoms.
+%% variables used by the question box below  
+%        VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2  
+%        EVALUATE QTITLE = 'Renumber and recentre atoms?'  
+%        EVALUATE QLINE1 = 'Do you want to change hydrogen atom serials to CRYSTALS default?'  
+%        EVALUATE QLINE2 = 'This WILL invalidate any restraints imported from SHELXL.'  
+%        EVALUATE BUTTXX = '&Renumber'  
+%        EVALUATE BUTTOK = '&Leave unchanged'  
+%        COPY '#SCRIPT XQUESTIO'  
+%        IF ANSWER .EQ. FALSE THEN  
+%         COPY '#EDIT'  
+%         COPY 'INSERT ELECTRON'  
+%         COPY 'DSORT SPARE'  
+%         COPY 'KEEP 1 ALL'  
+%         COPY 'END'  
+%         COPY '#SCRIPT XCENTRE'  
+%% RESOLVE H ATOMS  
+%         COPY '#SCRIPT HNAM'  
+%         copy '#EDIT'  
+%         COPY 'SORT SERIAL'  
+%         COPY 'END'  
+%        END IF  
+%%  
+%    end if  
+%%  
+%%  
+%%  
+%    IF cextn .eq. 'INS' .or. cextn .eq. 'RES' then  
+%      IF ( .not. FILEEXISTS ( 'crystalsinput.cry' ) ) THEN  
+{I  
+{I The .INS format file conversion has failed  
+{I  
+%        FINISH  
+%      END IF  
+{R * Done. RES/INS file input complete.  
+%%  
+%    END IF  
+%%  
+%    if ( cextn .eq. 'FCF' ) .OR. ( cextn .eq. 'HKL' ) then  
+%      if ( .not. FILEEXISTS ( 'cif-reflections.cry' ) ) THEN  
+{I CRYSTALS could find no embedded HKLI data in the cif file.  
+{I If you have a SHELX hklf file, input that from the Data menu.  
+{I If you have an fcf file, input that from the Data menu
+%        FINISH  
+%      else  
+%        IF FILEFOUND .NE. 'HKL' THEN  
+Files INITIAL.* will be created in your logs/ folder. They may be important.  
+%          TRANSFER '#USE cif-reflections.cry' TO CRYSTALS  
+%        END IF
+%      end if  
+%    else  
+%      if ( ( .not. FILEEXISTS ( 'from-cif.hkl' ) ) .and. ( .not. FILEEXISTS ( 'from-cifv2.hkl' ) ) ) THEN  
+%        IF FILEFOUND .NE. 'INS' THEN        %% Pascal's INS file loads LIST 6 so continue to merge etc  
+{I CRYSTALS could find no embedded HKLI data in the cif file.  
+{I If you have a SHELX hklf file, input that from the Data menu.  
+{I If you have an fcf file, input that from the Data menu
+%          FINISH  
+%        END IF  
+%      end if  
+%    end if  
+%%  
+%% Hope that the LIST 6 is a new one!  
+%    IF ( EXISTS 6 .NE. 1 ) THEN  
+  
+{I You still need to import some reflections  
+  
+%      FINISH  
+%    END IF  
+%%  
+%% Set list 4, 23, 28  
+%    COPY '#SCRIPT XFRESH6' 
+%%
+%% Now try to set a scale factor
+%  if ( exists 5 .eq. 1 )  .and. ( exists 6 .eq. 1 ) then  
+%   copy '#script xscale'
+%  end if
+%%  
+ 
+{R * Done. Diffractometer data input complete.  
+
+%  END SCRIPT  

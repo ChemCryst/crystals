@@ -1,0 +1,74 @@
+%%SSR MAINTOOLBAR
+% The main toolbar
+%
+^^WI       @ 1,1 TOOLBAR _MAINBAR
+^^WI       {
+^^WI         TOOL _MGU 'guide.png' 'Guide' '#SCRIPT XGUIDE'
+^^WI           DISABLEIF='IN'
+^^WI         SPLIT
+^^WI         TOOL _MGU 'import.png' 'Import' '#SCRIPT XFILE_ANY'
+^^WI           DISABLEIF='IN'
+^^WI         SPLIT
+^^WI         TOOL _MFO fourier.png
+^^WI 'Fourier'
+^^WI          '#SCRIPT XFOUR_NDIFF' DISABLEIF='IN QS' ENABLEIF='L5 L1 L2'
+^^WI         TOOL _MADDH addh.png
+^^WI 'Add Hydrogen'
+^^WI         '#SCRIPT GFINDH'
+^^WI         DISABLEIF='IN QS'  ENABLEIF='L5'
+^^WI         TOOL _MREMQ noq.png
+^^WI 'Remove Q peaks'
+^^WI         '#SCRIPT XDELQ'
+^^WI         DISABLEIF='IN'  ENABLEIF='QS L5'                                  
+^^WI         TOOL _MREMH noh.png
+^^WI 'Remove Hydrogen atoms'
+^^WI         '#EDIT_NSELECT TYPE NE H_NEND'
+^^WI          DISABLEIF='IN'  ENABLEIF='L5'
+^^WI         SPLIT
+^^WI         TOOL _UN05 history.png
+^^WI 'Undo'
+^^WI         '#SCRIPT XDSCMAN' DISABLEIF='IN'  ENABLEIF='L5'
+^^WI         TOOL _ED05 edit5.png
+^^WI 'Edit the atomic and other Parameters'
+^^WI          '#SCRIPT SYSED5' DISABLEIF='IN' ENABLEIF='L5'
+^^WI         TOOL _ED12 edit12.png
+^^WI 'Edit the current refinement instructions (Constraints)'
+^^WI          '#SCRIPT EDLIST12' DISABLEIF='IN' ENABLEIF='L5'
+^^WI         TOOL _ED16 edit16.png
+^^WI 'Edit the current Restraints'
+^^WI          '#SCRIPT EDLIST16' DISABLEIF='IN' ENABLEIF='L5'
+^^WI         TOOL _DO33 dorefine.png
+^^WI 'Setup refinement'
+^^WI          '#SCRIPT SWRITE5' DISABLEIF='IN' ENABLEIF='L1 L2 L5 L6'
+^^WI         TOOL _DO33 runref.png
+^^WI 'Initiate some cycles of refinement'
+^^WI          '#SCRIPT XREFINE' DISABLEIF='IN' ENABLEIF='L1 L2 L5 L6'
+^^WI         SPLIT
+^^WI         TOOL _AGREE 'scatter.png' 'Fo vs Fc graph' '#SCRIPT XFOVSFC' 
+^^WI          ENABLEIF='L6 L5 L1 L2' DISABLEIF='IN' 
+^^WI         TOOL _MGU 'export.png' 'Export' '#SCRIPT XCIF'  
+^^WI           DISABLEIF='IN QS' ENABLEIF='L1 L2 L3 L5 L6'
+^^WI         SPLIT
+^^WI         TOOL _MCA cam.png
+^^WI 'Manipulate the structure with Cameron graphics'
+^^WI         '#SCRIPT XCAMNORM'
+^^WI         DISABLEIF='IN' ENABLEIF='L5 L1 L2'
+^^WI         TOOL _MRC 'mercury.png'
+^^WI 'View the structure in Mercury'
+^^WI         '#SCRIPT MERCURY'  DISABLEIF='IN' ENABLEIF='L5'
+^^WI         SPLIT
+^^WI         TOOL _MNP 'notepad.png'
+^^WI 'Open Notepad'
+^^WI         '$notepad'   DISABLEIF='IN'
+^^WI         TOOL _MCM 'cmd.png'
+^^WI 'Open a Command shell'
+^^WI         '$cmd' DISABLEIF='IN'
+^^WI         TOOL _MEX 'explorer.png'
+^^WI 'Explore the current working folder'
+^^WI         '$explorer ./'  DISABLEIF='IN'
+^^WI         SPLIT
+^^WI         TOOL _MHL 'tool_help.png'
+^^WI 'Some not very useful Help'
+^^WI         '$ "CRYSDIR:manual/readme.html"' DISABLEIF='IN'
+^^WI       }
+%%SSR END

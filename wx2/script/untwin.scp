@@ -1,0 +1,79 @@
+%SCRIPT UNTWIN
+% VARIABLE LOGICAL JUSTINCASE
+%% JustInCase is TRUE if called from XROTAX. Don't print error message
+%% if no pretwin 6 is found.
+{I This script removes any twin laws that you may have previously entered.
+{I (Apart from the refinement directives and any restraints) - refinement
+{I directives will be handled automatically if you are using the GUIDE.
+%%
+%% Remove LIST 25
+%%
+{S * Removing the twin laws - deleting list 25.
+% IF EXISTS 25 .EQ. 1 THEN
+% COPY '#DISK'
+% COPY 'DELETE 25'
+% COPY 'END'
+% END IF
+{R Done. Recovering backed up reflection list from 'pretwin6.dat'.
+% IF FILEEXISTS 'pretwin6.dat' .EQ. TRUE THEN
+%    COPY '#USE pretwin6.dat'
+{R Done.
+% ELSE IF JUSTINCASE THEN
+{I No pretwin6.dat exists: We will assume that this is the first
+{I time a twin law has been applied to this data set.
+% ELSE
+{E
+{E Error. Pretwin6.dat not found.
+{E
+{I All is not lost. You may recover your List 6 as follows:
+{R Choose X-ray data -> View Reflections
+{R On the line starting INPUT, change the value /FO/ to /FOT/ and
+{R change /FOT/ to /FO/. Then save the file.
+{I Type
+{R #USE scplst6.dat
+{R #LIST 6
+{R READ TYPE=COPY
+{R END
+{I Your original observations should be back in the /FO/ column.
+
+
+
+% END IF
+{S * Removing element scales from list 5.
+%  VARIABLE INTEGER MD5ES
+%  EVALUATE MD5ES = 0
+%  BLOCK
+%   ON EDITERROR TERMINATE
+%   COPY '#GENERALEDIT 5'
+%   COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%   COPY 'TRANSHEAD TO OFFSET=22 FROM MD5ES'
+%   COPY 'WRITE'
+%   COPY 'END'
+%  END BLOCK
+{R Done. Now punching and altering element values...
+%  BLOCK
+%   VARIABLE CHARACTER CLINE1
+%   EXTRACT CLOSE
+%   COPY '#RELEASE PUNCH untwin5.dat'
+%   COPY '#PUNCH 5'
+%   COPY 'END'
+%   COPY '#RELEASE PUNCH logs/bfile.pch'
+%   COPY '#USE untwin5.dat'
+%%   COPY '#SUM L 5'
+%%   COPY 'END'
+%  END BLOCK
+{R Done. Now Removing twin flag from list 13.
+%  VARIABLE INTEGER TWIN
+%  EVALUATE TWIN = - 1
+%  BLOCK
+%   ON EDITERROR TERMINATE
+%   COPY '#GENERALEDIT 13'
+%   COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%   COPY 'LOCATE RECORD=101'
+%   COPY 'TRANSFER TO OFFSET=1 FROM TWIN'
+%   COPY 'WRITE'
+%   COPY 'END'
+%  END BLOCK
+{R Done.
+%END SCRIPT
+

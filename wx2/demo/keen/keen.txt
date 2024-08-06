@@ -1,0 +1,15 @@
+This structure (an organic salt) has a twinning problem. Use the
+tools (i.e. ROTAX) to work out the twin-law. It is P21/c, but the
+twinning makes it look like P21 because the minor component causes
+intensity where the c/glide absences should be.
+
+Look at the 'Systematic Absences' tab of the initial analyses to
+see this effect in P21/c.
+
+
+Crystal supplied and data collected by Sofia Pascu (ICL, Oxford).
+Twin spotted by Andrew Cowley (Chemical Crystallography, Oxford).
+
+KEEN is usually one of the last workshop structures. You are
+keen for getting this far.
+

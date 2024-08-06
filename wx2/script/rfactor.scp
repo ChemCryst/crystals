@@ -1,0 +1,65 @@
+%SCRIPT RFACTOR
+%% The variables R, OSCALE and RATIO may be needed in other scripts
+%  VARIABLE REAL R OSCALE RATIO ARATIO MFUNC
+%%       A dummy in case we have no Fc
+%      EVALUATE R = 100.
+%      EVALUATE RATIO = 100.
+%      VARIABLE CHARACTER CR CR2
+%      VARIABLE REAL  FO FC
+%      VARIABLE INTEGER N5
+%      VARIABLE LOGICAL ERROR6
+%      EVALUATE ERROR6 = TRUE
+%      ON END TERMINATE
+%      ON ERROR TERMINATE
+%% get the overall scale factor
+%      COPY '#GENERALEDIT 5'
+%      COPY 'TRANSHEAD FROM OFFSET=3 TO N5'                                          
+%      COPY 'LOCATE RECORDTYPE = 102'
+%      COPY 'TRANSFER FROM OFFSET = 0 TO OSCALE'
+%      COPY 'END'
+%      IF N5 .EQ. 0 THEN
+Script rfactor: no atoms in model (L5).
+%        FINISH
+%      END IF
+%      BLOCK
+%        ON ERROR TERMINATE
+%        COPY "#GENERALEDIT 6"
+%        COPY "LOCATE RECORDTYPE=106"
+%        COPY "TRANSFER FROM OFFSET=1 TO R"
+%        COPY "TRANSFER FROM OFFSET=3 TO MFUNC"
+%% get the rms Fo and Fc
+%        COPY "LOCATE RECORDTYPE=107"
+%        COPY "NEXT"
+%        COPY "NEXT"
+%        COPY "NEXT"
+%% rms Fo
+%        COPY "TRANSFER FROM OFFSET=3 TO FO"
+%        COPY 'NEXT'
+%        COPY 'NEXT'
+%        COPY "TRANSFER FROM OFFSET=3 TO FC"
+%        COPY "END"
+%        IF FC .GT. 0.0 THEN
+%          EVALUATE RATIO = FO / ( FC * OSCALE )
+%        END IF
+%      EVALUATE ERROR6 = FALSE
+%      END BLOCK
+%      BLOCK
+%        CLEAR
+%        INSERT '{R    The R-factor is '
+%        STORE FORMAT '(F8.3)' LENGTH 8 REAL R
+%        INSERT '%, the ratio Fo/Fc is '
+%        STORE FORMAT '(F8.4)' LENGTH 8 REAL RATIO
+%        OUTPUT
+%      END BLOCK
+%%NOV-09     EVALAUTE THE ACTUAL RATIO 
+%      EVALUATE ARATIO = RATIO     
+%      IF RATIO .LT. 1.0 THEN
+%            EVALUATE RATIO = 1.0 / RATIO
+%      END IF
+%      IF ERROR6 .EQ. TRUE THEN
+%            COPY '#SCRIPT XDELQ'
+%            COPY '#SFLS'
+%            COPY 'CALC'
+%            COPY 'END'
+%      END IF
+%END SCRIPT

@@ -1,0 +1,37 @@
+# File            :-  
+# File closed     :- C:\Users\richard.cooper\Documents\crystals\wx2\script\l6check.scp 
+# File closed     :- C:\Users\richard.cooper\Documents\crystals\wx2\script\dsccheck.scp 
+# File closed     :- C:\Users\richard.cooper\Documents\crystals\wx2\script\xnewgui.scp 
+# File            :- C:\Users\richard.cooper\Documents\crystals\wx2\demo\cyclo\cyclo.txt 
+# File            :- C:\Users\richard.cooper\Documents\crystals\wx2\demo\cyclo\crystart.dat 
+# File closed     :- C:\Users\richard.cooper\Documents\crystals\wx2\script\tipauto.scp 
+# File closed     :- C:\Users\richard.cooper\Documents\crystals\wx2\script\xguidei.scp 
+# File closed     :- C:\Users\richard.cooper\Documents\crystals\wx2\script\xguide.scp 
+# File closed     :- C:\Users\richard.cooper\Documents\crystals\wx2\script\guideauto.scp 
+# File            :-  
+# File closed     :- C:\Users\richard.cooper\Documents\crystals\wx2\crystals.srt 
+# #SCRIPT XGUIDEIC
+# #SCRIPT XFILE_ANY
+# File closed     :- C:\Users\richard.cooper\Documents\crystals\wx2\script\xfile_any.scp 
+# #SCRIPT XGUIDE
+# #SCRIPT XGUIDEI
+# File closed     :- C:\Users\richard.cooper\Documents\crystals\wx2\script\xguidei.scp 
+# File closed     :- C:\Users\richard.cooper\Documents\crystals\wx2\script\xguide.scp 
+# File closed     :- C:\Users\richard.cooper\Documents\crystals\wx2\script\xguideic.scp 
+# #SCRIPT XGUIDEIC
+# #SCRIPT XFILE_ANY
+# File closed     :- C:\Users\richard.cooper\Documents\crystals\wx2\script\xfile_any.scp 
+# #SCRIPT XGUIDE
+# #SCRIPT XGUIDEI
+# File closed     :- C:\Users\richard.cooper\Documents\crystals\wx2\script\xguidei.scp 
+# File closed     :- C:\Users\richard.cooper\Documents\crystals\wx2\script\xguide.scp 
+# File closed     :- C:\Users\richard.cooper\Documents\crystals\wx2\script\xguideic.scp 
+# #SCRIPT XGUIDEIC
+# #SCRIPT XFILE_ANY
+# #SPAWN % "CRYSDIR:shelx2cry.exe" "C:\Users\richard.cooper\Documents\crystals\wx2\demo\cyclo\cyclo.ins"
+# #SCRIPT DIFFEXEC
+#DISK
+EXTEND SIZE = 10 TRIES = 1000
+END
+#RELEASE PRINT logs/initial.lis
+#RELEASE LOG logs/initial.dat

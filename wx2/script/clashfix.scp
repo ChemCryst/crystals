@@ -1,0 +1,24 @@
+%SCRIPT CLASHFIX
+% VARIABLE INTEGER EDIT:CLASH
+%%   variables used by the question box below  
+% VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2  
+% VARIABLE LOGICAL ANSWER  
+% COPY '#EDIT'
+% COPY 'CLASH REPORT'
+% COPY 'END'
+% IF EDIT:CLASH .GT. 0 THEN
+%%  
+%    EVALUATE QTITLE = 'Duplicate atom name(s) detected'  
+%    EVALUATE QLINE1 = 'Found ' // CHARACTER EDIT:CLASH // ' duplicate atom names.'
+%    EVALUATE QLINE2 = 'Fix this now? Atoms will be renumbered.'  
+%    EVALUATE BUTTOK = '&Yes'  
+%    EVALUATE BUTTXX = '&No'  
+%    COPY '#SCRIPT XQUESTIO'  
+%    IF ANSWER .EQ. TRUE THEN  
+%      COPY '#EDIT'  
+%      COPY 'CLASH FIXLATTER'  
+%      COPY 'END'  
+{I Clashes fixed. Check your atom numbering scheme still has logical consistency.
+%    END IF  
+% END IF
+%END SCRIPT

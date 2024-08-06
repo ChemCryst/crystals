@@ -1,0 +1,149 @@
+%SCRIPT ASSESS5
+%% A Script to determine the current state of the list 5 refinement.
+%  VARIABLE LOGICAL DOEXTNC DOFLACK DOSORT DOTWIN
+%  VARIABLE INTEGER ADP ISER HCOUNT NES N5
+%  VARIABLE REAL U11 FLAG UONE EXTP FLACKP HFIRST
+%  VARIABLE CHARACTER CTYPE
+%% Return values:
+%%    ADP      0 NO LIST 5
+%%             1 NOT REFINED
+%%             2 ISO
+%%             3 ANISO
+%%
+%%    DOEXTNC  TRUE Extinction param is non-zero.
+%%
+%%    DOFLACK  TRUE Flack param is non-zero.
+%%
+%%    DOSORT   TRUE if H are mixed with non-H
+%%
+%%    DOTWIN   TRUE if there are two or more ELEMENTS defined in list 5.
+%%
+%%    HFIRST   serial number of first H found, or -1 if no H
+%%
+%  EVALUATE ADP     = 0
+%  EVALUATE DOFLACK = FALSE
+%  EVALUATE DOEXTNC = FALSE
+%  EVALUATE HFIRST  = - 1.0
+%  EVALUATE HCOUNT  = 0
+%%
+%  IF EXISTS 5 .LE. 0 THEN
+{R   WARNING - You have no atoms to refine
+{S * Done.
+%    FINISH
+%  END IF
+%  COPY '#GENERALEDIT 5'
+%  COPY 'TRANSHEAD FROM OFFSET=3 TO N5' 
+%  COPY 'END'
+%  IF N5 .EQ. 0 THEN
+{R   WARNING - You have no atoms to refine
+{S * Done.
+%    FINISH
+%  END IF
+%%
+%        IF EXISTS 39 .LE. 0 THEN
+%          COPY '#LIST 39'
+%          COPY 'END'
+%       END IF
+%       VARIABLE CHARACTER CFLACK
+%       VARIABLE REAL SERIAL DSIG
+%       COPY '#GENERALEDIT 39'
+%       COPY 'LOCATE RECORDTYPE = 102'
+%       COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%       COPY 'TOP'
+%       LOOP
+%        ON EDITERROR TERMINATE
+%        COPY 'TRANSFER FROM OFFSET=0 TO CFLACK'
+%        COPY 'TRANSFER FROM OFFSET=1 TO SERIAL'
+%        IF CFLACK .EQ. 'FLAC' THEN
+%         IF SERIAL .EQ. 0. THEN
+%          COPY 'TRANSFER FROM OFFSET=6 TO FLACKP'
+%          COPY 'TRANSFER FROM OFFSET=7 TO DSIG'
+%          IF  DSIG  .GT. 0.00001 THEN
+%            EVALUATE FDONE = TRUE
+%          END IF
+%          EVALUATE LOOPCOUNTER = LOOPEND
+%         END IF
+%        END IF
+%        COPY 'NEXT'
+%       END LOOP
+%       COPY 'END'
+%% If post-refinement Flack is in middle 2 quartiles you may 
+%% have inversion twinning and so need to refine it
+%  IF ( FLACKP .GE. 0.25 ) .AND. ( FLACKP .LE. 0.75 ) THEN
+%    EVALUATE DOFLACK = TRUE
+%  END IF
+%  EVALUATE ISER = - 1
+%  EVALUATE DOSORT = FALSE
+%  COPY "#GENERALEDIT 5"
+%  COPY "LOCATE RECORDTYPE=101"
+%  COPY "ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR"
+%  COPY "TOP"
+%  COPY 'LOCATE RECORDTYPE=102'
+%  COPY 'TOP'
+%%
+%  COPY 'TRANSFER FROM OFFSET=5 TO EXTP'
+%  IF EXTP .GE. 0.001 THEN
+%    EVALUATE DOEXTNC = TRUE
+%  END IF
+%%
+%  COPY 'TRANSHEAD FROM OFFSET=22 TO NES'
+%  IF NES .GE. 2 THEN
+%    EVALUATE DOTWIN = TRUE
+%  ELSE
+%    EVALUATE DOTWIN = FALSE
+%  END IF
+%%
+%  COPY 'LOCATE RECORDTYPE=101'
+%  COPY 'ERROR MESSAGE=NO SIGNAL=NONE ACTION=CONTING NAME=EDITERROR'
+%  COPY 'TOP'
+%  COPY 'TRANSFER FROM OFFSET=7 TO UONE'
+%  LOOP
+%    ON EDITERROR TERMINATE
+%    COPy 'NEXT'
+%    COPY 'TRANSFER FROM OFFSET=0 TO CTYPE'
+%    COPY 'TRANSFER FROM OFFSET=3 TO FLAG'
+%    COPY 'TRANSFER FROM OFFSET=7 TO U11'
+%    IF ( ( CTYPE .NE. 'H' ) .and. ( CTYPE .NE. 'D' ) ) THEN
+%      IF  ( FLAG .LE. 0.0 ) THEN
+%        EVALUATE ADP = 3
+%      ELSE IF ( ADP .LT. 3 ) .AND. ( UONE .NE. U11 ) THEN
+%        EVALUATE ADP = 2
+%      ELSE IF ( ADP .LT. 2 ) THEN
+%        EVALUATE ADP = 1
+%      END IF
+%      IF ISER .GE. 1 THEN
+%%       LIST IS IN WRONG ORDER wrt H's.
+%        EVALUATE ISER = 0
+%        EVALUATE DOSORT = TRUE
+%      END IF
+%    ELSE IF ISER .NE. 1 THEN
+%% Indicate H found, should be no more non-h after here.
+%      EVALUATE ISER = 1
+%      COPY 'TRANSFER FROM OFFSET=1 TO HFIRST'
+%      EVALUATE HCOUNT = 1
+%    ELSE
+%      EVALUATE HCOUNT = HCOUNT + 1
+%    END IF
+%  END LOOP
+%  COPY 'END'
+%  IF ( ADP .EQ. 0 ) THEN
+%    TRANSFER '{E   Cannot determine adp state. No atoms?' TO DISPLAY
+%  END IF
+%  IF ( DOEXTNC .EQ. TRUE ) THEN
+%    CLEAR
+%    INSERT '{R   Extinction parameter is: '
+%    STORE FORMAT /(F15.5)/ LENGTH 15 REAL EXTP
+%    OUTPUT
+%  END IF
+%  IF ( DOFLACK .EQ. TRUE ) THEN
+%    CLEAR
+%    INSERT '{R   Flack parameter is: '
+%    STORE FORMAT /(F8.5)/ LENGTH 15 REAL FLACKP
+%    OUTPUT
+%  END IF
+%  IF ( DOTWIN .EQ. TRUE ) THEN
+%    CLEAR
+%    INSERT '{R   There are twin element parameters '
+%    OUTPUT
+%  END IF
+%END SCRIPT

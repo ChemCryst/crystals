@@ -1,0 +1,120 @@
+%SCRIPT MATCHCMP
+%%
+%% Quick script to 'get it working'
+%   VARIABLE CHARACTER CATM CELE CCHK
+%   VARIABLE INTEGER ISER IFRAG MATCH:ERROR
+%   VARIABLE REAL RCHK
+%% Re-assign fragment numbers.
+%   COPY '#EDIT'
+%   COPY 'INSERT RESIDUE'
+%   COPY 'END'
+%%
+%   QUEUE REWIND
+%   QUEUE COPY #MATCH
+%% Need this to be able map onto Q's
+%%%%%   QUEUE COPY EQUALATOM
+%%
+%   QUEUE COPY MAP
+%%
+%   LOOP
+%    ON END TERMINATE
+%    CLEAR
+%    INSERT 'CONTINUE '
+%    GET SILENT TEXT 'Atom?' ' '
+%    QUEUE SEND
+%   END LOOP
+%%
+^^WI WINDOW XMATCH 'Map ... Onto... ' COMMIT='CANCEL' CANCEL='CANCEL'
+^^WI POSITION CENTRED _MAINTEXTOUTPUT
+^^WI GRID GRIDM NROWS=9 NCOLS=5
+^^WI {
+^^WI   @ 2,2 CHECKBOX OPCAM 'Show molecules overlaid in Cameron' STATE=ON
+^^WI   @ 4,2 CHECKBOX INVERT 'Allow Inversion' STATE=ON
+^^WI   @ 6,2 STATIC T2 'Click an atom in the residue'
+^^WI   @ 7,2 STATIC T3 'to compare with the first.'
+^^WI   @ 8,2 GRID G NROWS=2 NCOLS=2
+^^WI   {
+^^WI     @ 2,1 STRETCH S HORIZONTAL
+^^WI     @ 2,2 BUTTON CANCEL 'Cancel' CANCEL DEFAULT COMMIT
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+^^CO SET MODEL01 MOUSEACTION=HEADERATOM
+%   VERIFY CANCEL ATOM
+%   GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
+%   IF VALUE .EQ. 2 THEN
+%       EVALUATE IFRAG = - 1
+%       GET NOSTORE SILENT TEXT ' ' ' '
+%       EVALUATE CATM = CVALUE
+%       EVALUATE CELE = FIRSTSTR ( CATM )
+%       EVALUATE ISER = FIRSTINT ( CATM ) 
+%       COPY '#GENERALEDIT 5'
+%       COPY 'LOCATE RECORDTYPE=101'
+%       COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%       LOOP 
+%        ON EDITERROR TERMINATE
+%        COPY 'TRANSFER FROM OFFSET=0 TO CCHK'
+%        COPY 'TRANSFER FROM OFFSET=1 TO RCHK'
+%        IF ( ( CELE .EQ. CCHK ) .AND. ( ISER .EQ. INTEGER ( RCHK ) ) ) THEN
+%         COPY 'TRANSFER FROM OFFSET=16 TO IFRAG'
+%         COPY 'END'
+%         EVALUATE LOOPEND = LOOPCOUNTER
+%        END IF
+%        COPY 'NEXT'
+%       END LOOP
+%       IF ( IFRAG .LT. 0 ) THEN
+{E Cannot find the atom you clicked on. Sounds like an error.
+%       ELSE
+%         QUEUE PROCESS
+%         TRANSFER 'ONTO RESI(' // CHARACTER ( IFRAG ) // ')' TO CRYSTALS
+****************************************************************************
+^^??      INVERT STATE
+%         VERIFY ON OFF
+%         GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
+%         IF VALUE .EQ. 2 THEN
+%              TRANSFER 'METHOD 3' TO CRYSTALS
+%         ELSE
+%              TRANSFER 'METHOD 4' TO CRYSTALS
+%         END IF
+%         COPY 'END'
+%         IF ( MATCH:ERROR .EQ. 0 ) THEN
+^^?? OPCAM STATE
+%           VERIFY ON OFF
+%           GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
+%           IF VALUE .EQ. 1 THEN
+%              COPY '#SCRIPT XCAMSPEC'
+%          END IF
+%         ELSE
+{E An error occured when attempting the match the two fragments, the
+{E most common reasons are:
+{I   1.  The fragments have two- or more-fold symmetry.
+{I   2.  The fragments are different.
+
+^^WI WINDOW XHELP 'Break Symmetry ' COMMIT='CANCEL' CANCEL='CANCEL'
+^^WI POSITION CENTRED _MAINTEXTOUTPUT
+^^WI GRID GRIDM NROWS=5 NCOLS=5
+^^WI {
+^^WI   @ 2,2 STATIC T2 'See the HELP file to see one'
+^^WI   @ 3,2 STATIC T3 'possible way to break the symmetry'
+^^WI   @ 4,2 GRID G NROWS=2 NCOLS=4
+^^WI   {
+^^WI     @ 2,1 STRETCH S HORIZONTAL
+^^WI     @ 2,2 BUTTON XHELP 'Help' 
+^^WI     @ 2,4 BUTTON CANCEL 'Cancel' CANCEL DEFAULT COMMIT
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+%          VERIFY CANCEL XHELP
+%          GET NOSTORE SILENT FINAL ABBREVIATED ' ' ' '
+%          IF VALUE .EQ. 2 THEN
+%           COPY '#SPAWN CRYSDIR:manual/analyse/matchcmp.html' 
+{S Symmetry help
+%          END IF
+^^CO       DISPOSE XHELP
+%         END IF
+%       END IF
+%   END IF
+^^CO DISPOSE XMATCH
+%END SCRIPT

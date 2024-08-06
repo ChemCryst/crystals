@@ -1,0 +1,42 @@
+%SCRIPT INATOMS
+A SCRIPT to help you input atom coordinates.
+      You may either input coordinates from the keyboard, or from a
+CRYSTALS or SHELXS type file.
+%VARIABLE CHARACTER FILENAME
+%CLEAR
+%VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+ 'Do you have coordinates in a file?' 'NO'
+%  IF VALUE .EQ. 1 THEN
+%%     Get data from a file
+%      VERIFY CRYSTALS SHELXS
+%      GET NOSTORE FINAL ABBREVIATED  -
+       'Which format file?' 'SHELXS'
+%        IF VALUE .EQ. 1 THEN
+%%         CRYSTALS format
+%          ON ERROR REPEAT
+%          ON END TERMINATE
+%          GET FINAL KEYWORD 'Enter  full filename'
+%          EVALUATE FILENAME = CVALUE
+%          TRANSFER '#USE ' //  FILENAME // ' ' TO CRYSTALS
+%        ELSE
+%%         SHELXS format
+%          COPY '#SCRIPT INSHELXS'
+%        END IF
+%  ELSE
+%%
+%%      Prompt for data
+There is a SCRIPT which prompts for x,y,z and uses default Uiso,
+or one which prompts for all atomic coordinated.
+%      VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+       'Input x,y,z only?' 'YES'
+%        IF VALUE .EQ. 1 THEN
+%            ON ERROR RESTART
+%            COPY '#SCRIPT INXYZ'
+%        ELSE
+%            ON ERROR RESTART
+%            COPY '#SCRIPT INLIST5'
+%        END IF
+%  END IF
+%END SCRIPT

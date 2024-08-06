@@ -1,0 +1,8 @@
+%SCRIPT XDELQ
+{I Removing all dummy atoms
+% COPY '#EDIT'
+% COPY 'MONITOR OFF'
+% COPY 'SELECT TYPE NE QH'
+% COPY 'EXEC'
+% COPY 'END'
+%END SCRIPT

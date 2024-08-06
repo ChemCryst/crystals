@@ -1,0 +1,145 @@
+%SCRIPT SELECTATOMS
+%%
+%  VARIABLE CHARACTER MODE ATOM
+%  VARIABLE INTEGER PARA IOPTION
+%%
+%  VARIABLE CHARACTER CELE CCHK
+%  VARIABLE INTEGER IPAR IPAR1 IPAR2 ISER
+%  VARIABLE REAL RPKH RCHK
+%%
+%  VARIABLE LOGICAL LDEBUG
+%%
+%% We need to change the names as otherwise they are not local anymore and other scripts
+%% may experience problems. I have addes S for subroutine. MN
+%%
+%  VARIABLE INTEGER IPRTS IHYBS
+%  VARIABLE INTEGER IPEGS IPEPS
+%%
+%% The parameters ATOM is provided by the calling script. If ATOM = "NOATOM"
+%% then the integer parameter PARA is expected to tell which part to select
+%%
+%% If MODE is set the values of IOPTION are derived from it
+%%
+%  IF MODE .EQ. "RESIDUE" THEN
+%    EVALUATE IOPTION = 1
+%  ELSE IF MODE .EQ. "ASSEMBLY" THEN
+%    EVALUATE IOPTION = 2
+%  ELSE IF MODE .EQ. "GROUP" THEN
+%    EVALUATE IOPTION = 3
+%  END IF
+%%
+%% TRANSFER '{I Parameters available in script SelectAtoms: ' // MODE // ', ' // ATOM // ' and ' // CHARACTER ( PARA ) TO DISPLAY
+%%
+%  IF ATOM .EQ. "NOATOM" THEN
+%%
+%    EVALUATE IPAR1 = PARA
+%%
+%  ELSE
+%%
+%    EVALUATE CELE = FIRSTSTR ( ATOM )
+%    EVALUATE ISER = FIRSTINT ( ATOM )
+%%
+%%   TRANSFER '{I Atom type: ' // CELE // ', serial: ' // CHARACTER ( ISER ) TO DISPLAY
+%%
+%    BLOCK
+%      EVALUATE IPAR1 = 0
+%      ON EDITERROR TERMINATE
+%      COPY '#GENERALEDIT 5'
+%      COPY 'LOCATE RECORDTYPE=101'
+%      COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%      LOOP
+%       ON EDITERROR TERMINATE
+%       COPY 'TRANSFER FROM OFFSET=0 TO CCHK'
+%       COPY 'TRANSFER FROM OFFSET=1 TO RCHK'
+%       IF ( ( CELE .EQ. CCHK ) .AND. ( ISER .EQ. INTEGER ( RCHK ) ) ) THEN
+%        COPY 'TRANSFER FROM OFFSET=14 TO IPRTS'
+%        COPY 'TRANSFER FROM OFFSET=16 TO IHYBS'
+%%       COPY 'END'
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%%
+%        EVALUATE IPEGS = IPRTS / 1000
+%%       EVALUATE IPEP = IPRT - ( IPEG * 1000 )
+%%
+%%       EVALUATE IPEGS = ( IPRTS IDECMASK 111000 ) / 1000
+%%       EVALUATE IPEPS = IPRTS IDECMASK 000111
+%%
+%        EVALUATE IPAR1 = 0
+%        CASE IOPTION
+%          EVALUATE IPAR1 = IHYBS
+%          EVALUATE IPAR1 = IPEGS
+%          EVALUATE IPAR1 = IPRTS
+%        END CASE
+%%       IF MODE .EQ. "RESIDUE" THEN
+%%
+%%       ELSE IF MODE .EQ. "ASSEMBLY" THEN
+%%
+%%       ELSE IF MODE .EQ. "GROUP" THEN
+%%
+%%       ELSE
+%%
+%%       END IF
+%%
+%       END IF
+%       COPY 'NEXT'
+%      END LOOP
+%      COPY 'END'
+%    END BLOCK
+%  END IF
+%%
+%  IF LDEBUG THEN
+%    TRANSFER '{I ' // MODE // ' we want to select has the number ' // CHARACTER ( IPAR1 ) // '.' TO DISPLAY
+%  END IF
+%%
+%  IF IPAR1 .EQ. 0 THEN
+%   TRANSFER '{E Number of the structure fragment to select is 0, this makes no sense!' TO DISPLAY
+%  ELSE
+%%  TRANSFER '{I OK, we will do it!' TO DISPLAY
+%%
+%  BLOCK
+%    EVALUATE IPAR2 = 0
+%    ON EDITERROR TERMINATE
+%    COPY '#GENERALEDIT 5'
+%    COPY 'LOCATE RECORDTYPE=101'
+%    COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%    LOOP
+%     ON EDITERROR TERMINATE
+%     COPY 'TRANSFER FROM OFFSET=0 TO CCHK'
+%     COPY 'TRANSFER FROM OFFSET=1 TO RCHK'
+%     COPY 'TRANSFER FROM OFFSET=14 TO IPRTS'
+%     COPY 'TRANSFER FROM OFFSET=16 TO IHYBS'
+%%
+%     EVALUATE IPEGS = IPRTS / 1000
+%%    EVALUATE IPEP = IPRT - ( IPEG * 1000 )
+%%
+%%    EVALUATE IPEGS = ( IPRTS IDECMASK 111000 ) / 1000
+%%    EVALUATE IPEPS = IPRTS IDECMASK 000111
+%     EVALUATE IPAR2 = 0
+%     CASE IOPTION
+%       EVALUATE IPAR2 = IHYBS
+%       EVALUATE IPAR2 = IPEGS
+%       EVALUATE IPAR2 = IPRTS
+%     END CASE
+%%    IF MODE .EQ. "RESIDUE" THEN
+%%     EVALUATE IPAR2 = IHYBS
+%%    ELSE IF MODE .EQ. "ASSEMBLY" THEN
+%%     EVALUATE IPAR2 = IPEGS
+%%    ELSE IF MODE .EQ. "GROUP" THEN
+%%     EVALUATE IPAR2 = IPRTS
+%%    ELSE
+%%     EVALUATE IPAR2 = 0
+%%    END IF
+%%
+%     IF IPAR1 .EQ. IPAR2 THEN
+%      EVALUATE CELE = FIRSTSTR ( CCHK )
+%      EVALUATE ISER = INTEGER ( RCHK )
+%%     TRANSFER '{I Working on ' // CELE // '(' // CHARACTER ( ISER ) // ')...' TO DISPLAY
+%      TRANSFER '^^CO SET MODEL01 SELECT ' // CELE // '(' // CHARACTER ( ISER ) // ') YES' TO DISPLAY
+%     END IF
+%     COPY 'NEXT'
+%    END LOOP
+%    COPY 'END'
+%  END BLOCK
+%%
+%  END IF
+%%
+%END SCRIPT

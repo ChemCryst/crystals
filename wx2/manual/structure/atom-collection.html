@@ -1,0 +1,74 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta name="generator" content=
+  "HTML Tidy for Linux (vers 25 March 2009), see www.w3.org" />
+
+  <title></title>
+  <style type="text/css">
+/*<![CDATA[*/
+  div.c1 {text-align: center}
+  /*]]>*/
+  </style>
+</head>
+
+<body>
+  <div class="c1">
+    <h1>Atom Collection</h1>
+  </div>This module tries to take atoms which are dispersed throughout the unit cell and
+  assemble them into bonded clusters.
+
+  <div class="c1">
+    <h2>Method</h2>
+  </div>Structure solution programs (especially older ones) simply look for peaks in the
+  electron density map and call them atoms (or 'Q' peaks in SHELX etc).<br />
+  This module uses covalent radii (or a default value for Q-peaks) and the space group
+  symmetry operators to bring <i>bonded</i> atoms together.<br />
+  The first atom in the atom list (<i>pivot atom</i>) is marked as <i>found</i> and then
+  the symmetry operators used on all subsequent <i>not-found</i> atoms to find the
+  equivalent position which brings them closest to the pivot. Any atom which is within
+  bonding distance plus a user-defined tolerance is marked as found. The first remaining
+  not-found atom is now chosen as a new found pivot and the process repeated. The process
+  is repeated until atoms are marked as found.<br />
+  If an incomplete structure is being extended by Fourier methods, the known structure
+  can be marked as found, so that only new peaks are aggregated with the existing
+  structure.<br />
+  The names and serial numbers of atoms, and their position in the list, are not
+  altered.<br />
+  <hr color="blue" />
+  The procedure is performed twice.<br />
+  In the first pass, the tolerance augments the covalent radii by 2.0A. This helps to
+  bring separate entities into the same part of the unit cell, but will not get
+  physically realistic bonding.<br />
+  The second pass uses a default tolerance of 0.2A to build reasonable molecules.<br />
+  <hr color="blue" />
+  If you have a heavy atom you
+  might want to make this the first atom before starting this module. If you know the name
+  of this atom, say Zn(1), you can move it to the top of the list by issuing:<br />
+  <pre>
+#EDIT
+MOVE Zn(1)
+END
+</pre><br />
+  If you dont know the name, you can try sorting on the electron count or atomic weight:
+
+  <table border="1">
+    <tr>
+      <td>
+        <pre>
+#EDIT
+INSERT ELECTRON (or INSERT WEIGHT)
+DSORT SPARE     
+END
+</pre>
+      </td>
+
+      <td>The electron count or atomic weight of each atom is inserted into the key
+      <i>SPARE</i>.<br />
+      DSORT sorts the values in the given key (in this case SPARE) by decreasing value.
+      Any key can be sorted, eg DSORT U[iso] would put the atom with the smallest Uiso at
+      the top of the atom list.</td>
+    </tr>
+  </table>
+  
+</body>
+</html>

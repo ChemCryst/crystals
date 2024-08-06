@@ -1,0 +1,52 @@
+%SCRIPT XPROC6
+%% Process a newly input LIST 6
+%  VARIABLE LOGICAL XQMERGE
+%    IF ( EXISTS 6 .NE. 1 ) THEN
+
+{E   You have not yet successfully read in any reflections
+
+%     FINISH
+%    END IF
+%    IF ( EXISTS 2 .NE. 1 ) THEN
+
+{E   You have not yet successfully input a Space Group
+
+%     FINISH
+%    END IF
+%%
+%    COPY '#SCRIPT XFRIEDEL'                                                      
+%%                                                                              
+{S * Removing systematically absent reflections                                 
+%    COPY '#SYSTEMATIC'                                                           
+%    COPY 'END'                                                                   
+{S * Sorting reflections                                                        
+%    COPY '#SORT'                                                                 
+%    COPY 'END'                                                                   
+%    IF ( XQMERGE ) THEN        
+%%   Friedel Pair merging is controlled by LIST 13                                                  
+{S * Merging equivalent reflections                                             
+%      CLEAR                                                                    
+%      COPY '#MERGE' 
+%      COPY 'REJECT SIGMA=2'
+%      COPY 'REFLECTION LIST=HI'
+%      COPY 'END'                                                               
+%    END IF                                                                       
+%                                                                               
+{S * Final copy to DSC file                                                     
+%    COPY '#LIST 6'                                                               
+%    COPY 'READ TYPE = COPY'  
+%    COPY 'STORE NCOEF=10'
+%    COPY 'OUTP INDI /FO/ SIG RATIO CORR SERI JCODE /FC/ SQRTW BATCH/PHASE'
+%   COPY 'END'  
+%%
+%%   Because modern strategies do not (usually) make use of the LIST 6
+%%   scratch files (pseudo 'mag tapes', MT1 and MT2) lots of copies of
+%%   LIST 6 build up on the disk (approximatly 12 from the usual scripts)
+%%                                                                              
+{S * Clear out intermediate reflection files
+%%    COPY  '#DISK'
+%%    COPY  'PRINT DISK'
+%%    COPY  'END'
+%    COPY '#PURGE LIST=6'
+%    COPY 'END'
+%END SCRIPT

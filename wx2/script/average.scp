@@ -1,0 +1,23 @@
+%SCRIPT AVERAGE
+%% variables used by the question box                                           
+%  VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2                        
+%  VARIABLE LOGICAL ANSWER                                                      
+%%     
+% IF EXISTS 5 .EQ. 1 THEN                                                                         
+%             EVALUATE QTITLE = 'Treatment of duplicate peaks'                                
+% EVALUATE QLINE1 = ' '     
+% EVALUATE QLINE2 = 'Would you like to average or eliminate them?'        
+%             EVALUATE BUTTOK = 'Average'                             
+%             EVALUATE BUTTXX = 'Eliminate'                    
+%             COPY '#SCRIPT XQUESTIO'                                           
+%             IF ANSWER .EQ. TRUE THEN                                          
+%                  COPY '#PEAK 5 5'
+%                  COPY 'SELECT TYPE=AVERAGE'
+%                  COPY 'END'
+%             ELSE                                                                
+%                  COPY '#PEAK 5 5'
+%                  COPY 'SELECT TYPE=ALL REJECT = .5'
+%                  COPY 'END'
+%            END IF                                                              
+% END IF
+%END SCRIPT

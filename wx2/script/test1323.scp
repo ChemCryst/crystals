@@ -1,0 +1,45 @@
+%SCRIPT TEST1323
+%  VARIABLE LOGICAL TWINNED PARTS UPDATE MERGED
+%  VARIABLE INTEGER F67 ITMP
+%                                                                               
+%  BLOCK                                                                        
+%    VARIABLE INTEGER ITMP                                                      
+%    IF ( ( EXISTS 13 ) .EQ. 1 ) THEN                                           
+%        COPY '#GENERALEDIT 13'                                                 
+%        COPY 'LOCATE RECORDTYPE=101'                                           
+%        COPY 'TRANSFER FROM OFFSET=1 TO ITMP'                                  
+%        IF ( ITMP .GE. 0 ) THEN                                                
+%         EVALUATE TWINNED = TRUE                                               
+%        ELSE                                                                   
+%         EVALUATE TWINNED = FALSE                                              
+%        END IF                                                                 
+%        COPY 'TRANSFER FROM OFFSET=0 TO ITMP'                                  
+%        IF ( ITMP .GE. 0 ) THEN                                                
+%         EVALUATE MERGED = TRUE                                                
+%        ELSE                                                                   
+%         EVALUATE MERGED = FALSE                                               
+%        END IF                                                                 
+%        COPY 'END'                                                             
+%    END IF                                                                     
+%  END BLOCK                                                                    
+%%                                                                              
+%    IF ( ( EXISTS 23 ) .EQ. 1 ) THEN                                           
+%       COPY '#GENERALEDIT 23'                                                        
+%       COPY 'LOCATE RECORDTYPE=101'                                                  
+%% FIND PARTIAL FLAG
+%       COPY 'TRANSFER FROM OFFSET=4 TO ITMP'                                  
+%        IF ( ITMP .GE. 0 ) THEN                                                
+%         EVALUATE PARTS = TRUE                                               
+%        ELSE                                                                   
+%         EVALUATE PARTS = FALSE                                              
+%        END IF                                                                 
+%% FIND UPDATE FLAG
+%       COPY 'TRANSFER FROM OFFSET=5 TO ITMP'                                  
+%        IF ( ITMP .GE. 0 ) THEN                                                
+%         EVALUATE UPDATE = TRUE                                               
+%        ELSE                                                                   
+%         EVALUATE UPDATE = FALSE                                              
+%        END IF                                                                 
+%       COPY 'END'                                                                    
+%    END IF
+%END SCRIPT

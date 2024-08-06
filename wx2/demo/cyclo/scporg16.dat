@@ -1,0 +1,76 @@
+#
+# Punched on 06/08/24 at 14:12:40
+#
+#LIST     16                                                                    
+NO 
+REM   HREST   START (DO NOT REMOVE THIS LINE) 
+REM   HREST   END (DO NOT REMOVE THIS LINE) 
+REM   THERMSIM   START (DO NOT REMOVE THIS LINE) 
+U(IJ) .0, 0.04000 = N(1) TO C(2) 
+U(IJ) .0, 0.04000 = N(1) TO C(9) 
+U(IJ) .0, 0.04000 = C(2) TO C(3) 
+U(IJ) .0, 0.04000 = C(2) TO C(4) 
+U(IJ) .0, 0.04000 = C(2) TO C(5) 
+U(IJ) .0, 0.04000 = C(3) TO C(4) 
+U(IJ) .0, 0.08000 = C(5) TO O(6) 
+U(IJ) .0, 0.04000 = C(5) TO O(7) 
+U(IJ) .0, 0.08000 = O(7) TO C(8) 
+U(IJ) .0, 0.08000 = C(9) TO O(10) 
+U(IJ) .0, 0.08000 = C(9) TO C(11) 
+REM   THERMSIM   END (DO NOT REMOVE THIS LINE) 
+REM   SHIFTLIMIT   START (DO NOT REMOVE THIS LINE) 
+LIMIT      0.01000000 U[ISO] 
+LIMIT      0.01000000 X 
+LIMIT      0.01000000 Y 
+LIMIT      0.01000000 Z 
+LIMIT      0.01000000 U[11] 
+LIMIT      0.01000000 U[22] 
+LIMIT      0.01000000 U[33] 
+LIMIT      0.01000000 U[12] 
+LIMIT      0.01000000 U[13] 
+LIMIT      0.01000000 U[23] 
+LIMIT      0.01000000 OCC 
+REM   SHIFTLIMIT   END (DO NOT REMOVE THIS LINE) 
+REM   DELU   START (DO NOT REMOVE THIS LINE) 
+VIBR .0, 0.00200 = N(1) TO C(2) 
+VIBR .0, 0.00200 = N(1) TO C(9) 
+VIBR .0, 0.00500 = C(9) TO C(2) 
+VIBR .0, 0.00200 = C(2) TO C(3) 
+VIBR .0, 0.00200 = C(2) TO C(4) 
+VIBR .0, 0.00200 = C(2) TO C(5) 
+VIBR .0, 0.00500 = C(3) TO N(1) 
+VIBR .0, 0.00500 = C(4) TO N(1) 
+VIBR .0, 0.00500 = C(4) TO C(3) 
+VIBR .0, 0.00500 = C(5) TO N(1) 
+VIBR .0, 0.00500 = C(5) TO C(3) 
+VIBR .0, 0.00500 = C(5) TO C(4) 
+VIBR .0, 0.00200 = C(3) TO C(4) 
+VIBR .0, 0.00500 = C(4) TO C(2) 
+VIBR .0, 0.00500 = C(2) TO C(3) 
+VIBR .0, 0.00200 = C(5) TO O(6) 
+VIBR .0, 0.00200 = C(5) TO O(7) 
+VIBR .0, 0.00500 = O(6) TO C(2) 
+VIBR .0, 0.00500 = O(7) TO C(2) 
+VIBR .0, 0.00500 = O(7) TO O(6) 
+VIBR .0, 0.00200 = O(7) TO C(8) 
+VIBR .0, 0.00500 = C(8) TO C(5) 
+VIBR .0, 0.00200 = C(9) TO O(10) 
+VIBR .0, 0.00200 = C(9) TO C(11) 
+VIBR .0, 0.00500 = O(10) TO N(1) 
+VIBR .0, 0.00500 = C(11) TO N(1) 
+VIBR .0, 0.00500 = C(11) TO O(10) 
+REM   DELU   END (DO NOT REMOVE THIS LINE) 
+END                                                                             
+# Remove space after hash to activate next line
+# USE LAST
+  
+# This file will be read by CRYSTALS
+# when you close it, so save any changes that you make.
+# To abandon changes: either don't save, or, delete all
+# lines from this file before saving.
+# 
+# To remove all restraints, replace them with the
+# single keyword NO, so that the file reads:
+#     #LIST 16
+#     NO
+#     END

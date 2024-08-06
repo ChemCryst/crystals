@@ -1,0 +1,3 @@
+%SCRIPT AUTO12
+% COPY '#SCRIPT not-here'
+%END SCRIPT

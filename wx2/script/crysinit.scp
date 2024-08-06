@@ -1,0 +1,19 @@
+%SCRIPT CRYSINIT
+%
+      On startup, CRYSTALS reads from a user file, CRYSINIT.DAT, whose
+      location is defined near the end of the file
+                  \CRYSTALS\SRT\CRYSTALS.SRT
+      If the file CRYSINIT.DAT does not exist, CRYSTALS.SRT continues to
+      be executed, otherwise CRYSINIT.DAT is executed.
+      CRYSINIT.DAT can contain any CRYSTALS commands, e.g. read another
+      file (via #USE), or purge the DSC file. However, it is most
+      commonly used to tailor CRYSTALS by issuing 'SYSTEM' commands, as
+      described in VOL 1 of the manual.
+      e.g.
+            #SET SPEED SLOW
+            #SET WATCH 5
+            #SET LISTS WRITE
+            #SET TERMINAL VGA
+            #USE LAST         - note, replacing this with #USE CONTROL
+                                inhibits SCRIPT mode.
+%END SCRIPT

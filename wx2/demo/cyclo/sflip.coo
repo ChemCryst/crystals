@@ -1,0 +1,26 @@
+# Analysis of the density map sflip.m81
+# Dimension of the map  :   3
+# Division of the map   :    30   60   80
+# Order of the axes     : 123
+# Range for spline interpolation:   9
+# The center of charge and total charge of atomic basins will be computed using an on-grid algorithm (fast, but possibly inaccurate)
+# The density in the incommensurate directions is calculated from -0.500 to  1.500
+# The density limit for the pixel to be accepted in the com calculation is   0.250*Rho(max)
+# The scale of the output coordinates will be fractional
+# All maxima with density above     1.500 will be printed for each t.
+
+#  maxima:
+#     x           y           z              x_coc       y_coc       z_coc        charge     density        vol.
+    0.167446    0.600203    0.060635       0.166443    0.599880    0.059896       7.64771     30.4657      2.8451
+    0.635491    0.150625    0.076676       0.634870    0.151143    0.076949       5.23329     22.3350      2.4981
+    0.147694    0.832511    0.095923       0.146214    0.832089    0.095045       4.90788     18.2425      2.8277
+    0.258900    0.633834    0.126441       0.259472    0.632633    0.127502       4.64903     23.5910      2.1338
+    0.601579    0.459615    0.148926       0.600890    0.460178    0.149195       4.78102     18.9785      2.6716
+    0.271143    0.745165    0.154406       0.271493    0.745293    0.155115       8.07490     31.9953      2.7930
+    0.732595    0.116150    0.166447       0.731765    0.115386    0.167160       5.21394     26.3319      2.1338
+    0.331507    0.412665    0.179917       0.331455    0.413285    0.180352       5.03761     21.6770      2.4172
+    0.975211    0.108440    0.183813       0.976496    0.108399    0.183730       7.73165     31.8928      2.5964
+    0.400077    0.546373    0.192658       0.398893    0.545990    0.192070       5.69774     23.4987      2.4750
+    0.542811    0.090279    0.223594       0.540266    0.090384    0.223642       8.01803     31.7081      2.4808
+
+

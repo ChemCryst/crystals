@@ -1,0 +1,269 @@
+%SCRIPT REGULARISE
+%%
+%% Variables used by calling script
+%%
+%% VARIABLE INTEGER IMODE
+%  VARIABLE INTEGER IOPTION
+%%
+%  VARIABLE CHARACTER CTITLE CPOSITION CTEXT1 CTEXT2
+%  VARIABLE CHARACTER CATM COMMAND COMMAND2
+%  VARIABLE INTEGER ISELECTED IREGMODE IRINGCNT
+%  VARIABLE LOGICAL LDEBUG T
+%%
+%% Variables for restore point
+%%
+%  VARIABLE INTEGER ISER5 ISER12 ISER16
+%  VARIABLE LOGICAL LEX5 LEX12 LEX16
+%%
+%% Variables for geometry and for transfer from script
+%%
+%  VARIABLE REAL RDIST0 RDIST1
+%  VARIABLE REAL MEANBOND
+%%
+%% Variable for call to script orthoAtoms
+%%
+%  VARIABLE INTEGER IATOMCOUNT
+%%
+%% Variables for call to script meanDist
+%%
+%% VARIABLE CHARACTER COMMANDO
+%% VARIABLE REAL MEANDIST
+%%
+%% Variables for call to script nextfree
+%%
+%% VARIABLE INTEGER STARTFROM NEXTFREE
+%% VARIABLE CHARACTER CTYPE
+%%
+%% EVALUATE STARTFROM = 1
+%% EVALUATE CTYPE = "C"
+%%
+%% We set a restore point for security
+%%
+%  COPY '#SCRIPT A_RESTOREPOINT'
+%%
+%  EVALUATE LDEBUG = FALSE
+%% EVALUATE LDEBUG = TRUE
+%%
+%  EVALUATE ISELECTED = 0
+%  EVALUATE COMMAND = "TARGET"
+%%
+%% This section can be left if the TARGET card is assembled elsewhere
+%%
+%  COPY '#OPEN SCPDATA AtomsToWorkOn.dat'
+%  LOOP
+%    ON ERROR TERMINATE
+%    ON END TERMINATE
+%    EXTRACT NEXT
+%    EXTRACT TRANSFER INPUT
+%    CLEAR
+%    GET TEXT 'Atom'
+%    EVALUATE CATM = CVALUE
+%    IF CVALUE .EQ. 'END' THEN
+%      EVALUATE LOOPEND = LOOPCOUNTER
+%    ELSE
+%      EVALUATE ISELECTED = ISELECTED + 1
+%      EVALUATE COMMAND = COMMAND // " " // CVALUE
+%      COPY 'NEXT'
+%    END IF
+%  END LOOP
+%  COPY '#CLOSE SCPDATA'
+%% We will need the file later
+%% EVALUATE T = FILEDELETE ( 'AtomsToWorkOn.dat' )
+%%
+%  TRANSFER "Number of atoms selected is " // CHARACTER ( ISELECTED ) // ", selected option is " // CHARACTER ( IOPTION ) // "." TO DISPLAY
+%  TRANSFER "Command line stored is " // COMMAND TO DISPLAY
+%%
+%  COPY '#SCRIPT A_ORTHOATOMS'
+%%
+%  CASE IOPTION
+%%
+%    BLOCK                   % Phenyl
+%      TRANSFER "Selected option is PHENYL" TO DISPLAY
+%      EVALUATE IREGMODE = 2
+%      EVALUATE IRINGCNT = 6
+%      IF ( ISELECTED .GE. 3 ) .AND. ( ISELECTED .LE. 5 ) THEN
+%        EVALUATE IREGMODE = 1
+%        TRANSFER "{I The AUGMENT mode for the PHENYL option will be implemented later" TO DISPLAY
+%%       EVALUATE ISELECTED = 6
+%      END IF
+%      IF ISELECTED .EQ. 6 THEN
+%        COPY '#SCRIPT A_SORTRING'
+%        CASE IREGMODE
+%          COPY '#REGULARISE AUGMENT'
+%          COPY '#REGULARISE REPLACE'
+%        END CASE
+%        COPY 'GROUP 6'
+%        TRANSFER COMMAND TO CRYSTALS
+%        COPY 'PHENYL'
+%        COPY 'END'
+%      ELSE
+%        TRANSFER "{E Number of selected atoms (" // CHARACTER ( ISELECTED ) // ") not suited for the PHENYL option" TO DISPLAY
+%      END IF
+%    END BLOCK
+%%
+%    BLOCK                   % cp-ring
+%      TRANSFER "Selected option is CP-RING" TO DISPLAY
+%      EVALUATE IREGMODE = 2
+%      EVALUATE IRINGCNT = 5
+%      IF ( ISELECTED .GE. 3 ) .AND. ( ISELECTED .LE. 4 ) THEN
+%        EVALUATE IREGMODE = 1
+%        TRANSFER "{I The AUGMENT mode for the CP-RING option will be implemented later" TO DISPLAY
+%%       EVALUATE ISELECTED = 5
+%      END IF
+%      IF ISELECTED .EQ. 5 THEN
+%        COPY '#SCRIPT A_SORTRING'
+%        CASE IREGMODE
+%          COPY '#REGULARISE AUGMENT'
+%          COPY '#REGULARISE REPLACE'
+%        END CASE
+%        COPY 'GROUP 5'
+%        TRANSFER COMMAND TO CRYSTALS
+%        COPY 'CP-RING'
+%        COPY 'END'
+%      ELSE
+%        TRANSFER "{E Number of selected atoms (" // CHARACTER ( ISELECTED ) // ") not suited for the CP-RING option" TO DISPLAY
+%      END IF
+%    END BLOCK
+%%
+%    BLOCK                   % hexagon
+%      TRANSFER "Selected option is HEXAGON" TO DISPLAY
+%      IF ISELECTED .EQ. 6 THEN
+%%
+%  EVALUATE CTITLE = "Hexagon"
+%  EVALUATE CPOSITION = "=CENTERED '_MAINTEXTOUTPUT'"
+%  EVALUATE CTEXT1 = "Set the bond length to the common mean of"
+%  EVALUATE CTEXT2 = "or set the bond length to this value:"
+%%
+%  COPY '#SCRIPT A_SORTRING'
+%  EVALUATE RDIST0 = MEANBOND
+%  EVALUATE RDIST1 = 1.395
+%%
+^^WI WINDOW XREG
+% TRANSFER "^^WI '" // CTITLE // "'" TO DISPLAY
+^^WI MODAL
+% TRANSFER "^^WI POSITION" // CPOSITION TO DISPLAY
+^^WI GRID M NROWS=3 NCOLS=3 {
+^^WI   @ 2,2 GRID B NROWS=7 NCOLS=5 {
+% TRANSFER "^^WI     @ 1,1 RADIOBUTTON RB0 '" // CTEXT1 // "' STATE=ON" TO DISPLAY
+^^WI     @ 1,3 EDITBOX RD0 '1.0' CHARS=8 REAL
+^^WI     @ 1,5 STATIC T2 'Angstrom'
+%%
+% TRANSFER "^^WI     @ 3,1 RADIOBUTTON RB1 '" // CTEXT2 // "'" TO DISPLAY
+^^WI     @ 3,3 EDITBOX RD1 '1.0' CHARS=8 REAL
+^^WI     @ 3,5 STATIC T4 'Angstrom'
+%%
+^^WI     @ 5,3 BUTTON BAP 'Apply' DISABLED=NO
+%%
+^^WI     @ 7,3 BUTTON BCA 'Cancel' DISABLED=YES
+^^WI     @ 7,5 BUTTON BOK '&OK' DEFAULT COMMIT CANCEL
+^^WI   }
+^^WI }
+^^WI SHOW
+^^CR
+%%
+% TRANSFER "^^CO SET RD0 TEXT '" // CHARACTER ( RDIST0 ) // "'" TO DISPLAY
+% TRANSFER "^^CO SET RD1 TEXT '" // CHARACTER ( RDIST1 ) // "'" TO DISPLAY
+%%
+%  LOOP
+%   VERIFY BOK BAP BCA
+%   GET SILENT FINAL NOSTORE ABBREVIATED ' ' ' '
+%   CASE VALUE
+%%
+%    BLOCK        % BOK - CLOSE window
+^^CO   DISPOSE XREG
+%      FINISH
+%    END BLOCK
+%%
+%    BLOCK        % BAP
+%% Build the string HEXAGON X
+^^??   RD0 TEXT
+%      GET NOSTORE SILENT REAL ' ' ' '
+%      EVALUATE RDIST0 = VALUE
+^^??   RD1 TEXT
+%      GET NOSTORE SILENT REAL ' ' ' '
+%      EVALUATE RDIST1 = VALUE
+^^??   RB0 STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      IF ( VALUE .EQ. 1 ) THEN
+%        EVALUATE COMMAND2 = "HEXAGON " // CHARACTER ( RDIST0 )
+%      END IF
+^^??   RB1 STATE
+%      VERIFY ON OFF
+%      GET SILENT NOSTORE FINAL ABBREVIATED ' '
+%      IF ( VALUE .EQ. 1 ) THEN
+%        EVALUATE COMMAND2 = "HEXAGON " // CHARACTER ( RDIST1 )
+%      END IF
+%%
+%      COPY '#REGULARISE REPLACE'
+%      COPY 'GROUP 6'
+%      TRANSFER COMMAND TO CRYSTALS
+%      TRANSFER COMMAND2 TO CRYSTALS
+%      COPY 'END'
+^^CO  SET BCA DISABLED=NO
+%%^^CO  SET BOK 'OK'
+%    END BLOCK
+%%
+%    BLOCK        % BCA
+%      COPY '#SCRIPT A_RESETTORP'
+^^CO   DISPOSE XREG
+%      FINISH
+%    END BLOCK
+%%
+%   END CASE
+%  END LOOP
+%%
+%      ELSE IF ISELECTED .LT. 6 THEN
+%%       COPY '#REGULARISE AUGMENT'
+%        TRANSFER "{I #REGULARISE AUGMENT could work here, not available via GUI for now" TO DISPLAY
+%      ELSE
+%        TRANSFER "{E Number of selected atoms (" // CHARACTER ( ISELECTED ) // ") not suited for the HEXAGON option" TO DISPLAY
+%      END IF
+%%
+%    END BLOCK
+%%
+%    BLOCK                   % tetrahedron
+%      TRANSFER "Selected option is TETRAHEDRON" TO DISPLAY
+%%
+%%       COPY 'TETRAHEDRON' X
+%%
+%    END BLOCK
+%%
+%    BLOCK                   % octahedron
+%      TRANSFER "Selected option is OCTAHEDRON" TO DISPLAY
+%%
+%%       COPY 'OCTAHEDRON' X Y Z
+%%
+%    END BLOCK
+%%
+%    BLOCK                   % square
+%      TRANSFER "Selected option is SQUARE" TO DISPLAY
+%%
+%%       COPY 'SQUARE' X Y
+%%
+%    END BLOCK
+%%
+%    BLOCK                   % square pyramid
+%      TRANSFER "Selected option is SQP" TO DISPLAY
+%%
+%%       COPY 'SQP' X Y Z
+%%
+%    END BLOCK
+%%
+%    BLOCK                   % trigonal bipyramid
+%      TRANSFER "Selected option is TBP" TO DISPLAY
+%%
+%%       COPY 'TBP' X Z
+%%
+%    END BLOCK
+%%
+%    BLOCK                   % custom
+%      TRANSFER "Selected option is CUSTOM" TO DISPLAY
+%%
+%% Write code to match a group of choice
+%%
+%    END BLOCK
+%%
+%  END CASE
+%%
+%END SCRIPT

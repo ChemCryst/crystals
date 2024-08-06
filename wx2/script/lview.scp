@@ -1,0 +1,75 @@
+%SCRIPT LVIEW
+%   LOOP
+%   VARIABLE INTEGER ATOMSIN ATOMSOUT ATOMCHANGE
+%% COUNT THE NUMBER OF ATOMS PASSED TO CAMERON.
+%   COPY '#GENERALEDIT 5'
+%   COPY 'LOCATE RECORDTYPE=101'
+%   COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%   EVALUATE ATOMSIN = 0
+%   LOOP
+%       ON EDITERROR TERMINATE
+%       COPY 'NEXT'
+%       EVALUATE ATOMSIN = LOOPCOUNTER
+%   END LOOP
+%   COPY 'END'
+%% RUN CAMERON
+%       COPY '#SCRIPT XCAM'
+%   VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2
+%   VARIABLE LOGICAL ANSWER
+%   EVALUATE QTITLE = 'Return to Crystals'
+%   EVALUATE QLINE1 = 'Do you want to apply any'
+%   EVALUATE QLINE2 = 'changes made in CAMERON?'
+%   EVALUATE BUTTOK = '&Yes'
+%   EVALUATE BUTTXX = '&No'
+%   COPY '#SCRIPT XQUESTIO'
+%   IF ANSWER .EQ. TRUE THEN
+%           COPY '#USE CAMERON.L5'
+%   ELSE
+%       FINISH
+%   END IF
+%% COUNT THE NUMBER OF ATOMS PASSED BACK FROM CAMERON.
+%   COPY '#GENERALEDIT 5'
+%   COPY 'LOCATE RECORDTYPE=101'
+%   COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%   EVALUATE ATOMSOUT = 0
+%   LOOP
+%       ON EDITERROR TERMINATE
+%       COPY 'NEXT'
+%       EVALUATE ATOMSOUT = LOOPCOUNTER
+%   END LOOP
+%   COPY 'END'
+%       EVALUATE ATOMCHANGE = ATOMSOUT - ATOMSIN
+%   IF ATOMCHANGE .GT. 0 THEN
+
+
+  WW    WW   AAAA   RRRR   NN   NN  IIIIII  NN   NN   GGGG
+  WW    WW  AA  AA  RR RR  NNN  NN    II    NNN  NN  GG  GG
+  WW WW WW  AAAAAA  RRRR   NN N NN    II    NN N NN  GG   
+  WW WW WW  AA  AA  RR RR  NN  NNN    II    NN  NNN  GG GGGG
+   WW  WW   AA  AA  RR RR  NN   NN  IIIIII  NN   NN   GGGG
+
+  Very Important:
+
+  The number of atoms that has returned to CRYSTALS is larger
+  than the number that was sent to CAMERON....
+
+  This could mean that the structure was PACKed when you exited
+  Cameron. It is strongly recommended that you revert to the
+  previous structural model, and run CAMERON again.
+
+%    EVALUATE QTITLE = 'Too many atoms?'
+%    EVALUATE QLINE1 = 'The number of atoms returned is larger than' 
+%    EVALUATE QLINE2 = 'the number sent. Restore previous atom list?'
+%    EVALUATE BUTTOK = '&Yes'
+%    EVALUATE BUTTXX = '&No'
+%    COPY '#SCRIPT XQUESTIO'
+%    IF ANSWER .EQ. TRUE THEN
+%          COPY '#USE CAMERON.L5I'
+%    ELSE
+%          FINISH
+%    END IF
+%   ELSE
+%       FINISH
+%   END IF
+%   END LOOP
+%END SCRIPT

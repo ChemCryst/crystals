@@ -1,0 +1,91 @@
+%SCRIPT USE
+%% CRYSTALS script for single stepping through files
+%  VARIABLE CHARACTER FILENAME
+    This script enables you to read a pre-prepared data file into
+    CRYSTALS,   reading it line - by - line,   and accepting or
+    rejecting the lines,   or inserting additional lines of data.
+      An additional feature in VAX implementations is that you
+   can re-process the current LOG file, by giving the file name 'LOG'.
+                                                          djw
+%  CLEAR
+%  BLOCK
+%    ON END TERMINATE
+%    ON ERROR REPEAT
+%    GET FINAL FILENAME 'File you wish to execute' 'LOG'
+%    IF CVALUE .EQ. "LOG" THEN
+%      GET FINAL KEYWORD 'Enter structure name'
+%      COPY '#RELEASE LOG'
+%      EVALUATE FILENAME = 'CRDIR:' // CVALUE // '.LOG;-1'
+%    ELSE
+%      EVALUATE FILENAME = CVALUE
+%    END IF
+%    SHOW FILENAME
+%    TRANSFER '#OPEN SCPDATA ' //  FILENAME // ' ' TO CRYSTALS
+%  END BLOCK
+%%
+%  VERIFY YES NO
+%      GET NOSTORE FINAL ABBREVIATED  -
+ 'Do you want to single step the file? ' 'YES'
+%  IF ( VALUE .EQ. 2 ) THEN
+%    TRANSFER '#CLOSE SCPDATA ' TO CRYSTALS
+%    TRANSFER '#USE ' // FILENAME // ' '  TO CRYSTALS
+%  ELSE
+%    QUEUE REWIND
+%    EXTRACT NEXT
+%    LOOP
+%      ON ERROR TERMINATE
+%%                                CLEAR THE COMMAND BUFFER
+%      CLEAR
+%%                                NOW COPY FROM FILE TO USER I/O BUFFER
+%      EXTRACT TRANSFER INPUT
+%      CLEAR
+%%                                AND READ IT
+%      GET NOSTORE NOPROMPT TEXT '%%' '%%'
+%%                                CHECK FOR DATA ON LINE
+%      IF CVALUE .NE. '%%'  THEN
+%%                                COPY FROM FILE TO COMMAND BUFFER
+%        EXTRACT TRANSFER COMMAND
+%%                                COPY THE LINE TO SCRIPT AND HENCE
+%        EXECUTE SEND
+%%                                TO TERMINAL (UNLESS BEGINS WITH %!)
+%%                                     NOW PROMPT USER
+%        GET NOSTORE KEYWORD '  (A/ R/ I/ EXIT)'  'A'
+%        IF CVALUE .EQ. 'A' THEN
+%%                                NOW COPY FROM FILE TO USER I/O BUFFER
+%          EXTRACT TRANSFER INPUT
+%          CLEAR
+%          GET APPEND NOPROMPT TEXT NULLSTRING
+%%                                SEND IT TO THE OUTPUT QUEUE
+%          QUEUE SEND
+%%                                GET THE NEXT FILE RECORD AND LOOP
+%          EXTRACT NEXT
+%        ELSE IF CVALUE .EQ. 'R' THEN
+%          CLEAR
+%          EXTRACT NEXT
+%        ELSE IF CVALUE .EQ. 'I' THEN
+%          CLEAR
+%          GET APPEND TEXT 'Text' NULLSTRING
+%          QUEUE SEND
+%        ELSE IF CVALUE .EQ. 'EXIT' THEN
+%          CLEAR
+%          EVALUATE LOOPCOUNTER = 0
+%        ELSE
+%          CLEAR
+        Respond with :
+                        A to accept the displayed line
+                        R to reject the displayed line
+                        I to insert a new text line BEFORE the displayed line
+                     EXIT to cause the accepted and inserted text to  be
+                          passed to CRYSTALS
+                   DIRECT to return to CRYSTALS
+                     HELP to display this text
+%        END IF
+%      ELSE
+%        CLEAR
+%        EXTRACT NEXT
+%      END IF
+%    END LOOP
+%    QUEUE PROCESS
+%    EXTRACT CLOSE
+%  END IF
+%END SCRIPT

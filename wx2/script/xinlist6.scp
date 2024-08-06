@@ -1,0 +1,845 @@
+%SCRIPT XINLIST6                                                                
+%% CRYSTALS reflection input script  
+%%  copy '#script verify'                                           
+%  VARIABLE CHARACTER HKLTITLE THEINS
+%  VARIABLE INTEGER INBASICS FTYPE FS NCOEF FMT                                 
+%  VARIABLE LOGICAL LCANCEL INITSETUP XQMERGE LOKOK FOUNDINS
+%  EVALUATE LCANCEL = FALSE                                                     
+%  EVALUATE LOKOK = FALSE                                                       
+%% variables used by the question box                                           
+%  VARIABLE CHARACTER QTITLE BUTTOK BUTTXX QLINE1 QLINE2  
+%  VARIABLE CHARACTER BUTT1 BUTT2 BUTT3
+%  VARIABLE LOGICAL ANSWER HTRANS
+%  VARIABLE INTEGER XCHOICE
+%  VARIABLE REAL HKLT11 HKLT12 HKLT13 HKLT21 HKLT22 HKLT23
+%  VARIABLE REAL HKLT31 HKLT32 HKLT33
+%% variables used to check if any reflections were actually read in
+%  VARIABLE REAL  H K L SUM
+%% First check for all zero values. 
+%  EVALUATE HTRANS = FALSE
+%  IF ABS ( HKLT11 ) .GT. 0.01 THEN
+%    EVALUATE HTRANS = TRUE
+%  END IF
+%  IF ABS ( HKLT22 ) .GT. 0.01 THEN 
+%    EVALUATE HTRANS = TRUE
+%  END IF
+%  IF ABS ( HKLT33 ) .GT. 0.01 THEN 
+%    EVALUATE HTRANS = TRUE
+%  END IF
+%  IF ABS ( HKLT12 ) .GT. 0.01 THEN 
+%    EVALUATE HTRANS = TRUE
+%  END IF
+%  IF ABS ( HKLT13 ) .GT. 0.01 THEN 
+%    EVALUATE HTRANS = TRUE
+%  END IF
+%  IF ABS ( HKLT21 ) .GT. 0.01 THEN 
+%    EVALUATE HTRANS = TRUE
+%  END IF
+%  IF ABS ( HKLT23 ) .GT. 0.01 THEN 
+%    EVALUATE HTRANS = TRUE
+%  END IF
+%  IF ABS ( HKLT31 ) .GT. 0.01 THEN 
+%    EVALUATE HTRANS = TRUE
+%  END IF
+%  IF ABS ( HKLT33 ) .GT. 0.01 THEN 
+%    EVALUATE HTRANS = TRUE
+%  END IF
+%  IF ( .NOT. HTRANS ) THEN
+%    EVALUATE HKLT11 = 1.0
+%    EVALUATE HKLT12 = 0.0
+%    EVALUATE HKLT13 = 0.0
+%    EVALUATE HKLT21 = 0.0
+%    EVALUATE HKLT22 = 1.0
+%    EVALUATE HKLT23 = 0.0
+%    EVALUATE HKLT31 = 0.0
+%    EVALUATE HKLT32 = 0.0
+%    EVALUATE HKLT33 = 1.0
+%  ELSE
+%% Some values are set. Do they differ from unit matrix?
+%   EVALUATE HTRANS = FALSE
+%   IF ABS ( HKLT11 - 1.0 ) .GT. 0.01 THEN 
+%    EVALUATE HTRANS = TRUE
+%   END IF
+%   IF ABS ( HKLT22 - 1.0 ) .GT. 0.01 THEN 
+%    EVALUATE HTRANS = TRUE
+%   END IF
+%   IF ABS ( HKLT33 - 1.0 ) .GT. 0.01 THEN 
+%    EVALUATE HTRANS = TRUE
+%   END IF
+%   IF ABS ( HKLT12 ) .GT. 0.01 THEN 
+%    EVALUATE HTRANS = TRUE
+%   END IF
+%   IF ABS ( HKLT13 ) .GT. 0.01 THEN 
+%    EVALUATE HTRANS = TRUE
+%   END IF
+%   IF ABS ( HKLT21 ) .GT. 0.01 THEN 
+%    EVALUATE HTRANS = TRUE
+%   END IF
+%   IF ABS ( HKLT23 ) .GT. 0.01 THEN 
+%    EVALUATE HTRANS = TRUE
+%   END IF
+%   IF ABS ( HKLT31 ) .GT. 0.01 THEN 
+%    EVALUATE HTRANS = TRUE
+%   END IF
+%   IF ABS ( HKLT33 ) .GT. 0.01 THEN 
+%    EVALUATE HTRANS = TRUE
+%   END IF
+%  END IF
+%%
+Initialisation:
+%% Initial checks. Is there any point proceeding.
+%%
+%% If data missing, is there a .ins or .res file worth loading?
+%%
+%  IF ( EXISTS 1 + EXISTS 2 + EXISTS 3 + EXISTS 13 -
+ + EXISTS 29 + EXISTS 30 .NE. 6 ) THEN
+%%
+%    EVALUATE FOUNDINS = FALSE
+%    EVALUATE THEINS = GETPATH ( HKLTITLE ) // GETTITLE ( HKLTITLE )
+%    IF ( FILEEXISTS ( THEINS // '.ins' ) ) THEN
+%      EVALUATE FOUNDINS = TRUE
+%      EVALUATE THEINS = THEINS // '.ins'
+%    ELSE IF ( FILEEXISTS ( THEINS // '.res' ) ) THEN
+%      EVALUATE FOUNDINS = TRUE
+%      EVALUATE THEINS = THEINS // '.res'
+%    END IF
+%    IF FOUNDINS THEN
+%      EVALUATE QTITLE = 'Missing Data'                                
+% EVALUATE QLINE1 =  -
+ 'It is best to import cell and other data before hkl data'
+% EVALUATE QLINE2 = 'Do you want to import ' // THEINS // ' first?'        
+%      EVALUATE BUTT1 = 'Yes'                             
+%      EVALUATE BUTT2 = 'No, input data manually'                    
+%      EVALUATE BUTT3 = 'Cancel'                    
+%      COPY '#SCRIPT XCHOICE'                                           
+%      IF XCHOICE .EQ. 3 THEN
+%        FINISH
+%      ELSE IF XCHOICE .EQ. 1 THEN
+%        EVALUATE INSTITLE = THEINS
+%        COPY '#SCRIPT XPASCAL'
+%% Shelxin will call this script again. So stop here.
+%        FINISH
+%      END IF
+%    END IF                                                            
+%  END IF
+%%
+%  COPY '#SCRIPT XINBASIC'                                                      
+%  IF INBASICS .NE. 1 THEN                                                      
+                                                                                
+{0,3   Basic Cell, Space Group or composition information is missing.           
+{0,3   This SCRIPT will be abandoned without reading the reflections.           
+   EITHER:                                                                      
+{0,2          a - choose CELL, SPACE GROUP & ATOMIC PROPERTIES off              
+{0,2              the X-ray data menu,                                          
+   OR:                                                                          
+{0,2          b - choose the Shelx (INS of RES) option off                      
+{0,2              the X-ray data menu,                                          
+                                                                                
+%    FINISH                                                                     
+%  END IF                                                                       
+%% XInBasic returns LCANCEL as TRUE if the user cancels the dialog.             
+%  IF LCANCEL .EQ. TRUE THEN                                                    
+                                                                                
+{0,3   Basic Cell, Space Group or composition information is missing.           
+{0,3   This SCRIPT will be abandoned without reading the reflections.           
+   EITHER:                                                                      
+{0,2          a - choose CELL, SPACE GROUP & ATOMIC PROPERTIES off              
+{0,2              the X-ray data menu,                                          
+   OR:                                                                          
+{0,2          b - choose the Shelx (INS of RES) option off                      
+{0,2              the X-ray data menu,                                          
+                                                                                
+%    FINISH                                                                     
+%  END IF                                                                       
+%%                                                                              
+%% Gather information before acting.                                            
+%%
+%  VARIABLE INTEGER FRIEDELF 
+%  VARIABLE REAL FCENTRO  
+%% get wavelength and Zmaz
+%  VARIABLE REAL WORK1 WAVE ZMAX 
+%  COPY '#SCRIPT XGETWZ'
+%  IF ( EXISTS 2 .NE. 1 ) THEN                                                   
+{I **** No symmetry (list 2) present.                                           
+{R             I could have done with that information to                       
+{R             recommend what to do with the Friedel pairs.                     
+%%                                                                              
+%  ELSE                                                                          
+%   COPY '#GENERALEDIT 2'                                                       
+%   COPY 'LOCATE RECORDTYPE=101'                                                
+%   COPY 'TRANSFER FROM OFFSET=0 TO FCENTRO'                                    
+%   COPY 'END'                                                                  
+%  END IF                                                                        
+%%                                                                              
+%%                                                                              
+%  EVALUATE FRIEDELF = - 1                                                       
+%%                                                                              
+%%                                                                              
+%  IF ( EXISTS ( 13 ) .NE. 1 ) THEN                                          
+%       COPY '#LIST 13'                                                         
+%       COPY 'END'                                                              
+%  END IF                                                                    
+%%
+%  IF ( FCENTRO .GT. 0.9 ) THEN                                                  
+                                                                                
+{I Centro-symmetric space-group.                                                
+{R * Friedel Pairs will be merged.                                              
+
+%   EVALUATE FRIEDELF = 0                                                       
+%   COPY '#GENERALEDIT 13'                                                      
+%   COPY 'LOCATE RECORDTYPE=101'                                                
+%   COPY 'TRANSFER TO OFFSET=0 FROM FRIEDELF'                                   
+%   COPY 'WRITE'                                                                
+%   COPY 'END'                                                                  
+%  END IF                                                                        
+%%
+%  COPY '#SCRIPT XSET28'
+%%
+^^WI WINDOW XINLIST6 'Input reflection data' MODAL                              
+^^WI        COMMIT='BOK' CANCEL='BXX'                                           
+^^WI GRID GRIDM NROWS=2 NCOLS=1                                                 
+^^WI {                                                                          
+^^WI  @ 1,1 TABCTRL IN6TABS                                                     
+^^WI  {                                                                         
+^^WI   TAB IN6TAB0 'HKL data' GRID XIN6T NROWS=9 NCOLS=3                        
+^^WI   {                                                                        
+^^WI    @ 2,2 GRID GF NROWS=1 NCOLS=3 OUTLINE='File'                            
+^^WI    {                                                                       
+% TRANSFER "^^WI @ 1,1 EDITBOX L6FILE '" // HKLTITLE // -                                         
+  "' CHARS=48 INFORM=NO INPUT " TO DISPLAY                                                        
+^^WI     @ 1,3 BUTTON BROWSE 'Browse...'                                        
+^^WI    }                                                                       
+^^WI    @ 4,2 GRID GD NROWS=3 NCOLS=1 OUTLINE='Data type'                       
+^^WI    {                                                                       
+^^WI     @ 1,1 GRID GT NROWS=1 NCOLS=4                                          
+^^WI     {                                                                      
+^^WI      @ 1,1 ICON IM INFO                                                    
+^^WI      @ 1,4 GRID GT NROWS=2 NCOLS=1                                         
+^^WI      {                                                                     
+^^WI @ 1,1 STATIC G 'Please give the type of the data in the file above.'       
+^^WI @ 2,1 STATIC G 'Files usually contain F-squared values.'  
+^^WI      }                                                                     
+^^WI     }                                                                      
+^^WI     @ 3,1 GRID GT NROWS=1 NCOLS=7                                          
+^^WI     {                                                                      
+^^WI      @ 1,1 RADIOBUTTON RFS1 'F' IGNORE                                     
+^^WI      @ 1,3 RADIOBUTTON RFS2 'F-squared' STATE=ON IGNORE                    
+^^WI      @ 1,5 RADIOBUTTON RFS3 'I' IGNORE
+^^WI      @ 1,6 STRETCH ACROS HORIZONTAL                                           
+^^WI      @ 1,7 CHECKBOX CS 'Data contains sigmas' STATE=ON INFORM=NO            
+^^WI     }                                                                      
+^^WI    }                                                                       
+^^WI    @ 6,2 GRID GD NROWS=3 NCOLS=2 OUTLINE='Format'                          
+^^WI    {                                                                       
+^^WI     @ 1,1 RADIOBUTTON RDF1 'Free format' INFORM                            
+^^WI     @ 2,1 RADIOBUTTON RDF2 'Shelx (fixed format)'                          
+^^WI                              INFORM STATE=ON                               
+^^WI     @ 3,1 RADIOBUTTON RDF3 'Other (fixed format):'                         
+^^WI                              INFORM                                        
+^^WI     @ 3,2 EDITBOX L6FORM ' (3F4.0, 2F8.0) ' CHARS=24                       
+^^WI                                        DISABLED=YES                        
+^^WI    }                                                                       
+^^WI    @ 8,2 GRID GD NROWS=10 NCOLS=1 OUTLINE='Merge'
+^^WI    {                                                                       
+^^WI      @ 1,1 CHECKBOX CBMERGE 'Merge symmetry equivalent reflections'        
+^^WI      STATE=ON 
+^^WI      @ 4,1 STATIC MF1
+^^WI 'It is important not to merge Friedel pairs: (a) when determining the'
+^^WI      @ 5,1 STATIC MF1
+^^WI 'absolute structure parameter; (b) for structures with strong anomolous'
+^^WI      @ 6,1 STATIC MF1
+^^WI 'scatterers, since pairs are not equivalent in these cases.'
+%%
+% IF ( FRIEDELF .GE. 0 )  THEN
+%%                                                                              
+^^WI      @ 2,1 CHECKBOX MFO 'Merge Friedel pairs' STATE=ON                             
+^^WI @ 7,1 STATIC MF2
+^^WI 'This structure is centrosymmetric - Friedel pairs should be merged.'
+%%                                                                              
+% ELSE IF ( ZMAX .GT. 29.0 )  THEN                                                   
+%%                                                                              
+^^WI      @ 2,1 CHECKBOX MFO 'Merge Friedel pairs' STATE=OFF
+^^WI      @ 7,1 STATIC MF2
+^^WI 'This structure has atoms heavier than Silicon, so the Friedel pairs'
+^^WI      @ 8,1 STATIC MF2
+^^WI 'should NOT be merged. However to determine the absolute structure you'
+^^WI @ 9,1 STATIC MF2
+^^WI 'must have observed a sufficient number of Friedel pairs, e.g. > 50%.'
+%%                                                                              
+% ELSE IF ( WAVE .GT. 1.5 ) THEN                                                
+%%                                                                              
+^^WI      @ 2,1 CHECKBOX MFO 'Merge Friedel pairs' STATE=OFF
+^^WI      @ 7,1 STATIC MF2
+^^WI 'This is a light-atom structure so the anomalous differences will be'
+^^WI      @ 8,1 STATIC MF2
+^^WI 'small. As you have used Cu radiation, you may be able to determine'
+^^WI      @ 9,1 STATIC MF2
+^^WI 'the absolute structure if you have collected sufficient Friedel pairs.'
+%%                                                                              
+% ELSE                                                                          
+%%                                                                              
+^^WI      @ 2,1 CHECKBOX MFO 'Merge Friedel pairs' STATE=ON                     
+^^WI      @ 7,1 STATIC MF2
+^^WI 'However, this is a light-atom structure so the anomalous differences'
+^^WI      @ 8,1 STATIC MF2
+^^WI 'will be small. As you have used Mo radiation, you will not be able to'
+^^WI @ 9,1 STATIC MF2
+^^WI 'to determine the absolute structure, except in exceptional cases. You'
+^^WI      @ 10,1 STATIC MF2 'should merge the Friedel pairs.'   
+%%                                                                              
+% END IF                                                                        
+^^WI    }
+^^WI   }
+^^WI   TAB IN6TAB1 'Transform' GRID XIN6A NROWS=5 NCOLS=3                        
+^^WI   {                                                                        
+^^WI    @ 2,2 GRID GAC NROWS=3 NCOLS=1 OUTLINE = ' '                    
+^^WI    {    
+^^WI     @ 2,1 CHECKBOX MAT 
+^^WI      'Apply this transformation matrix to the hkl data?.'
+^^WI       INFORM = YES
+%          IF HTRANS THEN
+^^WI        STATE=ON
+%          ELSE
+^^WI        STATE=OFF
+%          END IF
+^^WI    }                                                                        
+^^WI    @ 4,2 GRID GAB NROWS=3 NCOLS=1 OUTLINE ='Matrix'                     
+^^WI    {   
+^^WI     @ 1,1 GRID GBB NROWS=5 NCOLS=5
+^^WI     {                                                                      
+% TRANSFER "^^WI @ 1,1 EDITBOX M11 " // CHARACTER HKLT11 TO DISPLAY
+^^WI CHARS=6 REAL
+% TRANSFER "^^WI @ 1,3 EDITBOX M12 " // CHARACTER HKLT12 TO DISPLAY
+^^WI CHARS=6 REAL
+% TRANSFER "^^WI @ 1,5 EDITBOX M13 " // CHARACTER HKLT13 TO DISPLAY
+^^WI CHARS=6 REAL
+% TRANSFER "^^WI @ 3,1 EDITBOX M21 " // CHARACTER HKLT21 TO DISPLAY
+^^WI CHARS=6 REAL
+% TRANSFER "^^WI @ 3,3 EDITBOX M22 " // CHARACTER HKLT22 TO DISPLAY
+^^WI CHARS=6 REAL
+% TRANSFER "^^WI @ 3,5 EDITBOX M23 " // CHARACTER HKLT23 TO DISPLAY
+^^WI CHARS=6 REAL
+% TRANSFER "^^WI @ 5,1 EDITBOX M31 " // CHARACTER HKLT31 TO DISPLAY
+^^WI CHARS=6 REAL
+% TRANSFER "^^WI @ 5,3 EDITBOX M32 " // CHARACTER HKLT32 TO DISPLAY
+^^WI CHARS=6 REAL
+% TRANSFER "^^WI @ 5,5 EDITBOX M33 " // CHARACTER HKLT33 TO DISPLAY
+^^WI CHARS=6 REAL
+^^WI     }                                                                      
+^^WI    }
+^^WI   }                                                                      
+^^WI   @ 2,1 GRID GB NROWS=3 NCOLS=7                                             
+^^WI   {                                                                         
+^^WI    @ 2,2 BUTTON BOK '&Ok' DEFAULT DISABLED=YES                              
+^^WI    @ 2,4 BUTTON BXX '&Cancel'                                               
+^^WI    @ 2,5 STRETCH ACROS HORIZONTAL                                           
+^^WI    @ 2,6 BUTTON HELP1 'Help...'                                             
+^^WI   }                                                                         
+^^WI }                                                                          
+^^WI SHOW                                                                       
+^^CR         
+%       IF HTRANS .EQ. FALSE THEN
+^^CO         SET M11 DISABLED=YES
+^^CO         SET M12 DISABLED=YES
+^^CO         SET M13 DISABLED=YES
+^^CO         SET M21 DISABLED=YES
+^^CO         SET M22 DISABLED=YES
+^^CO         SET M23 DISABLED=YES
+^^CO         SET M31 DISABLED=YES
+^^CO         SET M32 DISABLED=YES
+^^CO         SET M33 DISABLED=YES
+%       END IF
+% IF ( FILEEXISTS ( HKLTITLE ) ) THEN                                           
+%   TRANSFER "^^CO SET L6FILE TEXT '" // HKLTITLE // "'" TO DISPLAY             
+^^CO SET L6FILE INFORM=NO SET BOK DISABLED=NO                                   
+%       EVALUATE LOKOK = TRUE
+% ELSE
+^^WI    SYSOPENFILE '*.hkl;*.hkp' 'HKL file (*.hkl,*.hkp)'                      
+^^CR                                                                            
+%       GET SILENT TEXT 'New filename:'                                         
+%       IF CVALUE .NE. 'CANCEL' THEN                                            
+%        CLEAR                                                                  
+^^WI     SET L6FILE TEXT                                                        
+%        TRANSFER "^^WI '" // CVALUE // "'" TO DISPLAY                          
+%        EVALUATE HKLTITLE = CVALUE
+^^CR                                                                            
+^^CO      SET L6FILE INFORM=NO SET BOK DISABLED=NO                              
+%         EVALUATE LOKOK = TRUE                                                 
+%       END IF                                                                  
+% END IF
+% IF ( UPPERCASE GETFILE ( HKLTITLE ) .EQ. 'FROM-CIF.HKL' ) THEN
+^^CO    SET L6FORM DISABLED=NO TEXT='(3F4.0,2F10.0)' 
+^^CO    SET RDF3 STATE=ON
+% ELSE
+^^CO    SET L6FORM DISABLED=YES  
+^^CO    SET RDF2 STATE=ON
+% END IF
+%%                                                                              
+%% Now the window is displayed, we wait for any of the following                
+%% things to happen:                                                            
+%% "BOK" - the OK button is pressed.                                            
+%% "BXX" - the Cancel button is pressed.                                        
+%% "BROWSE" - the browse button is pressed.                                     
+%% "HELP1" - the help button is pressed.                                        
+%% "RDF1" - free format is selected. (DISable L6FORM)                           
+%% "RDF2" - shelx format is selected.(DISable L6FORM)                           
+%% "RDF3" - other format is selected.(ENable L6FORM)                            
+%% "CBMERGE" - enable or disable MFO (Friedel merge checkbox) 
+%%                                                                              
+% LOOP                                                                          
+%   VERIFY MAT L6FILE BOK BXX BROWSE HELP1 RDF1 RDF2 RDF3 CBMERGE
+%   GET SILENT NOSTORE FINAL ABBREVIATED 'Opt' ' '                              
+%   CASE VALUE                                                                  
+%     BLOCK
+%           VERIFY ON OFF                                                       
+%           GET SILENT NOSTORE FINAL ABBREVIATED 'Transform?' 'ON'              
+%           IF ( VALUE .EQ. 1 ) THEN                                            
+^^CO         SET M11 DISABLED=NO
+^^CO         SET M12 DISABLED=NO
+^^CO         SET M13 DISABLED=NO
+^^CO         SET M21 DISABLED=NO
+^^CO         SET M22 DISABLED=NO
+^^CO         SET M23 DISABLED=NO
+^^CO         SET M31 DISABLED=NO
+^^CO         SET M32 DISABLED=NO
+^^CO         SET M33 DISABLED=NO
+%            EVALUATE HTRANS = TRUE
+%           ELSE
+^^CO         SET M11 DISABLED=YES
+^^CO         SET M12 DISABLED=YES
+^^CO         SET M13 DISABLED=YES
+^^CO         SET M21 DISABLED=YES
+^^CO         SET M22 DISABLED=YES
+^^CO         SET M23 DISABLED=YES
+^^CO         SET M31 DISABLED=YES
+^^CO         SET M32 DISABLED=YES
+^^CO         SET M33 DISABLED=YES
+%            EVALUATE HTRANS = FALSE
+%           END IF
+%     END BLOCK
+%     BLOCK                         %L6FILE%                                    
+%       GET SILENT NOSTORE TEXT ' ' ' '                                         
+^^CO SET L6FILE INFORM=NO SET BOK DISABLED=NO                                   
+%       EVALUATE LOKOK = TRUE                                                   
+%     END BLOCK                                                                 
+%     BLOCK                         %BOK%                                       
+%%                                                                              
+%      IF LOKOK THEN                                                            
+%% First get the filename.                                                      
+%       CLEAR                                                                   
+%       QUEUE REWIND                                                            
+%       INSERT '#CLOSE HKLI'                                                    
+%       QUEUE SEND                                                              
+%       CLEAR                                                                   
+%       INSERT '#OPEN HKLI'                                                     
+^^??    L6FILE TEXT                                                             
+%       GET NOSTORE SILENT TEXT 'Reflection File (HKLI file) '                  
+%       IF ( .NOT. ( FILEEXISTS CVALUE ) ) THEN                                 
+^^CO SET L6FILE INFORM=YES SET BOK DISABLED=YES                                 
+%       EVALUATE LOKOK = FALSE                                                  
+ Error: Filename given does not exist.                                          
+%       ELSE                                                                    
+%         TRANSFER '"' // CVALUE // '"' TO BUFFER                               
+%         QUEUE SEND                                                            
+%         QUEUE PROCESS                                                         
+%         BLOCK   %REFLECTION TYPE%                                             
+%           VERIFY ON OFF                                                       
+^^??        RFS1 STATE                                                          
+%           GET SILENT NOSTORE FINAL ABBREVIATED 'Fs?' 'OFF'                    
+%           IF VALUE .EQ. 1 THEN                                                
+%             EVALUATE FS = 1                                                   
+%             EVALUATE QTITLE = 'Format warning'                                
+% EVALUATE QLINE1 = 'You have stated that your hkl file contains F values.'     
+% EVALUATE QLINE2 = 'This is unlikely to be the case in modern times...'        
+%             EVALUATE BUTTOK = 'I meant F squared'                             
+%             EVALUATE BUTTXX = 'I really did mean F values'                    
+%             COPY '#SCRIPT XQUESTIO'                                           
+%             IF ANSWER .EQ. TRUE THEN                                          
+%               EVALUATE FS = 2                                                 
+%             END IF                                                            
+%           ELSE                                                                
+^^??          RFS2 STATE                                                        
+%             VERIFY ON OFF                                                     
+%             GET SILENT NOSTORE FINAL ABBREVIATED 'Fsq?' 'ON'                  
+%             IF VALUE .EQ. 1 THEN                                              
+%               EVALUATE FS = 2                                                 
+%             ELSE                                                              
+%               EVALUATE FS = 3                                                 
+%             END IF                                                            
+%           END IF                                                              
+%           VERIFY ON OFF                                                       
+^^??        RDF1 STATE                                                          
+%           GET SILENT NOSTORE FINAL ABBREVIATED 'Free format?' 'OFF'           
+%%                                                                              
+%% FMT : 1 = free format, 2 = fixed, 3 = fixed shelx                            
+%%                                                                              
+%           EVALUATE FMT = VALUE                                                
+%%                                                                              
+%           IF ( FMT .EQ. 2 ) THEN                                              
+^^??          RDF2 STATE                                                        
+%             GET SILENT NOSTORE FINAL ABBREVIATED 'Shelx format?' 'ON'         
+%             IF ( VALUE .EQ. 1 ) THEN                                          
+%                EVALUATE FMT = 3                                               
+%             END IF                                                            
+%             EVALUATE NCOEF = 5                                                
+%           END IF                                                              
+^^??        CS STATE                                                            
+%           GET SILENT NOSTORE FINAL ABBREVIATED 'sigmas? ' 'ON'                
+%           EVALUATE NCOEF = 6 - VALUE                                          
+%         END BLOCK                                                             
+%         BLOCK                                                                 
+%           QUEUE REWIND                                                        
+%           ON ERROR RESTART                                                    
+%           CLEAR                                                               
+%           INSERT "READ "                                                      
+%           IF FS = 1 THEN                                                      
+%             INSERT " F'S=FO"                                                  
+%           ELSE                                                                
+%             INSERT " F'S=FSQ"                                                 
+%           END IF                                                              
+%           IF NCOEF .EQ. 4 THEN                                                
+%             INSERT ' NCOEF=4'                                               
+%           ELSE                                                                
+%             INSERT ' NCOEF=5'                                               
+%           END IF                                                              
+%           IF FMT .EQ. 1 THEN                                                  
+%             INSERT ' TYPE=FREE CHECK=NO ARCH=YES'                                  
+%           ELSE                                                                
+%             INSERT ' TYPE=FIXED CHECK=NO ARCH=YES'                                 
+%           END IF                                                              
+%           QUEUE SEND                                                          
+%%                                                                              
+%           CLEAR                                                               
+%           IF NCOEF .EQ. 5 THEN                                                
+%             INSERT 'INPUT H K L /FO/ SIGMA(/FO/) '                            
+%           ELSE                                                                
+%             INSERT 'INPUT H K L /FO/ '                                        
+%           END IF                                                              
+%           QUEUE SEND                                                          
+%%                                                                              
+%           CLEAR                                                               
+%           IF ( FMT .EQ. 2 ) THEN                                              
+%             INSERT 'FORMAT '                                                  
+^^?? L6FORM TEXT                                                                
+%             GET SILENT APPEND TEXT 'FORMAT' ' (3F4.0, 2F8.0) '                
+%             QUEUE SEND                                                        
+%           ELSE IF ( FMT .EQ. 3 ) THEN                                         
+%             INSERT 'FORMAT (3F4.0, 2F8.0)'                                    
+%             QUEUE SEND                                                        
+%           END IF                                                              
+%%                                                                              
+%           CLEAR                                                               
+%           INSERT 'STORE NCOEF=10'                                              
+%           QUEUE SEND                                                          
+%           CLEAR                 
+% INSERT 'OUTP INDI /FO/ SIG RATIO CORR SERI JCODE /FC/ SQRTW BATCH/PHASE'
+%           QUEUE SEND                                                          
+%           CLEAR 
+%           IF HTRANS THEN
+%             INSERT 'MATRIX'                                                   
+^^??          M11 TEXT                                                          
+%             GET SILENT REAL ' ' '1.0'                                         
+^^??          M12 TEXT                                                          
+%             GET SILENT REAL ' ' '0.0'                                         
+^^??          M13 TEXT                                                          
+%             GET SILENT REAL ' ' '0.0'                                         
+^^??          M21 TEXT                                                          
+%             GET SILENT REAL ' ' '0.0'                                         
+%             QUEUE SEND                                                        
+%             CLEAR                                                             
+%             INSERT 'CONT'                                                     
+^^??          M22 TEXT                                                          
+%             GET SILENT REAL ' ' '1.0'                                         
+^^??          M23 TEXT                                                          
+%             GET SILENT REAL ' ' '0.0'                                         
+^^??          M31 TEXT                                                          
+%             GET SILENT REAL ' ' '0.0'                                         
+^^??          M32 TEXT                                                          
+%             GET SILENT REAL ' ' '0.0'                                         
+^^??          M33 TEXT                                                          
+%             GET SILENT REAL ' ' '1.0'                                         
+%             QUEUE SEND                                                        
+%           END IF                                                              
+%         END BLOCK
+%% Check Fridel and merge options
+^^??      CBMERGE STATE
+%         VERIFY OFF ON                                                             
+%         GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                              
+%         CASE VALUE                                                                
+%              EVALUATE XQMERGE = FALSE                                                 
+%              EVALUATE XQMERGE = TRUE                                                  
+%         END CASE                                                                  
+^^??      MFO STATE                                                                 
+%         VERIFY OFF ON                                                             
+%         GET SILENT NOSTORE FINAL ABBREVIATED ' ' ' '                              
+%         EVALUATE FRIEDELF = VALUE - 2                                             
+%%                                                                              
+%         COPY '#GENERALEDIT 13'                                                    
+%         COPY 'LOCATE RECORDTYPE=101'                                              
+%         COPY 'TRANSFER TO OFFSET=0 FROM FRIEDELF'                                 
+%         COPY 'WRITE'                                                              
+%         COPY 'END'                                                                
+
+^^WI      DISPOSE XINLIST6                                                      
+^^CR  
+%%         COPY '#OPEN FRN2 ARCHIVE-HKL.CIF'
+%         COPY '#HKLI'
+%         QUEUE PROCESS                                                         
+%         COPY 'END'                                                            
+%%         COPY '#CLOSE FRN2'
+%         COPY '#CLOSE HKLI'                                                    
+%%                                                                              
+%         BLOCK
+%         IF ( EXISTS 6 .NE. 1 ) THEN 
+{E
+{E  You have not succeeded in reading in any reflections
+{E  Check the file format and the file extension.
+   A common problem is that a file with .fcf format has .hkl 
+   as the extension so that CRYSTALS tries to read it as
+   a SHELX hklf4 file.
+
+{E
+%           COPY "#USE CONTROL"
+%           FINISH
+%         END IF
+%% 
+%           ON ERROR TERMINATE
+%           COPY "#GENERALEDIT 6"
+%% get the rms Indices
+%           COPY "LOCATE RECORDTYPE=107"
+%           COPY "TRANSFER FROM OFFSET=3 TO H"
+%           COPY "NEXT"
+%           COPY "TRANSFER FROM OFFSET=3 TO K"
+%           COPY "NEXT"
+%           COPY "TRANSFER FROM OFFSET=3 TO L"
+%           COPY "END"
+%           EVALUATE SUM = H + K + L
+%           IF SUM .LE. 0.0 THEN
+{E
+{E  You have not succeeded in reading in any reflections
+{E  Check the file format and the file extension.
+   A common problem is that a file with .fcf format has .hkl 
+   as the extension so that CRYSTALS tries to read it as
+   a SHELX hklf4 file.
+
+{E
+%             COPY "#USE CONTROL"
+%             FINISH
+%           END IF  
+%         END BLOCK
+%%
+%         IF FS .EQ. 3 THEN                                                     
+%           COPY '#LP'                                                          
+%           COPY 'END'                                                          
+%         END IF                                                                
+%
+%% COPY '#SCRIPT XFRIEDEL'
+%         MESSAGE USER1 ' Error during reflection processing'                   
+%         ON ERROR TERMINATE USER1                                              
+{S * Removing systematically absent reflections                                 
+%         COPY '#SYSTEMATIC'                                                    
+%         COPY 'END'                                                            
+%         CLEAR                                                                 
+{S * Sorting reflections                                                        
+%         COPY '#SORT'                                                          
+%         COPY 'END'                                                            
+%         CLEAR                                                                 
+%% This is now done in XFRIEDEL, using same XQMERGE variable                    
+%% Ask user if they want to merge reflections:                                  
+%%         COPY '#SCRIPT XQMERGE'                                               
+%         IF ( XQMERGE ) THEN                                                   
+{S * Merging equivalent reflections                                             
+%           CLEAR                                                               
+%           COPY '#MERGE'   
+%           COPY 'REFLECTIONS LIST=HI'
+%           COPY 'REJECT SIGMA=2'
+%           COPY 'END'                                                          
+%         END IF                                                                
+% 
+%       COPY '#LIST 6'                                                        
+%       COPY 'READ TYPE = COPY' 
+%       copy 'STORE NCOEF=10'
+%       COPY 'OUTP INDI /FO/ SIG RATIO CORR SERI JCODE /FC/ SQRTW BATCH/PHASE'
+%       COPY 'END'                                                            
+%%                                                                              
+%%
+
+{R * Done. Reflection data input complete.                                      
+                                                                                
+
+%% Actual input complete. XFRESH6 sorts out lists 4, 23, 28 etc
+%% djw dec 2011
+%         COPY '#SCRIPT XFRESH6' 
+%         FINISH                                                                
+%       END IF                                                                  
+%      END IF                                                                   
+%     END BLOCK                                                                 
+%     BLOCK                         %BXX%                                       
+^^WI    DISPOSE XINLIST6                                                        
+^^CR                                 
+{E
+{E You have aborted reading in reflection data
+{E                                           
+%       FINISH                                                                  
+%     END BLOCK                                                                 
+%     BLOCK                         %BROWSE%                                    
+^^WI    SYSOPENFILE '*.hkl;*.hkp' 'HKL file (*.hkl,*.hkp)'                      
+^^CR                                                                            
+%       GET SILENT TEXT 'New filename:'                                         
+%       IF CVALUE .NE. 'CANCEL' THEN                                            
+%        CLEAR                                                                  
+^^WI     SET L6FILE TEXT                                                        
+%        TRANSFER "^^WI '" // CVALUE // "'" TO DISPLAY                          
+^^CR                                                                            
+^^CO      SET L6FILE INFORM=NO SET BOK DISABLED=NO  
+%         EVALUATE LOKOK = TRUE                    
+%% For from-cif.hkl files set correct FORMAT
+%         IF ( UPPERCASE GETFILE ( CVALUE ) .EQ. 'FROM-CIF.HKL' ) THEN
+^^CO        SET L6FORM DISABLED=NO TEXT='(3F4.0,2F10.0)' 
+^^CO        SET RDF3 STATE=ON
+%         ELSE
+^^CO        SET L6FORM DISABLED=YES  
+^^CO        SET RDF2 STATE=ON
+%         END IF
+%       END IF                                                                  
+%     END BLOCK                                                                 
+%     BLOCK                         %HELP1%                                     
+%       COPY '#SCRIPT XHELP1'                                                   
+X-ray observation data can be stored in several different formats:              
+                                                                                
+I's --               Intensities. The "raw" reflection data as                  
+                     recorded by the diffractometer.                            
+F's and F-squared -- Structure factor amplitudes (or their square).             
+                     Data reduction and absorption corrections on               
+                     I's produce F-squared or F.                                
+e.g. a file processed by RC93 will contain intensities.                         
+     a file processed by DIPIN will contain F-squared.                          
+%       COPY '#SCRIPT XHELP2'                                                   
+%     END BLOCK                                                                 
+%     BLOCK                         %RDF1%                                      
+^^WI SET L6FORM DISABLED=YES                                                    
+^^CR                                                                            
+%     END BLOCK                                                                 
+%     BLOCK                         %RDF2%                                      
+^^WI SET L6FORM DISABLED=YES                                                    
+^^CR                                                                            
+%     END BLOCK                                                                 
+%     BLOCK                         %RDF3%                                      
+^^WI SET L6FORM DISABLED=NO                                                     
+^^CR                                                                            
+%     END BLOCK                                                                 
+%     BLOCK                         %CBMERGE% 
+%   VERIFY OFF ON                                                               
+%   GET SILENT NOSTORE FINAL ABBREVIATED ' ' 'ON'                               
+%   IF VALUE .EQ. 1 THEN                                                        
+{I Merge set off                                                                
+%%^^CO SET MFO DISABLED=YES 
+%   ELSE                                                                        
+{I Merge set on                                                                 
+%%^^CO SET MFO DISABLED=NO
+%   END IF                                                                      
+%     END BLOCK
+%   END CASE                                                                    
+% END LOOP                                                                      
+%END SCRIPT                                                                     
+%%                                                                              
+%% $Log: not supported by cvs2svn $
+%% Revision 1.37  2012/05/03 15:39:49  rich
+%% Don't apply a null matrix to reflection input.
+%%
+%% Revision 1.36  2012/03/23 14:05:06  rich
+%% Detect transformation matrix on HKLF 4 line in .INS files and apply automatically when reading HKL.
+%%
+%% Revision 1.35  2012/01/04 14:30:46  rich
+%% More import script fiddling
+%%
+%% Revision 1.34  2012/01/03 16:47:23  rich
+%% Fix INSTITLE rubbish.
+%%
+%% Revision 1.33  2011/12/16 15:13:14  djw
+%% Replace individual setting of LISTS 4, 23 and 28 by a call to XFRESH6
+%%
+%% Revision 1.32  2011/06/20 14:22:00  djw
+%% Pass in filename from calling script
+%%
+%% Revision 1.31  2011/06/14 10:05:53  djw
+%% List 28 is an auto-create list. Try to ensure it is created before any weigting is done. If LIST 23 exists, try to set defaults at -3 for F^2 and +3 for F. If LIST 23 does not exist, call script XLIST28 to enable user to set values.
+%% Scripts changed are: difabs, inemap,newstart,xcifnosu, xflipinlist6, xinlist6 xinrc93
+%%
+%% Revision 1.30  2009/10/14 15:02:29  djw
+%% Fix ordering of transformation matrix for reflections in Advanced mode
+%%                                                       
+%% Revision 1.29  2008/09/05 10:29:23  djw                                      
+%% Make SHELX wts with P1=.1 defauly for Fsq ref                                
+%%                                                                              
+%% Revision 1.28  2005/01/23 10:00:25  rich                                     
+%% Reinstate CVS history for scripts. History from Dec23 - Jan23 is lost, but   
+%% changes are not!                                                             
+%%                                                                              
+%% Revision 1.1.1.1  2004/12/13 11:16:23  rich                                  
+%% New CRYSTALS repository                                                      
+%%                                                                              
+%% Revision 1.27  2003/07/08 10:00:09  rich                                     
+%%                                                                              
+%% Col/row ordering was wrong for new                                           
+%% transformation matrix on input of                                            
+%% LIST 6. Fixed.                                                               
+%%                                                                              
+%% Revision 1.26  2003/07/07 14:24:29  rich                                     
+%% If an hkl filename is passed in, then enable the OK button, or the hapless   
+%% user will be stuck.                                                          
+%%                                                                              
+%% Revision 1.25  2003/06/27 14:44:13  rich                                     
+%% Added option to apply a transformation matrix to HKL data as it is read in.  
+%%                                                                              
+%% Revision 1.24  2003/02/25 16:47:26  rich                                     
+%%                                                                              
+%% Streamline input of data. Merging question and Friedel question moved        
+%% into one dialog (in XFRIEDEL).                                               
+%%                                                                              
+%% F or F^2 question moved to AFTER the reflection file format is given - this w
+%% hopefully reduce some confusion.                                             
+%%                                                                              
+%% Revision 1.23  2002/09/27 14:40:28  rich                                     
+%% Message about applying unit weights.                                         
+%%                                                                              
+%% Revision 1.22  2002/07/08 11:34:08  richard                                  
+%% If user selects F as data format, warn and give option to revert to F^2.     
+%%                                                                              
+%% Revision 1.21  2002/05/15 08:02:56  richard                                  
+%% Little update using new HIDDENSTRING GUI control - the stem of the .ins      
+%% filename is remembered and used for the default .hkl filename if the file    
+%% exists.                                                                      
+%%                                                                              
+%% Revision 1.20  2002/03/12 17:57:18  ckp2                                     
+%% Warn about the meaning of F and F2 in this context.                          
+%%                                                                              
+%% Revision 1.19  2002/02/27 19:52:35  ckp2                                     
+%% RIC: Whenever SPAWN command is used with unexpanded environment variable as a
+%% ensure that arg is in double quotes in case expanded value contains spaces.  
+%% RIC: Make consistent use of \ after CRYSDIR:                                 
+%%                                                                              
+%% Revision 1.18  2001/11/23 09:15:01  ckp2                                     
+%% Call the xlist28 script for setting up a list 28 when importing hkl file.    
+%%                                                                              
+%% Revision 1.17  2001/11/13 09:51:29  ckp2                                     
+%% Fix free format reads of reflections.                                        
+%% Fix bug when no file name given.                                             
+%% Fix default format when reading shelx files.                                 
+%%                                                                              
+%% Revision 1.16  2001/10/31 13:04:06  ckp2                                     
+%% Option to read in reflection files with HKP extension, as well as normal HKL'
+%% (HKP's are output by PLATON).                                                
+%%                                                                              
+%% Revision 1.15  2001/09/11 11:18:07  ckp2                                     
+%% Option not to merge friedel pairs.                                           
+%%                                                                              
+%% Revision 1.14  2001/03/27 15:06:23  richard                                  
+%% Use XQMERGE to ask the MERGE question.                                       
+%%                                                                              
+%% Revision 1.13  2001/02/06 10:18:33  richard                                  
+%% Changed "IGNORE" token after CHECKBOX to "INFORM=NO"                         
+%%                                                                              
+%% Revision 1.12  2000/10/31 15:18:16  ckp2                                     
+%% New text colour method                                                       
+%%                                                                              

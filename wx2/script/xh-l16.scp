@@ -1,0 +1,51 @@
+%SCRIPT XH-L16
+%%
+%%   Local variables:
+%  VARIABLE CHARACTER CTYPE
+%  VARIABLE REAL SERIAL
+%  VARIABLE LOGICAL HRIDE
+%% Initialise to no hydrogen, but if any found, refine them.
+%% see also XWRITE5.SSC, which tests REFLAG for each atom
+%  EVALUATE HRIDE = FALSE
+%%
+%  IF EXISTS 5 .LE. 0 THEN
+
+You have no atoms for this structure
+
+%   FINISH
+%  END IF
+%     COPY '#GENERALEDIT 5'
+%     COPY 'LOCATE RECORDTYPE=101'
+%     COPY 'ERROR MESS=NO SIGN=NONE ACTI=CONT NAME=EDITERROR'
+%     LOOP
+%       ON EDITERROR TERMINATE
+%       COPY 'TRANSFER FROM OFFSET=0 TO CTYPE'
+%       IF ( CTYPE .EQ. 'H' )  THEN
+%         EVALUATE HRIDE = TRUE
+%       ELSE IF ( CTYPE .EQ. 'D' )  THEN
+%         EVALUATE HRIDE = TRUE
+%       END IF
+%       COPY 'NEXT'
+%     END LOOP
+%     COPY 'END'
+%%
+%% If HRIDE is set, we found some atoms to ride.
+%%
+%  IF ( HRIDE ) THEN
+
+%      COPY '#RELEASE PUNCH h-restraints.dat'                                        
+%      COPY '#DISTANCES'                                                         
+%      COPY 'OUTPUT MON=OFF PUNCH=H-REST'                                        
+%      COPY 'SELECT SYMMETRY=NONE RANGE=L41'
+%      COPY 'PIVOT C N O'
+%      COPY 'END'                                                                
+%      COPY '#RELEASE PUNCH logs/bfile.pch'                                           
+
+Hydrogen restraints have been  put in the file {&h-restraints.dat{&
+
+%  ELSE
+
+ No hydrogen atoms to restrain
+
+%  END IF
+%END SCRIPT

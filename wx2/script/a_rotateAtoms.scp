@@ -1,0 +1,60 @@
+%SCRIPT ROTATEATOMS
+%%
+%% Get the parameters from the calling routine
+%%
+%  VARIABLE CHARACTER CDEG CVEC
+%  VARIABLE LOGICAL LSELECTATOMS
+%%
+%% Local variables
+%%
+%  VARIABLE CHARACTER CLINE
+%  VARIABLE INTEGER ISELECTED
+%%
+%% Variables for calling message window
+%%
+%  VARIABLE CHARACTER CTITLE CTEXT1 CTEXT2 CPOSITION
+%%
+%  TRANSFER '{I Passed rotation angle is ' // CDEG // ' degrees...' TO DISPLAY
+%%
+%  EVALUATE ISELECTED = 0
+%%
+%  COPY '#OPEN SCPDATA AtomsToWorkOn.dat'
+%  BLOCK
+%    QUEUE REWIND
+%    QUEUE COPY #EDIT
+%    LOOP
+%      ON ERROR TERMINATE
+%      ON END TERMINATE
+%      EXTRACT NEXT
+%      EXTRACT TRANSFER INPUT
+%      CLEAR
+%      GET KEYWORD 'Entry'
+%% force an exit from loop on reading an END card
+%      IF CVALUE .EQ. 'END' THEN
+%        EVALUATE LOOPEND = LOOPCOUNTER
+%      ELSE
+%        EVALUATE CLINE = "ROTATE " // CDEG // " " // CVEC // " " // CVALUE
+%        CLEAR
+%        STORE CHARACTER CLINE
+%        QUEUE SEND
+%        EVALUATE ISELECTED = ISELECTED + 1
+%      END IF
+%    END LOOP
+%    QUEUE COPY END
+%  END BLOCK
+%  COPY '#CLOSE SCPDATA'
+%%
+%  IF ISELECTED .GT. 0 THEN
+%    QUEUE PROCESS
+%    IF LSELECTATOMS THEN
+%      COPY '#SCRIPT A_REFRESHSELECTION'
+%    END IF
+%  ELSE
+%    EVALUATE CTITLE = "No atoms selected!"
+%    EVALUATE CTEXT1 = "CRYSTALS cannot execute your request"
+%    EVALUATE CTEXT2 = "Please select atoms by clicking and repeat"
+%    EVALUATE CPOSITION = "=CENTERED '_MAINTEXTOUTPUT'"
+%    COPY '#SCRIPT A_XMESSAGE'
+%  END IF
+%%
+%END SCRIPT

@@ -1,0 +1,131 @@
+%SCRIPT XGUIDEIC
+% VARIABLE CHARACTER INSTITLE
+%%
+%% KTDEFA  = 
+%%  1  General file input
+%%  2  Import SHELX INS/RES file.
+%%  3  Import SHELX HKL file.
+%%  4  Input cell
+%%  5  Input cell contents
+%%  6  Input space group.
+%%  7  Input CIF file (obsolete)
+%%  8  Run KCCDIN (obsolete)
+%%  9  Run RC93 (obsolete)
+%%  10 Run DIPIN (obsolete)
+%%  11 Import KCCDIN output. (obsolete)
+%%  12 Import RC93 output (obsolete)
+%%  13 Import DIPIN output (obsolete)
+%%  14 Edit CIF type data 
+%%  15 Read in CRYSTALS instructions. (obsolete)
+%%
+%  VERIFY GI_BOK GI_BXX GI_BHELP
+%  GET SILENT NOSTORE ABBREVIATED 'Continue?' 'GI_BXX'
+%  CASE VALUE
+%    BLOCK  %BOK%
+^^?? _XG_LIST SELECTED
+%      GET SILENT NOSTORE INTEGER 'Choice number'
+%      CASE VALUE
+%%
+%        BLOCK % 1
+%          COPY '#SCRIPT XFILE_ANY'                                                  
+%        END BLOCK                                                              
+%%
+%        BLOCK % 2
+%          COPY '#SCRIPT XPASCAL'
+%        END BLOCK
+%%
+%        BLOCK % 3
+^^??       INSTTL TEXT
+%          GET SILENT NOSTORE TEXT 'institle?' ' '
+%          EVALUATE INSTITLE = CVALUE
+%          COPY '#SCRIPT XINLIST6'
+%        END BLOCK
+%%
+%        BLOCK % 4
+%          COPY '#SCRIPT XCELLIN'
+%        END BLOCK
+%%
+%        BLOCK % 5
+%          COPY '#SCRIPT XINLIST3'
+%        END BLOCK
+%%
+%        BLOCK % 6
+%          COPY '#SCRIPT XSPACE'
+%        END BLOCK
+%%
+%        BLOCK % 7
+%%          COPY '#SCRIPT CIF2CRY'
+%%          Generates errors in CIFPRC called from CIF2CRY.EXE
+           'Not yet available' 
+%        END BLOCK
+%%
+%        BLOCK % 8
+%          COPY '#SCRIPT KCCD'
+%        END BLOCK
+%%
+%        BLOCK % 9
+%          COPY '#SCRIPT RC93'
+%        END BLOCK
+%%
+%        BLOCK % 10
+%          COPY '#SCRIPT DIP'
+%        END BLOCK
+%%
+%        BLOCK % 11
+%          COPY '#SCRIPT XKCCDIN'
+%        END BLOCK
+%%
+%        BLOCK % 12
+%          COPY '#SCRIPT XINRC93'
+%        END BLOCK
+%%
+%        BLOCK % 13
+%          COPY '#SCRIPT XDIPIN'
+%        END BLOCK
+%%
+%        BLOCK % 14
+%          COPY '#SCRIPT ED30'
+%        END BLOCK
+%%
+%        BLOCK % 15
+%          COPY '#SCRIPT XUSE'
+%        END BLOCK
+%%
+%      END CASE
+%    END BLOCK
+%%
+%%
+%    BLOCK  %BXX%
+^^WI   DISPOSE XGUIDEI
+^^CR
+%      FINISH
+%    END BLOCK
+%%
+%%
+%    BLOCK  %BHELP%
+%      COPY '#SCRIPT XHELP12'
+%      GET SILENT NOSTORE TEXT ' ' ' '
+%    END BLOCK
+%%
+%  END CASE
+%%
+%%
+%%
+%  VARIABLE REAL WAVE ZMAX
+%  VARIABLE LOGICAL NEUTRONS
+%  IF EXISTS 1 .EQ. 1 THEN
+%   COPY '#SCRIPT XGETWZ'
+%   IF ( ( .NOT. NEUTRONS ) .AND.  -
+        ( ABS ( WAVE - 1.54 ) .GT. .01 ) .AND. -
+        ( ABS ( WAVE - 0.71 ) .GT. .01 ) ) THEN
+{I Unusual wavelength - Please update anomalous scattering factors
+%   COPY '#SCRIPT EDLIST3'
+%   END IF
+%  END IF
+%%
+%%
+%%
+%% Back to the GUIDE:
+%%
+%  COPY '#SCRIPT XGUIDE'
+%END SCRIPT

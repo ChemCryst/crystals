@@ -1,0 +1,8 @@
+This is an example structure. The data is for tetraphenylene, but was collected
+at break-neck speed to see what happended.
+
+The data is in SHELX format.
+
+  veryfast.ins contains the cell and spacegroup.
+  veryfast.hkl 15519 reflections collected in 48 minutes.
+
