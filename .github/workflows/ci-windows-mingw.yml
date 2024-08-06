@@ -21,7 +21,7 @@ jobs:
           guiflag: yes
           testsuffix: GUI
           removeguitst:
-          wxoptions: -DwxWidgets_ROOT_DIR=c:\wx -DwxWidgets_LIB_DIR=C:\wx\lib\gcc810_x64_dll -DwxWidgets_CONFIGURATION=mswu
+          wxoptions: -DwxWidgets_ROOT_DIR=c:\wx -DwxWidgets_LIB_DIR=C:\wx\lib\gcc1220_x64_dll -DwxWidgets_CONFIGURATION=mswu
         - cl: nogui
           guiflag: no
           testsuffix:
@@ -54,7 +54,7 @@ jobs:
       if: matrix.cl == 'gui'
       shell: cmd
       run: | 
-        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.5/wxMSW-3.2.5_gcc810_x64_Dev.7z > src.7z
+        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.5/wxMSW-3.2.5_gcc1220_x64_Dev.7z > src.7z
         curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.5/wxWidgets-3.2.5-headers.7z > head.7z
         7z x src.7z -owx -y
         7z x head.7z -owx -y
