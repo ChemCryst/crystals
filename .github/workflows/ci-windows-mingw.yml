@@ -124,9 +124,9 @@ jobs:
         echo "testfail=true" >> $GITHUB_ENV
         del /q test_suite\MIN64GH${{ matrix.testsuffix }}.org
         copy test_suite*.out test_suite\MIN64GH${{ matrix.testsuffix }}.org
-        copy datafiles\* test_suite\MIN64GH${{ matrix.testsuffix }}.org
-        copy crystals.exe test_suite\MIN64GH${{ matrix.testsuffix }}.org
-        copy crystals-cl.exe test_suite\MIN64GH${{ matrix.testsuffix }}.org
+        copy ci\datafiles\* test_suite\MIN64GH${{ matrix.testsuffix }}.org
+        copy ci\crystals.exe test_suite\MIN64GH${{ matrix.testsuffix }}.org
+        copy ci\crystals-cl.exe test_suite\MIN64GH${{ matrix.testsuffix }}.org
         del /q *.*
 
     - name: Upload outputs if failures
