@@ -21,7 +21,7 @@ jobs:
           guiflag: yes
           testsuffix: GUI
           removeguitst:
-          wxoptions: -DwxWidgets_ROOT_DIR=..\wx -DwxWidgets_LIB_DIR=..\wx\lib\gcc810_x64_dll -DwxWidgets_CONFIGURATION=mswu
+          wxoptions: -DwxWidgets_ROOT_DIR=..\wx -DwxWidgets_LIB_DIR=..\wx\lib\gcc1220_x64_dll -DwxWidgets_CONFIGURATION=mswu
         - cl: nogui
           guiflag: no
           testsuffix:
@@ -38,23 +38,40 @@ jobs:
 
 # WIN ONLY
     - name: Install MinGW compiler and tools
-      run: |
-        c:\msys64\usr\bin\pacman --noconfirm -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-openblas mingw-w64-x86_64-perl msys2-w32api-runtime mingw-w64-x86_64-curl
+      shell: cmd
+      run: |                                    
+        c:\msys64\usr\bin\pacman --noconfirm -S mingw-w64-x86_64-cmake mingw-w64-x86_64-openblas
+
+
+#        c:\msys64\usr\bin\pacman --noconfirm -S mingw-w64-ucrt-x86_64-toolchain mingw-w64-ucrt-x86_64-openblas mingw-w64-x86_64-perl mingw-w64-x86_64-curl
+
+# WIN GUI ONLY
+#    - name: Install MinGW compiler and tools
+#      if: matrix.cl == 'gui'
+#      shell: cmd
+#      run: |
+#        c:\msys64\usr\bin\pacman --noconfirm -S  mingw-w64-x86_64-wxwidgets3.2-msw 
 
 # Install wxWidgets - win GUI only
-#
-    - name: Setup wxWidgets for Win64 gui
+    - name: Setup wxWidgets for Win64 gui#
       if: matrix.cl == 'gui'
       shell: cmd
-      run: |
-        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.3/wxMSW-3.1.3_gcc810_x64_Dev.7z > dev.7z
-        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.3/wxWidgets-3.1.3-headers.7z > head.7z
-        7z x dev.7z -owx -y
+      run: | 
+        dir c:\mingw64
+        dir c:\msys64\mingw64
+        dir c:\mingw64\bin
+        dir c:\msys64\mingw64\bin
+        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.5/wxMSW-3.2.5_gcc1220_x64_Dev.7z > src.7z
+        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.5/wxWidgets-3.2.5-headers.7z > head.7z
+        7z x src.7z -owx -y
         7z x head.7z -owx -y
-        dir
-#
-    - name: Create build folder
-      run: mkdir ci
+        dir 
+        dir wx
+        dir wx\lib
+
+    - name: Create build folders
+      run: | 
+        mkdir ci
 
 # Build WIN64
 #
@@ -63,10 +80,9 @@ jobs:
       working-directory: ci
       shell: cmd
       run: |
-        set PATH=C:\msys64\mingw64\bin;%PATH%
-        cmake .. -G"MinGW Makefiles" -DuseGUI=${{ matrix.guiflag }} -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }} || echo Try again
-        cmake .. -G"MinGW Makefiles" -DuseGUI=${{ matrix.guiflag }} -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }}
-        mingw32-make -j2
+        set PATH=C:\msys64\mingw64\bin;%PATH%;..\wx\lib\gcc1220_x64_dll
+        c:\msys64\mingw64\bin\cmake .. -G"MinGW Makefiles" -DuseGUI=${{ matrix.guiflag }} -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }}
+        mingw32-make
 
 # Tests
     - name: Test CRYSTALS windows
@@ -82,7 +98,7 @@ jobs:
         set CRYSDIR=.\,..\ci\
         set COMPCODE=MIN64GH${{ matrix.testsuffix }}
         set OMP_NUM_THREADS=1
-        set PATH=C:\msys64\mingw64\bin;..\wx\lib\gcc810_x64_dll;%path%
+        set PATH=C:\msys64\mingw64\bin;..\wx\lib\gcc1220_x64_dll;%path%
         echo PATH is %PATH%
         echo CRYSDIR is %CRYSDIR%
         ren MIN64GH${{ matrix.testsuffix }}.org safe.dir
