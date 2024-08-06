@@ -81,7 +81,7 @@ jobs:
       shell: cmd
       run: |
         set PATH=C:\msys64\mingw64\bin;%PATH%
-        c:\mingw64\bin\cmake .. -G"MinGW Makefiles" -DuseGUI=${{ matrix.guiflag }} -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }}
+        c:\msys64\mingw64\bin\cmake .. -G"MinGW Makefiles" -DuseGUI=${{ matrix.guiflag }} -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }}
         mingw32-make
 
 # Tests
