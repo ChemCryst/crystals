@@ -54,6 +54,10 @@ jobs:
       if: matrix.cl == 'gui'
       shell: cmd
       run: | 
+        dir c:\mingw64
+        dir c:\msys64\mingw64
+        dir c:\mingw64\bin
+        dir c:\msys64\mingw64\bin
         curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.5/wxMSW-3.2.5_gcc1220_x64_Dev.7z > src.7z
         curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.5/wxWidgets-3.2.5-headers.7z > head.7z
         7z x src.7z -owx -y
@@ -74,7 +78,7 @@ jobs:
       shell: cmd
       run: |
         set PATH=C:\msys64\mingw64\bin;%PATH%
-        cmake .. -G"MinGW Makefiles" -DuseGUI=${{ matrix.guiflag }} -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }}
+        c:\mingw64\bin\cmake .. -G"MinGW Makefiles" -DuseGUI=${{ matrix.guiflag }} -DMINGW=1 -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }}
         mingw32-make
 
 # Tests
