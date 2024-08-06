@@ -37,10 +37,10 @@ jobs:
       uses: actions/checkout@v3
 
 # WIN ONLY
-    - name: Install MinGW compiler and tools
-      shell: cmd
-      run: |                                    
-        c:\msys64\usr\bin\pacman --noconfirm -S mingw-w64-ucrt-x86_64-toolchain mingw-w64-ucrt-x86_64-openblas mingw-w64-x86_64-perl mingw-w64-x86_64-curl
+#    - name: Install MinGW compiler and tools
+#      shell: cmd
+#      run: |                                    
+#        c:\msys64\usr\bin\pacman --noconfirm -S mingw-w64-ucrt-x86_64-toolchain mingw-w64-ucrt-x86_64-openblas mingw-w64-x86_64-perl mingw-w64-x86_64-curl
 
 # WIN GUI ONLY
 #    - name: Install MinGW compiler and tools
