@@ -40,7 +40,7 @@ jobs:
     - name: Install MinGW compiler and tools
       shell: cmd
       run: |                                    
-        c:\msys64\usr\bin\pacman --noconfirm -S mingw-w64-x86_64-cmake mingw-w64-x86_64-openblas msys2-w32api-runtime
+        c:\msys64\usr\bin\pacman --noconfirm -S mingw-w64-x86_64-cmake mingw-w64-x86_64-toolchain mingw-w64-x86_64-openblas 
 
 
 #        c:\msys64\usr\bin\pacman --noconfirm -S mingw-w64-ucrt-x86_64-toolchain mingw-w64-ucrt-x86_64-openblas mingw-w64-x86_64-perl mingw-w64-x86_64-curl
