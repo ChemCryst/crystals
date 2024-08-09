@@ -82,7 +82,7 @@ jobs:
 
     - name: cache install oneapi
       id: cache-install-oneapi
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       with:
         path: C:\Program Files (x86)\Intel\oneAPI
         key: install-${{ env.WINDOWS_BASEKIT_URL }}-${{ env.WINDOWS_MKL_COMPONENTS }}-mkl-${{ env.WINDOWS_HPCKIT_URL }}-${{ env.WINDOWS_FORTRAN_COMPONENTS }}-${{ hashFiles('**/bin/cache_exclude_windows.sh') }}
@@ -112,7 +112,7 @@ jobs:
 
     - name: cache install wx
       id: cache-wxlibs  # give it a name for checking the cache hit-or-not
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       with:
         path: ./wx  # what we cache: the folder
         key: ${{ runner.os }}-wxlibs314
