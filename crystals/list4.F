@@ -375,16 +375,21 @@ C
       call xmove(iproc4(4), factor, 1)
       call xmovei(iproc4(5), LEVEL, 1)
 c
-      if (istore(l23mn+3) .lt. 0) THEN
-        write(cmon,'(a)')' We are not refining against reflection data'
-        if (issprt.eq.0)write(ncwu,'(a)') trim(cmon(1))
-        return
-      endif
 
       INCLUDE 'IDIM04.INC'
       call xfal04          
       IFSQ = ISTORE(L23MN+1)                               ! (-1) F or (0) F^2
       REWT=STORE(L4F+6)
+      call xwlstd(4, icom04, idim04,-1,-1) ! write the new list out to disc
+
+
+c      if (istore(l23mn+3) .lt. 0) THEN
+c        write(cmon,'(a)')' We are not refining against reflection data'
+c        if (issprt.eq.0)write(ncwu,'(a)') trim(cmon(1))
+c        return
+c      endif
+
+
 C
       if (factor .le. zero) then
 c        User requests auto-reweigting

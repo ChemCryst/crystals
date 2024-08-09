@@ -1193,7 +1193,7 @@ C--
       CALL XWLSTD(33,ICOM33,IDIM33,-1,-1)   ! OUTPUT THE NEW LIST 33 TO DISC
 C
 C DONT UPDATE LIST 30 FOR SFLS 7
-      IF (IULN .NE.7) THEN
+      IF ((IREFLS .GE. 0) .AND. (IULN .NE.7)) THEN
        IF (KHUNTR (30,0, IADDL,IADDR,IADDD, -1) .NE. 0) CALL XFAL30  ! CALC or REF
        IF ((SFLS_TYPE .EQ. SFLS_SCALE) .OR.                    ! scale requested
      1    (KHUNTR (11,0, IADDL,IADDR,IADDD, -1) .EQ. 0)) THEN  !LIST 11 is loaded
