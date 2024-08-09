@@ -355,7 +355,7 @@ jobs:
     - name: Upload installer
       uses: actions/upload-artifact@v4
       with:
-        name: crystals-setup
+        name: crystals-setup-${{ matrix.release }}
         path: ./installer/crystals-${{steps.get_version.outputs.version}}-${{steps.vars.outputs.sha_short}}-${{matrix.release}}-setup.exe
       if:  ${{ matrix.cl == 'gui' }}
 
