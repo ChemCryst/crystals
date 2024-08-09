@@ -138,7 +138,7 @@ jobs:
         mkdir installer
 
     - id: get_version 
-      uses: drewg13/get-version-action@v1.0.0
+      uses: MicaForEveryone/get-version-action@v2.3.1
 
 #    - run: echo ${{ steps.get_version.outputs.version }}
 #    - run: echo ${{ steps.get_version.outputs.version-without-v }}
