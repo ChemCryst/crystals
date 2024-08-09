@@ -138,7 +138,7 @@ jobs:
         mkdir installer
 
     - id: get_version 
-      uses: CarterChen247/version-retriever@v1
+      uses: drewg13/get-version-action@v2
 
 #    - run: echo ${{ steps.get_version.outputs.version }}
 #    - run: echo ${{ steps.get_version.outputs.version-without-v }}
