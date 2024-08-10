@@ -138,9 +138,9 @@ jobs:
         mkdir installer
 
     - name: Process version of the tag
+      uses: maltoze/get-version-action@v1
       id: version
-      uses: ncipollo/semantic-version-action@v1
-
+    
     - name: Get short SHA of commit
       id: vars
       run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
