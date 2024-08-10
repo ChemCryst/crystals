@@ -137,21 +137,16 @@ jobs:
         mkdir ci
         mkdir installer
 
-    - id: get_version 
-      uses: MicaForEveryone/get-version-action@v2.3.1
-
-#    - run: echo ${{ steps.get_version.outputs.version }}
-#    - run: echo ${{ steps.get_version.outputs.version-without-v }}
-#    - run: echo ${{ steps.get_version.outputs.major }}
-#    - run: echo ${{ steps.get_version.outputs.minor }}
-#    - run: echo ${{ steps.get_version.outputs.patch }}
+    - name: Process version of the tag
+      id: version
+      uses: ncipollo/semantic-version-action@v1
 
     - name: Get short SHA of commit
       id: vars
       run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
 
-    - name: Check outputs
-      run: echo ${{ steps.vars.outputs.sha_short }} ${{ steps.get_version.outputs.major }} ${{ steps.get_version.outputs.minor }}
+#    - name: Check outputs
+#      run: echo ${{ steps.vars.outputs.sha_short }} ${{ steps.get_version.outputs.major }} ${{ steps.get_version.outputs.minor }}
     
     - name: Build custom mkl library
       working-directory: ci
@@ -173,6 +168,10 @@ jobs:
     - uses: ilammy/msvc-dev-cmd@v1
 
     - name: Build CRYSTALS intel64
+      env:
+        CRYVMAJOR: ${{ steps.version.outputs.major }}
+        CRYVMINOR: ${{ steps.version.outputs.minor }}
+        CRYVPATCH: ${{ steps.version.outputs.patch }}
       working-directory: ci
       shell: cmd
       run: |
@@ -180,10 +179,8 @@ jobs:
         call "C:\Program Files (x86)\Intel\oneAPI\setvars.bat"
         set FC=ifort
         set CRYSVNVER=${{ steps.vars.outputs.sha_short }}
-        set CRYVMAJOR=${{ steps.get_version.outputs.major }}
-        set CRYVMINOR=${{ steps.get_version.outputs.minor }}
-        set CRYVPATCH=${{ steps.get_version.outputs.patch }}
-        echo Commit SHA: %CRYSVNVER% Version: %CRYVMAJOR%.%CRYVMINOR%.%CRYVPATCH%
+ 
+        echo Commit SHA: %CRYSVNVER% Version: $CRYVMAJOR.$CRYVMINOR.$CRYVPATCH
         cmake .. -G"NMake Makefiles" -DuseGUI=${{ matrix.guiflag }} -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }} -DuseCustomMKL=yes -DusePY=no -DCMAKE_EXPORT_COMPILE_COMMANDS=on
         nmake || exit /b %ERRORLEVEL%
         copy ..\wx\lib\vc14x_x64_dll\wxmsw314u_stc_vc14x_x64.dll . 
@@ -335,12 +332,12 @@ jobs:
       shell: cmd
       run: |
         set CRYSVNVER=${{ steps.vars.outputs.sha_short }}
-        set CRYSEMVER=${{ steps.get_version.outputs.major }}.${{ steps.get_version.outputs.minor }}.${{ steps.get_version.outputs.patch }}
+        set CRYSEMVER=${{ steps.version.outputs.major }}.${{ steps.version.outputs.minor }}.${{ steps.version.outputs.patch }}
         echo Commit SHA: %CRYSVNVER% Version: %CRYSEMVER%
         IF "%CRYSVNVER%"=="" (SET CRYSVNVER=0000)
         IF "%CRYSEMVER%"=="" (SET CRYSEMVER=10.1.100)
         "C:\Program Files (x86)\Inno Setup 6\iscc.exe" "../bin/crystals-gh.iss"
-        ren crystals-setup.exe crystals-${{steps.get_version.outputs.version}}-${{steps.vars.outputs.sha_short}}-${{matrix.release}}-setup.exe
+        ren crystals-setup.exe crystals-${{steps.version.outputs.version}}-${{steps.vars.outputs.sha_short}}-${{matrix.release}}-setup.exe
 
 #    - uses: ChemCryst/code-sign-action@2cf2f6795b8a52517aeb27d1c570614edb6a6018
 #      with:
