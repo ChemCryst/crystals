@@ -138,7 +138,7 @@ jobs:
         mkdir installer
 
     - name: Process version of the tag
-      uses: dhkatz/get-version-action@v3.0.0
+      uses: batilla7/get-version-action@v2.3.0
       id: version
     
     - name: Get short SHA of commit
