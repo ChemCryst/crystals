@@ -146,8 +146,11 @@ jobs:
       run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
 
     - name: Check outputs
-      run: echo ${{ steps.vars.outputs.sha_short }} ${{ steps.version.outputs.major }} ${{ steps.version.outputs.minor }}
-    
+      run: |
+        echo SHA: ${{ steps.vars.outputs.sha_short }} 
+        echo Major: ${{ steps.version.outputs.major }} Minor: ${{ steps.version.outputs.minor }}
+        echo Ref: ${{github.ref_name}}
+        
     - name: Build custom mkl library
       working-directory: ci
       shell: cmd
