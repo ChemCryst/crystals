@@ -138,7 +138,7 @@ jobs:
         mkdir installer
 
     - name: Process version of the tag
-      uses: maltoze/get-version-action@v1
+      uses: dhkatz/get-version-action
       id: version
     
     - name: Get short SHA of commit
