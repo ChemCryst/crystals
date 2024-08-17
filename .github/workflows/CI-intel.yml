@@ -64,7 +64,7 @@ jobs:
         id: semver_parser 
         uses: booxmedialtd/ws-action-parse-semver@v1
         with:
-         input_string: "${{steps.gsrversion.outputs.version}}'
+         input_string: "${{steps.gsrversion.outputs.version}}"
          version_extractor_regex: '\/v(.*)$'
  
       - name: Use parsed semver
