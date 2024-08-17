@@ -43,8 +43,44 @@ jobs:
 #          installer*
 #        retention-days: 7
 
+  versioning:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-go@v3
+        with:
+          go-version: 1.19
+
+      - uses: go-semantic-release/action@v1
+        id: gsrversion
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          dry: true
+
+      - name: Parse semver string
+        id: semver_parser 
+        uses: booxmedialtd/ws-action-parse-semver@v1
+        with:
+         input_string: "${{steps.gsrversion.outputs.version}}'
+         version_extractor_regex: '\/v(.*)$'
+ 
+      - name: Use parsed semver
+        run: |
+            echo "v${{ steps.semver_parser.outputs.major }}"
+            echo "v${{ steps.semver_parser.outputs.minor }}"
+            echo "v${{ steps.semver_parser.outputs.patch }}"
+            echo "v${{ steps.semver_parser.outputs.prerelease }}"
+            echo "v${{ steps.semver_parser.outputs.build }}"
+            echo "v${{ steps.semver_parser.outputs.fullversion }}"
+
+
   build:
-    runs-on: windows-2019
+    runs-on: windows-2019    
+    needs: versioning
+
 
     env:
       testfail: false
