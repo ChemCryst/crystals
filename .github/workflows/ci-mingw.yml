@@ -50,8 +50,10 @@ jobs:
         curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.5/wxWidgets-3.2.5.7z > wxw.7z
         7z x wxw.7z -owx -y
         dir
+        where gcc.exe
         gcc --version
         cd wx\build\msw
+        where mingw32-make.exe
         mingw32-make -f makefile.gcc SHARED=1 UNICODE=1 BUILD=release clean
         mingw32-make -f makefile.gcc SHARED=1 UNICODE=1 BUILD=release setup_h
         mingw32-make -f makefile.gcc SHARED=1 UNICODE=1 BUILD=release -j4
