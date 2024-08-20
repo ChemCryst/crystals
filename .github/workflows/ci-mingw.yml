@@ -58,8 +58,10 @@ jobs:
         dir
         where gcc.exe
         gcc --version
+        C:\mingw64\bin\gcc.exe --version
         cd wx\build\msw
         where mingw32-make.exe
+        mingw32-make.exe --version
         mingw32-make -f makefile.gcc SHARED=1 UNICODE=1 BUILD=release clean
         mingw32-make -f makefile.gcc SHARED=1 UNICODE=1 BUILD=release setup_h
         mingw32-make -f makefile.gcc SHARED=1 UNICODE=1 BUILD=release -j4
