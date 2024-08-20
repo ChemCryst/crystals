@@ -38,9 +38,14 @@ jobs:
 
 # WIN ONLY
     - name: Install MinGW compiler and tools
-      run: |
-        where pacman.exe
-        pacman --noconfirm -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-openblas mingw-w64-x86_64-perl msys2-w32api-runtime mingw-w64-x86_64-curl
+    - uses: msys2/setup-msys2@v2
+     with:
+        msystem: ${{matrix.sys}}
+        install: mingw-w64-x86_64-toolchain mingw-w64-x86_64-openblas mingw-w64-x86_64-perl msys2-w32api-runtime mingw-w64-x86_64-curl
+
+#      run: |
+#        where pacman.exe
+#        pacman --noconfirm -S 
 
 # Install wxWidgets - win GUI only
 #
