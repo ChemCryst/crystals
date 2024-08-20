@@ -21,7 +21,7 @@ jobs:
           guiflag: yes
           testsuffix: GUI
           removeguitst:
-          wxoptions: -DwxWidgets_ROOT_DIR=..\wx -DwxWidgets_LIB_DIR=..\wx\lib\gcc810_x64_dll -DwxWidgets_CONFIGURATION=mswu
+          wxoptions: -DwxWidgets_ROOT_DIR=..\wxb -DwxWidgets_LIB_DIR=..\wxb\lib\gcc_dll -DwxWidgets_CONFIGURATION=mswu
         - cl: nogui
           guiflag: no
           testsuffix:
@@ -41,24 +41,31 @@ jobs:
       run: |
         c:\msys64\usr\bin\pacman --noconfirm -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-openblas mingw-w64-x86_64-perl msys2-w32api-runtime mingw-w64-x86_64-curl
 
+    - name: Create wxWidgets build folder 
+      if: matrix.cl == 'gui'
+      run: mkdir wxb
+
 # Install wxWidgets - win GUI only
 #
     - name: Setup wxWidgets for Win64 gui
+      working-directory: wxb
       if: matrix.cl == 'gui'
       shell: cmd
       run: |
-        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.3/wxMSW-3.1.3_gcc810_x64_Dev.7z > dev.7z
-        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.3/wxWidgets-3.1.3-headers.7z > head.7z
-        7z x dev.7z -owx -y
-        7z x head.7z -owx -y
+        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.5/wxWidgets-3.2.5.7z > wxw.7z
+        7z x wxw.7z -owx -y
         dir
+        gcc --version
+        cd build\msw
+        mingw32-make -f makefile.gcc SHARED=1 UNICODE=1 BUILD=release clean
+        mingw32-make -f makefile.gcc SHARED=1 UNICODE=1 BUILD=release setup_h
+        mingw32-make -f makefile.gcc SHARED=1 UNICODE=1 BUILD=release -j4
 #
+
+# Build WIN64
     - name: Create build folder
       run: mkdir ci
 
-# Build WIN64
-#
-#        set PATH=D:\a\_temp\msys\msys64\mingw64\bin;%PATH%
     - name: Build CRYSTALS win64
       working-directory: ci
       shell: cmd
@@ -77,12 +84,11 @@ jobs:
 # Setup environment
 # Compcode sets folder with reference test outputs
 # Go
-#        set PATH=D:\a\_temp\msys\msys64\mingw64\bin;..\wx\lib\gcc810_x64_dll;%path%
       run: |
         set CRYSDIR=.\,..\ci\
         set COMPCODE=MIN64GH${{ matrix.testsuffix }}
         set OMP_NUM_THREADS=1
-        set PATH=C:\msys64\mingw64\bin;..\wx\lib\gcc810_x64_dll;%path%
+        set PATH=C:\msys64\mingw64\bin;..\wxb\lib\gcc_dll;%path%
         echo PATH is %PATH%
         echo CRYSDIR is %CRYSDIR%
         ren MIN64GH${{ matrix.testsuffix }}.org safe.dir
