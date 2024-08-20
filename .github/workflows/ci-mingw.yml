@@ -21,7 +21,7 @@ jobs:
           guiflag: yes
           testsuffix: GUI
           removeguitst:
-          wxoptions: -DwxWidgets_ROOT_DIR=..\wxb -DwxWidgets_LIB_DIR=..\wxb\lib\gcc_dll -DwxWidgets_CONFIGURATION=mswu
+          wxoptions: -DwxWidgets_ROOT_DIR=..\wx -DwxWidgets_LIB_DIR=..\wx\lib\gcc_dll -DwxWidgets_CONFIGURATION=mswu
         - cl: nogui
           guiflag: no
           testsuffix:
@@ -41,14 +41,10 @@ jobs:
       run: |
         c:\msys64\usr\bin\pacman --noconfirm -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-openblas mingw-w64-x86_64-perl msys2-w32api-runtime mingw-w64-x86_64-curl
 
-    - name: Create wxWidgets build folder 
-      if: matrix.cl == 'gui'
-      run: mkdir wxb
-
 # Install wxWidgets - win GUI only
 #
     - name: Setup wxWidgets for Win64 gui
-      working-directory: wxb
+      working-directory: wx
       if: matrix.cl == 'gui'
       shell: cmd
       run: |
@@ -88,7 +84,7 @@ jobs:
         set CRYSDIR=.\,..\ci\
         set COMPCODE=MIN64GH${{ matrix.testsuffix }}
         set OMP_NUM_THREADS=1
-        set PATH=C:\msys64\mingw64\bin;..\wxb\lib\gcc_dll;%path%
+        set PATH=C:\msys64\mingw64\bin;..\wx\lib\gcc_dll;%path%
         echo PATH is %PATH%
         echo CRYSDIR is %CRYSDIR%
         ren MIN64GH${{ matrix.testsuffix }}.org safe.dir
