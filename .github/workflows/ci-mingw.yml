@@ -54,7 +54,10 @@ jobs:
       shell: cmd
       run: |
         echo %PATH%
-        set PATH=C:\msys64\mingw64\bin;%PATH%
+        dir C:\msys64\mingw64
+        dir C:\mingw64
+        dir C:\msys64\mingw64\bin
+        dir C:\mingw64\bin
         curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.5/wxWidgets-3.2.5.7z > wxw.7z
         7z x wxw.7z -owx -y
         dir
