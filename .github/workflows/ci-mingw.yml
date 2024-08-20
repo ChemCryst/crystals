@@ -44,7 +44,6 @@ jobs:
 # Install wxWidgets - win GUI only
 #
     - name: Setup wxWidgets for Win64 gui
-      working-directory: wx
       if: matrix.cl == 'gui'
       shell: cmd
       run: |
@@ -52,7 +51,7 @@ jobs:
         7z x wxw.7z -owx -y
         dir
         gcc --version
-        cd build\msw
+        cd wx\build\msw
         mingw32-make -f makefile.gcc SHARED=1 UNICODE=1 BUILD=release clean
         mingw32-make -f makefile.gcc SHARED=1 UNICODE=1 BUILD=release setup_h
         mingw32-make -f makefile.gcc SHARED=1 UNICODE=1 BUILD=release -j4
