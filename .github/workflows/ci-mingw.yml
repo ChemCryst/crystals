@@ -41,21 +41,9 @@ jobs:
     - name: Set path for MINGW tools
       shell: msys2
       run: |
-          echo "/c/mingw64/bin" >> $GITHUB_PATH
+        echo "/c/mingw64/bin" >> $GITHUB_PATH
 
-#    - name: Install MinGW compiler and tools
-#      uses: msys2/setup-msys2@v2
-#      with:
-#        msystem: MINGW64
-#        install: mingw-w64-x86_64-toolchain mingw-w64-x86_64-openblas mingw-w64-x86_64-perl msys2-w32api-runtime mingw-w64-x86_64-curl
 
-#      run: |
-#        where pacman.exe
-#        pacman --noconfirm -S 
-
-# Install wxWidgets - win GUI only
-#
-# $env:PATH = "C:\msys64\ucrt64\bin;C:\msys64\usr\bin;$env:PATH"
 
     - name: Setup wxWidgets for Win64 gui
       if: matrix.cl == 'gui'
