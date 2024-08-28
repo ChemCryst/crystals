@@ -40,6 +40,7 @@ jobs:
 
     - name: Set up MinGW
       uses: egor-tensin/setup-mingw@v2.2.0
+      id: mgwsetup
       with:
         platform: x64
         version: 12.2.0
@@ -51,9 +52,6 @@ jobs:
 
     - name: Setup wxWidgets for Win64 gui
       if: matrix.cl == 'gui'
-      env:
-        CC=x86_64-w64-mingw32-gcc
-        CXX=x86_64-w64-mingw32-g++
       shell: cmd
       run: |
         echo $PATH
@@ -61,6 +59,12 @@ jobs:
         7z x wxw.7z -owx -y
         dir
         cd wx/build/msw
+        set CC=${{ steps.mgwsetup.outputs.gcc }}
+        set CXX=${{ steps.mgwsetup.outputs.gxx }}
+        set FC=${{ steps.mgwsetup.outputs.prefix }}-gfortran
+        echo %CC%
+        echo %CXX%
+        echo %FC%
         mingw32-make.exe --version
         mingw32-make -f makefile.gcc SHARED=1 UNICODE=1 BUILD=release setup_h
         mingw32-make -f makefile.gcc SHARED=1 UNICODE=1 BUILD=release -j4
