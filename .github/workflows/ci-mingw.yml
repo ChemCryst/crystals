@@ -38,10 +38,11 @@ jobs:
 
 # WIN ONLY
 
-    - name: Set path for MINGW tools
-      shell: msys2
-      run: |
-        echo "/c/mingw64/bin" >> $GITHUB_PATH
+    - name: Set up MinGW
+      uses: egor-tensin/setup-mingw@v2.2.0
+      with:
+        platform: x64
+        version: 12.2.0
 
 # Prep WIN64
     - name: Create build folder
@@ -50,21 +51,19 @@ jobs:
 
     - name: Setup wxWidgets for Win64 gui
       if: matrix.cl == 'gui'
-      shell: msys2
+      env:
+      - CC=x86_64-w64-mingw32-gcc
+      - CXX=x86_64-w64-mingw32-g++
+      shell: cmd
       run: |
         echo $PATH
         curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.5/wxWidgets-3.2.5.7z > wxw.7z
         7z x wxw.7z -owx -y
         dir
-        which gcc.exe
-        gcc --version
-        /c/mingw64/bin/gcc.exe --version
         cd wx/build/msw
-        which mingw32-make.exe
         mingw32-make.exe --version
         mingw32-make -f makefile.gcc SHARED=1 UNICODE=1 BUILD=release setup_h
         mingw32-make -f makefile.gcc SHARED=1 UNICODE=1 BUILD=release -j4
-#
 
 
     - name: Build CRYSTALS win64
