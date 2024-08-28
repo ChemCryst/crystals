@@ -52,8 +52,8 @@ jobs:
     - name: Setup wxWidgets for Win64 gui
       if: matrix.cl == 'gui'
       env:
-      - CC=x86_64-w64-mingw32-gcc
-      - CXX=x86_64-w64-mingw32-g++
+        CC=x86_64-w64-mingw32-gcc
+        CXX=x86_64-w64-mingw32-g++
       shell: cmd
       run: |
         echo $PATH
