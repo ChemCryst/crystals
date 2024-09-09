@@ -124,9 +124,9 @@ jobs:
       if: ${{ steps.cache-wxlibs.outputs.cache-hit != 'true' && matrix.cl == 'gui' }}
       shell: cmd
       run: |
-        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.4/wxMSW-3.1.4_vc14x_x64_Dev.7z > dev.7z
-        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.4/wxWidgets-3.1.4-headers.7z > head.7z
-        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.4/wxMSW-3.1.4_vc14x_x64_ReleaseDLL.7z > rel.7Z
+        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.6/wxMSW-3.2.6_vc14x_x64_Dev.7z > dev.7z
+        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.6/wxWidgets-3.2.6-headers.7z > head.7z
+        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.6/wxMSW-3.2.6_vc14x_x64_ReleaseDLL.7z > rel.7Z
         7z x dev.7z -owx -y
         7z x head.7z -owx -y
         7z x rel.7z -owx -y
