@@ -182,10 +182,10 @@ jobs:
         echo Commit SHA: %CRYSVNVER% Version: ${{ steps.version.outputs.major }}.${{ steps.version.outputs.minor }}.${{ steps.version.outputs.patch }}
         cmake .. -G"NMake Makefiles" -DuseGUI=${{ matrix.guiflag }} -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }} -DuseCustomMKL=yes -DusePY=no -DCMAKE_EXPORT_COMPILE_COMMANDS=on
         nmake || exit /b %ERRORLEVEL%
-        copy ..\wx\lib\vc14x_x64_dll\wxmsw314u_stc_vc14x_x64.dll . 
-        copy ..\wx\lib\vc14x_x64_dll\wxmsw314u_core_vc14x_x64.dll .
-        copy ..\wx\lib\vc14x_x64_dll\wxmsw314u_gl_vc14x_x64.dll . 
-        copy ..\wx\lib\vc14x_x64_dll\wxbase314u_vc14x_x64.dll .
+        copy ..\wx\lib\vc14x_x64_dll\wxmsw32u_stc_vc14x_x64.dll . 
+        copy ..\wx\lib\vc14x_x64_dll\wxmsw32u_core_vc14x_x64.dll .
+        copy ..\wx\lib\vc14x_x64_dll\wxmsw32u_gl_vc14x_x64.dll . 
+        copy ..\wx\lib\vc14x_x64_dll\wxbase32u_vc14x_x64.dll .
         SET COMMAND=where libifcoremd.dll
         FOR /F "delims=" %%A IN ('%COMMAND%') DO (
             SET TEMPVAR=%%A
