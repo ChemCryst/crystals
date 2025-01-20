@@ -52,7 +52,7 @@ jobs:
         sudo apt-key adv --fetch-keys https://repos.codelite.org/CodeLite.asc
         sudo apt-add-repository 'deb https://repos.codelite.org/wx3.1.4/ubuntu/ focal universe'
         sudo apt-get update
-        sudo apt-get install -y libwxbase3.1-0-unofficial libwxbase3.1-dev libwxgtk3.1-0-unofficial libwxgtk3.1-dev wx3.1gtk2-headers wx-common libwxgtk-media3.1-0-unofficial libwxgtk-media3.1-dev libwxbase3.1-0-unofficial-dbg libwxgtk3.1-0-unofficial-dbg libwxgtk-media3.1-0-unofficial-dbg wx3.1-i18n 
+        sudo apt install libwxgtk3.2-dev
 
     - name: Create build folder
       run: mkdir ci
