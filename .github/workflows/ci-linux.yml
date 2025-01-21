@@ -91,7 +91,7 @@ jobs:
         perl ../editor/filepp.pl -ds -w -o diffin2.tst -DTESTLINUX diffin2.tss
         perl ../editor/filepp.pl -ds -w -o diffin3.tst -DTESTLINUX diffin3.tss
         perl ../editor/filepp.pl -ds -w -o shelx2cry.tst -DTESTLINUX shelx2cry.tss
-        ${{ matrix.fbrunner }} perl testsuite.pl ${{ matrix.testoption }}
+        ${{ matrix.fbrunner }} perl testsuite.pl -l ${{ matrix.testoption }}
         cd ../bits/shelx2cry
         ln -s ../../ci/shelx2cry shelx2cry
         cd regressions_tests
