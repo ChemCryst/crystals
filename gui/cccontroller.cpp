@@ -625,6 +625,7 @@
 #include    <sstream>
 #include    <deque>
 #include    <algorithm>
+#include <stdint.h>
 using namespace std;
 
 #include    "crconstants.h"
