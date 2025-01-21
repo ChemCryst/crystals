@@ -7,7 +7,7 @@
 //   Filename:  CcLock.cpp
 //   Authors:   Richard Cooper 
 //   Created:   9.5.2001 10:12am
-
+#include <stdint.h>
 #include    "crystalsinterface.h"
 
 #ifdef __GIL__
