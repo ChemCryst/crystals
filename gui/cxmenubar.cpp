@@ -7,6 +7,8 @@
 #include    "crystalsinterface.h"
 #include    <string>
 #include    <sstream>
+#include <stdint.h>
+
 using namespace std;
 #include    "cccontroller.h"
 #include    "crmenu.h"

@@ -140,6 +140,7 @@
 #include    "crweb.h"
 #include    <string>
 #include    <sstream>
+#include <stdint.h>
 
 #ifndef CRY_OSWIN32
   #include "wincrys.xpm"
