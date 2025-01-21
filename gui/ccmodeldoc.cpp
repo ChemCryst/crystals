@@ -220,6 +220,7 @@
 #include <sstream>
 #include <algorithm>
 #include <iomanip>
+#include <stdint.h>
 using namespace std;
 
 list<CcModelDoc*> CcModelDoc::sm_ModelDocList;
