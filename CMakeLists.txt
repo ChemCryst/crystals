@@ -340,6 +340,9 @@ IF (NOT CRYSVNVER)  # not set
         # `:` is a special character in crystals.srt
         STRING(REPLACE ":" "%" CRYSVNVER "${CRYSVNVER}")
         STRING(SUBSTRING "${CRYSVNVER}" 0 8 CRYSVNVER)
+        if ( "${CRYSVNVER}" STREQUAL "" )   # svnversion command failed
+           SET ( CRYSVNVER "0000" )
+        endif()
     ELSE ()
         SET (CRYSVNVER "0000")
     ENDIF ()
