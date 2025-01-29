@@ -100,6 +100,9 @@ GET_FILENAME_COMPONENT (Fortran_COMPILER_NAME "${CMAKE_Fortran_COMPILER}" NAME)
 if ((Fortran_COMPILER_NAME MATCHES "ifort") OR (Fortran_COMPILER_NAME MATCHES "ifort.exe")) # ifort (untested)
     message(WARNING "Using Intel Fortran compiler.")
     SET (IFORT_COMPILER 1)
+elseif((Fortran_COMPILER_NAME MATCHES "ifx") OR (Fortran_COMPILER_NAME MATCHES "ifx.exe"))
+    message(WARNING "Using Intel IFX compiler.")
+    SET (IFX_COMPILER 1)
 endif()
 
 
@@ -261,6 +264,8 @@ endif()
 if ( WIN32 )
     add_definitions(-DCRY_OSWIN32)
     if ( IFORT_COMPILER )
+        add_definitions(-D__INW__)
+    elseif ( IFX_COMPILER )
         add_definitions(-D__INW__)
     else ()
         add_definitions(-D__MIN__)
@@ -443,6 +448,35 @@ ELSEIF ( IFORT_COMPILER ) # ifort (untested)
 	include_directories(gui)
 
 
+ELSEIF ( IFX_COMPILER ) # ifx 
+
+
+	SET (CMAKE_Fortran_FLAGS_RELEASE "-O3 -fpp -MD /heap-arrays:8 -Qdiag-disable:8291 -traceback -QaxSSE2")
+	SET (CMAKE_Fortran_FLAGS_DEBUG   "-check:all -MDd /heap-arrays:8 -debug:all -Qtrapuv -fpe0 -fpp -warn:nofileopt -Qdiag-disable:8291 -Qdiag-disable:8290 -check:format -check:overflow -check:pointers -check:noarg_temp_created -check:uninit -traceback -check:nooutput_conversion")
+
+	SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}  /O2  /EHs /W3 /Oy- ")
+	SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /EHs /W3 /Oy- ")
+	SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}  /O2 /EHs /W3 /Oy- ")
+	SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}  /EHs /W3 /Oy- ")
+
+	add_definitions(-DWIN32)
+	add_definitions(-DWXUSINGDLL)
+	add_definitions(-D_WINDOWS)
+	add_definitions(-D_UNICODE)
+	add_definitions(-D__WXMSW__)
+	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+
+	set(CMAKE_CXX_LINK_EXECUTABLE "ifx <OBJECTS>  -o <TARGET> <LINK_LIBRARIES> /link <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS>")
+
+	add_definitions(-DCRYSVNVER=${CRYSVNVER})
+
+    IF(CMAKE_BUILD_TYPE MATCHES Debug)
+		add_definitions(-DDEBUG)
+	else()
+		add_definitions(-DNDEBUG)
+	endif()
+
+	include_directories(gui)
 
 
 ELSEIF (Fortran_COMPILER_NAME MATCHES "g77")   # g77
@@ -717,6 +751,10 @@ endif()
 
 
 IF (IFORT_COMPILER)
+    SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_FORTINTEL)
+ENDIF()
+
+IF (IFX_COMPILER)
     SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_FORTINTEL)
 ENDIF()
 
