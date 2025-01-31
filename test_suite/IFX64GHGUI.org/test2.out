@@ -3347,7 +3347,7 @@ All cycle   Rw                    0.0            44.           0.10E+03
 
 180.0 degree rotation about   1.  0.  0. direct lattice direction: 
 [   1.000    0.000    0.000]
-[   0.000   -1.000    0.000]
+[   0.000   -1.000   -0.000]
 [  -1.004    0.000   -1.000]
 Figure of merit =   0.64 ***********
 No reflections omitted
@@ -3391,7 +3391,7 @@ value in the case of a highly skew unit cell
 
 180.0 degree rotation about  -2.  0.  1. reciprocal lattice direction: 
 [   1.001    0.000    0.002]
-[   0.000   -1.000   -0.000]
+[   0.000   -1.000    0.000]
 [  -1.000    0.000   -1.001]
 Figure of merit =   0.87 ***********
 No reflections omitted
@@ -37983,7 +37983,7 @@ The slope and correlation coefficient should be small
      /FO/ RANGE  No. of data     </Fo/>      </Fc/>     <Delta**2>     <W*Delta**2>    R(%)   RW(%)  LOG(<W*DELTA**2>)
 
           0.00                                                                                                . 
-                        5        -1.65         0.6       0.202E+02       0.340E+01    84.45  105.14           .*     
+                        5        -1.65         0.6       0.202E+02       0.340E+01    84.45  105.13           .*     
           0.79                                                                                                . 
 [17]                        22         1.33         2.1       0.26 E+02       0.3 E+01    59.    77.            .*     
           3.16                                                                                                . 
