@@ -13,7 +13,7 @@ on: [push]
 env:
   WINDOWS_IFX_INSTALLER: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/1269b58a-590e-49b1-9f53-beebe171ac56/intel-fortran-compiler-2025.0.4.19_offline.exe
   WINDOWS_MKL_INSTALLER: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/bcb40b43-4ca9-4725-9749-4f9fc1e9b97f/intel-onemkl-2025.0.1.15_offline.exe
-  WXVER: 3.2.4
+  WXVER: 3.2.5
 
 jobs:
   build:
