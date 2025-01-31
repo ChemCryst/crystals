@@ -53,7 +53,7 @@ jobs:
 #      uses: microsoft/setup-msbuild@v1.0.2
 
     - name: install oneapi
-      shell: bash
+      shell: cmd
       if: steps.cache-install-oneapi.outputs.cache-hit != 'true'
       run: |
         curl.exe --output mklinst.exe --url %WINDOWS_MKL_INSTALLER% --retry 5 --retry-delay 5
