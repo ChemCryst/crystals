@@ -94,9 +94,9 @@ jobs:
       uses: actions/cache@v4
       with:
         path: ./wx  # what we cache: the folder
-        key: ${{ runner.os }}-wxlibs${{WXVER}}
+        key: ${{ runner.os }}-wxlibs${{env.WXVER}}
         restore-keys: |
-          ${{ runner.os }}-wxlibs${{WXVER}}
+          ${{ runner.os }}-wxlibs${{env.WXVER}}
       if: matrix.cl == 'gui'
           
     - name: Download wxWidgets for Win64 gui
