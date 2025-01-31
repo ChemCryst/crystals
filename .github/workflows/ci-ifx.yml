@@ -244,16 +244,16 @@ jobs:
 # Go
       run: |
         set CRYSDIR=.\,..\ci\
-        set COMPCODE=INW64GH${{ matrix.testsuffix }}
+        set COMPCODE=IFX64GH${{ matrix.testsuffix }}
         set OMP_NUM_THREADS=1
         set PATH=..\wx\lib\vc14x_x64_dll;%path%
         for /f "tokens=* usebackq" %%f in (`dir /b "C:\Program Files (x86)\Intel\oneAPI\compiler\" ^| findstr /V latest ^| sort`) do @set "LATEST_VERSION=%%f"
         call "C:\Program Files (x86)\Intel\oneAPI\setvars.bat"
         echo PATH is %PATH%
         echo CRYSDIR is %CRYSDIR%
-        ren INW64GH${{ matrix.testsuffix }}.org safe.dir
+        ren IFX64GH${{ matrix.testsuffix }}.org safe.dir
         for /d %%G in ("*.org") do rd /s /q "%%~G"
-        ren safe.dir INW64GH${{ matrix.testsuffix }}.org
+        ren safe.dir IFX64GH${{ matrix.testsuffix }}.org
         ${{ matrix.removeguitst }}
         mkdir script
         echo "%SCRIPT NONE" > script\\tipauto.scp
@@ -275,15 +275,15 @@ jobs:
       run: |
         dir
         echo "testfail=true" >> $GITHUB_ENV
-        del /q INW64GH${{ matrix.testsuffix }}.org
-        copy *.out INW64GH${{ matrix.testsuffix }}.org
+        del /q IFX64GH${{ matrix.testsuffix }}.org
+        copy *.out IFX64GH${{ matrix.testsuffix }}.org
         del /q *.*
 
     - name: Upload outputs if failures
       uses: actions/upload-artifact@v4
       if:  failure()
       with:
-        name: test-outputs-win64-${{ matrix.cl }}
+        name: test-outputs-win64-ifx-${{ matrix.cl }}-${{matrix.release}}
         path: test_suite
 
 # Could be useful for debugging
