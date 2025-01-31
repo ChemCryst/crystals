@@ -52,6 +52,13 @@ jobs:
 #    - name: Add msbuild to PATH
 #      uses: microsoft/setup-msbuild@v1.0.2
 
+    - name: cache install oneapi
+      id: cache-install-oneapi
+      uses: actions/cache@v4
+      with:
+        path: C:\Program Files (x86)\Intel\oneAPI
+        key: install-${{ env.WINDOWS_IFX_INSTALLER }}-${{ env.WINDOWS_MKL_INSTALLER }}-${{ hashFiles('**/bin/cache_exclude_windows.sh') }}
+
     - name: install oneapi
       shell: cmd
       if: steps.cache-install-oneapi.outputs.cache-hit != 'true'
@@ -64,6 +71,11 @@ jobs:
         del ifxinst.exe
         mkl_extracted\bootstrapper.exe -s --action install --eula=accept -p=NEED_VS2017_INTEGRATION=0 -p=NEED_VS2019_INTEGRATION=0 -p=NEED_VS2022_INTEGRATION=0 --log-dir=.
         ifx_extracted\bootstrapper.exe -s --action install --eula=accept -p=NEED_VS2017_INTEGRATION=0 -p=NEED_VS2019_INTEGRATION=0 -p=NEED_VS2022_INTEGRATION=0 --log-dir=.
+
+    - name: exclude unused files from cache oneapi
+      if: steps.cache-install-oneapi.outputs.cache-hit != 'true'
+      shell: bash
+      run: bin/cache_exclude_windows.sh
 
     - name: Upload outputs if install fail
       uses: actions/upload-artifact@v4
@@ -125,7 +137,7 @@ jobs:
         for /f "tokens=* usebackq" %%f in (`dir /b "C:\Program Files (x86)\Intel\oneAPI\compiler\" ^| findstr /V latest ^| sort`) do @set "LATEST_VERSION=%%f"
         xcopy /I/E/Y "C:\Program Files (x86)\Intel\oneAPI\mkl\%LATEST_VERSION%\share\mkl\tools\builder" builder
         call "C:\Program Files (x86)\Intel\oneAPI\setvars.bat"
-        set FC=ifort
+        set FC=ifx
         pushd builder
         nmake libintel64 export="..\..\build\mkllibs.txt"
         popd
@@ -142,7 +154,7 @@ jobs:
       run: |
         for /f "tokens=* usebackq" %%f in (`dir /b "C:\Program Files (x86)\Intel\oneAPI\compiler\" ^| findstr /V latest ^| sort`) do @set "LATEST_VERSION=%%f"
         call "C:\Program Files (x86)\Intel\oneAPI\setvars.bat"
-        set FC=ifort
+        set FC=ifx
         set CRYSVNVER=${{ steps.vars.outputs.sha_short }}
  
         echo Commit SHA: %CRYSVNVER% Version: ${{ steps.version.outputs.major }}.${{ steps.version.outputs.minor }}.${{ steps.version.outputs.patch }}
