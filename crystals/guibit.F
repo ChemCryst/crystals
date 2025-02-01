@@ -1144,10 +1144,17 @@ C Filter out tiny axes
      1                             * SQRT(ABS(TENSOR(KJ,KJ)))
      2                             * GSCALE
      3                             * 1.5
+                     AXET(KI,KJ) =   ROTN(KI,KJ)
+     1                             * SQRT(ABS(WSPAC(KJ))
+     2                             * GSCALE
+     3                             * 1.5
                    END DO
                  END DO
 
-c          WRITE(99,'(9(1X,F7.4))') ((AXES(KI,KJ)/GSCALE,KI=1,3),KJ=1,3)
+      WRITE(99,'(A,9(1X,F7.4))')
+	 1 'axs',((AXES(KI,KJ)/GSCALE,KI=1,3),KJ=1,3)
+      WRITE(99,'(A,9(1X,F7.4))')
+	 2 'axt',((AXET(KI,KJ)/GSCALE,KI=1,3),KJ=1,3)
 c          WRITE(99,'(9(1X,F7.4))') (GUMTRX(KI),KI=19,27)
 
 C Work out UEQUIV:
