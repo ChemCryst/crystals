@@ -632,7 +632,7 @@ c         loaded by the calling routine.
       DIMENSION JDEV(4)
       DIMENSION CARD(20)
       REAL TENSOR(3,3), TEMPOR(3,3), ROTN(3,3), AXES(3,3)
-      REAL TENSOS(3,3), ROTM(3,3)
+      REAL TENSOS(3,3), ROTM(3,3), AXET(3,3)
       DIMENSION WSPAC(3)
       CHARACTER CCOL*6, WCLINE*80, CFILEN*256, CATTYP*4,CLAB*32,CLAB2*32
       character *80 ctext(4)
@@ -1152,9 +1152,9 @@ C Filter out tiny axes
                  END DO
 
       WRITE(99,'(A,9(1X,F7.4))')
-	 1 'axs',((AXES(KI,KJ)/GSCALE,KI=1,3),KJ=1,3)
+     1 'axs',((AXES(KI,KJ)/GSCALE,KI=1,3),KJ=1,3)
       WRITE(99,'(A,9(1X,F7.4))')
-	 2 'axt',((AXET(KI,KJ)/GSCALE,KI=1,3),KJ=1,3)
+     2 'axt',((AXET(KI,KJ)/GSCALE,KI=1,3),KJ=1,3)
 c          WRITE(99,'(9(1X,F7.4))') (GUMTRX(KI),KI=19,27)
 
 C Work out UEQUIV:
