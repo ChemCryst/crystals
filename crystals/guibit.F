@@ -632,6 +632,7 @@ c         loaded by the calling routine.
       DIMENSION JDEV(4)
       DIMENSION CARD(20)
       REAL TENSOR(3,3), TEMPOR(3,3), ROTN(3,3), AXES(3,3)
+      REAL TENSOS(3,3), ROTM(3,3)
       DIMENSION WSPAC(3,3)
       CHARACTER CCOL*6, WCLINE*80, CFILEN*256, CATTYP*4,CLAB*32,CLAB2*32
       character *80 ctext(4)
@@ -1087,6 +1088,16 @@ C Colour info still not found, use and cache default values:
                  TENSOR(3,2) = TENSOR(2,3)
                  TENSOR(3,1) = TENSOR(1,3)
                  TENSOR(2,1) = TENSOR(1,2)
+
+                 TENSOS(1,1) = STORE(I5+7)
+                 TENSOS(2,2) = STORE(I5+8)
+                 TENSOS(3,3) = STORE(I5+9)
+                 TENSOS(2,3) = STORE(I5+10)
+                 TENSOS(1,3) = STORE(I5+11)
+                 TENSOS(1,2) = STORE(I5+12)
+                 TENSOS(3,2) = TENSOR(2,3)
+                 TENSOS(3,1) = TENSOR(1,3)
+                 TENSOS(2,1) = TENSOR(1,2)
       
 c                WRITE(99,'(A)') 'CRY: TENSOR, ORTHTENSOR, AXES, ELOR: '
 c                WRITE(99,'(9(1X,F7.4))') ((TENSOR(KI,KJ),KI=1,3),KJ=1,3)
@@ -1094,7 +1105,10 @@ c                WRITE(99,'(9(1X,F7.4))') ((TENSOR(KI,KJ),KI=1,3),KJ=1,3)
                  CALL XMLTMM(GUMTRX(19), TENSOR,     TEMPOR,3,3,3)
                  CALL XMLTMT(TEMPOR,     GUMTRX(19), TENSOR,3,3,3)
 
-C We now have an orthogonal tensor in TENSOR(3,3).
+                 CALL XMLTMM(GUMTRX(19), TENSOS,     TEMPOR,3,3,3)
+                 CALL XMLTMT(TEMPOR,     GUMTRX(19), TENSOS,3,3,3)
+
+C We now have an orthogonal tensor in TENSOR(3,3) and TENSOS
 
            WRITE(99,'(A)') 'Input orth tensor'
            WRITE(99,'(9(1X,F7.4))') ((TENSOR(KI,KJ),KI=1,3),KJ=1,3)
@@ -1106,11 +1120,11 @@ C We now have an orthogonal tensor in TENSOR(3,3).
          WRITE(99,'(A)') 'Zeigen output ROTN tensor'
          WRITE(99,'(9(1X,F7.4))') ((ROTN(KI,KJ),KI=1,3),KJ=1,3)
 
-		 CALL XMXEGV(TENSOR, WSPAC, ROTN)
+		 CALL XMXEGV(TENSOS, WSPAC, ROTM)
          WRITE(99,'(A)') 'Zeigen output orth tensor'
-         WRITE(99,'(9(1X,F7.4))') ((TENSOR(KI,KJ),KI=1,3),KJ=1,3)
+         WRITE(99,'(9(1X,F7.4))') ((TENSOS(KI,KJ),KI=1,3),KJ=1,3)
          WRITE(99,'(A)') 'Zeigen output ROTN tensor'
-         WRITE(99,'(9(1X,F7.4))') ((ROTN(KI,KJ),KI=1,3),KJ=1,3)
+         WRITE(99,'(9(1X,F7.4))') ((ROTM(KI,KJ),KI=1,3),KJ=1,3)
 		 
 #endif
 
