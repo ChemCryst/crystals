@@ -1145,7 +1145,7 @@ C Filter out tiny axes
      2                             * GSCALE
      3                             * 1.5
                      AXET(KI,KJ) =   ROTN(KI,KJ)
-     1                             * SQRT(ABS(WSPAC(KJ))
+     1                             * SQRT(ABS(WSPAC(KJ)))
      2                             * GSCALE
      3                             * 1.5
                    END DO
