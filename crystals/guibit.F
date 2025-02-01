@@ -1096,8 +1096,8 @@ c                WRITE(99,'(9(1X,F7.4))') ((TENSOR(KI,KJ),KI=1,3),KJ=1,3)
 
 C We now have an orthogonal tensor in TENSOR(3,3).
 
-                 WRITE(99,'(A)') 'Input orth tensor'
-                 WRITE(99,'(9(1X,F7.4))') ((TENSOR(KI,KJ),KI=1,3),KJ=1,3)
+           WRITE(99,'(A)') 'Input orth tensor'
+           WRITE(99,'(9(1X,F7.4))') ((TENSOR(KI,KJ),KI=1,3),KJ=1,3)
 
 #ifdef CRY_GUI
          CALL ZEIGEN(TENSOR,ROTN)
