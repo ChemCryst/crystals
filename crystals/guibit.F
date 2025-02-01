@@ -1120,10 +1120,10 @@ C We now have an orthogonal tensor in TENSOR(3,3) and TENSOS
          WRITE(99,'(A)') 'Zeigen output ROTN tensor'
          WRITE(99,'(9(1X,F7.4))') ((ROTN(KI,KJ),KI=1,3),KJ=1,3)
 
-		 CALL XMXEGV(TENSOS, WSPAC, ROTM)
-         WRITE(99,'(A)') 'Zeigen output orth tensor'
+		 CALL XMXEGV(TENSOS, ROTM, WSPAC)
+         WRITE(99,'(A)') 'xmxegv output orth tensor'
          WRITE(99,'(9(1X,F7.4))') ((TENSOS(KI,KJ),KI=1,3),KJ=1,3)
-         WRITE(99,'(A)') 'Zeigen output ROTN tensor'
+         WRITE(99,'(A)') 'xmxegv output ROTM tensor'
          WRITE(99,'(9(1X,F7.4))') ((ROTM(KI,KJ),KI=1,3),KJ=1,3)
 		 
 #endif
