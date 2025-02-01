@@ -632,6 +632,7 @@ c         loaded by the calling routine.
       DIMENSION JDEV(4)
       DIMENSION CARD(20)
       REAL TENSOR(3,3), TEMPOR(3,3), ROTN(3,3), AXES(3,3)
+      DIMENSION WSPAC(3,3)
       CHARACTER CCOL*6, WCLINE*80, CFILEN*256, CATTYP*4,CLAB*32,CLAB2*32
       character *80 ctext(4)
       CHARACTER*5 CWT 
@@ -1095,10 +1096,22 @@ c                WRITE(99,'(9(1X,F7.4))') ((TENSOR(KI,KJ),KI=1,3),KJ=1,3)
 
 C We now have an orthogonal tensor in TENSOR(3,3).
 
-c                WRITE(99,'(9(1X,F7.4))') ((TENSOR(KI,KJ),KI=1,3),KJ=1,3)
+                 WRITE(99,'(A)') 'Input orth tensor'
+                 WRITE(99,'(9(1X,F7.4))') ((TENSOR(KI,KJ),KI=1,3),KJ=1,3)
 
 #ifdef CRY_GUI
          CALL ZEIGEN(TENSOR,ROTN)
+         WRITE(99,'(A)') 'Zeigen output orth tensor'
+         WRITE(99,'(9(1X,F7.4))') ((TENSOR(KI,KJ),KI=1,3),KJ=1,3)
+         WRITE(99,'(A)') 'Zeigen output ROTN tensor'
+         WRITE(99,'(9(1X,F7.4))') ((ROTN(KI,KJ),KI=1,3),KJ=1,3)
+
+		 CALL XMXEGV(TENSOR, WSPAC, ROTN)
+         WRITE(99,'(A)') 'Zeigen output orth tensor'
+         WRITE(99,'(9(1X,F7.4))') ((TENSOR(KI,KJ),KI=1,3),KJ=1,3)
+         WRITE(99,'(A)') 'Zeigen output ROTN tensor'
+         WRITE(99,'(9(1X,F7.4))') ((ROTN(KI,KJ),KI=1,3),KJ=1,3)
+		 
 #endif
 
 C Filter out tiny axes
