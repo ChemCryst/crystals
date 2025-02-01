@@ -633,7 +633,7 @@ c         loaded by the calling routine.
       DIMENSION CARD(20)
       REAL TENSOR(3,3), TEMPOR(3,3), ROTN(3,3), AXES(3,3)
       REAL TENSOS(3,3), ROTM(3,3)
-      DIMENSION WSPAC(3,3)
+      DIMENSION WSPAC(3)
       CHARACTER CCOL*6, WCLINE*80, CFILEN*256, CATTYP*4,CLAB*32,CLAB2*32
       character *80 ctext(4)
       CHARACTER*5 CWT 
