@@ -71,6 +71,19 @@ CcModelAtom::CcModelAtom(const string & llabel,int lx1,int ly1,int lz1,
   localmatrix[14]=0.0;
   localmatrix[15]=1.0;
 
+// check for nan values to prevent corrupting the opengl
+  if ( isnan( localmatrix[0] ) ) localmatrix[0] = 0.2f;
+  if ( isnan( localmatrix[1] ) ) localmatrix[1] = 0.0f;
+  if ( isnan( localmatrix[2] ) ) localmatrix[2] = 0.0f;
+
+  if ( isnan( localmatrix[4] ) ) localmatrix[4] = 0.0f;
+  if ( isnan( localmatrix[5] ) ) localmatrix[5] = 0.2f;
+  if ( isnan( localmatrix[6] ) ) localmatrix[6] = 0.0f;
+
+  if ( isnan( localmatrix[8] ) ) localmatrix[8] = 0.0f;
+  if ( isnan( localmatrix[9] ) ) localmatrix[9] = 0.0f;
+  if ( isnan( localmatrix[10] ) ) localmatrix[10] = 0.2f;
+
   switch (m_isflg) {
     case 0: m_sflags = ""; break;
     case 1: m_sflags = "refine X's"; break;
@@ -292,6 +305,16 @@ void CcModelAtom::Render(CcModelStyle *style, bool feedback)
     }
   } else if(style->radius_type == CRTHERMAL) {
     if ( m_IsADP) {
+
+//     ostringstream aaarg;
+//     for ( int i = 0; i<16; i++ ) 
+//     {
+//		  aaarg << localmatrix[i] << ", ";
+//     }
+//
+//     LOGERR ( "ADP " + m_label + aaarg.str() );
+
+
      glMultMatrixf(*&localmatrix);
      gluSphere(sphere, ( 1.0f + (extra / 1000.0f) ), detail,detail);
 
