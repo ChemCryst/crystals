@@ -632,7 +632,8 @@ c         loaded by the calling routine.
       DIMENSION JDEV(4)
       DIMENSION CARD(20)
       REAL TENSOR(3,3), TEMPOR(3,3), ROTN(3,3), AXES(3,3)
-      REAL TENSOS(3,3), ROTM(3,3), AXET(3,3)
+c      REAL TENSOS(3,3), ROTM(3,3), AXET(3,3)
+      REAL ROTM(3,3)
       DIMENSION WSPAC(3)
       CHARACTER CCOL*6, WCLINE*80, CFILEN*256, CATTYP*4,CLAB*32,CLAB2*32
       character *80 ctext(4)
@@ -1074,9 +1075,6 @@ C Colour info still not found, use and cache default values:
 
                UEQUIV = STORE(I5+7)
 
-
-
-
                IF ( NINT(STORE(I5+3)) .EQ. 0 ) THEN
 
                  TENSOR(1,1) = STORE(I5+7)
@@ -1089,15 +1087,15 @@ C Colour info still not found, use and cache default values:
                  TENSOR(3,1) = TENSOR(1,3)
                  TENSOR(2,1) = TENSOR(1,2)
 
-                 TENSOS(1,1) = STORE(I5+7)
-                 TENSOS(2,2) = STORE(I5+8)
-                 TENSOS(3,3) = STORE(I5+9)
-                 TENSOS(2,3) = STORE(I5+10)
-                 TENSOS(1,3) = STORE(I5+11)
-                 TENSOS(1,2) = STORE(I5+12)
-                 TENSOS(3,2) = TENSOR(2,3)
-                 TENSOS(3,1) = TENSOR(1,3)
-                 TENSOS(2,1) = TENSOR(1,2)
+c                 TENSOS(1,1) = STORE(I5+7)
+c                 TENSOS(2,2) = STORE(I5+8)
+c                 TENSOS(3,3) = STORE(I5+9)
+c                 TENSOS(2,3) = STORE(I5+10)
+c                 TENSOS(1,3) = STORE(I5+11)
+c                 TENSOS(1,2) = STORE(I5+12)
+c                 TENSOS(3,2) = TENSOR(2,3)
+c                 TENSOS(3,1) = TENSOR(1,3)
+c                 TENSOS(2,1) = TENSOR(1,2)
       
 c                WRITE(99,'(A)') 'CRY: TENSOR, ORTHTENSOR, AXES, ELOR: '
 c                WRITE(99,'(9(1X,F7.4))') ((TENSOR(KI,KJ),KI=1,3),KJ=1,3)
@@ -1105,45 +1103,51 @@ c                WRITE(99,'(9(1X,F7.4))') ((TENSOR(KI,KJ),KI=1,3),KJ=1,3)
                  CALL XMLTMM(GUMTRX(19), TENSOR,     TEMPOR,3,3,3)
                  CALL XMLTMT(TEMPOR,     GUMTRX(19), TENSOR,3,3,3)
 
-                 CALL XMLTMM(GUMTRX(19), TENSOS,     TEMPOR,3,3,3)
-                 CALL XMLTMT(TEMPOR,     GUMTRX(19), TENSOS,3,3,3)
+c                 CALL XMLTMM(GUMTRX(19), TENSOS,     TEMPOR,3,3,3)
+c                 CALL XMLTMT(TEMPOR,     GUMTRX(19), TENSOS,3,3,3)
 
 C We now have an orthogonal tensor in TENSOR(3,3) and TENSOS
 
-           WRITE(99,'(A)') 'Input orth tensor'
-           WRITE(99,'(9(1X,F7.4))') ((TENSOR(KI,KJ),KI=1,3),KJ=1,3)
+c           WRITE(99,'(A)') 'Input orth tensor'
+c           WRITE(99,'(9(1X,F7.4))') ((TENSOR(KI,KJ),KI=1,3),KJ=1,3)
 
 #ifdef CRY_GUI
-         CALL ZEIGEN(TENSOR,ROTN)
-         WRITE(99,'(A)') 'Zeigen output orth tensor'
-         WRITE(99,'(9(1X,F7.4))') ((TENSOR(KI,KJ),KI=1,3),KJ=1,3)
-         WRITE(99,'(A)') 'Zeigen output ROTN tensor'
-         WRITE(99,'(9(1X,F7.4))') ((ROTN(KI,KJ),KI=1,3),KJ=1,3)
+c         CALL ZEIGEN(TENSOR,ROTN)
+c         WRITE(99,'(A)') 'Zeigen output orth tensor'
+c         WRITE(99,'(9(1X,F7.4))') ((TENSOR(KI,KJ),KI=1,3),KJ=1,3)
+c         WRITE(99,'(A)') 'Zeigen output ROTN tensor'
+c         WRITE(99,'(9(1X,F7.4))') ((ROTN(KI,KJ),KI=1,3),KJ=1,3)
 
-		 CALL XMXEGV(TENSOS, ROTM, WSPAC)
-         WRITE(99,'(A)') 'xmxegv output orth tensor'
-         WRITE(99,'(9(1X,F7.4))') ((TENSOS(KI,KJ),KI=1,3),KJ=1,3)
-         WRITE(99,'(A)') 'xmxegv output ROTM tensor'
-         WRITE(99,'(9(1X,F7.4))') ((ROTM(KI,KJ),KI=1,3),KJ=1,3)
-         WRITE(99,'(A)') 'xmxegv output eigs '
-         WRITE(99,'(9(1X,F7.4))') (WSPAC(KI),KI=1,3)
+		 CALL XMXEGV(TENSOR, ROTM, WSPAC)
+c         WRITE(99,'(A)') 'xmxegv output orth tensor'
+c         WRITE(99,'(9(1X,F7.4))') ((TENSOS(KI,KJ),KI=1,3),KJ=1,3)
+c         WRITE(99,'(A)') 'xmxegv output ROTM tensor'
+c         WRITE(99,'(9(1X,F7.4))') ((ROTM(KI,KJ),KI=1,3),KJ=1,3)
+c         WRITE(99,'(A)') 'xmxegv output eigs '
+c         WRITE(99,'(9(1X,F7.4))') (WSPAC(KI),KI=1,3)
 		 
 #endif
 
 C Filter out tiny axes
-                 TENSOR(1,1) = MAX ( TENSOR(1,1), TENSOR(2,2)/100 )
-                 TENSOR(1,1) = MAX ( TENSOR(1,1), TENSOR(3,3)/100 )
-                 TENSOR(2,2) = MAX ( TENSOR(2,2), TENSOR(1,1)/100 )
-                 TENSOR(2,2) = MAX ( TENSOR(2,2), TENSOR(3,3)/100 )
-                 TENSOR(3,3) = MAX ( TENSOR(3,3), TENSOR(1,1)/100 )
-                 TENSOR(3,3) = MAX ( TENSOR(3,3), TENSOR(2,2)/100 )
+                 WSPAC(1) = MAX( WSPAC(1), WSPAC(2)/100)
+                 WSPAC(1) = MAX( WSPAC(1), WSPAC(3)/100)
+                 WSPAC(2) = MAX( WSPAC(2), WSPAC(1)/100)
+                 WSPAC(2) = MAX( WSPAC(2), WSPAC(3)/100)
+                 WSPAC(3) = MAX( WSPAC(3), WSPAC(1)/100)
+                 WSPAC(3) = MAX( WSPAC(3), WSPAC(2)/100)
+c                 TENSOR(1,1) = MAX ( TENSOR(1,1), TENSOR(2,2)/100 )
+c                 TENSOR(1,1) = MAX ( TENSOR(1,1), TENSOR(3,3)/100 )
+c                 TENSOR(2,2) = MAX ( TENSOR(2,2), TENSOR(1,1)/100 )
+c                 TENSOR(2,2) = MAX ( TENSOR(2,2), TENSOR(3,3)/100 )
+c                 TENSOR(3,3) = MAX ( TENSOR(3,3), TENSOR(1,1)/100 )
+c                 TENSOR(3,3) = MAX ( TENSOR(3,3), TENSOR(2,2)/100 )
             
                  DO KI=1,3
                    DO KJ=1,3
-                     AXET(KI,KJ) =   ROTN(KJ,KI)
-     1                             * SQRT(ABS(TENSOR(KJ,KJ)))
-     2                             * GSCALE
-     3                             * 1.5
+c                     AXET(KI,KJ) =   ROTN(KJ,KI)
+c     1                             * SQRT(ABS(TENSOR(KJ,KJ)))
+c     2                             * GSCALE
+c     3                             * 1.5
                      AXES(KI,KJ) =   ROTM(KI,KJ)
      1                             * SQRT(ABS(WSPAC(KJ)))
      2                             * GSCALE
@@ -1151,10 +1155,10 @@ C Filter out tiny axes
                    END DO
                  END DO
 
-      WRITE(99,'(A,9(1X,F7.4))')
-     1 'axs',((AXES(KI,KJ)/GSCALE,KI=1,3),KJ=1,3)
-      WRITE(99,'(A,9(1X,F7.4))')
-     2 'axt',((AXET(KI,KJ)/GSCALE,KI=1,3),KJ=1,3)
+c      WRITE(99,'(A,9(1X,F7.4))')
+c     1 'axs',((AXES(KI,KJ)/GSCALE,KI=1,3),KJ=1,3)
+c      WRITE(99,'(A,9(1X,F7.4))')
+c     2 'axt',((AXET(KI,KJ)/GSCALE,KI=1,3),KJ=1,3)
 c          WRITE(99,'(9(1X,F7.4))') (GUMTRX(KI),KI=19,27)
 
 C Work out UEQUIV:

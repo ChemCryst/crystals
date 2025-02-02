@@ -306,13 +306,13 @@ void CcModelAtom::Render(CcModelStyle *style, bool feedback)
   } else if(style->radius_type == CRTHERMAL) {
     if ( m_IsADP) {
 
-     ostringstream aaarg;
-     for ( int i = 0; i<16; i++ ) 
-     {
-		  aaarg << localmatrix[i] << ", ";
-     }
-
-     LOGERR ( "ADP " + m_label + aaarg.str() );
+//     ostringstream aaarg;
+//     for ( int i = 0; i<16; i++ ) 
+//     {
+//		  aaarg << localmatrix[i] << ", ";
+//     }
+//
+//     LOGERR ( "ADP " + m_label + aaarg.str() );
 
 
      glMultMatrixf(*&localmatrix);
