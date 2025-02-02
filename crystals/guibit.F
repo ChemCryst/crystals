@@ -1140,11 +1140,11 @@ C Filter out tiny axes
             
                  DO KI=1,3
                    DO KJ=1,3
-                     AXES(KI,KJ) =   ROTN(KJ,KI)
+                     AXET(KI,KJ) =   ROTN(KJ,KI)
      1                             * SQRT(ABS(TENSOR(KJ,KJ)))
      2                             * GSCALE
      3                             * 1.5
-                     AXET(KI,KJ) =   ROTM(KI,KJ)
+                     AXES(KI,KJ) =   ROTM(KI,KJ)
      1                             * SQRT(ABS(WSPAC(KJ)))
      2                             * GSCALE
      3                             * 1.5
