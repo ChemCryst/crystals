@@ -1144,7 +1144,7 @@ C Filter out tiny axes
      1                             * SQRT(ABS(TENSOR(KJ,KJ)))
      2                             * GSCALE
      3                             * 1.5
-                     AXET(KI,KJ) =   ROTN(KI,KJ)
+                     AXET(KI,KJ) =   ROTM(KI,KJ)
      1                             * SQRT(ABS(WSPAC(KI)))
      2                             * GSCALE
      3                             * 1.5
