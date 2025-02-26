@@ -393,7 +393,7 @@ C--
       use xiobuf_mod, only: cmon
       use xlxprt_mod, only: nptcur, npttot
       implicit none
-      
+
       integer KMOUSE(5), KCONT(4), KALL(3), KREM(3), KSMILE(3)
       CHARACTER *240 CMOUSE
       integer ICOMMN(IDIMN)
@@ -403,22 +403,22 @@ C--
       integer imouse, jmouse, iskip, istat, j, ja, k , l, limit
       integer lxa, m, mmouse, n, nbrack, nchrrd, nmouse, nxa, nxtcdi
       real t
-      
+
       integer klxrdd
       integer, external :: kstalh, kfndnp, krdpv, kequal
       integer, external :: kcomp, knequl, kbits, kinput, krdndc
       integer, external :: kexist
-      
+
       character(len=size(image)) :: image_text
       character(len=128) :: ctemp
       integer ierror
-      
+
       ! array containing a list of characters. It was equivalenced with iplus &co
       ! but it is incompatible accross different modules
       ! As the variable is read only, just making a copy as replacement
       ! Cannot be initialised here.
-      integer, dimension(10) :: kchar 
-      
+      integer, dimension(10) :: kchar
+
       DATA NXA/9/,LXA/1/
 #ifdef _HOL_
       DATA KMOUSE/1HM ,1HO ,1HU ,1HS ,1HE /
@@ -435,9 +435,9 @@ C--
 #endif
 
       ! set kchar
-      kchar = 
+      kchar =
      1  (/ iplus,minus,ia,islash,iexp,ilb,irb,icomma,iequal,ipoint /)
-      
+
 C
 C----- SET NO MOUSE INPUT YET
       IMOUSE = 0
@@ -497,7 +497,7 @@ C -- IF CARDS HAVE BEEN READ IN PREVIOUSLY THESE MUST BE MOVED NOW
 C -- MOVE PREVIOUS CARDS READ
       I = IADCRD
       IADCRD = KSTALH ( NWCARD )
-      
+
       CALL XMOVE ( STORE(I) , STORE(IADCRD) , NCHRRD )
 C
 1610  CONTINUE
@@ -550,14 +550,14 @@ c     1 itemp=nxtcdi,nxtcdi+lastch/4)
       ! on the fly substitution for the lexical analyzer
       if (kexist(41).gt.0 .and. kexist(5).gt.0) then
         write(ctemp, '("(",I0,"A1)")') size(image)
-        write(image_text, ctemp) image      
+        write(image_text, ctemp) image
         call lexical_preprocessing(image_text, ierror)
         if(ierror<0) then
           istat = -1
           goto 9900
         end if
         read(image_text, ctemp) image
-        
+
         ! This is a bit risky
         ! If for some reason the restraint has been commented out
         ! the type of restraint is changed to rem in list61
@@ -586,7 +586,7 @@ C----- LOOK FOR 'CONT'
             IF (ISKIP .eq. 1) THEN
 C---- DONT INTERPRET IF LAST CARD WAS A REM OR SMILES CARD
                   NC = LASTCH + 1
-                  GOTO 7000            
+                  GOTO 7000
             ENDIF
       ENDIF
 C
@@ -594,7 +594,7 @@ C----- RESET ISKIP TO NON-MESSAGE STATUS
       ISKIP = 0
 C----- INITIALISE THE OPERATOR STATUS
       MA = 0
-      
+
 1750  CONTINUE
 C
 C -- **** ARGUMENT PROCESSING LOOP STARTS HERE ****
@@ -774,7 +774,7 @@ C -- SET RETURN VALUE
       ILAST = IDIRNM
 C -- CHANGE NUMBER FOR 'END' TO 0
       IF ( ILAST .LT. 0 ) ILAST = 0
-      
+
 C
       RETURN
 C
@@ -856,7 +856,7 @@ C
       INCLUDE 'XOPVAL.INC'
 C
       INCLUDE 'QSTORE.INC'
-      
+
       call lexical_list_init()
 C
 C
@@ -987,7 +987,7 @@ C
       INCLUDE 'QSTORE.INC'
 C
 C
-#ifdef _HOL_ 
+#ifdef _HOL_
       DATA NOPS/1/,LOPS/1/,IOPS(1)/4HUNTI/
 #else
       DATA NOPS/1/,LOPS/1/,IOPS(1)/'UNTI'/
@@ -1248,7 +1248,7 @@ C SET UP THE HEADER LINK INFORMATION
 
       IF(KOP(6))1250,1350,1300 ! TEST FOR '(' AFTER THE ATOM NAME
 
-1250  CONTINUE                ! END OF CARD. 
+1250  CONTINUE                ! END OF CARD.
       IF ( KA .GE. 0 ) THEN     ! OK if first or last, otherwise:
           ME = ME + 1             ! ERROR. BACKSPACE ONE ARGUMENT AND RETURN
           MF = MF - LK2
@@ -1517,7 +1517,7 @@ C Count the parts
      2          ( ((ISTORE(I).NE.KHYD).AND.(ISTORE(I).NE.KDET)).AND.
      1            ((J.EQ.3).OR.(J.EQ.7)) ) ) THEN
                CALL PRTGRP ( JPTVAL, JPT, JGR, 1 )
-               IF ( ((JPT .EQ. IPT) .OR. (IPT .EQ. 999 )) .AND. 
+               IF ( ((JPT .EQ. IPT) .OR. (IPT .EQ. 999 )) .AND.
      1          ((JGR .EQ. IGR) .OR. (IGR. EQ. 999 )))NPTTOT=NPTTOT+1
              END IF
            END DO
@@ -1532,7 +1532,7 @@ c           CALL XPRVDU(NCVDU,1,0)
      2          ( ((ISTORE(I).NE.KHYD).AND.(ISTORE(I).NE.KDET)).AND.
      1            ((J.EQ.3).OR.(J.EQ.7)) ) ) THEN
               CALL PRTGRP ( JPTVAL, JPT, JGR, 1 )
-              IF ( ((JPT .EQ. IPT) .OR. (IPT .EQ. 999 )) 
+              IF ( ((JPT .EQ. IPT) .OR. (IPT .EQ. 999 ))
      1       .AND. ((JGR .EQ. IGR) .OR. (IGR. EQ. 999 ))) II=II+1
               IF ( II .GE. NPTCUR ) THEN
                  M5F = I
@@ -2005,7 +2005,7 @@ C
       INCLUDE 'QSTORE.INC'
 C
 C
-#ifdef _HOL_ 
+#ifdef _HOL_
       DATA IOPS(1)/4HUNTI/,NOPS/1/,LOPS/1/,NWOPS/1/
 #else
       DATA IOPS(1)/'UNTI'/,NOPS/1/,LOPS/1/,NWOPS/1/
@@ -2920,7 +2920,7 @@ C
       INCLUDE 'XSSVAL.INC'
       INCLUDE 'XIOBUF.INC'
       INCLUDE 'XCONST.INC'
-      
+
       integer l
 C
       if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
@@ -2948,11 +2948,11 @@ C
 C
       if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN(LN)
-      IN = MIN ( IN, 88-6 ) ! Calls for some continued L16 
+      IN = MIN ( IN, 88-6 ) ! Calls for some continued L16
       IN = MAX ( IN, 0  ) ! records will otherwise fail.
       WRITE ( CMON, 1000) BLANKS(1:IN+6),IN
       CALL XPRVDU(NCEROR, 2,0)
-      IF (ISSPRT .EQ. 0) 
+      IF (ISSPRT .EQ. 0)
      1 WRITE(NCWU,'(A)')TRIM(CMON(1)(3:)),TRIM(CMON(2))
 1000  FORMAT('{E ',A,'*',/,' Error in atom definition at about column',
      1 I5)
@@ -2974,7 +2974,7 @@ ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN(LN)
       WRITE ( CMON, 1000) BLANKS(1:IN+6),IN
       CALL XPRVDU(NCEROR, 2,0)
-      IF (ISSPRT .EQ. 0) 
+      IF (ISSPRT .EQ. 0)
      1 WRITE(NCWU,'(A)')TRIM(CMON(1)(3:)),TRIM(CMON(2))
 1000  FORMAT('{E ',A,'*',/,
      1 ' Compiler requires more core at about column',I5)
@@ -2997,7 +2997,7 @@ ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN(LN)
       WRITE ( CMON, 1000)
       CALL XPRVDU(NCEROR, 1,0)
-      IF (ISSPRT .EQ. 0) 
+      IF (ISSPRT .EQ. 0)
      1 WRITE(NCWU,'(A)')TRIM(CMON(1)(3:))
 1000  FORMAT('{E Processing of the card above has been abandoned')
       LEF=LEF+1
@@ -3018,7 +3018,7 @@ ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN(LN)
       WRITE ( CMON, 1000) BLANKS(1:IN+6),IN
       CALL XPRVDU(NCEROR, 2,0)
-      IF (ISSPRT .EQ. 0) 
+      IF (ISSPRT .EQ. 0)
      1 WRITE(NCWU,'(A)')TRIM(CMON(1)(3:)),TRIM(CMON(2))
 1000  FORMAT('{E ',A,'*',/,' Illegal number at about column',I5)
       LEF=LEF+1
@@ -3039,7 +3039,7 @@ ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN(LN)
       WRITE ( CMON, 1000) BLANKS(1:IN+6),IN
       CALL XPRVDU(NCEROR, 2,0)
-      IF (ISSPRT .EQ. 0) 
+      IF (ISSPRT .EQ. 0)
      1 WRITE(NCWU,'(A)')TRIM(CMON(1)(3:)),TRIM(CMON(2))
 1000  FORMAT('{E ',A,'*',/,' Illegal operator at about column',I5)
       LEF=LEF+1
@@ -3064,7 +3064,7 @@ ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN(LN)
       WRITE ( CMON, 1000) BLANKS(1:IN+6),IN
       CALL XPRVDU(NCEROR, 2,0)
-      IF (ISSPRT .EQ. 0) 
+      IF (ISSPRT .EQ. 0)
      1 WRITE(NCWU,'(A)')TRIM(CMON(1)(3:)),TRIM(CMON(2))
 1000  FORMAT('{E ',A,'*',/,
      1 ' Illegal operand or variable at about column',I5)
@@ -3090,7 +3090,7 @@ ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN(LN)
       WRITE ( CMON, 1000) BLANKS(1:IN+6),IN
       CALL XPRVDU(NCEROR, 2,0)
-      IF (ISSPRT .EQ. 0) 
+      IF (ISSPRT .EQ. 0)
      1 WRITE(NCWU,'(A)')TRIM(CMON(1)(3:)),TRIM(CMON(2))
 1000  FORMAT('{E ',A,'*',/,' An argument is incorrect or has been',
      2 ' omitted at or just after column',I5)
@@ -3112,7 +3112,7 @@ ctemp      if (issmon.ne.1) CALL SETISSMON(0) ! Turn monitoring back on
       CALL XPCLNN(LN)
       WRITE ( CMON, 1000) BLANKS(1:IN+6),OP,IN
       CALL XPRVDU(NCEROR, 2,0)
-      IF (ISSPRT .EQ. 0) 
+      IF (ISSPRT .EQ. 0)
      1 WRITE(NCWU,'(A)')TRIM(CMON(1)(3:)),TRIM(CMON(2))
 1000  FORMAT('{E ',A,'*'/' Operator ''',A1,
      1 ''' not found at about column',I5)
@@ -3149,7 +3149,7 @@ C--PRINT THE INITIAL HEADING
       CALL XPRTCN
       WRITE ( CMON, 1100) IN
       CALL XPRVDU(NCEROR, 1,0)
-      IF (ISSPRT .EQ. 0) 
+      IF (ISSPRT .EQ. 0)
      1 WRITE(NCWU,'(A)')TRIM(CMON(1)(3:))
 1100  FORMAT('{E Print symbolic list ',I5)
 C--LOAD THE NEXT DATA RECORD HEADER
