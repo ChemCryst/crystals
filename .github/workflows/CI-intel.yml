@@ -9,11 +9,11 @@ on: [push]
 # the end of the git commit hash as a unique id to identify this build.
 
 
-env:
-  WINDOWS_BASEKIT_URL:  https://registrationcenter-download.intel.com/akdlm/IRC_NAS/c961e083-5685-4f0b-ada5-c6cf16f561dd/w_BaseKit_p_2023.1.0.47256_offline.exe 
-  WINDOWS_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/2a13d966-fcc5-4a66-9fcc-50603820e0c9/w_HPCKit_p_2023.1.0.46357_offline.exe
-  WINDOWS_MKL_COMPONENTS: intel.oneapi.win.mkl.devel
-  WINDOWS_FORTRAN_COMPONENTS: intel.oneapi.win.ifort-compiler
+#env:
+#  WINDOWS_BASEKIT_URL:  https://registrationcenter-download.intel.com/akdlm/IRC_NAS/c961e083-5685-4f0b-ada5-c6cf16f561dd/w_BaseKit_p_2023.1.0.47256_offline.exe 
+#  WINDOWS_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/2a13d966-fcc5-4a66-9fcc-50603820e0c9/w_HPCKit_p_2023.1.0.46357_offline.exe
+#  WINDOWS_MKL_COMPONENTS: intel.oneapi.win.mkl.devel
+#  WINDOWS_FORTRAN_COMPONENTS: intel.oneapi.win.ifort-compiler
 
 
 jobs:
@@ -83,7 +83,7 @@ jobs:
       id: setup-fortran
       with:
         compiler: intel-classic
-        version: '2023.2'
+        version: '2021.12'
  
 # Install wxWidgets - win GUI only
 
@@ -136,8 +136,6 @@ jobs:
         for /f "tokens=* usebackq" %%f in (`dir /b "C:\Program Files (x86)\Intel\oneAPI\compiler\" ^| findstr /V latest ^| sort`) do @set "LATEST_VERSION=%%f"
         xcopy /I/E/Y "C:\Program Files (x86)\Intel\oneAPI\mkl\%LATEST_VERSION%\tools\builder" builder
         call "C:\Program Files (x86)\Intel\oneAPI\setvars.bat"
-        set FC=ifort
-        pushd builder
         nmake libintel64 export="..\..\build\mkllibs.txt"
         popd
         copy ".\builder\mkl_custom.dll" .
@@ -152,8 +150,6 @@ jobs:
       shell: cmd
       run: |
         for /f "tokens=* usebackq" %%f in (`dir /b "C:\Program Files (x86)\Intel\oneAPI\compiler\" ^| findstr /V latest ^| sort`) do @set "LATEST_VERSION=%%f"
-        call "C:\Program Files (x86)\Intel\oneAPI\setvars.bat"
-        set FC=ifort
         set CRYSVNVER=${{ steps.vars.outputs.sha_short }}
  
         echo Commit SHA: %CRYSVNVER% Version: ${{ steps.version.outputs.major }}.${{ steps.version.outputs.minor }}.${{ steps.version.outputs.patch }}
