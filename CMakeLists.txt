@@ -519,7 +519,7 @@ endforeach()
 # (Keep your executable and target_link_libraries logic, but use modern target-based commands where possible.)
 
 if ( useGUI )
-    include_directories${CMAKE_BINARY_DIR}/crys_fortran)
+    include_directories(${CMAKE_BINARY_DIR}/crys_fortran)
     add_executable(crystals WIN32 ${scpfiles} ${datfiles} ${srtfiles} $<TARGET_OBJECTS:CrystalsUserInterface> ${CMAKE_SOURCE_DIR}/gui/fwrapper_gui.F90 ${CMAKE_SOURCE_DIR}/gui/fwrapperimp_gui.F90 gui/gcrystals.cpp crystals/crystals.F gui/wx.rc)
     add_executable(crystalscl ${scpfiles} ${datfiles} ${srtfiles} crystals/crystals-cl.F ${CMAKE_SOURCE_DIR}/gui/fwrapperimp_cl.F90 )
 
