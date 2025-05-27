@@ -77,36 +77,13 @@ jobs:
     - name: Checkout crystals
       uses: actions/checkout@v4
 
-#    - name: Add msbuild to PATH
-#      uses: microsoft/setup-msbuild@v1.0.2
 
-    - name: cache install oneapi
-      id: cache-install-oneapi
-      uses: actions/cache@v4
+    - name: install intel fortran
+      uses: fortran-lang/setup-fortran@v1
+      id: setup-fortran
       with:
-        path: C:\Program Files (x86)\Intel\oneAPI
-        key: install-${{ env.WINDOWS_BASEKIT_URL }}-${{ env.WINDOWS_MKL_COMPONENTS }}-mkl-${{ env.WINDOWS_HPCKIT_URL }}-${{ env.WINDOWS_FORTRAN_COMPONENTS }}-${{ hashFiles('**/bin/cache_exclude_windows.sh') }}
-
-    - name: install oneapi
-      shell: bash
-      if: steps.cache-install-oneapi.outputs.cache-hit != 'true'
-      run: |
-        bin/install_windows.bat $WINDOWS_BASEKIT_URL $WINDOWS_MKL_COMPONENTS mklinst
-        bin/install_windows.bat $WINDOWS_HPCKIT_URL $WINDOWS_FORTRAN_COMPONENTS ifortinst
-
-    - name: exclude unused files from cache oneapi
-      if: steps.cache-install-oneapi.outputs.cache-hit != 'true'
-      shell: bash
-      run: bin/cache_exclude_windows.sh
-
-    - name: Upload outputs if install fail
-      uses: actions/upload-artifact@v4
-      if:  failure()
-      with:
-        name: install-fail-logs-win64-${{ matrix.cl }}
-        path: .
-
-
+        compiler: intel-classic
+        version: 2021.10
  
 # Install wxWidgets - win GUI only
 
