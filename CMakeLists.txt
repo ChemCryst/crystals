@@ -405,25 +405,19 @@ else()
 endif()
 
 # -------------------- Fortran Compiler Feature Checks --------------------
-if(${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.0)
-    check_fortran_compiler_flag("-std=legacy" _std_legacy_flag)
-    check_fortran_compiler_flag("-fexceptions" _f_exceptions)
-    check_fortran_compiler_flag("-fno-sign-zero" _f_no_signzero)
-    if(_std_legacy_flag)
-        set(CMAKE_Fortran_FLAGS_DEBUG "${CMAKE_Fortran_FLAGS_DEBUG} -std=gnu")
-    endif()
-    if(_f_exceptions)
-        set(CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -fexceptions")
-        set(CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -fexceptions")
-    endif()
-    if(_f_no_signzero)
-        set(CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -fno-sign-zero")
-        set(CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -fno-sign-zero")
-    endif()
-else()
-    set(CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -std=gnu")
-    set(CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -fexceptions -fno-sign-zero")
-    set(CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -fexceptions -fno-sign-zero")
+check_fortran_compiler_flag("-std=legacy" _std_legacy_flag)
+check_fortran_compiler_flag("-fexceptions" _f_exceptions)
+check_fortran_compiler_flag("-fno-sign-zero" _f_no_signzero)
+if(_std_legacy_flag)
+    set(CMAKE_Fortran_FLAGS_DEBUG "${CMAKE_Fortran_FLAGS_DEBUG} -std=gnu")
+endif()
+if(_f_exceptions)
+    set(CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -fexceptions")
+    set(CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -fexceptions")
+endif()
+if(_f_no_signzero)
+    set(CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -fno-sign-zero")
+    set(CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -fno-sign-zero")
 endif()
 
 if(useGGDB3)
@@ -471,7 +465,107 @@ endif()
 # -------------------- Custom Commands and Targets --------------------
 # (Keep your custom commands for .ssc, .sda, .ssr files, etc., as in your current file.)
 
+add_dependencies(CameronFortran CrystalsFortran)
+
+# Executables
+get_property(value DIRECTORY PROPERTY COMPILE_DEFINITIONS)
+if (value)
+   foreach(item ${value})
+       list(APPEND flags "-D${item}")
+   endforeach()
+endif()
+
+message( STATUS "Defines: ${value}" )
+message( STATUS "Flags: ${flags}" )
+
+
+add_custom_command ( OUTPUT commands.dsc COMMAND ${CMAKE_COMMAND} -E copy datafiles/commands.dsc . DEPENDS subdscbuild )
+
+# Script file sources and targets
+file(GLOB sscfiles RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/script/*.ssc")
+set(scpfiles)
+foreach(_file ${sscfiles})
+    string(REPLACE ".ssc" ".scp" file_scp ${_file})
+    add_custom_command( OUTPUT ${file_scp}
+                        COMMAND ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_CURRENT_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_scp} ${flags} -DCRYSVNVER=${CRYSVNVER} -DCRYVERSUM=${CRYVERSUM} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} ${CMAKE_CURRENT_SOURCE_DIR}/${_file}
+                        DEPENDS ${_file} )
+    list(APPEND scpfiles ${file_scp})
+endforeach()
+
+# Data file sources and targets
+
+file(GLOB sdafiles RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/script/*.sda")
+set(datfiles)
+foreach(_file ${sdafiles})
+    string(REPLACE ".sda" ".dat" file_dat ${_file})
+    add_custom_command( OUTPUT ${file_dat}
+                        COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_CURRENT_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_dat} ${flags} -DCRYSVNVER=${CRYSVNVER} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} -DCRYVERSUM=${CRYVERSUM} ${CMAKE_CURRENT_SOURCE_DIR}/${_file}
+    DEPENDS ${_file} )
+    list(APPEND datfiles ${file_dat})
+endforeach()
+
+file(GLOB ssrfiles RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/datafiles" "${CMAKE_CURRENT_SOURCE_DIR}/datafiles/*.ssr")
+set(srtfiles)
+foreach(_file ${ssrfiles})
+    string(REPLACE ".ssr" ".srt" file_srt ${_file})
+    add_custom_command( OUTPUT ${file_srt}
+                        COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/editor/filepp.pl -ds -w -imacros ${CMAKE_CURRENT_SOURCE_DIR}/gui/crystalsinterface.h -o ${file_srt} ${flags} -DCRYARCH=${CRYARCH} -DCRYHOST=${CRYHOST} -DCRYSVNVER=${CRYSVNVER} -DCRYVERSUM=${CRYVERSUM} -DCRYMONTH=${CRYMONTH} -DCRYYEAR=${CRYYEAR} ${CMAKE_CURRENT_SOURCE_DIR}/datafiles/${_file}
+                        DEPENDS datafiles/${_file} )
+    list(APPEND srtfiles ${file_srt})
+endforeach()
+
+
 # -------------------- Executables and Linking --------------------
 # (Keep your executable and target_link_libraries logic, but use modern target-based commands where possible.)
+
+if ( useGUI )
+    include_directories${CMAKE_BINARY_DIR}/crys_fortran)
+    add_executable(crystals WIN32 ${scpfiles} ${datfiles} ${srtfiles} $<TARGET_OBJECTS:CrystalsUserInterface> ${CMAKE_SOURCE_DIR}/gui/fwrapper_gui.F90 ${CMAKE_SOURCE_DIR}/gui/fwrapperimp_gui.F90 gui/gcrystals.cpp crystals/crystals.F gui/wx.rc)
+    add_executable(crystalscl ${scpfiles} ${datfiles} ${srtfiles} crystals/crystals-cl.F ${CMAKE_SOURCE_DIR}/gui/fwrapperimp_cl.F90 )
+
+    if(MSYS)
+        set(OPENGL_INCLUDE_DIR "/mingw64/x86_64-w64-mingw32/include/")
+        set(OPENGL_gl_LIBRARY "/mingw64/bin/")
+        set(MSYS2LIBS  "-lstdc++ -lopengl32  -lglu32 -llzma" )
+    else ()
+        set(MSYS2LIBS  "" )
+    endif()
+    find_package(OpenGL REQUIRED)
+    message(STATUS "Using OpenGL libraries: ${OPENGL_LIBRARIES}")
+    include_directories( ${OPENGL_INCLUDE_DIRS}  )
+    target_link_libraries(crystals ${OPENGL_LIBRARIES} )
+    target_link_libraries(crystals CrystalsFortran CameronFortran ${wxWidgets_LIBRARIES} ${MSYS2LIBS} ${wxSTATICEXTRA_LIBS})
+
+    set_target_properties(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_GUI)
+    set_target_properties(CrystalsFortran PROPERTIES Fortran_MODULE_DIRECTORY ${Fortran_MODULE_DIRECTORY} )
+
+    target_link_libraries(crystalscl CrystalsFortran CameronFortran)
+
+elseif( usePY )
+    add_executable(crystals ${scpfiles} ${datfiles} ${srtfiles} crystals/crystals.F)
+    set_target_properties(crystals PROPERTIES LINKER_LANGUAGE Fortran)
+    target_link_libraries(crystals CrystalsFortran CameronFortran )
+else()
+    add_executable(crystals ${scpfiles} ${datfiles} ${srtfiles} crystals/crystals.F)
+    set_target_properties(crystals PROPERTIES LINKER_LANGUAGE Fortran)
+    target_link_libraries(crystals CrystalsFortran CameronFortran)
+    set_target_properties(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_NOGUI)
+endif()
+
+
+if(IFORT_COMPILER)
+    set_target_properties(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_FORTINTEL)
+endif()
+
+if(OpenBLAS_LIBRARY)
+    TARGET_LINK_LIBRARIES(crystals ${OpenBLAS_LIBRARY})
+  if( useGUI )
+    TARGET_LINK_LIBRARIES(crystalscl ${OpenBLAS_LIBRARY})
+  endif()
+endif()
+
+add_custom_target( startups ALL DEPENDS dscbuild ${srtfiles} )
+add_custom_target( dscbuild ALL DEPENDS commands.dsc crystals )
+
 
 # -------------------- End --------------------
