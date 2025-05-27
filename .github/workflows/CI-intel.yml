@@ -83,7 +83,7 @@ jobs:
       id: setup-fortran
       with:
         compiler: intel-classic
-        version: '2021.10'
+        version: '2023.1'
  
 # Install wxWidgets - win GUI only
 
