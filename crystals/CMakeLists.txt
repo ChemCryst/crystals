@@ -4,18 +4,14 @@ enable_language(Fortran)
 
 
 if ( useGUI )
-add_definitions(-D__WXUSINGDLL)
-add_definitions(-DCRY_GUI)
+   add_definitions(-D__WXUSINGDLL)
+   add_definitions(-DCRY_GUI)
 else()
-add_definitions(-DCRY_NOGUI)
+   add_definitions(-DCRY_NOGUI)
 endif()
 
 
-#add_library(PySpecific STATIC
-#pyspecific.F
-#)
-
-add_library(CrystalsFortran STATIC
+add_library(CrystalsFortran OBJECT
 helper.c
 mrgrnk.f90
 crystals_hdf5.F90
@@ -154,21 +150,19 @@ lapack.F
 
 if (Fortran_COMPILER_NAME MATCHES "gfortran")  # gfortran
    # gfortran: Trap NaN as those seem to appear sometimes in the fourier test
-   # Not applied globally because it breaks things
-   SET_PROPERTY( SOURCE fourier.F PROPERTY COMPILE_FLAGS -ffpe-trap=invalid )
-   SET_PROPERTY( SOURCE fourie.F PROPERTY COMPILE_FLAGS -ffpe-trap=invalid )
-   SET_SOURCE_FILES_PROPERTIES(lapack.F PROPERTIES COMPILE_FLAGS -O0)
+   set_property( SOURCE fourier.F PROPERTY COMPILE_FLAGS -ffpe-trap=invalid )
+   set_property( SOURCE fourie.F PROPERTY COMPILE_FLAGS -ffpe-trap=invalid )
+   set_source_files_properties(lapack.F PROPERTIES COMPILE_FLAGS -O0)
 endif()
 
-#target_link_libraries(CrystalsFortran openblas)
-SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES LINKER_LANGUAGE Fortran)
+set_target_properties(CrystalsFortran PROPERTIES LINKER_LANGUAGE Fortran)
 
 # These lines add definitions at the preprocessor stage - when CMake is checking for module dependencies in the Fortran.
 # Without these lines modules may be built in the wrong order causing a compilation failure in parallel builds.
 if ( useGUI )
-SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_GUI)
+   set_target_properties(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_GUI)
 else()
-SET_TARGET_PROPERTIES(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_NOGUI)
+   set_target_properties(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_NOGUI)
 endif()
 
 
