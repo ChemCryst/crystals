@@ -44,7 +44,7 @@ jobs:
 #        retention-days: 7
 
   build:
-    runs-on: windows-2019
+    runs-on: windows-latest
 
     env:
       testfail: false
@@ -84,7 +84,7 @@ jobs:
       id: cache-install-oneapi
       uses: actions/cache@v4
       with:
-        path: 'C:\Program Files (x86)\Intel\oneAPI'
+        path: 'C:\Program Files (x86)\Intel\oneAPI' 
         key: install-${{ env.WINDOWS_BASEKIT_URL }}-${{ env.WINDOWS_MKL_COMPONENTS }}-mkl-${{ env.WINDOWS_HPCKIT_URL }}-${{ env.WINDOWS_FORTRAN_COMPONENTS }}-${{ hashFiles('**/bin/cache_exclude_windows.sh') }}
 
     - name: install oneapi
