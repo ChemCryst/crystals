@@ -474,7 +474,8 @@ endif()
 
 add_dependencies(CameronFortran CrystalsFortran)
 
-# -------------------- Executables --------------------
+# --- Grab definitions for data file / script generation ---
+
 get_property(value DIRECTORY PROPERTY COMPILE_DEFINITIONS)
 if (value)
    foreach(item ${value})
@@ -489,7 +490,7 @@ message( STATUS "Flags: ${flags}" )
 add_custom_command ( OUTPUT commands.dsc COMMAND ${CMAKE_COMMAND} -E copy datafiles/commands.dsc . DEPENDS subdscbuild )
 
 # -------------------- Script files ------------------
-# Script file sources and targets
+
 file (GLOB sscfiles RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/script/*.ssc")
 set  (scpfiles)
 foreach (_file ${sscfiles})
@@ -566,9 +567,9 @@ endif()
 
 if(OpenBLAS_LIBRARY)
     target_link_libraries(crystals ${OpenBLAS_LIBRARY})
-  if ( useGUI )
-    target_link_libraries(crystalscl ${OpenBLAS_LIBRARY})
-  endif ()
+    if ( useGUI )
+        target_link_libraries(crystalscl ${OpenBLAS_LIBRARY})
+    endif ()
 endif ()
 
 add_custom_target( startups ALL DEPENDS dscbuild ${srtfiles} )
