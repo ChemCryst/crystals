@@ -100,7 +100,7 @@ get_filename_component(Fortran_COMPILER_NAME "${CMAKE_Fortran_COMPILER}" NAME)
 
 if ((Fortran_COMPILER_NAME MATCHES "ifort") OR (Fortran_COMPILER_NAME MATCHES "ifort.exe")) # ifort (untested)
     message(WARNING "Using Intel Fortran compiler.")
-    SET (IFORT_COMPILER 1)
+    set (IFORT_COMPILER 1)
 endif()
 
 
@@ -111,52 +111,14 @@ if( PERL_FOUND )
 endif()
 
 # -------------------- BLAS/LAPACK/MKL --------------------
-IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.5)
+if ( useCustomMKL ) 
 
-  if ( useCustomMKL ) 
-
-        message(STATUS "Using Custom MKL library: ./mkl_custom.lib")
-        link_libraries ( "mkl_custom.lib" )  
-        link_directories( ${CMAKE_BINARY_DIR} )
+    message(STATUS "Using Custom MKL library: ./mkl_custom.lib")
+    link_libraries ( "mkl_custom.lib" )  
+    link_directories( ${CMAKE_BINARY_DIR} )
   
-  else()
-    find_package(BLAS)
-    find_package(LAPACK)
+else()
 
-    if(BLAS_FOUND AND LAPACK_FOUND)
-        if(BLAS_LIBRARIES_DIR)
-           link_directories( ${BLAS_LIBRARIES_DIR} )
-        endif()
-        if ( BLAS_LIBRARIES )
-           link_libraries ( ${BLAS_LIBRARIES} )
-        endif()
-        if ( BLAS_LINKER_FLAGS )
-           uniquely_add_flags ( CMAKE_MODULE_LINKER_FLAGS ${BLAS_LINKER_FLAGS} )
-        endif()
-
-        if(LAPACK_LIBRARIES_DIR)
-           link_directories( ${LAPACK_LIBRARIES_DIR} )
-        endif()
-        if ( LAPACK_LIBRARIES )
-           link_libraries ( ${LAPACK_LIBRARIES} )
-        endif()
-        if ( LAPACK_LINKER_FLAGS )
-           uniquely_add_flags ( CMAKE_MODULE_LINKER_FLAGS ${LAPACK_LINKER_FLAGS} )
-        endif()
-        message(STATUS "Using BLAS library: ${BLAS_LIBRARIES}")
-    else ()
-        message(STATUS "Using builtin BLAS and LAPACK library")
-        add_definitions(-DCRY_OWNLAPACK)
-    endif ()
-  endif ()
-else ()
-  if ( useCustomMKL ) 
-
-        message(STATUS "Using Custom MKL library: ./mkl_custom.lib")
-        link_libraries ( "mkl_custom.lib" )  
-        link_directories( ${CMAKE_BINARY_DIR} )
-  
-  else()
     find_library(OpenBLAS_LIBRARY openblaso)
     if(OpenBLAS_LIBRARY)
         message(STATUS "Using OpenBLAS [${OpenBLAS_LIBRARY}]")
@@ -166,31 +128,30 @@ else ()
 
         if(BLAS_FOUND AND LAPACK_FOUND)
             if(BLAS_LIBRARIES_DIR)
-               link_directories( ${BLAS_LIBRARIES_DIR} )
+                link_directories( ${BLAS_LIBRARIES_DIR} )
             endif()
             if ( BLAS_LIBRARIES )
-               link_libraries ( ${BLAS_LIBRARIES} )
+                link_libraries ( ${BLAS_LIBRARIES} )
             endif()
             if ( BLAS_LINKER_FLAGS )
-               uniquely_add_flags ( CMAKE_MODULE_LINKER_FLAGS ${BLAS_LINKER_FLAGS} )
+                uniquely_add_flags ( CMAKE_MODULE_LINKER_FLAGS ${BLAS_LINKER_FLAGS} )
             endif()
 
             if(LAPACK_LIBRARIES_DIR)
-               link_directories( ${LAPACK_LIBRARIES_DIR} )
+                link_directories( ${LAPACK_LIBRARIES_DIR} )
             endif()
             if ( LAPACK_LIBRARIES )
-               link_libraries ( ${LAPACK_LIBRARIES} )
+                link_libraries ( ${LAPACK_LIBRARIES} )
             endif()
             if ( LAPACK_LINKER_FLAGS )
-               uniquely_add_flags ( CMAKE_MODULE_LINKER_FLAGS ${LAPACK_LINKER_FLAGS} )
+                uniquely_add_flags ( CMAKE_MODULE_LINKER_FLAGS ${LAPACK_LINKER_FLAGS} )
             endif()
-            message(STATUS "Using BLAS library: ${BLAS_LIBRARIES}")
+                message(STATUS "Using BLAS library: ${BLAS_LIBRARIES}")
         else ()
-            message(STATUS "Using builtin BLASS library")
+            message(STATUS "Using builtin BLAS and LAPACK library")
             add_definitions(-DCRY_OWNLAPACK)
         endif ()
     endif()
-  endif()
 endif ()
 
 if(BLA_VENDOR)
@@ -330,44 +291,44 @@ if( NOT CRYSVNVER)  # not set
         STRING(REPLACE ":" "%" CRYSVNVER "${CRYSVNVER}")
         STRING(SUBSTRING "${CRYSVNVER}" 0 8 CRYSVNVER)
         if ( "${CRYSVNVER}" STREQUAL "" )   # svnversion command failed
-           SET ( CRYSVNVER "0000" )
+           set( CRYSVNVER "0000" )
         endif()
     else()
-        SET (CRYSVNVER "0000")
+        set(CRYSVNVER "0000")
     endif()
     message(STATUS "Svn version: ${CRYSVNVER}")
 endif()
 message(STATUS "Compilation date = ${CRYDAY} / ${CRYMONTH} / ${CRYYEAR}")
 
-IF (NOT CMAKE_BUILD_TYPE)   # make sure that the default is a RELEASE
-    SET (CMAKE_BUILD_TYPE RELEASE CACHE STRING
+if(NOT CMAKE_BUILD_TYPE)   # make sure that the default is a RELEASE
+    set(CMAKE_BUILD_TYPE RELEASE CACHE STRING
          "Choose the type of build, options are: None Debug Release."  FORCE)
-ENDIF()
+endif()
 string(TOUPPER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE)
 
 
 
 # -------------------- Compiler Flags by Compiler --------------------
-IF (Fortran_COMPILER_NAME MATCHES "gfortran")  # gfortran
+if(Fortran_COMPILER_NAME MATCHES "gfortran")  # gfortran
 
     add_definitions(-DCRY_GNU)
 
     if(CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER_EQUAL 10)
-        SET (MISMATCH_FLAG "-fallow-argument-mismatch")
+        set(MISMATCH_FLAG "-fallow-argument-mismatch")
     else ()
-        SET (MISMATCH_FLAG "")
+        set(MISMATCH_FLAG "")
     endif ()
 
     if(useFAST)
-        SET (CMAKE_Fortran_FLAGS_RELEASE "-fno-f2c -O3 -g -march=native -Wfatal-errors -ftree-vectorize -flto -fwhole-program ${MISMATCH_FLAG}")
+        set(CMAKE_Fortran_FLAGS_RELEASE "-fno-f2c -O3 -g -march=native -Wfatal-errors -ftree-vectorize -flto -fwhole-program ${MISMATCH_FLAG}")
     else ()
-        SET (CMAKE_Fortran_FLAGS_RELEASE "-fno-f2c -O3 -g -Wfatal-errors -ftree-vectorize -msse2 -w ${MISMATCH_FLAG}")
+        set(CMAKE_Fortran_FLAGS_RELEASE "-fno-f2c -O3 -g -Wfatal-errors -ftree-vectorize -msse2 -w ${MISMATCH_FLAG}")
     endif ()
-    SET (CMAKE_Fortran_FLAGS_DEBUG   "-fno-f2c -O0 -g -Wfatal-errors -Wall -Wextra ${MISMATCH_FLAG}")
+    set(CMAKE_Fortran_FLAGS_DEBUG   "-fno-f2c -O0 -g -Wfatal-errors -Wall -Wextra ${MISMATCH_FLAG}")
     if(CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER 4.5)
-        SET (CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -fcheck=all ${MISMATCH_FLAG}")
+        set (CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -fcheck=all ${MISMATCH_FLAG}")
     else ()
-        SET (CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -fbounds-check")
+        set(CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -fbounds-check")
     endif()
     if(useFAST)
         set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -std=gnu++11 -O3 -g -march=native -ftree-vectorize -flto -fwhole-program")
@@ -394,23 +355,21 @@ IF (Fortran_COMPILER_NAME MATCHES "gfortran")  # gfortran
 
     endif()
 
-ELSEIF ( IFORT_COMPILER ) # ifort (untested)
+elseif( IFORT_COMPILER ) # ifort (untested)
 
-  IF (UNIX)
+  if(UNIX)
 
-	    SET (CMAKE_Fortran_FLAGS_RELEASE "-debug all -g -O3 -fpp -mkl -diag-disable:8291 -traceback")
-	    SET (CMAKE_Fortran_FLAGS_DEBUG   "-g -check all -debug all -ftrapuv -fpe0 -fstack-protector-all -O0 -fpp -mkl -diag-disable:8291 -check uninit -traceback -check nooutput_conversion")
+	    set (CMAKE_Fortran_FLAGS_RELEASE "-debug all -g -O3 -fpp -mkl -diag-disable:8291 -traceback")
+	    set (CMAKE_Fortran_FLAGS_DEBUG   "-g -check all -debug all -ftrapuv -fpe0 -fstack-protector-all -O0 -fpp -mkl -diag-disable:8291 -check uninit -traceback -check nooutput_conversion")
 
-  ELSE()
+  else()
 
-	    SET (CMAKE_Fortran_FLAGS_RELEASE "-O3 -fpp -MD /heap-arrays:8 -Qdiag-disable:8291 -traceback -QaxSSE2")
-	    SET (CMAKE_Fortran_FLAGS_DEBUG   "-check:all -MDd /heap-arrays:8 -debug:all -Qtrapuv -fpe0 -fpp -warn:nofileopt -Qdiag-disable:8291 -Qdiag-disable:8290 -check:format -check:overflow -check:pointers -check:noarg_temp_created -check:uninit -traceback -check:nooutput_conversion")
-
+	    set(CMAKE_Fortran_FLAGS_RELEASE "-O3 -fpp -MD /heap-arrays:8 -Qdiag-disable:8291 -traceback -QaxSSE2")
+	    set(CMAKE_Fortran_FLAGS_DEBUG   "-check:all -MDd /heap-arrays:8 -debug:all -Qtrapuv -fpe0 -fpp -warn:nofileopt -Qdiag-disable:8291 -Qdiag-disable:8290 -check:format -check:overflow -check:pointers -check:noarg_temp_created -check:uninit -traceback -check:nooutput_conversion")
     	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}  /O2  /EHs /W3 /Oy- ")
     	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /EHs /W3 /Oy- ")
     	set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}  /O2 /EHs /W3 /Oy- ")
     	set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}  /EHs /W3 /Oy- ")
-
 
 	    add_definitions(-DWIN32)
 	    add_definitions(-DWXUSINGDLL)
@@ -421,11 +380,11 @@ ELSEIF ( IFORT_COMPILER ) # ifort (untested)
 
 	    set(CMAKE_CXX_LINK_EXECUTABLE "ifort <OBJECTS>  -o <TARGET> <LINK_LIBRARIES> /link <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS>")
 
-    ENDIF()
+    endif()
 
 	add_definitions(-DCRYSVNVER=${CRYSVNVER})
 
-    IF(CMAKE_BUILD_TYPE MATCHES Debug)
+    if(CMAKE_BUILD_TYPE MATCHES Debug)
 		add_definitions(-DDEBUG)
 	else()
 		add_definitions(-DNDEBUG)
@@ -433,24 +392,21 @@ ELSEIF ( IFORT_COMPILER ) # ifort (untested)
 
 	include_directories(gui)
 
-
-
-
-ELSEIF (Fortran_COMPILER_NAME MATCHES "g77")   # g77
+elseif(Fortran_COMPILER_NAME MATCHES "g77")   # g77
 
     add_definitions(-DCRY_GNU)
-    SET (CMAKE_Fortran_FLAGS_RELEASE "-funroll-all-loops -fno-f2c -O3")
-    SET (CMAKE_Fortran_FLAGS_DEBUG   "-fno-f2c -O0 -g")
+    set(CMAKE_Fortran_FLAGS_RELEASE "-funroll-all-loops -fno-f2c -O3")
+    set(CMAKE_Fortran_FLAGS_DEBUG   "-fno-f2c -O0 -g")
 
-ELSE ()
+else()
 
-    MESSAGE ("CMAKE_Fortran_COMPILER full path: " ${CMAKE_Fortran_COMPILER})
-    MESSAGE ("Fortran compiler: " ${Fortran_COMPILER_NAME})
-    MESSAGE ("No optimized Fortran compiler flags are known, we just try -O2...")
-    SET (CMAKE_Fortran_FLAGS_RELEASE "-O2")
-    SET (CMAKE_Fortran_FLAGS_DEBUG   "-O0 -g")
+    message("CMAKE_Fortran_COMPILER full path: " ${CMAKE_Fortran_COMPILER})
+    message("Fortran compiler: " ${Fortran_COMPILER_NAME})
+    message("No optimized Fortran compiler flags are known, we just try -O2...")
+    set(CMAKE_Fortran_FLAGS_RELEASE "-O2")
+    set(CMAKE_Fortran_FLAGS_DEBUG   "-O0 -g")
 
-endif ()
+endif()
 
 
 # -------------------- Fortran Compiler Feature Checks --------------------
@@ -459,7 +415,6 @@ check_fortran_compiler_flag("-fexceptions" _f_exceptions)
 check_fortran_compiler_flag("-fno-sign-zero" _f_no_signzero)
 
 if(_std_legacy_flag)
-#      set(CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -std=legacy")
     set(CMAKE_Fortran_FLAGS_DEBUG   "${CMAKE_Fortran_FLAGS_DEBUG} -std=gnu")
 endif()
 if(_f_exceptions)
