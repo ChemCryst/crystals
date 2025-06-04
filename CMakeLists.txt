@@ -103,6 +103,10 @@ if ((Fortran_COMPILER_NAME MATCHES "ifort") OR (Fortran_COMPILER_NAME MATCHES "i
     set (IFORT_COMPILER 1)
 endif()
 
+if ((Fortran_COMPILER_NAME MATCHES "ifx") OR (Fortran_COMPILER_NAME MATCHES "ifx.exe")) # ifort (untested)
+    message(WARNING "Using Intel IFX Fortran compiler.")
+    set (IFX_COMPILER 1)
+endif()
 
 # -------------------- Perl --------------------
 find_package( Perl REQUIRED)
@@ -224,7 +228,7 @@ endif()
 # -------------------- OS Definitions --------------------
 if ( WIN32 )
     add_definitions(-DCRY_OSWIN32)
-    if ( IFORT_COMPILER )
+    if ( IFORT_COMPILER OR IFX_COMPILER )
         add_definitions(-D__INW__)
     else ()
         add_definitions(-D__MIN__)
@@ -381,6 +385,34 @@ elseif( IFORT_COMPILER ) # ifort (untested)
 	    set(CMAKE_CXX_LINK_EXECUTABLE "ifort <OBJECTS>  -o <TARGET> <LINK_LIBRARIES> /link <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS>")
 
     endif()
+
+	add_definitions(-DCRYSVNVER=${CRYSVNVER})
+
+    if(CMAKE_BUILD_TYPE MATCHES Debug)
+		add_definitions(-DDEBUG)
+	else()
+		add_definitions(-DNDEBUG)
+	endif()
+
+	include_directories(gui)
+
+elseif( IFX_COMPILER ) # ifx (untested)
+
+    set(CMAKE_Fortran_FLAGS_RELEASE "-O3 -fpp -MD /heap-arrays:8 -Qdiag-disable:8291 -traceback -QaxSSE2")
+    set(CMAKE_Fortran_FLAGS_DEBUG   "-check:all -MDd /heap-arrays:8 -debug:all -Qtrapuv -fpe0 -fpp -warn:nofileopt -Qdiag-disable:8291 -Qdiag-disable:8290 -check:format -check:overflow -check:pointers -check:noarg_temp_created -check:uninit -traceback -check:nooutput_conversion")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}  /O2  /EHs /W3 /Oy- ")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /EHs /W3 /Oy- ")
+    set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}  /O2 /EHs /W3 /Oy- ")
+    set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}  /EHs /W3 /Oy- ")
+
+    add_definitions(-DWIN32)
+    add_definitions(-DWXUSINGDLL)
+    add_definitions(-D_WINDOWS)
+    add_definitions(-D_UNICODE)
+    add_definitions(-D__WXMSW__)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+
+    set(CMAKE_CXX_LINK_EXECUTABLE "ifort <OBJECTS>  -o <TARGET> <LINK_LIBRARIES> /link <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS>")
 
 	add_definitions(-DCRYSVNVER=${CRYSVNVER})
 
@@ -561,7 +593,7 @@ else()
 endif()
 
 
-if(IFORT_COMPILER)
+if(IFORT_COMPILER OR IFX_COMPILER)
     set_target_properties(CrystalsFortran PROPERTIES COMPILE_DEFINITIONS  CRY_FORTINTEL)
 endif()
 
