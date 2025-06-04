@@ -14,6 +14,7 @@ env:
   WINDOWS_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/2a13d966-fcc5-4a66-9fcc-50603820e0c9/w_HPCKit_p_2023.1.0.46357_offline.exe
   WINDOWS_MKL_COMPONENTS: intel.oneapi.win.mkl.devel
   WINDOWS_FORTRAN_COMPONENTS: intel.oneapi.win.ifort-compiler
+  WINDOWS_CPP_COMPONENT: intel.oneapi.lin.dpcpp-cpp-compiler
 
 
 jobs:
@@ -85,7 +86,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: 'C:\Program Files (x86)\Intel\oneAPI' 
-        key: install-${{ env.WINDOWS_BASEKIT_URL }}-${{ env.WINDOWS_MKL_COMPONENTS }}-mkl-${{ env.WINDOWS_HPCKIT_URL }}-${{ env.WINDOWS_FORTRAN_COMPONENTS }}-${{ hashFiles('**/bin/cache_exclude_windows.sh') }}
+        key: install-${{ env.WINDOWS_BASEKIT_URL }}-${{ env.WINDOWS_MKL_COMPONENTS }}-mkl-${{ env.WINDOWS_HPCKIT_URL }}-${{ env.WINDOWS_FORTRAN_COMPONENTS }}-${{ env.WINDOWS_CPP_COMPONENT }}-${{ hashFiles('**/bin/cache_exclude_windows.sh') }}
 
     - name: install oneapi
       shell: bash
@@ -93,6 +94,7 @@ jobs:
       run: |
         bin/install_windows.bat $WINDOWS_BASEKIT_URL $WINDOWS_MKL_COMPONENTS mklinst
         bin/install_windows.bat $WINDOWS_HPCKIT_URL $WINDOWS_FORTRAN_COMPONENTS ifortinst
+        bin/install_windows.bat $WINDOWS_HPCKIT_URL WINDOWS_CPP_COMPONENT cppinst
         where ifx
 
     - name: exclude unused files from cache oneapi
