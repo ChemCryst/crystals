@@ -98,8 +98,8 @@ jobs:
         start /b /wait hpckit.exe -s -x -f hpckit_extracted --log hpckit_extract.log
         del basekit.exe
         del hpckit.exe
-        basekit_extracted\bootstrapper.exe -s --action install --components=intel.oneapi.win.mkl.devel --eula=accept -p=NEED_VS2017_INTEGRATION=0 -p=NEED_VS2019_INTEGRATION=0 -p=NEED_VS2022_INTEGRATION=0 --log-dir=.
-        hpckit_extracted\bootstrapper.exe -s --action install --eula=accept -p=NEED_VS2017_INTEGRATION=0 -p=NEED_VS2019_INTEGRATION=0 -p=NEED_VS2022_INTEGRATION=0 --log-dir=. --components=intel.oneapi.win.ifort-compiler intel.oneapi.lin.dpcpp-cpp-compiler 
+        hpckit_extracted\bootstrapper.exe -s --action install --components=intel.oneapi.win.ifort-compiler  --eula=accept -p=NEED_VS2017_INTEGRATION=0 -p=NEED_VS2019_INTEGRATION=0 -p=NEED_VS2022_INTEGRATION=0 --log-dir=. 
+        basekit_extracted\bootstrapper.exe -s --action install --components=intel.oneapi.win.mkl.devel:intel.oneapi.lin.dpcpp-cpp-compiler --eula=accept -p=NEED_VS2017_INTEGRATION=0 -p=NEED_VS2019_INTEGRATION=0 -p=NEED_VS2022_INTEGRATION=0 --log-dir=.
         where ifx
 
     - name: exclude unused files from cache oneapi
