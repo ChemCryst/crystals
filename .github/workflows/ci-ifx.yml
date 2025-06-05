@@ -12,9 +12,8 @@ on: [push]
 env:
   WINDOWS_BASEKIT_URL:  https://registrationcenter-download.intel.com/akdlm/IRC_NAS/c961e083-5685-4f0b-ada5-c6cf16f561dd/w_BaseKit_p_2023.1.0.47256_offline.exe 
   WINDOWS_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/2a13d966-fcc5-4a66-9fcc-50603820e0c9/w_HPCKit_p_2023.1.0.46357_offline.exe
-  WINDOWS_MKL_COMPONENTS: intel.oneapi.win.mkl.devel
+  WINDOWS_MKL_COMPONENTS: intel.oneapi.win.mkl.devel:intel.oneapi.lin.dpcpp-cpp-compiler
   WINDOWS_FORTRAN_COMPONENTS: intel.oneapi.win.ifort-compiler
-  WINDOWS_CPP_COMPONENT: intel.oneapi.lin.dpcpp-cpp-compiler
 
 
 jobs:
@@ -86,20 +85,14 @@ jobs:
       uses: actions/cache@v4
       with:
         path: 'C:\Program Files (x86)\Intel\oneAPI' 
-        key: install-${{ env.WINDOWS_BASEKIT_URL }}-${{ env.WINDOWS_MKL_COMPONENTS }}-mkl-${{ env.WINDOWS_HPCKIT_URL }}-${{ env.WINDOWS_FORTRAN_COMPONENTS }}-${{ env.WINDOWS_CPP_COMPONENT }}-${{ hashFiles('**/bin/cache_exclude_windows.sh') }}
+        key: install-${{ env.WINDOWS_BASEKIT_URL }}-${{ env.WINDOWS_MKL_COMPONENTS }}-mkl-${{ env.WINDOWS_HPCKIT_URL }}-${{ env.WINDOWS_FORTRAN_COMPONENTS }}-${{ hashFiles('**/bin/cache_exclude_windows.sh') }}
 
     - name: install oneapi
       shell: bash
       if: steps.cache-install-oneapi.outputs.cache-hit != 'true'
       run: |
-        curl.exe --output basekit.exe --url $WINDOWS_BASEKIT_URL --retry 5 --retry-delay 5
-        curl.exe --output hpckit.exe --url $WINDOWS_HPCKIT_URL --retry 5 --retry-delay 5
-        start /b /wait basekit.exe -s -x -f basekit_extracted --log basekit_extract.log
-        start /b /wait hpckit.exe -s -x -f hpckit_extracted --log hpckit_extract.log
-        del basekit.exe
-        del hpckit.exe
-        hpckit_extracted\bootstrapper.exe -s --action install --components=intel.oneapi.win.ifort-compiler  --eula=accept -p=NEED_VS2017_INTEGRATION=0 -p=NEED_VS2019_INTEGRATION=0 -p=NEED_VS2022_INTEGRATION=0 --log-dir=. 
-        basekit_extracted\bootstrapper.exe -s --action install --components=intel.oneapi.win.mkl.devel:intel.oneapi.lin.dpcpp-cpp-compiler --eula=accept -p=NEED_VS2017_INTEGRATION=0 -p=NEED_VS2019_INTEGRATION=0 -p=NEED_VS2022_INTEGRATION=0 --log-dir=.
+        bin/install_windows.bat $WINDOWS_BASEKIT_URL $WINDOWS_MKL_COMPONENTS mklinst
+        bin/install_windows.bat $WINDOWS_HPCKIT_URL $WINDOWS_FORTRAN_COMPONENTS ifortinst
         where ifx
 
     - name: exclude unused files from cache oneapi
