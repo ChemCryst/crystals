@@ -123,6 +123,7 @@ sub obscureMachinePrecision() {
 
 	if (-e $CROUTPUT) {
 
+        print("Copying to $CROUTPUT.temp\n");
 
 		use File::Copy;
 		$new_file = "$CROUTPUT.temp";
@@ -130,6 +131,8 @@ sub obscureMachinePrecision() {
 		unlink( $CROUTPUT );
 		open(my $fhi, '<', "$CROUTPUT.temp") or die $!;
 		open(my $fho, '>', "$CROUTPUT") or die $!;
+
+        print("Copying back to original $CROUTPUT\n");
 
 		while (<$fhi>) {
 
