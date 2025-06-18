@@ -178,7 +178,6 @@ jobs:
         call "C:\Program Files (x86)\Intel\oneAPI\setvars.bat"
         set FC=ifx
         set CRYSVNVER=${{ steps.vars.outputs.sha_short }}
- 
         echo Commit SHA: %CRYSVNVER% Version: ${{ steps.version.outputs.major }}.${{ steps.version.outputs.minor }}.${{ steps.version.outputs.patch }}
         cmake .. -G"NMake Makefiles" -DuseGUI=${{ matrix.guiflag }} -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }} -DuseCustomMKL=yes -DusePY=no -DCMAKE_EXPORT_COMPILE_COMMANDS=on
         nmake || exit /b %ERRORLEVEL%
@@ -316,14 +315,13 @@ jobs:
 #        name: executable-outputs-win64-${{ matrix.cl }}
 #        path: ci
 
-# Could be useful for debugging
+# Could be useful for debugging - upload even if tests failed.
     - name: Upload compile_commands 
       uses: actions/upload-artifact@v4
+      if: success() || failure()
       with:
         name: commands-win64-${{ matrix.cl }}-${{ matrix.release }}
         path: ci/compile_commands.json
-
-
 
     - name: Build installer
       if:  ${{ matrix.cl == 'gui' }}
@@ -346,7 +344,6 @@ jobs:
 #        certificatename: '${{ secrets.CERTNAME }}'
 #        folder: 'installer'
 #        recursive: false
-
 
     - name: Upload installer
       uses: actions/upload-artifact@v4
