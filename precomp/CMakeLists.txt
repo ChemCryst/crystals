@@ -22,7 +22,7 @@ foreach( precomp_file ${precomp_files} )
   endif()
 endforeach( precomp_file )
 
-IF (IFORT_COMPILER)
+IF (IFORT_COMPILER OR IFX_COMPILER)
 
 	file( GLOB_RECURSE precomp_files RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/INW/" "INW/*" )
 	foreach( precomp_file ${precomp_files} )
