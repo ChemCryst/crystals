@@ -11,10 +11,10 @@ on: [push]
 
 
 env:
-  WINDOWS_BASEKIT_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/e5785fb3-b5a7-4b97-89bc-918adab1f77d/intel-oneapi-base-toolkit-2025.1.3.8_offline.exe
+#  WINDOWS_BASEKIT_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/e5785fb3-b5a7-4b97-89bc-918adab1f77d/intel-oneapi-base-toolkit-2025.1.3.8_offline.exe
   WINDOWS_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/77bf3a15-a766-4619-91b4-1011badc4a36/intel-oneapi-hpc-toolkit-2025.1.3.7_offline.exe
-  WINDOWS_MKL_COMPONENTS: intel.oneapi.win.mkl.devel:intel.oneapi.win.cpp-dpcpp-common
-  WINDOWS_FORTRAN_COMPONENTS: intel.oneapi.win.ifort-compiler
+#  WINDOWS_MKL_COMPONENTS: 
+  WINDOWS_FORTRAN_COMPONENTS: intel.oneapi.win.ifort-compiler:intel.oneapi.win.mkl.devel:intel.oneapi.win.cpp-dpcpp-common
 
 
 jobs:
@@ -86,13 +86,12 @@ jobs:
       uses: actions/cache@v4
       with:
         path: 'C:\Program Files (x86)\Intel\oneAPI' 
-        key: install-${{ env.WINDOWS_BASEKIT_URL }}-${{ env.WINDOWS_MKL_COMPONENTS }}-mkl-${{ env.WINDOWS_HPCKIT_URL }}-${{ env.WINDOWS_FORTRAN_COMPONENTS }}-${{ hashFiles('**/bin/cache_exclude_windows.sh') }}
+        key: install-${{ env.WINDOWS_HPCKIT_URL }}-${{ env.WINDOWS_FORTRAN_COMPONENTS }}-${{ hashFiles('**/bin/cache_exclude_windows.sh') }}
 
     - name: install oneapi
       shell: bash
       if: steps.cache-install-oneapi.outputs.cache-hit != 'true'
       run: |
-        bin/install_windows.bat $WINDOWS_BASEKIT_URL $WINDOWS_MKL_COMPONENTS mklinst
         bin/install_windows.bat $WINDOWS_HPCKIT_URL $WINDOWS_FORTRAN_COMPONENTS ifortinst
 
     - name: exclude unused files from cache oneapi
@@ -158,7 +157,7 @@ jobs:
       run: |    
         call ..\bin\fix_cached_intelcomp.bat
         for /f "tokens=* usebackq" %%f in (`dir /b "C:\Program Files (x86)\Intel\oneAPI\compiler\" ^| findstr /V latest ^| sort`) do @set "LATEST_VERSION=%%f"
-        xcopy /I/E/Y "C:\Program Files (x86)\Intel\oneAPI\mkl\%LATEST_VERSION%\tools\builder" builder
+        xcopy /I/E/Y "C:\Program Files (x86)\Intel\oneAPI\mkl\%LATEST_VERSION%\share\mkl\tools\builder" builder
         call "C:\Program Files (x86)\Intel\oneAPI\setvars.bat"
         set FC=ifx
         pushd builder
