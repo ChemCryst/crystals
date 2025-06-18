@@ -3435,7 +3435,7 @@ value in the case of a highly skew unit cell
 
 180.0 degree rotation about   0.  0.  1. reciprocal lattice direction: 
 [  -1.000    0.000    0.000]
-[   0.000   -1.000    0.000]
+[   0.000   -1.000   -0.000]
 [   1.004    0.000    1.000]
 Figure of merit =   0.64 ***********
 No reflections omitted

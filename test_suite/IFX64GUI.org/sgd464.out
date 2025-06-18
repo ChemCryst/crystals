@@ -6825,7 +6825,7 @@ ___________
        S(I) L TX TY TZ       Value       target   Difference Leverage    Description
 [79]          1  1  0  0  0   -2E-06     0E+00    -2E-06    1.00    Ul_12 = 0.0
 [79]          1  1  0  0  0    8E-07     0E+00     8E-07    1.00    Ul_23 = 0.0
-[79]          1  1  0  0  0   -3E-07     0E+00    -3E-07    1.00    Ul_13 = 0.0
+[79]          1  1  0  0  0   -4E-07     0E+00    -4E-07    1.00    Ul_13 = 0.0
 ___________
  (1) NO
 ___________
@@ -10743,7 +10743,7 @@ All cycle   Min function          0.0           0.31E+04       0.10E+16
  Statistics for   263 least squares parameters, with  4794 degrees of freedom
  Number of observations              5050                 7              5057
 [30]  Minimisation function              0.30E+04         0.3E+04         0.63E+04
-[45]  Hamilton weighted R-value          14.              4.55              6. 
+[45]  Hamilton weighted R-value          14.              4.56              6. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -11061,7 +11061,7 @@ All cycle   Min function          0.0           0.31E+04       0.10E+16
  Statistics for   263 least squares parameters, with  4794 degrees of freedom
  Number of observations              5050                 7              5057
 [30]  Minimisation function              0.31E+04         0.6E+03         0.37E+04
-[45]  Hamilton weighted R-value          15.              2.02              4. 
+[45]  Hamilton weighted R-value          15.              2.03              4. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -11890,7 +11890,7 @@ All cycle   Min function          0.0           0.31E+04       0.10E+16
 [37]      C         26.    1.00    0.00    0.72    0.80   -0.04    0.04
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
 [37]                       0.00             0.00    0.00    0.00    0.01    0.02    0.01    0.01    0.01    0.01
-[31]           0.03   0.04   0.03 
+[31]           0.03   0.03   0.03 
 
 [37]      C         27.    1.00    0.00    0.65    0.70   -0.10    0.05
 [37]                       0.00             0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00

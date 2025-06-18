@@ -113,7 +113,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.3907E-03          On scale of /FO/
+       237.           237.              0.               0.3906E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -588,7 +588,7 @@ All cycle   Min function          0.0            2.6           0.10E+16
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.3885E-03          On scale of /FO/
+       237.           237.              0.               0.3884E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -754,7 +754,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.3907E-03          On scale of /FO/
+       237.           237.              0.               0.3906E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -1396,7 +1396,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.3907E-03          On scale of /FO/
+       237.           237.              0.               0.3906E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -1548,7 +1548,7 @@ All cycle   Min function          0.0           0.39E-03       0.10E+16
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.3887E-03          On scale of /FO/
+       237.           237.              0.               0.3886E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -1872,7 +1872,7 @@ All cycle   Min function          0.0            2.6           0.10E+16
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.3885E-03          On scale of /FO/
+       237.           237.              0.               0.3884E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -2040,7 +2040,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.3907E-03          On scale of /FO/
+       237.           237.              0.               0.3905E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -2193,7 +2193,7 @@ All cycle   Min function          0.0           0.39E-03       0.10E+16
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.3884E-03          On scale of /FO/
+       237.           237.              0.               0.3882E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -2517,7 +2517,7 @@ All cycle   Min function          0.0            2.6           0.10E+16
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.4967E-03          On scale of /FO/
+       237.           237.              0.               0.4966E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -3143,7 +3143,7 @@ All cycle   Min function          0.0           0.33           0.10E+16
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.7117E-03          On scale of /FO/
+       237.           237.              0.               0.7114E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -3779,7 +3779,7 @@ All cycle   Min function          0.0           0.33           0.10E+16
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.7097E-03          On scale of /FO/
+       237.           237.              0.               0.7093E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -3831,7 +3831,7 @@ Inter cycle Rw                   -5.0            1.4           0.10E+03
 
  Statistics for     2 least squares parameters, with    44 degrees of freedom
  Number of observations                46                 0                46
-[30]  Minimisation function              0.71E-03         0.0E+00         0.71E-03
+[30]  Minimisation function              0.70E-03         0.0E+00         0.70E-03
 [45]  Hamilton weighted R-value           0.              0.00              0. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -4908,7 +4908,7 @@ All cycle   Rw                    0.0            7.1           0.10E+03
       K            0.000000E+00   0.100000E+02
       L            0.000000E+00   0.800000E+01
       Fo           0.184000E+01   0.246560E+03
-      Weight       0.482784E-03   0.117714E+00
+      Weight       0.482785E-03   0.117714E+00
 [09]       Fc           0.175 E+00   0.925 E+02
  List   6 contains      904 reflections of which      904 are accepted by LIST 28
  After     6 structure factor/refinement calculations 

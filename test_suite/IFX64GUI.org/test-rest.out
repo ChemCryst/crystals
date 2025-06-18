@@ -649,7 +649,7 @@ ___________
 
             Atom  1    S(I) L TX TY TZ     U(IJ)'s          Atom  2    S(I) L TX TY TZ     U(IJ)'s    Delta     Coord.'S
   UIJ restraint:  No derivatives found
-  ?        O       1     1  1  0  0  0     0.02317         C       2     1  1  0  0  0     0.03111   0.00795     U[11]   
+  ?        O       1     1  1  0  0  0     0.02316         C       2     1  1  0  0  0     0.03111   0.00795     U[11]   
   UIJ restraint:  No derivatives found
   ?        O       1     1  1  0  0  0     0.04898         C       2     1  1  0  0  0     0.02477  -0.02421     U[22]   
   UIJ restraint:  No derivatives found
@@ -1036,7 +1036,7 @@ ___________
           Leverage: 0.250
           Leverage: 0.250
           Leverage: 0.658
-[41]       Mean value = 110.3102  Mean delta =   0.0000  r.m.s. delta =   3.23
+[41]       Mean value = 110.3101  Mean delta =   0.0000  r.m.s. delta =   3.23
 ___________
  (-1) 
 

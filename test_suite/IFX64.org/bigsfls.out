@@ -1425,13 +1425,15 @@ ___________
 ___________
  (1) DISTANCES 1.395 , 0.02= C(111) TO C(112) , C(112) TO C(113)
 CONT C(113) TO C(114) , C(114) TO C(115) , C(115) TO C(116) , C(116) TO C(111)
+ Directive  DISTANCE: No derivatives found during Evaluation
 
    1. Restrain these distances to be    1.395 Angstrom,
                 with an E.S.D. of   0.020
 
             Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ   distances    Delta
            C     111     1  1  0  0  0      C     112     1  1  0  0  0      1.405    -0.010
-           C     112     1  1  0  0  0      C     113     1  1  0  0  0      1.395     0.000
+  DISTANCE restraint:  No derivatives found
+  ?        C     112     1  1  0  0  0      C     113     1  1  0  0  0      1.395     0.000
            C     113     1  1  0  0  0      C     114     1  1  0  0  0      1.363     0.032
            C     114     1  1  0  0  0      C     115     1  1  0  0  0      1.372     0.023
            C     115     1  1  0  0  0      C     116     1  1  0  0  0      1.376     0.019
@@ -1601,7 +1603,7 @@ CONT C(214) TO C(215) TO C(216) , C(215) TO C(216) TO C(211)
            C     214     1  1  0  0  0      C     215     1  1  0  0  0      C     216     1  1  0  0  0    120.23  -0.23
            C     215     1  1  0  0  0      C     216     1  1  0  0  0      C     211     1  1  0  0  0    119.67   0.33
           - Derivatives not found, do a refinement cycle to get leverages -
-[41]       Mean value = 119.9731  Mean delta =   0.0268  r.m.s. delta =   0.47
+[41]       Mean value = 119.9731  Mean delta =   0.0269  r.m.s. delta =   0.47
 ___________
  (12) PLANAR C(221) UNTIL C(226)
  -- Restrain the distance to a mean plane to zero
@@ -1866,15 +1868,13 @@ ___________
 ___________
  (28) DISTANCES 1.395 , 0.02= C(411) TO C(412) , C(412) TO C(413)
 CONT C(413) TO C(414) , C(414) TO C(415) , C(415) TO C(416) , C(416) TO C(411)
- Directive  DISTANCE: No derivatives found during Evaluation
 
   28. Restrain these distances to be    1.395 Angstrom,
                 with an E.S.D. of   0.020
 
             Atom  1    S(I) L TX TY TZ       Atom  2    S(I) L TX TY TZ   distances    Delta
            C     411     1  1  0  0  0      C     412     1  1  0  0  0      2.398    -1.003
-  DISTANCE restraint:  No derivatives found
-  ?        C     412     1  1  0  0  0      C     413     1  1  0  0  0      1.373     0.022
+           C     412     1  1  0  0  0      C     413     1  1  0  0  0      1.373     0.022
            C     413     1  1  0  0  0      C     414     1  1  0  0  0      2.372    -0.977
            C     414     1  1  0  0  0      C     415     1  1  0  0  0      2.736    -1.341
            C     415     1  1  0  0  0      C     416     1  1  0  0  0      1.375     0.020
@@ -3338,6 +3338,7 @@ Refining     6 parameters in    1 block :       49 elements in the LS matrix.
 LS-scale=  0.909   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =  0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
 #DORESTRAIN
+ Directive  DISTANCE: No derivatives found during Evaluation
 #INVERT  DEFA
 #NEWSHIFTS
 #INVERT  DEFA
@@ -3377,10 +3378,10 @@ All cycle   Min function          0.0           0.14E+06       0.10E+16
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
- Statistics for     6 least squares parameters, with 12785 degrees of freedom
- Number of observations             12575               216             12791
+ Statistics for     6 least squares parameters, with 12784 degrees of freedom
+ Number of observations             12575               215             12790
 [30]  Minimisation function              0.13E+06         0.1E+06         0.26E+06
-[45]  Hamilton weighted R-value           4.             15.99              6. 
+[45]  Hamilton weighted R-value           4.             16.07              6. 
 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -5225,8 +5226,8 @@ LS-scale=  0.909   Wilson Scale=  0.000
 [27] <Fo>-<Fc> =  0.3     100*(<Fo>-<Fc>)/<Fo> =     0.
 #CYCLENDS
 #FINISH
- Physical reads      13250 Physical writes      10085 Cache hits     223520
- Cache hit distribution   203844   13117    2278     747     323     601
+ Physical reads      13250 Physical writes      10085 Cache hits     223521
+ Cache hit distribution   203844   13115    2279     748     324     601
  Cache hit distribution      184     122     211     203     235     212
  Cache hit distribution      190     163     152     168     211     105
  Cache hit distribution      162      50      41      61      66      74

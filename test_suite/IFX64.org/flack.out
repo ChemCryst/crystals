@@ -113,7 +113,7 @@ Refining     1 parameters in    1 block :       19 elements in the LS matrix.
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.3907E-03          On scale of /FO/
+       237.           237.              0.               0.3906E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -588,7 +588,7 @@ All cycle   Min function          0.0            2.6           0.10E+16
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.3885E-03          On scale of /FO/
+       237.           237.              0.               0.3884E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -905,7 +905,7 @@ All cycle   Min function          0.0           0.39E-03       0.10E+16
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.3886E-03          On scale of /FO/
+       237.           237.              0.               0.3887E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -1229,7 +1229,7 @@ All cycle   Min function          0.0            2.6           0.10E+16
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.3884E-03          On scale of /FO/
+       237.           237.              0.               0.3885E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -3143,7 +3143,7 @@ All cycle   Min function          0.0           0.33           0.10E+16
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.7115E-03          On scale of /FO/
+       237.           237.              0.               0.7114E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -3779,7 +3779,7 @@ All cycle   Min function          0.0           0.33           0.10E+16
 
        237.           237.              0.                                   On scale of /FC/
 
-       237.           237.              0.               0.7094E-03          On scale of /FO/
+       237.           237.              0.               0.7093E-03          On scale of /FO/
 
  New scale factor (G) is      1.000,      46 reflections used in refinement
 
@@ -5114,7 +5114,7 @@ Dc    29     5     7     7    12    10    11    17    20    25    30    28    20
 
  Outliers in Normal Probability Plot at delta(Z) > 0.29
     Indices       Ds        Do        Zo         Zc     /Zc-Zo/
-[12]    0   2   1   176.71    389.24     -4.202    -3.143     1.060
+[12]    0   2   1   176.72    389.24     -4.202    -3.143     1.060
 [12]    0   6   5    -9.73      9.37     -3.951    -2.903     1.048
 [12]    1   4   2   -10.11     60.31     -3.678    -2.736     0.942
 [12]    1   2   4    -9.96     24.26     -3.338    -2.607     0.731
