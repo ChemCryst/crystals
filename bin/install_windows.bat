@@ -7,7 +7,7 @@ set COMPONENTS=%2
 set THING=%3
 
 curl.exe --output %THING%.exe --url %URL% --retry 5 --retry-delay 5
-start /b /wait %THING%.exe -s -x -f %THING%_extracted --log extract.log
+start /b /wait %THING%.exe -s -x -f %THING%_extracted --log %THING%_extract.log
 del %THING%.exe
 
 dir %THING%_extracted

@@ -1,53 +1,429 @@
-name: CI Tests
+name: CI-Win-IFX
 
-on:
-  pull_request:
-    types: [opened, synchronize, reopened]
-    # Do not run if the only files changed cannot affect the build
-    paths-ignore:
-      - "**.md"
-      - "**.MD"
-      - "LICENCE"
-      - "COPYRIGHT"
+on: [push]
+
+# if there is a version tag, build release and push. 
+# From now (Jul 21) use semantic version number e.g. v15.2.103 (major.minor.patch) 
+# The old system has a hardcoded version (e.g. 15.1) and a build number instead of a patch.
+# The build number was the number of commits on current branch. Instead, let's store
+# the end of the git commit hash as a unique id to identify this build.
+
+
+
+env:
+#  WINDOWS_BASEKIT_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/e5785fb3-b5a7-4b97-89bc-918adab1f77d/intel-oneapi-base-toolkit-2025.1.3.8_offline.exe
+  WINDOWS_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/77bf3a15-a766-4619-91b4-1011badc4a36/intel-oneapi-hpc-toolkit-2025.1.3.7_offline.exe
+#  WINDOWS_MKL_COMPONENTS: 
+  WINDOWS_FORTRAN_COMPONENTS: intel.oneapi.win.ifort-compiler:intel.oneapi.win.mkl.devel:intel.oneapi.win.cpp-dpcpp-common
 
 
 jobs:
 
-  Intel:
+#    # Delete the following if you don't want to save install logs
+#    - name: Saving install logs
+#      if: steps.cache-install.outputs.cache-hit != 'true'
+#      uses: actions/upload-artifact@v2
+#      with:
+#        name: InstallLogs_${{ github.job }}
+#        path: |
+#          extract.log
+#          bootstrapper*
+#          installer*
+#        retention-days: 7
+
+
+#    # Delete the following if you don't want to save install logs
+#    - name: Saving install logs
+#      if: steps.cache-install.outputs.cache-hit != 'true'
+#      uses: actions/upload-artifact@v2
+#      with:
+#        name: InstallLogs_${{ github.job }}
+#        path: |
+#          extract.log
+#          bootstrapper*
+#          installer*
+#        retention-days: 7
+
+  build:
     runs-on: windows-latest
 
     env:
-      FC: ifx
-      CC: icx
+      testfail: false
 
-    name: Intel Fortran
+
+    strategy:
+      fail-fast: false
+      matrix:
+        cl: [gui, nogui]
+        release: [debug, release]
+        include:
+# Setup some GUI/NOGUI specific variables
+        - cl: gui
+          guiflag: yes
+          testsuffix: GUI
+          removeguitst:
+          wxoptions: -DwxWidgets_ROOT_DIR=..\wx -DwxWidgets_LIB_DIR=..\wx\lib\vc14x_x64_dll -DwxWidgets_CONFIGURATION=mswu
+        - cl: nogui
+          guiflag: no
+          testsuffix:
+          removeguitst: del gui.tst
+          wxoptions:
+        - release: debug
+          testoption: -s
+        - release: release
+          testoption:
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+
+    - name: Checkout crystals
+      uses: actions/checkout@v4
+
+#    - name: Add msbuild to PATH
+#      uses: microsoft/setup-msbuild@v1.0.2
+
+    - name: cache install oneapi
+      id: cache-install-oneapi
+      uses: actions/cache@v4
+      with:
+        path: 'C:\Program Files (x86)\Intel\oneAPI' 
+        key: install-${{ env.WINDOWS_HPCKIT_URL }}-${{ env.WINDOWS_FORTRAN_COMPONENTS }}-${{ hashFiles('**/bin/cache_exclude_windows.sh') }}
+
+    - name: install oneapi
+      shell: bash
+      if: steps.cache-install-oneapi.outputs.cache-hit != 'true'
+      run: |
+        bin/install_windows.bat $WINDOWS_HPCKIT_URL $WINDOWS_FORTRAN_COMPONENTS ifortinst
+
+    - name: exclude unused files from cache oneapi
+      if: steps.cache-install-oneapi.outputs.cache-hit != 'true'
+      shell: bash
+      run: bin/cache_exclude_windows.sh
+
+    - name: Upload outputs if install fail
+      uses: actions/upload-artifact@v4
+      if:  failure()
+      with:
+        name: install-fail-logs-win64-${{ matrix.cl }}
+        path: .
+
+
+ 
+# Install wxWidgets - win GUI only
+
+    - name: cache install wx
+      id: cache-wxlibs  # give it a name for checking the cache hit-or-not
+      uses: actions/cache@v4
+      with:
+        path: ./wx  # what we cache: the folder
+        key: ${{ runner.os }}-wxlibs314
+        restore-keys: |
+          ${{ runner.os }}-wxlibs314
+      if: matrix.cl == 'gui'
+          
+    - name: Download wxWidgets for Win64 gui
+      if: ${{ steps.cache-wxlibs.outputs.cache-hit != 'true' && matrix.cl == 'gui' }}
+      shell: cmd
+      run: |
+        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.4/wxMSW-3.1.4_vc14x_x64_Dev.7z > dev.7z
+        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.4/wxWidgets-3.1.4-headers.7z > head.7z
+        curl -LsS https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.4/wxMSW-3.1.4_vc14x_x64_ReleaseDLL.7z > rel.7Z
+        7z x dev.7z -owx -y
+        7z x head.7z -owx -y
+        7z x rel.7z -owx -y
+        dir
+#
+    - name: Create build and install folder
+      run: |
+        mkdir ci
+        mkdir installer
+
+    - name: Process version of the tag
+      uses: dhkatz/get-version-action@v3.0.0
+      id: version
+    
+    - name: Get short SHA of commit
+      id: vars
+      run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+    - name: Check outputs
+      run: |
+        echo SHA: ${{ steps.vars.outputs.sha_short }} 
+        echo Major: ${{ steps.version.outputs.major }} Minor: ${{ steps.version.outputs.minor }}
+        echo Ref: ${{github.ref_name}}
+        
+    - name: Build custom mkl library
+      working-directory: ci
+      shell: cmd
+      run: |    
+        call ..\bin\fix_cached_intelcomp.bat
+        for /f "tokens=* usebackq" %%f in (`dir /b "C:\Program Files (x86)\Intel\oneAPI\compiler\" ^| findstr /V latest ^| sort`) do @set "LATEST_VERSION=%%f"
+        xcopy /I/E/Y "C:\Program Files (x86)\Intel\oneAPI\mkl\%LATEST_VERSION%\share\mkl\tools\builder" builder
+        call "C:\Program Files (x86)\Intel\oneAPI\setvars.bat"
+        set FC=ifx
+        pushd builder
+        nmake libintel64 export="..\..\build\mkllibs.txt"
+        popd
+        copy ".\builder\mkl_custom.dll" .
+        copy ".\builder\mkl_custom.lib" .
+
+# Build WIN64
+#
+    - uses: ilammy/msvc-dev-cmd@v1
+
+    - name: Build CRYSTALS intel64
+      working-directory: ci
+      shell: cmd
+      run: |
+        for /f "tokens=* usebackq" %%f in (`dir /b "C:\Program Files (x86)\Intel\oneAPI\compiler\" ^| findstr /V latest ^| sort`) do @set "LATEST_VERSION=%%f"
+        call "C:\Program Files (x86)\Intel\oneAPI\setvars.bat"
+        set FC=ifx
+        set CRYSVNVER=${{ steps.vars.outputs.sha_short }}
+ 
+        echo Commit SHA: %CRYSVNVER% Version: ${{ steps.version.outputs.major }}.${{ steps.version.outputs.minor }}.${{ steps.version.outputs.patch }}
+        cmake .. -G"NMake Makefiles" -DuseGUI=${{ matrix.guiflag }} -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }} -DuseCustomMKL=yes -DusePY=no -DCMAKE_EXPORT_COMPILE_COMMANDS=on
+        nmake || exit /b %ERRORLEVEL%
+        copy ..\wx\lib\vc14x_x64_dll\wxmsw314u_stc_vc14x_x64.dll . 
+        copy ..\wx\lib\vc14x_x64_dll\wxmsw314u_core_vc14x_x64.dll .
+        copy ..\wx\lib\vc14x_x64_dll\wxmsw314u_gl_vc14x_x64.dll . 
+        copy ..\wx\lib\vc14x_x64_dll\wxbase314u_vc14x_x64.dll .
+        SET COMMAND=where libifcoremd.dll
+        FOR /F "delims=" %%A IN ('%COMMAND%') DO (
+            SET TEMPVAR=%%A
+            GOTO :copy1
+        )
+        :copy1
+        ECHO %TEMPVAR%
+        copy "%tempvar%"
+        SET COMMAND=where libifportMD.dll
+        FOR /F "delims=" %%A IN ('%COMMAND%') DO (
+            SET TEMPVAR=%%A
+            GOTO :copy2
+        )
+        :copy2
+        ECHO %TEMPVAR%
+        copy "%tempvar%"
+        SET COMMAND=where libiomp5md.dll
+        FOR /F "delims=" %%A IN ('%COMMAND%') DO (
+            SET TEMPVAR=%%A
+            GOTO :copy3
+        )
+        :copy3
+        ECHO %TEMPVAR%
+        copy "%tempvar%"
+        SET COMMAND=where libmmd.dll
+        FOR /F "delims=" %%A IN ('%COMMAND%') DO (
+            SET TEMPVAR=%%A
+            GOTO :copy5
+        )
+        :copy5
+        ECHO %TEMPVAR%
+        copy "%tempvar%"
+        SET COMMAND=where svml_dispmd.dll
+        FOR /F "delims=" %%A IN ('%COMMAND%') DO (
+            SET TEMPVAR=%%A
+            GOTO :copy6
+        )
+        :copy6
+        ECHO %TEMPVAR%
+        copy "%tempvar%"
+        SET COMMAND=where msvcp140.dll
+        FOR /F "delims=" %%A IN ('%COMMAND%') DO (
+            SET TEMPVAR=%%A
+            GOTO :copy7
+        )
+        :copy7
+        ECHO %TEMPVAR%
+        copy "%tempvar%"
+        SET COMMAND=where vcruntime140.dll
+        FOR /F "delims=" %%A IN ('%COMMAND%') DO (
+            SET TEMPVAR=%%A
+            GOTO :copy8
+        )
+        :copy8
+        ECHO %TEMPVAR%
+        copy "%tempvar%"
+        SET COMMAND=where vcruntime140_1.dll
+        FOR /F "delims=" %%A IN ('%COMMAND%') DO (
+            SET TEMPVAR=%%A
+            GOTO :copy9
+        )
+        :copy9
+        ECHO %TEMPVAR%
+        copy "%tempvar%"
+
+
+
+# Tests
+    - uses: ilammy/msvc-dev-cmd@v1
+
+    - name: Test CRYSTALS windows
+      working-directory: test_suite
+      shell: cmd
+# Prevent interactive scripts from running
+# Prevent gui test from running for this cl version
+# Setup environment
+# Compcode sets folder with reference test outputs
+# Go
+      run: |
+        set CRYSDIR=.\,..\ci\
+        set COMPCODE=IFX64${{ matrix.testsuffix }}
+        set OMP_NUM_THREADS=1
+        set PATH=..\wx\lib\vc14x_x64_dll;%path%
+        for /f "tokens=* usebackq" %%f in (`dir /b "C:\Program Files (x86)\Intel\oneAPI\compiler\" ^| findstr /V latest ^| sort`) do @set "LATEST_VERSION=%%f"
+        call "C:\Program Files (x86)\Intel\oneAPI\setvars.bat"
+        echo PATH is %PATH%
+        echo CRYSDIR is %CRYSDIR%
+        ren IFX64${{ matrix.testsuffix }}.org safe.dir
+        for /d %%G in ("*.org") do rd /s /q "%%~G"
+        ren safe.dir IFX64${{ matrix.testsuffix }}.org
+        ${{ matrix.removeguitst }}
+        mkdir script
+        echo "%SCRIPT NONE" > script\\tipauto.scp
+        echo "%END SCRIPT" >> script\\tipauto.scp
+        echo "%SCRIPT NONE" > script\\guideauto.scp
+        echo "%END SCRIPT" >> script\\guideauto.scp
+        perl ../editor/filepp.pl -ds -w -o diffin.tst -DTESTWIN diffin.tss
+        perl ../editor/filepp.pl -ds -w -o diffin2.tst -DTESTWIN diffin2.tss
+        perl ../editor/filepp.pl -ds -w -o diffin3.tst -DTESTWIN diffin3.tss
+        perl ../editor/filepp.pl -ds -w -o shelx2cry.tst -DTESTWIN shelx2cry.tss
+        perl testsuite.pl  ${{ matrix.testoption }} -l
+
+
+# If failures, trigger next two stages (one to tidy, one to upload)
+    - name: Tidy failed test outputs win64
+      working-directory: test_suite
+      if: failure() 
+      shell: cmd
+      run: |
+        dir
+        echo "testfail=true" >> $GITHUB_ENV
+        del /q IFX64${{ matrix.testsuffix }}.org
+        copy *.out IFX64${{ matrix.testsuffix }}.org
+        del /q *.*
+
+    - name: Upload outputs if failures
+      uses: actions/upload-artifact@v4
+      if:  failure()
+      with:
+        name: test-outputs-win64-${{ matrix.cl }}
+        path: test_suite
+
+# Could be useful for debugging
+#    - name: Upload exe folder if failures 
+#      uses: actions/upload-artifact@v1
+#      if:  failure()
+#      with:
+#        name: executable-outputs-win64-${{ matrix.cl }}
+#        path: ci
+
+# Could be useful for debugging
+    - name: Upload compile_commands 
+      uses: actions/upload-artifact@v4
+      with:
+        name: commands-win64-${{ matrix.cl }}-${{ matrix.release }}
+        path: ci/compile_commands.json
+
+
+
+    - name: Build installer
+      if:  ${{ matrix.cl == 'gui' }}
+      working-directory: installer
+      shell: cmd
+      run: |
+        set CRYSVNVER=${{ steps.vars.outputs.sha_short }}
+        set CRYSEMVER=${{ steps.version.outputs.major }}.${{ steps.version.outputs.minor }}.${{ steps.version.outputs.patch }}
+        echo Commit SHA: %CRYSVNVER% Version: %CRYSEMVER%
+        IF "%CRYSVNVER%"=="" (SET CRYSVNVER=0000)
+        IF "%CRYSEMVER%"=="" (SET CRYSEMVER=10.1.100)
+        "C:\Program Files (x86)\Inno Setup 6\iscc.exe" "../bin/crystals-gh.iss"
+        ren crystals-setup.exe crystals-${{steps.version.outputs.version}}-${{steps.vars.outputs.sha_short}}-${{matrix.release}}-setup.exe
+
+#    - uses: ChemCryst/code-sign-action@2cf2f6795b8a52517aeb27d1c570614edb6a6018
+#      with:
+#        certificate: '${{ secrets.CERTIFICATE }}'
+#        password: '${{ secrets.PASSWORD }}'
+#        certificatesha1: '${{ secrets.CERTHASH }}'
+#        certificatename: '${{ secrets.CERTNAME }}'
+#        folder: 'installer'
+#        recursive: false
+
+
+    - name: Upload installer
+      uses: actions/upload-artifact@v4
+      with:
+        name: crystals-setup-${{ matrix.release }}
+        path: ./installer/crystals-${{steps.version.outputs.version}}-${{steps.vars.outputs.sha_short}}-${{matrix.release}}-setup.exe
+      if:  ${{ matrix.cl == 'gui' }}
+
+    - name: Create Release
+      if:  ${{ matrix.cl == 'gui' && matrix.release == 'release' && startsWith(github.ref, 'refs/tags/') }}
+      id: create_release
+      uses: actions/create-release@v1.0.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: Tag-${{ github.ref }}
+        release_name: Release ${{ github.ref }} 
+        draft: false
+        prerelease: false
+
+    - name: Store Release url
+      if:  ${{ matrix.cl == 'gui' && matrix.release == 'release' && startsWith(github.ref, 'refs/tags/') }}
+      run: |
+        echo "${{ steps.create_release.outputs.upload_url }}" > ./upload_url
+
+    - uses: actions/upload-artifact@v4
+      with:
+        path: ./upload_url
+        name: upload_url
+      if:  ${{ matrix.cl == 'gui' && matrix.release == 'release' && startsWith(github.ref, 'refs/tags/') }}
+
+    #upload assets to release
+    - name: Download URL
+      if:  ${{ matrix.cl == 'gui' && matrix.release == 'release' && startsWith(github.ref, 'refs/tags/') }}
+      uses: actions/download-artifact@v4
+      with:
+        name: upload_url
+        path: ./
+        
+#    - id: set_upload_url
+#      if:  ${{ matrix.cl == 'gui' && matrix.release == 'release' && startsWith(github.ref, 'refs/tags/')}}
+#      run: echo "upload_url=$(cat ./upload_url)" >> $GITHUB_OUTPUT
+
+#    - name: Upload to Release
+      #uses: actions/upload-release-asset@v1.0.1
+      #env:
+        #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #with:
+        #upload_url: ${{ steps.set_upload_url.outputs.upload_url }}
+        #asset_path: ./installer/crystals-setup.exe
+        #asset_name: crystals-v${{ env.VERSION }}-win64.exe
+        #asset_content_type: application/x-executable
+      #if:  ${{ matrix.cl == 'gui' && matrix.release == 'release' }}
+        
+ #        if: startsWith(github.ref, 'refs/tags/')
+    - name: Upload to Release
+      uses: softprops/action-gh-release@v1
+      if:  ${{ matrix.cl == 'gui' && matrix.release == 'release' && startsWith(github.ref, 'refs/tags/') }}
+      with:
+          files: |
+            ./installer/crystals-*-${{matrix.release}}-setup.exe
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release:
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
         with:
-          fetch-depth: 1
-
-      - name: Setup Intel oneAPI repository
-        run: |
-          wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
-          sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
-          sudo add-apt-repository "deb https://apt.repos.intel.com/oneapi all main"
-          sudo apt-get update
-
-      - name: Install Intel oneAPI compilers
-        timeout-minutes: 5
-        run: sudo apt-get install intel-oneapi-compiler-fortran intel-oneapi-compiler-dpcpp-cpp
-
-      - name: Setup Intel oneAPI environment
-        run: |
-          source /opt/intel/oneapi/setvars.sh
-          printenv >> $GITHUB_ENV
-          printenv | grep intel
-
-      - name: Versions
-        run: |
-          ${FC} --version
-          ${CC} --version
-          mpirun --version
-          cmake --version
+          go-version: 1.19
+      - uses: go-semantic-release/action@v1
+        with:
+          hooks: goreleaser
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

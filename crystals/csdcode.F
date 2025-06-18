@@ -3084,7 +3084,9 @@ C-- terminal C  and no hydrogen, Use the bond length
               IF (D1.GE.1.30 .AND. D1.LT.1.44) NBT=2
             ENDIF
 C-- terminal C and 1 hydrogen - probably triple bond
-            IF (NCC.EQ.1 .AND. NHY.EQ.1 .AND. D1.LT.1.30) NBT=3
+            IF (NCC.EQ.1 .AND. NHY.EQ.1) THEN
+                IF (D1.LT.1.30) NBT=3
+            END IF
 C-- terminal C and 2 hydrogens - probably double bond
             IF (NCC.EQ.1 .AND. NHY.EQ.2 .AND.
      +            ISTORE(HYBR+IAT-1).EQ.2) NBT=2

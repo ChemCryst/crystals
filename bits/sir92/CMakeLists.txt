@@ -33,21 +33,33 @@ SET (CMAKE_Fortran_FLAGS_RELEASE "-O1 -std=legacy -fno-automatic -fno-inline")
 message(STATUS "sir92 fortran flags: ${CMAKE_Fortran_FLAGS_RELEASE}")
 
 IF (IFORT_COMPILER)
-set (CMAKE_Fortran_LINKER_PREFERENCE 80)
-set (CMAKE_FORTRAN_LINK_EXECUTABLE "ifort  <CMAKE_Fortran_LINK_FLAGS> <LINK_FLAGS> <FLAGS> <OBJECTS>  -o <TARGET> <LINK_LIBRARIES>")
 
-add_executable (sir92 WIN32 norm92.F sir92.F )
-TARGET_LINK_LIBRARIES(sir92 ifqwin.lib ifqw_mdi.lib)
+  set (CMAKE_Fortran_LINKER_PREFERENCE 80)
+  set (CMAKE_FORTRAN_LINK_EXECUTABLE "ifort  <CMAKE_Fortran_LINK_FLAGS> <LINK_FLAGS> <FLAGS> <OBJECTS>  -o <TARGET> <LINK_LIBRARIES>")
 
+  add_executable (sir92 WIN32 norm92.F sir92.F )
+  TARGET_LINK_LIBRARIES(sir92 ifqwin.lib ifqw_mdi.lib)
 
-#target_link_options (sir92 PUBLIC "/libs:qwin")
-set_property(TARGET sir92 PROPERTY LINKER_LANGUAGE Fortran)
-SET_TARGET_PROPERTIES(sir92 PROPERTIES LINKER_LANGUAGE Fortran)
+  set_property(TARGET sir92 PROPERTY LINKER_LANGUAGE Fortran)
+  SET_TARGET_PROPERTIES(sir92 PROPERTIES LINKER_LANGUAGE Fortran)
 
-# target_link_libraries(sir92 "qwin")
+ELSEIF ((IFX_COMPILER))
+
+  set (CMAKE_Fortran_LINKER_PREFERENCE 80)
+  set (CMAKE_FORTRAN_LINK_EXECUTABLE "ifx  <CMAKE_Fortran_LINK_FLAGS> <LINK_FLAGS> <FLAGS> <OBJECTS>  -o <TARGET> <LINK_LIBRARIES>")
+
+  add_executable (sir92 WIN32 norm92.F sir92.F )
+  TARGET_LINK_LIBRARIES(sir92 ifqwin.lib ifqw_mdi.lib)
+
+  set_property(TARGET sir92 PROPERTY LINKER_LANGUAGE Fortran)
+  SET_TARGET_PROPERTIES(sir92 PROPERTIES LINKER_LANGUAGE Fortran)
+
 ELSE()
-add_executable (sir92 norm92.F sir92.F sir92X11.c)
-target_link_libraries(sir92 "-lX11")
+
+  add_executable (sir92 norm92.F sir92.F sir92X11.c)
+  target_link_libraries(sir92 "-lX11")
+
 ENDIF()
+
 message(STATUS "End building sir92")
 message("")
