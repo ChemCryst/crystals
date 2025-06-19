@@ -249,6 +249,7 @@ jobs:
         :copy9
         ECHO %TEMPVAR%
         copy "%tempvar%"
+        dir
 
 
 
