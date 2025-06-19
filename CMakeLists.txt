@@ -398,8 +398,8 @@ elseif( IFORT_COMPILER ) # ifort (untested)
 
 elseif( IFX_COMPILER ) # ifx (untested)
 
-    set(CMAKE_Fortran_FLAGS_RELEASE "/O3 /fpp /MD /heap-arrays:8 /Qdiag-disable:8291 /traceback")
-    set(CMAKE_Fortran_FLAGS_DEBUG   "/traceback /debug:all /fpe-all=0 /check:all,nouninit /MDd /heap-arrays:8 /fpp /warn:nofileopt /Qdiag-disable:8291 /Qdiag-disable:8290")
+    set(CMAKE_Fortran_FLAGS_RELEASE "/O3 /fpp /MD  /heap-arrays:8 /traceback /Qdiag-disable:8291")
+    set(CMAKE_Fortran_FLAGS_DEBUG   "/Od /fpp /MDd /heap-arrays:8 /traceback /Qdiag-disable:8291 /Qdiag-disable:8290 /warn:nofileopt /debug:all /fpe:0 /check:all" )
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}  /O2  /EHs /W3 /Oy- ")
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /EHs /W3 /Oy- ")
     set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}  /O2 /EHs /W3 /Oy- ")
