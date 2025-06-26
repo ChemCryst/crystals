@@ -160,6 +160,8 @@ jobs:
         xcopy /I/E/Y "C:\Program Files (x86)\Intel\oneAPI\mkl\%LATEST_VERSION%\share\mkl\tools\builder" builder
         call "C:\Program Files (x86)\Intel\oneAPI\setvars.bat"
         set FC=ifx
+        set CC=icx
+        set CXX=icx
         pushd builder
         nmake libintel64 export="..\..\build\mkllibs.txt"
         popd
@@ -177,6 +179,8 @@ jobs:
         for /f "tokens=* usebackq" %%f in (`dir /b "C:\Program Files (x86)\Intel\oneAPI\compiler\" ^| findstr /V latest ^| sort`) do @set "LATEST_VERSION=%%f"
         call "C:\Program Files (x86)\Intel\oneAPI\setvars.bat"
         set FC=ifx
+        set CC=icx
+        set CXX=icx
         set CRYSVNVER=${{ steps.vars.outputs.sha_short }}
         echo Commit SHA: %CRYSVNVER% Version: ${{ steps.version.outputs.major }}.${{ steps.version.outputs.minor }}.${{ steps.version.outputs.patch }}
         cmake .. -G"NMake Makefiles" -DuseGUI=${{ matrix.guiflag }} -DCMAKE_SH="CMAKE_SH-NOTFOUND" ${{ matrix.wxoptions }} -DCMAKE_BUILD_TYPE=${{ matrix.release }} -DuseCustomMKL=yes -DusePY=no -DCMAKE_EXPORT_COMPILE_COMMANDS=on
