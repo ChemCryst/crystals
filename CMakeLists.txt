@@ -413,7 +413,7 @@ elseif( IFX_COMPILER ) # ifx (untested)
     add_definitions(-D__WXMSW__)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 
-    set(CMAKE_CXX_LINK_EXECUTABLE "icc -fortlib <OBJECTS>  -o <TARGET> <LINK_LIBRARIES> /link <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS>")
+    set(CMAKE_CXX_LINK_EXECUTABLE "icx -fortlib <OBJECTS>  -o <TARGET> <LINK_LIBRARIES> /link <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS>")
 
 	add_definitions(-DCRYSVNVER=${CRYSVNVER})
 
