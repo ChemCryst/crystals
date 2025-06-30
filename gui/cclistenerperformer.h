@@ -38,7 +38,7 @@ class CcListener
 		 * Virtual listener class needs a virtual destructor, so that the CClisternerPerformer 
 		 * class can delete the added listeners. 
 		 */
-		virtual ~CCListener() = default;
+		virtual ~CcListener() = default;
 
 };
 
