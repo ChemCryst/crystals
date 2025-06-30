@@ -33,6 +33,13 @@ class CcListener
 		 * pData Some data which is required by the listener. Maybe NULL.
 		 */
 		virtual void perform(const void* pData) = 0;
+
+		/*
+		 * Virtual listener class needs a virtual destructor, so that the CClisternerPerformer 
+		 * class can delete the added listeners. 
+		 */
+		virtual ~CCListener() = default;
+
 };
 
 class AddListener : public CcListener
