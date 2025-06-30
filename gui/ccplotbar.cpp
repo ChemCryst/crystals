@@ -273,8 +273,8 @@ void CcPlotBar::DrawView(bool print)
         // gap between division markers on x and y axes
         int xdivoffset = (2400-m_XGapLeft-m_XGapRight) / (m_Axes.m_AxisData[Axis_X].m_NumDiv);          
         int ydivoffset = (2400-m_YGapTop-m_YGapBottom) / (m_Axes.m_AxisData[Axis_YL].m_NumDiv);         
-        int yroffset   = 0;
-        if(m_Axes.m_NumberOfYAxes == 2) yroffset = (2400 - m_YGapTop - m_YGapBottom)/(m_Axes.m_AxisData[Axis_YR].m_NumDiv);
+//        int yroffset   = 0;
+//        if(m_Axes.m_NumberOfYAxes == 2) yroffset = (2400 - m_YGapTop - m_YGapBottom)/(m_Axes.m_AxisData[Axis_YR].m_NumDiv);
 
         // axis dimensions after rounding
         int axisheight = ydivoffset * (m_Axes.m_AxisData[Axis_YL].m_NumDiv);
@@ -283,7 +283,7 @@ void CcPlotBar::DrawView(bool print)
         int xseroffset=0;
 
         // take the axis height, work out where zero is...
-        int xorigin    = (int)(2400 - m_XGapLeft   + ((axiswidth *  m_Axes.m_AxisData[Axis_X].m_Min)     / (m_Axes.m_AxisData[Axis_X].m_Max      - m_Axes.m_AxisData[Axis_X].m_Min)));
+//        int xorigin    = (int)(2400 - m_XGapLeft   + ((axiswidth *  m_Axes.m_AxisData[Axis_X].m_Min)     / (m_Axes.m_AxisData[Axis_X].m_Max      - m_Axes.m_AxisData[Axis_X].m_Min)));
         int yorigin    = (int)(2400 - m_YGapBottom + (axisheight * (m_Axes.m_AxisData[Axis_YL].m_AxisMin / (m_Axes.m_AxisData[Axis_YL].m_AxisMax - m_Axes.m_AxisData[Axis_YL].m_AxisMin))));
         int yorigright = (int)(2400 - m_YGapBottom + (axisheight * (m_Axes.m_AxisData[Axis_YR].m_AxisMin / (m_Axes.m_AxisData[Axis_YR].m_AxisMax - m_Axes.m_AxisData[Axis_YR].m_AxisMin))));
 
@@ -373,7 +373,7 @@ void CcPlotBar::DrawView(bool print)
                 case Plot_SeriesLine:
                 {
                     vector<float>::iterator ity = m_Series[j].m_Data.begin();
-                    float fy = *ity;
+//                    float fy = *ity;
                     ity++;
                     for( i = 0; ity != m_Series[j].m_Data.end(); ity++ )
                     {
@@ -558,8 +558,8 @@ void CcPlotBar::SaveToFile(string filename)
         {
 			fprintf( output, "\nSeries %d: %s\n", j+1, m_Series[j].m_SeriesName.c_str());
 			vector<string>::iterator its = m_Axes.m_Labels.begin();
-			vector<float>::iterator ity = m_Series[j].m_Data.begin();
-			for( int i = 0; ity != m_Series[j].m_Data.end(); ity++ )
+			vector<float>::iterator ity;
+			for( ity = m_Series[j].m_Data.begin(); ity != m_Series[j].m_Data.end(); ity++ )
 			{
 				fprintf( output, "%s,%f,%d\n", (*its).c_str(), *ity, j+1 );
 				its++;

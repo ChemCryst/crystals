@@ -1214,7 +1214,7 @@ bool CcController::ParseInput( deque<string> & tokenList )
                 // remove that token
                 tokenList.pop_front();
 
-                CrGUIElement * theElement;
+                CrGUIElement * theElement = nil;
                 if ( mCurrentWindow )
                 {
                     // Look for the item in current window first.
@@ -1883,7 +1883,6 @@ void  CcController::AddInterfaceCommand( const string &line, bool internal )
   LOGSTAT("-----------CRYSTALS has put: " + line );
 
 
-  bool comp = false;
   if ( lock )
   {
        m_Complete_Signal.Wait();
@@ -2434,7 +2433,7 @@ void CcController::StartCrystalsThread()
 //    This returns a pointer which is stored so we can        //
 //             kill it later if we want!                      //
 //                                                            //
-   int arg = 6;
+//   int arg = 6;
 
 #ifdef CRY_OSMAC
     setlocale( LC_ALL, "POSIX");
@@ -3510,7 +3509,7 @@ extern "C" {
 
 // READ THE BUFFER; REMOVE UNWANTED CHARS; APPEND TO EXISTING INPUT BUFFER:
 
-                string::size_type i,j;
+                string::size_type i;
                 BZERO(buf);
                 ReadFile(outPipe.output,buf,1023,&bread,NULL);  //read the stdout pipe
                 string s(buf);
