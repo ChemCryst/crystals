@@ -65,7 +65,7 @@ CRCALCLAYOUT(CrStretch,CxStretch)
 CcParse CrStretch::ParseInput( deque<string> & tokenList )
 {
     CcParse retVal(true, mXCanResize, mYCanResize);
-    bool hasTokenForMe = true;
+ //   bool hasTokenForMe = true;
 
     if( ! mSelfInitialised )
     {

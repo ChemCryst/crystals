@@ -1170,13 +1170,13 @@ void CcModelDoc::SendAtoms(int style, bool sendonly)
 void CcModelDoc::ZoomAtoms(bool doZoom)
 {
   m_thread_critical_section.Enter();
-  if (!mAtomList.empty())
+  if (!mAtomList.empty()){
     for (list<CcModelAtom>::iterator atom = mAtomList.begin(); atom != mAtomList.end(); atom++)
       if ((*atom).IsSelected())
         (*atom).m_excluded = false;
       else
         (*atom).m_excluded = doZoom;
-
+  }
   if (!mSphereList.empty()) {
     for (list<CcModelSphere>::iterator sphere = mSphereList.begin(); sphere != mSphereList.end(); sphere++)
       if ((*sphere).IsSelected())
@@ -1184,7 +1184,7 @@ void CcModelDoc::ZoomAtoms(bool doZoom)
       else
         (*sphere).m_excluded = doZoom;
   }
-  
+
   if (!mDonutList.empty()) {
     for (list<CcModelDonut>::iterator donut = mDonutList.begin(); donut != mDonutList.end(); donut++)
       if ((*donut).IsSelected())

@@ -278,7 +278,7 @@ void CcPlotBar::DrawView(bool print)
 
         // axis dimensions after rounding
         int axisheight = ydivoffset * (m_Axes.m_AxisData[Axis_YL].m_NumDiv);
-        int axiswidth = xdivoffset * (m_Axes.m_AxisData[Axis_X].m_NumDiv);
+//        int axiswidth = xdivoffset * (m_Axes.m_AxisData[Axis_X].m_NumDiv);
         
         int xseroffset=0;
 

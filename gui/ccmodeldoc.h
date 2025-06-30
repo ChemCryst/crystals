@@ -243,10 +243,10 @@ class CcModelDoc
         
 		GLuint m_glIDs;
         int nSelected;
-        int m_nAtoms;
-        int m_TotX;
-        int m_TotY;
-        int m_TotZ;
+//        int m_nAtoms;
+//        int m_TotX;
+//        int m_TotY;
+//        int m_TotZ;
   
         list<CcModelAtom> mAtomList;
         list<CcModelBond> mBondList;
