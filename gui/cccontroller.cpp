@@ -1810,12 +1810,22 @@ void  CcController::AddCrystalsCommand(const string &line, bool jumpQueue)
 //Add this command to the queue to crystals.
     string temp = trim(line);
     string::size_type stp;
+
+    stp = temp.rfind("*N");
+    while ( stp != string::npos ) {
+        // substitue the *N from the string
+        temp.replace(stp, 2, "_N");
+        stp = temp.rfind("*N");
+    }
+
     if ( jumpQueue )
     {
          stp = temp.rfind("_N");
          if (stp != string::npos)
          {
+            // add string after _N to the command queue
             mCrystalsCommandDeq.push_front ( temp.substr(stp+2,temp.length()-stp-2) );   //Add the next command in the list to the command queue
+            // recursion, process rest (before _N) of string again
             AddCrystalsCommand(temp.substr(0,stp), jumpQueue);
          }
          else
@@ -2514,6 +2524,10 @@ string CcController::OpenFileDialog(list<pair<string,string> > &extensionsAndDes
             wxString pathandtitle = pathname.BeforeLast('.');
             pathname = pathandtitle;
         }
+
+        // replace _N with *N to avoid problems with _N in filenames
+        pathname.Replace(wxT("_N"), wxT("*N"));
+
     }
     else
     {
@@ -2548,6 +2562,8 @@ string CcController::SaveFileDialog(const string &defaultName,
     if (fileDialog.ShowModal() == wxID_OK )
     {
         pathname = fileDialog.GetPath();
+        // replace _N with *N to avoid problems with _N in filenames
+        pathname.Replace(wxT("_N"), wxT("*N"));
     }
     else
     {
