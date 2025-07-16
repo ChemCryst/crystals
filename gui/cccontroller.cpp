@@ -1811,40 +1811,72 @@ void CcController::AddCrystalsCommand(const string &line, bool jumpQueue)
 
   // 3. Everything else.
   // Add this command to the queue to crystals.
+
+
   string temp = trim(line);
   string::size_type stp;
 
-  stp = temp.rfind("*N");
-  while (stp != string::npos)
-  {
-    // substitue the *N from the string
-    temp.replace(stp, 2, "_N");
-    stp = temp.rfind("*N");
-  }
 
   if (jumpQueue)
   {
-    stp = temp.rfind("_N");
+    stp = temp.rfind("_N");    // split string at _N
     if (stp != string::npos)
     {
       // add string after _N to the command queue
-      mCrystalsCommandDeq.push_front(temp.substr(stp + 2, temp.length() - stp - 2)); // Add the next command in the list to the command queue
+      string endofstring = temp.substr(stp + 2, temp.length() - stp - 2); 
+
+      // but first, substitute the *N with _N
+      string::size_type nstar = enddofstring.rfind("*N");
+      while (nstar != string::npos)
+      {
+        // substitue the *N from the string
+        endofstring.replace(nstar, 2, "_N");
+        nstar = endofstring.rfind("*N");
+      }
+      mCrystalsCommandDeq.push_front(endofstring); // Add the next command in the list to the command queue
       // recursion, process rest (before _N) of string again
       AddCrystalsCommand(temp.substr(0, stp), jumpQueue);
     }
-    else
+    else {
+      string::size_type nstar = temp.rfind("*N");
+      while (nstar != string::npos)
+      {
+        // substitue the *N from the string
+        temp.replace(nstar, 2, "_N");
+        nstar = temp.rfind("*N");
+      }
       mCrystalsCommandDeq.push_front(temp); // Add the next command in the list to the command queue
+    }
   }
   else
   {
     stp = temp.find("_N");
     if (stp != string::npos)
     {
-      mCrystalsCommandDeq.push_back(temp.substr(0, stp)); // Add the next command in the list to the command queue
+      // add string after _N to the command queue
+      string startofstring = temp.substr(0,stp); 
+
+      // but first, substitute the *N with _N
+      string::size_type nstar = startofstring.rfind("*N");
+      while (nstar != string::npos)
+      {
+        // substitue the *N from the string
+        startofstring.replace(nstar, 2, "_N");
+        nstar = startofstring.rfind("*N");
+      }
+      mCrystalsCommandDeq.push_back(startofstring); // Add the next command in the list to the command queue
       AddCrystalsCommand(temp.substr(stp + 2, temp.length() - stp - 2), jumpQueue);
     }
-    else
+    else {
+     string::size_type nstar = temp.rfind("*N");
+      while (nstar != string::npos)
+      {
+        // substitue the *N from the string
+        temp.replace(nstar, 2, "_N");
+        nstar = temp.rfind("*N");
+      }
       mCrystalsCommandDeq.push_back(temp); // Add the next command in the list to the command queue
+    }
   }
 }
 
