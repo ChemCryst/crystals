@@ -1826,7 +1826,7 @@ void CcController::AddCrystalsCommand(const string &line, bool jumpQueue)
       string endofstring = temp.substr(stp + 2, temp.length() - stp - 2); 
 
       // but first, substitute the *N with _N
-      string::size_type nstar = enddofstring.rfind("*N");
+      string::size_type nstar = endofstring.rfind("*N");
       while (nstar != string::npos)
       {
         // substitue the *N from the string
