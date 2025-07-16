@@ -1306,6 +1306,7 @@ C    through equivalence so the use of a temporary variable is compulsory
       real, dimension(N), intent(out) :: RESLT
       real, dimension(N) :: temp
       integer i
+      volatile SRCE, RESLT
 C
       temp=SRCE
       RESLT=temp
@@ -1328,6 +1329,7 @@ C    through equivalence so the use of a temporary variable is compulsory
       integer, dimension(N), intent(out) :: IRESLT
       integer, dimension(N) :: temp
       integer i
+      volatile ISRCE, IRESLT
 C
       temp=ISRCE
       IRESLT=temp
