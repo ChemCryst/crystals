@@ -10572,6 +10572,10 @@ C INITIALISE
         a(5) = 0.
         a(6) = 0.
       ELSE IF (MODE .EQ. 1) THEN
+           if (y > 9999999.9) then ! this will go badly
+               y = 1.0
+           end if
+
 c      totals for plot
            a(1) =  a(1)  + 1.
            a(2) =  a(2)  + X
@@ -10585,8 +10589,13 @@ c      totals for plot
        correl = 0.
        n = nint(a(1))
 c      determinant
-       deter = a(1)*a(4)-a(2)*a(2)
-        if (deter .ne. 0.) then
+       if (a(2) > 9999999.9) then ! this has gone badly
+           deter = 1.0
+           denom = -1.0
+       else 
+          deter = a(1)*a(4)-a(2)*a(2)
+       end if   
+       if (deter .ne. 0.) then
          mode = 3
          slope = (a(1)*a(6)-a(2)*a(3))/deter
          rinter = (a(4)*a(3)-a(2)*a(6))/deter
