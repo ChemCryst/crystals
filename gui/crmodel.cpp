@@ -645,7 +645,7 @@ CcParse CrModel::ParseInput( deque<string> &  tokenList )
       case kTSelectTool:
       {
         tokenList.pop_front();
-        bool bRect = true;
+//        bool bRect = true;
         if (!tokenList.empty() && CcController::GetDescriptor( tokenList.front(), kLogicalClass ) == kTSelectRect)
         {
           tokenList.pop_front();

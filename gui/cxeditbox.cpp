@@ -110,13 +110,7 @@ CxEditBox * CxEditBox::CreateCxEditBox( CrEditBox * container, CxGrid * guiParen
 //and it will do the initialisation for you.
 
     CxEditBox   *theEditBox = new CxEditBox( container );
-#ifdef CRY_USEMFC
-        theEditBox->Create(ES_LEFT| ES_AUTOHSCROLL| WS_VISIBLE| WS_CHILD| ES_WANTRETURN, CRect(0,0,10,10), guiParent, mEditBoxCount++);
-    theEditBox->ModifyStyleEx(NULL,WS_EX_CLIENTEDGE,0);  //Sink it into the window.
-    theEditBox->SetFont(CcController::mp_font);
-#else
       theEditBox->Create(guiParent, -1, "edit", wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
-#endif
     return theEditBox;
 }
 CxEditBox::CxEditBox( CrEditBox * container )
@@ -136,11 +130,7 @@ CxEditBox::~CxEditBox()
 
 void CxEditBox::CxDestroyWindow()
 {
-#ifdef CRY_USEMFC
-DestroyWindow();
-#else
 Destroy();
-#endif
 }
 
 void  CxEditBox::SetText( const string & text )
@@ -169,37 +159,16 @@ void  CxEditBox::SetText( const string & text )
     if ( temp.length() > m_Limit )
     {
        temp.erase(m_Limit);
-#ifdef CRY_USEMFC
-      MessageBeep(MB_ICONASTERISK);
-#endif
     }
-#ifdef CRY_USEMFC
-      SetWindowText( temp.c_str() );
-#else
       SetValue( temp.c_str() );
-#endif
 	  mPreviousText = temp;
 }
 
 
 void  CxEditBox::AddText( const string & text )
 {
-#ifdef CRY_USEMFC
-  if (GetWindowTextLength() + text.length() > m_Limit)
-  {
-    MessageBeep(MB_ICONASTERISK);
-  }
-  else
-  {
-    SetSel(GetWindowTextLength(),GetWindowTextLength());       //Set the selection at the end of the text buffer.
-    ReplaceSel(text.c_str());    //Replace the selection (nothing) with the text to add.
-    SetWindowPos(&wndTop,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_SHOWWINDOW); //Bring the focus to this window.
-    SetSel(GetWindowTextLength(),GetWindowTextLength());  //Place caret at end of text.
-  }
-#else
       AppendText(text.c_str());
       SetFocus();
-#endif	
 	mPreviousText = GetText(); 
 }
 
@@ -215,31 +184,17 @@ int CxEditBox::GetIdealWidth()
 
 int CxEditBox::GetIdealHeight()
 {
-#ifdef CRY_USEMFC
-    CClientDC cdc(this);   //See GetIdealWidth for how this works.
-    CFont* oldFont = cdc.SelectObject( (m_IsInput ? CcController::mp_inputfont : CcController::mp_font) );
-    TEXTMETRIC textMetric;
-    cdc.GetTextMetrics(&textMetric);
-    cdc.SelectObject(oldFont);
-    return textMetric.tmHeight + 5;
-#else
       int cx, cy;
       GetTextExtent( "Some text", &cx, &cy ) ;
       return cy + 5;
-#endif
 }
 
 string CxEditBox::GetText()
 {
       char theText[255];
-      int maxlen = 255;
-#ifdef CRY_USEMFC
-      int textlen = GetWindowText((char*)&theText,maxlen);
-#else
       wxString wtext = GetValue();
       int textlen = wtext.length();
       strcpy(theText, wtext.c_str());
-#endif
 
 //If the allowed input is a number, check it before returning.
 //It should be a number, if it isn't 0 or 0.0 will be returned.
@@ -258,16 +213,7 @@ string CxEditBox::GetText()
 
 void    CxEditBox::SetVisibleChars( int count )
 {
-#ifdef CRY_USEMFC
-    CClientDC cdc(this);    //Get the device context for this window (edit box).
-    CFont* oldFont = cdc.SelectObject(CcController::mp_font); //Select the standard font into the device context, save the old one for later.
-    TEXTMETRIC textMetric;
-    cdc.GetTextMetrics(&textMetric);   //Get the metrics for this font.
-    cdc.SelectObject(oldFont);         //Select the old font back into the DC.
-      mCharsWidth = count * textMetric.tmAveCharWidth;  //Work out the ideal width.
-#else
       mCharsWidth = count * GetCharWidth();
-#endif
 }
 
 void    CxEditBox::EditChanged()
@@ -275,76 +221,22 @@ void    CxEditBox::EditChanged()
     ((CrEditBox*)ptr_to_crObject)->BoxChanged();  //Inform container that the text has changed.
 }
 
-#ifdef CRY_USEMFC
-BEGIN_MESSAGE_MAP(CxEditBox, CEdit)
-    ON_WM_CHAR()
-        ON_WM_KEYDOWN()
-END_MESSAGE_MAP()
-#else
 //wx Message Table
 BEGIN_EVENT_TABLE(CxEditBox, BASEEDITBOX)
       EVT_CHAR( CxEditBox::OnChar )
       EVT_KEY_DOWN( CxEditBox::OnKeyDown )
       EVT_KEY_UP( CxEditBox::OnKeyUp )
 END_EVENT_TABLE()
-#endif
 
 
 void CxEditBox::Focus()
 {
     SetFocus();
-#ifdef CRY_USEMFC
-      SetSel(GetWindowTextLength(),GetWindowTextLength());  //Place caret at end of text.
-#else
-      SetInsertionPoint( GetLineLength(0) );  //Place caret at end of text.
-#endif
+    SetInsertionPoint( GetLineLength(0) );  //Place caret at end of text.
 
 }
 
 
-#ifdef CRY_USEMFC
-void CxEditBox::OnChar( UINT nChar, UINT nRepCnt, UINT nFlags )
-{
-    if( nChar == 9 )   //TAB. Move focus to next UI object.
-    {
-        bool shifted = ( HIWORD(GetKeyState(VK_SHIFT)) != 0) ? true : false;
-        ptr_to_crObject->NextFocus(shifted);
-    }
-    else if ( allowedInput == CXE_READ_ONLY )
-    {
-        return;
-    }
-    else if ( nChar == 13 ) //RETURN.
-    {
-        ((CrEditBox*)ptr_to_crObject)->ReturnPressed();
-    }
-    else
-    {
-//Block unwanted keypresses...
-        char c = (char) nChar;
-        if(iscntrl( nChar )) //It it a control char (delete, arrow keys), let it through
-        {
-            CEdit::OnChar( nChar, nRepCnt, nFlags );
-            EditChanged();
-            return;
-        }
-
-        if( allowedInput != CXE_TEXT_STRING ) //It's not text (it's a number).
-        {
-            if ( ((c < '0') || (c > '9')) && (c != '.') && ( c != '-') ) {Beep(1000,50); return;} //If it is non numeric, and not '.', then ignore.
-            }
-
-        if( allowedInput == CXE_INT_NUMBER ) //It's an integer.
-        {
-            if ( c == '.' ) {Beep(1000,50); return;} //If it's a dot, ignore.
-        }
-
-        CEdit::OnChar( nChar, nRepCnt, nFlags );
-        EditChanged();
-        return;
-    }
-}
-#else
 void CxEditBox::OnChar( wxKeyEvent & event )
 {
       int nChar = event.GetKeyCode();
@@ -402,23 +294,15 @@ void CxEditBox::OnKeyUp( wxKeyEvent & event )
 
     return;
 }
-#endif
 
 
 
 void CxEditBox::Disable(bool disable)
 {
-#ifdef CRY_USEMFC
-      if(disable)
-            EnableWindow(false);
-      else
-            EnableWindow(true);
-#else
       if(disable)
             Enable(false);
     else
             Enable(true);
-#endif
 }
 
 void CxEditBox::SetInputType(int type)
@@ -429,42 +313,9 @@ void CxEditBox::SetInputType(int type)
 
 void CxEditBox::ClearBox()
 {
-#ifdef CRY_USEMFC
-    SetSel(0,-1);       //Set the selection to the whole of the text buffer.
-    Clear();            //Clears the selection.
-#else
       Clear();
-#endif
 }
 
-#ifdef CRY_USEMFC
-void CxEditBox::OnKeyDown ( UINT nChar, UINT nRepCnt, UINT nFlags )
-{
-            CrGUIElement * theElement;
-            switch (nChar)
-            {
-                  case VK_UP:
-                        ((CrEditBox*)ptr_to_crObject)->SysKey( CRUP );
-                        break;
-                  case VK_DOWN:
-                        ((CrEditBox*)ptr_to_crObject)->SysKey( CRDOWN );
-                        break;
-                  case VK_PRIOR:
-                       theElement = (CcController::theController)->GetTextOutputPlace();
-                       if (theElement)
-                          ((CrTextOut*)theElement)->ScrollPage(true);
-                       break;
-                  case VK_NEXT:
-                       theElement = (CcController::theController)->GetTextOutputPlace();
-                       if (theElement)
-                          ((CrTextOut*)theElement)->ScrollPage(false);
-                       break;
-                  default:
-                        CEdit::OnKeyDown( nChar, nRepCnt, nFlags );
-                        break;
-            }
-}
-#else
 void CxEditBox::OnKeyDown ( wxKeyEvent & event )
 {
             switch (event.GetKeyCode())
@@ -480,16 +331,10 @@ void CxEditBox::OnKeyDown ( wxKeyEvent & event )
                         break;
             }
 }
-#endif
 
 void CxEditBox::LimitChars(string::size_type limit)
 {
    m_Limit = limit;
-#ifdef CRY_USEMFC
-   SetLimitText(limit);
-#else
-//
-#endif
 
 }
 
@@ -497,26 +342,6 @@ void CxEditBox::IsInputPlace()
 {
    if (CcController::mp_inputfont == nil)
    {
-#ifdef CRY_USEMFC
-     LOGFONT lf;
-     ::GetObject(GetStockObject(DEFAULT_GUI_FONT), sizeof(LOGFONT), &lf);
-     string temp;
-     temp = (CcController::theController)->GetKey( "MainFontHeight" );
-     if ( temp.length() )  lf.lfHeight = atoi( temp.c_str() ) ;
-     temp = (CcController::theController)->GetKey( "MainFontWidth" );
-     if ( temp.length() )  lf.lfWidth = atoi( temp.c_str() ) ;
-     temp = (CcController::theController)->GetKey( "MainFontFace" );
-     for (string::size_type i=0;i<32;i++)
-     {
-       if ( i < temp.length() )   lf.lfFaceName[i] = temp[i];
-       else                    lf.lfFaceName[i] = 0;
-     }
-     CcController::mp_inputfont = new CFont();
-     if (CcController::mp_inputfont->CreateFontIndirect(&lf))
-       SetFont(CcController::mp_inputfont);
-     else
-       ASSERT(0);
-#else
     wxFont* pFont = new wxFont(12,wxFONTFAMILY_MODERN,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL);
  #ifndef _WINNT
     *pFont = wxSystemSettings::GetFont( wxSYS_ANSI_FIXED_FONT );
@@ -527,24 +352,15 @@ void CxEditBox::IsInputPlace()
     temp = (CcController::theController)->GetKey( "MainFontInfo" );
     if ( temp.length() ) pFont->SetNativeFontInfo( temp.c_str() );
     CcController::mp_inputfont = pFont;
-#endif
    }
    else
    {
-#ifdef CRY_USEMFC
-     SetFont(CcController::mp_inputfont);
-#else
      SetFont(*CcController::mp_inputfont);
-#endif
    }
    m_IsInput = true;
 }
 
 void CxEditBox::UpdateFont()
 {
-#ifdef CRY_USEMFC
-     SetFont(CcController::mp_inputfont);
-#else
      SetFont(*CcController::mp_inputfont);
-#endif
 }

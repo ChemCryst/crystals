@@ -443,7 +443,7 @@ bool CcPlotData::ParseInput( deque<string> &  tokenList )
             {
                 string textstyle;                 // the drawing style, in text
                 int style = Plot_SeriesBar;         // the style in Plot_SeriesX form
-                int series = 0;
+//                int series = 0;
         
                 tokenList.pop_front();              // 'TYPE'
 
@@ -947,10 +947,10 @@ bool CcPlotAxes::CalculateDivisions()
     // now the y axis
     if(m_AxisData[Axis_YL].m_AxisLog) tempyl = m_AxisData[Axis_YL].CalculateLogDivisions();
     else tempyl = m_AxisData[Axis_YL].CalculateLinearDivisions();
-    if(m_NumberOfYAxes == 2)
+    if(m_NumberOfYAxes == 2){
         if(m_AxisData[Axis_YR].m_AxisLog) tempyr = m_AxisData[Axis_YR].CalculateLogDivisions();
         else tempyr = m_AxisData[Axis_YR].CalculateLinearDivisions();
-
+    }
     if(m_NumberOfYAxes == 2)
         return (tempx & tempyl & tempyr);
     else return (tempx & tempyl);
@@ -1015,7 +1015,7 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
 
         // variables used for loops
         int i=0;
-        int j=0;
+//        int j=0;
 
         // temp string for text label
         ostringstream ylabel;
@@ -1039,21 +1039,21 @@ void CcPlotAxes::DrawAxes(CrPlot* attachedPlot)
 		xorigin = CRMIN( xorigin, 2400-xgapright );
 
 		int yorigin = (int)(2400 - ygapbottom + (axisheight * (m_AxisData[Axis_YL].m_AxisMin/ (m_AxisData[Axis_YL].m_AxisMax - m_AxisData[Axis_YL].m_AxisMin))));
-        int yorigright = (int)(2400 - ygapbottom + (axisheight * (m_AxisData[Axis_YR].m_AxisMin / (m_AxisData[Axis_YR].m_AxisMax - m_AxisData[Axis_YR].m_AxisMin))));
+//        int yorigright = (int)(2400 - ygapbottom + (axisheight * (m_AxisData[Axis_YR].m_AxisMin / (m_AxisData[Axis_YR].m_AxisMax - m_AxisData[Axis_YR].m_AxisMin))));
 
         //this is the value of y at the origin <left> (may be non-zero for span-graphs)
         float yoriginvalue = 0;
         if(m_AxisData[Axis_YL].m_AxisScaleType == Plot_AxisSpan && m_AxisData[Axis_YL].m_AxisMin > 0) 
         {
             yorigin = 2400 - ygapbottom;
-            yoriginvalue = m_AxisData[Axis_YL].m_AxisDivisions[0];
+//            yoriginvalue = m_AxisData[Axis_YL].m_AxisDivisions[0];
         }
-        float yoriginvaluer = 0;
-        if(m_AxisData[Axis_YR].m_AxisScaleType == Plot_AxisSpan && m_AxisData[Axis_YR].m_AxisMin > 0)
-        {
-            yorigright = 2400 - ygapbottom;
-            yoriginvaluer = m_AxisData[Axis_YR].m_AxisDivisions[0];
-        }
+//        float yoriginvaluer = 0;
+//        if(m_AxisData[Axis_YR].m_AxisScaleType == Plot_AxisSpan && m_AxisData[Axis_YR].m_AxisMin > 0)
+//        {
+//            yorigright = 2400 - ygapbottom;
+//            yoriginvaluer = m_AxisData[Axis_YR].m_AxisDivisions[0];
+//        }
 
         // now draw the axes in black: overwrite bars
         attachedPlot->SetColour(0,0,0);

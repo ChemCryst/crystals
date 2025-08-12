@@ -227,32 +227,6 @@ jobs:
             GOTO :copy6
         )
         :copy6
-        ECHO %TEMPVAR%
-        copy "%tempvar%"
-        SET COMMAND=where msvcp140.dll
-        FOR /F "delims=" %%A IN ('%COMMAND%') DO (
-            SET TEMPVAR=%%A
-            GOTO :copy7
-        )
-        :copy7
-        ECHO %TEMPVAR%
-        copy "%tempvar%"
-        SET COMMAND=where vcruntime140.dll
-        FOR /F "delims=" %%A IN ('%COMMAND%') DO (
-            SET TEMPVAR=%%A
-            GOTO :copy8
-        )
-        :copy8
-        ECHO %TEMPVAR%
-        copy "%tempvar%"
-        SET COMMAND=where vcruntime140_1.dll
-        FOR /F "delims=" %%A IN ('%COMMAND%') DO (
-            SET TEMPVAR=%%A
-            GOTO :copy9
-        )
-        :copy9
-        ECHO %TEMPVAR%
-        copy "%tempvar%"
         dir
 
 

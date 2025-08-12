@@ -275,7 +275,7 @@ void CcPlotScatter::DrawView(bool print)
             m_XGapRight = 300;
 
         // used in loops
-        int i=0;
+//        int i=0;
         int j=0;
 
         // check the axis divisions have been calculated
@@ -293,7 +293,7 @@ void CcPlotScatter::DrawView(bool print)
         int axiswidth = xdivoffset * (m_Axes.m_AxisData[Axis_X].m_NumDiv);
         
         // the offset along the x axis if more than one series
-        int xseroffset = xdivoffset / m_NumberOfSeries;         
+//        int xseroffset = xdivoffset / m_NumberOfSeries;         
 
         // take the axis height, work out where zero is...
         int xorigin = (int)(m_XGapLeft - (axiswidth * (m_Axes.m_AxisData[Axis_X].m_AxisMin / (m_Axes.m_AxisData[Axis_X].m_AxisMax - m_Axes.m_AxisData[Axis_X].m_AxisMin))));
@@ -319,7 +319,7 @@ void CcPlotScatter::DrawView(bool print)
         // now loop through the data items, drawing each one
         // if there are 'm_Next' data items, each will use 2200/m_Next as an offset
         // NB draw data bars FIRST, so axes / markers are always visible
-        int offset = (2400-m_XGapLeft-m_XGapRight) / m_Series[0].m_DataXY[0].size();
+//        int offset = (2400-m_XGapLeft-m_XGapRight) / m_Series[0].m_DataXY[0].size();
 
         int x1 = 0;
         int y1 = 0;
@@ -402,12 +402,12 @@ void CcPlotScatter::DrawView(bool print)
                 // draw this series as an area graph: line graph with area underneath filled
                 case Plot_SeriesArea:
                 {
-                    float fx1,fy1;
+//                    float fx1,fy1;
                     int vert[8] = {0,0,0,0,0,yorigin,0,yorigin};
                     vector<float>::iterator itx = m_Series[j].m_DataXY[0].begin();
                     vector<float>::iterator ity = m_Series[j].m_DataXY[1].begin();
-                    fx1 = *itx;
-                    fy1 = *ity;
+//                    fx1 = *itx;
+//                    fy1 = *ity;
                     itx++; ity++;
                     for( ; itx != m_Series[j].m_DataXY[0].end(); itx++ )
                     {
@@ -416,7 +416,7 @@ void CcPlotScatter::DrawView(bool print)
                         vert[4] = vert[2] = (int)(xorigin + (axiswidth * ( *itx / (m_Axes.m_AxisData[Axis_X].m_AxisMax - m_Axes.m_AxisData[Axis_X].m_AxisMin))));
                         vert[3] = (int)(yorigin - (axisheight * (( *ity - yoriginvalue) / (m_Axes.m_AxisData[axis].m_AxisMax - m_Axes.m_AxisData[axis].m_AxisMin))));
                         attachedPlot->DrawPoly(4, &vert[0], true);
-                        fx1 = *itx; fy1 = *ity;
+//                        fx1 = *itx; fy1 = *ity;
                         ity++;
                     }
                     break;

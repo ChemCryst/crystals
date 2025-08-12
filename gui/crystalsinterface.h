@@ -438,9 +438,6 @@ void a ::OnChar(wxKeyEvent &event){ \
        ptr_to_crObject->FocusToInput((char)key); \
 }
 
-//else {(CcController::theController)->LogError(#a,0);ptr_to_crObject->FocusToInput((char)event.GetKeyCode());}}
-
-//else if (event.IsKeyInCategory(WXK_CATEGORY_ARROW | WXK_CATEGORY_PAGING)) event.Skip();  \
 
 #endif
 
