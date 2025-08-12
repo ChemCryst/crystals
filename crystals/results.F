@@ -10572,8 +10572,8 @@ C INITIALISE
         a(5) = 0.
         a(6) = 0.
       ELSE IF (MODE .EQ. 1) THEN
-           if (y > 1.0E7) then ! this will go badly
-               y = 1.0
+           if (y > 1.0E16) then ! this will go badly
+               y = 1.0E16
            end if
 
 c      totals for plot
