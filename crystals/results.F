@@ -10572,21 +10572,42 @@ C INITIALISE
         a(5) = 0.
         a(6) = 0.
       ELSE IF (MODE .EQ. 1) THEN
+           if (y > 1.0E16) then ! this will go badly
+               y = 1.0E16
+           end if
+
 c      totals for plot
+c If risk of overflow, stop accululating. Results will be nonsense anyway.
            a(1) =  a(1)  + 1.
-           a(2) =  a(2)  + X
-           a(3) =  a(3)  + Y
-           a(4) = a(4) + X*X
-           a(5) = a(5) + Y*Y
-           a(6) = a(6) + X*Y
+           if ( abs(a(2)) .lt. 1.0E16 ) then
+               a(2) =  a(2)  + X
+           endif
+           if ( abs(a(3)) .lt. 1.0E16 ) then
+              a(3) =  a(3)  + Y
+           end if
+           if ( a(4) .lt. 1.0E32 ) then
+              a(4) = a(4) + X*X
+           end if
+           if ( a(5) .lt. 1.0E32 ) then
+              a(5) = a(5) + Y*Y
+           end if
+           if ( a(6) .lt. 1.0E32 ) then
+              a(6) = a(6) + X*Y
+           endif
       ELSE
        slope = 0.
        inter = 0.
        correl = 0.
        n = nint(a(1))
 c      determinant
-       deter = a(1)*a(4)-a(2)*a(2)
-        if (deter .ne. 0.) then
+c       if (a(2) > 999999999999.9) then ! this has gone badly
+c           deter = 1.0
+c           denom = -1.0
+c      else 
+          deter = a(1)*a(4)-a(2)*a(2)
+c       end if  
+        
+       if (deter .ne. 0.) then
          mode = 3
          slope = (a(1)*a(6)-a(2)*a(3))/deter
          rinter = (a(4)*a(3)-a(2)*a(6))/deter
