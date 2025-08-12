@@ -608,68 +608,69 @@
 //      display atom names in the current progress/status bar.
 //
 
-#include    "crystalsinterface.h"
+#include "crystalsinterface.h"
 
 #ifdef CRY_USEWX
-  #include <wx/app.h>
+#include <wx/app.h>
 #else
-  #include <tchar.h>
+#include <tchar.h>
 #endif
 
-#include    <string>
-#include    <vector>
-#include    <set>
-#include    <iostream>
-#include    <iomanip>
 #include    <cstdlib>
-#include    <sstream>
-#include    <deque>
-#include    <algorithm>
+#include <string>
+#include <vector>
+#include <set>
+#include <iostream>
+#include <iomanip>
+#include <cstdlib>
+#include <sstream>
+#include <deque>
+#include <algorithm>
 #include <stdint.h>
 using namespace std;
 
-#include    "crconstants.h"
-#include    "crgrid.h"
-#include    "cclock.h"
-#include    "cccontroller.h"
-#include    "crwindow.h"
-#include    "cxgrid.h" //to delete its static font pointer.
-#include    "crbutton.h"
-#include    "creditbox.h"
-#include    "cccrystcommandlistener.h"
-#include    "startupdialog.h"
+#include "crconstants.h"
+#include "crgrid.h"
+#include "cclock.h"
+#include "cccontroller.h"
+#include "crwindow.h"
+#include "cxgrid.h" //to delete its static font pointer.
+#include "crbutton.h"
+#include "creditbox.h"
+#include "cccrystcommandlistener.h"
+#include "startupdialog.h"
 
 // Get all the kT and kS defines for now: TODO - move all into crconstants.
 
-#include    "crwindow.h"
-#include    "crmenu.h"
+#include "crwindow.h"
+#include "crmenu.h"
 #ifdef CRY_OSMAC
-  #include <wx/glcanvas.h>
+#include <wx/glcanvas.h>
 #else
-  #include    <GL/glu.h>
+#include <GL/glu.h>
 #endif
-#include    "crmodel.h"
-#include    "crchart.h"
-#include    "crbutton.h"
-#include    "ccstatus.h"
-#include    "cricon.h"
-#include    "crbitmap.h"
-#include    "crlistbox.h"
-#include    "crtab.h"
-#include    "crresizebar.h"
-#include    "crstretch.h"
-#include    "crlistctrl.h"
-#include    "cxeditbox.h"
-#include    "crmultiedit.h"
-#include    "crtextout.h"
-#include    "ccplotdata.h"
-#include    "ccchartdoc.h"
-#include    "ccmodeldoc.h"
-#include    "ccchartobject.h"
-#include    "crprogress.h"
-#include    "ccmenuitem.h"
-#include    "crtoolbar.h"
-#include    "cxweb.h"
+#include "crmodel.h"
+#include "crchart.h"
+#include "crbutton.h"
+#include "ccstatus.h"
+#include "cricon.h"
+#include "crbitmap.h"
+#include "crlistbox.h"
+#include "crtab.h"
+#include "crresizebar.h"
+#include "crstretch.h"
+#include "crlistctrl.h"
+#include "cxeditbox.h"
+#include "crmultiedit.h"
+#include "crtextout.h"
+#include "ccplotdata.h"
+#include "ccchartdoc.h"
+#include "ccmodeldoc.h"
+#include "ccchartobject.h"
+#include "crprogress.h"
+#include "ccmenuitem.h"
+#include "crtoolbar.h"
+#include "cxweb.h"
 
 #ifdef __WITH_CRASHRPT__
 #include "CrashRpt.h"
@@ -682,13 +683,12 @@ using namespace std;
 #include <wx/dirdlg.h>
 #include <wx/mimetype.h>
 #include <wx/utils.h>
-CcThread * CcController::mCrystalsThread = nil;
+CcThread *CcController::mCrystalsThread = nil;
 #include <wx/settings.h>
-wxFont* CcController::mp_inputfont = nil;
+wxFont *CcController::mp_inputfont = nil;
 #include <wx/msgdlg.h>
 #include <wx/stdpaths.h>
 #include <wx/filename.h>
-
 
 #ifdef CRY_OSWIN32
 #include <stdio.h>
@@ -705,17 +705,15 @@ wxFont* CcController::mp_inputfont = nil;
 #include <unistd.h>
 #endif
 
-
 #include "fortran.h"
 
-
-//#include <RDGeneral/Invariant.h>
-//#include <GraphMol/RDKitBase.h>
-//#include <GraphMol/SmilesParse/SmilesParse.h>
-//#include <GraphMol/SmilesParse/SmilesWrite.h>
-//#include <GraphMol/Substruct/SubstructMatch.h>
-//#include <GraphMol/Depictor/RDDepictor.h>
-//#include <GraphMol/FileParsers/FileParsers.h>
+// #include <RDGeneral/Invariant.h>
+// #include <GraphMol/RDKitBase.h>
+// #include <GraphMol/SmilesParse/SmilesParse.h>
+// #include <GraphMol/SmilesParse/SmilesWrite.h>
+// #include <GraphMol/Substruct/SubstructMatch.h>
+// #include <GraphMol/Depictor/RDDepictor.h>
+// #include <GraphMol/FileParsers/FileParsers.h>
 
 /**
  * @brief Robust split of a string
@@ -726,54 +724,64 @@ wxFont* CcController::mp_inputfont = nil;
  */
 size_t split(char *buffer, char *argv[], size_t argv_size)
 {
-    char *p, *start_of_word;
-    int c;
-    enum states { DULL, IN_WORD, IN_STRING } state = DULL;
-    size_t argc = 0;
+  char *p, *start_of_word;
+  int c;
+  enum states
+  {
+    DULL,
+    IN_WORD,
+    IN_STRING
+  } state = DULL;
+  size_t argc = 0;
 
-    for (p = buffer; argc < argv_size && *p != '\0'; p++) {
-        c = (unsigned char) *p;
-        switch (state) {
-        case DULL:
-            if (isspace(c)) {
-                continue;
-            }
+  for (p = buffer; argc < argv_size && *p != '\0'; p++)
+  {
+    c = (unsigned char)*p;
+    switch (state)
+    {
+    case DULL:
+      if (isspace(c))
+      {
+        continue;
+      }
 
-            if (c == '"') {
-                state = IN_STRING;
-                start_of_word = p + 1;
-                continue;
-            }
-            state = IN_WORD;
-            start_of_word = p;
-            continue;
+      if (c == '"')
+      {
+        state = IN_STRING;
+        start_of_word = p + 1;
+        continue;
+      }
+      state = IN_WORD;
+      start_of_word = p;
+      continue;
 
-        case IN_STRING:
-            if (c == '"') {
-                *p = 0;
-                argv[argc++] = start_of_word;
-                state = DULL;
-            }
-            continue;
-
-        case IN_WORD:
-            if (isspace(c)) {
-                *p = 0;
-                argv[argc++] = start_of_word;
-                state = DULL;
-            }
-            continue;
-        }
-    }
-
-    if (state != DULL && argc < argv_size)
+    case IN_STRING:
+      if (c == '"')
+      {
+        *p = 0;
         argv[argc++] = start_of_word;
+        state = DULL;
+      }
+      continue;
 
-    return argc;
+    case IN_WORD:
+      if (isspace(c))
+      {
+        *p = 0;
+        argv[argc++] = start_of_word;
+        state = DULL;
+      }
+      continue;
+    }
+  }
+
+  if (state != DULL && argc < argv_size)
+    argv[argc++] = start_of_word;
+
+  return argc;
 }
 
-
-#define BZERO(a) memset(a,0,sizeof(a)) //easier -- shortcut
+#define BZERO(a) memset(a, 0, sizeof(a)) // easier -- shortcut
 
 bool bRedir = false;
 
@@ -782,278 +790,276 @@ static CcLock m_Crystals_Thread_Alive(true);
 static CcLock m_Complete_Signal(false);
 static CcLock m_wait_for_thread_start(false);
 
-static list<char*> stringlist;
+static list<char *> stringlist;
 static set<string> stringset;
 
-CcController* CcController::theController = nil;
+CcController *CcController::theController = nil;
 int CcController::debugIndent = 0;
 
-CcController::CcController( const string & directory, const string & dscfile )
+CcController::CcController(const string &directory, const string &dscfile)
 {
-    CcCrystalsCommandListener tInterfaceCommandListener(wxTheApp, ccEVT_COMMAND_ADDED);
+  CcCrystalsCommandListener tInterfaceCommandListener(wxTheApp, ccEVT_COMMAND_ADDED);
 
-    mInterfaceCommandDeq.addAddListener(tInterfaceCommandListener);
+  mInterfaceCommandDeq.addAddListener(tInterfaceCommandListener);
 
 #ifdef CRY_OSWIN32
-    m_start_ticks = GetTickCount();
+  m_start_ticks = GetTickCount();
 #else
-    struct timeval time;
-    struct timezone tz;
-    gettimeofday(&time,&tz);
-    m_start_ticks = (time.tv_sec%10000)*1000 + time.tv_usec/1000;
+  struct timeval time;
+  struct timezone tz;
+  gettimeofday(&time, &tz);
+  m_start_ticks = (time.tv_sec % 10000) * 1000 + time.tv_usec / 1000;
 #endif
-//Things
-    mErrorLog = nil;
-    mThisThreadisDead = false;
-    m_restart = false;
-    mCrystalsThread = nil;
-    m_AllowThreadKill = true;
-    m_BatchMode = false;
-    m_ExitCode = 0;
-//Current window pointers. Used to direct streams of input to the correct places (if for some reason the stream has been interuppted.)
-    mCurrentWindow = nil;   //The current window. GetValue will search in this window first.
-//Token list pointers.
-//    mCurTokenList = nil;    //The current token list, could be for charts, model, windows etc.
-//    mTempTokenList = nil;   //Stores the current token list when 'quick' commands are jumping the input queue.
-// Initialize the static pointers in classes for accessing this controller object.
-    CrGUIElement::mControllerPtr = this;
-    CcController::theController = this;
-    CcController::debugIndent = 0;
+  // Things
+  mErrorLog = nil;
+  mThisThreadisDead = false;
+  m_restart = false;
+  mCrystalsThread = nil;
+  m_AllowThreadKill = true;
+  m_BatchMode = false;
+  m_ExitCode = 0;
+  // Current window pointers. Used to direct streams of input to the correct places (if for some reason the stream has been interuppted.)
+  mCurrentWindow = nil; // The current window. GetValue will search in this window first.
+  // Token list pointers.
+  //     mCurTokenList = nil;    //The current token list, could be for charts, model, windows etc.
+  //     mTempTokenList = nil;   //Stores the current token list when 'quick' commands are jumping the input queue.
+  //  Initialize the static pointers in classes for accessing this controller object.
+  CrGUIElement::mControllerPtr = this;
+  CcController::theController = this;
+  CcController::debugIndent = 0;
 
 #ifdef DEPRECATEDCRY_USEWX
-    CxWeb::InitXULRunner();
+  CxWeb::InitXULRunner();
 #endif
 
+  // If directory is set, check for and remove quotes, change directory.
+  if (directory.length())
+  {
+    string dirtemp = directory;
+    if (dirtemp[0] == '\"')
+      dirtemp = dirtemp.substr(1, dirtemp.length() - 1);
+    ChangeDir(dirtemp);
+  }
 
-// If directory is set, check for and remove quotes, change directory.
-    if ( directory.length() )
+  // Setup initial windows
+  CrGUIElement *theElement = nil;
+
+  // Must call Tokenize directly when working in this thread. (Not AddInterfaceCommand,
+  // as this delays window creation until OnIdle is called).
+  // This sets up the command line window, and the main text output window.
+  // Source an external menu definition file - "GUIMENU.SRT"
+
+  FILE *file;
+  //    char charline[256];
+  char *ecrys = getenv("CRYSDIR");
+  if (ecrys == 0)
+  {
+    string crysdir = GetExePath();
+    if (crysdir.length() == 0)
     {
-      string dirtemp = directory;
-      if ( dirtemp[0] == '\"' ) dirtemp = dirtemp.substr(1,dirtemp.length()-1);
-      ChangeDir( dirtemp );
+      std::cerr << "You must set CRYSDIR before running crystals.\n";
+      return;
     }
-
-// Setup initial windows
-    CrGUIElement * theElement = nil;
-
-// Must call Tokenize directly when working in this thread. (Not AddInterfaceCommand,
-// as this delays window creation until OnIdle is called).
-// This sets up the command line window, and the main text output window.
-// Source an external menu definition file - "GUIMENU.SRT"
-
-    FILE * file;
-//    char charline[256];
-    char * ecrys = getenv("CRYSDIR");
-    if ( ecrys == 0 )
+    else
     {
-      string crysdir=GetExePath();
-      if ( crysdir.length() == 0 )
-      {
-        std::cerr << "You must set CRYSDIR before running crystals.\n";
-        return;
-      }
-      else
-      {
-        string p = "CRYSDIR="+crysdir;
+      string p = "CRYSDIR=" + crysdir;
 #ifdef CRY_OSWIN32
-        _putenv( p.c_str() );
+      _putenv(p.c_str());
 #else
-        char * env = new char[p.size()+1];
-        strcpy(env, p.c_str());
-        stringlist.push_back(env);
-        putenv( env );
-#endif
-      }
-    }
-
-    string crysdir ( ecrys );
-    if ( crysdir.length() == 0 )
-    {
-      crysdir=GetExePath();
-      if ( crysdir.length() == 0 )
-      {
-        std::cerr << "Set CRYSDIR to the location of crystals before running crystals.\n";
-        return;
-      }
-      else
-      {
-        string p = "CRYSDIR="+crysdir;
-#ifdef CRY_OSWIN32
-        _putenv( p.c_str() );
-#else
-        char * env = new char[p.size()+1];
-        strcpy(env, p.c_str());
-        stringlist.push_back(env);
-        putenv( env );
-#endif
-      }
-    }
-
-    int nEnv = EnvVarCount( crysdir );
-    int i = 0;
-    bool noLuck = true;
-
-    while ( noLuck )
-    {
-      string dir = EnvVarExtract( crysdir, i );
-      i++;
-      string buffer = dir + "guimenu.srt" ;
-
-      if( (file = fopen( buffer.c_str(), "r" ) ) ) //Assignment witin conditional - OK
-      {
-        ReadStartUp(file,crysdir);
-        noLuck = false;   // stop looping
-      }
-      else if ( i >= nEnv )
-      {
-        //Last resort, there is no external file. Default window defined here:
-        Tokenize("^^WI WINDOW _MAIN 'Crystals' MODAL STAYOPEN SIZE CANCEL='_MAIN CLOSE' GRID ");
-        Tokenize("^^WI _MAINGRID NROWS=3 NCOLS=1 { @ 1,1 GRID _SUBGRID NROWS=1 NCOLS=3 ");
-        Tokenize("^^WI { @ 1,2 TEXTOUT _MAINTEXTOUTPUT '(C)1999 CCL, Oxford.' NCOLS=95 ");
-        Tokenize("^^WI NROWS=20 } @ 3,1 PROGRESS ");
-        Tokenize("^^WI _MAINPROGRESS 'guimenu.srt NOT FOUND' CHARS=20 @ 2,1 EDITBOX ");
-        Tokenize("^^WI _MAINTEXTINPUT ' ' NCOLS=45 LIMIT=80 SENDONRETURN=YES INPUT } SHOW ");
-        Tokenize("^^CR  ");
-        LOGSTAT ( "Back from tokenizing all \n") ;
-        noLuck = false;  // stop looping
-      }
-    }
-
-// Find the main window and let the framework know what it is. (Without a
-// main window, the program will be terminated, as the framework assumes it has closed)
-    theElement = FindObject( "_MAIN" );
-    if ( theElement == nil )
-    {
-      LOGERR ("Failed to get main window");
-    }
-    ((CrWindow*)theElement)->SetTimer(); //Start timer events - a sort of
-                                         //pacemaker for the GUI to stop
-                                         //it freezing up so often ;)
-
-    wxGetApp().SetTopWindow((wxWindow*)(theElement->GetWidget()));
-    LOGSTAT ( "Main window found\n") ;
-
-//Find the output window. Needed by CcController so that text can be sent to it.
-    CrTextOut* outputWindow;
-    outputWindow = (CrTextOut*) FindObject( "_MAINTEXTOUTPUT" );
-    if ( outputWindow == nil )
-    {
-      LOGERR("Failed to get main text output");
-    }
-
-    SetTextOutputPlace(outputWindow);
-    LOGSTAT ( "Text Output window found\n") ;
-
-//Find the progress window. Needed by CcController so that messages can be sent to it.
-    CrProgress* progressWindow;
-    progressWindow = (CrProgress*)FindObject( "_MAINPROGRESS" );
-    if ( progressWindow == nil )
-    {
-      LOGERR("Failed to get progress window");
-    }
-
-    SetProgressOutputPlace(progressWindow);
-    LOGSTAT ( "Progress/status window found\n") ;
-
-
-
-    wxString cwd = wxGetCwd(); 
-    std::string pathsep = string(wxString(wxFileName::GetPathSeparator()).ToStdString());
-
-// If specified on the command line, set the CRDSC environment variable,
-// regardless of whether it is already set...
-//                 wxMessageBox("Debug","ing",wxOK|wxICON_HAND|wxCENTRE);
-    LOGSTAT ( "Setting CRDSC to " + dscfile + "\n") ;
-    if ( dscfile.length() > 1 )
-    {
-      string dsctemp = "CRDSC=" + dscfile;
-      string::size_type qp = dsctemp.find_last_of('\"');
-      if ( qp != string::npos ) dsctemp.erase(qp,1);
-#ifdef CRY_OSWIN32
-      _putenv( dsctemp.c_str() );
-#else
-      char * env = new char[dsctemp.size()+1];
-      strcpy(env, dsctemp.c_str());
+      char *env = new char[p.size() + 1];
+      strcpy(env, p.c_str());
       stringlist.push_back(env);
-      putenv( env );
+      putenv(env);
 #endif
-//For info, put DSC name in the title bar.
-      Tokenize("^^CO SET _MAIN TEXT 'Crystals - " + cwd.ToStdString() + pathsep + dscfile + "'");
     }
+  }
 
-// If the CRDSC variable is set, leave its value the same.
-// Otherwise, set it to the default value of CRFILEV2.DSC
-    char* envv;
-
-    envv = getenv( "CRDSC" );
-
-    if ( envv == NULL )
+  string crysdir(ecrys);
+  if (crysdir.length() == 0)
+  {
+    crysdir = GetExePath();
+    if (crysdir.length() == 0)
     {
+      std::cerr << "Set CRYSDIR to the location of crystals before running crystals.\n";
+      return;
+    }
+    else
+    {
+      string p = "CRYSDIR=" + crysdir;
 #ifdef CRY_OSWIN32
-       _putenv( "CRDSC=crfilev2.dsc" );
+      _putenv(p.c_str());
 #else
-//       _setenv("CRDSC", "crfilev2.dsc", 1);
-       string p = "CRDSC=crfilev2.dsc";
-       char * env = new char[p.size()+1];
-       strcpy(env, p.c_str());
-       stringlist.push_back(env);
-       putenv( env );
+      char *env = new char[p.size() + 1];
+      strcpy(env, p.c_str());
+      stringlist.push_back(env);
+      putenv(env);
+#endif
+    }
+  }
+
+  int nEnv = EnvVarCount(crysdir);
+  int i = 0;
+  bool noLuck = true;
+
+  while (noLuck)
+  {
+    string dir = EnvVarExtract(crysdir, i);
+    i++;
+    string buffer = dir + "guimenu.srt";
+
+    if ((file = fopen(buffer.c_str(), "r"))) // Assignment witin conditional - OK
+    {
+      ReadStartUp(file, crysdir);
+      noLuck = false; // stop looping
+    }
+    else if (i >= nEnv)
+    {
+      // Last resort, there is no external file. Default window defined here:
+      Tokenize("^^WI WINDOW _MAIN 'Crystals' MODAL STAYOPEN SIZE CANCEL='_MAIN CLOSE' GRID ");
+      Tokenize("^^WI _MAINGRID NROWS=3 NCOLS=1 { @ 1,1 GRID _SUBGRID NROWS=1 NCOLS=3 ");
+      Tokenize("^^WI { @ 1,2 TEXTOUT _MAINTEXTOUTPUT '(C)1999 CCL, Oxford.' NCOLS=95 ");
+      Tokenize("^^WI NROWS=20 } @ 3,1 PROGRESS ");
+      Tokenize("^^WI _MAINPROGRESS 'guimenu.srt NOT FOUND' CHARS=20 @ 2,1 EDITBOX ");
+      Tokenize("^^WI _MAINTEXTINPUT ' ' NCOLS=45 LIMIT=80 SENDONRETURN=YES INPUT } SHOW ");
+      Tokenize("^^CR  ");
+      LOGSTAT("Back from tokenizing all \n");
+      noLuck = false; // stop looping
+    }
+  }
+
+  // Find the main window and let the framework know what it is. (Without a
+  // main window, the program will be terminated, as the framework assumes it has closed)
+  theElement = FindObject("_MAIN");
+  if (theElement == nil)
+  {
+    LOGERR("Failed to get main window");
+  }
+  ((CrWindow *)theElement)->SetTimer(); // Start timer events - a sort of
+                                        // pacemaker for the GUI to stop
+                                        // it freezing up so often ;)
+
+  wxGetApp().SetTopWindow((wxWindow *)(theElement->GetWidget()));
+  LOGSTAT("Main window found\n");
+
+  // Find the output window. Needed by CcController so that text can be sent to it.
+  CrTextOut *outputWindow;
+  outputWindow = (CrTextOut *)FindObject("_MAINTEXTOUTPUT");
+  if (outputWindow == nil)
+  {
+    LOGERR("Failed to get main text output");
+  }
+
+  SetTextOutputPlace(outputWindow);
+  LOGSTAT("Text Output window found\n");
+
+  // Find the progress window. Needed by CcController so that messages can be sent to it.
+  CrProgress *progressWindow;
+  progressWindow = (CrProgress *)FindObject("_MAINPROGRESS");
+  if (progressWindow == nil)
+  {
+    LOGERR("Failed to get progress window");
+  }
+
+  SetProgressOutputPlace(progressWindow);
+  LOGSTAT("Progress/status window found\n");
+
+  wxString cwd = wxGetCwd();
+  std::string pathsep = string(wxString(wxFileName::GetPathSeparator()).ToStdString());
+
+  // If specified on the command line, set the CRDSC environment variable,
+  // regardless of whether it is already set...
+  //                 wxMessageBox("Debug","ing",wxOK|wxICON_HAND|wxCENTRE);
+  LOGSTAT("Setting CRDSC to " + dscfile + "\n");
+  if (dscfile.length() > 1)
+  {
+    string dsctemp = "CRDSC=" + dscfile;
+    string::size_type qp = dsctemp.find_last_of('\"');
+    if (qp != string::npos)
+      dsctemp.erase(qp, 1);
+#ifdef CRY_OSWIN32
+    _putenv(dsctemp.c_str());
+#else
+    char *env = new char[dsctemp.size() + 1];
+    strcpy(env, dsctemp.c_str());
+    stringlist.push_back(env);
+    putenv(env);
+#endif
+    // For info, put DSC name in the title bar.
+    Tokenize("^^CO SET _MAIN TEXT 'Crystals - " + cwd.ToStdString() + pathsep + dscfile + "'");
+  }
+
+  // If the CRDSC variable is set, leave its value the same.
+  // Otherwise, set it to the default value of CRFILEV2.DSC
+  char *envv;
+
+  envv = getenv("CRDSC");
+
+  if (envv == NULL)
+  {
+#ifdef CRY_OSWIN32
+    _putenv("CRDSC=crfilev2.dsc");
+#else
+    //       _setenv("CRDSC", "crfilev2.dsc", 1);
+    string p = "CRDSC=crfilev2.dsc";
+    char *env = new char[p.size() + 1];
+    strcpy(env, p.c_str());
+    stringlist.push_back(env);
+    putenv(env);
 
 //       envv = getenv( "CRDSC" );
 #endif
-//       Tokenize("^^CO SET _MAIN TEXT 'Crystals - crfilev2.dsc'");
-      Tokenize("^^CO SET _MAIN TEXT 'Crystals - " + cwd.ToStdString() + pathsep + "crfilev2.dsc'");
-    }
+    //       Tokenize("^^CO SET _MAIN TEXT 'Crystals - crfilev2.dsc'");
+    Tokenize("^^CO SET _MAIN TEXT 'Crystals - " + cwd.ToStdString() + pathsep + "crfilev2.dsc'");
+  }
 
-    LOGSTAT( "Starting Crystals Thread" );
+  LOGSTAT("Starting Crystals Thread");
 
-    StartCrystalsThread();
+  StartCrystalsThread();
 
-//    wxMessageBox("Debug","Started CRYSTALS");
+  //    wxMessageBox("Debug","Started CRYSTALS");
 
-
-    LOGSTAT ( "Crystals thread started.\n") ;
+  LOGSTAT("Crystals thread started.\n");
 }
 
-
-void CcController::ReadStartUp( FILE * file, string & crysdir )
+void CcController::ReadStartUp(FILE *file, string &crysdir)
 {
   char charline[256];
-  int nEnv = EnvVarCount( crysdir );
+  int nEnv = EnvVarCount(crysdir);
 
   LOGSTAT("Entering ReadStartUp");
 
-  while ( ! feof( file ) )
+  while (!feof(file))
   {
-    if ( fgets( charline, 256, file ) )
+    if (fgets(charline, 256, file))
     {
       string inputline = charline;
-      if ( inputline[0] == '!' )
+      if (inputline[0] == '!')
       {
-        inputline = inputline.substr(1,inputline.length()-1); // Remove that shriek.
+        inputline = inputline.substr(1, inputline.length() - 1); // Remove that shriek.
         int newl = inputline.find("\n");
-        if ( newl ) inputline = inputline.substr(0,newl);
-        FILE * newfile;
-//Remove trailing spaces:
+        if (newl)
+          inputline = inputline.substr(0, newl);
+        FILE *newfile;
+        // Remove trailing spaces:
         string::size_type strim = inputline.find_last_not_of(" ");
-        if ( strim != string::npos )
-            inputline = inputline.substr(0,strim+1);
-//Remove leading spaces:
+        if (strim != string::npos)
+          inputline = inputline.substr(0, strim + 1);
+        // Remove leading spaces:
         strim = inputline.find_first_not_of(" ");
-        if ( strim != string::npos )
-            inputline = inputline.substr(strim,inputline.length()-strim);
-        LOGSTAT("Trimmed: "+inputline);
+        if (strim != string::npos)
+          inputline = inputline.substr(strim, inputline.length() - strim);
+        LOGSTAT("Trimmed: " + inputline);
         int i = 0;
         bool noLuck = true;
-        while ( noLuck && i < nEnv )
+        while (noLuck && i < nEnv)
         {
-          string dir = EnvVarExtract( crysdir, i++ );
-          string buffer = dir + inputline ;
-          LOGSTAT("Trying: "+buffer);
-          if( (newfile = fopen( buffer.c_str(), "r" ) ) ) //Assignment witin conditional - OK
+          string dir = EnvVarExtract(crysdir, i++);
+          string buffer = dir + inputline;
+          LOGSTAT("Trying: " + buffer);
+          if ((newfile = fopen(buffer.c_str(), "r"))) // Assignment witin conditional - OK
           {
             LOGSTAT("Success, reading file");
-            ReadStartUp( newfile, crysdir );
+            ReadStartUp(newfile, crysdir);
             noLuck = false;
           }
           else
@@ -1062,157 +1068,154 @@ void CcController::ReadStartUp( FILE * file, string & crysdir )
           }
         }
       }
-      else if ( ! (inputline[0]=='%'))  // Line is not a comment
+      else if (!(inputline[0] == '%')) // Line is not a comment
       {
         Tokenize(inputline);
       }
     }
   }
-  fclose( file );
+  fclose(file);
 }
 
-CcController::~CcController()       //The destructor. Delete all the heap objects.
+CcController::~CcController() // The destructor. Delete all the heap objects.
 {
-    int i = 0;
-    ostringstream aaarg;
-        list<CcModelDoc*>::iterator moddoc;
-    while( ! CcModelDoc::sm_ModelDocList.empty() )
-    {
-        i++;
-        moddoc = CcModelDoc::sm_ModelDocList.begin();    // Get first item
-        delete *moddoc;              //It will remove itself from the list
-    }
+  int i = 0;
+  ostringstream aaarg;
+  list<CcModelDoc *>::iterator moddoc;
+  while (!CcModelDoc::sm_ModelDocList.empty())
+  {
+    i++;
+    moddoc = CcModelDoc::sm_ModelDocList.begin(); // Get first item
+    delete *moddoc;                               // It will remove itself from the list
+  }
 
-    aaarg << i;
+  aaarg << i;
 
-    LOGSTAT ( "Deleted " + aaarg.str() + " CcModelDocs from the stack." );
+  LOGSTAT("Deleted " + aaarg.str() + " CcModelDocs from the stack.");
 
-    i = 0;
-    list<CcChartDoc*>::iterator chartdoc;
-    while ( ! CcChartDoc::sm_ChartDocList.empty() )
-    {
-        i++;
-        chartdoc = CcChartDoc::sm_ChartDocList.begin();  // Get first item
-        delete *chartdoc;            //It will remove itself from the list
-    }
+  i = 0;
+  list<CcChartDoc *>::iterator chartdoc;
+  while (!CcChartDoc::sm_ChartDocList.empty())
+  {
+    i++;
+    chartdoc = CcChartDoc::sm_ChartDocList.begin(); // Get first item
+    delete *chartdoc;                               // It will remove itself from the list
+  }
 
-    aaarg.str("");
-    aaarg << i;
+  aaarg.str("");
+  aaarg << i;
 
-    LOGSTAT ( "Deleted " + aaarg.str() + " CcChartDocs from the stack." );
+  LOGSTAT("Deleted " + aaarg.str() + " CcChartDocs from the stack.");
 
-    i = 0;
-    list<CcPlotData*>::iterator plotdata;
-    while ( ! CcPlotData::sm_PlotList.empty() )
-    {
-        i++;
-        plotdata = CcPlotData::sm_PlotList.begin();  // Get first item
-        delete *plotdata;            //It will remove itself from the list
-    }
+  i = 0;
+  list<CcPlotData *>::iterator plotdata;
+  while (!CcPlotData::sm_PlotList.empty())
+  {
+    i++;
+    plotdata = CcPlotData::sm_PlotList.begin(); // Get first item
+    delete *plotdata;                           // It will remove itself from the list
+  }
 
-    aaarg.str("");
-    aaarg << i;
+  aaarg.str("");
+  aaarg << i;
 
-    LOGSTAT ( "Deleted " + aaarg.str() + " CcPlotDatas from the stack." );
+  LOGSTAT("Deleted " + aaarg.str() + " CcPlotDatas from the stack.");
 
-    list<CrWindow*>::iterator mw;
-    for ( mw = mWindowList.begin(); mw != mWindowList.end(); mw++ )
-        delete *mw;
+  list<CrWindow *>::iterator mw;
+  for (mw = mWindowList.begin(); mw != mWindowList.end(); mw++)
+    delete *mw;
 
-    mWindowList.clear();
-    mQuickTokenList.clear();
-    mWindowTokenList.clear();
-    mPlotTokenList.clear();
-    mChartTokenList.clear();
-    mModelTokenList.clear();
-    mStatusTokenList.clear();
+  mWindowList.clear();
+  mQuickTokenList.clear();
+  mWindowTokenList.clear();
+  mPlotTokenList.clear();
+  mChartTokenList.clear();
+  mModelTokenList.clear();
+  mStatusTokenList.clear();
 
+  list<char *>::iterator s = stringlist.begin();
+  while (s != stringlist.end())
+  {
+    delete[] *s;
+    s++;
+  }
 
-    list<char*>::iterator s = stringlist.begin();
-    while ( s != stringlist.end() )
-    {
-        delete[] *s;
-        s++;
-    }
-
-
-// If the thread isn't dead yet, then kill it.
-    if( mCrystalsThread && m_Crystals_Thread_Alive.IsLocked() )
-         delete mCrystalsThread;
-
+  // If the thread isn't dead yet, then kill it.
+  if (mCrystalsThread && m_Crystals_Thread_Alive.IsLocked())
+    delete mCrystalsThread;
 }
 
-
-bool CcController::ParseInput( deque<string> & tokenList )
+bool CcController::ParseInput(deque<string> &tokenList)
 {
-    CcController::debugIndent = 0;
+  CcController::debugIndent = 0;
 
-    CcParse retVal(false, false, false);
-    int infiniteLoopCheck = 0;
-    int infiniteLoopCheck2 = -999999;
+  CcParse retVal(false, false, false);
+  int infiniteLoopCheck = 0;
+  int infiniteLoopCheck2 = -999999;
 
-    while (! tokenList.empty()) //don't return until the list is empty
+  while (!tokenList.empty()) // don't return until the list is empty
+  {
+    infiniteLoopCheck = tokenList.size();
+    if (infiniteLoopCheck == infiniteLoopCheck2) // if the list size has remained the same during one iteration of this loop...
     {
-        infiniteLoopCheck = tokenList.size();
-        if(infiniteLoopCheck == infiniteLoopCheck2) //if the list size has remained the same during one iteration of this loop...
+      LOGWARN("CcController::ParseInput:infiniteLoopCheck Getting nowhere with this token: " + tokenList.front());
+      tokenList.pop_front();
+      if (tokenList.empty())
+        break;
+    }
+    infiniteLoopCheck2 = infiniteLoopCheck;
+    bool safeSet = false;
+
+    switch (CcController::GetDescriptor(tokenList.front(), kInstructionClass))
+    {
+    case kTCreateWindow:
+    {
+      LOGSTAT("CcController: Creating window");
+      CrWindow *wPtr = new CrWindow();
+      if (wPtr != nil)
+      {
+        tokenList.pop_front(); // remove token.
+        retVal = wPtr->ParseInput(tokenList);
+        if (retVal.OK())
         {
-            LOGWARN("CcController::ParseInput:infiniteLoopCheck Getting nowhere with this token: " + tokenList.front());
-            tokenList.pop_front();
-            if ( tokenList.empty() ) break;
+          LOGSTAT("CcController: Adding window to list: " + wPtr->mName);
+          mWindowList.push_back(wPtr);
+          mCurrentWindow = wPtr;
         }
-        infiniteLoopCheck2 = infiniteLoopCheck;
-        bool safeSet = false;
-
-        switch ( CcController::GetDescriptor( tokenList.front(), kInstructionClass ) )
+        else
         {
-            case kTCreateWindow:
-            {
-                LOGSTAT("CcController: Creating window");
-                CrWindow * wPtr = new CrWindow();
-                if ( wPtr != nil )
-                {
-                    tokenList.pop_front(); //remove token.
-                    retVal = wPtr->ParseInput( tokenList );
-                    if ( retVal.OK() )
-                    {
-                        LOGSTAT("CcController: Adding window to list: " + wPtr->mName );
-                        mWindowList.push_back( wPtr );
-                        mCurrentWindow = wPtr;
-                    }
-                    else
-                    {
-                        LOGERR("CcController: Failed to create window: " + wPtr->mName );
-                        delete wPtr;
-                    }
-                }
-                break;
-            }
-            case kTDisposeWindow:
-            {
-                tokenList.pop_front();
-                LOGSTAT("CcController: Disposing window " + tokenList.front());
-                CrWindow* mWindowToClose = (CrWindow*)FindObject(tokenList.front()); //Find window by name.
-                tokenList.pop_front();
-                ostringstream strstrm;
-                strstrm << (uintptr_t) mWindowToClose;
-                LOGSTAT("CcController: Found window " + strstrm.str() );
-                mWindowList.remove(mWindowToClose);
+          LOGERR("CcController: Failed to create window: " + wPtr->mName);
+          delete wPtr;
+        }
+      }
+      break;
+    }
+    case kTDisposeWindow:
+    {
+      tokenList.pop_front();
+      LOGSTAT("CcController: Disposing window " + tokenList.front());
+      CrWindow *mWindowToClose = (CrWindow *)FindObject(tokenList.front()); // Find window by name.
+      tokenList.pop_front();
+      ostringstream strstrm;
+      strstrm << (uintptr_t)mWindowToClose;
+      LOGSTAT("CcController: Found window " + strstrm.str());
+      mWindowList.remove(mWindowToClose);
 
-//                if ( mWindowList.size() )
-//                        mWindowList.back()->CrFocus();
+      //                if ( mWindowList.size() )
+      //                        mWindowList.back()->CrFocus();
 
-                delete mWindowToClose;
-                if ( mWindowList.size() )
-                    mCurrentWindow = mWindowList.back();
-                else
-                    mCurrentWindow = nil;
-                break;
-            }
-            case kTGetValue:
-            {
-                LOGSTAT("CcController: Getting Value");
-                // remove that token
-                tokenList.pop_front();
+      delete mWindowToClose;
+      if (mWindowList.size())
+        mCurrentWindow = mWindowList.back();
+      else
+        mCurrentWindow = nil;
+      break;
+    }
+    case kTGetValue:
+    {
+      LOGSTAT("CcController: Getting Value");
+      // remove that token
+      tokenList.pop_front();
 
                 CrGUIElement * theElement = nil;
                 if ( mCurrentWindow )
@@ -1221,695 +1224,741 @@ bool CcController::ParseInput( deque<string> & tokenList )
                      theElement = mCurrentWindow->FindObject( tokenList.front() );
                 }
 
-                if ( theElement == nil )
-                {
-                    // Look for the element everywhere.
-                    theElement = FindObject ( tokenList.front() );
-                }
+      if (theElement == nil)
+      {
+        // Look for the element everywhere.
+        theElement = FindObject(tokenList.front());
+      }
 
+      if (theElement != nil)
+      {
+        theElement->GetValue();
+      }
+      else
+      {
+        SendCommand("FALSE", true); // This can be used to check if an object exists.
+        LOGWARN("CcController:ParseInput:GetValue couldn't find object with name '" + tokenList.front() + "'");
+      }
+      tokenList.pop_front();
 
-                if ( theElement != nil )
-                {
-                    theElement->GetValue();
-                }
-                else
-                {
-                    SendCommand("FALSE",true); //This can be used to check if an object exists.
-                    LOGWARN( "CcController:ParseInput:GetValue couldn't find object with name '" + tokenList.front() + "'");
-                }
-                tokenList.pop_front();
+      break;
+    }
+    case kTCloseGroup:
+    {
+      tokenList.pop_front(); // ]
+      break;
+    }
+    case kTSafeSet:
+    {
+      safeSet = true;
+      tokenList.pop_front(); // SAFESET
+      if (CcController::GetDescriptor(tokenList.front(), kInstructionClass) != kTOpenGroup)
+      {
+        LOGWARN("CcController:ParseInput:SAFESET must be followed by opening and closing []");
+        break;
+      }
+      // Continue into kTSet code.
+    }
+    case kTSet:
+    {
+      // remove that token
+      tokenList.pop_front();
 
-                break;
+      string name = string(tokenList.front()); // Get the name of the object
+      tokenList.pop_front();
+      LOGSTAT("CcController: Setting Value of " + name);
+      CrGUIElement *theElement = nil;
 
-            }
-            case kTCloseGroup:
-            {
-                tokenList.pop_front(); // ]
-                break;
-            }
-            case kTSafeSet:
-            {
-                safeSet = true;
-                tokenList.pop_front(); // SAFESET
-                if ( CcController::GetDescriptor( tokenList.front(), kInstructionClass ) != kTOpenGroup )
-                {
-                    LOGWARN( "CcController:ParseInput:SAFESET must be followed by opening and closing []");
-                    break;
-                }
-                //Continue into kTSet code.
-            }
-            case kTSet:
-            {
-             // remove that token
-                tokenList.pop_front();
-
-                string name = string(tokenList.front());  // Get the name of the object
-                tokenList.pop_front();
-                LOGSTAT("CcController: Setting Value of " + name);
-                CrGUIElement* theElement = nil;
-
-                if (name == "TEXTOUTPUT")
-                {
-                    theElement = GetTextOutputPlace();
-                    theElement->ParseInput( tokenList );
-                }
-                else if (name == "PROGOUTPUT")
-                {
-                    theElement = GetProgressOutputPlace();
-                    if ( theElement ) theElement->ParseInput( tokenList );
-                }
-                else if (name == "TEXTINPUT")
-                {
-                    theElement = GetInputPlace();
-                    theElement->ParseInput( tokenList );
-                }
-                else
-                {
-                    // Look for the item
-                    theElement = FindObject( name );
-                    if(theElement)
-                    {
-                        theElement->ParseInput( tokenList );
-                        break;
-                    }
-
-                    list<CcChartDoc*>::iterator doc
-                          =  find( CcChartDoc::sm_ChartDocList.begin(),
-                                   CcChartDoc::sm_ChartDocList.end(), name );
-
-                    if ( doc != CcChartDoc::sm_ChartDocList.end() )
-                    {
-                        (*doc)->ParseInput( tokenList );
-                        break;
-                    }
-
-                    CcMenuItem * theMenuItem = nil;
-
-                    theMenuItem = CrMenu::FindMenuItem ( name );
-                    if ( theMenuItem )
-                    {
-                        theMenuItem->ParseInput( tokenList );
-                        break;
-                    }
-
-                    list<CcPlotData*>::reverse_iterator rpd = CcPlotData::sm_PlotList.rbegin();
-//This loop finds the LAST item with a given name in the plotlist.
-                    for ( ; rpd != CcPlotData::sm_PlotList.rend(); rpd++ )
-                    {
-                        if ( (*rpd)->FindObject( name ) )
-                        {
-                            break;
-                        }
-                    }
-                    if ( rpd != CcPlotData::sm_PlotList.rend())
-                    {
-                        (*rpd)->ParseInput( tokenList );
-                        break;
-                    }
-// Not found.
-                    if ( safeSet )
-                    {
-                      //Never mind - scan for closing ], but error if find
-                      //an InstructionClass first.
-                      while (true)
-                      {
-                         if ( tokenList.empty() )
-                         {
-                            LOGWARN( "CcController:ParseInput:SAFESET ran off end of input.");
-                            break;
-                         }
-                         else if ( CcController::GetDescriptor( tokenList.front(), kInstructionClass ) == kTCloseGroup )
-                         {
-                            tokenList.pop_front();
-                            break;
-                         }
-                         tokenList.pop_front();
-                      }
-                    }
-                    else
-                    {
-                       LOGWARN( "CcController:ParseInput:Set couldn't find object with name '" + name + "'");
-                    }
-                }
-                break;
-            }
-            case kTFocus:
-            {
-                // remove that token
-                tokenList.pop_front();
-
-                string name = string(tokenList.front());  // Get the name of the object
-                tokenList.pop_front();
-                LOGSTAT("CcController: Setting Value of " + name);
-                CrGUIElement* theElement = nil;
-
-                if (name == "TEXTOUTPUT")
-                {
-                    theElement = GetTextOutputPlace();
-                              theElement->CrFocus();
-                }
-                else if (name == "PROGOUTPUT")
-                {
-                    theElement = GetProgressOutputPlace();
-                              theElement->CrFocus();
-                }
-                else if (name == "TEXTINPUT")
-                {
-                    theElement = GetInputPlace();
-                    theElement->CrFocus();
-                }
-                else
-                {
-                    // Look for the item
-                    theElement = FindObject( name );
-                    if(theElement)
-                        theElement->CrFocus();
-                    else
-                        LOGWARN( "CcController:ParseInput:Focus couldn't find object with name '" + name + "'");
-                }
-                break;
-            }
-            case kTBatch:
-            {
-                // remove that token
-                tokenList.pop_front();
-                m_BatchMode = true;   //Stops blocking dialogs on error.
-                break;
-            }
-            case kTRenameObject:
-            {
-                // remove that token
-                tokenList.pop_front();
-
-                string name = string(tokenList.front());  // Get the name of the object
-                tokenList.pop_front();
-                LOGSTAT("CcController: About to rename: " + name);
-                CrGUIElement* theElement = nil;
-
+      if (name == "TEXTOUTPUT")
+      {
+        theElement = GetTextOutputPlace();
+        theElement->ParseInput(tokenList);
+      }
+      else if (name == "PROGOUTPUT")
+      {
+        theElement = GetProgressOutputPlace();
+        if (theElement)
+          theElement->ParseInput(tokenList);
+      }
+      else if (name == "TEXTINPUT")
+      {
+        theElement = GetInputPlace();
+        theElement->ParseInput(tokenList);
+      }
+      else
+      {
         // Look for the item
-                theElement = FindObject( name );
-                if(theElement)
-                    theElement->Rename( tokenList.front() );
-                else
-                {
-
-                    list<CcChartDoc*>::iterator doc
-                          =  find( CcChartDoc::sm_ChartDocList.begin(),
-                                   CcChartDoc::sm_ChartDocList.end(), name );
-
-                    if ( doc != CcChartDoc::sm_ChartDocList.end() )
-                    {
-                        (*doc)->Rename( tokenList.front() );
-                    }
-                    else
-                    {
-                       LOGWARN( "CcController:ParseInput:Rename couldn't find object with name '" + name + "'");
-                    }
-                }
-                tokenList.pop_front();  // Remove the new name.
-                break;
-            }
-            case kTCreateChartDoc:
-            {
-                tokenList.pop_front(); //remove token
-                CcChartDoc* cPtr = new CcChartDoc();
-                cPtr->ParseInput( tokenList );
-                break;
-            }
-            case kTCreatePlotData:
-            {
-                tokenList.pop_front(); //remove token
-                CcPlotData* pPtr = CcPlotData::CreatePlotData( tokenList );
-                pPtr->ParseInput( tokenList );
-                CcPlotData::sm_CurrentPlotData = pPtr;
-                break;
-            }
-            case kTCreateModelDoc:
-            {
-                tokenList.pop_front(); //remove token
-                CreateModelDoc(tokenList.front());
-                tokenList.pop_front();
-                CcModelDoc::sm_CurrentModelDoc->ParseInput( tokenList );
-                break;
-            }
-            case kTSysOpenFile: //Display OpenFileDialog and send result back to the Script.
-            {
-                tokenList.pop_front();    // remove that token
-        string result;  //the answer
-        list<pair<string,string> > extensionsAndDescriptions;
-
-//Updated syntax use SYSOPENFILE [ 'ext' 'desc' 'ext' 'desc' ]
-                if ( !tokenList.empty() && CcController::GetDescriptor( tokenList.front(), kInstructionClass ) == kTOpenGroup) {
-                    tokenList.pop_front();
-                        while ( !tokenList.empty() && CcController::GetDescriptor( tokenList.front(), kInstructionClass ) != kTCloseGroup) {
-                        string extension = string(tokenList.front()); // Get the extension
-                        tokenList.pop_front();
-                if ( tokenList.empty() || CcController::GetDescriptor( tokenList.front(), kInstructionClass ) == kTCloseGroup ) {
-                               LOGWARN( "CcController:ParseInput:SysOpenFile extension string without description");
-                   break;
-                }
-                        string description = string(tokenList.front());   // Get the extension description
-                        tokenList.pop_front();
-                extensionsAndDescriptions.push_back(make_pair(extension,description));
-
-            }
-                    tokenList.pop_front();
-        } else {
-// old syntax
-                    string result;
-                    string extension = string(tokenList.front()); // Get the extension
-                    tokenList.pop_front();
-                    string description = string(tokenList.front());   // Get the extension description
-                    tokenList.pop_front();
-            extensionsAndDescriptions.push_back(make_pair(extension,description));
+        theElement = FindObject(name);
+        if (theElement)
+        {
+          theElement->ParseInput(tokenList);
+          break;
         }
 
-            if ( !tokenList.empty() && CcController::GetDescriptor( tokenList.front(), kAttributeClass ) == kTTitleOnly)
-            {
-                result = OpenFileDialog(extensionsAndDescriptions, true);
-                tokenList.pop_front(); //Remove TitleOnly token
-            }
-            else
-            {
-                result = OpenFileDialog(extensionsAndDescriptions, false);
-            }
-                SendCommand(result);
-                break;
-            }
-            case kTSysSaveFile: //Display SaveFileDialog and send result back to the Script.
-            {
-                tokenList.pop_front();    // remove that token
-                string defName = string(tokenList.front());   // Get the default file name.
-                tokenList.pop_front();    // remove that token
-                string extension = string(tokenList.front()); // Get the extension.
-                tokenList.pop_front();    // remove that token
-                string description = string(tokenList.front());   // Get the extension description.
-                tokenList.pop_front();    // remove that token
+        list<CcChartDoc *>::iterator doc = find(CcChartDoc::sm_ChartDocList.begin(),
+                                                CcChartDoc::sm_ChartDocList.end(), name);
 
-                SendCommand( SaveFileDialog( defName, extension, description ) );
-                break;
-            }
-            case kTSysGetDir: //Display GetDirDialog and send result back to the Script.
-            {
-                tokenList.pop_front();    // remove that token
-                string result = OpenDirDialog();
-                SendCommand(result);
-                break;
-            }
-            case kTSysRestart: //Crystals has closed down, restart in specified directory.
-            {
-      	        string newfile = "crfilev2.dsc"; // default, maybe overwrite in a sec
-                tokenList.pop_front();    // remove that token
-                m_newdir = string (tokenList.front());
-                tokenList.pop_front();
-                m_restart = true;
-                if (!tokenList.empty() && CcController::GetDescriptor( tokenList.front(),  kAttributeClass  )==kTRestartFile)
-                {
-                              tokenList.pop_front();    // remove that token
-							  newfile = tokenList.front();
-                              string newdsc = "CRDSC=" + newfile;
-                              tokenList.pop_front();    // remove that token
-#if defined(CRY_OSWIN32)
-                              _putenv( newdsc.c_str() );
-#else
-                             char * env = new char[newdsc.size()+1];
-                             strcpy(env, newdsc.c_str());
-                             stringlist.push_back(env);
-                             putenv( env );
-#endif
-                }
-				wxFileName re( m_newdir, newfile ) ;
-				CcMRUFiles cmruf;
-				cmruf.AddFile( re );
-                break;
-            }
-            case kTRedirectText:
-            {
-                tokenList.pop_front();
-                CrTextOut * theTO = (CrTextOut*) FindObject( tokenList.front() );
-                if ( theTO != nil )
-                    SetTextOutputPlace(theTO);
-                else
-                    LOGWARN( "CcController:ParseInput:RedirectText couldn't find object with name '" + tokenList.front() + "'");
-                tokenList.pop_front();
-                break;
-            }
-            case kTRedirectProgress:
-            {
-                tokenList.pop_front();
-                CrProgress * thePB = (CrProgress*)FindObject( tokenList.front() );
-                if ( thePB != nil )
-                    SetProgressOutputPlace(thePB);
-                else
-                    LOGWARN( "CcController:ParseInput:RedirectProgress couldn't find object with name '" + tokenList.front() + "'");
-                tokenList.pop_front();
-                break;
-            }
-            case kTRedirectInput:
-            {
-                tokenList.pop_front();
-                CrEditBox * theEB = (CrEditBox*)FindObject( tokenList.front() );
-                if ( theEB != nil )
-                         SetInputPlace(theEB);
-                else
-                         LOGWARN( "CcController:ParseInput:RedirectInput couldn't find object with name '" + tokenList.front() + "'");
-                tokenList.pop_front();
-                break;
-            }
-            case kTGetRegValue:
-            {
-                tokenList.pop_front();
-                string val = GetRegKey( tokenList[0], tokenList[1] );
-                tokenList.pop_front();
-                tokenList.pop_front();
-                SendCommand(val);
-                break;
-            }
-            case kTGetKeyValue:
-            {
-                tokenList.pop_front();
-                string val = GetKey( tokenList.front() );
-                tokenList.pop_front();
-                SendCommand(val);
-                break;
-            }
-            case kTSetKeyValue:
-            {
-                tokenList.pop_front();
-                StoreKey( tokenList[0], tokenList[1] );
-                tokenList.pop_front();
-                tokenList.pop_front();
-                break;
-            }
-            case kTSetStatus:
-            {
-                tokenList.pop_front();
-                status.ParseInput( tokenList );
-                break;
-            }
-            case kTFontSet:
-            {
-                tokenList.pop_front();
-                CcChooseFont();
-                break;
-            }
-
-            default:
-            {
-                // This is not a known instruction for Controller.
-                // Pass it on to the current window.
-                if ( &tokenList == &mWindowTokenList )
-                {
-                    if ( mCurrentWindow )
-                    {
-                        LOGSTAT("CcController:ParseInput Passing tokenlist to window");
-                        retVal = mCurrentWindow->ParseInput( tokenList );
-                    }
-                }
-                else if ( &tokenList == &mChartTokenList )
-                {
-                    if ( CcChartDoc::sm_CurrentChartDoc != nil )
-                    {
-                        LOGSTAT("CcController:ParseInput:default Passing tokenlist to chart");
-                        retVal = CcChartDoc::sm_CurrentChartDoc->ParseInput( tokenList );
-                    }
-                }
-                else if ( &tokenList == &mPlotTokenList )
-                {
-                    if ( CcPlotData::sm_CurrentPlotData != nil )
-                    {
-                        LOGSTAT("CcController:ParseInput:default Passing tokenlist to plot");
-                        retVal = CcPlotData::sm_CurrentPlotData->ParseInput( tokenList );
-                    }
-                }
-                else if ( &tokenList == &mModelTokenList )
-                {
-                    if ( CcModelDoc::sm_CurrentModelDoc != nil )
-                    {
-                        LOGSTAT("CcController:ParseInput:default Passing tokenlist to model");
-                        retVal = CcModelDoc::sm_CurrentModelDoc->ParseInput( tokenList );
-                    }
-                }
-                else if ( &tokenList == &mStatusTokenList )
-                {
-                        LOGSTAT("CcController:ParseInput:default Passing tokenlist to status handler");
-                        status.ParseInput( tokenList );
-                }
-                else
-                {
-                    LOGWARN("CcController:ParseInput:default found an unknown command = '" + tokenList.front() +
-                         "', attempting to continue");
-                    tokenList.pop_front();
-                }
-                break;
-            }
-        } //end case
-    } //end of while loop
-
-
-    return (retVal.OK());
-
-}
-
-void    CcController::SendCommand( string command , bool jumpQueue)
-{
-    LOGSTAT("CcController:SendCommand received command '" + command + "'");
-//    char* theLine = (char*)command.c_str();
-    AddCrystalsCommand( command, jumpQueue );
-}
-
-
-void    CcController::Tokenize( const string & cText )
-{
-
-//    LOGWARN(cText);
-
-    int clen = cText.length();
-    int chop = 0;
-
-// Look out for lines where the ^^ are misplaced.
-
-    if ( clen >= 4 )
-    {
-        if ( cText[1] == '^' )
+        if (doc != CcChartDoc::sm_ChartDocList.end())
         {
-          chop = 5;
-          if ( cText[0] == '^' )
+          (*doc)->ParseInput(tokenList);
+          break;
+        }
+
+        CcMenuItem *theMenuItem = nil;
+
+        theMenuItem = CrMenu::FindMenuItem(name);
+        if (theMenuItem)
+        {
+          theMenuItem->ParseInput(tokenList);
+          break;
+        }
+
+        list<CcPlotData *>::reverse_iterator rpd = CcPlotData::sm_PlotList.rbegin();
+        // This loop finds the LAST item with a given name in the plotlist.
+        for (; rpd != CcPlotData::sm_PlotList.rend(); rpd++)
+        {
+          if ((*rpd)->FindObject(name))
           {
-            chop = 4;
+            break;
           }
         }
-    }
-
-    if ( chop && (clen >= chop) )   // It is definitely tagged text
-    {
-        string selector = cText.substr(chop-2,2); // Get the selector and determine list to use
-        if ( selector.compare(kSWindowSelector) == 0 )
+        if (rpd != CcPlotData::sm_PlotList.rend())
         {
-            mCurTokenList = &mWindowTokenList;
-            MakeTokens( cText.substr(chop,cText.length()-chop), *mCurTokenList);
+          (*rpd)->ParseInput(tokenList);
+          break;
         }
-        else if ( selector.compare(kSChartSelector) == 0 )
+        // Not found.
+        if (safeSet)
         {
-            mCurTokenList = &mChartTokenList;
-            MakeTokens( cText.substr(chop,cText.length()-chop), *mCurTokenList);
+          // Never mind - scan for closing ], but error if find
+          // an InstructionClass first.
+          while (true)
+          {
+            if (tokenList.empty())
+            {
+              LOGWARN("CcController:ParseInput:SAFESET ran off end of input.");
+              break;
+            }
+            else if (CcController::GetDescriptor(tokenList.front(), kInstructionClass) == kTCloseGroup)
+            {
+              tokenList.pop_front();
+              break;
+            }
+            tokenList.pop_front();
+          }
         }
-        else if ( selector.compare(kSPlotSelector) == 0 )
+        else
         {
-            mCurTokenList = &mPlotTokenList;
-            MakeTokens( cText.substr(chop,cText.length()-chop), *mCurTokenList);
+          LOGWARN("CcController:ParseInput:Set couldn't find object with name '" + name + "'");
         }
-        else if ( selector.compare(kSModelSelector) == 0 )
-        {
-            mCurTokenList = &mModelTokenList;
-            MakeTokens( cText.substr(chop,cText.length()-chop), *mCurTokenList);
-        }
-        else if ( selector.compare(kSStatusSelector) == 0 )
-        {
-            mCurTokenList = &mStatusTokenList;
-            MakeTokens( cText.substr(chop,cText.length()-chop), *mCurTokenList);
-        }
-        else if ( selector.compare(kSControlSelector) == 0 )
-        {
-            while ( ParseInput( *mCurTokenList ) )
-        ;
-        }
-        else if ( selector.compare(kSWaitControlSelector) == 0 )
-        {
-            while ( ParseInput( *mCurTokenList ) )
-        ;
-//We must now signal the waiting Crystals thread that we're complete.
-            LOGSTAT ( "CW complete, unlocking output queue.");
-            m_Complete_Signal.Signal();
-        }
-        else if ( selector.compare(kSOneCommand) == 0 )
-        {                                                                                                                                //Avoids breaking up (and corrupting) the incoming streams from scripts.
-            mTempTokenList = mCurTokenList;
-            mCurTokenList  = &mQuickTokenList;
-            MakeTokens( cText.substr(chop,cText.length()-chop), *mCurTokenList);
-            while ( ParseInput( mQuickTokenList ) );
-            mCurTokenList  = mTempTokenList;
-        }
-        else if ( selector.compare(kSQuerySelector) == 0 )
-        {
-            mTempTokenList = mCurTokenList;
-            mCurTokenList  = &mQuickTokenList;
-            MakeTokens( cText.substr(chop,cText.length()-chop), *mCurTokenList);
-            GetValue( mQuickTokenList ) ;
-            mCurTokenList  = mTempTokenList;
-//We must now signal the waiting Crystals thread that it's input is ready.
-            LOGSTAT ( "?? complete, unlocking output queue.");
-            m_Complete_Signal.Signal();
-        }
-        else                                             // Simple output text or comment
-        {
-            ProcessOutput( cText ); // Useful to see mistakes in ^^ format.
-        }
-    }
-    else                                             // Simple output text or comment
-    {
-            ProcessOutput( cText );
-    }
-}
-
-string trim(const string& pString)
-{
-    string::size_type start = pString.find_first_not_of(" \t\r\n");
-    string::size_type end = pString.find_last_not_of(" \t\r\n");
-    if (start == string::npos || end == string::npos)
-        return string();
-    else
-        return pString.substr(start, end-(start-1));
-}
-
-void  CcController::AddCrystalsCommand(const string &line, bool jumpQueue)
-{
-//Pre check for commands which we should handle. (Useful as these can be handled while the crystals thread is busy...)
-// 1. Close the main window. (Close the program).
-      if( line.length() > 10 )
-      {
-         if( ( line.substr(0,11) == "_MAIN CLOSE" ) && m_AllowThreadKill )
-         {
-           LOGSTAT("---Closing main window.");
-           AddInterfaceCommand("^^CO DISPOSE _MAIN ");
-           mThisThreadisDead = true;
-           return; //Messy at the moment. Need to do this from crystals thread so it can exit cleanly.
-         }
       }
-// 2. Allow GUIelements to send commands directly to the interface. Trap them here.
-      if( line.length() >= 4 )
+      break;
+    }
+    case kTFocus:
+    {
+      // remove that token
+      tokenList.pop_front();
+
+      string name = string(tokenList.front()); // Get the name of the object
+      tokenList.pop_front();
+      LOGSTAT("CcController: Setting Value of " + name);
+      CrGUIElement *theElement = nil;
+
+      if (name == "TEXTOUTPUT")
       {
-         if( line.substr(0,2) == "^^")
-         {
-              AddInterfaceCommand(line,true);
-              return;
-         }
+        theElement = GetTextOutputPlace();
+        theElement->CrFocus();
+      }
+      else if (name == "PROGOUTPUT")
+      {
+        theElement = GetProgressOutputPlace();
+        theElement->CrFocus();
+      }
+      else if (name == "TEXTINPUT")
+      {
+        theElement = GetInputPlace();
+        theElement->CrFocus();
+      }
+      else
+      {
+        // Look for the item
+        theElement = FindObject(name);
+        if (theElement)
+          theElement->CrFocus();
+        else
+          LOGWARN("CcController:ParseInput:Focus couldn't find object with name '" + name + "'");
+      }
+      break;
+    }
+    case kTBatch:
+    {
+      // remove that token
+      tokenList.pop_front();
+      m_BatchMode = true; // Stops blocking dialogs on error.
+      break;
+    }
+    case kTRenameObject:
+    {
+      // remove that token
+      tokenList.pop_front();
+
+      string name = string(tokenList.front()); // Get the name of the object
+      tokenList.pop_front();
+      LOGSTAT("CcController: About to rename: " + name);
+      CrGUIElement *theElement = nil;
+
+      // Look for the item
+      theElement = FindObject(name);
+      if (theElement)
+        theElement->Rename(tokenList.front());
+      else
+      {
+
+        list<CcChartDoc *>::iterator doc = find(CcChartDoc::sm_ChartDocList.begin(),
+                                                CcChartDoc::sm_ChartDocList.end(), name);
+
+        if (doc != CcChartDoc::sm_ChartDocList.end())
+        {
+          (*doc)->Rename(tokenList.front());
+        }
+        else
+        {
+          LOGWARN("CcController:ParseInput:Rename couldn't find object with name '" + name + "'");
+        }
+      }
+      tokenList.pop_front(); // Remove the new name.
+      break;
+    }
+    case kTCreateChartDoc:
+    {
+      tokenList.pop_front(); // remove token
+      CcChartDoc *cPtr = new CcChartDoc();
+      cPtr->ParseInput(tokenList);
+      break;
+    }
+    case kTCreatePlotData:
+    {
+      tokenList.pop_front(); // remove token
+      CcPlotData *pPtr = CcPlotData::CreatePlotData(tokenList);
+      pPtr->ParseInput(tokenList);
+      CcPlotData::sm_CurrentPlotData = pPtr;
+      break;
+    }
+    case kTCreateModelDoc:
+    {
+      tokenList.pop_front(); // remove token
+      CreateModelDoc(tokenList.front());
+      tokenList.pop_front();
+      CcModelDoc::sm_CurrentModelDoc->ParseInput(tokenList);
+      break;
+    }
+    case kTSysOpenFile: // Display OpenFileDialog and send result back to the Script.
+    {
+      tokenList.pop_front(); // remove that token
+      string result;         // the answer
+      list<pair<string, string>> extensionsAndDescriptions;
+
+      // Updated syntax use SYSOPENFILE [ 'ext' 'desc' 'ext' 'desc' ]
+      if (!tokenList.empty() && CcController::GetDescriptor(tokenList.front(), kInstructionClass) == kTOpenGroup)
+      {
+        tokenList.pop_front();
+        while (!tokenList.empty() && CcController::GetDescriptor(tokenList.front(), kInstructionClass) != kTCloseGroup)
+        {
+          string extension = string(tokenList.front()); // Get the extension
+          tokenList.pop_front();
+          if (tokenList.empty() || CcController::GetDescriptor(tokenList.front(), kInstructionClass) == kTCloseGroup)
+          {
+            LOGWARN("CcController:ParseInput:SysOpenFile extension string without description");
+            break;
+          }
+          string description = string(tokenList.front()); // Get the extension description
+          tokenList.pop_front();
+          extensionsAndDescriptions.push_back(make_pair(extension, description));
+        }
+        tokenList.pop_front();
+      }
+      else
+      {
+        // old syntax
+        string result;
+        string extension = string(tokenList.front()); // Get the extension
+        tokenList.pop_front();
+        string description = string(tokenList.front()); // Get the extension description
+        tokenList.pop_front();
+        extensionsAndDescriptions.push_back(make_pair(extension, description));
       }
 
-// 3. Everything else.
-//Add this command to the queue to crystals.
-    string temp = trim(line);
-    string::size_type stp;
-    if ( jumpQueue )
-    {
-         stp = temp.rfind("_N");
-         if (stp != string::npos)
-         {
-            mCrystalsCommandDeq.push_front ( temp.substr(stp+2,temp.length()-stp-2) );   //Add the next command in the list to the command queue
-            AddCrystalsCommand(temp.substr(0,stp), jumpQueue);
-         }
-         else
-            mCrystalsCommandDeq.push_front ( temp );    //Add the next command in the list to the command queue
+      if (!tokenList.empty() && CcController::GetDescriptor(tokenList.front(), kAttributeClass) == kTTitleOnly)
+      {
+        result = OpenFileDialog(extensionsAndDescriptions, true);
+        tokenList.pop_front(); // Remove TitleOnly token
+      }
+      else
+      {
+        result = OpenFileDialog(extensionsAndDescriptions, false);
+      }
+      LOGWARN("CcController:ParseInput:SysOpenFile result: " + result);
+      SendCommand(result);
+      break;
     }
-    else
+    case kTSysSaveFile: // Display SaveFileDialog and send result back to the Script.
     {
-         stp = temp.find("_N");
-         if (stp != string::npos)
-         {
-            mCrystalsCommandDeq.push_back ( temp.substr(0,stp) );   //Add the next command in the list to the command queue
-            AddCrystalsCommand(temp.substr(stp+2,temp.length()-stp-2), jumpQueue);
-         }
-         else
-            mCrystalsCommandDeq.push_back ( temp ); //Add the next command in the list to the command queue
+      tokenList.pop_front();                          // remove that token
+      string defName = string(tokenList.front());     // Get the default file name.
+      tokenList.pop_front();                          // remove that token
+      string extension = string(tokenList.front());   // Get the extension.
+      tokenList.pop_front();                          // remove that token
+      string description = string(tokenList.front()); // Get the extension description.
+      tokenList.pop_front();                          // remove that token
+
+      SendCommand(SaveFileDialog(defName, extension, description));
+      break;
     }
+    case kTSysGetDir: // Display GetDirDialog and send result back to the Script.
+    {
+      tokenList.pop_front(); // remove that token
+      string result = OpenDirDialog();
+      SendCommand(result);
+      break;
+    }
+    case kTSysRestart: // Crystals has closed down, restart in specified directory.
+    {
+      string newfile = "crfilev2.dsc"; // default, maybe overwrite in a sec
+      tokenList.pop_front();           // remove that token
+      m_newdir = string(tokenList.front());
+      tokenList.pop_front();
+      m_restart = true;
+      if (!tokenList.empty() && CcController::GetDescriptor(tokenList.front(), kAttributeClass) == kTRestartFile)
+      {
+        tokenList.pop_front(); // remove that token
+        newfile = tokenList.front();
+        string newdsc = "CRDSC=" + newfile;
+        tokenList.pop_front(); // remove that token
+#if defined(CRY_OSWIN32)
+        _putenv(newdsc.c_str());
+#else
+        char *env = new char[newdsc.size() + 1];
+        strcpy(env, newdsc.c_str());
+        stringlist.push_back(env);
+        putenv(env);
+#endif
+      }
+      wxFileName re(m_newdir, newfile);
+      CcMRUFiles cmruf;
+      cmruf.AddFile(re);
+      break;
+    }
+    case kTRedirectText:
+    {
+      tokenList.pop_front();
+      CrTextOut *theTO = (CrTextOut *)FindObject(tokenList.front());
+      if (theTO != nil)
+        SetTextOutputPlace(theTO);
+      else
+        LOGWARN("CcController:ParseInput:RedirectText couldn't find object with name '" + tokenList.front() + "'");
+      tokenList.pop_front();
+      break;
+    }
+    case kTRedirectProgress:
+    {
+      tokenList.pop_front();
+      CrProgress *thePB = (CrProgress *)FindObject(tokenList.front());
+      if (thePB != nil)
+        SetProgressOutputPlace(thePB);
+      else
+        LOGWARN("CcController:ParseInput:RedirectProgress couldn't find object with name '" + tokenList.front() + "'");
+      tokenList.pop_front();
+      break;
+    }
+    case kTRedirectInput:
+    {
+      tokenList.pop_front();
+      CrEditBox *theEB = (CrEditBox *)FindObject(tokenList.front());
+      if (theEB != nil)
+        SetInputPlace(theEB);
+      else
+        LOGWARN("CcController:ParseInput:RedirectInput couldn't find object with name '" + tokenList.front() + "'");
+      tokenList.pop_front();
+      break;
+    }
+    case kTGetRegValue:
+    {
+      tokenList.pop_front();
+      string val = GetRegKey(tokenList[0], tokenList[1]);
+      tokenList.pop_front();
+      tokenList.pop_front();
+      SendCommand(val);
+      break;
+    }
+    case kTGetKeyValue:
+    {
+      tokenList.pop_front();
+      string val = GetKey(tokenList.front());
+      tokenList.pop_front();
+      SendCommand(val);
+      break;
+    }
+    case kTSetKeyValue:
+    {
+      tokenList.pop_front();
+      StoreKey(tokenList[0], tokenList[1]);
+      tokenList.pop_front();
+      tokenList.pop_front();
+      break;
+    }
+    case kTSetStatus:
+    {
+      tokenList.pop_front();
+      status.ParseInput(tokenList);
+      break;
+    }
+    case kTFontSet:
+    {
+      tokenList.pop_front();
+      CcChooseFont();
+      break;
+    }
+
+    default:
+    {
+      // This is not a known instruction for Controller.
+      // Pass it on to the current window.
+      if (&tokenList == &mWindowTokenList)
+      {
+        if (mCurrentWindow)
+        {
+          LOGSTAT("CcController:ParseInput Passing tokenlist to window");
+          retVal = mCurrentWindow->ParseInput(tokenList);
+        }
+      }
+      else if (&tokenList == &mChartTokenList)
+      {
+        if (CcChartDoc::sm_CurrentChartDoc != nil)
+        {
+          LOGSTAT("CcController:ParseInput:default Passing tokenlist to chart");
+          retVal = CcChartDoc::sm_CurrentChartDoc->ParseInput(tokenList);
+        }
+      }
+      else if (&tokenList == &mPlotTokenList)
+      {
+        if (CcPlotData::sm_CurrentPlotData != nil)
+        {
+          LOGSTAT("CcController:ParseInput:default Passing tokenlist to plot");
+          retVal = CcPlotData::sm_CurrentPlotData->ParseInput(tokenList);
+        }
+      }
+      else if (&tokenList == &mModelTokenList)
+      {
+        if (CcModelDoc::sm_CurrentModelDoc != nil)
+        {
+          LOGSTAT("CcController:ParseInput:default Passing tokenlist to model");
+          retVal = CcModelDoc::sm_CurrentModelDoc->ParseInput(tokenList);
+        }
+      }
+      else if (&tokenList == &mStatusTokenList)
+      {
+        LOGSTAT("CcController:ParseInput:default Passing tokenlist to status handler");
+        status.ParseInput(tokenList);
+      }
+      else
+      {
+        LOGWARN("CcController:ParseInput:default found an unknown command = '" + tokenList.front() +
+                "', attempting to continue");
+        tokenList.pop_front();
+      }
+      break;
+    }
+    } // end case
+  } // end of while loop
+
+  return (retVal.OK());
 }
 
-void  CcController::AddInterfaceCommand( const string &line, bool internal )
-//------------------------------------------------------
+void CcController::SendCommand(string command, bool jumpQueue)
 {
-/*  This is a critical section between the threads.
- *  If the interface thread has a lock on the section, then we
- *  have to wait (using a mutex sync object).
+  LOGSTAT("CcController:SendCommand received command '" + command + "'");
+  //    char* theLine = (char*)command.c_str();
+  AddCrystalsCommand(command, jumpQueue);
+}
 
- *  If the command is a query from the CRYSTALS program ( ^^?? ), then
- *  we must get a lock on the Crystals Command Queue, so that
- *  nothing can be read from it, until the answer to the query
- *  is placed at the top of the queue.
- */
-  bool lock = false;
-    int chop = 0;
-  int clen = line.length();
-    if (clen >= 4 )
+void CcController::Tokenize(const string &cText)
+{
+
+  //    LOGWARN(cText);
+
+  int clen = cText.length();
+  int chop = 0;
+
+  // Look out for lines where the ^^ are misplaced.
+
+  if (clen >= 4)
   {
-    if ( line[1] == '^' )
+    if (cText[1] == '^')
     {
-      if ( clen >= 5 ) chop = 5;
-
-      if ( line[0] == '^' )
+      chop = 5;
+      if (cText[0] == '^')
       {
         chop = 4;
       }
-      if ( chop )
+    }
+  }
+
+  if (chop && (clen >= chop)) // It is definitely tagged text
+  {
+    string selector = cText.substr(chop - 2, 2); // Get the selector and determine list to use
+    if (selector.compare(kSWindowSelector) == 0)
+    {
+      mCurTokenList = &mWindowTokenList;
+      MakeTokens(cText.substr(chop, cText.length() - chop), *mCurTokenList);
+    }
+    else if (selector.compare(kSChartSelector) == 0)
+    {
+      mCurTokenList = &mChartTokenList;
+      MakeTokens(cText.substr(chop, cText.length() - chop), *mCurTokenList);
+    }
+    else if (selector.compare(kSPlotSelector) == 0)
+    {
+      mCurTokenList = &mPlotTokenList;
+      MakeTokens(cText.substr(chop, cText.length() - chop), *mCurTokenList);
+    }
+    else if (selector.compare(kSModelSelector) == 0)
+    {
+      mCurTokenList = &mModelTokenList;
+      MakeTokens(cText.substr(chop, cText.length() - chop), *mCurTokenList);
+    }
+    else if (selector.compare(kSStatusSelector) == 0)
+    {
+      mCurTokenList = &mStatusTokenList;
+      MakeTokens(cText.substr(chop, cText.length() - chop), *mCurTokenList);
+    }
+    else if (selector.compare(kSControlSelector) == 0)
+    {
+      while (ParseInput(*mCurTokenList))
+        ;
+    }
+    else if (selector.compare(kSWaitControlSelector) == 0)
+    {
+      while (ParseInput(*mCurTokenList))
+        ;
+      // We must now signal the waiting Crystals thread that we're complete.
+      LOGSTAT("CW complete, unlocking output queue.");
+      m_Complete_Signal.Signal();
+    }
+    else if (selector.compare(kSOneCommand) == 0)
+    { // Avoids breaking up (and corrupting) the incoming streams from scripts.
+      mTempTokenList = mCurTokenList;
+      mCurTokenList = &mQuickTokenList;
+      MakeTokens(cText.substr(chop, cText.length() - chop), *mCurTokenList);
+      while (ParseInput(mQuickTokenList))
+        ;
+      mCurTokenList = mTempTokenList;
+    }
+    else if (selector.compare(kSQuerySelector) == 0)
+    {
+      mTempTokenList = mCurTokenList;
+      mCurTokenList = &mQuickTokenList;
+      MakeTokens(cText.substr(chop, cText.length() - chop), *mCurTokenList);
+      GetValue(mQuickTokenList);
+      mCurTokenList = mTempTokenList;
+      // We must now signal the waiting Crystals thread that it's input is ready.
+      LOGSTAT("?? complete, unlocking output queue.");
+      m_Complete_Signal.Signal();
+    }
+    else // Simple output text or comment
+    {
+      ProcessOutput(cText); // Useful to see mistakes in ^^ format.
+    }
+  }
+  else // Simple output text or comment
+  {
+    ProcessOutput(cText);
+  }
+}
+
+string trim(const string &pString)
+{
+  string::size_type start = pString.find_first_not_of(" \t\r\n");
+  string::size_type end = pString.find_last_not_of(" \t\r\n");
+  if (start == string::npos || end == string::npos)
+    return string();
+  else
+    return pString.substr(start, end - (start - 1));
+}
+
+void CcController::AddCrystalsCommand(const string &line, bool jumpQueue)
+{
+  // Pre check for commands which we should handle. (Useful as these can be handled while the crystals thread is busy...)
+  //  1. Close the main window. (Close the program).
+  if (line.length() > 10)
+  {
+    if ((line.substr(0, 11) == "_MAIN CLOSE") && m_AllowThreadKill)
+    {
+      LOGSTAT("---Closing main window.");
+      AddInterfaceCommand("^^CO DISPOSE _MAIN ");
+      mThisThreadisDead = true;
+      return; // Messy at the moment. Need to do this from crystals thread so it can exit cleanly.
+    }
+  }
+  // 2. Allow GUIelements to send commands directly to the interface. Trap them here.
+  if (line.length() >= 4)
+  {
+    if (line.substr(0, 2) == "^^")
+    {
+      AddInterfaceCommand(line, true);
+      return;
+    }
+  }
+
+  // 3. Everything else.
+  // Add this command to the queue to crystals.
+
+
+  string temp = trim(line);
+  string::size_type stp;
+
+
+  if (jumpQueue)
+  {
+    stp = temp.rfind("_N");    // split string at _N
+    if (stp != string::npos)
+    {
+      // add string after _N to the command queue
+      string endofstring = temp.substr(stp + 2, temp.length() - stp - 2); 
+
+      // but first, substitute the *N with _N
+      string::size_type nstar = endofstring.rfind("*N");
+      while (nstar != string::npos)
       {
-        string selector = line.substr(chop-2,2);
-        if ( !internal && (( selector.compare(kSQuerySelector)      ==0) ||
-                           ( selector.compare(kSWaitControlSelector)==0)    ) )
+        // substitue the *N from the string
+        endofstring.replace(nstar, 2, "_N");
+        nstar = endofstring.rfind("*N");
+      }
+      mCrystalsCommandDeq.push_front(endofstring); // Add the next command in the list to the command queue
+      // recursion, process rest (before _N) of string again
+      AddCrystalsCommand(temp.substr(0, stp), jumpQueue);
+    }
+    else {
+      string::size_type nstar = temp.rfind("*N");
+      while (nstar != string::npos)
+      {
+        // substitue the *N from the string
+        temp.replace(nstar, 2, "_N");
+        nstar = temp.rfind("*N");
+      }
+      mCrystalsCommandDeq.push_front(temp); // Add the next command in the list to the command queue
+    }
+  }
+  else
+  {
+    stp = temp.find("_N");
+    if (stp != string::npos)
+    {
+      // add string after _N to the command queue
+      string startofstring = temp.substr(0,stp); 
+
+      // but first, substitute the *N with _N
+      string::size_type nstar = startofstring.rfind("*N");
+      while (nstar != string::npos)
+      {
+        // substitue the *N from the string
+        startofstring.replace(nstar, 2, "_N");
+        nstar = startofstring.rfind("*N");
+      }
+      mCrystalsCommandDeq.push_back(startofstring); // Add the next command in the list to the command queue
+      AddCrystalsCommand(temp.substr(stp + 2, temp.length() - stp - 2), jumpQueue);
+    }
+    else {
+     string::size_type nstar = temp.rfind("*N");
+      while (nstar != string::npos)
+      {
+        // substitue the *N from the string
+        temp.replace(nstar, 2, "_N");
+        nstar = temp.rfind("*N");
+      }
+      mCrystalsCommandDeq.push_back(temp); // Add the next command in the list to the command queue
+    }
+  }
+}
+
+void CcController::AddInterfaceCommand(const string &line, bool internal)
+//------------------------------------------------------
+{
+  /*  This is a critical section between the threads.
+   *  If the interface thread has a lock on the section, then we
+   *  have to wait (using a mutex sync object).
+
+   *  If the command is a query from the CRYSTALS program ( ^^?? ), then
+   *  we must get a lock on the Crystals Command Queue, so that
+   *  nothing can be read from it, until the answer to the query
+   *  is placed at the top of the queue.
+   */
+  bool lock = false;
+  int chop = 0;
+  int clen = line.length();
+  if (clen >= 4)
+  {
+    if (line[1] == '^')
+    {
+      if (clen >= 5)
+        chop = 5;
+
+      if (line[0] == '^')
+      {
+        chop = 4;
+      }
+      if (chop)
+      {
+        string selector = line.substr(chop - 2, 2);
+        if (!internal && ((selector.compare(kSQuerySelector) == 0) ||
+                          (selector.compare(kSWaitControlSelector) == 0)))
         {
           lock = true; // Don't return from here until
                        // this query is answered.
-          LOGSTAT ("-----------Thread will be locked before returning: "+selector);
+          LOGSTAT("-----------Thread will be locked before returning: " + selector);
         }
       }
     }
   }
 
-  if(mThisThreadisDead) endthread(0);
+  if (mThisThreadisDead)
+    endthread(0);
 
-//  ostringstream os;
-//  os << "-----(" << mInterfaceCommandDeq.size() <<  ")---CRYSTALS puting: " << line ;
-//  LOGSTAT(os.str());
+  //  ostringstream os;
+  //  os << "-----(" << mInterfaceCommandDeq.size() <<  ")---CRYSTALS puting: " << line ;
+  //  LOGSTAT(os.str());
 
   mInterfaceCommandDeq.push_back(line);
-  LOGSTAT("-----------CRYSTALS has put: " + line );
-
+  LOGSTAT("-----------CRYSTALS has put: " + line);
 
   if ( lock )
   {
-       m_Complete_Signal.Wait();
-       LOGSTAT ("-----------Queue released");
+    m_Complete_Signal.Wait();
+    LOGSTAT("-----------Queue released");
   }
 }
 
-bool CcController::GetInterfaceCommand( string &line )
+bool CcController::GetInterfaceCommand(string &line)
 //------------------------------------------------------
 {
-    //This routine gets called repeatedly by the Idle loop.
-    //It needn't be highly optimised even though it is high on
-    //the profile count list.
-//  LOGSTAT("GtIfCmd.");
-  if( mCrystalsThread )
+  // This routine gets called repeatedly by the Idle loop.
+  // It needn't be highly optimised even though it is high on
+  // the profile count list.
+  //  LOGSTAT("GtIfCmd.");
+  if (mCrystalsThread)
   {
-    if ( ! (m_Crystals_Thread_Alive.IsLocked()) )
+    if (!(m_Crystals_Thread_Alive.IsLocked()))
     {
       LOGSTAT("The CRYSTALS thread has died.");
-//      delete mCrystalsThread;
+      //      delete mCrystalsThread;
       mCrystalsThread = nil;
-      if ( m_restart )
+      if (m_restart)
       {
-        ChangeDir( m_newdir );
+        ChangeDir(m_newdir);
         StartCrystalsThread();
         m_restart = false;
-      } else {
+      }
+      else
+      {
         mThisThreadisDead = true;
         LOGSTAT("Shutting down the main window of this (GUI) thread.");
         line = "^^CO DISPOSE _MAIN ";
@@ -1919,376 +1968,379 @@ bool CcController::GetInterfaceCommand( string &line )
   }
   else
   {
-      LOGSTAT("The CRYSTALS thread has ended.");
-      mThisThreadisDead = true;
-      LOGSTAT("Shutting down this (GUI) thread.");
-      line = "^^CO DISPOSE _MAIN ";
-      return (true);
+    LOGSTAT("The CRYSTALS thread has ended.");
+    mThisThreadisDead = true;
+    LOGSTAT("Shutting down this (GUI) thread.");
+    line = "^^CO DISPOSE _MAIN ";
+    return (true);
   }
 
   try
   {
-      if ( mInterfaceCommandDeq.size() == 0 )
-          return false;
+    if (mInterfaceCommandDeq.size() == 0)
+      return false;
 
-      line = mInterfaceCommandDeq.pop_front(0);
-//    ostringstream os;
-//    os << "GUI gets (rem: " << mInterfaceCommandDeq.size() << ": " << line;
-//    LOGSTAT(os.str());
-    LOGSTAT("GUI gets: "+line);
+    line = mInterfaceCommandDeq.pop_front(0);
+    //    ostringstream os;
+    //    os << "GUI gets (rem: " << mInterfaceCommandDeq.size() << ": " << line;
+    //    LOGSTAT(os.str());
+    LOGSTAT("GUI gets: " + line);
     return (true);
   }
-  catch (const exception& e)
+  catch (const exception &e)
   {
-    line = "" ;
+    line = "";
     return (false);
   }
 }
 
-void    CcController::LogError( string errString , int level )
+void CcController::LogError(string errString, int level)
 {
-    if ( mErrorLog == nil )
-    {
-        mErrorLog = fopen( "Script.log", "w+" );
-    }
-    if ( level == 1 ) //Warning mark with stars.
-    {
-        errString = " WARNING: " + errString;
-        ProcessOutput( "{E " + errString );
-    }
-    else if (level == 0) //Serious error mark with XXXX's
-    {
-        errString = " ERROR: " + errString;
-        ProcessOutput( "{E " + errString );
-    }
-    for ( int i = 0; i < CcController::debugIndent; i++)
-    {
-      fprintf( mErrorLog, "  ");
-    }
+  if (mErrorLog == nil)
+  {
+    mErrorLog = fopen("Script.log", "w+");
+  }
+  if (level == 1) // Warning mark with stars.
+  {
+    errString = " WARNING: " + errString;
+    ProcessOutput("{E " + errString);
+  }
+  else if (level == 0) // Serious error mark with XXXX's
+  {
+    errString = " ERROR: " + errString;
+    ProcessOutput("{E " + errString);
+  }
+  for (int i = 0; i < CcController::debugIndent; i++)
+  {
+    fprintf(mErrorLog, "  ");
+  }
 
 #ifdef CRY_OSWIN32
-    int now_ticks = GetTickCount();
+  int now_ticks = GetTickCount();
 #else
-    struct timeval time;
-    struct timezone tz;
-    gettimeofday(&time,&tz);
-    int now_ticks = (time.tv_sec%10000)*1000 + time.tv_usec/1000;
+  struct timeval time;
+  struct timezone tz;
+  gettimeofday(&time, &tz);
+  int now_ticks = (time.tv_sec % 10000) * 1000 + time.tv_usec / 1000;
 #endif
 
+  int elapse = now_ticks - m_start_ticks; // may go negative- GetTickCount wraps every 47 days.
 
-    int elapse = now_ticks - m_start_ticks; // may go negative- GetTickCount wraps every 47 days.
+  fprintf(mErrorLog, "%d.%03d %s\n", elapse / 1000, elapse % 1000, errString.c_str());
+  fflush(mErrorLog);
 
-    fprintf( mErrorLog, "%d.%03d %s\n", elapse/1000,elapse%1000,errString.c_str() );
-    fflush( mErrorLog );
-
-    #ifdef CRY_OSLINUX
-//          std::cerr << elapse << " " << errString.c_str() << "\n";
-    #endif
+#ifdef CRY_OSLINUX
+  //          std::cerr << elapse << " " << errString.c_str() << "\n";
+#endif
 }
 
-
-CrGUIElement* CcController::FindObject(const string & Name)
+CrGUIElement *CcController::FindObject(const string &Name)
 {
-    CrGUIElement * theElement = nil;
-    list<CrWindow*>::iterator mw;
-    for ( mw = mWindowList.begin(); mw != mWindowList.end(); mw++ )
-    {
-      LOGSTAT("Find object, testing: " + (*mw)->mName);
-      if ( (theElement = (*mw)->FindObject(Name) )) return theElement;
-    }
-    return nil;
+  CrGUIElement *theElement = nil;
+  list<CrWindow *>::iterator mw;
+  for (mw = mWindowList.begin(); mw != mWindowList.end(); mw++)
+  {
+    LOGSTAT("Find object, testing: " + (*mw)->mName);
+    if ((theElement = (*mw)->FindObject(Name)))
+      return theElement;
+  }
+  return nil;
 }
 
 bool CcController::InputPlaceIsInTopLevelModalWindow()
 {
-    if ( CrWindow::mModalWindowStack.empty() ) return true; //shouldn't happen, but maybe top level window isn't in stack
-    if ( GetInputPlace() ) {
-        if ( GetInputPlace()->GetRootWidget() == CrWindow::mModalWindowStack.back() ) return true;
-    }
-    return false;
+  if (CrWindow::mModalWindowStack.empty())
+    return true; // shouldn't happen, but maybe top level window isn't in stack
+  if (GetInputPlace())
+  {
+    if (GetInputPlace()->GetRootWidget() == CrWindow::mModalWindowStack.back())
+      return true;
+  }
+  return false;
 }
 
 void CcController::FocusToInput(char theChar)
 {
-    int nChar = (int) theChar;
-    if( nChar == 13) //Return key, process input.
+  int nChar = (int)theChar;
+  if (nChar == 13) // Return key, process input.
+  {
+    GetInputPlace()->ReturnPressed();
+    GetInputPlace()->CrFocus();
+  }
+  else if (nChar > 31 && nChar < 127) // Some keyboard text. Append to command line.
+  {
+    string someText = ((CxEditBox *)(GetInputPlace()->GetWidget()))->GetText();
+    someText += theChar;
+    if (InputPlaceIsInTopLevelModalWindow())
     {
-            GetInputPlace()->ReturnPressed();
-            GetInputPlace()->CrFocus();
+      GetInputPlace()->SetText(someText);
+      GetInputPlace()->CrFocus();
     }
-    else if ( nChar > 31 && nChar < 127 ) //Some keyboard text. Append to command line.
-    {
-        string someText = ((CxEditBox*)(GetInputPlace()->GetWidget()))->GetText();
-        someText += theChar;
-        if ( InputPlaceIsInTopLevelModalWindow() ){
-            GetInputPlace()->SetText(someText);
-            GetInputPlace()->CrFocus();
-        }
-    }
-    else if ( InputPlaceIsInTopLevelModalWindow() ) //No input text, but focus anyway.
-    {
-        GetInputPlace()->CrFocus();
-    }
+  }
+  else if (InputPlaceIsInTopLevelModalWindow()) // No input text, but focus anyway.
+  {
+    GetInputPlace()->CrFocus();
+  }
 }
 
-void CcController::SetTextOutputPlace(CrGUIElement * outputPane)
+void CcController::SetTextOutputPlace(CrGUIElement *outputPane)
 {
-    mTextOutputWindowList.push_back(outputPane);
+  mTextOutputWindowList.push_back(outputPane);
 }
 
-CrGUIElement* CcController::GetTextOutputPlace()
+CrGUIElement *CcController::GetTextOutputPlace()
 {
-    if (mTextOutputWindowList.empty()) return nil;
-    return mTextOutputWindowList.back();
+  if (mTextOutputWindowList.empty())
+    return nil;
+  return mTextOutputWindowList.back();
 }
 
-void CcController::SetProgressOutputPlace(CrProgress * outputPane)
+void CcController::SetProgressOutputPlace(CrProgress *outputPane)
 {
-    if ( !mProgressOutputWindowList.empty() )
-             mProgressOutputWindowList.back()->SetText(" ");
-    mProgressOutputWindowList.push_back(outputPane);
+  if (!mProgressOutputWindowList.empty())
+    mProgressOutputWindowList.back()->SetText(" ");
+  mProgressOutputWindowList.push_back(outputPane);
 }
-CrGUIElement* CcController::GetProgressOutputPlace()
+CrGUIElement *CcController::GetProgressOutputPlace()
 {
-    if (mProgressOutputWindowList.empty()) return nil;
-    return mProgressOutputWindowList.back();
-}
-
-void CcController::SetInputPlace(CrEditBox * inputPane)
-{
-      mInputWindowList.push_back(inputPane);
+  if (mProgressOutputWindowList.empty())
+    return nil;
+  return mProgressOutputWindowList.back();
 }
 
-CrEditBox* CcController::GetInputPlace()
+void CcController::SetInputPlace(CrEditBox *inputPane)
 {
-    if (mInputWindowList.empty()) return nil;
-    return mInputWindowList.back();
+  mInputWindowList.push_back(inputPane);
 }
 
-
-
-
-void CcController::RemoveTextOutputPlace(CrGUIElement* output)
+CrEditBox *CcController::GetInputPlace()
 {
-      mTextOutputWindowList.remove(output);
-}
-void CcController::RemoveProgressOutputPlace(CrProgress* output)
-{
-      mProgressOutputWindowList.remove(output);
+  if (mInputWindowList.empty())
+    return nil;
+  return mInputWindowList.back();
 }
 
-void CcController::RemoveInputPlace(CrEditBox* input)
+void CcController::RemoveTextOutputPlace(CrGUIElement *output)
 {
-      mInputWindowList.remove(input);
+  mTextOutputWindowList.remove(output);
+}
+void CcController::RemoveProgressOutputPlace(CrProgress *output)
+{
+  mProgressOutputWindowList.remove(output);
 }
 
-void CcController::RemoveWindowFromList(CrWindow* window)
+void CcController::RemoveInputPlace(CrEditBox *input)
 {
-// CxWindows can be destroyed by the framework, when their parent
-// windows are destroyed. This bypasses our normal destruction
-// method, so to be safe, all dying windows call this function
-// to 'de-register' themselves from the Controller's list.
-      mWindowList.remove(window);
-      LOGSTAT("CcController: Window destroyed by framework?" );
+  mInputWindowList.remove(input);
 }
 
-
-
-CcModelDoc* CcController::FindModelDoc(const string & name)
+void CcController::RemoveWindowFromList(CrWindow *window)
 {
-    if ( CcModelDoc::sm_ModelDocList.empty() ) return nil;
+  // CxWindows can be destroyed by the framework, when their parent
+  // windows are destroyed. This bypasses our normal destruction
+  // method, so to be safe, all dying windows call this function
+  // to 'de-register' themselves from the Controller's list.
+  mWindowList.remove(window);
+  LOGSTAT("CcController: Window destroyed by framework?");
+}
 
-    list<CcModelDoc*>::iterator doc =
-              find( CcModelDoc::sm_ModelDocList.begin(), CcModelDoc::sm_ModelDocList.end(), name );
+CcModelDoc *CcController::FindModelDoc(const string &name)
+{
+  if (CcModelDoc::sm_ModelDocList.empty())
+    return nil;
 
-    if ( doc == CcModelDoc::sm_ModelDocList.end() )
-                return nil;
+  list<CcModelDoc *>::iterator doc =
+      find(CcModelDoc::sm_ModelDocList.begin(), CcModelDoc::sm_ModelDocList.end(), name);
+
+  if (doc == CcModelDoc::sm_ModelDocList.end())
+    return nil;
+  else
+    return *doc;
+}
+
+CcModelDoc *CcController::CreateModelDoc(const string &name)
+{
+  CcModelDoc *modelDoc;
+  modelDoc = FindModelDoc(name);
+  if (modelDoc == nil)
+  {
+    modelDoc = new CcModelDoc();
+    modelDoc->mName = name;
+  }
+  else
+  {
+    modelDoc->Clear();
+  }
+
+  CcModelDoc::sm_CurrentModelDoc = modelDoc;
+  return modelDoc;
+}
+
+void CcController::GetValue(deque<string> &tokenList)
+{
+  LOGSTAT("CcController: Getting Value");
+
+  string name = string(tokenList.front()); // Get the name of the object
+  tokenList.pop_front();
+  CrGUIElement *theElement = nil;
+
+  if (mCurrentWindow)
+  {
+    // Look for the item in current window first.
+    theElement = mCurrentWindow->FindObject(name);
+  }
+
+  if (theElement == nil)
+  {
+    // Look for the element everywhere.
+    theElement = FindObject(name);
+  }
+
+  // If this is an EXISTS query, then send either TRUE or FALSE
+
+  if (CcController::GetDescriptor(tokenList.front(), kQueryClass) == kTQExists)
+  {
+    tokenList.pop_front(); // Remove token.
+
+    if (theElement != nil)
+      SendCommand("TRUE", true); // This is used to check if an object exists.
     else
-                return *doc;
-}
+      SendCommand("FALSE", true); // This is used to check if an object exists.
+  }
 
-CcModelDoc* CcController::CreateModelDoc(const string & name)
-{
-    CcModelDoc* modelDoc;
-    modelDoc = FindModelDoc(name);
-    if ( modelDoc == nil )
-    {
-        modelDoc = new CcModelDoc();
-        modelDoc->mName = name;
-    }
-    else
-    {
-        modelDoc->Clear();
-    }
+  // If this is a GETKEY query, then process it at once.
 
-    CcModelDoc::sm_CurrentModelDoc = modelDoc;
-    return modelDoc;
-}
-
-
-
-void CcController::GetValue(deque<string> &  tokenList)
-{
-    LOGSTAT("CcController: Getting Value");
-
-    string name = string(tokenList.front());  // Get the name of the object
+  else if (name.find(kSGetKeyValue) == 0)
+  {
+    string val = GetKey(tokenList.front());
     tokenList.pop_front();
-    CrGUIElement * theElement = nil;
+    SendCommand(val, true);
+  }
 
-    if ( mCurrentWindow )
-    {
-        // Look for the item in current window first.
-         theElement = mCurrentWindow->FindObject( name );
-    }
+  // If this is another query pass control to object, or if it doesn't exist, return ERROR.
 
-    if ( theElement == nil )
-    {
-        // Look for the element everywhere.
-        theElement = FindObject ( name );
-    }
-
-//If this is an EXISTS query, then send either TRUE or FALSE
-
-    if( CcController::GetDescriptor( tokenList.front(), kQueryClass ) == kTQExists )
-    {
-        tokenList.pop_front(); //Remove token.
-
-        if ( theElement != nil )
-            SendCommand("TRUE",true); //This is used to check if an object exists.
-        else
-            SendCommand("FALSE",true); //This is used to check if an object exists.
-    }
-
-//If this is a GETKEY query, then process it at once.
-
-    else if( name.find(kSGetKeyValue) == 0 )
-    {
-        string val = GetKey( tokenList.front() );
-        tokenList.pop_front();
-        SendCommand(val,true);
-    }
-
-//If this is another query pass control to object, or if it doesn't exist, return ERROR.
-
+  else
+  {
+    if (theElement != nil)
+      theElement->GetValue(tokenList);
     else
     {
-        if ( theElement != nil )
-            theElement->GetValue(tokenList);
-        else
-        {
-            SendCommand("ERROR",true);
-            LOGWARN( "CcController:GetValue couldn't find object with name '" + name + "'");
-        }
-
+      SendCommand("ERROR", true);
+      LOGWARN("CcController:GetValue couldn't find object with name '" + name + "'");
     }
+  }
 }
 
-
-void  CcController::SetProgressText(const string& theText)
+void CcController::SetProgressText(const string &theText)
 {
-      CrProgress* theElement = (CrProgress*) GetProgressOutputPlace();
-      if (theElement != nil)
-            theElement->SwitchText( theText );
+  CrProgress *theElement = (CrProgress *)GetProgressOutputPlace();
+  if (theElement != nil)
+    theElement->SwitchText(theText);
 }
 
-
-void CcController::StoreKey( string key, string value )
+void CcController::StoreKey(string key, string value)
 {
 
- wxString ckey = wxT("Chem Cryst");
- wxString pkey = wxT("Crystals/");
- pkey += wxString(key.c_str(),wxConvUTF8);
- wxString wval(value.c_str(),wxConvUTF8);
- wxConfig * config = new wxConfig(ckey);
- config->Write( pkey, wval );
- delete config;
+  wxString ckey = wxT("Chem Cryst");
+  wxString pkey = wxT("Crystals/");
+  pkey += wxString(key.c_str(), wxConvUTF8);
+  wxString wval(value.c_str(), wxConvUTF8);
+  wxConfig *config = new wxConfig(ckey);
+  config->Write(pkey, wval);
+  delete config;
 
-
- return;
-
+  return;
 }
-string CcController::GetKey( string key )
+string CcController::GetKey(string key)
 {
- string value;
+  string value;
 
+  wxString str;
+  wxString pkey = wxT("Crystals/");
+  pkey += wxString(key.c_str(), wxConvUTF8);
+  wxString wstr;
 
- wxString str;
- wxString pkey = wxT("Crystals/");
- pkey += wxString(key.c_str(),wxConvUTF8);
- wxString wstr;
+  wxConfig *config = new wxConfig("Chem Cryst");
+  if (config->Read(pkey, &wstr))
+  {
+    value = wstr.mb_str();
+  }
+  delete config;
 
- wxConfig * config = new wxConfig("Chem Cryst");
- if ( config->Read(pkey, &wstr ) ) {
-   value = wstr.mb_str();
- }
- delete config;
-
-
- return value;
-
+  return value;
 }
 
-string CcController::GetRegKey( string key, string name )
+string CcController::GetRegKey(string key, string name)
 {
 
-// Fetch any key from the registry. It first looks in HKCU/key for name,
-// if not found, then it falls back to HKLM/key. The return value is
-// empty if the key isn't found.
+  // Fetch any key from the registry. It first looks in HKCU/key for name,
+  // if not found, then it falls back to HKLM/key. The return value is
+  // empty if the key isn't found.
 
-// Non-windows platforms will return an empty string.
+  // Non-windows platforms will return an empty string.
 
- string data;
+  string data;
 
-#if defined(CRY_OSWIN32)   // All other windows library versions
+#if defined(CRY_OSWIN32) // All other windows library versions
 
- bool notfound = true;
- wxString wsdata;
+  bool notfound = true;
+  wxString wsdata;
 
- wxRegKey regcu(wxRegKey::HKCU, ""); //first try HKCU
- if (regcu.HasSubKey(key.c_str()) ) {
+  wxRegKey regcu(wxRegKey::HKCU, ""); // first try HKCU
+  if (regcu.HasSubKey(key.c_str()))
+  {
     wxRegKey keycu(wxRegKey::HKCU, key.c_str());
-    if ( keycu.HasValue(name.c_str()) && keycu.QueryValue(name.c_str(), wsdata)) {
+    if (keycu.HasValue(name.c_str()) && keycu.QueryValue(name.c_str(), wsdata))
+    {
+      data = wsdata.mb_str();
+      notfound = false;
+    }
+  }
+
+  if (notfound)
+  { // try 32-bit HKLM registry keys.
+    wxRegKey regcu32(wxRegKey::HKCU, "", wxRegKey::WOW64ViewMode_32);
+    if (regcu32.HasSubKey(key.c_str()))
+    {
+      wxRegKey rkey(wxRegKey::HKLM, key.c_str(), wxRegKey::WOW64ViewMode_32);
+      if (rkey.HasValue(name.c_str()) && rkey.QueryValue(name.c_str(), wsdata))
+      {
         data = wsdata.mb_str();
         notfound = false;
+      }
     }
- }
+  }
 
- if ( notfound ) { // try 32-bit HKLM registry keys.
-    wxRegKey regcu32(wxRegKey::HKCU, "", wxRegKey::WOW64ViewMode_32);
-    if (regcu32.HasSubKey(key.c_str()) ) {
-        wxRegKey rkey(wxRegKey::HKLM, key.c_str(), wxRegKey::WOW64ViewMode_32);
-        if ( rkey.HasValue(name.c_str()) && rkey.QueryValue(name.c_str(), wsdata)) {
-            data = wsdata.mb_str();
-            notfound = false;
-        }
-    }
-
- }
-
- if ( notfound ) { // try HKLM registry keys.
+  if (notfound)
+  { // try HKLM registry keys.
     wxRegKey reglm(wxRegKey::HKLM, "");
-    if (reglm.HasSubKey(key.c_str()) ) {
-        wxRegKey rkey(wxRegKey::HKLM, key.c_str());
-        if ( rkey.HasValue(name.c_str()) && rkey.QueryValue(name.c_str(), wsdata)) {
-            data = wsdata.mb_str();
-            notfound = false;
-        }
+    if (reglm.HasSubKey(key.c_str()))
+    {
+      wxRegKey rkey(wxRegKey::HKLM, key.c_str());
+      if (rkey.HasValue(name.c_str()) && rkey.QueryValue(name.c_str(), wsdata))
+      {
+        data = wsdata.mb_str();
+        notfound = false;
+      }
     }
- }
+  }
 
- if ( notfound ) { // try HKLM 32-bit registry keys.
+  if (notfound)
+  { // try HKLM 32-bit registry keys.
     wxRegKey reglm(wxRegKey::HKLM, "", wxRegKey::WOW64ViewMode_32);
-    if (reglm.HasSubKey(key.c_str()) ) {
-        wxRegKey rkey(wxRegKey::HKLM, key.c_str(), wxRegKey::WOW64ViewMode_32);
-        if ( rkey.HasValue(name.c_str()) && rkey.QueryValue(name.c_str(), wsdata)) {
-            data = wsdata.mb_str();
-            notfound = false;
-        }
+    if (reglm.HasSubKey(key.c_str()))
+    {
+      wxRegKey rkey(wxRegKey::HKLM, key.c_str(), wxRegKey::WOW64ViewMode_32);
+      if (rkey.HasValue(name.c_str()) && rkey.QueryValue(name.c_str(), wsdata))
+      {
+        data = wsdata.mb_str();
+        notfound = false;
+      }
     }
- }
+  }
 
 #endif
- return data;
+  return data;
 }
 
 void CcController::UpdateToolBars()
@@ -2297,132 +2349,133 @@ void CcController::UpdateToolBars()
   // to update during idle time.
   // So we'll do it from here.
 
-   CrToolBar::UpdateToolBars(status);
+  CrToolBar::UpdateToolBars(status);
 
+  list<CrWindow *>::iterator mdwl;
+  for (mdwl = mDisableableWindowsList.begin(); mdwl != mDisableableWindowsList.end(); mdwl++)
+    (*mdwl)->Enable(status.ShouldBeEnabled((*mdwl)->wEnableFlags, (*mdwl)->wDisableFlags));
 
-   list<CrWindow*>::iterator mdwl;
-   for ( mdwl = mDisableableWindowsList.begin(); mdwl != mDisableableWindowsList.end(); mdwl++ )
-              (*mdwl)->Enable(status.ShouldBeEnabled((*mdwl)->wEnableFlags,(*mdwl)->wDisableFlags));
-
-   list<CrButton*>::iterator mdbl;
-   for ( mdbl = mDisableableButtonsList.begin(); mdbl != mDisableableButtonsList.end(); mdbl++ )
-              (*mdbl)->Enable(status.ShouldBeEnabled((*mdbl)->bEnableFlags,(*mdbl)->bDisableFlags));
-
+  list<CrButton *>::iterator mdbl;
+  for (mdbl = mDisableableButtonsList.begin(); mdbl != mDisableableButtonsList.end(); mdbl++)
+    (*mdbl)->Enable(status.ShouldBeEnabled((*mdbl)->bEnableFlags, (*mdbl)->bDisableFlags));
 }
 void CcController::ScriptsExited()
 {
-  //Use this fact to close any modal windows that don't
-  //have the STAYOPEN property. (This means that the script
-  //has terminated incorrectly without closing the window).
+  // Use this fact to close any modal windows that don't
+  // have the STAYOPEN property. (This means that the script
+  // has terminated incorrectly without closing the window).
 
-  //Iterate in reverse, so that children of earlier windows are
-  //deleted first.
+  // Iterate in reverse, so that children of earlier windows are
+  // deleted first.
 
-  list<CrWindow*>::reverse_iterator mw;
-  list<CrWindow*>::iterator temp;
+  list<CrWindow *>::reverse_iterator mw;
+  list<CrWindow *>::iterator temp;
 
-  for ( mw = mWindowList.rbegin(); mw != mWindowList.rend();  )
+  for (mw = mWindowList.rbegin(); mw != mWindowList.rend();)
   {
-     if ( (*mw)->mIsModal && !(*mw)->mStayOpen )
-     {
-        if ( (*mw) == mCurrentWindow ) mCurrentWindow = nil;
-        LOGSTAT("CcController: ScriptsExited, destroying: " + (*mw)->mName );
-        delete *mw;
-        mw++;
-        temp = mw.base();
-        mWindowList.erase(temp);
-        mw = mWindowList.rbegin(); //start again
-     }
-     else
-       mw++;
+    if ((*mw)->mIsModal && !(*mw)->mStayOpen)
+    {
+      if ((*mw) == mCurrentWindow)
+        mCurrentWindow = nil;
+      LOGSTAT("CcController: ScriptsExited, destroying: " + (*mw)->mName);
+      delete *mw;
+      mw++;
+      temp = mw.base();
+      mWindowList.erase(temp);
+      mw = mWindowList.rbegin(); // start again
+    }
+    else
+      mw++;
   }
 }
 
-void CcController::AddDisableableWindow( CrWindow * aWindow )
+void CcController::AddDisableableWindow(CrWindow *aWindow)
 {
-      mDisableableWindowsList.push_back( aWindow );
+  mDisableableWindowsList.push_back(aWindow);
 }
-void CcController::RemoveDisableableWindow ( CrWindow * aWindow )
+void CcController::RemoveDisableableWindow(CrWindow *aWindow)
 {
-   mDisableableWindowsList.remove( aWindow );
+  mDisableableWindowsList.remove(aWindow);
 }
-void CcController::AddDisableableButton( CrButton * aButton )
+void CcController::AddDisableableButton(CrButton *aButton)
 {
-      mDisableableButtonsList.push_back( aButton );
+  mDisableableButtonsList.push_back(aButton);
 }
-void CcController::RemoveDisableableButton ( CrButton * aButton )
+void CcController::RemoveDisableableButton(CrButton *aButton)
 {
-   mDisableableButtonsList.remove( aButton );
+  mDisableableButtonsList.remove(aButton);
 }
 void CcController::ReLayout()
 {
   CcRect gridRect;
-  list<CrWindow*>::iterator mw;
-    for ( mw = mWindowList.begin(); mw != mWindowList.end(); mw++ )
+  list<CrWindow *>::iterator mw;
+  for (mw = mWindowList.begin(); mw != mWindowList.end(); mw++)
   {
-    gridRect = (*mw) -> mGridPtr -> GetGeometry();
-    (*mw) -> CalcLayout(true);
-    (*mw) -> ResizeWindow(gridRect.Width(),gridRect.Height());
-    (*mw) -> Redraw();
+    gridRect = (*mw)->mGridPtr->GetGeometry();
+    (*mw)->CalcLayout(true);
+    (*mw)->ResizeWindow(gridRect.Width(), gridRect.Height());
+    (*mw)->Redraw();
   }
   return;
 }
 
-extern "C" { void crystl(); }
+extern "C"
+{
+  void crystl();
+}
 
 #ifdef CRY_OSWIN32
-UINT CrystalsThreadProc( void* arg );
+UINT CrystalsThreadProc(void *arg);
 #else
-int CrystalsThreadProc( void* arg );
+int CrystalsThreadProc(void *arg);
 #endif
 
-
 #ifdef CRY_OSWIN32
-UINT CrystalsThreadProc( void * arg )
+UINT CrystalsThreadProc(void *arg)
 #else
-int CrystalsThreadProc( void * arg )
+int CrystalsThreadProc(void *arg)
 #endif
 {
-#if defined (__WITH_CRASHRPT__)
-    crInstallToCurrentThread2(0);
+#if defined(__WITH_CRASHRPT__)
+  crInstallToCurrentThread2(0);
 #endif
 
   // Unset exception handlers before exiting the thread
-    LOGSTAT("FORTRAN: Grabbing Crystals_Thread_Alive mutex");
-    m_Crystals_Thread_Alive.Enter(); //Will be owned whole time crystals thread is running.
-    LOGSTAT("FORTRAN: Posting wait_for_thread_start semaphore");
-    m_wait_for_thread_start.Signal(true);
+  LOGSTAT("FORTRAN: Grabbing Crystals_Thread_Alive mutex");
+  m_Crystals_Thread_Alive.Enter(); // Will be owned whole time crystals thread is running.
+  LOGSTAT("FORTRAN: Posting wait_for_thread_start semaphore");
+  m_wait_for_thread_start.Signal(true);
 
-    LOGSTAT("FORTRAN: Running CRYSTALS");
-    try
-    {
-       crystl();
-       LOGSTAT ("Exited CRYSTL() without exception. Surely some mistake?");
-    }
-    catch (CcController::MyException ccme )
-    {
-        LOGSTAT ("Normal close down exception caught. Thread ends. Releasing mutex. Goodbye. " );
-    }
-    catch (CcController::MyBadException ccme )
-    {
-        LOGSTAT ("Error Exception caught. Thread ends. Releasing mutex. Goodbye. " );
-#if defined (__INW__)
-        m_Crystals_Thread_Alive.Leave(); //Will be owned whole time crystals thread is running.
-        (CcController::theController)->AddInterfaceCommand("^^CR"); // Kick GUI thread to notice we've gone.
-        throw;  //rethrow for the crash handler
-#endif
-    }
-//    catch ( ... )
-//    {
- //       LOGERR ("Unhandled exception caught. Thread ends. Releasing mutex. Goodbye. " );
-//    }
-    m_Crystals_Thread_Alive.Leave(); //Will be owned whole time crystals thread is running.
+  LOGSTAT("FORTRAN: Running CRYSTALS");
+  try
+  {
+    crystl();
+    LOGSTAT("Exited CRYSTL() without exception. Surely some mistake?");
+  }
+  catch (CcController::MyException ccme)
+  {
+    LOGSTAT("Normal close down exception caught. Thread ends. Releasing mutex. Goodbye. ");
+  }
+  catch (CcController::MyBadException ccme)
+  {
+    LOGSTAT("Error Exception caught. Thread ends. Releasing mutex. Goodbye. ");
+#if defined(__INW__)
+    m_Crystals_Thread_Alive.Leave();                            // Will be owned whole time crystals thread is running.
     (CcController::theController)->AddInterfaceCommand("^^CR"); // Kick GUI thread to notice we've gone.
-    LOGSTAT ("Final word from the CRYSTALS thread: Bye." );
-#if defined (__INW__)
-    //crUninstallFromCurrentThread();
+    throw;                                                      // rethrow for the crash handler
 #endif
-    return 0;
+  }
+  //    catch ( ... )
+  //    {
+  //       LOGERR ("Unhandled exception caught. Thread ends. Releasing mutex. Goodbye. " );
+  //    }
+  m_Crystals_Thread_Alive.Leave();                            // Will be owned whole time crystals thread is running.
+  (CcController::theController)->AddInterfaceCommand("^^CR"); // Kick GUI thread to notice we've gone.
+  LOGSTAT("Final word from the CRYSTALS thread: Bye.");
+#if defined(__INW__)
+  // crUninstallFromCurrentThread();
+#endif
+  return 0;
 }
 
 void CcController::StartCrystalsThread()
@@ -2436,92 +2489,96 @@ void CcController::StartCrystalsThread()
 //   int arg = 6;
 
 #ifdef CRY_OSMAC
-    setlocale( LC_ALL, "POSIX");
+  setlocale(LC_ALL, "POSIX");
 #endif
 
-   mCrystalsThread = new CcThread();
-   wxThreadError a =  mCrystalsThread->Create();
-   if ( a == wxTHREAD_NO_ERROR )
-     LOGSTAT("No create error");
-   else
-     LOGSTAT("Thread create error");
+  mCrystalsThread = new CcThread();
+  wxThreadError a = mCrystalsThread->Create();
+  if (a == wxTHREAD_NO_ERROR)
+    LOGSTAT("No create error");
+  else
+    LOGSTAT("Thread create error");
 
-   a = mCrystalsThread->Run();
-   if ( a == wxTHREAD_NO_ERROR )
-     LOGSTAT("No run error");
-   else
-     LOGSTAT("Thread run error");
-   LOGSTAT("GUI: Waiting for wait_for_thread_start semaphore.");
-   m_wait_for_thread_start.Wait(0);
-   LOGSTAT("GUI: Continuing.");
+  a = mCrystalsThread->Run();
+  if (a == wxTHREAD_NO_ERROR)
+    LOGSTAT("No run error");
+  else
+    LOGSTAT("Thread run error");
+  LOGSTAT("GUI: Waiting for wait_for_thread_start semaphore.");
+  m_wait_for_thread_start.Wait(0);
+  LOGSTAT("GUI: Continuing.");
 
-//                                                            //
-//                                                            //
-//                                                            //
-//                                                            //
-//************************************************************//
+  //                                                            //
+  //                                                            //
+  //                                                            //
+  //                                                            //
+  //************************************************************//
 }
 
 //  Append the contents of the buffer to the output
 
-void CcController::ProcessOutput( const string & line )
+void CcController::ProcessOutput(const string &line)
 {
-    CrGUIElement* element = GetTextOutputPlace();
-    if( element != nil ) element->SetText(line);
+  CrGUIElement *element = GetTextOutputPlace();
+  if (element != nil)
+    element->SetText(line);
 }
 
-string CcController::OpenFileDialog(list<pair<string,string> > &extensionsAndDescriptions,
-                                  bool titleOnly)
+string CcController::OpenFileDialog(list<pair<string, string>> &extensionsAndDescriptions,
+                                    bool titleOnly)
 {
-    list<pair<string,string> >::iterator i = extensionsAndDescriptions.begin();
-    list<pair<string,string> >::iterator e = extensionsAndDescriptions.end();
+  list<pair<string, string>>::iterator i = extensionsAndDescriptions.begin();
+  list<pair<string, string>>::iterator e = extensionsAndDescriptions.end();
 
-    wxString pathname, filename, filetitle;
+  wxString pathname, filename, filetitle;
 
-    wxString extension;//  = wxString(extensionDescription.c_str()) + "|" + wxString(extensionFilter.c_str())  ;
+  wxString extension; //  = wxString(extensionDescription.c_str()) + "|" + wxString(extensionFilter.c_str())  ;
 
-    bool firstt = true;
-    while ( i!=e ) {
-        if ( ! firstt ) {
-            extension += "|";
-    } else {
-                firstt = false;
-    }
-        extension += wxString((i->second).c_str()) + "|" + wxString((i->first).c_str());
-        ++i;
-    }
-
-    wxString cwd = wxGetCwd(); //This filedialog changes the working dir. Save it.
-
-    wxFileDialog fileDialog ( wxGetApp().GetTopWindow(),
-                              "Choose a file",
-                              cwd,
-                              "",
-                              extension,
-                              wxFD_OPEN  );
-
-
-
-
-
-    if (fileDialog.ShowModal() == wxID_OK )
+  bool firstt = true;
+  while (i != e)
+  {
+    if (!firstt)
     {
-        pathname = fileDialog.GetPath();
-
-        if(titleOnly)
-        {
-            wxString pathandtitle = pathname.BeforeLast('.');
-            pathname = pathandtitle;
-        }
+      extension += "|";
     }
     else
     {
-        pathname = "CANCEL";
+      firstt = false;
+    }
+    extension += wxString((i->second).c_str()) + "|" + wxString((i->first).c_str());
+    ++i;
+  }
+
+  wxString cwd = wxGetCwd(); // This filedialog changes the working dir. Save it.
+
+  wxFileDialog fileDialog(wxGetApp().GetTopWindow(),
+                          "Choose a file",
+                          cwd,
+                          "",
+                          extension,
+                          wxFD_OPEN);
+
+  if (fileDialog.ShowModal() == wxID_OK)
+  {
+    pathname = fileDialog.GetPath();
+
+    if (titleOnly)
+    {
+      wxString pathandtitle = pathname.BeforeLast('.');
+      pathname = pathandtitle;
     }
 
-    wxSetWorkingDirectory(cwd);
+    // replace _N with *N to avoid problems with _N in filenames
+    pathname.Replace(wxT("_N"), wxT("*N"));
+  }
+  else
+  {
+    pathname = "CANCEL";
+  }
 
-    return string(pathname.c_str());
+  wxSetWorkingDirectory(cwd);
+
+  return string(pathname.c_str());
 }
 
 string CcController::SaveFileDialog(const string &defaultName,
@@ -2529,982 +2586,1024 @@ string CcController::SaveFileDialog(const string &defaultName,
                                     const string &extensionDescription)
 {
 
+  wxString pathname, filename, filetitle;
+  wxString extension = wxString(extensionDescription.c_str()) + "|" + wxString(extensionFilter.c_str());
+  wxString initName = wxString(defaultName.c_str());
 
-    wxString pathname, filename, filetitle;
-    wxString extension = wxString(extensionDescription.c_str()) + "|" + wxString(extensionFilter.c_str())  ;
-    wxString initName = wxString(defaultName.c_str());
+  wxString cwd = wxGetCwd(); // This filedialog changes the working dir. Save it.
 
-    wxString cwd = wxGetCwd(); //This filedialog changes the working dir. Save it.
+  wxFileDialog fileDialog(wxGetApp().GetTopWindow(),
+                          "Save file as",
+                          cwd,
+                          initName,
+                          extension,
+                          wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 
-    wxFileDialog fileDialog ( wxGetApp().GetTopWindow(),
-                              "Save file as",
-                              cwd,
-                              initName,
-                              extension,
-                              wxFD_SAVE|wxFD_OVERWRITE_PROMPT );
+  if (fileDialog.ShowModal() == wxID_OK)
+  {
+    pathname = fileDialog.GetPath();
+    // replace _N with *N to avoid problems with _N in filenames
+    pathname.Replace(wxT("_N"), wxT("*N"));
+  }
+  else
+  {
+    pathname = "CANCEL";
+  }
 
+  wxSetWorkingDirectory(cwd);
 
-    if (fileDialog.ShowModal() == wxID_OK )
-    {
-        pathname = fileDialog.GetPath();
-    }
-    else
-    {
-        pathname = "CANCEL";
-    }
-
-    wxSetWorkingDirectory(cwd);
-
-    return string(pathname.c_str());
-
+  return string(pathname.c_str());
 }
-
 
 string CcController::OpenDirDialog()
 {
-    wxConfig * config = new wxConfig("Chem Cryst");
-    wxString pathname;
-    wxString cwd = wxGetCwd(); //This dir dialog changes the working dir. Save it.
-    if ( ! config->Read("Crystals/Strdir",&pathname) ) {
-      pathname = cwd;
-    }
+  wxConfig *config = new wxConfig("Chem Cryst");
+  wxString pathname;
+  wxString cwd = wxGetCwd(); // This dir dialog changes the working dir. Save it.
+  if (!config->Read("Crystals/Strdir", &pathname))
+  {
+    pathname = cwd;
+  }
 
-    wxDirDialog dirDialog ( wxGetApp().GetTopWindow(),
-                            "Choose a directory",
-                             pathname,
-                             wxDD_NEW_DIR_BUTTON);
+  wxDirDialog dirDialog(wxGetApp().GetTopWindow(),
+                        "Choose a directory",
+                        pathname,
+                        wxDD_NEW_DIR_BUTTON);
 
-    if (dirDialog.ShowModal() == wxID_OK )
-    {
-        pathname = dirDialog.GetPath();
-        config->Write("Crystals/Strdir",pathname);
-    }
-    else
-    {
-        pathname = "CANCEL";
-    }
+  if (dirDialog.ShowModal() == wxID_OK)
+  {
+    pathname = dirDialog.GetPath();
+    config->Write("Crystals/Strdir", pathname);
+  }
+  else
+  {
+    pathname = "CANCEL";
+  }
 
-    delete config;
+  delete config;
 
-    wxSetWorkingDirectory(cwd);
-    return string(pathname.c_str());
+  wxSetWorkingDirectory(cwd);
+  return string(pathname.c_str());
 }
 
-
-void CcController::ChangeDir (string newDir)
+void CcController::ChangeDir(string newDir)
 {
-      wxSetWorkingDirectory(newDir);
-
+  wxSetWorkingDirectory(newDir);
 }
-
 
 void CcController::CcChooseFont()
 {
   wxFontData data;
-  wxFont* pFont = new wxFont(12,wxFONTFAMILY_TELETYPE,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL);
+  wxFont *pFont = new wxFont(12, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
 
-  if ( CcController::mp_inputfont == NULL )
+  if (CcController::mp_inputfont == NULL)
   {
 #ifndef _WINNT
-    *pFont = wxSystemSettings::GetFont( wxSYS_ANSI_FIXED_FONT );
+    *pFont = wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT);
 #else
-    *pFont = wxSystemSettings::GetFont( wxDEVICE_DEFAULT_FONT );
-#endif  // !_WINNT
-   }
-   else
-   {
-     *pFont = *CcController::mp_inputfont;
-   }
+    *pFont = wxSystemSettings::GetFont(wxDEVICE_DEFAULT_FONT);
+#endif // !_WINNT
+  }
+  else
+  {
+    *pFont = *CcController::mp_inputfont;
+  }
 
-   data.SetInitialFont(*pFont);
+  data.SetInitialFont(*pFont);
 
-   wxWindow* top = wxGetApp().GetTopWindow();
+  wxWindow *top = wxGetApp().GetTopWindow();
 
-   wxFontDialog fd( top, data );
+  wxFontDialog fd(top, data);
 
-   if ( fd.ShowModal() == wxID_OK )
-   {
-     wxFontData newdata = fd.GetFontData();
-     *pFont = newdata.GetChosenFont();
-     if( mp_inputfont ) delete( mp_inputfont );
-     mp_inputfont = pFont;
+  if (fd.ShowModal() == wxID_OK)
+  {
+    wxFontData newdata = fd.GetFontData();
+    *pFont = newdata.GetChosenFont();
+    if (mp_inputfont)
+      delete (mp_inputfont);
+    mp_inputfont = pFont;
 
-     ostringstream strstrm;
-     strstrm << pFont->GetNativeFontInfoDesc().c_str();
-     (CcController::theController)->StoreKey( "MainFontInfo", strstrm.str() );
-     ReLayout();
-   }
-
+    ostringstream strstrm;
+    strstrm << pFont->GetNativeFontInfoDesc().c_str();
+    (CcController::theController)->StoreKey("MainFontInfo", strstrm.str());
+    ReLayout();
+  }
 }
 
-
-int CcController::EnvVarCount( string & dir )
+int CcController::EnvVarCount(string &dir)
 {
-// Find the number of commas + 1 in the string.
+  // Find the number of commas + 1 in the string.
 
-   int nCommas = 1;
-   for ( string::size_type i = 0; i < dir.length(); i++ )
-   {
-     if ( dir[i] == ',' ) nCommas++;
-   }
-   return nCommas;
+  int nCommas = 1;
+  for (string::size_type i = 0; i < dir.length(); i++)
+  {
+    if (dir[i] == ',')
+      nCommas++;
+  }
+  return nCommas;
 }
-string CcController::EnvVarExtract ( string & dir, int i )
+string CcController::EnvVarExtract(string &dir, int i)
 {
-// Find string following the i th comma.
+  // Find string following the i th comma.
 
-   string::size_type j;
-   int nCommas = 0;
+  string::size_type j;
+  int nCommas = 0;
 
-// Find posn of ith comma.
+  // Find posn of ith comma.
 
-   for ( j = 0; j < dir.length(); j++ )
-   {
-     if ( nCommas == i ) break;
-     if ( dir[j] == ',' ) nCommas++;
-   }
+  for (j = 0; j < dir.length(); j++)
+  {
+    if (nCommas == i)
+      break;
+    if (dir[j] == ',')
+      nCommas++;
+  }
 
-   string::size_type firstPos = CRMAX(1,j+1);
+  string::size_type firstPos = CRMAX(1, j + 1);
 
-// Find posn of ith+1 comma.
+  // Find posn of ith+1 comma.
 
-   for ( j = j+1; j < dir.length(); j++ )
-   {
-     if ( dir[j] == ',' ) break;
-   }
+  for (j = j + 1; j < dir.length(); j++)
+  {
+    if (dir[j] == ',')
+      break;
+  }
 
-   string::size_type lastPos = CRMIN(dir.length(),j);
+  string::size_type lastPos = CRMIN(dir.length(), j);
 
-   firstPos = CRMIN (firstPos,lastPos);
-   lastPos = CRMAX (firstPos,lastPos);
+  firstPos = CRMIN(firstPos, lastPos);
+  lastPos = CRMAX(firstPos, lastPos);
 
-   string retS =  dir.substr(firstPos-1,1+lastPos-firstPos);
+  string retS = dir.substr(firstPos - 1, 1 + lastPos - firstPos);
 
-/*  Not used.
-// Search for allowed env variables to expand:
-// USERPROFILE
+  /*  Not used.
+  // Search for allowed env variables to expand:
+  // USERPROFILE
 
-   int up = retS.Find("USERPROFILE:");
+     int up = retS.Find("USERPROFILE:");
 
-   if (up)
-   {
-      string userp ( getenv("USERPROFILE") );
-      retS = retS.Sub(1,up-1) + userp + retS.Sub(up+12,-1);
-   }
-*/
-   return retS;
+     if (up)
+     {
+        string userp ( getenv("USERPROFILE") );
+        retS = retS.Sub(1,up-1) + userp + retS.Sub(up+12,-1);
+     }
+  */
+  return retS;
 }
 void CcController::TimerFired()
 {
-   DoCommandTransferStuff();
+  DoCommandTransferStuff();
 }
 
 bool CcController::DoCommandTransferStuff()
 {
-  //char theLine[255];
+  // char theLine[255];
   bool appret = false;
   string theLine;
 
-  if( GetInterfaceCommand(theLine) )
+  if (GetInterfaceCommand(theLine))
   {
     appret = true;
-//    int theLength = 0;
+    //    int theLength = 0;
 
-//    if(theLength = strlen( theLine )) //Assignment within conditional (OK)
-    if(theLine.length() > 0) //Assignment within conditional (OK)
+    //    if(theLength = strlen( theLine )) //Assignment within conditional (OK)
+    if (theLine.length() > 0) // Assignment within conditional (OK)
     {
-//      theLine[theLength+1]='\0';
+      //      theLine[theLength+1]='\0';
       Tokenize(theLine);
     }
   }
   return appret;
 }
 
+void CcController::endthread(long theExitcode)
+{
+  ostringstream strstrm;
+  strstrm << "Thread ends2. Exit code is: " << theExitcode;
 
-  void CcController::endthread ( long theExitcode )
+  LOGSTAT(strstrm.str());
+
+  if (theExitcode != 0 && theExitcode != 1000)
   {
-        ostringstream strstrm;
-        strstrm << "Thread ends2. Exit code is: " << theExitcode ;
+    CcController::theController->m_ExitCode = theExitcode;
 
-        LOGSTAT (strstrm.str());
+#ifdef __WITH_CRASHRPT__
+    CR_EXCEPTION_INFO ei;
+    memset(&ei, 0, sizeof(CR_EXCEPTION_INFO));
+    ei.cb = sizeof(CR_EXCEPTION_INFO);
+    ei.exctype = CR_SEH_EXCEPTION;
+    ei.code = 1234;
+    ei.pexcptrs = NULL;
 
-        if ( theExitcode != 0 && theExitcode != 1000 )
-        {
-           CcController::theController->m_ExitCode = theExitcode;
+    int result = crGenerateErrorReport(&ei);
 
-  #ifdef __WITH_CRASHRPT__
-            CR_EXCEPTION_INFO ei;
-            memset(&ei, 0, sizeof(CR_EXCEPTION_INFO));
-            ei.cb = sizeof(CR_EXCEPTION_INFO);
-            ei.exctype = CR_SEH_EXCEPTION;
-            ei.code = 1234;
-            ei.pexcptrs = NULL;
+    if (result != 0)
+    {
+      // If goes here, crGenerateErrorReport() has failed
+      // Get the last error message
+      TCHAR szErrorMsg[256];
+      crGetLastErrorMsg(szErrorMsg, 256);
+    }
+#endif
+    // Manually terminate program
+    //          ExitProcess(0);
 
-            int result = crGenerateErrorReport(&ei);
-
-            if(result!=0)
-            {
-              // If goes here, crGenerateErrorReport() has failed
-              // Get the last error message
-              TCHAR szErrorMsg[256];
-              crGetLastErrorMsg(szErrorMsg, 256);
-            }
-  #endif
-            // Manually terminate program
-//          ExitProcess(0);
-
-//  #ifdef __BOTHWX__
-//           if ( !CcController::theController->m_BatchMode )
-//                 wxMessageBox("Closing","Crystals ends in error",
-//                               wxOK|wxICON_HAND|wxCENTRE);
-//  #endif
-        }
-
-        LOGSTAT ("Really going now. Bye. " );
-        #ifdef CRY_OSMAC
-            m_Crystals_Thread_Alive.Leave();
-            pthread_exit(0);
-        #else
-        if ( theExitcode != 0 && theExitcode != 1000 )
-            throw CcController::MyBadException();   // Leap right out of the Fortran
-        else
-            throw CcController::MyException();   // Leap right out of the Fortran
-                                                 // to the top of the call stack.
-        #endif
-        LOGSTAT ("Thread ends. Execution should never get here. Odd. ");
+    //  #ifdef __BOTHWX__
+    //           if ( !CcController::theController->m_BatchMode )
+    //                 wxMessageBox("Closing","Crystals ends in error",
+    //                               wxOK|wxICON_HAND|wxCENTRE);
+    //  #endif
   }
 
-
-void CcController::MakeTokens(const string& str,
-                deque<string>& tokens,
-                const string& delimiters,
-                const string& pairopen  ,
-                const string& pairclose  )
-{
-
-// Find start of first token
-   string::size_type nextTokenStart = str.find_first_not_of(delimiters, 0);
-
-// Find next delimiter.
-   string::size_type nextDelimStart = str.find_first_of(delimiters, nextTokenStart);
-
-   while (string::npos != nextDelimStart || string::npos != nextTokenStart)
-   {
-// Found a token, check for pair opener, then add it to the vector.
-     string::size_type pTStart = str.substr(nextTokenStart, nextDelimStart - nextTokenStart).find_first_of(pairopen);
-     if ( pTStart != string::npos )
-     {
-         pTStart += nextTokenStart;
-// Find out what pair closer is
-       string::size_type pTCloser = pairclose.find( str[pTStart] );
-// Find closer in the string
-       string::size_type pTEnd = str.find_first_of(pairclose[pTCloser],pTStart+1);
-       if ( pTEnd == string::npos )
-       {
-// No closer found, continue as normal
-         tokens.push_back(str.substr(nextTokenStart, nextDelimStart - nextTokenStart));
-         LOGSTAT("No closer found. Token added: " + tokens.back() );
-       }
-       else
-       {
-         tokens.push_back(str.substr(pTStart+1, pTEnd - pTStart - 1));
-         LOGSTAT("Quoted token added: " + tokens.back() );
-         nextDelimStart = pTEnd + 1;
-       }
-     }
-     else
-     {
-       tokens.push_back(str.substr(nextTokenStart, nextDelimStart - nextTokenStart));
-       LOGSTAT("Token added: " + tokens.back() );
-     }
-
-// Find start of next token
-     nextTokenStart = str.find_first_not_of(delimiters, nextDelimStart);
-
-// Find next delimiter
-     nextDelimStart = str.find_first_of(delimiters, nextTokenStart);
-   }
-
+  LOGSTAT("Really going now. Bye. ");
+#ifdef CRY_OSMAC
+  m_Crystals_Thread_Alive.Leave();
+  pthread_exit(0);
+#else
+  if (theExitcode != 0 && theExitcode != 1000)
+    throw CcController::MyBadException(); // Leap right out of the Fortran
+  else
+    throw CcController::MyException(); // Leap right out of the Fortran
+                                       // to the top of the call stack.
+#endif
+  LOGSTAT("Thread ends. Execution should never get here. Odd. ");
 }
 
+void CcController::MakeTokens(const string &str,
+                              deque<string> &tokens,
+                              const string &delimiters,
+                              const string &pairopen,
+                              const string &pairclose)
+{
 
-int CcController::GetDescriptor( string &token, int descriptorClass )
+  // Find start of first token
+  string::size_type nextTokenStart = str.find_first_not_of(delimiters, 0);
+
+  // Find next delimiter.
+  string::size_type nextDelimStart = str.find_first_of(delimiters, nextTokenStart);
+
+  while (string::npos != nextDelimStart || string::npos != nextTokenStart)
+  {
+    // Found a token, check for pair opener, then add it to the vector.
+    string::size_type pTStart = str.substr(nextTokenStart, nextDelimStart - nextTokenStart).find_first_of(pairopen);
+    if (pTStart != string::npos)
+    {
+      pTStart += nextTokenStart;
+      // Find out what pair closer is
+      string::size_type pTCloser = pairclose.find(str[pTStart]);
+      // Find closer in the string
+      string::size_type pTEnd = str.find_first_of(pairclose[pTCloser], pTStart + 1);
+      if (pTEnd == string::npos)
+      {
+        // No closer found, continue as normal
+        tokens.push_back(str.substr(nextTokenStart, nextDelimStart - nextTokenStart));
+        LOGSTAT("No closer found. Token added: " + tokens.back());
+      }
+      else
+      {
+        tokens.push_back(str.substr(pTStart + 1, pTEnd - pTStart - 1));
+        LOGSTAT("Quoted token added: " + tokens.back());
+        nextDelimStart = pTEnd + 1;
+      }
+    }
+    else
+    {
+      tokens.push_back(str.substr(nextTokenStart, nextDelimStart - nextTokenStart));
+      LOGSTAT("Token added: " + tokens.back());
+    }
+
+    // Find start of next token
+    nextTokenStart = str.find_first_not_of(delimiters, nextDelimStart);
+
+    // Find next delimiter
+    nextDelimStart = str.find_first_of(delimiters, nextTokenStart);
+  }
+}
+
+int CcController::GetDescriptor(string &token, int descriptorClass)
 {
 //  #define DESCRIPTOR(a) if(token.compare(kS##a)==0)retVal=kT##a;
-#define DESCRIPTOR(a) if(token.compare(kS##a)==0){return kT##a ;};
+#define DESCRIPTOR(a)            \
+  if (token.compare(kS##a) == 0) \
+  {                              \
+    return kT##a;                \
+  };
 
   int retVal = kTUnknown;
   switch (descriptorClass)
   {
-      case kLogicalClass:
-               DESCRIPTOR(Yes)
-               DESCRIPTOR(No)
-               DESCRIPTOR(All)
-               DESCRIPTOR(Invert)
-               DESCRIPTOR(On)
-               DESCRIPTOR(Off)
-               DESCRIPTOR(SelectRect)
-               DESCRIPTOR(SelectPoly)
-             break;
+  case kLogicalClass:
+    DESCRIPTOR(Yes)
+    DESCRIPTOR(No)
+    DESCRIPTOR(All)
+    DESCRIPTOR(Invert)
+    DESCRIPTOR(On)
+    DESCRIPTOR(Off)
+    DESCRIPTOR(SelectRect)
+    DESCRIPTOR(SelectPoly)
+    break;
 
-      case kAttributeClass:
-               DESCRIPTOR(Default)
-               DESCRIPTOR(TextSelector)
-               DESCRIPTOR(Select)
-               DESCRIPTOR(SelectAtoms)
-               DESCRIPTOR(DisableAtoms)
-               DESCRIPTOR(NumberOfColumns)
-               DESCRIPTOR(NumberOfRows)
-               DESCRIPTOR(OpenGrid)
-               DESCRIPTOR(EndGrid)
-               DESCRIPTOR(VisibleLines)
-               DESCRIPTOR(Inform)
-               DESCRIPTOR(Ignore)
-               DESCRIPTOR(Disabled)
-               DESCRIPTOR(Steps)
-               DESCRIPTOR(State)
-               DESCRIPTOR(On)
-               DESCRIPTOR(Off)
-               DESCRIPTOR(Outline)
-               DESCRIPTOR(AlignIsolate)
-               DESCRIPTOR(AlignRight)
-               DESCRIPTOR(AlignBottom)
-               DESCRIPTOR(Modal)
-               DESCRIPTOR(Zoom)
-               DESCRIPTOR(Pane)
-               DESCRIPTOR(Frame)
-               DESCRIPTOR(Close)
-               DESCRIPTOR(Size)
-               DESCRIPTOR(Chars)
-               DESCRIPTOR(Complete)
-               DESCRIPTOR(NoEcho)
-               DESCRIPTOR(Menu)
-               DESCRIPTOR(EndMenu)
-               DESCRIPTOR(Item)
-               DESCRIPTOR(MenuSplit)
-               DESCRIPTOR(MenuDisableCondition)
-               DESCRIPTOR(MenuEnableCondition)
-               DESCRIPTOR(TitleOnly)
-               DESCRIPTOR(Append)
-               DESCRIPTOR(Limit)
-               DESCRIPTOR(GetPolygonArea)
-               DESCRIPTOR(Transparent)
-               DESCRIPTOR(BitmapFile)
-               DESCRIPTOR(GetCursorKeys)
-               DESCRIPTOR(IsoView)
-               DESCRIPTOR(WantReturn)
-               DESCRIPTOR(IsInput)
-               DESCRIPTOR(IntegerInput)
-               DESCRIPTOR(RealInput)
-               DESCRIPTOR(NoInput)
-               DESCRIPTOR(SetCommitText)
-               DESCRIPTOR(SetCancelText)
-               DESCRIPTOR(AttachModel)
-               DESCRIPTOR(RadiusType)
-               DESCRIPTOR(RadiusScale)
-               DESCRIPTOR(MinPeakHeight)
-               DESCRIPTOR(MaxPeakHeight)
-               DESCRIPTOR(LonePeak)
-               DESCRIPTOR(BondStyle)
-               DESCRIPTOR(VDW)
-               DESCRIPTOR(Normal)
-               DESCRIPTOR(Part)
-               DESCRIPTOR(Element)
-               DESCRIPTOR(Covalent)
-               DESCRIPTOR(Tiny)
-               DESCRIPTOR(Thermal)
-               DESCRIPTOR(Spare)
-               DESCRIPTOR(SelectAction)
-               DESCRIPTOR(AppendTo)
-               DESCRIPTOR(SendA)
-               DESCRIPTOR(SendB)
-               DESCRIPTOR(SendC)
-               DESCRIPTOR(SendD)
-               DESCRIPTOR(SendCAndSelect)
-               DESCRIPTOR(InsertIn)
-               DESCRIPTOR(SetCommandText)
-               DESCRIPTOR(DefinePopupMenu)
-               DESCRIPTOR(ChartHighlight)
-               DESCRIPTOR(EndDefineMenu)
-               DESCRIPTOR(NoEdge)
-               DESCRIPTOR(ChartSave)
-               DESCRIPTOR(ChartSaveEnh)
-               DESCRIPTOR(ChartPrint)
-               DESCRIPTOR(Position)
-               DESCRIPTOR(AddToList)
-               DESCRIPTOR(SetSelection)
-               DESCRIPTOR(SortColumn)
-               DESCRIPTOR(CheckValue)
-               DESCRIPTOR(Spew)
-               DESCRIPTOR(Empty)
-               DESCRIPTOR(Find)
-               DESCRIPTOR(FindNext)
-               DESCRIPTOR(Insert)
-               DESCRIPTOR(Remove)
-               DESCRIPTOR(RestartFile)
-               DESCRIPTOR(IconInfo)
-               DESCRIPTOR(IconError)
-               DESCRIPTOR(IconWarn)
-               DESCRIPTOR(IconQuery)
-               DESCRIPTOR(IconInfoSmall)
-               DESCRIPTOR(IconErrorSmall)
-               DESCRIPTOR(IconWarnSmall)
-               DESCRIPTOR(IconQuerySmall)
-               DESCRIPTOR(IconBlank)
-               DESCRIPTOR(IconBlankSmall)
-               DESCRIPTOR(NRes)
-               DESCRIPTOR(Style)
-               DESCRIPTOR(StyleSmooth)
-               DESCRIPTOR(StyleLine)
-               DESCRIPTOR(StylePoint)
-               DESCRIPTOR(AutoSize)
-               DESCRIPTOR(Hover)
-               DESCRIPTOR(Shading)
-               DESCRIPTOR(SelectTool)
-               DESCRIPTOR(RotateTool)
-               DESCRIPTOR(ZoomSelected)
-               DESCRIPTOR(SelectFrag)
-               DESCRIPTOR(LoadBitmap)
-               DESCRIPTOR(Keep)
-               DESCRIPTOR(Large)
-               DESCRIPTOR(StayOpen)
-               DESCRIPTOR(FontSelect)
-               DESCRIPTOR(TextTransparent)
-               DESCRIPTOR(ViewTop)
-               DESCRIPTOR(Toggle)
-               DESCRIPTOR(AppIcon)
-               DESCRIPTOR(AddTool)
-               DESCRIPTOR(Horizontal)
-               DESCRIPTOR(Vertical)
-               DESCRIPTOR(Both)
-               DESCRIPTOR(Length)
-               DESCRIPTOR(Slim)
-               DESCRIPTOR(PlotPrint)
-               DESCRIPTOR(PlotSave)
-               DESCRIPTOR(PlotExport)
-               DESCRIPTOR(Save)
-               DESCRIPTOR(Load)
-               DESCRIPTOR(ShowH)
-               DESCRIPTOR(MenuIcon)
-               DESCRIPTOR(CycleResidue)
-               DESCRIPTOR(ShowResidues)
-               DESCRIPTOR(CycleGroup)
-               DESCRIPTOR(ShowGroups)
-               DESCRIPTOR(Value)
-               DESCRIPTOR(ToolTip)
-               DESCRIPTOR(SetIcon)
-             break;
+  case kAttributeClass:
+    DESCRIPTOR(Default)
+    DESCRIPTOR(TextSelector)
+    DESCRIPTOR(Select)
+    DESCRIPTOR(SelectAtoms)
+    DESCRIPTOR(DisableAtoms)
+    DESCRIPTOR(NumberOfColumns)
+    DESCRIPTOR(NumberOfRows)
+    DESCRIPTOR(OpenGrid)
+    DESCRIPTOR(EndGrid)
+    DESCRIPTOR(VisibleLines)
+    DESCRIPTOR(Inform)
+    DESCRIPTOR(Ignore)
+    DESCRIPTOR(Disabled)
+    DESCRIPTOR(Steps)
+    DESCRIPTOR(State)
+    DESCRIPTOR(On)
+    DESCRIPTOR(Off)
+    DESCRIPTOR(Outline)
+    DESCRIPTOR(AlignIsolate)
+    DESCRIPTOR(AlignRight)
+    DESCRIPTOR(AlignBottom)
+    DESCRIPTOR(Modal)
+    DESCRIPTOR(Zoom)
+    DESCRIPTOR(Pane)
+    DESCRIPTOR(Frame)
+    DESCRIPTOR(Close)
+    DESCRIPTOR(Size)
+    DESCRIPTOR(Chars)
+    DESCRIPTOR(Complete)
+    DESCRIPTOR(NoEcho)
+    DESCRIPTOR(Menu)
+    DESCRIPTOR(EndMenu)
+    DESCRIPTOR(Item)
+    DESCRIPTOR(MenuSplit)
+    DESCRIPTOR(MenuDisableCondition)
+    DESCRIPTOR(MenuEnableCondition)
+    DESCRIPTOR(TitleOnly)
+    DESCRIPTOR(Append)
+    DESCRIPTOR(Limit)
+    DESCRIPTOR(GetPolygonArea)
+    DESCRIPTOR(Transparent)
+    DESCRIPTOR(BitmapFile)
+    DESCRIPTOR(GetCursorKeys)
+    DESCRIPTOR(IsoView)
+    DESCRIPTOR(WantReturn)
+    DESCRIPTOR(IsInput)
+    DESCRIPTOR(IntegerInput)
+    DESCRIPTOR(RealInput)
+    DESCRIPTOR(NoInput)
+    DESCRIPTOR(SetCommitText)
+    DESCRIPTOR(SetCancelText)
+    DESCRIPTOR(AttachModel)
+    DESCRIPTOR(RadiusType)
+    DESCRIPTOR(RadiusScale)
+    DESCRIPTOR(MinPeakHeight)
+    DESCRIPTOR(MaxPeakHeight)
+    DESCRIPTOR(LonePeak)
+    DESCRIPTOR(BondStyle)
+    DESCRIPTOR(VDW)
+    DESCRIPTOR(Normal)
+    DESCRIPTOR(Part)
+    DESCRIPTOR(Element)
+    DESCRIPTOR(Covalent)
+    DESCRIPTOR(Tiny)
+    DESCRIPTOR(Thermal)
+    DESCRIPTOR(Spare)
+    DESCRIPTOR(SelectAction)
+    DESCRIPTOR(AppendTo)
+    DESCRIPTOR(SendA)
+    DESCRIPTOR(SendB)
+    DESCRIPTOR(SendC)
+    DESCRIPTOR(SendD)
+    DESCRIPTOR(SendCAndSelect)
+    DESCRIPTOR(InsertIn)
+    DESCRIPTOR(SetCommandText)
+    DESCRIPTOR(DefinePopupMenu)
+    DESCRIPTOR(ChartHighlight)
+    DESCRIPTOR(EndDefineMenu)
+    DESCRIPTOR(NoEdge)
+    DESCRIPTOR(ChartSave)
+    DESCRIPTOR(ChartSaveEnh)
+    DESCRIPTOR(ChartPrint)
+    DESCRIPTOR(Position)
+    DESCRIPTOR(AddToList)
+    DESCRIPTOR(SetSelection)
+    DESCRIPTOR(SortColumn)
+    DESCRIPTOR(CheckValue)
+    DESCRIPTOR(Spew)
+    DESCRIPTOR(Empty)
+    DESCRIPTOR(Find)
+    DESCRIPTOR(FindNext)
+    DESCRIPTOR(Insert)
+    DESCRIPTOR(Remove)
+    DESCRIPTOR(RestartFile)
+    DESCRIPTOR(IconInfo)
+    DESCRIPTOR(IconError)
+    DESCRIPTOR(IconWarn)
+    DESCRIPTOR(IconQuery)
+    DESCRIPTOR(IconInfoSmall)
+    DESCRIPTOR(IconErrorSmall)
+    DESCRIPTOR(IconWarnSmall)
+    DESCRIPTOR(IconQuerySmall)
+    DESCRIPTOR(IconBlank)
+    DESCRIPTOR(IconBlankSmall)
+    DESCRIPTOR(NRes)
+    DESCRIPTOR(Style)
+    DESCRIPTOR(StyleSmooth)
+    DESCRIPTOR(StyleLine)
+    DESCRIPTOR(StylePoint)
+    DESCRIPTOR(AutoSize)
+    DESCRIPTOR(Hover)
+    DESCRIPTOR(Shading)
+    DESCRIPTOR(SelectTool)
+    DESCRIPTOR(RotateTool)
+    DESCRIPTOR(ZoomSelected)
+    DESCRIPTOR(SelectFrag)
+    DESCRIPTOR(LoadBitmap)
+    DESCRIPTOR(Keep)
+    DESCRIPTOR(Large)
+    DESCRIPTOR(StayOpen)
+    DESCRIPTOR(FontSelect)
+    DESCRIPTOR(TextTransparent)
+    DESCRIPTOR(ViewTop)
+    DESCRIPTOR(Toggle)
+    DESCRIPTOR(AppIcon)
+    DESCRIPTOR(AddTool)
+    DESCRIPTOR(Horizontal)
+    DESCRIPTOR(Vertical)
+    DESCRIPTOR(Both)
+    DESCRIPTOR(Length)
+    DESCRIPTOR(Slim)
+    DESCRIPTOR(PlotPrint)
+    DESCRIPTOR(PlotSave)
+    DESCRIPTOR(PlotExport)
+    DESCRIPTOR(Save)
+    DESCRIPTOR(Load)
+    DESCRIPTOR(ShowH)
+    DESCRIPTOR(MenuIcon)
+    DESCRIPTOR(CycleResidue)
+    DESCRIPTOR(ShowResidues)
+    DESCRIPTOR(CycleGroup)
+    DESCRIPTOR(ShowGroups)
+    DESCRIPTOR(Value)
+    DESCRIPTOR(ToolTip)
+    DESCRIPTOR(SetIcon)
+    break;
 
-      case kChartClass:
-               DESCRIPTOR(ChartAttach)
-               DESCRIPTOR(ChartShow)
-               DESCRIPTOR(ChartLine)
-               DESCRIPTOR(ChartEllipseE)
-               DESCRIPTOR(ChartEllipseF)
-               DESCRIPTOR(ChartClear)
-               DESCRIPTOR(ChartText)
-               DESCRIPTOR(ChartPolyE)
-               DESCRIPTOR(ChartPolyF)
-               DESCRIPTOR(ChartColour)
-               DESCRIPTOR(ChartFlow)
-               DESCRIPTOR(ChartChoice)
-               DESCRIPTOR(ChartLink)
-               DESCRIPTOR(ChartAction)
-               DESCRIPTOR(ChartN)
-               DESCRIPTOR(ChartS)
-               DESCRIPTOR(ChartE)
-               DESCRIPTOR(ChartW)
+  case kChartClass:
+    DESCRIPTOR(ChartAttach)
+    DESCRIPTOR(ChartShow)
+    DESCRIPTOR(ChartLine)
+    DESCRIPTOR(ChartEllipseE)
+    DESCRIPTOR(ChartEllipseF)
+    DESCRIPTOR(ChartClear)
+    DESCRIPTOR(ChartText)
+    DESCRIPTOR(ChartPolyE)
+    DESCRIPTOR(ChartPolyF)
+    DESCRIPTOR(ChartColour)
+    DESCRIPTOR(ChartFlow)
+    DESCRIPTOR(ChartChoice)
+    DESCRIPTOR(ChartLink)
+    DESCRIPTOR(ChartAction)
+    DESCRIPTOR(ChartN)
+    DESCRIPTOR(ChartS)
+    DESCRIPTOR(ChartE)
+    DESCRIPTOR(ChartW)
 
-             break;
+    break;
 
-      case kPlotClass:
-               DESCRIPTOR(PlotAttach)
-               DESCRIPTOR(PlotShow)
-               DESCRIPTOR(PlotBarGraph)
-               DESCRIPTOR(PlotScatter)
-               DESCRIPTOR(PlotSeries)
-               DESCRIPTOR(PlotNSeries)
-               DESCRIPTOR(PlotLength)
-               DESCRIPTOR(PlotLabel)
-               DESCRIPTOR(PlotData)
-               DESCRIPTOR(PlotAuto)
-               DESCRIPTOR(PlotSpan)
-               DESCRIPTOR(PlotZoom)
-               DESCRIPTOR(PlotLinear)
-               DESCRIPTOR(PlotLog)
-               DESCRIPTOR(PlotTitle)
-               DESCRIPTOR(PlotSeriesName)
-               DESCRIPTOR(PlotAxisTitle)
-               DESCRIPTOR(PlotSeriesType)
-               DESCRIPTOR(PlotAddSeries)
-               DESCRIPTOR(PlotXAxis)
-               DESCRIPTOR(PlotYAxis)
-               DESCRIPTOR(PlotYAxisRight)
-               DESCRIPTOR(PlotUseRightAxis)
-               DESCRIPTOR(PlotKey)
-             break;
+  case kPlotClass:
+    DESCRIPTOR(PlotAttach)
+    DESCRIPTOR(PlotShow)
+    DESCRIPTOR(PlotBarGraph)
+    DESCRIPTOR(PlotScatter)
+    DESCRIPTOR(PlotSeries)
+    DESCRIPTOR(PlotNSeries)
+    DESCRIPTOR(PlotLength)
+    DESCRIPTOR(PlotLabel)
+    DESCRIPTOR(PlotData)
+    DESCRIPTOR(PlotAuto)
+    DESCRIPTOR(PlotSpan)
+    DESCRIPTOR(PlotZoom)
+    DESCRIPTOR(PlotLinear)
+    DESCRIPTOR(PlotLog)
+    DESCRIPTOR(PlotTitle)
+    DESCRIPTOR(PlotSeriesName)
+    DESCRIPTOR(PlotAxisTitle)
+    DESCRIPTOR(PlotSeriesType)
+    DESCRIPTOR(PlotAddSeries)
+    DESCRIPTOR(PlotXAxis)
+    DESCRIPTOR(PlotYAxis)
+    DESCRIPTOR(PlotYAxisRight)
+    DESCRIPTOR(PlotUseRightAxis)
+    DESCRIPTOR(PlotKey)
+    break;
 
-      case kModelClass:
-               DESCRIPTOR(ModelAtom)
-               DESCRIPTOR(ModelBond)
-               DESCRIPTOR(ModelShow)
-               DESCRIPTOR(ModelCell)
-               DESCRIPTOR(ModelTri)
-               DESCRIPTOR(ModelClear)
-             break;
+  case kModelClass:
+    DESCRIPTOR(ModelAtom)
+    DESCRIPTOR(ModelBond)
+    DESCRIPTOR(ModelShow)
+    DESCRIPTOR(ModelCell)
+    DESCRIPTOR(ModelTri)
+    DESCRIPTOR(ModelClear)
+    break;
 
-      case kPeakShowClass:
-               DESCRIPTOR(ShowAll)
-               DESCRIPTOR(ShowAtomBonded)
-               DESCRIPTOR(ShowBonded)
-             break;
+  case kPeakShowClass:
+    DESCRIPTOR(ShowAll)
+    DESCRIPTOR(ShowAtomBonded)
+    DESCRIPTOR(ShowBonded)
+    break;
 
-      case kInstructionClass:
-               DESCRIPTOR(CreateButton)
-               DESCRIPTOR(At)
-               DESCRIPTOR(CreateWindow)
-               DESCRIPTOR(SysRestart)
-               DESCRIPTOR(SysGetDir)
-               DESCRIPTOR(SysOpenFile)
-               DESCRIPTOR(SysSaveFile)
-               DESCRIPTOR(CreateListBox)
-               DESCRIPTOR(CreateDropDown)
-               DESCRIPTOR(CreateEditBox)
-               DESCRIPTOR(CreateSlider)
-               DESCRIPTOR(CreateGrid)
-               DESCRIPTOR(CreateMultiEdit)
-               DESCRIPTOR(CreateTextOut)
-               DESCRIPTOR(CreateText)
-               DESCRIPTOR(CreateIcon)
-               DESCRIPTOR(CreateProgress)
-               DESCRIPTOR(CreateRadioButton)
-               DESCRIPTOR(CreateCheckBox)
-               DESCRIPTOR(CreateChart)
-               DESCRIPTOR(CreatePlot)
-               DESCRIPTOR(CreateModel)
-               DESCRIPTOR(CreateBitmap)
-               DESCRIPTOR(ShowWindow)
-               DESCRIPTOR(HideWindow)
-               DESCRIPTOR(DisposeWindow)
-               DESCRIPTOR(EndGrid)
-               DESCRIPTOR(Set)
-               DESCRIPTOR(RenameObject)
-               DESCRIPTOR(GetValue)
-               DESCRIPTOR(DefineMenu)
-               DESCRIPTOR(EndDefineMenu)
-               DESCRIPTOR(CreateChartDoc)
-               DESCRIPTOR(CreateModelDoc)
-               DESCRIPTOR(RedirectText)
-               DESCRIPTOR(RedirectInput)
-               DESCRIPTOR(RedirectProgress)
-               DESCRIPTOR(CreateListCtrl)
-               DESCRIPTOR(CreateModList)
-               DESCRIPTOR(SetKeyValue)
-               DESCRIPTOR(GetKeyValue)
-               DESCRIPTOR(GetRegValue)
-               DESCRIPTOR(TextSelector)
-               DESCRIPTOR(Focus)
-               DESCRIPTOR(Batch)
-               DESCRIPTOR(FontSet)
-               DESCRIPTOR(CreateTab)
-               DESCRIPTOR(CreateWeb)
-               DESCRIPTOR(CreateTabCtrl)
-               DESCRIPTOR(CreateToolBar)
-               DESCRIPTOR(CreateResize)
-               DESCRIPTOR(CreateStretch)
-               DESCRIPTOR(CreateHidden)
-               DESCRIPTOR(CreatePlotData)
-               DESCRIPTOR(SafeSet)
-               DESCRIPTOR(OpenGroup)
-               DESCRIPTOR(CloseGroup)
-             break;
+  case kInstructionClass:
+    DESCRIPTOR(CreateButton)
+    DESCRIPTOR(At)
+    DESCRIPTOR(CreateWindow)
+    DESCRIPTOR(SysRestart)
+    DESCRIPTOR(SysGetDir)
+    DESCRIPTOR(SysOpenFile)
+    DESCRIPTOR(SysSaveFile)
+    DESCRIPTOR(CreateListBox)
+    DESCRIPTOR(CreateDropDown)
+    DESCRIPTOR(CreateEditBox)
+    DESCRIPTOR(CreateSlider)
+    DESCRIPTOR(CreateGrid)
+    DESCRIPTOR(CreateMultiEdit)
+    DESCRIPTOR(CreateTextOut)
+    DESCRIPTOR(CreateText)
+    DESCRIPTOR(CreateIcon)
+    DESCRIPTOR(CreateProgress)
+    DESCRIPTOR(CreateRadioButton)
+    DESCRIPTOR(CreateCheckBox)
+    DESCRIPTOR(CreateChart)
+    DESCRIPTOR(CreatePlot)
+    DESCRIPTOR(CreateModel)
+    DESCRIPTOR(CreateBitmap)
+    DESCRIPTOR(ShowWindow)
+    DESCRIPTOR(HideWindow)
+    DESCRIPTOR(DisposeWindow)
+    DESCRIPTOR(EndGrid)
+    DESCRIPTOR(Set)
+    DESCRIPTOR(RenameObject)
+    DESCRIPTOR(GetValue)
+    DESCRIPTOR(DefineMenu)
+    DESCRIPTOR(EndDefineMenu)
+    DESCRIPTOR(CreateChartDoc)
+    DESCRIPTOR(CreateModelDoc)
+    DESCRIPTOR(RedirectText)
+    DESCRIPTOR(RedirectInput)
+    DESCRIPTOR(RedirectProgress)
+    DESCRIPTOR(CreateListCtrl)
+    DESCRIPTOR(CreateModList)
+    DESCRIPTOR(SetKeyValue)
+    DESCRIPTOR(GetKeyValue)
+    DESCRIPTOR(GetRegValue)
+    DESCRIPTOR(TextSelector)
+    DESCRIPTOR(Focus)
+    DESCRIPTOR(Batch)
+    DESCRIPTOR(FontSet)
+    DESCRIPTOR(CreateTab)
+    DESCRIPTOR(CreateWeb)
+    DESCRIPTOR(CreateTabCtrl)
+    DESCRIPTOR(CreateToolBar)
+    DESCRIPTOR(CreateResize)
+    DESCRIPTOR(CreateStretch)
+    DESCRIPTOR(CreateHidden)
+    DESCRIPTOR(CreatePlotData)
+    DESCRIPTOR(SafeSet)
+    DESCRIPTOR(OpenGroup)
+    DESCRIPTOR(CloseGroup)
+    break;
 
-      case kStatusClass:
-               DESCRIPTOR(UnSetStatus)
-               DESCRIPTOR(SetStatus)
-             break;
+  case kStatusClass:
+    DESCRIPTOR(UnSetStatus)
+    DESCRIPTOR(SetStatus)
+    break;
 
+  case kPositionClass:
+    DESCRIPTOR(Row)
+    DESCRIPTOR(Column)
+    DESCRIPTOR(Column)
+    break;
 
-      case kPositionClass:
-               DESCRIPTOR(Row)
-               DESCRIPTOR(Column)
-               DESCRIPTOR(Column)
-             break;
+  case kPositionalClass:
+    DESCRIPTOR(RightOf)
+    DESCRIPTOR(LeftOf)
+    DESCRIPTOR(Above)
+    DESCRIPTOR(Below)
+    DESCRIPTOR(Cascade)
+    DESCRIPTOR(Centred)
+    break;
 
-      case kPositionalClass:
-               DESCRIPTOR(RightOf)
-               DESCRIPTOR(LeftOf)
-               DESCRIPTOR(Above)
-               DESCRIPTOR(Below)
-               DESCRIPTOR(Cascade)
-               DESCRIPTOR(Centred)
-             break;
+  case kPanePositionClass:
+    DESCRIPTOR(Right)
+    DESCRIPTOR(Left)
+    DESCRIPTOR(Top)
+    DESCRIPTOR(Bottom)
+    DESCRIPTOR(Centre)
+    break;
 
-      case kPanePositionClass:
-               DESCRIPTOR(Right)
-               DESCRIPTOR(Left)
-               DESCRIPTOR(Top)
-               DESCRIPTOR(Bottom)
-               DESCRIPTOR(Centre)
-             break;
+  case kQueryClass:
+    DESCRIPTOR(QExists)
+    DESCRIPTOR(QListtext)
+    DESCRIPTOR(QText)
+    DESCRIPTOR(QModified)
+    DESCRIPTOR(QListrow)
+    DESCRIPTOR(QListitem)
+    DESCRIPTOR(QNselected)
+    DESCRIPTOR(QSelected)
+    DESCRIPTOR(QState)
+    DESCRIPTOR(QNLines)
+    DESCRIPTOR(QAtomStyle)
+    DESCRIPTOR(QBondStyle)
 
-      case kQueryClass:
-               DESCRIPTOR(QExists)
-               DESCRIPTOR(QListtext)
-               DESCRIPTOR(QText)
-               DESCRIPTOR(QModified)
-               DESCRIPTOR(QListrow)
-               DESCRIPTOR(QListitem)
-               DESCRIPTOR(QNselected)
-               DESCRIPTOR(QSelected)
-               DESCRIPTOR(QState)
-               DESCRIPTOR(QNLines)
-               DESCRIPTOR(QAtomStyle)
-               DESCRIPTOR(QBondStyle)
-
-      default:
-               DESCRIPTOR(Null)
-             break;
+  default:
+    DESCRIPTOR(Null)
+    break;
   }
   return retVal;
 }
-
 
 //////////////////////////////
 //   STATIC C FUNCTIONS     //
 //////////////////////////////
 
+extern "C"
+{
 
-extern "C" {
-
-  void callccode ( char* theLine)
+  void callccode(char *theLine)
   {
-      string temp =  theLine ;    // To be deleted later by the queue.
-      string::size_type strim = temp.find_last_not_of(" ");
-      if ( strim != string::npos ) temp = temp.substr(0,strim+1);
-      (CcController::theController)->AddInterfaceCommand( temp );
+    string temp = theLine; // To be deleted later by the queue.
+    string::size_type strim = temp.find_last_not_of(" ");
+    if (strim != string::npos)
+      temp = temp.substr(0, strim + 1);
+    (CcController::theController)->AddInterfaceCommand(temp);
   }
 
-  void getcenv ( char* key, char* value)
+  void getcenv(char *key, char *value)
   {
-      char* v;
-      v = getenv(key);
-      if ( v ) strcpy(value,v);
+    char *v;
+    v = getenv(key);
+    if (v)
+      strcpy(value, v);
   }
 
-  int guexec ( char* theLine)
+  int guexec(char *theLine)
   {
     int exitcode = -1;
     string line = string(theLine);
 
-    tstring::size_type strim = line.find_last_not_of(' '); //Remove trailing spaces
+    tstring::size_type strim = line.find_last_not_of(' '); // Remove trailing spaces
 
-    if ( strim != string::npos )
-        line = line.substr(0,strim+1);
-//   delete [] tempstr;
-//    tempstr = NULL;
+    if (strim != string::npos)
+      line = line.substr(0, strim + 1);
+    //   delete [] tempstr;
+    //    tempstr = NULL;
 
-//  (CcController::theController)->AddInterfaceCommand( "Launching: " + line );
+    //  (CcController::theController)->AddInterfaceCommand( "Launching: " + line );
 
     bRedir = false;
     bool bWait = false;
     bool bRest = false;
-    tstring::size_type sFirst,eFirst,sRest,eRest;
+    tstring::size_type sFirst, eFirst, sRest, eRest;
 
-    sFirst = line.find_first_not_of(' ');     // Find first non-space.
-    if ( sFirst == string::npos ) sFirst = 0;
+    sFirst = line.find_first_not_of(' '); // Find first non-space.
+    if (sFirst == string::npos)
+      sFirst = 0;
 
-    if ( line[sFirst] == '+' )                // Check for + symbol (signifies 'wait')
+    if (line[sFirst] == '+') // Check for + symbol (signifies 'wait')
     {
-       bWait = true;
-// Find next non space ( in case + is seperated from first word ).
-       sFirst = line.find_first_not_of(' ',sFirst+1);
-       if ( sFirst == string::npos ) sFirst = 0; // should not happen unless no content in string
+      bWait = true;
+      // Find next non space ( in case + is seperated from first word ).
+      sFirst = line.find_first_not_of(' ', sFirst + 1);
+      if (sFirst == string::npos)
+        sFirst = 0; // should not happen unless no content in string
     }
-    else if ( line[sFirst] == '%' )  // Check for % symbol (signifies 'redirect STDIN and OUT')
+    else if (line[sFirst] == '%') // Check for % symbol (signifies 'redirect STDIN and OUT')
     {
-       bRedir = true;
-// Find next non space ( in case + is seperated from first word ).
-       sFirst = line.find_first_not_of(' ',sFirst+1);
-       if ( sFirst == string::npos ) sFirst = 0;
+      bRedir = true;
+      // Find next non space ( in case + is seperated from first word ).
+      sFirst = line.find_first_not_of(' ', sFirst + 1);
+      if (sFirst == string::npos)
+        sFirst = 0;
     }
-// sFirst now points to the beginning of the command.
+    // sFirst now points to the beginning of the command.
 
-    if ( line[sFirst] == '"' )
+    if (line[sFirst] == '"')
     {
-       sFirst++; //Move to after 1st quote.
-       eFirst = line.find_first_of('"',sFirst);   // Find next quote.
-       if ( eFirst == string::npos ) eFirst = line.length();
+      sFirst++;                                 // Move to after 1st quote.
+      eFirst = line.find_first_of('"', sFirst); // Find next quote.
+      if (eFirst == string::npos)
+        eFirst = line.length();
     }
-    else                        // Find next space ( after the first word )
+    else // Find next space ( after the first word )
     {
-       eFirst = line.find_first_of(' ',sFirst);
-       if ( eFirst == string::npos ) eFirst = line.length();
+      eFirst = line.find_first_of(' ', sFirst);
+      if (eFirst == string::npos)
+        eFirst = line.length();
     }
 
-    tstring firstTok = line.substr(sFirst,eFirst-sFirst);
+    tstring firstTok = line.substr(sFirst, eFirst - sFirst);
     tstring restLine;
 
-//        LOGERR(firstTok);
+    //        LOGERR(firstTok);
 
-// Find next non space and last non space
-    sRest = line.find_first_not_of(' ',eFirst+1);
+    // Find next non space and last non space
+    sRest = line.find_first_not_of(' ', eFirst + 1);
     eRest = line.find_last_not_of(' ');
 
-
-    if ( sRest != string::npos )
+    if (sRest != string::npos)
     {
       bRest = true;
       eRest = eRest - sRest + 1;
-      eRest = CRMAX ( 1, eRest );  // ensure positive length
+      eRest = CRMAX(1, eRest); // ensure positive length
       restLine = line.substr(sRest, eRest);
     }
 
-//        LOGERR(restLine);
+    //        LOGERR(restLine);
 
-        tstring totalcl = firstTok;
-        totalcl += " ";
-        totalcl += restLine;
-//        LOGERR(totalcl);
+    tstring totalcl = firstTok;
+    totalcl += " ";
+    totalcl += restLine;
+    //        LOGERR(totalcl);
 
 #ifdef CRY_OSWIN32
 
-    if ( bWait )
+    if (bWait)
     {
-// Launch with ShellExecute function. Then wait for app.
-//Special case html files with a # anchor reference after file name:
+      // Launch with ShellExecute function. Then wait for app.
+      // Special case html files with a # anchor reference after file name:
       string::size_type match = firstTok.find('#');
-      if ( match != string::npos ) {
-         char buf[MAX_PATH];
-         tstring tempfile = firstTok.substr(0,match);
-         if ( (uintptr_t)FindExecutableA(tempfile.c_str(),NULL,buf) >= 32) {
-            restLine = firstTok + restLine;
-            bRest = true;
-            firstTok = buf;
-         }
+      if (match != string::npos)
+      {
+        char buf[MAX_PATH];
+        tstring tempfile = firstTok.substr(0, match);
+        if ((uintptr_t)FindExecutableA(tempfile.c_str(), NULL, buf) >= 32)
+        {
+          restLine = firstTok + restLine;
+          bRest = true;
+          firstTok = buf;
+        }
       }
 
-//Special case http urls:
+      // Special case http urls:
       tstring lFirstTok = firstTok;
 #ifdef _UNICODE
-      std::transform( lFirstTok.begin(), lFirstTok.end(), lFirstTok.begin(), ::towlower );
+      std::transform(lFirstTok.begin(), lFirstTok.end(), lFirstTok.begin(), ::towlower);
 #else
-      std::transform( lFirstTok.begin(), lFirstTok.end(), lFirstTok.begin(), ::tolower );
+      std::transform(lFirstTok.begin(), lFirstTok.end(), lFirstTok.begin(), ::tolower);
 #endif
       match = lFirstTok.find("http://");
-      if ( match == 0 )
+      if (match == 0)
       {
-         restLine = "url.dll,FileProtocolHandler " + firstTok + " "+ restLine;
-         bRest = true;
-         firstTok = "rundll32.exe";
+        restLine = "url.dll,FileProtocolHandler " + firstTok + " " + restLine;
+        bRest = true;
+        firstTok = "rundll32.exe";
       }
-
-
 
       SHELLEXECUTEINFOA si;
 
-      si.cbSize       = sizeof(si);
-      si.fMask        = SEE_MASK_NOCLOSEPROCESS|SEE_MASK_FLAG_NO_UI ;
-      si.hwnd         = GetDesktopWindow();
-      si.lpVerb       = "open";
-      si.lpFile       = firstTok.c_str();
-      si.lpParameters = ( (bRest)? restLine.c_str() : NULL );
-      si.lpDirectory  = NULL;
-      si.nShow        = SW_SHOWNORMAL;
+      si.cbSize = sizeof(si);
+      si.fMask = SEE_MASK_NOCLOSEPROCESS | SEE_MASK_FLAG_NO_UI;
+      si.hwnd = GetDesktopWindow();
+      si.lpVerb = "open";
+      si.lpFile = firstTok.c_str();
+      si.lpParameters = ((bRest) ? restLine.c_str() : NULL);
+      si.lpDirectory = NULL;
+      si.nShow = SW_SHOWNORMAL;
 
-      int err = (int)ShellExecuteExA ( & si );
+      int err = (int)ShellExecuteExA(&si);
 
-      if ( (uintptr_t)si.hInstApp == SE_ERR_NOASSOC )
+      if ((uintptr_t)si.hInstApp == SE_ERR_NOASSOC)
       {
-        (CcController::theController)->AddInterfaceCommand( "File has no association. Retrying." );
-        tstring newparam = tstring("shell32.dll,OpenAs_RunDLL ")+firstTok+( (bRest) ? " " + restLine : "" ) ;
-        si.lpFile       = "rundll32.exe";
+        (CcController::theController)->AddInterfaceCommand("File has no association. Retrying.");
+        tstring newparam = tstring("shell32.dll,OpenAs_RunDLL ") + firstTok + ((bRest) ? " " + restLine : "");
+        si.lpFile = "rundll32.exe";
         si.lpParameters = newparam.c_str();
-        si.fMask        = SEE_MASK_NOCLOSEPROCESS; //Don't mask errors for this call.
-        ShellExecuteExA ( & si );
-// It is not possible to wait for rundll32's spawned process, so
-// we just pop up a message box, to hold this app here.
+        si.fMask = SEE_MASK_NOCLOSEPROCESS; // Don't mask errors for this call.
+        ShellExecuteExA(&si);
+        // It is not possible to wait for rundll32's spawned process, so
+        // we just pop up a message box, to hold this app here.
 
-        CcController::theController->AddInterfaceCommand( " ");
+        CcController::theController->AddInterfaceCommand(" ");
         stringstream t;
         t << "     {0,2 Waiting for {2,0 " << firstTok.c_str() << " {0,2 to finish... ";
-        CcController::theController->AddInterfaceCommand( t.str() );
-        CcController::theController->AddInterfaceCommand( " ");
-        WaitForSingleObject( si.hProcess, INFINITE );
+        CcController::theController->AddInterfaceCommand(t.str());
+        CcController::theController->AddInterfaceCommand(" ");
+        WaitForSingleObject(si.hProcess, INFINITE);
 
         DWORD dwExitCode = 0;
-        GetExitCodeProcess( si.hProcess, &dwExitCode );
+        GetExitCodeProcess(si.hProcess, &dwExitCode);
         exitcode = (int)dwExitCode;
 
-        CcController::theController->AddInterfaceCommand( "                                                               {0,2 ... Done");
-        CcController::theController->AddInterfaceCommand( " ");
+        CcController::theController->AddInterfaceCommand("                                                               {0,2 ... Done");
+        CcController::theController->AddInterfaceCommand(" ");
       }
-      else if ( (uintptr_t)si.hInstApp <= 32 )
+      else if ((uintptr_t)si.hInstApp <= 32)
       {
-        (CcController::theController)->AddInterfaceCommand( "Could not launch as Win process. Trying command prompt.");
+        (CcController::theController)->AddInterfaceCommand("Could not launch as Win process. Trying command prompt.");
 
-        tstring newparam = tstring("/c ")+firstTok+( (bRest) ? " " + restLine : "" ) ;
-        si.cbSize       = sizeof(si);
-        si.fMask        = SEE_MASK_NOCLOSEPROCESS|SEE_MASK_FLAG_NO_UI ;
-        si.hwnd         = GetDesktopWindow();
-        si.lpVerb       = "open";
-        if ( IsWinNT() )
-          si.lpFile       = "cmd.exe";
+        tstring newparam = tstring("/c ") + firstTok + ((bRest) ? " " + restLine : "");
+        si.cbSize = sizeof(si);
+        si.fMask = SEE_MASK_NOCLOSEPROCESS | SEE_MASK_FLAG_NO_UI;
+        si.hwnd = GetDesktopWindow();
+        si.lpVerb = "open";
+        if (IsWinNT())
+          si.lpFile = "cmd.exe";
         else
-          si.lpFile       = "command.com";
+          si.lpFile = "command.com";
         si.lpParameters = newparam.c_str();
-        si.lpDirectory  = NULL;
-        si.nShow        = SW_SHOWNORMAL;
+        si.lpDirectory = NULL;
+        si.nShow = SW_SHOWNORMAL;
 
-        err = (int)ShellExecuteExA ( & si );
+        err = (int)ShellExecuteExA(&si);
 
-        if ( (uintptr_t)si.hInstApp > 32 ) {
-          CcController::theController->AddInterfaceCommand( " ");
+        if ((uintptr_t)si.hInstApp > 32)
+        {
+          CcController::theController->AddInterfaceCommand(" ");
           stringstream t;
           t << "     {0,2 Waiting for {2,0 " << firstTok.c_str() << " {0,2 to finish... ";
-          CcController::theController->AddInterfaceCommand( t.str() );
-          CcController::theController->AddInterfaceCommand( " ");
-          WaitForSingleObject( si.hProcess, INFINITE );
+          CcController::theController->AddInterfaceCommand(t.str());
+          CcController::theController->AddInterfaceCommand(" ");
+          WaitForSingleObject(si.hProcess, INFINITE);
           DWORD dwExitCode = 0;
-          GetExitCodeProcess( si.hProcess, &dwExitCode );
+          GetExitCodeProcess(si.hProcess, &dwExitCode);
           exitcode = (int)dwExitCode;
 
-          CcController::theController->AddInterfaceCommand( "                                                               {0,2 ... Done");
-          CcController::theController->AddInterfaceCommand( " ");
+          CcController::theController->AddInterfaceCommand("                                                               {0,2 ... Done");
+          CcController::theController->AddInterfaceCommand(" ");
         }
 
-/*
-// Some other failure. Try another method of starting external programs.
-  //      CcController::theController->AddInterfaceCommand( "{I Failed to start " + firstTok + ", (security or not found?) trying another method.");
-        extern int errno;
-        char * str = new char[257];
-        memcpy(str,line.substr(sFirst,line.length()-sFirst).c_str(),256);
-        *(str+256) = '\0';
+        /*
+        // Some other failure. Try another method of starting external programs.
+          //      CcController::theController->AddInterfaceCommand( "{I Failed to start " + firstTok + ", (security or not found?) trying another method.");
+                extern int errno;
+                char * str = new char[257];
+                memcpy(str,line.substr(sFirst,line.length()-sFirst).c_str(),256);
+                *(str+256) = '\0';
 
-        char* args[10];       // This allows a maximum of 9 command line arguments
+                char* args[10];       // This allows a maximum of 9 command line arguments
 
-        for (int i=0;i<10;i++) args[i]=NULL;
+                for (int i=0;i<10;i++) args[i]=NULL;
 
 
-        char seps[] = " \t";
-        char *token = strtok( str, seps );
-        args[0] = token;
-        for (int i = 1; (( token != NULL ) && ( i < 10 )); i++ )
-        {
-          token = strtok( NULL, seps );
-          args[i] = token;
-        }
+                char seps[] = " \t";
+                char *token = strtok( str, seps );
+                args[0] = token;
+                for (int i = 1; (( token != NULL ) && ( i < 10 )); i++ )
+                {
+                  token = strtok( NULL, seps );
+                  args[i] = token;
+                }
 
-        LOGERR(string(args[0]?args[0]:"")+" "+
-                  string(args[1]?args[1]:"") + " " +  string(args[2]?args[2]:"")+" "+
-                  string(args[3]?args[3]:"") + " " +  string(args[4]?args[4]:"")+" ...etc...");
+                LOGERR(string(args[0]?args[0]:"")+" "+
+                          string(args[1]?args[1]:"") + " " +  string(args[2]?args[2]:"")+" "+
+                          string(args[3]?args[3]:"") + " " +  string(args[4]?args[4]:"")+" ...etc...");
 
-        int result = _spawnvp(_P_WAIT, args[0], args);
+                int result = _spawnvp(_P_WAIT, args[0], args);
 
-        if ( result == -1 )  //Start failed
-        {
-          ostringstream strstrm;
-          strstrm << "{I Failed again to start " << firstTok << ", errno is:" << errno << " trying a command shell.";
-          CcController::theController->AddInterfaceCommand(strstrm.str());
-          for (int ij = 7; ij>=0; ij--)
-          {
-             args[ij+2] = args[ij];
-          }
+                if ( result == -1 )  //Start failed
+                {
+                  ostringstream strstrm;
+                  strstrm << "{I Failed again to start " << firstTok << ", errno is:" << errno << " trying a command shell.";
+                  CcController::theController->AddInterfaceCommand(strstrm.str());
+                  for (int ij = 7; ij>=0; ij--)
+                  {
+                     args[ij+2] = args[ij];
+                  }
 
-          if ( IsWinNT() )
-            args[0] = "cmd.exe";
-          else
-            args[0] = "command.com" ;
+                  if ( IsWinNT() )
+                    args[0] = "cmd.exe";
+                  else
+                    args[0] = "command.com" ;
 
-          args[1] = "/c";
+                  args[1] = "/c";
 
-          result = _spawnvp(_P_WAIT, args[0], args);
-          LOGERR("Args: "+string(args[0])+" "+
-                  string(args[1]?args[1]:"") + " " +  string(args[2]?args[2]:"")+" "+
-                  string(args[3]?args[3]:"") + " " +  string(args[4]?args[4]:"")+" ...etc...");
+                  result = _spawnvp(_P_WAIT, args[0], args);
+                  LOGERR("Args: "+string(args[0])+" "+
+                          string(args[1]?args[1]:"") + " " +  string(args[2]?args[2]:"")+" "+
+                          string(args[3]?args[3]:"") + " " +  string(args[4]?args[4]:"")+" ...etc...");
 
-          strstrm.str("");
-          strstrm << "{I Failed yet again. Errno is:" << errno << ". Giving up.";
+                  strstrm.str("");
+                  strstrm << "{I Failed yet again. Errno is:" << errno << ". Giving up.";
 
-          if ( result != 0 ) LOGERR ( strstrm.str() );
-          else LOGERR("Might have worked.");
-        }
+                  if ( result != 0 ) LOGERR ( strstrm.str() );
+                  else LOGERR("Might have worked.");
+                }
 
-        delete [] str;
-*/
+                delete [] str;
+        */
       }
       else
       {
-        CcController::theController->AddInterfaceCommand( " ");
+        CcController::theController->AddInterfaceCommand(" ");
         stringstream t;
         t << "     {0,2 Waiting for {2,0 " << firstTok.c_str() << " {0,2 to finish... ";
-        CcController::theController->AddInterfaceCommand( t.str() );
-        CcController::theController->AddInterfaceCommand( " ");
-        WaitForSingleObject( si.hProcess, INFINITE );
+        CcController::theController->AddInterfaceCommand(t.str());
+        CcController::theController->AddInterfaceCommand(" ");
+        WaitForSingleObject(si.hProcess, INFINITE);
         DWORD dwExitCode = 0;
-        GetExitCodeProcess( si.hProcess, &dwExitCode );
+        GetExitCodeProcess(si.hProcess, &dwExitCode);
         exitcode = (int)dwExitCode;
-        CcController::theController->AddInterfaceCommand( "                                                               {0,2 ... Done");
-        CcController::theController->AddInterfaceCommand( " ");
+        CcController::theController->AddInterfaceCommand("                                                               {0,2 ... Done");
+        CcController::theController->AddInterfaceCommand(" ");
       }
     }
-    else if ( bRedir )
+    else if (bRedir)
     {
-        STARTUPINFOA si;
-        SECURITY_ATTRIBUTES sa;
-        SECURITY_DESCRIPTOR sd;               //security information for pipes
-        if (IsWinNT())        //initialize security descriptor (Windows NT)
+      STARTUPINFOA si;
+      SECURITY_ATTRIBUTES sa;
+      SECURITY_DESCRIPTOR sd; // security information for pipes
+      if (IsWinNT())          // initialize security descriptor (Windows NT)
+      {
+        InitializeSecurityDescriptor(&sd, SECURITY_DESCRIPTOR_REVISION);
+        SetSecurityDescriptorDacl(&sd, true, NULL, false);
+        sa.lpSecurityDescriptor = &sd;
+      }
+      else
+        sa.lpSecurityDescriptor = NULL;
+      sa.nLength = sizeof(SECURITY_ATTRIBUTES);
+      sa.bInheritHandle = true; // allow inheritable handles
+      CcPipe inPipe(sa);
+      if (!inPipe.CreateOK)
+      {
+        CcController::theController->AddInterfaceCommand("Error creating in pipe.");
+        return -1;
+      }
+      CcPipe outPipe(sa);
+      if (!outPipe.CreateOK)
+      {
+        CcController::theController->AddInterfaceCommand("Error creating out pipe.");
+        return -1;
+      }
+
+      GetStartupInfoA(&si); // set startupinfo for the spawned process
+      si.dwFlags = STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW;
+      si.wShowWindow = SW_HIDE;
+      si.hStdOutput = outPipe.input;
+      si.hStdError = outPipe.input; // set the new handles for the child process
+      si.hStdInput = inPipe.output;
+      //          #(totalcl);
+      CcProcessInfo pi(firstTok, si, totalcl);
+      if (!pi.CreateOK)
+      {
+        CcController::theController->AddInterfaceCommand("Error creating process.");
+        return -1;
+      }
+
+      unsigned long exit = 0; // process exit code
+      unsigned long bread;    // bytes read
+      unsigned long avail;    // bytes available
+
+      // Disable all menus etc.
+      CcController::theController->AddInterfaceCommand("^^ST STATSET IN");
+      CcController::theController->AddInterfaceCommand("^^CR");
+      CcController::theController->m_AllowThreadKill = false;
+
+      char buf[1024]; // i/o buffer
+      BZERO(buf);
+      string keep;
+      for (;;) // main program reading/writing loop
+      {
+        keep = ""; // output buffer - must contain a newline before we output it to screen.
+        PeekNamedPipe(outPipe.output, buf, 1023, &bread, &avail, NULL);
+
+        while (bread != 0)
         {
-            InitializeSecurityDescriptor(&sd,SECURITY_DESCRIPTOR_REVISION);
-            SetSecurityDescriptorDacl(&sd, true, NULL, false);
-            sa.lpSecurityDescriptor = &sd;
-        }
-        else sa.lpSecurityDescriptor = NULL;
-        sa.nLength = sizeof(SECURITY_ATTRIBUTES);
-        sa.bInheritHandle = true;         //allow inheritable handles
-        CcPipe inPipe(sa);
-        if ( ! inPipe.CreateOK ) {
-            CcController::theController->AddInterfaceCommand( "Error creating in pipe.");
-            return -1;
-        }
-        CcPipe outPipe(sa);
-        if ( ! outPipe.CreateOK ) {
-            CcController::theController->AddInterfaceCommand( "Error creating out pipe.");
-            return -1;
-        }
 
-        GetStartupInfoA(&si);      //set startupinfo for the spawned process
-        si.dwFlags = STARTF_USESTDHANDLES|STARTF_USESHOWWINDOW;
-        si.wShowWindow = SW_HIDE;
-        si.hStdOutput = outPipe.input;
-        si.hStdError = outPipe.input;     //set the new handles for the child process
-        si.hStdInput = inPipe.output;
-//          #(totalcl);
-        CcProcessInfo pi(firstTok,si,totalcl);
-        if (!pi.CreateOK)
-        {
-            CcController::theController->AddInterfaceCommand( "Error creating process.");
-            return -1;
-        }
+          // READ THE BUFFER; REMOVE UNWANTED CHARS; APPEND TO EXISTING INPUT BUFFER:
 
-        unsigned long exit=0;  //process exit code
-        unsigned long bread;   //bytes read
-        unsigned long avail;   //bytes available
+          string::size_type i, j;
+          BZERO(buf);
+          ReadFile(outPipe.output, buf, 1023, &bread, NULL); // read the stdout pipe
+          string s(buf);
 
-// Disable all menus etc.
-        CcController::theController->AddInterfaceCommand( "^^ST STATSET IN");
-        CcController::theController->AddInterfaceCommand( "^^CR");
-        CcController::theController->m_AllowThreadKill = false;
+          // Change all \r\n into just \n. Leave \r alone.
+          string::size_type irn = s.find("\r\n");
+          while (irn != string::npos)
+          {
+            s.replace(irn, 2, "\n");
+            irn = s.find("\r\n");
+          }
 
-        char buf[1024];           //i/o buffer
-        BZERO(buf);
-        string keep;
-        for(;;)      //main program reading/writing loop
-        {
-            keep = ""; //output buffer - must contain a newline before we output it to screen.
-            PeekNamedPipe(outPipe.output,buf,1023,&bread,&avail,NULL);
+          // Replace { with \ otherwise will interfere with output colours
+          i = s.find_first_of("{");
+          while (i != string::npos)
+          {
+            s.insert(i, 1, '\\');
+            i = s.find("{", i + 2);
+          }
 
-            while ( bread != 0 )
+          // Append to output buffer
+          keep = keep + s;
+
+          for (;;)
+          {
+
+            // OUTPUT LOOP - consume output buffer. Output any strings upto each newline. For carriage returns, only output from last CR as far as next LF
+
+            string::size_type strim = keep.find_first_of("\n");
+            if (strim == string::npos)
             {
 
 // READ THE BUFFER; REMOVE UNWANTED CHARS; APPEND TO EXISTING INPUT BUFFER:
@@ -3567,463 +3666,499 @@ extern "C" {
                 PeekNamedPipe(outPipe.output,buf,1023,&bread,&avail,NULL);
             }
 
-// No bytes to read (maybe waiting for input) check the process is still active
-
-            GetExitCodeProcess(pi.proc.hProcess,&exit);      //while the process is running
-            if (exit != STILL_ACTIVE) {
-                exitcode = exit;
-                break;
+            string::size_type strimr = keep.substr(0, strim).find_last_of("\r"); // If carriage returns present, only output from the last one to the end of the line.
+            if (strimr == string::npos)
+            {
+              CcController::theController->AddInterfaceCommand("{0,1 " + keep.substr(0, strim));
+              keep.erase(0, strim + 1);
+            }
+            else
+            {
+              CcController::theController->AddInterfaceCommand("{0,1 " + keep.substr(strimr + 1, strim - strimr - 1));
+              keep.erase(0, strim + 1);
             }
 
-            bool wait = false;
+          } // END oF OUTPUT LOOP.
 
-// Check for input or interupt from main process
-            (CcController::theController)->GetCrystalsCommand(*&buf,wait);
-            if ( wait ) {
-               string s(buf);
-               s.erase(s.find_last_not_of(" ")+1,s.length());
-               if ( s.substr(0,11) == "_MAIN CLOSE" )
-               {
-                 UINT uexit=0;
-                 TerminateProcess(pi.proc.hProcess, uexit);
-                 CloseHandle(pi.proc.hThread);
-                 CloseHandle(pi.proc.hProcess);
-                 CcController::theController->AddInterfaceCommand("{0,2 Process terminated.");
-                 break;
-               }
-               CcController::theController->AddInterfaceCommand("{0,1 " + s);
-               WriteFile(inPipe.input,s.c_str(),s.length(),&bread,NULL); //send it to stdin
-               WriteFile(inPipe.input,"\n",1,&bread,NULL); //send an extra newline char
-            }
+          // Keep checking for new output from process
+          BZERO(buf);
+          PeekNamedPipe(outPipe.output, buf, 1023, &bread, &avail, NULL);
+        }
 
+        // No bytes to read (maybe waiting for input) check the process is still active
 
-        }  //end of processing loop (from a break)
+        GetExitCodeProcess(pi.proc.hProcess, &exit); // while the process is running
+        if (exit != STILL_ACTIVE)
+        {
+          exitcode = exit;
+          break;
+        }
 
-// Dregs of output
+        bool wait = false;
+
+        // Check for input or interupt from main process
+        (CcController::theController)->GetCrystalsCommand(*&buf, wait);
+        if (wait)
+        {
+          string s(buf);
+          s.erase(s.find_last_not_of(" ") + 1, s.length());
+          if (s.substr(0, 11) == "_MAIN CLOSE")
+          {
+            UINT uexit = 0;
+            TerminateProcess(pi.proc.hProcess, uexit);
+            CloseHandle(pi.proc.hThread);
+            CloseHandle(pi.proc.hProcess);
+            CcController::theController->AddInterfaceCommand("{0,2 Process terminated.");
+            break;
+          }
+          CcController::theController->AddInterfaceCommand("{0,1 " + s);
+          WriteFile(inPipe.input, s.c_str(), s.length(), &bread, NULL); // send it to stdin
+          WriteFile(inPipe.input, "\n", 1, &bread, NULL);               // send an extra newline char
+        }
+
+      } // end of processing loop (from a break)
+
+      // Dregs of output
       CcController::theController->AddInterfaceCommand("{0,2 " + keep);
 
-// Reenable all menus
-      CcController::theController->AddInterfaceCommand( "^^ST STATUNSET IN");
-      CcController::theController->AddInterfaceCommand( "^^CR");
+      // Reenable all menus
+      CcController::theController->AddInterfaceCommand("^^ST STATUNSET IN");
+      CcController::theController->AddInterfaceCommand("^^CR");
       CcController::theController->m_AllowThreadKill = true;
     }
     else
     {
-// Launch with ShellExecute function. There is no waiting for apps to finish.
-//Special case http urls:
+      // Launch with ShellExecute function. There is no waiting for apps to finish.
+      // Special case http urls:
       tstring lFirstTok = firstTok;
 #ifdef _UNICODE
-      std::transform( lFirstTok.begin(), lFirstTok.end(), lFirstTok.begin(), ::towlower );
+      std::transform(lFirstTok.begin(), lFirstTok.end(), lFirstTok.begin(), ::towlower);
 #else
-      std::transform( lFirstTok.begin(), lFirstTok.end(), lFirstTok.begin(), ::tolower );
+      std::transform(lFirstTok.begin(), lFirstTok.end(), lFirstTok.begin(), ::tolower);
 #endif
 
-//Special case html files with a # anchor reference after file name:
+      // Special case html files with a # anchor reference after file name:
       string::size_type match = firstTok.find('#');
-      if ( match != string::npos ) {
-         char buf[MAX_PATH];
-         tstring tempfile = firstTok.substr(0,match);
-         if ( (uintptr_t)FindExecutableA(tempfile.c_str(),NULL,buf) >= 32) {
-            restLine = firstTok + restLine;
-            bRest = true;
-            firstTok = buf;
-            if ( lFirstTok.find("http") != 0 ) {  // Not a web URL, add file:/// to start.
-               if ( lFirstTok.find("file") != 0 ) {  // Not a file URL, add file:/// to start.
+      if (match != string::npos)
+      {
+        char buf[MAX_PATH];
+        tstring tempfile = firstTok.substr(0, match);
+        if ((uintptr_t)FindExecutableA(tempfile.c_str(), NULL, buf) >= 32)
+        {
+          restLine = firstTok + restLine;
+          bRest = true;
+          firstTok = buf;
+          if (lFirstTok.find("http") != 0)
+          { // Not a web URL, add file:/// to start.
+            if (lFirstTok.find("file") != 0)
+            { // Not a file URL, add file:/// to start.
 
-                    string launch = string( firstTok + " file:///" + restLine);
-                    STARTUPINFOA si;
-                    PROCESS_INFORMATION proc;
-                    GetStartupInfoA(&si);      //set startupinfo for the spawned process
-                    si.dwFlags = STARTF_USESHOWWINDOW;
-                    si.wShowWindow = SW_HIDE;
-                    ::CreateProcessA ( NULL, &launch[0], NULL, NULL, FALSE, 0, NULL, NULL, &si, &proc);
-                    return 0;
-                }
+              string launch = string(firstTok + " file:///" + restLine);
+              STARTUPINFOA si;
+              PROCESS_INFORMATION proc;
+              GetStartupInfoA(&si); // set startupinfo for the spawned process
+              si.dwFlags = STARTF_USESHOWWINDOW;
+              si.wShowWindow = SW_HIDE;
+              ::CreateProcessA(NULL, &launch[0], NULL, NULL, FALSE, 0, NULL, NULL, &si, &proc);
+              return 0;
             }
-
-         }
+          }
+        }
       }
       match = lFirstTok.find("http://");
-      if ( match == 0 )
+      if (match == 0)
       {
-         return ( wxLaunchDefaultBrowser( firstTok, wxBROWSER_NEW_WINDOW ) ? 0: 1);
-      } else {
-         match = lFirstTok.find("file:///");
-         if ( match == 0 )
-         {
-            wxMimeTypesManager manager;
-            wxFileType *filetype=manager.GetFileTypeFromExtension("html");
-            wxString command=filetype->GetOpenCommand(firstTok);
-            wxExecute(command);
-            return 0;
-         }
+        return (wxLaunchDefaultBrowser(firstTok, wxBROWSER_NEW_WINDOW) ? 0 : 1);
+      }
+      else
+      {
+        match = lFirstTok.find("file:///");
+        if (match == 0)
+        {
+          wxMimeTypesManager manager;
+          wxFileType *filetype = manager.GetFileTypeFromExtension("html");
+          wxString command = filetype->GetOpenCommand(firstTok);
+          wxExecute(command);
+          return 0;
+        }
       }
 
-
-
-      if ( restLine.find('#') != string::npos ) {
+      if (restLine.find('#') != string::npos)
+      {
         string launch = string(firstTok + " " + restLine);
         STARTUPINFOA si;
         PROCESS_INFORMATION proc;
-        GetStartupInfoA(&si);      //set startupinfo for the spawned process
+        GetStartupInfoA(&si); // set startupinfo for the spawned process
         si.dwFlags = STARTF_USESHOWWINDOW;
         si.wShowWindow = SW_HIDE;
-        ::CreateProcessA ( NULL, &launch[0], NULL, NULL, FALSE, 0, NULL, NULL, &si, &proc);
+        ::CreateProcessA(NULL, &launch[0], NULL, NULL, FALSE, 0, NULL, NULL, &si, &proc);
         return 0;
       }
-      
-//      (CcController::theController)->AddInterfaceCommand( "Going for shellexec: " + firstTok );
-  //    (CcController::theController)->AddInterfaceCommand( "Going for shellexec: " + restLine );
-     
+
+      //      (CcController::theController)->AddInterfaceCommand( "Going for shellexec: " + firstTok );
+      //    (CcController::theController)->AddInterfaceCommand( "Going for shellexec: " + restLine );
+
       wxFileName fileToCheck = wxFileName(wxFileName::GetCwd(), firstTok);
-      
-      
-    
-    if ( fileToCheck.Exists() ) {
-      
 
-//      (CcController::theController)->AddInterfaceCommand( "Going for explorer select: " + firstTok );
-      HINSTANCE ex = ShellExecuteA( GetDesktopWindow(),
-                                   "open",
-                                   "explorer.exe",
-                                   tstring ( "/select,\"" + firstTok + "\"").c_str(),
-                                   NULL,
-                                   SW_SHOWNORMAL);
-
-    } else {
-      HINSTANCE ex = ShellExecuteA( GetDesktopWindow(),
-                                   "open",
-                                   firstTok.c_str(),
-                                   ( (bRest)? restLine.c_str() : NULL ),
-                                   NULL,
-                                   SW_SHOWNORMAL);
-
-      if ( (uintptr_t)ex == SE_ERR_NOASSOC )
+      if (fileToCheck.Exists())
       {
-        (CcController::theController)->AddInterfaceCommand( "File has no association. Retrying." );
-         ShellExecuteA( GetDesktopWindow(),
-                       "open",
-                       "rundll32.exe",
-                       tstring("shell32.dll,OpenAs_RunDLL "+firstTok).c_str(),
-                       NULL,
-                       SW_SHOWNORMAL);
+
+        //      (CcController::theController)->AddInterfaceCommand( "Going for explorer select: " + firstTok );
+        HINSTANCE ex = ShellExecuteA(GetDesktopWindow(),
+                                     "open",
+                                     "explorer.exe",
+                                     tstring("/select,\"" + firstTok + "\"").c_str(),
+                                     NULL,
+                                     SW_SHOWNORMAL);
       }
-      else if ( (uintptr_t)ex <= 32 )
+      else
       {
+        HINSTANCE ex = ShellExecuteA(GetDesktopWindow(),
+                                     "open",
+                                     firstTok.c_str(),
+                                     ((bRest) ? restLine.c_str() : NULL),
+                                     NULL,
+                                     SW_SHOWNORMAL);
 
-        (CcController::theController)->AddInterfaceCommand( "Could not launch Win process. Trying command prompt." );
-
-        tstring newparam = tstring("/c ")+firstTok+( (bRest) ? " " + restLine : "" ) ;
-        if ( IsWinNT() ) {
-           ShellExecuteA( GetDesktopWindow(),
-                       "open",
-                       "cmd.exe",
-                       newparam.c_str(),
-                       NULL,
-                       SW_SHOWNORMAL);
-      } else {
-
-        ShellExecuteA( GetDesktopWindow(),
-                       "open",
-                       "command.com",
-                       newparam.c_str(),
-                       NULL,
-                       SW_SHOWNORMAL);
-        }
-
-
-/*
-// Some other failure. Try another method of starting external programs.
-        extern int errno;
-        char * str = new char[257];
-        memcpy(str,line.substr(sFirst,line.length()-sFirst).c_str(),256);
-        *(str+256) = '\0';
-
-        char* args[10];       // This allows a maximum of 9 command line arguments
-
-        char seps[] = " \t";
-        char *token = strtok( str, seps );
-        args[0] = token;
-        for ( int i = 1; (( token != NULL ) && ( i < 10 )); i++ )
+        if ((uintptr_t)ex == SE_ERR_NOASSOC)
         {
-          token = strtok( NULL, seps );
-          args[i] = token;
+          (CcController::theController)->AddInterfaceCommand("File has no association. Retrying.");
+          ShellExecuteA(GetDesktopWindow(),
+                        "open",
+                        "rundll32.exe",
+                        tstring("shell32.dll,OpenAs_RunDLL " + firstTok).c_str(),
+                        NULL,
+                        SW_SHOWNORMAL);
         }
-
-        int result = _spawnvp(_P_WAIT, args[0], args);
-
-        if ( result == -1 )  //Start failed
+        else if ((uintptr_t)ex <= 32)
         {
-          for (int ij = 7; ij>=0; ij--)
+
+          (CcController::theController)->AddInterfaceCommand("Could not launch Win process. Trying command prompt.");
+
+          tstring newparam = tstring("/c ") + firstTok + ((bRest) ? " " + restLine : "");
+          if (IsWinNT())
           {
-             args[ij+2] = args[ij];
+            ShellExecuteA(GetDesktopWindow(),
+                          "open",
+                          "cmd.exe",
+                          newparam.c_str(),
+                          NULL,
+                          SW_SHOWNORMAL);
+          }
+          else
+          {
+
+            ShellExecuteA(GetDesktopWindow(),
+                          "open",
+                          "command.com",
+                          newparam.c_str(),
+                          NULL,
+                          SW_SHOWNORMAL);
           }
 
-          if ( IsWinNT() )
-            args[0] = "cmd.exe";
-          else
-            args[0] = "command.com" ;
+          /*
+          // Some other failure. Try another method of starting external programs.
+                  extern int errno;
+                  char * str = new char[257];
+                  memcpy(str,line.substr(sFirst,line.length()-sFirst).c_str(),256);
+                  *(str+256) = '\0';
 
-          args[1] = "/c";
-          result = _spawnvp(_P_WAIT, args[0], args);
+                  char* args[10];       // This allows a maximum of 9 command line arguments
 
-          ostringstream strstrm;
-          strstrm << "{I Failed yet again. Errno is:" << errno << ". Giving up.";
-          if ( result != 0 ) { TEXTOUT ( strstrm.str() ); }
+                  char seps[] = " \t";
+                  char *token = strtok( str, seps );
+                  args[0] = token;
+                  for ( int i = 1; (( token != NULL ) && ( i < 10 )); i++ )
+                  {
+                    token = strtok( NULL, seps );
+                    args[i] = token;
+                  }
+
+                  int result = _spawnvp(_P_WAIT, args[0], args);
+
+                  if ( result == -1 )  //Start failed
+                  {
+                    for (int ij = 7; ij>=0; ij--)
+                    {
+                       args[ij+2] = args[ij];
+                    }
+
+                    if ( IsWinNT() )
+                      args[0] = "cmd.exe";
+                    else
+                      args[0] = "command.com" ;
+
+                    args[1] = "/c";
+                    result = _spawnvp(_P_WAIT, args[0], args);
+
+                    ostringstream strstrm;
+                    strstrm << "{I Failed yet again. Errno is:" << errno << ". Giving up.";
+                    if ( result != 0 ) { TEXTOUT ( strstrm.str() ); }
+                  }
+                  delete [] str;
+          */
         }
-        delete [] str;
-*/
-    }
       }
-        }
+    }
     return exitcode;
 #endif
 
 #if defined(__WXGTK__) || defined(__WXMAC__)
-// Check if this might be a filename, and if so find application to
-// open it with.
+    // Check if this might be a filename, and if so find application to
+    // open it with.
 
     wxString fullname(firstTok.c_str());
     wxString path, name, extension, command;
-//    ::wxSplitPath(firstTok.c_str(),&path,&name,&extension);
-    wxFileName::SplitPath(firstTok.c_str(),&path,&name,&extension);
+    //    ::wxSplitPath(firstTok.c_str(),&path,&name,&extension);
+    wxFileName::SplitPath(firstTok.c_str(), &path, &name, &extension);
 
-    if(extension=="exe")
+    if (extension == "exe")
     {
-        if(not wxFileName::FileExists(firstTok.c_str()))
+      if (not wxFileName::FileExists(firstTok.c_str()))
+      {
+        // Trying without extension
+        string::size_type match = firstTok.find(".exe");
+        if (match != string::npos)
         {
-            // Trying without extension
-            string::size_type match = firstTok.find(".exe");
-            if ( match != string::npos )
-            {
-                tstring tempfile = firstTok.substr(0,match) + firstTok.substr(match+4);
-                firstTok = tempfile;
-                std::cerr << "\nGUEXEC: executable not found, trying without extension" << "\n";
-                wxFileName::SplitPath(firstTok.c_str(),&path,&name,&extension);
-            }
+          tstring tempfile = firstTok.substr(0, match) + firstTok.substr(match + 4);
+          firstTok = tempfile;
+          std::cerr << "\nGUEXEC: executable not found, trying without extension" << "\n";
+          wxFileName::SplitPath(firstTok.c_str(), &path, &name, &extension);
         }
+      }
     }
 
-    if(not extension.IsEmpty())
+    if (not extension.IsEmpty())
     {
-        wxFileType * filetype = wxTheMimeTypesManager->GetFileTypeFromExtension(extension);
+      wxFileType *filetype = wxTheMimeTypesManager->GetFileTypeFromExtension(extension);
 
-        if ( filetype && filetype->GetOpenCommand(&command, wxFileType::MessageParameters(fullname,_T("")) ) )
-        {
-            line = string(command.c_str()) + " " + line;
-            std::cerr << "\nGUEXEC: Found handler app: " << line.c_str() << "\n";
-        }
+      if (filetype && filetype->GetOpenCommand(&command, wxFileType::MessageParameters(fullname, _T(""))))
+      {
+        line = string(command.c_str()) + " " + line;
+        std::cerr << "\nGUEXEC: Found handler app: " << line.c_str() << "\n";
+      }
     }
-    if ( bWait )
+    if (bWait)
     {
-      (CcController::theController)->AddInterfaceCommand( "     {0,2 Waiting for {2,0 " + firstTok + " {0,2 to finish... ");
+      (CcController::theController)->AddInterfaceCommand("     {0,2 Waiting for {2,0 " + firstTok + " {0,2 to finish... ");
     }
-    else if ( bRedir )
+    else if (bRedir)
     {
-      (CcController::theController)->AddInterfaceCommand( "     {0,2 Starting {2,0 " + firstTok + " {0,2 interactively. ");
+      (CcController::theController)->AddInterfaceCommand("     {0,2 Starting {2,0 " + firstTok + " {0,2 interactively. ");
     }
     else
     {
-      (CcController::theController)->AddInterfaceCommand( "     {0,2 Starting {2,0 " + firstTok + " {0,2 ");
+      (CcController::theController)->AddInterfaceCommand("     {0,2 Starting {2,0 " + firstTok + " {0,2 ");
     }
 
     extern int errno;
-    char * cmd = new char[257];
-    memcpy(cmd,firstTok.c_str(),256);
-    *(cmd+256) = '\0';
+    char *cmd = new char[257];
+    memcpy(cmd, firstTok.c_str(), 256);
+    *(cmd + 256) = '\0';
 
-    char* args[10];       // This allows a maximum of 9 command line arguments
+    char *args[10]; // This allows a maximum of 9 command line arguments
     char buf[257];
     size_t i, argc;
     char *argv[9];
 
     strncpy(buf, restLine.c_str(), 256);
-    buf[257]='\0';
+    buf[257] = '\0';
     argc = split(buf, argv, 9);
-    //printf("input: '%s'\n", buf);
+    // printf("input: '%s'\n", buf);
     args[0] = cmd;
     for (i = 0; i < argc; i++)
     {
-        args[i+1]=argv[i];
-        //printf("[%u] '%s'\n", i, argv[i]);
+      args[i + 1] = argv[i];
+      // printf("[%u] '%s'\n", i, argv[i]);
     }
-    args[argc+1]=NULL;
+    args[argc + 1] = NULL;
 
-    if ( bRedir )
+    if (bRedir)
     {
       int ftoChild[2];
       int ftoParent[2];
 
-      if ( pipe(ftoChild) < 0 ) {
+      if (pipe(ftoChild) < 0)
+      {
         std::cerr << "GUEXEC: Pipe 1 failed: " << "\n";
-        delete [] cmd;
+        delete[] cmd;
         return -1;
       }
-      if ( pipe(ftoParent) < 0 ) {
+      if (pipe(ftoParent) < 0)
+      {
         std::cerr << "GUEXEC: Pipe 2 failed: " << "\n";
         close(ftoChild[0]);
         close(ftoChild[1]);
-        delete [] cmd;
+        delete[] cmd;
         return -1;
       }
-      if ( fcntl(ftoParent[0],F_SETFL,O_NONBLOCK) == -1 ) {
+      if (fcntl(ftoParent[0], F_SETFL, O_NONBLOCK) == -1)
+      {
         std::cerr << "GUEXEC: Pipe 2 switch to Non-blocking failed: " << "\n";
         close(ftoParent[0]);
         close(ftoParent[1]);
         close(ftoChild[0]);
         close(ftoChild[1]);
-        delete [] cmd;
+        delete[] cmd;
         return -1;
       }
 
       int fd;
       pid_t pid = fork();
 
-      if ( pid == 0 ) {          //We're in the child process.
-       close(ftoChild[1]);
-       close(ftoParent[0]);
-       if ( dup2(ftoChild[0],  0) < 0 ) {
-         std::cerr << "\nGUEXEC: Child. Failed to dup2 to stdin...\n";
-       }
-       close(ftoChild[0]);
-       if ( dup2(ftoParent[1], 1) < 0 ) {
-         std::cerr << "\nGUEXEC: Child. Failed to dup2 to stdout...\n";
-       }
-       if ( dup2(ftoParent[1], 2) < 0 ) {
-         std::cerr << "\nGUEXEC: Child. Failed to dup2 to stderr...\n";
-       }
-       close(ftoParent[1]);
+      if (pid == 0)
+      { // We're in the child process.
+        close(ftoChild[1]);
+        close(ftoParent[0]);
+        if (dup2(ftoChild[0], 0) < 0)
+        {
+          std::cerr << "\nGUEXEC: Child. Failed to dup2 to stdin...\n";
+        }
+        close(ftoChild[0]);
+        if (dup2(ftoParent[1], 1) < 0)
+        {
+          std::cerr << "\nGUEXEC: Child. Failed to dup2 to stdout...\n";
+        }
+        if (dup2(ftoParent[1], 2) < 0)
+        {
+          std::cerr << "\nGUEXEC: Child. Failed to dup2 to stderr...\n";
+        }
+        close(ftoParent[1]);
 
-       std::cerr << "\nGUEXEC: Child. Execing...\n";
-       int err = execvp( args[0], args );
-       std::cerr << "GUEXEC: Something went wrong: " << err <<"\n";
-       std::cerr << "GUEXEC: ERRNO: "<< errno << "\n";
-       _exit(-1);
+        std::cerr << "\nGUEXEC: Child. Execing...\n";
+        int err = execvp(args[0], args);
+        std::cerr << "GUEXEC: Something went wrong: " << err << "\n";
+        std::cerr << "GUEXEC: ERRNO: " << errno << "\n";
+        _exit(-1);
       }
 
-// We're in the parent process
+      // We're in the parent process
       close(ftoChild[0]);
       close(ftoParent[1]);
       std::cerr << "GUEXEC: Parent.\n";
 
-      unsigned long exit=0;  //process exit code
-      unsigned long bread;   //bytes read
-      unsigned long avail;   //bytes available
+      unsigned long exit = 0; // process exit code
+      unsigned long bread;    // bytes read
+      unsigned long avail;    // bytes available
 
-// Disable all menus etc.
-      CcController::theController->AddInterfaceCommand( "^^ST STATSET IN");
-      CcController::theController->AddInterfaceCommand( "^^CR");
+      // Disable all menus etc.
+      CcController::theController->AddInterfaceCommand("^^ST STATSET IN");
+      CcController::theController->AddInterfaceCommand("^^CR");
       CcController::theController->m_AllowThreadKill = false;
 
-      char buf[1024];           //i/o buffer
+      char buf[1024]; // i/o buffer
       BZERO(buf);
-      for(;;)      //main program loop
+      for (;;) // main program loop
       {
         int bread = -1;
         string partial;
         partial = "";
-        while ( 1 )
+        while (1)
         {
           BZERO(buf);
-          bread = read(ftoParent[0],buf,1023);  //read the stdout pipe
-          if ( bread <= 0 ) break;
+          bread = read(ftoParent[0], buf, 1023); // read the stdout pipe
+          if (bread <= 0)
+            break;
           string s(buf);
           string::size_type i, j;
 
           i = s.find_first_of("{");
-          while(i!=string::npos)
+          while (i != string::npos)
           {
             s.insert(i, 1, '\\');
-            i = s.find("{", i+2);
+            i = s.find("{", i + 2);
           }
 
           // appending from last partial line
           s = partial + s;
 
-          for(;;) {
+          for (;;)
+          {
 
             i = s.find_first_of("\r");
-            while(i!=string::npos)
+            while (i != string::npos)
             {
-              if(i!=string::npos and s.substr(i+1,1)=="\n") // eol is \r\n, changing to \n only
+              if (i != string::npos and s.substr(i + 1, 1) == "\n") // eol is \r\n, changing to \n only
               {
-                s.erase(i,1);
+                s.erase(i, 1);
               }
 
               i = s.find_first_of("\r");
               j = s.find_first_of("\n");
-              if(i!=string::npos and j!=string::npos and i<j)
+              if (i != string::npos and j != string::npos and i < j)
               {
                 // found a \r before \n
                 // deleting the content before \r (the following text would be overwritting it on the terminal)
-                s.erase(0,i+1);
+                s.erase(0, i + 1);
               }
-              if(i!=string::npos and j!=string::npos and j<i)
+              if (i != string::npos and j != string::npos and j < i)
               {
                 // There is a \r but on the next line, ignoring
                 break;
               }
-              if(i!=string::npos and j==string::npos)
+              if (i != string::npos and j == string::npos)
               {
                 // partial string, no end of line
-                partial=s;
+                partial = s;
                 break;
               }
               i = s.find_first_of("\r");
             }
 
             string::size_type strim = s.find_first_of("\n");
-            if ( strim == string::npos )
+            if (strim == string::npos)
             {
-              //CcController::theController->AddInterfaceCommand("{0,1 " + s);
-              //no end of line
-              partial=s;
+              // CcController::theController->AddInterfaceCommand("{0,1 " + s);
+              // no end of line
+              partial = s;
               break;
             }
-            CcController::theController->AddInterfaceCommand("{0,1 " + s.substr(0,strim));
-            s.erase(0,strim+1);
+            CcController::theController->AddInterfaceCommand("{0,1 " + s.substr(0, strim));
+            s.erase(0, strim + 1);
           }
           BZERO(buf);
         }
 
-
         int status;
-        if ( waitpid(pid, &status, WNOHANG) != 0 ) {
-          std::cerr << "GUEXEC: Detected child process exited\n" ;
-          if ( WIFEXITED(status) ) {
+        if (waitpid(pid, &status, WNOHANG) != 0)
+        {
+          std::cerr << "GUEXEC: Detected child process exited\n";
+          if (WIFEXITED(status))
+          {
             exitcode = WEXITSTATUS(status);
-            (CcController::theController)->AddInterfaceCommand( "     {0,2 Process has exited. ");
-          } else {  //abnormal termination (no exit code)
-            (CcController::theController)->AddInterfaceCommand( "{0,2 Abnormal program termination.");
+            (CcController::theController)->AddInterfaceCommand("     {0,2 Process has exited. ");
+          }
+          else
+          { // abnormal termination (no exit code)
+            (CcController::theController)->AddInterfaceCommand("{0,2 Abnormal program termination.");
             exitcode = -1;
           }
           break;
         }
 
-
         bool wait = false;
 
-        (CcController::theController)->GetCrystalsCommand(*&buf,wait);
-        if ( wait ) {
-           string s(buf);
-           s.erase(s.find_last_not_of(" ")+1,s.length());
-           if ( s.substr(0,11) == "_MAIN CLOSE" )
-           {
-             UINT uexit=0;
-             kill(pid,9);
-             CcController::theController->AddInterfaceCommand("{0,2 Process terminated.");
-             break;
-           }
-           CcController::theController->AddInterfaceCommand("{0,1 " + s);
-           write(ftoChild[1],s.c_str(),s.length()); //send it to stdin
-           write(ftoChild[1],"\n",1); //send an extra newline char
+        (CcController::theController)->GetCrystalsCommand(*&buf, wait);
+        if (wait)
+        {
+          string s(buf);
+          s.erase(s.find_last_not_of(" ") + 1, s.length());
+          if (s.substr(0, 11) == "_MAIN CLOSE")
+          {
+            UINT uexit = 0;
+            kill(pid, 9);
+            CcController::theController->AddInterfaceCommand("{0,2 Process terminated.");
+            break;
+          }
+          CcController::theController->AddInterfaceCommand("{0,1 " + s);
+          write(ftoChild[1], s.c_str(), s.length()); // send it to stdin
+          write(ftoChild[1], "\n", 1);               // send an extra newline char
         }
-
       }
 
-// Reenable all menus
-      CcController::theController->AddInterfaceCommand( "^^ST STATUNSET IN");
-      CcController::theController->AddInterfaceCommand( "^^CR");
+      // Reenable all menus
+      CcController::theController->AddInterfaceCommand("^^ST STATUNSET IN");
+      CcController::theController->AddInterfaceCommand("^^CR");
       CcController::theController->m_AllowThreadKill = true;
     }
     else
@@ -4031,78 +4166,76 @@ extern "C" {
 
       pid_t pid = fork();
 
-      if ( pid == 0 ) {          //We're in the child process.
-       std::cerr << "\nGUEXEC: Child. Execing...\n";
-       int err = execvp( args[0], args );
-       std::cerr << "GUEXEC: Arg 0 was: " << args[0] << "\n";
-       std::cerr << "GUEXEC: Something went wrong: " << err <<"\n";
-       std::cerr << "GUEXEC: ERRNO: "<< errno << "\n";
-       _exit(-1);
+      if (pid == 0)
+      { // We're in the child process.
+        std::cerr << "\nGUEXEC: Child. Execing...\n";
+        int err = execvp(args[0], args);
+        std::cerr << "GUEXEC: Arg 0 was: " << args[0] << "\n";
+        std::cerr << "GUEXEC: Something went wrong: " << err << "\n";
+        std::cerr << "GUEXEC: ERRNO: " << errno << "\n";
+        _exit(-1);
       }
-// We're in the parent process
+      // We're in the parent process
 
       std::cerr << "GUEXEC: Parent.\n";
 
-      if ( bWait )
+      if (bWait)
       {
-          int child_status;
-          std::cerr << "\n\nGUEXEC: Parent. Waiting.\n";
-          waitpid(pid,&child_status,0);
+        int child_status;
+        std::cerr << "\n\nGUEXEC: Parent. Waiting.\n";
+        waitpid(pid, &child_status, 0);
 
-          if ( WIFEXITED(child_status) ) {
+        if (WIFEXITED(child_status))
+        {
 
-            exitcode = WEXITSTATUS(child_status);
-            (CcController::theController)->AddInterfaceCommand( "                                                               {0,2 ... Done");
+          exitcode = WEXITSTATUS(child_status);
+          (CcController::theController)->AddInterfaceCommand("                                                               {0,2 ... Done");
+        }
+        else
+        { // abnormal termination (no exit code)
 
-          } else {  //abnormal termination (no exit code)
-
-            (CcController::theController)->AddInterfaceCommand( "{0,2 Abnormal program termination.");
-            exitcode = -1;
-          }
-
-
+          (CcController::theController)->AddInterfaceCommand("{0,2 Abnormal program termination.");
+          exitcode = -1;
+        }
       }
       std::cerr << "\n\nGUEXEC: Done.\n";
-
     }
 
-    delete [] cmd;
+    delete[] cmd;
     return exitcode;
 #endif
   }
 
-  void cinextcommand ( long *theStatus, char *theLine )
+  void cinextcommand(long *theStatus, char *theLine)
   {
-      NOTUSED(theStatus);
-      bool temp = true;
-      if((CcController::theController)->GetCrystalsCommand( theLine, temp ))
-      {
-          int ilen = strlen(theLine);
+    NOTUSED(theStatus);
+    bool temp = true;
+    if ((CcController::theController)->GetCrystalsCommand(theLine, temp))
+    {
+      int ilen = strlen(theLine);
 
-          for (int j = ilen; j<256; j++)   //Pad with blanks.
-          {
-              *(theLine + j) = ' ';
-          }
-//          *(theLine+255) = '\0'; /Fortran does not need null terminated strings.
-
-      }
-      else
+      for (int j = ilen; j < 256; j++) // Pad with blanks.
       {
-         CcController::theController->endthread ( 0 );
+        *(theLine + j) = ' ';
       }
+      //          *(theLine+255) = '\0'; /Fortran does not need null terminated strings.
+    }
+    else
+    {
+      CcController::theController->endthread(0);
+    }
   }
 
-  void    ciendthread (long theExitcode )
+  void ciendthread(long theExitcode)
   {
-// Scope this bit or it appears to leak a tiny bit of memory.
-       {
-         ostringstream strstrm;
-         strstrm << "Thread ends1. Exit code is: " << theExitcode ;
-         LOGSTAT (strstrm.str());
-       }
-       CcController::theController->endthread ( theExitcode );
+    // Scope this bit or it appears to leak a tiny bit of memory.
+    {
+      ostringstream strstrm;
+      strstrm << "Thread ends1. Exit code is: " << theExitcode;
+      LOGSTAT(strstrm.str());
+    }
+    CcController::theController->endthread(theExitcode);
   }
-
 
 #ifdef CRY_OSWIN32
   bool IsWinNT()
@@ -4110,76 +4243,78 @@ extern "C" {
     OSVERSIONINFO o;
     o.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
     GetVersionEx(&o);
-    return ( o.dwPlatformId == VER_PLATFORM_WIN32_NT );
+    return (o.dwPlatformId == VER_PLATFORM_WIN32_NT);
   }
 #endif
 } // end of C functions
 
-
-
 // Functions that are called from the CRYSTALS thread:
-bool CcController::GetCrystalsCommand( char * line, bool & bGuexec )
+bool CcController::GetCrystalsCommand(char *line, bool &bGuexec)
 //-----------------------------------------------------
 {
-//This is where the Crystals thread will spend most of its time.
-//Waiting for the user to do somethine.
-    if (mThisThreadisDead) return false;
-        string tNextCommand;
+  // This is where the Crystals thread will spend most of its time.
+  // Waiting for the user to do somethine.
+  if (mThisThreadisDead)
+    return false;
+  string tNextCommand;
 
-    strcpy( line, "" );
-    if ( bGuexec )
-        try
-        {
-            tNextCommand = mCrystalsCommandDeq.pop_front();
-        }
-        catch (const exception& e)
-        {
-
-            std::cerr << "This shouldn't have happened. " << e.what() << endl;
-        }
-    else
+  strcpy(line, "");
+  if (bGuexec)
+    try
     {
-        try
-        {
-            tNextCommand = mCrystalsCommandDeq.pop_front(200);
-            bGuexec = true;
-        }
-        catch (const semaphore_timeout& e)
-        {
-            bGuexec = false;
-            return true;
-        }
+      tNextCommand = mCrystalsCommandDeq.pop_front();
     }
-    strcpy( line, tNextCommand.c_str());
-      LOGSTAT("-----------Crystals thread: Got command: "+ string(line));
-  if (mThisThreadisDead) return false;
+    catch (const exception &e)
+    {
+
+      std::cerr << "This shouldn't have happened. " << e.what() << endl;
+    }
+  else
+  {
+    try
+    {
+      tNextCommand = mCrystalsCommandDeq.pop_front(200);
+      bGuexec = true;
+    }
+    catch (const semaphore_timeout &e)
+    {
+      bGuexec = false;
+      return true;
+    }
+  }
+  strcpy(line, tNextCommand.c_str());
+  LOGSTAT("-----------Crystals thread: Got command: " + string(line));
+  if (mThisThreadisDead)
+    return false;
   return (true);
 }
 
-std::string GetExePath() {
+std::string GetExePath()
+{
 #ifdef CRY_OSLINUX
   // Code taken from: http://www.gamedev.net/community/forums/topic.asp?topic_id=459511
   std::string path = "";
   pid_t pid = getpid();
   char buf[20] = {0};
-  sprintf(buf,"%d",pid);
+  sprintf(buf, "%d", pid);
   std::string _link = "/proc/";
-  _link.append( buf );
-  _link.append( "/exe");
+  _link.append(buf);
+  _link.append("/exe");
   char proc[512];
-  int ch = readlink(_link.c_str(),proc,512);
-  if (ch != -1) {
+  int ch = readlink(_link.c_str(), proc, 512);
+  if (ch != -1)
+  {
     proc[ch] = 0;
     path = proc;
     std::string::size_type t = path.find_last_of("/");
-    path = path.substr(0,t);
+    path = path.substr(0, t);
   }
 
   std::string crysdir = path + string("/");
   return crysdir;
 #else
   std::string pathsep = string(wxString(wxFileName::GetPathSeparator()).ToStdString());
-  std::string crysdir = wxStandardPaths::Get().GetDataDir().ToStdString() + pathsep + "," + wxStandardPaths::Get().GetUserDataDir().ToStdString() + pathsep + "," + wxStandardPaths::Get().GetConfigDir().ToStdString() + pathsep ;
+  std::string crysdir = wxStandardPaths::Get().GetDataDir().ToStdString() + pathsep + "," + wxStandardPaths::Get().GetUserDataDir().ToStdString() + pathsep + "," + wxStandardPaths::Get().GetConfigDir().ToStdString() + pathsep;
   return crysdir;
 #endif
 }

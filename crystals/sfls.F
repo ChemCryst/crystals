@@ -2634,10 +2634,14 @@ c          IF (STORE(M6+20) .GE. RALL(13)) THEN      ! user-sigma
       
       ! put back right hand side into original storage
       if(sfls_sp_normalm<1) then
-        str11(l11r:l11R+n11r-1)=righthandside
+        if (l11r>0) then
+          str11(l11r:l11R+n11r-1)=righthandside
+        end if
         deallocate(righthandside)
       else
-        str11(l11r:l11R+n11r-1)=righthandside_sp
+        if (l11r>0) then
+          str11(l11r:l11R+n11r-1)=righthandside_sp
+        end if
         deallocate(righthandside_sp)
       end if
 
