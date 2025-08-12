@@ -10590,7 +10590,7 @@ c If risk of overflow, stop accululating. Results will be nonsense anyway.
            end if
            if ( a(5) .lt. 1.0E32 ) then
               a(5) = a(5) + Y*Y
-           emd if
+           end if
            if ( a(6) .lt. 1.0E32 ) then
               a(6) = a(6) + X*Y
            endif
