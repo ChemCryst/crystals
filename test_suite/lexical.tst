@@ -17,6 +17,10 @@ ueqiv 1.0 C(*)
 end
 \ rigu restraint
 \list 16
+xrigu *(*)
+xrigu *  (*)
+xrigu * ( *  , part=1)
+xrigu * ( *  , resi=1)
 xrigu C(*)
 Xrigu 0.04 0.0 C(*)
 end
@@ -33,5 +37,4 @@ uqiso 0.01 C(128) C(2, 128)
 \end
 \ everything here is ignored because of the error above
 \finish
-
 
