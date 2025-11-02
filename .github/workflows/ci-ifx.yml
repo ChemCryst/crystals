@@ -143,11 +143,13 @@ jobs:
     
     - name: Get short SHA of commit
       id: vars
+      shell: cmd
       run: |
         echo "sha_short=$(git rev-parse --short HEAD)" 
         echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
     - name: Check outputs
+      shell: cmd
       run: |
         echo SHA: ${{ steps.vars.outputs.sha_short }} 
         echo Major: ${{ steps.version.outputs.major }} Minor: ${{ steps.version.outputs.minor }}
