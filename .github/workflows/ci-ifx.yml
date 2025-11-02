@@ -143,10 +143,10 @@ jobs:
     
     - name: Get short SHA of commit
       id: vars
-      shell: cmd
+      shell: pwsh
       run: |
         echo "sha_short=$(git rev-parse --short HEAD)" 
-        echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+        echo "sha_short=$(git rev-parse --short HEAD)" >> $env:GITHUB_OUTPUT
 
     - name: Check outputs
       shell: cmd
