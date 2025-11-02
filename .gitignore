@@ -133,3 +133,4 @@ test_suite/*.job
 gitstat.int
 gitstat.bat
 /e
+/bb

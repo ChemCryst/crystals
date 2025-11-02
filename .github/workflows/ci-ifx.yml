@@ -143,7 +143,9 @@ jobs:
     
     - name: Get short SHA of commit
       id: vars
-      run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+      run: |
+        echo "sha_short=$(git rev-parse --short HEAD)" 
+        echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
     - name: Check outputs
       run: |
@@ -283,7 +285,7 @@ jobs:
         ${{ matrix.removeguitst }}
         mkdir script
         echo "%SCRIPT NONE" > script\\tipauto.scp
-        echo "%END SCRIPT" >> script\\tipauto.scp
+        echo "%END SCRIPT" >> script\\tipauto.scp 
         echo "%SCRIPT NONE" > script\\guideauto.scp
         echo "%END SCRIPT" >> script\\guideauto.scp
         perl ../editor/filepp.pl -ds -w -o diffin.tst -DTESTWIN diffin.tss
