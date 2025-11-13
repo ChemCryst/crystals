@@ -696,7 +696,7 @@ contains
       if (present(punch)) then
         write (reflections_unit, '(''];'')')
         close (reflections_unit)
-        design_unit = 0
+        reflections_unit = 0
         return
       end if
 
@@ -1640,7 +1640,7 @@ contains
     end if
 
     close (leverage_unit)
-    design_unit = 0
+    leverage_unit = 0
 
     write (cmon, '(A,A)') '{I Leverages written in file: ', trim(file_name)
     call xprvdu(ncvdu, 1, 0)
