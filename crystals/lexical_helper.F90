@@ -52,6 +52,8 @@ module lexical_mod
     integer :: bond !< type of bond when used in pairs
     integer :: part !< part number
     integer :: resi !< residue number
+    integer :: error !< error code (0 = no error)
+    character(len=16) :: suffix !< text found after the atom definition
   contains
     procedure :: init => init_atom !< initialise object
     procedure :: text => atom_text !< pretty print
@@ -80,7 +82,7 @@ module lexical_mod
   integer savedl5, savedn5, savedmd5
   integer savedl41b, savedmd41b, savedn41b
 
-  real, dimension(:), allocatable :: l5store, l41store !< local copy of l5 and l41 in store
+  real, dimension(:), allocatable :: l5store, l41store !< local copy of l2, l5 and l41 in store
 
   public lexical_preprocessing, lexical_list_init, lexical_print_changes
 
@@ -96,7 +98,7 @@ contains
     integer, dimension(idim05) :: icom05
     integer, parameter :: idim41 = 16
     integer, dimension(idim41) :: icom41
-    integer n0old, nflold, nulold, lflold, i
+    integer n0old, nflold, nulold, lflold
 
     integer, external :: kexist
 
@@ -115,7 +117,7 @@ contains
     lexical_var_list_index = 0
     list16_modified = .false.
 
-    if (kexist(41) .gt. 0 .and. kexist(5) .gt. 0) then
+    if (kexist(41) > 0 .and. kexist(5) > 0) then
       ! load list 5 and 41 and save their adresses
       ! Their existence from other subroutines is wiped out to avoid side effects
       n0old = n0
@@ -128,7 +130,7 @@ contains
       if (n0old /= n0) then
         ! a new record has been added
         if (n0 > 1) then
-          n0 = n0-1
+          n0 = n0 - 1
         else
           n0 = 0
           l0 = -1000000
@@ -142,7 +144,7 @@ contains
       savedmd5 = icom05(3)
 
       allocate (l5store(savedn5*savedmd5))
-      l5store = store(savedl5:savedl5+savedn5*savedmd5-1)
+      l5store = store(savedl5:savedl5 + savedn5*savedmd5 - 1)
       savedl5 = 1
 
       n0old = n0
@@ -152,7 +154,7 @@ contains
       if (n0old /= n0) then
         ! a new record has been added
         if (n0 > 1) then
-          n0 = n0-1
+          n0 = n0 - 1
         else
           n0 = 0
           l0 = -1000000
@@ -166,7 +168,7 @@ contains
       savedn41b = icom41(4)
 
       allocate (l41store(savedn41b*savedmd41b))
-      l41store = store(savedl41b:savedl41b+savedn41b*savedmd41b-1)
+      l41store = store(savedl41b:savedl41b + savedn41b*savedmd41b - 1)
       savedl41b = 1
 
       nfl = nflold
@@ -202,13 +204,13 @@ contains
     end if
 
     ! update index and allocate/etend storage if necessary
-    lexical_list_index = lexical_list_index+1
+    lexical_list_index = lexical_list_index + 1
     if (.not. allocated(lexical_list)) then
       allocate (lexical_list(128))
     end if
     if (lexical_list_index > size(lexical_list)) then
       call move_alloc(lexical_list, lexical_temp)
-      allocate (lexical_list(size(lexical_temp)+128))
+      allocate (lexical_list(size(lexical_temp) + 128))
       lexical_list(1:size(lexical_temp)) = lexical_temp
     end if
 
@@ -233,7 +235,7 @@ contains
 
     if (image_text(1:4) == 'REM ') then
       ! ignore comments
-      associate (restraint=>lexical_list(lexical_list_index))
+      associate (restraint => lexical_list(lexical_list_index))
         allocate (character(len=len_trim(image_text)) :: restraint%processed)
         restraint%processed = trim(image_text)
       end associate
@@ -245,7 +247,7 @@ contains
 
     ! check atoms
     call check_atom(image_text, ierror)
-! check_atom just prints warnings at the parsing stage. Erroring here prevents input of L16 
+! check_atom just prints warnings at the parsing stage. Erroring here prevents input of L16
 ! which wipes the whole list. Restraint will be ignored in processing.
 !    if (ierror /= 0) return
 
@@ -274,7 +276,7 @@ contains
     call expand_rigu(image_text, ierror, changesub)
     change = change .or. changesub
 
-    associate (restraint=>lexical_list(lexical_list_index))
+    associate (restraint => lexical_list(lexical_list_index))
       allocate (character(len=len_trim(image_text)) :: restraint%processed)
       restraint%processed = trim(image_text)
 
@@ -288,7 +290,6 @@ contains
         image_text = restraint%original
       end if
     end associate
-
   end subroutine
 
   !> Split a string into different pieces given a separator. Defaul separator is space.
@@ -322,15 +323,26 @@ contains
     end if
 
     n = count_char(trim(line), sep, greedy)
-    allocate (elements(n+1))
+
+    if (n == 0) then
+      allocate (elements(1))
+      elements(1) = line
+      if (present(fieldpos)) then
+        allocate (fieldpos(1))
+        fieldpos(1) = 0
+      end if
+      return
+    end if
+
+    allocate (elements(n + 1))
     if (present(fieldpos)) then
-      allocate (fieldpos(n+1))
+      allocate (fieldpos(n + 1))
     end if
 
     start = 1
     if (greedy) then
       do while (line(start:start) == sep)
-        start = start+1
+        start = start + 1
       end do
     end if
 
@@ -342,7 +354,7 @@ contains
     do i = start, len_trim(line)
       if (line(i:i) == sep) then
         if (greedy .and. i > 1) then
-          if (line(i-1:i-1) == sep) then
+          if (line(i - 1:i - 1) == sep) then
             cycle
           end if
         end if
@@ -350,12 +362,12 @@ contains
         if (present(fieldpos)) then
           fieldpos(k) = bufferpos
         end if
-        k = k+1
+        k = k + 1
         j = 0
         bufferlabel = ''
         cycle
       end if
-      j = j+1
+      j = j + 1
       if (j > lenstring) then
         call print_to_mon('{E Programming error: len too short for elements in explode (lexical_helper.F90)')
         cycle
@@ -380,37 +392,48 @@ contains
       n = 0
       do j = 1, len_trim(elements(i))
         if (elements(i) (j:j) == '(') then
-          n = n+1
+          n = n + 1
         else if (elements(i) (j:j) == ')') then
-          n = n-1
+          n = n - 1
         end if
       end do
       if (n /= 0 .and. i < size(elements)) then
         ! found unbalanced parenthesis, merging next field
-        maxel = maxel-1
-        elements(i) = trim(elements(i))//trim(elements(i+1))
-        elements(i+1:maxel) = elements(i+2:maxel+1)
+        maxel = maxel - 1
+        elements(i) = trim(elements(i))//trim(elements(i + 1))
+        elements(i + 1:maxel) = elements(i + 2:maxel + 1)
         if (present(fieldpos)) then
-          fieldpos(i+1:maxel) = fieldpos(i+2:maxel+1)
+          fieldpos(i + 1:maxel) = fieldpos(i + 2:maxel + 1)
         end if
         cycle
       end if
-      i = i+1
+      i = i + 1
     end do
     if (maxel < size(elements)) then
-      call move_alloc(elements, temp)
-      allocate (elements(maxel))
-      elements = temp(1:maxel)
-      if (present(fieldpos)) then
-        call move_alloc(fieldpos, fieldpostemp)
-        allocate (fieldpos(maxel))
-        fieldpos = fieldpostemp(1:maxel)
+      if (maxel == 0) then
+        deallocate (elements)
+        allocate (elements(1))
+        elements(1) = line
+        if (present(fieldpos)) then
+          deallocate (fieldpos)
+          allocate (fieldpos(1))
+          fieldpos = 0
+        end if
+      else
+        call move_alloc(elements, temp)
+        allocate (elements(maxel))
+        elements = temp(1:maxel)
+        if (present(fieldpos)) then
+          call move_alloc(fieldpos, fieldpostemp)
+          allocate (fieldpos(maxel))
+          fieldpos = fieldpostemp(1:maxel)
+        end if
       end if
     end if
   end subroutine
 
   !> count the number of a character, option to count consecutive ones as one.
-  !! if greedy is set, separators at begining of line are ignored
+  !! if greedy is set, separators at begining of line are ignored and contiguous separators ignored
   function count_char(line, c, greedy) result(cpt)
     implicit none
     character(len=*), intent(in) :: line !< text to process
@@ -424,7 +447,7 @@ contains
     if (greedy) then
       i = 1
       do while (line(i:i) == c)
-        i = i+1
+        i = i + 1
       end do
       start = i
     else
@@ -435,12 +458,12 @@ contains
       if (line(i:i) == c) then
         if (greedy) then
           if (i > 1) then
-            if (line(i-1:i-1) /= c) then
-              cpt = cpt+1
+            if (line(i - 1:i - 1) /= c) then
+              cpt = cpt + 1
             end if
           end if
         else
-          cpt = cpt+1
+          cpt = cpt + 1
         end if
       end if
     end do
@@ -470,7 +493,7 @@ contains
       return
     end if
 
-    do m41b = savedl41b, savedl41b+(savedn41b-1)*savedmd41b, savedmd41b
+    do m41b = savedl41b, savedl41b + (savedn41b - 1)*savedmd41b, savedmd41b
       bond_atoms = load_atom_from_l41(m41b)
       call left%init()
       call right%init()
@@ -478,16 +501,16 @@ contains
       do i = 1, size(atoms)
         !print *, i, atoms(i)%text()
         if (trim(atoms(i)%label) == trim(bond_atoms(1)%label)) then
-          if (atoms(i)%serial == -1) then
+          if (atoms(i)%serial == huge(0)) then
             ! found one side
-            if (left%serial == -1 .and. right%ref /= i) then
+            if (left%serial == huge(0) .and. right%ref /= i) then
               ! left has not been assigned yet atom(i) is not used in right
               left = bond_atoms(1)
               left%ref = i
               !print *, 'l ', left%ref, right%ref, left%text(), right%text()
             end if
           else
-            if (atoms(i) == bond_atoms(1) .and. left%serial == -1 .and. right%ref /= i) then
+            if (atoms(i) == bond_atoms(1) .and. left%serial == huge(0) .and. right%ref /= i) then
               ! left has not been assigned yet atom(i) is not used in right
               left = bond_atoms(1)
               left%ref = i
@@ -497,16 +520,16 @@ contains
         end if
 
         if (trim(atoms(i)%label) == trim(bond_atoms(2)%label)) then
-          if (atoms(i)%serial == -1) then
+          if (atoms(i)%serial == huge(0)) then
             ! found the other side
-            if (right%serial == -1 .and. left%ref /= i) then
+            if (right%serial == huge(0) .and. left%ref /= i) then
               ! right has not been assigned yet atom(i) is not used in left
               right = bond_atoms(2)
               right%ref = i
               !print *, 'r ', left%ref, right%ref, left%text(), right%text()
             end if
           else
-            if (atoms(i) == bond_atoms(2) .and. right%serial == -1 .and. left%ref /= i) then
+            if (atoms(i) == bond_atoms(2) .and. right%serial == huge(0) .and. left%ref /= i) then
               ! right has not been assigned yet atom(i) is not used in left
               right = bond_atoms(2)
               right%ref = i
@@ -517,7 +540,7 @@ contains
       end do
       !print *, 'e ', left%ref, right%ref, left%text(), right%text()
 
-      if (left%ref /= -1 .and. right%ref /= -1) then
+      if (left%ref /= huge(0) .and. right%ref /= huge(0)) then
         if (present(bond_type)) then
           if (bond_type /= size(bond_list_definition)) then ! last bond type is any type
             if (bond_type /= left%bond .or. bond_type /= right%bond) then
@@ -527,7 +550,7 @@ contains
           end if
         end if
 
-        pair_index = pair_index+1
+        pair_index = pair_index + 1
         if (pair_index > ubound(pairs_temp, 2)) then
           call move_alloc(pairs_temp, pairs)
           allocate (pairs_temp(2, size(pairs)))
@@ -574,14 +597,14 @@ contains
       do i = 1, size(atoms)
         if (atoms(i)%label == connectivity_13(1, j)%label) then
           !print *, 'left ', atoms(i)%text()
-          if (atoms(i)%serial == -1) then
+          if (atoms(i)%serial == huge(0)) then
             ! found one side
-            if (left%serial == -1 .and. right%ref /= i) then
+            if (left%serial == huge(0) .and. right%ref /= i) then
               ! left has not been assigned yet atom(i) is not used in right
               left = connectivity_13(1, j)
               left%ref = i
             end if
-          else if (atoms(i) == connectivity_13(1, j) .and. left%serial == -1 .and. right%ref /= i) then
+          else if (atoms(i) == connectivity_13(1, j) .and. left%serial == huge(0) .and. right%ref /= i) then
             left = connectivity_13(1, j)
             left%ref = i
           end if
@@ -589,22 +612,22 @@ contains
 
         if (trim(atoms(i)%label) == connectivity_13(3, j)%label) then
           !print *, 'right ', atoms(i)%text()
-          if (atoms(i)%serial == -1) then
+          if (atoms(i)%serial == huge(0)) then
             ! found the other side
-            if (right%serial == -1 .and. left%ref /= i) then
+            if (right%serial == huge(0) .and. left%ref /= i) then
               ! right has not been assigned yet atom(i) is not used in left
               right = connectivity_13(3, j)
               right%ref = i
             end if
-          else if (atoms(i) == connectivity_13(3, j) .and. left%serial == -1 .and. right%ref /= i) then
+          else if (atoms(i) == connectivity_13(3, j) .and. left%serial == huge(0) .and. right%ref /= i) then
             right = connectivity_13(3, j)
             right%ref = i
           end if
         end if
       end do
 
-      if (left%ref /= -1 .and. right%ref /= -1) then
-        pair_index = pair_index+1
+      if (left%ref /= huge(0) .and. right%ref /= huge(0)) then
+        pair_index = pair_index + 1
         if (pair_index > ubound(pairs_temp, 2)) then
           call move_alloc(pairs_temp, pairs)
           allocate (pairs_temp(2, size(pairs)))
@@ -639,16 +662,16 @@ contains
     allocate (connectivity_13_temp(3, 128))
     connectivity_13_index = 0
 
-    do m41b_1 = savedl41b, savedl41b+(savedn41b-1)*savedmd41b, savedmd41b
+    do m41b_1 = savedl41b, savedl41b + (savedn41b - 1)*savedmd41b, savedmd41b
       bond1_atoms = load_atom_from_l41(m41b_1)
 
-      do m41b_2 = m41b_1+savedmd41b, savedl41b+(savedn41b-1)*savedmd41b, savedmd41b
+      do m41b_2 = m41b_1 + savedmd41b, savedl41b + (savedn41b - 1)*savedmd41b, savedmd41b
         bond2_atoms = load_atom_from_l41(m41b_2)
 
         if (bond1_atoms(1) == bond2_atoms(1) .and. &
         & bond1_atoms(2) /= bond2_atoms(2)) then
 
-          connectivity_13_index = connectivity_13_index+1
+          connectivity_13_index = connectivity_13_index + 1
           if (connectivity_13_index > ubound(connectivity_13_temp, 2)) then
             call extend_connectivity(connectivity_13_temp)
           end if
@@ -660,7 +683,7 @@ contains
         else if (bond1_atoms(2) == bond2_atoms(1) .and. &
         & bond1_atoms(1) /= bond2_atoms(2)) then
 
-          connectivity_13_index = connectivity_13_index+1
+          connectivity_13_index = connectivity_13_index + 1
           if (connectivity_13_index > ubound(connectivity_13_temp, 2)) then
             call extend_connectivity(connectivity_13_temp)
           end if
@@ -672,7 +695,7 @@ contains
         else if (bond1_atoms(1) == bond2_atoms(2) .and. &
         & bond1_atoms(2) /= bond2_atoms(1)) then
 
-          connectivity_13_index = connectivity_13_index+1
+          connectivity_13_index = connectivity_13_index + 1
           if (connectivity_13_index > ubound(connectivity_13_temp, 2)) then
             call extend_connectivity(connectivity_13_temp)
           end if
@@ -684,7 +707,7 @@ contains
         else if (bond1_atoms(2) == bond2_atoms(2) .and. &
         & bond1_atoms(1) /= bond2_atoms(1)) then
 
-          connectivity_13_index = connectivity_13_index+1
+          connectivity_13_index = connectivity_13_index + 1
           if (connectivity_13_index > ubound(connectivity_13_temp, 2)) then
             call extend_connectivity(connectivity_13_temp)
           end if
@@ -715,7 +738,7 @@ contains
       type(atom_t), dimension(:, :), allocatable :: temp
 
       call move_alloc(connectivity_13, temp)
-      allocate (connectivity_13(6, size(temp)+128))
+      allocate (connectivity_13(6, size(temp) + 128))
       connectivity_13(:, 1:ubound(temp, 2)) = temp
 
     end subroutine
@@ -728,15 +751,17 @@ contains
     class(atom_t), intent(inout) :: self
     self%l5addr = -1
     self%label = ''
-    self%serial = -1
+    self%serial = huge(0)
     self%sym_op%S = huge(0)
-    self%sym_op%L = -1
+    self%sym_op%L = 1
     self%sym_op%translation = 0.0
     self%sym_mat%R = 0.0
     self%sym_mat%T = 0.0
-    self%ref = -1
-    self%part = -1
-    self%resi = -1
+    self%ref = huge(0)
+    self%part = huge(0)
+    self%resi = huge(0)
+    self%error = 0
+    self%suffix = ''
   end subroutine
 
   !> pretty print for atom_t type
@@ -746,95 +771,96 @@ contains
     character(len=:), allocatable ::atom_text
     character(len=256) :: buffer
 
-    if (any(abs(self%sym_op%translation) > 1e-6)) then
-      write (buffer, '(A,"(",3(I0,","),2(F8.4,","),F8.4,")")') &
-      & trim(self%label), self%serial, self%sym_op%S, self%sym_op%L, self%sym_op%translation
-    else if (self%sym_op%L > 1) then
-      write (buffer, '(A,"(",2(I0,","),I0,")")') &
-      & trim(self%label), self%serial, self%sym_op%S, self%sym_op%L
-    else if (self%sym_op%S > 1 .and. self%sym_op%S /= huge(1)) then
-      write (buffer, '(A,"(",1(I0,","),I0,")")') &
-      & trim(self%label), self%serial, self%sym_op%S
+    if (self%serial == huge(0)) then
+      write (buffer, '(A,"(",A,")", A)') &
+      & trim(self%label), "*", trim(self%suffix)
     else
-      write (buffer, '(A,"(",I0,")")') &
-      & trim(self%label), self%serial
+      if (any(abs(self%sym_op%translation) > 1e-6)) then
+        write (buffer, '(A,"(",3(I0,","),2(F8.4,","),F8.4,")", A)') &
+        & trim(self%label), self%serial, self%sym_op%S, self%sym_op%L, self%sym_op%translation, trim(self%suffix)
+      else if (self%sym_op%L > 1) then
+        write (buffer, '(A,"(",2(I0,","),I0,")", A)') &
+        & trim(self%label), self%serial, self%sym_op%S, self%sym_op%L, trim(self%suffix)
+      else if (self%sym_op%S > 1 .and. self%sym_op%S /= huge(1)) then
+        write (buffer, '(A,"(",1(I0,","),I0,")", A)') &
+        & trim(self%label), self%serial, self%sym_op%S, trim(self%suffix)
+      else
+        write (buffer, '(A,"(",I0,")", A)') &
+        & trim(self%label), self%serial, trim(self%suffix)
+      end if
     end if
-
     atom_text = trim(buffer)
   end function
 
-  !> replace a bond place holder with paris of bonded atoms (C--H => C(1) to H(1), ...)
+  !> replace a bond place holder with pairs of bonded atoms (C--H => C(1) to H(1), ...)
   subroutine replace_bonds(text, change)
     implicit none
     character(len=*), intent(inout) :: text
     logical, intent(out) :: change
     character(len=4) :: bond_type_text, left, right
     integer bond_type, location, motif_len
-    integer i, j
+    integer i, j, cpt
     ! atoms pairs
     type(atom_t), dimension(2) :: atoms
     type(atom_t), dimension(:, :), allocatable :: pairs
     character(len=8000) :: replacement
-    logical found, empty
+    logical found
 
     found = .false. ! true if a bond definition is found
-    empty = .true. ! true if all bond definitions are empty
     change = .false.
+    cpt = 0
 
     do ! loop until everything is found
       bond_type = -1
       do i = 1, size(bond_list_definition)
-        write (bond_type_text, '("-",I0,"-")') i
-        if (index(text, bond_list_definition(i)) > 0 .or. &
-        & index(text, bond_type_text) > 0) then
+        if (index(text, bond_list_definition(i)) > 0) then
           bond_type = i
+          location = index(text, bond_list_definition(i))
+          motif_len = len_trim(bond_list_definition(i))
+          cpt = cpt + 1
+          exit
+        end if
+        write (bond_type_text, '("-",I0,"-")') i
+        if (index(text, trim(bond_type_text)) > 0) then
+          bond_type = i
+          location = index(text, trim(bond_type_text))
+          motif_len = len_trim(bond_type_text)
+          cpt = cpt + 1
           exit
         end if
       end do
 
       ! special case for -0- which is any bond like -10-
       write (bond_type_text, '("-",I0,"-")') 0
-      if (index(text, bond_type_text) > 0) then
+      if (index(text, trim(bond_type_text)) > 0) then
         bond_type = size(bond_list_definition)
+        location = index(text, trim(bond_type_text))
+        motif_len = len_trim(bond_type_text)
       end if
 
       if (bond_type <= 0) then
         exit
-      else
-        found = .true. ! if true, we have found at least a bond definition
-      end if
-
-      ! we found a bond definition, we now fetch the atom type
-      ! get which bond text is used first, numeric or characters
-      change = .true.
-      location = index(text, bond_list_definition(bond_type))
-      if (location > 0) then
-        motif_len = len(bond_list_definition(bond_type))
-      else
-        write (bond_type_text, '("-",I0,"-")') bond_type
-        location = index(text, bond_type_text)
-        motif_len = len_trim(bond_type_text)
       end if
 
       i = 1
       left = ''
-      do while (text(location-i:location-i) /= ' ')
+      do while (text(location - i:location - i) /= ' ')
         if (i > 3) then
           exit
         end if
-        left(3-i+1:3-i+1) = text(location-i:location-i)
-        i = i+1
+        left(3 - i + 1:3 - i + 1) = text(location - i:location - i)
+        i = i + 1
       end do
       left = adjustl(left)
 
       i = 1
       right = ''
-      do while (text(location+motif_len+i-1:location+motif_len+i-1) /= ' ')
+      do while (text(location + motif_len + i - 1:location + motif_len + i - 1) /= ' ')
         if (i > 3) then
           exit
         end if
-        right(i:i) = text(location+motif_len+i-1:location+motif_len+i-1)
-        i = i+1
+        right(i:i) = text(location + motif_len + i - 1:location + motif_len + i - 1)
+        i = i + 1
       end do
 
       if (left /= '' .and. right /= '') then
@@ -845,31 +871,30 @@ contains
         call get_pairs(atoms, pairs, bond_type)
         if (size(pairs) == 0) then
           ! no pairs, remove the bond place holder
-          text = text(1:location-len_trim(left)-1)//text(location+motif_len+len_trim(right):)
+          text = text(1:location - len_trim(left) - 1)//text(location + motif_len + len_trim(right):)
           cycle
         end if
 
         replacement = ''
         do i = 1, ubound(pairs, 2)
           replacement = trim(replacement)//' '//pairs(1, i)%text()//' TO '//pairs(2, i)%text()//','
-          empty = .false.
+          change = .true.
         end do
         replacement(len_trim(replacement):len_trim(replacement)) = ' '
 
-        i = location-len_trim(left)
-        j = location+motif_len+len_trim(right)-1
+        i = location - len_trim(left)
+        j = location + motif_len + len_trim(right) - 1
 
-        text = text(1:i-1)//trim(replacement)//trim(text(j+1:))
+        text = text(1:i - 1)//trim(replacement)//trim(text(j + 1:))
       end if
     end do
 
-    if (found .and. empty) then
+    if (cpt > 0 .and. .not. change) then
       ! nothing have been found, commenting out the restraint
       call print_to_mon('{I No bond found in restraint:')
       call print_to_mon('{I '//trim(text))
       text = 'REM '//trim(text)
     end if
-
   end subroutine
 
   !> define a variable for later use using the DEFINE `restraint`
@@ -886,20 +911,20 @@ contains
     ! process local variable definition
     if (image_text(1:6) == 'DEFINE') then
       eq = index(image_text, '=')
-      var_name = trim(adjustl(image_text(7:eq-1)))
+      var_name = trim(adjustl(image_text(7:eq - 1)))
       do i = 1, len_trim(var_name)
         if (iachar(var_name(i:i)) < 65 .or. iachar(var_name(i:i)) > 90) then
           call print_to_mon('{E '//trim(image_text))
-          call print_to_mon('{E '//repeat('-', 6+i)//'^')
+          call print_to_mon('{E '//repeat('-', 6 + i)//'^')
           call print_to_mon('{E Error: Invalid variable name, character `'// &
           & var_name(i:i)//'` not allowed')
           ierror = -1
           return
         end if
       end do
-      lexical_var_list_index = lexical_var_list_index+1
-      lexical_var_list(lexical_var_list_index)%label = trim(adjustl(image_text(7:eq-1)))
-      read (image_text(eq+1:), *) lexical_var_list(lexical_var_list_index)%rvalue
+      lexical_var_list_index = lexical_var_list_index + 1
+      lexical_var_list(lexical_var_list_index)%label = trim(adjustl(image_text(7:eq - 1)))
+      read (image_text(eq + 1:), *) lexical_var_list(lexical_var_list_index)%rvalue
     end if
 
   end subroutine
@@ -921,19 +946,19 @@ contains
     dollar_start = index(image_text, '$')
     do while (dollar_start > 0)
       ! capture variable name
-      dollar_end = dollar_start+1
+      dollar_end = dollar_start + 1
       do while (iachar(image_text(dollar_end:dollar_end)) > 64 .and. &
       & iachar(image_text(dollar_end:dollar_end)) < 91)
-        dollar_end = dollar_end+1
+        dollar_end = dollar_end + 1
       end do
-      var_name = trim(image_text(dollar_start+1:dollar_end-1))
+      var_name = trim(image_text(dollar_start + 1:dollar_end - 1))
 
       ! look for its value in the table
       found = .false.
       do i = 1, lexical_var_list_index
         if (lexical_var_list(i)%label == var_name) then
           write (var_name, '(F0.6)') lexical_var_list(i)%rvalue
-          image_text = image_text(1:dollar_start-1)//' '// &
+          image_text = image_text(1:dollar_start - 1)//' '// &
           & trim(var_name)//' '//trim(image_text(dollar_end:))
           found = .true.
           change = .true.
@@ -943,8 +968,8 @@ contains
         dollar_start = index(image_text, '$')
       else
         call print_to_mon('{E '//trim(image_text))
-        call print_to_mon('{E '//repeat('-', dollar_start-1)// &
-        & repeat('^', len_trim(var_name)+1))
+        call print_to_mon('{E '//repeat('-', dollar_start - 1)// &
+        & repeat('^', len_trim(var_name) + 1))
         call print_to_mon('{E Error: Definition of variable `$'// &
         & trim(var_name)//'` is missing')
         ierror = -1
@@ -954,9 +979,10 @@ contains
   end subroutine
 
   !> expand generic atoms name.
-  !! - C(*) == all C atoms
-  !! - C(part=i) all C atoms in part i
-  !! - C(resi=i) all C atoms in residue i
+  !! - *(*):      all atoms except Hydrogen and Deuterium
+  !! - C(*):      all C atoms
+  !! - C(part=i): all C atoms in part i
+  !! - C(resi=i): all C atoms in residue i
   subroutine expand_atoms_names(image_text, ierror, modified)
     implicit none
     character(len=*), intent(inout) :: image_text
@@ -965,87 +991,104 @@ contains
     character(len=len(image_text)) :: original
     character(len=len(image_text)) :: buffer
     character(len=split_len), dimension(:), allocatable :: elements
-    integer m5, k
-    character(len=16) :: atom_name
-    integer pattern_start
-    integer i, j
-    character(len=64) :: var_name
-    type(atom_t) :: atom, atom_l5
+    integer m5, count_multiples
+    integer i, j, serial_addr
+    type(atom_t) :: atom, new_atom
+    logical, dimension(4) :: founds
+    logical :: atom_in_l5
 
     ierror = 0
     modified = .false.
     original = image_text
 
-    ! expand atoms type
-    if (index(image_text, '(*)') > 0) then
-      call explode(image_text, split_len, elements)
-      image_text = ''
-      do i = 1, size(elements)
-        pattern_start = index(elements(i), '(*)')
-        ! capture atom type
-        if (pattern_start > 0) then
-          var_name = elements(i) (1:pattern_start-1)
-
-          if (i < size(elements)) then
-            if (trim(elements(i+1)) == 'TO') then
-              ! need to be done in pairs
-              call print_to_mon('{E '//trim(image_text)//' '//elements(i)//' '// &
-              & trim(elements(i+1)))
-              call print_to_mon('{E Error: Generic pairs are not implemented')
-              image_text = trim(image_text)//' '//elements(i)
-              ierror = -1
-              return
-            end if
-          end if
-
-          ! look for all atoms with same type
-          m5 = savedl5
-          do j = 1, savedn5
-            if (transfer(l5store(m5), '    ') == var_name) then
-              write (atom_name, '(A,"(",I0,")")') trim(transfer(l5store(m5), '    ')), &
-              & nint(l5store(m5+1))
-              image_text = trim(image_text)//' '//trim(atom_name)
-              modified = .true.
-            end if
-            m5 = m5+savedmd5
-          end do
-        else
-          image_text = trim(image_text)//' '//elements(i)
-        end if
-      end do
-      image_text = adjustl(image_text)
-    end if
-
-    ! expand part and resi
-    call explode(image_text, split_len, elements) ! split atom list
-    buffer = elements(1)
+    call explode(image_text, split_len, elements)
+    image_text = elements(1)
     do i = 2, size(elements)
-      atom = read_atom(trim(elements(i)))
-      if (atom%part > 0 .or. atom%resi > 0) then
-        modified = .true.
+      buffer = ''
+      count_multiples = 0
+      atom = read_atom(elements(i))
+
+      if (atom%error == 0) then
+        if (atom%serial == huge(0) .and. i < size(elements)) then
+          if (trim(elements(i + 1)) == "TO" .or. trim(elements(i + 1)) == "UNTIL") then
+            ! need to be done in pairs, not implemented yet
+            call print_to_mon('{E '//trim(elements(i))//' '//elements(i + 1)//' '// &
+                & trim(elements(i + 2)))
+            call print_to_mon('{E Error: Generic pairs are not implemented')
+            image_text = original
+            ierror = -1
+            return
+          end if
+        end if
 
         m5 = savedl5
-        do k = 1, savedn5
-          write (atom_l5%label, '(A4)') l5store(m5)
-          atom_l5%serial = nint(l5store(m5+1))
-          atom_l5%part = transfer(l5store(m5+14), 1)
-          atom_l5%resi = transfer(l5store(m5+16), 1)
-
-          if (atom%part > 0 .and. atom_l5%part == atom%part .and. atom_l5%label == atom%label) then
-            write (atom_name, '(A,"(",I0,")")') trim(atom_l5%label), atom_l5%serial
-            buffer = trim(buffer)//' '//trim(atom_name)
-          else if (atom%resi > 0 .and. atom_l5%resi == atom%resi .and. atom_l5%label == atom%label) then
-            write (atom_name, '(A,"(",I0,")")') trim(atom_l5%label), atom_l5%serial
-            buffer = trim(buffer)//' '//trim(atom_name)
+        serial_addr = -1
+        atom_in_l5 = .false.
+        do j = 1, savedn5
+          founds = .true.
+          if (atom%label /= "" .and. atom%label /= "*") then
+            if (atom%label /= transfer(l5store(m5), '    ')) then
+              founds(1) = .false.
+            end if
+          else
+            if (transfer(l5store(m5), '    ') == "H   " .or. transfer(l5store(m5), '    ') == "D   ") then
+              founds(1) = .false.
+            end if
           end if
-          m5 = m5+savedmd5
+          if (atom%serial /= huge(0)) then
+            if (atom%serial /= nint(l5store(m5 + 1))) then
+              founds(2) = .false.
+            else
+              ! List 5 can contain duplicated serials
+              ! the workaround here is to use the first one and ignore the following ones
+              ! otherwise you will end with duplicated atoms in the list (one for each serial found)
+              if (serial_addr == -1 .or. serial_addr == m5) then
+                serial_addr = m5
+              else
+                founds(2) = .false.
+              end if
+            end if
+          end if
+          if (atom%part /= huge(0)) then
+            if (atom%part /= transfer(l5store(m5 + 14), 1)) then
+              founds(3) = .false.
+            end if
+          end if
+          if (atom%resi /= huge(0)) then
+            if (atom%resi /= transfer(l5store(m5 + 16), 1)) then
+              founds(4) = .false.
+            end if
+          end if
+
+          if (all(founds)) then
+            count_multiples = count_multiples + 1
+            atom_in_l5 = .true.
+            new_atom = atom
+            new_atom%label = trim(transfer(l5store(m5), '    '))
+            new_atom%serial = nint(l5store(m5 + 1))
+            image_text = trim(image_text)//" "//trim(new_atom%text())
+          end if
+
+          m5 = m5 + savedmd5
         end do
 
+        if (.not. atom_in_l5) then
+          image_text = trim(image_text)//" "//elements(i)
+        end if
       else
-        buffer = trim(buffer)//' '//trim(elements(i))
+        image_text = trim(image_text)//" "//trim(elements(i))
       end if
+
+      if (count_multiples == 0) then
+        ierror = -1 ! no atom found
+      end if
+
+      if (count_multiples > 1) then
+        modified = .true.
+      end if
+
     end do
-    image_text = buffer
+    image_text = adjustl(image_text)
 
   end subroutine
 
@@ -1081,10 +1124,10 @@ contains
       image_text = trim(elements(1))
       do i = 2, size(elements)
         atom = read_atom(trim(elements(i)))
-        if (atom%serial /= -1) then
+        if (atom%serial /= huge(0)) then
           ! explicit neighbours
           neighbour_cpt = 0
-          do m41b = savedl41b, savedl41b+(savedn41b-1)*savedmd41b, savedmd41b
+          do m41b = savedl41b, savedl41b + (savedn41b - 1)*savedmd41b, savedmd41b
             bond_atoms = load_atom_from_l41(M41B)
 
             neighbour_address = -1
@@ -1095,7 +1138,7 @@ contains
             end if
 
             if (neighbour_address > 0) then
-              neighbour_cpt = neighbour_cpt+1
+              neighbour_cpt = neighbour_cpt + 1
               if (neighbour_cpt > 6) then
                 exit
               end if
@@ -1180,7 +1223,7 @@ contains
         if (.not. found) exit
       end do
       if (found) then
-        start = start+1
+        start = start + 1
         image_text = trim(image_text)//' '//elements(2)
       else
         image_text = trim(image_text)//' 0.004'
@@ -1196,7 +1239,7 @@ contains
         if (.not. found) exit
       end do
       if (found) then
-        start = start+1
+        start = start + 1
         image_text = trim(image_text)//' '//elements(3)
         read (elements(3), *) esd13
       else
@@ -1204,7 +1247,7 @@ contains
         esd13 = 0.004
       end if
 
-      if (size(elements)-start < 2) then
+      if (size(elements) - start < 2) then
         ierror = -1
         image_text = original
         call print_to_mon('{E '//trim(image_text))
@@ -1212,11 +1255,11 @@ contains
         return
       end if
 
-      allocate (atoms(size(elements)-start))
+      allocate (atoms(size(elements) - start))
       call atoms%init()
-      do i = start+1, size(elements)
-        atoms(i-start) = read_atom(trim(elements(i)))
-        if (atoms(i-start)%serial == -1) then
+      do i = start + 1, size(elements)
+        atoms(i - start) = read_atom(trim(elements(i)))
+        if (atoms(i - start)%error < 0) then
           ierror = -1
           image_text = original
           return
@@ -1263,21 +1306,18 @@ contains
         end if
       end if
     end if
-    !print *, trim(image_text)
-
   end subroutine
 
   !> Parse an atom definition TYPE(SERIAL,S,L,TX,TY,TZ)
-  !! If serial returns -1, there was an error
   function read_atom(text) result(atom)
     implicit none
     character(len=*), intent(in) :: text
     type(atom_t) :: atom
-    integer i, j, k, n, info, eoffset
+    integer i, j, k, n, eoffset
     character(len=len(text)) :: buffer
     character(len=split_len), dimension(:), allocatable :: elements
     character(len=128) :: msgstatus
-    logical skip_position
+    logical named_only, found_named
 
     character(len=6), dimension(21), parameter :: param_name = (/  &
     & 'X     ', 'Y     ', 'Z     ', 'OCC   ', 'U[ISO]', 'SPARE ',&
@@ -1287,112 +1327,118 @@ contains
 
     call atom%init()
 
-    ! catch (*) notation
-    if (index(text, '(*)') > 0) then
-      atom%serial = -1
+    if (index(text, '(') < 2 .and. index(text, ')') < 4) then
+      atom%error = -1
+      return
+    end if
+
+    if (index(text, 'U(IJ)') > 0) then
+      atom%error = -1
       return
     end if
 
     i = index(text, '(')
     j = index(text, ')')
-    atom%label = text(1:i-1)
-    if (atom%label(1:1) == ',') then
-      ! oops, a coma made it here. It happens when there is no space after the coma
-      ! can safely ignored because it was fallowing a space
-      atom%label = atom%label(2:)
-    end if
+    atom%label = text(1:i - 1)
+    atom%suffix = trim(text(j + 1:))
 
     if (len_trim(atom%label) > 3) then
       ! ok, not an atom could be command like type, first...
       ! to be done properly
+      atom%error = -2
       return
     end if
 
     if (i > 1 .and. j > i) then
-      buffer = text(i+1:j-1)
+      buffer = text(i + 1:j - 1)
       call explode(buffer, split_len, elements, ',', greedy_arg=.false.)
       eoffset = 0
-      do j = 1, size(elements)
-        skip_position = .false.
-        info = 0
+      named_only = .false.
+      atomloop: do j = 1, size(elements)
         msgstatus = ''
         if (trim(elements(j)) /= '') then
+          ! First we check for named parameters
           do k = 1, size(param_name)
             if (index(elements(j), trim(param_name(k))) > 0) then
               ! valid instruction but not used in restraints
-              eoffset = eoffset+1
-              skip_position = .true.
-              exit
+              if (index(elements(j), "=") > 0) then
+                named_only = .true.
+              end if
+              cycle atomloop
             end if
           end do
 
+          found_named = .false.
           if (index(elements(j), 'PART') > 0) then
             n = index(elements(j), '=')
             if (n > 0) then
-              read (elements(j) (n+1:), *, iostat=info, iomsg=msgstatus) atom%part
-              eoffset = eoffset+1
-              skip_position = .true.
+              read (elements(j) (n + 1:), *, iostat=atom%error, iomsg=msgstatus) atom%part
+              named_only = .true.
+              found_named = .true.
             end if
           else if (index(elements(j), 'RESI') > 0) then
             n = index(elements(j), '=')
             if (n > 0) then
-              read (elements(j) (n+1:), *, iostat=info, iomsg=msgstatus) atom%resi
-              eoffset = eoffset+1
-              skip_position = .true.
+              read (elements(j) (n + 1:), *, iostat=atom%error, iomsg=msgstatus) atom%resi
+              named_only = .true.
+              found_named = .true.
             end if
           end if
 
-          if (.not. skip_position) then
-            select case (j+eoffset)
-            case (1) ! serial
-              read (elements(j+eoffset), *, iostat=info, iomsg=msgstatus) atom%serial
-! negative serial is OK, and is used to temporarily rename atoms in some scripts to avoid clashes.
-              !if (atom%serial < 0) then
-              !  info = -1
-              !  msgstatus = 'Negative serial number is not valid'
-              !end if
-            case (2) ! symmetry operator provided in the unit cell symmetry LIST 2
-              read (elements(j+eoffset), *, iostat=info, iomsg=msgstatus) atom%sym_op%S
-            case (3) ! the non-primitive lattice translation that is to be added
-              read (elements(j+eoffset), *, iostat=info, iomsg=msgstatus) atom%sym_op%L
-              if (atom%sym_op%L < 1 .or. atom%sym_op%L > 4) then
-                info = -1
-                msgstatus = 'Lattice translation number is not valid'
-              end if
-            case (4)
-              read (elements(j+eoffset), *, iostat=info, iomsg=msgstatus) atom%sym_op%translation(1)
-            case (5)
-              read (elements(j+eoffset), *, iostat=info, iomsg=msgstatus) atom%sym_op%translation(2)
-            case (6)
-              read (elements(j+eoffset), *, iostat=info, iomsg=msgstatus) atom%sym_op%translation(3)
-            case default
-              write (msgstatus, '(A, I0, 1X, I0)') '{E Error: wrong offset in read_atom ', j, eoffset
-              info = -1
-              atom%serial = -1
-            end select
+          ! If not a named parameter, treat it as positional
+          if (.not. found_named) then
+            if (.not. named_only) then
+              select case (j)
+              case (1) ! serial
+                if (trim(elements(j)) /= "*") then
+                  read (elements(j), *, iostat=atom%error, iomsg=msgstatus) atom%serial
+                end if
+              case (2) ! symmetry operator provided in the unit cell symmetry LIST 2
+                read (elements(j), *, iostat=atom%error, iomsg=msgstatus) atom%sym_op%S
+              case (3) ! the non-primitive lattice translation that is to be added
+                read (elements(j), *, iostat=atom%error, iomsg=msgstatus) atom%sym_op%L
+                if (atom%sym_op%L < 1 .or. atom%sym_op%L > 4) then
+                  atom%error = -1
+                  msgstatus = 'Lattice translation number is not valid'
+                end if
+              case (4)
+                read (elements(j), *, iostat=atom%error, iomsg=msgstatus) atom%sym_op%translation(1)
+              case (5)
+                read (elements(j), *, iostat=atom%error, iomsg=msgstatus) atom%sym_op%translation(2)
+              case (6)
+                read (elements(j), *, iostat=atom%error, iomsg=msgstatus) atom%sym_op%translation(3)
+              case default
+                write (msgstatus, '(A, I0, 1X, I0)') '{E Error: wrong offset in read_atom ', j, eoffset
+                atom%error = -3
+              end select
+            else
+              write (msgstatus, '(A)') '{E positional parameter not allowed after a named parameter'
+              atom%error = -4
+            end if
           end if
-          if (info /= 0) then ! error when reading one of the values
+          if (atom%error /= 0) then ! error when reading one of the values
             call print_to_mon('{E Error: '//trim(text)//' is not a valid atom name')
             call print_to_mon('{E '//trim(msgstatus))
-            atom%serial = -1
+            atom%error = -5
             return
           end if
         end if
-      end do
+      end do atomloop
     else
-      atom%serial = -1
+      atom%error = -6
       return
     end if
 
+    ! I am not sure about this
     if (atom%resi == 0) then
       atom%resi = 1
     end if
 
-    call atom%sym_mat_update(info)
-    if (info /= 0) then
-      atom%serial = -1
+    call atom%sym_mat_update(atom%error)
+    if (atom%error /= 0) then
       return
     end if
+
   end function
 
   !> Update symmetry oprators from crystals notation to matrix notation
@@ -1406,35 +1452,37 @@ contains
     integer i, j
     character(len=256) :: logtext
 
-    if (self%sym_op%S == huge(1) .or. self%sym_op%L == -1) then
+    if (self%sym_op%S == huge(0)) then
       self%sym_mat%R = 0.0
       self%sym_mat%T = 0.0
       return
     end if
 
     ierror = 0
-    i = l2+(md2*(abs(self%sym_op%S)-1))
+    i = l2 + (md2*(abs(self%sym_op%S) - 1))
     if (self%sym_op%L == 0) then
-      j = l2p+(md2p*(self%sym_op%L))
+      j = l2p + (md2p*(self%sym_op%L))
     else
-      j = l2p+(md2p*(self%sym_op%L-1))
+      j = l2p + (md2p*(self%sym_op%L - 1))
     end if
 
-    if (i > l2+((n2-1)*md2) .or. i < l2 .or. l2 < 1) then
-      write (logtext, '(A,I0)') '{E Error: invalid symmetry operator index ', self%sym_op%S
+    if (i > l2 + ((n2 - 1)*md2) .or. i < l2 .or. l2 < 1) then
+      write (logtext, '(A,I0,A, A)') '{E Warning: invalid symmetry operator index ', self%sym_op%S, &
+      & ' in atom ', self%text()
       call print_to_mon(logtext)
       ierror = -1
       return
     end if
-    if (j > l2p+((n2p-1)*md2p) .or. j < l2p .or. l2p < 1) then
-      write (logtext, '(A,I0)') '{E Error: invalid lattice translation index ', self%sym_op%L
+    if (j > l2p + ((n2p - 1)*md2p) .or. j < l2p .or. l2p < 1) then
+      write (logtext, '(A,I0,A,A)') '{E Warning: invalid lattice translation index ', self%sym_op%L, &
+      & ' in atom ', self%text()
       call print_to_mon(logtext)
       ierror = -1
       return
     end if
 
-    self%sym_mat%R = transpose(reshape(store(i:i+8), (/3, 3/)))
-    self%sym_mat%T = store(j:j+2)+self%sym_op%translation
+    self%sym_mat%R = transpose(reshape(store(i:i + 8), (/3, 3/)))
+    self%sym_mat%T = store(j:j + 2) + self%sym_op%translation
 
     if (self%sym_op%S < 0) then
       self%sym_mat%R = -1.0*self%sym_mat%R
@@ -1449,35 +1497,37 @@ contains
     type(atom_t), dimension(2) :: atom
     integer l5addr
 
-    l5addr = savedl5+transfer(l41store(l41addr), 1)*savedmd5
+    call atom%init()
+
+    l5addr = savedl5 + transfer(l41store(l41addr), 1)*savedmd5
     atom(1)%l5addr = l5addr
     atom(1)%label = trim(transfer(l5store(l5addr), '    '))
-    atom(1)%serial = nint(l5store(l5addr+1))
-    atom(1)%part = transfer(l5store(l5addr+14), 1)
-    atom(1)%resi = transfer(l5store(l5addr+16), 1)
-    atom(1)%bond = transfer(l41store(l41addr+12), 1)
-    atom(1)%sym_op%S = transfer(l41store(l41addr+1), 1)
+    atom(1)%serial = nint(l5store(l5addr + 1))
+    atom(1)%part = transfer(l5store(l5addr + 14), 1)
+    atom(1)%resi = transfer(l5store(l5addr + 16), 1)
+    atom(1)%bond = transfer(l41store(l41addr + 12), 1)
+    atom(1)%sym_op%S = transfer(l41store(l41addr + 1), 1)
     ! every where else default is 1 but not is list 41, fixing...
     if (atom(1)%sym_op%S == 0) then
       atom(1)%sym_op%S = 1
     end if
-    atom(1)%sym_op%L = transfer(l41store(l41addr+2), 1)
+    atom(1)%sym_op%L = transfer(l41store(l41addr + 2), 1)
     ! every where else default is 1 but not is list 41, fixing...
     if (atom(1)%sym_op%L == 0) then
       atom(1)%sym_op%L = 1
     end if
-    atom(1)%sym_op%translation = l41store(l41addr+3:l41addr+5)
+    atom(1)%sym_op%translation = l41store(l41addr + 3:l41addr + 5)
 
-    l5addr = savedl5+transfer(l41store(l41addr+6), 1)*savedmd5
+    l5addr = savedl5 + transfer(l41store(l41addr + 6), 1)*savedmd5
     atom(2)%l5addr = l5addr
     atom(2)%label = trim(transfer(l5store(l5addr), '    '))
-    atom(2)%serial = nint(l5store(l5addr+1))
-    atom(2)%part = transfer(l5store(l5addr+14), 1)
-    atom(2)%resi = transfer(l5store(l5addr+16), 1)
-    atom(2)%bond = transfer(l41store(l41addr+12), 1)
-    atom(2)%sym_op%S = transfer(l41store(l41addr+7), 1)
-    atom(2)%sym_op%L = transfer(l41store(l41addr+8), 1)
-    atom(2)%sym_op%translation = l41store(l41addr+9:l41addr+11)
+    atom(2)%serial = nint(l5store(l5addr + 1))
+    atom(2)%part = transfer(l5store(l5addr + 14), 1)
+    atom(2)%resi = transfer(l5store(l5addr + 16), 1)
+    atom(2)%bond = transfer(l41store(l41addr + 12), 1)
+    atom(2)%sym_op%S = transfer(l41store(l41addr + 7), 1)
+    atom(2)%sym_op%L = transfer(l41store(l41addr + 8), 1)
+    atom(2)%sym_op%translation = l41store(l41addr + 9:l41addr + 11)
   end function
 
   !> compare 2 atom_t object type together
@@ -1492,12 +1542,12 @@ contains
     !print *, 'label ', atom1%label, atom2%label, r
     if (atom1%serial /= atom2%serial) r = .false.
     !print *, 'serial ', atom1%serial, atom2%serial, r
-    if (atom1%part /= -1 .and. atom2%part /= -1) then
+    if (atom1%part /= huge(0) .and. atom2%part /= huge(0)) then
       ! ignore part if one of the atom has no part definition
       if (atom1%part /= atom2%part) r = .false.
     end if
     !print *, 'part ', atom1%part, atom2%part, r
-    if (atom1%resi /= -1 .and. atom2%resi /= -1) then
+    if (atom1%resi /= huge(0) .and. atom2%resi /= huge(0)) then
       ! ignore residue if one of the atom has no residue definition
       if (atom1%resi /= atom2%resi) r = .false.
     end if
@@ -1509,7 +1559,7 @@ contains
       if (atom1%sym_op%L /= atom2%sym_op%L) r = .false.
       !print *, 'L ', atom1%sym_op%L, atom2%sym_op%L, r
 
-      if (any(abs(atom1%sym_op%translation-atom2%sym_op%translation) > 0.01)) r = .false.
+      if (any(abs(atom1%sym_op%translation - atom2%sym_op%translation) > 0.01)) r = .false.
     end if
 
     !print *, atom1%text(), atom2%text()
@@ -1561,15 +1611,15 @@ contains
     end if
     istart = 1
     if (.not. present(mon_only)) then
-      write (ncwu, '(A)') trim(text(istart+len_trim(prefix)-1:))
+      write (ncwu, '(A)') trim(text(istart + len_trim(prefix) - 1:))
     end if
 #endif
 
     if (wrap) then
       if (line_len < len_trim(text)) then
-        iend = line_len+istart-1
+        iend = line_len + istart - 1
         do while (text(iend:iend) /= ' ')
-          iend = iend-1
+          iend = iend - 1
           if (iend < 1) exit
         end do
       else
@@ -1580,14 +1630,14 @@ contains
     end if
     write (cmon, '(A)') trim(text(istart:iend))
     call xprvdu(ncvdu, 1, 0)
-    istart = iend+1
-    iend = min(iend+line_len-tab_len, len_trim(text))
+    istart = iend + 1
+    iend = min(iend + line_len - tab_len, len_trim(text))
 
     do while (istart < len_trim(text))
 
       if (iend < len_trim(text)) then
         do while (text(iend:iend) /= ' ')
-          iend = iend-1
+          iend = iend - 1
           if (iend < istart) exit
         end do
       else
@@ -1597,8 +1647,8 @@ contains
       write (cmon, '(A, A, A)') prefix, repeat(' ', tab_len), trim(adjustl(text(istart:iend)))
       call xprvdu(ncvdu, 1, 0)
 
-      istart = iend+1
-      iend = min(iend+line_len, len_trim(text))
+      istart = iend + 1
+      iend = min(iend + line_len, len_trim(text))
     end do
 
   end subroutine
@@ -1630,13 +1680,21 @@ contains
                                                   'TYPE    ', &
                                                   'FIRST   ', &
                                                   'UNTIL   ', &
-                                                  'MOVE    ' /)
+                                                  'MOVE    '/)
 
     ierror = 0
-    image_text_nchar = index(image_text,' ')-1  !look for abbreviated directiv$
-    image_text_nchar = min ( image_text_nchar, 8 ) ! can't compare beyond leng$
+
+    if (savedl5 == -1) then
+      call print_to_mon('{E Warning: '//trim(image_text))
+      call print_to_mon('{E Warning: List 5 not loaded, cannot check atom')
+      ierror = -1
+      return
+    end if
+
+    image_text_nchar = index(image_text, ' ') - 1  !look for abbreviated directiv$
+    image_text_nchar = min(image_text_nchar, 8) ! can't compare beyond leng$
     if (image_text_nchar <= 1) then    ! should never get to this point
- !      write(123,*) 'Empty line, Nchar=', image_text_nchar
+      !      write(123,*) 'Empty line, Nchar=', image_text_nchar
       return
     end if
 
@@ -1645,7 +1703,7 @@ contains
     end if
 
     do i = 1, size(ignore)
-      if (image_text(1:image_text_nchar) == ignore(i)(1:image_text_nchar)) then ! ignore some instructions
+      if (image_text(1:image_text_nchar) == ignore(i) (1:image_text_nchar)) then ! ignore some instructions
         return
       end if
     end do
@@ -1668,46 +1726,67 @@ contains
         if (atom%serial < 1 .or. atom%serial > 3) then
           n = index(image_text, trim(elements(i)))
           call print_to_mon('{E Warning: '//trim(image_text))
-          call print_to_mon('{E '//repeat('-', n+6)//repeat('^', len_trim(elements(i))))
+          call print_to_mon('{E '//repeat('-', n + 6)//repeat('^', len_trim(elements(i))))
           call print_to_mon('{E Warning: index out of bound for the metric tensor '//trim(elements(i)))
           ierror = -1
         end if
         if (atom%sym_op%S < 1 .or. atom%sym_op%S > 3) then
           n = index(image_text, trim(elements(i)))
           call print_to_mon('{E Warning: '//trim(image_text))
-          call print_to_mon('{E '//repeat('-', n+6)//repeat('^', len_trim(elements(i))))
+          call print_to_mon('{E '//repeat('-', n + 6)//repeat('^', len_trim(elements(i))))
           call print_to_mon('{E Warning: index out of bound for the metric tensor '//trim(elements(i)))
           ierror = -1
         end if
         cycle
       end if
 
-      if (atom%serial /= -1) then
+      if (atom%error == 0 .and. atom%serial /= huge(0)) then
         ! check list 5
         m5 = savedl5
         found = .false.
         do j = 1, savedn5
           if (transfer(l5store(m5), '    ') == atom%label .and. &
-          & nint(l5store(m5+1)) == atom%serial) then
-            found = .true.
-            exit
+          & nint(l5store(m5 + 1)) == atom%serial) then
+            if (atom%resi /= huge(0) .and. atom%part /= huge(0)) then
+              if (nint(l5store(m5 + 16)) == atom%resi .and. nint(l5store(m5 + 14)) == atom%part) then
+                found = .true.
+                exit
+              end if
+            else if (atom%resi /= huge(0)) then
+              if (nint(l5store(m5 + 16)) == atom%resi) then
+                found = .true.
+                exit
+              end if
+            else if (atom%part /= huge(0)) then
+              if (nint(l5store(m5 + 14)) == atom%part) then
+                found = .true.
+                exit
+              end if
+            else
+              found = .true.
+              exit
+            end if
           end if
-          m5 = m5+savedmd5
+          m5 = m5 + savedmd5
         end do
 
         if (.not. found) then
           n = fieldpos(i)
           if (i < size(fieldpos)) then
-            m = fieldpos(i+1)-fieldpos(i)
+            m = fieldpos(i + 1) - fieldpos(i)
           else
-            m = len_trim(image_text)-fieldpos(i)
+            m = len_trim(image_text) - fieldpos(i)
           end if
           call print_to_mon('{E Warning: '//trim(image_text))
-          call print_to_mon('{E '//repeat('-', n+6)//repeat('^', m))
+          call print_to_mon('{E '//repeat('-', n + 6)//repeat('^', m))
           call print_to_mon('{E Warning: atom '//trim(elements(i))//' is not present in the model')
           ierror = -1
         end if
       end if
+
+      ! checking symmetry operators
+      ! Already checked when reading the atom
+
     end do
   end subroutine
 
@@ -1717,200 +1796,172 @@ contains
     implicit none
     character(len=*), intent(inout) :: image_text
     character, dimension(5), parameter :: operators = (/'/', '*', '-', '+', '='/)
-    integer n, m, i, s, lenbuf
-    logical founda, foundb
-    character(len=4) :: buffer
+    character(len=5), dimension(4), parameter :: keywords = (/'TO   ', 'AND  ', 'FROM ', 'UNTIL'/)
+    integer i, j, k, l
+    character(len=4) :: bond_type_text
+    logical found_atom
+
+    ! removed all duplicated spaces
+    do i = len_trim(image_text) - 1, 2, -1
+      if (image_text(i:i) == ' ' .and. image_text(i - 1:i - 1) == ' ') then
+        image_text = image_text(1:i - 1)//image_text(i + 1:)
+      end if
+    end do
 
     ! insert spaces around operators if missing
-    s = index(image_text, ' ') ! look for the first space, do not touch the first keyword
     do i = 1, size(operators)
-      n = s
-      do
-        n = n+1
-
-        if (n > len_trim(image_text)) exit
-
-        if (image_text(n:n) == operators(i)) then
-          founda = .false. !after
-          foundb = .false. !before
-
-          ! spaces after operator
-          founda = .false. !after
-          if (iachar(image_text(n+1:n+1)) > 64 .and. iachar(image_text(n+1:n+1)) < 91) then! A-Z, no need for a-z already all upper case
-            !we need a space except if it is a bond definition
-            if ((iachar(image_text(n-1:n-1)) > 32 .and. iachar(image_text(n-1:n-1)) < 39) .or. &
-            &   (iachar(image_text(n-1:n-1)) > 41 .and. iachar(image_text(n-1:n-1)) < 48) .or. &
-            &   (iachar(image_text(n-1:n-1)) > 57 .and. iachar(image_text(n-1:n-1)) < 65) .or. &
-            &   (iachar(image_text(n-1:n-1)) > 89 .and. iachar(image_text(n-1:n-1)) < 97) .or. &
-            &   (iachar(image_text(n-1:n-1)) > 122 .and. iachar(image_text(n-1:n-1)) < 127)) then ! not [ A-Za-z0-9)]
-              founda = .false.
-            else
-              founda = .true.
-            end if
-          else if (image_text(n+1:n+1) == '(') then
-            founda = .true.
-          end if
-
-          if (founda) then
-            image_text = image_text(1:n)//' '//trim(image_text(n+1:))
-          end if
-
-          if (n > 1) then
-            if (iachar(image_text(n-1:n-1)) > 64 .and. iachar(image_text(n-1:n-1)) < 91) then ! A-Z, no need for a-z already all upper case
-              !we need a space except if it is a bond definition
-              if ((iachar(image_text(n+1:n+1)) > 32 .and. iachar(image_text(n+1:n+1)) < 48) .or. &
-              &   (iachar(image_text(n+1:n+1)) > 41 .and. iachar(image_text(n+1:n+1)) < 48) .or. &
-              &   (iachar(image_text(n+1:n+1)) > 57 .and. iachar(image_text(n+1:n+1)) < 65) .or. &
-              &   (iachar(image_text(n+1:n+1)) > 89 .and. iachar(image_text(n+1:n+1)) < 97) .or. &
-              &   (iachar(image_text(n+1:n+1)) > 122 .and. iachar(image_text(n+1:n+1)) < 127)) then ! not [ A-Za-z0-9]
-                foundb = .false.
-              else
-                foundb = .true.
-              end if
-            else if (image_text(n-1:n-1) == ')') then
-              foundb = .true.
-            end if
-
-            if (foundb) then
-              image_text = image_text(1:n-1)//' '//trim(image_text(n:))
-            end if
-          end if
-
-          if (founda) n = n+1
-          if (foundb) n = n+1
-
+      do j = len_trim(image_text) - 1, 2, -1
+        if (image_text(j:j) == operators(i) .and. &
+        &   image_text(j - 1:j - 1) /= ' ' .and. &
+        &   .not. check_for_bond(image_text, j) .and. &
+        &   image_text(j - 1:j - 1) /= '(') then
+          image_text = image_text(1:j - 1)//' '//image_text(j:)
+        end if
+      end do
+      do j = len_trim(image_text) - 1, 2, -1
+        if (image_text(j:j) == operators(i) .and. &
+        &   image_text(j + 1:j + 1) /= ' ' .and. &
+        &   .not. check_for_bond(image_text, j) .and. &
+        &   image_text(j + 1:j + 1) /= ')') then
+          image_text = image_text(1:j)//' '//image_text(j + 1:)
         end if
       end do
     end do
 
-    ! always have a space after `)`
-    s = index(image_text, ' ') ! look for the first space, do not touch the first keyword
-    n = s
-    do
-      n = n+1
-      if (n > len_trim(image_text)) exit
-
-      if (image_text(n:n) == ')') then
-        if (image_text(n+1:n+1) /= ' ') then
-          image_text = image_text(1:n)//' '//trim(image_text(n+1:))
-          n = n+1
+    ! insert spaces around keywords if missing
+    do i = 1, size(keywords)
+      do j = len_trim(image_text) - len_trim(keywords(i)), 2, -1
+        if (image_text(j:j + len_trim(keywords(i)) - 1) == trim(keywords(i)) .and. &
+        &   image_text(j - 1:j - 1) /= ' ') then
+          image_text = image_text(1:j - 1)//' '//image_text(j:)
         end if
+      end do
+      do j = len_trim(image_text) - len_trim(keywords(i)), 2, -1
+        if (image_text(j:j + len_trim(keywords(i)) - 1) == trim(keywords(i)) .and. &
+        &   image_text(j + len_trim(keywords(i)):j + len_trim(keywords(i))) /= ' ') then
+          image_text = image_text(1:j + len_trim(keywords(i)) - 1)//' '//image_text(j + len_trim(keywords(i)):)
+        end if
+      end do
+    end do
+
+    ! insert space after `,` and remove it before
+    do j = len_trim(image_text) - 1, 2, -1
+      if (image_text(j:j) == ',' .and. image_text(j - 1:j - 1) == ' ') then
+        image_text = image_text(1:j - 2)//image_text(j:)
+      end if
+    end do
+    do j = len_trim(image_text) - 1, 2, -1
+      if (image_text(j:j) == ',' .and. image_text(j + 1:j + 1) /= ' ') then
+        image_text = image_text(1:j)//' '//image_text(j + 1:)
       end if
     end do
 
-    ! remove spaces between label and serial in an atom definition
-    ! or add space otherwise if missing
-    ! ie. C  (1) => c(1)
-    s = index(image_text, ' ') ! look for the first space, do not touch the first keyword
-    n = s
-    do
-      n = n+1
-      if (n > len_trim(image_text)) exit
+    ! insert space after ) and remove it before
+    do j = len_trim(image_text) - 1, 2, -1
+      if (image_text(j:j) == ')' .and. image_text(j - 1:j - 1) == ' ') then
+        image_text = image_text(1:j - 2)//image_text(j:)
+      end if
+    end do
+    do j = len_trim(image_text) - 1, 2, -1
+      if (image_text(j:j) == ')' .and. image_text(j + 1:j + 1) /= ' ' .and. image_text(j + 1:j + 1) /= ',') then
+        image_text = image_text(1:j)//' '//image_text(j + 1:)
+      end if
+    end do
 
-      if (image_text(n:n) == '(' .and. n > 1) then
-        if (image_text(n-1:n-1) == ' ') then
-          m = 1
-          do while (image_text(n-m:n-m) == ' ')
-            m = m+1
-          end do
-          if (n-m > s .and. iachar(image_text(n-m:n-m)) > 64 .and. iachar(image_text(n-m:n-m)) < 89) then ! text already upper case at this point
-            ! removing the spaces
-            image_text = image_text(1:n-m)//trim(image_text(n:))
-            n = n-m
+    ! insert space before ( and remove it before only if not a letter
+    do j = len_trim(image_text) - 1, 2, -1
+      if (image_text(j:j) == '(') then
+        if (image_text(j - 1:j - 1) == ' ') then
+          if (iachar(image_text(j - 2:j - 2)) > 64 .and. iachar(image_text(j - 2:j - 2)) < 91) then
+            image_text = image_text(1:j - 2)//image_text(j:)
           end if
         else
-          if (iachar(image_text(n-1:n-1)) > 64 .and. iachar(image_text(n-1:n-1)) < 89) then
-            ! atom label, we are ok
-          else
-            image_text = image_text(1:n-1)//' '//trim(image_text(n:))
+          if (iachar(image_text(j - 1:j - 1)) < 65 .or. iachar(image_text(j - 1:j - 1)) > 90) then
+            image_text = image_text(1:j - 1)//' '//image_text(j:)
           end if
         end if
       end if
     end do
-
-    ! remove spaces after ( or before )
-    s = index(image_text, ' ') ! look for the first space, do not touch the first keyword
-    n = s
-    do
-      n = n+1
-      if (n > len_trim(image_text)) exit
-
-      if (image_text(n:n) == '(') then
-        m = 0
-        do while (image_text(n+m+1:n+m+1) == ' ')
-          m = m+1
-        end do
-        if (m > 0) then
-          image_text = image_text(1:n)//trim(image_text(n+m+1:))
-        end if
-      else if (image_text(n:n) == ')') then
-        m = 1
-        do while (image_text(n-m:n-m) == ' ')
-          m = m+1
-        end do
-        if (m > 1) then
-          image_text = image_text(1:n-m)//trim(image_text(n:))
-          n = n-m
-        end if
+    do j = len_trim(image_text) - 1, 2, -1
+      if (image_text(j:j) == '(' .and. image_text(j + 1:j + 1) == ' ') then
+        image_text = image_text(1:j)//image_text(j + 2:)
       end if
     end do
 
-    ! remove spaces aroud bond definitions
-    s = index(image_text, ' ') ! look for the first space, do not touch the first keyword
-    do i = 1, size(bond_list_definition)
-      n = s
-      do
-        n = n+1
-        if (n > len_trim(image_text)) exit
-
-        if (image_text(n:n+1) == bond_list_definition(i)) then
-          m = 0
-          do while (image_text(n+1+m+1:n+1+m+1) == ' ')
-            m = m+1
-          end do
-          if (m > 0) then
-            image_text = image_text(1:n+1)//trim(image_text(n+1+m+1:))
-          end if
-
-          m = 1
-          do while (image_text(n-m:n-m) == ' ')
-            m = m+1
-          end do
-          if (m > 1) then
-            image_text = image_text(1:n-m)//trim(image_text(n:))
-            n = n-m
+    ! remove spaces around bonds
+    do j = 1, size(bond_list_definition)
+      do i = len_trim(image_text) - 1, 2, -1
+        if (image_text(i:i + len_trim(bond_list_definition(j)) - 1) == bond_list_definition(j)) then
+          if (image_text(i - 1:i - 1) == ' ') then
+            image_text = image_text(1:i - 2)//image_text(i:)
           end if
         end if
       end do
     end do
-    do i = 1, size(bond_list_definition)
-      n = s
-      write (buffer, '("-",I0,"-")') i
-      lenbuf = len_trim(buffer)
-
-      do
-        n = n+1
-        if (n > len_trim(image_text)) exit
-
-        if (image_text(n:n+lenbuf-1) == trim(buffer)) then
-          m = 0
-          do while (image_text(n+m+lenbuf:n+m+lenbuf) == ' ')
-            m = m+1
-          end do
-          if (m > 0) then
-            image_text = image_text(1:n+lenbuf-1)//trim(image_text(n+m+lenbuf:))
-          end if
-
-          m = 1
-          do while (image_text(n-m:n-m) == ' ')
-            m = m+1
-          end do
-          if (m > 1) then
-            image_text = image_text(1:n-m)//trim(image_text(n:))
-            n = n-m
+    do j = 1, size(bond_list_definition)
+      do i = len_trim(image_text) - 1, 2, -1
+        if (image_text(i:i + len_trim(bond_list_definition(j)) - 1) == bond_list_definition(j)) then
+          if (image_text(i + len_trim(bond_list_definition(j)):i + len_trim(bond_list_definition(j))) == ' ') then
+            image_text = image_text(1:i + len_trim(bond_list_definition(j)) - 1)// &
+            &  image_text(i + len_trim(bond_list_definition(j)) + 1:)
           end if
         end if
       end do
+    end do
+    do j = 0, size(bond_list_definition)
+      write (bond_type_text, '("-",I0,"-")') j
+      do i = len_trim(image_text) - 1, 2, -1
+        if (image_text(i:i + len_trim(bond_type_text) - 1) == bond_type_text) then
+          if (image_text(i - 1:i - 1) == ' ') then
+            image_text = image_text(1:i - 2)//image_text(i:)
+          end if
+        end if
+      end do
+    end do
+    do j = 0, size(bond_list_definition)
+      write (bond_type_text, '("-",I0,"-")') j
+      do i = len_trim(image_text) - 1, 2, -1
+        if (image_text(i:i + len_trim(bond_type_text) - 1) == bond_type_text) then
+          if (image_text(i + len_trim(bond_type_text):i + len_trim(bond_type_text)) == ' ') then
+            image_text = image_text(1:i + len_trim(bond_type_text) - 1)// &
+            &  image_text(i + len_trim(bond_type_text) + 1:)
+          end if
+        end if
+      end do
+    end do
+
+    ! remove space after * if followed by an atom specification
+    ! the case *(3) is considered not to be an atom but a math expression
+    do j = len_trim(image_text) - 3, 1, -1
+      if (image_text(j:j + 2) == '* (') then
+        ! look for end group
+        found_atom = .false.
+        do k = j+2, len_trim(image_text)
+          if (image_text(k:k) == ')') then
+            ! look for `=` or `,` inside the group. They only occur in atom specification
+            do l = j+2, k
+              if (image_text(l:l) == '=' .or. image_text(l:l) == ',') then
+                found_atom = .true.
+                exit
+              end if
+            end do
+
+            if (.not. found_atom) then
+              ! look if only ` ` or `*` is inside the group. ie. we have ( * )
+              found_atom = .true.
+              do l = j+3, k-1
+                if (image_text(l:l) /= ' ' .and. image_text(l:l) /= '*') then
+                  found_atom = .false.
+                  exit
+                end if
+              end do
+            end if
+          end if
+        end do
+        if (found_atom) then
+          image_text = image_text(1:j)//image_text(j+2:)
+        end if
+      end if
     end do
 
   end subroutine
@@ -1932,5 +1983,36 @@ contains
       end do
     end if
   end subroutine
+
+  function check_for_bond(text, current_pos) result(is_bond)
+    logical :: is_bond
+    character(len=*), intent(in) :: text
+    integer, intent(in) :: current_pos
+    integer i, j
+    character(len=4) :: bond_type_text
+
+    is_bond = .false.
+
+    do j = 1, size(bond_list_definition)
+      do i = max(current_pos - 1, 1), min(current_pos + 1, len_trim(text))
+        if (text(i:i + len_trim(bond_list_definition(j)) - 1) == bond_list_definition(j)) then
+          is_bond = .true.
+          return
+        end if
+      end do
+    end do
+
+    do j = 1, size(bond_list_definition)
+      write (bond_type_text, '("-",I0,"-")') j
+      do i = max(current_pos - len_trim(bond_type_text) + 1, 1), &
+      &      min(current_pos + len_trim(bond_type_text) - 1, len_trim(text))
+        if (text(i:i + len_trim(bond_type_text) - 1) == bond_type_text) then
+          is_bond = .true.
+          return
+        end if
+      end do
+    end do
+
+  end function
 
 end module
