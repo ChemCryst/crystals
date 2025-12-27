@@ -1217,12 +1217,12 @@ bool CcController::ParseInput(deque<string> &tokenList)
       // remove that token
       tokenList.pop_front();
 
-      CrGUIElement *theElement;
-      if (mCurrentWindow)
-      {
-        // Look for the item in current window first.
-        theElement = mCurrentWindow->FindObject(tokenList.front());
-      }
+                CrGUIElement * theElement = nil;
+                if ( mCurrentWindow )
+                {
+                    // Look for the item in current window first.
+                     theElement = mCurrentWindow->FindObject( tokenList.front() );
+                }
 
       if (theElement == nil)
       {
@@ -1930,8 +1930,7 @@ void CcController::AddInterfaceCommand(const string &line, bool internal)
   mInterfaceCommandDeq.push_back(line);
   LOGSTAT("-----------CRYSTALS has put: " + line);
 
-  bool comp = false;
-  if (lock)
+  if ( lock )
   {
     m_Complete_Signal.Wait();
     LOGSTAT("-----------Queue released");
@@ -2481,13 +2480,13 @@ int CrystalsThreadProc(void *arg)
 
 void CcController::StartCrystalsThread()
 {
-  //************************************************************//
-  //                                                            //
-  //    V.Important. Start the CRYSTALS (FORTRAN) thread.       //
-  //    This returns a pointer which is stored so we can        //
-  //             kill it later if we want!                      //
-  //                                                            //
-  int arg = 6;
+//************************************************************//
+//                                                            //
+//    V.Important. Start the CRYSTALS (FORTRAN) thread.       //
+//    This returns a pointer which is stored so we can        //
+//             kill it later if we want!                      //
+//                                                            //
+//   int arg = 6;
 
 #ifdef CRY_OSMAC
   setlocale(LC_ALL, "POSIX");
@@ -3606,7 +3605,65 @@ extern "C"
             string::size_type strim = keep.find_first_of("\n");
             if (strim == string::npos)
             {
-              break; // No more newlines in buffer. Job done for now.
+
+// READ THE BUFFER; REMOVE UNWANTED CHARS; APPEND TO EXISTING INPUT BUFFER:
+
+                string::size_type i;
+                BZERO(buf);
+                ReadFile(outPipe.output,buf,1023,&bread,NULL);  //read the stdout pipe
+                string s(buf);
+
+ // Change all \r\n into just \n. Leave \r alone.
+                string::size_type irn = s.find("\r\n");
+                while ( irn != string::npos ) {
+                      s.replace(irn,2,"\n");
+                      irn = s.find("\r\n");
+                }
+
+
+// Replace { with \ otherwise will interfere with output colours
+                i = s.find_first_of("{");
+                while(i!=string::npos)
+                {
+                    s.insert(i, 1, '\\');
+                    i = s.find("{", i+2);
+                }
+
+// Append to output buffer
+                keep = keep + s;
+
+
+
+
+                for(;;)
+                {
+
+// OUTPUT LOOP - consume output buffer. Output any strings upto each newline. For carriage returns, only output from last CR as far as next LF
+
+
+                    string::size_type strim = keep.find_first_of("\n");
+                    if ( strim == string::npos )
+                    {
+                        break;   // No more newlines in buffer. Job done for now.
+                    }
+
+                    string::size_type strimr = keep.substr(0,strim).find_last_of("\r");   // If carriage returns present, only output from the last one to the end of the line.
+                    if ( strimr == string::npos ) {
+                        CcController::theController->AddInterfaceCommand("{0,1 " + keep.substr(0,strim));
+                        keep.erase(0,strim+1);
+                    } else {
+                        CcController::theController->AddInterfaceCommand("{0,1 " + keep.substr(strimr+1,strim - strimr - 1 ));
+                        keep.erase(0,strim+1);
+                    }
+
+                }  //END oF OUTPUT LOOP.
+
+
+
+
+                // Keep checking for new output from process
+                BZERO(buf);
+                PeekNamedPipe(outPipe.output,buf,1023,&bread,&avail,NULL);
             }
 
             string::size_type strimr = keep.substr(0, strim).find_last_of("\r"); // If carriage returns present, only output from the last one to the end of the line.

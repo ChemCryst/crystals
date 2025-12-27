@@ -149,7 +149,7 @@ void CcModelSphere::Render(CcModelStyle *style, bool feedback)
 {
   glPushMatrix();
 
-  float extra = 0.0;
+//  float extra = 0.0;
 
   int detail = style->normal_res;
 
@@ -161,7 +161,7 @@ void CcModelSphere::Render(CcModelStyle *style, bool feedback)
   {
     GLfloat Surface[] = { 128.0f+(float)r/127.0f,128.0f+(float)g/127.0f,128.0f+(float)b/127.0f, 1.0f };
     glColor4fv( Surface );
-    extra = 20.0;
+//    extra = 20.0;
   }
   else if ( m_selected ) // highlighted
   {
@@ -173,13 +173,13 @@ void CcModelSphere::Render(CcModelStyle *style, bool feedback)
 
     GLfloat Surface[] = { ((float)r+64)/319.0f,((float)g+64)/319.0f,((float)b+64)/319.0f, 1.0f };
     glColor4fv( Surface );
-    extra = 10.0f;
+//    extra = 10.0f;
   }
   else if ( m_disabled )  // disabled atom
   {
     GLfloat Diffuse[] = { (float)r/512.0f,(float)g/512.0f,(float)b/512.0f, 1.0f };
     glColor4fv( Diffuse );
-    extra = 20.0f;
+//    extra = 20.0f;
   }
   else  // normal
   {

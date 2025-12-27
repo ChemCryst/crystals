@@ -73,7 +73,7 @@ CcParse CrMenuBar::ParseInput( deque<string> &  tokenList )
 {
     CcParse retVal(true, mXCanResize, mYCanResize);
     bool hasTokenForMe = true;
-    bool isMainMenu = false;
+//    bool isMainMenu = false;
 
     // Initialization for the first time
     if( ! mSelfInitialised )
@@ -81,7 +81,7 @@ CcParse CrMenuBar::ParseInput( deque<string> &  tokenList )
         LOGSTAT("*** Menu *** Initing...");
         mName = string(tokenList.front());
         tokenList.pop_front();
-        isMainMenu = true;
+//        isMainMenu = true;
         mText = string(tokenList.front());
         tokenList.pop_front();
         SetText(mText);

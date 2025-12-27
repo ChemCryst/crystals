@@ -406,6 +406,15 @@ elseif( IFX_COMPILER ) # ifx (untested)
     set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}  /O2 /EHs /W3 /Oy- ")
     set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}  /EHs /W3 /Oy- ")
 
+
+    # Disabling OMP SIMD feature on Windows ICX debug builds and suppressing this warning:
+    # Using /MTd or /MDd with '#pragma omp simd' may lead to unexpected fails due
+    # to the debugging version of iterators that cannot be vectorized correctly.
+    if (UPPERCASE_CMAKE_BUILD_TYPE MATCHES "(DEBUG|RELWITHMDD)")
+        append(CMAKE_CXX_FLAGS "/Qopenmp-simd-")
+        append(CMAKE_CXX_FLAGS "/Wno-debug-option-simd")
+    endif()
+
     add_definitions(-DWIN32)
     add_definitions(-DWXUSINGDLL)
     add_definitions(-D_WINDOWS)

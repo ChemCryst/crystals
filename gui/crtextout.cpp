@@ -65,10 +65,10 @@ CcParse CrTextOut::ParseInput( deque<string> & tokenList )
 
         LOGSTAT( "*** Created MulitEdit    " + mName );
 
-            int size = 200;
-            string cgeom = (CcController::theController)->GetKey( "FontSize" );
-            if ( cgeom.length() )
-                size = atoi( cgeom.c_str() );
+//            int size = 200;
+//            string cgeom = (CcController::theController)->GetKey( "FontSize" );
+//            if ( cgeom.length() )
+//                size = atoi( cgeom.c_str() );
 //            ((CxTextOut*)ptr_to_cxObject)->SetFontHeight(size);
     }
     // End of Init, now comes the general parser

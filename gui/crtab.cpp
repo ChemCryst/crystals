@@ -356,8 +356,8 @@ int CrTab::GetIdealWidth()
 
 int CrTab::GetIdealHeight()
 {
-  int offy = ((CxTab*)ptr_to_cxObject)->GetTabsHeight();
-  int offh = ((CxTab*)ptr_to_cxObject)->GetTabsExtraVSpace();
+//  int offy = ((CxTab*)ptr_to_cxObject)->GetTabsHeight();
+//  int offh = ((CxTab*)ptr_to_cxObject)->GetTabsExtraVSpace();
   int resizeableHeight=0;
 
   list<CrGrid*>::iterator crgi = mTabsList.begin();

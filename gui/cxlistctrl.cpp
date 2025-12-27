@@ -159,12 +159,12 @@ void CxListCtrl::AddRow(string * rowOfStrings)
 void CxListCtrl::HeaderClicked( wxListEvent& wxLE )
 {
 
-	if( wxLE.GetColumn() == nSortedCol )
-		bSortAscending = !bSortAscending;
+    if( wxLE.GetColumn() == nSortedCol )
+        bSortAscending = !bSortAscending;
     else
         bSortAscending = true;
 
-	nSortedCol = wxLE.GetColumn();
+    nSortedCol = wxLE.GetColumn();
     CxSortItems( m_colTypes[nSortedCol], nSortedCol, bSortAscending );
  
 }
@@ -173,7 +173,7 @@ bool CxListCtrl::CxSortItems( int colType, int nCol, bool bAscending)
 
 
     int size = GetItemCount();
-	int nColCount = GetColumnCount();
+//	int nColCount = GetColumnCount();
 
 	vector<int> intsToSort;
     vector<float> floatsToSort;

@@ -195,7 +195,7 @@ void CrResizeBar::SetGeometry( const CcRect * rect )
 CcParse CrResizeBar::ParseInput( deque<string> & tokenList )
 {
   CcParse retVal(true, mXCanResize, mYCanResize);
-  bool hasTokenForMe = true;
+//  bool hasTokenForMe = true;
 
 // Initialization for the first time
   if( ! mSelfInitialised )

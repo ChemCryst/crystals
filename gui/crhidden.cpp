@@ -69,7 +69,7 @@ void CrHidden::SetGeometry(const CcRect * rect)
 CcParse CrHidden::ParseInput( deque<string> & tokenList )
 {
     CcParse retVal(true, mXCanResize, mYCanResize);
-    bool hasTokenForMe = true;
+//    bool hasTokenForMe = true;
 
     if( ! mSelfInitialised )
     {
