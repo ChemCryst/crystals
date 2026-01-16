@@ -1,0 +1,23 @@
+% SCRIPT RANDOMTEST
+%  VARIABLE REAL RA1 RA2 RA3 RA4 RA5 RA6 RA7 RA8 RA9
+%% Fun fact - the 0.0 in the argument to the RANDOM function doesn't do anything.
+%% RANDOM returns a value sampled from a uniform distribution between 0 and 1.
+%  EVALUATE RA1 = RANDOM ( 0.0 )
+%  EVALUATE RA2 = RANDOM ( 0.0 )
+%  EVALUATE RA3 = RANDOM ( 0.0 )
+%  EVALUATE RA4 = RANDOM ( 0.0 )
+%  EVALUATE RA5 = RANDOM ( 0.0 )
+%  EVALUATE RA6 = RANDOM ( 0.0 )
+%  EVALUATE RA7 = RANDOM ( 0.0 )
+%  EVALUATE RA8 = RANDOM ( 0.0 )
+%  EVALUATE RA9 = RANDOM ( 0.0 )
+%  SHOW RA1
+%  SHOW RA2
+%  SHOW RA3
+%  SHOW RA4
+%  SHOW RA5
+%  SHOW RA6
+%  SHOW RA7
+%  SHOW RA8
+%  SHOW RA9
+%END SCRIPT
