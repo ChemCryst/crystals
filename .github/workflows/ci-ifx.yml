@@ -45,7 +45,7 @@ jobs:
 #        retention-days: 7
 
   build:
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     env:
       testfail: false
